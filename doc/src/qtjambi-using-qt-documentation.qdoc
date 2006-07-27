@@ -69,7 +69,7 @@
         QApplication::QApplication ( int & argc, char ** argv )
     \endcode
 
-    from the C++ based Qt libray is
+    from the C++ based Qt library is
 
     \code
         QApplication ( QNativePointer argc, QNativePointer argv )
@@ -162,7 +162,7 @@
 
     Object types are handled differently depending on whether they
     inherit QObject or not. Object types that \e don't inherit QObject
-    are garbage collected unless the garabage collector has been
+    are garbage collected unless the garbage collector has been
     disabled (see \l {Ownership and Garbage Collection} for details).
 
     QObject subclasses, on the other hand, normally have a lifetime
@@ -636,7 +636,7 @@
     such a object is deleted, either assign the object to a parent or
     call the dispose() function. Object types that don't inherit
     QObject, on the other hand, are garbage collected unless the
-    garabage collector has been disabled (see Ownership and Garbage
+    garbage collector has been disabled (see Ownership and Garbage
     Collection for details).
 
 

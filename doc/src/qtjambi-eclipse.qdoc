@@ -73,7 +73,7 @@
     Qt Jambi applications depend on native libraries to run, so when
     launching Qt Jambi applications from inside of eclipse the correct
     environment has to be set up. See \l {Installing Qt Jambi} for
-    more details on the spesific environments required for your
+    more details on the specific environment required for your
     platform.
 
     The simplest way to set up this environment is to right-click on

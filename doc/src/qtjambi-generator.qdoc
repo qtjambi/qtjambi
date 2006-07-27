@@ -477,7 +477,7 @@
     \o
 
     The generator will generate several warnings which may be
-    irrelevant to the user. The \c suppress-warning node supresses the
+    irrelevant to the user. The \c suppress-warning node suppresses the
     specified warning, and is a child of the \l typesystem node.
 
     \code
