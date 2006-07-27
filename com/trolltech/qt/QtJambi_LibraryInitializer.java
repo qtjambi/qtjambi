@@ -1,0 +1,33 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of $PRODUCT$.
+**
+** $JAVA_LICENSE$
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+package com.trolltech.qt;
+
+abstract class QtJambi_LibraryInitializer 
+{
+    static {
+        QtJambiInternal.loadLibrary("qtjambi", "qtjambi_debuglib");
+        
+        // ### Shouldn't we be using the class' static initializer combined with
+        // and just touch the class? That's how jdb database drivers work, at least..
+        QClassPathFileEngineHandler handler = new QClassPathFileEngineHandler();
+        handler.disableGarbageCollection();
+	
+        initialize();
+        QThreadManager.initialize();
+    }    
+
+    static void init() {}
+
+    private static native void initialize();
+}

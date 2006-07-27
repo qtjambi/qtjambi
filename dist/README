@@ -1,0 +1,109 @@
+Qt Jambi
+========
+
+Qt Jambi is the Qt library made available to Java. 
+
+Please make sure you read and understand the LICENSE file.
+
+
+Requirements
+------------
+
+Qt Jambi requires Java 1.5 or later to be installed and available in
+your PATH for examples to run.
+
+
+Running the Launcher
+--------------------
+
+The Qt Jambi package comes prebuilt for Linux, Mac OS X and
+Windows. To run the Examples/Demo launcher, run the:
+
+Windows:
+	qtjambi.exe
+
+Linux/Mac OS X:
+	qtjambi.sh
+
+file from the root directory. This will verify your virtual machine
+version and set the correct environment for running Qt Jambi
+applications.
+
+
+Documentation
+-------------
+
+The documentation is provided in doc/html with the qtjambi_index.html
+as the main index file. For easy access to the documentation execute
+the 'assistant.bat' or 'assistant.sh' files in your install directory.
+
+
+Manually launching Qt Jambi applications
+----------------------------------------
+
+If you want to manually run Qt Jambi you need to set your CLASSPATH
+environment variable to include the qtjambi.jar file to get access to
+the library. To run the examples or launcher, you also need include the
+Qt Jambi root directory in the CLASSPATH.
+
+In addition to this, you need to set the correct environment for Qt
+Jambi to find the native libraries. 
+
+Windows:
+	Set the PATH environment variable to include the bin directory
+	in the Qt Jambi directory.
+
+Linux:
+	Set the LD_LIBRARY_PATH environment variable to include the
+	lib directory in the Qt Jambi directory.
+
+Mac OS X:
+	Set the DYLD_LIBRARY_PATH environment variable to include the
+	lib directory in the Qt Jambi directory.
+
+
+Platform Notes
+--------------
+
+Mac OS X: 
+    It is necessary to pass the argument -XstartOnFirstThread to the
+    java executable when running a Qt Jambi application. 
+
+Linux:
+    On 64 bit Ubuntu installations you need to install the ia32-sun-java5-bin
+    package and put /usr/lib/jvm/ia32-java-1.5.0-sun-1.5.0.06/jre/bin into your
+    PATH environment variable.
+    The final version will of course ship with sources, so you can compile and
+    run it with the full 64 bit version of java.
+
+Running the Qt Jambi Generator
+------------------------------
+
+There is an example included on how to use the Qt Jambi Generator
+available in the generator_example directory in the Qt Jambi
+directory.
+
+
+Reporting Bugs, Mailing List and Support
+----------------------------------------
+
+Any inquiries or problems encountered with Qt Jambi should be reported
+to support@trolltech.com. Include as much information as you can about
+your environment and versions.
+
+If you want to join the Qt Jambi users' mailing list, send a mail to
+qtjambi-interest-request@trolltech.com containing the single word
+"subscribe".
+
+
+More information
+----------------
+
+Please see http://www.trolltech.com/products/qtjambi for more information
+about Qt Jambi.
+
+Please do not hesitate to contact us at sales@trolltech.com if you
+have questions regarding purchasing of Qt Jambi. 
+
+Enjoy Qt Jambi!
+The Trolltech team

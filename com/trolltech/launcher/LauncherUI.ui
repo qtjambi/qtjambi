@@ -1,0 +1,482 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>Launcher</class>
+ <widget class="QWidget" name="Launcher" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>913</width>
+    <height>708</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>1</hsizetype>
+    <vsizetype>5</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="palette" >
+   <palette>
+    <active>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>224</red>
+      <green>223</green>
+      <blue>227</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>241</red>
+      <green>239</green>
+      <blue>226</blue>
+     </color>
+     <color>
+      <red>157</red>
+      <green>157</green>
+      <blue>161</blue>
+     </color>
+     <color>
+      <red>149</red>
+      <green>149</green>
+      <blue>151</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>113</red>
+      <green>111</green>
+      <blue>100</blue>
+     </color>
+     <color>
+      <red>178</red>
+      <green>180</green>
+      <blue>191</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>0</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>232</red>
+      <green>232</green>
+      <blue>232</blue>
+     </color>
+    </active>
+    <inactive>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>224</red>
+      <green>223</green>
+      <blue>227</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>241</red>
+      <green>239</green>
+      <blue>226</blue>
+     </color>
+     <color>
+      <red>157</red>
+      <green>157</green>
+      <blue>161</blue>
+     </color>
+     <color>
+      <red>149</red>
+      <green>149</green>
+      <blue>151</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>113</red>
+      <green>111</green>
+      <blue>100</blue>
+     </color>
+     <color>
+      <red>224</red>
+      <green>223</green>
+      <blue>227</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>0</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>232</red>
+      <green>232</green>
+      <blue>232</blue>
+     </color>
+    </inactive>
+    <disabled>
+     <color>
+      <red>112</red>
+      <green>111</green>
+      <blue>113</blue>
+     </color>
+     <color>
+      <red>224</red>
+      <green>223</green>
+      <blue>227</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>239</red>
+      <green>239</green>
+      <blue>241</blue>
+     </color>
+     <color>
+      <red>157</red>
+      <green>157</green>
+      <blue>161</blue>
+     </color>
+     <color>
+      <red>149</red>
+      <green>149</green>
+      <blue>151</blue>
+     </color>
+     <color>
+      <red>112</red>
+      <green>111</green>
+      <blue>113</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>112</red>
+      <green>111</green>
+      <blue>113</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>178</red>
+      <green>180</green>
+      <blue>191</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>255</red>
+      <green>0</green>
+      <blue>255</blue>
+     </color>
+     <color>
+      <red>232</red>
+      <green>232</green>
+      <blue>232</blue>
+     </color>
+    </disabled>
+   </palette>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="group_main" >
+     <property name="title" >
+      <string>Qt Jambi Example and Demo Launcher</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="1" >
+       <widget class="QStackedWidget" name="container" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>3</vsizetype>
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="currentIndex" >
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="page" >
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="ScrollingHTMLView" name="description" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>3</hsizetype>
+              <vsizetype>7</vsizetype>
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_2" >
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="ScrollingHTMLView" name="source" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>13</hsizetype>
+              <vsizetype>13</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="html" >
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;">No source&lt;/p>&lt;/body>&lt;/html></string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QGroupBox" name="group_styles" >
+          <property name="title" >
+           <string>Styles</string>
+          </property>
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>9</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_assistant" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="text" >
+           <string>Qt Assistant</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_content" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="text" >
+           <string>View Source</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_launch" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="text" >
+           <string>Launch</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0" >
+       <widget class="CustomListView" name="list" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>1</hsizetype>
+          <vsizetype>3</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::NoFrame</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>ScrollingHTMLView</class>
+   <extends>QTextEdit</extends>
+   <header>scrollinghtmlview.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>CustomListView</class>
+   <extends>QListView</extends>
+   <header>customlistview.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

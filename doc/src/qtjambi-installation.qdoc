@@ -1,0 +1,115 @@
+/*!
+    \page qtjambi-installation
+    \title Installing Qt Jambi
+
+    The Qt Jambi package comes prebuilt for Linux, Mac OS X and
+    Windows. The package requires Java 1.5 or later to be
+    installed. On Mac Os X and Linux, the \c PATH environment variable
+    must also be set for examples to run.
+
+    Enjoy !
+
+    \list
+        \o \l {Running The Launcher}
+        \o \l {Manually Launching Qt Jambi Applications}
+        \o \l {Platform Notes}
+        \o \l {Running the Qt Jambi Generator}
+    \endlist
+
+    \section1 Running The Launcher
+
+    To run the examples and demo launcher on Windows run the
+
+    \code
+	qtjambi.exe
+    \endcode
+
+    executable from the root directory. On Linux and Mac OS X run the
+
+    \code
+	qtjambi.sh
+    \endcode
+
+    shell script. Running these files will also verify the virtual
+    machine version and set the correct environment for running Qt
+    Jambi applications.
+
+
+    \section1 Manually Launching Qt Jambi Applications
+
+    To manually run Qt Jambi, the \c CLASSPATH environment variable
+    must include the \c qtjambi.jar file to get access to the
+    library. To run the examples or launcher, the classpath must
+    also include the Qt Jambi root directory.
+
+    Finally, Qt Jambi must be enabled to find the native libraries:
+
+    \table 100%
+    \header \o Platform \o Comment
+
+    \row
+    \o Windows
+    \o Set the \c PATH environment variable to include the bin
+    directory in the Qt Jambi directory.
+
+    \row
+    \o Linux
+    \o Set the \c LD_LIBRARY_PATH environment variable to include the
+    lib directory in the Qt Jambi directory.
+
+    \row
+    \o Mac OS X
+    \o Set the \c DYLD_LIBRARY_PATH environment variable to include
+    the lib directory in the Qt Jambi directory.
+
+    \endtable
+
+    See also the \c qtjambi.sh file for details on which environment
+    variables to set.
+
+    \section1 Platform Notes
+
+    \table 100%
+    \header \o Platform \o Comment
+    \row \o Mac OS X
+    \o When running a Qt Jambi application, it is necessary to pass
+    the \c -XstartOnFirstThread argument to the Java executable.
+
+    \row \o Linux / 64 bit:
+
+    \o Install a 32 bit virtual machine, e.g., on Ubuntu, install the
+    \c ia32-sun-java5-bin package and put \c
+    /usr/lib/jvm/ia32-java-1.5.0-sun-1.5.0.06/jre/bin into the \c PATH
+    environment variable.
+
+    The final release will of course ship with sources, so you can
+    compile and run it with the full 64 bit version of Java.
+
+    \endtable
+
+    \section1 Running the Qt Jambi Generator
+
+    The generator is a Qt application which can be used to map C++
+    based Qt APIs onto equivalent Java APIs. The Qt Jambi package
+    provides an example on how to use the Qt Jambi Generator, located
+    in the \c {path/to/Qt Jambi/generator_example} directory.
+
+    To generate the example's Java library run the
+
+    \code
+        generator_example.bat
+    \endcode
+
+    script on Windows. On Linux and Mac OS X run
+
+    \code
+        generator_example.sh
+    \endcode
+
+    These scripts will generate and compile the Java source
+    code, as well as compile the C++ side of the example. See the
+    script files for details.
+
+    \warning The \QJ generator is written to handle Qt based source
+    code, and is not intended for mapping C++ libraries in general.
+*/

@@ -1,0 +1,17 @@
+/*!
+    \page qtjambi-chart.html
+    \title Chart Example
+
+    The Chart example shows how to create a custom view for the model/view framework.
+
+    \image chart-example.png
+
+    In this example, the items in a table model are represented as slices in a pie chart,
+    relying on the flexibility of the model/view architecture to handle custom editing
+    and selection features.
+
+    \bold{Note that you only need to create a new view class if your data requires a
+    specialized representation.} You should first consider using a standard QListView,
+    QTableView, or QTreeView with a custom QItemDelegate subclass if you need to
+    represent data in a special way.
+*/

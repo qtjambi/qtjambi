@@ -1,0 +1,32 @@
+<typesystem package="com.trolltech.qt.opengl" default-superclass="com.trolltech.qt.QtObject">  
+  <rejection class="QGLWidget" function-name="setMouseTracking"/>
+  
+  <primitive-type name="GLuint" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="GLint" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="GLenum" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  
+  <enum-type name="QGL::FormatOption" flags="QGL::FormatOptions"/>
+  
+  <namespace-type name="QGL"/>
+  
+  <value-type name="QGLColormap"/>
+  <value-type name="QGLFormat"/>
+  
+  <object-type name="QGLContext"/>  
+  <object-type name="QGLPixelBuffer">
+    <extra-includes>
+        <include file-name="QImage" location="global"/>
+    </extra-includes>
+  </object-type>
+  <object-type name="QGLWidget">
+    <extra-includes>
+        <include file-name="QImage" location="global"/>
+        <include file-name="QPixmap" location="global"/>
+    </extra-includes>
+  </object-type>  
+ 
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QGLColormap::QGLColormapData\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />
+  <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
+</typesystem>

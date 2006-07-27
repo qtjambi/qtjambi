@@ -1,0 +1,100 @@
+<typesystem package="com.trolltech.qt.sql" default-superclass="com.trolltech.qt.QtObject">
+  <rejection class="QSqlDriverCreator" />
+  <rejection class="QSqlDriverPlugin" />
+  <rejection class="QSqlDriverFactoryInterface" />
+
+  <namespace-type name="QSql" />
+  
+  <value-type name="QSqlDatabase">
+    <extra-includes>
+        <include file-name="QSqlQuery" location="global" />
+        <include file-name="QSqlError" location="global" />
+        <include file-name="QSqlIndex" location="global" />
+        <include file-name="QSqlRecord" location="global" />
+        <include file-name="QStringList" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>  
+  </value-type>  
+  <value-type name="QSqlQuery">
+    <extra-includes>
+        <include file-name="QSqlError" location="global" />
+        <include file-name="QSqlRecord" location="global" />
+        <include file-name="QStringList" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>  
+  </value-type>  
+  <value-type name="QSqlRecord">
+    <extra-includes>
+        <include file-name="QSqlField" location="global" />
+    </extra-includes>
+  </value-type>
+  <value-type name="QSqlError" />
+  <value-type name="QSqlIndex" />  
+  <value-type name="QSqlRelation" />
+  <value-type name="QSqlField" />  
+  
+  <object-type name="QSqlDriver">  
+    <extra-includes>
+        <include file-name="QSqlQuery" location="global" />
+        <include file-name="QSqlError" location="global" />
+        <include file-name="QSqlIndex" location="global" />
+        <include file-name="QSqlRecord" location="global" />
+        <include file-name="QStringList" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>  
+  </object-type>  
+  
+  <object-type name="QSqlQueryModel">    
+    <extra-includes>
+        <include file-name="QSqlError" location="global" />
+        <include file-name="QSqlQuery" location="global" />
+        <include file-name="QSqlRecord" location="global" />
+        <include file-name="QStringList" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>  
+  </object-type>      
+  <object-type name="QSqlRelationalTableModel">
+    <extra-includes>
+        <include file-name="QStringList" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>  
+  </object-type>
+  <object-type name="QSqlResult">
+      <extra-includes>
+        <include file-name="QSqlError" location="global" />
+        <include file-name="QSqlQuery" location="global" />
+        <include file-name="QSqlRecord" location="global" />
+        <include file-name="QStringList" location="global" />
+        <include file-name="QSize" location="global" />
+      </extra-includes>
+  </object-type>
+  <object-type name="QSqlTableModel">  
+    <extra-includes>
+        <include file-name="QSqlIndex" location="global" />
+        <include file-name="QStringList" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>  
+  </object-type>  
+  <object-type name="QSqlDriverCreatorBase">
+    <extra-includes>
+        <include file-name="QSqlDriver" location="global" />
+    </extra-includes>    
+  </object-type>
+  
+  <enum-type name="QSql::Location" />
+  <enum-type name="QSql::ParamTypeFlag" flags="QSql::ParamType" />
+  <enum-type name="QSql::TableType" />
+  <enum-type name="QSqlDriver::DriverFeature" />
+  <enum-type name="QSqlDriver::IdentifierType" />
+  <enum-type name="QSqlDriver::StatementType" />
+  <enum-type name="QSqlError::ErrorType" />
+  <enum-type name="QSqlField::RequiredStatus" />
+  <enum-type name="QSqlResult::BindingSyntax" />
+  <enum-type name="QSqlResult::VirtualHookOperation" />
+  <enum-type name="QSqlTableModel::EditStrategy" />
+  
+  <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unsupported default value 'QLatin1String(defaultConnection)' of argument in function '*', class 'QSqlDatabase'" />
+</typesystem>

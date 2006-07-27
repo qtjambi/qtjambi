@@ -1,0 +1,35 @@
+/*!
+    \page qtjambi-examples.html
+    \title Qt Jambi Examples
+
+    This is the list of examples in Qt Jambi's \c examples
+    directory. The examples demonstrate Qt Jambi features in small,
+    self-contained programs. They are not very impressive when you run
+    them, but their source code is carefully written to show good Qt
+    Jambi programming practices.
+
+    In addition to the examples, Qt Jambi includes a small selection
+    of demos that deliberately show off Qt's features. You might want
+    to look at these as well.
+
+    \section1 Examples
+
+    \list
+    \o \l{Analog Clock Example}{Analog Clock}
+    \o \l{Line Edits Example}{Line Edits}
+    \o \l{Spin Boxes Example}{Spin Boxes}
+    \o \l{Tetrix Example}{Tetrix}
+    \o \l{Wiggly Example}{Wiggly}
+    \o \l{Application Example}{Application}
+    \o \l{Resource System Example}{Resource System}
+    \o \l{Generator Example}{Generator Example}
+    \endlist
+
+    \section1 Demos
+
+    \list
+    \o \l{Vector Deformation}
+    \o \l{Image Viewer}
+    \o \l{Text Edit}
+    \endlist
+*/

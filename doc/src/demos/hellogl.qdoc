@@ -1,0 +1,9 @@
+/*!
+  \page qtjambi-hellogl.html
+  \title Hello GL
+
+  The Hello GL demonstration shows the basic use of the OpenGL-related classes
+  provided with Qt.
+
+  \image hellogl-demo.png
+*/

@@ -1,0 +1,145 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of $PRODUCT$.
+**
+** $CPP_LICENSE$
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "jni.h"
+
+#include "qtjambi_core.h"
+
+#include <QtCore/QAbstractItemModel>
+#include <QtCore/QModelIndex>
+
+#include <QtGui/QStandardItemModel>
+
+struct QModelIndexAccessor {
+    int row;
+    int col;
+    void *ptr;
+    QAbstractItemModel *model;
+};
+
+QStandardItemModel *sillyModel;
+
+_declspec(noinline) static void doStuff(const QModelIndex &index) {
+    if (index.row() == index.column() + 1)
+        printf("tada!!!\n");
+}
+
+jclass class_FastIndexArray;
+jfieldID id_FastIndexArray_data;
+jmethodID id_FastIndexArray_constructor;
+
+jclass class_FastIndexMembers;
+jfieldID id_FastIndexMembers_row;
+jfieldID id_FastIndexMembers_col;
+jfieldID id_FastIndexMembers_model;
+jfieldID id_FastIndexMembers_object;
+jmethodID id_FastIndexMembers_constructor;
+
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_trolltech_benchmarks_itemview_FastIndexModel_setupNative
+(JNIEnv *env, jclass)
+{
+    sillyModel = new QStandardItemModel(1000, 1000);
+
+    class_FastIndexArray = (jclass) env->NewGlobalRef(env->FindClass("com/trolltech/benchmarks/itemview/FastIndexArray"));
+    Q_ASSERT(class_FastIndexArray);
+
+
+    id_FastIndexArray_data = env->GetFieldID(class_FastIndexArray, "data", "[J");
+    Q_ASSERT(id_FastIndexArray_data);
+    id_FastIndexArray_constructor = env->GetMethodID(class_FastIndexArray, "<init>", "(IILcom/trolltech/qt/gui/QAbstractItemModel;)V");
+    Q_ASSERT(id_FastIndexArray_constructor);
+
+    class_FastIndexMembers = (jclass) env->NewGlobalRef(env->FindClass("com/trolltech/benchmarks/itemview/FastIndexMembers"));
+    Q_ASSERT(class_FastIndexMembers);
+
+
+    id_FastIndexMembers_row = env->GetFieldID(class_FastIndexMembers, "row", "I");
+    id_FastIndexMembers_col = env->GetFieldID(class_FastIndexMembers, "col", "I");
+    id_FastIndexMembers_model = env->GetFieldID(class_FastIndexMembers, "model", "Lcom/trolltech/qt/gui/QAbstractItemModel;");
+    id_FastIndexMembers_object = env->GetFieldID(class_FastIndexMembers, "object", "Ljava/lang/Object;");
+    Q_ASSERT(id_FastIndexMembers_row);
+    Q_ASSERT(id_FastIndexMembers_col);
+    Q_ASSERT(id_FastIndexMembers_model);
+    Q_ASSERT(id_FastIndexMembers_object);
+
+    id_FastIndexMembers_constructor = env->GetMethodID(class_FastIndexMembers, "<init>", "(IILcom/trolltech/qt/gui/QAbstractItemModel;)V");
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_trolltech_benchmarks_itemview_FastIndexModel_doNativeStuff
+(JNIEnv *, jobject)
+{
+    QModelIndex index = sillyModel->index(500, 500);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_trolltech_benchmarks_itemview_FastIndexModel_takeQModelIndex
+(JNIEnv *, jobject, jlong indexPointer, jobject, jint)
+{
+    QModelIndex *index = (QModelIndex *) qtjambi_from_jlong(indexPointer);
+    doStuff(*index);
+}
+
+
+extern "C" JNIEXPORT jobject JNICALL
+Java_com_trolltech_benchmarks_itemview_FastIndexModel_createFastIndexArray
+(JNIEnv *env, jobject, jint row, jint col)
+{
+    sillyModel->index(row, col);
+    return env->NewObject(class_FastIndexArray, id_FastIndexArray_constructor, row, col, 0);
+}
+
+
+extern "C" JNIEXPORT jobject JNICALL
+Java_com_trolltech_benchmarks_itemview_FastIndexModel_createFastIndexMembers
+(JNIEnv *env, jobject, jint row, jint col)
+{
+    sillyModel->index(row, col);
+    return env->NewObject(class_FastIndexMembers, id_FastIndexMembers_constructor, row, col, 0);
+}
+
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_trolltech_benchmarks_itemview_FastIndexModel_takeFastIndexArray
+(JNIEnv *env, jobject, jobject index, jobject, jint)
+{
+    jlongArray array = (jlongArray) env->GetObjectField(index, id_FastIndexArray_data);
+    jlong *data = env->GetLongArrayElements(array, 0);
+
+    QModelIndexAccessor modelIndex = {
+        (int) data[0],
+        (int) data[1],
+        (void *) data[2],
+        (QAbstractItemModel *) data[3]
+    };
+    env->ReleaseLongArrayElements(array, data, JNI_ABORT);
+
+    doStuff(*(QModelIndex *) &modelIndex);
+}
+
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_trolltech_benchmarks_itemview_FastIndexModel_takeFastIndexMembers
+(JNIEnv *env, jobject, jobject index, jobject, jint)
+{
+    QModelIndexAccessor modelIndex = {
+        env->GetIntField(index, id_FastIndexMembers_row),
+        env->GetIntField(index, id_FastIndexMembers_col),
+        (void *) env->GetObjectField(index, id_FastIndexMembers_object),
+        (QAbstractItemModel *) env->GetObjectField(index, id_FastIndexMembers_model)
+    };
+
+    doStuff(*(QModelIndex *)&modelIndex);
+}

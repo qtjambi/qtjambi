@@ -1,0 +1,90 @@
+/*!
+    \page qtjambi-eclipse
+
+    \title Qt Jambi Eclipse Integration
+
+    Qt Jambi comes with an integration for the Eclipse IDE that
+    provides access to the Qt Jambi documentation and Qt Designer.
+
+    \section1 Installing the Qt Jambi Eclipse Integration
+
+    To install the Qt Jambi Eclipse Integration, you need to get the
+    Qt Jambi Eclipse Integration package. This is a .zip file for
+    Windows and a .tar.gz file for linux, that contains the
+    documentation, the Eclipse plugins and the native libraries
+    required by the plugins to run Qt Designer.
+
+    Unpack the package in the eclipse root folder to install the
+    package. On Windows you also need to run the
+    register_eclipse_integration.bat file. On Linux there are no
+    additional steps.
+
+    Qt Jambi Eclipse integration for Mac OS X is being worked on.
+
+    \section1 Creating New Forms with Qt Designer
+
+    To create a new .ui file with Qt Designer go into the file menu
+    and select New and then File, as show in the screenshot below.
+
+    \img eclipse-file-new.png
+
+    This will bring up a dialog box to query for the file name and
+    location. If you specify a filename that has a .ui extension, as
+    shown in the screenshot below, this will create a new User
+    Interface.
+
+    \img eclipse-file-new-ui.png
+
+    \section1 Using Qt Designer in the Eclipse Integration
+
+    The Qt Designer plugin views, such as the Qt Property Editor and
+    the Qt Widget Box, are not shown by default so they need to be
+    explicitly enabled by the user. This is done in the Windows menu
+    by selecting Show View and then Other, like shown in the screen
+    shot below.
+
+    \img eclipse-window-others.png
+
+    This will bring up a dialog box where it is possible to select and
+    enable the different Qt Designer components.
+
+    \img eclipse-window-show-view.png
+
+    \section1 UIC for Qt Jambi
+
+    Qt Jambi comes with its own version of UIC, the user interface
+    compiler, a tool that produces Qt Jambi source code from a user
+    interface (.ui) definition file. This tool is integrated into the
+    Eclipse IDE as a custom build tool which will update all .ui files
+    when they are changed. This build tool will be executed prior to
+    the Eclipse built-in incremental builder which means that all
+    source code is ensured to be up to date after a editing in Qt
+    Designer.
+
+    If you do not have the executable for Qt Jambi's UIC tool in your 
+    path, then you should specify its location for your Qt project.
+    This can be done by right clicking on the project in the Package
+    explorer and selecting Properties. In the Properties dialog box
+    you can select the Qt Jambi property sheet and enter the full 
+    path of your JUIC executable in the entry field.
+
+    \section1 Running Qt Jambi Applications from Eclipse
+
+    Qt Jambi applications depend on native libraries to run, so when
+    launching Qt Jambi applications from inside of eclipse the correct
+    environment has to be set up. See \l {Installing Qt Jambi} for
+    more details on the spesific environments required for your
+    platform.
+
+    The simplest way to set up this environment is to right-click on
+    the application in the Package explorer and select Run As and then
+    Run like shown in the screenshot below.
+
+    \img eclipse-run-as.png
+
+    Then create a new launcher for Java Application and edit the
+    environment as shown in the screenshot below.
+
+    \img eclipse-environment-new.png
+
+*/

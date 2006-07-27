@@ -1,0 +1,18 @@
+<typesystem package="com.trolltech.autotests.generator" default-superclass="com.trolltech.qt.QtObject">
+
+  <load-typesystem name="../generator/typesystem_core.txt" generate="no" />
+  <load-typesystem name="../generator/typesystem_gui.txt" generate="no" />
+
+  <value-type name="Tulip">
+    <include file-name="tulip.h" location="local"/>
+  </value-type>
+
+  <value-type name="Variants">
+    <include file-name="Variants.h" location="local"/>
+  </value-type>
+
+  <object-type name="SignalsAndSlots">
+    <include file-name="signalsandslots.h" location="local"/>
+  </object-type>
+
+</typesystem>

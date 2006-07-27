@@ -1,0 +1,30 @@
+/*!
+    \page qtjambi-generatorexample.html
+    \title Generator Example
+
+    To run the generator example, simply execute the generator_example
+    script:
+
+    Windows:
+
+    \code
+    generator_example.bat
+    \endcode
+
+    Linux and Mac OS X:
+    \code
+    generator_example.sh
+    \endcode
+
+    This will go through the required steps of executing the generator
+    with the correct environment set up, then build the native
+    libraries and the java source files required by the example. See
+    the script files for details in the individual steps.
+
+    When the script has run you will see the \c {GeneratorExample} in
+    the launcher and should be able to run it.
+
+    Please note that you need an actual Qt version installed with
+    qmake and the Qt header files for the generator example to work.
+
+*/

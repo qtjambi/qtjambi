@@ -1,0 +1,9 @@
+<typesystem package="com.trolltech.examples.generator" default-superclass="com.trolltech.qt.QtObject">
+
+  <load-typesystem name=":/trolltech/generator/typesystem_core.txt" generate="no" />
+  <load-typesystem name=":/trolltech/generator/typesystem_gui.txt" generate="no" />
+
+  <object-type name="MyWidget">
+    <include file-name="mywidget.h" location="local"/>
+  </object-type>
+</typesystem>

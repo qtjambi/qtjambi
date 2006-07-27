@@ -1,0 +1,1843 @@
+<typesystem package="com.trolltech.qt.core" default-superclass="com.trolltech.qt.QtObject">
+
+  <rejection class="*" function-name="d_func"/>
+
+  <rejection class="*" field-name="d_ptr"/>
+  <rejection class="*" field-name="d"/>
+  
+  <rejection class="QTextStreamManipulator"/>    
+  <rejection class="QFactoryInterface"/>
+  <rejection class="QAlgorithmsPrivate"/>
+  <rejection class="QAtomic"/>
+  <rejection class="QAtomicPointer"/>
+  <rejection class="QBasicAtomic"/>
+  <rejection class="QBasicAtomicPointer"/>
+  <rejection class="QBitRef"/>
+  <rejection class="QCache"/>
+  <rejection class="QCharRef"/>
+  <rejection class="QDebug"/>
+  <rejection class="QFlag"/>
+  <rejection class="QFlags"/>
+  <rejection class="QForeachContainer"/>
+  <rejection class="QForeachContainerBase"/>
+  <rejection class="QGlobalStatic"/>
+  <rejection class="QHash"/>
+  <rejection class="QHashData"/>
+  <rejection class="QHashDummyNode"/>
+  <rejection class="QHashDummyNode"/>
+  <rejection class="QHashDummyNode"/>
+  <rejection class="QHashDummyNode"/>
+  <rejection class="QHashDummyNode"/>
+  <rejection class="QHashDummyValue"/>
+  <rejection class="QHashIterator"/>
+  <rejection class="QHashNode"/>
+  <rejection class="QHashNode"/>
+  <rejection class="QHashNode"/>
+  <rejection class="QHashNode"/>
+  <rejection class="QHashNode"/>
+  <rejection class="QInternal"/>
+  <rejection class="QLibrary"/>
+  <rejection class="QLinkedList"/>
+  <rejection class="QLinkedListData"/>
+  <rejection class="QLinkedListIterator"/>
+  <rejection class="QLinkedListNode"/>
+  <rejection class="QListData"/>
+  <rejection class="QListIterator"/>
+  <rejection class="QMap"/>
+  <rejection class="QMapData"/>
+  <rejection class="QMapIterator"/>
+  <rejection class="QMetaType"/>
+  <rejection class="QMetaTypeId"/>
+  <rejection class="QMultiHash"/>
+  <rejection class="QMultiMap"/>
+  <rejection class="QMutableHashIterator"/>
+  <rejection class="QMutableLinkedListIterator"/>
+  <rejection class="QMutableListIterator"/>
+  <rejection class="QMutableMapIterator"/>
+  <rejection class="QMutableVectorIterator"/>
+  <rejection class="QMutexLocker"/>
+  <rejection class="QNoImplicitBoolCast"/>
+  <rejection class="QObjectCleanupHandler"/>
+  <rejection class="QObjectData"/>
+  <rejection class="QObjectUserData"/>
+  <rejection class="QPluginLoader"/>
+  <rejection class="QPointer"/>
+  <rejection class="QReadLocker"/>
+  <rejection class="QSet"/>
+  <rejection class="QSetIterator"/>
+  <rejection class="QSharedData"/>
+  <rejection class="QSharedDataPointer"/>
+  <rejection class="QStack"/>
+  <rejection class="QThreadStorage"/>
+  <rejection class="QThreadStorageData"/>
+  <rejection class="QTypeInfo"/>
+  <rejection class="QTypeInfo"/>
+  <rejection class="QVFbKeyData"/>
+  <rejection class="QVariantComparisonHelper"/>
+  <rejection class="QVectorData"/>
+  <rejection class="QVectorIterator"/>  
+  <rejection class="QVectorTypedData"/>
+  <rejection class="QWriteLocker"/>
+  <rejection class="QtPrivate"/>
+  <rejection class="qGreater"/>
+  <rejection class="qLess"/>
+  <rejection class="std"/>
+  <rejection class="QSysInfo"/>
+
+  <rejection class="QAbstractEventDispatcher" function-name="filterEvent"/>
+  <rejection class="QAbstractEventDispatcher" function-name="setEventFilter"/>
+  <rejection class="QAbstractFileEngine" function-name="beginEntryList"/>
+  <rejection class="QAbstractFileEngine" function-name="endEntryList"/>
+  <rejection class="QAbstractFileEngine" function-name="extension"/>
+  <rejection class="QCoreApplication" function-name="compressEvent"/>
+  <rejection class="QCoreApplication" function-name="eventFilter"/>
+  <rejection class="QCoreApplication" function-name="filterEvent"/>
+  <rejection class="QCoreApplication" function-name="setEventFilter"/>
+  <rejection class="QFile" function-name="setDecodingFunction"/>
+  <rejection class="QFile" function-name="setEncodingFunction"/>
+  <rejection class="QList" function-name="begin"/>
+  <rejection class="QList" function-name="constBegin"/>
+  <rejection class="QList" function-name="constEnd"/>
+  <rejection class="QList" function-name="end"/>
+  <rejection class="QList" function-name="erase"/>
+  <rejection class="QList" function-name="erase"/>
+  <rejection class="QList" function-name="free"/>
+  <rejection class="QList" function-name="fromList"/>
+  <rejection class="QList" function-name="fromSet"/>
+  <rejection class="QList" function-name="fromSet"/>
+  <rejection class="QList" function-name="insert"/>
+  <rejection class="QList" function-name="malloc"/>
+  <rejection class="QList" function-name="node_construct"/>
+  <rejection class="QList" function-name="node_copy"/>
+  <rejection class="QList" function-name="node_destruct"/>
+  <rejection class="QList" function-name="toSet"/>
+  <rejection class="QObject" function-name="receivers"/>
+  <rejection class="QObject" function-name="findChild"/>   
+  <rejection class="QObject" function-name="findChildren"/>
+  <rejection class="QObject" function-name="setUserData"/>
+  <rejection class="QObject" function-name="userData"/>
+  <rejection class="QObject" function-name="destroyed"/>
+  <rejection class="QObject" function-name="connect"/>
+  <rejection class="QObject" function-name="disconnect"/>
+  <rejection class="QObject" function-name="registerUserData"/>
+  <rejection class="QObject" function-name="sender"/>
+  <rejection class="QTimer" function-name="singleShot"/>
+  <rejection class="QProcess" function-name="pid"/>
+  <rejection class="QRegion" function-name="cleanUp"/>
+  <rejection class="QSettings" function-name="registerFormat"/>
+  <rejection class="QVector" function-name="back"/>
+  <rejection class="QVector" function-name="begin"/>
+  <rejection class="QVector" function-name="constBegin"/>
+  <rejection class="QVector" function-name="constEnd"/>
+  <rejection class="QVector" function-name="end"/>
+  <rejection class="QVector" function-name="erase"/>
+  <rejection class="QVector" function-name="free"/>
+  <rejection class="QVector" function-name="front"/>
+  <rejection class="QVector" function-name="insert"/>
+  <rejection class="QVector" function-name="malloc"/>
+  <rejection class="QVector" function-name="operator+="/>
+
+  <namespace-type name="Qt"/>
+
+  <primitive-type name="bool" java-name="boolean" jni-name="jboolean"/>
+  
+  <primitive-type name="double" jni-name="jdouble"/>
+  <primitive-type name="qreal" java-name="double" preferred-conversion="no" jni-name="jdouble" />
+  
+  <primitive-type name="float" jni-name="jfloat"/>  
+  
+  <primitive-type name="qint64" java-name="long" jni-name="jlong"/>
+  <primitive-type name="__int64" java-name="long" preferred-conversion="no" jni-name="jlong"/>
+  <primitive-type name="unsigned __int64" java-name="long" preferred-conversion="no" jni-name="jlong"/>
+  <primitive-type name="unsigned long long" java-name="long" preferred-conversion="no" jni-name="jlong"/>
+  <primitive-type name="long long" java-name="long" preferred-conversion="no" jni-name="jlong"/>
+  <primitive-type name="qlonglong" preferred-conversion="no" java-name="long" jni-name="jlong"/>
+  <primitive-type name="qulonglong" preferred-conversion="no" java-name="long" jni-name="jlong"/>
+        
+  <primitive-type name="short" preferred-conversion="no" java-name="char" jni-name="jchar"/>
+  <primitive-type name="signed short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
+  <primitive-type name="ushort" java-name="char" jni-name="jchar"/>
+  <primitive-type name="unsigned short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
+  
+  <primitive-type name="char" java-name="byte" jni-name="jbyte"/>
+  <primitive-type name="signed char" java-name="byte" preferred-conversion="no" jni-name="jbyte" />  
+  <primitive-type name="uchar" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>
+  <primitive-type name="unsigned char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>  
+  
+  <primitive-type name="int" jni-name="jint"/>
+  <primitive-type name="signed int" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="uint" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="ulong" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="unsigned int" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="signed long" java-name="int" preferred-conversion="no" jni-name="jint"/>  
+  <primitive-type name="long" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="unsigned long" java-name="int" preferred-conversion="no" jni-name="jint"/>  
+
+  <primitive-type name="WId" java-name="long" preferred-conversion="no" jni-name="jlong"/>
+  <primitive-type name="Qt::HANDLE" java-name="long" preferred-conversion="no" jni-name="jlong"/>
+  <primitive-type name="QVariant::Type" java-name="int" preferred-conversion="no" jni-name="jint"/>
+
+  <primitive-type name="QByteRef" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>
+  <primitive-type name="QBitRef" java-name="boolean" preferred-conversion="no" jni-name="jboolean"/>
+
+  <primitive-type name="QBool" java-name="boolean" preferred-conversion="no" jni-name="bool">
+    <custom-constructor>
+        return new QBool(((const void *) *copy) != 0);
+    </custom-constructor>
+    <custom-destructor>
+        delete copy;
+    </custom-destructor>
+  </primitive-type>   
+            
+  <enum-type name="Qt::enum_1"/>
+  <enum-type name="Qt::enum_2"/>
+
+  <enum-type name="QAbstractFileEngine::Extension"/>
+  <enum-type name="QAbstractFileEngine::FileFlag" flags="QAbstractFileEngine::FileFlags"/>
+  <enum-type name="QAbstractFileEngine::FileName"/>
+  <enum-type name="QAbstractFileEngine::FileOwner"/>
+  <enum-type name="QAbstractFileEngine::FileTime"/>
+  <enum-type name="QCoreApplication::Encoding"/>
+  <enum-type name="QDataStream::Status"/>
+  <enum-type name="QDataStream::Version"/>
+  <enum-type name="QDir::Filter" flags="QDir::Filters"/>
+  <enum-type name="QDir::SortFlag" flags="QDir::SortFlags"/>
+  <enum-type name="QDirModel::Roles"/>
+  <enum-type name="QEvent::Type"/>
+  <enum-type name="QEventLoop::ProcessEventsFlag" flags="QEventLoop::ProcessEventsFlags"/>
+  <enum-type name="QFile::FileError"/>
+  <enum-type name="QFile::Permission" flags="QFile::Permissions"/>
+  <enum-type name="QFileInfo::Permission" flags="QFileInfo::Permissions"/>
+  <enum-type name="QIODevice::OpenModeFlag" flags="QIODevice::OpenMode"/>
+  <enum-type name="QLibraryInfo::LibraryLocation"/>
+  <enum-type name="QLocale::Country"/>
+  <enum-type name="QLocale::FormatType"/>
+  <enum-type name="QLocale::Language"/>
+  <enum-type name="QMetaMethod::Access"/>
+  <enum-type name="QMetaMethod::Attributes"/>
+  <enum-type name="QMetaMethod::MethodType"/>
+  <enum-type name="QMetaType::Type"/>
+  <enum-type name="QMutex::RecursionMode"/>
+  <enum-type name="QProcess::ExitStatus"/>
+  <enum-type name="QProcess::ProcessChannel"/>
+  <enum-type name="QProcess::ProcessChannelMode"/>
+  <enum-type name="QProcess::ProcessError"/>
+  <enum-type name="QProcess::ProcessState"/>
+  <enum-type name="QRegExp::CaretMode"/>
+  <enum-type name="QRegExp::PatternSyntax"/>
+  <enum-type name="QSettings::Format"/>
+  <enum-type name="QSettings::Scope"/>
+  <enum-type name="QSettings::Status"/>
+  <enum-type name="QSocketNotifier::Type"/>
+  <enum-type name="QString::SectionFlag" flags="QString::SectionFlags"/>
+  <enum-type name="QTextStream::FieldAlignment"/>
+  <enum-type name="QTextStream::NumberFlag" flags="QTextStream::NumberFlags"/>
+  <enum-type name="QTextStream::RealNumberNotation"/>
+  <enum-type name="QTextStream::Status"/>
+  <enum-type name="QUrl::FormattingOption" flags="QUrl::FormattingOptions"/>
+  <enum-type name="QUrl::ParsingMode"/>
+  <enum-type name="QUuid::Variant"/>
+  <enum-type name="QUuid::Version"/>
+  <enum-type name="Qt::AlignmentFlag" flags="Qt::Alignment"/>
+  <enum-type name="Qt::AnchorAttribute"/>
+  <enum-type name="Qt::ArrowType"/>
+  <enum-type name="Qt::AspectRatioMode"/>
+  <enum-type name="Qt::BGMode"/>
+  <enum-type name="Qt::BrushStyle"/>
+  <enum-type name="Qt::CaseSensitivity"/>
+  <enum-type name="Qt::CheckState"/>
+  <enum-type name="Qt::ClipOperation"/>
+  <enum-type name="Qt::ConnectionType"/>
+  <enum-type name="Qt::ContextMenuPolicy"/>
+  <enum-type name="Qt::Corner"/>
+  <enum-type name="Qt::CursorShape"/>
+  <enum-type name="Qt::DateFormat"/>
+  <enum-type name="Qt::DayOfWeek"/>
+  <enum-type name="Qt::DockWidgetArea" flags="Qt::DockWidgetAreas"/>
+  <enum-type name="Qt::DockWidgetAreaSizes"/>
+  <enum-type name="Qt::DropAction" flags="Qt::DropActions"/>
+  <enum-type name="Qt::FillRule"/>
+  <enum-type name="Qt::FocusPolicy"/>
+  <enum-type name="Qt::FocusReason"/>
+  <enum-type name="Qt::GlobalColor"/>
+  <enum-type name="Qt::HitTestAccuracy"/>
+  <enum-type name="Qt::ImageConversionFlag" flags="Qt::ImageConversionFlags"/>
+  <enum-type name="Qt::InputMethodQuery"/>
+  <enum-type name="Qt::ItemDataRole"/>
+  <enum-type name="Qt::ItemFlag" flags="Qt::ItemFlags"/>
+  <enum-type name="Qt::Key"/>
+  <enum-type name="Qt::KeyboardModifier" flags="Qt::KeyboardModifiers"/>
+  <enum-type name="Qt::LayoutDirection"/>
+  <enum-type name="Qt::MatchFlag" flags="Qt::MatchFlags"/>
+  <enum-type name="Qt::Modifier"/>
+  <enum-type name="Qt::MouseButton" flags="Qt::MouseButtons"/>
+  <enum-type name="Qt::Orientation" flags="Qt::Orientations"/>
+  <enum-type name="Qt::PenCapStyle"/>
+  <enum-type name="Qt::PenJoinStyle"/>
+  <enum-type name="Qt::PenStyle"/>
+  <enum-type name="Qt::ScrollBarPolicy"/>
+  <enum-type name="Qt::ShortcutContext"/>
+  <enum-type name="Qt::SortOrder"/>
+  <enum-type name="Qt::TextElideMode"/>
+  <enum-type name="Qt::TextFlag"/>
+  <enum-type name="Qt::TextFormat"/>
+  <enum-type name="Qt::TimeSpec"/>
+  <enum-type name="Qt::ToolBarArea" flags="Qt::ToolBarAreas"/>
+  <enum-type name="Qt::ToolBarAreaSizes"/>
+  <enum-type name="Qt::ToolButtonStyle"/>
+  <enum-type name="Qt::TransformationMode"/>
+  <enum-type name="Qt::UIEffect"/>
+  <enum-type name="Qt::WhiteSpaceMode"/>
+  <enum-type name="Qt::WidgetAttribute"/>
+  <enum-type name="Qt::WindowModality"/>
+  <enum-type name="Qt::WindowState" flags="Qt::WindowStates"/>
+  <enum-type name="Qt::WindowType" flags="Qt::WindowFlags"/>
+  
+  <value-type name="QBasicTimer"/>
+  <value-type name="QBitArray"/>
+  <value-type name="QByteArrayMatcher"/>
+  <value-type name="QDate"/>
+  <value-type name="QDateTime"/>
+  <value-type name="QDir">
+    <modify-function signature="QDir(QString,QString,QFlags&lt;QDir::SortFlag&gt;,QFlags&lt;QDir::Filter&gt;)">
+        <replace-default-expression index="2" with="Name | IgnoreCase" />
+    </modify-function>  
+  </value-type>
+  <value-type name="QLocale"/>  
+  <value-type name="QMetaEnum"/>
+  <value-type name="QPoint"/>
+  <value-type name="QPointF"/>
+  <value-type name="QRect"/>
+  <value-type name="QRectF"/>
+  <value-type name="QSize"/>
+  <value-type name="QSizeF"/>
+  <value-type name="QStringMatcher"/>
+  <value-type name="QTime"/>  
+  <value-type name="QPersistentModelIndex"/>
+  <value-type name="QUuid"/>
+    
+  <object-type name="QAbstractItemModel">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>  
+    <modify-function signature="match(QModelIndex,int,QVariant,int,QFlags&lt;Qt::MatchFlag&gt;)const">
+        <replace-default-expression index="4" with="Qt.MatchStartsWith | Qt.MatchWrap" />         
+    </modify-function>
+    <inject-code class="java">
+    private native boolean setData_native(long id, int row, int col, Object value, int role);
+    public boolean setData(int row, int col, Object value) {
+        return setData_native(nativeId(), row, col, value, com.trolltech.qt.core.Qt.DisplayRole);
+    }
+    public boolean setData(int row, int col, Object value, int role) {
+        return setData_native(nativeId(), row, col, value, role);
+    }
+    private native Object data_native(long id, int row, int col, int role);
+    public Object data(int row, int col, int role) {
+        return data_native(nativeId(), row, col, role);
+    }
+    public Object data(int row, int col) {
+        return data_native(nativeId(), row, col, Qt.DisplayRole);
+    }
+    
+    </inject-code>
+    <inject-code class="native">
+    extern "C" JNIEXPORT jint Java_com_trolltech_qt_core_QAbstractItemModel_setData_1native
+    (JNIEnv *__jni_env,
+     jobject,
+     int __this_nativeId,
+     int row, int col, jobject value, int role)
+    {
+        QtJambiShell_QAbstractItemModel *__qt_this =
+            (QtJambiShell_QAbstractItemModel *) qtjambi_from_jlong(__this_nativeId);
+        QVariant qt_value = qtjambi_to_qvariant(__jni_env, value);
+    
+        QModelIndex index = __qt_this->index(row, col, QModelIndex());
+        return __qt_this->setData(index, qt_value, role);
+    }
+
+    extern "C" JNIEXPORT jobject Java_com_trolltech_qt_core_QAbstractItemModel_data_1native
+    (JNIEnv *__jni_env,
+     jobject,
+     int __this_nativeId,
+     int row, int col, int role)
+    {
+        QtJambiShell_QAbstractItemModel *__qt_this =
+            (QtJambiShell_QAbstractItemModel *) qtjambi_from_jlong(__this_nativeId);
+    
+        QModelIndex index = __qt_this->index(row, col, QModelIndex());
+        return qtjambi_from_qvariant(__jni_env, __qt_this->data(index, role));
+    }
+    </inject-code>
+  </object-type>
+  
+  <object-type name="QAbstractListModel">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>
+  </object-type>
+  
+  <value-type name="QUrl">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+    </extra-includes>
+  </value-type>
+  
+  <value-type name="QRegExp">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+    </extra-includes>
+  </value-type>
+
+  <value-type name="QFileInfo">
+    <extra-includes>
+        <include file-name="QDateTime" location="global"/>
+        <include file-name="QDir" location="global"/>
+    </extra-includes>
+  </value-type>
+  
+  <value-type name="QByteArray">
+    <inject-code class="java">
+        public QByteArray(String s) 
+        {
+            this();         
+            append(s);                        
+        }
+
+        public String toString() {
+            return QVariant.toString(this);
+        }
+
+    </inject-code> 
+    <extra-includes>
+        <include file-name="QNoImplicitBoolCast" location="global"/>
+    </extra-includes>
+    <modify-function signature="operator const void *()const">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator const char *()const">
+        <remove />
+    </modify-function>    
+  </value-type>
+
+  <object-type name="QAbstractEventDispatcher"/>  
+  <object-type name="QBuffer"/>
+  <object-type name="QChildEvent"/>
+  <object-type name="QEventLoop"/>
+  <object-type name="QFile" memory-managed="yes"/>
+  <object-type name="QIODevice"/>
+  <object-type name="QLibraryInfo"/>
+  <object-type name="QMetaClassInfo"/>  
+  <object-type name="QMetaMethod"/>
+  <object-type name="QMetaProperty"/>
+  <object-type name="QMetaType"/>    
+  <object-type name="QMutex"/>  
+  <object-type name="QSemaphore"/>
+  <object-type name="QSocketNotifier"/>
+  <object-type name="QTemporaryFile" memory-managed="yes" />
+  <object-type name="QTextCodec"/>  
+  <object-type name="QTextCodecFactoryInterface"/>
+  <object-type name="QTextCodecPlugin"/>  
+  <object-type name="QTextDecoder"/>
+  <object-type name="QTextEncoder"/>
+  <object-type name="QTimerEvent"/>
+  <object-type name="QTranslator"/>
+  <object-type name="QWaitCondition"/>
+  
+  <object-type name="QTextCodec::ConverterState">
+    <include file-name="QTextCodec" location="global"/>
+    <modify-function signature="ConverterState(QFlags&lt;QTextCodec::ConversionFlag&gt;)">
+        <replace-default-expression index="0" />         
+    </modify-function>    
+  </object-type>
+  
+  <object-type name="QTimer">
+    <inject-code class="java">
+        static private class QSingleShotTimer extends QObject
+        {
+            private int timerId = -1;
+            public Signal0 timeout;
+            
+            public QSingleShotTimer(int msec, QObject obj, String method)
+            {
+                timeout.connect(obj, method);
+                timerId = startTimer(msec);
+            }
+            
+            protected void finalize()
+            {
+                if (timerId &gt; 0)
+                    killTimer(timerId);
+                super.finalize();
+            }
+            
+            protected void timerEvent(QTimerEvent e)
+            {
+                if (timerId &gt; 0)
+                    killTimer(timerId);
+                timerId = -1;
+                timeout.emit();
+                dispose();
+            }
+            
+        }
+    
+        public static void singleShot(int msec, QObject obj, String method)
+        {
+            new QSingleShotTimer(msec, obj, method);
+        }
+    </inject-code>
+  </object-type>
+
+  <object-type name="QAbstractFileEngineHandler">
+    <modify-function class="shell" signature="create(const QString &amp;) const">
+        <disable-gc />
+    </modify-function>
+  </object-type>
+  
+  <object-type name="QAbstractFileEngine">
+    <extra-includes>
+        <include file-name="QDateTime" location="global"/>
+    </extra-includes>
+  </object-type>
+  
+  <object-type name="QProcess">
+    <modify-function signature="finished(int, QProcess::ExitStatus)">
+        <rename to="finishedWithStatusCode" />
+    </modify-function>
+  </object-type>
+  
+  <object-type name="QSignalMapper">
+    <modify-function signature="mapped(const QString &amp;)">
+        <rename to="mappedString"/>
+    </modify-function>
+    <modify-function signature="mapped(int)">
+        <rename to="mappedInteger"/>
+    </modify-function>    
+    <modify-function signature="mapped(QObject *)">
+        <rename to="mappedQObject"/>
+    </modify-function>    
+    <modify-function signature="mapped(QWidget *)">
+        <rename to="mappedQWidget"/>
+    </modify-function>
+  </object-type>  
+  
+  <object-type name="QObject">
+    <modify-function signature="deleteLater()">
+        <rename to="disposeLater"/>
+    </modify-function>
+        
+    <inject-code class="native">
+        extern "C" JNIEXPORT jobject JNICALL
+        Java_com_trolltech_qt_core_QObject_fetchSignal(JNIEnv *env, jobject java_object, jobject field)
+        {
+            jfieldID fieldId = env-&gt;FromReflectedField(field);
+            if (fieldId == 0)
+                return 0;
+
+            jobject signal = env-&gt;GetObjectField(java_object, fieldId);
+            return signal;
+        }
+
+        extern "C" JNIEXPORT jlong JNICALL Java_com_trolltech_qt_core_QObject_resolveSlot
+        (JNIEnv *env,
+        jclass,
+        jobject method)
+        {
+            Q_ASSERT(method);
+            return reinterpret_cast&lt;jlong&gt;(env-&gt;FromReflectedMethod(method));
+        }
+
+        extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_core_QObject_setField
+        (JNIEnv *env,
+        jobject _this,
+        jobject field,
+        jobject newValue)
+        {
+            jfieldID fieldId = env-&gt;FromReflectedField(field);
+            Q_ASSERT(fieldId != 0);
+
+            env-&gt;SetObjectField(_this, fieldId, newValue);
+        }
+
+        extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_core_QObject_invokeSlot
+        (JNIEnv *env,
+        jclass,
+        jobject receiver,
+        jlong m,
+        jbyte returnType,
+        jobjectArray args,
+        jintArray _cnvTypes)
+        {
+            Q_ASSERT(receiver);
+            Q_ASSERT(m);
+
+            int len = env-&gt;GetArrayLength(_cnvTypes);
+            jint *cnvTypes = env-&gt;GetIntArrayElements(_cnvTypes, 0);
+            QVarLengthArray&lt;jvalue&gt; argsArray(len);
+            for (int i=0; i&lt;len; ++i) {
+                jobject arg_object = env-&gt;GetObjectArrayElement(args, i);
+                switch (cnvTypes[i]) {
+                case 'L': argsArray[i].l = arg_object; break ;
+                case 'Z': argsArray[i].z = qtjambi_to_boolean(env, arg_object); break ;
+                case 'J': argsArray[i].j = qtjambi_to_long(env, arg_object); break ;
+                case 'I': argsArray[i].i = qtjambi_to_int(env, arg_object); break ;
+                case 'F': argsArray[i].f = qtjambi_to_float(env, arg_object); break ;
+                case 'D': argsArray[i].d = qtjambi_to_double(env, arg_object); break ;
+                case 'S': argsArray[i].s = qtjambi_to_short(env, arg_object); break ;
+                case 'B': argsArray[i].b = qtjambi_to_byte(env, arg_object); break ;
+                case 'C': argsArray[i].c = qtjambi_to_jchar(env, arg_object); break ;
+                default:
+                    Q_ASSERT(false &amp;&amp; "Error in conversion array");
+                }
+            }
+            env-&gt;ReleaseIntArrayElements(_cnvTypes, cnvTypes, JNI_ABORT);
+
+            jmethodID methodId = reinterpret_cast&lt;jmethodID&gt;(m); 
+            switch (returnType)
+            {
+            case 'L': env-&gt;CallObjectMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'V': env-&gt;CallVoidMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'I': env-&gt;CallIntMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'J': env-&gt;CallLongMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'S': env-&gt;CallShortMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'Z': env-&gt;CallBooleanMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'F': env-&gt;CallFloatMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'D': env-&gt;CallDoubleMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'B': env-&gt;CallByteMethodA(receiver, methodId, argsArray.data()); break ;
+            case 'C': env-&gt;CallCharMethodA(receiver, methodId, argsArray.data()); break ;
+            default:
+                Q_ASSERT(false &amp;&amp; "Invalid return type parameter");
+            };
+        }            
+    </inject-code>
+    
+    <inject-code class="java">
+        protected boolean m_cpp_signals_initialized = false; // set to true in __qt_signalInitialization
+        private boolean b = initializeSignals(); // constructs objects for all signals
+    </inject-code>
+    
+    <extra-includes>
+        <include file-name="java.lang.reflect.*" location="java" />
+        <include file-name="java.util.*" location="java" />
+        <include file-name="QVarLengthArray" location="global"/>
+    </extra-includes>
+    
+    <inject-code class="java">
+        public Signal0 destroyed;
+        protected void finalize() { destroyed.emit(); super.finalize(); }
+    </inject-code>
+        
+    <inject-code class="java">
+    public class QMetaCallEvent extends QEvent {
+	    public static final int METACALL_TYPE = 512;
+
+	    public QMetaCallEvent(QObject.AbstractSignal.Connection connection, Object ... arguments) {
+		    super(METACALL_TYPE);
+		    this.arguments = arguments;
+		    this.connection = connection;
+	    }
+        
+	    public final Object[] getArguments() { return arguments; }
+	    public final void setArguments(Object[] arguments) { this.arguments = arguments; }
+        
+	    public final QObject.AbstractSignal.Connection getConnection() { 
+		    return connection;
+	    }
+
+	    public final void setConnection(QObject.AbstractSignal.Connection connection) {
+		    this.connection = connection;
+	    }
+        
+	    final void execute() {
+		    QObject.invokeSlot(connection.receiver, 
+		         		    connection.slotId,
+						    connection.returnType,
+						    arguments,
+						    connection.convertTypes);
+	    }
+        
+	    private Object arguments[];
+	    private QObject.AbstractSignal.Connection connection;
+
+    }
+
+    private static QObject m_currentSender = null;
+
+    public abstract class AbstractSignal {
+        // Set by javaConnectNotify and friends in mappings between C++ and Java emissions
+        protected int m_cpp_connections = 0;        
+    
+        public class Connection {
+            public static final int DIRECT_CONNECTION = 0x0001;
+        	public static final int QUEUED_CONNECTION = 0x0002;
+        	
+        	public static final int PUBLIC_SLOT = 0x0010;
+        	
+            Connection(Object receiver, Method slot, byte returnType, byte connectionType) {
+                this.receiver = receiver;
+                this.slot = slot;
+                this.slotId = resolveSlot(slot);
+                this.returnType = returnType;
+                
+                if (connectionType == Qt.QueuedConnection) flags |= QUEUED_CONNECTION;
+                else if (connectionType == Qt.DirectConnection) flags |= DIRECT_CONNECTION;
+                
+                if (Modifier.isPublic(slot.getModifiers()) &amp;&amp;
+                    Modifier.isPublic(receiver.getClass().getModifiers())) {
+                    flags |= PUBLIC_SLOT;
+                }
+
+                Class&lt;?&gt; slotParameterTypes[] = slot.getParameterTypes();
+                Class&lt;?&gt; signalParameterTypes[] = parameterTypes();
+                convertTypes = new int[slotParameterTypes.length];
+                for (int i = 0; i &lt; convertTypes.length; ++i) {
+                    convertTypes[i] = 'L';
+                    if (slotParameterTypes[i].isPrimitive()) {
+                        if (signalParameterTypes[i].equals(Integer.class))
+                            convertTypes[i] = 'I';
+                        else if (signalParameterTypes[i].equals(Long.class))
+                            convertTypes[i] = 'J';
+                        else if (signalParameterTypes[i].equals(Short.class))
+                            convertTypes[i] = 'S';
+                        else if (signalParameterTypes[i].equals(Boolean.class))
+                            convertTypes[i] = 'Z';
+                        else if (signalParameterTypes[i].equals(Byte.class))
+                            convertTypes[i] = 'B';
+                        else if (signalParameterTypes[i].equals(Float.class))
+                            convertTypes[i] = 'F';
+                        else if (signalParameterTypes[i].equals(Double.class))
+                            convertTypes[i] = 'D';
+                        else if (signalParameterTypes[i]
+                                .equals(Character.class))
+                            convertTypes[i] = 'C';
+                        else
+                            throw new RuntimeException(
+                                    "Error in conversion to primitive for complex type "
+                                            + signalParameterTypes[i]);
+                    }
+                }
+            }
+        	
+        	public final boolean isSlotPublic() { return (flags &amp; PUBLIC_SLOT) != 0; }
+        	public final boolean isQueuedConnection() { return (flags &amp; QUEUED_CONNECTION) != 0; }
+        	public final boolean isDirectConnection() { return (flags &amp; DIRECT_CONNECTION) != 0; }
+        	public final boolean isAutoConnection() { 
+        		return (flags &amp; (QUEUED_CONNECTION | DIRECT_CONNECTION)) == 0; 
+        	} 
+        	
+
+            public Object receiver;
+            public Method slot;
+            public byte returnType;
+            public int convertTypes[];
+            public int flags = 0;
+            public long slotId;
+            public Object args[];
+        }
+
+        private List&lt;Connection&gt; m_connections = new LinkedList&lt;Connection&gt;();
+        private Class&lt;?&gt; m_types[] = null;
+        private int m_arrayDims[] = null;
+        private String m_name = "";
+        private boolean m_inEmit = false;
+                        
+        // Set in JNI when we are mapping a c++ emission into Java
+        private boolean m_in_cpp_emission = false;
+
+        /**
+        * Connects the signal to a method in an object. Whenever it is emitted, the method will be invoked
+        * on the given object.
+        * 
+        * @param receiver The object containing the method to be invoked upon signal emission
+        * @param method The signature of the method to call, excluding the return type and variable names
+        * @param connectionType One of the connection types defined in the Qt interface.
+        * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
+        * @throws QRuntimeException Raised if the signal object could not be successfully introspected.  
+        */
+        public final boolean connect(QObject receiver, String method, int connectionType) 
+        {
+            __qt_signalInitialization();
+
+            Method slotMethod = receiver.lookupSlot(method);
+            if (slotMethod == null) 
+                throw new QNoSuchSlotException(method);            
+
+            return connectSignalMethod(slotMethod, receiver, connectionType);
+        }
+
+        public final boolean connect(QObject receiver, String method) 
+        {
+            return connect(receiver, method, Qt.AutoConnection);
+        }
+            
+        private final boolean connectSignalMethod(Method slotMethod, Object receiver, int connectionType) 
+        {
+            if (!matchSlot(slotMethod))
+                return false;           
+
+            addConnection(receiver, slotMethod, connectionType);
+            return true;
+        }
+
+        private Method findEmitMethod(AbstractSignal signal) {
+            Method methods[] = signal.getClass().getDeclaredMethods();
+
+            Method slotMethod = null;
+            for (int i = 0; i &lt; methods.length; ++i) {
+                if (methods[i].getName().equals("emit")) {
+                    slotMethod = methods[i];
+                    break;
+                }
+
+            }
+
+            return slotMethod;
+        }
+
+        /**
+        * Connects this signal to another. Whenever this signal is emitted, it will cause the second signal to be emitted as well.
+        * @param signalOut The second signal. This will be emitted whenever this signal is emitted.
+        * @return true if the connection was successfully established. Otherwise false. The method will return false if the signatures
+        * of the emit functions in the two signal objects were incompatible.
+        * @throws RuntimeException Raised if either of the signal objects could not be successfully be introspected.
+        */
+        public final boolean connect(AbstractSignal signalOut) {
+            return connectSignalMethod(findEmitMethod(signalOut), signalOut, Qt.DirectConnection);
+        }
+
+        /**
+        * Disconnects the signal from a method in an object if the two were previously connected by a call to connect.
+        * 
+        * @param receiver The object to which the signal is connected
+        * @param method The method in the receiver object to which the signal is connected
+        * @return true if the connection was successfully removed, otherwise false. The method will return false if the 
+        * connection has not been previously established by a call to connect.
+        * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
+        */
+        public boolean disconnect(QObject receiver, String method) {
+            __qt_signalInitialization();
+
+            Method slotMethod = receiver.lookupSlot(method);
+            if (slotMethod == null)
+                throw new QNoSuchSlotException(method);            
+
+            return removeConnection(receiver, slotMethod);
+        }
+
+        /**
+        * Disconnects a signal from another signal if the two were previously connected by a call to connect. 
+        * A call to this function will assure that the emission of the first signal will not cause the emission of the second.
+        * 
+        * @param signalIn The first signal.
+        * @param signalOut The second signal.
+        * @return true if the two signals were successfully disconnected, or false otherwise. 
+        */
+        public boolean disconnect(AbstractSignal signalOut) {
+            return removeConnection(signalOut, findEmitMethod(signalOut));
+        }
+
+        private boolean matchSlot(Method slot) {
+            Class&lt;?&gt; slotArguments[] = slot.getParameterTypes();
+            Class&lt;?&gt; signalArguments[] = parameterTypes();
+            int signalArrayDims[] = arrayDimensions();
+
+            if (slotArguments.length &gt; signalArguments.length)
+                return false;
+
+            for (int i = 0; i &lt; slotArguments.length; ++i) {
+                if (!matchTwoTypes(slotArguments[i], signalArguments[i],
+                        signalArrayDims[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private boolean matchTwoTypes(Class&lt;?&gt; slotArgument,
+                Class&lt;?&gt; signalArgument, int signalArrayDims) {
+            if (slotArgument.isArray() || signalArrayDims &gt; 0) {
+                int slotArrayDims = 0;
+                while (slotArgument.isArray()) {
+                    slotArgument = slotArgument.getComponentType();
+                    ++slotArrayDims;
+                }
+
+                if (slotArrayDims != signalArrayDims)
+                    return false;
+                else
+                    return matchTwoTypes(slotArgument, signalArgument, 0);
+            } else if (slotArgument.isPrimitive()) {
+                return matchTwoTypes(getComplexType(slotArgument), signalArgument,
+                        signalArrayDims);
+            } else if (!slotArgument.isAssignableFrom(signalArgument)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        private Class&lt;?&gt; getComplexType(Class&lt;?&gt; primitiveType) {
+            if (!primitiveType.isPrimitive())
+                throw new RuntimeException("Primitive type required");
+
+            if (primitiveType.equals(Integer.TYPE))
+                return Integer.class;
+            else if (primitiveType.equals(Double.TYPE))
+                return Double.class;
+            else if (primitiveType.equals(Long.TYPE))
+                return Long.class;
+            else if (primitiveType.equals(Float.TYPE))
+                return Float.class;
+            else if (primitiveType.equals(Short.TYPE))
+                return Short.class;
+            else if (primitiveType.equals(Boolean.TYPE))
+                return Boolean.class;
+            else if (primitiveType.equals(Character.TYPE))
+                return Character.class;
+            else if (primitiveType.equals(Byte.TYPE))
+                return Byte.class;
+            else
+                throw new RuntimeException("Unrecognized primitive type: "
+                        + primitiveType);
+        }
+        protected AbstractSignal() 
+        {
+        }
+
+        public final String name() {
+            parameterTypes();
+            return m_name;
+        }
+
+        protected final int[] arrayDimensions() {
+            parameterTypes();
+            return m_arrayDims;
+        }
+        
+        // Returns true if the connection c is the mapping of the c++ emission
+        private boolean isCppEmission(Connection c)
+        {
+            return c.receiver == this_reference() &amp;&amp; c.slot.getName().equals(name());
+        }        
+
+        private boolean hasCppEmission()
+        {
+            for (Connection c : m_connections) {
+                if (isCppEmission(c))
+                    return true;
+            }
+            
+            return false;
+        }
+                                
+        protected final int receivers()
+        {
+            return m_connections.size() - (hasCppEmission() ? 1 : 0) + m_cpp_connections;
+        }
+
+        protected final Class&lt;?&gt;[] parameterTypes() {
+            if (m_types == null) {
+                m_types = new Class[0]; // For signals with no parameters
+                m_arrayDims = new int[0];
+
+                Class cls = this_reference().getClass();
+                while (cls != null) {
+                    Field fields[] = cls.getDeclaredFields();
+                    for (int i = 0; i &lt; fields.length; ++i) {
+                        if (AbstractSignal.class.isAssignableFrom(fields[i]
+                                .getType())) {
+                            AbstractSignal sig = this_reference().fetchSignal(
+                                    fields[i]);
+                            if (sig == null)
+                                throw new RuntimeException(
+                                        "Error reflecting on signal: "
+                                                + fields[i].getName());
+
+                            if (sig == this) {
+                                m_name = fields[i].getName();
+
+                                Type t = fields[i].getGenericType();
+
+                                // either t is a parameterized type, or it is Signal0
+                                if (t instanceof ParameterizedType) {
+                                    ParameterizedType p = (ParameterizedType) t;
+                                    Type actualTypes[] = p
+                                            .getActualTypeArguments();
+
+                                    m_types = new Class[actualTypes.length];
+                                    m_arrayDims = new int[actualTypes.length];
+                                    for (int j = 0; j &lt; m_types.length; ++j) {
+
+                                        Type actualType = actualTypes[j];
+                                        int arrayDims = 0;
+                                        while (actualType instanceof GenericArrayType
+                                                || actualType instanceof ParameterizedType) {
+                                            if (actualType instanceof GenericArrayType) {
+                                                actualType = ((GenericArrayType) actualType)
+                                                        .getGenericComponentType();
+                                                ++arrayDims;
+                                            } else { // ParameterizedType
+                                                actualType = ((ParameterizedType) actualType)
+                                                        .getRawType();
+                                            }
+                                        }
+
+                                        if (actualType instanceof Class) {
+                                            m_types[j] = (Class) actualType;
+                                            m_arrayDims[j] = arrayDims;
+                                        } else {
+                                            throw new RuntimeException(
+                                                    "Signals of generic types not supported: "
+                                                            + actualTypes[j]
+                                                                    .toString());
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    
+                    cls = cls.getSuperclass();
+                }
+            }
+
+            if (m_types.length == 0 &amp;&amp; !(this instanceof Signal0))
+                throw new RuntimeException("Signal initialization failed");
+
+            return m_types;
+        }
+
+        private final QObject outer_object() {
+            return this_reference();
+        }
+       
+        protected final void emit_helper(Object... args) {
+            if (this != destroyed &amp;&amp; signalsBlocked())
+                return;
+            if (m_inEmit)            
+                return;
+            m_inEmit = true; // recursion block
+            
+            m_currentSender = this_reference();
+
+            for (Connection c : m_connections) {
+            
+                // Make sure we don't emit the cpp signal twice
+                if (m_in_cpp_emission &amp;&amp; isCppEmission(c))
+                    continue ;
+            
+                if (this != destroyed 
+                    &amp;&amp; (c.isDirectConnection()
+                        || (c.isAutoConnection() 
+                            &amp;&amp; c.receiver instanceof QtObject 
+                            &amp;&amp; ((QtObject) c.receiver).thread() == thread()))) {
+                    try {                        
+                        boolean updateSender = this_reference() instanceof QObject 
+                                               &amp;&amp; c.receiver instanceof QObject; 
+                        QObject oldSender = null;
+                        if (updateSender) 
+                            oldSender = QtJambiInternal.swapQObjectSender((QObject) c.receiver, (QObject) this_reference());
+                        
+                        if (c.isSlotPublic()) { 
+                            if (args.length == c.convertTypes.length) {
+                                // Same number of arguments... direct call
+                                c.slot.invoke(c.receiver, args);
+                            } else {
+                                if (c.args == null) 
+                                    c.args = new Object[c.convertTypes.length];                                
+                                System.arraycopy(args, 0, c.args, 0, c.args.length);
+                                c.slot.invoke(c.receiver, c.args);
+                            }                                
+                        } else {
+                            invokeSlot(c.receiver, c.slotId, c.returnType, args, c.convertTypes);
+                        }
+                        
+                        if (updateSender)
+                            QtJambiInternal.swapQObjectSender((QObject) c.receiver, (QObject) oldSender);
+                        
+                    } catch (Exception e) {
+                        System.err.println("Exception caught while after invoking slot:");
+                        e.printStackTrace();
+                    }
+                } else {
+                	if (c.receiver instanceof QObject) {
+                		QMetaCallEvent event = new QMetaCallEvent(c, args);
+                		com.trolltech.qt.core.QCoreApplication.postEvent(((QObject)c.receiver), event);
+                	} else {
+                		throw new RuntimeException("Queued connections only valid for QObjects");
+                	}
+                }
+            }
+
+            m_currentSender = null;
+            m_inEmit = false;
+        }
+
+        private final void addConnection(Object receiver, Method slot, int connectionType) {
+            Class&lt;?&gt; returnType = slot.getReturnType();
+            byte returnSig;
+            if (!returnType.isPrimitive()) {
+                returnSig = 'L';
+            } else {
+                if (returnType.equals(Integer.TYPE))
+                    returnSig = 'I';
+                else if (returnType.equals(Short.TYPE))
+                    returnSig = 'S';
+                else if (returnType.equals(Boolean.TYPE))
+                    returnSig = 'Z';
+                else if (returnType.equals(Byte.TYPE))
+                    returnSig = 'B';
+                else if (returnType.equals(Long.TYPE))
+                    returnSig = 'J';
+                else if (returnType.equals(Character.TYPE))
+                    returnSig = 'C';
+                else if (returnType.equals(Float.TYPE))
+                    returnSig = 'F';
+                else if (returnType.equals(Double.TYPE))
+                    returnSig = 'D';
+                else if (returnType.equals(Void.TYPE))
+                    returnSig = 'V';
+                else
+                    throw new RuntimeException("Unknown primitive type: "
+                            + returnType);
+            }
+
+            m_connections.add(new Connection(receiver, slot, returnSig, (byte) connectionType));
+            this_reference().connectNotify(this);
+        }
+
+        protected final boolean removeConnection(Object receiver, Method slot) {
+            ListIterator&lt;Connection&gt; i = m_connections.listIterator();
+
+            boolean returned = false;
+            while (i.hasNext()) {
+                Connection c = i.next();
+
+                if ((receiver == null || c.receiver == receiver)
+                        &amp;&amp; (slot == null || slot.equals(c.slot))) {
+                    i.remove();
+                    this_reference().disconnectNotify(this);
+                    returned = true;
+                }
+            }
+
+            return returned;
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * no parameters.
+     */
+    public final class Signal0 extends AbstractSignal {
+        public Signal0() {
+            super();
+        }
+
+        public void emit() {
+            emit_helper();
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * one parameter.
+     * 
+     * @param &lt;A&gt; The type of the single parameter of the signal.
+     */
+    public final class Signal1&lt;A&gt; extends AbstractSignal {
+        public Signal1() {
+            super();
+        }
+
+        public void emit(A arg1) {
+            emit_helper(arg1);
+        }
+
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * two parameters.
+     * 
+     * @param &lt;A&gt; The type of the first parameter of the signal.
+     * @param &lt;B&gt; The type of the second parameter of the signal.
+     */
+    public final class Signal2&lt;A, B&gt; extends AbstractSignal {
+        public Signal2() {
+            super();
+        }
+
+        public void emit(A arg1, B arg2) {
+            emit_helper(arg1, arg2);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * three parameters.
+     * 
+     * @param &lt;A&gt; The type of the first parameter of the signal.
+     * @param &lt;B&gt; The type of the second parameter of the signal.
+     * @param &lt;C&gt; The type of the third parameter of the signal.
+     */
+    public final class Signal3&lt;A, B, C&gt; extends AbstractSignal {
+        public Signal3() {
+            super();
+        }
+
+        public void emit(A arg1, B arg2, C arg3) {
+            emit_helper(arg1, arg2, arg3);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * four parameters.
+     * 
+     * @param &lt;A&gt; The type of the first parameter of the signal.
+     * @param &lt;B&gt; The type of the second parameter of the signal.
+     * @param &lt;C&gt; The type of the third parameter of the signal.
+     * @param &lt;D&gt; The type of the fourth parameter of the signal.
+     */
+
+    public final class Signal4&lt;A, B, C, D&gt; extends AbstractSignal {
+        public Signal4() {
+            super();
+        }
+
+        public void emit(A arg1, B arg2, C arg3, D arg4) {
+            emit_helper(arg1, arg2, arg3, arg4);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * five parameters.
+     * 
+     * @param &lt;A&gt; The type of the first parameter of the signal.
+     * @param &lt;B&gt; The type of the second parameter of the signal.
+     * @param &lt;C&gt; The type of the third parameter of the signal.
+     * @param &lt;D&gt; The type of the fourth parameter of the signal.
+     * @param &lt;E&gt; The type of the fifth parameter of the signal.
+     */
+    public final class Signal5&lt;A, B, C, D, E&gt; extends AbstractSignal {
+        public Signal5() {
+            super();
+        }
+
+        public void emit(A arg1, B arg2, C arg3, D arg4, E arg5) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * six parameters.
+     * 
+     * @param &lt;A&gt; The type of the first parameter of the signal.
+     * @param &lt;B&gt; The type of the second parameter of the signal.
+     * @param &lt;C&gt; The type of the third parameter of the signal.
+     * @param &lt;D&gt; The type of the fourth parameter of the signal.
+     * @param &lt;E&gt; The type of the fifth parameter of the signal.
+     * @param &lt;F&gt; The type of the sixth parameter of the signal.
+     */
+    public final class Signal6&lt;A, B, C, D, E, F&gt; extends AbstractSignal {
+        public Signal6() {
+            super();
+        }
+
+        public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5, arg6);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * seven parameters.
+     * 
+     * @param &lt;A&gt; The type of the first parameter of the signal.
+     * @param &lt;B&gt; The type of the second parameter of the signal.
+     * @param &lt;C&gt; The type of the third parameter of the signal.
+     * @param &lt;D&gt; The type of the fourth parameter of the signal.
+     * @param &lt;E&gt; The type of the fifth parameter of the signal.
+     * @param &lt;F&gt; The type of the sixth parameter of the signal.
+     * @param &lt;G&gt; The type of the seventh parameter of the signal.
+     */
+    public final class Signal7&lt;A, B, C, D, E, F, G&gt; extends AbstractSignal {
+        public Signal7() {
+            super();
+        }
+
+        public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6, G arg7) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * eight parameters.
+     * 
+     * @param &lt;A&gt; The type of the first parameter of the signal.
+     * @param &lt;B&gt; The type of the second parameter of the signal.
+     * @param &lt;C&gt; The type of the third parameter of the signal.
+     * @param &lt;D&gt; The type of the fourth parameter of the signal.
+     * @param &lt;E&gt; The type of the fifth parameter of the signal.
+     * @param &lt;F&gt; The type of the sixth parameter of the signal.
+     * @param &lt;G&gt; The type of the seventh parameter of the signal.
+     * @param &lt;H&gt; The type of the eighth parameter of the signal.
+     */
+    public final class Signal8&lt;A, B, C, D, E, F, G, H&gt; extends
+            AbstractSignal {
+        public Signal8() {
+            super();
+        }
+
+        public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6,
+                G arg7, H arg8) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * nine parameters.
+     * 
+     * @param &lt;A&gt; The type of the first parameter of the signal.
+     * @param &lt;B&gt; The type of the second parameter of the signal.
+     * @param &lt;C&gt; The type of the third parameter of the signal.
+     * @param &lt;D&gt; The type of the fourth parameter of the signal.
+     * @param &lt;E&gt; The type of the fifth parameter of the signal.
+     * @param &lt;F&gt; The type of the sixth parameter of the signal.
+     * @param &lt;G&gt; The type of the seventh parameter of the signal.
+     * @param &lt;H&gt; The type of the eighth parameter of the signal.
+     * @param &lt;I&gt; The type of the ninth parameter of the signal.
+     */
+    public final class Signal9&lt;A, B, C, D, E, F, G, H, I&gt; extends
+            AbstractSignal {
+        public Signal9() {
+            super();
+        }
+
+        public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6,
+                G arg7, H arg8, I arg9) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+        }
+    }
+
+    /**
+     * Returns true if the class cl represents a Signal.
+     */
+    public static boolean isSignal(Class cl) {
+        return AbstractSignal.class.isAssignableFrom(cl);
+    }
+    
+    private boolean initializeSignals()
+    {
+        Field fields[] = getClass().getFields();
+        
+        for (Field f : fields) {
+            if (isSignal(f.getType())) {
+                AbstractSignal newSignal = null;
+                try {
+                    newSignal = (AbstractSignal) f.getType().getConstructors()[0].newInstance(this);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error getting and calling constructor for signal: " + f.getName(), e);
+                }
+                
+                setField(f, newSignal);
+            }
+        }
+        
+        return true;
+    }
+    private native void setField(Field f, AbstractSignal newValue);
+    
+
+    /** 
+     * If a signal is currently being emitted (e.g. if this method is called from within a slot that has been invoked by a signal),
+     * then this function will return the object containing the signal that was emitted. 
+     * @return Current sender, or null if a signal is not currently being emitted.
+     */
+    public static QObject signalSender() {
+        return m_currentSender;
+    }
+
+    private Method lookupSlot(String signature) {
+        Class cls = getClass();
+
+        int pos = signature.indexOf('(');
+        if (pos &lt; 0)
+            throw new RuntimeException("Wrong syntax in slot signature: '"
+                    + signature + "'");
+
+        int spacePos = signature.trim().lastIndexOf(' ', pos);
+        if (pos &gt; spacePos &amp;&amp; spacePos &gt; 0)
+            throw new RuntimeException(
+                    "Do not specify return type in slot signature: '"
+                            + signature + "'");
+
+        String name = signature.substring(0, pos).trim();
+
+        int pos2 = signature.indexOf(')', pos);
+        if (pos2 &lt; 0)
+            throw new RuntimeException("Wrong syntax in slot signature: '"
+                    + signature + "'");
+        String strTypes = signature.substring(pos + 1, pos2).trim();
+
+        String argumentTypes[];
+
+        if (strTypes.length() == 0)
+            argumentTypes = new String[0];
+        else
+            argumentTypes = strTypes.split(",");
+
+        for (int i = 0; i &lt; argumentTypes.length; ++i)
+            argumentTypes[i] = argumentTypes[i].replace(" ", "");
+
+        return findFunctionRecursive(cls, name, argumentTypes);
+    }
+
+    private static Method findFunctionRecursive(Class cls, String functionName,
+            String argumentTypes[]) {
+        Method methods[] = cls.getDeclaredMethods();
+        Method foundMethod = null;
+
+        for (Method m : methods) {
+            boolean found = false;
+            if (!m.getName().equals(functionName))
+                continue;
+
+            Class a[] = m.getParameterTypes();
+            if (a.length != argumentTypes.length)
+                continue;
+
+            found = true;
+            for (int i = 0; i &lt; a.length; ++i) {
+                String arg = a[i].getName();
+
+                Class t = a[i];
+                int dims = 0;
+                while (t.isArray()) {
+                    dims++;
+                    t = t.getComponentType();
+                }
+                if (dims &gt; 0)
+                    arg = arg.substring(2, arg.length() - 1) + "[]";
+                for (int j = 0; j &lt; dims - 1; ++j)
+                    arg = arg.substring(1) + "[]";
+
+                if (argumentTypes[i].indexOf('.') &lt; 0) {
+                    arg = arg.substring(arg.lastIndexOf('.') + 1);
+                }
+
+                if (!arg.equals(argumentTypes[i])) {
+                    found = false;
+                    break;
+                }
+            }
+
+            if (found)
+                return m;
+        }
+
+        cls = cls.getSuperclass();
+        if (cls == null)
+            return null;
+        else
+            return findFunctionRecursive(cls, functionName, argumentTypes);
+    }
+
+    private native AbstractSignal fetchSignal(Field f);
+    
+    static native void invokeSlot(Object receiver, long m, 
+			  byte returnType, Object args[], int slotTypes[]);
+    static native long resolveSlot(Method method);
+
+    /**
+     * Internal function to initialize the signals and slots mechanism. It will be called automatically by the connect
+     * method.
+     */
+    protected void __qt_signalInitialization() { /* intentionally empty */
+    }
+
+    private QObject this_reference() {
+        return this;
+    }
+
+    </inject-code>
+    <modify-function class="java" signature="connectNotify(const char *)"> 
+        <access modifier="private"/>      
+    </modify-function>
+    <modify-function class="shell" signature="connectNotify(const char *)"> 
+        
+        <inject-code class="shell">        
+            <argument-map position="1" meta-name="signal"/>
+            qtjambi_connect_notify(qtjambi_current_environment(), m_link, signal);
+        </inject-code>
+    </modify-function>
+    
+    <modify-function class="java" signature="disconnectNotify(const char *)"> 
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="shell" signature="disconnectNotify(const char *)">         
+        <inject-code class="shell">        
+            <argument-map position="1" meta-name="signal"/>
+            qtjambi_disconnect_notify(qtjambi_current_environment(), m_link, signal);
+        </inject-code>
+    </modify-function>
+    
+    <inject-code class="java">
+        protected boolean __qt_no_notify = false;
+    
+        private String findSignalMethodSignature(String name) 
+            throws NoSuchFieldException, IllegalAccessException
+        {
+            String found = null;
+            
+            Class cls = getClass();
+            while (cls != null) {
+                Method methods[] = cls.getDeclaredMethods();
+                for (int i=0; i&lt;methods.length; ++i) {
+                    if (methods[i].getName().equals(name)) {
+                        found = name + "(";
+                        
+                        Class&lt;?&gt; params[] = methods[i].getParameterTypes();
+                        for (int j=0; j&lt;params.length; ++j) {
+                            if (j &gt; 0)
+                                found += ",";
+                            found += params[j].getName();
+                        }
+                        found = found + ")";
+                        break ;
+                    }
+                    
+                    
+                }
+                
+                cls = cls.getSuperclass();
+            }
+            return found;
+        }
+            
+        private void __qt_javaConnectNotify(String name, int cpp_connections) 
+            throws NoSuchFieldException, IllegalAccessException   
+        {
+            if (__qt_no_notify) 
+                return ;
+                        
+            String found = findSignalMethodSignature(name);
+
+            // If the signal is private it will not be mapped to Java, thus not found here.
+            if (found == null)
+                return ;
+                
+            Field f = getClass().getField(name);                        
+            
+            AbstractSignal signal = (AbstractSignal) f.get(this);
+            if (m_cpp_signals_initialized)
+                cpp_connections--;            
+            __qt_signalInitialization(); 
+            
+            if (cpp_connections == 0)
+                return ;
+            
+            if (signal.m_cpp_connections == 0)            
+                signal.connect(this, found);
+            else
+                connectNotify(signal);
+            
+            signal.m_cpp_connections = cpp_connections;
+        }
+                
+        private void __qt_javaDisconnectNotify(String name, int cpp_connections)
+            throws NoSuchFieldException, IllegalAccessException
+        {
+            if (__qt_no_notify) 
+                return ;
+            
+            if (name == null)
+                return ;
+                        
+            String found = findSignalMethodSignature(name);
+
+            // If the signal is private it will not be mapped to Java, thus not found here.
+            if (found == null)
+                return ;
+                
+            Field f = getClass().getField(name);                        
+            
+            AbstractSignal signal = (AbstractSignal) f.get(this);
+            if (m_cpp_signals_initialized)
+                cpp_connections--;                
+            __qt_signalInitialization();
+            
+            if (cpp_connections == 0)
+                signal.disconnect(this, found);
+            else
+                disconnectNotify(signal);
+            
+            signal.m_cpp_connections = cpp_connections;
+        }
+    
+        protected void connectNotify(AbstractSignal signal)
+        {
+            // empty default implementation
+        }
+        
+        protected void disconnectNotify(AbstractSignal signal)
+        {
+            // empty default implementation
+        }        
+        
+        protected static int receivers(AbstractSignal signal)
+        {
+            return signal.receivers();
+        }
+        
+    </inject-code>
+    
+    
+    <inject-code class="java">
+    public java.util.List&lt;QObject> findChildren() { return findChildren(null, (QRegExp) null); }
+    public java.util.List&lt;QObject> findChildren(Class cl) { return findChildren(cl, (QRegExp) null); }
+    
+    public java.util.List&lt;QObject> findChildren(Class cl, String name) { 
+    	java.util.List&lt;QObject> children = this.children();
+    	java.util.List&lt;QObject> matching = new java.util.ArrayList&lt;QObject>();    	
+    	java.util.Iterator&lt;QObject> it = children.iterator();
+    	while (it.hasNext()) {
+    		QObject current = it.next();
+    		if ((name == null || name.equals(current.objectName()))
+    		    &amp;&amp; (cl == null || cl.isAssignableFrom(current.getClass()))) 
+    			matching.add(current);
+    		matching.addAll(current.findChildren(cl, name));
+    	}
+    	
+    	return matching;
+    }
+    
+    public java.util.List&lt;QObject> findChildren(Class cl, QRegExp name) {
+    	java.util.List&lt;QObject> children = this.children();
+    	java.util.List&lt;QObject> matching = new java.util.ArrayList&lt;QObject>();    	
+    	java.util.Iterator&lt;QObject> it = children.iterator();
+    	while (it.hasNext()) {
+    		QObject current = it.next();
+    		if ((name == null || name.indexIn(current.objectName()) >= 0)
+    		    &amp;&amp; (cl == null || cl.isAssignableFrom(current.getClass()))) 
+    			matching.add(current);
+    		matching.addAll(current.findChildren(cl, name));
+    	}
+    	
+    	return matching;
+    }
+
+    public QObject findChild() { return findChild(null, null); }
+    public QObject findChild(Class cl) { return findChild(cl, null); }
+    public QObject findChild(Class cl, String name) {
+    	java.util.List&lt;QObject> children = this.children();
+    	java.util.Iterator&lt;QObject> it = children.iterator();
+    	while (it.hasNext()) {
+    		QObject current = it.next();
+    		if ((name == null || name.equals(current.objectName()))
+    		    &amp;&amp; (cl == null || cl.isAssignableFrom(current.getClass()))) 
+    			return current;
+    	}
+    	return null;
+    }
+    </inject-code>
+  </object-type>
+
+  <object-type name="QCoreApplication" memory-managed="yes">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+    </extra-includes>
+    <modify-function class="java" signature="QCoreApplication(int &amp;, char  **)">
+      <access modifier="private" />
+    </modify-function>     
+    
+    <modify-function class="java" signature="postEvent(QObject*,QEvent*)">
+      <disable-gc argument="2" />  
+    </modify-function>    
+    <inject-code class="java">
+    protected static QCoreApplication m_instance = null;
+    public static void initialize(String args[])
+    {
+        if (m_instance != null)
+            throw new RuntimeException("QApplication can only be initialized once");
+            
+        m_instance = new QCoreApplication(args);
+    }
+        
+    protected final static QNativePointer argv(String args[])
+    {
+        String newArgs[] = new String[args.length + 1];
+        System.arraycopy(args, 0, newArgs, 1, args.length);
+        newArgs[0] = "java app";        
+        argv = QNativePointer.createCharPointerPointer(newArgs);
+        return argv;
+    }
+
+    protected final static QNativePointer argc(String args[])
+    {
+        if (argc != null) {
+             throw new RuntimeException("There can only exist one QCoreApplication instance");
+        }
+        argc = new QNativePointer(QNativePointer.Type.Int);
+        argc.setIntValue(args.length + 1);
+        return argc;
+    }
+
+    public QCoreApplication(String args[])         
+    {
+        this(argc(args), argv(args)); 
+    }
+    
+    
+
+    private static QNativePointer argc, argv;
+    </inject-code>
+    <modify-function class="shell" signature="notify(QObject *, QEvent *)"> 
+        <inject-code class="shell">        
+        <argument-map position="2" meta-name="event"/>
+	if (arg__1->type() == 512) {
+            qtjambi_metacall(0, event);
+            return true;
+        }
+        </inject-code>
+    </modify-function>
+  </object-type>
+
+  <object-type name="QSettings">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+    </extra-includes>
+    <modify-function signature="registerFormat(const QString&amp;,ReadFunc,WriteFunc,Qt::CaseSensitivity)">
+        <remove/>
+    </modify-function>
+  </object-type>
+
+  <object-type name="QEvent">
+    <include file-name="qevent.h" location="global"/>
+    
+  </object-type>
+
+  <object-type name="QDataStream" memory-managed="yes">  
+    <modify-function signature="operator&gt;&gt;(char *&amp;)">
+        <rename to="operator_shift_right_char_star"/>
+    </modify-function>  
+    <modify-function signature="operator&gt;&gt;(double&amp;)">
+        <rename to="operator_shift_right_double"/>
+    </modify-function>
+    <modify-function signature="operator&gt;&gt;(uint&amp;)">
+        <rename to="operator_shift_right_uint"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(bool&amp;)">
+        <rename to="operator_shift_right_bool"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(float&amp;)">
+        <rename to="operator_shift_right_float"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(unsigned short&amp;)">
+        <rename to="operator_shift_right_unsigned_short"/>
+    </modify-function>        
+    <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)">
+        <rename to="operator_shift_right_unsigned_long_long"/>
+    </modify-function>        
+    <modify-function signature="operator&gt;&gt;(long long&amp;)">
+        <rename to="operator_shift_right_long_long"/>
+    </modify-function>            
+    <modify-function signature="operator&gt;&gt;(short&amp;)">
+        <rename to="operator_shift_right_short"/>
+    </modify-function>            
+    <modify-function signature="operator&gt;&gt;(int&amp;)">
+        <rename to="operator_shift_right_int"/>
+    </modify-function>            
+    <modify-function signature="operator&gt;&gt;(unsigned int&amp;)">
+        <rename to="operator_shift_right_unsigned_int"/>
+    </modify-function>                
+  </object-type>
+  <object-type name="QFSFileEngine">
+	<extra-includes>
+           <include file-name="QDateTime" location="global" />
+        </extra-includes>
+  </object-type>
+
+  <object-type name="QTextStream" memory-managed="yes">
+    <include file-name="qtextstream.h" location="global"/>        
+    <modify-function signature="operator&gt;&gt;(QChar&amp;)">
+        <rename to="operator_shift_right_QChar"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(const void*)">
+        <remove/>
+    </modify-function>
+    <modify-function signature="operator&gt;&gt;(char&amp;)">
+        <rename to="operator_shift_right_char"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(signed short&amp;)">
+        <rename to="operator_shift_right_signed_short"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(unsigned short&amp;)">
+        <rename to="operator_shift_right_unsigned_short"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(signed int&amp;)">
+        <rename to="operator_shift_right_signed_int"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(unsigned int&amp;)">
+        <rename to="operator_shift_right_unsigned_int"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(signed long&amp;)">
+        <rename to="operator_shift_right_signed_long"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(unsigned long&amp;)">
+        <rename to="operator_shift_right_unsigned_long"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(qlonglong&amp;)">
+        <rename to="operator_shift_right_qlonglong"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(qulonglong&amp;)">
+        <rename to="operator_shift_right_qulonglong"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)">
+        <rename to="operator_shift_right_unsigned_long_long"/>
+    </modify-function>        
+    <modify-function signature="operator&gt;&gt;(float&amp;)">
+        <rename to="operator_shift_right_QChar"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(double&amp;)">
+        <rename to="operator_shift_right_double"/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(QString&amp;)">
+        <rename to="operator_shift_right_QString"/>
+    </modify-function>    
+        <modify-function signature="operator&gt;&gt;(QByteArray&amp;)">
+        <rename to="operator_shift_right_QByteArray"/>
+    </modify-function>
+        <modify-function signature="operator&gt;&gt;(char *)">
+        <rename to="operator_shift_right_char_star"/>
+    </modify-function>    
+  </object-type>
+  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QMetaObject'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'FILE\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QByteArray::Data\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QTSMFC'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QTSMFI'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QAbstractFileEngine::ExtensionOption const\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QAbstractFileEngine::Iterator\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QDataStream::ByteOrder'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />
+  <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QPointer&lt;*&gt;'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QVector&lt;*&gt;'" />
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: enum 'QDataStream::ByteOrder' does not have a type entry or is not an enum" />
+  
+</typesystem>

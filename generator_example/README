@@ -1,0 +1,22 @@
+To run the generator example, simply execute the generator_example
+script:
+
+Windows:
+    generator_example.bat
+
+Linux and Mac OS X: 
+    generator_example.sh
+
+This will go through the required steps of executing the generator
+with the correct environment set up, then build the native libraries
+and the java source files required by the example. See the script
+files for details in the individual steps.
+
+Please note that you need an actual Qt version installed with qmake
+and the Qt header files for the generator example to work. You also
+need the Java compiler, javac,  in your path.
+
+On Mac OS X this example requires that the Qt version you are
+compiling against is a release version of the Qt source package,
+configure without frameworks.
+

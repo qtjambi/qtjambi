@@ -1,0 +1,5 @@
+<typesystem>
+  <load-typesystem name="typesystem_core.txt" generate="no" />    
+  <load-typesystem name="typesystem_gui.txt" generate="no" />    
+  <load-typesystem name="typesystem_sql.txt" generate="yes" />    
+</typesystem>

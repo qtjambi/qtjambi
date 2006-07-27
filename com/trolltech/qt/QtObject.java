@@ -1,0 +1,152 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of $PRODUCT$.
+**
+** $JAVA_LICENSE$
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+package com.trolltech.qt;
+
+import java.util.Hashtable;
+import com.trolltech.qt.QNativePointer;
+import java.lang.reflect.*;
+
+/**
+ * The super class of all class types in Qt. Loading this class or any
+ * of its subclasses will imply a dependency on both the Qt Jambi
+ * library and the Qt libraries.
+ */
+public abstract class QtObject implements QtObjectInterface
+{
+    static {
+    	QtJambi_LibraryInitializer.init();
+    }
+    
+    protected static class QPrivateConstructor { }
+
+    public QtObject()
+    {
+        /* intentionally empty */
+    }
+
+    public QtObject(QPrivateConstructor p)
+    {
+        /* intentionally empty */
+    }
+
+    public String tr(String str) { return str; }
+
+    /**
+     * Called before garbage collection occurs on the object. This
+     * implementation of this method must be called by any subclass
+     * which reimplements the method.
+     */
+    protected native void finalize();
+
+    /**
+     * Explicitly removes the native resources held by the
+     * object. Note that though this method does not guarantee that
+     * the object will be garbage collected, it is not safe to
+     * reference the object after it has been disposed.
+     */
+    public native void dispose();
+
+
+    /**
+     * Disables garbage collection for this object. This should be
+     * used when objects created in java are passed to C++ functions
+     * that take ownership of the objects. Both the Java and C++ part
+     * of the object will then be cleaned up by C++.
+     */
+    public native void disableGarbageCollection();
+
+    /**
+     * Internal function which fetches a wrapper around the pointer to
+     * the native resources held by this object.
+     * @return A QNativePointer object for the current object.
+     */
+    public native QNativePointer nativePointer();
+
+    /**
+     * Internal function which fetches the native id of the current
+     * object.
+     * @return A long value which uniquely define the native resources
+     * held by this object during their life time.
+     */
+    public long nativeId() { return native__id; }
+    
+    /**
+     * Returns the thread affinity of the object. If this is an instance of
+     * QObject the thread that owns the object is returned. For non QObject's
+     * the current thread is returned...
+     */
+    public Thread thread() { return Thread.currentThread(); }
+
+    /**
+     * In certain cases, the native resources of a QtObject object may
+     * be out of sync with its class. In such cases this method can be
+     * used to reassign the native resources to an object of another
+     * class. Take special care when using this method, as it has
+     * limited type safety and may cause crashes when used wrong. Note
+     * also that as the returned object "steals" the native resources
+     * held by the original object, the original object will not be
+     * usable after a call to this function. Invoking a method on the
+     * original object may result in an exception being raised. If an
+     * exception is raised, it is safe to assume that the original
+     * object is still valid. If the object is already of the type
+     * specified by clazz, then a reference to the object itself is
+     * returned.
+     *
+     * @param object The original object which holds the native
+     * resources. This object will be considered unusable after the
+     * call.
+     * @param clazz The class of the new object. The class must be a
+     * subclass of QtObject and you must not rely on any constructors
+     * being invoked upon construction of the object.
+     * @return An object of the specified type which owns the
+     * resources previously held by object.
+     * @throws ClassCastException If the class of object is unrelated
+     * to clazz, or if clazz is an unsupported class type.
+     * @throws InstantiationException If clazz cannot be instantiated
+     */
+    public static QtObject reassignNativeResources(QtObject object, Class<? extends QtObject> clazz)
+        throws InstantiationException
+    {
+        if (!object.getClass().isAssignableFrom(clazz)) {
+            throw new ClassCastException("The object '" + object.toString() + "' (class: '" + object.getClass().getName() + "') " 
+                                         + "must be of class '" + clazz.getName() + "' or one of its superclasses.");
+        }
+
+        if (object.getClass().equals(clazz))
+            return object;
+
+        if (object.native__id == 0)
+            throw new QNoNativeResourcesException("The object '" + object.toString() + "' does not have native resources.");
+
+        Constructor<? extends QtObject> c;
+        try {
+            c = clazz.getDeclaredConstructor(QPrivateConstructor.class);
+        } catch (NoSuchMethodException e) {
+            ClassCastException new_e = new ClassCastException("The class '" + clazz.getName() + "' must be of a generated type.");
+            new_e.initCause(e);
+            throw new_e;
+        }
+
+        long nativeId = object.native__id;
+        object.native__id = 0;
+        return __qt_reassignLink(nativeId, clazz, c);
+    }
+
+    // The constructor must take a single object reference as its
+    // parameter and accept null. Basically, it should be the
+    // QPrivateConstructor-constructor.
+    private static native QtObject __qt_reassignLink(long newNativeId, Class cls, Constructor constructor);
+
+    private long native__id = 0;
+}

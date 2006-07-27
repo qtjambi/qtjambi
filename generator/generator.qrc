@@ -1,0 +1,9 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/trolltech/generator/">
+<file>typesystem_core.txt</file>
+<file>typesystem_gui.txt</file>
+<file>typesystem_sql.txt</file>
+<file>typesystem_opengl.txt</file>
+<file>parser/rpp/pp-qt-configuration</file>
+</qresource>
+</RCC>

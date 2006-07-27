@@ -1,0 +1,1289 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of $PRODUCT$.
+**
+** $CPP_LICENSE$
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "metajavabuilder.h"
+#include "reporthandler.h"
+
+#include "ast.h"
+#include "binder.h"
+#include "control.h"
+#include "default_visitor.h"
+#include "dumptree.h"
+#include "lexer.h"
+#include "parser.h"
+#include "tokens.h"
+
+#include <QFile>
+#include <QTextStream>
+#include <QTextCodec>
+#include <QDebug>
+
+static QString strip_template_args(const QString &name)
+{
+    int pos = name.indexOf('<');
+    return pos < 0 ? name : name.left(pos);
+}
+
+static QString strip_preprocessor_lines(const QString &name)
+{
+    QStringList lst = name.split("\n");
+    QString s;
+    for (int i=0; i<lst.size(); ++i) {
+        if (!lst.at(i).startsWith('#'))
+            s += lst.at(i);
+    }
+    return s.trimmed();
+}
+
+static QHash<QString, QString> *operator_names;
+QString rename_operator(const QString &oper)
+{
+    QString op = oper.trimmed();
+    if (!operator_names) {
+        operator_names = new QHash<QString, QString>;
+
+        operator_names->insert("+", "add");
+        operator_names->insert("-", "subtract");
+        operator_names->insert("*", "multiply");
+        operator_names->insert("/", "divide");
+        operator_names->insert("%", "modulo");
+        operator_names->insert("&", "and");
+        operator_names->insert("|", "or");
+        operator_names->insert("^", "xor");
+        operator_names->insert("~", "negate");
+        operator_names->insert("<<", "shift_left");
+        operator_names->insert(">>", "shift_right");
+
+        // assigments
+        operator_names->insert("=", "assign");
+        operator_names->insert("+=", "add_assign");
+        operator_names->insert("-=", "subtract_assign");
+        operator_names->insert("*=", "multiply_assign");
+        operator_names->insert("/=", "divide_assign");
+        operator_names->insert("%=", "modulo_assign");
+        operator_names->insert("&=", "and_assign");
+        operator_names->insert("|=", "or_assign");
+        operator_names->insert("^=", "xor_assign");
+        operator_names->insert("<<=", "shift_left_assign");
+        operator_names->insert(">>=", "shift_right_assign");
+
+        // Logical
+        operator_names->insert("&&", "logical_and");
+        operator_names->insert("||", "logical_or");
+        operator_names->insert("!", "not");
+
+        // incr/decr
+        operator_names->insert("++", "increment");
+        operator_names->insert("--", "decrement");
+
+        // compare
+        operator_names->insert("<", "less");
+        operator_names->insert(">", "greater");
+        operator_names->insert("<=", "less_or_equal");
+        operator_names->insert(">=", "greater_or_equal");
+        operator_names->insert("!=", "not_equal");
+        operator_names->insert("==", "equal");
+
+        // other
+        operator_names->insert("[]", "subscript");
+        operator_names->insert("->", "pointer");
+    }
+
+    if (!operator_names->contains(op)) {
+        TypeDatabase *tb = TypeDatabase::instance();
+
+        TypeParser::Info typeInfo = TypeParser::parse(op);
+        QString cast_to_name = typeInfo.qualified_name.join("::");
+        TypeEntry *te = tb->findType(cast_to_name);
+        if ((te && te->codeGeneration() == TypeEntry::GenerateNothing)
+            || tb->isClassRejected(cast_to_name)) {
+            return QString();
+        } else if (te) {
+            return "operator_cast_" + typeInfo.qualified_name.join("_");
+        } else {
+            ReportHandler::warning(QString("Unknown operator '%1'").arg(op));
+            return "operator " + op;
+        }
+    }
+
+    return "operator_" + operator_names->value(op);
+}
+
+MetaJavaBuilder::MetaJavaBuilder()
+    : m_current_class(0)
+{
+}
+
+static bool function_less_than(const MetaJavaFunction *f1, const MetaJavaFunction *f2)
+{
+    QString s1 = f1->name();
+    QString s2 = f2->name();
+
+    MetaJavaArgumentList l1 = f1->arguments();
+    MetaJavaArgumentList l2 = f2->arguments();
+
+    int count = qMax(l1.count(), l2.count());
+    for (int i=0; i<count; ++i) {
+        if (i < l1.count())
+            s1 += " " + l1.at(i)->type()->name();
+        if (i < l2.count())
+            s2 += " " + l2.at(i)->type()->name();
+    }
+
+    return s1 < s2;
+}
+
+
+bool MetaJavaBuilder::build()
+{
+    Q_ASSERT(!m_file_name.isEmpty());
+
+    QFile file(m_file_name);
+
+    if (!file.open(QFile::ReadOnly))
+        return false;
+
+    QTextStream stream(&file);
+    stream.setCodec(QTextCodec::codecForName("UTF-8"));
+    QByteArray contents = stream.readAll().toUtf8();
+    file.close();
+
+    Control control;
+    Parser p(&control);
+    pool __pool;
+
+    TranslationUnitAST *ast = p.parse(contents, contents.size(), &__pool);
+
+    CodeModel model;
+    Binder binder(&model, p.location());
+    m_dom = binder.run(ast);
+
+    QHash<QString, ClassModelItem> typeMap = m_dom->classMap();
+
+    // fix up QObject's in the type system..
+    TypeDatabase *types = TypeDatabase::instance();
+    foreach (ClassModelItem item, typeMap.values()) {
+        QString qualified_name = item->qualifiedName().join("::");
+        TypeEntry *entry = types->findType(qualified_name);
+        if (entry) {
+            if (isQObject(qualified_name) && entry->isComplex()) {
+                ((ComplexTypeEntry *) entry)->setQObject(true);
+            }
+        }
+    }
+
+    // Start the generation...
+    foreach (ClassModelItem item, typeMap.values()) {
+        MetaJavaClass *cls = traverseClass(item);
+        if (!cls)
+            continue;
+
+	    cls->setOriginalAttributes(cls->attributes());
+        if (cls->typeEntry()->isContainer()) {
+            m_templates << cls;
+        } else {
+            m_java_classes << cls;
+            if (cls->typeEntry()->designatedInterface()) {
+                MetaJavaClass *interface = cls->extractInterface();
+                m_java_classes << interface;
+                ReportHandler::debugSparse(QString(" -> interface '%1'").arg(interface->name()));
+            }
+        }
+    }
+
+    foreach (MetaJavaClass *cls, m_java_classes) {
+        if (!cls->isInterface() && !cls->isNamespace()) {
+            setupInheritance(cls);
+        }
+    }
+
+    QHash<QString, NamespaceModelItem> namespaceMap = m_dom->namespaceMap();
+    foreach (NamespaceModelItem item, namespaceMap.values()) {
+        MetaJavaClass *java_class = traverseNamespace(item);
+        if (java_class)
+            m_java_classes << java_class;
+    }
+
+    foreach (MetaJavaClass *cls, m_java_classes) {
+        cls->fixFunctions();
+
+        if (cls->typeEntry() == 0) {
+            ReportHandler::warning(QString("class '%1' does not have an entry in the type system")
+                                   .arg(cls->name()));
+        } else {
+            if (!cls->hasConstructors() && !cls->isFinal() && !cls->isInterface() && !cls->isNamespace())
+                cls->addDefaultConstructor();
+        }
+
+    }
+
+    foreach (TypeEntry *entry, m_used_types) {
+        if (entry->isPrimitive())
+            continue;
+
+        QString name = entry->qualifiedJavaName();
+
+        if (!entry->codeGeneration() == TypeEntry::GenerateNothing
+            && (entry->isValue() || entry->isObject())
+            && !findClass(m_java_classes, name))
+            ReportHandler::warning(QString("type '%1' is specified in typesystem, but not declared")
+                                   .arg(name));
+
+        if (entry->isEnum()) {
+            QString pkg = entry->javaPackage();
+            QString name = (pkg.isEmpty() ? QString() : pkg + ".")
+                           + ((EnumTypeEntry *) entry)->javaQualifier();
+            MetaJavaClass *cls = findClass(m_java_classes, name);
+
+            if (!cls) {
+                ReportHandler::warning(QString("namespace '%1' for enum '%2' is not declared")
+                                       .arg(name).arg(entry->javaName()));
+            } else {
+                MetaJavaEnum *e = cls->findEnum(entry->javaName());
+                if (!e)
+                    ReportHandler::warning(QString("enum '%1' is specified in typesystem, "
+                                                   "but not declared")
+                                           .arg(entry->qualifiedCppName()));
+            }
+        }
+    }
+
+    dumpLog();
+
+    return true;
+}
+
+
+MetaJavaClass *MetaJavaBuilder::traverseNamespace(NamespaceModelItem namespace_item)
+{
+    NamespaceTypeEntry *type = TypeDatabase::instance()->findNamespaceType(namespace_item->name());
+
+    QString namespace_name = namespace_item->name();
+
+    if (TypeDatabase::instance()->isClassRejected(namespace_name)) {
+        m_rejected_classes.insert(namespace_name, GenerationDisabled);
+        return 0;
+    }
+
+    if (!type) {
+        ReportHandler::warning(QString("namespace '%1' does not have a type entry")
+                               .arg(namespace_item->name()));
+        return 0;
+    }
+
+    MetaJavaClass *java_class = new MetaJavaClass;
+    java_class->setTypeEntry(type);
+
+    *java_class += MetaJavaAttributes::Public;
+
+    m_current_class = java_class;
+
+    ReportHandler::debugSparse(QString("namespace '%1.%2'")
+                               .arg(java_class->package())
+                               .arg(namespace_item->name()));
+
+    traverseEnums(model_dynamic_cast<ScopeModelItem>(namespace_item), java_class);
+    // traverseFunctions(model_dynamic_cast<ScopeModelItem>(namespace_item), java_class);
+
+    m_current_class = 0;
+
+    return java_class;
+}
+
+MetaJavaEnum *MetaJavaBuilder::traverseEnum(EnumModelItem enum_item)
+{
+    // Skipping private enums.
+    if (enum_item->accessPolicy() == CodeModel::Private) {
+        return 0;
+    }
+
+    QString qualified_name = enum_item->qualifiedName().join("::");
+    TypeEntry *type_entry = TypeDatabase::instance()->findType(qualified_name);
+
+    if (!type_entry || !type_entry->isEnum()) {
+        ReportHandler::warning(QString("enum '%1::%2' does not have a type entry or is not an enum")
+                               .arg(m_current_class->name())
+                               .arg(enum_item->name()));
+        m_rejected_enums.insert(qualified_name, NotInTypeSystem);
+        return 0;
+    }
+
+    MetaJavaEnum *java_enum = new MetaJavaEnum;
+
+    java_enum->setTypeEntry((EnumTypeEntry *) type_entry);
+    switch (enum_item->accessPolicy()) {
+    case CodeModel::Public: *java_enum += MetaJavaAttributes::Public; break;
+    case CodeModel::Protected: *java_enum += MetaJavaAttributes::Protected; break;
+//     case CodeModel::Private: *java_enum += MetaJavaAttributes::Private; break;
+    default: break;
+    }
+
+    ReportHandler::debugMedium(QString(" - traversing enum %1").arg(java_enum->fullName()));
+
+    foreach (EnumeratorModelItem value, enum_item->enumerators()) {
+        MetaJavaEnumValue *java_enum_value = new MetaJavaEnumValue;
+        java_enum_value->setName(value->name());
+        java_enum_value->setValue(strip_preprocessor_lines(value->value()));
+        java_enum->addEnumValue(java_enum_value);
+
+        ReportHandler::debugFull("   - " + java_enum_value->name() + " = "
+                                 + java_enum_value->value());
+    }
+
+    return java_enum;
+}
+
+MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
+{
+    QString class_name = strip_template_args(class_item->name());
+
+    QString full_class_name = class_name;
+    // we have inner an class
+    if (m_current_class) {
+        full_class_name = strip_template_args(m_current_class->typeEntry()->qualifiedCppName())
+                          + "::" + full_class_name;
+    }
+
+    ComplexTypeEntry *type = TypeDatabase::instance()->findComplexType(full_class_name);
+    RejectReason reason = NoReason;
+
+    if (TypeDatabase::instance()->isClassRejected(full_class_name)) {
+        reason = GenerationDisabled;
+    } else if (!type) {
+        TypeEntry *te = TypeDatabase::instance()->findType(full_class_name);
+        if (te && !te->isComplex())
+            reason = RedefinedToNotClass;
+        else
+            reason = NotInTypeSystem;
+    } else if (type->codeGeneration() == TypeEntry::GenerateNothing) {
+        reason = GenerationDisabled;
+    }
+
+    if (reason != NoReason) {
+        m_rejected_classes.insert(class_name, reason);
+        return false;
+    }
+
+    if (type->isObject()) {
+        ((ObjectTypeEntry *)type)->setQObject(isQObject(full_class_name));
+    }
+
+    MetaJavaClass *java_class = new MetaJavaClass;
+    java_class->setTypeEntry(type);
+    java_class->setBaseClassNames(class_item->baseClasses());
+    *java_class += MetaJavaAttributes::Public;
+
+    m_current_class = java_class;
+
+    if (type->isContainer()) {
+        ReportHandler::debugSparse(QString("container: '%1'").arg(full_class_name));
+    } else {
+        ReportHandler::debugSparse(QString("class: '%1'").arg(java_class->fullName()));
+    }
+
+
+    TemplateParameterList template_parameters = class_item->templateParameters();
+    m_template_args.clear();
+    for (int i=0; i<template_parameters.size(); ++i) {
+        const TemplateParameterModelItem &param = template_parameters.at(i);
+        TemplateArgumentEntry *param_type = new TemplateArgumentEntry(param->name());
+        param_type->setOrdinal(i);
+        m_template_args.append(param_type);
+    }
+
+    traverseFunctions(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
+    traverseEnums(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
+    traverseFields(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
+
+    // Inner classes
+    {
+        QList<ClassModelItem> inner_classes = class_item->classMap().values();
+        foreach (const ClassModelItem &ci, inner_classes) {
+            MetaJavaClass *cl = traverseClass(ci);
+            if (cl) {
+                cl->setEnclosingClass(java_class);
+                m_java_classes << cl;
+            }
+        }
+
+    }
+
+    m_template_args.clear();
+
+    m_current_class = 0;
+
+    return java_class;
+}
+
+MetaJavaField *MetaJavaBuilder::traverseField(VariableModelItem field, const MetaJavaClass *cls)
+{
+    QString field_name = field->name();
+    QString class_name = m_current_class->typeEntry()->qualifiedCppName();
+
+    // Ignore friend decl.
+    if (field->isFriend())
+        return 0;
+
+    if (field->accessPolicy() == CodeModel::Private)
+        return 0;
+
+    if (TypeDatabase::instance()->isFieldRejected(class_name, field_name)) {
+        m_rejected_fields.insert(class_name + "::" + field_name, GenerationDisabled);
+        return 0;
+    }
+
+
+    MetaJavaField *java_field = new MetaJavaField;
+    java_field->setName(field_name);
+    java_field->setEnclosingClass(cls);
+
+    bool ok;
+    TypeInfo field_type = field->type();
+    MetaJavaType *java_type = translateType(field_type, &ok);
+
+    if (!java_type || !ok) {
+        ReportHandler::warning(QString("skipping field '%1::%2' with unmatched type '%3'")
+                               .arg(m_current_class->name())
+                               .arg(field_name)
+                               .arg(TypeInfo::resolveType(field_type, model()->toItem()).qualifiedName().join("::")));
+        delete java_field;
+        return 0;
+    }
+
+    java_field->setType(java_type);
+
+    uint attr = 0;
+    if (field->isStatic())
+        attr |= MetaJavaAttributes::Static;
+
+    CodeModel::AccessPolicy policy = field->accessPolicy();
+    if (policy == CodeModel::Public)
+        attr |= MetaJavaAttributes::Public;
+    else if (policy == CodeModel::Protected)
+        attr |= MetaJavaAttributes::Protected;
+    else
+        attr |= MetaJavaAttributes::Private;
+    java_field->setAttributes(attr);
+
+    return java_field;
+}
+
+void MetaJavaBuilder::traverseFields(ScopeModelItem scope_item, MetaJavaClass *java_class)
+{
+    foreach (VariableModelItem field, scope_item->variables()) {
+        MetaJavaField *java_field = traverseField(field, java_class);
+
+        if (java_field) {
+            java_field->setOriginalAttributes(java_field->attributes());
+            java_class->addField(java_field);
+        }
+    }
+}
+
+void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass *java_class)
+{
+    foreach (FunctionModelItem function, scope_item->functions()) {
+        MetaJavaFunction *java_function = traverseFunction(function);
+
+        if (java_function) {
+
+            // Some of the queries below depend on the implementing class being set
+            // to function properly. Such as function modifications
+            java_function->setImplementingClass(java_class);
+            java_function->setOriginalAttributes(java_function->attributes());
+
+            if ((java_function->isConstructor() || java_function->isDestructor())
+                && (java_function->isPrivate() || java_function->isInvalid())
+                && !java_class->hasNonPrivateConstructor()) {
+                *java_class += MetaJavaAttributes::Final;
+            } else if (java_function->isConstructor() && !java_function->isPrivate()) {
+                *java_class -= MetaJavaAttributes::Final;
+                java_class->setHasNonPrivateConstructor(true);
+            }
+
+            if (java_function->isSignal() && !java_class->isQObject()) {
+                QString warn = QString("Signal '%1' in non-QObject class '%2'")
+                    .arg(java_function->name()).arg(java_class->name());
+                ReportHandler::warning(warn);
+            }
+
+            if (java_function->isSignal() && java_class->hasSignal(java_function)) {
+                QString warn = QString("Signal '%1' in class '%2' is overloaded.")
+                    .arg(java_function->name()).arg(java_class->name());
+                ReportHandler::warning(warn);
+            }
+
+            if (!java_function->isDestructor()
+                && !java_function->isInvalid()
+                && !java_class->hasFunctionNotRemoved(java_function)
+                && (!java_function->isConstructor() || !java_function->isPrivate())) {
+
+                if (java_class->typeEntry()->designatedInterface() && !java_function->isPublic()
+                    && !java_function->isPrivate()) {
+                    QString warn = QString("non-public function '%1' in interface '%2'")
+                        .arg(java_function->name()).arg(java_class->name());
+                    ReportHandler::warning(warn);
+
+                    java_function->setVisibility(MetaJavaClass::Public);
+                }
+
+                java_class->addFunction(java_function);
+            }
+        }
+    }
+}
+
+bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
+{
+    Q_ASSERT(!java_class->isInterface());
+
+    QStringList base_classes = java_class->baseClassNames();
+
+    TypeDatabase *types = TypeDatabase::instance();
+
+    // we only support our own containers and ONLY if there is only one baseclass
+    if (base_classes.size() == 1 && base_classes.first().count('<') == 1) {
+        QString complete_name = base_classes.first();
+        TypeParser::Info info = TypeParser::parse(complete_name);
+        QString base_name = info.qualified_name.join("::");
+        ContainerTypeEntry *cte = types->findContainerType(base_name);
+
+        if (cte) {
+            MetaJavaClass *templ = 0;
+            foreach (MetaJavaClass *c, m_templates) {
+                if (c->typeEntry()->name() == base_name) {
+                    templ = c;
+                    break;
+                }
+            }
+            if (templ) {
+                inheritTemplate(java_class, templ, info);
+                return true;
+            }
+
+            ReportHandler::warning(QString("Template baseclass '%1' of '%2' is not known")
+                                   .arg(base_name)
+                                   .arg(java_class->name()));
+            return false;
+        }
+    }
+
+    int primary = -1;
+    int primaries = 0;
+    for (int i=0; i<base_classes.size(); ++i) {
+
+        if (types->isClassRejected(base_classes.at(i)))
+            continue;
+
+        TypeEntry *base_class_entry = types->findType(base_classes.at(i));
+        if (!base_class_entry) {
+            ReportHandler::warning(QString("class '%1' inherits from unknown base class '%2'")
+                                   .arg(java_class->name()).arg(base_classes.at(i)));
+        }
+
+        // true for primary base class
+        else if (!base_class_entry->designatedInterface()) {
+            if (primaries > 0) {
+                ReportHandler::warning(QString("class '%1' has multiple primary base classes"
+                                               " '%2' and '%3'")
+                                       .arg(java_class->name())
+                                       .arg(base_classes.at(primary))
+                                       .arg(base_class_entry->name()));
+                return false;
+            }
+            primaries++;
+            primary = i;
+        }
+    }
+
+    if (primary >= 0) {
+        const MetaJavaClass *base_class = findClass(m_java_classes, base_classes.at(primary));
+        if (!base_class) {
+            ReportHandler::warning(QString("Unknown baseclass for '%1': '%2'")
+                                   .arg(java_class->name())
+                                   .arg(base_classes.at(primary)));
+            return false;
+        }
+        java_class->setBaseClass(base_class);
+    }
+
+    for (int i=0; i<base_classes.size(); ++i) {
+        if (types->isClassRejected(base_classes.at(i)))
+            continue;
+
+        if (i != primary) {
+            QString interface_name = InterfaceTypeEntry::interfaceName(base_classes.at(i));
+            MetaJavaClass *iface = findClass(m_java_classes, interface_name);
+            if (!iface) {
+                ReportHandler::warning(QString("Unknown interface for '%1': '%2'")
+                                       .arg(java_class->name())
+                                       .arg(interface_name));
+                return false;
+            }
+            java_class->addInterface(iface);
+        }
+    }
+
+    return true;
+}
+
+void MetaJavaBuilder::traverseEnums(ScopeModelItem scope_item, MetaJavaClass *java_class)
+{
+    EnumList enums = scope_item->enums();
+    foreach (EnumModelItem enum_item, enums) {
+        MetaJavaEnum *java_enum = traverseEnum(enum_item);
+        if (java_enum) {
+            java_enum->setOriginalAttributes(java_enum->attributes());
+            java_class->addEnum(java_enum);
+        }
+    }
+}
+
+MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_item)
+{
+    QString function_name = function_item->name();
+    QString class_name = m_current_class->typeEntry()->qualifiedCppName();
+
+    if (TypeDatabase::instance()->isFunctionRejected(class_name, function_name)) {
+        m_rejected_functions.insert(class_name + "::" + function_name, GenerationDisabled);
+        return 0;
+    }
+
+    Q_ASSERT(function_item->functionType() == CodeModel::Normal
+             || function_item->functionType() == CodeModel::Signal
+             || function_item->functionType() == CodeModel::Slot);
+
+    if (function_item->isFriend())
+        return 0;
+
+
+    QString cast_type;
+
+    // skip destructors
+    if (function_name.startsWith('~')) {
+        return 0;
+    } else if (function_name.startsWith("operator")) {
+        function_name = rename_operator(function_name.mid(8));
+        if (function_name.isEmpty()) {
+            m_rejected_functions.insert(class_name + "::" + function_name,
+                                        GenerationDisabled);
+            return 0;
+        }
+        if (function_name.contains("_cast_"))
+            cast_type = function_name.mid(14).trimmed();
+    }
+
+    MetaJavaFunction *java_function = new MetaJavaFunction;
+    java_function->setConstant(function_item->isConstant());
+
+    ReportHandler::debugMedium(QString(" - %2()").arg(function_name));
+
+    java_function->setName(function_name);
+    java_function->setOriginalName(function_item->name());
+
+    *java_function += MetaJavaAttributes::Native;
+
+    if (!function_item->isVirtual())
+        *java_function += MetaJavaAttributes::Final;
+
+    if (function_item->isStatic()) {
+        *java_function += MetaJavaAttributes::Static;
+        *java_function += MetaJavaAttributes::Final;
+    }
+
+    // Access rights
+    if (function_item->accessPolicy() == CodeModel::Public)
+        *java_function += MetaJavaAttributes::Public;
+    else if (function_item->accessPolicy() == CodeModel::Private)
+        *java_function += MetaJavaAttributes::Private;
+    else
+        *java_function += MetaJavaAttributes::Protected;
+
+    if (function_item->isAbstract())
+        *java_function += MetaJavaAttributes::Abstract;
+
+    QString stripped_class_name = class_name;
+    int cc_pos = stripped_class_name.lastIndexOf("::");
+    if (cc_pos > 0)
+        stripped_class_name = stripped_class_name.mid(cc_pos + 2);
+
+    TypeInfo function_type = function_item->type();
+    if (strip_template_args(function_name) == stripped_class_name) {
+        java_function->setFunctionType(MetaJavaFunction::ConstructorFunction);
+        java_function->setName(m_current_class->name());
+    } else {
+        bool ok;
+        MetaJavaType *type = 0;
+
+        if (!cast_type.isEmpty()) {
+            TypeInfo info;
+            info.setQualifiedName(QStringList(cast_type));
+            type = translateType(info, &ok);
+        } else {
+            type = translateType(function_type, &ok);
+        }
+
+        if (!ok) {
+            ReportHandler::warning(QString("skipping function '%1::%2', unmatched return type '%3'")
+                                   .arg(class_name)
+                                   .arg(function_item->name())
+                                   .arg(function_item->type().toString()));
+            m_rejected_functions[class_name + "::" + function_name] =
+                UnmatchedReturnType;
+            java_function->setInvalid(true);
+            return java_function;
+        }
+        java_function->setType(type);
+
+        if (function_item->functionType() == CodeModel::Signal)
+            java_function->setFunctionType(MetaJavaFunction::SignalFunction);
+    }
+
+    ArgumentList arguments = function_item->arguments();
+    MetaJavaArgumentList java_arguments;    
+
+    int first_default_argument = 0;
+    for (int i=0; i<arguments.size(); ++i) {
+        ArgumentModelItem arg = arguments.at(i);
+
+        bool ok;
+        MetaJavaType *java_type = translateType(arg->type(), &ok);
+        if (!java_type || !ok) {
+            ReportHandler::warning(QString("skipping function '%1::%2', "
+                                           "unmatched parameter type '%3'")
+                                   .arg(class_name)
+                                   .arg(function_item->name())
+                                   .arg(arg->type().toString()));
+            m_rejected_functions[class_name + "::" + function_name] =
+                UnmatchedArgumentType;
+            java_function->setInvalid(true);
+            return java_function;
+        }
+        MetaJavaArgument *java_argument = new MetaJavaArgument;
+        java_argument->setType(java_type);
+        java_argument->setName((arg->name().isEmpty() ? "arg" : arg->name())
+                               + "__" + QString::number(i));
+       
+        java_arguments << java_argument;
+    }
+   
+    java_function->setArguments(java_arguments);
+
+    // Find the correct default values
+    for (int i=0; i<arguments.size(); ++i) {
+        ArgumentModelItem arg = arguments.at(i);
+        if (arg->defaultValue()) {
+            QString expr = translateDefaultValue(arg, java_arguments[i]->type(), java_function, m_current_class, i);
+            if (expr.isEmpty()) {
+                first_default_argument = i;
+            } else {
+                java_arguments[i]->setDefaultValueExpression(expr);
+            }
+        }
+    }
+
+    // If we where not able to translate the default argument make it
+    // reset all default arguments befor this one too.
+    for (int i=0; i<first_default_argument; ++i)
+        java_arguments[i]->setDefaultValueExpression(QString());
+
+
+    if (ReportHandler::debugLevel() == ReportHandler::FullDebug)
+        foreach(MetaJavaArgument *arg, java_arguments)
+            ReportHandler::debugFull("   - " + arg->toString());
+
+    return java_function;
+}
+
+
+MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
+{
+    Q_ASSERT(ok);
+    *ok = true;
+
+    TypeInfo typei = TypeInfo::resolveType(_typei, model()->toItem());
+    if (typei.isFunctionPointer()) {
+        *ok = false;
+        return 0;
+    }
+    TypeParser::Info typeInfo = TypeParser::parse(typei.toString());
+    if (typeInfo.is_busted) {
+        *ok = false;
+        return 0;
+    }
+
+    bool array_of_unspecified_size = false;
+    if (typeInfo.arrays.size() > 0) {        
+        array_of_unspecified_size = true;
+        for (int i=0; i<typeInfo.arrays.size(); ++i) 
+            array_of_unspecified_size = array_of_unspecified_size && typeInfo.arrays.at(i).isEmpty();
+
+        if (!array_of_unspecified_size) {
+            TypeInfo newInfo;
+            //newInfo.setArguments(typei.arguments());
+            newInfo.setIndirections(typei.indirections());
+            newInfo.setConstant(typei.isConstant());
+            newInfo.setFunctionPointer(typei.isFunctionPointer());
+            newInfo.setQualifiedName(typei.qualifiedName());
+            newInfo.setReference(typei.isReference());
+            newInfo.setVolatile(typei.isVolatile());
+
+            MetaJavaType *elementType = translateType(newInfo, ok);
+            if (!ok)
+                return 0;
+
+            for (int i=typeInfo.arrays.size()-1; i>=0; --i) {
+                QString s = typeInfo.arrays.at(i);
+                bool ok;
+
+
+                int elems = s.toInt(&ok);
+                if (!ok)
+                    return 0;            
+
+                MetaJavaType *arrayType = new MetaJavaType;
+                arrayType->setArrayElementCount(elems);
+                arrayType->setArrayElementType(elementType);
+                arrayType->setTypeEntry(new ArrayTypeEntry(elementType->typeEntry()));
+                decideUsagePattern(arrayType);
+
+                elementType = arrayType;
+            } 
+
+            return elementType;
+        }  else {
+            typeInfo.indirections += typeInfo.arrays.size();
+        }
+    }
+
+    QStringList qualifier_list = typeInfo.qualified_name;
+
+    if (qualifier_list.isEmpty()) {
+        ReportHandler::warning(QString("Horribly broken type '%1'").arg(_typei.toString()));
+        *ok = false;
+        return 0;
+    }
+
+    QString qualified_name = qualifier_list.join("::");
+    QString name = qualifier_list.takeLast();
+
+    if (name == "void" && typeInfo.indirections == 0) {
+        return 0;
+    }
+
+    if (qualified_name == "QFlags")
+        qualified_name = typeInfo.toString();
+
+    TypeEntry *type = TypeDatabase::instance()->findType(qualified_name);
+
+    if (!type) {
+        type = TypeDatabase::instance()->findContainerType(name);
+
+        if (!type) {
+            foreach (TypeEntry *te, m_template_args) {
+                if (te->name() == qualified_name)
+                    type = te;
+            }
+
+            if (!type) {
+                *ok = false;
+                return 0;
+            }
+        }
+    }
+
+    // Used to for diagnostics later...
+    m_used_types << type;
+
+    // These are only implicit and should not appear in code...
+    Q_ASSERT(!type->isInterface());
+
+    MetaJavaType *java_type = new MetaJavaType;
+    java_type->setTypeEntry(type);
+    java_type->setIndirections(typeInfo.indirections);
+    java_type->setReference(typeInfo.is_reference);
+    java_type->setConstant(typeInfo.is_constant);
+    decideUsagePattern(java_type);
+
+    if (java_type->isContainer()) {
+        ContainerTypeEntry::Type container_type =
+            static_cast<const ContainerTypeEntry *>(type)->type();
+
+        if (container_type == ContainerTypeEntry::StringListContainer) {
+            TypeInfo info;
+            info.setQualifiedName(QStringList() << "QString");
+            MetaJavaType *targ_type = translateType(info, ok);
+
+            Q_ASSERT(*ok);
+            Q_ASSERT(targ_type);
+
+            java_type->addInstantiation(targ_type);
+
+        } else {
+            foreach (const TypeParser::Info &ta, typeInfo.template_instantiations) {
+                TypeInfo info;
+                info.setConstant(ta.is_constant);
+                info.setReference(ta.is_reference);
+                info.setIndirections(ta.indirections);
+                info.setFunctionPointer(false);
+                info.setQualifiedName(ta.instantiationName().split("::"));
+
+                MetaJavaType *targ_type = translateType(info, ok);
+                if (!(*ok)) {
+                    delete java_type;
+                    return 0;
+                }
+                java_type->addInstantiation(targ_type);
+            }
+        }
+
+        if (container_type == ContainerTypeEntry::ListContainer
+            || container_type == ContainerTypeEntry::VectorContainer
+            || container_type == ContainerTypeEntry::StringListContainer) {
+            Q_ASSERT(java_type->instantiations().size() == 1);
+        }
+    }
+
+    return java_type;
+}
+
+void MetaJavaBuilder::decideUsagePattern(MetaJavaType *java_type)
+{
+    const TypeEntry *type = java_type->typeEntry();
+
+    if (type->isPrimitive() && java_type->actualIndirections() == 0) {
+        java_type->setTypeUsagePattern(MetaJavaType::PrimitivePattern);
+
+    } else if (type->isVoid()) {
+        java_type->setTypeUsagePattern(MetaJavaType::NativePointerPattern);
+
+    } else if (type->isString()
+               && java_type->indirections() == 0
+               && java_type->isConstant() == java_type->isReference()) {
+        java_type->setTypeUsagePattern(MetaJavaType::StringPattern);
+
+    } else if (type->isChar()
+        && java_type->indirections() == 0
+        && java_type->isConstant() == java_type->isReference()) {
+        java_type->setTypeUsagePattern(MetaJavaType::CharPattern);
+
+    } else if (type->isVariant()
+        && java_type->indirections() == 0
+        && java_type->isConstant() == java_type->isReference()) {
+        java_type->setTypeUsagePattern(MetaJavaType::VariantPattern);
+
+    } else if (type->isEnum() && java_type->actualIndirections() == 0) {
+        java_type->setTypeUsagePattern(MetaJavaType::EnumPattern);
+
+    } else if (type->isObject()
+                && java_type->indirections() == 0
+                && java_type->isReference()) {
+        if (((ComplexTypeEntry *) type)->isQObject())
+            java_type->setTypeUsagePattern(MetaJavaType::QObjectPattern);
+        else
+            java_type->setTypeUsagePattern(MetaJavaType::ObjectPattern);
+
+    } else if (type->isObject()
+               && java_type->indirections() == 1
+               && !java_type->isReference()) {
+        if (((ComplexTypeEntry *) type)->isQObject())
+            java_type->setTypeUsagePattern(MetaJavaType::QObjectPattern);
+        else
+            java_type->setTypeUsagePattern(MetaJavaType::ObjectPattern);
+
+    } else if (type->isContainer()) {
+        java_type->setTypeUsagePattern(MetaJavaType::ContainerPattern);
+
+    } else if (type->isTemplateArgument()) {
+
+    } else if (type->isFlags()
+               && java_type->indirections() == 0
+               && (java_type->isConstant() == java_type->isReference())) {
+        java_type->setTypeUsagePattern(MetaJavaType::FlagsPattern);
+
+    } else if (type->isArray()) {
+        java_type->setTypeUsagePattern(MetaJavaType::ArrayPattern);
+
+    } else if (type->isThread()) {
+        Q_ASSERT(java_type->indirections() == 1);
+        java_type->setTypeUsagePattern(MetaJavaType::ThreadPattern);
+
+    } else if (type->isValue()
+               && java_type->indirections() == 0
+               && (java_type->isConstant() == java_type->isReference()
+                   || !java_type->isReference())) {
+        java_type->setTypeUsagePattern(MetaJavaType::ValuePattern);
+
+    } else {
+        java_type->setTypeUsagePattern(MetaJavaType::NativePointerPattern);
+        ReportHandler::debugFull(QString("native pointer pattern for '%1'")
+                                 .arg(java_type->cppSignature()));
+    }
+}
+
+QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaType *type,
+                                               MetaJavaFunction *fnc, MetaJavaClass *implementing_class,
+                                               int argument_index)
+{
+    QString function_name = fnc->name();
+    QString class_name = implementing_class->name();
+    FunctionModificationList mods = fnc->modifications(implementing_class);
+    foreach (const FunctionModification &mod, mods) {
+        if (mod.isReplaceExpression()) {
+            if (mod.renamed_default_expressions.contains(argument_index))
+                return mod.renamed_default_expressions.value(argument_index);
+        }
+    }
+
+    QString expr = item->defaultValueExpression();
+    if (type->isPrimitive()) {
+        if (type->name() == "boolean") {
+            if (expr == "false" || expr=="true") {
+                return expr;
+            } else {
+                bool ok = false;
+                int number = expr.toInt(&ok);
+                if (ok && number)
+                    return "true";
+                else
+                    return "false";
+            }
+        } else if (expr == "ULONG_MAX") {
+            return "Long.MAX_VALUE";
+        } else {
+            return expr.replace("::", ".");
+        }
+    } else if (type != 0 && (type->isFlags() || type->isEnum())) {
+        return expr.replace("::", ".");
+
+    } else {
+
+        // constructor or functioncall can be a bit tricky...
+        if (expr == "QVariant()") {
+            return "null";
+        } else if (expr == "QString()") {
+            return "\"\"";
+        } else if (expr.endsWith(")") && expr.contains("::")) {
+            TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(expr.indexOf("::")));
+            if (typeEntry)
+                return typeEntry->qualifiedJavaName() + "." + expr.right(expr.length() - expr.indexOf("::") - 2);
+        } else if (expr.endsWith(")") && type->isValue()) {
+            int pos = expr.indexOf("(");
+
+            TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(pos));                
+            if (typeEntry)
+                return "new " + typeEntry->qualifiedJavaName() + expr.right(expr.length() - pos);            
+            else
+                return expr;
+        } else if (expr == "0") {
+            return "null";
+        } else if (type->isObject() || type->isValue() || expr.contains("::")) { // like Qt::black passed to a QColor
+            TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(expr.indexOf("::")));
+
+            expr = expr.right(expr.length() - expr.indexOf("::") - 2);
+            if (typeEntry) {
+                return "new " + type->typeEntry()->qualifiedJavaName() + 
+                       "(" + typeEntry->qualifiedJavaName() + "." + expr + ")";
+            }
+        }
+    }
+
+    QString warn = QString("unsupported default value '%3' of argument in function '%1', class '%2'")
+        .arg(function_name).arg(class_name).arg(item->defaultValueExpression());
+    ReportHandler::warning(warn);
+
+    return QString();
+}
+
+
+bool MetaJavaBuilder::isQObject(const QString &qualified_name)
+{
+    if (qualified_name == "QObject")
+        return true;
+
+    ClassModelItem class_item = m_dom->findClass(qualified_name);
+    bool isqobject = class_item && class_item->extendsClass("QObject");
+
+    if (class_item && !isqobject) {
+        QStringList baseClasses = class_item->baseClasses();
+        for (int i=0; i<baseClasses.count(); ++i) {
+            isqobject = isQObject(baseClasses.at(i));
+            if (isqobject)
+                break;
+        }
+    }
+
+    return isqobject;
+}
+
+
+bool MetaJavaBuilder::isEnum(const QStringList &qualified_name)
+{
+    CodeModelItem item = m_dom->model()->findItem(qualified_name, m_dom->toItem());
+    return item && item->kind() == _EnumModelItem::__node_kind;
+}
+
+MetaJavaType *MetaJavaBuilder::inheritTemplateType(const QList<TypeEntry *> &template_types,
+                                                   MetaJavaType *java_type)
+{
+
+    if (!java_type || (!java_type->typeEntry()->isTemplateArgument() && !java_type->hasInstantiations()))
+        return java_type;
+
+    MetaJavaType *returned = java_type->copy();
+
+    if (returned->typeEntry()->isTemplateArgument()) {
+        const TemplateArgumentEntry *tae = static_cast<const TemplateArgumentEntry *>(returned->typeEntry());
+
+        MetaJavaType *t = returned->copy();
+        t->setTypeEntry(template_types.at(tae->ordinal()));
+        decideUsagePattern(t);
+
+        delete returned;
+        returned = inheritTemplateType(template_types, t);
+    }
+
+    if (returned->hasInstantiations()) {
+        QList<MetaJavaType *> instantiations = returned->instantiations();
+        for (int i=0; i<instantiations.count(); ++i)
+            instantiations[i] = inheritTemplateType(template_types, instantiations.at(i));
+        returned->setInstantiations(instantiations);
+    }
+
+    return returned;
+}
+
+bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
+                                      const MetaJavaClass *template_class,
+                                      const TypeParser::Info &info)
+{
+    QList<TypeParser::Info> targs = info.template_instantiations;
+
+    QList<TypeEntry *> template_types;
+    foreach (const TypeParser::Info &i, targs) {
+        TypeEntry *t = TypeDatabase::instance()->findType(i.qualified_name.join("::"));
+        if (t) {
+            template_types << t;
+        } else {
+            ReportHandler::warning(QString("Unknown type used as template argument: %1 in %2")
+                                   .arg(i.toString())
+                                   .arg(info.toString()));
+            return false;
+        }
+    }
+
+    foreach (const MetaJavaFunction *function, template_class->functions()) {
+        MetaJavaFunction *f = function->copy();
+        f->setArguments(MetaJavaArgumentList());
+
+        MetaJavaType *ftype = function->type();
+        f->setType(inheritTemplateType(template_types, ftype));
+
+        foreach (MetaJavaArgument *argument, function->arguments()) {
+            MetaJavaType *atype = argument->type();
+
+            MetaJavaArgument *arg = argument->copy();
+            arg->setType(inheritTemplateType(template_types, atype));
+            f->addArgument(arg);
+        }
+
+        // There is no base class in java to inherit from here, so the
+        // template instantiation is the class that implements the function..
+        f->setImplementingClass(subclass);
+
+        if (subclass->hasFunctionNotRemoved(f) || f->isConstructor()) {
+            delete f;
+            continue;
+        }
+
+        // if the instantiation has a function named the same as an existing
+        // function we have shadowing so we need to skip it.
+        MetaJavaFunctionList funcs = subclass->functions();
+        bool found = false;
+        for (int i=0; i<funcs.size(); ++i) {
+            if (funcs.at(i)->name() == f->name()) {
+                found = true;
+                continue;
+            }
+        }
+        if (found)
+            continue;
+
+        subclass->addFunction(f);
+    }
+
+    return true;
+}
+
+
+static void write_reject_log_file(const QString &name,
+                                  const QMap<QString, MetaJavaBuilder::RejectReason> &rejects)
+{
+    QFile f(name);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        ReportHandler::warning(QString("Failed to write log file: '%1'")
+                               .arg(f.fileName()));
+        return;
+    }
+
+    QTextStream s(&f);
+
+
+    for (int reason=0; reason<MetaJavaBuilder::NoReason; ++reason) {
+        s << QString(72, '*') << endl;
+        switch (reason) {
+        case MetaJavaBuilder::NotInTypeSystem:
+            s << "Not in type system";
+            break;
+        case MetaJavaBuilder::GenerationDisabled:
+            s << "Generation disabled by type system";
+            break;
+        case MetaJavaBuilder::RedefinedToNotClass:
+            s << "Type redefined to not be a class";
+            break;
+
+        case MetaJavaBuilder::UnmatchedReturnType:
+            s << "Unmatched return type";
+            break;
+
+        case MetaJavaBuilder::UnmatchedArgumentType:
+            s << "Unmatched argument type";
+            break;
+
+        default:
+            s << "unknown reason";
+            break;
+        }
+
+        s << endl;
+
+        for (QMap<QString, MetaJavaBuilder::RejectReason>::const_iterator it = rejects.constBegin();
+             it != rejects.constEnd(); ++it) {
+            if (it.value() != reason)
+                continue;
+            s << " - " << it.key() << endl;
+        }
+
+        s << QString(72, '*') << endl << endl;
+    }
+
+}
+
+
+void MetaJavaBuilder::dumpLog()
+{
+    write_reject_log_file("mjb_rejected_classes.log", m_rejected_classes);
+    write_reject_log_file("mjb_rejected_enums.log", m_rejected_enums);
+    write_reject_log_file("mjb_rejected_functions.log", m_rejected_functions);
+    write_reject_log_file("mjb_rejected_fields.log", m_rejected_fields);
+}

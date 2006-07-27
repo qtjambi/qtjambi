@@ -1,0 +1,190 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of $PRODUCT$.
+**
+** $CPP_LICENSE$
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QTJAMBISHELL_H
+#define QTJAMBISHELL_H
+
+#include "qtjambi_global.h"
+
+#include <QObject>
+#include <QString>
+#include <QList>
+#include <QHash>
+#include <QVector>
+
+class QtJambiLink;
+
+// Create fully qualified c++ function name
+#define QTJAMBINAME(QTLIBRARY, CLASSNAME, RETURNTYPE, METHOD) \
+extern "C" JNIEXPORT RETURNTYPE JNICALL Java_com_trolltech_##QTLIBRARY##_##CLASSNAME##_##METHOD
+
+#define PACKAGEPATH "com/trolltech/"
+#define EXCEPTIONPATHN PACKAGEPATH"exceptions/"
+#define EXCEPTIONPATH(CLASS) EXCEPTIONPATHN#CLASS
+#define KERNELPATHN PACKAGEPATH"kernel/"
+#define KERNELPATH(CLASS) KERNELPATHN#CLASS
+#define QTPATHN PACKAGEPATH"qt/"
+#define QTPATH(CLASS) QTPATHN#CLASS
+
+typedef void (*PtrDestructorFunction)(void *);
+
+struct QtJambiLinkUserData : public QObjectUserData
+{
+    QtJambiLinkUserData(QtJambiLink *link) : m_link(link) { }
+    virtual ~QtJambiLinkUserData();
+
+    inline QtJambiLink *link() { return m_link; }
+
+private:
+    QtJambiLink *m_link;
+};
+
+/*
+  A QtJambiLink is owned by Java, it will be deleted when the
+  java object is finalized.
+ */
+class QT_QTJAMBI_EXPORT QtJambiLink
+{
+    inline QtJambiLink(JNIEnv *env, jobject jobj)
+        : m_environment(env),
+          m_java_object(jobj),
+          m_wrapper(0),
+          m_has_been_finalized(false),
+          m_qobject_deleted(false),
+          m_created_by_java(false),
+          m_destructor_function(0)
+    {
+    };
+
+public:
+    ~QtJambiLink();
+
+    /* Returns the pointer value, wether its a QObject or plain object */
+    inline void *pointer() const { return m_pointer; }
+
+    /* Returns the pointer value as an object, will assert if pointer
+       is a QObject */
+    inline void *object() const { Q_ASSERT(!isQObject()); return m_pointer; }
+    void resetObject();
+
+    /* Returns the pointer value for the signal wrapper, will assert if pointer is not a QObject */
+    inline QObject *signalWrapper() const { Q_ASSERT(isQObject()); return m_wrapper; }
+    inline void setSignalWrapper(QObject *ptr) { m_wrapper = ptr; }
+
+    inline jobject javaObject(JNIEnv *env) const;
+
+    /* Returns the pointer value as a QObject, will assert if pointer
+       is not a QObject */
+    inline QObject *qobject() const { Q_ASSERT(isQObject()); return reinterpret_cast<QObject *>(m_pointer); }
+
+    inline int metaType() const { return m_meta_type; }
+    void setMetaType(int metaType);
+
+    inline JNIEnv *environment() const { return m_environment; }
+    inline void setEnvironment(JNIEnv *env) { m_environment = env; }
+
+    /* Returns true if this link holds a global reference to the java
+       object, meaning that the java object will not be
+       finalized. This is for widgets mostly. */
+    inline bool isGlobalReference() const { return m_global_ref; }
+
+    /* Returns true if the link has ownership over the data. */
+    inline bool hasOwnership() const { return !isQObject() || !isGlobalReference(); }
+
+    inline bool isQObject() const { return m_is_qobject; }
+
+    /* Deletes any global references to the java object so that it can
+       be finalized by the virtual machine */
+    void releaseJavaObject();
+
+    /* Deletes the native object */
+    void deleteNativeObject();
+
+    /* Triggered by native jni functions when a java object has been
+       finalized. */
+    void javaObjectFinalized();
+
+    /* Called by the native jni fucntion when the java object has been
+       disposed */
+    void javaObjectDisposed();
+
+    inline bool hasBeenFinalized() const { return m_has_been_finalized; }
+    inline bool readyForDelete() const { return !isQObject() || (hasBeenFinalized() && qobjectDeleted()); }
+    inline bool qobjectDeleted() const { return m_qobject_deleted; }
+    inline PtrDestructorFunction destructorFunction() const { return m_destructor_function; }
+    inline void setAsQObjectDeleted() { m_qobject_deleted = true; }
+    inline void setAsFinalized() { m_has_been_finalized = true; }
+    inline void setDestructorFunction(PtrDestructorFunction dfnc) { m_destructor_function = dfnc; }
+
+    inline bool createdByJava() const { return m_created_by_java; }
+    inline void setCreatedByJava(bool cbj) { m_created_by_java = cbj; }
+
+    int indexQtSignal(const QByteArray &signal) const;
+    int indexQtSlot(const QByteArray &slot) const;
+
+    void disableGarbageCollection(JNIEnv *env, jobject java);
+
+    static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, PtrDestructorFunction dfnc);
+    static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object, bool owner);
+    static QtJambiLink *createWrapperForQObject(JNIEnv *env, QObject *o, const char *class_name,
+        const char *package_name);
+
+    static QtJambiLink *findLink(JNIEnv *env, jobject java);
+    static inline QtJambiLink *findQObjectLink(JNIEnv *env, jobject java);
+
+    static QtJambiLink *findLinkForQObject(QObject *qobject);
+    static QtJambiLink *findLinkForUserObject(const void *ptr);
+
+    static jmethodID findMethod(JNIEnv *env, jobject java, const QString &method);
+
+    static QString nameForClass(JNIEnv *env, jclass clazz);
+    static bool stripQtPackageName(QString *className);
+    static bool throwQtException(JNIEnv *env, const QString &extra, const QString &name);
+
+private:
+    void setNativeId();
+    void cleanUpAll();
+    void removeFromCache();
+
+    JNIEnv *m_environment;
+    jobject m_java_object;
+    void *m_pointer;
+    int m_meta_type;
+
+    QObject *m_wrapper;
+
+    uint m_global_ref : 1;
+    uint m_is_qobject : 1;
+    uint m_has_been_finalized : 1;
+    uint m_qobject_deleted : 1;
+    uint m_created_by_java : 1;
+
+    PtrDestructorFunction m_destructor_function;
+};
+
+inline jobject QtJambiLink::javaObject(JNIEnv *env) const
+{
+    if (m_global_ref)
+        return m_java_object;
+    else
+        return env->NewLocalRef(m_java_object);
+}
+
+inline QtJambiLink *QtJambiLink::findQObjectLink(JNIEnv *env, jobject java)
+{
+    QtJambiLink *link = findLink(env, java);
+    return link && link->isQObject() ? link : 0;
+}
+
+
+#endif

@@ -1,0 +1,1566 @@
+<typesystem package="com.trolltech.qt.gui" default-superclass="com.trolltech.qt.QtObject">
+
+  <rejection class="*" function-name="d_func"/>
+
+  <rejection class="*" field-name="d_ptr"/>
+  <rejection class="*" field-name="d"/>
+
+  <rejection class="QPainterPathPrivate"/>
+  <rejection class="QImageTextKeyLang"/>
+  <rejection class="QAccessibleApplication"/>
+  <rejection class="QAbstractUndoItem"/>    
+  <rejection class="QVFbHeader"/>
+  <rejection class="QUpdateLaterEvent"/>
+  <rejection class="QRegionData"/>
+  <rejection class="QAccessibleBridgeFactoryInterface"/>
+  <rejection class="QAccessibleBridgePlugin"/>
+  <rejection class="QAccessibleFactoryInterface"/>
+  <rejection class="QAccessiblePlugin"/>
+  <rejection class="QBrushData"/>
+  <rejection class="QIconEngineFactoryInterface"/>
+  <rejection class="QIconEnginePlugin"/>
+  <rejection class="QImageIOHandlerFactoryInterface"/>
+  <rejection class="QImageIOPlugin"/>
+  <rejection class="QInputContextFactoryInterface"/>
+  <rejection class="QInputContextPlugin"/>
+  <rejection class="QLibrary"/>
+  <rejection class="QLinkedList"/>
+  <rejection class="QLinkedListData"/>
+  <rejection class="QLinkedListIterator"/>
+  <rejection class="QLinkedListNode"/>
+  <rejection class="QPictureFormatInterface"/>
+  <rejection class="QPictureFormatPlugin"/>
+  <rejection class="QStyleFactoryInterface"/>
+  <rejection class="QStyleOptionQ3DockWindow"/>
+  <rejection class="QStyleOptionQ3ListView"/>
+  <rejection class="QStyleOptionQ3ListViewItem"/>
+  <rejection class="QStylePlugin"/>
+  <rejection class="QTextCodecFactoryInterface"/>
+  <rejection class="QTextCodecPlugin"/>
+  <rejection class="QTextFrameLayoutData"/>
+  <rejection class="QWidgetData"/>
+  <rejection class="QMimeSource"/>
+  <rejection class="QItemEditorCreator"/>
+
+  <rejection class="QAbstractItemDelegate" function-name="operator="/>
+  <rejection class="QAccessible" function-name="installFactory"/>
+  <rejection class="QAccessible" function-name="installRootObjectHandler"/>
+  <rejection class="QAccessible" function-name="installUpdateHandler"/>
+  <rejection class="QAccessible" function-name="removeFactory"/>
+  <rejection class="QApplication" function-name="compressEvent"/>
+  <rejection class="QBrush" function-name="cleanUp"/>
+  <rejection class="QPictureIO" function-name="defineIOHandler"/>
+  <rejection class="QPrinter" function-name="printerSelectionOption"/>
+  <rejection class="QPrinter" function-name="setPrinterSelectionOption"/>
+  <rejection class="QWidget" function-name="create"/>
+  <rejection class="QWidget" function-name="find"/>
+  <rejection class="QWidget" function-name="handle"/>
+  <rejection class="QWidget" function-name="styleChange"/>
+  <rejection class="QWidget" function-name="winId"/>
+  <rejection class="QActionGroup" function-name="selected"/>  
+            
+  <enum-type name="QAbstractItemDelegate::EndEditHint"/>
+  <enum-type name="QAbstractItemView::CursorAction"/>
+  <enum-type name="QAbstractItemView::DropIndicatorPosition"/>
+  <enum-type name="QAbstractItemView::EditTrigger" flags="QAbstractItemView::EditTriggers"/>
+  <enum-type name="QAbstractItemView::ScrollHint"/>
+  <enum-type name="QAbstractItemView::SelectionBehavior"/>
+  <enum-type name="QAbstractItemView::SelectionMode"/>
+  <enum-type name="QAbstractItemView::State"/>
+  <enum-type name="QAbstractPrintDialog::PrintDialogOption" flags="QAbstractPrintDialog::PrintDialogOptions"/>
+  <enum-type name="QAbstractPrintDialog::PrintRange"/>
+  <enum-type name="QAbstractSlider::SliderAction"/>
+  <enum-type name="QAbstractSlider::SliderChange"/>
+  <enum-type name="QAbstractSpinBox::ButtonSymbols"/>
+  <enum-type name="QAbstractSpinBox::StepEnabledFlag" flags="QAbstractSpinBox::StepEnabled"/>
+  <enum-type name="QAccessible::Action"/>
+  <enum-type name="QAccessible::Event"/>
+  <enum-type name="QAccessible::RelationFlag" flags="QAccessible::Relation"/>
+  <enum-type name="QAccessible::Role"/>
+  <enum-type name="QAccessible::StateFlag" flags="QAccessible::State"/>
+  <enum-type name="QAccessible::Text"/>
+  <enum-type name="QAction::ActionEvent"/>
+  <enum-type name="QApplication::ColorSpec"/>
+  <enum-type name="QApplication::Type"/>
+  <enum-type name="QBoxLayout::Direction"/>
+  <enum-type name="QClipboard::Mode"/>
+  <enum-type name="QColor::Spec"/>
+  <enum-type name="QColormap::Mode"/>
+  <enum-type name="QComboBox::InsertPolicy"/>
+  <enum-type name="QComboBox::SizeAdjustPolicy"/>
+  <enum-type name="QContextMenuEvent::Reason"/>
+  <enum-type name="QDateTimeEdit::Section" flags="QDateTimeEdit::Sections"/>
+  <enum-type name="QDialog::DialogCode"/>
+  <enum-type name="QDockWidget::DockWidgetFeature" flags="QDockWidget::DockWidgetFeatures"/>
+  <enum-type name="QFileDialog::AcceptMode"/>
+  <enum-type name="QFileDialog::DialogLabel"/>
+  <enum-type name="QFileDialog::FileMode"/>
+  <enum-type name="QFileDialog::Option" flags="QFileDialog::Options"/>
+  <enum-type name="QFileDialog::ViewMode"/>
+  <enum-type name="QFileIconProvider::IconType"/>
+  <enum-type name="QFont::FontWeight"/>
+  <enum-type name="QFont::Stretch"/>
+  <enum-type name="QFont::Style"/>
+  <enum-type name="QFont::StyleHint"/>
+  <enum-type name="QFont::StyleStrategy"/>
+  <enum-type name="QFont::Weight"/>
+  <enum-type name="QFontDatabase::WritingSystem"/>
+  <enum-type name="QFrame::FrameFlags"/>
+  <enum-type name="QFrame::Shadow"/>
+  <enum-type name="QFrame::Shape"/>
+  <enum-type name="QGradient::Spread"/>
+  <enum-type name="QGradient::Type"/>
+  <enum-type name="QHeaderView::ResizeMode"/>
+  <enum-type name="QIcon::Mode"/>
+  <enum-type name="QIcon::State"/>
+  <enum-type name="QImage::Format"/>
+  <enum-type name="QImage::InvertMode"/>
+  <enum-type name="QImageIOHandler::ImageOption"/>
+  <enum-type name="QImageIOPlugin::Capability" flags="QImageIOPlugin::Capabilitys"/>
+  <enum-type name="QImageReader::ImageReaderError"/>
+  <enum-type name="QImageWriter::ImageWriterError"/>
+  <enum-type name="QInputContext::StandardFormat"/>
+  <enum-type name="QInputMethodEvent::AttributeType"/>
+  <enum-type name="QItemSelectionModel::SelectionFlag" flags="QItemSelectionModel::SelectionFlags"/>
+  <enum-type name="QKeySequence::SequenceFormat"/>
+  <enum-type name="QKeySequence::SequenceMatch"/>
+  <enum-type name="QLCDNumber::Mode"/>
+  <enum-type name="QLCDNumber::SegmentStyle"/>
+  <enum-type name="QLayout::SizeConstraint"/>
+  <enum-type name="QLineEdit::EchoMode"/>
+  <enum-type name="QLineF::IntersectType"/>
+  <enum-type name="QListView::Flow"/>
+  <enum-type name="QListView::LayoutMode"/>
+  <enum-type name="QListView::Movement"/>
+  <enum-type name="QListView::ResizeMode"/>
+  <enum-type name="QListView::ViewMode"/>
+  <enum-type name="QListWidgetItem::ItemType"/>
+  <enum-type name="QMessageBox::Button"/>
+  <enum-type name="QMessageBox::Icon"/>
+  <enum-type name="QMovie::CacheMode"/>
+  <enum-type name="QMovie::MovieState"/>
+  <enum-type name="QPaintDevice::PaintDeviceMetric"/>
+  <enum-type name="QPaintEngine::DirtyFlag" flags="QPaintEngine::DirtyFlags"/>
+  <enum-type name="QPaintEngine::PaintEngineFeature" flags="QPaintEngine::PaintEngineFeatures"/>
+  <enum-type name="QPaintEngine::PolygonDrawMode"/>
+  <enum-type name="QPaintEngine::Type"/>
+  <enum-type name="QPainter::CompositionMode"/>
+  <enum-type name="QPainter::RenderHint" flags="QPainter::RenderHints"/>
+  <enum-type name="QPainterPath::ElementType"/>
+  <enum-type name="QPalette::ColorGroup"/>
+  <enum-type name="QPalette::ColorRole"/>
+  <enum-type name="QPrintEngine::PrintEnginePropertyKey"/>
+  <enum-type name="QPrinter::ColorMode"/>
+  <enum-type name="QPrinter::Orientation"/>
+  <enum-type name="QPrinter::OutputFormat"/>
+  <enum-type name="QPrinter::PageOrder"/>
+  <enum-type name="QPrinter::PageSize"/>
+  <enum-type name="QPrinter::PaperSource"/>
+  <enum-type name="QPrinter::PrintRange"/>
+  <enum-type name="QPrinter::PrinterMode"/>
+  <enum-type name="QPrinter::PrinterState"/>
+  <enum-type name="QProgressBar::Direction"/>
+  <enum-type name="QRegion::RegionType"/>
+  <enum-type name="QRubberBand::Shape"/>
+  <enum-type name="QSessionManager::RestartHint"/>
+  <enum-type name="QSizePolicy::Policy"/>
+  <enum-type name="QSizePolicy::PolicyFlag"/>
+  <enum-type name="QSizePolicy::SizePolicyMasks"/>
+  <enum-type name="QSlider::TickPosition"/>
+  <enum-type name="QStyle::ComplexControl" />
+  <enum-type name="QStyle::ContentsType" />
+  <enum-type name="QStyle::ControlElement" />
+  <enum-type name="QStyle::PixelMetric" />
+  <enum-type name="QStyle::PrimitiveElement" />
+  <enum-type name="QStyle::StandardPixmap" />
+  <enum-type name="QStyle::StateFlag" flags="QStyle::State"/>
+  <enum-type name="QStyle::StyleHint"/>
+  <enum-type name="QStyle::SubControl" flags="QStyle::SubControls" />
+  <enum-type name="QStyle::SubElement" />
+  <enum-type name="QStyleHintReturn::HintReturnType"/>
+  <enum-type name="QStyleHintReturn::StyleOptionType"/>
+  <enum-type name="QStyleHintReturn::StyleOptionVersion"/>
+  <enum-type name="QStyleHintReturnMask::StyleOptionType"/>
+  <enum-type name="QStyleHintReturnMask::StyleOptionVersion"/>
+  <enum-type name="QStyleOption::OptionType"/>
+  <enum-type name="QStyleOption::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionButton::ButtonFeature" flags="QStyleOptionButton::ButtonFeatures"/>
+  <enum-type name="QStyleOptionButton::StyleOptionType"/>
+  <enum-type name="QStyleOptionButton::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionComboBox::StyleOptionType"/>
+  <enum-type name="QStyleOptionComboBox::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionComplex::StyleOptionType"/>
+  <enum-type name="QStyleOptionComplex::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionDockWidget::StyleOptionType"/>
+  <enum-type name="QStyleOptionDockWidget::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionFocusRect::StyleOptionType"/>
+  <enum-type name="QStyleOptionFocusRect::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionFrame::StyleOptionType"/>
+  <enum-type name="QStyleOptionFrame::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionFrameV2::FrameFeature" flags="QStyleOptionFrameV2::FrameFeatures"/>
+  <enum-type name="QStyleOptionFrameV2::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionGroupBox::StyleOptionType"/>
+  <enum-type name="QStyleOptionGroupBox::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionHeader::SectionPosition"/>
+  <enum-type name="QStyleOptionHeader::SelectedPosition"/>
+  <enum-type name="QStyleOptionHeader::SortIndicator"/>
+  <enum-type name="QStyleOptionHeader::StyleOptionType"/>
+  <enum-type name="QStyleOptionHeader::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionMenuItem::CheckType"/>
+  <enum-type name="QStyleOptionMenuItem::MenuItemType"/>
+  <enum-type name="QStyleOptionMenuItem::StyleOptionType"/>
+  <enum-type name="QStyleOptionMenuItem::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionProgressBar::StyleOptionType"/>
+  <enum-type name="QStyleOptionProgressBar::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionProgressBarV2::StyleOptionType"/>
+  <enum-type name="QStyleOptionProgressBarV2::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionQ3ListViewItem::Q3ListViewItemFeature"/>
+  <enum-type name="QStyleOptionRubberBand::StyleOptionType"/>
+  <enum-type name="QStyleOptionRubberBand::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionSlider::StyleOptionType"/>
+  <enum-type name="QStyleOptionSlider::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionSpinBox::StyleOptionType"/>
+  <enum-type name="QStyleOptionSpinBox::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionTab::CornerWidget" flags="QStyleOptionTab::CornerWidgets"/>
+  <enum-type name="QStyleOptionTab::SelectedPosition"/>
+  <enum-type name="QStyleOptionTab::StyleOptionType"/>
+  <enum-type name="QStyleOptionTab::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionTab::TabPosition"/>
+  <enum-type name="QStyleOptionTabBarBase::StyleOptionType"/>
+  <enum-type name="QStyleOptionTabBarBase::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionTabV2::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionTabWidgetFrame::StyleOptionType"/>
+  <enum-type name="QStyleOptionTabWidgetFrame::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionTitleBar::StyleOptionType"/>
+  <enum-type name="QStyleOptionTitleBar::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionToolBar::StyleOptionType"/>
+  <enum-type name="QStyleOptionToolBar::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionToolBar::ToolBarFeature" flags="QStyleOptionToolBar::ToolBarFeatures"/>
+  <enum-type name="QStyleOptionToolBar::ToolBarPosition"/>
+  <enum-type name="QStyleOptionToolBox::StyleOptionType"/>
+  <enum-type name="QStyleOptionToolBox::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionToolButton::StyleOptionType"/>
+  <enum-type name="QStyleOptionToolButton::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionToolButton::ToolButtonFeature" flags="QStyleOptionToolButton::ToolButtonFeatures"/>
+  <enum-type name="QStyleOptionViewItem::Position"/>
+  <enum-type name="QStyleOptionViewItem::StyleOptionType"/>
+  <enum-type name="QStyleOptionViewItem::StyleOptionVersion"/>
+  <enum-type name="QTabBar::Shape"/>
+  <enum-type name="QTabWidget::TabPosition"/>
+  <enum-type name="QTabWidget::TabShape"/>
+  <enum-type name="QTableWidgetItem::ItemType"/>
+  <enum-type name="QTabletEvent::PointerType"/>
+  <enum-type name="QTabletEvent::TabletDevice"/>
+  <enum-type name="QTextCharFormat::VerticalAlignment"/>
+  <enum-type name="QTextCodec::ConversionFlag" flags="QTextCodec::ConversionFlags"/>
+  <enum-type name="QTextCursor::MoveMode"/>
+  <enum-type name="QTextCursor::MoveOperation"/>
+  <enum-type name="QTextCursor::SelectionType"/>
+  <enum-type name="QTextDocument::FindFlag" flags="QTextDocument::FindFlags"/>
+  <enum-type name="QTextDocument::MetaInformation"/>
+  <enum-type name="QTextDocument::ResourceType"/>
+  <enum-type name="QTextEdit::AutoFormattingFlag" flags="QTextEdit::AutoFormatting"/>
+  <enum-type name="QTextEdit::CursorAction"/>
+  <enum-type name="QTextEdit::LineWrapMode"/>
+  <enum-type name="QTextFormat::FormatType"/>
+  <enum-type name="QTextFormat::ObjectTypes"/>
+  <enum-type name="QTextFormat::Property"/>
+  <enum-type name="QTextFrameFormat::Position"/>
+  <enum-type name="QTextItem::RenderFlag" flags="QTextItem::RenderFlags"/>
+  <enum-type name="QTextLayout::CursorMode"/>
+  <enum-type name="QTextLength::Type"/>
+  <enum-type name="QTextLine::CursorPosition"/>
+  <enum-type name="QTextLine::Edge"/>
+  <enum-type name="QTextListFormat::Style"/>
+  <enum-type name="QTextOption::Flag" flags="QTextOption::Flags"/>
+  <enum-type name="QTextOption::WrapMode"/>
+  <enum-type name="QToolButton::ToolButtonPopupMode"/>
+  <enum-type name="QTreeWidgetItem::ItemType"/>
+  <enum-type name="QTreeWidgetItemIterator::IteratorFlag" flags="QTreeWidgetItemIterator::IteratorFlags"/>
+  <enum-type name="QValidator::State"/>
+  <enum-type name="QWidget::WidgetMode"/>
+  <enum-type name="QWorkspace::WindowOrder"/>
+  
+  <enum-type name="QFrame::enum_1"/>
+  <enum-type name="QListWidgetItem::enum_1"/>
+  <enum-type name="QStyleHintReturn::enum_1"/>
+  <enum-type name="QStyleHintReturn::enum_2"/>
+  <enum-type name="QStyleHintReturnMask::enum_1"/>
+  <enum-type name="QStyleHintReturnMask::enum_2"/>
+  <enum-type name="QStyleOption::enum_2"/>
+  <enum-type name="QStyleOptionButton::enum_1"/>
+  <enum-type name="QStyleOptionButton::enum_2"/>
+  <enum-type name="QStyleOptionComboBox::enum_1"/>
+  <enum-type name="QStyleOptionComboBox::enum_2"/>
+  <enum-type name="QStyleOptionComplex::enum_1"/>
+  <enum-type name="QStyleOptionComplex::enum_2"/>
+  <enum-type name="QStyleOptionDockWidget::enum_1"/>
+  <enum-type name="QStyleOptionDockWidget::enum_2"/>
+  <enum-type name="QStyleOptionFocusRect::enum_1"/>
+  <enum-type name="QStyleOptionFocusRect::enum_2"/>
+  <enum-type name="QStyleOptionFrame::enum_1"/>
+  <enum-type name="QStyleOptionFrame::enum_2"/>
+  <enum-type name="QStyleOptionFrameV2::enum_1"/>
+  <enum-type name="QStyleOptionGroupBox::enum_1"/>
+  <enum-type name="QStyleOptionGroupBox::enum_2"/>
+  <enum-type name="QStyleOptionHeader::enum_1"/>
+  <enum-type name="QStyleOptionHeader::enum_2"/>
+  <enum-type name="QStyleOptionMenuItem::enum_1"/>
+  <enum-type name="QStyleOptionMenuItem::enum_2"/>
+  <enum-type name="QStyleOptionProgressBar::enum_1"/>
+  <enum-type name="QStyleOptionProgressBar::enum_2"/>
+  <enum-type name="QStyleOptionProgressBarV2::enum_1"/>
+  <enum-type name="QStyleOptionProgressBarV2::enum_2"/>
+  <enum-type name="QStyleOptionRubberBand::enum_1"/>
+  <enum-type name="QStyleOptionRubberBand::enum_2"/>
+  <enum-type name="QStyleOptionSlider::enum_1"/>
+  <enum-type name="QStyleOptionSlider::enum_2"/>
+  <enum-type name="QStyleOptionSpinBox::enum_1"/>
+  <enum-type name="QStyleOptionSpinBox::enum_2"/>
+  <enum-type name="QStyleOptionTab::enum_1"/>
+  <enum-type name="QStyleOptionTab::enum_2"/>
+  <enum-type name="QStyleOptionTabBarBase::enum_1"/>
+  <enum-type name="QStyleOptionTabBarBase::enum_2"/>
+  <enum-type name="QStyleOptionTabV2::enum_1"/>
+  <enum-type name="QStyleOptionTabWidgetFrame::enum_1"/>
+  <enum-type name="QStyleOptionTabWidgetFrame::enum_2"/>
+  <enum-type name="QStyleOptionTitleBar::enum_1"/>
+  <enum-type name="QStyleOptionTitleBar::enum_2"/>
+  <enum-type name="QStyleOptionToolBar::enum_1"/>
+  <enum-type name="QStyleOptionToolBar::enum_2"/>
+  <enum-type name="QStyleOptionToolBox::enum_1"/>
+  <enum-type name="QStyleOptionToolBox::enum_2"/>
+  <enum-type name="QStyleOptionToolButton::enum_1"/>
+  <enum-type name="QStyleOptionToolButton::enum_2"/>
+  <enum-type name="QStyleOptionViewItem::enum_1"/>
+  <enum-type name="QStyleOptionViewItem::enum_2"/>
+  <enum-type name="QTableWidgetItem::enum_1"/>
+  <enum-type name="QTreeWidgetItem::enum_1"/>
+
+  <value-type name="QStyleOption"/>
+  <value-type name="QStyleOptionButton"/>
+  <value-type name="QStyleOptionComboBox"/>
+  <value-type name="QStyleOptionComplex"/>
+  <value-type name="QStyleOptionDockWidget"/>
+  <value-type name="QStyleOptionFocusRect"/>
+  <value-type name="QStyleOptionFrame"/>
+  <value-type name="QStyleOptionFrameV2"/>
+  <value-type name="QStyleOptionGroupBox"/>
+  <value-type name="QStyleOptionHeader"/>
+  <value-type name="QStyleOptionMenuItem"/>
+  <value-type name="QStyleOptionProgressBar"/>
+  <value-type name="QStyleOptionProgressBarV2"/>
+  <value-type name="QStyleOptionRubberBand"/>
+  <value-type name="QStyleOptionSlider"/>
+  <value-type name="QStyleOptionSpinBox"/>
+  <value-type name="QStyleOptionTab"/>
+  <value-type name="QStyleOptionTabBarBase"/>
+  <value-type name="QStyleOptionTabV2"/>
+  <value-type name="QStyleOptionTabWidgetFrame"/>
+  <value-type name="QStyleOptionTitleBar"/>
+  <value-type name="QStyleOptionToolBar"/>
+  <value-type name="QStyleOptionToolBox"/>
+  <value-type name="QStyleOptionToolButton"/>
+  <value-type name="QStyleOptionViewItem"/>  
+  <value-type name="QTextFragment"/>  
+  <value-type name="QBitmap"/>  
+  <value-type name="QTextInlineObject"/>
+  <value-type name="QSizePolicy"/>
+  <value-type name="QTableWidgetSelectionRange"/>
+  <value-type name="QTextDocumentFragment"/>
+  <value-type name="QTextOption"/>
+  <value-type name="QTextLine"/>
+  <value-type name="QTextTableFormat"/>
+  <value-type name="QTextImageFormat"/>
+  <value-type name="QTextFrameFormat"/>
+  <value-type name="QTextLength"/>
+  <value-type name="QItemSelectionRange"/>
+  <value-type name="QKeySequence"/>  
+  <value-type name="QLine"/>
+  <value-type name="QLineF"/>
+  <value-type name="QPainterPath"/>  
+  <value-type name="QPalette"/>
+  <value-type name="QPicture"/>
+  <value-type name="QPolygon"/>
+  <value-type name="QPolygonF"/>
+  <value-type name="QRegion"/>
+  <value-type name="QTextBlock"/>
+  <value-type name="QTextBlockFormat"/>
+  <value-type name="QTextCharFormat"/>
+  <value-type name="QTextFormat"/>
+  <value-type name="QTextListFormat"/>
+
+  <value-type name="QIcon">
+    <modify-function signature="pixmap(int,QIcon::Mode,QIcon::State)const">
+        <remove />
+    </modify-function> 
+  </value-type>  
+
+  <value-type name="QTextFrame::iterator">
+    <include file-name="QTextFrame" location="global"/>
+  </value-type>
+
+  <value-type name="QTreeWidgetItemIterator">  
+    <custom-constructor>
+    return new QTreeWidgetItemIterator(*copy);
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>
+   </value-type>
+
+  <value-type name="QTextBlock::iterator">
+    <include file-name="QTextBlock" location="global"/>
+  </value-type>
+
+  <value-type name="QAbstractTextDocumentLayout::PaintContext">
+    <include file-name="QAbstractTextDocumentLayout" location="global"/>
+  </value-type>
+
+  <value-type name="QPixmap">
+    <modify-function signature="QPixmap(const char *[])">
+        <access modifier="private"/>
+    </modify-function>
+    <inject-code>
+        public QPixmap(String xpm[]) 
+        {
+            this(QNativePointer.createCharPointerPointer(xpm));
+        }
+    </inject-code>
+  
+    <extra-includes>
+        <include file-name="QBitmap" location="global"/>
+        <include file-name="QMatrix" location="global"/>
+    </extra-includes>
+    <modify-function class="java" signature="save(const QString &amp;, const char *, int) const">
+        <access modifier="private"/>
+        <rename to="private_save"/>
+    </modify-function>
+    <modify-function class="java" signature="save(QIODevice *, const char *, int) const">
+        <access modifier="private"/>
+        <rename to="private_save"/>
+    </modify-function>
+    <inject-code>
+    public boolean save(com.trolltech.qt.core.QIODevice fileName, String format, int quality) {
+        return private_save(fileName,  QNativePointer.createCharPointer(format), quality);
+    }
+    public boolean save(com.trolltech.qt.core.QIODevice fileName, String format) {
+        return private_save(fileName,  QNativePointer.createCharPointer(format));
+    }
+    public boolean save(String fileName, String format, int quality) {
+        return private_save(fileName,  QNativePointer.createCharPointer(format), quality);
+    }
+    public boolean save(String fileName, String format) {
+        return private_save(fileName,  QNativePointer.createCharPointer(format));
+    }
+    </inject-code>
+  </value-type>
+
+  <value-type name="QTextCursor">
+    <extra-includes>
+        <include file-name="QTextBlock" location="global"/>
+        <include file-name="QTextDocumentFragment" location="global"/>
+    </extra-includes>  
+  </value-type>
+
+  <value-type name="QTextLayout::FormatRange">
+    <include file-name="QTextLayout" location="global"/>
+  </value-type>
+
+  <value-type name="QInputMethodEvent::Attribute">
+    <include file-name="QInputMethodEvent" location="global"/>
+    <custom-constructor>
+    return new QInputMethodEvent::Attribute(copy->type, copy->start, copy->length, copy->value);
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>
+  </value-type>
+  
+  <value-type name="QItemSelection"> 
+    <inject-code class="shell-declaration">
+    QList&lt;QItemSelectionRange&gt; &amp;operator=(const QList&lt;QItemSelectionRange&gt; &amp;other)
+    {
+        return ((QList&lt;QItemSelectionRange&gt; *)this)-&gt;operator=(other);
+    }    
+    </inject-code>
+  </value-type>
+
+  <value-type name="QMatrix">
+    <extra-includes>
+        <include file-name="QPainterPath" location="global"/>
+    </extra-includes>
+  </value-type>
+
+  <value-type name="QConicalGradient">
+    <custom-constructor>
+    return new QConicalGradient(copy->center(), copy->angle());
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>  
+  </value-type>
+
+  <value-type name="QFontInfo">
+    <custom-constructor>
+    return new QFontInfo(*copy);
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>
+  </value-type>
+
+  <value-type name="QRadialGradient">
+    <custom-constructor>
+    return new QRadialGradient(copy->center(), copy->radius(), copy->focalPoint());
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>
+  </value-type>
+    
+  <value-type name="QPainterPath::Element">
+    <modify-field name="x" write="false"/>
+    <modify-field name="y" write="false"/>
+    <include file-name="QPainterPath" location="global"/>
+  </value-type>
+
+  <value-type name="QFont">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+    </extra-includes>    
+  </value-type>
+
+  <value-type name="QTextTableCell">
+    <extra-includes>
+        <include file-name="QTextCursor" location="global"/>
+    </extra-includes>
+  </value-type>
+
+  <value-type name="QImage">
+    <modify-function signature="QImage(const char *, const char *)">
+        <remove />
+    </modify-function>
+    <modify-function signature="QImage(const char *[])">
+        <access modifier="private"/>
+    </modify-function>
+    <inject-code>
+        public QImage(String xpm[]) 
+        {
+            this(QNativePointer.createCharPointerPointer(xpm));
+        }
+    </inject-code>
+    
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QMatrix" location="global"/>
+    </extra-includes>
+    <modify-function class="java" signature="save(const QString &amp;, const char *, int) const">
+        <access modifier="private"/>
+        <rename to="private_save"/>
+    </modify-function>
+    <modify-function class="java" signature="save(QIODevice *, const char *, int) const">
+        <access modifier="private"/>
+        <rename to="private_save"/>
+    </modify-function>
+    <inject-code>
+    public boolean save(com.trolltech.qt.core.QIODevice fileName, String format, int quality) {
+        return private_save(fileName,  QNativePointer.createCharPointer(format), quality);
+    }
+    public boolean save(com.trolltech.qt.core.QIODevice fileName, String format) {
+        return private_save(fileName,  QNativePointer.createCharPointer(format));
+    }
+    public boolean save(String fileName, String format, int quality) {
+        return private_save(fileName,  QNativePointer.createCharPointer(format), quality);
+    }
+    public boolean save(String fileName, String format) {
+        return private_save(fileName,  QNativePointer.createCharPointer(format));
+    }
+    </inject-code>
+  </value-type>
+
+  <value-type name="QColormap">
+    <extra-includes>
+        <include file-name="QColor" location="global"/>
+    </extra-includes>           
+    <custom-constructor>
+    return new QColormap(*copy);
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>    
+  </value-type>
+
+  <value-type name="QCursor">
+    <extra-includes>
+        <include file-name="QPixmap" location="global"/>
+    </extra-includes>
+  </value-type>
+      
+  <value-type name="QFontDatabase">
+      <extra-includes>
+        <include file-name="QStringList" location="global"/>
+    </extra-includes>
+  </value-type>  
+
+  <value-type name="QPen">
+      <extra-includes>
+        <include file-name="QBrush" location="global"/>
+    </extra-includes>
+    <inject-code>
+    public QPen(QColor color, double width, int s, int c, int j) {
+        this(new QBrush(color), width, s, c, j);
+    }
+    public QPen(QColor color, double width, int s, int c) {
+        this(new QBrush(color), width, s, c);
+    }
+    public QPen(QColor color, double width, int s) {
+        this(new QBrush(color), width, s);
+    }
+    public QPen(QColor color, double width) {
+        this(new QBrush(color), width);
+    }
+    public static final QPen NoPen = new QPen(com.trolltech.qt.core.Qt.NoPen);
+    </inject-code>
+  </value-type>  
+  
+  <value-type name="QBrush">
+    <modify-function class="java" signature="QBrush(Qt::GlobalColor, Qt::BrushStyle)">
+      <remove/>
+    </modify-function>
+      <extra-includes>
+        <include file-name="QPixmap" location="global"/>
+    </extra-includes>    
+    <inject-code class="java">
+    public static final QBrush NoBrush = new QBrush(com.trolltech.qt.core.Qt.NoBrush);
+    </inject-code>
+  </value-type>
+
+  <value-type name="QColor">
+    <modify-function signature="QColor(uint)">
+        <remove/>
+    </modify-function>
+    <inject-code class="java">
+    public static final QColor white = new QColor(com.trolltech.qt.core.Qt.white);
+    public static final QColor black = new QColor(com.trolltech.qt.core.Qt.black);
+    public static final QColor red = new QColor(com.trolltech.qt.core.Qt.red);
+    public static final QColor darkRed = new QColor(com.trolltech.qt.core.Qt.darkRed);
+    public static final QColor green = new QColor(com.trolltech.qt.core.Qt.green);
+    public static final QColor darkGreen = new QColor(com.trolltech.qt.core.Qt.darkGreen);
+    public static final QColor blue = new QColor(com.trolltech.qt.core.Qt.blue);
+    public static final QColor darkBlue = new QColor(com.trolltech.qt.core.Qt.darkBlue);
+    public static final QColor cyan = new QColor(com.trolltech.qt.core.Qt.cyan);
+    public static final QColor darkCyan = new QColor(com.trolltech.qt.core.Qt.darkCyan);
+    public static final QColor magenta = new QColor(com.trolltech.qt.core.Qt.magenta);
+    public static final QColor darkMagenta = new QColor(com.trolltech.qt.core.Qt.darkMagenta);
+    public static final QColor yellow = new QColor(com.trolltech.qt.core.Qt.yellow);
+    public static final QColor darkYellow = new QColor(com.trolltech.qt.core.Qt.darkYellow);
+    public static final QColor gray = new QColor(com.trolltech.qt.core.Qt.gray);
+    public static final QColor darkGray = new QColor(com.trolltech.qt.core.Qt.darkGray);
+    public static final QColor lightGray = new QColor(com.trolltech.qt.core.Qt.lightGray);
+    public static final QColor transparent = new QColor(com.trolltech.qt.core.Qt.transparent);
+    public static final QColor color0 = new QColor(com.trolltech.qt.core.Qt.color0);
+    public static final QColor color1 = new QColor(com.trolltech.qt.core.Qt.color1);
+    </inject-code>
+  </value-type>
+ 
+  <value-type name="QFontMetricsF">
+    <custom-constructor>
+        return new QFontMetricsF(*copy);
+    </custom-constructor>
+    <custom-destructor>
+        delete copy;
+    </custom-destructor>
+  </value-type>
+
+  <value-type name="QFontMetrics">
+    <custom-constructor>
+        return new QFontMetrics(*copy);
+    </custom-constructor>
+    <custom-destructor>
+        delete copy;
+    </custom-destructor>
+  </value-type>
+
+  <value-type name="QGradient">
+    <custom-constructor>
+    if (copy->type() == QGradient::LinearGradient) {
+        const QLinearGradient *lg_copy = static_cast&lt;const QLinearGradient *&gt;(copy);
+        QLinearGradient *lg = new QLinearGradient(lg_copy->start(), lg_copy->finalStop());
+        lg->setSpread(copy->spread());
+        lg->setStops(copy->stops());
+        return (void *) lg;
+    }
+    return 0;
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>
+  </value-type>
+
+  <value-type name="QLinearGradient">
+    <custom-constructor>
+    QLinearGradient *lg = new QLinearGradient(copy->start(), copy->finalStop());
+    lg->setSpread(copy->spread());
+    lg->setStops(copy->stops());
+    return (void *) lg;
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>
+  </value-type>
+    
+  <interface-type name="QLayoutItem"/>
+  <interface-type name="QPaintDevice"/>
+  
+  <object-type name="QSound"/>  
+  <object-type name="QAbstractItemView"/>  
+  <object-type name="QAbstractPageSetupDialog"/>
+  <object-type name="QAbstractPrintDialog"/>
+  <object-type name="QAbstractSlider"/>  
+  <object-type name="QAbstractTextDocumentLayout"/>
+  <object-type name="QAccessible"/>
+  <object-type name="QAccessibleBridge"/>
+  <object-type name="QAccessibleBridgeFactoryInterface"/>
+  <object-type name="QAccessibleBridgePlugin"/>
+  <object-type name="QAccessibleEvent"/>
+  <object-type name="QAccessibleFactoryInterface"/>
+  <object-type name="QAccessibleInterface"/>
+  <object-type name="QAccessibleObject"/>
+  <object-type name="QAccessiblePlugin"/>
+  <object-type name="QAccessibleWidget"/>
+  <object-type name="QActionEvent"/>
+  <object-type name="QActionGroup"/>
+  <object-type name="QBoxLayout"/>
+  <object-type name="QCDEStyle"/>
+  <object-type name="QCheckBox"/>
+  <object-type name="QClipboardEvent"/>
+  <object-type name="QCloseEvent"/>  
+  <object-type name="QColorDialog"/>  
+  <object-type name="QCommonStyle"/>
+  <object-type name="QContextMenuEvent"/>
+  <object-type name="QDateEdit"/>
+  <object-type name="QDialog"/>  
+  <object-type name="QDirModel"/>
+  <object-type name="QDoubleValidator"/>
+  <object-type name="QDragEnterEvent"/>
+  <object-type name="QDragLeaveEvent"/>
+  <object-type name="QDragMoveEvent"/>
+  <object-type name="QDropEvent"/>
+  <object-type name="QFileIconProvider"/>
+  <object-type name="QFileOpenEvent"/>
+  <object-type name="QFocusEvent"/>
+  <object-type name="QFocusFrame"/>
+  <object-type name="QFontDialog"/>
+  <object-type name="QGridLayout"/>
+  <object-type name="QHBoxLayout"/>
+  <object-type name="QHeaderView"/>
+  <object-type name="QHelpEvent"/>
+  <object-type name="QHideEvent"/>
+  <object-type name="QHoverEvent"/>
+  <object-type name="QIconDragEvent"/>
+  <object-type name="QIconEngine"/>
+  <object-type name="QIconEngineFactoryInterface"/>
+  <object-type name="QIconEnginePlugin"/>
+  <object-type name="QImageIOHandlerFactoryInterface"/>
+  <object-type name="QImageIOPlugin"/>
+  <object-type name="QImageWriter"/>
+  <object-type name="QInputContextFactory"/>
+  <object-type name="QInputContextFactoryInterface"/>
+  <object-type name="QInputContextPlugin"/>
+  <object-type name="QInputDialog"/>
+  <object-type name="QInputMethodEvent"/>
+  <object-type name="QIntValidator"/>
+  <object-type name="QItemDelegate"/>  
+  <object-type name="QItemEditorCreatorBase"/>
+  <object-type name="QItemEditorFactory"/>
+  <object-type name="QItemSelectionModel"/>
+  <object-type name="QLayout"/>
+  <object-type name="QListView"/>
+  <object-type name="QMainWindow"/>
+  <object-type name="QMenu"/>
+  <object-type name="QMenuBar"/>
+  <object-type name="QMotifStyle"/>
+  <object-type name="QMoveEvent"/>
+  <object-type name="QPainterPathStroker"/>
+  <object-type name="QPictureFormatInterface"/>
+  <object-type name="QPictureFormatPlugin"/>
+  <object-type name="QPictureIO"/>
+  <object-type name="QPixmapCache"/>
+  <object-type name="QPlastiqueStyle"/>
+  <object-type name="QPrintDialog"/>  
+  <object-type name="QPrintEngine"/>
+  <object-type name="QProgressBar"/>
+  <object-type name="QPushButton"/>
+  <object-type name="QReadWriteLock"/>
+  <object-type name="QRegExpValidator"/>
+  <object-type name="QResizeEvent"/>
+  <object-type name="QScrollArea"/>
+  <object-type name="QSessionManager"/>
+  <object-type name="QShortcut"/>
+  <object-type name="QShortcutEvent"/>
+  <object-type name="QShowEvent"/>
+  <object-type name="QSizeGrip"/>
+  <object-type name="QSpacerItem"/>
+  <object-type name="QStatusBar"/>
+  <object-type name="QStatusTipEvent"/>
+  <object-type name="QStringListModel"/>
+  <object-type name="QStyle"/>
+  <object-type name="QStyleFactory"/>
+  <object-type name="QStyleFactoryInterface"/>
+  <object-type name="QStyleHintReturn"/>
+  <object-type name="QStyleHintReturnMask"/>
+  <object-type name="QStylePainter"/>
+  <object-type name="QStylePlugin"/>
+  <object-type name="QSyntaxHighlighter"/>
+  <object-type name="QTableView"/>
+  <object-type name="QTabletEvent"/>
+  <object-type name="QTextBlockGroup"/>
+  <object-type name="QTextBlockUserData"/>
+  <object-type name="QTextItem"/>
+  <object-type name="QTextList"/>
+  <object-type name="QTextObject"/>
+  <object-type name="QTextObjectInterface"/>
+  <object-type name="QTimeEdit"/>
+  <object-type name="QToolBarChangeEvent"/>
+  <object-type name="QToolBox"/>
+  <object-type name="QToolButton"/>
+  <object-type name="QToolTip"/>
+  <object-type name="QTreeView"/>
+  <object-type name="QVBoxLayout"/>
+  <object-type name="QValidator"/>
+  <object-type name="QWhatsThis"/>
+  <object-type name="QWhatsThisClickedEvent"/>
+  <object-type name="QWheelEvent"/>
+  <object-type name="QWidgetItem"/>
+  <object-type name="QWindowStateChangeEvent"/>
+  <object-type name="QWindowsStyle"/>
+  <object-type name="QWorkspace"/>
+  
+  <object-type name="QAbstractButton">
+    <inject-code class="java">
+        public void setShortcut(String key) { setShortcut(new QKeySequence(key)); }
+    </inject-code>
+  </object-type>
+
+  <object-type name="QTreeWidget">
+    <modify-function signature="addTopLevelItem(QTreeWidgetItem *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addTopLevelItems(const QList &amp;)">
+        <disable-gc argument="1" />
+    </modify-function>    
+    <modify-function signature="insertTopLevelItem(int, QTreeWidgetItem *)">
+        <disable-gc argument="2" />
+    </modify-function>
+    <modify-function signature="insertTopLevelItems(int, const QList &amp;)">
+        <disable-gc argument="2" />
+    </modify-function>        
+    <modify-function signature="setHeaderItem(QTreeWidgetItem *)">
+        <disable-gc argument="1" />
+    </modify-function>                
+  </object-type>
+  
+  <object-type name="QAbstractItemDelegate">
+    <modify-function signature="QAbstractItemDelegate(const QAbstractItemDelegate&amp;)">
+        <remove/>
+    </modify-function>
+  </object-type>
+
+  <object-type name="QTableWidgetItem">
+    <modify-function class="shell" signature="clone() const">
+        <disable-gc />
+    </modify-function>    
+  </object-type>
+
+  <object-type name="QListWidgetItem">
+    <modify-function signature="QListWidgetItem(QListWidget *, int)">
+        <disable-gc argument="0" />
+    </modify-function>
+    <modify-function signature="QListWidgetItem(const QString &amp;, QListWidget *, int)">
+        <disable-gc argument="0" />
+    </modify-function>    
+    <modify-function signature="QListWidgetItem(const QIcon &amp;, const QString &amp;, QListWidget *, int)">
+        <disable-gc argument="0" />
+    </modify-function>    
+    <modify-function class="shell" signature="clone() const">
+        <disable-gc />
+    </modify-function>
+  </object-type>
+
+  <object-type name="QTreeWidgetItem">
+    <modify-function signature="QTreeWidgetItem(const QTreeWidgetItem &amp;)">
+        <remove exclusive="yes" />
+    </modify-function>
+    <modify-function signature="QTreeWidgetItem(QTreeWidget *,int)">
+        <disable-gc argument="0" />
+    </modify-function>
+    <modify-function signature="QTreeWidgetItem(QTreeWidget *,const QStringList &amp;,int)">
+        <disable-gc argument="0" />
+    </modify-function>    
+    <modify-function signature="QTreeWidgetItem(QTreeWidget *,QTreeWidgetItem *,int)">
+        <disable-gc argument="0" />
+    </modify-function>        
+    <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,int)">
+        <disable-gc argument="0" />
+    </modify-function>
+    <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,const QStringList &amp;,int)">
+        <disable-gc argument="0" />
+    </modify-function>    
+    <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,QTreeWidgetItem *,int)">
+        <disable-gc argument="0" />
+    </modify-function>            
+    <modify-function class="shell" signature="clone() const">
+        <disable-gc />
+    </modify-function>
+    <modify-function signature="addChild(QTreeWidgetItem *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addChildren(const QList &amp;)">
+        <disable-gc argument="1" />
+    </modify-function>    
+    <modify-function signature="insertChild(int, QTreeWidgetItem *)">
+        <disable-gc argument="2" />
+    </modify-function>
+    <modify-function signature="insertChildren(int, const QList &amp;)">
+        <disable-gc argument="2" />
+    </modify-function>        
+  </object-type>
+
+  <object-type name="QListWidget">
+    <modify-function signature="addItem(QListWidgetItem *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="insertItem(int, QListWidgetItem *)">
+        <disable-gc argument="2" />
+    </modify-function>    
+  </object-type>
+
+  <object-type name="QWidget">
+    <extra-includes>
+        <include file-name="QIcon" location="global"/>
+    </extra-includes>          
+  </object-type>
+
+
+  <object-type name="QMessageBox">
+    <extra-includes>
+        <include file-name="QPixmap" location="global"/>
+    </extra-includes>          
+  </object-type>
+
+  <object-type name="QAbstractSpinBox">
+  </object-type>
+
+  <object-type name="QTextFrame">
+    <extra-includes>
+        <include file-name="QTextCursor" location="global"/>
+    </extra-includes>              
+  </object-type>
+
+  <object-type name="QImageIOHandler">
+    <extra-includes>
+        <include file-name="QRect" location="global"/>
+    </extra-includes>                
+  </object-type>
+    
+  <object-type name="QProxyModel">
+    <extra-includes>
+        <include file-name="QPixmap" location="global"/>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>              
+  </object-type>
+
+  <object-type name="QImageReader">  
+    <extra-includes>
+        <include file-name="QColor" location="global"/>
+        <include file-name="QRect" location="global"/>
+        <include file-name="QSize" location="global"/>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QImage" location="global"/>
+    </extra-includes>              
+  </object-type>
+  
+  <object-type name="QMovie">
+    <extra-includes>
+        <include file-name="QColor" location="global"/>
+        <include file-name="QImage" location="global"/>
+        <include file-name="QPixmap" location="global"/>
+        <include file-name="QRect" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>   
+  </object-type>
+    
+  <object-type name="QPageSetupDialog">
+  </object-type>
+
+  <object-type name="QTabWidget"/>
+  <object-type name="QDrag">
+    <extra-includes>
+        <include file-name="QPoint" location="global"/>
+        <include file-name="QPixmap" location="global"/>
+    </extra-includes>                  
+  </object-type>
+  
+  <object-type name="QDateTimeEdit"/>
+
+  <object-type name="QSortFilterProxyModel">
+    <extra-includes>
+        <include file-name="QItemSelection" location="global"/>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>            
+  </object-type>
+
+  <object-type name="QSlider"/>
+
+  <object-type name="QInputContext">
+    <extra-includes>
+        <include file-name="QTextFormat" location="global"/>
+    </extra-includes>        
+  </object-type>
+  
+    
+  <object-type name="QProgressDialog">
+  </object-type>
+
+  <object-type name="QLabel">
+  </object-type>
+
+  <object-type name="QFileDialog">
+  </object-type>
+
+  <object-type name="QErrorMessage">
+  </object-type>
+
+  <object-type name="QTabBar">
+    <extra-includes>
+        <include file-name="QIcon" location="global"/>
+    </extra-includes>        
+  </object-type>
+
+  <object-type name="QStandardItemModel">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>        
+  </object-type>
+
+  <object-type name="QRadioButton">
+  </object-type>
+
+  <object-type name="QScrollBar">
+  </object-type>
+
+  <object-type name="QClipboard">
+    <extra-includes>
+        <include file-name="QImage" location="global"/>
+        <include file-name="QPixmap" location="global"/>
+    </extra-includes>      
+  </object-type>
+
+  <object-type name="QDragResponseEvent">
+  </object-type>
+
+  <object-type name="QAbstractScrollArea">
+  </object-type>
+
+  <object-type name="QPaintEngineState">
+    <extra-includes>
+        <include file-name="QPainterPath" location="global"/>
+    </extra-includes>        
+  </object-type>
+
+  <object-type name="QRubberBand">
+  </object-type>
+
+  <object-type name="QTextLayout">
+    <extra-includes>
+        <include file-name="QTextOption" location="global"/>
+    </extra-includes>          
+  </object-type>  
+
+  <object-type name="QTableWidget">
+    <modify-function signature="setHorizontalHeaderItem(int, QTableWidgetItem *)">
+        <disable-gc argument="2" />
+    </modify-function>
+    <modify-function signature="setItem(int, int, QTableWidgetItem *)">
+        <disable-gc argument="3" />
+    </modify-function>    
+    <modify-function signature="setItemPrototype(const QTableWidgetItem *)">
+        <disable-gc argument="1" />
+    </modify-function>    
+    <modify-function signature="setVerticalHeaderItem(int, QTableWidgetItem *)">
+        <disable-gc argument="2" />
+    </modify-function>    
+  </object-type>
+
+  <object-type name="QTextDocument">
+    <extra-includes>
+        <include file-name="QTextBlock" location="global"/>
+        <include file-name="QTextFormat" location="global"/>
+        <include file-name="QTextCursor" location="global"/>
+    </extra-includes>  
+  </object-type>
+
+  <object-type name="QSplitter">
+  </object-type>
+  
+  <object-type name="QGroupBox">
+  </object-type>
+
+  <object-type name="QStackedWidget">
+  </object-type>
+
+  <object-type name="QSplitterHandle">
+  </object-type>
+
+  <object-type name="QDial">
+  </object-type>
+
+  <object-type name="QLineEdit">
+  </object-type>
+  
+  <object-type name="QLCDNumber">
+  </object-type>
+  
+  <object-type name="QSplashScreen">  
+  </object-type>
+  
+  
+  <object-type name="QDockWidget">
+  </object-type>
+
+  <object-type name="QAbstractProxyModel">
+    <extra-includes>
+        <include file-name="QItemSelection" location="global"/>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>
+  </object-type>
+
+  <object-type name="QDesktopWidget">
+  </object-type>
+
+  <object-type name="QFrame">
+  </object-type>
+
+  <object-type name="QStackedLayout">
+    <modify-function signature="addWidget(QWidget *)">
+        <rename to="addStackedWidget"/>
+    </modify-function>
+  </object-type>
+
+  <object-type name="QTextTable">
+    <modify-function signature="format() const">
+        <rename to="tableFormat"/>
+    </modify-function>
+    <extra-includes>
+        <include file-name="QTextCursor" location="global"/>
+    </extra-includes>
+  </object-type>
+
+  <object-type name="QSpinBox">
+    <modify-function signature="valueChanged(const QString &amp;)">
+        <rename to="valueStringChanged"/>
+    </modify-function>
+  </object-type>
+  
+  <object-type name="QTextBrowser">
+    <modify-function signature="highlighted(const QString &amp;)">
+        <rename to="highlightedString"/>
+    </modify-function>
+  </object-type>
+  
+  <object-type name="QDoubleSpinBox">
+    <modify-function signature="valueChanged(const QString &amp;)">
+        <rename to="valueStringChanged"/>
+    </modify-function>
+  </object-type>  
+
+  <object-type name="QButtonGroup">
+    <modify-function class="java" signature="buttonClicked(int)">
+        <rename to="buttonIdClicked"/>
+    </modify-function>
+  </object-type>
+    
+  <object-type name="QToolBar">
+  </object-type>
+  
+  <object-type name="QPaintEngine">
+    <modify-function class="java" signature="drawLines(const QLine *, int)">
+        <rename to="drawLines_int"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawLines(const QLineF *, int)">
+        <rename to="drawLines_float"/>
+        <access modifier="private"/>    
+    </modify-function>    
+    <modify-function class="java" signature="drawRects(const QRectF *, int)">
+        <rename to="drawRects_float"/>
+        <access modifier="private"/>    
+    </modify-function>        
+    <modify-function class="java" signature="drawRects(const QRect *, int)">
+        <rename to="drawRects_int"/>
+        <access modifier="private"/>    
+    </modify-function>            
+    <modify-function class="java" signature="drawPoints(const QPointF *, int)">
+        <rename to="drawPoints_float"/>
+        <access modifier="private"/>    
+    </modify-function>            
+    <modify-function class="java" signature="drawPoints(const QPoint *, int)">
+        <rename to="drawPoints_int"/>
+        <access modifier="private"/>        
+    </modify-function>                
+    <modify-function class="java" signature="drawPolygon(const QPoint *, int, QPaintEngine::PolygonDrawMode)">
+        <rename to="drawPolygon_int"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawPolygon(const QPointF *, int, QPaintEngine::PolygonDrawMode)">
+        <rename to="drawPolygon_float"/>
+        <access modifier="private"/>
+    </modify-function>    
+    <inject-code class="java">
+    public final void drawLines(QLineF lines[]) 
+    {
+        drawLines_float(QLineF.nativePointerArray(lines), lines.length);
+    }
+    </inject-code>
+    <inject-code class="java">        
+    public final void drawLines(QLine lines[])
+    {
+        drawLines_int(QLine.nativePointerArray(lines), lines.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawRects(com.trolltech.qt.core.QRect rects[])
+    {
+        drawRects_int(com.trolltech.qt.core.QRect.nativePointerArray(rects), rects.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawRects(com.trolltech.qt.core.QRectF rects[])
+    {
+        drawRects_float(com.trolltech.qt.core.QRectF.nativePointerArray(rects), rects.length);
+    }
+    </inject-code>    
+    <inject-code class="java">
+    public final void drawPoints(com.trolltech.qt.core.QPoint points[])
+    {
+        drawPoints_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawPoints(com.trolltech.qt.core.QPointF points[])
+    {
+        drawPoints_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
+    }
+    </inject-code>    
+    <inject-code class="java">
+    public final void drawPolygon(com.trolltech.qt.core.QPoint points[], int mode)
+    {
+        drawPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length, mode);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawPolygon(com.trolltech.qt.core.QPointF points[], int mode)
+    {
+        drawPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length, mode);
+    }
+    </inject-code>    
+  </object-type>
+  
+  <object-type name="QAbstractTableModel">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>  
+  </object-type>
+  
+  <object-type name="QMimeData">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QUrl" location="global"/>
+    </extra-includes>
+  </object-type>
+  
+  <object-type name="QComboBox">
+    <modify-function class="java" signature="activated(int)">>
+        <rename to="activatedIndex"/>        
+    </modify-function>
+    <modify-function class="java" signature="currentIndexChanged(const QString &amp;)">
+        <rename to="currentStringChanged"/>
+    </modify-function>
+    <modify-function class="java" signature="highlighted(int)">
+        <rename to="highlightedIndex"/>
+    </modify-function>
+  </object-type>  
+ 
+  <object-type name="QTextEdit">
+    <extra-includes>
+        <include file-name="QTextCursor" location="global"/>
+    </extra-includes>
+  </object-type>
+  
+  <object-type name="QInputEvent" />  
+  <object-type name="QKeyEvent" />
+  <object-type name="QMouseEvent" />
+  <object-type name="QPaintEvent" />
+    
+  <object-type name="QPrinter" memory-managed="yes">
+    <custom-constructor>
+        return (void *) copy;
+    </custom-constructor>
+    <custom-destructor>
+        Q_UNUSED(copy);
+    </custom-destructor>
+  </object-type>
+
+  <object-type name="QAction">
+    <inject-code class="java">
+    public void setShortcut(String str) { setShortcut(new QKeySequence(str)); }
+    public void setIcon(QPixmap pm) { setIcon(new QIcon(pm)); }
+    </inject-code>
+  </object-type>
+
+  <object-type name="QPainter">
+    <extra-includes>
+      <include file-name="QWidget" location="global"/>
+      <include file-name="QPainterPath" location="global"/>
+      <include file-name="QPixmap" location="global"/>
+    </extra-includes>
+    <inject-code class="java">
+        public void setBrush(QColor color) { setBrush(new QBrush(color)); }
+        public void setBrush(QGradient gradient) { setBrush(new QBrush(gradient)); }
+        public void setBrush(QPixmap pm) { setBrush(new QBrush(pm)); }
+    </inject-code>
+    <modify-function class="java" signature="QPainter(QPaintDevice *)">
+        <remove/>
+    </modify-function>
+    <modify-function class="java" signature="drawConvexPolygon(const QPoint *, int)">
+        <rename to="drawConvexPolygon_int"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawConvexPolygon(const QPointF *, int)">
+        <rename to="drawConvexPolygon_float"/>
+        <access modifier="private"/>
+    </modify-function>    
+    <modify-function class="java" signature="drawLines(const QLine *, int)">
+        <rename to="drawLines_int"/>
+        <access modifier="private"/>        
+    </modify-function>    
+    <modify-function class="java" signature="drawLines(const QLineF *, int)">
+        <rename to="drawLines_float"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawLines(const QPoint *, int)">
+        <rename to="drawLines_point_pairs_int"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawLines(const QPointF *, int)">
+        <rename to="drawLines_point_pairs_float"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawPoints(const QPoint *, int)">
+        <rename to="drawPoints_int"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawPoints(const QPointF *, int)">
+        <rename to="drawPoints_float"/>
+        <access modifier="private"/>
+    </modify-function>    
+    <modify-function class="java" signature="drawPolygon(const QPoint *, int, Qt::FillRule)">
+        <rename to="drawPolygon_int"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawPolygon(const QPointF *, int, Qt::FillRule)">
+        <rename to="drawPolygon_float"/>
+        <access modifier="private"/>
+    </modify-function>    
+    <modify-function class="java" signature="drawPolyline(const QPoint *, int)">
+        <rename to="drawPolyline_int"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawPolyline(const QPointF *, int)">
+        <rename to="drawPolyline_float"/>
+        <access modifier="private"/>
+    </modify-function>    
+    <modify-function class="java" signature="drawRects(const QRect *, int)">
+        <rename to="drawRects_int"/>
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="java" signature="drawRects(const QRectF *, int)">
+        <rename to="drawRects_float"/>
+        <access modifier="private"/>
+    </modify-function>    
+    <inject-code class="java">
+    public final void drawRects(com.trolltech.qt.core.QRect rects[]) 
+    {
+        drawRects_int(com.trolltech.qt.core.QRect.nativePointerArray(rects), rects.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawRects(com.trolltech.qt.core.QRectF rects[])
+    {
+        drawRects_float(com.trolltech.qt.core.QRectF.nativePointerArray(rects), rects.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawPolygon(com.trolltech.qt.core.QPoint points[]) 
+    { 
+        drawPolygon(points, com.trolltech.qt.core.Qt.OddEvenFill); 
+    }    
+    </inject-code>
+    <inject-code class="java">
+    public final void drawPolygon(com.trolltech.qt.core.QPointF points[]) 
+    { 
+        drawPolygon(points, com.trolltech.qt.core.Qt.OddEvenFill); 
+    }    
+    </inject-code>    
+    <inject-code class="java">
+    public final void drawPolygon(com.trolltech.qt.core.QPoint points[], int mode) 
+    { 
+        drawPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length, mode);
+    }    
+    </inject-code>    
+    <inject-code class="java">
+    public final void drawPolygon(com.trolltech.qt.core.QPointF points[], int mode) 
+    { 
+        drawPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length, mode);
+    }    
+    </inject-code>        
+    <inject-code class="java">
+    public final void drawPoints(com.trolltech.qt.core.QPoint points[])
+    {
+        drawPoints_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawPoints(com.trolltech.qt.core.QPointF points[])
+    {
+        drawPoints_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
+    }
+    </inject-code>    
+    <inject-code class="java">
+    public final void drawLines(QLine lines[])
+    {
+        drawLines_int(QLine.nativePointerArray(lines), lines.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawLines(QLineF lines[])
+    {
+        drawLines_float(QLineF.nativePointerArray(lines), lines.length);
+    }
+    </inject-code>    
+    <inject-code class="java">
+    public final void drawLines(com.trolltech.qt.core.QPoint pointPairs[])
+    {
+        drawLines_point_pairs_int(com.trolltech.qt.core.QPoint.nativePointerArray(pointPairs), pointPairs.length / 2);
+    }
+    </inject-code>    
+    <inject-code class="java">
+    public final void drawLines(com.trolltech.qt.core.QPointF pointPairs[])
+    {
+        drawLines_point_pairs_float(com.trolltech.qt.core.QPointF.nativePointerArray(pointPairs), pointPairs.length / 2);
+    }
+    </inject-code>        
+    <inject-code class="java">
+    public final void drawPolyline(com.trolltech.qt.core.QPoint points[])
+    {
+        drawPolyline_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawPolyline(com.trolltech.qt.core.QPointF points[])
+    {
+        drawPolyline_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
+    }
+    </inject-code>    
+    <inject-code class="java">
+    public final void drawConvexPolygon(com.trolltech.qt.core.QPoint points[])
+    {
+        drawConvexPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
+    }
+    </inject-code>
+    <inject-code class="java">
+    public final void drawConvexPolygon(com.trolltech.qt.core.QPointF points[])
+    {
+        drawConvexPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
+    }
+    </inject-code>    
+  </object-type>  
+    
+  <object-type name="QApplication" memory-managed="yes">
+    <extra-includes>
+      <include file-name="QBasicTimer" location="global"/>
+      <include file-name="qtjambi_cache.h" location="local"/>
+      <include file-name="QFont" location="global"/>
+      <include file-name="QFontMetrics" location="global"/>
+      <include file-name="QPalette" location="global"/>
+      <include file-name="QIcon" location="global"/>
+    </extra-includes>  
+    <inject-code class="java">
+    public static void initialize(String args[])
+    {
+        if (m_instance != null)
+            throw new RuntimeException("QApplication can only be initialized once");
+            
+        m_instance = new QApplication(args);
+    }
+    
+    public static void aboutQtJambi() {
+        QtJambiInternal.aboutQtJambi();
+    }
+
+    public static QApplication instance() {
+        if (type() != Tty)
+            return (QApplication) com.trolltech.qt.core.QCoreApplication.instance();
+        return null;
+    }
+    </inject-code>
+    <inject-code class="java">
+    public QApplication(String args[])         
+    {
+        this(argc(args), argv(args));        
+    }
+    </inject-code>
+    <modify-function class="java" signature="QApplication(int &amp;, char  **)">
+      <access modifier="private" />
+    </modify-function>    
+    <modify-function class="shell" signature="notify(QObject *, QEvent *)"> 
+        <inject-code class="shell">        
+        <argument-map position="2" meta-name="event"/>
+	if (event->type() == 512) {
+            qtjambi_metacall(0, event);
+            return true;
+        }
+        </inject-code>
+    </modify-function>
+  </object-type>
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type '*' is specified in typesystem, but not declared" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private const\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QTextEngine\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QFontEngine\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QPixmap::Type'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QInputDialog::Type'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QTextFrameLayoutData\*'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QAbstractUndoItem\*'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*QImageTextKeyLang*'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: non-public function '*' in interface '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unsupported default value 'QVector&lt;FormatRange&gt;()' of argument in function '*', class '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unsupported default value 'QVariantList()' of argument in function '*', class '*'" />  
+  <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: enum 'QStyleOption::enum_1' does not have a type entry or is not an enum" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QTextLayout::QTextLayout', unmatched parameter type 'QTextEngine*'" />    
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unsupported default value of argument in function 'doAction', class 'QAccessibleInterface'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFileDialog::QFileDialog', unmatched parameter type 'QFileDialogArgs const&amp;'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unsupported default value '0., 0., 1000000000., 1000000000.' of argument in function 'update', class 'QAbstractTextDocumentLayout'" />
+  
+</typesystem>

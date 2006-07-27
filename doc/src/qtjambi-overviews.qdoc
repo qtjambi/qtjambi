@@ -1,0 +1,16 @@
+/*!
+    \page qtjambi-overviews.html
+
+    \title All Qt Jambi Overviews and HOWTOs
+
+    \list
+    \o \l {Installing Qt Jambi}
+    \o \l {Qt Jambi Eclipse Integration}
+    \o \l {Object Types in Qt Jambi}
+    \o \l {The Qt Jambi Generator}
+    \o \l {The Qt Jambi Type System}
+    \o \l {Using Qt's Documentation}{Using Qt's Documentation for Qt Jambi development}
+    \o \l {Value Types in Qt Jambi}
+
+    \endlist
+*/

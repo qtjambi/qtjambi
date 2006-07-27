@@ -1,0 +1,136 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>AboutImageViewer</class>
+ <widget class="QDialog" name="AboutImageViewer" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>464</width>
+    <height>313</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>About Image Viewer</string>
+  </property>
+  <property name="autoFillBackground" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" colspan="3" >
+    <widget class="QFrame" name="frame" >
+     <property name="autoFillBackground" >
+      <bool>false</bool>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="pixmap" >
+         <pixmap/>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QTextEdit" name="textEdit" >
+        <property name="acceptDrops" >
+         <bool>true</bool>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="undoRedoEnabled" >
+         <bool>false</bool>
+        </property>
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
+        <property name="html" >
+         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;title>Image Viewer&lt;/title>&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p align="center" style=" margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;">&lt;font size="5">Image Viewer&lt;/font>&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;">This application was written to show the various aspects of Qt that can be used from Java, such as:&lt;/p>&lt;ul style="-qt-list-indent: 1;">&lt;li style=" font-size:10pt;" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Qt Designer and generated user interfaces.&lt;li style=" font-size:10pt;" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Convenient default models for the item view framework, such as the &lt;span style=" font-family:Courier New,courier;">QDirModel&lt;/span>, which shows the local filesystem in a&lt;span style=" font-family:Courier New,courier;"> QTreeView&lt;/span>.&lt;li style=" font-size:10pt;" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Main window and docking architecture  the core of any application.&lt;li style=" font-size:10pt;" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Signals and Slots  Qt's intercomponent communication architecture with support for the following features:&lt;ul type=circle style="-qt-list-indent: 2;">&lt;li style=" font-size:10pt;" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Queued connections that provide a powerful mechanism for threaded programming.&lt;li style=" font-size:10pt;" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Automatic connections based on naming conventions.&lt;/ul>&lt;li style=" font-size:10pt;" style=" margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">The overall power and flexibility of the Qt API.&lt;/ul>&lt;/body>&lt;/html></string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="2" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QPushButton" name="okButton" >
+     <property name="text" >
+      <string>OK</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>131</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AboutImageViewer</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>270</x>
+     <y>279</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>96</x>
+     <y>254</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

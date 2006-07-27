@@ -1,0 +1,62 @@
+
+--------------------------------------------------------------------------------
+Requirements:
+
+The packaging script uses QSA so you'll need a qsa command line
+runner. A prebuilt version of this is located in
+
+  //depot/private/gunnar/qsengine_win32
+  //depot/private/gunnar/qsengine_linux
+  //depot/private/gunnar/qsengine_mac
+
+If you want to build manually, do so by building qsa in
+//depot/research/qsa/quickport and building the executable in
+//depot/research/qsa/quickport/tests/qsengine
+
+You also need a version of qdoc3 in your path. 
+
+You need cygwin on windows, including zip.
+
+
+--------------------------------------------------------------------------------
+Building the Qt package
+
+ - Fetch the Qt source package for the version you intend to build against.
+
+ - Apply patches: 
+   * 221022, painting bug in itemviews, visible in the imageviewer.
+   * 222044, clipping bug on mac, very visible in the demo.
+   * 222336, Run as foreground process on mac.
+   * Copy src/gui/painting/qprinter.cpp from 4.1.4 branch to support no-qt3support
+
+ - Configure using:
+    Mac OS X: ./configure -no-qt3support -universal -release -no-rpath -fast -shared -no-framework -prefix $(pwd)
+    Windows: configure -no-qt3support -release -fast -shared -no-dsp -no-vcproj
+    Linux: ./configure -no-qt3support -fast -release -no-rpath -fast -shared
+
+ - Qt 4.1.3 is missing some symbols when compiled without Qt 3 support. To
+   fix this, copy qprinter.cpp from Qt 4.1 depot into the Qt 4.1.3 package.
+    
+ - Make using:
+    make sub-src sub-tools
+
+--------------------------------------------------------------------------------
+Building the Qt Jambi package
+
+ - execute qsengine as follows
+   qsengine $PATH_TO_DEPOT/private/gunnar/utils.qs mkdist.qs -args --verbose
+
+ - If you're adventurous, put add a '--teambuilder' on the commandline to
+   qsengine to make use of teambuilder if present on the system you're
+   building on.
+
+ - qsengine will check a number of dependencies, mainly cygwin and
+   commong shell-tools. If these are not present, qsengine will throw
+   an exception. Just update your system and try again.
+
+ - The resulting package will be in
+     Linux/Mac: /tmp/package-builder/qtjambi-preview.tar.gz
+     Windows: d:/tmp/package-builder/qtjambi-preview.zip
+
+
+

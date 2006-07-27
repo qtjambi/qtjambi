@@ -1,0 +1,84 @@
+/*!
+    \page qtjambi-index.html
+
+    \title Qt Jambi Reference Documentation
+
+
+    Qt is the de facto standard C++ framework for high performance
+    cross-platform software development.  \QJ is the Qt library made
+    available to Java. It is an officially supported technology aimed
+    at all desktop programmers who want to write rich GUI clients
+    using the Java language, while at the same time taking advantage
+    of Qt's power and efficiency.
+
+    The technology provides new possibilities for both Java and C++
+    programmers: It enables Java developers to take the advantage of
+    Qt's features from within Java Standard Edition 5.0 and Java
+    Enterprise Edition 5.0 as well as later versions.In addition, \QJ
+    also enables C++ programmers to easily integrate their Qt code
+    with Java by providing the \QJ generator.
+
+    Unfortunately, the documentation for the \QJ technology is not
+    ready at the time of the current release, but the \QJ API is
+    almost identical to the C++ based Qt API, making it possible to
+    use the C++ based documentation to develop \QJ source code. There
+    are some conceptual language differences that must be considered
+    when using \QJ. These are described in the \l {Using Qt's
+    Documentation}{Using Qt's Documentation for Qt Jambi development }
+    document. A complete set of documentation for \QJ will be
+    published for the final release.
+
+    \raw HTML
+
+        <table cellpadding="2" cellspacing="1" border="0" width="100%" bgcolor="#e5e5e5">
+        <tr>
+        <th bgcolor="#a2c511" width="33%">
+        Getting Started
+        </th>
+        <th bgcolor="#a2c511" width="33%">
+        API Reference
+        </th>
+        <th bgcolor="#a2c511" width="33%">
+        Developer Resources
+        </th>
+        </tr>
+        <tr>
+        <td valign="top">
+        <ul>
+        <li><a href="qtjambi-installation.html">Installation</a></li>
+        <li><a href="qtjambi-eclipse.html">Qt Jambi Eclipse Integration</a></li>
+        <li><a href="qtjambi-using-qt-documentation.html">Using Qt's Documentation for Qt Jambi Development</a></li>
+        <li><a href="qtjambi-examples.html">Examples</a></li>
+        <li><a href="http://doc.trolltech.com/index.html">Qt Reference Documentation</a></li>
+        </ul>
+        </td>
+        <td valign="top">
+        <ul>
+        <li><a href="qtjambi-classes.html">Classes</a></li>
+        <li><a href="qtjambi-value-types.html">Value Types</a></li>
+        <li><a href="qtjambi-object-types.html">Object Types</a></li>
+        <li><a href="qtjambi-generator.html">The Qt Jambi Generator</a></li>
+        <li><a href="qtjambi-typesystem.html">Type System</a></li>
+        </ul>
+        </td>
+        <td valign="top">
+        <ul>
+        <li><a href="http://lists.trolltech.com">Qt Mailing Lists</a></li>
+        <li><a href="http://www.trolltech.com/developer/community">Qt Community Web Sites</a></li>
+        <li><a href="http://doc.trolltech.com/qq/">Qt Quarterly</a></li>
+        </ul>
+        </td>
+        </tr>
+        </table>
+    \endraw
+
+    Any inquiries or problems encountered with Qt Jambi should be
+    reported to \l
+    {mailto:support@trolltech.com}{support@trolltech.com}. Include as
+    much information as you can about your environment and
+    versions. If you want to join the Qt Jambi users' mailing list,
+    send a mail to \l {mailto:qtjambi-interest-request@trolltech.com}
+    {qtjambi-interest-request@trolltech.com} containing the single
+    word "subscribe".
+
+*/

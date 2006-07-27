@@ -1,0 +1,862 @@
+/*!
+    \page qtjambi-generator.html
+
+    \title The Qt Jambi Generator
+
+    The generator is a Qt application which can be used to map C++
+    based APIs onto equivalent Java APIs, enabling C++ programmers to
+    easily integrate their own Qt code with Java.
+
+    The generator supports a selected subset of C++, covering the most
+    common constructs in Qt. It creates the Java Api by parsing the
+    C++ header files and generating Java source files. It also
+    generates code to tie the Java classes to the C++ classes. Based
+    on the Java Native Interface (JNI), this code ensures that method
+    calls made in Java are redirected to the corresponding methods in
+    the C++ library.
+
+    \image generator.png
+
+    The \QJ generator is a command line tool accepting a header
+    file and a type system specification as arguments:
+
+    \code
+        ./generator [options] header-file typesystem-file
+    \endcode
+
+    The header file should include the relevant modules of the C++
+    based library. The type system specification is a handwritten XML
+    document listing the types that will be made available in the
+    generated Java API (see the \l {The Qt Jambi Type System}{type
+    system} documentation for details).
+
+    \table
+    \header \o {2,1} Command Line Options
+    \row
+    \o --debug-level=sparse | medium | full
+
+    \o Specifies the debug level of the generator which, for example,
+    is useful to understand how the type system is loaded.
+
+    \row
+    \o --dump-object-tree
+    \o Dumps the parsed object tree as plain text which can be helpful
+    when debugging the type system.
+
+    \row
+    \o --juic-file
+    \o Specifies the location of the information file that is used
+    together with \QJ's implementation of UIC (\c juic) to generate
+    code for custom libraries.
+
+    \row
+    \o --no-cpp-h
+    \o The generator will not generate any C++ header files.
+
+    \row
+    \o --no-cpp-impl
+    \o The generator will not generate any C++ source files.
+
+    \row
+    \o --no-java
+    \o The generator will not generate any Java source files.
+
+    \row
+    \o --no-metainfo
+    \o The generator will not generate any meta-info files.
+
+    \row
+    \o --no-suppress-warnings
+    \o All warnings are shown even if they are suppressed by the type
+    system specification (see the \l {The Qt Jambi Type
+    System#suppress-warning}{type system} documentation for details).
+
+    \row
+    \o --output-directory
+    \o Specifies the output directory for the generated code.
+
+    \omit (unstable option)
+    \row
+    \o --rebuild-only
+    \o Specifies a comma separated list of the classes to
+    generate (all other classes are ignored).
+    \endomit
+
+    \endtable
+
+    When running the generator, the header files are preprocessed
+    (i.e., all macros and type definitions are expanded). Then enums,
+    namespaces and classes are mapped according to the \l {The Qt
+    Jambi Type System}{type system} specification. For each C++ class
+    that is encountered, the generator creates a Java source file and
+    a set of C++ implementation files.
+
+    \warning The \QJ generator is written to handle Qt- based source
+    code, and is not intended for mapping C++ libraries in general.
+
+
+    \tableofcontents
+
+    \section1 The Java Source File
+
+    The Java source file contains one public class with the same name
+    as the original C++ class.
+
+    All public and protected members of the C++ class are included in
+    the Java class. For each C++ method, the generator creates a
+    native Java method, and each original member variable generates a
+    set and get method pair since JNI only provides access to native
+    resources through methods. For example, the C++ member variable:
+
+    \code
+        QString text;
+    \endcode
+
+    generates
+
+    \code
+        String get_text();
+        void set_text(String text);
+    \endcode
+
+    in the Java API.
+
+    Using the \l {The Qt Jambi Type System}{type system} specification,
+    it is also possible to rename or remove methods when generating
+    the Java API, as well as changing the access privileges. It is
+    even possible to use the type system to inject arbitrary code into
+    the Java source file, such as an extra member method.
+
+    \section1 The C++ Implementation Files
+
+    The C++ source file contain two different parts: a shell class and
+    the implementation of the methods declared in the Java source
+    file.
+
+    The shell class inherits the original class in the C++ based Qt
+    library, and makes it possible to reimplement virtual methods in
+    Java and to call protected methods in the C++ based library from
+    Java. Whenever an instance of a class is constructed in Java, a
+    corresponding object of the shell class is constructed. If a class
+    has been extended by a user's custom Java class, and one or more
+    of the virtual methods in the class have been reimplemented, the
+    shell class ensures that it is the reimplemented Java implementations
+    that are called.
+
+    As with the generated Java source file, it is possible to inject
+    code in the reimplemented virtual methods in the shell classes
+    using the type system specification.
+
+    The C++ header file is primarily an implementation detail and can
+    in most cases be ignored.
+
+    \omit
+    \section1 Type Mapping
+
+    The \QJ generator's type mapping is based on the \l {The
+    Qt Jambi Type System}{type system} specification passed as
+    argument. Types that are not declared in this specification will
+    be ignored along with everything that depends on them.
+
+    The \l {The Qt Jambi Type System}{type system} supports the
+    following types:
+
+    \list
+        \o Object types
+        \o Value types
+        \o Interface types
+        \o Primitive types
+        \o C++ based Qt enums
+    \endlist
+
+    Most of Qt's classes can be described either as value types or as
+    object types. Value types behave like Java's built-in types: they
+    can be created on the stack and passed to functions by value or by
+    constant reference (const &). Object types behave like Java's
+    class constructs: they must be instantiated using the new operator
+    and are passed to functions by pointers.
+
+    In the case of object types (e.g., QObject, QEvent, and QPainter),
+    the generator will assume that such objects are never passed by
+    value in any of the original C++ code. Java objects of these types
+    will at all times maintain connections to the equivalent C++
+    objects. When mapping object types from Java to C++, the generator
+    will look up the Java object's connection to fetch a pointer to
+    the corresponding C++ object. When mapping from C++ to Java, the
+    objects will be handled differently depending on whether they were
+    originally constructed in Java or inside the C++ library: Objects
+    created on the Java side will always contain a pointer linking to
+    its Java object, and the mapping is a simple pointer lookup. When
+    mapping objects allocated within the C++ based library, on the
+    other hand, the generator must use a separate list which is
+    specifying the Java equivalent for each class.
+
+    In the case of value types, the generator will assume that any
+    method modifying an object of a value type class never alters the
+    original object. Likewise, a value type object returned from a
+    method in the original library can be altered, but it will never
+    affect the corresponding object within the original library.
+
+    In the Java part of the technology the value types are identical
+    to any other class, and their objects are passed by reference like
+    any other Java object. But before they are passed to methods in
+    the C++ based library, such objects will be copied by the C++
+    implementation using the QMetaType class (QMetaType manages named
+    types in Qt's \l {Meta-Object System}{meta-object
+    system}). Likewise, return values will be copied before they are
+    passed back into Java.
+
+    Finally, interface types are handled equivalently to object type
+    classes, primitive types are always passed by value, and enum
+    types are handled like primitive integers.
+
+    \endomit
+*/
+
+/*!
+    \page qtjambi-typesystem.html
+
+    \title The Qt Jambi Type System
+
+    The type system is used when mapping a C++ based library onto a
+    corresponding Java library using the \l {The Qt Jambi
+    Generator}{Qt Jambi generator}.
+
+    The developer can define the scope of the Java API by writing a
+    type system specification. The specification is a handwritten XML
+    document listing the types that will be available in the generated
+    Java API; types that are not declared in the specification will be
+    ignored along with everything that depends on them. In addition,
+    it is possible to rename or remove methods as well as changing
+    their access privileges. It is even possible to use the type
+    system specification to inject arbitrary code into the source
+    files, such as an extra member method.
+
+    The type system specification is passed as an argument to the \l
+    {The Qt Jambi Generator}{generator}.
+
+    Below is a complete reference guide to the various nodes of the
+    type system. For examples of use, take a look at the type system
+    files used to generate the \QJ API. These files can be found in
+    the \c generator directory of the \QJ package.
+
+    \tableofcontents
+
+    \section1 Alphabetical List
+
+    \l {access}, \l {argument-map}, \l {custom-constructor}, \l
+    {custom-destructor}, \l {disable-gc}, \l {enum-type}, \l
+    {extra-includes}, \l {include}, \l {inject-code}, \l
+    {interface-type}, \l {load-typesystem}{load-typesystem (multiple
+    type system)}, \l {modify-field}, \l {modify-function}, \l
+    {namespace-type}, \l {object-type}, \l {primitive-type}, \l
+    {suppress-warning}, \l {typesystem}, \l {rejection}, \l {remove},
+    \l {rename}, \l replace-default-expression, \l {value-type}
+
+    \section1 Specifying Types
+
+    \image typesystem-root.png
+
+    \table
+    \header
+    \o Node \o Description
+
+
+    \row
+    \o \bold typesystem  \target typesystem
+    \o
+
+    The \c typesystem node is the root node containing all the type
+    system information.
+
+    \code
+        <typesystem package="..."
+            default-superclass="..." (optional)>
+        </typesystem>
+    \endcode
+
+    The \c package attribute is a string describing the package to be
+    used, e.g.,\c "com.trolltech.qt.core". The optional \c
+    default-superclass attribute is the complete class name of the
+    default baseclass of all objects in Java, e.g., \c
+    "com.trolltech.qt.QtObject".
+
+    \row
+    \o \bold load-typesystem \target load-typesystem
+    \o
+
+    The \c load-typesystem node specifies which type systems to load
+    when mapping multiple libraries to Java or basing one library on
+    another, and is a child of the \l typesystem node.
+
+    \code
+        <typesystem ...>
+            <load-typesystem name="..."
+                generate="yes | no">
+        </typesystem>
+    \endcode
+
+    The \c name attribute is the filename of the type system to load,
+    the \c generate attribute specifies whether code should be
+    generated or not. The latter must be specified when basing one
+    library on another, making the generator able to understand
+    inheritance hierarchies, primitive mapping, parameter types in
+    methods etc.
+
+    Most libraries will be based on both the QtCore and QtGui modules,
+    in which case code generation for these libraries will be
+    disabled.
+
+    \row
+    \o \bold rejection \target rejection
+    \o
+
+    The \c rejection node rejects the given class, or the specified
+    method or field, and is a child of the \l typesystem node.
+
+    \code
+        <typesystem ...>
+            <rejection class="..."
+                function-name="..." (optional)
+                field-name="..." (optional) />
+        </typesystem>
+    \endcode
+
+    The \c class attribute is the C++ class name of the class to
+    reject. Use the optional \c function-name or \c field-name
+    attributes to reject a particular method or field. Note that the
+    \c field-name and \c function-name cannot be specified at the same
+    time. To remove all occurrences of a given field or method, set
+    the \c class attribute to \c *.
+
+    \row
+    \o \bold primitive-type \target primitive-type
+    \o
+
+    The \c primitive-type node describes how a primitive type is
+    mapped from C++ to Java and the Java Native Interface (JNI), and
+    is a child of the \l typesystem node. Note that most primitives
+    are already specified in the QtCore type system.
+
+    \code
+        <typesystem ...>
+            <primitive-type name="..."
+                java-name="..." (optional)
+                jni-name="..." (optional)
+                preferred-conversion="no" (optional)>
+        </typesystem>
+    \endcode
+
+    The \c name attribute is the name of the primitive in C++, the \c
+    java-name attribute is the name of the primitive in Java, and the
+    \c jni-name attribute is the name of the primitive in JNI. If the
+    latter two attributes are not specified, their default value will
+    be the same as the \c name attribute.
+
+    If the optional \c preferred-conversion attribute is set to "no",
+    it indicates that this version of the primitive is not the
+    preferred C++ equivalent of the Java type. For example, both
+    "qint64" and "long long" become "long" in Java but we should
+    prefer the "qint64" version. For this reason we mark "long long"
+    with \c preferred-conversion="no".
+
+    \row
+    \o \bold namespace-type \target namespace-type
+    \o
+
+    The \c namespace-type node maps the given C++ namespace to Java (
+    note that the namespace becomes an interface in Java), and is a
+    child of the \l typesystem node. Note that within namespaces, the
+    generator only supports enums (i.e., no methods or classes).
+
+    \code
+        <typesystem ...>
+            <namespace-type name="..."
+                package="..." (optional) />
+        </typesystem>
+    \endcode
+
+    The \c name attribute is the name of the namespace, e.g.,
+    "Qt". The \c package attribute can be used to override the package
+    of the typesystem.
+
+    \row
+    \o \bold enum-type \target enum-type
+    \o
+
+    The \c enum-type node maps the given enum from C++ to Java, and is
+    a child of the \l typesystem node. Note that enums and flags are
+    converted to integers in Java, and that code generation for enums
+    is disabled by default.
+
+    \code
+        <typesystem ...>
+            <enum-type name="..."
+                flags="yes | no" (optional) />
+        </typesystem>
+    \endcode
+
+    The \c name attribute is the fully qualified C++ name of the enum
+    (e.g.,"Qt::FillRule"). If the optional \c flags attribute is set
+    to \c yes, the generator will expect an existing QFlags<T> for the
+    given enum type.
+
+    \row
+    \o \bold value-type \target value-type
+    \o
+
+    The \c value-type node indicates that the given C++ type is mapped
+    onto Java as a value type, and is a child of the \l typesystem
+    node.
+
+    \code
+        <typesystem ...>
+            <value-type  name="..."
+                package ="..." (optional)
+                default-superclass ="..." (optional) />
+        </typesystem>
+    \endcode
+
+    The \c name attribute is the fully qualified C++ class name, such
+    as "QMatrix" or "QPainterPath::Element". If there is no C++ base
+    class, the \c default-superclass attribute can be used to specify
+    a superclass for the given type, in the generated Java API.
+
+    See also: \l {Using Qt's Documentation#Type Mapping}{Type Mapping}
+
+    \row
+    \o \bold object-type \target object-type
+    \o
+
+    The \c object-type node indicates that the given C++ type is
+    mapped onto Java as an object type, and is a child of the \l
+    typesystem node.
+
+    \code
+        <typesystem ...>
+            <object-type name="..."
+                memory-managed="yes | no" (optional)
+                package ="..." (optional)
+                default-superclass ="..." (optional)/>
+        </typesystem>
+    \endcode
+
+    The \c name attribute is the fully qualified C++ class name, the
+    optional \c memory-managed attribute specifies whether the type
+    should be memory managed in Java or not.
+
+    See also: \l {Using Qt's Documentation#Type Mapping}{Type Mapping}
+
+    \row
+    \o \bold interface-type \target interface-type
+    \o
+
+    The \c interface-type node indicates that the given class is
+    replaced by an interface pattern when mapping from C++ to Java. It
+    is used to resolve multiple base classes which is not supported by
+    Java. Using the \c interface-type node implicitly makes the given
+    type an \l {object type}.
+
+    \code
+        <typesystem ...>
+            <interface-type name="..."
+                memory-managed="yes | no" (optional)
+                package ="..." (optional)
+                default-superclass ="..." (optional)/>
+        </typesystem>
+     \endcode
+
+    The \c name attribute is the fully qualified C++ class name, the
+    optional \c memory-managed attribute specifies whether the type
+    should be memory managed in Java or not. If there is no C++ base
+    class, the \c default-superclass attribute can be used to specify
+    a superclass in the generated Java API, for the given class.
+
+    \row
+    \o \bold suppress-warning \target suppress-warning
+    \o
+
+    The generator will generate several warnings which may be
+    irrelevant to the user. The \c suppress-warning node supresses the
+    specified warning, and is a child of the \l typesystem node.
+
+    \code
+        <typesystem...>
+            <suppress-warning text="..." />
+        </typesystem>
+    \endcode
+
+    The \c text attribute is the warning text to suppress, and may
+    contain the \c * wildcard (use "\" to escape regular expression
+    matching if the warning contain a regular "*").
+
+    \endtable
+
+    \section2 Value Type Requirements
+
+    \image typesystem-valuetype.png
+
+    \table
+    \header
+    \o Node \o Description
+
+    \row
+    \o \bold custom-constructor \target custom-constructor
+    \o
+
+    In Java, value types are required to have a copy constructor. If a
+    C++ class without a copy constructor is mapped onto Java as a
+    value type, it is possible to provide a custom constructor using
+    the \c custom-constructor node which is a child of the \c
+    value-type node.
+
+    \code
+       <value-type ...>
+           <custom-constructor
+                name="..." (optional)
+                param-name="..." (optional)>
+                   // code for custom constructor
+           </custom-constructor>
+       </value-type>
+    \endcode
+
+    The custom constructor's signature becomes:
+
+    \code
+        T *name(T *param-name);
+    \endcode
+
+    If not specified the name of the constructor becomes \c
+    {<lowercase type name>_create()} and the parameter name becomes \c
+    copy.
+
+    \row
+    \o \bold custom-destructor \target custom-destructor
+    \o
+
+    When a custom constructor is provided using the \l
+    custom-constructor node, it is most likely required to clean up
+    the allocated memory. For that reason, it is also possible to
+    provide a custom destructor using the \c custom-destructor node
+    which is a child of the \c value-type node.
+
+    \code
+       <value-type ...>
+           <custom-destructor
+                name="..." (optional)
+                param-name="..." (optional)>
+                   // code for custom destructor
+           </custom-destructor>
+       </value-type>
+    \endcode
+
+    The custom destructor must have the following signature:
+
+    \code
+        T *name(T *param-name);
+    \endcode
+
+    If not specified the name of the constructor becomes \c
+    {<lowercase type name>_delete()} and the parameter name becomes \c
+    copy.
+
+    \endtable
+
+    \section1 Manipulating Types
+
+    \image typesystem-types.png
+
+    \table
+    \header
+    \o Node \o Description
+
+    \row
+    \o \bold  modify-field \target modify-field
+    \o
+
+    The \c modify-field node allows you to alter the access privileges
+    for a given C++ field when mapping it onto Java, and is a child of
+    an \l object-type or a \l value-type node.
+
+    \code
+        <object-type ...>
+            <modify-field name="..."
+                write="true | false" (optional)
+                read="true | false" (optional)/>
+        </object-type>
+    \endcode
+
+    The \c name attribute is the name of the field, the optional \c
+    write and \c read attributes specify the field's access privileges
+    in the Java API (both are set to \c true by default).
+
+    \row
+    \o \bold  modify-function \target modify-function
+    \o
+
+    The \c modify-function node allows you to modify a given C++
+    function when mapping it onto Java, and is a child of an \l
+    object-type or a \l value-type node. Use the \l remove, \l access,
+    \l rename and \l inject-code nodes to specify the details of the
+    modification.
+
+    \code
+        <object-type ...>
+            <modify-function class="shell | native | java
+                | shell-declaration" (optional)
+                signature="...">
+        </object-type>
+    \endcode
+
+    The \c class attribute specifies which module of the generated
+    code that will be affected by the modification. This is only a
+    hint to the generator, as certain modifications are irrelevant for
+    certain modules while others usually span across all modules in
+    order to be effective (e.g. the \l remove modifier will affect all
+    modules unless its \c exclusive attribute is set to true).
+
+    The \c class attribute accepts the following values:
+
+    \list
+        \o \c java: The generated java code
+        \o \c native: The generated JNI-based functions
+        \o \c shell: The generated shell class
+        \o \c shell-declaration: Only used for injecting code. The
+        code will be injected into the generated header file
+        containing the shell class definition.
+    \endlist
+
+    The \c signature attribute is a normalized C++ signature,
+    excluding return values but including potential \c const
+    declarations.
+
+    \row
+    \o \bold extra-includes \target extra-includes
+    \o
+
+    The \c extra-includes node contains declarations of additional
+    include files, and can be a child of the \l primitive-type, \l
+    value-type and \l object-type nodes.
+
+    The generator automatically tries to read the global header for
+    each type. But sometimes it is required to include extra files in
+    the generated C++ code to make sure that the code compiles. These
+    files must be listed using \l include nodes witin the \c
+    extra-include node:
+
+    \code
+        <primitive-type ...>
+            <extra-includes>
+                <include file-name="..." location="global | local"/>
+            </extra-includes>
+        </primitive-type>
+    \endcode
+
+    The \c file-name attribute is the file to include, such as
+    "QStringList". The \c location attribute is where the file is
+    located: \c global means that the file is located in \c
+    $INCLUDEPATH and will be included using \c {#include <...>}, \c
+    local means that the file is in a local directory and will be
+    included using \c {#include "..."}.
+
+    \row
+    \o \bold include \target include
+    \o
+
+    The \c include node specifies the name and location of a file that
+    must be included, and is a child of the \l primitive-type, \l
+    value-type, \l object-type or \l extra-includes nodes
+
+    The generator automatically tries to read the global header for
+    each type. Use the \c include node to override this behavior,
+    providing an alternative file. The \c include node can also be
+    used to specify \l {extra-includes}{extra include files}.
+
+    \code
+        <primitive-type ...>
+            <include file-name="..."
+                location="global | local"/>
+        </primitive-type>
+    \endcode
+
+    The \c file-name attribute is the file to include, such as
+    "QStringList". The \c location attribute is where the file is
+    located: \c global means that the file is located in \c
+    $INCLUDEPATH and will be included using \c {#include <...>}, \c
+    local means that the file is in a local directory and will be
+    included using \c {#include "..."}.
+
+    \row
+    \o \bold inject-code \target inject-code
+    \o
+
+    The \c inject-code node inserts the given code into the generated
+    code for the given type or function, and is a child of the \l
+    object-type, \l value-type and \l modify-function nodes.
+
+    \code
+        <value-type ...>
+            <inject-code class="java | native | shell | shell-declaration"
+                position="beginning | end">
+                // the code
+            </inject-code>
+        </value-type>
+    \endcode
+
+    The \c class attribute specifies which module of the generated
+    code that will be affected by the code injection. The \c class
+    attribute accepts the following values:
+
+    \list
+        \o \c java: The generated java code
+        \o \c native: The generated JNI-based functions
+        \o \c shell: The generated shell class
+        \o \c shell-declaration: The code will be injected into the
+        generated header file containing the shell class definition.
+    \endlist
+
+    If the position attribute is set to \c beginning (the default), the
+    code is inserted at the beginning of the function. If it is set to
+    \c end, the code is inserted at the end of the function.
+
+    \endtable
+
+    \section1 Modifying Functions
+
+    \image typesystem-modify.png
+
+    \table
+    \header
+    \o Node \o Description
+
+
+    \row
+    \o \bold  remove \target remove
+    \o
+
+    The \c remove node removes the given method from the generated
+    Java code, and is a child of the \l modify-function node.
+
+    \code
+        <modify-function ...>
+            <remove exclusive=" Yes | No"(optional)/>
+        </modify-function>
+    \endcode
+
+    If the \c exclusive attribute is set to "Yes", the function is
+    only removed for the part of the generated code specified by the
+    \l modify-function's \c class attribute; the default value is "No".
+
+    \row
+    \o \bold  access \target access
+    \o
+
+    The \c access node changes the access privileges of the given
+    method in the generated Java code, and is a child of the \l
+    modify-function node.
+
+    \code
+        <modify-function ...>
+            <access modifier="public | protected | private"/>
+        </modify-function>
+    \endcode
+
+    \row
+    \o \bold  rename \target rename
+    \o
+
+    The \c rename node changes the name of the given method in the
+    generated Java code, and is a child of the \l modify-function
+    node.
+
+    \code
+        <modify-function...>
+            <rename to="..." />
+        </modify-function>
+    \endcode
+
+    The \c to attribute is the new name of the function.
+
+    \row
+    \o \bold  inject-code
+    \o Documented in the \l {inject-code}{Manipulating Types} section
+
+    \row
+    \o \bold argument-map \target argument-map
+    \o
+
+    The \c argument-map node maps a C++ argument name to the argument
+    name used in the generated Java code, and is a child of the \l
+    inject-code node when the latter is a child of a \l
+    modify-function node.
+
+    \code
+        <modify-function...>
+            <inject-code ...>
+                <argument-map position="numeric value"
+                    meta-name="string value">
+            </inject-code>
+        </modify-function>
+    \endcode
+
+    The \c position attribute is an index, starting at 1, indicating
+    the argument position to which this argument mapping applies. The
+    \c meta-name attribute is the name used within the code injection
+    to adress the argument at the given position.
+
+    \row
+    \o \bold replace-default-expression \target replace-default-expression
+    \o
+
+    The \c replace-default-expression node replaces the specified
+    argument with the given expression, and is a child of the \l
+    modify-function node.
+
+    \code
+        <modify-function...>
+            <replace-default-expression index = "..."
+                with="..." />
+        </modify-function>
+    \endcode
+
+    The \c index attribute specifies the number of the argument to
+    replace, e.g.,\c index=0 will ensure that the method's first
+    argument is replaced with the expression given by the \c with
+    attribute.
+
+    \row
+    \o \bold disable-gc \target disable-gc
+    \o
+
+    The \c disable-gc node indicates that the argument object will not
+    be garbage collected, and is a child of the \l modify-function
+    node when the latter specifies its \c class attribute to be either
+    "java" or "shell".
+
+    \code
+        <modify-function class="java" signature="...">
+             <disable-gc argument="this | 1, ..." />
+        </modify-function>
+    \endcode
+
+    If the \l modify-function node's value for the \c class attribute
+    is "Java", the \c argument attribute must specify the object: By
+    setting it to "this" (or 0) the garbage collector will be disabled
+    for the object the function is applied to. Specify a number equal
+    to or larger than 1 to disable garbage collection for the
+    corresponding argument object (e.g., "2" will disable the garbage
+    collector for the second argument).
+
+    \code
+        <modify-function class="shell" signature="...">
+            <disable-gc />
+        </modify-function>
+    \endcode
+
+    When the \l modify-function node's value for \c class attribute is
+    shell, the \c argument attribute will be ignored. If the function
+    is virtual, garbage collection is disabled for the object returned
+    from the Java version of the function.
+
+    \endtable
+*/
