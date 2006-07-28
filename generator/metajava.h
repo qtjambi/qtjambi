@@ -62,6 +62,8 @@ public:
         GetterFunction              = 0x0400,
         SetterFunction              = 0x0800,
 
+        FinalOverload               = 0x1000,
+
         Final                       = FinalInJava | FinalInCpp
     };
 
@@ -84,6 +86,8 @@ public:
     bool isAbstract() const { return m_attributes & Abstract; }
     bool isStatic() const { return m_attributes & Static; }
     bool isForcedShellImplementation() const { return m_attributes & ForceShellImplementation; }
+
+    bool isFinalOverload() const { return m_attributes & FinalOverload; }
 
     bool isPrivate() const { return m_attributes & Private; }
     bool isProtected() const { return m_attributes & Protected; }

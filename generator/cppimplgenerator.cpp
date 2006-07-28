@@ -965,6 +965,11 @@ void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const MetaJav
     s << ")" << endl << "{" << endl;
 }
 
+
+/*!
+    Generates type conversion from Java -> Qt for all the arguments
+    that are to be to be passed to the function
+*/
 void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const MetaJavaFunction *java_function,
                                                const QString &qt_object_name,
                                                const MetaJavaClass *cls)
@@ -983,9 +988,10 @@ void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const MetaJavaFun
 
     // Extract the qt equivalent to the this pointer and name it "qt_object_name"
     if (!java_function->isStatic() && !java_function->isConstructor()) {
+        QString className = java_function->isFinalOverload() ? cls->name() : shellClassName(cls);
         s << INDENT
-          << shellClassName(cls) << " *" << qt_object_name
-          << " = (" << shellClassName(cls) << " *) qtjambi_from_jlong(__this_nativeId);"
+          << className << " *" << qt_object_name
+          << " = (" << className << " *) qtjambi_from_jlong(__this_nativeId);"
           << endl
           << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
           << INDENT << "Q_ASSERT(" << qt_object_name << ");" << endl;
@@ -1044,7 +1050,9 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
             QStringList extra_param;
             Option option = NoOption;
 
-            if (java_function->isFinalInCpp() && !java_function->wasPublic()) {
+            if (java_function->isFinalOverload()) {
+                // no prefix
+            } else if (java_function->isFinalInCpp() && !java_function->wasPublic()) {
                 function_prefix = "__public_";
             } else if (!java_function->isFinalInCpp() && !java_function->isStatic()) {
                 function_prefix = "__override_";

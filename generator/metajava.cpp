@@ -958,6 +958,17 @@ void MetaJavaClass::fixFunctions()
         }
     }
 
+    foreach (MetaJavaFunction *f1, funcs) {
+        foreach (MetaJavaFunction *f2, funcs) {
+            if (f1 != f2) {
+                uint cmp = f1->compareTo(f2);
+                if ((cmp & MetaJavaFunction::EqualName) && !f1->isFinal() && f2->isFinal()) {
+                    *f2 += MetaJavaAttributes::FinalOverload;
+                }
+            }
+        }
+    }
+
     setFunctions(funcs);
 }
 
