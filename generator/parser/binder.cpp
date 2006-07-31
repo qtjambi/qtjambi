@@ -434,12 +434,12 @@ void Binder::visitTemplateDeclaration(TemplateDeclarationAST *node)
       TypeParameterAST *type_parameter = parameter->type_parameter;
       if (! type_parameter)
         {
-          std::cerr << "** WARNING template declaration not supported ``";
-          Token const &tk = _M_token_stream->token ((int) node->start_token);
-          Token const &end_tk = _M_token_stream->token ((int) node->declaration->start_token);
+//           std::cerr << "** WARNING template declaration not supported ``";
+//           Token const &tk = _M_token_stream->token ((int) node->start_token);
+//           Token const &end_tk = _M_token_stream->token ((int) node->declaration->start_token);
 
-          std::cerr << std::string (&tk.text[tk.position], (end_tk.position) - tk.position) << "''"
-                    << std::endl << std::endl;
+//           std::cerr << std::string (&tk.text[tk.position], (end_tk.position) - tk.position) << "''"
+//                     << std::endl << std::endl;
 
           changeTemplateParameters(savedTemplateParameters);
           return;
@@ -450,12 +450,12 @@ void Binder::visitTemplateDeclaration(TemplateDeclarationAST *node)
       int tk = decode_token(type_parameter->type);
       if (tk != Token_typename && tk != Token_class)
         {
-          std::cerr << "** WARNING template declaration not supported ``";
-          Token const &tk = _M_token_stream->token ((int) node->start_token);
-          Token const &end_tk = _M_token_stream->token ((int) node->declaration->start_token);
+//           std::cerr << "** WARNING template declaration not supported ``";
+//           Token const &tk = _M_token_stream->token ((int) node->start_token);
+//           Token const &end_tk = _M_token_stream->token ((int) node->declaration->start_token);
 
-          std::cerr << std::string (&tk.text[tk.position], (end_tk.position) - tk.position) << "''"
-                    << std::endl << std::endl;
+//           std::cerr << std::string (&tk.text[tk.position], (end_tk.position) - tk.position) << "''"
+//                     << std::endl << std::endl;
 
           changeTemplateParameters(savedTemplateParameters);
           return;
