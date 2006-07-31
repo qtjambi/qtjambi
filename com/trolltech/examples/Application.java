@@ -17,16 +17,16 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 public class Application extends QMainWindow {
-    
+
     private String curFile;
     private QTextEdit textEdit;
     private QMenu fileMenu;
     private QMenu editMenu;
     private QMenu helpMenu;
-    
+
     private QToolBar fileToolBar;
     private QToolBar editToolBar;
-    
+
     private QAction newAct;
     private QAction openAct;
     private QAction saveAct;
@@ -37,16 +37,16 @@ public class Application extends QMainWindow {
     private QAction pasteAct;
     private QAction aboutAct;
     private QAction aboutQtAct;
-    
+
     private String rsrcPath = "classpath:com/trolltech/images";
-    
+
     public Application()
     {
         QMenuBar menuBar = new QMenuBar();
         setMenuBar(menuBar);
-        
+
         setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
-        
+
         textEdit = new QTextEdit();
         setCentralWidget(textEdit);
 
@@ -113,7 +113,7 @@ public class Application extends QMainWindow {
 
     public void about()
     {
-        QMessageBox.about(this, 
+        QMessageBox.about(this,
                          tr("About Application"),
                          tr("The <b>Application</b> example demonstrates how to " +
                             "write modern GUI applications using Qt, with a menu bar, " +
@@ -241,10 +241,8 @@ public class Application extends QMainWindow {
         if (textEdit.document().isModified()) {
             int ret = QMessageBox.warning(this, tr("Application"),
                                            tr("The document has been modified.\n" +
-                                              "Do you want to save your changes?"),
-                                           QMessageBox.Yes | QMessageBox.Default,
-                                           QMessageBox.No,
-                                           QMessageBox.Cancel | QMessageBox.Escape);
+                                              "Save your changes?"),
+                                           QMessageBox.Ok | QMessageBox.Cancel);
             if (ret == QMessageBox.Yes) {
                 return save();
             } else if (ret == QMessageBox.Cancel) {
@@ -278,7 +276,7 @@ public class Application extends QMainWindow {
             QMessageBox.warning(this, tr("Application"), String.format(tr("Cannot write file %1$s:\n%2$s."), fileName, file.errorString()));
             return false;
         }
-        
+
         QTextStream out = new QTextStream(file);
         QApplication.setOverrideCursor(new QCursor(Qt.WaitCursor));
         out.operator_shift_left(textEdit.toPlainText());
@@ -295,7 +293,7 @@ public class Application extends QMainWindow {
         curFile = fileName;
         textEdit.document().setModified(false);
         setWindowModified(false);
-        
+
         String shownName;
         if (curFile.length() == 0)
             shownName = "untitled.txt";
@@ -312,10 +310,10 @@ public class Application extends QMainWindow {
 
     public static void main(String[] args) {
         QApplication.initialize(args);
-	
+
         Application application = new Application();
         application.show();
-	
+
         QApplication.exec();
     }
 

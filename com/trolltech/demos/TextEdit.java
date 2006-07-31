@@ -38,7 +38,7 @@ public class TextEdit extends QMainWindow {
     private QComboBox comboSize;
     private String rsrcPath = "classpath:com/trolltech/images/textedit/win";
     private boolean initialized = false;
-    
+
     void init() {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
 
@@ -346,11 +346,11 @@ public class TextEdit extends QMainWindow {
     boolean maybeSave() {
         if (!textEdit.document().isModified())
             return true;
-        int ret = QMessageBox.warning(this, "Application",
-                "The document has been modified.\n"
-                        + "Do you want to save your changes?", QMessageBox.Yes
-                        | QMessageBox.Default, QMessageBox.No,
-                QMessageBox.Cancel | QMessageBox.Escape);
+        int ret = QMessageBox.warning(this,
+                                      "Application",
+                                      "The document has been modified.\n"
+                                      + "Save your changes?",
+                                      QMessageBox.Ok | QMessageBox.Cancel);
         if (ret == QMessageBox.Yes)
             return fileSave();
         else if (ret == QMessageBox.Cancel)
@@ -573,7 +573,7 @@ public class TextEdit extends QMainWindow {
             mw.load(args[0]);
         }
         mw.show();
-        
+
 
         QApplication.exec();
     }
