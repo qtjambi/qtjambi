@@ -37,14 +37,14 @@ public:
     inline const T *constData() const { return d; }
 
     inline bool operator==(const CodeModelPointer<T> &other) const { return d == other.d; }
-#ifndef Q_CC_MSVC
     inline bool operator!=(const CodeModelPointer<T> &other) const { return d != other.d; }
-#endif
+    inline bool operator==(const T *ptr) const { return d == ptr; }
+    inline bool operator!=(const T *ptr) const { return d != ptr; }
 
     inline CodeModelPointer() { d = 0; }
     inline ~CodeModelPointer() { if (d && !d->ref.deref()) delete d; }
 
-    CodeModelPointer(T *data);
+    explicit CodeModelPointer(T *data);
     inline CodeModelPointer(const CodeModelPointer<T> &o) : d(o.d) { if (d) d->ref.ref(); }
     inline CodeModelPointer<T> & operator=(const CodeModelPointer<T> &o) {
         if (o.d != d) {
