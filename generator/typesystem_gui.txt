@@ -418,7 +418,7 @@
   </value-type>
 
   <value-type name="QPixmap">
-    <modify-function signature="QPixmap(const char *[])">
+    <modify-function signature="QPixmap(const char * [])">
         <access modifier="private"/>
     </modify-function>
     <inject-code>
@@ -638,6 +638,9 @@
 
   <value-type name="QColor">
     <modify-function signature="QColor(uint)">
+        <remove/>
+    </modify-function>
+    <modify-function signature="QColor(QColor::Spec)">
         <remove/>
     </modify-function>
     <inject-code class="java">
@@ -1500,6 +1503,7 @@
       <include file-name="QFontMetrics" location="global"/>
       <include file-name="QPalette" location="global"/>
       <include file-name="QIcon" location="global"/>
+      <include file-name="QLocale" location="global"/>
     </extra-includes>  
     <inject-code class="java">
     public static void initialize(String args[])
@@ -1526,8 +1530,8 @@
         this(argc(args), argv(args));        
     }
     </inject-code>
-    <modify-function class="java" signature="QApplication(int &amp;, char  **)">
-      <access modifier="private" />
+    <modify-function class="java" signature="QApplication(int &amp;, char  **, int)">
+      <access modifier="private"/>
     </modify-function>    
     <modify-function class="shell" signature="notify(QObject *, QEvent *)"> 
         <inject-code class="shell">        
@@ -1537,6 +1541,12 @@
             return true;
         }
         </inject-code>
+    </modify-function>
+    <modify-function class="java" signature="QApplication(int &amp;, char **, QApplication::Type, int)">
+	<remove/>
+    </modify-function>
+    <modify-function class="java" signature="QApplication(int &amp;, char **, bool, int)">
+	<remove/>
     </modify-function>
   </object-type>
 

@@ -222,12 +222,12 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
 
 }
 
-void JavaGenerator::writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg, 
+void JavaGenerator::writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg,
                                                const QString &indent)
 {
     Q_ASSERT(arg->type()->isContainer());
 
-    s << indent << "for (" << arg->type()->instantiations().at(0)->fullName() << " i : " 
+    s << indent << "for (" << arg->type()->instantiations().at(0)->fullName() << " i : "
                 << arg->name() << ")" << endl
       << indent << "    if (i != null) i.disableGarbageCollection();" << endl;
 }
@@ -238,7 +238,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     MetaJavaArgumentList arguments = java_function->arguments();
 
     if (disabled_gc_arguments.value(0, false) && !java_function->isConstructor())
-        s << "        this.disableGarbageCollection();" << endl;    
+        s << "        this.disableGarbageCollection();" << endl;
 
     for (int i=0; i<arguments.count(); ++i) {
         MetaJavaArgument *arg = arguments.at(i);
@@ -250,7 +250,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
             if (arg->type()->isContainer())
                 writeDisableGCForContainer(s, arg, "            ");
-            else 
+            else
                 s << "            " << arg->name() << ".disableGarbageCollection();" << endl;
             s << "        }" << endl;
         }
@@ -302,7 +302,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     s << ");" << endl;
 
     if (disabled_gc_arguments.value(0, false) && java_function->isConstructor())
-        s << "        this.disableGarbageCollection();" << endl;    
+        s << "        this.disableGarbageCollection();" << endl;
 }
 
 void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_function)
@@ -751,6 +751,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
 
     if (attr & MetaJavaAttributes::Public) s << "public ";
     else if (attr & MetaJavaAttributes::Protected) s << "protected ";
+    else if (attr & MetaJavaAttributes::Private) s << "private ";
 
     if (attr & MetaJavaAttributes::Native) s << "native ";
     else if (attr & MetaJavaAttributes::Abstract) s << "abstract ";

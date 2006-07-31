@@ -926,7 +926,7 @@ void MetaJavaClass::fixFunctions()
                         }
                     }
 
-                    if (sf->isFinal()) {
+                    if (sf->isFinal() && !sf->isPrivate()) {
                         // Shadowed funcion, need to make base class function non-virtual
                         *sf -= MetaJavaAttributes::FinalInJava;
 //                         printf("   --- shadowing... force final in java\n");
@@ -962,8 +962,20 @@ void MetaJavaClass::fixFunctions()
         foreach (MetaJavaFunction *f2, funcs) {
             if (f1 != f2) {
                 uint cmp = f1->compareTo(f2);
-                if ((cmp & MetaJavaFunction::EqualName) && !f1->isFinal() && f2->isFinal()) {
+                if ((cmp & MetaJavaFunction::EqualName)
+                    && !f1->isFinalInCpp()
+                    && f2->isFinalInCpp()) {
                     *f2 += MetaJavaAttributes::FinalOverload;
+//                     qDebug() << f2 << f2->implementingClass()->name() << "::" << f2->name() << f2->arguments().size() << " vs " << f1 << f1->implementingClass()->name() << "::" << f1->name() << f1->arguments().size();
+//                     qDebug() << "    " << f2;
+//                     MetaJavaArgumentList f2Args = f2->arguments();
+//                     foreach (MetaJavaArgument *a, f2Args)
+//                         qDebug() << "        " << a->type()->name() << a->name();
+//                     qDebug() << "    " << f1;
+//                     MetaJavaArgumentList f1Args = f1->arguments();
+//                     foreach (MetaJavaArgument *a, f1Args)
+//                         qDebug() << "        " << a->type()->name() << a->name();
+
                 }
             }
         }
