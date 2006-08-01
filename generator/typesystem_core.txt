@@ -5,8 +5,6 @@
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
   
-  <rejection class="QTextStreamManipulator"/>    
-  <rejection class="QFactoryInterface"/>
   <rejection class="QAlgorithmsPrivate"/>
   <rejection class="QAtomic"/>
   <rejection class="QAtomicPointer"/>
@@ -16,6 +14,7 @@
   <rejection class="QCache"/>
   <rejection class="QCharRef"/>
   <rejection class="QDebug"/>
+  <rejection class="QFactoryInterface"/>
   <rejection class="QFlag"/>
   <rejection class="QFlags"/>
   <rejection class="QForeachContainer"/>
@@ -63,11 +62,14 @@
   <rejection class="QPluginLoader"/>
   <rejection class="QPointer"/>
   <rejection class="QReadLocker"/>
+  <rejection class="QResource" />
   <rejection class="QSet"/>
   <rejection class="QSetIterator"/>
   <rejection class="QSharedData"/>
   <rejection class="QSharedDataPointer"/>
   <rejection class="QStack"/>
+  <rejection class="QSysInfo"/>
+  <rejection class="QTextStreamManipulator"/>    
   <rejection class="QThreadStorage"/>
   <rejection class="QThreadStorageData"/>
   <rejection class="QTypeInfo"/>
@@ -82,7 +84,7 @@
   <rejection class="qGreater"/>
   <rejection class="qLess"/>
   <rejection class="std"/>
-  <rejection class="QSysInfo"/>
+
 
   <rejection class="QAbstractEventDispatcher" function-name="filterEvent"/>
   <rejection class="QAbstractEventDispatcher" function-name="setEventFilter"/>
@@ -230,10 +232,14 @@
   <enum-type name="QSettings::Status"/>
   <enum-type name="QSocketNotifier::Type"/>
   <enum-type name="QString::SectionFlag" flags="QString::SectionFlags"/>
+  <enum-type name="QSystemLocale::QueryType"/>
   <enum-type name="QTextStream::FieldAlignment"/>
   <enum-type name="QTextStream::NumberFlag" flags="QTextStream::NumberFlags"/>
   <enum-type name="QTextStream::RealNumberNotation"/>
   <enum-type name="QTextStream::Status"/>
+  <enum-type name="QTimeLine::CurveShape"/>
+  <enum-type name="QTimeLine::Direction"/>
+  <enum-type name="QTimeLine::State"/>
   <enum-type name="QUrl::FormattingOption" flags="QUrl::FormattingOptions"/>
   <enum-type name="QUrl::ParsingMode"/>
   <enum-type name="QUuid::Variant"/>
@@ -315,7 +321,7 @@
   <value-type name="QTime"/>  
   <value-type name="QPersistentModelIndex"/>
   <value-type name="QUuid"/>
-    
+
   <object-type name="QAbstractItemModel">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
@@ -424,6 +430,7 @@
   <object-type name="QAbstractEventDispatcher"/>  
   <object-type name="QBuffer"/>
   <object-type name="QChildEvent"/>
+  <object-type name="QDynamicPropertyChangeEvent"/>
   <object-type name="QEventLoop"/>
   <object-type name="QFile" memory-managed="yes"/>
   <object-type name="QIODevice"/>
@@ -435,15 +442,23 @@
   <object-type name="QMutex"/>  
   <object-type name="QSemaphore"/>
   <object-type name="QSocketNotifier"/>
+  <object-type name="QSystemLocale"/>
   <object-type name="QTemporaryFile" memory-managed="yes" />
   <object-type name="QTextCodec"/>  
   <object-type name="QTextCodecFactoryInterface"/>
   <object-type name="QTextCodecPlugin"/>  
   <object-type name="QTextDecoder"/>
   <object-type name="QTextEncoder"/>
+  <object-type name="QTimeLine"/> 
   <object-type name="QTimerEvent"/>
   <object-type name="QTranslator"/>
   <object-type name="QWaitCondition"/>
+
+  <object-type name="QFileSystemWatcher">
+    <extra-includes>
+      <include file-name="QStringList" location="global"/>
+    </extra-includes>
+  </object-type>
   
   <object-type name="QTextCodec::ConverterState">
     <include file-name="QTextCodec" location="global"/>

@@ -158,6 +158,7 @@ bool Handler::endElement(const QString &, const QString &, const QString &)
     switch (element.type) {
     case StackElement::ObjectTypeEntry:
     case StackElement::ValueTypeEntry:
+    case StackElement::InterfaceTypeEntry:
         {
             ComplexTypeEntry *centry = static_cast<ComplexTypeEntry *>(element.entry);
             centry->setFunctionModifications(m_function_mods);
@@ -283,16 +284,16 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::EnumTypeEntry:
             attributes["flags"] = "no";
             break;
-        
+
         case StackElement::InterfaceTypeEntry:
         case StackElement::ObjectTypeEntry:
-            attributes["memory-managed"] = "no"; 
+            attributes["memory-managed"] = "no";
             // fall through
         case StackElement::ValueTypeEntry:
             attributes["default-superclass"] = m_defaultSuperclass;
             // fall through
         case StackElement::NamespaceTypeEntry:
-            attributes["package"] = m_defaultPackage;                        
+            attributes["package"] = m_defaultPackage;
             break;
         default:
             ; // nada
@@ -531,7 +532,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
             }
             break;
-        case StackElement::DisableGC: 
+        case StackElement::DisableGC:
             {
                 QString argument = attributes["argument"];
 
@@ -552,7 +553,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 } else if (argument.toLower() == "this") {
                     argument = "0";
-                } 
+                }
 
                 if (!argument.isEmpty() && lang == CodeSnip::ShellCode) {
                     ReportHandler::warning("Argument attribute ignored when disabling GC for "
@@ -1003,7 +1004,6 @@ QString FunctionModification::accessModifierString() const
 FunctionModificationList ComplexTypeEntry::functionModifications(const QString &signature) const
 {
     FunctionModificationList lst;
-
     for (int i=0; i<m_function_mods.count(); ++i) {
         FunctionModification mod = m_function_mods.at(i);
         if (mod.signature == signature)

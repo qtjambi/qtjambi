@@ -48,6 +48,8 @@ public:
         VirtualCall             = 0x2000,
         SkipTemplateParameters  = 0x4000,
 
+        DeclareOnly             = 0x8000,
+
         ForceValueType          = ExcludeReference | ExcludeConst
     };
 

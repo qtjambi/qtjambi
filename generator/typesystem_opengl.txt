@@ -12,7 +12,9 @@
   <value-type name="QGLColormap"/>
   <value-type name="QGLFormat"/>
   
+  <object-type name="QGLColormapData"/>
   <object-type name="QGLContext"/>  
+  <object-type name="QGLFramebufferObject"/>
   <object-type name="QGLPixelBuffer">
     <extra-includes>
         <include file-name="QImage" location="global"/>

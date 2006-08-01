@@ -38,18 +38,19 @@ public:
     void write(QTextStream &s, const MetaJavaClass *java_class);
 
     void writeFunctionOverloads(QTextStream &s, const MetaJavaFunction *java_function,
-                                uint included_attributes, uint excluded_attributes);
+                                uint included_attributes, uint excluded_attributes,
+                                uint options);
     void writeExtraFunctions(QTextStream &s, const MetaJavaClass *java_class);
     void writeFunctionAttributes(QTextStream &s, const MetaJavaFunction *java_function,
                                  uint included_attributes = 0, uint excluded_attributes = 0,
                                  uint options = 0);
     void writeConstructorContents(QTextStream &s, const MetaJavaFunction *java_function,
                                   const QHash<int, bool> &);
-    void writeFunctionArguments(QTextStream &s, const MetaJavaFunction *java_function, 
+    void writeFunctionArguments(QTextStream &s, const MetaJavaFunction *java_function,
         int count = -1, uint options = 0);
     void writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function,
                                       const QHash<int, bool> &);
-    void writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg, 
+    void writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg,
                                     const QString &indent);
     void writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function);
 
