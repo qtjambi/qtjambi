@@ -195,7 +195,7 @@ uint MetaJavaFunction::compareTo(const MetaJavaFunction *other) const
     }
 
     // Compare names
-    int cmp = name().compare(other->name());
+    int cmp = originalName().compare(other->originalName());
 
     if (cmp < 0) {
         result |= NameLessThan;
@@ -226,6 +226,7 @@ MetaJavaFunction *MetaJavaFunction::copy() const
     cpy->setOriginalName(originalName());
     cpy->setOwnerClass(ownerClass());
     cpy->setImplementingClass(implementingClass());
+    cpy->setInterfaceClass(interfaceClass());
     cpy->setFunctionType(functionType());
     cpy->setAttributes(attributes());
     if (type())
@@ -236,8 +237,8 @@ MetaJavaFunction *MetaJavaFunction::copy() const
     foreach (MetaJavaArgument *arg, arguments())
         cpy->addArgument(arg->copy());
 
-	Q_ASSERT((!type() && !cpy->type())
-		|| (type()->instantiations() == cpy->type()->instantiations()));
+    Q_ASSERT((!type() && !cpy->type())
+             || (type()->instantiations() == cpy->type()->instantiations()));
 
     return cpy;
 }
@@ -287,21 +288,10 @@ FunctionModificationList MetaJavaFunction::modifications(const MetaJavaClass *im
 
     minimalSignature = QMetaObject::normalizedSignature(minimalSignature.toLocal8Bit().constData());
 
-    m_modifications = implementor->typeEntry()->functionModifications(minimalSignature);
+    FunctionModificationList modifications =
+        implementor->typeEntry()->functionModifications(minimalSignature);
 
-    QString debug = QString("Adding %1 modifications for function '%2' in class '%3'")
-        .arg(m_modifications.count()).arg(minimalSignature).arg(implementor->name());
-
-    if (m_modifications.count() > 0)
-        ReportHandler::debugMedium(debug);
-    else
-        ReportHandler::debugFull(debug);
-
-    m_resolved_modification = true;
-
-
-
-    return m_modifications;
+    return modifications;
 }
 
 bool MetaJavaFunction::hasModifications(const MetaJavaClass *implementor) const
@@ -346,6 +336,7 @@ MetaJavaClass *MetaJavaClass::extractInterface()
         MetaJavaClass *iface = new MetaJavaClass;
         iface->setAttributes(attributes());
         iface->setBaseClass(0);
+        iface->setPrimaryInterfaceImplementor(this);
 
         iface->setTypeEntry(typeEntry()->designatedInterface());
 
@@ -823,6 +814,10 @@ bool MetaJavaClass::hasSignals() const
 }
 
 
+/**
+ * Adds the specified interface to this class by adding all the
+ * functions in the interface to this class.
+ */
 void MetaJavaClass::addInterface(MetaJavaClass *interface)
 {
     Q_ASSERT(!m_interfaces.contains(interface));
@@ -832,6 +827,16 @@ void MetaJavaClass::addInterface(MetaJavaClass *interface)
         if (!hasFunction(function) && !function->isConstructor()) {
             MetaJavaFunction *cpy = function->copy();
             cpy->setImplementingClass(this);
+
+            // Setup that this function is an interface class.
+            cpy->setInterfaceClass(interface);
+            *cpy += MetaJavaAttributes::InterfaceFunction;
+
+            // Copy the modifications in interface into the implementing classes.
+            FunctionModificationList mods = function->modifications(interface);
+            foreach  (const FunctionModification &mod, mods) {
+                m_type_entry->addFunctionModification(mod);
+            }
 
             // It should be mostly safe to assume that when we implement an interface
             // we don't "pass on" pure virtual functions to our sublcasses...
@@ -902,6 +907,15 @@ void MetaJavaClass::fixFunctions()
 
                     add = false;
                     if (cmp & MetaJavaFunction::EqualArguments) {
+
+//                         if (!(cmp & MetaJavaFunction::EqualReturnType)) {
+//                             ReportHandler::warning(QString("%1::%2 and %3::%4 differ in retur type")
+//                                                    .arg(sf->implementingClass()->name())
+//                                                    .arg(sf->name())
+//                                                    .arg(f->implementingClass()->name())
+//                                                    .arg(f->name()));
+//                         }
+
                         // Same function, propegate virtual...
                         if (!(cmp & MetaJavaFunction::EqualAttributes)) {
                             if (!sf->isFinalInCpp() && f->isFinalInCpp()) {
@@ -919,15 +933,18 @@ void MetaJavaClass::fixFunctions()
                                 .arg(f->name()).arg(name());
                             ReportHandler::warning(warn);
 
-                            // If new visibility is private, we can't do anything. If it isn't, then we
-                            // prefer the parent class's visibility setting for the function.
+                            // If new visibility is private, we can't
+                            // do anything. If it isn't, then we
+                            // prefer the parent class's visibility
+                            // setting for the function.
                             if (!f->isPrivate() && !sf->isPrivate())
                                 f->setVisibility(sf->visibility());
                         }
                     }
 
                     if (sf->isFinal() && !sf->isPrivate()) {
-                        // Shadowed funcion, need to make base class function non-virtual
+                        // Shadowed funcion, need to make base class
+                        // function non-virtual
                         *sf -= MetaJavaAttributes::FinalInJava;
 //                         printf("   --- shadowing... force final in java\n");
                     }
@@ -953,8 +970,11 @@ void MetaJavaClass::fixFunctions()
     foreach (MetaJavaFunction *func, funcs) {
         FunctionModificationList mods = func->modifications(this);
         foreach (const FunctionModification &mod, mods) {
-            if (mod.isRenameModifier())
+            if (mod.isRenameModifier()) {
+                qDebug() << name() << func->originalName() << func << " from "
+                         << func->implementingClass()->name() << "renamed to" << mod.renamedTo();
                 func->setName(mod.renamedTo());
+            }
         }
     }
 

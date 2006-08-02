@@ -779,7 +779,7 @@
 
   <interface-type name="QGraphicsItem">
     <modify-function signature="children()const">	
-      <rename to="itemChildren"/>
+      <rename to="childItems"/>
     </modify-function>
   </interface-type>
   
@@ -817,7 +817,6 @@
   <object-type name="QDateEdit"/>
   <object-type name="QDesktopServices"/>
   <object-type name="QDialog"/>  
-  <object-type name="QDialogButtonBox"/>
   <object-type name="QDirModel"/>
   <object-type name="QDoubleValidator"/>
   <object-type name="QDragEnterEvent"/>
@@ -947,6 +946,13 @@
         public void setShortcut(String key) { setShortcut(new QKeySequence(key)); }
     </inject-code>
   </object-type>
+
+  <object-type name="QDialogButtonBox">
+    <modify-function signature="QDialogButtonBox(Qt::Orientation, QWidget *)">
+      <remove />
+    </modify-function>
+  </object-type>
+
 
   <object-type name="QGraphicsView">
     <extra-includes>

@@ -63,6 +63,7 @@ public:
         SetterFunction              = 0x0800,
 
         FinalOverload               = 0x1000,
+        InterfaceFunction           = 0x2000,
 
         Final                       = FinalInJava | FinalInCpp
     };
@@ -86,7 +87,7 @@ public:
     bool isAbstract() const { return m_attributes & Abstract; }
     bool isStatic() const { return m_attributes & Static; }
     bool isForcedShellImplementation() const { return m_attributes & ForceShellImplementation; }
-
+    bool isInterfaceFunction() const { return m_attributes & InterfaceFunction; }
     bool isFinalOverload() const { return m_attributes & FinalOverload; }
 
     bool isPrivate() const { return m_attributes & Private; }
@@ -319,9 +320,9 @@ public:
           m_type(0),
           m_class(0),
           m_implementing_class(0),
+          m_interface_class(0),
           m_constant(false),
-          m_invalid(false),
-          m_resolved_modification(false)
+          m_invalid(false)
     {
     }
 
@@ -392,6 +393,11 @@ public:
     bool hasModifications(const MetaJavaClass *implementor) const;
     FunctionModificationList modifications(const MetaJavaClass *implementor) const;
 
+    // If this function stems from an interface, this returns the
+    // interface that declares it.
+    const MetaJavaClass *interfaceClass() const { return m_interface_class; }
+    void setInterfaceClass(const MetaJavaClass *cl) { m_interface_class = cl; }
+
 private:
     QString m_name;
     QString m_original_name;
@@ -400,12 +406,10 @@ private:
     MetaJavaType *m_type;
     const MetaJavaClass *m_class;
     const MetaJavaClass *m_implementing_class;
+    const MetaJavaClass *m_interface_class;
     MetaJavaArgumentList m_arguments;
     uint m_constant : 1;
     uint m_invalid  : 1;
-
-    mutable FunctionModificationList m_modifications;
-    mutable bool m_resolved_modification;
 };
 
 
@@ -476,6 +480,7 @@ public:
           m_enclosing_class(0),
           m_base_class(0),
           m_extracted_interface(0),
+          m_primary_interface_implementor(0),
           m_type_entry(0)
     {
     }
@@ -568,8 +573,11 @@ public:
     QStringList baseClassNames() const { return m_base_class_names; }
     void setBaseClassNames(const QStringList &names) { m_base_class_names = names; }
 
+    MetaJavaClass *primaryInterfaceImplementor() const { return m_primary_interface_implementor; }
+    void setPrimaryInterfaceImplementor(MetaJavaClass *cl) { m_primary_interface_implementor = cl; }
+
     const ComplexTypeEntry *typeEntry() const { return m_type_entry; }
-    void setTypeEntry(const ComplexTypeEntry *type) { m_type_entry = type; }
+    void setTypeEntry(ComplexTypeEntry *type) { m_type_entry = type; }
 
 private:
     uint m_namespace : 1;
@@ -585,9 +593,10 @@ private:
     MetaJavaEnumList m_enums;
     MetaJavaClassList m_interfaces;
     MetaJavaClass *m_extracted_interface;
+    MetaJavaClass *m_primary_interface_implementor;
 
     QStringList m_base_class_names;
-    const ComplexTypeEntry *m_type_entry;
+    ComplexTypeEntry *m_type_entry;
 };
 
 inline MetaJavaFunctionList MetaJavaClass::allVirtualFunctions() const
