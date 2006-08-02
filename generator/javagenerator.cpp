@@ -418,9 +418,10 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
         }
     }
 
-    // The overloads
-    writeFunctionOverloads(s, java_function, include_attributes, exclude_attributes,
-                           java_class->isInterface() ? DeclareOnly : NoOption);
+    if (!java_class->isInterface()) {
+        // The overloads
+        writeFunctionOverloads(s, java_function, include_attributes, exclude_attributes);
+    }
 
     // The actual function
     s << "    ";
@@ -461,8 +462,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
 }
 
 void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunction *java_function,
-                                           uint include_attributes, uint exclude_attributes,
-                                           uint options)
+                                           uint include_attributes, uint exclude_attributes)
 {
     MetaJavaArgumentList arguments = java_function->arguments();
     int argument_count = arguments.size();
@@ -486,58 +486,52 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
             java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
         s << java_function->name() << "(";
         writeFunctionArguments(s, java_function, used_arguments);
-        s << ")";
+        s << ") {\n        ";
+        if (java_function->type())
+            s << "return ";
+        if (java_function->isConstructor())
+            s << "this";
+        else
+            s << java_function->name();
+        s << "(";
+        for (int j=0; j<argument_count; ++j) {
+            if (j != 0)
+                s << ", ";
+            if (j < used_arguments) {
+                s << arguments.at(j)->name();
+            } else {
 
-        if (options & DeclareOnly) {
-            s << ";" << endl;
-        } else {
-            s << "{\n        ";
-            if (java_function->type())
-                s << "return ";
-            if (java_function->isConstructor())
-                s << "this";
-            else
-                s << java_function->name();
-            s << "(";
-            for (int j=0; j<argument_count; ++j) {
-                if (j != 0)
-                    s << ", ";
-                if (j < used_arguments) {
-                    s << arguments.at(j)->name();
+                MetaJavaType *arg_type = arguments.at(j)->type();
+                if (arg_type->isNativePointer()) {
+                    s << "(QNativePointer)";
                 } else {
-
-                    MetaJavaType *arg_type = arguments.at(j)->type();
-                    if (arg_type->isNativePointer()) {
-                        s << "(QNativePointer)";
-                    } else {
-                        const TypeEntry *type = arguments.at(j)->type()->typeEntry();
-                        if (type->designatedInterface())
-                            type = type->designatedInterface();
-                        if (!type->isEnum() && !type->isFlags())
-                            s << "(" << type->qualifiedJavaName() << ")";
-                    }
-
-                    QString defaultExpr = arguments.at(j)->defaultValueExpression();
-
-                    int pos = defaultExpr.indexOf(".");
-                    if (pos > 0) {
-                        QString someName = defaultExpr.left(pos);
-                        ComplexTypeEntry *ctype =
-                            TypeDatabase::instance()->findComplexType(someName);
-                        QString replacement;
-                        if (ctype != 0 && ctype->isVariant())
-                            replacement = "com.trolltech.qt.QVariant.";
-                        else if (ctype != 0)
-                            replacement = ctype->javaPackage() + "." + ctype->javaName() + ".";
-                        else
-                            replacement = someName + ".";
-                        defaultExpr = defaultExpr.replace(someName + ".", replacement);
-                    }
-                    s << defaultExpr;
+                    const TypeEntry *type = arguments.at(j)->type()->typeEntry();
+                    if (type->designatedInterface())
+                        type = type->designatedInterface();
+                    if (!type->isEnum() && !type->isFlags())
+                        s << "(" << type->qualifiedJavaName() << ")";
                 }
+
+                QString defaultExpr = arguments.at(j)->defaultValueExpression();
+
+                int pos = defaultExpr.indexOf(".");
+                if (pos > 0) {
+                    QString someName = defaultExpr.left(pos);
+                    ComplexTypeEntry *ctype =
+                        TypeDatabase::instance()->findComplexType(someName);
+                    QString replacement;
+                    if (ctype != 0 && ctype->isVariant())
+                        replacement = "com.trolltech.qt.QVariant.";
+                    else if (ctype != 0)
+                        replacement = ctype->javaPackage() + "." + ctype->javaName() + ".";
+                    else
+                        replacement = someName + ".";
+                    defaultExpr = defaultExpr.replace(someName + ".", replacement);
+                }
+                s << defaultExpr;
             }
-            s << ");\n    }" << endl;
         }
+        s << ");\n    }" << endl;
     }
 }
 

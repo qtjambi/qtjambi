@@ -38,8 +38,7 @@ public:
     void write(QTextStream &s, const MetaJavaClass *java_class);
 
     void writeFunctionOverloads(QTextStream &s, const MetaJavaFunction *java_function,
-                                uint included_attributes, uint excluded_attributes,
-                                uint options);
+                                uint included_attributes, uint excluded_attributes);
     void writeExtraFunctions(QTextStream &s, const MetaJavaClass *java_class);
     void writeFunctionAttributes(QTextStream &s, const MetaJavaFunction *java_function,
                                  uint included_attributes = 0, uint excluded_attributes = 0,
