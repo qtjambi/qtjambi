@@ -893,13 +893,8 @@ void CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
             s << "return ";
         if (static_call) {
             const MetaJavaClass *implementor = java_function->implementingClass();
-            if (java_function->isInterfaceFunction()) {
+            if (java_function->isInterfaceFunction())
                 implementor = java_function->interfaceClass()->primaryInterfaceImplementor();
-                qDebug() << "changed implementor from"
-                         << java_function->implementingClass()->name()
-                         << "to"
-                         << implementor->name();
-            }
             s << implementor->qualifiedCppName() << "::";
         }
         s << java_function->originalName() << "(";

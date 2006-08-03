@@ -971,8 +971,8 @@ void MetaJavaClass::fixFunctions()
         FunctionModificationList mods = func->modifications(this);
         foreach (const FunctionModification &mod, mods) {
             if (mod.isRenameModifier()) {
-                qDebug() << name() << func->originalName() << func << " from "
-                         << func->implementingClass()->name() << "renamed to" << mod.renamedTo();
+//                 qDebug() << name() << func->originalName() << func << " from "
+//                          << func->implementingClass()->name() << "renamed to" << mod.renamedTo();
                 func->setName(mod.renamedTo());
             }
         }
