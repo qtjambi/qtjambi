@@ -535,6 +535,16 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
     }
 }
 
+void generateInitializer(QTextStream &s, const QString &package, CodeSnip::Position pos)
+{
+    QList<CodeSnip> snips =
+        ((TypeSystemTypeEntry *) TypeDatabase::instance()->findType(package))->snips;
+
+    foreach (const CodeSnip &snip, snips)
+        if (snip.position == pos)
+            s << snip.code;
+}
+
 void JavaGenerator::generate()
 {
     Generator::generate();
@@ -562,12 +572,17 @@ void JavaGenerator::generate()
             s << "package " << cls->package() << ";" << endl << endl
               << "class QtJambi_LibraryInitializer" << endl
               << "{" << endl
-              << "    static {" << endl
-              << "        com.trolltech.qt.QtJambiInternal.loadLibrary(\""
-              << cls->package().replace(".", "_") << "\", \""
-              << cls->package().replace(".", "_") << "_debuglib\");" << endl
-              << "        __qt_initLibrary();" << endl
-              << "    }" << endl
+              << "    static {" << endl;
+
+            generateInitializer(s, cls->package(), CodeSnip::Beginning);
+
+            s << "        com.trolltech.qt.Utilities.loadJambiLibrary(\""
+              << cls->package().replace(".", "_") << "\");" << endl
+              << "        __qt_initLibrary();" << endl;
+
+            generateInitializer(s, cls->package(), CodeSnip::End);
+
+            s << "    }" << endl
               << "    private native static void __qt_initLibrary();" << endl
               << "    static void init() { };" << endl
               << "}" << endl << endl;

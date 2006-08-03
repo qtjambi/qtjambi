@@ -57,7 +57,8 @@ struct CodeSnip
         JavaCode,
         NativeCode,
         ShellCode,
-        ShellDeclaration
+        ShellDeclaration,
+        PackageInitializer
     };
 
     enum Position {
@@ -162,7 +163,8 @@ public:
         VariantType,
         CharType,
         ArrayType,
-        CustomType
+        TypeSystemType,
+        CustomType,
     };
 
     enum CodeGeneration {
@@ -201,6 +203,7 @@ public:
     bool isThread() const { return m_type == ThreadType; }
     bool isCustom() const { return m_type == CustomType; }
     bool isBasicValue() const { return m_type == BasicValueType; }
+    bool isTypeSystem() const { return m_type == TypeSystemType; }
 
     virtual bool preferredConversion() const { return m_preferred_conversion; }
     virtual void setPreferredConversion(bool b) { m_preferred_conversion = b; }
@@ -251,6 +254,19 @@ private:
     bool m_preferred_conversion;
 };
 typedef QHash<QString, TypeEntry *> TypeEntryHash;
+
+
+class TypeSystemTypeEntry : public TypeEntry
+{
+public:
+    TypeSystemTypeEntry(const QString &name)
+        : TypeEntry(name, TypeSystemType)
+    {
+    };
+
+    QList<CodeSnip> snips;
+};
+
 
 class ThreadTypeEntry : public TypeEntry
 {
@@ -570,7 +586,7 @@ public:
     void setOrigin(ObjectTypeEntry *origin) { m_origin = origin; }
 
     virtual bool isNativeIdBased() const { return true; }
-    virtual QString qualifiedCppName() const { 
+    virtual QString qualifiedCppName() const {
         return name().left(name().length() - interfaceName("").length());
     }
 

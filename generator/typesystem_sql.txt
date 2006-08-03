@@ -1,4 +1,8 @@
 <typesystem package="com.trolltech.qt.sql" default-superclass="com.trolltech.qt.QtObject">
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtSql");
+  </inject-code>
+
   <rejection class="QSqlDriverCreator" />
   <rejection class="QSqlDriverPlugin" />
   <rejection class="QSqlDriverFactoryInterface" />

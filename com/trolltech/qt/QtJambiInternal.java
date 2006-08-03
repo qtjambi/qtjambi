@@ -48,14 +48,4 @@ public class QtJambiInternal {
         mb.exec();
         mb.dispose();
     }
-
-    public static void loadLibrary(String release, String debug) {
-        String tryLoad = System.getProperty("com.trolltech.qt.debug") != null ? debug : release;
-        try {
-            System.loadLibrary(tryLoad);
-        } catch (Error e) {
-	    System.err.println("failed to load library: '" + tryLoad + "'");
-	    throw e;
-	}
-    }
 }

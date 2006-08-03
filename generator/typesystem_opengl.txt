@@ -1,4 +1,8 @@
 <typesystem package="com.trolltech.qt.opengl" default-superclass="com.trolltech.qt.QtObject">  
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtOpenGL");
+  </inject-code>
+
   <rejection class="QGLWidget" function-name="setMouseTracking"/>
   
   <primitive-type name="GLuint" java-name="int" preferred-conversion="no" jni-name="jint"/>

@@ -1,4 +1,7 @@
 <typesystem package="com.trolltech.qt.gui" default-superclass="com.trolltech.qt.QtObject">
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+  </inject-code>
 
   <rejection class="*" function-name="d_func"/>
 

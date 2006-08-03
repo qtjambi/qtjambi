@@ -148,12 +148,14 @@ void Handler::fetchAttributeValues(const QString &name, const QXmlAttributes &at
     }
 }
 
-bool Handler::endElement(const QString &, const QString &, const QString &)
+bool Handler::endElement(const QString &name, const QString &, const QString &)
 {
     if (m_stack.isEmpty())
         return true;
 
     StackElement element = m_stack.top();
+
+    CodeSnip snip;
 
     switch (element.type) {
     case StackElement::ObjectTypeEntry:
@@ -179,14 +181,14 @@ bool Handler::endElement(const QString &, const QString &, const QString &)
             func.code = m_current_data;
             element.entry->setCustomConstructor(func);
         }
-        break ;
+        break;
     case StackElement::CustomMetaDestructor:
         {
             CustomFunction func = element.entry->customDestructor();
             func.code = m_current_data;
             element.entry->setCustomDestructor(func);
         }
-        break ;
+        break;
     default:
         break;
     }
@@ -198,13 +200,16 @@ bool Handler::endElement(const QString &, const QString &, const QString &)
 
         if (element.type & StackElement::CodeSnipMask) {
             switch (parent.type) {
+            case StackElement::Root:
+                ((TypeSystemTypeEntry *) parent.entry)->snips.last().code = m_current_data;
+                break;
             case StackElement::ModifyFunction:
                 m_function_mods.last().snips.last().code = m_current_data;
-                break ;
+                break;
             case StackElement::ObjectTypeEntry:
             case StackElement::ValueTypeEntry:
                 m_code_snips.last().code = m_current_data;
-                break ;
+                break;
             default:
                 Q_ASSERT(false);
             };
@@ -216,13 +221,11 @@ bool Handler::endElement(const QString &, const QString &, const QString &)
 
 bool Handler::characters(const QString &ch)
 {
-    if (!m_stack.isEmpty()) {
-        StackElement &element = m_stack.top();
-        if (element.type & StackElement::CodeSnipMask
-            || element.type & StackElement::CustomMetaConstructor
-            || element.type & StackElement::CustomMetaDestructor)
-            m_current_data += ch;
-    }
+    StackElement &element = m_stack.top();
+    if (element.type & StackElement::CodeSnipMask
+        || element.type & StackElement::CustomMetaConstructor
+        || element.type & StackElement::CustomMetaDestructor)
+        m_current_data += ch;
     return true;
 }
 
@@ -267,7 +270,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
     element.type = tagNames[tagName];
     if (element.type & StackElement::TypeEntryMask) {
-        if (!m_stack.isEmpty()) {
+        if (m_stack.top().type != StackElement::Root) {
             m_error = "Nested types not supported";
             return false;
         }
@@ -280,7 +283,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["java-name"] = QString();
             attributes["jni-name"] = QString();
             attributes["preferred-conversion"] = "yes";
-            break ;
+            break;
         case StackElement::EnumTypeEntry:
             attributes["flags"] = "no";
             break;
@@ -343,7 +346,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 element.entry = type;
             }
-            break ;
+            break;
         case StackElement::EnumTypeEntry:
             element.entry = new EnumTypeEntry(name);
             element.entry->setCodeGeneration(m_generate);
@@ -356,7 +359,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 ftype->setCodeGeneration(m_generate);
                 m_database->addType(ftype);
             }
-            break ;
+            break;
         case StackElement::InterfaceTypeEntry:
             {
                 ObjectTypeEntry *otype = new ObjectTypeEntry(name);
@@ -399,7 +402,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 if (ctype != 0)
                     ctype->setJavaPackage(attributes["package"]);
             }
-            break ;
+            break;
         default:
             Q_ASSERT(false);
         };
@@ -410,14 +413,15 @@ bool Handler::startElement(const QString &, const QString &n,
         bool topLevel = element.type == StackElement::Root
       || element.type == StackElement::SuppressedWarning
       || element.type == StackElement::Rejection
-      || element.type == StackElement::LoadTypesystem;
+      || element.type == StackElement::LoadTypesystem
+      || element.type == StackElement::InjectCode;
 
-        if (!topLevel && m_stack.isEmpty()) {
+        if (!topLevel && m_stack.top().type == StackElement::Root) {
             m_error = QString("Tag requires parent: '%1'").arg(tagName);
             return false;
         }
 
-        StackElement topElement = topLevel ? StackElement() : m_stack.top();
+        StackElement topElement = m_stack.isEmpty() ? StackElement() : m_stack.top();
         element.entry = topElement.entry;
 
         QHash<QString, QString> attributes;
@@ -425,7 +429,7 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::Root:
             attributes["package"] = QString();
             attributes["default-superclass"] = QString();
-            break ;
+            break;
         case StackElement::LoadTypesystem:
             attributes["name"] = QString();
             attributes["generate"] = "yes";
@@ -435,35 +439,35 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::SuppressedWarning:
             attributes["text"] = QString();
-            break ;
+            break;
         case StackElement::ReplaceDefaultExpression:
             attributes["index"] = QString();
             attributes["with"] = QString();
-            break ;
+            break;
         case StackElement::ModifyFunction:
             attributes["signature"] = QString();
             attributes["class"] = "java";
-            break ;
+            break;
         case StackElement::ModifyField:
             attributes["name"] = QString();
             attributes["write"] = "true";
             attributes["read"] = "true";
-            break ;
+            break;
         case StackElement::Access:
             attributes["modifier"] = QString();
             break;
         case StackElement::Include:
             attributes["file-name"] = QString();
             attributes["location"] = QString();
-            break ;
+            break;
         case StackElement::CustomMetaConstructor:
             attributes["name"] = topElement.entry->name().toLower() + "_create";
             attributes["param-name"] = "copy";
-            break ;
+            break;
         case StackElement::CustomMetaDestructor:
             attributes["name"] = topElement.entry->name().toLower() + "_delete";
             attributes["param-name"] = "copy";
-            break ;
+            break;
         case StackElement::InjectCode:
             if (topElement.type == StackElement::ModifyFunction) {
                 FunctionModification mod = m_function_mods.last();
@@ -474,18 +478,21 @@ bool Handler::startElement(const QString &, const QString &n,
                 case CodeSnip::ShellCode: attributes["class"] = "shell"; break;
                 case CodeSnip::ShellDeclaration: attributes["class"] = "shell-declaration"; break;
                 };
+            } else if (topElement.type == StackElement::Root) {
+                attributes["class"] = "library-initializer";
+
             } else {
                 attributes["class"] = "java";
             }
             attributes["position"] = "beginning";
-            break ;
+            break;
         case StackElement::ArgumentMap:
             attributes["position"] = "1";
             attributes["meta-name"] = QString();
-            break ;
+            break;
         case StackElement::Rename:
             attributes["to"] = QString();
-            break ;
+            break;
         case StackElement::Rejection:
             attributes["class"] = "*";
             attributes["function-name"] = "*";
@@ -504,8 +511,10 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::Root:
             m_defaultPackage = attributes["package"];
             m_defaultSuperclass = attributes["default-superclass"];
-            element.type = StackElement::None; // don't push on stack
-            break ;
+            element.type = StackElement::Root;
+            element.entry = new TypeSystemTypeEntry(m_defaultPackage);
+            TypeDatabase::instance()->addType(element.entry);
+            break;
         case StackElement::LoadTypesystem:
             {
                 QString name = attributes["name"];
@@ -570,7 +579,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 ReportHandler::warning("Suppressed warning with no text specified");
             else
                 m_database->addSuppressedWarning(attributes["text"]);
-            break ;
+            break;
         case StackElement::ArgumentMap:
             {
                 if (!(topElement.type & StackElement::CodeSnipMask)) {
@@ -603,7 +612,7 @@ bool Handler::startElement(const QString &, const QString &n,
                                            "into functions.");
                 }
             }
-            break ;
+            break;
         case StackElement::Rename:
         case StackElement::Removal:
         case StackElement::Access:
@@ -661,7 +670,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 FunctionModification::Modifiers mod = modifierNames[modifier];
                 m_function_mods.last().modifiers |= mod;
             }
-            break ;
+            break;
 
         case StackElement::ModifyField:
             {
@@ -719,7 +728,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 m_function_mods << mod;
             }
-            break ;
+            break;
         case StackElement::ReplaceDefaultExpression:
             if (!(topElement.type & StackElement::ModifyFunction)) {
                 m_error = "Replace default expression only allowed as child of modify function";
@@ -733,7 +742,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
             m_function_mods.last().modifiers |= FunctionModification::ReplaceExpression;
             m_function_mods.last().renamed_default_expressions[attributes["index"].toUInt()] = attributes["with"];
-            break ;
+            break;
         case StackElement::CustomMetaConstructor:
         case StackElement::CustomMetaDestructor:
 
@@ -745,22 +754,16 @@ bool Handler::startElement(const QString &, const QString &n,
                 else
                     element.entry->setCustomDestructor(func);
             }
-            break ;
+            break;
         case StackElement::InjectCode:
             {
-                if ((topElement.type & StackElement::ComplexTypeEntryMask) == 0 &&
-                    (topElement.type & StackElement::ModifyFunction) == 0) {
-                    m_error = "Modify function requires complex type entry or function modification "
-                              "as parent";
-                    return false;
-                }
-
                 static QHash<QString, CodeSnip::Language> languageNames;
                 if (languageNames.isEmpty()) {
                     languageNames["java"] = CodeSnip::JavaCode;
                     languageNames["native"] = CodeSnip::NativeCode;
                     languageNames["shell"] = CodeSnip::ShellCode;
                     languageNames["shell-declaration"] = CodeSnip::ShellDeclaration;
+                    languageNames["library-initializer"] = CodeSnip::PackageInitializer;
                 }
 
                 QString className = attributes["class"].toLower();
@@ -785,7 +788,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 snip.language = languageNames[className];
                 snip.position = positionNames[position];
 
-                if (topElement.type & StackElement::ModifyFunction) {
+                if (topElement.type == StackElement::ModifyFunction) {
                     FunctionModification mod = m_function_mods.last();
                     if (mod.language != CodeSnip::ShellCode) {
                         m_error = "Code injection in functions only supported for shell functions";
@@ -800,11 +803,14 @@ bool Handler::startElement(const QString &, const QString &n,
 
                     m_function_mods.last().snips << snip;
                     element.type = StackElement::InjectCodeInFunction;
-                } else {
+                } else if (topElement.type == StackElement::Root) {
+                    ((TypeSystemTypeEntry *) element.entry)->snips << snip;
+
+                } else if (topElement.type != StackElement::Root) {
                     m_code_snips << snip;
                 }
             }
-            break ;
+            break;
         case StackElement::Include:
             {
                 QString location = attributes["location"].toLower();
@@ -842,7 +848,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     ctype->setInclude(inc);
                 }
             }
-            break ;
+            break;
         case StackElement::Rejection:
             {
                 QString cls = attributes["class"];
@@ -857,7 +863,7 @@ bool Handler::startElement(const QString &, const QString &n,
             }
             break;
         default:
-            ; // nada
+            break; // nada
         };
     }
 

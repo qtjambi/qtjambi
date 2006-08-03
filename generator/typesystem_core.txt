@@ -1,4 +1,7 @@
 <typesystem package="com.trolltech.qt.core" default-superclass="com.trolltech.qt.QtObject">
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
+  </inject-code>
 
   <rejection class="*" function-name="d_func"/>
 
