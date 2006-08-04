@@ -312,7 +312,6 @@
 ./com/trolltech/qt/gui/QStackedLayout.java
 ./com/trolltech/qt/gui/QStackedWidget.java
 ./com/trolltech/qt/gui/QStandardItem.java
-./com/trolltech/qt/gui/QStandardItemEditorCreator.java
 ./com/trolltech/qt/gui/QStandardItemModel.java
 ./com/trolltech/qt/gui/QStatusBar.java
 ./com/trolltech/qt/gui/QStatusTipEvent.java

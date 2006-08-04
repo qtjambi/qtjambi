@@ -41,7 +41,7 @@ public class Utilities {
     	String lib = jniLibraryName(library);
     	loadLibrary(lib);
     }
-    
+
     public static boolean loadLibrary(String lib) {
         try {
             Runtime rt = Runtime.getRuntime();
@@ -53,7 +53,6 @@ public class Utilities {
                 File f = new File(path, lib);
                 if (f.exists()) {
                     rt.load(f.getAbsolutePath());
-                    System.out.println("successfully loaded: " + f.getAbsolutePath());
                     return true;
                 }
             }
@@ -74,7 +73,7 @@ public class Utilities {
                 copy(libUrl, destLib);
             }
             rt.load(destLib.getAbsolutePath());
-        } catch (Throwable t) {            
+        } catch (Throwable t) {
             System.err.println(t.getMessage());
             return false;
         }

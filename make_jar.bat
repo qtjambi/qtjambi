@@ -9,7 +9,8 @@ cp -r com d:/tmp/jar_package/com
 
 copy %qtdir%\bin\*4.dll d:\tmp\jar_package
 copy bin\*.dll d:\tmp\jar_package
-copy "C:\Program Files (x86)\Microsoft Visual Studio 8\VC\redist\amd64\Microsoft.VC80.CRT\*.dll" d:\tmp\jar_package
+copy c:\windows\system32\msvcr71.dll d:\tmp\jar_package
+copy c:\windows\system32\msvcp71.dll d:\tmp\jar_package
 
 pushd d:\tmp\jar_package
 
