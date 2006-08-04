@@ -1,4 +1,4 @@
-javac com\trolltech\qt\QtJambiInternal.java
+javac @java_files
 
 if NOT "%errorlevel%" == "0" goto end
 
@@ -26,5 +26,9 @@ jar -cfm qtjambi-win.jar manifest.txt com *.dll
 popd
 
 cp d:/tmp/jar_package/qtjambi-win.jar .
+
+jarsigner qtjambi-win.jar gunnar
+
+cp -f qtjambi-win.jar d:/tmp
 
 :end

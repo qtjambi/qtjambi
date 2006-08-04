@@ -24,6 +24,9 @@ public class Utilities {
     private static final String DEBUG_SUFFIX = "_debuglib";
 
     public static void loadSystemLibraries() {
+
+        System.out.println("CLASSPATH: " + System.getProperty("java.class.path"));
+
         List<String> libs = readSystemLibraries();
         for (String s : libs) {
             loadLibrary(s);
@@ -44,6 +47,13 @@ public class Utilities {
 
     public static boolean loadLibrary(String lib) {
         try {
+            try {
+                System.loadLibrary(stripLibraryName(lib));
+                return true;
+            } catch (Error e) {
+                e.printStackTrace();
+            }
+
             Runtime rt = Runtime.getRuntime();
 
             // First look in the library path for the libraries...
@@ -52,6 +62,7 @@ public class Utilities {
             for (String path : libraryPaths) {
                 File f = new File(path, lib);
                 if (f.exists()) {
+                    System.out.println("loadLibrary(1): trying to load: " + f.getAbsolutePath());
                     rt.load(f.getAbsolutePath());
                     return true;
                 }
@@ -60,7 +71,7 @@ public class Utilities {
             // If not in the library path, try to search in the classpath,
             // including .jar files and unpack to a temp directory, then load
             // from there.
-            URL libUrl = ClassLoader.getSystemClassLoader().getResource(lib);
+            URL libUrl = Utilities.class.getClassLoader().getResource(lib);
             if (libUrl == null)
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
 
@@ -72,9 +83,11 @@ public class Utilities {
                 tmpLibDir.mkdirs();
                 copy(libUrl, destLib);
             }
+            System.out.println("loadLibrary(2): trying to load: " + destLib.getAbsolutePath());
             rt.load(destLib.getAbsolutePath());
         } catch (Throwable t) {
             System.err.println(t.getMessage());
+            t.printStackTrace();
             return false;
         }
         return true;
@@ -134,6 +147,16 @@ public class Utilities {
     }
 
 
+    private static String stripLibraryName(String lib) {
+        // Strip away "lib" prefix
+        if (operatingSystem != OperatingSystem.Windows)
+            lib = lib.substring(3);
+        // Strip away the library postfix...
+        int dot = lib.lastIndexOf('.');
+        return lib.substring(0, dot);
+    }
+
+
     private static String qtLibraryName(String lib) {
         switch (operatingSystem) {
         case Windows:
@@ -160,16 +183,16 @@ public class Utilities {
             else throw new RuntimeException("Unhandled operating system");
         }
 
-        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("com/trolltech/qt/resources/syslibs." + runtime);
+        InputStream in = Utilities.class.getClassLoader().getResourceAsStream("com/trolltech/qt/resources/syslibs." + runtime);
+
         List<String> list = new ArrayList<String>();
-
-        StreamTokenizer tok = new StreamTokenizer(new BufferedReader(new InputStreamReader(in)));
-
         try {
+            StreamTokenizer tok =
+                new StreamTokenizer(new BufferedReader(new InputStreamReader(in)));
             while (tok.nextToken() != StreamTokenizer.TT_EOF) {
                 list.add(tok.sval);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
