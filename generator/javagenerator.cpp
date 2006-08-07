@@ -263,6 +263,20 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
               << arg->name() << ".length + \", expected: " << type->arrayElementCount() << "\");"
               << endl << endl;
         }
+
+        if (type->isEnum()) {
+            EnumTypeEntry *et = (EnumTypeEntry *) type->typeEntry();
+            if (!et->lowerBound().isEmpty()) {
+                s << "        if (" << arg->name() << " < " << et->lowerBound() << ")" << endl
+                  << "            throw new IllegalArgumentException(\"Argument " << arg->name()
+                  << " is less than lowerbound " << et->lowerBound() << "\");" << endl;
+            }
+            if (!et->upperBound().isEmpty()) {
+                s << "        if (" << arg->name() << " > " << et->upperBound() << ")" << endl
+                  << "            throw new IllegalArgumentException(\"Argument " << arg->name()
+                  << " is greated than upperbound " << et->upperBound() << "\");" << endl;
+            }
+        }
     }
 
     if (!java_function->isConstructor() && !java_function->isStatic()) {

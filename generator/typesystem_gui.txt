@@ -132,7 +132,7 @@
   <enum-type name="QFrame::StyleMask"/>
   <enum-type name="QFrame::enum_1"/>
   <enum-type name="QGradient::CoordinateMode"/>
-  <enum-type name="QGradient::Spread"/>
+  <enum-type name="QGradient::Spread" lower-bound="QGradient.PadSpread" upper-bound="QGradient.RepeatSpread"/>
   <enum-type name="QGradient::Type"/>
   <enum-type name="QGraphicsEllipseItem::enum_1"/>
   <enum-type name="QGraphicsItem::Extension"/>

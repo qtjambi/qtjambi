@@ -397,11 +397,22 @@ public:
 
     virtual bool preferredConversion() const { return false; }
 
+    bool isBoundsChecked() const { return m_lower_bound.isEmpty() && m_upper_bound.isEmpty(); }
+
+    QString upperBound() const { return m_upper_bound; }
+    void setUpperBound(const QString &bound) { m_upper_bound = bound; }
+
+    QString lowerBound() const { return m_lower_bound; }
+    void setLowerBound(const QString &bound) { m_lower_bound = bound; }
+
 private:
     QString m_qualified_cpp_name;
     QString m_package_name;
     QString m_qualifier;
     QString m_java_name;
+
+    QString m_lower_bound;
+    QString m_upper_bound;
 };
 
 

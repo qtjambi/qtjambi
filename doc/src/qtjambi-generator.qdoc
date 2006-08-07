@@ -392,7 +392,9 @@
     \code
         <typesystem ...>
             <enum-type name="..."
-                flags="yes | no" (optional) />
+                flags="yes | no" (optional)
+                lower-bound="..." (optional)
+                upper-bound="..." (optional) />
         </typesystem>
     \endcode
 
@@ -400,6 +402,10 @@
     (e.g.,"Qt::FillRule"). If the optional \c flags attribute is set
     to \c yes, the generator will expect an existing QFlags<T> for the
     given enum type.
+
+    The \c lower-bound and \c upper-bound attributes are used to specify
+    runtime boundschecking for the enum value. The value must be a
+    compilable java statement, such as "QGradient.PadSpread".
 
     \row
     \o \bold value-type \target value-type

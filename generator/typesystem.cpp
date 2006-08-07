@@ -286,6 +286,8 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::EnumTypeEntry:
             attributes["flags"] = "no";
+            attributes["upper-bound"] = QString();
+            attributes["lower-bound"] = QString();
             break;
 
         case StackElement::InterfaceTypeEntry:
@@ -351,6 +353,8 @@ bool Handler::startElement(const QString &, const QString &n,
             element.entry = new EnumTypeEntry(name);
             element.entry->setCodeGeneration(m_generate);
             ((EnumTypeEntry *) element.entry)->setJavaPackage(attributes["package"]);
+            ((EnumTypeEntry *) element.entry)->setUpperBound(attributes["upper-bound"]);
+            ((EnumTypeEntry *) element.entry)->setLowerBound(attributes["lower-bound"]);
 
             // put in the flags parallel...
             if (!attributes["flags"].isEmpty()) {
@@ -359,6 +363,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 ftype->setCodeGeneration(m_generate);
                 m_database->addType(ftype);
             }
+
             break;
         case StackElement::InterfaceTypeEntry:
             {
