@@ -481,6 +481,9 @@
     <modify-function signature="QPixmap(const char * [])">
         <access modifier="private"/>
     </modify-function>
+    <modify-function signature="fill(const QColor &amp;)"> 
+      <replace-default-expression index="0" with="QColor.white"/>
+    </modify-function>
     <inject-code>
         public QPixmap(String xpm[]) 
         {
@@ -704,6 +707,9 @@
     <modify-function signature="QColor(uint)">
         <remove/>
     </modify-function>
+    <modify-function signature="QColor(Qt::GlobalColor)">
+      <access modifier="private"/>
+    </modify-function>
     <modify-function signature="QColor(QColor::Spec)">
         <remove/>
     </modify-function>
@@ -813,7 +819,6 @@
   <object-type name="QCleanlooksStyle"/>
   <object-type name="QClipboardEvent"/>
   <object-type name="QCloseEvent"/>  
-  <object-type name="QColorDialog"/>  
   <object-type name="QCommonStyle"/>
   <object-type name="QContextMenuEvent"/>
   <object-type name="QDataWidgetMapper"/>
@@ -956,6 +961,11 @@
     </modify-function>
   </object-type>
 
+  <object-type name="QColorDialog">
+    <modify-function signature="getColor(const QColor &amp;, QWidget *)">
+      <replace-default-expression index="0" with="QColor.white"/>      
+    </modify-function>
+  </object-type>
 
   <object-type name="QGraphicsView">
     <extra-includes>
@@ -1307,7 +1317,10 @@
   <object-type name="QLCDNumber">
   </object-type>
   
-  <object-type name="QSplashScreen">  
+  <object-type name="QSplashScreen">
+    <modify-function signature="showMessage(const QString &amg;, int, const QColor &amp;)">
+      <replace-default-expression index="2" with="QColor.black"/>
+    </modify-function>
   </object-type>
   
   

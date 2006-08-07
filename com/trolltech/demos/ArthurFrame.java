@@ -34,7 +34,7 @@ class ArthurFrame extends QWidget
         super(parent);
 
         m_tile = new QPixmap(100, 100);
-        m_tile.fill(new QColor(Qt.white));
+        m_tile.fill(QColor.white);
 
         QPainter pt = new QPainter();
         pt.begin(m_tile);
@@ -96,7 +96,7 @@ class ArthurFrame extends QWidget
                 clearRect.width() - shade + 1, shade);
         painter.setRenderHint(QPainter.Antialiasing, false);
         painter.setBrush(new QBrush(new QColor(255, 255, 255, 220)));
-        painter.setPen(new QColor(Qt.black));
+        painter.setPen(QColor.black);
         painter.drawRect(clearRect);
 
         painter.setClipRegion(new QRegion(textRect), Qt.IntersectClip);
@@ -104,9 +104,9 @@ class ArthurFrame extends QWidget
 
         QAbstractTextDocumentLayout_PaintContext ctx = new QAbstractTextDocumentLayout_PaintContext();
         QLinearGradient g = new QLinearGradient(0, 0, 0, textRect.height());
-        g.setColorAt(0, new QColor(Qt.black));
-        g.setColorAt(0.9, new QColor(Qt.black));
-        g.setColorAt(1, new QColor(Qt.transparent));
+        g.setColorAt(0, QColor.black);
+        g.setColorAt(0.9, QColor.black);
+        g.setColorAt(1, QColor.transparent);
 
         QPalette pal = palette();
         pal.setBrush(QPalette.Text, new QBrush(g));
