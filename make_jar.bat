@@ -7,10 +7,12 @@ md d:\tmp\jar_package
 
 cp -r com d:/tmp/jar_package/com
 
+if NOT "%1" == "win32" goto after_win32_copy
 copy %qtdir%\bin\*4.dll d:\tmp\jar_package
 copy bin\*.dll d:\tmp\jar_package
 copy c:\windows\system32\msvcr71.dll d:\tmp\jar_package
 copy c:\windows\system32\msvcp71.dll d:\tmp\jar_package
+:after_win32_copy
 
 pushd d:\tmp\jar_package
 
@@ -21,14 +23,19 @@ echo Created-By: 1.5.0_07 (Sun Microsystems Inc.)>> manifest.txt
 echo Main-Class: com.trolltech.launcher.Launcher>> manifest.txt
 echo.>> manifest.txt
 
-jar -cfm qtjambi-win.jar manifest.txt com *.dll
+jar -cfm ../qtjambi.jar manifest.txt com
+jarsigner ../qtjambi.jar gunnar
+
+if NOT "%1" == "win32" goto after_win32
+del QtTest*
+del *_debuglib.dll
+del *d4.dll
+del Qt3Support*
+jar -cf ../qtjambi-win32.jar *.dll
+jarsigner ../qtjambi-win32.jar gunnar
+
+:after_win32
 
 popd
-
-cp d:/tmp/jar_package/qtjambi-win.jar .
-
-jarsigner qtjambi-win.jar gunnar
-
-cp -f qtjambi-win.jar d:/tmp
 
 :end

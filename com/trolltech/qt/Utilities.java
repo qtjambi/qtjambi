@@ -23,10 +23,10 @@ public class Utilities {
 
     private static final String DEBUG_SUFFIX = "_debuglib";
 
+    private static final boolean VERBOSE_LOADING =
+        System.getProperty("com.trolltech.qt.verbose-loading") != null;
+
     public static void loadSystemLibraries() {
-
-        System.out.println("CLASSPATH: " + System.getProperty("java.class.path"));
-
         List<String> libs = readSystemLibraries();
         for (String s : libs) {
             loadLibrary(s);
@@ -49,9 +49,10 @@ public class Utilities {
         try {
             try {
                 System.loadLibrary(stripLibraryName(lib));
+                if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") in standard way");
                 return true;
             } catch (Error e) {
-                e.printStackTrace();
+                if (VERBOSE_LOADING) e.printStackTrace();
             }
 
             Runtime rt = Runtime.getRuntime();
@@ -62,8 +63,9 @@ public class Utilities {
             for (String path : libraryPaths) {
                 File f = new File(path, lib);
                 if (f.exists()) {
-                    System.out.println("loadLibrary(1): trying to load: " + f.getAbsolutePath());
                     rt.load(f.getAbsolutePath());
+                    if (VERBOSE_LOADING)
+                        System.out.println("Loaded(" + lib + ") using absolute path");
                     return true;
                 }
             }
@@ -83,11 +85,10 @@ public class Utilities {
                 tmpLibDir.mkdirs();
                 copy(libUrl, destLib);
             }
-            System.out.println("loadLibrary(2): trying to load: " + destLib.getAbsolutePath());
             rt.load(destLib.getAbsolutePath());
+            if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") using cached");
         } catch (Throwable t) {
-            System.err.println(t.getMessage());
-            t.printStackTrace();
+            if (VERBOSE_LOADING) t.printStackTrace();
             return false;
         }
         return true;
@@ -193,7 +194,7 @@ public class Utilities {
                 list.add(tok.sval);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (VERBOSE_LOADING) e.printStackTrace();
         }
 
         return list;
