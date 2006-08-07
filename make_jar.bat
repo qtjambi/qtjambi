@@ -27,11 +27,14 @@ jar -cfm ../qtjambi.jar manifest.txt com
 jarsigner ../qtjambi.jar gunnar
 
 if NOT "%1" == "win32" goto after_win32
+del qt_system_libs
+echo msvcr71.dll>>qt_system_libs
+echo msvcp71.dll>>qt_system_libs
 del QtTest*
 del *_debuglib.dll
 del *d4.dll
 del Qt3Support*
-jar -cf ../qtjambi-win32.jar *.dll
+jar -cf ../qtjambi-win32.jar *.dll qt_system_libs
 jarsigner ../qtjambi-win32.jar gunnar
 
 :after_win32
