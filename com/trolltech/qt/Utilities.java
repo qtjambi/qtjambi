@@ -176,27 +176,23 @@ public class Utilities {
 
 
     private static List<String> readSystemLibraries() {
-        String runtime = System.getProperty("com.trolltech.qt.runtimespec");
-        if (runtime == null) {
-            if (operatingSystem == OperatingSystem.Windows) runtime = "win";
-            else if (operatingSystem == OperatingSystem.Linux) runtime = "linux";
-            else if (operatingSystem == OperatingSystem.MacOSX) runtime = "macosx";
-            else throw new RuntimeException("Unhandled operating system");
-        }
-
-        InputStream in = Utilities.class.getClassLoader().getResourceAsStream("com/trolltech/qt/resources/syslibs." + runtime);
-
         List<String> list = new ArrayList<String>();
-        try {
-            StreamTokenizer tok =
-                new StreamTokenizer(new BufferedReader(new InputStreamReader(in)));
-            while (tok.nextToken() != StreamTokenizer.TT_EOF) {
-                list.add(tok.sval);
-            }
-        } catch (Exception e) {
-            if (VERBOSE_LOADING) e.printStackTrace();
+        String liblist = System.getProperty("com.trolltech.qt.systemlibraries");
+        if (liblist != null) {
+            String libs[] = liblist.split(File.pathSeparator);
+            for (String s : libs)
+                list.add(s);
+        } else {
+            InputStream in = Utilities.class.getClassLoader().getResourceAsStream("qt_system_libs");
+            // may return null, but that will be covered by the catch below...
+            try {
+                StreamTokenizer tok =
+                    new StreamTokenizer(new BufferedReader(new InputStreamReader(in)));
+                while (tok.nextToken() != StreamTokenizer.TT_EOF) {
+                    list.add(tok.sval);
+                }
+            } catch (Exception e) { }
         }
-
         return list;
     }
 }
