@@ -21,8 +21,8 @@
 class QtJambiFunctionTable;
 class QString;
 
-QT_QTJAMBI_EXPORT void registerQtToJava(const QString &qt_name, const QString &java_name);
-QT_QTJAMBI_EXPORT void registerJavaToQt(const QString &java_name, const QString &qt_name);
+QTJAMBI_EXPORT void registerQtToJava(const QString &qt_name, const QString &java_name);
+QTJAMBI_EXPORT void registerJavaToQt(const QString &java_name, const QString &qt_name);
 
 QString getQtName(const QString &java_name);
 QString getJavaName(const QString &qt_name);
@@ -53,7 +53,7 @@ private: \
     void resolve##type_name##_internal()
 
 
-struct QT_QTJAMBI_EXPORT StaticCache
+struct QTJAMBI_EXPORT StaticCache
 {
     JNIEnv *env;
 
@@ -283,7 +283,7 @@ private:
 };
 
 
-QT_QTJAMBI_EXPORT StaticCache *StaticCache::instance(JNIEnv *env)
+QTJAMBI_EXPORT StaticCache *StaticCache::instance(JNIEnv *env)
 {
     // chances are that number of envs are so few that a linear search is faster than
     // time spent doing hashing and collision resolution.

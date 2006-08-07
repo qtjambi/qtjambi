@@ -18,7 +18,7 @@
 
 #include <QtCore/QObject>
 
-class QT_QTJAMBI_EXPORT QtJambiFunctionTable
+class QTJAMBI_EXPORT QtJambiFunctionTable
 {
 public:
     QtJambiFunctionTable(const QString &className, int size);
@@ -44,7 +44,7 @@ private:
 };
 
 
-QT_QTJAMBI_EXPORT jmethodID QtJambiFunctionTable::method(int pos) const
+QTJAMBI_EXPORT jmethodID QtJambiFunctionTable::method(int pos) const
 {
     Q_ASSERT(pos >= 0);
     Q_ASSERT(pos < m_method_count);
@@ -52,7 +52,7 @@ QT_QTJAMBI_EXPORT jmethodID QtJambiFunctionTable::method(int pos) const
 }
 
 
-QT_QTJAMBI_EXPORT void QtJambiFunctionTable::setMethod(int pos, jmethodID id)
+QTJAMBI_EXPORT void QtJambiFunctionTable::setMethod(int pos, jmethodID id)
 {
     Q_ASSERT(pos >= 0);
     Q_ASSERT(pos < m_method_count);

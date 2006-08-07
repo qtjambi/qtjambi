@@ -17,22 +17,22 @@
 #include <qglobal.h>
 
 #if defined(Q_WS_WIN)
-#  if !defined(QT_QTJAMBI_EXPORT) && !defined(QT_QTJAMBI_IMPORT)
-#    define QT_QTJAMBI_EXPORT
+#  if !defined(QTJAMBI_EXPORT) && !defined(QT_QTJAMBI_IMPORT)
+#    define QTJAMBI_EXPORT
 #  elif defined(QT_QTJAMBI_IMPORT)
-#    if defined(QT_QTJAMBI_EXPORT)
-#      undef QT_QTJAMBI_EXPORT
+#    if defined(QTJAMBI_EXPORT)
+#      undef QTJAMBI_EXPORT
 #    endif
-#    define QT_QTJAMBI_EXPORT __declspec(dllimport)
-#  elif defined(QT_QTJAMBI_EXPORT)
-#    undef QT_QTJAMBI_EXPORT
-#    define QT_QTJAMBI_EXPORT __declspec(dllexport)
+#    define QTJAMBI_EXPORT __declspec(dllimport)
+#  elif defined(QTJAMBI_EXPORT)
+#    undef QTJAMBI_EXPORT
+#    define QTJAMBI_EXPORT __declspec(dllexport)
 #  endif
 #else
-# if defined(QT_QTJAMBI_EXPORT)
-#   undef QT_QTJAMBI_EXPORT
+# if defined(QTJAMBI_EXPORT)
+#   undef QTJAMBI_EXPORT
 # endif
-#  define QT_QTJAMBI_EXPORT
+#  define QTJAMBI_EXPORT
 #endif
 
 #if defined Q_WS_MAC

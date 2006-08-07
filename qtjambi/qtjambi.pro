@@ -24,7 +24,7 @@ HEADERS += \
 	qtjambitypemanager.h \
 	qtjambi_global.h
 
-DEFINES += QT_QTJAMBI_EXPORT
+DEFINES += QTJAMBI_EXPORT
 
 win32:CONFIG += precompile_header
 win32:PRECOMPILED_HEADER = qtjambi_core.h

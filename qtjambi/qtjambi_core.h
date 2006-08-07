@@ -58,84 +58,84 @@ inline void *qtjambi_from_jlong(jlong ptr)
     }
 }
 
-QT_QTJAMBI_EXPORT void qtjambi_exception_check(JNIEnv *env);
+QTJAMBI_EXPORT void qtjambi_exception_check(JNIEnv *env);
 
-QT_QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
+QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
 
-QT_QTJAMBI_EXPORT QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object);
+QTJAMBI_EXPORT QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object);
 
-QT_QTJAMBI_EXPORT jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant);
+QTJAMBI_EXPORT jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant);
 
-QT_QTJAMBI_EXPORT void *qtjambi_to_object(JNIEnv *env, jobject java_object);
+QTJAMBI_EXPORT void *qtjambi_to_object(JNIEnv *env, jobject java_object);
 
-QT_QTJAMBI_EXPORT QObject *qtjambi_to_qobject(JNIEnv *env, jobject java_object);
+QTJAMBI_EXPORT QObject *qtjambi_to_qobject(JNIEnv *env, jobject java_object);
 
-QT_QTJAMBI_EXPORT int qtjambi_to_enum(JNIEnv *env, jobject java_object);
+QTJAMBI_EXPORT int qtjambi_to_enum(JNIEnv *env, jobject java_object);
 
-QT_QTJAMBI_EXPORT QString qtjambi_to_qstring(JNIEnv *env, jstring java_string);
+QTJAMBI_EXPORT QString qtjambi_to_qstring(JNIEnv *env, jstring java_string);
 
-QT_QTJAMBI_EXPORT void *qtjambi_to_interface(JNIEnv *env,
+QTJAMBI_EXPORT void *qtjambi_to_interface(JNIEnv *env,
                                            QtJambiLink *link,
                                            const char *interface_name,
                                            const char *package_name,
                                            const char *function_name);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 jobject qtjambi_from_object(JNIEnv *env, const QRect &rect, const char *className, const char *packageName);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className, const char *packageName);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 jobject qtjambi_from_object(JNIEnv *env, const QEvent *qt_object, const char *className, const char *packageName);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *className, const char *packageName);
 
 #if 0
 jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className);
 #endif
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 jstring qtjambi_from_qstring(JNIEnv *env, const QString &s);
 
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject,
                               bool memory_managed);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,
                              int metaType = QMetaType::Void, PtrDestructorFunction dfnc = 0);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *,
                                     const char *className);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 jobject qtjambi_from_cpointer(JNIEnv *env, const void *qt_pointer, int type_id, int indirections);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 void qtjambi_connect_notify(JNIEnv *env, QtJambiLink *link, const char *signal);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 void qtjambi_disconnect_notify(JNIEnv *env, QtJambiLink *link, const char *signal);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 jobject qtjambi_array_to_nativepointer(JNIEnv *env, jobjectArray array, int elementSize);
 
-QT_QTJAMBI_EXPORT QThread *qtjambi_to_thread(JNIEnv *env, jobject thread);
-QT_QTJAMBI_EXPORT jobject qtjambi_from_thread(JNIEnv *env, QThread *thread);
+QTJAMBI_EXPORT QThread *qtjambi_to_thread(JNIEnv *env, jobject thread);
+QTJAMBI_EXPORT jobject qtjambi_from_thread(JNIEnv *env, QThread *thread);
 
-QT_QTJAMBI_EXPORT QModelIndex qtjambi_to_QModelIndex(JNIEnv *env, jobject index);
-QT_QTJAMBI_EXPORT jobject qtjambi_from_QModelIndex(JNIEnv *env, const QModelIndex &index);
+QTJAMBI_EXPORT QModelIndex qtjambi_to_QModelIndex(JNIEnv *env, jobject index);
+QTJAMBI_EXPORT jobject qtjambi_from_QModelIndex(JNIEnv *env, const QModelIndex &index);
 
 bool qtjambi_release_threads(JNIEnv *env);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                                          jobject object,
                                          int inconsistentCount,
@@ -145,10 +145,10 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                                          const char **methodNames,
                                          const char **methodSignatures);
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 QString qtjambi_class_name(JNIEnv *env, jclass java_class);
 
-QT_QTJAMBI_EXPORT void qtjambi_metacall(JNIEnv *env, QEvent *event);
+QTJAMBI_EXPORT void qtjambi_metacall(JNIEnv *env, QEvent *event);
 
 // Boxing functions
 inline jobject qtjambi_from_int(JNIEnv *env, int int_value) {
@@ -336,7 +336,7 @@ inline jobjectArray qtjambi_collection_toArray(JNIEnv *env, jobject col) {
 }
 
 
-QT_QTJAMBI_EXPORT
+QTJAMBI_EXPORT
 void qtjambi_setup_signals(JNIEnv *env, jobject java_object, QtJambiSignalInfo *signal_infos, int count,
                           const char **names, const int *argument_counts);
 inline void qtjambi_call_java_signal(JNIEnv *env, const QtJambiSignalInfo &signal_info, jvalue *args)

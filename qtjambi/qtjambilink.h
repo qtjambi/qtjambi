@@ -53,7 +53,7 @@ private:
   A QtJambiLink is owned by Java, it will be deleted when the
   java object is finalized.
  */
-class QT_QTJAMBI_EXPORT QtJambiLink
+class QTJAMBI_EXPORT QtJambiLink
 {
     inline QtJambiLink(JNIEnv *env, jobject jobj)
         : m_environment(env),
