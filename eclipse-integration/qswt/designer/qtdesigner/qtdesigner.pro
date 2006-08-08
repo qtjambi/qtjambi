@@ -19,16 +19,16 @@ include(qtdesigner_inc.pri)
 HEADERS += \
     ../../qswt.h \
     ../formeditorw.h \
-    ../../../qworkbench/src/plugins/designer/shared/widgethost.h
+    ../widgethost.h
 
 
 SOURCES += \
     ../formeditorw.cpp \
-    ../../../qworkbench/src/plugins/designer/shared/widgethost.cpp
+    ../widgethost.cpp
 
 # copy the .java files
 JAVAFILES_SRC = java/*.java
-JAVAFILES_DEST = ../../../eclipse/project/com.trolltech.qtdesigner/src/com/trolltech/qtdesigner/views/
+JAVAFILES_DEST = ../../../com.trolltech.qtdesigner/src/com/trolltech/qtdesigner/views/
 
 win32 {
     JAVAFILES_SRC ~= s|/|\|
