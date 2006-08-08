@@ -9,8 +9,7 @@ contains(CONFIG, static) {
 
 INCLUDEPATH += . \
     ../ \
-    $$QMAKE_INCDIR_QT/QtDesigner \
-    ../../qworkbench/src/plugins/designer/shared
+    $$QMAKE_INCDIR_QT/QtDesigner    
 
 CONFIG(debug, debug|release) {
     unix: LIBS += -lQtDesigner_debug -lQtDesignerComponents_debug
@@ -31,7 +30,7 @@ SOURCES += widgetboxw.cpp \
     resourceeditorw.cpp \
     signalsloteditorw.cpp \
     ../qswt.cpp \
-    ../../qworkbench/src/plugins/designer/shared/widgethost.cpp
+    widgethost.cpp
     
     
 HEADERS += widgetboxw.h \
@@ -43,4 +42,4 @@ HEADERS += widgetboxw.h \
     resourceeditorw.h \
     signalsloteditorw.h \
     ../qswt.h \
-    ../../qworkbench/src/plugins/designer/shared/widgethost.h
+    widgethost.h
