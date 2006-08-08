@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension
+       id="propertyPages"
+       point="org.eclipse.ui.propertyPages">
+		<page
+			objectClass="org.eclipse.jdt.core.IJavaProject"
+			name="Qt Jambi"
+			class="com.trolltech.qtjambi.QtJambiPropertyPage"
+			id="com.trolltech.qtjambi.QtJambiPropertyPage">
+		</page>
+	</extension>
+
+	<extension id="juicBuilder" name="Juic Builder" point="org.eclipse.core.resources.builders"> 
+		<builder > 
+			<run class="com.trolltech.qtjambi.JuicBuilder"/> 
+		</builder>
+	</extension>
+ <extension
+       id="startup"
+       point="org.eclipse.ui.startup">
+ </extension>
+</plugin>
