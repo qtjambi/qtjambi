@@ -216,12 +216,12 @@ void FormWindowW::formSelectionChanged()
     if (m_form == m_fwm->activeFormWindow() &&
         cursor && cursor->isWidgetSelected(m_form->mainContainer())) {
         WidgetHost::selectFormWindow();
-    } else {
-        WidgetHost::unSelectFormWindow();
 
         bool blocked = m_form->blockSignals(true);
         emit checkActiveWindow();            
         m_form->blockSignals(blocked);
+    } else {
+        WidgetHost::unSelectFormWindow();
     }    
 }
 
