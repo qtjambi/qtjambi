@@ -23,6 +23,43 @@ import org.eclipse.jface.util.Policy;
 public class JuicBuilder extends IncrementalProjectBuilder {
 	
 	private Process juicProc = null;
+    
+    private IClasspathEntry[] newSourceEntry(IClasspathEntry[] raw_classpath, IPath path)
+    {        
+        IClasspathEntry[] new_classpath = new IClasspathEntry[raw_classpath.length + 1];
+        
+        // Check for and remove nesting in new classpath
+        for (int i=0; i<raw_classpath.length; ++i) {
+            new_classpath[i] = raw_classpath[i];
+            
+            if (raw_classpath[i].getEntryKind() == IClasspathEntry.CPE_SOURCE && raw_classpath[i].getPath().isPrefixOf(path)) {
+                IPath[] exclusionPatterns = raw_classpath[i].getExclusionPatterns();                
+                IPath relative_path = 
+                    path.removeFirstSegments(raw_classpath[i].getPath().segmentCount()).addTrailingSeparator();
+                                
+                // Don't add it twice
+                boolean found = false;
+                for (IPath exclusion : exclusionPatterns) {                    
+                    if (exclusion.equals(relative_path))
+                        found = true;                    
+                }
+                
+                if (!found) {
+                    IPath[] new_exclusions = new IPath[exclusionPatterns.length + 1];
+                    System.arraycopy(exclusionPatterns, 0, new_exclusions, 0, exclusionPatterns.length);
+                    new_exclusions[exclusionPatterns.length] = relative_path; 
+                        
+                    new_classpath[i] = JavaCore.newSourceEntry(raw_classpath[i].getPath(), 
+                            raw_classpath[i].getInclusionPatterns(), new_exclusions, 
+                            raw_classpath[i].getOutputLocation(), 
+                            raw_classpath[i].getExtraAttributes());                    
+                } 
+            }
+        }
+
+        new_classpath[raw_classpath.length] = JavaCore.newSourceEntry(path);        
+        return new_classpath;
+    }
 
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
@@ -74,9 +111,12 @@ public class JuicBuilder extends IncrementalProjectBuilder {
             {
                 IPath exclusions[] = classpath.getExclusionPatterns();
                 for (int j=0;j<exclusions.length; ++j) {
-                    if (j>0) 
-                        excluded_directories += System.getProperty("path.separator");
-                    excluded_directories += wroot.findMember(path.append(exclusions[j])).getLocation().toOSString();
+                    IResource member = wroot.findMember(path.append(exclusions[j]));
+                    if (member != null) {
+                        if (j>0) 
+                            excluded_directories += System.getProperty("path.separator");                        
+                        excluded_directories += member.getLocation().toOSString();
+                    }
                 }
             }
             
@@ -84,13 +124,40 @@ public class JuicBuilder extends IncrementalProjectBuilder {
             {
                 IPath inclusions[] = classpath.getInclusionPatterns();
                 for (int j=0;j<inclusions.length;++j) {
-                    if (j>0) 
-                        included_directories += System.getProperty("path.separator");
-                    included_directories += wroot.findMember(path.append(inclusions[j])).getLocation().toOSString();
+                    IResource member = wroot.findMember(path.append(inclusions[j]));
+                    
+                    if (member != null) {
+                        if (j>0) 
+                            included_directories += System.getProperty("path.separator");
+                        included_directories += member.getLocation().toOSString();
+                    }
                 }
             }
-                        
-            int argument_count = 3;
+            
+            IProject current_project = res.getProject();
+            IFolder projuiced_files_in = current_project.getFolder("Generated JUIC files");
+            if (!projuiced_files_in.exists()) {
+                try {
+                    projuiced_files_in.create(true, true, null);
+                    
+                    
+                    IClasspathEntry[] raw_classpath = jpro.getRawClasspath();                                        
+                    IClasspathEntry[] new_classpath = newSourceEntry(raw_classpath, projuiced_files_in.getFullPath());  
+                    
+                    jpro.setRawClasspath(new_classpath, null);
+                } catch (CoreException e) {
+                    ILogger logger = Policy.getLog();
+                    logger.log(new Status(
+                            Status.WARNING,
+                            "qtJambiPlugin",
+                            Status.OK,
+                            "Could not create directory for generated JUIC files: " + projuiced_files_in.getLocation().toOSString(),
+                            e
+                    ));                                    
+                }
+            }
+                                    
+            int argument_count = 5;
             argument_count += excluded_directories.length() > 0 ? 2 : 0;
             argument_count += included_directories.length() > 0 ? 2 : 0;
             
@@ -99,8 +166,10 @@ public class JuicBuilder extends IncrementalProjectBuilder {
 			juicargs[0] = juicpath;
 			juicargs[1] = "-cp";			
 			juicargs[2] = cpath.toOSString();
-            
-            int j = 3;
+            juicargs[3] = "-d";
+            juicargs[4] = projuiced_files_in.getLocation().toOSString();
+
+            int j = 5;
             if (excluded_directories.length() > 0) {
                 juicargs[j++] = "-e";
                 juicargs[j++] = excluded_directories;
