@@ -227,6 +227,7 @@ static bool setup_path_w(char *dest, const wchar_t *extra, const wchar_t *enviro
     // Convert to UTF-8
     if (WideCharToMultiByte(CP_UTF8, 0, tmp, -1, dest, MAX_PATH + BUFFER_SIZE, NULL, NULL) == 0)
         return false;
+    dest[extra_len + sz] = '\0';
 
     return true;
 }
@@ -243,6 +244,7 @@ static bool setup_path_a(char *dest, const char *extra, const char *environment_
     DWORD sz = GetEnvironmentVariableA(environment_var, dest + extra_len, remaining_space);
     if (sz > remaining_space)
         return false;
+    dest[extra_len + sz] = '\0';
 
     return true;
 }
@@ -253,26 +255,35 @@ static bool launch_launcher(JNIEnv *jni_env)
 {
     const char *launcher = "com/trolltech/launcher/Launcher";
 
-    jclass launcher_class = jni_env->FindClass(launcher);
-    jmethodID main_function = 0;
+    jclass launcher_class = jni_env->FindClass(launcher);    
+    if (jni_env->ExceptionOccurred()) {
+        //jni_env->ExceptionDescribe();
+        jni_env->ExceptionClear(); // DestroyVM will crash if there's an exception on stack
+    }
 
+    jmethodID main_function = 0;
     if (launcher_class != 0)
         main_function = jni_env->GetStaticMethodID(launcher_class, "start_qt", "(Z)V");
-
-    // DestroyVM will crash if there's an exception on stack
-    jni_env->ExceptionClear();
-
+    else 
+        return bug_out("Cannot find com.trolltech.launcher.Launcher") != 0; 
+    if (jni_env->ExceptionOccurred()) {
+        //jni_env->ExceptionDescribe();
+        jni_env->ExceptionClear(); // DestroyVM will crash if there's an exception on stack
+    }
+   
     if (main_function != 0)
         jni_env->CallStaticVoidMethod(launcher_class, main_function, JNI_TRUE);
+    else
+        return bug_out("Cannot find main function in Launcher class") != 0; 
 
     // Fail on exception
     if (jni_env->ExceptionOccurred()) {
         jni_env->ExceptionDescribe();
         jni_env->ExceptionClear();
-        main_function = 0;
+        return bug_out("Exception in Launcher") != 0;
     }
 
-    return main_function != 0;
+    return true;
 }
 
 enum QtMsgType { QtDebugMsg, QtWarningMsg, QtCriticalMsg, QtFatalMsg, QtSystemMsg = QtCriticalMsg };
@@ -517,20 +528,24 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         DWORD remaining_space = DWORD(BUFFER_SIZE - len);
         dw_sz = GetEnvironmentVariableW(L"PATH", path_w + len, remaining_space);
-        if (dw_sz > 0 && dw_sz <= remaining_space)
+        if (dw_sz <= remaining_space) {
+            path_w[len + dw_sz] = L'\0';
             SetEnvironmentVariableW(L"PATH", path_w);
-        else
+        } else {
             dw_sz = 0;
+        }
     }, {
         const char *new_path = ".\\bin;";
         len = strlen(new_path);
         strncpy(path_a, new_path, len);
         DWORD remaining_space = DWORD(BUFFER_SIZE - len);
         dw_sz = GetEnvironmentVariableA("PATH", path_a + len, remaining_space);
-        if (dw_sz > 0 && dw_sz <= remaining_space)
+        if (dw_sz <= remaining_space){
+            path_a[len + dw_sz] = '\0';
             SetEnvironmentVariableA("PATH", path_a);
-        else
+        } else {
             dw_sz = 0;
+        }
     });
 
     hook_to_qt();
@@ -538,8 +553,8 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     // Set up VM options
     void *extra_class_path   = QT_WA_INLINE((void *)L"-Djava.class.path=.;qtjambi.jar;",
                                             (void *)"-Djava.class.path=.;qtjambi.jar;");
-    void *extra_library_path = QT_WA_INLINE((void *)L"-Djava.library.path=.\\bin;",
-                                            (void *)"-Djava.library.path=.\\bin;");
+    void *extra_library_path = QT_WA_INLINE((void *)L"-Djava.library.path=",
+                                            (void *)"-Djava.library.path=");
 
     JavaVMInitArgs args;
     args.version = JNI_VERSION_1_4;
@@ -611,14 +626,13 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     {
         bool success = launch_launcher(jni_env);
-
         vm->DestroyJavaVM();
 
-        if (!success)
-            return bug_out("Error when launching Launcher application");
-
-        clean_up();
-
-        return 0;
+        if (!success) {
+            return 1;
+        } else {
+            clean_up();
+            return 0;
+        }
     }
 }
