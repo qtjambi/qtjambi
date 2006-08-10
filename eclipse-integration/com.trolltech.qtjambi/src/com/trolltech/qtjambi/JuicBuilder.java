@@ -60,6 +60,27 @@ public class JuicBuilder extends IncrementalProjectBuilder {
         new_classpath[raw_classpath.length] = JavaCore.newSourceEntry(path);        
         return new_classpath;
     }
+    
+    private boolean uiFilesInContainer(IContainer container)
+    {
+        IResource[] resources = null;
+        try {
+            resources = container.members();
+        } catch (CoreException e) {
+            return false;
+        }
+        
+        for (IResource resource : resources) {
+            if (resource.getType() == IResource.FILE && resource.getName().endsWith(".ui")) {
+                return true;
+            } else if (resource instanceof IContainer) {
+                if (uiFilesInContainer((IContainer)resource))
+                    return true;
+            }
+        }
+        
+        return false;
+    }
 
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
@@ -77,7 +98,18 @@ public class JuicBuilder extends IncrementalProjectBuilder {
         IWorkspaceRoot wroot = jpro.getJavaModel().getWorkspace().getRoot();
 		IClasspathEntry[] classpaths = jpro.getResolvedClasspath(true);
         String juicpath = jpro.getResource().getPersistentProperty(new QualifiedName("",
-                QtJambiPropertyPage.JUICPROPERTY));                
+                QtJambiPropertyPage.JUIC_LOCATION_PROPERTY));
+        String destinationFolder = jpro.getResource().getPersistentProperty(new QualifiedName("",
+                QtJambiPropertyPage.JUIC_DESTINATIONFOLDER_PROPERTY));
+        String useDestinationFolder = jpro.getResource().getPersistentProperty(new QualifiedName("",
+                QtJambiPropertyPage.JUIC_USEDESTINATIONFOLDER_PROPERTY));
+        
+        if (juicpath == null)
+            juicpath = QtJambiPropertyPage.defaultValue(QtJambiPropertyPage.JUIC_LOCATION_PROPERTY);
+        if (destinationFolder == null)
+            destinationFolder = QtJambiPropertyPage.defaultValue(QtJambiPropertyPage.JUIC_DESTINATIONFOLDER_PROPERTY);
+        if (useDestinationFolder == null)
+            useDestinationFolder = QtJambiPropertyPage.defaultValue(QtJambiPropertyPage.JUIC_USEDESTINATIONFOLDER_PROPERTY);
         
 		for (int i=0; i<classpaths.length; ++i) {
 			IClasspathEntry classpath = classpaths[i];
@@ -103,10 +135,7 @@ public class JuicBuilder extends IncrementalProjectBuilder {
             
                         
             IPath cpath = res.getLocation();                                
-			
-			if (juicpath == null)
-				juicpath = "juic";
-			
+						
             String excluded_directories = "";
             {
                 IPath exclusions[] = classpath.getExclusionPatterns();
@@ -135,41 +164,45 @@ public class JuicBuilder extends IncrementalProjectBuilder {
             }
             
             IProject current_project = res.getProject();
-            IFolder projuiced_files_in = current_project.getFolder("Generated JUIC files");
-            if (!projuiced_files_in.exists()) {
-                try {
-                    projuiced_files_in.create(true, true, null);
-                    
-                    
-                    IClasspathEntry[] raw_classpath = jpro.getRawClasspath();                                        
-                    IClasspathEntry[] new_classpath = newSourceEntry(raw_classpath, projuiced_files_in.getFullPath());  
-                    
-                    jpro.setRawClasspath(new_classpath, null);
-                } catch (CoreException e) {
-                    ILogger logger = Policy.getLog();
-                    logger.log(new Status(
-                            Status.WARNING,
-                            "qtJambiPlugin",
-                            Status.OK,
-                            "Could not create directory for generated JUIC files: " + projuiced_files_in.getLocation().toOSString(),
-                            e
-                    ));                                    
+            IFolder projuiced_files_in = null;
+            
+            if (Boolean.parseBoolean(useDestinationFolder) && destinationFolder.length() > 0) {                                
+                projuiced_files_in = current_project.getFolder(destinationFolder);
+                if (!projuiced_files_in.exists() && uiFilesInContainer(jpro.getProject())) {
+                    try {
+                        projuiced_files_in.create(true, true, null);                                                
+                        IClasspathEntry[] new_classpath = newSourceEntry(jpro.getRawClasspath(), projuiced_files_in.getFullPath());                          
+                        jpro.setRawClasspath(new_classpath, null);
+                    } catch (CoreException e) {
+                        ILogger logger = Policy.getLog();
+                        logger.log(new Status(
+                                Status.WARNING,
+                                "qtJambiPlugin",
+                                Status.OK,
+                                "Could not create directory for generated JUIC files: " + projuiced_files_in.getLocation().toOSString(),
+                                e
+                        ));                                    
+                    }
                 }
             }
                                     
-            int argument_count = 5;
+            int argument_count = 3;
+            argument_count += projuiced_files_in != null ? 2 : 0;
             argument_count += excluded_directories.length() > 0 ? 2 : 0;
             argument_count += included_directories.length() > 0 ? 2 : 0;
-            
+                        
 			Runtime rt = Runtime.getRuntime();
 			String[] juicargs = new String[argument_count];
 			juicargs[0] = juicpath;
 			juicargs[1] = "-cp";			
 			juicargs[2] = cpath.toOSString();
-            juicargs[3] = "-d";
-            juicargs[4] = projuiced_files_in.getLocation().toOSString();
-
-            int j = 5;
+            
+            int j = 3;
+            if (projuiced_files_in != null) {
+                juicargs[j++] = "-d";
+                juicargs[j++] = projuiced_files_in.getLocation().toOSString();              
+            }
+            
             if (excluded_directories.length() > 0) {
                 juicargs[j++] = "-e";
                 juicargs[j++] = excluded_directories;
