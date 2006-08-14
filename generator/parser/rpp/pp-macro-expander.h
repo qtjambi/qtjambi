@@ -55,6 +55,7 @@ class pp_macro_expander
   pp_skip_argument skip_argument;
   pp_skip_comment_or_divop skip_comment_or_divop;
   pp_skip_blanks skip_blanks;
+  pp_skip_whitespaces skip_whitespaces;
 
   std::string const *resolve_formal (pp_fast_string const *__name)
   {
@@ -213,11 +214,12 @@ public:
               }
 
             // function like macro
-            _InputIterator arg_it = __first;
+            _InputIterator arg_it = skip_whitespaces (__first, __last);
 
-            if (arg_it == __last || *arg_it  != '(')
+            if (arg_it == __last || *arg_it != '(')
               {
                 std::copy (name_begin, name_end, __result);
+                lines += skip_whitespaces.lines;
                 __first = name_end;
                 continue;
               }

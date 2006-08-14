@@ -63,6 +63,25 @@ struct pp_skip_blanks
   }
 };
 
+struct pp_skip_whitespaces
+{
+  int lines;
+
+  template <typename _InputIterator>
+  _InputIterator operator () (_InputIterator __first, _InputIterator __last)
+  {
+    lines = 0;
+
+    for (; __first != __last; lines += (*__first != '\n' ? 0 : 1), ++__first)
+      {
+        if (! pp_isspace (*__first))
+          break;
+      }
+
+    return __first;
+  }
+};
+
 struct pp_skip_comment_or_divop
 {
   int lines;
