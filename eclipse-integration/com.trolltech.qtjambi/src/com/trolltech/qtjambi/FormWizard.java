@@ -2,28 +2,20 @@ package com.trolltech.qtjambi;
 
 import java.io.InputStream;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.UIPlugin;
 
 public class FormWizard extends Wizard implements INewWizard 
 {
@@ -63,7 +55,6 @@ public class FormWizard extends Wizard implements INewWizard
             IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot(); 
                         
             String folderName = name.substring(0, name.lastIndexOf('/'));
-            System.out.println("folder: " + folderName + ", name: " + name);
             container = container.append(folderName).addTrailingSeparator();
             
             IFolder folder = root.getFolder(container);

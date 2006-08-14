@@ -75,7 +75,10 @@ public class FormWizardPage extends WizardPage
         }
 
         public Object getParent(Object element) {
-            return null;
+            if (element instanceof IResource)
+                return ((IResource) element).getParent();
+            else
+                return null;
         }
         
         public boolean hasChildren(Object element) 
@@ -293,9 +296,8 @@ public class FormWizardPage extends WizardPage
                 
         // Set initial element
         {            
-            IResource resource = findSuitableParent(root.findMember(defaultValue));                        
-            if (resource != null)
-                dialog.setInitialSelection(resource);
+            IResource resource = findSuitableParent(root.findMember(defaultValue));
+            dialog.setInitialSelection(resource);
         }
                 
         dialog.setBlockOnOpen(true);
