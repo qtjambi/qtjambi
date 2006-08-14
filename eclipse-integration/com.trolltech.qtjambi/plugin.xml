@@ -21,4 +21,17 @@
        id="startup"
        point="org.eclipse.ui.startup">
  </extension>
+ <extension
+       point="org.eclipse.ui.newWizards">
+    <category
+          id="com.trolltech.qtjambi.files"
+          name="Qt Jambi"/>
+    <wizard
+          canFinishEarly="true"
+          category="com.trolltech.qtjambi.files"
+          class="com.trolltech.qtjambi.FormWizard"
+          icon="icons/designer.gif"
+          id="com.trolltech.qtjambi.wizards.new.file"
+          name="Qt Designer Form"/>
+ </extension>
 </plugin>

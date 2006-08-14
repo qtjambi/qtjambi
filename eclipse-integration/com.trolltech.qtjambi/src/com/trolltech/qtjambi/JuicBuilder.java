@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,7 +40,8 @@ public class JuicBuilder extends IncrementalProjectBuilder {
                                 
                 // Don't add it twice
                 boolean found = false;
-                for (IPath exclusion : exclusionPatterns) {                    
+                for (int j=0; j<exclusionPatterns.length; ++j) {
+                    IPath exclusion = exclusionPatterns[j];
                     if (exclusion.equals(relative_path))
                         found = true;                    
                 }
@@ -70,7 +72,8 @@ public class JuicBuilder extends IncrementalProjectBuilder {
             return false;
         }
         
-        for (IResource resource : resources) {
+        for (int i=0; i<resources.length; ++i) {
+            IResource resource = resources[i];
             if (resource.getType() == IResource.FILE && resource.getName().endsWith(".ui")) {
                 return true;
             } else if (resource instanceof IContainer) {
@@ -170,7 +173,12 @@ public class JuicBuilder extends IncrementalProjectBuilder {
                 projuiced_files_in = current_project.getFolder(destinationFolder);
                 if (!projuiced_files_in.exists() && uiFilesInContainer(jpro.getProject())) {
                     try {
-                        projuiced_files_in.create(true, true, null);                                                
+                        projuiced_files_in.create(true, true, null);
+                        
+                        ResourceAttributes attributes = projuiced_files_in.getResourceAttributes();
+                        attributes.setReadOnly(true);
+                        projuiced_files_in.setResourceAttributes(attributes);
+                        
                         IClasspathEntry[] new_classpath = newSourceEntry(jpro.getRawClasspath(), projuiced_files_in.getFullPath());                          
                         jpro.setRawClasspath(new_classpath, null);
                     } catch (CoreException e) {
