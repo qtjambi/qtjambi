@@ -9,11 +9,21 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.UIPlugin;
 
 public class FormWizard extends Wizard implements INewWizard 
 {
@@ -82,16 +92,32 @@ public class FormWizard extends Wizard implements INewWizard
                 } catch (CoreException e) {}
             }
                       
-            container = container.append(name.substring(name.lastIndexOf('/')));
+            String fname = name.substring(name.lastIndexOf('/'));
+            container = container.append(fname);
             IFile file = root.getFile(container);
             if (!file.exists()) {                
                 ClassLoader cl = Thread.currentThread().getContextClassLoader();
                 InputStream stream = cl.getResourceAsStream(pathToTemplate);
                 
                 try {
-                    file.create(stream, true, null);
+                    file.create(stream, true, null);     
+                    IWorkbench wb = PlatformUI.getWorkbench();                    
+                                        
+                    IWorkbenchWindow ww = null;
+                    if (wb != null)
+                        ww = wb.getActiveWorkbenchWindow();
+                    
+                    IWorkbenchPage wp = null;
+                    if (ww != null)
+                        wp = ww.getActivePage();
+                    
+                    if (wp != null)
+                        IDE.openEditor(wp, file);
+                                                                
                     return true;
                 } catch (CoreException e) {}
+
+                
             }            
         } 
         return false;        
