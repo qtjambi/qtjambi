@@ -3,11 +3,13 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET += 
+TARGET +=
 DEPENDPATH += . tests
 mac:CONFIG -= app_bundle
-INCLUDEPATH += . 
+INCLUDEPATH += .
 INCLUDEPATH += ../common
+
+DEFINES += RPP_JAMBI
 
 CONFIG += console
 RESOURCES += generator.qrc
@@ -30,7 +32,7 @@ HEADERS += \
 	juicdatagenerator.h \
 	reporthandler.h \
 	typeparser.h \
-        classlistgenerator.h \	
+        classlistgenerator.h \
         cppheadergenerator.h \
         generator.h \
         main.h \
@@ -62,7 +64,7 @@ win32{
 	PRECOMPILED_HEADER = generator_pch.h
 	CONFIG += precompile_header
 }
- 
+
 mac {
     CONFIG += x86 ppc
     CONFIG -= precompile_header

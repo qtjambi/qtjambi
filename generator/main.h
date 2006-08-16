@@ -23,10 +23,10 @@ struct Preprocess
 {
     static bool preprocess(const QString &sourceFile, const QString &targetFile)
     {
-        pp_environment env;
-        pp preprocess(env);
+        rpp::pp_environment env;
+        rpp::pp preprocess(env);
 
-        pp_null_output_iterator null_out;
+        rpp::pp_null_output_iterator null_out;
 
         const char *ppconfig = ":/trolltech/generator/parser/rpp/pp-qt-configuration";
 
@@ -70,7 +70,7 @@ struct Preprocess
         result += "\"\n";
 
         preprocess.file (sourceInfo.fileName().toStdString(),
-                         pp_output_iterator<std::string> (result));
+                         rpp::pp_output_iterator<std::string> (result));
 
         QDir::setCurrent(currentDir);
 

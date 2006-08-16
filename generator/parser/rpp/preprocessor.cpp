@@ -35,12 +35,13 @@
 
 #include <string>
 
-using namespace rpp;
-
 // register callback for include hooks
 static void includeFileHook(const std::string &, const std::string &, FILE *);
+
 #define PP_HOOK_ON_FILE_INCLUDED(A, B, C) includeFileHook(A, B, C)
 #include "pp.h"
+
+using namespace rpp;
 
 #include <QtCore/QtCore>
 
@@ -109,9 +110,10 @@ QStringList Preprocessor::macroNames() const
 {
     QStringList macros;
 
-    pp_environment::base_type::const_iterator it = d->env.begin();
-    while (it != d->env.end()) {
-        macros += QString::fromLatin1((*it).first->begin(), (*it).first->size());
+    pp_environment::const_iterator it = d->env.first_macro();
+    while (it != d->env.last_macro()) {
+        const pp_macro *m = *it;
+        macros += QString::fromLatin1(m->name->begin(), m->name->size());
         ++it;
     }
 
@@ -122,20 +124,21 @@ QList<Preprocessor::MacroItem> Preprocessor::macros() const
 {
     QList<MacroItem> items;
 
-    pp_environment::base_type::const_iterator it = d->env.begin();
-    while (it != d->env.end()) {
+    pp_environment::const_iterator it = d->env.first_macro();
+    while (it != d->env.last_macro()) {
+        const pp_macro *m = *it;
         MacroItem item;
-        item.name = QString::fromLatin1((*it).first->begin(), (*it).first->size());
-        item.definition = QString::fromLatin1((*it).second.definition->begin(),
-                                              (*it).second.definition->size());
-        for (size_t i = 0; i < (*it).second.formals.size(); ++i) {
-            item.parameters += QString::fromLatin1((*it).second.formals[i]->begin(),
-                    (*it).second.formals[i]->size());
+        item.name = QString::fromLatin1(m->name->begin(), m->name->size());
+        item.definition = QString::fromLatin1(m->definition->begin(),
+                                              m->definition->size());
+        for (size_t i = 0; i < m->formals.size(); ++i) {
+            item.parameters += QString::fromLatin1(m->formals[i]->begin(),
+                    m->formals[i]->size());
         }
-        item.isFunctionLike = (*it).second.function_like;
+        item.isFunctionLike = m->function_like;
 
 #ifdef PP_WITH_MACRO_POSITION
-        item.fileName = QString::fromLatin1((*it).second.file->begin(), (*it).second.file->size());
+        item.fileName = QString::fromLatin1(m->file->begin(), m->file->size());
 #endif
         items += item;
 

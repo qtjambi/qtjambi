@@ -41,7 +41,7 @@ public:
 
   ~pp_environment ()
   {
-    for (int i = 0; i < _M_macros.size (); ++i)
+    for (std::size_t i = 0; i < _M_macros.size (); ++i)
       delete _M_macros [i];
 
     delete [] _M_base;
@@ -63,6 +63,8 @@ public:
 
     if (_M_macros.size() == _M_hash_size)
       rehash();
+
+    return true;
   }
 
   inline void unbind (pp_fast_string const *__name)
