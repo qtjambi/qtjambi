@@ -27,6 +27,7 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <QDebug>
+#include <QFileInfo>
 
 static QString strip_template_args(const QString &name)
 {
@@ -422,8 +423,11 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
 
     m_current_class = 0;
 
-    if (type->include().name.isEmpty())
-        type->setInclude(Include(Include::IncludePath, class_item->fileName()));
+    // Set the default include file name
+    if (!type->include().isValid()) {
+        QFileInfo info(class_item->fileName());        
+        type->setInclude(Include(Include::IncludePath, info.fileName()));
+    }
 
     return java_class;
 }
@@ -493,6 +497,29 @@ void MetaJavaBuilder::traverseFields(ScopeModelItem scope_item, MetaJavaClass *j
     }
 }
 
+static void add_extra_include_for_type(MetaJavaClass *java_class, const MetaJavaType *type)
+{            
+    Q_ASSERT(java_class != 0);
+    const TypeEntry *entry = (type ? type->typeEntry() : 0);
+    if (entry != 0 && entry->isComplex()) {
+        const ComplexTypeEntry *centry = static_cast<const ComplexTypeEntry *>(entry);
+        ComplexTypeEntry *class_entry = java_class->typeEntry();
+        if (class_entry != 0 && centry->include().isValid())            
+            class_entry->addExtraInclude(centry->include());        
+    }
+}
+
+static void add_extra_includes_for_function(MetaJavaClass *java_class, const MetaJavaFunction *java_function)
+{
+    Q_ASSERT(java_class != 0); 
+    Q_ASSERT(java_function != 0);
+    add_extra_include_for_type(java_class, java_function->type());
+    
+    MetaJavaArgumentList arguments = java_function->arguments();
+    foreach (MetaJavaArgument *argument, arguments)
+        add_extra_include_for_type(java_class, argument->type());    
+}
+
 void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass *java_class)
 {
     foreach (FunctionModelItem function, scope_item->functions()) {
@@ -540,6 +567,8 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
                     java_function->setVisibility(MetaJavaClass::Public);
                 }
 
+                // Make sure that we include files for all classes that are in use
+                add_extra_includes_for_function(java_class, java_function);
                 java_class->addFunction(java_function);
             }
         }

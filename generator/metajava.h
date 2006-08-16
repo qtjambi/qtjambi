@@ -577,6 +577,7 @@ public:
     void setPrimaryInterfaceImplementor(MetaJavaClass *cl) { m_primary_interface_implementor = cl; }
 
     const ComplexTypeEntry *typeEntry() const { return m_type_entry; }
+    ComplexTypeEntry *typeEntry() { return m_type_entry; }
     void setTypeEntry(ComplexTypeEntry *type) { m_type_entry = type; }
 
 private:

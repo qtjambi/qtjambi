@@ -33,6 +33,8 @@
 #  define PATH_SEPARATOR '/'
 #endif
 
+#include <algorithm>
+
 namespace rpp {
 
 inline std::string pp::fix_file_path(std::string const &filename) const

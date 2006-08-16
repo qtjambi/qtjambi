@@ -34,6 +34,8 @@ struct Include
     Include() : type(IncludePath) { }
     Include(IncludeType t, const QString &nam) : type(t), name(nam) { };
 
+    bool isValid() { return !name.isEmpty(); }
+
     IncludeType type;
     QString name;
 
@@ -435,7 +437,13 @@ public:
 
     IncludeList extraIncludes() const { return m_extra_includes; }
     void setExtraIncludes(const IncludeList &includes) { m_extra_includes = includes; }
-    void addExtraInclude(const Include &include) { m_extra_includes << include; }
+    void addExtraInclude(const Include &include) 
+    { 
+        if (!m_includes_used.value(include.name, false)) {
+            m_extra_includes << include; 
+            m_includes_used[include.name] = true;
+        }
+    }
 
     Include include() const { return m_include; }
     void setInclude(const Include &inc) { m_include = inc; }
@@ -470,6 +478,7 @@ public:
 private:
     IncludeList m_extra_includes;
     Include m_include;
+    QHash<QString, bool> m_includes_used;
     FunctionModificationList m_function_mods;
     FieldModificationList m_field_mods;
     CodeSnipList m_code_snips;
