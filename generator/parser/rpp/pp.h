@@ -57,7 +57,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "../rxx_allocator.h"
+#if defined (RPP_JAMBI)
+#  include "rxx_allocator.h"
+#else
+#  include "rpp-allocator.h"
+#endif
 
 #include "pp-fwd.h"
 #include "pp-cctype.h"
@@ -74,4 +78,4 @@
 
 #endif // PP_H
 
-// kate: indent-width 2;
+// kate: space-indent on; indent-width 2; replace-tabs on;

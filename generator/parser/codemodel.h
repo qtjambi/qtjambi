@@ -1,16 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $CPP_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 
 /* This file is part of KDevelop
@@ -36,6 +23,7 @@
 #define CODEMODEL_H
 
 #include "codemodel_fwd.h"
+#include <codemodel_pointer.h>
 
 #include <QtCore/QHash>
 #include <QtCore/QList>

@@ -34,12 +34,15 @@
 #ifndef PP_MACRO_H
 #define PP_MACRO_H
 
+namespace rpp {
+
 struct pp_macro
 {
-  pp_fast_string const *definition;
 #if defined (PP_WITH_MACRO_POSITION)
   pp_fast_string const *file;
 #endif
+  pp_fast_string const *name;
+  pp_fast_string const *definition;
   std::vector<pp_fast_string const *> formals;
 
   union
@@ -55,16 +58,24 @@ struct pp_macro
   };
 
   int lines;
+  pp_macro *next;
+  std::size_t hash_code;
 
   inline pp_macro():
 #if defined (PP_WITH_MACRO_POSITION)
     file (0),
 #endif
+    name (0),
+    definition (0),
     state (0),
-    lines (0)
+    lines (0),
+    next (0),
+    hash_code (0)
     {}
 };
 
+} // namespace rpp
+
 #endif // PP_MACRO_H
 
-// kate: indent-width 2;
+// kate: space-indent on; indent-width 2; replace-tabs on;

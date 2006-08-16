@@ -34,6 +34,8 @@
 #ifndef PP_SCANNER_H
 #define PP_SCANNER_H
 
+namespace rpp {
+
 struct pp_skip_blanks
 {
   int lines;
@@ -350,6 +352,8 @@ struct pp_skip_argument
   }
 };
 
+} // namespace rpp
+
 #endif // PP_SCANNER_H
 
-// kate: indent-width 2;
+// kate: space-indent on; indent-width 2; replace-tabs on;

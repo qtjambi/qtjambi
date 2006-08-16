@@ -36,6 +36,8 @@
 
 #include <iterator>
 
+namespace rpp {
+
 class pp_null_output_iterator
   : public std::iterator<std::output_iterator_tag, void, void, void, void>
 {
@@ -75,4 +77,8 @@ public:
   inline pp_output_iterator operator ++ (int) { return *this; }
 };
 
+} // namespace rpp
+
 #endif // PP_ITERATOR_H
+
+// kate: space-indent on; indent-width 2; replace-tabs on;

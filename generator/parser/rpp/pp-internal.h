@@ -34,6 +34,8 @@
 #ifndef PP_INTERNAL_H
 #define PP_INTERNAL_H
 
+namespace rpp {
+
 namespace _PP_internal
 {
 
@@ -81,4 +83,8 @@ struct _Hash_string: public std::unary_function<std::size_t, pp_fast_string cons
 
 } // _PP_internal
 
+} // namespace rpp
+
 #endif // PP_INTERNAL_H
+
+// kate: space-indent on; indent-width 2; replace-tabs on;

@@ -34,6 +34,8 @@
 #ifndef PP_MACRO_EXPANDER_H
 #define PP_MACRO_EXPANDER_H
 
+namespace rpp {
+
 struct pp_frame
 {
   pp_macro *expanding_macro;
@@ -73,8 +75,10 @@ class pp_macro_expander
 
         if (*formal != *__name)
           continue;
+
         else if (frame->actuals && index < frame->actuals->size())
           return &(*frame->actuals)[index];
+
         else
           assert (0); // internal error?
       }
@@ -116,12 +120,31 @@ public:
             lines += skip_blanks.lines;
 
             _InputIterator end_id = skip_identifier (__first, __last);
-            *__result++ = '\"';
-            int was = lines;
-            this->operator () (__first, end_id, __result);
-            lines += was;
-            *__result++ = '\"';
-            __first = end_id;
+
+            // ### rewrite: not safe
+            char name_buffer[512], *cp = name_buffer;
+            std::copy (__first, end_id, cp);
+            std::size_t name_size = end_id - __first;
+            name_buffer[name_size] = '\0';
+
+            pp_fast_string fast_name (name_buffer, name_size);
+
+            if (std::string const *actual = resolve_formal (&fast_name))
+              {
+                *__result++ = '\"';
+
+                for (std::string::const_iterator it = skip_whitespaces (actual->begin (), actual->end ());
+                    it != actual->end (); ++it)
+                  {
+                    if (*it == '"')
+                      *__result++ = '\\';
+                    *__result++ = *it;
+                  }
+                *__result++ = '\"';
+                __first = end_id;
+              }
+            else
+              *__result++ = '#'; // ### warning message?
           }
         else if (*__first == '\"')
           {
@@ -178,12 +201,15 @@ public:
                   __first = skip_blanks(++next, __last);
               }
 
+            // ### rewrite: not safe
+
             std::ptrdiff_t name_size = std::distance (name_begin, name_end);
             assert (name_size >= 0 && name_size < 512);
 
             char name_buffer[512], *cp = name_buffer;
+            std::size_t __size = name_end - name_begin;
             std::copy (name_begin, name_end, cp);
-            name_buffer[name_end - name_begin] = '\0';
+            name_buffer[__size] = '\0';
 
             pp_fast_string fast_name (name_buffer, name_size);
 
@@ -198,7 +224,28 @@ public:
             pp_macro *macro = env.resolve (name_buffer, name_size);
             if (! macro || macro->hidden || hide_next)
               {
-                hide_next = !strcmp (name_buffer, "defined");
+                hide_next = ! strcmp (name_buffer, "defined");
+
+                if (__size == 8 && name_buffer [0] == '_' && name_buffer [1] == '_')
+                  {
+                    if (! strcmp (name_buffer, "__LINE__"))
+                      {
+                        char buf [16];
+                        char *end = buf + snprintf (buf, 16, "%d", env.current_line + lines);
+
+                        std::copy (&buf [0], end, __result);
+                        continue;
+                      }
+
+                    else if (! strcmp (name_buffer, "__FILE__"))
+                      {
+                        __result++ = '"';
+                        std::copy (env.current_file.begin (), env.current_file.end (), __result); // ### quote
+                        __result++ = '"';
+                        continue;
+                      }
+                  }
+
                 std::copy (name_begin, name_end, __result);
                 continue;
               }
@@ -207,7 +254,8 @@ public:
               {
                 pp_macro_expander expand_macro (env);
                 macro->hidden = true;
-                expand_macro (macro->definition->begin (), macro->definition->end (), __result);
+                if (macro->definition)
+                  expand_macro (macro->definition->begin (), macro->definition->end (), __result);
                 macro->hidden = false;
                 generated_lines += expand_macro.lines;
                 continue;
@@ -220,7 +268,7 @@ public:
               {
                 std::copy (name_begin, name_end, __result);
                 lines += skip_whitespaces.lines;
-                __first = name_end;
+                __first = arg_it;
                 continue;
               }
 
@@ -292,6 +340,8 @@ public:
   }
 };
 
+} // namespace rpp
+
 #endif // PP_MACRO_EXPANDER_H
 
-// kate: indent-width 2;
+// kate: space-indent on; indent-width 2; replace-tabs on;

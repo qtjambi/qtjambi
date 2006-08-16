@@ -1,0 +1,5 @@
+This is a tool to get Qt and other C++ libraries into the LSB database.
+
+Information about the LSB database and the schema: http://www.linuxbase.org/LSBWiki/SpecDatabase
+
+Note: You need at least Qt 4.1

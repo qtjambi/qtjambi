@@ -34,6 +34,8 @@
 #ifndef PP_SYMBOL_H
 #define PP_SYMBOL_H
 
+namespace rpp {
+
 class pp_symbol
 {
   static rxx_allocator<char> &allocator_instance ()
@@ -79,6 +81,8 @@ public:
   { return get (__s.c_str (), __s.size ()); }
 };
 
+} // namespace rpp
+
 #endif // PP_SYMBOL_H
 
-// kate: indent-width 2;
+// kate: space-indent on; indent-width 2; replace-tabs on;

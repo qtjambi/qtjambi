@@ -1,16 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $CPP_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
 /* This file is part of KDevelop
     Copyright (C) 2002-2005 Roberto Raggi <roberto@kdevelop.org>
 
@@ -141,6 +128,10 @@ void Lexer::tokenize(const char *contents, std::size_t size)
     current_token->size = cursor - begin_buffer - current_token->position;
   } while (cursor < end_buffer-1);
 
+  if (index == token_stream.size())
+      token_stream.resize(token_stream.size() * 2);
+
+  Q_ASSERT(index < token_stream.size());
   token_stream[(int) index].position = cursor - begin_buffer;
   token_stream[(int) index].kind = Token_EOF;
 }

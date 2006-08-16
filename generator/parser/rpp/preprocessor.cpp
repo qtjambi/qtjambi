@@ -35,6 +35,8 @@
 
 #include <string>
 
+using namespace rpp;
+
 // register callback for include hooks
 static void includeFileHook(const std::string &, const std::string &, FILE *);
 #define PP_HOOK_ON_FILE_INCLUDED(A, B, C) includeFileHook(A, B, C)

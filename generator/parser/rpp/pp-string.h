@@ -34,6 +34,8 @@
 #ifndef PP_STRING_H
 #define PP_STRING_H
 
+namespace rpp {
+
 template <typename _CharT>
 class pp_string
 {
@@ -56,7 +58,9 @@ public:
   inline _CharT const *begin () const { return _M_begin; }
   inline _CharT const *end () const { return _M_begin + _M_size; }
 
-  inline int size () const { return (int) _M_size; }
+  inline _CharT at (std::size_t index) const { return _M_begin [index]; }
+
+  inline std::size_t size () const { return _M_size; }
 
   inline int compare (pp_string const &__other) const
   {
@@ -79,8 +83,23 @@ public:
 
   inline bool operator < (pp_string const &__other) const
   { return compare (__other) < 0; }
+
+  inline bool operator == (char const *s) const
+  {
+    std::size_t n = strlen (s);
+
+    if (n != _M_size)
+      return false;
+
+    return ! strncmp (_M_begin, s, n);
+  }
+
+  inline bool operator != (char const *s) const
+  { return ! operator == (s); }
 };
+
+} // namespace rpp
 
 #endif // PP_STRING_H
 
-// kate: indent-width 2;
+// kate: space-indent on; indent-width 2; replace-tabs on;

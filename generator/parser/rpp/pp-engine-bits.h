@@ -1,16 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $CPP_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
 /*
   Copyright 2005 Roberto Raggi <roberto@kdevelop.org>
 
@@ -46,14 +33,17 @@
 #  define PATH_SEPARATOR '/'
 #endif
 
+namespace rpp {
+
 inline std::string pp::fix_file_path(std::string const &filename) const
 {
 #if defined (PP_OS_WIN)
     std::string s = filename;
-    for (std::string::iterator it = s.begin(); it != s.end(); ++it) {
+    for (std::string::iterator it = s.begin(); it != s.end(); ++it)
+      {
         if (*it == '/')
             *it = '\\';
-    }
+      }
     return s;
 #else
     return filename;
@@ -78,10 +68,10 @@ void pp::file (std::string const &filename, _OutputIterator __result)
   FILE *fp = fopen (filename.c_str(), "rb");
   if (fp != 0)
     {
-      std::string was = _M_current_file;
-      _M_current_file = filename;
+      std::string was = env.current_file;
+      env.current_file = filename;
       file (fp, __result);
-      _M_current_file = was;
+      env.current_file = was;
     }
   else
     std::cerr << "** WARNING file ``" << filename << " not found!" << std::endl;
@@ -119,43 +109,43 @@ void pp::file (FILE *fp, _OutputIterator __result)
 template <typename _InputIterator>
 bool pp::find_header_protection (_InputIterator __first, _InputIterator __last, std::string *__prot)
 {
-  int was = lines;
+  int was = env.current_line;
 
   while (__first != __last)
     {
       if (pp_isspace (*__first))
         {
           if (*__first == '\n')
-            ++lines;
+            ++env.current_line;
 
           ++__first;
         }
       else if (_PP_internal::comment_p (__first, __last))
         {
           __first = skip_comment_or_divop (__first, __last);
-          lines += skip_comment_or_divop.lines;
+          env.current_line += skip_comment_or_divop.lines;
         }
       else if (*__first == '#')
         {
           __first = skip_blanks (++__first, __last);
-          lines += skip_blanks.lines;
+          env.current_line += skip_blanks.lines;
 
           if (__first != __last && *__first == 'i')
             {
               _InputIterator __begin = __first;
               __first = skip_identifier (__begin, __last);
-              lines += skip_identifier.lines;
+              env.current_line += skip_identifier.lines;
 
               std::string __directive (__begin, __first);
 
               if (__directive == "ifndef")
                 {
                   __first = skip_blanks (__first, __last);
-                  lines += skip_blanks.lines;
+                  env.current_line += skip_blanks.lines;
 
                   __begin = __first;
                   __first = skip_identifier (__first, __last);
-                  lines += skip_identifier.lines;
+                  env.current_line += skip_identifier.lines;
 
                   if (__begin != __first && __first != __last)
                     {
@@ -170,7 +160,7 @@ bool pp::find_header_protection (_InputIterator __first, _InputIterator __last, 
         break;
     }
 
- lines = was;
+ env.current_line = was;
  return false;
 }
 
@@ -212,6 +202,11 @@ inline pp::PP_DIRECTIVE_TYPE pp::find_directive (char const *__directive, std::s
           return PP_INCLUDE;
         break;
 
+      case 12:
+        if (__directive[0] == 'i' && !strcmp (__directive, "include_next"))
+          return PP_INCLUDE_NEXT;
+        break;
+
       default:
         break;
     }
@@ -229,52 +224,66 @@ inline bool pp::file_exists (std::string const &__filename) const
 #endif
 }
 
-inline FILE *pp::find_include_file(std::string const &__input_filename, std::string *__filepath, INCLUDE_POLICY __include_policy) const
+inline FILE *pp::find_include_file(std::string const &__input_filename, std::string *__filepath,
+      INCLUDE_POLICY __include_policy, bool __skip_current_path) const
 {
-  assert (! __input_filename.empty() && __filepath);
+  assert (__filepath != 0);
+  assert (! __input_filename.empty());
 
-  std::string __filename = fix_file_path(__input_filename);
+  __filepath->assign (__input_filename);
 
-  if (is_absolute(__filename))
+  if (is_absolute (*__filepath))
+    return fopen (__filepath->c_str(), "r");
+
+  if (! env.current_file.empty ())
     {
-      *__filepath = __filename;
+      std::size_t __index = env.current_file.rfind (PATH_SEPARATOR);
 
-      return fopen (__filename.c_str(), "r");
+      if (__index == std::string::npos)
+        __filepath->clear ();
+
+      else
+        __filepath->assign (env.current_file, __index, std::string::npos);
+
+      if (__filepath->empty () || __filepath->at (__filepath->size () - 1) != PATH_SEPARATOR)
+        (*__filepath) += PATH_SEPARATOR;
     }
 
-  if (__include_policy == INCLUDE_LOCAL && !_M_current_file.empty ())
+  if (__include_policy == INCLUDE_LOCAL && ! __skip_current_path)
     {
-      std::string::size_type __index = _M_current_file.rfind (PATH_SEPARATOR);
+      std::string __tmp (*__filepath);
+      __tmp += __input_filename;
 
-      if (__index != std::string::npos)
+      if (file_exists (__tmp))
         {
-          std::string &__path = *__filepath;
-
-          __path.assign (_M_current_file, __index, std::string::npos);
-
-          if (! __path.empty () && __path[__path.size () - 1] != PATH_SEPARATOR)
-            __path += PATH_SEPARATOR;
-
-          __path += __filename;
-
-          if (file_exists (__path))
-            return fopen (__path.c_str (), "r");
+          __filepath->append (__input_filename);
+          return fopen (__filepath->c_str (), "r");
         }
     }
 
-  for (std::vector<std::string>::const_iterator it = include_paths.begin ();
-      it != include_paths.end (); ++it)
+  std::vector<std::string>::const_iterator it = include_paths.begin ();
+
+  if (__skip_current_path)
     {
-      std::string &__path = *__filepath;
+      it = std::find (include_paths.begin (), include_paths.end (), *__filepath);
 
-      __path = *it;
-      if (! __path.empty () && __path[__path.size () - 1] != PATH_SEPARATOR)
-        __path += PATH_SEPARATOR;
+      if (it != include_paths.end ())
+        ++it;
 
-      __path += __filename;
+      else
+        it = include_paths.begin ();
+    }
 
-      if (file_exists (__path))
-        return fopen (__path.c_str(), "r");
+  for (; it != include_paths.end (); ++it)
+    {
+      if (__skip_current_path && it == include_paths.begin())
+        continue;
+
+      __filepath->assign (*it);
+      __filepath->append (__input_filename);
+
+      if (file_exists (*__filepath))
+        return fopen (__filepath->c_str(), "r");
     }
 
   return 0;
@@ -286,7 +295,8 @@ _InputIterator pp::handle_directive(char const *__directive, std::size_t __size,
 {
   __first = skip_blanks (__first, __last);
 
-  switch (find_directive (__directive, __size))
+  PP_DIRECTIVE_TYPE d = find_directive (__directive, __size);
+  switch (d)
     {
       case PP_DEFINE:
         if (! skipping ())
@@ -294,8 +304,9 @@ _InputIterator pp::handle_directive(char const *__directive, std::size_t __size,
         break;
 
       case PP_INCLUDE:
+      case PP_INCLUDE_NEXT:
         if (! skipping ())
-          return handle_include (__first, __last, __result);
+          return handle_include (d == PP_INCLUDE_NEXT, __first, __last, __result);
         break;
 
       case PP_UNDEF:
@@ -355,7 +366,7 @@ void pp::output_line(const std::string &__filename, int __line, _OutputIterator 
 }
 
 template <typename _InputIterator, typename _OutputIterator>
-_InputIterator pp::handle_include (_InputIterator __first, _InputIterator __last,
+_InputIterator pp::handle_include (bool __skip_current_path, _InputIterator __first, _InputIterator __last,
       _OutputIterator __result)
 {
   assert (*__first == '<' || *__first == '"');
@@ -374,28 +385,30 @@ _InputIterator pp::handle_include (_InputIterator __first, _InputIterator __last
   std::string filename (__first, end_name);
 
   std::string filepath;
-  FILE *fp = find_include_file (filename, &filepath, quote == '<' ? INCLUDE_GLOBAL : INCLUDE_LOCAL);
+  FILE *fp = find_include_file (filename, &filepath, quote == '<' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, __skip_current_path);
 #if defined (PP_HOOK_ON_FILE_INCLUDED)
-      PP_HOOK_ON_FILE_INCLUDED (_M_current_file, fp ? filepath : filename, fp);
+      PP_HOOK_ON_FILE_INCLUDED (env.current_file, fp ? filepath : filename, fp);
 #endif
   if (fp != 0)
     {
-      std::string old_file = _M_current_file;
-      _M_current_file = filepath;
-      int __saved_lines = lines;
+      std::string old_file = env.current_file;
+      env.current_file = filepath;
+      int __saved_lines = env.current_line;
 
-      lines = 1;
-      //output_line (_M_current_file, 1, __result);
+      env.current_line = 1;
+      //output_line (env.current_file, 1, __result);
 
       file (fp, __result);
 
       // restore the file name and the line position
-      _M_current_file = old_file;
-      lines = __saved_lines;
+      env.current_file = old_file;
+      env.current_line = __saved_lines;
 
       // sync the buffer
-      output_line (_M_current_file, lines, __result);
+      output_line (env.current_file, env.current_line, __result);
     }
+  else
+    std::cerr << "*** ERROR " << filename << ": No such file or directory" << std::endl;
 
   return __first;
 }
@@ -406,22 +419,23 @@ void pp::operator () (_InputIterator __first, _InputIterator __last, _OutputIter
 #ifndef PP_NO_SMART_HEADER_PROTECTION
   std::string __prot;
   __prot.reserve (255);
+  pp_fast_string __tmp (__prot.c_str (), __prot.size ());
 
   if (find_header_protection (__first, __last, &__prot)
-      && env.resolve (pp_symbol::get (__prot.c_str (), __prot.size ())) != 0)
+      && env.resolve (&__tmp) != 0)
     {
       // std::cerr << "** DEBUG found header protection:" << __prot << std::endl;
       return;
     }
 #endif
 
-  lines = 1;
+  env.current_line = 1;
   char __buffer[512];
 
   while (true)
     {
       __first = skip_blanks (__first, __last);
-      lines += skip_blanks.lines;
+      env.current_line += skip_blanks.lines;
 
       if (__first == __last)
         break;
@@ -429,10 +443,10 @@ void pp::operator () (_InputIterator __first, _InputIterator __last, _OutputIter
         {
           assert (*__first == '#');
           __first = skip_blanks (++__first, __last);
-          lines += skip_blanks.lines;
+          env.current_line += skip_blanks.lines;
 
           _InputIterator end_id = skip_identifier (__first, __last);
-          lines += skip_identifier.lines;
+          env.current_line += skip_identifier.lines;
           std::size_t __size = end_id - __first;
 
           assert (__size < 512);
@@ -443,31 +457,31 @@ void pp::operator () (_InputIterator __first, _InputIterator __last, _OutputIter
           end_id = skip_blanks (end_id, __last);
           __first = skip (end_id, __last);
 
-          int was = lines;
+          int was = env.current_line;
           (void) handle_directive (__buffer, __size, end_id, __first, __result);
 
-          if (lines != was)
+          if (env.current_line != was)
             {
-              lines = was;
-              output_line (_M_current_file, lines, __result);
+              env.current_line = was;
+              output_line (env.current_file, env.current_line, __result);
             }
         }
       else if (*__first == '\n')
         {
           // ### compress the line
           *__result++ = *__first++;
-          ++lines;
+          ++env.current_line;
         }
       else if (skipping ())
         __first = skip (__first, __last);
       else
         {
-          output_line (_M_current_file, lines, __result);
+          output_line (env.current_file, env.current_line, __result);
           __first = expand (__first, __last, __result);
-          lines += expand.lines;
+          env.current_line += expand.lines;
 
           if (expand.generated_lines)
-            output_line (_M_current_file, lines, __result);
+            output_line (env.current_file, env.current_line, __result);
         }
     }
 }
@@ -496,14 +510,24 @@ inline std::vector<std::string>::const_iterator pp::include_paths_end () const
 { return include_paths.end (); }
 
 inline void pp::push_include_path (std::string const &__path)
-{ include_paths.push_back (__path); }
+{
+  if (__path.empty () || __path [__path.size () - 1] != PATH_SEPARATOR)
+    {
+      std::string __tmp (__path);
+      __tmp += PATH_SEPARATOR;
+      include_paths.push_back (__tmp);
+    }
+
+  else
+    include_paths.push_back (__path);
+}
 
 template <typename _InputIterator>
 _InputIterator pp::handle_define (_InputIterator __first, _InputIterator __last)
 {
   pp_macro macro;
 #if defined (PP_WITH_MACRO_POSITION)
-  macro.file = pp_symbol::get (_M_current_file);
+  macro.file = pp_symbol::get (env.current_file);
 #endif
   std::string definition;
 
@@ -591,27 +615,27 @@ _InputIterator pp::skip (_InputIterator __first, _InputIterator __last)
       if (*__first == '/')
         {
           __first = skip_comment_or_divop (__first, __last);
-          lines += skip_comment_or_divop.lines;
+          env.current_line += skip_comment_or_divop.lines;
         }
       else if (*__first == '"')
         {
           __first = skip_string_literal (__first, __last);
-          lines += skip_string_literal.lines;
+          env.current_line += skip_string_literal.lines;
         }
       else if (*__first == '\'')
         {
           __first = skip_char_literal (__first, __last);
-          lines += skip_char_literal.lines;
+          env.current_line += skip_char_literal.lines;
         }
       else if (*__first == '\\')
         {
           __first = skip_blanks (++__first, __last);
-          lines += skip_blanks.lines;
+          env.current_line += skip_blanks.lines;
 
           if (__first != __last && *__first == '\n')
             {
               ++__first;
-              ++lines;
+              ++env.current_line;
             }
         }
       else
@@ -1075,8 +1099,15 @@ _InputIterator pp::handle_ifdef (bool check_undefined, _InputIterator __first, _
   if (test_if_level())
     {
       _InputIterator end_macro_name = skip_identifier (__first, __last);
-      pp_fast_string const *macro_name = pp_symbol::get (__first, end_macro_name);
-      bool value = env.resolve (macro_name) != 0;
+
+      std::size_t __size = std::distance (__first, end_macro_name);
+      assert (__size < 256);
+
+      char __buffer [256];
+      std::copy (__first, end_macro_name, __buffer);
+
+      bool value = env.resolve (__buffer, __size) != 0;
+
       __first = end_macro_name;
 
       if (check_undefined)
@@ -1096,7 +1127,15 @@ _InputIterator pp::handle_undef(_InputIterator __first, _InputIterator __last)
   _InputIterator end_macro_name = skip_identifier (__first, __last);
   assert (end_macro_name != __first);
 
-  env.unbind (pp_symbol::get (__first, end_macro_name));
+  std::size_t __size = std::distance (__first, end_macro_name);
+  assert (__size < 256);
+
+  char __buffer [256];
+  std::copy (__first, end_macro_name, __buffer);
+
+  pp_fast_string const __tmp (__buffer, __size);
+  env.unbind (&__tmp);
+
   __first = end_macro_name;
 
   return __first;
@@ -1248,6 +1287,8 @@ _InputIterator pp::next_token (_InputIterator __first, _InputIterator __last, in
   return __first;
 }
 
+} // namespace rpp
+
 #endif // PP_ENGINE_BITS_H
 
-// kate: indent-width 2;
+// kate: space-indent on; indent-width 2; replace-tabs on;

@@ -1,16 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $CPP_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
 /*
   Copyright 2005 Roberto Raggi <roberto@kdevelop.org>
 
@@ -34,6 +21,8 @@
 #ifndef PP_ENGINE_H
 #define PP_ENGINE_H
 
+namespace rpp {
+
 class pp
 {
   pp_environment &env;
@@ -43,14 +32,12 @@ class pp
   pp_skip_blanks skip_blanks;
   pp_skip_number skip_number;
   std::vector<std::string> include_paths;
-  std::string _M_current_file;
   std::string _M_current_text;
 
   enum { MAX_LEVEL = 512 };
   int _M_skipping[MAX_LEVEL];
   int _M_true_test[MAX_LEVEL];
   int iflevel;
-  int lines;
 
   union
   {
@@ -84,6 +71,7 @@ class pp
     PP_UNKNOWN_DIRECTIVE,
     PP_DEFINE,
     PP_INCLUDE,
+    PP_INCLUDE_NEXT,
     PP_ELIF,
     PP_ELSE,
     PP_ENDIF,
@@ -124,7 +112,7 @@ public:
 private:
   inline bool file_exists (std::string const &__filename) const;
   FILE *find_include_file (std::string const &__filename, std::string *__filepath,
-                           INCLUDE_POLICY __include_policy) const;
+                           INCLUDE_POLICY __include_policy, bool __skip_current_path = false) const;
 
   inline int skipping() const;
   bool test_if_level();
@@ -181,7 +169,7 @@ private:
           _InputIterator __first, _InputIterator __last, _OutputIterator __result);
 
   template <typename _InputIterator, typename _OutputIterator>
-  _InputIterator handle_include(_InputIterator __first, _InputIterator __last,
+  _InputIterator handle_include(bool skip_current_path, _InputIterator __first, _InputIterator __last,
         _OutputIterator __result);
 
   template <typename _InputIterator>
@@ -212,6 +200,8 @@ private:
   _InputIterator next_token (_InputIterator __first, _InputIterator __last, int *kind);
 };
 
+} // namespace rpp
+
 #endif // PP_ENGINE_H
 
-// kate: indent-width 2;
+// kate: space-indent on; indent-width 2; replace-tabs on;
