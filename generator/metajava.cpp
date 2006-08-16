@@ -866,6 +866,28 @@ MetaJavaEnum *MetaJavaClass::findEnum(const QString &enumName)
     return 0;
 }
 
+static void add_extra_include_for_type(MetaJavaClass *java_class, const MetaJavaType *type)
+{            
+    Q_ASSERT(java_class != 0);
+    const TypeEntry *entry = (type ? type->typeEntry() : 0);
+    if (entry != 0 && entry->isComplex()) {
+        const ComplexTypeEntry *centry = static_cast<const ComplexTypeEntry *>(entry);
+        ComplexTypeEntry *class_entry = java_class->typeEntry();
+        if (class_entry != 0 && centry->include().isValid())            
+            class_entry->addExtraInclude(centry->include());        
+    }
+}
+
+static void add_extra_includes_for_function(MetaJavaClass *java_class, const MetaJavaFunction *java_function)
+{
+    Q_ASSERT(java_class != 0); 
+    Q_ASSERT(java_function != 0);
+    add_extra_include_for_type(java_class, java_function->type());
+    
+    MetaJavaArgumentList arguments = java_function->arguments();
+    foreach (MetaJavaArgument *argument, arguments)
+        add_extra_include_for_type(java_class, argument->type());    
+}
 
 void MetaJavaClass::fixFunctions()
 {
@@ -976,6 +998,9 @@ void MetaJavaClass::fixFunctions()
                 func->setName(mod.renamedTo());
             }
         }
+
+        // Make sure that we include files for all classes that are in use
+        add_extra_includes_for_function(this, func);
     }
 
     foreach (MetaJavaFunction *f1, funcs) {
