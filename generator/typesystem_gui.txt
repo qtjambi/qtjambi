@@ -1378,6 +1378,12 @@
     <modify-function class="java" signature="buttonClicked(int)">
         <rename to="buttonIdClicked"/>
     </modify-function>
+    <modify-function class="java" signature="buttonPressed(int)">
+        <rename to="buttonIdPressed"/>
+    </modify-function>
+    <modify-function class="java" signature="buttonReleased(int)">
+        <rename to="buttonIdReleased"/>
+    </modify-function>
   </object-type>
     
   <object-type name="QToolBar">
