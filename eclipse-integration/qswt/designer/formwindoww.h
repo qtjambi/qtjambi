@@ -27,7 +27,7 @@ public:
     void signalChange(int id)
         { emit actionChanged(id); }
     
-//    bool eventFilter(QObject *watched, QEvent *e);
+    bool eventFilter(QObject *watched, QEvent *e);
 
     //do nothing, use default always
     void setFont(const QFont &) { }

@@ -36,19 +36,21 @@ FormWindowW::FormWindowW(QWidget *parent)
     if(!FormEditorW::instance()->updateTopLevel())
         FormEditorW::instance()->formEditor()->setTopLevel(m_form);
 
+    installEventFilter(this);
+
 #ifdef Q_OS_WIN
-//    installEventFilter(this);
+    
 #endif
 }
 
-/*bool FormWindowW::eventFilter(QObject *watched, QEvent *e)
+bool FormWindowW::eventFilter(QObject *watched, QEvent *e)
 {
-    if (e->type() == QEvent::KeyPress) {
+    if (e->type() == QEvent::KeyPress || e->type() == QEvent::ShortcutOverride) {
         QKeyEvent *k = static_cast<QKeyEvent *>(e);
         QKeySequence ks(k->key() + k->modifiers());
 
         FormEditorW *fe = FormEditorW::instance();
-        for (int i=0; i<=fe->LastAction; ++i) {
+        for (int i=7; i<=fe->LastAction; ++i) {
             if (fe->idToAction(i)->shortcut() == ks) {
                 fe->idToAction(i)->trigger();
                 break;
@@ -57,7 +59,7 @@ FormWindowW::FormWindowW(QWidget *parent)
     }
 
     return QScrollArea::eventFilter(watched, e);
-}*/
+}
 
 FormWindowW::~FormWindowW()
 {
@@ -169,6 +171,7 @@ bool FormWindowW::isEnabled(int id)
 void FormWindowW::setActiveFormWindow()
 {
     m_fwm->setActiveFormWindow(m_form);
+    m_form->setFocus();
 }
 
 int FormWindowW::toolCount()
