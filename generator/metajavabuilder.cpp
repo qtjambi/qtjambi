@@ -422,6 +422,9 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
 
     m_current_class = 0;
 
+    if (type->include().name.isEmpty())
+        type->setInclude(Include(Include::IncludePath, class_item->fileName()));
+
     return java_class;
 }
 
@@ -750,7 +753,7 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
     }
 
     ArgumentList arguments = function_item->arguments();
-    MetaJavaArgumentList java_arguments;    
+    MetaJavaArgumentList java_arguments;
 
     int first_default_argument = 0;
     for (int i=0; i<arguments.size(); ++i) {
@@ -773,10 +776,10 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
         java_argument->setType(java_type);
         java_argument->setName((arg->name().isEmpty() ? "arg" : arg->name())
                                + "__" + QString::number(i));
-       
+
         java_arguments << java_argument;
     }
-   
+
     java_function->setArguments(java_arguments);
 
     // Find the correct default values
@@ -823,9 +826,9 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
     }
 
     bool array_of_unspecified_size = false;
-    if (typeInfo.arrays.size() > 0) {        
+    if (typeInfo.arrays.size() > 0) {
         array_of_unspecified_size = true;
-        for (int i=0; i<typeInfo.arrays.size(); ++i) 
+        for (int i=0; i<typeInfo.arrays.size(); ++i)
             array_of_unspecified_size = array_of_unspecified_size && typeInfo.arrays.at(i).isEmpty();
 
         if (!array_of_unspecified_size) {
@@ -849,7 +852,7 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
 
                 int elems = s.toInt(&ok);
                 if (!ok)
-                    return 0;            
+                    return 0;
 
                 MetaJavaType *arrayType = new MetaJavaType;
                 arrayType->setArrayElementCount(elems);
@@ -858,7 +861,7 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
                 decideUsagePattern(arrayType);
 
                 elementType = arrayType;
-            } 
+            }
 
             return elementType;
         }  else {
@@ -1080,9 +1083,9 @@ QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaT
         } else if (expr.endsWith(")") && type->isValue()) {
             int pos = expr.indexOf("(");
 
-            TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(pos));                
+            TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(pos));
             if (typeEntry)
-                return "new " + typeEntry->qualifiedJavaName() + expr.right(expr.length() - pos);            
+                return "new " + typeEntry->qualifiedJavaName() + expr.right(expr.length() - pos);
             else
                 return expr;
         } else if (expr == "0") {
@@ -1092,7 +1095,7 @@ QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaT
 
             expr = expr.right(expr.length() - expr.indexOf("::") - 2);
             if (typeEntry) {
-                return "new " + type->typeEntry()->qualifiedJavaName() + 
+                return "new " + type->typeEntry()->qualifiedJavaName() +
                        "(" + typeEntry->qualifiedJavaName() + "." + expr + ")";
             }
         }

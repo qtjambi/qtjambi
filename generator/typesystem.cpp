@@ -402,7 +402,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 ctype->setJavaPackage(attributes["package"]);
                 ctype->setDefaultSuperclass(attributes["default-superclass"]);
 
-                ctype->setInclude(Include(Include::IncludePath, ctype->name()));
+                // ctype->setInclude(Include(Include::IncludePath, ctype->name()));
                 ctype = ctype->designatedInterface();
                 if (ctype != 0)
                     ctype->setJavaPackage(attributes["package"]);
