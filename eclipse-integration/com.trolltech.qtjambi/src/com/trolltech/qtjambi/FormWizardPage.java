@@ -55,6 +55,7 @@ public class FormWizardPage extends WizardPage
     private IStructuredSelection selection;
     private Text fileName;
     private Text packageName;
+    private Text className;
     
     private class ContainerProvider implements ITreeContentProvider, ILabelProvider
     {
@@ -255,6 +256,14 @@ public class FormWizardPage extends WizardPage
         return "";
     }
     
+    public String getClassName() 
+    {
+        if (className != null)
+            return className.getText();
+        else
+            return "";
+    }
+    
     public void setSelection(IStructuredSelection selection)
     {
         this.selection = selection;
@@ -384,6 +393,19 @@ public class FormWizardPage extends WizardPage
             gridData.horizontalAlignment = GridData.FILL;
             gridData.horizontalSpan = 2;
             packageName.setLayoutData(gridData);                                    
+        }
+        
+        {
+            Label label = new Label(topLevel, SWT.NONE);
+            label.setText("Class name: Ui_");
+            
+            className = new Text(topLevel, SWT.BORDER);
+            GridData gridData = new GridData();
+            gridData.grabExcessHorizontalSpace = true;
+            gridData.grabExcessVerticalSpace = true;
+            gridData.horizontalAlignment = GridData.FILL;
+            gridData.horizontalSpan = 2;
+            className.setLayoutData(gridData);                                                
         }
         
         {

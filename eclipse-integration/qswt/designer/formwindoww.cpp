@@ -82,15 +82,16 @@ void FormWindowW::open(QString fileName)
     m_file = new QFile(fileName);
     m_form->setContents(m_file);
     m_form->setFileName(fileName);
+    QWidget *mc = m_form->mainContainer();    
+    if (mc)
+        setFormWindowSize(mc->size());    
+}
 
+void FormWindowW::setObjectName(const QString &objectName)
+{
     QWidget *mc = m_form->mainContainer();
-    
-    if (mc) {
-        setFormWindowSize(mc->size());
-
-        if (mc->objectName().isEmpty())
-            mc->setObjectName(QFileInfo(fileName).baseName());
-    }
+    if (mc)
+        mc->setObjectName(objectName);    
 }
 
 bool FormWindowW::save()
@@ -109,6 +110,12 @@ bool FormWindowW::saveAs(QString fileName)
 
 bool FormWindowW::save(QString fileName)
 {
+    QWidget *mc = m_form->mainContainer();    
+    if (mc) {
+        if (mc->objectName().isEmpty())
+            mc->setObjectName(QFileInfo(fileName).baseName());
+    }
+
     QFile f(fileName);
     if (!f.open(QFile::WriteOnly))
         return false;

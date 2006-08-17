@@ -39,6 +39,7 @@ public slots:
     void close();
     
     void setActiveFormWindow();
+    void setObjectName(const QString &objectName);
     
     // actions
     int actionCount();

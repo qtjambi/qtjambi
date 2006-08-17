@@ -4,18 +4,24 @@ import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+
+import com.trolltech.qtdesigner.editors.UiEditor;
+import com.trolltech.qtdesigner.views.FormWindowW;
 
 public class FormWizard extends Wizard implements INewWizard 
 {
@@ -85,16 +91,21 @@ public class FormWizard extends Wizard implements INewWizard
                 }
             }
                       
-            String fname = name.substring(name.lastIndexOf('/'));
+            String fname = name.substring(name.lastIndexOf('/') + 1);
             container = container.append(fname);
             IFile file = root.getFile(container);
             if (!file.exists()) {                
                 ClassLoader cl = Thread.currentThread().getContextClassLoader();
                 InputStream stream = cl.getResourceAsStream(pathToTemplate);
                 
-                try {
+                try {                  
+                    IWorkspaceDescription wsd = ResourcesPlugin.getWorkspace().getDescription();
+                    boolean wasAutoBuilding = wsd.isAutoBuilding();
+                    wsd.setAutoBuilding(false);
+                    ResourcesPlugin.getWorkspace().setDescription(wsd);
                     file.create(stream, true, null);     
-                    IWorkbench wb = PlatformUI.getWorkbench();                    
+                    IWorkbench wb = PlatformUI.getWorkbench();
+                    
                                         
                     IWorkbenchWindow ww = null;
                     if (wb != null)
@@ -104,8 +115,28 @@ public class FormWizard extends Wizard implements INewWizard
                     if (ww != null)
                         wp = ww.getActivePage();
                     
-                    if (wp != null)
-                        IDE.openEditor(wp, file);
+                    if (wp != null) {
+                        IEditorPart part = IDE.openEditor(wp, file);
+                        
+                        FormWindowW window = null;
+                        if (part instanceof UiEditor) {
+                            UiEditor editor = (UiEditor) part;
+                            window = editor.formWindow();                            
+                        }
+                        
+                        if (window != null) {
+                            String objectName = mainPage.getClassName(); 
+                            if (objectName.length() == 0)                                
+                                objectName = fname.substring(0, fname.lastIndexOf("."));                            
+                            window.setObjectName(objectName);
+                            window.save();
+                        }
+                            
+                    }
+
+                    wsd = ResourcesPlugin.getWorkspace().getDescription();
+                    wsd.setAutoBuilding(wasAutoBuilding);
+                    ResourcesPlugin.getWorkspace().setDescription(wsd);
                                                                 
                     return true;
                 } catch (CoreException e) {}

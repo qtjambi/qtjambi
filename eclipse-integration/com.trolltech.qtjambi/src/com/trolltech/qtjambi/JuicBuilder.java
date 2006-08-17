@@ -96,7 +96,7 @@ public class JuicBuilder extends IncrementalProjectBuilder {
 			}
 		}
 		        
-        IJavaProject jpro = JavaCore.create(getProject());
+        IJavaProject jpro = JavaCore.create(getProject());               
         
         IWorkspaceRoot wroot = jpro.getJavaModel().getWorkspace().getRoot();
 		IClasspathEntry[] classpaths = jpro.getResolvedClasspath(true);
@@ -161,8 +161,7 @@ public class JuicBuilder extends IncrementalProjectBuilder {
                     }
                 }
             }
-            System.out.println("excluded: " + excluded_directories);
-            
+
             String included_directories = "";
             {
                 IPath inclusions[] = classpath.getInclusionPatterns();
