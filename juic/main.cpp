@@ -39,16 +39,16 @@ static char ENV_SPLITTER = ':';
 
 void showHelp(const char *appName);
 bool ensurePath(const QString &path);
-void traverseAll(const QFileInfoList &included, const QFileInfoList &excluded, const QString &out_dir, 
+void traverseAll(const QStringList &included, const QStringList &excluded, const QString &out_dir, 
                  bool process_all);
 QString findClassName(const QFileInfo &file);
-void traverseClassPath(const QString &rootPath, const QDir &dir, const QFileInfoList &included, 
-                       const QFileInfoList &excluded, const QString &out_dir, bool process_all);
+void traverseClassPath(const QString &rootPath, const QDir &dir, const QStringList &included, 
+                       const QStringList &excluded, const QString &out_dir, bool process_all);
 
-bool shouldProcess(const QFileInfo &info, const QFileInfoList &included, const QFileInfoList &excluded);
+bool shouldProcess(const QFileInfo &info, const QStringList &included, const QStringList &excluded);
 
 bool runJuic(const QFileInfo &uiFile, const QString &baseDir, const QString &package, bool process_all);
-QFileInfoList resolveFileInfoList(char *argv0, const QStringList &filenames);
+QStringList resolveFileInfoList(char *argv0, const QStringList &filenames);
 
 static int num_processed_files;
 static int num_updated_files;
@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
     QString fileName;
     QString package;
     QString outDir;
-    QFileInfoList included;
-    QFileInfoList excluded;
+    QStringList included;
+    QStringList excluded;
     
     bool process_all = false;
     bool process_directory = false;
@@ -163,15 +163,15 @@ int main(int argc, char *argv[])
     return runJuic(QFileInfo(fileName), outDir, package, process_all);
 }
 
-QFileInfoList resolveFileInfoList(char *argv0, const QStringList &list) 
+QStringList resolveFileInfoList(char *argv0, const QStringList &list) 
 {
-    QFileInfoList file_infos;
+    QStringList file_infos;
     foreach (QString item, list) {
         QFileInfo info(item);
         if (info.exists())
-            file_infos.append(info);
-        else
-            fprintf(stderr, "%s: Path does not exist: '%s'\n", argv0, qPrintable(item));
+            file_infos.append(info.absoluteFilePath());
+        else 
+            file_infos.append(item.replace('\\', '/'));
     }
 
     return file_infos;
@@ -319,29 +319,58 @@ bool process(const QString &rootPath, const QString &outPath, const QFileInfo &f
     return runJuic(file, outPath, package, process_all);
 }
 
-bool shouldProcess(const QFileInfo &file, const QFileInfoList &included, const QFileInfoList &excluded)
+static bool has_match(const QFileInfo &file, const QString &pattern)
 {
-    if (!included.isEmpty()) {
+    QString potential = file.absoluteFilePath();
+    QStringList segments = pattern.split(QLatin1Char('*'));
+    int pos = -1;
+    foreach (QString segment, segments) {
+        if (!segment.isEmpty()) {
+            int new_pos = potential.indexOf(segment, pos);
+
+            if ((new_pos < pos) // no match
+                || (new_pos > 0 && pos < 0)) { // match too far into string for first segment
+                return false; 
+            }
+            pos = new_pos + segment.length();
+
+        } else if (pos == -1) {
+            pos = 0;
+        }
+        
+    }
+
+    return (segments.last().isEmpty() || pos == potential.length());
+}
+
+bool shouldProcess(const QFileInfo &file, const QStringList &included, const QStringList &excluded)
+{
+    if (!included.isEmpty() && file.isDir()) {
+        return true;
+    } else if (!included.isEmpty()) {
         bool found = false;
-        foreach (QFileInfo info, included) {            
-            if (file.absoluteFilePath().startsWith(info.absoluteFilePath())) {
+        foreach (QString info, included) {            
+            if (has_match(file, info)) {
                 found = true;
                 break; 
-            }
+            } 
         }
 
         if (!found)
             return false;
-    } else if (excluded.contains(file)) {
-        return false;
+    } else {
+        foreach (QString info, excluded) {
+            if (has_match(file, info))
+                return false;
+        }
     } 
 
     return true;    
 }
 
 
-void traverseClassPath(const QString &rootPath, const QDir &dir, const QFileInfoList &included, 
-                       const QFileInfoList &excluded, const QString &out_dir, bool process_all)
+void traverseClassPath(const QString &rootPath, const QDir &dir, const QStringList &included, 
+                       const QStringList &excluded, const QString &out_dir, bool process_all)
 {
     QFileInfoList uiFiles = dir.entryInfoList(QStringList() << "*.ui", QDir::Files);
 
@@ -360,7 +389,7 @@ void traverseClassPath(const QString &rootPath, const QDir &dir, const QFileInfo
 }
 
 
-void traverseAll(const QFileInfoList &included, const QFileInfoList &excluded, const QString &out_dir, bool process_all)
+void traverseAll(const QStringList &included, const QStringList &excluded, const QString &out_dir, bool process_all)
 {
 
     QString classPath = QString(getenv("CLASSPATH"));
