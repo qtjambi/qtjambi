@@ -325,10 +325,9 @@ static bool has_match(const QFileInfo &file, const QString &pattern)
     QStringList segments = pattern.split(QLatin1Char('*'));
     int pos = -1;
     foreach (QString segment, segments) {
-        if (!segment.isEmpty()) {
-            int new_pos = potential.indexOf(segment, pos);
-
-            if ((new_pos < pos) // no match
+        if (!segment.isEmpty()) {            
+            int new_pos = potential.indexOf(segment, pos < 0 ? 0 : pos);
+            if ((new_pos < 0) // no match
                 || (new_pos > 0 && pos < 0)) { // match too far into string for first segment
                 return false; 
             }
@@ -340,7 +339,7 @@ static bool has_match(const QFileInfo &file, const QString &pattern)
         
     }
 
-    return (segments.last().isEmpty() || pos == potential.length());
+    return (segments.last().isEmpty() || pos >= potential.length());
 }
 
 bool shouldProcess(const QFileInfo &file, const QStringList &included, const QStringList &excluded)
@@ -352,7 +351,7 @@ bool shouldProcess(const QFileInfo &file, const QStringList &included, const QSt
         foreach (QString info, included) {            
             if (has_match(file, info)) {
                 found = true;
-                break; 
+                break;
             } 
         }
 
