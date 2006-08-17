@@ -6,10 +6,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 public class DesignerAction extends Action
 {
-	private DesignerActionBarContributor contributor;
-	private int actId;
-	private boolean tool;
-	private boolean hasicon;
+    private DesignerActionBarContributor contributor;
+    private int actId;
+    private boolean tool;
+    private boolean hasicon;
+    private long time = 0;
 	
 	public DesignerAction(DesignerActionBarContributor contributor, int actId, boolean tool)
 	{
@@ -63,7 +64,15 @@ public class DesignerAction extends Action
 	public void run()
 	{
 		FormWindowW formwindow = contributor.activeEditor().formWindow();
-		
+        long l = System.currentTimeMillis();        
+        if (time == 0) {
+            time = l;
+        } else {
+            if (l - time < 100)
+                return ;
+            time = l;
+        }
+            		
 		if (tool)
 		{
 			formwindow.setCurrentTool(actId);
@@ -71,7 +80,7 @@ public class DesignerAction extends Action
 		}
 		else
 		{
-			formwindow.actionTrigger(actId);
+	        formwindow.actionTrigger(actId);                       
 		}
 	}
 	

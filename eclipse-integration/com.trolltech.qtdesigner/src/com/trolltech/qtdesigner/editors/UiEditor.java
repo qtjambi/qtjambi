@@ -91,7 +91,7 @@ public class UiEditor extends EditorPart {
 		formwindow.addFormWindowWListener(new FormWindowWListener() {
 			public void actionChanged(int actId)
 			{
-				IEditorActionBarContributor cont = UiEditor.this.getEditorSite().getActionBarContributor();
+				IEditorActionBarContributor cont = UiEditor.this.getEditorSite().getActionBarContributor();                
 				if (cont instanceof DesignerActionBarContributor) {
 					DesignerActionBarContributor dcont = (DesignerActionBarContributor)cont;
 					dcont.updateAction(actId);

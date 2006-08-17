@@ -9,6 +9,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.actions.ActionFactory;
+
 import java.util.ArrayList;
 import com.trolltech.qtdesigner.views.FormWindowW;
 import org.eclipse.jface.action.Separator;
@@ -64,33 +66,33 @@ public class DesignerActionBarContributor implements IEditorActionBarContributor
 	
 		//the first 7 actions are hard coded because they are integrated
 		DesignerAction act = new DesignerAction(this, 0, false);
-		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.CUT, act);
+		actionbars.setGlobalActionHandler(ActionFactory.CUT.getId(), act);
 		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.CUT_EXT, act);
 		actions.add(act);
 
 		act = new DesignerAction(this, 1, false);
-		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.COPY, act);
+		actionbars.setGlobalActionHandler(ActionFactory.COPY.getId(), act);
 		actions.add(act);
 
 		act = new DesignerAction(this, 2, false);
-		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.PASTE, act);
+		actionbars.setGlobalActionHandler(ActionFactory.PASTE.getId(), act);
 		actions.add(act);
 
 		act = new DesignerAction(this, 3, false);
-		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.DELETE, act);
+		actionbars.setGlobalActionHandler(ActionFactory.DELETE.getId(), act);
 		actions.add(act);
 
 		act = new DesignerAction(this, 4, false);
-		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, act);
+		actionbars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), act);
 		actions.add(act);
 		
 		act = new DesignerAction(this, 5, false);
-		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.UNDO, act);
+		actionbars.setGlobalActionHandler(ActionFactory.UNDO.getId(), act);
 		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.UNDO_EXT, act);
 		actions.add(act);
 
 		act = new DesignerAction(this, 6, false);
-		actionbars.setGlobalActionHandler(IWorkbenchActionConstants.REDO, act);
+		actionbars.setGlobalActionHandler(ActionFactory.REDO.getId(), act);
 		actions.add(act);
 		
 		MenuManager qtmenu = new MenuManager("Qt");
@@ -125,7 +127,7 @@ public class DesignerActionBarContributor implements IEditorActionBarContributor
 	
 	public IActionBars actionBars()
 	{
-		return actionbars;
+        return actionbars;
 	}
 	
 	public void updateAction(int actId)
