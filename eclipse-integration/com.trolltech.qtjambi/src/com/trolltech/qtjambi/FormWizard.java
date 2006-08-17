@@ -57,30 +57,32 @@ public class FormWizard extends Wizard implements INewWizard
             String folderName = name.substring(0, name.lastIndexOf('/'));
             container = container.append(folderName).addTrailingSeparator();
             
-            IFolder folder = root.getFolder(container);
-            if (folder != null && !folder.exists()) {
-                IPath path = null;
-                
-                // path == project
-                path = container.removeLastSegments(container.segmentCount() - 1);
-                
-                // Try to make entire path
-                for (int i=1; i<container.segmentCount(); ++i) {
-                    path = path.append(container.segment(i)).addTrailingSeparator();
+            if (container.segmentCount() > 1) {
+                IFolder folder = root.getFolder(container);
+                if (folder != null && !folder.exists()) {
+                    IPath path = null;
                     
-                    folder = root.getFolder(path);
-                    if (!folder.exists()) {
-                        try {
-                            folder.create(true, true, null);                            
-                        } catch (CoreException e) {
-                            break; 
+                    // path == project
+                    path = container.removeLastSegments(container.segmentCount() - 1);
+                    
+                    // Try to make entire path
+                    for (int i=1; i<container.segmentCount(); ++i) {
+                        path = path.append(container.segment(i)).addTrailingSeparator();
+                        
+                        folder = root.getFolder(path);
+                        if (!folder.exists()) {
+                            try {
+                                folder.create(true, true, null);                            
+                            } catch (CoreException e) {
+                                break; 
+                            }
                         }
                     }
+                    
+                    try {
+                        folder.create(true, true, null);
+                    } catch (CoreException e) {}
                 }
-                
-                try {
-                    folder.create(true, true, null);
-                } catch (CoreException e) {}
             }
                       
             String fname = name.substring(name.lastIndexOf('/'));

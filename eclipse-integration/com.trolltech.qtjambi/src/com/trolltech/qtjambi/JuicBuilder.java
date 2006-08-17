@@ -143,25 +143,45 @@ public class JuicBuilder extends IncrementalProjectBuilder {
             {
                 IPath exclusions[] = classpath.getExclusionPatterns();
                 for (int j=0;j<exclusions.length; ++j) {
-                    IResource member = wroot.findMember(path.append(exclusions[j]));
+                    IResource member = wroot.findMember(path.append(exclusions[j]));                    
+                    if (j>0) 
+                        excluded_directories += System.getProperty("path.separator");
+                    
                     if (member != null) {
-                        if (j>0) 
-                            excluded_directories += System.getProperty("path.separator");                        
                         excluded_directories += member.getLocation().toOSString();
+                    } else {
+                        member = wroot.findMember(path);
+                        if (member != null) {
+                            excluded_directories += member
+                                                        .getLocation()
+                                                        .addTrailingSeparator()
+                                                        .append(exclusions[j])
+                                                        .toOSString();
+                        }                                                
                     }
                 }
             }
+            System.out.println("excluded: " + excluded_directories);
             
             String included_directories = "";
             {
                 IPath inclusions[] = classpath.getInclusionPatterns();
                 for (int j=0;j<inclusions.length;++j) {
                     IResource member = wroot.findMember(path.append(inclusions[j]));
+                    if (j>0) 
+                        included_directories += System.getProperty("path.separator");
                     
                     if (member != null) {
-                        if (j>0) 
-                            included_directories += System.getProperty("path.separator");
                         included_directories += member.getLocation().toOSString();
+                    } else {
+                        member = wroot.findMember(path);
+                        if (member != null) {
+                            included_directories += member
+                                                    .getLocation()
+                                                    .addTrailingSeparator()
+                                                    .append(inclusions[j])
+                                                    .toOSString();
+                        }
                     }
                 }
             }
