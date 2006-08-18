@@ -72,13 +72,13 @@
         </table>
     \endraw
 
-    Any inquiries or problems encountered with Qt Jambi should be
-    reported to \l
-    {mailto:support@trolltech.com}{support@trolltech.com}. Include as
-    much information as you can about your environment and
+    Any problems encountered with Qt Jambi should be reported using a
+    \l {http://www.trolltech.com/bugreport-form}{bug report}. Include
+    as much information as you can about your environment and
     versions. If you want to join the Qt Jambi users' mailing list,
     send a mail to \l {mailto:qtjambi-interest-request@trolltech.com}
     {qtjambi-interest-request@trolltech.com} containing the single
-    word "subscribe".
-
+    word "subscribe". Other inquiries can be directed through the \l
+    {http://www.trolltech.com/company/contact-info}{ regular
+    channels}.
 */
