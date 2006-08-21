@@ -8,17 +8,19 @@ const cygdrive_slash = (os_name() == OS_NAME_WINDOWS ? cygdrive + "/" : "")
 const rootDir = "/tmp";
 const destDir = rootDir + "/output";
 
-const javaScriptDir = rootDir + "/research/java/scripts";
+const qtjambidir = rootDir + "/qtjambi/1.0.0-tp2"
 
-const generatorDir = rootDir + "/research/qswt/designer";
+const javaScriptDir = qtjambidir + "/scripts";
+
+const generatorDir = qtjambidir + "/eclipse-integration/qswt/designer";
 const generatorExe = generatorDir
                      + (os_name() == OS_NAME_WINDOWS ? "/release/designer.exe" : "/designer");
 
 const generatedDir = generatorDir + "/qtdesigner";
 const generatedExe = os_name() == OS_NAME_WINDOWS ? "qtdesigner.dll" : "libqtdesigner.so";
 
-const qtdesignerPackageDir = rootDir + "/research/eclipse/project/com.trolltech.qtdesigner";
-const qtjavaPackageDir = rootDir + "/research/eclipse/project/com.trolltech.qtjambi";
+const qtdesignerPackageDir = qtjambidir + "/eclipse-integration/com.trolltech.qtdesigner";
+const qtjavaPackageDir = qtjambidir + "/eclipse-integration/com.trolltech.qtjambi";
 const qtdesignerJavaSrcRoot = qtdesignerPackageDir + "/src";
 const qtjavaJavaSrcRoot = qtjavaPackageDir + "/src";
 const eclipseRoot = "/source/eclipse_packages";
@@ -29,9 +31,7 @@ const qtdesignerSources = [qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/ed
                            qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/views",
                            qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/"];
 
-const directoriesP4 = [rootDir + "/addons",
-                       rootDir + "/research/qswt",
-                       rootDir + "/research/qworkbench",
+const directoriesP4 = [qtjambidir,                       
 		       qtdesignerPackageDir,
                        javaScriptDir,
                        qtjavaPackageDir];
@@ -64,7 +64,13 @@ if (os_name() == OS_NAME_WINDOWS) {
 }
 
 
-const qtjavaJarContents = ["plugin.xml"];
+const qtjavaJarContents = ["plugin.xml",
+                           "icons/designer.gif",
+                           "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Bottom.ui",
+                           "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Right.ui",
+                           "com/trolltech/qtjambi/templates/Main_Window.ui",
+                           "com/trolltech/qtjambi/templates/templates.txt",
+                           "com/trolltech/qtjambi/templates/Widget.ui"];
 
 const qtdesignerJarContents = [
                                qtdesignerBinDir + "/editors/actionicons/adjustsize.gif",
@@ -155,7 +161,7 @@ if (os_name() == OS_NAME_WINDOWS) {
                       [commandCp, "-f ", cygdrive + vcRedistributableDir + "/" + "msvcr71.dll", " ."],
                       [commandCp, "-f ", cygdrive + rootDir + "/research/java/scripts/register_eclipse_integration.bat", " ."],
                       [commandCp, "-f ", cygdrive + generatedDir + "/release/" + generatedExe, " ."],
-                      [commandWGet, "http://anarki.troll.no/~gunnar/packages/com.trolltech.help_1.0.0.zip"],
+                      [commandWGet, "http://anarki.troll.no/~gunnar/packages/old_packages/com.trolltech.help_1.0.0.zip"],
 		      [commandUnzip, "-o ", "com.trolltech.help_1.0.0.zip"],
                       [commandZip, cygdrive + zipDest + " ", zipContents],
     ];
@@ -186,6 +192,8 @@ const actionsPackage = [
                         ["cd", "/home/qt/qtjambi/qtjambi-linux-preview/lib"],
                         ["cd", qtjavaJavaSrcRoot],
                         [commandCp, "-f", " ../plugin.xml", " ."],
+                        [commandCp, "-f -r", " ../icons", " ."],
+                        [commandCp, "-f -r", " ../resources/com", " ."],
                         ["files", qtjavaJavaSrcRoot, "class", qtjavaJarContents],
                         ["join", qtjavaJarContentsStr, qtjavaJarContents],
                         [commandJar, "-cfm ", qtjavaJarDest, " ../META-INF/MANIFEST.MF ", qtjavaJarContentsStr],
