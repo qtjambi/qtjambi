@@ -63,10 +63,16 @@ void MetaInfoGenerator::writeCppFile()
     MetaJavaClassList classList = classes();
     QHash<QString, QFile *> fileHash;
 
+    QHash<QString, bool> skip_list;
+    foreach (MetaJavaClass *cls, classList) {
+        if (shouldGenerate(cls))
+            skip_list[cls->package()] = false;        
+    }
+
     foreach (MetaJavaClass *cls, classList) {
         QTextStream s;
-        QFile *f = fileHash.value(cls->package(), 0);
-        if (f == 0) {
+        QFile *f = fileHash.value(cls->package(), 0);        
+        if (f == 0 && !skip_list.value(cls->package(), true)) {
             QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls));
             dir.mkpath(dir.absolutePath());
 
@@ -134,9 +140,15 @@ void MetaInfoGenerator::writeHeaderFile()
     MetaJavaClassList classList = classes();
     QHash<QString, bool> fileHash;
 
+    QHash<QString, bool> skip_list;
+    foreach (MetaJavaClass *cls, classList) {
+        if (shouldGenerate(cls))
+            skip_list[cls->package()] = false;        
+    }
+
     foreach (MetaJavaClass *cls, classList) {
         bool hasGenerated = fileHash.value(cls->package(), false);
-        if (!hasGenerated) {
+        if (!hasGenerated && !skip_list.value(cls->package(), true)) {
             QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls));
             dir.mkpath(dir.absolutePath());
 
