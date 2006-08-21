@@ -19,6 +19,20 @@ import com.trolltech.qt.gui.*;
 import com.trolltech.qtest.QTestCase;
 import com.trolltech.autotests.generator.*;
 
+class JavaNonAbstractSubclass extends AbstractClass
+{
+
+    public void abstractFunction(String something) 
+    {
+        setS("Even more " + something);
+    }
+
+    public AbstractClass getAbstractClass() {
+        return new JavaNonAbstractSubclass();
+    }
+    
+}
+
 public class VirtualFunctions extends QTestCase {
 
     class WidgetClass1 extends QWidget {
@@ -179,6 +193,15 @@ public class VirtualFunctions extends QTestCase {
         QCOMPARE(cls.getAbstractClass(), null);
         obj.doVirtualCall(cls, "my non-super string");
         QCOMPARE(cls.getS(), "my non-super string");
+        
+        JavaNonAbstractSubclass foo = new JavaNonAbstractSubclass();
+        QVERIFY(foo.getAbstractClass() instanceof JavaNonAbstractSubclass);
+        
+        foo.abstractFunction("of my super strings");
+        QCOMPARE(foo.getS(), "Even more of my super strings");
+        
+        obj.doVirtualCall(foo, "of my non-super strings");
+        QCOMPARE(foo.getS(), "Even more of my non-super strings");
     }
  
     
