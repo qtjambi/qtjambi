@@ -290,12 +290,12 @@ public class TestClassFunctionality extends QTestCase
         
         // The result can be checked in the resulting "tmp__testclass_func_result.png" file 
         QPixmap pm = new QPixmap(100, 100);
-        pm.fill(new QColor(Qt.blue));
+        pm.fill(QColor.blue);
         
         QPainter p = new QPainter();
         p.begin(pm);
-        p.setPen(new QPen(new QColor(Qt.red)));
-        p.setBrush(new QBrush(new QColor(Qt.green)));
+        p.setPen(new QPen(QColor.red));
+        p.setBrush(new QBrush(QColor.green));
         
         QRect rects[] = new QRect[2];
         rects[0] = new QRect(0, 0, 10, 10);
@@ -385,7 +385,7 @@ public class TestClassFunctionality extends QTestCase
         QVERIFY(so.icon().isNull());
         
         QPixmap pm = new QPixmap(100, 100);
-        pm.fill(new QColor(Qt.red));
+        pm.fill(QColor.red);
         QIcon icon = new QIcon(pm);
         so.setIcon(icon);
         so.setText("A travelling salesman walks into a bar");

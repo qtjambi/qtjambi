@@ -17,5 +17,6 @@
 #include "tulip.h"
 #include "variants.h"
 #include "signalsandslots.h"
+#include "abstractclass.h"
 
 #endif

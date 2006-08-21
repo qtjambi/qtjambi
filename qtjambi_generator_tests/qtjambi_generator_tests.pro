@@ -7,3 +7,5 @@ HEADERS += \
 	tulip.h \
 	variants.h \
         signalsandslots.h \
+        abstractclass.h \
+

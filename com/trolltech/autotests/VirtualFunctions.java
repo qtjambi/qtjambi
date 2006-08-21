@@ -17,6 +17,7 @@ import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qtest.QTestCase;
+import com.trolltech.autotests.generator.*;
 
 public class VirtualFunctions extends QTestCase {
 
@@ -153,6 +154,31 @@ public class VirtualFunctions extends QTestCase {
     	try { thread.join(); } catch (Exception e) { e.printStackTrace(); }
     	
     	QCOMPARE(((CallCounter) thread.image).callCount(), 1);
+    }
+    
+    public void run_abstractClasses() {
+        AnotherNonAbstractSubclass obj = new AnotherNonAbstractSubclass();
+                
+        obj.setS("a string");
+        try {
+            obj.abstractFunction("a super-string");
+            QVERIFY(false); // we should never get here
+        } catch (QNoImplementationException e) {
+            obj.setS("a non-super string");
+        }
+        QCOMPARE(obj.getS(), "a non-super string");
+        
+        obj.doVirtualCall(obj, "a super-string");
+        QCOMPARE(obj.getS(), "Not a super-string");
+        
+        AbstractClass cls = obj.getAbstractClass();
+        QCOMPARE(cls.getClass().getName(), "com.trolltech.autotests.generator._AbstractClass");
+        
+        cls.abstractFunction("my super-string");
+        QCOMPARE(cls.getS(), "my super-string");        
+        QCOMPARE(cls.getAbstractClass(), null);
+        obj.doVirtualCall(cls, "my non-super string");
+        QCOMPARE(cls.getS(), "my non-super string");
     }
  
     

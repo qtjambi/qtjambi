@@ -93,36 +93,36 @@ public class TestConnections extends QTestCase implements Qt
     {
         {
             SignalsAndSlots obj1 = new SignalsAndSlots();            
-            QCOMPARE(obj1.get_slot1_1_called(), 0);
-            QCOMPARE(obj1.get_slot1_2_called(), 0);
-            QCOMPARE(obj1.get_slot1_3_called(), 0);
-            QCOMPARE(obj1.get_slot2_called(), 0);
-            QCOMPARE(obj1.get_slot3_called(), 0);
+            QCOMPARE(obj1.slot1_1_called(), 0);
+            QCOMPARE(obj1.slot1_2_called(), 0);
+            QCOMPARE(obj1.slot1_3_called(), 0);
+            QCOMPARE(obj1.slot2_called(), 0);
+            QCOMPARE(obj1.slot3_called(), 0);
             QCOMPARE(Accessor.access_receivers(obj1.signal1), 0);
             QCOMPARE(Accessor.access_receivers(obj1.signal2), 0);
             QCOMPARE(Accessor.access_receivers(obj1.signal3), 0);
         
             SignalsAndSlots obj2 = new SignalsAndSlots();
-            QCOMPARE(obj2.get_slot1_1_called(), 0);
-            QCOMPARE(obj2.get_slot1_2_called(), 0);
-            QCOMPARE(obj2.get_slot1_3_called(), 0);
-            QCOMPARE(obj2.get_slot2_called(), 0);
-            QCOMPARE(obj2.get_slot3_called(), 0);
+            QCOMPARE(obj2.slot1_1_called(), 0);
+            QCOMPARE(obj2.slot1_2_called(), 0);
+            QCOMPARE(obj2.slot1_3_called(), 0);
+            QCOMPARE(obj2.slot2_called(), 0);
+            QCOMPARE(obj2.slot3_called(), 0);
             QCOMPARE(Accessor.access_receivers(obj2.signal1), 0);
             QCOMPARE(Accessor.access_receivers(obj2.signal2), 0);
             QCOMPARE(Accessor.access_receivers(obj2.signal3), 0);
         
             obj1.setupSignals(obj2, 0);
-            QCOMPARE(obj1.get_slot1_1_called(), 0);
-            QCOMPARE(obj1.get_slot1_2_called(), 0);
-            QCOMPARE(obj1.get_slot1_3_called(), 0);
-            QCOMPARE(obj1.get_slot2_called(), 0);
-            QCOMPARE(obj1.get_slot3_called(), 0);
-            QCOMPARE(obj2.get_slot1_1_called(), 0);
-            QCOMPARE(obj2.get_slot1_2_called(), 0);
-            QCOMPARE(obj2.get_slot1_3_called(), 0);
-            QCOMPARE(obj2.get_slot2_called(), 0);
-            QCOMPARE(obj2.get_slot3_called(), 0);
+            QCOMPARE(obj1.slot1_1_called(), 0);
+            QCOMPARE(obj1.slot1_2_called(), 0);
+            QCOMPARE(obj1.slot1_3_called(), 0);
+            QCOMPARE(obj1.slot2_called(), 0);
+            QCOMPARE(obj1.slot3_called(), 0);
+            QCOMPARE(obj2.slot1_1_called(), 0);
+            QCOMPARE(obj2.slot1_2_called(), 0);
+            QCOMPARE(obj2.slot1_3_called(), 0);
+            QCOMPARE(obj2.slot2_called(), 0);
+            QCOMPARE(obj2.slot3_called(), 0);
             QCOMPARE(Accessor.access_receivers(obj1.signal1), 1);
             QCOMPARE(Accessor.access_receivers(obj1.signal2), 1);
             QCOMPARE(Accessor.access_receivers(obj1.signal3), 1);
@@ -132,16 +132,16 @@ public class TestConnections extends QTestCase implements Qt
             
             SignalsAndSlots obj3 = new SignalsAndSlots();
             obj1.setupSignals(obj3, 1);
-            QCOMPARE(obj1.get_slot1_1_called(), 0);
-            QCOMPARE(obj1.get_slot1_2_called(), 0);
-            QCOMPARE(obj1.get_slot1_3_called(), 0);
-            QCOMPARE(obj1.get_slot2_called(), 0);
-            QCOMPARE(obj1.get_slot3_called(), 0);
-            QCOMPARE(obj3.get_slot1_1_called(), 0);
-            QCOMPARE(obj3.get_slot1_2_called(), 0);
-            QCOMPARE(obj3.get_slot1_3_called(), 0);
-            QCOMPARE(obj3.get_slot2_called(), 0);
-            QCOMPARE(obj3.get_slot3_called(), 0);
+            QCOMPARE(obj1.slot1_1_called(), 0);
+            QCOMPARE(obj1.slot1_2_called(), 0);
+            QCOMPARE(obj1.slot1_3_called(), 0);
+            QCOMPARE(obj1.slot2_called(), 0);
+            QCOMPARE(obj1.slot3_called(), 0);
+            QCOMPARE(obj3.slot1_1_called(), 0);
+            QCOMPARE(obj3.slot1_2_called(), 0);
+            QCOMPARE(obj3.slot1_3_called(), 0);
+            QCOMPARE(obj3.slot2_called(), 0);
+            QCOMPARE(obj3.slot3_called(), 0);
             QCOMPARE(Accessor.access_receivers(obj1.signal1), 3);
             QCOMPARE(Accessor.access_receivers(obj1.signal2), 2);
             QCOMPARE(Accessor.access_receivers(obj1.signal3), 2);
@@ -154,45 +154,45 @@ public class TestConnections extends QTestCase implements Qt
             QVERIFY(obj1.signal1.connect(obj1, "slot1_3()"));
             QVERIFY(obj1.signal2.connect(obj1, "slot2(int)"));
             QVERIFY(obj1.signal3.connect(obj1, "slot3(String)"));
-            QCOMPARE(obj1.get_slot1_1_called(), 0);
-            QCOMPARE(obj1.get_slot1_2_called(), 0);
-            QCOMPARE(obj1.get_slot1_3_called(), 0);
-            QCOMPARE(obj1.get_slot2_called(), 0);
-            QCOMPARE(obj1.get_slot3_called(), 0);
-            QCOMPARE(obj2.get_slot1_1_called(), 0);
-            QCOMPARE(obj2.get_slot1_2_called(), 0);
-            QCOMPARE(obj2.get_slot1_3_called(), 0);
-            QCOMPARE(obj2.get_slot2_called(), 0);
-            QCOMPARE(obj2.get_slot3_called(), 0);
+            QCOMPARE(obj1.slot1_1_called(), 0);
+            QCOMPARE(obj1.slot1_2_called(), 0);
+            QCOMPARE(obj1.slot1_3_called(), 0);
+            QCOMPARE(obj1.slot2_called(), 0);
+            QCOMPARE(obj1.slot3_called(), 0);
+            QCOMPARE(obj2.slot1_1_called(), 0);
+            QCOMPARE(obj2.slot1_2_called(), 0);
+            QCOMPARE(obj2.slot1_3_called(), 0);
+            QCOMPARE(obj2.slot2_called(), 0);
+            QCOMPARE(obj2.slot3_called(), 0);
             QCOMPARE(Accessor.access_receivers(obj1.signal1), 6);
             QCOMPARE(Accessor.access_receivers(obj1.signal2), 3);
             QCOMPARE(Accessor.access_receivers(obj1.signal3), 3);
 
             Accessor.emit_signal(obj1.signal1);
-            QCOMPARE(obj1.get_slot1_1_called(), 1);
-            QCOMPARE(obj1.get_slot1_2_called(), 1);
-            QCOMPARE(obj1.get_slot1_3_called(), 1);
+            QCOMPARE(obj1.slot1_1_called(), 1);
+            QCOMPARE(obj1.slot1_2_called(), 1);
+            QCOMPARE(obj1.slot1_3_called(), 1);
 
-            QCOMPARE(obj2.get_slot1_1_called(), 1);
-            QCOMPARE(obj2.get_slot1_2_called(), 0);
-            QCOMPARE(obj2.get_slot1_3_called(), 0);
+            QCOMPARE(obj2.slot1_1_called(), 1);
+            QCOMPARE(obj2.slot1_2_called(), 0);
+            QCOMPARE(obj2.slot1_3_called(), 0);
             
-            QCOMPARE(obj3.get_slot1_1_called(), 1);
-            QCOMPARE(obj3.get_slot1_2_called(), 1);
-            QCOMPARE(obj3.get_slot1_3_called(), 0);
+            QCOMPARE(obj3.slot1_1_called(), 1);
+            QCOMPARE(obj3.slot1_2_called(), 1);
+            QCOMPARE(obj3.slot1_3_called(), 0);
             
             Accessor.emit_signal(obj1.signal1);
-            QCOMPARE(obj1.get_slot1_1_called(), 2);
-            QCOMPARE(obj1.get_slot1_2_called(), 2);
-            QCOMPARE(obj1.get_slot1_3_called(), 2);
+            QCOMPARE(obj1.slot1_1_called(), 2);
+            QCOMPARE(obj1.slot1_2_called(), 2);
+            QCOMPARE(obj1.slot1_3_called(), 2);
 
-            QCOMPARE(obj2.get_slot1_1_called(), 2);
-            QCOMPARE(obj2.get_slot1_2_called(), 0);
-            QCOMPARE(obj2.get_slot1_3_called(), 0);
+            QCOMPARE(obj2.slot1_1_called(), 2);
+            QCOMPARE(obj2.slot1_2_called(), 0);
+            QCOMPARE(obj2.slot1_3_called(), 0);
             
-            QCOMPARE(obj3.get_slot1_1_called(), 2);
-            QCOMPARE(obj3.get_slot1_2_called(), 2);
-            QCOMPARE(obj3.get_slot1_3_called(), 0);
+            QCOMPARE(obj3.slot1_1_called(), 2);
+            QCOMPARE(obj3.slot1_2_called(), 2);
+            QCOMPARE(obj3.slot1_3_called(), 0);
             
             QVERIFY(obj1.signal1.connect(obj2, "slot1_1()"));
             QVERIFY(obj1.signal1.connect(obj1, "slot1_2()"));
@@ -201,17 +201,17 @@ public class TestConnections extends QTestCase implements Qt
             QCOMPARE(Accessor.access_receivers(obj1.signal3), 3);
             
             Accessor.emit_signal(obj1.signal1);
-            QCOMPARE(obj1.get_slot1_1_called(), 3);
-            QCOMPARE(obj1.get_slot1_2_called(), 4);
-            QCOMPARE(obj1.get_slot1_3_called(), 3);
+            QCOMPARE(obj1.slot1_1_called(), 3);
+            QCOMPARE(obj1.slot1_2_called(), 4);
+            QCOMPARE(obj1.slot1_3_called(), 3);
 
-            QCOMPARE(obj2.get_slot1_1_called(), 4);
-            QCOMPARE(obj2.get_slot1_2_called(), 0);
-            QCOMPARE(obj2.get_slot1_3_called(), 0);
+            QCOMPARE(obj2.slot1_1_called(), 4);
+            QCOMPARE(obj2.slot1_2_called(), 0);
+            QCOMPARE(obj2.slot1_3_called(), 0);
             
-            QCOMPARE(obj3.get_slot1_1_called(), 3);
-            QCOMPARE(obj3.get_slot1_2_called(), 3);
-            QCOMPARE(obj3.get_slot1_3_called(), 0);
+            QCOMPARE(obj3.slot1_1_called(), 3);
+            QCOMPARE(obj3.slot1_2_called(), 3);
+            QCOMPARE(obj3.slot1_3_called(), 0);
             
             obj1.dispose();
             obj2.dispose();
@@ -229,25 +229,25 @@ public class TestConnections extends QTestCase implements Qt
             QVERIFY(obj1.signal3.connect(obj1, "slot3(String)"));
 
             Accessor.emit_signal(obj1.signal2, 15);
-            QCOMPARE(obj1.get_slot1_1_called(), 0);
-            QCOMPARE(obj1.get_slot1_2_called(), 0);
-            QCOMPARE(obj1.get_slot1_3_called(), 0);
-            QCOMPARE(obj1.get_slot2_called(), 15);
-            QCOMPARE(obj1.get_slot3_called(), 0);
+            QCOMPARE(obj1.slot1_1_called(), 0);
+            QCOMPARE(obj1.slot1_2_called(), 0);
+            QCOMPARE(obj1.slot1_3_called(), 0);
+            QCOMPARE(obj1.slot2_called(), 15);
+            QCOMPARE(obj1.slot3_called(), 0);
             
             obj1.emit_signal_2(20);
-            QCOMPARE(obj1.get_slot1_1_called(), 0);
-            QCOMPARE(obj1.get_slot1_2_called(), 0);
-            QCOMPARE(obj1.get_slot1_3_called(), 0);
-            QCOMPARE(obj1.get_slot2_called(), 35);
-            QCOMPARE(obj1.get_slot3_called(), 0);
+            QCOMPARE(obj1.slot1_1_called(), 0);
+            QCOMPARE(obj1.slot1_2_called(), 0);
+            QCOMPARE(obj1.slot1_3_called(), 0);
+            QCOMPARE(obj1.slot2_called(), 35);
+            QCOMPARE(obj1.slot3_called(), 0);
             
             obj1.emit_signal_3("11");
-            QCOMPARE(obj1.get_slot1_1_called(), 0);
-            QCOMPARE(obj1.get_slot1_2_called(), 0);
-            QCOMPARE(obj1.get_slot1_3_called(), 0);
-            QCOMPARE(obj1.get_slot2_called(), 35);
-            QCOMPARE(obj1.get_slot3_called(), 22);
+            QCOMPARE(obj1.slot1_1_called(), 0);
+            QCOMPARE(obj1.slot1_2_called(), 0);
+            QCOMPARE(obj1.slot1_3_called(), 0);
+            QCOMPARE(obj1.slot2_called(), 35);
+            QCOMPARE(obj1.slot3_called(), 22);
             
             obj1.dispose();
         }
@@ -291,11 +291,11 @@ public class TestConnections extends QTestCase implements Qt
             
             obj1.emit_signal_2(13);
             QCOMPARE(obj1.java_slot2_called, 52);
-            QCOMPARE(obj1.get_slot2_called(), 6);
+            QCOMPARE(obj1.slot2_called(), 6);
             
             Accessor.emit_signal(obj1.signal2, 4);
             QCOMPARE(obj1.java_slot2_called, 68);
-            QCOMPARE(obj1.get_slot2_called(), 12);
+            QCOMPARE(obj1.slot2_called(), 12);
             
             QVERIFY(obj1.signal3.connect(obj1, "slot3_2(String)"));
             QVERIFY(obj1.signal3.connect(obj1, "slot3_2(String)"));
@@ -315,7 +315,7 @@ public class TestConnections extends QTestCase implements Qt
             
             obj1.emit_signal_3("17");
             QCOMPARE(obj1.java_slot3_2_called, 34);
-            QCOMPARE(obj1.get_slot3_called(), 17);
+            QCOMPARE(obj1.slot3_called(), 17);
             
             QVERIFY(obj1.signal4.connect(obj1, "slot4()"));
             QVERIFY(obj1.signal1.connect(obj1.signal4));
@@ -334,9 +334,9 @@ public class TestConnections extends QTestCase implements Qt
             QCOMPARE(Accessor.access_receivers(obj1.signal4), 1);
             
             obj1.emit_signal_1();
-            QCOMPARE(obj1.get_slot1_1_called(), 1);
-            QCOMPARE(obj1.get_slot1_2_called(), 1);
-            QCOMPARE(obj1.get_slot1_3_called(), 1);
+            QCOMPARE(obj1.slot1_1_called(), 1);
+            QCOMPARE(obj1.slot1_2_called(), 1);
+            QCOMPARE(obj1.slot1_3_called(), 1);
             QCOMPARE(obj1.java_slot4_called, 1);
             
             QVERIFY(obj1.signal1.disconnect(obj1.signal4));
@@ -371,9 +371,9 @@ public class TestConnections extends QTestCase implements Qt
             
             obj1.emit_signal_4();
             QCOMPARE(obj1.java_slot4_called, 2);
-            QCOMPARE(obj1.get_slot1_1_called(), 2);
-            QCOMPARE(obj1.get_slot1_2_called(), 2);
-            QCOMPARE(obj1.get_slot1_3_called(), 2);
+            QCOMPARE(obj1.slot1_1_called(), 2);
+            QCOMPARE(obj1.slot1_2_called(), 2);
+            QCOMPARE(obj1.slot1_3_called(), 2);
             
             obj1.disconnectSignals(obj1);
             QCOMPARE(obj1.signal1_notified, 4);
@@ -392,15 +392,15 @@ public class TestConnections extends QTestCase implements Qt
             QCOMPARE(Accessor.access_receivers(obj1.signal4), 2);
             
             obj1.emit_signal_1();
-            QCOMPARE(obj1.get_slot1_1_called(), 2);
-            QCOMPARE(obj1.get_slot1_2_called(), 3);
-            QCOMPARE(obj1.get_slot1_3_called(), 3);
+            QCOMPARE(obj1.slot1_1_called(), 2);
+            QCOMPARE(obj1.slot1_2_called(), 3);
+            QCOMPARE(obj1.slot1_3_called(), 3);
             QCOMPARE(obj1.java_slot4_called, 2);
             
             obj1.emit_signal_4();
-            QCOMPARE(obj1.get_slot1_1_called(), 2);
-            QCOMPARE(obj1.get_slot1_2_called(), 4);
-            QCOMPARE(obj1.get_slot1_3_called(), 4);
+            QCOMPARE(obj1.slot1_1_called(), 2);
+            QCOMPARE(obj1.slot1_2_called(), 4);
+            QCOMPARE(obj1.slot1_3_called(), 4);
             QCOMPARE(obj1.java_slot4_called, 3);            
                         
             obj1.disconnectAll();
@@ -422,9 +422,9 @@ public class TestConnections extends QTestCase implements Qt
             
             obj1.emit_signal_4();
             obj1.emit_signal_1();
-            QCOMPARE(obj1.get_slot1_1_called(), 2);
-            QCOMPARE(obj1.get_slot1_2_called(), 4);
-            QCOMPARE(obj1.get_slot1_3_called(), 4);
+            QCOMPARE(obj1.slot1_1_called(), 2);
+            QCOMPARE(obj1.slot1_2_called(), 4);
+            QCOMPARE(obj1.slot1_3_called(), 4);
             QCOMPARE(obj1.java_slot4_called, 3);*/            
             
         }
