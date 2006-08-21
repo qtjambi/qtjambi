@@ -382,10 +382,9 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         }
 
         // Write virtual function overries used to decide on static/virtual calls
-        MetaJavaFunctionList virtual_functions = java_class->allVirtualFunctions();
-        foreach (const MetaJavaFunction *function, virtual_functions) {
-            if (!function->isFinalInCpp() && !function->isPrivate())
-                writeVirtualFunctionOverride(s, function, java_class);
+        MetaJavaFunctionList virtual_functions = java_class->virtualOverrideFunctions();
+        foreach (const MetaJavaFunction *function, virtual_functions) {            
+            writeVirtualFunctionOverride(s, function, java_class);
         }
 
         writeExtraFunctions(s, java_class);
@@ -400,7 +399,7 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // Native callbacks (all java functions require native callbacks)
     MetaJavaFunctionList class_funcs = java_class->functionsInJava();
     foreach (MetaJavaFunction *function, class_funcs) {
-        if (!java_class->isFinal() || function->wasPublic())
+        if ((!function->isAbstract() || function->isFinalInJava()) && !function->isEmptyFunction())
             writeFinalFunction(s, function, java_class);
     }
 
@@ -1038,7 +1037,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
             s << INDENT << "Q_UNUSED(__this_nativeId)" << endl;
     }
 
-    if (cls->isFinal() && !java_function->isPublic()) {
+    if (cls->isFinal() && (!java_function->isAbstract() || !java_function->isFinalInJava()) && !java_function->wasPublic()) {
         QString debug = QString("protected function '%1' in final class '%2'")
             .arg(java_function->signature()).arg(java_class->name());
         ReportHandler::warning(debug);
@@ -1402,7 +1401,7 @@ void CppImplGenerator::writeFromNativeFunction(QTextStream &s, const MetaJavaCla
     {
         Indentation indent;
         s << INDENT << "void *ptr = qtjambi_to_cpointer(__jni_env, nativePointer, 1);" << endl
-          << INDENT << "return qtjambi_from_object(__jni_env, ptr, \"" << java_class->name()
+            << INDENT << "return qtjambi_from_object(__jni_env, ptr, \"" << java_class->typeEntry()->lookupName()
           << "\", \"" << java_class->package().replace(".", "/") << "/\");" << endl
           << "}" << endl;
     }
@@ -1762,7 +1761,7 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
                 s << "&";
 
             s << qt_name
-              << ", \"" << java_type->name() << "\""
+              << ", \"" << java_type->typeEntry()->lookupName() << "\""
               << ", \"" << java_type->package().replace(".", "/") << "/\""
               << ");" << endl;
 
@@ -1780,16 +1779,18 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
             s << qt_name << ", " << nativePointerType(java_type) << ", "
               << java_type->actualIndirections() << ");" << endl;
         } else if (java_type->isValue()) {
-            s << "qtjambi_from_object(__jni_env, &" << qt_name
-              << ", \"" << java_type->typeEntry()->name() << "\""
-              << ", \"" << java_type->package().replace(".", "/") << "/\");" << endl;
+            s << "qtjambi_from_object(__jni_env, &" << qt_name;
+
+            s << ", \"" << java_type->typeEntry()->lookupName() << "\"";
+
+            s << ", \"" << java_type->package().replace(".", "/") << "/\");" << endl;
 
         } else {
             s << "qtjambi_from_object(__jni_env, ";
             if (java_type->isReference())
                 s << "&";
             s << qt_name
-              << ", \"" << java_type->typeEntry()->name() << "\""
+              << ", \"" << java_type->typeEntry()->lookupName() << "\""
               << ", \"" << java_type->package().replace(".", "/") << "/\");" << endl;
 
         }

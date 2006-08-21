@@ -149,10 +149,9 @@ void CppHeaderGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     }
 
     // Override all virtual functions to get the decision on static/virtual call
-    MetaJavaFunctionList virtual_functions = java_class->allVirtualFunctions();
+    MetaJavaFunctionList virtual_functions = java_class->virtualOverrideFunctions();
     foreach (const MetaJavaFunction *function, virtual_functions) {
-        if (!function->isFinalInCpp() && !function->isPrivate())
-            writeVirtualFunctionOverride(s, function);
+        writeVirtualFunctionOverride(s, function);
     }
 
     // Field accessors

@@ -132,6 +132,8 @@ bool MetaJavaFunction::isModifiedRemoved(int types) const
 
 bool MetaJavaFunction::needsCallThrough() const
 {
+    if (isAbstract() && !isFinalInJava())
+        return false;
     if (ownerClass()->isInterface())
         return false;
     if (argumentsHaveNativeId() || !isStatic())
@@ -324,6 +326,28 @@ MetaJavaClass::~MetaJavaClass()
     qDeleteAll(m_fields);
 }
 
+/*MetaJavaClass *MetaJavaClass::copy() const
+{
+    MetaJavaClass *cls = new MetaJavaClass;
+    cls->setAttributes(attributes());
+    cls->setBaseClass(baseClass());
+    cls->setTypeEntry(typeEntry());
+    foreach (MetaJavaFunction *function, functions()) {
+        MetaJavaFunction *copy = function->copy();
+        function->setImplementingClass(cls);
+        cls->addFunction(copy);
+    }
+    cls->setEnums(enums());
+    foreach (const MetaJavaField *field, fields()) {
+        MetaJavaField *copy = field->copy();
+        copy->setEnclosingClass(cls);
+        cls->addField(copy);
+    }
+    cls->setInterfaces(interfaces());
+
+    return cls;
+}*/
+
 /*******************************************************************************
  * Constructs an interface based on the functions and enums in this
  * class and returns it...
@@ -376,19 +400,32 @@ MetaJavaFunctionList MetaJavaClass::functionsInJava() const
     default_flags |= isInterface() ? 0 : ClassImplements;
 
     // Only public functions in final classes
-    default_flags |= isFinal() ? WasPublic : 0;
+    // default_flags |= isFinal() ? WasPublic : 0;
+    int public_flags = isFinal() ? WasPublic : 0;
 
     // Constructors
-    MetaJavaFunctionList returned = queryFunctions(Constructors | default_flags);
+    MetaJavaFunctionList returned = queryFunctions(Constructors | default_flags | public_flags);
 
     // Final functions
-    returned += queryFunctions(FinalInJavaFunctions | NonStaticFunctions | default_flags);
+    returned += queryFunctions(FinalInJavaFunctions | NonStaticFunctions | default_flags | public_flags);
 
     // Virtual functions
-    returned += queryFunctions(VirtualFunctions | NonStaticFunctions | default_flags);
+    returned += queryFunctions(VirtualInJavaFunctions | NonStaticFunctions | default_flags | public_flags);
 
     // Static functions
-    returned += queryFunctions(StaticFunctions | default_flags);
+    returned += queryFunctions(StaticFunctions | default_flags | public_flags);
+
+    // Empty, private functions, since they aren't caught by the other ones
+    returned += queryFunctions(Empty | Invisible);
+
+    // Add in the invisible, abstract-final functions in the dummy implementation classes for abstract classes
+    if (isFinal()) {
+        returned += queryFunctions(AbstractFunctions 
+                                  | FinalInJavaFunctions 
+                                  | ClassImplements 
+                                  | WasProtected 
+                                  | NormalFunctions);
+    }
 
     return returned;
 }
@@ -421,6 +458,12 @@ MetaJavaFunctionList MetaJavaClass::publicOverrideFunctions() const
 {
     return queryFunctions(NormalFunctions | WasProtected | FinalInCppFunctions)
            + queryFunctions(Signals | WasProtected | FinalInCppFunctions);
+}
+
+MetaJavaFunctionList MetaJavaClass::virtualOverrideFunctions() const 
+{
+    return queryFunctions(NormalFunctions | NonEmptyFunctions | Visible | VirtualInCppFunctions) + 
+           queryFunctions(Signals | NonEmptyFunctions | Visible | VirtualInCppFunctions);
 }
 
 void MetaJavaClass::setFunctions(const MetaJavaFunctionList &functions)
@@ -551,7 +594,7 @@ bool MetaJavaClass::hasSignal(const MetaJavaFunction *other) const
 
 QString MetaJavaClass::name() const
 {
-    return QString(m_type_entry->javaName()).replace("::", "_");
+    return m_name_prefix + QString(m_type_entry->javaName()).replace("::", "_");
 }
 
 bool MetaJavaClass::hasFunction(const QString &str) const
@@ -724,6 +767,18 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
             continue;
         }
 
+        if ((query & VirtualInJavaFunctions) && f->isFinalInJava()) {
+            continue;
+        }
+
+        if ((query & Invisible) && !f->isPrivate()) {
+            continue;
+        }
+
+        if ((query & Empty) && !f->isEmptyFunction()) {
+            continue;
+        }
+
         if ((query & WasPublic) && !f->wasPublic()) {
             continue;
         }
@@ -745,6 +800,10 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
         }
 
         if ((query & FinalInCppFunctions) && !f->isFinalInCpp()) {
+            continue;
+        }
+
+        if ((query & VirtualInCppFunctions) && f->isFinalInCpp()) {
             continue;
         }
 
@@ -782,7 +841,15 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
             continue;
         }
 
+        if ((query & NonEmptyFunctions) && (f->isEmptyFunction())) {
+            continue;
+        }
+
         if ((query & NormalFunctions) && (f->isSignal())) {
+            continue;
+        }
+
+        if ((query & AbstractFunctions) && !f->isAbstract()) {
             continue;
         }
 
@@ -891,11 +958,18 @@ static void add_extra_includes_for_function(MetaJavaClass *java_class, const Met
 
 void MetaJavaClass::fixFunctions()
 {
-    const MetaJavaClass *super_class = baseClass();
+    if (m_functions_fixed)
+        return;
+    else
+        m_functions_fixed = true;
+
+    MetaJavaClass *super_class = baseClass();
     MetaJavaFunctionList funcs = functions();
 
 //     printf("fix functions for %s\n", qPrintable(name()));
-
+    
+    if (super_class != 0)
+        super_class->fixFunctions();
     int iface_idx = 0;
     while (super_class || iface_idx < interfaces().size()) {
 //         printf(" - base: %s\n", qPrintable(super_class->name()));
@@ -910,10 +984,11 @@ void MetaJavaClass::fixFunctions()
             super_funcs = interfaces().at(iface_idx)->queryFunctions(MetaJavaClass::NormalFunctions);
 
         QSet<MetaJavaFunction *> funcs_to_add;
-
         for (int sfi=0; sfi<super_funcs.size(); ++sfi) {
             MetaJavaFunction *sf = super_funcs.at(sfi);
-            bool add = true;
+            // we generally don't care about private functions, but we have to get the ones that are
+            // virtual in case they override abstract functions. 
+            bool add = (sf->isNormal() || sf->isSignal() || sf->isEmptyFunction());
             for (int fi=0; fi<funcs.size(); ++fi) {
                 MetaJavaFunction *f = funcs.at(fi);
                 uint cmp = f->compareTo(sf);
@@ -940,14 +1015,16 @@ void MetaJavaClass::fixFunctions()
 
                         // Same function, propegate virtual...
                         if (!(cmp & MetaJavaFunction::EqualAttributes)) {
-                            if (!sf->isFinalInCpp() && f->isFinalInCpp()) {
-                                *f -= MetaJavaAttributes::FinalInCpp;
-//                                 printf("   --- inherit virtual\n");
-                            }
-                            if (!sf->isFinalInJava() && f->isFinalInJava()) {
-                                *f -= MetaJavaAttributes::FinalInJava;
-//                                 printf("   --- inherit virtual\n");
-                            }
+                            if (!f->isEmptyFunction()) {
+                                if (!sf->isFinalInCpp() && f->isFinalInCpp()) {
+                                    *f -= MetaJavaAttributes::FinalInCpp;
+    //                                 printf("   --- inherit virtual\n");
+                                }
+                                if (!sf->isFinalInJava() && f->isFinalInJava()) {
+                                    *f -= MetaJavaAttributes::FinalInJava;
+    //                                 printf("   --- inherit virtual\n");
+                                }
+                            } 
                         }
 
                         if (f->visibility() != sf->visibility()) {
@@ -961,23 +1038,34 @@ void MetaJavaClass::fixFunctions()
                             // setting for the function.
                             if (!f->isPrivate() && !sf->isPrivate())
                                 f->setVisibility(sf->visibility());
+
+                            // Private overrides of abstract functions have to go into the class or 
+                            // the subclasses will not compile as non-abstract classes.
+                            // But they don't need to be implemented, since they can never be called.
+                            if (f->isPrivate() && sf->isAbstract()) {
+                                f->setFunctionType(MetaJavaFunction::EmptyFunction);
+                                f->setVisibility(sf->visibility());
+                                *f += MetaJavaAttributes::FinalInJava;
+                                *f += MetaJavaAttributes::FinalInCpp;
+                            }
                         }
                     }
 
-                    if (sf->isFinal() && !sf->isPrivate()) {
+                    if (sf->isFinalInJava() && !sf->isPrivate()) {
                         // Shadowed funcion, need to make base class
                         // function non-virtual
                         *sf -= MetaJavaAttributes::FinalInJava;
 //                         printf("   --- shadowing... force final in java\n");
-                    }
+                    } 
 
                     // Otherwise we have function shadowing and we can
                     // skip the thing...
-                }
+                }          
+
             }
 
-            if (add && (sf->isNormal() || sf->isSignal()))
-                funcs_to_add << sf;
+            if (add)
+                funcs_to_add << sf;            
         }
 
         foreach (MetaJavaFunction *f, funcs_to_add)
@@ -997,6 +1085,12 @@ void MetaJavaClass::fixFunctions()
 //                          << func->implementingClass()->name() << "renamed to" << mod.renamedTo();
                 func->setName(mod.renamedTo());
             }
+        }
+
+        // Make sure class is abstract if one of the functions is
+        if (func->isAbstract()) {
+            (*this) += MetaJavaAttributes::Abstract;
+            (*this) -= MetaJavaAttributes::Final;
         }
 
         // Make sure that we include files for all classes that are in use

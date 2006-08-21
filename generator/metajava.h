@@ -291,7 +291,8 @@ public:
         ConstructorFunction,
         DestructorFunction,
         NormalFunction,
-        SignalFunction
+        SignalFunction,
+        EmptyFunction
     };
 
     enum CompareResult {
@@ -374,6 +375,7 @@ public:
     bool isConstructor() const { return functionType() == ConstructorFunction; }
     bool isNormal() const { return functionType() == NormalFunction; }
     bool isSignal() const { return functionType() == SignalFunction; }
+    bool isEmptyFunction() const { return functionType() == EmptyFunction; }
     FunctionType functionType() const { return m_function_type; }
     void setFunctionType(FunctionType type) { m_function_type = type; }
 
@@ -454,21 +456,27 @@ class MetaJavaClass : public MetaJavaAttributes
 {
 public:
     enum FunctionQueryOption {
-        Constructors            = 0x0001,   // Only constructors
-        Destructors             = 0x0002,   // Only destructors
-        VirtualFunctions        = 0x0004,   // Only virtual functions (virtual in both Java and C++)
-        FinalInJavaFunctions    = 0x0008,   // Only functions that are non-virtual in Java
-        FinalInCppFunctions     = 0x0010,   // Only functions that are non-virtual in C++
-        ClassImplements         = 0x0020,   // Only functions implemented by the current class
-        Inconsistent            = 0x0040,   // Only inconsistent functions (inconsistent virtualness in Java/C++)
-        StaticFunctions         = 0x0080,   // Only static functions
-        Signals                 = 0x0100,   // Only signals
-        NormalFunctions         = 0x0200,   // Only functions that aren't signals
-        Visible                 = 0x0400,   // Only public and protected functions
-        ForcedShellFunctions    = 0x0800,   // Only functions that are overridden to be implemented in the shell class
-        WasPublic               = 0x1000,   // Only functions that were originally public
-        WasProtected            = 0x2000,   // Only functions that were originally protected
-        NonStaticFunctions      = 0x4000    // No static functions
+        Constructors            = 0x000001,   // Only constructors
+        Destructors             = 0x000002,   // Only destructors
+        VirtualFunctions        = 0x000004,   // Only virtual functions (virtual in both Java and C++)
+        FinalInJavaFunctions    = 0x000008,   // Only functions that are non-virtual in Java
+        FinalInCppFunctions     = 0x000010,   // Only functions that are non-virtual in C++
+        ClassImplements         = 0x000020,   // Only functions implemented by the current class
+        Inconsistent            = 0x000040,   // Only inconsistent functions (inconsistent virtualness in Java/C++)
+        StaticFunctions         = 0x000080,   // Only static functions
+        Signals                 = 0x000100,   // Only signals
+        NormalFunctions         = 0x000200,   // Only functions that aren't signals
+        Visible                 = 0x000400,   // Only public and protected functions
+        ForcedShellFunctions    = 0x000800,   // Only functions that are overridden to be implemented in the shell class
+        WasPublic               = 0x001000,   // Only functions that were originally public
+        WasProtected            = 0x002000,   // Only functions that were originally protected
+        NonStaticFunctions      = 0x004000,   // No static functions
+        Empty                   = 0x008000,   // Empty overrides of abstract functions
+        Invisible               = 0x010000,   // Only private functions 
+        VirtualInCppFunctions   = 0x020000,   // Only functions that are virtual in C++
+        NonEmptyFunctions       = 0x040000,   // Only functions with JNI implementations
+        VirtualInJavaFunctions  = 0x080000,   // Only functions which are virtual in Java
+        AbstractFunctions       = 0x100000    // Only abstract functions
     };
 
     MetaJavaClass()
@@ -477,11 +485,13 @@ public:
           m_has_virtuals(false),
           m_has_nonpublic(false),
           m_has_nonprivateconstructor(false),
+          m_functions_fixed(false),
+          m_force_shell_class(false),
           m_enclosing_class(0),
           m_base_class(0),
           m_extracted_interface(0),
           m_primary_interface_implementor(0),
-          m_type_entry(0)
+          m_type_entry(0)          
     {
     }
 
@@ -513,6 +523,7 @@ public:
     inline MetaJavaFunctionList cppInconsistentFunctions() const;
     inline MetaJavaFunctionList cppSignalFunctions() const;
     MetaJavaFunctionList publicOverrideFunctions() const;
+    MetaJavaFunctionList virtualOverrideFunctions() const;
 
     MetaJavaFieldList fields() const { return m_fields; }
     void setFields(const MetaJavaFieldList &fields) { m_fields = fields; }
@@ -530,10 +541,12 @@ public:
     QString fullName() const { return package() + "." + name(); }
     QString name() const;
 
+    void setNamePrefix(const QString &prefix) { m_name_prefix = prefix; }
+
     QString baseClassName() const { return m_base_class ? m_base_class->name() : QString(); }
 
-    const MetaJavaClass *baseClass() const { return m_base_class; }
-    void setBaseClass(const MetaJavaClass *base_class) { m_base_class = base_class; }
+    MetaJavaClass *baseClass() const { return m_base_class; }
+    void setBaseClass(MetaJavaClass *base_class) { m_base_class = base_class; }
 
     const MetaJavaClass *enclosingClass() const { return m_enclosing_class; }
     void setEnclosingClass(MetaJavaClass *cl) { m_enclosing_class = cl; }
@@ -547,14 +560,16 @@ public:
     bool hasInconsistentFunctions() const;
     bool hasSignals() const;
 
+    void setForceShellClass(bool on) { m_force_shell_class = on; }
     bool generateShellClass() const
-    {
-        return !isFinal()
-            && (hasVirtualFunctions()
-                || hasInconsistentFunctions()
-                || hasNonPublicFunctions()
-                || hasFieldAccessors()
-                || isQObject());
+    {        
+        return m_force_shell_class || 
+            (!isFinal()
+               && (hasVirtualFunctions()
+                  || hasInconsistentFunctions()
+                  || hasNonPublicFunctions()
+                  || hasFieldAccessors()
+                  || isQObject()));
     }
 
     bool hasVirtualFunctions() const { return !isFinal() && m_has_virtuals; }
@@ -586,9 +601,13 @@ private:
     uint m_has_virtuals : 1;
     uint m_has_nonpublic : 1;
     uint m_has_nonprivateconstructor : 1;
+    uint m_functions_fixed : 1;
+    uint m_force_shell_class : 1;
+
+    QString m_name_prefix;
 
     const MetaJavaClass *m_enclosing_class;
-    const MetaJavaClass *m_base_class;
+    MetaJavaClass *m_base_class;
     MetaJavaFunctionList m_functions;
     MetaJavaFieldList m_fields;
     MetaJavaEnumList m_enums;

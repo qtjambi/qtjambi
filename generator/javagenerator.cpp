@@ -191,11 +191,16 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
 {
 
     int exclude_attributes = MetaJavaAttributes::Public | MetaJavaAttributes::Protected;
-    int include_attributes = MetaJavaAttributes::Native | MetaJavaAttributes::Private;
+    int include_attributes = MetaJavaAttributes::Private;
+
+    if (java_function->isEmptyFunction())
+        exclude_attributes |= MetaJavaAttributes::Native;
+    else
+        include_attributes |= MetaJavaAttributes::Native;
 
     s << "    ";
     writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
-                            java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
+        java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
 
     if (java_function->isConstructor())
         s << "void ";
@@ -218,8 +223,17 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
         else
             s << "long " << arg->name();
     }
-    s << ");" << endl << endl;
+    s << ")";
 
+    // Make sure people don't call the private functions
+    if (java_function->isEmptyFunction()) {
+        s << endl
+          << "    {" << endl
+          << "        throw new QNoImplementationException();" << endl
+          << "    }" << endl << endl;
+    } else {
+        s << ";" << endl << endl;
+    }
 }
 
 void JavaGenerator::writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg,
@@ -396,7 +410,10 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     int exclude_attributes = java_class->isInterface() || java_function->isConstructor()
                             ? MetaJavaAttributes::Native
                             | MetaJavaAttributes::Final
-                            : MetaJavaAttributes::Abstract;
+                            : 0;
+    if (java_class->isInterface())
+        exclude_attributes |= MetaJavaAttributes::Abstract;
+
     int include_attributes = included_attributes;
 
     exclude_attributes |= excluded_attributes;
@@ -440,13 +457,12 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     // The actual function
     s << "    ";
     writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
-                            java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
+        java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
 
 
     s << functionName << "(";
     writeFunctionArguments(s, java_function, argument_count);
     s << ")";
-
 
     if (java_function->isConstructor()) {
         writeConstructorContents(s, java_function, disabled_params);
@@ -457,6 +473,14 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
         writePrivateNativeFunction(s, java_function);
     } else {
         s << ";" << endl;
+
+        // For abstract functions we actually need the final private native function declaration
+        // so that overriding the function works. We don't need any implementation for it though,
+        // cause it's private, so if you cheat and call it anyway, then you'll get an exception.
+        if (!java_class->isInterface() && java_function->isAbstract() && !java_function->isFinalInJava())
+            writePrivateNativeFunction(s, java_function);
+        else
+            s << endl;       
     }
 
     if (functionName == "operator_equal") {
@@ -497,7 +521,7 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
         int used_arguments = argument_count - i - 1;
         s << "\n    ";
         writeFunctionAttributes(s, java_function, include_attributes, excluded_attributes,
-            java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
+            java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
         s << java_function->name() << "(";
         writeFunctionArguments(s, java_function, used_arguments);
         s << ") {\n        ";
@@ -606,8 +630,6 @@ void JavaGenerator::generate()
 
 void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 {
-    Q_ASSERT(java_class->isPublic());
-
     ReportHandler::debugSparse("Generating class: " + java_class->name());
 
     s << "package " << java_class->package() << ";" << endl << endl
@@ -625,19 +647,26 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     if (java_class->isInterface()) {
         s << "public interface ";
     } else {
-        s << "public ";
+        if (java_class->isPublic())
+            s << "public ";        
+        // else friendly
 
         if (java_class->isFinal())
             s << "final ";
-        if (java_class->isNamespace())
+
+        if (java_class->isNamespace()) {
             s << "interface ";
-        else
+        } else {
+            if (java_class->isAbstract())
+                s << "abstract ";
             s << "class ";
+        }
+
     }
 
     const ComplexTypeEntry *type = java_class->typeEntry();
 
-    s << type->javaName();
+    s << java_class->name();
 
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         if (!java_class->baseClassName().isEmpty()) {
@@ -687,11 +716,10 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         writeSignal(s, signal_funcs.at(i));
 
     // Functions
-    MetaJavaFunctionList java_funcs = java_class->functionsInJava();
+    MetaJavaFunctionList java_funcs = java_class->functionsInJava();    
     for (int i=0; i<java_funcs.size(); ++i) {
         MetaJavaFunction *function = java_funcs.at(i);
         writeFunction(s, function);
-
         if (function->isConstructor() && i != java_funcs.size() - 1)
             s << endl;
     }
@@ -785,10 +813,10 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
     else if (attr & MetaJavaAttributes::Private) s << "private ";
 
     if (attr & MetaJavaAttributes::Native) s << "native ";
+    else if (attr & MetaJavaAttributes::FinalInJava) s << "final ";
     else if (attr & MetaJavaAttributes::Abstract) s << "abstract ";
 
-    if (attr & MetaJavaAttributes::Static) s << "static ";
-    else if (attr & MetaJavaAttributes::FinalInJava) s << "final ";
+    if (attr & MetaJavaAttributes::Static) s << "static ";    
 
     if ((options & SkipReturnType) == 0) {
         s << translateType(java_function->type());

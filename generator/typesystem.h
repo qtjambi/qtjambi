@@ -224,6 +224,9 @@ public:
     // The type's name in Java
     virtual QString javaName() const { return m_name; }
 
+    // The type to lookup when converting to Java
+    virtual QString lookupName() const { return javaName(); }
+
     // The package
     virtual QString javaPackage() const { return QString(); }
 
@@ -445,6 +448,31 @@ public:
         }
     }
 
+    ComplexTypeEntry *copy() const 
+    {
+        ComplexTypeEntry *centry = new ComplexTypeEntry(name(), type());
+        centry->setInclude(include());
+        centry->setExtraIncludes(extraIncludes());
+        centry->setFunctionModifications(functionModifications());
+        centry->setFieldModifications(fieldModifications());
+        centry->setQObject(isQObject());
+        centry->setDefaultSuperclass(defaultSuperclass());
+        centry->setCodeSnips(codeSnips());
+        centry->setJavaPackage(javaPackage());
+
+        return centry;
+    }
+
+    void setLookupName(const QString &name) 
+    {
+        m_lookup_name = name;
+    }
+
+    virtual QString lookupName() const 
+    {
+        return m_lookup_name.isEmpty() ? javaName() : m_lookup_name;
+    }
+
     Include include() const { return m_include; }
     void setInclude(const Include &inc) { m_include = inc; }
 
@@ -463,6 +491,7 @@ public:
 
     FieldModification fieldModification(const QString &name) const;
     void setFieldModifications(const FieldModificationList &mods) { m_field_mods = mods; }
+    FieldModificationList fieldModifications() const { return m_field_mods; }
 
     QString javaPackage() const { return m_package; }
     void setJavaPackage(const QString &package) { m_package = package; }
@@ -486,6 +515,7 @@ private:
     QString m_default_superclass;
     QString m_qualified_cpp_name;
     uint m_qobject : 1;
+    QString m_lookup_name;
 };
 
 

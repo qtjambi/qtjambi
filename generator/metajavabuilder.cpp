@@ -144,6 +144,42 @@ static bool function_less_than(const MetaJavaFunction *f1, const MetaJavaFunctio
     return s1 < s2;
 }
 
+void MetaJavaBuilder::addNonVirtualClasses()
+{
+    MetaJavaClassList classes_to_add;
+    foreach (MetaJavaClass *cls, m_java_classes) {
+        if (cls->isAbstract()) {
+            MetaJavaClass *copy = new MetaJavaClass;
+
+            ComplexTypeEntry *centry = cls->typeEntry();
+            centry->setCodeSnips(CodeSnipList());
+            copy->setTypeEntry(centry);
+            copy->setNamePrefix("_");
+            centry->setLookupName(copy->name());
+            cls->typeEntry()->setLookupName(copy->name());
+            copy->setBaseClass(cls);
+            copy->setAttributes(MetaJavaAttributes::Friendly | MetaJavaAttributes::Final);
+            copy->setEnums(MetaJavaEnumList());            
+            copy->setForceShellClass(true);
+
+            MetaJavaFunctionList functions = cls->functions();
+            MetaJavaFunctionList new_functions;
+            foreach (const MetaJavaFunction *f, functions) {
+                if (f->isAbstract()) {
+                    MetaJavaFunction *new_function = f->copy();
+                    new_function->setImplementingClass(copy);
+                    *new_function += MetaJavaAttributes::FinalInJava;
+                    new_functions << new_function;
+                } 
+            }
+            copy->setFunctions(new_functions);
+
+            classes_to_add << copy;
+        }
+    }
+
+    m_java_classes += classes_to_add;
+}
 
 bool MetaJavaBuilder::build()
 {
@@ -225,8 +261,9 @@ bool MetaJavaBuilder::build()
             if (!cls->hasConstructors() && !cls->isFinal() && !cls->isInterface() && !cls->isNamespace())
                 cls->addDefaultConstructor();
         }
-
     }
+
+    addNonVirtualClasses();
 
     foreach (TypeEntry *entry, m_used_types) {
         if (entry->isPrimitive())
@@ -614,7 +651,7 @@ bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
     }
 
     if (primary >= 0) {
-        const MetaJavaClass *base_class = findClass(m_java_classes, base_classes.at(primary));
+        MetaJavaClass *base_class = findClass(m_java_classes, base_classes.at(primary));
         if (!base_class) {
             ReportHandler::warning(QString("Unknown baseclass for '%1': '%2'")
                                    .arg(java_class->name())
@@ -698,7 +735,11 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
     java_function->setName(function_name);
     java_function->setOriginalName(function_item->name());
 
-    *java_function += MetaJavaAttributes::Native;
+    if (function_item->isAbstract())
+        *java_function += MetaJavaAttributes::Abstract;
+
+    if (!java_function->isAbstract())
+        *java_function += MetaJavaAttributes::Native;
 
     if (!function_item->isVirtual())
         *java_function += MetaJavaAttributes::Final;
@@ -716,8 +757,6 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
     else
         *java_function += MetaJavaAttributes::Protected;
 
-    if (function_item->isAbstract())
-        *java_function += MetaJavaAttributes::Abstract;
 
     QString stripped_class_name = class_name;
     int cc_pos = stripped_class_name.lastIndexOf("::");
