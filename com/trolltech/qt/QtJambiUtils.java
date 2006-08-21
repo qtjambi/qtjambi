@@ -275,8 +275,8 @@ public class QtJambiUtils {
                 if (signal_type != param_type)
                     return;
             }
-
-        } else {
+            
+        } else if (params.length != 0) {
             throw new RuntimeException("Don't know how to autoconnect to: "
                     + signal.getDeclaringClass().getName() + "."
                     + signal.getName());
@@ -291,7 +291,14 @@ public class QtJambiUtils {
             return;
         }
 
-        ((QObject.AbstractSignal) signal_object).connect(receiver, methodSignature(method));
+        boolean ok = ((QObject.AbstractSignal) signal_object).connect(receiver, methodSignature(method));
+        if (!ok) {
+            throw new RuntimeException("Autoconnection failed for: " 
+                    + signal.getDeclaringClass().getName() + "."
+                    + signal.getName() 
+                    + " to " + receiver.getClass().getName() + "." 
+                    + methodSignature(method));
+        }
     }
 
     /**
