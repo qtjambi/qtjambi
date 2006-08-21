@@ -63,8 +63,11 @@ public class Launcher extends QWidget {
 
     private Ui_Launcher ui = new Ui_Launcher();
     private LaunchableListModel m_model = new LaunchableListModel();
-    private Launchable m_current = null;
-    private QProcess assistantProcess = null;
+    private Launchable m_current;
+    
+    private QProcess assistantProcess;
+    
+    private static QPalette systemPalette;
 
     public Launcher() {
         ui.setupUi(this);
@@ -129,6 +132,10 @@ public class Launcher extends QWidget {
                 if (button.isChecked()) {
                     QStyle style = QStyleFactory.create(button.text());
                     QApplication.setStyle(style);
+                    if (button.text().equals(styleForCurrentSystem()))
+                        QApplication.setPalette(systemPalette);                        
+                    else
+                        QApplication.setPalette(style.standardPalette());
                 }
             }
         }
@@ -332,6 +339,9 @@ public class Launcher extends QWidget {
 
     public static void main(String args[]) {
         QApplication.initialize(args);
+   
+        systemPalette = QApplication.palette();
+        
         Launcher l = new Launcher();
         l.show();
         QApplication.exec();
