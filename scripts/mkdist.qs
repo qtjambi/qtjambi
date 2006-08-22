@@ -1,7 +1,8 @@
 const packageDir = os_name() == OS_NAME_WINDOWS
                    ? "d:/tmp/package-builder"
                    : "/tmp/package-builder";
-const javaDir = packageDir + "/research/java";
+const version = "1.0.0-tp2";
+const javaDir = packageDir + "/qtjambi/" + version;
 
 const regexp_mainfunction = /void *main *\( *String *\w* *\[ *\] *\)/
 
@@ -129,10 +130,10 @@ function prepareSourceTree()
 
     verbose(" - sync'ing source tree");
     execute([command.p4, "sync", "-f",
-             "//depot/research/main/java/...",
+             "//depot/qtjambi/" + version + "/...",
              "//depot/research/main/uic4/..."]);
 
-    execute([command.chmod, "-R", "u+w", "research"]);
+    execute([command.chmod, "-R", "u+w", "."]);
 }
 
 
@@ -554,9 +555,9 @@ function createBundle() {
     dir.cdUp();
     dir.setCurrent();
 
-    var packageName = "qtjambi-" + option.packageName + "-preview";
+    var packageName = "qt-jambi-" + option.packageName + "-" + version;
 
-    execute([command.mv, "java", packageName]);
+    execute([command.mv, version, packageName]);
 
     var packageFile = option.startDir + "/" + packageName;
     if (os_name() == OS_NAME_WINDOWS)

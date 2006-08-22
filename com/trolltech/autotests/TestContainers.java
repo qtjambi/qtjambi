@@ -15,7 +15,7 @@ package com.trolltech.autotests;
 
 import java.util.*;
 
-import com.trolltech.autotests.generator.Tulip;
+import com.trolltech.autotests.generated.Tulip;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

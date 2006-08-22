@@ -20,7 +20,8 @@ public class QNativePointer {
 
     // Keep this in sync with the values in common/nativepointer.h
     public enum Type {
-        Boolean, Byte, Char, Short, Int, Long, Float, Double, Pointer
+        Boolean, Byte, Char, Short, Int, Long, Float, Double, Pointer,
+        String
     }
 
     public enum AutoDeleteMode {
@@ -91,6 +92,10 @@ public class QNativePointer {
     public QNativePointer pointerValue() {
         return pointerAt(0);
     }
+    
+    public String stringValue() {
+        return stringAt(0);
+    }
 
     public void setBooleanValue(boolean value) {
         setBooleanAt(0, value);
@@ -126,6 +131,10 @@ public class QNativePointer {
 
     public void setPointerValue(QNativePointer value) {
         setPointerAt(0, value);
+    }
+    
+    public void setStringValue(String value) {
+        setStringAt(0, value);
     }
 
     public boolean booleanAt(int pos) {
@@ -173,6 +182,11 @@ public class QNativePointer {
         long ptr = readPointer(m_ptr, pos);
         return fromNative(ptr, m_type, m_indirections - 1);
     }
+    
+    public String stringAt(int pos) {
+        verifyAccess(Type.String, pos);
+        return readString(m_ptr, pos);
+    }
 
     public void setBooleanAt(int pos, boolean value) {
         verifyAccess(Type.Boolean, pos);
@@ -217,6 +231,11 @@ public class QNativePointer {
     public void setPointerAt(int pos, QNativePointer value) {
         verifyAccess(Type.Pointer, pos);
         writePointer(m_ptr, pos, value == null ? 0 : value.m_ptr);
+    }
+    
+    public void setStringAt(int pos, String value) {
+        verifyAccess(Type.String, pos);
+        writeString(m_ptr, pos, value);
     }
 
     public Type type() {
@@ -384,26 +403,28 @@ public class QNativePointer {
         }
     }
 
-    private native boolean readBoolean(long ptr, int pos);
-    private native byte readByte(long ptr, int pos);
-    private native char readChar(long ptr, int pos);
-    private native short readShort(long ptr, int pos);
-    private native int readInt(long ptr, int pos);
-    private native long readLong(long ptr, int pos);
-    private native float readFloat(long ptr, int pos);
-    private native double readDouble(long ptr, int pos);
-    private native long readPointer(long ptr, int pos);
-    private native void writeBoolean(long ptr, int pos, boolean value);
-    private native void writeByte(long ptr, int pos, byte value);
-    private native void writeChar(long ptr, int pos, char value);
-    private native void writeShort(long ptr, int pos, short value);
-    private native void writeInt(long ptr, int pos, int value);
-    private native void writeLong(long ptr, int pos, long value);
-    private native void writeFloat(long ptr, int pos, float value);
-    private native void writeDouble(long ptr, int pos, double value);
-    private native void writePointer(long ptr, int pos, long value);
-    private native long createPointer(int type, int size, int indirections);
-    private native void deletePointer(long ptr, int type, int deleteMode);
+    private static native boolean readBoolean(long ptr, int pos);
+    private static native byte readByte(long ptr, int pos);
+    private static native char readChar(long ptr, int pos);
+    private static native short readShort(long ptr, int pos);
+    private static native int readInt(long ptr, int pos);
+    private static native long readLong(long ptr, int pos);
+    private static native float readFloat(long ptr, int pos);
+    private static native double readDouble(long ptr, int pos);
+    private static native long readPointer(long ptr, int pos);
+    private static native String readString(long ptr, int pos);
+    private static native void writeBoolean(long ptr, int pos, boolean value);
+    private static native void writeByte(long ptr, int pos, byte value);
+    private static native void writeChar(long ptr, int pos, char value);
+    private static native void writeShort(long ptr, int pos, short value);
+    private static native void writeInt(long ptr, int pos, int value);
+    private static native void writeLong(long ptr, int pos, long value);
+    private static native void writeFloat(long ptr, int pos, float value);
+    private static native void writeDouble(long ptr, int pos, double value);
+    private static native void writePointer(long ptr, int pos, long value);
+    private static native void writeString(long ptr, int pos, String value);
+    private static native long createPointer(int type, int size, int indirections);
+    private static native void deletePointer(long ptr, int type, int deleteMode);
 
     private long m_ptr;
     private Type m_type;

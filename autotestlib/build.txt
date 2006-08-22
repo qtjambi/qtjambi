@@ -1,4 +1,4 @@
-<typesystem package="com.trolltech.autotests.generator" default-superclass="com.trolltech.qt.QtObject">
+<typesystem package="com.trolltech.autotests.generated" default-superclass="com.trolltech.qt.QtObject">
 
   <load-typesystem name="../generator/typesystem_core.txt" generate="no" />
   <load-typesystem name="../generator/typesystem_gui.txt" generate="no" />
@@ -15,4 +15,16 @@
     <include file-name="signalsandslots.h" location="local"/>
   </object-type>
 
+  <object-type name="AbstractClass">
+    <include file-name="abstractclass.h" location="local"/>
+  </object-type>
+
+  <object-type name="AnotherNonAbstractSubclass">
+    <include file-name="abstractclass.h" location="local"/>
+  </object-type>
+
+  <object-type name="NativePointerTester">
+    <include file-name="nativepointertester.h" location="local"/>
+  </object-type>
+   
 </typesystem>

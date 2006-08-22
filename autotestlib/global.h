@@ -18,5 +18,6 @@
 #include "variants.h"
 #include "signalsandslots.h"
 #include "abstractclass.h"
+#include "nativepointertester.h"
 
 #endif

@@ -24,7 +24,8 @@ enum PointerType {
     LongType            = 5,
     FloatType           = 6,
     DoubleType          = 7,
-    PointerType         = 8
+    PointerType         = 8,
+    StringType          = 9
 };
 
 #endif // QNATIVEPOINTER_H

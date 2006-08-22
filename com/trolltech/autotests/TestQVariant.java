@@ -16,7 +16,7 @@ package com.trolltech.autotests;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import com.trolltech.autotests.generator.Variants;
+import com.trolltech.autotests.generated.Variants;
 import com.trolltech.qt.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;

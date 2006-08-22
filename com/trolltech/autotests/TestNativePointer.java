@@ -18,6 +18,8 @@ import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+import com.trolltech.autotests.generated.NativePointerTester;
+
 
 public class TestNativePointer extends QTestCase {
     public void run_createBooleanPointer() {
@@ -302,6 +304,26 @@ public class TestNativePointer extends QTestCase {
                 }
                 QCOMPARE(caught, i != j);
             }
+        }
+    }
+    
+    public void run_testInOut() {
+        NativePointerTester npt = new NativePointerTester();
+        
+        {
+            QNativePointer np_int = new QNativePointer(QNativePointer.Type.Int);
+            np_int.setIntValue(14);
+            int returned = npt.testInt(np_int, 15);
+            QCOMPARE(returned, 14);
+            QCOMPARE(np_int.intValue(), 15);
+        }
+        
+        {
+            QNativePointer np_string = new QNativePointer(QNativePointer.Type.String);
+            np_string.setStringValue("First");
+            String returned = npt.testString(np_string, "Second");
+            QCOMPARE(returned, "First");
+            QCOMPARE(np_string.stringValue(), "Second");
         }
     }
     
