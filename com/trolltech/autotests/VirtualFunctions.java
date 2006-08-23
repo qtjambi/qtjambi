@@ -186,7 +186,7 @@ public class VirtualFunctions extends QTestCase {
         QCOMPARE(obj.getS(), "Not a super-string");
         
         AbstractClass cls = obj.getAbstractClass();
-        QCOMPARE(cls.getClass().getName(), "com.trolltech.autotests.generator._AbstractClass");
+        QCOMPARE(cls.getClass().getName(), "com.trolltech.autotests.generated.AbstractClass$ConcreteWrapper");
         
         cls.abstractFunction("my super-string");
         QCOMPARE(cls.getS(), "my super-string");        

@@ -198,6 +198,9 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
     else
         include_attributes |= MetaJavaAttributes::Native;
 
+    if (!java_function->isConstructor())
+        include_attributes |= MetaJavaAttributes::Static;
+
     s << "    ";
     writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
         java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
@@ -395,6 +398,36 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
                   MetaJavaAttributes::Visibility);
 }
 
+void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function, const MetaJavaClass *java_class,
+                                          QHash<int, bool> *disabled_params, int *exclude_attributes, int *include_attributes) const
+{    
+    FunctionModificationList mods = java_function->modifications(java_class);
+    foreach (FunctionModification mod, mods) {
+        if (mod.language == CodeSnip::JavaCode) {
+            if (mod.isDisableGCModifier())
+                disabled_params->unite(mod.disable_gc_argument_indexes);
+
+            if (mod.isAccessModifier()) {
+                *exclude_attributes |= MetaJavaAttributes::Public
+                                    | MetaJavaAttributes::Protected
+                                    | MetaJavaAttributes::Private
+                                    | MetaJavaAttributes::Friendly;
+
+                if (mod.isPublic())
+                    *include_attributes |= MetaJavaAttributes::Public;
+                else if (mod.isProtected())
+                    *include_attributes |= MetaJavaAttributes::Protected;
+                else if (mod.isPrivate())
+                    *include_attributes |= MetaJavaAttributes::Private;
+                else if (mod.isFriendly())
+                    *include_attributes |= MetaJavaAttributes::Friendly;
+
+                *exclude_attributes &= ~(*include_attributes);
+            }
+        }
+    }
+}
+
 void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_function,
                                   uint included_attributes, uint excluded_attributes)
 {
@@ -420,35 +453,9 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     if (callThrough)
         exclude_attributes |= MetaJavaAttributes::Native;
 
-    QString functionName = java_function->name();
-    FunctionModificationList mods = java_function->modifications(java_class);
-
+    QString functionName = java_function->name();    
     QHash<int, bool> disabled_params;
-    foreach (FunctionModification mod, mods) {
-        if (mod.language == CodeSnip::JavaCode) {
-            if (mod.isDisableGCModifier())
-                disabled_params.unite(mod.disable_gc_argument_indexes);
-
-            if (mod.isAccessModifier()) {
-                exclude_attributes |= MetaJavaAttributes::Public
-                                    | MetaJavaAttributes::Protected
-                                    | MetaJavaAttributes::Private
-                                    | MetaJavaAttributes::Friendly;
-
-                if (mod.isPublic())
-                    include_attributes |= MetaJavaAttributes::Public;
-                else if (mod.isProtected())
-                    include_attributes |= MetaJavaAttributes::Protected;
-                else if (mod.isPrivate())
-                    include_attributes |= MetaJavaAttributes::Private;
-                else if (mod.isFriendly())
-                    include_attributes |= MetaJavaAttributes::Friendly;
-
-                exclude_attributes &= ~(include_attributes);
-            }
-        }
-    }
-
+    retrieveModifications(java_function, java_class, &disabled_params, &exclude_attributes, &include_attributes);
     if (!java_class->isInterface()) {
         // The overloads
         writeFunctionOverloads(s, java_function, include_attributes, exclude_attributes);
@@ -467,20 +474,16 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     if (java_function->isConstructor()) {
         writeConstructorContents(s, java_function, disabled_params);
     } else if (callThrough) {
-        s << " {" << endl;
-        writeJavaCallThroughContents(s, java_function, disabled_params);
-        s << "    }" << endl;
+        if (java_function->isAbstract()) {
+            s << ";" << endl;
+        } else {
+            s << " {" << endl;
+            writeJavaCallThroughContents(s, java_function, disabled_params);
+            s << "    }" << endl;
+        }
         writePrivateNativeFunction(s, java_function);
     } else {
-        s << ";" << endl;
-
-        // For abstract functions we actually need the final private native function declaration
-        // so that overriding the function works. We don't need any implementation for it though,
-        // cause it's private, so if you cheat and call it anyway, then you'll get an exception.
-        if (!java_class->isInterface() && java_function->isAbstract() && !java_function->isFinalInJava())
-            writePrivateNativeFunction(s, java_function);
-        else
-            s << endl;       
+        s << ";" << endl << endl;
     }
 
     if (functionName == "operator_equal") {
@@ -695,11 +698,36 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
     s << endl << "{" << endl;
 
+
     if (!java_class->isInterface() && !java_class->isNamespace()
         && (java_class->baseClass() == 0 || java_class->package() != java_class->baseClass()->package())) {
         s << "    static {" << endl
           << "        " << java_class->package() << ".QtJambi_LibraryInitializer.init();" << endl
           << "    }" << endl;
+    }
+
+    if (!java_class->isInterface() && java_class->isAbstract()) {
+        s << "    private static class ConcreteWrapper extends " << java_class->fullName() << " {" << endl
+          << "        protected ConcreteWrapper(QPrivateConstructor p) { super(p); }" << endl;
+
+        int exclude_attributes = MetaJavaAttributes::Native | MetaJavaAttributes::Abstract;
+        int include_attributes = 0;
+        MetaJavaFunctionList functions = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions | MetaJavaClass::NonEmptyFunctions);
+        foreach (const MetaJavaFunction *java_function, functions) {
+            QHash<int, bool> disabled_params;
+            retrieveModifications(java_function, java_class, &disabled_params, &exclude_attributes, &include_attributes);
+
+            s << "        ";
+            writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
+                java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
+
+            s << java_function->name() << "(";
+            writeFunctionArguments(s, java_function, java_function->arguments().count());
+            s << ") {" << endl;
+            writeJavaCallThroughContents(s, java_function, disabled_params);
+            s << "        }" << endl;
+        }
+        s  << "    }" << endl << endl;
     }
 
     // Enums
@@ -722,6 +750,17 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         writeFunction(s, function);
         if (function->isConstructor() && i != java_funcs.size() - 1)
             s << endl;
+    }
+
+    // Just the private functions for abstract functions implemeneted in superclasses
+    if (!java_class->isInterface() && java_class->isAbstract()) {
+        java_funcs = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions);
+        foreach (MetaJavaFunction *java_function, java_funcs) {
+            if (java_function->implementingClass() != java_class) {
+                writePrivateNativeFunction(s, java_function);
+                s << endl;
+            }
+        }
     }
 
     // Field accessors

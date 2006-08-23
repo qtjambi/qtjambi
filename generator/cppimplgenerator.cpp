@@ -399,8 +399,15 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // Native callbacks (all java functions require native callbacks)
     MetaJavaFunctionList class_funcs = java_class->functionsInJava();
     foreach (MetaJavaFunction *function, class_funcs) {
-        if ((!function->isAbstract() || function->isFinalInJava()) && !function->isEmptyFunction())
+        if (!function->isEmptyFunction())
             writeFinalFunction(s, function, java_class);
+    }
+
+    class_funcs = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions);
+    foreach (MetaJavaFunction *function, class_funcs) {
+        if (function->implementingClass() != java_class) {
+            writeFinalFunction(s, function, java_class);
+        }
     }
 
     // Field accessors
@@ -945,7 +952,7 @@ void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const MetaJav
 
     s << "("
       << "JNIEnv *__jni_env," << endl;
-    if (java_function->isStatic())
+    if (!java_function->isConstructor())
         s << " jclass";
     else
         s << " jobject " << java_object_name;
@@ -1029,7 +1036,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
     {
         s << INDENT << "Q_UNUSED(__jni_env)" << endl;
 
-        if (!java_function->isStatic())
+        if (java_function->isConstructor())
             s << INDENT << "Q_UNUSED(" << java_object_name << ")" << endl;
 
         bool hasNativeId = (callThrough && !java_function->isStatic() && !java_function->isConstructor());
@@ -1188,8 +1195,6 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
         {
             Indentation indent;
 
-            if (!java_field->isStatic())
-                s << INDENT << "Q_UNUSED(__java_object);" << endl;
             s << INDENT << "Q_UNUSED(__jni_env);" << endl << endl;
 
             writeFinalFunctionSetup(s, setter, "__qt_object", setter->ownerClass());
@@ -1239,7 +1244,6 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
             Indentation indent;
 
         if (!java_field->isStatic())
-            s << INDENT << "Q_UNUSED(__java_object);" << endl;
             s << INDENT << "Q_UNUSED(__jni_env);" << endl << endl;
 
             writeFinalFunctionSetup(s, getter, "__qt_object", getter->ownerClass());

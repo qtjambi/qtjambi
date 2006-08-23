@@ -55,6 +55,9 @@ public:
 
     bool hasDefaultConstructor(const MetaJavaType *type);
 
+    void retrieveModifications(const MetaJavaFunction *f, const MetaJavaClass *java_class,
+        QHash<int, bool> *disabled_params, int *exclude_attributes, int *include_attributes) const;
+
     virtual QString subDirectoryForClass(const MetaJavaClass *java_class) const
     { return subDirectoryForPackage(java_class->package()); }
 

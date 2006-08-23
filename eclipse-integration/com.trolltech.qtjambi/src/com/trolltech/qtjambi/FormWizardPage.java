@@ -213,10 +213,10 @@ public class FormWizardPage extends WizardPage
                 while ((s = r.readLine()) != null)
                     templates.add(s);                
             } catch (IOException e) {
-                setErrorMessage("IOException caught when reading templates");
+                ErrorReporter.reportError(e, "Couldn't read templates in New Form Wizard");
             }
         } else {
-            setErrorMessage("Can't find resource: " + TEMPLATE_PATH + "/" + TEMPLATE_LIST_FILENAME);            
+            ErrorReporter.reportError(null, "Can't find resource: " + TEMPLATE_PATH + "/" + TEMPLATE_LIST_FILENAME);            
         }
     }
     

@@ -144,43 +144,6 @@ static bool function_less_than(const MetaJavaFunction *f1, const MetaJavaFunctio
     return s1 < s2;
 }
 
-void MetaJavaBuilder::addNonVirtualClasses()
-{
-    MetaJavaClassList classes_to_add;
-    foreach (MetaJavaClass *cls, m_java_classes) {
-        if (cls->isAbstract()) {
-            MetaJavaClass *copy = new MetaJavaClass;
-
-            ComplexTypeEntry *centry = cls->typeEntry();
-            centry->setCodeSnips(CodeSnipList());
-            copy->setTypeEntry(centry);
-            copy->setNamePrefix("_");
-            centry->setLookupName(copy->name());
-            cls->typeEntry()->setLookupName(copy->name());
-            copy->setBaseClass(cls);
-            copy->setAttributes(MetaJavaAttributes::Friendly | MetaJavaAttributes::Final);
-            copy->setEnums(MetaJavaEnumList());            
-            copy->setForceShellClass(true);
-
-            MetaJavaFunctionList functions = cls->functions();
-            MetaJavaFunctionList new_functions;
-            foreach (const MetaJavaFunction *f, functions) {
-                if (f->isAbstract()) {
-                    MetaJavaFunction *new_function = f->copy();
-                    new_function->setImplementingClass(copy);
-                    *new_function += MetaJavaAttributes::FinalInJava;
-                    new_functions << new_function;
-                } 
-            }
-            copy->setFunctions(new_functions);
-
-            classes_to_add << copy;
-        }
-    }
-
-    m_java_classes += classes_to_add;
-}
-
 bool MetaJavaBuilder::build()
 {
     Q_ASSERT(!m_file_name.isEmpty());
@@ -261,9 +224,11 @@ bool MetaJavaBuilder::build()
             if (!cls->hasConstructors() && !cls->isFinal() && !cls->isInterface() && !cls->isNamespace())
                 cls->addDefaultConstructor();
         }
-    }
 
-    addNonVirtualClasses();
+        if (cls->isAbstract() && !cls->isInterface()) {
+            cls->typeEntry()->setLookupName(cls->typeEntry()->javaName() + "$ConcreteWrapper");
+        }
+    }
 
     foreach (TypeEntry *entry, m_used_types) {
         if (entry->isPrimitive())

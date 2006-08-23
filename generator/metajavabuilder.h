@@ -54,9 +54,7 @@ public:
     void traverseFields(ScopeModelItem item, MetaJavaClass *parent);
     MetaJavaFunction *traverseFunction(FunctionModelItem function);
     MetaJavaField *traverseField(VariableModelItem field, const MetaJavaClass *cls);
-
-    void addNonVirtualClasses();
-
+    
     QString translateDefaultValue(ArgumentModelItem item, MetaJavaType *type,
                                                MetaJavaFunction *fnc, MetaJavaClass *,
                                                int argument_index);    

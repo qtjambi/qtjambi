@@ -1,6 +1,7 @@
 package com.trolltech.qtjambi;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -20,8 +21,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-import com.trolltech.qtdesigner.editors.UiEditor;
-import com.trolltech.qtdesigner.views.FormWindowW;
 
 public class FormWizard extends Wizard implements INewWizard 
 {
@@ -80,6 +79,8 @@ public class FormWizard extends Wizard implements INewWizard
                             try {
                                 folder.create(true, true, null);                            
                             } catch (CoreException e) {
+                                ErrorReporter.reportError(e, "Couldn't create parent folder for form: " 
+                                                             + folder.getLocation().toOSString());
                                 break; 
                             }
                         }
@@ -87,7 +88,9 @@ public class FormWizard extends Wizard implements INewWizard
                     
                     try {
                         folder.create(true, true, null);
-                    } catch (CoreException e) {}
+                    } catch (CoreException e) {
+                        ErrorReporter.reportError(e, "Couldn't create folder for form: " + folder.getLocation().toOSString());
+                    }
                 }
             }
                       
@@ -118,18 +121,28 @@ public class FormWizard extends Wizard implements INewWizard
                     if (wp != null) {
                         IEditorPart part = IDE.openEditor(wp, file);
                         
-                        FormWindowW window = null;
-                        if (part instanceof UiEditor) {
-                            UiEditor editor = (UiEditor) part;
-                            window = editor.formWindow();                            
-                        }
+                        Object window = null;                        
                         
-                        if (window != null) {
-                            String objectName = mainPage.getClassName(); 
-                            if (objectName.length() == 0)                                
-                                objectName = fname.substring(0, fname.lastIndexOf("."));                            
-                            window.setObjectName(objectName);
-                            window.save();
+                        try {
+                            if (part.getClass().getName() == "com.trolltech.qtdesigner.editors.UiEditor") {
+                                Method m = part.getClass().getMethod("formWindow", null);                            
+                                window = m.invoke(part, null);                                                        
+                            }
+                            
+                            if (window != null) {
+                                String objectName = mainPage.getClassName(); 
+                                if (objectName.length() == 0)                                
+                                    objectName = fname.substring(0, fname.lastIndexOf("."));
+                                
+                                
+                                Method m = window.getClass().getMethod("setObjectName", new Class[] { String.class });
+                                m.invoke(window, new Object[] { objectName });
+                                
+                                m = window.getClass().getMethod("save", null);
+                                m.invoke(window, null);
+                            }
+                        } catch (Exception e) {
+                            ErrorReporter.reportError(e, "Couldn't introspect editor: " + part.getClass().getName());
                         }
                             
                     }
@@ -139,7 +152,9 @@ public class FormWizard extends Wizard implements INewWizard
                     ResourcesPlugin.getWorkspace().setDescription(wsd);
                                                                 
                     return true;
-                } catch (CoreException e) {}
+                } catch (CoreException e) {
+                    ErrorReporter.reportError(e, "Error creating form: " + name);
+                }
 
                 
             }            

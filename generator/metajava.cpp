@@ -132,8 +132,6 @@ bool MetaJavaFunction::isModifiedRemoved(int types) const
 
 bool MetaJavaFunction::needsCallThrough() const
 {
-    if (isAbstract() && !isFinalInJava())
-        return false;
     if (ownerClass()->isInterface())
         return false;
     if (argumentsHaveNativeId() || !isStatic())
@@ -418,15 +416,6 @@ MetaJavaFunctionList MetaJavaClass::functionsInJava() const
     // Empty, private functions, since they aren't caught by the other ones
     returned += queryFunctions(Empty | Invisible);
 
-    // Add in the invisible, abstract-final functions in the dummy implementation classes for abstract classes
-    if (isFinal()) {
-        returned += queryFunctions(AbstractFunctions 
-                                  | FinalInJavaFunctions 
-                                  | ClassImplements 
-                                  | WasProtected 
-                                  | NormalFunctions);
-    }
-
     return returned;
 }
 
@@ -594,7 +583,7 @@ bool MetaJavaClass::hasSignal(const MetaJavaFunction *other) const
 
 QString MetaJavaClass::name() const
 {
-    return m_name_prefix + QString(m_type_entry->javaName()).replace("::", "_");
+    return QString(m_type_entry->javaName()).replace("::", "_");
 }
 
 bool MetaJavaClass::hasFunction(const QString &str) const

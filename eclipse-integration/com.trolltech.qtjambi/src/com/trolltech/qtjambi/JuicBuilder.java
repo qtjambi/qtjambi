@@ -14,12 +14,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.util.ILogger;
-import org.eclipse.jface.util.Policy;
 
 public class JuicBuilder extends IncrementalProjectBuilder {
 	
@@ -125,14 +122,7 @@ public class JuicBuilder extends IncrementalProjectBuilder {
 		    try {
                 res = wroot.findMember(path);
             } catch (Exception e) {
-                ILogger logger = Policy.getLog();
-                logger.log(new Status(
-                        Status.WARNING,
-                        "qtJambiPlugin",
-                        Status.OK,
-                        "Could not get project for " + classpath.getPath().toString(),
-                        e
-                ));                
+                ErrorReporter.reportError(e, "Could not get project for " + classpath.getPath().toString());
                 continue ;
             }
             
@@ -201,14 +191,8 @@ public class JuicBuilder extends IncrementalProjectBuilder {
                         IClasspathEntry[] new_classpath = newSourceEntry(jpro.getRawClasspath(), projuiced_files_in.getFullPath());                          
                         jpro.setRawClasspath(new_classpath, null);
                     } catch (CoreException e) {
-                        ILogger logger = Policy.getLog();
-                        logger.log(new Status(
-                                Status.WARNING,
-                                "qtJambiPlugin",
-                                Status.OK,
-                                "Could not create directory for generated JUIC files: " + projuiced_files_in.getLocation().toOSString(),
-                                e
-                        ));                                    
+                        ErrorReporter.reportError(e, "Could not create directory for generated JUIC files: " 
+                                                      + projuiced_files_in.getLocation().toOSString());
                     }
                 }
             }
@@ -243,14 +227,7 @@ public class JuicBuilder extends IncrementalProjectBuilder {
 			try {
 				juicProc = rt.exec(juicargs);
 			} catch(IOException e) {
-				ILogger logger = Policy.getLog();
-				logger.log(new Status(
-						Status.WARNING,
-						"qtJambiPlugin",
-						Status.OK,
-						"Could not run " + juicpath,
-						e
-						));		
+                ErrorReporter.reportError(e, "Could not run " + juicpath);
 			}
             
                         

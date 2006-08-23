@@ -87,19 +87,12 @@ class BuilderAdder implements Runnable {
                 try {
                     m_project.getProject().setDescription(desc, null);
                 } catch (Exception e) {
-                    ILogger logger = Policy.getLog();
-                    logger.log(new Status(
-                            Status.WARNING,
-                            "qtJambiPlugin",
-                            Status.OK,
-                            "Unable to modify description of project",
-                            e
-                            ));                         
+                    ErrorReporter.reportError(e, "Unable to modify description of project");
                 }
 
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();												
+            ErrorReporter.reportError(e, "Exception when adding builder");
 		}						
 	}
 }

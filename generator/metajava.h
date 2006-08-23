@@ -541,8 +541,6 @@ public:
     QString fullName() const { return package() + "." + name(); }
     QString name() const;
 
-    void setNamePrefix(const QString &prefix) { m_name_prefix = prefix; }
-
     QString baseClassName() const { return m_base_class ? m_base_class->name() : QString(); }
 
     MetaJavaClass *baseClass() const { return m_base_class; }
@@ -603,8 +601,6 @@ private:
     uint m_has_nonprivateconstructor : 1;
     uint m_functions_fixed : 1;
     uint m_force_shell_class : 1;
-
-    QString m_name_prefix;
 
     const MetaJavaClass *m_enclosing_class;
     MetaJavaClass *m_base_class;

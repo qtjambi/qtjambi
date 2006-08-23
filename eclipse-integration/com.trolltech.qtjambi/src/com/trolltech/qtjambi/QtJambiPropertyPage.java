@@ -177,8 +177,10 @@ public class QtJambiPropertyPage extends PropertyPage {
                     new Boolean(juicUseDestinationFolder.getSelection()).toString());
             
 		} catch (Exception e) {
-			return false;
+			ErrorReporter.reportError(e, "Couldn't set properties");
+            return false;
 		}
+        
 		return true;
 	}
 

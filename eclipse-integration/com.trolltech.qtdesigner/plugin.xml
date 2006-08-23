@@ -2,15 +2,11 @@
 <?eclipse version="3.0"?>
 <plugin
    id="com.trolltech.qtdesigner"
-   name="QtDesigner Plug-in"
+   name="Qt Designer Plugin"
    version="1.0.0"
    provider-name=""
    class="com.trolltech.qtdesigner.QtDesignerPlugin">
-
    <runtime>
-      <library name="QtDesigner.jar">
-         <export name="*"/>
-      </library>
    </runtime>
 
    <requires>
