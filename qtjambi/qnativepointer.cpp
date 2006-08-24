@@ -13,6 +13,7 @@
 
 #include "qtjambi_global.h"
 #include "qnativepointer.h"
+#include "qtjambi_core.h"
 
 #include <stdlib.h>
 
@@ -140,7 +141,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_QNativePointer_writePoin
 extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_QNativePointer_writeString
   (JNIEnv *env, jclass, jlong ptr, jint pos, jstring value)
 {
-    *reinterpret_cast<QString *>(ptr) = qtjambi_to_qstring(env, value);
+    reinterpret_cast<QString *>(ptr)[pos] = qtjambi_to_qstring(env, value);
 }
 
 

@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.ui,
  org.eclipse.ui.ide
 Eclipse-AutoStart: true
+Export-Package: com.trolltech.qtjambi

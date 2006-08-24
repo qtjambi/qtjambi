@@ -40,11 +40,7 @@ const directoriesP4 = [qtjambidir,
 const qtjavaJarDest = rootDir + "/plugins/com.trolltech.qtjambi_1.0.0.jar";
 const qtdesignerBinDir = "com/trolltech/qtdesigner";
 const qtjavaBinDir = "com/trolltech/qtjambi";
-const qtdesignerJarDest = qtdesignerJavaSrcRoot + "/QtDesigner.jar";
-const mainQtDesignerJarDest = rootDir + "/plugins/com.trolltech.qtdesigner_1.0.0.jar";
-const mainQtDesignerJarContents = ["plugin.xml",
-                                   "icons/designer.gif",
-                                   "QtDesigner.jar"];
+const qtdesignerJarDest = rootDir + "/plugins/com.trolltech.qtdesigner_1.0.0.jar";
 
 const zipDest = (os_name() == OS_NAME_WINDOWS ? destDir + "/qt-jambi-eclipse-integration-1.0.0.zip" : destDir + "/qt-jambi-eclipse-integration-1.0.0.tar");
 zipContents = ["plugins/com.trolltech.qtdesigner_1.0.0.jar",
@@ -72,7 +68,8 @@ const qtjavaJarContents = ["plugin.xml",
                            "com/trolltech/qtjambi/templates/templates.txt",
                            "com/trolltech/qtjambi/templates/Widget.ui"];
 
-const qtdesignerJarContents = [
+const qtdesignerJarContents = ["plugin.xml",
+                               "icons/designer.gif",
                                qtdesignerBinDir + "/editors/actionicons/adjustsize.gif",
                                qtdesignerBinDir + "/editors/actionicons/buddytool.gif",
                                qtdesignerBinDir + "/editors/actionicons/editbreaklayout.gif",
@@ -185,8 +182,7 @@ const actionsPackage = [
                         [commandCp, "-f -r", " ../icons", " ."],
                         ["files", qtdesignerJavaSrcRoot, "class", qtdesignerJarContents],
                         ["join", qtdesignerJarContentsStr, qtdesignerJarContents],
-                        [commandJar, "-cf ", qtdesignerJarDest, " ", qtdesignerJarContentsStr],
-                        [commandJar, "-cf ", mainQtDesignerJarDest, " ", mainQtDesignerJarContents.join(" ")],
+                        [commandJar, "-cfm ", qtdesignerJarDest, " ../META-INF/MANIFEST.MF ", qtdesignerJarContentsStr],
                         ["cd", generatedDir],
                         platformSpecificCommand,
                         ["cd", "/home/qt/qtjambi/qtjambi-linux-preview/lib"],
