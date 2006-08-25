@@ -476,10 +476,24 @@ class QClassPathEngine extends QAbstractFileEngine
     private String m_baseName = "";
     private String m_selectedSource = "*";
     private List<QAbstractFileEngine> m_engines = new LinkedList<QAbstractFileEngine>();
-
+    
     public QClassPathEngine(String fileName)
     {
         setFileName(fileName);
+    }
+    
+    public static void addSearchPath(String path)
+    {
+        if (classpaths == null)
+            findClassPaths();
+        classpaths.add(path);
+    }
+    
+    public static void removeSearchPath(String path)
+    {
+        if (classpaths == null)
+            findClassPaths();
+        classpaths.remove(path);
     }
 
     public void setFileName(String fileName)
@@ -780,7 +794,7 @@ class QClassPathEngine extends QAbstractFileEngine
     private void addFromPath(String path, String fileName)
     {
         String qtified_path = path.replace(File.separator, "/");
-
+        
         QFileInfo file = new QFileInfo(qtified_path);
         if (file.isDir()
             && file.exists()
@@ -813,7 +827,7 @@ class QClassPathEngine extends QAbstractFileEngine
         m_engines.add(engine);
     }
     
-    private void findClassPaths() {
+    private static void findClassPaths() {
         classpaths = new HashSet<String>();
         
         String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
@@ -821,7 +835,7 @@ class QClassPathEngine extends QAbstractFileEngine
             classpaths.add(p);
         
         try {
-            Enumeration<URL> urls = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");            
+            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
             while (urls.hasMoreElements()) {
                 URL url = (URL) urls.nextElement();
                 if (url.getProtocol().equals("jar")) {
@@ -846,11 +860,12 @@ class QClassPathEngine extends QAbstractFileEngine
 public class QClassPathFileEngineHandler extends QAbstractFileEngineHandler
 {
     static List<QClassPathEngine> engines = new LinkedList<QClassPathEngine>();
+    
 
     public QClassPathFileEngineHandler()
     {
         super();
-    }
+    }       
 
     public QAbstractFileEngine create(String fileName)
     {

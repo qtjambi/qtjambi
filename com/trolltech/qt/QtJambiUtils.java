@@ -330,5 +330,14 @@ public class QtJambiUtils {
             signal.connect(o, slotSignature);
         }
     }
-
+    
+    public static void addSearchPathForResourceEngine(String path)
+    {
+        QClassPathEngine.addSearchPath(path);
+    }
+    
+    public static void removeSearchPathForResourceEngine(String path)
+    {
+        QClassPathEngine.removeSearchPath(path);
+    }
 }

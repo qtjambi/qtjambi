@@ -179,8 +179,7 @@ INCLUDEPATH += ./ \
     /usr/include/cairo \
     /usr/include/pango-1.0 \
     /usr/include/atk-1.0 \
-    $$(QTDIR)/src/gui/kernel \
-    $$DEPOT_ROOT/research/qswt
+    $$(QTDIR)/src/gui/kernel
 
 LIBS += -L/usr/X11R6/lib \
     -L/usr/lib \
@@ -189,8 +188,8 @@ LIBS += -L/usr/X11R6/lib \
     -lgdk-x11-2.0 \
     -lgtk-x11-2.0
 
-HEADERS += $$DEPOT_ROOT/research/qswt/qgtkeventdispatcher.h
-SOURCES += $$DEPOT_ROOT/research/qswt/qgtkeventdispatcher.cpp
+HEADERS += ../../qgtkeventdispatcher.h
+SOURCES += ../../qgtkeventdispatcher.cpp
 
 //[END]
 

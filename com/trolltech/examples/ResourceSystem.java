@@ -13,6 +13,7 @@
 
 package com.trolltech.examples;
 
+import com.trolltech.qt.QtJambiUtils;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -100,7 +101,7 @@ public class ResourceSystem extends QWidget
     private QTreeWidget m_selection = null;
     private boolean m_browse_class_path = true;
     private boolean m_shown = false;
-    private String m_old_class_path = null;
+    private String m_jar_name = null;
 
     public ResourceSystem()
     {
@@ -191,13 +192,11 @@ public class ResourceSystem extends QWidget
         }
 
         String searchPath = null;
-        if (m_browse_class_path) {
-            if (m_old_class_path == null) {
-                m_old_class_path = System.getProperty("java.class.path");
-                System.setProperty("java.class.path", jarInfo.canonicalFilePath() + System.getProperty("path.separator")
-                        + m_old_class_path);
+        if (m_browse_class_path) {   
+            if (m_jar_name == null) {
+                QtJambiUtils.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());
+                m_jar_name = jarInfo.canonicalFilePath();
             }
-
             searchPath = "classpath:/";
         } else { // Otherwise just browse the root of the jar file
             searchPath = "classpath:" + jarInfo.canonicalFilePath() + "#/";
@@ -214,8 +213,8 @@ public class ResourceSystem extends QWidget
 
     protected void finalize()
     {
-        if (m_old_class_path != null)
-            System.setProperty("java.class.path", m_old_class_path);
+        if (m_jar_name != null)
+            QtJambiUtils.removeSearchPathForResourceEngine(m_jar_name);
         super.finalize();
     }
 

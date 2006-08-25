@@ -1,3 +1,5 @@
+const version = "0.0.2";
+const depot_version = "1.0.0-tp2";
 
 // Set up P4
 const client = "eclipse-package-builder" + (os_name() == OS_NAME_WINDOWS ? "" : "-linux");
@@ -8,7 +10,7 @@ const cygdrive_slash = (os_name() == OS_NAME_WINDOWS ? cygdrive + "/" : "")
 const rootDir = "/tmp";
 const destDir = rootDir + "/output";
 
-const qtjambidir = rootDir + "/qtjambi/1.0.0-tp2"
+const qtjambidir = rootDir + "/qtjambi/" + depot_version;
 
 const javaScriptDir = qtjambidir + "/scripts";
 
@@ -31,24 +33,26 @@ const qtdesignerSources = [qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/ed
                            qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/views",
                            qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/"];
 
-const directoriesP4 = [qtjambidir,                       
+const directoriesP4 = [qtjambidir,
 		       qtdesignerPackageDir,
                        javaScriptDir,
                        qtjavaPackageDir];
 
 
-const qtjavaJarDest = rootDir + "/plugins/com.trolltech.qtjambi_1.0.0.jar";
+const qtjavaJarDest = rootDir + "/plugins/com.trolltech.qtjambi_" + version + ".jar";
 const qtdesignerBinDir = "com/trolltech/qtdesigner";
 const qtjavaBinDir = "com/trolltech/qtjambi";
-const qtdesignerJarDest = rootDir + "/plugins/com.trolltech.qtdesigner_1.0.0.jar";
+const qtdesignerJarDest = rootDir + "/plugins/com.trolltech.qtdesigner_" + version + ".jar";
 
-const zipDest = (os_name() == OS_NAME_WINDOWS ? destDir + "/qt-jambi-eclipse-integration-1.0.0.zip" : destDir + "/qt-jambi-eclipse-integration-1.0.0.tar");
-zipContents = ["plugins/com.trolltech.qtdesigner_1.0.0.jar",
-               "plugins/com.trolltech.qtjambi_1.0.0.jar",
-               "plugins/com.trolltech.help_1.0.0/doc.zip",
-               "plugins/com.trolltech.help_1.0.0/plugin.xml",
-               "plugins/com.trolltech.help_1.0.0/qt.xml",
-               "features/com.trolltech.help_1.0.0/feature.xml"];
+const zipDest = (os_name() == OS_NAME_WINDOWS 
+                    ? destDir + "/qt-jambi-eclipse-integration-win32-" + version + ".zip" 
+                    : destDir + "/qt-jambi-eclipse-integration-linux-" + version + ".tar");
+zipContents = ["plugins/com.trolltech.qtdesigner_" + version + ".jar",
+               "plugins/com.trolltech.qtjambi_" + version + ".jar",
+               "plugins/com.trolltech.help_" + version + "/doc.zip",
+               "plugins/com.trolltech.help_" + version + "/plugin.xml",
+               "plugins/com.trolltech.help_" + version + "/qt.xml",
+               "features/com.trolltech.help_" + version + "/feature.xml"];
 
 
   const vcRedistributableDir = "/Progra~1/Micros~1.net/SDK/v1.1/Bin"
@@ -146,7 +150,7 @@ platformSpecificCommand = [];
 if (os_name() != OS_NAME_WINDOWS) {
     platformSpecificCommand.push(commandJar);
     platformSpecificCommand.push("-uf ");
-    platformSpecificCommand.push(mainQtDesignerJarDest);
+    platformSpecificCommand.push(qtdesignerJarDest);
     platformSpecificCommand.push(" ");
     platformSpecificCommand.push(generatedExe);
 }
@@ -156,17 +160,19 @@ if (os_name() == OS_NAME_WINDOWS) {
                       ["cd", rootDir],
                       [commandCp, "-f ", cygdrive + vcRedistributableDir + "/" + "msvcp71.dll", " ."],
                       [commandCp, "-f ", cygdrive + vcRedistributableDir + "/" + "msvcr71.dll", " ."],
-                      [commandCp, "-f ", cygdrive + rootDir + "/research/java/scripts/register_eclipse_integration.bat", " ."],
+                      [commandCp, "-f ", cygdrive + qtjambidir + "/scripts/register_eclipse_integration.bat", " ."],
                       [commandCp, "-f ", cygdrive + generatedDir + "/release/" + generatedExe, " ."],
-                      [commandWGet, "http://anarki.troll.no/~gunnar/packages/old_packages/com.trolltech.help_1.0.0.zip"],
-		      [commandUnzip, "-o ", "com.trolltech.help_1.0.0.zip"],
+                      [commandRM, "-f com.trolltech.help_" + version + ".zip"],
+                      [commandWGet, "http://anarki.troll.no/~eblomfel/help_package/com.trolltech.help_" + version + ".zip"],
+		      [commandUnzip, "-o ", "com.trolltech.help_" + version + ".zip"],
                       [commandZip, cygdrive + zipDest + " ", zipContents],
     ];
 } else {
     packageCommand = [
                       ["cd", rootDir],
-                      [commandWGet, "http://anarki.troll.no/~gunnar/packages/com.trolltech.help_1.0.0.zip"],
-		      [commandUnzip, "-o ", "com.trolltech.help_1.0.0.zip"],
+	              [commandRM, "-f com.trolltech.help_" + version + ".zip"],		
+                      [commandWGet, "http://anarki.troll.no/~eblomfel/help_package/com.trolltech.help_" + version + ".zip"],
+		      [commandUnzip, "-o ", "com.trolltech.help_" + version + ".zip"],
                       [commandTar, "rf", " " + cygdrive + zipDest + " ",zipContents],
                       [commandRM, "-f ", cygdrive + zipDest + ".gz"],
                       [commandGZip, cygdrive + zipDest]

@@ -928,7 +928,7 @@ jobject qtjambi_from_QModelIndex(JNIEnv *env, const QModelIndex &index)
                                     index.internalId(),
                                     qtjambi_from_qobject(env,
                                                         const_cast<QAbstractItemModel *>(index.model()),
-                                                        "_QAbstractItemModel",
+                                                        "QAbstractItemModel$ConcreteWrapper",
                                                         "com/trolltech/qt/core/"));
     QTJAMBI_EXCEPTION_CHECK(env);
     return retVal;
