@@ -258,6 +258,12 @@ void QtJambiLink::resetObject() {
         removeFromCache();
     m_pointer = 0;
 
+    if (m_java_object != 0) {
+        StaticCache *sc = StaticCache::instance(environment());
+        sc->resolveQtObject();
+        environment()->SetLongField(m_java_object, sc->QtObject.native_id, 0);
+    }
+
     if (m_wrapper) {
         delete m_wrapper;
         m_wrapper = 0;
