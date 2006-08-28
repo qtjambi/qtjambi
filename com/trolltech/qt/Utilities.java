@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-
 public class Utilities {
 
     public enum OperatingSystem {
@@ -183,15 +182,16 @@ public class Utilities {
             for (String s : libs)
                 list.add(s);
         } else {
-            InputStream in = Utilities.class.getClassLoader().getResourceAsStream("qt_system_libs");
-            // may return null, but that will be covered by the catch below...
-            try {
-                StreamTokenizer tok =
-                    new StreamTokenizer(new BufferedReader(new InputStreamReader(in)));
-                while (tok.nextToken() != StreamTokenizer.TT_EOF) {
-                    list.add(tok.sval);
-                }
-            } catch (Exception e) { }
+            InputStream in = Utilities.class.getClassLoader().getResourceAsStream("qt_system_libs");            
+            if (in != null) {
+                BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                // may return null, but that will be covered by the catch below...
+                try {
+                    String s = null;
+                    while ((s = r.readLine()) != null)
+                        list.add(s);                    
+                } catch (Exception e) { }
+            }
         }
         return list;
     }
