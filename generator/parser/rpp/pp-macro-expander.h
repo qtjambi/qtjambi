@@ -139,9 +139,22 @@ public:
                     it != actual->end (); ++it)
                   {
                     if (*it == '"')
-                      *__result++ = '\\';
-                    *__result++ = *it;
+                      {
+                        *__result++ = '\\';
+                        *__result++ = *it;
+                      }
+
+                    else if (*it == '\n')
+                      {
+                        *__result++ = '"';
+                        *__result++ = '\n';
+                        *__result++ = '"';
+                      }
+
+                    else
+                      *__result++ = *it;
                   }
+
                 *__result++ = '\"';
                 __first = end_id;
               }
@@ -254,13 +267,43 @@ public:
 
             if (! macro->function_like)
               {
-                pp_macro_expander expand_macro (env);
-                macro->hidden = true;
+                pp_macro *m = 0;
+
                 if (macro->definition)
-                  expand_macro (macro->definition->begin (), macro->definition->end (), __result);
-                macro->hidden = false;
-                generated_lines += expand_macro.lines;
-                continue;
+                  {
+                    macro->hidden = true;
+
+                    std::string __tmp;
+                    __tmp.reserve (256);
+
+                    pp_macro_expander expand_macro (env);
+                    expand_macro (macro->definition->begin (), macro->definition->end (), std::back_inserter (__tmp));
+                    generated_lines += expand_macro.lines;
+
+                    if (! __tmp.empty ())
+                      {
+                        std::string::iterator __begin_id = skip_whitespaces (__tmp.begin (), __tmp.end ());
+                        std::string::iterator __end_id = skip_identifier (__begin_id, __tmp.end ());
+
+                        if (__end_id == __tmp.end ())
+                          {
+                            std::string __id;
+                            __id.assign (__begin_id, __end_id);
+
+                            m = env.resolve (__id.c_str (), std::distance (__begin_id, __end_id));
+                          }
+
+                        if (! m)
+                          std::copy (__tmp.begin (), __tmp.end (), __result);
+                      }
+
+                    macro->hidden = false;
+                  }
+
+                if (! m)
+                  continue;
+
+                macro = m;
               }
 
             // function like macro
