@@ -114,7 +114,7 @@ private:
     for (std::size_t index = 0; index < _M_macros.size (); ++index)
       {
         pp_macro *elt = _M_macros [index];
-        uint h = std::size_t (elt->name) % _M_hash_size;
+        std::size_t h = hash_code (*elt->name) % _M_hash_size;
         elt->next = _M_base [h];
         elt->hash_code = h;
         _M_base [h] = elt;
