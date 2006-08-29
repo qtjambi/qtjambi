@@ -13,6 +13,9 @@ Qt Jambi Library
 
  - QNativePointer now supports the java.lang.String class.
 
+ - Added API to QtJambiUtils to add and remove search paths from
+   the class path file engine.
+
  - Bugfix: Auto-connections did not work for signals with zero
    arguments.
 

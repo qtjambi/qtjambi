@@ -13,6 +13,7 @@
 
 package com.trolltech.autotests;
 
+import com.trolltech.qt.QtJambiUtils;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qtest.QTestCase;
@@ -25,9 +26,9 @@ public class TestFileEngine extends QTestCase {
     {
         QFileInfo info = new QFileInfo("classpath:com/trolltech/autotests/TestClassFunctionality.jar");
         QVERIFY(info.exists());
-        
-        String classPath = System.getProperty("java.class.path");                      
-        System.setProperty("java.class.path", info.canonicalFilePath() + System.getProperty("path.separator") + classPath);
+                
+        String search_path = info.canonicalFilePath();
+        QtJambiUtils.addSearchPathForResourceEngine(search_path);
         
         QFileInfo ne_info = new QFileInfo("classpath:*#TestClassFunctionality_nosuchfile.txt");
         QVERIFY(!ne_info.exists());
@@ -145,7 +146,7 @@ public class TestFileEngine extends QTestCase {
         QVERIFY((file.permissions() & QAbstractFileEngine.ReadUserPerm) != 0);
         QCOMPARE(file.size(), 13L);
         
-        System.setProperty("java.class.path", classPath);
+        QtJambiUtils.removeSearchPathForResourceEngine(search_path);
     }
 
 
