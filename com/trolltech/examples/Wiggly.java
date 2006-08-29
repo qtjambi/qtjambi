@@ -96,7 +96,7 @@ public class Wiggly extends QDialog
 	lineEdit.setText("Hello world!");
 
 	setWindowTitle("Wiggly");
-    setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+    setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 	resize(360, 145);		
     }	
 

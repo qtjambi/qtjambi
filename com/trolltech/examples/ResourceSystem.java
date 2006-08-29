@@ -143,7 +143,7 @@ public class ResourceSystem extends QWidget
 
         setLayout(layout);
 
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         setWindowTitle("Resource System");
     }

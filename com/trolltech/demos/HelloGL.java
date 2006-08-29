@@ -287,7 +287,7 @@ public class HelloGL extends QWidget
         zSlider.setValue(0 * 16);
 
         setWindowTitle(tr("Hello GL"));
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
     public static boolean canInstantiate() {

@@ -613,7 +613,7 @@ public class Tetrix extends QWidget
         setLayout(layout);
 
         setWindowTitle("Tetrix");
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(550, 370);
     }
 

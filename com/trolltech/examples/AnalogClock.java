@@ -38,7 +38,7 @@ public class AnalogClock
         m_timer.timeout.connect(this, "update()"); 
 
         setWindowTitle("Analog clock");
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(200, 200);
     }
 

@@ -45,7 +45,7 @@ body { background: #ffffff; color: black; }</style>
             lineEdit.setText(&quot;Hello world!&quot;);
     
             setWindowTitle(&quot;Wiggly&quot;);
-        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/com/trolltech/images/logo_32.png&quot;));
+        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/com/trolltech/images/qt-logo.png&quot;));
             resize(360, 145);               
         }</pre>
 <p>In the constructor we create a wiggly widget along with a line edit, and we put the two widgets in a vertical layout. We connect the line edit's textChanged() signal to the wiggly widget's <tt>setText()</tt> slot to obtain the real time interaction with the wiggly widget. The widget's default text is &quot;Hello world!&quot;.</p>

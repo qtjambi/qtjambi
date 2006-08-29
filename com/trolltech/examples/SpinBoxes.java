@@ -40,7 +40,7 @@ public class SpinBoxes extends QWidget
 
 	setWindowTitle(tr("Spin Boxes"));
     
-    setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+    setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
     public void createSpinBoxes() {

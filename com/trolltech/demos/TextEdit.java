@@ -40,7 +40,7 @@ public class TextEdit extends QMainWindow {
     private boolean initialized = false;
 
     void init() {
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         setupFileActions();
         setupEditActions();

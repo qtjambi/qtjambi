@@ -45,7 +45,7 @@ public class Application extends QMainWindow {
         QMenuBar menuBar = new QMenuBar();
         setMenuBar(menuBar);
 
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         textEdit = new QTextEdit();
         setCentralWidget(textEdit);

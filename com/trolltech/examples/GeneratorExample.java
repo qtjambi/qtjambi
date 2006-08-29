@@ -28,7 +28,7 @@ public class GeneratorExample extends QWidget {
         
         layout.addWidget(new MyWidget(this));
         
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         
         QPushButton exit = new QPushButton("Exit");
         exit.clicked.connect(this, "close()");

@@ -84,7 +84,7 @@ public class Launcher extends QWidget {
         updateStyle(this, new Style());
 
         setWindowTitle("Qt Jambi Examples and Demos");
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         QPixmap bg = new QPixmap("classpath:com/trolltech/launcher/fadlogo.png");
         ui.description.setBackground(bg);

@@ -396,7 +396,7 @@ public class Deform extends QWidget
         super(parent);
 
         setWindowTitle("Vector deformation");
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         m_renderer = new PathDeformRenderer(this);
         m_renderer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding);

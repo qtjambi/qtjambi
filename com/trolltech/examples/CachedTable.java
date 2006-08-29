@@ -59,7 +59,7 @@ public class CachedTable extends QDialog {
         QTableView view = new QTableView();
         view.setModel(model);
         
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         submitButton = new QPushButton(tr("Submit"));
         submitButton.setDefault(true);

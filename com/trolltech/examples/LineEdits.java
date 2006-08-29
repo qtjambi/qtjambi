@@ -33,7 +33,7 @@ public class LineEdits extends QWidget {
 	echoComboBox.addItem(tr("Password"));
 	echoComboBox.addItem(tr("No Echo"));
     
-    setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+    setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
 	echoLineEdit = new QLineEdit();
 	echoLineEdit.setFocus();

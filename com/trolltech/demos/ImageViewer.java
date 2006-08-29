@@ -19,7 +19,7 @@ import com.trolltech.qt.gui.*;
 public class ImageViewer extends MainWindow {
     
     public ImageViewer() {
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/logo_32.png"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
     
     public static void main(String[] args) {
