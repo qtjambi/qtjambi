@@ -71,7 +71,7 @@ struct _Hash_string: public std::unary_function<std::size_t, pp_fast_string cons
   inline std::size_t operator () (pp_fast_string const *__s) const
   {
     char const *__ptr = __s->begin ();
-    int __size = __s->size ();
+    std::size_t __size = __s->size ();
     std::size_t __h = 0;
 
     while (--__size >= 0)
