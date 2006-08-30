@@ -275,7 +275,7 @@ public class TextEdit extends QMainWindow {
         menu.addSeparator();
 
         QPixmap pix = new QPixmap(16, 16);
-        pix.fill(new QColor(Qt.black));
+        pix.fill(QColor.black);
         actionTextColor = new QAction(new QIcon(pix), "&Color...", this);
         actionTextColor.triggered.connect(this, "textColor()");
         tb.addAction(actionTextColor);

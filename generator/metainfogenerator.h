@@ -34,6 +34,8 @@ public:
     virtual QString subDirectoryForClass(const MetaJavaClass *) const;
     virtual bool shouldGenerate(const MetaJavaClass *) const;
 
+    bool generated(const MetaJavaClass *cls) const;
+
 private:
     void writeCppFile();
     void writeHeaderFile();
@@ -44,7 +46,9 @@ private:
     void writeCustomStructors(QTextStream &s, const TypeEntry *entry);
     void writeCodeBlock(QTextStream &s, const QString &code);
     bool shouldGenerate(const TypeEntry *entry) const;
+    void buildSkipList();
 
+    QHash<QString, bool> m_skip_list;
     QString m_filenameStub;
 };
 

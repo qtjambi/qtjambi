@@ -30,6 +30,7 @@ QString MetaInfoGenerator::subDirectoryForClass(const MetaJavaClass *cls) const
 
 void MetaInfoGenerator::generate()
 {
+    buildSkipList();
     writeCppFile();
     writeHeaderFile();
 }
@@ -55,27 +56,35 @@ void MetaInfoGenerator::write(QTextStream &, const MetaJavaClass *)
     // not used
 }
 
+bool MetaInfoGenerator::generated(const MetaJavaClass *cls) const
+{
+    return (m_skip_list.value(cls->package(), true) ? 0 : 1);
+}
+
+void MetaInfoGenerator::buildSkipList()
+{
+    MetaJavaClassList classList = classes();
+    foreach (MetaJavaClass *cls, classList) {
+        if (shouldGenerate(cls))
+            m_skip_list[cls->package()] = false;        
+    }
+}
+
 void MetaInfoGenerator::writeCppFile()
 {
     TypeEntryHash entries = TypeDatabase::instance()->entries();
     TypeEntryHash::iterator it;
-
+    
     MetaJavaClassList classList = classes();
     QHash<QString, QFile *> fileHash;
-
-    QHash<QString, bool> skip_list;
-    foreach (MetaJavaClass *cls, classList) {
-        if (shouldGenerate(cls))
-            skip_list[cls->package()] = false;        
-    }
-
     foreach (MetaJavaClass *cls, classList) {
         QTextStream s;
         QFile *f = fileHash.value(cls->package(), 0);        
-        if (f == 0 && !skip_list.value(cls->package(), true)) {
+        if (f == 0 && !m_skip_list.value(cls->package(), true)) {
             QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls));
             dir.mkpath(dir.absolutePath());
 
+            m_num_generated++;
             f = new QFile(dir.absoluteFilePath(cppFilename()));
             if (!f->open(QIODevice::WriteOnly)) {
                 ReportHandler::warning(QString("failed to open file '%1' for writing")
@@ -140,15 +149,9 @@ void MetaInfoGenerator::writeHeaderFile()
     MetaJavaClassList classList = classes();
     QHash<QString, bool> fileHash;
 
-    QHash<QString, bool> skip_list;
-    foreach (MetaJavaClass *cls, classList) {
-        if (shouldGenerate(cls))
-            skip_list[cls->package()] = false;        
-    }
-
     foreach (MetaJavaClass *cls, classList) {
         bool hasGenerated = fileHash.value(cls->package(), false);
-        if (!hasGenerated && !skip_list.value(cls->package(), true)) {
+        if (!hasGenerated && !m_skip_list.value(cls->package(), true)) {
             QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls));
             dir.mkpath(dir.absolutePath());
 

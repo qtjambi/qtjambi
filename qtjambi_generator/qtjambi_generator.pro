@@ -6,8 +6,8 @@ include(../cpp/com_trolltech_tools_generator/com_trolltech_tools_generator.pri)
 INCLUDEPATH += ../generator
 INCLUDEPATH += ../common
 
-include(../../cppparser/rxx.pri)
-include(../../cppparser/rpp/rpp.pri)
+include(../generator/parser/rxx.pri)
+include(../generator/parser/rpp/rpp.pri)
 
 GENERATOR_DIR = ../generator
 

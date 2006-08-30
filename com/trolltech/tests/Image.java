@@ -122,7 +122,7 @@ public class Image extends QWidget
 	if (render_logo) {
 	    // set up painter for the logo drawing..
 	    p.setPen(Qt.NoPen);
-	    p.setBrush(new QBrush(new QColor(Qt.black)));
+	    p.setBrush(new QBrush(QColor.black));
 	    p.translate(0.5, 0.5);
 	    p.rotate(-45);
 
@@ -220,7 +220,7 @@ public class Image extends QWidget
 	QColor dark_brown = QColor.fromRgbF(0.3, 0.15, 0, coffey_alpha);
 	QColor light_brown = QColor.fromRgbF(0.66, 0.33, 0, coffey_alpha);
 	QColor highlight = QColor.fromRgbF(1, 1, 0.8, coffey_alpha);
-	QColor transparent = new QColor(Qt.transparent);
+	QColor transparent = QColor.transparent;
 	double highlight_pos = 0.4;
 	double highlight_size = 0.05;
 	
@@ -248,7 +248,7 @@ public class Image extends QWidget
 	cg.setColorAt(0.4, highlight);
 	cg.setColorAt(highlight_pos + highlight_size, light_brown);
 	cg.setColorAt(1, dark_brown);
-	p.setPen(new QPen(new QBrush(new QColor(Qt.black)), size * 0.01));
+	p.setPen(new QPen(new QBrush(QColor.black), size * 0.01));
 	p.setBrush(new QBrush(cg));
 	p.drawEllipse(coffey_bounds);
 
@@ -348,7 +348,7 @@ public class Image extends QWidget
 	
 	QPainter p = new QPainter();
     p.begin(this);
-	p.fillRect(rect(), new QBrush(new QColor(Qt.white)));
+	p.fillRect(rect(), new QBrush(QColor.white));
 // 	p.fillRect(rect(), new QBrush(Qt.CrossPattern));
 	
 	p.drawImage(50, 80, m_logo);

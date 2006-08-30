@@ -26,7 +26,7 @@ class PaintWidget extends QWidget {
     ArrayList<QPolygon> polygons = new ArrayList<QPolygon>();
     ArrayList<QColor> colors = new ArrayList<QColor>();
     QPolygon current = new QPolygon();
-    QColor m_current_color = new QColor(Qt.red);
+    QColor m_current_color = QColor.red;
 
     public PaintWidget() {
         this(0);

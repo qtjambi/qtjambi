@@ -17,7 +17,7 @@ import com.trolltech.qt.gui.*;
 
 public class FormTest extends QDialog
 {
-    private ComplexForm ui = new ComplexForm();
+    private Ui_ComplexForm ui = new Ui_ComplexForm();
 
     public FormTest() {
 	ui.setupUi(this);

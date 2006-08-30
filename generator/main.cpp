@@ -26,7 +26,7 @@
 
 void generatePriFile(const QString &base_dir, const QString &sub_dir,
                      const MetaJavaClassList &classes,
-                     const QString &metaInfoStub = QString());
+                     MetaInfoGenerator *info_generator);
 
 void dumpMetaJavaTree(const MetaJavaClassList &classes);
 void test_typeparser(const QString &signature);
@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
     if (!no_metainfo) {
         metainfo = new MetaInfoGenerator;
         generators << metainfo;
-        contexts << "MetaInfoGenerator";
+        contexts << "MetaInfoGenerator";                
     }
 
     if (build_class_list) {
@@ -198,9 +198,10 @@ int main(int argc, char *argv[])
             generator->generate();
     }
 
+    no_metainfo = metainfo == 0 || metainfo->numGenerated() == 0;
     if (!no_cpp_impl || !no_cpp_h || !no_metainfo) {
         generatePriFile(out_dir, "cpp", builder.classes(),
-                        no_metainfo ? QString() : metainfo->filenameStub());
+                        metainfo);
     }
 
     JuicDataGenerator juicg;
@@ -246,13 +247,17 @@ QFile *openPriFile(const QString &base_dir, const QString &sub_dir, const MetaJa
 
 void generatePriFile(const QString &base_dir, const QString &sub_dir,
                      const MetaJavaClassList &classes,
-                     const QString &metaInfoStub)
+                     MetaInfoGenerator *info_generator)
 {
     QHash<QString, QFile *> fileHash;
 
     foreach (const MetaJavaClass *cls, classes) {
         if (!(cls->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp))
             continue;
+
+        QString meta_info_stub = info_generator->filenameStub();
+        if (info_generator == 0 || info_generator->generated(cls) == 0)
+            meta_info_stub = QString();            
 
         QTextStream s;
 
@@ -262,18 +267,18 @@ void generatePriFile(const QString &base_dir, const QString &sub_dir,
             fileHash.insert(cls->package(), f);
 
             s.setDevice(f);
-            if (!metaInfoStub.isEmpty()) {
+            if (!meta_info_stub.isEmpty()) {
                 s << "HEADERS += $$QTJAMBI_CPP/" << cls->package().replace(".", "_") << "/"
-                  << metaInfoStub << ".h" << endl;
+                  << meta_info_stub << ".h" << endl;
             }
 
             s << "SOURCES += \\" << endl;
-            if (!metaInfoStub.isEmpty()) {
+            if (!meta_info_stub.isEmpty()) {
                 s << "        " << "$$QTJAMBI_CPP/" << cls->package().replace(".", "_")
-                  << "/" << metaInfoStub << ".cpp \\" << endl;
+                  << "/" << meta_info_stub << ".cpp \\" << endl;
+                s << "     $$QTJAMBI_CPP/" << cls->package().replace(".", "_")
+                  << "/qtjambi_libraryinitializer.cpp \\" << endl;
             }
-            s << "     $$QTJAMBI_CPP/" << cls->package().replace(".", "_")
-              << "/qtjambi_libraryinitializer.cpp \\" << endl;
         } else {
             s.setDevice(f);
         }
