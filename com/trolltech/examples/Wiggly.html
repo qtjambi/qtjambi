@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <body>
 <h1 align="center">Wiggly Example<br /><small></small></h1>
 <p>The Wiggly example shows how to animate a widget using QBasicTimer and timerEvent(). In addition, the example demonstrates how to use QFontMetrics to determine the size of text on screen.</p>
-<p align="center"><img src="com/trolltech/images/wiggly-example.png" alt="Screenshot of the Wiggly example" /></p><p>QBasicTimer is a low-level class for timers. Unlike QTimer, QBasicTimer doesn't inherit from QObject; instead of emitting a timeout() signal when a certain amount of time has passed, it sends a QTimerEvent to a QObject of our choice. This makes QBasicTimer a more lightweight alternative to QTimer. Qt's built-in widgets use it internally, and it is provided in Qt's API for highly-optimized applications (e.g., Qtopia Core applications).</p>
+<p align="center"><img src="classpath:com/trolltech/images/wiggly-example.png" alt="Screenshot of the Wiggly example" /></p><p>QBasicTimer is a low-level class for timers. Unlike QTimer, QBasicTimer doesn't inherit from QObject; instead of emitting a timeout() signal when a certain amount of time has passed, it sends a QTimerEvent to a QObject of our choice. This makes QBasicTimer a more lightweight alternative to QTimer. Qt's built-in widgets use it internally, and it is provided in Qt's API for highly-optimized applications (e.g., Qtopia Core applications).</p>
 <p>The example consists of two classes:</p>
 <ul>
 <li><tt>WigglyWidget</tt> is the custom widget displaying the text in a wiggly line.</li>
@@ -45,7 +45,7 @@ body { background: #ffffff; color: black; }</style>
             lineEdit.setText(&quot;Hello world!&quot;);
     
             setWindowTitle(&quot;Wiggly&quot;);
-        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/com/trolltech/images/qt-logo.png&quot;));
+        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
             resize(360, 145);               
         }</pre>
 <p>In the constructor we create a wiggly widget along with a line edit, and we put the two widgets in a vertical layout. We connect the line edit's textChanged() signal to the wiggly widget's <tt>setText()</tt> slot to obtain the real time interaction with the wiggly widget. The widget's default text is &quot;Hello world!&quot;.</p>

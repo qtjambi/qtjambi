@@ -1,6 +1,7 @@
 <typesystem package="com.trolltech.qt.core" default-superclass="com.trolltech.qt.QtObject">
   <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
+    com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
   </inject-code>
 
   <rejection class="*" function-name="d_func"/>
@@ -1738,10 +1739,7 @@
     </modify-function>
   </object-type>
 
-  <object-type name="QEvent">
-    <include file-name="qevent.h" location="global"/>
-    
-  </object-type>
+  <object-type name="QEvent"/>
 
   <object-type name="QDataStream" memory-managed="yes">  
     <modify-function signature="operator&gt;&gt;(char *&amp;)">

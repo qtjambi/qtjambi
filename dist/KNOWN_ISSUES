@@ -1,5 +1,9 @@
 This is list of known issues for Qt Jambi. 
 
+ - If you start a main window application from the demo launcher on Mac OSX, 
+   and then close the window, the menu bar may not be properly removed. If
+   you click on one of the menus, the application will crash.
+
  - The tr() method in QObject is currently only a dummy implementation
    and will always return you an exact copy of the string you pass in.
    Internationalization support has not been implemented yet in Qt 

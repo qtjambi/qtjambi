@@ -60,3 +60,31 @@ Building the Qt Jambi package
 
 
 
+--------------------------------------------------------------------------------
+Building the Qt Jambi Webstart
+
+ - This sucks a little bit...
+
+ - First build the linux binary. That can be done using 
+   scripts/build_webstart_jar.sh
+   This requires a Qt Jambi package, on a webserver somewhere, currently
+   http://anarki/~gunnar/packages
+
+ - Upload the webstart linux jar file to a webserver somewhere
+
+ - Run 
+   scripts/make_jar.bat
+   on windows to build the packages. This requires jambi packages on 
+   a webserver
+
+ - Update the qtjambi.jnlp file with the url of the webserver you're
+   putting it on. Its in the 
+   <jnlp codebase="http://anarki.troll.no/~gunnar/webstart"
+   html tag.
+
+ - You should be good to go...
+
+ - If you have problems, you can specify 
+   <property name="com.trolltech.qt.verbose-loading" value="true"/>
+   inside a resource tag
+   

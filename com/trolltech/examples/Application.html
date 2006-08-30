@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <body>
 <h1 align="center">Application Example<br /><small></small></h1>
 <p>The Application example shows how to implement a standard GUI application with menus, toolbars, and a status bar. The example itself is a simple text editor program built around QTextEdit.</p>
-<p align="center"><img src="com/trolltech/images/application.png" alt="Screenshot of the Application example" /></p><p>Nearly all of the code for the Application example is in the <tt>MainWindow</tt> class, which inherits QMainWindow. QMainWindow provides the framework for windows that have menus, toolbars, dock windows, and a status bar. The application provides <b>File</b>, <b>Edit</b>, and <b>Help</b> entries in the menu bar, with the following popup menus:</p>
-<p align="center"><img src="com/trolltech/images/application-menus.png" alt="The Application example's menu system" /></p><p>The status bar at the bottom of the main window shows a description of the menu item or toolbar button under the cursor.</p>
+<p align="center"><img src="classpath:com/trolltech/images/application.png" alt="Screenshot of the Application example" /></p><p>Nearly all of the code for the Application example is in the <tt>MainWindow</tt> class, which inherits QMainWindow. QMainWindow provides the framework for windows that have menus, toolbars, dock windows, and a status bar. The application provides <b>File</b>, <b>Edit</b>, and <b>Help</b> entries in the menu bar, with the following popup menus:</p>
+<p align="center"><img src="classpath:com/trolltech/images/application-menus.png" alt="The Application example's menu system" /></p><p>The status bar at the bottom of the main window shows a description of the menu item or toolbar button under the cursor.</p>
 <p>To keep the example simple, recently opened files aren't shown in the <b>File</b> menu, even though this feature is desired in 90% of applications. The Recent Files example shows how to implement this. Furthermore, this example can only load one file at a time. The SDI and MDI examples shows how to lift these restrictions.</p>
 <a name="importing-the-qt-classes"></a>
 <h2>Importing the Qt Classes</h2>
@@ -28,16 +28,16 @@ body { background: #ffffff; color: black; }</style>
 <h2>Application Class Implementation</h2>
 <p>The entire example is implemented in a single subclass of QMainWindow:</p>
 <pre>&nbsp;   public class Application extends QMainWindow {
-        
+    
         private String curFile;
         private QTextEdit textEdit;
         private QMenu fileMenu;
         private QMenu editMenu;
         private QMenu helpMenu;
-        
+    
         private QToolBar fileToolBar;
         private QToolBar editToolBar;
-        
+    
         private QAction newAct;
         private QAction openAct;
         private QAction saveAct;
@@ -48,7 +48,7 @@ body { background: #ffffff; color: black; }</style>
         private QAction pasteAct;
         private QAction aboutAct;
         private QAction aboutQtAct;
-        
+    
         private String rsrcPath = &quot;classpath:com/trolltech/images&quot;;</pre>
 <p>We declare various variables for widgets, menus, toolbars, and actions that will be explained later.</p>
 <p>In the constructor, we start by creating a menu bar and setting it as the menu bar for the main window:</p>
@@ -120,7 +120,7 @@ body { background: #ffffff; color: black; }</style>
 <p>In <tt>saveAs()</tt>, we start by popping up a QFileDialog asking the user to provide a name. If the user clicks <b>Cancel</b>, the returned file name is empty, and we do nothing.</p>
 <pre>&nbsp;       public void about()
         {
-            QMessageBox.about(this, 
+            QMessageBox.about(this,
                              tr(&quot;About Application&quot;),
                              tr(&quot;The &lt;b&gt;Application&lt;/b&gt; example demonstrates how to &quot; +
                                 &quot;write modern GUI applications using Qt, with a menu bar, &quot; +
@@ -250,7 +250,7 @@ body { background: #ffffff; color: black; }</style>
                 QMessageBox.warning(this, tr(&quot;Application&quot;), String.format(tr(&quot;Cannot write file %1$s:\n%2$s.&quot;), fileName, file.errorString()));
                 return false;
             }
-            
+    
             QTextStream out = new QTextStream(file);
             QApplication.setOverrideCursor(new QCursor(Qt.WaitCursor));
             out.operator_shift_left(textEdit.toPlainText());
@@ -267,7 +267,7 @@ body { background: #ffffff; color: black; }</style>
             curFile = fileName;
             textEdit.document().setModified(false);
             setWindowModified(false);
-            
+    
             String shownName;
             if (curFile.length() == 0)
                 shownName = &quot;untitled.txt&quot;;
@@ -287,10 +287,10 @@ body { background: #ffffff; color: black; }</style>
 <p>The <tt>main()</tt> function for this application is typical of applications that contain one main window:</p>
 <pre>&nbsp;       public static void main(String[] args) {
             QApplication.initialize(args);
-            
+    
             Application application = new Application();
             application.show();
-            
+    
             QApplication.exec();
         }</pre>
 </body>

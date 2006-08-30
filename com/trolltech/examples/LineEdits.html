@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <body>
 <h1 align="center">Line Edits Example<br /><small></small></h1>
 <p>The Line Edits example demonstrates the many ways that QLineEdit can be used, and shows the effects of various properties and validators on the input and output supplied by the user.</p>
-<p align="center"><img src="com/trolltech/images/lineedits-example.png" /></p><p>The example consists of a single <tt>LineEdits</tt> class, containing a selection of line edits with different input constraints and display properties that can be changed by selecting items from comboboxes. Presenting these together helps developers choose suitable properties to use with line edits, and makes it easy to compare the effects of each validator on user input.</p>
+<p align="center"><img src="classpath:com/trolltech/images/lineedits-example.png" /></p><p>The example consists of a single <tt>LineEdits</tt> class, containing a selection of line edits with different input constraints and display properties that can be changed by selecting items from comboboxes. Presenting these together helps developers choose suitable properties to use with line edits, and makes it easy to compare the effects of each validator on user input.</p>
 <a name="lineedits-class-implementation"></a>
 <h2>LineEdits Class Implementation</h2>
 <p>The <tt>LineEdits</tt> class inherits QWidget. Apart from a constructor and several slots (shown later), it contains a number of private variables that are accessed from various places in the class:</p>
@@ -38,7 +38,7 @@ body { background: #ffffff; color: black; }</style>
             echoComboBox.addItem(tr(&quot;Password&quot;));
             echoComboBox.addItem(tr(&quot;No Echo&quot;));
         
-        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/com/trolltech/images/qt-logo.png&quot;));
+        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
     
             echoLineEdit = new QLineEdit();
             echoLineEdit.setFocus();</pre>

@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <body>
 <h1 align="center">Spin Boxes Example<br /><small></small></h1>
 <p>The Spin Boxes example shows how to use the many different types of spin boxes available in Qt, from a simple QSpinBox widget to more complex editors like the QDateTimeEdit widget.</p>
-<p align="center"><img src="com/trolltech/images/spinboxes-example.png" /></p><p>The example consists of a single <tt>Window</tt> class that is used to display the different spin box-based widgets available with Qt.</p>
+<p align="center"><img src="classpath:com/trolltech/images/spinboxes-example.png" /></p><p>The example consists of a single <tt>Window</tt> class that is used to display the different spin box-based widgets available with Qt.</p>
 <a name="window-class-implementation"></a>
 <h2>Window Class Implementation</h2>
 <p>The <tt>Window</tt> class inherits QWidget and contains two slots that are used to provide interactive features:</p>
@@ -45,7 +45,7 @@ body { background: #ffffff; color: black; }</style>
     
             setWindowTitle(tr(&quot;Spin Boxes&quot;));
         
-        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/com/trolltech/images/qt-logo.png&quot;));
+        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
         }</pre>
 <p>We use the layout to manage the arrangement of the window's child widgets, and change the window title.</p>
 <p>The <tt>createSpinBoxes()</tt> function constructs a QGroupBox and places three QSpinBox widgets inside it with descriptive labels to indicate the types of input they expect.</p>

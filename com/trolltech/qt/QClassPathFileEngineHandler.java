@@ -469,26 +469,26 @@ class QClassPathEngine extends QAbstractFileEngine
     public final static String FileNameDelimRegExp = "\\x23";
     public final static String FileNameIndicator = "classpath";
     public final static String FileNamePrefix = FileNameIndicator + ":";
-    
+
     private static HashSet<String> classpaths;
 
     private String m_fileName = "";
     private String m_baseName = "";
     private String m_selectedSource = "*";
     private List<QAbstractFileEngine> m_engines = new LinkedList<QAbstractFileEngine>();
-    
+
     public QClassPathEngine(String fileName)
     {
         setFileName(fileName);
     }
-    
+
     public static void addSearchPath(String path)
     {
         if (classpaths == null)
             findClassPaths();
         classpaths.add(path);
     }
-    
+
     public static void removeSearchPath(String path)
     {
         if (classpaths == null)
@@ -516,8 +516,8 @@ class QClassPathEngine extends QAbstractFileEngine
         if (m_selectedSource.equals("*")) {
             if (classpaths == null)
                 findClassPaths();
-            
-            for (String path : classpaths) {                
+
+            for (String path : classpaths) {
                 addFromPath(path, m_baseName);
             }
         } else {
@@ -794,7 +794,7 @@ class QClassPathEngine extends QAbstractFileEngine
     private void addFromPath(String path, String fileName)
     {
         String qtified_path = path.replace(File.separator, "/");
-        
+
         QFileInfo file = new QFileInfo(qtified_path);
         if (file.isDir()
             && file.exists()
@@ -826,27 +826,22 @@ class QClassPathEngine extends QAbstractFileEngine
 
         m_engines.add(engine);
     }
-    
+
     private static void findClassPaths() {
         classpaths = new HashSet<String>();
-        
+
         String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
         for (String p : paths)
             classpaths.add(p);
-        
+
         try {
             Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
             while (urls.hasMoreElements()) {
                 URL url = (URL) urls.nextElement();
                 if (url.getProtocol().equals("jar")) {
-                    String f = url.getFile();
+                    String f = new URL(url.getFile()).getFile();
                     int bang = f.indexOf("!");
-                    String jarFile = null;
-                    if (f.startsWith("file:/"))
-                        jarFile = f.substring(6, bang);
-                    else if (f.startsWith("file:")) // Need this to support some broken url's that show up every now and then...
-                        jarFile = f.substring(5, bang);
-                    jarFile = jarFile.replace("%20", " ");
+                    String jarFile = f.substring(0, bang).replace("%20", " ");
                     classpaths.add(jarFile);
                 }
             }
@@ -860,12 +855,12 @@ class QClassPathEngine extends QAbstractFileEngine
 public class QClassPathFileEngineHandler extends QAbstractFileEngineHandler
 {
     static List<QClassPathEngine> engines = new LinkedList<QClassPathEngine>();
-    
+
 
     public QClassPathFileEngineHandler()
     {
         super();
-    }       
+    }
 
     public QAbstractFileEngine create(String fileName)
     {

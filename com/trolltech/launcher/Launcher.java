@@ -64,9 +64,9 @@ public class Launcher extends QWidget {
     private Ui_Launcher ui = new Ui_Launcher();
     private LaunchableListModel m_model = new LaunchableListModel();
     private Launchable m_current;
-    
+
     private QProcess assistantProcess;
-    
+
     private static QPalette systemPalette;
 
     public Launcher() {
@@ -91,6 +91,9 @@ public class Launcher extends QWidget {
         ui.source.setBackground(bg);
 
         ui.description.setHtml(loadDefaultText());
+
+        if (System.getProperty("com.trolltech.launcher.webstart") != null)
+            ui.button_assistant.hide();
     }
 
     public boolean eventFilter(QObject object, QEvent e) {
@@ -133,7 +136,7 @@ public class Launcher extends QWidget {
                     QStyle style = QStyleFactory.create(button.text());
                     QApplication.setStyle(style);
                     if (button.text().equals(styleForCurrentSystem()))
-                        QApplication.setPalette(systemPalette);                        
+                        QApplication.setPalette(systemPalette);
                     else
                         QApplication.setPalette(style.standardPalette());
                 }
@@ -151,7 +154,7 @@ public class Launcher extends QWidget {
         assistantProcess.finished.connect(this, "assistantFinished()");
 
         if (QSysInfo.macVersion() > 0)
-            assistantProcess.start("bin/assistant.app/Contents/MacOS/ assistant", arguments);
+            assistantProcess.start("bin/assistant.app/Contents/MacOS/assistant", arguments);
         else
             assistantProcess.start("assistant", arguments);
 
@@ -310,7 +313,6 @@ public class Launcher extends QWidget {
 
     public static void start_qt(boolean debug)
     {
-
         File f_out = null;
         File f_err = null;
 
@@ -339,11 +341,17 @@ public class Launcher extends QWidget {
 
     public static void main(String args[]) {
         QApplication.initialize(args);
-   
+
         systemPalette = QApplication.palette();
-        
+
         Launcher l = new Launcher();
         l.show();
         QApplication.exec();
+
+
+        l.dispose();
+        QApplication.instance().dispose();
+
+        System.exit(0);
     }
 }

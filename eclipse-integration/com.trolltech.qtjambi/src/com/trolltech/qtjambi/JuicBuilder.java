@@ -185,7 +185,6 @@ public class JuicBuilder extends IncrementalProjectBuilder {
                         projuiced_files_in.create(true, true, null);
                         
                         ResourceAttributes attributes = projuiced_files_in.getResourceAttributes();
-                        attributes.setReadOnly(true);
                         projuiced_files_in.setResourceAttributes(attributes);
                         
                         IClasspathEntry[] new_classpath = newSourceEntry(jpro.getRawClasspath(), projuiced_files_in.getFullPath());                          

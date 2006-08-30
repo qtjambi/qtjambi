@@ -192,7 +192,7 @@ public class ResourceSystem extends QWidget
         }
 
         String searchPath = null;
-        if (m_browse_class_path) {   
+        if (m_browse_class_path) {
             if (m_jar_name == null) {
                 QtJambiUtils.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());
                 m_jar_name = jarInfo.canonicalFilePath();
@@ -224,6 +224,12 @@ public class ResourceSystem extends QWidget
             m_shown = true;
         }
     }
+
+    public static boolean canInstantiate()
+    {
+        return System.getProperty("com.trolltech.launcher.webstart") == null;
+    }
+
 
     public static void main(String[] args)
     {

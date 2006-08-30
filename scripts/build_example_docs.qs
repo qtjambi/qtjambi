@@ -36,7 +36,7 @@ for (var i=0; i<input.length; ++i) {
     Process.execute([command.p4, "edit", target]);
     Process.execute([command.cp, source, target]);
 
-    replace_in_file(target, "images/", "com/trolltech/images/");
+    replace_in_file(target, "images/", "classpath:com/trolltech/images/");
 
     print("updated: " + target);
 }

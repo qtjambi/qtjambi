@@ -47,8 +47,9 @@ public class Utilities {
     public static boolean loadLibrary(String lib) {
         try {
             try {
-                System.loadLibrary(stripLibraryName(lib));
-                if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") in standard way");
+                String stripped = stripLibraryName(lib);
+                System.loadLibrary(stripped);
+                if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") in standard way as " + stripped);
                 return true;
             } catch (Error e) {
                 if (VERBOSE_LOADING) e.printStackTrace();
@@ -72,7 +73,7 @@ public class Utilities {
             // If not in the library path, try to search in the classpath,
             // including .jar files and unpack to a temp directory, then load
             // from there.
-            URL libUrl = Utilities.class.getClassLoader().getResource(lib);
+            URL libUrl = Thread.currentThread().getContextClassLoader().getResource(lib);
             if (libUrl == null)
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
 
@@ -151,8 +152,22 @@ public class Utilities {
         // Strip away "lib" prefix
         if (operatingSystem != OperatingSystem.Windows)
             lib = lib.substring(3);
+
+        int dot = -1;
+
+        switch (operatingSystem) {
+        case Windows:
+            dot = lib.indexOf(".dll");
+            break;
+        case Linux:
+            dot = lib.indexOf(".so");
+            break;
+        case MacOSX:
+            dot = lib.indexOf("."); // makes a fair attemt at matching /.[0-9]*.(jni)|(dy)lib/
+            break;
+        }
+
         // Strip away the library postfix...
-        int dot = lib.lastIndexOf('.');
         return lib.substring(0, dot);
     }
 
@@ -167,8 +182,8 @@ public class Utilities {
             return "lib" + lib + ".4.dylib";
         case Linux:
             if (configuration == Configuration.Debug)
-                return "lib" + lib + "_debug.4.so";
-            return "lib" + lib + ".4.so";
+                return "lib" + lib + "_debug.so.4";
+            return "lib" + lib + ".so.4";
         }
         throw new RuntimeException("Unreachable statement");
     }
@@ -182,15 +197,18 @@ public class Utilities {
             for (String s : libs)
                 list.add(s);
         } else {
-            InputStream in = Utilities.class.getClassLoader().getResourceAsStream("qt_system_libs");            
+            InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("qt_system_libs");
+            if (in == null && VERBOSE_LOADING)
+                System.out.println("No 'qt_system_libs' file");
+
             if (in != null) {
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
                 // may return null, but that will be covered by the catch below...
                 try {
                     String s = null;
                     while ((s = r.readLine()) != null)
-                        list.add(s);                    
-                } catch (Exception e) { }
+                        list.add(s);
+                } catch (Exception e) { if (VERBOSE_LOADING) e.printStackTrace(); }
             }
         }
         return list;

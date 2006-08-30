@@ -297,6 +297,10 @@ function compileNativeLibraries() {
     var make = [command.make];
     if (option.teambuilder)
         make.push("-j20");
+
+    if (os_name() == OS_NAME_WINDOWS)
+        make.push("release");
+
     execute(make);
 }
 
@@ -453,6 +457,7 @@ function moveFiles() {
                  "dist/KNOWN_ISSUES",
                  "dist/LICENSE",
                  "dist/README",
+                 "dist/changes-" + version
     ];
 
     if (os_name() == OS_NAME_MACOSX) {
@@ -495,6 +500,7 @@ function moveFiles() {
  */
 function removeFiles() {
     var dirs = [
+                "autotestlib",
                 "com/trolltech/autotests",
                 "com/trolltech/benchmarks",
                 "com/trolltech/qt",
@@ -506,6 +512,7 @@ function removeFiles() {
                 "dist",
                 "doc/config",
                 "doc/src",
+                "eclipse-integration",
                 "generator",
                 "juic",
                 "launcher_launcher",
@@ -518,6 +525,7 @@ function removeFiles() {
                 "qtjambi_opengl",
                 "qtjambi_sql",
                 "scripts",
+                "uic4",
                 "whitepaper"
     ];
 
@@ -555,7 +563,7 @@ function createBundle() {
     dir.cdUp();
     dir.setCurrent();
 
-    var packageName = "qt-jambi-" + option.packageName + "-" + version;
+    var packageName = "qtjambi-" + option.packageName + "-" + version;
 
     execute([command.mv, version, packageName]);
 

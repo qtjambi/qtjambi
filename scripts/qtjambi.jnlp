@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<jnlp codebase="http://anarki.troll.no/~gunnar/webstart"
+      href="qtjambi.jnlp">
+
+
+  <information>
+    <title>Qt Jambi Demo</title>
+    <vendor>Trolltech ASA</vendor>
+    <homepage>http://www.trolltech.com</homepage>
+    <description>Qt Jambi Technology Preview Webstart Demo</description>
+    <description kind="short"></description>
+  </information>
+
+
+  <resources>
+    <j2se version="1.5+"/>
+    <jar href="qtjambi-launcher.jar" main="true"/>
+    <jar href="qtjambi.jar"/>
+    <property name="com.trolltech.launcher.webstart" value="true"/>
+  </resources>
+
+
+  <resources os="Windows" arch="x86">
+    <j2se version="1.5+"/>
+    <nativelib href="qtjambi-win32.jar"/>
+    <jar href="qtjambi-win32.jar"/>
+  </resources>
+
+  <resources os="Linux" arch="i386">
+    <j2se version="1.5+"/>
+    <nativelib href="qtjambi-linux.jar"/>
+    <jar href="qtjambi-linux.jar"/>
+  </resources>
+
+
+  <application-desc main-class="com.trolltech.launcher.Launcher"/>
+
+
+  <security>
+    <all-permissions/>
+  </security>
+
+</jnlp>

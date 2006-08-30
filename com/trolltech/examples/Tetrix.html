@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <body>
 <h1 align="center">Tetrix Example<br /><small></small></h1>
 <p>The Tetrix example is a Qt version of the classic Tetrix game.</p>
-<p align="center"><img src="com/trolltech/images/tetrix-example.png" /></p><p>The object of the game is to stack pieces dropped from the top of the playing area so that they fill entire rows at the bottom of the playing area.</p>
+<p align="center"><img src="classpath:com/trolltech/images/tetrix-example.png" /></p><p>The object of the game is to stack pieces dropped from the top of the playing area so that they fill entire rows at the bottom of the playing area.</p>
 <p>When a row is filled, all the blocks on that row are removed, the player earns a number of points, and the pieces above are moved down to occupy that row. If more than one row is filled, the blocks on each row are removed, and the player earns extra points.</p>
 <p>The <b>Left</b> cursor key moves the current piece one space to the left, the <b>Right</b> cursor key moves it one space to the right, the <b>Up</b> cursor key rotates the piece counter-clockwise by 90 degrees, and the <b>Down</b> cursor key rotates the piece clockwise by 90 degrees.</p>
 <p>To avoid waiting for a piece to fall to the bottom of the board, press <b>D</b> to immediately move the piece down by one row, or press the <b>Space</b> key to drop it as close to the bottom of the board as possible.</p>
@@ -78,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
             setLayout(layout);
     
             setWindowTitle(&quot;Tetrix&quot;);
-            setWindowIcon(new QIcon(&quot;classpath:com/trolltech/com/trolltech/images/qt-logo.png&quot;));
+            setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
             resize(550, 370);
         }</pre>
 <p>Finally, we set the grid layout on the widget, give the window a title, and resize it to an appropriate size.</p>

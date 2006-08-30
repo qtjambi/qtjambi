@@ -87,7 +87,8 @@ public class FormWizard extends Wizard implements INewWizard
                     }
                     
                     try {
-                        folder.create(true, true, null);
+                        if (!folder.exists()) 
+                            folder.create(true, true, null);
                     } catch (CoreException e) {
                         ErrorReporter.reportError(e, "Couldn't create folder for form: " + folder.getLocation().toOSString());
                     }
