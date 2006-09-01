@@ -209,47 +209,45 @@ public class TestClassFunctionality extends QTestCase
         QVERIFY(receiver.paintRectMatched);
         QCOMPARE(receiver.paintEventType, QEvent.Paint);
         
-        String[] expected = new String[27];
-        int i = 0;
-        expected[i++] = "com.trolltech.qt.gui.QSizeGrip";
-        expected[i++] = "com.trolltech.qt.gui.QGridLayout";
-        expected[i++] = "com.trolltech.qt.gui.QDirModel";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QAction";
-        expected[i++] = "com.trolltech.qt.gui.QListView";
-        expected[i++] = "com.trolltech.qt.gui.QTreeView";
-        expected[i++] = "com.trolltech.qt.gui.QToolButton";
-        expected[i++] = "com.trolltech.qt.gui.QToolButton";
-        expected[i++] = "com.trolltech.qt.gui.QToolButton";
-        expected[i++] = "com.trolltech.qt.gui.QToolButton";
-        expected[i++] = "com.trolltech.qt.gui.QToolButton";
-        expected[i++] = "com.trolltech.qt.gui.QLabel";
-        expected[i++] = "com.trolltech.qt.gui.QLabel";
-        expected[i++] = "com.trolltech.qt.gui.QLabel";
-        expected[i++] = "com.trolltech.qt.gui.QPushButton";
-        expected[i++] = "com.trolltech.qt.gui.QPushButton";
-        expected[i++] = "com.trolltech.qt.gui.QComboBox";
-        expected[i++] = "com.trolltech.qt.gui.QLineEdit";
-        expected[i++] = "com.trolltech.qt.gui.QComboBox";
-                        
+        String[] expected = {
+                "com.trolltech.qt.gui.QSizeGrip", 
+                "com.trolltech.qt.gui.QGridLayout",
+                "com.trolltech.qt.gui.QDirModel",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QListView",
+                "com.trolltech.qt.gui.QTreeView",
+                "com.trolltech.qt.gui.QToolButton",
+                "com.trolltech.qt.gui.QToolButton",
+                "com.trolltech.qt.gui.QToolButton",
+                "com.trolltech.qt.gui.QToolButton",
+                "com.trolltech.qt.gui.QToolButton",
+                "com.trolltech.qt.gui.QLabel",
+                "com.trolltech.qt.gui.QLabel",
+                "com.trolltech.qt.gui.QLabel",
+                "com.trolltech.qt.gui.QDialogButtonBox",
+                "com.trolltech.qt.gui.QComboBox",
+                "com.trolltech.qt.gui.QLineEdit",
+                "com.trolltech.qt.gui.QComboBox" };
+                                
         QFileDialog d = new QFileDialog();
         children = d.children();
-        
+                
         QCOMPARE(children.size(), expected.length);
         
-        i = 0;
+        int i = 0;
         for (QObject c : children) {
             QCOMPARE(c.getClass().getName(), expected[i++]);
             
             // Test one of them with instanceof, just to be on the safe side
-            if (i == 26) {
+            if (i == 25) {
                 QVERIFY(c instanceof QLineEdit);
                 
                 QLineEdit le = (QLineEdit) c;
