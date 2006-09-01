@@ -576,61 +576,6 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
     }
 }
 
-void generateInitializer(QTextStream &s, const QString &package, CodeSnip::Position pos)
-{
-    QList<CodeSnip> snips =
-        ((TypeSystemTypeEntry *) TypeDatabase::instance()->findType(package))->snips;
-
-    foreach (const CodeSnip &snip, snips)
-        if (snip.position == pos)
-            s << snip.code;
-}
-
-void JavaGenerator::generate()
-{
-    Generator::generate();
-
-    // Generate library constructor for each package
-    QHash<QString, bool> generatedHash;
-    foreach (MetaJavaClass *cls, classes()) {
-        if (!shouldGenerate(cls))
-            continue;
-
-        if (!generatedHash.value(cls->package(), false)) {
-            generatedHash.insert(cls->package(), true);
-
-            QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls));
-            dir.mkpath(dir.absolutePath());
-
-            QFile f(dir.absoluteFilePath("QtJambi_LibraryInitializer.java"));
-            if (!f.open(QIODevice::WriteOnly)) {
-                ReportHandler::warning(QString("failed to open file '%1' for writing")
-                    .arg(f.fileName()));
-                return;
-            }
-
-            QTextStream s(&f);
-            s << "package " << cls->package() << ";" << endl << endl
-              << "class QtJambi_LibraryInitializer" << endl
-              << "{" << endl
-              << "    static {" << endl;
-
-            generateInitializer(s, cls->package(), CodeSnip::Beginning);
-
-            s << "        com.trolltech.qt.Utilities.loadJambiLibrary(\""
-              << cls->package().replace(".", "_") << "\");" << endl
-              << "        __qt_initLibrary();" << endl;
-
-            generateInitializer(s, cls->package(), CodeSnip::End);
-
-            s << "    }" << endl
-              << "    private native static void __qt_initLibrary();" << endl
-              << "    static void init() { };" << endl
-              << "}" << endl << endl;
-        }
-    }
-}
-
 void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 {
     ReportHandler::debugSparse("Generating class: " + java_class->name());

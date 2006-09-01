@@ -19,6 +19,16 @@
 class MetaInfoGenerator : public Generator
 {
 public:
+    enum GenerationFlags {
+        GeneratedJavaClasses = 0x1,
+        GeneratedMetaInfo = 0x2
+    };
+
+    enum OutputDirectoryType {
+        CppDirectory,
+        JavaDirectory
+    };
+
     MetaInfoGenerator();
 
     virtual void generate();
@@ -31,14 +41,18 @@ public:
     QString headerFilename() const { return filenameStub() + ".h"; }
     QString cppFilename() const { return filenameStub() + ".cpp"; }
 
-    virtual QString subDirectoryForClass(const MetaJavaClass *) const;
+    virtual QString subDirectoryForClass(const MetaJavaClass *, OutputDirectoryType type) const;
+    virtual QString subDirectoryForPackage(const QString &package, OutputDirectoryType type) const;
     virtual bool shouldGenerate(const MetaJavaClass *) const;
 
     bool generated(const MetaJavaClass *cls) const;
+    bool generatedJavaClasses(const QString &package) const;
+    bool generatedMetaInfo(const QString &package) const;
 
 private:
     void writeCppFile();
     void writeHeaderFile();
+    void writeLibraryInitializers();
     void writeInclude(QTextStream &s, const Include &inc);
     void writeIncludeStatements(QTextStream &s, const MetaJavaClassList &classList, const QString &package);
     void writeInitializationFunctionName(QTextStream &s);
@@ -48,8 +62,10 @@ private:
     bool shouldGenerate(const TypeEntry *entry) const;
     void buildSkipList();
 
-    QHash<QString, bool> m_skip_list;
+    QHash<QString, int> m_skip_list;
     QString m_filenameStub;
+
+    QHash<OutputDirectoryType, QString> m_out_dir;
 };
 
 #endif // METAINFOGENERATOR_H

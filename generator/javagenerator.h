@@ -72,8 +72,6 @@ public:
                && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateJava);
     }
 
-    virtual void generate();
-
 private:
     QString subDirectoryForPackage(const QString &package) const { return QString(package).replace(".", "/"); }
 

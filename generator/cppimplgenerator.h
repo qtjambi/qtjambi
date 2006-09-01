@@ -120,8 +120,6 @@ public:
 
     QString translateType(const MetaJavaType *java_type) const;
 
-    virtual void generate();
-
 };
 
 #endif // CPPIMPLGENERATOR_H

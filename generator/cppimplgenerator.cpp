@@ -1100,49 +1100,6 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
     s << endl << endl;
 }
 
-void CppImplGenerator::generate()
-{
-    CppGenerator::generate();
-
-    // Generate library constructor for each package
-    QHash<QString, bool> generatedHash;
-    QHash<QString, QString> initializers;
-    foreach (MetaJavaClass *cls, classes()) {
-        if (!shouldGenerate(cls))
-            continue;
-
-        if (!generatedHash.value(cls->package(), false)) {
-            generatedHash.insert(cls->package(), true);
-
-            initializers[subDirectoryForClass(cls)] = cls->package();
-        }
-    }
-
-    // Write out the library initializers...
-    for (QHash<QString, QString>::const_iterator it = initializers.begin();
-         it != initializers.end(); ++it) {
-        QDir dir(outputDirectory() + QString("/") + it.key());
-        dir.mkpath(dir.absolutePath());
-        QFile f(dir.absoluteFilePath("qtjambi_libraryinitializer.cpp"));
-        if (!f.open(QIODevice::WriteOnly)) {
-            ReportHandler::warning(QString("failed to open file '%1' for writing")
-                                   .arg(f.fileName()));
-            return;
-        }
-
-        QString signature = jni_function_signature(it.value(), "QtJambi_LibraryInitializer",
-                                                   "__qt_initLibrary", "void");
-        QTextStream s(&f);
-        s << "#include \"metainfo.h\"" << endl
-          << "#include \"qtjambi_global.h\"" << endl << endl
-          << signature << "(JNIEnv *, jclass)" << endl
-          << "{" << endl
-          << "    __metainfo_init();" << endl
-          << "}" << endl << endl;
-    }
-}
-
-
 void CppImplGenerator::writeAssignment(QTextStream &s, const QString &destName, const QString &srcName,
                                        const MetaJavaType *java_type)
 {
