@@ -40,6 +40,7 @@ HEADERS += \
         metajava.h \
         metajavabuilder.h \
         typesystem.h \
+        qdocgenerator.h \
 
 SOURCES += \
 	cppgenerator.cpp \
@@ -57,6 +58,7 @@ SOURCES += \
         metainfogenerator.cpp \
         metajava.cpp \
         metajavabuilder.cpp \
+        qdocgenerator.cpp \
 
 QT = core xml
 

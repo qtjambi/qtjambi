@@ -56,7 +56,11 @@ public:
     bool hasDefaultConstructor(const MetaJavaType *type);
 
     void retrieveModifications(const MetaJavaFunction *f, const MetaJavaClass *java_class,
-        QHash<int, bool> *disabled_params, int *exclude_attributes, int *include_attributes) const;
+        QHash<int, bool> *disabled_params, uint *exclude_attributes, uint *include_attributes) const;
+    QString functionSignature(const MetaJavaFunction *java_function,
+        uint included_attributes, uint excluded_attributes);
+    void setupForFunction(const MetaJavaFunction *java_function, uint *included_attributes, uint *excluded_attributes,
+        QHash<int, bool> *disabled_params) const;
 
     virtual QString subDirectoryForClass(const MetaJavaClass *java_class) const
     { return subDirectoryForPackage(java_class->package()); }

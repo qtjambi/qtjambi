@@ -21,6 +21,7 @@
 #include "typesystem.h"
 #include "juicdatagenerator.h"
 #include "classlistgenerator.h"
+#include "qdocgenerator.h"
 
 #include <QDir>
 
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
     bool display_help = false;
     bool dump_object_tree = false;
     bool build_class_list = false;
+    bool build_qdoc_japi = false;
 
     for (int i=1; i<argc; ++i) {
         QString arg(argv[i]);
@@ -79,6 +81,12 @@ int main(int argc, char *argv[])
             no_cpp_impl = true;
         } else if (arg.startsWith("--build-class-list")) {
             build_class_list = true;
+        } else if (arg.startsWith("--build-qdoc-japi")) {
+            no_java = true;
+            no_cpp_h = true;
+            no_cpp_impl = true;
+            no_metainfo = true;
+            build_qdoc_japi = true;
         } else if (arg.startsWith("--no-metainfo")) {
             no_metainfo = true;
         } else if (arg.startsWith("--help") || arg.startsWith("-h") || arg.startsWith("-?")) {
@@ -155,8 +163,14 @@ int main(int argc, char *argv[])
     JavaGenerator *java_generator = 0;
     CppHeaderGenerator *cpp_header_generator = 0;
     CppImplGenerator *cpp_impl_generator = 0;
+    MetaInfoGenerator *metainfo = 0;
 
     QStringList contexts;
+    if (build_qdoc_japi) {
+        generators << new QDocGenerator;
+        contexts << "QDocGenerator";
+    }
+
     if (!no_java) {
         java_generator = new JavaGenerator;
         generators << java_generator;
@@ -168,13 +182,13 @@ int main(int argc, char *argv[])
         generators << cpp_header_generator;
         contexts << "CppHeaderGenerator";
     }
+
     if (!no_cpp_impl) {
         cpp_impl_generator = new CppImplGenerator;
         generators << cpp_impl_generator;
         contexts << "CppImplGenerator";
     }
-
-    MetaInfoGenerator *metainfo = 0;
+   
     if (!no_metainfo) {
         metainfo = new MetaInfoGenerator;
         generators << metainfo;
@@ -220,7 +234,6 @@ int main(int argc, char *argv[])
            cpp_impl_generator ? cpp_impl_generator->numGenerated() : 0,
            cpp_header_generator ? cpp_header_generator->numGenerated() : 0,
            metainfo ? metainfo->numGenerated() : 0);
-
 
     printf("Done, %d warnings (%d known issues)\n", ReportHandler::warningCount(),
            ReportHandler::suppressedCount());

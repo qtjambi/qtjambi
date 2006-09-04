@@ -399,7 +399,7 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
 }
 
 void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function, const MetaJavaClass *java_class,
-                                          QHash<int, bool> *disabled_params, int *exclude_attributes, int *include_attributes) const
+                                          QHash<int, bool> *disabled_params, uint *exclude_attributes, uint *include_attributes) const
 {    
     FunctionModificationList mods = java_function->modifications(java_class);
     foreach (FunctionModification mod, mods) {
@@ -428,52 +428,61 @@ void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
     }
 }
 
-void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_function,
-                                  uint included_attributes, uint excluded_attributes)
+QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
+                                         uint included_attributes, uint excluded_attributes)
 {
     MetaJavaArgumentList arguments = java_function->arguments();
-    const MetaJavaClass *java_class = java_function->ownerClass();
-    int argument_count = arguments.size();
+    int argument_count = arguments.size();    
 
-    if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
-        return ;
-
-    bool callThrough = java_function->needsCallThrough();
-
-    int exclude_attributes = java_class->isInterface() || java_function->isConstructor()
-                            ? MetaJavaAttributes::Native
-                            | MetaJavaAttributes::Final
-                            : 0;
-    if (java_class->isInterface())
-        exclude_attributes |= MetaJavaAttributes::Abstract;
-
-    int include_attributes = included_attributes;
-
-    exclude_attributes |= excluded_attributes;
-    if (callThrough)
-        exclude_attributes |= MetaJavaAttributes::Native;
-
+    QString result;
+    QTextStream s(&result);
     QString functionName = java_function->name();    
-    QHash<int, bool> disabled_params;
-    retrieveModifications(java_function, java_class, &disabled_params, &exclude_attributes, &include_attributes);
-    if (!java_class->isInterface()) {
-        // The overloads
-        writeFunctionOverloads(s, java_function, include_attributes, exclude_attributes);
-    }
-
     // The actual function
-    s << "    ";
-    writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
+    writeFunctionAttributes(s, java_function, included_attributes, excluded_attributes,
         java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
 
 
     s << functionName << "(";
     writeFunctionArguments(s, java_function, argument_count);
     s << ")";
+    
+    return result;
+}
+
+void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function, 
+                                     uint *included_attributes, uint *excluded_attributes,
+                                     QHash<int, bool> *disabled_params) const
+{    
+    *excluded_attributes |= java_function->ownerClass()->isInterface() || java_function->isConstructor()
+                            ? MetaJavaAttributes::Native | MetaJavaAttributes::Final
+                            : 0;
+    if (java_function->ownerClass()->isInterface())
+        *excluded_attributes |= MetaJavaAttributes::Abstract;    
+    if (java_function->needsCallThrough())
+        *excluded_attributes |= MetaJavaAttributes::Native;
+ 
+    const MetaJavaClass *java_class = java_function->ownerClass();
+    retrieveModifications(java_function, java_class, disabled_params, excluded_attributes, included_attributes);
+}
+
+void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_function,
+                                  uint included_attributes, uint excluded_attributes)
+{    
+    
+    if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
+        return ;
+
+    QHash<int, bool> disabled_params;
+    setupForFunction(java_function, &included_attributes, &excluded_attributes, &disabled_params);
+
+    if (!java_function->ownerClass()->isInterface())
+        writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);       
+    s << "    ";
+    s << functionSignature(java_function, included_attributes, excluded_attributes);
 
     if (java_function->isConstructor()) {
         writeConstructorContents(s, java_function, disabled_params);
-    } else if (callThrough) {
+    } else if (java_function->needsCallThrough()) {
         if (java_function->isAbstract()) {
             s << ";" << endl;
         } else {
@@ -486,16 +495,17 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
         s << ";" << endl << endl;
     }
 
-    if (functionName == "operator_equal") {
-
+    MetaJavaArgumentList arguments = java_function->arguments();
+    int argument_count = arguments.count();
+    if (java_function->name() == "operator_equal") {
         if (argument_count != 1
-            || arguments.at(0)->type()->name() != java_class->name()
-            || java_class->hasFunction("equals"))
+            || arguments.at(0)->type()->name() != java_function->ownerClass()->name()
+            || java_function->ownerClass()->hasFunction("equals"))
             return;
 
         s << "    public boolean equals(Object other) {" << endl
-          << "        if (other != null && other instanceof " << java_class->name() << ")" << endl
-          << "            return operator_equal((" << java_class->name() << ") other);" << endl
+          << "        if (other != null && other instanceof " << java_function->ownerClass()->name() << ")" << endl
+          << "            return operator_equal((" << java_function->ownerClass()->name() << ") other);" << endl
           << "        return false;" << endl
           << "    }" << endl;
     }
@@ -655,8 +665,8 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         s << "    private static class ConcreteWrapper extends " << java_class->fullName() << " {" << endl
           << "        protected ConcreteWrapper(QPrivateConstructor p) { super(p); }" << endl;
 
-        int exclude_attributes = MetaJavaAttributes::Native | MetaJavaAttributes::Abstract;
-        int include_attributes = 0;
+        uint exclude_attributes = MetaJavaAttributes::Native | MetaJavaAttributes::Abstract;
+        uint include_attributes = 0;
         MetaJavaFunctionList functions = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions | MetaJavaClass::NonEmptyFunctions);
         foreach (const MetaJavaFunction *java_function, functions) {
             QHash<int, bool> disabled_params;
