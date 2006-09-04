@@ -18,6 +18,39 @@ import com.trolltech.qtest.QTestCase;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.autotests.generated.*;
+
+class OrdinarySubclass extends OrdinaryDestroyed
+{
+    private TestClassFunctionality tc = null;
+    
+    public OrdinarySubclass(TestClassFunctionality tc) 
+    {
+        this.tc = tc;
+    }
+          
+    protected void disposed() 
+    {
+        tc.disposed++;
+    }
+}
+
+class QObjectSubclass extends QObjectDestroyed
+{
+    private TestClassFunctionality tc = null;
+    
+    public QObjectSubclass(QObject parent, TestClassFunctionality tc) 
+    {
+        super(parent);
+        
+        this.tc = tc;
+    }
+    
+    protected void disposed()
+    {
+        tc.disposed++;
+    }
+}
 
 class GeneralObject
 {
@@ -135,6 +168,89 @@ public class TestClassFunctionality extends QTestCase
         QApplication app = new QApplication(args);
         
         runTest(new TestClassFunctionality());
+    }
+    
+    public int disposed = 0;
+    public void run_testDestruction()
+    {
+        // Delete from Java        
+        {
+            disposed = 0;
+            {
+                new OrdinarySubclass(this);
+            }
+            System.gc();
+            try {
+                Thread.sleep(600);
+            } catch (Exception e) { };
+        
+            QCOMPARE(disposed, 1);
+        }
+        
+        // Delete from C++
+        {
+            disposed = 0;
+            OrdinarySubclass sc = new OrdinarySubclass(this);
+            OrdinaryDestroyed.deleteFromCpp(sc);
+            QCOMPARE(disposed, 1);
+            QCOMPARE(sc.nativeId(), 0L);
+        }
+        
+        // Delete through virtual destructor
+        {
+            disposed = 0;
+            OrdinarySuperclass sc = new OrdinarySubclass(this);
+            OrdinaryDestroyed.deleteFromCppOther(sc);
+            QCOMPARE(disposed, 1);
+            QCOMPARE(sc.nativeId(), 0L);
+        }
+        
+        // Delete QObject from Java
+        {
+            disposed = 0;
+            QObjectSubclass qobject = new QObjectSubclass(null, this);
+            qobject.dispose();
+            QCOMPARE(disposed, 1);
+            QCOMPARE(qobject.nativeId(), 0L);
+        }
+        
+        // Delete QObject from parent
+        {
+            disposed = 0;
+            QObject parent = new QObject();
+            QObject qobject = new QObjectSubclass(parent, this);
+            parent.dispose();
+            QCOMPARE(disposed, 1);
+            QCOMPARE(qobject.nativeId(), 0L);
+        }
+        
+        // Delete QObject later
+        {
+            disposed = 0;
+            QObject qobject = new QObjectSubclass(null, this);
+            qobject.disposeLater();
+            QApplication.processEvents(QEventLoop.DeferredDeletion);            
+            QCOMPARE(disposed, 1);
+            QCOMPARE(qobject.nativeId(), 0L);            
+        }
+        
+        // Delete QObject from C++ 
+        {
+            disposed = 0;
+            QObjectSubclass qobject = new QObjectSubclass(null, this);
+            QObjectDestroyed.deleteFromCpp(qobject);
+            QCOMPARE(disposed, 1);
+            QCOMPARE(qobject.nativeId(), 0L);
+        }
+        
+        // Delete QObject from C++ through virtual destructor
+        {
+            disposed = 0;
+            QObject qobject = new QObjectSubclass(null, this);
+            QObjectDestroyed.deleteFromCppOther(qobject);
+            QCOMPARE(disposed, 1);
+            QCOMPARE(qobject.nativeId(), 0L);
+        }
     }
     
     
@@ -475,8 +591,8 @@ public class TestClassFunctionality extends QTestCase
             super(rect);
         }
 
-        public void finalize() {
-        	super.finalize();
+        protected void disposed() {
+        	super.disposed();
             finalized = true;
         }
     }
@@ -551,3 +667,4 @@ public class TestClassFunctionality extends QTestCase
         QCOMPARE(img2.pixel(12,12), 0xffffffff);
     }
 }
+

@@ -484,11 +484,11 @@
                 timerId = startTimer(msec);
             }
             
-            protected void finalize()
+            protected void disposed()
             {
                 if (timerId &gt; 0)
                     killTimer(timerId);
-                super.finalize();
+                super.disposed();
             }
             
             protected void timerEvent(QTimerEvent e)
@@ -642,12 +642,7 @@
         <include file-name="java.util.*" location="java" />
         <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
-    
-    <inject-code class="java">
-        public Signal0 destroyed;
-        protected void finalize() { destroyed.emit(); super.finalize(); }
-    </inject-code>
-        
+            
     <inject-code class="java">
     public class QMetaCallEvent extends QEvent {
 	    public static final int METACALL_TYPE = 512;
@@ -1034,7 +1029,7 @@
         }
        
         protected final void emit_helper(Object... args) {
-            if (this != destroyed &amp;&amp; signalsBlocked())
+            if (signalsBlocked())
                 return;
             if (m_inEmit)            
                 return;
@@ -1048,11 +1043,10 @@
                 if (m_in_cpp_emission &amp;&amp; isCppEmission(c))
                     continue ;
             
-                if (this != destroyed 
-                    &amp;&amp; (c.isDirectConnection()
+                if (c.isDirectConnection()
                         || (c.isAutoConnection() 
                             &amp;&amp; c.receiver instanceof QtObject 
-                            &amp;&amp; ((QtObject) c.receiver).thread() == thread()))) {
+                            &amp;&amp; ((QtObject) c.receiver).thread() == thread())) {
                     try {                        
                         boolean updateSender = this_reference() instanceof QObject 
                                                &amp;&amp; c.receiver instanceof QObject; 
@@ -1617,8 +1611,7 @@
             return signal.receivers();
         }
         
-    </inject-code>
-    
+    </inject-code>        
     
     <inject-code class="java">
     public java.util.List&lt;QObject> findChildren() { return findChildren(null, (QRegExp) null); }

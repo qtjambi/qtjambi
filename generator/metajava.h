@@ -567,7 +567,7 @@ public:
                   || hasInconsistentFunctions()
                   || hasNonPublicFunctions()
                   || hasFieldAccessors()
-                  || isQObject()));
+                  || this->typeEntry()->isObject()));
     }
 
     bool hasVirtualFunctions() const { return !isFinal() && m_has_virtuals; }

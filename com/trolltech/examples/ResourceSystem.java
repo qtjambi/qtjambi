@@ -211,11 +211,11 @@ public class ResourceSystem extends QWidget
         new ResourceItem(m_selection, info, true);
     }
 
-    protected void finalize()
+    protected void disposed()
     {
         if (m_jar_name != null)
             QtJambiUtils.removeSearchPathForResourceEngine(m_jar_name);
-        super.finalize();
+        super.disposed();
     }
 
     protected void showEvent(QShowEvent e) {

@@ -19,5 +19,6 @@
 #include "signalsandslots.h"
 #include "abstractclass.h"
 #include "nativepointertester.h"
+#include "destruction.h"
 
 #endif

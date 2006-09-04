@@ -39,15 +39,30 @@ public abstract class QtObject implements QtObjectInterface
     {
         /* intentionally empty */
     }
+    
+    /**
+     * Called either as the native resources that belong to the object are being
+     * cleaned up or directly before the object is finalized. Reimplement this
+     * function to do clean up when the object is destroyed. The function
+     * will never be called more than once per object, and the object is 
+     * guaranteed to be unusable after this function has returned. The default
+     * implementation does nothing.
+     */
+    protected void disposed() 
+    {
+        /* intentionally empty */
+    }
 
     public String tr(String str) { return str; }
 
     /**
-     * Called before garbage collection occurs on the object. This
-     * implementation of this method must be called by any subclass
-     * which reimplements the method.
+     * Called before the java object is removed by the garbage collector. As the 
+     * native resources belonging to an object may be cleaned up prior to the 
+     * call of this function, it has been set as final. Reimplement disposed() instead,
+     * which will be called either as the native resources are being removed
+     * or just before the object is finalized, whichever happens first.
      */
-    protected native void finalize();
+    protected final native void finalize();
 
     /**
      * Explicitly removes the native resources held by the
@@ -55,7 +70,7 @@ public abstract class QtObject implements QtObjectInterface
      * the object will be garbage collected, it is not safe to
      * reference the object after it has been disposed.
      */
-    public native void dispose();
+    public final native void dispose();
 
 
     /**
@@ -64,14 +79,14 @@ public abstract class QtObject implements QtObjectInterface
      * that take ownership of the objects. Both the Java and C++ part
      * of the object will then be cleaned up by C++.
      */
-    public native void disableGarbageCollection();
+    public final native void disableGarbageCollection();
 
     /**
      * Internal function which fetches a wrapper around the pointer to
      * the native resources held by this object.
      * @return A QNativePointer object for the current object.
      */
-    public native QNativePointer nativePointer();
+    public final native QNativePointer nativePointer();
 
     /**
      * Internal function which fetches the native id of the current
@@ -79,7 +94,7 @@ public abstract class QtObject implements QtObjectInterface
      * @return A long value which uniquely define the native resources
      * held by this object during their life time.
      */
-    public long nativeId() { return native__id; }
+    public final long nativeId() { return native__id; }
     
     /**
      * Returns the thread affinity of the object. If this is an instance of
@@ -89,11 +104,11 @@ public abstract class QtObject implements QtObjectInterface
     public Thread thread() { return Thread.currentThread(); }
 
     /**
-     * In certain cases, the native resources of a QtObject object may
+     * In certain, uncommon cases, the native resources of a QtObject object may
      * be out of sync with its class. In such cases this method can be
      * used to reassign the native resources to an object of another
      * class. Take special care when using this method, as it has
-     * limited type safety and may cause crashes when used wrong. Note
+     * limited type safety and may cause crashes when used in the wrong way. Note
      * also that as the returned object "steals" the native resources
      * held by the original object, the original object will not be
      * usable after a call to this function. Invoking a method on the

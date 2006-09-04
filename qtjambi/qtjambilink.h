@@ -62,7 +62,8 @@ class QTJAMBI_EXPORT QtJambiLink
           m_has_been_finalized(false),
           m_qobject_deleted(false),
           m_created_by_java(false),
-          m_destructor_function(0)
+          m_object_invalid(false),
+          m_destructor_function(0)          
     {
     };
 
@@ -155,6 +156,7 @@ private:
     void setNativeId();
     void cleanUpAll();
     void removeFromCache();
+    void aboutToMakeObjectInvalid();
 
     JNIEnv *m_environment;
     jobject m_java_object;
@@ -168,6 +170,7 @@ private:
     uint m_has_been_finalized : 1;
     uint m_qobject_deleted : 1;
     uint m_created_by_java : 1;
+    uint m_object_invalid : 1;
 
     PtrDestructorFunction m_destructor_function;
 };

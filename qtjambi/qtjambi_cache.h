@@ -149,6 +149,7 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jfieldID native_id;
+        jmethodID disposed;
     } QtObject;
 
     struct {

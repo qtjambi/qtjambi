@@ -11,4 +11,6 @@ HEADERS += \
   	nativepointertester.h \
         abstractclass.h \
         signalsandslots.h \
+        destruction.h \
+
 

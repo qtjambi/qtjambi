@@ -38,9 +38,9 @@ public class Button extends QPushButton {
     	super.mouseReleaseEvent(e);
     }	
 
-    protected void finalize() {
-    	System.out.println("object finalized...\n");
-    	super.finalize();
+    protected void disposed() {
+    	System.out.println("object disposed...\n");
+    	super.disposed();
     }
 
     public static void main(String args[]) {

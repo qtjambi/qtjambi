@@ -1280,12 +1280,15 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     }
     s << INDENT << "}" << endl;
 
-    if (!cls->hasVirtualFunctions() && !cls->hasInconsistentFunctions())
+    if (!cls->hasVirtualFunctions() && !cls->hasInconsistentFunctions() && !cls->typeEntry()->isObject())
         return;
 
     // Set up the link object
     s << INDENT << qt_object_name << "->m_link = __qt_java_link;" << endl
       << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
+
+    if (!cls->hasVirtualFunctions() && !cls->hasInconsistentFunctions())
+        return;
 
     // Set up the vtable
     QString space(48, ' ');

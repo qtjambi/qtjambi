@@ -152,6 +152,8 @@ void QtJambiLink::releaseJavaObject()
 
     Q_ASSERT(m_environment != 0);
 
+    aboutToMakeObjectInvalid();
+
     if (isGlobalReference()) {
         m_environment->DeleteGlobalRef(m_java_object);
     } else {
@@ -177,6 +179,18 @@ QtJambiLink::~QtJambiLink()
     cleanUpAll();
 }
 
+
+void QtJambiLink::aboutToMakeObjectInvalid()
+{
+    if (m_pointer != 0 && m_java_object != 0 && !m_object_invalid) {
+        StaticCache *sc = StaticCache::instance(environment());
+        sc->resolveQtObject();
+        environment()->CallVoidMethod(m_java_object, sc->QtObject.disposed);
+        environment()->SetLongField(m_java_object, sc->QtObject.native_id, 0);
+        m_object_invalid = true;
+    }
+}
+
 void QtJambiLink::deleteNativeObject()
 {
 #ifdef DEBUG_REFCOUNTING
@@ -191,6 +205,8 @@ void QtJambiLink::deleteNativeObject()
     Q_ASSERT(m_environment);
     Q_ASSERT(m_pointer);
 
+    aboutToMakeObjectInvalid();
+
     if (isQObject()) {
         if (m_java_object && isGlobalReference()) {
             m_environment->DeleteGlobalRef(m_java_object);
@@ -202,7 +218,7 @@ void QtJambiLink::deleteNativeObject()
         if (QThread::currentThread() == qobj->thread())
             delete qobj;
         else
-            qobj->deleteLater();
+            qobj->deleteLater();        
         m_pointer = 0;
 
     } else {
@@ -254,15 +270,12 @@ void QtJambiLink::setMetaType(int metaType)
 
 
 void QtJambiLink::resetObject() {
+    aboutToMakeObjectInvalid();
+
     if (m_destructor_function)
         removeFromCache();
     m_pointer = 0;
 
-    if (m_java_object != 0) {
-        StaticCache *sc = StaticCache::instance(environment());
-        sc->resolveQtObject();
-        environment()->SetLongField(m_java_object, sc->QtObject.native_id, 0);
-    }
 
     if (m_wrapper) {
         delete m_wrapper;

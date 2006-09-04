@@ -46,7 +46,13 @@ class GLWidget extends QGLWidget
         trolltechGreen = QColor.fromCmykF(0.40, 0.0, 1.0, 0.0);
         trolltechPurple = QColor.fromCmykF(0.39, 0.39, 0.0, 0.0);
     }
-
+    
+    protected void disposed()
+    {
+        makeCurrent();
+        func.glDeleteLists(object, 1);
+    }
+    
     public QSize minimumSizeHint()
     {
         return new QSize(50, 50);
@@ -301,10 +307,11 @@ public class HelloGL extends QWidget
 
     public static void main(String args[])
     {
-        QApplication.initialize(args);
+        QApplication.initialize(args);        
         HelloGL window = new HelloGL();
         window.show();
         QApplication.exec();
+        window.dispose();
     }
 }
 

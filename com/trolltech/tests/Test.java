@@ -30,8 +30,9 @@ public class Test
             super("");
             if (VERBOSE) System.out.println("Created Collected QObject");
         }
-        protected void finalize() {
-            if (VERBOSE) System.out.println("QFile finalized...");
+        protected void disposed() {
+            if (VERBOSE) System.out.println("QFile disposed...");
+            super.disposed();
         }
     }
     
@@ -39,8 +40,9 @@ public class Test
         public CollectedObject() {
             if (VERBOSE) System.out.println("Created Collected Object");
         }
-        protected void finalize() {
-            if (VERBOSE) System.out.println("Object finalized...");
+        protected void disposed() {
+            if (VERBOSE) System.out.println("Object disposed...");
+            super.disposed();
         }        
     }
     
@@ -48,8 +50,9 @@ public class Test
         public NonCollectedQObject() {
 	    if (VERBOSE) System.out.println("Created QObject that is not collected and explicitly disposed");
         }
-        protected void finalize() {
-            if (VERBOSE) System.out.println("Non-Collected object finalized...");
+        protected void disposed() {
+            if (VERBOSE) System.out.println("Non-Collected object disposed...");
+            super.disposed();
         }
     }
 

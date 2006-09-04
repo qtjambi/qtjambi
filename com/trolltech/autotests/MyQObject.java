@@ -47,6 +47,7 @@ class MyQObject extends QObject
     public Signal3<Integer[], Integer[][], Integer[][][]> signalManyArrays = new Signal3<Integer[], Integer[][], Integer[][][]>();
     public Signal1<List<String>> signalStringList = new Signal1<List<String>>();
     public Signal1<List<List<String>>> signalStringListList = new Signal1<List<List<String>>>();
+    public Signal0 destroyed;
     
      
     public MyQObject()
@@ -63,6 +64,12 @@ class MyQObject extends QObject
     public int signalIntegerReceivers()
     {
         return receivers(signalInteger);
+    }
+    
+    protected void disposed()
+    {
+        destroyed.emit();
+        super.disposed();
     }
     
     public int signalDoubleReceivers()

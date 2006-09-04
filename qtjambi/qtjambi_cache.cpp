@@ -689,9 +689,10 @@ void StaticCache::resolveQtObject_internal()
     QtObject.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtObject"));
     Q_ASSERT(QtObject.class_ref);
 
-    QtObject.native_id = env->GetFieldID(QtObject.class_ref, "native__id", "J");
-
+    QtObject.native_id = env->GetFieldID(QtObject.class_ref, "native__id", "J");   
     Q_ASSERT(QtObject.native_id);
+
+    QtObject.disposed = env->GetMethodID(QtObject.class_ref, "disposed", "()V");
 }
 
 void StaticCache::resolveBoolean_internal()

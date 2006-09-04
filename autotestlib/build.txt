@@ -26,5 +26,9 @@
   <object-type name="NativePointerTester">
     <include file-name="nativepointertester.h" location="local"/>
   </object-type>
+
+  <object-type name="OrdinarySuperclass" />
+  <object-type name="OrdinaryDestroyed" />
+  <object-type name="QObjectDestroyed" />
    
 </typesystem>
