@@ -10,6 +10,7 @@ HEADERS += $$RXXPATH/ast.h \
            $$RXXPATH/list.h \
            $$RXXPATH/parser.h \
            $$RXXPATH/rxx_allocator.h \
+           $$RXXPATH/rpp-allocator.h \
            $$RXXPATH/smallobject.h \
            $$RXXPATH/tokens.h \
            $$RXXPATH/symbol.h \

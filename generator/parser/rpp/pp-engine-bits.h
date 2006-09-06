@@ -21,20 +21,6 @@
 #ifndef PP_ENGINE_BITS_H
 #define PP_ENGINE_BITS_H
 
-#if (_MSC_VER >= 1400)
-#  define FILENO _fileno
-#else
-#  define FILENO fileno
-#endif
-
-#if defined (PP_OS_WIN)
-#  define PATH_SEPARATOR '\\'
-#else
-#  define PATH_SEPARATOR '/'
-#endif
-
-#include <algorithm>
-
 namespace rpp {
 
 inline std::string pp::fix_file_path(std::string const &filename) const
@@ -238,18 +224,7 @@ inline FILE *pp::find_include_file(std::string const &__input_filename, std::str
     return fopen (__filepath->c_str(), "r");
 
   if (! env.current_file.empty ())
-    {
-      std::size_t __index = env.current_file.rfind (PATH_SEPARATOR);
-
-      if (__index == std::string::npos)
-        __filepath->clear ();
-
-      else
-        __filepath->assign (env.current_file, __index, std::string::npos);
-
-      if (__filepath->empty () || __filepath->at (__filepath->size () - 1) != PATH_SEPARATOR)
-        (*__filepath) += PATH_SEPARATOR;
-    }
+    _PP_internal::extract_file_path (env.current_file, __filepath);
 
   if (__include_policy == INCLUDE_LOCAL && ! __skip_current_path)
     {
@@ -341,36 +316,22 @@ _InputIterator pp::handle_directive(char const *__directive, std::size_t __size,
   return __first;
 }
 
-template <typename _OutputIterator>
-void pp::output_line(const std::string &__filename, int __line, _OutputIterator __result)
-{
-  std::string __msg;
-
-  __msg += "# ";
-
-  char __line_descr[16];
-#if defined(_MSC_VER)
-  _snprintf (__line_descr, 16, "%d", __line);
-#else
-  snprintf (__line_descr, 16, "%d", __line);
-#endif
-  __msg += __line_descr;
-
-  __msg += " \"";
-
-  if (__filename.empty ())
-    __msg += "<internal>";
-  else
-    __msg += __filename;
-
-  __msg += "\"\n";
-  std::copy (__msg.begin (), __msg.end (), __result);
-}
-
 template <typename _InputIterator, typename _OutputIterator>
 _InputIterator pp::handle_include (bool __skip_current_path, _InputIterator __first, _InputIterator __last,
       _OutputIterator __result)
 {
+  if (pp_isalpha (*__first) || *__first == '_')
+    {
+      pp_macro_expander expand_include (env);
+      std::string name;
+      name.reserve (255);
+      expand_include (__first, __last, std::back_inserter (name));
+      std::string::iterator it = skip_blanks (name.begin (), name.end ());
+      assert (it != name.end () && (*it == '<' || *it == '"'));
+      handle_include (__skip_current_path, it, name.end (), __result);
+      return __first;
+    }
+
   assert (*__first == '<' || *__first == '"');
   int quote = (*__first == '"') ? '"' : '>';
   ++__first;
@@ -387,10 +348,12 @@ _InputIterator pp::handle_include (bool __skip_current_path, _InputIterator __fi
   std::string filename (__first, end_name);
 
   std::string filepath;
-  FILE *fp = find_include_file (filename, &filepath, quote == '<' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, __skip_current_path);
+  FILE *fp = find_include_file (filename, &filepath, quote == '>' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, __skip_current_path);
+
 #if defined (PP_HOOK_ON_FILE_INCLUDED)
       PP_HOOK_ON_FILE_INCLUDED (env.current_file, fp ? filepath : filename, fp);
 #endif
+
   if (fp != 0)
     {
       std::string old_file = env.current_file;
@@ -407,12 +370,10 @@ _InputIterator pp::handle_include (bool __skip_current_path, _InputIterator __fi
       env.current_line = __saved_lines;
 
       // sync the buffer
-      output_line (env.current_file, env.current_line, __result);
+      _PP_internal::output_line (env.current_file, env.current_line, __result);
     }
-#ifndef RPP_JAMBI
   else
-    std::cerr << "*** ERROR " << filename << ": No such file or directory" << std::endl;
-#endif
+    std::cerr << "*** WARNING " << filename << ": No such file or directory" << std::endl;
 
   return __first;
 }
@@ -467,7 +428,7 @@ void pp::operator () (_InputIterator __first, _InputIterator __last, _OutputIter
           if (env.current_line != was)
             {
               env.current_line = was;
-              output_line (env.current_file, env.current_line, __result);
+              _PP_internal::output_line (env.current_file, env.current_line, __result);
             }
         }
       else if (*__first == '\n')
@@ -480,12 +441,12 @@ void pp::operator () (_InputIterator __first, _InputIterator __last, _OutputIter
         __first = skip (__first, __last);
       else
         {
-          output_line (env.current_file, env.current_line, __result);
+          _PP_internal::output_line (env.current_file, env.current_line, __result);
           __first = expand (__first, __last, __result);
           env.current_line += expand.lines;
 
           if (expand.generated_lines)
-            output_line (env.current_file, env.current_line, __result);
+            _PP_internal::output_line (env.current_file, env.current_line, __result);
         }
     }
 }
@@ -661,7 +622,7 @@ inline int pp::skipping() const
 { return _M_skipping[iflevel]; }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_primary(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_primary(_InputIterator __first, _InputIterator __last, Value *result)
 {
   bool expect_paren = false;
   int token;
@@ -670,7 +631,11 @@ _InputIterator pp::eval_primary(_InputIterator __first, _InputIterator __last, l
   switch (token)
     {
     case TOKEN_NUMBER:
-      *result = token_value;
+      result->set_long (token_value);
+      break;
+
+    case TOKEN_UNUMBER:
+      result->set_ulong (token_uvalue);
       break;
 
     case TOKEN_DEFINED:
@@ -685,11 +650,11 @@ _InputIterator pp::eval_primary(_InputIterator __first, _InputIterator __last, l
       if (token != TOKEN_IDENTIFIER)
         {
           std::cerr << "** WARNING expected ``identifier'' found:" << char(token) << std::endl;
-          *result = 0;
+          result->set_long (0);
           break;
         }
 
-      *result = env.resolve (token_text->c_str (), token_text->size ()) != 0;
+      result->set_long (env.resolve (token_text->c_str (), token_text->size ()) != 0);
 
       next_token (__first, __last, &token); // skip '('
 
@@ -704,12 +669,12 @@ _InputIterator pp::eval_primary(_InputIterator __first, _InputIterator __last, l
       break;
 
     case TOKEN_IDENTIFIER:
-      *result = 0;
+      result->set_long (0);
       break;
 
     case '!':
       __first = eval_primary (__first, __last, result);
-      *result = !*result;
+      result->set_long (result->is_zero ());
       return __first;
 
     case '(':
@@ -723,14 +688,14 @@ _InputIterator pp::eval_primary(_InputIterator __first, _InputIterator __last, l
       break;
 
     default:
-      *result = 0;
+      result->set_long (0);
     }
 
   return __first;
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_multiplicative(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_multiplicative(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_primary(__first, __last, result);
 
@@ -739,30 +704,30 @@ _InputIterator pp::eval_multiplicative(_InputIterator __first, _InputIterator __
 
   while (token == '*' || token == '/' || token == '%')
     {
-      long value;
+      Value value;
       __first = eval_primary(next, __last, &value);
 
       if (token == '*')
-        *result = *result * value;
+        result->op_mult (value);
       else if (token == '/')
         {
-          if (value == 0)
+          if (value.is_zero ())
             {
               std::cerr << "** WARNING division by zero" << std::endl;
-              *result = 0;
+              result->set_long (0);
             }
           else
-            *result = *result / value;
+            result->op_div (value);
         }
       else
         {
-          if (value == 0)
+          if (value.is_zero ())
             {
               std::cerr << "** WARNING division by zero" << std::endl;
-              *result = 0;
+              result->set_long (0);
             }
           else
-            *result = *result % value;
+            result->op_mod (value);
         }
       next = next_token (__first, __last, &token);
     }
@@ -771,7 +736,7 @@ _InputIterator pp::eval_multiplicative(_InputIterator __first, _InputIterator __
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_additive(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_additive(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_multiplicative(__first, __last, result);
 
@@ -780,13 +745,13 @@ _InputIterator pp::eval_additive(_InputIterator __first, _InputIterator __last, 
 
   while (token == '+' || token == '-')
     {
-      long value;
+      Value value;
       __first = eval_multiplicative(next, __last, &value);
 
       if (token == '+')
-        *result = *result + value;
+        result->op_add (value);
       else
-        *result = *result - value;
+        result->op_sub (value);
       next = next_token (__first, __last, &token);
     }
 
@@ -794,7 +759,7 @@ _InputIterator pp::eval_additive(_InputIterator __first, _InputIterator __last, 
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_shift(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_shift(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_additive(__first, __last, result);
 
@@ -803,13 +768,13 @@ _InputIterator pp::eval_shift(_InputIterator __first, _InputIterator __last, lon
 
   while (token == TOKEN_LT_LT || token == TOKEN_GT_GT)
     {
-      long value;
+      Value value;
       __first = eval_additive (next, __last, &value);
 
       if (token == TOKEN_LT_LT)
-        *result = *result << value;
+        result->op_lhs (value);
       else
-        *result = *result >> value;
+        result->op_rhs (value);
       next = next_token (__first, __last, &token);
     }
 
@@ -817,7 +782,7 @@ _InputIterator pp::eval_shift(_InputIterator __first, _InputIterator __last, lon
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_relational(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_relational(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_shift(__first, __last, result);
 
@@ -829,7 +794,7 @@ _InputIterator pp::eval_relational(_InputIterator __first, _InputIterator __last
       || token == TOKEN_LT_EQ
       || token == TOKEN_GT_EQ)
     {
-      long value;
+      Value value;
       __first = eval_shift(next, __last, &value);
 
       switch (token)
@@ -839,19 +804,19 @@ _InputIterator pp::eval_relational(_InputIterator __first, _InputIterator __last
             break;
 
           case '<':
-            *result = *result < value;
+            result->op_lt (value);
             break;
 
           case '>':
-            *result = *result < value;
+            result->op_gt (value);
             break;
 
           case TOKEN_LT_EQ:
-            *result = *result <= value;
+            result->op_le (value);
             break;
 
           case TOKEN_GT_EQ:
-            *result = *result >= value;
+            result->op_ge (value);
             break;
         }
       next = next_token (__first, __last, &token);
@@ -861,7 +826,7 @@ _InputIterator pp::eval_relational(_InputIterator __first, _InputIterator __last
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_equality(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_equality(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_relational(__first, __last, result);
 
@@ -870,13 +835,13 @@ _InputIterator pp::eval_equality(_InputIterator __first, _InputIterator __last, 
 
   while (token == TOKEN_EQ_EQ || token == TOKEN_NOT_EQ)
     {
-      long value;
+      Value value;
       __first = eval_relational(next, __last, &value);
 
       if (token == TOKEN_EQ_EQ)
-        *result = *result == value;
+        result->op_eq (value);
       else
-        *result = *result != value;
+        result->op_ne (value);
       next = next_token (__first, __last, &token);
     }
 
@@ -884,7 +849,7 @@ _InputIterator pp::eval_equality(_InputIterator __first, _InputIterator __last, 
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_and(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_and(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_equality(__first, __last, result);
 
@@ -893,9 +858,9 @@ _InputIterator pp::eval_and(_InputIterator __first, _InputIterator __last, long 
 
   while (token == '&')
     {
-      long value;
+      Value value;
       __first = eval_equality(next, __last, &value);
-      *result = *result & value;
+      result->op_bit_and (value);
       next = next_token (__first, __last, &token);
     }
 
@@ -903,7 +868,7 @@ _InputIterator pp::eval_and(_InputIterator __first, _InputIterator __last, long 
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_xor(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_xor(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_and(__first, __last, result);
 
@@ -912,9 +877,9 @@ _InputIterator pp::eval_xor(_InputIterator __first, _InputIterator __last, long 
 
   while (token == '^')
     {
-      long value;
+      Value value;
       __first = eval_and(next, __last, &value);
-      *result = *result ^ value;
+      result->op_bit_xor (value);
       next = next_token (__first, __last, &token);
     }
 
@@ -922,7 +887,7 @@ _InputIterator pp::eval_xor(_InputIterator __first, _InputIterator __last, long 
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_or(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_or(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_xor(__first, __last, result);
 
@@ -931,9 +896,9 @@ _InputIterator pp::eval_or(_InputIterator __first, _InputIterator __last, long *
 
   while (token == '|')
     {
-      long value;
+      Value value;
       __first = eval_xor(next, __last, &value);
-      *result = *result | value;
+      result->op_bit_or (value);
       next = next_token (__first, __last, &token);
     }
 
@@ -941,7 +906,7 @@ _InputIterator pp::eval_or(_InputIterator __first, _InputIterator __last, long *
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_logical_and(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_logical_and(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_or(__first, __last, result);
 
@@ -950,9 +915,9 @@ _InputIterator pp::eval_logical_and(_InputIterator __first, _InputIterator __las
 
   while (token == TOKEN_AND_AND)
     {
-      long value;
+      Value value;
       __first = eval_or(next, __last, &value);
-      *result = *result && value;
+      result->op_and (value);
       next = next_token (__first, __last, &token);
     }
 
@@ -960,7 +925,7 @@ _InputIterator pp::eval_logical_and(_InputIterator __first, _InputIterator __las
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_logical_or(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_logical_or(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_logical_and (__first, __last, result);
 
@@ -969,9 +934,9 @@ _InputIterator pp::eval_logical_or(_InputIterator __first, _InputIterator __last
 
   while (token == TOKEN_OR_OR)
     {
-      long value;
+      Value value;
       __first = eval_logical_and(next, __last, &value);
-      *result = *result || value;
+      result->op_or (value);
       next = next_token (__first, __last, &token);
     }
 
@@ -979,7 +944,7 @@ _InputIterator pp::eval_logical_or(_InputIterator __first, _InputIterator __last
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_constant_expression(_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_constant_expression(_InputIterator __first, _InputIterator __last, Value *result)
 {
   __first = eval_logical_or(__first, __last, result);
 
@@ -988,17 +953,17 @@ _InputIterator pp::eval_constant_expression(_InputIterator __first, _InputIterat
 
   if (token == '?')
     {
-      long left_value;
+      Value left_value;
       __first = eval_constant_expression(next, __last, &left_value);
       __first = skip_blanks (__first, __last);
 
       __first = next_token(__first, __last, &token);
       if (token == ':')
         {
-          long right_value;
+          Value right_value;
           __first = eval_constant_expression(__first, __last, &right_value);
 
-          *result = *result ? left_value : right_value;
+          *result = !result->is_zero () ? left_value : right_value;
         }
       else
         {
@@ -1011,7 +976,7 @@ _InputIterator pp::eval_constant_expression(_InputIterator __first, _InputIterat
 }
 
 template <typename _InputIterator>
-_InputIterator pp::eval_expression (_InputIterator __first, _InputIterator __last, long *result)
+_InputIterator pp::eval_expression (_InputIterator __first, _InputIterator __last, Value *result)
 {
   return __first = eval_constant_expression (skip_blanks (__first, __last), __last, result);
 }
@@ -1026,11 +991,12 @@ _InputIterator pp::handle_if (_InputIterator __first, _InputIterator __last)
       condition.reserve (255);
       expand_condition (skip_blanks (__first, __last), __last, std::back_inserter (condition));
 
-      long result = 0;
+      Value result;
+      result.set_long (0);
       eval_expression(condition.c_str (), condition.c_str () + condition.size (), &result);
 
-      _M_true_test[iflevel] = result;
-      _M_skipping[iflevel] = !result;
+      _M_true_test[iflevel] = !result.is_zero ();
+      _M_skipping[iflevel] = result.is_zero ();
     }
 
   return __first;
@@ -1066,10 +1032,10 @@ _InputIterator pp::handle_elif (_InputIterator __first, _InputIterator __last)
     }
   else if (!_M_true_test[iflevel] && !_M_skipping[iflevel - 1])
     {
-      long result;
+      Value result;
       __first = eval_expression(__first, __last, &result);
-      _M_true_test[iflevel] = result;
-      _M_skipping[iflevel] = !result;
+      _M_true_test[iflevel] = !result.is_zero ();
+      _M_skipping[iflevel] = result.is_zero ();
     }
   else
     {
@@ -1279,10 +1245,19 @@ _InputIterator pp::next_token (_InputIterator __first, _InputIterator __last, in
         else if (pp_isdigit (ch))
           {
             _InputIterator end = skip_number (__first, __last);
-            token_value = strtol (std::string (__first, __last).c_str (), 0, 0);
+            std::string __str (__first, __last);
+            char ch = __str [__str.size () - 1];
+            if (ch == 'u' || ch == 'U')
+              {
+                token_uvalue = strtoul (__str.c_str (), 0, 0);
+                *kind = TOKEN_UNUMBER;
+              }
+            else
+              {
+                token_value = strtol (__str.c_str (), 0, 0);
+                *kind = TOKEN_NUMBER;
+              }
             __first = end;
-
-            *kind = TOKEN_NUMBER;
           }
         else
           *kind = *__first++;

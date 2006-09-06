@@ -1,16 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $CPP_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
 /*
   Copyright 2005 Roberto Raggi <roberto@kdevelop.org>
 
@@ -33,8 +20,6 @@
 
 #ifndef PP_MACRO_EXPANDER_H
 #define PP_MACRO_EXPANDER_H
-
-#include <QByteArray>
 
 namespace rpp {
 
@@ -246,7 +231,7 @@ public:
                     if (! strcmp (name_buffer, "__LINE__"))
                       {
                         char buf [16];
-                        char *end = buf + qsnprintf (buf, 16, "%d", env.current_line + lines);
+                        char *end = buf + pp_snprintf (buf, 16, "%d", env.current_line + lines);
 
                         std::copy (&buf [0], end, __result);
                         continue;

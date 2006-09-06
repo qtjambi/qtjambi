@@ -23,6 +23,68 @@
 
 namespace rpp {
 
+struct Value
+{
+  enum Kind {
+    Kind_Long,
+    Kind_ULong,
+  };
+
+  Kind kind;
+
+  union {
+    long l;
+    unsigned long ul;
+  };
+
+  inline bool is_ulong () const { return kind == Kind_ULong; }
+
+  inline void set_ulong (unsigned long v)
+  {
+    ul = v;
+    kind = Kind_ULong;
+  }
+
+  inline void set_long (long v)
+  {
+    l = v;
+    kind = Kind_Long;
+  }
+
+  inline bool is_zero () const { return l == 0; }
+
+#define PP_DEFINE_BIN_OP(name, op) \
+  inline Value &name (const Value &other) \
+  { \
+    if (is_ulong () || other.is_ulong ()) \
+      set_ulong (ul op other.ul); \
+    else \
+      set_long (l op other.l); \
+    return *this; \
+  }
+
+  PP_DEFINE_BIN_OP(op_add, +)
+  PP_DEFINE_BIN_OP(op_sub, -)
+  PP_DEFINE_BIN_OP(op_mult, *)
+  PP_DEFINE_BIN_OP(op_div, /)
+  PP_DEFINE_BIN_OP(op_mod, %)
+  PP_DEFINE_BIN_OP(op_lhs, <<)
+  PP_DEFINE_BIN_OP(op_rhs, >>)
+  PP_DEFINE_BIN_OP(op_lt, <)
+  PP_DEFINE_BIN_OP(op_gt, >)
+  PP_DEFINE_BIN_OP(op_le, <=)
+  PP_DEFINE_BIN_OP(op_ge, >=)
+  PP_DEFINE_BIN_OP(op_eq, ==)
+  PP_DEFINE_BIN_OP(op_ne, !=)
+  PP_DEFINE_BIN_OP(op_bit_and, &)
+  PP_DEFINE_BIN_OP(op_bit_or, |)
+  PP_DEFINE_BIN_OP(op_bit_xor, ^)
+  PP_DEFINE_BIN_OP(op_and, &&)
+  PP_DEFINE_BIN_OP(op_or, ||)
+
+#undef PP_DEFINE_BIN_OP
+};
+
 class pp
 {
   pp_environment &env;
@@ -42,6 +104,7 @@ class pp
   union
   {
     long token_value;
+    unsigned long token_uvalue;
     std::string *token_text;
   };
 
@@ -54,6 +117,7 @@ class pp
   enum TOKEN_TYPE
   {
     TOKEN_NUMBER = 1000,
+    TOKEN_UNUMBER,
     TOKEN_IDENTIFIER,
     TOKEN_DEFINED,
     TOKEN_LT_LT,
@@ -95,7 +159,7 @@ public:
   inline std::vector<std::string>::const_iterator include_paths_end () const;
 
   template <typename _InputIterator>
-  inline _InputIterator eval_expression (_InputIterator __first, _InputIterator __last, long *result);
+  inline _InputIterator eval_expression (_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _OutputIterator>
   void file (std::string const &filename, _OutputIterator __result);
@@ -105,9 +169,6 @@ public:
 
   template <typename _InputIterator, typename _OutputIterator>
   void operator () (_InputIterator __first, _InputIterator __last, _OutputIterator __result);
-
-  template <typename _OutputIterator>
-  void output_line(const std::string &__filename, int __line, _OutputIterator __result);
 
 private:
   inline bool file_exists (std::string const &__filename) const;
@@ -129,40 +190,40 @@ private:
   _InputIterator skip (_InputIterator __first, _InputIterator __last);
 
   template <typename _InputIterator>
-  _InputIterator eval_primary(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_primary(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_multiplicative(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_multiplicative(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_additive(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_additive(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_shift(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_shift(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_relational(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_relational(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_equality(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_equality(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_and(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_and(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_xor(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_xor(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_or(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_or(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_logical_and(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_logical_and(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_logical_or(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_logical_or(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator>
-  _InputIterator eval_constant_expression(_InputIterator __first, _InputIterator __last, long *result);
+  _InputIterator eval_constant_expression(_InputIterator __first, _InputIterator __last, Value *result);
 
   template <typename _InputIterator, typename _OutputIterator>
   _InputIterator handle_directive(char const *__directive, std::size_t __size,

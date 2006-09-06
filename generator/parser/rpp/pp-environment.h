@@ -50,7 +50,7 @@ public:
   const_iterator first_macro () const { return _M_macros.begin (); }
   const_iterator last_macro () const { return _M_macros.end (); }
 
-  inline bool bind (pp_fast_string const *__name, pp_macro const &__macro)
+  inline void bind (pp_fast_string const *__name, pp_macro const &__macro)
   {
     std::size_t h = hash_code (*__name) % _M_hash_size;
     pp_macro *m = new pp_macro (__macro);
@@ -63,14 +63,18 @@ public:
 
     if (_M_macros.size() == _M_hash_size)
       rehash();
-
-    return true;
   }
 
   inline void unbind (pp_fast_string const *__name)
   {
     if (pp_macro *m = resolve (__name))
       m->hidden = true;
+  }
+
+  inline void unbind (char const *__s, std::size_t __size)
+  {
+    pp_fast_string __tmp (__s, __size);
+    unbind (&__tmp);
   }
 
   inline pp_macro *resolve (pp_fast_string const *__name) const

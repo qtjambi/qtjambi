@@ -1,16 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $CPP_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
 /*
   Copyright 2005 Roberto Raggi <roberto@kdevelop.org>
 
@@ -57,10 +44,28 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#if (_MSC_VER >= 1400)
+#  define FILENO _fileno
+#else
+#  define FILENO fileno
+#endif
+
+#if defined (PP_OS_WIN)
+#  define PATH_SEPARATOR '\\'
+#else
+#  define PATH_SEPARATOR '/'
+#endif
+
 #if defined (RPP_JAMBI)
 #  include "rxx_allocator.h"
 #else
 #  include "rpp-allocator.h"
+#endif
+
+#if defined (_MSC_VER)
+#  define pp_snprintf _snprintf
+#else
+#  define pp_snprintf snprintf
 #endif
 
 #include "pp-fwd.h"
