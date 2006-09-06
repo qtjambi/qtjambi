@@ -5,6 +5,16 @@
 
 #include <QtCore/QDir>
 
+static QString escape(const QString &str)
+{
+    QString result = str;
+    result.replace(QChar('&'), "&amp;");
+    result.replace(QChar('"'), "&quot;");
+    result.replace(QChar('<'), "&lt;");
+    result.replace(QChar('>'), "&gt;");
+    return result;
+}
+
 QDocGenerator::QDocGenerator() { }
 
 QString QDocGenerator::subDirectoryForClass(const MetaJavaClass *) const
@@ -55,8 +65,8 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
     setupForFunction(java_function, &included_attributes, &excluded_attributes, &disabled_params);
     QString signature = functionSignature(java_function, included_attributes, excluded_attributes);
 
-    s << "<method java=\"" << signature << "\"" << endl
-      << "    cpp=\"" << java_function->signature() << "\"";
+    s << "<method java=\"" << escape(signature) << "\"" << endl
+      << "    cpp=\"" << escape(java_function->signature()) << "\"";
 
     if (disabled_params.count() > 0) {
         s << endl << "    steals-ownership-of=\"";
@@ -76,7 +86,7 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaEnumValue *java_enum_value)
 {
-    s << "<enum-value java=\"" << java_enum_value->name() << "\"" << endl
+    s << "<enumvalue java=\"" << java_enum_value->name() << "\"" << endl
       << "    cpp=\"" << java_enum_value->name() << "\"" << endl
       << "    value=\"" << java_enum_value->value() << "\" />" << endl;
 }
@@ -97,14 +107,14 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field)
     uint included_attributes = 0;
     uint excluded_attributes = 0;
     setupForFunction(java_field->getter(), &included_attributes, &excluded_attributes, &disabled_params);
-    s << "<variablegetter java=\"" << functionSignature(java_field->getter(), included_attributes, excluded_attributes) 
+    s << "<variablegetter java=\"" << escape(functionSignature(java_field->getter(), included_attributes, excluded_attributes)) 
       << "\"" << endl
       << "    cpp=\"" << java_field->name() << "\" />" << endl;
 
     included_attributes = 0;
     excluded_attributes = 0;
     setupForFunction(java_field->setter(), &included_attributes, &excluded_attributes, &disabled_params);
-    s << "<variablesetter java=\"" << functionSignature(java_field->setter(), included_attributes, excluded_attributes) 
+    s << "<variablesetter java=\"" << escape(functionSignature(java_field->setter(), included_attributes, excluded_attributes)) 
       << "\"" << endl
       << "    cpp=\"" << java_field->name() << "\" />" << endl;    
 }
