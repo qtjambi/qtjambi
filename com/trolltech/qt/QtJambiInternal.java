@@ -48,4 +48,6 @@ public class QtJambiInternal {
         mb.exec();
         mb.dispose();
     }
+    
+    public native static Object createExtendedEnum(int value, int ordinal, Class cl, String name);
 }

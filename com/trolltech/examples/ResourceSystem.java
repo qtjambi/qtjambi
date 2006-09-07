@@ -113,7 +113,7 @@ public class ResourceSystem extends QWidget
         m_currentImage = new QLabel();
         m_selection = new QTreeWidget();
         m_selection.setColumnCount(1);
-        m_selection.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum);
+        m_selection.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum);
         m_selection.currentItemChanged.connect(this, "itemChanged(QTreeWidgetItem, QTreeWidgetItem)");
         m_selection.itemExpanded.connect(this, "expandItem(QTreeWidgetItem)");
 

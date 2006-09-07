@@ -84,10 +84,10 @@ class QJarEntryEngine extends QAbstractFileEngine
         if (newFile.exists())
             return false;
 
-        if (!open(QFile.ReadOnly))
+        if (!open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly)))
             return false;
 
-        if (!newFile.open(QFile.WriteOnly)) {
+        if (!newFile.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly))) {
             close();
             return false;
         }
@@ -137,16 +137,16 @@ class QJarEntryEngine extends QAbstractFileEngine
         return true;
     }
 
-    public List<String> entryList(int filters, List<String> filterNames)
+    public List<String> entryList(QDir.Filters filters, List<String> filterNames)
     {
         if (m_entry != null && !m_entry.isDirectory())
             return new LinkedList<String>();
 
         List<String> result = new LinkedList<String>();
-
+        
         // Default to readable
-        if ((filters & (QDir.Readable | QDir.Writable | QDir.Executable)) == 0)
-            filters |= QDir.Readable;
+        if (!filters.isSet(QDir.Filter.Readable, QDir.Filter.Writable, QDir.Filter.Executable))
+            filters.set(QDir.Filter.Readable);
 
         String mentryName = m_entry == null ? "" : m_entry.getName();
         if (!mentryName.endsWith("/") && mentryName.length() > 0)
@@ -167,17 +167,17 @@ class QJarEntryEngine extends QAbstractFileEngine
 
                 boolean isDir = entry.isDirectory();
 
-                if ((filters & QDir.Readable) == 0)
+                if (!filters.isSet(QDir.Filter.Readable))
                     continue ;
 
-                if ((filters & QDir.Dirs) == 0 && isDir)
+                if (!filters.isSet(QDir.Filter.Dirs) && isDir)
                     continue ;
 
-                if ((filters & QDir.Files) == 0 && !isDir)
+                if (!filters.isSet(QDir.Filter.Files) && !isDir)
                     continue ;
 
                 if (filterNames.size() > 0) {
-                    if ((!isDir || (filters & QDir.AllDirs) == 0)
+                    if ((!isDir || !filters.isSet(QDir.Filter.AllDirs))
                         && (!QDir.match(filterNames, entryName))) {
                         continue;
                     }
@@ -192,38 +192,46 @@ class QJarEntryEngine extends QAbstractFileEngine
         return result;
     }
 
-    public int fileFlags(int type)
+    public FileFlags fileFlags(FileFlags type)
     {
-         int flags = 0;
+        int flags = 0;
 
          QFileInfo info = new QFileInfo(m_jarFileName);
-         if (info.exists())
-             flags |= info.permissions() & (ReadOwnerPerm | ReadGroupPerm | ReadOtherPerm | ReadUserPerm);
+         if (info.exists()) {
+             flags |= info.permissions().value() 
+                      & (FileFlag.ReadOwnerPerm.value() 
+                         | FileFlag.ReadGroupPerm.value() 
+                         | FileFlag.ReadOtherPerm.value() 
+                         | FileFlag.ReadUserPerm.value());
+         }
 
          if (m_entry == null || m_entry.isDirectory())
-             flags |= DirectoryType;
+             flags |= FileFlag.DirectoryType.value();
          else
-             flags |= FileType;
+             flags |= FileFlag.FileType.value();
+         
 
-         return (flags | ExistsFlag) & type;
+         return new FileFlags((flags | FileFlag.ExistsFlag.value()) & type.value());
     }
 
-    public String fileName(int file)
+    public String fileName(FileName file)
     {
         String entryFileName = m_entryFileName;
 
-        if (file == LinkName) {
+        if (file == FileName.LinkName) {
             return "";
-        } else if (file == DefaultName || file == AbsoluteName || file == CanonicalName) {
+        } else if (file == FileName.DefaultName 
+                || file == FileName.AbsoluteName 
+                || file == FileName.CanonicalName) {
             return QClassPathEngine.FileNamePrefix + m_jarFileName + QClassPathEngine.FileNameDelim + entryFileName;
-        } else if (file == BaseName) {
+        } else if (file == FileName.BaseName) {
             int pos = m_entryFileName.lastIndexOf("/", m_entryFileName.length() - 2);
             return pos >= 0 ? m_entryFileName.substring(pos + 1) : entryFileName;
-        } else if (file == PathName) {
+        } else if (file == FileName.PathName) {
             int pos = m_entryFileName.lastIndexOf("/", m_entryFileName.length() - 2);
             return pos >= 0 ? m_entryFileName.substring(0, pos) : "/";
-        } else if (file == CanonicalPathName || file == AbsolutePathName) {
-            return QClassPathEngine.FileNamePrefix + m_jarFileName + QClassPathEngine.FileNameDelim + fileName(PathName);
+        } else if (file == FileName.CanonicalPathName || file == FileName.AbsolutePathName) {
+            return QClassPathEngine.FileNamePrefix + m_jarFileName + QClassPathEngine.FileNameDelim + fileName(FileName.PathName);
         } else {
             throw new IllegalArgumentException("Unknown file name type: " + file);
         }
@@ -262,12 +270,12 @@ class QJarEntryEngine extends QAbstractFileEngine
         return false;
     }
 
-    public boolean open(int openMode)
+    public boolean open(QIODevice.OpenMode openMode)
     {
         if (m_entry == null)
             return false;
 
-        if ((openMode & ~QIODevice.Text) == QIODevice.ReadOnly) {
+        if ((openMode.value() & ~QIODevice.OpenModeFlag.Text.value()) == QIODevice.OpenModeFlag.ReadOnly.value()) {
             try {
                 m_stream = m_jarFile.getInputStream(m_entry);
             } catch (IOException e) {
@@ -275,10 +283,10 @@ class QJarEntryEngine extends QAbstractFileEngine
             }
 
             if (m_stream != null) {
-                if ((openMode & QIODevice.Text) != 0)
+                if (openMode.isSet(QIODevice.OpenModeFlag.Text))
                     m_reader = new BufferedReader(new InputStreamReader(m_stream));
                 m_pos = 0;
-                m_openMode = openMode;
+                m_openMode = openMode.value();
                 return true;
             } else {
                 return false;
@@ -365,7 +373,7 @@ class QJarEntryEngine extends QAbstractFileEngine
     {
         try {
             m_stream.close();
-            if (!open(m_openMode))
+            if (!open(new QIODevice.OpenMode(m_openMode)))
                 return false;
 
             m_pos = 0;
@@ -434,7 +442,7 @@ class QDirEntryEngine extends QFSFileEngine
         m_fileName = fileName;
     }
 
-    public String fileName(int file)
+    public String fileName(FileName file)
     {
         String fileName = m_fileName;
 
@@ -442,9 +450,9 @@ class QDirEntryEngine extends QFSFileEngine
         switch (file) {
         case LinkName:
         case CanonicalName:
-            return super.fileName(AbsoluteName);
+            return super.fileName(FileName.AbsoluteName);
         case CanonicalPathName:
-            return super.fileName(AbsolutePathName);
+            return super.fileName(FileName.AbsolutePathName);
         case DefaultName:
             return QClassPathEngine.FileNamePrefix + m_path + QClassPathEngine.FileNameDelim + fileName;
         case BaseName:
@@ -453,7 +461,7 @@ class QDirEntryEngine extends QFSFileEngine
         case AbsoluteName:
             return QClassPathEngine.FileNamePrefix + m_path + QClassPathEngine.FileNameDelim + fileName;
         case AbsolutePathName:
-            return QClassPathEngine.FileNamePrefix + m_path + QClassPathEngine.FileNameDelim + fileName(PathName);
+            return QClassPathEngine.FileNamePrefix + m_path + QClassPathEngine.FileNameDelim + fileName(FileName.PathName);
         case PathName:
             pos = m_fileName.lastIndexOf('/', m_fileName.length() - 2);
             return pos >= 0 ? m_fileName.substring(0, pos) : "/";
@@ -556,7 +564,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).close();
     }
 
-    public List<String> entryList(int filters, List<String> filterNames)
+    public List<String> entryList(QDir.Filters filters, List<String> filterNames)
     {
         List<String> result = null;
         for (QAbstractFileEngine engine : m_engines) {
@@ -572,20 +580,20 @@ class QClassPathEngine extends QAbstractFileEngine
         return result;
     }
 
-    public int fileFlags(int type)
+    public FileFlags fileFlags(FileFlags type)
     {
-        int flags = 0;
+        FileFlags flags = new FileFlags();
 
         for (QAbstractFileEngine engine : m_engines)
-            flags |= engine.fileFlags(type);
+            flags.set(engine.fileFlags(type));
 
-        if (fileName(PathName).equals("/"))
-            flags |= QAbstractFileEngine.RootFlag;
+        if (fileName(FileName.PathName).equals("/"))
+            flags.set(QAbstractFileEngine.FileFlag.RootFlag);
 
         return flags;
     }
 
-    public String fileName(int file)
+    public String fileName(FileName file)
     {
         if (m_engines.size() == 0)
             return "";
@@ -609,18 +617,18 @@ class QClassPathEngine extends QAbstractFileEngine
         String baseName = m_baseName;
 
         String result = "";
-        if (file == DefaultName) {
+        if (file == FileName.DefaultName) {
             result = QClassPathEngine.FileNamePrefix + m_fileName;
-        } else if (file == AbsoluteName || file == CanonicalName || file == LinkName) {
+        } else if (file == FileName.AbsoluteName || file == FileName.CanonicalName || file == FileName.LinkName) {
             result = QClassPathEngine.FileNamePrefix + "*" + FileNameDelim + m_baseName;
-        } else if (file == BaseName) {
+        } else if (file == FileName.BaseName) {
             int pos = m_baseName.lastIndexOf("/", m_baseName.length() - 2);
             result = pos >= 0 ? m_baseName.substring(pos + 1) : m_baseName;
-        } else if (file == PathName) {
+        } else if (file == FileName.PathName) {
             int pos = m_baseName.lastIndexOf("/", m_baseName.length() - 2);
             result = pos >= 0 ? m_baseName.substring(0, pos) : "/";
-        } else if (file == AbsolutePathName || file == CanonicalPathName) {
-            result = QClassPathEngine.FileNamePrefix + "*" + FileNameDelim + fileName(PathName);
+        } else if (file == FileName.AbsolutePathName || file == FileName.CanonicalPathName) {
+            result = QClassPathEngine.FileNamePrefix + "*" + FileNameDelim + fileName(FileName.PathName);
         } else {
             throw new IllegalArgumentException("Unknown file name type: " + file);
         }
@@ -631,7 +639,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return result;
     }
 
-    public QDateTime fileTime(int time)
+    public QDateTime fileTime(FileTime time)
     {
         if (m_engines.size() == 0)
             return new QDateTime();
@@ -657,7 +665,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return false;
     }
 
-    public boolean open(int openMode)
+    public boolean open(QIODevice.OpenMode openMode)
     {
         if (m_engines.size() == 0)
             return false;
@@ -721,7 +729,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).seek(offset);
     }
 
-    public String owner(int owner)
+    public String owner(FileOwner owner)
     {
         String result = "";
         int i = 0;
@@ -731,7 +739,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return result;
     }
 
-    public int ownerId(int owner)
+    public int ownerId(FileOwner owner)
     {
         int result = -2;
         int i = 0;

@@ -87,15 +87,15 @@ public class SpinBoxes extends QWidget
 	QDateTimeEdit dateEdit = new QDateTimeEdit(QDate.currentDate());
 	dateEdit.setDateRange(new QDate(2005, 1, 1), new QDate(2010, 12, 31));
 	dateLabel.setText(String.format(tr("Appointment date (between %0$s and %1$s):"),
-					dateEdit.minimumDate().toString(Qt.ISODate),
-					dateEdit.maximumDate().toString(Qt.ISODate)));
+					dateEdit.minimumDate().toString(Qt.DateFormat.ISODate),
+					dateEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
 
 	QLabel timeLabel = new QLabel();
 	QDateTimeEdit timeEdit = new QDateTimeEdit(QTime.currentTime());
 	timeEdit.setTimeRange(new QTime(9, 0, 0, 0), new QTime(16, 30, 0, 0));
 	timeLabel.setText(String.format(tr("Appointment time (between %0$s and %1$s):"),
-					timeEdit.minimumTime().toString(Qt.ISODate),
-					timeEdit.maximumTime().toString(Qt.ISODate)));
+					timeEdit.minimumTime().toString(Qt.DateFormat.ISODate),
+					timeEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
 
 	meetingLabel = new QLabel();
 	meetingEdit = new QDateTimeEdit(QDateTime.currentDateTime());
@@ -126,16 +126,16 @@ public class SpinBoxes extends QWidget
 
     public void setFormatString(String formatString) {
 	meetingEdit.setDisplayFormat(formatString);
-	if ((meetingEdit.displayedSections() & QDateTimeEdit.DateSections_Mask) != 0) {
+	if (meetingEdit.displayedSections().isSet(QDateTimeEdit.Section.DateSections_Mask)) {
 	    meetingEdit.setDateRange(new QDate(2004, 11, 1), new QDate(2005, 11, 30));
 	    meetingLabel.setText(String.format(tr("Meeting date (between %0$s and %1$s):"),
-						meetingEdit.minimumDate().toString(Qt.ISODate),
-						meetingEdit.maximumDate().toString(Qt.ISODate)));
+						meetingEdit.minimumDate().toString(Qt.DateFormat.ISODate),
+						meetingEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
 	} else {
 	    meetingEdit.setTimeRange(new QTime(0, 7, 20, 0), new QTime(21, 0, 0, 0));
 	    meetingLabel.setText(String.format(tr("Meeting time (between %0$s and %1$s):"),
-					       meetingEdit.minimumTime().toString(Qt.ISODate),
-					       meetingEdit.maximumTime().toString(Qt.ISODate)));
+					       meetingEdit.minimumTime().toString(Qt.DateFormat.ISODate),
+					       meetingEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
 	}
     }
 

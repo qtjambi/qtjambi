@@ -10,7 +10,8 @@
   <primitive-type name="GLenum" java-name="int" preferred-conversion="no" jni-name="jint"/>
   
   <enum-type name="QGL::FormatOption" flags="QGL::FormatOptions"/>
-  
+  <enum-type name="QGLFormat::OpenGLVersionFlag" flags="QGLFormat::OpenGLVersionFlags"/>
+
   <namespace-type name="QGL"/>
   
   <value-type name="QGLColormap"/>

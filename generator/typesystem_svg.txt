@@ -1,0 +1,28 @@
+<typesystem package="com.trolltech.qt.svg" default-superclass="com.trolltech.qt.QtObject">
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtSvg");
+  </inject-code>
+
+  <namespace-type name="QSvg" />
+  
+  <object-type name="QSvgRenderer">
+    <extra-includes>
+        <include file-name="QRectF" location="global" />
+        <include file-name="QMatrix" location="global" />
+        <include file-name="QSize" location="global" />
+        <include file-name="QByteArray" location="global" />
+    </extra-includes>  
+  </object-type>  
+  
+  <object-type name="QSvgWidget">
+    <extra-includes>
+        <include file-name="QByteArray" location="global" />
+        <include file-name="QSvgRenderer" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>  
+  </object-type> 
+  
+  <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />  
+</typesystem>

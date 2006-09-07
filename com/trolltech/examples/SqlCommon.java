@@ -30,8 +30,9 @@ class SqlCommon
                          "This example needs SQLite support. Please read " +
                          "the Qt SQL driver documentation for information how " +
                          "to build it.\n\n" +
-                         "Click Cancel to exit."), QMessageBox.Cancel,
-                         QMessageBox.NoButton);
+                         "Click Cancel to exit."), 
+                         new QMessageBox.StandardButtons(QMessageBox.StandardButton.Cancel,
+                                                         QMessageBox.StandardButton.NoButton));
             return false;
         }
 

@@ -121,12 +121,12 @@ public class TextEdit extends QMainWindow {
 
         QAction a = new QAction(new QIcon(rsrcPath + "/filenew.png"), "&New",
                 this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_N));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_N.value()));
         a.triggered.connect(this, "fileNew()");
         menu.addAction(a);
 
         a = new QAction(new QIcon(rsrcPath + "/fileopen.png"), "&Open...", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_O));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_O.value()));
         a.triggered.connect(this, "fileOpen()");
         tb.addAction(a);
         menu.addAction(a);
@@ -135,7 +135,7 @@ public class TextEdit extends QMainWindow {
 
         actionSave = a = new QAction(new QIcon(rsrcPath + "/filesave.png"),
                 "&Save", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_S));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_S.value()));
         a.triggered.connect(this, "fileSave()");
         a.setEnabled(false);
         tb.addAction(a);
@@ -148,14 +148,14 @@ public class TextEdit extends QMainWindow {
 
         a = new QAction(new QIcon(rsrcPath + "/fileprint.png"), "&Print...",
                 this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_P));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_P.value()));
         a.triggered.connect(this, "filePrint()");
         tb.addAction(a);
         menu.addAction(a);
 
         a = new QAction(new QIcon(rsrcPath + "/exportpdf.png"),
                 "&Export PDF...", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_D));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_D.value()));
         a.triggered.connect(this, "filePrintPdf()");
         tb.addAction(a);
         menu.addAction(a);
@@ -163,7 +163,7 @@ public class TextEdit extends QMainWindow {
         menu.addSeparator();
 
         a = new QAction("&Quit", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_Q));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_Q.value()));
         a.triggered.connect(this, "close()");
         menu.addAction(a);
     }
@@ -179,28 +179,28 @@ public class TextEdit extends QMainWindow {
         QAction a;
         a = actionUndo = new QAction(new QIcon(rsrcPath + "/editundo.png"),
                 "&Undo", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_Z));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_Z.value()));
         tb.addAction(a);
         menu.addAction(a);
         a = actionRedo = new QAction(new QIcon(rsrcPath + "/editredo.png"),
                 "&Redo", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_Y));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_Y.value()));
         tb.addAction(a);
         menu.addAction(a);
         menu.addSeparator();
         a = actionCut = new QAction(new QIcon(rsrcPath + "/editcut.png"),
                 "Cu&t", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_X));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_X.value()));
         tb.addAction(a);
         menu.addAction(a);
         a = actionCopy = new QAction(new QIcon(rsrcPath + "/editcopy.png"),
                 "&Copy", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_C));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_C.value()));
         tb.addAction(a);
         menu.addAction(a);
         a = actionPaste = new QAction(new QIcon(rsrcPath + "/editpaste.png"),
                 "&Paste", this);
-        a.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_V));
+        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_V.value()));
         tb.addAction(a);
         menu.addAction(a);
         actionPaste.setEnabled(QApplication.clipboard().text().length() > 0);
@@ -216,7 +216,7 @@ public class TextEdit extends QMainWindow {
 
         actionTextBold = new QAction(new QIcon(rsrcPath + "/textbold.png"),
                 "&Bold", this);
-        actionTextBold.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_B));
+        actionTextBold.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_B.value()));
         QFont bold = new QFont();
         bold.setBold(true);
         actionTextBold.setFont(bold);
@@ -227,7 +227,7 @@ public class TextEdit extends QMainWindow {
 
         actionTextItalic = new QAction(new QIcon(rsrcPath + "/textitalic.png"),
                 "&Italic", this);
-        actionTextItalic.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_I));
+        actionTextItalic.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_I.value()));
         QFont italic = new QFont();
         italic.setItalic(true);
         actionTextItalic.setFont(italic);
@@ -238,7 +238,7 @@ public class TextEdit extends QMainWindow {
 
         actionTextUnderline = new QAction(
                 new QIcon(rsrcPath + "/textunder.png"), "&Underline", this);
-        actionTextUnderline.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_U));
+        actionTextUnderline.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_U.value()));
         QFont underline = new QFont();
         underline.setUnderline(true);
         actionTextUnderline.setFont(underline);
@@ -254,19 +254,19 @@ public class TextEdit extends QMainWindow {
 
         actionAlignLeft = new QAction(new QIcon(rsrcPath + "/textleft.png"),
                 "&Left", grp);
-        actionAlignLeft.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_L));
+        actionAlignLeft.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_L.value()));
         actionAlignLeft.setCheckable(true);
         actionAlignCenter = new QAction(
                 new QIcon(rsrcPath + "/textcenter.png"), "C&enter", grp);
-        actionAlignCenter.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_E));
+        actionAlignCenter.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_E.value()));
         actionAlignCenter.setCheckable(true);
         actionAlignRight = new QAction(new QIcon(rsrcPath + "/textright.png"),
                 "&Right", grp);
-        actionAlignRight.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_R));
+        actionAlignRight.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_R.value()));
         actionAlignRight.setCheckable(true);
         actionAlignJustify = new QAction(new QIcon(rsrcPath
                 + "/textjustify.png"), "&Justify", grp);
-        actionAlignJustify.setShortcut(new QKeySequence(Qt.CTRL + Qt.Key_J));
+        actionAlignJustify.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_J.value()));
         actionAlignJustify.setCheckable(true);
 
         tb.addActions(grp.actions());
@@ -282,9 +282,9 @@ public class TextEdit extends QMainWindow {
         menu.addAction(actionTextColor);
 
         tb = new QToolBar(this);
-        tb.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea);
+        tb.setAllowedAreas(new Qt.ToolBarAreas(Qt.ToolBarArea.TopToolBarArea, Qt.ToolBarArea.BottomToolBarArea));
         tb.setWindowTitle("Format Actions");
-        addToolBarBreak(Qt.TopToolBarArea);
+        addToolBarBreak(Qt.ToolBarArea.TopToolBarArea);
         addToolBar(tb);
 
         comboStyle = new QComboBox(tb);
@@ -305,7 +305,7 @@ public class TextEdit extends QMainWindow {
         comboFont.addItems(db.families());
         comboFont.activated.connect(this, "textFamily(String)");
         comboFont.setCurrentIndex(comboFont.findText(QApplication.font()
-                .family(), Qt.MatchExactly | Qt.MatchCaseSensitive));
+                .family(), new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
 
         comboSize = new QComboBox(tb);
         comboSize.setObjectName("comboSize");
@@ -319,15 +319,15 @@ public class TextEdit extends QMainWindow {
 
         comboSize.activated.connect(this, "textSize(String)");
         comboSize.setCurrentIndex(comboSize.findText(""
-                + QApplication.font().pointSize(), Qt.MatchExactly
-                | Qt.MatchCaseSensitive));
+                + QApplication.font().pointSize(),
+                new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
     }
 
     boolean load(String f) {
         if (!QFile.exists(f))
             return false;
         QFile file = new QFile(f);
-        if (!file.open(QFile.ReadOnly))
+        if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly)))
             return false;
 
         QByteArray data = file.readAll();
@@ -346,14 +346,14 @@ public class TextEdit extends QMainWindow {
     boolean maybeSave() {
         if (!textEdit.document().isModified())
             return true;
-        int ret = QMessageBox.warning(this,
+        QMessageBox.StandardButton ret = QMessageBox.warning(this,
                                       "Application",
                                       "The document has been modified.\n"
                                       + "Save your changes?",
-                                      QMessageBox.Ok | QMessageBox.Cancel);
-        if (ret == QMessageBox.Yes)
+                                      new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Cancel));
+        if (ret == QMessageBox.StandardButton.Yes)
             return fileSave();
-        else if (ret == QMessageBox.Cancel)
+        else if (ret == QMessageBox.StandardButton.Cancel)
             return false;
         return true;
     }
@@ -391,7 +391,7 @@ public class TextEdit extends QMainWindow {
             return fileSaveAs();
 
         QFile file = new QFile(fileName);
-        if (!file.open(QFile.WriteOnly))
+        if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly)))
             return false;
         QTextStream ts = new QTextStream(file);
         ts.setCodec(QTextCodec.codecForName(new QByteArray("UTF-8")));
@@ -414,10 +414,10 @@ public class TextEdit extends QMainWindow {
     }
 
     public void filePrint() {
-        QPrinter printer = new QPrinter(QPrinter.HighResolution);
+        QPrinter printer = new QPrinter(QPrinter.PrinterMode.HighResolution);
         printer.setFullPage(true);
         QPrintDialog dlg = new QPrintDialog(printer, this);
-        if (dlg.exec() == QDialog.Accepted) {
+        if (dlg.exec() == QDialog.DialogCode.Accepted.value()) {
             textEdit.document().print(printer);
         }
     }
@@ -427,15 +427,16 @@ public class TextEdit extends QMainWindow {
                 "*.pdf");
         if (fileName.length() == 0)
             return;
-        QPrinter printer = new QPrinter(QPrinter.HighResolution);
-        printer.setOutputFormat(QPrinter.PdfFormat);
+        QPrinter printer = new QPrinter(QPrinter.PrinterMode.HighResolution);
+        printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat);
         printer.setOutputFileName(fileName);
         textEdit.document().print(printer);
     }
 
     public void textBold() {
-        textEdit.setFontWeight(actionTextBold.isChecked() ? QFont.Bold
-                : QFont.Normal);
+        textEdit.setFontWeight(actionTextBold.isChecked()
+                ? QFont.Weight.Bold.value()
+                : QFont.Weight.Normal.value());
     }
 
     public void textUnderline() {
@@ -458,27 +459,27 @@ public class TextEdit extends QMainWindow {
         QTextCursor cursor = textEdit.textCursor();
 
         if (styleIndex != 0) {
-            int style = QTextListFormat.ListDisc;
+            QTextListFormat.Style style = QTextListFormat.Style.ListDisc;
 
             switch (styleIndex) {
             default:
             case 1:
-                style = QTextListFormat.ListDisc;
+                style = QTextListFormat.Style.ListDisc;
                 break;
             case 2:
-                style = QTextListFormat.ListCircle;
+                style = QTextListFormat.Style.ListCircle;
                 break;
             case 3:
-                style = QTextListFormat.ListSquare;
+                style = QTextListFormat.Style.ListSquare;
                 break;
             case 4:
-                style = QTextListFormat.ListDecimal;
+                style = QTextListFormat.Style.ListDecimal;
                 break;
             case 5:
-                style = QTextListFormat.ListLowerAlpha;
+                style = QTextListFormat.Style.ListLowerAlpha;
                 break;
             case 6:
-                style = QTextListFormat.ListUpperAlpha;
+                style = QTextListFormat.Style.ListUpperAlpha;
                 break;
             }
 
@@ -518,13 +519,13 @@ public class TextEdit extends QMainWindow {
 
     public void textAlign(QAction a) {
         if (a == actionAlignLeft)
-            textEdit.setAlignment(Qt.AlignLeft);
+            textEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignLeft));
         else if (a == actionAlignCenter)
-            textEdit.setAlignment(Qt.AlignHCenter);
+            textEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignHCenter));
         else if (a == actionAlignRight)
-            textEdit.setAlignment(Qt.AlignRight);
+            textEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignRight));
         else if (a == actionAlignJustify)
-            textEdit.setAlignment(Qt.AlignJustify);
+            textEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignJustify));
     }
 
     public void currentCharFormatChanged(QTextCharFormat format) {
@@ -539,9 +540,9 @@ public class TextEdit extends QMainWindow {
 
     public void fontChanged(QFont f) {
         comboFont.setCurrentIndex(comboFont.findText(f.family(),
-                Qt.MatchExactly | Qt.MatchCaseSensitive));
+                new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
         comboSize.setCurrentIndex(comboSize.findText(new Integer(f.pointSize())
-                .toString(), Qt.MatchExactly | Qt.MatchCaseSensitive));
+                .toString(), new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
         actionTextBold.setChecked(f.bold());
         actionTextItalic.setChecked(f.italic());
         actionTextUnderline.setChecked(f.underline());
@@ -553,14 +554,14 @@ public class TextEdit extends QMainWindow {
         actionTextColor.setIcon(new QIcon(pix));
     }
 
-    public void alignmentChanged(int a) {
-        if ((a & Qt.AlignLeft) != 0)
+    public void alignmentChanged(Qt.Alignment a) {
+        if (a.isSet(Qt.AlignmentFlag.AlignLeft))
             actionAlignLeft.setChecked(true);
-        else if ((a & Qt.AlignHCenter) != 0)
+        else if (a.isSet(Qt.AlignmentFlag.AlignHCenter))
             actionAlignCenter.setChecked(true);
-        else if ((a & Qt.AlignRight) != 0)
+        else if (a.isSet(Qt.AlignmentFlag.AlignRight))
             actionAlignRight.setChecked(true);
-        else if ((a & Qt.AlignJustify) != 0)
+        else if (a.isSet(Qt.AlignmentFlag.AlignJustify))
             actionAlignJustify.setChecked(true);
     }
 

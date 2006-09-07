@@ -82,7 +82,6 @@
   <enum-type name="QAbstractSpinBox::ButtonSymbols"/>
   <enum-type name="QAbstractSpinBox::CorrectionMode"/>
   <enum-type name="QAbstractSpinBox::StepEnabledFlag" flags="QAbstractSpinBox::StepEnabled"/>
-  <enum-type name="QAccessible::Action"/>
   <enum-type name="QAccessible::Event"/>
   <enum-type name="QAccessible::Method"/>
   <enum-type name="QAccessible::RelationFlag" flags="QAccessible::Relation"/>
@@ -93,11 +92,9 @@
   <enum-type name="QAction::MenuRole"/>
   <enum-type name="QApplication::ColorSpec"/>
   <enum-type name="QApplication::Type"/>
-  <enum-type name="QBoxLayout::Direction"/>
   <enum-type name="QCalendarWidget::HorizontalHeaderFormat"/>
   <enum-type name="QCalendarWidget::SelectionMode"/>
   <enum-type name="QCalendarWidget::VerticalHeaderFormat"/>
-  <enum-type name="QClipboard::Mode"/>
   <enum-type name="QColor::Spec"/>
   <enum-type name="QColormap::Mode"/>
   <enum-type name="QComboBox::InsertPolicy"/>
@@ -110,8 +107,6 @@
   <enum-type name="QDialog::DialogCode"/>
   <enum-type name="QDialogButtonBox::ButtonLayout"/>
   <enum-type name="QDialogButtonBox::ButtonRole"/>
-  <enum-type name="QDialogButtonBox::StandardButton" flags="QDialogButtonBox::StandardButtons"/>
-  <enum-type name="QDockWidget::DockWidgetFeature" flags="QDockWidget::DockWidgetFeatures"/>
   <enum-type name="QFileDialog::AcceptMode"/>
   <enum-type name="QFileDialog::DialogLabel"/>
   <enum-type name="QFileDialog::FileMode"/>
@@ -121,11 +116,9 @@
   <enum-type name="QFont::FontWeight"/>
   <enum-type name="QFont::Stretch"/>
   <enum-type name="QFont::Style"/>
-  <enum-type name="QFont::StyleHint"/>
   <enum-type name="QFont::StyleStrategy"/>
   <enum-type name="QFont::Weight"/>
   <enum-type name="QFontComboBox::FontFilter" flags="QFontComboBox::FontFilters"/>
-  <enum-type name="QFontDatabase::WritingSystem"/>
   <enum-type name="QFrame::FrameFlags"/>
   <enum-type name="QFrame::Shadow"/>
   <enum-type name="QFrame::Shape"/>
@@ -153,7 +146,6 @@
   <enum-type name="QGraphicsView::CacheModeFlag" flags="QGraphicsView::CacheMode"/>
   <enum-type name="QGraphicsView::DragMode"/>
   <enum-type name="QGraphicsView::ViewportAnchor"/>
-  <enum-type name="QHeaderView::ResizeMode"/>
   <enum-type name="QIcon::Mode"/>
   <enum-type name="QIcon::State"/>
   <enum-type name="QImage::Format"/>
@@ -180,11 +172,9 @@
   <enum-type name="QListView::ViewMode"/>
   <enum-type name="QListWidgetItem::ItemType"/>
   <enum-type name="QListWidgetItem::enum_1"/>
-  <enum-type name="QLocale::NumberOption" flags="QLocale::NumberOptions"/>
   <enum-type name="QMessageBox::Button"/>
   <enum-type name="QMessageBox::ButtonRole"/>
   <enum-type name="QMessageBox::Icon"/>
-  <enum-type name="QMessageBox::StandardButton" flags="QMessageBox::StandardButtons"/>
   <enum-type name="QMovie::CacheMode"/>
   <enum-type name="QMovie::MovieState"/>
   <enum-type name="QPaintDevice::PaintDeviceMetric"/>
@@ -195,14 +185,11 @@
   <enum-type name="QPainter::CompositionMode"/>
   <enum-type name="QPainter::RenderHint" flags="QPainter::RenderHints"/>
   <enum-type name="QPainterPath::ElementType"/>
-  <enum-type name="QPalette::ColorGroup"/>
-  <enum-type name="QPalette::ColorRole"/>
   <enum-type name="QPrintEngine::PrintEnginePropertyKey"/>
   <enum-type name="QPrinter::ColorMode"/>
   <enum-type name="QPrinter::Orientation"/>
   <enum-type name="QPrinter::OutputFormat"/>
   <enum-type name="QPrinter::PageOrder"/>
-  <enum-type name="QPrinter::PageSize"/>
   <enum-type name="QPrinter::PaperSource"/>
   <enum-type name="QPrinter::PrintRange"/>
   <enum-type name="QPrinter::PrinterMode"/>
@@ -214,18 +201,16 @@
   <enum-type name="QSizePolicy::Policy"/>
   <enum-type name="QSizePolicy::PolicyFlag"/>
   <enum-type name="QSizePolicy::SizePolicyMasks"/>
-  <enum-type name="QSlider::TickPosition"/>
   <enum-type name="QSqlQuery::BatchExecutionMode"/>
   <enum-type name="QStandardItem::ItemType"/>
-  <enum-type name="QStyle::ComplexControl" />
+  <enum-type name="QStyle::SubControl" flags="QStyle::SubControls" force-integer="yes"/>
+  <enum-type name="QStyle::ComplexControl"/>
   <enum-type name="QStyle::ContentsType" />
   <enum-type name="QStyle::ControlElement" />
   <enum-type name="QStyle::PixelMetric" />
   <enum-type name="QStyle::PrimitiveElement" />
   <enum-type name="QStyle::StandardPixmap" />
   <enum-type name="QStyle::StateFlag" flags="QStyle::State"/>
-  <enum-type name="QStyle::StyleHint"/>
-  <enum-type name="QStyle::SubControl" flags="QStyle::SubControls" />
   <enum-type name="QStyle::SubElement" />
   <enum-type name="QStyleHintReturn::HintReturnType"/>
   <enum-type name="QStyleHintReturn::StyleOptionType"/>
@@ -262,7 +247,7 @@
   <enum-type name="QStyleOptionFocusRect::enum_2"/>
   <enum-type name="QStyleOptionFrame::StyleOptionType"/>
   <enum-type name="QStyleOptionFrame::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionFrame::enum_1"/>
+ <enum-type name="QStyleOptionFrame::enum_1"/>
   <enum-type name="QStyleOptionFrame::enum_2"/>
   <enum-type name="QStyleOptionFrameV2::FrameFeature" flags="QStyleOptionFrameV2::FrameFeatures"/>
   <enum-type name="QStyleOptionFrameV2::StyleOptionVersion"/>
@@ -361,7 +346,6 @@
   <enum-type name="QTabletEvent::TabletDevice"/>
   <enum-type name="QTextCharFormat::UnderlineStyle"/>
   <enum-type name="QTextCharFormat::VerticalAlignment"/>
-  <enum-type name="QTextCodec::ConversionFlag" flags="QTextCodec::ConversionFlags"/>
   <enum-type name="QTextCursor::MoveMode"/>
   <enum-type name="QTextCursor::MoveOperation"/>
   <enum-type name="QTextCursor::SelectionType"/>
@@ -371,9 +355,8 @@
   <enum-type name="QTextEdit::AutoFormattingFlag" flags="QTextEdit::AutoFormatting"/>
   <enum-type name="QTextEdit::CursorAction"/>
   <enum-type name="QTextEdit::LineWrapMode"/>
-  <enum-type name="QTextFormat::FormatType"/>
   <enum-type name="QTextFormat::ObjectTypes"/>
-  <enum-type name="QTextFormat::Property"/>
+  <enum-type name="QTextFormat::PageBreakFlag" flags="QTextFormat::PageBreakFlags"/>
   <enum-type name="QTextFrameFormat::Position"/>
   <enum-type name="QTextItem::RenderFlag" flags="QTextItem::RenderFlags"/>
   <enum-type name="QTextLayout::CursorMode"/>
@@ -390,9 +373,86 @@
   <enum-type name="QValidator::State"/>
   <enum-type name="QWidget::WidgetMode"/>
   <enum-type name="QWorkspace::WindowOrder"/>
-  <enum-type name="Qt::TextInteractionFlag" flags="Qt::TextInteractionFlags"/>
 
-  <value-type name="QStyleOption"/>
+  <enum-type name="QAccessible::Action">
+    <reject-enum-value name="FirstStandardAction"/>
+    <reject-enum-value name="LastStandardAction"/>
+  </enum-type>
+
+  <enum-type name="QBoxLayout::Direction">
+    <reject-enum-value name="Down"/>
+    <reject-enum-value name="Up"/>
+  </enum-type>
+
+
+  <enum-type name="QClipboard::Mode">
+    <reject-enum-value name="LastMode"/>
+  </enum-type>
+
+  <enum-type name="QDialogButtonBox::StandardButton" flags="QDialogButtonBox::StandardButtons">
+    <reject-enum-value name="FirstButton"/>
+    <reject-enum-value name="LastButton"/>
+  </enum-type>
+
+
+  <enum-type name="QDockWidget::DockWidgetFeature" flags="QDockWidget::DockWidgetFeatures">
+    <reject-enum-value name="AllDockWidgetFeatures"/>
+  </enum-type>
+
+  <enum-type name="QFont::StyleHint">
+    <reject-enum-value name="SansSerif"/>
+    <reject-enum-value name="Serif"/>
+    <reject-enum-value name="TypeWriter"/>
+    <reject-enum-value name="Decorative"/>
+  </enum-type>
+
+  <enum-type name="QFontDatabase::WritingSystem">
+    <reject-enum-value name="Other"/>
+  </enum-type>
+
+  <enum-type name="QHeaderView::ResizeMode">
+    <reject-enum-value name="Custom"/>
+  </enum-type>
+
+
+  <enum-type name="QMessageBox::StandardButton" flags="QMessageBox::StandardButtons">
+    <reject-enum-value name="FirstButton"/>
+    <reject-enum-value name="LastButton"/>
+    <reject-enum-value name="YesAll"/>
+    <reject-enum-value name="NoAll"/>
+  </enum-type>
+
+  <enum-type name="QPalette::ColorGroup">
+    <reject-enum-value name="Normal"/>
+  </enum-type>
+
+  <enum-type name="QPalette::ColorRole">
+    <reject-enum-value name="NoRole"/>
+    <reject-enum-value name="Foreground"/>
+    <reject-enum-value name="Background"/>
+  </enum-type>
+
+  <enum-type name="QPrinter::PageSize">
+    <reject-enum-value name="NPageSize"/>
+  </enum-type>
+
+  <enum-type name="QSlider::TickPosition">
+    <reject-enum-value name="TicksLeft"/>
+    <reject-enum-value name="TicksRight"/>
+  </enum-type>
+
+  <enum-type name="QStyle::StyleHint">
+    <reject-enum-value name="SH_ScrollBar_StopMouseOverSlider"/>
+  </enum-type>
+
+
+  <enum-type name="QTextFormat::FormatType"/>
+
+  <enum-type name="QTextFormat::Property">
+    <reject-enum-value name="FontSizeIncrement"/>
+  </enum-type>
+
+   <value-type name="QStyleOption"/>
   <value-type name="QStyleOptionButton"/>
   <value-type name="QStyleOptionComboBox"/>
   <value-type name="QStyleOptionComplex"/>
@@ -434,6 +494,7 @@
   <value-type name="QLineF"/>
   <value-type name="QPainterPath"/>  
   <value-type name="QPalette"/>
+  <value-type name="QKeySequence"/> 
   <value-type name="QPicture"/>
   <value-type name="QPolygon"/>
   <value-type name="QPolygonF"/>
@@ -444,12 +505,6 @@
   <value-type name="QTextFormat"/>
   <value-type name="QTextListFormat"/>
 
-  <value-type name="QKeySequence"> 
-    <modify-function signature="QKeySequence(int, int, int, int)">
-      <remove />
-    </modify-function>
-  </value-type>
- 
   <value-type name="QIcon">
     <modify-function signature="pixmap(int,QIcon::Mode,QIcon::State)const">
         <remove />
@@ -675,19 +730,19 @@
         <include file-name="QBrush" location="global"/>
     </extra-includes>
     <inject-code>
-    public QPen(QColor color, double width, int s, int c, int j) {
+    public QPen(QColor color, double width, com.trolltech.qt.core.Qt.PenStyle s, com.trolltech.qt.core.Qt.PenCapStyle c, com.trolltech.qt.core.Qt.PenJoinStyle j) {
         this(new QBrush(color), width, s, c, j);
     }
-    public QPen(QColor color, double width, int s, int c) {
+    public QPen(QColor color, double width, com.trolltech.qt.core.Qt.PenStyle s, com.trolltech.qt.core.Qt.PenCapStyle c) {
         this(new QBrush(color), width, s, c);
     }
-    public QPen(QColor color, double width, int s) {
+    public QPen(QColor color, double width, com.trolltech.qt.core.Qt.PenStyle s) {
         this(new QBrush(color), width, s);
     }
     public QPen(QColor color, double width) {
         this(new QBrush(color), width);
     }
-    public static final QPen NoPen = new QPen(com.trolltech.qt.core.Qt.NoPen);
+    public static final QPen NoPen = new QPen(com.trolltech.qt.core.Qt.PenStyle.NoPen);
     </inject-code>
   </value-type>  
   
@@ -699,7 +754,7 @@
         <include file-name="QPixmap" location="global"/>
     </extra-includes>    
     <inject-code class="java">
-    public static final QBrush NoBrush = new QBrush(com.trolltech.qt.core.Qt.NoBrush);
+    public static final QBrush NoBrush = new QBrush(com.trolltech.qt.core.Qt.BrushStyle.NoBrush);
     </inject-code>
   </value-type>
 
@@ -714,26 +769,26 @@
         <remove/>
     </modify-function>
     <inject-code class="java">
-    public static final QColor white = new QColor(com.trolltech.qt.core.Qt.white);
-    public static final QColor black = new QColor(com.trolltech.qt.core.Qt.black);
-    public static final QColor red = new QColor(com.trolltech.qt.core.Qt.red);
-    public static final QColor darkRed = new QColor(com.trolltech.qt.core.Qt.darkRed);
-    public static final QColor green = new QColor(com.trolltech.qt.core.Qt.green);
-    public static final QColor darkGreen = new QColor(com.trolltech.qt.core.Qt.darkGreen);
-    public static final QColor blue = new QColor(com.trolltech.qt.core.Qt.blue);
-    public static final QColor darkBlue = new QColor(com.trolltech.qt.core.Qt.darkBlue);
-    public static final QColor cyan = new QColor(com.trolltech.qt.core.Qt.cyan);
-    public static final QColor darkCyan = new QColor(com.trolltech.qt.core.Qt.darkCyan);
-    public static final QColor magenta = new QColor(com.trolltech.qt.core.Qt.magenta);
-    public static final QColor darkMagenta = new QColor(com.trolltech.qt.core.Qt.darkMagenta);
-    public static final QColor yellow = new QColor(com.trolltech.qt.core.Qt.yellow);
-    public static final QColor darkYellow = new QColor(com.trolltech.qt.core.Qt.darkYellow);
-    public static final QColor gray = new QColor(com.trolltech.qt.core.Qt.gray);
-    public static final QColor darkGray = new QColor(com.trolltech.qt.core.Qt.darkGray);
-    public static final QColor lightGray = new QColor(com.trolltech.qt.core.Qt.lightGray);
-    public static final QColor transparent = new QColor(com.trolltech.qt.core.Qt.transparent);
-    public static final QColor color0 = new QColor(com.trolltech.qt.core.Qt.color0);
-    public static final QColor color1 = new QColor(com.trolltech.qt.core.Qt.color1);
+    public static final QColor white = new QColor(com.trolltech.qt.core.Qt.GlobalColor.white);
+    public static final QColor black = new QColor(com.trolltech.qt.core.Qt.GlobalColor.black);
+    public static final QColor red = new QColor(com.trolltech.qt.core.Qt.GlobalColor.red);
+    public static final QColor darkRed = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkRed);
+    public static final QColor green = new QColor(com.trolltech.qt.core.Qt.GlobalColor.green);
+    public static final QColor darkGreen = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkGreen);
+    public static final QColor blue = new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue);
+    public static final QColor darkBlue = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkBlue);
+    public static final QColor cyan = new QColor(com.trolltech.qt.core.Qt.GlobalColor.cyan);
+    public static final QColor darkCyan = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkCyan);
+    public static final QColor magenta = new QColor(com.trolltech.qt.core.Qt.GlobalColor.magenta);
+    public static final QColor darkMagenta = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkMagenta);
+    public static final QColor yellow = new QColor(com.trolltech.qt.core.Qt.GlobalColor.yellow);
+    public static final QColor darkYellow = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkYellow);
+    public static final QColor gray = new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray);
+    public static final QColor darkGray = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkGray);
+    public static final QColor lightGray = new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray);
+    public static final QColor transparent = new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent);
+    public static final QColor color0 = new QColor(com.trolltech.qt.core.Qt.GlobalColor.color0);
+    public static final QColor color1 = new QColor(com.trolltech.qt.core.Qt.GlobalColor.color1);
     </inject-code>
   </value-type>
  
@@ -1459,13 +1514,13 @@
     }
     </inject-code>    
     <inject-code class="java">
-    public final void drawPolygon(com.trolltech.qt.core.QPoint points[], int mode)
+    public final void drawPolygon(com.trolltech.qt.core.QPoint points[], QPaintEngine.PolygonDrawMode mode)
     {
         drawPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length, mode);
     }
     </inject-code>
     <inject-code class="java">
-    public final void drawPolygon(com.trolltech.qt.core.QPointF points[], int mode)
+    public final void drawPolygon(com.trolltech.qt.core.QPointF points[], QPaintEngine.PolygonDrawMode mode)
     {
         drawPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length, mode);
     }
@@ -1532,9 +1587,9 @@
       <include file-name="QPixmap" location="global"/>
     </extra-includes>
     <inject-code class="java">
-        public void setBrush(QColor color) { setBrush(new QBrush(color)); }
-        public void setBrush(QGradient gradient) { setBrush(new QBrush(gradient)); }
-        public void setBrush(QPixmap pm) { setBrush(new QBrush(pm)); }
+    public void setBrush(QColor color) { setBrush(new QBrush(color)); }
+    public void setBrush(QGradient gradient) { setBrush(new QBrush(gradient)); }
+    public void setBrush(QPixmap pm) { setBrush(new QBrush(pm)); }
     </inject-code>
     <modify-function class="java" signature="QPainter(QPaintDevice *)">
         <remove/>
@@ -1602,90 +1657,77 @@
     }
     </inject-code>
     <inject-code class="java">
+
     public final void drawRects(com.trolltech.qt.core.QRectF rects[])
     {
         drawRects_float(com.trolltech.qt.core.QRectF.nativePointerArray(rects), rects.length);
     }
-    </inject-code>
-    <inject-code class="java">
+
     public final void drawPolygon(com.trolltech.qt.core.QPoint points[]) 
     { 
-        drawPolygon(points, com.trolltech.qt.core.Qt.OddEvenFill); 
+        drawPolygon(points, com.trolltech.qt.core.Qt.FillRule.OddEvenFill); 
     }    
-    </inject-code>
-    <inject-code class="java">
+
     public final void drawPolygon(com.trolltech.qt.core.QPointF points[]) 
     { 
-        drawPolygon(points, com.trolltech.qt.core.Qt.OddEvenFill); 
+        drawPolygon(points, com.trolltech.qt.core.Qt.FillRule.OddEvenFill); 
     }    
-    </inject-code>    
-    <inject-code class="java">
-    public final void drawPolygon(com.trolltech.qt.core.QPoint points[], int mode) 
+
+    public final void drawPolygon(com.trolltech.qt.core.QPoint points[], com.trolltech.qt.core.Qt.FillRule mode) 
     { 
         drawPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length, mode);
     }    
-    </inject-code>    
-    <inject-code class="java">
-    public final void drawPolygon(com.trolltech.qt.core.QPointF points[], int mode) 
+
+    public final void drawPolygon(com.trolltech.qt.core.QPointF points[], com.trolltech.qt.core.Qt.FillRule mode) 
     { 
         drawPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length, mode);
     }    
-    </inject-code>        
-    <inject-code class="java">
+
     public final void drawPoints(com.trolltech.qt.core.QPoint points[])
     {
         drawPoints_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
     }
-    </inject-code>
-    <inject-code class="java">
+
     public final void drawPoints(com.trolltech.qt.core.QPointF points[])
     {
         drawPoints_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
     }
-    </inject-code>    
-    <inject-code class="java">
+
     public final void drawLines(QLine lines[])
     {
         drawLines_int(QLine.nativePointerArray(lines), lines.length);
     }
-    </inject-code>
-    <inject-code class="java">
+
     public final void drawLines(QLineF lines[])
     {
         drawLines_float(QLineF.nativePointerArray(lines), lines.length);
     }
-    </inject-code>    
-    <inject-code class="java">
+
     public final void drawLines(com.trolltech.qt.core.QPoint pointPairs[])
     {
         drawLines_point_pairs_int(com.trolltech.qt.core.QPoint.nativePointerArray(pointPairs), pointPairs.length / 2);
     }
-    </inject-code>    
-    <inject-code class="java">
+
     public final void drawLines(com.trolltech.qt.core.QPointF pointPairs[])
     {
         drawLines_point_pairs_float(com.trolltech.qt.core.QPointF.nativePointerArray(pointPairs), pointPairs.length / 2);
     }
-    </inject-code>        
-    <inject-code class="java">
+
     public final void drawPolyline(com.trolltech.qt.core.QPoint points[])
     {
         drawPolyline_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
     }
-    </inject-code>
-    <inject-code class="java">
+
     public final void drawPolyline(com.trolltech.qt.core.QPointF points[])
     {
         drawPolyline_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
     }
-    </inject-code>    
-    <inject-code class="java">
+
     public final void drawConvexPolygon(com.trolltech.qt.core.QPoint points[])
     {
         drawConvexPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
     }
-    </inject-code>
-    <inject-code class="java">
+
     public final void drawConvexPolygon(com.trolltech.qt.core.QPointF points[])
     {
         drawConvexPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
@@ -1717,7 +1759,7 @@
     }
 
     public static QApplication instance() {
-        if (type() != Tty)
+        if (type() != Type.Tty)
             return (QApplication) com.trolltech.qt.core.QCoreApplication.instance();
         return null;
     }

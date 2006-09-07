@@ -49,12 +49,12 @@ public class CachedTable extends QDialog {
         
         model = new QSqlTableModel(this);
         model.setTable(tableName);
-        model.setEditStrategy(QSqlTableModel.OnManualSubmit);
+        model.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit);
         model.select();
 
-        model.setHeaderData(0, Qt.Horizontal, tr("ID"));
-        model.setHeaderData(1, Qt.Horizontal, tr("First name"));
-        model.setHeaderData(2, Qt.Horizontal, tr("Last name"));
+        model.setHeaderData(0, Qt.Orientation.Horizontal, tr("ID"));
+        model.setHeaderData(1, Qt.Orientation.Horizontal, tr("First name"));
+        model.setHeaderData(2, Qt.Orientation.Horizontal, tr("Last name"));
 
         QTableView view = new QTableView();
         view.setModel(model);

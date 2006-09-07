@@ -35,23 +35,23 @@ public class Delegate extends QItemDelegate {
     }
 
     private final boolean isLast(QModelIndex index) {
-	return index.row() == m_model.size() - 1;
+        return index.row() == m_model.size() - 1;
     }
 
     public void paint(QPainter p, QStyleOptionViewItem option, QModelIndex index) {
-	Launchable l = m_model.at(index);
-	String text = stripName(l.name());
-	boolean selected = (option.state() & QStyle.State_Selected) != 0;
-	QRectF rect = new QRectF(option.rect());
+        Launchable l = m_model.at(index);
+        String text = stripName(l.name());
+        boolean selected = (option.state().isSet(QStyle.StateFlag.State_Selected));
+        QRectF rect = new QRectF(option.rect());
 
-	drawBackground(p, rect, index);
+        drawBackground(p, rect, index);
 
-	if (selected) {
-	    Style.drawShadeButton(p, rect, QStyle.State_Enabled);
-	    Style.drawButtonOutline(p, rect, QStyle.State_Enabled);
-	}
+        if (selected) {
+            Style.drawShadeButton(p, rect, new QStyle.State(QStyle.StateFlag.State_Enabled));
+            Style.drawButtonOutline(p, rect, new QStyle.State(Style.StateFlag.State_Enabled));
+        }
 
-	Style.drawShadowText(p, rect.translated(0, -1), text, 2, 2);
+        Style.drawShadowText(p, rect.translated(0, -1), text, 2, 2);
     }
 
 
@@ -104,7 +104,7 @@ public class Delegate extends QItemDelegate {
 	    fill = new QPainterPath();
 	    fill.addRect(rect);
 	}
-	p.setRenderHint(QPainter.Antialiasing);
+	p.setRenderHint(QPainter.RenderHint.Antialiasing);
 
 	p.fillPath(fill, new QBrush(Style.TT_BG_GREEN_LIGHT));
 	p.strokePath(outline, Style.PEN_THICK_GREEN);

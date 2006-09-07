@@ -77,9 +77,9 @@ class PathDeformRenderer extends ArthurFrame
     private void makeTextPaths()
     {
         QFont f = new QFont("times new roman,utopia");
-        f.setStyleStrategy(QFont.ForceOutline);
+        f.setStyleStrategy(QFont.StyleStrategy.ForceOutline);
         f.setPointSize(m_fontSize);
-        f.setStyleHint(QFont.Times);
+        f.setStyleHint(QFont.StyleHint.Times);
 
         QFontMetrics fm = new QFontMetrics(f);
         m_paths.clear();
@@ -150,7 +150,7 @@ class PathDeformRenderer extends ArthurFrame
 
         QPainter painter = new QPainter();
         if (preferImage()) {
-            m_lens_image = new QImage(bounds.size(), QImage.Format_ARGB32_Premultiplied);
+            m_lens_image = new QImage(bounds.size(), QImage.Format.Format_ARGB32_Premultiplied);
             m_lens_image.fill(0);
             painter.begin(m_lens_image);
         } else {
@@ -166,9 +166,9 @@ class PathDeformRenderer extends ArthurFrame
         gr.setColorAt(0.95, new QColor(0, 0, 0, 127));
         gr.setColorAt(1, new QColor(0, 0, 0, 0));
 
-        painter.setRenderHint(QPainter.Antialiasing);
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing);
         painter.setBrush(new QBrush(gr));
-        painter.setPen(Qt.NoPen);
+        painter.setPen(QPen.NoPen);
         painter.drawEllipse(0, 0, bounds.width(), bounds.height());
         painter.end();
     }
@@ -251,7 +251,7 @@ class PathDeformRenderer extends ArthurFrame
 
     protected void mouseReleaseEvent(QMouseEvent e)
     {
-        if (e.buttons() == Qt.NoButton && m_animated) {
+        if (e.buttons().isSet(Qt.MouseButton.NoButton) && m_animated) {
             m_repaintTimer.start(25, this);
             m_repaintTracker.start();
         }
@@ -260,7 +260,7 @@ class PathDeformRenderer extends ArthurFrame
     protected void mouseMoveEvent(QMouseEvent e)
     {
         QRect rectBefore = circle_bounds(m_pos, m_radius, m_fontSize);
-        if (e.type() == QEvent.MouseMove) {
+        if (e.type() == QEvent.Type.MouseMove) {
             QPointF epos = new QPointF(e.pos());
             epos.operator_add_assign(m_offset);
             QLineF line = new QLineF(m_pos, epos);
@@ -338,7 +338,7 @@ class PathDeformRenderer extends ArthurFrame
         int skip_x = (int)Math.round(m_pathBounds.width() + pad_x + m_fontSize / 2);
         int skip_y = (int)Math.round(m_pathBounds.height() + pad_y);
 
-        painter.setPen(Qt.NoPen);
+        painter.setPen(QPen.NoPen);
         painter.setBrush(new QBrush(QColor.black));
 
         QRectF clip = painter.clipPath().boundingRect();
@@ -399,34 +399,30 @@ public class Deform extends QWidget
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         m_renderer = new PathDeformRenderer(this);
-        m_renderer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding);
+        m_renderer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
 
         QGroupBox mainGroup = new QGroupBox(this);
         mainGroup.setTitle("Vector Deformation");
 
         QGroupBox radiusGroup = new QGroupBox(mainGroup);
-        radiusGroup.setAttribute(Qt.WA_ContentsPropagated);
         radiusGroup.setTitle("Lens radius");
-        QSlider radiusSlider = new QSlider(Qt.Horizontal, radiusGroup);
+        QSlider radiusSlider = new QSlider(Qt.Orientation.Horizontal, radiusGroup);
         radiusSlider.setRange(50, 150);
-        radiusSlider.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed);
+        radiusSlider.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed);
 
         QGroupBox deformGroup = new QGroupBox(mainGroup);
-        deformGroup.setAttribute(Qt.WA_ContentsPropagated);
         deformGroup.setTitle("Deformation");
-        QSlider deformSlider = new QSlider(Qt.Horizontal, deformGroup);
+        QSlider deformSlider = new QSlider(Qt.Orientation.Horizontal, deformGroup);
         deformSlider.setRange(-100, 100);
-        deformSlider.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed);
+        deformSlider.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed);
 
         QGroupBox fontSizeGroup = new QGroupBox(mainGroup);
-        fontSizeGroup.setAttribute(Qt.WA_ContentsPropagated);
         fontSizeGroup.setTitle("Font Size");
-        QSlider fontSizeSlider = new QSlider(Qt.Horizontal, fontSizeGroup);
+        QSlider fontSizeSlider = new QSlider(Qt.Orientation.Horizontal, fontSizeGroup);
         fontSizeSlider.setRange(16, 200);
-        fontSizeSlider.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed);
+        fontSizeSlider.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed);
 
         QGroupBox textGroup = new QGroupBox(mainGroup);
-        textGroup.setAttribute(Qt.WA_ContentsPropagated);
         textGroup.setTitle("Text");
 
         QLineEdit textInput = new QLineEdit(textGroup);

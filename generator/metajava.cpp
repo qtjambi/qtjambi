@@ -367,8 +367,8 @@ MetaJavaClass *MetaJavaClass::extractInterface()
                 iface->addFunction(function->copy());
         }
 
-        iface->setEnums(enums());
-        setEnums(MetaJavaEnumList());
+//         iface->setEnums(enums());
+//         setEnums(MetaJavaEnumList());
 
         foreach (const MetaJavaField *field, fields()) {
             if (field->isPublic()) {
@@ -449,9 +449,9 @@ MetaJavaFunctionList MetaJavaClass::publicOverrideFunctions() const
            + queryFunctions(Signals | WasProtected | FinalInCppFunctions);
 }
 
-MetaJavaFunctionList MetaJavaClass::virtualOverrideFunctions() const 
+MetaJavaFunctionList MetaJavaClass::virtualOverrideFunctions() const
 {
-    return queryFunctions(NormalFunctions | NonEmptyFunctions | Visible | VirtualInCppFunctions) + 
+    return queryFunctions(NormalFunctions | NonEmptyFunctions | Visible | VirtualInCppFunctions) +
            queryFunctions(Signals | NonEmptyFunctions | Visible | VirtualInCppFunctions);
 }
 
@@ -922,27 +922,73 @@ MetaJavaEnum *MetaJavaClass::findEnum(const QString &enumName)
     return 0;
 }
 
+
+
+
+/*!  Recursivly searches for the enum value named \a enumValueName in
+  this class and its superclasses and interfaces. Values belonging to
+  \a java_enum are excluded from the search.
+*/
+MetaJavaEnumValue *MetaJavaClass::findEnumValue(const QString &enumValueName, MetaJavaEnum *java_enum)
+{
+    foreach (MetaJavaEnum *e, m_enums) {
+        if (e == java_enum)
+            continue;
+        foreach (MetaJavaEnumValue *v, e->values()) {
+            if (v->name() == enumValueName)
+                return v;
+        }
+    }
+
+    if (typeEntry()->designatedInterface())
+        return extractInterface()->findEnumValue(enumValueName, java_enum);
+
+    if (baseClass() != 0)
+        return baseClass()->findEnumValue(enumValueName, java_enum);
+
+    return 0;
+}
+
+MetaJavaEnum *MetaJavaClass::findEnumForValue(const QString &enumValueName)
+{
+    foreach (MetaJavaEnum *e, m_enums) {
+        foreach (MetaJavaEnumValue *v, e->values()) {
+            if (v->name() == enumValueName)
+                return e;
+        }
+    }
+
+    if (typeEntry()->designatedInterface())
+        return extractInterface()->findEnumForValue(enumValueName);
+
+    if (baseClass() != 0)
+        return baseClass()->findEnumForValue(enumValueName);
+
+    return 0;
+}
+
+
 static void add_extra_include_for_type(MetaJavaClass *java_class, const MetaJavaType *type)
-{            
+{
     Q_ASSERT(java_class != 0);
     const TypeEntry *entry = (type ? type->typeEntry() : 0);
     if (entry != 0 && entry->isComplex()) {
         const ComplexTypeEntry *centry = static_cast<const ComplexTypeEntry *>(entry);
         ComplexTypeEntry *class_entry = java_class->typeEntry();
-        if (class_entry != 0 && centry->include().isValid())            
-            class_entry->addExtraInclude(centry->include());        
+        if (class_entry != 0 && centry->include().isValid())
+            class_entry->addExtraInclude(centry->include());
     }
 }
 
 static void add_extra_includes_for_function(MetaJavaClass *java_class, const MetaJavaFunction *java_function)
 {
-    Q_ASSERT(java_class != 0); 
+    Q_ASSERT(java_class != 0);
     Q_ASSERT(java_function != 0);
     add_extra_include_for_type(java_class, java_function->type());
-    
+
     MetaJavaArgumentList arguments = java_function->arguments();
     foreach (MetaJavaArgument *argument, arguments)
-        add_extra_include_for_type(java_class, argument->type());    
+        add_extra_include_for_type(java_class, argument->type());
 }
 
 void MetaJavaClass::fixFunctions()
@@ -956,7 +1002,7 @@ void MetaJavaClass::fixFunctions()
     MetaJavaFunctionList funcs = functions();
 
 //     printf("fix functions for %s\n", qPrintable(name()));
-    
+
     if (super_class != 0)
         super_class->fixFunctions();
     int iface_idx = 0;
@@ -976,7 +1022,7 @@ void MetaJavaClass::fixFunctions()
         for (int sfi=0; sfi<super_funcs.size(); ++sfi) {
             MetaJavaFunction *sf = super_funcs.at(sfi);
             // we generally don't care about private functions, but we have to get the ones that are
-            // virtual in case they override abstract functions. 
+            // virtual in case they override abstract functions.
             bool add = (sf->isNormal() || sf->isSignal() || sf->isEmptyFunction());
             for (int fi=0; fi<funcs.size(); ++fi) {
                 MetaJavaFunction *f = funcs.at(fi);
@@ -1013,7 +1059,7 @@ void MetaJavaClass::fixFunctions()
                                     *f -= MetaJavaAttributes::FinalInJava;
     //                                 printf("   --- inherit virtual\n");
                                 }
-                            } 
+                            }
                         }
 
                         if (f->visibility() != sf->visibility()) {
@@ -1028,7 +1074,7 @@ void MetaJavaClass::fixFunctions()
                             if (!f->isPrivate() && !sf->isPrivate())
                                 f->setVisibility(sf->visibility());
 
-                            // Private overrides of abstract functions have to go into the class or 
+                            // Private overrides of abstract functions have to go into the class or
                             // the subclasses will not compile as non-abstract classes.
                             // But they don't need to be implemented, since they can never be called.
                             if (f->isPrivate() && sf->isAbstract()) {
@@ -1045,16 +1091,16 @@ void MetaJavaClass::fixFunctions()
                         // function non-virtual
                         *sf -= MetaJavaAttributes::FinalInJava;
 //                         printf("   --- shadowing... force final in java\n");
-                    } 
+                    }
 
                     // Otherwise we have function shadowing and we can
                     // skip the thing...
-                }          
+                }
 
             }
 
             if (add)
-                funcs_to_add << sf;            
+                funcs_to_add << sf;
         }
 
         foreach (MetaJavaFunction *f, funcs_to_add)
@@ -1122,31 +1168,9 @@ bool MetaJavaType::hasNativeId() const
 /*******************************************************************************
  * Other stuff...
  */
-MetaJavaClass *findClass(const MetaJavaClassList &classes, const QString &name)
-{
-    if (name.isEmpty())
-        return 0;
-
-    foreach (MetaJavaClass *c, classes) {
-        if (c->qualifiedCppName() == name)
-            return c;
-    }
-
-    foreach (MetaJavaClass *c, classes) {
-        if (c->fullName() == name)
-            return c;
-    }
-
-    foreach (MetaJavaClass *c, classes) {
-        if (c->name() == name)
-            return c;
-    }
-
-    return 0;
-}
 
 
-MetaJavaEnum *findEnum(const MetaJavaClassList &classes, const EnumTypeEntry *entry)
+MetaJavaEnum *MetaJavaClassList::findEnum(const EnumTypeEntry *entry) const
 {
     Q_ASSERT(entry->isEnum());
 
@@ -1157,7 +1181,7 @@ MetaJavaEnum *findEnum(const MetaJavaClassList &classes, const EnumTypeEntry *en
     QString enum_name = qualified_name.mid(pos + 2);
     QString class_name = qualified_name.mid(0, pos);
 
-    MetaJavaClass *java_class = findClass(classes, class_name);
+    MetaJavaClass *java_class = findClass(class_name);
     if (!java_class) {
         ReportHandler::warning(QString("MetaJava::findEnum(), unknown class '%1' in '%2'")
                                .arg(class_name).arg(entry->qualifiedCppName()));
@@ -1165,4 +1189,54 @@ MetaJavaEnum *findEnum(const MetaJavaClassList &classes, const EnumTypeEntry *en
     }
 
     return java_class->findEnum(enum_name);
+}
+
+MetaJavaEnumValue *MetaJavaEnumValueList::find(const QString &name) const
+{
+    for (int i=0; i<size(); ++i) {
+        if (name == at(i)->name())
+            return at(i);
+    }
+    return 0;
+}
+
+MetaJavaEnumValue *MetaJavaClassList::findEnumValue(const QString &name) const
+{
+    QStringList lst = name.split(QLatin1String("::"));
+
+    Q_ASSERT_X(lst.size() == 2, "MetaJavaClassList::findEnumValue()", "Expected qualified enum");
+
+
+    QString prefixName = lst.at(0);
+    QString enumName = lst.at(1);
+
+    MetaJavaClass *cl = findClass(prefixName);
+    if (cl)
+        return cl->findEnumValue(enumName, 0);
+
+    ReportHandler::warning(QString("No matching enum '%1'").arg(name));
+    return 0;
+}
+
+MetaJavaClass *MetaJavaClassList::findClass(const QString &name) const
+{
+    if (name.isEmpty())
+        return 0;
+
+    foreach (MetaJavaClass *c, *this) {
+        if (c->qualifiedCppName() == name)
+            return c;
+    }
+
+    foreach (MetaJavaClass *c, *this) {
+        if (c->fullName() == name)
+            return c;
+    }
+
+    foreach (MetaJavaClass *c, *this) {
+        if (c->name() == name)
+            return c;
+    }
+
+    return 0;
 }

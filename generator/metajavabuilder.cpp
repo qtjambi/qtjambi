@@ -238,7 +238,7 @@ bool MetaJavaBuilder::build()
 
         if (!entry->codeGeneration() == TypeEntry::GenerateNothing
             && (entry->isValue() || entry->isObject())
-            && !findClass(m_java_classes, name))
+            && !m_java_classes.findClass(name))
             ReportHandler::warning(QString("type '%1' is specified in typesystem, but not declared")
                                    .arg(name));
 
@@ -246,7 +246,7 @@ bool MetaJavaBuilder::build()
             QString pkg = entry->javaPackage();
             QString name = (pkg.isEmpty() ? QString() : pkg + ".")
                            + ((EnumTypeEntry *) entry)->javaQualifier();
-            MetaJavaClass *cls = findClass(m_java_classes, name);
+            MetaJavaClass *cls = m_java_classes.findClass(name);
 
             if (!cls) {
                 ReportHandler::warning(QString("namespace '%1' for enum '%2' is not declared")
@@ -260,6 +260,10 @@ bool MetaJavaBuilder::build()
             }
         }
     }
+
+
+    figureOutEnumValues();
+    figureOutDefaultEnumArguments();
 
     dumpLog();
 
@@ -303,7 +307,239 @@ MetaJavaClass *MetaJavaBuilder::traverseNamespace(NamespaceModelItem namespace_i
     return java_class;
 }
 
-MetaJavaEnum *MetaJavaBuilder::traverseEnum(EnumModelItem enum_item)
+struct Operator
+{
+    enum Type { Plus, ShiftLeft, None };
+
+    Operator() : type(None) { }
+
+    int calculate(int x) {
+        switch (type) {
+        case Plus: return x + value;
+        case ShiftLeft: return x << value;
+        }
+        return x;
+    }
+
+    Type type;
+    int value;
+};
+
+
+
+Operator findOperator(QString *s) {
+    const char *names[] = {
+        "+",
+        "<<"
+    };
+
+    for (int i=0; i<Operator::None; ++i) {
+        QString name = QLatin1String(names[i]);
+        QString str = *s;
+        int splitPoint = str.indexOf(name);
+        if (splitPoint > 0) {
+            bool ok;
+            QString right = str.mid(splitPoint + name.length());
+            Operator op;
+            op.value = right.toInt(&ok);
+            if (ok) {
+                op.type = Operator::Type(i);
+                *s = str.left(splitPoint).trimmed();
+                return op;
+            }
+        }
+    }
+    return Operator();
+}
+
+int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
+                                        int oldValuevalue,
+                                        MetaJavaEnum *java_enum)
+{
+    if (stringValue.isEmpty())
+        return oldValuevalue;
+
+    QStringList stringValues = stringValue.split("|");
+
+    int returnValue = 0;
+
+    bool matched = false;
+
+    for (int i=0; i<stringValues.size(); ++i) {
+        QString s = strip_preprocessor_lines(stringValues.at(i));
+
+        bool ok;
+        int v;
+
+        Operator op = findOperator(&s);
+
+        if (s.length() > 0 && s.at(0) == QLatin1Char('0'))
+            v = s.toUInt(&ok, 0);
+        else
+            v = s.toInt(&ok);
+
+        if (ok) {
+            matched = true;
+
+        } else if (m_enum_values.contains(s)) {
+            v = m_enum_values[s]->value();
+            matched = true;
+
+        } else {
+            MetaJavaEnumValue *ev = 0;
+
+            if (java_enum && (ev = java_enum->values().find(s))) {
+                if (!ev->isValueSet())
+                    qDebug() << "value is not set..." << s << ev->name();
+                v = ev->value();
+                matched = true;
+
+            } else if (java_enum && (ev = java_enum->enclosingClass()->findEnumValue(s, java_enum))) {
+                if (!ev->isValueSet())
+                    qDebug() << "value is not set... (take two)" << s << ev->name();
+                v = ev->value();
+                matched = true;
+
+            } else {
+                ReportHandler::warning("Unhandled enum value: " + s + " in "
+                                       + java_enum->enclosingClass()->name() + "::"
+                                       + java_enum->name());
+            }
+        }
+
+        if (matched)
+            returnValue |= op.calculate(v);
+    }
+
+    if (!matched) {
+        ReportHandler::warning("Unmatched enum " + stringValue);
+        returnValue = oldValuevalue;
+
+    }
+
+    return returnValue;
+}
+
+void MetaJavaBuilder::figureOutEnumValuesForClass(MetaJavaClass *java_class,
+                                                  QSet<MetaJavaClass *> *classes)
+{
+    MetaJavaClass *base = java_class->baseClass();
+
+    if (base != 0 && !classes->contains(base))
+        figureOutEnumValuesForClass(base, classes);
+
+    if (classes->contains(java_class))
+        return;
+
+    MetaJavaEnumList enums = java_class->enums();
+    foreach (MetaJavaEnum *e, enums) {
+        MetaJavaEnumValueList lst = e->values();
+        int value = 0;
+        for (int i=0; i<lst.size(); ++i) {
+            value = figureOutEnumValue(lst.at(i)->stringValue(), value, e);
+            lst.at(i)->setValue(value);
+            value++;
+        }
+
+        // Check for duplicate values...
+        EnumTypeEntry *ete = e->typeEntry();
+        if (!ete->forceInteger()) {
+            QHash<int, MetaJavaEnumValue *> entries;
+            foreach (MetaJavaEnumValue *v, lst) {
+                if (ete->isEnumValueRejected(v->name()))
+                    continue;
+                if (entries.contains(v->value())) {
+                    ReportHandler::warning(QString("Duplciate enum values: %1::%2, %3 and %4 are %5")
+                                           .arg(java_class->name())
+                                           .arg(e->name())
+                                           .arg(v->name())
+                                           .arg(entries[v->value()]->name())
+                                           .arg(v->value()));
+                }
+                entries[v->value()] = v;
+            }
+        }
+    }
+
+
+
+    *classes += java_class;
+}
+
+
+void MetaJavaBuilder::figureOutEnumValues()
+{
+    // Keep a set of classes that we already traversed. We use this to
+    // enforce that we traverse base classes prior to subclasses.
+    QSet<MetaJavaClass *> classes;
+    foreach (MetaJavaClass *c, m_java_classes) {
+        figureOutEnumValuesForClass(c, &classes);
+    }
+}
+
+void MetaJavaBuilder::figureOutDefaultEnumArguments()
+{
+    foreach (MetaJavaClass *java_class, m_java_classes) {
+        foreach (MetaJavaFunction *java_function, java_class->functions()) {
+            foreach (MetaJavaArgument *arg, java_function->arguments()) {
+
+                QString expr = arg->defaultValueExpression();
+                if (expr.isEmpty())
+                    continue;
+
+                QString new_expr = expr;
+                if (arg->type()->isEnum()) {
+                    QStringList lst = expr.split(QLatin1String("::"));
+                    if (lst.size() == 1) {
+                        MetaJavaEnum *e = java_class->findEnumForValue(expr);
+                        new_expr = QString("%1.%2")
+                                   .arg(e->typeEntry()->qualifiedJavaName())
+                                   .arg(expr);
+                    } else if (lst.size() == 2) {
+                        MetaJavaClass *cl = m_java_classes.findClass(lst.at(0));
+                        new_expr = QString("%1.%2.%3")
+                                   .arg(cl->typeEntry()->qualifiedJavaName())
+                                   .arg(arg->type()->name())
+                                   .arg(lst.at(1));
+                    } else {
+                        ReportHandler::warning("Bad default value passed to enum " + expr);
+                    }
+
+                } else if(arg->type()->isFlags()) {
+                    const FlagsTypeEntry *flagsEntry =
+                        static_cast<const FlagsTypeEntry *>(arg->type()->typeEntry());
+                    EnumTypeEntry *enumEntry = flagsEntry->originator();
+                    MetaJavaEnum *java_enum = m_java_classes.findEnum(enumEntry);
+
+                    int value = figureOutEnumValue(expr, 0, java_enum);
+                    new_expr = QString::number(value);
+
+                } else if (arg->type()->isPrimitive()) {
+                    MetaJavaEnumValue *value = 0;
+                    if (expr.contains("::"))
+                        value = m_java_classes.findEnumValue(expr);
+                    if (!value)
+                        value = java_class->findEnumValue(expr, 0);
+
+                    if (value) {
+                        new_expr = QString::number(value->value());
+                    } else if (expr.contains(QLatin1Char('+'))) {
+                        new_expr = QString::number(figureOutEnumValue(expr, 0, 0));
+
+                    }
+
+
+
+                }
+
+                arg->setDefaultValueExpression(new_expr);
+            }
+        }
+    }
+}
+
+
+MetaJavaEnum *MetaJavaBuilder::traverseEnum(EnumModelItem enum_item, MetaJavaClass *enclosing)
 {
     // Skipping private enums.
     if (enum_item->accessPolicy() == CodeModel::Private) {
@@ -334,14 +570,26 @@ MetaJavaEnum *MetaJavaBuilder::traverseEnum(EnumModelItem enum_item)
     ReportHandler::debugMedium(QString(" - traversing enum %1").arg(java_enum->fullName()));
 
     foreach (EnumeratorModelItem value, enum_item->enumerators()) {
+
+//         if (((EnumTypeEntry *) type_entry)->isEnumValueRejected(value->name()))
+//             continue;
+
         MetaJavaEnumValue *java_enum_value = new MetaJavaEnumValue;
         java_enum_value->setName(value->name());
-        java_enum_value->setValue(strip_preprocessor_lines(value->value()));
+        // Deciding the enum value...
+
+        java_enum_value->setStringValue(strip_preprocessor_lines(value->value()));
         java_enum->addEnumValue(java_enum_value);
 
         ReportHandler::debugFull("   - " + java_enum_value->name() + " = "
                                  + java_enum_value->value());
+
+        // Add into global register...
+        QString key = enclosing->name() + "::" + java_enum_value->name();
+        m_enum_values[key] = java_enum_value;
     }
+
+    m_enums << java_enum;
 
     return java_enum;
 }
@@ -427,7 +675,7 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
 
     // Set the default include file name
     if (!type->include().isValid()) {
-        QFileInfo info(class_item->fileName());        
+        QFileInfo info(class_item->fileName());
         type->setInclude(Include(Include::IncludePath, info.fileName()));
     }
 
@@ -616,7 +864,7 @@ bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
     }
 
     if (primary >= 0) {
-        MetaJavaClass *base_class = findClass(m_java_classes, base_classes.at(primary));
+        MetaJavaClass *base_class = m_java_classes.findClass(base_classes.at(primary));
         if (!base_class) {
             ReportHandler::warning(QString("Unknown baseclass for '%1': '%2'")
                                    .arg(java_class->name())
@@ -632,7 +880,7 @@ bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
 
         if (i != primary) {
             QString interface_name = InterfaceTypeEntry::interfaceName(base_classes.at(i));
-            MetaJavaClass *iface = findClass(m_java_classes, interface_name);
+            MetaJavaClass *iface = m_java_classes.findClass(interface_name);
             if (!iface) {
                 ReportHandler::warning(QString("Unknown interface for '%1': '%2'")
                                        .arg(java_class->name())
@@ -650,10 +898,11 @@ void MetaJavaBuilder::traverseEnums(ScopeModelItem scope_item, MetaJavaClass *ja
 {
     EnumList enums = scope_item->enums();
     foreach (EnumModelItem enum_item, enums) {
-        MetaJavaEnum *java_enum = traverseEnum(enum_item);
+        MetaJavaEnum *java_enum = traverseEnum(enum_item, java_class);
         if (java_enum) {
             java_enum->setOriginalAttributes(java_enum->attributes());
             java_class->addEnum(java_enum);
+            java_enum->setEnclosingClass(java_class);
         }
     }
 }
@@ -793,13 +1042,20 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
     // Find the correct default values
     for (int i=0; i<arguments.size(); ++i) {
         ArgumentModelItem arg = arguments.at(i);
+        MetaJavaArgument *java_arg = java_arguments.at(i);
         if (arg->defaultValue()) {
-            QString expr = translateDefaultValue(arg, java_arguments[i]->type(), java_function, m_current_class, i);
+            QString expr = translateDefaultValue(arg, java_arg->type(), java_function, m_current_class, i);
             if (expr.isEmpty()) {
                 first_default_argument = i;
             } else {
-                java_arguments[i]->setDefaultValueExpression(expr);
+                java_arg->setDefaultValueExpression(expr);
             }
+
+            if (java_arg->type()->isEnum() || java_arg->type()->isFlags()) {
+                m_enum_default_arguments
+                    << QPair<MetaJavaArgument *, MetaJavaFunction *>(java_arg, java_function);
+            }
+
         }
     }
 
@@ -1072,10 +1328,14 @@ QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaT
         } else if (expr == "ULONG_MAX") {
             return "Long.MAX_VALUE";
         } else {
-            return expr.replace("::", ".");
+            // This can be an enum or flag so I need to delay the
+            // translation untill all namespaces are completly
+            // processed. This is done in figureOutEnumValues()
+            return expr;
         }
     } else if (type != 0 && (type->isFlags() || type->isEnum())) {
-        return expr.replace("::", ".");
+        // Same as with enum explanation above...
+        return expr;
 
     } else {
 

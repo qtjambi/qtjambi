@@ -97,7 +97,7 @@ public class Launcher extends QWidget {
     }
 
     public boolean eventFilter(QObject object, QEvent e) {
-        if (object == m_current.widget() && e.type() == QEvent.Close) {
+        if (object == m_current.widget() && e.type() == QEvent.Type.Close) {
             launch_close();
             return false;
         }
@@ -194,7 +194,7 @@ public class Launcher extends QWidget {
     private String loadDefaultText() {
         QFile f = new QFile("classpath:com/trolltech/launcher/launcher.html");
         assert f.exists();
-        if (f.open(QFile.ReadOnly)) {
+        if (f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly))) {
             String s = f.readAll().toString();
             f.close();
             return s;

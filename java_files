@@ -391,3 +391,6 @@
 ./com/trolltech/qt/sql/QSqlResult.java
 ./com/trolltech/qt/sql/QSqlTableModel.java
 ./com/trolltech/qt/sql/QtJambi_LibraryInitializer.java
+./com/trolltech/qt/svg/QSvgRenderer.java
+./com/trolltech/qt/svg/QSvgWidget.java
+./com/trolltech/qt/svg/QtJambi_LibraryInitializer.java

@@ -672,6 +672,15 @@ _InputIterator pp::eval_primary(_InputIterator __first, _InputIterator __last, V
       result->set_long (0);
       break;
 
+    case '-':
+      __first = eval_primary (__first, __last, result);
+      result->set_long (- result->l);
+      return __first;
+
+    case '+':
+      __first = eval_primary (__first, __last, result);
+      return __first;
+
     case '!':
       __first = eval_primary (__first, __last, result);
       result->set_long (result->is_zero ());

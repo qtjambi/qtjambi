@@ -34,7 +34,7 @@ public class LazyPixmap extends QObject {
         
         QImage small = (img.width() > SMALL_SIZE.width()
                         || img.height() > SMALL_SIZE.height())
-                        ? img.scaled(SMALL_SIZE, Qt.KeepAspectRatio) 
+                        ? img.scaled(SMALL_SIZE, Qt.AspectRatioMode.KeepAspectRatio) 
                         : img.copy();
 
         synchronized (this) {

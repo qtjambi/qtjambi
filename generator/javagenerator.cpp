@@ -70,10 +70,18 @@ QString JavaGenerator::translateType(const MetaJavaType *java_type, Option optio
     } else if (java_type->isArray()) {
         s = translateType(java_type->arrayElementType()) + "[]";
     } else if (java_type->isEnum() || java_type->isFlags()) {
-        if (option & BoxedPrimitive)
-            s = "java.lang.Integer";
-        else
-            s = "int";
+        if (java_type->isEnum() && ((EnumTypeEntry *)java_type->typeEntry())->forceInteger()
+            || java_type->isFlags() && ((FlagsTypeEntry *)java_type->typeEntry())->forceInteger()) {
+            if (option & BoxedPrimitive)
+                s = "java.lang.Integer";
+            else
+                s = "int";
+        } else {
+            if (option & EnumAsInts)
+                s = "int";
+            else
+                s = java_type->fullName();
+        }
     } else {
         if (java_type->isPrimitive() && (option & BoxedPrimitive)) {
             s = static_cast<const PrimitiveTypeEntry *>(java_type->typeEntry())->javaObjectFullName();
@@ -114,33 +122,14 @@ void JavaGenerator::writeArgument(QTextStream &s, const MetaJavaVariable *java_v
         s << " " << java_variable->name();
 }
 
-void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
+void JavaGenerator::writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_enum)
 {
     const MetaJavaEnumValueList &values = java_enum->values();
 
     s << "    // enum " << java_enum->name() << endl;
     for (int i=0; i<values.size(); ++i) {
         MetaJavaEnumValue *enum_value = values.at(i);
-        s << "    public static final int " << enum_value->name() << " = ";
-        if (enum_value->value().isEmpty()) {
-            if (i == 0)
-                s << 0;
-            else
-                s << values.at(i-1)->name() << " + 1";
-        } else {
-            QString expr = enum_value->value().replace("::", ".");
-
-            int pos = expr.indexOf(".");
-            if (pos > 0) {
-                QString someName = expr.left(pos);
-
-                ComplexTypeEntry *ctype = TypeDatabase::instance()->findComplexType(someName);
-                if (ctype != 0)
-                    expr = expr.replace(someName + ".", ctype->javaPackage() + "." + someName + ".");
-            }
-            s << expr;
-        }
-
+        s << "    public static final int " << enum_value->name() << " = " << enum_value->value();
         s << ";";
 
         s << endl;
@@ -149,42 +138,90 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
     s << endl;
 }
 
-#if 0
-void JavaGenerator::write1_dot_5_enum(QTextStream &s, const MetaJavaEnum *java_enum)
+void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
 {
+    if (java_enum->typeEntry()->forceInteger()) {
+        writeIntegerEnum(s, java_enum);
+        return;
+    }
+
     // Generates Java 1.5 type enums
-    s << "    public enum " << java_enum->name() << " {" << endl;
+    s << "    public enum " << java_enum->name()
+      << " implements com.trolltech.qt.QtEnumerator<" << java_enum->name() << "> {" << endl;
     const MetaJavaEnumValueList &values = java_enum->values();
+    EnumTypeEntry *entry = java_enum->typeEntry();
 
     for (int i=0; i<values.size(); ++i) {
         MetaJavaEnumValue *enum_value = values.at(i);
-        s << "        " << enum_value->name();
-        s << "(";
-        if (enum_value->value().isEmpty()) {
-            if (i == 0)
-                s << 0;
-            else
-                s << values.at(i-1)->name() << ".value() + 1";
-        } else
-            s << enum_value->value();
-        s << ")";
+        s << "        " << enum_value->name() << "(" << enum_value->value() << ")";
 
-        if (i != values.size() - 1) {
-            s << ",";
-            s << endl;
+        if (i != values.size() - 1 || entry->isExtensible()) {
+            s << "," << endl;
         }
     }
 
-    s << ";" << endl << endl
-      << "        " << java_enum->name() << "(int value) { this.value = value; }" << endl
-      << "        " << java_enum->name() << "(" << java_enum->name() << " other) { "
-      << "this.value = other.value; }" << endl
-      << "        private final int value;" << endl
-      << "        public int value() { return value; }" << endl;
+    if (entry->isExtensible())
+        s << "        CustomEnum(0)";
 
+    s << ";" << endl << endl;
+
+    s << "        " << java_enum->name() << "(int value) { this.value = value; }" << endl
+      << "        public int value() { return value; }" << endl
+      << endl;
+
+    // The resolve function
+    s << "        public static " << java_enum->name() << " resolve(int value) {" << endl
+      << "            switch (value) {" << endl;
+
+    for (int i=0; i<values.size(); ++i) {
+        MetaJavaEnumValue *e = values.at(i);
+        if (entry->isEnumValueRejected(e->name()))
+            continue;
+
+        s << "            case " << e->value() << ": return " << e->name() << ";" << endl;
+    }
+
+    s << "            }" << endl;
+
+    if (entry->isExtensible()) {
+        s << "            if (enumCache == null)" << endl
+          << "                enumCache = new java.util.HashMap<Integer, " << java_enum->name()
+          << ">();" << endl
+          << "            " << java_enum->name() << " e = enumCache.get(value);" << endl
+          << "            if (e == null) {" << endl
+          << "                e = (" << java_enum->name() << ") QtJambiInternal.createExtendedEnum("
+          << "value, CustomEnum.ordinal(), " << java_enum->name() << ".class, CustomEnum.name());"
+          << endl
+          << "                enumCache.put(value, e);" << endl
+          << "            }" << endl
+          << "            return e;" << endl;
+    } else {
+        s << "            throw new QNoSuchEnumValueException(value);" << endl;
+    }
+
+
+    s << "        }" << endl;
+
+    s << "        private final int value;" << endl
+      << endl;
+    if (entry->isExtensible()) {
+        s << "        private static java.util.HashMap<Integer, " << java_enum->name()
+          << "> enumCache;";
+    }
     s << "    }" << endl;
+
+    // Write out the QFlags if present...
+    FlagsTypeEntry *flags_entry = entry->flags();
+    if (flags_entry) {
+        QString flagsName = flags_entry->javaName().split(".").at(1);
+        s << "    public static class " << flagsName << " extends QFlags<"
+          << java_enum->name() << "> {" << endl
+          << "        public " << flagsName << "(" << java_enum->name() << " ... args)"
+          << " { super(args); }" << endl
+          << "        public " << flagsName << "(int value) { setValue(value); }" << endl
+          << "    }" << endl << endl;
+    }
 }
-#endif
 
 
 void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function)
@@ -203,7 +240,10 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
 
     s << "    ";
     writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
-        java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
+                            EnumAsInts
+                            | (java_function->isEmptyFunction()
+                               || java_function->isNormal()
+                               || java_function->isSignal() ? 0 : SkipReturnType));
 
     if (java_function->isConstructor())
         s << "void ";
@@ -222,7 +262,7 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
             s << ", ";
 
         if (!arg->type()->hasNativeId())
-            writeArgument(s, arg);
+            writeArgument(s, arg, EnumAsInts);
         else
             s << "long " << arg->name();
     }
@@ -283,15 +323,17 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
         if (type->isEnum()) {
             EnumTypeEntry *et = (EnumTypeEntry *) type->typeEntry();
-            if (!et->lowerBound().isEmpty()) {
-                s << "        if (" << arg->name() << " < " << et->lowerBound() << ")" << endl
-                  << "            throw new IllegalArgumentException(\"Argument " << arg->name()
-                  << " is less than lowerbound " << et->lowerBound() << "\");" << endl;
-            }
-            if (!et->upperBound().isEmpty()) {
-                s << "        if (" << arg->name() << " > " << et->upperBound() << ")" << endl
-                  << "            throw new IllegalArgumentException(\"Argument " << arg->name()
-                  << " is greated than upperbound " << et->upperBound() << "\");" << endl;
+            if (et->forceInteger()) {
+                if (!et->lowerBound().isEmpty()) {
+                    s << "        if (" << arg->name() << " < " << et->lowerBound() << ")" << endl
+                      << "            throw new IllegalArgumentException(\"Argument " << arg->name()
+                      << " is less than lowerbound " << et->lowerBound() << "\");" << endl;
+                }
+                if (!et->upperBound().isEmpty()) {
+                    s << "        if (" << arg->name() << " > " << et->upperBound() << ")" << endl
+                      << "            throw new IllegalArgumentException(\"Argument " << arg->name()
+                      << " is greated than upperbound " << et->upperBound() << "\");" << endl;
+                }
             }
         }
     }
@@ -303,8 +345,20 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
 
     s << "        ";
-    if (java_function->type())
+
+
+    MetaJavaType *return_type = java_function->type();
+
+    if (return_type) {
         s << "return ";
+
+        if (return_type->isJavaEnum()) {
+            s << ((EnumTypeEntry *) return_type->typeEntry())->qualifiedJavaName() << ".resolve(";
+        } else if (return_type->isJavaFlags()) {
+            s << "new " << return_type->typeEntry()->qualifiedJavaName() << "(";
+        }
+    }
+
     s << java_function->marshalledName() << "(";
 
     if (!java_function->isConstructor() && !java_function->isStatic())
@@ -318,7 +372,9 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
         if (i > 0 || (!java_function->isStatic() && !java_function->isConstructor()))
             s << ", ";
 
-        if (!type->hasNativeId()) {
+        if (type->isJavaEnum() || type->isJavaFlags()) {
+            s << arg->name() << ".value()";
+        } else if (!type->hasNativeId()) {
             s << arg->name();
         } else {
             s << arg->name() << " == null ? ";
@@ -330,7 +386,12 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
             s << " : " << arg->name() << ".nativeId()";
         }
     }
-    s << ");" << endl;
+    s << ")";
+
+    if (return_type && (return_type->isJavaEnum() || return_type->isJavaFlags()))
+        s << ")";
+
+    s << ";" << endl;
 
     if (disabled_gc_arguments.value(0, false) && java_function->isConstructor())
         s << "        this.disableGarbageCollection();" << endl;
@@ -400,7 +461,7 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
 
 void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function, const MetaJavaClass *java_class,
                                           QHash<int, bool> *disabled_params, uint *exclude_attributes, uint *include_attributes) const
-{    
+{
     FunctionModificationList mods = java_function->modifications(java_class);
     foreach (FunctionModification mod, mods) {
         if (mod.language == CodeSnip::JavaCode) {
@@ -432,11 +493,11 @@ QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
                                          uint included_attributes, uint excluded_attributes)
 {
     MetaJavaArgumentList arguments = java_function->arguments();
-    int argument_count = arguments.size();    
+    int argument_count = arguments.size();
 
     QString result;
     QTextStream s(&result);
-    QString functionName = java_function->name();    
+    QString functionName = java_function->name();
     // The actual function
     writeFunctionAttributes(s, java_function, included_attributes, excluded_attributes,
         java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
@@ -445,38 +506,38 @@ QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
     s << functionName << "(";
     writeFunctionArguments(s, java_function, argument_count);
     s << ")";
-    
+
     return result;
 }
 
-void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function, 
+void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
                                      uint *included_attributes, uint *excluded_attributes,
                                      QHash<int, bool> *disabled_params) const
-{    
+{
     *excluded_attributes |= java_function->ownerClass()->isInterface() || java_function->isConstructor()
                             ? MetaJavaAttributes::Native | MetaJavaAttributes::Final
                             : 0;
     if (java_function->ownerClass()->isInterface())
-        *excluded_attributes |= MetaJavaAttributes::Abstract;    
+        *excluded_attributes |= MetaJavaAttributes::Abstract;
     if (java_function->needsCallThrough())
         *excluded_attributes |= MetaJavaAttributes::Native;
- 
+
     const MetaJavaClass *java_class = java_function->ownerClass();
     retrieveModifications(java_function, java_class, disabled_params, excluded_attributes, included_attributes);
 }
 
 void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_function,
                                   uint included_attributes, uint excluded_attributes)
-{    
-    
+{
+
     if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
         return ;
-
+    QString functionName = java_function->name();
     QHash<int, bool> disabled_params;
     setupForFunction(java_function, &included_attributes, &excluded_attributes, &disabled_params);
 
     if (!java_function->ownerClass()->isInterface())
-        writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);       
+        writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);
     s << "    ";
     s << functionSignature(java_function, included_attributes, excluded_attributes);
 
@@ -579,7 +640,12 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
                         replacement = someName + ".";
                     defaultExpr = defaultExpr.replace(someName + ".", replacement);
                 }
-                s << defaultExpr;
+
+                if (arg_type->isFlags()) {
+                    s << "new " << arg_type->fullName() << "(" << defaultExpr << ")";
+                } else {
+                    s << defaultExpr;
+                }
             }
         }
         s << ");\n    }" << endl;
@@ -606,7 +672,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         s << "public interface ";
     } else {
         if (java_class->isPublic())
-            s << "public ";        
+            s << "public ";
         // else friendly
 
         if (java_class->isFinal())
@@ -699,7 +765,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         writeSignal(s, signal_funcs.at(i));
 
     // Functions
-    MetaJavaFunctionList java_funcs = java_class->functionsInJava();    
+    MetaJavaFunctionList java_funcs = java_class->functionsInJava();
     for (int i=0; i<java_funcs.size(); ++i) {
         MetaJavaFunction *function = java_funcs.at(i);
         writeFunction(s, function);
@@ -810,10 +876,10 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
     else if (attr & MetaJavaAttributes::FinalInJava) s << "final ";
     else if (attr & MetaJavaAttributes::Abstract) s << "abstract ";
 
-    if (attr & MetaJavaAttributes::Static) s << "static ";    
+    if (attr & MetaJavaAttributes::Static) s << "static ";
 
     if ((options & SkipReturnType) == 0) {
-        s << translateType(java_function->type());
+        s << translateType(java_function->type(), (Option) options);
         s << " ";
     }
 }

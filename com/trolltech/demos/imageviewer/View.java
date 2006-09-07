@@ -47,7 +47,7 @@ public class View extends QWidget
     }
 
     public void setImage(QImage original) {
-        this.original = original != null ? original.convertToFormat(QImage.Format_ARGB32_Premultiplied) : null;
+        this.original = original != null ? original.convertToFormat(QImage.Format.Format_ARGB32_Premultiplied) : null;
         zoom = 1;
         calculatePos(original);
         resetImage();
@@ -103,14 +103,14 @@ public class View extends QWidget
 
         if (modified != null) {
             p.save();
-            p.setRenderHint(QPainter.SmoothPixmapTransform);
+            p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform);
 
-            if (p.paintEngine().hasFeature(QPaintEngine.PixmapTransform))
+            if (p.paintEngine().hasFeature(new QPaintEngine.PaintEngineFeatures(QPaintEngine.PaintEngineFeature.PixmapTransform)))
                 p.drawImage(new QRect(posx, posy, currentWidth, currentHeight), modified);
             else {
                 p.translate(posx, posy);
                 p.scale(zoom, zoom);
-                p.setPen(Qt.NoPen);
+                p.setPen(QPen.NoPen);
                 p.setBrush(new QBrush(QPixmap.fromImage(modified)));
                 p.drawRect(0, 0, modified.width(), modified.height());
             }
@@ -212,7 +212,7 @@ public class View extends QWidget
 
         QPainter p = new QPainter();
         p.begin(modified);
-        p.setCompositionMode(QPainter.CompositionMode_SourceAtop);
+        p.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceAtop);
         if (redCyan != 0) {
             QColor c = decideColor(redCyan, QColor.cyan, QColor.red);
             p.fillRect(0, 0, modified.width(), modified.height(), new QBrush(c));

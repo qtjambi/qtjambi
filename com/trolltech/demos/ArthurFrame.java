@@ -53,7 +53,7 @@ class ArthurFrame extends QWidget
     {
         QFile textFile = new QFile(filename);
         String text;
-        if (!textFile.open(QFile.ReadOnly)) {
+        if (!textFile.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly))) {
             text = "Unable to load resource file: " + filename;
         } else {
             QByteArray ba = textFile.readAll();
@@ -85,7 +85,7 @@ class ArthurFrame extends QWidget
                                    pageWidth, pageHeight);
         int pad = 10;
         QRect clearRect = textRect.adjusted(-pad, -pad, pad, pad);
-        painter.setPen(Qt.NoPen);
+        painter.setPen(QPen.NoPen);
         painter.setBrush(new QBrush(new QColor(0, 0, 0, 63)));
         int shade = 10;
 
@@ -94,12 +94,12 @@ class ArthurFrame extends QWidget
                          shade, clearRect.height() + 1);
         painter.drawRect(clearRect.x() + shade, clearRect.y() + clearRect.height() + 1,
                 clearRect.width() - shade + 1, shade);
-        painter.setRenderHint(QPainter.Antialiasing, false);
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, false);
         painter.setBrush(new QBrush(new QColor(255, 255, 255, 220)));
         painter.setPen(QColor.black);
         painter.drawRect(clearRect);
 
-        painter.setClipRegion(new QRegion(textRect), Qt.IntersectClip);
+        painter.setClipRegion(new QRegion(textRect), Qt.ClipOperation.IntersectClip);
         painter.translate(textRect.topLeft());
 
         QAbstractTextDocumentLayout_PaintContext ctx = new QAbstractTextDocumentLayout_PaintContext();
@@ -109,7 +109,7 @@ class ArthurFrame extends QWidget
         g.setColorAt(1, QColor.transparent);
 
         QPalette pal = palette();
-        pal.setBrush(QPalette.Text, new QBrush(g));
+        pal.setBrush(QPalette.ColorRole.Text, new QBrush(g));
         ctx.setPalette(pal);
         ctx.setClip(new QRectF(0, 0, textRect.width(), textRect.height()));
         m_document.documentLayout().draw(painter, ctx);
@@ -134,7 +134,7 @@ class ArthurFrame extends QWidget
             contents = "No source for widget: " + objectName();
         } else {
             QFile f = new QFile(m_sourceFilename);
-            if (!f.open(QFile.ReadOnly)) {
+            if (!f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly))) {
                 contents = "Could not open file: " + m_sourceFilename;
             } else {
                 QByteArray ba = f.readAll();
@@ -193,8 +193,8 @@ class ArthurFrame extends QWidget
 
         QTextBrowser sourceViewer = new QTextBrowser(null);
         sourceViewer.setWindowTitle("Source: " + m_sourceFilename);
-        sourceViewer.setParent(this, Qt.Dialog);
-        sourceViewer.setAttribute(Qt.WA_DeleteOnClose);
+        sourceViewer.setParent(this, new Qt.WindowFlags(Qt.WindowType.Dialog));
+        sourceViewer.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose);
         sourceViewer.setHtml(html);
         sourceViewer.resize(600, 600);
         sourceViewer.show();
@@ -221,16 +221,16 @@ class ArthurFrame extends QWidget
         QPainter painter = new QPainter();
         if (preferImage()) {
             if (m_static_image == null) {
-                m_static_image = new QImage(size(), QImage.Format_RGB32);
+                m_static_image = new QImage(size(), QImage.Format.Format_RGB32);
             } else if (m_static_image.size().width() != size().width()
                     || m_static_image.size().height() != size().height()) {
-                m_static_image = new QImage(size(), QImage.Format_RGB32);
+                m_static_image = new QImage(size(), QImage.Format.Format_RGB32);
             }
 
             painter.begin(m_static_image);
             int o = 10;
 
-            QBrush bg = palette().brush(QPalette.Background);
+            QBrush bg = palette().brush(QPalette.ColorRole.Background);
             painter.fillRect(0, 0, o, o, bg);
             painter.fillRect(width() - o, 0, o, o, bg);
             painter.fillRect(0, height() - o, o, o, bg);
@@ -240,7 +240,7 @@ class ArthurFrame extends QWidget
         }
 
         painter.setClipRect(e.rect());
-        painter.setRenderHint(QPainter.Antialiasing);
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing);
         QPainterPath clipPath = new QPainterPath();
 
         QRect r = rect();
@@ -258,7 +258,7 @@ class ArthurFrame extends QWidget
         clipPath.closeSubpath();
 
         painter.save();
-        painter.setClipPath(clipPath, Qt.IntersectClip);
+        painter.setClipPath(clipPath, Qt.ClipOperation.IntersectClip);
         painter.drawTiledPixmap(rect(), m_tile);
 
         paint(painter);
@@ -272,7 +272,7 @@ class ArthurFrame extends QWidget
 
         int level = 180;
         painter.setPen(new QPen(new QBrush(new QColor(level, level, level)), 2));
-        painter.setBrush(Qt.NoBrush);
+        painter.setBrush(QBrush.NoBrush);
         painter.drawPath(clipPath);
 
         if (preferImage()) {

@@ -239,13 +239,14 @@ public class Application extends QMainWindow {
     private boolean maybeSave()
     {
         if (textEdit.document().isModified()) {
-            int ret = QMessageBox.warning(this, tr("Application"),
+            QMessageBox.StandardButton ret = QMessageBox.warning(this, tr("Application"),
                                            tr("The document has been modified.\n" +
                                               "Save your changes?"),
-                                           QMessageBox.Ok | QMessageBox.Cancel);
-            if (ret == QMessageBox.Yes) {
+                                          new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok,
+                                                  QMessageBox.StandardButton.Cancel));
+            if (ret == QMessageBox.StandardButton.Yes) {
                 return save();
-            } else if (ret == QMessageBox.Cancel) {
+            } else if (ret == QMessageBox.StandardButton.Cancel) {
                 return false;
             }
         }
@@ -255,13 +256,13 @@ public class Application extends QMainWindow {
     public void loadFile(String fileName)
     {
         QFile file = new QFile(fileName);
-        if (!file.open(QFile.ReadOnly | QFile.Text)) {
+        if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text))) {
             QMessageBox.warning(this, tr("Application"), String.format(tr("Cannot read file %1$s:\n%2$s."), fileName, file.errorString()));
             return;
         }
 
         QTextStream in = new QTextStream(file);
-        QApplication.setOverrideCursor(new QCursor(Qt.WaitCursor));
+        QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.WaitCursor));
         textEdit.setPlainText(in.readAll());
         QApplication.restoreOverrideCursor();
 
@@ -272,13 +273,13 @@ public class Application extends QMainWindow {
     public boolean saveFile(String fileName)
     {
         QFile file = new QFile(fileName);
-        if (!file.open(QFile.WriteOnly | QFile.Text)) {
+        if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly, QFile.OpenModeFlag.Text))) {
             QMessageBox.warning(this, tr("Application"), String.format(tr("Cannot write file %1$s:\n%2$s."), fileName, file.errorString()));
             return false;
         }
 
         QTextStream out = new QTextStream(file);
-        QApplication.setOverrideCursor(new QCursor(Qt.WaitCursor));
+        QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.WaitCursor));
         out.operator_shift_left(textEdit.toPlainText());
         QApplication.restoreOverrideCursor();
 

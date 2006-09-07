@@ -112,7 +112,7 @@ public class Launchable {
 
     private final String resourceFile(String fileType) {
 	QFile f = new QFile("classpath:" + widget().getClass().getName().replace(".", "/") + "." + fileType);
-	if (f.exists() && f.open(QFile.ReadOnly))
+	if (f.exists() && f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly)))
 	    return f.readAll().toString();
 	return null;
     }

@@ -383,7 +383,7 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
         // Write virtual function overries used to decide on static/virtual calls
         MetaJavaFunctionList virtual_functions = java_class->virtualOverrideFunctions();
-        foreach (const MetaJavaFunction *function, virtual_functions) {            
+        foreach (const MetaJavaFunction *function, virtual_functions) {
             writeVirtualFunctionOverride(s, function, java_class);
         }
 
@@ -1490,7 +1490,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
         bool written = false;
         if (java_type->isEnum()) {
             MetaJavaEnum *java_enum =
-                findEnum(m_java_classes, static_cast<const EnumTypeEntry *>(java_type->typeEntry()));
+                m_java_classes.findEnum(static_cast<const EnumTypeEntry *>(java_type->typeEntry()));
             if (java_enum && !java_enum->isPublic()) {
 
                 s << INDENT << "int " << qt_name << " = ";
@@ -2028,8 +2028,7 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
                                                       || argument->type()->typeEntry()->isFlags());
         if (argument->type()->isEnum()) {
             MetaJavaEnum *java_enum =
-                findEnum(m_java_classes,
-                         static_cast<const EnumTypeEntry *>(argument->type()->typeEntry()));
+                m_java_classes.findEnum(static_cast<const EnumTypeEntry *>(argument->type()->typeEntry()));
             if (java_enum == 0) {
                 ReportHandler::warning(QString("enum not found: '%1'")
                     .arg(argument->type()->typeEntry()->qualifiedCppName()));

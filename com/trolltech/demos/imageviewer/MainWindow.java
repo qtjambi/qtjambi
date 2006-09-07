@@ -75,7 +75,7 @@ public class MainWindow extends QMainWindow {
         ui.label.setPixmap(new QPixmap("classpath:com/trolltech/images/qt-logo.png"));
 
         QPalette pal = ui.textEdit.palette();
-        pal.setBrush(QPalette.Base, d.palette().window());
+        pal.setBrush(QPalette.ColorRole.Base, d.palette().window());
         ui.textEdit.setPalette(pal);
 
         d.exec();
@@ -112,7 +112,7 @@ public class MainWindow extends QMainWindow {
             return;
         dirModel = new QDirModel();
         dirModel.setLazyChildCount(true);
-        dirModel.setFilter(QDir.Dirs | QDir.Drives);
+        dirModel.setFilter(new QDir.Filters(QDir.Filter.Dirs, QDir.Filter.Drives));
         ui.dirView.setModel(dirModel);
         for (int i=1; i<ui.dirView.header().count(); ++i)
             ui.dirView.header().hideSection(i);

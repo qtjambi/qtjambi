@@ -128,13 +128,13 @@ public class LineEdits extends QWidget {
     public void echoChanged(int index) {
 	switch (index) {
 	case 0:
-	    echoLineEdit.setEchoMode(QLineEdit.Normal);
+	    echoLineEdit.setEchoMode(QLineEdit.EchoMode.Normal);
 	    break;
 	case 1:
-	    echoLineEdit.setEchoMode(QLineEdit.Password);
+	    echoLineEdit.setEchoMode(QLineEdit.EchoMode.Password);
 	    break;
 	case 2:
-	    echoLineEdit.setEchoMode(QLineEdit.NoEcho);
+	    echoLineEdit.setEchoMode(QLineEdit.EchoMode.NoEcho);
 	}
     }
 
@@ -159,13 +159,13 @@ public class LineEdits extends QWidget {
     {
 	switch (index) {
 	case 0:
-	    alignmentLineEdit.setAlignment(Qt.AlignLeft);
+	    alignmentLineEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignLeft));
 	    break;
 	case 1:
-	    alignmentLineEdit.setAlignment(Qt.AlignCenter);
+	    alignmentLineEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignCenter));
 	    break;
 	case 2:
-	    alignmentLineEdit.setAlignment(Qt.AlignRight);
+	    alignmentLineEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignRight));
 	}
     }
 

@@ -81,8 +81,8 @@ class TetrixBoard extends QFrame
     {
         super(parent);
         
-        setFrameStyle(QFrame.Panel | QFrame.Sunken);
-        setFocusPolicy(Qt.StrongFocus);
+        setFrameStyle(QFrame.Shape.Panel.value() | QFrame.Shadow.Sunken.value());
+        setFocusPolicy(Qt.FocusPolicy.StrongFocus);
         clearBoard();
 
         nextPiece.setRandomShape();
@@ -184,7 +184,7 @@ class TetrixBoard extends QFrame
         QRect rect = contentsRect();
 
         if (isPaused) {
-            painter.drawText(rect, Qt.AlignCenter, "Pause");
+            painter.drawText(rect, Qt.AlignmentFlag.AlignCenter.value(), "Pause");
             painter.end();
             return ;
         }
@@ -222,17 +222,17 @@ class TetrixBoard extends QFrame
             return ;
         }
 
-        if (event.key() == Qt.Key_Left) 
+        if (event.key() == Qt.Key.Key_Left.value()) 
             tryMove(curPiece, curX - 1, curY);
-        else if (event.key() == Qt.Key_Right) 
+        else if (event.key() == Qt.Key.Key_Right.value()) 
             tryMove(curPiece, curX + 1, curY);
-        else if (event.key() == Qt.Key_Down)
+        else if (event.key() == Qt.Key.Key_Down.value())
             tryMove(curPiece.rotatedRight(), curX, curY);
-        else if (event.key() == Qt.Key_Up)
+        else if (event.key() == Qt.Key.Key_Up.value())
             tryMove(curPiece.rotatedLeft(), curX, curY);
-        else if (event.key() == Qt.Key_Space) 
+        else if (event.key() == Qt.Key.Key_Space.value()) 
             dropDown();
-        else if (event.key() == Qt.Key_D) 
+        else if (event.key() == Qt.Key.Key_D.value()) 
             oneLineDown();
         else 
             super.keyPressEvent(event);        
@@ -569,25 +569,25 @@ public class Tetrix extends QWidget
         board = new TetrixBoard(null);
 
         nextPieceLabel = new QLabel();
-        nextPieceLabel.setFrameStyle(QFrame.Box | QFrame.Raised);
-        nextPieceLabel.setAlignment(Qt.AlignCenter);
+        nextPieceLabel.setFrameStyle(QFrame.Shape.Box.value() | QFrame.Shadow.Raised.value());
+        nextPieceLabel.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignCenter));
         board.setNextPieceLabel(nextPieceLabel);
 
         scoreLcd = new QLCDNumber(5);
-        scoreLcd.setSegmentStyle(QLCDNumber.Filled);
+        scoreLcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);
 
         levelLcd = new QLCDNumber(2);
-        levelLcd.setSegmentStyle(QLCDNumber.Filled);
+        levelLcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);
 
         linesLcd = new QLCDNumber(5);
-        linesLcd.setSegmentStyle(QLCDNumber.Filled);
+        linesLcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);
 
         startButton = new QPushButton("&Start");
-        startButton.setFocusPolicy(Qt.NoFocus);
+        startButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);
         quitButton = new QPushButton("&Quit");
-        quitButton.setFocusPolicy(Qt.NoFocus);
+        quitButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);
         pauseButton = new QPushButton("&Pause");
-        pauseButton.setFocusPolicy(Qt.NoFocus);
+        pauseButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);
 
         startButton.clicked.connect(board, "start()");                        
         quitButton.clicked.connect(this, "close()");
@@ -620,7 +620,7 @@ public class Tetrix extends QWidget
     private QLabel createLabel(String text)
     {
         QLabel lbl = new QLabel(text);
-        lbl.setAlignment(Qt.AlignBottom);
+        lbl.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignBottom));
         return lbl;
     }
 

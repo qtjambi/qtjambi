@@ -75,7 +75,7 @@ public class ScrollingHTMLView extends QWidget {
         p.drawPixmap(w / 2 - background.width() / 2, h / 2 - background.height() / 2, background);
 
         QRectF textRect = new QRectF(w * margin, 0, w * (1 - margin), h);
-        p.setPen(Qt.NoPen);
+        p.setPen(QPen.NoPen);
 
         int ypos = m_y_offset;
 

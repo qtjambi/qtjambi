@@ -399,6 +399,8 @@ void *qtjambi_to_interface(JNIEnv *env,
                           const char *package_name,
                           const char *function_name)
 {
+    if (!link)
+        return 0;
     jobject object = link->javaObject(env);
     jmethodID cast_id = resolveMethod(env, function_name, "(J)J", interface_name, package_name);
     jlong ret = env->CallLongMethod(object, cast_id, (jlong) link->pointer());

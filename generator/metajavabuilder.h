@@ -45,19 +45,24 @@ public:
 
     bool build();
 
+    void figureOutEnumValuesForClass(MetaJavaClass *java_class, QSet<MetaJavaClass *> *classes);
+    int figureOutEnumValue(const QString &name, int value, MetaJavaEnum *java_enum);
+    void figureOutEnumValues();
+    void figureOutDefaultEnumArguments();
+
     MetaJavaClass *traverseClass(ClassModelItem item);
     bool setupInheritance(MetaJavaClass *java_class);
     MetaJavaClass *traverseNamespace(NamespaceModelItem item);
-    MetaJavaEnum *traverseEnum(EnumModelItem item);
+    MetaJavaEnum *traverseEnum(EnumModelItem item, MetaJavaClass *enclosing);
     void traverseEnums(ScopeModelItem item, MetaJavaClass *parent);
     void traverseFunctions(ScopeModelItem item, MetaJavaClass *parent);
     void traverseFields(ScopeModelItem item, MetaJavaClass *parent);
     MetaJavaFunction *traverseFunction(FunctionModelItem function);
     MetaJavaField *traverseField(VariableModelItem field, const MetaJavaClass *cls);
-    
+
     QString translateDefaultValue(ArgumentModelItem item, MetaJavaType *type,
                                                MetaJavaFunction *fnc, MetaJavaClass *,
-                                               int argument_index);    
+                                               int argument_index);
     MetaJavaType *translateType(const TypeInfo &type, bool *ok);
 
     void decideUsagePattern(MetaJavaType *type);
@@ -84,6 +89,12 @@ protected:
     QMap<QString, RejectReason> m_rejected_enums;
     QMap<QString, RejectReason> m_rejected_functions;
     QMap<QString, RejectReason> m_rejected_fields;
+
+    QList<MetaJavaEnum *> m_enums;
+
+    QList<QPair<MetaJavaArgument *, MetaJavaFunction *> > m_enum_default_arguments;
+
+    QHash<QString, MetaJavaEnumValue *> m_enum_values;
 
     MetaJavaClass *m_current_class;
 };

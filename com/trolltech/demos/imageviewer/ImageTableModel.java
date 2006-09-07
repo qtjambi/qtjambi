@@ -101,8 +101,8 @@ public class ImageTableModel extends QAbstractItemModel {
         return count;
     }
     
-    public Object headerData(int section, int orientation, int role) {
-        if (orientation == Qt.Horizontal 
+    public Object headerData(int section, Qt.Orientation orientation, int role) {
+        if (orientation == Qt.Orientation.Horizontal 
             && (role == Qt.DisplayRole || role == Qt.EditRole)) {
             switch (section) {
             case NAME_COL: return "Name";
@@ -125,7 +125,9 @@ public class ImageTableModel extends QAbstractItemModel {
             filters.add("*." + ba.toString());
         }
                 
-        infos = directory.entryInfoList(filters, QDir.Files, QDir.NoSort);
+        infos = directory.entryInfoList(filters, 
+                new QDir.Filters(QDir.Filter.Files), 
+                new QDir.SortFlags(QDir.SortFlag.NoSort));
         
         mapper.mappedInteger.connect(this, "updateRow(int)");
         

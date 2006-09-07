@@ -31,6 +31,7 @@ public:
     void writeArgument(QTextStream &s, const MetaJavaVariable *java_variable,
                        uint options = 0);
     void writeEnum(QTextStream &s, const MetaJavaEnum *java_enum);
+    void writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_enum);
     void writeSignal(QTextStream &s, const MetaJavaFunction *java_function);
     void writeFunction(QTextStream &s, const MetaJavaFunction *java_function,
                        uint included_attributes = 0, uint excluded_attributes = 0);

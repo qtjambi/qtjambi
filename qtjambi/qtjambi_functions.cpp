@@ -71,3 +71,11 @@ Java_com_trolltech_qt_QtJambiInternal_sender(JNIEnv *env, jclass, jobject obj)
     QObjectPrivateAccessor *d = (reinterpret_cast<QObjectAccessor *>(qobject))->d_ptr;
     return qtjambi_from_qobject(env, d->currentSender, "QObject", "com.trolltech.qt.core");
 }
+
+
+extern "C" JNIEXPORT jobject JNICALL Java_com_trolltech_qt_QtJambiInternal(JNIEnv *env, jclass, jint value, jint ordinal, jclass enumClass, jstring name)
+{
+    jmethodID methodId = env->GetMethodID(enumClass, "<init>", "(Ljava/lang/String;II)V");
+    jobject object = env->NewObject(enumClass, methodId, name, ordinal, value);
+    return object;
+}

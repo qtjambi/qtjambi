@@ -203,22 +203,18 @@
   <enum-type name="QAbstractFileEngine::FileName"/>
   <enum-type name="QAbstractFileEngine::FileOwner"/>
   <enum-type name="QAbstractFileEngine::FileTime"/>
-  <enum-type name="QCoreApplication::Encoding"/>
   <enum-type name="QDataStream::Status"/>
-  <enum-type name="QDataStream::Version"/>
   <enum-type name="QDir::Filter" flags="QDir::Filters"/>
-  <enum-type name="QDir::SortFlag" flags="QDir::SortFlags"/>
   <enum-type name="QDirModel::Roles"/>
-  <enum-type name="QEvent::Type"/>
+  <enum-type name="QEvent::Type" extensible="yes"/>
   <enum-type name="QEventLoop::ProcessEventsFlag" flags="QEventLoop::ProcessEventsFlags"/>
   <enum-type name="QFile::FileError"/>
   <enum-type name="QFile::Permission" flags="QFile::Permissions"/>
   <enum-type name="QFileInfo::Permission" flags="QFileInfo::Permissions"/>
   <enum-type name="QIODevice::OpenModeFlag" flags="QIODevice::OpenMode"/>
   <enum-type name="QLibraryInfo::LibraryLocation"/>
-  <enum-type name="QLocale::Country"/>
   <enum-type name="QLocale::FormatType"/>
-  <enum-type name="QLocale::Language"/>
+  <enum-type name="QLocale::NumberOption" flags="QLocale::NumberOptions"/>
   <enum-type name="QMetaMethod::Access"/>
   <enum-type name="QMetaMethod::Attributes"/>
   <enum-type name="QMetaMethod::MethodType"/>
@@ -237,6 +233,7 @@
   <enum-type name="QSocketNotifier::Type"/>
   <enum-type name="QString::SectionFlag" flags="QString::SectionFlags"/>
   <enum-type name="QSystemLocale::QueryType"/>
+  <enum-type name="QTextCodec::ConversionFlag" flags="QTextCodec::ConversionFlags"/>
   <enum-type name="QTextStream::FieldAlignment"/>
   <enum-type name="QTextStream::NumberFlag" flags="QTextStream::NumberFlags"/>
   <enum-type name="QTextStream::RealNumberNotation"/>
@@ -248,7 +245,6 @@
   <enum-type name="QUrl::ParsingMode"/>
   <enum-type name="QUuid::Variant"/>
   <enum-type name="QUuid::Version"/>
-  <enum-type name="Qt::AlignmentFlag" flags="Qt::Alignment"/>
   <enum-type name="Qt::AnchorAttribute"/>
   <enum-type name="Qt::ArrowType"/>
   <enum-type name="Qt::AspectRatioMode"/>
@@ -260,10 +256,8 @@
   <enum-type name="Qt::ConnectionType"/>
   <enum-type name="Qt::ContextMenuPolicy"/>
   <enum-type name="Qt::Corner"/>
-  <enum-type name="Qt::CursorShape"/>
   <enum-type name="Qt::DateFormat"/>
   <enum-type name="Qt::DayOfWeek"/>
-  <enum-type name="Qt::DockWidgetArea" flags="Qt::DockWidgetAreas"/>
   <enum-type name="Qt::DockWidgetAreaSizes"/>
   <enum-type name="Qt::DropAction" flags="Qt::DropActions"/>
   <enum-type name="Qt::FillRule"/>
@@ -271,11 +265,8 @@
   <enum-type name="Qt::FocusReason"/>
   <enum-type name="Qt::GlobalColor"/>
   <enum-type name="Qt::HitTestAccuracy"/>
-  <enum-type name="Qt::ImageConversionFlag" flags="Qt::ImageConversionFlags"/>
   <enum-type name="Qt::InputMethodQuery"/>
-  <enum-type name="Qt::ItemDataRole"/>
   <enum-type name="Qt::ItemFlag" flags="Qt::ItemFlags"/>
-  <enum-type name="Qt::Key"/>
   <enum-type name="Qt::KeyboardModifier" flags="Qt::KeyboardModifiers"/>
   <enum-type name="Qt::LayoutDirection"/>
   <enum-type name="Qt::MatchFlag" flags="Qt::MatchFlags"/>
@@ -291,17 +282,76 @@
   <enum-type name="Qt::TextElideMode"/>
   <enum-type name="Qt::TextFlag"/>
   <enum-type name="Qt::TextFormat"/>
+  <enum-type name="Qt::TextInteractionFlag" flags="Qt::TextInteractionFlags"/>
   <enum-type name="Qt::TimeSpec"/>
-  <enum-type name="Qt::ToolBarArea" flags="Qt::ToolBarAreas"/>
   <enum-type name="Qt::ToolBarAreaSizes"/>
   <enum-type name="Qt::ToolButtonStyle"/>
   <enum-type name="Qt::TransformationMode"/>
   <enum-type name="Qt::UIEffect"/>
   <enum-type name="Qt::WhiteSpaceMode"/>
-  <enum-type name="Qt::WidgetAttribute"/>
   <enum-type name="Qt::WindowModality"/>
   <enum-type name="Qt::WindowState" flags="Qt::WindowStates"/>
   <enum-type name="Qt::WindowType" flags="Qt::WindowFlags"/>
+
+  <enum-type name="QCoreApplication::Encoding">
+    <reject-enum-value name="DefaultCodec"/>
+  </enum-type>
+
+  <enum-type name="Qt::AlignmentFlag" flags="Qt::Alignment">
+    <reject-enum-value name="AlignLeading"/>
+    <reject-enum-value name="AlignTrailing"/>
+  </enum-type>
+
+  <enum-type name="Qt::CursorShape">
+    <reject-enum-value name="LastCursor"/>
+  </enum-type>
+
+  <enum-type name="Qt::ItemDataRole" force-integer="yes">
+    <reject-enum-value name="BackgroundColorRole"/>
+    <reject-enum-value name="TextColorRole"/>
+  </enum-type>
+
+
+  <enum-type name="QDataStream::Version">
+    <reject-enum-value name="Qt_4_1"/>
+  </enum-type>
+
+  <enum-type name="QDir::SortFlag" flags="QDir::SortFlags">
+    <reject-enum-value name="Unsorted"/>
+  </enum-type>
+
+  <enum-type name="Qt::DockWidgetArea" flags="Qt::DockWidgetAreas">
+    <reject-enum-value name="AllDockWidgetAreas"/>
+  </enum-type>
+
+  <enum-type name="Qt::ImageConversionFlag" flags="Qt::ImageConversionFlags">
+    <reject-enum-value name="AutoDither"/>
+    <reject-enum-value name="ColorOnly"/>
+    <reject-enum-value name="DiffuseDither"/>
+    <reject-enum-value name="NoAlpha"/>
+    <reject-enum-value name="ThresholdAlphaDither"/>
+  </enum-type>
+
+  <enum-type name="Qt::Key">
+    <reject-enum-value name="Key_Any"/>
+  </enum-type>
+
+  <enum-type name="QLocale::Language">
+    <reject-enum-value name="LastLanguage"/>
+  </enum-type>
+
+  <enum-type name="QLocale::Country">
+    <reject-enum-value name="LastCountry"/>
+  </enum-type>
+
+  <enum-type name="Qt::ToolBarArea" flags="Qt::ToolBarAreas">
+    <reject-enum-value name="AllToolBarAreas"/>
+  </enum-type>
+  
+  <enum-type name="Qt::WidgetAttribute">
+    <reject-enum-value name="WA_ForceAcceptDrops"/>
+    <reject-enum-value name="WA_NoBackground"/>
+  </enum-type>
   
   <value-type name="QBasicTimer"/>
   <value-type name="QBitArray"/>
@@ -644,11 +694,11 @@
     </extra-includes>
             
     <inject-code class="java">
-    public class QMetaCallEvent extends QEvent {
-	    public static final int METACALL_TYPE = 512;
+    public static class QMetaCallEvent extends QEvent {
+	    public static final QEvent.Type MetaCallEventType = QEvent.Type.resolve(512);
 
 	    public QMetaCallEvent(QObject.AbstractSignal.Connection connection, Object ... arguments) {
-		    super(METACALL_TYPE);
+		    super(MetaCallEventType);
 		    this.arguments = arguments;
 		    this.connection = connection;
 	    }
@@ -695,8 +745,8 @@
                 this.slotId = resolveSlot(slot);
                 this.returnType = returnType;
                 
-                if (connectionType == Qt.QueuedConnection) flags |= QUEUED_CONNECTION;
-                else if (connectionType == Qt.DirectConnection) flags |= DIRECT_CONNECTION;
+                if (connectionType == Qt.ConnectionType.QueuedConnection.value()) flags |= QUEUED_CONNECTION;
+                else if (connectionType == Qt.ConnectionType.DirectConnection.value()) flags |= DIRECT_CONNECTION;
                 
                 if (Modifier.isPublic(slot.getModifiers()) &amp;&amp;
                     Modifier.isPublic(receiver.getClass().getModifiers())) {
@@ -770,7 +820,7 @@
         * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
         * @throws QRuntimeException Raised if the signal object could not be successfully introspected.  
         */
-        public final boolean connect(QObject receiver, String method, int connectionType) 
+        public final boolean connect(QObject receiver, String method, Qt.ConnectionType type) 
         {
             __qt_signalInitialization();
 
@@ -778,12 +828,12 @@
             if (slotMethod == null) 
                 throw new QNoSuchSlotException(method);            
 
-            return connectSignalMethod(slotMethod, receiver, connectionType);
+            return connectSignalMethod(slotMethod, receiver, type.value());
         }
 
         public final boolean connect(QObject receiver, String method) 
         {
-            return connect(receiver, method, Qt.AutoConnection);
+            return connect(receiver, method, Qt.ConnectionType.AutoConnection);
         }
             
         private final boolean connectSignalMethod(Method slotMethod, Object receiver, int connectionType) 
@@ -818,7 +868,7 @@
         * @throws RuntimeException Raised if either of the signal objects could not be successfully be introspected.
         */
         public final boolean connect(AbstractSignal signalOut) {
-            return connectSignalMethod(findEmitMethod(signalOut), signalOut, Qt.DirectConnection);
+            return connectSignalMethod(findEmitMethod(signalOut), signalOut, Qt.ConnectionType.DirectConnection.value());
         }
 
         /**

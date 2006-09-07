@@ -4,6 +4,7 @@
 <file>typesystem_gui.txt</file>
 <file>typesystem_sql.txt</file>
 <file>typesystem_opengl.txt</file>
+<file>typesystem_svg.txt</file>
 <file>parser/rpp/pp-qt-configuration</file>
 </qresource>
 </RCC>

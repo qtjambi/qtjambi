@@ -50,6 +50,7 @@ struct StackElement
         SuppressedWarning       = 0x900,
         Rejection               = 0xa00,
         LoadTypesystem          = 0xb00,
+        RejectEnumValue         = 0xc00,
         SimpleMask              = 0xf00,
 
         // Code snip tags (0x1000, 0x2000, ... , 0xf000)
@@ -78,6 +79,7 @@ public:
     Handler(TypeDatabase *database, bool generate)
         : m_database(database), m_generate(generate ? TypeEntry::GenerateAll : TypeEntry::GenerateForSubclass)
     {
+        m_current_enum = 0;
     }
 
     bool startElement(const QString &namespaceURI, const QString &localName,
@@ -101,6 +103,8 @@ private:
     QString m_defaultSuperclass;
     QString m_error;
     TypeEntry::CodeGeneration m_generate;
+
+    EnumTypeEntry *m_current_enum;
 
     CodeSnipList m_code_snips;
     QString m_current_data;
@@ -148,7 +152,7 @@ void Handler::fetchAttributeValues(const QString &name, const QXmlAttributes &at
     }
 }
 
-bool Handler::endElement(const QString &name, const QString &, const QString &)
+bool Handler::endElement(const QString &, const QString &, const QString &)
 {
     if (m_stack.isEmpty())
         return true;
@@ -188,6 +192,9 @@ bool Handler::endElement(const QString &name, const QString &, const QString &)
             func.code = m_current_data;
             element.entry->setCustomDestructor(func);
         }
+        break;
+    case StackElement::EnumTypeEntry:
+        m_current_enum = 0;
         break;
     default:
         break;
@@ -261,6 +268,7 @@ bool Handler::startElement(const QString &, const QString &n,
         tagNames["load-typesystem"] = StackElement::LoadTypesystem;
         tagNames["disable-gc"] = StackElement::DisableGC;
         tagNames["replace-default-expression"] = StackElement::ReplaceDefaultExpression;
+        tagNames["reject-enum-value"] = StackElement::RejectEnumValue;
     }
 
     if (!tagNames.contains(tagName)) {
@@ -288,6 +296,10 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["flags"] = "no";
             attributes["upper-bound"] = QString();
             attributes["lower-bound"] = QString();
+            attributes["force-integer"] = "no";
+            attributes["extensible"] = "no";
+            attributes["package"] = m_defaultPackage;
+
             break;
 
         case StackElement::InterfaceTypeEntry:
@@ -350,21 +362,30 @@ bool Handler::startElement(const QString &, const QString &n,
             }
             break;
         case StackElement::EnumTypeEntry:
-            element.entry = new EnumTypeEntry(name);
-            element.entry->setCodeGeneration(m_generate);
-            ((EnumTypeEntry *) element.entry)->setJavaPackage(attributes["package"]);
-            ((EnumTypeEntry *) element.entry)->setUpperBound(attributes["upper-bound"]);
-            ((EnumTypeEntry *) element.entry)->setLowerBound(attributes["lower-bound"]);
+            m_current_enum = new EnumTypeEntry(name);
+            element.entry = m_current_enum;
+            m_current_enum->setCodeGeneration(m_generate);
+            m_current_enum->setJavaPackage(attributes["package"]);
+            m_current_enum->setUpperBound(attributes["upper-bound"]);
+            m_current_enum->setLowerBound(attributes["lower-bound"]);
+            m_current_enum->setForceInteger(attributes["force-integer"].toLower() == "yes");
+            m_current_enum->setExtensible(attributes["extensible"].toLower() == "yes");
 
             // put in the flags parallel...
-            if (!attributes["flags"].isEmpty()) {
+            if (!attributes["flags"].isEmpty() && attributes["flags"] != "no") {
                 FlagsTypeEntry *ftype = new FlagsTypeEntry("QFlags<" + name + ">");
+                ftype->setOriginator(m_current_enum);
                 ftype->setOriginalName(attributes["flags"]);
                 ftype->setCodeGeneration(m_generate);
+                QString n = ftype->originalName();
+                ftype->setFlagsName(n.replace("::", "."));
+                m_current_enum->setFlags(ftype);
+
                 m_database->addType(ftype);
             }
 
             break;
+
         case StackElement::InterfaceTypeEntry:
             {
                 ObjectTypeEntry *otype = new ObjectTypeEntry(name);
@@ -491,6 +512,9 @@ bool Handler::startElement(const QString &, const QString &n,
             }
             attributes["position"] = "beginning";
             break;
+        case StackElement::RejectEnumValue:
+            attributes["name"] = "";
+            break;
         case StackElement::ArgumentMap:
             attributes["position"] = "1";
             attributes["meta-name"] = QString();
@@ -546,6 +570,18 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
             }
             break;
+        case StackElement::RejectEnumValue: {
+            if (!m_current_enum) {
+                m_error = "<reject-enum-value> node must be used inside a <enum-type> node";
+                return false;
+            }
+            QString name = attributes["name"];
+            if (!name.isEmpty()) {
+                m_current_enum->addEnumValueRejection(name);
+            }
+
+            } break;
+
         case StackElement::DisableGC:
             {
                 QString argument = attributes["argument"];

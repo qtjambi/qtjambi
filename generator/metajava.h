@@ -30,11 +30,21 @@ class MetaJavaFunction;
 class MetaJavaType;
 class MetaJavaVariable;
 class MetaJavaArgument;
+class MetaJavaEnumValue;
+class MetaJavaEnum;
 
 typedef QList<MetaJavaField *> MetaJavaFieldList;
 typedef QList<MetaJavaArgument *> MetaJavaArgumentList;
 typedef QList<MetaJavaFunction *> MetaJavaFunctionList;
-typedef QList<MetaJavaClass *> MetaJavaClassList;
+class MetaJavaClassList : public  QList<MetaJavaClass *>
+{
+public:
+    MetaJavaClass *findClass(const QString &name) const;
+    MetaJavaEnumValue *findEnumValue(const QString &string) const;
+    MetaJavaEnum *findEnum(const EnumTypeEntry *entry) const;
+
+};
+
 
 
 class MetaJavaAttributes
@@ -197,6 +207,13 @@ public:
 
     bool isReference() const { return m_reference; }
     void setReference(bool ref) { m_reference = ref; }
+
+    // Returns true if the type is to be implemented using Java enums, e.g. not plain ints.
+    bool isJavaEnum() const { return isEnum() && !((EnumTypeEntry *) typeEntry())->forceInteger(); }
+
+    // Returns true if the type is to be implemented using Java QFlags, e.g. not plain ints.
+    bool isJavaFlags() const {
+        return isFlags() && !((FlagsTypeEntry *) typeEntry())->forceInteger(); }
 
     int actualIndirections() const { return m_indirections + (isReference() ? 1 : 0); }
     int indirections() const { return m_indirections; }
@@ -418,23 +435,42 @@ private:
 class MetaJavaEnumValue
 {
 public:
-    QString value() const { return m_value; }
-    void setValue(const QString &value) { m_value = value; }
+    MetaJavaEnumValue()
+        : m_value(0), m_value_set(false)
+    {
+    }
+
+    int value() const { return m_value; }
+    void setValue(int value) { m_value_set = true; m_value = value; }
+
+    QString stringValue() const { return m_string_value; }
+    void setStringValue(const QString &v) { m_string_value = v; }
 
     QString name() const { return m_name; }
     void setName(const QString &name) { m_name = name; }
 
-
+    bool isValueSet() const { return m_value_set; }
 
 private:
     QString m_name;
-    QString m_value;
+    QString m_string_value;
+
+    bool m_value_set;
+    int m_value;
 };
-typedef QList<MetaJavaEnumValue *> MetaJavaEnumValueList;
+
+
+class MetaJavaEnumValueList : public QList<MetaJavaEnumValue *>
+{
+public:
+    MetaJavaEnumValue *find(const QString &name) const;
+};
 
 class MetaJavaEnum : public MetaJavaAttributes
 {
 public:
+    MetaJavaEnum() : m_type_entry(0), m_class(0){}
+
     MetaJavaEnumValueList values() const { return m_enum_values; }
     void addEnumValue(MetaJavaEnumValue *enumValue) { m_enum_values << enumValue; }
 
@@ -446,10 +482,15 @@ public:
     EnumTypeEntry *typeEntry() const { return m_type_entry; }
     void setTypeEntry(EnumTypeEntry *entry) { m_type_entry = entry; }
 
+    MetaJavaClass *enclosingClass() const { return m_class; }
+    void setEnclosingClass(MetaJavaClass *c) { m_class = c; }
+
 private:
     MetaJavaEnumValueList m_enum_values;
     EnumTypeEntry *m_type_entry;
+    MetaJavaClass *m_class;
 };
+
 typedef QList<MetaJavaEnum *> MetaJavaEnumList;
 
 class MetaJavaClass : public MetaJavaAttributes
@@ -472,7 +513,7 @@ public:
         WasProtected            = 0x002000,   // Only functions that were originally protected
         NonStaticFunctions      = 0x004000,   // No static functions
         Empty                   = 0x008000,   // Empty overrides of abstract functions
-        Invisible               = 0x010000,   // Only private functions 
+        Invisible               = 0x010000,   // Only private functions
         VirtualInCppFunctions   = 0x020000,   // Only functions that are virtual in C++
         NonEmptyFunctions       = 0x040000,   // Only functions with JNI implementations
         VirtualInJavaFunctions  = 0x080000,   // Only functions which are virtual in Java
@@ -491,7 +532,7 @@ public:
           m_base_class(0),
           m_extracted_interface(0),
           m_primary_interface_implementor(0),
-          m_type_entry(0)          
+          m_type_entry(0)
     {
     }
 
@@ -532,7 +573,10 @@ public:
     MetaJavaEnumList enums() const { return m_enums; }
     void setEnums(const MetaJavaEnumList &enums) { m_enums = enums; }
     void addEnum(MetaJavaEnum *e) { m_enums << e; }
+
     MetaJavaEnum *findEnum(const QString &enumName);
+    MetaJavaEnum *findEnumForValue(const QString &enumName);
+    MetaJavaEnumValue *findEnumValue(const QString &enumName, MetaJavaEnum *java_enum);
 
     MetaJavaClassList interfaces() const { return m_interfaces; }
     void addInterface(MetaJavaClass *interface);
@@ -560,8 +604,8 @@ public:
 
     void setForceShellClass(bool on) { m_force_shell_class = on; }
     bool generateShellClass() const
-    {        
-        return m_force_shell_class || 
+    {
+        return m_force_shell_class ||
             (!isFinal()
                && (hasVirtualFunctions()
                   || hasInconsistentFunctions()
@@ -637,9 +681,5 @@ inline MetaJavaFunctionList MetaJavaClass::cppSignalFunctions() const
     return queryFunctions(MetaJavaClass::Signals
                           | MetaJavaClass::Visible);
 }
-
-MetaJavaClass *findClass(const MetaJavaClassList &classes, const QString &name);
-MetaJavaEnum *findEnum(const MetaJavaClassList &classes, const EnumTypeEntry *entry);
-
 
 #endif // METAJAVA_H

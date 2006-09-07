@@ -53,11 +53,11 @@ public class AnalogClock
 
         QPainter painter = new QPainter();
         painter.begin(this);
-        painter.setRenderHint(QPainter.Antialiasing);
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing);
         painter.translate(width() / 2, height() / 2);
         painter.scale(side / 200.0f, side / 200.0f);
 
-        painter.setPen(Qt.NoPen);
+        painter.setPen(QPen.NoPen);
         painter.setBrush(hourColor);
 
         painter.save();
@@ -72,7 +72,7 @@ public class AnalogClock
             painter.rotate(30.0f);
         }
 
-        painter.setPen(Qt.NoPen);
+        painter.setPen(QPen.NoPen);
         painter.setBrush(minuteColor);
 
         painter.save();

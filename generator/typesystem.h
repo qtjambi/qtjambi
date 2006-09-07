@@ -23,6 +23,9 @@
 class MetaJavaType;
 class QTextStream;
 
+class EnumTypeEntry;
+class FlagsTypeEntry;
+
 struct Include
 {
     enum IncludeType {
@@ -305,22 +308,6 @@ private:
 };
 
 
-class FlagsTypeEntry : public TypeEntry
-{
-public:
-    FlagsTypeEntry(const QString &name) : TypeEntry(name, FlagsType) { }
-
-    QString javaName() const { return "int"; }
-    QString jniName() const { return "jint"; }
-    virtual bool preferredConversion() const { return false; }
-
-    QString originalName() const { return m_original_name; }
-    void setOriginalName(const QString &s) { m_original_name = s; }
-
-private:
-    QString m_original_name;
-};
-
 class ArrayTypeEntry : public TypeEntry
 {
 public:
@@ -379,7 +366,7 @@ class EnumTypeEntry : public TypeEntry
 {
 public:
     EnumTypeEntry(const QString &name)
-        : TypeEntry(name, EnumType), m_qualified_cpp_name(name)
+        : TypeEntry(name, EnumType), m_qualified_cpp_name(name), m_flags(0), m_extensible(false)
     {
         QStringList splitted = name.split("::");
         Q_ASSERT(splitted.size() == 2);
@@ -410,6 +397,18 @@ public:
     QString lowerBound() const { return m_lower_bound; }
     void setLowerBound(const QString &bound) { m_lower_bound = bound; }
 
+    void setFlags(FlagsTypeEntry *flags) { m_flags = flags; }
+    FlagsTypeEntry *flags() const { return m_flags; }
+
+    bool isExtensible() const { return m_extensible; }
+    void setExtensible(bool is) { m_extensible = is; }
+
+    bool isEnumValueRejected(const QString &name) { return m_rejected_enums.contains(name); }
+    void addEnumValueRejection(const QString &name) { m_rejected_enums << name; }
+
+    bool forceInteger() const { return m_force_integer; }
+    void setForceInteger(bool force) { m_force_integer = force; }
+
 private:
     QString m_qualified_cpp_name;
     QString m_package_name;
@@ -418,6 +417,43 @@ private:
 
     QString m_lower_bound;
     QString m_upper_bound;
+
+    QStringList m_rejected_enums;
+
+    FlagsTypeEntry *m_flags;
+
+    bool m_extensible;
+    bool m_force_integer;
+};
+
+class FlagsTypeEntry : public TypeEntry
+{
+public:
+    FlagsTypeEntry(const QString &name) : TypeEntry(name, FlagsType), m_enum(0)
+    {
+    }
+
+    QString javaName() const { return m_java_name; }
+    QString jniName() const { return "jint"; }
+    virtual bool preferredConversion() const { return false; }
+
+    QString originalName() const { return m_original_name; }
+    void setOriginalName(const QString &s) { m_original_name = s; }
+
+    QString flagsName() const { return m_java_name; }
+    void setFlagsName(const QString &name) { m_java_name = name; }
+
+    bool forceInteger() const { return m_enum->forceInteger(); }
+
+    EnumTypeEntry *originator() const { return m_enum; }
+    void setOriginator(EnumTypeEntry *e) { m_enum = e; }
+
+    QString javaPackage() const { return m_enum->javaPackage(); }
+
+private:
+    QString m_original_name;
+    QString m_java_name;
+    EnumTypeEntry *m_enum;
 };
 
 
@@ -440,15 +476,15 @@ public:
 
     IncludeList extraIncludes() const { return m_extra_includes; }
     void setExtraIncludes(const IncludeList &includes) { m_extra_includes = includes; }
-    void addExtraInclude(const Include &include) 
-    { 
+    void addExtraInclude(const Include &include)
+    {
         if (!m_includes_used.value(include.name, false)) {
-            m_extra_includes << include; 
+            m_extra_includes << include;
             m_includes_used[include.name] = true;
         }
     }
 
-    ComplexTypeEntry *copy() const 
+    ComplexTypeEntry *copy() const
     {
         ComplexTypeEntry *centry = new ComplexTypeEntry(name(), type());
         centry->setInclude(include());
@@ -463,12 +499,12 @@ public:
         return centry;
     }
 
-    void setLookupName(const QString &name) 
+    void setLookupName(const QString &name)
     {
         m_lookup_name = name;
     }
 
-    virtual QString lookupName() const 
+    virtual QString lookupName() const
     {
         return m_lookup_name.isEmpty() ? javaName() : m_lookup_name;
     }

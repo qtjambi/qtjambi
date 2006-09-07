@@ -29,7 +29,7 @@ class WigglyWidget extends QWidget
     WigglyWidget(QWidget parent) 
     {
 	super(parent);
-	setBackgroundRole(QPalette.Midlight);
+	setBackgroundRole(QPalette.ColorRole.Midlight);
 
 	QFont newFont = font();
 	newFont.setPointSize(newFont.pointSize() + 20);
