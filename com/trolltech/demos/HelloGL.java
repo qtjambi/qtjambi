@@ -146,10 +146,10 @@ class GLWidget extends QGLWidget
         int dx = event.x() - lastPos.x();
         int dy = event.y() - lastPos.y();
 
-        if ((event.buttons() & Qt.LeftButton) != 0) {
+        if (event.buttons().isSet(Qt.MouseButton.LeftButton)) {
             setXRotation(xRot + 8 * dy);
             setYRotation(yRot + 8 * dx);
-        } else if ((event.buttons() & Qt.RightButton) != 0) {
+        } else if (event.buttons().isSet(Qt.MouseButton.RightButton)) {
             setXRotation(xRot + 8 * dy);
             setZRotation(zRot + 8 * dx);
         }
@@ -256,12 +256,12 @@ public class HelloGL extends QWidget
 
     QSlider createSlider(String setterSlot)
     {
-        QSlider slider = new QSlider(Qt.Vertical);
+        QSlider slider = new QSlider(Qt.Orientation.Vertical);
         slider.setRange(0, 360 * 16);
         slider.setSingleStep(16);
         slider.setPageStep(15 * 16);
         slider.setTickInterval(15 * 16);
-        slider.setTickPosition(QSlider.TicksRight);
+        slider.setTickPosition(QSlider.TickPosition.TicksAbove);
         slider.valueChanged.connect(glWidget, setterSlot);
         return slider;
     }

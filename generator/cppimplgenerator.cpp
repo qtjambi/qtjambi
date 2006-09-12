@@ -46,7 +46,7 @@ enum JNISignatureFormat {
     SlashesAndStuff     // Used for looking up functions through jni
 };
 
-QString jni_signature(MetaJavaType *java_type, JNISignatureFormat format = Underscores)
+QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format = Underscores)
 {
     if (!java_type)
         return "V";
@@ -74,7 +74,8 @@ QString jni_signature(MetaJavaType *java_type, JNISignatureFormat format = Under
             return "Lcom_trolltech_qt_QNativePointer_2";
         else
             return "Lcom/trolltech/qt/QNativePointer;";
-    } else if (java_type->isEnum() || java_type->isFlags()) {
+    } else if (java_type->isIntegerEnum() || java_type->isIntegerFlags()
+               || (format == Underscores && (java_type->isEnum() || java_type->isFlags()))) {
         return "I";
     } else if (java_type->isThread()) {
         if (format == Underscores)
@@ -85,31 +86,31 @@ QString jni_signature(MetaJavaType *java_type, JNISignatureFormat format = Under
 
     QString signature;
 
+    char dot_replacement = format == Underscores ? '_' : '/';
+
     QString name = java_type->name();
     if (java_type->isObject()) {
         if (const InterfaceTypeEntry *ie
             = static_cast<const ObjectTypeEntry *>(java_type->typeEntry())->designatedInterface())
             name = ie->javaName();
+    } else if (java_type->isJavaEnum()) {
+        const EnumTypeEntry *et = static_cast<const EnumTypeEntry *>(java_type->typeEntry());
+        name = et->javaQualifier() + "$" + et->javaName();
+
+    } else if (java_type->isJavaFlags()) {
+        const FlagsTypeEntry *ft = static_cast<const FlagsTypeEntry *>(java_type->typeEntry());
+        name = ft->originator()->javaQualifier() + "$" + ft->javaName();
     }
 
     if (format == Underscores) {
         signature = "L";
-        signature += java_type->package().replace("_", "_1").replace(".", "_");
+        signature += java_type->package().replace("_", "_1").replace('.', dot_replacement);
         signature += "_";
-#if 0
-        if (java_type->isEnum()) {
-            const EnumTypeEntry *etype = static_cast<const EnumTypeEntry *>(java_type->typeEntry());
-
-            signature += etype->javaQualifier().replace("_", "_1");
-            signature += "_00024";
-        }
-#endif
-
         signature += name.replace("_", "_1");
         signature += "_2";
     } else {
         signature = "L";
-        signature += java_type->package().replace(".", "/");
+        signature += java_type->package().replace('.', dot_replacement);
         signature += "/";
         signature += name;
         signature += ";";
@@ -203,7 +204,7 @@ QByteArray jniTypeName(const MetaJavaType *java_type)
             table["double"] = "Double";
         }
         return table[java_type->name()];
-    } else if (java_type->isEnum() || java_type->isFlags()) {
+    } else if (java_type->isIntegerEnum() || java_type->isIntegerFlags()) {
         return "Int";
     } else {
         return "Object";
@@ -919,7 +920,7 @@ void CppImplGenerator::writeFunctionName(QTextStream &s,
 
     // Function signature
     bool callThrough = java_function->needsCallThrough();
-    QString return_type = translateType(java_function->type());
+    QString return_type = translateType(java_function->type(), EnumAsInts);
     QString function_name;
 
     if (!callThrough)
@@ -967,7 +968,7 @@ void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const MetaJav
 
         s << "," << endl << " ";
         if (!argument->type()->hasNativeId())
-            s << translateType(argument->type());
+            s << translateType(argument->type(), EnumAsInts);
         else
             s << "jlong ";
         s << " " << argument->name();
@@ -992,7 +993,7 @@ void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const MetaJavaFun
                             argument->type(),
                             "__qt_" + argument->name(),
                             argument->name(),
-                            UseNativeIds);
+                            Option(UseNativeIds | EnumAsInts));
         }
     }
 
@@ -1017,6 +1018,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
     if (java_function->isModifiedRemoved(MetaJavaFunction::CppNativeFunction))
         return;
 
+    s << "// " << java_function->signature() << endl;
 
     const MetaJavaClass *cls = java_class ? java_class : java_function->ownerClass();
     const MetaJavaType *function_type = java_function->type();
@@ -1087,7 +1089,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
                                   extra_param);
                 s << endl;
 
-                writeQtToJava(s, function_type, qt_return_value, java_return_value);
+                writeQtToJava(s, function_type, qt_return_value, java_return_value, EnumAsInts);
                 s << INDENT << "return " << java_return_value << ";";
 
             } else {
@@ -1225,7 +1227,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
                 qt_return_value += getter->name() + "_getter()";
             s << qt_return_value << ";" << endl;
 
-            writeQtToJava(s, getter->type(), tmp_name, java_return_value);
+            writeQtToJava(s, getter->type(), tmp_name, java_return_value, EnumAsInts);
             s << INDENT << "return " << java_return_value << ";" << endl;
         }
         s << "}" << endl << endl;
@@ -1459,9 +1461,9 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
         writeTypeInfo(s, elementType);
         s << " " << qt_name << "[" << java_type->arrayElementCount() << "];" << endl;
 
-        s << INDENT << "__jni_env->" << getXxxArrayRegion(elementType) << "( (" << translateType(java_type)
+        s << INDENT << "__jni_env->" << getXxxArrayRegion(elementType) << "( (" << translateType(java_type, options)
           << ")" << java_name << ", 0, " << java_type->arrayElementCount() << ", "
-          << "(" << translateType(elementType) << " *" << ")"
+          << "(" << translateType(elementType, options) << " *" << ")"
           << qt_name << ");" << endl;
 
     } else if (java_type->isArray()) {
@@ -1504,8 +1506,10 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
               << " = (" << qualified_name << ") ";
         }
 
+        if ((options & EnumAsInts) == 0 && (java_type->isJavaEnum() || java_type->isJavaFlags())) {
+            s << "qtjambi_to_enumerator(__jni_env, " << java_name << ");" << endl;
 
-        if (options & BoxedPrimitive) {
+        } else if (options & BoxedPrimitive) {
             const PrimitiveTypeEntry *pentry = TypeDatabase::instance()->findJavaPrimitiveType("int");
             Q_ASSERT(pentry);
 
@@ -1650,13 +1654,13 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
     if (java_type->isArray() && java_type->arrayElementType()->isPrimitive()) {
         MetaJavaType *elementType = java_type->arrayElementType();
 
-        s << INDENT << translateType(java_type) << " " << java_name << " = __jni_env->" << newXxxArray(elementType)
+        s << INDENT << translateType(java_type, option) << " " << java_name << " = __jni_env->" << newXxxArray(elementType)
           << "(" << java_type->arrayElementCount() << ");" << endl;
 
         s << INDENT << "__jni_env->" << setXxxArrayRegion(elementType) << "("
-          << "(" << translateType(java_type) << ")" << java_name
+          << "(" << translateType(java_type, option) << ")" << java_name
           << ", 0, " << java_type->arrayElementCount() << ", "
-          << "(" << translateType(elementType) << " *" << ")"
+          << "(" << translateType(elementType, option) << " *" << ")"
           << qt_name << ");" << endl;
 
     } else if (java_type->isArray()) {
@@ -1696,12 +1700,35 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
     } else if (java_type->isJavaChar()) {
         s << INDENT << "jchar " << java_name << " = " << qt_name << ".unicode();" << endl;
 
-    } else if (java_type->isEnum() || java_type->isFlags()) {
+    } else if (java_type->isIntegerEnum() || java_type->isIntegerFlags()
+               || ((option & EnumAsInts) && (java_type->isEnum() || java_type->isFlags()))) {
+//     } else if (java_type->isEnum() || java_type->isFlags()) {
+
+//         if (option & EnumAsInts) {
+//             qDebug() << java_type->name() << "should be int...";
+//         }
+
         if (option & BoxedPrimitive) {
-            s << INDENT << "jobject " << java_name << " = qtjambi_from_int(__jni_env, " << qt_name << ");" << endl;
+            s << INDENT << "jobject " << java_name << " = qtjambi_from_int(__jni_env, "
+            << qt_name << ");" << endl;
         } else {
             s << INDENT << "int " << java_name << " = " << qt_name << ";" << endl;
         }
+
+    } else if (java_type->isJavaEnum()) {
+        Q_ASSERT((option & EnumAsInts) == 0);
+        const EnumTypeEntry *et = static_cast<const EnumTypeEntry *>(java_type->typeEntry());
+        s << INDENT << "jobject " << java_name << " = qtjambi_from_enum(__jni_env, "
+          << qt_name << ", \"" << et->javaPackage().replace('.', '/') << '/'
+          << et->javaQualifier() << '$' << et->javaName() << "\");" << endl;
+
+    } else if (java_type->isJavaFlags()) {
+        Q_ASSERT((option & EnumAsInts) == 0);
+        const FlagsTypeEntry *ft = static_cast<const FlagsTypeEntry *>(java_type->typeEntry());
+        s << INDENT << "jobject " << java_name << " = qtjambi_from_flags(__jni_env, "
+          << qt_name << ", \"" << ft->javaPackage().replace('.', '/') << '/'
+          << ft->originator()->javaQualifier() << '$' << ft->javaName() << "\");" << endl;
+
     } else if (java_type->isContainer()) {
         writeQtToJavaContainer(s, java_type, qt_name, java_name);
 
@@ -2053,7 +2080,7 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
 }
 
 
-QString CppImplGenerator::translateType(const MetaJavaType *java_type) const
+QString CppImplGenerator::translateType(const MetaJavaType *java_type, Option option) const
 {
     if (!java_type)
         return "void";
@@ -2064,7 +2091,8 @@ QString CppImplGenerator::translateType(const MetaJavaType *java_type) const
         || java_type->isJavaChar()
         || java_type->isArray()) {
         return java_type->typeEntry()->jniName();
-    } else if (java_type->isEnum() || java_type->isFlags()) {
+    } else if (java_type->isIntegerEnum() || java_type->isIntegerFlags()
+               || ((option & EnumAsInts) && (java_type->isEnum() || java_type->isFlags()))) {
          return "jint";
      } else {
         return "jobject";

@@ -47,7 +47,7 @@ public class QModelIndex
         return model != null ? model.index(arow, acolumn, this) : null; 
     }
     
-    public Object data() { return data(Qt.DisplayRole); }
+    public Object data() { return data(Qt.ItemDataRole.DisplayRole); }
     public Object data(int role) {
         return model != null ? model.data(this, role) : null;
     }

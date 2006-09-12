@@ -210,10 +210,12 @@ public:
 
     // Returns true if the type is to be implemented using Java enums, e.g. not plain ints.
     bool isJavaEnum() const { return isEnum() && !((EnumTypeEntry *) typeEntry())->forceInteger(); }
+    bool isIntegerEnum() const { return isEnum() && !isJavaEnum(); }
 
     // Returns true if the type is to be implemented using Java QFlags, e.g. not plain ints.
     bool isJavaFlags() const {
         return isFlags() && !((FlagsTypeEntry *) typeEntry())->forceInteger(); }
+    bool isIntegerFlags() const { return isFlags() && !isJavaFlags(); }
 
     int actualIndirections() const { return m_indirections + (isReference() ? 1 : 0); }
     int indirections() const { return m_indirections; }
@@ -436,7 +438,7 @@ class MetaJavaEnumValue
 {
 public:
     MetaJavaEnumValue()
-        : m_value(0), m_value_set(false)
+        : m_value_set(false), m_value(0)
     {
     }
 

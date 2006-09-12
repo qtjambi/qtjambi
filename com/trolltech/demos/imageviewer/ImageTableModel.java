@@ -71,7 +71,7 @@ public class ImageTableModel extends QAbstractItemModel {
         int row = index.row();
         int col = index.column();
         
-        if (role == Qt.DisplayRole) {
+        if (role == Qt.ItemDataRole.DisplayRole) {
             QFileInfo info = infos.get(row);
             if (col == NAME_COL) {
                 return info.fileName();
@@ -87,10 +87,10 @@ public class ImageTableModel extends QAbstractItemModel {
             } else if (col == PIXMAP_COL) {
                 return pixmaps[row].isValid() ? null : tr("loading");
             }
-        } else if (role == Qt.DecorationRole) {
+        } else if (role == Qt.ItemDataRole.DecorationRole) {
             if (col == PIXMAP_COL) 
                 return pixmaps[row].isValid() ? pixmaps[row].thumbNail() : null;
-        } else if (role == Qt.SizeHintRole) {
+        } else if (role == Qt.ItemDataRole.SizeHintRole) {
             return LazyPixmap.SMALL_SIZE;
         }        
         return null;
@@ -103,7 +103,7 @@ public class ImageTableModel extends QAbstractItemModel {
     
     public Object headerData(int section, Qt.Orientation orientation, int role) {
         if (orientation == Qt.Orientation.Horizontal 
-            && (role == Qt.DisplayRole || role == Qt.EditRole)) {
+            && (role == Qt.ItemDataRole.DisplayRole || role == Qt.ItemDataRole.EditRole)) {
             switch (section) {
             case NAME_COL: return "Name";
             case SIZE_COL: return "Size";

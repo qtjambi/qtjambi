@@ -11,7 +11,7 @@ a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
 td.postheader { font-family: sans-serif }
 tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+body { color: black; }</style>
 </head>
 <body>
 <h1 align="center">Cached Table Example<br /><small></small></h1>
@@ -46,8 +46,9 @@ body { background: #ffffff; color: black; }</style>
                              &quot;This example needs SQLite support. Please read &quot; +
                              &quot;the Qt SQL driver documentation for information how &quot; +
                              &quot;to build it.\n\n&quot; +
-                             &quot;Click Cancel to exit.&quot;), QMessageBox.Cancel,
-                             QMessageBox.NoButton);
+                             &quot;Click Cancel to exit.&quot;), 
+                             new QMessageBox.StandardButtons(QMessageBox.StandardButton.Cancel,
+                                                             QMessageBox.StandardButton.NoButton));
                 return false;
             }
     
@@ -77,12 +78,12 @@ body { background: #ffffff; color: black; }</style>
 <p>First we create the data model and set the SQL database table we want the model to operate on. Note that the QSqlTableModel::setTable() function does not select data from the table; it only fetches its field information. For that reason we call the QSqlTableModel::select() function later on, populating the model with data from the table. The selection can be customized by specifying filters and sort conditions (see the QSqlTableModel class documentation for more details).</p>
 <pre>&nbsp;           model = new QSqlTableModel(this);
             model.setTable(tableName);
-            model.setEditStrategy(QSqlTableModel.OnManualSubmit);
+            model.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit);
             model.select();
     
-            model.setHeaderData(0, Qt.Horizontal, tr(&quot;ID&quot;));
-            model.setHeaderData(1, Qt.Horizontal, tr(&quot;First name&quot;));
-            model.setHeaderData(2, Qt.Horizontal, tr(&quot;Last name&quot;));</pre>
+            model.setHeaderData(0, Qt.Orientation.Horizontal, tr(&quot;ID&quot;));
+            model.setHeaderData(1, Qt.Orientation.Horizontal, tr(&quot;First name&quot;));
+            model.setHeaderData(2, Qt.Orientation.Horizontal, tr(&quot;Last name&quot;));</pre>
 <p>We also set the model's edit strategy: The edit strategy dictates when the changes done by the user in the view are actually applied to the database. Since we want to cache the changes in the table view (i.e. in the model) until the user explicitly submits them, we choose the QSqlTableModel::OnManualSubmit strategy. The alternatives are QSqlTableModel::OnFieldChange and QSqlTableModel::OnRowChange.</p>
 <p>Finally, we set up the labels displayed in the view header using the setHeaderData() function the model inherits from the QSqlQueryModel class.</p>
 <pre>&nbsp;           QTableView view = new QTableView();

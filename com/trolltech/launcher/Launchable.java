@@ -50,27 +50,29 @@ public class Launchable {
 	};
 
 	static public String format(String source) {
-	    source = source.replace("&", "&amp;");
+		source = source.replace("&", "&amp;");
 	    source = source.replace("<", "&lt;");
 	    source = source.replace(">", "&gt;");
-
+	    
+	    source = source.replace("\t", "   ");
+	    
 	    for (int i=0; i<KEYWORDS.length; ++i) {
-		String keyword = KEYWORDS[i];
-		source = source.replace(keyword, "<font color=olive>" + keyword + "</font>");
+	    	String keyword = KEYWORDS[i];
+	    	source = source.replace(keyword, "<font color=olive>" + keyword + "</font>");
 	    }
 	    source = source.replace("(int ", "(<font color=olive><b>int </b></font>");
 	    source = source.replaceAll("(\\d\\d?)", "<font color=navy>$1</font>");
-
-	    String commentRe = "(//.+)\\n";
-	    source = source.replaceAll(commentRe, "<font color=red>$1</font>\n");
+	    
+	    String commentRe = "(//+[.[^\n]]*\n)";
+	    source = source.replaceAll(commentRe, "<font color=darkgreen><i>$1</i></font>");
 
 	    String stringLiteralRe = "(\".+\")";
 	    source = source.replaceAll(stringLiteralRe, "<font color=green>$1</font>");
 
- 	    source = "<html style=\"white-space:pre-wrap;font-family:courier new\">" + source + "</html>";
+	    source = "<html style=\"white-space:pre-wrap;font-family:courier new\">" + source + "</html>";
 	    return source;
 	}
-    } // end of SourceFormatter
+} // end of SourceFormatter
 
 
     private QWidget m_widget;
@@ -111,8 +113,8 @@ public class Launchable {
     }
 
     private final String resourceFile(String fileType) {
-	QFile f = new QFile("classpath:" + widget().getClass().getName().replace(".", "/") + "." + fileType);
-	if (f.exists() && f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly)))
+	QFile f = new QFile("classpath:" + m_name.replace(".", "/") + "." + fileType);
+	if (f.exists() && f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text)))
 	    return f.readAll().toString();
 	return null;
     }

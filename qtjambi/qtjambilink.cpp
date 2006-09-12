@@ -30,7 +30,7 @@ Q_GLOBAL_STATIC(QReadWriteLock, gStaticUserDataIdLock);
 Q_GLOBAL_STATIC(QReadWriteLock, gUserObjectCacheLock);
 Q_GLOBAL_STATIC(LinkHash, gUserObjectCache);
 
-static int qtjambi_user_data_id = -1;
+int qtjambi_user_data_id = -1;
 
 QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object,
                                              bool java_owns_qobject)

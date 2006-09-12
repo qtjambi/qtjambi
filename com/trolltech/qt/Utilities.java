@@ -24,6 +24,23 @@ public class Utilities {
 
     private static final boolean VERBOSE_LOADING =
         System.getProperty("com.trolltech.qt.verbose-loading") != null;
+    
+    /**
+     * Returns true if the system property name contains any of the specified
+     * substrings. If substrings is null or empty the function returns true
+     * if the  value is non-null.
+     */
+    public static boolean matchProperty(String name, String ... substrings) {
+        String value = System.getProperty(name);
+        if (value == null)
+            return false;
+        if (substrings == null || substrings.length == 0)
+            return value != null;
+        for (String s : substrings)
+            if (value.contains(s))
+                return true;
+        return false;
+    }
 
     public static void loadSystemLibraries() {
         List<String> libs = readSystemLibraries();

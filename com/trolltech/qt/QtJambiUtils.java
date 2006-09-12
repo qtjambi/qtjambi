@@ -1,5 +1,5 @@
 /****************************************************************************
-**
+**en
 ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
 **
 ** This file is part of $PRODUCT$.
@@ -20,9 +20,12 @@ import com.trolltech.qt.gui.*;
 
 public class QtJambiUtils {
 
-    static private final boolean DEBUG = false;
-    static private final boolean DEBUG_LOTS = DEBUG && true;
+    static private final boolean DEBUG_LOTS = false;
     
+    static private final boolean CHECK_NATIVE_SIGNATURES = Utilities.matchProperty("com.trolltech.qt.check-native-signatures");
+    static private final boolean VERBOSE_VTABLE_JAVA = Utilities.matchProperty("com.trolltech.qt.verbose-vtable", "java");
+    static private final boolean VERBOSE_VTABLE_CPP = Utilities.matchProperty("com.trolltech.qt.verbose-vtable", "cpp");
+        
     /**
      * A silly function to help me find the actual class name...
      */
@@ -33,6 +36,13 @@ public class QtJambiUtils {
             return name;
         else
             return name.substring(dot_pos + 1);
+    }
+    
+    private static String innerClassName(Class cl) {
+        String name = className(cl);     
+        int dollar_pos = name.indexOf('$');
+        assert(dollar_pos >= 0);
+        return name.substring(dollar_pos + 1);
     }
 
     /**
@@ -53,13 +63,11 @@ public class QtJambiUtils {
      * @return wether the implements the function or not.
      */	
     public static boolean isImplementedInJava(Method method) {
-        if (DEBUG) {
-            System.err.println("\nQtJambiUtils.isImplementor(): "
-                    + method.getDeclaringClass().getName() + "."
-                    + method.getName());
+        if (DEBUG_LOTS) {
+            System.err.println("\nQtJambiUtils.isImplementor(): " + method);
         }
 
-	Class implementor = method.getDeclaringClass();
+        Class implementor = method.getDeclaringClass();
 
         StringBuilder name = new StringBuilder();
         name.append("__qt_").append(method.getName());
@@ -86,33 +94,39 @@ public class QtJambiUtils {
                 jni_args[i + 1] = args[i];
 
                 if (DEBUG_LOTS)
-                    System.out.println(" - : " + className(args[i]) + ":"
-                            + jni_args[i + 1]);
+                    System.out.println(" - : " + className(args[i]) + ":" + jni_args[i + 1]);
 
             } else if (QtObject.class.isAssignableFrom(args[i])) {
                 name.append(className(args[i]));
                 jni_args[i + 1] = long.class;
 
                 if (DEBUG_LOTS)
-                    System.out.println(" - : " + className(args[i]) + ":"
-                            + jni_args[i + 1]);
+                    System.out.println(" - : " + className(args[i]) + ":" + jni_args[i + 1]);
 
             } else if (QtObjectInterface.class.isAssignableFrom(args[i])) {
                 name.append(stripInterface(className(args[i])));
                 jni_args[i + 1] = long.class;
 
                 if (DEBUG_LOTS)
-                    System.out.println(" - (if) : "
-                            + stripInterface(className(args[i])) + ":"
+                    System.out.println(" - (if) : " + stripInterface(className(args[i])) + ":"
                             + jni_args[i + 1]);
+                
+            } else if (args[i].isEnum()) {
+//                System.out.println("its an enum:" + args[i]);
+                name.append(innerClassName(args[i]));
+                jni_args[i + 1] = int.class;
+                
+            } else if (QFlags.class.isAssignableFrom(args[i])) {
+//                System.out.println("its a flag..." + args[i]);
+                name.append(innerClassName(args[i]));
+                jni_args[i + 1] = int.class;
 
             } else if (args[i] == QNativePointer.class) {
                 name.append("nativepointer");
                 jni_args[i + 1] = args[i];
 
                 if (DEBUG_LOTS)
-                    System.out.println(" - : " + "nativepointer"
-                            + jni_args[i + 1]);
+                    System.out.println(" - : " + "nativepointer" + jni_args[i + 1]);
 
             } else if (args[i] == String.class) {
                 name.append("String");
@@ -137,16 +151,15 @@ public class QtJambiUtils {
                 jni_args[i + 1] = QPair.class;
                 if (DEBUG_LOTS)
                     System.out.println(" - : QPair");
-                
+
             } else if (args[i] == QModelIndex.class) {
                 name.append("QModelIndex");
                 jni_args[i + 1] = QModelIndex.class;
-                if (DEBUG_LOTS) 
+                if (DEBUG_LOTS)
                     System.out.println(" - : QModelIndex");
-                
+
             } else {
-                throw new RuntimeException("Unhandled argument type: "
-                        + args[i]);
+                throw new RuntimeException("Unhandled argument type: " + args[i]);
             }
         }
 
@@ -155,7 +168,7 @@ public class QtJambiUtils {
         // A sanity check... Verify that we mangled the name correctly
         // by traversing the hierarchy and locating the class that
         // implements it. It its nowhere to be found, its a bug..
-        if (DEBUG) {
+        if (CHECK_NATIVE_SIGNATURES) {
             boolean found_somewhere = false;
             Class base = implementor;
             while (base != null && !found_somewhere) {
@@ -167,7 +180,7 @@ public class QtJambiUtils {
                 base = base.getSuperclass();
             }
             if (!found_somewhere) {
-                System.err.println("did not find function: " + complete_name);
+                System.err.println("(ERROR) Did not find function: " + complete_name);
                 for (Class c : jni_args)
                     System.err.println(" - " + c);
                 System.exit(0);
@@ -181,9 +194,16 @@ public class QtJambiUtils {
         } catch (Exception e) {
         }
 
-        if (DEBUG_LOTS) {
-            System.out.println(" - " + complete_name.toString() + ": "
-                    + (!found ? "Implemented in Java" : "Callthrough to Qt/C++"));
+        if (VERBOSE_VTABLE_JAVA || VERBOSE_VTABLE_CPP) {            
+            if (found && VERBOSE_VTABLE_CPP) {
+                System.out.println(method.getName() + ": (C++)"
+                        + "\n - " + method
+                        + "\n - " + complete_name);
+            } else if (!found && VERBOSE_VTABLE_JAVA) {
+                System.out.println(method.getName() + ": (Java)"
+                        + "\n - " + method
+                        + "\n - " + complete_name);                
+            }
         }
 
         return !found;
@@ -191,8 +211,8 @@ public class QtJambiUtils {
 
     
     /**
-     * Returns the signature of the method m excluding the modifiers
-     * and the return type.
+     * Returns the signature of the method m excluding the modifiers and the
+     * return type.
      */
     private static String methodSignature(Method m) {
         Class params[] = m.getParameterTypes();

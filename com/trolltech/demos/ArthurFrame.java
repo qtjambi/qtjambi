@@ -230,7 +230,7 @@ class ArthurFrame extends QWidget
             painter.begin(m_static_image);
             int o = 10;
 
-            QBrush bg = palette().brush(QPalette.ColorRole.Background);
+            QBrush bg = palette().brush(QPalette.ColorRole.Window);
             painter.fillRect(0, 0, o, o, bg);
             painter.fillRect(width() - o, 0, o, o, bg);
             painter.fillRect(0, height() - o, o, o, bg);

@@ -48,7 +48,7 @@ class SmokeEffect
 	    double d = Math.random();
 	    m_seeds[i] = (int) (d * 255);
 	}
-	m_image = new QImage(width, height, QImage.Format_ARGB32_Premultiplied);
+	m_image = new QImage(width, height, QImage.Format.Format_ARGB32_Premultiplied);
 	m_image.fill(0);
 
 	m_data = new int[m_width * (m_height + 1)];
@@ -107,10 +107,10 @@ public class Image extends QWidget
 	QBrush tt_green = new QBrush(color_green);
 	QBrush tt_black = new QBrush(new QColor(0, 0, 0));
 
-	QImage image = new QImage(width, height, QImage.Format_RGB32);
+	QImage image = new QImage(width, height, QImage.Format.Format_RGB32);
 	QPainter p = new QPainter();
     p.begin(image);
- 	p.setRenderHint(QPainter.Antialiasing);
+ 	p.setRenderHint(QPainter.RenderHint.Antialiasing);
 
 	// Fill the background
 	p.scale(width, height);
@@ -121,7 +121,7 @@ public class Image extends QWidget
 
 	if (render_logo) {
 	    // set up painter for the logo drawing..
-	    p.setPen(Qt.NoPen);
+	    p.setPen(Qt.PenStyle.NoPen);
 	    p.setBrush(new QBrush(QColor.black));
 	    p.translate(0.5, 0.5);
 	    p.rotate(-45);
@@ -143,7 +143,7 @@ public class Image extends QWidget
 	    QPainterPath t_path = new QPainterPath();
 	    t_path.addRect(-t_2, 0, thickness, 0.48);
 	    t_path.addRect(-0.17, -t_2, 0.34, thickness);
-	    t_path.setFillRule(Qt.WindingFill);
+	    t_path.setFillRule(Qt.FillRule.WindingFill);
 	    p.drawPath(t_path);
 	}
 	p.end();
@@ -192,7 +192,7 @@ public class Image extends QWidget
 	int srch = src.height();
 	int desth = srch + warp;
 
-	QImage dest = new QImage(w, desth, QImage.Format_ARGB32_Premultiplied);      	
+	QImage dest = new QImage(w, desth, QImage.Format.Format_ARGB32_Premultiplied);      	
 	dest.fill(0);
 	
 	QNativePointer sbits = src.bits();
@@ -227,13 +227,13 @@ public class Image extends QWidget
 
 	QImage combined = new QImage(size + size / 2,
 				     size + warp * 2 + size / 8,
-				     QImage.Format_ARGB32_Premultiplied);
+				     QImage.Format.Format_ARGB32_Premultiplied);
 	combined.fill(0);
 
 	QPainter p = new QPainter();
     p.begin(combined);
-	p.setRenderHint(QPainter.Antialiasing);
-	p.setPen(Qt.NoPen);
+	p.setRenderHint(QPainter.RenderHint.Antialiasing);
+	p.setPen(Qt.PenStyle.NoPen);
 
 	// draw the background
 	p.drawImage(0, 0, bg_image);
@@ -261,7 +261,7 @@ public class Image extends QWidget
 	double hcx = handle_bounds.width() / 2;
 	double hcy = handle_bounds.height() / 2;
 	QImage handle_im = new QImage(handle_bounds.size().toSize(),
-				      QImage.Format_ARGB32_Premultiplied);
+				      QImage.Format.Format_ARGB32_Premultiplied);
 	{ 
 	    handle_im.fill(0);
 	    QPainter ph = new QPainter();
@@ -279,14 +279,14 @@ public class Image extends QWidget
 	    rg.setColorAt(or, QColor.fromRgbF(0, 0, 0, 1));
 	    rg.setColorAt(or + aa, transparent);
 	    ph.setBrush(new QBrush(rg));
-	    ph.setPen(Qt.NoPen);
+	    ph.setPen(Qt.PenStyle.NoPen);
 	    ph.drawEllipse(0, 0, (int) handle_bounds.width(), (int) handle_bounds.height());
 
 	    QLinearGradient lg = new QLinearGradient(0, 0, handle_bounds.width(), 0);
 	    lg.setColorAt(0.42, transparent);
 	    lg.setColorAt(0.47, QColor.fromRgbF(0, 0, 0));
 	    ph.setBrush(new QBrush(lg));
-	    ph.setCompositionMode(QPainter.CompositionMode_DestinationIn);
+	    ph.setCompositionMode(QPainter.CompositionMode.CompositionMode_DestinationIn);
 	    ph.drawRect(0, 0, (int) handle_bounds.width(), (int) handle_bounds.height());
 	    ph.end();
 	}
@@ -299,8 +299,8 @@ public class Image extends QWidget
  	p.translate(size * 3 / 4, size + warp * 1.4);
  	p.scale(size * 1.5, size / 2);
 	p.setBrush(new QBrush(dsg));
-	p.setPen(Qt.NoPen);
-	p.setCompositionMode(QPainter.CompositionMode_DestinationOver);
+	p.setPen(Qt.PenStyle.NoPen);
+	p.setCompositionMode(QPainter.CompositionMode.CompositionMode_DestinationOver);
  	p.drawEllipse(new QRectF(-0.5, -0.5, 1, 1));
 //  	p.drawEllipse(new QRectF(size - size / 2, size + warp - size / 2, size, size));
 
@@ -327,7 +327,7 @@ public class Image extends QWidget
 	}
 
    	QImage cup = composeCup(bg_image, fg_image, size, warp);
-	return cup.scaledToWidth(size, Qt.SmoothTransformation);
+	return cup.scaledToWidth(size, Qt.TransformationMode.SmoothTransformation);
     }
 
     private SmokeEffect m_smoke_effect;
@@ -353,7 +353,7 @@ public class Image extends QWidget
 	
 	p.drawImage(50, 80, m_logo);
 
-	p.setRenderHint(QPainter.SmoothPixmapTransform);
+	p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform);
 	QImage im = m_smoke_effect.image();
 	p.drawImage(new QRect(50, -20, im.width(), im.height()), 
 		    im, 

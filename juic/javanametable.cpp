@@ -57,6 +57,27 @@ void JavaNameTable::loadXmlFile(const QString &fileName)
     }
 
     info.append(current);
+
+    QDomElement enums = current.root.namedItem("enumerators").toElement();
+    for (QDomElement enum_node = enums.firstChild().toElement();
+         !enum_node.isNull(); enum_node = enum_node.nextSibling().toElement()) {
+
+        QString flags_name = enum_node.attribute("java-flags-name");
+
+        for (QDomElement enum_value = enum_node.firstChild().toElement();
+             !enum_value.isNull(); enum_value = enum_value.nextSibling().toElement()) {
+
+            QString cppValue = enum_value.attribute("cpp-value");
+            QString javaValue = enum_value.attribute("java-value");
+
+            m_enum_values[cppValue] = javaValue;
+
+            if (!flags_name.isEmpty()) {
+                m_flags_names[cppValue] = flags_name;
+            }
+        }
+
+    }
 }
 
 QString JavaNameTable::javaSignature(const QString &cppSignature, const QString &className)
@@ -84,6 +105,18 @@ QString JavaNameTable::javaSignal(const QString &cppSignal, const QString &class
 
     return cppSignal.left(lparen);
 }
+
+
+QString JavaNameTable::javaEnum(const QString &cppEnum)
+{
+    return m_enum_values[cppEnum];
+}
+
+QString JavaNameTable::javaFlagsName(const QString &cppEnumValue)
+{
+    return m_flags_names[cppEnumValue];
+}
+
 
 QString JavaNameTable::javaSignature(const QString &sig, const QString &className, const XmlEntry &entry)
 {

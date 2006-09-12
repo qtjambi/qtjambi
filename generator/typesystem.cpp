@@ -378,7 +378,18 @@ bool Handler::startElement(const QString &, const QString &n,
                 ftype->setOriginalName(attributes["flags"]);
                 ftype->setCodeGeneration(m_generate);
                 QString n = ftype->originalName();
-                ftype->setFlagsName(n.replace("::", "."));
+
+                QStringList lst = n.split("::");
+                if (lst.size() != 2) {
+                    ReportHandler::warning(QString("flag %2 is not on pattern Qualifier::Name")
+                                           .arg(n));
+                } else if (lst.at(0) != m_current_enum->javaQualifier()) {
+                    ReportHandler::warning(QString("enum %1 and flags %2 differ in qualifiers")
+                                           .arg(m_current_enum->javaQualifier())
+                                           .arg(lst.at(0)));
+                }
+
+                ftype->setFlagsName(lst.at(1));
                 m_current_enum->setFlags(ftype);
 
                 m_database->addType(ftype);
@@ -1107,6 +1118,22 @@ QString ContainerTypeEntry::qualifiedCppName() const
         return "QStringList";
     return ComplexTypeEntry::qualifiedCppName();
 }
+
+QString EnumTypeEntry::jniName() const
+{
+    return "jint";
+}
+
+QString FlagsTypeEntry::jniName() const
+{
+    return "jint";
+}
+
+QString FlagsTypeEntry::qualifiedJavaName() const
+{
+    return javaPackage() + "." + m_enum->javaQualifier() + "." + javaName();
+}
+
 
 void TypeDatabase::addRejection(const QString &class_name, const QString &function_name,
                                 const QString &field_name)

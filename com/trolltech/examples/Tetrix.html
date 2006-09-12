@@ -11,7 +11,7 @@ a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
 td.postheader { font-family: sans-serif }
 tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+body { color: black; }</style>
 </head>
 <body>
 <h1 align="center">Tetrix Example<br /><small></small></h1>
@@ -42,14 +42,14 @@ body { background: #ffffff; color: black; }</style>
 <p>We begin by constructing a <tt>TetrixBoard</tt> instance for the playing area and a label that shows the next piece to be dropped into the playing area; the label is initially empty.</p>
 <p>Three QLCDNumber objects are used to display the score, number of lives, and lines removed. These initially show default values, and will be filled in when a game begins:</p>
 <pre>&nbsp;           scoreLcd = new QLCDNumber(5);
-            scoreLcd.setSegmentStyle(QLCDNumber.Filled);</pre>
+            scoreLcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);</pre>
 <p>Three buttons with shortcuts are constructed so that the user can start a new game, pause the current game, and quit the application:</p>
 <pre>&nbsp;           startButton = new QPushButton(&quot;&amp;Start&quot;);
-            startButton.setFocusPolicy(Qt.NoFocus);
+            startButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);
             quitButton = new QPushButton(&quot;&amp;Quit&quot;);
-            quitButton.setFocusPolicy(Qt.NoFocus);
+            quitButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);
             pauseButton = new QPushButton(&quot;&amp;Pause&quot;);
-            pauseButton.setFocusPolicy(Qt.NoFocus);</pre>
+            pauseButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);</pre>
 <p>These buttons are configured so that they never receive the keyboard focus; we want the keyboard focus to remain with the <tt>TetrixBoard</tt> instance so that it receives all the keyboard events. Nonetheless, the buttons will still respond to <b>Alt</b> key shortcuts.</p>
 <p>We connect clicked() signals from the <b>Start</b> and <b>Pause</b> buttons to the board, and from the <b>Quit</b> button to the application's quit() slot.</p>
 <pre>&nbsp;   
@@ -86,7 +86,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       private QLabel createLabel(String text)
         {
             QLabel lbl = new QLabel(text);
-            lbl.setAlignment(Qt.AlignBottom);
+            lbl.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignBottom));
             return lbl;
         }</pre>
 <p>Since each label will be used in the widget's layout, it will become a child of the <tt>TetrixWindow</tt> widget and, as a result, it will be deleted when the window is deleted.</p>
@@ -334,8 +334,8 @@ body { background: #ffffff; color: black; }</style>
         {
             super(parent);
             
-            setFrameStyle(QFrame.Panel | QFrame.Sunken);
-            setFocusPolicy(Qt.StrongFocus);
+            setFrameStyle(QFrame.Shape.Panel.value() | QFrame.Shadow.Sunken.value());
+            setFocusPolicy(Qt.FocusPolicy.StrongFocus);
             clearBoard();
     
             nextPiece.setRandomShape();
@@ -442,17 +442,17 @@ body { background: #ffffff; color: black; }</style>
             }</pre>
 <p>If there is no current game, the game is running but paused, or if there is no current shape to control, we simply pass on the event to the base class.</p>
 <p>We check whether the event is about any of the keys that the player uses to control the current piece and, if so, we call the relevant function to handle the input:</p>
-<pre>&nbsp;           if (event.key() == Qt.Key_Left) 
+<pre>&nbsp;           if (event.key() == Qt.Key.Key_Left.value()) 
                 tryMove(curPiece, curX - 1, curY);
-            else if (event.key() == Qt.Key_Right) 
+            else if (event.key() == Qt.Key.Key_Right.value()) 
                 tryMove(curPiece, curX + 1, curY);
-            else if (event.key() == Qt.Key_Down)
+            else if (event.key() == Qt.Key.Key_Down.value())
                 tryMove(curPiece.rotatedRight(), curX, curY);
-            else if (event.key() == Qt.Key_Up)
+            else if (event.key() == Qt.Key.Key_Up.value())
                 tryMove(curPiece.rotatedLeft(), curX, curY);
-            else if (event.key() == Qt.Key_Space) 
+            else if (event.key() == Qt.Key.Key_Space.value()) 
                 dropDown();
-            else if (event.key() == Qt.Key_D) 
+            else if (event.key() == Qt.Key.Key_D.value()) 
                 oneLineDown();
             else 
                 super.keyPressEvent(event);        

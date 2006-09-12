@@ -460,7 +460,7 @@ public class TestConnections extends QTestCase implements Qt
         try {
             Thread.sleep(600);
         } catch (Exception e) { };
-        QApplication.processEvents(QEventLoop.DeferredDeletion);
+        QApplication.processEvents(new QEventLoop.ProcessEventsFlags(QEventLoop.ProcessEventsFlag.DeferredDeletion));
         
         QCOMPARE(MyQObject.finalizedCount, count);
     }
@@ -1013,21 +1013,21 @@ public class TestConnections extends QTestCase implements Qt
     	  MyQObject sender = new MyQObject();
     	  MyQObject receiver = new MyQObject();
     	  
-    	  QVERIFY(sender.signalBoolean.connect(receiver, "javaSlotboolean(boolean)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalBoolean.connect(receiver, "javaSlotBoolean(java.lang.Boolean)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalCharacter.connect(receiver, "javaSlotchar(char)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalCharacter.connect(receiver, "javaSlotCharacter(java.lang.Character)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalShort.connect(receiver, "javaSlotshort(short)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalShort.connect(receiver, "javaSlotShort(java.lang.Short)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalInteger.connect(receiver, "javaSlotint(int)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalInteger.connect(receiver, "javaSlotInteger(java.lang.Integer)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalLong.connect(receiver, "javaSlotlong(long)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalLong.connect(receiver, "javaSlotLong(java.lang.Long)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalFloat.connect(receiver, "javaSlotfloat(float)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalFloat.connect(receiver, "javaSlotFloat(java.lang.Float)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalDouble.connect(receiver, "javaSlotdouble(double)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalDouble.connect(receiver, "javaSlotDouble(java.lang.Double)", Qt.QueuedConnection));
-    	  QVERIFY(sender.signalString.connect(receiver, "javaSlotString(java.lang.String)", Qt.QueuedConnection));
+    	  QVERIFY(sender.signalBoolean.connect(receiver, "javaSlotboolean(boolean)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalBoolean.connect(receiver, "javaSlotBoolean(java.lang.Boolean)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalCharacter.connect(receiver, "javaSlotchar(char)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalCharacter.connect(receiver, "javaSlotCharacter(java.lang.Character)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalShort.connect(receiver, "javaSlotshort(short)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalShort.connect(receiver, "javaSlotShort(java.lang.Short)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalInteger.connect(receiver, "javaSlotint(int)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalInteger.connect(receiver, "javaSlotInteger(java.lang.Integer)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalLong.connect(receiver, "javaSlotlong(long)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalLong.connect(receiver, "javaSlotLong(java.lang.Long)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalFloat.connect(receiver, "javaSlotfloat(float)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalFloat.connect(receiver, "javaSlotFloat(java.lang.Float)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalDouble.connect(receiver, "javaSlotdouble(double)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalDouble.connect(receiver, "javaSlotDouble(java.lang.Double)", Qt.ConnectionType.QueuedConnection));
+    	  QVERIFY(sender.signalString.connect(receiver, "javaSlotString(java.lang.String)", Qt.ConnectionType.QueuedConnection));
 
     	  // Boolean
     	  receiver.slotResult = null;

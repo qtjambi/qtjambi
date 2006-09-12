@@ -20,6 +20,8 @@
 #include <QtCore/QReadWriteLock>
 #include <QtCore/QByteArray>
 
+#include <QtCore/QDebug>
+
 QList<StaticCache *> StaticCache::m_caches;
 
 // #define QTJAMBI_NOCACHE
@@ -689,7 +691,7 @@ void StaticCache::resolveQtObject_internal()
     QtObject.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtObject"));
     Q_ASSERT(QtObject.class_ref);
 
-    QtObject.native_id = env->GetFieldID(QtObject.class_ref, "native__id", "J");   
+    QtObject.native_id = env->GetFieldID(QtObject.class_ref, "native__id", "J");
     Q_ASSERT(QtObject.native_id);
 
     QtObject.disposed = env->GetMethodID(QtObject.class_ref, "disposed", "()V");
@@ -822,13 +824,13 @@ void StaticCache::resolveQObject_internal()
 {
     Q_ASSERT(!QObject.class_ref);
 
-    QObject.class_ref = ref_class(env->FindClass("com/trolltech/qt/core/QObject"));   
+    QObject.class_ref = ref_class(env->FindClass("com/trolltech/qt/core/QObject"));
     Q_ASSERT(QObject.class_ref);
 
-    QObject.javaConnectNotify = env->GetMethodID(QObject.class_ref, "__qt_javaConnectNotify", 
+    QObject.javaConnectNotify = env->GetMethodID(QObject.class_ref, "__qt_javaConnectNotify",
         "(Ljava/lang/String;I)V");
     Q_ASSERT(QObject.javaConnectNotify);
-    QObject.javaDisconnectNotify = env->GetMethodID(QObject.class_ref, "__qt_javaDisconnectNotify", 
+    QObject.javaDisconnectNotify = env->GetMethodID(QObject.class_ref, "__qt_javaDisconnectNotify",
         "(Ljava/lang/String;I)V");
     Q_ASSERT(QObject.javaDisconnectNotify);
 }
@@ -839,7 +841,7 @@ void StaticCache::resolveAbstractSignal_internal()
 
     AbstractSignal.class_ref = ref_class(env->FindClass("com/trolltech/qt/core/QObject$AbstractSignal"));
     Q_ASSERT(AbstractSignal.class_ref);
-    
+
     AbstractSignal.m_in_cpp_emission = env->GetFieldID(AbstractSignal.class_ref, "m_in_cpp_emission", "Z");
 }
 
@@ -883,4 +885,16 @@ void StaticCache::resolveQModelIndex_internal()
     Q_ASSERT(QModelIndex.field_column);
     Q_ASSERT(QModelIndex.field_internalId);
     Q_ASSERT(QModelIndex.field_model);
+}
+
+void StaticCache::resolveQtEnumerator_internal()
+{
+    Q_ASSERT(!QtEnumerator.class_ref);
+
+    QtEnumerator.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtEnumerator"));
+    Q_ASSERT(QtEnumerator.class_ref);
+
+    QtEnumerator.value = env->GetMethodID(QtEnumerator.class_ref, "value", "()I");
+    Q_ASSERT(QtEnumerator.value);
+
 }

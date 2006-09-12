@@ -7,6 +7,6 @@ cd ..
 nmake distclean
 qmake -r 
 nmake
-bin\juic -cp .
+bin\juic -cp . -a -e eclipse-integration\
 javac @java_files
 

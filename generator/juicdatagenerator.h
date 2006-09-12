@@ -32,6 +32,7 @@ public:
     void generateSignatures(QDomDocument *doc_node, QDomElement *signatures_node);
     void generateHierarchy(QDomDocument *doc_node, QDomElement *hierarchy_node);
     void generateModifications(QDomDocument *doc_nod, QDomElement *mods_node);
+    void generateEnumerators(QDomDocument *doc_nod, QDomElement *mods_node);
 
 private:
     MetaJavaClassList m_classes;

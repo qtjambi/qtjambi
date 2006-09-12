@@ -73,9 +73,10 @@ Java_com_trolltech_qt_QtJambiInternal_sender(JNIEnv *env, jclass, jobject obj)
 }
 
 
-extern "C" JNIEXPORT jobject JNICALL Java_com_trolltech_qt_QtJambiInternal(JNIEnv *env, jclass, jint value, jint ordinal, jclass enumClass, jstring name)
+extern "C" JNIEXPORT jobject JNICALL Java_com_trolltech_qt_QtJambiInternal_createExtendedEnum(JNIEnv *env, jclass, jint value, jint ordinal, jclass enumClass, jstring name)
 {
     jmethodID methodId = env->GetMethodID(enumClass, "<init>", "(Ljava/lang/String;II)V");
     jobject object = env->NewObject(enumClass, methodId, name, ordinal, value);
     return object;
 }
+

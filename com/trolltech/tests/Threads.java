@@ -30,10 +30,10 @@ public class Threads implements Runnable {
     
     public class ThreadReceiver extends QObject {
         public boolean event(QEvent e) {            
-            if (e.type() == QEvent.Quit) {
+            if (e.type() == QEvent.Type.Quit) {
                 System.out.println("ThreadReceiver should call quit()");
                 eventLoop.quit();
-            } else if (e.type() > QEvent.User) {
+            } else if (e.type().value() > QEvent.Type.User.value()) {
                 System.out.println("ThreadReceiver: got user event: " + Thread.currentThread().getId() + ", id=" + e.type());
             }
             
@@ -56,11 +56,11 @@ public class Threads implements Runnable {
             } catch (Exception e) {
             }
 
-            QEvent e = new QEvent(QEvent.User + ++counter);
+            QEvent e = new QEvent(QEvent.Type.resolve(QEvent.Type.User.value() + ++counter));
             QApplication.postEvent(tr, e);
         }
 
-        QEvent e = new QEvent(QEvent.Quit);
+        QEvent e = new QEvent(QEvent.Type.Quit);
         QApplication.postEvent(tr, e);
 
         eventLoop = new QEventLoop();

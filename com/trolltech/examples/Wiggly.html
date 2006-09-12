@@ -11,7 +11,7 @@ a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
 td.postheader { font-family: sans-serif }
 tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+body { color: black; }</style>
 </head>
 <body>
 <h1 align="center">Wiggly Example<br /><small></small></h1>
@@ -65,7 +65,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       WigglyWidget(QWidget parent) 
         {
             super(parent);
-            setBackgroundRole(QPalette.Midlight);
+            setBackgroundRole(QPalette.ColorRole.Midlight);
     
             QFont newFont = font();
             newFont.setPointSize(newFont.pointSize() + 20);

@@ -198,7 +198,7 @@
   <enum-type name="Qt::enum_1"/>
   <enum-type name="Qt::enum_2"/>
 
-  <enum-type name="QAbstractFileEngine::Extension"/>
+  <enum-type name="QAbstractFileEngine::Extension" extensible="yes"/>
   <enum-type name="QAbstractFileEngine::FileFlag" flags="QAbstractFileEngine::FileFlags"/>
   <enum-type name="QAbstractFileEngine::FileName"/>
   <enum-type name="QAbstractFileEngine::FileOwner"/>
@@ -246,6 +246,7 @@
   <enum-type name="QUuid::Variant"/>
   <enum-type name="QUuid::Version"/>
   <enum-type name="Qt::AnchorAttribute"/>
+  <enum-type name="Qt::ApplicationAttribute"/>
   <enum-type name="Qt::ArrowType"/>
   <enum-type name="Qt::AspectRatioMode"/>
   <enum-type name="Qt::BGMode"/>
@@ -267,6 +268,7 @@
   <enum-type name="Qt::HitTestAccuracy"/>
   <enum-type name="Qt::InputMethodQuery"/>
   <enum-type name="Qt::ItemFlag" flags="Qt::ItemFlags"/>
+  <enum-type name="Qt::ItemSelectionMode"/>
   <enum-type name="Qt::KeyboardModifier" flags="Qt::KeyboardModifiers"/>
   <enum-type name="Qt::LayoutDirection"/>
   <enum-type name="Qt::MatchFlag" flags="Qt::MatchFlags"/>
@@ -387,7 +389,7 @@
     <inject-code class="java">
     private native boolean setData_native(long id, int row, int col, Object value, int role);
     public boolean setData(int row, int col, Object value) {
-        return setData_native(nativeId(), row, col, value, com.trolltech.qt.core.Qt.DisplayRole);
+        return setData_native(nativeId(), row, col, value, com.trolltech.qt.core.Qt.ItemDataRole.DisplayRole);
     }
     public boolean setData(int row, int col, Object value, int role) {
         return setData_native(nativeId(), row, col, value, role);
@@ -397,7 +399,7 @@
         return data_native(nativeId(), row, col, role);
     }
     public Object data(int row, int col) {
-        return data_native(nativeId(), row, col, Qt.DisplayRole);
+        return data_native(nativeId(), row, col, Qt.ItemDataRole.DisplayRole);
     }
     
     </inject-code>
@@ -1759,6 +1761,10 @@
     }
     
     
+    public static void invokeLater(java.lang.Runnable runnable) {
+        postEvent(new QInvokable(runnable), new QEvent(QInvokable.INVOKABLE_EVENT));
+    }
+
 
     private static QNativePointer argc, argv;
     </inject-code>

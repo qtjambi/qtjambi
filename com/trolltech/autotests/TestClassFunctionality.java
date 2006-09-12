@@ -60,7 +60,10 @@ class GeneralObject
 class CustomEvent extends QEvent
 {
     public String s;
-    public CustomEvent(String param) { super(QEvent.User + 16); s = param; }    
+    public CustomEvent(String param) { 
+        super(QEvent.Type.resolve(QEvent.Type.User.value() + 16)); 
+        s = param; 
+    }    
 }
 
 class MyModel extends QStandardItemModel
@@ -98,9 +101,9 @@ class EventReceiver extends QWidget
     public String customEventString = null;
     public QSize resizeEventSize = null;
     public QSize resizeEventOldSize = null;
-    public int customEventType = 0;
-    public int resizeEventType = 0;
-    public int paintEventType = 0;
+    public QEvent.Type customEventType;
+    public QEvent.Type resizeEventType;
+    public QEvent.Type paintEventType;
     public boolean paintEventCastWorked = false;
     public boolean paintRectMatched = false;
     
@@ -117,7 +120,7 @@ class EventReceiver extends QWidget
             CustomEvent ce = (CustomEvent) event;
             customEventType = event.type();
             customEventString = ce.s;
-        } else if (event.type() == QEvent.Paint) {
+        } else if (event.type() == QEvent.Type.Paint) {
             QtObject new_event = null;
             try {
                 new_event = QtObject.reassignNativeResources(event, QPaintEvent.class);                
@@ -229,7 +232,7 @@ public class TestClassFunctionality extends QTestCase
             disposed = 0;
             QObject qobject = new QObjectSubclass(null, this);
             qobject.disposeLater();
-            QApplication.processEvents(QEventLoop.DeferredDeletion);            
+            QApplication.processEvents(new QEventLoop.ProcessEventsFlags(QEventLoop.ProcessEventsFlag.DeferredDeletion));            
             QCOMPARE(disposed, 1);
             QCOMPARE(qobject.nativeId(), 0L);            
         }
@@ -315,15 +318,15 @@ public class TestClassFunctionality extends QTestCase
         QApplication.processEvents();
         
         QCOMPARE(receiver.customEventString, "this is my stuff");
-        QCOMPARE(receiver.customEventType, QEvent.User + 16);
-        QCOMPARE(receiver.resizeEventType, QEvent.Resize);
+        QCOMPARE(receiver.customEventType, QEvent.Type.resolve(QEvent.Type.User.value() + 16));
+        QCOMPARE(receiver.resizeEventType, QEvent.Type.Resize);
         QCOMPARE(receiver.resizeEventSize.width(), 101);
         QCOMPARE(receiver.resizeEventSize.height(), 102);
         QCOMPARE(receiver.resizeEventOldSize.width(), 103);
         QCOMPARE(receiver.resizeEventOldSize.height(), 104);
         QVERIFY(receiver.paintEventCastWorked);
         QVERIFY(receiver.paintRectMatched);
-        QCOMPARE(receiver.paintEventType, QEvent.Paint);
+        QCOMPARE(receiver.paintEventType, QEvent.Type.Paint);
         
         String[] expected = {
                 "com.trolltech.qt.gui.QSizeGrip", 
@@ -400,7 +403,7 @@ public class TestClassFunctionality extends QTestCase
         QKeySequence seq = act.shortcut();
         
         QCOMPARE(seq.count(), 1);
-        QCOMPARE(seq.operator_subscript(0), Qt.CTRL | Qt.Key_A);
+        QCOMPARE(seq.operator_subscript(0), Qt.Modifier.CTRL.value() | Qt.Key.Key_A.value());
         
         // The result can be checked in the resulting "tmp__testclass_func_result.png" file 
         QPixmap pm = new QPixmap(100, 100);
@@ -565,7 +568,7 @@ public class TestClassFunctionality extends QTestCase
     // QEvent stay alive after they are posted to the event queue...
     // The verifecation here is basically that the vm doesn't crash.
     private static class OwnershipTransferReceiver extends QObject {
-        public int event_id;
+        public QEvent.Type event_id;
 
         public QRect rect;
 
@@ -623,7 +626,7 @@ public class TestClassFunctionality extends QTestCase
         QCOMPARE(CustomPaintEvent.finalized, true);
 
         // Sanity check the data...
-        QCOMPARE(receiver.event_id, QEvent.Paint);
+        QCOMPARE(receiver.event_id, QEvent.Type.Paint);
         QCOMPARE(1, receiver.rect.x());
         QCOMPARE(2, receiver.rect.y());
         QCOMPARE(3, receiver.rect.width());
@@ -665,6 +668,61 @@ public class TestClassFunctionality extends QTestCase
         QImage img2 = pm.toImage();
         QCOMPARE(img2.pixel(2,1), 0xff000000);
         QCOMPARE(img2.pixel(12,12), 0xffffffff);
+    }
+    
+    /* 
+     * Tests for QInvokable and QCoreApplication.invokeLater(Runnable);
+     */
+    
+    
+    /**
+     * The run() function sets the executing thread.
+     */
+    private static class Invokable implements Runnable {
+        public void run() { thread = Thread.currentThread(); }        
+        public boolean wasRun() { return thread != null; }        
+        public Thread thread;
+    }
+    
+    /**
+     * Create an invokable object and post it. Then verify that
+     * its not executed before after we call processEvents()
+     */
+    public void run_invokeLater_mainThread() {
+        Invokable invokable = new Invokable();
+        QCoreApplication.invokeLater(invokable);        
+        
+        QVERIFY(!invokable.wasRun());        
+        QCoreApplication.processEvents();        
+        QVERIFY(invokable.wasRun());        
+    }
+    
+    private static boolean invokeLater_in_otherThread;
+    private static Invokable invokable_in_otherThread;
+
+    /**
+     * Same as the test above, except that the invokable is now 
+     * created in a different thread and we wait for this thread
+     * to finish before testing if the invokable was run. We also
+     * in this case check that the invokable is executed by the correct
+     * thread.
+     */
+    public void run_invokeLater_otherThread() {
+        Thread thread = new Thread() {
+            public void run() {
+                invokable_in_otherThread = new Invokable();
+                QApplication.invokeLater(invokable_in_otherThread);
+                try { Thread.sleep(500); } catch (Exception e) { }
+            }
+        };
+        thread.start();        
+        try { thread.join(); } catch (Exception e) { }
+        
+        QVERIFY(!invokable_in_otherThread.wasRun());
+        QCoreApplication.processEvents();
+        QVERIFY(invokable_in_otherThread.wasRun());
+        QCOMPARE(invokable_in_otherThread.thread, QCoreApplication.instance().thread());
+        
     }
 }
 

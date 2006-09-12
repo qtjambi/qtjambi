@@ -9,8 +9,6 @@ mac:CONFIG -= app_bundle
 INCLUDEPATH += .
 INCLUDEPATH += ../common
 
-DEFINES += RPP_JAMBI
-
 CONFIG += console
 RESOURCES += generator.qrc
 

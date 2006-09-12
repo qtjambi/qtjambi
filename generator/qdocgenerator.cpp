@@ -5,16 +5,6 @@
 
 #include <QtCore/QDir>
 
-static QString escape(const QString &str)
-{
-    QString result = str;
-    result.replace(QChar('&'), "&amp;");
-    result.replace(QChar('"'), "&quot;");
-    result.replace(QChar('<'), "&lt;");
-    result.replace(QChar('>'), "&gt;");
-    return result;
-}
-
 QDocGenerator::QDocGenerator() { }
 
 QString QDocGenerator::subDirectoryForClass(const MetaJavaClass *) const
@@ -54,6 +44,45 @@ void QDocGenerator::generate()
     }
 }
 
+// copy-paste from linguist/shared/metatranslator.cpp
+static QString numericEntity( int ch )
+{
+    return QString( ch <= 0x20 ? "<byte value=\"x%1\"/>" : "&#x%1;" )
+           .arg( ch, 0, 16 );
+}
+
+static QString protect( const QByteArray& str )
+{
+    QString result;
+    int len = (int) str.length();
+    for ( int k = 0; k < len; k++ ) {
+        switch( str[k] ) {
+        case '\"':
+            result += QString( "&quot;" );
+            break;
+        case '&':
+            result += QString( "&amp;" );
+            break;
+        case '>':
+            result += QString( "&gt;" );
+            break;
+        case '<':
+            result += QString( "&lt;" );
+            break;
+        case '\'':
+            result += QString( "&apos;" );
+            break;
+        default:
+            if ( (uchar) str[k] < 0x20 && str[k] != '\n' )
+                result += numericEntity( (uchar) str[k] );
+            else
+                result += str[k];
+        }
+    }
+    return result;
+}
+
+
 void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function) 
 {
     if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
@@ -65,8 +94,8 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
     setupForFunction(java_function, &included_attributes, &excluded_attributes, &disabled_params);
     QString signature = functionSignature(java_function, included_attributes, excluded_attributes);
 
-    s << "<method java=\"" << escape(signature) << "\"" << endl
-      << "    cpp=\"" << escape(java_function->signature()) << "\"";
+    s << "<method java=\"" << protect(signature.toUtf8()) << "\"" << endl
+      << "    cpp=\"" << protect(java_function->signature().toUtf8()) << "\"";
 
     if (disabled_params.count() > 0) {
         s << endl << "    steals-ownership-of=\"";
@@ -76,7 +105,7 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
                 const MetaJavaArgument *arg = arguments.at(i);
                 if (i > 0) 
                     s << ",";
-                s << arg->name();
+                s << protect(arg->name().toUtf8());
             }
         }
         s << "\"";
@@ -86,14 +115,13 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaEnumValue *java_enum_value)
 {
-    s << "<enumvalue java=\"" << java_enum_value->name() << "\"" << endl
-      << "    cpp=\"" << java_enum_value->name() << "\"" << endl
-      << "    value=\"" << java_enum_value->value() << "\" />" << endl;
+    s << "<enum-value java=\"" << protect(java_enum_value->name().toUtf8()) << "\"" << endl
+      << "    cpp=\"" << protect(java_enum_value->name().toUtf8()) << "\"/>" << endl;
 }
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaEnum *java_enum) 
 {
-    s << "<enum java=\"" << java_enum->name() << "\"" << " cpp=\"" << java_enum->name() << "\">" << endl;
+    s << "<enum java=\"" << protect(java_enum->name().toUtf8()) << "\"" << " cpp=\"" << protect(java_enum->name().toUtf8()) << "\">" << endl;
     MetaJavaEnumValueList values = java_enum->values();
     foreach (MetaJavaEnumValue *value, values) {
         write(s, value);
@@ -107,24 +135,24 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field)
     uint included_attributes = 0;
     uint excluded_attributes = 0;
     setupForFunction(java_field->getter(), &included_attributes, &excluded_attributes, &disabled_params);
-    s << "<variablegetter java=\"" << escape(functionSignature(java_field->getter(), included_attributes, excluded_attributes)) 
+    s << "<variablegetter java=\"" << protect(functionSignature(java_field->getter(), included_attributes, excluded_attributes).toUtf8()) 
       << "\"" << endl
-      << "    cpp=\"" << java_field->name() << "\" />" << endl;
+      << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
 
     included_attributes = 0;
     excluded_attributes = 0;
     setupForFunction(java_field->setter(), &included_attributes, &excluded_attributes, &disabled_params);
-    s << "<variablesetter java=\"" << escape(functionSignature(java_field->setter(), included_attributes, excluded_attributes)) 
+    s << "<variablesetter java=\"" << protect(functionSignature(java_field->setter(), included_attributes, excluded_attributes).toUtf8()) 
       << "\"" << endl
-      << "    cpp=\"" << java_field->name() << "\" />" << endl;    
+      << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;    
 }
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 {
     s << "<class" << endl
-      << "   java=\"" << java_class->name() << "\"" << endl
-      << "   cpp=\"" << java_class->typeEntry()->qualifiedCppName() << "\"" << endl
-      << "   java-extends=\"" << java_class->baseClassName() << "\"" << endl;
+      << "   java=\"" << protect(java_class->name().toUtf8()) << "\"" << endl
+      << "   cpp=\"" << protect(java_class->typeEntry()->qualifiedCppName().toUtf8()) << "\"" << endl
+      << "   java-extends=\"" << protect(java_class->baseClass() ? java_class->baseClass()->name().toUtf8() : "") << "\"" << endl;
 
     if (java_class->typeEntry()->isObject()) {
         const ObjectTypeEntry *ot = static_cast<const ObjectTypeEntry *>(java_class->typeEntry());
@@ -138,7 +166,7 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             const MetaJavaClass *interfaze = interfaces.at(i);
             if (i > 0)
                 s << ",";
-            s << interfaze->name();
+            s << protect(interfaze->name().toUtf8());
         }
         s << "\"" << endl;
     }

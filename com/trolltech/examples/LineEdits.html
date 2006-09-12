@@ -11,7 +11,7 @@ a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
 td.postheader { font-family: sans-serif }
 tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+body { color: black; }</style>
 </head>
 <body>
 <h1 align="center">Line Edits Example<br /><small></small></h1>
@@ -137,13 +137,13 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       public void echoChanged(int index) {
             switch (index) {
             case 0:
-                echoLineEdit.setEchoMode(QLineEdit.Normal);
+                echoLineEdit.setEchoMode(QLineEdit.EchoMode.Normal);
                 break;
             case 1:
-                echoLineEdit.setEchoMode(QLineEdit.Password);
+                echoLineEdit.setEchoMode(QLineEdit.EchoMode.Password);
                 break;
             case 2:
-                echoLineEdit.setEchoMode(QLineEdit.NoEcho);
+                echoLineEdit.setEchoMode(QLineEdit.EchoMode.NoEcho);
             }
         }</pre>
 <p>The slot updates the line edit in the same group box to use an echo mode that corresponds to the entry described in the combobox.</p>
@@ -170,13 +170,13 @@ body { background: #ffffff; color: black; }</style>
         {
             switch (index) {
             case 0:
-                alignmentLineEdit.setAlignment(Qt.AlignLeft);
+                alignmentLineEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignLeft));
                 break;
             case 1:
-                alignmentLineEdit.setAlignment(Qt.AlignCenter);
+                alignmentLineEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignCenter));
                 break;
             case 2:
-                alignmentLineEdit.setAlignment(Qt.AlignRight);
+                alignmentLineEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignRight));
             }
         }</pre>
 <p>This changes the way that text is displayed in the line edit to correspond with the description selected in the combobox.</p>

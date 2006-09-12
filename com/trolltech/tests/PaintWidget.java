@@ -29,10 +29,10 @@ class PaintWidget extends QWidget {
     QColor m_current_color = QColor.red;
 
     public PaintWidget() {
-        this(0);
+        this(null);
     }
     
-    public PaintWidget(int flags) {
+    public PaintWidget(Qt.WindowFlags flags) {
         super(null, flags);
         this.setGeometry(new QRect(100, 100, 32 * 16 + 2, 480));
     }
@@ -73,12 +73,12 @@ class PaintWidget extends QWidget {
         QPainter p = new QPainter();
         p.begin(this);
 
-        p.setRenderHint(QPainter.Antialiasing);
+        p.setRenderHint(QPainter.RenderHint.Antialiasing);
 
         p.setBrush(new QBrush(new QColor(255, 255, 255)));
         p.drawRect(0, 0, width() - 1, height() - 1);
 
-        p.setPen(Qt.NoPen);
+        p.setPen(Qt.PenStyle.NoPen);
         Iterator<QPolygon> it = polygons.iterator();
         Iterator<QColor> color_it = colors.iterator();
         while (it.hasNext()) {
@@ -95,7 +95,7 @@ class PaintWidget extends QWidget {
             p.drawPolyline(current);
         }
 
-        p.setPen(Qt.NoPen);
+        p.setPen(Qt.PenStyle.NoPen);
         p.setBrush(new QBrush(m_current_color));
 
         p.drawRect(1, height() - 11, width() - 2, 10);

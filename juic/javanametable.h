@@ -31,6 +31,8 @@ public:
 
     QString javaSignature(const QString &cppSignature, const QString &className = QString());
     QString javaSignal(const QString &cppSignal, const QString &className = QString());
+    QString javaEnum(const QString &javaEnum);
+    QString javaFlagsName(const QString &cppEnumValue);
 
 protected:
     struct XmlEntry {
@@ -48,6 +50,12 @@ protected:
 
     QList<XmlEntry> info;
     QMap<QString, QSet<QString> > hierarchy;
+
+    // Map of qualified C++ enum value to qualified Java enum value.
+    QHash<QString, QString> m_enum_values;
+
+    // Map of qualified C++ enum value to qualified Java flags name
+    QHash<QString, QString> m_flags_names;
 };
 
 #endif // JAVANAMETABLE_H

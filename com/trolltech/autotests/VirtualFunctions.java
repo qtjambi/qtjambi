@@ -79,20 +79,20 @@ public class VirtualFunctions extends QTestCase {
         QStyle java_windowsstyle = new QWindowsStyle();
         
         // Verify that the values are as expected...
-        QCOMPARE(java_plastique.pixelMetric(QStyle.PM_SliderThickness), 15);
-        QCOMPARE(java_windowsstyle.pixelMetric(QStyle.PM_SliderThickness), 16);
+        QCOMPARE(java_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness), 15);
+        QCOMPARE(java_windowsstyle.pixelMetric(QStyle.PixelMetric.PM_SliderThickness), 16);
         
         QStyle cpp_plastique = QStyleFactory.create("plastique");
         QVERIFY(cpp_plastique != null);
         QVERIFY(cpp_plastique instanceof QPlastiqueStyle);
         
         // The actual test...
-        QCOMPARE(java_plastique.pixelMetric(QStyle.PM_SliderThickness),
-                 cpp_plastique.pixelMetric(QStyle.PM_SliderThickness));      
+        QCOMPARE(java_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness),
+                 cpp_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness));      
         
         QWindowsStyle windows_style = (QPlastiqueStyle) cpp_plastique;
-        QCOMPARE(windows_style.pixelMetric(QStyle.PM_SliderThickness),
-                 java_plastique.pixelMetric(QStyle.PM_SliderThickness));
+        QCOMPARE(windows_style.pixelMetric(QStyle.PixelMetric.PM_SliderThickness),
+                 java_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness));
     }
     
     // A QObject subclass to call super.paintEngine();
@@ -115,7 +115,7 @@ public class VirtualFunctions extends QTestCase {
     // A non QObject subclass to call super.paintEngine();
     private static class Image extends QImage implements CallCounter {
     	public int called;
-    	public Image() { super(100, 100, QImage.Format_ARGB32_Premultiplied); }
+    	public Image() { super(100, 100, QImage.Format.Format_ARGB32_Premultiplied); }
     	public int callCount() { return called; }
     	public QPaintEngine paintEngine() {
     		++called;

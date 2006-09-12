@@ -66,7 +66,7 @@ HTML.style              = "h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; 
                           "a:visited { color: #672967; text-decoration: none }\n" \
                           "td.postheader { font-family: sans-serif }\n" \
                           "tr.address { font-family: sans-serif }\n" \
-                          "body { background: #ffffff; color: black; }"
+                          "body { color: black; }"
 
 HTML.postheader         = ""
 

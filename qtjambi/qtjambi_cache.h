@@ -242,8 +242,14 @@ struct QTJAMBI_EXPORT StaticCache
         jfieldID field_model;
     } QModelIndex;
 
+    struct {
+        jclass class_ref;
+        jmethodID value;
+    } QtEnumerator;
+
 
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
+    DECLARE_RESOLVE_FUNCTIONS(QtEnumerator);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
     DECLARE_RESOLVE_FUNCTIONS(Byte);

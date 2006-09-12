@@ -138,9 +138,12 @@ bool MetaJavaFunction::needsCallThrough() const
         return true;
 
     foreach (const MetaJavaArgument *arg, arguments()) {
-        if (arg->type()->isArray())
+        if (arg->type()->isArray() || arg->type()->isJavaEnum() || arg->type()->isJavaFlags())
             return true;
     }
+
+    if (type() && (type()->isArray() || type()->isJavaEnum() || type()->isJavaFlags()))
+        return true;
 
     return false;
 }
@@ -153,7 +156,7 @@ QString MetaJavaFunction::marshalledName() const
         returned += "_";
         if (arg->type()->isNativePointer()) {
             returned += "nativepointer";
-        } else if (arg->type()->isEnum() || arg->type()->isFlags()) {
+        } else if (arg->type()->isIntegerEnum() || arg->type()->isIntegerFlags()) {
             returned += "int";
         } else {
             returned += arg->type()->name().replace("[]", "_3");

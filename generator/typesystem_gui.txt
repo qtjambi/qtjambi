@@ -201,7 +201,6 @@
   <enum-type name="QSizePolicy::Policy"/>
   <enum-type name="QSizePolicy::PolicyFlag"/>
   <enum-type name="QSizePolicy::SizePolicyMasks"/>
-  <enum-type name="QSqlQuery::BatchExecutionMode"/>
   <enum-type name="QStandardItem::ItemType"/>
   <enum-type name="QStyle::SubControl" flags="QStyle::SubControls" force-integer="yes"/>
   <enum-type name="QStyle::ComplexControl"/>
@@ -427,7 +426,7 @@
   </enum-type>
 
   <enum-type name="QPalette::ColorRole">
-    <reject-enum-value name="NoRole"/>
+    <reject-enum-value name="NColorRoles"/>
     <reject-enum-value name="Foreground"/>
     <reject-enum-value name="Background"/>
   </enum-type>
@@ -759,12 +758,6 @@
   </value-type>
 
   <value-type name="QColor">
-    <modify-function signature="QColor(uint)">
-        <remove/>
-    </modify-function>
-    <modify-function signature="QColor(Qt::GlobalColor)">
-      <access modifier="private"/>
-    </modify-function>
     <modify-function signature="QColor(QColor::Spec)">
         <remove/>
     </modify-function>
@@ -880,6 +873,7 @@
   <object-type name="QDateEdit"/>
   <object-type name="QDesktopServices"/>
   <object-type name="QDialog"/>  
+  <object-type name="QDialogButtonBox"/>
   <object-type name="QDirModel"/>
   <object-type name="QDoubleValidator"/>
   <object-type name="QDragEnterEvent"/>
@@ -1010,11 +1004,6 @@
     </inject-code>
   </object-type>
 
-  <object-type name="QDialogButtonBox">
-    <modify-function signature="QDialogButtonBox(Qt::Orientation, QWidget *)">
-      <remove />
-    </modify-function>
-  </object-type>
 
   <object-type name="QColorDialog">
     <modify-function signature="getColor(const QColor &amp;, QWidget *)">
@@ -1154,46 +1143,6 @@
     <extra-includes>
         <include file-name="QPixmap" location="global"/>
     </extra-includes>
-    
-    <modify-function signature="information(QWidget *, const QString &amp;, const QString &amp;, int, int, int)">
-      <remove />
-    </modify-function>
-    <modify-function signature="information(QWidget *, const QString &amp;, const QString &amp;, const QString &amp;, const QString &amp;, int, int)">
-      <remove />
-    </modify-function>
-    <modify-function signature="information(QWidget *, const QString &amp;, const QString &amp;, QMessageBox::StandardButton, QMessageBox::StandardButton)">
-      <remove />
-    </modify-function>
-
-    <modify-function signature="question(QWidget *, const QString &amp;, const QString &amp;, int, int, int)">
-      <remove />
-    </modify-function>
-    <modify-function signature="question(QWidget *, const QString &amp;, const QString &amp;, const QString &amp;, const QString &amp;, int, int)">
-      <remove />
-    </modify-function>
-    <modify-function signature="question(QWidget *, const QString &amp;, const QString &amp;, QMessageBox::StandardButton, QMessageBox::StandardButton)">
-      <remove />
-    </modify-function>
-
-    <modify-function signature="warning(QWidget *, const QString &amp;, const QString &amp;, int, int, int)">
-      <remove />
-    </modify-function>
-    <modify-function signature="warning(QWidget *, const QString &amp;, const QString &amp;, const QString &amp;, const QString &amp;, int, int)">
-      <remove />
-    </modify-function>
-    <modify-function signature="warning(QWidget *, const QString &amp;, const QString &amp;, QMessageBox::StandardButton, QMessageBox::StandardButton)">
-      <remove />
-    </modify-function>
-
-    <modify-function signature="critical(QWidget *, const QString &amp;, const QString &amp;, int, int, int)">
-      <remove />
-    </modify-function>
-    <modify-function signature="critical(QWidget *, const QString &amp;, const QString &amp;, const QString &amp;, const QString &amp;, int, int)">
-      <remove />
-    </modify-function>
-    <modify-function signature="critical(QWidget *, const QString &amp;, const QString &amp;, QMessageBox::StandardButton, QMessageBox::StandardButton)">
-      <remove />
-    </modify-function>
   </object-type>
 
   <object-type name="QAbstractSpinBox">

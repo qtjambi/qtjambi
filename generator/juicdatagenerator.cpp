@@ -47,10 +47,14 @@ void JuicDataGenerator::generate()
     QDomElement mods = doc.createElement("modifications");
     generateModifications(&doc, &mods);
 
+    QDomElement enums = doc.createElement("enumerators");
+    generateEnumerators(&doc, &enums);
+
     doc.appendChild(root);
     root.appendChild(signatures);
     root.appendChild(hierarchy);
     root.appendChild(mods);
+    root.appendChild(enums);
 
     f.write(doc.toByteArray(4));
 }
@@ -123,6 +127,36 @@ void JuicDataGenerator::generateSignatures(QDomDocument *doc_node, QDomElement *
         elm.setAttribute("cpp-signature", it.key());
         elm.setAttribute("java-signature", it.value());
         signatures_node->appendChild(elm);
+    }
+}
+
+void JuicDataGenerator::generateEnumerators(QDomDocument *doc_node, QDomElement *enums_node)
+{
+    QMap<QString, QString> table;
+
+    foreach (MetaJavaClass *c, m_classes) {
+        foreach (MetaJavaEnum *e, c->enums()) {
+
+            const EnumTypeEntry *et = e->typeEntry();
+
+            QDomElement enum_node = doc_node->createElement("enumerator");
+            enum_node.setAttribute("cpp-name", et->qualifiedCppName());
+            enum_node.setAttribute("java-name", et->qualifiedJavaName());
+            if (et->flags())
+                enum_node.setAttribute("java-flags-name", et->flags()->qualifiedJavaName());
+
+            foreach (MetaJavaEnumValue *ev, e->values()) {
+                QDomElement value_node = doc_node->createElement("enum-value");
+                value_node.setAttribute("cpp-value", QString("%1::%2").arg(et->qualifier())
+                                                                      .arg(ev->name()));
+                value_node.setAttribute("java-value", QString("%1.%2.%3.%4").arg(et->javaPackage())
+                                                                            .arg(et->qualifier())
+                                                                            .arg(et->javaName())
+                                                                            .arg(ev->name()));
+                enum_node.appendChild(value_node);
+            }
+            enums_node->appendChild(enum_node);
+        }
     }
 }
 

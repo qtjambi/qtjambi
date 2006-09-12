@@ -183,7 +183,7 @@ public class Style extends QWindowsStyle {
         QRectF rect = new QRectF(opt.rect());
         QStyle.State state = opt.state();
         boolean button_down = state.isSet(QStyle.StateFlag.State_Sunken);
-        boolean enabled = state.isSet(QStyle.StateFlag.State_Sunken);
+        boolean enabled = state.isSet(QStyle.StateFlag.State_Enabled);
 
         p.setRenderHint(QPainter.RenderHint.Antialiasing);
 

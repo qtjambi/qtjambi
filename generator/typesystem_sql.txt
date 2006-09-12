@@ -93,10 +93,11 @@
   <enum-type name="QSqlDriver::StatementType" />
   <enum-type name="QSqlError::ErrorType" />
   <enum-type name="QSqlField::RequiredStatus" />
+  <enum-type name="QSqlQuery::BatchExecutionMode"/>
   <enum-type name="QSqlResult::BindingSyntax" />
   <enum-type name="QSqlResult::VirtualHookOperation" />
   <enum-type name="QSqlTableModel::EditStrategy" />
-  
+
   <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />  
   <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />  

@@ -11,7 +11,7 @@ a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
 td.postheader { font-family: sans-serif }
 tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+body { color: black; }</style>
 </head>
 <body>
 <h1 align="center">Spin Boxes Example<br /><small></small></h1>
@@ -97,16 +97,16 @@ body { background: #ffffff; color: black; }</style>
             QDateTimeEdit dateEdit = new QDateTimeEdit(QDate.currentDate());
             dateEdit.setDateRange(new QDate(2005, 1, 1), new QDate(2010, 12, 31));
             dateLabel.setText(String.format(tr(&quot;Appointment date (between %0$s and %1$s):&quot;),
-                                            dateEdit.minimumDate().toString(Qt.ISODate),
-                                            dateEdit.maximumDate().toString(Qt.ISODate)));</pre>
+                                            dateEdit.minimumDate().toString(Qt.DateFormat.ISODate),
+                                            dateEdit.maximumDate().toString(Qt.DateFormat.ISODate)));</pre>
 <p>The first spin box is a QDateEdit widget that is able to accept dates within a given range specified using QDate values. The arrow buttons and <b>Up</b> and <b>Down</b> keys can be used to increase and decrease the values for year, month, and day when the cursor is in the relevant section.</p>
 <p>The second spin box is a QTimeEdit widget:</p>
 <pre>&nbsp;           QLabel timeLabel = new QLabel();
             QDateTimeEdit timeEdit = new QDateTimeEdit(QTime.currentTime());
             timeEdit.setTimeRange(new QTime(9, 0, 0, 0), new QTime(16, 30, 0, 0));
             timeLabel.setText(String.format(tr(&quot;Appointment time (between %0$s and %1$s):&quot;),
-                                            timeEdit.minimumTime().toString(Qt.ISODate),
-                                            timeEdit.maximumTime().toString(Qt.ISODate)));</pre>
+                                            timeEdit.minimumTime().toString(Qt.DateFormat.ISODate),
+                                            timeEdit.maximumTime().toString(Qt.DateFormat.ISODate)));</pre>
 <p>Acceptable values for the time are defined using QTime values.</p>
 <p>The third spin box is a QDateTimeEdit widget that can display both date and time values, and we place a label above it to indicate the range of allowed times for a meeting. These widgets will be updated when the user changes a format string.</p>
 <pre>&nbsp;           meetingLabel = new QLabel();
@@ -138,16 +138,16 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       public void setFormatString(String formatString) {
             meetingEdit.setDisplayFormat(formatString);</pre>
 <p>Depending on the visible sections in the widget, we set a new date or time range, and update the associated label to provide relevant information for the user:</p>
-<pre>&nbsp;           if ((meetingEdit.displayedSections() &amp; QDateTimeEdit.DateSections_Mask) != 0) {
+<pre>&nbsp;           if (meetingEdit.displayedSections().isSet(QDateTimeEdit.Section.DateSections_Mask)) {
                 meetingEdit.setDateRange(new QDate(2004, 11, 1), new QDate(2005, 11, 30));
                 meetingLabel.setText(String.format(tr(&quot;Meeting date (between %0$s and %1$s):&quot;),
-                                                    meetingEdit.minimumDate().toString(Qt.ISODate),
-                                                    meetingEdit.maximumDate().toString(Qt.ISODate)));
+                                                    meetingEdit.minimumDate().toString(Qt.DateFormat.ISODate),
+                                                    meetingEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
             } else {
                 meetingEdit.setTimeRange(new QTime(0, 7, 20, 0), new QTime(21, 0, 0, 0));
                 meetingLabel.setText(String.format(tr(&quot;Meeting time (between %0$s and %1$s):&quot;),
-                                                   meetingEdit.minimumTime().toString(Qt.ISODate),
-                                                   meetingEdit.maximumTime().toString(Qt.ISODate)));
+                                                   meetingEdit.minimumTime().toString(Qt.DateFormat.ISODate),
+                                                   meetingEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
             }
         }</pre>
 <p>When the format string is changed, there will be an appropriate label and entry widget for dates, times, or both types of input.</p>

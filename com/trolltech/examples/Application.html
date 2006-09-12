@@ -11,7 +11,7 @@ a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
 td.postheader { font-family: sans-serif }
 tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+body { color: black; }</style>
 </head>
 <body>
 <h1 align="center">Application Example<br /><small></small></h1>
@@ -206,15 +206,14 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       private boolean maybeSave()
         {
             if (textEdit.document().isModified()) {
-                int ret = QMessageBox.warning(this, tr(&quot;Application&quot;),
+                QMessageBox.StandardButton ret = QMessageBox.warning(this, tr(&quot;Application&quot;),
                                                tr(&quot;The document has been modified.\n&quot; +
-                                                  &quot;Do you want to save your changes?&quot;),
-                                               QMessageBox.Yes | QMessageBox.Default,
-                                               QMessageBox.No,
-                                               QMessageBox.Cancel | QMessageBox.Escape);
-                if (ret == QMessageBox.Yes) {
+                                                  &quot;Save your changes?&quot;),
+                                              new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok,
+                                                      QMessageBox.StandardButton.Cancel));
+                if (ret == QMessageBox.StandardButton.Yes) {
                     return save();
-                } else if (ret == QMessageBox.Cancel) {
+                } else if (ret == QMessageBox.StandardButton.Cancel) {
                     return false;
                 }
             }
@@ -225,13 +224,13 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       public void loadFile(String fileName)
         {
             QFile file = new QFile(fileName);
-            if (!file.open(QFile.ReadOnly | QFile.Text)) {
+            if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text))) {
                 QMessageBox.warning(this, tr(&quot;Application&quot;), String.format(tr(&quot;Cannot read file %1$s:\n%2$s.&quot;), fileName, file.errorString()));
                 return;
             }
     
             QTextStream in = new QTextStream(file);
-            QApplication.setOverrideCursor(new QCursor(Qt.WaitCursor));
+            QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.WaitCursor));
             textEdit.setPlainText(in.readAll());
             QApplication.restoreOverrideCursor();
     
@@ -246,13 +245,13 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       public boolean saveFile(String fileName)
         {
             QFile file = new QFile(fileName);
-            if (!file.open(QFile.WriteOnly | QFile.Text)) {
+            if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly, QFile.OpenModeFlag.Text))) {
                 QMessageBox.warning(this, tr(&quot;Application&quot;), String.format(tr(&quot;Cannot write file %1$s:\n%2$s.&quot;), fileName, file.errorString()));
                 return false;
             }
     
             QTextStream out = new QTextStream(file);
-            QApplication.setOverrideCursor(new QCursor(Qt.WaitCursor));
+            QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.WaitCursor));
             out.operator_shift_left(textEdit.toPlainText());
             QApplication.restoreOverrideCursor();
     

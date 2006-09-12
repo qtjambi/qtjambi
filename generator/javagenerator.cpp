@@ -126,16 +126,15 @@ void JavaGenerator::writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_en
 {
     const MetaJavaEnumValueList &values = java_enum->values();
 
-    s << "    // enum " << java_enum->name() << endl;
+    s << "    public static class " << java_enum->name() << "{" << endl;
     for (int i=0; i<values.size(); ++i) {
-        MetaJavaEnumValue *enum_value = values.at(i);
-        s << "    public static final int " << enum_value->name() << " = " << enum_value->value();
+        MetaJavaEnumValue *value = values.at(i);
+        s << "        public static final int " << value->name() << " = " << value->value();
         s << ";";
-
         s << endl;
     }
 
-    s << endl;
+    s << "    } // end of enum " << java_enum->name() << endl << endl;
 }
 
 void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
@@ -169,14 +168,20 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
       << "        public int value() { return value; }" << endl
       << endl;
 
-    // The resolve function
+    // The resolve functions. The public one that returns the right
+    // type and an internal one that has a generic signature. Makes it
+    // easier to find the right one from JNI.
     s << "        public static " << java_enum->name() << " resolve(int value) {" << endl
+      << "            return (" << java_enum->name() << ") resolve_internal(value);" << endl
+      << "        }" << endl
+      << "        private static Object resolve_internal(int value) {" << endl
       << "            switch (value) {" << endl;
 
     for (int i=0; i<values.size(); ++i) {
         MetaJavaEnumValue *e = values.at(i);
-        if (entry->isEnumValueRejected(e->name()))
-            continue;
+
+//         if (entry->isEnumValueRejected(e->name()))
+//             continue;
 
         s << "            case " << e->value() << ": return " << e->name() << ";" << endl;
     }
@@ -213,7 +218,7 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
     // Write out the QFlags if present...
     FlagsTypeEntry *flags_entry = entry->flags();
     if (flags_entry) {
-        QString flagsName = flags_entry->javaName().split(".").at(1);
+        QString flagsName = flags_entry->javaName();
         s << "    public static class " << flagsName << " extends QFlags<"
           << java_enum->name() << "> {" << endl
           << "        public " << flagsName << "(" << java_enum->name() << " ... args)"

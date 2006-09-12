@@ -26,6 +26,18 @@
 
 #include <limits.h>
 
+
+static QString enumify(const QString &value, const char *enumName)
+{
+    bool isNumber = false;
+    int i = value.toInt(&isNumber);
+    if (isNumber)
+        return QString::fromLatin1("%1.resolve(%2)").arg(enumName).arg(i);
+    return value;
+}
+
+
+
 namespace Java {
 
 WriteInitialization::WriteInitialization(Uic *uic)
@@ -218,6 +230,7 @@ void WriteInitialization::acceptWidget(DomWidget *node)
                 area += QString::number(pstyle->elementNumber());
             }
 
+            area = enumify(area, "com.trolltech.qt.core.Qt.ToolBarArea");
             output << option.indent << parentWidget << ".addToolBar(" << area << ", "
                    << varName << ");\n";
         } else if (uic->customWidgetsInfo()->extends(className, QLatin1String("QDockWidget"))) {
@@ -226,6 +239,7 @@ void WriteInitialization::acceptWidget(DomWidget *node)
                 area += QString::number(pstyle->elementNumber());
             }
 
+            area = enumify(area, "com.trolltech.qt.core.Qt.DockWidgetArea");
             output << option.indent << parentWidget << ".addDockWidget(" << area << ", "
                    << varName << ");\n";
         } else if (uic->customWidgetsInfo()->extends(className, QLatin1String("QStatusBar"))) {
@@ -396,6 +410,8 @@ void WriteInitialization::acceptLayout(DomLayout *node)
 
 void WriteInitialization::acceptSpacer(DomSpacer *node)
 {
+    JavaNameTable *names = JavaNameTable::instance();
+
     QHash<QString, DomProperty *> properties = propertyMap(node->elementProperty());
     QString varName = driver->findOrInsertSpacer(node);
 
@@ -420,12 +436,13 @@ void WriteInitialization::acceptSpacer(DomSpacer *node)
     if (sizeType.startsWith(QLatin1String("QSizePolicy::")) == false)
         sizeType.prepend(QLatin1String("QSizePolicy::"));
 
-    sizeType.replace("::", ".");
+    sizeType = names->javaEnum(sizeType);
+    QString minimum = names->javaEnum(QLatin1String("QSizePolicy::Minimum"));
 
     if (isVspacer)
-        output << "QSizePolicy.Minimum, " << sizeType << ");\n";
+        output << minimum << ", " << sizeType << ");\n";
     else
-        output << sizeType << ", QSizePolicy.Minimum);\n";
+        output << sizeType << ", " << minimum << ");\n";
 
     TreeWalker::acceptSpacer(node);
 }
@@ -662,11 +679,35 @@ void WriteInitialization::writeProperties(const QString &varName,
             propertyValue = p->elementEnum();
             if (!propertyValue.contains(QLatin1String("::")))
                 propertyValue.prepend(className + QLatin1String(QLatin1String("::")));
-            propertyValue = propertyValue.replace("::", ".");
+            propertyValue = JavaNameTable::instance()->javaEnum(propertyValue);
             break;
-        case DomProperty::Set:
+        case DomProperty::Set: {
             propertyValue = p->elementSet();
-            propertyValue = propertyValue.replace("::", ".");
+
+            QStringList vals = propertyValue.split(QLatin1Char('|'), QString::SkipEmptyParts);
+
+            // Find the name of the flags type...
+            QString flagsName;
+            for (int i=0; i<vals.size(); ++i) {
+                flagsName = JavaNameTable::instance()->javaFlagsName(vals.at(i));
+                if (!flagsName.isEmpty())
+                    break;
+            }
+
+            // change to java names.
+            for (QStringList::iterator it = vals.begin(); it != vals.end(); ++it)
+                *it = JavaNameTable::instance()->javaEnum(*it);
+
+            // Take out the empty ones... This is potentially very dangerous...
+            for (QStringList::iterator it = vals.begin(); it != vals.end(); ) {
+                if (it->isEmpty())
+                    it = vals.erase(it);
+                else
+                    ++it;
+            }
+
+            propertyValue = QString::fromLatin1("new %1(%2)").arg(flagsName).arg(vals.join(","));
+            }
             break;
         case DomProperty::Font: {
             DomFont *f = p->elementFont();
@@ -707,9 +748,9 @@ void WriteInitialization::writeProperties(const QString &varName,
             QString paletteName = driver->unique(QLatin1String("palette"));
             output << option.indent << "QPalette " << paletteName << "= new QPalette();\n";
 
-            writeColorGroup(pal->elementActive(), QLatin1String("QPalette.Active"), paletteName);
-            writeColorGroup(pal->elementInactive(), QLatin1String("QPalette.Inactive"), paletteName);
-            writeColorGroup(pal->elementDisabled(), QLatin1String("QPalette.Disabled"), paletteName);
+            writeColorGroup(pal->elementActive(), QLatin1String("QPalette.ColorGroup.Active"), paletteName);
+            writeColorGroup(pal->elementInactive(), QLatin1String("QPalette.ColorGroup.Inactive"), paletteName);
+            writeColorGroup(pal->elementDisabled(), QLatin1String("QPalette.ColorGroup.Disabled"), paletteName);
 
             propertyValue = paletteName;
             break;
@@ -731,9 +772,13 @@ void WriteInitialization::writeProperties(const QString &varName,
         case DomProperty::SizePolicy: {
             DomSizePolicy *sp = p->elementSizePolicy();
             QString spName = driver->unique(QLatin1String("sizePolicy"));
+
+            const char *name = "com.trolltech.qt.gui.QSizePolicy.Policy.resolve(%1)";
+            QString vSizeType = QString::fromLatin1(name).arg(sp->elementVSizeType());
+            QString hSizeType = QString::fromLatin1(name).arg(sp->elementHSizeType());
+
             output << option.indent << "QSizePolicy " << spName << " = "
-                   << "new QSizePolicy(" << sp->elementHSizeType() << ", "
-                   << sp->elementVSizeType() << ");\n";
+                   << "new QSizePolicy(" << hSizeType << ", " << vSizeType << ");\n";
             output << option.indent << spName << ".setHorizontalStretch"
                    << "((byte)" << sp->elementHorStretch() << ");\n";
             output << option.indent << spName << ".setVerticalStretch"
@@ -850,14 +895,36 @@ void WriteInitialization::writeColorGroup(DomColorGroup *colorGroup, const QStri
     if (!colorGroup)
         return;
 
+    const char *roleNames[] = {
+        "WindowText",
+        "Button",
+        "Light",
+        "Midlight",
+        "Dark",
+        "Mid",
+        "Text",
+        "BrightText",
+        "ButtonText",
+        "Base",
+        "Window",
+        "Shadow",
+        "Highlight",
+        "HighlightedText",
+        "Link",
+        "LinkVisited",
+        "AlternateBase",
+        "NoRole"
+    };
+
+
     QList<DomColor*> colors = colorGroup->elementColor();
     for (int i=0; i<colors.size(); ++i) {
         DomColor *color = colors.at(i);
 
         output << option.indent << paletteName << ".setColor(" << group
-            << ", " << i
-            << ", " << domColor2QString(color)
-            << ");\n";
+               << ", QPalette.ColorRole." << roleNames[i]
+               << ", " << domColor2QString(color)
+               << ");\n";
     }
 }
 

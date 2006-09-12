@@ -43,7 +43,7 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
     /*************************************************************************/
     
     private static class PingPong extends QObject{
-        private static final int ID_PING = QEvent.User + 1;
+        private static final QEvent.Type ID_PING = QEvent.Type.resolve(QEvent.Type.User.value() + 1);
         public int numPings = 0;
         public PingPong other;
         public boolean affinityOk = true;

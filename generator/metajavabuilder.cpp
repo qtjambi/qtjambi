@@ -23,11 +23,12 @@
 #include "parser.h"
 #include "tokens.h"
 
-#include <QFile>
-#include <QTextStream>
-#include <QTextCodec>
-#include <QDebug>
-#include <QFileInfo>
+#include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QTextCodec>
+#include <QtCore/QTextStream>
+#include <QtCore/QVariant>
 
 static QString strip_template_args(const QString &name)
 {
@@ -446,8 +447,8 @@ void MetaJavaBuilder::figureOutEnumValuesForClass(MetaJavaClass *java_class,
         if (!ete->forceInteger()) {
             QHash<int, MetaJavaEnumValue *> entries;
             foreach (MetaJavaEnumValue *v, lst) {
-                if (ete->isEnumValueRejected(v->name()))
-                    continue;
+//                 if (ete->isEnumValueRejected(v->name()))
+//                     continue;
                 if (entries.contains(v->value())) {
                     ReportHandler::warning(QString("Duplciate enum values: %1::%2, %3 and %4 are %5")
                                            .arg(java_class->name())
@@ -571,8 +572,8 @@ MetaJavaEnum *MetaJavaBuilder::traverseEnum(EnumModelItem enum_item, MetaJavaCla
 
     foreach (EnumeratorModelItem value, enum_item->enumerators()) {
 
-//         if (((EnumTypeEntry *) type_entry)->isEnumValueRejected(value->name()))
-//             continue;
+        if (((EnumTypeEntry *) type_entry)->isEnumValueRejected(value->name()))
+            continue;
 
         MetaJavaEnumValue *java_enum_value = new MetaJavaEnumValue;
         java_enum_value->setName(value->name());
@@ -1327,6 +1328,8 @@ QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaT
             }
         } else if (expr == "ULONG_MAX") {
             return "Long.MAX_VALUE";
+        } else if (expr == "QVariant::Invalid") {
+            return QString::number(QVariant::Invalid);
         } else {
             // This can be an enum or flag so I need to delay the
             // translation untill all namespaces are completly

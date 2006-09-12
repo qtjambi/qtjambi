@@ -561,27 +561,35 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
     return link->javaObject(env);
 }
 
-#if 0 // we don't do enums this way
 jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className)
 {
-    jobject returned = 0;
+    jclass cl = env->FindClass(className);
+    Q_ASSERT(cl);
 
-    // ### Fixme:
-    jclass clazz = resolveClass(env, className, "com/trolltech/qt/core/");
-    if (clazz == 0) {
-        env->ExceptionClear();
-        clazz = resolveClass(env, className, "com/trolltech/qt/gui/");
-    }
+    jmethodID method = env->GetStaticMethodID(cl, "resolve_internal", "(I)Ljava/lang/Object;");
+    Q_ASSERT(method);
 
-    jmethodID methodId = 0;
-    if (clazz != 0)
-        methodId = resolveMethod(env, "<init>", "(I)V", clazz);
-    if (methodId != 0)
-        returned = env->NewObject(clazz, methodId, qt_enum);
-
-    return returned;
+    return env->CallStaticObjectMethod(cl, method, qt_enum);
 }
-#endif
+
+jobject qtjambi_from_flags(JNIEnv *env, int qt_flags, const char *className)
+{
+    jclass cl = env->FindClass(className);
+    Q_ASSERT(cl);
+
+    jmethodID method = env->GetMethodID(cl, "<init>", "(I)V");
+    Q_ASSERT(method);
+
+    return env->NewObject(cl, method, qt_flags);
+}
+
+int qtjambi_to_enumerator(JNIEnv *env, jobject value)
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtEnumerator();
+    return env->CallIntMethod(value, sc->QtEnumerator.value);
+}
+
 
 QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject,
                               bool memory_managed)
@@ -936,3 +944,12 @@ jobject qtjambi_from_QModelIndex(JNIEnv *env, const QModelIndex &index)
     return retVal;
 }
 
+bool qtjambi_is_created_by_java(QObject *qobject)
+{
+    extern int qtjambi_user_data_id;
+    QtJambiLinkUserData *userData = static_cast<QtJambiLinkUserData *>(qobject->userData(qtjambi_user_data_id));
+
+    Q_ASSERT(!userData || userData->link());
+
+    return userData && userData->link()->createdByJava();
+}

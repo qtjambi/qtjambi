@@ -130,8 +130,8 @@ public class ThrowVsStack {
             QPixmap pm = new QPixmap(100, 100);
             QPainter p = new QPainter();
             p.begin(pm);
-            p.setPen(Qt.NoPen);
-            p.setBrush(Qt.blue);
+            p.setPen(Qt.PenStyle.NoPen);
+            p.setBrush(new QBrush(new QColor(Qt.GlobalColor.blue)));
 	    long ops = 100000;
             long t1 = System.currentTimeMillis();
             for (int i=0; i<ops; ++i) {

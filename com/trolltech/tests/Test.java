@@ -13,79 +13,36 @@
 
 package com.trolltech.tests;
 
+import com.trolltech.launcher.Style;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 
+import java.lang.reflect.*;
 import java.util.*;
 
 public class Test
 {
-
-    private static final boolean VERBOSE = true;
-    
-    static class CollectedQObject extends QFile {
-        public CollectedQObject() { 
-            super("");
-            if (VERBOSE) System.out.println("Created Collected QObject");
-        }
-        protected void disposed() {
-            if (VERBOSE) System.out.println("QFile disposed...");
-            super.disposed();
-        }
-    }
-    
-    static class CollectedObject extends QColor {
-        public CollectedObject() {
-            if (VERBOSE) System.out.println("Created Collected Object");
-        }
-        protected void disposed() {
-            if (VERBOSE) System.out.println("Object disposed...");
-            super.disposed();
-        }        
-    }
-    
-    static class NonCollectedQObject extends QObject {
-        public NonCollectedQObject() {
-	    if (VERBOSE) System.out.println("Created QObject that is not collected and explicitly disposed");
-        }
-        protected void disposed() {
-            if (VERBOSE) System.out.println("Non-Collected object disposed...");
-            super.disposed();
-        }
-    }
-
-    static class Timer extends QObject {
-	public Timer() {
-	    startTimer(10);
-	}
-
-	protected void timerEvent(QTimerEvent e) {
-  	    byte x[] = new byte[1024 * 1024];
-	    new CollectedObject();
-	}
-    }
-    
     public static void main(String args[]) throws Exception
     {
-        QApplication app = new QApplication(args);
-
-	Timer t = new Timer();
-
-	app.exec();
+        QApplication.initialize(args);
         
-// 	while (true) {
-//             System.out.println();
-//             QtObject col_obj = new CollectedObject();
-//             System.out.println();
-//             QtObject ncol_qobj = new NonCollectedQObject();
-//             System.out.println();
-//             QtObject col_qobj = new CollectedQObject();            
-//             System.out.println();
-//             ncol_qobj.dispose();
-//             ncol_qobj.dispose();
-//         }
-
+        System.out.println("Created groupbox...");
+        QGroupBox box = new QGroupBox();
+        System.out.println(" -> ok");
+        
+        System.out.println("Creating style...");
+        QStyle style = new Style();
+        System.out.println(" -> ok");
+        box.setStyle(style);
+        System.out.println(" -> ok to set style");
+        box.setTitle("Hey there...");
+        
+        System.out.println(" -> ok to set tilte..");
+        
+        box.show();
+        
+        QApplication.exec();
     }
 }

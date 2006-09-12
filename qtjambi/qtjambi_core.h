@@ -92,9 +92,12 @@ jobject qtjambi_from_object(JNIEnv *env, const QEvent *qt_object, const char *cl
 QTJAMBI_EXPORT
 jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *className, const char *packageName);
 
-#if 0
-jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className);
-#endif
+QTJAMBI_EXPORT jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className);
+
+QTJAMBI_EXPORT jobject qtjambi_from_flags(JNIEnv *env, int qt_flags, const char *className);
+
+// QtEnumerator<T> -> int
+QTJAMBI_EXPORT int qtjambi_to_enumerator(JNIEnv *env, jobject value);
 
 QTJAMBI_EXPORT
 jstring qtjambi_from_qstring(JNIEnv *env, const QString &s);
@@ -149,6 +152,8 @@ QTJAMBI_EXPORT
 QString qtjambi_class_name(JNIEnv *env, jclass java_class);
 
 QTJAMBI_EXPORT void qtjambi_metacall(JNIEnv *env, QEvent *event);
+
+QTJAMBI_EXPORT bool qtjambi_is_created_by_java(QObject *qobject);
 
 // Boxing functions
 inline jobject qtjambi_from_int(JNIEnv *env, int int_value) {

@@ -89,8 +89,8 @@ public:
                                  const MetaJavaFunction *java_function,
                                  const QString &qt_object_name,
                                  const MetaJavaClass *java_class);
-    void writeDisableGarbageCollection(QTextStream &s, 
-                                       const MetaJavaFunction *java_function, 
+    void writeDisableGarbageCollection(QTextStream &s,
+                                       const MetaJavaFunction *java_function,
                                        const QString &var_name,
                                        const MetaJavaClass *implementor);
     void writeQtToJava(QTextStream &s,
@@ -118,7 +118,7 @@ public:
                                 const QString &qt_name,
                                 const QString &java_name);
 
-    QString translateType(const MetaJavaType *java_type) const;
+    QString translateType(const MetaJavaType *java_type, Option option = NoOption) const;
 
 };
 

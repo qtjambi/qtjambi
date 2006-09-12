@@ -57,7 +57,7 @@ public class TestFileEngine extends QTestCase {
         QFile file = new QFile("classpath:TestClassFunctionality_test.txt");
         QVERIFY(file.exists());
         
-        QVERIFY(file.open(QFile.ReadOnly));
+        QVERIFY(file.open(new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly)));
         QVERIFY(file.isOpen());
         
         QByteArray ba = file.readAll();
@@ -96,7 +96,7 @@ public class TestFileEngine extends QTestCase {
         file.close();
         QVERIFY(!file.isOpen());
         
-        QVERIFY(file.open(QFile.ReadOnly | QFile.Text));
+        QVERIFY(file.open(new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly, QIODevice.OpenModeFlag.Text)));
         QVERIFY(file.isOpen());
         file.reset();
         
@@ -143,7 +143,7 @@ public class TestFileEngine extends QTestCase {
         
         file = new QFile("classpath:TestClassFunctionality_dir/TestClassFunctionality_dir2/TestClassFunctionality_indir.txt");
         QVERIFY(file.exists());
-        QVERIFY((file.permissions() & QAbstractFileEngine.ReadUserPerm) != 0);
+        QVERIFY(file.permissions().isSet(QFile.Permission.ReadUser));
         QCOMPARE(file.size(), 13L);
         
         QtJambiUtils.removeSearchPathForResourceEngine(search_path);

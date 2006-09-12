@@ -385,7 +385,11 @@ public:
         return pkg + '.' + javaQualifier() + '.' + javaName();
     }
 
+    QString jniName() const;
+
     QString qualifiedCppName() const { return m_qualified_cpp_name; }
+
+    QString qualifier() const { return m_qualifier; }
 
     virtual bool preferredConversion() const { return false; }
 
@@ -433,8 +437,9 @@ public:
     {
     }
 
+    QString qualifiedJavaName() const;
     QString javaName() const { return m_java_name; }
-    QString jniName() const { return "jint"; }
+    QString jniName() const;
     virtual bool preferredConversion() const { return false; }
 
     QString originalName() const { return m_original_name; }
