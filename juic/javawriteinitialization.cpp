@@ -627,9 +627,9 @@ void WriteInitialization::writeProperties(const QString &varName,
         } else if (propertyName == QLatin1String("orientation")
                     && uic->customWidgetsInfo()->extends(className, QLatin1String("Line"))) {
             // Line support
-            QString shape = QLatin1String("QFrame.HLine");
+            QString shape = QLatin1String("QFrame.Shape.HLine");
             if (p->elementEnum() == QLatin1String("Qt::Vertical"))
-                shape = QLatin1String("QFrame.VLine");
+                shape = QLatin1String("QFrame.Shape.VLine");
 
             output << option.indent << varName << ".setFrameShape(" << shape << ");\n";
             continue;

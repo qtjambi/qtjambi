@@ -35,36 +35,51 @@ static char ENV_SPLITTER = ';';
 static char ENV_SPLITTER = ':';
 #endif
 
+enum JuicError {
+    NoError                         = 0x00, 
+    HelpInvoked                     = 0x01,
+    NoClassName                     = 0x02,
+    CannotMakeOutputDirectory       = 0x03,
+    CannotMakeDirectoryForPackage   = 0x04,
+    NotAGeneratedFile               = 0x05,
+    FailedToOpenFile                = 0x06,
+    DriverFailed                    = 0x07
+};
 
+struct Options 
+{
+    Options() : process_all(false), process_directory(false), force(false), prefix(QLatin1String("Ui_")) {}
+
+    QString application_name;
+    QString file_name;
+    QString package;
+    QString out_dir;
+    QString prefix;
+    QStringList included;
+    QStringList excluded;
+    bool process_all;
+    bool process_directory;
+    bool force;
+};
 
 void showHelp(const char *appName);
 bool ensurePath(const QString &path);
-void traverseAll(const QStringList &included, const QStringList &excluded, const QString &out_dir, 
-                 bool process_all);
+JuicError traverseAll(const Options &options);
+JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const Options &options);
 QString findClassName(const QFileInfo &file);
-void traverseClassPath(const QString &rootPath, const QDir &dir, const QStringList &included, 
-                       const QStringList &excluded, const QString &out_dir, bool process_all);
 
-bool shouldProcess(const QFileInfo &info, const QStringList &included, const QStringList &excluded);
+bool shouldProcess(const QFileInfo &info, const Options &options);
 
-bool runJuic(const QFileInfo &uiFile, const QString &baseDir, const QString &package, bool process_all);
+JuicError runJuic(const QFileInfo &uiFile, const Options &options);
 QStringList resolveFileInfoList(char *argv0, const QStringList &filenames);
 
 static int num_processed_files;
 static int num_updated_files;
 
-
-
 int main(int argc, char *argv[])
 {
-    QString fileName;
-    QString package;
-    QString outDir;
-    QStringList included;
-    QStringList excluded;
-    
-    bool process_all = false;
-    bool process_directory = false;
+    Options options;
+    options.application_name = QString::fromLocal8Bit(argv[0]);
 
     int arg = 1;
     while (arg < argc) {
@@ -75,7 +90,7 @@ int main(int argc, char *argv[])
             showHelp(argv[0]);
             return 0;
         } else if (opt == QLatin1String("-a")) {
-            process_all = true;
+            options.process_all = true;
 
         } else if (opt == QLatin1String("-i")) {
             ++arg;
@@ -83,7 +98,7 @@ int main(int argc, char *argv[])
                 showHelp(argv[0]);
                 return 1;
             }
-            included = resolveFileInfoList(argv[0], QString(QLatin1String(argv[arg])).split(ENV_SPLITTER));
+            options.included = resolveFileInfoList(argv[0], QString(QString::fromLocal8Bit(argv[arg])).split(ENV_SPLITTER));
 
         } else if (opt == QLatin1String("-e")) {
             ++arg;
@@ -91,7 +106,7 @@ int main(int argc, char *argv[])
                 showHelp(argv[0]);
                 return 1;
             }
-            excluded = resolveFileInfoList(argv[0], QString(QLatin1String(argv[arg])).split(ENV_SPLITTER));
+            options.excluded = resolveFileInfoList(argv[0], QString(QString::fromLocal8Bit(argv[arg])).split(ENV_SPLITTER));
 
         } else if (opt == QLatin1String("-v") || opt == QLatin1String("-version")) {
             fprintf(stderr, "Qt Jambi user interface compiler %s.\n", QT_VERSION_STR);
@@ -102,7 +117,7 @@ int main(int argc, char *argv[])
                 showHelp(argv[0]);
                 return 1;
             }
-            package = QString::fromLocal8Bit(argv[arg]);
+            options.package = QString::fromLocal8Bit(argv[arg]);
 
         } else if (opt == QLatin1String("-d")) {
             ++arg;
@@ -110,7 +125,7 @@ int main(int argc, char *argv[])
                 showHelp(argv[0]);
                 return 1;
             }
-            outDir = QString::fromLocal8Bit(argv[arg]);
+            options.out_dir = QString::fromLocal8Bit(argv[arg]);
 
         } else if (opt == QLatin1String("-x")) {
             ++arg;
@@ -121,10 +136,17 @@ int main(int argc, char *argv[])
             JavaNameTable::instance()->loadXmlFile(QString::fromLocal8Bit(argv[arg]));
 
         } else if (opt == QLatin1String("-cp")) {
-            process_directory = true;
+            options.process_directory = true;
 
-        } else if (fileName.isEmpty()) {
-            fileName = QString::fromLocal8Bit(argv[arg]);
+        } else if (opt.startsWith(QLatin1String("-pf"))) {
+            options.prefix = opt.right(opt.size() - 3);
+
+        } else if (opt == QLatin1String("-f")) {
+            options.force = true;
+
+        } else if (options.file_name.isEmpty()) {
+            options.file_name = QString::fromLocal8Bit(argv[arg]);
+
 
         } else {
             showHelp(argv[0]);
@@ -133,14 +155,15 @@ int main(int argc, char *argv[])
         ++arg;
     }
 
-    fileName = QDir::cleanPath(fileName);
+    options.file_name = QDir::cleanPath(options.file_name);
 
-    if (process_directory) {
-        if (fileName.isEmpty()) {
-            traverseAll(included, excluded, outDir, process_all);
+    if (options.process_directory) {
+        int error_code;
+
+        if (options.file_name.isEmpty()) {
+            error_code = traverseAll(options);
         } else {
-            traverseClassPath(QFileInfo(fileName).absoluteFilePath(), QDir(fileName), 
-                included, excluded, outDir, process_all);        
+            error_code = traverseClassPath(QFileInfo(options.file_name).absoluteFilePath(), QDir(options.file_name), options);
         }
 
         if (num_processed_files == 0) {
@@ -151,19 +174,18 @@ int main(int argc, char *argv[])
             fprintf(stdout, "juic: updated %d files\n", num_updated_files);
         }
 
-        return 0;
+        return error_code;
     }
 
-    if (fileName.isEmpty()) {
+    if (options.file_name.isEmpty()) {
         showHelp(argv[0]);
-        return 1
-            ;
+        return 1;
     }
 
-    return runJuic(QFileInfo(fileName), outDir, package, process_all);
+    return runJuic(QFileInfo(options.file_name), options);    
 }
 
-QStringList resolveFileInfoList(char *argv0, const QStringList &list) 
+QStringList resolveFileInfoList(char *, const QStringList &list) 
 {
     QStringList file_infos;
     foreach (QString item, list) {
@@ -229,6 +251,9 @@ void showHelp(const char *appName)
             "  -tr <func>               use func() for i18n\n"
             "  -cp <optional path>      updates all .ui files based on the input path. $CLASSPATH\n"
             "                           is used if no argument is specified.\n"
+            "  -pf<optional prefix>     set the prefix of the names of generated classes. The\n"
+            "                           default is 'Ui_'. Omit the optional argument for no\n"
+            "                           prefix.\n"
             "  -i <paths>               when used with 'cp' argument, only includes the files and\n"
             "                           traverses the directories specified. The paths should\n"
             "                           be separated by '%c'.\n"
@@ -236,27 +261,38 @@ void showHelp(const char *appName)
             "                           not traverse the directories specified. The paths should be\n"
             "                           separated by '%c'.\n"
             "  -a                       update files regardless of modification date.\n"
+            "  -f                       override safety check and force update of files.\n"
             "\n", appName, ENV_SPLITTER, ENV_SPLITTER);
 }
 
+static bool isGeneratedFile(const QFileInfo &generated_file)
+{
+    QFile file(generated_file.absoluteFilePath());
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray ba = file.read(1024).trimmed();
+        return ba.contains("** WARNING! All changes made in this file will be lost when recompiling ui file!");
+    }
 
-bool runJuic(const QFileInfo &uiFile, const QString &baseDir, const QString &package, bool process_all)
+    return false;
+}
+
+JuicError runJuic(const QFileInfo &uiFile, const Options &options)
 {
     Driver driver;
     driver.option().generator = Option::JavaGenerator;
-    driver.option().javaOutputDirectory = baseDir;
-    driver.option().javaPackage = package;
-    driver.option().prefix = "Ui_";
+    driver.option().javaOutputDirectory = options.out_dir;
+    driver.option().javaPackage = options.package;
+    driver.option().prefix = options.prefix;
 
     QString className = findClassName(uiFile);
     if (className.isEmpty())
-        return false;
+        return NoClassName;
 
     QString javaFileName = driver.option().prefix + className + ".java";
 
     // Verify that we have the output directory.
     if (!ensurePath(driver.option().javaOutputDirectory)) {
-        return false;
+        return CannotMakeOutputDirectory;
     }
 
     // Verify that the package subdirectory is ok
@@ -264,48 +300,54 @@ bool runJuic(const QFileInfo &uiFile, const QString &baseDir, const QString &pac
         QDir outDir(driver.option().javaOutputDirectory);
         QString subDir = QString(driver.option().javaPackage).replace(".", "/");
         if (!ensurePath(outDir.filePath(subDir)))
-            return false;
+            return CannotMakeDirectoryForPackage;
     }
 
     ++num_processed_files;
 
-    QString outFileName = baseDir + "/" + QString(package).replace(".", "/") + "/" + javaFileName;
+    QString outFileName = options.out_dir + "/" + QString(options.package).replace(".", "/") + "/" + javaFileName;
     QFileInfo outFileInfo(outFileName);
 
     // File already generated
-    if (!process_all 
+    if (!options.process_all 
         && outFileInfo.exists()
         && uiFile.lastModified() < QFileInfo(outFileName).lastModified()) {
-        return true;
+        return NoError;
     }
 
+    if (outFileInfo.exists() 
+        && !options.force
+        && !isGeneratedFile(outFileInfo)) {
+        fprintf(stderr, "%s: Skipping '%s': Not a generated file\n", qPrintable(options.application_name), qPrintable(outFileName));
+        return NotAGeneratedFile;
+    }
 
     // Open the output file.
     QFile f(outFileName);
     if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        fprintf(stderr, "Failed to open output file: %s\n", qPrintable(f.fileName()));
-        return false;
+        fprintf(stderr, "%s: Failed to open output file: %s\n", qPrintable(options.application_name), qPrintable(f.fileName()));
+        return FailedToOpenFile;
     }
 
     // Run UIC
     QTextStream stream(&f);
     if (!driver.uic(uiFile.absoluteFilePath(), &stream)) {
-        fprintf(stderr, "Failed on input file: '%s'\n", qPrintable(uiFile.absoluteFilePath()));
-        return false;
+        fprintf(stderr, "%s: Failed on input file: '%s'\n", qPrintable(options.application_name), qPrintable(uiFile.absoluteFilePath()));
+        return DriverFailed;
     }
 
     ++num_updated_files;
 
     fprintf(stdout, "updated: ");
-    if (!package.isEmpty())
-        fprintf(stdout, "%s.", qPrintable(package));
+    if (!options.package.isEmpty())
+        fprintf(stdout, "%s.", qPrintable(options.package));
     fprintf(stdout, "%s%s\n", qPrintable(driver.option().prefix), qPrintable(className));
 
-    return true;
+    return NoError;
 }
 
 
-bool process(const QString &rootPath, const QString &outPath, const QFileInfo &file, bool process_all)
+JuicError process(const QString &rootPath, const QFileInfo &file, const Options &options)
 {
     QString absFilePath = QDir::convertSeparators(file.absoluteFilePath());
     Q_ASSERT(absFilePath.length() > rootPath.length());
@@ -316,7 +358,10 @@ bool process(const QString &rootPath, const QString &outPath, const QFileInfo &f
     if (package == QLatin1String("."))
         package = QString();
 
-    return runJuic(file, outPath, package, process_all);
+    Options new_options = options;
+    new_options.package = package;
+
+    return runJuic(file, new_options);
 }
 
 static bool has_match(const QFileInfo &file, const QString &pattern)
@@ -342,8 +387,10 @@ static bool has_match(const QFileInfo &file, const QString &pattern)
     return (segments.last().isEmpty() || pos >= potential.length());
 }
 
-bool shouldProcess(const QFileInfo &file, const QStringList &included, const QStringList &excluded)
+bool shouldProcess(const QFileInfo &file, const Options &options)
 {
+    QStringList included = options.included, excluded = options.excluded;
+
     if (!included.isEmpty() && file.isDir()) {
         return true;
     } else if (!included.isEmpty()) {
@@ -368,34 +415,48 @@ bool shouldProcess(const QFileInfo &file, const QStringList &included, const QSt
 }
 
 
-void traverseClassPath(const QString &rootPath, const QDir &dir, const QStringList &included, 
-                       const QStringList &excluded, const QString &out_dir, bool process_all)
+JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const Options &options)
 {
     QFileInfoList uiFiles = dir.entryInfoList(QStringList() << "*.ui", QDir::Files);
 
+    JuicError error = NoError;
     for (int i=0; i<uiFiles.size(); ++i) {
-        if (shouldProcess(uiFiles.at(i), included, excluded))
-            process(rootPath, out_dir.isEmpty() ? rootPath : out_dir, uiFiles.at(i), process_all);
+        if (shouldProcess(uiFiles.at(i), options)) {
+            Options new_options = options;
+            if (new_options.out_dir.isEmpty())
+                new_options.out_dir = rootPath;             
+           
+            JuicError err = process(rootPath, uiFiles.at(i), new_options);
+            if (err != NoError)
+                error = err;
+        }
     }
 
     QFileInfoList subDirs = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (int i=0; i<subDirs.size(); ++i) {
-        if (shouldProcess(subDirs.at(i), included, excluded)) {
-            traverseClassPath(rootPath, QDir(subDirs.at(i).filePath()), 
-                included, excluded, out_dir, process_all);
+        if (shouldProcess(subDirs.at(i), options)) {
+            JuicError err = traverseClassPath(rootPath, QDir(subDirs.at(i).filePath()), options);
+            if (err != NoError)
+                error = err;
         }
     }
+
+    return error;
 }
 
 
-void traverseAll(const QStringList &included, const QStringList &excluded, const QString &out_dir, bool process_all)
+JuicError traverseAll(const Options &options)
 {
 
     QString classPath = QString(getenv("CLASSPATH"));
     QStringList paths = classPath.split(ENV_SPLITTER);
 
+    JuicError error = NoError;
     for (int i=0; i<paths.size(); ++i) {
-        traverseClassPath(QFileInfo(paths.at(i)).absoluteFilePath(), QDir(paths.at(i)), 
-            included, excluded, out_dir, process_all);    
+        JuicError err = traverseClassPath(QFileInfo(paths.at(i)).absoluteFilePath(), QDir(paths.at(i)), options);
+        if (err != NoError)
+            error = err;
     }
+
+    return error;
 }
