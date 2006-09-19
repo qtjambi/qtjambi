@@ -13,6 +13,8 @@
 
 package com.trolltech.autotests;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import com.trolltech.qtest.QTestCase;
 import com.trolltech.qt.*;
@@ -149,6 +151,7 @@ class Accessor extends QObject
         return receivers(signal);
     }
     
+    @SuppressWarnings("unchecked") 
     public static void emit_signal(AbstractSignal signal, Object ... args)
     {        
         if (signal instanceof Signal0)
@@ -168,14 +171,105 @@ public class TestClassFunctionality extends QTestCase
         args[0] = "A";
         args[1] = "B";
         args[2] = "C";
-        QApplication app = new QApplication(args);
+        QApplication.initialize(args);
         
         runTest(new TestClassFunctionality());
     }
     
+    
+    static class TestQObject extends QObject {
+        private Signal0 a = new Signal0();
+        public boolean slot_called = false;
+        
+        public boolean signalIsNull() { return a == null; }
+        public boolean signalIsEqualTo(AbstractSignal signal) { return a == signal; }
+        
+        @SuppressWarnings("unused")
+        private void slot() { slot_called = true; }
+    }
+        
+    public void run_testCallQtJambiInternalNativeFunctions() {
+        
+        Method method = null;
+        try {
+            method = QtJambiInternal.class.getDeclaredMethod("setField", QObject.class, Field.class, 
+                    QObject.AbstractSignal.class);
+        } catch (NoSuchMethodException e) {
+            QCOMPARE(e, null);
+        }
+        
+        QVERIFY(method != null);
+        
+        Field field = null;
+        try {
+            field = TestQObject.class.getDeclaredField("a");
+        } catch (NoSuchFieldException e) {
+            QCOMPARE(e, null);
+        }
+        
+        QVERIFY(field != null);
+        
+        TestQObject test_qobject = new TestQObject();
+        try {
+            method.setAccessible(true);
+            method.invoke(null, test_qobject, field, null);
+        } catch (Exception e) {
+            QCOMPARE(e, null);
+        }
+        
+        QVERIFY(test_qobject.signalIsNull());
+        
+        try {
+            method = QtJambiInternal.class.getDeclaredMethod("fetchSignal", QObject.class, Field.class);            
+        } catch (NoSuchMethodException e) {
+            QCOMPARE(e, null);
+        }
+        
+        test_qobject = new TestQObject();
+        try {
+            method.setAccessible(true);
+            QObject.AbstractSignal signal = (QObject.AbstractSignal) method.invoke(null, test_qobject, field);
+            QVERIFY(test_qobject.signalIsEqualTo(signal));
+        } catch (Exception e) {
+            QCOMPARE(e, null);
+        }
+        
+        long method_long = 0;
+        try {            
+            method = QtJambiInternal.class.getDeclaredMethod("resolveSlot", Method.class);
+        } catch (NoSuchMethodException e) {
+            QCOMPARE(e, null);
+        }
+        
+        try {
+            Method slotMethod = TestQObject.class.getDeclaredMethod("slot", (Class[]) null);
+            method.setAccessible(true);
+            method_long = (Long) method.invoke(null, slotMethod);
+            QVERIFY(method_long != 0);
+        } catch (Exception e) {
+            QCOMPARE(e, null);
+        }
+               
+        try {
+            method = QtJambiInternal.class.getDeclaredMethod("invokeSlot", Object.class, Long.TYPE,
+                    Byte.TYPE, Object[].class, int[].class);
+        } catch (NoSuchMethodException e) {
+            QCOMPARE(e, null);
+        }
+        
+        QCOMPARE(test_qobject.slot_called, false);
+        try {
+            method.setAccessible(true);
+            method.invoke(null, test_qobject, method_long, (byte) 'V', new Object[] {}, new int[] {});
+        } catch (Exception e) {
+            QCOMPARE(e, null);
+        }
+        
+        QCOMPARE(test_qobject.slot_called, true);
+    }
+    
     public int disposed = 0;
-    public void run_testDestruction()
-    {
+    public void run_testDestruction() {
         // Delete from Java        
         {
             disposed = 0;
@@ -697,6 +791,7 @@ public class TestClassFunctionality extends QTestCase
         QVERIFY(invokable.wasRun());        
     }
     
+    @SuppressWarnings("unused")
     private static boolean invokeLater_in_otherThread;
     private static Invokable invokable_in_otherThread;
 

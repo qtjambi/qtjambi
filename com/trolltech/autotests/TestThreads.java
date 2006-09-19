@@ -13,7 +13,6 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 
 public class TestThreads extends com.trolltech.qtest.QTestCase {
@@ -189,7 +188,7 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
     
     
     
-    private static class MoveToThreadObject extends QObject {
+    /*private static class MoveToThreadObject extends QObject {
         Thread timerEventThread;
         Thread customEventThread;
         Thread slotThread;
@@ -231,11 +230,11 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
         public void emitDone() { 
             done.emit();
         }
-    }
+    }*/
     
     
-
-    private static class MoveToThreadThread extends QObject implements Runnable {
+   
+    /*private static class MoveToThreadThread extends QObject implements Runnable {
         Signal0 started = new Signal0();
         Thread thread = new Thread(this);
         QEventLoop loop;
@@ -255,6 +254,7 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
             loop.exec();
         }
     }
+    */
 
     public void run_moveToThread() throws Exception
     {
@@ -403,7 +403,7 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
     
 
     public static void main(String args[]) {
-        QCoreApplication app = new QCoreApplication(args);
+        QCoreApplication.initialize(args);
 
         runTest(new TestThreads());
 //        try {

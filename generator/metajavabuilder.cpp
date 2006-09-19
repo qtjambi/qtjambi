@@ -755,9 +755,14 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
 
         if (java_function) {
 
+            // Set the default value of the declaring class. This may be changed
+            // in fixFunctions later on
+            java_function->setDeclaringClass(java_class);
+
             // Some of the queries below depend on the implementing class being set
             // to function properly. Such as function modifications
             java_function->setImplementingClass(java_class);
+            
             java_function->setOriginalAttributes(java_function->attributes());
 
             if ((java_function->isConstructor() || java_function->isDestructor())
@@ -794,7 +799,7 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
 
                     java_function->setVisibility(MetaJavaClass::Public);
                 }
-
+                
                 java_class->addFunction(java_function);
             }
         }

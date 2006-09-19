@@ -644,5 +644,15 @@ public class Tetrix extends QWidget
 
         QApplication.exec();
     }
+    // REMOVE-START
+    
+    public static String exampleName() {
+        return "Tetrix";
+    }
 
+    public static boolean canInstantiate() {
+        return true;
+    }
+
+    // REMOVE-END
 }

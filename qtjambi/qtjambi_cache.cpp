@@ -835,14 +835,14 @@ void StaticCache::resolveQObject_internal()
     Q_ASSERT(QObject.javaDisconnectNotify);
 }
 
-void StaticCache::resolveAbstractSignal_internal()
+void StaticCache::resolveInternalSignal_internal()
 {
-    Q_ASSERT(!AbstractSignal.class_ref);
+    Q_ASSERT(!InternalSignal.class_ref);
 
-    AbstractSignal.class_ref = ref_class(env->FindClass("com/trolltech/qt/core/QObject$AbstractSignal"));
-    Q_ASSERT(AbstractSignal.class_ref);
+    InternalSignal.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtJambiInternal$InternalSignal"));
+    Q_ASSERT(InternalSignal.class_ref);
 
-    AbstractSignal.m_in_cpp_emission = env->GetFieldID(AbstractSignal.class_ref, "m_in_cpp_emission", "Z");
+    InternalSignal.m_in_cpp_emission = env->GetFieldID(InternalSignal.class_ref, "m_in_cpp_emission", "Z");
 }
 
 void StaticCache::resolveString_internal()

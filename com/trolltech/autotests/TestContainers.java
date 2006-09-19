@@ -191,7 +191,7 @@ public class TestContainers extends QTestCase {
     
     public static void main(String args[])
     {
-        QCoreApplication app = new QCoreApplication(args);
+        QCoreApplication.initialize(args);
         runTest(new TestContainers());
     }
     

@@ -112,7 +112,7 @@ public class MainWindow extends QMainWindow {
             return;
         dirModel = new QDirModel();
         dirModel.setLazyChildCount(true);
-        dirModel.setFilter(new QDir.Filters(QDir.Filter.Dirs, QDir.Filter.Drives));
+        dirModel.setFilter(new QDir.Filters(QDir.Filter.Dirs, QDir.Filter.Drives, QDir.Filter.NoDotAndDotDot));
         ui.dirView.setModel(dirModel);
         for (int i=1; i<ui.dirView.header().count(); ++i)
             ui.dirView.header().hideSection(i);

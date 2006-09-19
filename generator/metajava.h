@@ -315,17 +315,18 @@ public:
     };
 
     enum CompareResult {
-        EqualName               = 0x0001,
-        EqualArguments          = 0x0002,
-        EqualAttributes         = 0x0004,
-        EqualImplementor        = 0x0008,
-        EqualReturnType         = 0x0010,
+        EqualName                   = 0x0001,
+        EqualArguments              = 0x0002,
+        EqualAttributes             = 0x0004,
+        EqualImplementor            = 0x0008,
+        EqualReturnType             = 0x0010,
+        EqualDefaultValueOverload   = 0x0020,
 
-        NameLessThan            = 0x1000,
+        NameLessThan                = 0x1000,
 
-        PrettySimilar           = EqualName | EqualArguments,
-        Equal                   = 0x001f,
-        NotEqual                = 0x1000
+        PrettySimilar               = EqualName | EqualArguments,
+        Equal                       = 0x001f,
+        NotEqual                    = 0x1000
     };
 
     enum FunctionContext {
@@ -340,6 +341,7 @@ public:
           m_type(0),
           m_class(0),
           m_implementing_class(0),
+          m_declaring_class(0),
           m_interface_class(0),
           m_constant(false),
           m_invalid(false)
@@ -377,6 +379,10 @@ public:
     // The class that has this function as a member.
     const MetaJavaClass *ownerClass() const { return m_class; }
     void setOwnerClass(const MetaJavaClass *cls) { m_class = cls; }
+
+    // The first class in a hierarchy that declares the function
+    const MetaJavaClass *declaringClass() const { return m_declaring_class; }
+    void setDeclaringClass(const MetaJavaClass *cls) { m_declaring_class = cls; }
 
     // The class that actually implements this function
     const MetaJavaClass *implementingClass() const { return m_implementing_class; }
@@ -428,6 +434,7 @@ private:
     const MetaJavaClass *m_class;
     const MetaJavaClass *m_implementing_class;
     const MetaJavaClass *m_interface_class;
+    const MetaJavaClass *m_declaring_class;
     MetaJavaArgumentList m_arguments;
     uint m_constant : 1;
     uint m_invalid  : 1;
@@ -531,7 +538,7 @@ public:
           m_functions_fixed(false),
           m_force_shell_class(false),
           m_enclosing_class(0),
-          m_base_class(0),
+          m_base_class(0),         
           m_extracted_interface(0),
           m_primary_interface_implementor(0),
           m_type_entry(0)

@@ -116,7 +116,6 @@ public class TestFileEngine extends QTestCase {
         QDir dir = new QDir("classpath:TestClassFunctionality_dir/");
         QVERIFY(dir.exists());
 
-        List<String> ss = dir.entryList();
         QCOMPARE(dir.entryList().size(), 1);
         QVERIFY(dir.entryList().get(0).equals("TestClassFunctionality_dir2"));
         
@@ -151,7 +150,7 @@ public class TestFileEngine extends QTestCase {
 
 
     public static void main(String[] args) {
-        QApplication app = new QApplication(args);
+        QApplication.initialize(args);
         runTest(new TestFileEngine());
     }
 }

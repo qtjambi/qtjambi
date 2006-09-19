@@ -87,7 +87,7 @@ QString JavaGenerator::translateType(const MetaJavaType *java_type, Option optio
             s = static_cast<const PrimitiveTypeEntry *>(java_type->typeEntry())->javaObjectFullName();
 
         } else if (java_type->isNativePointer()) {
-            s = "QNativePointer";
+            s = "com.trolltech.qt.QNativePointer";
 
         } else if (java_type->isContainer()) {
             s = java_type->typeEntry()->qualifiedJavaName();
@@ -146,7 +146,7 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
 
     // Generates Java 1.5 type enums
     s << "    public enum " << java_enum->name()
-      << " implements com.trolltech.qt.QtEnumerator<" << java_enum->name() << "> {" << endl;
+      << " implements com.trolltech.qt.QtEnumerator {" << endl;
     const MetaJavaEnumValueList &values = java_enum->values();
     EnumTypeEntry *entry = java_enum->typeEntry();
 
@@ -194,14 +194,14 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
           << ">();" << endl
           << "            " << java_enum->name() << " e = enumCache.get(value);" << endl
           << "            if (e == null) {" << endl
-          << "                e = (" << java_enum->name() << ") QtJambiInternal.createExtendedEnum("
+          << "                e = (" << java_enum->name() << ") com.trolltech.qt.QtJambiInternal.createExtendedEnum("
           << "value, CustomEnum.ordinal(), " << java_enum->name() << ".class, CustomEnum.name());"
           << endl
           << "                enumCache.put(value, e);" << endl
           << "            }" << endl
           << "            return e;" << endl;
     } else {
-        s << "            throw new QNoSuchEnumValueException(value);" << endl;
+        s << "            throw new com.trolltech.qt.QNoSuchEnumValueException(value);" << endl;
     }
 
 
@@ -219,8 +219,11 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
     FlagsTypeEntry *flags_entry = entry->flags();
     if (flags_entry) {
         QString flagsName = flags_entry->javaName();
-        s << "    public static class " << flagsName << " extends QFlags<"
+        s << "    public static class " << flagsName << " extends com.trolltech.qt.QFlags<"
           << java_enum->name() << "> {" << endl
+          << "        private static final long serialVersionUID = 1L;" << endl
+          << "        public " << flagsName << "(" << flagsName << " other)"
+          << " { super(other); }" << endl
           << "        public " << flagsName << "(" << java_enum->name() << " ... args)"
           << " { super(args); }" << endl
           << "        public " << flagsName << "(int value) { setValue(value); }" << endl
@@ -277,7 +280,7 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
     if (java_function->isEmptyFunction()) {
         s << endl
           << "    {" << endl
-          << "        throw new QNoImplementationException();" << endl
+          << "        throw new com.trolltech.qt.QNoImplementationException();" << endl
           << "    }" << endl << endl;
     } else {
         s << ";" << endl << endl;
@@ -345,7 +348,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
     if (!java_function->isConstructor() && !java_function->isStatic()) {
         s << "        if (nativeId() == 0)" << endl
-          << "            throw new QNoNativeResourcesException(\"Function call on incomplete object\");" << endl;
+          << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object\");" << endl;
     }
 
 
@@ -459,6 +462,7 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
     s << signalTypeName;
     s << " " << signalName << ";" << endl << endl;
 
+    s << "    @SuppressWarnings(\"unused\")" << endl;
     writeFunction(s, java_function,
                   MetaJavaAttributes::Private,
                   MetaJavaAttributes::Visibility);
@@ -541,8 +545,16 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     QHash<int, bool> disabled_params;
     setupForFunction(java_function, &included_attributes, &excluded_attributes, &disabled_params);
 
-    if (!java_function->ownerClass()->isInterface())
+    if (!java_function->ownerClass()->isInterface()) {
+        writeEnumOverload(s, java_function, included_attributes, excluded_attributes);
         writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);
+    }
+
+    if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
+        && (java_function->isPrivate() 
+            || ((included_attributes & MetaJavaAttributes::Private) != 0))) {
+        s << "    @SuppressWarnings(\"unused\")" << endl;
+    }
     s << "    ";
     s << functionSignature(java_function, included_attributes, excluded_attributes);
 
@@ -578,11 +590,77 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
 
 }
 
+void JavaGenerator::writeEnumOverload(QTextStream &s, const MetaJavaFunction *java_function,
+                                      uint include_attributes, uint exclude_attributes)
+{
+    MetaJavaArgumentList arguments = java_function->arguments();
+
+    if (!java_function->isNormal() || java_function->isEmptyFunction() || java_function->isAbstract())
+        return ;
+
+    int generate_enum_overload = -1;
+    for (int i=0; i<arguments.size(); ++i) {
+        generate_enum_overload = arguments.at(i)->type()->isJavaFlags()
+                                    && !(static_cast<const EnumTypeEntry *>(arguments.at(i)->type()->typeEntry()))->forceInteger()
+                                    ? i
+                                    : -1;
+    }
+
+    if (generate_enum_overload >= 0) {
+        s << endl << "    ";
+        writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes, 0);
+        s << java_function->name() << "(";
+        if (generate_enum_overload > 0) {
+            writeFunctionArguments(s, java_function, generate_enum_overload);
+            s << ", ";
+        }
+
+        // Write the ellipsis convenience argument
+        MetaJavaArgument *affected_arg = arguments.at(generate_enum_overload);
+        EnumTypeEntry *originator = ((FlagsTypeEntry *)affected_arg->type()->typeEntry())->originator();
+
+        s << originator->javaPackage() << "." << originator->javaQualifier() << "." << originator->javaName()
+          << " ... " << affected_arg->name() << ") {" << endl;
+
+        s << "        ";
+        if (java_function->type() != 0)
+            s << "return ";
+
+        if (java_function->isStatic())
+            s << java_function->implementingClass()->fullName() << ".";
+        else
+            s << "this.";
+
+        s << java_function->name() << "(";
+        for (int i=0; i<generate_enum_overload; ++i) {
+            s << arguments.at(i)->name() << ", ";
+        }
+        s << "new " << affected_arg->type()->fullName() << "(" << affected_arg->name() << "));" << endl
+          << "    }" << endl;
+    }
+}
+
 void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunction *java_function,
                                            uint include_attributes, uint exclude_attributes)
 {
     MetaJavaArgumentList arguments = java_function->arguments();
     int argument_count = arguments.size();
+
+    // We only create the overloads for the class that actually declares the function
+    // unless this is an interface, in which case we create the overloads for all
+    // classes that directly implement the interface.
+    const MetaJavaClass *decl_class = java_function->declaringClass();
+    if (decl_class->isInterface()) {
+        MetaJavaClassList interfaces = java_function->implementingClass()->interfaces();
+        foreach (MetaJavaClass *iface, interfaces) {
+            if (iface == decl_class) {
+                decl_class = java_function->implementingClass();
+                break;
+            }
+        }
+    }
+    if (decl_class != java_function->implementingClass())
+        return;
 
     // Figure out how many functions we need to write out,
     // One extra for each default argument.
@@ -590,6 +668,7 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
     uint excluded_attributes = MetaJavaAttributes::Abstract
                             | MetaJavaAttributes::Native
                             | exclude_attributes;
+    uint included_attributes = (java_function->isConstructor() ? 0 : MetaJavaAttributes::Final) | include_attributes;
 
     for (int i=0; i<argument_count; ++i) {
         if (!arguments.at(i)->defaultValueExpression().isEmpty())
@@ -598,8 +677,15 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
     Q_ASSERT(overload_count <= argument_count);
     for (int i=0; i<overload_count; ++i) {
         int used_arguments = argument_count - i - 1;
+
+        if (((excluded_attributes & MetaJavaAttributes::Private) == 0) 
+            && (java_function->isPrivate() 
+                || (included_attributes & MetaJavaAttributes::Private) != 0)) {
+            s << endl << "    @SuppressWarnings(\"unused\")";
+        }
+
         s << "\n    ";
-        writeFunctionAttributes(s, java_function, include_attributes, excluded_attributes,
+        writeFunctionAttributes(s, java_function, included_attributes, excluded_attributes,
             java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
         s << java_function->name() << "(";
         writeFunctionArguments(s, java_function, used_arguments);
@@ -620,7 +706,7 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
 
                 MetaJavaType *arg_type = arguments.at(j)->type();
                 if (arg_type->isNativePointer()) {
-                    s << "(QNativePointer)";
+                    s << "(com.trolltech.qt.QNativePointer)";
                 } else {
                     const TypeEntry *type = arguments.at(j)->type()->typeEntry();
                     if (type->designatedInterface())
@@ -661,8 +747,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 {
     ReportHandler::debugSparse("Generating class: " + java_class->name());
 
-    s << "package " << java_class->package() << ";" << endl << endl
-      << "import com.trolltech.qt.*;" << endl;
+    s << "package " << java_class->package() << ";" << endl << endl;
 
     QList<Include> includes = java_class->typeEntry()->extraIncludes();
     foreach (const Include &inc, includes) {
@@ -707,7 +792,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
                 s << " extends " << sc;
         }
     } else if (java_class->isInterface()) {
-        s << " extends QtObjectInterface";
+        s << " extends com.trolltech.qt.QtObjectInterface";
     }
 
     // implementing interfaces...
@@ -733,7 +818,8 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     }
 
     if (!java_class->isInterface() && java_class->isAbstract()) {
-        s << "    private static class ConcreteWrapper extends " << java_class->fullName() << " {" << endl
+        s << "    @SuppressWarnings(\"unused\")" << endl
+          << "    private static class ConcreteWrapper extends " << java_class->fullName() << " {" << endl
           << "        protected ConcreteWrapper(QPrivateConstructor p) { super(p); }" << endl;
 
         uint exclude_attributes = MetaJavaAttributes::Native | MetaJavaAttributes::Abstract;
@@ -801,7 +887,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         && !type->isObject()) {
         s << endl
           << "    public static native " << java_class->name() << " fromNativePointer("
-          << "QNativePointer nativePointer);" << endl;
+          << "com.trolltech.qt.QNativePointer nativePointer);" << endl;
     }
 
     // The __qt_signalInitialization() function
@@ -824,7 +910,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // Add a function that converts an array of the value type to a QNativePointer
     if (java_class->typeEntry()->isValue()) {
         s << endl
-          << "    public static native QNativePointer nativePointerArray(" << java_class->name()
+          << "    public static native com.trolltech.qt.QNativePointer nativePointerArray(" << java_class->name()
           << " array[]);" << endl;
     }
 

@@ -13,7 +13,6 @@
 
 package com.trolltech.qt;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 
 public class QVariant extends QtObject {
 

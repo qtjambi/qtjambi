@@ -13,12 +13,9 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-import java.awt.*;
-import java.awt.geom.*;
 import java.util.*;
 
 class PaintWidget extends QWidget {
@@ -113,7 +110,7 @@ class PaintWidget extends QWidget {
     */
 
     public static void main(String args[]) {
-        QApplication app = new QApplication(args);
+        QApplication.initialize(args);
         PaintWidget pw = new PaintWidget();
         pw.show();
         QApplication.exec();

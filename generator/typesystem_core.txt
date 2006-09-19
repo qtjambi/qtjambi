@@ -257,7 +257,6 @@
   <enum-type name="Qt::ConnectionType"/>
   <enum-type name="Qt::ContextMenuPolicy"/>
   <enum-type name="Qt::Corner"/>
-  <enum-type name="Qt::DateFormat"/>
   <enum-type name="Qt::DayOfWeek"/>
   <enum-type name="Qt::DockWidgetAreaSizes"/>
   <enum-type name="Qt::DropAction" flags="Qt::DropActions"/>
@@ -307,6 +306,11 @@
   <enum-type name="Qt::CursorShape">
     <reject-enum-value name="LastCursor"/>
   </enum-type>
+
+  <enum-type name="Qt::DateFormat">
+    <reject-enum-value name="LocalDate"/>
+  </enum-type>
+
 
   <enum-type name="Qt::ItemDataRole" force-integer="yes">
     <reject-enum-value name="BackgroundColorRole"/>
@@ -468,7 +472,7 @@
         }
 
         public String toString() {
-            return QVariant.toString(this);
+            return com.trolltech.qt.QVariant.toString(this);
         }
 
     </inject-code> 
@@ -598,602 +602,67 @@
     <modify-function signature="deleteLater()">
         <rename to="disposeLater"/>
     </modify-function>
-        
-    <inject-code class="native">
-        extern "C" JNIEXPORT jobject JNICALL
-        Java_com_trolltech_qt_core_QObject_fetchSignal(JNIEnv *env, jobject java_object, jobject field)
-        {
-            jfieldID fieldId = env-&gt;FromReflectedField(field);
-            if (fieldId == 0)
-                return 0;
-
-            jobject signal = env-&gt;GetObjectField(java_object, fieldId);
-            return signal;
-        }
-
-        extern "C" JNIEXPORT jlong JNICALL Java_com_trolltech_qt_core_QObject_resolveSlot
-        (JNIEnv *env,
-        jclass,
-        jobject method)
-        {
-            Q_ASSERT(method);
-            return reinterpret_cast&lt;jlong&gt;(env-&gt;FromReflectedMethod(method));
-        }
-
-        extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_core_QObject_setField
-        (JNIEnv *env,
-        jobject _this,
-        jobject field,
-        jobject newValue)
-        {
-            jfieldID fieldId = env-&gt;FromReflectedField(field);
-            Q_ASSERT(fieldId != 0);
-
-            env-&gt;SetObjectField(_this, fieldId, newValue);
-        }
-
-        extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_core_QObject_invokeSlot
-        (JNIEnv *env,
-        jclass,
-        jobject receiver,
-        jlong m,
-        jbyte returnType,
-        jobjectArray args,
-        jintArray _cnvTypes)
-        {
-            Q_ASSERT(receiver);
-            Q_ASSERT(m);
-
-            int len = env-&gt;GetArrayLength(_cnvTypes);
-            jint *cnvTypes = env-&gt;GetIntArrayElements(_cnvTypes, 0);
-            QVarLengthArray&lt;jvalue&gt; argsArray(len);
-            for (int i=0; i&lt;len; ++i) {
-                jobject arg_object = env-&gt;GetObjectArrayElement(args, i);
-                switch (cnvTypes[i]) {
-                case 'L': argsArray[i].l = arg_object; break ;
-                case 'Z': argsArray[i].z = qtjambi_to_boolean(env, arg_object); break ;
-                case 'J': argsArray[i].j = qtjambi_to_long(env, arg_object); break ;
-                case 'I': argsArray[i].i = qtjambi_to_int(env, arg_object); break ;
-                case 'F': argsArray[i].f = qtjambi_to_float(env, arg_object); break ;
-                case 'D': argsArray[i].d = qtjambi_to_double(env, arg_object); break ;
-                case 'S': argsArray[i].s = qtjambi_to_short(env, arg_object); break ;
-                case 'B': argsArray[i].b = qtjambi_to_byte(env, arg_object); break ;
-                case 'C': argsArray[i].c = qtjambi_to_jchar(env, arg_object); break ;
-                default:
-                    Q_ASSERT(false &amp;&amp; "Error in conversion array");
-                }
-            }
-            env-&gt;ReleaseIntArrayElements(_cnvTypes, cnvTypes, JNI_ABORT);
-
-            jmethodID methodId = reinterpret_cast&lt;jmethodID&gt;(m); 
-            switch (returnType)
-            {
-            case 'L': env-&gt;CallObjectMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'V': env-&gt;CallVoidMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'I': env-&gt;CallIntMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'J': env-&gt;CallLongMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'S': env-&gt;CallShortMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'Z': env-&gt;CallBooleanMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'F': env-&gt;CallFloatMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'D': env-&gt;CallDoubleMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'B': env-&gt;CallByteMethodA(receiver, methodId, argsArray.data()); break ;
-            case 'C': env-&gt;CallCharMethodA(receiver, methodId, argsArray.data()); break ;
-            default:
-                Q_ASSERT(false &amp;&amp; "Invalid return type parameter");
-            };
-        }            
-    </inject-code>
-    
-    <inject-code class="java">
-        protected boolean m_cpp_signals_initialized = false; // set to true in __qt_signalInitialization
-        private boolean b = initializeSignals(); // constructs objects for all signals
-    </inject-code>
     
     <extra-includes>
         <include file-name="java.lang.reflect.*" location="java" />
-        <include file-name="java.util.*" location="java" />
         <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
+    
+    <modify-function class="java" signature="connectNotify(const char *)"> 
+        <access modifier="private"/>      
+    </modify-function>
+    <modify-function class="shell" signature="connectNotify(const char *)">         
+        <inject-code class="shell">        
+            <argument-map position="1" meta-name="signal"/>
+            qtjambi_connect_notify(qtjambi_current_environment(), m_link, signal);
+        </inject-code>
+    </modify-function>
+    
+    <modify-function class="java" signature="disconnectNotify(const char *)"> 
+        <access modifier="private"/>
+    </modify-function>
+    <modify-function class="shell" signature="disconnectNotify(const char *)">         
+        <inject-code class="shell">        
+            <argument-map position="1" meta-name="signal"/>
+            qtjambi_disconnect_notify(qtjambi_current_environment(), m_link, signal);
+        </inject-code>
+    </modify-function>
             
     <inject-code class="java">
-    public static class QMetaCallEvent extends QEvent {
-	    public static final QEvent.Type MetaCallEventType = QEvent.Type.resolve(512);
-
-	    public QMetaCallEvent(QObject.AbstractSignal.Connection connection, Object ... arguments) {
-		    super(MetaCallEventType);
-		    this.arguments = arguments;
-		    this.connection = connection;
-	    }
-        
-	    public final Object[] getArguments() { return arguments; }
-	    public final void setArguments(Object[] arguments) { this.arguments = arguments; }
-        
-	    public final QObject.AbstractSignal.Connection getConnection() { 
-		    return connection;
-	    }
-
-	    public final void setConnection(QObject.AbstractSignal.Connection connection) {
-		    this.connection = connection;
-	    }
-        
-	    final void execute() {
-		    QObject.invokeSlot(connection.receiver, 
-		         		    connection.slotId,
-						    connection.returnType,
-						    arguments,
-						    connection.convertTypes);
-	    }
-        
-	    private Object arguments[];
-	    private QObject.AbstractSignal.Connection connection;
-
+    private static QObject m_currentSender = null;
+    protected boolean m_cpp_signals_initialized = false; // set to true in __qt_signalInitialization
+    
+    { 
+        com.trolltech.qt.QtJambiInternal.initializeSignals(this); // constructs objects for all signals 
     }
 
-    private static QObject m_currentSender = null;
+    public abstract class AbstractSignal extends com.trolltech.qt.QtJambiInternal.InternalSignal {
 
-    public abstract class AbstractSignal {
         // Set by javaConnectNotify and friends in mappings between C++ and Java emissions
-        protected int m_cpp_connections = 0;        
-    
-        public class Connection {
-            public static final int DIRECT_CONNECTION = 0x0001;
-        	public static final int QUEUED_CONNECTION = 0x0002;
-        	
-        	public static final int PUBLIC_SLOT = 0x0010;
-        	
-            Connection(Object receiver, Method slot, byte returnType, byte connectionType) {
-                this.receiver = receiver;
-                this.slot = slot;
-                this.slotId = resolveSlot(slot);
-                this.returnType = returnType;
-                
-                if (connectionType == Qt.ConnectionType.QueuedConnection.value()) flags |= QUEUED_CONNECTION;
-                else if (connectionType == Qt.ConnectionType.DirectConnection.value()) flags |= DIRECT_CONNECTION;
-                
-                if (Modifier.isPublic(slot.getModifiers()) &amp;&amp;
-                    Modifier.isPublic(receiver.getClass().getModifiers())) {
-                    flags |= PUBLIC_SLOT;
-                }
-
-                Class&lt;?&gt; slotParameterTypes[] = slot.getParameterTypes();
-                Class&lt;?&gt; signalParameterTypes[] = parameterTypes();
-                convertTypes = new int[slotParameterTypes.length];
-                for (int i = 0; i &lt; convertTypes.length; ++i) {
-                    convertTypes[i] = 'L';
-                    if (slotParameterTypes[i].isPrimitive()) {
-                        if (signalParameterTypes[i].equals(Integer.class))
-                            convertTypes[i] = 'I';
-                        else if (signalParameterTypes[i].equals(Long.class))
-                            convertTypes[i] = 'J';
-                        else if (signalParameterTypes[i].equals(Short.class))
-                            convertTypes[i] = 'S';
-                        else if (signalParameterTypes[i].equals(Boolean.class))
-                            convertTypes[i] = 'Z';
-                        else if (signalParameterTypes[i].equals(Byte.class))
-                            convertTypes[i] = 'B';
-                        else if (signalParameterTypes[i].equals(Float.class))
-                            convertTypes[i] = 'F';
-                        else if (signalParameterTypes[i].equals(Double.class))
-                            convertTypes[i] = 'D';
-                        else if (signalParameterTypes[i]
-                                .equals(Character.class))
-                            convertTypes[i] = 'C';
-                        else
-                            throw new RuntimeException(
-                                    "Error in conversion to primitive for complex type "
-                                            + signalParameterTypes[i]);
-                    }
-                }
-            }
-        	
-        	public final boolean isSlotPublic() { return (flags &amp; PUBLIC_SLOT) != 0; }
-        	public final boolean isQueuedConnection() { return (flags &amp; QUEUED_CONNECTION) != 0; }
-        	public final boolean isDirectConnection() { return (flags &amp; DIRECT_CONNECTION) != 0; }
-        	public final boolean isAutoConnection() { 
-        		return (flags &amp; (QUEUED_CONNECTION | DIRECT_CONNECTION)) == 0; 
-        	} 
-        	
-
-            public Object receiver;
-            public Method slot;
-            public byte returnType;
-            public int convertTypes[];
-            public int flags = 0;
-            public long slotId;
-            public Object args[];
-        }
-
-        private List&lt;Connection&gt; m_connections = new LinkedList&lt;Connection&gt;();
-        private Class&lt;?&gt; m_types[] = null;
-        private int m_arrayDims[] = null;
-        private String m_name = "";
-        private boolean m_inEmit = false;
-                        
-        // Set in JNI when we are mapping a c++ emission into Java
-        private boolean m_in_cpp_emission = false;
-
-        /**
-        * Connects the signal to a method in an object. Whenever it is emitted, the method will be invoked
-        * on the given object.
-        * 
-        * @param receiver The object containing the method to be invoked upon signal emission
-        * @param method The signature of the method to call, excluding the return type and variable names
-        * @param connectionType One of the connection types defined in the Qt interface.
-        * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
-        * @throws QRuntimeException Raised if the signal object could not be successfully introspected.  
-        */
-        public final boolean connect(QObject receiver, String method, Qt.ConnectionType type) 
-        {
-            __qt_signalInitialization();
-
-            Method slotMethod = receiver.lookupSlot(method);
-            if (slotMethod == null) 
-                throw new QNoSuchSlotException(method);            
-
-            return connectSignalMethod(slotMethod, receiver, type.value());
-        }
-
-        public final boolean connect(QObject receiver, String method) 
-        {
-            return connect(receiver, method, Qt.ConnectionType.AutoConnection);
-        }
-            
-        private final boolean connectSignalMethod(Method slotMethod, Object receiver, int connectionType) 
-        {
-            if (!matchSlot(slotMethod))
-                return false;           
-
-            addConnection(receiver, slotMethod, connectionType);
-            return true;
-        }
-
-        private Method findEmitMethod(AbstractSignal signal) {
-            Method methods[] = signal.getClass().getDeclaredMethods();
-
-            Method slotMethod = null;
-            for (int i = 0; i &lt; methods.length; ++i) {
-                if (methods[i].getName().equals("emit")) {
-                    slotMethod = methods[i];
-                    break;
-                }
-
-            }
-
-            return slotMethod;
-        }
-
-        /**
-        * Connects this signal to another. Whenever this signal is emitted, it will cause the second signal to be emitted as well.
-        * @param signalOut The second signal. This will be emitted whenever this signal is emitted.
-        * @return true if the connection was successfully established. Otherwise false. The method will return false if the signatures
-        * of the emit functions in the two signal objects were incompatible.
-        * @throws RuntimeException Raised if either of the signal objects could not be successfully be introspected.
-        */
-        public final boolean connect(AbstractSignal signalOut) {
-            return connectSignalMethod(findEmitMethod(signalOut), signalOut, Qt.ConnectionType.DirectConnection.value());
-        }
-
-        /**
-        * Disconnects the signal from a method in an object if the two were previously connected by a call to connect.
-        * 
-        * @param receiver The object to which the signal is connected
-        * @param method The method in the receiver object to which the signal is connected
-        * @return true if the connection was successfully removed, otherwise false. The method will return false if the 
-        * connection has not been previously established by a call to connect.
-        * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
-        */
-        public boolean disconnect(QObject receiver, String method) {
-            __qt_signalInitialization();
-
-            Method slotMethod = receiver.lookupSlot(method);
-            if (slotMethod == null)
-                throw new QNoSuchSlotException(method);            
-
-            return removeConnection(receiver, slotMethod);
-        }
-
-        /**
-        * Disconnects a signal from another signal if the two were previously connected by a call to connect. 
-        * A call to this function will assure that the emission of the first signal will not cause the emission of the second.
-        * 
-        * @param signalIn The first signal.
-        * @param signalOut The second signal.
-        * @return true if the two signals were successfully disconnected, or false otherwise. 
-        */
-        public boolean disconnect(AbstractSignal signalOut) {
-            return removeConnection(signalOut, findEmitMethod(signalOut));
-        }
-
-        private boolean matchSlot(Method slot) {
-            Class&lt;?&gt; slotArguments[] = slot.getParameterTypes();
-            Class&lt;?&gt; signalArguments[] = parameterTypes();
-            int signalArrayDims[] = arrayDimensions();
-
-            if (slotArguments.length &gt; signalArguments.length)
-                return false;
-
-            for (int i = 0; i &lt; slotArguments.length; ++i) {
-                if (!matchTwoTypes(slotArguments[i], signalArguments[i],
-                        signalArrayDims[i]))
-                    return false;
-            }
-
-            return true;
-        }
-
-        private boolean matchTwoTypes(Class&lt;?&gt; slotArgument,
-                Class&lt;?&gt; signalArgument, int signalArrayDims) {
-            if (slotArgument.isArray() || signalArrayDims &gt; 0) {
-                int slotArrayDims = 0;
-                while (slotArgument.isArray()) {
-                    slotArgument = slotArgument.getComponentType();
-                    ++slotArrayDims;
-                }
-
-                if (slotArrayDims != signalArrayDims)
-                    return false;
-                else
-                    return matchTwoTypes(slotArgument, signalArgument, 0);
-            } else if (slotArgument.isPrimitive()) {
-                return matchTwoTypes(getComplexType(slotArgument), signalArgument,
-                        signalArrayDims);
-            } else if (!slotArgument.isAssignableFrom(signalArgument)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        private Class&lt;?&gt; getComplexType(Class&lt;?&gt; primitiveType) {
-            if (!primitiveType.isPrimitive())
-                throw new RuntimeException("Primitive type required");
-
-            if (primitiveType.equals(Integer.TYPE))
-                return Integer.class;
-            else if (primitiveType.equals(Double.TYPE))
-                return Double.class;
-            else if (primitiveType.equals(Long.TYPE))
-                return Long.class;
-            else if (primitiveType.equals(Float.TYPE))
-                return Float.class;
-            else if (primitiveType.equals(Short.TYPE))
-                return Short.class;
-            else if (primitiveType.equals(Boolean.TYPE))
-                return Boolean.class;
-            else if (primitiveType.equals(Character.TYPE))
-                return Character.class;
-            else if (primitiveType.equals(Byte.TYPE))
-                return Byte.class;
-            else
-                throw new RuntimeException("Unrecognized primitive type: "
-                        + primitiveType);
-        }
-        protected AbstractSignal() 
-        {
-        }
-
-        public final String name() {
-            parameterTypes();
-            return m_name;
-        }
-
-        protected final int[] arrayDimensions() {
-            parameterTypes();
-            return m_arrayDims;
+        protected int m_cpp_connections = 0;
+        
+        protected final void disconnected() { disconnectNotify(this); }
+        
+        protected final void connected() { connectNotify(this); }
+                           
+        protected final QObject qobject() {
+            return QObject.this;
         }
         
-        // Returns true if the connection c is the mapping of the c++ emission
-        private boolean isCppEmission(Connection c)
-        {
-            return c.receiver == this_reference() &amp;&amp; c.slot.getName().equals(name());
-        }        
-
-        private boolean hasCppEmission()
-        {
-            for (Connection c : m_connections) {
-                if (isCppEmission(c))
-                    return true;
-            }
-            
-            return false;
-        }
-                                
-        protected final int receivers()
-        {
-            return m_connections.size() - (hasCppEmission() ? 1 : 0) + m_cpp_connections;
-        }
-
-        protected final Class&lt;?&gt;[] parameterTypes() {
-            if (m_types == null) {
-                m_types = new Class[0]; // For signals with no parameters
-                m_arrayDims = new int[0];
-
-                Class cls = this_reference().getClass();
-                while (cls != null) {
-                    Field fields[] = cls.getDeclaredFields();
-                    for (int i = 0; i &lt; fields.length; ++i) {
-                        if (AbstractSignal.class.isAssignableFrom(fields[i]
-                                .getType())) {
-                            AbstractSignal sig = this_reference().fetchSignal(
-                                    fields[i]);
-                            if (sig == null)
-                                throw new RuntimeException(
-                                        "Error reflecting on signal: "
-                                                + fields[i].getName());
-
-                            if (sig == this) {
-                                m_name = fields[i].getName();
-
-                                Type t = fields[i].getGenericType();
-
-                                // either t is a parameterized type, or it is Signal0
-                                if (t instanceof ParameterizedType) {
-                                    ParameterizedType p = (ParameterizedType) t;
-                                    Type actualTypes[] = p
-                                            .getActualTypeArguments();
-
-                                    m_types = new Class[actualTypes.length];
-                                    m_arrayDims = new int[actualTypes.length];
-                                    for (int j = 0; j &lt; m_types.length; ++j) {
-
-                                        Type actualType = actualTypes[j];
-                                        int arrayDims = 0;
-                                        while (actualType instanceof GenericArrayType
-                                                || actualType instanceof ParameterizedType) {
-                                            if (actualType instanceof GenericArrayType) {
-                                                actualType = ((GenericArrayType) actualType)
-                                                        .getGenericComponentType();
-                                                ++arrayDims;
-                                            } else { // ParameterizedType
-                                                actualType = ((ParameterizedType) actualType)
-                                                        .getRawType();
-                                            }
-                                        }
-
-                                        if (actualType instanceof Class) {
-                                            m_types[j] = (Class) actualType;
-                                            m_arrayDims[j] = arrayDims;
-                                        } else {
-                                            throw new RuntimeException(
-                                                    "Signals of generic types not supported: "
-                                                            + actualTypes[j]
-                                                                    .toString());
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    
-                    cls = cls.getSuperclass();
-                }
-            }
-
-            if (m_types.length == 0 &amp;&amp; !(this instanceof Signal0))
-                throw new RuntimeException("Signal initialization failed");
-
-            return m_types;
-        }
-
-        private final QObject outer_object() {
-            return this_reference();
-        }
-       
-        protected final void emit_helper(Object... args) {
-            if (signalsBlocked())
-                return;
-            if (m_inEmit)            
-                return;
-            m_inEmit = true; // recursion block
-            
-            m_currentSender = this_reference();
-
-            for (Connection c : m_connections) {
-            
-                // Make sure we don't emit the cpp signal twice
-                if (m_in_cpp_emission &amp;&amp; isCppEmission(c))
-                    continue ;
-            
-                if (c.isDirectConnection()
-                        || (c.isAutoConnection() 
-                            &amp;&amp; c.receiver instanceof QtObject 
-                            &amp;&amp; ((QtObject) c.receiver).thread() == thread())) {
-                    try {                        
-                        boolean updateSender = this_reference() instanceof QObject 
-                                               &amp;&amp; c.receiver instanceof QObject; 
-                        QObject oldSender = null;
-                        if (updateSender) 
-                            oldSender = QtJambiInternal.swapQObjectSender((QObject) c.receiver, (QObject) this_reference());
-                        
-                        try { 
-                            if (args.length == c.convertTypes.length) {
-                                // Same number of arguments... direct call
-                                c.slot.invoke(c.receiver, args);
-                            } else {
-                                if (c.args == null) 
-                                    c.args = new Object[c.convertTypes.length];                                
-                                System.arraycopy(args, 0, c.args, 0, c.args.length);
-                                c.slot.invoke(c.receiver, c.args);
-                            }                                
-                        } catch (IllegalAccessException e) {
-                            invokeSlot(c.receiver, c.slotId, c.returnType, args, c.convertTypes);
-                        }
-                        
-                        if (updateSender)
-                            QtJambiInternal.swapQObjectSender((QObject) c.receiver, (QObject) oldSender);
-                        
-                    } catch (Exception e) {
-                        System.err.println("Exception caught while after invoking slot:");
-                        e.printStackTrace();
-                    }
-                } else {
-                	if (c.receiver instanceof QObject) {
-                		QMetaCallEvent event = new QMetaCallEvent(c, args);
-                		com.trolltech.qt.core.QCoreApplication.postEvent(((QObject)c.receiver), event);
-                	} else {
-                		throw new RuntimeException("Queued connections only valid for QObjects");
-                	}
-                }
-            }
-
+        protected final void initSignals() {
+            __qt_signalInitialization();
+        }       
+        
+        protected final void emit_helper(Object ... args) {
+            m_currentSender = QObject.this;
+            super.emit_helper(args);
             m_currentSender = null;
-            m_inEmit = false;
         }
-
-        private final void addConnection(Object receiver, Method slot, int connectionType) {
-            Class&lt;?&gt; returnType = slot.getReturnType();
-            byte returnSig;
-            if (!returnType.isPrimitive()) {
-                returnSig = 'L';
-            } else {
-                if (returnType.equals(Integer.TYPE))
-                    returnSig = 'I';
-                else if (returnType.equals(Short.TYPE))
-                    returnSig = 'S';
-                else if (returnType.equals(Boolean.TYPE))
-                    returnSig = 'Z';
-                else if (returnType.equals(Byte.TYPE))
-                    returnSig = 'B';
-                else if (returnType.equals(Long.TYPE))
-                    returnSig = 'J';
-                else if (returnType.equals(Character.TYPE))
-                    returnSig = 'C';
-                else if (returnType.equals(Float.TYPE))
-                    returnSig = 'F';
-                else if (returnType.equals(Double.TYPE))
-                    returnSig = 'D';
-                else if (returnType.equals(Void.TYPE))
-                    returnSig = 'V';
-                else
-                    throw new RuntimeException("Unknown primitive type: "
-                            + returnType);
-            }
-
-            try {
-                slot.setAccessible(true);
-            } catch (SecurityException e) {}
-            m_connections.add(new Connection(receiver, slot, returnSig, (byte) connectionType));
-            this_reference().connectNotify(this);
+        
+        protected final int receivers() {
+            return super.receivers() + m_cpp_connections;
         }
-
-        protected final boolean removeConnection(Object receiver, Method slot) {
-            ListIterator&lt;Connection&gt; i = m_connections.listIterator();
-
-            boolean returned = false;
-            while (i.hasNext()) {
-                Connection c = i.next();
-
-                if ((receiver == null || c.receiver == receiver)
-                        &amp;&amp; (slot == null || slot.equals(c.slot))) {
-                    i.remove();
-                    this_reference().disconnectNotify(this);
-                    returned = true;
-                }
-            }
-
-            return returned;
-        }
+        
     }
 
     /**
@@ -1395,36 +864,7 @@
             emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
     }
-
-    /**
-     * Returns true if the class cl represents a Signal.
-     */
-    public static boolean isSignal(Class cl) {
-        return AbstractSignal.class.isAssignableFrom(cl);
-    }
     
-    private boolean initializeSignals()
-    {
-        Field fields[] = getClass().getFields();
-        
-        for (Field f : fields) {
-            if (isSignal(f.getType())) {
-                AbstractSignal newSignal = null;
-                try {
-                    newSignal = (AbstractSignal) f.getType().getConstructors()[0].newInstance(this);
-                } catch (Exception e) {
-                    throw new RuntimeException("Error getting and calling constructor for signal: " + f.getName(), e);
-                }
-                
-                setField(f, newSignal);
-            }
-        }
-        
-        return true;
-    }
-    private native void setField(Field f, AbstractSignal newValue);
-    
-
     /** 
      * If a signal is currently being emitted (e.g. if this method is called from within a slot that has been invoked by a signal),
      * then this function will return the object containing the signal that was emitted. 
@@ -1434,97 +874,6 @@
         return m_currentSender;
     }
 
-    private Method lookupSlot(String signature) {
-        Class cls = getClass();
-
-        int pos = signature.indexOf('(');
-        if (pos &lt; 0)
-            throw new RuntimeException("Wrong syntax in slot signature: '"
-                    + signature + "'");
-
-        int spacePos = signature.trim().lastIndexOf(' ', pos);
-        if (pos &gt; spacePos &amp;&amp; spacePos &gt; 0)
-            throw new RuntimeException(
-                    "Do not specify return type in slot signature: '"
-                            + signature + "'");
-
-        String name = signature.substring(0, pos).trim();
-
-        int pos2 = signature.indexOf(')', pos);
-        if (pos2 &lt; 0)
-            throw new RuntimeException("Wrong syntax in slot signature: '"
-                    + signature + "'");
-        String strTypes = signature.substring(pos + 1, pos2).trim();
-
-        String argumentTypes[];
-
-        if (strTypes.length() == 0)
-            argumentTypes = new String[0];
-        else
-            argumentTypes = strTypes.split(",");
-
-        for (int i = 0; i &lt; argumentTypes.length; ++i)
-            argumentTypes[i] = argumentTypes[i].replace(" ", "");
-
-        return findFunctionRecursive(cls, name, argumentTypes);
-    }
-
-    private static Method findFunctionRecursive(Class cls, String functionName,
-            String argumentTypes[]) {
-        Method methods[] = cls.getDeclaredMethods();
-        Method foundMethod = null;
-
-        for (Method m : methods) {
-            boolean found = false;
-            if (!m.getName().equals(functionName))
-                continue;
-
-            Class a[] = m.getParameterTypes();
-            if (a.length != argumentTypes.length)
-                continue;
-
-            found = true;
-            for (int i = 0; i &lt; a.length; ++i) {
-                String arg = a[i].getName();
-
-                Class t = a[i];
-                int dims = 0;
-                while (t.isArray()) {
-                    dims++;
-                    t = t.getComponentType();
-                }
-                if (dims &gt; 0)
-                    arg = arg.substring(2, arg.length() - 1) + "[]";
-                for (int j = 0; j &lt; dims - 1; ++j)
-                    arg = arg.substring(1) + "[]";
-
-                if (argumentTypes[i].indexOf('.') &lt; 0) {
-                    arg = arg.substring(arg.lastIndexOf('.') + 1);
-                }
-
-                if (!arg.equals(argumentTypes[i])) {
-                    found = false;
-                    break;
-                }
-            }
-
-            if (found)
-                return m;
-        }
-
-        cls = cls.getSuperclass();
-        if (cls == null)
-            return null;
-        else
-            return findFunctionRecursive(cls, functionName, argumentTypes);
-    }
-
-    private native AbstractSignal fetchSignal(Field f);
-    
-    static native void invokeSlot(Object receiver, long m, 
-			  byte returnType, Object args[], int slotTypes[]);
-    static native long resolveSlot(Method method);
-
     /**
      * Internal function to initialize the signals and slots mechanism. It will be called automatically by the connect
      * method.
@@ -1532,188 +881,94 @@
     protected void __qt_signalInitialization() { /* intentionally empty */
     }
 
-    private QObject this_reference() {
-        return this;
+    protected boolean __qt_no_notify = false;        
+    
+    @SuppressWarnings("unused")
+    private void __qt_javaConnectNotify(String name, int cpp_connections) 
+        throws NoSuchFieldException, IllegalAccessException {
+        if (__qt_no_notify) 
+            return ;
+
+        String found = com.trolltech.qt.QtJambiInternal.findSignalMethodSignature(this, name);
+
+        // If the signal is private it will not be mapped to Java, thus not found here.
+        if (found == null)
+            return ;
+            
+        Field f = getClass().getField(name);                        
+        
+        AbstractSignal signal = (AbstractSignal) f.get(this);
+        if (m_cpp_signals_initialized)
+            cpp_connections--;            
+        __qt_signalInitialization(); 
+        
+        if (cpp_connections == 0)
+            return ;
+        
+        if (signal.m_cpp_connections == 0)            
+            signal.connect(this, found);
+        else
+            connectNotify(signal);
+        
+        signal.m_cpp_connections = cpp_connections;
+    }
+            
+    @SuppressWarnings("unused")
+    private void __qt_javaDisconnectNotify(String name, int cpp_connections)
+        throws NoSuchFieldException, IllegalAccessException  {
+        if (__qt_no_notify) 
+            return ;
+        
+        if (name == null)
+            return ;
+                    
+        String found = com.trolltech.qt.QtJambiInternal.findSignalMethodSignature(this, name);
+
+        // If the signal is private it will not be mapped to Java, thus not found here.
+        if (found == null)
+            return ;
+            
+        Field f = getClass().getField(name);                        
+        
+        AbstractSignal signal = (AbstractSignal) f.get(this);
+        if (m_cpp_signals_initialized)
+            cpp_connections--;                
+        __qt_signalInitialization();
+        
+        if (cpp_connections == 0)
+            signal.disconnect(this, found);
+        else
+            disconnectNotify(signal);
+        
+        signal.m_cpp_connections = cpp_connections;
     }
 
-    </inject-code>
-    <modify-function class="java" signature="connectNotify(const char *)"> 
-        <access modifier="private"/>      
-    </modify-function>
-    <modify-function class="shell" signature="connectNotify(const char *)"> 
-        
-        <inject-code class="shell">        
-            <argument-map position="1" meta-name="signal"/>
-            qtjambi_connect_notify(qtjambi_current_environment(), m_link, signal);
-        </inject-code>
-    </modify-function>
+    protected void connectNotify(AbstractSignal signal) {
+        // empty default implementation
+    }
     
-    <modify-function class="java" signature="disconnectNotify(const char *)"> 
-        <access modifier="private"/>
-    </modify-function>
-    <modify-function class="shell" signature="disconnectNotify(const char *)">         
-        <inject-code class="shell">        
-            <argument-map position="1" meta-name="signal"/>
-            qtjambi_disconnect_notify(qtjambi_current_environment(), m_link, signal);
-        </inject-code>
-    </modify-function>
+    protected void disconnectNotify(AbstractSignal signal) {
+        // empty default implementation
+    }        
     
-    <inject-code class="java">
-        protected boolean __qt_no_notify = false;
+    public static int receivers(AbstractSignal signal) {
+        return signal.receivers();
+    }        
     
-        private String findSignalMethodSignature(String name) 
-            throws NoSuchFieldException, IllegalAccessException
-        {
-            String found = null;
-            
-            Class cls = getClass();
-            while (cls != null) {
-                Method methods[] = cls.getDeclaredMethods();
-                for (int i=0; i&lt;methods.length; ++i) {
-                    if (methods[i].getName().equals(name)) {
-                        found = name + "(";
-                        
-                        Class&lt;?&gt; params[] = methods[i].getParameterTypes();
-                        for (int j=0; j&lt;params.length; ++j) {
-                            if (j &gt; 0)
-                                found += ",";
-                            found += params[j].getName();
-                        }
-                        found = found + ")";
-                        break ;
-                    }
-                    
-                    
-                }
-                
-                cls = cls.getSuperclass();
-            }
-            return found;
-        }
-            
-        private void __qt_javaConnectNotify(String name, int cpp_connections) 
-            throws NoSuchFieldException, IllegalAccessException   
-        {
-            if (__qt_no_notify) 
-                return ;
-                        
-            String found = findSignalMethodSignature(name);
-
-            // If the signal is private it will not be mapped to Java, thus not found here.
-            if (found == null)
-                return ;
-                
-            Field f = getClass().getField(name);                        
-            
-            AbstractSignal signal = (AbstractSignal) f.get(this);
-            if (m_cpp_signals_initialized)
-                cpp_connections--;            
-            __qt_signalInitialization(); 
-            
-            if (cpp_connections == 0)
-                return ;
-            
-            if (signal.m_cpp_connections == 0)            
-                signal.connect(this, found);
-            else
-                connectNotify(signal);
-            
-            signal.m_cpp_connections = cpp_connections;
-        }
-                
-        private void __qt_javaDisconnectNotify(String name, int cpp_connections)
-            throws NoSuchFieldException, IllegalAccessException
-        {
-            if (__qt_no_notify) 
-                return ;
-            
-            if (name == null)
-                return ;
-                        
-            String found = findSignalMethodSignature(name);
-
-            // If the signal is private it will not be mapped to Java, thus not found here.
-            if (found == null)
-                return ;
-                
-            Field f = getClass().getField(name);                        
-            
-            AbstractSignal signal = (AbstractSignal) f.get(this);
-            if (m_cpp_signals_initialized)
-                cpp_connections--;                
-            __qt_signalInitialization();
-            
-            if (cpp_connections == 0)
-                signal.disconnect(this, found);
-            else
-                disconnectNotify(signal);
-            
-            signal.m_cpp_connections = cpp_connections;
-        }
-    
-        protected void connectNotify(AbstractSignal signal)
-        {
-            // empty default implementation
-        }
-        
-        protected void disconnectNotify(AbstractSignal signal)
-        {
-            // empty default implementation
-        }        
-        
-        protected static int receivers(AbstractSignal signal)
-        {
-            return signal.receivers();
-        }
-        
-    </inject-code>        
-    
-    <inject-code class="java">
     public java.util.List&lt;QObject> findChildren() { return findChildren(null, (QRegExp) null); }
-    public java.util.List&lt;QObject> findChildren(Class cl) { return findChildren(cl, (QRegExp) null); }
+    public java.util.List&lt;QObject> findChildren(Class&lt;?> cl) { return findChildren(cl, (QRegExp) null); }    
+    public java.util.List&lt;QObject> findChildren(Class&lt;?> cl, String name) { 
+        return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
+    }    
     
-    public java.util.List&lt;QObject> findChildren(Class cl, String name) { 
-    	java.util.List&lt;QObject> children = this.children();
-    	java.util.List&lt;QObject> matching = new java.util.ArrayList&lt;QObject>();    	
-    	java.util.Iterator&lt;QObject> it = children.iterator();
-    	while (it.hasNext()) {
-    		QObject current = it.next();
-    		if ((name == null || name.equals(current.objectName()))
-    		    &amp;&amp; (cl == null || cl.isAssignableFrom(current.getClass()))) 
-    			matching.add(current);
-    		matching.addAll(current.findChildren(cl, name));
-    	}
-    	
-    	return matching;
-    }
-    
-    public java.util.List&lt;QObject> findChildren(Class cl, QRegExp name) {
-    	java.util.List&lt;QObject> children = this.children();
-    	java.util.List&lt;QObject> matching = new java.util.ArrayList&lt;QObject>();    	
-    	java.util.Iterator&lt;QObject> it = children.iterator();
-    	while (it.hasNext()) {
-    		QObject current = it.next();
-    		if ((name == null || name.indexIn(current.objectName()) >= 0)
-    		    &amp;&amp; (cl == null || cl.isAssignableFrom(current.getClass()))) 
-    			matching.add(current);
-    		matching.addAll(current.findChildren(cl, name));
-    	}
-    	
-    	return matching;
+    public java.util.List&lt;QObject> findChildren(Class&lt;?> cl, QRegExp name) {
+        return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
     }
 
     public QObject findChild() { return findChild(null, null); }
-    public QObject findChild(Class cl) { return findChild(cl, null); }
-    public QObject findChild(Class cl, String name) {
-    	java.util.List&lt;QObject> children = this.children();
-    	java.util.Iterator&lt;QObject> it = children.iterator();
-    	while (it.hasNext()) {
-    		QObject current = it.next();
-    		if ((name == null || name.equals(current.objectName()))
-    		    &amp;&amp; (cl == null || cl.isAssignableFrom(current.getClass()))) 
-    			return current;
-    	}
-    	return null;
+    public QObject findChild(Class&lt;?> cl) { return findChild(cl, null); }
+    public QObject findChild(Class&lt;?> cl, String name) {    
+        return com.trolltech.qt.QtJambiInternal.findChild(this, cl, name);
     }
     </inject-code>
   </object-type>
@@ -1739,21 +994,21 @@
         m_instance = new QCoreApplication(args);
     }
         
-    protected final static QNativePointer argv(String args[])
+    protected final static com.trolltech.qt.QNativePointer argv(String args[])
     {
         String newArgs[] = new String[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);
         newArgs[0] = "java app";        
-        argv = QNativePointer.createCharPointerPointer(newArgs);
+        argv = com.trolltech.qt.QNativePointer.createCharPointerPointer(newArgs);
         return argv;
     }
 
-    protected final static QNativePointer argc(String args[])
+    protected final static com.trolltech.qt.QNativePointer argc(String args[])
     {
         if (argc != null) {
              throw new RuntimeException("There can only exist one QCoreApplication instance");
         }
-        argc = new QNativePointer(QNativePointer.Type.Int);
+        argc = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Int);
         argc.setIntValue(args.length + 1);
         return argc;
     }
@@ -1769,7 +1024,7 @@
     }
 
 
-    private static QNativePointer argc, argv;
+    private static com.trolltech.qt.QNativePointer argc, argv;
     </inject-code>
     <modify-function class="shell" signature="notify(QObject *, QEvent *)"> 
         <inject-code class="shell">        

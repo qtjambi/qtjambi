@@ -161,6 +161,7 @@ public class Launcher extends QWidget {
         ui.button_assistant.setEnabled(false);
     }
 
+    @SuppressWarnings("unused")
     private void assistantFinished() {
         assistantProcess.disposeLater();
         assistantProcess = null;

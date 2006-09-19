@@ -20,5 +20,6 @@
 #include "abstractclass.h"
 #include "nativepointertester.h"
 #include "destruction.h"
+#include "interfaces.h"
 
 #endif

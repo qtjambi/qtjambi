@@ -50,7 +50,7 @@ public class OnConnection extends QWidget
 
     public static void main(String args[])
     {
-	QApplication app = new QApplication(args);
+	QApplication.initialize(args);
 	
 	OnConnection oc = new OnConnection();
 	oc.show();

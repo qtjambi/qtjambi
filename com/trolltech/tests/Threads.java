@@ -13,7 +13,6 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
@@ -82,13 +81,13 @@ public class Threads implements Runnable {
     }
     
     public static void main(String args[]) {
-        QApplication app = new QApplication(args);
+        QApplication.initialize(args);
         runThreads(10);
         
         System.gc();
 
         System.out.println("All done...");
 
-        app.exec();
+        QApplication.exec();
     }
 };

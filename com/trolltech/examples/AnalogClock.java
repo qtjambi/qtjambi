@@ -108,4 +108,15 @@ public class AnalogClock
         
         QApplication.exec();
     }
+    // REMOVE-START
+    
+    public static String exampleName() {
+        return "Analog Clock";
+    }
+
+    public static boolean canInstantiate() {
+        return true;
+    }
+
+    // REMOVE-END
 }

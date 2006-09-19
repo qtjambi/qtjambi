@@ -1,6 +1,6 @@
 package com.trolltech.qt;
 
 
-public interface QtEnumerator<T extends QtEnumerator<T> > {
+public interface QtEnumerator {
     public int value();
 }

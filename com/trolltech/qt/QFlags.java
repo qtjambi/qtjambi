@@ -13,31 +13,46 @@
 
 package com.trolltech.qt;
 
-public abstract class QFlags<T extends QtEnumerator<T>> 
-    implements QtEnumerator<T>, 
-               java.io.Serializable, 
+public abstract class QFlags<T extends QtEnumerator> 
+    implements java.io.Serializable, 
                Cloneable
 {
     
-     protected QFlags(QtEnumerator<T> ... args) {
-         for (QtEnumerator<T> t : args)
-             set(t);
+     protected QFlags(QFlags<T> other) {
+         set(other);
+     }
+    
+     protected QFlags(T ... args) {
+         set(args);
      }
 
-     public final void set(QtEnumerator<T> ... ts) {
-         for (QtEnumerator<T> t : ts)
+     public final void set(QFlags<T> other) {
+         value |= other.value();
+     }
+     
+     public final void set(T ... ts) {
+         for (T t : ts)
              value |= t.value();
      }
+     
+     public final boolean isSet(QFlags<T> other) {
+         return (value & other.value()) == other.value();  
+     }
 
-     public final boolean isSet(QtEnumerator<T> ... ts) {
-         for (QtEnumerator<T> t : ts)
+     public final boolean isSet(T ... ts) {
+         for (T t : ts) {
              if ((t.value() & value) != t.value())
                   return false;
+         }
          return true;
      }
      
-     public final void clear(QtEnumerator<T> ... ts) {
-         for (QtEnumerator<T> t : ts)
+     public final void clear(QFlags<T> other) {
+         value &= ~other.value();
+     }
+     
+     public final void clear(T ... ts) {
+         for (T t : ts)
              value &= ~t.value(); 
      }
          

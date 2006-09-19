@@ -12,5 +12,6 @@ HEADERS += \
         abstractclass.h \
         signalsandslots.h \
         destruction.h \
+        interfaces.h \
 
 

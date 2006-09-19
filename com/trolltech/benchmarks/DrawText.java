@@ -23,7 +23,9 @@ import javax.swing.*;
 public class DrawText {
     
     private static class AwtWidget extends Component {
-	public void paint(Graphics g) {
+    private static final long serialVersionUID = 1L;
+
+    public void paint(Graphics g) {
 	    g.setColor(new Color(0, 0, 0));
 
 	    int runningTime = 5000;
@@ -41,7 +43,7 @@ public class DrawText {
 	    long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
 	    System.out.printf("Awt:   text drawing: ops/sec=%d\n", opsPrSec);
 	    
-	    hide();
+	    setVisible(false);
 	}
 
 	public Dimension getPreferredSize() {
@@ -128,7 +130,7 @@ public class DrawText {
 	try { Thread.sleep(10 * 1000); } catch (Exception e) { }
 
 	{
-	    QApplication app = new QApplication(args);
+	    QApplication.initialize(args);
 
 	    QtWidget w = new QtWidget();
 	    w.show();
@@ -136,7 +138,7 @@ public class DrawText {
 	    QtGLWidget wgl = new QtGLWidget();
 	    wgl.show();
 
-	    app.exec();
+	    QApplication.exec();
 	}
 
 

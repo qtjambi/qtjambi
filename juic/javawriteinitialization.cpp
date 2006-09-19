@@ -632,6 +632,7 @@ void WriteInitialization::writeProperties(const QString &varName,
                 shape = QLatin1String("QFrame.Shape.VLine");
 
             output << option.indent << varName << ".setFrameShape(" << shape << ");\n";
+            output << option.indent << varName << ".setFrameShadow(QFrame.Shadow.Sunken);\n";
             continue;
         }
 
@@ -890,6 +891,11 @@ QString WriteInitialization::domColor2QString(DomColor *c)
         .arg(c->elementBlue());
 }
 
+QString WriteInitialization::domBrush2QString(DomBrush *c)
+{
+    return domColor2QString(c->elementColor());
+}
+
 void WriteInitialization::writeColorGroup(DomColorGroup *colorGroup, const QString &group, const QString &paletteName)
 {
     if (!colorGroup)
@@ -916,7 +922,7 @@ void WriteInitialization::writeColorGroup(DomColorGroup *colorGroup, const QStri
         "NoRole"
     };
 
-
+    // Old format
     QList<DomColor*> colors = colorGroup->elementColor();
     for (int i=0; i<colors.size(); ++i) {
         DomColor *color = colors.at(i);
@@ -924,6 +930,16 @@ void WriteInitialization::writeColorGroup(DomColorGroup *colorGroup, const QStri
         output << option.indent << paletteName << ".setColor(" << group
                << ", QPalette.ColorRole." << roleNames[i]
                << ", " << domColor2QString(color)
+               << ");\n";
+    }
+
+    // New format
+    QList<DomColorRole*> roles = colorGroup->elementColorRole();
+    for (int i=0; i<roles.size(); ++i) {
+        DomColorRole *role = roles.at(i);
+        output << option.indent << paletteName << ".setColor(" << group
+               << ", QPalette.ColorRole." << roleNames[i]
+               << ", " << domBrush2QString(role->elementBrush())
                << ");\n";
     }
 }

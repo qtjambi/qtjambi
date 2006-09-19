@@ -14,15 +14,7 @@
 package com.trolltech.examples;
 
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QDialog;
-import com.trolltech.qt.gui.QHBoxLayout;
-import com.trolltech.qt.gui.QIcon;
-import com.trolltech.qt.gui.QMessageBox;
-import com.trolltech.qt.gui.QPushButton;
-import com.trolltech.qt.gui.QTableView;
-import com.trolltech.qt.gui.QVBoxLayout;
-import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.gui.*;
 import com.trolltech.qt.sql.QSqlDatabase;
 import com.trolltech.qt.sql.QSqlTableModel;
 
@@ -32,9 +24,11 @@ public class CachedTable extends QDialog {
     private QPushButton quitButton = null;
     private QSqlTableModel model = null;
     
-    public static boolean canInstantiate() 
-    {
-        return QSqlDatabase.isDriverAvailable("QSQLITE");
+    public static void main(String[] args) {
+        QApplication.initialize(args);
+        CachedTable table = new CachedTable(null);
+        table.show();
+        table.exec();       
     }
     
     public CachedTable(QWidget parent) 
@@ -95,13 +89,15 @@ public class CachedTable extends QDialog {
                                 tr("The database reported an error: ") + model.lastError().text());
         }        
     }
-
-    public static void main(String[] args) {
-        QApplication.initialize(args);
-        
-        CachedTable table = new CachedTable(null);
-        table.show();
-        table.exec();       
+    // REMOVE-START
+    
+    public static String exampleName() {
+        return "Cached Table";
     }
 
+    public static boolean canInstantiate() {
+        return QSqlDatabase.isDriverAvailable("QSQLITE");
+    }
+
+    // REMOVE-END
 }

@@ -7,7 +7,7 @@ import com.trolltech.qtest.*;
 
 public class TestQFlags extends QTestCase {
     
-    private enum MyEnum implements QtEnumerator<MyEnum> {
+    private enum MyEnum implements QtEnumerator {
         Zero,
         One,
         Two,
@@ -17,7 +17,9 @@ public class TestQFlags extends QTestCase {
     }
     
     private static class Flags extends QFlags<MyEnum> {
-        private Flags(QtEnumerator<MyEnum> ... flags) { super(flags); }        
+        private static final long serialVersionUID = 1L;
+        private Flags(MyEnum ... flags) { super(flags); }
+        private Flags(Flags other) { super(other); }
     }
     
     public void run_testConstructor() {
@@ -27,13 +29,19 @@ public class TestQFlags extends QTestCase {
         QCOMPARE(new Flags(MyEnum.Three).value(), 3);
         QCOMPARE(new Flags(MyEnum.One, MyEnum.Four).value(), 5);
         
-        QCOMPARE(new Flags(new Flags(MyEnum.One), new Flags(MyEnum.Four)).value(), 5);
+        QCOMPARE(new Flags(new Flags(MyEnum.One, MyEnum.Four)).value(), 5);
         QCOMPARE(new Flags(new Flags(MyEnum.Four)).value(), 4);
     }
     
-    private static Flags createFlags(QtEnumerator<MyEnum> ... args) {
+    private static Flags createFlags(Flags other) {
         Flags f = new Flags();
-        for (QtEnumerator<MyEnum> e : args)
+        f.set(other);
+        return f;
+    }
+    
+    private static Flags createFlags(MyEnum ... args) {
+        Flags f = new Flags();
+        for (MyEnum e : args)
             f.set(e);
         return f;
     }
@@ -45,7 +53,7 @@ public class TestQFlags extends QTestCase {
         QCOMPARE(createFlags(MyEnum.Three).value(), 3);
         QCOMPARE(createFlags(MyEnum.One, MyEnum.Four).value(), 5);
         
-        QCOMPARE(createFlags(new Flags(MyEnum.One), new Flags(MyEnum.Four)).value(), 5);
+        QCOMPARE(createFlags(new Flags(MyEnum.One, MyEnum.Four)).value(), 5);
         QCOMPARE(createFlags(new Flags(MyEnum.Four)).value(), 4);
     }
     
@@ -56,24 +64,24 @@ public class TestQFlags extends QTestCase {
         
         
         addDataSet("1", 
-                new QtEnumerator[] { MyEnum.One, MyEnum.Two, MyEnum.Four },
-                new QtEnumerator[] { MyEnum.Three },
+                new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four },
+                new MyEnum[] { MyEnum.Three },
                 4);
         
         addDataSet("2", 
-                new QtEnumerator[] { MyEnum.One, MyEnum.Two, MyEnum.Four },
-                new QtEnumerator[] { MyEnum.Four },
+                new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four },
+                new MyEnum[] { MyEnum.Four },
                 3);                
         
         addDataSet("3", 
-                new QtEnumerator[] { MyEnum.One, MyEnum.Two, MyEnum.Four },
-                new QtEnumerator[] { MyEnum.Four, MyEnum.One },
+                new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four },
+                new MyEnum[] { MyEnum.Four, MyEnum.One },
                 2);                
     }
     
     public void run_clear() {
-        QtEnumerator<MyEnum> toSet[] = (QtEnumerator<MyEnum>[]) getParameter("toSet");
-        QtEnumerator<MyEnum> toClear[] = (QtEnumerator<MyEnum>[]) getParameter("toClear");
+        MyEnum toSet[] = (MyEnum[]) getParameter("toSet");
+        MyEnum toClear[] = (MyEnum[]) getParameter("toClear");
         int i = (Integer) getParameter("result");
         Flags f = new Flags(toSet);
         f.clear(toClear);        
@@ -85,7 +93,7 @@ public class TestQFlags extends QTestCase {
         QCOMPARE(new Flags(MyEnum.Three, MyEnum.Four), new Flags(MyEnum.Three, MyEnum.Four));
         QVERIFY(!new Flags(MyEnum.One).equals(new Flags(MyEnum.Two)));
         
-        QVERIFY(!new Flags(MyEnum.One).equals(new QFlags<MyEnum>(MyEnum.One) { }));            
+        QVERIFY(!new Flags(MyEnum.One).equals(new QFlags<MyEnum>(MyEnum.One) { private static final long serialVersionUID = 1L; }));            
     }
     
 

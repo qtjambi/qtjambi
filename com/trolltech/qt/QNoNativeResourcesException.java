@@ -14,6 +14,8 @@
 package com.trolltech.qt;
 
 public class QNoNativeResourcesException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
     public QNoNativeResourcesException(String message) 
     {
         super(message);

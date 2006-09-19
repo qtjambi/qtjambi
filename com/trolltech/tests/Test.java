@@ -14,13 +14,7 @@
 package com.trolltech.tests;
 
 import com.trolltech.launcher.Style;
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-
-
-import java.lang.reflect.*;
-import java.util.*;
 
 public class Test
 {

@@ -15,6 +15,8 @@ package com.trolltech.qt;
 
 public class QNoSuchSlotException extends RuntimeException
 {       
+    private static final long serialVersionUID = 1L;
+
     public QNoSuchSlotException(String extraMessage)    
     {
         super(extraMessage.length() > 0 ? "Slot not found: " + extraMessage : "Slot not found");    

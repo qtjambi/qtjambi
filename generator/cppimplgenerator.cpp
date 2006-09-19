@@ -342,13 +342,6 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
       << "#include \"qtjambifunctiontable.h\"" << endl
       << "#include \"qtjambilink.h\"" << endl;
 
-    if (java_class->isQObject()) { // ### remove for 4.2
-        s << "#include <QtCore/QMutex>" << endl
-          << "#include <QtCore/QMutexLocker>" << endl << endl
-          << "Q_GLOBAL_STATIC(QMutex, qobject_constructor_lock);" << endl << endl;
-    }
-
-
    if (!java_class->isQObject() && !java_class->typeEntry()->isValue())
         writeFinalDestructor(s, java_class);
 
@@ -1251,9 +1244,6 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     MetaJavaArgumentList arguments = java_function->arguments();
     QString className = cls->name();
 
-    if (cls->isQObject()) // ### remove for 4.2
-        s << INDENT << "QMutexLocker locker(qobject_constructor_lock());" << endl;
-
     s << INDENT << shellClassName(cls) << " *" << qt_object_name
       << " = new " << shellClassName(cls)
       << "(";
@@ -1569,8 +1559,15 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
                    && static_cast<const ObjectTypeEntry *>(type)->designatedInterface()) {
             const InterfaceTypeEntry *ie =
                 static_cast<const ObjectTypeEntry *>(type)->designatedInterface();
-            s << "qtjambi_to_interface(__jni_env, (QtJambiLink *)" << java_name << ", "
-              << "\"" << ie->javaName() << "\", \""
+            s << "qtjambi_to_interface(__jni_env, ";
+
+            // This cast is only valid if we're dealing with a native id
+            if ((options & UseNativeIds) == UseNativeIds)
+                s << "(QtJambiLink *)";
+
+            s << java_name << ", ";
+
+            s << "\"" << ie->javaName() << "\", \""
               << ie->javaPackage().replace(".", "/") << "/\", "
               << "\"__qt_cast_to_" << type->javaName() << "\");" << endl;
 

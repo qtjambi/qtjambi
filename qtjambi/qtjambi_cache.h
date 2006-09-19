@@ -225,7 +225,7 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jfieldID m_in_cpp_emission;
-    } AbstractSignal;
+    } InternalSignal;
 
 
     struct {
@@ -248,7 +248,7 @@ struct QTJAMBI_EXPORT StaticCache
     } QtEnumerator;
 
 
-    DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
+    DECLARE_RESOLVE_FUNCTIONS(InternalSignal);
     DECLARE_RESOLVE_FUNCTIONS(QtEnumerator);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);

@@ -44,13 +44,13 @@ public class Button extends QPushButton {
     }
 
     public static void main(String args[]) {
-    	QApplication app = new QApplication(args);
+    	QApplication.initialize(args);
 	
     	Button b = new Button();
     	b.setText("Not clicked");
     	b.show();
 
-    	app.exec();
+    	QApplication.exec();
     }
 
 }

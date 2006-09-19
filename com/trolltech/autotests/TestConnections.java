@@ -845,8 +845,6 @@ public class TestConnections extends QTestCase implements Qt
                    
        // No parameters
        parameterTypes = new Class[0];
-       String s1 = "Signal no params";                   
-       String s2 = "Slot no params";
        sender = new MyQObject();
        receiver = new MyQObject();
        addDataSet("No parameters, void returning signal/slot",
@@ -938,7 +936,6 @@ public class TestConnections extends QTestCase implements Qt
      
      public void run_borkedConnections()
      {
-         MyQObject sender = getParameter("sender");
          QObject receiver = getParameter("receiver");
          Object signal = getParameter("signal");
          String slotSignature = getParameter("slotSignature");
@@ -1098,7 +1095,7 @@ public class TestConnections extends QTestCase implements Qt
      
      public static void main(String args[])
      {
-         QApplication app = new QApplication(args);
+         QApplication.initialize(args);
          runTest(new TestConnections());
      }
 }

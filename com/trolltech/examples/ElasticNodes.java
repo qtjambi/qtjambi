@@ -1,0 +1,432 @@
+/****************************************************************************
+**
+**  (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of $PRODUCT$.
+**
+** $JAVA_LICENSE$
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+
+package com.trolltech.examples;
+
+import java.util.Vector;
+
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+
+public class ElasticNodes extends QGraphicsView {
+
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+        ElasticNodes elasticNodes = new ElasticNodes();
+        elasticNodes.show();
+        QApplication.exec();
+    }
+
+    private int timerId;
+    private Node centerNode;
+
+    public ElasticNodes() {
+        QGraphicsScene scene = new QGraphicsScene(this);
+        scene.setItemIndexMethod(QGraphicsScene.ItemIndexMethod.NoIndex);
+        scene.setSceneRect(-200, -200, 400, 400);
+        setScene(scene);
+
+        setCacheMode(new QGraphicsView.CacheMode(QGraphicsView.CacheModeFlag.CacheBackground));
+
+        setRenderHint(QPainter.RenderHint.Antialiasing);
+        setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse);
+        setResizeAnchor(QGraphicsView.ViewportAnchor.AnchorViewCenter);
+
+        Node node1 = new Node(this);
+        Node node2 = new Node(this);
+        Node node3 = new Node(this);
+        Node node4 = new Node(this);
+        centerNode = new Node(this);
+        Node node6 = new Node(this);
+        Node node7 = new Node(this);
+        Node node8 = new Node(this);
+        Node node9 = new Node(this);
+        scene.addItem(node1);
+        scene.addItem(node2);
+        scene.addItem(node3);
+        scene.addItem(node4);
+        scene.addItem(centerNode);
+        scene.addItem(node6);
+        scene.addItem(node7);
+        scene.addItem(node8);
+        scene.addItem(node9);
+        scene.addItem(new Edge(node1, node2));
+        scene.addItem(new Edge(node2, node3));
+        scene.addItem(new Edge(node2, centerNode));
+        scene.addItem(new Edge(node3, node6));
+        scene.addItem(new Edge(node4, node1));
+        scene.addItem(new Edge(node4, centerNode));
+        scene.addItem(new Edge(centerNode, node6));
+        scene.addItem(new Edge(centerNode, node8));
+        scene.addItem(new Edge(node6, node9));
+        scene.addItem(new Edge(node7, node4));
+        scene.addItem(new Edge(node8, node7));
+        scene.addItem(new Edge(node9, node8));
+
+        node1.setPos(-50, -50);
+        node2.setPos(0, -50);
+        node3.setPos(50, -50);
+        node4.setPos(-50, 0);
+        centerNode.setPos(0, 0);
+        node6.setPos(50, 0);
+        node7.setPos(-50, 50);
+        node8.setPos(0, 50);
+        node9.setPos(50, 50);
+
+        scale(0.8, 0.8);
+        setMinimumSize(400, 400);
+        setWindowTitle(tr("Elastic Nodes"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+    }
+
+    private void itemMoved() {
+        if (timerId == 0)
+            timerId = startTimer(1000 / 25);
+    }
+
+    protected void keyPressEvent(QKeyEvent event) {
+        Qt.Key key = Qt.Key.resolve(event.key());
+        switch (key) {
+        case Key_Up:
+            centerNode.moveBy(0, -20);
+            break;
+        case Key_Down:
+            centerNode.moveBy(0, 20);
+            break;
+        case Key_Left:
+            centerNode.moveBy(-20, 0);
+            break;
+        case Key_Right:
+            centerNode.moveBy(20, 0);
+            break;
+        case Key_Plus:
+            scaleView(1.2);
+            break;
+        case Key_Minus:
+            scaleView(1 / 1.2);
+            break;
+        case Key_Space:
+        case Key_Enter:
+            for (QGraphicsItemInterface item : scene().items()) {
+                if (item instanceof Node)
+                    item.setPos(-150 + Math.random() * 300, -150 + Math.random() * 300);
+            }
+            break;
+        default:
+            super.keyPressEvent(event);
+        }
+    }
+
+    protected void timerEvent(QTimerEvent event) {
+        Vector<Node> nodes = new Vector<Node>();
+        for (QGraphicsItemInterface item : scene().items()) {
+            if (item instanceof Node)
+                nodes.add((Node) item);
+        }
+
+        for (Node node : nodes)
+            node.calculateForces();
+
+        boolean itemsMoved = false;
+        for (Node node : nodes) {
+            if (node.advance())
+                itemsMoved = true;
+        }
+
+        if (!itemsMoved) {
+            killTimer(timerId);
+            timerId = 0;
+        }
+    }
+
+    protected void wheelEvent(QWheelEvent event) {
+        scaleView(Math.pow(2, -event.delta() / 240.0));
+    }
+
+    protected void drawBackground(QPainter painter, QRectF rect) {
+        // Shadow
+        QRectF sceneRect = this.sceneRect();
+        QRectF rightShadow = new QRectF(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
+        QRectF bottomShadow = new QRectF(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
+        if (rightShadow.intersects(rect) || rightShadow.contains(rect))
+            painter.fillRect(rightShadow, new QBrush(QColor.darkGray));
+        if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
+            painter.fillRect(bottomShadow, new QBrush(QColor.darkGray));
+
+        // Fill
+        QLinearGradient gradient = new QLinearGradient(sceneRect.topLeft(), sceneRect.bottomRight());
+        gradient.setColorAt(0, QColor.white);
+        gradient.setColorAt(1, QColor.lightGray);
+        painter.fillRect(rect.intersect(sceneRect), new QBrush(gradient));
+        painter.setBrush(QBrush.NoBrush);
+        painter.drawRect(sceneRect);
+
+        // Text
+        QRectF textRect = new QRectF(sceneRect.left() + 4, sceneRect.top() + 4, sceneRect.width() - 4, sceneRect.height() - 4);
+        String message = tr("Click and drag the nodes around, and zoom with the mouse wheel or the '+' and '-' keys");
+
+        QFont font = painter.font();
+        font.setBold(true);
+        font.setPointSize(14);
+        painter.setFont(font);
+        painter.setPen(QColor.lightGray);
+        painter.drawText(textRect.translated(2, 2), message);
+        painter.setPen(QColor.black);
+        painter.drawText(textRect, message);
+    }
+
+    private void scaleView(double scaleFactor) {
+        QMatrix m = matrix();
+        m.scale(scaleFactor, scaleFactor);
+        double factor = m.mapRect(new QRectF(0, 0, 1, 1)).width();
+        if (factor < 0.07 || factor > 100)
+            return;
+
+        scale(scaleFactor, scaleFactor);
+    }
+
+    public class Node extends QGraphicsItem {
+
+        private Vector<Edge> edgeList = new Vector<Edge>();
+        private QPointF newPos;
+        private ElasticNodes graph;
+
+        Node(ElasticNodes graphWidget) {
+            graph = graphWidget;
+            setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable);
+            setZValue(1);
+            newPos = pos();
+        }
+
+        private void addEdge(Edge edge) {
+            edgeList.add(edge);
+            edge.adjust();
+        }
+
+        private void calculateForces() {
+            if (scene() == null || scene().mouseGrabberItem() == this) {
+                newPos = pos();
+                return;
+            }
+            // Sum up all forces pushing this item away
+            double xvel = 0;
+            double yvel = 0;
+            for (QGraphicsItemInterface item : scene().items()) {
+
+                Node node = null;
+                if (!(item instanceof Node))
+                    continue;
+
+                node = (Node) item;
+                QLineF line = new QLineF(mapFromItem(node, 0, 0), new QPointF(0, 0));
+                double dx = line.dx();
+                double dy = line.dy();
+                double l = 2.0 * (dx * dx + dy * dy);
+                if (l > 0) {
+                    xvel += (dx * 150.0) / l;
+                    yvel += (dy * 150.0) / l;
+                }
+            }
+
+            // Now subtract all forces pulling items together
+            double weight = (edgeList.size() + 1) * 10;
+            for (Edge edge : edgeList) {
+                QPointF pos;
+                if (edge.sourceNode() == this)
+                    pos = mapFromItem(edge.destNode(), 0, 0);
+                else
+                    pos = mapFromItem(edge.sourceNode(), 0, 0);
+                xvel += pos.x() / weight;
+                yvel += pos.y() / weight;
+            }
+
+            if (Math.abs(xvel) < 0.1 && Math.abs(yvel) < 0.1)
+                xvel = yvel = 0;
+
+            QRectF sceneRect = scene().sceneRect();
+            newPos.setX(Math.min(Math.max(newPos.x() + xvel, sceneRect.left() + 10), sceneRect.right() - 10));
+            newPos.setY(Math.min(Math.max(newPos.y() + yvel, sceneRect.top() + 10), sceneRect.bottom() - 10));
+        }
+
+        private boolean advance() {
+            if (newPos == pos())
+                return false;
+
+            setPos(newPos);
+            return true;
+        }
+
+        public QRectF boundingRect() {
+            double adjust = 2;
+            return new QRectF(-10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
+        }
+
+        public QPainterPath shape() {
+            QPainterPath path = new QPainterPath();
+            path.addEllipse(-10, -10, 20, 20);
+            return path;
+        }
+
+        public void paint(QPainter painter, QStyleOptionGraphicsItem option, QWidget widget) {
+            painter.setPen(Qt.PenStyle.NoPen);
+            painter.setBrush(QColor.fromRgba(QColor.black.rgb() & 0x7fffffff));
+            painter.drawEllipse(-7, -7, 20, 20);
+
+            QRadialGradient gradient = new QRadialGradient(-3, -3, 10);
+
+            if ((option.state().isSet(QStyle.StateFlag.State_Sunken))) {
+                gradient.setCenter(3, 3);
+                gradient.setFocalPoint(3, 3);
+                gradient.setColorAt(1, new QColor(QColor.yellow).light(120));
+                gradient.setColorAt(0, new QColor(QColor.darkYellow).light(120));
+            } else {
+                gradient.setColorAt(0, QColor.yellow);
+                gradient.setColorAt(1, QColor.darkYellow);
+            }
+
+            painter.setBrush(gradient);
+            painter.setPen(new QPen(QColor.black, 0));
+            painter.drawEllipse(-10, -10, 20, 20);
+        }
+
+        public Object itemChange(GraphicsItemChange change, Object value) {
+            switch (change) {
+            case ItemPositionChange:
+                for (Edge edge : edgeList)
+                    edge.adjust();
+                graph.itemMoved();
+                break;
+            default:
+                break;
+            }
+
+            return super.itemChange(change, value);
+        }
+
+        public void mousePressEvent(QGraphicsSceneMouseEvent event) {
+            update();
+            super.mousePressEvent(event);
+        }
+
+        public void mouseReleaseEvent(QGraphicsSceneMouseEvent event) {
+            update();
+            super.mouseReleaseEvent(event);
+        }
+    }
+
+    public class Edge extends QGraphicsItem {
+        private Node source;
+        private Node dest;
+
+        private QPointF sourcePoint;
+        private QPointF destPoint;
+        private double arrowSize;
+
+        public Edge(Node sourceNode, Node destNode) {
+            arrowSize = 10;
+            // setAcceptedMouseButtons(LeftButton);
+            source = sourceNode;
+            dest = destNode;
+            source.addEdge(this);
+            dest.addEdge(this);
+            adjust();
+        }
+
+        private QPointF add(QPointF p1, QPointF p2) {
+            return new QPointF(p1.x() + p2.x(), p1.y() + p2.y());
+        }
+
+        private QPointF subtract(QPointF p1, QPointF p2) {
+            return new QPointF(p1.x() - p2.x(), p1.y() - p2.y());
+        }
+
+        private Node sourceNode() {
+            return source;
+        }
+
+        private Node destNode() {
+            return dest;
+        }
+
+        private void adjust() {
+            if (source == null || dest == null)
+                return;
+
+            QLineF line = new QLineF(mapFromItem(source, 0, 0), mapFromItem(dest, 0, 0));
+            double length = line.length();
+            QPointF edgeOffset = new QPointF((line.dx() * 10) / length, (line.dy() * 10) / length);
+
+            removeFromIndex();
+            sourcePoint = add(line.p1(), edgeOffset);
+            destPoint = subtract(line.p2(), edgeOffset);
+            addToIndex();
+        }
+
+        public QRectF boundingRect() {
+            if (source == null || dest == null)
+                return new QRectF();
+
+            double penWidth = 1;
+            double extra = (penWidth + arrowSize) / 2.0;
+
+            return new QRectF(sourcePoint, new QSizeF(destPoint.x() - sourcePoint.x(), destPoint.y() - sourcePoint.y())).normalized().adjusted(-extra, -extra, extra, extra);
+        }
+
+        public void paint(QPainter painter, QStyleOptionGraphicsItem option, QWidget widget) {
+
+            if (source == null || dest == null)
+                return;
+
+            // Draw the line itself
+            QLineF line = new QLineF(sourcePoint, destPoint);
+            painter.setPen(new QPen(QColor.black, 1, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin));
+            painter.drawLine(line);
+
+            // Draw the arrows if there's enough room
+            double angle = Math.acos(line.dx() / line.length());
+            if (line.dy() >= 0)
+                angle = (Math.PI * 2) - angle;
+
+            QPointF sourceArrowP1 = add(sourcePoint, new QPointF(Math.sin(angle + Math.PI / 3) * arrowSize, Math.cos(angle + Math.PI / 3) * arrowSize));
+            QPointF sourceArrowP2 = add(sourcePoint, new QPointF(Math.sin(angle + Math.PI - Math.PI / 3) * arrowSize, Math.cos(angle + Math.PI - Math.PI / 3) * arrowSize));
+            QPointF destArrowP1 = add(destPoint, new QPointF(Math.sin(angle - Math.PI / 3) * arrowSize, Math.cos(angle - Math.PI / 3) * arrowSize));
+            QPointF destArrowP2 = add(destPoint, new QPointF(Math.sin(angle - Math.PI + Math.PI / 3) * arrowSize, Math.cos(angle - Math.PI + Math.PI / 3) * arrowSize));
+
+            painter.setBrush(QColor.black);
+            QPolygonF pol1 = new QPolygonF();
+            pol1.append(line.p1());
+            pol1.append(sourceArrowP1);
+            pol1.append(sourceArrowP2);
+            painter.drawPolygon(pol1);
+
+            QPolygonF pol2 = new QPolygonF();
+            pol2.append(line.p2());
+            pol2.append(destArrowP1);
+            pol2.append(destArrowP2);
+            painter.drawPolygon(pol2);
+
+        }
+    }
+    // REMOVE-START
+    
+    public static String exampleName() {
+        return "Elastic Nodes";
+    }
+
+    public static boolean canInstantiate() {
+        return true;
+    }
+
+    // REMOVE-END
+}

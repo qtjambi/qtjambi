@@ -23,4 +23,6 @@ public interface QtObjectInterface {
      * @return A value which uniquely identifies the native resources held by an object in their life time.
      */
     public long nativeId();    
+    
+    public void disableGarbageCollection();
 }

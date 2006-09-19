@@ -14,7 +14,6 @@
 package com.trolltech.tests;
 
 import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 import java.util.*;

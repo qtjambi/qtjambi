@@ -541,7 +541,7 @@
     <inject-code>
         public QPixmap(String xpm[]) 
         {
-            this(QNativePointer.createCharPointerPointer(xpm));
+            this(com.trolltech.qt.QNativePointer.createCharPointerPointer(xpm));
         }
     </inject-code>
   
@@ -559,16 +559,16 @@
     </modify-function>
     <inject-code>
     public boolean save(com.trolltech.qt.core.QIODevice fileName, String format, int quality) {
-        return private_save(fileName,  QNativePointer.createCharPointer(format), quality);
+        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
     }
     public boolean save(com.trolltech.qt.core.QIODevice fileName, String format) {
-        return private_save(fileName,  QNativePointer.createCharPointer(format));
+        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format));
     }
     public boolean save(String fileName, String format, int quality) {
-        return private_save(fileName,  QNativePointer.createCharPointer(format), quality);
+        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
     }
     public boolean save(String fileName, String format) {
-        return private_save(fileName,  QNativePointer.createCharPointer(format));
+        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format));
     }
     </inject-code>
   </value-type>
@@ -668,7 +668,7 @@
     <inject-code>
         public QImage(String xpm[]) 
         {
-            this(QNativePointer.createCharPointerPointer(xpm));
+            this(com.trolltech.qt.QNativePointer.createCharPointerPointer(xpm));
         }
     </inject-code>
     
@@ -686,16 +686,16 @@
     </modify-function>
     <inject-code>
     public boolean save(com.trolltech.qt.core.QIODevice fileName, String format, int quality) {
-        return private_save(fileName,  QNativePointer.createCharPointer(format), quality);
+        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
     }
     public boolean save(com.trolltech.qt.core.QIODevice fileName, String format) {
-        return private_save(fileName,  QNativePointer.createCharPointer(format));
+        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format));
     }
     public boolean save(String fileName, String format, int quality) {
-        return private_save(fileName,  QNativePointer.createCharPointer(format), quality);
+        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
     }
     public boolean save(String fileName, String format) {
-        return private_save(fileName,  QNativePointer.createCharPointer(format));
+        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format));
     }
     </inject-code>
   </value-type>
@@ -861,7 +861,6 @@
   <object-type name="QAccessibleWidgetEx"/>
   <object-type name="QActionEvent"/>
   <object-type name="QActionGroup"/>
-  <object-type name="QBoxLayout"/>
   <object-type name="QCDEStyle"/>
   <object-type name="QCheckBox"/>
   <object-type name="QCleanlooksStyle"/>
@@ -894,7 +893,6 @@
   <object-type name="QGraphicsPixmapItem"/>
   <object-type name="QGraphicsPolygonItem"/>
   <object-type name="QGraphicsRectItem"/>
-  <object-type name="QGraphicsScene"/>
   <object-type name="QGraphicsSceneContextMenuEvent"/>
   <object-type name="QGraphicsSceneDragDropEvent"/>
   <object-type name="QGraphicsSceneEvent"/>
@@ -903,7 +901,6 @@
   <object-type name="QGraphicsSceneMouseEvent"/>
   <object-type name="QGraphicsSceneWheelEvent"/>
   <object-type name="QGraphicsSimpleTextItem"/>
-  <object-type name="QGridLayout"/>
   <object-type name="QHBoxLayout"/>
   <object-type name="QHeaderView"/>
   <object-type name="QHelpEvent"/>
@@ -926,7 +923,6 @@
   <object-type name="QItemEditorCreatorBase"/>
   <object-type name="QItemEditorFactory"/>
   <object-type name="QItemSelectionModel"/>
-  <object-type name="QLayout"/>
   <object-type name="QListView"/>
   <object-type name="QMainWindow"/>
   <object-type name="QMenu"/>
@@ -1010,12 +1006,115 @@
       <replace-default-expression index="0" with="QColor.white"/>      
     </modify-function>
   </object-type>
+  
+  <object-type name="QLayout">  
+    <modify-function signature="addItem(QLayoutItem *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addChildLayout(QLayout *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addChildLayout(QLayout *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function class="shell" signature="itemAt(int) const">
+        <disable-gc />
+    </modify-function>        
+  </object-type>
 
+  <object-type name="QStackedLayout">  
+    <modify-function signature="addItem(QLayoutItem *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addChildLayout(QLayout *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addChildLayout(QLayout *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function class="shell" signature="itemAt(int) const">
+        <disable-gc />
+    </modify-function>        
+    <modify-function signature="addWidget(QWidget *)">
+        <rename to="addStackedWidget"/>
+    </modify-function>    
+  </object-type>
+  
+  <object-type name="QBoxLayout">  
+    <modify-function signature="addItem(QLayoutItem *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addChildLayout(QLayout *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addChildLayout(QLayout *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="insertLayout(int, QLayout *, int)">
+        <disable-gc argument="2" />
+    </modify-function>    
+    <modify-function signature="insertItem(int, QLayoutItem *)">
+        <disable-gc argument="2" />
+    </modify-function>    
+    <modify-function signature="addLayout(QLayout *, int)">
+        <disable-gc argument="1" />
+    </modify-function>            
+  </object-type>
+
+  <object-type name="QGridLayout">  
+    <modify-function signature="addItem(QLayoutItem *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addItem(QLayoutItem *, int, int, int, Qt::Alignment)">
+        <disable-gc argument="1" />
+    </modify-function>    
+    <modify-function signature="addLayout(QLayout *, int, int, Qt::Alignment)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addLayout(QLayout *, int, int, int, int, Qt::Alignment)">
+        <disable-gc argument="1" />
+    </modify-function>            
+    <modify-function signature="addChildLayout(QLayout *)">
+        <disable-gc argument="1" />
+    </modify-function>
+    <modify-function signature="addChildLayout(QLayout *)">
+        <disable-gc argument="1" />
+    </modify-function>
+  </object-type>
+  
   <object-type name="QGraphicsView">
     <extra-includes>
       <include file-name="QPainterPath" location="global"/>
     </extra-includes>
   </object-type>
+
+  <object-type name="QGraphicsScene">
+    <modify-function signature="addItem(QGraphicsItem *)">
+      <disable-gc argument="1"/>
+    </modify-function>   
+    <modify-function signature="addEllipse(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)">
+      <disable-gc argument="0"/>
+    </modify-function>
+    <modify-function signature="addLine(const QLineF &amp;, const QPen &amp;)">
+      <disable-gc argument="0"/>
+    </modify-function>
+    <modify-function signature="addPath(const QPainterPath &amp;, const QPen &amp;, const QBrush &amp;)">
+      <disable-gc argument="0"/>
+    </modify-function>
+    <modify-function signature="addPixmap(const QPixmap &amp;)">
+      <disable-gc argument="0"/>
+    </modify-function>
+    <modify-function signature="addPolygon(const QPolygonF &amp;, const QPen &amp;, const QBrush &amp;)">
+      <disable-gc argument="0"/>
+    </modify-function>
+    <modify-function signature="addRect(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)">
+      <disable-gc argument="0"/>
+    </modify-function>
+    <modify-function signature="addText(const QString &amp;, const QFont &amp;)">
+      <disable-gc argument="0"/>
+    </modify-function>
+  </object-type>
+
 
   <object-type name="QCalendarWidget">
     <extra-includes>
@@ -1343,12 +1442,6 @@
   </object-type>
 
   <object-type name="QFrame">
-  </object-type>
-
-  <object-type name="QStackedLayout">
-    <modify-function signature="addWidget(QWidget *)">
-        <rename to="addStackedWidget"/>
-    </modify-function>
   </object-type>
 
   <object-type name="QTextTable">
@@ -1704,7 +1797,7 @@
     }
     
     public static void aboutQtJambi() {
-        QtJambiInternal.aboutQtJambi();
+        com.trolltech.qt.QtJambiInternal.aboutQtJambi();
     }
 
     public static QApplication instance() {

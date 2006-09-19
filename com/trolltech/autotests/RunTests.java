@@ -22,7 +22,7 @@ import com.trolltech.qtest.QTestCase;
 
 public class RunTests {
     public static void main(String[] args) throws Exception {
-        QApplication app = new QApplication(args);
+        QApplication.initialize(args);
         
         QDir dir = new QDir("com/trolltech/autotests");
         if (!dir.exists())

@@ -13,8 +13,6 @@
 
 package com.trolltech.benchmarks.itemview;
 
-import java.util.*;
-
 import javax.swing.*;
 
 import com.trolltech.qt.gui.*;
@@ -66,6 +64,7 @@ public class MillionList {
 		}
 	}
 	
+    @SuppressWarnings("unused")
 	private static class FakeModelIndex {
 		int row, col;
 		Object data;
@@ -77,7 +76,8 @@ public class MillionList {
 	}
 	
 	public static class SwingList extends JList {
-		public long populateTime;
+        private static final long serialVersionUID = 1L;
+        public long populateTime;
 		public long setModelTime;
 		
 		private DefaultListModel model = new DefaultListModel();
@@ -112,7 +112,7 @@ public class MillionList {
 	 */
 	public static void main(String[] args) {
 		
-		QApplication app = new QApplication(args);
+		QApplication.initialize(args);
 		
 		if (args.length >= 1 && (args[0].contains("java") || args[0].contains("swing"))) {
 			// run swing test
@@ -126,7 +126,7 @@ public class MillionList {
 			l.show();			
 		}
 		
-		app.exec();
+		QApplication.exec();
 	}
 
 }

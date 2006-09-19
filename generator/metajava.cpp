@@ -207,17 +207,38 @@ uint MetaJavaFunction::compareTo(const MetaJavaFunction *other) const
     }
 
     // Compare arguments...
-    int count = m_arguments.size();
-    int other_count = other->m_arguments.size();
-    if (count == other_count) {
-        bool same = true;
-        for (int i=0; i<count; ++i)
-            if (m_arguments.at(i)->type()->name() != other->m_arguments.at(i)->type()->name())
+    MetaJavaArgumentList min_arguments;
+    MetaJavaArgumentList max_arguments;
+    if (arguments().size() < other->arguments().size()) {
+        min_arguments = arguments();
+        max_arguments = other->arguments();        
+    } else {
+        min_arguments = other->arguments();
+        max_arguments = arguments();        
+    }
+
+    int min_count = min_arguments.size();
+    int max_count = max_arguments.size();
+    bool same = true;
+    for (int i=0; i<max_count; ++i) {
+        if (i < min_count) {
+            const MetaJavaArgument *min_arg = min_arguments.at(i);
+            const MetaJavaArgument *max_arg = max_arguments.at(i);
+            if (min_arg->type()->name() != max_arg->type()->name()
+                && (min_arg->defaultValueExpression().isEmpty() || max_arg->defaultValueExpression().isEmpty())) {
                 same = false;
-        if (same) {
-            result |= EqualArguments;
+                break;
+            }       
+        } else {
+            if (max_arguments.at(i)->defaultValueExpression().isEmpty()) {
+                same = false;
+                break;
+            }
         }
     }
+        
+    if (same)
+        result |= min_count == max_count ? EqualArguments : EqualDefaultValueOverload;
 
     return result;
 }
@@ -232,6 +253,7 @@ MetaJavaFunction *MetaJavaFunction::copy() const
     cpy->setInterfaceClass(interfaceClass());
     cpy->setFunctionType(functionType());
     cpy->setAttributes(attributes());
+    cpy->setDeclaringClass(declaringClass());
     if (type())
         cpy->setType(type()->copy());
 	cpy->setConstant(isConstant());
@@ -642,6 +664,7 @@ static MetaJavaFunction *createXetter(const MetaJavaField *g, const QString &nam
     f->setName(name);
     f->setOwnerClass(g->enclosingClass());
     f->setImplementingClass(g->enclosingClass());
+    f->setDeclaringClass(g->enclosingClass());
 
     uint attr = MetaJavaAttributes::Native
                 | MetaJavaAttributes::Final
@@ -700,6 +723,7 @@ void MetaJavaClass::addDefaultConstructor()
     f->setOwnerClass(this);
     f->setFunctionType(MetaJavaFunction::ConstructorFunction);
     f->setArguments(MetaJavaArgumentList());
+    f->setDeclaringClass(this);
 
     uint attr = MetaJavaAttributes::Native;
     attr |= MetaJavaAttributes::Public;
@@ -1085,8 +1109,22 @@ void MetaJavaClass::fixFunctions()
                                 f->setVisibility(sf->visibility());
                                 *f += MetaJavaAttributes::FinalInJava;
                                 *f += MetaJavaAttributes::FinalInCpp;
-                            }
+                            }                          
                         }
+
+                        // Set the class which first declares this function, afawk
+                        f->setDeclaringClass(sf->declaringClass());
+                    }
+
+                    if (cmp & MetaJavaFunction::EqualDefaultValueOverload) {
+                        MetaJavaArgumentList arguments;
+                        if (f->arguments().size() < sf->arguments().size()) 
+                            arguments = sf->arguments();
+                        else
+                            arguments = f->arguments();
+
+                        for (int i=0; i<arguments.size(); ++i)
+                            arguments[i]->setDefaultValueExpression(QString());                                                
                     }
 
                     if (sf->isFinalInJava() && !sf->isPrivate()) {

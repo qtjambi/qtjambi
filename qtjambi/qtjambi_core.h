@@ -80,6 +80,22 @@ QTJAMBI_EXPORT void *qtjambi_to_interface(JNIEnv *env,
                                            const char *package_name,
                                            const char *function_name);
 
+inline void *qtjambi_to_interface(JNIEnv *env,
+                                  jobject java_object,
+                                  const char *interface_name,
+                                  const char *package_name,
+                                  const char *function_name)
+{
+    return qtjambi_to_interface(
+        env, 
+        QtJambiLink::findLink(env, java_object), 
+        interface_name, 
+        package_name, 
+        function_name
+    );
+}
+
+
 QTJAMBI_EXPORT
 jobject qtjambi_from_object(JNIEnv *env, const QRect &rect, const char *className, const char *packageName);
 
@@ -347,13 +363,13 @@ void qtjambi_setup_signals(JNIEnv *env, jobject java_object, QtJambiSignalInfo *
 inline void qtjambi_call_java_signal(JNIEnv *env, const QtJambiSignalInfo &signal_info, jvalue *args)
 {
     StaticCache *sc = StaticCache::instance(env);
-    sc->resolveAbstractSignal();
-    env->SetBooleanField(signal_info.object, sc->AbstractSignal.m_in_cpp_emission, true);
+    sc->resolveInternalSignal();
+    env->SetBooleanField(signal_info.object, sc->InternalSignal.m_in_cpp_emission, true);
     if (args == 0)
         env->CallVoidMethod(signal_info.object, signal_info.methodId);
     else
         env->CallVoidMethodA(signal_info.object, signal_info.methodId, args);
-    env->SetBooleanField(signal_info.object, sc->AbstractSignal.m_in_cpp_emission, false);
+    env->SetBooleanField(signal_info.object, sc->InternalSignal.m_in_cpp_emission, false);
 }
 
 #endif // QTJAMBI_CORE_H

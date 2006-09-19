@@ -221,8 +221,8 @@ public class QTestCase
         
         for (int i=0; i<objs.length; ++i) {
             if (objs[i] != null) {            
-                Class expectedClass = m_currentDataStructure[i];
-                Class foundClass = objs[i].getClass();
+                Class<?> expectedClass = m_currentDataStructure[i];
+                Class<?> foundClass = objs[i].getClass();
                 
                 if (!expectedClass.isAssignableFrom(foundClass)) {
                     throw new RuntimeException("Invalid data set: '" + name + "', parameter #" + i + ". Expected subclass" +
@@ -238,6 +238,7 @@ public class QTestCase
         m_dataSets.add(td);
     }
     
+    @SuppressWarnings("unchecked")
     public <T extends Object> T getParameter(String name)
     {
         if (m_currentDataSet == null)
@@ -246,7 +247,7 @@ public class QTestCase
         if (!m_indexMap.containsKey(name))
             throw new RuntimeException("No such parameter: " + name);
             
-        int index = m_indexMap.get(name);               
+        int index = m_indexMap.get(name);
         return (T) m_currentDataSet.dataSet[index];   
     }
     /***/
@@ -394,7 +395,7 @@ public class QTestCase
             return ;
         }
         
-        QApplication app = new QApplication(args);
+        QApplication.initialize(args);
         
         String className = args[0];
         ClassLoader loader = ClassLoader.getSystemClassLoader();

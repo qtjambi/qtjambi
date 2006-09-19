@@ -225,19 +225,22 @@ public class ResourceSystem extends QWidget
         }
     }
 
-    public static boolean canInstantiate()
-    {
-        return System.getProperty("com.trolltech.launcher.webstart") == null;
-    }
-
-
     public static void main(String[] args)
     {
         QApplication.initialize(args);
         ResourceSystem w = new ResourceSystem();
         w.show();
-
         QApplication.exec();
     }
+    // REMOVE-START
+    
+    public static String exampleName() {
+        return "Resource System";
+    }
 
+    public static boolean canInstantiate() {
+        return System.getProperty("com.trolltech.launcher.webstart") == null;
+    }
+
+    // REMOVE-END
 }

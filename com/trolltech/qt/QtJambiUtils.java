@@ -16,7 +16,6 @@ package com.trolltech.qt;
 import java.lang.reflect.*;
 import java.util.*;
 import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
 
 public class QtJambiUtils {
 
@@ -237,7 +236,7 @@ public class QtJambiUtils {
         while (c != null) {
             Field declared[] = c.getDeclaredFields();
             for (Field f : declared) {
-                if (QObject.isSignal(f.getType())) {
+                if (QtJambiInternal.isSignal(f.getType())) {
                     fields.add(f);
                 }
             }

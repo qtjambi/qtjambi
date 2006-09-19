@@ -379,7 +379,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
     if (!entry->preferredConversion())
         return ;
 
-    QString javaName = entry->qualifiedJavaName().replace(".", "/");
+    QString javaName = entry->javaPackage().replace(".", "/") + "/" + entry->lookupName();
     QString qtName = entry->name();
 
     s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl

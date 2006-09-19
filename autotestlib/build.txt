@@ -30,5 +30,7 @@
   <object-type name="OrdinarySuperclass" />
   <object-type name="OrdinaryDestroyed" />
   <object-type name="QObjectDestroyed" />
+
+  <object-type name="SetupLayout" />
    
 </typesystem>

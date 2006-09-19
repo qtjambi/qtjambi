@@ -432,7 +432,6 @@ public class TestQVariant extends QTestCase {
         QVERIFY(QVariant.toBitArray(object).operator_equal(expectedBitArray));
         QCOMPARE(QVariant.toChar(object), expectedChar);
         QVERIFY(QVariant.toDate(object).operator_equal(expectedDate));
-        QTime t = QVariant.toTime(object);
         QVERIFY(QVariant.toTime(object).operator_equal(expectedTime));        
         QVERIFY(QVariant.toDateTime(object).operator_equal(expectedDateTime));
         QVariant.toDateTime(object);
@@ -583,7 +582,7 @@ public class TestQVariant extends QTestCase {
     }
     
     public static void main(String[] args) {
-        QApplication app = new QApplication(args);
+        QApplication.initialize(args);
         runTest(new TestQVariant());
     }
 

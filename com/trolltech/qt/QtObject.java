@@ -13,7 +13,6 @@
 
 package com.trolltech.qt;
 
-import java.util.Hashtable;
 import com.trolltech.qt.QNativePointer;
 import java.lang.reflect.*;
 

@@ -143,6 +143,9 @@ public class SystemTrayExample extends QWidget {
 		layout.addWidget(iconLabel, 7, 0);
 		layout.addWidget(iconPicker, 7, 1);
 		setLayout(layout);
+        
+        setWindowTitle(tr("System Tray Example"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 	}
 
 	public void closeEvent(QCloseEvent e) {
@@ -207,4 +210,16 @@ public class SystemTrayExample extends QWidget {
 		trayIcon.dispose();
 		QApplication.quit();
 	}
+    
+    // REMOVE-START
+    
+    public static String exampleName() {
+        return "System Tray Example";
+    }
+
+    public static boolean canInstantiate() {
+        return true;
+    }
+
+    // REMOVE-END
 }

@@ -25,6 +25,8 @@
 class Driver;
 class Uic;
 
+class DomBrush;
+
 namespace Java {
 
 struct WriteInitialization : public TreeWalker
@@ -76,6 +78,7 @@ struct WriteInitialization : public TreeWalker
 
 private:
     static QString domColor2QString(DomColor *c);
+    static QString domBrush2QString(DomBrush *c);
 
     QString pixCall(DomProperty *prop) const;
     QString trCall(const QString &str, const QString &comment = QString()) const;

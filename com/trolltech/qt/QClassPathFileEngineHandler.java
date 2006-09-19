@@ -614,7 +614,6 @@ class QClassPathEngine extends QAbstractFileEngine
         }
         if (fn.length() > 0)
             return fn;
-        String baseName = m_baseName;
 
         String result = "";
         if (file == FileName.DefaultName) {

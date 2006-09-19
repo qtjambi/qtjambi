@@ -33,6 +33,38 @@ class JavaNonAbstractSubclass extends AbstractClass
     
 }
 
+class MyLayout extends QVBoxLayout {
+    @Override
+    public QLayoutItemInterface itemAt(int index) {
+        return super.itemAt(index);
+    }
+
+    @Override
+    public void addItem(QLayoutItemInterface arg__0) {
+        super.addItem(arg__0);
+    }
+
+    @Override
+    public int count() {
+        return super.count();
+    }
+
+    @Override
+    public void setGeometry(QRect arg__0) {
+        super.setGeometry(arg__0);
+    }
+
+    @Override
+    public QSize sizeHint() {
+        return super.sizeHint();
+    }
+
+    @Override
+    public QLayoutItemInterface takeAt(int index__0) {
+        return super.takeAt(index__0);
+    }
+}
+
 public class VirtualFunctions extends QTestCase {
 
     class WidgetClass1 extends QWidget {
@@ -43,7 +75,42 @@ public class VirtualFunctions extends QTestCase {
     
     class WidgetClass2 extends QWidget {
         public void setJavaSizeHint(QSize size) { m_size = size; }
+        
+        @SuppressWarnings("unused") 
         private QSize m_size = new QSize(0, 0);
+    }
+    
+    public void run_testOverridingMethodsThatReturnInterfaceTypes() {
+        QWidget topLevel = new QWidget();
+        QPushButton button1 = new QPushButton("Test", topLevel);
+        
+        MyLayout layout = new MyLayout();
+        layout.addWidget(button1);        
+        topLevel.setLayout(layout);
+        topLevel.dispose();
+    }
+    
+    public void run_testNonQObjectsInCustomLayout() {
+        QWidget topLevel = new QWidget();
+        QSpacerItem spacer = new QSpacerItem(10, 10); 
+        
+        MyLayout layout = new MyLayout();
+        layout.addItem(spacer);        
+        topLevel.setLayout(layout);
+        topLevel.show();
+        topLevel.dispose();        
+    }
+    
+    public void run_testNonQObjectsInCustomLayoutAddedFromCpp() {
+        QWidget topLevel = new QWidget();
+        MyLayout layout = new MyLayout();
+        topLevel.setLayout(layout);
+        
+        SetupLayout.setupLayout(layout);
+        
+        QCOMPARE(layout.count(), 4);        
+        topLevel.show();
+        topLevel.dispose();
     }
     
     public void run_testOneSubclass() {
@@ -206,7 +273,7 @@ public class VirtualFunctions extends QTestCase {
  
     
     public static void main(String args[]) {
-        QApplication app = new QApplication(args);
+        QApplication.initialize(args);
         runTest(new VirtualFunctions());
     }
 }

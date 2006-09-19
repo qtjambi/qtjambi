@@ -205,7 +205,7 @@ inline pp::PP_DIRECTIVE_TYPE pp::find_directive (char const *__directive, std::s
 inline bool pp::file_exists (std::string const &__filename) const
 {
   struct stat __st;
-#if defined(_MSC_VER)
+#if defined(WIN32)
   return stat(__filename.c_str (), &__st) == 0;
 #else
   return lstat (__filename.c_str (), &__st) == 0;

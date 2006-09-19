@@ -25,10 +25,10 @@ public class FormTest extends QDialog
 
     public static void main(String args[]) 
     {
-	QApplication app = new QApplication(args);
+	QApplication.initialize(args);
 
 	new FormTest().show();
 
-	app.exec();
+	QApplication.exec();
     }
 }

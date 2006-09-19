@@ -20,7 +20,9 @@ package com.trolltech.qt;
  *  
  * @author gunnar
  */
-public class QPaintingOutsidePaintEventException extends RuntimeException {    
+public class QPaintingOutsidePaintEventException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
     public QPaintingOutsidePaintEventException(String message) {        
 	super(message);
     }

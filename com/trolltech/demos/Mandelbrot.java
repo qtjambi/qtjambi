@@ -1,0 +1,352 @@
+/****************************************************************************
+ **
+ ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+ **
+ ** This file is part of $PRODUCT$.
+ **
+ ** $JAVA_LICENSE$
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
+
+package com.trolltech.demos;
+
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+
+public class Mandelbrot extends QWidget {
+
+    private RenderThread thread = new RenderThread();
+    private QPixmap pixmap = new QPixmap();
+    private QPoint pixmapOffset = new QPoint();
+    private QPoint lastDragPos = new QPoint();
+    private double centerX;
+    private double centerY;
+    private double pixmapScale;
+    private double curScale;
+
+    final double DefaultCenterX = -0.637011f;
+    final double DefaultCenterY = -0.0395159f;
+    final double DefaultScale = 0.00403897f;
+
+    final double ZoomInFactor = 0.8f;
+    final double ZoomOutFactor = 1 / ZoomInFactor;
+    final int ScrollStep = 20;
+
+    private Signal2<QImage, Double> renderImageSignal = new Signal2<QImage, Double>();
+
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+        Mandelbrot mainw = new Mandelbrot();
+        mainw.show();
+        QApplication.exec();
+    }
+
+    public Mandelbrot() {
+        centerX = DefaultCenterX;
+        centerY = DefaultCenterY;
+        pixmapScale = DefaultScale;
+        curScale = DefaultScale;
+
+        renderImageSignal.connect(this, "updatePixmap(QImage, Double)");
+
+        setWindowTitle(tr("Mandelbrot"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+        setCursor(new QCursor(Qt.CursorShape.CrossCursor));
+        resize(550, 400);
+    }
+
+    public void paintEvent(QPaintEvent event) {
+        QPainter painter = new QPainter();
+        painter.begin(this);
+        painter.fillRect(rect(), new QBrush(QColor.black));
+
+        if (pixmap.isNull()) {
+            painter.setPen(QColor.white);
+            painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(), tr("Rendering initial image, please wait..."));
+            painter.end();
+
+            return;
+        }
+        if (curScale == pixmapScale) {
+            painter.drawPixmap(pixmapOffset, pixmap);
+        } else {
+            double scaleFactor = pixmapScale / curScale;
+            int newWidth = (int) (pixmap.width() * scaleFactor);
+            int newHeight = (int) (pixmap.height() * scaleFactor);
+            int newX = pixmapOffset.x() + (pixmap.width() - newWidth) / 2;
+            int newY = pixmapOffset.y() + (pixmap.height() - newHeight) / 2;
+
+            painter.save();
+            painter.translate(newX, newY);
+            painter.scale(scaleFactor, scaleFactor);
+            QRect exposed = painter.matrix().inverted().mapRect(rect()).adjusted(-1, -1, 1, 1);
+            painter.drawPixmap(exposed, pixmap, exposed);
+            painter.restore();
+        }
+
+        String text = tr("Use mouse wheel to zoom. Press and hold left mouse button to scroll.");
+        QFontMetrics metrics = painter.fontMetrics();
+        int textWidth = metrics.width(text);
+
+        painter.setPen(QPen.NoPen);
+        painter.setBrush(new QColor(0, 0, 0, 127));
+        painter.drawRect((width() - textWidth) / 2 - 5, 0, textWidth + 10, metrics.lineSpacing() + 5);
+        painter.setPen(QColor.white);
+        painter.drawText((width() - textWidth) / 2, metrics.leading() + metrics.ascent(), text);
+        painter.end();
+    }
+
+    public void resizeEvent(QResizeEvent event) {
+        thread.render(centerX, centerY, curScale, size());
+    }
+
+    protected void closeEvent(QCloseEvent event) {
+        synchronized (thread) {
+            thread.abort = true;
+            thread.notify();
+        }
+        super.changeEvent(event);
+    }
+
+    public void keyPressEvent(QKeyEvent event) {
+        Qt.Key key = Qt.Key.resolve(event.key());
+        switch (key) {
+        case Key_Plus:
+            zoom(ZoomInFactor);
+            break;
+        case Key_Minus:
+            zoom(ZoomOutFactor);
+            break;
+        case Key_Left:
+            scroll(-ScrollStep, 0);
+            break;
+        case Key_Right:
+            scroll(+ScrollStep, 0);
+            break;
+        case Key_Down:
+            scroll(0, -ScrollStep);
+            break;
+        case Key_Up:
+            scroll(0, +ScrollStep);
+            break;
+        default:
+            super.keyPressEvent(event);
+        }
+    }
+
+    public void wheelEvent(QWheelEvent event) {
+        int numDegrees = event.delta() / 8;
+        double numSteps = numDegrees / 15.0f;
+        zoom(Math.pow(ZoomInFactor, numSteps));
+    }
+
+    public void mousePressEvent(QMouseEvent event) {
+        if (event.button() == Qt.MouseButton.LeftButton)
+            lastDragPos = event.pos();
+    }
+
+    public void mouseMoveEvent(QMouseEvent event) {
+        if (event.buttons().isSet(Qt.MouseButton.LeftButton)) {
+            // pixmapOffset += event.pos() - lastDragPos;
+            pixmapOffset.operator_add_assign(event.pos());
+            pixmapOffset.operator_subtract_assign(lastDragPos);
+
+            lastDragPos = event.pos();
+            update();
+        }
+    }
+
+    public void mouseReleaseEvent(QMouseEvent event) {
+        if (event.button() == Qt.MouseButton.LeftButton) {
+            pixmapOffset.operator_add_assign(event.pos());
+            pixmapOffset.operator_subtract_assign(lastDragPos);
+            lastDragPos = new QPoint();
+
+            int deltaX = (width() - pixmap.width()) / 2 - pixmapOffset.x();
+            int deltaY = (height() - pixmap.height()) / 2 - pixmapOffset.y();
+            scrollImage(deltaX, deltaY);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private void updatePixmap(QImage image, Double scaleFactor) {
+        if (!lastDragPos.isNull())
+            return;
+        pixmap = QPixmap.fromImage(image);
+        pixmapOffset = new QPoint();
+        lastDragPos = new QPoint();
+        pixmapScale = scaleFactor;
+        update();
+    }
+
+    protected void zoom(double zoomFactor) {
+        curScale *= zoomFactor;
+        update();
+        thread.render(centerX, centerY, curScale, size());
+    }
+
+    public void scrollImage(int deltaX, int deltaY) {
+        centerX += deltaX * curScale;
+        centerY += deltaY * curScale;
+        update();
+        thread.render(centerX, centerY, curScale, size());
+    }
+
+    private class RenderThread extends Thread {
+        private double centerX;
+        private double centerY;
+        private double scaleFactor;
+        private QSize resultSize;
+        private boolean restart;
+        private boolean abort;
+
+        final int ColormapSize = 512;
+        int[] colormap = new int[ColormapSize];
+
+        RenderThread() {
+            restart = false;
+            abort = false;
+
+            for (int i = 0; i < ColormapSize; ++i) {
+                colormap[i] = rgbFromWaveLength(380.0 + (i * 400.0 / ColormapSize));
+            }
+        }
+
+        synchronized void render(double centerX, double centerY, double scaleFactor, QSize resultSize) {
+            this.centerX = centerX;
+            this.centerY = centerY;
+            this.scaleFactor = scaleFactor;
+            this.resultSize = resultSize;
+
+            if (!isAlive()) {
+                start();
+            } else {
+                restart = true;
+                notify();
+            }
+        }
+
+        public void run() {
+            QSize resultSize;
+            double scaleFactor;
+            double centerX;
+            double centerY;
+
+            while (true) {
+                synchronized (this) {
+                    resultSize = this.resultSize;
+                    scaleFactor = this.scaleFactor;
+                    centerX = this.centerX;
+                    centerY = this.centerY;
+                }
+
+                int halfWidth = resultSize.width() / 2;
+                int halfHeight = resultSize.height() / 2;
+                QImage image = new QImage(resultSize, QImage.Format.Format_RGB32);
+
+                final int NumPasses = 8;
+                int pass = 0;
+                while (pass < NumPasses) {
+                    final int MaxIterations = (1 << (2 * pass + 6)) + 32;
+                    final int Limit = 4;
+                    boolean allBlack = true;
+
+                    for (int y = -halfHeight; y < halfHeight; ++y) {
+                        if (restart)
+                            break;
+                        if (abort)
+                            return;
+
+                        double ay = centerY + (y * scaleFactor);
+
+                        for (int x = -halfWidth; x < halfWidth; ++x) {
+                            double ax = centerX + (x * scaleFactor);
+                            double a1 = ax;
+                            double b1 = ay;
+                            int numIterations = 0;
+
+                            do {
+                                ++numIterations;
+                                double a2 = (a1 * a1) - (b1 * b1) + ax;
+                                double b2 = (2 * a1 * b1) + ay;
+                                if ((a2 * a2) + (b2 * b2) > Limit)
+                                    break;
+
+                                ++numIterations;
+                                a1 = (a2 * a2) - (b2 * b2) + ax;
+                                b1 = (2 * a2 * b2) + ay;
+                                if ((a1 * a1) + (b1 * b1) > Limit)
+                                    break;
+                            } while (numIterations < MaxIterations);
+
+                            if (numIterations < MaxIterations) {
+                                image.setPixel(x + halfWidth, y + halfHeight, colormap[numIterations % ColormapSize]);
+
+                                allBlack = false;
+                            } else {
+                                image.setPixel(x + halfWidth, y + halfHeight, 0xff000000); // rgb(0,0,0)
+                            }
+                        }
+                    }
+                    if (allBlack && pass == 0) {
+                        pass = 4;
+                    } else {
+                        if (!restart) {
+                            renderImageSignal.emit(image, scaleFactor);
+                        }
+                        ++pass;
+                    }
+                }
+                synchronized (this) {
+                    if (!restart)
+                        try {
+                            wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    restart = false;
+                }
+            }
+        }
+
+        int rgbFromWaveLength(double wave) {
+            double r = 0.0;
+            double g = 0.0;
+            double b = 0.0;
+
+            if (wave >= 380.0 && wave <= 440.0) {
+                r = -1.0 * (wave - 440.0) / (440.0 - 380.0);
+                b = 1.0;
+            } else if (wave >= 440.0 && wave <= 490.0) {
+                g = (wave - 440.0) / (490.0 - 440.0);
+                b = 1.0;
+            } else if (wave >= 490.0 && wave <= 510.0) {
+                g = 1.0;
+                b = -1.0 * (wave - 510.0) / (510.0 - 490.0);
+            } else if (wave >= 510.0 && wave <= 580.0) {
+                r = (wave - 510.0) / (580.0 - 510.0);
+                g = 1.0;
+            } else if (wave >= 580.0 && wave <= 645.0) {
+                r = 1.0;
+                g = -1.0 * (wave - 645.0) / (645.0 - 580.0);
+            } else if (wave >= 645.0 && wave <= 780.0) {
+                r = 1.0;
+            }
+
+            double s = 1.0;
+            if (wave > 700.0)
+                s = 0.3 + 0.7 * (780.0 - wave) / (780.0 - 700.0);
+            else if (wave < 420.0)
+                s = 0.3 + 0.7 * (wave - 380.0) / (420.0 - 380.0);
+
+            r = Math.pow(r * s, 0.8);
+            g = Math.pow(g * s, 0.8);
+            b = Math.pow(b * s, 0.8);
+
+            return new QColor((int) (r * 255), (int) (g * 255), (int) (b * 255)).rgb();
+        }
+    }
+}

@@ -39,6 +39,7 @@ public class SyntaxHighlighter extends QMainWindow {
         setCentralWidget(editor);
         resize(640, 480);
         setWindowTitle(tr("Syntax Highlighter"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
     public void about() {
@@ -225,4 +226,15 @@ public class SyntaxHighlighter extends QMainWindow {
             }
         }
     }
+    // REMOVE-START
+    
+    public static String exampleName() {
+        return "Syntax Highlighter";
+    }
+
+    public static boolean canInstantiate() {
+        return true;
+    }
+
+    // REMOVE-END
 }

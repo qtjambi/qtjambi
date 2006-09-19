@@ -13,7 +13,6 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -126,7 +125,7 @@ public class ThrowVsStack {
        }
 
        if (true) {
-            QApplication app = new QApplication(args);
+            QApplication.initialize(args);
             QPixmap pm = new QPixmap(100, 100);
             QPainter p = new QPainter();
             p.begin(pm);

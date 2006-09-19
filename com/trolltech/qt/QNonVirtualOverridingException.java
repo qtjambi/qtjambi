@@ -15,6 +15,8 @@ package com.trolltech.qt;
 
 public class QNonVirtualOverridingException extends RuntimeException 
 {
+    private static final long serialVersionUID = 1L;
+
     public QNonVirtualOverridingException(String extraMessage)    
     {
         super(extraMessage.length() > 0 ? "Non-virtual function overridden: " + extraMessage : "Non-virtual function overridden");    

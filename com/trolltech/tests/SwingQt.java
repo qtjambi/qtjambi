@@ -13,17 +13,15 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
 
 
 class SwingWindow extends JFrame implements ActionListener
 {
+    private static final long serialVersionUID = 1L;
+
     public SwingWindow() 
     {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

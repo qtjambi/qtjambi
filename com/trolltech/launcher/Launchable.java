@@ -50,6 +50,19 @@ public class Launchable {
 	};
 
 	static public String format(String source) {
+        int start = -1;
+        int end = -1;
+        boolean stop = false;
+        do {
+            start = source.indexOf("// REMOVE-START");
+            end = source.indexOf("// REMOVE-END");
+            if (start != -1 && end > start) {
+                source = source.substring(0, start) + source.substring(end + 13);
+            } else {
+                stop = true;
+            }
+        } while (!stop);
+        
 		source = source.replace("&", "&amp;");
 	    source = source.replace("<", "&lt;");
 	    source = source.replace(">", "&gt;");
@@ -91,7 +104,15 @@ public class Launchable {
     }
 
     public String name() {
-	return m_name;
+        try {   
+            Class cl = Class.forName(m_name);
+            Method exampleName = cl.getMethod("exampleName");
+            if (exampleName != null) {
+                return exampleName.invoke(null).toString();
+            }
+        } catch (Exception e) {
+        }
+        return m_name;
     }
 
     public String description() {

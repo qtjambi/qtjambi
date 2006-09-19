@@ -13,7 +13,6 @@
 
 package com.trolltech.benchmarks.signalslot;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 
 public class EmitVsDirect extends QObject {
@@ -22,8 +21,10 @@ public class EmitVsDirect extends QObject {
     public Signal2<Integer, QByteArray> signal_int_QByteArray;
     public Signal3<Integer, QByteArray, Double> signal_int_QByteArray_double;
     
+    @SuppressWarnings("unused")
     private int x;
     
+    @SuppressWarnings("unused")
     private void private_slot_int_QByteArray(int i, QByteArray ar) {
         x = i % ar.size();
     }

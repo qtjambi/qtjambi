@@ -13,7 +13,6 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -24,7 +23,7 @@ public class Speed
     
     public static void main(String[] args)
     {
-        QApplication app = new QApplication(args);        
+        QApplication.initialize(args);        
         QWidget w = new QWidget();
         QRect rects[] = new QRect[many];
         

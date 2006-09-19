@@ -48,6 +48,7 @@ public class QNativePointer {
         m_autodelete = size == 1 ? AutoDeleteMode.Delete : AutoDeleteMode.DeleteArray;
     }
 
+    @SuppressWarnings("unused")
     private QNativePointer(int type, int size, int indirections) {
         this(typeOf(type), size, indirections);
     }

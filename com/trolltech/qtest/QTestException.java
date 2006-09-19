@@ -15,6 +15,7 @@ package com.trolltech.qtest;
 
 public class QTestException extends RuntimeException
 {
+    private static final long serialVersionUID = 1L;
     public String m_className;
     public String m_fileName;
     public String m_methodName;
@@ -39,6 +40,8 @@ public class QTestException extends RuntimeException
 
 class QTestPassException extends QTestException
 {
+    private static final long serialVersionUID = 1L;
+
     public QTestPassException(String methodName)
     {
         super("", "", methodName, 0, "");

@@ -13,7 +13,6 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.util.List;

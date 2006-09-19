@@ -370,18 +370,16 @@ public class Image extends QWidget
     
     public static void main(String args[])
     {
-	QApplication app = new QApplication(args);
-	int size = 128;
-	if (args.length >= 1) try { size = Integer.parseInt(args[0]); } catch (Exception e) { }
+	QApplication.initialize(args);
 
 	QApplication.setWindowIcon(new QIcon(QPixmap.fromImage(qoffeyLogo(64))));
 	
 	
- 	QPixmap pm = QPixmap.fromImage(qoffeyLogo(400));
+ 	//QPixmap pm = QPixmap.fromImage(qoffeyLogo(400));
 	
 	Image im = new Image();
 	im.show();
 
-	app.exec();
+	QApplication.exec();
     }
 }

@@ -13,13 +13,12 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 
 public class CoreLibTest {
 
     public static void main(String args[]) {
-        QCoreApplication app = new QCoreApplication(args);
+        QCoreApplication.initialize(args);
 		 
         QFile file = new QFile("file_list");
         if (file.exists()) {
@@ -28,6 +27,6 @@ public class CoreLibTest {
             System.out.println("file_list doesn't exist...");
         }
         
-        app.exec();
+        QCoreApplication.exec();
 	 }
 }
