@@ -507,7 +507,7 @@ class MetaJavaClass : public MetaJavaAttributes
 public:
     enum FunctionQueryOption {
         Constructors            = 0x000001,   // Only constructors
-        Destructors             = 0x000002,   // Only destructors
+        //Destructors             = 0x000002,   // Only destructors. Not included in class.
         VirtualFunctions        = 0x000004,   // Only virtual functions (virtual in both Java and C++)
         FinalInJavaFunctions    = 0x000008,   // Only functions that are non-virtual in Java
         FinalInCppFunctions     = 0x000010,   // Only functions that are non-virtual in C++
@@ -537,6 +537,7 @@ public:
           m_has_nonprivateconstructor(false),
           m_functions_fixed(false),
           m_force_shell_class(false),
+          m_has_public_destructor(true),
           m_enclosing_class(0),
           m_base_class(0),         
           m_extracted_interface(0),
@@ -564,6 +565,8 @@ public:
 
     bool hasNonPrivateConstructor() const { return m_has_nonprivateconstructor; }
     void setHasNonPrivateConstructor(bool on) { m_has_nonprivateconstructor = on; }
+    bool hasPublicDestructor() const { return m_has_public_destructor; }
+    void setHasPublicDestructor(bool on) { m_has_public_destructor = on; }
 
     MetaJavaFunctionList queryFunctions(uint query) const;
     inline MetaJavaFunctionList allVirtualFunctions() const;
@@ -652,6 +655,7 @@ private:
     uint m_has_virtuals : 1;
     uint m_has_nonpublic : 1;
     uint m_has_nonprivateconstructor : 1;
+    uint m_has_public_destructor : 1;
     uint m_functions_fixed : 1;
     uint m_force_shell_class : 1;
 

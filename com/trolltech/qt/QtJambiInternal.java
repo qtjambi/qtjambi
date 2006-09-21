@@ -19,10 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QObject;
@@ -704,11 +701,17 @@ public class QtJambiInternal {
      * Searches the object's class and its superclasses for a method of the given name and returns
      * its signature.
      */
-    public static String findSignalMethodSignature(QObject qobject, String name)
-            throws NoSuchFieldException, IllegalAccessException {
-        String found = null;
+    static private HashMap<String, String> signalMethodSignatureCash = new HashMap<String, String>();
+    public static String findSignalMethodSignature(QObject qobject, String name) throws NoSuchFieldException, IllegalAccessException {
 
         Class cls = qobject.getClass();
+        String fullName = cls + "." + name;
+        String found = signalMethodSignatureCash.get(fullName);
+
+        if (found != null) {
+            return found;
+        }
+
         while (cls != null) {
             Method methods[] = cls.getDeclaredMethods();
             for (int i = 0; i < methods.length; ++i) {
@@ -724,11 +727,11 @@ public class QtJambiInternal {
                     found = found + ")";
                     break;
                 }
-
             }
 
             cls = cls.getSuperclass();
         }
+        signalMethodSignatureCash.put(fullName, found);
         return found;
     }
 

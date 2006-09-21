@@ -608,22 +608,24 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                if (argument.isEmpty() && lang == CodeSnip::JavaCode) {
+                if (argument.isEmpty()) {
                     m_error = "You need to specify an argument index or 'this' "
                               "for disable gc in java function modifications";
                     return false;
                 } else if (argument.toLower() == "this") {
-                    argument = "0";
+                    argument = QString::number(FunctionModification::DisableGarbageCollectionForThis);
+                } else if (argument.toLower() == "return") {
+                    argument = QString::number(FunctionModification::DisableGarbageCollectionForReturn);
                 }
 
-                if (!argument.isEmpty() && lang == CodeSnip::ShellCode) {
-                    ReportHandler::warning("Argument attribute ignored when disabling GC for "
-                                           "shell code");
-                } else if (argument.isEmpty()) {
-                    argument = "-1";
+                bool ok = false;
+                int arg_index = argument.toInt(&ok);
+                if (!ok && arg_index >= -2) {
+                    m_error = "Argument must be index, 'this' or 'return': '" + argument + "'";
+                    return false;
                 }
 
-                m_function_mods.last().disable_gc_argument_indexes[argument.toInt()] = true;
+                m_function_mods.last().disable_gc_argument_indexes[arg_index] = true;
             }
             break;
         case StackElement::SuppressedWarning:

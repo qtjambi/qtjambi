@@ -14,12 +14,13 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include "tulip.h"
-#include "variants.h"
-#include "signalsandslots.h"
 #include "abstractclass.h"
-#include "nativepointertester.h"
 #include "destruction.h"
 #include "interfaces.h"
+#include "nativepointertester.h"
+#include "signalsandslots.h"
+#include "threads.h"
+#include "tulip.h"
+#include "variants.h"
 
 #endif

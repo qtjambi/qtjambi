@@ -567,7 +567,7 @@
 
   <object-type name="QAbstractFileEngineHandler">
     <modify-function class="shell" signature="create(const QString &amp;) const">
-        <disable-gc />
+        <disable-gc argument="return" />
     </modify-function>
   </object-type>
   

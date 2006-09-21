@@ -85,6 +85,24 @@ QString getQtName(const QString &java_name)
 
 }
 
+
+typedef QHash<QString, PtrDestructorFunction> DestructorHash;
+Q_GLOBAL_STATIC(QReadWriteLock, gDestructorHashLock);
+Q_GLOBAL_STATIC(DestructorHash, gDestructorHash);
+void registerDestructor(const QString &java_name, PtrDestructorFunction destructor)
+{
+    QWriteLocker locker(gDestructorHashLock());
+    gDestructorHash()->insert(java_name, destructor);
+}
+
+PtrDestructorFunction destructor(const QString &java_name) 
+{
+    QReadLocker locker(gDestructorHashLock());
+    return gDestructorHash()->value(java_name, 0);
+}
+
+
+
 /*******************************************************************************
  * Class Cache
  */

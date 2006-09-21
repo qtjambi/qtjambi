@@ -91,7 +91,7 @@ void MetaInfoGenerator::buildSkipList()
         if (!m_skip_list.contains(cls->package()))
             m_skip_list[cls->package()] = 0x0;
 
-        if (shouldGenerate(cls))
+        if (cls->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp)
             m_skip_list[cls->package()] |= GeneratedMetaInfo;
 
         if (cls->typeEntry()->codeGeneration() & TypeEntry::GenerateJava)
@@ -130,8 +130,11 @@ void MetaInfoGenerator::writeCppFile()
             s.setDevice(f);
         }
 
-        if (s.device() != 0)
+        if (s.device() != 0) {
+            if (cls->typeEntry()->isObject() && !cls->typeEntry()->isQObject() && !cls->isInterface())
+                writeDestructors(s, cls);
             writeCustomStructors(s, cls->typeEntry());
+        }
     }
 
     // Primitive types must be added to all packages
@@ -214,6 +217,26 @@ void MetaInfoGenerator::writeCodeBlock(QTextStream &s, const QString &code)
         else
             indent = "";
     }
+}
+
+void MetaInfoGenerator::writeDestructors(QTextStream &s, const MetaJavaClass *cls) 
+{
+    const ComplexTypeEntry *entry = cls->typeEntry();
+    s << "void destructor_" << entry->javaPackage().replace(".", "_")  << "_"  
+      << entry->lookupName().replace(".", "_").replace("$", "_") << "(void *ptr)" << endl
+      << "{" << endl;
+
+    // We can only delete classes with public destructors. 
+    while (cls != 0) {
+        if (cls->hasPublicDestructor()) {
+            s << "    delete reinterpret_cast<" << cls->qualifiedCppName() << " *>(ptr);" << endl;
+            cls = 0;
+        } else {
+            cls = cls->baseClass();
+        }
+    }
+
+    s << "}" << endl << endl;
 }
 
 void MetaInfoGenerator::writeCustomStructors(QTextStream &s, const TypeEntry *entry)
@@ -348,7 +371,7 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const MetaJavaCla
     s << endl;
 
     foreach (MetaJavaClass *cls, classList) {
-        if (shouldGenerate(cls) && cls->package() == package) {
+        if (generated(cls) && !cls->isInterface() && cls->package() == package) {
             const ComplexTypeEntry *ctype = cls->typeEntry();
 
             Include inc = ctype->include();
@@ -384,6 +407,9 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
     s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl
       << "    registerJavaToQt(\"" << javaName << "\", \"" << qtName << "\");" << endl;
+    if (entry->isComplex() && entry->isObject() && !((ComplexTypeEntry *)entry)->isQObject() && !entry->isInterface()) 
+      s << "    registerDestructor(\"" << javaName << "\", destructor_" << javaName.replace("/", "_").replace("$", "_") << ");" << endl;
+    
 
     if (!registerMetaType)
         return ;

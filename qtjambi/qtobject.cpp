@@ -69,13 +69,16 @@ QTQUALIFY(jobject,_1_1qt_1reassignLink)(JNIEnv *env, jclass, jlong old_native_id
         new_link = QtJambiLink::createLinkForQObject(env, new_object, qobject, !link->isGlobalReference());
     } else {
         void *ptr = link->pointer();
+        bool wasCached = link->isCached();
+        QString java_name = qtjambi_class_name(env, clazz);        
         link->resetObject();
-        new_link = QtJambiLink::createLinkForObject(env, new_object, ptr, link->destructorFunction());
-        new_link->setMetaType(link->metaType());
+
+        // Create new link. 
+        new_link = QtJambiLink::createLinkForObject(env, new_object, ptr, java_name, wasCached);
+        new_link->setMetaType(link->metaType());        
     }
 
     delete link;
-
     return new_object;
 }
 

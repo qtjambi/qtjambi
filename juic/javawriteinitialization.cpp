@@ -866,7 +866,13 @@ void WriteInitialization::writeProperties(const QString &varName,
 
         case DomProperty::Unknown:
             break;
+
+        default:
+            // fewer warnings...
+            break;
         }
+
+
 
         if (propertyValue.size()) {
             QTextStream *o = &output;

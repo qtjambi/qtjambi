@@ -1017,9 +1017,9 @@
     <modify-function signature="addChildLayout(QLayout *)">
         <disable-gc argument="1" />
     </modify-function>
-    <modify-function class="shell" signature="itemAt(int) const">
-        <disable-gc />
-    </modify-function>        
+    <modify-function signature="itemAt(int) const">
+        <disable-gc argument="return" />
+    </modify-function>            
   </object-type>
 
   <object-type name="QStackedLayout">  
@@ -1032,9 +1032,9 @@
     <modify-function signature="addChildLayout(QLayout *)">
         <disable-gc argument="1" />
     </modify-function>
-    <modify-function class="shell" signature="itemAt(int) const">
-        <disable-gc />
-    </modify-function>        
+    <modify-function signature="itemAt(int) const">
+        <disable-gc argument="return" />
+    </modify-function>
     <modify-function signature="addWidget(QWidget *)">
         <rename to="addStackedWidget"/>
     </modify-function>    
@@ -1093,25 +1093,25 @@
       <disable-gc argument="1"/>
     </modify-function>   
     <modify-function signature="addEllipse(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)">
-      <disable-gc argument="0"/>
+      <disable-gc argument="return"/>
     </modify-function>
     <modify-function signature="addLine(const QLineF &amp;, const QPen &amp;)">
-      <disable-gc argument="0"/>
+      <disable-gc argument="return"/>
     </modify-function>
     <modify-function signature="addPath(const QPainterPath &amp;, const QPen &amp;, const QBrush &amp;)">
-      <disable-gc argument="0"/>
+      <disable-gc argument="return"/>
     </modify-function>
     <modify-function signature="addPixmap(const QPixmap &amp;)">
-      <disable-gc argument="0"/>
+      <disable-gc argument="return"/>
     </modify-function>
     <modify-function signature="addPolygon(const QPolygonF &amp;, const QPen &amp;, const QBrush &amp;)">
-      <disable-gc argument="0"/>
+      <disable-gc argument="return"/>
     </modify-function>
     <modify-function signature="addRect(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)">
-      <disable-gc argument="0"/>
+      <disable-gc argument="return"/>
     </modify-function>
     <modify-function signature="addText(const QString &amp;, const QFont &amp;)">
-      <disable-gc argument="0"/>
+      <disable-gc argument="return"/>
     </modify-function>
   </object-type>
 
@@ -1148,22 +1148,22 @@
 
   <object-type name="QTableWidgetItem">
     <modify-function class="shell" signature="clone() const">
-        <disable-gc />
+        <disable-gc argument="return" />
     </modify-function>    
   </object-type>
 
   <object-type name="QListWidgetItem">
     <modify-function signature="QListWidgetItem(QListWidget *, int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>
     <modify-function signature="QListWidgetItem(const QString &amp;, QListWidget *, int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>    
     <modify-function signature="QListWidgetItem(const QIcon &amp;, const QString &amp;, QListWidget *, int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>    
     <modify-function class="shell" signature="clone() const">
-        <disable-gc />
+        <disable-gc argument="return" />
     </modify-function>
   </object-type>
 
@@ -1188,25 +1188,25 @@
         <remove exclusive="yes" />
     </modify-function>
     <modify-function signature="QTreeWidgetItem(QTreeWidget *,int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>
     <modify-function signature="QTreeWidgetItem(QTreeWidget *,const QStringList &amp;,int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>    
     <modify-function signature="QTreeWidgetItem(QTreeWidget *,QTreeWidgetItem *,int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>        
     <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>
     <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,const QStringList &amp;,int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>    
     <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,QTreeWidgetItem *,int)">
-        <disable-gc argument="0" />
+        <disable-gc argument="this" />
     </modify-function>            
     <modify-function class="shell" signature="clone() const">
-        <disable-gc />
+        <disable-gc argument="return" />
     </modify-function>
     <modify-function signature="addChild(QTreeWidgetItem *)">
         <disable-gc argument="1" />

@@ -14,7 +14,8 @@
 package com.trolltech.qt;
 
 public abstract class QFlags<T extends QtEnumerator> 
-    implements java.io.Serializable, 
+    implements QtEnumerator,
+               java.io.Serializable, 
                Cloneable
 {
     

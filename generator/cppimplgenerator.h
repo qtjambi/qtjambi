@@ -53,7 +53,6 @@ public:
                                     const MetaJavaFunction *java_function,
                                     const MetaJavaClass *java_class,
                                     Option options = NoOption);
-    void writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls);
     void writeFinalConstructor(QTextStream &s,
                                const MetaJavaFunction *java_function,
                                const QString &qt_object_name,
@@ -92,6 +91,7 @@ public:
     void writeDisableGarbageCollection(QTextStream &s,
                                        const MetaJavaFunction *java_function,
                                        const QString &var_name,
+                                       int var_index,
                                        const MetaJavaClass *implementor);
     void writeQtToJava(QTextStream &s,
                        const MetaJavaType *java_type,

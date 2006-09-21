@@ -14,6 +14,7 @@
 ./com/trolltech/examples/Calculator.java
 ./com/trolltech/examples/CollidingMice.java
 ./com/trolltech/examples/CustomFilter.java
+./com/trolltech/examples/ItemviewChart.java
 ./com/trolltech/examples/LineEdits.java
 ./com/trolltech/examples/ResourceSystem.java
 ./com/trolltech/examples/SpinBoxes.java

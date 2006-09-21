@@ -492,19 +492,23 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
 
     // If it's not a value type, we just link to the pointer directly.
     void *copy = 0;
+    QString java_name;
     if (metaType == QMetaType::Void) {
         // If the object is constructed in Java, then we can look it up
         QtJambiLink *link = QtJambiLink::findLinkForUserObject(qt_object);
         if (link != 0)
             return link->javaObject(env);
+
+        // Otherwise we have to create it
         copy = const_cast<void *>(qt_object);
+        java_name = QLatin1String(packageName) + QLatin1String(className);
     } else {
         copy = QMetaType::construct(metaType, qt_object);
         if (copy == 0)
             return 0;
     }
-
-    if (!qtjambi_construct_object(env, returned, copy, metaType)) {
+   
+    if (!qtjambi_construct_object(env, returned, copy, metaType, java_name, false)) {
         if (metaType != QMetaType::Void && copy != 0)
             QMetaType::destroy(metaType, copy);
 
@@ -614,15 +618,15 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
 }
 
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,
-                             int metaType, PtrDestructorFunction dfnc)
+                             int metaType, const QString &java_name, bool created_by_java)
 {
-    QtJambiLink *link = QtJambiLink::createLinkForObject(env, java_object, object, dfnc);
+    QtJambiLink *link = QtJambiLink::createLinkForObject(env, java_object, object, java_name, created_by_java);
     link->setMetaType(metaType);
     return link;
 }
 
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,
-                             const char *className)
+                                      const char *className)
 {
     int metaType = QMetaType::type(className);
     if (metaType != QMetaType::Void)

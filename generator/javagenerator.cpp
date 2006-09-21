@@ -302,7 +302,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 {
     MetaJavaArgumentList arguments = java_function->arguments();
 
-    if (disabled_gc_arguments.value(0, false) && !java_function->isConstructor())
+    if (disabled_gc_arguments.value(FunctionModification::DisableGarbageCollectionForThis, false) && !java_function->isConstructor())
         s << "        this.disableGarbageCollection();" << endl;
 
     for (int i=0; i<arguments.count(); ++i) {
@@ -358,7 +358,10 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     MetaJavaType *return_type = java_function->type();
 
     if (return_type) {
-        s << "return ";
+        if (disabled_gc_arguments.value(FunctionModification::DisableGarbageCollectionForReturn, false))
+            s << translateType(return_type) << " __qt_return_value = ";
+        else
+            s << "return ";
 
         if (return_type->isJavaEnum()) {
             s << ((EnumTypeEntry *) return_type->typeEntry())->qualifiedJavaName() << ".resolve(";
@@ -399,9 +402,14 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     if (return_type && (return_type->isJavaEnum() || return_type->isJavaFlags()))
         s << ")";
 
+    if (return_type && disabled_gc_arguments.value(FunctionModification::DisableGarbageCollectionForReturn, false)) {
+        s << ";" << endl
+          << "        if (__qt_return_value != null) __qt_return_value.disableGarbageCollection();" << endl
+          << "        return __qt_return_value";
+    }
     s << ";" << endl;
 
-    if (disabled_gc_arguments.value(0, false) && java_function->isConstructor())
+    if (disabled_gc_arguments.value(FunctionModification::DisableGarbageCollectionForThis, false) && java_function->isConstructor())
         s << "        this.disableGarbageCollection();" << endl;
 }
 

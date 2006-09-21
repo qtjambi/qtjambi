@@ -7,7 +7,9 @@
   <rejection class="QSqlDriverPlugin" />
   <rejection class="QSqlDriverFactoryInterface" />
 
-  <namespace-type name="QSql" />
+  <namespace-type name="QSql">
+     <include file-name="qsql.h" location="global" />
+  </namespace-type>
   
   <value-type name="QSqlDatabase">
     <extra-includes>

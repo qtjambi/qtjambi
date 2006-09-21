@@ -32,6 +32,15 @@ Q_GLOBAL_STATIC(LinkHash, gUserObjectCache);
 
 int qtjambi_user_data_id = -1;
 
+inline static void deleteWeakObject(JNIEnv *env, jobject object)
+{
+#ifdef Q_CC_MINGW
+    env->DeleteWeakGlobalRef( (jweak) object);
+#else
+    env->DeleteWeakGlobalRef(object);
+#endif
+}
+
 QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object,
                                              bool java_owns_qobject)
 {
@@ -94,7 +103,8 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
 }
 
 
-QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *ptr, PtrDestructorFunction dfnc)
+QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,
+                                              bool enter_in_cache)
 {
     Q_ASSERT(env);
     Q_ASSERT(java);
@@ -105,13 +115,15 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     link->m_is_qobject = false;
     link->m_global_ref = false;
     link->m_pointer = ptr;
-    link->m_destructor_function = dfnc;
+    link->m_destructor_function = java_name.isEmpty() ? 0 : destructor(java_name);
 
     // If the object is created by Java, then we have control over its destructor, which means
-    // we can cache the pointer.
-    if (dfnc != 0) {
+    // we can cache the pointer. Otherwise, we do not have any control over when the memory
+    // becomes free, so we cannot cache the pointer.
+    if (enter_in_cache) {
         QWriteLocker locker(gUserObjectCacheLock());
         gUserObjectCache()->insert(ptr, link);
+        link->m_in_cache = true;
     }
 
     // Set the native__id field of the java object
@@ -160,7 +172,7 @@ void QtJambiLink::releaseJavaObject()
         // Check if garbage collector has removed the object
         jobject localRef = m_environment->NewLocalRef(m_java_object);
         if (!m_environment->IsSameObject(localRef, 0)) {
-            m_environment->DeleteWeakGlobalRef(m_java_object);
+            deleteWeakObject(m_environment, m_java_object);
             m_environment->DeleteLocalRef(localRef);
         }
     }
@@ -218,7 +230,7 @@ void QtJambiLink::deleteNativeObject()
         if (QThread::currentThread() == qobj->thread())
             delete qobj;
         else
-            qobj->deleteLater();        
+            qobj->deleteLater();
         m_pointer = 0;
 
     } else {
@@ -272,10 +284,9 @@ void QtJambiLink::setMetaType(int metaType)
 void QtJambiLink::resetObject() {
     aboutToMakeObjectInvalid();
 
-    if (m_destructor_function)
+    if (m_in_cache)
         removeFromCache();
     m_pointer = 0;
-
 
     if (m_wrapper) {
         delete m_wrapper;
@@ -320,6 +331,7 @@ void QtJambiLink::removeFromCache()
         int count = gUserObjectCache()->remove(m_pointer);
         Q_ASSERT(count == 1);
         Q_UNUSED(count);
+        m_in_cache = false;
     }
 }
 
@@ -389,7 +401,7 @@ void QtJambiLink::disableGarbageCollection(JNIEnv *env, jobject obj)
     jobject global_ref = env->NewGlobalRef(obj);
 
     if (m_java_object)
-        env->DeleteWeakGlobalRef(m_java_object);
+        deleteWeakObject(env, m_java_object);
 
     m_java_object = global_ref;
     m_global_ref = true;

@@ -188,11 +188,11 @@ int main(int argc, char *argv[])
         generators << cpp_impl_generator;
         contexts << "CppImplGenerator";
     }
-   
+
     if (!no_metainfo) {
         metainfo = new MetaInfoGenerator;
         generators << metainfo;
-        contexts << "MetaInfoGenerator";                
+        contexts << "MetaInfoGenerator";
     }
 
     if (build_class_list) {
@@ -270,7 +270,7 @@ void generatePriFile(const QString &base_dir, const QString &sub_dir,
 
         QString meta_info_stub = info_generator->filenameStub();
         if (info_generator == 0 || info_generator->generated(cls) == 0)
-            meta_info_stub = QString();            
+            meta_info_stub = QString();
 
         QTextStream s;
 
@@ -281,24 +281,20 @@ void generatePriFile(const QString &base_dir, const QString &sub_dir,
 
             s.setDevice(f);
             if (!meta_info_stub.isEmpty()) {
-                s << "HEADERS += $$QTJAMBI_CPP/" << cls->package().replace(".", "_") << "/"
-                  << meta_info_stub << ".h" << endl;
+                s << "HEADERS += $$PWD/" << meta_info_stub << ".h" << endl;
             }
 
             s << "SOURCES += \\" << endl;
             if (!meta_info_stub.isEmpty()) {
-                s << "        " << "$$QTJAMBI_CPP/" << cls->package().replace(".", "_")
-                  << "/" << meta_info_stub << ".cpp \\" << endl;
-                s << "     $$QTJAMBI_CPP/" << cls->package().replace(".", "_")
-                  << "/qtjambi_libraryinitializer.cpp \\" << endl;
+                s << "        " << "$$PWD/" << meta_info_stub << ".cpp \\" << endl;
+                s << "     $$PWD/qtjambi_libraryinitializer.cpp \\" << endl;
             }
         } else {
             s.setDevice(f);
         }
 
         if (!cls->isNamespace() && !cls->isInterface() && !cls->typeEntry()->isVariant())
-            s << "        " << "$$QTJAMBI_CPP/" << cls->package().replace(".", "_")
-              << "/qtjambishell_" << cls->name() << ".cpp \\" << endl;
+            s << "        " << "$$PWD/qtjambishell_" << cls->name() << ".cpp \\" << endl;
     }
 
     foreach (QFile *f, fileHash.values()) {
@@ -319,8 +315,7 @@ void generatePriFile(const QString &base_dir, const QString &sub_dir,
             /*bool shellfile = (!cls->isNamespace() && !cls->isInterface() && cls->hasVirtualFunctions()
                           && !cls->typeEntry()->isVariant()) */
         if (shellfile)
-            s << "        $$QTJAMBI_CPP/" << cls->package().replace(".", "_") << "/qtjambishell_"
-              << cls->name() << ".h \\" << endl;
+            s << "        $$PWD/qtjambishell_" << cls->name() << ".h \\" << endl;
     }
 
     foreach (QFile *f, fileHash.values()) {

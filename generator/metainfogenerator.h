@@ -58,6 +58,7 @@ private:
     void writeInitializationFunctionName(QTextStream &s);
     void writeInitialization(QTextStream &s, const TypeEntry *entry, bool registerMetaType = true);
     void writeCustomStructors(QTextStream &s, const TypeEntry *entry);
+    void writeDestructors(QTextStream &s, const MetaJavaClass *cls);
     void writeCodeBlock(QTextStream &s, const QString &code);
     bool shouldGenerate(const TypeEntry *entry) const;
     void buildSkipList();

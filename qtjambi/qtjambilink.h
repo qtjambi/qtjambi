@@ -36,8 +36,6 @@ extern "C" JNIEXPORT RETURNTYPE JNICALL Java_com_trolltech_##QTLIBRARY##_##CLASS
 #define QTPATHN PACKAGEPATH"qt/"
 #define QTPATH(CLASS) QTPATHN#CLASS
 
-typedef void (*PtrDestructorFunction)(void *);
-
 struct QtJambiLinkUserData : public QObjectUserData
 {
     QtJambiLinkUserData(QtJambiLink *link) : m_link(link) { }
@@ -63,6 +61,7 @@ class QTJAMBI_EXPORT QtJambiLink
           m_qobject_deleted(false),
           m_created_by_java(false),
           m_object_invalid(false),
+          m_in_cache(false),
           m_destructor_function(0)          
     {
     };
@@ -90,6 +89,8 @@ public:
 
     inline int metaType() const { return m_meta_type; }
     void setMetaType(int metaType);
+
+    inline bool isCached() const { return m_in_cache; }
 
     inline JNIEnv *environment() const { return m_environment; }
     inline void setEnvironment(JNIEnv *env) { m_environment = env; }
@@ -135,7 +136,8 @@ public:
 
     void disableGarbageCollection(JNIEnv *env, jobject java);
 
-    static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, PtrDestructorFunction dfnc);
+    static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name, 
+        bool enter_in_cache);
     static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object, bool owner);
     static QtJambiLink *createWrapperForQObject(JNIEnv *env, QObject *o, const char *class_name,
         const char *package_name);
@@ -171,6 +173,7 @@ private:
     uint m_qobject_deleted : 1;
     uint m_created_by_java : 1;
     uint m_object_invalid : 1;
+    uint m_in_cache : 1;
 
     PtrDestructorFunction m_destructor_function;
 };

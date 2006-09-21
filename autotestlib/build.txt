@@ -32,5 +32,7 @@
   <object-type name="QObjectDestroyed" />
 
   <object-type name="SetupLayout" />
+
+  <object-type name="Threads"/>
    
 </typesystem>

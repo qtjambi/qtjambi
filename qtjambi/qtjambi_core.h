@@ -125,7 +125,8 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
 
 QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,
-                             int metaType = QMetaType::Void, PtrDestructorFunction dfnc = 0);
+                                      int metaType = QMetaType::Void, const QString &java_name = QString(),
+                                      bool created_by_java = false);
 
 QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *,

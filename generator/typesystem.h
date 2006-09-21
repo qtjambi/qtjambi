@@ -100,6 +100,11 @@ struct FunctionModification
         ReplaceExpression =     0x0100
     };
 
+    enum DisableGarbageCollectionArgument {
+        DisableGarbageCollectionForReturn = -1,
+        DisableGarbageCollectionForThis = 0
+    };
+
     FunctionModification() : modifiers(0) { }
 
     bool isAccessModifier() const { return modifiers & AccessModifierMask; }

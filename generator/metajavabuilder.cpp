@@ -801,6 +801,8 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
                 }
                 
                 java_class->addFunction(java_function);
+            } else if (java_function->isDestructor() && !java_function->isPublic()) {
+                java_class->setHasPublicDestructor(false);
             }
         }
     }
@@ -933,10 +935,7 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
 
     QString cast_type;
 
-    // skip destructors
-    if (function_name.startsWith('~')) {
-        return 0;
-    } else if (function_name.startsWith("operator")) {
+    if (function_name.startsWith("operator")) {
         function_name = rename_operator(function_name.mid(8));
         if (function_name.isEmpty()) {
             m_rejected_functions.insert(class_name + "::" + function_name,
@@ -984,7 +983,10 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
         stripped_class_name = stripped_class_name.mid(cc_pos + 2);
 
     TypeInfo function_type = function_item->type();
-    if (strip_template_args(function_name) == stripped_class_name) {
+    if (function_name.startsWith('~')) {
+        java_function->setFunctionType(MetaJavaFunction::DestructorFunction);        
+        java_function->setInvalid(true);
+    } else if (strip_template_args(function_name) == stripped_class_name) {
         java_function->setFunctionType(MetaJavaFunction::ConstructorFunction);
         java_function->setName(m_current_class->name());
     } else {

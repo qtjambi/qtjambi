@@ -47,6 +47,7 @@ class QJarEntryEngine extends QAbstractFileEngine
         }
     }
 
+    @Override
     public void setFileName(String fileName)
     {
         m_entry = null;
@@ -75,6 +76,7 @@ class QJarEntryEngine extends QAbstractFileEngine
         return m_valid;
     }
 
+    @Override
     public boolean copy(String newName)
     {
         final int BUFFER_SIZE = 1024*1024;
@@ -112,16 +114,19 @@ class QJarEntryEngine extends QAbstractFileEngine
         return (i == sz);
     }
 
+    @Override
     public boolean setPermissions(int perms)
     {
         return false;
     }
 
+    @Override
     public boolean caseSensitive()
     {
         return true;
     }
 
+    @Override
     public boolean close()
     {
         if (m_stream != null) {
@@ -137,6 +142,7 @@ class QJarEntryEngine extends QAbstractFileEngine
         return true;
     }
 
+    @Override
     public List<String> entryList(QDir.Filters filters, List<String> filterNames)
     {
         if (m_entry != null && !m_entry.isDirectory())
@@ -192,28 +198,35 @@ class QJarEntryEngine extends QAbstractFileEngine
         return result;
     }
 
+    @Override
     public FileFlags fileFlags(FileFlags type)
     {
-        int flags = 0;
-
-         QFileInfo info = new QFileInfo(m_jarFileName);
-         if (info.exists()) {
-             flags |= info.permissions().value() 
-                      & (FileFlag.ReadOwnerPerm.value() 
-                         | FileFlag.ReadGroupPerm.value() 
-                         | FileFlag.ReadOtherPerm.value() 
-                         | FileFlag.ReadUserPerm.value());
-         }
-
-         if (m_entry == null || m_entry.isDirectory())
-             flags |= FileFlag.DirectoryType.value();
-         else
-             flags |= FileFlag.FileType.value();
-         
-
-         return new FileFlags((flags | FileFlag.ExistsFlag.value()) & type.value());
+        try {
+            int flags = 0;
+    
+             QFileInfo info = new QFileInfo(m_jarFileName);
+             if (info.exists()) {
+                 flags |= info.permissions().value() 
+                          & (FileFlag.ReadOwnerPerm.value() 
+                             | FileFlag.ReadGroupPerm.value() 
+                             | FileFlag.ReadOtherPerm.value() 
+                             | FileFlag.ReadUserPerm.value());
+             }
+    
+             if (m_entry == null || m_entry.isDirectory())
+                 flags |= FileFlag.DirectoryType.value();
+             else
+                 flags |= FileFlag.FileType.value();
+             
+    
+             return new FileFlags((flags | FileFlag.ExistsFlag.value()) & type.value());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
+    @Override
     public String fileName(FileName file)
     {
         String entryFileName = m_entryFileName;
@@ -237,7 +250,8 @@ class QJarEntryEngine extends QAbstractFileEngine
         }
     }
 
-    public QDateTime fileTime(int time)
+    @Override
+    public QDateTime fileTime(QAbstractFileEngine.FileTime time)
     {
         if (m_entry == null) {
             QFileInfo info = new QFileInfo(m_jarFileName);
@@ -260,16 +274,19 @@ class QJarEntryEngine extends QAbstractFileEngine
                                        calendar.get(Calendar.MILLISECOND)));
     }
 
+    @Override
     public boolean link(String newName)
     {
         return false;
     }
 
+    @Override
     public boolean mkdir(String dirName, boolean createParentDirectories)
     {
         return false;
     }
 
+    @Override
     public boolean open(QIODevice.OpenMode openMode)
     {
         if (m_entry == null)
@@ -296,11 +313,13 @@ class QJarEntryEngine extends QAbstractFileEngine
         }
     }
 
+    @Override
     public long pos()
     {
         return m_pos;
     }
-
+    
+    @Override
     public long read(QNativePointer data, long maxlen)
     {
         if (m_stream == null)
@@ -330,6 +349,7 @@ class QJarEntryEngine extends QAbstractFileEngine
         return bytes_read;
     }
 
+    @Override
     public long readLine(QNativePointer data, long maxlen)
     {
         if (m_stream == null || m_reader == null)
@@ -354,21 +374,25 @@ class QJarEntryEngine extends QAbstractFileEngine
         return bytes_read;
     }
 
+    @Override
     public boolean remove()
     {
         return false;
     }
 
+    @Override
     public boolean rename(String newName)
     {
         return false;
     }
 
+    @Override
     public boolean rmdir(String dirName, boolean recursive)
     {
         return false;
     }
 
+    @Override
     public boolean seek(long offset)
     {
         try {
@@ -390,36 +414,43 @@ class QJarEntryEngine extends QAbstractFileEngine
         return true;
     }
 
-    public String owner(int owner)
+    @Override
+    public String owner(QAbstractFileEngine.FileOwner owner)
     {
         return "";
     }
 
-    public int ownerId(int owner)
+    @Override
+    public int ownerId(QAbstractFileEngine.FileOwner owner)
     {
         return -2;
     }
 
+    @Override
     public boolean isRelativePath()
     {
         return false;
     }
 
+    @Override
     public boolean isSequential()
     {
         return false;
     }
 
+    @Override
     public boolean setSize(long sz)
     {
         return false;
     }
 
+    @Override
     public long size()
     {
         return m_entry == null ? 0 : m_entry.getSize();
     }
 
+    @Override
     public long write(QNativePointer data, long len)
     {
         return -1;

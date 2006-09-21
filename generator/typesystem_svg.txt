@@ -21,6 +21,14 @@
         <include file-name="QSize" location="global" />
     </extra-includes>  
   </object-type> 
+
+  <object-type name="QGraphicsSvgItem">
+    <extra-includes>
+        <include file-name="QGraphicsItem" location="global" />
+        <include file-name="QSvgRenderer" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>  
+  </object-type>
   
   <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />  

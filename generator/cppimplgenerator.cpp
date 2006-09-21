@@ -342,9 +342,6 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
       << "#include \"qtjambifunctiontable.h\"" << endl
       << "#include \"qtjambilink.h\"" << endl;
 
-   if (!java_class->isQObject() && !java_class->typeEntry()->isValue())
-        writeFinalDestructor(s, java_class);
-
     if (shellInclude)
         writeShellSignatures(s, java_class);
 
@@ -690,6 +687,7 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunctio
 void CppImplGenerator::writeDisableGarbageCollection(QTextStream &s,
                                                      const MetaJavaFunction *java_function,
                                                      const QString &var_name,
+                                                     int var_index,
                                                      const MetaJavaClass *implementor)
 {
     FunctionModificationList mods;
@@ -705,19 +703,27 @@ void CppImplGenerator::writeDisableGarbageCollection(QTextStream &s,
     foreach (FunctionModification mod, mods) {
         if (mod.language != CodeSnip::ShellCode)
             continue ;
-        if (mod.disable_gc_argument_indexes.count() == 0)
+        if (!mod.disable_gc_argument_indexes.value(var_index, false))
             continue ;
 
-        s << INDENT << "if (" << var_name << " != 0) {" << endl;
-
-        {
-            Indentation indent;
-            s << INDENT << "QtJambiLink *__link = QtJambiLink::findLink(__jni_env, "
-                        << var_name << ");" << endl
-              << INDENT << "Q_ASSERT(__link != 0);" << endl
-              << INDENT << "__link->disableGarbageCollection(__jni_env, " << var_name << ");" << endl;
+        if (var_index != FunctionModification::DisableGarbageCollectionForThis) {
+            s << INDENT << "if (" << var_name << " != 0) {" << endl;
+            {
+                Indentation indent;
+                s << INDENT << "QtJambiLink *__link = QtJambiLink::findLink(__jni_env, "
+                            << var_name << ");" << endl
+                << INDENT << "Q_ASSERT(__link != 0);" << endl
+                << INDENT << "__link->disableGarbageCollection(__jni_env, " << var_name << ");" << endl;
+            }
+            s << INDENT << "}" << endl;
+        } else {
+            s << INDENT << "if (m_link) {" << endl;
+            {
+                Indentation indent;
+                s << INDENT << "m_link->disableGarbageCollection(__jni_env, m_link->javaObject(__jni_env));" << endl;
+            }
+            s << INDENT << "}" << endl;
         }
-        s << INDENT << "}" << endl;
         break ;
     }
 
@@ -756,6 +762,9 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
                                   "__java_" + argument->name());
             }
 
+            for (int i=0; i<arguments.size(); ++i)
+                writeDisableGarbageCollection(s, java_function, "__java_" + arguments.at(i)->name(), i, implementor);            
+
             MetaJavaType *function_type = java_function->type();
 
             s << INDENT;
@@ -772,7 +781,10 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             if (function_type)
                 writeJavaToQt(s, function_type, "__qt_return_value", "__java_return_value");
 
-            writeDisableGarbageCollection(s, java_function, "__java_return_value", implementor);
+            writeDisableGarbageCollection(s, java_function, "this", 
+                FunctionModification::DisableGarbageCollectionForThis, implementor);
+            writeDisableGarbageCollection(s, java_function, "__java_return_value", 
+                FunctionModification::DisableGarbageCollectionForReturn, implementor);
 
             s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
             if (function_type)
@@ -1227,13 +1239,13 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
     }
 }
 
-void CppImplGenerator::writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls)
+/*void CppImplGenerator::writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls)
 {
     bool has_constructors = !cls->queryFunctions(MetaJavaClass::Constructors).isEmpty();
     if (has_constructors)
         s << INDENT << "static void qtjambi_destructor(void *ptr) { delete ("
           << shellClassName(cls) << " *)ptr; }" << endl << endl;
-}
+}*/
 
 void CppImplGenerator::writeFinalConstructor(QTextStream &s,
                                          const MetaJavaFunction *java_function,
@@ -1260,7 +1272,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
         if (cls->typeEntry()->isValue())
             s << ", \"" << className << "\")";
         else // non-QObject, object type
-            s << ", QMetaType::Void, qtjambi_destructor)";
+            s << ", QMetaType::Void, QLatin1String(\"" << cls->fullName().replace(".", "/") << "\"), true)";
     }
     s << ";" << endl
       << INDENT << "if (!__qt_java_link) {" << endl;

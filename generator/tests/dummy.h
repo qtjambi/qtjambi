@@ -17,6 +17,7 @@
 #include "sql.h"
 #include <QtSvg/qsvgrenderer.h>
 #include <QtSvg/qsvgwidget.h>
+#include <QtSvg/qgraphicssvgitem.h>
 
 #define GL_ACCUM                          0x0100
 #define GL_LOAD                           0x0101

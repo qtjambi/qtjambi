@@ -839,11 +839,13 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
             continue;
         }
 
-        if ((query & Destructors) && (!f->isDestructor()
+        // Destructors are never included in the functions of a class currently
+        /* 
+           if ((query & Destructors) && (!f->isDestructor()
                                        || f->ownerClass() != f->implementingClass())
             || f->isDestructor() && (query & Destructors) == 0) {
             continue;
-        }
+        }*/
 
         if ((query & VirtualFunctions) && (f->isFinal() || f->isSignal() || f->isStatic())) {
             continue;

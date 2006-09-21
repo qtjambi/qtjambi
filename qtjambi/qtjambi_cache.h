@@ -23,9 +23,11 @@ class QString;
 
 QTJAMBI_EXPORT void registerQtToJava(const QString &qt_name, const QString &java_name);
 QTJAMBI_EXPORT void registerJavaToQt(const QString &java_name, const QString &qt_name);
+QTJAMBI_EXPORT void registerDestructor(const QString &java_name, PtrDestructorFunction destructor);
 
 QString getQtName(const QString &java_name);
 QString getJavaName(const QString &qt_name);
+PtrDestructorFunction destructor(const QString &java_name);
 
 jclass resolveClass(JNIEnv *env, const char *className, const char *package);
 jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature, jclass clazz,

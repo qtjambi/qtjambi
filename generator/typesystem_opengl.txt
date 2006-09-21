@@ -12,7 +12,9 @@
   <enum-type name="QGL::FormatOption" flags="QGL::FormatOptions"/>
   <enum-type name="QGLFormat::OpenGLVersionFlag" flags="QGLFormat::OpenGLVersionFlags"/>
 
-  <namespace-type name="QGL"/>
+  <namespace-type name="QGL">
+     <include file-name="qgl.h" location="global"/>
+  </namespace-type>
   
   <value-type name="QGLColormap"/>
   <value-type name="QGLFormat"/>

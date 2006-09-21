@@ -41,4 +41,6 @@
 #  include <jni.h>
 #endif
 
+typedef void (*PtrDestructorFunction)(void *);
+
 #endif
