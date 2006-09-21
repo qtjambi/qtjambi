@@ -12,6 +12,8 @@ class ObjectInspectorW : public QWidget
     Q_CLASSINFO("ClassID", "{D8647F38-ACB0-43BD-9C6A-42EC88983D22}")
     Q_CLASSINFO("InterfaceID", "{FD8C3F28-1EC1-41BD-B64B-0CD4EA14F9F8}")
     Q_CLASSINFO("EventsID", "{30740FA1-BE77-4BDD-8F9C-A4A670864A64}")
+    Q_CLASSINFO("ToSuperClass", "ObjectInspectorW")
+
 public:
     ObjectInspectorW(QWidget *parent = 0);
     ~ObjectInspectorW();

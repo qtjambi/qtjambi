@@ -19,6 +19,7 @@ class FormWindowW : public WidgetHost
     Q_CLASSINFO("ClassID", "{3B33923D-9423-4662-A2D2-35CA60098A4E}")
     Q_CLASSINFO("InterfaceID", "{147566D3-D7EC-4745-BA9B-C7904FB800BF}")
     Q_CLASSINFO("EventsID", "{E4A3B9F5-DEBE-4CD5-83ED-34694204E0CE}")
+    Q_CLASSINFO("ToSuperClass", "FormWindowW")
 
 public:
     FormWindowW(QWidget *parent = 0);

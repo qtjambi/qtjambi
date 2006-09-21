@@ -244,7 +244,11 @@ void writeJavaFile(const QObject *obj, QString libName, QString package)
     stream << "    }\n\n";
     stream << "    public " << metaobj->className() << "(Composite parent, int style)\n    {\n";
 
+#ifdef Q_WS_MAC
+    writeStaticData(scommon, stream, "//[COMMON_MAC_JAVA_CONSTRUCTOR]");
+#else
     writeStaticData(scommon, stream, "//[COMMON_JAVA_CONSTRUCTOR]");
+#endif
 
     if (hasSig)
         stream << "        listeners = new ArrayList();\n\n";
@@ -337,6 +341,11 @@ void writeJavaFile(const QObject *obj, QString libName, QString package)
         }
     }
 
+#ifdef Q_WS_MAC
+    stream << "    static final native int createControl(int phandle);\n";
+#else
+    stream << "    static final native int createControl(int phandle, int socketWin);\n";
+#endif
     writeStaticData(scommon, stream, "//[COMMON_JAVA_NATIVE]");
 
     // declare native functions
@@ -401,8 +410,13 @@ void QSWT::writeNativeHeaderFile(const QList<QObject *> &lstObj, QString libName
         metaobj = lstObj.at(nobj)->metaObject();
         stream << "\n// ------ " << metaobj->className() << " ------\n";
 
+#ifdef Q_WS_MAC
+        stream << "JNIEXPORT jint JNICALL Java_" << sigpack << metaobj->className()
+            << "_createControl(JNIEnv *, jclass, jint);\n";
+#else
         stream << "JNIEXPORT jint JNICALL Java_" << sigpack << metaobj->className()
             << "_createControl(JNIEnv *, jclass, jint, jint);\n";
+#endif
         stream << "JNIEXPORT void JNICALL Java_" << sigpack << metaobj->className()
             << "_computeSize(JNIEnv *, jclass, jint, jintArray);\n";
         stream << "JNIEXPORT void JNICALL Java_" << sigpack << metaobj->className()
@@ -553,6 +567,94 @@ void QSWT::writeProjectFile(const QList<QString> &lstSources, const QList<QStrin
     cfile.close();
 }
 
+void writeCommonNativeSource(QTextStream &stream, QTextStream &scommon, const QMetaObject *metaobj, QString sigpack)
+{
+
+    stream << "JNIEXPORT void JNICALL Java_" << sigpack <<  metaobj->className()
+        << "_computeSize(JNIEnv *env, jclass that, jint handle, jintArray result)\n{\n";
+    stream << "    " << metaobj->className() << " *obj = (" << metaobj->className() << "*)handle;\n";
+    
+#ifdef Q_WS_MAC
+    writeStaticData(scommon, stream, "//[COMMON_MAC_NATIVE_COMPUTESIZE]");
+#else
+    writeStaticData(scommon, stream, "//[COMMON_NATIVE_COMPUTESIZE]");
+#endif
+
+    stream << "}\n\n";
+
+    stream << "JNIEXPORT void JNICALL Java_" << sigpack << metaobj->className()
+        << "_resizeControl(JNIEnv *env, jclass that, jint handle, jint x, jint y, jint width, jint height)\n{\n";
+    stream << "    " << metaobj->className() << " *obj = (" << metaobj->className() << "*)handle;\n";
+
+#ifdef Q_WS_MAC
+    writeStaticData(scommon, stream, "//[COMMON_MAC_NATIVE_RESIZECONTROL]");
+#else
+    writeStaticData(scommon, stream, "//[COMMON_NATIVE_RESIZECONTROL]");
+#endif
+
+    stream << "}\n\n";
+
+    stream << "JNIEXPORT void JNICALL Java_" << sigpack << metaobj->className()
+        << "_disposeControl(JNIEnv *env, jclass that, jint handle)\n{\n";
+    stream << "    " << metaobj->className() << " *obj = (" << metaobj->className() << "*)handle;\n";
+
+
+    stream << "    QWidget *parentW = obj->topLevelWidget();\n";
+    stream << "    delete parentW;\n";
+    
+    stream << "    Q_UNUSED(env);\n";
+    stream << "    Q_UNUSED(that);\n";
+    stream << "}\n\n";
+
+    stream << "JNIEXPORT void JNICALL Java_" << sigpack << metaobj->className()
+        << "_setFont(JNIEnv *env, jclass that, jint handle, jstring jni_family, jint size)\n{\n";
+    stream << "    " << metaobj->className() << " *obj = (" << metaobj->className() << "*)handle;\n";
+    writeStaticData(scommon, stream, "//[COMMON_NATIVE_SETFONT]");
+    stream << "}\n\n";
+
+    for (int nmem=metaobj->methodOffset(); nmem<metaobj->methodCount(); ++nmem)
+    {
+        QMetaMethod mmember;
+        mmember = metaobj->method(nmem);
+        QList<QByteArray> parTypes = mmember.parameterTypes();
+        QList<QByteArray> parNames = mmember.parameterNames();
+
+        // public slots
+        if ((mmember.access() == QMetaMethod::Public)
+            && (mmember.methodType() == QMetaMethod::Slot))
+        {
+            stream << "JNIEXPORT " << toJavaNativeType(mmember.typeName())
+                << " JNICALL Java_" << sigpack << metaobj->className() << "_" << toMemberName(mmember.signature())
+                << "JNIEnv *env, jclass that, jint handle";
+
+            for (int npar=0; npar<parTypes.count(); ++npar) {
+                stream << ", " << toJavaNativeType(parTypes.at(npar)) << " ";
+                if (typeNeedsConvertion(parTypes.at(npar)))
+                    stream << "jni_";
+                stream << parNames.at(npar);
+            }
+            stream << ")\n{\n    " << metaobj->className() << " *obj = ("
+                << metaobj->className() << "*)handle;\n";
+
+            stream << "    Q_UNUSED(that);\n";
+
+            convertTypes(stream, parTypes, parNames);
+
+            stream << "    ";
+            if (!QString(mmember.typeName()).isEmpty())
+                stream << mmember.typeName() << " res = ";
+            stream << "obj->" << toMemberName(mmember.signature());
+            for (int npar=0; npar<parTypes.count(); ++npar) {
+                if (npar != 0) stream << ", ";
+                stream << parNames.at(npar);
+            }
+            stream << ");\n";
+            convertReturnType(stream, mmember.typeName());
+            stream << "}\n\n";
+        }
+    }
+}
+
 void QSWT::writeNativeSourceFile(const QList<QObject *> &lstObj, const QList<QString> &lstHeaders, QString libName, QString package)
 {
     const QMetaObject *metaobj;
@@ -578,8 +680,12 @@ void QSWT::writeNativeSourceFile(const QList<QObject *> &lstObj, const QList<QSt
     for (int nheader=0; nheader<lstHeaders.count(); ++nheader) {
         stream << "#include \"" << lstHeaders.at(nheader) << "\"\n";
     }
-
+#ifdef Q_WS_MAC
+    writeStaticData(scommon, stream, "//[COMMON_MAC_NATIVE_HEADER]");
+#else
     writeStaticData(scommon, stream, "//[COMMON_NATIVE_HEADER]");
+#endif
+
     stream << "#include \"" << libName << ".h\"\n";
 
     writeStaticData(scommon, stream, "//[COMMON_NATIVE_FUNCTIONS]");
@@ -591,12 +697,26 @@ void QSWT::writeNativeSourceFile(const QList<QObject *> &lstObj, const QList<QSt
 
         stream << "// ------ " << metaobj->className() << " ------\n";
 
+
+#ifdef Q_WS_MAC
+        stream << "JNIEXPORT jint JNICALL Java_" << sigpack << metaobj->className()
+            << "_createControl(JNIEnv *env, jclass that, jint parent)\n{\n";
+        writeStaticData(scommon, stream, "//[COMMON_MAC_NATIVE_CREATEQAPP]");
+#else
         stream << "JNIEXPORT jint JNICALL Java_" << sigpack << metaobj->className()
             << "_createControl(JNIEnv *env, jclass that, jint parent, jint socketWin)\n{\n";
         writeStaticData(scommon, stream, "//[COMMON_NATIVE_CREATEQAPP]");
+#endif
+
+
+
+#ifdef Q_WS_MAC
+        writeStaticData(scommon, stream, "//[COMMON_MAC_NATIVE_CREATECONTROL]");
+        stream << "    " << metaobj->className() << " *obj = new " << metaobj->className() << "(client);\n";        
+#else
         stream << "    " << metaobj->className() << " *obj = new " << metaobj->className() << "();\n";
         writeStaticData(scommon, stream, "//[COMMON_NATIVE_CREATECONTROL]");
-
+#endif
         // initialize all the signals
         if (nrSig != 0)
         {
@@ -632,79 +752,16 @@ void QSWT::writeNativeSourceFile(const QList<QObject *> &lstObj, const QList<QSt
             stream << "    Q_UNUSED(that);\n\n";
         }
 
+
+#ifndef Q_WS_MAC
         stream << "    vblayout->addWidget(obj);\n\n";
-        stream << "    xeclient->embedInto(socketWin);\n";
-        stream << "    xeclient->show();\n";
+        stream << "    client->embedInto(socketWin);\n";
+#endif
+        stream << "    client->show();\n";
         stream << "    return (jint)obj;\n";
         stream << "}\n\n";
-
-        stream << "JNIEXPORT void JNICALL Java_" << sigpack <<  metaobj->className()
-            << "_computeSize(JNIEnv *env, jclass that, jint handle, jintArray result)\n{\n";
-        stream << "    " << metaobj->className() << " *obj = (" << metaobj->className() << "*)handle;\n";
-        writeStaticData(scommon, stream, "//[COMMON_NATIVE_COMPUTESIZE]");
-        stream << "}\n\n";
-
-        stream << "JNIEXPORT void JNICALL Java_" << sigpack << metaobj->className()
-            << "_resizeControl(JNIEnv *env, jclass that, jint handle, jint x, jint y, jint width, jint height)\n{\n";
-        stream << "    " << metaobj->className() << " *obj = (" << metaobj->className() << "*)handle;\n";
-        writeStaticData(scommon, stream, "//[COMMON_NATIVE_RESIZECONTROL]");
-        stream << "}\n\n";
-
-        stream << "JNIEXPORT void JNICALL Java_" << sigpack << metaobj->className()
-            << "_disposeControl(JNIEnv *env, jclass that, jint handle)\n{\n";
-        stream << "    " << metaobj->className() << " *obj = (" << metaobj->className() << "*)handle;\n";
-        stream << "    QWidget *xembed = obj->topLevelWidget();\n";
-        stream << "    delete xembed;\n";
-        stream << "    Q_UNUSED(env);\n";
-        stream << "    Q_UNUSED(that);\n";
-        stream << "}\n\n";
-
-        stream << "JNIEXPORT void JNICALL Java_" << sigpack << metaobj->className()
-            << "_setFont(JNIEnv *env, jclass that, jint handle, jstring jni_family, jint size)\n{\n";
-        stream << "    " << metaobj->className() << " *obj = (" << metaobj->className() << "*)handle;\n";
-        writeStaticData(scommon, stream, "//[COMMON_NATIVE_SETFONT]");
-        stream << "}\n\n";
-
-        for (int nmem=metaobj->methodOffset(); nmem<metaobj->methodCount(); ++nmem)
-        {
-            mmember = metaobj->method(nmem);
-            QList<QByteArray> parTypes = mmember.parameterTypes();
-            QList<QByteArray> parNames = mmember.parameterNames();
-
-            // public slots
-            if ((mmember.access() == QMetaMethod::Public)
-                && (mmember.methodType() == QMetaMethod::Slot))
-            {
-                stream << "JNIEXPORT " << toJavaNativeType(mmember.typeName())
-                    << " JNICALL Java_" << sigpack << metaobj->className() << "_" << toMemberName(mmember.signature())
-                    << "JNIEnv *env, jclass that, jint handle";
-
-                for (int npar=0; npar<parTypes.count(); ++npar) {
-                    stream << ", " << toJavaNativeType(parTypes.at(npar)) << " ";
-                    if (typeNeedsConvertion(parTypes.at(npar)))
-                        stream << "jni_";
-                    stream << parNames.at(npar);
-                }
-                stream << ")\n{\n    " << metaobj->className() << " *obj = ("
-                    << metaobj->className() << "*)handle;\n";
-
-                stream << "    Q_UNUSED(that);\n";
-
-                convertTypes(stream, parTypes, parNames);
-
-                stream << "    ";
-                if (!QString(mmember.typeName()).isEmpty())
-                    stream << mmember.typeName() << " res = ";
-                stream << "obj->" << toMemberName(mmember.signature());
-                for (int npar=0; npar<parTypes.count(); ++npar) {
-                    if (npar != 0) stream << ", ";
-                    stream << parNames.at(npar);
-                }
-                stream << ");\n";
-                convertReturnType(stream, mmember.typeName());
-                stream << "}\n\n";
-            }
-        }
+        
+        writeCommonNativeSource(stream, scommon, metaobj, sigpack);
     }
 
     cfile.close();
@@ -770,7 +827,7 @@ void writeWinJavaFile(const QObject *obj, QString libName, QString package)
     stream << "        automation = new OleAutomation(site);\n";
     stream << "        site.doVerb(OLE.OLEIVERB_SHOW);\n\n";
 
-    int tmpId = 5; //start Id is (usually) 4
+    int tmpId = 1;
     if (hasSig)
     {
         stream << "        listeners = new ArrayList();\n";
@@ -926,6 +983,51 @@ void QSWT::writeWinProjectFile(const QList<QString> &lstSources, const QList<QSt
     }
     stream << "\n\n";
     stream << "SOURCES += ";
+    for (int nsrc=0; nsrc<lstSources.count(); ++nsrc) {
+        stream << "\\\n    ../" << lstSources.at(nsrc);
+    }
+
+    pfile.close();
+    cfile.close();
+}
+
+void QSWT::writeMacJavaFiles(const QList<QObject *> &lstObj, QString libName, QString package)
+{
+    writeJavaFiles(lstObj, libName, package);
+}
+
+void QSWT::writeMacNativeHeaderFile(const QList<QObject *> &lstObj, QString libName, QString package)
+{
+    writeNativeHeaderFile(lstObj, libName, package);
+}
+
+void QSWT::writeMacNativeSourceFile(const QList<QObject *> &lstObj, const QList<QString> &lstHeaders, QString libName, QString package)
+{
+    writeNativeSourceFile(lstObj, lstHeaders, libName, package);
+}
+
+void QSWT::writeMacProjectFile(const QList<QString> &lstSources, const QList<QString> &lstHeaders, QString libName)
+{
+    QFile pfile(libName + "/" + libName + "_inc.pri");
+    if (!ensureDir(pfile))
+        return;
+    if (!pfile.open(QIODevice::WriteOnly)) return;
+    QTextStream stream(&pfile);
+
+    QFile cfile(COMMONFILE);
+    if (!ensureDir(cfile))
+        return;
+    if (!cfile.open(QIODevice::ReadOnly)) return;
+    QTextStream scommon(&cfile);
+
+    writeStaticData(scommon, stream, "//[COMMON_MAC_PROJECT_HEADER]");
+
+    stream << "HEADERS += " << libName << ".h";
+    for (int nheader=0; nheader<lstHeaders.count(); ++nheader) {
+        stream << "\\\n    ../" << lstHeaders.at(nheader);
+    }
+    stream << "\n\n";
+    stream << "SOURCES += " << libName << ".cpp";
     for (int nsrc=0; nsrc<lstSources.count(); ++nsrc) {
         stream << "\\\n    ../" << lstSources.at(nsrc);
     }

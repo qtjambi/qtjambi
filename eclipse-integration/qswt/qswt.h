@@ -16,6 +16,11 @@ namespace QSWT
     void writeWinJavaFiles(const QList<QObject *> &lstObj, QString libName, QString package);
     void writeWinProjectFile(const QList<QString> &lstSources, const QList<QString> &lstHeaders, QString libName);
 
+    void writeMacJavaFiles(const QList<QObject *> &lstObj, QString libName, QString package);
+    void writeMacNativeHeaderFile(const QList<QObject *> &lstObj, QString libName, QString package);
+    void writeMacNativeSourceFile(const QList<QObject *> &lstObj, const QList<QString> &lstHeaders, QString libName, QString package);
+    void writeMacProjectFile(const QList<QString> &lstSources, const QList<QString> &lstHeaders, QString libName);
+
     void writeJavaFiles(const QList<QObject *> &lstObj, QString libName, QString package);
     void writeNativeHeaderFile(const QList<QObject *> &lstObj, QString libName, QString package);
     void writeNativeSourceFile(const QList<QObject *> &lstObj, const QList<QString> &lstHeaders, QString libName, QString package);
@@ -44,6 +49,15 @@ int main(int argc, char *argv[]) \
 #define QSWT_MAIN_END() \
     QSWT::writeWinJavaFiles(objList, libName, package); \
     QSWT::writeWinProjectFile(srcList, headerList, libName); \
+    delete qapp; \
+    return 0; \
+}
+#elif defined Q_WS_MAC
+#define QSWT_MAIN_END() \
+    QSWT::writeMacNativeHeaderFile(objList, libName, package); \
+    QSWT::writeMacNativeSourceFile(objList, headerList, libName, package); \
+    QSWT::writeMacJavaFiles(objList, libName, package); \
+    QSWT::writeMacProjectFile(srcList, headerList, libName); \
     delete qapp; \
     return 0; \
 }
