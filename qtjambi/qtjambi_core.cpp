@@ -556,11 +556,11 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
         }
 
         link = QtJambiLink::createWrapperForQObject(env, qt_object, className, packageName);
+        if (!link->createdByJava())
+            qtjambi_setup_connections(env, link);
     }
     Q_ASSERT(link);
 
-    if (!link->createdByJava())
-        qtjambi_setup_connections(env, link);
 
     return link->javaObject(env);
 }

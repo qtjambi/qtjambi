@@ -34,7 +34,7 @@ public class ItemviewChart extends QMainWindow {
 
         QAction quitAction = new QAction(tr("&Quit"), this);
         quitAction.setShortcut(new QKeySequence(tr("Ctrl+Q")));
-        quitAction.triggered.connect(this, "quit()");
+        quitAction.triggered.connect(QApplication.instance(), "quit()");
         fileMenu.addAction(quitAction);
 
         setupModel();
@@ -75,6 +75,7 @@ public class ItemviewChart extends QMainWindow {
         setCentralWidget(splitter);
     }
 
+    @SuppressWarnings("unused")
     private void openFile() {
         openFile("");
     }
@@ -118,6 +119,7 @@ public class ItemviewChart extends QMainWindow {
         }
     }
 
+    @SuppressWarnings("unused")
     private void saveFile() {
         String fileName = QFileDialog.getSaveFileName(this, tr("Save file as"), "", "*.cht");
 
@@ -138,10 +140,6 @@ public class ItemviewChart extends QMainWindow {
             file.close();
             statusBar().showMessage(tr("Saved " + fileName), 2000);
         }
-    }
-
-    private void quit() {
-        QApplication.quit();
     }
 
     private class PieView extends QAbstractItemView {

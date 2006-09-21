@@ -169,7 +169,6 @@ public class SvgCards extends QGraphicsView {
             fileName = file;
             renderer = new QSvgRenderer(fileName);
             cards = new LinkedList<Card>();
-            Random random = new Random();
             for (int i = 0; i < CARDS.length; ++i) {
                 Card item = new Card(CARDS[i], renderer);
                 cards.add(item);
