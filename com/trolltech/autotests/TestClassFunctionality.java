@@ -350,6 +350,23 @@ public class TestClassFunctionality extends QTestCase
         }
     }
     
+    /**
+     * Test that calling a private virtual function gives you an exception
+     */
+    @SuppressWarnings("deprecation")
+    public void run_callPrivateVirtualFunction() {
+        QTableWidget w = new QTableWidget();
+        
+        boolean gotException = false;
+        try {
+            w.setModel(null);
+        } catch (QNoImplementationException e) {
+            gotException = true;
+        }
+        
+        QVERIFY(gotException);
+    }
+    
     
     /*-------------------------------------------------------------------------
      * Test that QObject.sender() returns something valid during

@@ -967,6 +967,8 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
 //         }
     }
 
+    if (java_function->isEmptyFunction()) s << "@Deprecated ";
+
     if (attr & MetaJavaAttributes::Public) s << "public ";
     else if (attr & MetaJavaAttributes::Protected) s << "protected ";
     else if (attr & MetaJavaAttributes::Private) s << "private ";

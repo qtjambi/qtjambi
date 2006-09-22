@@ -433,8 +433,8 @@ private:
     MetaJavaType *m_type;
     const MetaJavaClass *m_class;
     const MetaJavaClass *m_implementing_class;
-    const MetaJavaClass *m_interface_class;
     const MetaJavaClass *m_declaring_class;
+    const MetaJavaClass *m_interface_class;
     MetaJavaArgumentList m_arguments;
     uint m_constant : 1;
     uint m_invalid  : 1;
@@ -526,7 +526,8 @@ public:
         VirtualInCppFunctions   = 0x020000,   // Only functions that are virtual in C++
         NonEmptyFunctions       = 0x040000,   // Only functions with JNI implementations
         VirtualInJavaFunctions  = 0x080000,   // Only functions which are virtual in Java
-        AbstractFunctions       = 0x100000    // Only abstract functions
+        AbstractFunctions       = 0x100000,   // Only abstract functions
+        WasVisible              = 0x200000    // Only functions that were public or protected in the original code
     };
 
     MetaJavaClass()
@@ -536,8 +537,8 @@ public:
           m_has_nonpublic(false),
           m_has_nonprivateconstructor(false),
           m_functions_fixed(false),
-          m_force_shell_class(false),
           m_has_public_destructor(true),
+          m_force_shell_class(false),
           m_enclosing_class(0),
           m_base_class(0),         
           m_extracted_interface(0),
@@ -655,8 +656,8 @@ private:
     uint m_has_virtuals : 1;
     uint m_has_nonpublic : 1;
     uint m_has_nonprivateconstructor : 1;
-    uint m_has_public_destructor : 1;
     uint m_functions_fixed : 1;
+    uint m_has_public_destructor : 1;
     uint m_force_shell_class : 1;
 
     const MetaJavaClass *m_enclosing_class;

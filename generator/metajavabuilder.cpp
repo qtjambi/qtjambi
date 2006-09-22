@@ -318,6 +318,7 @@ struct Operator
         switch (type) {
         case Plus: return x + value;
         case ShiftLeft: return x << value;
+        case None: return x;
         }
         return x;
     }

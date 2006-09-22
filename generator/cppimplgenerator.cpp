@@ -361,7 +361,7 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
             if (!function->isFinalInCpp())
                 ++pos;
-
+            
             writeShellFunction(s, function, java_class, pos);
         }
 

@@ -451,7 +451,7 @@ MetaJavaFunctionList MetaJavaClass::functionsInJava() const
 MetaJavaFunctionList MetaJavaClass::functionsInShellClass() const
 {
     // Only functions and only protected and public functions
-    int default_flags = NormalFunctions | Visible;
+    int default_flags = NormalFunctions | Visible | WasVisible;
 
     // All virtual functions
     MetaJavaFunctionList returned = queryFunctions(VirtualFunctions | default_flags);
@@ -799,6 +799,10 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
             continue;
         }
 
+        if ((query & WasVisible) && f->wasPrivate()) {
+            continue;
+        }
+
         if ((query & WasProtected) && !f->wasProtected()) {
             continue;
         }
@@ -1087,6 +1091,14 @@ void MetaJavaClass::fixFunctions()
                                 if (!sf->isFinalInJava() && f->isFinalInJava()) {
                                     *f -= MetaJavaAttributes::FinalInJava;
     //                                 printf("   --- inherit virtual\n");
+                                }
+                                if (!f->isFinalInJava() && f->isPrivate()) {
+                                    f->setFunctionType(MetaJavaFunction::EmptyFunction);
+                                    f->setVisibility(MetaJavaAttributes::Protected);
+                                    *f += MetaJavaAttributes::FinalInJava;
+                                    ReportHandler::warning(QString("private virtual function '%1' in '%2'")
+                                        .arg(f->signature())
+                                        .arg(f->implementingClass()->name()));
                                 }
                             }
                         }
