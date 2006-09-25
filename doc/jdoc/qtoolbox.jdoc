@@ -1,0 +1,96 @@
+<class name="QToolBox" doc="/**
+<p>The QToolBox class provides a column of tabbed widget items.</p>
+<p>A toolbox is a widget that displays a column of tabs one above the other, with the current item displayed below the current tab. Every tab has an index position within the column of tabs. A tab's item is a QWidget.</p>
+<p>Each item has an itemText(), an optional itemIcon(), an optional itemToolTip(), and a widget(). The item's attributes can be changed with setItemText(), setItemIcon(), and setItemToolTip(). Each item can be enabled or disabled individually with setItemEnabled().</p>
+<p>Items are added using addItem(), or inserted at particular positions using insertItem(). The total number of items is given by count(). Items can be deleted with delete, or removed from the toolbox with removeItem(). Combining removeItem() and insertItem() allows you to move items to different positions.</p>
+<p>The index of the current item widget is returned by currentIndex(), and set with setCurrentIndex(). The index of a particular item can be found using indexOf(), and the item at a given index is returned by item().</p>
+<p>The currentChanged() signal is emitted when the current item is changed.</p>
+
+*/">
+    <method name="public QToolBox(com.trolltech.qt.gui.QWidget parent__0, com.trolltech.qt.core.Qt.WindowFlags f__1)" doc="/**
+<p>Constructs a new toolbox with the given <i>parent</i> and the flags, <i>f</i>.</p>
+
+*/"/>
+    <method name="public final int addItem(com.trolltech.qt.gui.QWidget widget__0, java.lang.String text__1)" doc="/**
+<p>Adds the widget <i>w</i> in a new tab at bottom of the toolbox. The new tab's text is set to <i>text</i>. Returns the new tab's index.</p>
+
+*/"/>
+    <method name="public final int addItem(com.trolltech.qt.gui.QWidget widget__0, com.trolltech.qt.gui.QIcon icon__1, java.lang.String text__2)" doc="/**
+<p>Adds the <i>widget</i> in a new tab at bottom of the toolbox. The new tab's text is set to <i>text</i>, and the <i>iconSet</i> is displayed to the left of the <i>text</i>. Returns the new tab's index.</p>
+
+*/"/>
+    <method name="public final int count()"/>
+    <method name="public final int currentIndex()"/>
+    <method name="public final com.trolltech.qt.gui.QWidget currentWidget()" doc="/**
+<p>Returns a pointer to the current widget, or 0 if there is no such item.</p>
+
+*/"/>
+    <method name="public final int indexOf(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Returns the index of <i>widget</i>, or -1 if the item does not exist.</p>
+
+*/"/>
+    <method name="public final int insertItem(int index__0, com.trolltech.qt.gui.QWidget widget__1, java.lang.String text__2)" doc="/**
+<p>Inserts the <i>widget</i> at position <i>index</i>, or at the bottom of the toolbox if <i>index</i> is out of range. The new item's text is set to <i>text</i>. Returns the new item's index.</p>
+
+*/"/>
+    <method name="public final int insertItem(int index__0, com.trolltech.qt.gui.QWidget widget__1, com.trolltech.qt.gui.QIcon icon__2, java.lang.String text__3)" doc="/**
+<p>Inserts the <i>widget</i> at position <i>index</i>, or at the bottom of the toolbox if <i>index</i> is out of range. The new item's text is set to <i>text</i>, and the <i>icon</i> is displayed to the left of the <i>text</i>. Returns the new item's index.</p>
+
+*/"/>
+    <method name="public final boolean isItemEnabled(int index__0)" doc="/**
+<p>Returns true if the item at position <i>index</i> is enabled; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QIcon itemIcon(int index__0)" doc="/**
+<p>Returns the icon of the item at position <i>index</i>, or a null icon if <i>index</i> is out of range.</p>
+
+*/"/>
+    <method name="public final java.lang.String itemText(int index__0)" doc="/**
+<p>Returns the text of the item at position <i>index</i>, or an empty string if <i>index</i> is out of range.</p>
+
+*/"/>
+    <method name="public final java.lang.String itemToolTip(int index__0)" doc="/**
+<p>Returns the tooltip of the item at position <i>index</i>, or an empty string if <i>index</i> is out of range.</p>
+
+*/"/>
+    <method name="public final void removeItem(int index__0)" doc="/**
+<p>Removes the item at position <i>index</i> from the toolbox. Note that the widget is <i>not</i> deleted.</p>
+
+*/"/>
+    <method name="public final void setCurrentIndex(int index__0)"/>
+    <method name="public final void setCurrentWidget(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Makes<i>widget</i> the current widget. The <i>widget</i> must be an item in this tool box.</p>
+
+*/"/>
+    <method name="public final void setItemEnabled(int index__0, boolean enabled__1)" doc="/**
+<p>If <i>enabled</i> is true then the item at position <i>index</i> is enabled; otherwise the item at position <i>index</i> is disabled.</p>
+
+*/"/>
+    <method name="public final void setItemIcon(int index__0, com.trolltech.qt.gui.QIcon icon__1)" doc="/**
+<p>Sets the icon of the item at position <i>index</i> to <i>icon</i>.</p>
+
+*/"/>
+    <method name="public final void setItemText(int index__0, java.lang.String text__1)" doc="/**
+<p>Sets the text of the item at position <i>index</i> to <i>text</i>.</p>
+
+*/"/>
+    <method name="public final void setItemToolTip(int index__0, java.lang.String toolTip__1)" doc="/**
+<p>Sets the tooltip of the item at position <i>index</i> to <i>toolTip</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget widget(int index__0)" doc="/**
+<p>Returns the widget at position <i>index</i>, or 0 if there is no such item.</p>
+
+*/"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected void itemInserted(int index__0)" doc="/**
+<p>This virtual handler is called after a new item was added or inserted at position <i>index</i>.</p>
+
+*/"/>
+    <method name="protected void itemRemoved(int index__0)" doc="/**
+<p>This virtual handler is called after an item was removed from position <i>index</i>.</p>
+
+*/"/>
+    <method name="protected void showEvent(com.trolltech.qt.gui.QShowEvent e__0)"/>
+</class>

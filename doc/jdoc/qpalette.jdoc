@@ -1,0 +1,246 @@
+<class name="QPalette" doc="/**
+<p>The QPalette class contains color groups for each widget state.</p>
+<p>A palette consists of three color groups: <i>Active</i>, <i>Disabled</i>, and <i>Inactive</i>. All widgets in Qt contain a palette and use their palette to draw themselves. This makes the user interface easily configurable and easier to keep consistent.</p>
+<p>If you create a new widget we strongly recommend that you use the colors in the palette rather than hard-coding specific colors.</p>
+<p>The color groups:</p>
+<ul>
+<li>The Active group is used for the window that has keyboard focus.</li>
+<li>The Inactive group is used for other windows.</li>
+<li>The Disabled group is used for widgets (not windows) that are disabled for some reason.</li>
+</ul>
+<p>Both active and inactive windows can contain disabled widgets. (Disabled widgets are often called <i>inaccessible</i> or <i>grayed out</i>.)</p>
+<p>In most styles, Active and Inactive look the same.</p>
+<p>Colors and brushes can be set for particular roles in any of a palette's color groups with setColor() and setBrush(). A color group contains a group of colors used by widgets for drawing themselves. We recommend that widgets use color group roles from the palette such as &quot;foreground&quot; and &quot;base&quot; rather than literal colors like &quot;red&quot; or &quot;turquoise&quot;. The color roles are enumerated and defined in the ColorRole documentation.</p>
+<p>We strongly recommend that you use a system-supplied color group and modify that as necessary.</p>
+<p>To modify a color group you call the functions setColor() and setBrush(), depending on whether you want a pure color or a pixmap pattern.</p>
+<p>There are also corresponding color() and brush() getters, and a commonly used convenience function to get the ColorRole for the current ColorGroup: background(), foreground(), base(), etc.</p>
+<p>You can copy a palette using the copy constructor and test to see if two palettes are <i>identical</i> using isCopyOf().</p>
+<p>QPalette is optimized by the use of implicit sharing, so it is very efficient to pass QPalette objects as arguments.</p>
+
+*/">
+    <method name="public QPalette()" doc="/**
+<p>Constructs a palette object that uses the application's default palette.</p>
+
+*/"/>
+    <method name="public QPalette(com.trolltech.qt.gui.QColor button__0)" doc="/**
+<p>Constructs a palette from the <i>button</i> color. The other colors are automatically calculated, based on this color. <tt>Window</tt> will be the button color as well.</p>
+
+*/"/>
+    <method name="public QPalette(com.trolltech.qt.gui.QColor button__0, com.trolltech.qt.gui.QColor window__1)" doc="/**
+<p>Constructs a palette from a <i>button</i> color and a <i>window</i>. The other colors are automatically calculated, based on these colors.</p>
+
+*/"/>
+    <method name="public QPalette(com.trolltech.qt.gui.QPalette palette__0)" doc="/**
+<p>Constructs a copy of <i>p</i>.</p>
+<p>This constructor is fast thanks to implicit sharing.</p>
+
+*/"/>
+    <method name="public QPalette(com.trolltech.qt.gui.QBrush windowText__0, com.trolltech.qt.gui.QBrush button__1, com.trolltech.qt.gui.QBrush light__2, com.trolltech.qt.gui.QBrush dark__3, com.trolltech.qt.gui.QBrush mid__4, com.trolltech.qt.gui.QBrush text__5, com.trolltech.qt.gui.QBrush bright_text__6, com.trolltech.qt.gui.QBrush base__7, com.trolltech.qt.gui.QBrush window__8)" doc="/**
+<p>Constructs a palette. You can pass either brushes, pixmaps or plain colors for <i>windowText</i>, <i>button</i>, <i>light</i>, <i>dark</i>, <i>mid</i>, <i>text</i>, <i>bright_text</i>, <i>base</i> and <i>window</i>.</p>
+
+*/"/>
+    <method name="public QPalette(com.trolltech.qt.gui.QColor windowText__0, com.trolltech.qt.gui.QColor window__1, com.trolltech.qt.gui.QColor light__2, com.trolltech.qt.gui.QColor dark__3, com.trolltech.qt.gui.QColor mid__4, com.trolltech.qt.gui.QColor text__5, com.trolltech.qt.gui.QColor base__6)" doc="/**
+<p>Constructs a palette with the specified <i>windowText</i>, <i>window</i>, <i>light</i>, <i>dark</i>, <i>mid</i>, <i>text</i>, and <i>base</i> colors. The button color will be set to the window color.</p>
+
+*/"/>
+    <method name="public QPalette(com.trolltech.qt.core.Qt.GlobalColor button__0)" doc="/**
+<p>Constructs a palette from the <i>button</i> color. The other colors are automatically calculated, based on this color. <tt>Window</tt> will be the button color as well.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush alternateBase()" doc="/**
+<p>Returns the alternate base brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush background()" doc="/**
+<p>Use window() instead.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush base()" doc="/**
+<p>Returns the base brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush brightText()" doc="/**
+<p>Returns the bright text foreground brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush brush(com.trolltech.qt.gui.QPalette.ColorRole cr__0)" doc="/**
+<p>Returns the brush that has been set for color role <i>r</i> in the current ColorGroup.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush brush(com.trolltech.qt.gui.QPalette.ColorGroup cg__0, com.trolltech.qt.gui.QPalette.ColorRole cr__1)" doc="/**
+<p>Returns the brush in color group <i>gr</i>, used for color role <i>cr</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush button()" doc="/**
+<p>Returns the button brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush buttonText()" doc="/**
+<p>Returns the button text foreground brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QColor color(com.trolltech.qt.gui.QPalette.ColorGroup cg__0, com.trolltech.qt.gui.QPalette.ColorRole cr__1)" doc="/**
+<p>Returns the color in color group <i>gr</i>, used for color role <i>r</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QColor color(com.trolltech.qt.gui.QPalette.ColorRole cr__0)" doc="/**
+<p>Returns the color that has been set for color role <i>r</i> in the current ColorGroup.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPalette.ColorGroup currentColorGroup()" doc="/**
+<p>Returns the palette's current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush dark()" doc="/**
+<p>Returns the dark brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush foreground()" doc="/**
+<p>Use windowText() instead.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush highlight()" doc="/**
+<p>Returns the highlight brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush highlightedText()" doc="/**
+<p>Returns the highlighted text brush of the current color group.</p>
+
+*/"/>
+    <method name="public final boolean isBrushSet(com.trolltech.qt.gui.QPalette.ColorGroup cg__0, com.trolltech.qt.gui.QPalette.ColorRole cr__1)" doc="/**
+<p>Returns true if the ColorGroup <i>cg</i> and ColorRole <i>cr</i> has been set previously on this palette; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isCopyOf(com.trolltech.qt.gui.QPalette p__0)" doc="/**
+<p>Returns true if this palette and <i>p</i> are copies of each other, i.e. one of them was created as a copy of the other and neither was subsequently modified; otherwise returns false. This is much stricter than equality.</p>
+
+*/"/>
+    <method name="public final boolean isEqual(com.trolltech.qt.gui.QPalette.ColorGroup cr1__0, com.trolltech.qt.gui.QPalette.ColorGroup cr2__1)" doc="/**
+<p>Returns true (usually quickly) if color group <i>cg1</i> is equal to <i>cg2</i>; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush light()" doc="/**
+<p>Returns the light brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush link()" doc="/**
+<p>Returns the unvisited link text brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush linkVisited()" doc="/**
+<p>Returns the visited link text brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush mid()" doc="/**
+<p>Returns the mid brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush midlight()" doc="/**
+<p>Returns the midlight brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPalette resolve(com.trolltech.qt.gui.QPalette arg__0)" doc="/**
+<p>Returns a new QPalette that has attributes copied from <i>other</i>.</p>
+
+*/"/>
+    <method name="public final int resolve()"/>
+    <method name="public final int serialNumber()" doc="/**
+<p>Returns a number that uniquely identifies this QPalette object. The serial number is intended for caching. Its value may not be used for anything other than equality testing.</p>
+<p>Note that QPalette uses implicit sharing, and the serial number changes during the lazy copy operation (when the palette is actually modified), not during a shallow copy (copy constructor or assignment).</p>
+
+*/"/>
+    <method name="public final void setBrush(com.trolltech.qt.gui.QPalette.ColorRole cr__0, com.trolltech.qt.gui.QBrush brush__1)" doc="/**
+<p>Sets the brush for color role <i>cr</i> to brush <i>brush</i> for all groups in the palette.</p>
+
+*/"/>
+    <method name="public final void setBrush(com.trolltech.qt.gui.QPalette.ColorGroup cg__0, com.trolltech.qt.gui.QPalette.ColorRole cr__1, com.trolltech.qt.gui.QBrush brush__2)" doc="/**
+<p>Sets the brush in color group <i>cg</i>, used for color role <i>cr</i>, to <i>b</i>.</p>
+
+*/"/>
+    <method name="public final void setColor(com.trolltech.qt.gui.QPalette.ColorGroup cg__0, com.trolltech.qt.gui.QPalette.ColorRole cr__1, com.trolltech.qt.gui.QColor color__2)" doc="/**
+<p>Sets the brush in color group <i>gr</i>, used for color role <i>r</i>, to the solid color <i>c</i>.</p>
+
+*/"/>
+    <method name="public final void setColor(com.trolltech.qt.gui.QPalette.ColorRole cr__0, com.trolltech.qt.gui.QColor color__1)" doc="/**
+<p>Sets the color used for color role <i>r</i> in all color groups to a solid color <i>c</i>.</p>
+
+*/"/>
+    <method name="public final void setColorGroup(com.trolltech.qt.gui.QPalette.ColorGroup cr__0, com.trolltech.qt.gui.QBrush windowText__1, com.trolltech.qt.gui.QBrush button__2, com.trolltech.qt.gui.QBrush light__3, com.trolltech.qt.gui.QBrush dark__4, com.trolltech.qt.gui.QBrush mid__5, com.trolltech.qt.gui.QBrush text__6, com.trolltech.qt.gui.QBrush bright_text__7, com.trolltech.qt.gui.QBrush base__8, com.trolltech.qt.gui.QBrush window__9)" doc="/**
+<p>Sets a the group at <i>cg</i>. You can pass either brushes, pixmaps or plain colors for <i>windowText</i>, <i>button</i>, <i>light</i>, <i>dark</i>, <i>mid</i>, <i>text</i>, <i>bright_text</i>, <i>base</i> and <i>window</i>.</p>
+
+*/"/>
+    <method name="public final void setCurrentColorGroup(com.trolltech.qt.gui.QPalette.ColorGroup cg__0)" doc="/**
+<p>Set the palette's current color group to <i>cg</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush shadow()" doc="/**
+<p>Returns the shadow brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush text()" doc="/**
+<p>Returns the text foreground brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush window()" doc="/**
+<p>Returns the window (general background) brush of the current color group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush windowText()" doc="/**
+<p>Returns the window text (general foreground) brush of the current color group.</p>
+
+*/"/>
+    <enum name="ColorGroup" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>synonym for Active</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="ColorRole" doc="/**
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image palette.png]</font></p><p>The ColorRole enum defines the different symbolic color roles used in current GUIs.</p>
+<p>The central roles are:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A general background color.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This value is obsolete. Use Window instead.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A general foreground color.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This value is obsolete. Use WindowText instead.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Used as the background color for text entry widgets; usually white or another light color.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Used as the alternate background color in views with alternating row colors (see QAbstractItemView::setAlternatingRowColors()).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The foreground color used with <tt>Base</tt>. This is usually the same as the <tt>WindowText</tt>, in which case it must provide good contrast with <tt>Window</tt> and <tt>Base</tt>.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The general button background color. This background can be different from <tt>Window</tt> as some styles require a different background color for buttons.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A foreground color used with the <tt>Button</tt> color.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A text color that is very different from <tt>WindowText</tt>, and contrasts well with e.g. <tt>Dark</tt>. Typically used for text that needs to be drawn where <tt>Text</tt> or <tt>WindowText</tt> would give poor contrast, such as on pressed push buttons. Note that text colors can be used for things other than just words; text colors are <i>usually</i> used for text, but it's quite common to use the text color roles for lines, icons, etc.</td></tr>
+</table></p>
+<p>There are some color roles used mostly for 3D bevel and shadow effects. All of these are normally derived from <tt>Window</tt>, and used in ways that depend on that relationship. For example, buttons depend on it to make the bevels look attractive, and Motif scroll bars depend on <tt>Mid</tt> to be slightly different from <tt>Window</tt>.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Lighter than <tt>Button</tt> color.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Between <tt>Button</tt> and <tt>Light</tt>.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Darker than <tt>Button</tt>.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Between <tt>Button</tt> and <tt>Dark</tt>.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A very dark color. By default, the shadow color is Qt::black.</td></tr>
+</table></p>
+<p>Selected (marked) items have two roles:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A color to indicate a selected item or the current item. By default, the highlight color is Qt::darkBlue.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A text color that contrasts with <tt>Highlight</tt>. By default, the highlighted text color is Qt::white.</td></tr>
+</table></p>
+<p>There are two color roles related to hyperlinks:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A text color used for unvisited hyperlinks. By default, the link color is Qt::blue.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A text color used for already visited hyperlinks. By default, the linkvisited color is Qt::magenta.</td></tr>
+</table></p>
+<p>Note that we do not use the <tt>Link</tt> and <tt>LinkVisited</tt> roles when rendering rich text in Qt, and that we recommend that you use CSS and the QTextDocument::setDefaultStyleSheet() function to alter the appearance of links. For example:</p>
+<pre>        QTextBrowser browser;
+        QColor linkColor(Qt::red);
+        QString sheet = QString::fromLatin1(&quot;a { text-decoration: underline; color: %1 }&quot;).arg(linkColor.name());
+        browser.document()-&gt;setDefaultStyleSheet(sheet);</pre>
+
+*/"/>
+</class>

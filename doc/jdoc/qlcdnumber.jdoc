@@ -1,0 +1,98 @@
+<class name="QLCDNumber" doc="/**
+<p>The QLCDNumber widget displays a number with LCD-like digits.</p>
+<p>It can display a number in just about any size. It can display decimal, hexadecimal, octal or binary numbers. It is easy to connect to data sources using the display() slot, which is overloaded to take any of five argument types.</p>
+<p>There are also slots to change the base with setMode() and the decimal point with setSmallDecimalPoint().</p>
+<p>QLCDNumber emits the overflow() signal when it is asked to display something beyond its range. The range is set by setNumDigits(), but setSmallDecimalPoint() also influences it. If the display is set to hexadecimal, octal or binary, the integer equivalent of the value is displayed.</p>
+<p>These digits and other symbols can be shown: 0/O, 1, 2, 3, 4, 5/S, 6, 7, 8, 9/g, minus, decimal point, A, B, C, D, E, F, h, H, L, o, P, r, u, U, Y, colon, degree sign (which is specified as single quote in the string) and space. QLCDNumber substitutes spaces for illegal characters.</p>
+<p>It is not possible to retrieve the contents of a QLCDNumber object, although you can retrieve the numeric value with value(). If you really need the text, we recommend that you connect the signals that feed the display() slot to another slot as well and store the value there.</p>
+<p>Incidentally, QLCDNumber is the very oldest part of Qt, tracing its roots back to a BASIC program on the <a href=&quote;http://www.nvg.ntnu.no/sinclair/computers/zxspectrum/zxspectrum.htm&quote;>Sinclair Spectrum</a>.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image motif-lcdnumber.png]</font> <font color=&quote;red&quote;>[Missing image cde-lcdnumber.png]</font> <font color=&quote;red&quote;>[Missing image windows-lcdnumber.png]</font> <font color=&quote;red&quote;>[Missing image windowsxp-lcdnumber.png]</font> <font color=&quote;red&quote;>[Missing image macintosh-lcdnumber.png]</font> <font color=&quote;red&quote;>[Missing image plastique-lcdnumber.png]</font></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>LCD number widgets shown in various widget styles (from left to right): Motif, CDE, Windows, Windows XP, Macintosh, Plastique.</td></tr>
+</table></p>
+
+*/">
+    <method name="public QLCDNumber(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an LCD number, sets the number of digits to 5, the base to decimal, the decimal point mode to 'small' and the frame style to a raised box. The segmentStyle() is set to <tt>Outline</tt>.</p>
+<p>The <i>parent</i> argument is passed to the QFrame constructor.</p>
+
+*/"/>
+    <method name="public QLCDNumber(int numDigits__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs an LCD number, sets the number of digits to <i>numDigits</i>, the base to decimal, the decimal point mode to 'small' and the frame style to a raised box. The segmentStyle() is set to <tt>Outline</tt>.</p>
+<p>The <i>parent</i> argument is passed to the QFrame constructor.</p>
+
+*/"/>
+    <method name="public final boolean checkOverflow(int num__0)" doc="/**
+<p>Returns true if <i>num</i> is too big to be displayed in its entirety; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean checkOverflow(double num__0)" doc="/**
+<p>Returns true if <i>num</i> is too big to be displayed in its entirety; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final void display(int num__0)" doc="/**
+<p>Displays the number <i>num</i>.</p>
+
+*/"/>
+    <method name="public final void display(java.lang.String str__0)" doc="/**
+<p>Displays the number represented by the string <i>s</i>.</p>
+<p>This version of the function disregards mode() and smallDecimalPoint().</p>
+<p>These digits and other symbols can be shown: 0/O, 1, 2, 3, 4, 5/S, 6, 7, 8, 9/g, minus, decimal point, A, B, C, D, E, F, h, H, L, o, P, r, u, U, Y, colon, degree sign (which is specified as single quote in the string) and space. QLCDNumber substitutes spaces for illegal characters.</p>
+
+*/"/>
+    <method name="public final void display(double num__0)" doc="/**
+<p>Displays the number <i>num</i>.</p>
+
+*/"/>
+    <method name="public final int intValue()"/>
+    <method name="public final com.trolltech.qt.gui.QLCDNumber.Mode mode()"/>
+    <method name="public final int numDigits()"/>
+    <method name="public final com.trolltech.qt.gui.QLCDNumber.SegmentStyle segmentStyle()"/>
+    <method name="public final void setBinMode()" doc="/**
+<p>Calls setMode(Bin). Provided for convenience (e.g. for connecting buttons to it).</p>
+
+*/"/>
+    <method name="public final void setDecMode()" doc="/**
+<p>Calls setMode(Dec). Provided for convenience (e.g. for connecting buttons to it).</p>
+
+*/"/>
+    <method name="public final void setHexMode()" doc="/**
+<p>Calls setMode(Hex). Provided for convenience (e.g. for connecting buttons to it).</p>
+
+*/"/>
+    <method name="public final void setMode(com.trolltech.qt.gui.QLCDNumber.Mode arg__0)"/>
+    <method name="public final void setNumDigits(int nDigits__0)"/>
+    <method name="public final void setOctMode()" doc="/**
+<p>Calls setMode(Oct). Provided for convenience (e.g. for connecting buttons to it).</p>
+
+*/"/>
+    <method name="public final void setSegmentStyle(com.trolltech.qt.gui.QLCDNumber.SegmentStyle arg__0)"/>
+    <method name="public final void setSmallDecimalPoint(boolean arg__0)"/>
+    <method name="public final boolean smallDecimalPoint()"/>
+    <method name="public final double value()"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+    <enum name="Mode" doc="/**
+<p>This type determines how numbers are shown.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Hexadecimal</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Decimal</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Octal</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Binary</td></tr>
+</table></p>
+<p>If the display is set to hexadecimal, octal or binary, the integer equivalent of the value is displayed.</p>
+
+*/"/>
+    <enum name="SegmentStyle" doc="/**
+<p>This type determines the visual appearance of the QLCDNumber widget.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>gives raised segments filled with the background color.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>gives raised segments filled with the windowText color.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>gives flat segments filled with the windowText color.</td></tr>
+</table></p>
+
+*/"/>
+</class>

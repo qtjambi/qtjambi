@@ -1,0 +1,10 @@
+<class name="QAccessibleObjectEx">
+    <method name="public QAccessibleObjectEx(com.trolltech.qt.core.QObject object__0)"/>
+    <method name="public java.lang.String actionText(int action__0, com.trolltech.qt.gui.QAccessible.Text t__1, int child__2)"/>
+    <method name="public boolean doAction(int action__0, int child__1, java.util.List&lt;java.lang.Object&gt; params__2)"/>
+    <method name="public boolean isValid()"/>
+    <method name="public com.trolltech.qt.core.QObject object()"/>
+    <method name="public com.trolltech.qt.core.QRect rect(int child__0)"/>
+    <method name="public void setText(com.trolltech.qt.gui.QAccessible.Text t__0, int child__1, java.lang.String text__2)"/>
+    <method name="public int userActionCount(int child__0)"/>
+</class>

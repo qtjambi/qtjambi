@@ -1,0 +1,60 @@
+<class name="QTextInlineObject" doc="/**
+<p>The QTextInlineObject class represents an inline object in a QTextLayout.</p>
+<p>This class is only used if the text layout is used to lay out parts of a QTextDocument.</p>
+<p>The inline object has various attributes that can be set, for example using, setWidth(), setAscent(), and setDescent(). The rectangle it occupies is given by rect(), and its direction by isRightToLeft(). Its position in the text layout is given by at(), and its format is given by format().</p>
+
+*/">
+    <method name="public QTextInlineObject()"/>
+    <method name="public final double ascent()" doc="/**
+<p>Returns the inline object's ascent.</p>
+
+*/"/>
+    <method name="public final double descent()" doc="/**
+<p>Returns the inline object's descent.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFormat format()" doc="/**
+<p>Returns format of the inline object within the text layout.</p>
+
+*/"/>
+    <method name="public final int formatIndex()" doc="/**
+<p>Returns an integer describing the format of the inline object within the text layout.</p>
+
+*/"/>
+    <method name="public final double height()" doc="/**
+<p>Returns the inline object's total height. This is equal to ascent() + descent() + 1.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if this inline object is valid; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF rect()" doc="/**
+<p>Returns the inline object's rectangle.</p>
+
+*/"/>
+    <method name="public final void setAscent(double a__0)" doc="/**
+<p>Sets the inline object's ascent to <i>a</i>.</p>
+
+*/"/>
+    <method name="public final void setDescent(double d__0)" doc="/**
+<p>Sets the inline object's decent to <i>d</i>.</p>
+
+*/"/>
+    <method name="public final void setWidth(double w__0)" doc="/**
+<p>Sets the inline object's width to <i>w</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.LayoutDirection textDirection()" doc="/**
+<p>Returns if the object should be laid out right-to-left or left-to-right.</p>
+
+*/"/>
+    <method name="public final int textPosition()" doc="/**
+<p>The position of the inline object within the text layout.</p>
+
+*/"/>
+    <method name="public final double width()" doc="/**
+<p>Returns the inline object's width.</p>
+
+*/"/>
+</class>

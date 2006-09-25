@@ -1,0 +1,25 @@
+<class name="QDateEdit" doc="/**
+<p>The QDateEdit class provides a widget for editing dates based on the QDateTimeEdit widget.</p>
+<p>Many of the properties and functions provided by QDateEdit are implemented in QDateTimeEdit. The following properties are most relevant to users of this class:</p>
+<ul>
+<li>date holds the date displayed by the widget.</li>
+<li>minimumDate defines the minimum (earliest) date that can be set by the user.</li>
+<li>maximumDate defines the maximum (latest) date that can be set by the user.</li>
+<li>displayFormat contains a string that is used to format the date displayed in the widget.</li>
+</ul>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image windowsxp-dateedit.png]</font></td><td>A date editing widget shown in the Windows XP widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image macintosh-dateedit.png]</font></td><td>A date editing widget shown in the Macintosh widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image plastique-dateedit.png]</font></td><td>A date editing widget shown in the Plastique widget style.</td></tr>
+</table></p>
+
+*/">
+    <method name="public QDateEdit(com.trolltech.qt.core.QDate date__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs an empty date editor with a <i>parent</i>. The date is set to <i>date</i>.</p>
+
+*/"/>
+    <method name="public QDateEdit(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an empty date editor with a <i>parent</i>.</p>
+
+*/"/>
+</class>

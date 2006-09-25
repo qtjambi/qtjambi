@@ -1,0 +1,362 @@
+<class name="QTextCursor" doc="/**
+<p>The QTextCursor class offers an API to access and modify QTextDocuments.</p>
+<p>Text cursors are objects that are used to access and modify the contents and underlying structure of text documents via a programming interface that mimics the behavior of a cursor in a text editor. QTextCursor contains information about both the cursor's position within a QTextDocument and any selection that it has made.</p>
+<p>QTextCursor is modeled on the way a text cursor behaves in a text editor, providing a programmatic means of performing standard actions through the user interface. A document can be thought of as a single string of characters with the cursor's position() being <i>between</i> any two characters (or at the very beginning or very end of the document). Documents can also contain tables, lists, images, and other objects in addition to text but, from the developer's point of view, the document can be treated as one long string. Some portions of that string can be considered to lie within particular blocks (e.g. paragraphs), or within a table's cell, or a list's item, or other structural elements. When we refer to &quot;current character&quot; we mean the character immediately after the cursor position() in the document; similarly the &quot;current block&quot; is the block that contains the cursor position().</p>
+<p>A QTextCursor also has an anchor() position. The text that is between the anchor() and the position() is the selection. If anchor() == position() there is no selection.</p>
+<p>The cursor position can be changed programmatically using setPosition() and movePosition(); the latter can also be used to select text. For selections see selectionStart(), selectionEnd(), hasSelection(), clearSelection(), and removeSelectedText().</p>
+<p>If the position() is at the start of a block atBlockStart() returns true; and if it is at the end of a block atBlockEnd() returns true. The format of the current character is returned by charFormat(), and the format of the current block is returned by blockFormat().</p>
+<p>Formatting can be applied to the current text document using the setCharFormat(), mergeCharFormat(), setBlockFormat() and mergeBlockFormat() functions. The 'set' functions will replace the cursor's current character or block format, while the 'merge' functions add the given format properties to the cursor's current format. If the cursor has a selection the given format is applied to the current selection. Note that when only parts of a block is selected the block format is applied to the entire block. The text at the current character position can be turned into a list using createList().</p>
+<p>Deletions can be achieved using deleteChar(), deletePreviousChar(), and removeSelectedText().</p>
+<p>Text strings can be inserted into the document with the insertText() function, blocks (representing new paragraphs) can be inserted with insertBlock().</p>
+<p>Existing fragments of text can be inserted with insertFragment() but, if you want to insert pieces of text in various formats, it is usually still easier to use insertText() and supply a character format.</p>
+<p>Various types of higher-level structure can also be inserted into the document with the cursor:</p>
+<ul>
+<li>Lists are ordered sequences of block elements that are decorated with bullet points or symbols. These are inserted in a specified format with insertList().</li>
+<li>Tables are inserted with the insertTable() function, and can be given an optional format. These contain an array of cells that can be traversed using the cursor.</li>
+<li>Inline images are inserted with insertImage(). The image to be used can be specified in an image format, or by name.</li>
+<li>Frames are inserted by calling insertFrame() with a specified format.</li>
+</ul>
+<p>Actions can be grouped (i.e. treated as a single action for undo/redo) using beginEditBlock() and endEditBlock().</p>
+<p>Cursor movements are limited to valid cursor positions. In Latin writing this is usually after every character in the text. In some other writing systems cursor movements are limited to &quot;clusters&quot; (e.g. a syllable in Devanagari, or a base letter plus diacritics). Functions such as movePosition() and deleteChar() limit cursor movement to these valid positions.</p>
+
+*/">
+    <method name="public QTextCursor(com.trolltech.qt.gui.QTextFrame frame__0)" doc="/**
+<p>Constructs a cursor pointing to the beginning of the <i>frame</i>.</p>
+
+*/"/>
+    <method name="public QTextCursor(com.trolltech.qt.gui.QTextCursor cursor__0)" doc="/**
+<p>Constructs a new cursor that is a copy of <i>cursor</i>.</p>
+
+*/"/>
+    <method name="public QTextCursor()" doc="/**
+<p>Constructs a null cursor.</p>
+
+*/"/>
+    <method name="public QTextCursor(com.trolltech.qt.gui.QTextBlock block__0)" doc="/**
+<p>Constructs a cursor pointing to the beginning of the <i>block</i>.</p>
+
+*/"/>
+    <method name="public QTextCursor(com.trolltech.qt.gui.QTextDocument document__0)" doc="/**
+<p>Constructs a cursor pointing to the beginning of the <i>document</i>.</p>
+
+*/"/>
+    <method name="public final int anchor()" doc="/**
+<p>Returns the anchor position; this is the same as position() unless there is a selection in which case position() marks one end of the selection and anchor() marks the other end. Just like the cursor position, the anchor position is between characters.</p>
+
+*/"/>
+    <method name="public final boolean atBlockEnd()" doc="/**
+<p>Returns true if the cursor is at the end of a block; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean atBlockStart()" doc="/**
+<p>Returns true if the cursor is at the start of a block; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean atEnd()" doc="/**
+<p>Returns true if the cursor is at the end of the document; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean atStart()" doc="/**
+<p>Returns true if the cursor is at the start of the document; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final void beginEditBlock()" doc="/**
+<p>Indicates the start of a block of editing operations on the document that should appear as a single operation from an undo/redo point of view.</p>
+<p>For example:</p>
+<pre>    QTextCursor cursor(textDocument);
+    cursor.beginEditBlock();
+    cursor.insertText(&quot;Hello&quot;);
+    cursor.insertText(&quot;World&quot;);
+    cursor.endEditBlock();
+
+    textDocument-&gt;undo();</pre>
+<p>The call to undo() will cause both insertions to be undone, causing both &quot;World&quot; and &quot;Hello&quot; to be removed.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextBlock block()" doc="/**
+<p>Returns the block that contains the cursor.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextCharFormat blockCharFormat()" doc="/**
+<p>Returns the block character format of the block the cursor is in.</p>
+<p>The block char format is the format used when inserting text at the beginning of a block.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextBlockFormat blockFormat()" doc="/**
+<p>Returns the block format of the block the cursor is in.</p>
+
+*/"/>
+    <method name="public final int blockNumber()" doc="/**
+<p>Returns the number of the block the cursor is in.</p>
+<p>Note that this function only makes sense in documents without complex objects such as tables or frames.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextCharFormat charFormat()" doc="/**
+<p>Returns the format of the character immediately before the cursor position().</p>
+
+*/"/>
+    <method name="public final void clearSelection()" doc="/**
+<p>Clears the current selection by setting the anchor to the cursor position.</p>
+<p>Note that it does <b>not</b> delete the text of the selection.</p>
+
+*/"/>
+    <method name="public final int columnNumber()" doc="/**
+<p>Returns the position of the cursor within its containing line.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextList createList(com.trolltech.qt.gui.QTextListFormat format__0)" doc="/**
+<p>Creates and returns a new list with the given <i>format</i>, and makes the current paragraph the cursor is in the first list item.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextList createList(com.trolltech.qt.gui.QTextListFormat.Style style__0)" doc="/**
+<p>Creates and returns a new list with the given <i>style</i>, making the cursor's current paragraph the first list item.</p>
+<p>The style to be used is defined by the QTextListFormat::Style enum.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFrame currentFrame()" doc="/**
+<p>Returns a pointer to the current frame. Returns 0 if the cursor is invalid.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextList currentList()" doc="/**
+<p>Returns the current list if the cursor position() is inside a block that is part of a list; otherwise returns 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextTable currentTable()" doc="/**
+<p>Returns a pointer to the current table if the cursor position() is inside a block that is part of a table; otherwise returns 0.</p>
+
+*/"/>
+    <method name="public final void deleteChar()" doc="/**
+<p>If there is no selected text, deletes the character <i>at</i> the current cursor position; otherwise deletes the selected text.</p>
+
+*/"/>
+    <method name="public final void deletePreviousChar()" doc="/**
+<p>If there is no selected text, deletes the character <i>before</i> the current cursor position; otherwise deletes the selected text.</p>
+
+*/"/>
+    <method name="public final void endEditBlock()" doc="/**
+<p>Indicates the end of a block of editing operations on the document that should appear as a single operation from an undo/redo point of view.</p>
+
+*/"/>
+    <method name="public final boolean hasComplexSelection()" doc="/**
+<p>Returns true if the cursor contains a selection that is not simply a range from selectionStart() to selectionEnd(); otherwise returns false.</p>
+<p>Complex selections are ones that span at least two cells in a table; their extent is specified by selectedTableCells().</p>
+
+*/"/>
+    <method name="public final boolean hasSelection()" doc="/**
+<p>Returns true if the cursor contains a selection; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final void insertBlock(com.trolltech.qt.gui.QTextBlockFormat format__0)" doc="/**
+<p>Inserts a new empty block at the cursor position() with block format <i>format</i> and the current charFormat() as block char format.</p>
+
+*/"/>
+    <method name="public final void insertBlock(com.trolltech.qt.gui.QTextBlockFormat format__0, com.trolltech.qt.gui.QTextCharFormat charFormat__1)" doc="/**
+<p>Inserts a new empty block at the cursor position() with block format <i>format</i> and <i>charFormat</i> as block char format.</p>
+
+*/"/>
+    <method name="public final void insertBlock()" doc="/**
+<p>Inserts a new empty block at the cursor position() with the current blockFormat() and charFormat().</p>
+
+*/"/>
+    <method name="public final void insertFragment(com.trolltech.qt.gui.QTextDocumentFragment fragment__0)" doc="/**
+<p>Inserts the text <i>fragment</i> at the current position().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFrame insertFrame(com.trolltech.qt.gui.QTextFrameFormat format__0)" doc="/**
+<p>Inserts a frame with the given <i>format</i> at the current cursor position(), moves the cursor position() inside the frame, and returns the frame.</p>
+<p>If the cursor holds a selection, the whole selection is moved inside the frame.</p>
+
+*/"/>
+    <method name="public final void insertHtml(java.lang.String html__0)" doc="/**
+<p>Inserts the text <i>html</i> at the current position(). The text is interpreted as HTML.</p>
+
+*/"/>
+    <method name="public final void insertImage(com.trolltech.qt.gui.QTextImageFormat format__0, com.trolltech.qt.gui.QTextFrameFormat.Position alignment__1)" doc="/**
+<p>Inserts the image defined by the given <i>format</i> at the cursor's current position with the specified <i>alignment</i>.</p>
+
+*/"/>
+    <method name="public final void insertImage(java.lang.String name__0)" doc="/**
+<p>Convenience method for inserting the image with the given <i>name</i> at the current position().</p>
+<pre>    QImage img = ...
+    textDocument-&gt;addResource(QTextDocument::ImageResource, QUrl(&quot;myimage&quot;), img);
+    cursor.insertImage(&quot;myimage&quot;);</pre>
+
+*/"/>
+    <method name="public final void insertImage(com.trolltech.qt.gui.QTextImageFormat format__0)" doc="/**
+<p>Inserts the image defined by <i>format</i> at the current position().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextList insertList(com.trolltech.qt.gui.QTextListFormat format__0)" doc="/**
+<p>Inserts a new block at the current position and makes it the first list item of a newly created list with the given <i>format</i>. Returns the created list.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextList insertList(com.trolltech.qt.gui.QTextListFormat.Style style__0)" doc="/**
+<p>Inserts a new block at the current position and makes it the first list item of a newly created list with the given <i>style</i>. Returns the created list.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextTable insertTable(int rows__0, int cols__1, com.trolltech.qt.gui.QTextTableFormat format__2)" doc="/**
+<p>Creates a new table with the given number of <i>rows</i> and <i>columns</i> in the specified <i>format</i>, inserts it at the current cursor position() in the document, and returns the table object. The cursor is moved to the beginning of the first cell.</p>
+<p>There must be at least one row and one column in the table.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextTable insertTable(int rows__0, int cols__1)" doc="/**
+<p>Creates a new table with the given number of <i>rows</i> and <i>columns</i>, inserts it at the current cursor position() in the document, and returns the table object. The cursor is moved to the beginning of the first cell.</p>
+<p>There must be at least one row and one column in the table.</p>
+
+*/"/>
+    <method name="public final void insertText(java.lang.String text__0)" doc="/**
+<p>Inserts <i>text</i> at the current position, using the current character format.</p>
+<p>If there is a selection, the selection is deleted and replaced by <i>text</i>, for example:</p>
+<pre>    cursor.clearSelection();
+    cursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor);
+    cursor.insertText(&quot;Hello World&quot;);</pre>
+<p>This clears any existing selection, selects the word at the cursor (i.e. from position() forward), and replaces the selection with the phrase &quot;Hello World&quot;.</p>
+<p>Any ASCII linefeed characters (\n) in the inserted text are transformed into unicode block separators, corresponding to insertBlock() calls.</p>
+
+*/"/>
+    <method name="public final void insertText(java.lang.String text__0, com.trolltech.qt.gui.QTextCharFormat format__1)" doc="/**
+<p>Inserts <i>text</i> at the current position with the given <i>format</i>.</p>
+
+*/"/>
+    <method name="public final boolean isCopyOf(com.trolltech.qt.gui.QTextCursor other__0)" doc="/**
+<p>Returns true if this cursor and <i>other</i> are copies of each other, i.e. one of them was created as a copy of the other and neither has moved since. This is much stricter than equality.</p>
+
+*/"/>
+    <method name="public final boolean isNull()" doc="/**
+<p>Returns true if the cursor is null; otherwise returns false. A null cursor is created by the default constructor.</p>
+
+*/"/>
+    <method name="public final void joinPreviousEditBlock()" doc="/**
+<p>Like beginEditBlock() indicates the start of a block of editing operations that should appear as a single operation for undo/redo. However unlike beginEditBlock() it does not start a new block but reverses the previous call to endEditBlock() and therefore makes following operations part of the previous edit block created.</p>
+<p>For example:</p>
+<pre>    QTextCursor cursor(textDocument);
+    cursor.beginEditBlock();
+    cursor.insertText(&quot;Hello&quot;);
+    cursor.insertText(&quot;World&quot;);
+    cursor.endEditBlock();
+
+    ...
+
+    cursor.joinPreviousEditBlock();
+    cursor.insertText(&quot;Hey&quot;);
+    cursor.endEditBlock();
+
+    textDocument-&gt;undo();</pre>
+<p>The call to undo() will cause all three insertions to be undone.</p>
+
+*/"/>
+    <method name="public final void mergeBlockCharFormat(com.trolltech.qt.gui.QTextCharFormat modifier__0)" doc="/**
+<p>Modifies the block char format of the current block (or all blocks that are contained in the selection) with the block format specified by <i>modifier</i>.</p>
+
+*/"/>
+    <method name="public final void mergeBlockFormat(com.trolltech.qt.gui.QTextBlockFormat modifier__0)" doc="/**
+<p>Modifies the block format of the current block (or all blocks that are contained in the selection) with the block format specified by <i>modifier</i>.</p>
+
+*/"/>
+    <method name="public final void mergeCharFormat(com.trolltech.qt.gui.QTextCharFormat modifier__0)" doc="/**
+<p>Merges the cursor's current character format with the properties described by format <i>modifier</i>. If the cursor has a selection, this function applies all the properties set in <i>modifier</i> to all the character formats that are part of the selection.</p>
+
+*/"/>
+    <method name="public final boolean movePosition(com.trolltech.qt.gui.QTextCursor.MoveOperation op__0, com.trolltech.qt.gui.QTextCursor.MoveMode arg__1, int n__2)" doc="/**
+<p>Moves the cursor by performing the given <i>operation</i> <i>n</i> times, using the specified <i>mode</i>, and returns true if all operations were completed successfully; otherwise returns false.</p>
+<p>For example, if this function is repeatedly used to seek to the end of the next word, it will eventually fail when the end of the document is reached.</p>
+<p>By default, the move operation is performed once (<i>n</i> = 1).</p>
+<p>If <i>mode</i> is <tt>KeepAnchor</tt>, the cursor selects the text it moves over. This is the same effect that the user achieves when they hold down the Shift key and move the cursor with the cursor keys.</p>
+
+*/"/>
+    <method name="public final int position()" doc="/**
+<p>Returns the absolute position of the cursor within the document. The cursor is positioned between characters.</p>
+
+*/"/>
+    <method name="public final void removeSelectedText()" doc="/**
+<p>If there is a selection, its content is deleted; otherwise does nothing.</p>
+
+*/"/>
+    <method name="public final void select(com.trolltech.qt.gui.QTextCursor.SelectionType selection__0)" doc="/**
+<p>Selects text in the document according to the given <i>selection</i>.</p>
+
+*/"/>
+    <method name="public final void selectedTableCells(com.trolltech.qt.QNativePointer firstRow__0, com.trolltech.qt.QNativePointer numRows__1, com.trolltech.qt.QNativePointer firstColumn__2, com.trolltech.qt.QNativePointer numColumns__3)" doc="/**
+<p>If the selection spans over table cells, <i>firstRow</i> is populated with the number of the first row in the selection, <i>firstColumn</i> with the number of the first column in the selection, and <i>numRows</i> and <i>numColumns</i> with the number of rows and columns in the selection. If the selection does not span any table cells the results are harmless but undefined.</p>
+
+*/"/>
+    <method name="public final java.lang.String selectedText()" doc="/**
+<p>Returns the current selection's text (which may be empty). This only returns the text, with no rich text formatting information. If you want a document fragment (i.e. formatted rich text) use selection() instead.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextDocumentFragment selection()" doc="/**
+<p>Returns the current selection (which may be empty) with all its formatting information. If you just want the selected text (i.e. plain text) use selectedText() instead.</p>
+
+*/"/>
+    <method name="public final int selectionEnd()" doc="/**
+<p>Returns the end of the selection or position() if the cursor doesn't have a selection.</p>
+
+*/"/>
+    <method name="public final int selectionStart()" doc="/**
+<p>Returns the start of the selection or position() if the cursor doesn't have a selection.</p>
+
+*/"/>
+    <method name="public final void setBlockCharFormat(com.trolltech.qt.gui.QTextCharFormat format__0)" doc="/**
+<p>Sets the block char format of the current block (or all blocks that are contained in the selection) to <i>format</i>.</p>
+
+*/"/>
+    <method name="public final void setBlockFormat(com.trolltech.qt.gui.QTextBlockFormat format__0)" doc="/**
+<p>Sets the block format of the current block (or all blocks that are contained in the selection) to <i>format</i>.</p>
+
+*/"/>
+    <method name="public final void setCharFormat(com.trolltech.qt.gui.QTextCharFormat format__0)" doc="/**
+<p>Sets the cursor's current character format to the given <i>format</i>. If the cursor has a selection, the given <i>format</i> is applied to the current selection.</p>
+
+*/"/>
+    <method name="public final void setPosition(int pos__0, com.trolltech.qt.gui.QTextCursor.MoveMode mode__1)" doc="/**
+<p>Moves the cursor to the absolute position in the document specified by <i>pos</i> using a <tt>MoveMode</tt> specified by <i>m</i>. The cursor is positioned between characters.</p>
+
+*/"/>
+    <enum name="MoveMode" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Moves the anchor to the same position as the cursor itself.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Keeps the anchor where it is.</td></tr>
+</table></p>
+<p>If the anchor() is kept where it is and the position() is moved, the text in between will be selected.</p>
+
+*/"/>
+    <enum name="MoveOperation" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Keep the cursor where it is</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the start of the document.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the start of the current line.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the start of the current block.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the start of the current word.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the start of the previous block.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the previous character.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the beginning of the previous word.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move up one line.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move left one character.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move left one word.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the end of the document.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the end of the current line.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the end of the current word.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the end of the current block.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the beginning of the next block.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the next character.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move to the next word.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move down one line.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move right one character.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Move right one word.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="SelectionType" doc="/**
+<p>This enum describes the types of selection that can be applied with the select() function.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Selects the entire document.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Selects the block of text under the cursor.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Selects the line of text under the cursor.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Selects the word under the cursor. If the cursor is not positioned within a string of selectable characters, no text is selected.</td></tr>
+</table></p>
+
+*/"/>
+</class>

@@ -1,0 +1,29 @@
+<class name="QShortcutEvent" doc="/**
+<p>The QShortcutEvent class provides an event which is generated when the user presses a key combination.</p>
+<p>Normally you don't need to use this class directly; QShortcut provides a higher-level interface to handle shortcut keys.</p>
+
+*/">
+    <method name="public QShortcutEvent(com.trolltech.qt.gui.QKeySequence key__0, int id__1, boolean ambiguous__2)" doc="/**
+<p>Constructs a shortcut event for the given <i>key</i> press, associated with the QShortcut ID <i>id</i>.</p>
+<p><i>ambiguous</i> specifies whether there is more than one QShortcut for the same key sequence.</p>
+
+*/"/>
+    <method name="public final boolean isAmbiguous()" doc="/**
+<p>Returns true if the key sequence that triggered the event is ambiguous.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QKeySequence key()" doc="/**
+<p>Returns the key sequence that triggered the event.</p>
+
+*/"/>
+    <method name="public final int shortcutId()" doc="/**
+<p>Returns the ID of the QShortcut object for which this event was generated.</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.gui.QKeySequence sequence()"/>
+    <method name="protected final void setSequence(com.trolltech.qt.gui.QKeySequence sequence)"/>
+    <method name="protected final int sid()"/>
+    <method name="protected final void setSid(int sid)"/>
+    <method name="protected final boolean ambig()"/>
+    <method name="protected final void setAmbig(boolean ambig)"/>
+</class>

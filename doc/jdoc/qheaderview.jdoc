@@ -1,0 +1,291 @@
+<class name="QHeaderView" doc="/**
+<p>The QHeaderView class provides a header row or header column for item views.</p>
+<p>A QHeaderView displays the headers used in item views such as the QTableView and QTreeView classes. It takes the place of the <tt>QHeader</tt> class previously used for the same purpose, but uses the Qt's model/view architecture for consistency with the item view classes.</p>
+<p>The QHeaderView class is one of the Model/View Classes and is part of Qt's model/view framework.</p>
+<p>The model gets the data for each section from the model using the getHeaderData() function. You can set the data by using setHeaderData().</p>
+<p>Each header has an orientation() and a number of sections, given by the count() function. Sections can be moved and resized using moveSection() and resizeSection(); they can be hidden and shown with hideSection() and showSection().</p>
+<p>Each section of a header is described by a section ID, specified by its section(), and can be located at a particular visualIndex() in the header. A section can have a sort indicator set with setSortIndicator(); this indicates whether the items in the associated item view will be sorted in the order given by the section.</p>
+<p>A header can be fixed in place, or made movable with setMovable(). It can be made clickable with setClickable(), and has resizing behavior in accordance with setResizeMode().</p>
+<p>A header emits sectionMoved() if the user moves a section, sectionResized() if the user resizes a section, and sectionClicked() and sectionHandleDoubleClicked() in response to mouse clicks. A header also emits sectionCountChanged() and sectionAutoResize().</p>
+<p>You can identify a section using the logicalIndex() and logicalIndexAt() functions, or by its index position, using the visualIndex() and visualIndexAt() functions. The visual index will change if a section is moved while the logical index wont change.</p>
+<p>For a horizontal header the section is equivalent to a column in the model, and for a vertical header the section is equivalent to a row in the model.</p>
+
+*/">
+    <method name="public QHeaderView(com.trolltech.qt.core.Qt.Orientation orientation__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Creates a new generic header with the given <i>orientation</i> and <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final boolean cascadingSectionResizes()"/>
+    <method name="public final int count()" doc="/**
+<p>Returns the number of sections in the header.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.Alignment defaultAlignment()"/>
+    <method name="public final int defaultSectionSize()"/>
+    <method name="public final void headerDataChanged(com.trolltech.qt.core.Qt.Orientation orientation__0, int logicalFirst__1, int logicalLast__2)" doc="/**
+<p>Updates the changed header sections with the given <i>orientation</i>, from <i>logicalFirst</i> to <i>logicalLast</i> inclusive.</p>
+
+*/"/>
+    <method name="public final int hiddenSectionCount()" doc="/**
+<p>Returns the number of sections in the header that has been hidden.</p>
+
+*/"/>
+    <method name="public final void hideSection(int logicalIndex__0)" doc="/**
+<p>Hides the section specified by <i>logicalIndex</i>.</p>
+
+*/"/>
+    <method name="public final boolean highlightSections()"/>
+    <method name="protected final void initialize()"/>
+    <method name="protected final void initializeSections()"/>
+    <method name="protected final void initializeSections(int start__0, int end__1)"/>
+    <method name="public final boolean isClickable()" doc="/**
+<p>Returns true if the header is clickable; otherwise returns false. A clickable header could be set up to allow the user to change the representation of the data in the view related to the header.</p>
+
+*/"/>
+    <method name="public final boolean isMovable()" doc="/**
+<p>Returns true if the header can be moved by the user; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isSectionHidden(int logicalIndex__0)" doc="/**
+<p>Returns true if the section specified by <i>logicalIndex</i> is explicitly hidden from the user; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isSortIndicatorShown()"/>
+    <method name="public final int length()" doc="/**
+<p>Returns the length along the orientation of the header.</p>
+
+*/"/>
+    <method name="public final int logicalIndex(int visualIndex__0)" doc="/**
+<p>Returns the logicalIndex for the section at the given <i>visualIndex</i> position, or -1 otherwise.</p>
+
+*/"/>
+    <method name="public final int logicalIndexAt(com.trolltech.qt.core.QPoint pos__0)" doc="/**
+<p>Returns the logical index of the section at the position given in <i>pos</i>. If the header is horizontal the x-coordinate will be used to find the logical index; otherwise the y-coordinate will be used.</p>
+
+*/"/>
+    <method name="public final int logicalIndexAt(int x__0, int y__1)" doc="/**
+<p>Returns the logical index of the section at the given coordinate. If the header is horizontal <i>x</i> will be used, otherwise <i>y</i> will be used to find the logical index.</p>
+
+*/"/>
+    <method name="public final int logicalIndexAt(int position__0)" doc="/**
+<p>Returns the section that covers the given <i>position</i> in the viewport.</p>
+
+*/"/>
+    <method name="public final int minimumSectionSize()"/>
+    <method name="public final void moveSection(int from__0, int to__1)" doc="/**
+<p>Moves the section at visual index <i>from</i> to occupy visual index <i>to</i>.</p>
+
+*/"/>
+    <method name="public final int offset()" doc="/**
+<p>Returns the offset of the header: this is the header's left-most (or top-most for vertical headers) visible pixel.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.Orientation orientation()" doc="/**
+<p>Returns the orientation of the header.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QHeaderView.ResizeMode resizeMode(int logicalIndex__0)" doc="/**
+<p>Returns the resize mode that applies to the section specified by the given <i>logicalIndex</i>.</p>
+
+*/"/>
+    <method name="public final void resizeSection(int logicalIndex__0, int size__1)" doc="/**
+<p>Resizes the section specified by <i>logicalIndex</i> to the <i>size</i> measured in pixels.</p>
+
+*/"/>
+    <method name="public final void resizeSections(com.trolltech.qt.gui.QHeaderView.ResizeMode mode__0)" doc="/**
+<p>Resizes the sections according to the given <i>mode</i>, ignoring the current resize mode.</p>
+
+*/"/>
+    <method name="protected final void resizeSections()" doc="/**
+<p>Resizes the sections according to their size hints. You should not normally need to call this function.</p>
+
+*/"/>
+    <method name="public final int sectionPosition(int logicalIndex__0)" doc="/**
+<p>Returns the section position of the given <i>logicalIndex</i>, or -1 if the section is hidden.</p>
+
+*/"/>
+    <method name="public final int sectionSize(int logicalIndex__0)" doc="/**
+<p>Returns the width (or height for vertical headers) of the given <i>logicalIndex</i>.</p>
+
+*/"/>
+    <method name="public final int sectionSizeHint(int logicalIndex__0)" doc="/**
+<p>Returns a suitable size hint for the section specified by <i>logicalIndex</i>.</p>
+
+*/"/>
+    <method name="public final int sectionViewportPosition(int logicalIndex__0)" doc="/**
+<p>Returns the section viewport position of the given <i>logicalIndex</i>.</p>
+<p>If the section is hidden, this function returns an undefined value.</p>
+
+*/"/>
+    <method name="protected final void sectionsAboutToBeRemoved(com.trolltech.qt.core.QModelIndex parent__0, int logicalFirst__1, int logicalLast__2)" doc="/**
+<p>This slot is called when sections are removed from the <i>parent</i>, <i>logicalFirst</i> and <i>logicalLast</i> signify where the sections are removed from. (<i>logicalFirst</i> and <i>logicalLast</i> will be the same if just one section is removed.)</p>
+
+*/"/>
+    <method name="public final boolean sectionsHidden()" doc="/**
+<p>Returns true if sections in the header has been hidden; otherwise returns false;</p>
+
+*/"/>
+    <method name="protected final void sectionsInserted(com.trolltech.qt.core.QModelIndex parent__0, int logicalFirst__1, int logicalLast__2)" doc="/**
+<p>This slot is called when sections are inserted into the <i>parent</i>, <i>logicalFirst</i> and <i>logicalLast</i> indexes signify where the new sections are inserted.</p>
+<p><i>logicalFirst</i> and <i>logicalLast</i> will be the same if just one section is inserted.</p>
+
+*/"/>
+    <method name="public final boolean sectionsMoved()" doc="/**
+<p>Returns true if sections in the header has been moved; otherwise returns false;</p>
+
+*/"/>
+    <method name="public final void setCascadingSectionResizes(boolean enable__0)"/>
+    <method name="public final void setClickable(boolean clickable__0)" doc="/**
+<p>If <i>clickable</i> is true, the header will respond to single clicks.</p>
+
+*/"/>
+    <method name="public final void setDefaultAlignment(com.trolltech.qt.core.Qt.Alignment alignment__0)"/>
+    <method name="public final void setDefaultSectionSize(int size__0)"/>
+    <method name="public final void setHighlightSections(boolean highlight__0)"/>
+    <method name="public final void setMinimumSectionSize(int size__0)"/>
+    <method name="public final void setMovable(boolean movable__0)" doc="/**
+<p>If <i>movable</i> is true, the header may be moved by the user; otherwise it is fixed in place.</p>
+
+*/"/>
+    <method name="public final void setOffset(int offset__0)" doc="/**
+<p>Sets the header's offset to <i>offset</i>.</p>
+
+*/"/>
+    <method name="public final void setOffsetToSectionPosition(int visualIndex__0)" doc="/**
+<p>Sets the offset to the start of the section at the given <i>visualIndex</i>.</p>
+
+*/"/>
+    <method name="public final void setResizeMode(int logicalIndex__0, com.trolltech.qt.gui.QHeaderView.ResizeMode mode__1)" doc="/**
+<p>Sets the constraints on how the section specified by <i>logicalIndex</i> in the header can be resized to those described by the given <i>mode</i>.</p>
+
+*/"/>
+    <method name="public final void setResizeMode(com.trolltech.qt.gui.QHeaderView.ResizeMode mode__0)" doc="/**
+<p>Sets the constraints on how the header can be resized to those described by the given <i>mode</i>.</p>
+
+*/"/>
+    <method name="public final void setSectionHidden(int logicalIndex__0, boolean hide__1)" doc="/**
+<p>If <i>hide</i> is true the section specified by <i>logicalIndex</i> is hidden, otherwise the section is shown.</p>
+
+*/"/>
+    <method name="public final void setSortIndicator(int logicalIndex__0, com.trolltech.qt.core.Qt.SortOrder order__1)" doc="/**
+<p>Sets the sort indicator for the section specified by the given <i>logicalIndex</i> in the direction specified by <i>order</i>, and removes the sort indicator from any other section that was showing it.</p>
+
+*/"/>
+    <method name="public final void setSortIndicatorShown(boolean show__0)"/>
+    <method name="public final void setStretchLastSection(boolean stretch__0)"/>
+    <method name="public final void showSection(int logicalIndex__0)" doc="/**
+<p>Shows the section specified by <i>logicalIndex</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.SortOrder sortIndicatorOrder()" doc="/**
+<p>Returns the order for the sort indicator. If no section has a sort indicator the return value of this function is undefined.</p>
+
+*/"/>
+    <method name="public final int sortIndicatorSection()" doc="/**
+<p>Returns the logical index of the section that has a sort indicator. By default this is section 0.</p>
+
+*/"/>
+    <method name="public final boolean stretchLastSection()"/>
+    <method name="public final int stretchSectionCount()" doc="/**
+<p>Returns the number of sections that are set to resize mode stretch. In views this can be used to see if the headerview needs to resize the sections when the view geometry changes.</p>
+
+*/"/>
+    <method name="public final void swapSections(int first__0, int second__1)" doc="/**
+<p>Swaps the section at visual index <i>first</i> with the section at visual index <i>second</i>.</p>
+
+*/"/>
+    <method name="protected final void updateSection(int logicalIndex__0)" doc="/**
+<p>Updates the section specified by the given <i>logicalIndex</i>.</p>
+
+*/"/>
+    <method name="public final int visualIndex(int logicalIndex__0)" doc="/**
+<p>Returns the visual index position of the section specified by the given <i>logicalIndex</i>, or -1 otherwise. Hidden sections still have valid visual indexes.</p>
+
+*/"/>
+    <method name="public final int visualIndexAt(int position__0)" doc="/**
+<p>Returns the visual index of the section that covers the given <i>position</i> in the viewport.</p>
+
+*/"/>
+    <method name="protected void currentChanged(com.trolltech.qt.core.QModelIndex current__0, com.trolltech.qt.core.QModelIndex old__1)"/>
+    <method name="protected void dataChanged(com.trolltech.qt.core.QModelIndex topLeft__0, com.trolltech.qt.core.QModelIndex bottomRight__1)"/>
+    <method name="public void doItemsLayout()"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected int horizontalOffset()" doc="/**
+<p>Returns the horizontal offset of the header. This is 0 for vertical headers.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QModelIndex indexAt(com.trolltech.qt.core.QPoint p__0)" doc="/**
+<p>Empty implementation because the header doesn't show QModelIndex items.</p>
+
+*/"/>
+    <method name="protected boolean isIndexHidden(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Empty implementation because the header doesn't show QModelIndex items.</p>
+
+*/"/>
+    <method name="protected void mouseDoubleClickEvent(com.trolltech.qt.gui.QMouseEvent e__0)"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QMouseEvent e__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent e__0)"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QMouseEvent e__0)"/>
+    <method name="protected com.trolltech.qt.core.QModelIndex moveCursor(com.trolltech.qt.gui.QAbstractItemView.CursorAction arg__0, com.trolltech.qt.core.Qt.KeyboardModifiers arg__1)" doc="/**
+<p>Moves the cursor in the view according to the given <i>cursorAction</i> and keyboard modifiers specified by <i>modifiers</i>.</p>
+<p>In the base class this is a pure virtual function.</p>
+
+*/"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent e__0)"/>
+    <method name="protected void paintSection(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.core.QRect rect__1, int logicalIndex__2)" doc="/**
+<p>Paints the section specified by the given <i>logicalIndex</i>, using the given <i>painter</i> and <i>rect</i>.</p>
+<p>You normally would not need to use this function.</p>
+
+*/"/>
+    <method name="protected void rowsInserted(com.trolltech.qt.core.QModelIndex parent__0, int start__1, int end__2)" doc="/**
+<p>Empty implementation because the header doesn't show QModelIndex items.</p>
+
+*/"/>
+    <method name="protected void scrollContentsBy(int dx__0, int dy__1)"/>
+    <method name="public void scrollTo(com.trolltech.qt.core.QModelIndex index__0, com.trolltech.qt.gui.QAbstractItemView.ScrollHint hint__1)" doc="/**
+<p>Scrolls the view if necessary to ensure that the item at <i>index</i> is visible. The view will try to position the item according to the given <i>hint</i>.</p>
+<p>In the base class this is a pure virtual function.</p>
+
+*/"/>
+    <method name="protected com.trolltech.qt.core.QSize sectionSizeFromContents(int logicalIndex__0)" doc="/**
+<p>Returns the size of the contents of the section specified by the give <i>logicalIndex</i>.</p>
+
+*/"/>
+    <method name="public void setModel(com.trolltech.qt.core.QAbstractItemModel model__0)"/>
+    <method name="protected void setSelection(com.trolltech.qt.core.QRect arg__0, com.trolltech.qt.gui.QItemSelectionModel.SelectionFlags arg__1)" doc="/**
+<p>Applies the selection <i>flags</i> to the items in or touched by the rectangle, <i>rect</i>.</p>
+<p>When implementing your own itemview setSelection should call selectionModel()-&gt;select(selection, flags) where selection is either an empty QModelIndex or a QItemSelection that contains all items that are contained in <i>rect</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()" doc="/**
+<p>Returns a suitable size hint for this header.</p>
+
+*/"/>
+    <method name="protected void updateGeometries()"/>
+    <method name="protected int verticalOffset()" doc="/**
+<p>Returns the vertical offset of the header. This is 0 for horizontal headers.</p>
+
+*/"/>
+    <method name="protected boolean viewportEvent(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="public com.trolltech.qt.core.QRect visualRect(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Empty implementation because the header doesn't show QModelIndex items.</p>
+
+*/"/>
+    <method name="protected com.trolltech.qt.gui.QRegion visualRegionForSelection(com.trolltech.qt.gui.QItemSelection selection__0)"/>
+    <enum name="ResizeMode" doc="/**
+<p>The resize mode specifies the behavior of the header sections. It can be set on the entire header view or on individual sections using setResizeMode().</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The user can resize the section. The section can also be resized programmatically using resizeSection(). The section size defaults to defaultSectionSize. (See also cascadingSectionResizes.)</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The user cannot resize the section. The section can only be resized programmatically using resizeSection(). The section size defaults to defaultSectionSize.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>QHeaderView will automatically resize the section to fill the available space. The size cannot be changed by the user or programmatically.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>QHeaderView will automatically resize the section to its optimal size based on the contents of the entire column or row. The size cannot be changed by the user or programmatically.</td></tr>
+</table></p>
+<p>The following values are obsolete:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Use Fixed instead.</td></tr>
+</table></p>
+
+*/"/>
+</class>

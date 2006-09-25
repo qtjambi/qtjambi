@@ -1,0 +1,18 @@
+<class name="QTimerEvent" doc="/**
+<p>The QTimerEvent class contains parameters that describe a timer event.</p>
+<p>Timer events are sent at regular intervals to objects that have started one or more timers. Each timer has a unique identifier. A timer is started with QObject::startTimer().</p>
+<p>The QTimer class provides a high-level programming interface that uses signals instead of events. It also provides single-shot timers.</p>
+<p>The event handler QObject::timerEvent() receives timer events.</p>
+
+*/">
+    <method name="public QTimerEvent(int timerId__0)" doc="/**
+<p>Constructs a timer event object with the timer identifier set to <i>timerId</i>.</p>
+
+*/"/>
+    <method name="public final int timerId()" doc="/**
+<p>Returns the unique timer identifier, which is the same identifier as returned from QObject::startTimer().</p>
+
+*/"/>
+    <method name="protected final int id()"/>
+    <method name="protected final void setId(int id)"/>
+</class>

@@ -1,0 +1,247 @@
+<class name="QFileDialog" doc="/**
+<p>The QFileDialog class provides a dialog that allow users to select files or directories.</p>
+<p>The QFileDialog class enables a user to traverse the file system in order to select one or many files or a directory.</p>
+<p>The easiest way to create a QFileDialog is to use the static functions. On Windows, these static functions will call the native Windows file dialog, and on Mac OS X these static function will call the native Mac OS X file dialog.</p>
+<pre>    QString fileName = QFileDialog::getOpenFileName(this, tr(&quot;Open File&quot;),
+                                                   &quot;/home/jana&quot;,
+                                                   tr(&quot;Images (*.png *.xpm *.jpg)&quot;));</pre>
+<p>In the above example, a modal QFileDialog is created using a static function. The dialog initially displays the contents of the &quot;/home/jana&quot; directory, and displays files matching the patterns given in the string &quot;Images (*.png *.xpm *.jpg)&quot;. The parent of the file dialog is set to <i>this</i>, and the dialog is named &quot;open file dialog&quot;. The window title is set to &quot;Open File&quot;.</p>
+<p>If you want to use multiple filters, separate each one with <i>two</i> semicolons. For example:</p>
+<pre>    &quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&quot;</pre>
+<p>You can create your own QFileDialog without using the static functions. By calling setFileMode(), you can specify what the user must select in the dialog:</p>
+<pre>    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);</pre>
+<p>In the above example, the mode of the file dialog is set to AnyFile, meaning that the user can select any file, or even specify a file that doesn't exist. This mode is useful for creating a &quot;Save As&quot; file dialog. Use ExistingFile if the user must select an existing file, or Directory if only a directory may be selected. See the QFileDialog::FileMode enum for the complete list of modes.</p>
+<p>The fileMode property contains the mode of operation for the dialog; this indicates what types of objects the user is expected to select. Use setFilter() to set the dialog's file filter. For example:</p>
+<pre>    dialog.setFilter(tr(&quot;Images (*.png *.xpm *.jpg)&quot;));</pre>
+<p>In the above example, the filter is set to &quot;Images (*.png *.xpm *.jpg)&quot;, this means that only files with the extension <tt>png</tt>, <tt>xpm</tt>, or <tt>jpg</tt> will be shown in the QFileDialog. You can apply several filters by using setFilters(). Use selectFilter() to select one of the filters you've given as the file dialog's default filter.</p>
+<p>The file dialog has two view modes: QFileDialog::List and QFileDialog::Detail. QFileDialog::List presents the contents of the current directory as a list of file and directory names. QFileDialog::Detail also displays a list of file and directory names, but provides additional information alongside each name, such as the file size and modification date. Set the mode with setViewMode().</p>
+<pre>    dialog.setViewMode(QFileDialog::Detail);</pre>
+<p>The last important function you will need to use when creating your own file dialog is selectedFiles().</p>
+<pre>    QStringList fileNames;
+    if (fileDialog-&gt;exec())
+        fileNames = fileDialog-&gt;selectedFiles();</pre>
+<p>In the above example, a modal file dialog is created and shown. If the user clicked OK, the file they selected is put in <tt>fileName</tt>.</p>
+<p>The dialog's working directory can be set with setDirectory(). Each file in the current directory can be selected using the selectFile() function.</p>
+<p>The Standard Dialogs example shows how to use QFileDialog as well as other built-in Qt dialogs.</p>
+
+*/">
+    <method name="public QFileDialog(com.trolltech.qt.gui.QWidget parent__0, com.trolltech.qt.core.Qt.WindowFlags f__1)" doc="/**
+<p>Constructs a file dialog with the given <i>parent</i> and widget <i>flags</i>.</p>
+
+*/"/>
+    <method name="public QFileDialog(com.trolltech.qt.gui.QWidget parent__0, java.lang.String caption__1, java.lang.String directory__2, java.lang.String filter__3)" doc="/**
+<p>Constructs a file dialog with the given <i>parent</i> and <i>caption</i> that initially displays the contents of the specified <i>directory</i>. The contents of the directory are filtered before being shown in the dialog, using a semicolon-separated list of filters specified by <i>filter</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFileDialog.AcceptMode acceptMode()"/>
+    <method name="public final boolean confirmOverwrite()"/>
+    <method name="public final java.lang.String defaultSuffix()"/>
+    <method name="public final com.trolltech.qt.core.QDir directory()" doc="/**
+<p>Returns the directory currently being displayed in the dialog.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFileDialog.FileMode fileMode()"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; filters()" doc="/**
+<p>Returns the file type filters that are in operation on this file dialog.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; history()" doc="/**
+<p>returns the browsing history of the filedialog as a list of paths.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFileIconProvider iconProvider()" doc="/**
+<p>returns the icon provider used by the filedialog.</p>
+
+*/"/>
+    <method name="public final boolean isReadOnly()"/>
+    <method name="public final com.trolltech.qt.gui.QAbstractItemDelegate itemDelegate()" doc="/**
+<p>returns the item delegate used to render the items in the views in the filedialog</p>
+
+*/"/>
+    <method name="public final java.lang.String labelText(com.trolltech.qt.gui.QFileDialog.DialogLabel label__0)" doc="/**
+<p>returns the text shown in the filedialog in the specified <i>label</i></p>
+
+*/"/>
+    <method name="public final boolean resolveSymlinks()"/>
+    <method name="public final void selectFile(java.lang.String filename__0)" doc="/**
+<p>Selects the given <i>filename</i> in both the file dialog.</p>
+
+*/"/>
+    <method name="public final void selectFilter(java.lang.String filter__0)" doc="/**
+<p>Sets the current file type <i>filter</i>. Multiple filters can be passed in <i>filter</i> by separating them with semicolons or spaces.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; selectedFiles()" doc="/**
+<p>Returns a list of strings containing the absolute paths of the selected files in the dialog. If no files are selected, or the mode is not ExistingFiles, selectedFiles() is an empty string list.</p>
+
+*/"/>
+    <method name="public final java.lang.String selectedFilter()" doc="/**
+<p>Returns the filter that the user selected in the file dialog.</p>
+
+*/"/>
+    <method name="public final void setAcceptMode(com.trolltech.qt.gui.QFileDialog.AcceptMode mode__0)"/>
+    <method name="public final void setConfirmOverwrite(boolean enabled__0)"/>
+    <method name="public final void setDefaultSuffix(java.lang.String suffix__0)"/>
+    <method name="public final void setDirectory(java.lang.String directory__0)" doc="/**
+<p>Sets the file dialog's current <i>directory</i>.</p>
+
+*/"/>
+    <method name="public final void setDirectory(com.trolltech.qt.core.QDir directory__0)"/>
+    <method name="public final void setFileMode(com.trolltech.qt.gui.QFileDialog.FileMode mode__0)"/>
+    <method name="public final void setFilter(java.lang.String filter__0)" doc="/**
+<p>Sets the filter used in the file dialog to the given <i>filter</i>.</p>
+<p>If <i>filter</i> contains a pair of parentheses containing one or more of <b>anything*something</b>, separated by spaces or by semicolons then only the text contained in the parentheses is used as the filter. This means that these calls are all equivalent:</p>
+<pre>    dialog.setFilter(&quot;All C++ files (*.cpp *.cc *.C *.cxx *.c++)&quot;);
+    dialog.setFilter(&quot;*.cpp *.cc *.C *.cxx *.c++&quot;);
+    dialog.setFilter(&quot;All C++ files (*.cpp;*.cc;*.C;*.cxx;*.c++)&quot;);
+    dialog.setFilter(&quot;*.cpp;*.cc;*.C;*.cxx;*.c++&quot;);</pre>
+
+*/"/>
+    <method name="public final void setFilters(java.util.List&lt;java.lang.String&gt; filters__0)" doc="/**
+<p>Sets the <i>filters</i> used in the file dialog.</p>
+<pre>    QStringList filters;
+    filters &lt;&lt; &quot;Image files (*.png *.xpm *.jpg)&quot;
+            &lt;&lt; &quot;Text files (*.txt)&quot;
+            &lt;&lt; &quot;Any files (*)&quot;;
+
+    QFileDialog dialog(this);
+    dialog.setFilters(filters);
+    dialog.exec();</pre>
+
+*/"/>
+    <method name="public final void setHistory(java.util.List&lt;java.lang.String&gt; paths__0)" doc="/**
+<p>Sets the browsing history of the filedialog to contain the given <i>paths</i>.</p>
+
+*/"/>
+    <method name="public final void setIconProvider(com.trolltech.qt.gui.QFileIconProvider provider__0)" doc="/**
+<p>set the icon provider used by the filedialog to the specified <i>provider</i></p>
+
+*/"/>
+    <method name="public final void setItemDelegate(com.trolltech.qt.gui.QAbstractItemDelegate delegate__0)" doc="/**
+<p>set the item delegate used to render the items in the views in the filedialog to the specified <i>delegate</i></p>
+
+*/"/>
+    <method name="public final void setLabelText(com.trolltech.qt.gui.QFileDialog.DialogLabel label__0, java.lang.String text__1)" doc="/**
+<p>set the <i>text</i> shown in the filedialog in the specified <i>label</i></p>
+
+*/"/>
+    <method name="public final void setReadOnly(boolean enabled__0)"/>
+    <method name="public final void setResolveSymlinks(boolean enabled__0)"/>
+    <method name="public final void setViewMode(com.trolltech.qt.gui.QFileDialog.ViewMode mode__0)"/>
+    <method name="public final com.trolltech.qt.gui.QFileDialog.ViewMode viewMode()"/>
+    <method name="public void accept()"/>
+    <method name="public void done(int result__0)"/>
+    <method name="public final static java.lang.String getExistingDirectory(com.trolltech.qt.gui.QWidget parent__0, java.lang.String caption__1, java.lang.String dir__2, com.trolltech.qt.gui.QFileDialog.Options options__3)" doc="/**
+<p>This is a convenience static function that will return an existing directory selected by the user.</p>
+<pre>    QString dir = QFileDialog::getExistingDirectory(this, tr(&quot;Open Directory&quot;),
+                                                    &quot;/home&quot;,
+                                                    QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);</pre>
+<p>This function creates a modal file dialog with the given <i>parent</i> widget. If the parent is not 0, the dialog will be shown centered over the parent widget.</p>
+<p>The dialog's working directory is set to <i>dir</i>, and the caption is set to <i>caption</i>. Either of these may be an empty string in which case the current directory and a default caption will be used respectively. The <i>options</i> argument holds various options about how to run the dialog, see the QFileDialog::Option enum for more information on the flags you can pass.</p>
+<p>Under Windows and Mac OS X, this static function will use the native file dialog and not a QFileDialog. On Mac OS X, the <i>dir</i> argument is ignored, the native dialog always displays the last visited directory.</p>
+<p>Under Unix/X11, the normal behavior of the file dialog is to resolve and follow symlinks. For example, if <tt>/usr/tmp</tt> is a symlink to <tt>/var/tmp</tt>, the file dialog will change to <tt>/var/tmp</tt> after entering <tt>/usr/tmp</tt>. If <i>options</i> includes DontResolveSymlinks, the file dialog will treat symlinks as regular directories.</p>
+<p>Note that on Windows the dialog will spin a blocking modal event loop that will not dispatch any QTimers, and if parent is not 0 then it will position the dialog just under the parent's title bar.</p>
+
+*/"/>
+    <method name="public final static java.lang.String getOpenFileName(com.trolltech.qt.gui.QWidget parent__0, java.lang.String caption__1, java.lang.String dir__2, java.lang.String filter__3, com.trolltech.qt.QNativePointer selectedFilter__4, com.trolltech.qt.gui.QFileDialog.Options options__5)" doc="/**
+<p>This is a convenience static function that returns an existing file selected by the user. If the user presses Cancel, it returns a null string.</p>
+<pre>    QString fileName = QFileDialog::getOpenFileName(this, tr(&quot;Open File&quot;),
+                                                    &quot;/home&quot;,
+                                                    tr(&quot;Images (*.png *.xpm *.jpg)&quot;));</pre>
+<p>The function creates a modal file dialog with the given <i>parent</i> widget. If the parent is not 0, the dialog will be shown centered over the parent widget.</p>
+<p>The file dialog's working directory will be set to <i>dir</i>. If <i>dir</i> includes a file name, the file will be selected. Only files that match the given <i>filter</i> are shown. The filter selected is set to <i>selectedFilter</i>. The parameters <i>dir</i>, <i>selectedFilter</i>, and <i>filter</i> may be empty strings. The <i>options</i> argument holds various options about how to run the dialog, see the QFileDialog::Option enum for more information on the flags you can pass.</p>
+<p>The dialog's caption is set to <i>caption</i>. If <i>caption</i> is not specified then a default caption will be used.</p>
+<p>Under Windows and Mac OS X, this static function will use the native file dialog and not a QFileDialog. On Mac OS X, the <i>dir</i> argument is ignored, the native dialog always displays the last visited directory.</p>
+<p>Note that on Windows the dialog will spin a blocking modal event loop that will not dispatch any QTimers, and if parent is not 0 then it will position the dialog just under the parent's title bar.</p>
+<p>Under Unix/X11, the normal behavior of the file dialog is to resolve and follow symlinks. For example, if <tt>/usr/tmp</tt> is a symlink to <tt>/var/tmp</tt>, the file dialog will change to <tt>/var/tmp</tt> after entering <tt>/usr/tmp</tt>. If <i>options</i> includes DontResolveSymlinks, the file dialog will treat symlinks as regular directories.</p>
+
+*/"/>
+    <method name="public final static java.util.List&lt;java.lang.String&gt; getOpenFileNames(com.trolltech.qt.gui.QWidget parent__0, java.lang.String caption__1, java.lang.String dir__2, java.lang.String filter__3, com.trolltech.qt.QNativePointer selectedFilter__4, com.trolltech.qt.gui.QFileDialog.Options options__5)" doc="/**
+<p>This is a convenience static function that will return one or more existing files selected by the user.</p>
+<pre>    QStringList files = QFileDialog::getOpenFileNames(
+                            this,
+                            &quot;Select one or more files to open&quot;,
+                            &quot;/home&quot;,
+                            &quot;Images (*.png *.xpm *.jpg)&quot;);</pre>
+<p>This function creates a modal file dialog with the given <i>parent</i> widget. If the parent is not 0, the dialog will be shown centered over the parent widget.</p>
+<p>The file dialog's working directory will be set to <i>dir</i>. If <i>dir</i> includes a file name, the file will be selected. The filter is set to <i>filter</i> so that only those files which match the filter are shown. The filter selected is set to <i>selectedFilter</i>. The parameters <i>dir</i>, <i>selectedFilter</i> and <i>filter</i> may be empty strings.</p>
+<p>The dialog's caption is set to <i>caption</i>. If <i>caption</i> is not specified then a default caption will be used.</p>
+<p>Under Windows and Mac OS X, this static function will use the native file dialog and not a QFileDialog. On Mac OS X, the <i>dir</i> argument is ignored, the native dialog always displays the last visited directory.</p>
+<p>Note that on Windows the dialog will spin a blocking modal event loop that will not dispatch any QTimers, and if parent is not 0 then it will position the dialog just under the parent's title bar.</p>
+<p>Under Unix/X11, the normal behavior of the file dialog is to resolve and follow symlinks. For example, if <tt>/usr/tmp</tt> is a symlink to <tt>/var/tmp</tt>, the file dialog will change to <tt>/var/tmp</tt> after entering <tt>/usr/tmp</tt>. The <i>options</i> argument holds various options about how to run the dialog, see the QFileDialog::Option enum for more information on the flags you can pass.</p>
+<p>Note that if you want to iterate over the list of files, you should iterate over a copy. For example:</p>
+<pre>    QStringList list = files;
+    QStringList::Iterator it = list.begin();
+    while(it != list.end()) {
+        myProcessing(*it);
+        ++it;
+    }</pre>
+
+*/"/>
+    <method name="public final static java.lang.String getSaveFileName(com.trolltech.qt.gui.QWidget parent__0, java.lang.String caption__1, java.lang.String dir__2, java.lang.String filter__3, com.trolltech.qt.QNativePointer selectedFilter__4, com.trolltech.qt.gui.QFileDialog.Options options__5)" doc="/**
+<p>This is a convenience static function that will return a file name selected by the user. The file does not have to exist.</p>
+<p>It creates a modal file dialog with the given <i>parent</i> widget. If the parent is not 0, the dialog will be shown centered over the parent widget.</p>
+<pre>    QString fileName = QFileDialog::getSaveFileName(this, tr(&quot;Save File&quot;),
+                               &quot;/home/jana/untitled.png&quot;,
+                               tr(&quot;Images (*.png *.xpm *.jpg)&quot;));</pre>
+<p>The file dialog's working directory will be set to <i>dir</i>. If <i>dir</i> includes a file name, the file will be selected. Only files that match the <i>filter</i> are shown. The filter selected is set to <i>selectedFilter</i>. The parameters <i>dir</i>, <i>selectedFilter</i>, and <i>filter</i> may be empty strings. The <i>options</i> argument holds various options about how to run the dialog, see the QFileDialog::Option enum for more information on the flags you can pass.</p>
+<p>The dialog's caption is set to <i>caption</i>. If <i>caption</i> is not specified then a default caption will be used.</p>
+<p>Under Windows and Mac OS X, this static function will use the native file dialog and not a QFileDialog.</p>
+<p>Note that on Windows the dialog will spin a blocking modal event loop that will not dispatch any QTimers, and if parent is not 0 then it will position the dialog just under the parent's title bar. On Mac OS X, the filter argument is ignored.</p>
+<p>Under Unix/X11, the normal behavior of the file dialog is to resolve and follow symlinks. For example, if <tt>/usr/tmp</tt> is a symlink to <tt>/var/tmp</tt>, the file dialog will change to <tt>/var/tmp</tt> after entering <tt>/usr/tmp</tt>. If <i>options</i> includes DontResolveSymlinks, the file dialog will treat symlinks as regular directories.</p>
+
+*/"/>
+    <enum name="FileMode" doc="/**
+<p>This enum is used to indicate what the user may select in the file dialog; i.e. what the dialog will return if the user clicks OK.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The name of a file, whether it exists or not.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The name of a single existing file.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The name of a directory. Both files and directories are displayed.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The name of a directory. The file dialog will only display directories.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The names of zero or more existing files.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="Option" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Only show directories in the file dialog. By default both files and directories are shown.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Don't resolve symlinks in the file dialog. By default symlinks are resolved.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Don't ask for confirmation if an existing file is selected. By default confirmation is requested.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Don't make the native file dialog a sheet. By default on Mac OS X, the native file dialog is made a sheet if it has a parent that can take a sheet.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Don't use the native file dialog. By default on Mac OS X and Windows, the native file dialog is used.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="DialogLabel" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="ViewMode" doc="/**
+<p>This enum describes the view mode of the file dialog; i.e. what information about each file will be displayed.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Displays an icon, a name, and details for each item in the directory.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Displays only an icon and a name for each item in the directory.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="AcceptMode" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

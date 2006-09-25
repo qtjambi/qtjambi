@@ -1,0 +1,88 @@
+<class name="QStyleOptionGroupBox" doc="/**
+<p>The QStyleOptionGroupBox class describes the parameters for drawing a group box.</p>
+<p>QStyleOptionButton contains all the information that QStyle functions need the various graphical elements of a group box.</p>
+<p>It holds the lineWidth and the midLineWidth for drawing the panel, the group box's title and the title's alignment and color.</p>
+<p>For performance reasons, the access to the member variables is direct (i.e., using the <tt>.</tt> or <tt>-&gt;</tt> operator). This low-level feel makes the structures straightforward to use and emphasizes that these are simply parameters used by the style functions.</p>
+<p>For an example demonstrating how style options can be used, see the Styles example.</p>
+
+*/">
+    <method name="public QStyleOptionGroupBox(com.trolltech.qt.gui.QStyleOptionGroupBox other__0)" doc="/**
+<p>Constructs a copy of the <i>other</i> style option.</p>
+
+*/"/>
+    <method name="public QStyleOptionGroupBox()" doc="/**
+<p>Constructs a QStyleOptionGroupBox, initializing the members variables to their default values.</p>
+
+*/"/>
+    <method name="protected QStyleOptionGroupBox(int version__0)"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1</td></tr>
+</table></p>
+<p>The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SO_GroupBox for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles.</p>
+
+*/"/>
+    <method name="public final int lineWidth()" doc="/**
+<p>the line width for drawing the panel</p>
+<p>The default value is 0.</p>
+
+*/"/>
+    <method name="public final void setLineWidth(int lineWidth)" doc="/**
+<p>the line width for drawing the panel</p>
+<p>The default value is 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyleOptionFrameV2.FrameFeatures features()"/>
+    <method name="public final void setFeatures(com.trolltech.qt.gui.QStyleOptionFrameV2.FrameFeatures features)"/>
+    <method name="public final com.trolltech.qt.core.Qt.Alignment textAlignment()" doc="/**
+<p>the alignment of the group box title</p>
+<p>The default value is Qt::AlignLeft.</p>
+
+*/"/>
+    <method name="public final void setTextAlignment(com.trolltech.qt.core.Qt.Alignment textAlignment)" doc="/**
+<p>the alignment of the group box title</p>
+<p>The default value is Qt::AlignLeft.</p>
+
+*/"/>
+    <method name="public final int midLineWidth()" doc="/**
+<p>The mid-line width for drawing the panel.</p>
+<p>The mid-line width is usually used when drawing sunken or raised group box frames. The default value is 0.</p>
+
+*/"/>
+    <method name="public final void setMidLineWidth(int midLineWidth)" doc="/**
+<p>The mid-line width for drawing the panel.</p>
+<p>The mid-line width is usually used when drawing sunken or raised group box frames. The default value is 0.</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>the text of the group box</p>
+<p>The default value is an empty string.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String text)" doc="/**
+<p>the text of the group box</p>
+<p>The default value is an empty string.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QColor textColor()" doc="/**
+<p>the color of the group box title</p>
+<p>The default value is an invalid color with the RGB value (0, 0, 0). An invalid color is a color that is not properly set up for the underlying window system.</p>
+
+*/"/>
+    <method name="public final void setTextColor(com.trolltech.qt.gui.QColor textColor)" doc="/**
+<p>the color of the group box title</p>
+<p>The default value is an invalid color with the RGB value (0, 0, 0). An invalid color is a color that is not properly set up for the underlying window system.</p>
+
+*/"/>
+</class>

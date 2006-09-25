@@ -1,0 +1,58 @@
+<class name="QDockWidget" doc="/**
+<p>The QDockWidget class provides a widget that can be docked inside a QMainWindow or floated as a top-level window on the desktop.</p>
+<p>QDockWidget provides the concept of dock widgets, also know as tool palettes or utility windows. Dock windows are secondary windows placed in the <i>dock widget area</i> around the central widget in a QMainWindow.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image mainwindow-docks.png]</font></p><p>Dock windows can be moved inside their current area, moved into new areas and floated (e.g. undocked) by the end-user. The QDockWidget API allows the programmer to restrict the dock widgets ability to move, float and close, as well as the areas in which they can be placed.</p>
+<a name=&quote;appearance&quote;></a>
+<h3>Appearance</h3>
+<p>A QDockWidget consists of a title bar and the content area. The titlebar displays the dock widgets window title, a <i>float</i> button and a <i>close</i> button. Depending on the state of the QDockWidget, the <i>float</i> and <i>close</i> buttons may be either disabled or not shown at all.</p>
+<p>The visual appearance of the title bar and buttons is dependent on the style in use.</p>
+
+*/">
+    <method name="public QDockWidget(java.lang.String title__0, com.trolltech.qt.gui.QWidget parent__1, com.trolltech.qt.core.Qt.WindowFlags flags__2)" doc="/**
+<p>Constructs a QDockWidget with parent <i>parent</i> and window flags <i>flags</i>. The dock widget will be placed in the left dock widget area.</p>
+<p>The window title is set to <i>title</i>. This title is used when the QDockWidget is docked and undocked. It is also used in the context menu provided by QMainWindow.</p>
+
+*/"/>
+    <method name="public QDockWidget(com.trolltech.qt.gui.QWidget parent__0, com.trolltech.qt.core.Qt.WindowFlags flags__1)" doc="/**
+<p>Constructs a QDockWidget with parent <i>parent</i> and window flags <i>flags</i>. The dock widget will be placed in the left dock widget area.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.DockWidgetAreas allowedAreas()"/>
+    <method name="public final com.trolltech.qt.gui.QDockWidget.DockWidgetFeatures features()"/>
+    <method name="public final boolean isAreaAllowed(com.trolltech.qt.core.Qt.DockWidgetArea area__0)" doc="/**
+<p>Returns true if this dock widget can be placed in the given <i>area</i>; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isFloating()"/>
+    <method name="public final void setAllowedAreas(com.trolltech.qt.core.Qt.DockWidgetAreas areas__0)"/>
+    <method name="public final void setFeatures(com.trolltech.qt.gui.QDockWidget.DockWidgetFeatures features__0)"/>
+    <method name="public final void setFloating(boolean floating__0)"/>
+    <method name="public final void setWidget(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Sets the widget for the dock widget to <i>widget</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction toggleViewAction()" doc="/**
+<p>Returns a checkable action that can be used to show or close this dock widget.</p>
+<p>The action's text is set to the dock widget's window title.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget widget()" doc="/**
+<p>Returns the widget for the dock widget. This function returns zero if the widget has not been set.</p>
+
+*/"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="protected void closeEvent(com.trolltech.qt.gui.QCloseEvent event__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent event__0)"/>
+    <enum name="DockWidgetFeature" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The dock widget can be closed.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The dock widget can be moved between docks by the user.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The dock widget can be detached from the main window, and floated as an independent window.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The dock widget can be closed, moved, and floated.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The dock widget cannot be closed, moved, or floated.</td></tr>
+</table></p>
+
+*/"/>
+</class>

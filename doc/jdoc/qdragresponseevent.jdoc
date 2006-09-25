@@ -1,0 +1,9 @@
+<class name="QDragResponseEvent">
+    <method name="public QDragResponseEvent(boolean accepted__0)" doc="/**
+<p>Constructs a drag response event containing the <i>accepted</i> value, indicating whether the drag and drop operation was accepted by the recipient.</p>
+
+*/"/>
+    <method name="public final boolean dragAccepted()"/>
+    <method name="protected final boolean a()"/>
+    <method name="protected final void setA(boolean a)"/>
+</class>

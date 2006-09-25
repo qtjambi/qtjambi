@@ -1,0 +1,32 @@
+<class name="QHBoxLayout" doc="/**
+<p>The QHBoxLayout class lines up widgets horizontally.</p>
+<p>This class is used to construct horizontal box layout objects. See QBoxLayout for details.</p>
+<p>The simplest use of the class is like this:</p>
+<pre>        QWidget *window = new QWidget;
+        QPushButton *button1 = new QPushButton(&quot;One&quot;);
+        QPushButton *button2 = new QPushButton(&quot;Two&quot;);
+        QPushButton *button3 = new QPushButton(&quot;Three&quot;);
+        QPushButton *button4 = new QPushButton(&quot;Four&quot;);
+        QPushButton *button5 = new QPushButton(&quot;Five&quot;);
+
+        QHBoxLayout *layout = new QHBoxLayout;
+        layout-&gt;addWidget(button1);
+        layout-&gt;addWidget(button2);
+        layout-&gt;addWidget(button3);
+        layout-&gt;addWidget(button4);
+        layout-&gt;addWidget(button5);
+
+        window-&gt;setLayout(layout);
+        window-&gt;show();</pre>
+<p>First, we create the widgets we want in the layout. Then, we create the QHBoxLayout object and add the widgets into the layout. Finally, we call QWidget::setLayout() to install the QHBoxLayout object onto the widget. At that point, the widgets in the layout are reparented to have <tt>window</tt> as their parent.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image qhboxlayout-with-5-children.png]</font></p>
+*/">
+    <method name="public QHBoxLayout(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a new top-level horizontal box with parent <i>parent</i>.</p>
+
+*/"/>
+    <method name="public QHBoxLayout()" doc="/**
+<p>Constructs a new horizontal box. You must add it to another layout.</p>
+
+*/"/>
+</class>

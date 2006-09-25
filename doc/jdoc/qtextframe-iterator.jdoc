@@ -1,0 +1,22 @@
+<class name="QTextFrame_iterator" doc="/**
+<p>The QTextFrame::iterator class provides an iterator for reading the contents of a QTextFrame.</p>
+<p>A frame consists of an arbitrary sequence of QTextBlocks and child QTextFrames. This class provides a way to iterate over the child objects of a frame, and read their contents. It does not provide a way to modify the contents of the frame.</p>
+
+*/">
+    <method name="public final boolean atEnd()" doc="/**
+<p>Returns true if the current item is the last item in the text frame.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextBlock currentBlock()" doc="/**
+<p>Returns the current block the iterator points to. If the iterator points to a child frame, the returned block is invalid.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFrame currentFrame()" doc="/**
+<p>Returns the current frame pointed to by the iterator, or 0 if the iterator currently points to a block.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFrame parentFrame()" doc="/**
+<p>Returns the parent frame of the current frame.</p>
+
+*/"/>
+</class>

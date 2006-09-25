@@ -1,0 +1,208 @@
+<class name="QTextCodec" doc="/**
+<p>The QTextCodec class provides conversions between text encodings.</p>
+<p>Qt uses Unicode to store, draw and manipulate strings. In many situations you may wish to deal with data that uses a different encoding. For example, most Japanese documents are still stored in Shift-JIS or ISO 2022-JP, while Russian users often have their documents in KOI8-R or Windows-1251.</p>
+<p>Qt provides a set of QTextCodec classes to help with converting non-Unicode formats to and from Unicode. You can also create your own codec classes.</p>
+<p>The supported encodings are:</p>
+<ul>
+<li>Apple Roman</li>
+<li>Big5</li>
+<li>Big5-HKSCS</li>
+<li>EUC-JP</li>
+<li>EUC-KR</li>
+<li>GB18030-0</li>
+<li>IBM 850</li>
+<li>IBM 866</li>
+<li>IBM 874</li>
+<li>ISO 2022-JP</li>
+<li>ISO 8859-1 to 10</li>
+<li>ISO 8859-13 to 16</li>
+<li>Iscii-Bng, Dev, Gjr, Knd, Mlm, Ori, Pnj, Tlg, and Tml</li>
+<li>JIS X 0201</li>
+<li>JIS X 0208</li>
+<li>KOI8-R</li>
+<li>KOI8-U</li>
+<li>MuleLao-1</li>
+<li>ROMAN8</li>
+<li>Shift-JIS</li>
+<li>TIS-620</li>
+<li>TSCII</li>
+<li>UTF-8</li>
+<li>UTF-16</li>
+<li>UTF-16BE</li>
+<li>UTF-16LE</li>
+<li>Windows-1250 to 1258</li>
+<li>WINSAMI2</li>
+</ul>
+<p>QTextCodecs can be used as follows to convert some locally encoded string to Unicode. Suppose you have some string encoded in Russian KOI8-R encoding, and want to convert it to Unicode. The simple way to do it is like this:</p>
+<pre>    QByteArray encodedString = &quot;...&quot;;
+    QTextCodec *codec = QTextCodec::codecForName(&quot;KOI8-R&quot;);
+    QString string = codec-&gt;toUnicode(encodedString);</pre>
+<p>After this, <tt>string</tt> holds the text converted to Unicode. Converting a string from Unicode to the local encoding is just as easy:</p>
+<pre>    QString string = &quot;...&quot;;
+    QTextCodec *codec = QTextCodec::codecForName(&quot;KOI8-R&quot;);
+    QByteArray encodedString = codec-&gt;fromUnicode(string);</pre>
+<p>To read or write files in various encodings, use QTextStream and its setCodec() function. See the Codecs example for an application of QTextCodec to file I/O.</p>
+<p>Some care must be taken when trying to convert the data in chunks, for example, when receiving it over a network. In such cases it is possible that a multi-byte character will be split over two chunks. At best this might result in the loss of a character and at worst cause the entire conversion to fail.</p>
+<p>The approach to use in these situations is to create a QTextDecoder object for the codec and use this QTextDecoder for the whole decoding process, as shown below:</p>
+<pre>    QTextCodec *codec = QTextCodec::codecForName(&quot;Shift-JIS&quot;);
+    QTextDecoder *decoder = codec-&gt;makeDecoder();
+
+    QString string;
+    while (new_data_available()) {
+        QByteArray chunk = get_new_data();
+        string += decoder-&gt;toUnicode(chunk);
+    }</pre>
+<p>The QTextDecoder object maintains state between chunks and therefore works correctly even if a multi-byte character is split between chunks.</p>
+<a name=&quote;creating-your-own-codec-class&quote;></a>
+<h3>Creating Your Own Codec Class</h3>
+<p>Support for new text encodings can be added to Qt by creating QTextCodec subclasses.</p>
+<p>The pure virtual functions describe the encoder to the system and the coder is used as required in the different text file formats supported by QTextStream, and under X11, for the locale-specific character input and output.</p>
+<p>To add support for another encoding to Qt, make a subclass of QTextCodec and implement the functions listed in the table below.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Function</th><th>Description</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>name()</td><td>Returns the official name for the encoding. If the ncoding is listed in the <a href=&quote;http://www.iana.org/assignments/character-sets&quote;>IANA character-sets encoding file</a>, the name should be the preferred MIME name for the encoding.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>aliases()</td><td>Returns a list of alternative names for the encoding. QTextCodec provides a default implementation that returns an empty list. For example, &quot;ISO-8859-1&quot; has &quot;latin1&quot;, &quot;CP819&quot;, &quot;IBM819&quot;, and &quot;iso-ir-100&quot; as aliases.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>mibEnum()</td><td>Return the MIB enum for the encoding if it is listed in the <a href=&quote;http://www.iana.org/assignments/character-sets&quote;>IANA character-sets encoding file</a>.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>convertToUnicode()</td><td>Converts an 8-bit character string to Unicode.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>convertFromUnicode()</td><td>Converts a Unicode string to an 8-bit character string.</td></tr>
+</table></p>
+<p>You may find it more convenient to make your codec class available as a plugin; see How to Create Qt Plugins for details.</p>
+
+*/">
+    <method name="protected QTextCodec()" doc="/**
+<p>Constructs a QTextCodec, and gives it the highest precedence. The QTextCodec should always be constructed on the heap (i.e. with <tt>new</tt>). Qt takes ownership and will delete it when the application terminates.</p>
+
+*/"/>
+    <method name="public final boolean canEncode(java.lang.String arg__0)" doc="/**
+<p><i>s</i> contains the string being tested for encode-ability.</p>
+
+*/"/>
+    <method name="public final boolean canEncode(char arg__0)" doc="/**
+<p>Returns true if the Unicode character <i>ch</i> can be fully encoded with this codec; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray fromUnicode(java.lang.String uc__0)" doc="/**
+<p>Converts <i>str</i> from Unicode to the encoding of this codec, and returns the result in a QByteArray.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray fromUnicode(com.trolltech.qt.QNativePointer in__0, int length__1, com.trolltech.qt.core.QTextCodec_ConverterState state__2)" doc="/**
+<p>Converts the first <i>number</i> of characters from the <i>input</i> array from Unicode to the encoding of this codec, and returns the result in a QByteArray.</p>
+<p>The <i>state</i> of the convertor used is updated.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QTextDecoder makeDecoder()" doc="/**
+<p>Creates a QTextDecoder which stores enough state to decode chunks of <tt>char *</tt> data to create chunks of Unicode data.</p>
+<p>The caller is responsible for deleting the returned object.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QTextEncoder makeEncoder()" doc="/**
+<p>Creates a QTextEncoder which stores enough state to encode chunks of Unicode data as <tt>char *</tt> data.</p>
+<p>The caller is responsible for deleting the returned object.</p>
+
+*/"/>
+    <method name="public final java.lang.String toUnicode(com.trolltech.qt.core.QByteArray arg__0)" doc="/**
+<p>Converts <i>a</i> from the encoding of this codec to Unicode, and returns the result in a QString.</p>
+
+*/"/>
+    <method name="public final java.lang.String toUnicode(com.trolltech.qt.QNativePointer in__0, int length__1, com.trolltech.qt.core.QTextCodec_ConverterState state__2)" doc="/**
+<p>Converts the first <i>size</i> characters from the <i>input</i> from the encoding of this codec to Unicode, and returns the result in a QString.</p>
+<p>The <i>state</i> of the convertor used is updated.</p>
+
+*/"/>
+    <method name="public final java.lang.String toUnicode(com.trolltech.qt.QNativePointer chars__0)" doc="/**
+<p><i>chars</i> contains the source characters.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;com.trolltech.qt.core.QByteArray&gt; aliases()" doc="/**
+<p>Subclasses can return a number of aliases for the codec in question.</p>
+<p>Standard aliases for codecs can be found in the <a href=&quote;http://www.iana.org/assignments/character-sets&quote;>IANA character-sets encoding file</a>.</p>
+
+*/"/>
+    <method name="protected abstract com.trolltech.qt.core.QByteArray convertFromUnicode(com.trolltech.qt.QNativePointer in__0, int length__1, com.trolltech.qt.core.QTextCodec_ConverterState state__2)" doc="/**
+<p>QTextCodec subclasses must reimplement this function.</p>
+<p>Converts the first <i>number</i> of characters from the <i>input</i> array from Unicode to the encoding of the subclass, and returns the result in a QByteArray.</p>
+<p><i>state</i> can be 0 in which case the conversion is stateless and default conversion rules should be used. If state is not 0, the codec should save the state after the conversion in <i>state</i>, and adjust the remainingChars and invalidChars members of the struct.</p>
+
+*/"/>
+    <method name="protected abstract java.lang.String convertToUnicode(com.trolltech.qt.QNativePointer in__0, int length__1, com.trolltech.qt.core.QTextCodec_ConverterState state__2)" doc="/**
+<p>QTextCodec subclasses must reimplement this function.</p>
+<p>Converts the first <i>len</i> characters of <i>chars</i> from the encoding of the subclass to Unicode, and returns the result in a QString.</p>
+<p><i>state</i> can be 0, in which case the conversion is stateless and default conversion rules should be used. If state is not 0, the codec should save the state after the conversion in <i>state</i>, and adjust the remainingChars and invalidChars members of the struct.</p>
+
+*/"/>
+    <method name="public abstract int mibEnum()" doc="/**
+<p>Subclasses of QTextCodec must reimplement this function. It returns the MIBenum (see <a href=&quote;http://www.iana.org/assignments/character-sets&quote;>the IANA character-sets encoding file</a> for more information). It is important that each QTextCodec subclass returns the correct unique value for this function.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QByteArray name()" doc="/**
+<p>QTextCodec subclasses must reimplement this function. It returns the name of the encoding supported by the subclass.</p>
+<p>If the codec is registered as a character set in the <a href=&quote;http://www.iana.org/assignments/character-sets&quote;>IANA character-sets encoding file</a> this method should return the preferred mime name for the codec if defined, otherwise its name.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;com.trolltech.qt.core.QByteArray&gt; availableCodecs()" doc="/**
+<p>Returns the list of all available codecs, by name. Call QTextCodec::codecForName() to obtain the QTextCodec for the name.</p>
+<p>The list may contain many mentions of the same codec if the codec has aliases.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;java.lang.Integer&gt; availableMibs()" doc="/**
+<p>Returns the list of MIBs for all available codecs. Call QTextCodec::codecForMib() to obtain the QTextCodec for the MIB.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QTextCodec codecForCStrings()" doc="/**
+<p>Returns the codec used by QString to convert to and from <tt>const char *</tt> and QByteArrays. If this function returns 0 (the default), QString assumes Latin-1.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.core.QTextCodec codecForHtml(com.trolltech.qt.core.QByteArray ba__0)"/>
+    <method name="public native static com.trolltech.qt.core.QTextCodec codecForLocale()" doc="/**
+<p>Returns a pointer to the codec most suitable for this locale.</p>
+<p>On Windows, the codec will be based on a system locale. On Unix systems, starting with Qt 4.2, the codec will be using the <i>iconv</i> library. Note that in both cases the codec's name will be &quot;System&quot;.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QTextCodec codecForMib(int mib__0)" doc="/**
+<p>Returns the QTextCodec which matches the MIBenum <i>mib</i>.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.core.QTextCodec codecForName(com.trolltech.qt.core.QByteArray name__0)" doc="/**
+<p>Searches all installed QTextCodec objects and returns the one which best matches <i>name</i>; the match is case-insensitive. Returns 0 if no codec matching the name <i>name</i> could be found.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QTextCodec codecForName(com.trolltech.qt.QNativePointer name__0)" doc="/**
+<p>Searches all installed QTextCodec objects and returns the one which best matches <i>name</i>; the match is case-insensitive. Returns 0 if no codec matching the name <i>name</i> could be found.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QTextCodec codecForTr()" doc="/**
+<p>Returns the codec used by QObject::tr() on its argument. If this function returns 0 (the default), tr() assumes Latin-1.</p>
+
+*/"/>
+    <method name="public final static void setCodecForCStrings(com.trolltech.qt.core.QTextCodec c__0)" doc="/**
+<p>Sets the codec used by QString to convert to and from <tt>const char *</tt> and QByteArrays. If the <i>codec</i> is 0 (the default), QString assumes Latin-1.</p>
+<p><b>Warning:</b> Some codecs do not preserve the characters in the ASCII range (0x00 to 0x7F). For example, the Japanese Shift-JIS encoding maps the backslash character (0x5A) to the Yen character. To avoid undesirable side-effects, we recommend avoiding such codecs with setCodecsForCString().</p>
+
+*/"/>
+    <method name="public final static void setCodecForLocale(com.trolltech.qt.core.QTextCodec c__0)" doc="/**
+<p>Set the codec to <i>c</i>; this will be returned by codecForLocale(). This might be needed for some applications that want to use their own mechanism for setting the locale.</p>
+<p>Setting this codec is not supported on DOS based Windows.</p>
+
+*/"/>
+    <method name="public final static void setCodecForTr(com.trolltech.qt.core.QTextCodec c__0)" doc="/**
+<p>Sets the codec used by QObject::tr() on its argument to <i>c</i>. If <i>c</i> is 0 (the default), tr() assumes Latin-1.</p>
+<p>If the literal quoted text in the program is not in the Latin-1 encoding, this function can be used to set the appropriate encoding. For example, software developed by Korean programmers might use eucKR for all the text in the program, in which case the main() function might look like this:</p>
+<pre>    int main(int argc, char *argv[])
+    {
+        QApplication app(argc, argv);
+        QTextCodec::setCodecForTr(QTextCodec::codecForName(&quot;eucKR&quot;));
+        ...
+    }</pre>
+<p>Note that this is not the way to select the encoding that the <i>user</i> has chosen. For example, to convert an application containing literal English strings to Korean, all that is needed is for the English strings to be passed through tr() and for translation files to be loaded. For details of internationalization, see Internationalization with Qt.</p>
+
+*/"/>
+    <enum name="ConversionFlag" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>No flag is set.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>If this flag is set, invalid input results in an empty string.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Ignore any Unicode byte-order mark and don't generate any.</td></tr>
+</table></p>
+
+*/"/>
+</class>

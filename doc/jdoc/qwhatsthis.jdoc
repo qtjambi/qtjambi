@@ -1,0 +1,44 @@
+<class name="QWhatsThis" doc="/**
+<p>The QWhatsThis class provides a simple description of any widget, i.e. answering the question &quot;What's This?&quot;.</p>
+<p>&quot;What's This?&quot; help is part of an application's online help system, and provides users with information about the functionality and usage of a particular widget. &quot;What's This?&quot; help texts are typically longer and more detailed than tooltips, but generally provide less information than that supplied by separate help windows.</p>
+<p>QWhatsThis provides a single window with an explanatory text that pops up when the user asks &quot;What's This?&quot;. The default way for users to ask the question is to move the focus to the relevant widget and press Shift+F1. The help text appears immediately; it goes away as soon as the user does something else. (Note that if there is a shortcut for Shift+F1, this mechanism will not work.) Some dialogs provide a &quot;?&quot; button that users can click to enter &quot;What's This?&quot; mode; they then click the relevant widget to pop up the &quot;What's This?&quot; window. It is also possible to provide a a menu option or toolbar button to switch into &quot;What's This?&quot; mode.</p>
+<p>To add &quot;What's This?&quot; text to a widget or an action, you simply call QWidget::setWhatsThis() or QAction::setWhatsThis().</p>
+<p>The text can be either rich text or plain text. If you specify a rich text formatted string, it will be rendered using the default stylesheet, making it possible to embed images in the displayed text. To be as fast as possible, the default stylesheet uses a simple method to determine whether the text can be rendered as plain text. See Qt::mightBeRichText() for details.</p>
+<pre>        newAct = new QAction(tr(&quot;&amp;New&quot;), this);
+        newAct-&gt;setShortcut(tr(&quot;Ctrl+N&quot;));
+        newAct-&gt;setStatusTip(tr(&quot;Create a new file&quot;));
+        newAct-&gt;setWhatsThis(tr(&quot;Click this option to create a new file.&quot;));</pre>
+<p>An alternative way to enter &quot;What's This?&quot; mode is to call createAction(), and add the returned QAction to either a menu or a tool bar. By invoking this context help action (in the picture below, the button with the arrow and question mark icon) the user switches into &quot;What's This?&quot; mode. If they now click on a widget the appropriate help text is shown. The mode is left when help is given or when the user presses Esc.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image whatsthis.png]</font></p><p>You can enter &quot;What's This?&quot; mode programmatically with enterWhatsThisMode(), check the mode with inWhatsThisMode(), and return to normal mode with leaveWhatsThisMode().</p>
+<p>If you want to control the &quot;What's This?&quot; behavior of a widget manually see Qt::WA_CustomWhatsThis.</p>
+<p>It is also possible to show different help texts for different regions of a widget, by using a QHelpEvent of type QEvent::WhatsThis. Intercept the help event in your widget's QWidget::event() function and call QWhatsThis::showText() with the text you want to display for the position specified in QHelpEvent::pos(). If the text is rich text and the user clicks on a link, the widget also receives a QWhatsThisClickedEvent with the link's reference as QWhatsThisClickedEvent::href(). If a QWhatsThisClickedEvent is handled (i.e. QWidget::event() returns true), the help window remains visible. Call QWhatsThis::hideText() to hide it explicitly.</p>
+
+*/">
+    <method name="public final static com.trolltech.qt.gui.QAction createAction(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Returns a ready-made QAction, used to invoke &quot;What's This?&quot; context help, with the given <i>parent</i>.</p>
+<p>The returned QAction provides a convenient way to let users enter &quot;What's This?&quot; mode.</p>
+
+*/"/>
+    <method name="public native static void enterWhatsThisMode()" doc="/**
+<p>This function switches the user interface into &quot;What's This?&quot; mode. The user interface can be switched back into normal mode by the user (e.g. by them clicking or pressing Esc), or programmatically by calling leaveWhatsThisMode().</p>
+<p>When entering &quot;What's This?&quot; mode, a QEvent of type Qt::EnterWhatsThisMode is sent to all toplevel widgets.</p>
+
+*/"/>
+    <method name="public native static void hideText()" doc="/**
+<p>If a &quot;What's This?&quot; window is showing, this destroys it.</p>
+
+*/"/>
+    <method name="public native static boolean inWhatsThisMode()" doc="/**
+<p>Returns true if the user interface is in &quot;What's This?&quot; mode; otherwise returns false.</p>
+
+*/"/>
+    <method name="public native static void leaveWhatsThisMode()" doc="/**
+<p>If the user interface is in &quot;What's This?&quot; mode, this function switches back to normal mode; otherwise it does nothing.</p>
+<p>When leaving &quot;What's This?&quot; mode, a QEvent of type Qt::LeaveWhatsThisMode is sent to all toplevel widgets.</p>
+
+*/"/>
+    <method name="public final static void showText(com.trolltech.qt.core.QPoint pos__0, java.lang.String text__1, com.trolltech.qt.gui.QWidget w__2)" doc="/**
+<p>Shows <i>text</i> as a &quot;What's This?&quot; window, at global position <i>pos</i>. The optional widget argument, <i>w</i>, is used to determine the appropriate screen on multi-head systems.</p>
+
+*/"/>
+</class>

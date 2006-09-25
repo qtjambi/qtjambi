@@ -1,0 +1,37 @@
+<class name="QDragMoveEvent" doc="/**
+<p>The QDragMoveEvent class provides an event which is sent while a drag and drop action is in progress.</p>
+<p>A widget will receive drag move events repeatedly while the drag is within its boundaries, if it accepts drop events and enter events. The widget should examine the event to see what kind of data it provides, and call the accept() function to accept the drop if appropriate.</p>
+<p>The rectangle supplied by the answerRect() function can be used to restrict drops to certain parts of the widget. For example, we can check whether the rectangle intersects with the geometry of a certain child widget and only call acceptProposedAction() if that is the case.</p>
+<p>Note that this class inherits most of its functionality from QDropEvent.</p>
+
+*/">
+    <method name="public QDragMoveEvent(com.trolltech.qt.core.QPoint pos__0, com.trolltech.qt.core.Qt.DropActions actions__1, com.trolltech.qt.gui.QMimeData data__2, com.trolltech.qt.core.Qt.MouseButtons buttons__3, com.trolltech.qt.core.Qt.KeyboardModifiers modifiers__4, com.trolltech.qt.core.QEvent.Type type__5)" doc="/**
+<p>Creates a QDragMoveEvent of the required <i>type</i> indicating that the mouse is at position <i>pos</i> given within a widget.</p>
+<p>The mouse and keyboard states are specified by <i>buttons</i> and <i>modifiers</i>, and the <i>actions</i> describe the types of drag and drop operation that are possible. The drag data is passed as MIME-encoded information in <i>data</i>.</p>
+<p><b>Warning:</b> Do not attempt to create a QDragMoveEvent yourself. These objects rely on Qt's internal state.</p>
+
+*/"/>
+    <method name="public final void accept()" doc="/**
+<p>Calls QDropEvent::accept().</p>
+
+*/"/>
+    <method name="public final void accept(com.trolltech.qt.core.QRect r__0)" doc="/**
+<p>The same as accept(), but also notifies that future moves will also be acceptable if they remain within the <i>rectangle</i> given on the widget. This can improve performance, but may also be ignored by the underlying system.</p>
+<p>If the rectangle is empty, drag move events will be sent continuously. This is useful if the source is scrolling in a timer event.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect answerRect()" doc="/**
+<p>Returns the rectangle in the widget where the drop will occur if accepted. You can use this information to restrict drops to certain places on the widget.</p>
+
+*/"/>
+    <method name="public final void ignore(com.trolltech.qt.core.QRect r__0)" doc="/**
+<p>The opposite of the accept(const QRect&amp;) function. Moves within the <i>rectangle</i> are not acceptable, and will be ignored.</p>
+
+*/"/>
+    <method name="public void ignore()" doc="/**
+<p>Calls QDropEvent::ignore().</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.core.QRect rect()"/>
+    <method name="protected final void setRect(com.trolltech.qt.core.QRect rect)"/>
+</class>

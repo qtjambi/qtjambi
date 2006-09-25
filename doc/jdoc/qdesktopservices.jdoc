@@ -1,0 +1,47 @@
+<class name="QDesktopServices" doc="/**
+<p>The QDesktopServices class provides methods for accessing common desktop services.</p>
+<p>Many desktop environments provide services that can be used by applications to perform common tasks, such as opening a web page, in a way that is both consistent and takes into account the user's application preferences.</p>
+<p>This class contains functions that provide simple interfaces to these services that indicate whether they succeeded or failed.</p>
+<p>The openUrl() function is used to open files located at arbitrary URLs in external applications. For URLs that correspond to resources on the local filing system (where the URL scheme is &quot;file&quot;), a suitable application will be used to open the file; otherwise, a web browser will be used to fetch and display the file.</p>
+<p>The user's desktop settings control whether certain executable file types are opened for browsing, or if they are executed instead. Some desktop environments are configured to prevent users from executing files obtained from non-local URLs, or to ask the user's permission before doing so.</p>
+<a name=&quote;url-handlers&quote;></a>
+<h3>URL Handlers</h3>
+<p>The behavior of the openUrl() function can be customized for individual URL schemes to allow applications to override the default handling behavior for certain types of URLs.</p>
+<p>The dispatch mechanism allows only one custom handler to be used for each URL scheme; this is set using the setUrlHandler() function. Each handler is implemented as a slot which accepts only a single QUrl argument.</p>
+<p>The existing handlers for each scheme can be removed with the unsetUrlHandler() function. This returns the handling behavior for the given scheme to the default behavior.</p>
+<p>This system makes it easy to implement a help system, for example. Help could be provided in labels and text browsers using <b>help://myapplication/mytopic</b> URLs, and by registering a handler it becomes possible to display the help text inside the application:</p>
+<pre>    class MyHelpHandler : public QObject
+    {
+        Q_OBJECT
+    public:
+        ...
+    public slots:
+        void showHelp(const QUrl &amp;url);
+    };
+
+    QDesktopServices::setUrlHandler(&quot;help&quot;, helpInstance, &quot;showHelp&quot;);</pre>
+<p>If inside the handler you decide that you can't open the requested URL, you can just call QDesktopServices::openUrl() without arguments, and it will try to open the URL using the appropriate mechanism for the user's desktop environment.</p>
+
+*/">
+    <method name="public final static boolean openUrl(com.trolltech.qt.core.QUrl url__0)" doc="/**
+<p>Opens the given <i>url</i> in the appropriate web browser for the user's desktop environment, and returns true if successful; otherwise returns false.</p>
+<p>If the URL is a reference to a local file (i.e. the URL scheme is &quot;file&quot;) then it will be opened with a suitable application instead of a web browser.</p>
+<p>If a <tt>mailto</tt> URL is specified, the user's e-mail client will be used to open a composer window containing the options specified in the URL, similar to the way <tt>mailto</tt> links are handled by a web browser.</p>
+<p>For example, the following URL contains a recipient (<tt>user@foo.com</tt>), a subject (<tt>Test</tt>), and a message body (<tt>Just a test</tt>):</p>
+<pre>    mailto:user@foo.com?subject=Test&amp;body=Just a test</pre>
+<p><b>Warning:</b> Although many e-mail clients can send attachments and are Unicode-aware, the user may have configured their client without these features. Also, certain e-mail clients (e.g., Lotus Notes) have problems with long URLs.</p>
+
+*/"/>
+    <method name="public final static void setUrlHandler(java.lang.String scheme__0, com.trolltech.qt.core.QObject receiver__1, com.trolltech.qt.QNativePointer method__2)" doc="/**
+<p>Sets the handler for the given <i>scheme</i> to be the handler <i>method</i> provided by the <i>receiver</i> object.</p>
+<p>This function provides a way to customize the behavior of openUrl(). If openUrl() is called with a URL with the specified <i>scheme</i> then the given <i>method</i> on the <i>receiver</i> object is called instead of QDesktopServices launching an external application.</p>
+<p>The provided method must be implemented as a slot that only accepts a single QUrl argument.</p>
+<p>If setUrlHandler() is used to set a new handler for a scheme which already has a handler, the existing handler is simply replaced with the new one. Since QDesktopServices does not take ownership of handlers, no objects are deleted when a handler is replaced.</p>
+<p>Note that the handler will always be called from within the same thread that calls QDesktopServices::openUrl().</p>
+
+*/"/>
+    <method name="public native static void unsetUrlHandler(java.lang.String scheme__0)" doc="/**
+<p>Removes a previously set url handler for the specified <i>scheme</i>.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,20 @@
+<class name="QTextDecoder" doc="/**
+<p>The QTextDecoder class provides a state-based decoder.</p>
+<p>A text decoder converts text from an encoded text format into Unicode using a specific codec.</p>
+<p>The decoder converts text in this format into Unicode, remembering any state that is required between calls.</p>
+
+*/">
+    <method name="public QTextDecoder(com.trolltech.qt.core.QTextCodec codec__0)" doc="/**
+<p>Constructs a text decoder for the given <i>codec</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.String toUnicode(com.trolltech.qt.core.QByteArray ba__0)" doc="/**
+<p>Converts the bytes in the byte array specified by <i>ba</i> to Unicode and returns the result.</p>
+
+*/"/>
+    <method name="public final java.lang.String toUnicode(com.trolltech.qt.QNativePointer chars__0, int len__1)" doc="/**
+<p>Converts the first <i>len</i> bytes in <i>chars</i> to Unicode, returning the result.</p>
+<p>If not all characters are used (e.g. if only part of a multi-byte encoding is at the end of the characters), the decoder remembers enough state to continue with the next call to this function.</p>
+
+*/"/>
+</class>

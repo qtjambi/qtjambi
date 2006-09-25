@@ -1,0 +1,35 @@
+<class name="QHelpEvent" doc="/**
+<p>The QHelpEvent class provides an event that is used to request helpful information about a particular point in a widget.</p>
+<p>This event can be intercepted in applications to provide tooltips or &quot;What's This?&quot; help for custom widgets. The type() can be either QEvent::ToolTip or QEvent::WhatsThis.</p>
+
+*/">
+    <method name="public QHelpEvent(com.trolltech.qt.core.QEvent.Type type__0, com.trolltech.qt.core.QPoint pos__1, com.trolltech.qt.core.QPoint globalPos__2)" doc="/**
+<p>Constructs a help event with the given <i>type</i> corresponding to the widget-relative position specified by <i>pos</i> and the global position specified by <i>globalPos</i>.</p>
+<p><i>type</i> must be either QEvent::ToolTip or QEvent::WhatsThis.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint globalPos()" doc="/**
+<p>Returns the mouse cursor position when the event was generated in global coordinates.</p>
+
+*/"/>
+    <method name="public final int globalX()" doc="/**
+<p>Same as globalPos().x().</p>
+
+*/"/>
+    <method name="public final int globalY()" doc="/**
+<p>Same as globalPos().y().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint pos()" doc="/**
+<p>Returns the mouse cursor position when the event was generated, relative to the widget to which the event is dispatched.</p>
+
+*/"/>
+    <method name="public final int x()" doc="/**
+<p>Same as pos().x().</p>
+
+*/"/>
+    <method name="public final int y()" doc="/**
+<p>Same as pos().y().</p>
+
+*/"/>
+</class>

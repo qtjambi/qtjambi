@@ -1,0 +1,57 @@
+<class name="QMetaEnum" doc="/**
+<p>The QMetaEnum class provides meta-data about an enumerator.</p>
+<p>Use name() for the enumerator's name. The enumerator's keys (names of each enumerated item) are returned by key(); use keyCount() to find the number of keys. isFlag() returns whether the enumerator is meant to be used as a flag, meaning that its values can be combined using the OR operator.</p>
+<p>The conversion functions keyToValue(), valueToKey(), keysToValue(), and valueToKeys() allow conversion between the integer representation of an enumeration or set value and its literal representation. The scope() function returns the class scope this enumerator was declared in.</p>
+
+*/">
+    <method name="public QMetaEnum()"/>
+    <method name="public final boolean isFlag()" doc="/**
+<p>Returns true if this enumerator is used as a flag; otherwise returns false.</p>
+<p>When used as flags, enumerators can be combined using the OR operator.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if this enum is valid (has a name); otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer key(int index__0)" doc="/**
+<p>Returns the key with the given <i>index</i>, or 0 if no such key exists.</p>
+
+*/"/>
+    <method name="public final int keyCount()" doc="/**
+<p>Returns the number of keys.</p>
+
+*/"/>
+    <method name="public final int keyToValue(com.trolltech.qt.QNativePointer key__0)" doc="/**
+<p>Returns the integer value of the given enumeration <i>key</i>, or -1 if <i>key</i> is not defined.</p>
+<p>For flag types, use keysToValue().</p>
+
+*/"/>
+    <method name="public final int keysToValue(com.trolltech.qt.QNativePointer keys__0)" doc="/**
+<p>Returns the value derived from combining together the values of the <i>keys</i> using the OR operator, or -1 if <i>keys</i> is not defined. Note that the strings in <i>keys</i> must be '|'-separated.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer name()" doc="/**
+<p>Returns the name of the enumerator (without the scope).</p>
+<p>For example, the Qt::AlignmentFlag enumeration has <tt>AlignmentFlag</tt> as the name and Qt as the scope.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer scope()" doc="/**
+<p>Returns the scope this enumerator was declared in.</p>
+<p>For example, the Qt::AlignmentFlag enumeration has <tt>Qt</tt> as the scope and <tt>AlignmentFlag</tt> as the name.</p>
+
+*/"/>
+    <method name="public final int value(int index__0)" doc="/**
+<p>Returns the value with the given <i>index</i>; or returns -1 if there is no such value.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer valueToKey(int value__0)" doc="/**
+<p>Returns the string that is used as the name of the given enumeration <i>value</i>, or 0 if <i>value</i> is not defined.</p>
+<p>For flag types, use valueToKeys().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray valueToKeys(int value__0)" doc="/**
+<p>Returns a byte array of '|'-separated keys that represents the given <i>value</i>.</p>
+
+*/"/>
+</class>

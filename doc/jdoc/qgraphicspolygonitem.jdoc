@@ -1,0 +1,47 @@
+<class name="QGraphicsPolygonItem" doc="/**
+<p>The QGraphicsPolygonItem class provides a polygon item that you can add to a QGraphicsScene.</p>
+<p>To set the item's polygon, pass a QPolygonF to QGraphicsPolygonItem's constructor, or call the setPolygon() function. The polygon() function returns the current polygon.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image graphicsview-polygonitem.png]</font></p><p>QGraphicsPolygonItem uses the polygon and the pen width to provide a reasonable implementation of boundingRect(), shape(), and contains(). The paint() function draws the polygon using the item's associated pen and brush, which you can set by calling the setPen() and setBrush() functions.</p>
+
+*/">
+    <method name="public QGraphicsPolygonItem(com.trolltech.qt.gui.QGraphicsItemInterface parent__0, com.trolltech.qt.gui.QGraphicsScene scene__1)" doc="/**
+<p>Constructs a QGraphicsPolygonItem. The <i>parent</i> and <i>scene</i> parameters are passed to QAbstractGraphicsShapeItem's constructor.</p>
+
+*/"/>
+    <method name="public QGraphicsPolygonItem(com.trolltech.qt.gui.QPolygonF polygon__0, com.trolltech.qt.gui.QGraphicsItemInterface parent__1, com.trolltech.qt.gui.QGraphicsScene scene__2)" doc="/**
+<p>Constructs a QGraphicsPolygonItem with <i>polygon</i> as the default polygon. The <i>parent</i> and <i>scene</i> parameters are passed to QAbstractGraphicsShapeItem's constructor.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.FillRule fillRule()" doc="/**
+<p>Returns the fill rule of the polygon. The default fill rule is Qt::OddEvenFill.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPolygonF polygon()" doc="/**
+<p>Returns the item's polygon, or an empty polygon if no polygon has been set.</p>
+
+*/"/>
+    <method name="public final void setFillRule(com.trolltech.qt.core.Qt.FillRule rule__0)" doc="/**
+<p>Sets the fill rule of the polygon to <i>rule</i>. The default fill rule is Qt::OddEvenFill.</p>
+
+*/"/>
+    <method name="public final void setPolygon(com.trolltech.qt.gui.QPolygonF polygon__0)" doc="/**
+<p>Sets the item's polygon to be the given <i>polygon</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QRectF boundingRect()"/>
+    <method name="public boolean contains(com.trolltech.qt.core.QPointF point__0)"/>
+    <method name="public java.lang.Object extension(java.lang.Object variant__0)"/>
+    <method name="public boolean isObscuredBy(com.trolltech.qt.gui.QGraphicsItemInterface item__0)"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath opaqueArea()"/>
+    <method name="public void paint(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.gui.QStyleOptionGraphicsItem option__1, com.trolltech.qt.gui.QWidget widget__2)"/>
+    <method name="public void setExtension(com.trolltech.qt.gui.QGraphicsItem.Extension extension__0, java.lang.Object variant__1)" doc="/**
+<p>Note: This is provided as a hook to avoid future problems related to adding virtual functions.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath shape()"/>
+    <method name="public boolean supportsExtension(com.trolltech.qt.gui.QGraphicsItem.Extension extension__0)" doc="/**
+<p>Note: This is provided as a hook to avoid future problems related to adding virtual functions.</p>
+
+*/"/>
+    <method name="public int type()"/>
+</class>

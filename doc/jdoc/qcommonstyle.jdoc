@@ -1,0 +1,185 @@
+<class name="QCommonStyle" doc="/**
+<p>The QCommonStyle class encapsulates the common Look and Feel of a GUI.</p>
+<p>This abstract class implements some of the widget's look and feel that is common to all GUI styles provided and shipped as part of Qt.</p>
+<p>Since QCommonStyle inherits QStyle, all of its functions are fully documented in the QStyle documentation.</p>
+
+*/">
+    <method name="public QCommonStyle()" doc="/**
+<p>Constructs a QCommonStyle.</p>
+
+*/"/>
+    <method name="public void drawComplexControl(com.trolltech.qt.gui.QStyle.ComplexControl cc__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.gui.QPainter p__2, com.trolltech.qt.gui.QWidget w__3)" doc="/**
+<p>Draws the given <i>control</i> using the provided <i>painter</i> with the style options specified by <i>option</i>.</p>
+<p>The <i>widget</i> argument is optional and can be used as aid in drawing the control.</p>
+<p>The <i>option</i> parameter is a pointer to a QStyleOptionComplex object that can be casted to the correct subclass using the qstyleoption_cast() function. Note that the <tt>rect</tt> member of the specified <i>option</i> must be in logical coordinates. Reimplementations of this function should use visualRect() to change the logical coordinates into screen coordinates before calling the drawPrimitive() or drawControl() function.</p>
+<p>The table below is listing the complex control elements and their associated style option subclass. The style options contain all the parameters required to draw the controls, including QStyleOption::state which holds the style flags that are used when drawing. The table also describes which flags that are set when casting the given <i>option</i> to the appropiate subclass.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Complex Control</th><th>QStyleOptionComplex Subclass</th><th>Style Flag</th><th>Remark</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>CC_SpinBox</td><td rowspan=&quote;2&quote;>QStyleOptionSpinBox</td><td>State_Enabled</td><td>Set if the spin box is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_HasFocus</td><td>Set if the spin box has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>CC_ComboBox</td><td rowspan=&quote;2&quote;>QStyleOptionComboBox</td><td>State_Enabled</td><td>Set if the combobox is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_HasFocus</td><td>Set if the combobox has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>CC_ScrollBar</td><td rowspan=&quote;2&quote;>QStyleOptionSlider</td><td>State_Enabled</td><td>Set if the scroll bar is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_HasFocus</td><td>Set if the scroll bar has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>CC_Slider</td><td rowspan=&quote;2&quote;>QStyleOptionSlider</td><td>State_Enabled</td><td>Set if the slider is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_HasFocus</td><td>Set if the slider has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>CC_Dial</td><td rowspan=&quote;2&quote;>QStyleOptionSlider</td><td>State_Enabled</td><td>Set if the dial is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_HasFocus</td><td>Set if the dial has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;6&quote;>CC_ToolButton</td><td rowspan=&quote;6&quote;>QStyleOptionToolButton</td><td>State_Enabled</td><td>Set if the tool button is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_HasFocus</td><td>Set if the tool button has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_DownArrow</td><td>Set if the tool button is down (i.e., a mouse button or the space bar is pressed).</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_On</td><td>Set if the tool button is a toggle button and is toggled on.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_AutoRaise</td><td>Set if the tool button has auto-raise enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Raised</td><td>Set if the button is not down, not on, and doesn't contain the mouse when auto-raise is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>CC_TitleBar</td><td>QStyleOptionTitleBar</td><td>State_Enabled</td><td>Set if the title bar is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>CC_Q3ListView</td><td>QStyleOptionQ3ListView</td><td>State_Enabled</td><td>Set if the list view is enabled.</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public void drawControl(com.trolltech.qt.gui.QStyle.ControlElement element__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.gui.QPainter p__2, com.trolltech.qt.gui.QWidget w__3)" doc="/**
+<p>Draws the given <i>element</i> with the provided <i>painter</i> with the style options specified by <i>option</i>.</p>
+<p>The <i>widget</i> argument is optional and can be used as aid in drawing the control. The <i>option</i> parameter is a pointer to a QStyleOption object that can be casted to the correct subclass using the qstyleoption_cast() function.</p>
+<p>The table below is listing the control elements and their associated style option subclass. The style options contain all the parameters required to draw the controls, including QStyleOption::state which holds the style flags that are used when drawing. The table also describes which flags that are set when casting the given option to the appropiate subclass.</p>
+<p>Note that if a control element is not listed here, it is because it uses a plain QStyleOption object.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Control Element</th><th>QStyleOption Subclass</th><th>Style Flag</th><th>Remark</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;5&quote;>CE_MenuItem, CE_MenuBarItem</td><td rowspan=&quote;5&quote;>QStyleOptionMenuItem</td><td>State_Selected</td><td>The menu item is currently selected item.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Enabled</td><td>The item is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_DownArrow</td><td>Indicates that a scroll down arrow should be drawn.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_UpArrow</td><td>Indicates that a scroll up arrow should be drawn</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_HasFocus</td><td>Set if the menubar has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td rowspan=&quote;5&quote;>CE_PushButton, CE_PushButtonBevel, CE_PushButtonLabel</td><td rowspan=&quote;5&quote;>QStyleOptionButton</td><td>State_Enabled</td><td>Set if the button is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_HasFocus</td><td>Set if the button has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Raised</td><td>Set if the button is not down, not on and not flat.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_On</td><td>Set if the button is a toggle button and is toggled on.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Sunken</td><td>Set if the button is down (i.e., the mouse button or the space bar is pressed on the button).</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;6&quote;>CE_RadioButton, CE_RadioButtonLabel, CE_CheckBox, CE_CheckBoxLabel</td><td rowspan=&quote;6&quote;>QStyleOptionButton</td><td>State_Enabled</td><td>Set if the button is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_HasFocus</td><td>Set if the button has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_On</td><td>Set if the button is checked.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Off</td><td>Set if the button is not checked.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_NoChange</td><td>Set if the button is in the NoChange state.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Sunken</td><td>Set if the button is down (i.e., the mouse button or the space bar is pressed on the button).</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>CE_ProgressBarContents, CE_ProgressBarLabel, CE_ProgressBarGroove</td><td rowspan=&quote;2&quote;>QStyleOptionProgressBar</td><td>State_Enabled</td><td>Set if the progressbar is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_HasFocus</td><td>Set if the progressbar has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>CE_Header, CE_HeaderSection, CE_HeaderLabel</td><td>QStyleOptionHeader</td><td></td><td></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td rowspan=&quote;7&quote;>CE_ToolButtonLabel</td><td rowspan=&quote;7&quote;>QStyleOptionToolButton</td><td>State_Enabled</td><td>Set if the tool button is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_HasFocus</td><td>Set if the tool button has input focus.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Sunken</td><td>Set if the tool button is down (i.e., a mouse button or the space bar is pressed).</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_On</td><td>Set if the tool button is a toggle button and is toggled on.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_AutoRaise</td><td>Set if the tool button has auto-raise enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_MouseOver</td><td>Set if the mouse pointer is over the tool button.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Raised</td><td>Set if the button is not down and is not on.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>CE_ToolBoxTab</td><td>QStyleOptionToolBox</td><td>State_Selected</td><td>The tab is the currently selected tab.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td rowspan=&quote;3&quote;>CE_HeaderSection</td><td rowspan=&quote;3&quote;>QStyleOptionHeader</td><td>State_Sunken</td><td>Indicates that the section is pressed.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_UpArrow</td><td>Indicates that the sort indicator should be pointing up.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_DownArrow</td><td>Indicates that the sort indicator should be pointing down.</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public void drawPrimitive(com.trolltech.qt.gui.QStyle.PrimitiveElement pe__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.gui.QPainter p__2, com.trolltech.qt.gui.QWidget w__3)" doc="/**
+<p>Draws the given primitive <i>element</i> with the provided <i>painter</i> using the style options specified by <i>option</i>.</p>
+<p>The <i>widget</i> argument is optional and may contain a widget that may aid in drawing the primitive element.</p>
+<p>The table below is listing the primitive elements and their associated style option subclasses. The style options contain all the parameters required to draw the elements, including QStyleOption::state which holds the style flags that are used when drawing. The table also describes which flags that are set when casting the given option to the appropiate subclass.</p>
+<p>Note that if a primitive element is not listed here, it is because it uses a plain QStyleOption object.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Primitive Element</th><th>QStyleOption Subclass</th><th>Style Flag</th><th>Remark</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PE_FrameFocusRect</td><td>QStyleOptionFocusRect</td><td>State_FocusAtBorder</td><td>Whether the focus is is at the border or inside the widget.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td rowspan=&quote;2&quote;>PE_IndicatorCheckBox</td><td rowspan=&quote;2&quote;>QStyleOptionButton</td><td>State_NoChange</td><td>Indicates a &quot;tri-state&quot; checkbox.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_On</td><td>Indicates the indicator is checked.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PE_IndicatorRadioButton</td><td>QStyleOptionButton</td><td>State_On</td><td>Indicates that a radio button is selected.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;3&quote;>PE_Q3CheckListExclusiveIndicator, PE_Q3CheckListIndicator</td><td rowspan=&quote;3&quote;>QStyleOptionQ3ListView</td><td>State_On</td><td>Indicates whether or not the controller is selected.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_NoChange</td><td>Indicates a &quot;tri-state&quot; controller.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_Enabled</td><td>Indicates the controller is enabled.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td rowspan=&quote;4&quote;>PE_IndicatorBranch</td><td rowspan=&quote;4&quote;>QStyleOption</td><td>State_Children</td><td>Indicates that the control for expanding the tree to show child items, should be drawn.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_Item</td><td>Indicates that a horizontal branch (to show a child item), should be drawn.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>State_Open</td><td>Indicates that the tree branch is expanded.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>State_Sibling</td><td>Indicates that a vertical line (to show a sibling item), should be drawn.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PE_IndicatorHeaderArrow</td><td>QStyleOptionHeader</td><td>State_UpArrow</td><td>Indicates that the arrow should be drawn up; otherwise it should be down.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PE_FrameGroupBox, PE_Frame, PE_FrameLineEdit, PE_FrameMenu, PE_FrameDockWidget</td><td>QStyleOptionFrame</td><td>State_Sunken</td><td>Indicates that the Frame should be sunken.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PE_IndicatorToolBarHandle</td><td>QStyleOption</td><td>State_Horizontal</td><td>Indicates that the window handle is horizontal instead of vertical.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PE_Q3DockWindowSeparator</td><td>QStyleOption</td><td>State_Horizontal</td><td>Indicates that the separator is horizontal instead of vertical.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PE_IndicatorSpinPlus, PE_IndicatorSpinMinus, PE_IndicatorSpinUp, PE_IndicatorSpinDown,</td><td>QStyleOptionSpinBox</td><td>State_Sunken</td><td>Indicates that the button is pressed.</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPixmap generatedIconPixmap(com.trolltech.qt.gui.QIcon.Mode iconMode__0, com.trolltech.qt.gui.QPixmap pixmap__1, com.trolltech.qt.QNativePointer opt__2)"/>
+    <method name="public int hitTestComplexControl(com.trolltech.qt.gui.QStyle.ComplexControl cc__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.core.QPoint pt__2, com.trolltech.qt.gui.QWidget w__3)" doc="/**
+<p>Returns the sub control at the given <i>position</i> in the given complex <i>control</i> (with the style options specified by <i>option</i>).</p>
+<p>Note that the <i>position</i> is expressed in screen coordinates.</p>
+<p>The <i>option</i> argument is a pointer to a QStyleOptionComplex object (or one of its subclasses). The object can be casted to the appropriate type using the qstyleoption_cast() function. See drawComplexControl() for details. The <i>widget</i> argument is optional and can contain additional information for the function.</p>
+
+*/"/>
+    <method name="public int pixelMetric(com.trolltech.qt.gui.QStyle.PixelMetric m__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.gui.QWidget widget__2)" doc="/**
+<p>Returns the value of the given pixel <i>metric</i>.</p>
+<p>The specified <i>option</i> and <i>widget</i> can be used for calculating the metric. In general, the <i>widget</i> argument is not used. The <i>option</i> can be cast to the appropriate type using the qstyleoption_cast() function. Note that the <i>option</i> may be zero even for PixelMetrics that can make use of it. See the table below for the appropriate <i>option</i> casts:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Pixel Metric</th><th>QStyleOption Subclass</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PM_SliderControlThickness</td><td>QStyleOptionSlider</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PM_SliderLength</td><td>QStyleOptionSlider</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PM_SliderTickmarkOffset</td><td>QStyleOptionSlider</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PM_SliderSpaceAvailable</td><td>QStyleOptionSlider</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PM_ScrollBarExtent</td><td>QStyleOptionSlider</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PM_TabBarTabOverlap</td><td>QStyleOptionTab</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PM_TabBarTabHSpace</td><td>QStyleOptionTab</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PM_TabBarTabVSpace</td><td>QStyleOptionTab</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PM_TabBarBaseHeight</td><td>QStyleOptionTab</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PM_TabBarBaseOverlap</td><td>QStyleOptionTab</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QSize sizeFromContents(com.trolltech.qt.gui.QStyle.ContentsType ct__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.core.QSize contentsSize__2, com.trolltech.qt.gui.QWidget widget__3)" doc="/**
+<p>Returns the size of the element described by the specified <i>option</i> and <i>type</i>, based on the provided <i>contentsSize</i>.</p>
+<p>The <i>option</i> argument is a pointer to a QStyleOption or one of its subclasses. The <i>option</i> can be cast to the appropriate type using the qstyleoption_cast() function. The <i>widget</i> is an optional argument and can contain extra information used for calculating the size.</p>
+<p>See the table below for the appropriate <i>option</i> casts:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Contents Type</th><th>QStyleOption Subclass</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>CT_PushButton</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>CT_CheckBox</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>CT_RadioButton</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>CT_ToolButton</td><td>QStyleOptionToolButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>CT_ComboBox</td><td>QStyleOptionComboBox</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>CT_Splitter</td><td>QStyleOption</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>CT_Q3DockWindow</td><td>QStyleOptionQ3DockWindow</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>CT_ProgressBar</td><td>QStyleOptionProgressBar</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>CT_MenuItem</td><td>QStyleOptionMenuItem</td></tr>
+</table></p>
+
+*/"/>
+    <method name="protected com.trolltech.qt.gui.QIcon standardIconImplementation(com.trolltech.qt.gui.QStyle.StandardPixmap standardIcon__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.gui.QWidget widget__2)"/>
+    <method name="public com.trolltech.qt.gui.QPixmap standardPixmap(com.trolltech.qt.gui.QStyle.StandardPixmap sp__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.gui.QWidget widget__2)" doc="/**
+<p>Returns a pixmap for the given <i>standardPixmap</i>.</p>
+<p>A standard pixmap is a pixmap that can follow some existing GUI style or guideline. The <i>option</i> argument can be used to pass extra information required when defining the appropiate pixmap. The <i>widget</i> argument is optional and can also be used to aid the determination of the pixmap.</p>
+
+*/"/>
+    <method name="public int styleHint(com.trolltech.qt.gui.QStyle.StyleHint sh__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.gui.QWidget w__2, com.trolltech.qt.gui.QStyleHintReturn shret__3)" doc="/**
+<p>Returns an integer representing the specified style <i>hint</i> for the given <i>widget</i> described by the provided style <i>option</i>.</p>
+<p>Note that currently, the <i>returnData</i> and <i>widget</i> parameters are not used; they are provided for future enhancement. In addition, the <i>option</i> parameter is used only in case of the SH_ComboBox_Popup, SH_ComboBox_LayoutDirection, and SH_GroupBox_TextLabelColor style hints.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QRect subControlRect(com.trolltech.qt.gui.QStyle.ComplexControl cc__0, com.trolltech.qt.QNativePointer opt__1, int sc__2, com.trolltech.qt.gui.QWidget w__3)" doc="/**
+<p>Returns the rectangle containing the specified <i>subControl</i> of the given complex <i>control</i> (with the style specified by <i>option</i>). The rectangle is defined in screen coordinates.</p>
+<p>The <i>option</i> argument is a pointer to QStyleOptionComplex or one of its subclasses, and can be casted to the appropiate type using the qstyleoption_cast() function. See drawComplexControl() for details. The <i>widget</i> is optional and can contain additional information for the function.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QRect subElementRect(com.trolltech.qt.gui.QStyle.SubElement r__0, com.trolltech.qt.QNativePointer opt__1, com.trolltech.qt.gui.QWidget widget__2)" doc="/**
+<p>Returns the sub-area for the given <i>element</i> as described in the provided style <i>option</i>. The returned rectangle is defined in screen coordinates.</p>
+<p>The <i>widget</i> argument is optional and can be used to aid determining the area. The QStyleOption object can be casted to the appropriate type using the qstyleoption_cast() function. See the table below for the appropriate <i>option</i> casts:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Sub Element</th><th>QStyleOption Subclass</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>SE_PushButtonContents</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SE_PushButtonFocusRect</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>SE_CheckBoxIndicator</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SE_CheckBoxContents</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>SE_CheckBoxFocusRect</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SE_RadioButtonIndicator</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>SE_RadioButtonContents</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SE_RadioButtonFocusRect</td><td>QStyleOptionButton</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>SE_ComboBoxFocusRect</td><td>QStyleOptionComboBox</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SE_Q3DockWindowHandleRect</td><td>QStyleOptionQ3DockWindow</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>SE_ProgressBarGroove</td><td>QStyleOptionProgressBar</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SE_ProgressBarContents</td><td>QStyleOptionProgressBar</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>SE_ProgressBarLabel</td><td>QStyleOptionProgressBar</td></tr>
+</table></p>
+
+*/"/>
+</class>

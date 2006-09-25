@@ -1,0 +1,292 @@
+<class name="QGLWidget" doc="/**
+<p>The QGLWidget class is a widget for rendering OpenGL graphics.</p>
+<p>QGLWidget provides functionality for displaying OpenGL graphics integrated into a Qt application. It is very simple to use. You inherit from it and use the subclass like any other QWidget, except that you have the choice between using QPainter and standard OpenGL rendering commands.</p>
+<p>QGLWidget provides three convenient virtual functions that you can reimplement in your subclass to perform the typical OpenGL tasks:</p>
+<ul>
+<li>paintGL() - Renders the OpenGL scene. Gets called whenever the widget needs to be updated.</li>
+<li>resizeGL() - Sets up the OpenGL viewport, projection, etc. Gets called whenever the the widget has been resized (and also when it is shown for the first time because all newly created widgets get a resize event automatically).</li>
+<li>initializeGL() - Sets up the OpenGL rendering context, defines display lists, etc. Gets called once before the first time resizeGL() or paintGL() is called.</li>
+</ul>
+<p>Here is a rough outline of how a QGLWidget subclass might look:</p>
+<pre>    class MyGLDrawer : public QGLWidget
+    {
+        Q_OBJECT        <span class=&quote;comment&quote;>// must include this if you use Qt signals/slots</span>
+
+    public:
+        MyGLDrawer(QWidget *parent)
+            : QGLWidget(parent) {}
+
+    protected:
+
+        void initializeGL()
+        {
+            <span class=&quote;comment&quote;>// Set up the rendering context, define display lists etc.:</span>
+            ...
+            glClearColor(0.0, 0.0, 0.0, 0.0);
+            glEnable(GL_DEPTH_TEST);
+            ...
+        }
+
+        void resizeGL(int w, int h)
+        {
+            <span class=&quote;comment&quote;>// setup viewport, projection etc.:</span>
+            glViewport(0, 0, (GLint)w, (GLint)h);
+            ...
+            glFrustum(...);
+            ...
+        }
+
+        void paintGL()
+        {
+            <span class=&quote;comment&quote;>// draw the scene:</span>
+            ...
+            glRotatef(...);
+            glMaterialfv(...);
+            glBegin(GL_QUADS);
+            glVertex3f(...);
+            glVertex3f(...);
+            ...
+            glEnd();
+            ...
+        }
+
+    };</pre>
+<p>If you need to trigger a repaint from places other than paintGL() (a typical example is when using timers to animate scenes), you should call the widget's updateGL() function.</p>
+<p>Your widget's OpenGL rendering context is made current when paintGL(), resizeGL(), or initializeGL() is called. If you need to call the standard OpenGL API functions from other places (e.g. in your widget's constructor or in your own paint functions), you must call makeCurrent() first.</p>
+<p>QGLWidget provides functions for requesting a new display format and you can also create widgets with customized rendering contexts.</p>
+<p>You can also share OpenGL display lists between QGLWidgets (see the documentation of the QGLWidget constructors for details).</p>
+<a name=&quote;overlays&quote;></a>
+<h3>Overlays</h3>
+<p>The QGLWidget creates a GL overlay context in addition to the normal context if overlays are supported by the underlying system.</p>
+<p>If you want to use overlays, you specify it in the format. (Note: Overlay must be requested in the format passed to the QGLWidget constructor.) Your GL widget should also implement some or all of these virtual methods:</p>
+<ul>
+<li>paintOverlayGL()</li>
+<li>resizeOverlayGL()</li>
+<li>initializeOverlayGL()</li>
+</ul>
+<p>These methods work in the same way as the normal paintGL() etc. functions, except that they will be called when the overlay context is made current. You can explicitly make the overlay context current by using makeOverlayCurrent(), and you can access the overlay context directly (e.g. to ask for its transparent color) by calling overlayContext().</p>
+<p>On X servers in which the default visual is in an overlay plane, non-GL Qt windows can also be used for overlays.</p>
+<a name=&quote;painting-techniques&quote;></a>
+<h3>Painting Techniques</h3>
+<p>As described above, subclass QGLWidget to render pure 3D content in the following way:</p>
+<ul>
+<li>Reimplement the QGLWidget::initializeGL() and QGLWidget::resizeGL() to set up the OpenGL state and provide a perspective transformation.</li>
+<li>Reimplement QGLWidget::paintGL() to paint the 3D scene, calling only OpenGL functions to draw on the widget.</li>
+</ul>
+<p>It is also possible to draw 2D graphics onto a QGLWidget subclass, it is necessary to reimplement QGLWidget::paintEvent() and do the following:</p>
+<ul>
+<li>Construct a QPainter object.</li>
+<li>Initialize it for use on the widget with the QPainter::begin() function.</li>
+<li>Draw primitives using QPainter's member functions.</li>
+<li>Call QPainter::end() to finish painting.</li>
+</ul>
+<p>Overpainting 2D content on top of 3D content takes a little more effort. One approach to doing this is shown in the Overpainting example.</p>
+<p><i>OpenGL is a trademark of Silicon Graphics, Inc. in the United States and other countries.</i></p>
+
+*/">
+    <method name="public QGLWidget(com.trolltech.qt.gui.QWidget parent__0, com.trolltech.qt.opengl.QGLWidget shareWidget__1, com.trolltech.qt.core.Qt.WindowFlags f__2)" doc="/**
+<p>Constructs an OpenGL widget with a <i>parent</i> widget.</p>
+<p>The default format is used. The widget will be invalid if the system has no OpenGL support.</p>
+<p>The <i>parent</i> and widget flag, <i>f</i>, arguments are passed to the QWidget constructor.</p>
+<p>If the <i>shareWidget</i> parameter points to a valid QGLWidget, this widget will share OpenGL display lists with <i>shareWidget</i>. If this widget and <i>shareWidget</i> have different formats, display list sharing may fail. You can check whether display list sharing succeeded by calling isSharing().</p>
+<p>The initialization of OpenGL rendering state, etc. should be done by overriding the initializeGL() function, rather than in the constructor of your QGLWidget subclass.</p>
+
+*/"/>
+    <method name="protected final boolean autoBufferSwap()" doc="/**
+<p>Returns true if the widget is doing automatic GL buffer swapping; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int bindTexture(java.lang.String fileName__0)" doc="/**
+<p>Calls QGLContext::bindTexture(<i>fileName</i>) on the currently set context.</p>
+
+*/"/>
+    <method name="public final int bindTexture(com.trolltech.qt.gui.QPixmap pixmap__0, int target__1, int format__2)" doc="/**
+<p>Calls QGLContext:::bindTexture(<i>pixmap</i>, <i>target</i>, <i>format</i>) on the currently set context.</p>
+
+*/"/>
+    <method name="public final int bindTexture(com.trolltech.qt.gui.QImage image__0, int target__1, int format__2)" doc="/**
+<p>Calls QGLContext:::bindTexture(<i>image</i>, <i>target</i>, <i>format</i>) on the currently set context.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.opengl.QGLColormap colormap()" doc="/**
+<p>Returns the colormap for this widget.</p>
+<p>Usually it is only top-level widgets that can have different colormaps installed. Asking for the colormap of a child widget will return the colormap for the child's top-level widget.</p>
+<p>If no colormap has been set for this widget, the QColormap returned will be empty.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.opengl.QGLContext context()" doc="/**
+<p>Returns the context of this widget.</p>
+<p>It is possible that the context is not valid (see isValid()), for example, if the underlying hardware does not support the format attributes that were requested.</p>
+
+*/"/>
+    <method name="public final void deleteTexture(int tx_id__0)" doc="/**
+<p>Calls QGLContext::deleteTexture(<i>id</i>) on the currently set context.</p>
+
+*/"/>
+    <method name="public final void doneCurrent()" doc="/**
+<p>Makes no GL context the current context. Normally, you do not need to call this function; QGLContext calls it as necessary. However, it may be useful in multithreaded environments.</p>
+
+*/"/>
+    <method name="public final boolean doubleBuffer()" doc="/**
+<p>Returns true if the contained GL rendering context has double buffering; otherwise returns false.</p>
+
+*/"/>
+    <method name="protected final int fontDisplayListBase(com.trolltech.qt.gui.QFont fnt__0, int listBase__1)" doc="/**
+<p>Returns the value of the first display list that is generated for the characters in the given <i>font</i>. <i>listBase</i> indicates the base value used when generating the display lists for the font. The default value is 2000.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.opengl.QGLFormat format()" doc="/**
+<p>Returns the format of the contained GL rendering context.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QImage grabFrameBuffer(boolean withAlpha__0)" doc="/**
+<p>Returns an image of the frame buffer. If <i>withAlpha</i> is true the alpha channel is included.</p>
+<p>Depending on your hardware, you can explicitly select which color buffer to grab with a glReadBuffer() call before calling this function.</p>
+
+*/"/>
+    <method name="public final boolean isSharing()" doc="/**
+<p>Returns true if this widget's GL context is shared with another GL context, otherwise false is returned. The GL system may fail to provide context sharing if the two QGLWidgets use different formats.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if the widget has a valid GL rendering context; otherwise returns false. A widget will be invalid if the system has no OpenGL support.</p>
+
+*/"/>
+    <method name="public final void makeCurrent()" doc="/**
+<p>Makes this widget the current widget for OpenGL operations, i.e. makes the widget's rendering context the current OpenGL rendering context.</p>
+
+*/"/>
+    <method name="public final void makeOverlayCurrent()" doc="/**
+<p>Makes the overlay context of this widget current. Use this if you need to issue OpenGL commands to the overlay context outside of initializeOverlayGL(), resizeOverlayGL(), and paintOverlayGL().</p>
+<p>Does nothing if this widget has no overlay.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.opengl.QGLContext overlayContext()" doc="/**
+<p>Returns the overlay context of this widget, or 0 if this widget has no overlay.</p>
+
+*/"/>
+    <method name="public final void qglClearColor(com.trolltech.qt.gui.QColor c__0)" doc="/**
+<p>Convenience function for specifying the clearing color to OpenGL. Calls glClearColor (in RGBA mode) or glClearIndex (in color-index mode) with the color <i>c</i>. Applies to this widgets GL context.</p>
+
+*/"/>
+    <method name="public final void qglColor(com.trolltech.qt.gui.QColor c__0)" doc="/**
+<p>Convenience function for specifying a drawing color to OpenGL. Calls glColor4 (in RGBA mode) or glIndex (in color-index mode) with the color <i>c</i>. Applies to this widgets GL context.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap renderPixmap(int w__0, int h__1, boolean useContext__2)" doc="/**
+<p>Renders the current scene on a pixmap and returns the pixmap.</p>
+<p>You can use this method on both visible and invisible QGLWidgets.</p>
+<p>This method will create a pixmap and a temporary QGLContext to render on the pixmap. It will then call initializeGL(), resizeGL(), and paintGL() on this context. Finally, the widget's original GL context is restored.</p>
+<p>The size of the pixmap will be <i>w</i> pixels wide and <i>h</i> pixels high unless one of these parameters is 0 (the default), in which case the pixmap will have the same size as the widget.</p>
+<p>If <i>useContext</i> is true, this method will try to be more efficient by using the existing GL context to render the pixmap. The default is false. Only use true if you understand the risks. Note that under Windows a temporary context has to be created and usage of the <i>useContext</i> parameter is not supported.</p>
+<p>Overlays are not rendered onto the pixmap.</p>
+<p>If the GL rendering context and the desktop have different bit depths, the result will most likely look surprising.</p>
+<p>Note that the creation of display lists, modifications of the view frustum etc. should be done from within initializeGL(). If this is not done, the temporary QGLContext will not be initialized properly, and the rendered pixmap may be incomplete/corrupted.</p>
+
+*/"/>
+    <method name="public final void renderText(double x__0, double y__1, double z__2, java.lang.String str__3, com.trolltech.qt.gui.QFont fnt__4, int listBase__5)" doc="/**
+<p><i>x</i>, <i>y</i> and <i>z</i> are specified in scene or object coordinates relative to the currently set projection and model matrices. This can be useful if you want to annotate models with text labels and have the labels move with the model as it is rotated etc.</p>
+
+*/"/>
+    <method name="public final void renderText(int x__0, int y__1, java.lang.String str__2, com.trolltech.qt.gui.QFont fnt__3, int listBase__4)" doc="/**
+<p>Renders the string <i>str</i> into the GL context of this widget.</p>
+<p><i>x</i> and <i>y</i> are specified in window coordinates, with the origin in the upper left-hand corner of the window. If <i>font</i> is not specified, the currently set application font will be used to render the string. To change the color of the rendered text you can use the glColor() call (or the qglColor() convenience function), just before the renderText() call. Note that if you have GL_LIGHTING enabled, the string will not appear in the color you want. You should therefore switch lighting off before using renderText().</p>
+<p><i>listBase</i> specifies the index of the first display list that is generated by this function. The default value is 2000. 256 display lists will be generated, one for each of the first 256 characters in the font that is used to render the string. If several fonts are used in the same widget, the display lists for these fonts will follow the last generated list. You would normally not have to change this value unless you are using lists in the same range. The lists are deleted when the widget is destroyed.</p>
+<p><b>Warning:</b> This function only works reliably with ASCII strings.</p>
+
+*/"/>
+    <method name="protected final void setAutoBufferSwap(boolean on__0)" doc="/**
+<p>If <i>on</i> is true automatic GL buffer swapping is switched on; otherwise it is switched off.</p>
+<p>If <i>on</i> is true and the widget is using a double-buffered format, the background and foreground GL buffers will automatically be swapped after each paintGL() call.</p>
+<p>The buffer auto-swapping is on by default.</p>
+
+*/"/>
+    <method name="public final void setColormap(com.trolltech.qt.opengl.QGLColormap map__0)" doc="/**
+<p>Set the colormap for this widget to <i>cmap</i>. Usually it is only top-level widgets that can have colormaps installed.</p>
+
+*/"/>
+    <method name="public final void setContext(com.trolltech.qt.opengl.QGLContext context__0, com.trolltech.qt.opengl.QGLContext shareContext__1, boolean deleteOldContext__2)" doc="/**
+<p>Sets a new QGLContext, <i>context</i>, for this QGLWidget, using the shared context, <i>shareContext</i>. If <i>deleteOldContext</i> is true, the original context is deleted; otherwise it is overridden.</p>
+
+*/"/>
+    <method name="public final void setFormat(com.trolltech.qt.opengl.QGLFormat format__0)" doc="/**
+<p>Sets a new format for this widget.</p>
+<p>If the underlying OpenGL/Window system cannot satisfy all the features requested in <i>format</i>, the nearest subset of features will be used. After creation, the format() method will return the actual rendering context format obtained.</p>
+<p>The widget will be assigned a new QGLContext, and the initializeGL() function will be executed for this new context before the first resizeGL() or paintGL().</p>
+<p>This method will try to keep any existing display list sharing with other QGLWidgets, but it may fail. Use isSharing() to test.</p>
+
+*/"/>
+    <method name="public final void swapBuffers()" doc="/**
+<p>Swaps the screen contents with an off-screen buffer. This only works if the widget's format specifies double buffer mode.</p>
+<p>Normally, there is no need to explicitly call this function because it is done automatically after each widget repaint, i.e. each time after paintGL() has been executed.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="protected void glDraw()" doc="/**
+<p>Executes the virtual function paintGL().</p>
+<p>The widget's rendering context will become the current context and initializeGL() will be called if it hasn't already been called.</p>
+
+*/"/>
+    <method name="protected void glInit()" doc="/**
+<p>Initializes OpenGL for this widget's context. Calls the virtual function initializeGL().</p>
+
+*/"/>
+    <method name="protected void initializeGL()" doc="/**
+<p>This virtual function is called once before the first call to paintGL() or resizeGL(), and then once whenever the widget has been assigned a new QGLContext. Reimplement it in a subclass.</p>
+<p>This function should set up any required OpenGL context rendering flags, defining display lists, etc.</p>
+<p>There is no need to call makeCurrent() because this has already been done when this function is called.</p>
+
+*/"/>
+    <method name="protected void initializeOverlayGL()" doc="/**
+<p>This virtual function is used in the same manner as initializeGL() except that it operates on the widget's overlay context instead of the widget's main context. This means that initializeOverlayGL() is called once before the first call to paintOverlayGL() or resizeOverlayGL(). Reimplement it in a subclass.</p>
+<p>This function should set up any required OpenGL context rendering flags, defining display lists, etc. for the overlay context.</p>
+<p>There is no need to call makeOverlayCurrent() because this has already been done when this function is called.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPaintEngine paintEngine()" doc="/**
+<p>Returns the GL widget's paint engine. This is normally a QOpenGLPaintEngine.</p>
+
+*/"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent arg__0)" doc="/**
+<p>Handles paint events passed in the <i>event</i> parameter. Will cause the virtual paintGL() function to be called.</p>
+<p>The widget's rendering context will become the current context and initializeGL() will be called if it hasn't already been called.</p>
+
+*/"/>
+    <method name="protected void paintGL()" doc="/**
+<p>This virtual function is called whenever the widget needs to be painted. Reimplement it in a subclass.</p>
+<p>There is no need to call makeCurrent() because this has already been done when this function is called.</p>
+
+*/"/>
+    <method name="protected void paintOverlayGL()" doc="/**
+<p>This virtual function is used in the same manner as paintGL() except that it operates on the widget's overlay context instead of the widget's main context. This means that paintOverlayGL() is called whenever the widget's overlay needs to be painted. Reimplement it in a subclass.</p>
+<p>There is no need to call makeOverlayCurrent() because this has already been done when this function is called.</p>
+
+*/"/>
+    <method name="protected void resizeEvent(com.trolltech.qt.gui.QResizeEvent arg__0)" doc="/**
+<p>Handles resize events that are passed in the <i>event</i> parameter. Calls the virtual function resizeGL().</p>
+
+*/"/>
+    <method name="protected void resizeGL(int w__0, int h__1)" doc="/**
+<p>This virtual function is called whenever the widget has been resized. The new size is passed in <i>width</i> and <i>height</i>. Reimplement it in a subclass.</p>
+<p>There is no need to call makeCurrent() because this has already been done when this function is called.</p>
+
+*/"/>
+    <method name="protected void resizeOverlayGL(int w__0, int h__1)" doc="/**
+<p>This virtual function is used in the same manner as paintGL() except that it operates on the widget's overlay context instead of the widget's main context. This means that resizeOverlayGL() is called whenever the widget has been resized. The new size is passed in <i>width</i> and <i>height</i>. Reimplement it in a subclass.</p>
+<p>There is no need to call makeOverlayCurrent() because this has already been done when this function is called.</p>
+
+*/"/>
+    <method name="public void updateGL()" doc="/**
+<p>Updates the widget by calling glDraw().</p>
+
+*/"/>
+    <method name="public void updateOverlayGL()" doc="/**
+<p>Updates the widget's overlay (if any). Will cause the virtual function paintOverlayGL() to be executed.</p>
+<p>The widget's rendering context will become the current context and initializeGL() will be called if it hasn't already been called.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QImage convertToGLFormat(com.trolltech.qt.gui.QImage img__0)" doc="/**
+<p>Converts the image <i>img</i> into the unnamed format expected by OpenGL functions such as glTexImage2D(). The returned image is not usable as a QImage, but QImage::width(), QImage::height() and QImage::bits() may be used with OpenGL.</p>
+
+*/"/>
+</class>

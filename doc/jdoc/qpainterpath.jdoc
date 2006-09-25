@@ -1,0 +1,351 @@
+<class name="QPainterPath" doc="/**
+<p>The QPainterPath class provides a container for painting operations, enabling graphical shapes to be constructed and reused.</p>
+<p>A painter path is an object composed of a number of graphical building blocks, such as rectangles, ellipses, lines, and curves. Building blocks can be joined in closed subpaths, for example as a rectangle or an ellipse. A closed path has coinciding start and end points. Or they can exist independently as unclosed subpaths, such as lines and curves.</p>
+<p>A QPainterPath object can be used for filling, outlining, and clipping. To generate fillable outlines for a given painter path, use the QPainterPathStroker class. The main advantage of painter paths over normal drawing operations is that complex shapes only need to be created once; then they can be drawn many times using only calls to the QPainter::drawPath() function.</p>
+<p>QPainterPath provides a collection of functions that can be used to obtain information about the path and its elements. In addition it is possible to reverse the order of the elements using the toReversed() function. There are also several functions to convert this painter path object into a polygon representation.</p>
+<ul><li><a href=&quote;#composing-a-qpainterpath&quote;>Composing a QPainterPath</a></li>
+<li><a href=&quote;#qpainterpath-information&quote;>QPainterPath Information</a></li>
+<li><a href=&quote;#qpainterpath-conversion&quote;>QPainterPath Conversion</a></li>
+<li><a href=&quote;#examples&quote;>Examples</a></li>
+</ul>
+<a name=&quote;composing-a-qpainterpath&quote;></a>
+<h3>Composing a QPainterPath</h3>
+<p>A QPainterPath object can be constructed as an empty path, with a given start point, or as a copy of another QPainterPath object. Once created, lines and curves can be added to the path using the lineTo(), arcTo(), cubicTo() and quadTo() functions. The lines and curves stretch from the currentPosition() to the position passed as argument.</p>
+<p>The currentPosition() of the QPainterPath object is always the end position of the last subpath that was added (or the initial start point). Use the moveTo() function to move the currentPosition() without adding a component. The moveTo() function implicitly starts a new subpath, and closes the previous one. Another way of starting a new subpath is to call the closeSubpath() function which closes the current path by adding a line from the currentPosition() back to the path's start position. Note that the new path will have (0, 0) as its initial currentPosition().</p>
+<p>QPainterPath class also provides several convenience functions to add closed subpaths to a painter path: addEllipse(), addPath(), addRect(), addRegion() and addText(). The addPolygon() function adds an <i>unclosed</i> subpath. In fact, these functions are all collections of moveTo(), lineTo() and cubicTo() operations.</p>
+<p>In addition, a path can be added to the current path using the connectPath() function. But note that this function will connect the last element of the current path to the first element of given one by adding a line.</p>
+<p>Below is a code snippet that shows how a QPainterPath object can be used:</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qpainterpath-construction.png]</font></td><td><pre>    QPainterPath path;
+    path.addRect(20, 20, 60, 60);
+
+    path.moveTo(0, 0);
+    path.cubicTo(99, 0,  50, 50,  99, 99);
+    path.cubicTo(0, 99,  50, 50,  0, 0);
+
+    QPainter painter(this);
+    painter.fillRect(0, 0, 100, 100, Qt::white);
+    painter.setPen(QPen(QColor(79, 106, 25), 1, Qt::SolidLine,
+                        Qt::FlatCap, Qt::MiterJoin));
+    painter.setBrush(QColor(122, 163, 39));
+
+    painter.drawPath(path);</pre>
+</td></tr>
+</table></p>
+<p>The painter path is initially empty when constructed. We first add a rectangle, which is a closed subpath. Then we add two bezier curves which together form a closed subpath even though they are not closed individually. Finally we draw the entire path. The path is filled using the default fill rule, Qt::OddEvenFill. Qt provides two methods for filling paths:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qt-fillrule-oddeven.png]</font></td><td><font color=&quote;red&quote;>[Missing image qt-fillrule-winding.png]</font></td></tr>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Qt::OddEvenFill</th><th>Qt::WindingFill</th></tr></thead>
+</table></p>
+<p>See the Qt::Fillrule documentation for the definition of the rules. A painter path's currently set fill rule can be retrieved using the fillRule() function, and altered using the setFillRule() function.</p>
+<a name=&quote;qpainterpath-information&quote;></a>
+<h3>QPainterPath Information</h3>
+<p>The QPainterPath class provides a collection of functions that returns information about the path and its elements.</p>
+<p>The currentPosition() function returns the end point of the last subpath that was added (or the initial start point). The elementAt() function can be used to retrieve the various subpath elements, the <i>number</i> of elements can be retrieved using the elementCount() function, and the isEmpty() function tells whether this QPainterPath object contains any elements at all.</p>
+<p>The controlPointRect() function returns the rectangle containing all the points and control points in this path. This function is significantly faster to compute than the exact boundingRect() which returns the bounding rectangle of this painter path with floating point precision.</p>
+<p>Finally, QPainterPath provides the contains() function which can be used to determine whether a given point or rectangle is inside the path, and the intersects() function which determines if any of the points inside a given rectangle also are inside this path.</p>
+<a name=&quote;qpainterpath-conversion&quote;></a>
+<h3>QPainterPath Conversion</h3>
+<p>For compatibilty reasons, it might be required to simplify the representation of a painter path: QPainterPath provides the toFillPolygon(), toFillPolygons() and toSubpathPolygons() functions which convert the painter path into a polygon. The toFillPolygon() returns the painter path as one single polygon, while the two latter functions return a list of polygons.</p>
+<p>The toFillPolygons() and toSubpathPolygons() functions are provided because it is usually faster to draw several small polygons than to draw one large polygon, even though the total number of points drawn is the same. The difference between the two is the <i>number</i> of polygons they return: The toSubpathPolygons() creates one polygon for each subpath regardless of intersecting subpaths (i.e. overlapping bounding rectangles), while the toFillPolygons() functions creates only one polygon for overlapping subpaths.</p>
+<p>The toFillPolygon() and toFillPolygons() functions first convert all the subpaths to polygons, then uses a rewinding technique to make sure that overlapping subpaths can be filled using the correct fill rule. Note that rewinding inserts additional lines in the polygon so the outline of the fill polygon does not match the outline of the path.</p>
+<a name=&quote;examples&quote;></a>
+<h3>Examples</h3>
+<p>Qt provides the Painter Paths Example and the Vector Deformation Demo which are located in Qt's example and demo directories respectively.</p>
+<p>The Painter Paths Example shows how painter paths can be used to build complex shapes for rendering and lets the user experiment with the filling and stroking. The Vector Deformation Demo shows how to use QPainterPath to draw text.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qpainterpath-example.png]</font></td><td><font color=&quote;red&quote;>[Missing image qpainterpath-demo.png]</font></td></tr>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Painter Paths Example</th><th>Vector Deformation Demo</th></tr></thead>
+</table></p>
+
+*/">
+    <method name="public QPainterPath(com.trolltech.qt.gui.QPainterPath other__0)" doc="/**
+<p>Creates a QPainterPath object that is a copy of the given <i>path</i>.</p>
+
+*/"/>
+    <method name="public QPainterPath()" doc="/**
+<p>Constructs an empty QPainterPath object.</p>
+
+*/"/>
+    <method name="public QPainterPath(com.trolltech.qt.core.QPointF startPoint__0)" doc="/**
+<p>Creates a QPainterPath object with the given <i>startPoint</i> as its current position.</p>
+
+*/"/>
+    <method name="public final void addEllipse(double x__0, double y__1, double w__2, double h__3)" doc="/**
+<p>Creates an ellipse within the bounding rectangle defined by its top-left corner at (<i>x</i>, <i>y</i>), <i>width</i> and <i>height</i>, and adds it to the painter path as a closed subpath.</p>
+
+*/"/>
+    <method name="public final void addEllipse(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Creates an ellipse within the the specified <i>boundingRectangle</i> and adds it to the painter path as a closed subpath.</p>
+<p>The ellipse is composed of a clockwise curve, starting and finishing at zero degrees (the 3 o'clock position).</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qpainterpath-addellipse.png]</font></td><td><pre>    QLinearGradient myGradient;
+    QPen myPen;
+    QRectF boundingRectangle;
+
+    QPainterPath myPath;
+    myPath.addEllipse(boundingRectangle);
+
+    QPainter painter(this);
+    painter.setBrush(myGradient);
+    painter.setPen(myPen);
+    painter.drawPath(myPath);</pre>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public final void addPath(com.trolltech.qt.gui.QPainterPath path__0)" doc="/**
+<p>Adds the given <i>path</i> to <i>this</i> path as a closed subpath.</p>
+
+*/"/>
+    <method name="public final void addPolygon(com.trolltech.qt.gui.QPolygonF polygon__0)" doc="/**
+<p>Adds the given <i>polygon</i> to the path as an (unclosed) subpath.</p>
+<p>Note that the current position after the polygon has been added, is the last point in <i>polygon</i>. To draw a line back to the first point, use the closeSubpath() function.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qpainterpath-addpolygon.png]</font></td><td><pre>    QLinearGradient myGradient;
+    QPen myPen;
+    QPolygonF myPolygon;
+
+    QPainterPath myPath;
+    myPath.addPolygon(myPolygon);
+
+    QPainter painter(this);
+    painter.setBrush(myGradient);
+    painter.setPen(myPen);
+    painter.drawPath(myPath);</pre>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public final void addRect(double x__0, double y__1, double w__2, double h__3)" doc="/**
+<p>Adds a rectangle at position (<i>x</i>, <i>y</i>), with the given <i>width</i> and <i>height</i>, as a closed subpath.</p>
+
+*/"/>
+    <method name="public final void addRect(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Adds the given <i>rectangle</i> to this path as a closed subpath.</p>
+<p>The <i>rectangle</i> is added as a clockwise set of lines. The painter path's current position after the <i>rectangle</i> has been added is at the top-left corner of the rectangle.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qpainterpath-addrectangle.png]</font></td><td><pre>    QLinearGradient myGradient;
+    QPen myPen;
+    QRectF myRectangle;
+
+    QPainterPath myPath;
+    myPath.addRect(myRectangle);
+
+    QPainter painter(this);
+    painter.setBrush(myGradient);
+    painter.setPen(myPen);
+    painter.drawPath(myPath);</pre>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public final void addRegion(com.trolltech.qt.gui.QRegion region__0)" doc="/**
+<p>Adds the given <i>region</i> to the path by adding each rectangle in the region as a separate closed subpath.</p>
+
+*/"/>
+    <method name="public final void addText(com.trolltech.qt.core.QPointF point__0, com.trolltech.qt.gui.QFont f__1, java.lang.String text__2)" doc="/**
+<p>Adds the given <i>text</i> to this path as a set of closed subpaths created from the <i>font</i> supplied. The subpaths are positioned so that the left end of the text's baseline lies at the specified <i>point</i>.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qpainterpath-addtext.png]</font></td><td><pre>    QLinearGradient myGradient;
+    QPen myPen;
+    QFont myFont;
+    QPointF baseline(x, y);
+
+    QPainterPath myPath;
+    myPath.addText(baseline, myFont, tr(&quot;Qt&quot;));
+
+    QPainter painter(this);
+    painter.setBrush(myGradient);
+    painter.setPen(myPen);
+    painter.drawPath(myPath);</pre>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public final void addText(double x__0, double y__1, com.trolltech.qt.gui.QFont f__2, java.lang.String text__3)" doc="/**
+<p>Adds the given <i>text</i> to this path as a set of closed subpaths created from the <i>font</i> supplied. The subpaths are positioned so that the left end of the text's baseline lies at the point specified by (<i>x</i>, <i>y</i>).</p>
+
+*/"/>
+    <method name="public final void arcMoveTo(com.trolltech.qt.core.QRectF rect__0, double angle__1)" doc="/**
+<p>Creates a move to that lies on the arc that occupies the given <i>rectangle</i> at <i>angle</i>.</p>
+<p>Angles are specified in degrees. Clockwise arcs can be specified using negative angles.</p>
+
+*/"/>
+    <method name="public final void arcMoveTo(double x__0, double y__1, double w__2, double h__3, double angle__4)" doc="/**
+<p>Creates a move to that lies on the arc that occupies the QRectF(<i>x</i>, <i>y</i>, <i>width</i>, <i>height</i>) at <i>angle</i>.</p>
+
+*/"/>
+    <method name="public final void arcTo(com.trolltech.qt.core.QRectF rect__0, double startAngle__1, double arcLength__2)" doc="/**
+<p>Creates an arc that occupies the given <i>rectangle</i>, beginning at the specified <i>startAngle</i> and extending <i>sweepLength</i> degrees counter-clockwise.</p>
+<p>Angles are specified in degrees. Clockwise arcs can be specified using negative angles.</p>
+<p>Note that this function connects the starting point of the arc to the current position if they are not already connected. After the arc has been added, the current position is the last point in arc. To draw a line back to the first point, use the closeSubpath() function.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qpainterpath-arcto.png]</font></td><td><pre>    QLinearGradient myGradient;
+    QPen myPen;
+
+    QPointF center, startPoint;
+
+    QPainterPath myPath;
+    myPath.moveTo(center);
+    myPath.arcTo(boundingRect, startAngle,
+                 sweepLength);
+
+    QPainter painter(this);
+    painter.setBrush(myGradient);
+    painter.setPen(myPen);
+    painter.drawPath(myPath);</pre>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public final void arcTo(double x__0, double y__1, double w__2, double h__3, double startAngle__4, double arcLength__5)" doc="/**
+<p>Creates an arc that occupies the rectangle QRectF(<i>x</i>, <i>y</i>, <i>width</i>, <i>height</i>), beginning at the specified <i>startAngle</i> and extending <i>sweepLength</i> degrees counter-clockwise.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF boundingRect()" doc="/**
+<p>Returns the bounding rectangle of this painter path as a rectangle with floating point precision.</p>
+
+*/"/>
+    <method name="public final void closeSubpath()" doc="/**
+<p>Closes the current subpath by drawing a line to the beginning of the subpath, automatically starting a new path. The current point of the new path is (0, 0).</p>
+<p>If the subpath does not contain any elements, this function does nothing.</p>
+
+*/"/>
+    <method name="public final void connectPath(com.trolltech.qt.gui.QPainterPath path__0)" doc="/**
+<p>Connects the given <i>path</i> to <i>this</i> path by adding a line from the last element of this path to the first element of the given path.</p>
+
+*/"/>
+    <method name="public final boolean contains(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Returns true if the given <i>rectangle</i> is inside the path, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean contains(com.trolltech.qt.core.QPointF pt__0)" doc="/**
+<p>Returns true if the given <i>point</i> is inside the path, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF controlPointRect()" doc="/**
+<p>Returns the rectangle containing all the points and control points in this path.</p>
+<p>This function is significantly faster to compute than the exact boundingRect(), and the returned rectangle is always a superset of the rectangle returned by boundingRect().</p>
+
+*/"/>
+    <method name="public final void cubicTo(double ctrlPt1x__0, double ctrlPt1y__1, double ctrlPt2x__2, double ctrlPt2y__3, double endPtx__4, double endPty__5)" doc="/**
+<p>Adds a cubic Bezier curve between the current position and the end point (<i>endPointX</i>, <i>endPointY</i>) with control points specified by (<i>c1X</i>, <i>c1Y</i>) and (<i>c2X</i>, <i>c2Y</i>).</p>
+
+*/"/>
+    <method name="public final void cubicTo(com.trolltech.qt.core.QPointF ctrlPt1__0, com.trolltech.qt.core.QPointF ctrlPt2__1, com.trolltech.qt.core.QPointF endPt__2)" doc="/**
+<p>Adds a cubic Bezier curve between the current position and the given <i>endPoint</i> using the control points specified by <i>c1</i>, and <i>c2</i>.</p>
+<p>After the curve is added, the current position is updated to be at the end point of the curve.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qpainterpath-cubicto.png]</font></td><td><pre>    QLinearGradient myGradient;
+    QPen myPen;
+
+    QPainterPath myPath;
+    myPath.cubicto(c1, c2, endPoint);
+
+    QPainter painter(this);
+    painter.setBrush(myGradient);
+    painter.setPen(myPen);
+    painter.drawPath(myPath);</pre>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF currentPosition()" doc="/**
+<p>Returns the current position of the path.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPainterPath_Element elementAt(int i__0)" doc="/**
+<p>Returns the element at the given <i>index</i> in the painter path.</p>
+
+*/"/>
+    <method name="public final int elementCount()" doc="/**
+<p>Returns the number of path elements in the painter path.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.FillRule fillRule()" doc="/**
+<p>Returns the painter path's currently set fill rule.</p>
+
+*/"/>
+    <method name="public final boolean intersects(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Returns true if any point in the given <i>rectangle</i> intersects the path; otherwise returns false.</p>
+<p>There is an intersection if any of the lines making up the rectangle crosses a part of the path or if any part of the rectangle overlaps with any area enclosed by the path. This function respects the current fillRule to determine what is considered inside the path.</p>
+
+*/"/>
+    <method name="public final boolean isEmpty()" doc="/**
+<p>Returns true if there are no elements in this path, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final void lineTo(com.trolltech.qt.core.QPointF p__0)" doc="/**
+<p>Adds a straight line from the current position to the given <i>endPoint</i>. After the line is drawn, the current position is updated to be at the end point of the line.</p>
+
+*/"/>
+    <method name="public final void lineTo(double x__0, double y__1)" doc="/**
+<p>Draws a line from the current position to the point (<i>x</i>, <i>y</i>).</p>
+
+*/"/>
+    <method name="public final void moveTo(double x__0, double y__1)" doc="/**
+<p>Moves the current position to (<i>x</i>, <i>y</i>) and starts a new subpath, implicitly closing the previous path.</p>
+
+*/"/>
+    <method name="public final void moveTo(com.trolltech.qt.core.QPointF p__0)" doc="/**
+<p>Moves the current point to the given <i>point</i>, implicitly starting a new subpath and closing the previous one.</p>
+
+*/"/>
+    <method name="public final void quadTo(com.trolltech.qt.core.QPointF ctrlPt__0, com.trolltech.qt.core.QPointF endPt__1)" doc="/**
+<p>Adds a quadratic Bezier curve between the current position and the given <i>endPoint</i> with the control point specified by <i>c</i>.</p>
+<p>After the curve is added, the current point is updated to be at the end point of the curve.</p>
+
+*/"/>
+    <method name="public final void quadTo(double ctrlPtx__0, double ctrlPty__1, double endPtx__2, double endPty__3)" doc="/**
+<p>Adds a quadratic Bezier curve between the current point and the endpoint (<i>endPointX</i>, <i>endPointY</i>) with the control point specified by (<i>cx</i>, <i>cy</i>).</p>
+
+*/"/>
+    <method name="public final void setElementPositionAt(int i__0, double x__1, double y__2)" doc="/**
+<p>Sets the x and y coordinate of the element at index <i>index</i> to <i>x</i> and <i>y</i>.</p>
+
+*/"/>
+    <method name="public final void setFillRule(com.trolltech.qt.core.Qt.FillRule fillRule__0)" doc="/**
+<p>Sets the fill rule of the painter path to the given <i>fillRule</i>. Qt provides two methods for filling paths:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qt-fillrule-oddeven.png]</font></td><td><font color=&quote;red&quote;>[Missing image qt-fillrule-winding.png]</font></td></tr>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Qt::OddEvenFill (default)</th><th>Qt::WindingFill</th></tr></thead>
+</table></p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPolygonF toFillPolygon(com.trolltech.qt.gui.QMatrix matrix__0)" doc="/**
+<p>Converts the path into a polygon using the given transformation <i>matrix</i>, and returns the polygon.</p>
+<p>The polygon is created by first converting all subpaths to polygons, then using a rewinding technique to make sure that overlapping subpaths can be filled using the correct fill rule.</p>
+<p>Note that rewinding inserts addition lines in the polygon so the outline of the fill polygon does not match the outline of the path.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QPolygonF&gt; toFillPolygons(com.trolltech.qt.gui.QMatrix matrix__0)" doc="/**
+<p>Converts the path into a list of polygons using the given transformation <i>matrix</i>, and returns the list.</p>
+<p>The function differs from the toFillPolygon() function in that it creates several polygons. It is provided because it is usually faster to draw several small polygons than to draw one large polygon, even though the total number of points drawn is the same.</p>
+<p>The toFillPolygons() function differs from the toSubpathPolygons() function in that it create only polygon for subpaths that have overlapping bounding rectangles.</p>
+<p>Like the toFillPolygon() function, this function uses a rewinding technique to make sure that overlapping subpaths can be filled using the correct fill rule. Note that rewinding inserts addition lines in the polygons so the outline of the fill polygon does not match the outline of the path.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPainterPath toReversed()" doc="/**
+<p>Creates and returns a reversed copy of the path.</p>
+<p>It is the order of the elements that is reversed: If a QPainterPath is composed by calling the moveTo(), lineTo() and cubicTo() functions in the specified order, the reversed copy is composed by calling cubicTo(), lineTo() and moveTo().</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QPolygonF&gt; toSubpathPolygons(com.trolltech.qt.gui.QMatrix matrix__0)" doc="/**
+<p>Converts the path into a list of polygons using the given transformation <i>matrix</i>, and returns the list.</p>
+<p>This function creates one polygon for each subpath regardless of intersecting subpaths (i.e. overlapping bounding rectangles). To make sure that such overlapping subpaths are filled correctly, use the toFillPolygons() function instead.</p>
+
+*/"/>
+    <enum name="ElementType" doc="/**
+<p>This enum describes the types of elements used to connect vertices in subpaths.</p>
+<p>Note that elements added as closed subpaths using the addEllipse(), addPath(), addPolygon(), addRect(), addRegion() and addText() convenience functions, is actually added to the path as a collection of separate elements using the moveTo(), lineTo() and cubicTo() functions.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A new subpath. See also moveTo().</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A line. See also lineTo().</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A curve. See also cubicTo() and quadTo().</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The extra data required to describe a curve in a CurveToElement element.</td></tr>
+</table></p>
+
+*/"/>
+</class>

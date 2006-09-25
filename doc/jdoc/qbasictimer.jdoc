@@ -1,0 +1,29 @@
+<class name="QBasicTimer" doc="/**
+<p>The QBasicTimer class provides timer events for objects.</p>
+<p>This is a fast, lightweight, and low-level class used by Qt internally. We recommend using the higher-level QTimer class rather than this class if you want to use timers in your applications.</p>
+<p>To use this class, create a QBasicTimer, and call its start() function with a timeout interval and with a pointer to a QObject subclass. When the timer times out it will send a timer event to the QObject subclass. The timer can be stopped at any time using stop(). isActive() returns true for a timer that is running; i.e. it has been started, has not reached the timeout time, and has not been stopped. The timer's ID can be retrieved using timerId().</p>
+<p>The Wiggly example uses QBasicTimer to repaint a widget at regular intervals.</p>
+
+*/">
+    <method name="public QBasicTimer()" doc="/**
+<p>Contructs a basic timer.</p>
+
+*/"/>
+    <method name="public final boolean isActive()" doc="/**
+<p>Returns true if the timer is running, has not yet timed out, and has not been stopped; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final void start(int msec__0, com.trolltech.qt.core.QObject obj__1)" doc="/**
+<p>Starts (or restarts) the timer with a <i>msec</i> milliseconds timeout.</p>
+<p>The given <i>object</i> will receive timer events.</p>
+
+*/"/>
+    <method name="public final void stop()" doc="/**
+<p>Stops the timer.</p>
+
+*/"/>
+    <method name="public final int timerId()" doc="/**
+<p>Returns the timer's ID.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,794 @@
+<class name="QGraphicsItemInterface" doc="/**
+<p>The QGraphicsItem class is the base class for all graphical items in a QGraphicsScene.</p>
+<p>It provides a light-weight foundation for writing your own custom items. This includes defining the item's geometry, collision detection, its painting implementation and item interaction through its event handlers. QGraphicsItem is part of The Graphics View Framework</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image graphicsview-items.png]</font></p><p>For convenience, Qt provides a set of standard graphics items for the most common shapes. These are:</p>
+<ul>
+<li>QGraphicsEllipseItem provides an ellipse item</li>
+<li>QGraphicsLineItem provides a line item</li>
+<li>QGraphicsPathItem provides an arbitrary path item</li>
+<li>QGraphicsPixmapItem provides a pixmap item</li>
+<li>QGraphicsPolygonItem provides a polygon item</li>
+<li>QGraphicsRectItem provides a rectangular item</li>
+<li>QGraphicsTextItem provides a text item</li>
+</ul>
+<p>All of an item's geometric information is based on its local coordinate system. The item's position, pos(), is the only function that does not operate in local coordinates, as it returns a position in parent coordinates. {The Graphics View Coordinate System} describes the coordinate system in detail.</p>
+<p>You can set whether an item should be visible (i.e., drawn, and accepting events), by calling setVisible(). Hiding an item will also hide its children. Similarily, you can enable or disable an item by calling setEnabled(). If you disable an item, all its children will also be disabled. By default, items are both visible and enabled. To toggle whether an item is selected or not, first enable selection by setting the ItemIsSelectable flag, and then call setSelected(). Normally, selection is toggled by the scene, as a result of user interaction.</p>
+<p>To write your own graphics item, you first create a subclass of QGraphicsItem, and then start by implementing its two pure virtual public functions: boundingRect(), which returns an estimate of the area painted by the item, and paint(), which implements the actual painting. For example:</p>
+<pre>    class SimpleItem : public QGraphicsItem
+    {
+    public:
+        QRectF boundingRect() const
+        {
+            qreal penWidth = 1;
+            return QRectF(-10 - penWidth / 2, -10 - penWidth / 2,
+                          20 + penWidth / 2, 20 + penWidth / 2);
+        }
+
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+                   QWidget *widget)
+        {
+            painter-&gt;drawRoundRect(-10, -10, 20, 20);
+        }
+    };</pre>
+<p>The boundingRect() function has many different purposes. QGraphicsScene bases its item index on boundingRect(), and QGraphicsView uses it both for culling invisible items, and for determining the area that needs to be recomposed when drawing overlapping items. In addition, QGraphicsItem's collision detection mechanisms use boundingRect() to provide an efficient cut-off. The fine grained collision algorithm in collidesWithItem() is based on calling shape(), which returns an accurate outline of the item's shape as a QPainterPath.</p>
+<p>Collision detection can be done in two ways:</p>
+<ol type=&quote;1&quote;>
+<li>Reimplement shape() to return an accurate shape for your item, and rely on the default implementation of collidesWithItem() to do shape-shape intersection. This can be rather expensive if the shapes are complex.</li>
+<li>Reimplement collidesWithItem() to provide your own custom item and shape collision algorithm.</li>
+</ol>
+<p>The contains() function can be called to determine whether the item <i>contains</i> a point or not. This function can also be reimplemented by the item. The default behavior of contains() is based on calling shape().</p>
+<p>Items can contain other items, and also be contained by other items. All items can have a parent item and a list of children. Unless the item has no parent, its position is in <i>parent</i> coordinates (i.e., the parent's local coordinates). Parent items propagate both their position and their transformation to all children.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image graphicsview-parentchild.png]</font></p><p>QGraphicsItem supports affine transformations in addition to its base position, pos(). To change the item's transformation, you can either pass a transformation matrix to setMatrix(), or call one of the convenience functions rotate(), scale(), translate(), or shear(). Item transformations accumulate from parent to child, so if both a parent and child item are rotated 90 degrees, the child's total transformation will be 180 degrees. Similarily, if the item's parent is scaled to 2x its original size, its children will also be twice as large. An item's transformation does not affect its own local geometry; all geometry functions (e.g., contains(), update(), and all the mapping functions) still operate in local coordinates. For convenience, QGraphicsItem provides the functions sceneMatrix(), which returns the item's total transformation matrix (including its position and all parents' positions and transformations), and scenePos(), which returns its position in scene coordinates. To reset an item's matrix, call resetMatrix().</p>
+<p>The paint() function is called by QGraphicsView to paint the item's contents. The item has no background or default fill of its own; whatever is behind the item will shine through all areas that are not explicitly painted in this function. You can call update() to schedule a repaint, optionally passing the rectangle that needs a repaint. Depending on whether or not the item is visible in a view, the item may or may not be repainted; there is no equivalent to QWidget::repaint() in QGraphicsItem.</p>
+<p>Items are painted by the view, starting with the parent items and then drawing children, in ascending stacking order. You can set an item's stacking order by calling setZValue(), and test it by calling zValue(). Stacking order applies to sibling items; parents are always drawn before their children.</p>
+<p>QGraphicsItem receives events from QGraphicsScene through the virtual function sceneEvent(). This function distributes the most common events to a set of convenience event handlers:</p>
+<ul>
+<li>contextMenuEvent() handles context menu events</li>
+<li>focusInEvent() and focusOutEvent() handle focus in and out events</li>
+<li>hoverEnterEvent(), hoverMoveEvent(), and hoverLeaveEvent() handles hover enter, move and leave events</li>
+<li>inputMethodEvent() handles input events, for accessibility support</li>
+<li>keyPressEvent() and keyReleaseEvent handle key press and release events</li>
+<li>mousePressEvent(), mouseMoveEvent(), mouseReleaseEvent(), and mouseDoubleClickEvent() handles mouse press, move, release, click and doubleclick events</li>
+</ul>
+<p>You can filter events for any other item by installing event filters. This functionaly is separate from from Qt's regular event filters (see QObject::installEventFilter()), which only work on subclasses of QObject. After installing your item as an event filter for another item by calling installSceneEventFilter(), the filtered events will be received by the virtual function sceneEventFilter(). You can remove item event filters by calling removeSceneEventFilter().</p>
+<p>Sometimes it's useful to register custom data with an item, be it a custom item, or a standard item. You can call setData() on any item to store data in it using a key-value pair (the key being an integer, and the value is a QVariant). To get custom data from an item, call data(). This functionality is completely untouched by Qt itself; it is provided for the user's convenience.</p>
+
+*/">
+    <method name="public boolean acceptDrops()" doc="/**
+<p>Returns true if this item can accept drag and drop events; otherwise, returns false. By default, items do not accept drag and drop events; items are transparent to drag and drop.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.Qt.MouseButtons acceptedMouseButtons()" doc="/**
+<p>Returns the mouse buttons that this item accepts mouse events for. By default, all mouse buttons are accepted.</p>
+<p>If an item accepts a mouse button, it will become the mouse grabber item when a mouse press event is delivered for that mouse button. However, if the item does not accept the button, QGraphicsScene will forward the mouse events to the first item beneath it that does.</p>
+
+*/"/>
+    <method name="public boolean acceptsHoverEvents()" doc="/**
+<p>Returns true if an item accepts hover events (QGraphicsSceneHoverEvent); otherwise, returns false. By default, items do not accept hover events.</p>
+
+*/"/>
+    <method name="public void addToIndex()" doc="/**
+<p>Adds this item to the scene's index. Called in conjunction with removeFromIndex() to ensure the index bookkeeping is correct when the item's position, transformation or shape changes.</p>
+
+*/"/>
+    <method name="public void advance(int phase__0)" doc="/**
+<p>This virtual function is called twice for all items by the QGraphicsScene::advance() slot. In the first phase, all items are called with <i>phase</i> == 0, indicating that items on the scene are about to advance, and then all items are called with <i>phase</i> == 1. Reimplement this function to update your item if you need simple scene-controlled animation.</p>
+<p>The default implementation does nothing.</p>
+<p>For individual item animation, an alternative to this function is to either use QGraphicsItemAnimation, or to multiple-inherit from QObject and QGraphicsItem, and animate your item using QObject::startTimer() and QObject::timerEvent().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QRectF boundingRect()" doc="/**
+<p>This pure virtual function defines the outer bounds of the item as a rectangle; all painting must be restricted to inside an item's bounding rect. QGraphicsView uses this to determine whether the item requires redrawing.</p>
+<p>Although the item's shape can be arbitrary, the bounding rect is always rectangular, and it is unaffected by the items' transformation (scale(), rotate(), etc.).</p>
+<p>Reimplement this function to let QGraphicsView determine what parts of the widget, if any, need to be redrawn.</p>
+<p>Note: For shapes that paint an outline / stroke, it is important to include half the pen width in the bounding rect. It is not necessary to compensate for antialiasing, though.</p>
+<p>Example:</p>
+<pre>    QRectF CircleItem::boundingRect() const
+    {
+        qreal penWidth = 1;
+        return QRectF(-radius - penWidth / 2, -radius - penWidth / 2,
+                      diameter + penWidth, diameter + penWidth);
+    }</pre>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QRectF childrenBoundingRect()" doc="/**
+<p>Returns the bounding rect of this item's descendents (i.e., its children, their children, etc.) in local coordinates. If the item has no children, this function returns an empty QRectF.</p>
+<p>This does not include this item's own bounding rect; it only returns its descendents' accumulated bounding rect. If you need to include this item's bounding rect, you can add boundingRect() to childrenBoundingRect() using QRectF::operator|().</p>
+<p>This function is linear in complexity; it determines the size of the returned bounding rect by iterating through all descendents.</p>
+
+*/"/>
+    <method name="public void clearFocus()" doc="/**
+<p>Takes keyboard input focus from the item.</p>
+<p>If it has focus, a focus out event is sent to this item to tell it that it is about to lose the focus.</p>
+<p>Only items that set the ItemIsFocusable flag can accept keyboard focus.</p>
+
+*/"/>
+    <method name="public boolean collidesWithItem(com.trolltech.qt.gui.QGraphicsItemInterface other__0, com.trolltech.qt.core.Qt.ItemSelectionMode mode__1)" doc="/**
+<p>Returns true if this item collides with <i>other</i>; otherwise returns false. The ways items collide is determined by <i>mode</i>. The default value for <i>mode</i> is Qt::IntersectsItemShape; <i>other</i> collides with this item if it either intersect or are contained by this item's shape.</p>
+<p>The default implementation is based on shape intersection, and it calls shape() on both items. Because the complexity of arbitrary shape-shape intersection grows with an order of magnitude when the shapes are complex, this operation can be noticably time consuming. You have the option of reimplementing this function in a subclass of QGraphicsItem to provide a custom algorithm. This allows you to make use of natural constraints in the shapes of your own items, in order to improve the performance of the collision detection. For instance, two untransformed perfectly circular items' collision can be determined very efficiently by comparing their positions and radii.</p>
+<p>Keep in mind that when reimplementing this function and calling shape() or boundingRect() on <i>other</i>, the returned coordinates must be mapped to this item's coordinate system before any intersection can take place.</p>
+
+*/"/>
+    <method name="public boolean collidesWithPath(com.trolltech.qt.gui.QPainterPath path__0, com.trolltech.qt.core.Qt.ItemSelectionMode mode__1)" doc="/**
+<p>Returns true if this item collides with <i>path</i>.</p>
+<p>The collision is determined by <i>mode</i>. The default value for <i>mode</i> is Qt::IntersectsItemShape; <i>path</i> collides with this item if it either intersects or is contained by this item's shape.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; collidingItems(com.trolltech.qt.core.Qt.ItemSelectionMode mode__0)" doc="/**
+<p>Returns a list of all items that collide with this item.</p>
+<p>The way collisions are detected is determined by <i>mode</i>. The default value for <i>mode</i> is Qt::IntersectsItemShape; All items whose shape intersects or is contained by this item's shape are returned.</p>
+
+*/"/>
+    <method name="public boolean contains(com.trolltech.qt.core.QPointF point__0)" doc="/**
+<p>Returns true if this item contains <i>point</i>, which is in local coordinates; otherwise, false is returned. It is most often called from QGraphicsView to determine what item is under the cursor, and for that reason, the implementation of this function should be as light-weight as possible.</p>
+<p>By default, this function calls shape(), but you can reimplement it in a subclass to provide a (perhaps more efficient) implementation.</p>
+
+*/"/>
+    <method name="public void contextMenuEvent(com.trolltech.qt.gui.QGraphicsSceneContextMenuEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive context menu events for this item.</p>
+<p>If you ignore the event, (i.e., by calling QEvent::ignore(),) <i>event</i> will propagate to any item beneath this item. If no items accept the event, it will be ignored by the scene, and propagate to the view.</p>
+<p>The default implementation does nothing.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QCursor cursor()" doc="/**
+<p>Returns the current cursor shape for the item. The mouse cursor will assume this shape when it's over this item. See the list of predefined cursor objects for a range of useful shapes.</p>
+<p>An editor item might want to use an I-beam cursor:</p>
+<pre>    item-&gt;setCursor(Qt::IBeamCursor);</pre>
+<p>If no cursor has been set, the parent's cursor is used.</p>
+
+*/"/>
+    <method name="public java.lang.Object data(int key__0)" doc="/**
+<p>Returns this item's custom data for the key <i>key</i> as a QVariant.</p>
+<p>Custom item data is useful for storing arbitrary properties in any item. Example:</p>
+<pre>    static const int ObjectName = 0;
+
+    QGraphicsItem *item = scene.itemAt(100, 50);
+    if (item-&gt;data(ObjectName).toString().isEmpty()) {
+        if (qgraphicsitem_cast&lt;ButtonItem *&gt;(item))
+            item-&gt;setData(ObjectName, &quot;Button&quot;);
+    }</pre>
+<p>Qt does not use this feature for storing data; it is provided solely for the convenience of the user.</p>
+
+*/"/>
+    <method name="public void dragEnterEvent(com.trolltech.qt.gui.QGraphicsSceneDragDropEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive drag enter events for this item. Drag enter events are generated as the cursor enters the item's area.</p>
+<p>By accepting the event, (i.e., by calling QEvent::accept(),) the item will accept drop events, in addition to receiving drag move and drag leave. Otherwise, the event will be ignored and propagate to the item beneath. If the event is accepted, the item will receive a drag move event before control goes back to the event loop.</p>
+<p>A common implementation of dragEnterEvent accepts or ignores <i>event</i> depending on the associated mime data in <i>event</i>. Example:</p>
+<pre>    CustomItem::CustomItem()
+    {
+        setAcceptDrops(true);
+        ...
+    }
+
+    void CustomItem::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
+    {
+        event-&gt;setAccepted(event-&gt;mimeData()-&gt;hasFormat(&quot;text/plain&quot;));
+    }</pre>
+<p>Items do not receive drag and drop events by default; to enable this feature, call <tt>setAcceptDrops(true)</tt>.</p>
+<p>The default implementation does nothing.</p>
+
+*/"/>
+    <method name="public void dragLeaveEvent(com.trolltech.qt.gui.QGraphicsSceneDragDropEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive drag leave events for this item. Drag leave events are generated as the cursor leaves the item's area. Most often you will not need to reimplement this function, but it can be useful for resetting state in your item (e.g., highlighting).</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+<p>Items do not receive drag and drop events by default; to enable this feature, call <tt>setAcceptDrops(true)</tt>.</p>
+<p>The default implementation does nothing.</p>
+
+*/"/>
+    <method name="public void dragMoveEvent(com.trolltech.qt.gui.QGraphicsSceneDragDropEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive drag move events for this item. Drag move events are generated as the cursor moves around inside the item's area. Most often you will not need to reimplement this function; it is used to indicate that only parts of the item can accept drops.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> toggles whether or not the item will accept drops at the position from the event. By default, <i>event</i> is accepted, indicating that the item allows drops at the specified position.</p>
+<p>Items do not receive drag and drop events by default; to enable this feature, call <tt>setAcceptDrops(true)</tt>.</p>
+<p>The default implementation does nothing.</p>
+
+*/"/>
+    <method name="public void dropEvent(com.trolltech.qt.gui.QGraphicsSceneDragDropEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive drop events for this item. Items can only receive drop events if the last drag move event was accepted.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+<p>Items do not receive drag and drop events by default; to enable this feature, call <tt>setAcceptDrops(true)</tt>.</p>
+<p>The default implementation does nothing.</p>
+
+*/"/>
+    <method name="public void ensureVisible(double x__0, double y__1, double w__2, double h__3, int xmargin__4, int ymargin__5)" doc="/**
+<p>This convenience function is equivalent to calling ensureVisible(QRectF(<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>), <i>xmargin</i>, <i>ymargin</i>):</p>
+
+*/"/>
+    <method name="public void ensureVisible(com.trolltech.qt.core.QRectF rect__0, int xmargin__1, int ymargin__2)" doc="/**
+<p>If this item is part of a scene that is viewed by a QGraphicsView, this convenience function will attempt to scroll the view to ensure that <i>rect</i> is visible inside the view's viewport. If <i>rect</i> is a null rect (the default), QGraphicsItem will default to the item's bounding rect. <i>xmargin</i> and <i>ymargin</i> are the number of pixels the view should use for margins.</p>
+<p>If the specified rect cannot be reached, the contents are scrolled to the nearest valid position.</p>
+<p>If this item is not viewed by a QGraphicsView, this function does nothing.</p>
+
+*/"/>
+    <method name="public java.lang.Object extension(java.lang.Object variant__0)" doc="/**
+<p>Note: This is provided as a hook to avoid future problems related to adding virtual functions.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QGraphicsItem.GraphicsItemFlags flags()" doc="/**
+<p>Returns this item's flags. The flags describe what configurable features of the item are enabled and not. For example, if the flags include ItemIsFocusable, the item can accept input focus.</p>
+<p>By default, no flags are enabled.</p>
+
+*/"/>
+    <method name="public void focusInEvent(com.trolltech.qt.gui.QFocusEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive focus in events for this item. The default implementation does nothing.</p>
+
+*/"/>
+    <method name="public void focusOutEvent(com.trolltech.qt.gui.QFocusEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive focus out events for this item. The default implementation does nothing.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QGraphicsItemGroup group()" doc="/**
+<p>Returns a pointer to this item's item group, or 0 if this item is not member of a group.</p>
+
+*/"/>
+    <method name="public boolean handlesChildEvents()" doc="/**
+<p>Returns true if this item handles child events (i.e., all events intented for any of its children are instead sent to this item); otherwise, false is returned.</p>
+<p>This property is useful for item groups; it allows one item to handle events on behalf of its children, as opposed to its children handling their events individually.</p>
+<p>The default is to return false; children handle their own events.</p>
+
+*/"/>
+    <method name="public boolean hasCursor()" doc="/**
+<p>Returns true if this item has a cursor set; otherwise, false is returned.</p>
+<p>By default, items don't have any cursor set. cursor() will return a standard pointing arrow cursor.</p>
+
+*/"/>
+    <method name="public boolean hasFocus()" doc="/**
+<p>Returns true if this item has focus (i.e., can accept key events); otherwise, returns false.</p>
+
+*/"/>
+    <method name="public void hide()" doc="/**
+<p>Hides the item. (Items are visible by default.)</p>
+<p>This convenience function is equivalent to calling <tt>setVisible(false)</tt>.</p>
+
+*/"/>
+    <method name="public void hoverEnterEvent(com.trolltech.qt.gui.QGraphicsSceneHoverEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive hover enter events for this item. The default implementation calls update(); otherwise it does nothing.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+
+*/"/>
+    <method name="public void hoverLeaveEvent(com.trolltech.qt.gui.QGraphicsSceneHoverEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive hover leave events for this item. The default implementation calls update(); otherwise it does nothing.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+
+*/"/>
+    <method name="public void hoverMoveEvent(com.trolltech.qt.gui.QGraphicsSceneHoverEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive hover move events for this item. The default implementation does nothing.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+
+*/"/>
+    <method name="public void inputMethodEvent(com.trolltech.qt.gui.QInputMethodEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive input method events for this item. The default implementation ignores the event.</p>
+
+*/"/>
+    <method name="public java.lang.Object inputMethodQuery(com.trolltech.qt.core.Qt.InputMethodQuery query__0)" doc="/**
+<p>This method is only relevant for input items. It is used by the input method to query a set of properties of the item to be able to support complex input method operations, such as support for surrounding text and reconversions. <i>query</i> specifies which property is queried.</p>
+
+*/"/>
+    <method name="public void installSceneEventFilter(com.trolltech.qt.gui.QGraphicsItemInterface filterItem__0)" doc="/**
+<p>Installs an event filter for this item on <i>filterItem</i>, causing all events for this item to first pass through <i>filterItem</i>'s sceneEventFilter() function.</p>
+<p>To filter another item's events, install this item as an event filter for the other item. Example:</p>
+<pre>    QGraphicsScene scene;
+    QGraphicsEllipseItem *ellipse = scene.addEllipse(QRectF(-10, -10, 20, 20));
+    QGraphicsLineItem *line = scene.addLine(QLineF(-10, -10, 20, 20));
+
+    line-&gt;installSceneEventFilter(ellipse);
+<span class=&quote;comment&quote;>    // line's events are filtered by ellipse's sceneEventFilter() function.</span>
+
+    ellipse-&gt;installSceneEventFilter(line);
+<span class=&quote;comment&quote;>    // ellipse's events are filtered by line's sceneEventFilter() function.</span></pre>
+<p>An item can only filter events for other items in the same scene. Also, an item cannot filter its own events; instead, you can reimplement sceneEvent() directly.</p>
+
+*/"/>
+    <method name="public boolean isAncestorOf(com.trolltech.qt.gui.QGraphicsItemInterface child__0)" doc="/**
+<p>Returns true if this item is an ancestor of <i>child</i> (i.e., if this item is <i>child</i>'s parent, or one of <i>child</i>'s parent's ancestors).</p>
+
+*/"/>
+    <method name="public boolean isEnabled()" doc="/**
+<p>Returns true if the item is enabled; otherwise, false is returned.</p>
+
+*/"/>
+    <method name="public boolean isObscured()" doc="/**
+<p>Returns true if this item's bounding rect is completely obscured by the opaque shape of any of its colliding items. This function returns false if all the colliding items are at the same zValue() as this item.</p>
+
+*/"/>
+    <method name="public boolean isObscuredBy(com.trolltech.qt.gui.QGraphicsItemInterface item__0)" doc="/**
+<p>Returns true if this item's bounding rect is completely obscured by the opaque shape of <i>item</i>.</p>
+
+*/"/>
+    <method name="public boolean isSelected()" doc="/**
+<p>Returns true if this item is selected; otherwise, false is returned.</p>
+<p>Items that are in a group inherit the group's selected state.</p>
+<p>Items are not selected by default.</p>
+
+*/"/>
+    <method name="public boolean isVisible()" doc="/**
+<p>Returns true if the item is visible; otherwise, false is returned.</p>
+<p>Note that the item's general visibility is unrelated to whether or not it is actually being visualized by a QGraphicsView.</p>
+
+*/"/>
+    <method name="public java.lang.Object itemChange(com.trolltech.qt.gui.QGraphicsItem.GraphicsItemChange change__0, java.lang.Object value__1)" doc="/**
+<p>This virtual function is called by QGraphicsItem to notify custom items that some part of the item's state changes. By reimplementing this function, your can react to a change, and in some cases, (depending on <i>change</i>,) adjustments can be made.</p>
+<p><i>change</i> is the parameter of the item that is changing. <i>value</i> is the new value; the type of the value depends on <i>change</i>.</p>
+<p>Example:</p>
+<pre>    QVariant Component::itemChange(GraphicsItemChange change, const QVariant &amp;value)
+    {
+        if (change == ItemPositionChange &amp;&amp; scene()) {
+            <span class=&quote;comment&quote;>// value is the new position.</span>
+            QPointF newPos = value.toPointF();
+            QRectF rect = scene()-&gt;sceneRect();
+            if (!rect.contains(newPos)) {
+                <span class=&quote;comment&quote;>// Keep the item inside the scene rect.</span>
+                newPos.setX(qMin(rect.right(), qMax(newPos.x(), rect.left())));
+                newPos.setY(qMin(rect.bottom(), qMax(newPos.y(), rect.top())));
+                return newPos;
+            }
+        }
+        return QGraphicsItem::itemChange(change, value);
+    }</pre>
+<p>The default implementation does nothing, and returns <i>value</i>.</p>
+<p>Note: Certain QGraphicsItem functions cannot be called in a reimplementation of this function; see the GraphicsItemChange documentation for details.</p>
+
+*/"/>
+    <method name="public void keyPressEvent(com.trolltech.qt.gui.QKeyEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive key press events for this item. The default implementation ignores the event. If you reimplement this handler, the event will by default be accepted.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+<p>Note that key events are only received for items that set the ItemIsFocusable flag, and that have keyboard input focus.</p>
+
+*/"/>
+    <method name="public void keyReleaseEvent(com.trolltech.qt.gui.QKeyEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive key release events for this item. The default implementation ignores the event. If you reimplement this handler, the event will by default be accepted.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+<p>Note that key events are only received for items that set the ItemIsFocusable flag, and that have keyboard input focus.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapFromItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.core.QRectF rect__1)" doc="/**
+<p>Maps the rectangle <i>rect</i>, which is in <i>item</i>'s coordinate system, to this item's coordinate system, and returns the mapped rectangle as a polygon.</p>
+<p>If <i>item</i> is 0, this function returns the same as mapFromScene()</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapFromItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.gui.QPolygonF polygon__1)" doc="/**
+<p>Maps the polygon <i>polygon</i>, which is in <i>item</i>'s coordinate system, to this item's coordinate system, and returns the mapped polygon.</p>
+<p>If <i>item</i> is 0, this function returns the same as mapFromScene().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapFromItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.core.QPointF point__1)" doc="/**
+<p>Maps the point <i>point</i>, which is in <i>item</i>'s coordinate system, to this item's coordinate system, and returns the mapped coordinate.</p>
+<p>If <i>item</i> is 0, this function returns the same as mapFromScene().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath mapFromItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.gui.QPainterPath path__1)" doc="/**
+<p>Maps the path <i>path</i>, which is in <i>item</i>'s coordinate system, to this item's coordinate system, and returns the mapped path.</p>
+<p>If <i>item</i> is 0, this function returns the same as mapFromScene().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapFromItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, double x__1, double y__2)" doc="/**
+<p>This convenience function is equivalent to calling mapFromItem(<i>item</i>, QPointF(<i>x</i>, <i>y</i>)).</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapFromParent(double x__0, double y__1)" doc="/**
+<p>This convenience function is equivalent to calling mapFromParent(QPointF(<i>x</i>, <i>y</i>)).</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath mapFromParent(com.trolltech.qt.gui.QPainterPath path__0)" doc="/**
+<p>Maps the path <i>path</i>, which is in this item's parent's coordinate system, to this item's coordinate system, and returns the mapped path.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapFromParent(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Maps the rectangle <i>rect</i>, which is in this item's parent's coordinate system, to this item's coordinate system, and returns the mapped rectangle as a polygon.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapFromParent(com.trolltech.qt.core.QPointF point__0)" doc="/**
+<p>Maps the point <i>point</i>, which is in this item's parent's coordinate system, to this item's coordinate system, and returns the mapped coordinate.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapFromParent(com.trolltech.qt.gui.QPolygonF polygon__0)" doc="/**
+<p>Maps the polygon <i>polygon</i>, which is in this item's parent's coordinate system, to this item's coordinate system, and returns the mapped polygon.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapFromScene(com.trolltech.qt.core.QPointF point__0)" doc="/**
+<p>Maps the point <i>point</i>, which is in this item's scene's coordinate system, to this item's coordinate system, and returns the mapped coordinate.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapFromScene(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Maps the rectangle <i>rect</i>, which is in this item's scene's coordinate system, to this item's coordinate system, and returns the mapped rectangle as a polygon.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath mapFromScene(com.trolltech.qt.gui.QPainterPath path__0)" doc="/**
+<p>Maps the path <i>path</i>, which is in this item's scene's coordinate system, to this item's coordinate system, and returns the mapped path.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapFromScene(double x__0, double y__1)" doc="/**
+<p>This convenience function is equivalent to calling mapFromScene(QPointF(<i>x</i>, <i>y</i>)).</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapFromScene(com.trolltech.qt.gui.QPolygonF polygon__0)" doc="/**
+<p>Maps the polygon <i>polygon</i>, which is in this item's scene's coordinate system, to this item's coordinate system, and returns the mapped polygon.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapToItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.core.QRectF rect__1)" doc="/**
+<p>Maps the rectangle <i>rect</i>, which is in this item's coordinate system, to <i>item</i>'s coordinate system, and returns the mapped rectangle as a polygon.</p>
+<p>If <i>item</i> is 0, this function returns the same as mapToScene().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapToItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, double x__1, double y__2)" doc="/**
+<p>This convenience function is equivalent to calling mapToItem(<i>item</i>, QPointF(<i>x</i>, <i>y</i>)).</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapToItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.core.QPointF point__1)" doc="/**
+<p>Maps the point <i>point</i>, which is in this item's coordinate system, to <i>item</i>'s coordinate system, and returns the mapped coordinate.</p>
+<p>If <i>item</i> is 0, this function returns the same as mapToScene().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath mapToItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.gui.QPainterPath path__1)" doc="/**
+<p>Maps the path <i>path</i>, which is in this item's coordinate system, to <i>item</i>'s coordinate system, and returns the mapped path.</p>
+<p>If <i>item</i> is 0, this function returns the same as mapToScene().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapToItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.gui.QPolygonF polygon__1)" doc="/**
+<p>Maps the polygon <i>polygon</i>, which is in this item's coordinate system, to <i>item</i>'s coordinate system, and returns the mapped polygon.</p>
+<p>If <i>item</i> is 0, this function returns the same as mapToScene().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapToParent(com.trolltech.qt.gui.QPolygonF polygon__0)" doc="/**
+<p>Maps the polygon <i>polygon</i>, which is in this item's coordinate system, to its parent's coordinate system, and returns the mapped polygon. If the item has no parent, <i>polygon</i> will be mapped to the scene's coordinate system.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapToParent(com.trolltech.qt.core.QPointF point__0)" doc="/**
+<p>Maps the point <i>point</i>, which is in this item's coordinate system, to its parent's coordinate system, and returns the mapped coordinate. If the item has no parent, <i>point</i> will be mapped to the scene's coordinate system.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapToParent(double x__0, double y__1)" doc="/**
+<p>This convenience function is equivalent to calling mapToParent(QPointF(<i>x</i>, <i>y</i>)).</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapToParent(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Maps the rectangle <i>rect</i>, which is in this item's coordinate system, to its parent's coordinate system, and returns the mapped rectangle as a polygon. If the item has no parent, <i>rect</i> will be mapped to the scene's coordinate system.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath mapToParent(com.trolltech.qt.gui.QPainterPath path__0)" doc="/**
+<p>Maps the path <i>path</i>, which is in this item's coordinate system, to its parent's coordinate system, and returns the mapped path. If the item has no parent, <i>path</i> will be mapped to the scene's coordinate system.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapToScene(double x__0, double y__1)" doc="/**
+<p>This convenience function is equivalent to calling mapToScene(QPointF(<i>x</i>, <i>y</i>)).</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapToScene(com.trolltech.qt.gui.QPolygonF polygon__0)" doc="/**
+<p>Maps the polygon <i>polygon</i>, which is in this item's coordinate system, to the scene's coordinate system, and returns the mapped polygon.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF mapToScene(com.trolltech.qt.core.QPointF point__0)" doc="/**
+<p>Maps the point <i>point</i>, which is in this item's coordinate system, to the scene's coordinate system, and returns the mapped coordinate.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath mapToScene(com.trolltech.qt.gui.QPainterPath path__0)" doc="/**
+<p>Maps the path <i>path</i>, which is in this item's coordinate system, to the scene's coordinate system, and returns the mapped path.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPolygonF mapToScene(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Maps the rectangle <i>rect</i>, which is in this item's coordinate system, to the scene's coordinate system, and returns the mapped rectangle as a polygon.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QMatrix matrix()" doc="/**
+<p>Returns this item's transformation matrix. If no matrix has been set, the identity matrix is returned.</p>
+
+*/"/>
+    <method name="public void mouseDoubleClickEvent(com.trolltech.qt.gui.QGraphicsSceneMouseEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive mouse doubleclick events for this item.</p>
+<p>When doubleclicking an item, the item will first receive a mouse press event, followed by a release event (i.e., a click), then a doubleclick event, and finally a release event.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+<p>The default implementation calls mousePressEvent(). If you want to keep the base implementation when reimplementing this function, call QGraphicsItem::mouseDoubleClickEvent() in your reimplementation.</p>
+
+*/"/>
+    <method name="public void mouseMoveEvent(com.trolltech.qt.gui.QGraphicsSceneMouseEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive mouse move events for this item. If you do receive this event, you can be certain that this item also received a mouse press event, and that this item is the current mouse grabber.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+<p>The default implementation handles basic item interaction, such as selection and moving. If you want to keep the base implementation when reimplementing this function, call QGraphicsItem::mouseMoveEvent() in your reimplementation.</p>
+
+*/"/>
+    <method name="public void mousePressEvent(com.trolltech.qt.gui.QGraphicsSceneMouseEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive mouse press events for this item. Mouse press events are only delivered to items that accept the mouse button that is pressed. By default, an item accepts all mouse buttons, but you can change this by calling setAcceptedMouseButtons().</p>
+<p>The mouse press event decides which item should become the mouse grabber (see QGraphicsScene::mouseGrabberItem()). If you do not reimplement this function, the press event will propagate to any topmost item beneath this item, and no other mouse events will be delivered to this item.</p>
+<p>If you do reimplement this function, <i>event</i> will by default be accepted (see QEvent::accept()), and this item is then the mouse grabber. This allows the item to receive future move, release and doubleclick events. If you call QEvent::ignore() on <i>event</i>, this item will lose the mouse grab, and <i>event</i> will propagate to any topmost item beneath. No further mouse events will be delivered to this item unless a new mouse press event is received.</p>
+<p>The default implementation handles basic item interaction, such as selection and moving. If you want to keep the base implementation when reimplementing this function, call QGraphicsItem::mousePressEvent() in your reimplementation.</p>
+
+*/"/>
+    <method name="public void mouseReleaseEvent(com.trolltech.qt.gui.QGraphicsSceneMouseEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive mouse release events for this item.</p>
+<p>Calling QEvent::ignore() or QEvent::accept() on <i>event</i> has no effect.</p>
+<p>The default implementation handles basic item interaction, such as selection and moving. If you want to keep the base implementation when reimplementing this function, call QGraphicsItem::mouseReleaseEvent() in your reimplementation.</p>
+
+*/"/>
+    <method name="public void moveBy(double dx__0, double dy__1)" doc="/**
+<p>Moves the item by <i>dx</i> points horizontally, and <i>dy</i> point vertically. This function is equivalent to calling setPos(pos() + QPointF(<i>dx</i>, <i>dy</i>)).</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath opaqueArea()" doc="/**
+<p>This virtual function returns a shape representing the area where this item is opaque. An area is opaque if it is filled using an opaque brush or color (i.e., not transparent).</p>
+<p>This function is used by isObscuredBy(), which is called by underlying items to determine if they are obscured by this item.</p>
+<p>The default implementation returns an empty QPainterPath, indicating that this item is completely transparent and does not obscure any other items.</p>
+
+*/"/>
+    <method name="public void paint(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.gui.QStyleOptionGraphicsItem option__1, com.trolltech.qt.gui.QWidget widget__2)" doc="/**
+<p>This function, which is usually called by QGraphicsView, paints the contents of an item in local coordinates.</p>
+<p>Reimplement this function in a QGraphicsItem subclass to provide the item's painting implementation, using <i>painter</i>. The <i>option</i> parameter provides style options for the item, such as its state, exposed area and its level-of-detail hints. The <i>widget</i> argument is optional. If provided, it points to the widget that is being painted on; otherwise, it is 0.</p>
+<pre>    void RoundRectItem::paint(QPainter *painter,
+                              const QStyleOptionGraphicsItem *option,
+                              QWidget *widget)
+    {
+        painter-&gt;drawRoundRect(-10, -10, 20, 20);
+    }</pre>
+<p>The painter's pen is 0-width by default, and its pen is initialized to the QPalette::Text brush from the paint device's palette. The brush is initialized to QPalette::Window.</p>
+<p>All painting is done in local coordinates.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QGraphicsItemInterface parentItem()" doc="/**
+<p>Returns a pointer to this item's parent item. If this item does not have a parent, 0 is returned.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF pos()" doc="/**
+<p>Returns the position of the item in parent coordinates. If the item has no parent, its position is given in scene coordinates.</p>
+<p>The position of the item describes its origin (local coordinate (0, 0)) in parent coordinates; this function returns the same as mapToParent(0, 0).</p>
+<p>For convenience, you can also call scenePos() to determine the item's position in scene coordinates, regardless of its parent.</p>
+
+*/"/>
+    <method name="public void prepareGeometryChange()" doc="/**
+<p>Prepares the item for a geometry change. Call this function before changing the bounding rect of an item to keep QGraphicsScene's index up to date.</p>
+<p>prepareGeometryChange() will call update() if this is necessary.</p>
+<p>Example:</p>
+<pre>    void CircleItem::setRadius(qreal newRadius)
+    {
+        if (radius != newRadius) {
+            prepareGeometryChange();
+            radius = newRadius;
+        }
+    }</pre>
+
+*/"/>
+    <method name="public void removeFromIndex()" doc="/**
+<p>Removes this item from the scene's index. Called in conjunction with addToIndex() to ensure the index bookkeeping is correct when the item's position, transformation or shape changes.</p>
+
+*/"/>
+    <method name="public void removeSceneEventFilter(com.trolltech.qt.gui.QGraphicsItemInterface filterItem__0)" doc="/**
+<p>Removes an event filter on this item from <i>filterItem</i>.</p>
+
+*/"/>
+    <method name="public void resetMatrix()" doc="/**
+<p>Resets this item's tranformation matrix to the identity matrix. This is equivalent to calling <tt>setMatrix(QMatrix())</tt>.</p>
+
+*/"/>
+    <method name="public void rotate(double angle__0)" doc="/**
+<p>Rotates the current item transformation <i>angle</i> degrees clockwise.</p>
+
+*/"/>
+    <method name="public void scale(double sx__0, double sy__1)" doc="/**
+<p>Scales the current item transformation by (<i>sx</i>, <i>sy</i>).</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QGraphicsScene scene()" doc="/**
+<p>Returns the current scene for the item, or 0 if the item is not stored in a scene.</p>
+<p>Too add or move an item to a scene, call QGraphicsScene::addItem().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QRectF sceneBoundingRect()" doc="/**
+<p>Returns the bounding rect of this item in scene coordinates, by combining sceneMatrix() with boundingRect().</p>
+
+*/"/>
+    <method name="public boolean sceneEvent(com.trolltech.qt.core.QEvent event__0)" doc="/**
+<p>This virtual function receives events to this item. Reimplement this function to intercept events before they are dispatched to the specialized event handlers contextMenuEvent(), focusInEvent(), focusOutEvent(), hoverEnterEvent(), hoverMoveEvent(), hoverLeaveEvent(), keyPressEvent(), keyReleaseEvent(), mousePressEvent(), mouseReleaseEvent(), mouseMoveEvent(), and mouseDoubleClickEvent().</p>
+<p>Returns true if the event was recognized and handled; otherwise, (e.g., if the event type was not recognized,) false is returned.</p>
+<p><i>event</i> is the intercepted event.</p>
+
+*/"/>
+    <method name="public boolean sceneEventFilter(com.trolltech.qt.gui.QGraphicsItemInterface watched__0, com.trolltech.qt.core.QEvent event__1)" doc="/**
+<p>Filters events for the item <i>watched</i>. <i>event</i> is the filtered event. Reimplement this function after installing this item as an event filter for another item to intersect all the other item's events.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QMatrix sceneMatrix()" doc="/**
+<p>Returns this item's scene transformation matrix. This matrix can be used to map coordinates and geometrical shapes from this item's local coordinate system to the scene's coordinate system. To map coordinates from the scene, you must first invert the returned matrix.</p>
+<p>Example:</p>
+<pre>    QGraphicsRectItem rect;
+    rect.setPos(100, 100);
+
+    rect.sceneMatrix().map(QPointF(0, 0));
+<span class=&quote;comment&quote;>    // returns QPointF(100, 100);</span>
+
+    rect.sceneMatrix().inverted().map(QPointF(100, 100));
+<span class=&quote;comment&quote;>    // returns QPointF(0, 0);</span></pre>
+<p>Unlike matrix(), which returns only an item's local transformation, this function includes the item's (and any parents') position.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QPointF scenePos()" doc="/**
+<p>Returns the item's position in scene coordinates. This is equivalent to calling <tt>mapToScene(0, 0)</tt>.</p>
+
+*/"/>
+    <method name="public void setAcceptDrops(boolean on__0)" doc="/**
+<p>If <i>on</i> is true, this item will accept drag and drop events; otherwise, it is transparent for drag and drop events. By default, items do not accept drag and drop events.</p>
+
+*/"/>
+    <method name="public void setAcceptedMouseButtons(com.trolltech.qt.core.Qt.MouseButtons buttons__0)" doc="/**
+<p>Sets the mouse <i>buttons</i> that this item accepts mouse events for.</p>
+<p>By default, all mouse buttons are accepted. If an item accepts a mouse button, it will become the mouse grabber item when a mouse press event is delivered for that button. However, if the item does not accept the mouse button, QGraphicsScene will forward the mouse events to the first item beneath it that does.</p>
+<p>To disable mouse events for an item (i.e., make it transparent for mouse events), call setAcceptedMouseButtons(0).</p>
+
+*/"/>
+    <method name="public void setAcceptsHoverEvents(boolean enabled__0)" doc="/**
+<p>If <i>enabled</i> is true, this item will accept hover events; otherwise, it will ignore them. By default, items do not accept hover events.</p>
+<p>Hover events are delivered when there is no current mouse grabber item. They are sent when the mouse cursor enters an item, when it moves around inside the item, and when the cursor leaves an item. Hover events are commonly used to highlight an item when it's entered, and for tracking the mouse cursor as it hovers over the item (equivalent to QWidget::mouseTracking).</p>
+<p>Parent items receive hover enter events before their children, and leave events after their children. The parent does not receive a hover leave event if the cursor enters a child, though; the parent stays &quot;hovered&quot; until the cursor leaves its area, including its children's areas.</p>
+<p>If a parent item handles child events (setHandlesChildEvents()), it will receive hover move, drag move, and drop events as the cursor passes through its children, but it does not receive hover enter and hover leave, nor drag enter and drag leave events on behalf of its children.</p>
+
+*/"/>
+    <method name="public void setCursor(com.trolltech.qt.gui.QCursor cursor__0)" doc="/**
+<p>Sets the current cursor shape for the item to <i>cursor</i>. The mouse cursor will assume this shape when it's over this item. See the list of predefined cursor objects for a range of useful shapes.</p>
+<p>An editor item might want to use an I-beam cursor:</p>
+<pre>    item-&gt;setCursor(Qt::IBeamCursor);</pre>
+<p>If no cursor has been set, the parent's cursor is used.</p>
+
+*/"/>
+    <method name="public void setData(int key__0, java.lang.Object value__1)" doc="/**
+<p>Sets this item's custom data for the key <i>key</i> to <i>value</i>.</p>
+<p>Custom item data is useful for storing arbitrary properties for any item. Qt does not use this feature for storing data; it is provided solely for the convenience of the user.</p>
+
+*/"/>
+    <method name="public void setEnabled(boolean enabled__0)" doc="/**
+<p>If <i>enabled</i> is true, the item is enabled; otherwise, it is disabled.</p>
+<p>Disabled items are visible, but they do not receive any events, and cannot take focus nor be selected. Mouse events are discarded; they are not propagated unless the item is also invisible, or if it does not accept mouse events (see acceptedMouseButtons()). A disabled item cannot become the mouse grabber, and as a result of this, an item loses the grab if it becomes disabled when grabbing the mouse, just like it loses focus if it had focus when it was disabled.</p>
+<p>Disabled items are traditionally drawn using grayed-out colors (see QPalette::Disabled).</p>
+<p>Items are enabled by default.</p>
+
+*/"/>
+    <method name="public void setExtension(com.trolltech.qt.gui.QGraphicsItem.Extension extension__0, java.lang.Object variant__1)" doc="/**
+<p>Note: This is provided as a hook to avoid future problems related to adding virtual functions.</p>
+
+*/"/>
+    <method name="public void setFlag(com.trolltech.qt.gui.QGraphicsItem.GraphicsItemFlag flag__0, boolean enabled__1)" doc="/**
+<p>If <i>enabled</i> is true, the item flag <i>flag</i> is enabled; otherwise, it is disabled.</p>
+
+*/"/>
+    <method name="public void setFlags(com.trolltech.qt.gui.QGraphicsItem.GraphicsItemFlags flags__0)" doc="/**
+<p>Sets the item flags to <i>flags</i>. All flags in <i>flags</i> are enabled; all flags not in <i>flags</i> are disabled.</p>
+<p>If the item had focus and <i>flags</i> does not enable ItemIsFocusable, the item loses focus as a result of calling this function. Similarily, if the item was selected, and <i>flags</i> does not enabled ItemIsSelectable, the item is automatically unselected.</p>
+<p>By default, no flags are enabled.</p>
+
+*/"/>
+    <method name="public void setFocus(com.trolltech.qt.core.Qt.FocusReason focusReason__0)" doc="/**
+<p>Gives keyboard input focus to this item. The <i>focusReason</i> argument will be passed into any focus event generated by this function; it is used to give an explanation of what caused the item to get focus.</p>
+<p>Only items that set the ItemIsFocusable flag can accept keyboard focus.</p>
+<p>If this item is not visible (i.e., isVisible() returns false), not enabled, not associated with a scene, or if it already has input focus, this function will do nothing.</p>
+<p>As a result of calling this function, this item will receive a focus in event with <i>focusReason</i>. If another item already has focus, that item will first receive a focus out event indicating that it has lost input focus.</p>
+
+*/"/>
+    <method name="public void setGroup(com.trolltech.qt.gui.QGraphicsItemGroup group__0)" doc="/**
+<p>Adds this item to the item group <i>group</i>. If <i>group</i> is 0, this item is removed from any current group and added as a child of the previous group's parent.</p>
+
+*/"/>
+    <method name="public void setHandlesChildEvents(boolean enabled__0)" doc="/**
+<p>If <i>enabled</i> is true, this item is set to handle all events for all its children (i.e., all events intented for any of its children are instead sent to this item); otherwise, if <i>enabled</i> is false, this item will only handle its own events. The default value is false.</p>
+<p>This property is useful for item groups; it allows one item to handle events on behalf of its children, as opposed to its children handling their events individually.</p>
+<p>If a child item accepts hover events, its parent will receive hover move events as the cursor passes through the child, but it does not receive hover enter and hover leave events on behalf of its child.</p>
+
+*/"/>
+    <method name="public void setMatrix(com.trolltech.qt.gui.QMatrix matrix__0, boolean combine__1)" doc="/**
+<p>Sets the item's current transformation matrix to <i>matrix</i>.</p>
+<p>If <i>combine</i> is true, then <i>matrix</i> is combined with the current matrix; otherwise, <i>matrix</i> <i>replaces</i> the current matrix. <i>combine</i> is false by default.</p>
+<p>To simplify interation with items using a transformed view, QGraphicsItem provides mapTo... and mapFrom... functions that can translate between items' and the scene's coordinates. For example, you can call mapToScene() to map an item coordiate to a scene coordinate, or mapFromScene() to map from scene coordinates to item coordinates.</p>
+
+*/"/>
+    <method name="public void setParentItem(com.trolltech.qt.gui.QGraphicsItemInterface parent__0)" doc="/**
+<p>Sets this item's parent item to <i>parent</i>. If this item already has a parent, it is first removed from the previous parent. If <i>parent</i> is 0, this item will become a top-level item.</p>
+
+*/"/>
+    <method name="public void setPos(com.trolltech.qt.core.QPointF pos__0)" doc="/**
+<p>Sets the position of the item to <i>pos</i>, which is in parent coordinates. For items with no parent, <i>pos</i> is in scene coordinates.</p>
+<p>The position of the item describes its origin (local coordinate (0, 0)) in parent coordinates.</p>
+
+*/"/>
+    <method name="public void setPos(double x__0, double y__1)" doc="/**
+<p>This convenience function is equivalent to calling setPos(QPointF(<i>x</i>, <i>y</i>)).</p>
+
+*/"/>
+    <method name="public void setSelected(boolean selected__0)" doc="/**
+<p>If <i>selected</i> is true and this item is selectable, this item is selected; otherwise, it is unselected.</p>
+<p>If the item is in a group, the whole group's selected state is toggled by this function. If the group is selected, all items in the group are also selected, and if the group is not selected, no item in the group is selected.</p>
+<p>Only visible, enabled, selectable items can be selected. If <i>selected</i> is true and this item is either invisible or disabled or unselectable, this function does nothing.</p>
+<p>By default, items cannot be selected. To enable selection, set the ItemIsSelectable flag.</p>
+<p>This function is provided for convenience, allowing individual toggling of the selected state of an item. However, a more common way of selecting items is to call QGraphicsScene::setSelectionArea(), which will call this function for all visible, enabled, and selectable items within a specified area on the scene.</p>
+
+*/"/>
+    <method name="public void setToolTip(java.lang.String toolTip__0)" doc="/**
+<p>Sets the item's tool tip to <i>toolTip</i>. If <i>toolTip</i> is empty, the item's tool tip is cleared.</p>
+
+*/"/>
+    <method name="public void setVisible(boolean visible__0)" doc="/**
+<p>If <i>visible</i> is true, the item is made visible. Otherwise, the item is made invisible. Invisible items are not painted, nor do they receive any events. In particular, mouse events pass right through invisible items, and are delivered to any item that may be behind. Invisible items are also unselectable, they cannot take input focus, and are not detected by QGraphicsScene's item location functions.</p>
+<p>If an item becomes invisible while grabbing the mouse, (i.e., while it is receiving mouse events,) it will automatically lose the mouse grab, and the grab is not regained by making the item visible again; it must receive a new mouse press to regain the mouse grab.</p>
+<p>Similarily, an invisible item cannot have focus, so if the item has focus when it becomes invisible, it will lose focus, and the focus is not regained by simply making the item visible again.</p>
+<p>Items are visible by default; it is unnecessary to call setVisible() on a new item.</p>
+
+*/"/>
+    <method name="public void setZValue(double z__0)" doc="/**
+<p>Sets the Z-value, or the elevation, of the item, to <i>z</i>. The elevation decides the stacking order of sibling (neighboring) items. An item of high Z-value will be drawn on top of an item with a lower Z-value if they share the same parent item. In addition, children of an item will always be drawn on top of the parent, regardless of the child's Z-value. Sibling items that share the same Z-value will be drawn in an undefined order, although the order will stay the same for as long as the items live.</p>
+<p>Children of different parents are stacked according to the Z-value of each item's ancestor item which is an immediate child of the two items' closest common ancestor. For example, a robot item might define a torso item as the parent of a head item, two arm items, and two upper-leg items. The upper-leg items would each be parents of one lower-leg item, and each lower-leg item would be parents of one foot item. The stacking order of the feet is the same as the stacking order of each foot's ancestor that is an immediate child of the two feet's common ancestor (i.e., the torso item); so the feet are stacked in the same order as the upper-leg items, regardless of each foot's Z-value.</p>
+<p>The Z-value does not affect the item's size in any way.</p>
+<p>The default Z-value is 0.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath shape()" doc="/**
+<p>Returns the shape of this item as a QPainterPath in local coordinates. The shape is used for many things, including collision detection, hit tests, and for the QGraphicsScene::items() functions.</p>
+<p>The default implementation calls boundingRect() to return a simple rectangular shape, but subclasses can reimplement this function to return a more accurate shape for non-rectangular items. For example, a round item may choose to return an elliptic shape for better collision detection. For example:</p>
+<pre>    QPainterPath RoundItem::shape() const
+    {
+        QPainterPath path;
+        path.addEllipse(boundingRect());
+        return path;
+    }</pre>
+<p>This function is called by the default implementations of contains() and collidesWithPath().</p>
+
+*/"/>
+    <method name="public void shear(double sh__0, double sv__1)" doc="/**
+<p>Shears the current item transformation by (<i>sh</i>, <i>sv</i>).</p>
+
+*/"/>
+    <method name="public void show()" doc="/**
+<p>Shows the item. (Items are visible by default.)</p>
+<p>This convenience function is equivalent to calling <tt>setVisible(true)</tt>.</p>
+
+*/"/>
+    <method name="public boolean supportsExtension(com.trolltech.qt.gui.QGraphicsItem.Extension extension__0)" doc="/**
+<p>Note: This is provided as a hook to avoid future problems related to adding virtual functions.</p>
+
+*/"/>
+    <method name="public java.lang.String toolTip()" doc="/**
+<p>Returns the item's tool tip, or an empty QString if no tool tip has been set.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QGraphicsItemInterface topLevelItem()" doc="/**
+<p>Returns this item's top-level item. The top-level item is the item's topmost ancestor item whose parent is 0. If an item has no parent, its own pointer is returned (i.e., a top-level item is its own top-level item).</p>
+
+*/"/>
+    <method name="public void translate(double dx__0, double dy__1)" doc="/**
+<p>Translates the current item transformation by (<i>dx</i>, <i>dy</i>).</p>
+<p>If all you want is to move an item, you should call moveBy() or setPos() instead; this function changes the item's translation, which is conceptually separate from its position.</p>
+
+*/"/>
+    <method name="public int type()" doc="/**
+<p>Returns the type of an item as an int. All standard graphicsitem classes are associated with a unique value; see QGraphicsItem::Type. This type information is used by qgraphicsitem_cast() to distinguish between types.</p>
+<p>Reimplementing this function and declaring a Type enum value equal to your custom item's type will enable use of qgraphicsitem_cast() with the item. Custom items must return a value larger than or equal to UserType (65536).</p>
+<p>The default implementation (in QGraphicsItem) returns UserType.</p>
+
+*/"/>
+    <method name="public void unsetCursor()" doc="/**
+<p>Clears the cursor from this item.</p>
+
+*/"/>
+    <method name="public void update(double x__0, double y__1, double width__2, double height__3)" doc="/**
+<p>This convenience function is equivalent to calling update(QRectF(<i>x</i>, <i>y</i>, <i>width</i>, <i>height</i>)).</p>
+
+*/"/>
+    <method name="public void update(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Schedules a redraw of the area covered by <i>rect</i> in this item. You can call this function whenever your item needs to be redrawn, such as if it changes appearance or size.</p>
+<p>This function does not cause an immediate paint; instead it schedules a paint request that is processed by QGraphicsView after control reaches the event loop. The item will only be redrawn if it is visible in any associated view.</p>
+<p>As a side effect of the item being repainted, other items that overlap the area <i>rect</i> may also be repainted.</p>
+<p>If the item is invisible (i.e., isVisible() returns false), this function does nothing.</p>
+
+*/"/>
+    <method name="public void wheelEvent(com.trolltech.qt.gui.QGraphicsSceneWheelEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented to receive wheel events for this item. If you reimplement this function, <i>event</i> will be accepted by default.</p>
+<p>If you ignore the event, (i.e., by calling QEvent::ignore(),) it will propagate to any item beneath this item. If no items accept the event, it will be ignored by the scene, and propagate to the view (e.g., the view's vertical scroll bar).</p>
+<p>The default implementation ignores the event.</p>
+
+*/"/>
+    <method name="public double x()" doc="/**
+<p>This convenience function is equivalent to calling pos().x().</p>
+
+*/"/>
+    <method name="public double y()" doc="/**
+<p>This convenience function is equivalent to calling pos().y().</p>
+
+*/"/>
+    <method name="public double zValue()" doc="/**
+<p>Returns the Z-value, or the elevation, of the item. The Z-value decides the stacking order of sibling (neighboring) items.</p>
+<p>The default Z-value is 0.</p>
+
+*/"/>
+</class>

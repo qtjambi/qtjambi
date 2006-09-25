@@ -1,0 +1,189 @@
+<class name="QTextCharFormat" doc="/**
+<p>The QTextCharFormat class provides formatting information for characters in a QTextDocument.</p>
+<p>The character format of text in a document specifies the visual properties of the text, as well as information about its role in a hypertext document.</p>
+<p>The font used can be set by supplying a font to the setFont() function, and each aspect of its appearance can be adjusted to give the desired effect. setFontFamily() and setFontPointSize() define the font's family (e.g. Times) and printed size; setFontWeight() and setFontItalic() provide control over the style of the font. setFontUnderline(), setFontOverline(), setFontStrikeOut(), and setFontFixedPitch() provide additional effects for text.</p>
+<p>The color is set with setForeground(). If the text is intended to be used as an anchor (for hyperlinks), this can be enabled with setAnchor(). The setAnchorHref() and setAnchorName() functions are used to specify the information about the hyperlink's destination and the anchor's name.</p>
+<p>If the text is written within a table, it can be made to span a number of rows and columns with the setTableCellRowSpan() and setTableCellColumnSpan() functions.</p>
+
+*/">
+    <method name="public QTextCharFormat()" doc="/**
+<p>Constructs a new character format object.</p>
+
+*/"/>
+    <method name="public final java.lang.String anchorHref()" doc="/**
+<p>Returns the text format's hypertext link, or an empty string if none has been set.</p>
+
+*/"/>
+    <method name="public final java.lang.String anchorName()" doc="/**
+<p>Returns the anchor name associated with this text format, or an empty string if none has been set. If the anchor name is set, text with this format can be the destination of a hypertext link.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font()" doc="/**
+<p>Returns the font for this character format.</p>
+
+*/"/>
+    <method name="public final java.lang.String fontFamily()" doc="/**
+<p>Returns the text format's font family.</p>
+
+*/"/>
+    <method name="public final boolean fontFixedPitch()" doc="/**
+<p>Returns true if the text format's font is fixed pitch; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean fontItalic()" doc="/**
+<p>Returns true if the text format's font is italic; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean fontOverline()" doc="/**
+<p>Returns true if the text format's font is overlined; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final double fontPointSize()" doc="/**
+<p>Returns the font size used to display text in this format.</p>
+
+*/"/>
+    <method name="public final boolean fontStrikeOut()" doc="/**
+<p>Returns true if the text format's font is struck out (has a horizontal line drawn through it); otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean fontUnderline()" doc="/**
+<p>Returns true if the text format's font is underlined; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int fontWeight()" doc="/**
+<p>Returns the text format's font weight.</p>
+
+*/"/>
+    <method name="public final boolean isAnchor()" doc="/**
+<p>Returns true if the text is formatted as an anchor; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final void setAnchor(boolean anchor__0)" doc="/**
+<p>If <i>anchor</i> is true, text with this format represents an anchor, and is formatted in the appropriate way; otherwise the text is formatted normally. (Anchors are hyperlinks which are often shown underlined and in a different color from plain text.)</p>
+<p>The way the text is rendered is independent of whether or not the format has a valid anchor defined. Use setAnchorHref(), and optionally setAnchorName() to create a hypertext link.</p>
+
+*/"/>
+    <method name="public final void setAnchorHref(java.lang.String value__0)" doc="/**
+<p>Sets the hypertext link for the text format to the given <i>value</i>. This is typically a URL like &quot;http://www.trolltech.com/index.html&quot;.</p>
+<p>The anchor will be displayed with the <i>value</i> as its display text; if you want to display different text call setAnchorName().</p>
+<p>To format the text as a hypertext link use setAnchor().</p>
+
+*/"/>
+    <method name="public final void setAnchorName(java.lang.String name__0)" doc="/**
+<p>Sets the text format's anchor <i>name</i>. For the anchor to work as a hyperlink, the destination must be set with setAnchorHref() and the anchor must be enabled with setAnchor().</p>
+
+*/"/>
+    <method name="public final void setFont(com.trolltech.qt.gui.QFont font__0)" doc="/**
+<p>Sets the text format's <i>font</i>.</p>
+
+*/"/>
+    <method name="public final void setFontFamily(java.lang.String family__0)" doc="/**
+<p>Sets the text format's font <i>family</i>.</p>
+
+*/"/>
+    <method name="public final void setFontFixedPitch(boolean fixedPitch__0)" doc="/**
+<p>If <i>fixedPitch</i> is true, sets the text format's font to be fixed pitch; otherwise a non-fixed pitch font is used.</p>
+
+*/"/>
+    <method name="public final void setFontItalic(boolean italic__0)" doc="/**
+<p>If <i>italic</i> is true, sets the text format's font to be italic; otherwise the font will be non-italic.</p>
+
+*/"/>
+    <method name="public final void setFontOverline(boolean overline__0)" doc="/**
+<p>If <i>overline</i> is true, sets the text format's font to be overlined; otherwise the font is displayed non-overlined.</p>
+
+*/"/>
+    <method name="public final void setFontPointSize(double size__0)" doc="/**
+<p>Sets the text format's font <i>size</i>.</p>
+
+*/"/>
+    <method name="public final void setFontStrikeOut(boolean strikeOut__0)" doc="/**
+<p>If <i>strikeOut</i> is true, sets the text format's font with strike-out enabled (with a horizontal line through it); otherwise it is displayed without strikeout.</p>
+
+*/"/>
+    <method name="public final void setFontUnderline(boolean underline__0)" doc="/**
+<p>If <i>underline</i> is true, sets the text format's font to be underlined; otherwise it is displayed non-underlined.</p>
+
+*/"/>
+    <method name="public final void setFontWeight(int weight__0)" doc="/**
+<p>Sets the text format's font weight to <i>weight</i>.</p>
+
+*/"/>
+    <method name="public final void setTableCellColumnSpan(int tableCellColumnSpan__0)" doc="/**
+<p>If this character format is applied to characters in a table cell, the cell will span <i>tableCellColumnSpan</i> columns.</p>
+
+*/"/>
+    <method name="public final void setTableCellRowSpan(int tableCellRowSpan__0)" doc="/**
+<p>If this character format is applied to characters in a table cell, the cell will span <i>tableCellRowSpan</i> rows.</p>
+
+*/"/>
+    <method name="public final void setTextOutline(com.trolltech.qt.gui.QPen pen__0)" doc="/**
+<p>Sets the pen used to draw the outlines of characters to the given <i>pen</i>.</p>
+
+*/"/>
+    <method name="public final void setUnderlineColor(com.trolltech.qt.gui.QColor color__0)" doc="/**
+<p>Sets the underline color used for the characters with this format to the <i>color</i> specified.</p>
+
+*/"/>
+    <method name="public final void setUnderlineStyle(com.trolltech.qt.gui.QTextCharFormat.UnderlineStyle style__0)" doc="/**
+<p>Sets the style of underlining the text to <i>style</i>.</p>
+
+*/"/>
+    <method name="public final void setVerticalAlignment(com.trolltech.qt.gui.QTextCharFormat.VerticalAlignment alignment__0)" doc="/**
+<p>Sets the vertical alignment used for the characters with this format to the <i>alignment</i> specified.</p>
+
+*/"/>
+    <method name="public final int tableCellColumnSpan()" doc="/**
+<p>If this character format is applied to characters in a table cell, this function returns the number of columns spanned by the text (this may be 1); otherwise it returns 1.</p>
+
+*/"/>
+    <method name="public final int tableCellRowSpan()" doc="/**
+<p>If this character format is applied to characters in a table cell, this function returns the number of rows spanned by the text (this may be 1); otherwise it returns 1.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPen textOutline()" doc="/**
+<p>Returns the pen used to draw the outlines of characters in this format.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QColor underlineColor()" doc="/**
+<p>Returns the color used to underline the characters with this format.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextCharFormat.UnderlineStyle underlineStyle()" doc="/**
+<p>Returns the style of underlining the text.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextCharFormat.VerticalAlignment verticalAlignment()" doc="/**
+<p>Returns the vertical alignment used for characters with this format.</p>
+
+*/"/>
+    <method name="public boolean isValid()" doc="/**
+<p>Returns true if this character format is valid; otherwise returns false.</p>
+
+*/"/>
+    <enum name="VerticalAlignment" doc="/**
+<p>This enum describes the ways that adjacent characters can be vertically aligned.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Adjacent characters are positioned in the standard way for text in the writing system in use.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Characters are placed above the baseline for normal text.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Characters are placed below the baseline for normal text.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="UnderlineStyle" doc="/**
+<p>This enum describes the different ways drawing underlined text.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Text is draw without any underlining decoration.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A line is drawn using Qt::SolidLine.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Dashes are drawn using Qt::DashLine.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Dots are drawn using Qt::DotLine;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Dashs and dots are drawn using Qt::DashDotLine.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Underlines draw drawn using Qt::DashDotDotLine.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The text is underlined using a wave shaped line.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The underline is drawn depending on the QStyle::SH_SpellCeckUnderlineStyle style hint of the QApplication style. By default this is mapped to WaveUnderline, on Mac OS X it is mapped to DashDotLine.</td></tr>
+</table></p>
+
+*/"/>
+</class>

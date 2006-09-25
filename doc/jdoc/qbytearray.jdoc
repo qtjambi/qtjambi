@@ -1,0 +1,619 @@
+<class name="QByteArray" doc="/**
+<p>The QByteArray class provides an array of bytes.</p>
+<p>QByteArray can be used to store both raw bytes (including '\0's) and traditional 8-bit '\0'-terminated strings. Using QByteArray is much more convenient than using <tt>const char *</tt>. Behind the scenes, it always ensures that the data is followed by a '\0' terminator, and uses implicit sharing (copy-on-write) to reduce memory usage and avoid needless copying of data.</p>
+<p>In addition to QByteArray, Qt also provides the QString class to store string data. For most purposes, QString is the class you want to use. It stores 16-bit Unicode characters, making it easy to store non-ASCII/non-Latin-1 characters in your application. Furthermore, QString is used throughout in the Qt API. The two main cases where QByteArray is appropriate are when you need to store raw binary data, and when memory conservation is critical (e.g. with Qtopia Core).</p>
+<p>One way to initialize a QByteArray is simply to pass a <tt>const char *</tt> to its constructor. For example, the following code creates a byte array of size 5 containing the data &quot;Hello&quot;:</p>
+<pre>    QByteArray ba(&quot;Hello&quot;);</pre>
+<p>Although the size() is 5, the byte array also maintains an extra '\0' character at the end so that if a function is used that asks for a pointer to the underlying data (e.g. a call to data()), the data pointed to is guaranteed to be '\0'-terminated.</p>
+<p>QByteArray makes a deep copy of the <tt>const char *</tt> data, so you can modify it later without experiencing side effects. (If for performance reasons you don't want to take a deep copy of the character data, use QByteArray::fromRawData() instead.)</p>
+<p>Another approach is to set the size of the array using resize() and to initialize the data byte per byte. QByteArray uses 0-based indexes, just like C++ arrays. To access the byte at a particular index position, you can use operator[](). On non-const byte arrays, operator[]() returns a reference to a byte that can be used on the left side of an assignment. For example:</p>
+<pre>    QByteArray ba;
+    ba.resize(5);
+    ba[0] = 0x3c;
+    ba[1] = 0xb8;
+    ba[2] = 0x64;
+    ba[3] = 0x18;
+    ba[4] = 0xca;</pre>
+<p>For read-only access, an alternative syntax is to use at():</p>
+<pre>    for (int i = 0; i &lt; ba.size(); ++i) {
+        if (ba.at(i) &gt;= 'a' &amp;&amp; ba.at(i) &lt;= 'f')
+            cout &lt;&lt; &quot;Found character in range [a-f]&quot; &lt;&lt; endl;
+    }</pre>
+<p>at() can be faster than operator[](), because it never causes a deep copy to occur.</p>
+<p>To extract many bytes at a time, use left(), right(), or mid().</p>
+<p>A QByteArray can embed '\0' bytes. The size() function always returns the size of the whole array, including embedded '\0' bytes. If you want to obtain the length of the data up to and excluding the first '\0' character, call qstrlen() on the byte array.</p>
+<p>After a call to resize(), newly allocated bytes have undefined values. To set all the bytes to a particular value, call fill().</p>
+<p>To obtain a pointer to the actual character data, call data() or constData(). These functions return a pointer to the beginning of the data. The pointer is guaranteed to remain valid until a non-const function is called on the QByteArray. It is also guaranteed that the data ends with a '\0' byte. This '\0' byte is automatically provided by QByteArray and is not counted in size().</p>
+<p>QByteArray provides the following basic functions for modifying the byte data: append(), prepend(), insert(), replace(), and remove(). For example:</p>
+<pre>    QByteArray x(&quot;and&quot;);
+    x.prepend(&quot;rock &quot;);         <span class=&quote;comment&quote;>// x == &quot;rock and&quot;</span>
+    x.append(&quot; roll&quot;);          <span class=&quote;comment&quote;>// x == &quot;rock and roll&quot;</span>
+    x.replace(5, 3, &quot;&amp;&quot;);       <span class=&quote;comment&quote;>// x == &quot;rock &amp; roll&quot;</span></pre>
+<p>The replace() and remove() functions' first two arguments are the position from which to start erasing and the number of bytes that should be erased.</p>
+<p>If you are building a QByteArray gradually and know in advance approximately how many bytes the QByteArray will contain, you can call reserve(), asking QByteArray to preallocate a certain amount of memory. You can also call capacity() to find out how much memory QByteArray actually allocated.</p>
+<p>A frequent requirement is to remove whitespace characters from a byte array ('\n', '\t', ' ', etc.). If you want to remove whitespace from both ends of a QByteArray, use trimmed(). If you want to remove whitespace from both ends and replace multiple consecutive whitespaces with a single space character within the byte array, use simplified().</p>
+<p>If you want to find all occurrences of a particular character or substring in a QByteArray, use indexOf() or lastIndexOf(). The former searches forward starting from a given index position, the latter searches backward. Both return the index position of the character or substring if they find it; otherwise, they return -1. For example, here's a typical loop that finds all occurrences of a particular substring:</p>
+<pre>    QByteArray ba(&quot;We must be &lt;b&gt;bold&lt;/b&gt;, very &lt;b&gt;bold&lt;/b&gt;&quot;);
+    int j = 0;
+    while ((j = ba.indexOf(&quot;&lt;b&gt;&quot;, j)) != -1) {
+        cout &lt;&lt; &quot;Found &lt;b&gt; tag at index position &quot; &lt;&lt; j &lt;&lt; endl;
+        ++j;
+    }</pre>
+<p>If you simply want to check whether a QByteArray contains a particular character or substring, use contains(). If you want to find out how many times a particular character or substring occurs in the byte array, use count(). If you want to replace all occurrences of a particular value with another, use one of the two-parameter replace() overloads.</p>
+<p>QByteArrays can be compared using overloaded operators such as operator&lt;(), operator&lt;=(), operator==(), operator&gt;=(), and so on. The comparison is based exclusively on the numeric values of the characters and is very fast, but is not what a human would expect. QString::localeAwareCompare() is a better choice for sorting user-interface strings.</p>
+<p>For historical reasons, QByteArray distinguishes between a null byte array and an empty byte array. A <i>null</i> byte array is a byte array that is initialized using QByteArray's default constructor or by passing (const char *)0 to the constructor. An <i>empty</i> byte array is any byte array with size 0. A null byte array is always empty, but an empty byte array isn't necessarily null:</p>
+<pre>    QByteArray().isNull();          <span class=&quote;comment&quote;>// returns true</span>
+    QByteArray().isEmpty();         <span class=&quote;comment&quote;>// returns true</span>
+
+    QByteArray(&quot;&quot;).isNull();        <span class=&quote;comment&quote;>// returns false</span>
+    QByteArray(&quot;&quot;).isEmpty();       <span class=&quote;comment&quote;>// returns true</span>
+
+    QByteArray(&quot;abc&quot;).isNull();     <span class=&quote;comment&quote;>// returns false</span>
+    QByteArray(&quot;abc&quot;).isEmpty();    <span class=&quote;comment&quote;>// returns false</span></pre>
+<p>All functions except isNull() treat null byte arrays the same as empty byte arrays. For example, data() returns a pointer to a '\0' character for a null byte array (<i>not</i> a null pointer), and QByteArray() compares equal to QByteArray(&quot;&quot;). We recommend that you always use isEmpty() and avoid isNull().</p>
+<a name=&quote;note-on-8-bit-character-comparisons&quote;></a>
+<h3>Note on 8-bit Character Comparisons</h3>
+<p>In QByteArray, the notion of uppercase and lowercase and of which character is greater than or less than another character is locale dependent. This affects functions that support a case insensitive option or that compare or lowercase or uppercase their arguments. Case insensitive operations and comparisons will be accurate if both strings contain only ASCII characters. (If <tt>$LC_CTYPE</tt> is set, most Unix systems do &quot;the right thing&quot;.) Functions that this affects include contains(), indexOf(), lastIndexOf(), operator&lt;(), operator&lt;=(), operator&gt;(), operator&gt;=(), toLower() and toUpper().</p>
+<p>This issue does not apply to QStrings since they represent characters using Unicode.</p>
+
+*/">
+    <method name="public QByteArray(com.trolltech.qt.core.QByteArray arg__0)" doc="/**
+<p>Constructs a copy of <i>other</i>.</p>
+<p>This operation takes constant time, because QByteArray is implicitly shared. This makes returning a QByteArray from a function very fast. If a shared instance is modified, it will be copied (copy-on-write), and that takes linear time.</p>
+
+*/"/>
+    <method name="public QByteArray(int size__0, byte c__1)" doc="/**
+<p>Constructs a byte array of size <i>size</i> with every byte set to character <i>ch</i>.</p>
+
+*/"/>
+    <method name="public QByteArray(com.trolltech.qt.QNativePointer arg__0)" doc="/**
+<p>Constructs a byte array initialized with the string <i>str</i>.</p>
+<p>QByteArray makes a deep copy of the string data.</p>
+
+*/"/>
+    <method name="public QByteArray(com.trolltech.qt.QNativePointer arg__0, int size__1)" doc="/**
+<p>Constructs a byte array containing the first <i>size</i> bytes of array <i>data</i>.</p>
+<p>If <i>data</i> is 0, a null byte array is constructed.</p>
+<p>QByteArray makes a deep copy of the string data.</p>
+
+*/"/>
+    <method name="public QByteArray()" doc="/**
+<p>Constructs an empty byte array.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer append(com.trolltech.qt.QNativePointer s__0)" doc="/**
+<p>Appends the string <i>str</i> to this byte array.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer append(java.lang.String s__0)" doc="/**
+<p>Appends the string <i>str</i> to this byte array. The Unicode data is converted into 8-bit characters using QString::toAscii().</p>
+<p>If the QString contains non-ASCII Unicode characters, using this function can lead to loss of information. You can disable this function by defining <tt>QT_NO_CAST_TO_ASCII</tt> when you compile your applications. You then need to call QString::toAscii() (or QString::toLatin1() or QString::toUtf8() or QString::toLocal8Bit()) explicitly if you want to convert the data to <tt>const char *</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer append(com.trolltech.qt.core.QByteArray a__0)" doc="/**
+<p>Appends the byte array <i>ba</i> onto the end of this byte array.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;free&quot;);
+    QByteArray y(&quot;dom&quot;);
+    x.append(y);
+<span class=&quote;comment&quote;>    // x == &quot;freedom&quot;</span></pre>
+<p>This is the same as insert(size(), <i>ba</i>).</p>
+<p>This operation is typically very fast (constant time), because QByteArray preallocates extra space at the end of the character data so it can grow without reallocating the entire data each time.</p>
+
+*/"/>
+    <method name="public final byte at(int i__0)" doc="/**
+<p>Returns the character at index position <i>i</i> in the byte array.</p>
+<p><i>i</i> must be a valid index position in the byte array (i.e., 0 &lt;= <i>i</i> &lt; size()).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer begin()"/>
+    <method name="public final int capacity()" doc="/**
+<p>Returns the maximum number of bytes that can be stored in the byte array without forcing a reallocation.</p>
+<p>The sole purpose of this function is to provide a means of fine tuning QByteArray's memory usage. In general, you will rarely ever need to call this function. If you want to know how many bytes are in the byte array, call size().</p>
+
+*/"/>
+    <method name="public final void chop(int n__0)" doc="/**
+<p>Removes <i>n</i> bytes from the end of the byte array.</p>
+<p>If <i>n</i> is greater than size(), the result is an empty byte array.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;STARTTLS\r\n&quot;);
+    ba.chop(2);                 <span class=&quote;comment&quote;>// ba == &quot;STARTTLS&quot;</span></pre>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Clears the contents of the byte array and makes it empty.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer constBegin()"/>
+    <method name="public final com.trolltech.qt.QNativePointer constData()" doc="/**
+<p>Returns a pointer to the data stored in the byte array. The pointer can be used to access the bytes that compose the array. The data is '\0'-terminated. The pointer remains valid as long as the byte array isn't reallocated.</p>
+<p>This function is mostly useful to pass a byte array to a function that accepts a <tt>const char *</tt>.</p>
+<p>Note: A QByteArray can store any byte values including '\0's, but most functions that take <tt>char *</tt> arguments assume that the data ends at the first '\0' they encounter.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer constEnd()"/>
+    <method name="public final boolean contains(com.trolltech.qt.QNativePointer a__0)" doc="/**
+<p>Returns true if the byte array contains the string <i>str</i>; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean contains(com.trolltech.qt.core.QByteArray a__0)" doc="/**
+<p>Returns true if the byte array contains an occurrence of the byte array <i>ba</i>; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int count(com.trolltech.qt.core.QByteArray a__0)" doc="/**
+<p>Returns the number of (potentially overlapping) occurrences of byte array <i>ba</i> in this byte array.</p>
+
+*/"/>
+    <method name="public final int count(com.trolltech.qt.QNativePointer a__0)" doc="/**
+<p>Returns the number of (potentially overlapping) occurrences of string <i>str</i> in the byte array.</p>
+
+*/"/>
+    <method name="public final int count()" doc="/**
+<p>Same as size().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer data()"/>
+    <method name="public final void detach()"/>
+    <method name="public final com.trolltech.qt.QNativePointer end()"/>
+    <method name="public final boolean endsWith(com.trolltech.qt.QNativePointer c__0)" doc="/**
+<p>Returns true if this byte array ends with string <i>str</i>; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean endsWith(com.trolltech.qt.core.QByteArray a__0)" doc="/**
+<p>Returns true if this byte array ends with byte array <i>ba</i>; otherwise returns false.</p>
+<p>Example:</p>
+<pre>    QByteArray url(&quot;http:<span class=&quote;comment&quote;>//www.trolltech.com/index.html&quot;);</span>
+    if (url.endsWith(&quot;.html&quot;))
+        ...</pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer fill(byte c__0, int size__1)" doc="/**
+<p>Sets every byte in the byte array to character <i>ch</i>. If <i>size</i> is different from -1 (the default), the byte array is resized to size <i>size</i> beforehand.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;Istambul&quot;);
+    ba.fill(&quot;o&quot;);
+<span class=&quote;comment&quote;>    // ba == &quot;oooooooo&quot;</span>
+
+    ba.fill(&quot;X&quot;, 2);
+<span class=&quote;comment&quote;>    // ba == &quot;XX&quot;</span></pre>
+
+*/"/>
+    <method name="public final int indexOf(java.lang.String s__0, int from__1)" doc="/**
+<p>Returns the index position of the first occurrence of the string <i>str</i> in the byte array, searching forward from index position <i>from</i>. Returns -1 if <i>str</i> could not be found.</p>
+<p>The Unicode data is converted into 8-bit characters using QString::toAscii().</p>
+<p>If the QString contains non-ASCII Unicode characters, using this function can lead to loss of information. You can disable this function by defining <tt>QT_NO_CAST_TO_ASCII</tt> when you compile your applications. You then need to call QString::toAscii() (or QString::toLatin1() or QString::toUtf8() or QString::toLocal8Bit()) explicitly if you want to convert the data to <tt>const char *</tt>.</p>
+
+*/"/>
+    <method name="public final int indexOf(com.trolltech.qt.QNativePointer c__0, int from__1)" doc="/**
+<p>Returns the index position of the first occurrence of the string <i>str</i> in the byte array, searching forward from index position <i>from</i>. Returns -1 if <i>str</i> could not be found.</p>
+
+*/"/>
+    <method name="public final int indexOf(com.trolltech.qt.core.QByteArray a__0, int from__1)" doc="/**
+<p>Returns the index position of the first occurrence of the byte array <i>ba</i> in this byte array, searching forward from index position <i>from</i>. Returns -1 if <i>ba</i> could not be found.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;sticky question&quot;);
+    QByteArray y(&quot;sti&quot;);
+    x.indexOf(y);               <span class=&quote;comment&quote;>// returns 0</span>
+    x.indexOf(y, 1);            <span class=&quote;comment&quote;>// returns 10</span>
+    x.indexOf(y, 10);           <span class=&quote;comment&quote;>// returns 10</span>
+    x.indexOf(y, 11);           <span class=&quote;comment&quote;>// returns -1</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer insert(int i__0, com.trolltech.qt.core.QByteArray a__1)" doc="/**
+<p>Inserts the byte array <i>ba</i> at index position <i>i</i> and returns a reference to this byte array.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;Meal&quot;);
+    ba.insert(1, QByteArray(&quot;ontr&quot;));
+<span class=&quote;comment&quote;>    // ba == &quot;Montreal&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer insert(int i__0, java.lang.String s__1)" doc="/**
+<p>Inserts the string <i>str</i> at index position <i>i</i> in the byte array. The Unicode data is converted into 8-bit characters using QString::toAscii().</p>
+<p>If <i>i</i> is greater than size(), the array is first extended using resize().</p>
+<p>If the QString contains non-ASCII Unicode characters, using this function can lead to loss of information. You can disable this function by defining <tt>QT_NO_CAST_TO_ASCII</tt> when you compile your applications. You then need to call QString::toAscii() (or QString::toLatin1() or QString::toUtf8() or QString::toLocal8Bit()) explicitly if you want to convert the data to <tt>const char *</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer insert(int i__0, com.trolltech.qt.QNativePointer s__1)" doc="/**
+<p>Inserts the string <i>str</i> at position <i>i</i> in the byte array.</p>
+<p>If <i>i</i> is greater than size(), the array is first extended using resize().</p>
+
+*/"/>
+    <method name="public final boolean isDetached()"/>
+    <method name="public final boolean isEmpty()" doc="/**
+<p>Returns true if the byte array has size 0; otherwise returns false.</p>
+<p>Example:</p>
+<pre>    QByteArray().isEmpty();         <span class=&quote;comment&quote;>// returns true</span>
+    QByteArray(&quot;&quot;).isEmpty();       <span class=&quote;comment&quote;>// returns true</span>
+    QByteArray(&quot;abc&quot;).isEmpty();    <span class=&quote;comment&quote;>// returns false</span></pre>
+
+*/"/>
+    <method name="public final boolean isNull()" doc="/**
+<p>Returns true if this byte array is null; otherwise returns false.</p>
+<p>Example:</p>
+<pre>    QByteArray().isNull();          <span class=&quote;comment&quote;>// returns true</span>
+    QByteArray(&quot;&quot;).isNull();        <span class=&quote;comment&quote;>// returns false</span>
+    QByteArray(&quot;abc&quot;).isNull();     <span class=&quote;comment&quote;>// returns false</span></pre>
+<p>Qt makes a distinction between null byte arrays and empty byte arrays for historical reasons. For most applications, what matters is whether or not a byte array contains any data, and this can be determined using isEmpty().</p>
+
+*/"/>
+    <method name="public final int lastIndexOf(com.trolltech.qt.core.QByteArray a__0, int from__1)" doc="/**
+<p>Returns the index position of the last occurrence of the byte array <i>ba</i> in this byte array, searching backward from index position <i>from</i>. If <i>from</i> is -1 (the default), the search starts at the last byte. Returns -1 if <i>ba</i> could not be found.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;crazy azimuths&quot;);
+    QByteArray y(&quot;azy&quot;);
+    x.lastIndexOf(y);           <span class=&quote;comment&quote;>// returns 6</span>
+    x.lastIndexOf(y, 6);        <span class=&quote;comment&quote;>// returns 6</span>
+    x.lastIndexOf(y, 5);        <span class=&quote;comment&quote;>// returns 2</span>
+    x.lastIndexOf(y, 1);        <span class=&quote;comment&quote;>// returns -1</span></pre>
+
+*/"/>
+    <method name="public final int lastIndexOf(com.trolltech.qt.QNativePointer c__0, int from__1)" doc="/**
+<p>Returns the index position of the last occurrence of the string <i>str</i> in the byte array, searching backward from index position <i>from</i>. If <i>from</i> is -1 (the default), the search starts at the last (size() - 1) byte. Returns -1 if <i>str</i> could not be found.</p>
+
+*/"/>
+    <method name="public final int lastIndexOf(java.lang.String s__0, int from__1)" doc="/**
+<p>Returns the index position of the last occurrence of the string <i>str</i> in the byte array, searching backward from index position <i>from</i>. If <i>from</i> is -1 (the default), the search starts at the last (size() - 1) byte. Returns -1 if <i>str</i> could not be found.</p>
+<p>The Unicode data is converted into 8-bit characters using QString::toAscii().</p>
+<p>If the QString contains non-ASCII Unicode characters, using this function can lead to loss of information. You can disable this function by defining <tt>QT_NO_CAST_TO_ASCII</tt> when you compile your applications. You then need to call QString::toAscii() (or QString::toLatin1() or QString::toUtf8() or QString::toLocal8Bit()) explicitly if you want to convert the data to <tt>const char *</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray left(int len__0)" doc="/**
+<p>Returns a byte array that contains the leftmost <i>len</i> bytes of this byte array.</p>
+<p>The entire byte array is returned if <i>len</i> is greater than size().</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;Pineapple&quot;);
+    QByteArray y = x.left(4);
+<span class=&quote;comment&quote;>    // y == &quot;Pine&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray leftJustified(int width__0, byte fill__1, boolean truncate__2)" doc="/**
+<p>Returns a byte array of size <i>width</i> that contains this byte array padded by the <i>fill</i> character.</p>
+<p>If <i>truncate</i> is false and the size() of the byte array is more than <i>width</i>, then the returned byte array is a copy of this byte array.</p>
+<p>If <i>truncate</i> is true and the size() of the byte array is more than <i>width</i>, then any bytes in a copy of the byte array after position <i>width</i> are removed, and the copy is returned.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;apple&quot;);
+    QByteArray y = x.leftJustified(8, '.');   <span class=&quote;comment&quote;>// y == &quot;apple...&quot;</span></pre>
+
+*/"/>
+    <method name="public final int length()" doc="/**
+<p>Same as size().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray mid(int index__0, int len__1)" doc="/**
+<p>Returns a byte array containing <i>len</i> bytes from this byte array, starting at position <i>pos</i>.</p>
+<p>If <i>len</i> is -1 (the default), or <i>pos</i> + <i>len</i> &gt;= size(), returns a byte array containing all bytes starting at position <i>pos</i> until the end of the byte array.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;Five pineapples&quot;);
+    QByteArray y = x.mid(5, 4);     <span class=&quote;comment&quote;>// y == &quot;pine&quot;</span>
+    QByteArray z = x.mid(5);        <span class=&quote;comment&quote;>// z == &quot;pineapples&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer prepend(com.trolltech.qt.QNativePointer s__0)" doc="/**
+<p>Prepends the string <i>str</i> to this byte array.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer prepend(com.trolltech.qt.core.QByteArray a__0)" doc="/**
+<p>Prepends the byte array <i>ba</i> to this byte array and returns a reference to this byte array.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;ship&quot;);
+    QByteArray y(&quot;air&quot;);
+    x.prepend(y);
+<span class=&quote;comment&quote;>    // x == &quot;airship&quot;</span></pre>
+<p>This is the same as insert(0, <i>ba</i>).</p>
+
+*/"/>
+    <method name="public final void push_back(com.trolltech.qt.core.QByteArray a__0)" doc="/**
+<p>This function is provided for STL compatibility. It is equivalent to append(<i>other</i>).</p>
+
+*/"/>
+    <method name="public final void push_back(com.trolltech.qt.QNativePointer c__0)" doc="/**
+<p>Same as append(<i>str</i>).</p>
+
+*/"/>
+    <method name="public final void push_front(com.trolltech.qt.QNativePointer c__0)" doc="/**
+<p>Same as prepend(<i>str</i>).</p>
+
+*/"/>
+    <method name="public final void push_front(com.trolltech.qt.core.QByteArray a__0)" doc="/**
+<p>This function is provided for STL compatibility. It is equivalent to prepend(<i>other</i>).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer remove(int index__0, int len__1)" doc="/**
+<p>Removes <i>len</i> bytes from the array, starting at index position <i>pos</i>, and returns a reference to the array.</p>
+<p>If <i>pos</i> is out of range, nothing happens. If <i>pos</i> is valid, but <i>pos</i> + <i>len</i> is larger than the size of the array, the array is truncated at position <i>pos</i>.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;Montreal&quot;);
+    ba.remove(1, 4);
+<span class=&quote;comment&quote;>    // ba == &quot;Meal&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(byte before__0, byte after__1)" doc="/**
+<p>Replaces every occurrence of the character <i>before</i> with the character <i>after</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(byte c__0, java.lang.String after__1)" doc="/**
+<p>Replaces every occurrence of the character <i>before</i> with the string <i>after</i>. The Unicode data is converted into 8-bit characters using QString::toAscii().</p>
+<p>If the QString contains non-ASCII Unicode characters, using this function can lead to loss of information. You can disable this function by defining <tt>QT_NO_CAST_TO_ASCII</tt> when you compile your applications. You then need to call QString::toAscii() (or QString::toLatin1() or QString::toUtf8() or QString::toLocal8Bit()) explicitly if you want to convert the data to <tt>const char *</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(java.lang.String before__0, com.trolltech.qt.core.QByteArray after__1)" doc="/**
+<p>Replaces every occurrence of the string <i>before</i> with the byte array <i>after</i>. The Unicode data is converted into 8-bit characters using QString::toAscii().</p>
+<p>If the QString contains non-ASCII Unicode characters, using this function can lead to loss of information. You can disable this function by defining <tt>QT_NO_CAST_TO_ASCII</tt> when you compile your applications. You then need to call QString::toAscii() (or QString::toLatin1() or QString::toUtf8() or QString::toLocal8Bit()) explicitly if you want to convert the data to <tt>const char *</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(com.trolltech.qt.core.QByteArray before__0, com.trolltech.qt.core.QByteArray after__1)" doc="/**
+<p>Replaces every occurrence of the byte array <i>before</i> with the byte array <i>after</i>.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;colour behaviour flavour neighbour&quot;);
+    ba.replace(QByteArray(&quot;ou&quot;), QByteArray(&quot;o&quot;));
+<span class=&quote;comment&quote;>    // ba == &quot;color behavior flavor neighbor&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(com.trolltech.qt.QNativePointer before__0, com.trolltech.qt.core.QByteArray after__1)" doc="/**
+<p>Replaces every occurrence of the string <i>before</i> with the byte array <i>after</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(int index__0, int len__1, com.trolltech.qt.core.QByteArray s__2)" doc="/**
+<p>Replaces <i>len</i> bytes from index position <i>pos</i> with the byte array <i>after</i>, and returns a reference to this byte array.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;Say yes!&quot;);
+    QByteArray y(&quot;no&quot;);
+    x.replace(4, 3, y);
+<span class=&quote;comment&quote;>    // x == &quot;Say no!&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(com.trolltech.qt.core.QByteArray before__0, com.trolltech.qt.QNativePointer after__1)" doc="/**
+<p>Replaces every occurrence of the byte array <i>before</i> with the string <i>after</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(java.lang.String before__0, com.trolltech.qt.QNativePointer after__1)" doc="/**
+<p>Replaces every occurrence of the string <i>before</i> with the string <i>after</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer replace(int index__0, int len__1, com.trolltech.qt.QNativePointer s__2)"/>
+    <method name="public final void reserve(int size__0)" doc="/**
+<p>Attempts to allocate memory for at least <i>size</i> bytes. If you know in advance how large the byte array will be, you can call this function, and if you call resize() often you are likely to get better performance. If <i>size</i> is an underestimate, the worst that will happen is that the QByteArray will be a bit slower.</p>
+<p>The sole purpose of this function is to provide a means of fine tuning QByteArray's memory usage. In general, you will rarely ever need to call this function. If you want to change the size of the byte array, call resize().</p>
+
+*/"/>
+    <method name="public final void resize(int size__0)" doc="/**
+<p>Sets the size of the byte array to <i>size</i> bytes.</p>
+<p>If <i>size</i> is greater than the current size, the byte array is extended to make it <i>size</i> bytes with the extra bytes added to the end. The new bytes are uninitialized.</p>
+<p>If <i>size</i> is less than the current size, bytes are removed from the end.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray right(int len__0)" doc="/**
+<p>Returns a byte array that contains the rightmost <i>len</i> bytes of this byte array.</p>
+<p>The entire byte array is returned if <i>len</i> is greater than size().</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;Pineapple&quot;);
+    QByteArray y = x.right(5);
+<span class=&quote;comment&quote;>    // y == &quot;apple&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray rightJustified(int width__0, byte fill__1, boolean truncate__2)" doc="/**
+<p>Returns a byte array of size <i>width</i> that contains the <i>fill</i> character followed by this byte array.</p>
+<p>If <i>truncate</i> is false and the size of the byte array is more than <i>width</i>, then the returned byte array is a copy of this byte array.</p>
+<p>If <i>truncate</i> is true and the size of the byte array is more than <i>width</i>, then the resulting byte array is truncated at position <i>width</i>.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;apple&quot;);
+    QByteArray y = x.rightJustified(8, '.');    <span class=&quote;comment&quote;>// y == &quot;...apple&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer setNum(float arg__0, byte f__1, int prec__2)" doc="/**
+<p>Sets the byte array to the printed value of <i>n</i>, formatted in format <i>f</i> with precision <i>prec</i>, and returns a reference to the byte array.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer setNum(double arg__0, byte f__1, int prec__2)" doc="/**
+<p>Sets the byte array to the printed value of <i>n</i>, formatted in format <i>f</i> with precision <i>prec</i>, and returns a reference to the byte array.</p>
+<p>The format <i>f</i> can be any of the following:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Format</th><th>Meaning</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><tt>e</tt></td><td>format as [-]9.9e[+|-]999</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><tt>E</tt></td><td>format as [-]9.9E[+|-]999</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><tt>f</tt></td><td>format as [-]9.9</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><tt>g</tt></td><td>use <tt>e</tt> or <tt>f</tt> format, whichever is the most concise</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><tt>G</tt></td><td>use <tt>E</tt> or <tt>f</tt> format, whichever is the most concise</td></tr>
+</table></p>
+<p>With 'e', 'E', and 'f', <i>prec</i> is the number of digits after the decimal point. With 'g' and 'G', <i>prec</i> is the maximum number of significant digits (trailing zeroes are omitted).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray simplified()" doc="/**
+<p>Returns a byte array that has whitespace removed from the start and the end, and which has each sequence of internal whitespace replaced with a single space.</p>
+<p>Whitespace means any character for which the standard C++ isspace() function returns true. This includes the ASCII characters '\t', '\n', '\v', '\f', '\r', and ' '.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;  lots\t of\nwhitespace\r\n &quot;);
+    ba = ba.simplified();
+<span class=&quote;comment&quote;>    // ba == &quot;lots of whitespace&quot;;</span></pre>
+
+*/"/>
+    <method name="public final int size()" doc="/**
+<p>Returns the number of bytes in this byte array.</p>
+<p>The last byte in the byte array is at position size() - 1. In addition, QByteArray ensures that the byte at position size() is always '\0', so that you can use the return value of data() and constData() as arguments to functions that expect '\0'-terminated strings.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;Hello&quot;);
+    int n = ba.size();          <span class=&quote;comment&quote;>// n == 5</span>
+    ba.data()[0];               <span class=&quote;comment&quote;>// returns 'H'</span>
+    ba.data()[4];               <span class=&quote;comment&quote;>// returns 'o'</span>
+    ba.data()[5];               <span class=&quote;comment&quote;>// returns '\0'</span></pre>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.core.QByteArray&gt; split(byte sep__0)" doc="/**
+<p>Splits the byte array into subarrays wherever <i>sep</i> occurs, and returns the list of those arrays. If <i>sep</i> does not match anywhere in the byte array, split() returns a single-element list containing this byte array.</p>
+
+*/"/>
+    <method name="public final void squeeze()" doc="/**
+<p>Releases any memory not required to store the array's data.</p>
+<p>The sole purpose of this function is to provide a means of fine tuning QByteArray's memory usage. In general, you will rarely ever need to call this function.</p>
+
+*/"/>
+    <method name="public final boolean startsWith(com.trolltech.qt.core.QByteArray a__0)" doc="/**
+<p>Returns true if this byte array starts with byte array <i>ba</i>; otherwise returns false.</p>
+<p>Example:</p>
+<pre>    QByteArray url(&quot;ftp:<span class=&quote;comment&quote;>//ftp.trolltech.com/&quot;);</span>
+    if (url.startsWith(&quot;ftp:&quot;))
+        ...</pre>
+
+*/"/>
+    <method name="public final boolean startsWith(com.trolltech.qt.QNativePointer c__0)" doc="/**
+<p>Returns true if this byte array starts with string <i>str</i>; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray toBase64()" doc="/**
+<p>Returns a copy of the byte array, encoded as Base64.</p>
+<pre>    QByteArray text(&quot;Qt is great!&quot;);
+    text.toBase64();        <span class=&quote;comment&quote;>// returns &quot;UXQgaXMgZ3JlYXRcIQo=&quot;</span></pre>
+
+*/"/>
+    <method name="public final double toDouble(com.trolltech.qt.QNativePointer ok__0)" doc="/**
+<p>Returns the byte array converted to a <tt>double</tt> value.</p>
+<p>Returns 0.0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+<pre>    QByteArray string(&quot;1234.56&quot;);
+    double a = string.toDouble();   <span class=&quote;comment&quote;>// a == 1234.56</span></pre>
+
+*/"/>
+    <method name="public final float toFloat(com.trolltech.qt.QNativePointer ok__0)" doc="/**
+<p>Returns the byte array converted to a <tt>float</tt> value.</p>
+<p>Returns 0.0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+
+*/"/>
+    <method name="public final int toInt(com.trolltech.qt.QNativePointer ok__0, int base__1)" doc="/**
+<p>Returns the byte array converted to an <tt>int</tt> using base <i>base</i>, which is 10 by default and must be between 2 and 36, or 0.</p>
+<p>If <i>base</i> is 0, the base is determined automatically using the following rules: If the byte array begins with &quot;0x&quot;, it is assumed to be hexadecimal; if it begins with &quot;0&quot;, it is assumed to be octal; otherwise it is assumed to be decimal.</p>
+<p>Returns 0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+<pre>    QByteArray str(&quot;FF&quot;);
+    bool ok;
+    int hex = str.toInt(&amp;ok, 16);     <span class=&quote;comment&quote;>// hex == 255, ok == true</span>
+    int dec = str.toInt(&amp;ok, 10);     <span class=&quote;comment&quote;>// dec == 0, ok == false</span></pre>
+
+*/"/>
+    <method name="public final int toLong(com.trolltech.qt.QNativePointer ok__0, int base__1)" doc="/**
+<p>Returns the byte array converted to a <tt>long</tt> int using base <i>base</i>, which is 10 by default and must be between 2 and 36, or 0.</p>
+<p>If <i>base</i> is 0, the base is determined automatically using the following rules: If the byte array begins with &quot;0x&quot;, it is assumed to be hexadecimal; if it begins with &quot;0&quot;, it is assumed to be octal; otherwise it is assumed to be decimal.</p>
+<p>Returns 0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+<pre>    QByteArray str(&quot;FF&quot;);
+    bool ok;
+    long hex = str.toLong(&amp;ok, 16);   <span class=&quote;comment&quote;>// hex == 255, ok == true</span>
+    long dec = str.toLong(&amp;ok, 10);   <span class=&quote;comment&quote;>// dec == 0, ok == false</span></pre>
+
+*/"/>
+    <method name="public final long toLongLong(com.trolltech.qt.QNativePointer ok__0, int base__1)" doc="/**
+<p>Returns the byte array converted to a <tt>long long</tt> using base <i>base</i>, which is 10 by default and must be between 2 and 36, or 0.</p>
+<p>If <i>base</i> is 0, the base is determined automatically using the following rules: If the byte array begins with &quot;0x&quot;, it is assumed to be hexadecimal; if it begins with &quot;0&quot;, it is assumed to be octal; otherwise it is assumed to be decimal.</p>
+<p>Returns 0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray toLower()" doc="/**
+<p>Returns a lowercase copy of the byte array. The bytearray is interpreted as a Latin-1 encoded string.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;TROlltECH&quot;);
+    QByteArray y = x.toLower();
+<span class=&quote;comment&quote;>    // y == &quot;trolltech&quot;</span></pre>
+
+*/"/>
+    <method name="public final char toShort(com.trolltech.qt.QNativePointer ok__0, int base__1)" doc="/**
+<p>Returns the byte array converted to a <tt>short</tt> using base <i>base</i>, which is 10 by default and must be between 2 and 36, or 0.</p>
+<p>If <i>base</i> is 0, the base is determined automatically using the following rules: If the byte array begins with &quot;0x&quot;, it is assumed to be hexadecimal; if it begins with &quot;0&quot;, it is assumed to be octal; otherwise it is assumed to be decimal.</p>
+<p>Returns 0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+
+*/"/>
+    <method name="public final int toUInt(com.trolltech.qt.QNativePointer ok__0, int base__1)" doc="/**
+<p>Returns the byte array converted to an <tt>unsigned int</tt> using base <i>base</i>, which is 10 by default and must be between 2 and 36, or 0.</p>
+<p>If <i>base</i> is 0, the base is determined automatically using the following rules: If the byte array begins with &quot;0x&quot;, it is assumed to be hexadecimal; if it begins with &quot;0&quot;, it is assumed to be octal; otherwise it is assumed to be decimal.</p>
+<p>Returns 0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+
+*/"/>
+    <method name="public final int toULong(com.trolltech.qt.QNativePointer ok__0, int base__1)" doc="/**
+<p>Returns the byte array converted to an <tt>unsigned long int</tt> using base <i>base</i>, which is 10 by default and must be between 2 and 36, or 0.</p>
+<p>If <i>base</i> is 0, the base is determined automatically using the following rules: If the byte array begins with &quot;0x&quot;, it is assumed to be hexadecimal; if it begins with &quot;0&quot;, it is assumed to be octal; otherwise it is assumed to be decimal.</p>
+<p>Returns 0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+
+*/"/>
+    <method name="public final long toULongLong(com.trolltech.qt.QNativePointer ok__0, int base__1)" doc="/**
+<p>Returns the byte array converted to an <tt>unsigned long long</tt> using base <i>base</i>, which is 10 by default and must be between 2 and 36, or 0.</p>
+<p>If <i>base</i> is 0, the base is determined automatically using the following rules: If the byte array begins with &quot;0x&quot;, it is assumed to be hexadecimal; if it begins with &quot;0&quot;, it is assumed to be octal; otherwise it is assumed to be decimal.</p>
+<p>Returns 0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+
+*/"/>
+    <method name="public final char toUShort(com.trolltech.qt.QNativePointer ok__0, int base__1)" doc="/**
+<p>Returns the byte array converted to an <tt>unsigned short</tt> using base <i>base</i>, which is 10 by default and must be between 2 and 36, or 0.</p>
+<p>If <i>base</i> is 0, the base is determined automatically using the following rules: If the byte array begins with &quot;0x&quot;, it is assumed to be hexadecimal; if it begins with &quot;0&quot;, it is assumed to be octal; otherwise it is assumed to be decimal.</p>
+<p>Returns 0 if the conversion fails.</p>
+<p>If <i>ok</i> is not 0: if a conversion error occurs, *<i>ok</i> is set to false; otherwise *<i>ok</i> is set to true.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray toUpper()" doc="/**
+<p>Returns an uppercase copy of the byte array. The bytearray is interpreted as a Latin-1 encoded string.</p>
+<p>Example:</p>
+<pre>    QByteArray x(&quot;TROlltECH&quot;);
+    QByteArray y = x.toUpper();
+<span class=&quote;comment&quote;>    // y == &quot;TROLLTECH&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray trimmed()" doc="/**
+<p>Returns a byte array that has whitespace removed from the start and the end.</p>
+<p>Whitespace means any character for which the standard C++ isspace() function returns true. This includes the ASCII characters '\t', '\n', '\v', '\f', '\r', and ' '.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;  lots\t of\nwhitespace\r\n &quot;);
+    ba = ba.trimmed();
+<span class=&quote;comment&quote;>    // ba == &quot;lots\t of\nwhitespace&quot;;</span></pre>
+<p>Unlike simplified(), trimmed() leaves internal whitespace alone.</p>
+
+*/"/>
+    <method name="public final void truncate(int pos__0)" doc="/**
+<p>Truncates the byte array at index position <i>pos</i>.</p>
+<p>If <i>pos</i> is beyond the end of the array, nothing happens.</p>
+<p>Example:</p>
+<pre>    QByteArray ba(&quot;Stockholm&quot;);
+    ba.truncate(5);             <span class=&quote;comment&quote;>// ba == &quot;Stock&quot;</span></pre>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.core.QByteArray fromBase64(com.trolltech.qt.core.QByteArray base64__0)" doc="/**
+<p>Returns a decoded copy of the Base64 array <i>base64</i>. For example:</p>
+<pre>    QByteArray text = QByteArray::fromBase64(&quot;UXQgaXMgZ3JlYXRcIQo=&quot;);
+    text.data();            <span class=&quote;comment&quote;>// returns &quot;Qt is great!&quot;</span></pre>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QByteArray fromRawData(com.trolltech.qt.QNativePointer arg__0, int size__1)" doc="/**
+<p>Constructs a QByteArray that uses the first <i>size</i> characters in the array <i>data</i>. The bytes in <i>data</i> are <i>not</i> copied. The caller must be able to guarantee that <i>data</i> will not be deleted or modified as long as the QByteArray (or an unmodified copy of it) exists.</p>
+<p>Any attempts to modify the QByteArray or copies of it will cause it to create a deep copy of the data, ensuring that the raw data isn't modified.</p>
+<p>Here's an example of how we can read data using a QDataStream on raw data in memory without requiring to copy the data into a QByteArray:</p>
+<pre>     static const char mydata[] = {
+        0x00, 0x00, 0x03, 0x84, 0x78, 0x9c, 0x3b, 0x76,
+        0xec, 0x18, 0xc3, 0x31, 0x0a, 0xf1, 0xcc, 0x99,
+        ...
+        0x6d, 0x5b
+    };
+
+    QByteArray data = QByteArray::fromRawData(mydata, sizeof(mydata));
+    QDataStream in(&amp;data, QIODevice::ReadOnly);
+    ...</pre>
+<p><b>Warning:</b> A byte array created with fromRawData() is <i>not</i> null-terminated, unless the raw data contains a 0 character at position <i>size</i>. While that does not matter for QDataStream or functions like indexOf(), passing the byte array to a function that accepts a <tt>const char *</tt> and expects it to be '\0'-terminated leads into trouble.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QByteArray number(double arg__0, byte f__1, int prec__2)" doc="/**
+<p>Returns a byte array that contains the printed value of <i>n</i>, formatted in format <i>f</i> with precision <i>prec</i>.</p>
+<p>Argument <i>n</i> is formatted according to the <i>f</i> format specified, which is <tt>g</tt> by default, and can be any of the following:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Format</th><th>Meaning</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><tt>e</tt></td><td>format as [-]9.9e[+|-]999</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><tt>E</tt></td><td>format as [-]9.9E[+|-]999</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><tt>f</tt></td><td>format as [-]9.9</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><tt>g</tt></td><td>use <tt>e</tt> or <tt>f</tt> format, whichever is the most concise</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><tt>G</tt></td><td>use <tt>E</tt> or <tt>f</tt> format, whichever is the most concise</td></tr>
+</table></p>
+<p>With 'e', 'E', and 'f', <i>prec</i> is the number of digits after the decimal point. With 'g' and 'G', <i>prec</i> is the maximum number of significant digits (trailing zeroes are omitted).</p>
+<pre>    QByteArray ba = QByteArray::number(12.3456, 'E', 3);
+<span class=&quote;comment&quote;>    // ba == 1.235E+01</span></pre>
+
+*/"/>
+</class>

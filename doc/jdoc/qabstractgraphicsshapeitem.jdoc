@@ -1,0 +1,40 @@
+<class name="QAbstractGraphicsShapeItem" doc="/**
+<p>The QAbstractGraphicsShapeItem class provides a common base for all path items.</p>
+<p>This class does not fully implement an item by itself; in particular, it does not implement boundingRect() and paint(), which are inherited by QGraphicsItem.</p>
+<p>You can subclass this item to provide a simple base implementation of accessors for the item's pen and brush.</p>
+
+*/">
+    <method name="public QAbstractGraphicsShapeItem(com.trolltech.qt.gui.QGraphicsItemInterface parent__0, com.trolltech.qt.gui.QGraphicsScene scene__1)" doc="/**
+<p>Constructs a QAbstractGraphicsShapeItem. <i>parent</i> and <i>scene</i> are passed to QGraphicsItem's constructor.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush brush()" doc="/**
+<p>Returns the item's brush, or an empty brush if no brush has been set.</p>
+
+*/"/>
+    <method name="public final java.lang.Object data(int key__0)"/>
+    <method name="public final boolean isEnabled()"/>
+    <method name="public final com.trolltech.qt.core.QPointF mapFromItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, double x__1, double y__2)"/>
+    <method name="public final com.trolltech.qt.gui.QMatrix matrix()"/>
+    <method name="public final com.trolltech.qt.gui.QPen pen()" doc="/**
+<p>Returns the item's pen. If no pen has been set, this function returns QPen(), a default black solid line pen with 0 width.</p>
+
+*/"/>
+    <method name="public final void setBrush(com.trolltech.qt.gui.QBrush brush__0)" doc="/**
+<p>Sets the item's brush to <i>brush</i>.</p>
+<p>The item's brush is used to fill the item.</p>
+
+*/"/>
+    <method name="public final void setData(int key__0, java.lang.Object value__1)"/>
+    <method name="public final void setPen(com.trolltech.qt.gui.QPen pen__0)" doc="/**
+<p>Sets the pen for this item to <i>pen</i>.</p>
+<p>The pen is used to draw the item's outline.</p>
+
+*/"/>
+    <method name="public boolean isObscuredBy(com.trolltech.qt.gui.QGraphicsItemInterface item__0)"/>
+    <method name="public com.trolltech.qt.core.QPointF mapFromParent(double x__0, double y__1)"/>
+    <method name="public com.trolltech.qt.core.QPointF mapToItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, double x__1, double y__2)"/>
+    <method name="public com.trolltech.qt.core.QPointF mapToParent(double x__0, double y__1)"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath opaqueArea()"/>
+    <method name="public void setPos(double x__0, double y__1)"/>
+</class>

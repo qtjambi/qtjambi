@@ -1,0 +1,96 @@
+<class name="QToolBar" doc="/**
+<p>The QToolBar class provides a movable panel that contains a set of controls.</p>
+<p>Toolbar buttons are added by adding <i>actions</i>, using addAction() or insertAction(). Groups of buttons can be separated using addSeparator() or insertSeparator(). If a toolbar button is not appropriate, a widget can be inserted instead using addWidget() or insertWidget(); examples of suitable widgets are QSpinBox, QDoubleSpinBox, and QComboBox. When a toolbar button is pressed it emits the actionTriggered() signal.</p>
+<p>A toolbar can be fixed in place in a particular area (e.g. at the top of the window), or it can be movable (isMovable()) between toolbar areas; see allowedAreas() and isAreaAllowed().</p>
+<p>When a toolbar is resized in such a way that it is too small to show all the items it contains, an extension button will appear as the last item in the toolbar. Pressing the extension button will pop up a menu containing the items that does not currently fit in the toolbar. Note that only action based items will be shown in the menu. If only non-action based items are to appear in the extension menu (e.g. a QSpinBox), the extension button will appear as usual, but it will be disabled to indicate that some items in the toolbar are currently not visible.</p>
+
+*/">
+    <method name="public QToolBar(java.lang.String title__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs a QToolBar with the given <i>parent</i>.</p>
+<p>The given window <i>title</i> identifies the toolbar and is shown in the context menu provided by QMainWindow.</p>
+
+*/"/>
+    <method name="public QToolBar(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a QToolBar with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction actionAt(com.trolltech.qt.core.QPoint p__0)" doc="/**
+<p>Returns the action at point <i>p</i>. This function returns zero if no action was found.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction actionAt(int x__0, int y__1)" doc="/**
+<p>Returns the action at the point <i>x</i>, <i>y</i>. This function returns zero if no action was found.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect actionGeometry(com.trolltech.qt.gui.QAction action__0)" doc="/**
+<p>Returns the geometry of the toolbar item associated with the given <i>action</i>, or an invalid QRect if no matching item is found.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(java.lang.String text__0, com.trolltech.qt.core.QObject receiver__1, com.trolltech.qt.QNativePointer member__2)" doc="/**
+<p>Creates a new action with the given <i>text</i>. This action is added to the end of the toolbar. The action's triggered() signal is connected to <i>member</i> in <i>receiver</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(com.trolltech.qt.gui.QIcon icon__0, java.lang.String text__1, com.trolltech.qt.core.QObject receiver__2, com.trolltech.qt.QNativePointer member__3)" doc="/**
+<p>Creates a new action with the icon <i>icon</i> and text <i>text</i>. This action is added to the end of the toolbar. The action's triggered() signal is connected to <i>member</i> in <i>receiver</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(java.lang.String text__0)" doc="/**
+<p>Creates a new action with the given <i>text</i>. This action is added to the end of the toolbar.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(com.trolltech.qt.gui.QIcon icon__0, java.lang.String text__1)" doc="/**
+<p>Creates a new action with the given <i>icon</i> and <i>text</i>. This action is added to the end of the toolbar.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addSeparator()" doc="/**
+<p>Adds a separator to the end of the toolbar.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addWidget(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Adds the given <i>widget</i> to the toolbar as the toolbar's last item.</p>
+<p>Note: You should use QAction::setVisible() to change the visibility of the widget. Using QWidget::setVisible(), QWidget::show() and QWidget::hide() does not work.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ToolBarAreas allowedAreas()"/>
+    <method name="public final void clear()" doc="/**
+<p>Removes all actions from the toolbar.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize iconSize()"/>
+    <method name="public final com.trolltech.qt.gui.QAction insertSeparator(com.trolltech.qt.gui.QAction before__0)" doc="/**
+<p>Inserts a separator into the toolbar in front of the toolbar item associated with the <i>before</i> action.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction insertWidget(com.trolltech.qt.gui.QAction before__0, com.trolltech.qt.gui.QWidget widget__1)" doc="/**
+<p>Inserts the given <i>widget</i> in front of the toolbar item associated with the <i>before</i> action.</p>
+<p>Note: You should use QAction::setVisible() to change the visibility of the widget. Using QWidget::setVisible(), QWidget::show() and QWidget::hide() does not work.</p>
+
+*/"/>
+    <method name="public final boolean isAreaAllowed(com.trolltech.qt.core.Qt.ToolBarArea area__0)" doc="/**
+<p>Returns true if this toolbar is dockable in the given <i>area</i>; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isMovable()"/>
+    <method name="public final com.trolltech.qt.core.Qt.Orientation orientation()"/>
+    <method name="public final void setAllowedAreas(com.trolltech.qt.core.Qt.ToolBarAreas areas__0)"/>
+    <method name="public final void setIconSize(com.trolltech.qt.core.QSize iconSize__0)"/>
+    <method name="public final void setMovable(boolean movable__0)"/>
+    <method name="public final void setOrientation(com.trolltech.qt.core.Qt.Orientation orientation__0)"/>
+    <method name="public final void setToolButtonStyle(com.trolltech.qt.core.Qt.ToolButtonStyle toolButtonStyle__0)"/>
+    <method name="public final com.trolltech.qt.gui.QAction toggleViewAction()" doc="/**
+<p>Returns a checkable action that can be used to show or hide this toolbar.</p>
+<p>The action's text is set to the toolbar's window title.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ToolButtonStyle toolButtonStyle()"/>
+    <method name="public final com.trolltech.qt.gui.QWidget widgetForAction(com.trolltech.qt.gui.QAction action__0)" doc="/**
+<p>Returns the widget associated with the specified <i>action</i>.</p>
+
+*/"/>
+    <method name="protected void actionEvent(com.trolltech.qt.gui.QActionEvent event__0)"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="protected void childEvent(com.trolltech.qt.core.QChildEvent event__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent event__0)"/>
+    <method name="protected void resizeEvent(com.trolltech.qt.gui.QResizeEvent event__0)"/>
+</class>

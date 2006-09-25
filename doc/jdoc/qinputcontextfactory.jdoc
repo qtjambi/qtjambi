@@ -1,0 +1,32 @@
+<class name="QInputContextFactory" doc="/**
+<p>The QInputContextFactory class creates QInputContext objects.</p>
+<p>The input context factory creates a QInputContext object for a given key with QInputContextFactory::create().</p>
+<p>The input contexts are either built-in or dynamically loaded from an input context plugin (see QInputContextPlugin).</p>
+<p>keys() returns a list of valid keys. The keys are the names used, for example, to identify and specify input methods for the input method switching mechanism. The names have to be consistent with QInputContext::identifierName(), and may only contain ASCII characters.</p>
+<p>A key can be used to retrieve the associated input context's supported languages using languages(). You can retrieve the input context's description using description() and finally you can get a user friendly internationalized name of the QInputContext object specified by the key using displayName().</p>
+
+*/">
+    <method name="public final static com.trolltech.qt.gui.QInputContext create(java.lang.String key__0, com.trolltech.qt.core.QObject parent__1)" doc="/**
+<p>Creates and returns a QInputContext object for the input context specified by <i>key</i> with the given <i>parent</i>. Keys are case sensitive.</p>
+
+*/"/>
+    <method name="public native static java.lang.String description(java.lang.String key__0)" doc="/**
+<p>Returns an internationalized brief description of the QInputContext object specified by <i>key</i>. You can, for example, use this description in a user interface.</p>
+
+*/"/>
+    <method name="public native static java.lang.String displayName(java.lang.String key__0)" doc="/**
+<p>Returns a user friendly internationalized name of the QInputContext object specified by <i>key</i>. You can, for example, use this name in a menu.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;java.lang.String&gt; keys()" doc="/**
+<p>Returns the list of keys this factory can create input contexts for.</p>
+<p>The keys are the names used, for example, to identify and specify input methods for the input method switching mechanism. The names have to be consistent with QInputContext::identifierName(), and may only contain ASCII characters.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;java.lang.String&gt; languages(java.lang.String key__0)" doc="/**
+<p>Returns the languages supported by the QInputContext object specified by <i>key</i>.</p>
+<p>The languages are expressed as language code (e.g. &quot;zh_CN&quot;, &quot;zh_TW&quot;, &quot;zh_HK&quot;, &quot;ja&quot;, &quot;ko&quot;, ...). An input context that supports multiple languages can return all supported languages as a QStringList. The name has to be consistent with QInputContext::language().</p>
+<p>This information may be used to optimize a user interface.</p>
+
+*/"/>
+</class>

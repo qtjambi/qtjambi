@@ -1,0 +1,60 @@
+<class name="QPersistentModelIndex" doc="/**
+<p>The QPersistentModelIndex class is used to locate data in a data model.</p>
+<p>A QPersistentModelIndex is a model index that can be stored by an application, and later used to access information in a model. Unlike the QModelIndex class, it is safe to store a QPersistentModelIndex since the model will ensure that references to items will continue to be valid as long as they can be accessed by the model.</p>
+<p>It is good practice to check that persistent model indexes are valid before using them.</p>
+
+*/">
+    <method name="public QPersistentModelIndex(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Creates a new QPersistentModelIndex that is a copy of the model <i>index</i>.</p>
+
+*/"/>
+    <method name="public QPersistentModelIndex(com.trolltech.qt.core.QPersistentModelIndex other__0)" doc="/**
+<p>Creates a new QPersistentModelIndex that is a copy of the <i>other</i> persistent model index.</p>
+
+*/"/>
+    <method name="public QPersistentModelIndex()"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex child(int row__0, int column__1)" doc="/**
+<p>Returns the child of the model index that is stored in the given <i>row</i> and <i>column</i>.</p>
+
+*/"/>
+    <method name="public final int column()" doc="/**
+<p>Returns the column this persistent model index refers to.</p>
+
+*/"/>
+    <method name="public final java.lang.Object data(int role__0)" doc="/**
+<p>Returns the data for the given <i>role</i> for the item referred to by the index.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ItemFlags flags()" doc="/**
+<p>Returns the flags for the item referred to by the index.</p>
+
+*/"/>
+    <method name="public final long internalId()" doc="/**
+<p>Returns a <tt>qint64</tt> used by the model to associate the index with the internal data structure.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer internalPointer()" doc="/**
+<p>Returns a <tt>void</tt> <tt>*</tt> pointer used by the model to associate the index with the internal data structure.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if this persistent model index is valid; otherwise returns false. A valid index belongs to a model, and has non-negative row and column numbers.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QAbstractItemModel model()" doc="/**
+<p>Returns the model that the index belongs to.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex parent()" doc="/**
+<p>Returns the parent QModelIndex for this persistent index, or QModelIndex() if it has no parent.</p>
+
+*/"/>
+    <method name="public final int row()" doc="/**
+<p>Returns the row this persistent model index refers to.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex sibling(int row__0, int column__1)" doc="/**
+<p>Returns the sibling at <i>row</i> and <i>column</i> or an invalid QModelIndex if there is no sibling at this position.</p>
+
+*/"/>
+</class>

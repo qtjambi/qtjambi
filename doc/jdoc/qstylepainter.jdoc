@@ -1,0 +1,73 @@
+<class name="QStylePainter" doc="/**
+<p>The QStylePainter class is a convenience class for drawing QStyle elements inside a widget.</p>
+<p>QStylePainter extends QPainter with a set of high-level <tt>draw...()</tt> functions implemented on top of QStyle's API. The advantage of using QStylePainter is that the parameter lists get considerably shorter. Whereas a QStyle object must be able to draw on any widget using any painter (because the application normally has one QStyle object shared by all widget), a QStylePainter is initialized with a widget, eliminating the need to specify the QWidget, the QPainter, and the QStyle for every function call.</p>
+<p>Example using QStyle directly:</p>
+<pre>    void MyWidget::paintEvent(QPaintEvent * <span class=&quote;comment&quote;>/* event */</span>)
+    {
+        QPainter painter(this);
+
+        QStyleOptionFocusRect option;
+        option.initFrom(this);
+        option.backgroundColor = palette().color(QPalette::Background);
+
+        style()-&gt;drawPrimitive(QStyle::PE_FrameFocusRect, &amp;option, &amp;painter, this);
+    }</pre>
+<p>Example using QStylePainter:</p>
+<pre>    void MyWidget::paintEvent(QPaintEvent * <span class=&quote;comment&quote;>/* event */</span>)
+    {
+        QStylePainter painter(this);
+
+        QStyleOptionFocusRect option;
+        option.initFrom(this);
+        option.backgroundColor = palette().color(QPalette::Background);
+
+        painter.drawPrimitive(QStyle::PE_FrameFocusRect, option);
+    }</pre>
+
+*/">
+    <method name="public QStylePainter()" doc="/**
+<p>Constructs a QStylePainter.</p>
+
+*/"/>
+    <method name="public QStylePainter(com.trolltech.qt.gui.QWidget w__0)" doc="/**
+<p>Construct a QStylePainter using widget <i>widget</i> for its paint device.</p>
+
+*/"/>
+    <method name="public QStylePainter(com.trolltech.qt.gui.QPaintDeviceInterface pd__0, com.trolltech.qt.gui.QWidget w__1)" doc="/**
+<p>Construct a QStylePainter using <i>pd</i> for its paint device, and attributes from <i>widget</i>.</p>
+
+*/"/>
+    <method name="public final boolean begin(com.trolltech.qt.gui.QPaintDeviceInterface pd__0, com.trolltech.qt.gui.QWidget w__1)" doc="/**
+<p>Begin painting operations on paint device <i>pd</i> as if it was <i>widget</i>. This is automatically called by the constructor that takes a QPaintDevice and a QWidget.</p>
+
+*/"/>
+    <method name="public final boolean begin(com.trolltech.qt.gui.QWidget w__0)" doc="/**
+<p>Begin painting operations on widget <i>widget</i>. This is automatically called by the constructor that takes a QWidget.</p>
+
+*/"/>
+    <method name="public final void drawComplexControl(com.trolltech.qt.gui.QStyle.ComplexControl cc__0, com.trolltech.qt.gui.QStyleOptionComplex opt__1)" doc="/**
+<p>Use the widget's style to draw a complex control <i>cc</i> specified by the QStyleOptionComplex <i>option</i>.</p>
+
+*/"/>
+    <method name="public final void drawControl(com.trolltech.qt.gui.QStyle.ControlElement ce__0, com.trolltech.qt.gui.QStyleOption opt__1)" doc="/**
+<p>Use the widget's style to draw a control element <i>ce</i> specified by QStyleOption <i>option</i>.</p>
+
+*/"/>
+    <method name="public final void drawItemPixmap(com.trolltech.qt.core.QRect r__0, int flags__1, com.trolltech.qt.gui.QPixmap pixmap__2)" doc="/**
+<p>Draws the <i>pixmap</i> in rectangle <i>rect</i>. The pixmap is aligned according to <i>flags</i>.</p>
+
+*/"/>
+    <method name="public final void drawItemText(com.trolltech.qt.core.QRect r__0, int flags__1, com.trolltech.qt.gui.QPalette pal__2, boolean enabled__3, java.lang.String text__4, com.trolltech.qt.gui.QPalette.ColorRole textRole__5)" doc="/**
+<p>Draws the <i>text</i> in rectangle <i>rect</i> and palette <i>pal</i>. The text is aligned and wrapped according to <i>flags</i>.</p>
+<p>The pen color is specified with <i>textRole</i>. The <i>enabled</i> bool indicates whether or not the item is enabled; when reimplementing this bool should influence how the item is drawn.</p>
+
+*/"/>
+    <method name="public final void drawPrimitive(com.trolltech.qt.gui.QStyle.PrimitiveElement pe__0, com.trolltech.qt.gui.QStyleOption opt__1)" doc="/**
+<p>Use the widget's style to draw a primitive element <i>pe</i> specified by QStyleOption <i>option</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyle style()" doc="/**
+<p>Return the current style used by the QStylePainter.</p>
+
+*/"/>
+</class>

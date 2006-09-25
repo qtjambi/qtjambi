@@ -1,0 +1,98 @@
+<class name="QGradient" doc="/**
+<p>The QGradient class is used in combination with QBrush to specify gradient fills.</p>
+<p>Qt currently supports three types of gradient fills:</p>
+<ul>
+<li><i>Linear</i> gradients interpolate colors between start and end points.</li>
+<li><i>Radial</i> gradients interpolate colors between a focal point and end points on a circle surrounding it.</li>
+<li><i>Conical</i> gradients interpolate colors around a center point.</li>
+</ul>
+<p>A gradient's type can be retrieved using the type() function. Each of the types is represented by a subclass of QGradient:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qgradient-linear.png]</font></td><td><font color=&quote;red&quote;>[Missing image qgradient-radial.png]</font></td><td><font color=&quote;red&quote;>[Missing image qgradient-conical.png]</font></td></tr>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>QLinearGradient</th><th>QRadialGradient</th><th>QConicalGradient</th></tr></thead>
+</table></p>
+<p>The colors in a gradient is defined using stop points of the QGradientStop type, i.e. a position and a color. Use the setColorAt() function to define a single stop point. Alternatively, use the setStops() function to define several stop points in one go. Note that the latter function <i>replaces</i> the current set of stop points.</p>
+<p>It is the gradient's complete set of stop points (accessible through the stops() function) that describes how the gradient area should be filled. If no stop points have been specified, a gradient of black at 0 to white at 1 is used.</p>
+<p>A diagonal linear gradient from black at (100, 100) to white at (200, 200) could be specified like this:</p>
+<pre>        QLinearGradient linearGrad(QPointF(100, 100), QPointF(200, 200));
+        linearGrad.setColorAt(0, Qt::black);
+        linearGrad.setColorAt(1, Qt::white);</pre>
+<p>A gradient can have an arbitrary number of stop points. The following would create a radial gradient starting with red in the center, blue and then green on the edges:</p>
+<pre>        QRadialGradient radialGrad(QPointF(100, 100), 100);
+        radialGrad.setColorAt(0, Qt::red);
+        radialGrad.setColorAt(0.5, Qt::blue);
+        radialGrad.setColorAt(1, Qt::green);</pre>
+<p>It is possible to repeat or reflect the gradient outside its area by specifiying the spread method using the setSpread() function. The default is to pad the outside area with the color at the closest stop point. The currently set spread method can be retrieved using the spread() function. The QGradient::Spread enum defines three different methods:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qradialgradient-pad.png]</font></td><td><font color=&quote;red&quote;>[Missing image qradialgradient-repeat.png]</font></td><td><font color=&quote;red&quote;>[Missing image qradialgradient-reflect.png]</font></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PadSpread</td><td>RepeatSpread</td><td>ReflectSpread</td></tr>
+</table></p>
+<p>Note that the setSpread() function only has effect for linear and radial gradients. The reason is that the conical gradient is closed by definition, i.e. the <i>conical</i> gradient fills the entire circle from 0 - 360 degrees, while the boundary of a radial or a linear gradient can be specified through its radius or final stop points, respectively.</p>
+
+*/">
+    <method name="public QGradient()"/>
+    <method name="public final com.trolltech.qt.gui.QGradient.CoordinateMode coordinateMode()" doc="/**
+<p>Returns the coordinate mode of this gradient. The default mode is LogicalMode.</p>
+
+*/"/>
+    <method name="public final void setColorAt(double pos__0, com.trolltech.qt.gui.QColor color__1)" doc="/**
+<p>Creates a stop point at the given <i>position</i> with the given <i>color</i>. The given <i>position</i> must be in the range 0 to 1.</p>
+
+*/"/>
+    <method name="public final void setCoordinateMode(com.trolltech.qt.gui.QGradient.CoordinateMode mode__0)" doc="/**
+<p>Sets the coordinate mode of this gradient to <i>mode</i>. The default mode is LogicalMode.</p>
+
+*/"/>
+    <method name="public final void setSpread(com.trolltech.qt.gui.QGradient.Spread spread__0)" doc="/**
+<p>Specifies the spread <i>method</i> that should be used for this gradient.</p>
+<p>Note that this function only has effect for linear and radial gradients.</p>
+
+*/"/>
+    <method name="public final void setStops(java.util.List&lt;com.trolltech.qt.QPair&lt;java.lang.Double, com.trolltech.qt.gui.QColor&gt;&gt; stops__0)" doc="/**
+<p>Replaces the current set of stop points with the given <i>stopPoints</i>. The positions of the points must be in the range 0 to 1, and must be sorted with the lowest point first.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGradient.Spread spread()" doc="/**
+<p>Returns the spread method use by this gradient. The default is PadSpread.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.QPair&lt;java.lang.Double, com.trolltech.qt.gui.QColor&gt;&gt; stops()" doc="/**
+<p>Returns the stop points for this gradient.</p>
+<p>If no stop points have been specified, a gradient of black at 0 to white at 1 is used.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGradient.Type type()" doc="/**
+<p>Returns the type of gradient.</p>
+
+*/"/>
+    <enum name="CoordinateMode" doc="/**
+<p>This enum specifies how gradient coordinates map to the paint device on which the gradient is used.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="Spread" doc="/**
+<p>Specifies how the area outside the gradient area should be filled.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The area is filled with the closest stop color. This is the default.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The gradient is repeated outside the gradient area.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The gradient is reflected outside the gradient area.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="Type" doc="/**
+<p>Specifies the type of gradient.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Interpolates colors between start and end points (QLinearGradient).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Interpolate colors between a focal point and end points on a circle surrounding it (QRadialGradient).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Interpolate colors around a center point (QConicalGradient).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>No gradient is used.</td></tr>
+</table></p>
+
+*/"/>
+</class>

@@ -1,0 +1,19 @@
+<class name="QMoveEvent" doc="/**
+<p>The QMoveEvent class contains event parameters for move events.</p>
+<p>Move events are sent to widgets that have been moved to a new position relative to their parent.</p>
+<p>The event handler QWidget::moveEvent() receives move events.</p>
+
+*/">
+    <method name="public QMoveEvent(com.trolltech.qt.core.QPoint pos__0, com.trolltech.qt.core.QPoint oldPos__1)" doc="/**
+<p>Constructs a move event with the new and old widget positions, <i>pos</i> and <i>oldPos</i> respectively.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint oldPos()" doc="/**
+<p>Returns the old position of the widget.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint pos()" doc="/**
+<p>Returns the new position of the widget. This excludes the window frame for top level widgets.</p>
+
+*/"/>
+</class>

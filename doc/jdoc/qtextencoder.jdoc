@@ -1,0 +1,19 @@
+<class name="QTextEncoder" doc="/**
+<p>The QTextEncoder class provides a state-based encoder.</p>
+<p>A text encoder converts text from Unicode into an encoded text format using a specific codec.</p>
+<p>The encoder converts Unicode into another format, remembering any state that is required between calls.</p>
+
+*/">
+    <method name="public QTextEncoder(com.trolltech.qt.core.QTextCodec codec__0)" doc="/**
+<p>Constructs a text encoder for the given <i>codec</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray fromUnicode(com.trolltech.qt.QNativePointer uc__0, int len__1)" doc="/**
+<p>Converts <i>len</i> characters (not bytes) from <i>uc</i>, and returns the result in a QByteArray.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray fromUnicode(java.lang.String str__0)" doc="/**
+<p>Converts the Unicode string <i>str</i> into an encoded QByteArray.</p>
+
+*/"/>
+</class>

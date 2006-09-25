@@ -1,0 +1,25 @@
+<class name="QTimeEdit" doc="/**
+<p>The QTimeEdit class provides a widget for editing times based on the QDateTimeEdit widget.</p>
+<p>Many of the properties and functions provided by QTimeEdit are implemented in QDateTimeEdit. The following properties are most relevant to users of this class:</p>
+<ul>
+<li>time holds the date displayed by the widget.</li>
+<li>minimumTime defines the minimum (earliest) time that can be set by the user.</li>
+<li>maximumTime defines the maximum (latest) time that can be set by the user.</li>
+<li>displayFormat contains a string that is used to format the time displayed in the widget.</li>
+</ul>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image windowsxp-timeedit.png]</font></td><td>A time editing widget shown in the Windows XP widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image macintosh-timeedit.png]</font></td><td>A time editing widget shown in the Macintosh widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image plastique-timeedit.png]</font></td><td>A time editing widget shown in the Plastique widget style.</td></tr>
+</table></p>
+
+*/">
+    <method name="public QTimeEdit(com.trolltech.qt.core.QTime time__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs an empty time editor with a <i>parent</i>. The time is set to <i>time</i>.</p>
+
+*/"/>
+    <method name="public QTimeEdit(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an empty time editor with a <i>parent</i>.</p>
+
+*/"/>
+</class>

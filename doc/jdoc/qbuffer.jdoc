@@ -1,0 +1,106 @@
+<class name="QBuffer" doc="/**
+<p>The QBuffer class provides a QIODevice interface for a QByteArray.</p>
+<p>QBuffer allows you to access a QByteArray using the QIODevice interface. The QByteArray is treated just as a standard random-accessed file. Example:</p>
+<pre>        QBuffer buffer;
+        char ch;
+
+        buffer.open(QBuffer::ReadWrite);
+        buffer.write(&quot;Qt rocks!&quot;);
+        buffer.seek(0);
+        buffer.getChar(&amp;ch);  <span class=&quote;comment&quote;>// ch == 'Q'</span>
+        buffer.getChar(&amp;ch);  <span class=&quote;comment&quote;>// ch == 't'</span>
+        buffer.getChar(&amp;ch);  <span class=&quote;comment&quote;>// ch == ' '</span>
+        buffer.getChar(&amp;ch);  <span class=&quote;comment&quote;>// ch == 'r'</span></pre>
+<p>By default, an internal QByteArray buffer is created for you when you create a QBuffer. You can access this buffer directly by calling buffer(). You can also use QBuffer with an existing QByteArray by calling setBuffer(), or by passing your array to QBuffer's constructor.</p>
+<p>Call open() to open the buffer. Then call write() or putChar() to write to the buffer, and read(), readLine(), readAll(), or getChar() to read from it. size() returns the current size of the buffer, and you can seek to arbitrary positions in the buffer by calling seek(). When you are done with accessing the buffer, call close().</p>
+<p>The following code snippet shows how to write data to a QByteArray using QDataStream and QBuffer:</p>
+<pre>        QByteArray byteArray;
+        QBuffer buffer(&amp;byteArray);
+        buffer.open(QIODevice::WriteOnly);
+
+        QDataStream out(&amp;buffer);
+        out &lt;&lt; QApplication::palette();</pre>
+<p>Effectively, we convert the application's QPalette into a byte array. Here's how to read the data from the QByteArray:</p>
+<pre>        QPalette palette;
+        QBuffer buffer(&amp;byteArray);
+        buffer.open(QIODevice::ReadOnly);
+
+        QDataStream in(&amp;buffer);
+        in &gt;&gt; palette;</pre>
+<p>QTextStream and QDataStream also provide convenience constructors that take a QByteArray and that create a QBuffer behind the scenes.</p>
+<p>QBuffer emits readyRead() when new data has arrived in the buffer. By connecting to this signal, you can use QBuffer to store temporary data before processing it. For example, you can pass the buffer to QFtp when downloading a file from an FTP server. Whenever a new payload of data has been downloaded, readyRead() is emitted, and you can process the data that just arrived. QBuffer also emits bytesWritten() every time new data has been written to the buffer.</p>
+
+*/">
+    <method name="public QBuffer(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs an empty buffer with the given <i>parent</i>. You can call setData() to fill the buffer with data, or you can open it in write mode and use write().</p>
+
+*/"/>
+    <method name="public QBuffer(com.trolltech.qt.QNativePointer buf__0, com.trolltech.qt.core.QObject parent__1)" doc="/**
+<p>Constructs a QBuffer that uses the QByteArray pointed to by <i>byteArray</i> as its internal buffer, and with the given <i>parent</i>. The caller is responsible for ensuring that <i>byteArray</i> remains valid until the QBuffer is destroyed, or until setBuffer() is called to change the buffer. QBuffer doesn't take ownership of the QByteArray.</p>
+<p>If you open the buffer in write-only mode or read-write mode and write something into the QBuffer, <i>byteArray</i> will be modified.</p>
+<p>Example:</p>
+<pre>        QByteArray byteArray(&quot;abc&quot;);
+        QBuffer buffer(&amp;byteArray);
+        buffer.open(QIODevice::WriteOnly);
+        buffer.seek(3);
+        buffer.write(&quot;def&quot;, 3);
+        buffer.close();
+        <span class=&quote;comment&quote;>// byteArray == &quot;abcdef&quot;</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray buffer()"/>
+    <method name="public final com.trolltech.qt.core.QByteArray data()" doc="/**
+<p>Returns the data contained in the buffer.</p>
+<p>This is the same as buffer().</p>
+
+*/"/>
+    <method name="public final void setBuffer(com.trolltech.qt.QNativePointer a__0)" doc="/**
+<p>Makes QBuffer uses the QByteArray pointed to by <i>byteArray</i> as its internal buffer. The caller is responsible for ensuring that <i>byteArray</i> remains valid until the QBuffer is destroyed, or until setBuffer() is called to change the buffer. QBuffer doesn't take ownership of the QByteArray.</p>
+<p>Does nothing if isOpen() is true.</p>
+<p>If you open the buffer in write-only mode or read-write mode and write something into the QBuffer, <i>byteArray</i> will be modified.</p>
+<p>Example:</p>
+<pre>        QByteArray byteArray(&quot;abc&quot;);
+        QBuffer buffer;
+        buffer.setBuffer(&amp;byteArray);
+        buffer.open(QIODevice::WriteOnly);
+        buffer.seek(3);
+        buffer.write(&quot;def&quot;, 3);
+        buffer.close();
+        <span class=&quote;comment&quote;>// byteArray == &quot;abcdef&quot;</span></pre>
+<p>If <i>byteArray</i> is 0, the buffer creates its own internal QByteArray to work on. This byte array is initially empty.</p>
+
+*/"/>
+    <method name="public final void setData(com.trolltech.qt.QNativePointer data__0, int len__1)" doc="/**
+<p>Sets the contents of the internal buffer to be the first <i>size</i> bytes of <i>data</i>.</p>
+
+*/"/>
+    <method name="public final void setData(com.trolltech.qt.core.QByteArray data__0)" doc="/**
+<p>Sets the contents of the internal buffer to be <i>data</i>. This is the same as assigning <i>data</i> to buffer().</p>
+<p>Does nothing if isOpen() is true.</p>
+
+*/"/>
+    <method name="public boolean atEnd()"/>
+    <method name="public boolean canReadLine()"/>
+    <method name="public void close()"/>
+    <method name="public boolean open(com.trolltech.qt.core.QIODevice.OpenMode openMode__0)" doc="/**
+<p>Opens the device and sets its OpenMode to <i>mode</i>. Returns true if successful; otherwise returns false.</p>
+
+*/"/>
+    <method name="public long pos()"/>
+    <method name="protected long readData(com.trolltech.qt.QNativePointer data__0, long maxlen__1)" doc="/**
+<p>Reads up to <i>maxSize</i> bytes from the device into <i>data</i>, and returns the number of bytes read or -1 if an error occurred.</p>
+<p>This function is called by QIODevice. Reimplement this function when creating a subclass of QIODevice.</p>
+
+*/"/>
+    <method name="public boolean seek(long off__0)" doc="/**
+<p>For random-access devices, this function sets the current position to <i>pos</i>, returning true on success, or false if an error occurred. For sequential devices, the default behavior is to do nothing and return false.</p>
+<p>When subclassing QIODevice, you must call QIODevice::seek() at the start of your function to ensure integrity with QIODevice's built-in buffer. The base implementation always returns true.</p>
+
+*/"/>
+    <method name="public long size()"/>
+    <method name="protected long writeData(com.trolltech.qt.QNativePointer data__0, long len__1)" doc="/**
+<p>Writes up to <i>maxSize</i> bytes from <i>data</i> to the device. Returns the number of bytes written, or -1 if an error occurred.</p>
+<p>This function is called by QIODevice. Reimplement this function when creating a subclass of QIODevice.</p>
+
+*/"/>
+</class>

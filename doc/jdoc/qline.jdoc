@@ -1,0 +1,67 @@
+<class name="QLine" doc="/**
+<p>The QLine class provides a two-dimensional vector using integer precision.</p>
+<p>A QLine describes a finite length line (or a line segment) on a two-dimensional surface. The start and end points of the line are specified using integer point accuracy for coordinates. Use the QLineF constructor to retrieve a floating point copy.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image qline-point.png]</font></td><td><font color=&quote;red&quote;>[Missing image qline-coordinates.png]</font></td></tr>
+</table></p>
+<p>The positions of the line's start and end points can be retrieved using the p1(), x1(), y1(), p2(), x2(), and y2() functions. The dx() and dy() functions return the horizontal and vertical components of the line. Use isNull() to determine whether the QLine represents a valid line or a null line.</p>
+<p>Finally, the line can be translated a given offset using the translate() function.</p>
+
+*/">
+    <method name="public QLine()" doc="/**
+<p>Constructs a null line.</p>
+
+*/"/>
+    <method name="public QLine(com.trolltech.qt.core.QPoint pt1__0, com.trolltech.qt.core.QPoint pt2__1)" doc="/**
+<p>Constructs a line object that represents the line between <i>p1</i> and <i>p2</i>.</p>
+
+*/"/>
+    <method name="public QLine(int x1__0, int y1__1, int x2__2, int y2__3)" doc="/**
+<p>Constructs a line object that represents the line between (<i>x1</i>, <i>y1</i>) and (<i>x2</i>, <i>y2</i>).</p>
+
+*/"/>
+    <method name="public final int dx()" doc="/**
+<p>Returns the horizontal component of the line's vector.</p>
+
+*/"/>
+    <method name="public final int dy()" doc="/**
+<p>Returns the vertical component of the line's vector.</p>
+
+*/"/>
+    <method name="public final boolean isNull()" doc="/**
+<p>Returns true if the line is not set up with valid start and end point; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint p1()" doc="/**
+<p>Returns the line's start point.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint p2()" doc="/**
+<p>Returns the line's end point.</p>
+
+*/"/>
+    <method name="public final void translate(int dx__0, int dy__1)" doc="/**
+<p>Translates this line the distance specified by <i>dx</i> and <i>dy</i>.</p>
+
+*/"/>
+    <method name="public final void translate(com.trolltech.qt.core.QPoint p__0)" doc="/**
+<p>Translates this line by the given <i>offset</i>.</p>
+
+*/"/>
+    <method name="public final int x1()" doc="/**
+<p>Returns the x-coordinate of the line's start point.</p>
+
+*/"/>
+    <method name="public final int x2()" doc="/**
+<p>Returns the x-coordinate of the line's end point.</p>
+
+*/"/>
+    <method name="public final int y1()" doc="/**
+<p>Returns the y-coordinate of the line's start point.</p>
+
+*/"/>
+    <method name="public final int y2()" doc="/**
+<p>Returns the y-coordinate of the line's end point.</p>
+
+*/"/>
+</class>

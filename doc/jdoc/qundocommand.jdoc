@@ -1,0 +1,82 @@
+<class name="QUndoCommand" doc="/**
+<p>The QUndoCommand class is the base class of all commands stored on a QUndoStack.</p>
+<p>For an overview of Qt's Undo Framework, see the overview document.</p>
+<p>A QUndoCommand represents a single editing action on a document; for example, inserting or deleting a block of text in a text editor. QUndoCommand can apply a change to the document with redo() and undo the change with undo(). The implementations for these functions must be provided in a derived class.</p>
+<pre>    class AppendText : public QUndoCommand
+    {
+    public:
+        AppendText(QString *doc, const QString &amp;text)
+            : m_document(doc), m_text(text) { setText(&quot;append text&quot;); }
+        virtual void undo()
+            { m_document-&gt;chop(m_text.length()); }
+        virtual void redo()
+            { m_document-&gt;append(m_text); }
+    private:
+        QString *m_document;
+        QString m_text;
+    };</pre>
+<p>A QUndoCommand has an associated text(). This is a short string describing what the command does. It is used to update the text properties of the stack's undo and redo actions; see QUndoStack::createUndoAction() and QUndoStack::createRedoAction().</p>
+<p>To support command compression, QUndoCommand has an id() and the virtual function mergeWith(). These functions are used by QUndoStack::push().</p>
+<p>To support command macros, a QUndoCommand object can have any number of child commands. Undoing or redoing the parent command will cause the child commands to be undone or redone. A command can be assigned to a parent explicitly in the constructor.</p>
+<pre>    QUndoCommand *insertRed = new QUndoCommand(); <span class=&quote;comment&quote;>// an empty command</span>
+    insertRed-&gt;setText(&quot;insert red text&quot;);
+
+    new InsertText(document, idx, text, insertRed); <span class=&quote;comment&quote;>// becomes child of insertRed</span>
+    new SetColor(document, idx, text.length(), Qt::red, insertRed);
+
+    stack.push(insertRed);</pre>
+<p>Another way to create macros is to use the convenience functions QUndoStack::beginMacro() and QUndoStack::endMacro().</p>
+
+*/">
+    <method name="public QUndoCommand(com.trolltech.qt.gui.QUndoCommand parent__0)" doc="/**
+<p>Constructs a QUndoCommand object with parent <i>parent</i>.</p>
+<p>If <i>parent</i> is not 0, this command is appended to parent's child list. The parent command then owns this command and will delete it in its destructor.</p>
+
+*/"/>
+    <method name="public QUndoCommand(java.lang.String text__0, com.trolltech.qt.gui.QUndoCommand parent__1)" doc="/**
+<p>Constructs a QUndoCommand object with the given <i>parent</i> and <i>text</i>.</p>
+<p>If <i>parent</i> is not 0, this command is appended to parent's child list. The parent command then owns this command and will delete it in its destructor.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String text__0)" doc="/**
+<p>Sets the command's text to be the <i>text</i> specified.</p>
+<p>The specified text should be a short user-readable string describing what this command does.</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>Returns a short text string describing what this command does; for example, &quot;insert text&quot;.</p>
+<p>The text is used when the text properties of the stack's undo and redo actions are updated.</p>
+
+*/"/>
+    <method name="public int id()" doc="/**
+<p>Returns the ID of this command.</p>
+<p>A command ID is used in command compression. It must be an integer unique to this command's class, or -1 if the command doesn't support compression.</p>
+<p>If the command supports compression this function must be overriden in the derived class to return the correct ID. The base implementation returns -1.</p>
+<p>QUndoStack will only try to merge two commands if they have the same ID, and the ID is not -1.</p>
+
+*/"/>
+    <method name="public boolean mergeWith(com.trolltech.qt.gui.QUndoCommand other__0)" doc="/**
+<p>Attempts to merge this command with the specified <i>command</i>. Returns true on success; otherwise returns false.</p>
+<p>If this function returns true, calling this command's redo() must have the same effect as redoing both this command and the specified <i>command</i>. Similarly, calling this command's undo() must have the same effect as undoing both the specified <i>command</i> and this command.</p>
+<p>QUndoStack will only try to merge two commands if they have the same id, and the id is not -1.</p>
+<p>The default implementation returns false.</p>
+<pre>    bool AppendText::mergeWith(const QUndoCommand *other)
+    {
+        if (other-&gt;id() != id()) <span class=&quote;comment&quote;>// make sure other is also an AppendText command</span>
+            return false;
+        m_text += static_cast&lt;const AppendText*&gt;(other)-&gt;m_text;
+        return true;
+    }</pre>
+
+*/"/>
+    <method name="public void redo()" doc="/**
+<p>Applies a change to the document. This function must be implemented in the derived class.</p>
+<p>The default implementation calls redo() on all child commands.</p>
+
+*/"/>
+    <method name="public void undo()" doc="/**
+<p>Reverts a change to the document. After undo() is called, the state of the document should be the same as before redo() was called. This function must be implemented in the derived class.</p>
+<p>The default implementation calls undo() on all child commands in reverse order.</p>
+
+*/"/>
+</class>

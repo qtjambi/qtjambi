@@ -1,0 +1,45 @@
+<class name="QTreeWidgetItemIterator" doc="/**
+<p>The QTreeWidgetItemIterator class provides a way to iterate over the items in a QTreeWidget instance.</p>
+<p>The iterator will walk the items in a pre-order traversal order, thus visiting the parent node <i>before</i> it continues to the child nodes.</p>
+<p>For example, the following code examples each item in a tree, checking the text in the first column against a user-specified search string:</p>
+<pre>        QTreeWidgetItemIterator it(treeWidget);
+        while (*it) {
+            if ((*it)-&gt;text(0) == itemText)
+                treeWidget-&gt;setItemSelected(*it, true);
+            ++it;
+        }</pre>
+<p>It is also possible to filter out certain types of node by passing certain flags to the constructor of QTreeWidgetItemIterator.</p>
+
+*/">
+    <method name="public QTreeWidgetItemIterator(com.trolltech.qt.gui.QTreeWidgetItemIterator it__0)" doc="/**
+<p>Constructs an iterator for the same QTreeWidget as <i>it</i>. The current iterator item is set to point on the current item of <i>it</i>.</p>
+
+*/"/>
+    <enum name="IteratorFlag" doc="/**
+<p>These flags can be passed to a QTreeWidgetItemIterator constructor (OR-ed together if more than one is used), so that the iterator will only iterate over items that match the given flags.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

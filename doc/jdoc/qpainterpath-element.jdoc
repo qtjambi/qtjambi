@@ -1,0 +1,43 @@
+<class name="QPainterPath_Element" doc="/**
+<p>The QPainterPath::Element class specifies the position and type of a subpath.</p>
+<p>Once a QPainterPath object is constructed, subpaths like lines and curves can be added to the path (creating QPainterPath::LineToElement and QPainterPath::CurveToElement components).</p>
+<p>The lines and curves stretch from the currentPosition() to the position passed as argument. The currentPosition() of the QPainterPath object is always the end position of the last subpath that was added (or the initial start point). The moveTo() function can be used to move the currentPosition() without adding a line or curve, creating a QPainterPath::MoveToElement component.</p>
+
+*/">
+    <method name="public final boolean isCurveTo()" doc="/**
+<p>Returns true if the element is a curve, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isLineTo()" doc="/**
+<p>Returns true if the element is a line, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isMoveTo()" doc="/**
+<p>Returns true if the element is moving the current position, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final double x()" doc="/**
+<p>the x coordinate of the element's position.</p>
+
+*/"/>
+    <method name="public final void setX(double x)" doc="/**
+<p>the x coordinate of the element's position.</p>
+
+*/"/>
+    <method name="public final double y()" doc="/**
+<p>the y coordinate of the element's position.</p>
+
+*/"/>
+    <method name="public final void setY(double y)" doc="/**
+<p>the y coordinate of the element's position.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPainterPath.ElementType type()" doc="/**
+<p>the type of element</p>
+
+*/"/>
+    <method name="public final void setType(com.trolltech.qt.gui.QPainterPath.ElementType type)" doc="/**
+<p>the type of element</p>
+
+*/"/>
+</class>

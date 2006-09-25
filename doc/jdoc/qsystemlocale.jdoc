@@ -1,0 +1,45 @@
+<class name="QSystemLocale" doc="/**
+<p>The QSystemLocale class can be used to finetune the system locale of the user.</p>
+<p><b>Warning:</b> This class is only useful in very rare cases. Usually QLocale offers all the functionality required for application development.</p>
+<p>QSystemLocale allows to override the values provided by the system locale (QLocale::system()).</p>
+
+*/">
+    <method name="public QSystemLocale()" doc="/**
+<p>Constructs a QSystemLocale object. The constructor will automatically install this object as the system locale and remove any earlier installed system locales.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QLocale fallbackLocale()" doc="/**
+<p>Returns a fallback locale, that will get used for everything that is not explicitly overridden by the system locale.</p>
+
+*/"/>
+    <method name="public java.lang.Object query(com.trolltech.qt.core.QSystemLocale.QueryType type__0, java.lang.Object in__1)" doc="/**
+<p>Performs a query of the given <i>type</i> in the system locale for customized values or conversion. If the method returns a null QVariant, the conversion of the fallbackLocale() will be used.</p>
+<p><i>in</i> is unused for some of the query types.</p>
+
+*/"/>
+    <enum name="QueryType" doc="/**
+<p>Specifies the type of information queried by query(). For each value the type of information to return from the query() method is listed.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a uint specifying the language.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a uint specifying the country.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the decimal point.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the group separator.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the zero digit.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the minus sign.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the long date format</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the short date format</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the long time format</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the short time format</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the name of a weekday. the in variant contains an integer between 1 and 7 (Monday - Friday)</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the short name of a weekday. the in variant contains an integer between 1 and 7 (Monday - Friday)</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the name of a month. the in variant contains an integer between 1 and 12</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a QString specifying the short name of a month. the in variant contains an integer between 1 and 12</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>converts the QDate stored in the in variant to a QString using the long date format</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>converts the QDate stored in the in variant to a QString using the short date format</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>converts the QTime stored in the in variant to a QString using the long time format</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>converts the QTime stored in the in variant to a QString using the short time format</td></tr>
+</table></p>
+
+*/"/>
+</class>

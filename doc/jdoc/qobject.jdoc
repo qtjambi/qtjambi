@@ -1,0 +1,276 @@
+<class name="QObject" doc="/**
+<p>The QObject class is the base class of all Qt objects.</p>
+<p>QObject is the heart of the Qt object model. The central feature in this model is a very powerful mechanism for seamless object communication called signals and slots. You can connect a signal to a slot with connect() and destroy the connection with disconnect(). To avoid never ending notification loops you can temporarily block signals with blockSignals(). The protected functions connectNotify() and disconnectNotify() make it possible to track connections.</p>
+<p>QObjects organize themselves in object trees. When you create a QObject with another object as parent, the object will automatically add itself to the parent's children() list. The parent takes ownership of the object i.e. it will automatically delete its children in its destructor. You can look for an object by name and optionally type using findChild() or findChildren().</p>
+<p>Every object has an objectName() and its class name can be found via the corresponding metaObject() (see QMetaObject::className()). You can determine whether the object's class inherits another class in the QObject inheritance hierarchy by using the inherits() function.</p>
+<p>When an object is deleted, it emits a destroyed() signal. You can catch this signal to avoid dangling references to QObjects. The QPointer class provides an elegant way to use this feature.</p>
+<p>QObjects can receive events through event() and filter the events of other objects. See installEventFilter() and eventFilter() for details. A convenience handler, childEvent(), can be reimplemented to catch child events.</p>
+<p>Events are delivered in the thread in which the object was created; see Thread Support in Qt and thread() for details. Note that event processing is not done at all for QObjects with no thread affinity (thread() returns zero). Use the moveToThread() function to change the thread affinity for an object and its children (the object cannot be moved if it has a parent).</p>
+<p>Last but not least, QObject provides the basic timer support in Qt; see QTimer for high-level support for timers.</p>
+<p>Notice that the Q_OBJECT macro is mandatory for any object that implements signals, slots or properties. You also need to run the Meta Object Compiler on the source file. We strongly recommend the use of this macro in all subclasses of QObject regardless of whether or not they actually use signals, slots and properties, since failure to do so may lead certain functions to exhibit strange behavior.</p>
+<p>All Qt widgets inherit QObject. The convenience function isWidgetType() returns whether an object is actually a widget. It is much faster than qobject_cast&lt;QWidget *&gt;(<i>obj</i>) or <i>obj</i>-&gt;inherits(&quot;QWidget&quot;).</p>
+<p>Some QObject functions, e.g. children(), return a QObjectList. QObjectList is a typedef for QList&lt;QObject *&gt;.</p>
+<a name=&quote;auto-connection&quote;></a>
+<h3>Auto-Connection</h3>
+<p>Qt's meta-object system provides a mechanism to automatically connect signals and slots between QObject subclasses and their children. As long as objects are defined with suitable object names, and slots follow a simple naming convention, this connection can be performed at run-time by the QMetaObject::connectSlotsByName() function.</p>
+<p>uic generates code that invokes this function to enable auto-connection to be performed between widgets on forms created with <i>Qt Designer</i>. More information about using auto-connection with <i>Qt Designer</i> is given in the Using a Component in Your Application section of the <i>Qt Designer</i> manual.</p>
+
+*/">
+    <method name="public QObject(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs an object with parent object <i>parent</i>.</p>
+<p>The parent of an object may be viewed as the object's owner. For instance, a dialog box is the parent of the <b>OK</b> and <b>Cancel</b> buttons it contains.</p>
+<p>The destructor of a parent object destroys all child objects.</p>
+<p>Setting <i>parent</i> to 0 constructs an object with no parent. If the object is a widget, it will become a top-level window.</p>
+
+*/"/>
+    <method name="public final boolean blockSignals(boolean b__0)" doc="/**
+<p>If <i>block</i> is true, signals emitted by this object is blocked (i.e., emitted signals disappear into hyperspace). If <i>block</i> is false, no such blocking will occur.</p>
+<p>The return value is the previous value of signalsBlocked().</p>
+<p>Note that the destroyed() signal will be emitted even if the signals for this object have been blocked.</p>
+
+*/"/>
+    <method name="public final void dumpObjectInfo()" doc="/**
+<p>Dumps information about signal connections, etc. for this object to the debug output.</p>
+<p>This function is useful for debugging, but does nothing if the library has been compiled in release mode (i.e. without debugging information).</p>
+
+*/"/>
+    <method name="public final void dumpObjectTree()" doc="/**
+<p>Dumps a tree of children to the debug output.</p>
+<p>This function is useful for debugging, but does nothing if the library has been compiled in release mode (i.e. without debugging information).</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.core.QByteArray&gt; dynamicPropertyNames()" doc="/**
+<p>Returns the names of all properties that were dynamically added to the object using setProperty().</p>
+
+*/"/>
+    <method name="public final boolean inherits(com.trolltech.qt.QNativePointer classname__0)" doc="/**
+<p>Returns true if this object is an instance of a class that inherits <i>className</i> or a QObject subclass that inherits <i>className</i>; otherwise returns false.</p>
+<p>A class is considered to inherit itself.</p>
+<p>Example:</p>
+<pre>    QTimer *timer = new QTimer;         <span class=&quote;comment&quote;>// QTimer inherits QObject</span>
+    timer-&gt;inherits(&quot;QTimer&quot;);          <span class=&quote;comment&quote;>// returns true</span>
+    timer-&gt;inherits(&quot;QObject&quot;);         <span class=&quote;comment&quote;>// returns true</span>
+    timer-&gt;inherits(&quot;QAbstractButton&quot;); <span class=&quote;comment&quote;>// returns false</span>
+
+<span class=&quote;comment&quote;>    // QLayout inherits QObject and QLayoutItem</span>
+    QLayout *layout = new QLayout;
+    layout-&gt;inherits(&quot;QObject&quot;);        <span class=&quote;comment&quote;>// returns true</span>
+    layout-&gt;inherits(&quot;QLayoutItem&quot;);    <span class=&quote;comment&quote;>// returns false</span></pre>
+<p>(QLayoutItem is not a QObject.)</p>
+<p>Consider using qobject_cast&lt;Type *&gt;(object) instead. The method is both faster and safer.</p>
+
+*/"/>
+    <method name="public final void installEventFilter(com.trolltech.qt.core.QObject arg__0)" doc="/**
+<p>Installs an event filter <i>filterObj</i> on this object. For example:</p>
+<pre>    monitoredObj-&gt;installEventFilter(filterObj);</pre>
+<p>An event filter is an object that receives all events that are sent to this object. The filter can either stop the event or forward it to this object. The event filter <i>filterObj</i> receives events via its eventFilter() function. The eventFilter() function must return true if the event should be filtered, (i.e. stopped); otherwise it must return false.</p>
+<p>If multiple event filters are installed on a single object, the filter that was installed last is activated first.</p>
+<p>Here's a <tt>KeyPressEater</tt> class that eats the key presses of its monitored objects:</p>
+<pre>        class KeyPressEater : public QObject
+        {
+            Q_OBJECT
+            ...
+
+        protected:
+            bool eventFilter(QObject *obj, QEvent *event);
+        };
+
+        bool KeyPressEater::eventFilter(QObject *obj, QEvent *event)
+        {
+            if (event-&gt;type() == QEvent::KeyPress) {
+                QKeyEvent *keyEvent = static_cast&lt;QKeyEvent *&gt;(event);
+                qDebug(&quot;Ate key press %d&quot;, keyEvent-&gt;key());
+                return true;
+            } else {
+                <span class=&quote;comment&quote;>// standard event processing</span>
+                return QObject::eventFilter(obj, event);
+            }
+        }</pre>
+<p>And here's how to install it on two widgets:</p>
+<pre>        KeyPressEater *keyPressEater = new KeyPressEater(this);
+        QPushButton *pushButton = new QPushButton(this);
+        QListView *listView = new QListView(this);
+
+        pushButton-&gt;installEventFilter(keyPressEater);
+        listView-&gt;installEventFilter(keyPressEater);</pre>
+<p>The QShortcut class, for example, uses this technique to intercept shortcut key presses.</p>
+<p><b>Warning:</b> If you delete the receiver object in your eventFilter() function, be sure to return true. If you return false, Qt sends the event to the deleted object and the program will crash.</p>
+
+*/"/>
+    <method name="public final boolean isWidgetType()" doc="/**
+<p>Returns true if the object is a widget; otherwise returns false.</p>
+<p>Calling this function is equivalent to calling inherits(&quot;QWidget&quot;), except that it is much faster.</p>
+
+*/"/>
+    <method name="public final void moveToThread(java.lang.Thread thread__0)" doc="/**
+<p>Changes the thread affinity for this object and its children. The object cannot be moved if it has a parent. Event processing will continue in the <i>targetThread</i>. To move an object to the main thread, pass QCoreApplication::thread() as the <i>targetThread</i>.</p>
+<p>If <i>targetThread</i> is zero, all event processing for this object and its children stops.</p>
+<p>Note that all active timers for the object will be reset. The timers are first stopped in the current thread and restarted (with the same interval) in the <i>targetThread</i>. As a result, constantly moving an object between threads can postpone timer events indefinitely.</p>
+<p><b>Warning:</b> This function is <i>not</i> thread-safe; the current thread must be same as the current thread affinity. In other words, this function can only &quot;push&quot; an object from the current thread to another thread, it cannot &quot;pull&quot; an object from any arbitrary thread to the current thread.</p>
+
+*/"/>
+    <method name="public final java.lang.String objectName()"/>
+    <method name="public final java.lang.Object property(com.trolltech.qt.QNativePointer name__0)" doc="/**
+<p>Returns the value of the object's <i>name</i> property.</p>
+<p>If no such property exists, the returned variant is invalid.</p>
+<p>Information about all available properties is provided through the metaObject() and dynamicPropertyNames().</p>
+
+*/"/>
+    <method name="public final void removeEventFilter(com.trolltech.qt.core.QObject arg__0)" doc="/**
+<p>Removes an event filter object <i>obj</i> from this object. The request is ignored if such an event filter has not been installed.</p>
+<p>All event filters for this object are automatically removed when this object is destroyed.</p>
+<p>It is always safe to remove an event filter, even during event filter activation (i.e. from the eventFilter() function).</p>
+
+*/"/>
+    <method name="public final void setObjectName(java.lang.String name__0)"/>
+    <method name="public final boolean setProperty(com.trolltech.qt.QNativePointer name__0, java.lang.Object value__1)" doc="/**
+<p>Sets the value of the object's <i>name</i> property to <i>value</i>.</p>
+<p>If the property is defined in the class using Q_PROPERTY then true is returned on success and false otherwise. If the property is not defined using Q_PROPERTY and therefore not listed in the meta object it is added as dynamic property and false is returned.</p>
+<p>Information about all available properties is provided through the metaObject() and dynamicPropertyNames().</p>
+<p>Dynamic properties can be queried again using property() and can be removed by setting the property value to an invalid QVariant. Changing the value of a dynamic property causes a QDynamicPropertyChangeEvent to be sent to the object.</p>
+
+*/"/>
+    <method name="public final boolean signalsBlocked()" doc="/**
+<p>Returns true if signals are blocked; otherwise returns false.</p>
+<p>Signals are not blocked by default.</p>
+
+*/"/>
+    <method name="public final java.lang.Thread thread()" doc="/**
+<p>Returns the thread in which the object lives.</p>
+
+*/"/>
+    <method name="protected void childEvent(com.trolltech.qt.core.QChildEvent arg__0)" doc="/**
+<p>This event handler can be reimplemented in a subclass to receive child events. The event is passed in the <i>event</i> parameter.</p>
+<p>QEvent::ChildAdded and QEvent::ChildRemoved events are sent to objects when children are added or removed. In both cases you can only rely on the child being a QObject, or if isWidgetType() returns true, a QWidget. (This is because, in the ChildAdded case, the child is not yet fully constructed, and in the ChildRemoved case it might have been destructed already).</p>
+<p>QEvent::ChildPolished events are sent to widgets when children are polished, or when polished children are added. If you receive a child polished event, the child's construction is usually completed.</p>
+<p>For every child widget, you receive one ChildAdded event, zero or more ChildPolished events, and one ChildRemoved event.</p>
+<p>The ChildPolished event is omitted if a child is removed immediately after it is added. If a child is polished several times during construction and destruction, you may receive several child polished events for the same child, each time with a different virtual table.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;com.trolltech.qt.core.QObject&gt; children()" doc="/**
+<p>Returns a list of child objects. The QObjectList class is defined in the <tt>&lt;QObject&gt;</tt> header file as the following:</p>
+<pre>    typedef QList&lt;QObject*&gt; QObjectList;</pre>
+<p>The first child added is the first object in the list and the last child added is the last object in the list, i.e. new children are appended at the end.</p>
+<p>Note that the list order changes when QWidget children are raised or lowered. A widget that is raised becomes the last object in the list, and a widget that is lowered becomes the first object in the list.</p>
+
+*/"/>
+    <method name="private void connectNotify(com.trolltech.qt.QNativePointer signal__0)" doc="/**
+<p>This virtual function is called when something has been connected to <i>signal</i> in this object.</p>
+<p>If you want to compare <i>signal</i> with a specific signal, use QLatin1String and the <tt>SIGNAL()</tt> macro as follows:</p>
+<pre>    if (QLatin1String(signal) == SIGNAL(valueChanged(int))) {
+        <span class=&quote;comment&quote;>// signal is valueChanged(int)</span>
+    }</pre>
+<p>If the signal contains multiple parameters or parameters that contain spaces, call QMetaObject::normalizedSignature() on the result of the <tt>SIGNAL()</tt> macro.</p>
+<p><b>Warning:</b> This function violates the object-oriented principle of modularity. However, it might be useful when you need to perform expensive initialization only if something is connected to a signal.</p>
+
+*/"/>
+    <method name="protected void customEvent(com.trolltech.qt.core.QEvent arg__0)" doc="/**
+<p>This event handler can be reimplemented in a subclass to receive custom events. Custom events are user-defined events with a type value at least as large as the QEvent::User item of the QEvent::Type enum, and is typically a QEvent subclass. The event is passed in the <i>event</i> parameter.</p>
+
+*/"/>
+    <method name="private void disconnectNotify(com.trolltech.qt.QNativePointer signal__0)" doc="/**
+<p>This virtual function is called when something has been disconnected from <i>signal</i> in this object.</p>
+<p>See connectNotify() for an example of how to compare <i>signal</i> with a specific signal.</p>
+<p><b>Warning:</b> This function violates the object-oriented principle of modularity. However, it might be useful for optimizing access to expensive resources.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)" doc="/**
+<p>This virtual function receives events to an object and should return true if the event <i>e</i> was recognized and processed.</p>
+<p>The event() function can be reimplemented to customize the behavior of an object.</p>
+
+*/"/>
+    <method name="public boolean eventFilter(com.trolltech.qt.core.QObject arg__0, com.trolltech.qt.core.QEvent arg__1)" doc="/**
+<p>Filters events if this object has been installed as an event filter for the <i>watched</i> object.</p>
+<p>In your reimplementation of this function, if you want to filter the <i>event</i> out, i.e. stop it being handled further, return true; otherwise return false.</p>
+<p>Example:</p>
+<pre>    class MainWindow : public QMainWindow
+    {
+    public:
+        MainWindow();
+
+    protected:
+        bool eventFilter(QObject *obj, QEvent *ev);
+
+    private:
+        QTextEdit *textEdit;
+    };
+
+    MainWindow::MainWindow()
+    {
+        textEdit = new QTextEdit;
+        setCentralWidget(textEdit);
+
+        textEdit-&gt;installEventFilter(this);
+    }
+
+    bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+    {
+        if (obj == textEdit) {
+            if (event-&gt;type() == QEvent::KeyPress) {
+                QKeyEvent *keyEvent = static_cast&lt;QKeyEvent*&gt;(event);
+                qDebug() &lt;&lt; &quot;Ate key press&quot; &lt;&lt; keyEvent-&gt;key();
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            <span class=&quote;comment&quote;>// pass the event on to the parent class</span>
+            return QMainWindow::eventFilter(obj, event);
+        }
+    }</pre>
+<p>Notice in the example above that unhandled events are passed to the base class's eventFilter() function, since the base class might have reimplemented eventFilter() for its own internal purposes.</p>
+<p><b>Warning:</b> If you delete the receiver object in this function, be sure to return true. Otherwise, Qt will forward the event to the deleted object and the program might crash.</p>
+
+*/"/>
+    <method name="public void killTimer(int id__0)" doc="/**
+<p>Kills the timer with timer identifier, <i>id</i>.</p>
+<p>The timer identifier is returned by startTimer() when a timer event is started.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QObject parent()" doc="/**
+<p>Returns a pointer to the parent object.</p>
+
+*/"/>
+    <method name="public void setParent(com.trolltech.qt.core.QObject arg__0)" doc="/**
+<p>Makes the object a child of <i>parent</i>.</p>
+
+*/"/>
+    <method name="public int startTimer(int interval__0)" doc="/**
+<p>Starts a timer and returns a timer identifier, or returns zero if it could not start a timer.</p>
+<p>A timer event will occur every <i>interval</i> milliseconds until killTimer() is called. If <i>interval</i> is 0, then the timer event occurs once every time there are no more window system events to process.</p>
+<p>The virtual timerEvent() function is called with the QTimerEvent event parameter class when a timer event occurs. Reimplement this function to get timer events.</p>
+<p>If multiple timers are running, the QTimerEvent::timerId() can be used to find out which timer was activated.</p>
+<p>Example:</p>
+<pre>    class MyObject : public QObject
+    {
+        Q_OBJECT
+
+    public:
+        MyObject(QObject *parent = 0);
+
+    protected:
+        void timerEvent(QTimerEvent *event);
+    };
+
+    MyObject::MyObject(QObject *parent)
+        : QObject(parent)
+    {
+        startTimer(50);     <span class=&quote;comment&quote;>// 50-millisecond timer</span>
+        startTimer(1000);   <span class=&quote;comment&quote;>// 1-second timer</span>
+        startTimer(60000);  <span class=&quote;comment&quote;>// 1-minute timer</span>
+    }
+
+    void MyObject::timerEvent(QTimerEvent *event)
+    {
+        qDebug() &lt;&lt; &quot;Timer ID:&quot; &lt;&lt; event-&gt;timerId();
+    }</pre>
+<p>Note that QTimer's accuracy depends on the underlying operating system and hardware. Most platforms support an accuracy of 20 milliseconds; some provide more. If Qt is unable to deliver the requested number of timer events, it will silently discard some.</p>
+<p>The QTimer class provides a high-level programming interface with single-shot timers and timer signals instead of events. There is also a QBasicTimer class that is more lightweight than QTimer and less clumsy than using timer IDs directly.</p>
+
+*/"/>
+    <method name="protected void timerEvent(com.trolltech.qt.core.QTimerEvent arg__0)" doc="/**
+<p>This event handler can be reimplemented in a subclass to receive timer events for the object.</p>
+<p>QTimer provides a higher-level interface to the timer functionality, and also more general information about timers. The timer event is passed in the <i>event</i> parameter.</p>
+
+*/"/>
+</class>

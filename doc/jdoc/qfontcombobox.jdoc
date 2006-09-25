@@ -1,0 +1,33 @@
+<class name="QFontComboBox" doc="/**
+<p>The QFontComboBox widget is a combobox that lets the user select a font family.</p>
+<p>The combobox is populated with an alphabetized list of font family names, such as Arial, Helvetica, and Times New Roman. Family names are displayed using the actual font when possible. For fonts such as Symbol, where the name is not representable in the font itself, a sample of the font is displayed next to the family name.</p>
+<p>QFontComboBox is often used in toolbars, in conjunction with a QComboBox for controlling the font size and two QToolButtons for bold and italic.</p>
+<p>When the user selects a new font, the currentFontChanged() signal is emitted in addition to currentIndexChanged().</p>
+<p>Call setWritingSystem() to tell QFontComboBox to show only fonts that support a given writing system, and setFontFilters() to filter out certain types of fonts as e.g. non scalable fonts or monospaced fonts.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image windowsxp-fontcombobox.png]</font></p>
+*/">
+    <method name="public QFontComboBox(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a font combobox with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont currentFont()"/>
+    <method name="public final com.trolltech.qt.gui.QFontComboBox.FontFilters fontFilters()"/>
+    <method name="public final void setCurrentFont(com.trolltech.qt.gui.QFont f__0)"/>
+    <method name="public final void setFontFilters(com.trolltech.qt.gui.QFontComboBox.FontFilters filters__0)"/>
+    <method name="public final void setWritingSystem(com.trolltech.qt.gui.QFontDatabase.WritingSystem arg__0)"/>
+    <method name="public final com.trolltech.qt.gui.QFontDatabase.WritingSystem writingSystem()"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+    <enum name="FontFilter" doc="/**
+<p>This enum can be used to only show certain types of fonts in the font combo box.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Show all fonts</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Only show scalable fonts</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Only show non scalable fonts</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Only show monospaced fonts</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Only show proportional fonts</td></tr>
+</table></p>
+
+*/"/>
+</class>

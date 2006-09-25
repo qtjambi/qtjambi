@@ -1,0 +1,28 @@
+<class name="QIconEngine" doc="/**
+<p>The QIconEngine class provides an abstract base class for QIcon renderers.</p>
+<p>An icon engine provides the rendering functions for a QIcon. Each icon has a corresponding icon engine that is responsible for drawing the icon with a requested size, mode and state.</p>
+<p>The icon is rendered by the paint() function, and the icon can additionally be obtained as a pixmap with the pixmap() function (the default implementation simply uses paint() to achieve this). The addPixmap() function can be used to add new pixmaps to the icon engine, and is used by QIcon to add specialized custom pixmaps.</p>
+<p>The paint(), pixmap(), and addPixmap() functions are all virtual, and can therefore be reimplemented in subclasses of QIconEngine.</p>
+
+*/">
+    <method name="public com.trolltech.qt.core.QSize actualSize(com.trolltech.qt.core.QSize size__0, com.trolltech.qt.gui.QIcon.Mode mode__1, com.trolltech.qt.gui.QIcon.State state__2)" doc="/**
+<p>Returns the actual size of the icon the engine provides for the requested <i>size</i>, <i>mode</i> and <i>state</i>. The default implementation returns the given <i>size</i>.</p>
+
+*/"/>
+    <method name="public void addFile(java.lang.String fileName__0, com.trolltech.qt.core.QSize size__1, com.trolltech.qt.gui.QIcon.Mode mode__2, com.trolltech.qt.gui.QIcon.State state__3)" doc="/**
+<p>Called by QIcon::addFile(). Adds a specialized pixmap from the file with the given <i>fileName</i>, <i>size</i>, <i>mode</i> and <i>state</i>. The default pixmap-based engine stores any supplied file names, and it loads the pixmaps on demand instead of using scaled pixmaps if the size of a pixmap matches the size of icon requested. Custom icon engines that implement scalable vector formats are free to ignores any extra files.</p>
+
+*/"/>
+    <method name="public void addPixmap(com.trolltech.qt.gui.QPixmap pixmap__0, com.trolltech.qt.gui.QIcon.Mode mode__1, com.trolltech.qt.gui.QIcon.State state__2)" doc="/**
+<p>Called by QIcon::addPixmap(). Adds a specialized <i>pixmap</i> for the given <i>mode</i> and <i>state</i>. The default pixmap-based engine stores any supplied pixmaps, and it uses them instead of scaled pixmaps if the size of a pixmap matches the size of icon requested. Custom icon engines that implement scalable vector formats are free to ignores any extra pixmaps.</p>
+
+*/"/>
+    <method name="public abstract void paint(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.core.QRect rect__1, com.trolltech.qt.gui.QIcon.Mode mode__2, com.trolltech.qt.gui.QIcon.State state__3)" doc="/**
+<p>Uses the given <i>painter</i> to paint the icon with the required <i>mode</i> and <i>state</i> into the rectangle <i>rect</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPixmap pixmap(com.trolltech.qt.core.QSize size__0, com.trolltech.qt.gui.QIcon.Mode mode__1, com.trolltech.qt.gui.QIcon.State state__2)" doc="/**
+<p>Returns the icon as a pixmap with the required <i>size</i>, <i>mode</i>, and <i>state</i>. The default implementation creates a new pixmap and calls paint() to fill it.</p>
+
+*/"/>
+</class>

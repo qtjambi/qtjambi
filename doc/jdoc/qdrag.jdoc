@@ -1,0 +1,64 @@
+<class name="QDrag" doc="/**
+<p>The QDrag class provides support for MIME-based drag and drop data transfer.</p>
+<p>Drag and drop is an intuitive way for users to copy or move data around in an application, and is used in many desktop environments as a mechanism for copying data between applications. Drag and drop support in Qt is centered around the QDrag class that handles most of the details of a drag and drop operation.</p>
+<p>The data to be transferred by the drag and drop operation is contained in a QMimeData object. This is specified with the setMimeData() function in the following way:</p>
+<pre>            QDrag *drag = new QDrag(this);
+            QMimeData *mimeData = new QMimeData;
+
+            mimeData-&gt;setText(commentEdit-&gt;toPlainText());
+            drag-&gt;setMimeData(mimeData);</pre>
+<p>Note that setMimeData() assigns ownership of the QMimeData object to the QDrag object. The QDrag must be constructed on the heap with a parent QObject to ensure that Qt can clean up after the drag and drop operation has been completed.</p>
+<p>A pixmap can be used to represent the data while the drag is in progress, and will move with the cursor to the drop target. This pixmap typically shows an icon that represents the MIME type of the data being transferred, but any pixmap can be set with setPixmap(). Care must be taken to ensure that the pixmap is not too large. The cursor's hot spot can be given a position relative to the top-left corner of the pixmap with the setHotSpot() function. The following code positions the pixmap so that the cursor's hot spot points to the center of its bottom edge:</p>
+<pre>        drag-&gt;setHotSpot(QPoint(drag-&gt;pixmap().width()/2,
+                                drag-&gt;pixmap().height()));</pre>
+<p>The source and target widgets can be found with source() and target(). These functions are often used to determine whether drag and drop operations started and finished at the same widget, so that special behavior can be implemented.</p>
+<p>QDrag only deals with the drag and drop operation itself. It is up to the developer to decide when a drag operation begins, and how a QDrag object should be constructed and used. For a given widget, it is often necessary to reimplement mousePressEvent() to determine whether the user has pressed a mouse button, and reimplement mouseMoveEvent() to check whether a QDrag is required.</p>
+
+*/">
+    <method name="public QDrag(com.trolltech.qt.gui.QWidget dragSource__0)" doc="/**
+<p>Constructs a new drag object for the widget specified by <i>dragSource</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint hotSpot()" doc="/**
+<p>Returns the position of the hot spot relative to the top-left corner of the cursor.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMimeData mimeData()" doc="/**
+<p>Returns the MIME data that is encapsulated by the drag object.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap pixmap()" doc="/**
+<p>Returns the pixmap used to represent the data in a drag and drop operation.</p>
+
+*/"/>
+    <method name="public final void setDragCursor(com.trolltech.qt.gui.QPixmap cursor__0, com.trolltech.qt.core.Qt.DropAction action__1)" doc="/**
+<p>Sets the drag <i>cursor</i> for the <i>action</i>. This allows you to override the default native cursors. To revert to using the native cursor for <i>action</i> pass in a null QPixmap as <i>cursor</i>.</p>
+<p>The <i>action</i> can only be CopyAction, MoveAction or LinkAction. All other values of DropAction are ignored.</p>
+
+*/"/>
+    <method name="public final void setHotSpot(com.trolltech.qt.core.QPoint hotspot__0)" doc="/**
+<p>Sets the position of the hot spot relative to the top-left corner of the pixmap used to the point specified by <i>hotspot</i>.</p>
+
+*/"/>
+    <method name="public final void setMimeData(com.trolltech.qt.gui.QMimeData data__0)" doc="/**
+<p>Sets the data to be sent to the given MIME <i>data</i>. Ownership of the data is transferred to the QDrag object.</p>
+
+*/"/>
+    <method name="public final void setPixmap(com.trolltech.qt.gui.QPixmap arg__0)" doc="/**
+<p>Sets <i>pixmap</i> as the pixmap used to represent the data in a drag and drop operation.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget source()" doc="/**
+<p>Returns the source of the drag object. This is the widget where the drag and drop operation originated.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.DropAction start(com.trolltech.qt.core.Qt.DropActions supportedActions__0)" doc="/**
+<p>Starts the drag and drop operation and returns a value indicating the requested drop action when it is completed. The drop actions that the user can choose from are specified in <i>request</i>. Qt::CopyAction is always allowed.</p>
+<p><b>Note:</b> Although the drag and drop operation can take some time, this function does not block the event loop. Other events are still delivered to the application while the operation is performed.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget target()" doc="/**
+<p>Returns the target of the drag and drop operation. This is the widget where the drag object was dropped.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,70 @@
+<class name="QPushButton" doc="/**
+<p>The QPushButton widget provides a command button.</p>
+<p>The push button, or command button, is perhaps the most commonly used widget in any graphical user interface. Push (click) a button to command the computer to perform some action, or to answer a question. Typical buttons are OK, Apply, Cancel, Close, Yes, No and Help.</p>
+<p>A command button is rectangular and typically displays a text label describing its action. An underlined character in the label (signified by preceding it with an ampersand in the text) indicates a shortcut key, e.g.</p>
+<pre>    QPushButton *pb = new QPushButton(&quot;&amp;Download&quot;, this);</pre>
+<p>In this example the shortcut is <i>Alt+D</i>, and the label text will be displayed as <b><u>D</u>ownload</b>.</p>
+<p>Push buttons display a textual label, and optionally a small icon. These can be set using the constructors and changed later using setText() and setIcon(). If the button is disabled the appearance of the text and icon will be manipulated with respect to the GUI style to make the button look &quot;disabled&quot;.</p>
+<p>A push button emits the signal clicked() when it is activated by the mouse, the Spacebar or by a keyboard shortcut. Connect to this signal to perform the button's action. Push buttons also provide less commonly used signals, for example, pressed() and released().</p>
+<p>Command buttons in dialogs are by default auto-default buttons, i.e. they become the default push button automatically when they receive the keyboard input focus. A default button is a push button that is activated when the user presses the Enter or Return key in a dialog. You can change this with setAutoDefault(). Note that auto-default buttons reserve a little extra space which is necessary to draw a default-button indicator. If you do not want this space around your buttons, call setAutoDefault(false).</p>
+<p>Being so central, the button widget has grown to accommodate a great many variations in the past decade. The Microsoft style guide now shows about ten different states of Windows push buttons and the text implies that there are dozens more when all the combinations of features are taken into consideration.</p>
+<p>The most important modes or states are:</p>
+<ul>
+<li>Available or not (grayed out, disabled).</li>
+<li>Standard push button, toggling push button or menu button.</li>
+<li>On or off (only for toggling push buttons).</li>
+<li>Default or normal. The default button in a dialog can generally be &quot;clicked&quot; using the Enter or Return key.</li>
+<li>Auto-repeat or not.</li>
+<li>Pressed down or not.</li>
+</ul>
+<p>As a general rule, use a push button when the application or dialog window performs an action when the user clicks on it (such as Apply, Cancel, Close and Help) <i>and</i> when the widget is supposed to have a wide, rectangular shape with a text label. Small, typically square buttons that change the state of the window rather than performing an action (such as the buttons in the top-right corner of the QFileDialog) are not command buttons, but tool buttons. Qt provides a special class (QToolButton) for these buttons.</p>
+<p>If you need toggle behavior (see setCheckable()) or a button that auto-repeats the activation signal when being pushed down like the arrows in a scroll bar (see setAutoRepeat()), a command button is probably not what you want. When in doubt, use a tool button.</p>
+<p>A variation of a command button is a menu button. These provide not just one command, but several, since when they are clicked they pop up a menu of options. Use the method setMenu() to associate a popup menu with a push button.</p>
+<p>Other classes of buttons are option buttons (see QRadioButton) and check boxes (see QCheckBox).</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image macintosh-pushbutton.png]</font></td><td>A push button shown in the Macintosh widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image windowsxp-pushbutton.png]</font></td><td>A push button shown in the Windows XP widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image plastique-pushbutton.png]</font></td><td>A push button shown in the Plastique widget style.</td></tr>
+</table></p>
+<p>In Qt, the QAbstractButton base class provides most of the modes and other API, and QPushButton provides GUI logic. See QAbstractButton for more information about the API.</p>
+
+*/">
+    <method name="public QPushButton(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a push button with no text and a <i>parent</i>.</p>
+
+*/"/>
+    <method name="public QPushButton(java.lang.String text__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs a push button with the parent <i>parent</i> and the text <i>text</i>.</p>
+
+*/"/>
+    <method name="public QPushButton(com.trolltech.qt.gui.QIcon icon__0, java.lang.String text__1, com.trolltech.qt.gui.QWidget parent__2)" doc="/**
+<p>Constructs a push button with an <i>icon</i> and a <i>text</i>, and a <i>parent</i>.</p>
+<p>Note that you can also pass a QPixmap object as an icon (thanks to the implicit type conversion provided by C++).</p>
+
+*/"/>
+    <method name="public final boolean autoDefault()"/>
+    <method name="public final boolean isDefault()"/>
+    <method name="public final boolean isFlat()"/>
+    <method name="public final com.trolltech.qt.gui.QMenu menu()" doc="/**
+<p>Returns the button's associated popup menu or 0 if no popup menu has been set.</p>
+
+*/"/>
+    <method name="public final void setAutoDefault(boolean arg__0)"/>
+    <method name="public final void setDefault(boolean arg__0)"/>
+    <method name="public final void setFlat(boolean arg__0)"/>
+    <method name="public final void setMenu(com.trolltech.qt.gui.QMenu menu__0)" doc="/**
+<p>Associates the popup menu <i>menu</i> with this push button. This turns the button into a menu button, which in some styles will produce a small triangle to the right of the button's text.</p>
+<p>Ownership of the menu is <i>not</i> transferred to the push button.</p>
+
+*/"/>
+    <method name="public final void showMenu()" doc="/**
+<p>Shows (pops up) the associated popup menu. If there is no such menu, this function does nothing. This function does not return until the popup menu has been closed by the user.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected void focusInEvent(com.trolltech.qt.gui.QFocusEvent arg__0)"/>
+    <method name="protected void focusOutEvent(com.trolltech.qt.gui.QFocusEvent arg__0)"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent arg__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+</class>

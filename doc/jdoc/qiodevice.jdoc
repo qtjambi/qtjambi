@@ -1,0 +1,278 @@
+<class name="QIODevice" doc="/**
+<p>The QIODevice class is the base interface class of all I/O devices in Qt.</p>
+<p>QIODevice provides both a common implementation and an abstract interface for devices that support reading and writing of blocks of data, such as QFile, QBuffer and QTcpSocket. QIODevice is abstract and can not be instantiated, but it is common to use the interface it defines to provide device-independent I/O features. For example, Qt's XML classes operate on a QIODevice pointer, allowing them to be used with various devices (such as files and buffers).</p>
+<p>Before accessing the device, open() must be called to set the correct OpenMode (such as ReadOnly or ReadWrite). You can then write to the device with write() or putChar(), and read by calling either read(), readLine(), or readAll(). Call close() when you are done with the device.</p>
+<p>QIODevice distinguishes between two types of devices: random-access devices and sequential devices.</p>
+<ul>
+<li>Random-access devices support seeking to arbitrary positions using seek(). The current position in the file is available by calling pos(). QFile and QBuffer are examples of random-access devices.</li>
+<li>Sequential devices don't support seeking to arbitrary positions. The data must be read in one pass. The functions pos() and size() don't work for sequential devices. QTcpSocket and QProcess are examples of sequential devices.</li>
+</ul>
+<p>You can use isSequential() to determine the type of device.</p>
+<p>QIODevice emits readyRead() when new data is available for reading; for example, if new data has arrived on the network or if additional data is appended to a file that you are reading from. You can call bytesAvailable() to determine the number of bytes that currently available for reading. It's common to use bytesAvailable() together with the readyRead() signal when programming with asynchronous devices such as QTcpSocket, where fragments of data can arrive at arbitrary points in time. QIODevice emits the bytesWritten() signal every time a payload of data has been written to the device. Use bytesToWrite() to determine the current amount of data waiting to be written.</p>
+<p>Certain subclasses of QIODevice, such as QTcpSocket and QProcess, are asynchronous. This means that I/O functions such as write() or read() always return immediately, while communication with the device itself may happen when control goes back to the event loop. QIODevice provides functions that allow you to force these operations to be performed immediately, while blocking the calling thread and without entering the event loop. This allows QIODevice subclasses to be used without an event loop, or in a separate thread:</p>
+<ul>
+<li>waitForReadyRead() - This function suspends operation in the calling thread until new data is available for reading.</li>
+<li>waitForBytesWritten() - This function suspends operation in the calling thread until one payload of data has been written to the device.</li>
+<li>waitFor....() - Subclasses of QIODevice implement blocking functions for device-specific operations. For example, QProcess has a function called waitForStarted() which suspends operation in the calling thread until the process has started.</li>
+</ul>
+<p>Calling these functions from the main, GUI thread, may cause your user interface to freeze. Example:</p>
+<pre>    QProcess gzip;
+    gzip.start(&quot;gzip&quot;, QStringList() &lt;&lt; &quot;-c&quot;);
+    if (!gzip.waitForStarted())
+        return false;
+
+    gzip.write(&quot;uncompressed data&quot;);
+
+    QByteArray compressed;
+    while (gzip.waitForReadyRead())
+        compressed += gzip.readAll();</pre>
+<p>By subclassing QIODevice, you can provide the same interface to your own I/O devices. Subclasses of QIODevice are only required to implement the protected readData() and writeData() functions. QIODevice uses these functions to implement all its convenience functions, such as getChar(), readLine() and write(). QIODevice also handles access control for you, so you can safely assume that the device is opened in write mode if writeData() is called.</p>
+<p>Some subclasses, such as QFile and QTcpSocket, are implemented using a memory buffer for intermediate storing of data. This reduces the number of required device accessing calls, which are often very slow. Buffering makes functions like getChar() and putChar() fast, as they can operate on the memory buffer instead of directly on the device itself. Certain I/O operations, however, don't work well with a buffer. For example, if several users open the same device and read it character by character, they may end up reading the same data when they meant to read a separate chunk each. For this reason, QIODevice allows you to bypass any buffering by passing the Unbuffered flag to open(). When subclassing QIODevice, remember to bypass any buffer you may use when the device is open in Unbuffered mode.</p>
+
+*/">
+    <method name="public QIODevice()" doc="/**
+<p>Constructs a QIODevice object.</p>
+
+*/"/>
+    <method name="public QIODevice(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a QIODevice object with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.String errorString()" doc="/**
+<p>Returns a human-readable description of the last device error that occurred.</p>
+
+*/"/>
+    <method name="public final boolean getChar(com.trolltech.qt.QNativePointer c__0)" doc="/**
+<p>Reads one character from the device and stores it in <i>c</i>. If <i>c</i> is 0, the character is discarded. Returns true on success; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isOpen()" doc="/**
+<p>Returns true if the device is open; otherwise returns false. A device is open if it can be read from and/or written to. By default, this function returns false if openMode() returns <tt>NotOpen</tt>.</p>
+
+*/"/>
+    <method name="public final boolean isReadable()" doc="/**
+<p>Returns true if data can be read from the device; otherwise returns false. Use bytesAvailable() to determine how many bytes can be read.</p>
+<p>This is a convenience function which checks if the OpenMode of the device contains the ReadOnly flag.</p>
+
+*/"/>
+    <method name="public final boolean isTextModeEnabled()" doc="/**
+<p>Returns true if the Text flag is enabled; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isWritable()" doc="/**
+<p>Returns true if data can be written to the device; otherwise returns false.</p>
+<p>This is a convenience function which checks if the OpenMode of the device contains the WriteOnly flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QIODevice.OpenMode openMode()" doc="/**
+<p>Returns the mode in which the device has been opened; i.e. ReadOnly or WriteOnly.</p>
+
+*/"/>
+    <method name="public final long peek(com.trolltech.qt.QNativePointer data__0, long maxlen__1)" doc="/**
+<p>Reads at most <i>maxSize</i> bytes from the device into <i>data</i>, without side effects (i.e., if you call read() after peek(), you will get the same data). Returns the number of bytes read. If an error occurs, such as when attempting to peek a device opened in WriteOnly mode, this function returns -1.</p>
+<p>0 is returned when no more data is available for reading.</p>
+<p>Example:</p>
+<pre>    bool isExeFile(QFile *file)
+    {
+        char buf[2];
+        if (file-&gt;peek(buf, sizeof(buf)) == sizeof(buf))
+            return (buf[0] == 'M' &amp;&amp; buf[1] == 'Z');
+        return false;
+    }</pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray peek(long maxlen__0)" doc="/**
+<p>Peeks at most <i>maxSize</i> bytes from the device, returning the data peeked as a QByteArray.</p>
+<p>Example:</p>
+<pre>    bool isExeFile(QFile *file)
+    {
+        return file-&gt;peek(2) == &quot;MZ&quot;;
+    }</pre>
+<p>This function has no way of reporting errors; returning an empty QByteArray() can mean either that no data was currently available for peeking, or that an error occurred.</p>
+
+*/"/>
+    <method name="public final boolean putChar(byte c__0)" doc="/**
+<p>Writes the character <i>c</i> to the device. Returns true on success; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray read(long maxlen__0)" doc="/**
+<p>Reads at most <i>maxSize</i> bytes from the device, and returns the data read as a QByteArray.</p>
+<p>This function has no way of reporting errors; returning an empty QByteArray() can mean either that no data was currently available for reading, or that an error occurred.</p>
+
+*/"/>
+    <method name="public final long read(com.trolltech.qt.QNativePointer data__0, long maxlen__1)" doc="/**
+<p>Reads at most <i>maxSize</i> bytes from the device into <i>data</i>, and returns the number of bytes read. If an error occurs, such as when attempting to read from a device opened in WriteOnly mode, this function returns -1.</p>
+<p>0 is returned when no more data is available for reading.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray readAll()" doc="/**
+<p>Reads all available data from the device, and returns it as a QByteArray.</p>
+<p>This function has no way of reporting errors; returning an empty QByteArray() can mean either that no data was currently available for reading, or that an error occurred.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray readLine(long maxlen__0)" doc="/**
+<p>Reads a line from the device, but no more than <i>maxSize</i> characters, and returns the result as a QByteArray.</p>
+<p>This function has no way of reporting errors; returning an empty QByteArray() can mean either that no data was currently available for reading, or that an error occurred.</p>
+
+*/"/>
+    <method name="public final long readLine(com.trolltech.qt.QNativePointer data__0, long maxlen__1)" doc="/**
+<p>This function reads a line of ASCII characters from the device, up to a maximum of <i>maxSize</i> - 1 bytes, stores the characters in <i>data</i>, and returns the number of bytes read. If an error occurred, -1 is returned.</p>
+<p>A terminating '\0' byte is always appended to <i>data</i>, so <i>maxSize</i> must be larger than 1.</p>
+<p>Data is read until either of the following conditions are met:</p>
+<ul>
+<li>The first '\n' character is read.</li>
+<li><i>maxSize</i> - 1 bytes are read.</li>
+<li>The end of the device data is detected.</li>
+</ul>
+<p>For example, the following code reads a line of characters from a file:</p>
+<pre>    QFile file(&quot;box.txt&quot;);
+    if (file.open(QFile::ReadOnly)) {
+        char buf[1024];
+        qint64 lineLength = file.readLine(buf, sizeof(buf));
+        if (lineLength != -1) {
+            <span class=&quote;comment&quote;>// the line is available in buf</span>
+        }
+    }</pre>
+<p>If the '\n' character is the 1023th character read then it will be inserted into the buffer; if it occurs after the 1023 character then it is not read.</p>
+<p>This function calls readLineData(), which is implemented using repeated calls to getChar(). You can provide a more efficient implementation by reimplementing readLineData() in your own subclass.</p>
+
+*/"/>
+    <method name="protected final void setErrorString(java.lang.String errorString__0)" doc="/**
+<p>Sets the human readable description of the last device error that occurred to <i>str</i>.</p>
+
+*/"/>
+    <method name="protected final void setOpenMode(com.trolltech.qt.core.QIODevice.OpenMode openMode__0)" doc="/**
+<p>Sets the OpenMode of the device to <i>openMode</i>. Call this function to set the open mode when reimplementing open().</p>
+
+*/"/>
+    <method name="public final void setTextModeEnabled(boolean enabled__0)" doc="/**
+<p>If <i>enabled</i> is true, this function sets the Text flag on the device; otherwise the Text flag is removed. This feature is useful for classes that provide custom end-of-line handling on a QIODevice.</p>
+
+*/"/>
+    <method name="public final void ungetChar(byte c__0)" doc="/**
+<p>Puts the character <i>c</i> back into the device, and decrements the current position unless the position is 0. This function is usually called to &quot;undo&quot; a getChar() operation, such as when writing a backtracking parser.</p>
+<p>If <i>c</i> was not previously read from the device, the behavior is undefined.</p>
+
+*/"/>
+    <method name="public final long write(com.trolltech.qt.core.QByteArray data__0)" doc="/**
+<p>Writes the content of <i>byteArray</i> to the device. Returns the number of bytes that were actually written, or -1 if an error occurred.</p>
+
+*/"/>
+    <method name="public final long write(com.trolltech.qt.QNativePointer data__0, long len__1)" doc="/**
+<p>Writes at most <i>maxSize</i> bytes of data from <i>data</i> to the device. Returns the number of bytes that were actually written, or -1 if an error occurred.</p>
+
+*/"/>
+    <method name="public boolean atEnd()" doc="/**
+<p>Returns true if the current read and write position is at the end of the device (i.e. there is no more data available for reading on the device); otherwise returns false.</p>
+<p>For some devices, atEnd() can return true even though there is more data to read. This special case only applies to devices that generate data in direct response to you calling read() (e.g., <tt>/dev</tt> or <tt>/proc</tt> files on Unix and Mac OS X, or console input / <tt>stdin</tt> on all platforms).</p>
+
+*/"/>
+    <method name="public long bytesAvailable()" doc="/**
+<p>Returns the number of bytes that are available for reading. This function is commonly used with sequential devices to determine the number of bytes to allocate in a buffer before reading.</p>
+<p>Subclasses that reimplement this function must call the base implementation in order to include the size of QIODevices' buffer. Example:</p>
+<pre>    qint64 CustomDevice::bytesAvailable() const
+    {
+        return buffer.size() + QIODevice::bytesAvailable();
+    }</pre>
+
+*/"/>
+    <method name="public long bytesToWrite()" doc="/**
+<p>For buffered devices, this function returns the number of bytes waiting to be written. For devices with no buffer, this function returns 0.</p>
+
+*/"/>
+    <method name="public boolean canReadLine()" doc="/**
+<p>Returns true if a complete line of data can be read from the device; otherwise returns false.</p>
+<p>Note that unbuffered devices, which have no way of determining what can be read, always return false.</p>
+<p>This function is often called in conjunction with the readyRead() signal.</p>
+<p>Subclasses that reimplement this function must call the base implementation in order to include the size of the QIODevice's buffer. Example:</p>
+<pre>    bool CustomDevice::canReadLine() const
+    {
+        return buffer.contains('\n') || QIODevice::canReadLine();
+    }</pre>
+
+*/"/>
+    <method name="public void close()" doc="/**
+<p>First emits aboutToClose(), then closes the device and sets its OpenMode to NotOpen. The error string is also reset.</p>
+
+*/"/>
+    <method name="public boolean isSequential()" doc="/**
+<p>Returns true if this device is sequential; otherwise returns false.</p>
+<p>Sequential devices, as opposed to a random-access devices, have no concept of a start, an end, a size, or a current position, and they do not support seeking. You can only read from the device when it reports that data is available. The most common example of a sequential device is a network socket. On Unix, special files such as /dev/zero and fifo pipes are sequential.</p>
+<p>Regular files, on the other hand, do support random access. They have both a size and a current position, and they also support seeking backwards and forwards in the data stream. Regular files are non-sequential.</p>
+
+*/"/>
+    <method name="public boolean open(com.trolltech.qt.core.QIODevice.OpenMode mode__0)" doc="/**
+<p>Opens the device and sets its OpenMode to <i>mode</i>. Returns true if successful; otherwise returns false.</p>
+
+*/"/>
+    <method name="public long pos()" doc="/**
+<p>For random-access devices, this function returns the position that data is written to or read from. For sequential devices or closed devices, where there is no concept of a &quot;current position&quot;, 0 is returned.</p>
+<p>The current read/write position of the device is maintained internally by QIODevice, so reimplementing this function is not necessary. When subclassing QIODevice, use QIODevice::seek() to notify QIODevice about changes in the device position.</p>
+
+*/"/>
+    <method name="protected abstract long readData(com.trolltech.qt.QNativePointer data__0, long maxlen__1)" doc="/**
+<p>Reads up to <i>maxSize</i> bytes from the device into <i>data</i>, and returns the number of bytes read or -1 if an error occurred.</p>
+<p>This function is called by QIODevice. Reimplement this function when creating a subclass of QIODevice.</p>
+
+*/"/>
+    <method name="protected long readLineData(com.trolltech.qt.QNativePointer data__0, long maxlen__1)" doc="/**
+<p>Reads up to <i>maxSize</i> characters into <i>data</i> and returns the number of characters read.</p>
+<p>This function is called by readLine(), and provides its base implementation, using getChar(). Buffered devices can improve the performance of readLine() by reimplementing this function.</p>
+<p>readLine() appends a '\0' byte to <i>data</i>; readLineData() does not need to do this.</p>
+
+*/"/>
+    <method name="public boolean reset()" doc="/**
+<p>Seeks to the start of input for random-access devices. Returns true on success; otherwise returns false (for example, if the device is not open).</p>
+<p>Note that when using a QTextStream on a QFile, calling reset() on the QFile will not have the expected result because QTextStream buffers the file. Use the QTextStream::seek() function instead.</p>
+
+*/"/>
+    <method name="public boolean seek(long pos__0)" doc="/**
+<p>For random-access devices, this function sets the current position to <i>pos</i>, returning true on success, or false if an error occurred. For sequential devices, the default behavior is to do nothing and return false.</p>
+<p>When subclassing QIODevice, you must call QIODevice::seek() at the start of your function to ensure integrity with QIODevice's built-in buffer. The base implementation always returns true.</p>
+
+*/"/>
+    <method name="public long size()" doc="/**
+<p>For open random-access devices, this function returns the size of the device. For open sequential devices, bytesAvailable() is returned.</p>
+<p>If the device is closed, the size returned will not reflect the actual size of the device.</p>
+
+*/"/>
+    <method name="public boolean waitForBytesWritten(int msecs__0)" doc="/**
+<p>For buffered devices, this function waits until a payload of buffered written data has been written to the device and the bytesWritten() signal has been emitted, or until <i>msecs</i> milliseconds have passed. If msecs is -1, this function will not time out. For unbuffered devices, it returns immediately.</p>
+<p>Returns true if a payload of data was written to the device; otherwise returns false (i.e. if the operation timed out, or if an error occurred).</p>
+<p>This function can operate without an event loop. It is useful when writing non-GUI applications and when performing I/O operations in a non-GUI thread.</p>
+<p>If called from within a slot connected to the bytesWritten() signal, bytesWritten() will not be reemitted.</p>
+<p>Reimplement this function to provide a blocking API for a custom device. The default implementation does nothing, and returns false.</p>
+<p><b>Warning:</b> Calling this function from the main (GUI) thread might cause your user interface to freeze.</p>
+
+*/"/>
+    <method name="public boolean waitForReadyRead(int msecs__0)" doc="/**
+<p>Blocks until data is available for reading and the readyRead() signal has been emitted, or until <i>msecs</i> milliseconds have passed. If msecs is -1, this function will not time out.</p>
+<p>Returns true if data is available for reading; otherwise returns false (if the operation timed out or if an error occurred).</p>
+<p>This function can operate without an event loop. It is useful when writing non-GUI applications and when performing I/O operations in a non-GUI thread.</p>
+<p>If called from within a slot connected to the readyRead() signal, readyRead() will not be reemitted.</p>
+<p>Reimplement this function to provide a blocking API for a custom device. The default implementation does nothing, and returns false.</p>
+<p><b>Warning:</b> Calling this function from the main (GUI) thread might cause your user interface to freeze.</p>
+
+*/"/>
+    <method name="protected abstract long writeData(com.trolltech.qt.QNativePointer data__0, long len__1)" doc="/**
+<p>Writes up to <i>maxSize</i> bytes from <i>data</i> to the device. Returns the number of bytes written, or -1 if an error occurred.</p>
+<p>This function is called by QIODevice. Reimplement this function when creating a subclass of QIODevice.</p>
+
+*/"/>
+    <enum name="OpenModeFlag" doc="/**
+<p>This enum is used with open() to describe the mode in which a device is opened. It is also returned by openMode().</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The device is not open.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The device is open for reading.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The device is open for writing.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The device is open for reading and writing.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The device is opened in append mode, so that all data is written to the end of the file.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>If possible, the device is truncated before it is opened. All earlier contents of the device are lost.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>When reading, the end-of-line terminators are translated to '\n'. When writing, the end-of-line terminators are translated to the local encoding, for example '\r\n' for Win32.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Any buffer in the device is bypassed.</td></tr>
+</table></p>
+<p>Certain flags, such as QIODevice::Unbuffered and QIODevice::Truncate, might be meaningless for some subclasses. (For example, access to a QBuffer is always unbuffered.)</p>
+
+*/"/>
+</class>

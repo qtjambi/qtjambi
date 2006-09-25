@@ -1,0 +1,64 @@
+<class name="QRegExpValidator" doc="/**
+<p>The QRegExpValidator class is used to check a string against a regular expression.</p>
+<p>QRegExpValidator uses a regular expression (regexp) to determine whether an input string is Acceptable, Intermediate, or Invalid. The regexp can either be supplied when the QRegExpValidator is constructed, or at a later time.</p>
+<p>The regexp is treated as if it begins with the start of string assertion, <b>^</b>, and ends with the end of string assertion <b>$</b> so the match is against the entire input string, or from the given position if a start position greater than zero is given.</p>
+<p>For a brief introduction to Qt's regexp engine see QRegExp.</p>
+<p>Example of use:</p>
+<pre><span class=&quote;comment&quote;>    // regexp: optional '-' followed by between 1 and 3 digits</span>
+    QRegExp rx(&quot;-?\\d{1,3}&quot;);
+    QValidator *validator = new QRegExpValidator(rx, this);
+
+    QLineEdit *edit = new QLineEdit(this);
+    edit-&gt;setValidator(validator);</pre>
+<p>Below we present some examples of validators. In practice they would normally be associated with a widget as in the example above.</p>
+<pre><span class=&quote;comment&quote;>    // integers 1 to 9999</span>
+    QRegExp rx(&quot;[1-9]\\d{0,3}&quot;);
+<span class=&quote;comment&quote;>    // the validator treats the regexp as &quot;^[1-9]\\d{0,3}$&quot;</span>
+    QRegExpValidator v(rx, 0);
+    QString s;
+    int pos = 0;
+
+    s = &quot;0&quot;;     v.validate(s, pos);    <span class=&quote;comment&quote;>// returns Invalid</span>
+    s = &quot;12345&quot;; v.validate(s, pos);    <span class=&quote;comment&quote;>// returns Invalid</span>
+    s = &quot;1&quot;;     v.validate(s, pos);    <span class=&quote;comment&quote;>// returns Acceptable</span>
+
+    rx.setPattern(&quot;\\S+&quot;);            <span class=&quote;comment&quote;>// one or more non-whitespace characters</span>
+    v.setRegExp(rx);
+    s = &quot;myfile.txt&quot;;  v.validate(s, pos); <span class=&quote;comment&quote;>// Returns Acceptable</span>
+    s = &quot;my file.txt&quot;; v.validate(s, pos); <span class=&quote;comment&quote;>// Returns Invalid</span>
+
+<span class=&quote;comment&quote;>    // A, B or C followed by exactly five digits followed by W, X, Y or Z</span>
+    rx.setPattern(&quot;[A-C]\\d{5}[W-Z]&quot;);
+    v.setRegExp(rx);
+    s = &quot;a12345Z&quot;; v.validate(s, pos);        <span class=&quote;comment&quote;>// Returns Invalid</span>
+    s = &quot;A12345Z&quot;; v.validate(s, pos);        <span class=&quote;comment&quote;>// Returns Acceptable</span>
+    s = &quot;B12&quot;;     v.validate(s, pos);        <span class=&quote;comment&quote;>// Returns Intermediate</span>
+
+<span class=&quote;comment&quote;>    // match most 'readme' files</span>
+    rx.setPattern(&quot;read\\S?me(\.(txt|asc|1st))?&quot;);
+    rx.setCaseSensitive(false);
+    v.setRegExp(rx);
+    s = &quot;readme&quot;;      v.validate(s, pos); <span class=&quote;comment&quote;>// Returns Acceptable</span>
+    s = &quot;README.1ST&quot;;  v.validate(s, pos); <span class=&quote;comment&quote;>// Returns Acceptable</span>
+    s = &quot;read me.txt&quot;; v.validate(s, pos); <span class=&quote;comment&quote;>// Returns Invalid</span>
+    s = &quot;readm&quot;;       v.validate(s, pos); <span class=&quote;comment&quote;>// Returns Intermediate</span></pre>
+
+*/">
+    <method name="public QRegExpValidator(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a validator with a <i>parent</i> object that accepts any string (including an empty one) as valid.</p>
+
+*/"/>
+    <method name="public QRegExpValidator(com.trolltech.qt.core.QRegExp rx__0, com.trolltech.qt.core.QObject parent__1)" doc="/**
+<p>Constructs a validator with a <i>parent</i> object that accepts all strings that match the regular expression <i>rx</i>.</p>
+<p>The match is made against the entire string; e.g. if the regexp is <b>[A-Fa-f0-9]+</b> it will be treated as <b>^[A-Fa-f0-9]+$</b>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRegExp regExp()"/>
+    <method name="public final void setRegExp(com.trolltech.qt.core.QRegExp rx__0)"/>
+    <method name="public com.trolltech.qt.gui.QValidator.State validate(com.trolltech.qt.QNativePointer input__0, com.trolltech.qt.QNativePointer pos__1)" doc="/**
+<p>Returns Acceptable if <i>input</i> is matched by the regular expression for this validator, Intermediate if it has matched partially (i.e. could be a valid match if additional valid characters are added), and Invalid if <i>input</i> is not matched.</p>
+<p>The <i>pos</i> parameter is set to the length of the <i>input</i> parameter.</p>
+<p>For example, if the regular expression is <b>\w\d\d</b> (word-character, digit, digit) then &quot;A57&quot; is Acceptable, &quot;E5&quot; is Intermediate, and &quot;+9&quot; is Invalid.</p>
+
+*/"/>
+</class>

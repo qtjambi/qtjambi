@@ -1,0 +1,67 @@
+<class name="QIntValidator" doc="/**
+<p>The QIntValidator class provides a validator that ensures a string contains a valid integer within a specified range.</p>
+<p>Example of use:</p>
+<pre>    QValidator *validator = new QIntValidator(100, 999, this);
+    QLineEdit *edit = new QLineEdit(this);
+
+<span class=&quote;comment&quote;>    // the edit lineedit will only accept integers between 100 and 999</span>
+    edit-&gt;setValidator(validator);</pre>
+<p>Below we present some examples of validators. In practice they would normally be associated with a widget as in the example above.</p>
+<pre>    QString str;
+    int pos = 0;
+    QIntValidator v(100, 999, this);
+
+    str = &quot;1&quot;;
+    v.validate(str, pos);     <span class=&quote;comment&quote;>// returns Intermediate</span>
+    str = &quot;12&quot;;
+    v.validate(str, pos);     <span class=&quote;comment&quote;>// returns Intermediate</span>
+
+    str = &quot;123&quot;;
+    v.validate(str, pos);     <span class=&quote;comment&quote;>// returns Acceptable</span>
+    str = &quot;678&quot;;
+    v.validate(str, pos);     <span class=&quote;comment&quote;>// returns Acceptable</span>
+
+    str = &quot;1234&quot;;
+    v.validate(str, pos);     <span class=&quote;comment&quote;>// returns Invalid</span>
+    str = &quot;-123&quot;;
+    v.validate(str, pos);     <span class=&quote;comment&quote;>// returns Invalid</span>
+    str = &quot;abc&quot;;
+    v.validate(str, pos);     <span class=&quote;comment&quote;>// returns Invalid</span>
+    str = &quot;12cm&quot;;
+    v.validate(str, pos);     <span class=&quote;comment&quote;>// returns Invalid</span></pre>
+<p>The minimum and maximum values are set in one call with setRange(), or individually with setBottom() and setTop().</p>
+
+*/">
+    <method name="public QIntValidator(int bottom__0, int top__1, com.trolltech.qt.core.QObject parent__2)" doc="/**
+<p>Constructs a validator with a <i>parent</i>, that accepts integers from <i>minimum</i> to <i>maximum</i> inclusive.</p>
+
+*/"/>
+    <method name="public QIntValidator(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a validator with a <i>parent</i> object that accepts all integers.</p>
+
+*/"/>
+    <method name="public final int bottom()"/>
+    <method name="public final void setBottom(int arg__0)"/>
+    <method name="public final void setTop(int arg__0)"/>
+    <method name="public final int top()"/>
+    <method name="public void setRange(int bottom__0, int top__1)" doc="/**
+<p>Sets the range of the validator to only accept integers between <i>bottom</i> and <i>top</i> inclusive.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QValidator.State validate(com.trolltech.qt.QNativePointer arg__0, com.trolltech.qt.QNativePointer arg__1)" doc="/**
+<p>Returns Acceptable if the <i>input</i> is an integer within the valid range, Intermediate if the <i>input</i> is an integer outside the valid range and Invalid if the <i>input</i> is not an integer.</p>
+<p>Note: If the valid range consists of just positive integers (e.g. 32 to 100) and <i>input</i> is a negative integer then Invalid is returned.</p>
+<pre>    int pos = 0;
+
+    s = &quot;abc&quot;;
+    v.validate(s, pos);    <span class=&quote;comment&quote;>// returns Invalid</span>
+
+    s = &quot;5&quot;;
+    v.validate(s, pos);    <span class=&quote;comment&quote;>// returns Intermediate</span>
+
+    s = &quot;50&quot;;
+    v.validate(s, pos);    <span class=&quote;comment&quote;>// returns Acceptable</span></pre>
+<p>By default, the <i>pos</i> parameter is not used by this validator.</p>
+
+*/"/>
+</class>

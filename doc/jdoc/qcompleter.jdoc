@@ -1,0 +1,154 @@
+<class name="QCompleter" doc="/**
+<p>The QCompleter class provides completions based on a item model.</p>
+<p>You can use QCompleter to provide auto completions in any Qt widget, such as QLineEdit and QComboBox. When the user starts typing a word, QCompleter suggests possible ways of completing the word, based on a word list. The word list is provided as a QAbstractItemModel. (For simple applications, where the word list is static, you can pass a QStringList to QCompleter's constructor.)</p>
+<ul><li><a href=&quote;#basic-usage&quote;>Basic Usage</a></li>
+<li><a href=&quote;#iterating-through-completions&quote;>Iterating Through Completions</a></li>
+<li><a href=&quote;#the-completion-model&quote;>The Completion Model</a></li>
+<li><a href=&quote;#handling-tree-models&quote;>Handling Tree Models</a></li>
+</ul>
+<a name=&quote;basic-usage&quote;></a>
+<h3>Basic Usage</h3>
+<p>A QCompleter is used typically with a QLineEdit or QComboBox. For example, here's how to provide auto completions from a simple word list in a QLineEdit:</p>
+<pre>    QStringList wordList;
+    wordList &lt;&lt; &quot;alpha&quot; &lt;&lt; &quot;omega&quot; &lt;&lt; &quot;omicron&quot; &lt;&lt; &quot;zeta&quot;;
+
+    QLineEdit *lineEdit = new QLineEdit(this);
+
+    QCompleter *completer = new QCompleter(wordList, this);
+    completer-&gt;setCaseSensitivity(Qt::CaseInsensitive);
+    lineEdit-&gt;setCompleter(completer);</pre>
+<p>A QDirModel can be used to provide auto completion of file names. For example:</p>
+<pre>    QCompleter *completer = new QCompleter(this);
+    completer-&gt;setModel(new QDirModel(completer));
+    lineEdit-&gt;setCompleter(completer);</pre>
+<p>To set the model on which QCompleter should operate, call setModel(). By default, QCompleter will attempt to match the completion prefix (i.e., the word that the user has started typing) against the Qt::EditRole data stored in column 0 in the model case sensitively. This can be changed using setCompletionRole(), setCompletionColumn(), and setCaseSensitivity().</p>
+<p>If the model is sorted on the column and role that are used for completion, you can call setModelSorting() with either QCompleter::CaseSensitivelySortedModel or QCompleter::CaseInsensitivelySortedModel as the argument. On large models, this can lead to significant performance improvements, because QCompleter can then use binary search instead of linear search.</p>
+<p>The model can be a list model, a table model, or a tree model. Completion on tree models is slightly more involved and is covered in the <a href=&quote;#handling-tree-models&quote;>Handling Tree Models</a> section below.</p>
+<p>The completionMode() determines the mode used to provide completions to the user.</p>
+<a name=&quote;iterating-through-completions&quote;></a>
+<h3>Iterating Through Completions</h3>
+<p>To retrieve a single candidate string, call setCompletionPrefix() with the text that needs to be completed and call currentCompletion(). You can iterate through the list of completions as below:</p>
+<pre>    for (int i = 0; completer-&gt;setCurrentRow(i); i++)
+        qDebug() &lt;&lt; completer-&gt;currentCompletion() &lt;&lt; &quot; is match number &quot; &lt;&lt; i;</pre>
+<p>completionCount() returns the total number of completions for the current prefix. completionCount() should be avoided when posible, since it requires a scan of the entire model.</p>
+<a name=&quote;the-completion-model&quote;></a>
+<h3>The Completion Model</h3>
+<p>completionModel() return a list model that contains all possible completions for the current completion prefix, in the order in which they appear in the model. This model can be used to display the current completions in a custom view. Calling setCompletionPrefix() automatically refreshes the completion model.</p>
+<a name=&quote;handling-tree-models&quote;></a>
+<h3>Handling Tree Models</h3>
+<p>QCompleter can look for completions in tree models, assuming that any item (or sub-item or sub-sub-item) can be unambiguously represented as a string by specifying the path to the item. The completion is then performed one level at a time.</p>
+<p>Let's take the example of a user typing in a file system path. The model is a (hierarchical) QDirModel. The completion occurs for every element in the path. For example, if the current text is <tt>C:\Wind</tt>, QCompleter might suggest <tt>Windows</tt> to complete the current path element. Similarly, if the current text is <tt>C:\Windows\Sy</tt>, QCompleter might suggest <tt>System</tt>.</p>
+<p>For this kind of completion to work, QCompleter needs to be able to split the path into a list of strings that are matched at each level. For <tt>C:\Windows\Sy</tt>, it needs to be split as &quot;C:&quot;, &quot;Windows&quot; and &quot;Sy&quot;. The default implementation of splitPath(), splits the completionPrefix using QDir::separator() if the model is a QDirModel.</p>
+<p>To provide completions, QCompleter needs to know the path from an index. This is provided by pathFromIndex(). The default implementation of pathFromIndex(), returns the data for the completionRole() for list models and the absolute file path if the mode is a QDirModel.</p>
+
+*/">
+    <method name="public QCompleter(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a completer object with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public QCompleter(com.trolltech.qt.core.QAbstractItemModel model__0, com.trolltech.qt.core.QObject parent__1)" doc="/**
+<p>Constructs a completer object with the given <i>parent</i> that provides completions from the specified <i>model</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.CaseSensitivity caseSensitivity()"/>
+    <method name="public final void complete(com.trolltech.qt.core.QRect rect__0)" doc="/**
+<p>For QCompleter::PopupCompletion and QCompletion::UnfilteredPopupCompletion modes, calling this function displays the popup displaying the current completions. By default, if <i>rect</i> is not specified, the popup is displayed on the bottom of the widget(). If <i>rect</i> is specified the popup is displayed on the left edge of the rectangle.</p>
+<p>For QCompleter::InlineCompletion mode, the highlighted() signal is fired with the current completion.</p>
+
+*/"/>
+    <method name="public final int completionColumn()"/>
+    <method name="public final int completionCount()" doc="/**
+<p>Returns the number of completions for the current prefix. For an unsorted model with a large number of items this can be expensive. Use setCurrentRow() and currentCompletion() to iterate through all the completions.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QCompleter.CompletionMode completionMode()"/>
+    <method name="public final com.trolltech.qt.core.QAbstractItemModel completionModel()" doc="/**
+<p>Returns the completion model. The completion model is a read-only list model that contains all the possible matches for the current completion prefix. The completion model is auto-updated to reflect the current completions.</p>
+
+*/"/>
+    <method name="public final java.lang.String completionPrefix()"/>
+    <method name="public final int completionRole()"/>
+    <method name="public final java.lang.String currentCompletion()" doc="/**
+<p>Returns the current completion string. This includes the completionPrefix. When used alongside setCurrentRow(), it can be used to iterate through all the matches.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex currentIndex()" doc="/**
+<p>Returns the model index of the current completion in the completionModel().</p>
+
+*/"/>
+    <method name="public final int currentRow()" doc="/**
+<p>Returns the current row.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QAbstractItemModel model()" doc="/**
+<p>Returns the model that provides completion strings.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QCompleter.ModelSorting modelSorting()"/>
+    <method name="public final com.trolltech.qt.gui.QAbstractItemView popup()" doc="/**
+<p>Returns the popup used to display completions.</p>
+
+*/"/>
+    <method name="public final void setCaseSensitivity(com.trolltech.qt.core.Qt.CaseSensitivity caseSensitivity__0)"/>
+    <method name="public final void setCompletionColumn(int column__0)"/>
+    <method name="public final void setCompletionMode(com.trolltech.qt.gui.QCompleter.CompletionMode mode__0)"/>
+    <method name="public final void setCompletionPrefix(java.lang.String prefix__0)"/>
+    <method name="public final void setCompletionRole(int role__0)"/>
+    <method name="public final boolean setCurrentRow(int row__0)" doc="/**
+<p>Sets the current row to the <i>row</i> specified. This function may be used along with currentCompletion() to iterate through all the possible completions.</p>
+
+*/"/>
+    <method name="public final void setModel(com.trolltech.qt.core.QAbstractItemModel c__0)" doc="/**
+<p>Sets the model which provides completions to <i>model</i>. The <i>model</i> can be list model or a tree model. If a model has been already previously set and it has the QCompleter as its parent, it is deleted.</p>
+<p>For convenience, if <i>model</i> is a QDirModel, QCompleter switches its caseSensitivity to Qt::CaseInsensitive on Windows and Qt::CaseSensitive on other platforms.</p>
+
+*/"/>
+    <method name="public final void setModelSorting(com.trolltech.qt.gui.QCompleter.ModelSorting sorting__0)"/>
+    <method name="public final void setPopup(com.trolltech.qt.gui.QAbstractItemView popup__0)" doc="/**
+<p>Sets the popup used to display completions to <i>popup</i>. QCompleter takes ownership of the view.</p>
+<p>A QListView is automatically created when the completionMode() is set to QCompleter::PopupCompletion or QCompleter::UnfilteredPopupCompletion. The default popup displays the completionColumn().</p>
+<p>Ensure that this function is called before the view settings are modified. This is required since view's properties may require that a model has been set on the view (for example, hiding columns in the view requires a model to be set on the view).</p>
+
+*/"/>
+    <method name="public final void setWidget(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Sets the widget for which completion are provided for to <i>widget</i>. This function is automatically called when a QCompleter is set on a QLineEdit using QLineEdit::setCompleter() or on a QComboBox using QComboBox::setCompleter(). The widget needs to be set explicity when providing completions for custom widgets.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget widget()" doc="/**
+<p>Returns the widget for which the completer object is providing completions.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="public boolean eventFilter(com.trolltech.qt.core.QObject o__0, com.trolltech.qt.core.QEvent e__1)"/>
+    <method name="public java.lang.String pathFromIndex(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns the path for the given <i>index</i>. The completer object uses this to obtain the completion text from the underlying model.</p>
+<p>The default implementation returns the edit role of the item for list models. It returns the absolute file path if the model is a QDirModel.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;java.lang.String&gt; splitPath(java.lang.String path__0)" doc="/**
+<p>Splits the given <i>path</i> into strings that are used to match at each level in the model().</p>
+<p>The default implementation of splitPath() splits a file system path based on QDir::separator() when the sourceModel() is a QDirModel.</p>
+<p>When used with list models, the first item in the returned list is used for matching.</p>
+
+*/"/>
+    <enum name="ModelSorting" doc="/**
+<p>This enum specifies how the items in the model are sorted.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The model is unsorted.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The model is sorted case sensitively.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The model is sorted case insensitively.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="CompletionMode" doc="/**
+<p>This enum specifies how completions are provided to the user.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Current completions are displayed in a popup window.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Completions appear inline (as selected text).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>All possible completions are displayed in a popup window with the most likely suggestion selected.</td></tr>
+</table></p>
+
+*/"/>
+</class>

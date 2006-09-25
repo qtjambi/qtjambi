@@ -1,0 +1,142 @@
+<class name="QBitArray" doc="/**
+<p>The QBitArray class provides an array of bits.</p>
+<p>A QBitArray is an array that gives access to individual bits and provides operators (AND, OR, XOR, and NOT) that work on entire arrays of bits. It uses implicit sharing (copy-on-write) to reduce memory usage and to avoid the needless copying of data.</p>
+<p>The following code constructs a QBitArray containing 200 bits initialized to false (0):</p>
+<pre>    QBitArray ba(200);</pre>
+<p>To initialize the bits to true, either pass <tt>true</tt> as second argument to the constructor, or call fill() later on.</p>
+<p>QBitArray uses 0-based indexes, just like C++ arrays. To access the bit at a particular index position, you can use operator[](). On non-const bit arrays, operator[]() returns a reference to a bit that can be used on the left side of an assignment. For example:</p>
+<pre>    QBitArray ba;
+    ba.resize(3);
+    ba[0] = true;
+    ba[1] = false;
+    ba[2] = true;</pre>
+<p>For technical reasons, it is more efficient to use testBit() and setBit() to access bits in the array than operator[](). For example:</p>
+<pre>    QBitArray ba(3);
+    ba.setBit(0, true);
+    ba.setBit(1, false);
+    ba.setBit(2, true);</pre>
+<p>QBitArray supports <tt>&amp;</tt> (AND), <tt>|</tt> (OR), <tt>^</tt> (XOR), <tt>~</tt> (NOT), as well as <tt>&amp;=</tt>, <tt>|=</tt>, and <tt>^=</tt>. These operators work in the same way as the built-in C++ bitwise operators of the same name. For example:</p>
+<pre>    QBitArray x(5);
+    x.setBit(3, true);
+<span class=&quote;comment&quote;>    // x: [ 0, 0, 0, 1, 0 ]</span>
+
+    QBitArray y(5);
+    y.setBit(4, true);
+<span class=&quote;comment&quote;>    // y: [ 0, 0, 0, 0, 1 ]</span>
+
+    x |= y;
+<span class=&quote;comment&quote;>    // x: [ 0, 0, 0, 1, 1 ]</span></pre>
+<p>For historical reasons, QBitArray distinguishes between a null bit array and an empty bit array. A <i>null</i> bit array is a bit array that is initialized using QBitArray's default constructor. An <i>empty</i> bit array is any bit array with size 0. A null bit array is always empty, but an empty bit array isn't necessarily null:</p>
+<pre>    QBitArray().isNull();           <span class=&quote;comment&quote;>// returns true</span>
+    QBitArray().isEmpty();          <span class=&quote;comment&quote;>// returns true</span>
+
+    QBitArray(0).isNull();          <span class=&quote;comment&quote;>// returns false</span>
+    QBitArray(0).isEmpty();         <span class=&quote;comment&quote;>// returns true</span>
+
+    QBitArray(3).isNull();          <span class=&quote;comment&quote;>// returns false</span>
+    QBitArray(3).isEmpty();         <span class=&quote;comment&quote;>// returns false</span></pre>
+<p>All functions except isNull() treat null bit arrays the same as empty bit arrays; for example, QBitArray() compares equal to QBitArray(0). We recommend that you always use isEmpty() and avoid isNull().</p>
+
+*/">
+    <method name="public QBitArray()" doc="/**
+<p>Constructs an empty bit array.</p>
+
+*/"/>
+    <method name="public QBitArray(int size__0, boolean val__1)" doc="/**
+<p>Constructs a bit array containing <i>size</i> bits. The bits are initialized with <i>value</i>, which defaults to false (0).</p>
+
+*/"/>
+    <method name="public QBitArray(com.trolltech.qt.core.QBitArray other__0)" doc="/**
+<p>Constructs a copy of <i>other</i>.</p>
+<p>This operation takes constant time, because QBitArray is implicitly shared. This makes returning a QBitArray from a function very fast. If a shared instance is modified, it will be copied (copy-on-write), and that takes linear time.</p>
+
+*/"/>
+    <method name="public final boolean at(int i__0)" doc="/**
+<p>Returns the value of the bit at index position <i>i</i>.</p>
+<p><i>i</i> must be a valid index position in the bit array (i.e., 0 &lt;= <i>i</i> &lt; size()).</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Clears the contents of the bit array and makes it empty.</p>
+
+*/"/>
+    <method name="public final void clearBit(int i__0)" doc="/**
+<p>Sets the bit at index position <i>i</i> to 0.</p>
+<p><i>i</i> must be a valid index position in the bit array (i.e., 0 &lt;= <i>i</i> &lt; size()).</p>
+
+*/"/>
+    <method name="public final int count(boolean on__0)" doc="/**
+<p>If <i>on</i> is true, this function returns the number of 1-bits stored in the bit array; otherwise the number of 0-bits is returned.</p>
+
+*/"/>
+    <method name="public final int count()" doc="/**
+<p>Same as size().</p>
+
+*/"/>
+    <method name="public final void detach()"/>
+    <method name="public final boolean fill(boolean val__0, int size__1)" doc="/**
+<p>Sets every bit in the bit array to <i>value</i>, returning true if successful; otherwise returns false. If <i>size</i> is different from -1 (the default), the bit array is resized to <i>size</i> beforehand.</p>
+<p>Example:</p>
+<pre>    QBitArray ba(8);
+    ba.fill(true);
+<span class=&quote;comment&quote;>    // ba: [ 1, 1, 1, 1, 1, 1, 1, 1 ]</span>
+
+    ba.fill(false, 2);
+<span class=&quote;comment&quote;>    // ba: [ 0, 0 ]</span></pre>
+
+*/"/>
+    <method name="public final void fill(boolean val__0, int first__1, int last__2)" doc="/**
+<p>Sets bits at index positions <i>begin</i> up to and excluding <i>end</i> to <i>value</i>.</p>
+<p><i>begin</i> and <i>end</i> must be a valid index position in the bit array (i.e., 0 &lt;= <i>begin</i> &lt;= size() and 0 &lt;= <i>end</i> &lt;= size()).</p>
+
+*/"/>
+    <method name="public final boolean isDetached()"/>
+    <method name="public final boolean isEmpty()" doc="/**
+<p>Returns true if this bit array has size 0; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isNull()" doc="/**
+<p>Returns true if this bit array is null; otherwise returns false.</p>
+<p>Example:</p>
+<pre>    QBitArray().isNull();           <span class=&quote;comment&quote;>// returns true</span>
+    QBitArray(0).isNull();          <span class=&quote;comment&quote;>// returns false</span>
+    QBitArray(3).isNull();          <span class=&quote;comment&quote;>// returns false</span></pre>
+<p>Qt makes a distinction between null bit arrays and empty bit arrays for historical reasons. For most applications, what matters is whether or not a bit array contains any data, and this can be determined using isEmpty().</p>
+
+*/"/>
+    <method name="public final void resize(int size__0)" doc="/**
+<p>Resizes the bit array to <i>size</i> bits.</p>
+<p>If <i>size</i> is greater than the current size, the bit array is extended to make it <i>size</i> bits with the extra bits added to the end. The new bits are initialized to false (0).</p>
+<p>If <i>size</i> is less than the current size, bits are removed from the end.</p>
+
+*/"/>
+    <method name="public final void setBit(int i__0)" doc="/**
+<p>Sets the bit at index position <i>i</i> to 1.</p>
+<p><i>i</i> must be a valid index position in the bit array (i.e., 0 &lt;= <i>i</i> &lt; size()).</p>
+
+*/"/>
+    <method name="public final void setBit(int i__0, boolean val__1)" doc="/**
+<p>Sets the bit at index position <i>i</i> to <i>value</i>.</p>
+
+*/"/>
+    <method name="public final int size()" doc="/**
+<p>Returns the number of bits stored in the bit array.</p>
+
+*/"/>
+    <method name="public final boolean testBit(int i__0)" doc="/**
+<p>Returns true if the bit at index position <i>i</i> is 1; otherwise returns false.</p>
+<p><i>i</i> must be a valid index position in the bit array (i.e., 0 &lt;= <i>i</i> &lt; size()).</p>
+
+*/"/>
+    <method name="public final boolean toggleBit(int i__0)" doc="/**
+<p>Inverts the value of the bit at index position <i>i</i>, returning the previous value of that bit as either true (if it was set) or false (if it was unset).</p>
+<p>If the previous value was 0, the new value will be 1. If the previous value was 1, the new value will be 0.</p>
+<p><i>i</i> must be a valid index position in the bit array (i.e., 0 &lt;= <i>i</i> &lt; size()).</p>
+
+*/"/>
+    <method name="public final void truncate(int pos__0)" doc="/**
+<p>Truncates the bit array at index position <i>pos</i>.</p>
+<p>If <i>pos</i> is beyond the end of the array, nothing happens.</p>
+
+*/"/>
+</class>

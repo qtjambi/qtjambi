@@ -1,0 +1,104 @@
+<class name="QAbstractButton" doc="/**
+<p>The QAbstractButton class is the abstract base class of button widgets, providing functionality common to buttons.</p>
+<p>This class implements an <i>abstract</i> button. Subclasses of this class handle user actions, and specify how the button is drawn.</p>
+<p>QAbstractButton provides support for both push buttons and checkable (toggle) buttons. Checkable buttons are implemented in the QRadioButton and QCheckBox classes. Push buttons are implemented in the QPushButton and QToolButton classes; these also provide toggle behavior if required.</p>
+<p>Any button can display a label containing text and an icon. setText() sets the text; setIcon() sets the icon. If a button is disabled, its label is changed to give the button a &quot;disabled&quot; appearance.</p>
+<p>If the button is a text button with a string containing an ampersand (&amp;), QAbstractButton creates an automatic shortcut key, called a mnemonic, that may change based on the button translation. The following code creates a push button labelled &quot;Ro<u>c</u>k &amp; Roll&quot; (where the c is underlined):</p>
+<pre>    QPushButton *button = new QPushButton(tr(&quot;Ro&amp;ck &amp;&amp; Roll&quot;), this);</pre>
+<p>In this example, the shortcut <b>Alt+C</b> is assigned to the button, so that when the user presses <b>Alt+C</b> the button will call animateClick().</p>
+<p>You can also set a custom shortcut key using the setShortcut() function. This is useful mostly for buttons that do not have any text, because they have no automatic shortcut.</p>
+<pre>    button-&gt;setIcon(QIcon(&quot;:/images/print.png&quot;));
+    button-&gt;setShortcut(tr(&quot;Alt+F7&quot;));</pre>
+<p>All of the buttons provided by Qt (QPushButton, QToolButton, QCheckBox, and QRadioButton) can display both text and icons.</p>
+<p>A button can be made the default button in a dialog are provided by QPushButton::setDefault() and QPushButton::setAutoDefault().</p>
+<p>QAbstractButton provides most of the states used for buttons:</p>
+<ul>
+<li>isDown() indicates whether the button is <i>pressed</i> down.</li>
+<li>isChecked() indicates whether the button is <i>checked</i>. Only checkable buttons can be checked and unchecked (see below).</li>
+<li>isEnabled() indicates whether the button can be pressed by the user.</li>
+<li>setAutoRepeat() sets whether the button will auto-repeat if the user holds it down. autoRepeatDelay and autoRepeatInterval define how auto-repetition is done.</li>
+<li>setCheckable() sets whether the button is a toggle button or not.</li>
+</ul>
+<p>The difference between isDown() and isChecked() is as follows. When the user clicks a toggle button to check it, the button is first <i>pressed</i> then released into the <i>checked</i> state. When the user clicks it again (to uncheck it), the button moves first to the <i>pressed</i> state, then to the <i>unchecked</i> state (isChecked() and isDown() are both false).</p>
+<p>QAbstractButton provides five signals:</p>
+<ol type=&quote;1&quote;>
+<li>pressed() is emitted when the left mouse button is pressed while the mouse cursor is inside the button.</li>
+<li>released() is emitted when the left mouse button is released.</li>
+<li>clicked() is emitted when the button is first pressed and then released, when the shortcut key is typed, or when click() or animateClick() is called.</li>
+<li>toggled(bool) is emitted when the state of a toggle button changes.</li>
+</ol>
+<p>To subclass QAbstractButton, you must reimplement at least paintEvent() to draw the button's outline and its text or pixmap. It is generally advisable to reimplement sizeHint() as well, and sometimes hitButton() (to determine whether a button press is within the button). For buttons with more than two states (like tri-state buttons), you will also have to reimplement checkStateSet() and nextCheckState().</p>
+
+*/">
+    <method name="public QAbstractButton(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an abstract button with a <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final void animateClick(int msec__0)" doc="/**
+<p>Performs an animated click: the button is pressed and released <i>msec</i> milliseconds later (the default is 100 ms).</p>
+<p>All signals associated with a click are emitted as appropriate.</p>
+<p>This function does nothing if the button is disabled.</p>
+
+*/"/>
+    <method name="public final boolean autoExclusive()"/>
+    <method name="public final boolean autoRepeat()"/>
+    <method name="public final int autoRepeatDelay()"/>
+    <method name="public final int autoRepeatInterval()"/>
+    <method name="public final void click()" doc="/**
+<p>Performs a click.</p>
+<p>All the usual signals associated with a click are emitted as appropriate. If the button is checkable, the state of the button is toggled.</p>
+<p>This function does nothing if the button is disabled.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QButtonGroup group()" doc="/**
+<p>Returns the group that this button belongs to.</p>
+<p>If the button is not a member of any QButtonGroup, this function returns 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QIcon icon()"/>
+    <method name="public final com.trolltech.qt.core.QSize iconSize()"/>
+    <method name="public final boolean isCheckable()"/>
+    <method name="public final boolean isChecked()"/>
+    <method name="public final boolean isDown()"/>
+    <method name="public final void setAutoExclusive(boolean arg__0)"/>
+    <method name="public final void setAutoRepeat(boolean arg__0)"/>
+    <method name="public final void setAutoRepeatDelay(int arg__0)"/>
+    <method name="public final void setAutoRepeatInterval(int arg__0)"/>
+    <method name="public final void setCheckable(boolean arg__0)"/>
+    <method name="public final void setChecked(boolean arg__0)"/>
+    <method name="public final void setDown(boolean arg__0)"/>
+    <method name="public final void setIcon(com.trolltech.qt.gui.QIcon icon__0)"/>
+    <method name="public final void setIconSize(com.trolltech.qt.core.QSize size__0)"/>
+    <method name="public final void setShortcut(com.trolltech.qt.gui.QKeySequence key__0)"/>
+    <method name="public final void setText(java.lang.String text__0)"/>
+    <method name="public final com.trolltech.qt.gui.QKeySequence shortcut()"/>
+    <method name="public final java.lang.String text()"/>
+    <method name="public final void toggle()" doc="/**
+<p>Toggles the state of a checkable button.</p>
+
+*/"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected void checkStateSet()" doc="/**
+<p>This virtual handler is called when setChecked() was called, unless it was called from within nextCheckState(). It allows subclasses to reset their intermediate button states.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected void focusInEvent(com.trolltech.qt.gui.QFocusEvent e__0)"/>
+    <method name="protected void focusOutEvent(com.trolltech.qt.gui.QFocusEvent e__0)"/>
+    <method name="protected boolean hitButton(com.trolltech.qt.core.QPoint pos__0)" doc="/**
+<p>Returns true if <i>pos</i> is inside the clickable button rectangle; otherwise returns false.</p>
+<p>By default, the clickable area is the entire widget. Subclasses may reimplement this function to provide support for clickable areas of different shapes and sizes.</p>
+
+*/"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent e__0)"/>
+    <method name="protected void keyReleaseEvent(com.trolltech.qt.gui.QKeyEvent e__0)"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QMouseEvent e__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent e__0)"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QMouseEvent e__0)"/>
+    <method name="protected void nextCheckState()" doc="/**
+<p>This virtual handler is called when a button is clicked. The default implementation calls setChecked(!isChecked()) if the button isCheckable(). It allows subclasses to implement intermediate button states.</p>
+
+*/"/>
+    <method name="protected abstract void paintEvent(com.trolltech.qt.gui.QPaintEvent e__0)"/>
+    <method name="protected void timerEvent(com.trolltech.qt.core.QTimerEvent e__0)"/>
+</class>

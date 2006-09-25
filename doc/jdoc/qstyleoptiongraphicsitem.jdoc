@@ -1,0 +1,68 @@
+<class name="QStyleOptionGraphicsItem" doc="/**
+<p>The QStyleOptionGraphicsItem class is used to describe the parameters needed to draw a QGraphicsItem.</p>
+<p>For performance reasons, the access to the member variables is direct (i.e., using the <tt>.</tt> or <tt>-&gt;</tt> operator). This low-level feel makes the structures straightforward to use and emphasizes that these are simply parameters.</p>
+<p>For an example demonstrating how style options can be used, see the Styles example.</p>
+
+*/">
+    <method name="public QStyleOptionGraphicsItem(com.trolltech.qt.gui.QStyleOptionGraphicsItem other__0)" doc="/**
+<p>Constructs a copy of <i>other</i>.</p>
+
+*/"/>
+    <method name="public QStyleOptionGraphicsItem()" doc="/**
+<p>Constructs a QStyleOptionGraphicsItem. The levelOfDetail parameter is initialized to 1.</p>
+
+*/"/>
+    <method name="protected QStyleOptionGraphicsItem(int version__0)"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1</td></tr>
+</table></p>
+<p>The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SO_GraphicsItem for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF exposedRect()" doc="/**
+<p>the exposed rectangle, in item coordinates</p>
+<p>Make use of this rectangle to speed up item drawing when only parts of the item are exposed. If the whole item is exposed, this rectangle will be the same as QGraphicsItem::boundingRect().</p>
+
+*/"/>
+    <method name="public final void setExposedRect(com.trolltech.qt.core.QRectF exposedRect)" doc="/**
+<p>the exposed rectangle, in item coordinates</p>
+<p>Make use of this rectangle to speed up item drawing when only parts of the item are exposed. If the whole item is exposed, this rectangle will be the same as QGraphicsItem::boundingRect().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMatrix matrix()" doc="/**
+<p>the complete transformation matrix for the item</p>
+<p>This matrix is the sum of the item's scene matrix and the matrix of the painter used for drawing the item. It is provided for convenience, allowing anvanced level-of-detail metrics that can be used to speed up item drawing.</p>
+<p>To find the dimentions of an item in screen coordinates (i.e., pixels), you can use the mapping functions of QMatrix, such as QMatrix::map().</p>
+
+*/"/>
+    <method name="public final void setMatrix(com.trolltech.qt.gui.QMatrix matrix)" doc="/**
+<p>the complete transformation matrix for the item</p>
+<p>This matrix is the sum of the item's scene matrix and the matrix of the painter used for drawing the item. It is provided for convenience, allowing anvanced level-of-detail metrics that can be used to speed up item drawing.</p>
+<p>To find the dimentions of an item in screen coordinates (i.e., pixels), you can use the mapping functions of QMatrix, such as QMatrix::map().</p>
+
+*/"/>
+    <method name="public final double levelOfDetail()" doc="/**
+<p>a simple metric for determining an item's level of detail</p>
+<p>This simple metric provides an easy way to determine the level of detail for an item. Its value represents the maximum value of the height and width of a unity rectangle, mapped using the complete transformation matrix of the painter used to draw the item. By default, if no transformations are applied, its value is 1. If zoomed out 1:2, the level of detail will be 0.5, and if zoomed in 2:1, its value is 2.</p>
+<p>For more advanced level-of-detail metrics, use QStyleOptionGraphicsItem::matrix directly.</p>
+
+*/"/>
+    <method name="public final void setLevelOfDetail(double levelOfDetail)" doc="/**
+<p>a simple metric for determining an item's level of detail</p>
+<p>This simple metric provides an easy way to determine the level of detail for an item. Its value represents the maximum value of the height and width of a unity rectangle, mapped using the complete transformation matrix of the painter used to draw the item. By default, if no transformations are applied, its value is 1. If zoomed out 1:2, the level of detail will be 0.5, and if zoomed in 2:1, its value is 2.</p>
+<p>For more advanced level-of-detail metrics, use QStyleOptionGraphicsItem::matrix directly.</p>
+
+*/"/>
+</class>

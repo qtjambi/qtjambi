@@ -1,0 +1,133 @@
+<class name="QStyleOptionTab" doc="/**
+<p>The QStyleOptionTab class is used to describe the parameters for drawing a tab bar.</p>
+<p>The QStyleOptionTab class is used for drawing several built-in Qt widgets including QTabBar and the panel for QTabWidget. Note that to describe the parameters necessary for drawing a frame in Qt 4.1 or above, you must use the QStyleOptionFrameV2 subclass.</p>
+<p>An instance of the QStyleOptiontabV2 class has type SO_Tab and version 1. The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles. The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+<p>If you create your own QStyle subclass, you should handle both QStyleOptionTab and QStyleOptionTabV2.</p>
+<p>For an example demonstrating how style options can be used, see the Styles example.</p>
+
+*/">
+    <method name="public QStyleOptionTab(com.trolltech.qt.gui.QStyleOptionTab other__0)" doc="/**
+<p>Constructs a copy of the <i>other</i> style option.</p>
+
+*/"/>
+    <method name="public QStyleOptionTab()" doc="/**
+<p>Constructs a QStyleOptionTab object, initializing the members variables to their default values.</p>
+
+*/"/>
+    <method name="protected QStyleOptionTab(int version__0)"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1</td></tr>
+</table></p>
+<p>The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="CornerWidget" doc="/**
+<p>These flags indicate the corner widgets in a tab.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>There are no corner widgets</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Left corner widget</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Right corner widget</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="TabPosition" doc="/**
+<p>This enum describes the position of the tab.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The tab is the first tab in the tab bar.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The tab is neither the first nor the last tab in the tab bar.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The tab is the last tab in the tab bar.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The tab is both the first and the last tab in the tab bar.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="SelectedPosition" doc="/**
+<p>This enum describes the position of the selected tab. Some styles need to draw a tab differently depending on whether or not it is adjacent to the selected tab.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The tab is not adjacent to a selected tab (or is the selected tab).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The next tab (typically the tab on the right) is selected.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The previous tab (typically the tab on the left) is selected.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SO_Tab for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles.</p>
+
+*/"/>
+    <method name="public final int row()" doc="/**
+<p>which row the tab is currently in</p>
+<p>The default value is 0, indicating the front row. Currently this property can only be 0.</p>
+
+*/"/>
+    <method name="public final void setRow(int row)" doc="/**
+<p>which row the tab is currently in</p>
+<p>The default value is 0, indicating the front row. Currently this property can only be 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyleOptionTab.CornerWidgets cornerWidgets()" doc="/**
+<p>an OR combination of CornerWidget values indicating the corner widgets of the tab bar; the default value is NoCornerWidgets</p>
+
+*/"/>
+    <method name="public final void setCornerWidgets(com.trolltech.qt.gui.QStyleOptionTab.CornerWidgets cornerWidgets)" doc="/**
+<p>an OR combination of CornerWidget values indicating the corner widgets of the tab bar; the default value is NoCornerWidgets</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyleOptionTab.TabPosition position()" doc="/**
+<p>the position of the tab in the tab bar</p>
+<p>The default value is Beginning, i.e. the tab is the first tab in the tab bar.</p>
+
+*/"/>
+    <method name="public final void setPosition(com.trolltech.qt.gui.QStyleOptionTab.TabPosition position)" doc="/**
+<p>the position of the tab in the tab bar</p>
+<p>The default value is Beginning, i.e. the tab is the first tab in the tab bar.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QIcon icon()" doc="/**
+<p>The icon for the tab.</p>
+<p>The default value is an empty icon, i.e. an icon with neither a pixmap nor a filename.</p>
+
+*/"/>
+    <method name="public final void setIcon(com.trolltech.qt.gui.QIcon icon)" doc="/**
+<p>The icon for the tab.</p>
+<p>The default value is an empty icon, i.e. an icon with neither a pixmap nor a filename.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTabBar.Shape shape()" doc="/**
+<p>the tab shape used to draw the tab; by default QTabBar::RoundedNorth</p>
+
+*/"/>
+    <method name="public final void setShape(com.trolltech.qt.gui.QTabBar.Shape shape)" doc="/**
+<p>the tab shape used to draw the tab; by default QTabBar::RoundedNorth</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>The text of the tab.</p>
+<p>The default value is an empty string.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String text)" doc="/**
+<p>The text of the tab.</p>
+<p>The default value is an empty string.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyleOptionTab.SelectedPosition selectedPosition()" doc="/**
+<p>the position of the selected tab in relation to this tab</p>
+<p>The default value is NotAdjacent, i.e. the tab is not adjacent to a selected tab nor is it the selected tab.</p>
+
+*/"/>
+    <method name="public final void setSelectedPosition(com.trolltech.qt.gui.QStyleOptionTab.SelectedPosition selectedPosition)" doc="/**
+<p>the position of the selected tab in relation to this tab</p>
+<p>The default value is NotAdjacent, i.e. the tab is not adjacent to a selected tab nor is it the selected tab.</p>
+
+*/"/>
+</class>

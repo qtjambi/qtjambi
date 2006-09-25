@@ -1,0 +1,34 @@
+<class name="QFileIconProvider" doc="/**
+<p>The QFileIconProvider class provides file icon for the QDirModel class.</p>
+
+*/">
+    <method name="public QFileIconProvider()" doc="/**
+<p>Constructs a file icon provider.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QIcon icon(com.trolltech.qt.gui.QFileIconProvider.IconType type__0)" doc="/**
+<p>Returns an icon set for the given <i>type</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QIcon icon(com.trolltech.qt.core.QFileInfo info__0)" doc="/**
+<p>Returns an icon for the file described by <i>info</i>.</p>
+
+*/"/>
+    <method name="public java.lang.String type(com.trolltech.qt.core.QFileInfo info__0)" doc="/**
+<p>Returns the type of the file described by <i>info</i>.</p>
+
+*/"/>
+    <enum name="IconType" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

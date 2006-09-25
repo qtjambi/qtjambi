@@ -1,0 +1,167 @@
+<class name="QMainWindow" doc="/**
+<p>The QMainWindow class provides a main application window.</p>
+<p>QMainWindow provides a main application window, with a menu bar, tool bars, dock widgets and a status bar around a large central widget, such as a text edit, drawing canvas or QWorkspace (for MDI applications).</p>
+<p>Note that QMainWindow comes with its own customized layout and that setting a layout on a QMainWindow, or creating a layout with a QMainWindow as a parent is considered an error. You should set your own layout on the central widget instead.</p>
+<p>Topics:</p>
+<ul><li><a href=&quote;#saving-and-restoring-state&quote;>Saving and restoring state</a></li>
+<li><a href=&quote;#behavior-of-dock-widgets&quote;>Behavior of Dock Widgets</a></li>
+<ul><li><a href=&quote;#dock-widget-separators&quote;>Dock Widget Separators</a></li>
+<li><a href=&quote;#dragging-dock-widgets&quote;>Dragging Dock Widgets</a></li>
+<ul><li><a href=&quote;#managing-dock-widgets-and-toolbars&quote;>Managing Dock Widgets and Toolbars</a></li>
+</ul>
+</ul>
+</ul>
+<a name=&quote;saving-and-restoring-state&quote;></a>
+<h3>Saving and restoring state</h3>
+<p>The saveState() and restoreState() functions provide a means to save and restore the layout of the QToolBars and QDockWidgets in the QMainWindow. These functions work by storing the objectName of each QToolBar and QDockWidget together with information about placement, size, etc.</p>
+<a name=&quote;behavior-of-dock-widgets&quote;></a>
+<h3>Behavior of Dock Widgets</h3>
+<a name=&quote;dock-widget-separators&quote;></a><a name=&quote;dock-widget-separators&quote;></a>
+<h4>Dock Widget Separators</h4>
+<p>QMainWindow uses separators to separate QDockWidgets from each other and the central widget. These separators let the user control the size of QDockWidgets by dragging the boundary between them.</p>
+<p>A QDockWidget can be as large or as small as the user wishes, between the minimumSizeHint() (or minimumSize()) and maximumSize() of the QDockWidget. When a QDockWidget reaches its minimum size, space will be taken from other QDockWidgets in the direction of the user's drag, if possible. Once all QDockWidgets have reached their minimum sizes, further dragging does nothing. When a QDockWidget reaches its maximium size, space will be given to other QDockWidgets in the opposite direction of the user's drag, if possible. Once all QDockWidgets have reached their minimum size, futher dragging does nothing.</p>
+<a name=&quote;dragging-dock-widgets&quote;></a><a name=&quote;dragging-dock-widgets&quote;></a>
+<h4>Dragging Dock Widgets</h4>
+<p>QDockWidget displays a title bar to let the user drag the dock widget to a new location. A QDockWidget can be moved to any location provided enough space is available. (QMainWindow won't resize itself to a larger size in an attempt to provide more space.)</p>
+<p>A QRubberBand is shown while dragging the QDockWidget. This QRubberBand provides an indication to the user about where the QDockWidget will be placed when the mouse button is released.</p>
+<a name=&quote;managing-dock-widgets-and-toolbars&quote;></a>
+<h5>Managing Dock Widgets and Toolbars</h5>
+<p>By default, QMainWindow provides a context menu that can be used to toggle the visibility of the toolbars and dock widgets attached to a main window. This menu is usually accessed by right-clicking on a dock window or toolbar, but it can also be obtained programmatically by calling createPopupMenu().</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image mainwindow-contextmenu.png]</font></p><p>This popup menu can be replaced or customized to suit the specific needs of an application: In a QMainWindow subclass, reimplement createPopupMenu() to either create a custom popup menu by constructing a new QMenu on demand, or to modify the QMenu object obtained by calling the default implementation.</p>
+
+*/">
+    <method name="public QMainWindow(com.trolltech.qt.gui.QWidget parent__0, com.trolltech.qt.core.Qt.WindowFlags flags__1)" doc="/**
+<p>Constructs a QMainWindow with the given <i>parent</i> and the specified widget <i>flags</i>.</p>
+
+*/"/>
+    <method name="public final void addDockWidget(com.trolltech.qt.core.Qt.DockWidgetArea area__0, com.trolltech.qt.gui.QDockWidget dockwidget__1)" doc="/**
+<p>Adds the given <i>dockwidget</i> to the specified <i>area</i>.</p>
+
+*/"/>
+    <method name="public final void addDockWidget(com.trolltech.qt.core.Qt.DockWidgetArea area__0, com.trolltech.qt.gui.QDockWidget dockwidget__1, com.trolltech.qt.core.Qt.Orientation orientation__2)" doc="/**
+<p>Adds <i>dockwidget</i> into the given <i>area</i> in the direction specified by the <i>orientation</i>.</p>
+
+*/"/>
+    <method name="public final void addToolBar(com.trolltech.qt.gui.QToolBar toolbar__0)" doc="/**
+<p>Equivalent of calling addToolBar(Qt::TopToolBarArea, <i>toolbar</i>)</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QToolBar addToolBar(java.lang.String title__0)" doc="/**
+<p>Creates a QToolBar object, setting its window title to <i>title</i>, and inserts it into the top toolbar area.</p>
+
+*/"/>
+    <method name="public final void addToolBar(com.trolltech.qt.core.Qt.ToolBarArea area__0, com.trolltech.qt.gui.QToolBar toolbar__1)" doc="/**
+<p>Adds the <i>toolbar</i> into the specified <i>area</i> in this main window. The <i>toolbar</i> is placed at the end of the current tool bar block (i.e. line). If the main window already manages <i>toolbar</i> then it will only move the toolbar to <i>area</i>.</p>
+
+*/"/>
+    <method name="public final void addToolBarBreak(com.trolltech.qt.core.Qt.ToolBarArea area__0)" doc="/**
+<p>Adds a toolbar break to the given <i>area</i> after all the other objects that are present.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget centralWidget()" doc="/**
+<p>Returns the central widget for the main window. This function returns zero if the central widget has not been set.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.DockWidgetArea corner(com.trolltech.qt.core.Qt.Corner corner__0)" doc="/**
+<p>Returns the dock widget area that occupies the specified <i>corner</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.DockWidgetArea dockWidgetArea(com.trolltech.qt.gui.QDockWidget dockwidget__0)" doc="/**
+<p>Returns the Qt::DockWidgetArea for <i>dockwidget</i>. If <i>dockwidget</i> has not been added to the main window, this function returns <tt>Qt::NoDockWidgetArea</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize iconSize()"/>
+    <method name="public final void insertToolBar(com.trolltech.qt.gui.QToolBar before__0, com.trolltech.qt.gui.QToolBar toolbar__1)" doc="/**
+<p>Inserts the <i>toolbar</i> into the area occupied by the <i>before</i> toolbar so that it appears before it. For example, in normal left-to-right layout operation, this means that <i>toolbar</i> will appear to the left of the toolbar specified by <i>before</i> in a horizontal toolbar area.</p>
+
+*/"/>
+    <method name="public final void insertToolBarBreak(com.trolltech.qt.gui.QToolBar before__0)" doc="/**
+<p>Inserts a toolbar break before the toolbar specified by <i>before</i>.</p>
+
+*/"/>
+    <method name="public final boolean isAnimated()"/>
+    <method name="public final boolean isDockNestingEnabled()"/>
+    <method name="public final boolean isSeparator(com.trolltech.qt.core.QPoint pos__0)"/>
+    <method name="public final com.trolltech.qt.gui.QMenuBar menuBar()" doc="/**
+<p>Returns the menu bar for the main window. This function creates and returns an empty menu bar if the menu bar does not exist.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget menuWidget()" doc="/**
+<p>Returns the menu bar for the main window. This function returns null if a menubar hasn't been constructed yet.</p>
+
+*/"/>
+    <method name="public final void removeDockWidget(com.trolltech.qt.gui.QDockWidget dockwidget__0)" doc="/**
+<p>Removes the <i>dockwidget</i> from the main window layout and hides it. Note that the <i>dockwidget</i> is <i>not</i> deleted.</p>
+
+*/"/>
+    <method name="public final void removeToolBar(com.trolltech.qt.gui.QToolBar toolbar__0)" doc="/**
+<p>Removes the <i>toolbar</i> from the main window layout and hides it. Note that the <i>toolbar</i> is <i>not</i> deleted.</p>
+
+*/"/>
+    <method name="public final boolean restoreState(com.trolltech.qt.core.QByteArray state__0, int version__1)" doc="/**
+<p>Restores the <i>state</i> of this mainwindow's toolbars and dockwidgets. The <i>version</i> number is compared with that stored in <i>state</i>. If they do not match, the mainwindow's state is left unchanged, and this function returns <tt>false</tt>; otherwise, the state is restored, and this function returns <tt>true</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray saveState(int version__0)" doc="/**
+<p>Saves the current state of this mainwindow's toolbars and dockwidgets. The <i>version</i> number is stored as part of the data.</p>
+<p>The objectName property is used to identify each QToolBar and QDockWidget. You should make sure that this property is unique for each QToolBar and QDockWidget you add to the QMainWindow</p>
+<p>To restore the saved state, pass the return value and <i>version</i> number to restoreState().</p>
+
+*/"/>
+    <method name="public final void setAnimated(boolean enabled__0)"/>
+    <method name="public final void setCentralWidget(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Sets the given <i>widget</i> to be the main window's central widget.</p>
+<p>Note: QMainWindow takes ownership of the <i>widget</i> pointer and deletes it at the appropriate time.</p>
+
+*/"/>
+    <method name="public final void setCorner(com.trolltech.qt.core.Qt.Corner corner__0, com.trolltech.qt.core.Qt.DockWidgetArea area__1)" doc="/**
+<p>Sets the given dock widget <i>area</i> to occupy the specified <i>corner</i>.</p>
+
+*/"/>
+    <method name="public final void setDockNestingEnabled(boolean enabled__0)"/>
+    <method name="public final void setIconSize(com.trolltech.qt.core.QSize iconSize__0)"/>
+    <method name="public final void setMenuBar(com.trolltech.qt.gui.QMenuBar menubar__0)" doc="/**
+<p>Sets the menu bar for the main window to <i>menuBar</i>.</p>
+<p>Note: QMainWindow takes ownership of the <i>menuBar</i> pointer and deletes it at the appropriate time.</p>
+
+*/"/>
+    <method name="public final void setMenuWidget(com.trolltech.qt.gui.QWidget menubar__0)" doc="/**
+<p>Sets the menu bar for the main window to <i>menuBar</i>.</p>
+<p>QMainWindow takes ownership of the <i>menuBar</i> pointer and deletes it at the appropriate time.</p>
+
+*/"/>
+    <method name="public final void setStatusBar(com.trolltech.qt.gui.QStatusBar statusbar__0)" doc="/**
+<p>Sets the status bar for the main window to <i>statusbar</i>.</p>
+<p>Setting the status bar to 0 will remove it from the main window. Note that QMainWindow takes ownership of the <i>statusbar</i> pointer and deletes it at the appropriate time.</p>
+
+*/"/>
+    <method name="public final void setToolButtonStyle(com.trolltech.qt.core.Qt.ToolButtonStyle toolButtonStyle__0)"/>
+    <method name="public final void splitDockWidget(com.trolltech.qt.gui.QDockWidget after__0, com.trolltech.qt.gui.QDockWidget dockwidget__1, com.trolltech.qt.core.Qt.Orientation orientation__2)" doc="/**
+<p>Splits the space covered by the <i>first</i> dock widget into two parts, moves the <i>first</i> dock widget into the first part, and moves the <i>second</i> dock widget into the second part.</p>
+<p>The <i>orientation</i> specifies how the space is divided: A Qt::Horizontal split places the second dock widget to the right of the first; a Qt::Vertical split places the second dock widget below the first.</p>
+<p><i>Note</i>: if <i>first</i> is currently in a tabbed docked area, <i>second</i> will be added as a new tab, not as a neighbor of <i>next</i>. This is because a single tab can contain only one dock widget.</p>
+<p><i>Note</i>: The Qt::LayoutDirection influences the order of the dock widgets in the two parts of the divided area. When right-to-left layout direction is enabled, the placing of the dock widgets will be reversed.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStatusBar statusBar()" doc="/**
+<p>Returns the status bar for the main window. This function creates and returns an empty status bar if the status bar does not exist.</p>
+
+*/"/>
+    <method name="public final void tabifyDockWidget(com.trolltech.qt.gui.QDockWidget first__0, com.trolltech.qt.gui.QDockWidget second__1)" doc="/**
+<p>Moves <i>second</i> dock widget on top of <i>first</i> dock widget, creating a tabbed docked area in the main window.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ToolBarArea toolBarArea(com.trolltech.qt.gui.QToolBar toolbar__0)" doc="/**
+<p>Returns the Qt::ToolBarArea for <i>toolbar</i>. If <i>toolbar</i> has not been added to the main window, this function returns <tt>Qt::NoToolBarArea</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ToolButtonStyle toolButtonStyle()"/>
+    <method name="protected void contextMenuEvent(com.trolltech.qt.gui.QContextMenuEvent event__0)"/>
+    <method name="public com.trolltech.qt.gui.QMenu createPopupMenu()" doc="/**
+<p>Returns a popup menu containing checkable entries for the toolbars and dock widgets present in the main window.</p>
+<p>By default, this function is called by the main window when the user activates a context menu, typically by right-clicking on a toolbar or a dock widget.</p>
+<p>If you want to create a custom popup menu, reimplement this function and return a newly-created popup menu. Ownership of the popup menu is transferred to the caller.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)"/>
+</class>

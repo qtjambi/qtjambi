@@ -1,0 +1,113 @@
+<class name="QIcon" doc="/**
+<p>The QIcon class provides scalable icons in different modes and states.</p>
+<p>A QIcon can generate smaller, larger, active, and disabled pixmaps from the set of pixmaps it is given. Such pixmaps are used by Qt widgets to show an icon representing a particular action.</p>
+<p>The simplest use of QIcon is to create one from a QPixmap file or resource, and then use it, allowing Qt to work out all the required icon styles and sizes. For example:</p>
+<pre>    QToolButton *button = new QToolButton;
+    button-&gt;setIcon(QIcon(&quot;open.xpm&quot;));</pre>
+<p>Use the QImageReader::supportedImageFormats() and QImageWriter::supportedImageFormats() functions to retrieve a complete list of the supported file formats.</p>
+<p>When you retrieve a pixmap using pixmap(QSize, Mode, State), and no pixmap for this given size, mode and state has been added with addFile() or addPixmap(), then QIcon will generate one on the fly. This pixmap generation happens in a QIconEngine. The default engine scales pixmaps down if required, but never up, and it uses the current style to calculate a disabled appearance. By using custom icon engines, you can customize every aspect of generated icons. With QIconEnginePlugin it is possible to register different icon engines for different file suffixes, so you could provide a SVG icon engine or any other scalable format.</p>
+<a name=&quote;making-classes-that-use-qicon&quote;></a>
+<h3>Making Classes that Use QIcon</h3>
+<p>If you write your own widgets that have an option to set a small pixmap, consider allowing a QIcon to be set for that pixmap. The Qt class QToolButton is an example of such a widget.</p>
+<p>Provide a method to set a QIcon, and when you draw the icon, choose whichever pixmap is appropriate for the current state of your widget. For example:</p>
+<pre>    void MyWidget::drawIcon(QPainter *painter, QPoint pos)
+    {
+        QPixmap pixmap = icon.pixmap(QSize(22, 22),
+                                       isEnabled() ? QIcon::Normal
+                                                   : QIcon::Disabled,
+                                       isOn() ? QIcon::On
+                                              : QIcon::Off);
+        painter-&gt;drawPixmap(pos, pixmap);
+    }</pre>
+<p>You might also make use of the <tt>Active</tt> mode, perhaps making your widget <tt>Active</tt> when the mouse is over the widget (see QWidget::enterEvent()), while the mouse is pressed pending the release that will activate the function, or when it is the currently selected item. If the widget can be toggled, the &quot;On&quot; mode might be used to draw a different icon.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image icon.png]</font></p>
+*/">
+    <method name="public QIcon(com.trolltech.qt.gui.QPixmap pixmap__0)" doc="/**
+<p>Constructs an icon from a <i>pixmap</i>.</p>
+
+*/"/>
+    <method name="public QIcon()" doc="/**
+<p>Constructs a null icon.</p>
+
+*/"/>
+    <method name="public QIcon(java.lang.String fileName__0)" doc="/**
+<p>Constructs an icon from the file with the given <i>fileName</i>. The file will be loaded on demand.</p>
+<p>If <i>fileName</i> contains a relative path (e.g. the filename only) the relevant file must be found relative to the runtime working directory.</p>
+<p>The file name can be either refer to an actual file on disk or to one of the application's embedded resources. See the Resource System overview for details on how to embed images and other resource files in the application's executable.</p>
+<p>Use the QImageReader::supportedImageFormats() and QImageWriter::supportedImageFormats() functions to retrieve a complete list of the supported file formats.</p>
+
+*/"/>
+    <method name="public QIcon(com.trolltech.qt.gui.QIcon other__0)" doc="/**
+<p>Constructs a copy of <i>other</i>. This is very fast.</p>
+
+*/"/>
+    <method name="public QIcon(com.trolltech.qt.gui.QIconEngine engine__0)" doc="/**
+<p>Creates an icon with a specific icon <i>engine</i>. The icon takes ownership of the engine.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize actualSize(com.trolltech.qt.core.QSize size__0, com.trolltech.qt.gui.QIcon.Mode mode__1, com.trolltech.qt.gui.QIcon.State state__2)" doc="/**
+<p>Returns the actual size of the icon for the requested <i>size</i>, <i>mode</i>, and <i>state</i>. The result might be smaller than requested, but never larger.</p>
+
+*/"/>
+    <method name="public final void addFile(java.lang.String fileName__0, com.trolltech.qt.core.QSize size__1, com.trolltech.qt.gui.QIcon.Mode mode__2, com.trolltech.qt.gui.QIcon.State state__3)" doc="/**
+<p>Adds a pixmap from the file with the given <i>fileName</i> to the icon, as a specialization for <i>size</i>, <i>mode</i> and <i>state</i>. The file will be loaded on demand. Note: custom icon engines are free to ignore additionally added pixmaps.</p>
+<p>If <i>fileName</i> contains a relative path (e.g. the filename only) the relevant file must be found relative to the runtime working directory.</p>
+<p>The file name can be either refer to an actual file on disk or to one of the application's embedded resources. See the Resource System overview for details on how to embed images and other resource files in the application's executable.</p>
+<p>Use the QImageReader::supportedImageFormats() and QImageWriter::supportedImageFormats() functions to retrieve a complete list of the supported file formats.</p>
+
+*/"/>
+    <method name="public final void addPixmap(com.trolltech.qt.gui.QPixmap pixmap__0, com.trolltech.qt.gui.QIcon.Mode mode__1, com.trolltech.qt.gui.QIcon.State state__2)" doc="/**
+<p>Adds <i>pixmap</i> to the icon, as a specialization for <i>mode</i> and <i>state</i>.</p>
+<p>Custom icon engines are free to ignore additionally added pixmaps.</p>
+
+*/"/>
+    <method name="public final boolean isDetached()"/>
+    <method name="public final boolean isNull()" doc="/**
+<p>Returns true if the icon is empty; otherwise returns false.</p>
+<p>An icon is empty if it has neither a pixmap nor a filename.</p>
+<p>Note: Even a non-null icon might not be able to create valid pixmaps, eg. if the file does not exist or cannot be read.</p>
+
+*/"/>
+    <method name="public final void paint(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.core.QRect rect__1, com.trolltech.qt.core.Qt.Alignment alignment__2, com.trolltech.qt.gui.QIcon.Mode mode__3, com.trolltech.qt.gui.QIcon.State state__4)" doc="/**
+<p>Uses the <i>painter</i> to paint the icon with specified <i>alignment</i>, required <i>mode</i>, and <i>state</i> into the rectangle <i>rect</i>.</p>
+
+*/"/>
+    <method name="public final void paint(com.trolltech.qt.gui.QPainter painter__0, int x__1, int y__2, int w__3, int h__4, com.trolltech.qt.core.Qt.Alignment alignment__5, com.trolltech.qt.gui.QIcon.Mode mode__6, com.trolltech.qt.gui.QIcon.State state__7)" doc="/**
+<p>Paints the icon into the rectangle QRect(<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap pixmap(com.trolltech.qt.core.QSize size__0, com.trolltech.qt.gui.QIcon.Mode mode__1, com.trolltech.qt.gui.QIcon.State state__2)" doc="/**
+<p>Returns a pixmap with the requested <i>size</i>, <i>mode</i>, and <i>state</i>, generating one if necessary. The pixmap might be smaller than requested, but never larger.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap pixmap(int w__0, int h__1, com.trolltech.qt.gui.QIcon.Mode mode__2, com.trolltech.qt.gui.QIcon.State state__3)" doc="/**
+<p>Returns a pixmap of size QSize(<i>w</i>, <i>h</i>).</p>
+
+*/"/>
+    <method name="public final int serialNumber()" doc="/**
+<p>Returns a number that identifies the contents of this QIcon object. Distinct QIcon objects can have the same serial number if they refer to the same contents (but they don't have to). Also, the serial number of a QIcon object may change during its lifetime.</p>
+<p>A null icon always has a serial number of 0.</p>
+<p>Serial numbers are mostly useful in conjunction with cacheing.</p>
+
+*/"/>
+    <enum name="Mode" doc="/**
+<p>This enum type describes the mode for which a pixmap is intended to be used. The currently defined modes are:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display the pixmap when the user is not interacting with the icon, but the functionality represented by the icon is available.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display the pixmap when the functionality represented by the icon is not available.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display the pixmap when the functionality represented by the icon is available and the user is interacting with the icon, for example, moving the mouse over it or clicking it.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display the pixmap when the item represented by the icon is selected.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="State" doc="/**
+<p>This enum describes the state for which a pixmap is intended to be used. The <i>state</i> can be:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display the pixmap when the widget is in an &quot;off&quot; state</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display the pixmap when the widget is in an &quot;on&quot; state</td></tr>
+</table></p>
+
+*/"/>
+</class>

@@ -1,0 +1,81 @@
+<class name="QAbstractItemDelegate" doc="/**
+<p>The QAbstractItemDelegate class is used to display and edit data items from a model.</p>
+<p>A QAbstractItemDelegate provides the interface and common functionality for delegates in the model/view architecture. Delegates display individual items in views, and handle the editing of model data.</p>
+<p>The QAbstractItemDelegate class is one of the Model/View Classes and is part of Qt's model/view framework.</p>
+<p>To render an item in a custom way, you must implement paint() and sizeHint(). The QItemDelegate class provides default implementations for these functions; if you do not need custom rendering, subclass that class instead.</p>
+<p>To provide custom editing, there are two approaches that can be used. The first approach is to create an editor widget and display it directly on top of the item. To do this you must reimplement createEditor() to provide an editor widget, setEditorData() to populate the editor with the data from the model, and setModelData() so that the delegate can update the model with data from the editor.</p>
+<p>The second approach is to handle user events directly by reimplementing editorEvent().</p>
+
+*/">
+    <method name="public QAbstractItemDelegate(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Creates a new abstract item delegate with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QWidget createEditor(com.trolltech.qt.gui.QWidget parent__0, com.trolltech.qt.gui.QStyleOptionViewItem option__1, com.trolltech.qt.core.QModelIndex index__2)" doc="/**
+<p>Returns the editor to be used for editing the data item with the given <i>index</i>. Note that the index contains information about the model being used. The editor's parent widget is specified by <i>parent</i>, and the item options by <i>option</i>.</p>
+<p>The base implementation returns 0. If you want custom editing you will need to reimplement this function.</p>
+
+*/"/>
+    <method name="public boolean editorEvent(com.trolltech.qt.core.QEvent event__0, com.trolltech.qt.core.QAbstractItemModel model__1, com.trolltech.qt.gui.QStyleOptionViewItem option__2, com.trolltech.qt.core.QModelIndex index__3)" doc="/**
+<p>Whenever an event occurs, this function is called with the <i>event</i> <i>model</i> <i>option</i> and the <i>index</i> that corresponds to the item being edited.</p>
+<p>The base implementation returns false (indicating that it has not handled the event).</p>
+
+*/"/>
+    <method name="public abstract void paint(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.gui.QStyleOptionViewItem option__1, com.trolltech.qt.core.QModelIndex index__2)" doc="/**
+<p>This pure abstract function must be reimplemented if you want to provide custom rendering. Use the <i>painter</i> and style <i>option</i> to render the item specified by the item <i>index</i>.</p>
+<p>If you reimplement this you must also reimplement sizeHint().</p>
+
+*/"/>
+    <method name="public void setEditorData(com.trolltech.qt.gui.QWidget editor__0, com.trolltech.qt.core.QModelIndex index__1)" doc="/**
+<p>Sets the contents of the given <i>editor</i> to the data for the item at the given <i>index</i>. Note that the index contains information about the model being used.</p>
+<p>The base implementation does nothing. If you want custom editing you will need to reimplement this function.</p>
+
+*/"/>
+    <method name="public void setModelData(com.trolltech.qt.gui.QWidget editor__0, com.trolltech.qt.core.QAbstractItemModel model__1, com.trolltech.qt.core.QModelIndex index__2)" doc="/**
+<p>Sets the data for the item at the given <i>index</i> in the <i>model</i> to the contents of the given <i>editor</i>.</p>
+<p>The base implementation does nothing. If you want custom editing you will need to reimplement this function.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QSize sizeHint(com.trolltech.qt.gui.QStyleOptionViewItem option__0, com.trolltech.qt.core.QModelIndex index__1)" doc="/**
+<p>This pure abstract function must be reimplemented if you want to provide custom rendering. The options are specified by <i>option</i> and the model item by <i>index</i>.</p>
+<p>If you reimplement this you must also reimplement paint().</p>
+
+*/"/>
+    <method name="public void updateEditorGeometry(com.trolltech.qt.gui.QWidget editor__0, com.trolltech.qt.gui.QStyleOptionViewItem option__1, com.trolltech.qt.core.QModelIndex index__2)" doc="/**
+<p>Updates the geometry of the <i>editor</i> for the item with the given <i>index</i>, according to the rectangle specified in the <i>option</i>. If the item has an internal layout, the editor will be laid out accordingly. Note that the index contains information about the model being used.</p>
+<p>The base implementation does nothing. If you want custom editing you must reimplement this function.</p>
+
+*/"/>
+    <method name="public final static java.lang.String elidedText(com.trolltech.qt.gui.QFontMetrics fontMetrics__0, int width__1, com.trolltech.qt.core.Qt.TextElideMode mode__2, java.lang.String text__3)" doc="/**
+<p>Use QFontMetrics::elidedText() instead.</p>
+<p>For example, if you have code like</p>
+<pre><font color=&quote;#404040&quote;>    QFontMetrics fm = ...
+    QString str = QAbstractItemDelegate::elidedText(fm, width, mode, text);</font></pre>
+<p>you can rewrite it as</p>
+<pre>    QFontMetrics fm = ...
+    QString str = fm.elidedText(text, mode, width);</pre>
+
+*/"/>
+    <enum name="EndEditHint" doc="/**
+<p>This enum describes the different hints that the delegate can give to the model and view components to make editing data in a model a comfortable experience for the user.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>There is no recommended action to be performed.</td></tr>
+</table></p>
+<p>These hints let the delegate influence the behavior of the view:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The view should use the delegate to open an editor on the next item in the view.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The view should use the delegate to open an editor on the previous item in the view.</td></tr>
+</table></p>
+<p>Note that custom views may interpret the concepts of next and previous differently.</p>
+<p>The following hints are most useful when models are used that cache data, such as those that manipulate date locally in order to increase performance or conserve network bandwidth.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>If the model caches data, it should write out cached data to the underlying data store.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>If the model caches data, it should discard cached data and replace it with data from the underlying data store.</td></tr>
+</table></p>
+<p>Although models and views should respond to these hints in appropriate ways, custom components may ignore any or all of them if they are not relevant.</p>
+
+*/"/>
+</class>

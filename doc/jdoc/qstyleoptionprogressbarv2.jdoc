@@ -1,0 +1,72 @@
+<class name="QStyleOptionProgressBarV2" doc="/**
+<p>The QStyleOptionProgressBarV2 class is used to describe the parameters necessary for drawing a progress bar in Qt 4.1 or above.</p>
+<p>An instance of this class has type SO_ProgressBar and version 2.</p>
+<p>The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles. The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+<p>If you create your own QStyle subclass, you should handle both QStyleOptionProgressBar and QStyleOptionProgressBarV2. One way to achieve this is to use the QStyleOptionProgressBarV2 copy constructor. For example:</p>
+<pre>        if (const QStyleOptionProgressBar *progressBarOption =
+               qstyleoption_cast&lt;const QStyleOptionProgressBar *&gt;(option)) {
+            QStyleOptionProgressBarV2 progressBarV2(*progressBarOption);
+
+            <span class=&quote;comment&quote;>// draw the progress bar using progressBarV2</span>
+        }</pre>
+<p>In the example above: If the <tt>progressBarOption</tt>'s version is 1, the extra members (orientation, invertedAppearance, and bottomToTop) are set to default values for <tt>progressBarV2</tt>. If the <tt>progressBarOption</tt>'s version is 2, the constructor will simply copy the extra members to progressBarV2.</p>
+<p>For an example demonstrating how style options can be used, see the Styles example.</p>
+
+*/">
+    <method name="public QStyleOptionProgressBarV2(com.trolltech.qt.gui.QStyleOptionProgressBarV2 other__0)" doc="/**
+<p>Constructs a copy of the <i>other</i> style option.</p>
+
+*/"/>
+    <method name="public QStyleOptionProgressBarV2(com.trolltech.qt.gui.QStyleOptionProgressBar other__0)" doc="/**
+<p>Constructs a copy of the <i>other</i> style option which can be either of the QStyleOptionProgressBar and QStyleOptionProgressBarV2 types.</p>
+<p>If the <i>other</i> style option's version is 1, the extra members (orientation, invertedAppearance, and bottomToTop) are set to default values for the new style option. If <i>other</i>'s version is 2, the extra members are simply copied.</p>
+
+*/"/>
+    <method name="protected QStyleOptionProgressBarV2(int version__0)"/>
+    <method name="public QStyleOptionProgressBarV2()" doc="/**
+<p>Constructs a QStyleOptionProgressBarV2, initializing he members variables to their default values.</p>
+
+*/"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>2</td></tr>
+</table></p>
+<p>The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SO_ProgressBar for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles.</p>
+
+*/"/>
+    <method name="public final boolean bottomToTop()" doc="/**
+<p>whether the text reads from bottom to top when the progress bar is vertical; the default value is false</p>
+
+*/"/>
+    <method name="public final void setBottomToTop(boolean bottomToTop)" doc="/**
+<p>whether the text reads from bottom to top when the progress bar is vertical; the default value is false</p>
+
+*/"/>
+    <method name="public final boolean invertedAppearance()" doc="/**
+<p>whether the progress bar's appearance is inverted; the default value is false</p>
+
+*/"/>
+    <method name="public final void setInvertedAppearance(boolean invertedAppearance)" doc="/**
+<p>whether the progress bar's appearance is inverted; the default value is false</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.Orientation orientation()" doc="/**
+<p>the progress bar's orientation (horizontal or vertical); the default orentation is Qt::Horizontal</p>
+
+*/"/>
+    <method name="public final void setOrientation(com.trolltech.qt.core.Qt.Orientation orientation)" doc="/**
+<p>the progress bar's orientation (horizontal or vertical); the default orentation is Qt::Horizontal</p>
+
+*/"/>
+</class>

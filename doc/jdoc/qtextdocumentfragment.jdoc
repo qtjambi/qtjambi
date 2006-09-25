@@ -1,0 +1,50 @@
+<class name="QTextDocumentFragment" doc="/**
+<p>The QTextDocumentFragment class represents a piece of formatted text from a QTextDocument.</p>
+<p>A QTextDocumentFragment is a fragment of rich text, that can be inserted into a QTextDocument. A document fragment can be created from a QTextDocument, from a QTextCursor's selection, or from another document fragment. Document fragments can also be created by the static functions, fromPlainText() and fromHTML().</p>
+<p>The contents of a document fragment can be obtained as plain text by using the toPlainText() function, or it can be obtained as HTML with toHtml().</p>
+
+*/">
+    <method name="public QTextDocumentFragment(com.trolltech.qt.gui.QTextCursor range__0)" doc="/**
+<p>Creates a QTextDocumentFragment from the <i>cursor</i>'s selection. If the cursor doesn't have a selection, the created fragment is empty.</p>
+
+*/"/>
+    <method name="public QTextDocumentFragment()" doc="/**
+<p>Constructs an empty QTextDocumentFragment.</p>
+
+*/"/>
+    <method name="public QTextDocumentFragment(com.trolltech.qt.gui.QTextDocumentFragment rhs__0)" doc="/**
+<p>Copy constructor. Creates a copy of the <i>other</i> fragment.</p>
+
+*/"/>
+    <method name="public QTextDocumentFragment(com.trolltech.qt.gui.QTextDocument document__0)" doc="/**
+<p>Converts the given <i>document</i> into a QTextDocumentFragment.</p>
+
+*/"/>
+    <method name="public final boolean isEmpty()" doc="/**
+<p>Returns true if the fragment is empty; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final java.lang.String toHtml(com.trolltech.qt.core.QByteArray encoding__0)" doc="/**
+<p>Returns the contents of the document fragment as HTML, using the specified <i>encoding</i> (e.g., &quot;UTF-8&quot;, &quot;ISO 8859-1&quot;).</p>
+
+*/"/>
+    <method name="public final java.lang.String toHtml()"/>
+    <method name="public final java.lang.String toPlainText()" doc="/**
+<p>Returns the document fragment's text as plain text (i.e. with no formatting information).</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QTextDocumentFragment fromHtml(java.lang.String html__0)" doc="/**
+<p>Returns a QTextDocumentFragment based on the arbitrary piece of HTML in the given <i>text</i>. The formatting is preserved as much as possible; for example, &quot;&lt;b&gt;bold&lt;/b&gt;&quot; will become a document fragment with the text &quot;bold&quot; with a bold character format.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QTextDocumentFragment fromHtml(java.lang.String html__0, com.trolltech.qt.gui.QTextDocument resourceProvider__1)" doc="/**
+<p>Returns a QTextDocumentFragment based on the arbitrary piece of HTML in the given <i>text</i>. The formatting is preserved as much as possible; for example, &quot;&lt;b&gt;bold&lt;/b&gt;&quot; will become a document fragment with the text &quot;bold&quot; with a bold character format.</p>
+<p>If the provided HTML contains references to external resources such as imported style sheets, then they will be loaded through the <i>resourceProvider</i>.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QTextDocumentFragment fromPlainText(java.lang.String plainText__0)" doc="/**
+<p>Returns a document fragment that contains the given <i>plainText</i>.</p>
+<p>When inserting such a fragment into a QTextDocument the current char format of the QTextCursor used for insertion is used as format for the text.</p>
+
+*/"/>
+</class>

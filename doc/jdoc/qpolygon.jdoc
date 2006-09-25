@@ -1,0 +1,107 @@
+<class name="QPolygon" doc="/**
+<p>The QPolygon class provides a vector of points using integer precision.</p>
+<p>A QPolygon object is a QVector&lt;QPoint&gt;. The easiest way to add points to a QPolygon is to use QVector's streaming operator, as illustrated below:</p>
+<pre>            QPolygon polygon;
+            polygon &lt;&lt; QPoint(10, 20) &lt;&lt; QPoint(20, 30);</pre>
+<p>In addition to the functions provided by QVector, QPolygon provides some point-specific functions.</p>
+<p>Each point in a polygon can be retrieved by passing its index to the point() function. To populate the polygon, QPolygon provides the setPoint() function to set the point at a given index, the setPoints() function to set all the points in the polygon (resizing it to the given number of points), and the putPoints() function which copies a number of given points into the polygon from a specified index (resizing the polygon if necessary).</p>
+<p>QPolygon provides the boundingRect() and translate() functions for geometry functions. Use the QMatrix::map() function for more general transformations of QPolygons.</p>
+<p>The QPolygon class is implicitly shared.</p>
+
+*/">
+    <method name="public QPolygon(java.util.List&lt;com.trolltech.qt.core.QPoint&gt; v__0)" doc="/**
+<p>Constructs a polygon containing the specified <i>points</i>.</p>
+
+*/"/>
+    <method name="public QPolygon(com.trolltech.qt.gui.QPolygon a__0)" doc="/**
+<p>Constructs a copy of the given <i>polygon</i>.</p>
+
+*/"/>
+    <method name="public QPolygon()" doc="/**
+<p>Constructs a polygon with no points.</p>
+
+*/"/>
+    <method name="public QPolygon(int size__0)" doc="/**
+<p>Constructs a polygon of the given <i>size</i>. Creates an empty polygon if <i>size</i> == 0.</p>
+
+*/"/>
+    <method name="public QPolygon(com.trolltech.qt.core.QRect r__0, boolean closed__1)" doc="/**
+<p>Constructs a polygon from the given <i>rectangle</i>. If <i>closed</i> is false, the polygon just contains the four points of the rectangle ordered clockwise, otherwise the polygon's fifth point is set to <i>rectangle</i>.topLeft().</p>
+<p>Note that the bottom-right corner of the rectangle is located at (rectangle.x() + rectangle.width(), rectangle.y() + rectangle.height()).</p>
+
+*/"/>
+    <method name="public QPolygon(int nPoints__0, com.trolltech.qt.QNativePointer points__1)" doc="/**
+<p>Constructs a point array with <i>nPoints</i> points, taken from the <i>points</i> array.</p>
+<p>Equivalent to setPoints(nPoints, points).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect boundingRect()" doc="/**
+<p>Returns the bounding rectangle of the polygon, or QRect(0, 0, 0, 0) if the polygon is empty.</p>
+
+*/"/>
+    <method name="public final void point(int i__0, com.trolltech.qt.QNativePointer x__1, com.trolltech.qt.QNativePointer y__2)" doc="/**
+<p>Extracts the coordinates of the point at the given <i>index</i> to *<i>x</i> and *<i>y</i> (if they are valid pointers).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint point(int i__0)" doc="/**
+<p>Returns the point at the given <i>index</i>.</p>
+
+*/"/>
+    <method name="public final void putPoints(int index__0, int nPoints__1, int firstx__2, int firsty__3)" doc="/**
+<p>Copies <i>nPoints</i> points from the given <i>fromIndex</i> ( 0 by default) in <i>fromPolygon</i> into this polygon, starting at the specified <i>index</i>. For example:</p>
+<pre>            QPolygon polygon1;
+            polygon1.putPoints(0, 3, 1,2, 0,0, 5,6);
+            <span class=&quote;comment&quote;>// polygon1 is now the three-point polygon(1,2, 0,0, 5,6);</span>
+
+            QPolygon polygon2;
+            polygon2.putPoints(0, 3, 4,4, 5,5, 6,6);
+            <span class=&quote;comment&quote;>// polygon2 is now (4,4, 5,5, 6,6);</span>
+
+            polygon1.putPoints(2, 3, polygon2);
+            <span class=&quote;comment&quote;>// polygon1 is now the five-point polygon(1,2, 0,0, 4,4, 5,5, 6,6);</span></pre>
+
+*/"/>
+    <method name="public final void putPoints(int index__0, int nPoints__1, com.trolltech.qt.gui.QPolygon from__2, int fromIndex__3)" doc="/**
+<p>Copies <i>nPoints</i> points from the given <i>fromIndex</i> ( 0 by default) in <i>fromPolygon</i> into this polygon, starting at the specified <i>index</i>. For example:</p>
+<pre>            QPolygon polygon1;
+            polygon1.putPoints(0, 3, 1,2, 0,0, 5,6);
+            <span class=&quote;comment&quote;>// polygon1 is now the three-point polygon(1,2, 0,0, 5,6);</span>
+
+            QPolygon polygon2;
+            polygon2.putPoints(0, 3, 4,4, 5,5, 6,6);
+            <span class=&quote;comment&quote;>// polygon2 is now (4,4, 5,5, 6,6);</span>
+
+            polygon1.putPoints(2, 3, polygon2);
+            <span class=&quote;comment&quote;>// polygon1 is now the five-point polygon(1,2, 0,0, 4,4, 5,5, 6,6);</span></pre>
+
+*/"/>
+    <method name="public final void putPoints(int index__0, int nPoints__1, com.trolltech.qt.QNativePointer points__2)" doc="/**
+<p>Copies <i>nPoints</i> points from the <i>points</i> coord array into this point array, and resizes the point array if <tt>index+nPoints</tt> exceeds the size of the array.</p>
+
+*/"/>
+    <method name="public final void setPoint(int index__0, com.trolltech.qt.core.QPoint p__1)" doc="/**
+<p>Sets the point at the given <i>index</i> to the given <i>point</i>.</p>
+
+*/"/>
+    <method name="public final void setPoint(int index__0, int x__1, int y__2)" doc="/**
+<p>Sets the point at the given <i>index</i> to the point specified by (<i>x</i>, <i>y</i>).</p>
+
+*/"/>
+    <method name="public final void setPoints(int nPoints__0, com.trolltech.qt.QNativePointer points__1)" doc="/**
+<p>Resizes the polygon to <i>nPoints</i> and populates it with the given <i>points</i>.</p>
+<p>The example code creates a polygon with two points (10, 20) and (30, 40):</p>
+<pre>            static const int points[] = { 10, 20, 30, 40 };
+            QPolygon polygon;
+            polygon.setPoints(2, points);</pre>
+
+*/"/>
+    <method name="public final void squeeze()"/>
+    <method name="public final void translate(com.trolltech.qt.core.QPoint offset__0)" doc="/**
+<p>Translates all points in the polygon by the given <i>offset</i>.</p>
+
+*/"/>
+    <method name="public final void translate(int dx__0, int dy__1)" doc="/**
+<p>Translates all points in the polygon by (<i>dx</i>, <i>dy</i>).</p>
+
+*/"/>
+</class>

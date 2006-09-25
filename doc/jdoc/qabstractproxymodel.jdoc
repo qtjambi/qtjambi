@@ -1,0 +1,42 @@
+<class name="QAbstractProxyModel" doc="/**
+<p>The QAbstractProxyModel class provides a base class for proxy item models that can do sorting, filtering or other data processing tasks.</p>
+<p>This class defines the standard interface that proxy models must use to be able to interoperate correctly with other model/view components. It is not supposed to be instantiated directly.</p>
+<p>All standard proxy models are derived from the QAbstractProxyModel class. If you need to create a new proxy model class, it is usually better to subclass an existing class that provides the closest behavior to the one you want to provide. Proxy models that filter or sort items of data from a source model should be created by using or subclassing QSortFilterProxyModel.</p>
+
+*/">
+    <method name="public QAbstractProxyModel(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a proxy model with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QAbstractItemModel sourceModel()" doc="/**
+<p>Returns the model that contains the data that is available through the proxy model.</p>
+
+*/"/>
+    <method name="public java.lang.Object data(com.trolltech.qt.core.QModelIndex proxyIndex__0, int role__1)"/>
+    <method name="public com.trolltech.qt.core.Qt.ItemFlags flags(com.trolltech.qt.core.QModelIndex index__0)"/>
+    <method name="public java.lang.Object headerData(int section__0, com.trolltech.qt.core.Qt.Orientation orientation__1, int role__2)"/>
+    <method name="public abstract com.trolltech.qt.core.QModelIndex mapFromSource(com.trolltech.qt.core.QModelIndex sourceIndex__0)" doc="/**
+<p>Reimplement this function to return the model index in the proxy model that corresponds to the <i>sourceIndex</i> from the source model.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QItemSelection mapSelectionFromSource(com.trolltech.qt.gui.QItemSelection selection__0)" doc="/**
+<p>Returns a proxy selection mapped from the specified <i>sourceSelection</i>.</p>
+<p>Reimplement this method to map source selections to proxy selections.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QItemSelection mapSelectionToSource(com.trolltech.qt.gui.QItemSelection selection__0)" doc="/**
+<p>Returns a source selection mapped from the specified <i>proxySelection</i>.</p>
+<p>Reimplement this method to map proxy selections to source selections.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QModelIndex mapToSource(com.trolltech.qt.core.QModelIndex proxyIndex__0)" doc="/**
+<p>Reimplement this function to return the model index in the source model that corresponds to the <i>proxyIndex</i> in the proxy model.</p>
+
+*/"/>
+    <method name="public void revert()"/>
+    <method name="public void setSourceModel(com.trolltech.qt.core.QAbstractItemModel sourceModel__0)" doc="/**
+<p>Sets the given <i>sourceModel</i> to be processed by the proxy model.</p>
+
+*/"/>
+    <method name="public boolean submit()"/>
+</class>

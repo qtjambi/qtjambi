@@ -1,0 +1,395 @@
+<class name="QPrinter" doc="/**
+<p>The QPrinter class is a paint device that paints on a printer.</p>
+<p>On Windows or Mac OS X, QPrinter uses the built-in printer drivers. On X11, QPrinter generates postscript and sends that to lpr, lp, or another printProgram(). QPrinter can also print to any other QPrintEngine.</p>
+<p>QPrinter is used in much the same way as QWidget and QPixmap are used. The big difference is that you must keep track of pages.</p>
+<p>QPrinter supports a number of settable parameters, most of which can be changed by the end user through a QAbstractPrintDialog print dialog. In general, QPrinter passes these functions onto the underlying QPrintEngine.</p>
+<p>The most important parameters are:</p>
+<ul>
+<li>setOrientation() tells QPrinter which page orientation to use.</li>
+<li>setPageSize() tells QPrinter what page size to expect from the printer.</li>
+<li>setResolution() tells QPrinter what resolution you wish the printer to provide (in dots per inch -- dpi).</li>
+<li>setFullPage() tells QPrinter whether you want to deal with the full page or just with the part the printer can draw on. The default is false, so that by default you should be able to paint on (0,0). If true the origin of the coordinate system will be in the top left corner of the paper and most probably the printer will not be able to paint something there due to its physical margins.</li>
+<li>setNumCopies() tells QPrinter how many copies of the document it should print.</li>
+</ul>
+<p>Many of the settable functions can only be called before the actual printing begins (i.e., before QPainter::begin() is called). This usually makes sense (e.g., you can't change the number of copies when you are halfway through printing). There are also some settings that the user sets (through the printer dialog) and that applications are expected to obey. See QAbstractPrintDialog's documentation for more details.</p>
+<p>Once QPainter::begin() has been called, you must call newPage() for each page that you want to print <i>before</i> performing any painting operations.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Printer and Painter Coordinate Systems</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image printer-rects.png]</font></td><td>The paperRect() and pageRect() functions provide information about the size of the paper used for printing and the area on it that can be painted on.<p>The rectangle returned by pageRect() typically lies inside the rectangle returned by paperRect(). You do not need to take the positions and sizes of these area into account when using a QPainter with a QPrinter as the underlying paint device; the origin of the painter's coordinate system will coincide with the top-left corner of the pageRect() and painting operations will be clipped to the bounds of the drawable part of the page.</p>
+</td></tr>
+</table></p>
+<p>The paint system automatically uses the correct device metrics when painting text but, if you need to position text using information obtained from font metrics, you need to ensure that the print device is specified when you construct QFontMetrics and QFontMetricsF objects.</p>
+<p>use you will probably also need to look at the device metrics for the printer.</p>
+<p>If you want to abort the print job, abort() will try its best to stop printing. It may cancel the entire job or just part of it.</p>
+<p>If your current locale converts &quot;,&quot; to &quot;.&quot;, you will need to set a locale that doesn't do this (e.g. the &quot;C&quot; locale) before using QPrinter.</p>
+
+*/">
+    <method name="public QPrinter(com.trolltech.qt.gui.QPrinter.PrinterMode mode__0)" doc="/**
+<p>Creates a new printer object with the given <i>mode</i>.</p>
+
+*/"/>
+    <method name="public final boolean abort()" doc="/**
+<p>Aborts the current print run. Returns true if the print run was successfully aborted and printerState() will return QPrinter::Aborted; otherwise returns false.</p>
+<p>It is not always possible to abort a print job. For example, all the data has gone to the printer but the printer cannot or will not cancel the job when asked to.</p>
+
+*/"/>
+    <method name="public final boolean collateCopies()" doc="/**
+<p>Returns true if collation is turned on when multiple copies is selected. Returns false if it is turned off when multiple copies is selected.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter.ColorMode colorMode()" doc="/**
+<p>Returns the current color mode.</p>
+
+*/"/>
+    <method name="public final java.lang.String creator()" doc="/**
+<p>Returns the name of the application that created the document.</p>
+
+*/"/>
+    <method name="public final java.lang.String docName()" doc="/**
+<p>Returns the document name.</p>
+
+*/"/>
+    <method name="public final boolean doubleSidedPrinting()" doc="/**
+<p>Returns true if double side printing is enabled.</p>
+<p>Currently this option is only supported on X11.</p>
+
+*/"/>
+    <method name="public final boolean fontEmbeddingEnabled()" doc="/**
+<p>Returns true if font embedding is enabled.</p>
+<p>Currently this option is only supported on X11.</p>
+
+*/"/>
+    <method name="public final int fromPage()" doc="/**
+<p>Returns the from-page setting. The default value is 0.</p>
+<p>If fromPage() and toPage() both return 0 this signifies 'print the whole document'.</p>
+
+*/"/>
+    <method name="public final boolean fullPage()" doc="/**
+<p>Returns true if the origin of the printer's coordinate system is at the corner of the page and false if it is at the edge of the printable area.</p>
+<p>See setFullPage() for details and caveats.</p>
+
+*/"/>
+    <method name="public final boolean newPage()" doc="/**
+<p>Tells the printer to eject the current page and to continue printing on a new page. Returns true if this was successful; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int numCopies()" doc="/**
+<p>Returns the number of copies to be printed. The default value is 1.</p>
+<p>On Windows and Mac OS X, this will always return 1 as these operating systems can internally handle the number of copies.</p>
+<p>On X11, this value will return the number of times the application is required to print in order to match the number specified in the printer setup dialog. This has been done since some printer drivers are not capable of buffering up the copies and in those cases the application must make an explicit call to the print code for each copy.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter.Orientation orientation()" doc="/**
+<p>Returns the orientation setting. This is driver-dependent, but is usually QPrinter::Portrait.</p>
+
+*/"/>
+    <method name="public final java.lang.String outputFileName()" doc="/**
+<p>Returns the name of the output file. By default, this is an empty string (indicating that the printer shouldn't print to file).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter.OutputFormat outputFormat()" doc="/**
+<p>Returns the output format for this printer.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter.PageOrder pageOrder()" doc="/**
+<p>Returns the current page order.</p>
+<p>The default page order is <tt>FirstPageFirst</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect pageRect()" doc="/**
+<p>Returns the page's rectangle; this is usually smaller than the paperRect() since the page normally has margins between its borders and the paper.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter.PageSize pageSize()" doc="/**
+<p>Returns the printer page size. The default value is driver-dependent.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect paperRect()" doc="/**
+<p>Returns the paper's rectangle; this is usually larger than the pageRect().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter.PaperSource paperSource()" doc="/**
+<p>Returns the printer's paper source. This is <tt>Manual</tt> or a printer tray or paper cassette.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrintEngine printEngine()" doc="/**
+<p>Returns the print engine used by the printer.</p>
+
+*/"/>
+    <method name="public final java.lang.String printProgram()" doc="/**
+<p>Returns the name of the program that sends the print output to the printer.</p>
+<p>The default is to return an empty string; meaning that QPrinter will try to be smart in a system-dependent way. On X11 only, you can set it to something different to use a specific print program. On the other platforms, this returns an empty string.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter.PrintRange printRange()" doc="/**
+<p>Returns the page range of the QPrinter. After the print setup dialog has been opened, this function returns the value selected by the user.</p>
+
+*/"/>
+    <method name="public final java.lang.String printerName()" doc="/**
+<p>Returns the printer name. This value is initially set to the name of the default printer.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter.PrinterState printerState()" doc="/**
+<p>Returns the current state of the printer. This may not always be accurate (for example if the printer doesn't have the capability of reporting its state to the operating system).</p>
+
+*/"/>
+    <method name="public final int resolution()" doc="/**
+<p>Returns the current assumed resolution of the printer, as set by setResolution() or by the printer driver.</p>
+
+*/"/>
+    <method name="public final void setCollateCopies(boolean collate__0)" doc="/**
+<p>Sets the default value for collation checkbox when the print dialog appears. If <i>collate</i> is true, it will enable setCollateCopiesEnabled(). The default value is false. This value will be changed by what the user presses in the print dialog.</p>
+
+*/"/>
+    <method name="public final void setColorMode(com.trolltech.qt.gui.QPrinter.ColorMode arg__0)" doc="/**
+<p>Sets the printer's color mode to <i>newColorMode</i>, which can be either <tt>Color</tt> or <tt>GrayScale</tt>.</p>
+
+*/"/>
+    <method name="public final void setCreator(java.lang.String arg__0)" doc="/**
+<p>Sets the name of the application that created the document to <i>creator</i>.</p>
+<p>This function is only applicable to the X11 version of Qt. If no creator name is specified, the creator will be set to &quot;Qt&quot; followed by some version number.</p>
+
+*/"/>
+    <method name="public final void setDocName(java.lang.String arg__0)" doc="/**
+<p>Sets the document name to <i>name</i>.</p>
+
+*/"/>
+    <method name="public final void setDoubleSidedPrinting(boolean enable__0)" doc="/**
+<p>Enables double side printing if <i>enable</i> is true; otherwise disables it.</p>
+<p>Currently this option is only supported on X11.</p>
+
+*/"/>
+    <method name="protected final void setEngines(com.trolltech.qt.gui.QPrintEngine printEngine__0, com.trolltech.qt.gui.QPaintEngine paintEngine__1)" doc="/**
+<p>This function is used by subclasses of QPrinter to specify custom print and paint engines (<i>printEngine</i> and <i>paintEngine</i>, respectively).</p>
+<p>QPrinter does not take ownership of the engines, so you need to manage these engine instances yourself.</p>
+<p>Note that changing the engines will reset the printer state and all its properties.</p>
+
+*/"/>
+    <method name="public final void setFontEmbeddingEnabled(boolean enable__0)" doc="/**
+<p>Enabled or disables font embedding depending on <i>enable</i>.</p>
+<p>Currently this option is only supported on X11.</p>
+
+*/"/>
+    <method name="public final void setFromTo(int fromPage__0, int toPage__1)" doc="/**
+<p>Sets the from-page and to-page settings to <i>from</i> and <i>to</i> respectively.</p>
+<p>The from-page and to-page settings specify what pages to print.</p>
+<p>If from and to both return 0 this signifies 'print the whole document'.</p>
+<p>This function is useful mostly to set a default value that the user can override in the print dialog when you call setup().</p>
+
+*/"/>
+    <method name="public final void setFullPage(boolean arg__0)" doc="/**
+<p>Sets QPrinter to have the origin of the coordinate system at the top-left corner of the paper if <i>fp</i> is true, or where it thinks the top-left corner of the printable area is if <i>fp</i> is false.</p>
+<p>The default is false. You can (probably) print on (0,0), and the device metrics will report something smaller than the size indicated by PageSize. (Note that QPrinter may be wrong on Unix systems: it does not have perfect knowledge of the physical printer.)</p>
+<p>If <i>fp</i> is true, the device metrics will report the exact same size as indicated by <tt>PageSize</tt>. It probably isn't possible to print on the entire page because of the printer's physical margins, so the application must account for the margins itself.</p>
+
+*/"/>
+    <method name="public final void setNumCopies(int arg__0)" doc="/**
+<p>Sets the number of copies to be printed to <i>numCopies</i>.</p>
+<p>The printer driver reads this setting and prints the specified number of copies.</p>
+
+*/"/>
+    <method name="public final void setOrientation(com.trolltech.qt.gui.QPrinter.Orientation arg__0)" doc="/**
+<p>Sets the print orientation to <i>orientation</i>.</p>
+<p>The orientation can be either QPrinter::Portrait or QPrinter::Landscape.</p>
+<p>The printer driver reads this setting and prints using the specified orientation.</p>
+<p>On Windows and Mac OS X, this option can be changed while printing and will take effect from the next call to newPage().</p>
+
+*/"/>
+    <method name="public final void setOutputFileName(java.lang.String arg__0)" doc="/**
+<p>Sets the name of the output file to <i>fileName</i>.</p>
+<p>Setting a null or empty name (0 or &quot;&quot;) disables printing to a file. Setting a non-empty name enables printing to a file.</p>
+<p>If the file name has the suffix &quot;.ps&quot; then PostScript is automatically selected as output format. If the file name has the &quot;.pdf&quot; suffix PDF is generated.</p>
+
+*/"/>
+    <method name="public final void setOutputFormat(com.trolltech.qt.gui.QPrinter.OutputFormat format__0)" doc="/**
+<p>Sets the output format for this printer to <i>format</i>.</p>
+
+*/"/>
+    <method name="public final void setPageOrder(com.trolltech.qt.gui.QPrinter.PageOrder arg__0)" doc="/**
+<p>Sets the page order to <i>pageOrder</i>.</p>
+<p>The page order can be QPrinter::FirstPageFirst or QPrinter::LastPageFirst. The application is responsible for reading the page order and printing accordingly.</p>
+<p>This function is mostly useful for setting a default value that the user can override in the print dialog.</p>
+
+*/"/>
+    <method name="public final void setPageSize(com.trolltech.qt.gui.QPrinter.PageSize arg__0)" doc="/**
+<p>Sets the printer page size to <i>newPageSize</i> if that size is supported. The result if undefined if <i>newPageSize</i> is not supported.</p>
+<p>The default page size is driver-dependent.</p>
+<p>This function is useful mostly for setting a default value that the user can override in the print dialog.</p>
+
+*/"/>
+    <method name="public final void setPaperSource(com.trolltech.qt.gui.QPrinter.PaperSource arg__0)" doc="/**
+<p>Sets the paper source setting to <i>source</i>.</p>
+<p>Windows only: This option can be changed while printing and will take effect from the next call to newPage()</p>
+
+*/"/>
+    <method name="public final void setPrintProgram(java.lang.String arg__0)" doc="/**
+<p>Sets the name of the program that should do the print job to <i>printProg</i>.</p>
+<p>On X11, this function sets the program to call with the PostScript output. On other platforms, it has no effect.</p>
+
+*/"/>
+    <method name="public final void setPrintRange(com.trolltech.qt.gui.QPrinter.PrintRange range__0)" doc="/**
+<p>Sets the print range option in to be <i>range</i>.</p>
+
+*/"/>
+    <method name="public final void setPrinterName(java.lang.String arg__0)" doc="/**
+<p>Sets the printer name to <i>name</i>.</p>
+
+*/"/>
+    <method name="public final void setResolution(int arg__0)" doc="/**
+<p>Requests that the printer prints at <i>dpi</i> or as near to <i>dpi</i> as possible.</p>
+<p>This setting affects the coordinate system as returned by, for example QPainter::viewport().</p>
+<p>This function must be called before QPainter::begin() to have an effect on all platforms.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.Integer&gt; supportedResolutions()" doc="/**
+<p>Returns a list of the resolutions (a list of dots-per-inch integers) that the printer says it supports.</p>
+<p>For X11 where all printing is directly to postscript, this function will always return a one item list containing only the postscript resolution, i.e., 72 (72 dpi -- but see PrinterMode).</p>
+
+*/"/>
+    <method name="public final int toPage()" doc="/**
+<p>Returns the to-page setting. The default value is 0.</p>
+<p>If fromPage() and toPage() both return 0 this signifies 'print the whole document'.</p>
+<p>The programmer is responsible for reading this setting and printing accordingly.</p>
+
+*/"/>
+    <method name="public int depth()"/>
+    <method name="public int devType()"/>
+    <method name="public int metric(com.trolltech.qt.gui.QPaintDevice.PaintDeviceMetric arg__0)" doc="/**
+<p>Returns the metric information for the given paint device <i>metric</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPaintEngine paintEngine()" doc="/**
+<p>Returns the paint engine used by the printer.</p>
+
+*/"/>
+    <method name="public boolean paintingActive()"/>
+    <enum name="OutputFormat" doc="/**
+<p>The OutputFormat enum is used to describe the format QPrinter should use for printing.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>QPrinter will print output in the method given by the platform it is running on, e.g. This is how printing was traditionally done in Qt. This mode is the default.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>QPrinter will generate its output as a searchable PDF file.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>QPrinter will generate its output as in the PostScript format. Available since 4.2</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="PrintRange" doc="/**
+<p>Used to specify the print range selection option.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>All pages should be printed.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Only the selection should be printed.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The specified page range should be printed.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="PrinterMode" doc="/**
+<p>This enum describes the mode the printer should work in. It basically presets a certain resolution and working mode.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Sets the resolution of the print device to the screen resolution. This has the big advantage that the results obtained when painting on the printer will match more or less exactly the visible output on the screen. It is the easiest to use, as font metrics on the screen and on the printer are the same. This is the default value. ScreenResolution will produce a lower quality output than HighResolution and should only be used for drafts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This value is deprecated. Is is equivalent to ScreenResolution on Unix and HighResolution on Windows and Mac. Due do the difference between ScreenResolution and HighResolution, use of this value may lead to non-portable printer code.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Use printer resolution on Windows, and set the resolution of the PostScript driver to 600 dpi.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="Orientation" doc="/**
+<p>This enum type (not to be confused with <tt>Orientation</tt>) is used to specify each page's orientation.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the page's height is greater than its width.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the page's width is greater than its height.</td></tr>
+</table></p>
+<p>This type interacts with QPrinter::PageSize and QPrinter::setFullPage() to determine the final size of the page available to the application.</p>
+
+*/"/>
+    <enum name="PrinterState" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="ColorMode" doc="/**
+<p>This enum type is used to indicate whether QPrinter should print in color or not.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>print in color if available, otherwise in grayscale.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>print in grayscale, even on color printers.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="PaperSource" doc="/**
+<p>This enum type specifies what paper source QPrinter is to use. QPrinter does not check that the paper source is available; it just uses this information to try and set the paper source. Whether it will set the paper source depends on whether the printer has that particular source.</p>
+<p><b>Warning:</b> This is currently only implemented for Windows.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="PageOrder" doc="/**
+<p>This enum type is used by QPrinter to tell the application program how to print.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the lowest-numbered page should be printed first.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the highest-numbered page should be printed first.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="PageSize" doc="/**
+<p>This enum type specifies what paper size QPrinter should use. QPrinter does not check that the paper size is available; it just uses this information, together with QPrinter::Orientation and QPrinter::setFullPage(), to determine the printable area.</p>
+<p>The defined sizes (with setFullPage(true)) are:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>841 x 1189 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>594 x 841 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>420 x 594 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>297 x 420 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>210 x 297 mm, 8.26 x 11.69 inches</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>148 x 210 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>105 x 148 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>74 x 105 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>52 x 74 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>37 x 52 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1030 x 1456 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>728 x 1030 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>32 x 45 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>515 x 728 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>364 x 515 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>257 x 364 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>182 x 257 mm, 7.17 x 10.13 inches</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>128 x 182 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>91 x 128 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>64 x 91 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>45 x 64 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>163 x 229 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>105 x 241 mm, U.S. Common 10 Envelope</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>110 x 220 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>7.5 x 10 inches, 191 x 254 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>210 x 330 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>432 x 279 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>8.5 x 14 inches, 216 x 356 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>8.5 x 11 inches, 216 x 279 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>279 x 432 mm</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Unknown size</td></tr>
+</table></p>
+<p>With setFullPage(false) (the default), the metrics will be a bit smaller; how much depends on the printer in use.</p>
+
+*/"/>
+</class>

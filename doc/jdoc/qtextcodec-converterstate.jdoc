@@ -1,0 +1,8 @@
+<class name="QTextCodec_ConverterState">
+    <method name="public final com.trolltech.qt.core.QTextCodec.ConversionFlags flags()"/>
+    <method name="public final void setFlags(com.trolltech.qt.core.QTextCodec.ConversionFlags flags)"/>
+    <method name="public final int remainingChars()"/>
+    <method name="public final void setRemainingChars(int remainingChars)"/>
+    <method name="public final int invalidChars()"/>
+    <method name="public final void setInvalidChars(int invalidChars)"/>
+</class>

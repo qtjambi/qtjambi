@@ -1,0 +1,70 @@
+<class name="QStackedLayout" doc="/**
+<p>The QStackedLayout class provides a stack of widgets where only one widget is visible at a time.</p>
+<p>QStackedLayout can be used to create a user interface similar to the one provided by QTabWidget. There is also a convenience QStackedWidget class built on top of QStackedLayout.</p>
+<p>A QStackedLayout can be populated with a number of child widgets (&quot;pages&quot;). For example:</p>
+<pre>        QWidget *firstPageWidget = new QWidget;
+        QWidget *secondPageWidget = new QWidget;
+        QWidget *thirdPageWidget = new QWidget;
+
+        QStackedLayout *stackedLayout = new QStackedLayout;
+        stackedLayout-&gt;addWidget(firstPageWidget);
+        stackedLayout-&gt;addWidget(secondPageWidget);
+        stackedLayout-&gt;addWidget(thirdPageWidget);
+
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        mainLayout-&gt;addLayout(stackedLayout);
+        setLayout(mainLayout);</pre>
+<p>QStackedLayout provides no intrinsic means for the user to switch page. This is typically done through a QComboBox or a QListWidget that stores the titles of the QStackedLayout's pages. For example:</p>
+<pre>        QComboBox *pageComboBox = new QComboBox;
+        pageComboBox-&gt;addItem(tr(&quot;Page 1&quot;));
+        pageComboBox-&gt;addItem(tr(&quot;Page 2&quot;));
+        pageComboBox-&gt;addItem(tr(&quot;Page 3&quot;));
+        connect(pageComboBox, SIGNAL(activated(int)),
+                stackedLayout, SLOT(setCurrentIndex(int)));</pre>
+<p>When populating a layout, the widgets are added to an internal list. The indexOf() function returns the index of a widget in that list. The widgets can either be added to the end of the list using the addWidget() function, or inserted at a given index using the insertWidget() function. The removeWidget() function removes the widget at the given index from the layout. The number of widgets contained in the layout, can be obtained using the count() function.</p>
+<p>The widget() function returns the widget at a given index position. The index of the widget that is shown on screen is given by currentIndex() and can be changed using setCurrentIndex(). In a similar manner, the currently shown widget can be retrieved using the currentWidget() function, and altered using the setCurrentWidget() function.</p>
+<p>Whenever the current widget in the layout changes or a widget is removed from the layout, the currentChanged() and widgetRemoved() signals are emitted respectively.</p>
+
+*/">
+    <method name="public QStackedLayout(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a new QStackedLayout with the given <i>parent</i>.</p>
+<p>This layout will install itself on the <i>parent</i> widget and manage the geometry of its children.</p>
+
+*/"/>
+    <method name="public QStackedLayout(com.trolltech.qt.gui.QLayout parentLayout__0)" doc="/**
+<p>Constructs a new QStackedLayout and inserts it into the given <i>parentLayout</i>.</p>
+
+*/"/>
+    <method name="public QStackedLayout()" doc="/**
+<p>Constructs a QStackedLayout with no parent.</p>
+<p>This QStackedLayout must be installed on a widget later on to become effective.</p>
+
+*/"/>
+    <method name="public final int currentIndex()"/>
+    <method name="public final com.trolltech.qt.gui.QWidget currentWidget()" doc="/**
+<p>Returns the current widget, or 0 if there are no widgets in this layout.</p>
+
+*/"/>
+    <method name="public final int insertWidget(int index__0, com.trolltech.qt.gui.QWidget w__1)" doc="/**
+<p>Inserts the given <i>widget</i> at the given <i>index</i> in this QStackedLayout. If <i>index</i> is out of range, the widget is appended (in which case it is the actual index of the <i>widget</i> that is returned).</p>
+<p>If the QStackedLayout is empty before this function is called, the given <i>widget</i> becomes the current widget.</p>
+<p>Inserting a new widget at an index less than or equal to the current index will increment the current index, but keep the current widget.</p>
+
+*/"/>
+    <method name="public final void setCurrentIndex(int index__0)"/>
+    <method name="public final void setCurrentWidget(com.trolltech.qt.gui.QWidget w__0)" doc="/**
+<p>Sets the current widget to be the specified <i>widget</i>. The new current widget must already be contained in this stacked layout.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget widget(int arg__0)" doc="/**
+<p>Returns the widget at the given <i>index</i>, or 0 if there is no widget at the given position.</p>
+
+*/"/>
+    <method name="public void addItem(com.trolltech.qt.gui.QLayoutItemInterface item__0)"/>
+    <method name="public int count()"/>
+    <method name="public com.trolltech.qt.gui.QLayoutItemInterface itemAt(int arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize minimumSize()"/>
+    <method name="public void setGeometry(com.trolltech.qt.core.QRect rect__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+    <method name="public com.trolltech.qt.gui.QLayoutItemInterface takeAt(int arg__0)"/>
+</class>

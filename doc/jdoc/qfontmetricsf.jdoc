@@ -1,0 +1,200 @@
+<class name="QFontMetricsF" doc="/**
+<p>The QFontMetricsF class provides font metrics information.</p>
+<p>QFontMetricsF functions calculate the size of characters and strings for a given font. You can construct a QFontMetricsF object with an existing QFont to obtain metrics for that font. If the font is changed later, the font metrics object is <i>not</i> updated.</p>
+<p>Once created, the object provides functions to access the individual metrics of the font, its characters, and for strings rendered in the font.</p>
+<p>There are several functions that operate on the font: ascent(), descent(), height(), leading() and lineSpacing() return the basic size properties of the font. The underlinePos(), overlinePos(), strikeOutPos() and lineWidth() functions, return the properties of the line that underlines, overlines or strikes out the characters. These functions are all fast.</p>
+<p>There are also some functions that operate on the set of glyphs in the font: minLeftBearing(), minRightBearing() and maxWidth(). These are by necessity slow, and we recommend avoiding them if possible.</p>
+<p>For each character, you can get its width(), leftBearing() and rightBearing() and find out whether it is in the font using inFont(). You can also treat the character as a string, and use the string functions on it.</p>
+<p>The string functions include width(), to return the width of a string in pixels (or points, for a printer), boundingRect(), to return a rectangle large enough to contain the rendered string, and size(), to return the size of that rectangle.</p>
+<p>Example:</p>
+<pre>    QFont font(&quot;times&quot;, 24);
+    QFontMetricsF fm(font);
+    qreal pixelsWide = fm.width(&quot;What's the width of this text?&quot;);
+    qreal pixelsHigh = fm.height();</pre>
+
+*/">
+    <method name="public QFontMetricsF(com.trolltech.qt.gui.QFont arg__0)" doc="/**
+<p>Constructs a font metrics object for <i>font</i>.</p>
+<p>The font metrics will be compatible with the paintdevice used to create <i>font</i>.</p>
+<p>The font metrics object holds the information for the font that is passed in the constructor at the time it is created, and is not updated if the font's attributes are changed later.</p>
+<p>Use QFontMetricsF(const QFont &amp;, QPaintDevice *) to get the font metrics that are compatible with a certain paint device.</p>
+
+*/"/>
+    <method name="public QFontMetricsF(com.trolltech.qt.gui.QFontMetricsF arg__0)" doc="/**
+<p>Constructs a copy of <i>fm</i>.</p>
+
+*/"/>
+    <method name="public QFontMetricsF(com.trolltech.qt.gui.QFont arg__0, com.trolltech.qt.gui.QPaintDeviceInterface pd__1)" doc="/**
+<p>Constructs a font metrics object for <i>font</i> and <i>paintdevice</i>.</p>
+<p>The font metrics will be compatible with the paintdevice passed. If the <i>paintdevice</i> is 0, the metrics will be screen-compatible, ie. the metrics you get if you use the font for drawing text on a widgets or pixmaps, not on a QPicture or QPrinter.</p>
+<p>The font metrics object holds the information for the font that is passed in the constructor at the time it is created, and is not updated if the font's attributes are changed later.</p>
+
+*/"/>
+    <method name="public QFontMetricsF(com.trolltech.qt.gui.QFontMetrics arg__0)" doc="/**
+<p>Constructs a font metrics object with floating point precision from the given <i>fontMetrics</i> object.</p>
+
+*/"/>
+    <method name="public final double ascent()" doc="/**
+<p>Returns the ascent of the font.</p>
+<p>The ascent of a font is the distance from the baseline to the highest position characters extend to. In practice, some font designers break this rule, e.g. when they put more than one accent on top of a character, or to accommodate an unusual character in an exotic language, so it is possible (though rare) that this value will be too small.</p>
+
+*/"/>
+    <method name="public final double averageCharWidth()" doc="/**
+<p>Returns the average width of glyphs in the font.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF boundingRect(java.lang.String string__0)" doc="/**
+<p>Returns the bounding rectangle of the characters in the string specified by <i>text</i>. The bounding rectangle always covers at least the set of pixels the text would cover if drawn at (0, 0).</p>
+<p>Note that the bounding rectangle may extend to the left of (0, 0), e.g. for italicized fonts, and that the width of the returned rectangle might be different than what the width() method returns.</p>
+<p>If you want to know the advance width of the string (to layout a set of strings next to each other), use width() instead.</p>
+<p>Newline characters are processed as normal characters, <i>not</i> as linebreaks.</p>
+<p>The height of the bounding rectangle is at least as large as the value returned height().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF boundingRect(char arg__0)" doc="/**
+<p>Returns the bounding rectangle of the character <i>ch</i> relative to the left-most point on the base line.</p>
+<p>Note that the bounding rectangle may extend to the left of (0, 0), e.g. for italicized fonts, and that the text output may cover <i>all</i> pixels in the bounding rectangle.</p>
+<p>Note that the rectangle usually extends both above and below the base line.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF boundingRect(com.trolltech.qt.core.QRectF r__0, int flags__1, java.lang.String string__2, int tabstops__3, com.trolltech.qt.QNativePointer tabarray__4)" doc="/**
+<p>Returns the bounding rectangle of the characters in the given <i>text</i>. This is the set of pixels the text would cover if drawn when constrained to the bounding rectangle specified by <i>rect</i>.</p>
+<p>The <i>flags</i> argument is the bitwise OR of the following flags:</p>
+<ul>
+<li>Qt::AlignLeft aligns to the left border, except for Arabic and Hebrew where it aligns to the right.</li>
+<li>Qt::AlignRight aligns to the right border, except for Arabic and Hebrew where it aligns to the left.</li>
+<li>Qt::AlignJustify produces justified text.</li>
+<li>Qt::AlignHCenter aligns horizontally centered.</li>
+<li>Qt::AlignTop aligns to the top border.</li>
+<li>Qt::AlignBottom aligns to the bottom border.</li>
+<li>Qt::AlignVCenter aligns vertically centered</li>
+<li>Qt::AlignCenter (== <tt>Qt::AlignHCenter | Qt::AlignVCenter</tt>)</li>
+<li>Qt::TextSingleLine ignores newline characters in the text.</li>
+<li>Qt::TextExpandTabs expands tabs (see below)</li>
+<li>Qt::TextShowMnemonic interprets &quot;&amp;amp;x&quot; as <u>x</u>, i.e. underlined.</li>
+<li>Qt::TextWordBreak breaks the text to fit the rectangle.</li>
+</ul>
+<p>Qt::Horizontal alignment defaults to Qt::AlignLeft and vertical alignment defaults to Qt::AlignTop.</p>
+<p>If several of the horizontal or several of the vertical alignment flags are set, the resulting alignment is undefined.</p>
+<p>These flags are defined in Qt::AlignmentFlag.</p>
+<p>If Qt::TextExpandTabs is set in <i>flags</i>, the following behavior is used to interpret tab characters in the text:</p>
+<ul>
+<li>If <i>tabArray</i> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs in the text.</li>
+<li>If <i>tabStops</i> is non-zero, it is used as the tab spacing (in pixels).</li>
+</ul>
+<p>Note that the bounding rectangle may extend to the left of (0, 0), e.g. for italicized fonts.</p>
+<p>Newline characters are processed as line breaks.</p>
+<p>Despite the different actual character heights, the heights of the bounding rectangles of &quot;Yes&quot; and &quot;yes&quot; are the same.</p>
+<p>The bounding rectangle returned by this function is somewhat larger than that calculated by the simpler boundingRect() function. This function uses the maximum left and right font bearings as is necessary for multi-line text to align correctly. Also, fontHeight() and lineSpacing() are used to calculate the height, rather than individual character heights.</p>
+
+*/"/>
+    <method name="public final double descent()" doc="/**
+<p>Returns the descent of the font.</p>
+<p>The descent is the distance from the base line to the lowest point characters extend to. (Note that this is different from X, which adds 1 pixel.) In practice, some font designers break this rule, e.g. to accommodate an unusual character in an exotic language, so it is possible (though rare) that this value will be too small.</p>
+
+*/"/>
+    <method name="public final java.lang.String elidedText(java.lang.String text__0, com.trolltech.qt.core.Qt.TextElideMode mode__1, double width__2, int flags__3)" doc="/**
+<p>If the string <i>text</i> is wider than <i>width</i>, returns an elided version of the string (i.e., a string with &quot;...&quot; in it). Otherwise, returns the original string.</p>
+<p>The <i>mode</i> parameter specifies whether the text is elided on the left (e.g., &quot;...tech&quot;), in the middle (e.g., &quot;Tr...ch&quot;), or on the right (e.g., &quot;Trol...&quot;).</p>
+<p>The <i>width</i> is specified in pixels, not characters.</p>
+<p>The <i>flags</i> argument is optional and currently only supports Qt::TextShowMnemonic as value.</p>
+
+*/"/>
+    <method name="public final double height()" doc="/**
+<p>Returns the height of the font.</p>
+<p>This is always equal to ascent()+descent()+1 (the 1 is for the base line).</p>
+
+*/"/>
+    <method name="public final boolean inFont(char arg__0)" doc="/**
+<p>Returns true if character <i>ch</i> is a valid character in the font; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final double leading()" doc="/**
+<p>Returns the leading of the font.</p>
+<p>This is the natural inter-line spacing.</p>
+
+*/"/>
+    <method name="public final double leftBearing(char arg__0)" doc="/**
+<p>Returns the left bearing of character <i>ch</i> in the font.</p>
+<p>The left bearing is the right-ward distance of the left-most pixel of the character from the logical origin of the character. This value is negative if the pixels of the character extend to the left of the logical origin.</p>
+<p>See width(QChar) for a graphical description of this metric.</p>
+
+*/"/>
+    <method name="public final double lineSpacing()" doc="/**
+<p>Returns the distance from one base line to the next.</p>
+<p>This value is always equal to leading()+height().</p>
+
+*/"/>
+    <method name="public final double lineWidth()" doc="/**
+<p>Returns the width of the underline and strikeout lines, adjusted for the point size of the font.</p>
+
+*/"/>
+    <method name="public final double maxWidth()" doc="/**
+<p>Returns the width of the widest character in the font.</p>
+
+*/"/>
+    <method name="public final double minLeftBearing()" doc="/**
+<p>Returns the minimum left bearing of the font.</p>
+<p>This is the smallest leftBearing(char) of all characters in the font.</p>
+<p>Note that this function can be very slow if the font is large.</p>
+
+*/"/>
+    <method name="public final double minRightBearing()" doc="/**
+<p>Returns the minimum right bearing of the font.</p>
+<p>This is the smallest rightBearing(char) of all characters in the font.</p>
+<p>Note that this function can be very slow if the font is large.</p>
+
+*/"/>
+    <method name="public final double overlinePos()" doc="/**
+<p>Returns the distance from the base line to where an overline should be drawn.</p>
+
+*/"/>
+    <method name="public final double rightBearing(char arg__0)" doc="/**
+<p>Returns the right bearing of character <i>ch</i> in the font.</p>
+<p>The right bearing is the left-ward distance of the right-most pixel of the character from the logical origin of a subsequent character. This value is negative if the pixels of the character extend to the right of the width() of the character.</p>
+<p>See width() for a graphical description of this metric.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSizeF size(int flags__0, java.lang.String str__1, int tabstops__2, com.trolltech.qt.QNativePointer tabarray__3)" doc="/**
+<p>Returns the size in pixels of the characters in the given <i>text</i>.</p>
+<p>The <i>flags</i> argument is the bitwise OR of the following flags:</p>
+<ul>
+<li>Qt::TextSingleLine ignores newline characters.</li>
+<li>Qt::TextExpandTabs expands tabs (see below)</li>
+<li>Qt::TextShowMnemonic interprets &quot;&amp;amp;x&quot; as <u>x</u>, i.e. underlined.</li>
+<li>Qt::TextWordBreak breaks the text to fit the rectangle.</li>
+</ul>
+<p>These flags are defined in Qt::TextFlags.</p>
+<p>If Qt::TextExpandTabs is set in <i>flags</i>, the following behavior is used to interpret tab characters in the text:</p>
+<ul>
+<li>If <i>tabArray</i> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs in the text.</li>
+<li>If <i>tabStops</i> is non-zero, it is used as the tab spacing (in pixels).</li>
+</ul>
+<p>Newline characters are processed as line breaks.</p>
+<p>Note: Despite the different actual character heights, the heights of the bounding rectangles of &quot;Yes&quot; and &quot;yes&quot; are the same.</p>
+
+*/"/>
+    <method name="public final double strikeOutPos()" doc="/**
+<p>Returns the distance from the base line to where the strikeout line should be drawn.</p>
+
+*/"/>
+    <method name="public final double underlinePos()" doc="/**
+<p>Returns the distance from the base line to where an underscore should be drawn.</p>
+
+*/"/>
+    <method name="public final double width(java.lang.String string__0)" doc="/**
+<p>Returns the width in pixels of the characters in the given <i>text</i>.</p>
+<p>Note that this value is <i>not</i> equal to the width returned by boundingRect().width() because boundingRect() returns a rectangle describing the pixels this string will cover whereas width() returns the distance to where the next string should be drawn.</p>
+
+*/"/>
+    <method name="public final double width(char arg__0)" doc="/**
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image bearings.png]</font></p><p>Returns the logical width of character <i>ch</i> in pixels. This is a distance appropriate for drawing a subsequent character after <i>ch</i>.</p>
+<p>Some of the metrics are described in the image to the right. The central dark rectangles cover the logical width() of each character. The outer pale rectangles cover the leftBearing() and rightBearing() of each character. Notice that the bearings of &quot;f&quot; in this particular font are both negative, while the bearings of &quot;o&quot; are both positive.</p>
+<p><b>Warning:</b> This function will produce incorrect results for Arabic characters or non-spacing marks in the middle of a string, as the glyph shaping and positioning of marks that happens when processing strings cannot be taken into account. Use charWidth() instead if you aren't looking for the width of isolated characters.</p>
+
+*/"/>
+    <method name="public final double xHeight()" doc="/**
+<p>Returns the 'x' height of the font. This is often but not always the same as the height of the character 'x'.</p>
+
+*/"/>
+</class>

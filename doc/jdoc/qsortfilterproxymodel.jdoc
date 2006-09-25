@@ -1,0 +1,183 @@
+<class name="QSortFilterProxyModel" doc="/**
+<p>The QSortFilterProxyModel class provides support for sorting and filtering data passed between another model and a view.</p>
+<p>QSortFilterProxyModel can be used for sorting items, filtering out items, or both. The model transforms the structure of a source model by mapping the model indexes it supplies to new indexes, corresponding to different locations, for views to use. This approach allows a given source model to be restructured as far as views are concerned without requiring any transformations on the underlying data, and without duplicating the data in memory.</p>
+<p>Let's assume that we want to sort and filter the items provided by a custom model. The code to set up the model and the view, <i>without</i> sorting and filtering, would look like this:</p>
+<pre>            QTreeView *treeView = new QTreeView;
+            MyItemModel *model = new MyItemModel(this);
+
+            treeView-&gt;setModel(model);</pre>
+<p>To add sorting and filtering support to <tt>MyItemModel</tt>, we need to create a QSortFilterProxyModel, call setSourceModel() with the <tt>MyItemModel</tt> as argument, and install the QSortFilterProxyModel on the view:</p>
+<pre>            QTreeView *treeView = new QTreeView;
+            MyItemModel *sourceModel = new MyItemModel(this);
+            QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+
+            proxyModel-&gt;setSourceModel(sourceModel);
+            treeView-&gt;setModel(proxyModel);</pre>
+<p>At this point, neither sorting nor filtering is enabled; the original data is displayed in the view. Any changes made through the QSortFilterProxyModel are applied to the original model.</p>
+<p>The QSortFilterProxyModel acts as a wrapper for the original model. If you need to convert source QModelIndexes to sorted/filtered model indexes or vice versa, use mapToSource(), mapFromSource(), mapSelectionToSource(), and mapSelectionFromSource().</p>
+<p>In Qt 4.1, sorting and filtering isn't dynamically reapplied whenever the data of the original model changes, as an optimization. Qt 4.2 is expected to offer a mechanism to enable dynamic sorting and filtering.</p>
+<p>The Basic Sort/Filter Model and Custom Sort/Filter Model examples illustrate how to use QSortFilterProxyModel to perform basic sorting and filtering and how to subclass it to implement custom behavior.</p>
+<a name=&quote;sorting&quote;></a>
+<h3>Sorting</h3>
+<p>QTableView and QTreeView have a sortingEnabled property that controls whether the user can sort the view by clicking the view's horizontal header. For example:</p>
+<pre>            treeView-&gt;setSortingEnabled(true);</pre>
+<p>When this feature is on (the default is off), clicking on a header section sorts the items according to that column. By clicking repeatedly, the user can alternate between ascending and descending order.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image qsortfilterproxymodel-sorting.png]</font></p><p>Behind the scene, the view calls the sort() virtual function on the model to reorder the data in the model. To make your data sortable, you can either implement sort() in your model, or you use a QSortFilterProxyModel to wrap your model -- QSortFilterProxyModel provides a generic sort() reimplementation that operates on the sortRole() (Qt::DisplayRole by default) of the items and that understands several data types, including <tt>int</tt>, QString, and QDateTime. For hierarchical models, sorting is applied recursively to all child items. String comparisons are case sensitive by default; this can be changed by setting the sortCaseSensitivity property.</p>
+<p>Custom sorting behavior is achieved by subclassing QSortFilterProxyModel and reimplementing lessThan(), which is used to compare items. For example:</p>
+<pre>    bool MySortFilterProxyModel::lessThan(const QModelIndex &amp;left,
+                                          const QModelIndex &amp;right) const
+    {
+        QVariant leftData = sourceModel()-&gt;data(left);
+        QVariant rightData = sourceModel()-&gt;data(right);
+
+        if (leftData.type() == QVariant::DateTime) {
+            return leftData.toDateTime() &lt; rightData.toDateTime();
+        } else {
+            return QString::localeAwareCompare(leftData.toString(),
+                                               rightData.toString()) &lt; 0;
+        }
+    }</pre>
+<p>(This code snippet comes from the Custom Sort/Filter Model example.)</p>
+<p>An alternative approach to sorting is to disable sorting on the view and to impose a certain order to the user. This is done by explicitly calling sort() with the desired column and order as arguments on the QSortFilterProxyModel (or on the original model if it implements sort()). For example:</p>
+<pre>            proxyModel-&gt;sort(2, Qt::AscendingOrder);</pre>
+<a name=&quote;filtering&quote;></a>
+<h3>Filtering</h3>
+<p>In addition to sorting, QSortFilterProxyModel can be used to hide items that don't match a certain filter. The filter is specified using a QRegExp object and is applied to the filterRole() (Qt::DisplayRole by default) of each item, for a given column. The QRegExp object can be used to match a regular expression, a wildcard pattern, or a fixed string. For example:</p>
+<pre>            proxyModel-&gt;setFilterRegExp(QRegExp(&quot;.png&quot;, Qt::CaseInsensitive,
+                                                QRegExp::FixedString));
+            proxyModel-&gt;setFilterKeyColumn(1);</pre>
+<p>For hierarchical models, the filter is applied recursively to all children. If a parent item doesn't match the filter, none of its children will be shown.</p>
+<p>A common use case is to let the user specify the filter regexp, wildcard pattern, or fixed string in a QLineEdit and to connect the textChanged() signal to setFilterRegExp(), setFilterWildcard(), or setFilterFixedString() to reapply the filter.</p>
+<p>Custom filtering behavior can be achieved by reimplementing the filterAcceptsRow() and filterAcceptsColumn() functions. For example, the following implementation ignores the filterKeyColumn property and performs filtering on columns 0, 1, and 2:</p>
+<pre>    bool MySortFilterProxyModel::filterAcceptsRow(int sourceRow,
+            const QModelIndex &amp;sourceParent) const
+    {
+        QModelIndex index0 = sourceModel()-&gt;index(sourceRow, 0, sourceParent);
+        QModelIndex index1 = sourceModel()-&gt;index(sourceRow, 1, sourceParent);
+        QModelIndex index2 = sourceModel()-&gt;index(sourceRow, 2, sourceParent);
+
+        return (sourceModel()-&gt;data(index0).toString().contains(filterRegExp())
+                || sourceModel()-&gt;data(index1).toString().contains(filterRegExp()))
+               &amp;&amp; dateInRange(sourceModel()-&gt;data(index2).toDate());
+    }</pre>
+<p>(This code snippet comes from the Custom Sort/Filter Model example.)</p>
+<a name=&quote;subclassing&quote;></a>
+<h3>Subclassing</h3>
+<p><b>Note:</b> Some general guidelines for subclassing models are available in the Model Subclassing Reference.</p>
+<p>Since QAbstractProxyModel and its subclasses are derived from QAbstractItemModel, much of the same advice about subclassing normal models also applies to proxy models. In addition, it is worth noting that many of the default implementations of functions in this class are written so that they call the equivalent functions in the relevant source model. This simple proxying mechanism may need to be overridden for source models with more complex behavior; for example, if the source model provides a custom hasChildren() implementation, you should also provide one in the proxy model.</p>
+
+*/">
+    <method name="public QSortFilterProxyModel(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a sorting filter model with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Clears this sorting filter model, removing all mapping.</p>
+
+*/"/>
+    <method name="public final boolean dynamicSortFilter()"/>
+    <method name="public final com.trolltech.qt.core.Qt.CaseSensitivity filterCaseSensitivity()"/>
+    <method name="protected final void filterChanged()" doc="/**
+<p>Updates the mapping to reflect a change in the filter.</p>
+<p>This function should be called if you are implementing custom filtering (e.g. filterAcceptsRow()), and your filter parameters have changed.</p>
+
+*/"/>
+    <method name="public final int filterKeyColumn()"/>
+    <method name="public final com.trolltech.qt.core.QRegExp filterRegExp()"/>
+    <method name="public final int filterRole()"/>
+    <method name="public final void setDynamicSortFilter(boolean enable__0)"/>
+    <method name="public final void setFilterCaseSensitivity(com.trolltech.qt.core.Qt.CaseSensitivity cs__0)"/>
+    <method name="public final void setFilterFixedString(java.lang.String pattern__0)" doc="/**
+<p>Sets the fixed string used to filter the contents of the source model to the given <i>pattern</i>.</p>
+
+*/"/>
+    <method name="public final void setFilterKeyColumn(int column__0)"/>
+    <method name="public final void setFilterRegExp(com.trolltech.qt.core.QRegExp regExp__0)"/>
+    <method name="public final void setFilterRegExp(java.lang.String pattern__0)" doc="/**
+<p>Sets the regular expression used to filter the contents of the source model to <i>pattern</i>.</p>
+
+*/"/>
+    <method name="public final void setFilterRole(int role__0)"/>
+    <method name="public final void setFilterWildcard(java.lang.String pattern__0)" doc="/**
+<p>Sets the wildcard expression used to filter the contents of the source model to the given <i>pattern</i>.</p>
+
+*/"/>
+    <method name="public final void setSortCaseSensitivity(com.trolltech.qt.core.Qt.CaseSensitivity cs__0)"/>
+    <method name="public final void setSortRole(int role__0)"/>
+    <method name="public final com.trolltech.qt.core.Qt.CaseSensitivity sortCaseSensitivity()"/>
+    <method name="public final int sortRole()"/>
+    <method name="public com.trolltech.qt.core.QModelIndex buddy(com.trolltech.qt.core.QModelIndex index__0)"/>
+    <method name="public boolean canFetchMore(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="public int columnCount(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="public java.lang.Object data(com.trolltech.qt.core.QModelIndex index__0, int role__1)"/>
+    <method name="public boolean dropMimeData(com.trolltech.qt.gui.QMimeData data__0, com.trolltech.qt.core.Qt.DropAction action__1, int row__2, int column__3, com.trolltech.qt.core.QModelIndex parent__4)"/>
+    <method name="public void fetchMore(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="protected boolean filterAcceptsColumn(int source_column__0, com.trolltech.qt.core.QModelIndex source_parent__1)" doc="/**
+<p>Returns true if the value in the item in the column indicated by the given <i>source_column</i> and <i>source_parent</i> should be included in the model.</p>
+<p>The default implementation returns true.</p>
+
+*/"/>
+    <method name="protected boolean filterAcceptsRow(int source_row__0, com.trolltech.qt.core.QModelIndex source_parent__1)" doc="/**
+<p>Returns true if the value in the item in the row indicated by the given <i>source_row</i> and <i>source_parent</i> should be included in the model.</p>
+<p>By default, the Qt::DisplayRole is used to determine if the row should be accepted or not. This can be changed by setting the filterRole property.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.Qt.ItemFlags flags(com.trolltech.qt.core.QModelIndex index__0)"/>
+    <method name="public boolean hasChildren(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="public java.lang.Object headerData(int section__0, com.trolltech.qt.core.Qt.Orientation orientation__1, int role__2)"/>
+    <method name="public com.trolltech.qt.core.QModelIndex index(int row__0, int column__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public boolean insertColumns(int column__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public boolean insertRows(int row__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="protected boolean lessThan(com.trolltech.qt.core.QModelIndex left__0, com.trolltech.qt.core.QModelIndex right__1)" doc="/**
+<p>Returns true if the value of the item referred to by the given index <i>left</i> is less than the value of the item referred to by the given index <i>right</i>, otherwise returns false.</p>
+<p>This function is used as the &lt; operator when sorting, and handles the following QVariant types:</p>
+<ul>
+<li>QVariant::Int</li>
+<li>QVariant::UInt</li>
+<li>QVariant::LongLong</li>
+<li>QVariant::ULongLong</li>
+<li>QVariant::Double</li>
+<li>QVariant::Char</li>
+<li>QVariant::Date</li>
+<li>QVariant::Time</li>
+<li>QVariant::DateTime</li>
+<li>QVariant::String</li>
+</ul>
+<p>Any other type will be converted to a QString using QVariant::toString().</p>
+<p>Comparison of QStrings is case sensitive by default; this can be changed using the sortCaseSensitivity property.</p>
+<p>By default, the Qt::DisplayRole associated with the QModelIndexes is used for comparisons. This can be changed by setting the sortRole property.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QModelIndex mapFromSource(com.trolltech.qt.core.QModelIndex sourceIndex__0)" doc="/**
+<p>Returns the model index in the QSortFilterProxyModel given the <i>sourceIndex</i> from the source model.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QItemSelection mapSelectionFromSource(com.trolltech.qt.gui.QItemSelection sourceSelection__0)"/>
+    <method name="public com.trolltech.qt.gui.QItemSelection mapSelectionToSource(com.trolltech.qt.gui.QItemSelection proxySelection__0)"/>
+    <method name="public com.trolltech.qt.core.QModelIndex mapToSource(com.trolltech.qt.core.QModelIndex proxyIndex__0)" doc="/**
+<p>Returns the source model index corresponding to the given <i>proxyIndex</i> from the sorting filter model.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; match(com.trolltech.qt.core.QModelIndex start__0, int role__1, java.lang.Object value__2, int hits__3, com.trolltech.qt.core.Qt.MatchFlags flags__4)" doc="/**
+<p>Returns a list of indexes for the items where the data stored under the given <i>role</i> matches the specified <i>value</i>. The way the search is performed is defined by the <i>flags</i> given. The list that is returned may be empty.</p>
+<p>The search starts from the <i>start</i> index, and continues until the number of matching data items equals <i>hits</i>, the search reaches the last row, or the search reaches <i>start</i> again, depending on whether <tt>MatchWrap</tt> is specified in <i>flags</i>.</p>
+<p>By default, this function will perform a wrapping, string-based comparison on all items, searching for items that begin with the search term specified by <i>value</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QMimeData mimeData(java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; indexes__0)" doc="/**
+<p>Returns an object that contains serialized items of data corresponding to the list of <i>indexes</i> specified. The formats used to describe the encoded data is obtained from the mimeTypes() function.</p>
+<p>If the list of indexes is empty, or there are no supported MIME types, 0 is returned rather than a serialized empty list.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;java.lang.String&gt; mimeTypes()"/>
+    <method name="public com.trolltech.qt.core.QModelIndex parent(com.trolltech.qt.core.QModelIndex child__0)"/>
+    <method name="public boolean removeColumns(int column__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public boolean removeRows(int row__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public int rowCount(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="public boolean setData(com.trolltech.qt.core.QModelIndex index__0, java.lang.Object value__1, int role__2)"/>
+    <method name="public boolean setHeaderData(int section__0, com.trolltech.qt.core.Qt.Orientation orientation__1, java.lang.Object value__2, int role__3)"/>
+    <method name="public void setSourceModel(com.trolltech.qt.core.QAbstractItemModel sourceModel__0)"/>
+    <method name="public void sort(int column__0, com.trolltech.qt.core.Qt.SortOrder order__1)"/>
+    <method name="public com.trolltech.qt.core.QSize span(com.trolltech.qt.core.QModelIndex index__0)"/>
+    <method name="public com.trolltech.qt.core.Qt.DropActions supportedDropActions()"/>
+</class>

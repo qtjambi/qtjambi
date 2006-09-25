@@ -1,0 +1,151 @@
+<class name="QSplitter" doc="/**
+<p>The QSplitter class implements a splitter widget.</p>
+<p>A splitter lets the user control the size of child widgets by dragging the boundary between the children. Any number of widgets may be controlled by a single splitter. The typical use of a QSplitter is to create several widgets and add them using insertWidget() or addWidget().</p>
+<p>The following example will show a QListView, QTreeView, and QTextEdit side by side, with two splitter handles:</p>
+<pre>        QSplitter *splitter = new QSplitter(parent);
+        QListView *listview = new QListView;
+        QTreeView *treeview = new QTreeView;
+        QTextEdit *textedit = new QTextEdit;
+        splitter-&gt;addWidget(listview);
+        splitter-&gt;addWidget(treeview);
+        splitter-&gt;addWidget(textedit);</pre>
+<p>If a widget is already inside a QSplitter when insertWidget() or addWidget() is called, it will move to the new position. This can be used to reorder widgets in the splitter later. You can use indexOf(), widget(), and count() to get access to the widgets inside the splitter.</p>
+<p>A default QSplitter lays out its children horizontally (side by side); you can use setOrientation(Qt::Vertical) to lay its children out vertically.</p>
+<p>By default, all widgets can be as large or as small as the user wishes, between the minimumSizeHint() (or minimumSize()) and maximumSize() of the widgets.</p>
+<p>QSplitter resizes its children dynamically by default. If you would rather have QSplitter resize the children only at the end of a resize operation, call setOpaqueResize(false).</p>
+<p>The initial distribution of size between the widgets is determined by the initial size of each widget. You can also use setSizes() to set the sizes of all the widgets. The function sizes() returns the sizes set by the user. Alternatively, you can save and restore the sizes of the widgets from a QByteArray using saveState() and restoreState() respectively.</p>
+<p>When you hide() a child its space will be distributed among the other children. It will be reinstated when you show() it again.</p>
+
+*/">
+    <method name="public QSplitter(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a horizontal splitter with the <i>parent</i> arguments is passed on to the QFrame constructor.</p>
+
+*/"/>
+    <method name="public QSplitter(com.trolltech.qt.core.Qt.Orientation arg__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs a splitter with the given <i>orientation</i> and <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final void addWidget(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Adds the given <i>widget</i> to the splitter's layout after all the other items.</p>
+<p>If <i>widget</i> is already in the splitter, it will be moved to the new position.</p>
+
+*/"/>
+    <method name="public final boolean childrenCollapsible()"/>
+    <method name="protected final int closestLegalPosition(int arg__0, int arg__1)" doc="/**
+<p>Returns the closest legal position to <i>pos</i> of the widget with index <i>index</i>.</p>
+<p>For right-to-left languages such as Arabic and Hebrew, the layout of horizontal splitters is reversed. Positions are then measured from the right edge of the widget.</p>
+
+*/"/>
+    <method name="public final int count()" doc="/**
+<p>Returns the number of widgets contained in the splitter's layout.</p>
+
+*/"/>
+    <method name="public final void getRange(int index__0, com.trolltech.qt.QNativePointer arg__1, com.trolltech.qt.QNativePointer arg__2)" doc="/**
+<p>Returns the valid range of the splitter with index <i>index</i> in *<i>min</i> and *<i>max</i> if <i>min</i> and <i>max</i> are not 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QSplitterHandle handle(int index__0)" doc="/**
+<p>Returns the handle to the left (or above) for the item in the splitter's layout at the given <i>index</i>. The handle at index 0 is always hidden.</p>
+<p>For right-to-left languages such as Arabic and Hebrew, the layout of horizontal splitters is reversed. The handle will be to the right of the widget at <i>index</i>.</p>
+
+*/"/>
+    <method name="public final int handleWidth()"/>
+    <method name="public final int indexOf(com.trolltech.qt.gui.QWidget w__0)" doc="/**
+<p>Returns the index in the splitter's layout of the specified <i>widget</i>. This also works for handles.</p>
+<p>Handles are numbered from 0. There are as many handles as there are child widgets, but the handle at position 0 is always hidden.</p>
+
+*/"/>
+    <method name="public final void insertWidget(int index__0, com.trolltech.qt.gui.QWidget widget__1)" doc="/**
+<p>Inserts the <i>widget</i> specified into the splitter's layout at the given <i>index</i>.</p>
+<p>If <i>widget</i> is already in the splitter, it will be moved to the new position.</p>
+<p>if <i>index</i> is an invalid index, then the widget will be inserted at the end.</p>
+
+*/"/>
+    <method name="public final boolean isCollapsible(int index__0)" doc="/**
+<p>Returns true if the widget at <i>index</i> is collapsible, otherwise returns false</p>
+
+*/"/>
+    <method name="protected final void moveSplitter(int pos__0, int index__1)" doc="/**
+<p>Moves the left or top edge of the splitter handle at <i>index</i> as close as possible to position <i>pos</i>, which is the distance from the left or top edge of the widget.</p>
+<p>For right-to-left languages such as Arabic and Hebrew, the layout of horizontal splitters is reversed. <i>pos</i> is then the distance from the right edge of the widget.</p>
+
+*/"/>
+    <method name="public final boolean opaqueResize()"/>
+    <method name="public final com.trolltech.qt.core.Qt.Orientation orientation()"/>
+    <method name="public final void refresh()" doc="/**
+<p>Updates the splitter's state. You should not need to call this function.</p>
+
+*/"/>
+    <method name="public final boolean restoreState(com.trolltech.qt.core.QByteArray state__0)" doc="/**
+<p>Restores the splitter's layout to the <i>state</i> specified.</p>
+<p>Typically this is used in conjunction with QSettings to restore the size from a past session. Here is an example:</p>
+<p>Restore the splitters's state:</p>
+<pre>        QSettings settings;
+        splitter-&gt;restoreState(settings.value(&quot;splitterSizes&quot;).toByteArray());</pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray saveState()" doc="/**
+<p>Saves the state of the splitter's layout.</p>
+<p>Typically this is used in conjunction with QSettings to remember the size for a future session. A version number is stored as part of the data. Here is an example:</p>
+<pre>        QSettings settings;
+        settings.setValue(&quot;splitterSizes&quot;, splitter-&gt;saveState());</pre>
+
+*/"/>
+    <method name="public final void setChildrenCollapsible(boolean arg__0)"/>
+    <method name="public final void setCollapsible(int index__0, boolean arg__1)" doc="/**
+<p>Sets whether the child widget at index <i>index</i> is collapsible to <i>collapse</i>.</p>
+<p>By default, children are collapsible, meaning that the user can resize them down to size 0, even if they have a non-zero minimumSize() or minimumSizeHint(). This behavior can be changed on a per-widget basis by calling this function, or globally for all the widgets in the splitter by setting the childrenCollapsible property.</p>
+
+*/"/>
+    <method name="public final void setHandleWidth(int arg__0)"/>
+    <method name="public final void setOpaqueResize(boolean opaque__0)"/>
+    <method name="public final void setOrientation(com.trolltech.qt.core.Qt.Orientation arg__0)"/>
+    <method name="protected final void setRubberBand(int position__0)" doc="/**
+<p>Displays a rubber band at position <i>pos</i>. If <i>pos</i> is negative, the rubber band is removed.</p>
+
+*/"/>
+    <method name="public final void setSizes(java.util.List&lt;java.lang.Integer&gt; list__0)" doc="/**
+<p>Sets the size parameters to the values given in the <i>list</i>. If the splitter is horizontal, the values set the widths of each widget going from left to right. If the splitter is vertical, the values set the heights of each widget going from top to bottom. Extra values in the <i>list</i> are ignored.</p>
+<p>If <i>list</i> contains too few values, the result is undefined but the program will still be well-behaved.</p>
+<p>The values in <i>list</i> should be the height or width (depending on orientation()) that the widgets should be resized to.</p>
+
+*/"/>
+    <method name="public final void setStretchFactor(int index__0, int stretch__1)" doc="/**
+<p>Updates the size policy of the widget at position <i>index</i> to have a stretch factor of <i>stretch</i>.</p>
+<p>This function is provided for convenience. It is equivalent to</p>
+<pre>    QWidget *widget = splitter-&gt;widget(index);
+    QSizePolicy policy = widget-&gt;sizePolicy();
+    policy.setHorizontalStretch(stretch);
+    policy.setVerticalStretch(stretch);
+    widget-&gt;setSizePolicy(policy);</pre>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.Integer&gt; sizes()" doc="/**
+<p>Returns a list of the size parameters of all the widgets in this splitter.</p>
+<p>If the splitter's orientation is horizontal, the list is a list of widget widths; if the orientation is vertical, the list is a list of widget heights.</p>
+<p>Giving the values to another splitter's setSizes() function will produce a splitter with the same layout as this one.</p>
+<p>The easiest way to iterate over the list is to use the Java-style iterators.</p>
+<pre>        QListIterator&lt;int&gt; it(splitter-&gt;sizes());
+        while (it.hasNext())
+            processSize(it.next());</pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget widget(int index__0)" doc="/**
+<p>Returns the widget at the given <i>index</i> in the splitter's layout.</p>
+
+*/"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="protected void childEvent(com.trolltech.qt.core.QChildEvent arg__0)" doc="/**
+<p>Tells the splitter that the child widget described by <i>c</i> has been inserted or removed.</p>
+<p>This method is also used to handle the situation where a widget is created with the splitter as a parent but not explicitly added with insertWidget() or addWidget(). This is for compatiblity and not the recommended way of putting widgets into a splitter in new code. Please use insertWidget() or addWidget() in new code.</p>
+
+*/"/>
+    <method name="protected com.trolltech.qt.gui.QSplitterHandle createHandle()" doc="/**
+<p>Returns a new splitter handle as a child widget of this splitter. This function can be reimplemented in subclasses to provide support for custom handles.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize minimumSizeHint()"/>
+    <method name="protected void resizeEvent(com.trolltech.qt.gui.QResizeEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+</class>

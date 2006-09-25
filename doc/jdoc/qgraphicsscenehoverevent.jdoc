@@ -1,0 +1,30 @@
+<class name="QGraphicsSceneHoverEvent">
+    <method name="public QGraphicsSceneHoverEvent(com.trolltech.qt.core.QEvent.Type type__0)" doc="/**
+<p>Constructs a graphics scene hover event of the specified <i>type</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF pos()" doc="/**
+<p>Returns the position of the mouse cursor in item coordinates at the moment the the hover event was sent.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF scenePos()" doc="/**
+<p>Returns the position of the mouse cursor in scene coordinates at the moment the the hover event was sent.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint screenPos()" doc="/**
+<p>Returns the position of the mouse cursor in screen coordinates at the moment the the hover event was sent.</p>
+
+*/"/>
+    <method name="public final void setPos(com.trolltech.qt.core.QPointF pos__0)" doc="/**
+<p>Sets the position associated with the hover event to the given <i>point</i> in item coordinates.</p>
+
+*/"/>
+    <method name="public final void setScenePos(com.trolltech.qt.core.QPointF pos__0)" doc="/**
+<p>Sets the position associated with the hover event to the given <i>point</i> in scene coordinates.</p>
+
+*/"/>
+    <method name="public final void setScreenPos(com.trolltech.qt.core.QPoint pos__0)" doc="/**
+<p>Sets the position associated with the hover event to the given <i>point</i> in screen coordinates.</p>
+
+*/"/>
+</class>

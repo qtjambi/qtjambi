@@ -1,0 +1,115 @@
+<class name="QImageIOHandler" doc="/**
+<p>The QImageIOHandler class defines the common image I/O interface for all image formats in Qt.</p>
+<p>Qt uses QImageIOHandler for reading and writing images through QImageReader and QImageWriter. You can also derive from this class to write your own image format handler using Qt's plugin mechanism.</p>
+<p>Call setDevice() to assign a device to the handler, and setFormat() to assign a format to it. One QImageIOHandler may support more than one image format. canRead() returns true if an image can be read from the device, and read() and write() return true if reading or writing an image was completed successfully.</p>
+<p>QImageIOHandler also has support for animations formats, through the functions loopCount(), imageCount(), nextImageDelay() and currentImageNumber().</p>
+<p>In order to determine what options an image handler supports, Qt will call supportsOption() and setOption(). Make sure to reimplement these functions if you can provide support for any of the options in the ImageOption enum.</p>
+<p>To write your own image handler, you must at least reimplement canRead() and read(). Then create a QImageIOPlugin that can create the handler. Finally, install your plugin, and QImageReader and QImageWriter will then automatically load the plugin, and start using it.</p>
+
+*/">
+    <method name="public QImageIOHandler()" doc="/**
+<p>Constructs a QImageIOHandler object.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QIODevice device()" doc="/**
+<p>Returns the device currently assigned to the QImageIOHandler. If not device has been assigned, 0 is returned.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray format()" doc="/**
+<p>Returns the format that is currently assigned to QImageIOHandler. If no format has been assigned, an empty string is returned.</p>
+
+*/"/>
+    <method name="public final void setDevice(com.trolltech.qt.core.QIODevice device__0)" doc="/**
+<p>Sets the device of the QImageIOHandler to <i>device</i>. The image handler will use this device when reading and writing images.</p>
+<p>The device can only be set once and must be set before calling canRead(), read(), write(), etc. If you need to read multiple files, construct multiple instances of the appropriate QImageIOHandler subclass.</p>
+
+*/"/>
+    <method name="public final void setFormat(com.trolltech.qt.core.QByteArray format__0)" doc="/**
+<p>Sets the format of the QImageIOHandler to <i>format</i>. The format is most useful for handlers that support multiple image formats.</p>
+<p>This function is declared const so that it can be called from canRead().</p>
+
+*/"/>
+    <method name="public abstract boolean canRead()" doc="/**
+<p>Returns true if an image can be read from the device (i.e., the image format is supported, the device can be read from and the initial header information suggests that the image can be read); otherwise returns false.</p>
+<p>When reimplementing canRead(), make sure that the I/O device (device()) is left in its original state (e.g., by using peek() rather than read()).</p>
+
+*/"/>
+    <method name="public int currentImageNumber()" doc="/**
+<p>For image formats that support animation, this function returns the sequence number of the current image in the animation. If the image format does not support animation, or if it is unable to determine the current sequence number, 0 is returned.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QRect currentImageRect()" doc="/**
+<p>Returns the rect of the current image. If no rect is defined for the image, and empty QRect() is returned.</p>
+<p>This function is useful for animations, where only parts of the frame may be updated at a time.</p>
+
+*/"/>
+    <method name="public int imageCount()" doc="/**
+<p>For image formats that support animation, this function returns the number of images in the animation. If the image format does not support animation, or if it is unable to determine the number of images, 0 is returned.</p>
+<p>The default implementation returns 1 if canRead() returns true; otherwise 0 is returned.</p>
+
+*/"/>
+    <method name="public boolean jumpToImage(int imageNumber__0)" doc="/**
+<p>For image formats that support animation, this function jumps to the image whose sequence number is <i>imageNumber</i>. The next call to read() will attempt to read this image.</p>
+<p>The default implementation does nothing, and returns false.</p>
+
+*/"/>
+    <method name="public boolean jumpToNextImage()" doc="/**
+<p>For image formats that support animation, this function jumps to the next image.</p>
+<p>The default implementation does nothing, and returns false.</p>
+
+*/"/>
+    <method name="public int loopCount()" doc="/**
+<p>For image formats that support animation, this function returns the number of times the animation should loop. If the image format does not support animation, 0 is returned.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QByteArray name()" doc="/**
+<p>Use format() instead.</p>
+
+*/"/>
+    <method name="public int nextImageDelay()" doc="/**
+<p>For image formats that support animation, this function returns the number of milliseconds to wait until reading the next image. If the image format does not support animation, 0 is returned.</p>
+
+*/"/>
+    <method name="public java.lang.Object option(com.trolltech.qt.gui.QImageIOHandler.ImageOption option__0)" doc="/**
+<p>Returns the value assigned to <i>option</i> as a QVariant. The type of the value depends on the option. For example, option(Size) returns a QSize variant.</p>
+
+*/"/>
+    <method name="public abstract boolean read(com.trolltech.qt.QNativePointer image__0)" doc="/**
+<p>Read an image from the device, and stores it in <i>image</i>. For image formats that support incremental loading, and for animation formats, the image handler can assume that <i>image</i> points to the previous frame.</p>
+
+*/"/>
+    <method name="public void setOption(com.trolltech.qt.gui.QImageIOHandler.ImageOption option__0, java.lang.Object value__1)" doc="/**
+<p>Sets the option <i>option</i> with the value <i>value</i>.</p>
+
+*/"/>
+    <method name="public boolean supportsOption(com.trolltech.qt.gui.QImageIOHandler.ImageOption option__0)" doc="/**
+<p>Returns true if the QImageIOHandler supports the option <i>option</i>; otherwise returns false. For example, if the QImageIOHandler supports the Size option, supportsOption(Size) must return true.</p>
+
+*/"/>
+    <method name="public boolean write(com.trolltech.qt.gui.QImage image__0)" doc="/**
+<p>Writes the image <i>image</i> to the assigned device. Returns true on success; otherwise returns false.</p>
+<p>The default implementation does nothing, and simply returns false.</p>
+
+*/"/>
+    <enum name="ImageOption" doc="/**
+<p>This enum describes the different options supported by QImageIOHandler. Some options are used to query an image for properties, and others are used to toggle the way in which an image should be written.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The original size of an image. A handler that supports this option is expected to read the size of the image from the image metadata, and return this size from option() as a QSize.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The clip rect, or ROI (Region Of Interest). A handler that supports this option is expected to only read the provided QRect area from the original image in read(), before any other transformation is applied.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The scaled size of the image. A handler that supports this option is expected to scale the image to the provided size (a QSize), after applying any clip rect transformation (ClipRect). If the handler does not support this option, QImageReader will perform the scaling after the image has been read.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The scaled clip rect (or ROI, Region Of Interest) of the image. A handler that supports this option is expected to apply the provided clip rect (a QRect), after applying any scaling (ScaleSize) or regular clipping (ClipRect). If the handler does not support this option, QImageReader will apply the scaled clip rect after the image has been read.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The image description. Some image formats, such as GIF and PNG, allow embedding of text or comments into the image data (e.g., for storing copyright information). It's common that the text is stored in key-value pairs, but some formats store all text in one continuous block. QImageIOHandler returns the text as one QString, where keys and values are separated by a ':', and keys-value pairs are separated by two newlines (\n\n). For example, &quot;Title: Sunset\n\nAuthor: Jim Smith\nSarah Jones\n\n&quot;. Formats that store text in a single block can use &quot;Description&quot; as the key.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The compression ratio of the image data. A handler that supports this option is expected to set its compression rate depending on the value of this option (an int) when writing.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The gamma level of the image. A handler that supports this option is expected to set the image gamma level depending on the value of this option (a float) when writing.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The quality level of the image. A handler that supports this option is expected to set the image quality level depending on the value of this option (an int) when writing.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The name of the image. A handler that supports this option is expected to read the name from the image metadata and return this as a QString, or when writing an image it is expected to store the name in the image metadata.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The subtype of the image. A handler that supports this option can use the subtype value to help when reading and writing images. For example, a PPM handler may have a subtype value of &quot;ppm&quot; or &quot;ppmraw&quot;.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A handler that supports this option is expected to read the image in several passes, as if it was an animation. QImageReader will treat the image as an animation.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The endianness of the image. Certain image formats can be stored as BigEndian or LittleEndian. A handler that supports Endianness uses the value of this option to determine how the image should be stored.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Image formats that support animation return true for this value in supportsOption(); otherwise, false is returned.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Certain image formats allow the background color to be specified. A handler that supports BackgroundColor initializes the background color to this option (a QColor) when reading an image.</td></tr>
+</table></p>
+
+*/"/>
+</class>

@@ -1,0 +1,19 @@
+<class name="QResizeEvent" doc="/**
+<p>The QResizeEvent class contains event parameters for resize events.</p>
+<p>Resize events are sent to widgets that have been resized.</p>
+<p>The event handler QWidget::resizeEvent() receives resize events.</p>
+
+*/">
+    <method name="public QResizeEvent(com.trolltech.qt.core.QSize size__0, com.trolltech.qt.core.QSize oldSize__1)" doc="/**
+<p>Constructs a resize event with the new and old widget sizes, <i>size</i> and <i>oldSize</i> respectively.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize oldSize()" doc="/**
+<p>Returns the old size of the widget.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize size()" doc="/**
+<p>Returns the new size of the widget. This is the same as QWidget::size().</p>
+
+*/"/>
+</class>

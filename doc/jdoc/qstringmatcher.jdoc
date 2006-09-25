@@ -1,0 +1,40 @@
+<class name="QStringMatcher" doc="/**
+<p>The QStringMatcher class holds a sequence of characters that can be quickly matched in a Unicode string.</p>
+<p>This class is useful when you have a sequence of QChars that you want to repeatedly match against some strings (perhaps in a loop), or when you want to search for the same sequence of characters multiple times in the same string. Using a matcher object and indexIn() is faster than matching a plain QString with QString::indexOf() if repeated matching takes place. This class offers no benefit if you are doing one-off string matches.</p>
+<p>Create the QStringMatcher with the QString you want to search for. Then call indexIn() on the QString that you want to search.</p>
+
+*/">
+    <method name="public QStringMatcher()" doc="/**
+<p>Constructs an empty string matcher that won't match anything. Call setPattern() to give it a pattern to match.</p>
+
+*/"/>
+    <method name="public QStringMatcher(java.lang.String pattern__0, com.trolltech.qt.core.Qt.CaseSensitivity cs__1)" doc="/**
+<p>Constructs a string matcher that will search for <i>pattern</i>, with case sensitivity <i>cs</i>.</p>
+<p>Call indexIn() to perform a search.</p>
+
+*/"/>
+    <method name="public QStringMatcher(com.trolltech.qt.core.QStringMatcher other__0)" doc="/**
+<p>Copies the <i>other</i> string matcher to this string matcher.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.CaseSensitivity caseSensitivity()" doc="/**
+<p>Returns the case sensitivity setting for this string matcher.</p>
+
+*/"/>
+    <method name="public final int indexIn(java.lang.String str__0, int from__1)" doc="/**
+<p>Searches the string <i>str</i> from character position <i>from</i> (default 0, i.e. from the first character), for the string pattern() that was set in the constructor or in the most recent call to setPattern(). Returns the position where the pattern() matched in <i>str</i>, or -1 if no match was found.</p>
+
+*/"/>
+    <method name="public final java.lang.String pattern()" doc="/**
+<p>Returns the string pattern that this string matcher will search for.</p>
+
+*/"/>
+    <method name="public final void setCaseSensitivity(com.trolltech.qt.core.Qt.CaseSensitivity cs__0)" doc="/**
+<p>Sets the case sensitivity setting of this string matcher to <i>cs</i>.</p>
+
+*/"/>
+    <method name="public final void setPattern(java.lang.String pattern__0)" doc="/**
+<p>Sets the string that this string matcher will search for to <i>pattern</i>.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,195 @@
+<class name="QStandardItemModel" doc="/**
+<p>The QStandardItemModel class provides a generic model for storing custom data.</p>
+<p>QStandardItemModel can be used as a repository for standard Qt data types. It is one of the Model/View Classes and is part of Qt's model/view framework.</p>
+<p>QStandardItemModel provides a classic item-based approach to working with the model. The items in a QStandardItemModel are provided by QStandardItem.</p>
+<p>QStandardItemModel implements the QAbstractItemModel interface, which means that the model can be used to provide data in any view that supports that interface (such as QListView, QTableView and QTreeView, and your own custom views). For performance and flexibility, you may want to subclass QAbstractItemModel to provide support for different kinds of data repositories. For example, the QDirModel provides a model interface to the underlying file system, and does not actually store file information internally.</p>
+<p>When you want a list or tree, you typically create an empty QStandardItemModel and use appendRow() to add items to the model, and item() to access an item. If your model represents a table, you typically pass the dimensions of the table to the QStandardItemModel constructor and use setItem() to position items into the table. You can also use setRowCount() and setColumnCount() to alter the dimensions of the model. To insert items, use insertRow() or insertColumn(), and to remove items, use removeRow() or removeColumn().</p>
+<p>You can set the header labels of your model with setHorizontalHeaderLabels() and setVerticalHeaderLabels().</p>
+<p>You can search for items in the model with findItems(), and sort the model by calling sort().</p>
+<p>Call clear() to remove all items from the model.</p>
+<p>An example usage of QStandardItemModel to create a table:</p>
+<pre>    QStandardItemModel model(4, 4);
+    for (int row = 0; row &lt; 4; ++row) {
+        for (int column = 0; column &lt; 4; ++column) {
+            QStandardItem *item = new QStandardItem(QString(&quot;row %0, column %1&quot;).arg(row).arg(column));
+            model.setItem(row, column, item);
+        }
+    }</pre>
+<p>An example usage of QStandardItemModel to create a tree:</p>
+<pre>    QStandardItemModel model;
+    QStandardItem *parentItem = model.invisibleRootItem();
+    for (int i = 0; i &lt; 4; ++i) {
+        QStandardItem *item = new QStandardItem(QString(&quot;item %0&quot;).arg(i));
+        parentItem-&gt;appendRow(item);
+        parentItem = item;
+    }</pre>
+<p>After setting the model on a view, you typically want to react to user actions, such as an item being clicked. Since a QAbstractItemView provides QModelIndex-based signals and functions, you need a way to obtain the QStandardItem that corresponds to a given QModelIndex, and vice versa. itemFromIndex() and indexFromItem() provide this mapping. Typical usage of itemFromIndex() includes obtaining the item at the current index in a view, and obtaining the item that corresponds to an index carried by a QAbstractItemView signal, such as QAbstractItemView::clicked(). First you connect the view's signal to a slot in your class:</p>
+<pre>    QTreeView *treeView = new QTreeView(this);
+    treeView-&gt;setModel(myStandardItemModel);
+    connect(treeView, SIGNAL(clicked(QModelIndex)),
+            this, SLOT(clicked(QModelIndex)));</pre>
+<p>When you receive the signal, you call itemFromIndex() on the given model index to get a pointer to the item:</p>
+<pre>    void MyWidget::clicked(const QModelIndex &amp;index)
+    {
+        QStandardItem *item = myStandardItemModel-&gt;itemFromIndex(index);
+        <span class=&quote;comment&quote;>// Do stuff with the item ...</span>
+    }</pre>
+<p>Conversely, you must obtain the QModelIndex of an item when you want to invoke a model/view function that takes an index as argument. You can obtain the index either by using the model's indexFromItem() function, or, equivalently, by calling QStandardItem::index():</p>
+<pre>    treeView-&gt;scrollTo(item-&gt;index());</pre>
+<p>You are, of course, not required to use the item-based approach; you could instead rely entirely on the QAbstractItemModel interface when working with the model, or use a combination of the two as appropriate.</p>
+
+*/">
+    <method name="public QStandardItemModel(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a new item model with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public QStandardItemModel(int rows__0, int columns__1, com.trolltech.qt.core.QObject parent__2)" doc="/**
+<p>Constructs a new item model that initially has <i>rows</i> rows and <i>columns</i> columns, and that has the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final void appendColumn(java.util.List&lt;com.trolltech.qt.gui.QStandardItem&gt; items__0)" doc="/**
+<p>Appends a column containing <i>items</i>. If necessary, the row count is increased to the size of <i>items</i>.</p>
+
+*/"/>
+    <method name="public final void appendRow(com.trolltech.qt.gui.QStandardItem item__0)" doc="/**
+<p>When building a list or a tree that has only one column, this function provides a convenient way to append a single new <i>item</i>.</p>
+
+*/"/>
+    <method name="public final void appendRow(java.util.List&lt;com.trolltech.qt.gui.QStandardItem&gt; items__0)" doc="/**
+<p>Appends a row containing <i>items</i>. If necessary, the column count is increased to the size of <i>items</i>.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Removes all items (including header items) from the model and sets the number of rows and columns to zero.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QStandardItem&gt; findItems(java.lang.String text__0, com.trolltech.qt.core.Qt.MatchFlags flags__1, int column__2)" doc="/**
+<p>Returns a list of items that match the given <i>text</i>, using the given <i>flags</i>, in the given <i>column</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem horizontalHeaderItem(int column__0)" doc="/**
+<p>Returns the horizontal header item for <i>column</i> if one has been set; otherwise returns 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex indexFromItem(com.trolltech.qt.gui.QStandardItem item__0)" doc="/**
+<p>Returns the QModelIndex associated with the given <i>item</i>.</p>
+<p>Use this function when you want to perform an operation that requires the QModelIndex of the item, such as QAbstractItemView::scrollTo(). QStandardItem::index() is provided as convenience; it is equivalent to calling this function.</p>
+
+*/"/>
+    <method name="public final boolean insertColumn(int column__0, com.trolltech.qt.core.QModelIndex parent__1)"/>
+    <method name="public final void insertColumn(int column__0, java.util.List&lt;com.trolltech.qt.gui.QStandardItem&gt; items__1)" doc="/**
+<p>Inserts a column at <i>column</i> containing <i>items</i>. If necessary, the row count is increased to the size of <i>items</i>.</p>
+
+*/"/>
+    <method name="public final boolean insertRow(int row__0, com.trolltech.qt.core.QModelIndex parent__1)"/>
+    <method name="public final void insertRow(int row__0, com.trolltech.qt.gui.QStandardItem item__1)" doc="/**
+<p>Inserts a row at <i>row</i> containing <i>item</i>.</p>
+<p>When building a list or a tree that has only one column, this function provides a convenient way to append a single new item.</p>
+
+*/"/>
+    <method name="public final void insertRow(int row__0, java.util.List&lt;com.trolltech.qt.gui.QStandardItem&gt; items__1)" doc="/**
+<p>Inserts a row at <i>row</i> containing <i>items</i>. If necessary, the column count is increased to the size of <i>items</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem invisibleRootItem()" doc="/**
+<p>Returns the model's invisible root item.</p>
+<p>The invisible root item provides access to the model's top-level items through the QStandardItem API, making it possible to write functions that can treat top-level items and their children in a uniform way; for example, recursive functions involving a tree model.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem item(int row__0, int column__1)" doc="/**
+<p>Returns the item for the given <i>row</i> and <i>column</i> if one has been set; otherwise returns 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem itemFromIndex(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns a pointer to the QStandardItem associated with the given <i>index</i>.</p>
+<p>Calling this function is typically the initial step when processing QModelIndex-based signals from a view, such as QAbstractItemView::activated(). In your slot, you call itemFromIndex(), with the QModelIndex carried by the signal as argument, to obtain a pointer to the corresponding QStandardItem.</p>
+<p>Note that this function will lazily create an item for the index (using itemPrototype()), and set it in the parent item's child table, if no item already exists at that index.</p>
+<p>If <i>index</i> is an invalid index, this function returns 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem itemPrototype()" doc="/**
+<p>Returns the item prototype used by the model. The model uses the item prototype as an item factory when it needs to construct new items on demand (for instance, when a view or item delegate calls setData()).</p>
+
+*/"/>
+    <method name="public final void setColumnCount(int columns__0)" doc="/**
+<p>Sets the number of columns in this model to <i>columns</i>. If this is less than columnCount(), the data in the unwanted columns is discarded.</p>
+
+*/"/>
+    <method name="public final void setHorizontalHeaderItem(int column__0, com.trolltech.qt.gui.QStandardItem item__1)" doc="/**
+<p>Sets the horizontal header item for <i>column</i> to <i>item</i>. The model takes ownership of the item. If necessary, the column count is increased to fit the item. The previous header item (if there was one) is deleted.</p>
+
+*/"/>
+    <method name="public final void setHorizontalHeaderLabels(java.util.List&lt;java.lang.String&gt; labels__0)" doc="/**
+<p>Sets the horizontal header labels using <i>labels</i>. If necessary, the column count is increased to the size of <i>labels</i>.</p>
+
+*/"/>
+    <method name="public final void setItem(int row__0, int column__1, com.trolltech.qt.gui.QStandardItem item__2)" doc="/**
+<p>Sets the item for the given <i>row</i> and <i>column</i> to <i>item</i>. The model takes ownership of the item. If necessary, the row count and column count are increased to fit the item. The previous item at the given location (if there was one) is deleted.</p>
+
+*/"/>
+    <method name="public final void setItem(int row__0, com.trolltech.qt.gui.QStandardItem item__1)"/>
+    <method name="public final void setItemPrototype(com.trolltech.qt.gui.QStandardItem item__0)" doc="/**
+<p>Sets the item prototype for the model to the specified <i>item</i>. The model takes ownership of the prototype.</p>
+<p>The item prototype acts as a QStandardItem factory, by relying on the QStandardItem::clone() function. To provide your own prototype, subclass QStandardItem, reimplement QStandardItem::clone() and set the prototype to be an instance of your custom class. Whenever QStandardItemModel needs to create an item on demand (for instance, when a view or item delegate calls setData())), the new items will be instances of your custom class.</p>
+
+*/"/>
+    <method name="public final void setRowCount(int rows__0)" doc="/**
+<p>Sets the number of rows in this model to <i>rows</i>. If this is less than rowCount(), the data in the unwanted rows is discarded.</p>
+
+*/"/>
+    <method name="public final void setSortRole(int role__0)"/>
+    <method name="public final void setVerticalHeaderItem(int row__0, com.trolltech.qt.gui.QStandardItem item__1)" doc="/**
+<p>Sets the vertical header item for <i>row</i> to <i>item</i>. The model takes ownership of the item. If necessary, the row count is increased to fit the item. The previous header item (if there was one) is deleted.</p>
+
+*/"/>
+    <method name="public final void setVerticalHeaderLabels(java.util.List&lt;java.lang.String&gt; labels__0)" doc="/**
+<p>Sets the vertical header labels using <i>labels</i>. If necessary, the row count is increased to the size of <i>labels</i>.</p>
+
+*/"/>
+    <method name="public final int sortRole()"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QStandardItem&gt; takeColumn(int column__0)" doc="/**
+<p>Removes the given <i>column</i> without deleting the column items, and returns a list of pointers to the removed items. The model releases ownership of the items. For items in the column that have not been set, the corresponding pointers in the list will be 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem takeHorizontalHeaderItem(int column__0)" doc="/**
+<p>Removes the horizontal header item at <i>column</i> from the header without deleting it, and returns a pointer to the item. The model releases ownership of the item.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem takeItem(int row__0, int column__1)" doc="/**
+<p>Removes the item at (<i>row</i>, <i>column</i>) without deleting it. The model releases ownership of the item.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QStandardItem&gt; takeRow(int row__0)" doc="/**
+<p>Removes the given <i>row</i> without deleting the row items, and returns a list of pointers to the removed items. The model releases ownership of the items. For items in the row that have not been set, the corresponding pointers in the list will be 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem takeVerticalHeaderItem(int row__0)" doc="/**
+<p>Removes the vertical header item at <i>row</i> from the header without deleting it, and returns a pointer to the item. The model releases ownership of the item.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStandardItem verticalHeaderItem(int row__0)" doc="/**
+<p>Returns the vertical header item for row <i>row</i> if one has been set; otherwise returns 0.</p>
+
+*/"/>
+    <method name="public int columnCount(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="public java.lang.Object data(com.trolltech.qt.core.QModelIndex index__0, int role__1)"/>
+    <method name="public com.trolltech.qt.core.Qt.ItemFlags flags(com.trolltech.qt.core.QModelIndex index__0)"/>
+    <method name="public boolean hasChildren(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="public java.lang.Object headerData(int section__0, com.trolltech.qt.core.Qt.Orientation orientation__1, int role__2)"/>
+    <method name="public com.trolltech.qt.core.QModelIndex index(int row__0, int column__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public boolean insertColumns(int column__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public boolean insertRows(int row__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public java.util.SortedMap&lt;java.lang.Integer, java.lang.Object&gt; itemData(com.trolltech.qt.core.QModelIndex index__0)"/>
+    <method name="public com.trolltech.qt.core.QModelIndex parent(com.trolltech.qt.core.QModelIndex child__0)"/>
+    <method name="public boolean removeColumns(int column__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public boolean removeRows(int row__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)"/>
+    <method name="public int rowCount(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="public boolean setData(com.trolltech.qt.core.QModelIndex index__0, java.lang.Object value__1, int role__2)"/>
+    <method name="public boolean setHeaderData(int section__0, com.trolltech.qt.core.Qt.Orientation orientation__1, java.lang.Object value__2, int role__3)"/>
+    <method name="public boolean setItemData(com.trolltech.qt.core.QModelIndex index__0, java.util.SortedMap&lt;java.lang.Integer, java.lang.Object&gt; roles__1)"/>
+    <method name="public void sort(int column__0, com.trolltech.qt.core.Qt.SortOrder order__1)"/>
+    <method name="public com.trolltech.qt.core.Qt.DropActions supportedDropActions()" doc="/**
+<p>QStandardItemModel supports both copy and move.</p>
+
+*/"/>
+</class>

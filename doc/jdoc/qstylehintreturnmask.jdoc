@@ -1,0 +1,37 @@
+<class name="QStyleHintReturnMask" doc="/**
+<p>The QStyleHintReturnMask class provides style hints that return a QRegion.</p>
+
+*/">
+    <method name="public QStyleHintReturnMask()" doc="/**
+<p>Constructs a QStyleHintReturnMask. The member variables are initialized to default values.</p>
+
+*/"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleHintReturn subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1</td></tr>
+</table></p>
+<p>The version is used by QStyleHintReturn subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleHintReturn subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SH_Mask for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleHintReturn, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleHintReturn subclass and your own styles.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QRegion region()" doc="/**
+<p>The returned region.</p>
+<p>This variable contains the region for style hints that return a QRegion.</p>
+
+*/"/>
+    <method name="public final void setRegion(com.trolltech.qt.gui.QRegion region)" doc="/**
+<p>The returned region.</p>
+<p>This variable contains the region for style hints that return a QRegion.</p>
+
+*/"/>
+</class>

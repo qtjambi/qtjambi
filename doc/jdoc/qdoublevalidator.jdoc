@@ -1,0 +1,33 @@
+<class name="QDoubleValidator" doc="/**
+<p>The QDoubleValidator class provides range checking of floating-point numbers.</p>
+<p>QDoubleValidator provides an upper bound, a lower bound, and a limit on the number of digits after the decimal point. It does not provide a fixup() function.</p>
+<p>You can set the acceptable range in one call with setRange(), or with setBottom() and setTop(). Set the number of decimal places with setDecimals(). The validate() function returns the validation state.</p>
+
+*/">
+    <method name="public QDoubleValidator(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a validator object with a <i>parent</i> object that accepts any double.</p>
+
+*/"/>
+    <method name="public QDoubleValidator(double bottom__0, double top__1, int decimals__2, com.trolltech.qt.core.QObject parent__3)" doc="/**
+<p>Constructs a validator object with a <i>parent</i> object. This validator will accept doubles from <i>bottom</i> to <i>top</i> inclusive, with up to <i>decimals</i> digits after the decimal point.</p>
+
+*/"/>
+    <method name="public final double bottom()"/>
+    <method name="public final int decimals()"/>
+    <method name="public final void setBottom(double arg__0)"/>
+    <method name="public final void setDecimals(int arg__0)"/>
+    <method name="public final void setTop(double arg__0)"/>
+    <method name="public final double top()"/>
+    <method name="public void setRange(double bottom__0, double top__1, int decimals__2)" doc="/**
+<p>Sets the validator to accept doubles from <i>minimum</i> to <i>maximum</i> inclusive, with at most <i>decimals</i> digits after the decimal point.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QValidator.State validate(com.trolltech.qt.QNativePointer arg__0, com.trolltech.qt.QNativePointer arg__1)" doc="/**
+<p>Returns Acceptable if the string <i>input</i> contains a double that is within the valid range and is in the correct format.</p>
+<p>Returns Intermediate if <i>input</i> contains a double that is outside the range or is in the wrong format; e.g. with too many digits after the decimal point or is empty.</p>
+<p>Returns Invalid if the <i>input</i> is not a double.</p>
+<p>Note: If the valid range consists of just positive doubles (e.g. 0.0 to 100.0) and <i>input</i> is a negative double then Invalid is returned.</p>
+<p>By default, the <i>pos</i> parameter is not used by this validator.</p>
+
+*/"/>
+</class>

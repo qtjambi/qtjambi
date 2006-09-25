@@ -1,0 +1,59 @@
+<class name="QActionGroup" doc="/**
+<p>The QActionGroup class groups actions together.</p>
+<p>In some situations it is useful to group actions together. For example, if you have a <b>Left Align</b> action, a <b>Right Align</b> action, a <b>Justify</b> action, and a <b>Center</b> action, only one of these actions should be active at any one time. One simple way of achieving this is to group the actions together in an action group.</p>
+<p>Here's a example (from the Menus example):</p>
+<pre>        alignmentGroup = new QActionGroup(this);
+        alignmentGroup-&gt;addAction(leftAlignAct);
+        alignmentGroup-&gt;addAction(rightAlignAct);
+        alignmentGroup-&gt;addAction(justifyAct);
+        alignmentGroup-&gt;addAction(centerAct);
+        leftAlignAct-&gt;setChecked(true);</pre>
+<p>Here we create a new action group. Since the action group is exclusive by default, only one of the actions in the group is checked at any one time.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image qactiongroup-align.png]</font></p><p>A QActionGroup emits an triggered() signal when one of its actions is chosen. Each action in an action group emits its triggered() signal as usual.</p>
+<p>As stated above, an action group is exclusive by default; it ensures that only one checkable action is active at any one time. If you want to group checkable actions without making them exclusive, you can turn of exclusiveness by calling setExclusive(false).</p>
+<p>Actions can be added to an action group using addAction(), but it is usually more convenient to specify a group when creating actions; this ensures that actions are automatically created with a parent. Actions can be visually separated from each other using addSeparator(). Action groups are added to widgets with the QWidget::addActions() function.</p>
+
+*/">
+    <method name="public QActionGroup(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs an action group for the <i>parent</i> object.</p>
+<p>The action group is exclusive by default. Call setExclusive(false) to make the action group non-exclusive.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QAction&gt; actions()" doc="/**
+<p>Returns the list of this groups's actions. This may be empty.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(java.lang.String text__0)" doc="/**
+<p>Creates and returns an action with <i>text</i>. The newly created action is a child of this action group.</p>
+<p>Normally an action is added to a group by creating it with the group as parent, so this function is not usually used.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(com.trolltech.qt.gui.QAction a__0)" doc="/**
+<p>Adds the <i>action</i> to this group, and returns it.</p>
+<p>Normally an action is added to a group by creating it with the group as its parent, so this function is not usually used.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(com.trolltech.qt.gui.QIcon icon__0, java.lang.String text__1)" doc="/**
+<p>Creates and returns an action with <i>text</i> and an <i>icon</i>. The newly created action is a child of this action group.</p>
+<p>Normally an action is added to a group by creating it with the group as its parent, so this function is not usually used.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction checkedAction()" doc="/**
+<p>Returns the currently checked action in the group, or 0 if none are checked.</p>
+
+*/"/>
+    <method name="public final boolean isEnabled()"/>
+    <method name="public final boolean isExclusive()"/>
+    <method name="public final boolean isVisible()"/>
+    <method name="public final void removeAction(com.trolltech.qt.gui.QAction a__0)" doc="/**
+<p>Removes the <i>action</i> from this group. The action will have no parent as a result.</p>
+
+*/"/>
+    <method name="public final void setDisabled(boolean b__0)" doc="/**
+<p>This is a convenience function for the enabled property, that is useful for signals--slots connections. If <i>b</i> is true the action group is disabled; otherwise it is enabled.</p>
+
+*/"/>
+    <method name="public final void setEnabled(boolean arg__0)"/>
+    <method name="public final void setExclusive(boolean arg__0)"/>
+    <method name="public final void setVisible(boolean arg__0)"/>
+</class>

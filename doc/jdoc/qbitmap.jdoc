@@ -1,0 +1,50 @@
+<class name="QBitmap" doc="/**
+<p>The QBitmap class provides monochrome (1-bit depth) pixmaps.</p>
+<p>The QBitmap class is a monochrome off-screen paint device used mainly for creating custom QCursor and QBrush objects, constructing QRegion objects, and for setting masks for pixmaps and widgets.</p>
+<p>QBitmap is a QPixmap subclass ensuring a depth of 1, except for null objects which have a depth of 0. If a pixmap with a depth greater than 1 is assigned to a bitmap, the bitmap will be dithered automatically.</p>
+<p>Use the QColor objects Qt::color0 and Qt::color1 when drawing on a QBitmap object (or a QPixmap object with depth 1).</p>
+<p>Painting with Qt::color0 sets the bitmap bits to 0, and painting with Qt::color1 sets the bits to 1. For a bitmap, 0-bits indicate background (or transparent pixels) and 1-bits indicate foreground (or opaque pixels). Use the clear() function to set all the bits to Qt::color0. Note that using the Qt::black and Qt::white colors make no sense because the QColor::pixel() value is not necessarily 0 for black and 1 for white.</p>
+<p>The QBitmap class provides the transformed() function returning a transformed copy of the bitmap; use the QMatrix argument to translate, scale, shear, and rotate the bitmap. In addition, QBitmap provides the static fromData() function which returns a bitmap constructed from the given <tt>uchar</tt> data, and the static fromImage() function returning a converted copy of a QImage object.</p>
+<p>Just like the QPixmap class, QBitmap is optimized by the use of implicit data sharing. For more information, see the {Implicit Data Sharing} documentation.</p>
+
+*/">
+    <method name="public QBitmap(int w__0, int h__1)" doc="/**
+<p>Constructs a bitmap with the given <i>width</i> and <i>height</i>. The pixels inside are uninitialized.</p>
+
+*/"/>
+    <method name="public QBitmap(java.lang.String fileName__0, com.trolltech.qt.QNativePointer format__1)" doc="/**
+<p>Constructs a bitmap from the file specified by the given <i>fileName</i>. If the file does not exist, or has an unknown format, the bitmap becomes a null bitmap.</p>
+<p>The <i>fileName</i> and <i>format</i> parameters are passed on to the QPixmap::load() function. If the file format uses more than 1 bit per pixel, the resulting bitmap will be dithered automatically.</p>
+
+*/"/>
+    <method name="public QBitmap()" doc="/**
+<p>Constructs a null bitmap.</p>
+
+*/"/>
+    <method name="public QBitmap(com.trolltech.qt.core.QSize arg__0)" doc="/**
+<p>Constructs a bitmap with the given <i>size</i>. The pixels in the bitmap are uninitialized.</p>
+
+*/"/>
+    <method name="public QBitmap(com.trolltech.qt.gui.QPixmap arg__0)" doc="/**
+<p>Constructs a bitmap that is a copy of the given <i>pixmap</i>.</p>
+<p>If the pixmap has a depth greater than 1, the resulting bitmap will be dithered automatically.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Clears the bitmap, setting all its bits to Qt::color0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBitmap transformed(com.trolltech.qt.gui.QMatrix arg__0)" doc="/**
+<p>Returns a copy of this bitmap, transformed according to the given <i>matrix</i>.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QBitmap fromData(com.trolltech.qt.core.QSize size__0, com.trolltech.qt.QNativePointer bits__1, com.trolltech.qt.gui.QImage.Format monoFormat__2)" doc="/**
+<p>Constructs a bitmap with the given <i>size</i>, and sets the contents to the <i>bits</i> supplied.</p>
+<p>The bitmap data has to be byte aligned and provided in in the bit order specified by <i>monoFormat</i>. The mono format must be either QImage::Format_Mono or QImage::Format_MonoLSB. Use QImage::Format_Mono to specify data on the XBM format.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QBitmap fromImage(com.trolltech.qt.gui.QImage image__0, com.trolltech.qt.core.Qt.ImageConversionFlags flags__1)" doc="/**
+<p>Returns a copy of the given <i>image</i> converted to a bitmap using the specified image conversion <i>flags</i>.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,184 @@
+<class name="QListWidget" doc="/**
+<p>The QListWidget class provides an item-based list widget.</p>
+<p>QListWidget is a convenience class that provides a list view similar to the one supplied by QListView, but with a classic item-based interface for adding and removing items. QListWidget uses an internal model to manage each QListWidgetItem in the list.</p>
+<p>For a more flexible list view widget, use the QListView class with a standard model.</p>
+<p>List widgets are constructed in the same way as other widgets:</p>
+<pre>        QListWidget *listWidget = new QListWidget(this);</pre>
+<p>The selectionMode() of a list widget determines how many of the items in the list can be selected at the same time, and whether complex selections of items can be created. This can be set with the setSelectionMode() function.</p>
+<p>There are two ways to add items to the list: they can be constructed with the list widget as their parent widget, or they can be constructed with no parent widget and added to the list later. If a list widget already exists when the items are constructed, the first method is easier to use:</p>
+<pre>        new QListWidgetItem(tr(&quot;Oak&quot;), listWidget);
+        new QListWidgetItem(tr(&quot;Fir&quot;), listWidget);
+        new QListWidgetItem(tr(&quot;Pine&quot;), listWidget);</pre>
+<p>If you need to insert a new item into the list at a particular position, it is more convenient to construct the item without a parent widget and use the insertItem() function to place it within the list:</p>
+<pre>        QListWidgetItem *newItem = new QListWidgetItem;
+        newItem-&gt;setText(itemText);
+        listWidget-&gt;insertItem(row, newItem);</pre>
+<p>For multiple items, insertItems() can be used instead. The number of items in the list is found with the count() function. To remove items from the list, use takeItem().</p>
+<p>The current item in the list can be found with currentItem(), and changed with setCurrentItem(). The user can also change the current item by navigating with the keyboard or clicking on a different item. When the current item changes, the currentItemChanged() signal is emitted with the new current item and the item that was previously current.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image windowsxp-listview.png]</font></td><td><font color=&quote;red&quote;>[Missing image macintosh-listview.png]</font></td><td><font color=&quote;red&quote;>[Missing image plastique-listview.png]</font></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>A Windows XP style list widget.</td><td>A Macintosh style list widget.</td><td>A Plastique style list widget.</td></tr>
+</table></p>
+
+*/">
+    <method name="public QListWidget(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an empty QListWidget with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final void addItem(java.lang.String label__0)" doc="/**
+<p>Inserts an item with the text <i>label</i> at the end of the list widget.</p>
+
+*/"/>
+    <method name="public final void addItem(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Inserts the <i>item</i> at the the end of the list widget.</p>
+
+*/"/>
+    <method name="public final void addItems(java.util.List&lt;java.lang.String&gt; labels__0)" doc="/**
+<p>Inserts items with the text <i>labels</i> at the end of the list widget.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Removes all items and selections in the view.</p>
+
+*/"/>
+    <method name="public final void closePersistentEditor(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Closes the persistent editor for the given <i>item</i>.</p>
+
+*/"/>
+    <method name="public final int count()"/>
+    <method name="public final com.trolltech.qt.gui.QListWidgetItem currentItem()" doc="/**
+<p>Returns the current item.</p>
+
+*/"/>
+    <method name="public final int currentRow()"/>
+    <method name="public final void editItem(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Starts editing the <i>item</i> if it is editable.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QListWidgetItem&gt; findItems(java.lang.String text__0, com.trolltech.qt.core.Qt.MatchFlags flags__1)" doc="/**
+<p>Finds items with the text that matches the string <i>text</i> using the given <i>flags</i>.</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.core.QModelIndex indexFromItem(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Returns the QModelIndex assocated with the given <i>item</i>.</p>
+
+*/"/>
+    <method name="public final void insertItem(int row__0, java.lang.String label__1)" doc="/**
+<p>Inserts an item with the text <i>label</i> in the list widget at the position given by <i>row</i>.</p>
+
+*/"/>
+    <method name="public final void insertItem(int row__0, com.trolltech.qt.gui.QListWidgetItem item__1)" doc="/**
+<p>Inserts the <i>item</i> at the position in the list given by <i>row</i>.</p>
+
+*/"/>
+    <method name="public final void insertItems(int row__0, java.util.List&lt;java.lang.String&gt; labels__1)" doc="/**
+<p>Inserts items from the list of <i>labels</i> into the list, starting at the given <i>row</i>.</p>
+
+*/"/>
+    <method name="public final boolean isItemHidden(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Returns true if the <i>item</i> is explicitly hidden; otherwise returns false.</p>
+<p>This function is deprecated. Use QListWidgetItem::isHidden() instead.</p>
+
+*/"/>
+    <method name="public final boolean isItemSelected(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Returns true if <i>item</i> is selected; otherwise returns false.</p>
+<p>This function is deprecated. Use QListWidgetItem::isSelected() instead.</p>
+
+*/"/>
+    <method name="public final boolean isSortingEnabled()"/>
+    <method name="public final com.trolltech.qt.gui.QListWidgetItem item(int row__0)" doc="/**
+<p>Returns the item that occupies the given <i>row</i> in the list if one has been set; otherwise returns 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QListWidgetItem itemAt(com.trolltech.qt.core.QPoint p__0)" doc="/**
+<p>Returns a pointer to the item at the coordinates <i>p</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QListWidgetItem itemAt(int x__0, int y__1)" doc="/**
+<p>Returns a pointer to the item at the coordinates (<i>x</i>, <i>y</i>).</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.gui.QListWidgetItem itemFromIndex(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns a pointer to the QListWidgetItem assocated with the given <i>index</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget itemWidget(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Returns the widget displayed in the given <i>item</i>.</p>
+
+*/"/>
+    <method name="protected final java.util.List&lt;com.trolltech.qt.gui.QListWidgetItem&gt; items(com.trolltech.qt.gui.QMimeData data__0)" doc="/**
+<p>Returns a list of pointers to the items contained in the <i>data</i> object. If the object was not created by a QListWidget in the same process, the list is empty.</p>
+
+*/"/>
+    <method name="public final void openPersistentEditor(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Opens an editor for the given <i>item</i>. The editor remains open after editing.</p>
+
+*/"/>
+    <method name="public final int row(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Returns the row containing the given <i>item</i>.</p>
+
+*/"/>
+    <method name="public final void scrollToItem(com.trolltech.qt.gui.QListWidgetItem item__0, com.trolltech.qt.gui.QAbstractItemView.ScrollHint hint__1)" doc="/**
+<p>Scrolls the view if necessary to ensure that the <i>item</i> is visible. The <i>hint</i> parameter specifies more precisely where the <i>item</i> should be located after the operation.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QListWidgetItem&gt; selectedItems()" doc="/**
+<p>Returns a list of all selected items in the list widget.</p>
+
+*/"/>
+    <method name="public final void setCurrentItem(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Sets the current item to <i>item</i>.</p>
+<p>Depending on the current selection mode, the item may also be selected.</p>
+
+*/"/>
+    <method name="public final void setCurrentRow(int row__0)"/>
+    <method name="public final void setItemHidden(com.trolltech.qt.gui.QListWidgetItem item__0, boolean hide__1)" doc="/**
+<p>If <i>hide</i> is true, the <i>item</i> will be hidden; otherwise it will be shown.</p>
+<p>This function is deprecated. Use QListWidgetItem::setHidden() instead.</p>
+
+*/"/>
+    <method name="public final void setItemSelected(com.trolltech.qt.gui.QListWidgetItem item__0, boolean select__1)" doc="/**
+<p>Selects or deselects the given <i>item</i> depending on whether <i>select</i> is true of false.</p>
+<p>This function is deprecated. Use QListWidgetItem::setSelected() instead.</p>
+
+*/"/>
+    <method name="public final void setItemWidget(com.trolltech.qt.gui.QListWidgetItem item__0, com.trolltech.qt.gui.QWidget widget__1)" doc="/**
+<p>Sets the <i>widget</i> to be displayed in the give <i>item</i>.</p>
+<p>This function should only be used to display static content in the place of a list widget item. If you want to display custom dynamic content or implement a custom editor widget, use QListView and subclass QItemDelegate instead.</p>
+
+*/"/>
+    <method name="@Deprecated public final void setModel(com.trolltech.qt.core.QAbstractItemModel model__0)"/>
+    <method name="public final void setSortingEnabled(boolean enable__0)"/>
+    <method name="public final void sortItems(com.trolltech.qt.core.Qt.SortOrder order__0)" doc="/**
+<p>Sorts all the items in the list widget according to the specified <i>order</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QListWidgetItem takeItem(int row__0)" doc="/**
+<p>Removes and returns the item from the given <i>row</i> in the list widget; otherwise returns 0.</p>
+<p>Items removed from a list widget will not be managed by Qt, and will need to be deleted manually.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect visualItemRect(com.trolltech.qt.gui.QListWidgetItem item__0)" doc="/**
+<p>Returns the rectangle on the viewport occupied by the item at <i>item</i>.</p>
+
+*/"/>
+    <method name="protected void dropEvent(com.trolltech.qt.gui.QDropEvent event__0)"/>
+    <method name="protected boolean dropMimeData(int index__0, com.trolltech.qt.gui.QMimeData data__1, com.trolltech.qt.core.Qt.DropAction action__2)" doc="/**
+<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i> in the given <i>index</i>.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected com.trolltech.qt.gui.QMimeData mimeData(java.util.List&lt;com.trolltech.qt.gui.QListWidgetItem&gt; items__0)" doc="/**
+<p>Returns an object that contains a serialized description of the specified <i>items</i>. The format used to describe the items is obtained from the mimeTypes() function.</p>
+<p>If the list of items is empty, 0 is returned rather than a serialized empty list.</p>
+
+*/"/>
+    <method name="protected java.util.List&lt;java.lang.String&gt; mimeTypes()" doc="/**
+<p>Returns a list of MIME types that can be used to describe a list of listwidget items.</p>
+
+*/"/>
+    <method name="protected com.trolltech.qt.core.Qt.DropActions supportedDropActions()" doc="/**
+<p>Returns the drop actions supported by this view.</p>
+
+*/"/>
+</class>

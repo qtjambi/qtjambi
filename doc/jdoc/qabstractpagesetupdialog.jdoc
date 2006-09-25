@@ -1,0 +1,17 @@
+<class name="QAbstractPageSetupDialog" doc="/**
+<p>The QAbstractPageSetupDialog class provides a base for implementations of page setup dialogs.</p>
+
+*/">
+    <method name="public QAbstractPageSetupDialog(com.trolltech.qt.gui.QPrinter printer__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs the page setup dialog for the printer <i>printer</i> with <i>parent</i> as parent widget.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPrinter printer()" doc="/**
+<p>Returns the printer that this page setup dialog is operating on.</p>
+
+*/"/>
+    <method name="public abstract int exec()" doc="/**
+<p>This virtual function is called to pop up the dialog. It must be reimplemented in subclasses.</p>
+
+*/"/>
+</class>

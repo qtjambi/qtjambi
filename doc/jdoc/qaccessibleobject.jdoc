@@ -1,0 +1,28 @@
+<class name="QAccessibleObject" doc="/**
+<p>The QAccessibleObject class implements parts of the QAccessibleInterface for QObjects.</p>
+<p>This class is mainly provided for convenience. All subclasses of the QAccessibleInterface that provide implementations of non-widget objects should use this class as their base class.</p>
+
+*/">
+    <method name="public QAccessibleObject(com.trolltech.qt.core.QObject object__0)" doc="/**
+<p>Creates a QAccessibleObject for <i>object</i>.</p>
+
+*/"/>
+    <method name="public java.lang.String actionText(int action__0, com.trolltech.qt.gui.QAccessible.Text t__1, int child__2)" doc="/**
+<p>Returns the text property <i>t</i> of the action <i>action</i> supported by the object, or of the object's child if <i>child</i> is not 0.</p>
+
+*/"/>
+    <method name="public boolean doAction(int action__0, int child__1, java.util.List&lt;java.lang.Object&gt; params__2)" doc="/**
+<p>Asks the object, or the object's <i>child</i> if <i>child</i> is not 0, to execute <i>action</i> using the parameters, <i>params</i>. Returns true if the action could be executed; otherwise returns false.</p>
+<p><i>action</i> can be a predefined or a custom action.</p>
+
+*/"/>
+    <method name="public boolean isValid()"/>
+    <method name="public com.trolltech.qt.core.QObject object()"/>
+    <method name="public com.trolltech.qt.core.QRect rect(int child__0)"/>
+    <method name="public void setText(com.trolltech.qt.gui.QAccessible.Text t__0, int child__1, java.lang.String text__2)" doc="/**
+<p>Sets the text property <i>t</i> of the object, or of the object's child if <i>child</i> is not 0, to <i>text</i>.</p>
+<p>Note that the text properties of most objects are read-only.</p>
+
+*/"/>
+    <method name="public int userActionCount(int child__0)"/>
+</class>

@@ -1,0 +1,63 @@
+<class name="QContextMenuEvent" doc="/**
+<p>The QContextMenuEvent class contains parameters that describe a context menu event.</p>
+<p>Context menu events are sent to widgets when a user performs an action associated with opening a context menu. The actions required to open context menus vary between platforms; for example, on Windows, pressing the menu button or clicking the right mouse button will cause this event to be sent.</p>
+<p>When this event occurs it is customary to show a QMenu with a context menu, if this is relevant to the context.</p>
+<p>Context menu events contain a special accept flag that indicates whether the receiver accepted the event. If the event handler does not accept the event then, if possible, whatever triggered the event will be handled as a regular input event.</p>
+
+*/">
+    <method name="public QContextMenuEvent(com.trolltech.qt.gui.QContextMenuEvent.Reason reason__0, com.trolltech.qt.core.QPoint pos__1)" doc="/**
+<p>Constructs a context menu event object with the accept parameter flag set to false.</p>
+<p>The <i>reason</i> parameter must be QContextMenuEvent::Mouse or QContextMenuEvent::Keyboard.</p>
+<p>The <i>pos</i> parameter specifies the mouse position relative to the receiving widget.</p>
+<p>The globalPos() is initialized to QCursor::pos(), which may not be appropriate. Use the other constructor to specify the global position explicitly.</p>
+
+*/"/>
+    <method name="public QContextMenuEvent(com.trolltech.qt.gui.QContextMenuEvent.Reason reason__0, com.trolltech.qt.core.QPoint pos__1, com.trolltech.qt.core.QPoint globalPos__2)" doc="/**
+<p>Constructs a context menu event object with the accept parameter flag set to false.</p>
+<p>The <i>reason</i> parameter must be QContextMenuEvent::Mouse or QContextMenuEvent::Keyboard.</p>
+<p>The <i>pos</i> parameter specifies the mouse position relative to the receiving widget. <i>globalPos</i> is the mouse position in absolute coordinates.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint globalPos()" doc="/**
+<p>Returns the global position of the mouse pointer at the time of the event.</p>
+
+*/"/>
+    <method name="public final int globalX()" doc="/**
+<p>Returns the global x position of the mouse pointer at the time of the event.</p>
+
+*/"/>
+    <method name="public final int globalY()" doc="/**
+<p>Returns the global y position of the mouse pointer at the time of the event.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint pos()" doc="/**
+<p>Returns the position of the mouse pointer relative to the widget that received the event.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QContextMenuEvent.Reason reason()" doc="/**
+<p>Returns the reason for this context event.</p>
+
+*/"/>
+    <method name="public final int x()" doc="/**
+<p>Returns the x position of the mouse pointer, relative to the widget that received the event.</p>
+
+*/"/>
+    <method name="public final int y()" doc="/**
+<p>Returns the y position of the mouse pointer, relative to the widget that received the event.</p>
+
+*/"/>
+    <enum name="Reason" doc="/**
+<p>This enum describes the reason why the event was sent.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The mouse caused the event to be sent. Normally this means the right mouse button was clicked, but this is platform dependent.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The keyboard caused this event to be sent. On Windows, this means the menu button was pressed.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The event was sent by some other means (i.e. not by the mouse or keyboard).</td></tr>
+</table></p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.core.QPoint gp()"/>
+    <method name="protected final void setGp(com.trolltech.qt.core.QPoint gp)"/>
+    <method name="protected final com.trolltech.qt.core.QPoint p()"/>
+    <method name="protected final void setP(com.trolltech.qt.core.QPoint p)"/>
+</class>

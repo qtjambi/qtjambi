@@ -1,0 +1,24 @@
+<class name="QGraphicsSceneDragDropEvent">
+    <method name="public QGraphicsSceneDragDropEvent(com.trolltech.qt.core.QEvent.Type type__0)"/>
+    <method name="public final void acceptProposedAction()"/>
+    <method name="public final com.trolltech.qt.core.Qt.MouseButtons buttons()"/>
+    <method name="public final com.trolltech.qt.core.Qt.DropAction dropAction()"/>
+    <method name="public final com.trolltech.qt.gui.QMimeData mimeData()"/>
+    <method name="public final com.trolltech.qt.core.Qt.KeyboardModifiers modifiers()"/>
+    <method name="public final com.trolltech.qt.core.QPointF pos()"/>
+    <method name="public final com.trolltech.qt.core.Qt.DropActions possibleActions()"/>
+    <method name="public final com.trolltech.qt.core.Qt.DropAction proposedAction()"/>
+    <method name="public final com.trolltech.qt.core.QPointF scenePos()"/>
+    <method name="public final com.trolltech.qt.core.QPoint screenPos()"/>
+    <method name="public final void setButtons(com.trolltech.qt.core.Qt.MouseButtons buttons__0)"/>
+    <method name="public final void setDropAction(com.trolltech.qt.core.Qt.DropAction action__0)"/>
+    <method name="public final void setMimeData(com.trolltech.qt.gui.QMimeData data__0)"/>
+    <method name="public final void setModifiers(com.trolltech.qt.core.Qt.KeyboardModifiers modifiers__0)"/>
+    <method name="public final void setPos(com.trolltech.qt.core.QPointF pos__0)"/>
+    <method name="public final void setPossibleActions(com.trolltech.qt.core.Qt.DropActions actions__0)"/>
+    <method name="public final void setProposedAction(com.trolltech.qt.core.Qt.DropAction action__0)"/>
+    <method name="public final void setScenePos(com.trolltech.qt.core.QPointF pos__0)"/>
+    <method name="public final void setScreenPos(com.trolltech.qt.core.QPoint pos__0)"/>
+    <method name="public final void setSource(com.trolltech.qt.gui.QWidget source__0)"/>
+    <method name="public final com.trolltech.qt.gui.QWidget source()"/>
+</class>

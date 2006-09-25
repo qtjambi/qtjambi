@@ -1,0 +1,88 @@
+<class name="QMutex" doc="/**
+<p>The QMutex class provides access serialization between threads.</p>
+<p>The purpose of a QMutex is to protect an object, data structure or section of code so that only one thread can access it at a time (this is similar to the Java <tt>synchronized</tt> keyword). It is usually best to use a mutex with a QMutexLocker since this makes it easy to ensure that locking and unlocking are performed consistently.</p>
+<p>For example, say there is a method that prints a message to the user on two lines:</p>
+<pre>    int number = 6;
+
+    void method1()
+    {
+        number *= 5;
+        number /= 4;
+    }
+
+    void method2()
+    {
+        number *= 3;
+        number /= 2;
+    }</pre>
+<p>If these two methods are called in succession, the following happens:</p>
+<pre><span class=&quote;comment&quote;>    // method1()</span>
+    number *= 5;        <span class=&quote;comment&quote;>// number is now 30</span>
+    number /= 4;        <span class=&quote;comment&quote;>// number is now 7</span>
+
+<span class=&quote;comment&quote;>    // method2()</span>
+    number *= 3;        <span class=&quote;comment&quote;>// number is now 21</span>
+    number /= 2;        <span class=&quote;comment&quote;>// number is now 10</span></pre>
+<p>If these two methods are called simultaneously from two threads then the following sequence could result:</p>
+<pre><span class=&quote;comment&quote;>    // Thread 1 calls method1()</span>
+    number *= 5;        <span class=&quote;comment&quote;>// number is now 30</span>
+
+<span class=&quote;comment&quote;>    // Thread 2 calls method2().</span>
+<span class=&quote;comment&quote;>    //</span>
+<span class=&quote;comment&quote;>    // Most likely Thread 1 has been put to sleep by the operating</span>
+<span class=&quote;comment&quote;>    // system to allow Thread 2 to run.</span>
+    number *= 3;        <span class=&quote;comment&quote;>// number is now 90</span>
+    number /= 2;        <span class=&quote;comment&quote;>// number is now 45</span>
+
+<span class=&quote;comment&quote;>    // Thread 1 finishes executing.</span>
+    number /= 4;        <span class=&quote;comment&quote;>// number is now 11, instead of 10</span></pre>
+<p>If we add a mutex, we should get the result we want:</p>
+<pre>    QMutex mutex;
+    int number = 6;
+
+    void method1()
+    {
+        mutex.lock();
+        number *= 5;
+        number /= 4;
+        mutex.unlock();
+    }
+
+    void method2()
+    {
+        mutex.lock();
+        number *= 3;
+        number /= 2;
+        mutex.unlock();
+    }</pre>
+<p>Then only one thread can modify <tt>number</tt> at any given time and the result is correct. This is a trivial example, of course, but applies to any other case where things need to happen in a particular sequence.</p>
+<p>When you call lock() in a thread, other threads that try to call lock() in the same place will block until the thread that got the lock calls unlock(). A non-blocking alternative to lock() is tryLock().</p>
+
+*/">
+    <method name="public QMutex(com.trolltech.qt.core.QMutex.RecursionMode mode__0)" doc="/**
+<p>Constructs a new mutex. The mutex is created in an unlocked state.</p>
+<p>If <i>mode</i> is QMutex::Recursive, a thread can lock the same mutex multiple times and the mutex won't be unlocked until a corresponding number of unlock() calls have been made. The default is QMutex::NonRecursive.</p>
+
+*/"/>
+    <method name="public final void lock()" doc="/**
+<p>Locks the mutex. If another thread has locked the mutex then this call will block until that thread has unlocked it.</p>
+
+*/"/>
+    <method name="public final boolean tryLock()" doc="/**
+<p>Attempts to lock the mutex. If the lock was obtained, this function returns true. If another thread has locked the mutex, this function returns false immediately.</p>
+<p>If the lock was obtained, the mutex must be unlocked with unlock() before another thread can successfully lock it.</p>
+
+*/"/>
+    <method name="public final void unlock()" doc="/**
+<p>Unlocks the mutex. Attempting to unlock a mutex in a different thread to the one that locked it results in an error. Unlocking a mutex that is not locked results in undefined behavior.</p>
+
+*/"/>
+    <enum name="RecursionMode" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>In this mode, a thread can lock the same mutex multiple times and the mutex won't be unlocked until a corresponding number of unlock() calls have been made.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>In this mode, a thread may only lock a mutex once.</td></tr>
+</table></p>
+
+*/"/>
+</class>

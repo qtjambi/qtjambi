@@ -1,0 +1,179 @@
+<class name="QMenu" doc="/**
+<p>The QMenu class provides a menu widget for use in menu bars, context menus, and other popup menus.</p>
+<p>A menu widget is a selection menu. It can be either a pull-down menu in a menu bar or a standalone context menu. Pull-down menus are shown by the menu bar when the user clicks on the respective item or presses the specified shortcut key. Use QMenuBar::addMenu() to insert a menu into a menu bar. Context menus are usually invoked by some special keyboard key or by right-clicking. They can be executed either asynchronously with popup() or synchronously with exec(). Menus can also be invoked in response to button presses; these are just like context menus except for how they are invoked.</p>
+<p>A menu consists of a list of action items. Actions are added with addAction(). An action is represented vertically and rendered by QStyle. In addition, actions can have a text label, an optional icon drawn on the very left side, and shortcut key sequence such as &quot;Ctrl+X&quot;.</p>
+<p>There are three kinds of action items: separators, actions that show a submenu, and actions that perform an action. Separators are inserted with addSeparator(). For submenus use addMenu(). All other items are considered action items.</p>
+<p>When inserting action items you usually specify a receiver and a slot. The receiver will be notifed whenever the item is triggered(). In addition, QMenu provides two signals, activated() and highlighted(), which signal the QAction that was triggered from the menu.</p>
+<p>You clear a menu with clear() and remove individual action items with removeAction().</p>
+<p>A QMenu can also provide a tear-off menu. A tear-off menu is a top-level window that contains a copy of the menu. This makes it possible for the user to &quot;tear off&quot; frequently used menus and position them in a convenient place on the screen. If you want this functionality for a particular menu, insert a tear-off handle with setTearOffEnabled(). When using tear-off menus, bear in mind that the concept isn't typically used on Microsoft Windows so some users may not be familiar with it. Consider using a QToolBar instead.</p>
+<p>See the Menus example for an example of how to use QMenuBar and QMenu in your application.</p>
+<p>Important inherited functions: addAction(), removeAction(), clear(), addSeparator(), and addMenu().</p>
+
+*/">
+    <method name="public QMenu(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a menu with parent <i>parent</i>.</p>
+<p>Although a popup menu is always a top-level widget, if a parent is passed the popup menu will be deleted when that parent is destroyed (as with any other QObject).</p>
+
+*/"/>
+    <method name="public QMenu(java.lang.String title__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs a menu with a <i>title</i> and a <i>parent</i>.</p>
+<p>Although a popup menu is always a top-level widget, if a parent is passed the popup menu will be deleted when that parent is destroyed (as with any other QObject).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction actionAt(com.trolltech.qt.core.QPoint arg__0)" doc="/**
+<p>Returns the item at <i>pt</i>; returns 0 if there is no item there.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect actionGeometry(com.trolltech.qt.gui.QAction arg__0)" doc="/**
+<p>Returns the geometry of action <i>act</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction activeAction()" doc="/**
+<p>Returns the currently highlighted action, or 0 if no action is currently highlighted.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(java.lang.String text__0)" doc="/**
+<p>This convenience function creates a new action with <i>text</i>. The function adds the newly created action to the menu's list of actions, and returns it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(com.trolltech.qt.gui.QIcon icon__0, java.lang.String text__1, com.trolltech.qt.core.QObject receiver__2, com.trolltech.qt.QNativePointer member__3, com.trolltech.qt.gui.QKeySequence shortcut__4)" doc="/**
+<p>This convenience function creates a new action with an <i>icon</i> and some <i>text</i> and an optional shortcut <i>shortcut</i>. The action's triggered() signal is connected to the <i>member</i> slot of the <i>receiver</i> object. The function adds the newly created action to the menu's list of actions, and returns it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(com.trolltech.qt.gui.QIcon icon__0, java.lang.String text__1)" doc="/**
+<p>This convenience function creates a new action with an <i>icon</i> and some <i>text</i>. The function adds the newly created action to the menu's list of actions, and returns it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(java.lang.String text__0, com.trolltech.qt.core.QObject receiver__1, com.trolltech.qt.QNativePointer member__2, com.trolltech.qt.gui.QKeySequence shortcut__3)" doc="/**
+<p>This convenience function creates a new action with the text <i>text</i> and an optional shortcut <i>shortcut</i>. The action's triggered() signal is connected to the <i>receiver</i>'s <i>member</i> slot. The function adds the newly created action to the menu's list of actions and returns it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMenu addMenu(java.lang.String title__0)" doc="/**
+<p>Appends a new QMenu with <i>title</i> to the menu. The menu takes ownership of the menu. Returns the new menu.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addMenu(com.trolltech.qt.gui.QMenu menu__0)" doc="/**
+<p>This convenience function adds <i>menu</i> as a submenu to this menu. It returns the menus menuAction().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMenu addMenu(com.trolltech.qt.gui.QIcon icon__0, java.lang.String title__1)" doc="/**
+<p>Appends a new QMenu with <i>icon</i> and <i>title</i> to the menu. The menu takes ownership of the menu. Returns the new menu.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addSeparator()" doc="/**
+<p>This convenience function creates a new separator action, i.e. an action with QAction::isSeparator() returning true, and adds the new action to this menu's list of actions. It returns the newly created action.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Removes all the menu's actions. Actions owned by the menu and not shown in any other widget are deleted.</p>
+
+*/"/>
+    <method name="protected final int columnCount()" doc="/**
+<p>If a menu does not fit on the screen it lays itself out so that it does fit. It is style dependent what layout means (for example, on Windows it will use multiple columns).</p>
+<p>This functions returns the number of columns necessary.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction defaultAction()" doc="/**
+<p>Returns the current default action.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction exec()" doc="/**
+<p>Executes this menu synchronously.</p>
+<p>This is equivalent to <tt>exec(pos())</tt>.</p>
+<p>This returns the triggered QAction in either the popup menu or one of its submenus, or 0 if no item was triggered (normally because the user pressed Esc).</p>
+<p>In most situations you'll want to specify the position yourself, for example, the current mouse position:</p>
+<pre>    exec(QCursor::pos());</pre>
+<p>or aligned to a widget:</p>
+<pre>    exec(somewidget.mapToGlobal(QPoint(0,0)));</pre>
+<p>or in reaction to a QMouseEvent *e:</p>
+<pre>    exec(e-&gt;globalPos());</pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction exec(com.trolltech.qt.core.QPoint pos__0, com.trolltech.qt.gui.QAction at__1)" doc="/**
+<p>Executes this menu synchronously.</p>
+<p>Pops up the menu so that the action <i>action</i> will be at the specified <i>global</i> position <i>p</i>. To translate a widget's local coordinates into global coordinates, use QWidget::mapToGlobal().</p>
+<p>This returns the triggered QAction in either the popup menu or one of its submenus, or 0 if no item was triggered (normally because the user pressed Esc).</p>
+<p>Note that all signals are emitted as usual. If you connect a QAction to a slot and call the menu's exec(), you get the result both via the signal-slot connection and in the return value of exec().</p>
+<p>Common usage is to position the menu at the current mouse position:</p>
+<pre>    exec(QCursor::pos());</pre>
+<p>or aligned to a widget:</p>
+<pre>    exec(somewidget.mapToGlobal(QPoint(0, 0)));</pre>
+<p>or in reaction to a QMouseEvent *e:</p>
+<pre>    exec(e-&gt;globalPos());</pre>
+<p>When positioning a menu with exec() or popup(), bear in mind that you cannot rely on the menu's current size(). For performance reasons, the menu adapts its size only when necessary. So in many cases, the size before and after the show is different. Instead, use sizeHint() which calculates the proper size depending on the menu's current contents.</p>
+
+*/"/>
+    <method name="public final void hideTearOffMenu()" doc="/**
+<p>This function will forcibly hide the torn off menu making it disappear from the users desktop.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QIcon icon()"/>
+    <method name="public final com.trolltech.qt.gui.QAction insertMenu(com.trolltech.qt.gui.QAction before__0, com.trolltech.qt.gui.QMenu menu__1)" doc="/**
+<p>This convenience function inserts <i>menu</i> before action <i>before</i> and returns the menus menuAction().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction insertSeparator(com.trolltech.qt.gui.QAction before__0)" doc="/**
+<p>This convenience function creates a new separator action, i.e. an action with QAction::isSeparator() returning true. The function inserts the newly created action into this menu's list of actions before action <i>before</i> and returns it.</p>
+
+*/"/>
+    <method name="public final boolean isEmpty()" doc="/**
+<p>Returns true if there are no actions inserted into the menu, false otherwise.</p>
+
+*/"/>
+    <method name="public final boolean isTearOffEnabled()"/>
+    <method name="public final boolean isTearOffMenuVisible()" doc="/**
+<p>When a menu is torn off a second menu is shown to display the menu contents in a new window. When the menu is in this mode and the menu is visible returns true; otherwise false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction menuAction()" doc="/**
+<p>Returns the action associated with this menu.</p>
+
+*/"/>
+    <method name="public final void popup(com.trolltech.qt.core.QPoint pos__0, com.trolltech.qt.gui.QAction at__1)" doc="/**
+<p>Displays the menu so that the action <i>atAction</i> will be at the specified <i>global</i> position <i>p</i>. To translate a widget's local coordinates into global coordinates, use QWidget::mapToGlobal().</p>
+<p>When positioning a menu with exec() or popup(), bear in mind that you cannot rely on the menu's current size(). For performance reasons, the menu adapts its size only when necessary, so in many cases, the size before and after the show is different. Instead, use sizeHint() which calculates the proper size depending on the menu's current contents.</p>
+
+*/"/>
+    <method name="public final boolean separatorsCollapsible()"/>
+    <method name="public final void setActiveAction(com.trolltech.qt.gui.QAction act__0)" doc="/**
+<p>Sets the currently highlighted action to <i>act</i>.</p>
+
+*/"/>
+    <method name="public final void setDefaultAction(com.trolltech.qt.gui.QAction arg__0)" doc="/**
+<p>This will set the default action to <i>act</i>. The default action may have a visual queue depending on the current QStyle. A default action is usually meant to indicate what will defaultly happen on a drop, as shown in a context menu.</p>
+
+*/"/>
+    <method name="public final void setIcon(com.trolltech.qt.gui.QIcon icon__0)"/>
+    <method name="public final void setNoReplayFor(com.trolltech.qt.gui.QWidget widget__0)"/>
+    <method name="public final void setSeparatorsCollapsible(boolean collapse__0)"/>
+    <method name="public final void setTearOffEnabled(boolean arg__0)"/>
+    <method name="public final void setTitle(java.lang.String title__0)"/>
+    <method name="public final java.lang.String title()"/>
+    <method name="protected void actionEvent(com.trolltech.qt.gui.QActionEvent arg__0)"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="protected void enterEvent(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="protected boolean focusNextPrevChild(boolean next__0)"/>
+    <method name="protected void hideEvent(com.trolltech.qt.gui.QHideEvent arg__0)"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent arg__0)"/>
+    <method name="protected void leaveEvent(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+    <method name="protected void timerEvent(com.trolltech.qt.core.QTimerEvent arg__0)"/>
+    <method name="protected void wheelEvent(com.trolltech.qt.gui.QWheelEvent arg__0)"/>
+    <method name="public final static com.trolltech.qt.gui.QAction exec(java.util.List&lt;com.trolltech.qt.gui.QAction&gt; actions__0, com.trolltech.qt.core.QPoint pos__1, com.trolltech.qt.gui.QAction at__2)" doc="/**
+<p>Executes this menu synchronously.</p>
+<p>The menu's actions are specified by the list of <i>actions</i>. The menu will pop up so that the specified action, <i>at</i>, appears at global position <i>pos</i>. If <i>at</i> is not specified then the menu appears at position <i>pos</i>.</p>
+<p>The function returns the triggered QAction in either the popup menu or one of its submenus, or 0 if no item was triggered (normally because the user pressed Esc).</p>
+<p>This is equivalent to:</p>
+<pre>    QMenu menu;
+    QAction *at = actions[0]; <span class=&quote;comment&quote;>// Assumes actions is not empty</span>
+    foreach (QAction *a, actions)
+       menu.addAction(a);
+    menu.exec(pos, at);</pre>
+
+*/"/>
+</class>

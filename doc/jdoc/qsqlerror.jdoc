@@ -1,0 +1,71 @@
+<class name="QSqlError" doc="/**
+<p>The QSqlError class provides SQL database error information.</p>
+<p>A QSqlError object can provide database-specific error data, including the driverText() and databaseText() messages (or both concatenated together as text()), and the error number() and type(). The functions all have setters so that you can create and return QSqlError objects from your own classes, for example from your own SQL drivers.</p>
+
+*/">
+    <method name="public QSqlError(java.lang.String driverText__0, java.lang.String databaseText__1, com.trolltech.qt.sql.QSqlError.ErrorType type__2, int number__3)" doc="/**
+<p>Constructs an error containing the driver error text <i>driverText</i>, the database-specific error text <i>databaseText</i>, the type <i>type</i> and the optional error number <i>number</i>.</p>
+
+*/"/>
+    <method name="public QSqlError(com.trolltech.qt.sql.QSqlError other__0)" doc="/**
+<p>Creates a copy of <i>other</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.String databaseText()" doc="/**
+<p>Returns the text of the error as reported by the database. This may contain database-specific descriptions; it may be empty.</p>
+
+*/"/>
+    <method name="public final java.lang.String driverText()" doc="/**
+<p>Returns the text of the error as reported by the driver. This may contain database-specific descriptions. It may also be empty.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if an error is set, otherwise false.</p>
+<p>Example:</p>
+<pre>    QSqlQueryModel model;
+    model.setQuery(&quot;select * from myTable&quot;);
+    if (model.lastError().isValid())
+        qDebug() &lt;&lt; model.lastError();</pre>
+
+*/"/>
+    <method name="public final int number()" doc="/**
+<p>Returns the database-specific error number, or -1 if it cannot be determined.</p>
+
+*/"/>
+    <method name="public final void setDatabaseText(java.lang.String databaseText__0)" doc="/**
+<p>Sets the database error text to the value of <i>databaseText</i>.</p>
+
+*/"/>
+    <method name="public final void setDriverText(java.lang.String driverText__0)" doc="/**
+<p>Sets the driver error text to the value of <i>driverText</i>.</p>
+
+*/"/>
+    <method name="public final void setNumber(int number__0)" doc="/**
+<p>Sets the database-specific error number to <i>number</i>.</p>
+
+*/"/>
+    <method name="public final void setType(com.trolltech.qt.sql.QSqlError.ErrorType type__0)" doc="/**
+<p>Sets the error type to the value of <i>type</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>This is a convenience function that returns databaseText() and driverText() concatenated into a single string.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.sql.QSqlError.ErrorType type()" doc="/**
+<p>Returns the error type, or -1 if the type cannot be determined.</p>
+
+*/"/>
+    <enum name="ErrorType" doc="/**
+<p>This enum type describes the type of SQL error that occurred.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>No error occurred.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Connection error.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>SQL statement syntax error.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Transaction failed error.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Unknown error.</td></tr>
+</table></p>
+
+*/"/>
+</class>

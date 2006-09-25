@@ -1,0 +1,71 @@
+<class name="QSplitterHandle" doc="/**
+<p>The QSplitterHandle class provides handle functionality of the splitter.</p>
+<p>QSplitterHandle is typically what people think about when they think about a splitter. It is the handle that is used to resize the widgets.</p>
+<p>A typical developer using QSplitter will never have to worry about QSplitterHandle. It is provided for developers who want splitter handles that provide extra features, such as popup menus.</p>
+<p>The typical way one would create splitter handles is to subclass QSplitter then reimplement QSplitter::createHandle() to instantiate the custom splitter handle. For example, a minimum QSplitter subclass might look like this:</p>
+<pre>    class Splitter : public QSplitter
+    {
+    public:
+        Splitter(Qt::Orientation orientation, QWidget *parent = 0);
+
+    protected:
+        QSplitterHandle *createHandle();
+    };</pre>
+<p>The createHandle() implementation simply constructs a custom splitter handle, called <tt>Splitter</tt> in this example:</p>
+<pre>    QSplitterHandle *Splitter::createHandle()
+    {
+        return new SplitterHandle(orientation(), this);
+    }</pre>
+<p>Information about a given handle can be obtained using functions like orientation() and opaqueResize(), and is retrieved from its parent splitter. Details like these can be used to give custom handles different appearances depending on the splitter's orientation.</p>
+<p>The complexity of a custom handle subclass depends on the tasks that it needs to perform. A simple subclass might only provide a paintEvent() implementation:</p>
+<pre>    void SplitterHandle::paintEvent(QPaintEvent *event)
+    {
+        QPainter painter(this);
+        if (orientation() == Qt::Horizontal) {
+            gradient.setStart(rect().left(), rect().height()/2);
+            gradient.setFinalStop(rect().right(), rect().height()/2);
+        } else {
+            gradient.setStart(rect().width()/2, rect().top());
+            gradient.setFinalStop(rect().width()/2, rect().bottom());
+        }
+        painter.fillRect(event-&gt;rect(), QBrush(gradient));
+    }</pre>
+<p>In this example, a predefined gradient is set up differently depending on the orientation of the handle. QSplitterHandle provides a reasonable size hint for the handle, so the subclass does not need to provide a reimplementation of sizeHint() unless the handle has special size requirements.</p>
+
+*/">
+    <method name="public QSplitterHandle(com.trolltech.qt.core.Qt.Orientation o__0, com.trolltech.qt.gui.QSplitter parent__1)" doc="/**
+<p>Creates a QSplitter handle with the given <i>orientation</i> and QSplitter <i>parent</i>.</p>
+
+*/"/>
+    <method name="protected final int closestLegalPosition(int p__0)" doc="/**
+<p>Returns the closest legal position to <i>pos</i> of the splitter handle. The positions are measured from the left or top edge of the splitter, even for right-to-left languages.</p>
+
+*/"/>
+    <method name="protected final void moveSplitter(int p__0)" doc="/**
+<p>Tells the splitter to move this handle to position <i>pos</i>, which is the distance from the left or top edge of the widget.</p>
+<p>Note that <i>pos</i> is also measured from the left (or top) for right-to-left languages. This function will map <i>pos</i> to the appropriate position before calling QSplitter::moveSplitter().</p>
+
+*/"/>
+    <method name="public final boolean opaqueResize()" doc="/**
+<p>Returns true if widgets are resized dynamically (opaquely), otherwise returns false. This value is controlled by the QSplitter.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.Orientation orientation()" doc="/**
+<p>Returns the handle's orientation. This is usually propagated from the QSplitter.</p>
+
+*/"/>
+    <method name="public final void setOrientation(com.trolltech.qt.core.Qt.Orientation o__0)" doc="/**
+<p>Sets the orientation of the splitter handle to <i>orientation</i>. This is usually propogated from the QSplitter.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QSplitter splitter()" doc="/**
+<p>Returns the splitter associated with this splitter handle.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+</class>

@@ -1,0 +1,185 @@
+<class name="QTextLayout" doc="/**
+<p>The QTextLayout class is used to lay out and paint a single paragraph of text.</p>
+<p>It offers most features expected from a modern text layout engine, including Unicode compliant rendering, line breaking and handling of cursor positioning. It can also produce and render device independent layout, something that is important for WYSIWYG applications.</p>
+<p>The class has a rather low level API and unless you intend to implement your own text rendering for some specialized widget, you probably won't need to use it directly.</p>
+<p>QTextLayout can currently deal with plain text and rich text paragraphs that are part of a QTextDocument.</p>
+<p>QTextLayout can be used to create a sequence of QTextLine's with given widths and can position them independently on the screen. Once the layout is done, these lines can be drawn on a paint device.</p>
+<p>Here's some pseudo code that presents the layout phase:</p>
+<pre>    int leading = fontMetrics.leading();
+    int height = 0;
+    qreal widthUsed = 0;
+    textLayout.beginLayout();
+    while (1) {
+        QTextLine line = textLayout.createLine();
+        if (!line.isValid())
+            break;
+
+        line.setLineWidth(lineWidth);
+        height += leading;
+        line.setPosition(QPoint(0, height));
+        height += line.height();
+        widthUsed = qMax(widthUsed, line.naturalTextWidth());
+    }
+    textLayout.endLayout();</pre>
+<p>The text can be drawn by calling the layout's draw() function:</p>
+<pre>    QPainter painter(this);
+    textLayout.draw(&amp;painter, QPoint(0, 0));</pre>
+<p>The text layout's text is set in the constructor or with setText(). The layout can be seen as a sequence of QTextLine objects; use lineAt() or lineForTextPosition() to get a QTextLine, createLine() to create one. For a given position in the text you can find a valid cursor position with isValidCursorPosition(), nextCursorPosition(), and previousCursorPosition(). The layout itself can be positioned with setPosition(); it has a boundingRect(), and a minimumWidth() and a maximumWidth(). A text layout can be drawn on a painter device using draw().</p>
+
+*/">
+    <method name="public QTextLayout()" doc="/**
+<p>Constructs an empty text layout.</p>
+
+*/"/>
+    <method name="public QTextLayout(java.lang.String text__0, com.trolltech.qt.gui.QFont font__1, com.trolltech.qt.gui.QPaintDeviceInterface paintdevice__2)" doc="/**
+<p>Constructs a text layout to lay out the given <i>text</i> with the specified <i>font</i>.</p>
+<p>All the metric and layout calculations will be done in terms of the paint device, <i>paintdevice</i>. If <i>paintdevice</i> is 0 the calculations will be done in screen metrics.</p>
+
+*/"/>
+    <method name="public QTextLayout(java.lang.String text__0)" doc="/**
+<p>Constructs a text layout to lay out the given <i>text</i>.</p>
+
+*/"/>
+    <method name="public QTextLayout(com.trolltech.qt.gui.QTextBlock b__0)" doc="/**
+<p>Constructs a text layout to lay out the given <i>block</i>.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QTextLayout_FormatRange&gt; additionalFormats()" doc="/**
+<p>Returns the list of additional formats supported by the text layout.</p>
+
+*/"/>
+    <method name="public final void beginLayout()" doc="/**
+<p>Begins the layout process.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF boundingRect()" doc="/**
+<p>The smallest rectangle that contains all the lines in the layout.</p>
+
+*/"/>
+    <method name="public final boolean cacheEnabled()" doc="/**
+<p>Returns true if the complete layout information is cached; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final void clearAdditionalFormats()" doc="/**
+<p>Clears the list of additional formats supported by the text layout.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextLine createLine()" doc="/**
+<p>Returns a new text line to be laid out if there is text to be inserted into the layout; otherwise returns an invalid text line.</p>
+<p>The text layout creates a new line object that starts after the last line in the layout, or at the beginning if the layout is empty. The layout maintains an internal cursor, and each line is filled with text from the cursor position onwards when the QTextLine::setLineWidth() function is called.</p>
+<p>Once QTextLine::setLineWidth() is called, a new line can be created and filled with text. Repeating this process will lay out the whole block of text contained in the QTextLayout. If there is no text left to be inserted into the layout, the QTextLine returned will not be valid (isValid() will return false).</p>
+
+*/"/>
+    <method name="public final void draw(com.trolltech.qt.gui.QPainter p__0, com.trolltech.qt.core.QPointF pos__1, java.util.List&lt;com.trolltech.qt.gui.QTextLayout_FormatRange&gt; selections__2, com.trolltech.qt.core.QRectF clip__3)" doc="/**
+<p>Draws the whole layout on the painter <i>p</i> at the position specified by <i>pos</i>. The rendered layout includes the given <i>selections</i> and is clipped within the rectangle specified by <i>clip</i>.</p>
+
+*/"/>
+    <method name="public final void drawCursor(com.trolltech.qt.gui.QPainter p__0, com.trolltech.qt.core.QPointF pos__1, int cursorPosition__2, int width__3)" doc="/**
+<p>Draws a text cursor with the current pen and the specified <i>width</i> at the given <i>position</i> using the <i>painter</i> specified. The corresponding position within the text is specified by <i>cursorPosition</i>.</p>
+
+*/"/>
+    <method name="public final void drawCursor(com.trolltech.qt.gui.QPainter p__0, com.trolltech.qt.core.QPointF pos__1, int cursorPosition__2)" doc="/**
+<p>Draws a text cursor with the current pen at the given <i>position</i> using the <i>painter</i> specified. The corresponding position within the text is specified by <i>cursorPosition</i>.</p>
+
+*/"/>
+    <method name="public final void endLayout()" doc="/**
+<p>Ends the layout process.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font()" doc="/**
+<p>Returns the current font that is used for the layout, or a default font if none is set.</p>
+
+*/"/>
+    <method name="public final boolean isValidCursorPosition(int pos__0)" doc="/**
+<p>Returns true if position <i>pos</i> is a valid cursor position.</p>
+<p>In a Unicode context some positions in the text are not valid cursor positions, because the position is inside a Unicode surrogate or a grapheme cluster.</p>
+<p>A grapheme cluster is a sequence of two or more Unicode characters that form one indivisible entity on the screen. For example the latin character `<font color=&quote;red&quote;><b>&lt;Missing HTML&gt;</b></font>' can be represented in Unicode by two characters, `A' (0x41), and the combining diaresis (0x308). A text cursor can only validly be positioned before or after these two characters, never between them since that wouldn't make sense. In indic languages every syllable forms a grapheme cluster.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextLine lineAt(int i__0)" doc="/**
+<p>Returns the <i>i</i>-th line of text in this text layout.</p>
+
+*/"/>
+    <method name="public final int lineCount()" doc="/**
+<p>Returns the number of lines in this text layout.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextLine lineForTextPosition(int pos__0)" doc="/**
+<p>Returns the line that contains the cursor position specified by <i>pos</i>.</p>
+
+*/"/>
+    <method name="public final double maximumWidth()" doc="/**
+<p>The maximum width the layout could expand to; this is essentially the width of the entire text.</p>
+<p><b>Warning:</b> This function only returns a valid value after the layout has been done.</p>
+
+*/"/>
+    <method name="public final double minimumWidth()" doc="/**
+<p>The minimum width the layout needs. This is the width of the layout's smallest non-breakable substring.</p>
+<p><b>Warning:</b> This function only returns a valid value after the layout has been done.</p>
+
+*/"/>
+    <method name="public final int nextCursorPosition(int oldPos__0, com.trolltech.qt.gui.QTextLayout.CursorMode mode__1)" doc="/**
+<p>Returns the next valid cursor position after <i>oldPos</i> that respects the given cursor <i>mode</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF position()" doc="/**
+<p>The global position of the layout. This is independent of the bounding rectangle and of the layout process.</p>
+
+*/"/>
+    <method name="public final int preeditAreaPosition()" doc="/**
+<p>Returns the position of the area in the text layout that will be processed before editing occurs.</p>
+
+*/"/>
+    <method name="public final java.lang.String preeditAreaText()" doc="/**
+<p>Returns the text that is inserted in the layout before editing occurs.</p>
+
+*/"/>
+    <method name="public final int previousCursorPosition(int oldPos__0, com.trolltech.qt.gui.QTextLayout.CursorMode mode__1)" doc="/**
+<p>Returns the first valid cursor position before <i>oldPos</i> that respects the given cursor <i>mode</i>.</p>
+
+*/"/>
+    <method name="public final void setAdditionalFormats(java.util.List&lt;com.trolltech.qt.gui.QTextLayout_FormatRange&gt; overrides__0)" doc="/**
+<p>Sets the additional formats supported by the text layout to <i>formatList</i>.</p>
+
+*/"/>
+    <method name="public final void setCacheEnabled(boolean enable__0)" doc="/**
+<p>Enables caching of the complete layout information if <i>enable</i> is true; otherwise disables layout caching. Usually QTextLayout throws most of the layouting information away after a call to endLayout() to reduce memory consumption. If you however want to draw the layouted text directly afterwards enabling caching might speed up drawing significantly.</p>
+
+*/"/>
+    <method name="public final void setFont(com.trolltech.qt.gui.QFont f__0)" doc="/**
+<p>Sets the layout's font to the given <i>font</i>. The layout is invalidated and must be laid out again.</p>
+
+*/"/>
+    <method name="public final void setPosition(com.trolltech.qt.core.QPointF p__0)" doc="/**
+<p>Moves the text layout to point <i>p</i>.</p>
+
+*/"/>
+    <method name="public final void setPreeditArea(int position__0, java.lang.String text__1)" doc="/**
+<p>Sets the <i>position</i> and <i>text</i> of the area in the layout that is processed before editing occurs.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String string__0)" doc="/**
+<p>Sets the layout's text to the given <i>string</i>. The layout is invalidated and must be laid out again.</p>
+
+*/"/>
+    <method name="public final void setTextOption(com.trolltech.qt.gui.QTextOption option__0)" doc="/**
+<p>Sets the text option structure that controls the layout process to the given <i>option</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>Returns the layout's text.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextOption textOption()" doc="/**
+<p>Returns the current text option used to control the layout process.</p>
+
+*/"/>
+    <enum name="CursorMode" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

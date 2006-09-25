@@ -1,0 +1,105 @@
+<class name="QPaintEngineState" doc="/**
+<p>The QPaintEngineState class provides information about the active paint engine's current state.</p>
+<p>QPaintEngineState records which properties that have changed since the last time the paint engine was updated, as well as their current value.</p>
+<p>Which properties that have changed can at any time be retrieved using the state() function. This function returns an instance of the QPaintEngine::DirtyFlags type which stores an OR combination of QPaintEngine::DirtyFlag values. The QPaintEngine::DirtyFlag enum defines whether a property has changed since the last update or not.</p>
+<p>If a property is marked with a dirty flag, its current value can be retrieved using the corresponding get function:</p>
+<a name=&quote;getfunction&quote;></a><p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Property Flag</th><th>Current Property Value</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QPaintEngine::DirtyBackground</td><td>backgroundBrush()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QPaintEngine::DirtyBackgroundMode</td><td>backgroundMode()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QPaintEngine::DirtyBrush</td><td>brush()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QPaintEngine::DirtyBrushOrigin</td><td>brushOrigin()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QPaintEngine::DirtyClipRegion <i>or</i> QPaintEngine::DirtyClipPath</td><td>clipOperation()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QPaintEngine::DirtyClipPath</td><td>clipPath()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QPaintEngine::DirtyClipRegion</td><td>clipRegion()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QPaintEngine::DirtyCompositionMode</td><td>compositionMode()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QPaintEngine::DirtyFont</td><td>font()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QPaintEngine::DirtyTransform</td><td>matrix()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QPaintEngine::DirtyClipEnabled</td><td>isClipEnabled()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QPaintEngine::DirtyPen</td><td>pen()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QPaintEngine::DirtyHints</td><td>renderHints()</td></tr>
+</table></p>
+<p>The QPaintEngineState class also provide the painter() function which returns a pointer to the painter that is currently updating the paint engine.</p>
+<p>An instance of this class, representing the current state of the active paint engine, is passed as argument to the QPaintEngine::updateState() function. The only situation in which you will have to use this class directly is when implementing your own paint engine.</p>
+
+*/">
+    <method name="public final com.trolltech.qt.gui.QBrush backgroundBrush()" doc="/**
+<p>Returns the background brush in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyBackground flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.BGMode backgroundMode()" doc="/**
+<p>Returns the background mode in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyBackgroundMode flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush brush()" doc="/**
+<p>Returns the brush in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyBrush flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF brushOrigin()" doc="/**
+<p>Returns the brush origin in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyBrushOrigin flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ClipOperation clipOperation()" doc="/**
+<p>Returns the clip operation in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes either the QPaintEngine::DirtyClipPath or the QPaintEngine::DirtyClipRegion flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPainterPath clipPath()" doc="/**
+<p>Returns the clip path in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyClipPath flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QRegion clipRegion()" doc="/**
+<p>Returns the clip region in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyClipRegion flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPainter.CompositionMode compositionMode()" doc="/**
+<p>Returns the composition mode in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyCompositionMode flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font()" doc="/**
+<p>Returns the font in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyFont flag.</p>
+
+*/"/>
+    <method name="public final boolean isClipEnabled()" doc="/**
+<p>Returns wether clipping is enabled or not in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyClipEnabled flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMatrix matrix()" doc="/**
+<p>Returns the matrix in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyTransform flag.</p>
+
+*/"/>
+    <method name="public final double opacity()" doc="/**
+<p>Returns the opacity in the current paint engine state.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPainter painter()" doc="/**
+<p>Returns a pointer to the painter currently updating the paint engine.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPen pen()" doc="/**
+<p>Returns the pen in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyPen flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPainter.RenderHints renderHints()" doc="/**
+<p>Returns the render hints in the current paint engine state.</p>
+<p>This variable should only be used when the state() returns a combination which includes the QPaintEngine::DirtyHints flag.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPaintEngine.DirtyFlags state()" doc="/**
+<p>Returns a combination of flags identifying the set of properties that need to be updated when updating the paint engine's state (i.e. during a call to the QPaintEngine::updateState() function).</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.gui.QPaintEngine.DirtyFlags dirtyFlags()"/>
+    <method name="protected final void setDirtyFlags(com.trolltech.qt.gui.QPaintEngine.DirtyFlags dirtyFlags)"/>
+</class>

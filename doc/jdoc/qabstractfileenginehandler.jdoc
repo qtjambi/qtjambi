@@ -1,0 +1,48 @@
+<class name="QAbstractFileEngineHandler" doc="/**
+<p>The QAbstractFileEngineHandler class provides a way to register custom file engines with your application.</p>
+<p>QAbstractFileEngineHandler is a factory for creating QAbstractFileEngine objects (file engines), which are used internally by QFile, QFileInfo, and QDir when working with files and directories.</p>
+<p>When you open a file, Qt chooses a suitable file engine by passing the file name from QFile or QDir through an internal list of registered file engine handlers. The first handler to recognize the file name is used to create the engine. Qt provides internal file engines for working with regular files and resources, but you can also register your own QAbstractFileEngine subclasses.</p>
+<p>To install an application-specific file engine, you subclass QAbstractFileEngineHandler and reimplement create(). When you instantiate the handler (e.g. by creating an instance on the stack or on the heap), it will automatically register with Qt. (The latest registered handler takes precedence over existing handlers.)</p>
+<p>For example:</p>
+<pre>    class ZipEngineHandler : public QAbstractFileEngineHandler
+    {
+    public:
+        QAbstractSocketEngine *create(const QString &amp;fileName) const;
+    };
+
+    QAbstractSocketEngine *ZipEngineHandler::create(const QString &amp;fileName) const
+    {
+        <span class=&quote;comment&quote;>// ZipEngineHandler returns a ZipEngine for all .zip files</span>
+        return fileName.toLower().endsWith(&quot;.zip&quot;) ? new ZipEngine(fileName) : 0;
+    }
+
+    int main(int argc, char **argv)
+    {
+        QApplication app(argc, argv);
+
+        ZipEngineHandler engine;
+
+        MainWindow window;
+        window.show();
+
+        return app.exec();
+    }</pre>
+<p>When the handler is destroyed, it is automatically removed from Qt.</p>
+<p>The most common approach to registering a handler is to create an instance as part of the start-up phase of your application. It is also possible to limit the scope of the file engine handler to a particular area of interest (e.g. a special file dialog that needs a custom file engine). By creating the handler inside a local scope, you can precisely control the area in which your engine will be applied without disturbing file operations in other parts of your application.</p>
+
+*/">
+    <method name="public QAbstractFileEngineHandler()" doc="/**
+<p>Constructs a file handler and registers it with Qt. Once created this handler's create() function will be called (along with all the other handlers) for any paths used. The most recently created handler that recognizes the given path (i.e. that returns a QAbstractFileEngine) is used for the new path.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QAbstractFileEngine create(java.lang.String fileName__0)" doc="/**
+<p>Creates a file engine for file <i>fileName</i>. Returns 0 if this file handler cannot handle <i>fileName</i>.</p>
+<p>Example:</p>
+<pre>    QAbstractSocketEngine *ZipEngineHandler::create(const QString &amp;fileName) const
+    {
+        <span class=&quote;comment&quote;>// ZipEngineHandler returns a ZipEngine for all .zip files</span>
+        return fileName.toLower().endsWith(&quot;.zip&quot;) ? new ZipEngine(fileName) : 0;
+    }</pre>
+
+*/"/>
+</class>

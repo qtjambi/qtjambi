@@ -1,0 +1,92 @@
+<class name="QSignalMapper" doc="/**
+<p>The QSignalMapper class bundles signals from identifiable senders.</p>
+<p>This class collects a set of parameterless signals, and re-emits them with integer, string or widget parameters corresponding to the object that sent the signal.</p>
+<p>The class supports the mapping of particular strings or integers with particular objects using setMapping(). The objects' signals can then be connected to the map() slot which will emit the mapped() signal with the string or integer associated with the original signalling object. Mappings can be removed later using removeMappings().</p>
+<p>Example: Suppose we want to create a custom widget that contains a group of buttons (like a tool palette). One approach is to connect each button's <tt>clicked()</tt> signal to its own custom slot; but in this example we want to connect all the buttons to a single slot and parameterize the slot by the button that was clicked.</p>
+<p>Here's the definition of a simple custom widget that has a single signal, <tt>clicked()</tt>, which is emitted with the text of the button that was clicked:</p>
+<pre>    class ButtonWidget : public QWidget
+    {
+        Q_OBJECT
+
+    public:
+        ButtonWidget(QStringList texts, QWidget *parent = 0);
+
+    signals:
+        void clicked(const QString &amp;text);
+
+    private:
+        QSignalMapper *signalMapper;
+    };</pre>
+<p>The only function that we need to implement is the constructor:</p>
+<pre>    ButtonWidget::ButtonWidget(QStringList texts, QWidget *parent)
+        : QWidget(parent)
+    {
+        signalMapper = new QSignalMapper(this);
+
+        QGridLayout *gridLayout = new QGridLayout;
+        for (int i = 0; i &lt; texts.size(); ++i) {
+            QPushButton *button = new QPushButton(texts[i]);
+            connect(button, SIGNAL(clicked()), signalMapper, SLOT(map()));
+            signalMapper-&gt;setMapping(button, texts[i]);
+            gridLayout-&gt;addWidget(button, i / 3, i % 3);
+        }
+
+        connect(signalMapper, SIGNAL(mapped(const QString &amp;)),
+                this, SIGNAL(clicked(const QString &amp;)));
+
+        setLayout(gridLayout);
+    }</pre>
+<p>A list of texts is passed to the constructor. A signal mapper is constructed and for each text in the list a QPushButton is created. We connect each button's <tt>clicked()</tt> signal to the signal mapper's map() slot, and create a mapping in the signal mapper from each button to the button's text. Finally we connect the signal mapper's mapped() signal to the custom widget's <tt>clicked()</tt> signal. When the user clicks a button, the custom widget will emit a single <tt>clicked()</tt> signal whose argument is the text of the button the user clicked.</p>
+
+*/">
+    <method name="public QSignalMapper(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a QSignalMapper with parent <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final void map()" doc="/**
+<p>This slot emits signals based on which object sends signals to it.</p>
+
+*/"/>
+    <method name="public final void map(com.trolltech.qt.core.QObject sender__0)" doc="/**
+<p>This slot emits signals based on the <i>sender</i> object.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QObject mapping(java.lang.String text__0)"/>
+    <method name="public final com.trolltech.qt.core.QObject mapping(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Returns the sender QObject that is associated with the given <i>widget</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QObject mapping(com.trolltech.qt.core.QObject object__0)" doc="/**
+<p>Returns the sender QObject that is associated with the given <i>object</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QObject mapping(int id__0)" doc="/**
+<p>Returns the sender QObject that is associated with the given <i>id</i>.</p>
+
+*/"/>
+    <method name="public final void removeMappings(com.trolltech.qt.core.QObject sender__0)" doc="/**
+<p>Removes all mappings for <i>sender</i>.</p>
+<p>This is done automatically when mapped objects are destroyed.</p>
+
+*/"/>
+    <method name="public final void setMapping(com.trolltech.qt.core.QObject sender__0, com.trolltech.qt.core.QObject object__1)" doc="/**
+<p>Adds a mapping so that when map() is signalled from the given <i>sender</i>, the signal mapped(<i>object</i> ) is emitted.</p>
+<p>There may be at most one object for each sender.</p>
+
+*/"/>
+    <method name="public final void setMapping(com.trolltech.qt.core.QObject sender__0, com.trolltech.qt.gui.QWidget widget__1)" doc="/**
+<p>Adds a mapping so that when map() is signalled from the given <i>sender</i>, the signal mapped(<i>widget</i> ) is emitted.</p>
+<p>There may be at most one widget for each sender.</p>
+
+*/"/>
+    <method name="public final void setMapping(com.trolltech.qt.core.QObject sender__0, java.lang.String text__1)" doc="/**
+<p>Adds a mapping so that when map() is signalled from the given <i>sender</i>, the signal mapped(<i>text</i> ) is emitted.</p>
+<p>There may be at most one text for each sender.</p>
+
+*/"/>
+    <method name="public final void setMapping(com.trolltech.qt.core.QObject sender__0, int id__1)" doc="/**
+<p>Adds a mapping so that when map() is signalled from the given <i>sender</i>, the signal mapped(<i>id</i>) is emitted.</p>
+<p>There may be at most one integer ID for each sender.</p>
+
+*/"/>
+</class>

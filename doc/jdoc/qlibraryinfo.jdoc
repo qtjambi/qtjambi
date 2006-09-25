@@ -1,0 +1,47 @@
+<class name="QLibraryInfo" doc="/**
+<p>The QLibraryInfo class provides information about the Qt library.</p>
+<p>Many pieces of information are established when Qt is configured. Installation paths, license information, and even a unique build key. This class provides an abstraction for accessing this information.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Function</th><th>Return value</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>buildKey()</td><td>A string that identifies the Qt version and the configuration. This key is used to ensure that plugins link against the same version of Qt as the application.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>location()</td><td>The path to a certain Qt component (e.g., documentation, header files).</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>licensee(), licensedProducts()</td><td>Licensing information.</td></tr>
+</table></p>
+<p>You can also use a <tt>qt.conf</tt> file to override the hard-coded paths that are compiled into the Qt library. For more information, see the Using qt.conf documentation.</p>
+
+*/">
+    <method name="public native static java.lang.String buildKey()" doc="/**
+<p>Returns a unique key identifying this build of Qt and its configurations. This key is not globally unique, rather only useful for establishing of two configurations are compatible. This can be used to compare with the <tt>QT_BUILD_KEY</tt> preprocessor symbol.</p>
+
+*/"/>
+    <method name="public native static java.lang.String licensedProducts()" doc="/**
+<p>Returns the products that the license for this build of Qt has access to.</p>
+
+*/"/>
+    <method name="public native static java.lang.String licensee()" doc="/**
+<p>Returns the person to whom this build of Qt is licensed.</p>
+
+*/"/>
+    <method name="public final static java.lang.String location(com.trolltech.qt.core.QLibraryInfo.LibraryLocation arg__0)" doc="/**
+<p>Returns the location specified by <i>loc</i>.</p>
+
+*/"/>
+    <enum name="LibraryLocation" doc="/**
+<a name=&quote;library-location&quote;></a><p>This enum type is used to specify a specific location specifier:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The default prefix for all paths.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location for documentation upon install.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location for all headers.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location of installed librarires.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location of installed Qt binaries (tools and applications).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location of installed Qt plugins.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location of general Qt data.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location of translation information for Qt strings.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location for Qt settings.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location for examples upon install.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The location for demos upon install.</td></tr>
+</table></p>
+
+*/"/>
+</class>

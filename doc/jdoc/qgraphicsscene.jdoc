@@ -1,0 +1,350 @@
+<class name="QGraphicsScene" doc="/**
+<p>The QGraphicsScene class provides a surface for managing a large number of 2D graphical items.</p>
+<p>The class serves as a container for QGraphicsItems. It is used together with QGraphicsView for visualizing graphical items, such as lines, rectangles, text, or even custom items, on a 2D surface. QGraphicsScene is part of The Graphics View Framework.</p>
+<p>QGraphicsScene also provides functionality that lets you efficiently determine both the location of items, and for determining what items are visible within an arbitrary area on the scene. With the QGraphicsView widget, you can either visualize the whole scene, or zoom in and view only parts of the scene.</p>
+<p>Example:</p>
+<pre>    QGraphicsScene scene;
+    scene.addText(&quot;Hello, world!&quot;);
+
+    QGraphicsView view(&amp;scene);
+    view.show();</pre>
+<p>Note that QGraphicsScene has no visual appearance of its own; it only manages the items. You need to create a QGraphicsView widget to visualize the scene.</p>
+<p>To add items to a scene, you start off by constructing a QGraphicsScene object. Then, you have two options: either add your existing QGraphicsItem objects by calling addItem(), or you can call one of the convenience functions addEllipse(), addLine(), addPath(), addPixmap(), addPolygon(), addRect(), or addText(), which all return a pointer to the newly added item. You can then visualize the scene using QGraphicsView. When the scene changes, (e.g., when an item moves or is transformed) QGraphicsScene emits the changed() signal. To remove an item, call removeItem().</p>
+<p>QGraphicsScene uses an indexing algorithm to manage the location of items efficiently. By default, a BSP (Binary Space Partitioning) tree is used; an algorithm suitable for large scenes where most items remain static (i.e., do not move around). You can choose to disable this index by calling setItemIndexMethod(). For more information about the available indexing algorithms, see the itemIndexMethod propery.</p>
+<p>The scene's bounding rect is set by calling setSceneRect(). Items can be placed at any position on the scene, and the size of the scene is by default unlimited. The scene rect is used only for internal bookkeeping, maintaining the scene's item index. If the scene rect is unset, QGraphicsScene will use the bounding area of all items, as returned by itemsBoundingRect(), as the scene rect. However, itemsBoundingRect() is a relatively time consuming function, as it operates by collecting positional information for every item on the scene. Because of this, you should always set the scene rect when operating on large scenes.</p>
+<p>One of QGraphicsScene's greatest strengts is its ability to efficiently determine the location of items. Even with millions of items on the scene, the items() functions can determine the location of an item within few milliseconds. There are several overloads to items(): one that finds items at a certain position, one that finds items inside or intersecting with a polygon or a rectangle, and more. The list of returned items is sorted by stacking order, with the topmost item being the first item in the list. For convenience, there is also an itemAt() function that returns the topmost item at a given position.</p>
+<p>QGraphicsScene maintains selection information for the scene. To select items, call setSelectionArea(), and to clear the current selection, call clearSelection(). Call selectedItems() to get the list of all selected items.</p>
+<p>Another responsibility that QGraphicsScene has, is to propagate events from QGraphicsView. To send an event to a scene, you construct an event that inherits QEvent, and then send it using, for example, QApplication::sendEvent(). event() is responsible for dispatching the event to the individual items. Some common events are handled by convenience event handlers. For example, key press events are handled by keyPressEvent(), and mouse press events are handled by mousePressEvent().</p>
+<p>Key events are delivered to the <i>focus item</i>. To set the focus item, you can either call setFocusItem(), passing an item that accepts focus, or the item itself can call QGraphicsItem::setFocus(). Call focusItem() to get the current focus item. For compatibility with widgets, the scene also maintains its own focus information. By default, the scene does not have focus, and all key events are discarded. If setFocus() is called, or if an item on the scene gains focus, the scene automatically gains focus. If the scene has focus, hasFocus() will return true, and key events will be forwarded to the focus item, if any. If the scene loses focus, (i.e., someone calls clearFocus(),) while an item has focus, the scene will maintain its item focus information, and once the scene regains focus, it will make sure the last focus item regains focus.</p>
+<p>For mouse-over effects, QGraphicsScene dispatches <i>hover events</i>. If an item accepts hover events (see QGraphicsItem::acceptsHoverEvents()), it will receive a GraphicsSceneHoverEnter event when the mouse enters its area. As the mouse continues moving inside the item's area, QGraphicsScene will send it GraphicsSceneHoverMove events. When the mouse leaves the item's area, the item will receive a GraphicsSceneHoverLeave event.</p>
+<p>All mouse events are delivered to the current <i>mouse grabber</i> item. An item becomes the scene's mouse grabber if it accepts mouse events (see QGraphicsItem::acceptedMouseButtons()) and it receives a mouse press. It stays the mouse grabber until it receives a mouse release when no other mouse buttons are pressed. You can call mouseGrabberItem() to determine what item is currently grabbing the mouse.</p>
+
+*/">
+    <method name="public QGraphicsScene(double x__0, double y__1, double width__2, double height__3, com.trolltech.qt.core.QObject parent__4)" doc="/**
+<p>Constructs a QGraphicsScene object, using the rectangle specified by (<i>x</i>, <i>y</i>), and the given <i>width</i> and <i>height</i> for its scene rectangle. The <i>parent</i> parameter is passed to QObject's constructor.</p>
+
+*/"/>
+    <method name="public QGraphicsScene(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a QGraphicsScene object. The <i>parent</i> parameter is passed to QObject's constructor.</p>
+
+*/"/>
+    <method name="public QGraphicsScene(com.trolltech.qt.core.QRectF sceneRect__0, com.trolltech.qt.core.QObject parent__1)" doc="/**
+<p>Constructs a QGraphicsScene object, using <i>sceneRect</i> for its scene rectangle. The <i>parent</i> parameter is passed to QObject's constructor.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect__0, com.trolltech.qt.gui.QPen pen__1, com.trolltech.qt.gui.QBrush brush__2)" doc="/**
+<p>Creates and adds an ellipse item to the scene, and returns the item pointer. The geometry of the ellipse is defined by <i>rect</i>, and it's pen and brush are initialized to <i>pen</i> and <i>brush</i>.</p>
+<p>Note that the item's geometry is provided in item coordinates, and its position is initialized to (0, 0).</p>
+<p>If the item is visible (i.e., QGraphicsItem::isVisible() returns true), QGraphicsScene will emit changed() once control goes back to the event loop.</p>
+
+*/"/>
+    <method name="public final void addItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0)" doc="/**
+<p>Adds the item <i>item</i> and all its childen to the scene.</p>
+<p>If the item is visible (i.e., QGraphicsItem::isVisible() returns true), QGraphicsScene will emit changed() once control goes back to the event loop.</p>
+<p>If the item is already associated with a scene, it will first be removed from that scene, and then added to this scene.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsLineItem addLine(com.trolltech.qt.gui.QLineF line__0, com.trolltech.qt.gui.QPen pen__1)" doc="/**
+<p>Creates and adds a line item to the scene, and returns the item pointer. The geometry of the line is defined by <i>line</i>, and it's pen is initialized to <i>pen</i>.</p>
+<p>Note that the item's geometry is provided in item coordinates, and its position is initialized to (0, 0).</p>
+<p>If the item is visible (i.e., QGraphicsItem::isVisible() returns true), QGraphicsScene will emit changed() once control goes back to the event loop.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsPathItem addPath(com.trolltech.qt.gui.QPainterPath path__0, com.trolltech.qt.gui.QPen pen__1, com.trolltech.qt.gui.QBrush brush__2)" doc="/**
+<p>Creates and adds a path item to the scene, and returns the item pointer. The geometry of the path is defined by <i>path</i>, and it's pen and brush are initialized to <i>pen</i> and <i>brush</i>.</p>
+<p>Note that the item's geometry is provided in item coordinates, and its position is initialized to (0, 0).</p>
+<p>If the item is visible (i.e., QGraphicsItem::isVisible() returns true), QGraphicsScene will emit changed() once control goes back to the event loop.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsPixmapItem addPixmap(com.trolltech.qt.gui.QPixmap pixmap__0)" doc="/**
+<p>Creates and adds a pixmap item to the scene, and returns the item pointer. The pixmap is defined by <i>pixmap</i>.</p>
+<p>Note that the item's geometry is provided in item coordinates, and its position is initialized to (0, 0).</p>
+<p>If the item is visible (i.e., QGraphicsItem::isVisible() returns true), QGraphicsScene will emit changed() once control goes back to the event loop.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsPolygonItem addPolygon(com.trolltech.qt.gui.QPolygonF polygon__0, com.trolltech.qt.gui.QPen pen__1, com.trolltech.qt.gui.QBrush brush__2)" doc="/**
+<p>Creates and adds a polygon item to the scene, and returns the item pointer. The polygon is defined by <i>polygon</i>, and it's pen and brush are initialized to <i>pen</i> and <i>brush</i>.</p>
+<p>Note that the item's geometry is provided in item coordinates, and its position is initialized to (0, 0).</p>
+<p>If the item is visible (i.e., QGraphicsItem::isVisible() returns true), QGraphicsScene will emit changed() once control goes back to the event loop.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect__0, com.trolltech.qt.gui.QPen pen__1, com.trolltech.qt.gui.QBrush brush__2)" doc="/**
+<p>Creates and adds a rectangle item to the scene, and returns the item pointer. The geometry of the rectangle is defined by <i>rect</i>, and it's pen and brush are initialized to <i>pen</i> and <i>brush</i>.</p>
+<p>Note that the item's geometry is provided in item coordinates, and its position is initialized to (0, 0).</p>
+<p>If the item is visible (i.e., QGraphicsItem::isVisible() returns true), QGraphicsScene will emit changed() once control goes back to the event loop.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsTextItem addText(java.lang.String text__0, com.trolltech.qt.gui.QFont font__1)" doc="/**
+<p>Creates and adds a text item to the scene, and returns the item pointer. The text string is initialized to <i>text</i>, and it's font is initialized to <i>font</i>.</p>
+<p>The item's position is initialized to (0, 0).</p>
+<p>If the item is visible (i.e., QGraphicsItem::isVisible() returns true), QGraphicsScene will emit changed() once control goes back to the event loop.</p>
+
+*/"/>
+    <method name="public final void advance()" doc="/**
+<p>This slot <i>advances</i> the scene by one step, by calling QGraphicsItem::advance() for all items on the scene. This is done in two phases: in the first phase, all items are notified that the scene is about to change, and in the second phase all items are notified that they can move. In the first phase, QGraphicsItem::advance() is called passing a value of 0 as an argument, and 1 is passed in the second phase.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush backgroundBrush()"/>
+    <method name="public final void clearFocus()" doc="/**
+<p>Clears focus from the scene. If any item has focus when this function is called, it will lose focus, and regain focus again once the scene regains focus.</p>
+<p>A scene that does not have focus ignores key events.</p>
+
+*/"/>
+    <method name="public final void clearSelection()" doc="/**
+<p>Clears the current selection.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; collidingItems(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.core.Qt.ItemSelectionMode mode__1)" doc="/**
+<p>Returns a list of all items that collide with <i>item</i>. Collisions are determined by calling QGraphicsItem::collidesWithItem(); the collision detection is determined by <i>mode</i>. By default, all items whose shape intersects <i>item</i> or is contained inside <i>item</i>'s shape are returned.</p>
+<p>The items are returned in descending Z order (i.e., the first item in the list is the top-most item, and the last item is the bottom-most item).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsItemGroup createItemGroup(java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; items__0)" doc="/**
+<p>Groups all items in <i>items</i> into a new QGraphicsItemGroup, and returns a pointer to the group. The group is created with the common ancestor of <i>items</i> as its parent, and with position (0, 0). The items are all reparented to the group, and their positions and transformations are mapped to the group.</p>
+<p>QGraphicsScene has ownership of the group item; you do not need to delete it. To dismantle (ungroup) a group, call destroyItemGroup().</p>
+
+*/"/>
+    <method name="public final void destroyItemGroup(com.trolltech.qt.gui.QGraphicsItemGroup group__0)" doc="/**
+<p>Reparents all items in <i>group</i> to <i>group</i>'s parent item, then removes <i>group</i> from the scene, and finally deletes it. The items' positions and transformations are mapped from the group to the group's parent.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsItemInterface focusItem()" doc="/**
+<p>Returns the scene's current focus item, or 0 if no item currently has focus.</p>
+<p>The focus item receives keyboard input when the scene receives a key event.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush foregroundBrush()"/>
+    <method name="public final boolean hasFocus()" doc="/**
+<p>Returns true if the scene has focus; otherwise returns false. If the scene has focus, it will will forward key events from QKeyEvent to any item that has focus.</p>
+
+*/"/>
+    <method name="public final double height()" doc="/**
+<p>This convenience function is equivalent to calling <tt>sceneRect().height()</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsItemInterface itemAt(com.trolltech.qt.core.QPointF pos__0)" doc="/**
+<p>Returns the topmost item at the specified <i>position</i>, or 0 if there are no items at this position.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsItemInterface itemAt(double x__0, double y__1)" doc="/**
+<p>Returns the topmost item at the position specified by (<i>x</i>, <i>y</i>), or 0 if there are no items at this position.</p>
+<p>This convenience function is equivalent to calling <tt>itemAt(QPointF(x, y))</tt>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsScene.ItemIndexMethod itemIndexMethod()"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; items()" doc="/**
+<p>Returns a list of all items on the scene, in no particular order.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; items(com.trolltech.qt.gui.QPolygonF polygon__0, com.trolltech.qt.core.Qt.ItemSelectionMode mode__1)" doc="/**
+<p>Returns all visible items that, depending on <i>mode</i>, are either inside or intersect with the polygon <i>polygon</i>.</p>
+<p>The default value for <i>mode</i> is Qt::IntersectsItemShape; all items whose exact shape intersects with or is contained by <i>polygon</i> are returned.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; items(com.trolltech.qt.gui.QPainterPath path__0, com.trolltech.qt.core.Qt.ItemSelectionMode mode__1)" doc="/**
+<p>Returns all visible items that, depending on <i>path</i>, are either inside or intersect with the path <i>path</i>.</p>
+<p>The default value for <i>mode</i> is Qt::IntersectsItemShape; all items whose exact shape intersects with or is contained by <i>path</i> are returned.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; items(com.trolltech.qt.core.QRectF rect__0, com.trolltech.qt.core.Qt.ItemSelectionMode mode__1)"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; items(com.trolltech.qt.core.QPointF pos__0)" doc="/**
+<p>Returns all visible items at position <i>pos</i> in the scene. The items are listed in descending Z order (i.e., the first item in the list is the top-most item, and the last item is the bottom-most item).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF itemsBoundingRect()" doc="/**
+<p>Calculates and returns the bounding rect of all items on the scene. This function works by iterating over all items, and because if this, it can be slow for large scenes.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QGraphicsItemInterface mouseGrabberItem()" doc="/**
+<p>Returns the current mouse grabber item, or 0 if no item is currently grabbing the mouse. The mouse grabber item is the item that receives all mouse events sent to the scene.</p>
+<p>An item becomes a mouse grabber when it receives and accepts a mouse press event, and it stays the mouse grabber until either of the following events occur:</p>
+<ul>
+<li>If the item receives a mouse release event when there are no other buttons pressed, it loses the mouse grab.</li>
+<li>If the item becomes invisible (i.e., someone calls <tt>item-&gt;setVisible(false))</tt>, or if it becomes disabled (i.e., someone calls <tt>item-&gt;setEnabled(false))</tt>, it loses the mouse grab.</li>
+<li>If the item is removed from the scene, it loses the mouse grab.</li>
+</ul>
+<p>If the item loses its mouse grab, the scene will ignore all mouse events until a new item grabs the mouse (i.e., until a new item receives a mouse press event).</p>
+
+*/"/>
+    <method name="public final void removeItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0)" doc="/**
+<p>Removes the item <i>item</i> and all its children from the scene. The ownership of <i>item</i> is passed on to the caller (i.e., QGraphicsScene will no longer delete <i>item</i> when destroyed).</p>
+
+*/"/>
+    <method name="public final void render(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.core.QRectF target__1, com.trolltech.qt.core.QRectF source__2, com.trolltech.qt.core.Qt.AspectRatioMode aspectRatioMode__3)" doc="/**
+<p>Renders the <i>source</i> rect from scene into <i>target</i>, using <i>painter</i>. This function is useful for capturing the contents of the scene onto a paint device, such as a QImage (e.g., to take a screenshot), or for printing with QPrinter. For example:</p>
+<pre>    QGraphicsScene scene;
+    scene.addItem(...
+    ...
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPageSize(QPrinter::A4);
+
+    QPainter painter(&amp;printer);
+    scene.render(&amp;painter);</pre>
+<p>If <i>source</i> is a null rect, this function will use sceneRect() to determine what to render. If <i>target</i> is a null rect, the dimensions of <i>painter</i>'s paint device will be used.</p>
+<p>The source rect contents will be transformed according to <i>aspectRatioMode</i> to fit into the target rect. By default, the aspect ratio is kept, and <i>source</i> is scaled to fit in <i>target</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF sceneRect()"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QGraphicsItemInterface&gt; selectedItems()" doc="/**
+<p>Returns a list of all currently selected items. The items are returned in no particular order.</p>
+
+*/"/>
+    <method name="public final void setBackgroundBrush(com.trolltech.qt.gui.QBrush brush__0)"/>
+    <method name="public final void setFocus(com.trolltech.qt.core.Qt.FocusReason focusReason__0)" doc="/**
+<p>Sets focus on the scene by sending a QFocusEvent to the scene, passing <i>focusReason</i> as the reason. If the scene regains focus after having previously lost it while an item had focus, the last focus item will receive focus with <i>focusReason</i> as the reason.</p>
+<p>If the scene already has focus, this function does nothing.</p>
+
+*/"/>
+    <method name="public final void setFocusItem(com.trolltech.qt.gui.QGraphicsItemInterface item__0, com.trolltech.qt.core.Qt.FocusReason focusReason__1)" doc="/**
+<p>Sets the scene's focus item to <i>item</i>, with the focus reason <i>focusReason</i>, after removing focus from any previous item that may have had focus.</p>
+<p>If <i>item</i> is 0, or if it either does not accept focus (i.e., it does not have the QGraphicsItem::ItemIsFocusable flag enabled), or is not visible or not enabled, this function only removes focus from any previous focusitem.</p>
+<p>If item is not 0, and the scene does not currently have focus (i.e., hasFocus() returns false), this function will call setFocus() automatically.</p>
+
+*/"/>
+    <method name="public final void setForegroundBrush(com.trolltech.qt.gui.QBrush brush__0)"/>
+    <method name="public final void setItemIndexMethod(com.trolltech.qt.gui.QGraphicsScene.ItemIndexMethod method__0)"/>
+    <method name="public final void setSceneRect(double x__0, double y__1, double w__2, double h__3)"/>
+    <method name="public final void setSceneRect(com.trolltech.qt.core.QRectF rect__0)"/>
+    <method name="public final void setSelectionArea(com.trolltech.qt.gui.QPainterPath path__0)" doc="/**
+<p>Sets the selection area to <i>path</i>. All items within this area will be marked as selected. You can get the list of all selected items by calling selectedItems().</p>
+<p>For an item to be selected, it must be marked as <i>selectable</i> (QGraphicsItem::ItemIsSelectable). Items are selectable by default.</p>
+
+*/"/>
+    <method name="public final void update(com.trolltech.qt.core.QRectF rect__0)" doc="/**
+<p>Schedules a redraw of the area <i>rect</i> on the scene.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QGraphicsView&gt; views()" doc="/**
+<p>Returns a list of all the views that display this scene.</p>
+
+*/"/>
+    <method name="public final double width()" doc="/**
+<p>This convenience function is equivalent to calling sceneRect().width().</p>
+
+*/"/>
+    <method name="protected void contextMenuEvent(com.trolltech.qt.gui.QGraphicsSceneContextMenuEvent event__0)" doc="/**
+<p>This event handler, for event <i>contextMenuEvent</i>, can be reimplemented in a subclass to receive context menu events. The default implementation forwards the event to the item at the scene position provided by the event.</p>
+
+*/"/>
+    <method name="protected void dragEnterEvent(com.trolltech.qt.gui.QGraphicsSceneDragDropEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented in a subclass to receive drag enter events for the scene.</p>
+<p>The default implementation accepts the event and prepares the scene to accept drag move events.</p>
+
+*/"/>
+    <method name="protected void dragLeaveEvent(com.trolltech.qt.gui.QGraphicsSceneDragDropEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented in a subclass to receive drag leave events for the scene.</p>
+
+*/"/>
+    <method name="protected void dragMoveEvent(com.trolltech.qt.gui.QGraphicsSceneDragDropEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented in a subclass to receive drag move events for the scene.</p>
+
+*/"/>
+    <method name="protected void drawBackground(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.core.QRectF rect__1)" doc="/**
+<p>Draws the background of the scene using <i>painter</i>, before any items and the foreground are drawn. Reimplement this function to provide a custom background for the scene.</p>
+<p>All painting is done in <i>scene</i> coordinates. The <i>rect</i> parameter is the exposed rectangle.</p>
+
+*/"/>
+    <method name="protected void drawForeground(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.core.QRectF rect__1)" doc="/**
+<p>Draws the foreground of the scene using <i>painter</i>, after the background and all items have been drawn. Reimplement this function to provide a custom foreground for the scene.</p>
+<p>All painting is done in <i>scene</i> coordinates. The <i>rect</i> parameter is the exposed rectangle.</p>
+
+*/"/>
+    <method name="protected void drawItems(com.trolltech.qt.gui.QPainter painter__0, int numItems__1, com.trolltech.qt.QNativePointer items__2, com.trolltech.qt.gui.QStyleOptionGraphicsItem options__3, com.trolltech.qt.gui.QWidget widget__4)" doc="/**
+<p>Paints the given <i>items</i> using the provided <i>painter</i>, after the background has been drawn, and before the foreground has been drawn. All painting is done in <i>scene</i> coordinates. Before drawing each item, the painter must be transformed using QGraphicsItem::sceneMatrix().</p>
+<p>The <i>options</i> parameter is the list of style option objects for each item in <i>items</i>. The <i>numItems</i> parameter is the number of items in <i>items</i> and options in <i>options</i>. The <i>widget</i> parameter is optional; if specified, it should point to the widget that is being painted on.</p>
+<p>The default implementation prepares the painter matrix, and calls QGraphicsItem::paint() on all items. Reimplement this function to provide custom painting of all items for the scene; gaining complete control over how each item is drawn. In some cases this can increase drawing performance significantly.</p>
+<p>Example:</p>
+<pre>    void CustomScene::drawItems(QPainter *painter,
+                                int numItems,
+                                QGraphicsItem *items[],
+                                const QStyleOptionGraphicsItem options[]
+                                QWidget *widget)
+    {
+        for (int i = 0; i &lt; numItems; ++i) {
+            <span class=&quote;comment&quote;>// Draw the item</span>
+            painter-&gt;save();
+            painter-&gt;setMatrix(items[i]-&gt;sceneMatrix(), true);
+            items.at(i)-&gt;paint(painter, options[i], widget);
+            painter-&gt;restore();
+        }
+    }</pre>
+
+*/"/>
+    <method name="protected void dropEvent(com.trolltech.qt.gui.QGraphicsSceneDragDropEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented in a subclass to receive drop events for the scene.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)" doc="/**
+<p>Processes the event <i>event</i>, and dispatches it to the respective event handlers.</p>
+<p>In addition to calling the convenience event handlers, this function is responsible for converting mouse move events to hover events for when there is no mouse grabber item. Hover events are delivered directly to items; there is no convenience function for them.</p>
+
+*/"/>
+    <method name="protected void focusInEvent(com.trolltech.qt.gui.QFocusEvent event__0)" doc="/**
+<p>This event handler, for event <i>focusEvent</i>, can be reimplemented in a subclass to receive focus in events.</p>
+<p>The default implementation sets focus on the scene, and then on the last focus item.</p>
+
+*/"/>
+    <method name="protected void focusOutEvent(com.trolltech.qt.gui.QFocusEvent event__0)" doc="/**
+<p>This event handler, for event <i>focusEvent</i>, can be reimplemented in a subclass to receive focus out events.</p>
+<p>The default implementation removes focus from any focus item, then removes focus from the scene.</p>
+
+*/"/>
+    <method name="protected void helpEvent(com.trolltech.qt.gui.QGraphicsSceneHelpEvent event__0)" doc="/**
+<p>This event handler, for event <i>helpEvent</i>, can be reimplemented in a subclass to receive help events. The default implementation uses the event to show tooltips for items.</p>
+
+*/"/>
+    <method name="protected void inputMethodEvent(com.trolltech.qt.gui.QInputMethodEvent event__0)" doc="/**
+<p>This event handler, for event <i>event</i>, can be reimplemented in a subclass to receive input method events for the scene.</p>
+<p>The default implementation forwards the event to the focusItem(). If no item currently has focus, this function does nothing.</p>
+
+*/"/>
+    <method name="public java.lang.Object inputMethodQuery(com.trolltech.qt.core.Qt.InputMethodQuery query__0)" doc="/**
+<p>This method is used by input methods to query a set of properties of the scene to be able to support complex input method operations as support for surrounding text and reconversions.</p>
+<p>The <i>query</i> parameter specifies which property is queried.</p>
+
+*/"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent event__0)" doc="/**
+<p>This event handler, for event <i>keyEvent</i>, can be reimplemented in a subclass to receive keypress events. The default implementation forwards the event to current focus item.</p>
+
+*/"/>
+    <method name="protected void keyReleaseEvent(com.trolltech.qt.gui.QKeyEvent event__0)" doc="/**
+<p>This event handler, for event <i>keyEvent</i>, can be reimplemented in a subclass to receive key release events. The default implementation forwards the event to current focus item.</p>
+
+*/"/>
+    <method name="protected void mouseDoubleClickEvent(com.trolltech.qt.gui.QGraphicsSceneMouseEvent event__0)" doc="/**
+<p>This event handler, for event <i>mouseEvent</i>, can be reimplemented in a subclass to receive mouse doubleclick events for the scene.</p>
+<p>If someone doubleclicks on the scene, the scene will first receive a mouse press event, followed by a release event (i.e., a click), then a doubleclick event, and finally a release event. If the doubleclick event is delivered to a different item than the one that received the first press and release, it will be delivered as a press event. However, tripleclick events are not delivered as doubleclick events in this case.</p>
+<p>The default implementation is similar to mousePressEvent().</p>
+
+*/"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QGraphicsSceneMouseEvent event__0)" doc="/**
+<p>This event handler, for event <i>mouseEvent</i>, can be reimplemented in a subclass to receive mouse move events for the scene.</p>
+<p>The default implementation depends on the mouse grabber state. If there is a mouse grabber item, the event is sent to the mouse grabber; otherwise, the event is ignored.</p>
+
+*/"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QGraphicsSceneMouseEvent event__0)" doc="/**
+<p>This event handler, for event <i>mouseEvent</i>, can be reimplemented in a subclass to receive mouse press events for the scene.</p>
+<p>The default implementation depends on the state of the scene. If there is a mouse grabber item, then the event is sent to the mouse grabber. Otherwise, it is forwarded to the topmost item that accepts mouse events at the scene position from the event, and that item promptly becomes the mouse grabber item.</p>
+<p>If there is no item at the given position on the scene, the selection area is reset, any focus item loses its input focus, and the event is then ignored.</p>
+
+*/"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QGraphicsSceneMouseEvent event__0)" doc="/**
+<p>This event handler, for event <i>mouseEvent</i>, can be reimplemented in a subclass to receive mouse release events for the scene.</p>
+<p>The default implementation depends on the mouse grabber state. If there is no mouse grabber, the event is ignored. Otherwise, if there is a mouse grabber item, the event is sent to the mouse grabber. If this mouse release represents the last pressed button on the mouse, the mouse grabber item then loses the mouse grab.</p>
+
+*/"/>
+    <method name="protected void wheelEvent(com.trolltech.qt.gui.QGraphicsSceneWheelEvent event__0)" doc="/**
+<p>This event handler, for event <i>wheelEvent</i>, can be reimplemented in a subclass to receive mouse wheel events for the scene.</p>
+<p>By default, the event is delivered to the topmost visible item under the cursor. If ignored, the event propagates to the item beneath, and again until the event is accepted, or it reaches the scene. If no items accept the event, it is ignored.</p>
+
+*/"/>
+    <enum name="ItemIndexMethod" doc="/**
+<p>This enum describes the indexing algorithms QGraphicsScene provides for managing positional information about items on the scene.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A Binary Space Partitioning tree is applied. All QGraphicsScene's item location algorithms are of an order close to logarithmic complexity, by making use of binary search. Adding, moving and removing items is logarithmic. This approach is best for static scenes (i.e., scenes where most items do not move).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>No index is applied. Item location is of linear complexity, as all items on the scene are searched. Adding, moving and removing items, however, is done in constant time. This approach is ideal for dynamic scenes, where many items are added, moved or removed continuously.</td></tr>
+</table></p>
+
+*/"/>
+</class>

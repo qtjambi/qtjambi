@@ -1,0 +1,13 @@
+<class name="QWhatsThisClickedEvent" doc="/**
+<p>The QWhatsThisClickedEvent class provides an event that can be used to handle hyperlinks in a &quot;What's This?&quot; text.</p>
+
+*/">
+    <method name="public QWhatsThisClickedEvent(java.lang.String href__0)" doc="/**
+<p>Constructs an event containing a URL specified by <i>href</i> when a link is clicked in a &quot;What's This?&quot; message.</p>
+
+*/"/>
+    <method name="public final java.lang.String href()" doc="/**
+<p>Returns the URL that was clicked by the user in the &quot;What's This?&quot; text.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,399 @@
+<class name="QApplication" doc="/**
+<p>The QApplication class manages the GUI application's control flow and main settings.</p>
+<p>It contains the main event loop, where all events from the window system and other sources are processed and dispatched. It also handles the application's initialization and finalization, and provides session management. It also handles most system-wide and application-wide settings.</p>
+<p>For any GUI application that uses Qt, there is precisely one QApplication object, no matter whether the application has 0, 1, 2 or more windows at any time. For non-GUI Qt applications, use QCoreApplication instead, which doesn't depend on the QtGui library.</p>
+<p>The QApplication object is accessible through the instance() function which return a pointer equivalent to the global qApp pointer.</p>
+<p>QApplication's main areas of responsibility are:</p>
+<ul>
+<li>It initializes the application with the user's desktop settings such as palette(), font() and doubleClickInterval(). It keeps track of these properties in case the user changes the desktop globally, for example through some kind of control panel.</li>
+<li>It performs event handling, meaning that it receives events from the underlying window system and dispatches them to the relevant widgets. By using sendEvent() and postEvent() you can send your own events to widgets.</li>
+<li>It parses common command line arguments and sets its internal state accordingly. See the constructor documentation below for more details about this.</li>
+<li>It defines the application's look and feel, which is encapsulated in a QStyle object. This can be changed at runtime with setStyle().</li>
+<li>It specifies how the application is to allocate colors. See setColorSpec() for details.</li>
+<li>It provides localization of strings that are visible to the user via translate().</li>
+<li>It provides some magical objects like the desktop() and the clipboard().</li>
+<li>It knows about the application's windows. You can ask which widget is at a certain position using widgetAt(), get a list of topLevelWidgets() and closeAllWindows(), etc.</li>
+<li>It manages the application's mouse cursor handling, see setOverrideCursor()</li>
+<li>On the X window system, it provides functions to flush and sync the communication stream, see flushX() and syncX().</li>
+<li>It provides support for sophisticated session management. This makes it possible for applications to terminate gracefully when the user logs out, to cancel a shutdown process if termination isn't possible and even to preserve the entire application's state for a future session. See isSessionRestored(), sessionId() and commitData() and saveState() for details.</li>
+</ul>
+<p>Since the QApplication object does so much initialization, it <i>must</i> be created before any other objects related to the user interface are created.</p>
+<p>Since it also deals with common command line arguments, it is usually a good idea to create it <i>before</i> any interpretation or modification of <tt>argv</tt> is done in the application itself.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th colspan=&quote;2&quote;>Groups of functions</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>System settings</td><td>desktopSettingsAware(), setDesktopSettingsAware(), cursorFlashTime(), setCursorFlashTime(), doubleClickInterval(), setDoubleClickInterval(), setKeyboardInputInterval(), wheelScrollLines(), setWheelScrollLines(), palette(), setPalette(), font(), setFont(), fontMetrics().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Event handling</td><td>exec(), processEvents(), exit(), quit(). sendEvent(), postEvent(), sendPostedEvents(), removePostedEvents(), hasPendingEvents(), notify(), macEventFilter(), qwsEventFilter(), x11EventFilter(), x11ProcessEvent(), winEventFilter().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>GUI Styles</td><td>style(), setStyle().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Color usage</td><td>colorSpec(), setColorSpec(), qwsSetCustomColors().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Text handling</td><td>installTranslator(), removeTranslator() translate().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Widgets</td><td>allWidgets(), topLevelWidgets(), desktop(), activePopupWidget(), activeModalWidget(), clipboard(), focusWidget(), winFocus(), activeWindow(), widgetAt().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Advanced cursor handling</td><td>overrideCursor(), setOverrideCursor(), restoreOverrideCursor().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>X Window System synchronization</td><td>flushX(), syncX().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Session management</td><td>isSessionRestored(), sessionId(), commitData(), saveState().</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Miscellaneous</td><td>closeAllWindows(), startingUp(), closingDown(), type().</td></tr>
+</table></p>
+
+*/">
+    <method name="public final com.trolltech.qt.gui.QInputContext inputContext()" doc="/**
+<p>Returns the QInputContext instance used by the application.</p>
+
+*/"/>
+    <method name="public final boolean isSessionRestored()" doc="/**
+<p>Returns true if the application has been restored from an earlier session; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final java.lang.String sessionId()" doc="/**
+<p>Returns the current session's identifier.</p>
+<p>If the application has been restored from an earlier session, this identifier is the same as it was in that previous session.</p>
+<p>The session identifier is guaranteed to be unique both for different applications and for different instances of the same application.</p>
+
+*/"/>
+    <method name="public final java.lang.String sessionKey()" doc="/**
+<p>Returns the session key in the current session.</p>
+<p>If the application has been restored from an earlier session, this key is the same as it was when the previous session ended.</p>
+<p>The session key changes with every call of commitData() or saveState().</p>
+
+*/"/>
+    <method name="public final void setInputContext(com.trolltech.qt.gui.QInputContext arg__0)" doc="/**
+<p>This function replaces the QInputContext instance used by the application with <i>inputContext</i>.</p>
+
+*/"/>
+    <method name="public final void setStyleSheet(java.lang.String sheet__0)"/>
+    <method name="public final java.lang.String styleSheet()"/>
+    <method name="public void commitData(com.trolltech.qt.gui.QSessionManager sm__0)" doc="/**
+<p>This function deals with session management. It is invoked when the QSessionManager wants the application to commit all its data.</p>
+<p>Usually this means saving all open files, after getting permission from the user. Furthermore you may want to provide a means by which the user can cancel the shutdown.</p>
+<p>Note that you should not exit the application within this function. Instead, the session manager may or may not do this afterwards, depending on the context.</p>
+<p><b>Warning:</b> Within this function, no user interaction is possible, <i>unless</i> you ask the <i>manager</i> for explicit permission. See QSessionManager::allowsInteraction() and QSessionManager::allowsErrorInteraction() for details and example usage.</p>
+<p>The default implementation requests interaction and sends a close event to all visible top-level widgets. If any event was rejected, the shutdown is canceled.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="public boolean notify(com.trolltech.qt.core.QObject arg__0, com.trolltech.qt.core.QEvent arg__1)"/>
+    <method name="public void saveState(com.trolltech.qt.gui.QSessionManager sm__0)" doc="/**
+<p>This function deals with session management. It is invoked when the session manager wants the application to preserve its state for a future session.</p>
+<p>For example, a text editor would create a temporary file that includes the current contents of its edit buffers, the location of the cursor and other aspects of the current editing session.</p>
+<p>Note that you should never exit the application within this function. Instead, the session manager may or may not do this afterwards, depending on the context. Futhermore, most session managers will very likely request a saved state immediately after the application has been started. This permits the session manager to learn about the application's restart policy.</p>
+<p><b>Warning:</b> Within this function, no user interaction is possible, <i>unless</i> you ask the <i>manager</i> for explicit permission. See QSessionManager::allowsInteraction() and QSessionManager::allowsErrorInteraction() for details.</p>
+
+*/"/>
+    <method name="public native static void aboutQt()" doc="/**
+<p>Displays a simple message box about Qt. The message includes the version number of Qt being used by the application.</p>
+<p>This is useful for inclusion in the Help menu of an application. See the examples/menu/menu.cpp example.</p>
+<p>This function is a convenience slot for QMessageBox::aboutQt().</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QWidget activeModalWidget()" doc="/**
+<p>Returns the active modal widget.</p>
+<p>A modal widget is a special top-level widget which is a subclass of QDialog that specifies the modal parameter of the constructor as true. A modal widget must be closed before the user can continue with other parts of the program.</p>
+<p>Modal widgets are organized in a stack. This function returns the active modal widget at the top of the stack.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QWidget activePopupWidget()" doc="/**
+<p>Returns the active popup widget.</p>
+<p>A popup widget is a special top-level widget that sets the <tt>Qt::WType_Popup</tt> widget flag, e.g. the QMenu widget. When the application opens a popup widget, all events are sent to the popup. Normal widgets and modal widgets cannot be accessed before the popup widget is closed.</p>
+<p>Only other popup widgets may be opened when a popup widget is shown. The popup widgets are organized in a stack. This function returns the active popup widget at the top of the stack.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QWidget activeWindow()" doc="/**
+<p>Returns the application top-level window that has the keyboard input focus, or 0 if no application window has the focus. Note that there might be an activeWindow() even if there is no focusWidget(), for example if no widget in that window accepts key events.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;com.trolltech.qt.gui.QWidget&gt; allWidgets()" doc="/**
+<p>Returns a list of all the widgets in the application.</p>
+<p>The list is empty (QList::isEmpty()) if there are no widgets.</p>
+<p>Note that some of the widgets may be hidden.</p>
+<p>Example:</p>
+<pre>    void updateAllWidgets()
+    {
+        foreach (QWidget *widget, QApplication::allWidgets())
+            widget-&gt;update();
+    }</pre>
+
+*/"/>
+    <method name="public native static void beep()" doc="/**
+<p>Sounds the bell, using the default volume and sound. The function is <i>not</i> available in Qtopia Core.</p>
+
+*/"/>
+    <method name="public final static void changeOverrideCursor(com.trolltech.qt.gui.QCursor arg__0)" doc="/**
+<p>Changes the currently active application override cursor to <i>cursor</i>.</p>
+<p>This function has no effect if setOverrideCursor() wasn't called.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QClipboard clipboard()" doc="/**
+<p>Returns a pointer to the application global clipboard.</p>
+
+*/"/>
+    <method name="public native static void closeAllWindows()" doc="/**
+<p>Closes all top-level windows.</p>
+<p>This function is particularly useful for applications with many top-level windows. It could, for example, be connected to a <b>Exit</b> entry in the <b>File</b> menu:</p>
+<pre>        exitAct = new QAction(tr(&quot;E&amp;xit&quot;), this);
+        exitAct-&gt;setShortcut(tr(&quot;Ctrl+Q&quot;));
+        exitAct-&gt;setStatusTip(tr(&quot;Exit the application&quot;));
+        connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));</pre>
+<p>The windows are closed in random order, until one window does not accept the close event. The application quits when the last window was successfully closed; this can be turned off by setting quitOnLastWindowClosed to false.</p>
+
+*/"/>
+    <method name="public native static int colorSpec()" doc="/**
+<p>Returns the color specification.</p>
+
+*/"/>
+    <method name="public native static int cursorFlashTime()"/>
+    <method name="public native static com.trolltech.qt.gui.QDesktopWidget desktop()" doc="/**
+<p>Returns the desktop widget (also called the root window).</p>
+<p>Note that the desktop may be composed of multiple screens, so it would be incorrect, for example, to attempt to <i>center</i> some widget in the desktop's geometry. QDesktopWidget has various functions for obtaining useful geometries upon the desktop, such as QDesktopWidget::screenGeometry() and QDesktopWidget::availableGeometry().</p>
+<p>On X11, it is also possible to draw on the desktop.</p>
+
+*/"/>
+    <method name="public native static boolean desktopSettingsAware()" doc="/**
+<p>Returns true if Qt is set to use the system's standard colors, fonts, etc.; otherwise returns false. The default is true.</p>
+
+*/"/>
+    <method name="public native static int doubleClickInterval()"/>
+    <method name="public native static int exec()" doc="/**
+<p>Enters the main event loop and waits until exit() is called or the main widget is destroyed, and returns the value that was set to exit() (which is 0 if exit() is called via quit()).</p>
+<p>It is necessary to call this function to start event handling. The main event loop receives events from the window system and dispatches these to the application widgets.</p>
+<p>Generally speaking, no user interaction can take place before calling exec(). As a special case, modal widgets like QMessageBox can be used before calling exec(), because modal widgets call exec() to start a local event loop.</p>
+<p>To make your application perform idle processing, i.e. executing a special function whenever there are no pending events, use a QTimer with 0 timeout. More advanced idle processing schemes can be achieved using processEvents().</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QWidget focusWidget()" doc="/**
+<p>Returns the application widget that has the keyboard input focus, or 0 if no widget in this application has the focus.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QFont font(com.trolltech.qt.QNativePointer className__0)" doc="/**
+<p>Returns the font for widgets of the given <i>className</i>.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QFont font()" doc="/**
+<p>Returns the default application font.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QFont font(com.trolltech.qt.gui.QWidget arg__0)" doc="/**
+<p>Returns the default font for the <i>widget</i>.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QFontMetrics fontMetrics()" doc="/**
+<p>Returns display (screen) font metrics for the application font.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QSize globalStrut()"/>
+    <method name="public final static boolean isEffectEnabled(com.trolltech.qt.core.Qt.UIEffect arg__0)" doc="/**
+<p>Returns true if <i>effect</i> is enabled; otherwise returns false.</p>
+<p>By default, Qt will try to use the desktop settings. Call setDesktopSettingsAware(false) to prevent this.</p>
+<p>Note: All effects are disabled on screens running at less than 16-bit color depth.</p>
+
+*/"/>
+    <method name="public native static boolean isLeftToRight()" doc="/**
+<p>Returns true if the application's layout direction is Qt::LeftToRight; otherwise returns false.</p>
+
+*/"/>
+    <method name="public native static boolean isRightToLeft()" doc="/**
+<p>Returns true if the application's layout direction is Qt::RightToLeft; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.core.Qt.LayoutDirection keyboardInputDirection()" doc="/**
+<p>Returns the current keyboard input direction.</p>
+
+*/"/>
+    <method name="public native static int keyboardInputInterval()"/>
+    <method name="public native static com.trolltech.qt.core.QLocale keyboardInputLocale()" doc="/**
+<p>Returns the current keyboard input locale.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.core.Qt.KeyboardModifiers keyboardModifiers()" doc="/**
+<p>Returns the current state of the modifier keys on the keyboard. The current state is updated sychronously as the event queue is emptied of events that will spontaneously change the keyboard state (QEvent::KeyPress and QEvent::KeyRelease events).</p>
+<p>It should be noted this may not reflect the actual keys held on the input device at the time of calling but rather the modifiers as last reported in one of the above events. If no keys are being held Qt::NoModifier is returned.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.core.Qt.LayoutDirection layoutDirection()"/>
+    <method name="public final static com.trolltech.qt.core.Qt.MouseButtons mouseButtons()" doc="/**
+<p>Returns the current state of the buttons on the mouse. The current state is updated syncronously as the event queue is emptied of events that will spontaneously change the mouse state (QEvent::MousePress and QEvent::MouseRelease events).</p>
+<p>It should be noted this may not reflect the actual buttons held on theinput device at the time of calling but rather the mouse buttons as last reported in one of the above events. If no mouse buttons are being held Qt::NoButton is returned.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.QNativePointer overrideCursor()" doc="/**
+<p>Returns the active application override cursor.</p>
+<p>This function returns 0 if no application cursor has been defined (i.e. the internal cursor stack is empty).</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QPalette palette(com.trolltech.qt.gui.QWidget arg__0)" doc="/**
+<p>If a <i>widget</i> is passed, the default palette for the widget's class is returned. This may or may not be the application palette. In most cases there isn't a special palette for certain types of widgets, but one notable exception is the popup menu under Windows, if the user has defined a special background color for menus in the display settings.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QPalette palette(com.trolltech.qt.QNativePointer className__0)" doc="/**
+<p>Returns the palette for widgets of the given <i>className</i>.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QPalette palette()" doc="/**
+<p>Returns the application palette.</p>
+
+*/"/>
+    <method name="public native static boolean quitOnLastWindowClosed()"/>
+    <method name="public native static void restoreOverrideCursor()" doc="/**
+<p>Undoes the last setOverrideCursor().</p>
+<p>If setOverrideCursor() has been called twice, calling restoreOverrideCursor() will activate the first cursor set. Calling this function a second time restores the original widgets' cursors.</p>
+
+*/"/>
+    <method name="public final static void setActiveWindow(com.trolltech.qt.gui.QWidget act__0)" doc="/**
+<p>Sets the active window to the <i>active</i> widget in response to a system event. The function is called from the platform specific event handlers.</p>
+<p><b>Warning:</b> This function does <i>not</i> set the keyboard focus to the active widget. Call QWidget::activateWindow() instead.</p>
+<p>It sets the activeWindow() and focusWidget() attributes and sends proper WindowActivate/WindowDeactivate and FocusIn/FocusOut events to all appropriate widgets. The window will then be painted in active state (e.g. cursors in line edits will blink), and it will have tool tips enabled.</p>
+
+*/"/>
+    <method name="public native static void setColorSpec(int arg__0)" doc="/**
+<p>Sets the color specification for the application to <i>spec</i>.</p>
+<p>The color specification controls how the application allocates colors when run on a display with a limited amount of colors, e.g. 8 bit / 256 color displays.</p>
+<p>The color specification must be set before you create the QApplication object.</p>
+<p>The options are:</p>
+<ul>
+<li>QApplication::NormalColor. This is the default color allocation strategy. Use this option if your application uses buttons, menus, texts and pixmaps with few colors. With this option, the application uses system global colors. This works fine for most applications under X11, but on Windows machines it may cause dithering of non-standard colors.</li>
+<li>QApplication::CustomColor. Use this option if your application needs a small number of custom colors. On X11, this option is the same as NormalColor. On Windows, Qt creates a Windows palette, and allocates colors to it on demand.</li>
+<li>QApplication::ManyColor. Use this option if your application is very color hungry (e.g. it requires thousands of colors). Under X11 the effect is:<ul>
+<li>For 256-color displays which have at best a 256 color true color visual, the default visual is used, and colors are allocated from a color cube. The color cube is the 6x6x6 (216 color) &quot;Web palette&quot; (the red, green, and blue components always have one of the following values: 0x00, 0x33, 0x66, 0x99, 0xCC, or 0xFF), but the number of colors can be changed by the <i>-ncols</i> option. The user can force the application to use the true color visual with the -visual option.</li>
+<li>For 256-color displays which have a true color visual with more than 256 colors, use that visual. Silicon Graphics X servers have this feature, for example. They provide an 8 bit visual by default but can deliver true color when asked.</li>
+</ul>
+<p>On Windows, Qt creates a Windows palette, and fills it with a color cube.</p>
+</li>
+</ul>
+<p>Be aware that the CustomColor and ManyColor choices may lead to colormap flashing: The foreground application gets (most) of the available colors, while the background windows will look less attractive.</p>
+<p>Example:</p>
+<pre>    int main(int argc, char *argv[])
+    {
+        QApplication::setColorSpec(QApplication::ManyColor);
+        QApplication app(argc, argv);
+        ...
+        return app.exec();
+    }</pre>
+
+*/"/>
+    <method name="public native static void setCursorFlashTime(int arg__0)"/>
+    <method name="public native static void setDesktopSettingsAware(boolean arg__0)" doc="/**
+<p>Sets whether Qt should use the system's standard colors, fonts, etc., to <i>on</i>. By default, this is true.</p>
+<p>This function must be called before creating the QApplication object, like this:</p>
+<pre>    int main(int argc, char *argv[])
+    {
+        QApplication::setDesktopSettingsAware(false);
+        QApplication app(argc, argv);
+        ...
+        return app.exec();
+    }</pre>
+
+*/"/>
+    <method name="public native static void setDoubleClickInterval(int arg__0)"/>
+    <method name="public final static void setEffectEnabled(com.trolltech.qt.core.Qt.UIEffect arg__0, boolean enable__1)" doc="/**
+<p>Enables the UI effect <i>effect</i> if <i>enable</i> is true, otherwise the effect will not be used.</p>
+<p>Note: All effects are disabled on screens running at less than 16-bit color depth.</p>
+
+*/"/>
+    <method name="public final static void setFont(com.trolltech.qt.gui.QFont arg__0, com.trolltech.qt.QNativePointer className__1)" doc="/**
+<p>Changes the default application font to <i>font</i>. If <i>className</i> is passed, the change applies only to classes that inherit <i>className</i> (as reported by QObject::inherits()).</p>
+<p>On application start-up, the default font depends on the window system. It can vary depending on both the window system version and the locale. This function lets you override the default font; but overriding may be a bad idea because, for example, some locales need extra large fonts to support their special characters.</p>
+
+*/"/>
+    <method name="public final static void setGlobalStrut(com.trolltech.qt.core.QSize arg__0)"/>
+    <method name="public native static void setKeyboardInputInterval(int arg__0)"/>
+    <method name="public final static void setLayoutDirection(com.trolltech.qt.core.Qt.LayoutDirection direction__0)"/>
+    <method name="public final static void setOverrideCursor(com.trolltech.qt.gui.QCursor arg__0)" doc="/**
+<p>Sets the application override cursor to <i>cursor</i>.</p>
+<p>Application override cursors are intended for showing the user that the application is in a special state, for example during an operation that might take some time.</p>
+<p>This cursor will be displayed in all the application's widgets until restoreOverrideCursor() or another setOverrideCursor() is called.</p>
+<p>Application cursors are stored on an internal stack. setOverrideCursor() pushes the cursor onto the stack, and restoreOverrideCursor() pops the active cursor off the stack. changeOverrideCursor() changes the curently active application override cursor. Every setOverrideCursor() must eventually be followed by a corresponding restoreOverrideCursor(), otherwise the stack will never be emptied.</p>
+<p>Example:</p>
+<pre>    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    calculateHugeMandelbrot();              <span class=&quote;comment&quote;>// lunch time...</span>
+    QApplication::restoreOverrideCursor();</pre>
+
+*/"/>
+    <method name="public final static void setPalette(com.trolltech.qt.gui.QPalette arg__0, com.trolltech.qt.QNativePointer className__1)" doc="/**
+<p>Changes the default application palette to <i>palette</i>.</p>
+<p>If <i>className</i> is passed, the change applies only to widgets that inherit <i>className</i> (as reported by QObject::inherits()). If <i>className</i> is left 0, the change affects all widgets, thus overriding any previously set class specific palettes.</p>
+<p>The palette may be changed according to the current GUI style in QStyle::polish().</p>
+
+*/"/>
+    <method name="public native static void setQuitOnLastWindowClosed(boolean quit__0)"/>
+    <method name="public native static void setStartDragDistance(int l__0)"/>
+    <method name="public native static void setStartDragTime(int ms__0)"/>
+    <method name="public final static void setStyle(com.trolltech.qt.gui.QStyle arg__0)" doc="/**
+<p>Sets the application's GUI style to <i>style</i>. Ownership of the style object is transferred to QApplication, so QApplication will delete the style object on application exit or when a new style is set.</p>
+<p>Example usage:</p>
+<pre>    QApplication::setStyle(new QWindowsStyle);</pre>
+<p>When switching application styles, the color palette is set back to the initial colors or the system defaults. This is necessary since certain styles have to adapt the color palette to be fully style-guide compliant.</p>
+<p>Note that setting the style before a palette has been set (i.e. before creating QApplication) will cause the application to use QStyle::standardPalette() for the palette.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QStyle setStyle(java.lang.String arg__0)" doc="/**
+<p>Requests a QStyle object for <i>style</i> from the QStyleFactory.</p>
+<p>The string must be one of the QStyleFactory::keys(), typically one of &quot;windows&quot;, &quot;motif&quot;, &quot;cde&quot;, &quot;plastique&quot;, &quot;windowsxp&quot;, or &quot;macintosh&quot;. Style names are case insensitive.</p>
+<p>Returns 0 if an unknown <i>style</i> is passed, otherwise the QStyle object returned is set as the application's GUI style.</p>
+<p><b>Warning:</b> To ensure that the application's style is set correctly, it is best to call this function before the QApplication constructor, if possible.</p>
+
+*/"/>
+    <method name="public native static void setWheelScrollLines(int arg__0)"/>
+    <method name="public final static void setWindowIcon(com.trolltech.qt.gui.QIcon icon__0)"/>
+    <method name="public native static int startDragDistance()"/>
+    <method name="public native static int startDragTime()"/>
+    <method name="public native static com.trolltech.qt.gui.QStyle style()" doc="/**
+<p>Returns the application's style object.</p>
+
+*/"/>
+    <method name="public native static void syncX()" doc="/**
+<p>Synchronizes with the X server in the X11 implementation. This normally takes some time. Does nothing on other platforms.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QWidget topLevelAt(com.trolltech.qt.core.QPoint p__0)" doc="/**
+<p>Returns the top-level widget at the given <i>point</i>; returns 0 if there is no such widget.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QWidget topLevelAt(int x__0, int y__1)" doc="/**
+<p>Returns the top-level widget at the point (<i>x</i>, <i>y</i>); returns 0 if there is no such widget.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;com.trolltech.qt.gui.QWidget&gt; topLevelWidgets()" doc="/**
+<p>Returns a list of the top-level widgets (windows) in the application.</p>
+<p>Note that some of the top-level widgets may be hidden, for example a tooltip if no tooltip is currently shown.</p>
+<p>Example:</p>
+<pre>    void showAllHiddenTopLevelWidgets()
+    {
+        foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+            if (widget-&gt;isHidden())
+                widget-&gt;show();
+        }
+    }</pre>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QApplication.Type type()" doc="/**
+<p>Returns the type of application (Tty, GuiClient, or GuiServer). The type is set when constructing the QApplication object.</p>
+
+*/"/>
+    <method name="public native static int wheelScrollLines()"/>
+    <method name="public final static com.trolltech.qt.gui.QWidget widgetAt(com.trolltech.qt.core.QPoint p__0)" doc="/**
+<p>Returns the widget at global screen position <i>point</i>, or 0 if there is no Qt widget there.</p>
+<p>This function can be slow.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QWidget widgetAt(int x__0, int y__1)" doc="/**
+<p>Returns the widget at global screen position (<i>x</i>, <i>y</i>), or 0 if there is no Qt widget there.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QIcon windowIcon()"/>
+    <enum name="Type" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a console application</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a GUI client application</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a GUI server application (for Qtopia Core)</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="ColorSpec" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the default color allocation policy</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the same as NormalColor for X11; allocates colors to a palette on demand under Windows</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the right choice for applications that use thousands of colors</td></tr>
+</table></p>
+<p>See setColorSpec() for full details.</p>
+
+*/"/>
+</class>

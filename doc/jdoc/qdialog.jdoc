@@ -1,0 +1,130 @@
+<class name="QDialog" doc="/**
+<p>The QDialog class is the base class of dialog windows.</p>
+<p>A dialog window is a top-level window mostly used for short-term tasks and brief communications with the user. QDialogs may be modal or modeless. QDialogs can provide a <a href=&quote;#return&quote;>return value</a>, and they can have <a href=&quote;#default&quote;>default buttons</a>. QDialogs can also have a QSizeGrip in their lower-right corner, using setSizeGripEnabled().</p>
+<p>Note that QDialog (an any other widget that has type Qt::Dialog) uses the parent widget slightly differently from other classes in Qt. A dialog is always a top-level widget, but if it has a parent, its default location is centered on top of the parent's top-level widget (if it is not top-level itself). It will also share the parent's taskbar entry.</p>
+<p>Use the overload of the QWidget::setParent() function to change the ownership of a QDialog widget. This function allows you to explicitly set the window flags of the reparented widget; using the overloaded function will clear the window flags specifying the window-system properties for the widget (in particular it will reset the Qt::Dialog flag).</p>
+<a name=&quote;modal-dialogs&quote;></a>
+<h3>Modal Dialogs</h3>
+<p>A <b>modal</b> dialog is a dialog that blocks input to other visible windows in the same application. Users must finish interacting with the dialog and close it before they can access any other window in the application. Dialogs that are used to request a file name from the user or that are used to set application preferences are usually modal.</p>
+<p>The most common way to display a modal dialog is to call its exec() function. When the user closes the dialog, exec() will provide a useful <a href=&quote;#return&quote;>return value</a>. Typically, to get the dialog to close and return the appropriate value, we connect a default button, e.g. <b>OK</b>, to the accept() slot and a <b>Cancel</b> button to the reject() slot. Alternatively you can call the done() slot with <tt>Accepted</tt> or <tt>Rejected</tt>.</p>
+<p>An alternative is to call setModal(true) or setWindowModality(), then show(). Unlike exec(), show() returns control to the caller immediately. Calling setModal(true) is especially useful for progress dialogs, where the user must have the ability to interact with the dialog, e.g. to cancel a long running operation. If you use show() and setModal(true) together to perform a long operation, you must call QApplication::processEvents() periodically during processing to enable the user to interact with the dialog. (See QProgressDialog.)</p>
+<a name=&quote;modeless-dialogs&quote;></a>
+<h3>Modeless Dialogs</h3>
+<p>A <b>modeless</b> dialog is a dialog that operates independently of other windows in the same application. Find and replace dialogs in word-processors are often modeless to allow the user to interact with both the application's main window and with the dialog.</p>
+<p>Modeless dialogs are displayed using show(), which returns control to the caller immediately.</p>
+<a name=&quote;default&quote;></a><a name=&quote;default-button&quote;></a>
+<h3>Default Button</h3>
+<p>A dialog's <i>default</i> button is the button that's pressed when the user presses Enter (Return). This button is used to signify that the user accepts the dialog's settings and wants to close the dialog. Use QPushButton::setDefault(), QPushButton::isDefault() and QPushButton::autoDefault() to set and control the dialog's default button.</p>
+<a name=&quote;escapekey&quote;></a><a name=&quote;escape-key&quote;></a>
+<h3>Escape Key</h3>
+<p>If the user presses the Esc key in a dialog, QDialog::reject() will be called. This will cause the window to close: The close event cannot be ignored.</p>
+<a name=&quote;extensibility&quote;></a>
+<h3>Extensibility</h3>
+<p>Extensibility is the ability to show the dialog in two ways: a partial dialog that shows the most commonly used options, and a full dialog that shows all the options. Typically an extensible dialog will initially appear as a partial dialog, but with a <b>More</b> toggle button. If the user presses the <b>More</b> button down, the dialog is expanded. The Extension Example shows how to achieve extensible dialogs using Qt.</p>
+<a name=&quote;return&quote;></a><a name=&quote;return-value-modal-dialogs&quote;></a>
+<h3>Return Value (Modal Dialogs)</h3>
+<p>Modal dialogs are often used in situations where a return value is required, e.g. to indicate whether the user pressed <b>OK</b> or <b>Cancel</b>. A dialog can be closed by calling the accept() or the reject() slots, and exec() will return <tt>Accepted</tt> or <tt>Rejected</tt> as appropriate. The exec() call returns the result of the dialog. The result is also available from result() if the dialog has not been destroyed.</p>
+<a name=&quote;examples&quote;></a><a name=&quote;code-examples&quote;></a>
+<h3>Code Examples</h3>
+<p>A modal dialog:</p>
+<pre>    void EditorWindow::countWords()
+    {
+        WordCountDialog dialog(this);
+        dialog.setWordCount(document().wordCount());
+        dialog.exec();
+    }</pre>
+<p>A modeless dialog:</p>
+<pre>    void EditorWindow::find()
+    {
+        if (!findDialog) {
+            findDialog = new FindDialog(this);
+            connect(findDialog, SIGNAL(findNext()), this, SLOT(findNext()));
+        }
+
+        findDialog-&gt;show();
+        findDialog-&gt;raise();
+        findDialog-&gt;activateWindow();
+    }</pre>
+
+*/">
+    <method name="public QDialog(com.trolltech.qt.gui.QWidget parent__0, com.trolltech.qt.core.Qt.WindowFlags f__1)" doc="/**
+<p>Constructs a dialog with parent <i>parent</i>.</p>
+<p>A dialog is always a top-level widget, but if it has a parent, its default location is centered on top of the parent. It will also share the parent's taskbar entry.</p>
+<p>The widget flags <i>f</i> are passed on to the QWidget constructor. If, for example, you don't want a What's This button in the title bar of the dialog, pass Qt::WindowTitleHint | Qt::WindowSystemMenuHint in <i>f</i>.</p>
+
+*/"/>
+    <method name="protected final void adjustPosition(com.trolltech.qt.gui.QWidget arg__0)"/>
+    <method name="public final com.trolltech.qt.gui.QWidget extension()" doc="/**
+<p>Returns the dialog's extension or 0 if no extension has been defined.</p>
+<p>Instead of using this functionality, we recommend that you simply call show() or hide() on the part of the dialog that you want to use as an extension. See the Extension Example for details.</p>
+
+*/"/>
+    <method name="public final boolean isSizeGripEnabled()"/>
+    <method name="public final com.trolltech.qt.core.Qt.Orientation orientation()" doc="/**
+<p>Returns the dialog's extension orientation.</p>
+<p>Instead of using this functionality, we recommend that you simply call show() or hide() on the part of the dialog that you want to use as an extension. See the Extension Example for details.</p>
+
+*/"/>
+    <method name="public final int result()" doc="/**
+<p>Returns the modal dialog's result code, <tt>Accepted</tt> or <tt>Rejected</tt>.</p>
+<p>Do not call this function if the dialog was constructed with the Qt::WA_DeleteOnClose attribute.</p>
+
+*/"/>
+    <method name="public final void setExtension(com.trolltech.qt.gui.QWidget extension__0)" doc="/**
+<p>Sets the widget, <i>extension</i>, to be the dialog's extension, deleting any previous extension. The dialog takes ownership of the extension. Note that if 0 is passed any existing extension will be deleted. This function must only be called while the dialog is hidden.</p>
+<p>Instead of using this functionality, we recommend that you simply call show() or hide() on the part of the dialog that you want to use as an extension. See the Extension Example for details.</p>
+
+*/"/>
+    <method name="public final void setModal(boolean modal__0)"/>
+    <method name="public final void setOrientation(com.trolltech.qt.core.Qt.Orientation orientation__0)" doc="/**
+<p>If <i>orientation</i> is Qt::Horizontal, the extension will be displayed to the right of the dialog's main area. If <i>orientation</i> is Qt::Vertical, the extension will be displayed below the dialog's main area.</p>
+<p>Instead of using this functionality, we recommend that you simply call show() or hide() on the part of the dialog that you want to use as an extension. See the Extension Example for details.</p>
+
+*/"/>
+    <method name="public final void setResult(int r__0)" doc="/**
+<p>Sets the modal dialog's result code to <i>i</i>.</p>
+
+*/"/>
+    <method name="public final void setSizeGripEnabled(boolean arg__0)"/>
+    <method name="public final void showExtension(boolean arg__0)" doc="/**
+<p>If <i>showIt</i> is true, the dialog's extension is shown; otherwise the extension is hidden.</p>
+<p>Instead of using this functionality, we recommend that you simply call show() or hide() on the part of the dialog that you want to use as an extension. See the Extension Example for details.</p>
+
+*/"/>
+    <method name="public void accept()" doc="/**
+<p>Hides the modal dialog and sets the result code to <tt>Accepted</tt>.</p>
+
+*/"/>
+    <method name="protected void closeEvent(com.trolltech.qt.gui.QCloseEvent arg__0)"/>
+    <method name="protected void contextMenuEvent(com.trolltech.qt.gui.QContextMenuEvent arg__0)"/>
+    <method name="public void done(int arg__0)" doc="/**
+<p>Closes the dialog and sets its result code to <i>r</i>. If this dialog is shown with exec(), done() causes the local event loop to finish, and exec() to return <i>r</i>.</p>
+<p>As with QWidget::close(), done() deletes the dialog if the Qt::WA_DeleteOnClose flag is set. If the dialog is the application's main widget, the application terminates. If the dialog is the last window closed, the QApplication::lastWindowClosed() signal is emitted.</p>
+
+*/"/>
+    <method name="public boolean eventFilter(com.trolltech.qt.core.QObject arg__0, com.trolltech.qt.core.QEvent arg__1)"/>
+    <method name="public int exec()" doc="/**
+<p>Shows the dialog as a modal dialog, blocking until the user closes it. The function returns a DialogCode result.</p>
+<p>Users cannot interact with any other window in the same application until they close the dialog.</p>
+
+*/"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize minimumSizeHint()"/>
+    <method name="public void reject()" doc="/**
+<p>Hides the modal dialog and sets the result code to <tt>Rejected</tt>.</p>
+
+*/"/>
+    <method name="protected void resizeEvent(com.trolltech.qt.gui.QResizeEvent arg__0)"/>
+    <method name="public void setVisible(boolean visible__0)"/>
+    <method name="protected void showEvent(com.trolltech.qt.gui.QShowEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+    <enum name="DialogCode" doc="/**
+<p>The value returned by a modal dialog.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

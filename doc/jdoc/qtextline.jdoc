@@ -1,0 +1,104 @@
+<class name="QTextLine" doc="/**
+<p>The QTextLine class represents a line of text inside a QTextLayout.</p>
+<p>A text line is usually created by QTextLayout::createLine().</p>
+<p>After being created, the line can be filled using the setLineWidth() or setNumColumns() functions. A line has a number of attributes including the rectangle it occupies, rect(), its coordinates, x() and y(), its textLength(), width() and naturalTextWidth(), and its ascent() and decent() relative to the text. The position of the cursor in terms of the line is available from cursorToX() and its inverse from xToCursor(). A line can be moved with setPosition().</p>
+
+*/">
+    <method name="public QTextLine()" doc="/**
+<p>Creates an invalid line.</p>
+
+*/"/>
+    <method name="public final double ascent()" doc="/**
+<p>Returns the line's ascent.</p>
+
+*/"/>
+    <method name="public final double cursorToX(int cursorPos__0, com.trolltech.qt.gui.QTextLine.Edge edge__1)"/>
+    <method name="public final double descent()" doc="/**
+<p>Returns the line's descent.</p>
+
+*/"/>
+    <method name="public final void draw(com.trolltech.qt.gui.QPainter p__0, com.trolltech.qt.core.QPointF point__1, com.trolltech.qt.QNativePointer selection__2)" doc="/**
+<p>Draws a line on the given <i>painter</i> at the specified <i>position</i>. The <i>selection</i> is reserved for internal use.</p>
+
+*/"/>
+    <method name="public final double height()" doc="/**
+<p>Returns the line's height. This is equal to ascent() + descent() + 1.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if this text line is valid; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int lineNumber()" doc="/**
+<p>Returns the position of the line in the text engine.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF naturalTextRect()" doc="/**
+<p>Returns the rectangle covered by the line.</p>
+
+*/"/>
+    <method name="public final double naturalTextWidth()" doc="/**
+<p>Returns the width of the line that is occupied by text. This is always &lt;= to width(), and is the minimum width that could be used by layout() without changing the line break position.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF position()" doc="/**
+<p>Returns the line's position relative to the text layout's position.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF rect()" doc="/**
+<p>Returns the line's bounding rectangle.</p>
+
+*/"/>
+    <method name="public final void setLineWidth(double width__0)" doc="/**
+<p>Lays out the line with the given <i>width</i>. The line is filled from its starting position with as many characters as will fit into the line. In case the text cannot be split at the end of the line, it will be filled with additional characters to the next whitespace or end of the text.</p>
+
+*/"/>
+    <method name="public final void setNumColumns(int columns__0)" doc="/**
+<p>Lays out the line. The line is filled from its starting position with as many characters as are specified by <i>numColumns</i>. In case the text cannot be split until <i>numColumns</i> characters, the line will be filled with as many characters to the next whitespace or end of the text.</p>
+
+*/"/>
+    <method name="public final void setPosition(com.trolltech.qt.core.QPointF pos__0)" doc="/**
+<p>Moves the line to position <i>pos</i>.</p>
+
+*/"/>
+    <method name="public final int textLength()" doc="/**
+<p>Returns the length of the text in the line.</p>
+
+*/"/>
+    <method name="public final int textStart()" doc="/**
+<p>Returns the start of the line from the beginning of the string passed to the QTextLayout.</p>
+
+*/"/>
+    <method name="public final double width()" doc="/**
+<p>Returns the line's width as specified by the layout() function.</p>
+
+*/"/>
+    <method name="public final double x()" doc="/**
+<p>Returns the line's x position.</p>
+
+*/"/>
+    <method name="public final int xToCursor(double x__0, com.trolltech.qt.gui.QTextLine.CursorPosition arg__1)" doc="/**
+<p>Converts the x-coordinate <i>x</i>, to the nearest matching cursor position, depending on the cursor position type, <i>cpos</i>.</p>
+
+*/"/>
+    <method name="public final double y()" doc="/**
+<p>Returns the line's y position.</p>
+
+*/"/>
+    <enum name="Edge" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="CursorPosition" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

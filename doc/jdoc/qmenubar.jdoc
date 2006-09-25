@@ -1,0 +1,118 @@
+<class name="QMenuBar" doc="/**
+<p>The QMenuBar class provides a horizontal menu bar.</p>
+<p>A menu bar consists of a list of pull-down menu items. You add menu items with addMenu(). For example, asuming that <tt>menubar</tt> is a pointer to a QMenuBar and <tt>fileMenu</tt> is a pointer to a QMenu, the following statement inserts the menu into the menu bar:</p>
+<pre>    menubar-&gt;addMenu(fileMenu);</pre>
+<p>The ampersand in the menu item's text sets Alt+F as a shortcut for this menu. (You can use &quot;&amp;&amp;&quot; to get a real ampersand in the menu bar.)</p>
+<p>There is no need to lay out a menu bar. It automatically sets its own geometry to the top of the parent widget and changes it appropriately whenever the parent is resized.</p>
+<p>In most main window style applications you would use the menuBar() provided in QMainWindow, adding QMenus to the menu bar and adding QActions to the popup menus.</p>
+<p>Example (from the Menus example):</p>
+<pre>        fileMenu = menuBar()-&gt;addMenu(tr(&quot;&amp;File&quot;));
+        fileMenu-&gt;addAction(newAct);</pre>
+<p>Menu items may be removed with removeAction().</p>
+<a name=&quote;platform-dependent-look-and-feel&quote;></a>
+<h3>Platform Dependent Look and Feel</h3>
+<p>Different platforms have different requirements for the appearance of menu bars and their behavior when the user interacts with them. For example, Windows systems are often configured so that the underlined character mnemonics that indicate keyboard shortcuts for items in the menu bar are only shown when the <b>Alt</b> key is pressed.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image plastique-menubar.png]</font></td><td>The Plastique widget style, like most other styles, handles the <b>Help</b> menu in the same way as it handles any other menu.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image motif-menubar.png]</font></td><td>The Motif widget style treats <b>Help</b> menus in a special way, placing them at right-hand end of the menu bar.</td></tr>
+</table></p>
+<a name=&quote;qmenubar-on-qt-mac&quote;></a>
+<h3>QMenuBar on Qt/Mac</h3>
+<p>QMenuBar on Qt/Mac is a wrapper for using the system-wide menubar. If you have multiple menubars in one dialog the outermost menubar (normally inside a widget with widget flag Qt::Window) will be used for the system-wide menubar.</p>
+<p>Qt/Mac also provides a menubar merging feature to make QMenuBar conform more closely to accepted Mac OS X menubar layout. The merging functionality is based on string matching the title of a QMenu entry. These strings are translated (using QObject::tr()) in the &quot;QMenuBar&quot; context. If an entry is moved its slots will still fire as if it was in the original place. The table below outlines the strings looked for and where the entry is placed if matched:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>String matches</th><th>Placement</th><th>Notes</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>about.*</td><td>Application Menu | About &lt;application name&gt;</td><td>If this entry is not found no About item will appear in the Application Menu</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>config, options, setup, settings or preferences</td><td>Application Menu | Preferences</td><td>If this entry is not found the Settings item will be disabled</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>quit or exit</td><td>Application Menu | Quit &lt;application name&gt;</td><td>If this entry is not found a default Quit item will be created to call QApplication::quit()</td></tr>
+</table></p>
+<p>You can override this behavior by using the QAction::menuRole() property.</p>
+<p><b>Note:</b> The text used for the application name in the menu bar is obtained from the value set in the <tt>Info.plist</tt> file in the application's bundle. See Deploying an Application on Qt/Mac for more information.</p>
+<a name=&quote;examples&quote;></a>
+<h3>Examples</h3>
+<p>The Menus example shows how to use QMenuBar and QMenu. The other main window application examples also provide menus using these classes.</p>
+
+*/">
+    <method name="public QMenuBar(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a menu bar with parent <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction actionAt(com.trolltech.qt.core.QPoint arg__0)" doc="/**
+<p>Return the item at <i>pt</i>, or 0 if there is no item there or if it is a separator item.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect actionGeometry(com.trolltech.qt.gui.QAction arg__0)" doc="/**
+<p>Returns the geometry of action <i>act</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction activeAction()" doc="/**
+<p>Returns the QAction that is currently highlighted. A null pointer will be returned if no action is currently selected.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(java.lang.String text__0, com.trolltech.qt.core.QObject receiver__1, com.trolltech.qt.QNativePointer member__2)" doc="/**
+<p>This convenience function creates a new action with the given <i>text</i>. The action's triggered() signal is connected to the <i>receiver</i>'s <i>member</i> slot. The function adds the newly created action to the menu's list of actions and returns it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addAction(java.lang.String text__0)" doc="/**
+<p>This convenience function creates a new action with <i>text</i>. The function adds the newly created action to the menu's list of actions, and returns it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMenu addMenu(java.lang.String title__0)" doc="/**
+<p>Appends a new QMenu with <i>title</i> to the menubar. The menubar takes ownership of the menu. Returns the new menu.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addMenu(com.trolltech.qt.gui.QMenu menu__0)" doc="/**
+<p>Appends <i>menu</i> to the menubar. Returns the menu's menuAction().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMenu addMenu(com.trolltech.qt.gui.QIcon icon__0, java.lang.String title__1)" doc="/**
+<p>Appends a new QMenu with <i>icon</i> and <i>title</i> to the menubar. The menubar takes ownership of the menu. Returns the new menu.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction addSeparator()" doc="/**
+<p>Appends a separator to the menu.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Removes all the actions from the menu bar.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget cornerWidget(com.trolltech.qt.core.Qt.Corner corner__0)" doc="/**
+<p>Returns the widget in the left of the first or the right of the last menu item, depending on <i>corner</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction insertMenu(com.trolltech.qt.gui.QAction before__0, com.trolltech.qt.gui.QMenu menu__1)" doc="/**
+<p>This convenience function inserts <i>menu</i> before action <i>before</i> and returns the menus menuAction().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction insertSeparator(com.trolltech.qt.gui.QAction before__0)" doc="/**
+<p>This convenience function creates a new separator action, i.e. an action with QAction::isSeparator() returning true. The function inserts the newly created action into this menubar's list of actions before action <i>before</i> and returns it.</p>
+
+*/"/>
+    <method name="public final boolean isDefaultUp()"/>
+    <method name="public final void setActiveAction(com.trolltech.qt.gui.QAction action__0)" doc="/**
+<p>Sets the currently highlighted action to <i>act</i>.</p>
+
+*/"/>
+    <method name="public final void setCornerWidget(com.trolltech.qt.gui.QWidget w__0, com.trolltech.qt.core.Qt.Corner corner__1)" doc="/**
+<p>This sets widget <i>w</i> to be shown directly on the left of the first or the right of the last menu item, depending on <i>corner</i>.</p>
+
+*/"/>
+    <method name="public final void setDefaultUp(boolean arg__0)"/>
+    <method name="protected void actionEvent(com.trolltech.qt.gui.QActionEvent arg__0)"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="public boolean eventFilter(com.trolltech.qt.core.QObject arg__0, com.trolltech.qt.core.QEvent arg__1)"/>
+    <method name="protected void focusInEvent(com.trolltech.qt.gui.QFocusEvent arg__0)"/>
+    <method name="protected void focusOutEvent(com.trolltech.qt.gui.QFocusEvent arg__0)"/>
+    <method name="public int heightForWidth(int arg__0)"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent arg__0)"/>
+    <method name="protected void leaveEvent(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize minimumSizeHint()"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent arg__0)"/>
+    <method name="protected void resizeEvent(com.trolltech.qt.gui.QResizeEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+</class>

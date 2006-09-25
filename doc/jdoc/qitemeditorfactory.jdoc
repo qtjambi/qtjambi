@@ -1,0 +1,47 @@
+<class name="QItemEditorFactory" doc="/**
+<p>The QItemEditorFactory class provides widgets for editing item data in views and delegates.</p>
+<p>When editing the data shown by an item delegate, the QItemDelegate responsible requests an editor widget from its item editor factory by calling the createEditor() function. The default factory is provided by this class, but it is possible to implement subclasses that provide specialized editing behavior, such as row or column-specific editors, or editors for certain types of data.</p>
+<a name=&quote;standard-editing-widgets&quote;></a>
+<h3>Standard Editing Widgets</h3>
+<p>The standard factory implementation provides editors for a variety of data types. These are created whenever a delegate needs to provide an editor for data supplied by a model. The following table shows the relationship between types and the standard editors provided.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Type</th><th>Editor Widget</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>bool</td><td>QComboBox</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>double</td><td>QDoubleSpinBox</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>int</td><td rowspan=&quote;2&quote;>QSpinBox</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>unsigned int</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QDate</td><td>QDateEdit</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QDateTime</td><td>QDateTimeEdit</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QPixmap</td><td>QLabel</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QString</td><td>QLineEdit</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QTime</td><td>QTimeEdit</td></tr>
+</table></p>
+<p>Additional editors can be registered for use with both standard and custom delegates with the registerEditor() function.</p>
+
+*/">
+    <method name="public QItemEditorFactory()" doc="/**
+<p>Constructs a new item editor factory.</p>
+
+*/"/>
+    <method name="public final void registerEditor(int type__0, com.trolltech.qt.gui.QItemEditorCreatorBase creator__1)" doc="/**
+<p>Registers an item editor creator specified by <i>creator</i> for the given <i>type</i> of data.</p>
+<p><b>Note:</b> The factory takes ownership of the item editor creator and will destroy it if a new creator for the same type is registered later.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QWidget createEditor(int type__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Creates an editor widget with the given <i>parent</i> for the specified <i>type</i> of data, and returns it as a QWidget.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QByteArray valuePropertyName(int type__0)" doc="/**
+<p>Returns the property name used to access data for the given <i>type</i> of data.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QItemEditorFactory defaultFactory()" doc="/**
+<p>Returns the default item editor factory.</p>
+
+*/"/>
+    <method name="public final static void setDefaultFactory(com.trolltech.qt.gui.QItemEditorFactory factory__0)" doc="/**
+<p>Sets the default item editor factory to the given <i>factory</i>.</p>
+
+*/"/>
+</class>

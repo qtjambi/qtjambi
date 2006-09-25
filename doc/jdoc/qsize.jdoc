@@ -1,0 +1,100 @@
+<class name="QSize" doc="/**
+<p>The QSize class defines the size of a two-dimensional object using integer point precision.</p>
+<p>A size is specified by a width() and a height(). It can be set in the constructor and changed using the setWidth(), setHeight(), or scale() functions, or using arithmetic operators. A size can also be manipulated directly by retrieving references to the width and height using the rwidth() and rheight() functions. Finally, the width and height can be swapped using the transpose() function.</p>
+<p>The isValid() function determines if a size is valid (a valid size has both width and height greater than zero). The isEmpty() function returns true if either of the width and height is less than, or equal to, zero, while the isNull() function returns true only if both the width and the height is zero.</p>
+<p>Use the expandedTo() function to retrieve a size which holds the maximum height and width of <i>this</i> size and a given size. Similarily, the boundedTo() function returns a size which holds the minimum height and width of <i>this</i> size and a given size.</p>
+<p>QSize objects can be streamed as well as compared.</p>
+
+*/">
+    <method name="public QSize(int w__0, int h__1)" doc="/**
+<p>Constructs a size with the given <i>width</i> and <i>height</i>.</p>
+
+*/"/>
+    <method name="public QSize()" doc="/**
+<p>Constructs a size with an invalid width and height (i.e., isValid() returns false).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize boundedTo(com.trolltech.qt.core.QSize arg__0)" doc="/**
+<p>Returns a size holding the minimum width and height of this size and the given <i>otherSize</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize expandedTo(com.trolltech.qt.core.QSize arg__0)" doc="/**
+<p>Returns a size holding the maximum width and height of this size and the given <i>otherSize</i>.</p>
+
+*/"/>
+    <method name="public final int height()" doc="/**
+<p>Returns the height.</p>
+
+*/"/>
+    <method name="public final boolean isEmpty()" doc="/**
+<p>Returns true if either of the width and height is less than or equal to 0; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isNull()" doc="/**
+<p>Returns true if both the width and height is 0; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if both the width and height is equal to or greater than 0; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer rheight()" doc="/**
+<p>Returns a reference to the height.</p>
+<p>Using a reference makes it possible to manipulate the height directly. For example:</p>
+<pre>    QSize size(100, 10);
+    size.rheight() += 5;
+
+<span class=&quote;comment&quote;>    // size becomes (100,15)</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer rwidth()" doc="/**
+<p>Returns a reference to the width.</p>
+<p>Using a reference makes it possible to manipulate the width directly. For example:</p>
+<pre>    QSize size(100, 10);
+    size.rwidth() += 20;
+
+<span class=&quote;comment&quote;>    // size becomes (120,10)</span></pre>
+
+*/"/>
+    <method name="public final void scale(com.trolltech.qt.core.QSize s__0, com.trolltech.qt.core.Qt.AspectRatioMode mode__1)" doc="/**
+<p>Scales the size to a rectangle with the given <i>size</i>, according to the specified <i>mode</i>.</p>
+
+*/"/>
+    <method name="public final void scale(int w__0, int h__1, com.trolltech.qt.core.Qt.AspectRatioMode mode__2)" doc="/**
+<p>Scales the size to a rectangle with the given <i>width</i> and <i>height</i>, according to the specified <i>mode</i>:</p>
+<ul>
+<li>If <i>mode</i> is Qt::IgnoreAspectRatio, the size is set to (<i>width</i>, <i>height</i>).</li>
+<li>If <i>mode</i> is Qt::KeepAspectRatio, the current size is scaled to a rectangle as large as possible inside (<i>width</i>, <i>height</i>), preserving the aspect ratio.</li>
+<li>If <i>mode</i> is Qt::KeepAspectRatioByExpanding, the current size is scaled to a rectangle as small as possible outside (<i>width</i>, <i>height</i>), preserving the aspect ratio.</li>
+</ul>
+<p>Example:</p>
+<pre>    QSize t1(10, 12);
+    t1.scale(60, 60, Qt::IgnoreAspectRatio);
+<span class=&quote;comment&quote;>    // t1 is (60, 60)</span>
+
+    QSize t2(10, 12);
+    t2.scale(60, 60, Qt::KeepAspectRatio);
+<span class=&quote;comment&quote;>    // t2 is (50, 60)</span>
+
+    QSize t3(10, 12);
+    t3.scale(60, 60, Qt::KeepAspectRatioByExpanding);
+<span class=&quote;comment&quote;>    // t3 is (60, 72)</span></pre>
+
+*/"/>
+    <method name="public final void setHeight(int h__0)" doc="/**
+<p>Sets the height to the given <i>height</i>.</p>
+
+*/"/>
+    <method name="public final void setWidth(int w__0)" doc="/**
+<p>Sets the width to the given <i>width</i>.</p>
+
+*/"/>
+    <method name="public final void transpose()" doc="/**
+<p>Swaps the width and height values.</p>
+
+*/"/>
+    <method name="public final int width()" doc="/**
+<p>Returns the width.</p>
+
+*/"/>
+</class>

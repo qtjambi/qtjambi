@@ -1,0 +1,11 @@
+<class name="QSqlDriverCreatorBase" doc="/**
+<p>The QSqlDriverCreatorBase class is the base class for SQL driver factories.</p>
+<p>Reimplement createObject() to return an instance of the specific QSqlDriver subclass that you want to provide.</p>
+<p>See QSqlDatabase::registerSqlDriver() for details.</p>
+
+*/">
+    <method name="public abstract com.trolltech.qt.sql.QSqlDriver createObject()" doc="/**
+<p>Reimplement this function to returns a new instance of a QSqlDriver subclass.</p>
+
+*/"/>
+</class>

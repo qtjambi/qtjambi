@@ -1,0 +1,53 @@
+<class name="QSemaphore" doc="/**
+<p>The QSemaphore class provides a general counting semaphore.</p>
+<p>A semaphore is a generalization of a mutex. While a mutex can only be locked once, it's possible to acquire a semaphore multiple times. Semaphores are typically used to protect a certain number of identical resources.</p>
+<p>Semaphores support two fundamental operations, acquire() and release():</p>
+<ul>
+<li>acquire(<i>n</i>) tries to acquire <i>n</i> resources. If there aren't that many resources available, the call will block until this is the case.</li>
+<li>release(<i>n</i>) releases <i>n</i> resources.</li>
+</ul>
+<p>There's also a tryAcquire() function that returns immediately if it cannot acquire the resources, and an available() function that returns the number of available resources at any time.</p>
+<p>Example:</p>
+<pre>    QSemaphore sem(5);      <span class=&quote;comment&quote;>// sem.available() == 5</span>
+
+    sem.acquire(3);         <span class=&quote;comment&quote;>// sem.available() == 2</span>
+    sem.acquire(2);         <span class=&quote;comment&quote;>// sem.available() == 0</span>
+    sem.release(5);         <span class=&quote;comment&quote;>// sem.available() == 5</span>
+    sem.release(5);         <span class=&quote;comment&quote;>// sem.available() == 10</span>
+
+    sem.tryAcquire(1);      <span class=&quote;comment&quote;>// sem.available() == 9, returns true</span>
+    sem.tryAcquire(250);    <span class=&quote;comment&quote;>// sem.available() == 9, returns false</span></pre>
+<p>A typical application of semaphores is for controlling access to a circular buffer shared by a producer thread and a consumer thread. The Semaphores example shows how to use QSemaphore to solve that problem.</p>
+<p>A non-computing example of a semaphore would be dining at a restaurant. A semaphore is initialized with the number of chairs in the restaurant. As people arrive, they want a seat. As seats are filled, available() is decremented. As people leave, the available() is incremented, allowing more people to enter. If a party of 10 people want to be seated, but there are only 9 seats, those 10 people will wait, but a party of 4 people would be seated (taking the available seats to 5, making the party of 10 people wait longer).</p>
+
+*/">
+    <method name="public QSemaphore(int n__0)" doc="/**
+<p>Creates a new semaphore and initializes the number of resources it guards to <i>n</i> (by default, 0).</p>
+
+*/"/>
+    <method name="public final void acquire(int n__0)" doc="/**
+<p>Tries to acquire <tt>n</tt> resources guarded by the semaphore. If <i>n</i> &gt; available(), this call will block until enough resources are available.</p>
+
+*/"/>
+    <method name="public final int available()" doc="/**
+<p>Returns the number of resources currently available to the semaphore. This number can never be negative.</p>
+
+*/"/>
+    <method name="public final void release(int n__0)" doc="/**
+<p>Releases <i>n</i> resources guarded by the semaphore.</p>
+<p>This function can be used to &quot;create&quot; resources as well. For example:</p>
+<pre>    QSemaphore sem(5);      <span class=&quote;comment&quote;>// a semaphore that guards 5 resources</span>
+    sem.acquire(5);         <span class=&quote;comment&quote;>// acquire all 5 resources</span>
+    sem.release(5);         <span class=&quote;comment&quote;>// release the 5 resources</span>
+    sem.release(10);        <span class=&quote;comment&quote;>// &quot;create&quot; 10 new resources</span></pre>
+
+*/"/>
+    <method name="public final boolean tryAcquire(int n__0)" doc="/**
+<p>Tries to acquire <tt>n</tt> resources guarded by the semaphore and returns true on success. If available() &lt; <i>n</i>, this call immediately returns false without acquiring any resources.</p>
+<p>Example:</p>
+<pre>    QSemaphore sem(5);      <span class=&quote;comment&quote;>// sem.available() == 5</span>
+    sem.tryAcquire(250);    <span class=&quote;comment&quote;>// sem.available() == 5, returns false</span>
+    sem.tryAcquire(3);      <span class=&quote;comment&quote;>// sem.available() == 2, returns true</span></pre>
+
+*/"/>
+</class>

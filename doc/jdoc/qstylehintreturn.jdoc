@@ -1,0 +1,55 @@
+<class name="QStyleHintReturn" doc="/**
+<p>The QStyleHintReturn class provides style hints that return more than basic data types.</p>
+<p>QStyleHintReturn and its subclasses are used to pass information from a style back to the querying widget. This is most useful when the return value from QStyle::styleHint() does not provide enough detail; for example, when a mask is to be returned.</p>
+
+*/">
+    <method name="public QStyleHintReturn(int version__0, int type__1)" doc="/**
+<p>Constructs a QStyleHintReturn with version <i>version</i> and type <i>type</i>.</p>
+<p>The version has no special meaning for QStyleHintReturn; it can be used by subclasses to distinguish between different version of the same hint type.</p>
+
+*/"/>
+    <enum name="HintReturnType" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>QStyleHintReturn</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>QStyle::SH_RubberBand_Mask QStyle::SH_FocusFrame_Mask</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleHintReturn subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1</td></tr>
+</table></p>
+<p>The version is used by QStyleHintReturn subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleHintReturn subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SH_Default for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleHintReturn, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleHintReturn subclass and your own styles.</p>
+
+*/"/>
+    <method name="public final int version()" doc="/**
+<p>the version of the style hint return container</p>
+<p>This value can be used by subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast&lt;T&gt;(), you normally don't need to check it.</p>
+
+*/"/>
+    <method name="public final void setVersion(int version)" doc="/**
+<p>the version of the style hint return container</p>
+<p>This value can be used by subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast&lt;T&gt;(), you normally don't need to check it.</p>
+
+*/"/>
+    <method name="public final int type()" doc="/**
+<p>the type of the style hint container</p>
+
+*/"/>
+    <method name="public final void setType(int type)" doc="/**
+<p>the type of the style hint container</p>
+
+*/"/>
+</class>

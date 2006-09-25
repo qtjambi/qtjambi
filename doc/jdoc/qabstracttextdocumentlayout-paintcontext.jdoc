@@ -1,0 +1,38 @@
+<class name="QAbstractTextDocumentLayout_PaintContext" doc="/**
+<p>The QAbstractTextDocumentLayout::PaintContext class is a convenience class defining the parameters of a painter context.</p>
+<p>A painter context is used when rendering custom layouts for QTextDocuments with the QAbstractTextDocumentLayout::draw() function, and is specified by a cursor position, a default text color, a clip rectangle and a collection of selections.</p>
+
+*/">
+    <method name="public final com.trolltech.qt.gui.QPalette palette()" doc="/**
+<p>the default color that is used for the text, when no color is specified in the text.</p>
+<p>The default value of this variable uses the application's default palette.</p>
+
+*/"/>
+    <method name="public final void setPalette(com.trolltech.qt.gui.QPalette palette)" doc="/**
+<p>the default color that is used for the text, when no color is specified in the text.</p>
+<p>The default value of this variable uses the application's default palette.</p>
+
+*/"/>
+    <method name="public final int cursorPosition()" doc="/**
+<p>the position within the document, where the cursor line should be drawn.</p>
+<p>The default value is -1.</p>
+
+*/"/>
+    <method name="public final void setCursorPosition(int cursorPosition)" doc="/**
+<p>the position within the document, where the cursor line should be drawn.</p>
+<p>The default value is -1.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF clip()" doc="/**
+<p>a hint to the layout avoiding that paragraphs, frames or text that are clearly outside the specified rectangle, are drawn</p>
+<p>Specifying a clip rectangle can speed up drawing of large documents significantly. Note that the clip rectangle is in document coordinates (i.e., not in viewport coordinates), and that it is not a substitute for a clip region set on the painter.</p>
+<p>The default value is a null rectangle.</p>
+
+*/"/>
+    <method name="public final void setClip(com.trolltech.qt.core.QRectF clip)" doc="/**
+<p>a hint to the layout avoiding that paragraphs, frames or text that are clearly outside the specified rectangle, are drawn</p>
+<p>Specifying a clip rectangle can speed up drawing of large documents significantly. Note that the clip rectangle is in document coordinates (i.e., not in viewport coordinates), and that it is not a substitute for a clip region set on the painter.</p>
+<p>The default value is a null rectangle.</p>
+
+*/"/>
+</class>

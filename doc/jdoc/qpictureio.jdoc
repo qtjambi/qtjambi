@@ -1,0 +1,148 @@
+<class name="QPictureIO" doc="/**
+<p>The QPictureIO class contains parameters for loading and saving pictures.</p>
+<p>QPictureIO contains a QIODevice object that is used for picture data I/O. The programmer can install new picture file formats in addition to those that Qt provides.</p>
+<p>You don't normally need to use this class; QPicture::load(), QPicture::save().</p>
+
+*/">
+    <method name="public QPictureIO(com.trolltech.qt.core.QIODevice ioDevice__0, com.trolltech.qt.QNativePointer format__1)" doc="/**
+<p>Constructs a QPictureIO object with the I/O device <i>ioDevice</i> and a <i>format</i> tag.</p>
+
+*/"/>
+    <method name="public QPictureIO(java.lang.String fileName__0, com.trolltech.qt.QNativePointer format__1)" doc="/**
+<p>Constructs a QPictureIO object with the file name <i>fileName</i> and a <i>format</i> tag.</p>
+
+*/"/>
+    <method name="public QPictureIO()" doc="/**
+<p>Constructs a QPictureIO object with all parameters set to zero.</p>
+
+*/"/>
+    <method name="public final java.lang.String description()" doc="/**
+<p>Returns the picture description string.</p>
+
+*/"/>
+    <method name="public final java.lang.String fileName()" doc="/**
+<p>Returns the file name currently set.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer format()" doc="/**
+<p>Returns the picture format string or 0 if no format has been explicitly set.</p>
+
+*/"/>
+    <method name="public final float gamma()" doc="/**
+<p>Returns the gamma value at which the picture will be viewed.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QIODevice ioDevice()" doc="/**
+<p>Returns the IO device currently set.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer parameters()" doc="/**
+<p>Returns the picture's parameters string.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPicture picture()" doc="/**
+<p>Returns the picture currently set.</p>
+
+*/"/>
+    <method name="public final int quality()" doc="/**
+<p>Returns the quality of the written picture, related to the compression ratio.</p>
+
+*/"/>
+    <method name="public final boolean read()" doc="/**
+<p>Reads an picture into memory and returns true if the picture was successfully read; otherwise returns false.</p>
+<p>Before reading an picture you must set an IO device or a file name. If both an IO device and a file name have been set, the IO device will be used.</p>
+<p>Setting the picture file format string is optional.</p>
+<p>Note that this function does <i>not</i> set the format used to read the picture. If you need that information, use the pictureFormat() static functions.</p>
+<p>Example:</p>
+<pre>            QPictureIO iio;
+            QPixmap  pixmap;
+            iio.setFileName(&quot;vegeburger.bmp&quot;);
+            if (iio.read()) {        <span class=&quote;comment&quote;>// OK</span>
+                QPicture picture = iio.picture();
+                QPainter painter(&amp;pixmap);
+                painter.drawPicture(0, 0, picture);
+            }</pre>
+
+*/"/>
+    <method name="public final void setDescription(java.lang.String arg__0)" doc="/**
+<p>Sets the picture description string for picture handlers that support picture descriptions to <i>description</i>.</p>
+<p>Currently, no picture format supported by Qt uses the description string.</p>
+
+*/"/>
+    <method name="public final void setFileName(java.lang.String arg__0)" doc="/**
+<p>Sets the name of the file to read or write an picture from to <i>fileName</i>.</p>
+
+*/"/>
+    <method name="public final void setFormat(com.trolltech.qt.QNativePointer arg__0)" doc="/**
+<p>Sets the picture format to <i>format</i> for the picture to be read or written.</p>
+<p>It is necessary to specify a format before writing an picture, but it is not necessary to specify a format before reading an picture.</p>
+<p>If no format has been set, Qt guesses the picture format before reading it. If a format is set the picture will only be read if it has that format.</p>
+
+*/"/>
+    <method name="public final void setGamma(float arg__0)" doc="/**
+<p>Sets the gamma value at which the picture will be viewed to <i>gamma</i>. If the picture format stores a gamma value for which the picture is intended to be used, then this setting will be used to modify the picture. Setting to 0.0 will disable gamma correction (i.e. any specification in the file will be ignored).</p>
+<p>The default value is 0.0.</p>
+
+*/"/>
+    <method name="public final void setIODevice(com.trolltech.qt.core.QIODevice arg__0)" doc="/**
+<p>Sets the IO device to be used for reading or writing an picture.</p>
+<p>Setting the IO device allows pictures to be read/written to any block-oriented QIODevice.</p>
+<p>If <i>ioDevice</i> is not null, this IO device will override file name settings.</p>
+
+*/"/>
+    <method name="public final void setParameters(com.trolltech.qt.QNativePointer arg__0)" doc="/**
+<p>Sets the picture's parameter string to <i>parameters</i>. This is for picture handlers that require special parameters.</p>
+<p>Although the current picture formats supported by Qt ignore the parameters string, it may be used in future extensions or by contributions (for example, JPEG).</p>
+
+*/"/>
+    <method name="public final void setPicture(com.trolltech.qt.gui.QPicture arg__0)" doc="/**
+<p>Sets the picture to <i>picture</i>.</p>
+
+*/"/>
+    <method name="public final void setQuality(int arg__0)" doc="/**
+<p>Sets the quality of the written picture to <i>q</i>, related to the compression ratio.</p>
+<p><i>q</i> must be in the range -1..100. Specify 0 to obtain small compressed files, 100 for large uncompressed files. (-1 signifies the default compression.)</p>
+
+*/"/>
+    <method name="public final void setStatus(int arg__0)" doc="/**
+<p>Sets the picture IO status to <i>status</i>. A non-zero value indicates an error, whereas 0 means that the IO operation was successful.</p>
+
+*/"/>
+    <method name="public final int status()" doc="/**
+<p>Returns the picture's IO status. A non-zero value indicates an error, whereas 0 means that the IO operation was successful.</p>
+
+*/"/>
+    <method name="public final boolean write()" doc="/**
+<p>Writes an picture to an IO device and returns true if the picture was successfully written; otherwise returns false.</p>
+<p>Before writing an picture you must set an IO device or a file name. If both an IO device and a file name have been set, the IO device will be used.</p>
+<p>The picture will be written using the specified picture format.</p>
+<p>Example:</p>
+<pre>            QPictureIO iio;
+            QPicture   picture;
+            QPainter painter(&amp;picture);
+            painter.drawPixmap(0, 0, pixmap);
+            iio.setPicture(picture);
+            iio.setFileName(&quot;vegeburger.bmp&quot;);
+            iio.setFormat(&quot;BMP&quot;);
+            if (iio.write())
+                return true; <span class=&quote;comment&quote;>// returned true if written successfully</span></pre>
+
+*/"/>
+    <method name="public native static java.util.List&lt;com.trolltech.qt.core.QByteArray&gt; inputFormats()" doc="/**
+<p>Returns a sorted list of picture formats that are supported for picture input.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;com.trolltech.qt.core.QByteArray&gt; outputFormats()" doc="/**
+<p>Returns a sorted list of picture formats that are supported for picture output.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QByteArray pictureFormat(java.lang.String fileName__0)" doc="/**
+<p>Returns a string that specifies the picture format of the file <i>fileName</i>, or null if the file cannot be read or if the format is not recognized.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.core.QByteArray pictureFormat(com.trolltech.qt.core.QIODevice arg__0)" doc="/**
+<p>Returns a string that specifies the picture format of the picture read from IO device <i>d</i>, or 0 if the device cannot be read or if the format is not recognized.</p>
+<p>Make sure that <i>d</i> is at the right position in the device (for example, at the beginning of the file).</p>
+
+*/"/>
+</class>

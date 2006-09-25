@@ -1,0 +1,22 @@
+<class name="QTextBlock_iterator" doc="/**
+<p>The QTextBlock::iterator class provides an iterator for reading the contents of a QTextBlock.</p>
+<p>A block consists of a sequence of text fragments. This class provides a way to iterate over these, and read their contents. It does not provide a way to modify the internal structure or contents of the block.</p>
+<p>An iterator can be constructed and used to access the fragments within a text block in the following way:</p>
+<pre>        QTextBlock::iterator it;
+        for (it = currentBlock.begin(); !(it.atEnd()); ++it) {
+            QTextFragment currentFragment = it.fragment();
+            if (currentFragment.isValid())
+                processFragment(currentFragment);
+
+        }</pre>
+
+*/">
+    <method name="public final boolean atEnd()" doc="/**
+<p>Returns true if the current item is the last item in the text block.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFragment fragment()" doc="/**
+<p>Returns the text fragment the iterator currently points to.</p>
+
+*/"/>
+</class>

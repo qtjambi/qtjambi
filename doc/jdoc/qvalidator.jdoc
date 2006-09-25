@@ -1,0 +1,41 @@
+<class name="QValidator" doc="/**
+<p>The QValidator class provides validation of input text.</p>
+<p>The class itself is abstract. Two subclasses, QIntValidator and QDoubleValidator, provide basic numeric-range checking, and QRegExpValidator provides general checking using a custom regular expression.</p>
+<p>If the built-in validators aren't sufficient, you can subclass QValidator. The class has two virtual functions: validate() and fixup().</p>
+<p>validate() must be implemented by every subclass. It returns Invalid, Intermediate or Acceptable depending on whether its argument is valid (for the subclass's definition of valid).</p>
+<p>These three states require some explanation. An Invalid string is <i>clearly</i> invalid. Intermediate is less obvious: the concept of validity is difficult to apply when the string is incomplete (still being edited). QValidator defines Intermediate as the property of a string that is neither clearly invalid nor acceptable as a final result. Acceptable means that the string is acceptable as a final result. One might say that any string that is a plausible intermediate state during entry of an Acceptable string is Intermediate.</p>
+<p>Here are some examples:</p>
+<ul>
+<li>For a line edit that accepts integers from 10 to 999 inclusive, 42 and 123 are Acceptable, the empty string and 5 are Intermediate, and &quot;asdf&quot; and 1114 is Invalid.</li>
+<li>For an editable combobox that accepts URLs, any well-formed URL is Acceptable, &quot;http://www.trolltech.com/,&quot; is Intermediate (it might be a cut and paste action that accidentally took in a comma at the end), the empty string is Intermediate (the user might select and delete all of the text in preparation for entering a new URL) and &quot;http:///./&quot; is Invalid.</li>
+<li>For a spin box that accepts lengths, &quot;11cm&quot; and &quot;1in&quot; are Acceptable, &quot;11&quot; and the empty string are Intermediate, and &quot;http://www.trolltech.com&quot; and &quot;hour&quot; are Invalid.</li>
+</ul>
+<p>fixup() is provided for validators that can repair some user errors. The default implementation does nothing. QLineEdit, for example, will call fixup() if the user presses Enter (or Return) and the content is not currently valid. This allows the fixup() function the opportunity of performing some magic to make an Invalid string Acceptable.</p>
+<p>QValidator is typically used with QLineEdit, QSpinBox and QComboBox.</p>
+
+*/">
+    <method name="public QValidator(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Sets up the validator. The <i>parent</i> parameter is passed on to the QObject constructor.</p>
+
+*/"/>
+    <method name="public void fixup(com.trolltech.qt.QNativePointer arg__0)" doc="/**
+<p>This function attempts to change <i>input</i> to be valid according to this validator's rules. It need not result in a valid string: callers of this function must re-test afterwards; the default does nothing.</p>
+<p>Reimplementations of this function can change <i>input</i> even if they do not produce a valid string. For example, an ISBN validator might want to delete every character except digits and &quot;-&quot;, even if the result is still not a valid ISBN; a surname validator might want to remove whitespace from the start and end of the string, even if the resulting string is not in the list of accepted surnames.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.gui.QValidator.State validate(com.trolltech.qt.QNativePointer arg__0, com.trolltech.qt.QNativePointer arg__1)" doc="/**
+<p>This virtual function returns Invalid if <i>input</i> is invalid according to this validator's rules, Intermediate if it is likely that a little more editing will make the input acceptable (e.g. the user types &quot;4&quot; into a widget which accepts integers between 10 and 99), and Acceptable if the input is valid.</p>
+<p>The function can change both <i>input</i> and <i>pos</i> (the cursor position) if required.</p>
+
+*/"/>
+    <enum name="State" doc="/**
+<p>This enum type defines the states in which a validated string can exist.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The string is <i>clearly</i> invalid.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The string is a plausible intermediate value during editing.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The string is acceptable as a final result; i.e. it is valid.</td></tr>
+</table></p>
+
+*/"/>
+</class>

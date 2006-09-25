@@ -1,0 +1,32 @@
+<class name="QTextBlockGroup" doc="/**
+<p>The QTextBlockGroup class provides a container for text blocks within a QTextDocument.</p>
+<p>Block groups can be used to organize blocks of text within a document. They maintain an up-to-date list of the text blocks that belong to them, even when text blocks are being edited.</p>
+<p>Each group has a parent document which is specified when the group is constructed.</p>
+<p>Text blocks can be inserted into a group with blockInserted(), and removed with blockRemoved(). If a block's format is changed, blockFormatChanged() is called.</p>
+<p>The list of blocks in the group is returned by blockList(). Note that the blocks in the list are not necessarily adjacent elements in the document; for example, the top-level items in a multi-level list will be separated by the items in lower levels of the list.</p>
+
+*/">
+    <method name="protected QTextBlockGroup(com.trolltech.qt.gui.QTextDocument doc__0)" doc="/**
+<p>Creates a new new block group for the given <i>document</i>.</p>
+<p><b>Warning:</b> This function should only be called from QTextDocument::createObject().</p>
+
+*/"/>
+    <method name="protected final java.util.List&lt;com.trolltech.qt.gui.QTextBlock&gt; blockList()" doc="/**
+<p>Returns a (possibly empty) list of all the blocks that are part of the block group.</p>
+
+*/"/>
+    <method name="protected void blockFormatChanged(com.trolltech.qt.gui.QTextBlock block__0)" doc="/**
+<p>This function is called whenever the specified <i>block</i> of text is changed. The text block is a member of this group.</p>
+<p>The base class implementation does nothing.</p>
+
+*/"/>
+    <method name="protected void blockInserted(com.trolltech.qt.gui.QTextBlock block__0)" doc="/**
+<p>Appends the given <i>block</i> to the end of the group.</p>
+<p><b>Warning:</b> If you reimplement this function you must call the base class implementation.</p>
+
+*/"/>
+    <method name="protected void blockRemoved(com.trolltech.qt.gui.QTextBlock block__0)" doc="/**
+<p>Removes the given <i>block</i> from the group; the block itself is not deleted, it simply isn't a member of this group anymore.</p>
+
+*/"/>
+</class>

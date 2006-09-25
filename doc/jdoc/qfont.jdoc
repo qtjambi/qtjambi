@@ -1,0 +1,391 @@
+<class name="QFont" doc="/**
+<p>The QFont class specifies a font used for drawing text.</p>
+<p>When you create a QFont object you specify various attributes that you want the font to have. Qt will use the font with the specified attributes, or if no matching font exists, Qt will use the closest matching installed font. The attributes of the font that is actually used are retrievable from a QFontInfo object. If the window system provides an exact match exactMatch() returns true. Use QFontMetrics to get measurements, e.g. the pixel length of a string using QFontMetrics::width().</p>
+<p>Use QApplication::setFont() to set the application's default font.</p>
+<p>If a chosen font does not include all the characters that need to be displayed, QFont will try to find the characters in the nearest equivalent fonts. When a QPainter draws a character from a font the QFont will report whether or not it has the character; if it does not, QPainter will draw an unfilled square.</p>
+<p>Create QFonts like this:</p>
+<pre>    QFont serifFont(&quot;Times&quot;, 10, Bold);
+    QFont sansFont(&quot;Helvetica [Cronyx]&quot;, 12);</pre>
+<p>The attributes set in the constructor can also be set later, e.g. setFamily(), setPointSize(), setPointSizeFloat(), setWeight() and setItalic(). The remaining attributes must be set after contstruction, e.g. setBold(), setUnderline(), setOverline(), setStrikeOut() and setFixedPitch(). QFontInfo objects should be created <i>after</i> the font's attributes have been set. A QFontInfo object will not change, even if you change the font's attributes. The corresponding &quot;get&quot; functions, e.g. family(), pointSize(), etc., return the values that were set, even though the values used may differ. The actual values are available from a QFontInfo object.</p>
+<p>If the requested font family is unavailable you can influence the <a href=&quote;#fontmatching&quote;>font matching algorithm</a> by choosing a particular QFont::StyleHint and QFont::StyleStrategy with setStyleHint(). The default family (corresponding to the current style hint) is returned by defaultFamily().</p>
+<p>The font-matching algorithm has a lastResortFamily() and lastResortFont() in cases where a suitable match cannot be found. You can provide substitutions for font family names using insertSubstitution() and insertSubstitutions(). Substitutions can be removed with removeSubstitution(). Use substitute() to retrieve a family's first substitute, or the family name itself if it has no substitutes. Use substitutes() to retrieve a list of a family's substitutes (which may be empty).</p>
+<p>Every QFont has a key() which you can use, for example, as the key in a cache or dictionary. If you want to store a user's font preferences you could use QSettings, writing the font information with toString() and reading it back with fromString(). The operator&lt;&lt;() and operator&gt;&gt;() functions are also available, but they work on a data stream.</p>
+<p>It is possible to set the height of characters shown on the screen to a specified number of pixels with setPixelSize(); however using setPointSize() has a similar effect and provides device independence.</p>
+<p>Under X11 you can set a font using its system specific name with setRawName().</p>
+<p>Loading fonts can be expensive, especially on X11. QFont contains extensive optimizations to make the copying of QFont objects fast, and to cache the results of the slow window system functions it depends upon.</p>
+<a name=&quote;fontmatching&quote;></a><p>The font matching algorithm works as follows:</p>
+<ol type=&quote;1&quote;>
+<li>The specified font family is searched for.</li>
+<li>If not found, the styleHint() is used to select a replacement family.</li>
+<li>Each replacement font family is searched for.</li>
+<li>If none of these are found or there was no styleHint(), &quot;helvetica&quot; will be searched for.</li>
+<li>If &quot;helvetica&quot; isn't found Qt will try the lastResortFamily().</li>
+<li>If the lastResortFamily() isn't found Qt will try the lastResortFont() which will always return a name of some kind.</li>
+</ol>
+<p>Note that the actual font matching algorithm varies from platform to platform.</p>
+<p>Once a font is found, the remaining attributes are matched in order of priority:</p>
+<ol type=&quote;1&quote;>
+<li>fixedPitch()</li>
+<li>pointSize() (see below)</li>
+<li>weight()</li>
+<li>style()</li>
+</ol>
+<p>If you have a font which matches on family, even if none of the other attributes match, this font will be chosen in preference to a font which doesn't match on family but which does match on the other attributes. This is because font family is the dominant search criteria.</p>
+<p>The point size is defined to match if it is within 20% of the requested point size. When several fonts match and are only distinguished by point size, the font with the closest point size to the one requested will be chosen.</p>
+<p>The actual family, font size, weight and other font attributes used for drawing text will depend on what's available for the chosen family under the window system. A QFontInfo object can be used to determine the actual values used for drawing the text.</p>
+<p>Examples:</p>
+<pre>    QFont f(&quot;Helvetica&quot;);</pre>
+<p>If you had both an Adobe and a Cronyx Helvetica, you might get either.</p>
+<pre>    QFont f(&quot;Helvetica [Cronyx]&quot;);</pre>
+<p>You can specify the foundry you want in the family name. The font f in the above example will be set to &quot;Helvetica [Cronyx]&quot;.</p>
+<p>To determine the attributes of the font actually used in the window system, use a QFontInfo object, e.g.</p>
+<pre>    QFontInfo info(f1);
+    QString family = info.family();</pre>
+<p>To find out font metrics use a QFontMetrics object, e.g.</p>
+<pre>    QFontMetrics fm(f1);
+    int textWidthInPixels = fm.width(&quot;How many pixels wide is this text?&quot;);
+    int textHeightInPixels = fm.height();</pre>
+<p>For more general information on fonts, see the <a href=&quote;http://nwalsh.com/comp.fonts/FAQ/&quote;>comp.fonts FAQ.</a> Information on encodings can be found from <a href=&quote;http://czyborra.com/&quote;>Roman Czyborra's</a> page.</p>
+
+*/">
+    <method name="public QFont()" doc="/**
+<p>Constructs a font object that uses the application's default font.</p>
+
+*/"/>
+    <method name="public QFont(com.trolltech.qt.gui.QFont arg__0, com.trolltech.qt.gui.QPaintDeviceInterface pd__1)" doc="/**
+<p>Constructs a font from <i>font</i> for use on the paint device <i>pd</i>.</p>
+
+*/"/>
+    <method name="public QFont(java.lang.String family__0, int pointSize__1, int weight__2, boolean italic__3)" doc="/**
+<p>Constructs a font object with the specified <i>family</i>, <i>pointSize</i>, <i>weight</i> and <i>italic</i> settings.</p>
+<p>If <i>pointSize</i> is &lt;= 0, it is set to 12.</p>
+<p>The <i>family</i> name may optionally also include a foundry name, e.g. &quot;Helvetica [Cronyx]&quot;. If the <i>family</i> is available from more than one foundry and the foundry isn't specified, an arbitrary foundry is chosen. If the family isn't available a family will be set using the font matching algorithm.</p>
+
+*/"/>
+    <method name="public QFont(com.trolltech.qt.gui.QFont arg__0)" doc="/**
+<p>Constructs a font that is a copy of <i>font</i>.</p>
+
+*/"/>
+    <method name="public final boolean bold()" doc="/**
+<p>Returns true if weight() is a value greater than QFont::Normal; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final java.lang.String defaultFamily()" doc="/**
+<p>Returns the family name that corresponds to the current style hint.</p>
+
+*/"/>
+    <method name="public final boolean exactMatch()" doc="/**
+<p>Returns true if a window system font exactly matching the settings of this font is available.</p>
+
+*/"/>
+    <method name="public final java.lang.String family()" doc="/**
+<p>Returns the requested font family name, i.e. the name set in the constructor or the last setFont() call.</p>
+
+*/"/>
+    <method name="public final boolean fixedPitch()" doc="/**
+<p>Returns true if fixed pitch has been set; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean fromString(java.lang.String arg__0)" doc="/**
+<p>Sets this font to match the description <i>descrip</i>. The description is a comma-separated list of the font attributes, as returned by toString().</p>
+
+*/"/>
+    <method name="public final long handle()" doc="/**
+<p>Returns the window system handle to the font, for low-level access. Using this function is <i>not</i> portable.</p>
+
+*/"/>
+    <method name="public final boolean isCopyOf(com.trolltech.qt.gui.QFont arg__0)" doc="/**
+<p>Returns true if this font and <i>f</i> are copies of each other, i.e. one of them was created as a copy of the other and neither has been modified since. This is much stricter than equality.</p>
+
+*/"/>
+    <method name="public final boolean italic()" doc="/**
+<p>Returns true if the style() of the font is not QFont::StyleNormal</p>
+
+*/"/>
+    <method name="public final boolean kerning()" doc="/**
+<p>Returns true if kerning should be used when drawing text with this font.</p>
+
+*/"/>
+    <method name="public final java.lang.String key()" doc="/**
+<p>Returns the font's key, a textual representation of a font. It is typically used as the key for a cache or dictionary of fonts.</p>
+
+*/"/>
+    <method name="public final java.lang.String lastResortFamily()" doc="/**
+<p>Returns the &quot;last resort&quot; font family name.</p>
+<p>The current implementation tries a wide variety of common fonts, returning the first one it finds. Is is possible that no family is found in which case an empty string is returned.</p>
+
+*/"/>
+    <method name="public final java.lang.String lastResortFont()" doc="/**
+<p>Returns a &quot;last resort&quot; font name for the font matching algorithm. This is used if the last resort family is not available. It will always return a name, if necessary returning something like &quot;fixed&quot; or &quot;system&quot;.</p>
+<p>The current implementation tries a wide variety of common fonts, returning the first one it finds. The implementation may change at any time, but this function will always return a string containing something.</p>
+<p>It is theoretically possible that there really isn't a lastResortFont() in which case Qt will abort with an error message. We have not been able to identify a case where this happens. Please report it as a bug if it does, preferably with a list of the fonts you have installed.</p>
+
+*/"/>
+    <method name="public final boolean overline()" doc="/**
+<p>Returns true if overline has been set; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int pixelSize()" doc="/**
+<p>Returns the pixel size of the font if it was set with setPixelSize(). Returns -1 if the size was set with setPointSize() or setPointSizeF().</p>
+
+*/"/>
+    <method name="public final int pointSize()" doc="/**
+<p>Returns the point size of the font. Returns -1 if the font size was specified in pixels.</p>
+
+*/"/>
+    <method name="public final double pointSizeF()" doc="/**
+<p>Returns the point size of the font. Returns -1 if the font size was specified in pixels.</p>
+
+*/"/>
+    <method name="public final boolean rawMode()" doc="/**
+<p>Returns true if raw mode is used for font name matching; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final java.lang.String rawName()" doc="/**
+<p>Returns the name of the font within the underlying window system.</p>
+<p>On Windows and Mac OS X, this is usually just the family name of a TrueType font.</p>
+<p>On X11, depending on whether Qt was built with FontConfig support, it is an XLFD (X Logical Font Description) or a FontConfig pattern. An XLFD may be returned even if FontConfig support is enabled.</p>
+<p>Using the return value of this function is usually <i>not</i> <i>portable</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont resolve(com.trolltech.qt.gui.QFont arg__0)" doc="/**
+<p>Returns a new QFont that has attributes copied from <i>other</i> that have not been previously set on this font.</p>
+
+*/"/>
+    <method name="public final int resolve()"/>
+    <method name="public final void setBold(boolean arg__0)" doc="/**
+<p>If <i>enable</i> is true sets the font's weight to QFont::Bold; otherwise sets the weight to QFont::Normal.</p>
+<p>For finer boldness control use setWeight().</p>
+
+*/"/>
+    <method name="public final void setFamily(java.lang.String arg__0)" doc="/**
+<p>Sets the family name of the font. The name is case insensitive and may include a foundry name.</p>
+<p>The <i>family</i> name may optionally also include a foundry name, e.g. &quot;Helvetica [Cronyx]&quot;. If the <i>family</i> is available from more than one foundry and the foundry isn't specified, an arbitrary foundry is chosen. If the family isn't available a family will be set using the font matching algorithm.</p>
+
+*/"/>
+    <method name="public final void setFixedPitch(boolean arg__0)" doc="/**
+<p>If <i>enable</i> is true, sets fixed pitch on; otherwise sets fixed pitch off.</p>
+
+*/"/>
+    <method name="public final void setItalic(boolean b__0)" doc="/**
+<p>Sets the style() of the font to QFont::StyleItalic if <i>enable</i> is true; otherwise the style is set to QFont::StyleNormal.</p>
+
+*/"/>
+    <method name="public final void setKerning(boolean arg__0)" doc="/**
+<p>Enables kerning for this font if <i>enable</i> is true; otherwise disables it. By default, kerning is enabled.</p>
+<p>When kerning is enabled, glyph metrics do not add up anymore, even for Latin text. In other words, the assumption that width('a') + width('b') is equal to width(&quot;ab&quot;) is not neccesairly true.</p>
+
+*/"/>
+    <method name="public final void setOverline(boolean arg__0)" doc="/**
+<p>If <i>enable</i> is true, sets overline on; otherwise sets overline off.</p>
+
+*/"/>
+    <method name="public final void setPixelSize(int arg__0)" doc="/**
+<p>Sets the font size to <i>pixelSize</i> pixels.</p>
+<p>Using this function makes the font device dependent. Use setPointSize() or setPointSizeF() to set the size of the font in a device independent manner.</p>
+
+*/"/>
+    <method name="public final void setPointSize(int arg__0)" doc="/**
+<p>Sets the point size to <i>pointSize</i>. The point size must be greater than zero.</p>
+
+*/"/>
+    <method name="public final void setPointSizeF(double arg__0)" doc="/**
+<p>Sets the point size to <i>pointSize</i>. The point size must be greater than zero. The requested precision may not be achieved on all platforms.</p>
+
+*/"/>
+    <method name="public final void setRawMode(boolean arg__0)" doc="/**
+<p>If <i>enable</i> is true, turns raw mode on; otherwise turns raw mode off. This function only has an effect under X11.</p>
+<p>If raw mode is enabled, Qt will search for an X font with a complete font name matching the family name, ignoring all other values set for the QFont. If the font name matches several fonts, Qt will use the first font returned by X. QFontInfo <i>cannot</i> be used to fetch information about a QFont using raw mode (it will return the values set in the QFont for all parameters, including the family name).</p>
+<p><b>Warning:</b> Do not use raw mode unless you really, really need it! In most (if not all) cases, setRawName() is a much better choice.</p>
+
+*/"/>
+    <method name="public final void setRawName(java.lang.String arg__0)" doc="/**
+<p>Sets a font by its system specific name. The function is particularly useful under X, where system font settings (for example X resources) are usually available in XLFD (X Logical Font Description) form only. You can pass an XLFD as <i>name</i> to this function.</p>
+<p>A font set with setRawName() is still a full-featured QFont. It can be queried (for example with italic()) or modified (for example with setItalic()) and is therefore also suitable for rendering rich text.</p>
+<p>If Qt's internal font database cannot resolve the raw name, the font becomes a raw font with <i>name</i> as its family.</p>
+<p>Note that the present implementation does not handle wildcards in XLFDs well, and that font aliases (file <tt>fonts.alias</tt> in the font directory on X11) are not supported.</p>
+
+*/"/>
+    <method name="public final void setStretch(int arg__0)" doc="/**
+<p>Sets the stretch factor for the font.</p>
+<p>The stretch factor changes the width of all characters in the font by <i>factor</i> percent. For example, setting <i>factor</i> to 150 results in all characters in the font being 1.5 times (ie. 150%) wider. The default stretch factor is 100. The minimum stretch factor is 1, and the maximum stretch factor is 4000.</p>
+<p>The stretch factor is only applied to outline fonts. The stretch factor is ignored for bitmap fonts.</p>
+<p>NOTE: QFont cannot stretch XLFD fonts. When loading XLFD fonts on X11, the stretch factor is matched against a predefined set of values for the SETWIDTH_NAME field of the XLFD.</p>
+
+*/"/>
+    <method name="public final void setStrikeOut(boolean arg__0)" doc="/**
+<p>If <i>enable</i> is true, sets strikeout on; otherwise sets strikeout off.</p>
+
+*/"/>
+    <method name="public final void setStyle(com.trolltech.qt.gui.QFont.Style style__0)" doc="/**
+<p>Sets the style of the font to <i>style</i>.</p>
+
+*/"/>
+    <method name="public final void setStyleHint(com.trolltech.qt.gui.QFont.StyleHint arg__0, com.trolltech.qt.gui.QFont.StyleStrategy arg__1)" doc="/**
+<p>Sets the style hint and strategy to <i>hint</i> and <i>strategy</i>, respectively.</p>
+<p>If these aren't set explicitly the style hint will default to <tt>AnyStyle</tt> and the style strategy to <tt>PreferDefault</tt>.</p>
+<p>Qt does not support style hints on X11 since this information is not provided by the window system.</p>
+
+*/"/>
+    <method name="public final void setStyleStrategy(com.trolltech.qt.gui.QFont.StyleStrategy s__0)" doc="/**
+<p>Sets the style strategy for the font to <i>s</i>.</p>
+
+*/"/>
+    <method name="public final void setUnderline(boolean arg__0)" doc="/**
+<p>If <i>enable</i> is true, sets underline on; otherwise sets underline off.</p>
+
+*/"/>
+    <method name="public final void setWeight(int arg__0)" doc="/**
+<p>Sets the weight the font to <i>weight</i>, which should be a value from the QFont::Weight enumeration.</p>
+
+*/"/>
+    <method name="public final int stretch()" doc="/**
+<p>Returns the stretch factor for the font.</p>
+
+*/"/>
+    <method name="public final boolean strikeOut()" doc="/**
+<p>Returns true if strikeout has been set; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont.Style style()" doc="/**
+<p>Returns the style of the font.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont.StyleHint styleHint()" doc="/**
+<p>Returns the StyleHint.</p>
+<p>The style hint affects the font matching algorithm. See QFont::StyleHint for the list of available hints.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont.StyleStrategy styleStrategy()" doc="/**
+<p>Returns the StyleStrategy.</p>
+<p>The style strategy affects the font matching algorithm. See QFont::StyleStrategy for the list of available strategies.</p>
+
+*/"/>
+    <method name="public final java.lang.String toString()" doc="/**
+<p>Returns a description of the font. The description is a comma-separated list of the attributes, perfectly suited for use in QSettings.</p>
+
+*/"/>
+    <method name="public final boolean underline()" doc="/**
+<p>Returns true if underline has been set; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int weight()" doc="/**
+<p>Returns the weight of the font which is one of the enumerated values from QFont::Weight.</p>
+
+*/"/>
+    <method name="public native static void cleanup()" doc="/**
+<p>Internal function that cleans up the font system.</p>
+
+*/"/>
+    <method name="public native static void initialize()" doc="/**
+<p>Internal function that initializes the font system.</p>
+<p>The font cache and font dict do not alloc the keys. The key is a QString which is shared between QFontPrivate and QXFontName.</p>
+
+*/"/>
+    <method name="public native static void insertSubstitution(java.lang.String arg__0, java.lang.String arg__1)" doc="/**
+<p>Inserts <i>substituteName</i> into the substitution table for the family <i>familyName</i>.</p>
+
+*/"/>
+    <method name="public native static void insertSubstitutions(java.lang.String arg__0, java.util.List&lt;java.lang.String&gt; arg__1)" doc="/**
+<p>Inserts the list of families <i>substituteNames</i> into the substitution list for <i>familyName</i>.</p>
+
+*/"/>
+    <method name="public native static void removeSubstitution(java.lang.String arg__0)" doc="/**
+<p>Removes all the substitutions for <i>familyName</i>.</p>
+
+*/"/>
+    <method name="public native static java.lang.String substitute(java.lang.String arg__0)" doc="/**
+<p>Returns the first family name to be used whenever <i>familyName</i> is specified. The lookup is case insensitive.</p>
+<p>If there is no substitution for <i>familyName</i>, <i>familyName</i> is returned.</p>
+<p>To obtain a list of substitutions use substitutes().</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;java.lang.String&gt; substitutes(java.lang.String arg__0)" doc="/**
+<p>Returns a list of family names to be used whenever <i>familyName</i> is specified. The lookup is case insensitive.</p>
+<p>If there is no substitution for <i>familyName</i>, an empty list is returned.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;java.lang.String&gt; substitutions()" doc="/**
+<p>Returns a sorted list of substituted family names.</p>
+
+*/"/>
+    <enum name="StyleStrategy" doc="/**
+<p>The style strategy tells the font matching algorithm what type of fonts should be used to find an appropriate default family.</p>
+<p>The following strategies are available:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the default style strategy. It does not prefer any type of font.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>prefers bitmap fonts (as opposed to outline fonts).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>prefers device fonts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>prefers outline fonts (as opposed to bitmap fonts).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>forces the use of outline fonts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>don't antialias the fonts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>antialias if possible.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>forces the use of OpenGL compatible fonts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>If a font does not contain a character requested to draw then Qt automatically chooses a similar looking for that contains the character. This flag disables this feature.</td></tr>
+</table></p>
+<p>Any of these may be OR-ed with one of these flags:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>prefer an exact match. The font matcher will try to use the exact font size that has been specified.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>prefer the best quality font. The font matcher will use the nearest standard point size that the font supports.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="StyleHint" doc="/**
+<p>Style hints are used by the font matching algorithm to find an appropriate default family if a selected font family is not available.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>leaves the font matching algorithm to choose the family. This is the default.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the font matcher prefer sans serif fonts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>is a synonym for <tt>SansSerif</tt>.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the font matcher prefers serif fonts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>is a synonym for <tt>Serif</tt>.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the font matcher prefers fixed pitch fonts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>a synonym for <tt>TypeWriter</tt>.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the font matcher prefers decorative fonts.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>is a synonym for <tt>OldEnglish</tt>.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>the font matcher prefers system fonts.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="Weight" doc="/**
+<p>Qt uses a weighting scale from 0 to 99 similar to, but not the same as, the scales used in Windows or CSS. A weight of 0 is ultralight, whilst 99 will be an extremely black.</p>
+<p>This enum contains the predefined font weights:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>25</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>50</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>63</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>75</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>87</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="Stretch" doc="/**
+<p>Predefined stretch values that follow the CSS naming convention. The higher the value, the more stretched the text is.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>50</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>62</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>75</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>87</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>100</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>112</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>125</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>150</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>200</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="Style" doc="/**
+<p>This enum describes the different styles of glyphs that are used to display text.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Normal glyphs used in unstyled text.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Italic glyphs that are specifically designed for the purpose of representing italicized text.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Glyphs with an italic appearance that are typically based on the unstyled glyphs, but are not fine-tuned for the purpose of representing italicized text.</td></tr>
+</table></p>
+
+*/"/>
+</class>

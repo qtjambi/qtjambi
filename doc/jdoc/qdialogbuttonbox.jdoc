@@ -1,0 +1,164 @@
+<class name="QDialogButtonBox" doc="/**
+<p>The QDialogButtonBox class is a widget that presents buttons in a layout that is appropriate to the current widget style.</p>
+<p>Dialogs and message boxes typically present buttons in a layout that conforms to the interface guidelines for that platform. Invariably, different platforms have different layouts for their dialogs. QDialogButtonBox allows a developer to add buttons to it and will automatically use the appropriate layout for the user's desktop environment.</p>
+<p>Most buttons for a dialog follow certain roles. Such roles include:</p>
+<ul>
+<li>Accepting or rejecting the dialog.</li>
+<li>Asking for help.</li>
+<li>Performing actions on the dialog itself (such as resetting fields or applying changes).</li>
+</ul>
+<p>There can also be alternate ways of dismissing the dialog which may cause destructive results.</p>
+<p>Most dialogs have buttons that can almost be considered standard (e.g. <b>OK</b> and <b>Cancel</b> buttons). It is sometimes convenient to create these buttons in a standard way.</p>
+<p>There are a couple ways of using QDialogButtonBox. One ways is to create the buttons (or button texts) yourself and add them to the button box, specifying their role.</p>
+<pre>        findButton = new QPushButton(tr(&quot;&amp;Find&quot;));
+        findButton-&gt;setDefault(true);
+
+        moreButton = new QPushButton(tr(&quot;&amp;More&quot;));
+        moreButton-&gt;setCheckable(true);
+        moreButton-&gt;setAutoDefault(false);
+
+        buttonBox = new QDialogButtonBox(Qt::Vertical);
+        buttonBox-&gt;addButton(findButton, QDialogButtonBox::ActionRole);
+        buttonBox-&gt;addButton(moreButton, QDialogButtonBox::ActionRole);</pre>
+<p>Alternatively, QDialogButtonBox provides several standard buttons (e.g. OK, Cancel, Save) that you can use. They exist as flags so you can OR them together in the constructor.</p>
+<pre>        buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                         | QDialogButtonBox::Cancel);
+
+        connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+        connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));</pre>
+<p>You can mix and match normal buttons and standard buttons.</p>
+<p>Currently the buttons are laid out in the following way if the button box is horizontal:</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-gnomelayout-horizontal.png]</font></td><td>Button box laid out in horizontal GnomeLayout</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-kdelayout-horizontal.png]</font></td><td>Button box laid out in horizontal KdeLayout</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-maclayout-horizontal.png]</font></td><td>Button box laid out in horizontal MacLayout</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-winlayout-horizontal.png]</font></td><td>Button box laid out in horizontal WinLayout</td></tr>
+</table></p>
+<p>The buttons are laid out the following way if the button box is vertical:</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-gnomelayout-vertical.png]</font></td><td>Button box laid out in vertical GnomeLayout</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-kdelayout-vertical.png]</font></td><td>Button box laid out in vertical KdeLayout</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-maclayout-vertical.png]</font></td><td>Button box laid out in vertical MacLayout</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-winlayout-vertical.png]</font></td><td>Button box laid out in vertical WinLayout</td></tr>
+</table></p>
+<p>Additionally, button boxes that contain only buttons with ActionRole or HelpRole can be considered modeless and have an alternate look on the mac:</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-mac-modeless-horizontal.png]</font></td><td>modeless horizontal MacLayout</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image buttonbox-mac-modeless-vertical.png]</font></td><td>modeless vertical MacLayout</td></tr>
+</table></p>
+<p>When a button is clicked in the button box, the clicked() signal is emitted for the actual button is that is pressed. For convenience, if the button has an AcceptRole, RejectRole, or HelpRole, the accepted(), rejected(), or helpRequested() signals are emitted respectively.</p>
+
+*/">
+    <method name="public QDialogButtonBox(com.trolltech.qt.gui.QDialogButtonBox.StandardButtons buttons__0, com.trolltech.qt.core.Qt.Orientation orientation__1, com.trolltech.qt.gui.QWidget parent__2)" doc="/**
+<p>Constructs a button box with the given <i>orientation</i> and <i>parent</i>, containing the standard buttons specified by <i>buttons</i>.</p>
+
+*/"/>
+    <method name="public QDialogButtonBox(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an empty, horizontal button box with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public QDialogButtonBox(com.trolltech.qt.core.Qt.Orientation orientation__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs an empty button box with the given <i>orientation</i> and <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPushButton addButton(com.trolltech.qt.gui.QDialogButtonBox.StandardButton button__0)" doc="/**
+<p>Adds a standard <i>button</i> to the button box if it is valid to do so, and returns a push button. If <i>button</i> is invalid, it is not added to the button box, and zero is returned.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPushButton addButton(java.lang.String text__0, com.trolltech.qt.gui.QDialogButtonBox.ButtonRole role__1)" doc="/**
+<p>Creates a push button with the given <i>text</i>, adds it to the button box for the specified <i>role</i>, and returns the corresponding push button. If <i>role</i> is invalid, no button is created, and zero is returned.</p>
+
+*/"/>
+    <method name="public final void addButton(com.trolltech.qt.gui.QAbstractButton button__0, com.trolltech.qt.gui.QDialogButtonBox.ButtonRole role__1)" doc="/**
+<p>Adds the given <i>button</i> to the button box with the specified <i>role</i>. If the role is invalid, the button is not added.</p>
+<p>If the button has already been added, it is removed and added again with the new role.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPushButton button(com.trolltech.qt.gui.QDialogButtonBox.StandardButton which__0)" doc="/**
+<p>Returns the QPushButton corresponding to the standard button <i>which</i>, or 0 if the standard button doesn't exist in this button box.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QDialogButtonBox.ButtonRole buttonRole(com.trolltech.qt.gui.QAbstractButton button__0)" doc="/**
+<p>Returns the button role for the specified <i>button</i>. This function returns InvalidRole if <i>button</i> is 0 or has not been added to the button box.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QAbstractButton&gt; buttons()" doc="/**
+<p>Returns a list of all the buttons that have been added to the button box.</p>
+
+*/"/>
+    <method name="public final boolean centerButtons()"/>
+    <method name="public final void clear()" doc="/**
+<p>Clears the button box, deleting all buttons within it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.Orientation orientation()"/>
+    <method name="public final void removeButton(com.trolltech.qt.gui.QAbstractButton button__0)" doc="/**
+<p>Removes <i>button</i> from the button box without deleting it and sets its parent to zero.</p>
+
+*/"/>
+    <method name="public final void setCenterButtons(boolean center__0)"/>
+    <method name="public final void setOrientation(com.trolltech.qt.core.Qt.Orientation orientation__0)"/>
+    <method name="public final void setStandardButtons(com.trolltech.qt.gui.QDialogButtonBox.StandardButtons buttons__0)"/>
+    <method name="public final com.trolltech.qt.gui.QDialogButtonBox.StandardButton standardButton(com.trolltech.qt.gui.QAbstractButton button__0)" doc="/**
+<p>Returns the standard button enum value corresponding to the given <i>button</i>, or NoButton if the given <i>button</i> isn't a standard button.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QDialogButtonBox.StandardButtons standardButtons()"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)"/>
+    <enum name="ButtonLayout" doc="/**
+<p>This enum describes the layout policy to be used when arranging the buttons contained in the button box.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Use a policy appropriate for applications on Windows.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Use a policy appropriate for applications on Mac OS X.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Use a policy appropriate for applications on KDE.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Use a policy appropriate for applications on GNOME.</td></tr>
+</table></p>
+<p>The button layout is specified by the current style.</p>
+
+*/"/>
+    <enum name="ButtonRole" doc="/**
+<p>This enum describes the roles that can be used to describe buttons in the button box. Combinations of these roles are as flags used to describe different aspects of their behavior.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The button is invalid.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Clicking the button causes the dialog to be accepted (e.g. OK).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Clicking the button causes the dialog to be rejected (e.g. Cancel).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Clicking the button causes a destructive change (e.g. for Discarding Changes).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Clicking the button causes changes to the elements in the dialog (e.g. reset all the values or read defaults).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The button can be clicked to request help.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The button is a &quot;Yes&quot;-like button.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The button is a &quot;No&quot;-like button.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The button applies current changes.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The button resets the dialog's fields to default values.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="StandardButton" doc="/**
+<p>These enums describe flags for standard buttons. Each button has a defined ButtonRole.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>An &quot;OK&quot; button defined with the AcceptRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Open&quot; button defined with the AcceptRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Save&quot; button defined with the AcceptRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Cancel&quot; button defined with the RejectRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Close&quot; button defined with the RejectRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Discard&quot; or &quot;Don't Save&quot; button, depending on the platform, defined with the DestructiveRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>An &quot;Apply&quot; button defined with the ApplyRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Reset&quot; button defined with the ResetRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Restore Defaults&quot; button defined with the ResetRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Help&quot; button defined with the HelpRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Save All&quot; button defined with the AcceptRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Yes&quot; button defined with the YesRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Yes to All&quot; button defined with the YesRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;No&quot; button defined with the NoRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;No to All&quot; button defined with the NoRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>An &quot;Abort&quot; button defined with the RejectRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A &quot;Retry&quot; button defined with the AcceptRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>An &quot;Ignore&quot; button defined with the AcceptRole.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>An invalid button.</td></tr>
+</table></p>
+
+*/"/>
+</class>

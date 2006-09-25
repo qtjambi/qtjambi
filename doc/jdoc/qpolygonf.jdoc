@@ -1,0 +1,58 @@
+<class name="QPolygonF" doc="/**
+<p>The QPolygonF class provides a vector of points using floating point precision.</p>
+<p>A QPolygonF is a QVector&lt;QPointF&gt;. The easiest way to add points to a QPolygonF is to use its streaming operator, as illustrated below:</p>
+<pre>            QPolygonF polygon;
+            polygon &lt;&lt; QPointF(10.4, 20.5) &lt;&lt; QPointF(20.2, 30.2);</pre>
+<p>In addition to the functions provided by QVector, QPolygonF provides the boundingRect() and translate() functions for geometry operations. Use the QMatrix::map() function for more general transformations of QPolygonFs.</p>
+<p>QPolygonF also provides the isClosed() function to determine whether a polygon's start and end points are the same, and the toPolygon() function returning an integer precision copy of this polygon.</p>
+<p>The QPolygonF class is implicitly shared.</p>
+
+*/">
+    <method name="public QPolygonF()" doc="/**
+<p>Constructs a polygon with no points.</p>
+
+*/"/>
+    <method name="public QPolygonF(com.trolltech.qt.gui.QPolygonF a__0)" doc="/**
+<p>Constructs a copy of the given <i>polygon</i>.</p>
+
+*/"/>
+    <method name="public QPolygonF(com.trolltech.qt.core.QRectF r__0)" doc="/**
+<p>Constructs a closed polygon from the specified <i>rectangle</i>.</p>
+<p>The polygon contains the four vertices of the rectangle in clockwise order starting and ending with the top-left vertex.</p>
+
+*/"/>
+    <method name="public QPolygonF(int size__0)" doc="/**
+<p>Constructs a polygon of the given <i>size</i>. Creates an empty polygon if <i>size</i> == 0.</p>
+
+*/"/>
+    <method name="public QPolygonF(com.trolltech.qt.gui.QPolygon a__0)" doc="/**
+<p>Constructs a float based polygon from the specified integer based <i>polygon</i>.</p>
+
+*/"/>
+    <method name="public QPolygonF(java.util.List&lt;com.trolltech.qt.core.QPointF&gt; v__0)" doc="/**
+<p>Constructs a polygon containing the specified <i>points</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRectF boundingRect()" doc="/**
+<p>Returns the bounding rectangle of the polygon, or QRectF(0,0,0,0) if the polygon is empty.</p>
+
+*/"/>
+    <method name="public final boolean isClosed()" doc="/**
+<p>Returns true if the polygon is closed; otherwise returns false.</p>
+<p>A polygon is said to be closed if its start point and end point are equal.</p>
+
+*/"/>
+    <method name="public final void squeeze()"/>
+    <method name="public final com.trolltech.qt.gui.QPolygon toPolygon()" doc="/**
+<p>Creates and returns a QPolygon by converting each QPointF to a QPoint.</p>
+
+*/"/>
+    <method name="public final void translate(double dx__0, double dy__1)" doc="/**
+<p>Translates all points in the polygon by (<i>dx</i>, <i>dy</i>).</p>
+
+*/"/>
+    <method name="public final void translate(com.trolltech.qt.core.QPointF offset__0)" doc="/**
+<p>Translate all points in the polygon by the given <i>offset</i>.</p>
+
+*/"/>
+</class>

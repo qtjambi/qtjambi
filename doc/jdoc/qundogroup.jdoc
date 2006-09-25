@@ -1,0 +1,87 @@
+<class name="QUndoGroup" doc="/**
+<p>The QUndoGroup class is a group of QUndoStack objects.</p>
+<p>For an overview of the Qt's undo framework, see the overview.</p>
+<p>An application often has multiple undo stacks, one for each opened document. At the same time, an application usually has one undo action and one redo action, which triggers undo or redo in the active document.</p>
+<p>QUndoGroup is a group of QUndoStack objects, one of which may be active. It has an undo() and redo() slot, which calls QUndoStack::undo() and QUndoStack::redo() for the active stack. It also has the functions createUndoAction() and createRedoAction(). The actions returned by these functions behave in the same way as those returned by QUndoStack::createUndoAction() and QUndoStack::createRedoAction() of the active stack.</p>
+<p>Stacks are added to a group with addStack() and removed with removeStack(). A stack is implicitly added to a group when it is created with the group as its parent QObject.</p>
+<p>It is the programmer's responsibility to specify which stack is active by calling QUndoStack::setActive(), usually when the associated document window receives focus. The active stack may also be set with setActiveStack(), and is returned by activeStack().</p>
+<p>When a stack is added to a group using addStack(), the group does not take ownership of the stack. This means the stack has to be deleted separately from the group. When a stack is deleted, it is automatically removed from a group. A stack may belong to only one group. Adding it to another group will cause it to be removed from the previous group.</p>
+<p>A QUndoGroup is also useful in conjunction with QUndoView. If a QUndoView is set to watch a group using QUndoView::setGroup(), it will update itself to display the active stack.</p>
+
+*/">
+    <method name="public QUndoGroup(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Creates an empty QUndoGroup object with parent <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QUndoStack activeStack()" doc="/**
+<p>Returns the active stack of this group.</p>
+<p>If none of the stacks are active, or if the group is empty, this function returns 0.</p>
+
+*/"/>
+    <method name="public final void addStack(com.trolltech.qt.gui.QUndoStack stack__0)" doc="/**
+<p>Adds <i>stack</i> to this group. The group does not take ownership of the stack. Another way of adding a stack to a group is by specifying the group as the stack's parent QObject in QUndoStack::QUndoStack(). In this case, the stack is deleted when the group is deleted, in the usual manner of QObjects.</p>
+
+*/"/>
+    <method name="public final boolean canRedo()" doc="/**
+<p>Returns the value of the active stack's QUndoStack::canRedo().</p>
+<p>If none of the stacks are active, or if the group is empty, this function returns false.</p>
+
+*/"/>
+    <method name="public final boolean canUndo()" doc="/**
+<p>Returns the value of the active stack's QUndoStack::canUndo().</p>
+<p>If none of the stacks are active, or if the group is empty, this function returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction createRedoAction(com.trolltech.qt.core.QObject parent__0, java.lang.String prefix__1)" doc="/**
+<p>Creates an redo QAction object with parent <i>parent</i>.</p>
+<p>Triggering this action will cause a call to QUndoStack::redo() on the active stack. The text of this action will always be the text of the command which will be redone in the next call to redo(), prefixed by <i>prefix</i>. If there is no command available for redo, if the group is empty or if none of the stacks are active, this action will be disabled.</p>
+<p>If <i>prefix</i> is empty, the default prefix &quot;Undo&quot; is used.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction createUndoAction(com.trolltech.qt.core.QObject parent__0, java.lang.String prefix__1)" doc="/**
+<p>Creates an undo QAction object with parent <i>parent</i>.</p>
+<p>Triggering this action will cause a call to QUndoStack::undo() on the active stack. The text of this action will always be the text of the command which will be undone in the next call to undo(), prefixed by <i>prefix</i>. If there is no command available for undo, if the group is empty or if none of the stacks are active, this action will be disabled.</p>
+<p>If <i>prefix</i> is empty, the default prefix &quot;Undo&quot; is used.</p>
+
+*/"/>
+    <method name="public final boolean isClean()" doc="/**
+<p>Returns the value of the active stack's QUndoStack::isClean().</p>
+<p>If none of the stacks are active, or if the group is empty, this function returns true.</p>
+
+*/"/>
+    <method name="public final void redo()" doc="/**
+<p>Calls QUndoStack::redo() on the active stack.</p>
+<p>If none of the stacks are active, or if the group is empty, this function does nothing.</p>
+
+*/"/>
+    <method name="public final java.lang.String redoText()" doc="/**
+<p>Returns the value of the active stack's QUndoStack::redoText().</p>
+<p>If none of the stacks are active, or if the group is empty, this function returns an empty string.</p>
+
+*/"/>
+    <method name="public final void removeStack(com.trolltech.qt.gui.QUndoStack stack__0)" doc="/**
+<p>Removes <i>stack</i> from this group. If the stack was the active stack in the group, the active stack becomes 0.</p>
+
+*/"/>
+    <method name="public final void setActiveStack(com.trolltech.qt.gui.QUndoStack stack__0)" doc="/**
+<p>Sets the active stack of this group to <i>stack</i>.</p>
+<p>If the stack is not a member of this group, this function does nothing.</p>
+<p>Synonymous with calling QUndoStack::setActive() on <i>stack</i>.</p>
+<p>The actions returned by createUndoAction() and createRedoAction() will now behave in the same way as those returned by <i>stack</i>'s QUndoStack::createUndoAction() and QUndoStack::createRedoAction().</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QUndoStack&gt; stacks()" doc="/**
+<p>Returns a list of stacks in this group.</p>
+
+*/"/>
+    <method name="public final void undo()" doc="/**
+<p>Calls QUndoStack::undo() on the active stack.</p>
+<p>If none of the stacks are active, or if the group is empty, this function does nothing.</p>
+
+*/"/>
+    <method name="public final java.lang.String undoText()" doc="/**
+<p>Returns the value of the active stack's QUndoStack::undoText().</p>
+<p>If none of the stacks are active, or if the group is empty, this function returns an empty string.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,323 @@
+<class name="QAbstractItemModel" doc="/**
+<p>The QAbstractItemModel class provides the abstract interface for item model classes.</p>
+<p>The QAbstractItemModel class defines the standard interface that item models must use to be able to interoperate with other components in the model/view architecture. It is not supposed to be instantiated directly. Instead, you should subclass it to create new models.</p>
+<p>The QAbstractItemModel class is one of the Model/View Classes and is part of Qt's model/view framework.</p>
+<p>If you need a model to use with a QListView or a QTableView, you should consider subclassing QAbstractListModel or QAbstractTableModel instead of this class.</p>
+<p>The underlying data model is exposed to views and delegates as a hierarchy of tables. If you don't make use of the hierarchy, then the model is a simple table of rows and columns. Each item has a unique index specified by a QModelIndex.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image modelindex-no-parent.png]</font></p><p>Every item of data that can be accessed via a model has an associated model index that is obtained using the index() function. Each index may have a sibling() index; child items have a parent() index.</p>
+<p>Each item has a number of data elements associated with it, and each of these can be retrieved by specifying a role (see Qt::ItemDataRole) to the model's data() function. Data for all available roles can be obtained at the same time using the itemData() function.</p>
+<p>Data for each role is set using a particular Qt::ItemDataRole. Data for individual roles are set individually with setData(), or they can be set for all roles with setItemData().</p>
+<p>Items can be queried with flags() (see Qt::ItemFlag) to see if they can be selected, dragged, or manipulated in other ways.</p>
+<p>If an item has child objects, hasChildren() returns true for the corresponding index.</p>
+<p>The model has a rowCount() and a columnCount() for each level of the hierarchy. Rows and columns can be inserted and removed with insertRows(), insertColumns(), removeRows(), and removeColumns().</p>
+<p>The model emits signals to indicate changes. For example, dataChanged() is emitted whenever items of data made available by the model are changed. Changes to the headers supplied by the model cause headerDataChanged() to be emitted. If the structure of the underlying data changes, the model can emit layoutChanged() to indicate to any attached views that they should redisplay any items shown, taking the new structure into account.</p>
+<p>The items available through the model can be searched for particular data using the match() function.</p>
+<p>If the model is sortable, it can be sorted with sort().</p>
+<a name=&quote;subclassing&quote;></a>
+<h3>Subclassing</h3>
+<p><b>Note:</b> Some general guidelines for subclassing models are available in the Model Subclassing Reference.</p>
+<p>When subclassing QAbstractItemModel, at the very least you must implement index(), parent(), rowCount(), columnCount(), and data(). These functions are used in all read-only models, and form the basis of editable models.</p>
+<p>You can also reimplement hasChildren() to provide special behavior for models where the implementation of rowCount() is expensive. This makes it possible for models to restrict the amount of data requested by views, and can be used as a way to implement lazy population of model data.</p>
+<p>To enable editing in your model, you must also implement setData(), and reimplement flags() to ensure that <tt>ItemIsEditable</tt> is returned. You can also reimplement headerData() and setHeaderData() to control the way the headers for your model are presented.</p>
+<p>Note that the dataChanged() and headerDataChanged() signals must be emitted explicitly when reimplementing the setData() and setHeaderData() functions, respectively.</p>
+<p>Custom models need to create model indexes for other components to use. To do this, call createIndex() with suitable row and column numbers for the item, and supply a unique identifier for the item, either as a pointer or as an integer value. Custom models typically use these unique identifiers in other reimplemented functions to retrieve item data and access information about the item's parents and children. See the Simple Tree Model example for more information about unique identifiers.</p>
+<p>It is not necessary to support every role defined in Qt::ItemDataRole. Depending on the type of data contained within a model, it may only be useful to implement the data() function to return valid information for some of the more common roles. Most models provide at least a textual representation of item data for the Qt::DisplayRole, and well-behaved models should also provide valid information for the Qt::ToolTipRole and Qt::WhatsThisRole. Supporting these roles enables models to be used with standard Qt views. However, for some models that handle highly-specialized data, it may be appropriate to provide data only for user-defined roles.</p>
+<p>Models that provide interfaces to resizable data structures can provide implementations of insertRows(), removeRows(), insertColumns(), and removeColumns(). When implementing these functions, it is important to notify any connected views about changes to the model's dimensions both <i>before</i> and <i>after</i> they occur:</p>
+<ul>
+<li>An insertRows() implementation must call beginInsertRows() <i>before</i> inserting new rows into the data structure, and it must call endInsertRows() <i>immediately afterwards</i>.</li>
+<li>An insertColumns() implementation must call beginInsertColumns() <i>before</i> inserting new columns into the data structure, and it must call endInsertColumns() <i>immediately afterwards</i>.</li>
+<li>A removeRows() implementation must call beginRemoveRows() <i>before</i> the rows are removed from the data structure, and it must call endRemoveRows() <i>immediately afterwards</i>.</li>
+<li>A removeColumns() implementation must call beginRemoveColumns() <i>before</i> the columns are removed from the data structure, and it must call endRemoveColumns() <i>immediately afterwards</i>.</li>
+</ul>
+<p>The <i>private</i> signals that these functions emit give attached components the chance to take action before any data becomes unavailable. The encapsulation of the insert and remove operations with these begin and end functions also enables the model to manage persistent model indexes correctly. <b>If you want selections to be handled properly, you must ensure that you call these functions.</b></p>
+
+*/">
+    <method name="public QAbstractItemModel(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs an abstract item model with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="protected final void beginInsertColumns(com.trolltech.qt.core.QModelIndex parent__0, int first__1, int last__2)" doc="/**
+<p>Begins a column insertion operation.</p>
+<p>When reimplementing insertColumns() in a subclass, you must call this function <i>before</i> inserting data into the model's underlying data store.</p>
+<p>The <i>parent</i> index corresponds to the parent into which the new columns are inserted; <i>first</i> and <i>last</i> are the column numbers of the new columns will have after they have been inserted.</p>
+<p><table width=&quote;80%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image modelview-begin-insert-columns.png]</font></td><td>Specify the first and last column numbers for the span of columns you want to insert into an item in a model.<p>For example, as shown in the diagram, we insert three columns before column 4, so <i>first</i> is 4 and <i>last</i> is 6:</p>
+<pre>    beginInsertColumns(parent, 4, 6);</pre>
+<p>This inserts the three new columns as columns 4, 5, and 6.</p>
+</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image modelview-begin-append-columns.png]</font></td><td>To append columns, insert them after the last column.<p>For example, as shown in the diagram, we append three columns to a collection of six existing columns (ending in column 5), so <i>first</i> is 6 and <i>last</i> is 8:</p>
+<pre>    beginInsertColumns(parent, 6, 8);</pre>
+<p>This appends the two new columns as columns 6, 7, and 8.</p>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="protected final void beginInsertRows(com.trolltech.qt.core.QModelIndex parent__0, int first__1, int last__2)" doc="/**
+<p>Begins a row insertion operation.</p>
+<p>When reimplementing insertRows() in a subclass, you must call this function <i>before</i> inserting data into the model's underlying data store.</p>
+<p>The <i>parent</i> index corresponds to the parent into which the new rows are inserted; <i>first</i> and <i>last</i> are the row numbers that the new rows will have after they have been inserted.</p>
+<p><table width=&quote;80%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image modelview-begin-insert-rows.png]</font></td><td>Specify the first and last row numbers for the span of rows you want to insert into an item in a model.<p>For example, as shown in the diagram, we insert three rows before row 2, so <i>first</i> is 2 and <i>last</i> is 4:</p>
+<pre>    beginInsertRows(parent, 2, 4);</pre>
+<p>This inserts the three new rows as rows 2, 3, and 4.</p>
+</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image modelview-begin-append-rows.png]</font></td><td>To append rows, insert them after the last row.<p>For example, as shown in the diagram, we append two rows to a collection of 4 existing rows (ending in row 3), so <i>first</i> is 4 and <i>last</i> is 5:</p>
+<pre>    beginInsertRows(parent, 4, 5);</pre>
+<p>This appends the two new rows as rows 4 and 5.</p>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="protected final void beginRemoveColumns(com.trolltech.qt.core.QModelIndex parent__0, int first__1, int last__2)" doc="/**
+<p>Begins a column removal operation.</p>
+<p>When reimplementing removeColumns() in a subclass, you must call this function <i>before</i> removing data from the model's underlying data store.</p>
+<p>The <i>parent</i> index corresponds to the parent from which the new columns are removed; <i>first</i> and <i>last</i> are the column numbers of the first and last columns to be removed.</p>
+<p><table width=&quote;80%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image modelview-begin-remove-columns.png]</font></td><td>Specify the first and last column numbers for the span of columns you want to remove from an item in a model.<p>For example, as shown in the diagram, we remove the three columns from column 4 to column 6, so <i>first</i> is 4 and <i>last</i> is 6:</p>
+<pre>    beginRemoveColumns(parent, 4, 6);</pre>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="protected final void beginRemoveRows(com.trolltech.qt.core.QModelIndex parent__0, int first__1, int last__2)" doc="/**
+<p>Begins a row removal operation.</p>
+<p>When reimplementing removeRows() in a subclass, you must call this function <i>before</i> removing data from the model's underlying data store.</p>
+<p>The <i>parent</i> index corresponds to the parent from which the new rows are removed; <i>first</i> and <i>last</i> are the row numbers of the rows to be removed.</p>
+<p><table width=&quote;80%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image modelview-begin-remove-rows.png]</font></td><td>Specify the first and last row numbers for the span of rows you want to remove from an item in a model.<p>For example, as shown in the diagram, we remove the two rows from row 2 to row 3, so <i>first</i> is 2 and <i>last</i> is 3:</p>
+<pre>    beginRemoveRows(parent, 2, 3);</pre>
+</td></tr>
+</table></p>
+
+*/"/>
+    <method name="protected final void changePersistentIndex(com.trolltech.qt.core.QModelIndex from__0, com.trolltech.qt.core.QModelIndex to__1)" doc="/**
+<p>Changes the QPersistentModelIndex that is equal to the given <i>from</i> model index to the given <i>to</i> model index.</p>
+<p>If no persistent model index equal to the given <i>from</i> model index was found, nothing is changed.</p>
+
+*/"/>
+    <method name="protected final void changePersistentIndexList(java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; from__0, java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; to__1)" doc="/**
+<p>Changes the QPersistentModelIndexes that is equal to the indexes in the given <i>from</i> model index list to the given <i>to</i> model index list.</p>
+<p>If no persistent model indexes equal to the indexes in the given <i>from</i> model index list was found, nothing is changed.</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.core.QModelIndex createIndex(int row__0, int column__1, com.trolltech.qt.QNativePointer data__2)" doc="/**
+<p>Creates a model index for the given <i>row</i> and <i>column</i> with the internal pointer <i>ptr</i>.</p>
+<p>This function provides a consistent interface that model subclasses must use to create model indexes.</p>
+
+*/"/>
+    <method name="protected final boolean decodeData(int row__0, int column__1, com.trolltech.qt.core.QModelIndex parent__2, com.trolltech.qt.core.QDataStream stream__3)"/>
+    <method name="protected final void encodeData(java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; indexes__0, com.trolltech.qt.core.QDataStream stream__1)"/>
+    <method name="protected final void endInsertColumns()" doc="/**
+<p>Ends a column insertion operation.</p>
+<p>When reimplementing insertColumns() in a subclass, you must call this function <i>after</i> inserting data into the model's underlying data store.</p>
+
+*/"/>
+    <method name="protected final void endInsertRows()" doc="/**
+<p>Ends a row insertion operation.</p>
+<p>When reimplementing insertRows() in a subclass, you must call this function <i>after</i> inserting data into the model's underlying data store.</p>
+
+*/"/>
+    <method name="protected final void endRemoveColumns()" doc="/**
+<p>Ends a column removal operation.</p>
+<p>When reimplementing removeColumns() in a subclass, you must call this function <i>after</i> removing data from the model's underlying data store.</p>
+
+*/"/>
+    <method name="protected final void endRemoveRows()" doc="/**
+<p>Ends a row removal operation.</p>
+<p>When reimplementing removeRows() in a subclass, you must call this function <i>after</i> removing data from the model's underlying data store.</p>
+
+*/"/>
+    <method name="public final boolean hasIndex(int row__0, int column__1, com.trolltech.qt.core.QModelIndex parent__2)" doc="/**
+<p>Returns true if the model returns a valid QModelIndex for <i>row</i> and <i>column</i> with <i>parent</i>, otherwise returns false.</p>
+
+*/"/>
+    <method name="protected final java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; persistentIndexList()" doc="/**
+<p>Returns the list of indexes stored as persistent indexes in the model.</p>
+
+*/"/>
+    <method name="public final boolean removeColumn(int column__0, com.trolltech.qt.core.QModelIndex parent__1)" doc="/**
+<p>Removes the given <i>column</i> from the child items of the <i>parent</i> specified. Returns true if the column is removed; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean removeRow(int row__0, com.trolltech.qt.core.QModelIndex parent__1)" doc="/**
+<p>Removes the given <i>row</i> from the child items of the <i>parent</i> specified. Returns true if the row is removed; otherwise returns false.</p>
+
+*/"/>
+    <method name="protected final void reset()" doc="/**
+<p>Resets the model to its original state in any attached views.</p>
+<p>When a model is reset it means that any previous data reported from the model is now invalid and has to be queried for again.</p>
+<p>When a model radically changes its data it can sometimes be easier to just call this function rather than emit dataChanged() to inform other components when the underlying data source, or its structure, has changed.</p>
+
+*/"/>
+    <method name="public final void setSupportedDragActions(com.trolltech.qt.core.Qt.DropActions arg__0)" doc="/**
+<p>Sets the supported drag <i>actions</i> for the items in the model.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex sibling(int row__0, int column__1, com.trolltech.qt.core.QModelIndex idx__2)" doc="/**
+<p>Returns the sibling at <i>row</i> and <i>column</i> for the item at <i>index</i>, or an invalid QModelIndex if there is no sibling at that location.</p>
+<p>sibling() is just a convenience function that finds the item's parent, and uses it to retrieve the index of the child item in the specified <i>row</i> and <i>column</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.DropActions supportedDragActions()" doc="/**
+<p>Returns the actions supported by the data in this model.</p>
+<p>The default implementation returns supportedDropActions() unless specific values have been set with setSupportedDragActions().</p>
+<p>supportedDragActions() is used by QAbstractItemView::startDrag() as the default values when a drag occurs.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QModelIndex buddy(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns a model index for the buddy of the item represented by <i>index</i>. When the user wants to edit an item, the view will call this function to check whether another item in the model should be edited instead, and construct a delegate using the model index returned by the buddy item.</p>
+<p>In the default implementation each item is its own buddy.</p>
+
+*/"/>
+    <method name="public boolean canFetchMore(com.trolltech.qt.core.QModelIndex parent__0)" doc="/**
+<p>Returns true if there is more data available for <i>parent</i>, otherwise false.</p>
+<p>The default implementation always returns false.</p>
+
+*/"/>
+    <method name="public abstract int columnCount(com.trolltech.qt.core.QModelIndex parent__0)" doc="/**
+<p>Returns the number of columns for the children of the given <i>parent</i>.</p>
+<p>In most subclasses, the number of columns is independent of the <i>parent</i>. For example:</p>
+<pre>    int DomModel::columnCount(const QModelIndex &amp; /* parent */</span>) const
+    {
+        return 3;
+    }</pre>
+
+*/"/>
+    <method name="public abstract java.lang.Object data(com.trolltech.qt.core.QModelIndex index__0, int role__1)" doc="/**
+<p>Returns the data stored under the given <i>role</i> for the item referred to by the <i>index</i>.</p>
+
+*/"/>
+    <method name="public boolean dropMimeData(com.trolltech.qt.gui.QMimeData data__0, com.trolltech.qt.core.Qt.DropAction action__1, int row__2, int column__3, com.trolltech.qt.core.QModelIndex parent__4)" doc="/**
+<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i>. Although the specified <i>row</i>, <i>column</i> and <i>parent</i> indicate the location of an item in the model where the operation ended, it is the responsibility of the view to provide a suitable location for where the data should be inserted.</p>
+<p>For instance, a drop action on an item in a QTreeView can result in new items either being inserted as children of the item specified by <i>row</i>, <i>column</i>, and <i>parent</i>, or as siblings of the item.</p>
+
+*/"/>
+    <method name="public void fetchMore(com.trolltech.qt.core.QModelIndex parent__0)" doc="/**
+<p>Fetches any available data for the items with the parent specified by the <i>parent</i> index.</p>
+<p>Reimplement this if you have incremental data.</p>
+<p>The default implementation does nothing.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.Qt.ItemFlags flags(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns the item flags for the given <i>index</i>.</p>
+<p>The base class implementation returns a combination of flags that enables the item (<tt>ItemIsEnabled</tt>) and allows it to be selected (<tt>ItemIsSelectable</tt>).</p>
+
+*/"/>
+    <method name="public boolean hasChildren(com.trolltech.qt.core.QModelIndex parent__0)" doc="/**
+<p>Returns true if <i>parent</i> has any children; otherwise returns false. Use rowCount() on the parent to find out the number of children.</p>
+
+*/"/>
+    <method name="public java.lang.Object headerData(int section__0, com.trolltech.qt.core.Qt.Orientation orientation__1, int role__2)" doc="/**
+<p>Returns the data for the given <i>role</i> and <i>section</i> in the header with the specified <i>orientation</i>.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QModelIndex index(int row__0, int column__1, com.trolltech.qt.core.QModelIndex parent__2)" doc="/**
+<p>Returns the index of the item in the model specified by the given <i>row</i>, <i>column</i> and <i>parent</i> index.</p>
+<p>When reimplementing this function in a subclass, call createIndex() to generate model indexes that other components can use to refer to items in your model.</p>
+
+*/"/>
+    <method name="public boolean insertColumn(int column__0, com.trolltech.qt.core.QModelIndex parent__1)" doc="/**
+<p>Inserts a single column before the given <i>column</i> in the child items of the <i>parent</i> specified. Returns true if the column is inserted; otherwise returns false.</p>
+
+*/"/>
+    <method name="public boolean insertColumns(int column__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)" doc="/**
+<p>On models that support this, inserts <i>count</i> new columns into the model before the given <i>column</i>. The items in each new column will be children of the item represented by the <i>parent</i> model index.</p>
+<p>If <i>column</i> is 0, the columns are prepended to any existing columns. If <i>column</i> is columnCount(), the columns are appended to any existing columns. If <i>parent</i> has no children, a single row with <i>count</i> columns is inserted.</p>
+<p>Returns true if the columns were successfully inserted; otherwise returns false.</p>
+<p>The base class implementation does nothing and returns false.</p>
+<p>If you implement your own model, you can reimplement this function if you want to support insertions. Alternatively, you can provide you own API for altering the data.</p>
+
+*/"/>
+    <method name="public boolean insertRow(int row__0, com.trolltech.qt.core.QModelIndex parent__1)" doc="/**
+<p>Inserts a single row before the given <i>row</i> in the child items of the <i>parent</i> specified. Returns true if the row is inserted; otherwise returns false.</p>
+
+*/"/>
+    <method name="public boolean insertRows(int row__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)" doc="/**
+<p>On models that support this, inserts <i>count</i> rows into the model before the given <i>row</i>. The items in the new row will be children of the item represented by the <i>parent</i> model index.</p>
+<p>If <i>row</i> is 0, the rows are prepended to any existing rows in the parent. If <i>row</i> is rowCount(), the rows are appended to any existing rows in the parent. If <i>parent</i> has no children, a single column with <i>count</i> rows is inserted.</p>
+<p>Returns true if the rows were successfully inserted; otherwise returns false.</p>
+<p>The base class implementation does nothing and returns false.</p>
+<p>If you implement your own model, you can reimplement this function if you want to support insertions. Alternatively, you can provide you own API for altering the data.</p>
+
+*/"/>
+    <method name="public java.util.SortedMap&lt;java.lang.Integer, java.lang.Object&gt; itemData(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns a map with values for all predefined roles in the model for the item at the given <i>index</i>.</p>
+<p>Reimplemented this function if you want to extend the default behavior of this function to include custom roles in the map.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; match(com.trolltech.qt.core.QModelIndex start__0, int role__1, java.lang.Object value__2, int hits__3, com.trolltech.qt.core.Qt.MatchFlags flags__4)" doc="/**
+<p>Returns a list of indexes for the items where the data stored under the given <i>role</i> matches the specified <i>value</i>. The way the search is performed is defined by the <i>flags</i> given. The list that is returned may be empty.</p>
+<p>The search starts from the <i>start</i> index, and continues until the number of matching data items equals <i>hits</i>, the search reaches the last row, or the search reaches <i>start</i> again, depending on whether <tt>MatchWrap</tt> is specified in <i>flags</i>.</p>
+<p>By default, this function will perform a wrapping, string-based comparison on all items, searching for items that begin with the search term specified by <i>value</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QMimeData mimeData(java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; indexes__0)" doc="/**
+<p>Returns an object that contains serialized items of data corresponding to the list of <i>indexes</i> specified. The formats used to describe the encoded data is obtained from the mimeTypes() function.</p>
+<p>If the list of indexes is empty, or there are no supported MIME types, 0 is returned rather than a serialized empty list.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;java.lang.String&gt; mimeTypes()" doc="/**
+<p>Returns a list of MIME types that can be used to describe a list of model indexes.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QModelIndex parent(com.trolltech.qt.core.QModelIndex child__0)" doc="/**
+<p>Returns the parent of the model item with the given <i>index</i>, or QModelIndex() if it has no parent.</p>
+<p>A common convention used in models that expose tree data structures is that only items in the first column have children. When reimplementing this function in a subclass that provides a tree model, you should return a model index corresponding to an item in the first column by calling createIndex() with a value of 0 for the column number.</p>
+
+*/"/>
+    <method name="public boolean removeColumns(int column__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)" doc="/**
+<p>On models that support this, removes <i>count</i> columns starting with the given <i>column</i> under parent <i>parent</i> from the model. Returns true if the columns were successfully removed; otherwise returns false.</p>
+<p>The base class implementation does nothing and returns false.</p>
+<p>If you implement your own model, you can reimplement this function if you want to support removing. Alternatively, you can provide you own API for altering the data.</p>
+
+*/"/>
+    <method name="public boolean removeRows(int row__0, int count__1, com.trolltech.qt.core.QModelIndex parent__2)" doc="/**
+<p>On models that support this, removes <i>count</i> rows starting with the given <i>row</i> under parent <i>parent</i> from the model. Returns true if the rows were successfully removed; otherwise returns false.</p>
+<p>The base class implementation does nothing and returns false.</p>
+<p>If you implement your own model, you can reimplement this function if you want to support removing. Alternatively, you can provide you own API for altering the data.</p>
+
+*/"/>
+    <method name="public void revert()" doc="/**
+<p>Called to let the model know that it should discart whatever it has cached. Typically used for row editing.</p>
+
+*/"/>
+    <method name="public abstract int rowCount(com.trolltech.qt.core.QModelIndex parent__0)" doc="/**
+<p>Returns the number of rows under the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public boolean setData(com.trolltech.qt.core.QModelIndex index__0, java.lang.Object value__1, int role__2)" doc="/**
+<p>Sets the <i>role</i> data for the item at <i>index</i> to <i>value</i>. Returns true if successful; otherwise returns false.</p>
+<p>The dataChanged() signal should be emitted if the data was successfully set.</p>
+<p>The base class implementation returns false. This function and data() must be reimplemented for editable models. Note that the dataChanged() signal must be emitted explicitly when reimplementing this function.</p>
+
+*/"/>
+    <method name="public boolean setHeaderData(int section__0, com.trolltech.qt.core.Qt.Orientation orientation__1, java.lang.Object value__2, int role__3)" doc="/**
+<p>Sets the <i>role</i> for the header <i>section</i> to <i>value</i>. The <i>orientation</i> gives the orientation of the header.</p>
+<p>Note that the headerDataChanged() signal must be emitted explicitly when reimplementing this function.</p>
+
+*/"/>
+    <method name="public boolean setItemData(com.trolltech.qt.core.QModelIndex index__0, java.util.SortedMap&lt;java.lang.Integer, java.lang.Object&gt; roles__1)" doc="/**
+<p>For every Qt::ItemDataRole in <i>roles</i>, sets the role data for the item at <i>index</i> to the associated value in <i>roles</i>. Returns true if successful; otherwise returns false.</p>
+
+*/"/>
+    <method name="public void sort(int column__0, com.trolltech.qt.core.Qt.SortOrder order__1)" doc="/**
+<p>Sorts the model by <i>column</i> in the given <i>order</i>.</p>
+<p>The base class implementation does nothing.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QSize span(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns the row and column span of the item represented by <i>index</i>.</p>
+<p>Note: span is not used currently, but will be in the future.</p>
+
+*/"/>
+    <method name="public boolean submit()" doc="/**
+<p>Called to let the model know that it should submit whatever it has cached to the permanent storage. Typically used for row editing.</p>
+<p>Returns false on error, otherwise true.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.Qt.DropActions supportedDropActions()" doc="/**
+<p>Returns the drop actions supported by this model.</p>
+<p>The default implementation returns Qt::CopyAction. Reimplement this function if you wish to support additional actions. Note that you must also reimplement the dropMimeData() function to handle the additional operations.</p>
+
+*/"/>
+</class>

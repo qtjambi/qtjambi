@@ -1,0 +1,95 @@
+<class name="QLayoutItem" doc="/**
+<p>The QLayoutItem class provides an abstract item that a QLayout manipulates.</p>
+<p>This is used by custom layouts.</p>
+<p>Pure virtual functions are provided to return information about the layout, including, sizeHint(), minimumSize(), maximumSize() and expanding().</p>
+<p>The layout's geometry can be set and retrieved with setGeometry() and geometry(), and its alignment with setAlignment() and alignment().</p>
+<p>isEmpty() returns whether the layout item is empty. If the concrete item is a QWidget, it can be retrieved using widget(). Similarly for layout() and spacerItem().</p>
+<p>Some layouts have width and height interdependencies. These can be expressed using hasHeightForWidth(), heightForWidth(), and minimumHeightForWidth(). For more explanation see the <i>Qt Quarterly</i> article <a href=&quote;http://doc.trolltech.com/qq/qq04-height-for-width.html&quote;>Trading Height for Width</a>.</p>
+
+*/">
+    <method name="public QLayoutItem(com.trolltech.qt.core.Qt.Alignment alignment__0)" doc="/**
+<p>Constructs a layout item with an <i>alignment</i>. Not all subclasses support alignment.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.Qt.Alignment alignment()" doc="/**
+<p>Returns the alignment of this item.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.Qt.Orientations expandingDirections()" doc="/**
+<p>Returns whether this layout item can make use of more space than sizeHint(). A value of Qt::Vertical or Qt::Horizontal means that it wants to grow in only one dimension, whereas Qt::Vertical | Qt::Horizontal means that it wants to grow in both dimensions.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QRect geometry()" doc="/**
+<p>Returns the rectangle covered by this layout item.</p>
+
+*/"/>
+    <method name="public boolean hasHeightForWidth()" doc="/**
+<p>Returns true if this layout's preferred height depends on its width; otherwise returns false. The default implementation returns false.</p>
+<p>Reimplement this function in layout managers that support height for width.</p>
+
+*/"/>
+    <method name="public int heightForWidth(int arg__0)" doc="/**
+<p>Returns the preferred height for this layout item, given the width <i>w</i>.</p>
+<p>The default implementation returns -1, indicating that the preferred height is independent of the width of the item. Using the function hasHeightForWidth() will typically be much faster than calling this function and testing for -1.</p>
+<p>Reimplement this function in layout managers that support height for width. A typical implementation will look like this:</p>
+<pre>    int MyLayout::heightForWidth(int w) const
+    {
+        if (cache_dirty || cached_width != w) {
+            <span class=&quote;comment&quote;>// not all C++ compilers support &quot;mutable&quot;</span>
+            MyLayout *that = (MyLayout*)this;
+            int h = calculateHeightForWidth(w);
+            that-&gt;cached_hfw = h;
+            return h;
+        }
+        return cached_hfw;
+    }</pre>
+<p>Caching is strongly recommended; without it layout will take exponential time.</p>
+
+*/"/>
+    <method name="public void invalidate()" doc="/**
+<p>Invalidates any cached information in this layout item.</p>
+
+*/"/>
+    <method name="public abstract boolean isEmpty()" doc="/**
+<p>Implemented in subclasses to return whether this item is empty, i.e. whether it contains any widgets.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QLayout layout()" doc="/**
+<p>If this item is a QLayout, it is returned as a QLayout; otherwise 0 is returned. This function provides type-safe casting.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QSize maximumSize()" doc="/**
+<p>Implemented in subclasses to return the maximum size of this item.</p>
+
+*/"/>
+    <method name="public int minimumHeightForWidth(int arg__0)" doc="/**
+<p>Returns the minimum height this widget needs for the given width, <i>w</i>. The default implementation simply returns heightForWidth(<i>w</i>).</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QSize minimumSize()" doc="/**
+<p>Implemented in subclasses to return the minimum size of this item.</p>
+
+*/"/>
+    <method name="public void setAlignment(com.trolltech.qt.core.Qt.Alignment a__0)" doc="/**
+<p>Sets the alignment of this item to <i>alignment</i>. Not all subclasses support alignment.</p>
+
+*/"/>
+    <method name="public abstract void setGeometry(com.trolltech.qt.core.QRect arg__0)" doc="/**
+<p>Implemented in subclasses to set this item's geometry to <i>r</i>.</p>
+
+*/"/>
+    <method name="public abstract com.trolltech.qt.core.QSize sizeHint()" doc="/**
+<p>Implemented in subclasses to return the preferred size of this item.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QSpacerItem spacerItem()" doc="/**
+<p>If this item is a QSpacerItem, it is returned as a QSpacerItem; otherwise 0 is returned. This function provides type-safe casting.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QWidget widget()" doc="/**
+<p>If this item is a QWidget, it is returned as a QWidget; otherwise 0 is returned. This function provides type-safe casting.</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.core.Qt.Alignment align()"/>
+    <method name="protected final void setAlign(com.trolltech.qt.core.Qt.Alignment align)"/>
+</class>

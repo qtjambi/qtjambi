@@ -1,0 +1,55 @@
+<class name="QGraphicsSceneWheelEvent">
+    <method name="public QGraphicsSceneWheelEvent(com.trolltech.qt.core.QEvent.Type type__0)" doc="/**
+<p>Constructs a QGraphicsSceneWheelEvent of type <i>type</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.MouseButtons buttons()" doc="/**
+<p>Returns the mouse buttons that were pressed when the wheel event occurred.</p>
+
+*/"/>
+    <method name="public final int delta()" doc="/**
+<p>Returns the distance that the wheel is rotated, in eights of a degree. A positive value indicates that the wheel was rotated forwards away from the user; a negative value indicates that the wheel was rotated backwards toward the user.</p>
+<p>Most mouse types work in steps of 15 degrees, in which case the delta value is a multiple of 120 (== 15 * 8).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.KeyboardModifiers modifiers()" doc="/**
+<p>Returns the keyboard modifiers that were active when the wheel event occurred.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF pos()" doc="/**
+<p>Returns the position of the cursor in item coordinates when the wheel event occurred.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF scenePos()" doc="/**
+<p>Returns the position of the cursor in item coordinates when the wheel event occurred.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint screenPos()" doc="/**
+<p>Returns the position of the cursor in screen coordinates when the wheel event occurred.</p>
+
+*/"/>
+    <method name="public final void setButtons(com.trolltech.qt.core.Qt.MouseButtons buttons__0)" doc="/**
+<p>Sets the mouse buttons that were pressed when the wheel event occurred to <i>buttons</i>.</p>
+
+*/"/>
+    <method name="public final void setDelta(int delta__0)" doc="/**
+<p>Sets the distance that the wheel is rotated to <i>delta</i>.</p>
+
+*/"/>
+    <method name="public final void setModifiers(com.trolltech.qt.core.Qt.KeyboardModifiers modifiers__0)" doc="/**
+<p>Sets the keyboard modifiers that were active when the wheel event occurred to <i>modifiers</i>.</p>
+
+*/"/>
+    <method name="public final void setPos(com.trolltech.qt.core.QPointF pos__0)" doc="/**
+<p>Sets the position of the cursor in item coordinates when the wheel event occurred to <i>pos</i>.</p>
+
+*/"/>
+    <method name="public final void setScenePos(com.trolltech.qt.core.QPointF pos__0)" doc="/**
+<p>Sets the position of the cursor in scene coordinates when the wheel event occurred to <i>pos</i>.</p>
+
+*/"/>
+    <method name="public final void setScreenPos(com.trolltech.qt.core.QPoint pos__0)" doc="/**
+<p>Sets the position of the cursor in screen coordinates when the wheel event occurred to <i>pos</i>.</p>
+
+*/"/>
+</class>

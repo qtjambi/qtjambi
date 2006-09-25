@@ -1,0 +1,19 @@
+<class name="QActionEvent" doc="/**
+<p>The QActionEvent class provides an event that is generated when a QAction is added, removed, or changed.</p>
+<p>Actions can be added to widgets using QWidget::addAction(). This generates an ActionAdded event, which you can handle to provide custom behavior. For example, QToolBar reimplements QWidget::actionEvent() to create QToolButtons for the actions.</p>
+
+*/">
+    <method name="public QActionEvent(int type__0, com.trolltech.qt.gui.QAction action__1, com.trolltech.qt.gui.QAction before__2)" doc="/**
+<p>Constructs an action event. The <i>type</i> can be ActionChanged, ActionAdded, or ActionRemoved.</p>
+<p><i>action</i> is the action that is changed, added, or removed. If <i>type</i> is ActionAdded, the action is to be inserted before the action <i>before</i>. If <i>before</i> is 0, the action is appended.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction action()" doc="/**
+<p>Returns the action that is changed, added, or removed.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction before()" doc="/**
+<p>If type() is ActionAdded, returns the action that should appear before action(). If this function returns 0, the action should be appended to already existing actions on the same widget.</p>
+
+*/"/>
+</class>

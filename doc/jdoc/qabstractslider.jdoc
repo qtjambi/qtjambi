@@ -1,0 +1,106 @@
+<class name="QAbstractSlider" doc="/**
+<p>The QAbstractSlider class provides an integer value within a range.</p>
+<p>The class is designed as a common super class for widgets like QScrollBar, QSlider and QDial.</p>
+<p>Here are the main properties of the class:</p>
+<ol type=&quote;1&quote;>
+<li>value: The bounded integer that QAbstractSlider maintains.</li>
+<li>minimum: The lowest possible value.</li>
+<li>maximum: The highest possible value.</li>
+<li>singleStep: The smaller of two natural steps that an abstract sliders provides and typically corresponds to the user pressing an arrow key.</li>
+<li>pageStep: The larger of two natural steps that an abstract slider provides and typically corresponds to the user pressing PageUp or PageDown.</li>
+<li>tracking: Whether slider tracking is enabled.</li>
+<li>sliderPosition: The current position of the slider. If tracking is enabled (the default), this is identical to value.</li>
+</ol>
+<p>Unity (1) may be viewed as a third step size. setValue() lets you set the current value to any integer in the allowed range, not just minimum() + <i>n</i> * singleStep() for integer values of <i>n</i>. Some widgets may allow the user to set any value at all; others may just provide multiples of singleStep() or pageStep().</p>
+<p>QAbstractSlider emits a comprehensive set of signals:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Signal</th><th>Emitted when</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>valueChanged()</td><td>the value has changed. The tracking determines whether this signal is emitted during user interaction.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>sliderPressed()</td><td>the user starts to drag the slider.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>sliderMoved()</td><td>the user drags the slider.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>sliderReleased()</td><td>the user releases the slider.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>actionTriggered()</td><td>a slider action was triggerd.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>rangeChanged()</td><td>a the range has changed.</td></tr>
+</table></p>
+<p>QAbstractSlider provides a virtual sliderChange() function that is well suited for updating the on-screen representation of sliders. By calling triggerAction(), subclasses trigger slider actions. Two helper functions QStyle::sliderPositionFromValue() and QStyle::sliderValueFromPosition() help subclasses and styles to map screen coordinates to logical range values.</p>
+
+*/">
+    <method name="public QAbstractSlider(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an abstract slider.</p>
+<p>The <i>parent</i> arguments is sent to the QWidget constructor.</p>
+<p>The minimum defaults to 0, the maximum to 99, with a singleStep size of 1 and a pageStep size of 10, and an initial value of 0.</p>
+
+*/"/>
+    <method name="public final boolean hasTracking()"/>
+    <method name="public final boolean invertedAppearance()"/>
+    <method name="public final boolean invertedControls()"/>
+    <method name="public final boolean isSliderDown()"/>
+    <method name="public final int maximum()"/>
+    <method name="public final int minimum()"/>
+    <method name="public final com.trolltech.qt.core.Qt.Orientation orientation()"/>
+    <method name="public final int pageStep()"/>
+    <method name="protected final com.trolltech.qt.gui.QAbstractSlider.SliderAction repeatAction()" doc="/**
+<p>Returns the current repeat action.</p>
+
+*/"/>
+    <method name="public final void setInvertedAppearance(boolean arg__0)"/>
+    <method name="public final void setInvertedControls(boolean arg__0)"/>
+    <method name="public final void setMaximum(int arg__0)"/>
+    <method name="public final void setMinimum(int arg__0)"/>
+    <method name="public final void setOrientation(com.trolltech.qt.core.Qt.Orientation arg__0)"/>
+    <method name="public final void setPageStep(int arg__0)"/>
+    <method name="public final void setRange(int min__0, int max__1)" doc="/**
+<p>Sets the slider's minimum to <i>min</i> and its maximum to <i>max</i>.</p>
+<p>If <i>max</i> is smaller than <i>min</i>, <i>min</i> becomes the only legal value.</p>
+
+*/"/>
+    <method name="protected final void setRepeatAction(com.trolltech.qt.gui.QAbstractSlider.SliderAction action__0, int thresholdTime__1, int repeatTime__2)" doc="/**
+<p>Sets action <i>action</i> to be triggered repetitively in intervals of <i>repeatTime</i>, after an initial delay of <i>thresholdTime</i>.</p>
+
+*/"/>
+    <method name="public final void setSingleStep(int arg__0)"/>
+    <method name="public final void setSliderDown(boolean arg__0)"/>
+    <method name="public final void setSliderPosition(int arg__0)"/>
+    <method name="public final void setTracking(boolean enable__0)"/>
+    <method name="public final void setValue(int arg__0)"/>
+    <method name="public final int singleStep()"/>
+    <method name="public final int sliderPosition()"/>
+    <method name="public final void triggerAction(com.trolltech.qt.gui.QAbstractSlider.SliderAction action__0)" doc="/**
+<p>Triggers a slider <i>action</i>. Possible actions are SliderSingleStepAdd, SliderSingleStepSub, SliderPageStepAdd, SliderPageStepSub, SliderToMinimum, SliderToMaximum, and SliderMove.</p>
+
+*/"/>
+    <method name="public final int value()"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent ev__0)"/>
+    <method name="protected void sliderChange(com.trolltech.qt.gui.QAbstractSlider.SliderChange change__0)" doc="/**
+<p>Reimplement this virtual function to track slider changes such as SliderRangeChange, SliderOrientationChange, SliderStepsChange, or SliderValueChange. The default implementation only updates the display and ignores the <i>change</i> parameter.</p>
+
+*/"/>
+    <method name="protected void timerEvent(com.trolltech.qt.core.QTimerEvent arg__0)"/>
+    <method name="protected void wheelEvent(com.trolltech.qt.gui.QWheelEvent e__0)"/>
+    <enum name="SliderAction" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="SliderChange" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

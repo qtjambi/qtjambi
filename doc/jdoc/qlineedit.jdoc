@@ -1,0 +1,243 @@
+<class name="QLineEdit" doc="/**
+<p>The QLineEdit widget is a one-line text editor.</p>
+<p>A line edit allows the user to enter and edit a single line of plain text with a useful collection of editing functions, including undo and redo, cut and paste, and drag and drop.</p>
+<p>By changing the echoMode() of a line edit, it can also be used as a &quot;write-only&quot; field, for inputs such as passwords.</p>
+<p>The length of the text can be constrained to maxLength(). The text can be arbitrarily constrained using a validator() or an inputMask(), or both.</p>
+<p>A related class is QTextEdit which allows multi-line, rich text editing.</p>
+<p>You can change the text with setText() or insert(). The text is retrieved with text(); the displayed text (which may be different, see EchoMode) is retrieved with displayText(). Text can be selected with setSelection() or selectAll(), and the selection can be cut(), copy()ied and paste()d. The text can be aligned with setAlignment().</p>
+<p>When the text changes the textChanged() signal is emitted; when the text changes other than by calling setText() the textEdited() signal is emitted; when the cursor is moved the cursorPositionChanged() signal is emitted; and when the Return or Enter key is pressed the returnPressed() signal is emitted.</p>
+<p>When editing is finished, either because the line edit lost focus or Return/Enter is pressed the editingFinished() signal is emitted.</p>
+<p>Note that if there is a validator set on the line edit, the returnPressed()/editingFinished() signals will only be emitted if the validator returns QValidator::Acceptable.</p>
+<p>By default, QLineEdits have a frame as specified by the Windows and Motif style guides; you can turn it off by calling setFrame(false).</p>
+<p>The default key bindings are described below. The line edit also provides a context menu (usually invoked by a right mouse click) that presents some of these editing options. <a name=&quote;desc&quote;></a></p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Keypress</th><th>Action</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Left Arrow</td><td>Moves the cursor one character to the left.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Shift+Left Arrow</td><td>Moves and selects text one character to the left.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Right Arrow</td><td>Moves the cursor one character to the right.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Shift+Right Arrow</td><td>Moves and selects text one character to the right.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Home</td><td>Moves the cursor to the beginning of the line.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>End</td><td>Moves the cursor to the end of the line.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Backspace</td><td>Deletes the character to the left of the cursor.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Ctrl+Backspace</td><td>Deletes the word to the left of the cursor.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Delete</td><td>Deletes the character to the right of the cursor.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Ctrl+Delete</td><td>Deletes the word to the right of the cursor.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Ctrl+A</td><td>Select all.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Ctrl+C</td><td>Copies the selected text to the clipboard.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Ctrl+Insert</td><td>Copies the selected text to the clipboard.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Ctrl+K</td><td>Deletes to the end of the line.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Ctrl+V</td><td>Pastes the clipboard text into line edit.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Shift+Insert</td><td>Pastes the clipboard text into line edit.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Ctrl+X</td><td>Deletes the selected text and copies it to the clipboard.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Shift+Delete</td><td>Deletes the selected text and copies it to the clipboard.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Ctrl+Z</td><td>Undoes the last operation.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Ctrl+Y</td><td>Redoes the last undone operation.</td></tr>
+</table></p>
+<p>Any other key sequence that represents a valid character, will cause the character to be inserted into the line edit.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image macintosh-lineedit.png]</font></td><td>A line edit shown in the Macintosh widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image windows-lineedit.png]</font></td><td>A line edit shown in the Windows XP widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image plastique-lineedit.png]</font></td><td>A line edit shown in the Plastique widget style.</td></tr>
+</table></p>
+
+*/">
+    <method name="public QLineEdit(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a line edit with no text.</p>
+<p>The maximum text length is set to 32767 characters.</p>
+<p>The <i>parent</i> argument is sent to the QWidget constructor.</p>
+
+*/"/>
+    <method name="public QLineEdit(java.lang.String arg__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs a line edit containing the text <i>contents</i>.</p>
+<p>The cursor position is set to the end of the line and the maximum text length to 32767 characters.</p>
+<p>The <i>parent</i> and argument is sent to the QWidget constructor.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.Alignment alignment()"/>
+    <method name="public final void backspace()" doc="/**
+<p>If no text is selected, deletes the character to the left of the text cursor and moves the cursor one position to the left. If any text is selected, the cursor is moved to the beginning of the selected text and the selected text is deleted.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Clears the contents of the line edit.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QCompleter completer()" doc="/**
+<p>Returns the current QCompleter that provides completions.</p>
+
+*/"/>
+    <method name="public final void copy()" doc="/**
+<p>Copies the selected text to the clipboard, if there is any, and if echoMode() is Normal.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMenu createStandardContextMenu()" doc="/**
+<p>This function creates the standard context menu which is shown when the user clicks on the line edit with the right mouse button. It is called from the default contextMenuEvent() handler. The popup menu's ownership is transferred to the caller.</p>
+
+*/"/>
+    <method name="public final void cursorBackward(boolean mark__0, int steps__1)" doc="/**
+<p>Moves the cursor back <i>steps</i> characters. If <i>mark</i> is true each character moved over is added to the selection; if <i>mark</i> is false the selection is cleared.</p>
+
+*/"/>
+    <method name="public final void cursorForward(boolean mark__0, int steps__1)" doc="/**
+<p>Moves the cursor forward <i>steps</i> characters. If <i>mark</i> is true each character moved over is added to the selection; if <i>mark</i> is false the selection is cleared.</p>
+
+*/"/>
+    <method name="public final int cursorPosition()"/>
+    <method name="public final int cursorPositionAt(com.trolltech.qt.core.QPoint pos__0)" doc="/**
+<p>Returns the cursor position under the point <i>pos</i>.</p>
+
+*/"/>
+    <method name="public final void cursorWordBackward(boolean mark__0)" doc="/**
+<p>Moves the cursor one word backward. If <i>mark</i> is true, the word is also selected.</p>
+
+*/"/>
+    <method name="public final void cursorWordForward(boolean mark__0)" doc="/**
+<p>Moves the cursor one word forward. If <i>mark</i> is true, the word is also selected.</p>
+
+*/"/>
+    <method name="public final void cut()" doc="/**
+<p>Copies the selected text to the clipboard and deletes it, if there is any, and if echoMode() is Normal.</p>
+<p>If the current validator disallows deleting the selected text, cut() will copy without deleting.</p>
+
+*/"/>
+    <method name="public final void del()" doc="/**
+<p>If no text is selected, deletes the character to the right of the text cursor. If any text is selected, the cursor is moved to the beginning of the selected text and the selected text is deleted.</p>
+
+*/"/>
+    <method name="public final void deselect()" doc="/**
+<p>Deselects any selected text.</p>
+
+*/"/>
+    <method name="public final java.lang.String displayText()"/>
+    <method name="public final boolean dragEnabled()"/>
+    <method name="public final com.trolltech.qt.gui.QLineEdit.EchoMode echoMode()"/>
+    <method name="public final void end(boolean mark__0)" doc="/**
+<p>Moves the text cursor to the end of the line unless it is already there. If <i>mark</i> is true, text is selected towards the last position; otherwise, any selected text is unselected if the cursor is moved.</p>
+
+*/"/>
+    <method name="public final boolean hasAcceptableInput()"/>
+    <method name="public final boolean hasFrame()"/>
+    <method name="public final boolean hasSelectedText()"/>
+    <method name="public final void home(boolean mark__0)" doc="/**
+<p>Moves the text cursor to the beginning of the line unless it is already there. If <i>mark</i> is true, text is selected towards the first position; otherwise, any selected text is unselected if the cursor is moved.</p>
+
+*/"/>
+    <method name="public final java.lang.String inputMask()"/>
+    <method name="public final void insert(java.lang.String arg__0)" doc="/**
+<p>Deletes any selected text, inserts <i>newText</i>, and validates the result. If it is valid, it sets it as the new contents of the line edit.</p>
+
+*/"/>
+    <method name="public final boolean isModified()"/>
+    <method name="public final boolean isReadOnly()"/>
+    <method name="public final boolean isRedoAvailable()"/>
+    <method name="public final boolean isUndoAvailable()"/>
+    <method name="public final int maxLength()"/>
+    <method name="public final void paste()" doc="/**
+<p>Inserts the clipboard's text at the cursor position, deleting any selected text, providing the line edit is not read-only.</p>
+<p>If the end result would not be acceptable to the current validator, nothing happens.</p>
+
+*/"/>
+    <method name="public final void redo()" doc="/**
+<p>Redoes the last operation if redo is available.</p>
+
+*/"/>
+    <method name="public final void selectAll()" doc="/**
+<p>Selects all the text (i.e. highlights it) and moves the cursor to the end. This is useful when a default value has been inserted because if the user types before clicking on the widget, the selected text will be deleted.</p>
+
+*/"/>
+    <method name="public final java.lang.String selectedText()"/>
+    <method name="public final int selectionStart()" doc="/**
+<p>selectionStart() returns the index of the first selected character in the line edit or -1 if no text is selected.</p>
+
+*/"/>
+    <method name="public final void setAlignment(com.trolltech.qt.core.Qt.Alignment flag__0)"/>
+    <method name="public final void setCompleter(com.trolltech.qt.gui.QCompleter completer__0)" doc="/**
+<p>Sets this line edit to provide auto completions from the completer, <i>c</i>. The completion mode is set using QCompleter::setCompletionMode().</p>
+<p>Using a QCompleter with a QValidator or QLineEdit::inputMask is not supported.</p>
+<p>If <i>c</i> == 0, setCompleter() removes the current completer, effectively disabling auto completion.</p>
+
+*/"/>
+    <method name="public final void setCursorPosition(int arg__0)"/>
+    <method name="public final void setDragEnabled(boolean b__0)"/>
+    <method name="public final void setEchoMode(com.trolltech.qt.gui.QLineEdit.EchoMode arg__0)"/>
+    <method name="public final void setFrame(boolean arg__0)"/>
+    <method name="public final void setInputMask(java.lang.String inputMask__0)"/>
+    <method name="public final void setMaxLength(int arg__0)"/>
+    <method name="public final void setModified(boolean arg__0)"/>
+    <method name="public final void setReadOnly(boolean arg__0)"/>
+    <method name="public final void setSelection(int arg__0, int arg__1)" doc="/**
+<p>Selects text from position <i>start</i> and for <i>length</i> characters. Negative lengths are allowed.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String arg__0)"/>
+    <method name="public final void setValidator(com.trolltech.qt.gui.QValidator arg__0)" doc="/**
+<p>Sets this line edit to only accept input that the validator, <i>v</i>, will accept. This allows you to place any arbitrary constraints on the text which may be entered.</p>
+<p>If <i>v</i> == 0, setValidator() removes the current input validator. The initial setting is to have no input validator (i.e. any input is accepted up to maxLength()).</p>
+
+*/"/>
+    <method name="public final java.lang.String text()"/>
+    <method name="public final void undo()" doc="/**
+<p>Undoes the last operation if undo is available. Deselects any current selection, and updates the selection start to the current cursor position.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QValidator validator()" doc="/**
+<p>Returns a pointer to the current input validator, or 0 if no validator has been set.</p>
+
+*/"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="protected void contextMenuEvent(com.trolltech.qt.gui.QContextMenuEvent arg__0)" doc="/**
+<p>Shows the standard context menu created with createStandardContextMenu().</p>
+<p>If you do not want the line edit to have a context menu, you can set its contextMenuPolicy to Qt::NoContextMenu. If you want to customize the context menu, reimplement this function. If you want to extend the standard context menu, reimplement this function, call createStandardContextMenu() and extend the menu returned.</p>
+<pre>    void LineEdit::contextMenuEvent(QContextMenuEvent *event)
+    {
+        QMenu *menu = createStandardContextMenu();
+        menu-&gt;addAction(tr(&quot;My Menu Item&quot;));
+        <span class=&quote;comment&quote;>//...</span>
+        menu-&gt;exec(event-&gt;globalPos());
+        delete menu;
+    }</pre>
+<p>The <i>event</i> parameter is used to obtain the position where the mouse cursor was when the event was generated.</p>
+
+*/"/>
+    <method name="protected void dragEnterEvent(com.trolltech.qt.gui.QDragEnterEvent arg__0)"/>
+    <method name="protected void dragLeaveEvent(com.trolltech.qt.gui.QDragLeaveEvent e__0)"/>
+    <method name="protected void dragMoveEvent(com.trolltech.qt.gui.QDragMoveEvent e__0)"/>
+    <method name="protected void dropEvent(com.trolltech.qt.gui.QDropEvent arg__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <method name="protected void focusInEvent(com.trolltech.qt.gui.QFocusEvent arg__0)"/>
+    <method name="protected void focusOutEvent(com.trolltech.qt.gui.QFocusEvent arg__0)"/>
+    <method name="protected void inputMethodEvent(com.trolltech.qt.gui.QInputMethodEvent arg__0)"/>
+    <method name="public java.lang.Object inputMethodQuery(com.trolltech.qt.core.Qt.InputMethodQuery arg__0)"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent arg__0)" doc="/**
+<p>Converts the given key press <i>event</i> into a line edit action.</p>
+<p>If Return or Enter is pressed and the current text is valid (or can be made valid by the validator), the signal returnPressed() is emitted.</p>
+<p>The default key bindings are listed in the class's detailed description.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QSize minimumSizeHint()" doc="/**
+<p>Returns a minimum size for the line edit.</p>
+<p>The width returned is enough for at least one character.</p>
+
+*/"/>
+    <method name="protected void mouseDoubleClickEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QMouseEvent arg__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent arg__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()" doc="/**
+<p>Returns a recommended size for the widget.</p>
+<p>The width returned, in pixels, is usually enough for about 15 to 20 characters.</p>
+
+*/"/>
+    <enum name="EchoMode" doc="/**
+<p>This enum type describes how a line edit should display its contents.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display characters as they are entered. This is the default.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Do not display anything. This may be appropriate for passwords where even the length of the password should be kept secret.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display asterisks instead of the characters actually entered.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Display characters as they are entered while editing otherwise display asterisks.</td></tr>
+</table></p>
+
+*/"/>
+</class>

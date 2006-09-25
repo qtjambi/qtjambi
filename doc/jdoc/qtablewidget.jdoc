@@ -1,0 +1,267 @@
+<class name="QTableWidget" doc="/**
+<p>The QTableWidget class provides an item-based table view with a default model.</p>
+<p>Table widgets provide standard table display facilities for applications. The items in a QTableWidget are provided by QTableWidgetItem.</p>
+<p>If you want a table that uses your own data model you should use QTableView rather than this class.</p>
+<p>Table widgets can be constructed with the required numbers of rows and columns:</p>
+<pre>        tableWidget = new QTableWidget(12, 3, this);</pre>
+<p>Alternatively, tables can be constructed without a given size and resized later:</p>
+<pre>        tableWidget = new QTableWidget(this);
+        tableWidget-&gt;setRowCount(10);
+        tableWidget-&gt;setColumnCount(5);</pre>
+<p>Items are created ouside the table (with no parent widget) and inserted into the table with setItem():</p>
+<pre>        QTableWidgetItem *newItem = new QTableWidgetItem(tr(&quot;%1&quot;).arg(
+            (row+1)*(column+1)));
+        tableWidget-&gt;setItem(row, column, newItem);</pre>
+<p>Tables can be given both horizontal and vertical headers. The simplest way to create the headers is to supply a list of strings to the setHorizontalHeaderLabels() and setVerticalHeaderLabels() functions. These will provide simple textual headers for the table's columns and rows. More sophisticated headers can be created from existing table items that are usually constructed outside the table. For example, we can construct a table item with an icon and aligned text, and use it as the header for a particular column:</p>
+<pre>        QTableWidgetItem *cubesHeaderItem = new QTableWidgetItem(tr(&quot;Cubes&quot;));
+        cubesHeaderItem-&gt;setIcon(QIcon(QPixmap(&quot;:/Images/cubed.png&quot;)));
+        cubesHeaderItem-&gt;setTextAlignment(Qt::AlignVCenter);</pre>
+<p>The number of rows in the table can be found with rowCount(), and the number of columns with columnCount(). The table can be cleared with the clear() function.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image windowsxp-tableview.png]</font></td><td><font color=&quote;red&quote;>[Missing image macintosh-tableview.png]</font></td><td><font color=&quote;red&quote;>[Missing image plastique-tableview.png]</font></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>A Windows XP style table widget.</td><td>A Macintosh style table widget.</td><td>A Plastique style table widget.</td></tr>
+</table></p>
+
+*/">
+    <method name="public QTableWidget(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Creates a new table view with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public QTableWidget(int rows__0, int columns__1, com.trolltech.qt.gui.QWidget parent__2)" doc="/**
+<p>Creates a new table view with the given <i>rows</i> and <i>columns</i>, and with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QWidget cellWidget(int row__0, int column__1)" doc="/**
+<p>Returns the widget displayed in the cell in the given <i>row</i> and <i>column</i>.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Removes all items in the view. This will also remove all selections. The table dimentions stay the same.</p>
+
+*/"/>
+    <method name="public final void clearContents()" doc="/**
+<p>Removes all items not in the headers from the view. This will also remove all selections. The table dimensions stay the same.</p>
+
+*/"/>
+    <method name="public final void closePersistentEditor(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Closes the persistent editor for <i>item</i>.</p>
+
+*/"/>
+    <method name="public final int column(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Returns the column for the <i>item</i>.</p>
+
+*/"/>
+    <method name="public final int columnCount()" doc="/**
+<p>Returns the number of columns.</p>
+
+*/"/>
+    <method name="public final int currentColumn()" doc="/**
+<p>Returns the column of the current item.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem currentItem()" doc="/**
+<p>Returns the current item.</p>
+
+*/"/>
+    <method name="public final int currentRow()" doc="/**
+<p>Returns the row of the current item.</p>
+
+*/"/>
+    <method name="public final void editItem(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Starts editing the <i>item</i> if it is editable.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QTableWidgetItem&gt; findItems(java.lang.String text__0, com.trolltech.qt.core.Qt.MatchFlags flags__1)" doc="/**
+<p>Finds items that matches the <i>text</i> using the given <i>flags</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem horizontalHeaderItem(int column__0)" doc="/**
+<p>Returns the horizontal header item for column <i>column</i>.</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.core.QModelIndex indexFromItem(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Returns the QModelIndex assocated with the given <i>item</i>.</p>
+
+*/"/>
+    <method name="public final void insertColumn(int column__0)" doc="/**
+<p>Inserts an empty column into the table at <i>column</i>.</p>
+
+*/"/>
+    <method name="public final void insertRow(int row__0)" doc="/**
+<p>Inserts an empty row into the table at <i>row</i>.</p>
+
+*/"/>
+    <method name="public final boolean isItemSelected(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Returns true if the <i>item</i> is selected, otherwise returns false.</p>
+<p>This function is deprecated. Use QTableWidgetItem::isSelected() instead.</p>
+
+*/"/>
+    <method name="public final boolean isSortingEnabled()"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem item(int row__0, int column__1)" doc="/**
+<p>Returns the item for the given <i>row</i> and <i>column</i> if one has been set; otherwise returns 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem itemAt(com.trolltech.qt.core.QPoint p__0)" doc="/**
+<p>Returns a pointer to the item at the given <i>point</i>, or returns 0 if the point is not covered by an item in the table widget.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem itemAt(int x__0, int y__1)" doc="/**
+<p>Returns the item at the position equivalent to QPoint(<i>ax</i>, <i>ay</i>) in the table widget's coordinate system, or returns 0 if the specified point is not covered by an item in the table widget.</p>
+
+*/"/>
+    <method name="protected final com.trolltech.qt.gui.QTableWidgetItem itemFromIndex(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns a pointer to the QTableWidgetItem assocated with the given <i>index</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem itemPrototype()" doc="/**
+<p>Returns the item prototype used by the table.</p>
+
+*/"/>
+    <method name="protected final java.util.List&lt;com.trolltech.qt.gui.QTableWidgetItem&gt; items(com.trolltech.qt.gui.QMimeData data__0)" doc="/**
+<p>Returns a list of pointers to the items contained in the <i>data</i> object. If the object was not created by a QTreeWidget in the same process, the list is empty.</p>
+
+*/"/>
+    <method name="public final void openPersistentEditor(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Opens an editor for the give <i>item</i>. The editor remains open after editing.</p>
+
+*/"/>
+    <method name="public final void removeColumn(int column__0)" doc="/**
+<p>Removes the column <i>column</i> and all its items from the table.</p>
+
+*/"/>
+    <method name="public final void removeRow(int row__0)" doc="/**
+<p>Removes the row <i>row</i> and all its items from the table.</p>
+
+*/"/>
+    <method name="public final int row(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Returns the row for the <i>item</i>.</p>
+
+*/"/>
+    <method name="public final int rowCount()" doc="/**
+<p>Returns the number of rows.</p>
+
+*/"/>
+    <method name="public final void scrollToItem(com.trolltech.qt.gui.QTableWidgetItem item__0, com.trolltech.qt.gui.QAbstractItemView.ScrollHint hint__1)" doc="/**
+<p>Scrolls the view if necessary to ensure that the <i>item</i> is visible. The <i>hint</i> parameter specifies more precisely where the <i>item</i> should be located after the operation.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QTableWidgetItem&gt; selectedItems()" doc="/**
+<p>Returns a list of all selected items.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QTableWidgetSelectionRange&gt; selectedRanges()" doc="/**
+<p>Returns a list of all selected ranges.</p>
+
+*/"/>
+    <method name="public final void setCellWidget(int row__0, int column__1, com.trolltech.qt.gui.QWidget widget__2)" doc="/**
+<p>Sets the <i>widget</i> to be displayed in the cell in the given <i>row</i> and <i>column</i>.</p>
+
+*/"/>
+    <method name="public final void setColumnCount(int columns__0)" doc="/**
+<p>Sets the number of columns in this table's model to <i>columns</i>. If this is less than columnCount(), the data in the unwanted columns is discarded.</p>
+
+*/"/>
+    <method name="public final void setCurrentCell(int row__0, int column__1)" doc="/**
+<p>Sets the current cell to be the cell at position (<i>row</i>, <i>column</i>).</p>
+<p>Depending on the current selection mode, the cell may also be selected.</p>
+
+*/"/>
+    <method name="public final void setCurrentItem(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Sets the current item to <i>item</i>.</p>
+<p>Depending on the current selection mode, the item may also be selected.</p>
+
+*/"/>
+    <method name="public final void setHorizontalHeaderItem(int column__0, com.trolltech.qt.gui.QTableWidgetItem item__1)" doc="/**
+<p>Sets the horizontal header item for column <i>column</i> to <i>item</i>.</p>
+
+*/"/>
+    <method name="public final void setHorizontalHeaderLabels(java.util.List&lt;java.lang.String&gt; labels__0)" doc="/**
+<p>Sets the horizontal header labels using <i>labels</i>.</p>
+
+*/"/>
+    <method name="public final void setItem(int row__0, int column__1, com.trolltech.qt.gui.QTableWidgetItem item__2)" doc="/**
+<p>Sets the item for the given <i>row</i> and <i>column</i> to <i>item</i>.</p>
+<p>The table takes ownership of the item.</p>
+
+*/"/>
+    <method name="public final void setItemPrototype(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Sets the item prototype for the table to the specified <i>item</i>.</p>
+<p>The table widget will use the item prototype clone function when it needs to create a new table item. For example when the user is editing editing in an empty cell. This is useful when you have a QTableWidgetItem subclass and want to make sure that QTableWidget creates instances of your subclass.</p>
+<p>The table takes ownership of the prototype.</p>
+
+*/"/>
+    <method name="public final void setItemSelected(com.trolltech.qt.gui.QTableWidgetItem item__0, boolean select__1)" doc="/**
+<p>Selects or deselects <i>item</i> depending on <i>select</i>.</p>
+<p>This function is deprecated. Use QTableWidgetItem::setSelected() instead.</p>
+
+*/"/>
+    <method name="@Deprecated public final void setModel(com.trolltech.qt.core.QAbstractItemModel model__0)"/>
+    <method name="public final void setRangeSelected(com.trolltech.qt.gui.QTableWidgetSelectionRange range__0, boolean select__1)" doc="/**
+<p>Selects or deselects the <i>range</i> depending on <i>select</i>.</p>
+
+*/"/>
+    <method name="public final void setRowCount(int rows__0)" doc="/**
+<p>Sets the number of rows in this table's model to <i>rows</i>. If this is less than rowCount(), the data in the unwanted rows is discarded.</p>
+
+*/"/>
+    <method name="public final void setSortingEnabled(boolean enable__0)"/>
+    <method name="public final void setVerticalHeaderItem(int row__0, com.trolltech.qt.gui.QTableWidgetItem item__1)" doc="/**
+<p>Sets the vertical header item for row <i>row</i> to <i>item</i>.</p>
+
+*/"/>
+    <method name="public final void setVerticalHeaderLabels(java.util.List&lt;java.lang.String&gt; labels__0)" doc="/**
+<p>Sets the vertical header labels using <i>labels</i>.</p>
+
+*/"/>
+    <method name="public final void sortItems(int column__0, com.trolltech.qt.core.Qt.SortOrder order__1)" doc="/**
+<p>Sorts all the rows in the table widget based on <i>column</i> and <i>order</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem takeHorizontalHeaderItem(int column__0)" doc="/**
+<p>Removes the horizontal header item at <i>column</i> from the header without deleting it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem takeItem(int row__0, int column__1)" doc="/**
+<p>Removes the item at <i>row</i> and <i>column</i> from the table without deleting it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem takeVerticalHeaderItem(int row__0)" doc="/**
+<p>Removes the vertical header item at <i>row</i> from the header without deleting it.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTableWidgetItem verticalHeaderItem(int row__0)" doc="/**
+<p>Returns the vertical header item for row <i>row</i>.</p>
+
+*/"/>
+    <method name="public final int visualColumn(int logicalColumn__0)" doc="/**
+<p>Returns the visual column of the given <i>logicalColumn</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect visualItemRect(com.trolltech.qt.gui.QTableWidgetItem item__0)" doc="/**
+<p>Returns the rectangle on the viewport occupied by the item at <i>item</i>.</p>
+
+*/"/>
+    <method name="public final int visualRow(int logicalRow__0)" doc="/**
+<p>Returns the visual row of the given <i>logicalRow</i>.</p>
+
+*/"/>
+    <method name="protected void dropEvent(com.trolltech.qt.gui.QDropEvent event__0)"/>
+    <method name="protected boolean dropMimeData(int row__0, int column__1, com.trolltech.qt.gui.QMimeData data__2, com.trolltech.qt.core.Qt.DropAction action__3)" doc="/**
+<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i> in the given <i>row</i> and <i>column</i>.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected com.trolltech.qt.gui.QMimeData mimeData(java.util.List&lt;com.trolltech.qt.gui.QTableWidgetItem&gt; items__0)" doc="/**
+<p>Returns an object that contains a serialized description of the specified <i>items</i>. The format used to describe the items is obtained from the mimeTypes() function.</p>
+<p>If the list of items is empty, 0 is returned rather than a serialized empty list.</p>
+
+*/"/>
+    <method name="protected java.util.List&lt;java.lang.String&gt; mimeTypes()" doc="/**
+<p>Returns a list of MIME types that can be used to describe a list of tablewidget items.</p>
+
+*/"/>
+    <method name="protected com.trolltech.qt.core.Qt.DropActions supportedDropActions()" doc="/**
+<p>Returns the drop actions supported by this view.</p>
+
+*/"/>
+</class>

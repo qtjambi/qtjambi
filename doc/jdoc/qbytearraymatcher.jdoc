@@ -1,0 +1,31 @@
+<class name="QByteArrayMatcher" doc="/**
+<p>The QByteArrayMatcher class holds a sequence of bytes that can be quickly matched in a byte array.</p>
+<p>This class is useful when you have a sequence of bytes that you want to repeatedly match against some byte arrays (perhaps in a loop), or when you want to search for the same sequence of bytes multiple times in the same byte array. Using a matcher object and indexIn() is faster than matching a plain QByteArray with QByteArray::indexOf() if repeated matching takes place. This class offers no benefit if you are doing one-off byte array matches.</p>
+<p>Create the QByteArrayMatcher with the QByteArray you want to search for. Then call indexIn() on the QByteArray that you want to search.</p>
+
+*/">
+    <method name="public QByteArrayMatcher(com.trolltech.qt.core.QByteArrayMatcher other__0)" doc="/**
+<p>Copies the <i>other</i> byte array matcher to this byte array matcher.</p>
+
+*/"/>
+    <method name="public QByteArrayMatcher()" doc="/**
+<p>Constructs an empty byte array matcher that won't match anything. Call setPattern() to give it a pattern to match.</p>
+
+*/"/>
+    <method name="public QByteArrayMatcher(com.trolltech.qt.core.QByteArray pattern__0)" doc="/**
+<p>Constructs a byte array matcher that will search for <i>pattern</i>. Call indexIn() to perform a search.</p>
+
+*/"/>
+    <method name="public final int indexIn(com.trolltech.qt.core.QByteArray ba__0, int from__1)" doc="/**
+<p>Searches the byte array <i>ba</i>, from byte position <i>from</i> (default 0, i.e. from the first byte), for the byte array pattern() that was set in the constructor or in the most recent call to setPattern(). Returns the position where the pattern() matched in <i>ba</i>, or -1 if no match was found.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray pattern()" doc="/**
+<p>Returns the byte array pattern that this byte array matcher will search for.</p>
+
+*/"/>
+    <method name="public final void setPattern(com.trolltech.qt.core.QByteArray pattern__0)" doc="/**
+<p>Sets the byte array that this byte array matcher will search for to <i>pattern</i>.</p>
+
+*/"/>
+</class>

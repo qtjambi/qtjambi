@@ -1,0 +1,6 @@
+<class name="QClipboardEvent" doc="/**
+<p>The QClipboardEvent class provides the parameters used in a clipboard event.</p>
+<p>This class is for internal use only, and exists to aid the clipboard on various platforms to get all the information it needs. Use QEvent::Clipboard instead.</p>
+
+*/">
+</class>

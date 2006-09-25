@@ -1,0 +1,50 @@
+<class name="QGraphicsSimpleTextItem" doc="/**
+<p>The QGraphicsSimpleTextItem class provides a text item that you can add to a QGraphicsScene.</p>
+<p>To set the item's text, pass a QString to QGraphicsSimpleTextItem's constructor, or call setText().</p>
+<p>QGraphicsTextItem uses the text's formatted size and the associated font to provide a reasonable implementation of boundingRect(), shape(), and contains(). You can set the font by calling setFont().</p>
+<p>QGraphicsSimpleText does not display rich text. It is optimized for drawing plain text fast and with low memory overhead.</p>
+
+*/">
+    <method name="public QGraphicsSimpleTextItem(java.lang.String text__0, com.trolltech.qt.gui.QGraphicsItemInterface parent__1, com.trolltech.qt.gui.QGraphicsScene scene__2)" doc="/**
+<p>Constructs a QGraphicsSimpleTextItem, using <i>text</i> as the default plain text.</p>
+<p><i>parent</i> and <i>scene</i> are passed to QGraphicsItem's constructor.</p>
+
+*/"/>
+    <method name="public QGraphicsSimpleTextItem(com.trolltech.qt.gui.QGraphicsItemInterface parent__0, com.trolltech.qt.gui.QGraphicsScene scene__1)" doc="/**
+<p>Constructs a QGraphicsSimpleTextItem.</p>
+<p><i>parent</i> and <i>scene</i> are passed to QGraphicsItem's constructor.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font()" doc="/**
+<p>Returns the font that is used to draw the item's text.</p>
+
+*/"/>
+    <method name="public final void setFont(com.trolltech.qt.gui.QFont font__0)" doc="/**
+<p>Sets the font that is used to draw the item's text to <i>font</i>.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String text__0)" doc="/**
+<p>Sets the item's text to <i>text</i>. The text will be displayed as plain text. Newline characters ('\n') as well as characters of type QChar::LineSeparator will cause item to break the text into multiple lines.</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>Returns the item's text.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.core.QRectF boundingRect()"/>
+    <method name="public boolean contains(com.trolltech.qt.core.QPointF point__0)"/>
+    <method name="public java.lang.Object extension(java.lang.Object variant__0)"/>
+    <method name="public boolean isObscuredBy(com.trolltech.qt.gui.QGraphicsItemInterface item__0)"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath opaqueArea()"/>
+    <method name="public void paint(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.gui.QStyleOptionGraphicsItem option__1, com.trolltech.qt.gui.QWidget widget__2)"/>
+    <method name="public void setExtension(com.trolltech.qt.gui.QGraphicsItem.Extension extension__0, java.lang.Object variant__1)" doc="/**
+<p>Note: This is provided as a hook to avoid future problems related to adding virtual functions.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPainterPath shape()"/>
+    <method name="public boolean supportsExtension(com.trolltech.qt.gui.QGraphicsItem.Extension extension__0)" doc="/**
+<p>Note: This is provided as a hook to avoid future problems related to adding virtual functions.</p>
+
+*/"/>
+    <method name="public int type()"/>
+</class>

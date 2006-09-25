@@ -1,0 +1,123 @@
+<class name="QDateTimeEdit" doc="/**
+<p>The QDateTimeEdit class provides a widget for editing dates and times.</p>
+<p>QDateTimeEdit allows the user to edit dates by using the keyboard or the arrow keys to increase and decrease date and time values. The arrow keys can be used to move from section to section within the QDateTimeEdit box. Dates and times appear in accordance with the format set; see setDisplayFormat().</p>
+<pre>    QDateTimeEdit *dateEdit = new QDateTimeEdit(QDate::currentDate());
+    dateEdit-&gt;setMinimumDate(QDate::currentDate().addDays(-365));
+    dateEdit-&gt;setMaximumDate(QDate::currentDate().addDays(365));
+    dateEdit-&gt;setDisplayFormat(&quot;yyyy.MM.dd&quot;);</pre>
+<p>Here we've created a new QDateTimeEdit object initialized with today's date, and restricted the valid date range to today plus or minus 365 days. We've set the order to month, day, year.</p>
+<p>The maximum and minimum values for a date value in the date editor default to the maximum and minimum values for a QDate. You can change this by calling setMinimumDate(), setMaximumDate(), setMinimumTime(), and setMaximumTime().</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image windowsxp-datetimeedit.png]</font></td><td>A date time editing widget shown in the Windows XP widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image macintosh-datetimeedit.png]</font></td><td>A date time editing widget shown in the Macintosh widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image plastique-datetimeedit.png]</font></td><td>A date time editing widget shown in the Plastique widget style.</td></tr>
+</table></p>
+
+*/">
+    <method name="public QDateTimeEdit(com.trolltech.qt.core.QDate d__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs an empty date time editor with a <i>parent</i>. The value is set to <i>date</i>.</p>
+
+*/"/>
+    <method name="public QDateTimeEdit(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an empty date time editor with a <i>parent</i>.</p>
+
+*/"/>
+    <method name="public QDateTimeEdit(com.trolltech.qt.core.QDateTime dt__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs an empty date time editor with a <i>parent</i>. The value is set to <i>datetime</i>.</p>
+
+*/"/>
+    <method name="public QDateTimeEdit(com.trolltech.qt.core.QTime t__0, com.trolltech.qt.gui.QWidget parent__1)" doc="/**
+<p>Constructs an empty date time editor with a <i>parent</i>. The value is set to <i>time</i>.</p>
+
+*/"/>
+    <method name="public final boolean calendarPopup()"/>
+    <method name="public final void clearMaximumDate()"/>
+    <method name="public final void clearMaximumTime()"/>
+    <method name="public final void clearMinimumDate()"/>
+    <method name="public final void clearMinimumTime()"/>
+    <method name="public final com.trolltech.qt.gui.QDateTimeEdit.Section currentSection()"/>
+    <method name="public final com.trolltech.qt.core.QDate date()"/>
+    <method name="public final com.trolltech.qt.core.QDateTime dateTime()"/>
+    <method name="public final java.lang.String displayFormat()"/>
+    <method name="public final com.trolltech.qt.gui.QDateTimeEdit.Sections displayedSections()"/>
+    <method name="public final com.trolltech.qt.core.QDate maximumDate()"/>
+    <method name="public final com.trolltech.qt.core.QTime maximumTime()"/>
+    <method name="public final com.trolltech.qt.core.QDate minimumDate()"/>
+    <method name="public final com.trolltech.qt.core.QTime minimumTime()"/>
+    <method name="public final java.lang.String sectionText(com.trolltech.qt.gui.QDateTimeEdit.Section section__0)" doc="/**
+<p>Returns the text from the given <i>section</i>.</p>
+<p>### note about not working when not Acceptable</p>
+
+*/"/>
+    <method name="public final void setCalendarPopup(boolean enable__0)"/>
+    <method name="public final void setCurrentSection(com.trolltech.qt.gui.QDateTimeEdit.Section section__0)"/>
+    <method name="public final void setDate(com.trolltech.qt.core.QDate date__0)"/>
+    <method name="public final void setDateRange(com.trolltech.qt.core.QDate min__0, com.trolltech.qt.core.QDate max__1)" doc="/**
+<p>Convenience function to set minimum and maximum date with one function call.</p>
+<pre>    setDateRange(min, max);</pre>
+<p>is analogous to:</p>
+<pre>    setMinimumDate(min);
+    setMaximumDate(max);</pre>
+<p>If either <i>min</i> or <i>max</i> are not valid, this function does nothing.</p>
+
+*/"/>
+    <method name="public final void setDateTime(com.trolltech.qt.core.QDateTime dateTime__0)"/>
+    <method name="public final void setDisplayFormat(java.lang.String format__0)"/>
+    <method name="public final void setMaximumDate(com.trolltech.qt.core.QDate max__0)"/>
+    <method name="public final void setMaximumTime(com.trolltech.qt.core.QTime max__0)"/>
+    <method name="public final void setMinimumDate(com.trolltech.qt.core.QDate min__0)"/>
+    <method name="public final void setMinimumTime(com.trolltech.qt.core.QTime min__0)"/>
+    <method name="public final void setSelectedSection(com.trolltech.qt.gui.QDateTimeEdit.Section section__0)" doc="/**
+<p>Selects <i>section</i>. If <i>section</i> doesn't exist in the currently displayed sections this function does nothing. If <i>section</i> is NoSection this function will unselect all text in the editor. Otherwise this function will move the cursor and the current section to the selected section.</p>
+
+*/"/>
+    <method name="public final void setTime(com.trolltech.qt.core.QTime time__0)"/>
+    <method name="public final void setTimeRange(com.trolltech.qt.core.QTime min__0, com.trolltech.qt.core.QTime max__1)" doc="/**
+<p>Convenience function to set minimum and maximum time with one function call.</p>
+<pre>    setTimeRange(min, max);</pre>
+<p>is analogous to:</p>
+<pre>    setMinimumTime(min);
+    setMaximumTime(max);</pre>
+<p>If either <i>min</i> or <i>max</i> are not valid, this function does nothing.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QTime time()"/>
+    <method name="public void clear()"/>
+    <method name="protected com.trolltech.qt.core.QDateTime dateTimeFromText(java.lang.String text__0)" doc="/**
+<p>Returns an appropriate datetime for the given <i>text</i>.</p>
+<p>This virtual function is used by the datetime edit whenever it needs to interpret text entered by the user as a value.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="public void fixup(com.trolltech.qt.QNativePointer input__0)"/>
+    <method name="protected void focusInEvent(com.trolltech.qt.gui.QFocusEvent event__0)"/>
+    <method name="protected boolean focusNextPrevChild(boolean next__0)"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent event__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent event__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent event__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+    <method name="public void stepBy(int steps__0)"/>
+    <method name="protected com.trolltech.qt.gui.QAbstractSpinBox.StepEnabled stepEnabled()"/>
+    <method name="protected java.lang.String textFromDateTime(com.trolltech.qt.core.QDateTime dt__0)" doc="/**
+<p>This virtual function is used by the date time edit whenever it needs to display <i>dateTime</i>.</p>
+<p>If you reimplement this, you may also need to reimplement valueFromText() and validate().</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QValidator.State validate(com.trolltech.qt.QNativePointer input__0, com.trolltech.qt.QNativePointer pos__1)"/>
+    <method name="protected void wheelEvent(com.trolltech.qt.gui.QWheelEvent event__0)"/>
+    <enum name="Section" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

@@ -1,0 +1,160 @@
+<class name="QStyleOptionMenuItem" doc="/**
+<p>The QStyleOptionMenuItem class is used to describe the parameter necessary for drawing a menu item.</p>
+<p>QStyleOptionMenuItem contains all the information that QStyle functions need to draw the menu items from QMenu. It is also used for drawing other menu-related widgets.</p>
+<p>For performance reasons, the access to the member variables is direct (i.e., using the <tt>.</tt> or <tt>-&gt;</tt> operator). This low-level feel makes the structures straightforward to use and emphasizes that these are simply parameters used by the style functions.</p>
+<p>For an example demonstrating how style options can be used, see the Styles example.</p>
+
+*/">
+    <method name="public QStyleOptionMenuItem(com.trolltech.qt.gui.QStyleOptionMenuItem other__0)" doc="/**
+<p>Constructs a copy of the <i>other</i> style option.</p>
+
+*/"/>
+    <method name="public QStyleOptionMenuItem()" doc="/**
+<p>Constructs a QStyleOptionMenuItem, initializing the members variables to their default values.</p>
+
+*/"/>
+    <method name="protected QStyleOptionMenuItem(int version__0)"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1</td></tr>
+</table></p>
+<p>The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SO_MenuItem for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles.</p>
+
+*/"/>
+    <enum name="CheckType" doc="/**
+<p>This enum is used to indicate whether or not a check mark should be drawn for the item, or even if it should be drawn at all.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The item is not checkable.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The item is an exclusive check item (like a radio button).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The item is a non-exclusive check item (like a check box).</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="MenuItemType" doc="/**
+<p>This enum indicates the type of menu item that the structure describes.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A normal menu item.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A menu item that is the default action as specified with QMenu::defaultAction().</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A menu separator.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Indicates the menu item points to a sub-menu.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A popup menu scroller (currently only used on Mac OS X).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A tear-off handle for the menu.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The margin of the menu.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The empty area of the menu.</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public final boolean menuHasCheckableItems()" doc="/**
+<p>whether the menu as a whole has checkable items or not; by default true</p>
+<p>If this option is set to false, then the menu has no checkable items. This makes it possible for GUI styles to save some horizontal space that would normally be used for the check column.</p>
+
+*/"/>
+    <method name="public final void setMenuHasCheckableItems(boolean menuHasCheckableItems)" doc="/**
+<p>whether the menu as a whole has checkable items or not; by default true</p>
+<p>If this option is set to false, then the menu has no checkable items. This makes it possible for GUI styles to save some horizontal space that would normally be used for the check column.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect menuRect()" doc="/**
+<p>the rectangle for the entire menu</p>
+<p>The default value is a null rectangle, i.e. a rectangle with both the width and the height set to 0.</p>
+
+*/"/>
+    <method name="public final void setMenuRect(com.trolltech.qt.core.QRect menuRect)" doc="/**
+<p>the rectangle for the entire menu</p>
+<p>The default value is a null rectangle, i.e. a rectangle with both the width and the height set to 0.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyleOptionMenuItem.CheckType checkType()" doc="/**
+<p>The type of checkmark of the menu item</p>
+<p>The default value is NotCheckable.</p>
+
+*/"/>
+    <method name="public final void setCheckType(com.trolltech.qt.gui.QStyleOptionMenuItem.CheckType checkType)" doc="/**
+<p>The type of checkmark of the menu item</p>
+<p>The default value is NotCheckable.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QIcon icon()" doc="/**
+<p>the icon for the menu item</p>
+<p>The default value is an empty icon, i.e. an icon with neither a pixmap nor a filename.</p>
+
+*/"/>
+    <method name="public final void setIcon(com.trolltech.qt.gui.QIcon icon)" doc="/**
+<p>the icon for the menu item</p>
+<p>The default value is an empty icon, i.e. an icon with neither a pixmap nor a filename.</p>
+
+*/"/>
+    <method name="public final boolean checked()" doc="/**
+<p>whether the menu item is checked or not; by default false.</p>
+
+*/"/>
+    <method name="public final void setChecked(boolean checked)" doc="/**
+<p>whether the menu item is checked or not; by default false.</p>
+
+*/"/>
+    <method name="public final int maxIconWidth()" doc="/**
+<p>the maximum icon width for the icon in the menu item.</p>
+<p>This can be used for drawing the icon into the correct place or properly aligning items. The variable must be set regardless of whether or not the menu item has an icon. The default value is 0.</p>
+
+*/"/>
+    <method name="public final void setMaxIconWidth(int maxIconWidth)" doc="/**
+<p>the maximum icon width for the icon in the menu item.</p>
+<p>This can be used for drawing the icon into the correct place or properly aligning items. The variable must be set regardless of whether or not the menu item has an icon. The default value is 0.</p>
+
+*/"/>
+    <method name="public final int tabWidth()" doc="/**
+<p>The tab width for the menu item.</p>
+<p>The tab width is the distance between the text of the menu item and the shortcut. The default value is 0.</p>
+
+*/"/>
+    <method name="public final void setTabWidth(int tabWidth)" doc="/**
+<p>The tab width for the menu item.</p>
+<p>The tab width is the distance between the text of the menu item and the shortcut. The default value is 0.</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>the text for the menu item</p>
+<p>Note that the text format is something like this &quot;Menu text<b>\t</b>Shortcut&quot;.</p>
+<p>If the menu item doesn't have a shortcut, it will just contain the menu item's text. The default value is an empty string.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String text)" doc="/**
+<p>the text for the menu item</p>
+<p>Note that the text format is something like this &quot;Menu text<b>\t</b>Shortcut&quot;.</p>
+<p>If the menu item doesn't have a shortcut, it will just contain the menu item's text. The default value is an empty string.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font()" doc="/**
+<p>The font used for the menu item text.</p>
+<p>This is the font that should be used for drawing the menu text minus the shortcut. The shortcut is usually drawn using the painter's font. By default, the application's default font is used.</p>
+
+*/"/>
+    <method name="public final void setFont(com.trolltech.qt.gui.QFont font)" doc="/**
+<p>The font used for the menu item text.</p>
+<p>This is the font that should be used for drawing the menu text minus the shortcut. The shortcut is usually drawn using the painter's font. By default, the application's default font is used.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyleOptionMenuItem.MenuItemType menuItemType()" doc="/**
+<p>the type of menu item</p>
+<p>The default value is Normal.</p>
+
+*/"/>
+    <method name="public final void setMenuItemType(com.trolltech.qt.gui.QStyleOptionMenuItem.MenuItemType menuItemType)" doc="/**
+<p>the type of menu item</p>
+<p>The default value is Normal.</p>
+
+*/"/>
+</class>

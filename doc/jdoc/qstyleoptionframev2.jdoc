@@ -1,0 +1,52 @@
+<class name="QStyleOptionFrameV2" doc="/**
+<p>The QStyleOptionFrameV2 class is used to describe the parameters necessary for drawing a frame in Qt 4.1 or above.</p>
+<p>QStyleOptionFrameV2 inherits QStyleOptionFrame which is used for drawing several built-in Qt widgets, including QFrame, QGroupBox, QLineEdit, and QMenu.</p>
+<p>An instance of the QStyleOptionFrameV2 class has type SO_Frame and version 2. The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles. The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+<p>If you create your own QStyle subclass, you should handle both QStyleOptionFrame and QStyleOptionFrameV2. One way to achieve this is to use the QStyleOptionFrameV2 copy constructor. For example:</p>
+<pre>        QStyleOptionFrame *option;
+
+        if (const QStyleOptionFrame *frameOption =
+               qstyleoption_cast&lt;const QStyleOptionFrame *&gt;(option)) {
+            QStyleOptionFrameV2 frameOptionV2(*frameOption);
+
+            <span class=&quote;comment&quote;>// draw the frame using frameOptionV2</span>
+        }</pre>
+<p>In the example above: If the <tt>frameOption</tt>'s version is 1, FrameFeature is set to None for <tt>frameOptionV2</tt>. If <tt>frameOption</tt>'s version is 2, the constructor will simply copy the <tt>frameOption</tt>'s FrameFeature value.</p>
+<p>For an example demonstrating how style options can be used, see the Styles example.</p>
+
+*/">
+    <method name="public QStyleOptionFrameV2(com.trolltech.qt.gui.QStyleOptionFrameV2 other__0)" doc="/**
+<p>Constructs a QStyleOptionFrameV2 copy of the <i>other</i> style option.</p>
+
+*/"/>
+    <method name="public QStyleOptionFrameV2()" doc="/**
+<p>Constructs a QStyleOptionFrameV2 object.</p>
+
+*/"/>
+    <method name="protected QStyleOptionFrameV2(int version__0)"/>
+    <method name="public QStyleOptionFrameV2(com.trolltech.qt.gui.QStyleOptionFrame other__0)" doc="/**
+<p>Constructs a QStyleOptionFrameV2 copy of the <i>other</i> style option which can be either of the QStyleOptionFrameV2 or QStyleOptionFrame types.</p>
+<p>If the <i>other</i> style option's version is 1, the new style option's FrameFeature value is set to QStyleOptionFrameV2::None. If its version is 2, its FrameFeature value is simply copied to the new style option.</p>
+
+*/"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>2</td></tr>
+</table></p>
+<p>The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="FrameFeature" doc="/**
+<p>This enum describles the different types of features a frame can have.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Indicates a normal frame.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Indicates a flat frame.</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyleOptionFrameV2.FrameFeatures features()"/>
+    <method name="public final void setFeatures(com.trolltech.qt.gui.QStyleOptionFrameV2.FrameFeatures features)"/>
+</class>

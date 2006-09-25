@@ -1,0 +1,31 @@
+<class name="QSqlRelation" doc="/**
+<p>The QSqlRelation class stores information about an SQL foreign key.</p>
+<p>QSqlRelation is a helper class for QSqlRelationalTableModel. See QSqlRelationalTableModel::setRelation() and QSqlRelationalTableModel::relation() for details.</p>
+
+*/">
+    <method name="public QSqlRelation()" doc="/**
+<p>Constructs an invalid QSqlRelation object.</p>
+<p>For such an object, the tableName(), indexColumn(), and displayColumn() functions return an empty string.</p>
+
+*/"/>
+    <method name="public QSqlRelation(java.lang.String aTableName__0, java.lang.String indexCol__1, java.lang.String displayCol__2)" doc="/**
+<p>Constructs a QSqlRelation object, where <i>tableName</i> is the SQL table name to which a foreign key refers, <i>indexColumn</i> is the foreign key, and <i>displayColumn</i> is the field that should be presented to the user.</p>
+
+*/"/>
+    <method name="public final java.lang.String displayColumn()" doc="/**
+<p>Returns the column from table tableName() that should be presented to the user instead of a foreign key.</p>
+
+*/"/>
+    <method name="public final java.lang.String indexColumn()" doc="/**
+<p>Returns the index column from table tableName() to which a foreign key refers.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if the QSqlRelation object is valid; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final java.lang.String tableName()" doc="/**
+<p>Returns the name of the table to which a foreign key refers.</p>
+
+*/"/>
+</class>

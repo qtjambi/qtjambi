@@ -1,0 +1,23 @@
+<class name="QHoverEvent" doc="/**
+<p>The QHoverEvent class contains parameters that describe a mouse event.</p>
+<p>Mouse events occur when a mouse cursor is moved into, out of, or within a widget, and if the widget has the Qt::WA_Hover attribute.</p>
+<p>The function pos() gives the current cursor position, while oldPos() gives the old mouse position.</p>
+
+*/">
+    <method name="public QHoverEvent(com.trolltech.qt.core.QEvent.Type type__0, com.trolltech.qt.core.QPoint pos__1, com.trolltech.qt.core.QPoint oldPos__2)" doc="/**
+<p>Constructs a hover event object.</p>
+<p>The <i>type</i> parameter must be QEvent::HoverEnter, QEvent::HoverLeave, or QEvent::HoverMove.</p>
+<p>The <i>pos</i> is the current mouse cursor's position relative to the receiving widget, while <i>oldPos</i> is the previous mouse cursor's position relative to the receiving widget.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint oldPos()" doc="/**
+<p>Returns the previous position of the mouse cursor, relative to the widget that received the event. If there is no previous position, oldPos() will return the same position as pos().</p>
+<p>On QEvent::HoverEnter events, this position will always be QPoint(-1, -1).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint pos()" doc="/**
+<p>Returns the position of the mouse cursor, relative to the widget that received the event.</p>
+<p>On QEvent::HoverLeave events, this position will always be QPoint(-1, -1).</p>
+
+*/"/>
+</class>

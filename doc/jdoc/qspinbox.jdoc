@@ -1,0 +1,76 @@
+<class name="QSpinBox" doc="/**
+<p>The QSpinBox class provides a spin box widget.</p>
+<p>QSpinBox is designed to handle integers and discrete sets of values (e.g., month names); use QDoubleSpinBox for floating point values.</p>
+<p>QSpinBox allows the user to choose a value by clicking the up/down buttons or pressing up/down on the keyboard to increase/decrease the value currently displayed. The user can also type the value in manually. The spin box supports integer values but can be extended to use different strings with validate(), textFromValue() and valueFromText().</p>
+<p>Every time the value changes QSpinBox emits the valueChanged() signals. The current value can be fetched with value() and set with setValue().</p>
+<p>Clicking the up/down buttons or using the keyboard accelerator's up and down arrows will increase or decrease the current value in steps of size singleStep(). If you want to change this behaviour you can reimplement the virtual function stepBy(). The minimum and maximum value and the step size can be set using one of the constructors, and can be changed later with setMinimum(), setMaximum() and setSingleStep().</p>
+<p>Most spin boxes are directional, but QSpinBox can also operate as a circular spin box, i.e. if the range is 0-99 and the current value is 99, clicking &quot;up&quot; will give 0 if wrapping() is set to true. Use setWrapping() if you want circular behavior.</p>
+<p>The displayed value can be prepended and appended with arbitrary strings indicating, for example, currency or the unit of measurement. See setPrefix() and setSuffix(). The text in the spin box is retrieved with text() (which includes any prefix() and suffix()), or with cleanText() (which has no prefix(), no suffix() and no leading or trailing whitespace).</p>
+<p>It is often desirable to give the user a special (often default) choice in addition to the range of numeric values. See setSpecialValueText() for how to do this with QSpinBox.</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image windowsxp-spinbox.png]</font></td><td>A spin box shown in the Windows XP widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td><font color=&quote;red&quote;>[Missing image plastique-spinbox.png]</font></td><td>A spin box shown in the Plastique widget style.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image macintosh-spinbox.png]</font></td><td>A spin box shown in the Macintosh widget style.</td></tr>
+</table></p>
+<a name=&quote;subclassing-qspinbox&quote;></a>
+<h3>Subclassing QSpinBox</h3>
+<p>If using prefix(), suffix(), and specialValueText() don't provide enough control, you subclass QSpinBox and reimplement valueFromText() and textFromValue(). For example, here's the code for a custom spin box that allows the user to enter icon sizes (e.g., &quot;32 x 32&quot;):</p>
+<pre>    int IconSizeSpinBox::valueFromText(const QString &amp;text) const
+    {
+        QRegExp regExp(tr(&quot;(\\d+)(\\s*[xx]\\s*\\d+)?&quot;));
+
+        if (regExp.exactMatch(text)) {
+            return regExp.cap(1).toInt();
+        } else {
+            return 0;
+        }
+    }
+
+    QString IconSizeSpinBox::textFromValue(int value) const
+    {
+        return tr(&quot;%1 x %1&quot;).arg(value);
+    }</pre>
+<p>See the Icons example for the full source code.</p>
+
+*/">
+    <method name="public QSpinBox(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs a spin box with 0 as minimum value and 99 as maximum value, a step value of 1. The value is initially set to 0. It is parented to <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.String cleanText()"/>
+    <method name="public final int maximum()"/>
+    <method name="public final int minimum()"/>
+    <method name="public final java.lang.String prefix()"/>
+    <method name="public final void setMaximum(int max__0)"/>
+    <method name="public final void setMinimum(int min__0)"/>
+    <method name="public final void setPrefix(java.lang.String prefix__0)"/>
+    <method name="public final void setRange(int min__0, int max__1)" doc="/**
+<p>Convenience function to set the <i>minimum</i>, and <i>maximum</i> values with a single function call.</p>
+<pre>    setRange(minimum, maximum);</pre>
+<p>is equivalent to:</p>
+<pre>    setMinimum(minimum);
+    setMaximum(maximum);</pre>
+
+*/"/>
+    <method name="public final void setSingleStep(int val__0)"/>
+    <method name="public final void setSuffix(java.lang.String suffix__0)"/>
+    <method name="public final void setValue(int val__0)"/>
+    <method name="public final int singleStep()"/>
+    <method name="public final java.lang.String suffix()"/>
+    <method name="public final int value()"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="public void fixup(com.trolltech.qt.QNativePointer str__0)"/>
+    <method name="protected java.lang.String textFromValue(int val__0)" doc="/**
+<p>This virtual function is used by the spin box whenever it needs to display the given <i>value</i>. The default implementation returns a string containing <i>value</i> printed in the standard way using QLocale().toString(). Reimplementations may return anything. (See the example in the detailed description.)</p>
+<p>Note: QSpinBox does not call this function for specialValueText() and that neither prefix() nor suffix() should be included in the return value.</p>
+<p>If you reimplement this, you may also need to reimplement valueFromText() and validate()</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QValidator.State validate(com.trolltech.qt.QNativePointer input__0, com.trolltech.qt.QNativePointer pos__1)"/>
+    <method name="protected int valueFromText(java.lang.String text__0)" doc="/**
+<p>This virtual function is used by the spin box whenever it needs to interpret <i>text</i> entered by the user as a value.</p>
+<p>Subclasses that need to display spin box values in a non-numeric way need to reimplement this function.</p>
+<p>Note: QSpinBox handles specialValueText() separately; this function is only concerned with the other values.</p>
+
+*/"/>
+</class>

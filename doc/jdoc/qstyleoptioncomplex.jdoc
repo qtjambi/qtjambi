@@ -1,0 +1,54 @@
+<class name="QStyleOptionComplex" doc="/**
+<p>The QStyleOptionComplex class is used to hold parameters that are common to all complex controls.</p>
+<p>This class is not used on its own. Instead it is used to derive other complex control options, for example QStyleOptionSlider and QStyleOptionSpinBox.</p>
+<p>For performance reasons, the access to the member variables is direct (i.e., using the <tt>.</tt> or <tt>-&gt;</tt> operator).</p>
+<p>For an example demonstrating how style options can be used, see the Styles example.</p>
+
+*/">
+    <method name="public QStyleOptionComplex(com.trolltech.qt.gui.QStyleOptionComplex other__0)" doc="/**
+<p>Constructs a copy of the <i>other</i> style option.</p>
+
+*/"/>
+    <method name="public QStyleOptionComplex(int version__0, int type__1)" doc="/**
+<p>Constructs a QStyleOptionComplex of the specified <i>type</i> and <i>version</i>, initializing the member variables to their default values. This constructor is usually called by subclasses.</p>
+
+*/"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1</td></tr>
+</table></p>
+<p>The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SO_Complex for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles.</p>
+
+*/"/>
+    <method name="public final int subControls()" doc="/**
+<p>a bitwise OR of the various sub-controls that need to be drawn for the complex control</p>
+<p>The default value is QStyle::SC_All.</p>
+
+*/"/>
+    <method name="public final void setSubControls(int subControls)" doc="/**
+<p>a bitwise OR of the various sub-controls that need to be drawn for the complex control</p>
+<p>The default value is QStyle::SC_All.</p>
+
+*/"/>
+    <method name="public final int activeSubControls()" doc="/**
+<p>a bitwise OR of the various sub-controls that are active (pressed) for the complex control.</p>
+<p>The default value is QStyle::SC_None.</p>
+
+*/"/>
+    <method name="public final void setActiveSubControls(int activeSubControls)" doc="/**
+<p>a bitwise OR of the various sub-controls that are active (pressed) for the complex control.</p>
+<p>The default value is QStyle::SC_None.</p>
+
+*/"/>
+</class>

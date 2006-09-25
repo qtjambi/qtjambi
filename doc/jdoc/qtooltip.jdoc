@@ -1,0 +1,41 @@
+<class name="QToolTip" doc="/**
+<p>The QToolTip class provides tooltips (balloon help) for any widget.</p>
+<p>The tip is a short piece of text reminding the user of the widget's function. It is drawn immediately below the given position in a distinctive black-on-yellow color combination. The tip can be any rich text formatted string.</p>
+<p>Rich text formatted tips implictely do word breaking, unless specified differently with <tt>&lt;p style='white-space:pre'&gt;</tt>.</p>
+<p>The simplest and most common way to set a widget's tooltip is by calling its QWidget::setToolTip() function.</p>
+<p>It is also possible to show different tooltips for different regions of a widget, by using a QHelpEvent of type QEvent::ToolTip. Intercept the help event in your widget's event() function and call QToolTip::showText() with the text you want to display. The Tooltips example illustrates this technique.</p>
+<p>Note that if you want to show tooltips in an item view, the model/view architecture provides functionality to set an item's tootip, e.g., the QTableWidgetItem::setToolTip() function. But if you want to provide custom tooltips in an item view you must intercept the help event in the QAbstractItemView::viewportEvent() function instead.</p>
+<p>The default tooltip color and font can be customized with setPalette() and setFont().</p>
+
+*/">
+    <method name="public native static com.trolltech.qt.gui.QFont font()" doc="/**
+<p>Returns the font used to render tooltips.</p>
+
+*/"/>
+    <method name="public native static void hideText()" doc="/**
+<p>Hides the tool tip. This is the same as calling showText() with an empty string.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QPalette palette()" doc="/**
+<p>Returns the palette used to render tooltips.</p>
+
+*/"/>
+    <method name="public final static void setFont(com.trolltech.qt.gui.QFont arg__0)" doc="/**
+<p>Sets the <i>font</i> used to render tooltips.</p>
+
+*/"/>
+    <method name="public final static void setPalette(com.trolltech.qt.gui.QPalette arg__0)" doc="/**
+<p>Sets the <i>palette</i> used to render tooltips.</p>
+
+*/"/>
+    <method name="public final static void showText(com.trolltech.qt.core.QPoint pos__0, java.lang.String text__1, com.trolltech.qt.gui.QWidget w__2, com.trolltech.qt.core.QRect rect__3)" doc="/**
+<p>Shows <i>text</i> as a tool tip, at global position <i>pos</i>. If you specify a non-empty rect the tip will be hidden as soon as you move your cursor out of this area.</p>
+<p>The <i>rect</i> is in the coordinates of the widget you specify with <i>w</i>. If the <i>rect</i> is not empty you must specify a widget. Otherwise this argument can be 0 but it is used to determine the appropriate screen on multi-head systems.</p>
+<p>If <i>text</i> is empty the tool tip is hidden. If the text is the same as the currently shown tooltip, the tip will <i>not</i> move. You can force moving by first hiding the tip with an empty text, and then showing the new tip at the new position.</p>
+
+*/"/>
+    <method name="public final static void showText(com.trolltech.qt.core.QPoint pos__0, java.lang.String text__1, com.trolltech.qt.gui.QWidget w__2)" doc="/**
+<p>This is analogous to calling QToolTip::showText(<i>pos</i>, <i>text</i>, <i>w</i>, QRect())</p>
+
+*/"/>
+</class>

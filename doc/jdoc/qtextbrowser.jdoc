@@ -1,0 +1,82 @@
+<class name="QTextBrowser" doc="/**
+<p>The QTextBrowser class provides a rich text browser with hypertext navigation.</p>
+<p>This class extends QTextEdit (in read-only mode), adding some navigation functionality so that users can follow links in hypertext documents.</p>
+<p>If you want to provide your users with an editable rich text editor, use QTextEdit. If you want a text browser without hypertext navigation use QTextEdit, and use QTextEdit::setReadOnly() to disable editing. If you just need to display a small piece of rich text use QLabel.</p>
+<a name=&quote;document-source-and-contents&quote;></a>
+<h3>Document Source and Contents</h3>
+<p>The contents of QTextEdit are set with setHtml() or setPlainText(), but QTextBrowser also implements the setSource() function, making it possible to use a named document as the source text. The name is looked up in a list of search paths and in the directory of the current document factory.</p>
+<p>If a document name ends with an anchor (for example, &quot;<tt>#anchor&quot;</tt>), the text browser automatically scrolls to that position (using scrollToAnchor()). When the user clicks on a hyperlink, the browser will call setSource() itself with the link's <tt>href</tt> value as argument. You can track the current source by connecting to the sourceChanged() signal.</p>
+<a name=&quote;navigation&quote;></a>
+<h3>Navigation</h3>
+<p>QTextBrowser provides backward() and forward() slots which you can use to implement Back and Forward buttons. The home() slot sets the text to the very first document displayed. The anchorClicked() signal is emitted when the user clicks an anchor. To override the default navigation behavior of the browser, call the setSource() function to supply new document text in a slot connected to this signal.</p>
+<p>If you want to load documents stored in the Qt resource system use <tt>qrc</tt> as the scheme in the URL to load. For example, for the document resource path <tt>:/docs/index.html</tt> use <tt>qrc:/docs/index.html</tt> as the URL with setSource().</p>
+
+*/">
+    <method name="public QTextBrowser(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an empty QTextBrowser with parent <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final void clearHistory()" doc="/**
+<p>Clears the history of visited documents and disables the forward and backward navigation.</p>
+
+*/"/>
+    <method name="public final boolean isBackwardAvailable()" doc="/**
+<p>Returns true if the text browser can go backward in the document history using backward().</p>
+
+*/"/>
+    <method name="public final boolean isForwardAvailable()" doc="/**
+<p>Returns true if the text browser can go forward in the document history using forward().</p>
+
+*/"/>
+    <method name="public final boolean openExternalLinks()"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; searchPaths()"/>
+    <method name="public final void setOpenExternalLinks(boolean open__0)"/>
+    <method name="public final void setSearchPaths(java.util.List&lt;java.lang.String&gt; paths__0)"/>
+    <method name="public final com.trolltech.qt.core.QUrl source()"/>
+    <method name="public void backward()" doc="/**
+<p>Changes the document displayed to the previous document in the list of documents built by navigating links. Does nothing if there is no previous document.</p>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent e__0)"/>
+    <method name="protected boolean focusNextPrevChild(boolean next__0)"/>
+    <method name="protected void focusOutEvent(com.trolltech.qt.gui.QFocusEvent ev__0)"/>
+    <method name="public void forward()" doc="/**
+<p>Changes the document displayed to the next document in the list of documents built by navigating links. Does nothing if there is no next document.</p>
+
+*/"/>
+    <method name="public void home()" doc="/**
+<p>Changes the document displayed to be the first document the browser displayed.</p>
+
+*/"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent ev__0)" doc="/**
+<p>The event <i>ev</i> is used to provide the following keyboard shortcuts:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Keypress</th><th>Action</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Alt+Left Arrow</td><td>backward()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Alt+Right Arrow</td><td>forward()</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Alt+Up Arrow</td><td>home()</td></tr>
+</table></p>
+
+*/"/>
+    <method name="public java.lang.Object loadResource(int type__0, com.trolltech.qt.core.QUrl name__1)" doc="/**
+<p>This function is called when the document is loaded. The <i>type</i> indicates the type of resource to be loaded. For each image in the document, this function is called once.</p>
+<p>The default implementation ignores <i>type</i> and tries to locate the resources by interpreting <i>name</i> as a file name. If it is not an absolute path it tries to find the file in the paths of the searchPaths property and in the same directory as the current source. On success, the result is a QVariant that stores a QByteArray with the contents of the file.</p>
+<p>If you reimplement this function, you can return other QVariant types. The table below shows which variant types are supported depending on the resource type:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>ResourceType</th><th>QVariant::Type</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QTextDocument::HtmlResource</td><td>QString or QByteArray</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>QTextDocument::ImageResource</td><td>QImage, QPixmap or QByteArray</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>QTextDocument::StyleSheetResource</td><td>QString or QByteArray</td></tr>
+</table></p>
+
+*/"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QMouseEvent ev__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent ev__0)"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QMouseEvent ev__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent e__0)"/>
+    <method name="public void reload()" doc="/**
+<p>Reloads the current set source.</p>
+
+*/"/>
+    <method name="public void setSource(com.trolltech.qt.core.QUrl name__0)"/>
+</class>

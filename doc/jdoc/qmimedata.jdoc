@@ -1,0 +1,157 @@
+<class name="QMimeData" doc="/**
+<p>The QMimeData class provides a container for data that records information about its MIME type.</p>
+<p>QMimeData is used to describe information that can be stored in the clipboard, and transferred via the drag and drop mechanism. QMimeData objects associate the data that they hold with the corresponding MIME types to ensure that information can be safely transferred between applications, and copied around within the same application.</p>
+<p>QMimeData objects are usually created using <tt>new</tt> and supplied to QDrag or QClipboard objects. This is to enable Qt to manage the memory that they use.</p>
+<p>A single QMimeData object can store the same data using several different formats at the same time. The formats() function returns a list of the available formats in order of preference. The data() function returns the raw data associated with a MIME type, and setData() allows you to set the data for a MIME type.</p>
+<p>For the most common MIME types, QMimeData provides convenience functions to access the data:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Tester</th><th>Getter</th><th>Setter</th><th>MIME Types</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>hasText()</td><td>text()</td><td>setText()</td><td><tt>text/plain</tt></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>hasHtml()</td><td>html()</td><td>setHtml()</td><td><tt>text/html</tt></td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>hasUrls()</td><td>urls()</td><td>setUrls()</td><td><tt>text/uri-list</tt></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>hasImage()</td><td>imageData()</td><td>setImageData()</td><td><tt>image/</tt> *</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>hasColor()</td><td>colorData()</td><td>setColorData()</td><td><tt>application/x-color</tt></td></tr>
+</table></p>
+<p>For example, if your write a widget that accepts URL drags, you would end up writing code like this:</p>
+<pre>    void MyWidget::dragEnterEvent(QDragEnterEvent *event)
+    {
+        if (event-&gt;mimeData()-&gt;hasUrl())
+            event-&gt;acceptProposedEvent();
+    }
+
+    void MyWidget::dropEvent(QDropEvent *event)
+    {
+        if (event-&gt;mimeData()-&gt;hasUrl()) {
+            QUrl url = event-&gt;mimeData()-&gt;url();
+            ...
+        }
+    }</pre>
+<p>There are three appraches for storing custom data in a QMimeData object:</p>
+<ol type=&quote;1&quote;>
+<li>Custom data can be stored directly in a QMimeData object as a QByteArray using setData(). For example:<pre>        QByteArray csvData = ...;
+
+        QMimeData *mimeData = new QMimeData;
+        mimeData-&gt;setData(&quot;text/csv&quot;, csvData);</pre>
+</li>
+<li>We can subclass QMimeData and reimplement hasFormat(), formats(), and retrieveData().</li>
+<li>If the drag and drop operation occurs withing a single application, we can subclass QMimeData and add extra data in it, and use a qobject_cast() in the receiver's drop event handler. For example:<pre>    void MyWidget::dropEvent(QDropEvent *event)
+    {
+        const MyMimeData *myData =
+                qobject_cast&lt;const MyMimeData *&gt;(event-&gt;mimeData());
+        if (myData) {
+            <span class=&quote;comment&quote;>// access myData's data directly (not through QMimeData's API)</span>
+        }
+    }</pre>
+</li>
+</ol>
+
+*/">
+    <method name="public QMimeData()" doc="/**
+<p>Constructs a new MIME data object with no data in it.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Removes all the MIME type and data entries in the object.</p>
+
+*/"/>
+    <method name="public final java.lang.Object colorData()" doc="/**
+<p>Returns a color if the data stored in the object represents a color (MIME type <tt>application/x-color</tt>); otherwise returns a null variant.</p>
+<p>A QVariant is used because QMimeData belongs to the QtCore library, whereas QColor belongs to QtGui. To convert the QVariant to a QImage, simply use qvariant_cast(). For example:</p>
+<pre>    if (event-&gt;mimeData()-&gt;hasColor()) {
+        QColor color = qvariant_cast&lt;QColor&gt;(event-&gt;mimeData()-&gt;colorData());
+        ...
+    }</pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QByteArray data(java.lang.String mimetype__0)" doc="/**
+<p>Returns the data stored in the object in the format described by the MIME type specified by <i>mimeType</i>.</p>
+
+*/"/>
+    <method name="public final boolean hasColor()" doc="/**
+<p>Returns true if the object can return a color (MIME type <tt>application/x-color</tt>); otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean hasHtml()" doc="/**
+<p>Returns true if the object can return HTML (MIME type <tt>text/html</tt>); otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean hasImage()" doc="/**
+<p>Returns true if the object can return an image; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean hasText()" doc="/**
+<p>Returns true if the object can return plain text (MIME type <tt>text/plain</tt>); otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean hasUrls()" doc="/**
+<p>Returns true if the object can return a list of urls; otherwise returns false.</p>
+<p>URLs correspond to the MIME type <tt>text/uri-list</tt>.</p>
+
+*/"/>
+    <method name="public final java.lang.String html()" doc="/**
+<p>Returns a string if the data stored in the object is HTML (MIME type <tt>text/html</tt>); otherwise returns an empty string.</p>
+
+*/"/>
+    <method name="public final java.lang.Object imageData()" doc="/**
+<p>Returns a QVariant storing a QImage if the object can return an image; otherwise returns a null variant.</p>
+<p>A QVariant is used because QMimeData belongs to the QtCore library, whereas QImage belongs to QtGui. To convert the QVariant to a QImage, simply use qvariant_cast(). For example:</p>
+<pre>    if (event-&gt;mimeData()-&gt;hasImage()) {
+        QImage image = qvariant_cast&lt;QImage&gt;(event-&gt;mimeData()-&gt;imageData());
+        ...
+    }</pre>
+
+*/"/>
+    <method name="public final void setColorData(java.lang.Object color__0)" doc="/**
+<p>Sets the color data in the object to the given <i>color</i>.</p>
+<p>Colors correspond to the MIME type <tt>application/x-color</tt>.</p>
+
+*/"/>
+    <method name="public final void setData(java.lang.String mimetype__0, com.trolltech.qt.core.QByteArray data__1)" doc="/**
+<p>Sets the data associated with the MIME type given by <i>mimeType</i> to the specified <i>data</i>.</p>
+<p>For the most common types of data, you can call the higher-level functions setText(), setHtml(), setUrls(), setImageData(), and setColorData() instead.</p>
+
+*/"/>
+    <method name="public final void setHtml(java.lang.String html__0)" doc="/**
+<p>Sets <i>html</i> as the HTML (MIME type <tt>text/html</tt>) used to represent the data.</p>
+
+*/"/>
+    <method name="public final void setImageData(java.lang.Object image__0)" doc="/**
+<p>Sets the data in the object to the given <i>image</i>.</p>
+<p>A QVariant is used because QMimeData belongs to the QtCore library, whereas QImage belongs to QtGui. The conversion from QImage to QVariant is implicit. For example:</p>
+<pre>    mimeData-&gt;setImageData(QImage(&quot;beautifulfjord.png&quot;));</pre>
+
+*/"/>
+    <method name="public final void setText(java.lang.String text__0)" doc="/**
+<p>Sets <i>text</i> as the plain text (MIME type <tt>text/plain</tt>) used to represent the data.</p>
+
+*/"/>
+    <method name="public final void setUrls(java.util.List&lt;com.trolltech.qt.core.QUrl&gt; urls__0)" doc="/**
+<p>Sets the URLs stored in the MIME data object to those specified by <i>urls</i>.</p>
+<p>URLs correspond to the MIME type <tt>text/uri-list</tt>.</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>Returns a plain text (MIME type <tt>text/plain</tt>) representation of the data.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.core.QUrl&gt; urls()" doc="/**
+<p>Returns a list of URLs contained within the MIME data object.</p>
+<p>URLs correspond to the MIME type <tt>text/uri-list</tt>.</p>
+
+*/"/>
+    <method name="public java.util.List&lt;java.lang.String&gt; formats()" doc="/**
+<p>Returns a list of formats supported by the object. This is a list of MIME types for which the object can return suitable data. The formats in the list are in a priority order.</p>
+<p>For the most common types of data, you can call the higher-level functions hasText(), hasHtml(), hasUrls(), hasImage(), and hasColor() instead.</p>
+
+*/"/>
+    <method name="public boolean hasFormat(java.lang.String mimetype__0)" doc="/**
+<p>Returns true if the object can return data for the MIME type specified by <i>mimeType</i>; otherwise returns false.</p>
+<p>For the most common types of data, you can call the higher-level functions hasText(), hasHtml(), hasUrls(), hasImage(), and hasColor() instead.</p>
+
+*/"/>
+    <method name="protected java.lang.Object retrieveData(java.lang.String mimetype__0, int preferredType__1)" doc="/**
+<p>Returns a variant with the given <i>type</i> containing data for the MIME type specified by <i>mimeType</i>. If the object does not support the MIME type or variant type given, a null variant is returned instead.</p>
+<p>This function is called by the general data() getter and by the convenience getters (text(), html(), urls(), imageData(), and colorData()). You can reimplement it if you want to store your data using a custom data structure (instead of a QByteArray, which is what setData() provides). You would then also need to reimplement hasFormat() and formats().</p>
+
+*/"/>
+</class>

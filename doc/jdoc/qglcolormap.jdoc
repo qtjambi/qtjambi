@@ -1,0 +1,81 @@
+<class name="QGLColormap" doc="/**
+<p>The QGLColormap class is used for installing custom colormaps into QGLWidgets.</p>
+<p>QGLColormap provides a platform independent way of specifying and installing indexed colormaps into QGLWidgets. QGLColormap is especially useful when using the OpenGL color-index mode.</p>
+<p>Under X11 you must use an X server that supports either a <tt>PseudoColor</tt> or <tt>DirectColor</tt> visual class. If your X server currently only provides a <tt>GrayScale</tt>, <tt>TrueColor</tt>, <tt>StaticColor</tt> or <tt>StaticGray</tt> visual, you will not be able to allocate colorcells for writing. If this is the case, try setting your X server to 8 bit mode. It should then provide you with at least a <tt>PseudoColor</tt> visual. Note that you may experience colormap flashing if your X server is running in 8 bit mode.</p>
+<p>Under Windows the size of the colormap is always set to 256 colors. Note that under Windows you can also install colormaps in child widgets.</p>
+<p>This class uses implicit sharing as a memory and speed optimization.</p>
+<p>Example of use:</p>
+<pre>    #include &lt;QApplication&gt;
+    #include &lt;QGLColormap&gt;
+
+    int main()
+    {
+        QApplication app(argc, argv);
+
+        MySuperGLWidget widget;     <span class=&quote;comment&quote;>// a QGLWidget in color-index mode</span>
+        QGLColormap colormap;
+
+        <span class=&quote;comment&quote;>// This will fill the colormap with colors ranging from</span>
+        <span class=&quote;comment&quote;>// black to white.</span>
+        for (int i = 0; i &lt; colormap.size(); i++)
+            colormap.setEntry(i, qRgb(i, i, i));
+
+        widget.setColormap(colormap);
+        widget.show();
+        return app.exec();
+    }</pre>
+
+*/">
+    <method name="public QGLColormap()" doc="/**
+<p>Construct a QGLColormap.</p>
+
+*/"/>
+    <method name="public QGLColormap(com.trolltech.qt.opengl.QGLColormap arg__0)" doc="/**
+<p>Construct a shallow copy of <i>map</i>.</p>
+
+*/"/>
+    <method name="public final void detach()" doc="/**
+<p>Detaches this QGLColormap from the shared block.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QColor entryColor(int idx__0)" doc="/**
+<p>Returns the QRgb value in the colorcell with index <i>idx</i>.</p>
+
+*/"/>
+    <method name="public final int entryRgb(int idx__0)" doc="/**
+<p>Returns the QRgb value in the colorcell with index <i>idx</i>.</p>
+
+*/"/>
+    <method name="public final int find(int color__0)" doc="/**
+<p>Returns the index of the color <i>color</i>. If <i>color</i> is not in the map, -1 is returned.</p>
+
+*/"/>
+    <method name="public final int findNearest(int color__0)" doc="/**
+<p>Returns the index of the color that is the closest match to color <i>color</i>.</p>
+
+*/"/>
+    <method name="protected final long handle()" doc="/**
+<p>Returns the handle for this color map.</p>
+
+*/"/>
+    <method name="public final boolean isEmpty()" doc="/**
+<p>Returns true if the colormap is empty; otherwise returns false. A colormap with no color values set is considered to be empty.</p>
+
+*/"/>
+    <method name="public final void setEntries(int count__0, com.trolltech.qt.QNativePointer colors__1, int base__2)" doc="/**
+<p>Set an array of cells in this colormap. <i>count</i> is the number of colors that should be set, <i>colors</i> is the array of colors, and <i>base</i> is the starting index.</p>
+
+*/"/>
+    <method name="public final void setEntry(int idx__0, com.trolltech.qt.gui.QColor color__1)" doc="/**
+<p>Set the cell with index <i>idx</i> in the colormap to color <i>color</i>.</p>
+
+*/"/>
+    <method name="protected final void setHandle(long ahandle__0)" doc="/**
+<p>Sets the handle for this color map to <i>handle</i>.</p>
+
+*/"/>
+    <method name="public final int size()" doc="/**
+<p>Returns the number of colorcells in the colormap.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,41 @@
+<class name="QStatusTipEvent" doc="/**
+<p>The QStatusTipEvent class provides an event that is used to show messages in a status bar.</p>
+<p>Status tips can be set on a widget using the QWidget::setStatusTip() function. They are shown in the status bar when the mouse cursor enters the widget. For example:</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><pre>    MainWindow::MainWindow(QWidget *parent)
+        : QMainWindow(parent)
+    {
+        QWidget *myWidget = new QWidget;
+        myWidget-&gt;setStatusTip(tr(&quot;This is my widget.&quot;));
+
+        setCentralWidget(myWidget);
+        ...
+    }</pre>
+</td><td><p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image qstatustipevent-widget.png]</font></p></td></tr>
+</table></p>
+<p>Status tips can also be set on actions using the QAction::setStatusTip() function:</p>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><pre>    MainWindow::MainWindow(QWidget *parent)
+        : QMainWindow(parent)
+    {
+        QMenu *fileMenu = menuBar()-&gt;addMenu(tr(&quot;File&quot;));
+
+        QAction *newAct = new QAction(tr(&quot;&amp;New&quot;), this);
+        newAct-&gt;setStatusTip(tr(&quot;Create a new file.&quot;));
+        fileMenu-&gt;addAction(newAct);
+        ...
+    }</pre>
+</td><td><p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image qstatustipevent-action.png]</font></p></td></tr>
+</table></p>
+<p>Finally, status tips are supported for the item view classes through the Qt::StatusTipRole enum value.</p>
+
+*/">
+    <method name="public QStatusTipEvent(java.lang.String tip__0)" doc="/**
+<p>Constructs a status tip event with the text specified by <i>tip</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.String tip()" doc="/**
+<p>Returns the message to show in the status bar.</p>
+
+*/"/>
+</class>

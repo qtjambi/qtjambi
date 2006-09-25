@@ -1,0 +1,66 @@
+<class name="QGraphicsSceneMouseEvent">
+    <method name="public QGraphicsSceneMouseEvent(com.trolltech.qt.core.QEvent.Type type__0)" doc="/**
+<p>Constructs a generic graphics scene mouse event of the specified <i>type</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.MouseButton button()" doc="/**
+<p>Returns the mouse button that was pressed at the time the event was sent.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF buttonDownPos(com.trolltech.qt.core.Qt.MouseButton button__0)" doc="/**
+<p>Returns the mouse cursor position in item coordinates where the specified <i>button</i> was clicked.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF buttonDownScenePos(com.trolltech.qt.core.Qt.MouseButton button__0)" doc="/**
+<p>Returns the mouse cursor position in scene coordinates where the specified <i>button</i> was clicked.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint buttonDownScreenPos(com.trolltech.qt.core.Qt.MouseButton button__0)" doc="/**
+<p>Returns the mouse cursor position in screen coordinates where the specified <i>button</i> was clicked.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.MouseButtons buttons()" doc="/**
+<p>Returns the combination of mouse buttons that were pressed at the time the event was sent.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF lastPos()" doc="/**
+<p>Returns the last recorded mouse cursor position in item coordinates.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF lastScenePos()" doc="/**
+<p>Returns the last recorded mouse cursor position in scene coordinates.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint lastScreenPos()" doc="/**
+<p>Returns the last recorded mouse cursor position in screen coordinates.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.KeyboardModifiers modifiers()" doc="/**
+<p>Returns the keyboard modifiers in use at the time the event was sent.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF pos()" doc="/**
+<p>Returns the mouse cursor position in item coordinates.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPointF scenePos()" doc="/**
+<p>Returns the mouse cursor position in scene coordinates.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint screenPos()" doc="/**
+<p>Returns the mouse cursor position in screen coordinates.</p>
+
+*/"/>
+    <method name="public final void setButton(com.trolltech.qt.core.Qt.MouseButton button__0)"/>
+    <method name="public final void setButtonDownPos(com.trolltech.qt.core.Qt.MouseButton button__0, com.trolltech.qt.core.QPointF pos__1)"/>
+    <method name="public final void setButtonDownScenePos(com.trolltech.qt.core.Qt.MouseButton button__0, com.trolltech.qt.core.QPointF pos__1)"/>
+    <method name="public final void setButtonDownScreenPos(com.trolltech.qt.core.Qt.MouseButton button__0, com.trolltech.qt.core.QPoint pos__1)"/>
+    <method name="public final void setButtons(com.trolltech.qt.core.Qt.MouseButtons buttons__0)"/>
+    <method name="public final void setLastPos(com.trolltech.qt.core.QPointF pos__0)"/>
+    <method name="public final void setLastScenePos(com.trolltech.qt.core.QPointF pos__0)"/>
+    <method name="public final void setLastScreenPos(com.trolltech.qt.core.QPoint pos__0)"/>
+    <method name="public final void setModifiers(com.trolltech.qt.core.Qt.KeyboardModifiers modifiers__0)"/>
+    <method name="public final void setPos(com.trolltech.qt.core.QPointF pos__0)"/>
+    <method name="public final void setScenePos(com.trolltech.qt.core.QPointF pos__0)"/>
+    <method name="public final void setScreenPos(com.trolltech.qt.core.QPoint pos__0)"/>
+</class>

@@ -1,0 +1,66 @@
+<class name="QGLFramebufferObject" doc="/**
+<p>The QGLFramebufferObject class encapsulates an OpenGL framebuffer object.</p>
+<p>The QGLFramebufferObject class encapsulates an OpenGL framebuffer object, defined by the <tt>GL_EXT_framebuffer_object</tt> extension. In addition it provides a rendering surface that can be painted on with a QPainter, rendered to using native GL calls, or both. This surface can be bound and used as a regular texture in your own GL drawing code. By default, the QGLFramebufferObject class generates a 2D GL texture (using the <tt>GL_TEXTURE_2D</tt> target), which is used as the internal rendering target.</p>
+<p><b>It is important to have a current GL context when creating a QGLFramebufferObject, otherwise initialization will fail.</b></p>
+<p>OpenGL framebuffer objects and pbuffers (see QGLPixelBuffer) can both be used to render to offscreen surfaces, but there are a number of advantages with using framebuffer objects instead of pbuffers:</p>
+<ol type=&quote;1&quote;>
+<li>A framebuffer object does not require a separate rendering context, so no context switching will occur when switching rendering targets. There is an overhead involved in switching targets, but in general it is cheaper than a context switch to a pbuffer.</li>
+<li>Rendering to dynamic textures (i.e. render-to-texture functionality) works on all platforms. No need to do explicit copy calls from a render buffer into a texture, as was necessary on systems that did not support the <tt>render_texture</tt> extension.</li>
+<li>It is possible to attach several rendering buffers (or texture objects) to the same framebuffer object, and render to all of them without doing a context switch.</li>
+<li>The OpenGL framebuffer extension is a pure GL extension with no system dependant WGL, AGL or GLX parts. This makes using framebuffer objects more portable.</li>
+</ol>
+<p>Note that QPainter antialiasing of drawing primitives will not work when using a QGLFramebufferObject as a paintdevice. This is because sample buffers, which are needed for antialiasing, are not yet supported in application-defined framebuffer objects. However, an extension to solve this has already been approved by the OpenGL ARB (<tt>GL_EXT_framebuffer_multisample</tt>), and will most likely be available in the near future.</p>
+
+*/">
+    <method name="public QGLFramebufferObject(com.trolltech.qt.core.QSize size__0, int target__1)" doc="/**
+<p>Constructs an OpenGL framebuffer object and binds a 2D GL texture to the buffer of the size <i>size</i>. The texture is bound to the <tt>GL_COLOR_ATTACHMENT0</tt> target in the framebuffer object.</p>
+<p>The <i>target</i> parameter is used to specify the GL texture target. The default target is <tt>GL_TEXTURE_2D</tt>. Keep in mind that <tt>GL_TEXTURE_2D</tt> textures must have a power of 2 width and height (e.g. 256x512).</p>
+<p>It is important that you have a current GL context set when creating the QGLFramebufferObject, otherwise the initalization will fail.</p>
+
+*/"/>
+    <method name="public QGLFramebufferObject(int width__0, int height__1, int target__2)" doc="/**
+<p>Constructs an OpenGL framebuffer object and binds a 2D GL texture to the buffer of the given <i>width</i> and <i>height</i>.</p>
+
+*/"/>
+    <method name="public final boolean bind()" doc="/**
+<p>Switches rendering from the default, windowing system provided framebuffer to this framebuffer object. Returns true upon success, false otherwise.</p>
+
+*/"/>
+    <method name="public final int handle()" doc="/**
+<p>Returns the GL framebuffer object handle for this framebuffer object (returned by the <tt>glGenFrameBuffersEXT()</tt> function). This handle can be used to attach new images or buffers to the framebuffer. The user is responsible for cleaning up and destroying these objects.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if the framebuffer object is valid.</p>
+<p>The framebuffer can become invalid if the initialization process fails, the user attaches an invalid buffer to the framebuffer object, or a non-power of 2 width/height is specified as the texture size if the texture target is <tt>GL_TEXTURE_2D</tt>.</p>
+
+*/"/>
+    <method name="public final boolean release()" doc="/**
+<p>Switches rendering back to the default, windowing system provided framebuffer. Returns true upon success, false otherwise.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize size()" doc="/**
+<p>Returns the size of the texture attached to this framebuffer object.</p>
+
+*/"/>
+    <method name="public final int texture()" doc="/**
+<p>Returns the texture id for the texture attached as the default rendering target in this framebuffer object. This texture id can be bound as a normal texture in your own GL code.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QImage toImage()" doc="/**
+<p>Returns the contents of this framebuffer object as a QImage.</p>
+
+*/"/>
+    <method name="public int depth()"/>
+    <method name="public int devType()"/>
+    <method name="public int metric(com.trolltech.qt.gui.QPaintDevice.PaintDeviceMetric metric__0)" doc="/**
+<p>Returns the metric information for the given paint device <i>metric</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPaintEngine paintEngine()"/>
+    <method name="public boolean paintingActive()"/>
+    <method name="public native static boolean hasOpenGLFramebufferObjects()" doc="/**
+<p>Returns true if the OpenGL <tt>GL_EXT_framebuffer_object</tt> extension is present on this system; otherwise returns false.</p>
+
+*/"/>
+</class>

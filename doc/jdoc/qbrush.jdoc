@@ -1,0 +1,130 @@
+<class name="QBrush" doc="/**
+<p>The QBrush class defines the fill pattern of shapes drawn by QPainter.</p>
+<p>A brush has a style, a color, a gradient and a texture.</p>
+<p>The brush style() defines the fill pattern using the Qt::BrushStyle enum. The default brush style is Qt::NoBrush (depending on how you construct a brush). This style tells the painter to not fill shapes. The standard style for filling is Qt::SolidPattern. The style can be set when the brush is created using the appropiate constructor, and in addition the setStyle() function provides means for altering the style once the brush is constructed.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image brush-styles.png]</font></p><p>The brush color() defines the color of the fill pattern. The color can either be one of Qt's predefined colors, Qt::GlobalColor, or any other custom QColor. The currently set color can be retrieved and altered using the color() and setColor() functions, respectively.</p>
+<p>The gradient() defines the gradient fill used when the current style is either Qt::LinearGradientPattern, Qt::RadialGradientPattern or Qt::ConicalGradientPattern. The gradient can only be set when constructing the brush, while the texture() can be set using the appropiate constructor or by using the setTexture() function. The texture() defines the pixmap used when the current style is Qt::TexturePattern.</p>
+<p>Note that applying setTexture() makes style() == Qt::TexturePattern, regardless of previous style settings. Also, calling setColor() will not make a difference if the style is a gradient. The same is the case if the style is Qt::TexturePattern style unless the current texture is a QBitmap.</p>
+<p>The isOpaque() function returns true if the brush is fully opaque otherwise false. A brush is considered opaque if:</p>
+<ul>
+<li>The alpha component of the color() is 255.</li>
+<li>Its texture() does not have an alpha channel and is not a QBitmap.</li>
+<li>The colors in the gradient() all have an alpha component that is 255.</li>
+</ul>
+<p><table width=&quote;100%&quote; align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td><font color=&quote;red&quote;>[Missing image brush-outline.png]</font></td><td>To specify the style and color of lines and outlines, use the QPainter's pen combined with Qt::PenStyle and Qt::GlobalColor:<pre>    QPainter painter(this);
+
+    painter.setBrush(Qt::cyan);
+    painter.setPen(Qt::darkCyan);
+    painter.drawRect(0, 0, 100,100);
+
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(Qt::darkGreen);
+    painter.drawRect(40, 40, 100, 100);</pre>
+<p>Note that, by default, QPainter renders the outline (using the currently set pen) when drawing shapes. Use <tt>painter.setPen(Qt::NoPen)</tt> to disable this behavior.</p>
+</td></tr>
+</table></p>
+<p>For more information about painting in general, see The Paint System documentation.</p>
+
+*/">
+    <method name="public QBrush()" doc="/**
+<p>Constructs a default black brush with the style Qt::NoBrush (i.e. this brush will not fill shapes).</p>
+
+*/"/>
+    <method name="public QBrush(com.trolltech.qt.gui.QColor color__0, com.trolltech.qt.gui.QPixmap pixmap__1)" doc="/**
+<p>Constructs a brush with the given <i>color</i> and the custom pattern stored in <i>pixmap</i>.</p>
+<p>The style is set to Qt::TexturePattern. The color will only have an effect for QBitmaps.</p>
+
+*/"/>
+    <method name="public QBrush(com.trolltech.qt.gui.QColor color__0, com.trolltech.qt.core.Qt.BrushStyle bs__1)" doc="/**
+<p>Constructs a brush with the given <i>color</i> and <i>style</i>.</p>
+
+*/"/>
+    <method name="public QBrush(com.trolltech.qt.gui.QPixmap pixmap__0)" doc="/**
+<p>Constructs a brush with a black color and a texture set to the given <i>pixmap</i>. The style is set to Qt::TexturePattern.</p>
+
+*/"/>
+    <method name="public QBrush(com.trolltech.qt.gui.QBrush brush__0)" doc="/**
+<p>Constructs a copy of <i>other</i>.</p>
+
+*/"/>
+    <method name="public QBrush(com.trolltech.qt.gui.QImage image__0)" doc="/**
+<p>Constructs a brush with a black color and a texture set to the given <i>image</i>. The style is set to Qt::TexturePattern.</p>
+
+*/"/>
+    <method name="public QBrush(com.trolltech.qt.gui.QGradient gradient__0)" doc="/**
+<p>Constructs a brush based on the given <i>gradient</i>.</p>
+<p>The brush style is set to the corresponding gradient style (either Qt::LinearGradientPattern, Qt::RadialGradientPattern or Qt::ConicalGradientPattern).</p>
+
+*/"/>
+    <method name="public QBrush(com.trolltech.qt.core.Qt.GlobalColor color__0, com.trolltech.qt.gui.QPixmap pixmap__1)" doc="/**
+<p>Constructs a brush with the given <i>color</i> and the custom pattern stored in <i>pixmap</i>.</p>
+<p>The style is set to Qt::TexturePattern. The color will only have an effect for QBitmaps.</p>
+
+*/"/>
+    <method name="public QBrush(com.trolltech.qt.core.Qt.BrushStyle bs__0)" doc="/**
+<p>Constructs a black brush with the given <i>style</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QColor color()" doc="/**
+<p>Returns the brush color.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.QNativePointer gradient()" doc="/**
+<p>Returns the gradient describing this brush.</p>
+
+*/"/>
+    <method name="public final boolean isOpaque()" doc="/**
+<p>Returns true if the brush is fully opaque otherwise false. A brush is considered opaque if:</p>
+<ul>
+<li>The alpha component of the color() is 255.</li>
+<li>Its texture() does not have an alpha channel and is not a QBitmap.</li>
+<li>The colors in the gradient() all have an alpha component that is 255.</li>
+</ul>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QMatrix matrix()" doc="/**
+<p>Returns the current transformation matrix for the brush.</p>
+
+*/"/>
+    <method name="public final void setColor(com.trolltech.qt.gui.QColor color__0)" doc="/**
+<p>Sets the brush color to the given <i>color</i>.</p>
+<p>Note that calling setColor() will not make a difference if the style is a gradient. The same is the case if the style is Qt::TexturePattern style unless the current texture is a QBitmap.</p>
+
+*/"/>
+    <method name="public final void setColor(com.trolltech.qt.core.Qt.GlobalColor color__0)" doc="/**
+<p>Sets the brush color to the given <i>color</i>.</p>
+
+*/"/>
+    <method name="public final void setMatrix(com.trolltech.qt.gui.QMatrix mat__0)" doc="/**
+<p>Sets <i>matrix</i> as an explicit transformation matrix on the current brush. The brush transformation matrix is merged with QPainter transformation matrix to produce the final result.</p>
+
+*/"/>
+    <method name="public final void setStyle(com.trolltech.qt.core.Qt.BrushStyle arg__0)" doc="/**
+<p>Sets the brush style to <i>style</i>.</p>
+
+*/"/>
+    <method name="public final void setTexture(com.trolltech.qt.gui.QPixmap pixmap__0)" doc="/**
+<p>Sets the brush pixmap to <i>pixmap</i>. The style is set to Qt::TexturePattern.</p>
+<p>The current brush color will only have an effect for monochrome pixmaps, i.e. for QPixmap::depth() == 1 (QBitmaps).</p>
+
+*/"/>
+    <method name="public final void setTextureImage(com.trolltech.qt.gui.QImage image__0)" doc="/**
+<p>Sets the brush image to <i>image</i>. The style is set to Qt::TexturePattern.</p>
+<p>The current brush color will only have an effect for monochrome images, i.e. for QImage::depth() == 1.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.BrushStyle style()" doc="/**
+<p>Returns the brush style.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap texture()" doc="/**
+<p>Returns the custom brush pattern, or a null pixmap if no custom brush pattern has been set.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QImage textureImage()" doc="/**
+<p>Returns the custom brush pattern, or a null image if no custom brush pattern has been set.</p>
+<p>If the texture was set as a QPixmap it will be converted to a QImage.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,15 @@
+<class name="QFileOpenEvent" doc="/**
+<p>The QFileOpenEvent class provides an event that will be sent when there is a request to open a file.</p>
+<p>File open events will be sent to the QApplication::instance() when the operating system requests that a file be opened. This is a high-level event that can be caused by different user actions depending on the user's desktop environment; for example, double clicking on an file icon in the Finder on Mac OS X.</p>
+<p>This event is only used to notify the application of a request. It may be safely ignored.</p>
+
+*/">
+    <method name="public QFileOpenEvent(java.lang.String file__0)" doc="/**
+<p>Constructs a file open event for the given <i>file</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.String file()" doc="/**
+<p>Returns the file that is being opened.</p>
+
+*/"/>
+</class>

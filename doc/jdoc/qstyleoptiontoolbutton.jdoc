@@ -1,0 +1,126 @@
+<class name="QStyleOptionToolButton" doc="/**
+<p>The QStyleOptionToolButton class is used to describe the parameters for drawing a tool button.</p>
+<p>QStyleOptionToolButton contains all the information that QStyle functions need to draw QToolButton.</p>
+<p>For performance reasons, the access to the member variables is direct (i.e., using the <tt>.</tt> or <tt>-&gt;</tt> operator). This low-level feel makes the structures straightforward to use and emphasizes that these are simply parameters used by the style functions.</p>
+<p>For an example demonstrating how style options can be used, see the Styles example.</p>
+
+*/">
+    <method name="public QStyleOptionToolButton(com.trolltech.qt.gui.QStyleOptionToolButton other__0)" doc="/**
+<p>Constructs a copy of the <i>other</i> style option.</p>
+
+*/"/>
+    <method name="public QStyleOptionToolButton()" doc="/**
+<p>Constructs a QStyleOptionToolButton, initializing the members variables to their default values.</p>
+
+*/"/>
+    <method name="protected QStyleOptionToolButton(int version__0)"/>
+    <enum name="StyleOptionVersion" doc="/**
+<p>This enum is used to hold information about the version of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>1</td></tr>
+</table></p>
+<p>The version is used by QStyleOption subclasses to implement extensions without breaking compatibility. If you use qstyleoption_cast(), you normally don't need to check it.</p>
+
+*/"/>
+    <enum name="ToolButtonFeature" doc="/**
+<p>Describes the various features that a tool button can have.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A normal tool button.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The tool button is an arrow.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The tool button has a menu.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>There is a delay to showing the menu.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="StyleOptionType" doc="/**
+<p>This enum is used to hold information about the type of the style option, and is defined for each QStyleOption subclass.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The type of style option provided (SO_ToolButton for this class).</td></tr>
+</table></p>
+<p>The type is used internally by QStyleOption, its subclasses, and qstyleoption_cast() to determine the type of style option. In general you do not need to worry about this unless you want to create your own QStyleOption subclass and your own styles.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize iconSize()" doc="/**
+<p>the size of the icon for the tool button</p>
+<p>The default value is QSize(-1, -1), i.e. an invalid size.</p>
+
+*/"/>
+    <method name="public final void setIconSize(com.trolltech.qt.core.QSize iconSize)" doc="/**
+<p>the size of the icon for the tool button</p>
+<p>The default value is QSize(-1, -1), i.e. an invalid size.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ToolButtonStyle toolButtonStyle()" doc="/**
+<p>a Qt::ToolButtonStyle value describing the appearance of the tool button</p>
+<p>The default value is Qt::ToolButtonIconOnly.</p>
+
+*/"/>
+    <method name="public final void setToolButtonStyle(com.trolltech.qt.core.Qt.ToolButtonStyle toolButtonStyle)" doc="/**
+<p>a Qt::ToolButtonStyle value describing the appearance of the tool button</p>
+<p>The default value is Qt::ToolButtonIconOnly.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QStyleOptionToolButton.ToolButtonFeatures features()" doc="/**
+<p>an OR combination of the tool button's features</p>
+<p>The default value is None.</p>
+
+*/"/>
+    <method name="public final void setFeatures(com.trolltech.qt.gui.QStyleOptionToolButton.ToolButtonFeatures features)" doc="/**
+<p>an OR combination of the tool button's features</p>
+<p>The default value is None.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ArrowType arrowType()" doc="/**
+<p>the direction of the arrow for the tool button</p>
+<p>This value is only used if features includes Arrow. The default value is Qt::DownArrow.</p>
+
+*/"/>
+    <method name="public final void setArrowType(com.trolltech.qt.core.Qt.ArrowType arrowType)" doc="/**
+<p>the direction of the arrow for the tool button</p>
+<p>This value is only used if features includes Arrow. The default value is Qt::DownArrow.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QIcon icon()" doc="/**
+<p>the icon for the tool button</p>
+<p>The default value is an empty icon, i.e. an icon with neither a pixmap nor a filename.</p>
+
+*/"/>
+    <method name="public final void setIcon(com.trolltech.qt.gui.QIcon icon)" doc="/**
+<p>the icon for the tool button</p>
+<p>The default value is an empty icon, i.e. an icon with neither a pixmap nor a filename.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QPoint pos()" doc="/**
+<p>the position of the tool button</p>
+<p>The default value is a null point, i.e. (0, 0)</p>
+
+*/"/>
+    <method name="public final void setPos(com.trolltech.qt.core.QPoint pos)" doc="/**
+<p>the position of the tool button</p>
+<p>The default value is a null point, i.e. (0, 0)</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>The text of the tool button.</p>
+<p>This value is only used if toolButtonStyle is Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon, or Qt::ToolButtonTextOnly. The default value is an empty string.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String text)" doc="/**
+<p>The text of the tool button.</p>
+<p>This value is only used if toolButtonStyle is Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon, or Qt::ToolButtonTextOnly. The default value is an empty string.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font()" doc="/**
+<p>the font that is used for the text</p>
+<p>This value is only used if toolButtonStyle is Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon, or Qt::ToolButtonTextOnly. By default, the application's default font is used.</p>
+
+*/"/>
+    <method name="public final void setFont(com.trolltech.qt.gui.QFont font)" doc="/**
+<p>the font that is used for the text</p>
+<p>This value is only used if toolButtonStyle is Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon, or Qt::ToolButtonTextOnly. By default, the application's default font is used.</p>
+
+*/"/>
+</class>

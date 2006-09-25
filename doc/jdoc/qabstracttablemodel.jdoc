@@ -1,0 +1,34 @@
+<class name="QAbstractTableModel" doc="/**
+<p>The QAbstractTableModel class provides an abstract model that can be subclassed to create table models.</p>
+<p>QAbstractTableModel provides a standard interface for models that represent their data as a two-dimensional array of items. It is not used directly, but must be subclassed.</p>
+<p>Since the model provides a more specialized interface than QAbstractItemModel, it is not suitable for use with tree views, although it can be used to provide data to a QListView. If you need to represent a simple list of items, and only need a model to contain a single column of data, subclassing the QAbstractListModel may be more appropriate.</p>
+<p>The rowCount() and columnCount() functions return the dimensions of the table. To retrieve a model index corresponding to an item in the model, use index() and provide only the row and column numbers.</p>
+<a name=&quote;subclassing&quote;></a>
+<h3>Subclassing</h3>
+<p><b>Note:</b> Some general guidelines for subclassing models are available in the Model Subclassing Reference.</p>
+<p>When subclassing QAbstractTableModel, you must implement rowCount(), columnCount(), and data(). Default implementations of the index() and parent() functions are provided by QAbstractTableModel. Well behaved models will also implement headerData().</p>
+<p>Editable models need to implement setData(), and implement flags() to return a value containing Qt::ItemIsEditable.</p>
+<p>Models that provide interfaces to resizable data structures can provide implementations of insertRows(), removeRows(), insertColumns(), and removeColumns(). When implementing these functions, it is important to call the appropriate functions so that all connected views are aware of any changes:</p>
+<ul>
+<li>An insertRows() implementation must call beginInsertRows() <i>before</i> inserting new rows into the data structure, and it must call endInsertRows() <i>immediately afterwards</i>.</li>
+<li>An insertColumns() implementation must call beginInsertColumns() <i>before</i> inserting new columns into the data structure, and it must call endInsertColumns() <i>immediately afterwards</i>.</li>
+<li>A removeRows() implementation must call beginRemoveRows() <i>before</i> the rows are removed from the data structure, and it must call endRemoveRows() <i>immediately afterwards</i>.</li>
+<li>A removeColumns() implementation must call beginRemoveColumns() <i>before</i> the columns are removed from the data structure, and it must call endRemoveColumns() <i>immediately afterwards</i>.</li>
+</ul>
+
+*/">
+    <method name="public QAbstractTableModel(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs an abstract table model for the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="@Deprecated public final boolean hasChildren(com.trolltech.qt.core.QModelIndex parent__0)"/>
+    <method name="@Deprecated public final com.trolltech.qt.core.QModelIndex parent(com.trolltech.qt.core.QModelIndex child__0)" doc="/**
+<p>Returns the parent of the model item with the given <i>index</i>.</p>
+
+*/"/>
+    <method name="public boolean dropMimeData(com.trolltech.qt.gui.QMimeData data__0, com.trolltech.qt.core.Qt.DropAction action__1, int row__2, int column__3, com.trolltech.qt.core.QModelIndex parent__4)"/>
+    <method name="public com.trolltech.qt.core.QModelIndex index(int row__0, int column__1, com.trolltech.qt.core.QModelIndex parent__2)" doc="/**
+<p>Returns the index of the data in <i>row</i> and <i>column</i> with <i>parent</i>.</p>
+
+*/"/>
+</class>

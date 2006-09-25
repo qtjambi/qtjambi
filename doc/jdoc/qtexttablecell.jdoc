@@ -1,0 +1,70 @@
+<class name="QTextTableCell" doc="/**
+<p>The QTextTableCell class represents the properties of a cell in a QTextTable.</p>
+<p>Table cells are pieces of document structure that belong to a table. The table orders cells into particular rows and columns; cells can also span multiple columns and rows.</p>
+<p>Cells are usually created when a table is inserted into a document with QTextCursor::insertTable(), but they are also created and destroyed when a table is resized.</p>
+<p>Cells contain information about their location in a table; you can obtain the row() and column() numbers of a cell, and its rowSpan() and columnSpan().</p>
+<p>The format() of a cell describes the default character format of its contents. The firstCursorPosition() and lastCursorPosition() functions are used to obtain the extent of the cell in the document.</p>
+
+*/">
+    <method name="public QTextTableCell()" doc="/**
+<p>Constructs an invalid table cell.</p>
+
+*/"/>
+    <method name="public QTextTableCell(com.trolltech.qt.gui.QTextTableCell o__0)" doc="/**
+<p>Copy constructor. Creates a new QTextTableCell object based on the <i>other</i> cell.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFrame_iterator begin()" doc="/**
+<p>Returns a frame iterator pointing to the beginning of the table's cell.</p>
+
+*/"/>
+    <method name="public final int column()" doc="/**
+<p>Returns the number of the column in the table that contains this cell.</p>
+
+*/"/>
+    <method name="public final int columnSpan()" doc="/**
+<p>Returns the number of columns this cell spans. The default is 1.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFrame_iterator end()" doc="/**
+<p>Returns a frame iterator pointing to the end of the table's cell.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextCursor firstCursorPosition()" doc="/**
+<p>Returns the first valid cursor position in this cell.</p>
+
+*/"/>
+    <method name="public final int firstPosition()" doc="/**
+<p>Returns the first valid position in the document occupied by this cell.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextCharFormat format()" doc="/**
+<p>Returns the cell's character format.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if this is a valid table cell; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextCursor lastCursorPosition()" doc="/**
+<p>Returns the last valid cursor position in this cell.</p>
+
+*/"/>
+    <method name="public final int lastPosition()" doc="/**
+<p>Returns the last valid position in the document occupied by this cell.</p>
+
+*/"/>
+    <method name="public final int row()" doc="/**
+<p>Returns the number of the row in the table that contains this cell.</p>
+
+*/"/>
+    <method name="public final int rowSpan()" doc="/**
+<p>Returns the number of rows this cell spans. The default is 1.</p>
+
+*/"/>
+    <method name="public final void setFormat(com.trolltech.qt.gui.QTextCharFormat format__0)" doc="/**
+<p>Sets the cell's character format to <i>format</i>. This can for example be used to change the background color of the entire cell:</p>
+<p>QTextTableCell cell = table-&gt;cellAt(2, 3); QTextCharFormat format = cell.format(); format.setBackground(Qt::blue); cell.setFormat(format);</p>
+
+*/"/>
+</class>

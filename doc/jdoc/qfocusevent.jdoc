@@ -1,0 +1,24 @@
+<class name="QFocusEvent" doc="/**
+<p>The QFocusEvent class contains event parameters for widget focus events.</p>
+<p>Focus events are sent to widgets when the keyboard input focus changes. Focus events occur due to mouse actions, key presses (such as <b>Tab</b> or <b>Backtab</b>), the window system, popup menus, keyboard shortcuts, or other application-specific reasons. The reason for a particular focus event is returned by reason() in the appropriate event handler.</p>
+<p>The event handlers QWidget::focusInEvent() and QWidget::focusOutEvent() receive focus events.</p>
+
+*/">
+    <method name="public QFocusEvent(com.trolltech.qt.core.QEvent.Type type__0, com.trolltech.qt.core.Qt.FocusReason reason__1)" doc="/**
+<p>Constructs a focus event object.</p>
+<p>The <i>type</i> parameter must be either QEvent::FocusIn or QEvent::FocusOut. The <i>reason</i> describes the cause of the change in focus.</p>
+
+*/"/>
+    <method name="public final boolean gotFocus()" doc="/**
+<p>Returns true if type() is QEVent::FocusIn; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean lostFocus()" doc="/**
+<p>Returns true if type() is QEVent::FocusOut; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.FocusReason reason()" doc="/**
+<p>Returns the reason for this focus event.</p>
+
+*/"/>
+</class>

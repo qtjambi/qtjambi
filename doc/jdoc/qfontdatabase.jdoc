@@ -1,0 +1,181 @@
+<class name="QFontDatabase" doc="/**
+<p>The QFontDatabase class provides information about the fonts available in the underlying window system.</p>
+<p>The most common uses of this class are to query the database for the list of font families() and for the pointSizes() and styles() that are available for each family. An alternative to pointSizes() is smoothSizes() which returns the sizes at which a given family and style will look attractive.</p>
+<p>If the font family is available from two or more foundries the foundry name is included in the family name, e.g. &quot;Helvetica [Adobe]&quot; and &quot;Helvetica [Cronyx]&quot;. When you specify a family you can either use the old hyphenated Qt 2.x &quot;foundry-family&quot; format, e.g. &quot;Cronyx-Helvetica&quot;, or the new bracketed Qt 3.x &quot;family [foundry]&quot; format e.g. &quot;Helvetica [Cronyx]&quot;. If the family has a foundry it is always returned, e.g. by families(), using the bracketed format.</p>
+<p>The font() function returns a QFont given a family, style and point size.</p>
+<p>A family and style combination can be checked to see if it is italic() or bold(), and to retrieve its weight(). Similarly we can call isBitmapScalable(), isSmoothlyScalable(), isScalable() and isFixedPitch().</p>
+<p>Use the styleString() to obtain a text version of a style.</p>
+<p>The QFontDatabase class also supports some static functions, for example, standardSizes(). You can retrieve the description of a writing system using writingSystemName(), and a sample of characters in a writing system with writingSystemSample().</p>
+<p>Example:</p>
+<pre>        QFontDatabase database;
+        QTreeWidget fontTree;
+        fontTree.setColumnCount(2);
+        fontTree.setHeaderLabels(QStringList() &lt;&lt; &quot;Font&quot; &lt;&lt; &quot;Smooth Sizes&quot;);
+
+        foreach (QString family, database.families()) {
+            QTreeWidgetItem *familyItem = new QTreeWidgetItem(&amp;fontTree);
+            familyItem-&gt;setText(0, family);
+
+            foreach (QString style, database.styles(family)) {
+                QTreeWidgetItem *styleItem = new QTreeWidgetItem(familyItem);
+                styleItem-&gt;setText(0, style);
+
+                QString sizes;
+                foreach (int points, database.smoothSizes(family, style))
+                    sizes += QString::number(points) + &quot; &quot;;
+
+                styleItem-&gt;setText(1, sizes.trimmed());
+            }
+        }</pre>
+<p>This example gets the list of font families, the list of styles for each family, and the point sizes that are available for each combination of family and style, displaying this information in a tree view.</p>
+
+*/">
+    <method name="public QFontDatabase()" doc="/**
+<p>Creates a font database object.</p>
+
+*/"/>
+    <method name="public final boolean bold(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns true if the font that has family <i>family</i> and style <i>style</i> is bold; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; families(com.trolltech.qt.gui.QFontDatabase.WritingSystem writingSystem__0)" doc="/**
+<p>Returns a sorted list of the available font families which support the <i>writingSystem</i>.</p>
+<p>If a family exists in several foundries, the returned name for that font is in the form &quot;family [foundry]&quot;. Examples: &quot;Times [Adobe]&quot;, &quot;Times [Cronyx]&quot;, &quot;Palatino&quot;.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font(java.lang.String family__0, java.lang.String style__1, int pointSize__2)" doc="/**
+<p>Returns a QFont object that has family <i>family</i>, style <i>style</i> and point size <i>pointSize</i>. If no matching font could be created, a QFont object that uses the application's default font is returned.</p>
+
+*/"/>
+    <method name="public final boolean isBitmapScalable(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns true if the font that has family <i>family</i> and style <i>style</i> is a scalable bitmap font; otherwise returns false. Scaling a bitmap font usually produces an unattractive hardly readable result, because the pixels of the font are scaled. If you need to scale a bitmap font it is better to scale it to one of the fixed sizes returned by smoothSizes().</p>
+
+*/"/>
+    <method name="public final boolean isFixedPitch(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns true if the font that has family <i>family</i> and style <i>style</i> is fixed pitch; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isScalable(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns true if the font that has family <i>family</i> and style <i>style</i> is scalable; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isSmoothlyScalable(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns true if the font that has family <i>family</i> and style <i>style</i> is smoothly scalable; otherwise returns false. If this function returns true, it's safe to scale this font to any size, and the result will always look attractive.</p>
+
+*/"/>
+    <method name="public final boolean italic(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns true if the font that has family <i>family</i> and style <i>style</i> is italic; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.Integer&gt; pointSizes(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns a list of the point sizes available for the font that has family <i>family</i> and style <i>style</i>. The list may be empty.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.Integer&gt; smoothSizes(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns the point sizes of a font that has family <i>family</i> and style <i>style</i> that will look attractive. The list may be empty. For non-scalable fonts and bitmap scalable fonts, this function is equivalent to pointSizes().</p>
+
+*/"/>
+    <method name="public final java.lang.String styleString(com.trolltech.qt.gui.QFont font__0)" doc="/**
+<p>Returns a string that describes the style of the <i>font</i>. For example, &quot;Bold Italic&quot;, &quot;Bold&quot;, &quot;Italic&quot; or &quot;Normal&quot;. An empty string may be returned.</p>
+
+*/"/>
+    <method name="public final java.lang.String styleString(com.trolltech.qt.gui.QFontInfo fontInfo__0)" doc="/**
+<p>Returns a string that describes the style of the <i>fontInfo</i>. For example, &quot;Bold Italic&quot;, &quot;Bold&quot;, &quot;Italic&quot; or &quot;Normal&quot;. An empty string may be returned.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; styles(java.lang.String family__0)" doc="/**
+<p>Returns a list of the styles available for the font family <i>family</i>. Some example styles: &quot;Light&quot;, &quot;Light Italic&quot;, &quot;Bold&quot;, &quot;Oblique&quot;, &quot;Demi&quot;. The list may be empty.</p>
+
+*/"/>
+    <method name="public final int weight(java.lang.String family__0, java.lang.String style__1)" doc="/**
+<p>Returns the weight of the font that has family <i>family</i> and style <i>style</i>. If there is no such family and style combination, returns -1.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QFontDatabase.WritingSystem&gt; writingSystems(java.lang.String family__0)" doc="/**
+<p>Returns a sorted list of the writing systems supported by a given font <i>family</i>.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QFontDatabase.WritingSystem&gt; writingSystems()" doc="/**
+<p>Returns a sorted list of the available writing systems. This is list generated from information about all installed fonts on the system.</p>
+
+*/"/>
+    <method name="public native static int addApplicationFont(java.lang.String fileName__0)" doc="/**
+<p>Loads the font from the file specified by <i>fileName</i> and makes it available to the application. An ID is returned that can be used to remove the font again with removeApplicationFont() or to retrieve the list of family names contained in the font.</p>
+<p>The function returns -1 if the font could not be loaded.</p>
+<p>Currently only TrueType fonts and TrueType font collections are supported.</p>
+<p><b>Note:</b> Adding application fonts on Unix/X11 platforms without fontconfig is currently not supported.</p>
+
+*/"/>
+    <method name="public final static int addApplicationFontFromData(com.trolltech.qt.core.QByteArray fontData__0)" doc="/**
+<p>Loads the font from binary data specified by <i>fontData</i> and makes it available to the application. An ID is returned that can be used to remove the font again with removeApplicationFont() or to retrieve the list of family names contained in the font.</p>
+<p>The function returns -1 if the font could not be loaded.</p>
+<p>Currently only TrueType fonts and TrueType font collections are supported.</p>
+<p><b>Note:</b> Adding application fonts on Unix/X11 platforms without fontconfig is currently not supported.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;java.lang.String&gt; applicationFontFamilies(int id__0)" doc="/**
+<p>Returns a list of font families for the given application font identified by <i>id</i>.</p>
+
+*/"/>
+    <method name="public native static boolean removeAllApplicationFonts()" doc="/**
+<p>Removes all application-local fonts previously added using addApplicationFont() and addApplicationFontFromData().</p>
+<p>Returns true if unloading of the fonts succeeded; otherwise returns false.</p>
+
+*/"/>
+    <method name="public native static boolean removeApplicationFont(int id__0)" doc="/**
+<p>Removes the previously loaded application font identified by <i>id</i>. Returns true if unloading of the font succeeded; otherwise returns false.</p>
+
+*/"/>
+    <method name="public native static java.util.List&lt;java.lang.Integer&gt; standardSizes()" doc="/**
+<p>Returns a list of standard font sizes.</p>
+
+*/"/>
+    <method name="public final static java.lang.String writingSystemName(com.trolltech.qt.gui.QFontDatabase.WritingSystem writingSystem__0)" doc="/**
+<p>Returns the names the <i>writingSystem</i> (e.g. for displaying to the user in a dialog).</p>
+
+*/"/>
+    <method name="public final static java.lang.String writingSystemSample(com.trolltech.qt.gui.QFontDatabase.WritingSystem writingSystem__0)" doc="/**
+<p>Returns a string with sample characters from <i>writingSystem</i>.</p>
+
+*/"/>
+    <enum name="WritingSystem" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>(the same as Symbol)</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+</class>

@@ -1,0 +1,312 @@
+<class name="QSqlQuery" doc="/**
+<p>The QSqlQuery class provides a means of executing and manipulating SQL statements.</p>
+<p>QSqlQuery encapsulates the functionality involved in creating, navigating and retrieving data from SQL queries which are executed on a QSqlDatabase. It can be used to execute DML (data manipulation language) statements, such as <tt>SELECT</tt>, <tt>INSERT</tt>, <tt>UPDATE</tt> and <tt>DELETE</tt>, as well as DDL (data definition language) statements, such as <tt>CREATE</tt> <tt>TABLE</tt>. It can also be used to execute database-specific commands which are not standard SQL (e.g. <tt>SET DATESTYLE=ISO</tt> for PostgreSQL).</p>
+<p>Successfully executed SQL statements set the query's state to active; isActive() then returns true. Otherwise the query's state is set to inactive. In either case, when executing a new SQL statement, the query is positioned on an invalid record; an active query must be navigated to a valid record (so that isValid() returns true) before values can be retrieved.</p>
+<a name=&quote;qsqlquery-examples&quote;></a><p>Navigating records is performed with the following functions:</p>
+<ul>
+<li>next()</li>
+<li>previous()</li>
+<li>first()</li>
+<li>last()</li>
+<li>seek()</li>
+</ul>
+<p>These functions allow the programmer to move forward, backward or arbitrarily through the records returned by the query. If you only need to move forward through the results, e.g. using next() or using seek() with a positive offset, you can use setForwardOnly() and save a significant amount of memory overhead. Once an active query is positioned on a valid record, data can be retrieved using value(). All data is transferred from the SQL backend using QVariants.</p>
+<p>For example:</p>
+<pre>        QSqlQuery query(&quot;SELECT country FROM artist&quot;);
+        while (query.next()) {
+            QString country = query.value(0).toString();
+            doSomething(country);
+        }</pre>
+<p>To access the data returned by a query, use value(int). Each field in the data returned by a <tt>SELECT</tt> statement is accessed by passing the field's position in the statement, starting from 0. This makes using <tt>SELECT *</tt> queries inadvisable because the order of the fields returned is indeterminate.</p>
+<p>For the sake of efficiency, there are no functions to access a field by name (unless you use prepared queries with names, as explained below). To convert a field name into an index, use record().indexOf(), for example:</p>
+<pre>        QSqlQuery query(&quot;SELECT * FROM artist&quot;);
+        int fieldNo = query.record().indexOf(&quot;country&quot;);
+        while (query.next()) {
+            QString country = query.value(fieldNo).toString();
+            doSomething(country);
+        }</pre>
+<p>QSqlQuery supports prepared query execution and the binding of parameter values to placeholders. Some databases don't support these features, so for those, Qt emulates the required functionality. For example, the Oracle and ODBC drivers have proper prepared query support, and Qt makes use of it; but for databases that don't have this support, Qt implements the feature itself, e.g. by replacing placeholders with actual values when a query is executed. Use numRowsAffected() to find out how many rows were affected by a non-<tt>SELECT</tt> query, and size() to find how many were retrieved by a <tt>SELECT</tt>.</p>
+<p>Oracle databases identify placeholders by using a colon-name syntax, e.g <tt>:name</tt>. ODBC simply uses <tt>?</tt> characters. Qt supports both syntaxes, with the restriction that you can't mix them in the same query.</p>
+<p>You can retrieve the values of all the fields in a single variable (a map) using boundValues().</p>
+<a name=&quote;approaches-to-binding-values&quote;></a>
+<h3>Approaches to Binding Values</h3>
+<p>Below we present the same example using each of the four different binding approaches, as well as one example of binding values to a stored procedure.</p>
+<p><b>Named binding using named placeholders:</b></p>
+<pre>        QSqlQuery query;
+        query.prepare(&quot;INSERT INTO person (id, forename, surname) &quot;
+                      &quot;VALUES (:id, :forename, :surname)&quot;);
+        query.bindValue(&quot;:id&quot;, 1001);
+        query.bindValue(&quot;:forename&quot;, &quot;Bart&quot;);
+        query.bindValue(&quot;:surname&quot;, &quot;Simpson&quot;);
+        query.exec();</pre>
+<p><b>Positional binding using named placeholders:</b></p>
+<pre>        QSqlQuery query;
+        query.prepare(&quot;INSERT INTO person (id, forename, surname) &quot;
+                      &quot;VALUES (:id, :forename, :surname)&quot;);
+        query.bindValue(0, 1001);
+        query.bindValue(1, &quot;Bart&quot;);
+        query.bindValue(2, &quot;Simpson&quot;);
+        query.exec();</pre>
+<p><b>Binding values using positional placeholders (version 1):</b></p>
+<pre>        QSqlQuery query;
+        query.prepare(&quot;INSERT INTO person (id, forename, surname) &quot;
+                      &quot;VALUES (?, ?, ?)&quot;);
+        query.bindValue(0, 1001);
+        query.bindValue(1, &quot;Bart&quot;);
+        query.bindValue(2, &quot;Simpson&quot;);
+        query.exec();</pre>
+<p><b>Binding values using positional placeholders (version 2):</b></p>
+<pre>        QSqlQuery query;
+        query.prepare(&quot;INSERT INTO person (id, forename, surname) &quot;
+                      &quot;VALUES (?, ?, ?)&quot;);
+        query.addBindValue(1001);
+        query.addBindValue(&quot;Bart&quot;);
+        query.addBindValue(&quot;Simpson&quot;);
+        query.exec();</pre>
+<p><b>Binding values to a stored procedure:</b></p>
+<p>This code calls a stored procedure called <tt>AsciiToInt()</tt>, passing it a character through its in parameter, and taking its result in the out parameter.</p>
+<pre>        QSqlQuery query;
+        query.prepare(&quot;CALL AsciiToInt(?, ?)&quot;);
+        query.bindValue(0, &quot;A&quot;);
+        query.bindValue(1, 0, QSql::Out);
+        query.exec();
+        int i = query.boundValue(1).toInt(); <span class=&quote;comment&quote;>// i is 65</span></pre>
+<p>Note that unbound parameters will retain their values.</p>
+
+*/">
+    <method name="public QSqlQuery(java.lang.String query__0, com.trolltech.qt.sql.QSqlDatabase db__1)" doc="/**
+<p>Constructs a QSqlQuery object using the SQL <i>query</i> and the database <i>db</i>. If <i>db</i> is not specified, the application's default database is used. If <i>query</i> is not an empty string, it will be executed.</p>
+
+*/"/>
+    <method name="public QSqlQuery(com.trolltech.qt.sql.QSqlQuery other__0)" doc="/**
+<p>Constructs a copy of <i>other</i>.</p>
+
+*/"/>
+    <method name="public QSqlQuery(com.trolltech.qt.sql.QSqlResult r__0)" doc="/**
+<p>Constructs a QSqlQuery object which uses the QSqlResult <i>result</i> to communicate with a database.</p>
+
+*/"/>
+    <method name="public QSqlQuery(com.trolltech.qt.sql.QSqlDatabase db__0)" doc="/**
+<p>Constructs a QSqlQuery object using the database <i>db</i>.</p>
+
+*/"/>
+    <method name="public final void addBindValue(java.lang.Object val__0, com.trolltech.qt.sql.QSql.ParamType type__1)" doc="/**
+<p>Adds the value <i>val</i> to the list of values when using positional value binding. The order of the addBindValue() calls determines which placeholder a value will be bound to in the prepared query. If <i>paramType</i> is QSql::Out or QSql::InOut, the placeholder will be overwritten with data from the database after the exec() call.</p>
+
+*/"/>
+    <method name="public final int at()" doc="/**
+<p>Returns the current internal position of the query. The first record is at position zero. If the position is invalid, the function returns QSql::BeforeFirstRow or QSql::AfterLastRow, which are special negative values.</p>
+
+*/"/>
+    <method name="public final java.lang.Object boundValue(int pos__0)" doc="/**
+<p>Returns the value for the placeholder at position <i>pos</i>.</p>
+
+*/"/>
+    <method name="public final java.lang.Object boundValue(java.lang.String placeholder__0)" doc="/**
+<p>Returns the value for the <i>placeholder</i>.</p>
+
+*/"/>
+    <method name="public final java.util.SortedMap&lt;java.lang.String, java.lang.Object&gt; boundValues()" doc="/**
+<p>Returns a map of the bound values.</p>
+<p>With named binding, the bound values can be examined in the following ways:</p>
+<pre>        QMapIterator&lt;QString, QVariant&gt; i(query.boundValues());
+        while (i.hasNext()) {
+            i.next();
+            cout &lt;&lt; i.key().toAscii().data() &lt;&lt; &quot;: &quot;
+                 &lt;&lt; i.value().toString().toAscii().data() &lt;&lt; endl;
+        }</pre>
+<p>With positional binding, the code becomes:</p>
+<pre>        QList&lt;QVariant&gt; list = query.boundValues().values();
+        for (int i = 0; i &lt; list.size(); ++i)
+            cout &lt;&lt; i &lt;&lt; &quot;: &quot; &lt;&lt; list.at(i).toString().toAscii().data() &lt;&lt; endl;</pre>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Clears the result set and releases any resources held by the query. You should rarely if ever need to call this function.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.sql.QSqlDriver driver()" doc="/**
+<p>Returns the database driver associated with the query.</p>
+
+*/"/>
+    <method name="public final boolean exec()" doc="/**
+<p>Executes a previously prepared SQL query. Returns true if the query executed successfully; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean exec(java.lang.String query__0)" doc="/**
+<p>Executes the SQL in <i>query</i>. Returns true and sets the query state to active if the query was successful; otherwise returns false. The <i>query</i> string must use syntax appropriate for the SQL database being queried (for example, standard SQL).</p>
+<p>After the query is executed, the query is positioned on an <i>invalid</i> record and must be navigated to a valid record before data values can be retrieved (for example, using next()).</p>
+<p>Note that the last error for this query is reset when exec() is called.</p>
+<p>Example:</p>
+<pre>        QSqlQuery query;
+        query.prepare(&quot;INSERT INTO person (id, forename, surname) &quot;
+                      &quot;VALUES (:id, :forename, :surname)&quot;);
+        query.bindValue(&quot;:id&quot;, 1001);
+        query.bindValue(&quot;:forename&quot;, &quot;Bart&quot;);
+        query.bindValue(&quot;:surname&quot;, &quot;Simpson&quot;);
+        query.exec();</pre>
+
+*/"/>
+    <method name="public final boolean execBatch(com.trolltech.qt.sql.QSqlQuery.BatchExecutionMode mode__0)" doc="/**
+<p>Executes a previously prepared SQL query in a batch. All the bound parameters have to be lists of variants. If the database doesn't support batch executions, the driver will simulate it using conventional exec() calls.</p>
+<p>Example:</p>
+<pre>    QSqlQuery q;
+    q.prepare(&quot;insert into myTable values (?, ?)&quot;);
+
+    QVariantList ints;
+    ints &lt;&lt; 1 &lt;&lt; 2 &lt;&lt; 3 &lt;&lt; 4;
+    q.addBindValue(ints);
+
+    QVariantList names;
+    names &lt;&lt; &quot;Harald&quot; &lt;&lt; &quot;Boris&quot; &lt;&lt; &quot;Trond&quot; &lt;&lt; QVariant(QVariant::String);
+    q.addBindValue(names);
+
+    if (!q.execBatch())
+        qDebug() &lt;&lt; q.lastError();</pre>
+<p>The example above inserts four new rows into <tt>myTable</tt>:</p>
+<pre>    1  Harald
+    2  Boris
+    3  Trond
+    4  NULL</pre>
+<p>To bind NULL values, a null QVariant has to be added to the bound QVariantList, for example: <tt>QVariant(QVariant::String)</tt></p>
+<p>Note that every bound QVariantList must contain the same amount of variants. Note that the type of the QVariants in a list must not change. For example, you cannot mix integer and string variants within a QVariantList.</p>
+<p>The <i>mode</i> parameter indicates how the bound QVariantList will be interpreted. If <i>mode</i> is <tt>ValuesAsRows</tt>, every variant within the QVariantList will be interpreted as a value for a new row. <tt>ValuesAsColumns</tt> is a special case for the Oracle driver. In this mode, every entry within a QVariantList will be interpreted as array-value for an IN or OUT value within a stored procedure. Note that this will only work if the IN or OUT value is a table-type consisting of only one column of a basic type, for example <tt>TYPE myType IS TABLE OF VARCHAR(64) INDEX BY BINARY_INTEGER;</tt></p>
+
+*/"/>
+    <method name="public final java.lang.String executedQuery()" doc="/**
+<p>Returns the last query that was executed.</p>
+<p>In most cases this function returns the same string as lastQuery(). If a prepared query with placeholders is executed on a DBMS that does not support it, the preparation of this query is emulated. The placeholders in the original query are replaced with their bound values to form a new query. This function returns the modified query. It is mostly useful for debugging purposes.</p>
+
+*/"/>
+    <method name="public final boolean first()" doc="/**
+<p>Retrieves the first record in the result, if available, and positions the query on the retrieved record. Note that the result must be in an active state and isSelect() must return true before calling this function or it will do nothing and return false. Returns true if successful. If unsuccessful the query position is set to an invalid position and false is returned.</p>
+
+*/"/>
+    <method name="public final boolean isActive()" doc="/**
+<p>Returns true if the query is currently active; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isForwardOnly()" doc="/**
+<p>Returns true if you can only scroll forward through a result set; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isNull(int field__0)" doc="/**
+<p>Returns true if the query is active and positioned on a valid record and the <i>field</i> is NULL; otherwise returns false. Note that for some drivers, isNull() will not return accurate information until after an attempt is made to retrieve data.</p>
+
+*/"/>
+    <method name="public final boolean isSelect()" doc="/**
+<p>Returns true if the current query is a <tt>SELECT</tt> statement; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if the query is currently positioned on a valid record; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean last()" doc="/**
+<p>Retrieves the last record in the result, if available, and positions the query on the retrieved record. Note that the result must be in an active state and isSelect() must return true before calling this function or it will do nothing and return false. Returns true if successful. If unsuccessful the query position is set to an invalid position and false is returned.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.sql.QSqlError lastError()" doc="/**
+<p>Returns error information about the last error (if any) that occurred with this query.</p>
+
+*/"/>
+    <method name="public final java.lang.Object lastInsertId()" doc="/**
+<p>Returns the object ID of the most recent inserted row if the database supports it. An invalid QVariant will be returned if the query did not insert any value or if the database does not report the id back. If more than one row was touched by the insert, the behavior is undefined.</p>
+
+*/"/>
+    <method name="public final java.lang.String lastQuery()" doc="/**
+<p>Returns the text of the current query being used, or an empty string if there is no current query text.</p>
+
+*/"/>
+    <method name="public final boolean next()" doc="/**
+<p>Retrieves the next record in the result, if available, and positions the query on the retrieved record. Note that the result must be in an active state and isSelect() must return true before calling this function or it will do nothing and return false.</p>
+<p>The following rules apply:</p>
+<ul>
+<li>If the result is currently located before the first record, e.g. immediately after a query is executed, an attempt is made to retrieve the first record.</li>
+<li>If the result is currently located after the last record, there is no change and false is returned.</li>
+<li>If the result is located somewhere in the middle, an attempt is made to retrieve the next record.</li>
+</ul>
+<p>If the record could not be retrieved, the result is positioned after the last record and false is returned. If the record is successfully retrieved, true is returned.</p>
+
+*/"/>
+    <method name="public final int numRowsAffected()" doc="/**
+<p>Returns the number of rows affected by the result's SQL statement, or -1 if it cannot be determined. Note that for <tt>SELECT</tt> statements, the value is undefined; use size() instead. If the query is not active (isActive() returns false), -1 is returned.</p>
+
+*/"/>
+    <method name="public final boolean prepare(java.lang.String query__0)" doc="/**
+<p>Prepares the SQL query <i>query</i> for execution. The query may contain placeholders for binding values. Both Oracle style colon-name (e.g., <tt>:surname</tt>), and ODBC style (<tt>?</tt>) placeholders are supported; but they cannot be mixed in the same query. See the <a href=&quote;qsqlquery.jdoc#qsqlquery-examples&quote;>Detailed Description</a> for examples.</p>
+<p>Portability note: Some databases choose to delay preparing a query until it is executed the first time. In this case, preparing a syntactically wrong query succeeds, but every consecutive exec() will fail.</p>
+
+*/"/>
+    <method name="public final boolean previous()" doc="/**
+<p>Retrieves the previous record in the result, if available, and positions the query on the retrieved record. Note that the result must be in an active state and isSelect() must return true before calling this function or it will do nothing and return false.</p>
+<p>The following rules apply:</p>
+<ul>
+<li>If the result is currently located before the first record, there is no change and false is returned.</li>
+<li>If the result is currently located after the last record, an attempt is made to retrieve the last record.</li>
+<li>If the result is somewhere in the middle, an attempt is made to retrieve the previous record.</li>
+</ul>
+<p>If the record could not be retrieved, the result is positioned before the first record and false is returned. If the record is successfully retrieved, true is returned.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.sql.QSqlRecord record()" doc="/**
+<p>Returns a QSqlRecord containing the field information for the current query. If the query points to a valid row (isValid() returns true), the record is populated with the row's values. An empty record is returned when there is no active query (isActive() returns false).</p>
+<p>To retrieve values from a query, value() should be used since its index-based lookup is faster.</p>
+<p>In the following example, a <tt>SELECT * FROM</tt> query is executed. Since the order of the columns is not defined, QSqlRecord::indexOf() is used to obtain the index of a column.</p>
+<pre>    QSqlQuery q(&quot;select * from employees&quot;);
+    QSqlRecord rec = q.record();
+
+    qDebug() &lt;&lt; &quot;Number of columns: &quot; &lt;&lt; rec.count();
+
+    int nameCol = rec.indexOf(&quot;name&quot;); <span class=&quote;comment&quote;>// index of the field &quot;name&quot;</span>
+    while (q.next())
+        qDebug() &lt;&lt; q.value(nameCol).toString(); <span class=&quote;comment&quote;>// output all names</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.sql.QSqlResult result()" doc="/**
+<p>Returns the result associated with the query.</p>
+
+*/"/>
+    <method name="public final boolean seek(int i__0, boolean relative__1)" doc="/**
+<p>Retrieves the record at position <i>index</i>, if available, and positions the query on the retrieved record. The first record is at position 0. Note that the query must be in an active state and isSelect() must return true before calling this function.</p>
+<p>If <i>relative</i> is false (the default), the following rules apply:</p>
+<ul>
+<li>If <i>index</i> is negative, the result is positioned before the first record and false is returned.</li>
+<li>Otherwise, an attempt is made to move to the record at position <i>index</i>. If the record at position <i>index</i> could not be retrieved, the result is positioned after the last record and false is returned. If the record is successfully retrieved, true is returned.</li>
+</ul>
+<p>If <i>relative</i> is true, the following rules apply:</p>
+<ul>
+<li>If the result is currently positioned before the first record or on the first record, and <i>index</i> is negative, there is no change, and false is returned.</li>
+<li>If the result is currently located after the last record, and <i>index</i> is positive, there is no change, and false is returned.</li>
+<li>If the result is currently located somewhere in the middle, and the relative offset <i>index</i> moves the result below zero, the result is positioned before the first record and false is returned.</li>
+<li>Otherwise, an attempt is made to move to the record <i>index</i> records ahead of the current record (or <i>index</i> records behind the current record if <i>index</i> is negative). If the record at offset <i>index</i> could not be retrieved, the result is positioned after the last record if <i>index</i> &gt;= 0, (or before the first record if <i>index</i> is negative), and false is returned. If the record is successfully retrieved, true is returned.</li>
+</ul>
+
+*/"/>
+    <method name="public final void setForwardOnly(boolean forward__0)" doc="/**
+<p>Sets forward only mode to <i>forward</i>. If <i>forward</i> is true, only next() and seek() with positive values, are allowed for navigating the results. Forward only mode needs far less memory since results do not need to be cached.</p>
+<p>Forward only mode is off by default.</p>
+
+*/"/>
+    <method name="public final int size()" doc="/**
+<p>Returns the size of the result (number of rows returned), or -1 if the size cannot be determined or if the database does not support reporting information about query sizes. Note that for non-<tt>SELECT</tt> statements (isSelect() returns false), size() will return -1. If the query is not active (isActive() returns false), -1 is returned.</p>
+<p>To determine the number of rows affected by a non-<tt>SELECT</tt> statement, use numRowsAffected().</p>
+
+*/"/>
+    <method name="public final java.lang.Object value(int i__0)" doc="/**
+<p>Returns the value of field <i>index</i> in the current record.</p>
+<p>The fields are numbered from left to right using the text of the <tt>SELECT</tt> statement, e.g. in</p>
+<pre>    SELECT forename, surname FROM people;</pre>
+<p>field 0 is <tt>forename</tt> and field 1 is <tt>surname</tt>. Using <tt>SELECT *</tt> is not recommended because the order of the fields in the query is undefined.</p>
+<p>An invalid QVariant is returned if field <i>index</i> does not exist, if the query is inactive, or if the query is positioned on an invalid record.</p>
+
+*/"/>
+    <enum name="BatchExecutionMode" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>- Updates multiple rows. Treats every entry in a QVariantList as a value for updating the next row.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>- Updates a single row. Treats every entry in a QVariantList as a single value of an array type.</td></tr>
+</table></p>
+
+*/"/>
+</class>

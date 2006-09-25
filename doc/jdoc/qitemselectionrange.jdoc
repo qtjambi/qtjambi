@@ -1,0 +1,93 @@
+<class name="QItemSelectionRange" doc="/**
+<p>The QItemSelectionRange class manages information about a range of selected items in a model.</p>
+<p>A QItemSelectionRange contains information about a range of selected items in a model. A range of items is a contiguous array of model items, extending to cover a number of adjacent rows and columns with a common parent item; this can be visualized as a two-dimensional block of cells in a table. A selection range has a top(), left() a bottom(), right() and a parent().</p>
+<p>The QItemSelectionRange class is one of the Model/View Classes and is part of Qt's model/view framework.</p>
+<p>The model items contained in the selection range can be obtained by using the items() function. Use QItemSelectionModel::selectedIndexes() to get a list of all selected items for a view.</p>
+<p>You can determine whether a given model item lies within a particular range by using the contains() function. Ranges can also be compared using the overloaded operators for equality and inequality, and the intersects() function allows you to determine whether two ranges overlap.</p>
+
+*/">
+    <method name="public QItemSelectionRange(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Constructs a new selection range containing only the model item specified by the model index <i>index</i>.</p>
+
+*/"/>
+    <method name="public QItemSelectionRange(com.trolltech.qt.gui.QItemSelectionRange other__0)" doc="/**
+<p>Copy constructor. Constructs a new selection range with the same contents as the <i>other</i> range given.</p>
+
+*/"/>
+    <method name="public QItemSelectionRange(com.trolltech.qt.core.QModelIndex topLeft__0, com.trolltech.qt.core.QModelIndex bottomRight__1)" doc="/**
+<p>Constructs a new selection range containing only the index specified by the <i>topLeft</i> and the index <i>bottomRight</i>.</p>
+
+*/"/>
+    <method name="public QItemSelectionRange()" doc="/**
+<p>Constructs an empty selection range.</p>
+
+*/"/>
+    <method name="public final int bottom()" doc="/**
+<p>Returns the row index corresponding to the lowermost selected row in the selection range.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex bottomRight()" doc="/**
+<p>Returns the index for the item located at the bottom-right corner of the selection range.</p>
+
+*/"/>
+    <method name="public final boolean contains(com.trolltech.qt.core.QModelIndex index__0)" doc="/**
+<p>Returns true if the model item specified by the <i>index</i> lies within the range of selected items; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean contains(int row__0, int column__1, com.trolltech.qt.core.QModelIndex parentIndex__2)" doc="/**
+<p>Returns true if the model item specified by (<i>row</i>, <i>column</i>) and with <i>parentIndex</i> as the parent item lies within the range of selected items; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int height()" doc="/**
+<p>Returns the number of selected rows in the selection range.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.core.QModelIndex&gt; indexes()" doc="/**
+<p>Returns the list of model index items stored in the selection.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QItemSelectionRange intersect(com.trolltech.qt.gui.QItemSelectionRange other__0)" doc="/**
+<p>Use intersected(<i>other</i>) instead.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QItemSelectionRange intersected(com.trolltech.qt.gui.QItemSelectionRange other__0)" doc="/**
+<p>Returns a new selection range containing only the items that are found in both the selection range and the <i>other</i> selection range.</p>
+
+*/"/>
+    <method name="public final boolean intersects(com.trolltech.qt.gui.QItemSelectionRange other__0)" doc="/**
+<p>Returns true if this selection range intersects (overlaps with) the <i>other</i> range given; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isValid()" doc="/**
+<p>Returns true if the selection range is valid; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final int left()" doc="/**
+<p>Returns the column index corresponding to the leftmost selected column in the selection range.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QAbstractItemModel model()" doc="/**
+<p>Returns the model that the items in the selection range belong to.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex parent()" doc="/**
+<p>Returns the parent model item index of the items in the selection range.</p>
+
+*/"/>
+    <method name="public final int right()" doc="/**
+<p>Returns the column index corresponding to the rightmost selected column in the selection range.</p>
+
+*/"/>
+    <method name="public final int top()" doc="/**
+<p>Returns the row index corresponding to the uppermost selected row in the selection range.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QModelIndex topLeft()" doc="/**
+<p>Returns the index for the item located at the top-left corner of the selection range.</p>
+
+*/"/>
+    <method name="public final int width()" doc="/**
+<p>Returns the number of selected columns in the selection range.</p>
+
+*/"/>
+</class>

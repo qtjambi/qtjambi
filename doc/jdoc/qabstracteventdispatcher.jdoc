@@ -1,0 +1,78 @@
+<class name="QAbstractEventDispatcher" doc="/**
+<p>The QAbstractEventDispatcher class manages Qt's event queue, excluding GUI-related events.</p>
+<p>An event dispatcher receives events from the window system and other sources. It then sends them to the QCoreApplication or QApplication instance for processing and delivery. QAbstractEventDispatcher provides fine-grained control over event delivery.</p>
+<p>For simple control of event processing use QCoreApplication::processEvents().</p>
+<p>For finer control of the application's event loop, call instance() and call functions on the QAbstractEventDispatcher object that is returned. If you want to use your own instance of QAbstractEventDispatcher or of a QAbstractEventDispatcher subclass, you must create your instance <i>before</i> you create the QApplication object.</p>
+<p>The main event loop is started by calling QCoreApplication::exec(), and stopped by calling QCoreApplication::exit(). Local event loops can be created using QEventLoop.</p>
+<p>Programs that perform long operations can call processEvents() with a bitwise OR combination of various QEventLoop::ProcessEventsFlag values to control which events should be delivered.</p>
+<p>QAbstractEventDispatcher also allows the integration of an external event loop with the Qt event loop. For example, the Motif Extension included with Qt includes a reimplementation of QAbstractEventDispatcher that merges Qt and Motif events together.</p>
+
+*/">
+    <method name="public QAbstractEventDispatcher(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a new event dispatcher with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final int registerTimer(int interval__0, com.trolltech.qt.core.QObject object__1)" doc="/**
+<p>Registers a timer with the specified <i>interval</i> for the given <i>object</i>.</p>
+
+*/"/>
+    <method name="public void closingDown()"/>
+    <method name="public abstract void flush()" doc="/**
+<p>Flushes the event queue. This normally returns almost immediately. Does nothing on platforms other than X11.</p>
+
+*/"/>
+    <method name="public abstract boolean hasPendingEvents()" doc="/**
+<p>Returns true if there is an event waiting; otherwise returns false.</p>
+
+*/"/>
+    <method name="public abstract void interrupt()" doc="/**
+<p>Interrupts event dispatching; i.e. the event dispatcher will return from processEvents() as soon as possible.</p>
+
+*/"/>
+    <method name="public abstract boolean processEvents(com.trolltech.qt.core.QEventLoop.ProcessEventsFlags flags__0)" doc="/**
+<p>Processes pending events that match <i>flags</i> until there are no more events to process. Returns true if an event was processed; otherwise returns false.</p>
+<p>This function is especially useful if you have a long running operation and want to show its progress without allowing user input; i.e. by using the QEventLoop::ExcludeUserInputEvents flag.</p>
+<p>If the QEventLoop::WaitForMoreEvents flag is set in <i>flags</i>, the behavior of this function is as follows:</p>
+<ul>
+<li>If events are available, this function returns after processing them.</li>
+<li>If no events are available, this function will wait until more are available and return after processing newly available events.</li>
+</ul>
+<p>If the QEventLoop::WaitForMoreEvents flag is not set in <i>flags</i>, and no events are available, this function will return immediately.</p>
+<p><b>Note:</b> This function does not process events continuously; it returns after all available events are processed.</p>
+
+*/"/>
+    <method name="public abstract void registerSocketNotifier(com.trolltech.qt.core.QSocketNotifier notifier__0)" doc="/**
+<p>Registers <i>notifier</i> with the event loop. Subclasses must implement this method to tie a socket notifier into another event loop.</p>
+
+*/"/>
+    <method name="public abstract void registerTimer(int timerId__0, int interval__1, com.trolltech.qt.core.QObject object__2)" doc="/**
+<p>Register a timer with the specified <i>timerId</i> and <i>interval</i> for the given <i>object</i>.</p>
+
+*/"/>
+    <method name="public abstract java.util.List&lt;com.trolltech.qt.QPair&lt;java.lang.Integer, java.lang.Integer&gt;&gt; registeredTimers(com.trolltech.qt.core.QObject object__0)" doc="/**
+<p>Returns a list of registered timers for <i>object</i>. The timer ID is the first member in each pair; the interval is the second.</p>
+
+*/"/>
+    <method name="public void startingUp()"/>
+    <method name="public abstract void unregisterSocketNotifier(com.trolltech.qt.core.QSocketNotifier notifier__0)" doc="/**
+<p>Unregisters <i>notifier</i> from the event dispatcher. Subclasses must reimplement this method to tie a socket notifier into another event loop. Reimplementations must call the base implementation.</p>
+
+*/"/>
+    <method name="public abstract boolean unregisterTimer(int timerId__0)" doc="/**
+<p>Unregisters the timer with the given <i>timerId</i>.</p>
+
+*/"/>
+    <method name="public abstract boolean unregisterTimers(com.trolltech.qt.core.QObject object__0)" doc="/**
+<p>Unregisters all the timers associated with the given <i>object</i>.</p>
+
+*/"/>
+    <method name="public abstract void wakeUp()" doc="/**
+<p>Wakes up the event loop.</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.core.QAbstractEventDispatcher instance(java.lang.Thread thread__0)" doc="/**
+<p>Returns a pointer to the event dispatcher object for the specified <i>thread</i>. If <i>thread</i> is zero, the current thread is used. If no event dispatcher exists for the specified thread, this function returns 0.</p>
+<p><b>Note:</b> If Qt is built without thread support, the <i>thread</i> argument is ignored.</p>
+
+*/"/>
+</class>

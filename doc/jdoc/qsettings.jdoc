@@ -1,0 +1,575 @@
+<class name="QSettings" doc="/**
+<p>The QSettings class provides persistent platform-independent application settings.</p>
+<p>Users normally expect an application to remember its settings (window sizes and positions, options, etc.) across sessions. This information is often stored in the system registry on Windows, and in XML preferences files on Mac OS X. On Unix systems, in the absence of a standard, many applications (including the KDE applications) use INI text files.</p>
+<p>QSettings is an abstraction around these technologies, enabling you to save and restore application settings in a portable manner. It also supports custom storage formats.</p>
+<p>QSettings's API is based on QVariant, allowing you to save most value-based types, such as QString, QRect, and QImage, with the minimum of effort.</p>
+<p>If all you need is a non-persistent memory-based structure, consider using QMap&lt;QString, QVariant&gt; instead.</p>
+<ul><li><a href=&quote;#basic-usage&quote;>Basic Usage</a></li>
+<li><a href=&quote;#qvariant-and-gui-types&quote;>QVariant and GUI Types</a></li>
+<li><a href=&quote;#key-syntax&quote;>Key Syntax</a></li>
+<li><a href=&quote;#fallback-mechanism&quote;>Fallback Mechanism</a></li>
+<li><a href=&quote;#restoring-the-state-of-a-gui-application&quote;>Restoring the State of a GUI Application</a></li>
+<li><a href=&quote;#accessing-settings-from-multiple-threads-or-processes-simultaneously&quote;>Accessing Settings from Multiple Threads or Processes Simultaneously</a></li>
+<li><a href=&quote;#platform-specific-notes&quote;>Platform-Specific Notes</a></li>
+</ul>
+<a name=&quote;basic-usage&quote;></a>
+<h3>Basic Usage</h3>
+<p>When creating a QSettings object, you must pass the name of your company or organization as well as the name of your application. For example, if your product is called Star Runner and your company is called MySoft, you would construct the QSettings object as follows:</p>
+<pre>        QSettings settings(&quot;MySoft&quot;, &quot;Star Runner&quot;);</pre>
+<p>QSettings objects can be created either on the stack or on the heap (i.e. using <tt>new</tt>). Constructing and destroying a QSettings object is very fast.</p>
+<p>If you use QSettings from many places in your application, you might want to specify the organization name and the application name using QCoreApplication::setOrganizationName() and QCoreApplication::setApplicationName(), and then use the default QSettings constructor:</p>
+<pre>        QCoreApplication::setOrganizationName(&quot;MySoft&quot;);
+        QCoreApplication::setOrganizationDomain(&quot;mysoft.com&quot;);
+        QCoreApplication::setApplicationName(&quot;Star Runner&quot;);
+        ...
+        QSettings settings;</pre>
+<p>(Here, we also specify the organization's Internet domain. When the Internet domain is set, it is used on Mac OS X instead of the organization name, since Mac OS X applications conventionally use Internet domains to identify themselves. If no domain is set, a fake domain is derived from the organization name. See the <a href=&quote;#platform-specific-notes&quote;>Platform-Specific Notes</a> below for details.)</p>
+<p>QSettings stores settings. Each setting consists of a QString that specifies the setting's name (the <i>key</i>) and a QVariant that stores the data associated with the key. To write a setting, use setValue(). For example:</p>
+<pre>        settings.setValue(&quot;editor/wrapMargin&quot;, 68);</pre>
+<p>If there already exists a setting with the same key, the existing value is overwritten by the new value. For efficiency, the changes may not be saved to permanent storage immediately. (You can always call sync() to commit your changes.)</p>
+<p>You can get a setting's value back using value():</p>
+<pre>        int margin = settings.value(&quot;editor/wrapMargin&quot;).toInt();</pre>
+<p>If there is no setting with the specified name, QSettings returns a null QVariant (which can be converted to the integer 0). You can specify another default value by passing a second argument to value():</p>
+<pre>        int margin = settings.value(&quot;editor/wrapMargin&quot;, 80).toInt();</pre>
+<p>To test whether a given key exists, call contains(). To remove the setting associated with a key, call remove(). To obtain the list of all keys, call allKeys(). To remove all keys, call clear().</p>
+<a name=&quote;qvariant-and-gui-types&quote;></a>
+<h3>QVariant and GUI Types</h3>
+<p>Because QVariant is part of the QtCore library, it cannot provide conversion functions to data types such as QColor, QImage, and QPixmap, which are part of QtGui. In other words, there is no <tt>toColor()</tt>, <tt>toImage()</tt>, or <tt>toPixmap()</tt> functions in QVariant.</p>
+<p>Instead, you can use the QVariant::value() or the qVariantValue() template function. For example:</p>
+<pre>    QSettings settings(&quot;MySoft&quot;, &quot;Star Runner&quot;);
+    QColor color = settings.value(&quot;DataPump/bgcolor&quot;).value&lt;QColor&gt;();</pre>
+<p>The inverse conversion (e.g., from QColor to QVariant) is automatic for all data types supported by QVariant, including GUI-related types:</p>
+<pre>    QSettings settings(&quot;MySoft&quot;, &quot;Star Runner&quot;);
+    QColor color = palette().background().color();
+    settings.setValue(&quot;DataPump/bgcolor&quot;, color);</pre>
+<p>Custom types registered using qRegisterMetaType() and qRegisterMetaTypeStreamOperators() can be stored using QSettings.</p>
+<a name=&quote;key-syntax&quote;></a>
+<h3>Key Syntax</h3>
+<p>Setting keys can contain any Unicode characters. The Windows registry and INI files use case-insensitive keys, whereas the Carbon Preferences API on Mac OS X uses case-sensitive keys. To avoid portability problems, follow these two simple rules:</p>
+<ol type=&quote;1&quote;>
+<li>Always refer to the same key using the same case. For example, if you refer to a key as &quot;text fonts&quot; in one place in your code, don't refer to it as &quot;Text Fonts&quot; somewhere else.</li>
+<li>Avoid key names that are identical except for the case. For example, if you have a key called &quot;MainWindow&quot;, don't try to save another key as &quot;mainwindow&quot;.</li>
+</ol>
+<p>You can form hierarchical keys using the '/' character as a separator, similar to Unix file paths. For example:</p>
+<pre>        settings.setValue(&quot;mainwindow/size&quot;, win-&gt;size());
+        settings.setValue(&quot;mainwindow/fullScreen&quot;, win-&gt;isFullScreen());
+        settings.setValue(&quot;outputpanel/visible&quot;, panel-&gt;isVisible());</pre>
+<p>If you want to save or restore many settings with the same prefix, you can specify the prefix using beginGroup() and call endGroup() at the end. Here's the same example again, but this time using the group mechanism:</p>
+<pre>        settings.beginGroup(&quot;mainwindow&quot;);
+        settings.setValue(&quot;size&quot;, win-&gt;size());
+        settings.setValue(&quot;fullScreen&quot;, win-&gt;isFullScreen());
+        settings.endGroup();
+
+        settings.beginGroup(&quot;outputpanel&quot;);
+        settings.setValue(&quot;visible&quot;, panel-&gt;isVisible());
+        settings.endGroup();</pre>
+<p>If a group is set using beginGroup(), the behavior of most functions changes consequently. Groups can be set recursively.</p>
+<p>In addition to groups, QSettings also supports an &quot;array&quot; concept. See beginReadArray() and beginWriteArray() for details.</p>
+<a name=&quote;fallback-mechanism&quote;></a>
+<h3>Fallback Mechanism</h3>
+<p>Let's assume that you have created a QSettings object with the organization name MySoft and the application name Star Runner. When you look up a value, up to four locations are searched in that order:</p>
+<ol type=&quote;1&quote;>
+<li>a user-specific location for the Star Runner application</li>
+<li>a user-specific location for all applications by MySoft</li>
+<li>a system-wide location for the Star Runner application</li>
+<li>a system-wide location for all applications by MySoft</li>
+</ol>
+<p>(See <a href=&quote;#platform-specific-notes&quote;>Platform-Specific Notes</a> below for information on what these locations are on the different platforms supported by Qt.)</p>
+<p>If a key cannot be found in the first location, the search goes on in the second location, and so on. This enables you to store system-wide or organization-wide settings and to override them on a per-user or per-application basis. To turn off this mechanism, call setFallbacksEnabled(false).</p>
+<p>Although keys from all four locations are available for reading, only the first file (the user-specific location for the application at hand) is accessible for writing. To write to any of the other files, omit the application name and/or specify QSettings::SystemScope (as opposed to QSettings::UserScope, the default).</p>
+<p>Let's see with an example:</p>
+<pre>        QSettings obj1(&quot;MySoft&quot;, &quot;Star Runner&quot;);
+        QSettings obj2(&quot;MySoft&quot;);
+        QSettings obj3(QSettings::SystemScope, &quot;MySoft&quot;, &quot;Star Runner&quot;);
+        QSettings obj4(QSettings::SystemScope, &quot;MySoft&quot;);</pre>
+<p>The table below summarizes which QSettings objects access which location. &quot;<b>X</b>&quot; means that the location is the main location associated to the QSettings object and is used both for reading and for writing; &quot;o&quot; means that the location is used as a fallback when reading.</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Locations</th><th><tt>obj1</tt></th><th><tt>obj2</tt></th><th><tt>obj3</tt></th><th><tt>obj4</tt></th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>1. User, Application</td><td><b>X</b></td><td></td><td></td><td></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>2. User, Organization</td><td>o</td><td><b>X</b></td><td></td><td></td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>3. System, Application</td><td>o</td><td></td><td><b>X</b></td><td></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>4. System, Organization</td><td>o</td><td>o</td><td>o</td><td><b>X</b></td></tr>
+</table></p>
+<p>The beauty of this mechanism is that it works on all platforms supported by Qt and that it still gives you a lot of flexibility, without requiring you to specify any file names or registry paths.</p>
+<p>If you want to use INI files on all platforms instead of the native API, you can pass QSettings::IniFormat as the first argument to the QSettings constructor, followed by the scope, the organization name, and the application name:</p>
+<pre>        QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+                           &quot;MySoft&quot;, &quot;Star Runner&quot;);</pre>
+<p>The Settings Editor example lets you experiment with different settings location and with fallbacks turned on or off.</p>
+<a name=&quote;restoring-the-state-of-a-gui-application&quote;></a>
+<h3>Restoring the State of a GUI Application</h3>
+<p>QSettings is often used to store the state of a GUI application. The following example illustrates how to use we will use QSettings to save and restore the geometry of an application's main window.</p>
+<pre>    void MainWindow::writeSettings()
+    {
+        QSettings settings(&quot;Moose Soft&quot;, &quot;Clipper&quot;);
+
+        settings.beginGroup(&quot;MainWindow&quot;);
+        settings.setValue(&quot;size&quot;, size());
+        settings.setValue(&quot;pos&quot;, pos());
+        settings.endGroup();
+    }
+
+    void MainWindow::readSettings()
+    {
+        QSettings settings(&quot;Moose Soft&quot;, &quot;Clipper&quot;);
+
+        settings.beginGroup(&quot;MainWindow&quot;);
+        resize(settings.value(&quot;size&quot;, QSize(400, 400)).toSize());
+        move(settings.value(&quot;pos&quot;, QPoint(200, 200)).toPoint());
+        settings.endGroup();
+    }</pre>
+<p>See Window Geometry for a discussion on why it is better to call QWidget::resize() and QWidget::move() rather than QWidget::setGeometry() to restore a window's geometry.</p>
+<p>The <tt>readSettings()</tt> and <tt>writeSettings()</tt> functions must be called from the main window's constructor and close event handler as follows:</p>
+<pre>    MainWindow::MainWindow()
+    {
+        ...
+        readSettings();
+    }
+
+    void MainWindow::closeEvent(QCloseEvent *event)
+    {
+        if (userReallyWantsToQuit()) {
+            writeSettings();
+            event-&gt;accept();
+        } else {
+            event-&gt;ignore();
+        }
+    }</pre>
+<p>See the Application example for a self-contained example that uses QSettings.</p>
+<a name=&quote;accessing-settings-from-multiple-threads-or-processes-simultaneously&quote;></a>
+<h3>Accessing Settings from Multiple Threads or Processes Simultaneously</h3>
+<p>QSettings is reentrant. This means that you can use distinct QSettings object in different threads simultaneously. This guarantee stands even when the QSettings objects refer to the same files on disk (or to the same entries in the system registry). If a setting is modified through one QSettings object, the change will immediately be visible in any other QSettings objects that operate on the same location and that live in the same process.</p>
+<p>QSettings can safely be used from different processes (which can be different instances of your application running at the same time or different applications altogether) to read and write to the same system locations. It uses advisory file locking and a smart merging algorithm to ensure data integrity. Changes performed by another process aren't visible in the current process until sync() is called.</p>
+<a name=&quote;platform-specific-notes&quote;></a>
+<h3>Platform-Specific Notes</h3>
+<a name=&quote;locations-where-application-settings-are-stored&quote;></a>
+<h4>Locations Where Application Settings Are Stored</h4>
+<p>As mentioned in the <a href=&quote;#fallback-mechanism&quote;>Fallback Mechanism</a> section, QSettings stores settings for an application in up to four locations, depending on whether the settings are user-specific or system-wide and whether the the settings are application-specific or organization-wide. For simplicity, we're assuming the organization is called MySoft and the application is called Star Runner.</p>
+<p>On Unix systems, if the file format is NativeFormat, the following files are used by default:</p>
+<ol type=&quote;1&quote;>
+<li><tt>$HOME/.config/MySoft/Star Runner.conf</tt></li>
+<li><tt>$HOME/.config/MySoft.conf</tt></li>
+<li><tt>/etc/xdg/MySoft/Star Runner.conf</tt></li>
+<li><tt>/etc/xdg/MySoft.conf</tt></li>
+</ol>
+<p>On Mac OS X versions 10.2 and 10.3, these files are used by default:</p>
+<ol type=&quote;1&quote;>
+<li><tt>$HOME/Library/Preferences/com.MySoft.Star Runner.plist</tt></li>
+<li><tt>$HOME/Library/Preferences/com.MySoft.plist</tt></li>
+<li><tt>/Library/Preferences/com.MySoft.Star Runner.plist</tt></li>
+<li><tt>/Library/Preferences/com.MySoft.plist</tt></li>
+</ol>
+<p>On Windows, NativeFormat settings are stored in the following registry paths:</p>
+<ol type=&quote;1&quote;>
+<li><tt>HKEY_CURRENT_USER\Software\MySoft\Star Runner</tt></li>
+<li><tt>HKEY_CURRENT_USER\Software\MySoft</tt></li>
+<li><tt>HKEY_LOCAL_MACHINE\Software\MySoft\Star Runner</tt></li>
+<li><tt>HKEY_LOCAL_MACHINE\Software\MySoft</tt></li>
+</ol>
+<p>If the file format is IniFormat, the following files are used on Unix and Mac OS X:</p>
+<ol type=&quote;1&quote;>
+<li><tt>$HOME/.config/MySoft/Star Runner.ini</tt></li>
+<li><tt>$HOME/.config/MySoft.ini</tt></li>
+<li><tt>/etc/xdg/MySoft/Star Runner.ini</tt></li>
+<li><tt>/etc/xdg/MySoft.ini</tt></li>
+</ol>
+<p>On Windows, the following files are used:</p>
+<ol type=&quote;1&quote;>
+<li><tt>%APPDATA%\MySoft\Star Runner.ini</tt></li>
+<li><tt>%APPDATA%\MySoft.ini</tt></li>
+<li><tt>%COMMON_APPDATA%\MySoft\Star Runner.ini</tt></li>
+<li><tt>%COMMON_APPDATA%\MySoft.ini</tt></li>
+</ol>
+<p>The <tt>%APPDATA%</tt> path is usually <tt>C:\Documents and Settings\<i>User Name</i>\Application Data</tt>; the <tt>%COMMON_APPDATA%</tt> path is usually <tt>C:\Documents and Settings\All Users\Application Data</tt>.</p>
+<p>The paths for the <tt>.ini</tt> and <tt>.conf</tt> files can be changed using setPath(). On Unix and Mac OS X, the user can override them by by setting the <tt>XDG_CONFIG_HOME</tt> environment variable; see setPath() for details.</p>
+<a name=&quote;accessing-ini-and-plist-files-directly&quote;></a>
+<h4>Accessing INI and .plist Files Directly</h4>
+<p>Sometimes you do want to access settings stored in a specific file or registry path. On all platforms, if you want to read an INI file directly, you can use the QSettings constructor that takes a file name as first argument and pass QSettings::IniFormat as second argument. For example:</p>
+<pre>    QSettings settings(&quot;/home/petra/misc/myapp.ini&quot;,
+                       QSettings::IniFormat);</pre>
+<p>You can then use the QSettings object to read and write settings in the file.</p>
+<p>On Mac OS X, you can access XML-based <tt>.plist</tt> files by passing QSettings::NativeFormat as second argument. For example:</p>
+<pre>    QSettings settings(&quot;/Users/petra/misc/myapp.plist&quot;,
+                       QSettings::NativeFormat);</pre>
+<a name=&quote;accessing-the-windows-registry-directly&quote;></a>
+<h4>Accessing the Windows Registry Directly</h4>
+<p>On Windows, QSettings also lets you access arbitrary entries in the system registry. This is done by constructing a QSettings object with a path in the registry and QSettings::NativeFormat. For example:</p>
+<pre>    QSettings settings(&quot;HKEY_CURRENT_USER\\Software\\Microsoft\\Office&quot;,
+                       QSettings::NativeFormat);</pre>
+<p>All the registry entries that appear under the specified path can be read or written through the QSettings object as usual (using forward slashes instead of backslashes). For example:</p>
+<pre>    settings.setValue(&quot;11.0/Outlook/Security/DontTrustInstalledFiles&quot;, 0);</pre>
+<a name=&quote;platform-limitations&quote;></a>
+<h4>Platform Limitations</h4>
+<p>While QSettings attempts to smooth over the differences between the different supported platforms, there are still a few differences that you should be aware of when porting your application:</p>
+<ul>
+<li>The Windows system registry has the following limitations: A subkey may not exceed 255 characters, an entry's value may not exceed 16,383 characters, and all the values of a key may not exceed 65,535 characters. One way to work around these limitations is to store the settings using the IniFormat instead of the NativeFormat.</li>
+<li>On Mac OS X, allKeys() will return some extra keys for global settings that apply to all applications. These keys can be read using value() but cannot be changed, only shadowed. Calling setFallbacksEnabled(false) will hide these global settings.</li>
+<li>On Mac OS X, the CFPreferences API used by QSettings expects Internet domain names rather than organization names. To provide a uniform API, QSettings derives a fake domain name from the organization name (unless the organization name already is a domain name, e.g. OpenOffice.org). The algorithm appends &quot;.com&quot; to the company name and replaces spaces and other illegal characters with hyphens. If you want to specify a different domain name, call QCoreApplication::setOrganizationDomain(), QCoreApplication::setOrganizationName(), and QCoreApplication::setApplicationName() in your <tt>main()</tt> function and then use the default QSettings constructor. Another solution is to use preprocessor directives, for example:<pre>    #ifdef Q_WS_MAC
+        QSettings settings(&quot;grenoullelogique.fr&quot;, &quot;Squash&quot;);
+    #else
+        QSettings settings(&quot;Grenoulle Logique&quot;, &quot;Squash&quot;);
+    #endif</pre>
+</li>
+</ul>
+
+*/">
+    <method name="public QSettings(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs a QSettings object for accessing settings of the application and organization set previously with a call to QCoreApplication::setOrganizationName(), QCoreApplication::setOrganizationDomain(), and QCoreApplication::setApplicationName().</p>
+<p>The scope is QSettings::UserScope and the format is QSettings::NativeFormat.</p>
+<p>The code</p>
+<pre>    QSettings settings(&quot;Moose Soft&quot;, &quot;Facturo-Pro&quot;);</pre>
+<p>is equivalent to</p>
+<pre>    QCoreApplication::setOrganizationName(&quot;Moose Soft&quot;);
+    QCoreApplication::setApplicationName(&quot;Facturo-Pro&quot;);
+    QSettings settings;</pre>
+<p>If QCoreApplication::setOrganizationName() and QCoreApplication::setApplicationName() has not been previously called, the QSettings object will not be able to read or write any settings, and status() will return AccessError.</p>
+<p>On Mac OS X, if both a name and an Internet domain are specified for the organization, the domain is preferred over the name. On other platforms, the name is preferred over the domain.</p>
+
+*/"/>
+    <method name="public QSettings(java.lang.String organization__0, java.lang.String application__1, com.trolltech.qt.core.QObject parent__2)" doc="/**
+<p>Constructs a QSettings object for accessing settings of the application called <i>application</i> from the organization called <i>organization</i>, and with parent <i>parent</i>.</p>
+<p>Example:</p>
+<pre>    QSettings settings(&quot;Moose Tech&quot;, &quot;Facturo-Pro&quot;);</pre>
+<p>The scope is QSettings::UserScope and the format is QSettings::NativeFormat.</p>
+
+*/"/>
+    <method name="public QSettings(com.trolltech.qt.core.QSettings.Format format__0, com.trolltech.qt.core.QSettings.Scope scope__1, java.lang.String organization__2, java.lang.String application__3, com.trolltech.qt.core.QObject parent__4)" doc="/**
+<p>Constructs a QSettings object for accessing settings of the application called <i>application</i> from the organization called <i>organization</i>, and with parent <i>parent</i>.</p>
+<p>If <i>scope</i> is QSettings::UserScope, the QSettings object searches user-specific settings first, before it searches system-wide settings as a fallback. If <i>scope</i> is QSettings::SystemScope, the QSettings object ignores user-specific settings and provides access to system-wide settings.</p>
+<p>If <i>format</i> is QSettings::NativeFormat, the native API is used for storing settings. If <i>format</i> is QSettings::IniFormat, the INI format is used.</p>
+<p>If no application name is given, the QSettings object will only access the organization-wide <a href=&quote;qsettings.jdoc#fallback-mechanism&quote;>locations</a>.</p>
+
+*/"/>
+    <method name="public QSettings(com.trolltech.qt.core.QSettings.Scope scope__0, java.lang.String organization__1, java.lang.String application__2, com.trolltech.qt.core.QObject parent__3)" doc="/**
+<p>Constructs a QSettings object for accessing settings of the application called <i>application</i> from the organization called <i>organization</i>, and with parent <i>parent</i>.</p>
+<p>If <i>scope</i> is QSettings::UserScope, the QSettings object searches user-specific settings first, before it searches system-wide settings as a fallback. If <i>scope</i> is QSettings::SystemScope, the QSettings object ignores user-specific settings and provides access to system-wide settings.</p>
+<p>The storage format is always QSettings::NativeFormat.</p>
+<p>If no application name is given, the QSettings object will only access the organization-wide <a href=&quote;qsettings.jdoc#fallback-mechanism&quote;>locations</a>.</p>
+
+*/"/>
+    <method name="public QSettings(java.lang.String fileName__0, com.trolltech.qt.core.QSettings.Format format__1, com.trolltech.qt.core.QObject parent__2)" doc="/**
+<p>Constructs a QSettings object for accessing the settings stored in the file called <i>fileName</i>, with parent <i>parent</i>. If the file doesn't already exist, it is created.</p>
+<p>If <i>format</i> is QSettings::NativeFormat, the meaning of <i>fileName</i> depends on the platform. On Unix, <i>fileName</i> is the name of an INI file. On Mac OS X, <i>fileName</i> is the name of a <tt>.plist</tt> file. On Windows, <i>fileName</i> is a path in the system registry.</p>
+<p>If <i>format</i> is QSettings::IniFormat, <i>fileName</i> is the name of an INI file.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; allKeys()" doc="/**
+<p>Returns a list of all keys, including subkeys, that can be read using the QSettings object.</p>
+<p>Example:</p>
+<pre>    QSettings settings;
+    settings.setValue(&quot;fridge/color&quot;, Qt::white);
+    settings.setValue(&quot;fridge/size&quot;, QSize(32, 96));
+    settings.setValue(&quot;sofa&quot;, true);
+    settings.setValue(&quot;tv&quot;, false);
+
+    QStringList keys = settings.allKeys();
+<span class=&quote;comment&quote;>    // keys: [&quot;fridge/color&quot;, &quot;fridge/size&quot;, &quot;sofa&quot;, &quot;tv&quot;]</span></pre>
+<p>If a group is set using beginGroup(), only the keys in the group are returned, without the group prefix:</p>
+<pre>    settings.beginGroup(&quot;fridge&quot;);
+    keys = settings.allKeys();
+<span class=&quote;comment&quote;>    // keys: [&quot;color&quot;, &quot;size&quot;]</span></pre>
+
+*/"/>
+    <method name="public final void beginGroup(java.lang.String prefix__0)" doc="/**
+<p>Appends <i>prefix</i> to the current group.</p>
+<p>The current group is automatically prepended to all keys specified to QSettings. In addition, query functions such as childGroups(), childKeys(), and allKeys() are based on the group. By default, no group is set.</p>
+<p>Groups are useful to avoid typing in the same setting paths over and over. For example:</p>
+<pre>    settings.beginGroup(&quot;mainwindow&quot;);
+    settings.setValue(&quot;size&quot;, win-&gt;size());
+    settings.setValue(&quot;fullScreen&quot;, win-&gt;isFullScreen());
+    settings.endGroup();
+
+    settings.beginGroup(&quot;outputpanel&quot;);
+    settings.setValue(&quot;visible&quot;, panel-&gt;isVisible());
+    settings.endGroup();</pre>
+<p>This will set the value of three settings:</p>
+<ul>
+<li><tt>mainwindow/size</tt></li>
+<li><tt>mainwindow/fullScreen</tt></li>
+<li><tt>outputpanel/visible</tt></li>
+</ul>
+<p>Call endGroup() to reset the current group to what it was before the corresponding beginGroup() call. Groups can be nested.</p>
+
+*/"/>
+    <method name="public final int beginReadArray(java.lang.String prefix__0)" doc="/**
+<p>Adds <i>prefix</i> to the current group and starts reading from an array. Returns the size of the array.</p>
+<p>Example:</p>
+<pre>    struct Login {
+        QString userName;
+        QString password;
+    };
+    QList&lt;Login&gt; logins;
+    ...
+
+    QSettings settings;
+    int size = settings.beginReadArray(&quot;logins&quot;);
+    for (int i = 0; i &lt; size; ++i) {
+        settings.setArrayIndex(i);
+        Login login;
+        login.userName = settings.value(&quot;userName&quot;);
+        login.password = settings.value(&quot;password&quot;);
+        logins.append(login);
+    }
+    settings.endArray();</pre>
+<p>Use beginWriteArray() to write the array in the first place.</p>
+
+*/"/>
+    <method name="public final void beginWriteArray(java.lang.String prefix__0, int size__1)" doc="/**
+<p>Adds <i>prefix</i> to the current group and starts writing an array of size <i>size</i>. If <i>size</i> is -1 (the default), it is automatically determined based on the indexes of the entries written.</p>
+<p>If you have many occurrences of a certain set of keys, you can use arrays to make your life easier. For example, let's suppose that you want to save a variable-length list of user names and passwords. You could then write:</p>
+<pre>    struct Login {
+        QString userName;
+        QString password;
+    };
+    QList&lt;Login&gt; logins;
+    ...
+
+    QSettings settings;
+    settings.beginWriteArray(&quot;logins&quot;);
+    for (int i = 0; i &lt; logins.size(); ++i) {
+        settings.setArrayIndex(i);
+        settings.setValue(&quot;userName&quot;, list.at(i).userName);
+        settings.setValue(&quot;password&quot;, list.at(i).password);
+    }
+    settings.endArray();</pre>
+<p>The generated keys will have the form</p>
+<ul>
+<li><tt>logins/1/userName</tt></li>
+<li><tt>logins/1/password</tt></li>
+<li><tt>logins/2/userName</tt></li>
+<li><tt>logins/2/password</tt></li>
+<li><tt>logins/3/userName</tt></li>
+<li><tt>logins/3/password</tt></li>
+<li>...</li>
+</ul>
+<p>To read back an array, use beginReadArray().</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; childGroups()" doc="/**
+<p>Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.</p>
+<p>Example:</p>
+<pre>    QSettings settings;
+    settings.setValue(&quot;fridge/color&quot;, Qt::white);
+    settings.setValue(&quot;fridge/size&quot;, QSize(32, 96));
+    settings.setValue(&quot;sofa&quot;, true);
+    settings.setValue(&quot;tv&quot;, false);
+
+    QStringList groups = settings.childGroups();
+<span class=&quote;comment&quote;>    // group: [&quot;fridge&quot;]</span></pre>
+<p>If a group is set using beginGroup(), the first-level keys in that group are returned, without the group prefix.</p>
+<pre>    settings.beginGroup(&quot;fridge&quot;);
+    groups = settings.childGroups();
+<span class=&quote;comment&quote;>    // groups: []</span></pre>
+<p>You can navigate through the entire setting hierarchy using childKeys() and childGroups() recursively.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;java.lang.String&gt; childKeys()" doc="/**
+<p>Returns a list of all top-level keys that can be read using the QSettings object.</p>
+<p>Example:</p>
+<pre>    QSettings settings;
+    settings.setValue(&quot;fridge/color&quot;, Qt::white);
+    settings.setValue(&quot;fridge/size&quot;, QSize(32, 96));
+    settings.setValue(&quot;sofa&quot;, true);
+    settings.setValue(&quot;tv&quot;, false);
+
+    QStringList keys = settings.childKeys();
+<span class=&quote;comment&quote;>    // keys: [&quot;sofa&quot;, &quot;tv&quot;]</span></pre>
+<p>If a group is set using beginGroup(), the top-level keys in that group are returned, without the group prefix:</p>
+<pre>    settings.beginGroup(&quot;fridge&quot;);
+    keys = settings.childKeys();
+<span class=&quote;comment&quote;>    // keys: [&quot;color&quot;, &quot;size&quot;]</span></pre>
+<p>You can navigate through the entire setting hierarchy using childKeys() and childGroups() recursively.</p>
+
+*/"/>
+    <method name="public final void clear()" doc="/**
+<p>Removes all entries in the primary location associated to this QSettings object.</p>
+<p>Entries in fallback locations are not removed.</p>
+<p>If you only want to remove the entries in the current group(), use remove(&quot;&quot;) instead.</p>
+
+*/"/>
+    <method name="public final boolean contains(java.lang.String key__0)" doc="/**
+<p>Returns true if there exists a setting called <i>key</i>; returns false otherwise.</p>
+<p>If a group is set using beginGroup(), <i>key</i> is taken to be relative to that group.</p>
+
+*/"/>
+    <method name="public final void endArray()" doc="/**
+<p>Closes the array that was started using beginReadArray() or beginWriteArray().</p>
+
+*/"/>
+    <method name="public final void endGroup()" doc="/**
+<p>Resets the group to what it was before the corresponding beginGroup() call.</p>
+<p>Example:</p>
+<pre>    settings.beginGroup(&quot;alpha&quot;);
+<span class=&quote;comment&quote;>    // settings.group() == &quot;alpha&quot;</span>
+
+    settings.beginGroup(&quot;beta&quot;);
+<span class=&quote;comment&quote;>    // settings.group() == &quot;alpha/beta&quot;</span>
+
+    settings.endGroup();
+<span class=&quote;comment&quote;>    // settings.group() == &quot;alpha&quot;</span>
+
+    settings.endGroup();
+<span class=&quote;comment&quote;>    // settings.group() == &quot;&quot;</span></pre>
+
+*/"/>
+    <method name="public final boolean fallbacksEnabled()" doc="/**
+<p>Returns true if fallbacks are enabled; returns false otherwise.</p>
+<p>By default, fallbacks are enabled.</p>
+
+*/"/>
+    <method name="public final java.lang.String fileName()" doc="/**
+<p>Returns the path where settings written using this QSettings object are stored.</p>
+<p>On Windows, if the format is QSettings::NativeFormat, the return value is a system registry path, not a file path.</p>
+
+*/"/>
+    <method name="public final java.lang.String group()" doc="/**
+<p>Returns the current group.</p>
+
+*/"/>
+    <method name="public final boolean isWritable()" doc="/**
+<p>Returns true if settings can be written using this QSettings object; returns false otherwise.</p>
+<p>One reason why isWritable() might return false is if QSettings operates on a read-only file.</p>
+<p><b>Warning:</b> This function is not perfectly reliable, because the file permissions can change at any time.</p>
+
+*/"/>
+    <method name="public final void remove(java.lang.String key__0)" doc="/**
+<p>Removes the setting <i>key</i> and any sub-settings of <i>key</i>.</p>
+<p>Example:</p>
+<pre>    QSettings settings;
+    settings.setValue(&quot;ape&quot;);
+    settings.setValue(&quot;monkey&quot;, 1);
+    settings.setValue(&quot;monkey/sea&quot;, 2);
+    settings.setValue(&quot;monkey/doe&quot;, 4);
+
+    settings.remove(&quot;monkey&quot;);
+    QStringList keys = settings.allKeys();
+<span class=&quote;comment&quote;>    // keys: [&quot;ape&quot;]</span></pre>
+<p>Be aware that if one of the fallback locations contains a setting with the same key, that setting will be visible after calling remove().</p>
+<p>If <i>key</i> is an empty string, all keys in the current group() are removed. For example:</p>
+<pre>    QSettings settings;
+    settings.setValue(&quot;ape&quot;);
+    settings.setValue(&quot;monkey&quot;, 1);
+    settings.setValue(&quot;monkey/sea&quot;, 2);
+    settings.setValue(&quot;monkey/doe&quot;, 4);
+
+    settings.beginGroup(&quot;monkey&quot;);
+    settings.remove(&quot;&quot;);
+    settings.endGroup();
+
+    QStringList keys = settings.allKeys();
+<span class=&quote;comment&quote;>    // keys: [&quot;ape&quot;]</span></pre>
+
+*/"/>
+    <method name="public final void setArrayIndex(int i__0)" doc="/**
+<p>Sets the current array index to <i>i</i>. Calls to functions such as setValue(), value(), remove(), and contains() will operate on the array entry at that index.</p>
+<p>You must call beginReadArray() or beginWriteArray() before you can call this function.</p>
+
+*/"/>
+    <method name="public final void setFallbacksEnabled(boolean b__0)" doc="/**
+<p>Sets whether fallbacks are enabled to <i>b</i>.</p>
+<p>By default, fallbacks are enabled.</p>
+
+*/"/>
+    <method name="public final void setValue(java.lang.String key__0, java.lang.Object value__1)" doc="/**
+<p>Sets the value of setting <i>key</i> to <i>value</i>.</p>
+<p>If the key already exists, the previous value is overwritten.</p>
+<p>Example:</p>
+<pre>    QSettings settings;
+    settings.setValue(&quot;interval&quot;, 30);
+    settings.value(&quot;interval&quot;).toInt();     <span class=&quote;comment&quote;>// returns 30</span>
+
+    settings.setValue(&quot;interval&quot;, 6.55);
+    settings.value(&quot;interval&quot;).toDouble();  <span class=&quote;comment&quote;>// returns 6.55</span></pre>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSettings.Status status()" doc="/**
+<p>Returns a status code indicating the first error that was met by QSettings, or QSettings::NoError if no error occurred.</p>
+
+*/"/>
+    <method name="public final void sync()" doc="/**
+<p>Writes any unsaved changes to permanent storage, and reloads any settings that have been changed in the meantime by another application.</p>
+<p>Unless you use QSettings as a communication mechanism between different processes, you normally don't need to call this function.</p>
+
+*/"/>
+    <method name="public final java.lang.Object value(java.lang.String key__0, java.lang.Object defaultValue__1)" doc="/**
+<p>Returns the value for setting <i>key</i>. If the setting doesn't exist, returns <i>defaultValue</i>.</p>
+<p>If no default value is specified, a default QVariant is returned.</p>
+<p>Example:</p>
+<pre>    QSettings settings;
+    settings.setValue(&quot;animal/snake&quot;, 58);
+    settings.value(&quot;animal/snake&quot;, 1024).toInt();   <span class=&quote;comment&quote;>// returns 58</span>
+    settings.value(&quot;animal/zebra&quot;, 1024).toInt();   <span class=&quote;comment&quote;>// returns 1024</span>
+    settings.value(&quot;animal/zebra&quot;).toInt();         <span class=&quote;comment&quote;>// returns 0</span></pre>
+
+*/"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="public final static void setPath(com.trolltech.qt.core.QSettings.Format format__0, com.trolltech.qt.core.QSettings.Scope scope__1, java.lang.String path__2)" doc="/**
+<p>Sets the path used for storing settings for the given <i>format</i> and <i>scope</i>, to <i>path</i>. The <i>format</i> can be a custom format.</p>
+<p>The table below summarizes the default values:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Platform</th><th>Format</th><th>Scope</th><th>Path</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>Windows</td><td rowspan=&quote;2&quote;>IniFormat</td><td>UserScope</td><td><tt>%APPDATA%</tt></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SystemScope</td><td><tt>%COMMON_APPDATA%</tt></td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>Unix</td><td rowspan=&quote;2&quote;>NativeFormat, IniFormat</td><td>UserScope</td><td><tt>$HOME/.config</tt></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SystemScope</td><td><tt>/etc/xdg</tt></td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td rowspan=&quote;2&quote;>Mac OS X</td><td rowspan=&quote;2&quote;>IniFormat</td><td>UserScope</td><td><tt>$HOME/.config</tt></td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>SystemScope</td><td><tt>/etc/xdg</tt></td></tr>
+</table></p>
+<p>The default UserScope paths on Unix and Mac OS X (<tt>$HOME/.config</tt>) can be overridden by the user by setting the <tt>XDG_CONFIG_HOME</tt> environment variable. The default SystemScope paths on Unix and Mac OS X (<tt>/etc/xdg</tt>) can be overridden when building the Qt library using the <tt>configure</tt> script's <tt>--sysconfdir</tt> flag (see QLibraryInfo for details).</p>
+<p>Setting the NativeFormat paths on Windows and Mac OS X has no effect.</p>
+<p><b>Warning:</b> This function doesn't affect existing QSettings objects.</p>
+
+*/"/>
+    <method name="public native static void setSystemIniPath(java.lang.String dir__0)" doc="/**
+<p>Use setPath() instead.</p>
+<p>For example, if you have code like</p>
+<pre><font color=&quote;#404040&quote;>    setSystemIniPath(path);</font></pre>
+<p>you can rewrite it as</p>
+<pre>    setPath(QSettings::NativeFormat, QSettings::SystemScope, path);
+    setPath(QSettings::IniFormat, QSettings::SystemScope, path);</pre>
+
+*/"/>
+    <method name="public native static void setUserIniPath(java.lang.String dir__0)" doc="/**
+<p>Use setPath() instead.</p>
+
+*/"/>
+    <enum name="Format" doc="/**
+<p>This enum type specifies the storage format used by QSettings.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Store the settings using the most appropriate storage format for the platform. On Windows, this means the system registry; on Mac OS X, this means the CFPreferences API; on Unix, this means textual configuration files in INI format.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Store the settings in INI files.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Special value returned by registerFormat().</td></tr>
+</table></p>
+<p>On Unix, NativeFormat and IniFormat mean the same thing, except that the file extension is different (<tt>.conf</tt> for NativeFormat, <tt>.ini</tt> for IniFormat).</p>
+<p>The INI file format is a Windows file format that Qt supports on all platforms. In the absence of an INI standard, we try to follow what Microsoft does, with the following exceptions:</p>
+<ul>
+<li>If you store types that QVariant can't convert to QString (e.g., QPoint, QRect, and QSize), Qt uses an <tt>@</tt>-based syntax to encode the type. For example:<pre>    pos = @Point(100 100)</pre>
+<p>To minimize compatibility issues, any <tt>@</tt> that doesn't appear at the first position in the value or that isn't followed by a Qt type (<tt>Point</tt>, <tt>Rect</tt>, <tt>Size</tt>, etc.) is treated as a normal character.</p>
+</li>
+<li>Although backslash is a special character in INI files, most Windows applications don't escape backslashes (<tt>\</tt>) in file paths:<pre>    windir = C:\Windows</pre>
+<p>QSettings always treats backslash as a special character and provides no API for reading or writing such entries.</p>
+</li>
+<li>The INI file format has severe restrictions on the syntax of a key. Qt works around this by using <tt>%</tt> as an escape character in keys. In addition, if you save a top-level setting (a key with no slashes in it, e.g., &quot;someKey&quot;), it will appear in the INI file's &quot;General&quot; section. To avoid overwriting other keys, if you save something using the a key such as &quot;General/someKey&quot;, the key will be located in the &quot;%General&quot; section, <i>not</i> in the &quot;General&quot; section.</li>
+</ul>
+
+*/"/>
+    <enum name="Status" doc="/**
+<p>The following status values are possible:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>No error occurred.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>An access error occurred (e.g. trying to write to a read-only file).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>A format error occurred (e.g. loading a malformed INI file).</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="Scope" doc="/**
+<p>This enum specifies whether settings are user-specific or shared by all users of the same system.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Store settings in a location specific to the current user (e.g., in the user's home directory).</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Store settings in a global location, so that all users on the same machine access the same set of settings.</td></tr>
+</table></p>
+
+*/"/>
+</class>

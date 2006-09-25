@@ -1,0 +1,229 @@
+<class name="QTextDocument" doc="/**
+<p>The QTextDocument class holds formatted text that can be viewed and edited using a QTextEdit.</p>
+<p>QTextDocument is a container for structured rich text documents, providing support for styled text and various types of document elements, such as lists, tables, frames, and images. They can be created for use in a QTextEdit, or used independently.</p>
+<p>Each document element is described by an associated format object. Each format object is treated as a unique object by QTextDocuments, and can be passed to objectForFormat() to obtain the document element that it is applied to.</p>
+<p>A QTextDocument can be edited programmatically using a QTextCursor, and its contents can be examined by traversing the document structure. The entire document structure is stored as a hierarchy of document elements beneath the root frame, found with the rootFrame() function. Alternatively, if you just want to iterate over the textual contents of the document you can use begin(), end(), and findBlock() to retrieve text blocks that you can examine and iterate over.</p>
+<p>The layout of a document is determined by the documentLayout(); you can create your own QAbstractTextDocumentLayout subclass and set it using setDocumentLayout() if you want to use your own layout logic. The document's title can be obtained by calling the documentTitle() function.</p>
+<p>The toPlainText() and toHtml() convenience functions allow you to retrieve the contents of the document as plain text and HTML. The document's text can be searched using the find() functions.</p>
+<p>Undo/redo of operations performed on the document can be controlled using the setUndoRedoEnabled() function. The undo/redo system can be controlled by an editor widget through the undo() and redo() slots; the document also provides contentsChanged(), undoAvailable(), and redoAvailable() signals that inform connected editor widgets about the state of the undo/redo system.</p>
+
+*/">
+    <method name="public QTextDocument(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs an empty QTextDocument with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public QTextDocument(java.lang.String text__0, com.trolltech.qt.core.QObject parent__1)" doc="/**
+<p>Constructs a QTextDocument containing the plain (unformatted) <i>text</i> specified, and with the given <i>parent</i>.</p>
+
+*/"/>
+    <method name="public final void addResource(int type__0, com.trolltech.qt.core.QUrl name__1, java.lang.Object resource__2)" doc="/**
+<p>Adds the resource <i>resource</i> to the resource cache, using <i>type</i> and <i>name</i> as identifiers.</p>
+
+*/"/>
+    <method name="public final void adjustSize()" doc="/**
+<p>Adjusts the document to a reasonable size.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QTextFormat&gt; allFormats()" doc="/**
+<p>Returns a vector of text formats for all the formats used in the document.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextBlock begin()" doc="/**
+<p>Returns the document's first text block.</p>
+
+*/"/>
+    <method name="public final int blockCount()"/>
+    <method name="public final com.trolltech.qt.gui.QTextDocument clone(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Creates a new QTextDocument that is a copy of this text document. <i>parent</i> is the parent of the returned text document.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont defaultFont()" doc="/**
+<p>Returns the default font to be used in the document layout.</p>
+
+*/"/>
+    <method name="public final java.lang.String defaultStyleSheet()"/>
+    <method name="public final com.trolltech.qt.gui.QAbstractTextDocumentLayout documentLayout()" doc="/**
+<p>Returns the document layout for this document.</p>
+
+*/"/>
+    <method name="public final void drawContents(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.core.QRectF rect__1)" doc="/**
+<p>Draws the content of the document with painter <i>p</i>, clipped to <i>rect</i>. If <i>rect</i> is a null rectangle (default) then the document is painted unclipped.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextBlock end()" doc="/**
+<p>Returns the document's last text block.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextBlock findBlock(int pos__0)" doc="/**
+<p>Returns the text block that contains the <i>pos</i>-th character.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFrame frameAt(int pos__0)" doc="/**
+<p>Returns the frame that contains the text cursor position <i>pos</i>.</p>
+
+*/"/>
+    <method name="public final double idealWidth()" doc="/**
+<p>Returns the ideal width of the text document. The ideal width is the actually used width of the document without optional alignments taken into account. It is always &lt;= size().width().</p>
+
+*/"/>
+    <method name="public final boolean isEmpty()" doc="/**
+<p>Returns true if the document is empty; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isModified()"/>
+    <method name="public final boolean isRedoAvailable()" doc="/**
+<p>Returns true is redo is available; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isUndoAvailable()" doc="/**
+<p>Returns true is undo is available; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isUndoRedoEnabled()"/>
+    <method name="public final void markContentsDirty(int from__0, int length__1)" doc="/**
+<p>Marks the contents specified by the given <i>position</i> and <i>length</i> as &quot;dirty&quot;, informing the document that it needs to be layed out again.</p>
+
+*/"/>
+    <method name="public final int maximumBlockCount()"/>
+    <method name="public final java.lang.String metaInformation(com.trolltech.qt.gui.QTextDocument.MetaInformation info__0)" doc="/**
+<p>Returns meta information about the document of the type specified by <i>info</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextObject object(int objectIndex__0)" doc="/**
+<p>Returns the text object associated with the given <i>objectIndex</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextObject objectForFormat(com.trolltech.qt.gui.QTextFormat arg__0)" doc="/**
+<p>Returns the text object associated with the format <i>f</i>.</p>
+
+*/"/>
+    <method name="public final int pageCount()" doc="/**
+<p>returns the number of pages in this document.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSizeF pageSize()"/>
+    <method name="public final void print(com.trolltech.qt.gui.QPrinter printer__0)" doc="/**
+<p>Prints the document to the given <i>printer</i>. The QPrinter must be set up before being used with this function.</p>
+<p>This is only a convenience method to print the whole document to the printer.</p>
+<p>If the document is already paginated through a specified height in the pageSize() property it is printed as-is.</p>
+<p>If the document is not paginated, like for example a document used in a QTextEdit, then a temporary copy of the document is created and the copy is broken into multiple pages according to the size of the QPrinter's paperRect(). The default font size is also set to a font with 10 points and a 2 cm margin is set around the document contents. In addition the current page number is printed at the bottom of each page.</p>
+
+*/"/>
+    <method name="public final void redo(com.trolltech.qt.QNativePointer cursor__0)" doc="/**
+<p>Redoes the last editing operation on the document if redo is available.</p>
+<p>The provided <i>cursor</i> is positioned at the end of the location where the edition operation was redone.</p>
+
+*/"/>
+    <method name="public final void redo()" doc="/**
+<p>Redoes the last editing operation on the document if redo is available.</p>
+
+*/"/>
+    <method name="public final java.lang.Object resource(int type__0, com.trolltech.qt.core.QUrl name__1)" doc="/**
+<p>Returns data of the specified <i>type</i> from the resource with the given <i>name</i>.</p>
+<p>This function is called by the rich text engine to request data that isn't directly stored by QTextDocument, but still associated with it. For example, images are referenced indirectly by the name attribute of a QTextImageFormat object.</p>
+<p>Resources are cached internally in the document. If a resource can not be found in the cache, loadResource is called to try to load the resource. loadResource should then use addResource to add the resource to the cache.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QTextFrame rootFrame()" doc="/**
+<p>Returns the document's root frame.</p>
+
+*/"/>
+    <method name="public final void setDefaultFont(com.trolltech.qt.gui.QFont font__0)" doc="/**
+<p>Sets the default <i>font</i> to use in the document layout.</p>
+
+*/"/>
+    <method name="public final void setDefaultStyleSheet(java.lang.String sheet__0)"/>
+    <method name="public final void setDocumentLayout(com.trolltech.qt.gui.QAbstractTextDocumentLayout layout__0)" doc="/**
+<p>Sets the document to use the given <i>layout</i>. The previous layout is deleted.</p>
+<p>Note that when setting a new layout for a QTextEdit you have to create a new QTextDocument first, set the new layout on it and then set the new document on QTextEdit.</p>
+
+*/"/>
+    <method name="public final void setHtml(java.lang.String html__0)" doc="/**
+<p>Replaces the entire contents of the document with the given HTML-formatted text in the <i>html</i> string.</p>
+<p>The HTML formatting is respected as much as possible; for example, &quot;&lt;b&gt;bold&lt;/b&gt; text&quot; will produce text where the first word has a font weight that gives it a bold appearance: &quot;<b>bold</b> text&quot;.</p>
+
+*/"/>
+    <method name="public final void setMaximumBlockCount(int maximum__0)"/>
+    <method name="public final void setMetaInformation(com.trolltech.qt.gui.QTextDocument.MetaInformation info__0, java.lang.String arg__1)" doc="/**
+<p>Sets the document's meta information of the type specified by <i>info</i> to the given <i>string</i>.</p>
+
+*/"/>
+    <method name="public final void setModified(boolean m__0)"/>
+    <method name="public final void setPageSize(com.trolltech.qt.core.QSizeF size__0)"/>
+    <method name="public final void setPlainText(java.lang.String text__0)" doc="/**
+<p>Replaces the entire contents of the document with the given plain <i>text</i>.</p>
+
+*/"/>
+    <method name="public final void setTextWidth(double width__0)"/>
+    <method name="public final void setUndoRedoEnabled(boolean enable__0)"/>
+    <method name="public final void setUseDesignMetrics(boolean b__0)"/>
+    <method name="public final com.trolltech.qt.core.QSizeF size()"/>
+    <method name="public final double textWidth()"/>
+    <method name="public final java.lang.String toHtml(com.trolltech.qt.core.QByteArray encoding__0)" doc="/**
+<p>Returns a string containing an HTML representation of the document.</p>
+<p>The <i>encoding</i> parameter specifies the value for the charset attribute in the html header. For example if 'utf-8' is specified then the beginning of the generated html will look like this:</p>
+<pre>    &lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;&lt;/head&gt;&lt;body&gt;...</pre>
+<p>If no encoding is specified then no such meta information is generated.</p>
+<p>If you later on convert the returned html string into a byte array for transmission over a network or when saving to disk you should specify the encoding you're going to use for the conversion to a byte array here.</p>
+
+*/"/>
+    <method name="public final java.lang.String toPlainText()" doc="/**
+<p>Returns the plain text contained in the document. If you want formatting information use a QTextCursor instead.</p>
+
+*/"/>
+    <method name="public final void undo()" doc="/**
+<p>Undoes the last editing operation on the document if undo is available.</p>
+
+*/"/>
+    <method name="public final void undo(com.trolltech.qt.QNativePointer cursor__0)" doc="/**
+<p>Undoes the last editing operation on the document if undo is available.</p>
+<p>The provided <i>cursor</i> is positioned at the end of the location where the edition operation was undone.</p>
+
+*/"/>
+    <method name="public final boolean useDesignMetrics()"/>
+    <method name="public void clear()" doc="/**
+<p>Clears the document.</p>
+
+*/"/>
+    <method name="protected com.trolltech.qt.gui.QTextObject createObject(com.trolltech.qt.gui.QTextFormat f__0)" doc="/**
+<p>Creates and returns a new document object (a QTextObject), based on the given <i>format</i>.</p>
+<p>QTextObjects will always get created through this method, so you must reimplement it if you use custom text objects inside your document.</p>
+
+*/"/>
+    <method name="protected java.lang.Object loadResource(int type__0, com.trolltech.qt.core.QUrl name__1)" doc="/**
+<p>Loads data of the specified <i>type</i> from the resource with the given <i>name</i>.</p>
+<p>This function is called by the rich text engine to request data that isn't directly stored by QTextDocument, but still associated with it. For example, images are referenced indirectly by the name attribute of a QTextImageFormat object.</p>
+<p>When called by Qt, <i>type</i> is one of the values of QTextDocument::ResourceType.</p>
+<p>If the QTextDocument is a child object of a QTextEdit, QTextBrowser, or a QTextDocument itself then the default implementation tries to retrieve the data from the parent.</p>
+
+*/"/>
+    <enum name="ResourceType" doc="/**
+<p>This enum describes the types of resources that can be loaded by QTextDocument's loadResource() function.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The resource contains HTML.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The resource contains image data. Currently supported data types are QVariant::Pixmap and QVariant::Image. If the corresponding variant is of type QVariant::ByteArray then Qt attempts to load the image using QImage::loadFromData. QVariant::Icon is currently not supported. The icon needs to be converted to one of the supported types first, for example using QIcon::pixmap.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The resource contains CSS.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The first available value for user defined resource types.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="FindFlag" doc="/**
+<p>This enum describes the options available to QTextDocument's find function. The options can be OR-red together from the following list:</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Search backwards instead of forwards.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>By default find works case insensitive. Specifying this option changes the behaviour to a case sensitive find operation.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Makes find match only complete words.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="MetaInformation" doc="/**
+<p>This enum describes the different types of meta information that can be added to a document.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The title of the document.</td></tr>
+</table></p>
+
+*/"/>
+</class>

@@ -1,0 +1,145 @@
+<class name="QAbstractSpinBox" doc="/**
+<p>The QAbstractSpinBox class provides a spinbox and a line edit to display values.</p>
+<p>The class is designed as a common super class for widgets like QSpinBox, QDoubleSpinBox and QDateTimeEdit</p>
+<p>Here are the main properties of the class:</p>
+<ol type=&quote;1&quote;>
+<li>text: The text that is displayed in the QAbstractSpinBox.</li>
+<li>alignment: The alignment of the text in the QAbstractSpinBox.</li>
+<li>wrapping: Whether the QAbstractSpinBox wraps from the minimum value to the maximum value and vica versa.</li>
+</ol>
+<p>QAbstractSpinBox provides a virtual stepBy() function that is called whenever the user triggers a step. This function takes an integer value to signify how many steps were taken. E.g. Pressing Qt::Key_Down will trigger a call to stepBy(-1).</p>
+<p>QAbstractSpinBox also provide a virtual function stepEnabled() to determine whether stepping up/down is allowed at any point. This function returns a bitset of StepEnabled.</p>
+
+*/">
+    <method name="public QAbstractSpinBox(com.trolltech.qt.gui.QWidget parent__0)" doc="/**
+<p>Constructs an abstract spinbox with the given <i>parent</i> with default wrapping, and alignment properties.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.Alignment alignment()"/>
+    <method name="public final com.trolltech.qt.gui.QAbstractSpinBox.ButtonSymbols buttonSymbols()"/>
+    <method name="public final com.trolltech.qt.gui.QAbstractSpinBox.CorrectionMode correctionMode()"/>
+    <method name="public final boolean hasAcceptableInput()"/>
+    <method name="public final boolean hasFrame()"/>
+    <method name="public final void interpretText()" doc="/**
+<p>This function interprets the text of the spin box. If the value has changed since last interpretation it will emit signals.</p>
+
+*/"/>
+    <method name="public final boolean isAccelerated()"/>
+    <method name="public final boolean isReadOnly()"/>
+    <method name="protected final com.trolltech.qt.gui.QLineEdit lineEdit()" doc="/**
+<p>This function returns a pointer to the line edit of the spin box.</p>
+
+*/"/>
+    <method name="public final void selectAll()" doc="/**
+<p>Selects all the text in the spinbox except the prefix and suffix.</p>
+
+*/"/>
+    <method name="public final void setAccelerated(boolean on__0)"/>
+    <method name="public final void setAlignment(com.trolltech.qt.core.Qt.Alignment flag__0)"/>
+    <method name="public final void setButtonSymbols(com.trolltech.qt.gui.QAbstractSpinBox.ButtonSymbols bs__0)"/>
+    <method name="public final void setCorrectionMode(com.trolltech.qt.gui.QAbstractSpinBox.CorrectionMode cm__0)"/>
+    <method name="public final void setFrame(boolean arg__0)"/>
+    <method name="protected final void setLineEdit(com.trolltech.qt.gui.QLineEdit edit__0)" doc="/**
+<p>Sets the line edit of the spinbox to be <i>lineEdit</i> instead of the current line edit widget. <i>lineEdit</i> can not be 0.</p>
+<p>QAbstractSpinBox takes ownership of the new lineEdit</p>
+<p>If QLineEdit::validator() for the <i>lineEdit</i> returns 0, the internal validator of the spinbox will be set on the line edit.</p>
+
+*/"/>
+    <method name="public final void setReadOnly(boolean r__0)"/>
+    <method name="public final void setSpecialValueText(java.lang.String txt__0)"/>
+    <method name="public final void setWrapping(boolean w__0)"/>
+    <method name="public final java.lang.String specialValueText()"/>
+    <method name="public final void stepDown()" doc="/**
+<p>Steps down by one linestep Calling this slot is analogous to calling stepBy(-1);</p>
+
+*/"/>
+    <method name="public final void stepUp()" doc="/**
+<p>Steps up by one linestep Calling this slot is analogous to calling stepBy(1);</p>
+
+*/"/>
+    <method name="public final java.lang.String text()"/>
+    <method name="public final boolean wrapping()"/>
+    <method name="protected void changeEvent(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="public void clear()" doc="/**
+<p>Clears the lineedit of all text but prefix and suffix.</p>
+
+*/"/>
+    <method name="protected void closeEvent(com.trolltech.qt.gui.QCloseEvent event__0)"/>
+    <method name="protected void contextMenuEvent(com.trolltech.qt.gui.QContextMenuEvent event__0)"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent event__0)"/>
+    <method name="public void fixup(com.trolltech.qt.QNativePointer input__0)" doc="/**
+<p>This virtual function is called by the QAbstractSpinBox if the <i>input</i> is not validated to QValidator::Acceptable when Return is pressed or interpretText() is called. It will try to change the text so it is valid. Reimplemented in the various subclasses.</p>
+
+*/"/>
+    <method name="protected void focusInEvent(com.trolltech.qt.gui.QFocusEvent event__0)"/>
+    <method name="protected void focusOutEvent(com.trolltech.qt.gui.QFocusEvent event__0)"/>
+    <method name="protected void hideEvent(com.trolltech.qt.gui.QHideEvent event__0)"/>
+    <method name="protected void keyPressEvent(com.trolltech.qt.gui.QKeyEvent event__0)" doc="/**
+<p>This function handles keyboard input.</p>
+<p>The following keys are handled specifically:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Enter/Return</td><td>This will reinterpret the text and emit a signal even if the value has not changed since last time a signal was emitted.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Up</td><td>This will invoke stepBy(1)</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Down</td><td>This will invoke stepBy(-1)</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Page up</td><td>This will invoke stepBy(10)</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Page down</td><td>This will invoke stepBy(-10)</td></tr>
+</table></p>
+
+*/"/>
+    <method name="protected void keyReleaseEvent(com.trolltech.qt.gui.QKeyEvent event__0)"/>
+    <method name="public com.trolltech.qt.core.QSize minimumSizeHint()"/>
+    <method name="protected void mouseMoveEvent(com.trolltech.qt.gui.QMouseEvent event__0)"/>
+    <method name="protected void mousePressEvent(com.trolltech.qt.gui.QMouseEvent event__0)"/>
+    <method name="protected void mouseReleaseEvent(com.trolltech.qt.gui.QMouseEvent event__0)"/>
+    <method name="protected void paintEvent(com.trolltech.qt.gui.QPaintEvent event__0)"/>
+    <method name="protected void resizeEvent(com.trolltech.qt.gui.QResizeEvent event__0)"/>
+    <method name="protected void showEvent(com.trolltech.qt.gui.QShowEvent event__0)"/>
+    <method name="public com.trolltech.qt.core.QSize sizeHint()"/>
+    <method name="public void stepBy(int steps__0)" doc="/**
+<p>Virtual function that is called whenever the user triggers a step. The <i>steps</i> parameter indicates how many steps were taken, e.g. Pressing Qt::Key_Down will trigger a call to stepBy(-1), whereas pressing Qt::Key_Prior will trigger a call to stepBy(10).</p>
+<p>If you subclass QAbstractSpinBox you must reimplement this function. Note that this function is called even if the resulting value will be outside the bounds of minimum and maximum. It's this function's job to handle these situations.</p>
+
+*/"/>
+    <method name="protected com.trolltech.qt.gui.QAbstractSpinBox.StepEnabled stepEnabled()" doc="/**
+<p>Virtual function that determines whether stepping up and down is legal at any given time.</p>
+<p>The up arrow will be painted as disabled unless (stepEnabled() &amp; StepUpEnabled) != 0.</p>
+<p>The default implementation will return (StepUpEnabled| StepDownEnabled) if wrapping is turned on. Else it will return StepDownEnabled if value is &gt; minimum() or'ed with StepUpEnabled if value &lt; maximum().</p>
+<p>If you subclass QAbstractSpinBox you will need to reimplement this function.</p>
+
+*/"/>
+    <method name="protected void timerEvent(com.trolltech.qt.core.QTimerEvent event__0)"/>
+    <method name="public com.trolltech.qt.gui.QValidator.State validate(com.trolltech.qt.QNativePointer input__0, com.trolltech.qt.QNativePointer pos__1)" doc="/**
+<p>This virtual function is called by the QAbstractSpinBox to determine whether <i>input</i> is valid. The <i>pos</i> parameter indicates the position in the string. Reimplemented in the various subclasses.</p>
+
+*/"/>
+    <method name="protected void wheelEvent(com.trolltech.qt.gui.QWheelEvent event__0)"/>
+    <enum name="StepEnabledFlag" doc="/**
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;40%&quote;>
+<tr><th width=&quote;60%&quote;>Constant</th><th width=&quote;40%&quote;>Value</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="CorrectionMode" doc="/**
+<p>This enum type describes the mode the spinbox will use to correct an Intermediate value if editing finishes.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The spinbox will revert to the last valid value.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The spinbox will revert to the nearest valid value.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="ButtonSymbols" doc="/**
+<p>This enum type describes the symbols that can be displayed on the buttons in a spin box.</p>
+<p><font color=&quote;red&quote;>[Missing image qspinbox-updown.png]</font> <font color=&quote;red&quote;>[Missing image qspinbox-plusminus.png]</font></p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Little arrows in the classic style.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;><b>+</b> and <b>-</b> symbols.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>Don't display buttons.</td></tr>
+</table></p>
+
+*/"/>
+</class>

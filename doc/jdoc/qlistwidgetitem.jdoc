@@ -1,0 +1,200 @@
+<class name="QListWidgetItem" doc="/**
+<p>The QListWidgetItem class provides an item for use with the QListWidget item view class.</p>
+<p>QListWidgetItem is used to represent items in a list provided by the QListWidget class. Each item can hold several pieces of information, and will display these appropriately.</p>
+<p>The item view convenience classes use a classic item-based interface rather than a pure model/view approach. For a more flexible list view widget, consider using the QListView class with a standard model.</p>
+<p>List items can be automatically inserted into a list when they are constructed by specifying the list widget:</p>
+<pre>        new QListWidgetItem(tr(&quot;Hazel&quot;), listWidget);</pre>
+<p>They can also be created without a parent widget, and later inserted into a list (see QListWidget::insertItem()).</p>
+<p>List items are typically used to display text() and an icon(). These are set with the setText() and setIcon() functions. The appearance of the text can be customized with setFont(), setForeground(), and setBackground(). List item's text can be aligned using the setTextAlignment() function. Tooltips, status tips and &quot;What's This?&quot; help can be added to list items with setToolTip(), setStatusTip(), and setWhatsThis().</p>
+<p>By default, items are enabled, selectable, checkable, and can be the source of a drag and drop operation. Each item's flags can be changed by calling setFlags() with the appropriate value (see Qt::ItemFlags). Checkable items can be checked, unchecked and partially checked with the setCheckState() function. The corresponding checkState() function indicates what check state the item currently has.</p>
+<p>The isItemHidden() function can be used to determine whether the item is hidden. Items can be hidden with setItemHidden().</p>
+<a name=&quote;subclassing&quote;></a>
+<h3>Subclassing</h3>
+<p>When subclassing QListWidgetItem to provide custom items, it is possible to define new types for them so that they can be distinguished from standard items. The constructors for subclasses that require this feature need to call the base class constructor with a new type value equal to or greater than UserType.</p>
+
+*/">
+    <method name="public QListWidgetItem(com.trolltech.qt.gui.QListWidget view__0, int type__1)" doc="/**
+<p>Constructs an empty list widget item of the specified <i>type</i> with the given <i>parent</i>. If the parent is not specified, the item will need to be inserted into a list widget with QListWidget::insertItem().</p>
+
+*/"/>
+    <method name="public QListWidgetItem(com.trolltech.qt.gui.QIcon icon__0, java.lang.String text__1, com.trolltech.qt.gui.QListWidget view__2, int type__3)" doc="/**
+<p>Constructs an empty list widget item of the specified <i>type</i> with the given <i>icon</i>, <i>text</i> and <i>parent</i>. If the parent is not specified, the item will need to be inserted into a list widget with QListWidget::insertItem().</p>
+
+*/"/>
+    <method name="public QListWidgetItem(java.lang.String text__0, com.trolltech.qt.gui.QListWidget view__1, int type__2)" doc="/**
+<p>Constructs an empty list widget item of the specified <i>type</i> with the given <i>text</i> and <i>parent</i>. If the parent is not specified, the item will need to be inserted into a list widget with QListWidget::insertItem().</p>
+
+*/"/>
+    <method name="public QListWidgetItem(com.trolltech.qt.gui.QListWidgetItem other__0)" doc="/**
+<p>Constructs a copy of <i>other</i>. Note that type() and listWidget() are not copied.</p>
+<p>This function is useful when reimplementing clone().</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush background()" doc="/**
+<p>Returns the brush used to display the list item's background.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QColor backgroundColor()" doc="/**
+<p>This function is deprecated. Use background() instead.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.CheckState checkState()" doc="/**
+<p>Returns the checked state of the list item (see Qt::CheckState).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ItemFlags flags()" doc="/**
+<p>Returns the item flags for this item (see Qt::ItemFlags).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font()" doc="/**
+<p>Returns the font used to display this list item's text.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBrush foreground()" doc="/**
+<p>Returns the brush used to display the list item's foreground (e.g. text).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QIcon icon()" doc="/**
+<p>Returns the list item's icon.</p>
+
+*/"/>
+    <method name="public final boolean isHidden()" doc="/**
+<p>Returns true if the item is hidden, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isSelected()" doc="/**
+<p>Returns true if the item is selected, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QListWidget listWidget()" doc="/**
+<p>Returns the list widget that contains the item.</p>
+
+*/"/>
+    <method name="public final void setBackground(com.trolltech.qt.gui.QBrush brush__0)" doc="/**
+<p>Sets the background brush of the list item to the given <i>brush</i>.</p>
+
+*/"/>
+    <method name="public final void setCheckState(com.trolltech.qt.core.Qt.CheckState state__0)" doc="/**
+<p>Sets the check state of the list item to <i>state</i>.</p>
+
+*/"/>
+    <method name="public final void setFlags(com.trolltech.qt.core.Qt.ItemFlags flags__0)" doc="/**
+<p>Sets the item flags for the list item to <i>flags</i> (see Qt::ItemFlags).</p>
+
+*/"/>
+    <method name="public final void setFont(com.trolltech.qt.gui.QFont font__0)" doc="/**
+<p>Sets the font used when painting the item to the given <i>font</i>.</p>
+
+*/"/>
+    <method name="public final void setForeground(com.trolltech.qt.gui.QBrush brush__0)" doc="/**
+<p>Sets the foreground brush of the list item to the given <i>brush</i>.</p>
+
+*/"/>
+    <method name="public final void setHidden(boolean hide__0)" doc="/**
+<p>Hides the item if <i>hide</i> is true, otherwise shows the item.</p>
+
+*/"/>
+    <method name="public final void setIcon(com.trolltech.qt.gui.QIcon icon__0)" doc="/**
+<p>Sets the icon for the list item to the given <i>icon</i>.</p>
+
+*/"/>
+    <method name="public final void setSelected(boolean select__0)" doc="/**
+<p>Sets the selected state of the item to <i>select</i>.</p>
+
+*/"/>
+    <method name="public final void setSizeHint(com.trolltech.qt.core.QSize size__0)" doc="/**
+<p>Sets the size hint for the list item to be <i>size</i>. If no size hint is set, the item delegate will compute the size hint based on the item data.</p>
+
+*/"/>
+    <method name="public final void setStatusTip(java.lang.String statusTip__0)" doc="/**
+<p>Sets the status tip for the list item to the text specified by <i>statusTip</i>.</p>
+
+*/"/>
+    <method name="public final void setText(java.lang.String text__0)" doc="/**
+<p>Sets the text for the list widget item's to the given <i>text</i>.</p>
+
+*/"/>
+    <method name="public final void setTextAlignment(int alignment__0)" doc="/**
+<p>Sets the list item's text alignment to <i>alignment</i> (see Qt::AlignmentFlag).</p>
+
+*/"/>
+    <method name="public final void setTextColor(com.trolltech.qt.gui.QColor color__0)" doc="/**
+<p>This function is deprecated. Use setForeground() instead.</p>
+
+*/"/>
+    <method name="public final void setToolTip(java.lang.String toolTip__0)" doc="/**
+<p>Sets the tooltip for the list item to the text specified by <i>toolTip</i>.</p>
+
+*/"/>
+    <method name="public final void setWhatsThis(java.lang.String whatsThis__0)" doc="/**
+<p>Sets the &quot;What's This?&quot; help for the list item to the text specified by <i>whatsThis</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize sizeHint()" doc="/**
+<p>Returns the size hint set for the list item.</p>
+
+*/"/>
+    <method name="public final java.lang.String statusTip()" doc="/**
+<p>Returns the list item's status tip.</p>
+
+*/"/>
+    <method name="public final java.lang.String text()" doc="/**
+<p>Returns the list item's text.</p>
+
+*/"/>
+    <method name="public final int textAlignment()" doc="/**
+<p>Returns the text alignment for the list item (see Qt::AlignmentFlag).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QColor textColor()" doc="/**
+<p>Returns the color used to display the list item's text.</p>
+<p>This function is deprecated. Use foreground() instead.</p>
+
+*/"/>
+    <method name="public final java.lang.String toolTip()" doc="/**
+<p>Returns the list item's tooltip.</p>
+
+*/"/>
+    <method name="public final int type()" doc="/**
+<p>Returns the type passed to the QListWidgetItem constructor.</p>
+
+*/"/>
+    <method name="public final java.lang.String whatsThis()" doc="/**
+<p>Returns the list item's &quot;What's This?&quot; help text.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QListWidgetItem clone()" doc="/**
+<p>Creates an exact copy of the item.</p>
+
+*/"/>
+    <method name="public java.lang.Object data(int role__0)" doc="/**
+<p>This function returns the item's data for a given <i>role</i> (see {Qt::ItemDataRole}). Reimplement this function if you need extra roles or special behavior for certain roles.</p>
+
+*/"/>
+    <method name="public void read(com.trolltech.qt.core.QDataStream in__0)" doc="/**
+<p>Reads the item from stream <i>in</i>.</p>
+
+*/"/>
+    <method name="public void setBackgroundColor(com.trolltech.qt.gui.QColor color__0)" doc="/**
+<p>This function is deprecated. Use setBackground() instead.</p>
+
+*/"/>
+    <method name="public void setData(int role__0, java.lang.Object value__1)" doc="/**
+<p>This function sets the data for a given <i>role</i> to the given <i>value</i> (see Qt::ItemDataRole). Reimplement this function if you need extra roles or special behavior for certain roles.</p>
+
+*/"/>
+    <method name="public void write(com.trolltech.qt.core.QDataStream out__0)" doc="/**
+<p>Writes the item to stream <i>out</i>.</p>
+
+*/"/>
+    <enum name="ItemType" doc="/**
+<p>This enum describes the types that are used to describe list widget items.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The default type for list widget items.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>The minimum value for custom types. Values below UserType are reserved by Qt.</td></tr>
+</table></p>
+<p>You can define new user types in QListWidgetItem subclasses to ensure that custom items are treated specially.</p>
+
+*/"/>
+</class>

@@ -1,0 +1,169 @@
+<class name="QAction" doc="/**
+<p>The QAction class provides an abstract user interface action that can be inserted into widgets.</p>
+<p>In applications many common commands can be invoked via menus, toolbar buttons, and keyboard shortcuts. Since the user expects each command to be performed in the same way, regardless of the user interface used, it is useful to represent each command as an <i>action</i>.</p>
+<p>Actions can be added to menus and toolbars, and will automatically keep them in sync. For example, in a word processor, if the user presses a Bold toolbar button, the Bold menu item will automatically be checked.</p>
+<p>Actions can be created as independent objects, but they may also be created during the construction of menus; the QMenu class contains convenience functions for creating actions suitable for use as menu items.</p>
+<p>A QAction may contain an icon, menu text, a shortcut, status text, &quot;What's This?&quot; text, and a tooltip. Most of these can be set in the constructor. They can also be set independently with setIcon(), setText(), setIconText(), setShortcut(), setStatusTip(), setWhatsThis(), and setToolTip(). For menu items, it is possible to set an individual font with setFont().</p>
+<p>Actions are added to widgets using QWidget::addAction().</p>
+<p>Once a QAction has been created it should be added to the relevant menu and toolbar, then connected to the slot which will perform the action. For example:</p>
+<pre>        openAct = new QAction(QIcon(&quot;:/images/open.png&quot;), tr(&quot;&amp;Open...&quot;), this);
+        openAct-&gt;setShortcut(tr(&quot;Ctrl+O&quot;));
+        openAct-&gt;setStatusTip(tr(&quot;Open an existing file&quot;));
+        connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+
+        fileMenu-&gt;addAction(openAct);
+        fileToolBar-&gt;addAction(openAct);</pre>
+<p>We recommend that actions are created as children of the window they are used in. In most cases actions will be children of the application's main window.</p>
+
+*/">
+    <method name="public QAction(java.lang.String text__0, com.trolltech.qt.core.QObject parent__1)" doc="/**
+<p>Constructs an action with some <i>text</i> and <i>parent</i>. If <i>parent</i> is an action group the action will be automatically inserted into the group.</p>
+<p>The action uses a stripped version of <i>text</i> (e.g. &quot;&amp;Menu Option...&quot; becomes &quot;Menu Option&quot;) as descriptive text for toolbuttons. You can override this by setting a specific description with setText(). The same text will be used for tooltips unless you specify a different test using setToolTip().</p>
+
+*/"/>
+    <method name="public QAction(com.trolltech.qt.gui.QIcon icon__0, java.lang.String text__1, com.trolltech.qt.core.QObject parent__2)" doc="/**
+<p>Constructs an action with an <i>icon</i> and some <i>text</i> and <i>parent</i>. If <i>parent</i> is an action group the action will be automatically inserted into the group.</p>
+<p>The action uses a stripped version of <i>text</i> (e.g. &quot;&amp;Menu Option...&quot; becomes &quot;Menu Option&quot;) as descriptive text for toolbuttons. You can override this by setting a specific description with setText(). The same text will be used for tooltips unless you specify a different test using setToolTip().</p>
+
+*/"/>
+    <method name="public QAction(com.trolltech.qt.core.QObject parent__0)" doc="/**
+<p>Constructs an action with <i>parent</i>. If <i>parent</i> is an action group the action will be automatically inserted into the group.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QActionGroup actionGroup()" doc="/**
+<p>Returns the action group for this action. If no action group manages this action then 0 will be returned.</p>
+
+*/"/>
+    <method name="public final void activate(com.trolltech.qt.gui.QAction.ActionEvent event__0)" doc="/**
+<p>Sends the relevant signals for ActionEvent <i>event</i>.</p>
+<p>Action based widgets use this API to cause the QAction to emit signals as well as emitting their own.</p>
+
+*/"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QWidget&gt; associatedWidgets()" doc="/**
+<p>Returns a list of widgets this action has been added to.</p>
+
+*/"/>
+    <method name="public final boolean autoRepeat()"/>
+    <method name="public final java.lang.Object data()" doc="/**
+<p>Returns the user data as set in QAction::setData.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QFont font()"/>
+    <method name="public final void hover()" doc="/**
+<p>This is a convenience slot that calls activate(Hover).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QIcon icon()"/>
+    <method name="public final java.lang.String iconText()"/>
+    <method name="public final boolean isCheckable()"/>
+    <method name="public final boolean isChecked()"/>
+    <method name="public final boolean isEnabled()"/>
+    <method name="public final boolean isSeparator()" doc="/**
+<p>Returns true if this action is a separator action; otherwise it returns false.</p>
+
+*/"/>
+    <method name="public final boolean isVisible()"/>
+    <method name="public final com.trolltech.qt.gui.QMenu menu()" doc="/**
+<p>Returns the menu contained by this action. Actions that contain menus can be used to create menu items with submenus, or inserted into toolbars to create buttons with popup menus.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QAction.MenuRole menuRole()"/>
+    <method name="public final com.trolltech.qt.gui.QWidget parentWidget()" doc="/**
+<p>Returns the parent widget.</p>
+
+*/"/>
+    <method name="public final void setActionGroup(com.trolltech.qt.gui.QActionGroup group__0)" doc="/**
+<p>Sets this action group to <i>group</i>. The action will be automatically added to the group's list of actions.</p>
+<p>Actions within the group will be mutually exclusive.</p>
+
+*/"/>
+    <method name="public final void setAutoRepeat(boolean arg__0)"/>
+    <method name="public final void setCheckable(boolean arg__0)"/>
+    <method name="public final void setChecked(boolean arg__0)"/>
+    <method name="public final void setData(java.lang.Object var__0)" doc="/**
+<p>Sets the action's internal data to the given <i>userData</i>.</p>
+
+*/"/>
+    <method name="public final void setDisabled(boolean b__0)" doc="/**
+<p>This is a convenience function for the enabled property, that is useful for signals--slots connections. If <i>b</i> is true the action is disabled; otherwise it is enabled.</p>
+
+*/"/>
+    <method name="public final void setEnabled(boolean arg__0)"/>
+    <method name="public final void setFont(com.trolltech.qt.gui.QFont font__0)"/>
+    <method name="public final void setIcon(com.trolltech.qt.gui.QIcon icon__0)"/>
+    <method name="public final void setIconText(java.lang.String text__0)"/>
+    <method name="public final void setMenu(com.trolltech.qt.gui.QMenu menu__0)" doc="/**
+<p>Sets the menu contained by this action to the specified <i>menu</i>.</p>
+
+*/"/>
+    <method name="public final void setMenuRole(com.trolltech.qt.gui.QAction.MenuRole menuRole__0)"/>
+    <method name="public final void setSeparator(boolean b__0)" doc="/**
+<p>If <i>b</i> is true then this action will be considered a separator.</p>
+<p>How a separator is represented depends on the widget it is inserted into. Under most circumstances the text, submenu, and icon will be ignored for separator actions.</p>
+
+*/"/>
+    <method name="public final void setShortcut(com.trolltech.qt.gui.QKeySequence shortcut__0)"/>
+    <method name="public final void setShortcutContext(com.trolltech.qt.core.Qt.ShortcutContext context__0)"/>
+    <method name="public final void setShortcuts(java.util.List&lt;com.trolltech.qt.gui.QKeySequence&gt; shortcuts__0)" doc="/**
+<p>Sets <i>shortcuts</i> as the list of shortcuts that trigger the action. The first element of the list is the primary shortcut.</p>
+
+*/"/>
+    <method name="public final void setShortcuts(com.trolltech.qt.gui.QKeySequence.StandardKey arg__0)" doc="/**
+<p>Sets a platform dependent list of shortcuts based on the <i>key</i>. The result of calling this function will depend on the currently running platform. Note that more than one shortcut can assigned by this action. If only the primary shortcut is required, use setShortcut instead.</p>
+
+*/"/>
+    <method name="public final void setStatusTip(java.lang.String statusTip__0)"/>
+    <method name="public final void setText(java.lang.String text__0)"/>
+    <method name="public final void setToolTip(java.lang.String tip__0)"/>
+    <method name="public final void setVisible(boolean arg__0)"/>
+    <method name="public final void setWhatsThis(java.lang.String what__0)"/>
+    <method name="public final com.trolltech.qt.gui.QKeySequence shortcut()" doc="/**
+<p>Returns the primary shortcut.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.Qt.ShortcutContext shortcutContext()"/>
+    <method name="public final java.util.List&lt;com.trolltech.qt.gui.QKeySequence&gt; shortcuts()" doc="/**
+<p>Returns the list of shortcuts, with the primary shortcut as the first element of the list.</p>
+
+*/"/>
+    <method name="public final boolean showStatusText(com.trolltech.qt.gui.QWidget widget__0)" doc="/**
+<p>Updates the status bar for <i>widget</i>. If widget is an appropriate QStatusBar found for for this action based on the parent heirarchy will be used.</p>
+
+*/"/>
+    <method name="public final java.lang.String statusTip()"/>
+    <method name="public final java.lang.String text()"/>
+    <method name="public final void toggle()" doc="/**
+<p>This is a convenience function for the checked property. Connect to it to change the checked state to its opposite state.</p>
+
+*/"/>
+    <method name="public final java.lang.String toolTip()"/>
+    <method name="public final void trigger()" doc="/**
+<p>This is a convenience slot that calls activate(Trigger).</p>
+
+*/"/>
+    <method name="public final java.lang.String whatsThis()"/>
+    <method name="public boolean event(com.trolltech.qt.core.QEvent arg__0)"/>
+    <enum name="ActionEvent" doc="/**
+<p>This enum type is used when calling QAction::activate()</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>this will cause the QAction::triggered() signal to be emitted.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>this will cause the QAction::hovered() signal to be emitted.</td></tr>
+</table></p>
+
+*/"/>
+    <enum name="MenuRole" doc="/**
+<p>This enum describes how an action should be moved into the application menu on Mac OS X.</p>
+<p><table border=&quote;1&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; width=&quote;100%&quote;>
+<tr><th width=&quote;25%&quote;>Constant</th><th width=&quote;15%&quote;>Value</th><th width=&quote;60%&quote;>Description</th></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This action should not be put into the application menu</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This action should be put in the application menu based on the action's text as described in the QMenuBar documentation.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This action should be put in the application menu with an application specific role</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This action matches handles the &quot;About Qt&quot; menu item.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This action should be placed where the &quot;About&quot; menu item is in the application menu.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This action should be placed where the &quot;Preferences...&quot; menu item is in the application menu.</td></tr>
+<tr><td valign=&quote;top&quote;><tt></tt></td><td align=&quote;center&quote; valign=&quote;top&quote;>&nbsp;</td><td valign=&quote;top&quote;>This action should be placed where the Quit menu item is in the application menu.</td></tr>
+</table></p>
+
+*/"/>
+</class>

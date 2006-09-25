@@ -1,0 +1,293 @@
+<class name="QPixmap" doc="/**
+<p>The QPixmap class is an off-screen image representation that can be used as a paint device.</p>
+<p>Qt provides four classes for handling image data: QImage, QPixmap, QBitmap and QPicture. QImage is designed and optimized for I/O, and for direct pixel access and manipulation, while QPixmap is designed and optimized for showing images on screen. QBitmap is only a convenience class that inherits QPixmap, ensuring a depth of 1. The isQBitmap() function returns true if a QPixmap object is really a bitmap, otherwise returns false. Finally, the QPicture class is a paint device that records and replays QPainter commands.</p>
+<p>A QPixmap can easily be displayed on the screen using QLabel or one of QAbstractButton's subclasses (such as QPushButton and QToolButton). QLabel has a pixmap property, whereas QAbstractButton has an icon property. And because QPixmap is a QPaintDevice subclass, QPainter can be used to draw directly onto pixmaps.</p>
+<p>In addition to the ordinary constructors, a QPixmap can be constructed using the static grabWidget() and grabWindow() functions which creates a QPixmap and paints the given widget, or window, in it.</p>
+<p>Note that the pixel data in a pixmap is internal and is managed by the underlying window system. Pixels can only be accessed through QPainter functions or by converting the QPixmap to a QImage. Depending on the system, QPixmap is stored using a RGB32 or a premultiplied alpha format. If the image has an alpha channel, and if the system allows, the preferred format is premultiplied alpha. Note also that QPixmap, unlike QImage, may be hardware dependent. On X11 and Mac, a QPixmap is stored on the server side while a QImage is stored on the client side (on Windows, these two classes have an equivalent internal representation, i.e. both QImage and QPixmap are stored on the client side and don't use any GDI resources).</p>
+<p>There are functions to convert between QImage and QPixmap. Typically, the QImage class is used to load an image file, optionally manipulating the image data, before the QImage object is converted into a QPixmap to be shown on screen. Alternatively, if no manipulation is desired, the image file can be loaded directly into a QPixmap. On Windows, the QPixmap class also supports conversion between <tt>HBITMAP</tt> and QPixmap.</p>
+<p>QPixmap provides a collection of functions that can be used to obtain a variety of information about the pixmap. In addition, there are several functions that enables transformation of the pixmap.</p>
+<p>QPixmap objects can be passed around by value since the QPixmap class uses implicit data sharing. For more information, see the Implicit Data Sharing documentation. QPixmap objects can also be streamed.</p>
+<ul><li><a href=&quote;#reading-and-writing-image-files&quote;>Reading and Writing Image Files</a></li>
+<li><a href=&quote;#pixmap-information&quote;>Pixmap Information</a></li>
+<li><a href=&quote;#pixmap-conversion&quote;>Pixmap Conversion</a></li>
+<li><a href=&quote;#pixmap-transformations&quote;>Pixmap Transformations</a></li>
+</ul>
+<a name=&quote;reading-and-writing-image-files&quote;></a>
+<h3>Reading and Writing Image Files</h3>
+<p>QPixmap provides several ways of reading an image file: The file can be loaded when constructing the QPixmap object, or by using the load() or loadFromData() functions later on. When loading an image, the file name can either refer to an actual file on disk or to one of the application's embedded resources. See The Qt Resource System overview for details on how to embed images and other resource files in the application's executable.</p>
+<p>Simply call the save() function to save a QPixmap object.</p>
+<p>The complete list of supported file formats are available through the QImageReader::supportedImageFormats() and QImageWriter::supportedImageFormats() functions. New file formats can be added as plugins. By default, Qt supports the following formats:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th>Format</th><th>Description</th><th>Qt's support</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>BMP</td><td>Windows Bitmap</td><td>Read/write</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>GIF</td><td>Graphic Interchange Format (optional)</td><td>Read</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>JPG</td><td>Joint Photographic Experts Group</td><td>Read/write</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>JPEG</td><td>Joint Photographic Experts Group</td><td>Read/write</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PNG</td><td>Portable Network Graphics</td><td>Read/write</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PBM</td><td>Portable Bitmap</td><td>Read</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>PGM</td><td>Portable Graymap</td><td>Read</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>PPM</td><td>Portable Pixmap</td><td>Read/write</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>XBM</td><td>X11 Bitmap</td><td>Read/write</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>XPM</td><td>X11 Pixmap</td><td>Read/write</td></tr>
+</table></p>
+<p>(To configure Qt with GIF support, pass <tt>-qt-gif</tt> to the <tt>configure</tt> script or check the appropriate option in the graphical installer.)</p>
+<a name=&quote;pixmap-information&quote;></a>
+<h3>Pixmap Information</h3>
+<p>QPixmap provides a collection of functions that can be used to obtain a variety of information about the pixmap:</p>
+<p><table align=&quote;center&quote; cellpadding=&quote;2&quote; cellspacing=&quote;1&quote; border=&quote;0&quote;>
+<thead><tr valign=&quote;top&quote; class=&quote;qt-style&quote;><th></th><th>Available Functions</th></tr></thead>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Geometry</td><td>The size(), width() and height() functions provide information about the pixmap's size. The rect() function returns the image's enclosing rectangle.</td></tr>
+<tr valign=&quote;top&quote; class=&quote;even&quote;><td>Alpha component</td><td>The hasAlphaChannel() returns true if the pixmap has a format that respects the alpha channel, otherwise returns false, while the hasAlpha() function returns true if the pixmap has an alpha channel <i>or</i> a mask (otherwise false).<p>The alphaChannel() function returns the alpha channel as a new QPixmap object, while the mask() function returns the mask as a QBitmap object. The alpha channel and mask can be set using the setAlphaChannel() and setMask() functions, respectively.</p>
+</td></tr>
+<tr valign=&quote;top&quote; class=&quote;odd&quote;><td>Low-level information</td><td>The depth() function returns the depth of the pixmap. The defaultDepth() function returns the default depth, i.e. the depth used by the application on the given screen.<p>The serialNumber() function returns a number that uniquely identifies the contents of the QPixmap object.</p>
+<p>The x11Info() function returns information about the configuration of the X display used to display the widget. The x11PictureHandle() function returns the X11 Picture handle of the pixmap for XRender support. Note that the two latter functions are only available on x11.</p>
+</td></tr>
+</table></p>
+<a name=&quote;pixmap-conversion&quote;></a>
+<h3>Pixmap Conversion</h3>
+<p>A QPixmap object can be converted into a QImage using the toImage() function. Likewise, a QImage can be converted into a QPixmap using the fromImage(). If this is too expensive an operation, you can use QBitmap::fromImage() instead.</p>
+<p>In addition, on Windows, the QPixmap class supports conversion to and from HBitmap: the toWinHBITMAP() function creates a HBITMAP equivalent to the QPixmap, based on the given HBitmapFormat, and returns the HBITMAP handle. The fromWinHBITMAP() function returns a QPixmap that is equivalent to the given bitmap which has the specified format.</p>
+<a name=&quote;pixmap-transformations&quote;></a>
+<h3>Pixmap Transformations</h3>
+<p>QPixmap supports a number of functions for creating a new pixmap that is a transformed version of the original: The createHeuristicMask() function creates and returns a 1-bpp heuristic mask (i.e. a QBitmap) for this pixmap. It works by selecting a color from one of the corners and then chipping away pixels of that color, starting at all the edges. The createMaskFromColor() function creates and returns a mask (i.e. a QBitmap) for the pixmap based on a given color.</p>
+<p>The scaled(), scaledToWidth() and scaledToHeight() functions return scaled copies of the pixmap, while the copy() function creates a QPixmap that is a plain copy of the original one.</p>
+<p>The transformed() function returns a copy of the pixmap that is transformed with the given transformation matrix and transformation mode: Internally, the transformation matrix is adjusted to compensate for unwanted translation, i.e. transformed() returns the smallest pixmap containing all transformed points of the original pixmap. The static trueMatrix() function returns the actual matrix used for transforming the pixmap.</p>
+<p>There are also functions for changing attributes of a pixmap. in-place: The fill() function fills the entire image with the given color, the setMask() function sets a mask bitmap, and the setAlphaChannel() function sets the pixmap's alpha channel.</p>
+
+*/">
+    <method name="public QPixmap(java.lang.String fileName__0, com.trolltech.qt.QNativePointer format__1, com.trolltech.qt.core.Qt.ImageConversionFlags flags__2)" doc="/**
+<p>Constructs a pixmap from the file with the given <i>fileName</i>. If the file does not exist or is of an unknown format, the pixmap becomes a null pixmap.</p>
+<p>The loader attempts to read the pixmap using the specified <i>format</i>. If the <i>format</i> is not specified (which is the default), the loader probes the file for a header to guess the file format.</p>
+<p>The file name can either refer to an actual file on disk or to one of the application's embedded resources. See the Resource System overview for details on how to embed images and other resource files in the application's executable.</p>
+<p>If the image needs to be modified to fit in a lower-resolution result (e.g. converting from 32-bit to 8-bit), use the <i>flags</i> to control the conversion.</p>
+<p>The <i>fileName</i>, <i>format</i> and <i>flags</i> parameters are passed on to load(). This means that the data in <i>fileName</i> is not compiled into the binary. If <i>fileName</i> contains a relative path (e.g. the filename only) the relevant file must be found relative to the runtime working directory.</p>
+
+*/"/>
+    <method name="public QPixmap(int w__0, int h__1)" doc="/**
+<p>Constructs a pixmap with the given <i>width</i> and <i>height</i>.</p>
+<p>The content of the pixmap is uninitialized. If either <i>width</i> or <i>height</i> is zero, a null pixmap is constructed.</p>
+
+*/"/>
+    <method name="public QPixmap(com.trolltech.qt.gui.QPixmap arg__0)" doc="/**
+<p>Constructs a pixmap that is a copy of the given <i>pixmap</i>.</p>
+
+*/"/>
+    <method name="public QPixmap(com.trolltech.qt.core.QSize arg__0)" doc="/**
+<p>Constructs a pixmap of the given <i>size</i>.</p>
+
+*/"/>
+    <method name="public QPixmap()" doc="/**
+<p>Constructs a null pixmap.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap alphaChannel()" doc="/**
+<p>Returns the alpha channel of the pixmap. If the pixmap doesn't have an alpha channel (i.e. the alpha channel's value equals 0xff), a null pixmap is returned.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap copy(int x__0, int y__1, int width__2, int height__3)" doc="/**
+<p>Returns a deep copy of the subset of the pixmap that is specified by the rectangle QRect( <i>x</i>, <i>y</i>, <i>width</i>, <i>height</i>).</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap copy(com.trolltech.qt.core.QRect rect__0)" doc="/**
+<p>Returns a deep copy of the subset of the pixmap that is specified by the given <i>rectangle</i>. For more information on deep copies, see the Implicit Data Sharing documentation.</p>
+<p>If the given <i>rectangle</i> is empty, the whole image is copied.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBitmap createHeuristicMask(boolean clipTight__0)" doc="/**
+<p>Creates and returns a heuristic mask for this pixmap.</p>
+<p>The function works by selecting a color from one of the corners and then chipping away pixels of that color, starting at all the edges. If <i>clipTight</i> is true (the default) the mask is just large enough to cover the pixels; otherwise, the mask is larger than the data pixels.</p>
+<p>The mask may not be perfect but it should be reasonable, so you can do things such as the following:</p>
+<pre>    QPixmap myPixmap;
+    myPixmap-&gt;setMask(myPixmap-&gt;createHeuristicMask());</pre>
+<p>This function is slow because it involves transformation to a QImage, non-trivial computations and a transformation back to a QBitmap.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBitmap createMaskFromColor(com.trolltech.qt.gui.QColor maskColor__0)" doc="/**
+<p>Creates and returns a mask for this pixmap based on the given <i>maskColor</i>.</p>
+<p>This function is slow because it involves transformation to a QImage and a transformation back to a QBitmap.</p>
+
+*/"/>
+    <method name="public final void detach()" doc="/**
+<p>Detaches the pixmap from shared pixmap data.</p>
+<p>A pixmap is automatically detached by Qt whenever its contents are about to change. This is done in almost all QPixmap member functions that modify the pixmap (fill(), fromImage(), load(), etc.), and in QPainter::begin() on a pixmap.</p>
+<p>There are two exceptions in which detach() must be called explicitly, that is when calling the handle() or the x11PictureHandle() function (only available on X11). Otherwise, any modifications done using system calls, will be performed on the shared data.</p>
+<p>The detach() function returns immediately if there is just a single reference or if the pixmap has not been initialized yet.</p>
+
+*/"/>
+    <method name="public final void fill(com.trolltech.qt.gui.QColor fillColor__0)" doc="/**
+<p>Fills the pixmap with the given <i>fillColor</i>.</p>
+
+*/"/>
+    <method name="public final void fill(com.trolltech.qt.gui.QWidget widget__0, com.trolltech.qt.core.QPoint ofs__1)" doc="/**
+<p>Fills the pixmap with the <i>widget</i>'s background color or pixmap according to the given offset.</p>
+<p>The QPoint <i>offset</i> defines a point in widget coordinates to which the pixmap's top-left pixel will be mapped to. This is only significant if the widget has a background pixmap; otherwise the pixmap will simply be filled with the background color of the widget.</p>
+
+*/"/>
+    <method name="public final void fill(com.trolltech.qt.gui.QWidget widget__0, int xofs__1, int yofs__2)" doc="/**
+<p>Fills the pixmap with the <i>widget</i>'s background color or pixmap. The given point, (<i>x</i>, <i>y</i>), defines an offset in widget coordinates to which the pixmap's top-left pixel will be mapped to.</p>
+
+*/"/>
+    <method name="public final boolean hasAlpha()" doc="/**
+<p>Returns true if this pixmap has an alpha channel, <i>or</i> has a mask, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean hasAlphaChannel()" doc="/**
+<p>Returns true if the pixmap has a format that respects the alpha channel, otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean isDetached()"/>
+    <method name="public final boolean isNull()" doc="/**
+<p>Returns true if this is a null pixmap; otherwise returns false.</p>
+<p>A null pixmap has zero width, zero height and no contents. You cannot draw in a null pixmap.</p>
+
+*/"/>
+    <method name="public final boolean isQBitmap()" doc="/**
+<p>Returns true if this is a QBitmap; otherwise returns false.</p>
+
+*/"/>
+    <method name="public final boolean load(java.lang.String fileName__0, com.trolltech.qt.QNativePointer format__1, com.trolltech.qt.core.Qt.ImageConversionFlags flags__2)" doc="/**
+<p>Loads a pixmap from the file with the given <i>fileName</i>. Returns true if the pixmap was successfully loaded; otherwise returns false.</p>
+<p>The loader attempts to read the pixmap using the specified <i>format</i>. If the <i>format</i> is not specified (which is the default), the loader probes the file for a header to guess the file format.</p>
+<p>The file name can either refer to an actual file on disk or to one of the application's embedded resources. See the Resource System overview for details on how to embed pixmaps and other resource files in the application's executable.</p>
+<p>If the data needs to be modified to fit in a lower-resolution result (e.g. converting from 32-bit to 8-bit), use the <i>flags</i> to control the conversion.</p>
+
+*/"/>
+    <method name="public final boolean loadFromData(com.trolltech.qt.QNativePointer buf__0, int len__1, com.trolltech.qt.QNativePointer format__2, com.trolltech.qt.core.Qt.ImageConversionFlags flags__3)" doc="/**
+<p>Loads a pixmap from the <i>len</i> first bytes of the given binary <i>data</i>. Returns true if the pixmap was loaded successfully; otherwise returns false.</p>
+<p>The loader attempts to read the pixmap using the specified <i>format</i>. If the <i>format</i> is not specified (which is the default), the loader probes the file for a header to guess the file format.</p>
+<p>If the data needs to be modified to fit in a lower-resolution result (e.g. converting from 32-bit to 8-bit), use the <i>flags</i> to control the conversion.</p>
+
+*/"/>
+    <method name="public final boolean loadFromData(com.trolltech.qt.core.QByteArray data__0, com.trolltech.qt.QNativePointer format__1, com.trolltech.qt.core.Qt.ImageConversionFlags flags__2)" doc="/**
+<p>Loads a pixmap from the binary <i>data</i> using the specified <i>format</i> and conversion <i>flags</i>.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QBitmap mask()" doc="/**
+<p>Returns the mask, or a null bitmap if no mask has been set.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QRect rect()" doc="/**
+<p>Returns the pixmap's enclosing rectangle.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap scaled(com.trolltech.qt.core.QSize s__0, com.trolltech.qt.core.Qt.AspectRatioMode aspectMode__1, com.trolltech.qt.core.Qt.TransformationMode mode__2)" doc="/**
+<p>Scales the pixmap to the given <i>size</i>, using the aspect ratio and transformation modes specified by <i>aspectRatioMode</i> and <i>transformMode</i>.</p>
+<p align=&quote;center&quote;><font color=&quote;red&quote;>[Missing image qimage-scaling.png]</font></p><ul>
+<li>If <i>aspectRatioMode</i> is Qt::IgnoreAspectRatio, the pixmap is scaled to <i>size</i>.</li>
+<li>If <i>aspectRatioMode</i> is Qt::KeepAspectRatio, the pixmap is scaled to a rectangle as large as possible inside <i>size</i>, preserving the aspect ratio.</li>
+<li>If <i>aspectRatioMode</i> is Qt::KeepAspectRatioByExpanding, the pixmap is scaled to a rectangle as small as possible outside <i>size</i>, preserving the aspect ratio.</li>
+</ul>
+<p>If the given <i>size</i> is empty, this function returns a null pixmap.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap scaled(int w__0, int h__1, com.trolltech.qt.core.Qt.AspectRatioMode aspectMode__2, com.trolltech.qt.core.Qt.TransformationMode mode__3)" doc="/**
+<p>Returns a copy of the pixmap scaled to a rectangle with the given <i>width</i> and <i>height</i> according to the given <i>aspectRatioMode</i> and <i>transformMode</i>.</p>
+<p>If either the <i>width</i> or the <i>height</i> is zero or negative, this function returns a null pixmap.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap scaledToHeight(int h__0, com.trolltech.qt.core.Qt.TransformationMode mode__1)" doc="/**
+<p>Returns a scaled copy of the image. The returned image is scaled to the given <i>height</i> using the specified transformation <i>mode</i>. The width of the pixmap is automatically calculated so that the aspect ratio of the pixmap is preserved.</p>
+<p>If <i>height</i> is 0 or negative, a null pixmap is returned.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QPixmap scaledToWidth(int w__0, com.trolltech.qt.core.Qt.TransformationMode mode__1)" doc="/**
+<p>Returns a scaled copy of the image. The returned image is scaled to the given <i>width</i> using the specified transformation <i>mode</i>. The height of the pixmap is automatically calculated so that the aspect ratio of the pixmap is preserved.</p>
+<p>If <i>width</i> is 0 or negative, a null pixmap is returned.</p>
+
+*/"/>
+    <method name="public final int serialNumber()" doc="/**
+<p>Returns a number that uniquely identifies the contents of this QPixmap object.</p>
+<p>This means that multiple QPixmap objects only can have the same serial number as long as they refer to the same contents. A null pixmap has always a serial number of 0.</p>
+<p>An example of where this is useful is for caching QPixmaps.</p>
+
+*/"/>
+    <method name="public final void setAlphaChannel(com.trolltech.qt.gui.QPixmap arg__0)" doc="/**
+<p>Sets the alpha channel of this pixmap to the given <i>alphaChannel</i> by converting the <i>alphaChannel</i> into 32 bit and using the intensity of the RGB pixel values.</p>
+<p>The effect of this function is undefined when the pixmap is being painted on.</p>
+
+*/"/>
+    <method name="public final void setMask(com.trolltech.qt.gui.QBitmap arg__0)" doc="/**
+<p>Sets a mask bitmap.</p>
+<p>The <i>newmask</i> bitmap defines the clip mask for this pixmap. Every pixel in <i>newmask</i> corresponds to a pixel in this pixmap. Pixel value 1 means opaque and pixel value 0 means transparent. The mask must have the same size as this pixmap.</p>
+<p><b>Warning:</b> Setting the mask on a pixmap will cause any alpha channel data to be cleared. For example:</p>
+<pre>            QPixmap alpha(&quot;image-with-alpha.png&quot;);
+            QPixmap alphacopy = alpha;
+            alphacopy.setMask(alphacopy.mask());</pre>
+<p>Now, alpha and alphacopy are visually different.</p>
+<p>Setting a null mask resets the mask.</p>
+<p>The effect of this function is undefined when the pixmap is being painted on.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.core.QSize size()" doc="/**
+<p>Returns the size of the pixmap.</p>
+
+*/"/>
+    <method name="public final com.trolltech.qt.gui.QImage toImage()" doc="/**
+<p>Converts the pixmap to a QImage. Returns a null image if the conversion fails.</p>
+<p>If the pixmap has 1-bit depth, the returned image will also be 1 bit deep. If the pixmap has 2- to 8-bit depth, the returned image has 8-bit depth. If the pixmap has greater than 8-bit depth, the returned image has 32-bit depth.</p>
+<p>Note that for the moment, alpha masks on monochrome images are ignored.</p>
+
+*/"/>
+    <method name="public int depth()" doc="/**
+<p>Returns the depth of the pixmap.</p>
+<p>The pixmap depth is also called bits per pixel (bpp) or bit planes of a pixmap. A null pixmap has depth 0.</p>
+
+*/"/>
+    <method name="public int devType()"/>
+    <method name="public int height()" doc="/**
+<p>Returns the height of the pixmap.</p>
+
+*/"/>
+    <method name="public int metric(com.trolltech.qt.gui.QPaintDevice.PaintDeviceMetric arg__0)" doc="/**
+<p>Returns the metric information for the given paint device <i>metric</i>.</p>
+
+*/"/>
+    <method name="public com.trolltech.qt.gui.QPaintEngine paintEngine()"/>
+    <method name="public boolean paintingActive()"/>
+    <method name="public com.trolltech.qt.gui.QPixmap transformed(com.trolltech.qt.gui.QMatrix arg__0, com.trolltech.qt.core.Qt.TransformationMode mode__1)" doc="/**
+<p>Returns a copy of the pixmap that is transformed using the given transformation <i>matrix</i> and transformation <i>mode</i>. The original pixmap is not changed.</p>
+<p>The transformation <i>matrix</i> is internally adjusted to compensate for unwanted translation; i.e. the pixmap produced is the smallest pixmap that contains all the transformed points of the original pixmap. Use the trueMatrix() function to retrieve the actual matrix used for transforming the pixmap.</p>
+<p>This function is slow because it involves transformation to a QImage, non-trivial computations and a transformation back to a QPixmap.</p>
+
+*/"/>
+    <method name="public int width()" doc="/**
+<p>Returns the width of the pixmap.</p>
+
+*/"/>
+    <method name="public native static int defaultDepth()" doc="/**
+<p>Returns the default pixmap depth used by the application.</p>
+
+*/"/>
+    <method name="public static com.trolltech.qt.gui.QPixmap fromImage(com.trolltech.qt.gui.QImage image__0, com.trolltech.qt.core.Qt.ImageConversionFlags flags__1)" doc="/**
+<p>Converts the given <i>image</i> to a pixmap using the specified <i>flags</i> to control the conversion. The <i>flags</i> argument is a bitwise-OR of the Qt::ImageConversionFlags. Passing 0 for <i>flags</i> sets all the default options.</p>
+<p>In case of monochrome and 8-bit images, the image is first converted to a 32-bit pixmap and then filled with the colors in the color table. If this is too expensive an operation, you can use QBitmap::fromImage() instead.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QPixmap grabWidget(com.trolltech.qt.gui.QWidget widget__0, com.trolltech.qt.core.QRect rect__1)" doc="/**
+<p>Creates a pixmap and paints the given <i>widget</i>, restricted by the given <i>rectangle</i>, in it. If the <i>widget</i> has any children, then they are also painted in the appropriate positions.</p>
+<p>If no rectangle is specified (the default) the entire widget is painted.</p>
+<p>If <i>widget</i> is 0, the specified rectangle doesn't overlap the widget's rectangle, or an error occurs, the function will return a null QPixmap. If the rectangle is a superset of the given <i>widget</i>, the areas outside the <i>widget</i> are covered with the widget's background.</p>
+<p>This function actually asks <i>widget</i> to paint itself (and its children to paint themselves) by calling paintEvent() with painter redirection turned on. But QPixmap also provides the grabWindow() function which is a bit faster grabbing pixels directly off the screen. In addition, if there are overlaying windows, grabWindow(), unlike grabWidget(), will see them.</p>
+<p><b>Warning:</b> Do not call this function from QWidget::paintEvent().</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QPixmap grabWidget(com.trolltech.qt.gui.QWidget widget__0, int x__1, int y__2, int w__3, int h__4)" doc="/**
+<p>Creates a pixmap and paints the given <i>widget</i>, restricted by QRect(<i>x</i>, <i>y</i>, <i>width</i>, <i>height</i>), in it.</p>
+<p><b>Warning:</b> Do not call this function from QWidget::paintEvent().</p>
+
+*/"/>
+    <method name="public native static com.trolltech.qt.gui.QPixmap grabWindow(long arg__0, int x__1, int y__2, int w__3, int h__4)" doc="/**
+<p>Creates and returns a pixmap constructed by grabbing the contents of the given <i>window</i> restricted by QRect(<i>x</i>, <i>y</i>, <i>width</i>, <i>height</i>).</p>
+<p>The arguments (<i>x</i>, <i>y</i>) specify the offset in the window, whereas (<i>width</i>, <i>height</i>) specify the area to be copied. If <i>width</i> is negative, the function copies everything to the right border of the window. If <i>height</i> is negative, the function copies everything to the bottom of the window.</p>
+<p>The window system identifier (<tt>WId</tt>) can be retrieved using the QWidget::winId() function. The rationale for using a window identifier and not a QWidget, is to enable grabbing of windows that are not part of the application, window system frames, and so on.</p>
+<p>The grabWindow() function grabs pixels from the screen, not from the window, i.e. if there is another window partially or entirely over the one you grab, you get pixels from the overlying window, too. The mouse cursor is generally not grabbed.</p>
+<p>Note on X11that if the given <i>window</i> doesn't have the same depth as the root window, and another window partially or entirely obscures the one you grab, you will <i>not</i> get pixels from the overlying window. The contents of the obscured areas in the pixmap will be undefined and uninitialized.</p>
+<p><b>Warning:</b> In general, grabbing an area outside the screen is not safe. This depends on the underlying window system.</p>
+
+*/"/>
+    <method name="public final static com.trolltech.qt.gui.QMatrix trueMatrix(com.trolltech.qt.gui.QMatrix m__0, int w__1, int h__2)" doc="/**
+<p>Returns the actual matrix used for transforming a pixmap with the given <i>width</i>, <i>height</i> and <i>matrix</i>.</p>
+<p>When transforming a pixmap using the transformed() function, the transformation matrix is internally adjusted to compensate for unwanted translation, i.e. transformed() returns the smallest pixmap containing all transformed points of the original pixmap. This function returns the modified matrix, which maps points correctly from the original pixmap into the new pixmap.</p>
+
+*/"/>
+</class>
