@@ -326,7 +326,8 @@ public class Calculator extends QMainWindow {
                 fun = (Function) fun.clone();
                 if((i - r + 1) >= vArray.length)
                     throw new ParseException("Could not find parameters for function: " + fun.name);
-                fun.arguments.addAll((Vector) vArray[i - r + 1]);
+                if (vArray[i - r + 1] instanceof Vector)
+                    fun.arguments.addAll((Vector) vArray[i - r + 1]);
                 v.remove(i - r + 1);
                 v.set(i - r, fun);
                 r += 1;

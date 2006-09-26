@@ -26,7 +26,6 @@
 #include <QtCore/QVariant>
 
 #include <QtCore/QAbstractItemModel>
-
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaMethod>
 
@@ -170,7 +169,7 @@ void qtjambi_exception_check(JNIEnv *env)
     if (env->ExceptionCheck()) {
         qDebug("Exception pending in native code");
         env->ExceptionDescribe();
-        env->ExceptionCheck();
+        env->ExceptionClear();
     }
 }
 
@@ -507,7 +506,7 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
         if (copy == 0)
             return 0;
     }
-   
+
     if (!qtjambi_construct_object(env, returned, copy, metaType, java_name, false)) {
         if (metaType != QMetaType::Void && copy != 0)
             QMetaType::destroy(metaType, copy);
@@ -608,10 +607,23 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
     Q_ASSERT(qt_thread == QThread::currentThread());
     Q_ASSERT(qt_thread);
 
+    bool contained;
     {
+        QReadLocker readLocker(qtjambi_thread_table_lock());
+        contained = qtjambi_thread_table()->contains(qt_thread);
+    }
+
+    if (!contained) {
         QWriteLocker lock(qtjambi_thread_table_lock());
-        qtjambi_thread_table()->insert(qt_thread, env->NewWeakGlobalRef(java_thread));
-//         printf("inserting: %p for %s [%s] [%p]\n", qt_thread, qPrintable(qobject->objectName()), qobject->metaObject()->className(), qobject);
+        if (!qtjambi_thread_table()->contains(qt_thread)) {
+//             printf("(jni) inserting: %p for %s [%s] [%p]\n",
+//                    qt_thread,
+//                    qPrintable(qobject->objectName()),
+//                    qobject->metaObject()->className(),
+//                    qobject);
+            qtjambi_thread_table()->insert(qt_thread, env->NewWeakGlobalRef(java_thread));
+            QInternal::callFunction(QInternal::RefAdoptedThread, (void **) &qt_thread);
+        }
     }
 
     return QtJambiLink::createLinkForQObject(env, java_object, qobject, memory_managed);
@@ -829,8 +841,7 @@ jobject qtjambi_array_to_nativepointer(JNIEnv *env, jobjectArray array, int elem
     return nativePointer;
 }
 
-
-QThread *qtjambi_to_thread(JNIEnv *env, jobject thread)
+QThread *qtjambi_find_thread_in_table(JNIEnv *env, jobject thread)
 {
     QReadLocker locker(qtjambi_thread_table_lock());
     ThreadTable *table = qtjambi_thread_table();
@@ -839,6 +850,25 @@ QThread *qtjambi_to_thread(JNIEnv *env, jobject thread)
             return it.key();
     }
     return 0;
+}
+
+QThread *qtjambi_to_thread(JNIEnv *env, jobject thread)
+{
+    QThread *qt_thread = qtjambi_find_thread_in_table(env, thread);
+    if (qt_thread)
+        return qt_thread;
+
+    // No thread found, need to create a "fake" thread and insert it
+    // into the thread table for later mapping between Qt / Java.
+    // This thread object is already ref'ed by Qt.
+    QInternal::callFunction(QInternal::CreateThreadForAdoption, (void **) &qt_thread);
+    Q_ASSERT_X(qt_thread, "qtjambi_to_thread", "Thread adoption failed, have to abort...");
+
+    ThreadTable *table = qtjambi_thread_table();
+
+    QWriteLocker writeLocker(qtjambi_thread_table_lock());
+    table->insert(qt_thread, env->NewWeakGlobalRef(thread));
+    return qt_thread;
 }
 
 jobject qtjambi_from_thread(JNIEnv *, QThread *thread)
@@ -854,6 +884,9 @@ bool qtjambi_release_threads(JNIEnv *env)
     QWriteLocker locker(qtjambi_thread_table_lock());
     int releaseCount = 0;
     ThreadTable *table = qtjambi_thread_table();
+//     for (ThreadTable::const_iterator it = table->constBegin(); it != table->constEnd(); ++it) {
+//         printf("   - qt=%p, java=%p\n", it.key(), it.value());
+//     }
     for (ThreadTable::iterator it = table->begin(); it != table->end(); ) {
         jobject java_thread = it.value();
         Q_ASSERT(java_thread);
@@ -862,12 +895,33 @@ bool qtjambi_release_threads(JNIEnv *env)
             ++releaseCount;
             QThread *thread = it.key();
             it = table->erase(it);
-            delete thread;
+//             locker.unlock();
+            Q_ASSERT(thread);
+            QInternal::callFunction(QInternal::DerefAdoptedThread, (void **) &thread);
+//             locker.relock();
         } else {
             ++it;
         }
     }
     return releaseCount > 0;
+}
+
+bool qtjambi_adopt_current_thread(void **args)
+{
+    JNIEnv *env = qtjambi_current_environment();
+
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveThread();
+
+    jobject java_thread = env->CallStaticObjectMethod(sc->Thread.class_ref,
+                                                      sc->Thread.currentThread);
+
+    QThread *qt_thread = qtjambi_find_thread_in_table(env, java_thread);
+    if (!qt_thread)
+        return false;
+
+    *args = qt_thread;
+    return true;
 }
 
 void qtjambi_metacall(JNIEnv *env, QEvent *event)

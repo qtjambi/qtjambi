@@ -87,10 +87,10 @@ inline void *qtjambi_to_interface(JNIEnv *env,
                                   const char *function_name)
 {
     return qtjambi_to_interface(
-        env, 
-        QtJambiLink::findLink(env, java_object), 
-        interface_name, 
-        package_name, 
+        env,
+        QtJambiLink::findLink(env, java_object),
+        interface_name,
+        package_name,
         function_name
     );
 }
@@ -149,6 +149,7 @@ jobject qtjambi_array_to_nativepointer(JNIEnv *env, jobjectArray array, int elem
 
 QTJAMBI_EXPORT QThread *qtjambi_to_thread(JNIEnv *env, jobject thread);
 QTJAMBI_EXPORT jobject qtjambi_from_thread(JNIEnv *env, QThread *thread);
+bool qtjambi_adopt_current_thread(void **args);
 
 QTJAMBI_EXPORT QModelIndex qtjambi_to_QModelIndex(JNIEnv *env, jobject index);
 QTJAMBI_EXPORT jobject qtjambi_from_QModelIndex(JNIEnv *env, const QModelIndex &index);

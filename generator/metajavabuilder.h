@@ -70,7 +70,7 @@ public:
     bool inheritTemplate(MetaJavaClass *subclass,
                          const MetaJavaClass *template_class,
                          const TypeParser::Info &info);
-    MetaJavaType *inheritTemplateType(const QList<TypeEntry *> &template_types, MetaJavaType *java_type);
+    MetaJavaType *inheritTemplateType(const QList<MetaJavaType *> &template_types, MetaJavaType *java_type);
 
     bool isQObject(const QString &qualified_name);
     bool isEnum(const QStringList &qualified_name);

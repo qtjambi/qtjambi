@@ -113,13 +113,13 @@ QString JavaGenerator::translateType(const MetaJavaType *java_type, Option optio
     return s;
 }
 
-void JavaGenerator::writeArgument(QTextStream &s, const MetaJavaVariable *java_variable,
+void JavaGenerator::writeArgument(QTextStream &s, const MetaJavaArgument *java_argument,
                                   uint options)
 {
-    s << translateType(java_variable->type(), (Option) options);
+    s << translateType(java_argument->type(), (Option) options);
 
     if ((options & SkipName) == 0)
-        s << " " << java_variable->name();
+        s << " " << java_argument->argumentName();
 }
 
 void JavaGenerator::writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_enum)
@@ -272,7 +272,7 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
         if (!arg->type()->hasNativeId())
             writeArgument(s, arg, EnumAsInts);
         else
-            s << "long " << arg->name();
+            s << "long " << arg->argumentName();
     }
     s << ")";
 
@@ -293,7 +293,7 @@ void JavaGenerator::writeDisableGCForContainer(QTextStream &s, MetaJavaArgument 
     Q_ASSERT(arg->type()->isContainer());
 
     s << indent << "for (" << arg->type()->instantiations().at(0)->fullName() << " i : "
-                << arg->name() << ")" << endl
+                << arg->argumentName() << ")" << endl
       << indent << "    if (i != null) i.disableGarbageCollection();" << endl;
 }
 
@@ -311,21 +311,21 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
         if (disabled_gc_arguments.value(i + 1, false)) {
             s << "        "
-              << "if (" << arg->name() << " != null) {" << endl;
+              << "if (" << arg->argumentName() << " != null) {" << endl;
 
             if (arg->type()->isContainer())
                 writeDisableGCForContainer(s, arg, "            ");
             else
-                s << "            " << arg->name() << ".disableGarbageCollection();" << endl;
+                s << "            " << arg->argumentName() << ".disableGarbageCollection();" << endl;
             s << "        }" << endl;
         }
 
         if (type->isArray()) {
             s << "        "
-              << "if (" << arg->name() << ".length != " << type->arrayElementCount() << ")" << endl
+              << "if (" << arg->argumentName() << ".length != " << type->arrayElementCount() << ")" << endl
               << "            "
               << "throw new IllegalArgumentException(\"Wrong number of elements in array. Found: \" + "
-              << arg->name() << ".length + \", expected: " << type->arrayElementCount() << "\");"
+              << arg->argumentName() << ".length + \", expected: " << type->arrayElementCount() << "\");"
               << endl << endl;
         }
 
@@ -333,13 +333,13 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
             EnumTypeEntry *et = (EnumTypeEntry *) type->typeEntry();
             if (et->forceInteger()) {
                 if (!et->lowerBound().isEmpty()) {
-                    s << "        if (" << arg->name() << " < " << et->lowerBound() << ")" << endl
-                      << "            throw new IllegalArgumentException(\"Argument " << arg->name()
+                    s << "        if (" << arg->argumentName() << " < " << et->lowerBound() << ")" << endl
+                      << "            throw new IllegalArgumentException(\"Argument " << arg->argumentName()
                       << " is less than lowerbound " << et->lowerBound() << "\");" << endl;
                 }
                 if (!et->upperBound().isEmpty()) {
-                    s << "        if (" << arg->name() << " > " << et->upperBound() << ")" << endl
-                      << "            throw new IllegalArgumentException(\"Argument " << arg->name()
+                    s << "        if (" << arg->argumentName() << " > " << et->upperBound() << ")" << endl
+                      << "            throw new IllegalArgumentException(\"Argument " << arg->argumentName()
                       << " is greated than upperbound " << et->upperBound() << "\");" << endl;
                 }
             }
@@ -384,17 +384,17 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
             s << ", ";
 
         if (type->isJavaEnum() || type->isJavaFlags()) {
-            s << arg->name() << ".value()";
+            s << arg->argumentName() << ".value()";
         } else if (!type->hasNativeId()) {
-            s << arg->name();
+            s << arg->argumentName();
         } else {
-            s << arg->name() << " == null ? ";
+            s << arg->argumentName() << " == null ? ";
             // Try to call default constructor for value types...
             if (type->isValue() && hasDefaultConstructor(type))
                 s << "new " << type->typeEntry()->qualifiedJavaName() << "().nativeId()";
             else
                 s << "0";
-            s << " : " << arg->name() << ".nativeId()";
+            s << " : " << arg->argumentName() << ".nativeId()";
         }
     }
     s << ")";
@@ -559,7 +559,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     }
 
     if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
-        && (java_function->isPrivate() 
+        && (java_function->isPrivate()
             || ((included_attributes & MetaJavaAttributes::Private) != 0))) {
         s << "    @SuppressWarnings(\"unused\")" << endl;
     }
@@ -603,16 +603,15 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const MetaJavaFunction *ja
 {
     MetaJavaArgumentList arguments = java_function->arguments();
 
-    if (!java_function->isNormal() || java_function->isEmptyFunction() || java_function->isAbstract())
+    if ((java_function->implementingClass() != java_function->declaringClass())
+        || (!java_function->isNormal() || java_function->isEmptyFunction() || java_function->isAbstract())) {
         return ;
+    }
+    include_attributes |= MetaJavaAttributes::FinalInJava;
 
     int generate_enum_overload = -1;
-    for (int i=0; i<arguments.size(); ++i) {
-        generate_enum_overload = arguments.at(i)->type()->isJavaFlags()
-                                    && !(static_cast<const EnumTypeEntry *>(arguments.at(i)->type()->typeEntry()))->forceInteger()
-                                    ? i
-                                    : -1;
-    }
+    for (int i=0; i<arguments.size(); ++i)
+        generate_enum_overload = arguments.at(i)->type()->isJavaFlags() ? i : -1;
 
     if (generate_enum_overload >= 0) {
         s << endl << "    ";
@@ -628,7 +627,7 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const MetaJavaFunction *ja
         EnumTypeEntry *originator = ((FlagsTypeEntry *)affected_arg->type()->typeEntry())->originator();
 
         s << originator->javaPackage() << "." << originator->javaQualifier() << "." << originator->javaName()
-          << " ... " << affected_arg->name() << ") {" << endl;
+          << " ... " << affected_arg->argumentName() << ") {" << endl;
 
         s << "        ";
         if (java_function->type() != 0)
@@ -641,9 +640,9 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const MetaJavaFunction *ja
 
         s << java_function->name() << "(";
         for (int i=0; i<generate_enum_overload; ++i) {
-            s << arguments.at(i)->name() << ", ";
+            s << arguments.at(i)->argumentName() << ", ";
         }
-        s << "new " << affected_arg->type()->fullName() << "(" << affected_arg->name() << "));" << endl
+        s << "new " << affected_arg->type()->fullName() << "(" << affected_arg->argumentName() << "));" << endl
           << "    }" << endl;
     }
 }
@@ -686,8 +685,8 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
     for (int i=0; i<overload_count; ++i) {
         int used_arguments = argument_count - i - 1;
 
-        if (((excluded_attributes & MetaJavaAttributes::Private) == 0) 
-            && (java_function->isPrivate() 
+        if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
+            && (java_function->isPrivate()
                 || (included_attributes & MetaJavaAttributes::Private) != 0)) {
             s << endl << "    @SuppressWarnings(\"unused\")";
         }
@@ -709,7 +708,7 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
             if (j != 0)
                 s << ", ";
             if (j < used_arguments) {
-                s << arguments.at(j)->name();
+                s << arguments.at(j)->argumentName();
             } else {
 
                 MetaJavaType *arg_type = arguments.at(j)->type();

@@ -28,7 +28,7 @@ public:
 
     QString translateType(const MetaJavaType *java_type, Option option = NoOption);
 
-    void writeArgument(QTextStream &s, const MetaJavaVariable *java_variable,
+    void writeArgument(QTextStream &s, const MetaJavaArgument *java_argument,
                        uint options = 0);
     void writeEnum(QTextStream &s, const MetaJavaEnum *java_enum);
     void writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_enum);

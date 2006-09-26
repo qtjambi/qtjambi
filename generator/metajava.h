@@ -266,19 +266,32 @@ private:
 };
 
 
+
 class MetaJavaArgument : public MetaJavaVariable
 {
 public:
+    MetaJavaArgument() : m_argument_index(0) { };
+
     QString defaultValueExpression() const { return m_expression; }
     void setDefaultValueExpression(const QString &expr) { m_expression = expr; }
 
     QString toString() const { return type()->name() + " " + name() +
                                            (m_expression.isEmpty() ? "" :  " = " + m_expression); }
 
+    int argumentIndex() const { return m_argument_index; }
+    void setArgumentIndex(int argIndex) { m_argument_index = argIndex; }
+
+    QString argumentName() const;
+    QString indexedName() const;
+
     MetaJavaArgument *copy() const;
 
 private:
+    // Just to force people to call argumentName() And indexedName();
+    QString name() const { return QString(); }
+
     QString m_expression;
+    int m_argument_index;
 };
 
 
@@ -540,7 +553,7 @@ public:
           m_has_public_destructor(true),
           m_force_shell_class(false),
           m_enclosing_class(0),
-          m_base_class(0),         
+          m_base_class(0),
           m_extracted_interface(0),
           m_primary_interface_implementor(0),
           m_type_entry(0)

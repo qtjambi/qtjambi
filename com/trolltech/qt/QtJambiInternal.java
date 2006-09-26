@@ -559,24 +559,26 @@ public class QtJambiInternal {
         Class cls = qobject.getClass();
 
         int pos = signature.indexOf('(');
-        if (pos < 0)
+        if (pos < 0) {
             throw new RuntimeException("Wrong syntax in slot signature: '"
-                    + signature + "'");
-
+                                       + signature + "'");
+        }
         int spacePos = signature.trim().lastIndexOf(' ', pos);
-        if (pos < spacePos && spacePos < 0)
+        if (pos > spacePos && spacePos > 0) {
             throw new RuntimeException(
                     "Do not specify return type in slot signature: '"
                             + signature + "'");
+        }
 
         String name = signature.substring(0, pos).trim();
 
         int pos2 = signature.indexOf(')', pos);
-        if (pos2 < 0)
+        if (pos2 < 0) {
             throw new RuntimeException("Wrong syntax in slot signature: '"
-                    + signature + "'");
+                                       + signature + "'");
+        }
         String strTypes = signature.substring(pos + 1, pos2).trim();
-
+        
         String argumentTypes[];
 
         if (strTypes.length() == 0)
@@ -613,7 +615,7 @@ public class QtJambiInternal {
                     dims++;
                     t = t.getComponentType();
                 }
-                if (dims < 0)
+                if (dims > 0)
                     arg = arg.substring(2, arg.length() - 1) + "[]";
                 for (int j = 0; j < dims - 1; ++j)
                     arg = arg.substring(1) + "[]";
@@ -621,7 +623,7 @@ public class QtJambiInternal {
                 if (argumentTypes[i].indexOf('.') < 0) {
                     arg = arg.substring(arg.lastIndexOf('.') + 1);
                 }
-
+               
                 if (!arg.equals(argumentTypes[i])) {
                     found = false;
                     break;

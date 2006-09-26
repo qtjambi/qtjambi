@@ -59,11 +59,11 @@ public class GeneratorGui
             } else if (arg.startsWith("--debug-level=")) {
                 String level = arg.substring(14);
                 if (level == "sparse")
-                    ReportHandler.setDebugLevel(ReportHandler.SparseDebug);
+                    ReportHandler.setDebugLevel(ReportHandler.DebugLevel.SparseDebug);
                 else if (level == "medium")
-                    ReportHandler.setDebugLevel(ReportHandler.MediumDebug);
+                    ReportHandler.setDebugLevel(ReportHandler.DebugLevel.MediumDebug);
                 else if (level == "full")
-                    ReportHandler.setDebugLevel(ReportHandler.FullDebug);
+                    ReportHandler.setDebugLevel(ReportHandler.DebugLevel.FullDebug);
             } else if (arg.startsWith("--juic-file=")) {
                 juic_file = arg.substring(12);
             } else if (arg.startsWith("--no-java")) {
@@ -127,10 +127,10 @@ public class GeneratorGui
         if (!TypeDatabase.instance().parseFile(typesystemFileName))
             System.err.printf("Cannot parse file: '%s'", typesystemFileName);
 
-        if (!Preprocess.preprocess(fileName, pp_file)) {
+        /*if (!Preprocess.preprocess(fileName, pp_file)) {
             System.err.printf("Preprocessor failed on file: '%s'\n", fileName);
             return ;
-        }
+        }*/
 
         // Building the code inforamation...
         ReportHandler.setContext("MetaJavaBuilder");
@@ -147,7 +147,7 @@ public class GeneratorGui
         // Code generation
         List<Generator> generators = new LinkedList<Generator>();
         
-        List<MetaJavaClass> keep = builder.classes();
+        //MetaJavaClassList keep = builder.classes();
 
         List<String> contexts = new LinkedList<String>();
         if (!no_java) {
@@ -212,7 +212,7 @@ public class GeneratorGui
             pro_file_name = base_dir + "/" + pro_file_name;
 
         QFile pro_file = new QFile(pro_file_name);
-        if (!pro_file.open(QIODevice.WriteOnly)) {
+        if (!pro_file.open(QIODevice.OpenModeFlag.WriteOnly)) {
             ReportHandler.warning("failed to open " + pro_file_name + " for writing...");
             return new QFile();
         }
@@ -221,15 +221,16 @@ public class GeneratorGui
     }
     
     static void generatePriFile(String base_dir, String sub_dir, 
-            List<MetaJavaClass> classes,
+            MetaJavaClassList classes,
             String metaInfoStub)
     {
         HashMap<String, QFile> fileHash = new HashMap<String, QFile>();
         String endl = System.getProperty("line.separator");
     
-        for (MetaJavaClass cls : classes) {
+        for (int i=0; i<classes.size(); ++i) {
+            MetaJavaClass cls = classes.at(i);           
         
-            if ((cls.typeEntry().codeGeneration() & TypeEntry.GenerateCpp) == 0)
+            if ((cls.typeEntry().codeGeneration() & TypeEntry.CodeGeneration.GenerateCpp.value()) == 0)
                 continue;
     
             QTextStream s = new QTextStream();
@@ -272,8 +273,10 @@ public class GeneratorGui
             s.operator_shift_left(endl + "HEADERS += \\" + endl);
         }
     
-        for (MetaJavaClass cls : classes) {
-            if ((cls.typeEntry().codeGeneration() & TypeEntry.GenerateCpp) == 0)
+        for (int i=0; i<classes.size(); ++i) {
+            MetaJavaClass cls = classes.at(i);
+            
+            if ((cls.typeEntry().codeGeneration() & TypeEntry.CodeGeneration.GenerateCpp.value()) == 0)
                 continue;
                 
             QFile f = fileHash.containsKey(cls.packageName())
@@ -281,7 +284,8 @@ public class GeneratorGui
                 : null;
     
             QTextStream s = new QTextStream(f);
-            boolean shellfile = (cls.generateShellClass() || cls.queryFunctions(MetaJavaClass.Signals).size() > 0)
+            boolean shellfile = (cls.generateShellClass() 
+                || cls.queryFunctions(MetaJavaClass.FunctionQueryOption.Signals.value()).size() > 0)
                 && !cls.isNamespace() && !cls.isInterface() && !cls.typeEntry().isVariant();
             if (shellfile) {
                 s.operator_shift_left("        $$QTJAMBI_CPP/" + cls.packageName().replace(".", "_") + "/qtjambishell_" +

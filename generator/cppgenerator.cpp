@@ -77,7 +77,7 @@ void CppGenerator::writeFunctionArguments(QTextStream &s,
         MetaJavaArgument *arg = arguments.at(i);
         writeTypeInfo(s, arg->type(), option);
         if (!(option & SkipName))
-            s << " " << arg->name();
+            s << " " << arg->indexedName();
     }
 }
 

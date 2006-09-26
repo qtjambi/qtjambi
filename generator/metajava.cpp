@@ -77,10 +77,29 @@ MetaJavaArgument *MetaJavaArgument::copy() const
     cpy->setName(name());
     cpy->setDefaultValueExpression(defaultValueExpression());
     cpy->setType(type()->copy());
+    cpy->setArgumentIndex(argumentIndex());
 
     return cpy;
 }
 
+
+QString MetaJavaArgument::argumentName() const
+{
+    QString n = MetaJavaVariable::name();
+    if (n.isEmpty()) {
+        return QString("arg__%2").arg(m_argument_index);
+    }
+    return n;
+}
+
+
+QString MetaJavaArgument::indexedName() const
+{
+    QString n = MetaJavaVariable::name();
+    if (n.isEmpty())
+        return argumentName();
+    return QString("%1%2").arg(n).arg(m_argument_index);
+}
 
 
 /*******************************************************************************
@@ -211,10 +230,10 @@ uint MetaJavaFunction::compareTo(const MetaJavaFunction *other) const
     MetaJavaArgumentList max_arguments;
     if (arguments().size() < other->arguments().size()) {
         min_arguments = arguments();
-        max_arguments = other->arguments();        
+        max_arguments = other->arguments();
     } else {
         min_arguments = other->arguments();
-        max_arguments = arguments();        
+        max_arguments = arguments();
     }
 
     int min_count = min_arguments.size();
@@ -228,7 +247,7 @@ uint MetaJavaFunction::compareTo(const MetaJavaFunction *other) const
                 && (min_arg->defaultValueExpression().isEmpty() || max_arg->defaultValueExpression().isEmpty())) {
                 same = false;
                 break;
-            }       
+            }
         } else {
             if (max_arguments.at(i)->defaultValueExpression().isEmpty()) {
                 same = false;
@@ -236,7 +255,7 @@ uint MetaJavaFunction::compareTo(const MetaJavaFunction *other) const
             }
         }
     }
-        
+
     if (same)
         result |= min_count == max_count ? EqualArguments : EqualDefaultValueOverload;
 
@@ -844,7 +863,7 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
         }
 
         // Destructors are never included in the functions of a class currently
-        /* 
+        /*
            if ((query & Destructors) && (!f->isDestructor()
                                        || f->ownerClass() != f->implementingClass())
             || f->isDestructor() && (query & Destructors) == 0) {
@@ -1123,7 +1142,7 @@ void MetaJavaClass::fixFunctions()
                                 f->setVisibility(sf->visibility());
                                 *f += MetaJavaAttributes::FinalInJava;
                                 *f += MetaJavaAttributes::FinalInCpp;
-                            }                          
+                            }
                         }
 
                         // Set the class which first declares this function, afawk
@@ -1132,13 +1151,13 @@ void MetaJavaClass::fixFunctions()
 
                     if (cmp & MetaJavaFunction::EqualDefaultValueOverload) {
                         MetaJavaArgumentList arguments;
-                        if (f->arguments().size() < sf->arguments().size()) 
+                        if (f->arguments().size() < sf->arguments().size())
                             arguments = sf->arguments();
                         else
                             arguments = f->arguments();
 
                         for (int i=0; i<arguments.size(); ++i)
-                            arguments[i]->setDefaultValueExpression(QString());                                                
+                            arguments[i]->setDefaultValueExpression(QString());
                     }
 
                     if (sf->isFinalInJava() && !sf->isPrivate()) {

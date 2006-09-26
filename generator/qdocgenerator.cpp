@@ -83,7 +83,7 @@ static QString protect( const QByteArray& str )
 }
 
 
-void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function) 
+void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
 {
     if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
         return;
@@ -103,9 +103,9 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
         for (int i=0; i<arguments.count(); ++i) {
             if (disabled_params.value(i + 1, false)) {
                 const MetaJavaArgument *arg = arguments.at(i);
-                if (i > 0) 
+                if (i > 0)
                     s << ",";
-                s << protect(arg->name().toUtf8());
+                s << protect(arg->argumentName().toUtf8());
             }
         }
         s << "\"";
@@ -119,7 +119,7 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaEnumValue *java_enum_val
       << "    cpp=\"" << protect(java_enum_value->name().toUtf8()) << "\"/>" << endl;
 }
 
-void QDocGenerator::write(QTextStream &s, const MetaJavaEnum *java_enum) 
+void QDocGenerator::write(QTextStream &s, const MetaJavaEnum *java_enum)
 {
     s << "<enum java=\"" << protect(java_enum->name().toUtf8()) << "\"" << " cpp=\"" << protect(java_enum->name().toUtf8()) << "\">" << endl;
     MetaJavaEnumValueList values = java_enum->values();
@@ -129,22 +129,22 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaEnum *java_enum)
     s << "</enum>" << endl;
 }
 
-void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field) 
+void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field)
 {
     QHash<int, bool> disabled_params;
     uint included_attributes = 0;
     uint excluded_attributes = 0;
     setupForFunction(java_field->getter(), &included_attributes, &excluded_attributes, &disabled_params);
-    s << "<variablegetter java=\"" << protect(functionSignature(java_field->getter(), included_attributes, excluded_attributes).toUtf8()) 
+    s << "<variablegetter java=\"" << protect(functionSignature(java_field->getter(), included_attributes, excluded_attributes).toUtf8())
       << "\"" << endl
       << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
 
     included_attributes = 0;
     excluded_attributes = 0;
     setupForFunction(java_field->setter(), &included_attributes, &excluded_attributes, &disabled_params);
-    s << "<variablesetter java=\"" << protect(functionSignature(java_field->setter(), included_attributes, excluded_attributes).toUtf8()) 
+    s << "<variablesetter java=\"" << protect(functionSignature(java_field->setter(), included_attributes, excluded_attributes).toUtf8())
       << "\"" << endl
-      << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;    
+      << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
 }
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
@@ -176,7 +176,7 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         s << "interface";
     else if (java_class->typeEntry()->isValue())
         s << "value";
-    else 
+    else
         s << "object";
     s << "\">" << endl;
 

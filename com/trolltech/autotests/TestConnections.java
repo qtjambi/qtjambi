@@ -89,6 +89,15 @@ public class TestConnections extends QTestCase implements Qt
     {
     }
     
+    public void run_cppEmitShouldEmitJavaSignal() {
+        SignalsAndSlotsSubclass sas = new SignalsAndSlotsSubclass();
+        
+        sas.signal1.connect(sas, "slot4()");
+        sas.emit_signal_1();
+        
+        QCOMPARE(sas.java_slot4_called, 1);
+    }
+    
     public void run_CppSignals()
     {
         {

@@ -363,7 +363,7 @@ void dumpMetaJavaArgument(const MetaJavaArgument *arg)
 {
     printf("        ");
     dumpMetaJavaType(arg->type());
-    printf(" %s", qPrintable(arg->name()));
+    printf(" %s", qPrintable(arg->argumentName()));
     if (!arg->defaultValueExpression().isEmpty())
         printf(" = %s", qPrintable(arg->defaultValueExpression()));
     printf("\n");

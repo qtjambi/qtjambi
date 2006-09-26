@@ -451,7 +451,7 @@ void MetaJavaBuilder::figureOutEnumValuesForClass(MetaJavaClass *java_class,
 //                 if (ete->isEnumValueRejected(v->name()))
 //                     continue;
                 if (entries.contains(v->value())) {
-                    ReportHandler::warning(QString("Duplciate enum values: %1::%2, %3 and %4 are %5")
+                    ReportHandler::warning(QString("duplicate enum values: %1::%2, %3 and %4 are %5")
                                            .arg(java_class->name())
                                            .arg(e->name())
                                            .arg(v->name())
@@ -763,7 +763,7 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
             // Some of the queries below depend on the implementing class being set
             // to function properly. Such as function modifications
             java_function->setImplementingClass(java_class);
-            
+
             java_function->setOriginalAttributes(java_function->attributes());
 
             if ((java_function->isConstructor() || java_function->isDestructor())
@@ -800,7 +800,7 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
 
                     java_function->setVisibility(MetaJavaClass::Public);
                 }
-                
+
                 java_class->addFunction(java_function);
             } else if (java_function->isDestructor() && !java_function->isPublic()) {
                 java_class->setHasPublicDestructor(false);
@@ -985,7 +985,7 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
 
     TypeInfo function_type = function_item->type();
     if (function_name.startsWith('~')) {
-        java_function->setFunctionType(MetaJavaFunction::DestructorFunction);        
+        java_function->setFunctionType(MetaJavaFunction::DestructorFunction);
         java_function->setInvalid(true);
     } else if (strip_template_args(function_name) == stripped_class_name) {
         java_function->setFunctionType(MetaJavaFunction::ConstructorFunction);
@@ -1040,9 +1040,8 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
         }
         MetaJavaArgument *java_argument = new MetaJavaArgument;
         java_argument->setType(java_type);
-        java_argument->setName((arg->name().isEmpty() ? "arg" : arg->name())
-                               + "__" + QString::number(i));
-
+        java_argument->setName(arg->name());
+        java_argument->setArgumentIndex(i);
         java_arguments << java_argument;
     }
 
@@ -1270,12 +1269,17 @@ void MetaJavaBuilder::decideUsagePattern(MetaJavaType *java_type)
             java_type->setTypeUsagePattern(MetaJavaType::ObjectPattern);
 
     } else if (type->isObject()
-               && java_type->indirections() == 1
-               && !java_type->isReference()) {
+               && java_type->indirections() == 1) {
         if (((ComplexTypeEntry *) type)->isQObject())
             java_type->setTypeUsagePattern(MetaJavaType::QObjectPattern);
         else
             java_type->setTypeUsagePattern(MetaJavaType::ObjectPattern);
+
+        // const-references to pointers can be passed as pointers
+        if (java_type->isReference() && java_type->isConstant()) {
+            java_type->setReference(false);
+            java_type->setConstant(false);
+        }
 
     } else if (type->isContainer()) {
         java_type->setTypeUsagePattern(MetaJavaType::ContainerPattern);
@@ -1415,7 +1419,7 @@ bool MetaJavaBuilder::isEnum(const QStringList &qualified_name)
     return item && item->kind() == _EnumModelItem::__node_kind;
 }
 
-MetaJavaType *MetaJavaBuilder::inheritTemplateType(const QList<TypeEntry *> &template_types,
+MetaJavaType *MetaJavaBuilder::inheritTemplateType(const QList<MetaJavaType *> &template_types,
                                                    MetaJavaType *java_type)
 {
 
@@ -1428,7 +1432,11 @@ MetaJavaType *MetaJavaBuilder::inheritTemplateType(const QList<TypeEntry *> &tem
         const TemplateArgumentEntry *tae = static_cast<const TemplateArgumentEntry *>(returned->typeEntry());
 
         MetaJavaType *t = returned->copy();
-        t->setTypeEntry(template_types.at(tae->ordinal()));
+
+        t->setTypeEntry(template_types.at(tae->ordinal())->typeEntry());
+        t->setIndirections(template_types.at(tae->ordinal())->indirections() + t->indirections()
+                           ? 1
+                           : 0);
         decideUsagePattern(t);
 
         delete returned;
@@ -1451,11 +1459,17 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
 {
     QList<TypeParser::Info> targs = info.template_instantiations;
 
-    QList<TypeEntry *> template_types;
+    QList<MetaJavaType *> template_types;
     foreach (const TypeParser::Info &i, targs) {
         TypeEntry *t = TypeDatabase::instance()->findType(i.qualified_name.join("::"));
-        if (t) {
-            template_types << t;
+
+        if (t != 0) {
+            MetaJavaType *temporary_type = new MetaJavaType;
+            temporary_type->setTypeEntry(t);
+            temporary_type->setConstant(i.is_constant);
+            temporary_type->setReference(i.is_reference);
+            temporary_type->setIndirections(i.indirections);
+            template_types << temporary_type;
         } else {
             ReportHandler::warning(QString("Unknown type used as template argument: %1 in %2")
                                    .arg(i.toString())
@@ -1502,6 +1516,11 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
             continue;
 
         subclass->addFunction(f);
+    }
+
+    // Clean up
+    foreach (MetaJavaType *type, template_types) {
+        delete type;
     }
 
     return true;

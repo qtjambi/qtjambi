@@ -36,6 +36,8 @@ extern "C" JNIEXPORT void JNICALL
 Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize(JNIEnv *, jclass)
 {
     QCoreApplication::postEvent((QObject *) 0xFeedFace, (QEvent *) 0x00c0ffee);
+
+    QInternal::registerCallback(QInternal::AdoptCurrentThread, qtjambi_adopt_current_thread);
 }
 
 

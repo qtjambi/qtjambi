@@ -286,10 +286,10 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunctio
             const MetaJavaArgument *argument = arguments.at(i);
             writeQtToJava(s,
                           argument->type(),
-                          argument->name(),
-                          "__java_" + argument->name(),
+                          argument->indexedName(),
+                          "__java_" + argument->indexedName(),
                           BoxedPrimitive);
-            s << INDENT << "arguments[" << i << "].l = __java_" << argument->name() << ";" << endl;
+            s << INDENT << "arguments[" << i << "].l = __java_" << argument->indexedName() << ";" << endl;
         }
         s << INDENT << "qtjambi_call_java_signal(__jni_env, m_signals[" << pos << "], arguments);"
                     << endl;
@@ -361,7 +361,7 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
             if (!function->isFinalInCpp())
                 ++pos;
-            
+
             writeShellFunction(s, function, java_class, pos);
         }
 
@@ -600,7 +600,7 @@ void CppImplGenerator::writeShellConstructor(QTextStream &s, const MetaJavaFunct
     s << endl;
     s << "    : " << cls->qualifiedCppName() << "(";
     for (int i=0; i<arguments.size(); ++i) {
-        s << arguments.at(i)->name();
+        s << arguments.at(i)->indexedName();
         if (i != arguments.size() - 1)
             s << ", ";
     }
@@ -668,7 +668,7 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunctio
                 QString meta_name = it.value();
 
                 if (pos >= 0 && pos < java_function->arguments().count()) {
-                    code = code.replace(meta_name, java_function->arguments().at(pos)->name());
+                    code = code.replace(meta_name, java_function->arguments().at(pos)->indexedName());
                 } else {
                     QString debug = QString("Argument map specifies invalid argument index %1"
                                             "for function '%2'")
@@ -758,12 +758,12 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
                 if (!argument->type()->isPrimitive())
                     writeQtToJava(s,
                                   argument->type(),
-                                  argument->name(),
-                                  "__java_" + argument->name());
+                                  argument->indexedName(),
+                                  "__java_" + argument->indexedName());
             }
 
             for (int i=0; i<arguments.size(); ++i)
-                writeDisableGarbageCollection(s, java_function, "__java_" + arguments.at(i)->name(), i, implementor);            
+                writeDisableGarbageCollection(s, java_function, "__java_" + arguments.at(i)->indexedName(), i, implementor);
 
             MetaJavaType *function_type = java_function->type();
 
@@ -781,9 +781,9 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             if (function_type)
                 writeJavaToQt(s, function_type, "__qt_return_value", "__java_return_value");
 
-            writeDisableGarbageCollection(s, java_function, "this", 
+            writeDisableGarbageCollection(s, java_function, "this",
                 FunctionModification::DisableGarbageCollectionForThis, implementor);
-            writeDisableGarbageCollection(s, java_function, "__java_return_value", 
+            writeDisableGarbageCollection(s, java_function, "__java_return_value",
                 FunctionModification::DisableGarbageCollectionForReturn, implementor);
 
             s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
@@ -976,7 +976,7 @@ void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const MetaJav
             s << translateType(argument->type(), EnumAsInts);
         else
             s << "jlong ";
-        s << " " << argument->name();
+        s << " " << argument->indexedName();
     }
     s << ")" << endl << "{" << endl;
 }
@@ -996,8 +996,8 @@ void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const MetaJavaFun
         if (!argument->type()->isPrimitive()) {
                 writeJavaToQt(s,
                             argument->type(),
-                            "__qt_" + argument->name(),
-                            argument->name(),
+                            "__qt_" + argument->indexedName(),
+                            argument->indexedName(),
                             Option(UseNativeIds | EnumAsInts));
         }
     }
@@ -1147,7 +1147,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
                 QString thisRef = java_field->isStatic()
                     ? setter->ownerClass()->qualifiedCppName() + QString("::")
                     : QString("this->");
-                writeAssignment(s, thisRef + java_field->name(), argument->name(), argument->type());
+                writeAssignment(s, thisRef + java_field->name(), argument->indexedName(), argument->type());
             }
             s << "}" << endl << endl;
         }
@@ -1174,9 +1174,9 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
 
             QString src;
             if (!argument->type()->isPrimitive())
-                src = "__qt_" + argument->name();
+                src = "__qt_" + argument->indexedName();
             else
-                src = argument->name();
+                src = argument->indexedName();
 
             if (setter->isPublic())
                 writeAssignment(s, dest + java_field->name(), src, argument->type());
@@ -1515,7 +1515,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
             const PrimitiveTypeEntry *pentry = TypeDatabase::instance()->findJavaPrimitiveType("int");
             Q_ASSERT(pentry);
 
-            s << "qtjambi_to_" << pentry->name() << "(__jni_env, " << java_name << ");" << endl;
+            s << "qtjambi_to_" << pentry->javaName() << "(__jni_env, " << java_name << ");" << endl;
 
         } else {
             s << java_name << ';' << endl;
@@ -1556,7 +1556,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
                     pentry = TypeDatabase::instance()->findJavaPrimitiveType(pentry->javaName());
                 Q_ASSERT(pentry);
 
-                s << "qtjambi_to_" << pentry->name() << "(__jni_env, " << java_name << ");" << endl;
+                s << "qtjambi_to_" << pentry->javaName() << "(__jni_env, " << java_name << ");" << endl;
 
             } else {
                 s << java_name << ';' << endl;
@@ -2082,7 +2082,7 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
         if (!argument->type()->isPrimitive()) {
             s << prefix;
         }
-        s << argument->name();
+        s << argument->indexedName();
         if (i != arguments.size() - 1)
             s << ", ";
     }
