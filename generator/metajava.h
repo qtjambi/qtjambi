@@ -143,6 +143,7 @@ public:
         m_pattern(InvalidPattern),
         m_constant(false),
         m_reference(false),
+        m_cpp_instantiation(true),
         m_indirections(0)
     {
     }
@@ -159,6 +160,8 @@ public:
     void addInstantiation(MetaJavaType *inst) { m_instantiations << inst; }
 	void setInstantiations(const QList<MetaJavaType *> &insts) { m_instantiations = insts; }
     QList<MetaJavaType *> instantiations() const { return m_instantiations; }
+    void setInstantiationInCpp(bool incpp) { m_cpp_instantiation = incpp; }
+    bool hasInstantiationInCpp() const { return hasInstantiations() && m_cpp_instantiation; }
 
     // true when the type is a QtObject subclass
     bool hasNativeId() const;
@@ -245,6 +248,7 @@ private:
     TypeUsagePattern m_pattern;
     uint m_constant : 1;
     uint m_reference : 1;
+    uint m_cpp_instantiation : 1;
     short m_indirections : 4;
 };
 

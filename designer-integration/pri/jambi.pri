@@ -44,8 +44,7 @@ INCLUDEPATH += $$PWD/../include
 
 LIB_QTJAMBI = qtjambi
 CONFIG(debug, debug|release) {
-    unix: LIB_QTJAMBI = $$join(LIB_QTJAMBI,,,_debuglib)
-    else: LIB_QTJAMBI = $$join(LIB_QTJAMBI,,d)
+    LIB_QTJAMBI = $$join(LIB_QTJAMBI,,,_debuglib)
 }
 
 INCLUDEPATH += $$PWD/../../qtjambi

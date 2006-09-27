@@ -81,7 +81,7 @@ public class SystemTrayExample extends QWidget {
 		menu.addSeparator();
 
 		QAction quitAction = new QAction("&Quit", this);
-		quitAction.triggered.connect(this, "quit()");
+		quitAction.triggered.connect(this, "close()");
 		menu.addAction(quitAction);
 
 		// Create the tray icon
@@ -149,11 +149,7 @@ public class SystemTrayExample extends QWidget {
 	}
 
 	public void closeEvent(QCloseEvent e) {
-		if (trayIcon.isVisible()) {
-			QMessageBox.information(this, tr("System tray example"), tr("Application will continue running. Quit using context menu in the system tray"));
-			hide();
-			e.ignore();
-		}
+		trayIcon.dispose();
 	}
 
 	protected void updateMenu() {
@@ -206,11 +202,7 @@ public class SystemTrayExample extends QWidget {
 		trayIcon.setIcon(new QIcon(pix));
 	}
 
-	public void quit() {
-		trayIcon.dispose();
-		QApplication.quit();
-	}
-    
+   
     // REMOVE-START
     
     public static String exampleName() {

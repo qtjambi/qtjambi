@@ -24,7 +24,7 @@ public class Utilities {
 
     private static final boolean VERBOSE_LOADING =
         System.getProperty("com.trolltech.qt.verbose-loading") != null;
-    
+
     /**
      * Returns true if the system property name contains any of the specified
      * substrings. If substrings is null or empty the function returns true
@@ -198,8 +198,7 @@ public class Utilities {
                 return "lib" + lib + "_debug.4.dylib";
             return "lib" + lib + ".4.dylib";
         case Linux:
-            if (configuration == Configuration.Debug)
-                return "lib" + lib + "_debug.so.4";
+            // Linux doesn't have a dedicated "debug" library since 4.2
             return "lib" + lib + ".so.4";
         }
         throw new RuntimeException("Unreachable statement");

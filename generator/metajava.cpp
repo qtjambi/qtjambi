@@ -47,7 +47,7 @@ QString MetaJavaType::cppSignature() const
 
     s += typeEntry()->name();
 
-    if (hasInstantiations()) {
+    if (hasInstantiationInCpp()) {
         QList<MetaJavaType *> types = instantiations();
         s += "<";
         for (int i=0; i<types.count(); ++i) {
@@ -289,14 +289,19 @@ MetaJavaFunction *MetaJavaFunction::copy() const
 
 QString MetaJavaFunction::signature() const
 {
-    QString s(name());
+    QString s(m_original_name);
 
     s += "(";
 
     for (int i=0; i<m_arguments.count(); ++i) {
         if (i > 0)
             s += ", ";
-        s += m_arguments.at(i)->type()->cppSignature();
+        MetaJavaArgument *a = m_arguments.at(i);
+        s += a->type()->cppSignature();
+
+        // We need to have the argument names in the qdoc files
+        s += " ";
+        s += a->argumentName();
     }
     s += ")";
 

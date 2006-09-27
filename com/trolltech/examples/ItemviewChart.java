@@ -34,7 +34,7 @@ public class ItemviewChart extends QMainWindow {
 
         QAction quitAction = new QAction(tr("&Quit"), this);
         quitAction.setShortcut(new QKeySequence(tr("Ctrl+Q")));
-        quitAction.triggered.connect(QApplication.instance(), "quit()");
+        quitAction.triggered.connect(this, "close()");
         fileMenu.addAction(quitAction);
 
         setupModel();

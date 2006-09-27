@@ -1203,6 +1203,7 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
             Q_ASSERT(targ_type);
 
             java_type->addInstantiation(targ_type);
+            java_type->setInstantiationInCpp(false);
 
         } else {
             foreach (const TypeParser::Info &ta, typeInfo.template_instantiations) {

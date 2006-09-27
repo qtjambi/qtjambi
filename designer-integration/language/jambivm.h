@@ -17,11 +17,11 @@ protected:
     bool intializeJavaVM(const QString javadir = QString(), const QString &mach = QString());
 
 public: // JNI
-    typedef jint JNICALL (*GetDefaultJavaVMInitArgs_signature)(void *);
-    typedef jint JNICALL (*CreateJavaVM_signature)(JavaVM **, void **, void *);
-    typedef jint JNICALL (*GetCreatedJavaVMs_signature)(JavaVM **, jsize, jsize *);
-    typedef jint JNICALL (*OnLoad_signature)(JavaVM *, void *);
-    typedef void JNICALL (*OnUnload_signature)(JavaVM *, void *);
+    typedef jint (JNICALL *GetDefaultJavaVMInitArgs_signature)(void *);
+    typedef jint (JNICALL *CreateJavaVM_signature)(JavaVM **, void **, void *);
+    typedef jint (JNICALL *GetCreatedJavaVMs_signature)(JavaVM **, jsize, jsize *);
+    typedef jint (JNICALL *OnLoad_signature)(JavaVM *, void *);
+    typedef void (JNICALL *OnUnload_signature)(JavaVM *, void *);
 
     GetDefaultJavaVMInitArgs_signature GetDefaultJavaVMInitArgs;
     CreateJavaVM_signature CreateJavaVM;

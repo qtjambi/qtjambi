@@ -54,10 +54,6 @@ public class SyntaxHighlighter extends QMainWindow {
         QApplication.aboutQt();
     }
 
-    public void quit() {
-        QApplication.quit();
-    }
-
     public void newFile() {
         editor.clear();
     }
@@ -108,7 +104,7 @@ public class SyntaxHighlighter extends QMainWindow {
         fileMenu.addAction(openAct);
 
         QAction quitAct = new QAction(tr("E&xit"), this);
-        quitAct.triggered.connect(this, "quit()");
+        quitAct.triggered.connect(this, "close()");
         fileMenu.addAction(quitAct);
     }
 
