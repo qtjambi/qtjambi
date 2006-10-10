@@ -11,7 +11,7 @@ class JambiCustomWidget: public QObject, public QDesignerCustomWidgetInterface
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
-    JambiCustomWidget();
+    JambiCustomWidget(jobject object);
     virtual ~JambiCustomWidget();
 
     virtual bool isInitialized() const;
@@ -27,12 +27,36 @@ public:
     virtual QString includeFile() const;
     virtual QIcon icon() const;
 
+    virtual QString domXml() const;
+
+
     QDesignerLanguageExtension *language() const;
 
 private:
+    QString callStringMethod(jmethodID method) const;
+
     QDesignerFormEditorInterface *m_core;
-    jclass m_class;
     jobject m_object;
+
+
 };
 
+
+class JambiCustomWidgetCollection : public QObject, public QDesignerCustomWidgetCollectionInterface
+{
+    Q_OBJECT
+    Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
+
+public:
+    JambiCustomWidgetCollection();
+    ~JambiCustomWidgetCollection();
+
+    QList<QDesignerCustomWidgetInterface*> customWidgets() const;
+
+private:
+    jobject m_manager;
+    jmethodID m_id_customWidgets;
+
+    QList<QDesignerCustomWidgetInterface *> m_widgets;
+};
 #endif // JAMBI_CUSTOM_WIDGET_H

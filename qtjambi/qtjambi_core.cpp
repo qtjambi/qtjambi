@@ -20,14 +20,29 @@
 
 #include <qglobal.h>
 
+#include <QtCore/QAbstractItemModel>
 #include <QtCore/QDebug>
+#include <QtCore/QDir>
 #include <QtCore/QEvent>
+#include <QtCore/QLibrary>
+#include <QtCore/QMetaMethod>
+#include <QtCore/QMetaObject>
+#include <QtCore/QStringList>
 #include <QtCore/QThread>
 #include <QtCore/QVariant>
+#include <QtCore/QSettings>
+#include <QtCore/QFileInfo>
 
-#include <QtCore/QAbstractItemModel>
-#include <QtCore/QMetaObject>
-#include <QtCore/QMetaMethod>
+#include <stdio.h>
+
+
+
+static QString locate_vm();
+typedef jint (JNICALL *PtrGetDefaultJavaVMInitArgs)(void *);
+typedef jint (JNICALL *PtrCreateJavaVM)(JavaVM **, void **, void *);
+
+static PtrGetDefaultJavaVMInitArgs ptrGetDefaultJavaVMInitArgs;
+static PtrCreateJavaVM ptrCreateJavaVM;
 
 // C-style wrapper for qInstallMsgHandler so the launcher launcher can look it up dynamically
 // without bothering with knowing the name mangling
@@ -57,7 +72,6 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *)
     qtjambi_vm = vm;
     return JNI_VERSION_1_4;
 }
-
 
 typedef QHash<QThread *, jobject> ThreadTable;
 
@@ -164,13 +178,20 @@ static inline int javaObjectVariant()
 }
 
 
-void qtjambi_exception_check(JNIEnv *env)
+/*!  Checks for an exception in the virtual machine and returns true
+  if there was one; otherwise returns false. The function will print
+  the stack trace of any exception before clearing the exception state
+  in the virtual machine.
+*/
+bool qtjambi_exception_check(JNIEnv *env)
 {
     if (env->ExceptionCheck()) {
-        qDebug("Exception pending in native code");
+        qDebug("QtJambi: Exception pending in native code");
         env->ExceptionDescribe();
         env->ExceptionClear();
+        return true;
     }
+    return false;
 }
 
 
@@ -201,6 +222,11 @@ QString qtjambi_class_name(JNIEnv *env, jclass java_class)
     return QtJambiTypeManager::jstringToQString(env, name);
 }
 
+QString qtjambi_class_name(JNIEnv *env, jobject java_object)
+{
+    return qtjambi_class_name(env, env->GetObjectClass(java_object));
+}
+
 jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant)
 {
     int type = javaObjectVariant();
@@ -210,6 +236,7 @@ jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant)
     switch (qt_variant.userType()) {
     case QVariant::Invalid: return 0;
     case QVariant::Int:
+    case QVariant::UInt:
         sc->resolveInteger();
         return env->NewObject(sc->Integer.class_ref, sc->Integer.constructor, qt_variant.toInt());
     case QVariant::Double:
@@ -222,7 +249,11 @@ jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant)
     case QVariant::ULongLong:
         sc->resolveLong();
         return env->NewObject(sc->Long.class_ref, sc->Long.constructor, qt_variant.toLongLong());
+    case QVariant::Bool:
+        sc->resolveBoolean();
+        return env->NewObject(sc->Boolean.class_ref, sc->Boolean.constructor, qt_variant.toBool());
     }
+
 
     // generic java object
     if (qt_variant.userType() == type) {
@@ -268,6 +299,7 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
     sc->resolveInteger();
     sc->resolveDouble();
     sc->resolveLong();
+    sc->resolveBoolean();
     if (env->IsSameObject(sc->String.class_ref, object_class)) {
         return qtjambi_to_qstring(env, static_cast<jstring>(java_object));
     } else if (env->IsSameObject(sc->Integer.class_ref, object_class)) {
@@ -276,6 +308,8 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
         return env->CallDoubleMethod(java_object, sc->Double.doubleValue);
     } else if (env->IsSameObject(sc->Long.class_ref, object_class)) {
         return env->CallLongMethod(java_object, sc->Long.longValue);
+    } else if (env->IsSameObject(sc->Boolean.class_ref, object_class)) {
+        return QVariant((bool) env->CallBooleanMethod(java_object, sc->Boolean.booleanValue));
     }
 
     // Do the slightly slower fallback...
@@ -326,38 +360,6 @@ void *qtjambi_to_object(JNIEnv *env, jobject java_object)
     else
         return 0;
 }
-
-void qtjambi_connect_notify(JNIEnv *env, QtJambiLink *link, const char *signal)
-{
-    Q_ASSERT(signal != 0);
-
-    QString latin1 = QLatin1String(signal + 1);
-    latin1 = latin1.mid(0, latin1.indexOf("("));
-    jstring jstr = qtjambi_from_qstring(env, latin1);
-
-    StaticCache *sc = StaticCache::instance(env);
-    sc->resolveQObject();
-    env->CallVoidMethod(link->javaObject(env), sc->QObject.javaConnectNotify, jstr, ((Qaffeine *)link->qobject())->receivers(signal));
-}
-
-void qtjambi_disconnect_notify(JNIEnv *env, QtJambiLink *link, const char *signal)
-{
-    jstring jstr;
-    int receivers = 0;
-    if (signal != 0) {
-        QString latin1 = QLatin1String(signal + 1);
-        latin1 = latin1.mid(0, latin1.indexOf("("));
-        jstr = qtjambi_from_qstring(env, latin1);
-        receivers = ((Qaffeine *)link->qobject())->receivers(signal);
-    } else {
-        jstr = 0;
-    }
-
-    StaticCache *sc = StaticCache::instance(env);
-    sc->resolveQObject();
-    env->CallVoidMethod(link->javaObject(env), sc->QObject.javaDisconnectNotify, jstr, receivers);
-}
-
 
 QObject *qtjambi_to_qobject(JNIEnv *env, jobject java_object)
 {
@@ -517,10 +519,26 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
     return returned;
 }
 
-static void qtjambi_setup_connections(JNIEnv *env, QtJambiLink *link)
+static bool qtjambi_connect_callback(void **raw_data);
+
+/* Called the first time a C++ created QObject is converted into Java.
+   Any Java emissions of signals that have previously been connected to something
+   must then be connected to their corresponding C++ signal emissions.
+*/
+static void qtjambi_setup_connections(JNIEnv *, QtJambiLink *link)
 {
+    Q_ASSERT(link);
+
+    if (link->connectedToJava())
+        return;
+    link->setConnectedToJava(true);
+
     const QObject *qobject = link->qobject();
+    Q_ASSERT(qobject);
+
     const QMetaObject *mo = qobject->metaObject();
+    Q_ASSERT(mo);
+
     for (int i=0; i<mo->methodCount(); ++i) {
         QMetaMethod m = mo->method(i);
         if (m.methodType() == QMetaMethod::Signal) {
@@ -528,9 +546,9 @@ static void qtjambi_setup_connections(JNIEnv *env, QtJambiLink *link)
             QByteArray ba = QByteArray(signature);
             ba = QByteArray("2") + ba;
 
-            // There will always be one connection
-            if (((Qaffeine *)qobject)->receivers(ba.constData()) > 0)
-                qtjambi_connect_notify(env, link, ba.constData());
+            Qt::ConnectionType type = Qt::AutoConnection;
+            const void *cbdata[] = { qobject, ba.constData(), qobject, ba.constData(), &type };
+            qtjambi_connect_callback((void **)cbdata);
         }
     }
 }
@@ -540,26 +558,54 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
     if (qt_object == 0)
         return 0;
 
+
     QtJambiLink *link = QtJambiLink::findLinkForQObject(qt_object);
     if (!link) {
-        QString javaName = getJavaName(QLatin1String(qt_object->metaObject()->className()));
+        const QMetaObject *mo = qt_object->metaObject();
 
         QByteArray javaClassName;
         QByteArray javaPackageName;
-        if (javaName.length() > 0) {
-            javaClassName = QtJambiTypeManager::className(javaName).toLatin1();
-            javaPackageName = QtJambiTypeManager::package(javaName).toLatin1();
 
-            className = javaClassName.constData();
-            packageName = javaPackageName.constData();
+        // Search the hierarchy of classes for a class that has been mapped to Java.
+        // Prefer the requested class if no other can be found.
+        // Only return objects of subclasses of the requested class
+        // If the requested class is not in the object's hierarchy, then we prefer
+        // the requested class (this means it's basically a proper subclass of the
+        // requested class, and thus probably the concrete wrapper, but atleast a
+        // more specific version than anything we can find)
+        while (mo != 0) {
+            // Never go further down the hierarchy than the requested class
+            if (QLatin1String(className) == QLatin1String(mo->className()))
+                break;
+
+            QString javaName = getJavaName(QLatin1String(mo->className()));
+
+            if (javaName.length() > 0) {
+                javaClassName = QtJambiTypeManager::className(javaName).toLatin1();
+                javaPackageName = QtJambiTypeManager::package(javaName).toLatin1();
+
+                // Make sure the requested class is a superclass of this one
+                while (mo != 0 && QLatin1String(mo->className()) == QLatin1String(className))
+                    mo = mo->superClass();
+
+                // If we found the requested class in the hierarchy, then choose the most
+                // specialized class. Otherwise, just keep the requested class.
+                if (mo != 0) {
+                    className = javaClassName.constData();
+                    packageName = javaPackageName.constData();
+                    mo = 0;
+                }
+
+
+            } else {
+                mo = mo->superClass();
+            }
         }
 
         link = QtJambiLink::createWrapperForQObject(env, qt_object, className, packageName);
-        if (!link->createdByJava())
-            qtjambi_setup_connections(env, link);
+        qtjambi_setup_connections(env, link);
     }
     Q_ASSERT(link);
-
 
     return link->javaObject(env);
 }
@@ -782,34 +828,71 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
     return table;
 }
 
-void qtjambi_setup_signals(JNIEnv *env, jobject java_object, QtJambiSignalInfo *signal_infos, int count,
-                          const char **names, const int *argument_counts)
+void qtjambi_resolve_signals(JNIEnv *env,
+                             jobject java_object,
+                             QtJambiSignalInfo *infos,
+                             int count,
+                             char **names,
+                             int *argument_counts)
 {
-    if (count == 0)
-        return ;
+    jclass clazz = env->GetObjectClass(java_object);
+    QTJAMBI_EXCEPTION_CHECK(env);
+    Q_ASSERT(clazz);
 
-    jclass object_class = env->GetObjectClass(java_object);
     for (int i=0; i<count; ++i) {
-        QByteArray signal_class("Lcom/trolltech/qt/core/QObject$Signal");
-        signal_class += QByteArray::number(argument_counts[i]) + ";";
+        QByteArray class_name = QByteArray("QObject$Signal")
+                                + QByteArray::number(argument_counts[i]);
+        QByteArray signature("(");
+        for (int j=0;j<argument_counts[i]; ++j)
+            signature.append("Ljava/lang/Object;");
+        signature.append(")V");
 
-        jfieldID fieldId = env->GetFieldID(object_class, names[i], signal_class.constData());
+        QByteArray field_signature = QByteArray("Lcom/trolltech/qt/core/" + class_name + QByteArray(";"));
+        jfieldID fieldId = env->GetFieldID(clazz, names[i], field_signature.constData());
+        QTJAMBI_EXCEPTION_CHECK(env);
         Q_ASSERT(fieldId);
 
-        jobject signal_object = env->GetObjectField(java_object, fieldId);
-        Q_ASSERT(signal_object);
-        signal_infos[i].object = env->NewWeakGlobalRef(signal_object);
+        jobject signal = env->GetObjectField(java_object, fieldId);
+        QTJAMBI_EXCEPTION_CHECK(env);
+        Q_ASSERT(signal);
 
-        jclass signal_class_object = env->GetObjectClass(signal_object);
-        Q_ASSERT(signal_class_object);
-
-        QByteArray signature("(");
-        for (int j=0; j<argument_counts[i]; ++j)
-            signature += "Ljava/lang/Object;";
-        signature += ")V";
-        signal_infos[i].methodId = env->GetMethodID(signal_class_object, "emit", signature.constData());
-        Q_ASSERT(signal_infos[i].methodId);
+        infos[i].object = env->NewWeakGlobalRef(signal);
+        infos[i].methodId = resolveMethod(env, "emit", signature.constData(),
+                                          class_name.constData(), "com/trolltech/qt/core/");
     }
+}
+
+// Connects the emission of a C++ signal to the emit function in the corresponding
+// signal in Java
+bool qtjambi_connect_cpp_to_java(JNIEnv *,
+                                 const QString &java_signal_name,
+                                 QObject *sender,
+                                 QObject *wrapper,
+                                 const QString &java_class_name,
+                                 const QString &signal_wrapper_prefix)
+{
+    Q_ASSERT(wrapper);
+
+    QString cpp_signal_name = getQtName(java_class_name + QLatin1String(".") + java_signal_name);
+    if (cpp_signal_name.isEmpty())
+        return false;
+
+    int paren_pos = cpp_signal_name.indexOf(QLatin1Char('('));
+    cpp_signal_name = cpp_signal_name.mid(cpp_signal_name.lastIndexOf("::", paren_pos) + 2);
+    QString cpp_slot_name = QString::number(QSLOT_CODE)
+                            + signal_wrapper_prefix
+                            + cpp_signal_name;
+
+
+    cpp_signal_name = QString::number(QSIGNAL_CODE) + cpp_signal_name;
+    if (!sender->connect(sender, cpp_signal_name.toLatin1().constData(),
+                         wrapper, cpp_slot_name.toLatin1().constData())) {
+        qWarning("qtjambi_connect_cpp_to_java(): failed to connect '%s' in '%s' to wrapper '%s'",
+                 qPrintable(cpp_signal_name), qPrintable(java_class_name), qPrintable(cpp_slot_name));
+        return false;
+    }
+
+    return true;
 }
 
 jobject qtjambi_array_to_nativepointer(JNIEnv *env, jobjectArray array, int elementSize)
@@ -1010,4 +1093,422 @@ bool qtjambi_is_created_by_java(QObject *qobject)
     Q_ASSERT(!userData || userData->link());
 
     return userData && userData->link()->createdByJava();
+}
+
+bool qtjambi_initialize_vm()
+{
+    if (qtjambi_vm)
+        return true;
+
+    QString libvm = locate_vm();
+    if (libvm.isEmpty()) {
+        qWarning("Jambi: failed to initialize...");
+        return false;
+    }
+
+    QLibrary lib(libvm);
+    if (!lib.load()) {
+        qWarning("Jambi: failed to load: '%s'", qPrintable(libvm));
+        return false;
+    }
+
+    ptrCreateJavaVM = (PtrCreateJavaVM) lib.resolve("JNI_CreateJavaVM");
+    ptrGetDefaultJavaVMInitArgs = (PtrGetDefaultJavaVMInitArgs) lib.resolve("JNI_GetDefaultJavaVMInitArgs");
+
+    Q_ASSERT(ptrCreateJavaVM);
+    Q_ASSERT(ptrGetDefaultJavaVMInitArgs);
+
+
+
+    QList<QByteArray> options;
+
+    QByteArray class_path = getenv("CLASSPATH");
+    class_path.prepend("-Djava.class.path=");
+    options << class_path;
+
+#ifndef QT_NO_DEBUG
+    options << "-Xcheck:jni";
+    options << "-Dcom.trolltech.qt.debug=true";
+#endif
+
+    JavaVMOption *vm_options = new JavaVMOption[options.size()];
+    for (int i=0; i<options.size(); ++i)
+       vm_options[i].optionString = options[i].data();
+
+    JavaVMInitArgs vm_args;
+    vm_args.version = JNI_VERSION_1_4;
+    vm_args.ignoreUnrecognized = JNI_FALSE;
+    vm_args.nOptions = options.size();
+    vm_args.options = vm_options;
+
+    if (ptrGetDefaultJavaVMInitArgs(&vm_args)) {
+        qWarning("QtJambi: failed to get vm arguments");
+        delete [] vm_options;
+        return false;
+    }
+
+    JNIEnv *env;
+    if (ptrCreateJavaVM(&qtjambi_vm, (void**) &env, &vm_args)) {
+        qWarning("QtJambi: failed to create vm");
+        delete [] vm_options;
+        return false;
+    }
+
+    delete [] vm_options;
+
+//     const char *initializers[] = {
+//         "com/trolltech/qt/QtJambi_LibraryInitializer",
+//         "com/trolltech/qt/core/QtJambi_LibraryInitializer",
+//         "com/trolltech/qt/gui/QtJambi_LibraryInitializer",
+//         0
+//     };
+
+//     for (int i=0; initializers[i]; ++i) {
+//         jclass cl = env->FindClass(initializers[i]);
+//         if (qtjambi_exception_check(env)) {
+//             qWarning("QtJambi: failed to initialize qt jambi java libraries");
+//             break;
+//         }
+//     }
+
+    return true;
+}
+
+
+#ifdef Q_OS_LINUX
+static QString locate_vm()
+{
+    QString jpath = qgetenv("JAVADIR");
+    QString jmach = QLatin1String("i386");
+
+    jpath += QLatin1String("/jre/lib/");
+    jpath += jmach;
+
+    jpath = QDir::cleanPath(jpath);
+
+    if (! jpath.endsWith(QLatin1Char('/')))
+        jpath += QLatin1Char('/');
+
+    QLibrary libverify_so(jpath + "/libverify.so");
+    QLibrary libjava_so(jpath + "/libjava.so");
+    QLibrary libjvm_so(jpath + "/client/libjvm.so");
+
+    return jpath + "/client/libjvm.so";
+}
+
+#elif defined(Q_OS_WIN)
+
+// Windows version
+static QString locate_vm()
+{
+
+    QString javaHome;
+
+    {
+        QStringList roots, locations;
+        roots << "HKEY_LOCAL_MACHINE"
+              << "HKEY_CURRENT_USER";
+
+        locations << "Java Runtime Environment"
+                  << "Java Development Kit";
+
+        QString currentVersion("CurrentVersion");
+
+        for (QStringList::const_iterator root = roots.constBegin();
+             root < roots.constEnd() && javaHome.isEmpty(); ++root) {
+
+            for (QStringList::const_iterator loc = locations.constBegin();
+                 loc < locations.constEnd() && javaHome.isEmpty(); ++loc) {
+
+                QSettings reg(*root + "\\Software\\JavaSoft\\" + *loc, QSettings::NativeFormat);
+                if (reg.contains(currentVersion)) {
+                    QString version = reg.value(currentVersion).toString();
+                    reg.beginGroup(version);
+                    javaHome = reg.value("JavaHome").toString();
+                    reg.endGroup();
+                }
+            }
+        }
+
+        if (javaHome.isEmpty()) {
+            qWarning("Jambi: Failed to locate jvm.dll");
+            return false;
+        }
+    }
+
+    {
+        QStringList libs;
+        libs << "bin/client"
+             << "lib/client"
+             << "bin/server"
+             << "lib/server"
+             << "jre/bin/client"
+             << "jre/lib/client"
+             << "jre/bin/server"
+             << "jre/lib/server";
+
+        for (int i=0; i<libs.size(); ++i) {
+            QFileInfo fi(javaHome + "/" + libs.at(i) + "/jvm.dll");
+            if (fi.exists())
+                return fi.absoluteFilePath();
+        }
+    }
+
+    return QString();
+}
+
+#else
+
+#error implement VM location on arbitrary machines...
+
+#endif
+
+struct ResolvedConnectionData
+{
+    jobject java_sender;
+    jobject java_receiver;
+    jobject java_signal;
+    jobject java_method;
+};
+
+struct BasicConnectionData
+{
+    QObject *sender;
+    char *signal;
+    QObject *receiver;
+    char *method;
+};
+
+static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnectionData *data,
+                                            ResolvedConnectionData *resolved_data,
+                                            bool fail_on_cpp_resolve,
+                                            bool create_java_objects)
+{
+    Q_ASSERT(jni_env);
+    Q_ASSERT(data);
+    Q_ASSERT(resolved_data);
+    Q_ASSERT(data->sender);
+    Q_ASSERT(data->signal);
+
+    QtJambiLink *sender_link = QtJambiLink::findLinkForQObject(data->sender);
+    QtJambiLink *receiver_link = QtJambiLink::findLinkForQObject(data->receiver);
+
+    // If neither object has a link to Java, nothing to resolve
+    if (sender_link == 0 && receiver_link == 0)
+        return false; // don't meddle
+
+    // If both the signal and the slot exists in C++ then we make a c++ connection,
+    // but we will also have to make sure java emit makes c++ emit. This is both
+    // an optimization (don't go via java for pure C++ connection) and also strictly needed
+    // for connections made in superclass constructors because C++ builds the
+    // virtual table in stages.
+    if (fail_on_cpp_resolve
+        && data->sender->metaObject()->indexOfSignal(data->signal + 1) >= 0
+        && data->receiver != 0
+        && data->method != 0
+        && data->receiver->metaObject()->indexOfSlot(data->method + 1) >= 0) {
+        if (sender_link != 0 && !sender_link->connectedToJava()) { // connect java to c++
+            qtjambi_setup_connections(jni_env, sender_link);
+        }
+        return false; // do it in c++
+    }
+
+    if (receiver_link == 0 && data->receiver != 0) {
+        if (!create_java_objects)
+            return false;
+
+        receiver_link = QtJambiLink::findLink(jni_env,
+                                              qtjambi_from_qobject(jni_env, data->receiver,
+                                                                   "QObject", "com/trolltech/qt/core/"));
+    }
+    if (sender_link == 0 && data->sender != 0) {
+        if (!create_java_objects)
+            return false;
+
+        sender_link = QtJambiLink::findLink(jni_env,
+                                            qtjambi_from_qobject(jni_env, data->sender,
+                                                                 "QObject", "com/trolltech/qt/core/"));
+    }
+
+    if (sender_link == 0) {
+        qWarning("qtjambi_resolve_connection_data(): can't resolve sender '%s'",
+                    qPrintable(data->sender->objectName()));
+        return false;
+    }
+
+    resolved_data->java_sender = sender_link->javaObject(jni_env);
+    if (resolved_data->java_sender == 0) {
+        QString object_name = data->sender->objectName();
+        qWarning("qtjambi_resolve_connection_data(): attempt to connect from finalized object '%s'",
+                 qPrintable(object_name));
+        return false;
+    }
+
+    // Does the signal exist in C++? then we need to check if it's been renamed
+    const QMetaObject *mo = data->sender->metaObject();
+    const char *class_name = 0;
+    int mox = mo->indexOfSignal(data->signal + 1);
+    while (mox >= 0 && mo != 0 && class_name == 0) {
+        if (mox >= mo->methodOffset())
+            class_name =  mo->className();
+        mo = mo->superClass();
+    }
+
+    {
+        QString signal_name = QString::fromLatin1(data->signal + 1);
+        if (class_name != 0) {
+            signal_name = QLatin1String(class_name) + QLatin1String("::") + signal_name;
+            signal_name = getJavaName(signal_name);
+            signal_name.chop(signal_name.size() - signal_name.indexOf(QLatin1Char('(')));
+            signal_name = signal_name.mid(signal_name.lastIndexOf(QLatin1Char('.')) + 1);
+        }
+        if (signal_name.isEmpty())
+            return false;
+
+        StaticCache *sc = StaticCache::instance(jni_env);
+        sc->resolveQtJambiInternal();
+        resolved_data->java_signal =
+            jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
+                                            sc->QtJambiInternal.lookupSignal,
+                                            resolved_data->java_sender,
+                                            qtjambi_from_qstring(jni_env, signal_name));
+    }
+
+    if (resolved_data->java_signal == 0)  // unmapped signal, cannot be resolved by us
+        return false;
+
+    if (receiver_link != 0) {
+        resolved_data->java_receiver = receiver_link->javaObject(jni_env);
+        if (resolved_data->java_receiver == 0) {
+            QString object_name = data->receiver->objectName();
+            qWarning("qtjambi_resolve_connection_data(): attempt to connect to finalized object '%s'",
+                     qPrintable(object_name));
+            return false;
+        }
+    } else {
+        resolved_data->java_receiver = 0;
+    }
+
+    if (resolved_data->java_receiver != 0 && data->method != 0) {
+        mo = data->receiver->metaObject();
+        class_name = 0;
+        int mox = mo->indexOfMethod(data->method + 1);
+        while (mo != 0 && class_name == 0) {
+            if (mox >= mo->methodOffset())
+                class_name = mo->className();
+            mo = mo->superClass();
+        }
+
+        {
+            QString slot_name = QString::fromLatin1(data->method + 1);
+            if (class_name != 0) {
+                slot_name = QLatin1String(class_name) + QLatin1String("::") + slot_name;
+                slot_name = getJavaName(slot_name);
+                int paren_pos = slot_name.indexOf(QLatin1Char('('));
+                slot_name = slot_name.mid(slot_name.lastIndexOf(QLatin1Char('.'), paren_pos) + 1);
+            }
+
+            StaticCache *sc = StaticCache::instance(jni_env);
+            sc->resolveQtJambiInternal();
+            resolved_data->java_method =
+                jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
+                                                sc->QtJambiInternal.lookupSlot,
+                                                resolved_data->java_receiver,
+                                                qtjambi_from_qstring(jni_env, slot_name));
+        }
+
+        if (resolved_data->java_method == 0)
+            return false;
+
+    } else {
+        resolved_data->java_method = 0;
+    }
+
+    return true;
+}
+
+static void qtjambi_disconnect_all(JNIEnv *jni_env, QObject *sender, QObject *receiver)
+{
+    QtJambiLink *java_link = QtJambiLink::findLinkForQObject(sender);
+    if (java_link != 0) {
+        jobject java_sender = java_link->javaObject(jni_env);
+        jobject java_receiver = receiver != 0
+            ? qtjambi_from_qobject(jni_env, receiver, "QObject", "com/trolltech/qt/core/")
+            : 0;
+
+        StaticCache *sc = StaticCache::instance(jni_env);
+        sc->resolveQObject();
+        jni_env->CallVoidMethod(java_sender, sc->QObject.disconnect, java_receiver);
+    }
+}
+
+static bool qtjambi_disconnect_callback(void **raw_data)
+{
+    Q_ASSERT(raw_data != 0);
+
+    JNIEnv *jni_env = qtjambi_current_environment();
+    Q_ASSERT(jni_env != 0);
+
+
+    BasicConnectionData *data = reinterpret_cast<BasicConnectionData *>(raw_data);
+    Q_ASSERT(data->sender);
+    if (data->method == 0 && data->signal == 0) {
+        qtjambi_disconnect_all(jni_env, data->sender, data->receiver);
+    } else {
+        ResolvedConnectionData resolved_data;
+        if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, false, false))
+            return false;
+
+        StaticCache *sc = StaticCache::instance(jni_env);
+        sc->resolveInternalSignal();
+        jni_env->CallBooleanMethod(resolved_data.java_signal,
+                                sc->InternalSignal.removeConnection,
+                                resolved_data.java_receiver,
+                                resolved_data.java_method);
+        QTJAMBI_EXCEPTION_CHECK(jni_env);
+    }
+
+    return false; // always disconnect through default impl. as well
+}
+
+struct ConnectData: public BasicConnectionData
+{
+    Qt::ConnectionType *type;
+};
+static bool qtjambi_connect_callback(void **raw_data)
+{
+    Q_ASSERT(raw_data != 0);
+
+    JNIEnv *jni_env = qtjambi_current_environment();
+    Q_ASSERT(jni_env != 0);
+
+    ConnectData *data = reinterpret_cast<ConnectData *>(raw_data);
+    if (data->sender == 0 || data->signal == 0 || data->receiver == 0
+        || data->method == 0  || data->type == 0) {
+        qWarning("qtjambi_connect_callback(): received unexpected null parameters");
+        return false;
+    }
+
+    ResolvedConnectionData resolved_data;
+    if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, true, true))
+        return false;
+
+    StaticCache *sc = StaticCache::instance(jni_env);
+    sc->resolveInternalSignal();
+    bool result = jni_env->CallBooleanMethod(resolved_data.java_signal,
+                                             sc->InternalSignal.connectSignalMethod,
+                                             resolved_data.java_method,
+                                             resolved_data.java_receiver,
+                                             *data->type);
+    qtjambi_exception_check(jni_env);
+
+    // If we succeeded in connecting in Java, we skip the C++ connection
+    return result;
+}
+
+void qtjambi_register_callbacks()
+{
+    QInternal::registerCallback(QInternal::ConnectCallback,    qtjambi_connect_callback);
+    QInternal::registerCallback(QInternal::DisconnectCallback, qtjambi_disconnect_callback);
+    QInternal::registerCallback(QInternal::AdoptCurrentThread, qtjambi_adopt_current_thread);
 }

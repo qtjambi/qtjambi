@@ -58,7 +58,9 @@ inline void *qtjambi_from_jlong(jlong ptr)
     }
 }
 
-QTJAMBI_EXPORT void qtjambi_exception_check(JNIEnv *env);
+QTJAMBI_EXPORT bool qtjambi_initialize_vm(); // implemented in qtjambi_functions.cpp
+
+QTJAMBI_EXPORT bool qtjambi_exception_check(JNIEnv *env);
 
 QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
 
@@ -74,11 +76,17 @@ QTJAMBI_EXPORT int qtjambi_to_enum(JNIEnv *env, jobject java_object);
 
 QTJAMBI_EXPORT QString qtjambi_to_qstring(JNIEnv *env, jstring java_string);
 
+QTJAMBI_EXPORT void qtjambi_register_callbacks();
+
 QTJAMBI_EXPORT void *qtjambi_to_interface(JNIEnv *env,
                                            QtJambiLink *link,
                                            const char *interface_name,
                                            const char *package_name,
                                            const char *function_name);
+
+void qtjambi_connect_notify(JNIEnv *env, QObject *qobject, const QString &signal_name);
+
+void qtjambi_disconnect_notify(JNIEnv *env, QObject *qobject, const QString &signal_name);
 
 inline void *qtjambi_to_interface(JNIEnv *env,
                                   jobject java_object,
@@ -139,12 +147,6 @@ QTJAMBI_EXPORT
 jobject qtjambi_from_cpointer(JNIEnv *env, const void *qt_pointer, int type_id, int indirections);
 
 QTJAMBI_EXPORT
-void qtjambi_connect_notify(JNIEnv *env, QtJambiLink *link, const char *signal);
-
-QTJAMBI_EXPORT
-void qtjambi_disconnect_notify(JNIEnv *env, QtJambiLink *link, const char *signal);
-
-QTJAMBI_EXPORT
 jobject qtjambi_array_to_nativepointer(JNIEnv *env, jobjectArray array, int elementSize);
 
 QTJAMBI_EXPORT QThread *qtjambi_to_thread(JNIEnv *env, jobject thread);
@@ -166,8 +168,8 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                                          const char **methodNames,
                                          const char **methodSignatures);
 
-QTJAMBI_EXPORT
-QString qtjambi_class_name(JNIEnv *env, jclass java_class);
+QTJAMBI_EXPORT QString qtjambi_class_name(JNIEnv *env, jclass java_class);
+QTJAMBI_EXPORT QString qtjambi_class_name(JNIEnv *env, jobject java_object);
 
 QTJAMBI_EXPORT void qtjambi_metacall(JNIEnv *env, QEvent *event);
 
@@ -358,11 +360,25 @@ inline jobjectArray qtjambi_collection_toArray(JNIEnv *env, jobject col) {
     return (jobjectArray) env->CallObjectMethod(col, sc->Collection.toArray);
 }
 
+QTJAMBI_EXPORT
+void qtjambi_resolve_signals(JNIEnv *env,
+                             jobject java_object,
+                             QtJambiSignalInfo *infos,
+                             int count,
+                             char **names,
+                             int *argument_counts);
 
 QTJAMBI_EXPORT
-void qtjambi_setup_signals(JNIEnv *env, jobject java_object, QtJambiSignalInfo *signal_infos, int count,
-                          const char **names, const int *argument_counts);
-inline void qtjambi_call_java_signal(JNIEnv *env, const QtJambiSignalInfo &signal_info, jvalue *args)
+bool qtjambi_connect_cpp_to_java(JNIEnv *, 
+                                 const QString &java_signal_name,
+                                 QObject *sender,
+                                 QObject *wrapper,
+                                 const QString &java_class_name,
+                                 const QString &signal_wrapper_prefix);
+
+// ### QtJambiSignalInfo has to be passed as a copy, or we will crash whenever the
+// slot deletes its sender.
+inline void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue *args)
 {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveInternalSignal();

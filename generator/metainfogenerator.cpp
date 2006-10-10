@@ -13,17 +13,18 @@
 
 #include "metainfogenerator.h"
 #include "reporthandler.h"
+#include "cppimplgenerator.h"
 
 #include <QDir>
 #include <QMetaType>
 
-MetaInfoGenerator::MetaInfoGenerator() : Generator()
+MetaInfoGenerator::MetaInfoGenerator() : JavaGenerator()
 {
     setFilenameStub("metainfo");
 }
 
 QString MetaInfoGenerator::subDirectoryForPackage(const QString &package, OutputDirectoryType type) const
-{   
+{
     switch (type) {
     case CppDirectory:
         return "cpp/" + QString(package).replace(".", "_") + "/";
@@ -84,6 +85,84 @@ bool MetaInfoGenerator::generatedJavaClasses(const QString &package) const
     return (m_skip_list.value(package, 0x0) & GeneratedJavaClasses);
 }
 
+static void metainfo_write_name_list(QTextStream &s, char *var_name, const QList<QString> &strs,
+                                     int offset)
+{
+    s << "static const char *" << var_name << "[] = {" << endl;
+    for (int i=offset; i<strs.size(); i += 4) {
+        s << "    \"" << strs.at(i).toLatin1() << "\"";
+        if (i < strs.size() - 1)
+            s << ",";
+        s << endl;
+    }
+    s << "};" << endl << endl;
+}
+
+void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &package)
+{
+    MetaJavaClassList classes = this->classes();
+
+    QList<QString> strs;
+    foreach (MetaJavaClass *cls, classes) {
+        if (cls->package() == package) {
+            MetaJavaFunctionList functions = cls->functions();
+            foreach (MetaJavaFunction *f, functions) {
+                if (f->implementingClass() == cls && (f->isSignal() || f->isSlot())) {
+                    Option option = Option(SkipAttributes | SkipReturnType | SkipName);
+                    QString qtName;
+                    {
+
+                        QTextStream qtNameStream(&qtName);
+                        CppGenerator::writeFunctionSignature(qtNameStream, f, 0, QString(),
+                            Option(option | OriginalName | OriginalTypeDescription));
+                    }
+                    qtName = f->implementingClass()->qualifiedCppName() + "::" + qtName;
+                    qtName = QMetaObject::normalizedSignature(qtName.toLatin1().constData());
+
+                    QString javaFunctionName = functionSignature(f, 0, 0, option);
+                    QString javaObjectName = f->isSignal()
+                                            ? f->name()
+                                            : javaFunctionName;
+
+                    javaFunctionName = f->implementingClass()->fullName() + "." + javaFunctionName;
+                    javaObjectName   = f->implementingClass()->fullName() + "." + javaObjectName;
+
+                    QString javaSignature = "(";
+                    MetaJavaArgumentList args = f->arguments();
+                    foreach (MetaJavaArgument *arg, args) {
+                        javaSignature += jni_signature(arg->type(), SlashesAndStuff);
+                    }
+                    javaSignature += ")" + jni_signature(f->type(), SlashesAndStuff);
+
+                    strs.append(qtName);
+                    strs.append(javaFunctionName);
+                    strs.append(javaObjectName);
+                    strs.append(javaSignature);
+                }
+            }
+        }
+    }
+
+    Q_ASSERT(strs.size() % 4 == 0);
+
+    s << "static int sns_count = " << (strs.size() / 4) << ";" << endl;
+    if (strs.size() > 0) {
+        metainfo_write_name_list(s, "qtNames", strs, 0);
+        metainfo_write_name_list(s, "javaFunctionNames", strs, 1);
+        metainfo_write_name_list(s, "javaObjectNames", strs, 2);
+        metainfo_write_name_list(s, "javaSignatures", strs, 3);
+    }
+}
+
+void MetaInfoGenerator::writeRegisterSignalsAndSlots(QTextStream &s)
+{
+    s << "    for (int i=0;i<sns_count; ++i) {" << endl
+      << "        registerQtToJava(qtNames[i], javaFunctionNames[i]);" << endl
+      << "        registerJavaToQt(javaObjectNames[i], qtNames[i]);" << endl
+      << "        registerJavaSignature(qtNames[i], javaSignatures[i]);" << endl
+      << "    }" << endl;
+}
+
 void MetaInfoGenerator::buildSkipList()
 {
     MetaJavaClassList classList = classes();
@@ -95,7 +174,7 @@ void MetaInfoGenerator::buildSkipList()
             m_skip_list[cls->package()] |= GeneratedMetaInfo;
 
         if (cls->typeEntry()->codeGeneration() & TypeEntry::GenerateJava)
-            m_skip_list[cls->package()] |= GeneratedJavaClasses;        
+            m_skip_list[cls->package()] |= GeneratedJavaClasses;
     }
 }
 
@@ -103,12 +182,12 @@ void MetaInfoGenerator::writeCppFile()
 {
     TypeEntryHash entries = TypeDatabase::instance()->entries();
     TypeEntryHash::iterator it;
-    
+
     MetaJavaClassList classList = classes();
     QHash<QString, QFile *> fileHash;
     foreach (MetaJavaClass *cls, classList) {
         QTextStream s;
-        QFile *f = fileHash.value(cls->package(), 0);        
+        QFile *f = fileHash.value(cls->package(), 0);
         if (f == 0 && generated(cls)) {
             QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory));
             dir.mkpath(dir.absolutePath());
@@ -137,6 +216,14 @@ void MetaInfoGenerator::writeCppFile()
         }
     }
 
+    foreach (QString package, fileHash.keys()) {
+        QFile *f = fileHash.value(package, 0);
+        if (f != 0) {
+            QTextStream s(f);
+            writeSignalsAndSlots(s, package);
+        }
+    }
+
     // Primitive types must be added to all packages
     foreach (QFile *f, fileHash.values()) {
         QTextStream s(f);
@@ -158,6 +245,7 @@ void MetaInfoGenerator::writeCppFile()
                 writeInitialization(s, entry);
             }
         }
+        writeRegisterSignalsAndSlots(s);
     }
 
     foreach (MetaJavaClass *cls, classList) {
@@ -166,8 +254,10 @@ void MetaInfoGenerator::writeCppFile()
         if (f != 0) {
             QTextStream s(f);
             writeInitialization(s, cls->typeEntry(), shouldGenerate(cls));
+
         }
     }
+
 
     foreach (QFile *f, fileHash.values()) {
         QTextStream s(f);
@@ -219,14 +309,14 @@ void MetaInfoGenerator::writeCodeBlock(QTextStream &s, const QString &code)
     }
 }
 
-void MetaInfoGenerator::writeDestructors(QTextStream &s, const MetaJavaClass *cls) 
+void MetaInfoGenerator::writeDestructors(QTextStream &s, const MetaJavaClass *cls)
 {
     const ComplexTypeEntry *entry = cls->typeEntry();
-    s << "void destructor_" << entry->javaPackage().replace(".", "_")  << "_"  
+    s << "void destructor_" << entry->javaPackage().replace(".", "_")  << "_"
       << entry->lookupName().replace(".", "_").replace("$", "_") << "(void *ptr)" << endl
       << "{" << endl;
 
-    // We can only delete classes with public destructors. 
+    // We can only delete classes with public destructors.
     while (cls != 0) {
         if (cls->hasPublicDestructor()) {
             s << "    delete reinterpret_cast<" << cls->qualifiedCppName() << " *>(ptr);" << endl;
@@ -278,7 +368,7 @@ void MetaInfoGenerator::writeLibraryInitializers()
     extern QString jni_function_signature(QString package, QString class_name, const QString &function_name,
                                           const QString &return_type);
 
-    // We need to generate a library initializer in Java for all packages 
+    // We need to generate a library initializer in Java for all packages
     // that have generated classes in Java, and in C++ for all packages
     // that have generated metainfo.
 
@@ -304,7 +394,7 @@ void MetaInfoGenerator::writeLibraryInitializers()
               << "    __metainfo_init();" << endl
               << "}" << endl << endl;
         }
-        
+
         if (generatedJavaClasses(package)) {
             QDir dir(outputDirectory() + "/" + subDirectoryForPackage(package, JavaDirectory));
             dir.mkpath(dir.absolutePath());
@@ -407,9 +497,9 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
     s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl
       << "    registerJavaToQt(\"" << javaName << "\", \"" << qtName << "\");" << endl;
-    if (entry->isComplex() && entry->isObject() && !((ComplexTypeEntry *)entry)->isQObject() && !entry->isInterface()) 
+    if (entry->isComplex() && entry->isObject() && !((ComplexTypeEntry *)entry)->isQObject() && !entry->isInterface())
       s << "    registerDestructor(\"" << javaName << "\", destructor_" << javaName.replace("/", "_").replace("$", "_") << ");" << endl;
-    
+
 
     if (!registerMetaType)
         return ;

@@ -24,9 +24,11 @@ class QString;
 QTJAMBI_EXPORT void registerQtToJava(const QString &qt_name, const QString &java_name);
 QTJAMBI_EXPORT void registerJavaToQt(const QString &java_name, const QString &qt_name);
 QTJAMBI_EXPORT void registerDestructor(const QString &java_name, PtrDestructorFunction destructor);
+QTJAMBI_EXPORT void registerJavaSignature(const QString &qt_name, const QString &java_signature);
 
 QString getQtName(const QString &java_name);
 QString getJavaName(const QString &qt_name);
+QString getJavaSignature(const QString &qt_name);
 PtrDestructorFunction destructor(const QString &java_name);
 
 jclass resolveClass(JNIEnv *env, const char *className, const char *package);
@@ -156,8 +158,7 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
-        jmethodID javaConnectNotify;
-        jmethodID javaDisconnectNotify;
+        jmethodID disconnect;
     } QObject;
 
     struct {
@@ -227,8 +228,16 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jfieldID m_in_cpp_emission;
+        jmethodID connect;
+        jmethodID connectSignalMethod;
+        jmethodID removeConnection;
     } InternalSignal;
 
+    struct {
+        jclass class_ref;
+        jmethodID lookupSlot;
+        jmethodID lookupSignal;
+    } QtJambiInternal;
 
     struct {
         jclass class_ref;
@@ -250,6 +259,7 @@ struct QTJAMBI_EXPORT StaticCache
     } QtEnumerator;
 
 
+    DECLARE_RESOLVE_FUNCTIONS(QtJambiInternal);
     DECLARE_RESOLVE_FUNCTIONS(InternalSignal);
     DECLARE_RESOLVE_FUNCTIONS(QtEnumerator);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
@@ -285,27 +295,10 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(TreeMap);
 
 public:
-    inline static StaticCache *instance(JNIEnv *env);
+    static StaticCache *instance(JNIEnv *env);
 
 private:
     static QList<StaticCache *> m_caches;
 };
-
-
-QTJAMBI_EXPORT StaticCache *StaticCache::instance(JNIEnv *env)
-{
-    // chances are that number of envs are so few that a linear search is faster than
-    // time spent doing hashing and collision resolution.
-    for (int i=0; i<m_caches.size(); ++i)
-        if (env == m_caches.at(i)->env)
-            return m_caches.at(i);
-
-    StaticCache *s = new StaticCache;
-    memset(s, 0, sizeof(StaticCache));
-    s->env = env;
-
-    m_caches << s;
-    return s;
-}
 
 #endif // QTJAMBI_CACHE_H

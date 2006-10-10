@@ -60,30 +60,15 @@ class MyQObject extends QObject
         super(parent);
     }
             
-    public int signalIntegerReceivers()
-    {
-        return receivers(signalInteger);
-    }
-    
     protected void disposed()
     {
         destroyed.emit();
         super.disposed();
     }
     
-    public int signalDoubleReceivers()
-    {
-        return receivers(signalDouble);
-    }
-    
     public void increaseFinalized()
     {
         ++finalizedCount;
-    }
-    
-    public int signalStringReceivers()
-    {
-        return receivers(signalString);
     }
     
     public void javaSignalString(String param) 

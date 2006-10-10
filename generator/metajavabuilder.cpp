@@ -1016,6 +1016,8 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
 
         if (function_item->functionType() == CodeModel::Signal)
             java_function->setFunctionType(MetaJavaFunction::SignalFunction);
+        else if (function_item->functionType() == CodeModel::Slot)
+            java_function->setFunctionType(MetaJavaFunction::SlotFunction);
     }
 
     ArgumentList arguments = function_item->arguments();
@@ -1188,6 +1190,7 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
     java_type->setIndirections(typeInfo.indirections);
     java_type->setReference(typeInfo.is_reference);
     java_type->setConstant(typeInfo.is_constant);
+    java_type->setOriginalTypeDescription(_typei.toString());
     decideUsagePattern(java_type);
 
     if (java_type->isContainer()) {

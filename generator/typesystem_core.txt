@@ -604,65 +604,43 @@
     </modify-function>
     
     <extra-includes>
-        <include file-name="java.lang.reflect.*" location="java" />
         <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
     
     <modify-function class="java" signature="connectNotify(const char *)"> 
-        <access modifier="private"/>      
-    </modify-function>
-    <modify-function class="shell" signature="connectNotify(const char *)">         
-        <inject-code class="shell">        
-            <argument-map position="1" meta-name="signal"/>
-            qtjambi_connect_notify(qtjambi_current_environment(), m_link, signal);
-        </inject-code>
+        <access modifier="private" />
     </modify-function>
     
     <modify-function class="java" signature="disconnectNotify(const char *)"> 
-        <access modifier="private"/>
-    </modify-function>
-    <modify-function class="shell" signature="disconnectNotify(const char *)">         
-        <inject-code class="shell">        
-            <argument-map position="1" meta-name="signal"/>
-            qtjambi_disconnect_notify(qtjambi_current_environment(), m_link, signal);
-        </inject-code>
+        <access modifier="private" />
     </modify-function>
             
     <inject-code class="java">
-    private static QObject m_currentSender = null;
-    protected boolean m_cpp_signals_initialized = false; // set to true in __qt_signalInitialization
-    
+    private static QObject m_currentSender = null;    
     { 
         com.trolltech.qt.QtJambiInternal.initializeSignals(this); // constructs objects for all signals 
     }
 
     public abstract class AbstractSignal extends com.trolltech.qt.QtJambiInternal.InternalSignal {
-
-        // Set by javaConnectNotify and friends in mappings between C++ and Java emissions
-        protected int m_cpp_connections = 0;
+        int m_cpp_connections = 0;
         
-        protected final void disconnected() { disconnectNotify(this); }
-        
-        protected final void connected() { connectNotify(this); }
-                           
+        @Override                   
         protected final QObject qobject() {
             return QObject.this;
         }
         
+        @Override
         protected final void initSignals() {
-            __qt_signalInitialization();
+            __qt_signalInitialization(name());
         }       
         
+        @Override
         protected final void emit_helper(Object ... args) {
             m_currentSender = QObject.this;
             super.emit_helper(args);
             m_currentSender = null;
         }
-        
-        protected final int receivers() {
-            return super.receivers() + m_cpp_connections;
-        }
-        
+                
     }
 
     /**
@@ -878,82 +856,17 @@
      * Internal function to initialize the signals and slots mechanism. It will be called automatically by the connect
      * method.
      */
-    protected void __qt_signalInitialization() { /* intentionally empty */
+    protected boolean __qt_signalInitialization(String name) { 
+        return false;
     }
-
-    protected boolean __qt_no_notify = false;        
-    
-    @SuppressWarnings("unused")
-    private void __qt_javaConnectNotify(String name, int cpp_connections) 
-        throws NoSuchFieldException, IllegalAccessException {
-        if (__qt_no_notify) 
-            return ;
-
-        String found = com.trolltech.qt.QtJambiInternal.findSignalMethodSignature(this, name);
-
-        // If the signal is private it will not be mapped to Java, thus not found here.
-        if (found == null)
-            return ;
-            
-        Field f = getClass().getField(name);                        
-        
-        AbstractSignal signal = (AbstractSignal) f.get(this);
-        if (m_cpp_signals_initialized)
-            cpp_connections--;            
-        __qt_signalInitialization(); 
-        
-        if (cpp_connections == 0)
-            return ;
-        
-        if (signal.m_cpp_connections == 0)            
-            signal.connect(this, found);
-        else
-            connectNotify(signal);
-        
-        signal.m_cpp_connections = cpp_connections;
-    }
-            
-    @SuppressWarnings("unused")
-    private void __qt_javaDisconnectNotify(String name, int cpp_connections)
-        throws NoSuchFieldException, IllegalAccessException  {
-        if (__qt_no_notify) 
-            return ;
-        
-        if (name == null)
-            return ;
-                    
-        String found = com.trolltech.qt.QtJambiInternal.findSignalMethodSignature(this, name);
-
-        // If the signal is private it will not be mapped to Java, thus not found here.
-        if (found == null)
-            return ;
-            
-        Field f = getClass().getField(name);                        
-        
-        AbstractSignal signal = (AbstractSignal) f.get(this);
-        if (m_cpp_signals_initialized)
-            cpp_connections--;                
-        __qt_signalInitialization();
-        
-        if (cpp_connections == 0)
-            signal.disconnect(this, found);
-        else
-            disconnectNotify(signal);
-        
-        signal.m_cpp_connections = cpp_connections;
-    }
-
-    protected void connectNotify(AbstractSignal signal) {
-        // empty default implementation
+       
+    public void disconnect() {
+        disconnect(null);
     }
     
-    protected void disconnectNotify(AbstractSignal signal) {
-        // empty default implementation
-    }        
-    
-    public static int receivers(AbstractSignal signal) {
-        return signal.receivers();
-    }        
+    public void disconnect(QObject other) {
+        com.trolltech.qt.QtJambiInternal.disconnect(this, other);
+    }
     
     public java.util.List&lt;QObject> findChildren() { return findChildren(null, (QRegExp) null); }
     public java.util.List&lt;QObject> findChildren(Class&lt;?> cl) { return findChildren(cl, (QRegExp) null); }    
@@ -1018,7 +931,12 @@
         this(argc(args), argv(args)); 
     }
     
-    
+    @Override
+    protected void disposed() {
+        argc = null; argv = null; m_instance = null;
+        super.disposed();
+    }
+        
     public static void invokeLater(java.lang.Runnable runnable) {
         postEvent(new QInvokable(runnable), new QEvent(QInvokable.INVOKABLE_EVENT));
     }
@@ -1029,7 +947,7 @@
     <modify-function class="shell" signature="notify(QObject *, QEvent *)"> 
         <inject-code class="shell">        
         <argument-map position="2" meta-name="event"/>
-	if (arg__1->type() == 512) {
+	if (event->type() == 512) {
             qtjambi_metacall(0, event);
             return true;
         }

@@ -30,6 +30,7 @@ MetaJavaType *MetaJavaType::copy() const
     cpy->setIndirections(indirections());
 	cpy->setInstantiations(instantiations());
     cpy->setArrayElementCount(arrayElementCount());
+    cpy->setOriginalTypeDescription(originalTypeDescription());
 
     cpy->setArrayElementType(arrayElementType() ? arrayElementType()->copy() : 0);
 
@@ -87,7 +88,7 @@ QString MetaJavaArgument::argumentName() const
 {
     QString n = MetaJavaVariable::name();
     if (n.isEmpty()) {
-        return QString("arg__%2").arg(m_argument_index);
+        return QString("arg__%2").arg(m_argument_index + 1);
     }
     return n;
 }
@@ -358,6 +359,45 @@ QString MetaJavaFunction::modifiedName() const
     }
     return name();
 }
+
+QString MetaJavaFunction::javaSignature() const
+{
+    QString s;
+
+    // Attributes...
+    if (isPublic()) s += "public ";
+    else if (isProtected()) s += "protected ";
+    else if (isPrivate()) s += "private ";
+
+//     if (isNative()) s += "native ";
+//     else
+        if (isFinalInJava()) s += "final ";
+    else if (isAbstract()) s += "abstract ";
+
+    if (isStatic()) s += "static ";
+
+    // Return type
+    if (type())
+        s += type()->fullName() + " ";
+    else
+        s += "void ";
+
+    s += name();
+    s += "(";
+
+    for (int i=0; i<m_arguments.size(); ++i) {
+        if (i != 0)
+            s += ", ";
+        s += m_arguments.at(i)->type()->fullName();
+        s += " ";
+        s += m_arguments.at(i)->argumentName();
+    }
+
+    s += ")";
+
+    return s;
+}
+
 
 bool function_sorter(MetaJavaFunction *a, MetaJavaFunction *b)
 {

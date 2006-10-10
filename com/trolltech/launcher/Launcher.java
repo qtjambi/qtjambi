@@ -256,7 +256,7 @@ public class Launcher extends QWidget {
                 return "WindowsXP";
             else
                 return "Windows";
-        } else if (com.trolltech.qt.QSysInfo.macVersion() >= 0) {
+        } else if (com.trolltech.qt.QSysInfo.macVersion() > 0) {
             return "Aqua";
         } else {
             return "Plastique";
@@ -278,7 +278,7 @@ public class Launcher extends QWidget {
             layout.addWidget(button);
             button.clicked.connect(this, "styleChanged()");
 
-            if (styleKey.equals(checkedByDefault))
+            if (styleKey.equalsIgnoreCase(checkedByDefault))
                 button.setChecked(true);
         }
 

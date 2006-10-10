@@ -1,206 +1,210 @@
 /****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $JAVA_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
+ **
+ ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+ **
+ ** This file is part of $PRODUCT$.
+ **
+ ** $JAVA_LICENSE$
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
 
 package com.trolltech.autotests;
 
-import com.trolltech.qtest.*;
+import java.util.*;
+
 import com.trolltech.qt.*;
 
 import com.trolltech.autotests.generated.NativePointerTester;
+import static org.junit.Assert.*;
 
+import org.junit.*;
 
-public class TestNativePointer extends QTestCase {
+public class TestNativePointer extends QApplicationTest {
+    @Test
     public void run_createBooleanPointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Boolean);
             ptr.setBooleanValue(true);
 
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Boolean);
-            QCOMPARE(ptr.indirections(), 1);
-            QCOMPARE(ptr.booleanValue(), true);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Boolean);
+            assertEquals(ptr.indirections(), 1);
+            assertEquals(ptr.booleanValue(), true);
         }
 
         {
-            QNativePointer ptr = new QNativePointer(
-                    QNativePointer.Type.Boolean, 10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Boolean);
-            QCOMPARE(ptr.indirections(), 1);
+            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Boolean, 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Boolean);
+            assertEquals(ptr.indirections(), 1);
             for (int i = 0; i < 10; ++i)
                 ptr.setBooleanAt(i, i % 2 == 0 ? true : false);
             for (int i = 0; i < 10; ++i)
-                QCOMPARE(ptr.booleanAt(i), i % 2 == 0 ? true : false);
+                assertEquals(ptr.booleanAt(i), i % 2 == 0 ? true : false);
         }
     }
 
+    @Test
     public void run_createBytePointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Byte);
             ptr.setByteValue((byte) 100);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Byte);
-            QCOMPARE(ptr.indirections(), 1);
-            QCOMPARE(ptr.byteValue(), (byte) 100);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Byte);
+            assertEquals(ptr.indirections(), 1);
+            assertEquals(ptr.byteValue(), (byte) 100);
         }
 
         {
-            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Byte,
-                    10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Byte);
-            QCOMPARE(ptr.indirections(), 1);
+            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Byte, 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Byte);
+            assertEquals(ptr.indirections(), 1);
             for (int i = 0; i < 10; ++i)
                 ptr.setByteAt(i, (byte) i);
             for (int i = 0; i < 10; ++i)
-                QCOMPARE(ptr.byteAt(i), (byte) i);
+                assertEquals(ptr.byteAt(i), (byte) i);
         }
     }
 
+    @Test
     public void run_createCharPointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Char);
             ptr.setCharValue((char) '!');
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Char);
-            QCOMPARE(ptr.indirections(), 1);
-            QCOMPARE(ptr.charValue(), '!');
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Char);
+            assertEquals(ptr.indirections(), 1);
+            assertEquals(ptr.charValue(), '!');
         }
 
         {
-            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Char,
-                    10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Char);
-            QCOMPARE(ptr.indirections(), 1);
+            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Char, 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Char);
+            assertEquals(ptr.indirections(), 1);
             for (int i = 0; i < 10; ++i)
                 ptr.setCharAt(i, (char) ('a' + i));
             for (int i = 0; i < 10; ++i)
-                QCOMPARE(ptr.charAt(i), (char) ('a' + i));
+                assertEquals(ptr.charAt(i), (char) ('a' + i));
         }
     }
 
+    @Test
     public void run_createShortPointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Short);
             ptr.setShortValue((short) 10000);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Short);
-            QCOMPARE(ptr.indirections(), 1);
-            QCOMPARE(ptr.shortValue(), (short) 10000);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Short);
+            assertEquals(ptr.indirections(), 1);
+            assertEquals(ptr.shortValue(), (short) 10000);
         }
 
         {
-            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Short,
-                    10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Short);
-            QCOMPARE(ptr.indirections(), 1);
+            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Short, 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Short);
+            assertEquals(ptr.indirections(), 1);
             for (int i = 0; i < 10; ++i)
                 ptr.setShortAt(i, (short) (i * i));
             for (int i = 0; i < 10; ++i)
-                QCOMPARE(ptr.shortAt(i), (short) (i * i));
+                assertEquals(ptr.shortAt(i), (short) (i * i));
         }
     }
 
+    @Test
     public void run_createIntPointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Int);
             ptr.setIntValue(10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Int);
-            QCOMPARE(ptr.indirections(), 1);
-            QCOMPARE(ptr.intValue(), 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Int);
+            assertEquals(ptr.indirections(), 1);
+            assertEquals(ptr.intValue(), 10);
         }
 
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Int, 10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Int);
-            QCOMPARE(ptr.indirections(), 1);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Int);
+            assertEquals(ptr.indirections(), 1);
             for (int i = 0; i < 10; ++i)
                 ptr.setIntAt(i, i * i);
             for (int i = 0; i < 10; ++i)
-                QCOMPARE(ptr.intAt(i), i * i);
+                assertEquals(ptr.intAt(i), i * i);
         }
     }
 
+    @Test
     public void run_createLongPointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Long);
             ptr.setLongValue(10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Long);
-            QCOMPARE(ptr.indirections(), 1);
-            QCOMPARE(ptr.longValue(), (long) 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Long);
+            assertEquals(ptr.indirections(), 1);
+            assertEquals(ptr.longValue(), (long) 10);
         }
 
         {
-            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Long,
-                    10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Long);
-            QCOMPARE(ptr.indirections(), 1);
+            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Long, 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Long);
+            assertEquals(ptr.indirections(), 1);
             for (int i = 0; i < 10; ++i)
                 ptr.setLongAt(i, i * i);
             for (int i = 0; i < 10; ++i)
-                QCOMPARE(ptr.longAt(i), (long) (i * i));
+                assertEquals(ptr.longAt(i), (long) (i * i));
         }
     }
 
+    @Test
     public void run_createFloatPointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Float);
             ptr.setFloatValue(10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Float);
-            QCOMPARE(ptr.indirections(), 1);
-            QCOMPARE(ptr.floatValue(), (float) 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Float);
+            assertEquals(ptr.indirections(), 1);
+            assertEquals(ptr.floatValue(), (float) 10);
         }
 
         {
-            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Float,
-                    10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Float);
-            QCOMPARE(ptr.indirections(), 1);
+            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Float, 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Float);
+            assertEquals(ptr.indirections(), 1);
             for (int i = 0; i < 10; ++i)
                 ptr.setFloatAt(i, i * i);
             for (int i = 0; i < 10; ++i)
-                QCOMPARE(ptr.floatAt(i), (float) (i * i));
+                assertEquals(ptr.floatAt(i), (float) (i * i));
         }
     }
 
+    @Test
     public void run_createDoublePointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Double);
             ptr.setDoubleValue(10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Double);
-            QCOMPARE(ptr.indirections(), 1);
-            QCOMPARE(ptr.doubleValue(), (double) 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Double);
+            assertEquals(ptr.indirections(), 1);
+            assertEquals(ptr.doubleValue(), (double) 10);
         }
 
         {
-            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Double,
-                    10);
-            QVERIFY(!ptr.isNull());
-            QCOMPARE(ptr.type(), QNativePointer.Type.Double);
-            QCOMPARE(ptr.indirections(), 1);
+            QNativePointer ptr = new QNativePointer(QNativePointer.Type.Double, 10);
+            assertTrue(!ptr.isNull());
+            assertEquals(ptr.type(), QNativePointer.Type.Double);
+            assertEquals(ptr.indirections(), 1);
             for (int i = 0; i < 10; ++i)
                 ptr.setDoubleAt(i, i * i);
             for (int i = 0; i < 10; ++i)
-                QCOMPARE(ptr.doubleAt(i), (double) i * i);
+                assertEquals(ptr.doubleAt(i), (double) i * i);
         }
     }
 
@@ -211,6 +215,7 @@ public class TestNativePointer extends QTestCase {
         return b.toString();
     }
 
+    @Test
     public void run_createPointer() {
         try {
             String text[] = new String[4];
@@ -221,28 +226,35 @@ public class TestNativePointer extends QTestCase {
 
             QNativePointer ptr = QNativePointer.createCharPointerPointer(text);
 
-            QCOMPARE(pointerToString(ptr.pointerAt(0)), "once");
-            QCOMPARE(pointerToString(ptr.pointerAt(1)), "upon");
-            QCOMPARE(pointerToString(ptr.pointerAt(2)), "a");
-            QCOMPARE(pointerToString(ptr.pointerAt(3)), "time");
+            assertEquals(pointerToString(ptr.pointerAt(0)), "once");
+            assertEquals(pointerToString(ptr.pointerAt(1)), "upon");
+            assertEquals(pointerToString(ptr.pointerAt(2)), "a");
+            assertEquals(pointerToString(ptr.pointerAt(3)), "time");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    
-    public void data_testCreateCharPointer() {
-        defineDataStructure(String.class, "value");
-        addDataSet("simpl", "simple");
-        addDataSet("complex", "A sort of long string that contains some numbers, (1....4) among other stuff...");
-    }    
-    public void run_testCreateCharPointer() {
-        String s = getParameter("value");
-        QNativePointer np = QNativePointer.createCharPointer(s);
-        QCOMPARE(s, pointerToString(np));
+    private Collection<String> data;
+
+    @Before
+    public void setUp() {
+        data = new Vector<String>();
+        data.add("simple");
+        data.add("A sort of long string that contains some numbers, (1....4) among other stuff...");
     }
-    
-    
+
+    @Test
+    public void run_testCreateCharPointer() {
+        for (Iterator iter = data.iterator(); iter.hasNext();) {
+            String s = (String) iter.next();
+
+            QNativePointer np = QNativePointer.createCharPointer(s);
+            assertEquals(s, pointerToString(np));
+        }
+    }
+
+    @Test
     public void run_badAccess() {
         QNativePointer ptrs[] = new QNativePointer[8];
         ptrs[0] = new QNativePointer(QNativePointer.Type.Boolean);
@@ -294,39 +306,35 @@ public class TestNativePointer extends QTestCase {
                         ptr.doubleValue();
                         break;
                     default:
-                        QVERIFY(false, "unhandled case...");
+                        assertEquals(false, "unhandled case...");
                         break;
                     }
                 } catch (Exception e) {
                     caught = true;
                 }
-                QCOMPARE(caught, i != j);
+                assertEquals(caught, i != j);
             }
         }
     }
-    
+
+    @Test
     public void run_testInOut() {
         NativePointerTester npt = new NativePointerTester();
-        
+
         {
             QNativePointer np_int = new QNativePointer(QNativePointer.Type.Int);
             np_int.setIntValue(14);
             int returned = npt.testInt(np_int, 15);
-            QCOMPARE(returned, 14);
-            QCOMPARE(np_int.intValue(), 15);
+            assertEquals(returned, 14);
+            assertEquals(np_int.intValue(), 15);
         }
-        
+
         {
             QNativePointer np_string = new QNativePointer(QNativePointer.Type.String);
             np_string.setStringValue("First");
             String returned = npt.testString(np_string, "Second");
-            QCOMPARE(returned, "First");
-            QCOMPARE(np_string.stringValue(), "Second");
+            assertEquals(returned, "First");
+            assertEquals(np_string.stringValue(), "Second");
         }
     }
-    
-    public static void main(String args[])
-    {
-        runTest(new TestNativePointer());
-    }    
 }

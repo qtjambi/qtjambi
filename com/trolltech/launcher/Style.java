@@ -69,11 +69,12 @@ public class Style extends QWindowsStyle {
         return state.isSet(QStyle.StateFlag.State_Enabled);
     }
 
+    @Override
     public void drawComplexControl(QStyle.ComplexControl cc, QNativePointer opt, QPainter p,
             QWidget widget) {
         switch (cc) {
         case CC_GroupBox:
-            drawGroupBox(QStyleOptionGroupBox.fromNativePointer(opt), p);
+            drawGroupBox(QStyleOptionGroupBox.fromNativePointer(opt), p, widget);
             break;
         default:
             super.drawComplexControl(cc, opt, p, widget);
@@ -81,13 +82,21 @@ public class Style extends QWindowsStyle {
         }
     }
 
+    @Override
     public void drawControl(QStyle.ControlElement ce, QNativePointer opt, QPainter p, QWidget widget) {
-        switch (ce) {
+    	switch (ce) {
         case CE_RadioButton:
             drawRadioButton(QStyleOptionButton.fromNativePointer(opt), p);
             break;
         case CE_PushButton:
             drawPushButton(QStyleOptionButton.fromNativePointer(opt), p);
+            break;
+        case CE_ScrollBarSlider:
+            drawScrollBarSlider(QStyleOptionSlider.fromNativePointer(opt), p);
+            break;
+        case CE_ScrollBarAddLine :
+        case CE_ScrollBarSubLine :
+            drawScrollBarLine(QStyleOptionSlider.fromNativePointer(opt), p);
             break;
         default:
             super.drawControl(ce, opt, p, widget);
@@ -95,7 +104,7 @@ public class Style extends QWindowsStyle {
         }
     }
 
-    private void drawGroupBox(QStyleOptionGroupBox opt, QPainter p) {
+    private void drawGroupBox(QStyleOptionGroupBox opt, QPainter p, QWidget widget) {
 
         p.save();
 
@@ -103,49 +112,57 @@ public class Style extends QWindowsStyle {
 
         QStyle.State state = opt.state();
         String title = opt.text();
+
         QFont font = p.font();
         font.setBold(true);
         p.setFont(font);
 
         QRect rect = opt.rect();
-
-        QRectF text_rect = new QRectF(p.boundingRect(ROUND, 0, rect.width() - ROUND * 2, rect
-                .height(), Qt.AlignmentFlag.AlignTop.value()
-                | Qt.AlignmentFlag.AlignHCenter.value(), title));
-
-        text_rect = text_rect.adjusted(-H_TEXT_PADDING, GROUPBOX_LINE_THICKNESS / 2.0, TEXT_PADDING
-                * 2 + H_TEXT_PADDING, TEXT_PADDING * 2);
-
-        drawShadeButton(p, text_rect, state);
-
-        p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), GROUPBOX_LINE_THICKNESS));
-        p.drawRoundRect(text_rect, (int) (ROUND * 100 / text_rect.width()),
-                (int) (ROUND * 100 / text_rect.height()));
-
-        p.setPen(Style.PEN_BLACK);
-        Style.drawShadowText(p, text_rect.translated(-1, -1), title, 2, 2);
-
-        p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), GROUPBOX_LINE_THICKNESS));
         QPainterPath clipPath = new QPainterPath();
         clipPath.addRect(new QRectF(rect));
-        clipPath.addRect(text_rect);
-        p.setClipPath(clipPath);
 
-        double lt2 = GROUPBOX_LINE_THICKNESS / 2.0;
-        double yoff = p.fontMetrics().ascent();
-        QRectF bound_rect = new QRectF(rect).adjusted(lt2, lt2 + yoff, -lt2, -lt2);
+        double yoff = 0;
 
-        drawButtonOutline(p, bound_rect, state);
+        if(!title.equals("")){
+	        QRectF text_rect = new QRectF(p.boundingRect(ROUND, 0, rect.width() - ROUND * 2, rect
+	                .height(), Qt.AlignmentFlag.AlignTop.value()
+	                | Qt.AlignmentFlag.AlignHCenter.value(), title));
 
+	        text_rect = text_rect.adjusted(-H_TEXT_PADDING, GROUPBOX_LINE_THICKNESS / 2.0, TEXT_PADDING
+	                * 2 + H_TEXT_PADDING, TEXT_PADDING * 2);
+
+	        drawShadeButton(p, text_rect, state);
+
+	        p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), GROUPBOX_LINE_THICKNESS));
+
+	        p.drawRoundRect(text_rect, (int) (ROUND * 100 / text_rect.width()),
+	                (int) (ROUND * 100 / text_rect.height()));
+
+	        p.setPen(Style.PEN_BLACK);
+	        Style.drawShadowText(p, text_rect.translated(-1, -1), title, 2, 2);
+	        clipPath.addRect(text_rect);
+	        yoff = p.fontMetrics().ascent();
+        }
+
+        if(!((QGroupBox)widget).isFlat()){
+            p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), GROUPBOX_LINE_THICKNESS));
+            p.setClipPath(clipPath);
+            double lt2 = GROUPBOX_LINE_THICKNESS / 2.0;
+            QRectF bound_rect = new QRectF(rect).adjusted(lt2, lt2 + yoff, -lt2, -lt2);
+            drawButtonOutline(p, bound_rect, state);
+        }
         p.restore();
     }
 
+    @Override
     public int pixelMetric(QStyle.PixelMetric pm, QNativePointer option, QWidget widget) {
         QStyleOption opt = QStyleOption.fromNativePointer(option);
         switch (pm) {
         case PM_ExclusiveIndicatorWidth:
         case PM_ExclusiveIndicatorHeight:
             return opt.fontMetrics().height();
+        case PM_ScrollBarExtent:
+            return 23;
         default:
             return super.pixelMetric(pm, option, widget);
         }
@@ -186,7 +203,7 @@ public class Style extends QWindowsStyle {
         boolean enabled = state.isSet(QStyle.StateFlag.State_Enabled);
 
         p.setRenderHint(QPainter.RenderHint.Antialiasing);
-
+        rect.adjust(3, 1, -3, -1);
         drawShadeButton(p, rect, state);
         drawButtonOutline(p, rect, state);
 
@@ -208,8 +225,29 @@ public class Style extends QWindowsStyle {
 
     }
 
+    public void drawScrollBarSlider(QStyleOptionSlider opt, QPainter p) {
+    	QRectF rect = new QRectF(opt.rect());
+        p.save();
+        p.eraseRect(rect);
+        QStyle.State state = opt.state();
+        state.clear(QStyle.StateFlag.State_Sunken);
+        drawShadeButton(p, rect, state);
+        drawButtonOutline(p, rect, state);
+        p.restore();
+    }
+
+    public void drawScrollBarLine(QStyleOptionSlider opt, QPainter p) {
+    	QRectF rect = new QRectF(opt.rect());
+        p.save();
+        p.eraseRect(rect);
+        drawShadeButton(p, rect, opt.state());
+        drawButtonOutline(p, rect, opt.state());
+        p.restore();
+    }
+
     public static void drawButtonOutline(QPainter p, QRectF rect, QStyle.State state) {
         p.save();
+        p.setRenderHint(QPainter.RenderHint.Antialiasing);
         if (isEnabled(state))
             p.setPen(PEN_THICK_GREEN);
         else

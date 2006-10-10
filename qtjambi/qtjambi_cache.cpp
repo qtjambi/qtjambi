@@ -82,9 +82,21 @@ QString getQtName(const QString &java_name)
 {
     QReadLocker locker(gQtNameHashLock());
     return gQtNameHash()->value(java_name, QString());
-
 }
 
+Q_GLOBAL_STATIC(QReadWriteLock, gJavaSignatureHashLock);
+Q_GLOBAL_STATIC(NameHash, gJavaSignatureHash);
+void registerJavaSignature(const QString &qt_name, const QString &java_signature)
+{
+    QWriteLocker locker(gJavaSignatureHashLock());
+    gJavaSignatureHash()->insert(qt_name, java_signature);
+}
+
+QString getJavaSignature(const QString &qt_name)
+{
+    QReadLocker locker(gJavaSignatureHashLock());
+    return gJavaSignatureHash()->value(qt_name, QString());
+}
 
 typedef QHash<QString, PtrDestructorFunction> DestructorHash;
 Q_GLOBAL_STATIC(QReadWriteLock, gDestructorHashLock);
@@ -95,7 +107,7 @@ void registerDestructor(const QString &java_name, PtrDestructorFunction destruct
     gDestructorHash()->insert(java_name, destructor);
 }
 
-PtrDestructorFunction destructor(const QString &java_name) 
+PtrDestructorFunction destructor(const QString &java_name)
 {
     QReadLocker locker(gDestructorHashLock());
     return gDestructorHash()->value(java_name, 0);
@@ -136,10 +148,6 @@ jclass resolveClass(JNIEnv *env, const char *className, const char *package)
     }
 
     if (returned == 0) {
-        QWriteLocker locker(gStaticLock());
-
-        QTJAMBI_COUNTCACHEMISSES(className);
-
 #endif // QTJAMBI_NOCACHE
 
         QByteArray ba(package);
@@ -148,6 +156,9 @@ jclass resolveClass(JNIEnv *env, const char *className, const char *package)
         returned = env->FindClass(ba.constData());
 
 #ifndef QTJAMBI_NOCACHE
+        QWriteLocker locker(gStaticLock());
+        QTJAMBI_COUNTCACHEMISSES(className);
+
         if (returned != 0 && !gClassHash()->contains(key)) {
             char *tmp = new char[strlen(className) + 1];
             qstrcpy(tmp, className);
@@ -212,16 +223,17 @@ jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature,
 #ifndef QTJAMBI_NOCACHE
 
         {
-            QWriteLocker locker(gStaticLock());
-
-            QTJAMBI_COUNTCACHEMISSES(fieldName);
-
 #endif // QTJAMBI_NOCACHE
             if (!isStatic)
                 returned = env->GetFieldID(clazz, fieldName, signature);
             else
                 returned = env->GetStaticFieldID(clazz, fieldName, signature);
+
 #ifndef QTJAMBI_NOCACHE
+
+            QWriteLocker locker(gStaticLock());
+
+            QTJAMBI_COUNTCACHEMISSES(fieldName);
 
             if (returned != 0 && !gFieldHash()->contains(key)) {
                 char *tmp = new char[strlen(fieldName) + 1];
@@ -307,16 +319,16 @@ jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signatu
 #ifndef QTJAMBI_NOCACHE
 
         if (clazz != 0) {
-            QWriteLocker locker(gStaticLock());
-
-            QTJAMBI_COUNTCACHEMISSES(methodName);
-
 #endif // QTJAMBI_NOCACHE
             if (!isStatic)
                 returned = env->GetMethodID(clazz, methodName, signature);
             else
                 returned = env->GetStaticMethodID(clazz, methodName, signature);
 #ifndef QTJAMBI_NOCACHE
+
+            QWriteLocker locker(gStaticLock());
+
+            QTJAMBI_COUNTCACHEMISSES(methodName);
 
             if (returned != 0 && !gMethodHash()->contains(key)) {
                 char *tmp = new char[strlen(methodName) + 1];
@@ -460,6 +472,23 @@ void removeFunctionTable(QtJambiFunctionTable *table)
 {
     QWriteLocker locker(gStaticLock());
     functionTableCache.remove(table->className());
+}
+
+
+StaticCache *StaticCache::instance(JNIEnv *env)
+{
+    // chances are that number of envs are so few that a linear search is faster than
+    // time spent doing hashing and collision resolution.
+    for (int i=0; i<m_caches.size(); ++i)
+        if (env == m_caches.at(i)->env)
+            return m_caches.at(i);
+
+    StaticCache *s = new StaticCache;
+    memset(s, 0, sizeof(StaticCache));
+    s->env = env;
+
+    m_caches << s;
+    return s;
 }
 
 
@@ -845,22 +874,58 @@ void StaticCache::resolveQObject_internal()
     QObject.class_ref = ref_class(env->FindClass("com/trolltech/qt/core/QObject"));
     Q_ASSERT(QObject.class_ref);
 
-    QObject.javaConnectNotify = env->GetMethodID(QObject.class_ref, "__qt_javaConnectNotify",
-        "(Ljava/lang/String;I)V");
-    Q_ASSERT(QObject.javaConnectNotify);
-    QObject.javaDisconnectNotify = env->GetMethodID(QObject.class_ref, "__qt_javaDisconnectNotify",
-        "(Ljava/lang/String;I)V");
-    Q_ASSERT(QObject.javaDisconnectNotify);
+    QObject.disconnect = env->GetMethodID(QObject.class_ref, "disconnect",
+                                          "(Lcom/trolltech/qt/core/QObject;)V");
 }
 
 void StaticCache::resolveInternalSignal_internal()
 {
     Q_ASSERT(!InternalSignal.class_ref);
 
-    InternalSignal.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtJambiInternal$InternalSignal"));
+    InternalSignal.class_ref = 
+        ref_class(env->FindClass("com/trolltech/qt/QtJambiInternal$InternalSignal"));
     Q_ASSERT(InternalSignal.class_ref);
 
-    InternalSignal.m_in_cpp_emission = env->GetFieldID(InternalSignal.class_ref, "m_in_cpp_emission", "Z");
+    InternalSignal.m_in_cpp_emission = env->GetFieldID(InternalSignal.class_ref, 
+                                                       "m_in_cpp_emission", "Z");
+    Q_ASSERT(InternalSignal.m_in_cpp_emission);
+
+    InternalSignal.connect = env->GetMethodID(InternalSignal.class_ref, 
+                                              "connect",
+                                              "(Lcom/trolltech/qt/core/QObject;"
+                                               "Ljava/lang/String;"
+                                               "Lcom/trolltech/qt/core/Qt$ConnectionType;)Z");
+    Q_ASSERT(InternalSignal.connect);
+
+    InternalSignal.connectSignalMethod = env->GetMethodID(InternalSignal.class_ref, 
+                                                          "connectSignalMethod",
+                                                          "(Ljava/lang/reflect/Method;Ljava/lang/Object;I)Z");
+    Q_ASSERT(InternalSignal.connectSignalMethod);
+
+    InternalSignal.removeConnection = env->GetMethodID(InternalSignal.class_ref,
+                                                       "removeConnection",
+                                                       "(Ljava/lang/Object;Ljava/lang/reflect/Method;)Z");
+    Q_ASSERT(InternalSignal.removeConnection);
+}
+
+void StaticCache::resolveQtJambiInternal_internal()
+{
+    QtJambiInternal.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtJambiInternal"));
+    Q_ASSERT(QtJambiInternal.class_ref);
+
+    QtJambiInternal.lookupSignal = env->GetStaticMethodID(QtJambiInternal.class_ref, 
+                                                          "lookupSignal",
+                                                          "(Lcom/trolltech/qt/core/QObject;"
+                                                           "Ljava/lang/String;"
+                                                          ")Lcom/trolltech/qt/QtJambiInternal$InternalSignal;");
+    Q_ASSERT(QtJambiInternal.lookupSignal);
+
+    QtJambiInternal.lookupSlot = env->GetStaticMethodID(QtJambiInternal.class_ref, 
+                                                        "lookupSlot",
+                                                        "(Lcom/trolltech/qt/core/QObject;"
+                                                         "Ljava/lang/String;"
+                                                        ")Ljava/lang/reflect/Method;");
+    Q_ASSERT(QtJambiInternal.lookupSlot);
 }
 
 void StaticCache::resolveString_internal()

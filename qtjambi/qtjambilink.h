@@ -62,7 +62,8 @@ class QTJAMBI_EXPORT QtJambiLink
           m_created_by_java(false),
           m_object_invalid(false),
           m_in_cache(false),
-          m_destructor_function(0)          
+          m_connected_to_java(false),
+          m_destructor_function(0)
     {
     };
 
@@ -124,9 +125,11 @@ public:
     inline bool readyForDelete() const { return !isQObject() || (hasBeenFinalized() && qobjectDeleted()); }
     inline bool qobjectDeleted() const { return m_qobject_deleted; }
     inline PtrDestructorFunction destructorFunction() const { return m_destructor_function; }
+    inline bool connectedToJava() const { return m_connected_to_java; }
     inline void setAsQObjectDeleted() { m_qobject_deleted = true; }
     inline void setAsFinalized() { m_has_been_finalized = true; }
     inline void setDestructorFunction(PtrDestructorFunction dfnc) { m_destructor_function = dfnc; }
+    inline void setConnectedToJava(bool c) { m_connected_to_java = c; }
 
     inline bool createdByJava() const { return m_created_by_java; }
     inline void setCreatedByJava(bool cbj) { m_created_by_java = cbj; }
@@ -174,6 +177,7 @@ private:
     uint m_created_by_java : 1;
     uint m_object_invalid : 1;
     uint m_in_cache : 1;
+    uint m_connected_to_java : 1;
 
     PtrDestructorFunction m_destructor_function;
 };

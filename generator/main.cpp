@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
     QString pp_file = ".preprocessed.tmp";
     QStringList rebuild_classes;
     QString juic_file = "../juic/juic.xml";
+    QString doc_dir = "../../main/doc/jdoc";
     bool print_stdout = false;
 
     bool no_java = false;
@@ -53,6 +54,7 @@ int main(int argc, char *argv[])
     bool dump_object_tree = false;
     bool build_class_list = false;
     bool build_qdoc_japi = false;
+    bool docs_enabled = false;
 
     for (int i=1; i<argc; ++i) {
         QString arg(argv[i]);
@@ -98,6 +100,11 @@ int main(int argc, char *argv[])
             QStringList classes = QString(argv[i+1]).split(",", QString::SkipEmptyParts);
             TypeDatabase::instance()->setRebuildClasses(classes);
             ++i;
+        } else if (arg.startsWith("--jdoc-dir")) {
+            Q_ASSERT(argc < i);
+            doc_dir = argv[++i];
+        } else if (arg.startsWith("--jdoc-enabled")) {
+            docs_enabled = true;
         } else if (arg.startsWith("--test-typeparser")) {
             Q_ASSERT(argc > i);
             QString s = argv[i+1];
@@ -173,6 +180,8 @@ int main(int argc, char *argv[])
 
     if (!no_java) {
         java_generator = new JavaGenerator;
+        java_generator->setDocumentationDirectory(doc_dir);
+        java_generator->setDocumentationEnabled(docs_enabled);
         generators << java_generator;
         contexts << "JavaGenerator";
     }

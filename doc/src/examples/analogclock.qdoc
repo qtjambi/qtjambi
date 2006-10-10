@@ -144,5 +144,8 @@
     when the example is run:
 
     \skipto main(
+    \printto REMOVE-START
+    \skipto REMOVE-END
+    \skipto }
     \printuntil /^\}/
 */

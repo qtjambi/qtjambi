@@ -51,6 +51,13 @@
     with the wiggly widget. The widget's default text is "Hello
     world!".
 
+    \skipto main(
+    \printuntil }
+    \printuntil /^\}/
+
+    We also provide a \c main() function to create and show the dialog
+    widget when the example is run.
+
     \section1 WigglyWidget Class Implementation
 
     \quotefromfile Wiggly.java

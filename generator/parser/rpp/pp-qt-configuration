@@ -20,6 +20,4 @@
 #define Q_OS_OS2
 #define ULONG_MAX Integer.MAX_VALUE
 
-
-
-
+#define QT_JAMBI_RUN

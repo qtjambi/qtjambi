@@ -19,6 +19,8 @@
 
 #include <QTextStream>
 
+class DocParser;
+
 class JavaGenerator : public Generator
 {
     Q_OBJECT
@@ -61,7 +63,7 @@ public:
     void retrieveModifications(const MetaJavaFunction *f, const MetaJavaClass *java_class,
         QHash<int, bool> *disabled_params, uint *exclude_attributes, uint *include_attributes) const;
     QString functionSignature(const MetaJavaFunction *java_function,
-        uint included_attributes, uint excluded_attributes);
+        uint included_attributes, uint excluded_attributes, Option option = NoOption);
     void setupForFunction(const MetaJavaFunction *java_function, uint *included_attributes, uint *excluded_attributes,
         QHash<int, bool> *disabled_params) const;
 
@@ -79,11 +81,20 @@ public:
                && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateJava);
     }
 
+    QString documentationDirectory() const { return m_doc_directory; }
+    void setDocumentationDirectory(const QString &docDir) { m_doc_directory = docDir; }
+
+    bool documentationEnabled() const { return m_docs_enabled; }
+    void setDocumentationEnabled(bool e) { m_docs_enabled = e; }
+
 private:
     QString subDirectoryForPackage(const QString &package) const { return QString(package).replace(".", "/"); }
 
 protected:
     QString m_package_name;
+    QString m_doc_directory;
+    DocParser *m_doc_parser;
+    bool m_docs_enabled;
 };
 
 #endif // JAVAGENERATOR_H

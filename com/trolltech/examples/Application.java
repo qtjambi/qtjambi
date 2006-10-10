@@ -240,11 +240,12 @@ public class Application extends QMainWindow {
     {
         if (textEdit.document().isModified()) {
             QMessageBox.StandardButton ret = QMessageBox.warning(this, tr("Application"),
-                                           tr("The document has been modified.\n" +
-                                              "Save your changes?"),
-                                          new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok,
-                                                  QMessageBox.StandardButton.Cancel));
-            if (ret == QMessageBox.StandardButton.Yes) {
+                                                                 tr("The document has been modified.\n" +
+                                                                    "Save your changes?"),
+                                                                 new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok,
+                                                                                                 QMessageBox.StandardButton.Discard, 
+                                                                                                 QMessageBox.StandardButton.Cancel));
+            if (ret == QMessageBox.StandardButton.Ok) {
                 return save();
             } else if (ret == QMessageBox.StandardButton.Cancel) {
                 return false;

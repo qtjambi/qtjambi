@@ -9,6 +9,8 @@ mac:CONFIG -= app_bundle
 INCLUDEPATH += .
 INCLUDEPATH += ../common
 
+unix:CONFIG += debug_and_release
+
 CONFIG += console
 RESOURCES += generator.qrc
 
@@ -26,6 +28,7 @@ HEADERS += \
 	cppgenerator.h \
 	cppimplgenerator.h \
 	customtypes.h \
+	docparser.h \
 	javagenerator.h \
 	juicdatagenerator.h \
 	reporthandler.h \
@@ -44,6 +47,7 @@ SOURCES += \
 	cppgenerator.cpp \
 	cppimplgenerator.cpp \
 	customtypes.cpp \
+	docparser.cpp \
 	juicdatagenerator.cpp \
 	main.cpp \
 	reporthandler.cpp \

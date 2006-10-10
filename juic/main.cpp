@@ -36,7 +36,7 @@ static char ENV_SPLITTER = ':';
 #endif
 
 enum JuicError {
-    NoError                         = 0x00, 
+    NoError                         = 0x00,
     HelpInvoked                     = 0x01,
     NoClassName                     = 0x02,
     CannotMakeOutputDirectory       = 0x03,
@@ -46,9 +46,11 @@ enum JuicError {
     DriverFailed                    = 0x07
 };
 
-struct Options 
+struct Options
 {
-    Options() : process_all(false), process_directory(false), force(false), prefix(QLatin1String("Ui_")) {}
+    Options() : process_all(false), process_directory(false), force(false) {
+        prefix = QLatin1String("Ui_");
+    }
 
     QString application_name;
     QString file_name;
@@ -182,17 +184,17 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    return runJuic(QFileInfo(options.file_name), options);    
+    return runJuic(QFileInfo(options.file_name), options);
 }
 
-QStringList resolveFileInfoList(char *, const QStringList &list) 
+QStringList resolveFileInfoList(char *, const QStringList &list)
 {
     QStringList file_infos;
     foreach (QString item, list) {
         QFileInfo info(item);
         if (info.exists())
             file_infos.append(info.absoluteFilePath());
-        else 
+        else
             file_infos.append(item.replace('\\', '/'));
     }
 
@@ -309,17 +311,23 @@ JuicError runJuic(const QFileInfo &uiFile, const Options &options)
     QFileInfo outFileInfo(outFileName);
 
     // File already generated
-    if (!options.process_all 
+    if (!options.process_all
         && outFileInfo.exists()
         && uiFile.lastModified() < QFileInfo(outFileName).lastModified()) {
         return NoError;
     }
 
-    if (outFileInfo.exists() 
+    if (outFileInfo.exists()
         && !options.force
         && !isGeneratedFile(outFileInfo)) {
         fprintf(stderr, "%s: Skipping '%s': Not a generated file\n", qPrintable(options.application_name), qPrintable(outFileName));
         return NotAGeneratedFile;
+    }
+
+    // Remove the existing file. This is needed for Windows so the case of the letters in
+    // the file name are the same as in the class name just in case it has changed   
+    if (outFileInfo.exists()) {
+        QFile::remove(outFileInfo.filePath());
     }
 
     // Open the output file.
@@ -370,18 +378,18 @@ static bool has_match(const QFileInfo &file, const QString &pattern)
     QStringList segments = pattern.split(QLatin1Char('*'));
     int pos = -1;
     foreach (QString segment, segments) {
-        if (!segment.isEmpty()) {            
+        if (!segment.isEmpty()) {
             int new_pos = potential.indexOf(segment, pos < 0 ? 0 : pos);
             if ((new_pos < 0) // no match
                 || (new_pos > 0 && pos < 0)) { // match too far into string for first segment
-                return false; 
+                return false;
             }
             pos = new_pos + segment.length();
 
         } else if (pos == -1) {
             pos = 0;
         }
-        
+
     }
 
     return (segments.last().isEmpty() || pos >= potential.length());
@@ -395,11 +403,11 @@ bool shouldProcess(const QFileInfo &file, const Options &options)
         return true;
     } else if (!included.isEmpty()) {
         bool found = false;
-        foreach (QString info, included) {            
+        foreach (QString info, included) {
             if (has_match(file, info)) {
                 found = true;
                 break;
-            } 
+            }
         }
 
         if (!found)
@@ -409,9 +417,9 @@ bool shouldProcess(const QFileInfo &file, const Options &options)
             if (has_match(file, info))
                 return false;
         }
-    } 
+    }
 
-    return true;    
+    return true;
 }
 
 
@@ -424,8 +432,8 @@ JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const Opti
         if (shouldProcess(uiFiles.at(i), options)) {
             Options new_options = options;
             if (new_options.out_dir.isEmpty())
-                new_options.out_dir = rootPath;             
-           
+                new_options.out_dir = rootPath;
+
             JuicError err = process(rootPath, uiFiles.at(i), new_options);
             if (err != NoError)
                 error = err;

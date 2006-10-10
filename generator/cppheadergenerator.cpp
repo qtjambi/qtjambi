@@ -38,7 +38,8 @@ void CppHeaderGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField
 void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const MetaJavaFunction *signal)
 {
     s << "    ";
-    writeFunctionSignature(s, signal, 0, signalWrapperPrefix());
+    writeFunctionSignature(s, signal, 0, signalWrapperPrefix(), 
+                           Option(OriginalName | OriginalTypeDescription));
     s << ";" << endl;
 }
 

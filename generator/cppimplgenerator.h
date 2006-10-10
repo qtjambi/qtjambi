@@ -17,6 +17,13 @@
 #include "cppgenerator.h"
 #include "metajava.h"
 
+enum JNISignatureFormat {
+    Underscores,        // Used in the jni exported function names
+    SlashesAndStuff     // Used for looking up functions through jni
+};
+
+QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format = Underscores);
+
 class CppImplGenerator : public CppGenerator
 {
     Q_OBJECT
@@ -30,8 +37,6 @@ public:
 
     void writeAssignment(QTextStream &s, const QString &destName, const QString &srcName,
         const MetaJavaType *java_type);
-    void writeSetupConnections(QTextStream &s, const MetaJavaClass *java_class,
-        const QString &sender_name, const QString &receiver_name);
     void writeSignalInitialization(QTextStream &s, const MetaJavaClass *java_class);
     void writeCodeInjections(QTextStream &s, const MetaJavaFunction *java_function,
         const MetaJavaClass *implementor, CodeSnip::Position position);

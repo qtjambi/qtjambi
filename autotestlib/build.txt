@@ -8,7 +8,7 @@
   </value-type>
 
   <value-type name="Variants">
-    <include file-name="Variants.h" location="local"/>
+    <include file-name="variants.h" location="local"/>
   </value-type>
 
   <object-type name="SignalsAndSlots">

@@ -41,11 +41,6 @@ public:
         slot3_called = 0;
     }
 
-    void disconnectAll()
-    {
-        disconnect(this);
-    }
-
     void disconnectSignals(SignalsAndSlots *obj)
     {
         disconnect(this, SIGNAL(signal1()), obj, SLOT(slot1_1()));
@@ -67,6 +62,70 @@ public:
     void emit_signal_1() { emit signal1(); }
     void emit_signal_2(int i) { emit signal2(i); }
     void emit_signal_3(const QString &str) { emit signal3(str); }
+
+    bool connectSignal1ToSlot4() {
+        return connect(this, SIGNAL(signal1()), this, SLOT(slot4()));
+    }
+
+    bool connectSignal4ToSlot1_1() {
+        return connect(this, SIGNAL(signal4), this, SLOT(slot1_1()));
+    }
+
+    bool connectSignal4ToSlot4() {
+        return connect(this, SIGNAL(signal4), this, SLOT(slot4()));
+    }
+
+    bool connectSignal5ToSlot3()
+    {
+        return connect(this, SIGNAL(signal5), this, SLOT(slot3(const QString &)));
+    }
+
+    void connectSignal1ToSlot1_1() 
+    {
+        connectSignal1ToSlot1_1In(this);
+    }
+
+    void connectSignal1ToSlot1_1In(QObject *other) 
+    {
+        connect(this, SIGNAL(signal1()), other, SLOT(slot1_1()));
+    }
+
+    void disconnectSignal1FromSlot1_1() 
+    {
+        disconnect(this, SIGNAL(signal1()), this, SLOT(slot1_1()));
+    }
+
+    void connectSignal2ToSlot2() 
+    {
+        connect(this, SIGNAL(signal2(int)), this, SLOT(slot2(int)));
+    }
+
+    void disconnectAllFromObject()
+    {
+        disconnect();
+    }
+
+    void disconnectAllFromSignal1()
+    {
+        disconnect(SIGNAL(signal1()));
+    }
+
+    void disconnectReceiverFromSignal1(QObject *receiver)
+    {
+        disconnect(SIGNAL(signal1()), receiver);
+    }
+
+    void disconnectAllFromReceiver(QObject *receiver) 
+    {
+        disconnect(0, receiver);
+    }
+
+    static SignalsAndSlots *createConnectedObject() 
+    {
+        SignalsAndSlots *sas = new SignalsAndSlots;
+        QObject::connect(sas, SIGNAL(signal1()), sas, SLOT(slot1_1()));
+        return sas;
+    }
 
     int slot1_1_called;
     int slot1_2_called;

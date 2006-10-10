@@ -60,7 +60,7 @@ public class CachedTable extends QDialog {
         revertButton = new QPushButton(tr("&Revert"));
         quitButton = new QPushButton(tr("Quit"));
 
-        submitButton.clicked.connect(this, "submit()");
+        submitButton.clicked.connect(this, "submit()");               
         revertButton.clicked.connect(model, "revertAll()");
         quitButton.clicked.connect(this, "close()");
 

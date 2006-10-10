@@ -13,12 +13,15 @@
 
 #include "javagenerator.h"
 #include "reporthandler.h"
+#include "docparser.h"
 
 #include <QDir>
 #include <QTextStream>
 #include <QDebug>
 
 JavaGenerator::JavaGenerator()
+    : m_doc_parser(0),
+      m_docs_enabled(false)
 {
 }
 
@@ -507,7 +510,8 @@ void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
 }
 
 QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
-                                         uint included_attributes, uint excluded_attributes)
+                                         uint included_attributes, uint excluded_attributes,
+                                         Option option)
 {
     MetaJavaArgumentList arguments = java_function->arguments();
     int argument_count = arguments.size();
@@ -516,12 +520,12 @@ QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
     QTextStream s(&result);
     QString functionName = java_function->name();
     // The actual function
-    writeFunctionAttributes(s, java_function, included_attributes, excluded_attributes,
-        java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
-
+    if (!(java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal()))
+        option = Option(option | SkipReturnType);
+    writeFunctionAttributes(s, java_function, included_attributes, excluded_attributes, option);
 
     s << functionName << "(";
-    writeFunctionArguments(s, java_function, argument_count);
+    writeFunctionArguments(s, java_function, argument_count, option);
     s << ")";
 
     return result;
@@ -556,6 +560,10 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     if (!java_function->ownerClass()->isInterface()) {
         writeEnumOverload(s, java_function, included_attributes, excluded_attributes);
         writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);
+    }
+
+    if (m_doc_parser) {
+        s << m_doc_parser->documentation(java_function) << endl;
     }
 
     if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
@@ -754,6 +762,10 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 {
     ReportHandler::debugSparse("Generating class: " + java_class->name());
 
+    if (m_docs_enabled) {
+        m_doc_parser = new DocParser(m_doc_directory + "/" + java_class->name().toLower() + ".jdoc");
+    }
+
     s << "package " << java_class->package() << ";" << endl << endl;
 
     QList<Include> includes = java_class->typeEntry()->extraIncludes();
@@ -764,6 +776,10 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     }
 
     s << endl;
+
+    if (m_doc_parser) {
+        s << m_doc_parser->documentation(java_class) << endl << endl;
+    }
 
     if (java_class->isInterface()) {
         s << "public interface ";
@@ -900,8 +916,12 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // The __qt_signalInitialization() function
     if (signal_funcs.size() > 0) {
         s << endl
-          << "   protected void __qt_signalInitialization() { __qt_no_notify = true; __qt_signalInitialization(nativeId()); __qt_no_notify = false; m_cpp_signals_initialized = true; } " << endl
-          << "   private native void __qt_signalInitialization(long ptr);" << endl;
+          << "   @Override" << endl
+          << "   protected boolean __qt_signalInitialization(String name) {" << endl
+          << "       return (__qt_signalInitialization(nativeId(), name)" << endl
+          << "               || super.__qt_signalInitialization(name));" << endl
+          << "   } " << endl
+          << "   private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
     }
 
     // Add dummy constructor for use when constructing subclasses
@@ -939,6 +959,11 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     writeExtraFunctions(s, java_class);
 
     s << "}" << endl;
+
+    if (m_docs_enabled) {
+        delete m_doc_parser;
+        m_doc_parser = 0;
+    }
 }
 
 
@@ -966,17 +991,19 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
 //         }
     }
 
-    if (java_function->isEmptyFunction()) s << "@Deprecated ";
+    if ((options & SkipAttributes) == 0) {
+        if (java_function->isEmptyFunction()) s << "@Deprecated ";
 
-    if (attr & MetaJavaAttributes::Public) s << "public ";
-    else if (attr & MetaJavaAttributes::Protected) s << "protected ";
-    else if (attr & MetaJavaAttributes::Private) s << "private ";
+        if (attr & MetaJavaAttributes::Public) s << "public ";
+        else if (attr & MetaJavaAttributes::Protected) s << "protected ";
+        else if (attr & MetaJavaAttributes::Private) s << "private ";
 
-    if (attr & MetaJavaAttributes::Native) s << "native ";
-    else if (attr & MetaJavaAttributes::FinalInJava) s << "final ";
-    else if (attr & MetaJavaAttributes::Abstract) s << "abstract ";
+        if (attr & MetaJavaAttributes::Native) s << "native ";
+        else if (attr & MetaJavaAttributes::FinalInJava) s << "final ";
+        else if (attr & MetaJavaAttributes::Abstract) s << "abstract ";
 
-    if (attr & MetaJavaAttributes::Static) s << "static ";
+        if (attr & MetaJavaAttributes::Static) s << "static ";
+    }
 
     if ((options & SkipReturnType) == 0) {
         s << translateType(java_function->type(), (Option) options);

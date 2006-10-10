@@ -178,4 +178,14 @@
     number of decimal places in each of the QDoubleSpinBox widgets. Each one
     of these will be updated automatically when their
     \l{QDoubleSpinBox::decimals}{decimals} property is changed.
+
+    Finally, we provide a \c main() function to create and show the \c
+    SpinBoxes widget when the example is run:
+
+    \skipto main(
+    \printuntil }
+    \skipto REMOVE-END
+    \skipto }
+    \printuntil /^\}/
+
 */

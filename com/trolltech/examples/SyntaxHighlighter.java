@@ -39,7 +39,8 @@ public class SyntaxHighlighter extends QMainWindow {
         setCentralWidget(editor);
         resize(640, 480);
         setWindowTitle(tr("Syntax Highlighter"));
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+        setWindowIcon(new QIcon(
+                      "classpath:com/trolltech/images/qt-logo.png"));
     }
 
     public void about() {
@@ -86,8 +87,11 @@ public class SyntaxHighlighter extends QMainWindow {
 
         new Highlighter(editor.document());
 
-        QFile file = new QFile("classpath:com/trolltech/examples/SyntaxHighlighter.java");
-        if (file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text)))
+        QFile file = new QFile(
+               "classpath:com/trolltech/examples/SyntaxHighlighter.java");
+
+        if (file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, 
+                                         QFile.OpenModeFlag.Text)))
             editor.setPlainText(file.readAll().toString());
     }
 
@@ -144,47 +148,68 @@ public class SyntaxHighlighter extends QMainWindow {
         QTextCharFormat quotationFormat = new QTextCharFormat();
         QTextCharFormat functionFormat = new QTextCharFormat();
 
-        public Highlighter(QTextDocument doc) {
-            super(doc);
+        public Highlighter(QTextDocument parent) {
 
-            QBrush brush = new QBrush(Qt.BrushStyle.SolidPattern);
-            brush.setColor(QColor.darkBlue);
+            super(parent);
+
+            HighlightingRule rule; 
+            QBrush brush;
+            QRegExp pattern;
+
+            brush = new QBrush(QColor.darkBlue,Qt.BrushStyle.SolidPattern);
             keywordFormat.setForeground(brush);
             keywordFormat.setFontWeight(QFont.Weight.Bold.value());
 
             // All the java keywords
-            String[] keywords = { "abstract", "continue", "for", "new", "switch", "assert",
-                    "default", "goto", "package", "synchronized", "boolean", "do", "if", "private",
-                    "this", "break", "double", "implements", "protected", "throw", "byte", "else",
-                    "import", "public", "throws", "case", "enum", "instanceof", "return",
-                    "transient", "catch", "extends", "int", "short", "try", "char", "final",
-                    "interface", "static", "void", "class", "finally", "long", "strictfp",
-                    "volatile", "const", "float", "native", "super", "while" };
+            String[] keywords = { "abstract", "continue", "for", "new", 
+                                  "switch", "assert", "default", "goto", 
+                                  "package", "synchronized", "boolean",
+                                  "do", "if", "private", "this", "break", 
+                                  "double", "implements", "protected", 
+                                  "throw", "byte", "else", "import", 
+                                  "public", "throws", "case", "enum", 
+                                  "instanceof", "return", "transient", 
+                                  "catch", "extends", "int", "short", 
+                                  "try", "char", "final", "interface", 
+                                  "static", "void", "class", "finally", 
+                                  "long", "strictfp", "volatile", "const", 
+                                  "float", "native", "super", "while" };
 
             for (String keyword : keywords) {
-                highlightingRules.add(new HighlightingRule(new QRegExp("\\b" + keyword + "\\b"),
-                        keywordFormat));
+                pattern = new QRegExp("\\b" + keyword + "\\b");
+                rule = new HighlightingRule(pattern, keywordFormat);
+                highlightingRules.add(rule);
             }
 
             // Any word starting with Q
-            classFormat.setFontWeight(QFont.Weight.Bold.value());
-            classFormat.setForeground(new QBrush(QColor.darkMagenta));
-            highlightingRules
-                    .add(new HighlightingRule(new QRegExp("\\bQ[A-Za-z]+\\b"), classFormat));
+            brush = new QBrush(QColor.darkMagenta);
+            pattern = new QRegExp("\\bQ[A-Za-z]+\\b");
+            classFormat.setForeground(brush);
+            classFormat.setFontWeight(QFont.Weight.Bold.value());            
+            rule = new HighlightingRule(pattern, classFormat);
+            highlightingRules.add(rule);
 
             // Comment starting with //
-            commentFormat.setForeground(new QBrush(QColor.gray, Qt.BrushStyle.SolidPattern));
-            highlightingRules.add(new HighlightingRule(new QRegExp("//[^\n]*"), commentFormat));
+            brush = new QBrush(QColor.gray, Qt.BrushStyle.SolidPattern);
+            pattern = new QRegExp("//[^\n]*");
+            commentFormat.setForeground(brush);
+            rule = new HighlightingRule(pattern, commentFormat);
+            highlightingRules.add(rule);
 
             // String
-            quotationFormat.setForeground(new QBrush(QColor.blue, Qt.BrushStyle.SolidPattern));
-            highlightingRules.add(new HighlightingRule(new QRegExp("\".*\""), quotationFormat));
+            brush = new QBrush(QColor.blue, Qt.BrushStyle.SolidPattern);
+            pattern = new QRegExp("\".*\"");
+            quotationFormat.setForeground(brush);
+            rule = new HighlightingRule(pattern, quotationFormat);
+            highlightingRules.add(rule);
 
             // Function
+            brush = new QBrush(QColor.darkGreen, Qt.BrushStyle.SolidPattern);
+            pattern = new QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
+            functionFormat.setForeground(brush);
             functionFormat.setFontItalic(true);
-            functionFormat.setForeground(new QBrush(QColor.darkGreen, Qt.BrushStyle.SolidPattern));
-            highlightingRules.add(new HighlightingRule(new QRegExp("\\b[A-Za-z0-9_]+(?=\\()"),
-                    functionFormat));
+            rule = new HighlightingRule(pattern, functionFormat);
+            highlightingRules.add(rule);
 
             // Block comment
             commentStartExpression = new QRegExp("/\\*");

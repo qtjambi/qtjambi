@@ -56,6 +56,11 @@
   <rejection class="QApplication" function-name="compressEvent"/>
   <rejection class="QBrush" function-name="cleanUp"/>
   <rejection class="QPictureIO" function-name="defineIOHandler"/>
+  <rejection class="QPolygon" function-name="putPoints"/>
+  <rejection class="QPolygon" function-name="setPoints"/>
+  <rejection class="QPolygon" function-name="setPoint"/>
+  <rejection class="QPolygon" function-name="points"/>
+  <rejection class="QPolygon" function-name="point"/>
   <rejection class="QPrinter" function-name="printerSelectionOption"/>
   <rejection class="QPrinter" function-name="setPrinterSelectionOption"/>
   <rejection class="QWidget" function-name="create"/>
@@ -495,7 +500,6 @@
   <value-type name="QPalette"/>
   <value-type name="QKeySequence"/> 
   <value-type name="QPicture"/>
-  <value-type name="QPolygon"/>
   <value-type name="QPolygonF"/>
   <value-type name="QRegion"/>
   <value-type name="QTextBlock"/>
@@ -503,6 +507,12 @@
   <value-type name="QTextCharFormat"/>
   <value-type name="QTextFormat"/>
   <value-type name="QTextListFormat"/>
+
+  <value-type name="QPolygon">
+    <modify-function signature="QPolygon(int, const int *)">
+      <remove/>
+    </modify-function>
+  </value-type>
 
   <value-type name="QIcon">
     <modify-function signature="pixmap(int,QIcon::Mode,QIcon::State)const">

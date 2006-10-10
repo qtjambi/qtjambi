@@ -35,172 +35,182 @@ import com.trolltech.qt.gui.QWidget;
 
 public class SystemTrayExample extends QWidget {
 
-	private QLineEdit titleEdit;
-	private QTextEdit msgEdit;
-	private QComboBox typeCombo;
-	private QSystemTrayIcon trayIcon;
-	private QAction toggleVisibilityAction;
-	private QMenu menu;
-	private QTextEdit info;
-	private QComboBox iconPicker;
+    private QSystemTrayIcon trayIcon;
+    private QMenu trayIconMenu;
 
-	public static void main(String[] args) {
-		QApplication.initialize(args);
+    private QLineEdit titleEdit;
+    private QTextEdit messageEdit;
+    private QComboBox typeCombo;
 
-		SystemTrayExample systemTray = new SystemTrayExample();
-		systemTray.show();
+    private QTextEdit infoDisplay;
+    private QComboBox iconCombo;
 
-		QApplication.exec();
-        systemTray.dispose();
-	}
+    private QAction toggleVisibilityAction;
 
-	public SystemTrayExample() {
-		if (!QSystemTrayIcon.isSystemTrayAvailable())
-			QMessageBox.warning(this, tr("System tray is unavailable"), tr("System tray unavailable"));
+    public static void main(String[] args) {
+        QApplication.initialize(args);
 
-		// Create the menu that will be used for the context menu
-		menu = new QMenu(this);
-		menu.aboutToShow.connect(this, "updateMenu()");
+        SystemTrayExample editor = new SystemTrayExample();
+        editor.show();
 
-		toggleVisibilityAction = new QAction("Show/Hide", this);
-		toggleVisibilityAction.triggered.connect(this, "toggleVisibility()");
-		menu.addAction(toggleVisibilityAction);
+        QApplication.exec();
+    }
 
-		QAction restoreAction = new QAction("Restore", this);
-		restoreAction.triggered.connect(this, "showNormal()");
-		menu.addAction(restoreAction);
+    public SystemTrayExample() {
+        if (!QSystemTrayIcon.isSystemTrayAvailable())
+            QMessageBox.warning(this, tr("System tray is unavailable"),
+                                      tr("System tray unavailable"));
 
-		QAction minimizeAction = new QAction("Minimize", this);
-		minimizeAction.triggered.connect(this, "showMinimized()");
-		menu.addAction(minimizeAction);
+        // Create the menu that will be used for the context menu
+        trayIconMenu = new QMenu(this);
+        trayIconMenu.aboutToShow.connect(this, "updateMenu()");
 
-		QAction maximizeAction = new QAction("Maximize", this);
-		maximizeAction.triggered.connect(this, "showMaximized()");
-		menu.addAction(maximizeAction);
+        toggleVisibilityAction = new QAction("Show/Hide", this);
+        toggleVisibilityAction.triggered.connect(this, "toggleVisibility()");
+        trayIconMenu.addAction(toggleVisibilityAction);
 
-		menu.addSeparator();
+        QAction restoreAction = new QAction("Restore", this);
+        restoreAction.triggered.connect(this, "showNormal()");
+        trayIconMenu.addAction(restoreAction);
 
-		QAction quitAction = new QAction("&Quit", this);
-		quitAction.triggered.connect(this, "close()");
-		menu.addAction(quitAction);
+        QAction minimizeAction = new QAction("Minimize", this);
+        minimizeAction.triggered.connect(this, "showMinimized()");
+        trayIconMenu.addAction(minimizeAction);
 
-		// Create the tray icon
-		trayIcon = new QSystemTrayIcon(this);
-		trayIcon.setToolTip("System trayIcon example");
-		trayIcon.setContextMenu(menu);
+        QAction maximizeAction = new QAction("Maximize", this);
+        maximizeAction.triggered.connect(this, "showMaximized()");
+        trayIconMenu.addAction(maximizeAction);
 
-		trayIcon.activated.connect(this, "activated(int)");
-		trayIcon.messageClicked.connect(this, "balloonClicked()");
+        trayIconMenu.addSeparator();
 
-		changeIcon(0); // set the first icon
-		trayIcon.show();
+        QAction quitAction = new QAction("&Quit", this);
+        quitAction.triggered.connect(this, "close()");
+        trayIconMenu.addAction(quitAction);
 
-		QLabel titleLabel = new QLabel(tr("Message Title"));
-		titleEdit = new QLineEdit(tr("Message Title"));
-		QLabel msgLabel = new QLabel(tr("Message Contents"));
-		msgEdit = new QTextEdit(tr("Man is more ape than many of the apes"));
-		msgEdit.setAcceptRichText(false);
-		QLabel typeLabel = new QLabel(tr("Message Type"));
-		typeCombo = new QComboBox();
-		Vector<String> types = new Vector<String>();
-		types.add("NoIcon");
-		types.add("Information");
-		types.add("Warning");
-		types.add("Critical");
+        // Create the tray icon
+        trayIcon = new QSystemTrayIcon(this);
+        trayIcon.setToolTip("System trayIcon example");
+        trayIcon.setContextMenu(trayIconMenu);
 
-		typeCombo.addItems(types);
-		typeCombo.setCurrentIndex(2);
-		QPushButton balloonButton = new QPushButton(tr("Balloon message"));
-		balloonButton.setToolTip(tr("Click here to balloon the message"));
+        trayIcon.activated.connect(this, "activated(int)");
+        trayIcon.messageClicked.connect(this, "balloonClicked()");
 
-		balloonButton.clicked.connect(this, "showMessage()");
-		info = new QTextEdit(tr("Status messages will be visible here"));
-		info.setMaximumHeight(100);
+        changeIcon(0);
+        trayIcon.show();
 
-		QCheckBox toggleIconCheckBox = new QCheckBox(tr("Show system tray icon"));
-		toggleIconCheckBox.setChecked(true);
-		toggleIconCheckBox.clicked.connect(trayIcon, "setVisible(boolean)");
+        QLabel titleLabel = new QLabel(tr("Message Title"));
+        titleEdit = new QLineEdit(tr("Message Title"));
 
-		QLabel iconLabel = new QLabel("Select icon");
-		iconPicker = new QComboBox();
-		Vector<String> icons = new Vector<String>();
-		icons.add("16x16 icon");
-		icons.add("22x22 icon");
-		icons.add("32x32 icon");
-		iconPicker.addItems(icons);
-		iconPicker.activatedIndex.connect(this, "changeIcon(int)");
+        QLabel messageLabel = new QLabel(tr("Message Contents"));
+        messageEdit = new QTextEdit(tr("Man is more ape than many of the apes"));
+        messageEdit.setAcceptRichText(false);
 
-		QGridLayout layout = new QGridLayout();
-		layout.addWidget(titleLabel, 0, 0);
-		layout.addWidget(titleEdit, 0, 1);
-		layout.addWidget(msgLabel, 1, 0);
-		layout.addWidget(msgEdit, 1, 1);
-		layout.addWidget(typeLabel, 2, 0);
-		layout.addWidget(typeCombo, 2, 1);
-		layout.addWidget(balloonButton, 4, 1);
-		layout.addWidget(info, 5, 0, 1, 2);
-		layout.addWidget(toggleIconCheckBox, 6, 0);
-		layout.addWidget(iconLabel, 7, 0);
-		layout.addWidget(iconPicker, 7, 1);
-		setLayout(layout);
+        QLabel typeLabel = new QLabel(tr("Message Type"));
+        typeCombo = new QComboBox();
+        Vector<String> types = new Vector<String>();
+        types.add("NoIcon");
+        types.add("Information");
+        types.add("Warning");
+        types.add("Critical");
+        typeCombo.addItems(types);
+        typeCombo.setCurrentIndex(2);
+ 
+        QPushButton balloonButton = new QPushButton(tr("Balloon message"));
+        balloonButton.setToolTip(tr("Click here to balloon the message"));
+        balloonButton.clicked.connect(this, "showMessage()");
+
+        infoDisplay = new QTextEdit(tr("Status messages will be visible here"));
+        infoDisplay.setMaximumHeight(100);
+
+        QCheckBox toggleIconCheckBox = new QCheckBox(tr("Show system tray icon"));
+        toggleIconCheckBox.setChecked(true);
+        toggleIconCheckBox.clicked.connect(trayIcon, "setVisible(boolean)");
+
+        QLabel iconLabel = new QLabel("Select icon");
+        iconCombo = new QComboBox();
+        Vector<String> icons = new Vector<String>();
+        icons.add("16x16 icon");
+        icons.add("22x22 icon");
+        icons.add("32x32 icon");
+        iconCombo.addItems(icons);
+        iconCombo.activatedIndex.connect(this, "changeIcon(int)");
+
+        QGridLayout layout = new QGridLayout();
+        layout.addWidget(titleLabel, 0, 0);
+        layout.addWidget(titleEdit, 0, 1);
+        layout.addWidget(messageLabel, 1, 0);
+        layout.addWidget(messageEdit, 1, 1);
+        layout.addWidget(typeLabel, 2, 0);
+        layout.addWidget(typeCombo, 2, 1);
+        layout.addWidget(balloonButton, 4, 1);
+        layout.addWidget(infoDisplay, 5, 0, 1, 2);
+        layout.addWidget(toggleIconCheckBox, 6, 0);
+        layout.addWidget(iconLabel, 7, 0);
+        layout.addWidget(iconCombo, 7, 1);
+        setLayout(layout);
         
         setWindowTitle(tr("System Tray Example"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
-	}
+    }
 
-	public void closeEvent(QCloseEvent e) {
-		trayIcon.dispose();
-	}
+    public void closeEvent(QCloseEvent e) {
+        trayIcon.dispose();
+    }
 
-	protected void updateMenu() {
-		toggleVisibilityAction.setText(isVisible() ? tr("Hide") : tr("Show"));
-	}
+    protected void updateMenu() {
+        toggleVisibilityAction.setText(isVisible() ? tr("Hide") : tr("Show"));
+    }
 
-	protected void toggleVisibility() {
-		if (isVisible())
-			hide();
-		else
-			show();
-	}
+    protected void toggleVisibility() {
+        if (isVisible())
+            hide();
+        else
+            show();
+    }
 
-	protected void showMessage() {
-		// #ifdef Q_WS_MAC
-		if (QSysInfo.macVersion() != 0) {
-			QMessageBox.information(this, tr("System tray example"), tr("Balloon tips are not supported on Mac OS X"));
-		} else {
-			QSystemTrayIcon.MessageIcon icon = QSystemTrayIcon.MessageIcon.resolve(typeCombo.currentIndex());
-			trayIcon.showMessage(titleEdit.text(), msgEdit.toPlainText(), icon, 10000);
-			trayIcon.setToolTip(titleEdit.text());
-		}
-	}
+    protected void showMessage() {
+        // #ifdef Q_WS_MAC
+        if (QSysInfo.macVersion() != 0) {
+            QMessageBox.information(this, tr("System tray example"), 
+                    tr("Balloon tips are not supported on Mac OS X"));
+        } else {
+            QSystemTrayIcon.MessageIcon icon;
+            icon = QSystemTrayIcon.MessageIcon.resolve(typeCombo.currentIndex());
+            trayIcon.showMessage(titleEdit.text(), messageEdit.toPlainText(), 
+                                 icon, 10000);
+            trayIcon.setToolTip(titleEdit.text());
+        }
+    }
 
-	protected void balloonClicked() {
-		info.append(tr("Balloon message was clicked"));
-	}
+    protected void balloonClicked() {
+        infoDisplay.append(tr("Balloon message was clicked"));
+    }
 
-	protected void activated(int reason) {
-		String r = QSystemTrayIcon.MessageIcon.resolve(reason).name();
-		if (r != null)
-			info.append("Activated - Reason " + r);
-	}
+    protected void activated(int reason) {
+        String name = QSystemTrayIcon.MessageIcon.resolve(reason).name();
+        if (name != null)
+            infoDisplay.append("Activated - Reason " + name);
+    }
 
-	protected void changeIcon(int index) {
-		String iconname;
-		switch (index) {
-		default: // case 0 is default
-		case 0:
-			iconname = "classpath:com/trolltech/examples/images/icon_16x16.png";
-			break;
-		case 1:
-			iconname = "classpath:com/trolltech/examples/images/icon_22x22.png";
-			break;
-		case 2:
-			iconname = "classpath:com/trolltech/examples/images/icon_32x32.png";
-			break;
-		}
-		QPixmap pix = new QPixmap(iconname);
-		trayIcon.setIcon(new QIcon(pix));
-	}
+    protected void changeIcon(int index) {
+        String iconName;
+        switch (index) {
+        default:
+        case 0:
+            iconName = "classpath:com/trolltech/examples/images/icon_16x16.png";
+            break;                
+       
+        case 1:
+            iconName = "classpath:com/trolltech/examples/images/icon_22x22.png";
+            break;
+        
+        case 2:
+            iconName = "classpath:com/trolltech/examples/images/icon_32x32.png";
+            break;
+        }
+        QPixmap pixmap = new QPixmap(iconName);
+        trayIcon.setIcon(new QIcon(pixmap));
+    }
 
    
     // REMOVE-START

@@ -21,7 +21,6 @@ import com.trolltech.qt.gui.*;
 
 public class CollidingMice extends QWidget {
 
-    static final double TWO_PI = Math.PI * 2;
     static final int MOUSE_COUNT = 7;
 
     public static void main(String args[]) {
@@ -33,20 +32,24 @@ public class CollidingMice extends QWidget {
     }
 
     public CollidingMice() {
+        
         QGraphicsScene scene = new QGraphicsScene();
         scene.setSceneRect(-300, -300, 600, 600);
         scene.setItemIndexMethod(QGraphicsScene.ItemIndexMethod.NoIndex);
 
         for (int i = 0; i < MOUSE_COUNT; ++i) {
             Mouse mouse = new Mouse();
-            mouse.setPos(Math.sin((i * 6.28) / MOUSE_COUNT) * 200, Math.cos((i * 6.28) / MOUSE_COUNT) * 200);
+            mouse.setPos(Math.sin((i * 6.28) / MOUSE_COUNT) * 200, 
+                         Math.cos((i * 6.28) / MOUSE_COUNT) * 200);
             scene.addItem(mouse);
         }
 
         QGraphicsView view = new QGraphicsView(scene);
         view.setRenderHint(QPainter.RenderHint.Antialiasing);
-        view.setBackgroundBrush(new QBrush(new QPixmap("classpath:com/trolltech/examples/images/cheese.jpg")));
-        view.setCacheMode(new QGraphicsView.CacheMode(QGraphicsView.CacheModeFlag.CacheBackground));
+        view.setBackgroundBrush(new QBrush(new QPixmap(
+                "classpath:com/trolltech/examples/images/cheese.jpg")));
+        view.setCacheMode(new QGraphicsView.CacheMode(
+                QGraphicsView.CacheModeFlag.CacheBackground));
         view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag);
 
         QGridLayout layout = new QGridLayout();
@@ -57,7 +60,7 @@ public class CollidingMice extends QWidget {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(400, 300);
     }
-
+    
     public class Mouse extends QGraphicsItem {
 
         double angle = 0;
@@ -66,8 +69,11 @@ public class CollidingMice extends QWidget {
         QColor color = null;
         Random generator = new Random();
 
+        static final double TWO_PI = Math.PI * 2;
+
         public Mouse() {
-            color = new QColor(generator.nextInt(256), generator.nextInt(256), generator.nextInt(256));
+            color = new QColor(generator.nextInt(256), generator.nextInt(256), 
+                               generator.nextInt(256));
             rotate(generator.nextDouble() * 360);
 
             QObject timer = new QObject() {
@@ -81,7 +87,8 @@ public class CollidingMice extends QWidget {
 
         public QRectF boundingRect() {
             double adjust = 0.5;
-            return new QRectF(-20 - adjust, -22 - adjust, 40 + adjust, 83 + adjust);
+            return new QRectF(-20 - adjust, -22 - adjust, 
+                              40 + adjust, 83 + adjust);
         }
 
         public QPainterPath shape() {
@@ -90,7 +97,9 @@ public class CollidingMice extends QWidget {
             return path;
         }
 
-        public void paint(QPainter painter, QStyleOptionGraphicsItem styleOptionGraphicsItem, QWidget widget) {
+        public void paint(QPainter painter, 
+                          QStyleOptionGraphicsItem styleOptionGraphicsItem, 
+                          QWidget widget) {
             QBrush brush = new QBrush(Qt.BrushStyle.SolidPattern);
 
             // Body
@@ -133,17 +142,22 @@ public class CollidingMice extends QWidget {
 
         public void move() {
             // Don't move too far away
-            QLineF lineToCenter = new QLineF(new QPointF(0, 0), mapFromScene(0, 0));
+            QLineF lineToCenter = new QLineF(new QPointF(0, 0), 
+                                             mapFromScene(0, 0));
             if (lineToCenter.length() > 150) {
-                double angleToCenter = Math.acos(lineToCenter.dx() / lineToCenter.length());
+                double angleToCenter = Math.acos(lineToCenter.dx() 
+                                                 / lineToCenter.length());
                 if (lineToCenter.dy() < 0)
                     angleToCenter = TWO_PI - angleToCenter;
-                angleToCenter = normalizeAngle((Math.PI - angleToCenter) + Math.PI / 2);
+                angleToCenter = normalizeAngle((Math.PI - angleToCenter) 
+                                               + Math.PI / 2);
 
                 if (angleToCenter < Math.PI && angleToCenter > Math.PI / 4) {
                     // Rotate left
                     angle += (angle < -Math.PI / 2) ? 0.25 : -0.25;
-                } else if (angleToCenter >= Math.PI && angleToCenter < (Math.PI + Math.PI / 2 + Math.PI / 4)) {
+                } else if (angleToCenter >= Math.PI 
+                           && angleToCenter < (Math.PI + Math.PI / 2 
+                                               + Math.PI / 4)) {
                     // Rotate right
                     angle += (angle < Math.PI / 2) ? 0.25 : -0.25;
                 }
@@ -155,27 +169,31 @@ public class CollidingMice extends QWidget {
 
             // Try not to crash with any other mice
 
-            QPolygonF pol = new QPolygonF();
-            pol.append(mapToScene(0, 0));
-            pol.append(mapToScene(-30, -50));
-            pol.append(mapToScene(30, -50));
+            QPolygonF polygon = new QPolygonF();
+            polygon.append(mapToScene(0, 0));
+            polygon.append(mapToScene(-30, -50));
+            polygon.append(mapToScene(30, -50));
 
-            List<QGraphicsItemInterface> dangerMice = scene().items(pol);
+            List<QGraphicsItemInterface> dangerMice = scene().items(polygon);
 
             for (QGraphicsItemInterface item : dangerMice) {
                 if (item == this)
                     continue;
 
-                QLineF lineToMouse = new QLineF(new QPointF(0, 0), mapFromItem(item, 0, 0));
-                double angleToMouse = Math.acos(lineToMouse.dx() / lineToMouse.length());
+                QLineF lineToMouse = new QLineF(new QPointF(0, 0), 
+                                                mapFromItem(item, 0, 0));
+                double angleToMouse = Math.acos(lineToMouse.dx() 
+                                                / lineToMouse.length());
                 if (lineToMouse.dy() < 0)
                     angleToMouse = TWO_PI - angleToMouse;
-                angleToMouse = normalizeAngle((Math.PI - angleToMouse) + Math.PI / 2);
+                angleToMouse = normalizeAngle((Math.PI - angleToMouse) 
+                                              + Math.PI / 2);
 
                 if (angleToMouse >= 0 && angleToMouse < (Math.PI / 2)) {
                     // Rotate right
                     angle += 0.5;
-                } else if (angleToMouse <= TWO_PI && angleToMouse > (TWO_PI - Math.PI / 2)) {
+                } else if (angleToMouse <= TWO_PI 
+                           && angleToMouse > (TWO_PI - Math.PI / 2)) {
                     // Rotate left
                     angle -= 0.5;
                 }

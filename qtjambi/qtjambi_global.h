@@ -14,6 +14,8 @@
 #ifndef QTJAMBI_GLOBAL_H
 #define QTJAMBI_GLOBAL_H
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include <qglobal.h>
 
 #if defined(Q_WS_WIN)

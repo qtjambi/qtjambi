@@ -70,7 +70,8 @@ void JavaNameTable::loadXmlFile(const QString &fileName)
             QString cppValue = enum_value.attribute("cpp-value");
             QString javaValue = enum_value.attribute("java-value");
 
-            m_enum_values[cppValue] = javaValue;
+            m_java_enum_values[cppValue] = javaValue;
+            m_cpp_enum_values[javaValue] = cppValue;
 
             if (!flags_name.isEmpty()) {
                 m_flags_names[cppValue] = flags_name;
@@ -107,9 +108,14 @@ QString JavaNameTable::javaSignal(const QString &cppSignal, const QString &class
 }
 
 
-QString JavaNameTable::javaEnum(const QString &cppEnum)
+QString JavaNameTable::javaEnum(const QString &cppEnum) const
 {
-    return m_enum_values[cppEnum];
+    return m_java_enum_values[cppEnum];
+}
+
+QString JavaNameTable::cppEnum(const QString &javaEnum) const
+{
+    return m_cpp_enum_values[javaEnum];
 }
 
 QString JavaNameTable::javaFlagsName(const QString &cppEnumValue)

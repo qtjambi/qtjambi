@@ -1,0 +1,247 @@
+/*!
+    \page qtjambi-collidingmice.html
+    \title Colliding Mice Example
+
+    The Colliding Mice example shows how to use the Graphics View
+    framework to implement animated items and detect collision between
+    items.
+
+    \image collidingmice-example.png
+
+    Graphics View provides the QGraphicsScene class for managing and
+    interacting with a large number of custom-made 2D graphical items
+    derived from the QGraphicsItem class, and a QGraphicsView widget
+    for visualizing the items, with support for zooming and rotation.
+
+    The example consists of two classes: the \c CollidingMice class
+    which extends QWidget and provides the main application window,
+    and the \c Mouse class which extends QGraphicsItem and represents
+    the individual mice.
+
+    We will first review the \c Mouse class to see how to animate
+    items and detect item collision, and then we will review the \c
+    CollidingMice class to see how to put the items into a scene and
+    how to implement the corresponding view.
+
+    \section1 Mouse Class Implementation
+
+    The \c mouse class extends QGraphicsItem. The QGraphicsItem class
+    is the base class for all graphical items in the Graphics View
+    framework, and provides a light-weight foundation for writing your
+    own custom items.
+
+    \quotefromfile CollidingMice.java
+    \skipto public class Mouse
+    \printuntil rotate
+
+    In the constructor, we first initialize the color of the mouse
+    using a random number generator to calculate the color
+    components. Then we call the \l
+    {QGraphicsItem::rotate()}{rotate()} function inherited from
+    QGraphicsItem. Items live in their own local coordinate
+    system. Their coordinates are usually centered around (0, 0), and
+    this is also the center for all transformations. By calling the
+    item's \l {QGraphicsItem::rotate()}{rotate()} function we alter
+    the direction in which the mouse will start moving.
+
+    \skipto timer
+    \printuntil startTimer
+    \printline }
+
+    Then we create a QObject instance that will act as a timer. We
+    override the implementation of the QObject::timerEvent() function
+    to receive the timer events it generates. We start our timer by
+    calling QObject's \l {QObject::startTimer()}{startTimer()}
+    function; making a timer event occur every 1000/33
+    milliseconds. Whenever a mouse receives a timer event it will call
+    the \c move() function which we will come back to later.
+
+    When writing your own graphics item, you must implement the pure
+    virtual \l {QGraphicsItem::boundingRect()}{boundingRect()} and \l
+    {QGraphicsItem::paint()}{paint()} functions:
+
+    \skipto boundingRect()
+    \printuntil }
+
+    The \l {QGraphicsItem::boundingRect()}{boundingRect()} function
+    defines the outer bounds of the item as a rectangle. Note that the
+    Graphics View framework uses the bounding rectangle to determine
+    whether the item requires redrawing, so all painting must be
+    restricted inside this rectangle.
+
+    \skipto paint
+    \printuntil }
+
+    The Graphics View framework calls the \l
+    {QGraphicsItem::paint()}{paint()} function to paint the contents
+    of the item; the function paints the item in local coordinates.
+
+    Note the painting of the ears: Whenever a mouse item collides with
+    other mice items its ears are filled with red; otherwise they are
+    filled with dark yellow. We use the
+    QGraphicsScene::collidingItems() function to check if there are
+    any colliding mice.  The actual collision detection is handled by
+    the Graphics View framework using shape-shape intersection. All we
+    have to do is to ensure that the \l
+    {QGraphicsItem::shape()}{QGraphicsItem.shape()} function returns
+    an accurate shape for our item:
+
+    \quotefromfile CollidingMice.java
+    \skipto shape()
+    \printuntil }
+
+    Because the complexity of arbitrary shape-shape intersection grows
+    with an order of magnitude when the shapes are complex, this
+    operation can be noticably time consuming. An alternative approach
+    is to reimplement the \l
+    {QGraphicsItem::collidesWithItem()}{collidesWithItem()} function
+    to provide your own custom item and shape collision algorithm.
+
+    Finally, we must implement the \c move() function that is called
+    whenever the mouse item receives a timer event from the timer we
+    started in the constructor:
+
+    \skipto move()
+    \printto Don't move too far away
+    \skipto lineToCenter
+    \printto Try not to crash with any other mice
+
+    First we ensure that the mice stays within a circle with a radius
+    of 150 pixels.
+
+    Note the \l {QGraphicsItem::mapFromScene()}{mapFromScene()}
+    function provided by QGraphicsItem. This function maps a position
+    given in \e scene coordinates, to the item's coordinate system.
+
+    \skipto polygon
+    \printto Add some random movement
+    \skipto if
+    \printuntil }
+
+    Then we try to avoid colliding with other mice.
+
+    \skipto speed
+    \printuntil setPos
+    \printline }
+
+    Finally, we calculate the mouse's speed, its eye direction (for
+    use when painting the mouse), and set its new position.
+
+    The position of an item describes its origin (local coordinate (0,
+    0)) in the parent coordinates. The \l
+    {QGraphicsItem::setPos()}{QGraphicsItem.setPos()} function sets
+    the position of the item to the given position in the parent's
+    coordinate system. For items with no parent, the given position is
+    interpreted as scene coordinates. QGraphicsItem also provides a \l
+    {QGraphicsItem::mapToParent()}{mapToParent()} function to map a
+    position given in item coordinates, to the parent's coordinate
+    system. If the item has no parent, the position will be mapped to
+    the scene's coordinate system instead.
+
+    \skipto normalizeAngle
+    \printuntil return
+    \printline }
+
+    The \c normalizeAngle() function is only a convenience function
+    used when calculating the mouse's new position in the \c move()
+    function.
+
+    This completes the \c Mouse class implementation, it is now ready
+    for use. Let's take a look at the \c CollidingMice class to see
+    how to implement a scene for the mice and a view for displaying
+    the contents of the scene.
+
+    \section1 CollidingMice Class Implementation
+
+    The \c CollidingMice class extends QWidget and provides the main
+    application window:
+
+    \quotefromfile CollidingMice.java
+    \skipto public class CollidingMice
+    \printuntil MOUSE_COUNT
+    \skipto public CollidingMice
+    \printuntil scene
+    \skipto scene.setSceneRect
+    \printline scene.setSceneRect
+
+    In the constructor, we first create a scene. The QGraphicsScene
+    class serves as a container for QGraphicsItems. It also provides
+    functionality that lets you efficiently determine the location of
+    items as well as determining which items that are visible within
+    an arbitrary area on the scene.
+
+    When creating a scene it is recommended to set the scene's
+    rectangle, i.e., the rectangle that defines the extent of the
+    scene. It is primarily used by QGraphicsView to determine the
+    view's default scrollable area, and by QGraphicsScene to manage
+    item indexing. If not explicitly set, the scene's default
+    rectangle will be the largest bounding rectangle of all the items
+    on the scene since the scene was created (i.e., the rectangle will
+    grow when items are added to or moved in the scene, but it will
+    never shrink).
+
+    \skipto scene.setItemIndexMethod
+    \printuntil scene.setItemIndexMethod
+
+    The item index method is used to speed up item discovery. \l
+    {QGraphicsScene::NoIndex}{NoIndex} implies that item location is
+    of linear complexity, as all items on the scene are
+    searched. Adding, moving and removing items, however, is done in
+    constant time. This approach is ideal for dynamic scenes, where
+    many items are added, moved or removed continuously.  The
+    alternative is \l {QGraphicsScene::BspTreeIndex}{BspTreeIndex}
+    which makes use of binary search resulting in item location
+    algorithms that are of an order closer to logarithmic complexity.
+
+    \skipto for
+    \printuntil }
+
+    Then we add the mice to the scene.
+
+    \skipto QGraphicsView
+    \printuntil setBackgroundBrush
+
+    To be able to view the scene we must also create a QGraphicsView
+    widget. The QGraphicsView class visualizes the contents of a scene
+    in a scrollable viewport. We also ensure that the contents is
+    rendered using antialiasing, and we create the cheese background
+    by setting the view's background brush.
+
+    \skipto view.setCacheMode
+    \printline view.setCacheMode
+    \skipto view.setDragMode
+    \printline view.setDragMode
+    \skipto layout
+    \printuntil }
+
+    Then we set the chache mode; QGraphicsView can cache pre-rendered
+    content in a QPixmap, which is then drawn onto the viewport. The
+    purpose of such caching is to speed up the total rendering time
+    for areas that are slow to render, e.g., texture, gradient and
+    alpha blended backgrounds. The \l
+    {QGraphicsView::chacheMode}{chacheMode} property holds which parts
+    of the view that are cached, and the \l
+    {QGraphicsView::CacheBackground}{CacheBackground} flag enables
+    caching of the view's background.
+
+    By setting the \l {QGraphicsView::dragMode}{dragMode} property we
+    define what should happen when the user clicks on the scene
+    background and drags the mouse. The \l
+    {QGraphicsView::ScrollHandDrag}{ScrollHandDrag} flag makes the
+    cursor change into a pointing hand, and dragging the mouse around
+    will scroll the scrollbars.
+
+    In the end, we put the view into a layout that we install on the
+    \c CollidingMice widget, and set the application window's title,
+    size and icon.
+
+    \quotefromfile CollidingMice.java
+    \skipto main
+    \printuntil }
+    \skipto // REMOVE-END
+    \skipto }
+    \printline }
+
+    The \c main() function is provided to create and show the main
+    application window when the example is run.
+*/

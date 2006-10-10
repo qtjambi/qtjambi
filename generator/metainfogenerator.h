@@ -15,8 +15,10 @@
 #define METAINFOGENERATOR_H
 
 #include "generator.h"
+#include "javagenerator.h"
+#include "cppgenerator.h"
 
-class MetaInfoGenerator : public Generator
+class MetaInfoGenerator : public JavaGenerator
 {
 public:
     enum GenerationFlags {
@@ -60,6 +62,8 @@ private:
     void writeCustomStructors(QTextStream &s, const TypeEntry *entry);
     void writeDestructors(QTextStream &s, const MetaJavaClass *cls);
     void writeCodeBlock(QTextStream &s, const QString &code);
+    void writeSignalsAndSlots(QTextStream &s, const QString &package);
+    void writeRegisterSignalsAndSlots(QTextStream &s);
     bool shouldGenerate(const TypeEntry *entry) const;
     void buildSkipList();
 

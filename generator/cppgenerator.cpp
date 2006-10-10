@@ -18,6 +18,11 @@
 
 void CppGenerator::writeTypeInfo(QTextStream &s, const MetaJavaType *type, Option options)
 {
+    if ((options & OriginalTypeDescription) && !type->originalTypeDescription().isEmpty()) {
+        s << type->originalTypeDescription();
+        return;
+    }
+
     if (type->isArray()) {
         writeTypeInfo(s, type->arrayElementType(), options);
         if (options & ArrayAsPointer) {
@@ -63,7 +68,8 @@ void CppGenerator::writeTypeInfo(QTextStream &s, const MetaJavaType *type, Optio
     if (type->isReference() && !(options & ExcludeReference))
         s << "&";
 
-    s << ' ';
+    if (!(options & SkipName))
+        s << ' ';
 }
 
 

@@ -19,29 +19,33 @@ import com.trolltech.qt.gui.*;
 public class AnalogClock 
     extends QWidget 
 {
-    static QPolygon hourHand = new QPolygon(3);
-    static QPolygon minuteHand = new QPolygon(3);   
+    static QPolygon hourHand = new QPolygon();
+    static QPolygon minuteHand = new QPolygon();   
     static {
-        hourHand.setPoint(0, 7, 8);
-        hourHand.setPoint(1, -7, 8);
-        hourHand.setPoint(2, 0, -40);
+        hourHand.append(new QPoint(7, 8));
+        hourHand.append(new QPoint(-7, 8));
+        hourHand.append(new QPoint(0, -40));
 
-        minuteHand.setPoint(0, 7, 8);
-        minuteHand.setPoint(1, -7, 8);
-        minuteHand.setPoint(2, 0, -70);
+        minuteHand.append(new QPoint(7, 8));
+        minuteHand.append(new QPoint(-7, 8));
+        minuteHand.append(new QPoint(0, -70));
     }    
 
     QTimer m_timer = new QTimer(this);
 
-    public AnalogClock() 
-    {
+    public AnalogClock() {
+        this(null);
+    }
+    
+    public AnalogClock(QWidget parent) {
+        super(parent);
         m_timer.timeout.connect(this, "update()"); 
 
         setWindowTitle("Analog clock");
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(200, 200);
     }
-
+    
     protected void paintEvent(QPaintEvent e) 
     {
         QColor hourColor = new QColor(127, 0, 127);
@@ -90,13 +94,17 @@ public class AnalogClock
         
         painter.end();
     }
+    
+    public QSize sizeHint() {
+        return new QSize(200, 200);
+    }
 
     public void showEvent(QShowEvent e) {
-	m_timer.start(1000);
+        m_timer.start(1000);
     }
 
     public void hideEvent(QHideEvent e) {
-	m_timer.stop();
+        m_timer.stop();
     }
 
     static public void main(String args[]) 

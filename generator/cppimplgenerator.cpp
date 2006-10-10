@@ -41,12 +41,7 @@ inline QTextStream &operator <<(QTextStream &s, const Indentor &)
 
 Indentor INDENT;
 
-enum JNISignatureFormat {
-    Underscores,        // Used in the jni exported function names
-    SlashesAndStuff     // Used for looking up functions through jni
-};
-
-QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format = Underscores)
+QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
 {
     if (!java_type)
         return "V";
@@ -268,7 +263,9 @@ QString CppImplGenerator::fileNameForClass(const MetaJavaClass *java_class) cons
 void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunction *signal, const MetaJavaClass *cls,
                                            int pos)
 {
-    writeFunctionSignature(s, signal, cls, signalWrapperPrefix(), NoOption, "QtJambi_SignalWrapper_");
+    writeFunctionSignature(s, signal, cls, signalWrapperPrefix(), 
+                           Option(OriginalName | OriginalTypeDescription), 
+                           "QtJambi_SignalWrapper_");
     s << endl << "{" << endl;
     {
         MetaJavaArgumentList arguments = signal->arguments();
@@ -569,21 +566,6 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
         s << endl << "};" << endl << endl;
         s << "static const int qtjambi_signal_count = " << signal_functions.size() << ";" << endl
           << endl;
-    }
-}
-
-void CppImplGenerator::writeSetupConnections(QTextStream &s, const MetaJavaClass *java_class,
-                                             const QString &sender_name, const QString &receiver_name)
-{
-    MetaJavaFunctionList signal_funcs =
-        java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible);
-
-    foreach (const MetaJavaFunction *signal, signal_funcs) {
-        s << INDENT << "QObject::connect(" << sender_name << ", SIGNAL(";
-        writeFunctionSignature(s, signal, 0, QString(), Option(SkipName | SkipReturnType | OriginalName));
-        s << "), " << receiver_name << ", SLOT(";
-        writeFunctionSignature(s, signal, 0, signalWrapperPrefix(), Option(SkipName | SkipReturnType));
-        s << "));" << endl;
     }
 }
 
@@ -1325,33 +1307,35 @@ void CppImplGenerator::writeSignalInitialization(QTextStream &s, const MetaJavaC
         return ;
     }
 
-    s << jni_function_signature(java_class->package(), java_class->name(), "__qt_signalInitialization", "void")
-      << endl << "(JNIEnv *__jni_env, jobject java_this, jlong ptr)" << endl
+    s << jni_function_signature(java_class->package(), java_class->name(), "__qt_signalInitialization", "jboolean")
+      << endl << "(JNIEnv *__jni_env, jobject java_object, jlong ptr, jstring java_signal_name)" << endl
       << "{" << endl
       << "   QtJambiLink *link = (QtJambiLink *) ptr;" << endl
       << "   if (link == 0)" << endl
-      << "       return ;" << endl << endl
+      << "       return true;" << endl << endl
       << "   QObject *qt_this = link->qobject();" << endl
       << "   Q_ASSERT(qt_this);" << endl << endl
       << "   QtJambi_SignalWrapper_" << java_class->name() << " *qt_wrapper = "
       << "   (QtJambi_SignalWrapper_" << java_class->name() << " *) link->signalWrapper();" << endl
-      << "   if (qt_wrapper != 0) " << endl
-      << "       return ;" << endl
-      << "   qt_wrapper = new QtJambi_SignalWrapper_" << java_class->name() << ";" << endl
-      << "   link->setSignalWrapper(qt_wrapper);" << endl
-      << "   qt_wrapper->link = link;" << endl << endl
-      << "   qtjambi_setup_signals(__jni_env," << endl
-      << "                        java_this," << endl
-      << "                        qt_wrapper->m_signals," << endl
-      << "                        qtjambi_signal_count," << endl
-      << "                        qtjambi_signal_names," << endl
-      << "                        qtjambi_signal_argumentcounts);" << endl << endl;
-
-    {
-        Indentation indent;
-        writeSetupConnections(s, java_class, "qt_this", "qt_wrapper");
-    }
-    s << "}";
+      << "   if (qt_wrapper == 0) {" << endl
+      << "       qt_wrapper = new QtJambi_SignalWrapper_" << java_class->name() << ";" << endl
+      << "       link->setSignalWrapper(qt_wrapper);" << endl
+      << "       qt_wrapper->link = link;" << endl << endl
+      << "       qtjambi_resolve_signals(__jni_env," << endl
+      << "                               java_object," << endl
+      << "                               qt_wrapper->m_signals," << endl
+      << "                               qtjambi_signal_count," << endl
+      << "                               (char **) qtjambi_signal_names," << endl
+      << "                               (int *) qtjambi_signal_argumentcounts);" << endl
+      << "   }" << endl
+      << "   QString signal_name = qtjambi_to_qstring(__jni_env, java_signal_name);" << endl
+      << "   return qtjambi_connect_cpp_to_java(__jni_env," << endl
+      << "                                      signal_name," << endl
+      << "                                      qt_this," << endl
+      << "                                      qt_wrapper," << endl
+      << "                                      QLatin1String(\"" << java_class->fullName() << "\")," << endl
+      << "                                      QLatin1String(\"" << signalWrapperPrefix() << "\"));" << endl
+      << "}";
 }
 
 

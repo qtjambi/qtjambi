@@ -97,13 +97,15 @@
 
     Both in Java and C++, enums aim to provide type-safe constant
     values, but the implementations use different techniques: While
-    enums in C++ are integers, enums in Java are objects (and Java
-    enums with default values are implemented as special enum
-    subclasses with limited usage).
+    enums in C++ are integers, enums in Java are objects.
 
-    Since enums in Qt are used both as enums and bitmasks, the Java
-    enum class construction is too limited to be used in \QJ. For this
-    reason, \QJ maps Qt's enums to integers instead.
+    Although the Java syntax is very similar to that of C++ enums, the
+    fact that Java enums are implemented as objects means that they
+    cannot be used as integer constants or as bit flags. \QJ works
+    around this limitation and maps the C++ enums to Java enums,
+    guaranteeing type safety for both enums and flags (the \QJ flags
+    are implemented using the generics based com.trolltech.qt.QFlags
+    class).
 
     \section2 Variants
 

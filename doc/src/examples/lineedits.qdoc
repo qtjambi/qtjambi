@@ -156,9 +156,14 @@
     \l{QLineEdit::setReadOnly()}{QLineEdit.setReadOnly()}. This allows the user
     to enable and disable input to the line edit.
 
-    Finally, we provide a \c main() function to create and show the window when
-    the example is run:
+    Finally, we provide a \c main() function to create and show the \c
+    LineEdits widget when the example is run:
 
+    \quotefromfile LineEdits.java
     \skipto main(
+    \printuntil }
+    \skipto REMOVE-END
+    \skipto }
     \printuntil /^\}/
+
 */

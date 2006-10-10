@@ -9,27 +9,42 @@
     Jambi programming practices.
 
     In addition to the examples, Qt Jambi includes a small selection
-    of demos that deliberately show off Qt's features. You might want
-    to look at these as well.
+    of \l {Demos}{demos} that deliberately show off Qt Jambi's
+    features. You might want to look at these as well.
+
+    Examples marked with an asterisk (\raisedaster) are fully
+    documented.
+
+    \omit
+    It is our goal to fully document all examples in a future release.
+    \endomit
 
     \section1 Examples
 
     \list
-    \o \l{Analog Clock Example}{Analog Clock}
-    \o \l{Line Edits Example}{Line Edits}
-    \o \l{Spin Boxes Example}{Spin Boxes}
-    \o \l{Tetrix Example}{Tetrix}
-    \o \l{Wiggly Example}{Wiggly}
-    \o \l{Application Example}{Application}
-    \o \l{Resource System Example}{Resource System}
-    \o \l{Generator Example}{Generator Example}
+    \o \l{Analog Clock Example}{Analog Clock}\raisedaster
+    \o \l{Application Example}{Application}\raisedaster
+    \o \l{Cached Table Example}{Cached Table}\raisedaster
+    \o \l{Calculator UI Example}{Calculator UI}
+    \o \l{Colliding Mice Example}{Colliding Mice}\raisedaster
+    \o \l{Custom Filter Example}{Custom Filter}
+    \o \l{Generator Example}{Generator}\raisedaster
+    \o \l{Line Edits Example}{Line Edits}\raisedaster
+    \o \l{Resource System Example}{Resource System}\raisedaster
+    \o \l{Spin Boxes Example}{Spin Boxes}\raisedaster
+    \o \l{SVG Cards Example}{SVG Cards}
+    \o \l{Syntax Highlighter Example}{Syntax Highlighter}\raisedaster
+    \o \l{System Tray Icon Example}{System Tray Icon}\raisedaster
+    \o \l{Tetrix Example}{Tetrix}\raisedaster
+    \o \l{Wiggly Example}{Wiggly}\raisedaster
     \endlist
 
     \section1 Demos
 
     \list
-    \o \l{Vector Deformation}
     \o \l{Image Viewer}
     \o \l{Text Edit}
+    \o \l{Vector Deformation}
     \endlist
 */
+

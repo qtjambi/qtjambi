@@ -1,0 +1,18 @@
+/*!
+    \page qtjambi-calculator.html
+    \title Calculator UI Example
+
+    \table
+    \row
+        \o \inlineimage calculator-simple-example.png
+        \o \inlineimage calculator-normal-example.png
+        \o \inlineimage calculator-dockable-example.png
+    \endtable
+
+    \omit
+        \image calculator-selector.png
+    \endomit
+
+
+
+*/

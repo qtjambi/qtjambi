@@ -237,10 +237,14 @@ public:
     const TypeEntry *typeEntry() const { return m_type_entry; }
     void setTypeEntry(const TypeEntry *type) { m_type_entry = type; }
 
+    void setOriginalTypeDescription(const QString &otd) { m_original_type_description = otd; }
+    QString originalTypeDescription() const { return m_original_type_description; }
+
 private:
     const TypeEntry *m_type_entry;
     QList <MetaJavaType *> m_instantiations;
     QString m_package;
+    QString m_original_type_description;
 
     int m_array_element_count;
     MetaJavaType *m_array_element_type;
@@ -328,7 +332,8 @@ public:
         DestructorFunction,
         NormalFunction,
         SignalFunction,
-        EmptyFunction
+        EmptyFunction,
+        SlotFunction
     };
 
     enum CompareResult {
@@ -415,13 +420,15 @@ public:
     bool isInvalid() const { return m_invalid; }
     bool isDestructor() const { return functionType() == DestructorFunction; }
     bool isConstructor() const { return functionType() == ConstructorFunction; }
-    bool isNormal() const { return functionType() == NormalFunction; }
+    bool isNormal() const { return functionType() == NormalFunction || isSlot(); }
     bool isSignal() const { return functionType() == SignalFunction; }
+    bool isSlot() const { return functionType() == SlotFunction; }
     bool isEmptyFunction() const { return functionType() == EmptyFunction; }
     FunctionType functionType() const { return m_function_type; }
     void setFunctionType(FunctionType type) { m_function_type = type; }
 
     QString signature() const;
+    QString javaSignature() const;
 
     bool isConstant() const { return m_constant; }
     void setConstant(bool constant) { m_constant = constant; }

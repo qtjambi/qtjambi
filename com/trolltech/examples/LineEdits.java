@@ -34,6 +34,11 @@ public class LineEdits extends QWidget {
     }
     
     public LineEdits() {
+        this(null);
+    }
+    
+    public LineEdits(QWidget parent) {
+        super(parent);
         QGroupBox echoGroup = new QGroupBox(tr("Echo"));
 
         QLabel echoLabel = new QLabel(tr("Mode:"));

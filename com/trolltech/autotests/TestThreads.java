@@ -15,7 +15,11 @@ package com.trolltech.autotests;
 
 import com.trolltech.qt.core.*;
 
-public class TestThreads extends com.trolltech.qtest.QTestCase {
+import static org.junit.Assert.*;
+
+import org.junit.*;
+
+public class TestThreads extends QApplicationTest{
     
     /**
      */
@@ -28,12 +32,13 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
         }
     }
 
+    @Test
     public void run_affinity() throws InterruptedException {
         AffinityTester tester = new AffinityTester();
         Thread thread = new Thread(tester);
         thread.start();
         thread.join(10000);
-        QVERIFY(tester.ok);
+        assertTrue(tester.ok);
     }
 
     
@@ -94,6 +99,7 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
         }
     }
     
+    @Test
     public void run_pingPong() {
         try {
             PingPongRunner ping = new PingPongRunner(true);
@@ -111,11 +117,11 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
             ping.join();
             pong.join();
             
-            QCOMPARE(ping.object.numPings, 100);
-            QCOMPARE(pong.object.numPings, 100); 
+            assertEquals(ping.object.numPings, 100);
+            assertEquals(pong.object.numPings, 100); 
             
-            QVERIFY(ping.object.affinityOk);
-            QVERIFY(ping.object.affinityOk);
+            assertTrue(ping.object.affinityOk);
+            assertTrue(ping.object.affinityOk);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -161,7 +167,7 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
         }
     }
 
-    
+    @Test
     public void run_pingPongSignalSlot() throws Exception {
         PingPongSSRunner ping = new PingPongSSRunner(true);
         PingPongSSRunner pong = new PingPongSSRunner(false);
@@ -173,17 +179,17 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
         ping.object.other = pong.object;
         pong.object.other = ping.object;
         
-        QVERIFY(ping.object.ping.connect(pong.object, "pong()"));
-        QVERIFY(pong.object.ping.connect(ping.object, "pong()"));
+        assertTrue(ping.object.ping.connect(pong.object, "pong()"));
+        assertTrue(pong.object.ping.connect(ping.object, "pong()"));
         
         ping.join(1000);
         pong.join(1000);
         
-        QCOMPARE(ping.object.numPings, 100);
-        QCOMPARE(pong.object.numPings, 100); 
+        assertEquals(ping.object.numPings, 100);
+        assertEquals(pong.object.numPings, 100); 
         
-        QVERIFY(ping.object.affinityOk);
-        QVERIFY(ping.object.affinityOk);
+        assertTrue(ping.object.affinityOk);
+        assertTrue(ping.object.affinityOk);
     }
     
     
@@ -255,7 +261,8 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
         }
     }
     */
-
+    
+    @Test
     public void run_moveToThread() throws Exception
     {
         Thread currentThread = Thread.currentThread();
@@ -263,17 +270,17 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
         {
             QObject object = new QObject();
             QObject child = new QObject(object);
-            QCOMPARE(object.thread(), currentThread);
-            QCOMPARE(child.thread(), currentThread);
+            assertEquals(object.thread(), currentThread);
+            assertEquals(child.thread(), currentThread);
             object.moveToThread(null);
-            QCOMPARE(object.thread(), null);
-            QCOMPARE(child.thread(), null);
+            assertEquals(object.thread(), null);
+            assertEquals(child.thread(), null);
             object.moveToThread(currentThread);
-            QCOMPARE(object.thread(), currentThread);
-            QCOMPARE(child.thread(), currentThread);
+            assertEquals(object.thread(), currentThread);
+            assertEquals(child.thread(), currentThread);
             object.moveToThread(null);
-            QCOMPARE(object.thread(), null);
-            QCOMPARE(child.thread(), null);
+            assertEquals(object.thread(), null);
+            assertEquals(child.thread(), null);
             // can delete an object with no thread anywhere
             object.dispose();
         }
@@ -288,18 +295,18 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
             QObject opointer = object;
             QObject cpointer = object;
 
-            QCOMPARE(object.thread(), currentThread);
-            QCOMPARE(child.thread(), currentThread);
+            assertEquals(object.thread(), currentThread);
+            assertEquals(child.thread(), currentThread);
             object.moveToThread(thread);
-            QCOMPARE(object.thread(), thread);
-            QCOMPARE(child.thread(), thread);
+            assertEquals(object.thread(), thread);
+            assertEquals(child.thread(), thread);
 
             connect(object.destroyed, new Slot(thread, "quit()"), Qt.DirectConnection);
             object.deleteLater();
             thread.wait();
 
-            QVERIFY(opointer == 0);
-            QVERIFY(cpointer == 0);
+            assertTrue(opointer == 0);
+            assertTrue(cpointer == 0);
         }
         */
 
@@ -315,16 +322,16 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
 //            QCoreApplication.postEvent(child, new QEvent(QEvent.User));
 //            QCoreApplication.postEvent(object, new QEvent(QEvent.User));
 //
-//            QCOMPARE(object.thread(), currentThread);
-//            QCOMPARE(child.thread(), currentThread);
+//            assertEquals(object.thread(), currentThread);
+//            assertEquals(child.thread(), currentThread);
 //            object.moveToThread(thread.thread);
-//            QCOMPARE(object.thread(), thread);
-//            QCOMPARE(child.thread(), thread);
+//            assertEquals(object.thread(), thread);
+//            assertEquals(child.thread(), thread);
 //
 //            thread.thread.join();
 //
-//            QCOMPARE(object.customEventThread, thread);
-//            QCOMPARE(child.customEventThread, thread);
+//            assertEquals(object.customEventThread, thread);
+//            assertEquals(child.customEventThread, thread);
 //
 //            thread.start();
 //            QObject.connect(object.done, new Slot(thread.loop, "quit()"), Qt.DirectConnection);
@@ -344,16 +351,16 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
 //            child.startTimer(90);
 //            object.startTimer(100);
 //
-//            QCOMPARE(object.thread(), currentThread);
-//            QCOMPARE(child.thread(), currentThread);
+//            assertEquals(object.thread(), currentThread);
+//            assertEquals(child.thread(), currentThread);
 //            object.moveToThread(thread.thread);
-//            QCOMPARE(object.thread(), thread);
-//            QCOMPARE(child.thread(), thread);
+//            assertEquals(object.thread(), thread);
+//            assertEquals(child.thread(), thread);
 //
 //            thread.thread.join();
 //
-//            QCOMPARE(object.timerEventThread, thread);
-//            QCOMPARE(child.timerEventThread, thread);
+//            assertEquals(object.timerEventThread, thread);
+//            assertEquals(child.timerEventThread, thread);
 //
 //            thread.start();
 //            QObject.connect(object.done, new Slot(thread.loop, "quit()"), Qt.DirectConnection);
@@ -368,7 +375,7 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
             thread.start();
 
             QTcpServer server;
-            QVERIFY(server.listen(QHostAddress.LocalHost, 0));
+            assertTrue(server.listen(QHostAddress.LocalHost, 0));
             QTcpSocket *socket = new QTcpSocket();
             MoveToThreadObject *child = new MoveToThreadObject(socket);
             connect(socket, SIGNAL(disconnected()), child, SLOT(theSlot()), Qt.DirectConnection);
@@ -378,19 +385,19 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
 
             server.waitForNewConnection();
             QTcpSocket *serverSocket = server.nextPendingConnection();
-            QVERIFY(serverSocket);
+            assertTrue(serverSocket);
 
             socket.waitForConnected();
 
-            QCOMPARE(socket.thread(), currentThread);
+            assertEquals(socket.thread(), currentThread);
             socket.moveToThread(thread);
-            QCOMPARE(socket.thread(), thread);
+            assertEquals(socket.thread(), thread);
 
             serverSocket.close();
 
-            QVERIFY(thread.join(10000));
+            assertTrue(thread.join(10000));
 
-            QCOMPARE(child.slotThread, (Thread *)thread);
+            assertEquals(child.slotThread, (Thread *)thread);
 
             thread.start();
             connect(socket, SIGNAL(destroyed()), thread, SLOT(quit()), Qt.DirectConnection);
@@ -398,17 +405,5 @@ public class TestThreads extends com.trolltech.qtest.QTestCase {
             thread.join();
         }
         */
-    }
-
-    
-
-    public static void main(String args[]) {
-        QCoreApplication.initialize(args);
-
-        runTest(new TestThreads());
-//        try {
-//        	new TestThreads().run_pingPong();
-//        	System.out.println("worked just fine...");
-//        } catch (Exception e) { e.printStackTrace(); }
     }
 };

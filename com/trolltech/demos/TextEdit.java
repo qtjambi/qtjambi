@@ -350,7 +350,7 @@ public class TextEdit extends QMainWindow {
                                       "Application",
                                       "The document has been modified.\n"
                                       + "Save your changes?",
-                                      new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Cancel));
+                                      new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Discard, QMessageBox.StandardButton.Cancel));
         if (ret == QMessageBox.StandardButton.Yes)
             return fileSave();
         else if (ret == QMessageBox.StandardButton.Cancel)
