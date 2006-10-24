@@ -47,7 +47,7 @@ public class CollidingMice extends QWidget {
         QGraphicsView view = new QGraphicsView(scene);
         view.setRenderHint(QPainter.RenderHint.Antialiasing);
         view.setBackgroundBrush(new QBrush(new QPixmap(
-                "classpath:com/trolltech/examples/images/cheese.jpg")));
+                "classpath:com/trolltech/examples/images/cheese.png")));
         view.setCacheMode(new QGraphicsView.CacheMode(
                 QGraphicsView.CacheModeFlag.CacheBackground));
         view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag);

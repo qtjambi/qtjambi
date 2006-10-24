@@ -29,7 +29,18 @@ body { color: black; }</style>
         private QLineEdit accessLineEdit;</pre>
 <p>The <tt>LineEdits</tt> constructor is used to set up the line edits, validators, and comboboxes, connect signals from the comboboxes to slots in the <tt>LineEdits</tt> class, and arrange the child widgets in layouts.</p>
 <p>We begin by constructing a group box to hold a label, combobox, and line edit so that we can demonstrate the QLineEdit::echoMode property:</p>
-<pre>&nbsp;       public LineEdits() {
+<pre>&nbsp;           LineEdits lineedits = new LineEdits();
+            lineedits.show();
+    
+            QApplication.exec();
+        }
+        
+        public LineEdits() {
+            this(null);
+        }
+        
+        public LineEdits(QWidget parent) {
+            super(parent);
             QGroupBox echoGroup = new QGroupBox(tr(&quot;Echo&quot;));
     
             QLabel echoLabel = new QLabel(tr(&quot;Mode:&quot;));
@@ -37,8 +48,8 @@ body { color: black; }</style>
             echoComboBox.addItem(tr(&quot;Normal&quot;));
             echoComboBox.addItem(tr(&quot;Password&quot;));
             echoComboBox.addItem(tr(&quot;No Echo&quot;));
-        
-        setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
+    
+            setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
     
             echoLineEdit = new QLineEdit();
             echoLineEdit.setFocus();</pre>
@@ -107,7 +118,7 @@ body { color: black; }</style>
             alignmentLayout.addWidget(alignmentLabel, 0, 0);
             alignmentLayout.addWidget(alignmentComboBox, 0, 1);
             alignmentLayout.addWidget(alignmentLineEdit, 1, 0, 1, 2);
-            alignmentGroup. setLayout(alignmentLayout);
+            alignmentGroup.setLayout(alignmentLayout);
     
             QGridLayout inputMaskLayout = new QGridLayout();
             inputMaskLayout.addWidget(inputMaskLabel, 0, 0);
@@ -148,8 +159,7 @@ body { color: black; }</style>
         }</pre>
 <p>The slot updates the line edit in the same group box to use an echo mode that corresponds to the entry described in the combobox.</p>
 <p>When the combobox for the <b>Validator</b> group box is changed, the <tt>validatorChanged()</tt> slot is called:</p>
-<pre>&nbsp;       public void validatorChanged(int index)
-        {
+<pre>&nbsp;       public void validatorChanged(int index) {
             switch (index) {
             case 0:
                 validatorLineEdit.setValidator(null);
@@ -158,16 +168,14 @@ body { color: black; }</style>
                 validatorLineEdit.setValidator(new QIntValidator(validatorLineEdit));
                 break;
             case 2:
-                validatorLineEdit.setValidator(new QDoubleValidator(-999.0,
-                                                                     999.0, 2, validatorLineEdit));
+                validatorLineEdit.setValidator(new QDoubleValidator(-999.0, 999.0, 2, validatorLineEdit));
             }
     
             validatorLineEdit.setText(&quot;&quot;);
         }</pre>
 <p>The slot either creates a new validator for the line edit to use, or it removes the validator in use by calling QLineEdit.setValidator() with a <tt>null</tt> pointer. We clear the line edit in this case to ensure that the new validator is initially given valid input to work with.</p>
 <p>When the combobox for the <b>Alignment</b> group box is changed, the <tt>alignmentChanged()</tt> slot is called:</p>
-<pre>&nbsp;       public void alignmentChanged(int index)
-        {
+<pre>&nbsp;       public void alignmentChanged(int index) {
             switch (index) {
             case 0:
                 alignmentLineEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignLeft));
@@ -181,8 +189,7 @@ body { color: black; }</style>
         }</pre>
 <p>This changes the way that text is displayed in the line edit to correspond with the description selected in the combobox.</p>
 <p>The <tt>inputMaskChanged()</tt> slot handles changes to the combobox in the <b>Input Mask</b> group box:</p>
-<pre>&nbsp;       public void inputMaskChanged(int index)
-        {
+<pre>&nbsp;       public void inputMaskChanged(int index) {
             switch (index) {
             case 0:
                 inputMaskLineEdit.setInputMask(&quot;&quot;);
@@ -201,8 +208,7 @@ body { color: black; }</style>
         }</pre>
 <p>Each entry in the relevant combobox is associated with an input mask. We set a new mask by calling the QLineEdit.setMask() function with a suitable string; the mask is disabled if an empty string is used.</p>
 <p>The <tt>accessChanged()</tt> slot handles changes to the combobox in the <b>Access</b> group box:</p>
-<pre>&nbsp;       public void accessChanged(int index)
-        {
+<pre>&nbsp;       public void accessChanged(int index) {
             switch (index) {
             case 0:
                 accessLineEdit.setReadOnly(false);
@@ -212,10 +218,10 @@ body { color: black; }</style>
             }
         }</pre>
 <p>Here, we simply associate the <b>False</b> and <b>True</b> entries in the combobox with <tt>false</tt> and <tt>true</tt> values to be passed to QLineEdit.setReadOnly(). This allows the user to enable and disable input to the line edit.</p>
-<p>Finally, we provide a <tt>main()</tt> function to create and show the window when the example is run:</p>
+<p>Finally, we provide a <tt>main()</tt> function to create and show the <tt>LineEdits</tt> widget when the example is run:</p>
 <pre>&nbsp;       public static void main(String args[]) {
             QApplication.initialize(args);
-            
+    
             LineEdits lineedits = new LineEdits();
             lineedits.show();
     

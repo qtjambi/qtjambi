@@ -1,6 +1,5 @@
 package com.trolltech.qt;
 
-import java.lang.annotation.*;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -216,12 +215,9 @@ public class QtPropertyManager {
         }
     }
     
-    public void findProperties(Class cl) throws QMalformedQtPropertyException {
-        
+    public static HashMap<String, Entry> findProperties(Class cl) throws QMalformedQtPropertyException {
         HashMap<String, Entry> entries = new HashMap<String, Entry>();
-        
         Method methods[] = cl.getDeclaredMethods();
-        
         findReadAnnotatedProperties(entries, methods);
         findWriteAnnotatedProperties(entries, methods);
         findResetAnnotatedProperties(entries, methods);
@@ -249,18 +245,20 @@ public class QtPropertyManager {
             }
         }
         
-        for (String s : entries.keySet()) {
-            Entry e = entries.get(s);           
-            System.out.printf("entry: %s\n"
-                    + " - readable=%s\n"
-                    + " - writable=%s\n"
-                    + " - reset=%s\n"
-                    + " - designable=%s\n",
-                    e.name, e.read, e.write, e.reset, e.designable);
-        }        
+//        for (String s : entries.keySet()) {
+//            Entry e = entries.get(s);           
+//            System.out.printf("entry: %s\n"
+//                    + " - readable=%s\n"
+//                    + " - writable=%s\n"
+//                    + " - reset=%s\n"
+//                    + " - designable=%s\n",
+//                    e.name, e.read, e.write, e.reset, e.designable);
+//        }        
+//        
+        return entries;
     }
 
-    private void findResetAnnotatedProperties(HashMap<String, Entry> entries, Method[] methods) {
+    private static void findResetAnnotatedProperties(HashMap<String, Entry> entries, Method[] methods) {
         for (Method method : methods) {
             QtPropertyResetter reset = method.getAnnotation(QtPropertyResetter.class);
             if (reset == null)
@@ -278,7 +276,7 @@ public class QtPropertyManager {
         }
     }
 
-    private void findWriteAnnotatedProperties(HashMap<String, Entry> entries, Method[] methods) {
+    private static void findWriteAnnotatedProperties(HashMap<String, Entry> entries, Method[] methods) {
         for (Method method : methods) {
             QtPropertyWriter write = method.getAnnotation(QtPropertyWriter.class);
             if (write == null)
@@ -296,7 +294,7 @@ public class QtPropertyManager {
         }
     }
 
-    private void findReadAnnotatedProperties(HashMap<String, Entry> entries, Method[] methods) throws QMalformedQtPropertyException {
+    private static void findReadAnnotatedProperties(HashMap<String, Entry> entries, Method[] methods) throws QMalformedQtPropertyException {
         // Find all the annotated read methods
         for (Method method : methods) {
             QtPropertyReader read = method.getAnnotation(QtPropertyReader.class);
@@ -327,7 +325,7 @@ public class QtPropertyManager {
      * T isX()  <-> setX(T)
      * T hasX() <-> setX(T)
      */
-    private void findNamePatternProperties(HashMap<String, Entry> entries, Class cl, Method methods[]) {
+    private static void findNamePatternProperties(HashMap<String, Entry> entries, Class cl, Method methods[]) {
         for (int i=0; i<methods.length; ++i) {
             Method method = methods[i];
             

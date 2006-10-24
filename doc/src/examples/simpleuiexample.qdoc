@@ -1,0 +1,72 @@
+/*!
+  \page qtjambi-simpleui.html
+  \title Simple UI Example
+
+  The Simple UI Example shows how user interface (\c{.ui}) files created with
+  \QD can be used to implement user interfaces for applications.
+
+  \image simpleui-example.png
+
+  The example's main window shows a text browser and an \gui{Open Dialog} button
+  that can be used to access a dialog with input fields. When these fields have
+  been completed, or the dialog canceled, the resulting input is placed in the
+  text browser.
+
+  \section1 SimpleUIExample Class Implementation
+
+  The \c SimpleUIExample class is derived from QMainWindow, and provides a user
+  interface that is implemented by an instance of the
+  \c Ui_SimpleUIExampleMainWindow class:
+
+  \quotefromfile SimpleUIExample.java
+  \skipto public class SimpleUIExample extends QMainWindow {
+  \printuntil Ui_SimpleUIExampleMainWindow mainWindowUi
+
+  The instance of the user interface class is implemented as a member of the
+  \c SimpleUIExample class.
+
+  This user interface class is generated from a user interface file when the
+  example is built, and provides a \c setupUi() method that we use in the
+  \c SimpleUIExample constructor to set up the user interface:
+
+  \skipto public SimpleUIExample() {
+  \printuntil }
+
+  We also set the window's icon, and connect a push button defined in the user
+  interface to the \c showDialog() slot in this class:
+
+  \skipto private void showDialog() {
+  \printuntil dialogUi.setupUi(dialog);
+
+  The dialog itself uses a user interface class generated from a \c{.ui} file,
+  which we set up in a similar way to before. Here, we call the
+  \c Ui_SimpleUIExample instance's \c setupUi() method on the newly-constructed
+  QDialog instance.
+
+  Once set up, the dialog is executed in the normal way:
+
+  \skipto String result = "";
+  \printuntil mainWindowUi.textBrowser.setText(result);
+  \printuntil }
+  \skipto /^\}/
+  \printuntil }
+
+  If the user accepts the dialog, we read the contents of the input widgets it
+  contains, and write the result to the main window's text browser widget.
+  If the user cancels the dialog, the text "Cancelled by user." is written to
+  the text browser.
+
+  \section1 The main() Function
+
+  The \c main() function is defined as part of the \c SimpleUIExample class.
+  It constructs the necessary QApplication instance, constructs and shows an
+  instance of the \c SimpleUIExample class, and executes the application's
+  event loop:
+
+  \quotefromfile SimpleUIExample.java
+  \skipto public static void main(String[] args) {
+  \printuntil }
+
+  The example exits when the event loop has finished running, typically when
+  the user closes the main window.
+*/

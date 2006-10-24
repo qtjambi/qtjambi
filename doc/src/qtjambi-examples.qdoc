@@ -13,11 +13,8 @@
     features. You might want to look at these as well.
 
     Examples marked with an asterisk (\raisedaster) are fully
-    documented.
-
-    \omit
-    It is our goal to fully document all examples in a future release.
-    \endomit
+    documented. It is our goal to fully document all examples in a
+    future release.
 
     \section1 Examples
 
@@ -25,14 +22,18 @@
     \o \l{Analog Clock Example}{Analog Clock}\raisedaster
     \o \l{Application Example}{Application}\raisedaster
     \o \l{Cached Table Example}{Cached Table}\raisedaster
-    \o \l{Calculator UI Example}{Calculator UI}
+    \o \l{Calculator UI Example}{Calculator UI}\raisedaster
     \o \l{Colliding Mice Example}{Colliding Mice}\raisedaster
-    \o \l{Custom Filter Example}{Custom Filter}
+    \o \l{Custom Sort/Filter Model Example}{Custom Sort/Filter Model}\raisedaster
+    \o \l{Elastic Nodes Example}{Elastic Nodes}
     \o \l{Generator Example}{Generator}\raisedaster
+    \o \l{Item View Chart Example}{Item View Chart}\raisedaster
     \o \l{Line Edits Example}{Line Edits}\raisedaster
+    \o \l{Mandelbrot Example}{Mandelbrot}\raisedaster
     \o \l{Resource System Example}{Resource System}\raisedaster
+    \o \l{Simple UI Example}{Simple UI}\raisedaster
     \o \l{Spin Boxes Example}{Spin Boxes}\raisedaster
-    \o \l{SVG Cards Example}{SVG Cards}
+    \o \l{SVG Cards Example}{SVG Cards}\raisedaster
     \o \l{Syntax Highlighter Example}{Syntax Highlighter}\raisedaster
     \o \l{System Tray Icon Example}{System Tray Icon}\raisedaster
     \o \l{Tetrix Example}{Tetrix}\raisedaster

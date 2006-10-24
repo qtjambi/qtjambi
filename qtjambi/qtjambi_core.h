@@ -88,6 +88,9 @@ void qtjambi_connect_notify(JNIEnv *env, QObject *qobject, const QString &signal
 
 void qtjambi_disconnect_notify(JNIEnv *env, QObject *qobject, const QString &signal_name);
 
+QTJAMBI_EXPORT void qtjambi_end_paint(JNIEnv *env, jobject widget);
+
+
 inline void *qtjambi_to_interface(JNIEnv *env,
                                   jobject java_object,
                                   const char *interface_name,
@@ -369,7 +372,7 @@ void qtjambi_resolve_signals(JNIEnv *env,
                              int *argument_counts);
 
 QTJAMBI_EXPORT
-bool qtjambi_connect_cpp_to_java(JNIEnv *, 
+bool qtjambi_connect_cpp_to_java(JNIEnv *,
                                  const QString &java_signal_name,
                                  QObject *sender,
                                  QObject *wrapper,

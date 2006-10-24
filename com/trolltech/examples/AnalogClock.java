@@ -55,8 +55,7 @@ public class AnalogClock
         
         QTime time = QTime.currentTime();
 
-        QPainter painter = new QPainter();
-        painter.begin(this);
+        QPainter painter = new QPainter(this);
         painter.setRenderHint(QPainter.RenderHint.Antialiasing);
         painter.translate(width() / 2, height() / 2);
         painter.scale(side / 200.0f, side / 200.0f);
@@ -80,7 +79,7 @@ public class AnalogClock
         painter.setBrush(minuteColor);
 
         painter.save();
-        painter.rotate(6.0f * (time.minute() + time.second() / 60.0f));
+        painter.rotate(6.0f * (time.minute() + time.second() / 60.0f)); 
         painter.drawConvexPolygon(minuteHand);
         painter.restore();
 
@@ -91,8 +90,6 @@ public class AnalogClock
                 painter.drawLine(92, 0, 96, 0);
             painter.rotate(6.0f);
         }
-        
-        painter.end();
     }
     
     public QSize sizeHint() {

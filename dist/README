@@ -33,9 +33,10 @@ applications.
 Documentation
 -------------
 
-The documentation is provided in doc/html with the qtjambi_index.html
-as the main index file. For easy access to the documentation execute
-the 'assistant.bat' or 'assistant.sh' files in your install directory.
+The documentation is provided in doc/html with the
+com/trolltech/qt/qtjambi_index.html as the main index file. For easy
+access to the documentation run the launcher and click the
+"Documentation" button which will open the documentation in your preferred browser.
 
 
 Manually launching Qt Jambi applications

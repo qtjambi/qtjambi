@@ -15,7 +15,7 @@
 
     Java has a simpler type system compared to C++, with only
     primitives and objects. Primitives are passed by value and objects
-    are passed by reference.
+    are passed as references.
 
     Most of Qt's classes can be described either as value types or as
     object types. Value types behave like Java's built-in types: they
@@ -89,9 +89,9 @@
     allowing the programmer to use the conventional Java approach.
 
     Note: When you see commonly used functions that take \c
-    QNativePointer arguments, feel free to \l {}{let us know} so we
-    can improve the API by adding a corresponding convenience
-    function.
+    QNativePointer arguments, feel free to let us know (by sending an
+    email to \l {mailto:qt-jambi-interest@trolltech.com}) so we can improve
+    the API by adding a corresponding convenience function.
 
     \section2 Enums
 

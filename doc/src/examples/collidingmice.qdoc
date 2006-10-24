@@ -37,11 +37,11 @@
     In the constructor, we first initialize the color of the mouse
     using a random number generator to calculate the color
     components. Then we call the \l
-    {QGraphicsItem::rotate()}{rotate()} function inherited from
+    {QGraphicsItem::rotate()}{rotate()} method inherited from
     QGraphicsItem. Items live in their own local coordinate
     system. Their coordinates are usually centered around (0, 0), and
     this is also the center for all transformations. By calling the
-    item's \l {QGraphicsItem::rotate()}{rotate()} function we alter
+    item's \l {QGraphicsItem::rotate()}{rotate()} method we alter
     the direction in which the mouse will start moving.
 
     \skipto timer
@@ -49,21 +49,21 @@
     \printline }
 
     Then we create a QObject instance that will act as a timer. We
-    override the implementation of the QObject::timerEvent() function
+    override the implementation of the QObject::timerEvent() method
     to receive the timer events it generates. We start our timer by
     calling QObject's \l {QObject::startTimer()}{startTimer()}
-    function; making a timer event occur every 1000/33
+    method; making a timer event occur every 1000/33
     milliseconds. Whenever a mouse receives a timer event it will call
-    the \c move() function which we will come back to later.
+    the \c move() method which we will come back to later.
 
     When writing your own graphics item, you must implement the pure
     virtual \l {QGraphicsItem::boundingRect()}{boundingRect()} and \l
-    {QGraphicsItem::paint()}{paint()} functions:
+    {QGraphicsItem::paint()}{paint()} methods:
 
     \skipto boundingRect()
     \printuntil }
 
-    The \l {QGraphicsItem::boundingRect()}{boundingRect()} function
+    The \l {QGraphicsItem::boundingRect()}{boundingRect()} method
     defines the outer bounds of the item as a rectangle. Note that the
     Graphics View framework uses the bounding rectangle to determine
     whether the item requires redrawing, so all painting must be
@@ -73,17 +73,17 @@
     \printuntil }
 
     The Graphics View framework calls the \l
-    {QGraphicsItem::paint()}{paint()} function to paint the contents
-    of the item; the function paints the item in local coordinates.
+    {QGraphicsItem::paint()}{paint()} method to paint the contents
+    of the item; the method paints the item in local coordinates.
 
     Note the painting of the ears: Whenever a mouse item collides with
     other mice items its ears are filled with red; otherwise they are
     filled with dark yellow. We use the
-    QGraphicsScene::collidingItems() function to check if there are
+    QGraphicsScene::collidingItems() method to check if there are
     any colliding mice.  The actual collision detection is handled by
     the Graphics View framework using shape-shape intersection. All we
     have to do is to ensure that the \l
-    {QGraphicsItem::shape()}{QGraphicsItem.shape()} function returns
+    {QGraphicsItem::shape()}{QGraphicsItem.shape()} method returns
     an accurate shape for our item:
 
     \quotefromfile CollidingMice.java
@@ -94,10 +94,10 @@
     with an order of magnitude when the shapes are complex, this
     operation can be noticably time consuming. An alternative approach
     is to reimplement the \l
-    {QGraphicsItem::collidesWithItem()}{collidesWithItem()} function
+    {QGraphicsItem::collidesWithItem()}{collidesWithItem()} method
     to provide your own custom item and shape collision algorithm.
 
-    Finally, we must implement the \c move() function that is called
+    Finally, we must implement the \c move() method that is called
     whenever the mouse item receives a timer event from the timer we
     started in the constructor:
 
@@ -110,7 +110,7 @@
     of 150 pixels.
 
     Note the \l {QGraphicsItem::mapFromScene()}{mapFromScene()}
-    function provided by QGraphicsItem. This function maps a position
+    method provided by QGraphicsItem. This method maps a position
     given in \e scene coordinates, to the item's coordinate system.
 
     \skipto polygon
@@ -129,11 +129,11 @@
 
     The position of an item describes its origin (local coordinate (0,
     0)) in the parent coordinates. The \l
-    {QGraphicsItem::setPos()}{QGraphicsItem.setPos()} function sets
+    {QGraphicsItem::setPos()}{QGraphicsItem.setPos()} method sets
     the position of the item to the given position in the parent's
     coordinate system. For items with no parent, the given position is
     interpreted as scene coordinates. QGraphicsItem also provides a \l
-    {QGraphicsItem::mapToParent()}{mapToParent()} function to map a
+    {QGraphicsItem::mapToParent()}{mapToParent()} method to map a
     position given in item coordinates, to the parent's coordinate
     system. If the item has no parent, the position will be mapped to
     the scene's coordinate system instead.
@@ -142,9 +142,9 @@
     \printuntil return
     \printline }
 
-    The \c normalizeAngle() function is only a convenience function
+    The \c normalizeAngle() method is only a convenience method
     used when calculating the mouse's new position in the \c move()
-    function.
+    method.
 
     This completes the \c Mouse class implementation, it is now ready
     for use. Let's take a look at the \c CollidingMice class to see
@@ -214,12 +214,12 @@
     \skipto layout
     \printuntil }
 
-    Then we set the chache mode; QGraphicsView can cache pre-rendered
+    Then we set the cache mode; QGraphicsView can cache pre-rendered
     content in a QPixmap, which is then drawn onto the viewport. The
     purpose of such caching is to speed up the total rendering time
     for areas that are slow to render, e.g., texture, gradient and
     alpha blended backgrounds. The \l
-    {QGraphicsView::chacheMode}{chacheMode} property holds which parts
+    {QGraphicsView::CacheMode}{CacheMode} property holds which parts
     of the view that are cached, and the \l
     {QGraphicsView::CacheBackground}{CacheBackground} flag enables
     caching of the view's background.
@@ -242,6 +242,6 @@
     \skipto }
     \printline }
 
-    The \c main() function is provided to create and show the main
+    The \c main() method is provided to create and show the main
     application window when the example is run.
 */

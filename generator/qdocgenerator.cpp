@@ -85,6 +85,25 @@ static QString protect( const QByteArray& str )
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
 {
+    MetaJavaArgumentList arguments = java_function->arguments();
+    int argument_count = arguments.size();
+
+    int overload_count = 0;
+
+    for (int i=0; i<argument_count; ++i) {
+        if (!arguments.at(i)->defaultValueExpression().isEmpty())
+            ++overload_count;
+    }
+
+    for (int i=0; i<=overload_count; ++i) {
+        writeOverload(s, java_function, argument_count - i);
+    }
+}
+
+void QDocGenerator::writeOverload(QTextStream &s,
+                                  const MetaJavaFunction *java_function,
+                                  int arg_count)
+{
     if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
         return;
 
@@ -92,7 +111,19 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
     uint included_attributes = 0;
     uint excluded_attributes = 0;
     setupForFunction(java_function, &included_attributes, &excluded_attributes, &disabled_params);
-    QString signature = functionSignature(java_function, included_attributes, excluded_attributes);
+
+    if (arg_count < java_function->arguments().size()) {
+        // see JavaGenerator::writeFunctionOverloads()
+        if (!java_function->isConstructor())
+            included_attributes |= MetaJavaAttributes::Final;
+        excluded_attributes |= MetaJavaAttributes::Abstract | MetaJavaAttributes::Native;
+    }
+
+    QString signature = functionSignature(java_function,
+                                          included_attributes,
+                                          excluded_attributes,
+                                          NoOption,
+                                          arg_count);
 
     s << "<method java=\"" << protect(signature.toUtf8()) << "\"" << endl
       << "    cpp=\"" << protect(java_function->signature().toUtf8()) << "\"";
@@ -100,7 +131,7 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
     if (disabled_params.count() > 0) {
         s << endl << "    steals-ownership-of=\"";
         MetaJavaArgumentList arguments = java_function->arguments();
-        for (int i=0; i<arguments.count(); ++i) {
+        for (int i=0; i<arg_count; ++i) {
             if (disabled_params.value(i + 1, false)) {
                 const MetaJavaArgument *arg = arguments.at(i);
                 if (i > 0)
@@ -129,6 +160,13 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaEnum *java_enum)
     s << "</enum>" << endl;
 }
 
+void QDocGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_function)
+{
+    s << "<signal java=\""
+      << protect(java_function->javaSignature().toUtf8()) << "\" cpp=\""
+      << protect(java_function->signature().toUtf8()) << "\"/>" << endl;
+}
+
 void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field)
 {
     QHash<int, bool> disabled_params;
@@ -152,7 +190,8 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     s << "<class" << endl
       << "   java=\"" << protect(java_class->name().toUtf8()) << "\"" << endl
       << "   cpp=\"" << protect(java_class->typeEntry()->qualifiedCppName().toUtf8()) << "\"" << endl
-      << "   java-extends=\"" << protect(java_class->baseClass() ? java_class->baseClass()->name().toUtf8() : "") << "\"" << endl;
+      << "   java-extends=\"" << protect(java_class->baseClass() ? java_class->baseClass()->name().toUtf8() : "") << "\"" << endl
+      << "   package=\"" << protect(java_class->package().toUtf8()) << "\"" << endl;
 
     if (java_class->typeEntry()->isObject()) {
         const ObjectTypeEntry *ot = static_cast<const ObjectTypeEntry *>(java_class->typeEntry());
@@ -179,6 +218,11 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     else
         s << "object";
     s << "\">" << endl;
+
+    // Write signals
+    MetaJavaFunctionList sigs = java_class->queryFunctions(MetaJavaClass::Signals);
+    foreach (MetaJavaFunction *f, sigs)
+        writeSignal(s, f);
 
     // Write functions
     MetaJavaFunctionList functions = java_class->functionsInJava();

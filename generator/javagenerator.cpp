@@ -132,6 +132,10 @@ void JavaGenerator::writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_en
     s << "    public static class " << java_enum->name() << "{" << endl;
     for (int i=0; i<values.size(); ++i) {
         MetaJavaEnumValue *value = values.at(i);
+
+        if (m_doc_parser)
+            s << m_doc_parser->documentation(value);
+
         s << "        public static final int " << value->name() << " = " << value->value();
         s << ";";
         s << endl;
@@ -142,6 +146,10 @@ void JavaGenerator::writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_en
 
 void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
 {
+    if (m_doc_parser) {
+        s << m_doc_parser->documentation(java_enum);
+    }
+
     if (java_enum->typeEntry()->forceInteger()) {
         writeIntegerEnum(s, java_enum);
         return;
@@ -155,6 +163,10 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
 
     for (int i=0; i<values.size(); ++i) {
         MetaJavaEnumValue *enum_value = values.at(i);
+
+        if (m_doc_parser)
+            s << m_doc_parser->documentation(enum_value);
+
         s << "        " << enum_value->name() << "(" << enum_value->value() << ")";
 
         if (i != values.size() - 1 || entry->isExtensible()) {
@@ -467,6 +479,13 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
         }
     }
 
+    if (m_doc_parser) {
+        QString signature = functionSignature(java_function,
+                                              include_attributes,
+                                              exclude_attributes);
+        s << m_doc_parser->documentationForSignal(signature);
+    }
+
     s << "    ";
     writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
                             SkipReturnType);
@@ -479,8 +498,11 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
                   MetaJavaAttributes::Visibility);
 }
 
-void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function, const MetaJavaClass *java_class,
-                                          QHash<int, bool> *disabled_params, uint *exclude_attributes, uint *include_attributes) const
+void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
+                                          const MetaJavaClass *java_class,
+                                          QHash<int, bool> *disabled_params,
+                                          uint *exclude_attributes,
+                                          uint *include_attributes) const
 {
     FunctionModificationList mods = java_function->modifications(java_class);
     foreach (FunctionModification mod, mods) {
@@ -511,10 +533,11 @@ void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
 
 QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
                                          uint included_attributes, uint excluded_attributes,
-                                         Option option)
+                                         Option option,
+                                         int arg_count)
 {
     MetaJavaArgumentList arguments = java_function->arguments();
-    int argument_count = arguments.size();
+    int argument_count = arg_count < 0 ? arguments.size() : arg_count;
 
     QString result;
     QTextStream s(&result);
@@ -532,7 +555,8 @@ QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
 }
 
 void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
-                                     uint *included_attributes, uint *excluded_attributes,
+                                     uint *included_attributes,
+                                     uint *excluded_attributes,
                                      QHash<int, bool> *disabled_params) const
 {
     *excluded_attributes |= java_function->ownerClass()->isInterface() || java_function->isConstructor()
@@ -562,8 +586,10 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
         writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);
     }
 
+    QString signature = functionSignature(java_function, included_attributes, excluded_attributes);
+
     if (m_doc_parser) {
-        s << m_doc_parser->documentation(java_function) << endl;
+        s << m_doc_parser->documentationForFunction(signature) << endl;
     }
 
     if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
@@ -622,7 +648,20 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const MetaJavaFunction *ja
         generate_enum_overload = arguments.at(i)->type()->isJavaFlags() ? i : -1;
 
     if (generate_enum_overload >= 0) {
+        if (m_doc_parser) {
+            // steal documentation from main function
+            QString signature = functionSignature(java_function, include_attributes,
+                                                  exclude_attributes);
+            s << m_doc_parser->documentationForFunction(signature) << endl;
+        }
+
         s << endl << "    ";
+        if (((exclude_attributes & MetaJavaAttributes::Private) == 0)
+            && (java_function->isPrivate()
+                || (include_attributes & MetaJavaAttributes::Private) != 0)) {
+            s << "@SuppressWarnings(\"unused\")" << endl << "    ";
+        }
+
         writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes, 0);
         s << java_function->name() << "(";
         if (generate_enum_overload > 0) {
@@ -693,18 +732,25 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
     for (int i=0; i<overload_count; ++i) {
         int used_arguments = argument_count - i - 1;
 
+        QString signature = functionSignature(java_function, included_attributes,
+                                              excluded_attributes,
+                                              java_function->isEmptyFunction()
+                                              || java_function->isNormal()
+                                              || java_function->isSignal() ? NoOption
+                                                                           : SkipReturnType,
+                                              used_arguments);
+
+        if (m_doc_parser) {
+            s << m_doc_parser->documentationForFunction(signature) << endl;
+        }
+
         if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
             && (java_function->isPrivate()
                 || (included_attributes & MetaJavaAttributes::Private) != 0)) {
             s << endl << "    @SuppressWarnings(\"unused\")";
         }
 
-        s << "\n    ";
-        writeFunctionAttributes(s, java_function, included_attributes, excluded_attributes,
-            java_function->isEmptyFunction() || java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
-        s << java_function->name() << "(";
-        writeFunctionArguments(s, java_function, used_arguments);
-        s << ") {\n        ";
+        s << "\n    " << signature << " {\n        ";
         if (java_function->type())
             s << "return ";
         if (java_function->isConstructor())

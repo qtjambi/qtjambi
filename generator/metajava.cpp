@@ -341,7 +341,29 @@ FunctionModificationList MetaJavaFunction::modifications(const MetaJavaClass *im
     FunctionModificationList modifications =
         implementor->typeEntry()->functionModifications(minimalSignature);
 
-    return modifications;
+    if (modifications.size() == 0) {
+        modifications = implementor->typeEntry()->functionModifications();
+
+        QString possible;
+        for (int i=0; i<modifications.size(); ++i) {
+            FunctionModification modification = modifications.at(i);
+            if (modification.signature.contains(name() + "(")) {
+                if (i > 0) possible += ", ";
+                possible += "'" + modification.signature + "'";
+            }
+        }
+
+        if (!possible.isEmpty()) {
+            QString s = QString("No modifications specified for '%1' in '%2'. Suggestions for "
+                                "misspelt signatures: %3")
+                                .arg(minimalSignature).arg(implementor->name()).arg(possible);
+            ReportHandler::debugSparse(s);
+        }
+
+        return FunctionModificationList();
+    } else {
+        return modifications;
+    }
 }
 
 bool MetaJavaFunction::hasModifications(const MetaJavaClass *implementor) const

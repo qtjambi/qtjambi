@@ -63,6 +63,8 @@ macro.quotefromfile             = "\\quotefile"
 macro.quote                     = "\\quotation"
 macro.endquote                  = "\\endquotation"
 
+HTML.stylesheets        = classic.css
+
 HTML.style              = "h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }\n" \
                           "a:link { color: #004faf; text-decoration: none }\n" \
                           "a:visited { color: #672967; text-decoration: none }\n" \
@@ -92,5 +94,5 @@ HTML.footer             = "<p /><address><hr /><div align=\"center\">\n" \
                           "<table width=\"100%\" cellspacing=\"0\" border=\"0\"><tr class=\"address\">\n" \
                           "<td width=\"30%\">Copyright &copy; \$THISYEAR\$ <a href=\"trolltech.html\">Trolltech</a></td>\n" \
                           "<td width=\"40%\" align=\"center\"><a href=\"trademarks.html\">Trademarks</a></td>\n" \
-                          "<td width=\"30%\" align=\"right\"><div align=\"right\">Qt \\version</div></td>\n" \
+                          "<td width=\"30%\" align=\"right\"><div align=\"right\">Qt Jambi \\version</div></td>\n" \
                           "</tr></table></div></address>"

@@ -263,7 +263,7 @@ static bool launch_launcher(JNIEnv *jni_env)
 
     jmethodID main_function = 0;
     if (launcher_class != 0)
-        main_function = jni_env->GetStaticMethodID(launcher_class, "start_qt", "(Z)V");
+        main_function = jni_env->GetStaticMethodID(launcher_class, "main", "([Ljava/lang/String;)V");
     else 
         return bug_out("Cannot find com.trolltech.launcher.Launcher") != 0; 
     if (jni_env->ExceptionOccurred()) {
@@ -272,7 +272,7 @@ static bool launch_launcher(JNIEnv *jni_env)
     }
    
     if (main_function != 0)
-        jni_env->CallStaticVoidMethod(launcher_class, main_function, JNI_TRUE);
+        jni_env->CallStaticVoidMethod(launcher_class, main_function, jobject(0));
     else
         return bug_out("Cannot find main function in Launcher class") != 0; 
 

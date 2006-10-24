@@ -1,0 +1,152 @@
+/*!
+    \page qtjambi-deployment.html
+
+    \title Deploying Qt Jambi Applications
+
+    Java provides a number of different features which makes it easier
+    to deploy applications, such as the Web Start technology, Java
+    Archives (\c .jar files) and of course the virtual machine that
+    enables you to compile your application to bytecode once and run
+    on all architectures.
+
+    The apparent challenge when deploying \QJ applications is that \QJ
+    makes use of Qt's C++ libraries which means that platform
+    dependent code must be distributed in addition to the platform
+    independent bytecode. \QJ provides a solution; all you have to do
+    is to include the native libraries in the JAR bundle.  To include
+    resources, the programmer must follow a particular syntax since
+    \QJ provides its own resource system. But note that this system
+    makes it easy to access any kind of resources (e.g., pixmaps,
+    translation files and xml data files), no matter whether they are
+    located directly on the disk or in a JAR bundle.
+
+    We will first take a look at how \QJ loads native libraries into
+    the application, and how to include resources using \QJ's resource
+    system. Then we will see how to create an executable \c .jar
+    file. We will also see how a \QJ application can be deployed using
+    the Web Start technology. For an example, please take a look at
+    our own Web Start application, "The \QJ Examples and Demos
+    Launcher".
+
+    \tableofcontents
+
+    \section1 Resolving Native Libraries
+
+    When using native libraries in Java, the recommended approach is
+    to call the \c System.loadLibrary() method to load the libraries
+    in a platform independent manner. This method requires the user to
+    specify some platform dependent environment variables, or
+    alternatively specify a runtime property for the virtual machine.
+
+    In general, using this method also requires that the libraries are
+    available in the file system, i.e., making it impossible to
+    distribute the native libraries by including them in a \c .jar
+    file. \QJ solves this problem by searching the classpath in
+    addition to the traditional locations, using the \c
+    com.trolltech.UtilitiesLoadLibrary() function. So to distribute
+    native libraries, all you have to do is to include them in the JAR
+    bundle.
+
+    Since one native library may depend on another, e.g., QtCore
+    compiled with MSVC.NET 2003 will link against \c msvcr71.dll which
+    is not installed on Windows 2000 machines, it is important to
+    notice that all dependent libraries must be distributed as
+    well. Using \QJ, it is possible to specify dependent libraries by
+    listing them in a file called \c qt_system_libs which should be
+    located somewhere in the classpath root.
+
+    \table
+    \row \o
+
+    \bold {The \QJ Generator and Custom Libraries}
+
+    \QJ also supports distribution of custom native libraries using
+    the same approach as for regular libraries. This makes it possible
+    to ship applications based on Java \e and C++, both as executable
+    \c .jar files and using the Web Start technology.
+
+    To generate code that maps a C++ library onto an equivalent Java
+    API, \QJ provides its own generator. For more information, please
+    see the \l {The Qt Jambi Generator} documentation.
+
+    \endtable
+
+
+    \section1 Including Resources
+
+    \QJ provides a complete filesystem abstraction that allows a
+    uniform syntax (based on the Java classpath) for accessing
+    resources, no matter whether they are located directly on the disk
+    or in a JAR bundle. While the standard Java API only supports
+    accessing resources in an undocumented subset of its file I/O
+    operations (which does not include the \c java.io.File class), Qt
+    Jambi allows resources to be used wherever a file name is
+    expected. Resources are identifed by a \c classpath: prefix.
+
+    \image accessing-resources.png
+
+    Note that it is also possible to load resources as raw data:
+
+    \code
+        QFile file = new QFile("classpath:images/fileopen.png");
+        file.open(QFile.OpenMode.ReadOnly);
+        QByteArray rawData = file.readAll();
+    \endcode
+
+    To include resources in your distribution, all you have to do is
+    to ensure that the application follows the \QJ syntax for
+    accessing resources and make the resources available by adding
+    them to your JAR bundle.
+
+    \section1 Creating an Executable .jar File
+
+    To deploy \QJ applications using the executable \c .jar file
+    approach is straight forward:
+
+    \code
+        jar mcf myApplication.jar <manifest file> <my class files>
+                         <my resources> <native libraries>
+    \endcode
+
+    Simply put all resources, native libraries and application \c
+    .class files into one single \c .jar file. Remember to add a
+    mainfest file to make the file executable.
+
+    \section1 Creating a Web Start Application
+
+    Java Web Start is a helper application that gets associated with a
+    Web browser. When a user clicks on a link that points to a special
+    launch file, the browser launches Java Web Start, which then
+    automatically downloads, caches, and runs the given Java
+    Technology-based application.
+
+    The easiest way to create the launch file is to modify an existing
+    JNLP (Java Network Launching Protocol and API) file to fit your
+    requirements. The application \c .jar file can be created using
+    the approach described in the previous section; bundle all the
+    class files, resources and native libraries into one single \c
+    .jar file.
+
+    Note that for cross platform binaries, it might be useful to
+    specify which libraries that should be loaded on a given
+    platform. This can be done using the JNLP file.
+
+    The JNLP file is an XML document, and has a \c resources element
+    that is used to specify all the resources, such as Java class
+    files, native libraries, and system properties, that are part of
+    the application. A resource definition can be restricted to a
+    specific operating system, architecture, or locale using the \c
+    os, \c arch, and \c locale attributes. For example:
+
+    \code
+        <resources os="Windows" arch="x86">
+            <j2se version="1.5+"/>
+            <jar href="qtjambi-win32.jar" />
+        </resources>
+     \endcode
+
+    For more infomation about deploying Web Start applications, please
+    see the \l
+    {http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/contents.html}{Java
+    Web Start Developer's Guide}
+*/

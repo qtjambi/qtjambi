@@ -646,12 +646,12 @@ p, li { white-space: pre-wrap; }
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="button_assistant" >
+         <widget class="QPushButton" name="button_documentation" >
           <property name="enabled" >
            <bool>true</bool>
           </property>
           <property name="text" >
-           <string>Qt Assistant</string>
+           <string>Documentation</string>
           </property>
          </widget>
         </item>

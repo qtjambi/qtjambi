@@ -11,7 +11,7 @@
  **
  ****************************************************************************/
 
-package com.trolltech.demos;
+package com.trolltech.examples;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -21,11 +21,11 @@ public class Mandelbrot extends QWidget {
     private RenderThread thread = new RenderThread();
     private QPixmap pixmap = new QPixmap();
     private QPoint pixmapOffset = new QPoint();
-    private QPoint lastDragPos = new QPoint();
+    private QPoint lastDragPosition = new QPoint();
     private double centerX;
     private double centerY;
     private double pixmapScale;
-    private double curScale;
+    private double currentScale;
 
     final double DefaultCenterX = -0.637011f;
     final double DefaultCenterY = -0.0395159f;
@@ -35,12 +35,13 @@ public class Mandelbrot extends QWidget {
     final double ZoomOutFactor = 1 / ZoomInFactor;
     final int ScrollStep = 20;
 
-    private Signal2<QImage, Double> renderImageSignal = new Signal2<QImage, Double>();
+    private Signal2<QImage, Double> renderedImage = 
+            new Signal2<QImage, Double>();
 
     public static void main(String args[]) {
         QApplication.initialize(args);
-        Mandelbrot mainw = new Mandelbrot();
-        mainw.show();
+        Mandelbrot mainWindow = new Mandelbrot();
+        mainWindow.show();
         QApplication.exec();
     }
 
@@ -48,9 +49,9 @@ public class Mandelbrot extends QWidget {
         centerX = DefaultCenterX;
         centerY = DefaultCenterY;
         pixmapScale = DefaultScale;
-        curScale = DefaultScale;
+        currentScale = DefaultScale;
 
-        renderImageSignal.connect(this, "updatePixmap(QImage, Double)");
+        renderedImage.connect(this, "updatePixmap(QImage, Double)");
 
         setWindowTitle(tr("Mandelbrot"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
@@ -64,43 +65,53 @@ public class Mandelbrot extends QWidget {
         painter.fillRect(rect(), new QBrush(QColor.black));
 
         if (pixmap.isNull()) {
+            String message = tr("Rendering initial image, please wait...");
             painter.setPen(QColor.white);
-            painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(), tr("Rendering initial image, please wait..."));
+            painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(), 
+                             message);
             painter.end();
 
             return;
         }
-        if (curScale == pixmapScale) {
+        if (currentScale == pixmapScale) {
             painter.drawPixmap(pixmapOffset, pixmap);
         } else {
-            double scaleFactor = pixmapScale / curScale;
+            double scaleFactor = pixmapScale / currentScale;
             int newWidth = (int) (pixmap.width() * scaleFactor);
             int newHeight = (int) (pixmap.height() * scaleFactor);
-            int newX = pixmapOffset.x() + (pixmap.width() - newWidth) / 2;
-            int newY = pixmapOffset.y() + (pixmap.height() - newHeight) / 2;
+            int newX = pixmapOffset.x() 
+                       + (pixmap.width() - newWidth) / 2;
+            int newY = pixmapOffset.y() 
+                       + (pixmap.height() - newHeight) / 2;
 
             painter.save();
             painter.translate(newX, newY);
             painter.scale(scaleFactor, scaleFactor);
-            QRect exposed = painter.matrix().inverted().mapRect(rect()).adjusted(-1, -1, 1, 1);
+
+            QMatrix invertedMatrix = painter.matrix().inverted();
+            QRect exposed = invertedMatrix.mapRect(rect());
+            exposed = exposed.adjusted(-1, -1, 1, 1);
+
             painter.drawPixmap(exposed, pixmap, exposed);
             painter.restore();
         }
 
-        String text = tr("Use mouse wheel to zoom. Press and hold left mouse button to scroll.");
+        String text = tr("Use mouse wheel to zoom.") 
+                      + tr("Press and hold left mouse button to scroll.");
         QFontMetrics metrics = painter.fontMetrics();
         int textWidth = metrics.width(text);
+        int offset = (width() - textWidth) / 2;
 
         painter.setPen(QPen.NoPen);
         painter.setBrush(new QColor(0, 0, 0, 127));
-        painter.drawRect((width() - textWidth) / 2 - 5, 0, textWidth + 10, metrics.lineSpacing() + 5);
+        painter.drawRect(offset - 5, 0, textWidth + 10, metrics.lineSpacing() + 5);
         painter.setPen(QColor.white);
-        painter.drawText((width() - textWidth) / 2, metrics.leading() + metrics.ascent(), text);
+        painter.drawText(offset, metrics.leading() + metrics.ascent(), text);
         painter.end();
     }
 
     public void resizeEvent(QResizeEvent event) {
-        thread.render(centerX, centerY, curScale, size());
+        thread.render(centerX, centerY, currentScale, size());
     }
 
     protected void closeEvent(QCloseEvent event) {
@@ -108,7 +119,7 @@ public class Mandelbrot extends QWidget {
             thread.abort = true;
             thread.notify();
         }
-        super.changeEvent(event);
+        super.closeEvent(event);
     }
 
     public void keyPressEvent(QKeyEvent event) {
@@ -145,16 +156,15 @@ public class Mandelbrot extends QWidget {
 
     public void mousePressEvent(QMouseEvent event) {
         if (event.button() == Qt.MouseButton.LeftButton)
-            lastDragPos = event.pos();
+            lastDragPosition = event.pos();
     }
 
     public void mouseMoveEvent(QMouseEvent event) {
         if (event.buttons().isSet(Qt.MouseButton.LeftButton)) {
-            // pixmapOffset += event.pos() - lastDragPos;
             pixmapOffset.operator_add_assign(event.pos());
-            pixmapOffset.operator_subtract_assign(lastDragPos);
+            pixmapOffset.operator_subtract_assign(lastDragPosition);
 
-            lastDragPos = event.pos();
+            lastDragPosition = event.pos();
             update();
         }
     }
@@ -162,8 +172,8 @@ public class Mandelbrot extends QWidget {
     public void mouseReleaseEvent(QMouseEvent event) {
         if (event.button() == Qt.MouseButton.LeftButton) {
             pixmapOffset.operator_add_assign(event.pos());
-            pixmapOffset.operator_subtract_assign(lastDragPos);
-            lastDragPos = new QPoint();
+            pixmapOffset.operator_subtract_assign(lastDragPosition);
+            lastDragPosition = new QPoint();
 
             int deltaX = (width() - pixmap.width()) / 2 - pixmapOffset.x();
             int deltaY = (height() - pixmap.height()) / 2 - pixmapOffset.y();
@@ -173,26 +183,26 @@ public class Mandelbrot extends QWidget {
 
     @SuppressWarnings("unused")
     private void updatePixmap(QImage image, Double scaleFactor) {
-        if (!lastDragPos.isNull())
+        if (!lastDragPosition.isNull())
             return;
         pixmap = QPixmap.fromImage(image);
         pixmapOffset = new QPoint();
-        lastDragPos = new QPoint();
+        lastDragPosition = new QPoint();
         pixmapScale = scaleFactor;
         update();
     }
 
     protected void zoom(double zoomFactor) {
-        curScale *= zoomFactor;
+        currentScale *= zoomFactor;
         update();
-        thread.render(centerX, centerY, curScale, size());
+        thread.render(centerX, centerY, currentScale, size());
     }
 
     public void scrollImage(int deltaX, int deltaY) {
-        centerX += deltaX * curScale;
-        centerY += deltaY * curScale;
+        centerX += deltaX * currentScale;
+        centerY += deltaY * currentScale;
         update();
-        thread.render(centerX, centerY, curScale, size());
+        thread.render(centerX, centerY, currentScale, size());
     }
 
     private class RenderThread extends Thread {
@@ -211,11 +221,13 @@ public class Mandelbrot extends QWidget {
             abort = false;
 
             for (int i = 0; i < ColormapSize; ++i) {
-                colormap[i] = rgbFromWaveLength(380.0 + (i * 400.0 / ColormapSize));
+                double wave = 380.0 + (i * 400.0 / ColormapSize);
+                colormap[i] = rgbFromWaveLength(wave);
             }
         }
 
-        synchronized void render(double centerX, double centerY, double scaleFactor, QSize resultSize) {
+        synchronized void render(double centerX, double centerY, 
+                                 double scaleFactor, QSize resultSize) {
             this.centerX = centerX;
             this.centerY = centerY;
             this.scaleFactor = scaleFactor;
@@ -245,7 +257,8 @@ public class Mandelbrot extends QWidget {
 
                 int halfWidth = resultSize.width() / 2;
                 int halfHeight = resultSize.height() / 2;
-                QImage image = new QImage(resultSize, QImage.Format.Format_RGB32);
+                QImage.Format format = QImage.Format.Format_RGB32;
+                QImage image = new QImage(resultSize, format);
 
                 final int NumPasses = 8;
                 int pass = 0;
@@ -283,11 +296,14 @@ public class Mandelbrot extends QWidget {
                             } while (numIterations < MaxIterations);
 
                             if (numIterations < MaxIterations) {
-                                image.setPixel(x + halfWidth, y + halfHeight, colormap[numIterations % ColormapSize]);
+                                int index = numIterations % ColormapSize;
+                                image.setPixel(x + halfWidth, y + halfHeight, 
+                                               colormap[index]);
 
                                 allBlack = false;
                             } else {
-                                image.setPixel(x + halfWidth, y + halfHeight, 0xff000000); // rgb(0,0,0)
+                                image.setPixel(x + halfWidth, y + halfHeight,
+                                               0xff000000);
                             }
                         }
                     }
@@ -295,7 +311,7 @@ public class Mandelbrot extends QWidget {
                         pass = 4;
                     } else {
                         if (!restart) {
-                            renderImageSignal.emit(image, scaleFactor);
+                            renderedImage.emit(image, scaleFactor);
                         }
                         ++pass;
                     }
@@ -304,8 +320,8 @@ public class Mandelbrot extends QWidget {
                     if (!restart)
                         try {
                             wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        } catch (InterruptedException event) {
+                            event.printStackTrace();
                         }
                     restart = false;
                 }
@@ -313,27 +329,27 @@ public class Mandelbrot extends QWidget {
         }
 
         int rgbFromWaveLength(double wave) {
-            double r = 0.0;
-            double g = 0.0;
-            double b = 0.0;
+            double red= 0.0;
+            double green = 0.0;
+            double blue = 0.0;
 
             if (wave >= 380.0 && wave <= 440.0) {
-                r = -1.0 * (wave - 440.0) / (440.0 - 380.0);
-                b = 1.0;
+                red = -1.0 * (wave - 440.0) / (440.0 - 380.0);
+                blue = 1.0;
             } else if (wave >= 440.0 && wave <= 490.0) {
-                g = (wave - 440.0) / (490.0 - 440.0);
-                b = 1.0;
+                green = (wave - 440.0) / (490.0 - 440.0);
+                blue = 1.0;
             } else if (wave >= 490.0 && wave <= 510.0) {
-                g = 1.0;
-                b = -1.0 * (wave - 510.0) / (510.0 - 490.0);
+                green = 1.0;
+                blue = -1.0 * (wave - 510.0) / (510.0 - 490.0);
             } else if (wave >= 510.0 && wave <= 580.0) {
-                r = (wave - 510.0) / (580.0 - 510.0);
-                g = 1.0;
+                red = (wave - 510.0) / (580.0 - 510.0);
+                green = 1.0;
             } else if (wave >= 580.0 && wave <= 645.0) {
-                r = 1.0;
-                g = -1.0 * (wave - 645.0) / (645.0 - 580.0);
+                red = 1.0;
+                green = -1.0 * (wave - 645.0) / (645.0 - 580.0);
             } else if (wave >= 645.0 && wave <= 780.0) {
-                r = 1.0;
+                red= 1.0;
             }
 
             double s = 1.0;
@@ -342,11 +358,13 @@ public class Mandelbrot extends QWidget {
             else if (wave < 420.0)
                 s = 0.3 + 0.7 * (wave - 380.0) / (420.0 - 380.0);
 
-            r = Math.pow(r * s, 0.8);
-            g = Math.pow(g * s, 0.8);
-            b = Math.pow(b * s, 0.8);
+            red = Math.pow(red * s, 0.8) * 255;
+            green = Math.pow(green * s, 0.8) * 255;
+            blue = Math.pow(blue * s, 0.8) * 255;
 
-            return new QColor((int) (r * 255), (int) (g * 255), (int) (b * 255)).rgb();
+            QColor color = new QColor((int) red, (int) green, (int) blue);
+
+            return color.rgb();
         }
     }
 }

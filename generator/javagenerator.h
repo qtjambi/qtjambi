@@ -63,7 +63,10 @@ public:
     void retrieveModifications(const MetaJavaFunction *f, const MetaJavaClass *java_class,
         QHash<int, bool> *disabled_params, uint *exclude_attributes, uint *include_attributes) const;
     QString functionSignature(const MetaJavaFunction *java_function,
-        uint included_attributes, uint excluded_attributes, Option option = NoOption);
+                              uint included_attributes,
+                              uint excluded_attributes,
+                              Option option = NoOption,
+                              int arg_count = -1);
     void setupForFunction(const MetaJavaFunction *java_function, uint *included_attributes, uint *excluded_attributes,
         QHash<int, bool> *disabled_params) const;
 

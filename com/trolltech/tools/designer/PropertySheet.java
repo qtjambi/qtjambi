@@ -201,6 +201,7 @@ public class PropertySheet {
         // ignore...
     }
 
+    @SuppressWarnings("unused")
     private static Method findMethod(Class c, String name) {
         try {
             return c.getMethod(name);

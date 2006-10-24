@@ -27,8 +27,7 @@ body { color: black; }</style>
         private QSqlTableModel model = null;</pre>
 <p>Note the QSqlTableModel variable declaration: As we will see in this example, the QSqlTableModel class can be used to provide data to view classes such as QTableView. The QSqlTableModel class provides an editable data model making it possible to read and write database records from a single table. It is build on top of the lower-level QSqlQuery class which provides means of executing and manipulating SQL statements.</p>
 <p>We define a static method to check for suitable database support:</p>
-<pre>&nbsp;       public static boolean canInstantiate() 
-        {
+<pre>&nbsp;       public static boolean canInstantiate() {
             return QSqlDatabase.isDriverAvailable(&quot;QSQLITE&quot;);
         }</pre>
 <p>We are also going to show how a table view can be used to cache any changes to the data until the user explicitly requests to submit them. For that reason we need to declare a <tt>submit()</tt> slot in additon to the model and the editor's buttons.</p>
@@ -95,7 +94,7 @@ body { color: black; }</style>
             revertButton = new QPushButton(tr(&quot;&amp;Revert&quot;));
             quitButton = new QPushButton(tr(&quot;Quit&quot;));
     
-            submitButton.clicked.connect(this, &quot;submit()&quot;);
+            submitButton.clicked.connect(this, &quot;submit()&quot;);               
             revertButton.clicked.connect(model, &quot;revertAll()&quot;);
             quitButton.clicked.connect(this, &quot;close()&quot;);</pre>
 <p>The <tt>TableEditor</tt>'s buttons are regular QPushButton objects. We connect the <b>Quit</b> button to the table editor's close() slot, and the <b>Submit</b> button to our private <tt>submit()</tt> slot. The latter slot will take care of the data transactions. Finally, we connect the <b>Revert</b> button to our model's revertAll() slot, reverting all pending changes (restoring the original data).</p>

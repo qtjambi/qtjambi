@@ -1,8 +1,9 @@
 const packageDir = os_name() == OS_NAME_WINDOWS
                    ? "d:/tmp/package-builder"
                    : "/tmp/package-builder";
-const version = "1.0.0-tp2";
+const version = "1.0.0-tp3";
 const javaDir = packageDir + "/qtjambi/" + version;
+const javadocName = "qtjambi-javadoc-" + version + ".jar";
 
 const regexp_mainfunction = /void *main *\( *String *\w* *\[ *\] *\)/
 
@@ -19,6 +20,7 @@ option.verbose = array_contains(args, "--verbose");
 option.nocompilercheck = array_contains(args, "--no-compiler-check");
 option.teambuilder = array_contains(args, "--teambuilder");
 option.startDir = new Dir().absPath;
+option.javadocLocation = array_get_next_value(args, "--javadoc");
 
 var packageMap = new Object();
 packageMap[OS_NAME_WINDOWS] = "win";
@@ -37,8 +39,12 @@ command.qmake = find_executable("qmake");
 command.rm = find_executable("rm");
 command.tar = find_executable("tar");
 command.zip = find_executable("zip");
-command.qdoc = findQDoc();
 command.generator = findGeneratorName();
+
+if (os_name() == OS_NAME_MACOSX)
+    command.curl = find_executable("curl");
+else
+    command.wget = find_executable("wget");
 
 
 const packageTreeReuse = option.nosync
@@ -54,9 +60,12 @@ if (option.packageonly) {
     option.nosync = true;
 }
 
+if (!option.javadocLocation) {
+    option.javadocLocation = "http://anarki/~gunnar/packages/" + javadocName;
+}
 
-const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtDesigner", "QtDesignerComponents", "QtNetwork"];
-const qtBinaryNames = ["designer", "assistant", "linguist"];
+const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtSvg", "QtDesigner", "QtDesignerComponents", "QtNetwork"];
+const qtBinaryNames = ["designer", "linguist"];
 var qtReleaseLibraries = [];
 var qtDebugLibraries = [];
 var qtBinaries = [];
@@ -149,21 +158,6 @@ function findQtDir() {
     return qtdir;
 }
 
-
-/*******************************************************************************
- * Tries to locate QDoc either in path or its locatin relative to QTDIR
- */
-function findQDoc() {
-    var qdoc = "";
-    try {
-        qdoc = find_executable("qdoc3");
-    } catch (e) {
-        qdoc = option.qtdir + "/util/qdoc3/" + (os_name() == OS_NAME_WINDOWS ? "release/qdoc3.exe" : "qdoc3");
-    }
-    if (!File.exists(qdoc))
-        throw "Missing qdoc3 in '%1'".arg(qdoc);
-    return qdoc;
-}
 
 /*******************************************************************************
  * Checks that the necesary configuration is in place. This is primarly the
@@ -346,6 +340,9 @@ function createPackage() {
 
     verbose(" - bundling");
     createBundle();
+
+//     verbose(" - create platform archive");
+//     createPlatformArchive();
 }
 
 
@@ -411,15 +408,25 @@ function createJarFile() {
  */
 function createDocs() {
 
-    // back up file since qdoc deletes the html directory...
-    execute([command.mv, "doc/html/qtjambi.adp", "."]);
+    var dir = new Dir(javaDir);
+    dir.setCurrent();
 
-    // Must run first, as qdoc will delete the html directory...
-    execute([command.qdoc, "doc/config/qtjambi.qdocconf"]);
+    execute([command.rm, "-rf", "doc"]);
 
-    execute([command.cp, "-r", option.qtdir + "/doc/html", javaDir + "/doc"]);
+    var docDir = new Dir(javaDir + "/doc/html");
+    docDir.mkdirs();
+    docDir.setCurrent();
 
-    execute([command.mv, "qtjambi.adp", "doc/html/qtjambi.adp"]);
+    if (os_name() == OS_NAME_MACOSX)
+        execute([command.curl, "-O", option.javadocLocation]);
+    else
+        execute([command.wget, option.javadocLocation]);
+
+    execute([command.jar, "-xf", javadocName]);
+    execute([command.rm, javadocName]);
+
+    // Restore to old directory...
+    dir.setCurrent();
 }
 
 
@@ -462,15 +469,12 @@ function moveFiles() {
 
     if (os_name() == OS_NAME_MACOSX) {
         files.push("dist/mac/qtjambi.sh");
-        files.push("dist/mac/assistant.sh");
         files.push(["dist/mac/generator_example.sh", "generator_example"]);
     } else if (os_name() == OS_NAME_WINDOWS) {
         files.push("dist/win/qtjambi.exe");
-        files.push("dist/win/assistant.bat");
         files.push(["dist/win/generator_example.bat", "generator_example"]);
     } else {
         files.push("dist/linux/qtjambi.sh");
-        files.push("dist/linux/assistant.sh");
         files.push(["dist/linux/generator_example.sh", "generator_example"]);
     }
 
@@ -504,15 +508,16 @@ function removeFiles() {
                 "com/trolltech/autotests",
                 "com/trolltech/benchmarks",
                 "com/trolltech/qt",
-                "com/trolltech/qtest",
                 "com/trolltech/tests",
                 "com/trolltech/tools",
                 "common",
                 "cpp",
+                "designer-integration",
                 "dist",
                 "doc/config",
                 "doc/src",
                 "eclipse-integration",
+                "eclipse-stable",
                 "generator",
                 "juic",
                 "launcher_launcher",
@@ -524,6 +529,7 @@ function removeFiles() {
                 "qtjambi_gui",
                 "qtjambi_opengl",
                 "qtjambi_sql",
+                "qtjambi_svg",
                 "scripts",
                 "uic4",
                 "whitepaper"
@@ -536,7 +542,9 @@ function removeFiles() {
                  "Makefile",
                  "java.pro",
                  "java_files",
-                 "rebuild.bat"
+                 "rebuild.bat",
+                 "rebuild.sh",
+                 "build.xml"
     ];
 
     for_all_files(javaDir, function(name) {
@@ -582,6 +590,16 @@ function createBundle() {
 
     verbose("created package...");
 }
+
+// function createPlatformArchive() {
+//     var dir = new Dir(javaDir);
+
+//     if (os_name() == OS_NAME_WINDOWS) {
+//         dir.cd("bin");
+//         execute[command.jar, "-cf",
+//     }
+
+// }
 
 
 /*******************************************************************************

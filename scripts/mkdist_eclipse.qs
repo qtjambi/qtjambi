@@ -1,5 +1,5 @@
-const version = "0.0.2";
-const depot_version = "1.0.0-tp2";
+const version = "0.0.3";
+const depot_version = "1.0.0-tp3";
 
 // Set up P4
 const client = "eclipse-package-builder" + (os_name() == OS_NAME_WINDOWS ? "" : "-linux");
@@ -7,22 +7,23 @@ const cygdrive = (os_name() == OS_NAME_WINDOWS ? "/cygdrive/c" : "")
 const cygdrive_slash = (os_name() == OS_NAME_WINDOWS ? cygdrive + "/" : "")
 
 // Set up constants
-const rootDir = "/tmp";
+const rootDir = "/package-builder";
 const destDir = rootDir + "/output";
 
 const qtjambidir = rootDir + "/qtjambi/" + depot_version;
+const eclipsedir = qtjambidir + "/eclipse-stable";
 
 const javaScriptDir = qtjambidir + "/scripts";
 
-const generatorDir = qtjambidir + "/eclipse-integration/qswt/designer";
+const generatorDir = eclipsedir + "/qswt/designer";
 const generatorExe = generatorDir
                      + (os_name() == OS_NAME_WINDOWS ? "/release/designer.exe" : "/designer");
 
 const generatedDir = generatorDir + "/qtdesigner";
 const generatedExe = os_name() == OS_NAME_WINDOWS ? "qtdesigner.dll" : "libqtdesigner.so";
 
-const qtdesignerPackageDir = qtjambidir + "/eclipse-integration/com.trolltech.qtdesigner";
-const qtjavaPackageDir = qtjambidir + "/eclipse-integration/com.trolltech.qtjambi";
+const qtdesignerPackageDir = eclipsedir + "/com.trolltech.qtdesigner";
+const qtjavaPackageDir = eclipsedir + "/com.trolltech.qtjambi";
 const qtdesignerJavaSrcRoot = qtdesignerPackageDir + "/src";
 const qtjavaJavaSrcRoot = qtjavaPackageDir + "/src";
 const eclipseRoot = "/source/eclipse_packages";
@@ -34,6 +35,7 @@ const qtdesignerSources = [qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/ed
                            qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/"];
 
 const directoriesP4 = [qtjambidir,
+                       eclipsedir,
 		       qtdesignerPackageDir,
                        javaScriptDir,
                        qtjavaPackageDir];
@@ -44,15 +46,15 @@ const qtdesignerBinDir = "com/trolltech/qtdesigner";
 const qtjavaBinDir = "com/trolltech/qtjambi";
 const qtdesignerJarDest = rootDir + "/plugins/com.trolltech.qtdesigner_" + version + ".jar";
 
-const zipDest = (os_name() == OS_NAME_WINDOWS 
-                    ? destDir + "/qt-jambi-eclipse-integration-win32-" + version + ".zip" 
+const zipDest = (os_name() == OS_NAME_WINDOWS
+                    ? destDir + "/qt-jambi-eclipse-integration-win32-" + version + ".zip"
                     : destDir + "/qt-jambi-eclipse-integration-linux-" + version + ".tar");
 zipContents = ["plugins/com.trolltech.qtdesigner_" + version + ".jar",
                "plugins/com.trolltech.qtjambi_" + version + ".jar",
-               "plugins/com.trolltech.help_" + version + "/doc.zip",
-               "plugins/com.trolltech.help_" + version + "/plugin.xml",
-               "plugins/com.trolltech.help_" + version + "/qt.xml",
-               "features/com.trolltech.help_" + version + "/feature.xml"];
+               "plugins/com.trolltech.help_" + version +"/doc.zip",
+               "plugins/com.trolltech.help_" + version +"/plugin.xml",
+               "plugins/com.trolltech.help_" + version +"/qt.xml",
+               "features/com.trolltech.help_" + version +"/feature.xml"];
 
 
   const vcRedistributableDir = "/Progra~1/Micros~1.net/SDK/v1.1/Bin"
@@ -67,27 +69,31 @@ if (os_name() == OS_NAME_WINDOWS) {
 const qtjavaJarContents = ["plugin.xml",
                            "icons/designer.gif",
                            "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Bottom.ui",
+                           "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Bottom.png",
                            "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Right.ui",
+                           "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Right.png",
                            "com/trolltech/qtjambi/templates/Main_Window.ui",
+                           "com/trolltech/qtjambi/templates/Main_Window.png",
                            "com/trolltech/qtjambi/templates/templates.txt",
-                           "com/trolltech/qtjambi/templates/Widget.ui"];
+                           "com/trolltech/qtjambi/templates/Widget.ui",
+                           "com/trolltech/qtjambi/templates/Widget.png"];
 
 const qtdesignerJarContents = ["plugin.xml",
                                "icons/designer.gif",
-                               qtdesignerBinDir + "/editors/actionicons/adjustsize.gif",
-                               qtdesignerBinDir + "/editors/actionicons/buddytool.gif",
-                               qtdesignerBinDir + "/editors/actionicons/editbreaklayout.gif",
-                               qtdesignerBinDir + "/editors/actionicons/editgrid.gif",
-                               qtdesignerBinDir + "/editors/actionicons/edithlayout.gif",
-                               qtdesignerBinDir + "/editors/actionicons/edithlayoutsplit.gif",
-                               qtdesignerBinDir + "/editors/actionicons/editlower.gif",
-                               qtdesignerBinDir + "/editors/actionicons/editraise.gif",
-                               qtdesignerBinDir + "/editors/actionicons/editvlayout.gif",
-                               qtdesignerBinDir + "/editors/actionicons/editvlayoutsplit.gif",
-                               qtdesignerBinDir + "/editors/actionicons/resourceeditortool.gif",
-                               qtdesignerBinDir + "/editors/actionicons/signalslottool.gif",
-                               qtdesignerBinDir + "/editors/actionicons/tabordertool.gif",
-                               qtdesignerBinDir + "/editors/actionicons/widgettool.gif"];
+                               qtdesignerBinDir + "/editors/actionicons/adjustsize.png",
+                               qtdesignerBinDir + "/editors/actionicons/buddytool.png",
+                               qtdesignerBinDir + "/editors/actionicons/editbreaklayout.png",
+                               qtdesignerBinDir + "/editors/actionicons/editgrid.png",
+                               qtdesignerBinDir + "/editors/actionicons/edithlayout.png",
+                               qtdesignerBinDir + "/editors/actionicons/edithlayoutsplit.png",
+                               qtdesignerBinDir + "/editors/actionicons/editlower.png",
+                               qtdesignerBinDir + "/editors/actionicons/editraise.png",
+                               qtdesignerBinDir + "/editors/actionicons/editvlayout.png",
+                               qtdesignerBinDir + "/editors/actionicons/editvlayoutsplit.png",
+                               qtdesignerBinDir + "/editors/actionicons/resourceeditortool.png",
+                               qtdesignerBinDir + "/editors/actionicons/signalslottool.png",
+                               qtdesignerBinDir + "/editors/actionicons/tabordertool.png",
+                               qtdesignerBinDir + "/editors/actionicons/widgettool.png"];
 
 var java_files_qtjava = [];
 var java_files_qtdesigner = [];
@@ -126,12 +132,12 @@ const actionsAX = [
 // Actions to compile Java
 const javaCommand_qtjava =
     os_name() == OS_NAME_WINDOWS
-     ? [commandJavac, "-cp ", qtjavaJavaSrcRoot + PATH_SEPARATOR + qtdesignerJavaSrcRoot + PATH_SEPARATOR + eclipseRoot + " ", java_files_qtjava]
-     : [commandJavac, java_files_qtjava];
+     ? [commandJavac, "-source 1.4 -target 1.4 -cp ", qtjavaJavaSrcRoot + PATH_SEPARATOR + qtdesignerJavaSrcRoot + PATH_SEPARATOR + eclipseRoot + " ", java_files_qtjava]
+     : [commandJavac, "-source 1.4 -target 1.4 ", java_files_qtjava];
 const javaCommand_qtdesigner =
     os_name() == OS_NAME_WINDOWS
-     ? [commandJavac, "-cp ", qtjavaJavaSrcRoot + PATH_SEPARATOR + qtdesignerJavaSrcRoot + PATH_SEPARATOR + eclipseRoot + " ", java_files_qtdesigner]
-     : [commandJavac, java_files_qtdesigner];
+     ? [commandJavac, "-source 1.4 -target 1.4 -cp ", qtjavaJavaSrcRoot + PATH_SEPARATOR + qtdesignerJavaSrcRoot + PATH_SEPARATOR + eclipseRoot + " ", java_files_qtdesigner]
+     : [commandJavac, "-source 1.4 -target 1.4 ", java_files_qtdesigner];
 
 
 const actionsJava = [
@@ -170,7 +176,7 @@ if (os_name() == OS_NAME_WINDOWS) {
 } else {
     packageCommand = [
                       ["cd", rootDir],
-	              [commandRM, "-f com.trolltech.help_" + version + ".zip"],		
+	              [commandRM, "-f com.trolltech.help_" + version + ".zip"],
                       [commandWGet, "http://anarki.troll.no/~eblomfel/help_package/com.trolltech.help_" + version + ".zip"],
 		      [commandUnzip, "-o ", "com.trolltech.help_" + version + ".zip"],
                       [commandTar, "rf", " " + cygdrive + zipDest + " ",zipContents],

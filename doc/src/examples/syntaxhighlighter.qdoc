@@ -27,7 +27,7 @@
 
     To provide your own syntax highlighting, you must subclass
     QSyntaxHighlighter, reimplement the \l
-    {QSyntaxHighlighter::highlightBlock()}{highlightBlock()} function,
+    {QSyntaxHighlighter::highlightBlock()}{highlightBlock()} method,
     and define your own highlighting rules.
 
     \quotefromfile SyntaxHighlighter.java
@@ -54,7 +54,7 @@
     {QTextCharFormat::setFontWeight()}{QTextCharFormat.setFontWeight()}
     and \l
     {QTextCharFormat::setForeground()}{QTextCharFormat.setForeground()}
-    functions.
+    methods.
 
     \skipto Vector
     \printline Vector
@@ -117,7 +117,7 @@
     special care due to the design of the QSyntaxHighlighter class.
 
     After a QSyntaxHighlighter object is created, its \l
-    {QSyntaxHighlighter::highlightBlock()}{highlightBlock()} function
+    {QSyntaxHighlighter::highlightBlock()}{highlightBlock()} method
     will be called automatically whenever it is necessary by the rich
     text engine, highlighting the given text block. The problem
     appears when a comment spans several text blocks.
@@ -125,28 +125,28 @@
     \skipto highlightBlock
     \printto setCurrentBlockState
 
-    The \c highlightBlock() function is called automatically whenever
+    The \c highlightBlock() method is called automatically whenever
     there are text blocks that have changed.
 
     First we apply the syntax highlighting rules that we stored in the
     \c highlightingRules vector. For each rule (i.e. for each \c
     HighlightingRule object) we search for the pattern in the given
     textblock using the \l {QRegExp::indexIn()}{QRegExp.indexIn()}
-    function. When the first occurrence of the pattern is found, we
+    method. When the first occurrence of the pattern is found, we
     use the \l {QRegExp::matchedLength()}{QRegExp.matchedLength()}
-    function to determine the string that will be formatted. \l
+    method to determine the string that will be formatted. \l
     {QRegExp::matchedLength()}{QRegExp.matchedLength()} returns the
     length of the last matched string, or -1 if there was no match.
 
     To perform the actual formatting the QSyntaxHighlighter class
     provides the \l {QSyntaxHighlighter::setFormat()}{setFormat()}
-    function. This function operates on the text block that is passed
-    as argument to the \c highlightBlock() function. The specified
+    method. This method operates on the text block that is passed
+    as argument to the \c highlightBlock() method. The specified
     format is applied to the text from the given start position for
     the given length. The formatting properties set in the given
     format are merged at display time with the formatting information
     stored directly in the document. Note that the document itself
-    remains unmodified by the format set through this function.
+    remains unmodified by the format set through this method.
 
     This process is repeated until the last occurrence of the pattern
     in the current text block is found.
@@ -159,18 +159,18 @@
     highlightBlock() implementation you can query the end state of the
     previous text block using the \l
     {QSyntaxHighlighter::previousBlockState()}{QSyntaxHighlighter.previousBlockState()}
-    function. After parsing the block you can save the last state
+    method. After parsing the block you can save the last state
     using QSyntaxHighlighter's \l
     {QSyntaxHighlighter::setCurrentBlockState()}{setCurrentBlockState()}
-    function.
+    method.
 
     The \l
     {QSyntaxHighlighter::previousBlockState()}{previousBlockState()}
-    function return an int value. If no state is set, the returned
+    method return an int value. If no state is set, the returned
     value is -1. You can designate any other value to identify any
     given state using the \l
     {QSyntaxHighlighter::setCurrentBlockState()}{setCurrentBlockState()}
-    function. Once the state is set, the QTextBlock keeps that value
+    method. Once the state is set, the QTextBlock keeps that value
     until it is set again or until the corresponding paragraph of text
     is deleted.
 
@@ -186,7 +186,7 @@
     {previousBlockState() == 1}), we start the search for an end
     expression at the beginning of the text block. If the \l
     {QSyntaxHighlighter::previousBlockState()}{previousBlockState()}
-    function returns 0, we start the search at the location of the
+    method returns 0, we start the search at the location of the
     first occurrence of a start expression.
 
     \printline while
@@ -223,7 +223,7 @@
     upon which you want the highlighting to be applied.
 
     We initialize and install the \c Highlighter object in the private
-    \c setupEditor() convenience function:
+    \c setupEditor() convenience method:
 
     \skipto setupEditor()
     \printuntil }
@@ -239,12 +239,9 @@
     at the time, but you can easily reinstall the highlighter on
     another document using the \l
     {QSyntaxHighlighter::setDocument()}{QSyntaxHighlighter.setDocument()}
-    function. The QSyntaxHighlighter class also provides the \l
-    {QSyntaxHighlighter::document()}{document()} function which
+    method. The QSyntaxHighlighter class also provides the \l
+    {QSyntaxHighlighter::document()}{document()} method which
     returns the currently set document.
-
-    Finally, we provide a \c main() function to create and show the
-    main application window when the example is run:
 
     \quotefromfile SyntaxHighlighter.java
     \skipto main
@@ -253,4 +250,6 @@
     \skipto }
     \printuntil /^\}/
 
+    Finally, we provide a \c main() method to create and show the
+    main application window when the example is run.
 */

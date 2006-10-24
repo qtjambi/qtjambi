@@ -1,0 +1,3 @@
+#!/bin/sh
+~/depot/private/gunnar/qsengine_mac ~/depot/private/gunnar/utils.qs mkdist.qs -args --verbose
+

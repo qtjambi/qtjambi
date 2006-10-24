@@ -23,28 +23,23 @@ body { color: black; }</style>
 <pre>&nbsp;   public class AnalogClock 
         extends QWidget 
     {
-        static QPolygon hourHand = new QPolygon(3);
-        static QPolygon minuteHand = new QPolygon(3);   
+        static QPolygon hourHand = new QPolygon();
+        static QPolygon minuteHand = new QPolygon();   
         static {
-            hourHand.setPoint(0, 7, 8);
-            hourHand.setPoint(1, -7, 8);
-            hourHand.setPoint(2, 0, -40);
+            hourHand.append(new QPoint(7, 8));
+            hourHand.append(new QPoint(-7, 8));
+            hourHand.append(new QPoint(0, -40));
     
-            minuteHand.setPoint(0, 7, 8);
-            minuteHand.setPoint(1, -7, 8);
-            minuteHand.setPoint(2, 0, -70);
+            minuteHand.append(new QPoint(7, 8));
+            minuteHand.append(new QPoint(-7, 8));
+            minuteHand.append(new QPoint(0, -70));
         }    
     
         QTimer m_timer = new QTimer(this);</pre>
 <p>We subclass QWidget and define polygons to use for the hour and minute hands, as well as a timer that enables us to update the clock face.</p>
 <p>In the constructor, we set up a one-second timer to keep track of the current time, and we connect it to the standard update() slot so that the clock face is updated when the timer emits the timeout() signal:</p>
-<pre>&nbsp;       public AnalogClock() 
-        {
-            m_timer.timeout.connect(this, &quot;update()&quot;); 
-    
-            setWindowTitle(&quot;Analog clock&quot;);
-            setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
-            resize(200, 200);
+<pre>&nbsp;       public AnalogClock() {
+            this(null);
         }</pre>
 <p>We also resize the widget so that it is displayed at a reasonable size.</p>
 <p>The <tt>paintEvent()</tt> function is called whenever the widget's contents need to be updated. This happens when the widget is first shown, and when it is covered then exposed, but it is also executed when the widget's update() slot is called. Since we connected the timer's timeout() signal to this slot, it will be called at least once every five seconds.</p>
@@ -58,8 +53,7 @@ body { color: black; }</style>
             QTime time = QTime.currentTime();</pre>
 <p>Before we set up the painter and draw the clock, we first define two QColors that will be used for the hour and minute hands. The minute hand's color has an alpha component of 191, meaning that it's 75% opaque.</p>
 <p>We also determine the length of the widget's shortest side so that we can fit the clock face inside the widget. It is also useful to determine the current time before we start drawing.</p>
-<pre>&nbsp;           QPainter painter = new QPainter();
-            painter.begin(this);
+<pre>&nbsp;           QPainter painter = new QPainter(this);
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
             painter.translate(width() / 2, height() / 2);
             painter.scale(side / 200.0f, side / 200.0f);</pre>
@@ -88,7 +82,7 @@ body { color: black; }</style>
             painter.setBrush(minuteColor);
     
             painter.save();
-            painter.rotate(6.0f * (time.minute() + time.second() / 60.0f));
+            painter.rotate(6.0f * (time.minute() + time.second() / 60.0f)); 
             painter.drawConvexPolygon(minuteHand);
             painter.restore();</pre>
 <p>The minute hand is rotated in a similar way to the hour hand.</p>
@@ -100,9 +94,6 @@ body { color: black; }</style>
                 painter.rotate(6.0f);
             }</pre>
 <p>Again, we draw markers around the edge of the clock, but this time to indicate minutes. We skip multiples of 5 to avoid drawing minute markers on top of hour markers.</p>
-<pre>&nbsp;           painter.end();
-        }</pre>
-<p>We finish painting by calling the painter's end() method.</p>
 <p>The rest of the class contains a showEvent() implementation that starts the timer when the window is shown, and a hideEvent() implementation that stops it when the window is hidden.</p>
 <pre>&nbsp;       public void showEvent(QShowEvent e) {
             m_timer.start(1000);

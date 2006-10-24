@@ -206,7 +206,7 @@ JNIEnv *qtjambi_current_environment()
     Q_ASSERT(qtjambi_vm);
     int result = qtjambi_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_4);
     if (result == JNI_EDETACHED) {
-        qWarning("qtjambi_current_environment(): current thread is not attached\n");
+      // ### TODO: Attach thread, atleast when in adopt_current?
         return 0;
     }
     Q_ASSERT(result == JNI_OK);
@@ -992,6 +992,8 @@ bool qtjambi_release_threads(JNIEnv *env)
 bool qtjambi_adopt_current_thread(void **args)
 {
     JNIEnv *env = qtjambi_current_environment();
+    if (env == 0)
+      return false;
 
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveThread();
@@ -1259,7 +1261,10 @@ static QString locate_vm()
 
 #else
 
-#error implement VM location on arbitrary machines...
+static QString locate_vm()
+{
+    return QString("no vm available...");
+}
 
 #endif
 
@@ -1407,6 +1412,9 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
                 int paren_pos = slot_name.indexOf(QLatin1Char('('));
                 slot_name = slot_name.mid(slot_name.lastIndexOf(QLatin1Char('.'), paren_pos) + 1);
             }
+            // Private and compat signals...
+            if (slot_name.isEmpty())
+                return false;
 
             StaticCache *sc = StaticCache::instance(jni_env);
             sc->resolveQtJambiInternal();
@@ -1511,4 +1519,12 @@ void qtjambi_register_callbacks()
     QInternal::registerCallback(QInternal::ConnectCallback,    qtjambi_connect_callback);
     QInternal::registerCallback(QInternal::DisconnectCallback, qtjambi_disconnect_callback);
     QInternal::registerCallback(QInternal::AdoptCurrentThread, qtjambi_adopt_current_thread);
+}
+
+
+void qtjambi_end_paint(JNIEnv *env, jobject widget)
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiInternal();
+    env->CallStaticVoidMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.endPaint, widget);
 }

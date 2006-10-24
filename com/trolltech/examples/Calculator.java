@@ -8,16 +8,17 @@ public class Calculator extends QMainWindow {
     public static void main(String[] args) {
 
         QApplication.initialize(args);
-        Calculator mainw = new Calculator();
-        mainw.show();
+        Calculator calculator = new Calculator();
+        calculator.show();
         QApplication.exec();
     }
 
     private QLineEdit lineEdit;
     private QTextBrowser textBrowser;
 
-    private Hashtable<String, Function> functions = new Hashtable<String, Function>();
     private Vector<Function> infixFunctions = new Vector<Function>();
+    private Hashtable<String, Function> functions = new Hashtable<String, 
+                                                                  Function>();
 
     public Calculator() {
         Vector<String> uiTypes = new Vector<String>(3);
@@ -27,8 +28,10 @@ public class Calculator extends QMainWindow {
 
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
                 
-        String item = QInputDialog.getItem(this, tr("Ui selector"), tr("Ui configurations:"), uiTypes);
-        if (!item.equals("")) {
+        String item = QInputDialog.getItem(this, tr("Ui selector"), 
+                                           tr("Ui configurations:"), uiTypes,
+                                           0, false);
+        if (item != null) {
             if (item.equals("Simple")) {
                 Ui_CalculatorSimple uiSimple = new Ui_CalculatorSimple();
                 uiSimple.setupUi(this);
@@ -47,108 +50,114 @@ public class Calculator extends QMainWindow {
             }
         }
 
-        Function fun = new Function("abs") {
-            public double result(double[] args) {
+        Function function= new Function("abs") {
+            public double result(double[] args) throws ParseException {
+                checkNumberOfArguments(1,args);
                 return Math.abs(args[0]);
             }
         };
-        functions.put(fun.name, fun);
+        functions.put(function.name, function);
 
-        fun = new Function("pow") {
-            public double result(double[] args) {
+        function= new Function("pow") {
+            public double result(double[] args) throws ParseException {
+                checkNumberOfArguments(2,args);
                 return Math.pow(args[0], args[1]);
             }
         };
-        functions.put(fun.name, fun);
+        functions.put(function.name, function);
 
-        fun = new Function("cos") {
-            public double result(double[] args) {
+        function= new Function("cos") {
+            public double result(double[] args) throws ParseException {
+                checkNumberOfArguments(1,args);
                 return Math.cos(args[0]);
             }
         };
 
-        functions.put(fun.name, fun);
+        functions.put(function.name, function);
 
-        fun = new Function("sin") {
-            public double result(double[] args) {
+        function= new Function("sin") {
+            public double result(double[] args) throws ParseException {
+                checkNumberOfArguments(1,args);
                 return Math.sin(args[0]);
             }
         };
 
-        functions.put(fun.name, fun);
+        functions.put(function.name, function);
 
-        fun = new Function("random") {
-            public double result(double[] args) {
+        function= new Function("random") {
+            public double result(double[] args) throws ParseException {
+                checkNumberOfArguments(0,args);
                 return Math.random();
             }
         };
-        functions.put(fun.name, fun);
+        functions.put(function.name, function);
 
-        fun = new Function("min") {
+        function= new Function("min") {
             public double result(double[] args) {
-                double res = args[0];
+                double minimum = args[0];
                 for (int i = 1; i < args.length; i++) {
-                    res = Math.min(res, args[i]);
+                    minimum = Math.min(minimum, args[i]);
                 }
-                return res;
+                return minimum;
             }
         };
-        functions.put(fun.name, fun);
+        functions.put(function.name, function);
 
         infixFunctions.add(new Function("*") {
             public double result(double[] args) {
-                double res = args[0];
+                double product = args[0];
                 for (int i = 1; i < args.length; i++) {
-                    res *= args[i];
+                    product *= args[i];
                 }
-                return res;
+                return product;
             }
         });
         infixFunctions.add(new Function("/") {
             public double result(double[] args) {
-                double res = args[0];
+                double quotient = args[0];
                 for (int i = 1; i < args.length; i++) {
-                    res /= args[i];
+                    quotient /= args[i];
                 }
-                return res;
+                return quotient;
             }
         });
         infixFunctions.add(new Function("+") {
             public double result(double[] args) {
-                double res = 0;
+                double sum = 0;
                 for (int i = 0; i < args.length; i++) {
-                    res += args[i];
+                    sum += args[i];
                 }
-                return res;
+                return sum;
             }
         });
 
         infixFunctions.add(new Function("-") {
             public double result(double[] args) {
-                double res = args[0];
+                double difference = args[0];
                 for (int i = 1; i < args.length; i++) {
-                    res -= args[i];
+                    difference -= args[i];
                 }
-                return res;
+                return difference;
             }
         });
     }
 
     public void on_button_equal_clicked() {
-        String form = lineEdit.text();
-        String res = "";
+        String expression = lineEdit.text();
+        String result = "";
         boolean error = false;
         try {
-            res = "" + eval(parse(form));
-        } catch (ParseException e) {
-            res = "Error: <font color=\"red\">" + e.getMessage() + "</font>";
+            result = Double.toString(evaluate(parse(expression)));
+        } catch (ParseException exception) {
+            result = "Error: <font color=\"red\">" 
+                     + exception.getMessage() + "</font>";
             error = true;
         }
 
-        textBrowser.append(form + "<b> = " + res + "</b><br>");
+        textBrowser.append(expression + "<b> = " + result + "</b><br>");
         if (error)
-            res = form;
-        lineEdit.setText(res);
+            result = expression;
+        lineEdit.setText(result);
     }
 
     public void type(String s) {
@@ -234,83 +243,89 @@ public class Calculator extends QMainWindow {
     public void on_button_cos_clicked() {
         typeAround("cos");
     }
-
-    public void on_button_functions_clicked() {
-        Vector<String> uiTypes = new Vector<String>(3);
-        uiTypes.addAll(functions.keySet());
-
-        String item = QInputDialog.getItem(this, tr("Function selector"), tr("functions:"), uiTypes);
-        type(item);
+    
+    public void on_button_random_clicked() {
+        type("random()");
     }
 
-    public double eval(Object o) throws ParseException {
-        double res = 0;
+    public void on_button_functions_clicked() {
+        Vector<String> functionKeys = new Vector<String>(functions.size());
+        functionKeys.addAll(functions.keySet());
+
+        String key = QInputDialog.getItem(this, tr("Function selector"), 
+                                          tr("Available functions:"), 
+                                          functionKeys, 0, false);
+        if (key != null) 
+            type(key);
+    }
+
+    public double evaluate(Object o) throws ParseException {
+        double result = 0;
         if (o instanceof Vector) {
-            Vector v = (Vector) o;
-            if (v.isEmpty())
+            Vector vector = (Vector) o;
+            if (vector.isEmpty())
                 return 0;
-            return eval(((Vector) o).firstElement());
+            return evaluate(vector.firstElement());
         }
 
         else if (o instanceof Function) {
-            Function fun = (Function) o;
-            res = fun.evaluateFunction();
+            Function function= (Function) o;
+            result = function.evaluateFunction();
         }
 
         else if (o instanceof String) {
             try {
-                res = Double.parseDouble((String) o);
-            } catch (NumberFormatException e) {
-                throw new ParseException(e.getMessage());
+                result = Double.parseDouble((String) o);
+            } catch (NumberFormatException exception) {
+                throw new ParseException(exception.getMessage());
             }
         }
-
-        //System.out.println("Eval " + o + "--> " + res);
-        return res;
+        return result;
     }
 
     @SuppressWarnings("unchecked")
-    public Vector parse(String s) throws ParseException {
+    public Vector parse(String expression) throws ParseException {
         Stack<Vector> stack = new Stack<Vector>();
         stack.push(new Vector());
 
-        String delim = "()";
-        for (Iterator iter = infixFunctions.iterator(); iter.hasNext();) {
-            Function fun = (Function) iter.next();
-            delim += fun.name;
+        String delimiter = "()";
+        for (Iterator iterator = infixFunctions.iterator(); iterator.hasNext();) {
+            Function function= (Function) iterator.next();
+            delimiter += function.name;
 
         }
-        StringTokenizer st = new StringTokenizer(s, delim, true);
+        StringTokenizer tokenizer = new StringTokenizer(expression, delimiter, true);
 
-        while (st.hasMoreTokens()) {
-            String token = st.nextToken();
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
             if (token.equals("(")) {
                 stack.peek().add(new Vector());
                 stack.push((Vector) stack.peek().lastElement());
             } else if (token.equals(")")) {
                 if (stack.isEmpty())
-                    throw new ParseException("Missing starting parantes");
+                    throw new ParseException("Missing starting parenthesis");
                 prioritize(stack.pop());
 
             } else {
                 String[] tmp = token.trim().split(" ");
                 for (int i = 0; i < tmp.length; i++) {
                     if (stack.peek() == null) {
-                        throw new ParseException("Missing left side parantes");
+                        throw new ParseException("Missing left side parenthesis");
                     }
                     stack.peek().add(tmp[i]);
                 }
             }
         }
-
+        if(stack.isEmpty())
+            throw new ParseException("Not enough staring parantheses");
         prioritize(stack.peek());
         if (stack.size() > 1)
-            throw new ParseException("Not enough closing paranteses");
+            throw new ParseException("Not enough closing parentheses");
         return stack.peek();
     }
 
     @SuppressWarnings("unchecked")
-    private void prioritize(Vector v) throws ParseException {
+    private void prioritize(Vector vector) throws ParseException {
 
         Function unaryMinusProt = new Function("unaryMinus") {
             public double result(double[] args) {
@@ -318,66 +333,73 @@ public class Calculator extends QMainWindow {
             }
         };
 
-        Object[] vArray = v.toArray();
+        Object[] vectorArray = vector.toArray();
         int r = 0;
-        for (int i = 0; i < vArray.length; i++) {
-            Function fun = functions.get(vArray[i].toString().toUpperCase());
-            if (fun != null) {
-                fun = (Function) fun.clone();
-                if((i - r + 1) >= vArray.length)
-                    throw new ParseException("Could not find parameters for function: " + fun.name);
-                if (vArray[i - r + 1] instanceof Vector)
-                    fun.arguments.addAll((Vector) vArray[i - r + 1]);
-                v.remove(i - r + 1);
-                v.set(i - r, fun);
+        for (int i = 0; i < vectorArray.length; i++) {
+            Function function= functions.get(
+                    vectorArray[i].toString().toUpperCase());
+
+            if (function!= null) {
+                function= (Function) function.clone();
+                if((i - r + 1) >= vectorArray.length)
+                    throw new ParseException(
+                            "Could not find parameters for function: " 
+                            + function.name);
+                if (vectorArray[i - r + 1] instanceof Vector)
+                    function.arguments.addAll((Vector) vectorArray[i - r + 1]);
+                vector.remove(i - r + 1);
+                vector.set(i - r, function);
                 r += 1;
             }
         }
 
-        for (Iterator iter = infixFunctions.iterator(); iter.hasNext();) {
-            Function fun = (Function) iter.next();
+        for (Iterator iterator = infixFunctions.iterator(); iterator.hasNext();) {
+            Function function= (Function) iterator.next();
 
-            vArray = v.toArray();
+            vectorArray = vector.toArray();
 
             r = 0;
-            for (int i = 0; i < vArray.length; i++) {
-                Object element = vArray[i];
+            for (int i = 0; i < vectorArray.length; i++) {
+                Object element = vectorArray[i];
                 if (element instanceof String) {
-                    if (element.equals(fun.name)) {
-                        fun = (Function) fun.clone();
-                        if ((i - r - 1 < 0 && !element.equals("-")) || i - r + 1 >= v.size())
-                            throw new ParseException("Problems at infix function:" + fun.name);
+                    if (element.equals(function.name)) {
+                        function= (Function) function.clone();
+                        if ((i - r - 1 < 0 && !element.equals("-")) 
+                            || i - r + 1 >= vector.size())
+                            throw new ParseException(
+                                    "Problems at infix function:" 
+                                     + function.name);
 
                         if (i - r - 1 < 0) {
                             Function minus = (Function) unaryMinusProt.clone();
-                            minus.arguments.add(v.elementAt(i - r + 1));
-                            v.set(i - r, minus);
-                            v.remove(i - r + 1);
+                            minus.arguments.add(vector.elementAt(i - r + 1));
+                            vector.set(i - r, minus);
+                            vector.remove(i - r + 1);
                             r += 1;
                             i++;
                         } else {
-                            fun.arguments.add(v.elementAt(i - r - 1));
+                            function.arguments.add(vector.elementAt(i - r - 1));
 
-                            if (v.elementAt(i - r + 1).equals("-")) {
+                            if (vector.elementAt(i - r + 1).equals("-")) {
 
                                 Function minus = (Function) unaryMinusProt.clone();
-                                minus.arguments.add(v.elementAt(i - r + 2));
-                                fun.arguments.add(minus);
+                                minus.arguments.add(vector.elementAt(i - r + 2));
+                                function.arguments.add(minus);
 
-                                v.set(i - r, fun);
-                                v.remove(i - r + 2);
-                                v.remove(i - r + 1);
-                                v.remove(i - r - 1);
+                                vector.set(i - r, function);
+                                vector.remove(i - r + 2);
+                                vector.remove(i - r + 1);
+                                vector.remove(i - r - 1);
                                 r += 3;
                                 i++;
 
                             } else {
 
-                                fun.arguments.add(v.elementAt(i - r + 1));
+                                function.arguments.add(vector.elementAt(i - r + 1));
 
-                                v.set(i - r, fun);
-                                v.remove(i - r + 1);
-                                v.remove(i - r - 1);
+                                vector.set(i - r, function);
+                                vector.remove(i - r + 1);
+                                vector.remove(i - r - 1);
                                 r += 2;
                                 i++;
                             }
@@ -397,40 +419,45 @@ public class Calculator extends QMainWindow {
         }
 
         public String toString() {
-            String res = "";
-            res += "{function_" + name + "_ ";
-            for (Iterator iter = arguments.iterator(); iter.hasNext();) {
-                res += iter.next();
-                if (iter.hasNext())
-                    res += " ";
+            String signature = "";
+            signature += "{function_" + name + "_ ";
+            for (Iterator iterator = arguments.iterator(); iterator.hasNext();) {
+                signature += iterator.next();
+                if (iterator.hasNext())
+                    signature += " ";
             }
-            res += "}";
-            return res;
+            signature += "}";
+            return signature;
         }
 
         protected Object clone() {
-            Function fun = null;
+            Function function= null;
             try {
-                fun = (Function) super.clone();
-                fun.arguments = new Vector();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
+                function = (Function) super.clone();
+                function.arguments = new Vector();
+            } catch (CloneNotSupportedException exception) {
+                exception.printStackTrace();
             }
 
-            return fun;
+            return function;
         }
 
         public double evaluateFunction() throws ParseException {
             double[] args = new double[arguments.size()];
             int i = 0;
-            for (Iterator iter = arguments.iterator(); iter.hasNext();) {
-                args[i] = eval(iter.next());
+            for (Iterator iterator = arguments.iterator(); iterator.hasNext();) {
+                args[i] = evaluate(iterator.next());
                 i++;
             }
             return result(args);
         }
-
-        public abstract double result(double[] args);
+        
+        protected void checkNumberOfArguments(int size, double[] args) throws ParseException {
+            if(args.length!=size)
+                throw new ParseException("Wrong number of arguments to function " + name + ": Expected " + size + ".");
+        }
+        
+        public abstract double result(double[] args) throws ParseException;
     }
 
     class ParseException extends Exception {

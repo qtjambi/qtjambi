@@ -263,8 +263,8 @@ QString CppImplGenerator::fileNameForClass(const MetaJavaClass *java_class) cons
 void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunction *signal, const MetaJavaClass *cls,
                                            int pos)
 {
-    writeFunctionSignature(s, signal, cls, signalWrapperPrefix(), 
-                           Option(OriginalName | OriginalTypeDescription), 
+    writeFunctionSignature(s, signal, cls, signalWrapperPrefix(),
+                           Option(OriginalName | OriginalTypeDescription),
                            "QtJambi_SignalWrapper_");
     s << endl << "{" << endl;
     {
@@ -296,6 +296,11 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunctio
     s << "}" << endl << endl;
 
     writeFinalFunction(s, signal, cls);
+}
+
+bool CppImplGenerator::hasCustomDestructor(const MetaJavaClass *java_class) const
+{
+    return !java_class->isQObject() && !java_class->typeEntry()->isValue();
 }
 
 void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
@@ -342,7 +347,10 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     if (shellInclude)
         writeShellSignatures(s, java_class);
 
-    if (shellClass) {
+    if (hasCustomDestructor(java_class))
+        writeFinalDestructor(s, java_class);
+
+   if (shellClass) {
         foreach (MetaJavaFunction *function, java_class->functions()) {
             if (function->isConstructor() && !function->isPrivate())
                 writeShellConstructor(s, function);
@@ -784,25 +792,10 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
 
         writeCodeInjections(s, java_function, implementor, CodeSnip::End);
 
-        // A little trick to get exceptions when one forgets to close
-        // painters at the end of paintevent.
+        // A little trick to close open painters on a widget
         if (java_function->name() == "paintEvent") {
-            QString space(29, ' ');
-
-            s << INDENT << "QPaintDevice *pd = QPainter::redirected(this);" << endl
-              << INDENT << "if (!pd) pd = this;" << endl
-              << INDENT << "if (pd->paintingActive()) {" << endl;
-            {
-                Indentation indent;
-                s << INDENT << "JNIEnv *env = qtjambi_current_environment();" << endl
-                  << INDENT << "jclass cls = env->GetObjectClass(m_link->javaObject(env));" << endl
-                  << INDENT << "QtJambiLink::throwQtException(env," << endl
-                  << INDENT << space << "QString(\"Active QPainter after paint event in %1, "
-                  << "use QPainter::end()\")"
-                  << ".arg(qtjambi_class_name(env, cls))," << endl
-                  << INDENT << space << "\"QPaintingOutsidePaintEventException\");" << endl;
-            }
-            s << INDENT << "}" << endl;
+            s << INDENT << "JNIEnv *env = qtjambi_current_environment();" << endl
+              << INDENT << "qtjambi_end_paint(env, m_link->javaObject(env));" << endl;
         }
 
         s << "}" << endl << endl;
@@ -1221,13 +1214,13 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
     }
 }
 
-/*void CppImplGenerator::writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls)
+void CppImplGenerator::writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls)
 {
     bool has_constructors = !cls->queryFunctions(MetaJavaClass::Constructors).isEmpty();
     if (has_constructors)
         s << INDENT << "static void qtjambi_destructor(void *ptr) { delete ("
           << shellClassName(cls) << " *)ptr; }" << endl << endl;
-}*/
+}
 
 void CppImplGenerator::writeFinalConstructor(QTextStream &s,
                                          const MetaJavaFunction *java_function,
@@ -1265,6 +1258,10 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
           << INDENT << "return;" << endl;
     }
     s << INDENT << "}" << endl;
+
+    if (hasCustomDestructor(cls)) {
+        s << INDENT << "__qt_java_link->setDestructorFunction(qtjambi_destructor);" << endl;
+    }
 
     if (!cls->hasVirtualFunctions() && !cls->hasInconsistentFunctions() && !cls->typeEntry()->isObject())
         return;

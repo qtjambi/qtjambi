@@ -8,8 +8,8 @@ public class CustomFilter extends QWidget {
     public static void main(String[] args) {
 
         QApplication.initialize(args);
-        CustomFilter mainw = new CustomFilter();
-        mainw.show();
+        CustomFilter filter = new CustomFilter();
+        filter.show();
         QApplication.exec();
     }
 
@@ -29,50 +29,61 @@ public class CustomFilter extends QWidget {
     QDateEdit toDateEdit;
 
     public CustomFilter() {
-        proxyModel = new MySortFilterProxyModel(this);
-        proxyModel.setDynamicSortFilter(true);
+        QStandardItemModel model = createMailModel(this);
 
-        sourceGroupBox = new QGroupBox(tr("Original Model"));
-        proxyGroupBox = new QGroupBox(tr("Sorted/Filtered Model"));
+        proxyModel = new MySortFilterProxyModel(this);
+        proxyModel.setSourceModel(model);
+        proxyModel.setDynamicSortFilter(true);
 
         sourceView = new QTreeView();
         sourceView.setRootIsDecorated(false);
         sourceView.setAlternatingRowColors(true);
+        sourceView.setModel(model);
+
+        QHBoxLayout sourceLayout = new QHBoxLayout();
+        sourceLayout.addWidget(sourceView);
+
+        sourceGroupBox = new QGroupBox(tr("Original Model"));
+        sourceGroupBox.setLayout(sourceLayout);
+
+        filterPatternLineEdit = new QLineEdit("Grace|Sports");
+        filterPatternLabel = new QLabel(tr("&Filter pattern:"));
+        filterPatternLabel.setBuddy(filterPatternLineEdit);
+
+        filterSyntaxComboBox = new QComboBox();
+        filterSyntaxComboBox.addItem(tr("Regular expression"), 
+                                     QRegExp.PatternSyntax.RegExp);
+        filterSyntaxComboBox.addItem(tr("Wildcard"), 
+                                     QRegExp.PatternSyntax.Wildcard);
+        filterSyntaxComboBox.addItem(tr("Fixed string"), 
+                                     QRegExp.PatternSyntax.FixedString);
+
+        filterCaseSensitivityCheckBox = new QCheckBox(
+                tr("Case sensitive filter"));
+        filterCaseSensitivityCheckBox.setChecked(true);
+
+        fromDateEdit = new QDateEdit(new QDate(1970, 01, 01));
+        fromLabel = new QLabel(tr("F&rom:"));
+        fromLabel.setBuddy(fromDateEdit);
+
+        toDateEdit = new QDateEdit(new QDate(2099, 12, 31));
+        toLabel = new QLabel(tr("&To:"));
+        toLabel.setBuddy(toDateEdit);
+
+        filterPatternLineEdit.textChanged.connect(this, "textFilterChanged()");
+        filterSyntaxComboBox.currentIndexChanged.connect(this, 
+                                                         "textFilterChanged()");
+        filterCaseSensitivityCheckBox.toggled.connect(this, 
+                                                      "textFilterChanged()");
+        fromDateEdit.dateChanged.connect(this, "dateFilterChanged()");
+        toDateEdit.dateChanged.connect(this, "dateFilterChanged()");
 
         proxyView = new QTreeView();
         proxyView.setRootIsDecorated(false);
         proxyView.setAlternatingRowColors(true);
         proxyView.setModel(proxyModel);
         proxyView.setSortingEnabled(true);
-
-        filterCaseSensitivityCheckBox = new QCheckBox(tr("Case sensitive filter"));
-
-        filterPatternLineEdit = new QLineEdit();
-        filterPatternLabel = new QLabel(tr("&Filter pattern:"));
-        filterPatternLabel.setBuddy(filterPatternLineEdit);
-
-        filterSyntaxComboBox = new QComboBox();
-        filterSyntaxComboBox.addItem(tr("Regular expression"), QRegExp.PatternSyntax.RegExp);
-        filterSyntaxComboBox.addItem(tr("Wildcard"), QRegExp.PatternSyntax.Wildcard);
-        filterSyntaxComboBox.addItem(tr("Fixed string"), QRegExp.PatternSyntax.FixedString);
-
-        fromDateEdit = new QDateEdit();
-        fromLabel = new QLabel(tr("F&rom:"));
-        fromLabel.setBuddy(fromDateEdit);
-
-        toDateEdit = new QDateEdit();
-        toLabel = new QLabel(tr("&To:"));
-        toLabel.setBuddy(toDateEdit);
-
-        filterPatternLineEdit.textChanged.connect(this, "textFilterChanged()");
-        filterSyntaxComboBox.currentIndexChanged.connect(this, "textFilterChanged()");
-        filterCaseSensitivityCheckBox.toggled.connect(this, "textFilterChanged()");
-        fromDateEdit.dateChanged.connect(this, "dateFilterChanged()");
-        toDateEdit.dateChanged.connect(this, "dateFilterChanged()");
-
-        QHBoxLayout sourceLayout = new QHBoxLayout();
-        sourceLayout.addWidget(sourceView);
-        sourceGroupBox.setLayout(sourceLayout);
+        proxyView.sortByColumn(1, Qt.SortOrder.AscendingOrder);
 
         QGridLayout proxyLayout = new QGridLayout();
         proxyLayout.addWidget(proxyView, 0, 0, 1, 3);
@@ -85,6 +96,7 @@ public class CustomFilter extends QWidget {
         proxyLayout.addWidget(toLabel, 4, 0);
         proxyLayout.addWidget(toDateEdit, 4, 1, 1, 2);
 
+        proxyGroupBox = new QGroupBox(tr("Sorted/Filtered Model"));
         proxyGroupBox.setLayout(proxyLayout);
 
         QVBoxLayout mainLayout = new QVBoxLayout();
@@ -96,17 +108,12 @@ public class CustomFilter extends QWidget {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(500, 450);
 
-        proxyView.sortByColumn(1, Qt.SortOrder.AscendingOrder);
-        filterPatternLineEdit.setText("Grace|Sports");
-        filterCaseSensitivityCheckBox.setChecked(true);
-
-        fromDateEdit.setDate(new QDate(1970, 01, 01));
-        toDateEdit.setDate(new QDate(2099, 12, 31));
-
-        setSourceModel(createMailModel(this));
+        textFilterChanged();
+        dateFilterChanged();
     }
 
-    private void addMail(QAbstractItemModel model, String subject, String sender, QDateTime date) {
+    private void addMail(QAbstractItemModel model, String subject, 
+                         String sender, QDateTime date) {
         model.insertRow(0);
         model.setData(model.index(0, 0), subject);
         model.setData(model.index(0, 1), sender);
@@ -120,30 +127,45 @@ public class CustomFilter extends QWidget {
         model.setHeaderData(1, Qt.Orientation.Horizontal, tr("Sender"));
         model.setHeaderData(2, Qt.Orientation.Horizontal, tr("Date"));
 
-        addMail(model, "Happy New Year!", "Grace K. <grace@software-inc.com>", new QDateTime(new QDate(2006, 12, 31), new QTime(17, 03)));
-        addMail(model, "Radically new concept", "Grace K. <grace@software-inc.com>", new QDateTime(new QDate(2006, 12, 22), new QTime(9, 44)));
-        addMail(model, "Accounts", "pascale@nospam.com", new QDateTime(new QDate(2006, 12, 31), new QTime(12, 50)));
-        addMail(model, "Expenses", "Joe Bloggs <joe@bloggs.com>", new QDateTime(new QDate(2006, 12, 25), new QTime(11, 39)));
-        addMail(model, "Re: Expenses", "Andy <andy@nospam.com>", new QDateTime(new QDate(2007, 01, 02), new QTime(16, 05)));
-        addMail(model, "Re: Accounts", "Joe Bloggs <joe@bloggs.com>", new QDateTime(new QDate(2007, 01, 03), new QTime(14, 18)));
-        addMail(model, "Re: Accounts", "Andy <andy@nospam.com>", new QDateTime(new QDate(2007, 01, 03), new QTime(14, 26)));
-        addMail(model, "Sports", "Linda Smith <linda.smith@nospam.com>", new QDateTime(new QDate(2007, 01, 05), new QTime(11, 33)));
-        addMail(model, "AW: Sports", "Rolf Newschweinstein <rolfn@nospam.com>", new QDateTime(new QDate(2007, 01, 05), new QTime(12, 00)));
-        addMail(model, "RE: Sports", "Petra Schmidt <petras@nospam.com>", new QDateTime(new QDate(2007, 01, 05), new QTime(12, 01)));
+        addMail(model, "Happy New Year!", "Grace K. <grace@software-inc.com>", 
+                new QDateTime(new QDate(2006, 12, 31), new QTime(17, 03)));
+        addMail(model, "Radically new concept", 
+                "Grace K. <grace@software-inc.com>", 
+                new QDateTime(new QDate(2006, 12, 22), new QTime(9, 44)));
+        addMail(model, "Accounts", "pascale@nospam.com", 
+                new QDateTime(new QDate(2006, 12, 31), new QTime(12, 50)));
+        addMail(model, "Expenses", "Joe Bloggs <joe@bloggs.com>", 
+                new QDateTime(new QDate(2006, 12, 25), new QTime(11, 39)));
+        addMail(model, "Re: Expenses", "Andy <andy@nospam.com>", 
+                new QDateTime(new QDate(2007, 01, 02), new QTime(16, 05)));
+        addMail(model, "Re: Accounts", "Joe Bloggs <joe@bloggs.com>", 
+                new QDateTime(new QDate(2007, 01, 03), new QTime(14, 18)));
+        addMail(model, "Re: Accounts", "Andy <andy@nospam.com>", 
+                new QDateTime(new QDate(2007, 01, 03), new QTime(14, 26)));
+        addMail(model, "Sports", "Linda Smith <linda.smith@nospam.com>", 
+                new QDateTime(new QDate(2007, 01, 05), new QTime(11, 33)));
+        addMail(model, "AW: Sports", "Rolf Newschweinstein <rolfn@nospam.com>",
+                new QDateTime(new QDate(2007, 01, 05), new QTime(12, 00)));
+        addMail(model, "RE: Sports", "Petra Schmidt <petras@nospam.com>", 
+                new QDateTime(new QDate(2007, 01, 05), new QTime(12, 01)));
 
         return model;
     }
 
-    private void setSourceModel(QAbstractItemModel model) {
-        proxyModel.setSourceModel(model);
-        sourceView.setModel(model);
-    }
-
     @SuppressWarnings("unused")
     private void textFilterChanged() {
-        QRegExp.PatternSyntax syntax = (QRegExp.PatternSyntax) filterSyntaxComboBox.itemData(filterSyntaxComboBox.currentIndex());
-        Qt.CaseSensitivity caseSensitivity = filterCaseSensitivityCheckBox.isChecked() ? Qt.CaseSensitivity.CaseSensitive : Qt.CaseSensitivity.CaseInsensitive;
-        QRegExp regExp = new QRegExp(filterPatternLineEdit.text(), caseSensitivity, syntax);
+        QRegExp.PatternSyntax syntax;
+        int index = filterSyntaxComboBox.currentIndex();
+        syntax = (QRegExp.PatternSyntax) filterSyntaxComboBox.itemData(index);
+
+        Qt.CaseSensitivity caseSensitivity;
+        if (filterCaseSensitivityCheckBox.isChecked())
+            caseSensitivity = Qt.CaseSensitivity.CaseSensitive;
+        else
+            caseSensitivity = Qt.CaseSensitivity.CaseInsensitive;
+
+        QRegExp regExp = new QRegExp(filterPatternLineEdit.text(), 
+                                     caseSensitivity, syntax);
         proxyModel.setFilterRegExp(regExp);
     }
 
@@ -154,8 +176,8 @@ public class CustomFilter extends QWidget {
     }
 
     private class MySortFilterProxyModel extends QSortFilterProxyModel {
-        private QDateTime minDate;
-        private QDateTime maxDate;
+        private QDateTime minDate = new QDateTime();
+        private QDateTime maxDate = new QDateTime();
 
         private MySortFilterProxyModel(QObject parent) {
             super(parent);
@@ -163,34 +185,67 @@ public class CustomFilter extends QWidget {
 
         private void setFilterMinimumDate(QDate date) {
             minDate = new QDateTime(date);
-            clear();
+            filterChanged();
         }
 
         private void setFilterMaximumDate(QDate date) {
             maxDate = new QDateTime(date);
-            clear();
+            filterChanged();
         }
 
-        protected boolean filterAcceptsRow(int sourceRow, QModelIndex sourceParent) {
-            QModelIndex index0 = sourceModel().index(sourceRow, 0, sourceParent);
-            QModelIndex index1 = sourceModel().index(sourceRow, 1, sourceParent);
-            QModelIndex index2 = sourceModel().index(sourceRow, 2, sourceParent);
+        protected boolean filterAcceptsRow(int sourceRow, 
+                                           QModelIndex sourceParent) {
+            QModelIndex index0;
+            QModelIndex index1;
+            QModelIndex index2;
 
-            return (filterRegExp().indexIn(sourceModel().data(index0).toString()) != -1) || (filterRegExp().indexIn(sourceModel().data(index1).toString()) != -1) && dateInRange((QDateTime) (sourceModel().data(index2)));
+            index0 = sourceModel().index(sourceRow, 0, sourceParent);
+            index1 = sourceModel().index(sourceRow, 1, sourceParent);
+            index2 = sourceModel().index(sourceRow, 2, sourceParent);
+            
+            QRegExp filter = filterRegExp();
+            QAbstractItemModel model = sourceModel();
+            boolean matchFound;
+
+            matchFound = filter.indexIn(model.data(index0).toString()) != -1 
+                         || filter.indexIn(model.data(index1).toString()) != -1;
+
+            return matchFound && dateInRange((QDateTime) (model.data(index2)));
         }
 
         protected boolean lessThan(QModelIndex left, QModelIndex right) {
+
+            boolean result = false;
             Object leftData = sourceModel().data(left);
             Object rightData = sourceModel().data(right);
 
-            if (leftData instanceof QDateTime && rightData instanceof QDateTime) {
-                return ((QDateTime) leftData).operator_less((QDateTime) rightData);
+            if (leftData instanceof QDateTime 
+                && rightData instanceof QDateTime) {
+                
+                QDateTime leftDate = (QDateTime) leftData;
+                QDateTime rightDate = (QDateTime) rightData;
+
+                result = leftDate.operator_less(rightDate);
+            } else {
+
+                QRegExp emailPattern = new QRegExp("([\\w\\.]*@[\\w\\.]*)");
+
+                String leftString = leftData.toString();
+                if(left.column() == 1 && emailPattern.indexIn(leftString) != -1)
+                    leftString = emailPattern.cap(1);
+
+                String rightString = rightData.toString();
+                if(right.column() == 1 && emailPattern.indexIn(rightString) != -1)
+                    rightString = emailPattern.cap(1);
+
+                result = leftString.compareTo(rightString) < 0;
             }
-            return leftData.toString().compareTo(rightData.toString()) < 0;
+            return result;
         }
 
         private boolean dateInRange(QDateTime date) {
-            return (!minDate.isValid() || date.operator_greater(minDate)) && (!maxDate.isValid() || date.operator_less(maxDate));
+            return (!minDate.isValid() || date.operator_greater(minDate)) 
+                    && (!maxDate.isValid() || date.operator_less(maxDate));
         }
     }
     // REMOVE-START

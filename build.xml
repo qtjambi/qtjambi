@@ -7,6 +7,8 @@
     <property name="MailLogger.failure.to" value="hfroilan@trolltech.com" />
     <property name="MailLogger.success.to" value="hfroilan@trolltech.com" />
 
+    <tstamp/>
+
     <target name="init">
         <property name="sourceDir" value="." />
         <property name="outputDir" value="classes" />
@@ -14,7 +16,9 @@
         <property name="htmlDir"   value="/var/www/junit/" />
 
         <property name="jambiLib" value="./lib" />
-        <property name="qtLib" value="./../qt-4.2/lib" />
+        <property name="qtLib" value="./../../qt-4.2/lib" />
+
+        <property name="deployDir" value="./deploy" />
     </target>
 
     <target name="clean" depends="init">
@@ -54,8 +58,8 @@
         <exec executable="./bin/juic" dir=".">
             <arg line="-cp ." />
             <arg line="-a" />
-            <arg line="-e eclipse-integration" />
-            <arg line="-d ${outputDir}" />
+            <arg line="-e eclipse-integration:eclipse-stable" />
+            <arg line="-d ${sourceDir}" />
         </exec>
     </target>
 
@@ -67,7 +71,9 @@
         <exec executable="make"  dir="autotestlib" />
     </target>
 
-    <target name="compile" depends="generator,juic">
+    <target name="compile" depends="generator, compile.java" />
+
+    <target name="compile.java" depends="juic">
         <javac srcdir="${sourceDir}" destdir="${outputDir}" 
                includes="
                com/trolltech/demos/ArthurFrame.java
@@ -551,6 +557,45 @@
                com/trolltech/autotests/VirtualFunctions.java" />
     </target>
 
+    <target name="deploy.clean" depends="init">
+        <delete dir="${deployDir}" />
+        <mkdir dir="${deployDir}" />
+    </target>
+
+    <target name="deploy.jar" description="JARs the Task" depends="init">
+        <jar destfile="${deployDir}/jambi.jar" basedir="${outputDir}">
+            <manifest>
+                <attribute name="Built-By" value="Trolltech ASA - ${TODAY}"/>
+                <attribute name="Main-Class" value="com.trolltech.launcher.Launcher"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="deploy.linux" depends="deploy.clean, deploy.jar">
+        <copy todir="${deployDir}/lib">
+            <fileset dir="${jambiLib}">
+                <include name="*.so*" />
+            </fileset>
+        </copy>
+        <copy todir="${deployDir}/lib">
+            <fileset dir="${qtLib}">
+                <include name="*.so*" />
+            </fileset>
+        </copy>
+        <copy file="bin/juic" todir="${deployDir}/bin" />
+        <chmod file="${deployDir}/bin/juic" perm="+x"/>
+    </target>
+
+    <target name="deploy.zip" depends="init">
+        <zip destfile="jambi-devel.zip"
+             basedir="${deployDir}"/>
+    </target>
+
+    <target name="deploy.tar.gz" depends="deploy.linux">
+        <tar tarfile="jambi-devel.tar" basedir="${deployDir}"/>
+        <gzip zipfile="jambi-devel.tar.gz" src="jambi-devel.tar"/>
+        <delete file="jambi-devel.tar" />
+    </target>
 
     <target name="test" depends="prepare.report, generator.autotests, compile, compile.autotests">
         <junit printsummary="yes" haltonfailure="no">
@@ -576,6 +621,6 @@
         </junitreport>
     </target>
 
-    <target name="all" depends="sync,generator,compile,test" />
+    <target name="all" depends="sync,generator,compile,test,deploy.linux" />
 
 </project>

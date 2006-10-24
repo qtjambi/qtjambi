@@ -1,1 +1,0 @@
-@bin\assistant -profile doc\html\qtjambi.adp

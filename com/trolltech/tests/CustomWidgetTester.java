@@ -65,9 +65,7 @@ public class CustomWidgetTester extends QWidget {
     private QPoint position = new QPoint(50, 50);
     
     public static void main(String args[]) throws Exception {
-        QtPropertyManager m = new QtPropertyManager();
-        
-        m.findProperties(CustomWidgetTester.class);
+        QtPropertyManager.findProperties(CustomWidgetTester.class);
         
     }
 }

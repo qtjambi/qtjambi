@@ -237,6 +237,7 @@ struct QTJAMBI_EXPORT StaticCache
         jclass class_ref;
         jmethodID lookupSlot;
         jmethodID lookupSignal;
+        jmethodID endPaint;
     } QtJambiInternal;
 
     struct {

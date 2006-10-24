@@ -122,12 +122,6 @@
     time to indicate minutes. We skip multiples of 5 to avoid drawing
     minute markers on top of hour markers.
 
-    \skipto end()
-    \printuntil }
-
-    We finish painting by calling the painter's
-    \l{QPainter::}{end()} method.
-
     The rest of the class contains a \l{QWidget::}{showEvent()} implementation
     that starts the timer when the window is shown, and a
     \l{QWidget::}{hideEvent()} implementation that stops it when the window

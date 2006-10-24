@@ -17,7 +17,7 @@ then
 fi
 
 echo Running generator
-DYLD_LIBRARY_PATH=../lib ../bin/generator mywidget.h typesystem_mywidget.txt
+DYLD_LIBRARY_PATH=../lib ../bin/generator mywidget.h typesystem_mywidget.txt --juic-file=juic.xml 
 
 
 # Compile the library

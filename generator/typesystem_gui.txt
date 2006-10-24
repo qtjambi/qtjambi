@@ -926,7 +926,6 @@
   <object-type name="QInputContextFactory"/>
   <object-type name="QInputContextFactoryInterface"/>
   <object-type name="QInputContextPlugin"/>
-  <object-type name="QInputDialog"/>
   <object-type name="QInputMethodEvent"/>
   <object-type name="QIntValidator"/>
   <object-type name="QItemDelegate"/>  
@@ -1097,6 +1096,180 @@
       <include file-name="QPainterPath" location="global"/>
     </extra-includes>
   </object-type>
+  
+  <object-type name="QInputDialog">
+    <modify-function signature="getDouble(QWidget *, const QString &amp;, const QString &amp;, double, double, double, int, bool *, QFlags&lt;Qt::WindowType>)">
+        <rename to="getDouble_internal"/>
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue, int decimals, com.trolltech.qt.core.Qt.WindowType ... f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        double result = getDouble_internal(parent, title, label, value, minValue, maxValue, decimals, ok, f);
+        return ok.booleanValue() ? result : null;
+    }
+    
+    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        double result = getDouble_internal(parent, title, label, value, minValue, maxValue, 1, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue, int decimals) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        double result = getDouble_internal(parent, title, label, value, minValue, maxValue, decimals, ok);
+        return ok.booleanValue() ? result : null;
+    }    
+
+    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        double result = getDouble_internal(parent, title, label, value, minValue, (double)2147483647, (int)1, ok);
+        return ok.booleanValue() ? result : null;
+    }    
+
+    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        double result = getDouble_internal(parent, title, label, value, (double)-2147483647, (double)2147483647, (int)1, ok);
+        return ok.booleanValue() ? result : null;
+    }    
+    
+    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        double result = getDouble_internal(parent, title, label, 0.0, (double)-2147483647, (double)2147483647, (int)1, ok);
+        return ok.booleanValue() ? result : null;
+    }    
+    
+    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue, int decimals, com.trolltech.qt.core.Qt.WindowFlags f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        double result = getDouble_internal(parent, title, label, value, minValue, maxValue, decimals, ok, f);
+        return ok.booleanValue() ? result : null;
+    }        
+    </inject-code>
+    
+    <modify-function signature="getInteger(QWidget *, const QString &amp;, const QString &amp;, int, int, int, int, bool *, QFlags&lt;Qt::WindowType>)">
+        <rename to="getInteger_internal"/>
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue, int step, com.trolltech.qt.core.Qt.WindowType ... f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, maxValue, step, ok, f);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue, int step) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, maxValue, step, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, maxValue, 1, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, (int)2147483647, 1, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, (int)-2147483647, (int)2147483647, 1, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, 0, (int)-2147483647, (int)2147483647, 1, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue, int step, com.trolltech.qt.core.Qt.WindowFlags f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, maxValue, step, ok, f);
+        return ok.booleanValue() ? result : null;
+    }    
+    </inject-code>
+    
+    <modify-function signature="getItem(QWidget *, const QString &amp;, const QString &amp;, const QStringList &amp;, int, bool, bool *, QFlags&lt;Qt::WindowType>)">
+        <rename to="getItem_internal"/>
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current, boolean editable, com.trolltech.qt.core.Qt.WindowType ... f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, current, editable, ok, new com.trolltech.qt.core.Qt.WindowFlags(f));
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current, boolean editable) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, current, editable, ok);
+        return ok.booleanValue() ? result : null;
+    }
+    
+    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, current, true, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, 0, true, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current, boolean editable, com.trolltech.qt.core.Qt.WindowFlags f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, current, editable, ok, f);
+        return ok.booleanValue() ? result : null;
+    }
+    
+    </inject-code>
+    
+    <modify-function signature="getText(QWidget *, const QString &amp;, const QString &amp;, QLineEdit::EchoMode, const QString &amp;, bool *, QFlags&lt;Qt::WindowType>)">
+        <rename to="getText_internal"/>
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo, java.lang.String text, com.trolltech.qt.core.Qt.WindowType ... f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, echo, text, ok, f);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo, java.lang.String text) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, echo, text, ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, echo, "", ok);
+        return ok.booleanValue() ? result : null;
+    }
+    
+    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, com.trolltech.qt.gui.QLineEdit.EchoMode.Normal, "", ok);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo, java.lang.String text, com.trolltech.qt.core.Qt.WindowFlags f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, echo, text, ok, f);
+        return ok.booleanValue() ? result : null;
+    }
+    
+    </inject-code>
+    
+  </object-type>
+  
 
   <object-type name="QGraphicsScene">
     <modify-function signature="addItem(QGraphicsItem *)">
@@ -1643,9 +1816,6 @@
     public void setBrush(QGradient gradient) { setBrush(new QBrush(gradient)); }
     public void setBrush(QPixmap pm) { setBrush(new QBrush(pm)); }
     </inject-code>
-    <modify-function class="java" signature="QPainter(QPaintDevice *)">
-        <remove/>
-    </modify-function>
     <modify-function class="java" signature="drawConvexPolygon(const QPoint *, int)">
         <rename to="drawConvexPolygon_int"/>
         <access modifier="private"/>
@@ -1785,6 +1955,17 @@
         drawConvexPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
     }
     </inject-code>    
+
+    <inject-code>
+    public QPainter(QWidget widget) {
+        this();
+        begin(widget);  
+    }
+
+    public boolean begin(QWidget widget) {
+        return com.trolltech.qt.QtJambiInternal.beginPaint(widget, this);
+    }
+    </inject-code>
   </object-type>  
     
   <object-type name="QApplication" memory-managed="yes">

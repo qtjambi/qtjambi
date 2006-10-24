@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
 
-import com.trolltech.qt.QSysInfo;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -65,8 +64,6 @@ public class Launcher extends QWidget {
     private LaunchableListModel m_model = new LaunchableListModel();
     private Launchable m_current;
 
-    private QProcess assistantProcess;
-
     private static QPalette systemPalette;
 
     public Launcher() {
@@ -80,7 +77,7 @@ public class Launcher extends QWidget {
         ui.list.selectionModel().currentChanged.connect(this, "listSelectionChanged(QModelIndex,QModelIndex)");
         ui.button_content.clicked.connect(this, "slotSwapContent()");
         ui.button_launch.clicked.connect(this, "slotLaunch()");
-        ui.button_assistant.clicked.connect(this, "slotRunAssistant()");
+        ui.button_documentation.clicked.connect(this, "openDocumentation()");
         updateStyle(this, new Style());
 
         setWindowTitle("Qt Jambi Examples and Demos");
@@ -93,7 +90,7 @@ public class Launcher extends QWidget {
         ui.description.setHtml(loadDefaultText());
 
         if (System.getProperty("com.trolltech.launcher.webstart") != null)
-            ui.button_assistant.hide();
+            ui.button_documentation.hide();
     }
 
     public boolean eventFilter(QObject object, QEvent e) {
@@ -144,28 +141,10 @@ public class Launcher extends QWidget {
         }
     }
 
-    public void slotRunAssistant() {
-        assistantProcess = new QProcess();
-
-        List<String> arguments = new ArrayList<String>();
-        arguments.add("-profile");
-        arguments.add("doc/html/qtjambi.adp");
-
-        assistantProcess.finished.connect(this, "assistantFinished()");
-
-        if (QSysInfo.macVersion() > 0)
-            assistantProcess.start("bin/assistant.app/Contents/MacOS/assistant", arguments);
-        else
-            assistantProcess.start("assistant", arguments);
-
-        ui.button_assistant.setEnabled(false);
-    }
-
-    @SuppressWarnings("unused")
-    private void assistantFinished() {
-        assistantProcess.disposeLater();
-        assistantProcess = null;
-        ui.button_assistant.setEnabled(true);
+    public void openDocumentation() {
+        QUrl url = new QUrl();
+        url.setPath(new QFileInfo("doc/html/com/trolltech/qt/qtjambi-index.html").absoluteFilePath());
+        QDesktopServices.openUrl(url);
     }
 
     /**
@@ -312,24 +291,20 @@ public class Launcher extends QWidget {
         }
     }
 
-    public static void start_qt(boolean debug)
+    private static String[] start_qt()
     {
         File f_out = null;
         File f_err = null;
 
+        String args[] = new String[1];
+        args[0] = "Start Qt";
+
         try {
-            if (debug) {
-                f_out = new File("START_QT_STDOUT.TXT");
-                f_err = new File("START_QT_STDERR.TXT");
+            f_out = new File("START_QT_STDOUT.TXT");
+            f_err = new File("START_QT_STDERR.TXT");
 
-                System.setOut(new PrintStream(f_out));
-                System.setErr(new PrintStream(f_err));
-            }
-
-            String args[] = new String[1];
-            args[0] = "Start Qt";
-
-            main(args);
+            System.setOut(new PrintStream(f_out));
+            System.setErr(new PrintStream(f_err));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -338,10 +313,12 @@ public class Launcher extends QWidget {
             System.out.close();
         if (f_err != null)
             System.err.close();
+
+        return args;
     }
 
     public static void main(String args[]) {
-        QApplication.initialize(args);
+        QApplication.initialize(args == null ? start_qt() : args);
 
         systemPalette = QApplication.palette();
 

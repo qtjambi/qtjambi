@@ -13,8 +13,6 @@
 
 #include "qtjambi_core.h"
 
-#include <jni.h>
-
 #include <QtCore/QCoreApplication>
 #include <QtCore/QVarLengthArray>
 
@@ -36,7 +34,16 @@ public:
 extern "C" JNIEXPORT void JNICALL
 Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize(JNIEnv *, jclass)
 {
+    // ### remove for final release
+#if QT_VERSION == 0x040200
     QCoreApplication::postEvent((QObject *) 0xFeedFace, (QEvent *) 0x00c0ffee);
+#else
+    if (qstrcmp(qVersion(), "4.2.0") == 0) {
+        QCoreApplication::postEvent((QObject *) 0xFeedFace, (QEvent *) 0x00c0ffee);
+    } else {
+        QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, 0);
+    }
+#endif
     qtjambi_register_callbacks();
 }
 
@@ -56,14 +63,14 @@ Java_com_trolltech_qt_QtJambiInternal_nativeSwapQObjectSender
     QObject *the_sender = reinterpret_cast<QObject *>(qtjambi_from_jlong(s));
     if (the_receiver == 0)
         return 0;
-    
+
     QObjectPrivateAccessor *d = (reinterpret_cast<QObjectAccessor *>(the_receiver))->d_ptr;
     if (d == 0)
         return 0;
 
     QObject *prev = d->currentSender;
     d->currentSender = the_sender;
-    return return_previous_sender 
+    return return_previous_sender
            ? qtjambi_from_qobject(env, prev, "QObject", "com/trolltech/qt/core/")
            : 0;
 }
@@ -99,9 +106,9 @@ extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_QtJambiInternal_setField
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_com_trolltech_qt_QtJambiInternal_fetchSignal
-(JNIEnv *env, 
+(JNIEnv *env,
  jclass,
- jobject java_object, 
+ jobject java_object,
  jobject field)
 {
     jfieldID fieldId = env->FromReflectedField(field);
@@ -128,21 +135,21 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_trolltech_qt_QtJambiInternal_cppD
     if (sender == 0) // Sender object deleted or about to be deleted
         return false;
 
-    QObject *receiver = qtjambi_to_qobject(env, java_receiver);   
-    QByteArray signal_name = getQtName(qtjambi_to_qstring(env, java_signal_name)).toLatin1();        
+    QObject *receiver = qtjambi_to_qobject(env, java_receiver);
+    QByteArray signal_name = getQtName(qtjambi_to_qstring(env, java_signal_name)).toLatin1();
     if (signal_name.isEmpty())
         return false;
     int paren_pos = signal_name.indexOf('(');
-    signal_name = QByteArray::number(QSIGNAL_CODE) 
+    signal_name = QByteArray::number(QSIGNAL_CODE)
                   + signal_name.mid(signal_name.lastIndexOf("::", paren_pos) + 2);
-    QByteArray ba_slot_signature; 
+    QByteArray ba_slot_signature;
     const char *slot_signature = 0;
     if (java_slot_signature != 0) {
         ba_slot_signature = getQtName(qtjambi_to_qstring(env, java_slot_signature)).toLatin1();
         if (ba_slot_signature.isEmpty())
             return false;
         paren_pos = ba_slot_signature.indexOf('(');
-        ba_slot_signature = QByteArray::number(QSLOT_CODE) 
+        ba_slot_signature = QByteArray::number(QSLOT_CODE)
                             + ba_slot_signature.mid(ba_slot_signature.lastIndexOf("::", paren_pos) + 2);
         slot_signature = ba_slot_signature.constData();
     }
@@ -191,7 +198,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_QtJambiInternal_invokeSl
     }
     env->ReleaseIntArrayElements(_cnvTypes, cnvTypes, JNI_ABORT);
 
-    jmethodID methodId = reinterpret_cast<jmethodID>(m); 
+    jmethodID methodId = reinterpret_cast<jmethodID>(m);
     switch (returnType)
     {
     case 'L': env->CallObjectMethodA(receiver, methodId, argsArray.data()); break ;
@@ -207,5 +214,5 @@ extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_QtJambiInternal_invokeSl
     default:
         Q_ASSERT_X(false, "invokeSlot", "Invalid return type parameter");
     };
-}            
+}
 

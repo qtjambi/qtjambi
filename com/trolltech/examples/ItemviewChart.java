@@ -184,42 +184,28 @@ public class ItemviewChart extends QMainWindow {
         }
 
         protected boolean edit(final QModelIndex index, EditTrigger trigger, QEvent event) {
-            if (index != null && index.column() == 0)
-                return super.edit(index, trigger, event);
-            else
-                return false;
+            return false;
         }
 
-        /*
-         * Returns the item that covers the coordinate given in the view.
-         */
         public QModelIndex indexAt(final QPoint point) {
             if (validItems == 0)
                 return new QModelIndex();
 
-            // Transform the view coordinates into contents widget coordinates.
             int wx = point.x() + horizontalScrollBar().value();
             int wy = point.y() + verticalScrollBar().value();
 
             if (wx < totalSize) {
                 double cx = wx - totalSize / 2;
-                double cy = totalSize / 2 - wy; // positive cy for items above
-                // the
-                // center
-
-                // Determine the distance from the center point of the pie
-                // chart.
+                double cy = totalSize / 2 - wy;
                 double d = Math.pow(Math.pow(cx, 2) + Math.pow(cy, 2), 0.5);
 
                 if (d == 0 || d > pieSize / 2)
                     return new QModelIndex();
 
-                // Determine the angle of the point.
                 double angle = (180 / Math.PI) * Math.acos(cx / d);
                 if (cy < 0)
                     angle = 360 - angle;
 
-                // Find the relevant slice of the pie.
                 double startAngle = 0.0;
 
                 for (int row = 0; row < model().rowCount(rootIndex()); ++row) {
@@ -236,25 +222,6 @@ public class ItemviewChart extends QMainWindow {
                         startAngle += sliceAngle;
                     }
                 }
-            } else {
-                double itemHeight = new QFontMetrics(viewOptions().font()).height();
-                int listItem = (int) ((wy - margin) / itemHeight);
-                int validRow = 0;
-
-                for (int row = 0; row < model().rowCount(rootIndex()); ++row) {
-
-                    QModelIndex index = model().index(row, 1, rootIndex());
-                    if (toDouble(model().data(index)) > 0.0) {
-
-                        if (listItem == validRow)
-                            return model().index(row, 0, rootIndex());
-
-                        // Update the list index that corresponds to the next
-                        // valid
-                        // row.
-                        validRow++;
-                    }
-                }
             }
 
             return new QModelIndex();
@@ -264,24 +231,14 @@ public class ItemviewChart extends QMainWindow {
             return false;
         }
 
-        /*
-         * Returns the rectangle of the item at position \a index in the model.
-         * The rectangle is in contents coordinates.
-         */
         QRect itemRect(final QModelIndex index) {
             if (!index.isValid())
                 return new QRect();
 
-            // Check whether the index's row is in the list of rows represented
-            // by slices.
-            QModelIndex valueIndex;
-
             if (index.column() != 1)
-                valueIndex = model().index(index.row(), 1, rootIndex());
-            else
-                valueIndex = index;
+                return new QRect();
 
-            if (toDouble(model().data(valueIndex)) > 0.0) {
+            if (toDouble(model().data(index)) > 0.0) {
 
                 int listItem = 0;
                 for (int row = index.row() - 1; row >= 0; --row) {
@@ -289,17 +246,7 @@ public class ItemviewChart extends QMainWindow {
                         listItem++;
                 }
 
-                double itemHeight;
-
-                switch (index.column()) {
-                case 0:
-                    itemHeight = new QFontMetrics(viewOptions().font()).height();
-
-                    return new QRect(totalSize, (int) (margin + listItem * itemHeight), totalSize - margin, (int) itemHeight);
-                case 1:
-                    return viewport().rect();
-                }
-
+                return new QRect(margin, margin, pieSize, pieSize);
             }
             return new QRect();
         }
@@ -309,7 +256,7 @@ public class ItemviewChart extends QMainWindow {
                 return new QRegion();
 
             if (index.column() != 1)
-                return new QRegion(itemRect(index));
+                return new QRegion();
 
             if (toDouble(model().data(index)) <= 0.0)
                 return new QRegion();
@@ -408,7 +355,6 @@ public class ItemviewChart extends QMainWindow {
             painter.fillRect(event.rect(), background);
             painter.setPen(foreground);
 
-            // Viewport rectangles
             QRect pieRect = new QRect(margin, margin, pieSize, pieSize);
 
             if (validItems > 0) {
@@ -443,30 +389,13 @@ public class ItemviewChart extends QMainWindow {
                     }
                 }
                 painter.restore();
-
-                int keyNumber = 0;
-
-                for (row = 0; row < model().rowCount(rootIndex()); ++row) {
-
-                    QModelIndex index = model().index(row, 1, rootIndex());
-                    double value = toDouble(model().data(index));
-
-                    if (value > 0.0) {
-                        QModelIndex labelIndex = model().index(row, 0, rootIndex());
-
-                        QStyleOptionViewItem option2 = viewOptions();
-                        option2.setRect(visualRect(labelIndex));
-                        if (selections.isSelected(labelIndex))
-                            option2.setState(new QStyle.State(option2.state().value() | QStyle.StateFlag.State_Selected.value()));
-                        if (currentIndex() == labelIndex)
-                            option2.setState(new QStyle.State(option2.state().value() | QStyle.StateFlag.State_HasFocus.value()));
-                        itemDelegate().paint(painter, option2, labelIndex);
-
-                        keyNumber++;
-                    }
-                }
             }
             painter.end();
+        }
+
+        @SuppressWarnings("unused")
+        protected void resizeEvent(QResizeEvent event) {
+            updateGeometries();
         }
 
         int rows(final QModelIndex index) {
@@ -503,16 +432,29 @@ public class ItemviewChart extends QMainWindow {
         }
 
         public void scrollTo(final QModelIndex index, ScrollHint hint) {
+            QRect area = viewport().rect();
+            QRect rect = visualRect(index);
+
+            if (rect.left() < area.left())
+                horizontalScrollBar().setValue(
+                    horizontalScrollBar().value() + rect.left() - area.left());
+            else if (rect.right() > area.right())
+                horizontalScrollBar().setValue(
+                    horizontalScrollBar().value() + Math.min(
+                        rect.right() - area.right(), rect.left() - area.left()));
+
+            if (rect.top() < area.top())
+                verticalScrollBar().setValue(
+                    verticalScrollBar().value() + rect.top() - area.top());
+            else if (rect.bottom() > area.bottom())
+                verticalScrollBar().setValue(
+                    verticalScrollBar().value() + Math.min(
+                        rect.bottom() - area.bottom(), rect.top() - area.top()));
+
+            update();
         }
 
-        /*
-         * Find the indices corresponding to the extent of the selection.
-         */
         protected void setSelection(final QRect rect, QItemSelectionModel.SelectionFlags command) {
-            // Use content widget coordinates because we will use the
-            // itemRegion()
-            // function to check for intersections.
-
             QRect contentsRect = rect.translated(horizontalScrollBar().value(), verticalScrollBar().value()).normalized();
 
             int rows = model().rowCount(rootIndex());
@@ -524,10 +466,8 @@ public class ItemviewChart extends QMainWindow {
                     QModelIndex index = model().index(row, column, rootIndex());
                     QRegion region = itemRegion(index);
 
-                    if (!region.intersect(new QRegion(contentsRect)).isEmpty()) {
+                    if (!region.intersect(new QRegion(contentsRect)).isEmpty())
                         indexes.add(index);
-
-                    }
                 }
             }
 
@@ -544,7 +484,9 @@ public class ItemviewChart extends QMainWindow {
                     lastColumn = Math.max(lastColumn, indexes.elementAt(i).column());
                 }
 
-                QItemSelection selection = new QItemSelection(model().index(firstRow, firstColumn, rootIndex()), model().index(lastRow, lastColumn, rootIndex()));
+                QItemSelection selection = new QItemSelection(
+                    model().index(firstRow, firstColumn, rootIndex()),
+                    model().index(lastRow, lastColumn, rootIndex()));
                 selectionModel().select(selection, command);
             } else {
                 QModelIndex noIndex = new QModelIndex();
@@ -555,13 +497,17 @@ public class ItemviewChart extends QMainWindow {
             update();
         }
 
-        protected int verticalOffset() {
-            return 0;
+        protected void updateGeometries() {
+            horizontalScrollBar().setPageStep(viewport().width());
+            horizontalScrollBar().setRange(0, Math.max(0, totalSize - viewport().width()));
+            verticalScrollBar().setPageStep(viewport().height());
+            verticalScrollBar().setRange(0, Math.max(0, totalSize - viewport().height()));
         }
 
-        /*
-         * Returns the position of the item in viewport coordinates.
-         */
+        protected int verticalOffset() {
+            return verticalScrollBar().value();
+        }
+
         public QRect visualRect(final QModelIndex index) {
             QRect rect = itemRect(index);
             if (rect.isValid())
@@ -570,10 +516,6 @@ public class ItemviewChart extends QMainWindow {
                 return rect;
         }
 
-        /*
-         * Returns a region corresponding to the selection in viewport
-         * coordinates.
-         */
         protected QRegion visualRegionForSelection(final QItemSelection selection) {
             int ranges = selection.size();
 

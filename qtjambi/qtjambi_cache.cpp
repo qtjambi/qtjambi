@@ -882,22 +882,22 @@ void StaticCache::resolveInternalSignal_internal()
 {
     Q_ASSERT(!InternalSignal.class_ref);
 
-    InternalSignal.class_ref = 
+    InternalSignal.class_ref =
         ref_class(env->FindClass("com/trolltech/qt/QtJambiInternal$InternalSignal"));
     Q_ASSERT(InternalSignal.class_ref);
 
-    InternalSignal.m_in_cpp_emission = env->GetFieldID(InternalSignal.class_ref, 
+    InternalSignal.m_in_cpp_emission = env->GetFieldID(InternalSignal.class_ref,
                                                        "m_in_cpp_emission", "Z");
     Q_ASSERT(InternalSignal.m_in_cpp_emission);
 
-    InternalSignal.connect = env->GetMethodID(InternalSignal.class_ref, 
+    InternalSignal.connect = env->GetMethodID(InternalSignal.class_ref,
                                               "connect",
                                               "(Lcom/trolltech/qt/core/QObject;"
                                                "Ljava/lang/String;"
                                                "Lcom/trolltech/qt/core/Qt$ConnectionType;)Z");
     Q_ASSERT(InternalSignal.connect);
 
-    InternalSignal.connectSignalMethod = env->GetMethodID(InternalSignal.class_ref, 
+    InternalSignal.connectSignalMethod = env->GetMethodID(InternalSignal.class_ref,
                                                           "connectSignalMethod",
                                                           "(Ljava/lang/reflect/Method;Ljava/lang/Object;I)Z");
     Q_ASSERT(InternalSignal.connectSignalMethod);
@@ -913,19 +913,24 @@ void StaticCache::resolveQtJambiInternal_internal()
     QtJambiInternal.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtJambiInternal"));
     Q_ASSERT(QtJambiInternal.class_ref);
 
-    QtJambiInternal.lookupSignal = env->GetStaticMethodID(QtJambiInternal.class_ref, 
+    QtJambiInternal.lookupSignal = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                           "lookupSignal",
                                                           "(Lcom/trolltech/qt/core/QObject;"
                                                            "Ljava/lang/String;"
                                                           ")Lcom/trolltech/qt/QtJambiInternal$InternalSignal;");
     Q_ASSERT(QtJambiInternal.lookupSignal);
 
-    QtJambiInternal.lookupSlot = env->GetStaticMethodID(QtJambiInternal.class_ref, 
+    QtJambiInternal.lookupSlot = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                         "lookupSlot",
                                                         "(Lcom/trolltech/qt/core/QObject;"
                                                          "Ljava/lang/String;"
                                                         ")Ljava/lang/reflect/Method;");
     Q_ASSERT(QtJambiInternal.lookupSlot);
+
+    QtJambiInternal.endPaint = env->GetStaticMethodID(QtJambiInternal.class_ref,
+                                                      "endPaint",
+                                                      "(Lcom/trolltech/qt/gui/QWidget;)V");
+    Q_ASSERT(QtJambiInternal.endPaint);
 }
 
 void StaticCache::resolveString_internal()

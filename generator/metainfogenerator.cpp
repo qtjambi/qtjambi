@@ -151,6 +151,11 @@ void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &pack
         metainfo_write_name_list(s, "javaFunctionNames", strs, 1);
         metainfo_write_name_list(s, "javaObjectNames", strs, 2);
         metainfo_write_name_list(s, "javaSignatures", strs, 3);
+    } else {
+        s << "static const char **qtNames = 0;" << endl
+          << "static const char **javaFunctionNames = 0;" << endl
+          << "static const char **javaObjectNames = 0;" << endl
+          << "static const char **javaSignatures = 0;" << endl;
     }
 }
 
@@ -497,9 +502,12 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
     s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl
       << "    registerJavaToQt(\"" << javaName << "\", \"" << qtName << "\");" << endl;
-    if (entry->isComplex() && entry->isObject() && !((ComplexTypeEntry *)entry)->isQObject() && !entry->isInterface())
-      s << "    registerDestructor(\"" << javaName << "\", destructor_" << javaName.replace("/", "_").replace("$", "_") << ");" << endl;
+    if (entry->isComplex() && entry->isObject() && !((ComplexTypeEntry *)entry)->isQObject() && !entry->isInterface()) {
+        QString patchedName = QString(javaName).replace("/", "_").replace("$", "_");
+        s << "    registerDestructor(\"" << "### FIXME " << javaName << "\", destructor_" << patchedName << ");"
+          << endl;
 
+    }
 
     if (!registerMetaType)
         return ;

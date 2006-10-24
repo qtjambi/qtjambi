@@ -26,9 +26,7 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QMessageBox;
-import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.*;
 
 public class QtJambiInternal {
 
@@ -41,7 +39,7 @@ public class QtJambiInternal {
      */
     public abstract static class InternalSignal {
 
-        private boolean             m_in_cpp_emission      = false; 
+        private boolean             m_in_cpp_emission      = false;
         private List<Connection>    m_connections          = new ArrayList<Connection>();
         private Class<?>            m_types[]              = null;
         private int                 m_arrayDims[]          = null;
@@ -54,12 +52,12 @@ public class QtJambiInternal {
         /**
          * Contains book holding info about a single connection
          */
-        protected class Connection {            
+        protected class Connection {
             public int      flags           = 0;
             public Object   receiver        = null;
             public Method   slot            = null;
             public byte     returnType      = 0;
-            public int      convertTypes[]  = null;            
+            public int      convertTypes[]  = null;
             public long     slotId          = 0;
             public Object   args[]          = null;
 
@@ -106,7 +104,7 @@ public class QtJambiInternal {
                 for (int i = 0; i < convertTypes.length; ++i) {
                     convertTypes[i] = 'L';
                     if (slotParameterTypes[i].isPrimitive())
-                        convertTypes[i] = primitiveToByte(signalParameterTypes[i]);                    
+                        convertTypes[i] = primitiveToByte(signalParameterTypes[i]);
                 }
             }
         } // public class Connection
@@ -114,12 +112,12 @@ public class QtJambiInternal {
         /**
          * Connects the signal to a method in an object. Whenever it is emitted, the method will be invoked
          * on the given object.
-         * 
+         *
          * @param receiver The object containing the method to be invoked upon signal emission
          * @param method The signature of the method to call, excluding the return type and variable names
          * @param connectionType One of the connection types defined in the Qt interface.
          * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
-         * @throws QRuntimeException Raised if the signal object could not be successfully introspected.  
+         * @throws QRuntimeException Raised if the signal object could not be successfully introspected.
          */
         public final boolean connect(QObject receiver, String method,
                 Qt.ConnectionType type) {
@@ -132,43 +130,43 @@ public class QtJambiInternal {
 
         /**
          * Disconnects the signal from a method in an object if the two were previously connected by a call to connect.
-         * 
+         *
          * @param receiver The object to which the signal is connected
          * @param method The method in the receiver object to which the signal is connected
-         * @return true if the connection was successfully removed, otherwise false. The method will return false if the 
+         * @return true if the connection was successfully removed, otherwise false. The method will return false if the
          * connection has not been previously established by a call to connect.
          * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
          */
         public boolean disconnect(QObject receiver, String method) {
             if (method != null && receiver == null)
                 throw new IllegalArgumentException("Receiver cannot be null if you specify a method");
-            
+
             Method slotMethod = null;
             if (method != null) {
                 slotMethod = lookupSlot(receiver, method);
                 if (slotMethod == null)
                     throw new QNoSuchSlotException(method);
             }
-            
+
             return removeConnection(receiver, slotMethod);
         }
-        
-        /** 
+
+        /**
          * Removes any connection from this signal to the specified receiving object
-         * 
+         *
          *  @param receiver The object to which the signal has connections
          *  @return true if any connection was successfully removed, otherwise false. The method will return false if no
          *  connection has previously been establish to the receiver.
-         *  
+         *
          *  @see #disconnect(QObject, String)
          **/
         public boolean disconnect(QObject receiver) {
             return disconnect(receiver, null);
         }
-        
+
         /**
          * Removes all connections from this signal.
-         * 
+         *
          * @see #disconnect(QObject, String)
          **/
         public boolean disconnect() {
@@ -177,9 +175,9 @@ public class QtJambiInternal {
 
         /**
          * Creates an auto-connection from this signal to the specified object and method.
-         * 
+         *
          * @see #connect(com.trolltech.qt.core.QObject, String, com.trolltech.qt.core.Qt.ConnectionType)
-         **/ 
+         **/
         public final boolean connect(QObject receiver, String method) {
             return connect(receiver, method, Qt.ConnectionType.AutoConnection);
         }
@@ -197,15 +195,15 @@ public class QtJambiInternal {
         }
 
         /**
-         * Disconnects a signal from another signal if the two were previously connected by a call to connect. 
+         * Disconnects a signal from another signal if the two were previously connected by a call to connect.
          * A call to this function will assure that the emission of the first signal will not cause the emission of the second.
-         * 
+         *
          * @param signalIn The first signal.
          * @param signalOut The second signal.
-         * @return true if the two signals were successfully disconnected, or false otherwise. 
+         * @return true if the two signals were successfully disconnected, or false otherwise.
          */
         public boolean disconnect(QObject.AbstractSignal signalOut) {
-            
+
             return removeConnection(signalOut, findEmitMethod(signalOut));
         }
 
@@ -213,17 +211,17 @@ public class QtJambiInternal {
             resolveSignal();
             return m_name;
         }
-        
+
         public final String declaringClassName() {
             resolveSignal();
             return m_declaring_class == null ? "" : m_declaring_class.getName();
         }
-        
+
         public final String fullName() {
             return declaringClassName() + "." + name();
         }
-                
-        /** 
+
+        /**
          * Returns true if the connection receiver is the emission of the C++ version of the current
          * signal. This is used to avoid recursion from C++ emissions. Whenever we have a C++ emission
          * we know we will have a function with the same name in the same declaring class as the signal.
@@ -233,16 +231,16 @@ public class QtJambiInternal {
                     && connection.receiver == qobject()
                     && connection.slot.getDeclaringClass().equals(m_declaring_class));
         }
-        
+
         private final boolean connectSignalMethod(Method slotMethod,
-                                                  Object receiver, 
+                                                  Object receiver,
                                                   int connectionType) {
             if (slotMethod.getAnnotation(QtBlockedSlot.class) != null)
                 throw new QNoSuchSlotException(slotMethod.toString());
-            
+
             if (!matchSlot(slotMethod))
                 return false;
-            
+
             addConnection(receiver, slotMethod, connectionType);
             return true;
         }
@@ -330,27 +328,27 @@ public class QtJambiInternal {
         protected void emit_helper(Object... args) {
             if (qobject().signalsBlocked())
                 return;
-            
+
             if (m_inEmit)
                 return;
-            
+
             m_inEmit = true; // recursion block
 
             for (Connection c : m_connections) {
-                
+
                 if (m_in_cpp_emission && slotIsCppEmit(c))
                     continue ;
 
                 if (c.isDirectConnection()
                         || (c.isAutoConnection()
                                 && c.receiver instanceof QtObject
-                                && ((QtObject) c.receiver).thread() == Thread.currentThread() 
+                                && ((QtObject) c.receiver).thread() == Thread.currentThread()
                                 && ((QtObject) c.receiver).thread() == qobject().thread())) {
                     try {
                         boolean updateSender = c.receiver instanceof QObject;
                         QObject oldSender = null;
                         if (updateSender) {
-                            oldSender = QtJambiInternal.swapQObjectSender((QObject) c.receiver, 
+                            oldSender = QtJambiInternal.swapQObjectSender((QObject) c.receiver,
                                                                            qobject(), true);
                         }
 
@@ -371,12 +369,12 @@ public class QtJambiInternal {
                         }
 
                         if (updateSender) {
-                            QtJambiInternal.swapQObjectSender((QObject) c.receiver, 
+                            QtJambiInternal.swapQObjectSender((QObject) c.receiver,
                                                               (QObject) oldSender, false);
                         }
 
                     } catch (Exception e) {
-                        System.err.println("Exception caught while after " 
+                        System.err.println("Exception caught while after "
                                            + "invoking slot:");
                         e.printStackTrace();
                     }
@@ -392,12 +390,12 @@ public class QtJambiInternal {
             }
 
             m_inEmit = false;
-        }        
-        
+        }
+
         protected abstract QObject qobject();
-        
+
         protected abstract void initSignals();
-                
+
         private static Method findEmitMethod(QObject.AbstractSignal signal) {
             Method methods[] = signal.getClass().getDeclaredMethods();
 
@@ -420,8 +418,8 @@ public class QtJambiInternal {
                 return false;
 
             for (int i = 0; i < slotArguments.length; ++i) {
-                if (!matchTwoTypes(slotArguments[i], 
-                                   signalArguments[i], 
+                if (!matchTwoTypes(slotArguments[i],
+                                   signalArguments[i],
                                    signalArrayDims[i])) {
                     return false;
                 }
@@ -452,10 +450,10 @@ public class QtJambiInternal {
 
             return true;
         }
-        
+
         private static byte primitiveToByte(Class<?> primitiveType) {
             if (primitiveType.equals(Integer.class) || primitiveType.equals(Integer.TYPE)) {
-                return 'I'; 
+                return 'I';
             } else if (primitiveType.equals(Long.class) || primitiveType.equals(Long.TYPE)) {
                 return 'J';
             } else if (primitiveType.equals(Short.class) || primitiveType.equals(Short.TYPE)) {
@@ -503,21 +501,21 @@ public class QtJambiInternal {
                 throw new RuntimeException("Unrecognized primitive type: "
                         + primitiveType);
         }
-        
+
         private final void addConnection(Object receiver, Method slot,
                 int connectionType) {
-            
+
             if (!m_connected_to_cpp) {
                 m_connected_to_cpp = true;
-                initSignals();               
+                initSignals();
             }
-            
+
             Class<?> returnType = slot.getReturnType();
             byte returnSig;
             if (!returnType.isPrimitive())
                 returnSig = 'L';
             else
-                returnSig = primitiveToByte(returnType);            
+                returnSig = primitiveToByte(returnType);
 
             try {
                 slot.setAccessible(true);
@@ -525,20 +523,20 @@ public class QtJambiInternal {
                 // We don't care about the exception, as we'll use a fall back
                 // if the slot turns out to be inaccessible
             }
-            
-            m_connections.add(new Connection(receiver, slot, returnSig,(byte) connectionType));            
+
+            m_connections.add(new Connection(receiver, slot, returnSig,(byte) connectionType));
         }
 
         private final boolean removeConnection(Object receiver, Method slot) {
             if (m_in_disconnect)
                 return false;
             m_in_disconnect = true;
-            
+
             if (!m_connected_to_cpp) {
                 m_connected_to_cpp = true;
-                initSignals();                
+                initSignals();
             }
-            
+
             ListIterator<Connection> i = m_connections.listIterator();
             boolean returned = false;
             while (i.hasNext()) {
@@ -550,7 +548,7 @@ public class QtJambiInternal {
                     returned = true;
                 }
             }
-            
+
             if (receiver instanceof QObject || receiver == null) {
                 String methodSignature = null;
                 if (slot != null) {
@@ -558,12 +556,12 @@ public class QtJambiInternal {
                     int paren_pos = methodSignature.indexOf('(');
                     methodSignature = methodSignature.substring(methodSignature.lastIndexOf(' ', paren_pos) + 1);
                 }
-                returned |= cppDisconnect(qobject(), this.fullName(), (QObject) receiver, 
+                returned |= cppDisconnect(qobject(), this.fullName(), (QObject) receiver,
                                           methodSignature);
                 if (receiver == null && slot == null)
-                    m_connected_to_cpp = false;                
+                    m_connected_to_cpp = false;
             }
-            
+
 
             m_in_disconnect = false;
             return returned;
@@ -607,40 +605,40 @@ public class QtJambiInternal {
         private Object arguments[];
         private InternalSignal.Connection connection;
     }
-    
+
     @SuppressWarnings("unused")
-    private static InternalSignal lookupSignal(QObject qobject, String name) 
+    private static InternalSignal lookupSignal(QObject qobject, String name)
     {
         if (name == null || qobject == null) {
-            System.err.println("lookupSignal: Name or object is null"); 
+            System.err.println("lookupSignal: Name or object is null");
             return null;
         }
-                
+
         InternalSignal returned = null;
         for (Class cls = qobject.getClass();
              QObject.class.isAssignableFrom(cls) && returned == null;
              cls = cls.getSuperclass()) {
-            
+
             Field f = null;
             try {
                 f = cls.getDeclaredField(name);
             } catch (NoSuchFieldException e) {
                 continue;
             }
-            
+
             try {
                 f.setAccessible(true);
             } catch (SecurityException e) { }
-            
+
             if (InternalSignal.class.isAssignableFrom(f.getType())) {
                 try {
                     returned = (InternalSignal) f.get(qobject);
                 } catch (Exception e) {
                     returned = fetchSignal(qobject, f);
                 }
-            }                           
+            }
         }
-        
+
         return returned;
     }
 
@@ -667,7 +665,7 @@ public class QtJambiInternal {
                                        + signature + "'");
         }
         String strTypes = signature.substring(pos + 1, pos2).trim();
-        
+
         String argumentTypes[];
 
         if (strTypes.length() == 0)
@@ -712,7 +710,7 @@ public class QtJambiInternal {
                 if (argumentTypes[i].indexOf('.') < 0) {
                     arg = arg.substring(arg.lastIndexOf('.') + 1);
                 }
-               
+
                 if (!arg.equals(argumentTypes[i])) {
                     found = false;
                     break;
@@ -737,12 +735,12 @@ public class QtJambiInternal {
         return nativeSwapQObjectSender(receiver.nativeId(),
                 newSender != null ? newSender.nativeId() : 0, returnPreviousSender);
     }
-    
+
     public static void disconnect(QObject sender, QObject receiver) {
         Class cls = sender.getClass();
         while (QObject.class.isAssignableFrom(cls)) {
             Field fields[] = cls.getDeclaredFields();
-            
+
             for (Field f : fields) {
                 if (isSignal(f.getType())) {
                     QObject.AbstractSignal signal = null;
@@ -752,11 +750,11 @@ public class QtJambiInternal {
                     } catch (Exception e) {
                         signal = fetchSignal(sender, f);
                     }
-                    
+
                     signal.disconnect(receiver);
                 }
             }
-            
+
             cls = cls.getSuperclass();
         }
     }
@@ -772,7 +770,7 @@ public class QtJambiInternal {
 
     private static native QObject.AbstractSignal fetchSignal(QObject qobject,
             Field field);
-        
+
     private static native long resolveSlot(Method method);
 
     private static native void invokeSlot(Object receiver, long m,
@@ -780,8 +778,8 @@ public class QtJambiInternal {
 
     private static native void setField(QObject object, Field f,
             QObject.AbstractSignal newValue);
-    
-    private static native boolean cppDisconnect(QObject sender, String signal, QObject receiver, String slot); 
+
+    private static native boolean cppDisconnect(QObject sender, String signal, QObject receiver, String slot);
 
     /**
      * Initializes the signals for the object
@@ -922,4 +920,32 @@ public class QtJambiInternal {
 
     public native static Object createExtendedEnum(int value, int ordinal,
             Class cl, String name);
+
+
+
+    private static HashMap<QWidget, List<QPainter> > painters = new HashMap<QWidget, List<QPainter>>();
+    public static boolean beginPaint(QWidget widget, QPainter painter) {
+        List<QPainter> l = painters.get(widget);
+        if (l == null) {
+            l = new LinkedList<QPainter>();
+            painters.put(widget, l);
+        }        
+        if (l.contains(painter)) 
+            throw new RuntimeException("Painter opened twice on the same widget");
+        if (painter.isActive())
+            throw new RuntimeException("Painter already active");
+        l.add(painter);        
+        return painter.begin((QPaintDeviceInterface) widget);
+    }
+
+    public static void endPaint(QWidget widget) {
+        List <QPainter> ps = painters.get(widget);
+        if (ps != null) {
+            for (QPainter p : ps) {
+                p.dispose();
+            }
+            painters.remove(widget);
+        }
+    }
+
 }

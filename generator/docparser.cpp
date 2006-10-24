@@ -11,7 +11,6 @@
 DocParser::DocParser(const QString &name)
     : m_doc_file(name),
       m_dom(0)
-
 {
     build();
 }
@@ -38,35 +37,91 @@ QString DocParser::documentation(const MetaJavaClass *meta_class) const
     return doc;
 }
 
-QString DocParser::documentation(const MetaJavaFunction *function) const
+QString DocParser::documentationForFunction(const QString &signature, const QString &tag) const
 {
     if (!m_dom)
         return QString();
 
     QDomElement root_node = m_dom->documentElement();
-
-    QString java_signature = function->javaSignature();
-
-    QDomNodeList functions = root_node.elementsByTagName("method");
-
-    printf("\n\n%s\n", qPrintable(java_signature));
+    QDomNodeList functions = root_node.elementsByTagName(tag);
 
     for (int i=0; i<functions.size(); ++i) {
         QDomNode node = functions.item(i);
 
         QDomElement *e = (QDomElement *) &node;
 
-        if (!e->isElement())
-            printf("bad...\n");
+        Q_ASSERT(e->isElement());
 
-        printf("%s\n", qPrintable(e->attribute("name")));
-
-        if (e->attribute("name") == java_signature)
+        if (e->attribute("name") == signature)
             return e->attribute("doc");
     }
 
     return QString();
 }
+
+
+QString DocParser::documentationForSignal(const QString &signature) const
+{
+    return documentationForFunction(signature, "signal");
+}
+
+QString DocParser::documentationForFunction(const QString &signature) const
+{
+    return documentationForFunction(signature, "method");
+}
+
+QString DocParser::documentation(const MetaJavaEnum *java_enum) const
+{
+    if (!m_dom)
+        return QString();
+
+    QDomElement root_node = m_dom->documentElement();
+
+    QDomNodeList enums = root_node.elementsByTagName("enum");
+
+    for (int i=0; i<enums.size(); ++i) {
+        QDomNode node = enums.item(i);
+        QDomElement *e = (QDomElement *) &node;
+
+        Q_ASSERT(e->isElement());
+
+        if (e->attribute("name") == java_enum->name()) {
+            return e->attribute("doc");
+        }
+    }
+
+    return QString();
+}
+
+
+QString DocParser::documentation(const MetaJavaEnumValue *java_enum_value) const
+{
+    if (!m_dom)
+        return QString();
+
+    QDomElement root_node = m_dom->documentElement();
+
+    QDomNodeList enums = root_node.elementsByTagName("enum");
+
+    for (int i=0; i<enums.size(); ++i) {
+        QDomNode node = enums.item(i);
+        QDomElement *e = (QDomElement *) &node;
+        Q_ASSERT(e->isElement());
+
+        QDomNodeList enumValues = e->elementsByTagName("enum-value");
+        for (int j=0; j<enumValues.size(); ++j) {
+            QDomNode node = enumValues.item(j);
+            QDomElement *ev = (QDomElement *) &node;
+            if (ev->attribute("name") == java_enum_value->name()) {
+                return ev->attribute("doc");
+            }
+        }
+    }
+
+    return QString();
+}
+
+
 
 void DocParser::build()
 {
@@ -87,12 +142,12 @@ void DocParser::build()
     int line, column;
 
     if (!m_dom->setContent(&f, &error, &line, &column)) {
-//         ReportHandler::warning(QString("Failed to parse the documentation file:"
-//                                        " '%1' %2 line=%3 column=%4")
-//                                .arg(m_doc_file)
-//                                .arg(error)
-//                                .arg(line)
-//                                .arg(column));
+         ReportHandler::warning(QString("Failed to parse the documentation file:"
+                                        " '%1' %2 line=%3 column=%4")
+                                .arg(m_doc_file)
+                                .arg(error)
+                                .arg(line)
+                                .arg(column));
 
         delete m_dom;
         m_dom = 0;

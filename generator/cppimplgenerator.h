@@ -58,6 +58,7 @@ public:
                                     const MetaJavaFunction *java_function,
                                     const MetaJavaClass *java_class,
                                     Option options = NoOption);
+    void writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls);
     void writeFinalConstructor(QTextStream &s,
                                const MetaJavaFunction *java_function,
                                const QString &qt_object_name,
@@ -122,6 +123,8 @@ public:
                                 const MetaJavaType *java_type,
                                 const QString &qt_name,
                                 const QString &java_name);
+
+    bool hasCustomDestructor(const MetaJavaClass *java_class) const;
 
     QString translateType(const MetaJavaType *java_type, Option option = NoOption) const;
 

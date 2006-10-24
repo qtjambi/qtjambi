@@ -373,8 +373,8 @@ _InputIterator pp::handle_include (bool __skip_current_path, _InputIterator __fi
       _PP_internal::output_line (env.current_file, env.current_line, __result);
     }
 #ifndef RPP_JAMBI
-  else
-    std::cerr << "*** WARNING " << filename << ": No such file or directory" << std::endl;
+//   else
+//     std::cerr << "*** WARNING " << filename << ": No such file or directory" << std::endl;
 #endif
 
   return __first;

@@ -15,7 +15,7 @@
 
   To get a fairly complex path we allow the user to type in text and
   convert the text to paths. This is done using the
-  QPainterPath::addText() function.
+  QPainterPath::addText() method.
 
   The lens is drawn using a single call to QPainter::drawEllipse(),
   using a QRadialGradient to fill it with a specialized color
