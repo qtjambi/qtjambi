@@ -1,0 +1,18 @@
+import com.trolltech.qt.gui.*;
+
+public class %CLASS% extends %UI_CLASS%{
+
+    %CLASS% ui = new %CLASS%();
+    
+    public static void main(String[] args) {
+        QApplication.initialize(args);
+        Main mainw = new Main();
+        mainw.show();
+        QApplication.exec();
+    }
+    
+    public Main(){
+        ui.setupUi(this);
+    }
+
+}

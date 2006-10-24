@@ -1,0 +1,10 @@
+TEMPLATE = app
+TARGET = %PROJECT% 
+
+QT        += %MODULES%
+
+HEADERS   += %HEADER_FILE%
+SOURCES   += Main.cpp \
+    %SOURCE_FILE%
+FORMS     += %UI_FILE%    
+RESOURCES +=

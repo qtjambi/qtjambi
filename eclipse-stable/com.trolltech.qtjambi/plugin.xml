@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+	<extension
+       id="propertyPages"
+       point="org.eclipse.ui.propertyPages">
+		<page
+        adaptable="true"
+        class="com.trolltech.qtjambi.QtJambiPropertyPage"
+        id="com.trolltech.qtjambi.QtJambiPropertyPage"
+        name="Qt Jambi"
+        objectClass="org.eclipse.jdt.core.IJavaProject">
+		<filter name="nature" value="org.eclipse.jdt.core.javanature"/>
+		</page>
+		
+	</extension>
+
+	<extension 
+       id="propertyPages"
+	   point="org.eclipse.ui.propertyPages">
+	   <page
+          class="com.trolltech.qtjambi.QtJambiPropertyPage"
+          id="com.trolltech.qtjambi.QtJambiPropertyPage"
+          name="Qt Jambi"
+          objectClass="org.eclipse.core.resources.IProject">
+          <filter name="nature" value="org.eclipse.jdt.core.javanature"/>
+	   </page>
+	   
+	</extension>
+
+	<extension id="juicBuilder" name="Juic Builder" point="org.eclipse.core.resources.builders"> 
+		<builder > 
+			<run class="com.trolltech.qtjambi.JuicBuilder"/> 
+		</builder>
+	</extension>
+ <extension
+       id="startup"
+       point="org.eclipse.ui.startup">
+ </extension>
+ 
+ <extension point="org.eclipse.ui.newWizards">
+    <category id="com.trolltech.qtjambi.QtCategory" name="Qt Jambi" />
+    <wizard
+          canFinishEarly="false"
+          category="com.trolltech.qtjambi.QtCategory"
+          class="com.trolltech.qtjambi.wizards.FormWizard"
+          icon="icons/designer.gif"
+          id="com.trolltech.qtjambi.wizards.new.file"
+          name="Qt Jambi Designer Form"/>     
+</extension> 
+ 
+</plugin>

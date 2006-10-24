@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Qt Project Plug-in
+Bundle-SymbolicName: com.trolltech.qtproject;singleton:=true
+Bundle-Version: 0.0.2
+Bundle-Activator: com.trolltech.qtproject.QtProjectPlugin
+Bundle-Vendor: Trolltech AS
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources,
+ org.eclipse.cdt.core,
+ org.eclipse.cdt.make.core,
+ org.eclipse.jface.text,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.editors,
+ org.eclipse.debug.core,
+ org.eclipse.cdt.launch,
+ org.eclipse.cdt.ui,
+ org.eclipse.ui.workbench.texteditor
+Eclipse-LazyStart: true
+Bundle-ClassPath: bin/
+Export-Package: com.trolltech.qtproject

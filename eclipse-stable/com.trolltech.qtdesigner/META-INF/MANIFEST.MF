@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Qt Designer Plugin
+Bundle-SymbolicName: com.trolltech.qtdesigner; singleton:=true
+Bundle-Version: 0.0.3
+Bundle-Activator: com.trolltech.qtdesigner.QtDesignerPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources,
+ org.eclipse.jdt,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui
+Eclipse-LazyStart: true
+Export-Package: com.trolltech.qtdesigner,
+ com.trolltech.qtdesigner.editors,
+ com.trolltech.qtdesigner.views
+Bundle-Vendor: Trolltech ASA
+

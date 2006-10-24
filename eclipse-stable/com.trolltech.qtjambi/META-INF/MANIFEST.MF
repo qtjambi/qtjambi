@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Qt Jambi Plugin
+Bundle-SymbolicName: com.trolltech.qtjambi; singleton:=true
+Bundle-Version: 0.0.3
+Bundle-Activator: com.trolltech.qtjambi.QtJambiPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.ide
+Eclipse-AutoStart: true
+Export-Package: com.trolltech.qtjambi
+Bundle-Vendor: Trolltech ASA

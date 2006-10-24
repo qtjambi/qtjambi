@@ -1,0 +1,283 @@
+//[COMMON_JAVA_IMPORT]
+import java.util.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.*;
+
+//[END]
+
+//[COMMON_WIN_JAVA_IMPORT]
+import java.util.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.ole.win32.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+
+//[END]
+
+
+//[COMMON_JAVA_CONSTRUCTOR]
+        super (parent, style);
+        handleWidget = createControl(handle, embeddedHandle);
+        if (handleWidget == 0) SWT.error (SWT.ERROR_NO_HANDLES);
+        table.put(new Integer(handleWidget), this);
+        
+        setFont(getFont());
+    
+//[END]
+
+//[COMMON_MAC_JAVA_CONSTRUCTOR]
+        super (parent, style);
+        handleWidget = createControl(parent.handle);
+        if (handleWidget == 0) SWT.error (SWT.ERROR_NO_HANDLES);
+        table.put(new Integer(handleWidget), this);
+        
+        setFont(getFont());
+    
+//[END]
+
+//[COMMON_WIN_JAVA_CONSTRUCTOR]
+        super(parent, SWT.NONE);
+        int[] tmpIds;
+        dispIds = new ArrayList();
+		
+        setLayout(new FillLayout());
+        frame = new OleFrame(this, SWT.NONE);
+        
+//[END]
+
+//[COMMON_JAVA_FUNCTIONS]
+    public void widgetDisposed (DisposeEvent e)
+    {
+        table.remove(new Integer(handleWidget));
+        disposeControl(handleWidget);
+        handleWidget = 0;
+    }
+  
+    public void controlResized(ControlEvent e)
+    {
+        Rectangle rect = getClientArea();
+        resizeControl(handleWidget, rect.x, rect.y, rect.width, rect.height);
+    }
+
+    public Point computeSize(int wHint, int hHint, boolean changed)
+    {
+        checkWidget();
+        int [] result = new int[2];
+        computeSize(handleWidget, result);
+        if (wHint != SWT.DEFAULT) result[0] = wHint;
+        if (hHint != SWT.DEFAULT) result[1] = hHint;
+        int border = getBorderWidth();
+        return new Point(result[0] + border * 2, result[1] + border * 2);
+    }
+    
+    public void setFont(Font font)
+    {
+        super.setFont(font);
+        
+        if (font == null)
+            return;
+        FontData[] fntlist = font.getFontData();
+        setFont (handleWidget, fntlist[0].getName(), fntlist[0].getHeight());
+    }
+    
+//[END]
+
+//[COMMON_WIN_JAVA_FUNCTIONS]
+    
+//[END]
+
+//[COMMON_JAVA_NATIVE]
+    static final native void computeSize(int handle, int [] result);
+    static final native void disposeControl(int handle);
+    static final native void resizeControl(int handle, int x, int y, int width, int height);
+    static final native void setFont(int handle, String family, int size);
+//[END]
+
+//[COMMON_NATIVE_HEADER]
+#include "qgtkeventdispatcher.h"
+#include <QX11EmbedWidget>
+#include <QVBoxLayout>
+#include <pthread.h>
+#include <stdio.h>
+
+//[END]
+
+//[COMMON_MAC_NATIVE_HEADER]
+#include <QVBoxLayout>
+#include <stdio.h>
+#include <private/qhiviewwidget_mac_p.h>
+
+//[END]
+
+
+//[COMMON_NATIVE_FUNCTIONS]
+
+static pthread_key_t *envKey = 0;
+
+//[END]
+
+//[COMMON_NATIVE_CREATEQAPP]
+    QGtkEventDispatcher::hookQtIntoGtk(parent);
+
+    if (!envKey) {
+        envKey = new pthread_key_t;
+        pthread_key_create(envKey, NULL);
+    }
+    pthread_setspecific(*envKey, env);
+    
+//[END]
+
+//[COMMON_MAC_NATIVE_CREATEQAPP]
+    if (QApplication::instance() == 0) {
+        int argc = 1;
+        char *argv = "none";
+        new QApplication(argc, &argv);
+        envKey = new pthread_key_t;
+        pthread_key_create(envKey, NULL);
+    }
+    pthread_setspecific(*envKey, env);
+//[END]
+
+
+//[COMMON_NATIVE_SETFONT]
+    const char *utf_family = env->GetStringUTFChars(jni_family, 0);
+    QString family = QString::fromUtf8(utf_family);
+    env->ReleaseStringUTFChars(jni_family, utf_family);
+    
+    obj->setFont(QFont(family, size));
+    
+    Q_UNUSED(that);
+//[END]
+    
+//[COMMON_NATIVE_CREATECONTROL]
+
+    // the first client needs to be the parent of all the other clients.
+    // else focus will not work, since the other clients never becomes the
+    // active window in the application. 
+    QX11EmbedWidget *client = new QX11EmbedWidget();
+    
+    // we need to create obj first in order for the eventfilters in xembed
+    // to be called first.
+    obj->setParent(client);
+    
+    QVBoxLayout *vblayout = new QVBoxLayout(client);
+    vblayout->setMargin(0);
+    
+//[END]
+
+//[COMMON_MAC_NATIVE_CREATECONTROL]
+
+    QHIViewWidget *client = new QHIViewWidget((HIViewRef)parent, true);
+
+//[END]
+
+//[COMMON_NATIVE_COMPUTESIZE]
+    jint *nresult = NULL;
+    nresult = env->GetIntArrayElements(result, NULL);
+    
+    nresult[0] = obj->parentWidget()->sizeHint().width();
+    nresult[1] = obj->parentWidget()->sizeHint().height();
+    
+    env->ReleaseIntArrayElements(result, nresult, 0);
+    
+    Q_UNUSED(env);
+    Q_UNUSED(that);
+//[END]
+
+//[COMMON_MAC_NATIVE_COMPUTESIZE]
+    jint *nresult = NULL;
+    nresult = env->GetIntArrayElements(result, NULL);
+    
+    nresult[0] = obj->sizeHint().width();
+    nresult[1] = obj->sizeHint().height();
+    
+    env->ReleaseIntArrayElements(result, nresult, 0);
+    
+    Q_UNUSED(env);
+    Q_UNUSED(that);
+//[END]
+
+//[COMMON_NATIVE_RESIZECONTROL]
+    obj->parentWidget()->setGeometry(x, y, width, height);
+    
+    Q_UNUSED(env);
+    Q_UNUSED(that);
+//[END]
+
+//[COMMON_MAC_NATIVE_RESIZECONTROL]
+    obj->setGeometry(x, y, width, height);
+    
+    Q_UNUSED(env);
+    Q_UNUSED(that);
+//[END]
+
+
+//[COMMON_PROJECT_HEADER]
+TEMPLATE = lib
+
+CONFIG += core gui x11
+
+QT += xml
+
+DEPOT_ROOT = ../../../..
+
+INCLUDEPATH += ./ \
+    ../ \
+    ../../ \
+    $$(JAVADIR)/include \
+    $$(JAVADIR)/include/linux \
+    /usr/X11R6/include \
+    /usr/include/gtk-2.0 \
+    /usr/include/glib-2.0 \
+    /usr/lib/glib-2.0/include \
+    /usr/lib/gtk-2.0/include \
+    /usr/include/cairo \
+    /usr/include/pango-1.0 \
+    /usr/include/atk-1.0 \
+    $$(QTDIR)/src/gui/kernel
+
+LIBS += -L/usr/X11R6/lib \
+    -L/usr/lib \
+    -lX11 \
+    -lXt \
+    -lgdk-x11-2.0 \
+    -lgtk-x11-2.0
+
+HEADERS += ../../qgtkeventdispatcher.h
+SOURCES += ../../qgtkeventdispatcher.cpp
+
+//[END]
+//[COMMON_MAC_PROJECT_HEADER]
+TEMPLATE = lib
+
+QT += xml
+
+DEPOT_ROOT = ../../../..
+
+INCLUDEPATH += ./ \
+    ../ \
+    ../../ \
+    $$(JAVADIR)/Headers \
+    $$DEPOT_ROOT/research/qswt
+
+QMAKE_POST_LINK += ${COPY} ${TARGET} lib${QMAKE_TARGET}.jnilib
+
+//[END]
+
+
+//[COMMON_WIN_PROJECT_HEADER]
+TEMPLATE = lib
+
+CONFIG	+= qt warn_off qaxserver dll
+
+RC_FILE	 = $$(QTDIR)/src/activeqt/control/qaxserver.rc
+DEF_FILE = $$(QTDIR)/src/activeqt/control/qaxserver.def
+
+QT += xml
+
+INCLUDEPATH += . \
+    ../ \
+    ../../
+//[END]
