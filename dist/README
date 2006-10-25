@@ -34,8 +34,8 @@ Documentation
 -------------
 
 The documentation is provided in doc/html with the
-com/trolltech/qt/qtjambi_index.html as the main index file. For easy
-access to the documentation run the launcher and click the
+com/trolltech/qt/qtjambi-index.html as the main index file. For easy 
+access to the documentation run the launcher and click the 
 "Documentation" button which will open the documentation in your preferred browser.
 
 
@@ -89,10 +89,11 @@ Reporting Bugs, Mailing List and Support
 ----------------------------------------
 
 Any inquiries or problems encountered with Qt Jambi should be reported
-to support@trolltech.com. Include as much information as you can about
-your environment and versions.
+to the 'Qt Jambi users' mailing list.
 
-If you want to join the Qt Jambi users' mailing list, send a mail to
+Make sure you include information about your environment and versions.
+
+If you want to join the 'Qt Jambi users' mailing list, send a mail to
 qtjambi-interest-request@trolltech.com containing the single word
 "subscribe".
 
@@ -100,8 +101,9 @@ qtjambi-interest-request@trolltech.com containing the single word
 More information
 ----------------
 
-Please see http://www.trolltech.com/products/qtjambi for more information
-about Qt Jambi.
+Please see 
+   http://www.trolltech.com/developer/downloads/qt/qtjambi-techpreview 
+for more information about Qt Jambi.
 
 Please do not hesitate to contact us at sales@trolltech.com if you
 have questions regarding purchasing of Qt Jambi. 

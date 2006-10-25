@@ -76,8 +76,7 @@ JUIC
  - Added support for customizable prefix (in addition to Ui_) using -pf
    command line option
 
- - Added safety check before overwriting generated files and -f command 
-   line option to override the safety check
+ - Added safety check before overwriting generated files
 
  - Bugfix: Palette was not written out correctly
 

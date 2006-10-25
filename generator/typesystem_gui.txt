@@ -1074,7 +1074,7 @@
     <modify-function signature="addItem(QLayoutItem *)">
         <disable-gc argument="1" />
     </modify-function>
-    <modify-function signature="addItem(QLayoutItem *, int, int, int, Qt::Alignment)">
+    <modify-function signature="addItem(QLayoutItem *, int, int, int, int, QFlags&lt;Qt::AlignmentFlag&gt;)">
         <disable-gc argument="1" />
     </modify-function>    
     <modify-function signature="addLayout(QLayout *, int, int, Qt::Alignment)">

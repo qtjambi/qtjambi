@@ -51,11 +51,6 @@
 
     \img eclipse-create-form.png
 
-    In addition to the file name and source folder, you must select a
-    form template. The package name and class name, on the other hand,
-    are optional. By default, the package name is the default package
-    and the class name the same as the file name.
-
     \section1 Using Qt Designer in the Eclipse Integration
 
     The Qt Designer plugin views, such as the Qt Property Editor and

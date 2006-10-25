@@ -48,7 +48,7 @@ enum JuicError {
 
 struct Options
 {
-    Options() : process_all(false), process_directory(false), force(false) {
+    Options() : process_all(false), process_directory(false) {
         prefix = QLatin1String("Ui_");
     }
 
@@ -61,7 +61,6 @@ struct Options
     QStringList excluded;
     bool process_all;
     bool process_directory;
-    bool force;
 };
 
 void showHelp(const char *appName);
@@ -142,9 +141,6 @@ int main(int argc, char *argv[])
 
         } else if (opt.startsWith(QLatin1String("-pf"))) {
             options.prefix = opt.right(opt.size() - 3);
-
-        } else if (opt == QLatin1String("-f")) {
-            options.force = true;
 
         } else if (options.file_name.isEmpty()) {
             options.file_name = QString::fromLocal8Bit(argv[arg]);
@@ -263,7 +259,6 @@ void showHelp(const char *appName)
             "                           not traverse the directories specified. The paths should be\n"
             "                           separated by '%c'.\n"
             "  -a                       update files regardless of modification date.\n"
-            "  -f                       override safety check and force update of files.\n"
             "\n", appName, ENV_SPLITTER, ENV_SPLITTER);
 }
 
@@ -318,7 +313,6 @@ JuicError runJuic(const QFileInfo &uiFile, const Options &options)
     }
 
     if (outFileInfo.exists()
-        && !options.force
         && !isGeneratedFile(outFileInfo)) {
         fprintf(stderr, "%s: Skipping '%s': Not a generated file\n", qPrintable(options.application_name), qPrintable(outFileName));
         return NotAGeneratedFile;

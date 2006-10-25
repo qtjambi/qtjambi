@@ -2,8 +2,8 @@
 
 
 BASE_DIR=$PWD
-WEBSITE=http://anarki.troll.no/~gunnar/packages
-PACKAGE=1.0.0-tp2
+WEBSITE=http://anarki.troll.no/~eblomfel/packages
+PACKAGE=1.0.0-tp3
 
 
 echo Preparing directory

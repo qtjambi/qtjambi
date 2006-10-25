@@ -50,11 +50,7 @@ const zipDest = (os_name() == OS_NAME_WINDOWS
                     ? destDir + "/qt-jambi-eclipse-integration-win32-" + version + ".zip"
                     : destDir + "/qt-jambi-eclipse-integration-linux-" + version + ".tar");
 zipContents = ["plugins/com.trolltech.qtdesigner_" + version + ".jar",
-               "plugins/com.trolltech.qtjambi_" + version + ".jar",
-               "plugins/com.trolltech.help_" + version +"/doc.zip",
-               "plugins/com.trolltech.help_" + version +"/plugin.xml",
-               "plugins/com.trolltech.help_" + version +"/qt.xml",
-               "features/com.trolltech.help_" + version +"/feature.xml"];
+               "plugins/com.trolltech.qtjambi_" + version + ".jar"];
 
 
   const vcRedistributableDir = "/Progra~1/Micros~1.net/SDK/v1.1/Bin"
@@ -168,17 +164,11 @@ if (os_name() == OS_NAME_WINDOWS) {
                       [commandCp, "-f ", cygdrive + vcRedistributableDir + "/" + "msvcr71.dll", " ."],
                       [commandCp, "-f ", cygdrive + qtjambidir + "/scripts/register_eclipse_integration.bat", " ."],
                       [commandCp, "-f ", cygdrive + generatedDir + "/release/" + generatedExe, " ."],
-                      [commandRM, "-f com.trolltech.help_" + version + ".zip"],
-                      [commandWGet, "http://anarki.troll.no/~eblomfel/help_package/com.trolltech.help_" + version + ".zip"],
-		      [commandUnzip, "-o ", "com.trolltech.help_" + version + ".zip"],
                       [commandZip, cygdrive + zipDest + " ", zipContents],
     ];
 } else {
     packageCommand = [
                       ["cd", rootDir],
-	              [commandRM, "-f com.trolltech.help_" + version + ".zip"],
-                      [commandWGet, "http://anarki.troll.no/~eblomfel/help_package/com.trolltech.help_" + version + ".zip"],
-		      [commandUnzip, "-o ", "com.trolltech.help_" + version + ".zip"],
                       [commandTar, "rf", " " + cygdrive + zipDest + " ",zipContents],
                       [commandRM, "-f ", cygdrive + zipDest + ".gz"],
                       [commandGZip, cygdrive + zipDest]

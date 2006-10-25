@@ -64,7 +64,7 @@ if (!option.javadocLocation) {
     option.javadocLocation = "http://anarki/~gunnar/packages/" + javadocName;
 }
 
-const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtSvg", "QtDesigner", "QtDesignerComponents", "QtNetwork"];
+const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtSvg", "QtDesigner", "QtDesignerComponents", "QtNetwork", "QtAssistantClient"];
 const qtBinaryNames = ["designer", "linguist"];
 var qtReleaseLibraries = [];
 var qtDebugLibraries = [];

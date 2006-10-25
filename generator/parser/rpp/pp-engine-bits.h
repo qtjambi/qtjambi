@@ -61,8 +61,8 @@ void pp::file (std::string const &filename, _OutputIterator __result)
       file (fp, __result);
       env.current_file = was;
     }
-  else
-    std::cerr << "** WARNING file ``" << filename << " not found!" << std::endl;
+  //else
+    //std::cerr << "** WARNING file ``" << filename << " not found!" << std::endl;
 }
 
 template <typename _OutputIterator>

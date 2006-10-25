@@ -38,7 +38,7 @@ public class CollidingMice extends QWidget {
         scene.setItemIndexMethod(QGraphicsScene.ItemIndexMethod.NoIndex);
 
         for (int i = 0; i < MOUSE_COUNT; ++i) {
-            Mouse mouse = new Mouse();
+            Mouse mouse = new Mouse(this);
             mouse.setPos(Math.sin((i * 6.28) / MOUSE_COUNT) * 200, 
                          Math.cos((i * 6.28) / MOUSE_COUNT) * 200);
             scene.addItem(mouse);
@@ -71,12 +71,12 @@ public class CollidingMice extends QWidget {
 
         static final double TWO_PI = Math.PI * 2;
 
-        public Mouse() {
+        public Mouse(QObject parent) {
             color = new QColor(generator.nextInt(256), generator.nextInt(256), 
                                generator.nextInt(256));
             rotate(generator.nextDouble() * 360);
 
-            QObject timer = new QObject() {
+            QObject timer = new QObject(parent) {
                 @Override
                 protected void timerEvent(QTimerEvent arg__0) {
                     move();
