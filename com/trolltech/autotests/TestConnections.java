@@ -31,6 +31,14 @@ class SignalsAndSlotsSubclass extends SignalsAndSlots
     public int java_non_slot_called = 0;
 
     public Signal0 signal4;
+    
+    public class NonQObjectSubclass {
+        Signal0 s = new Signal0();
+    }
+    
+    public NonQObjectSubclass getSubclassObject() {
+        return new NonQObjectSubclass();
+    }
 
     public void emit_signal_4() { signal4.emit(); }
 
@@ -58,6 +66,14 @@ public class TestConnections extends QApplicationTest implements Qt
 {
     public TestConnections()
     {
+    }
+    
+    @Test public void run_signalInNonQObject() {
+        SignalsAndSlotsSubclass b = new SignalsAndSlotsSubclass();        
+        SignalsAndSlotsSubclass.NonQObjectSubclass sc = b.getSubclassObject();
+        sc.s.connect(b, "slot1_1()");
+        sc.s.emit();
+        assertEquals(1, b.slot1_1_called());
     }
 
     @Test public void run_shouldNotConnectToBlockedSlots()
@@ -664,6 +680,7 @@ public class TestConnections extends QApplicationTest implements Qt
     @Test public void run_connectJavaQt()
     {
         QWidget widget = new QWidget();
+       
         assertTrue(!widget.isVisible());
         assertTrue(widget.isEnabled());
 
@@ -718,6 +735,7 @@ public class TestConnections extends QApplicationTest implements Qt
         assertTrue(le.isEnabled());
 
         widget.show();
+        QApplication.setActiveWindow(widget);
         assertTrue(widget.isVisible());
         assertTrue(b1.isVisible());
         assertTrue(b2.isVisible());
@@ -754,6 +772,7 @@ public class TestConnections extends QApplicationTest implements Qt
         assertTrue(obj.signalQSize.connect(b2, "setIconSize(QSize)"));
 
         obj.javaSignalint(123);
+
         assertEquals(QApplication.focusWidget(), b1);
         assertTrue(QApplication.focusWidget() == b1);
         obj.javaSignalNoParams();

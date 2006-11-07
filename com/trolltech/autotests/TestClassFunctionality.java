@@ -64,34 +64,6 @@ class CustomEvent extends QEvent {
     }
 }
 
-class MyModel extends QStandardItemModel {
-    public Signal0 mySignal;
-
-    public void mySlot() {
-    }
-
-    public boolean b_dataChangedNotified = false;
-    public boolean b_mySignalNotified = false;
-    public boolean b_error = false;
-
-    protected void connectNotify(AbstractSignal signal) {
-        b_dataChangedNotified = b_dataChangedNotified || signal == dataChanged;
-        b_mySignalNotified = b_mySignalNotified || signal == mySignal;
-    }
-
-    protected void disconnectNotify(AbstractSignal signal) {
-        if (signal == dataChanged && b_dataChangedNotified)
-            b_dataChangedNotified = false;
-        else if (signal == dataChanged)
-            b_error = true;
-
-        if (signal == mySignal && b_mySignalNotified)
-            b_mySignalNotified = false;
-        else if (signal == mySignal)
-            b_error = true;
-    }
-}
-
 class EventReceiver extends QWidget {
     public String myString = null;
     public String customEventString = null;
@@ -564,37 +536,6 @@ public class TestClassFunctionality extends QApplicationTest {
     }
 
     @Test
-    public void run_connectNotify() {
-        MyModel model = new MyModel();
-        assertTrue(!model.b_error);
-        assertTrue(!model.b_dataChangedNotified);
-        assertTrue(!model.b_mySignalNotified);
-
-        model.mySignal.connect(model, "mySlot()");
-        assertTrue(!model.b_error);
-        assertTrue(!model.b_dataChangedNotified);
-        assertTrue(model.b_mySignalNotified);
-
-        QListView v = new QListView();
-        v.setModel(model);
-        assertTrue(!model.b_error);
-        assertTrue(model.b_dataChangedNotified);
-        assertTrue(model.b_mySignalNotified);
-
-        model.mySignal.disconnect(model, "mySlot()");
-        assertTrue(!model.b_error);
-        assertTrue(model.b_dataChangedNotified);
-        assertTrue(!model.b_mySignalNotified);
-
-        v.dispose();
-        assertTrue(!model.b_error);
-        assertTrue(!model.b_dataChangedNotified);
-        assertTrue(!model.b_mySignalNotified);
-
-        model.dispose();
-    }
-
-    @Test
     public void run_settersAndGetters() {
         QStyleOptionButton so = new QStyleOptionButton();
 
@@ -740,15 +681,14 @@ public class TestClassFunctionality extends QApplicationTest {
         String qt_plastique_radio[] = { "13 13 2 1", "X c #000000", ". c #ffffff", "....XXXXX....", "..XX.....XX..", ".X.........X.", ".X.........X.", "X...........X", "X...........X",
                 "X...........X", "X...........X", "X...........X", ".X.........X.", ".X.........X.", "..XX.....XX..", "....XXXXX...." };
 
-        QNativePointer p = QNativePointer.createCharPointerPointer(qt_plastique_radio);
-        QImage img = new QImage(p);
+        QImage img = new QImage(qt_plastique_radio);
         assertEquals(img.width(), 13);
         assertEquals(img.height(), 13);
 
         assertEquals(img.pixel(2, 1), 0xff000000);
         assertEquals(img.pixel(0, 0), 0xffffffff);
 
-        QPixmap pm = new QPixmap(p);
+        QPixmap pm = new QPixmap(qt_plastique_radio);
         QImage img2 = pm.toImage();
         assertEquals(img2.pixel(2, 1), 0xff000000);
         assertEquals(img2.pixel(12, 12), 0xffffffff);

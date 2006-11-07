@@ -85,23 +85,34 @@ public class CollidingMice extends QWidget {
             timer.startTimer(1000 / 33);
         }
 
-        public QRectF boundingRect() {
-            double adjust = 0.5;
-            return new QRectF(-20 - adjust, -22 - adjust, 
-                              40 + adjust, 83 + adjust);
+        private double adjust = 0.5;
+        private QRectF boundingRect = new QRectF(-20 - adjust, -22 - adjust,
+                                                 40 + adjust, 83 + adjust); 
+        public QRectF boundingRect() {            
+            return boundingRect;
         }
 
+        QPainterPath shape = new QPainterPath();
+        {
+            shape.addRect(-10, -20, 20, 40);
+        }
         public QPainterPath shape() {
-            QPainterPath path = new QPainterPath();
-            path.addRect(-10, -20, 20, 40);
-            return path;
+            return shape;
         }
 
+        QBrush brush = new QBrush(Qt.BrushStyle.SolidPattern);
+        QPainterPath tail = new QPainterPath(new QPointF(0, 20));
+        {
+            tail.cubicTo(-5, 22, -5, 22, 0, 25);
+            tail.cubicTo(5, 27, 5, 32, 0, 30);
+            tail.cubicTo(-5, 32, -5, 42, 0, 35);            
+        }
+        
+        @Override
         public void paint(QPainter painter, 
                           QStyleOptionGraphicsItem styleOptionGraphicsItem, 
                           QWidget widget) {
-            QBrush brush = new QBrush(Qt.BrushStyle.SolidPattern);
-
+            
             // Body
             painter.setBrush(color);
             painter.drawEllipse(-10, -20, 20, 40);
@@ -132,17 +143,15 @@ public class CollidingMice extends QWidget {
             painter.drawEllipse(1, -12, 16, 16);
 
             // Tail
-            QPainterPath path = new QPainterPath(new QPointF(0, 20));
-            path.cubicTo(-5, 22, -5, 22, 0, 25);
-            path.cubicTo(5, 27, 5, 32, 0, 30);
-            path.cubicTo(-5, 32, -5, 42, 0, 35);
             painter.setBrush(QBrush.NoBrush);
-            painter.drawPath(path);
+            painter.drawPath(tail);
         }
 
+        private QPolygonF polygon = new QPolygonF();
+        private QPointF origo = new QPointF(0, 0);
         public void move() {
-            // Don't move too far away
-            QLineF lineToCenter = new QLineF(new QPointF(0, 0), 
+            // Don't move too far away            
+            QLineF lineToCenter = new QLineF(origo, 
                                              mapFromScene(0, 0));
             if (lineToCenter.length() > 150) {
                 double angleToCenter = Math.acos(lineToCenter.dx() 
@@ -169,18 +178,17 @@ public class CollidingMice extends QWidget {
 
             // Try not to crash with any other mice
 
-            QPolygonF polygon = new QPolygonF();
+            polygon.clear();
             polygon.append(mapToScene(0, 0));
             polygon.append(mapToScene(-30, -50));
             polygon.append(mapToScene(30, -50));
 
             List<QGraphicsItemInterface> dangerMice = scene().items(polygon);
-
             for (QGraphicsItemInterface item : dangerMice) {
                 if (item == this)
                     continue;
 
-                QLineF lineToMouse = new QLineF(new QPointF(0, 0), 
+                QLineF lineToMouse = new QLineF(origo, 
                                                 mapFromItem(item, 0, 0));
                 double angleToMouse = Math.acos(lineToMouse.dx() 
                                                 / lineToMouse.length());

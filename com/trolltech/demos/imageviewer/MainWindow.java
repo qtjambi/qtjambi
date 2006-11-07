@@ -21,10 +21,12 @@ public class MainWindow extends QMainWindow {
 
     public MainWindow() {
         ui.setupUi(this);
-
+               
         patchPixmaps();
         setupTableView();
         setupView();
+        
+        readSettings();
     }
 
     public void on_dirView_activated(QModelIndex index) {
@@ -89,7 +91,7 @@ public class MainWindow extends QMainWindow {
     public void on_actionExit_triggered() {
         close();
     }
-
+   
     public void on_actionClose_triggered() {
         view.setImage(null);
     }
@@ -179,6 +181,26 @@ public class MainWindow extends QMainWindow {
         ui.labelMagenta.setPixmap(pixmapMagenta);
     }
 
+    public void closeEvent(QCloseEvent event) {
+        writeSettings();
+    }
+    
+    public void readSettings(){
+        QSettings settings = new QSettings("Trolltech", "ImageViewer Example");
+        resize((QSize)settings.value("size", new QSize(400, 400)));
+        move((QPoint)settings.value("pos", new QPoint(200, 200)));
+        restoreState((QByteArray)settings.value("state", null));
+        settings.sync();
+    }
+
+    public void writeSettings(){
+        QSettings settings = new QSettings("Trolltech", "ImageViewer Example");
+        settings.setValue("pos", pos());
+        settings.setValue("size", size());
+        settings.setValue("state", saveState());
+        settings.sync();
+    }
+    
     private Ui_MainWindow ui = new Ui_MainWindow();
     private QDirModel dirModel;
     private ImageTableModel imageModel;

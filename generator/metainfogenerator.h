@@ -64,6 +64,7 @@ private:
     void writeCodeBlock(QTextStream &s, const QString &code);
     void writeSignalsAndSlots(QTextStream &s, const QString &package);
     void writeRegisterSignalsAndSlots(QTextStream &s);
+    QStringList writePolymorphicHandler(QTextStream &s, const QString &package, const MetaJavaClassList &clss);
     bool shouldGenerate(const TypeEntry *entry) const;
     void buildSkipList();
 

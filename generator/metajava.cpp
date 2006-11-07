@@ -312,9 +312,119 @@ QString MetaJavaFunction::signature() const
     return s;
 }
 
-FunctionModificationList MetaJavaFunction::modifications(const MetaJavaClass *implementor) const {
-    Q_ASSERT(implementor);
+QString MetaJavaFunction::replacedDefaultExpression(const MetaJavaClass *cls, int key) const
+{
+    FunctionModificationList modifications = this->modifications(cls);
+    foreach (FunctionModification modification, modifications) {
+        QList<ArgumentModification> argument_modifications = modification.argument_mods;
+        foreach (ArgumentModification argument_modification, argument_modifications) {
+            if (argument_modification.index == key
+                && !argument_modification.replaced_default_expression.isEmpty()) {
+                return argument_modification.replaced_default_expression;                
+            }
+        }
+    }
 
+    return QString();
+}
+
+#include <QDebug>
+QString MetaJavaFunction::conversionRule(CodeSnip::Language language, int key) const
+{
+    FunctionModificationList modifications = this->modifications(declaringClass());
+    foreach (FunctionModification modification, modifications) {
+        if (modification.language == language) {
+            QList<ArgumentModification> argument_modifications = modification.argument_mods;
+            foreach (ArgumentModification argument_modification, argument_modifications) {
+                if (argument_modification.index == key) {
+                    if (!argument_modification.conversion_rule.isEmpty()) {
+                        return argument_modification.conversion_rule;
+                    }
+                }
+            }
+        }
+    }
+
+    return QString();
+}
+
+bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int key) const
+{
+    FunctionModificationList modifications = this->modifications(cls);
+    foreach (FunctionModification modification, modifications) {
+        QList<ArgumentModification> argument_modifications = modification.argument_mods;
+        foreach (ArgumentModification argument_modification, argument_modifications) {
+            if (argument_modification.index == key 
+                && argument_modification.disable_gc) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, CodeSnip::Language language, int key) const
+{
+    FunctionModificationList modifications = this->modifications(cls);
+    foreach (FunctionModification modification, modifications) {
+        if (modification.language == language) {
+            QList<ArgumentModification> argument_modifications = modification.argument_mods;
+            foreach (ArgumentModification argument_modification, argument_modifications) {
+                if (argument_modification.index == key 
+                    && argument_modification.disable_gc) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+bool MetaJavaFunction::isRemovedFromAllLanguages(const MetaJavaClass *cls) const
+{
+    FunctionModificationList modifications = this->modifications(cls);
+    foreach (FunctionModification modification, modifications) {
+        if (modification.isRemoveModifier() && !modification.isExclusive())
+            return true;       
+    }
+
+    return false;
+}
+
+bool MetaJavaFunction::isRemovedFrom(const MetaJavaClass *cls, CodeSnip::Language language) const
+{
+    FunctionModificationList modifications = this->modifications(cls);
+    foreach (FunctionModification modification, modifications) {
+        if (modification.isRemoveModifier()) {
+            if (!modification.isExclusive() || modification.language == language)
+                return true;       
+        }
+    }
+
+    return false;
+
+}
+
+QString MetaJavaFunction::typeReplaced(int key) const
+{
+    FunctionModificationList modifications = this->modifications(declaringClass());
+    foreach (FunctionModification modification, modifications) {
+        QList<ArgumentModification> argument_modifications = modification.argument_mods;
+        foreach (ArgumentModification argument_modification, argument_modifications) {
+            if (argument_modification.index == key 
+                && !argument_modification.modified_type.isEmpty()) {
+                return argument_modification.modified_type;
+            }
+        }
+    }
+
+    return QString();
+}
+
+QString MetaJavaFunction::minimalSignature() const 
+{
     QString minimalSignature = originalName() + "(";
     MetaJavaArgumentList arguments = this->arguments();
 
@@ -322,15 +432,9 @@ FunctionModificationList MetaJavaFunction::modifications(const MetaJavaClass *im
         MetaJavaType *t = arguments.at(i)->type();
 
         if (i > 0)
-            minimalSignature += ",";
+            minimalSignature += ",";       
 
-        if (t->isConstant())
-            minimalSignature += "const ";
-        minimalSignature += t->typeEntry()->name();
-        if (t->isReference())
-            minimalSignature += "&";
-        for (int j=0; j<t->indirections(); ++j)
-            minimalSignature += "*";
+        minimalSignature += t->minimalSignature();
     }
     minimalSignature += ")";
     if (isConstant())
@@ -338,32 +442,13 @@ FunctionModificationList MetaJavaFunction::modifications(const MetaJavaClass *im
 
     minimalSignature = QMetaObject::normalizedSignature(minimalSignature.toLocal8Bit().constData());
 
-    FunctionModificationList modifications =
-        implementor->typeEntry()->functionModifications(minimalSignature);
+    return minimalSignature;
+}
 
-    if (modifications.size() == 0) {
-        modifications = implementor->typeEntry()->functionModifications();
-
-        QString possible;
-        for (int i=0; i<modifications.size(); ++i) {
-            FunctionModification modification = modifications.at(i);
-            if (modification.signature.contains(name() + "(")) {
-                if (i > 0) possible += ", ";
-                possible += "'" + modification.signature + "'";
-            }
-        }
-
-        if (!possible.isEmpty()) {
-            QString s = QString("No modifications specified for '%1' in '%2'. Suggestions for "
-                                "misspelt signatures: %3")
-                                .arg(minimalSignature).arg(implementor->name()).arg(possible);
-            ReportHandler::debugSparse(s);
-        }
-
-        return FunctionModificationList();
-    } else {
-        return modifications;
-    }
+FunctionModificationList MetaJavaFunction::modifications(const MetaJavaClass *implementor) const 
+{
+    Q_ASSERT(implementor);
+    return implementor->typeEntry()->functionModifications(minimalSignature());
 }
 
 bool MetaJavaFunction::hasModifications(const MetaJavaClass *implementor) const
@@ -458,6 +543,24 @@ MetaJavaClass::~MetaJavaClass()
 }*/
 
 /*******************************************************************************
+ * Returns true if this class is a subclass of the given class
+ */
+bool MetaJavaClass::inheritsFrom(const MetaJavaClass *cls) const
+{
+    Q_ASSERT(cls != 0); 
+
+    const MetaJavaClass *clazz = this;
+    while (clazz != 0) {
+        if (clazz == cls)
+            return true;
+
+        clazz = clazz->baseClass();
+    }
+
+    return false;
+}
+
+/*******************************************************************************
  * Constructs an interface based on the functions and enums in this
  * class and returns it...
  */
@@ -503,7 +606,7 @@ MetaJavaClass *MetaJavaClass::extractInterface()
  */
 MetaJavaFunctionList MetaJavaClass::functionsInJava() const
 {
-    int default_flags = NormalFunctions | Visible;
+    int default_flags = NormalFunctions | Visible | NotRemovedFromJava;
 
     // Interfaces don't implement functions
     default_flags |= isInterface() ? 0 : ClassImplements;
@@ -537,7 +640,7 @@ MetaJavaFunctionList MetaJavaClass::functionsInJava() const
 MetaJavaFunctionList MetaJavaClass::functionsInShellClass() const
 {
     // Only functions and only protected and public functions
-    int default_flags = NormalFunctions | Visible | WasVisible;
+    int default_flags = NormalFunctions | Visible | WasVisible | NotRemovedFromShell;
 
     // All virtual functions
     MetaJavaFunctionList returned = queryFunctions(VirtualFunctions | default_flags);
@@ -556,14 +659,14 @@ MetaJavaFunctionList MetaJavaClass::functionsInShellClass() const
  */
 MetaJavaFunctionList MetaJavaClass::publicOverrideFunctions() const
 {
-    return queryFunctions(NormalFunctions | WasProtected | FinalInCppFunctions)
-           + queryFunctions(Signals | WasProtected | FinalInCppFunctions);
+    return queryFunctions(NormalFunctions | WasProtected | FinalInCppFunctions | NotRemovedFromJava)
+           + queryFunctions(Signals | WasProtected | FinalInCppFunctions | NotRemovedFromJava);
 }
 
 MetaJavaFunctionList MetaJavaClass::virtualOverrideFunctions() const
 {
-    return queryFunctions(NormalFunctions | NonEmptyFunctions | Visible | VirtualInCppFunctions) +
-           queryFunctions(Signals | NonEmptyFunctions | Visible | VirtualInCppFunctions);
+    return queryFunctions(NormalFunctions | NonEmptyFunctions | Visible | VirtualInCppFunctions | NotRemovedFromShell) +
+           queryFunctions(Signals | NonEmptyFunctions | Visible | VirtualInCppFunctions | NotRemovedFromShell);
 }
 
 void MetaJavaClass::setFunctions(const MetaJavaFunctionList &functions)
@@ -664,7 +767,6 @@ bool MetaJavaClass::hasFieldAccessors() const
 
 void MetaJavaClass::addFunction(MetaJavaFunction *function)
 {
-    Q_ASSERT(!hasFunctionNotRemoved(function));
     function->setOwnerClass(this);
 
     if (!function->isDestructor()) {
@@ -839,31 +941,19 @@ static MetaJavaFunctionList functions_equal(const MetaJavaFunctionList &l,
     return returned;
 }
 
-
-bool MetaJavaClass::hasFunctionNotRemoved(const MetaJavaFunction *f) const
-{
-    MetaJavaFunctionList lst = functions_equal(m_functions, f);
-    foreach (const MetaJavaFunction *f, lst) {
-        FunctionModificationList mods = f->modifications(this);
-        if (mods.count() == 0) {
-            return true;
-        } else {
-            foreach (FunctionModification mod, mods) {
-                if (!mod.isRemoveModifier())
-                    return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-
 MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
 {
     MetaJavaFunctionList functions;
 
     foreach (MetaJavaFunction *f, m_functions) {
+
+        if ((query & NotRemovedFromJava) && f->isRemovedFrom(f->declaringClass(), CodeSnip::JavaCode)) {
+            continue;
+        }
+
+        if ((query & NotRemovedFromShell) && f->isRemovedFrom(f->declaringClass(), CodeSnip::ShellCode)) {
+            continue;
+        }
 
         if ((query & Visible) && f->isPrivate()) {
             continue;
@@ -1299,6 +1389,31 @@ void MetaJavaClass::fixFunctions()
     setFunctions(funcs);
 }
 
+
+QString MetaJavaType::minimalSignature() const
+{
+    QString minimalSignature;
+    if (isConstant())
+        minimalSignature += "const ";
+    minimalSignature += typeEntry()->name();
+    if (hasInstantiations()) {
+        QList<MetaJavaType *> instantiations = this->instantiations();
+        minimalSignature += "<";
+        for (int i=0;i<instantiations.size();++i) {
+            if (i > 0)
+                minimalSignature += ",";
+            minimalSignature += instantiations.at(i)->minimalSignature();
+        }        
+        minimalSignature += ">";
+    }
+
+    if (isReference())
+        minimalSignature += "&";
+    for (int j=0; j<indirections(); ++j)
+        minimalSignature += "*";
+
+    return minimalSignature;
+}
 
 bool MetaJavaType::hasNativeId() const
 {

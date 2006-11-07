@@ -13,7 +13,6 @@
 
 package com.trolltech.launcher;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -70,11 +69,12 @@ public class Style extends QWindowsStyle {
     }
 
     @Override
-    public void drawComplexControl(QStyle.ComplexControl cc, QNativePointer opt, QPainter p,
+    public void drawComplexControl(QStyle.ComplexControl cc, QStyleOptionComplex opt, QPainter p,
             QWidget widget) {
+        
         switch (cc) {
         case CC_GroupBox:
-            drawGroupBox(QStyleOptionGroupBox.fromNativePointer(opt), p, widget);
+            drawGroupBox((QStyleOptionGroupBox) opt, p, widget);
             break;
         default:
             super.drawComplexControl(cc, opt, p, widget);
@@ -83,20 +83,20 @@ public class Style extends QWindowsStyle {
     }
 
     @Override
-    public void drawControl(QStyle.ControlElement ce, QNativePointer opt, QPainter p, QWidget widget) {
+    public void drawControl(QStyle.ControlElement ce, QStyleOption opt, QPainter p, QWidget widget) {        
     	switch (ce) {
         case CE_RadioButton:
-            drawRadioButton(QStyleOptionButton.fromNativePointer(opt), p);
+            drawRadioButton((QStyleOptionButton) opt, p);
             break;
         case CE_PushButton:
-            drawPushButton(QStyleOptionButton.fromNativePointer(opt), p);
+            drawPushButton((QStyleOptionButton) opt, p);
             break;
         case CE_ScrollBarSlider:
-            drawScrollBarSlider(QStyleOptionSlider.fromNativePointer(opt), p);
+            drawScrollBarSlider((QStyleOptionSlider)opt, p);
             break;
         case CE_ScrollBarAddLine :
         case CE_ScrollBarSubLine :
-            drawScrollBarLine(QStyleOptionSlider.fromNativePointer(opt), p);
+            drawScrollBarLine((QStyleOptionSlider)opt, p);
             break;
         default:
             super.drawControl(ce, opt, p, widget);
@@ -155,8 +155,7 @@ public class Style extends QWindowsStyle {
     }
 
     @Override
-    public int pixelMetric(QStyle.PixelMetric pm, QNativePointer option, QWidget widget) {
-        QStyleOption opt = QStyleOption.fromNativePointer(option);
+    public int pixelMetric(QStyle.PixelMetric pm, QStyleOption opt, QWidget widget) {
         switch (pm) {
         case PM_ExclusiveIndicatorWidth:
         case PM_ExclusiveIndicatorHeight:
@@ -164,7 +163,7 @@ public class Style extends QWindowsStyle {
         case PM_ScrollBarExtent:
             return 23;
         default:
-            return super.pixelMetric(pm, option, widget);
+            return super.pixelMetric(pm, opt, widget);
         }
     }
 

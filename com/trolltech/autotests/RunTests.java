@@ -16,10 +16,8 @@ package com.trolltech.autotests;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.lang.reflect.*;
-import java.lang.annotation.*;
 
 import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
 
 public class RunTests {
     public static void main(String[] args) throws Exception {

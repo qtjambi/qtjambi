@@ -30,7 +30,9 @@ public:
 
     QString translateType(const MetaJavaType *java_type, Option option = NoOption);
 
-    void writeArgument(QTextStream &s, const MetaJavaArgument *java_argument,
+    void writeArgument(QTextStream &s, 
+                       const MetaJavaFunction *java_function,
+                       const MetaJavaArgument *java_argument,
                        uint options = 0);
     void writeEnum(QTextStream &s, const MetaJavaEnum *java_enum);
     void writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_enum);
@@ -48,12 +50,10 @@ public:
     void writeFunctionAttributes(QTextStream &s, const MetaJavaFunction *java_function,
                                  uint included_attributes = 0, uint excluded_attributes = 0,
                                  uint options = 0);
-    void writeConstructorContents(QTextStream &s, const MetaJavaFunction *java_function,
-                                  const QHash<int, bool> &);
+    void writeConstructorContents(QTextStream &s, const MetaJavaFunction *java_function);
     void writeFunctionArguments(QTextStream &s, const MetaJavaFunction *java_function,
         int count = -1, uint options = 0);
-    void writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function,
-                                      const QHash<int, bool> &);
+    void writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function);
     void writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg,
                                     const QString &indent);
     void writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function);
@@ -61,14 +61,14 @@ public:
     bool hasDefaultConstructor(const MetaJavaType *type);
 
     void retrieveModifications(const MetaJavaFunction *f, const MetaJavaClass *java_class,
-        QHash<int, bool> *disabled_params, uint *exclude_attributes, uint *include_attributes) const;
+         uint *exclude_attributes, uint *include_attributes) const;
     QString functionSignature(const MetaJavaFunction *java_function,
                               uint included_attributes,
                               uint excluded_attributes,
                               Option option = NoOption,
                               int arg_count = -1);
-    void setupForFunction(const MetaJavaFunction *java_function, uint *included_attributes, uint *excluded_attributes,
-        QHash<int, bool> *disabled_params) const;
+    void setupForFunction(const MetaJavaFunction *java_function, 
+       uint *included_attributes, uint *excluded_attributes) const;
 
     virtual QString subDirectoryForClass(const MetaJavaClass *java_class) const
     { return subDirectoryForPackage(java_class->package()); }

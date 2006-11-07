@@ -1,0 +1,51 @@
+<typesystem package="com.trolltech.qt.network" default-superclass="com.trolltech.qt.QtObject">
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
+  </inject-code>
+  
+  <enum-type name="QAbstractSocket::NetworkLayerProtocol" />
+  <enum-type name="QAbstractSocket::SocketError" />
+  <enum-type name="QAbstractSocket::SocketState" />
+  <enum-type name="QAbstractSocket::SocketType" />
+  <enum-type name="QFtp::Command" />
+  <enum-type name="QFtp::Error" />
+  <enum-type name="QFtp::State" />
+  <enum-type name="QFtp::TransferMode" />
+  <enum-type name="QFtp::TransferType" />
+  <enum-type name="QHostAddress::SpecialAddress" />
+  <enum-type name="QHttp::Error" />
+  <enum-type name="QHttp::State" />
+  <enum-type name="QNetworkInterface::InterfaceFlag" flags="QNetworkInterface::InterfaceFlags" />
+  <enum-type name="QNetworkProxy::ProxyType" />
+  <enum-type name="QUdpSocket::BindFlag" flags="QUdpSocket::BindMode" />
+  <enum-type name="QUrlInfo::PermissionSpec" />
+  <enum-type name="QHostInfo::HostInfoError" />
+   
+  <object-type name="QAbstractSocket" />
+  <object-type name="QFtp" />
+  <object-type name="QHttp" />
+  <object-type name="QTcpServer">
+    <modify-function signature="listen(QHostAddress,unsigned short)">
+        <modify-argument index="1">
+            <replace-default-expression with="new com.trolltech.qt.network.QHostAddress(com.trolltech.qt.network.QHostAddress.SpecialAddress.Any)" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
+  <object-type name="QTcpSocket" />
+  <object-type name="QUdpSocket" />  
+  <object-type name="QHttpHeader" />
+    
+  <value-type name="QHostAddress" />  
+  <value-type name="QHostInfo" />
+  <value-type name="QHttpRequestHeader" />
+  <value-type name="QHttpResponseHeader" />
+  <value-type name="QNetworkAddressEntry" />
+  <value-type name="QNetworkInterface" />
+  <value-type name="QNetworkProxy" />
+  <value-type name="QUrlInfo" />
+  <value-type name="QIPv6Address">
+    <modify-function signature="operator[](int)const">
+        <remove/>
+    </modify-function>
+  </value-type>
+</typesystem>

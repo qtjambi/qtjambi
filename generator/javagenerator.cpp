@@ -116,10 +116,17 @@ QString JavaGenerator::translateType(const MetaJavaType *java_type, Option optio
     return s;
 }
 
-void JavaGenerator::writeArgument(QTextStream &s, const MetaJavaArgument *java_argument,
+void JavaGenerator::writeArgument(QTextStream &s,
+                                  const MetaJavaFunction *java_function,
+                                  const MetaJavaArgument *java_argument,
                                   uint options)
 {
-    s << translateType(java_argument->type(), (Option) options);
+    QString modified_type = java_function->typeReplaced(java_argument->argumentIndex() + 1);
+
+    if (modified_type.isEmpty())
+        s << translateType(java_argument->type(), (Option) options);
+    else
+        s << modified_type;
 
     if ((options & SkipName) == 0)
         s << " " << java_argument->argumentName();
@@ -285,7 +292,7 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
             s << ", ";
 
         if (!arg->type()->hasNativeId())
-            writeArgument(s, arg, EnumAsInts);
+            writeArgument(s, java_function, arg, EnumAsInts);
         else
             s << "long " << arg->argumentName();
     }
@@ -312,19 +319,18 @@ void JavaGenerator::writeDisableGCForContainer(QTextStream &s, MetaJavaArgument 
       << indent << "    if (i != null) i.disableGarbageCollection();" << endl;
 }
 
-void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function,
-                                                 const QHash<int, bool> &disabled_gc_arguments)
+void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function)
 {
     MetaJavaArgumentList arguments = java_function->arguments();
 
-    if (disabled_gc_arguments.value(FunctionModification::DisableGarbageCollectionForThis, false) && !java_function->isConstructor())
+    if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, -1) && !java_function->isConstructor())
         s << "        this.disableGarbageCollection();" << endl;
 
     for (int i=0; i<arguments.count(); ++i) {
         MetaJavaArgument *arg = arguments.at(i);
         MetaJavaType *type = arg->type();
 
-        if (disabled_gc_arguments.value(i + 1, false)) {
+        if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, i+1)) {
             s << "        "
               << "if (" << arg->argumentName() << " != null) {" << endl;
 
@@ -373,7 +379,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     MetaJavaType *return_type = java_function->type();
 
     if (return_type) {
-        if (disabled_gc_arguments.value(FunctionModification::DisableGarbageCollectionForReturn, false))
+        if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, 0))
             s << translateType(return_type) << " __qt_return_value = ";
         else
             s << "return ";
@@ -417,14 +423,14 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     if (return_type && (return_type->isJavaEnum() || return_type->isJavaFlags()))
         s << ")";
 
-    if (return_type && disabled_gc_arguments.value(FunctionModification::DisableGarbageCollectionForReturn, false)) {
+    if (return_type && java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, 0)) {
         s << ";" << endl
           << "        if (__qt_return_value != null) __qt_return_value.disableGarbageCollection();" << endl
           << "        return __qt_return_value";
     }
     s << ";" << endl;
 
-    if (disabled_gc_arguments.value(FunctionModification::DisableGarbageCollectionForThis, false) && java_function->isConstructor())
+    if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, -1) && java_function->isConstructor())
         s << "        this.disableGarbageCollection();" << endl;
 }
 
@@ -499,17 +505,13 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
 }
 
 void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
-                                          const MetaJavaClass *java_class,
-                                          QHash<int, bool> *disabled_params,
+                                          const MetaJavaClass *java_class,                                          
                                           uint *exclude_attributes,
                                           uint *include_attributes) const
 {
     FunctionModificationList mods = java_function->modifications(java_class);
     foreach (FunctionModification mod, mods) {
         if (mod.language == CodeSnip::JavaCode) {
-            if (mod.isDisableGCModifier())
-                disabled_params->unite(mod.disable_gc_argument_indexes);
-
             if (mod.isAccessModifier()) {
                 *exclude_attributes |= MetaJavaAttributes::Public
                                     | MetaJavaAttributes::Protected
@@ -556,8 +558,7 @@ QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
 
 void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
                                      uint *included_attributes,
-                                     uint *excluded_attributes,
-                                     QHash<int, bool> *disabled_params) const
+                                     uint *excluded_attributes) const
 {
     *excluded_attributes |= java_function->ownerClass()->isInterface() || java_function->isConstructor()
                             ? MetaJavaAttributes::Native | MetaJavaAttributes::Final
@@ -568,7 +569,7 @@ void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
         *excluded_attributes |= MetaJavaAttributes::Native;
 
     const MetaJavaClass *java_class = java_function->ownerClass();
-    retrieveModifications(java_function, java_class, disabled_params, excluded_attributes, included_attributes);
+    retrieveModifications(java_function, java_class, excluded_attributes, included_attributes);
 }
 
 void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_function,
@@ -578,8 +579,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
         return ;
     QString functionName = java_function->name();
-    QHash<int, bool> disabled_params;
-    setupForFunction(java_function, &included_attributes, &excluded_attributes, &disabled_params);
+    setupForFunction(java_function, &included_attributes, &excluded_attributes);
 
     if (!java_function->ownerClass()->isInterface()) {
         writeEnumOverload(s, java_function, included_attributes, excluded_attributes);
@@ -601,13 +601,13 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     s << functionSignature(java_function, included_attributes, excluded_attributes);
 
     if (java_function->isConstructor()) {
-        writeConstructorContents(s, java_function, disabled_params);
+        writeConstructorContents(s, java_function);
     } else if (java_function->needsCallThrough()) {
         if (java_function->isAbstract()) {
             s << ";" << endl;
         } else {
             s << " {" << endl;
-            writeJavaCallThroughContents(s, java_function, disabled_params);
+            writeJavaCallThroughContents(s, java_function);
             s << "    }" << endl;
         }
         writePrivateNativeFunction(s, java_function);
@@ -764,16 +764,21 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
             if (j < used_arguments) {
                 s << arguments.at(j)->argumentName();
             } else {
-
-                MetaJavaType *arg_type = arguments.at(j)->type();
-                if (arg_type->isNativePointer()) {
-                    s << "(com.trolltech.qt.QNativePointer)";
+                MetaJavaType *arg_type = 0;
+                QString modified_type = java_function->typeReplaced(arguments.at(j)->argumentIndex()+1);
+                if (modified_type.isEmpty()) {
+                    arg_type = arguments.at(j)->type();
+                    if (arg_type->isNativePointer()) {
+                        s << "(com.trolltech.qt.QNativePointer)";
+                    } else {
+                        const TypeEntry *type = arguments.at(j)->type()->typeEntry();
+                        if (type->designatedInterface())
+                            type = type->designatedInterface();
+                        if (!type->isEnum() && !type->isFlags())
+                            s << "(" << type->qualifiedJavaName() << ")";
+                    }
                 } else {
-                    const TypeEntry *type = arguments.at(j)->type()->typeEntry();
-                    if (type->designatedInterface())
-                        type = type->designatedInterface();
-                    if (!type->isEnum() && !type->isFlags())
-                        s << "(" << type->qualifiedJavaName() << ")";
+                    s << "(" << modified_type << ")";
                 }
 
                 QString defaultExpr = arguments.at(j)->defaultValueExpression();
@@ -793,7 +798,7 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
                     defaultExpr = defaultExpr.replace(someName + ".", replacement);
                 }
 
-                if (arg_type->isFlags()) {
+                if (arg_type != 0 && arg_type->isFlags()) {
                     s << "new " << arg_type->fullName() << "(" << defaultExpr << ")";
                 } else {
                     s << defaultExpr;
@@ -871,7 +876,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         for (int i=0; i<interfaces.size(); ++i) {
             MetaJavaClass *iface = interfaces.at(i);
             if (i != 0)
-                s << endl << "            ";
+                s << "," << endl << "            ";
             s << iface->package() << "." << iface->name();
         }
     }
@@ -893,10 +898,9 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
         uint exclude_attributes = MetaJavaAttributes::Native | MetaJavaAttributes::Abstract;
         uint include_attributes = 0;
-        MetaJavaFunctionList functions = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions | MetaJavaClass::NonEmptyFunctions);
+        MetaJavaFunctionList functions = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions | MetaJavaClass::NonEmptyFunctions | MetaJavaClass::NotRemovedFromJava);
         foreach (const MetaJavaFunction *java_function, functions) {
-            QHash<int, bool> disabled_params;
-            retrieveModifications(java_function, java_class, &disabled_params, &exclude_attributes, &include_attributes);
+            retrieveModifications(java_function, java_class, &exclude_attributes, &include_attributes);
 
             s << "        ";
             writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
@@ -905,7 +909,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             s << java_function->name() << "(";
             writeFunctionArguments(s, java_function, java_function->arguments().count());
             s << ") {" << endl;
-            writeJavaCallThroughContents(s, java_function, disabled_params);
+            writeJavaCallThroughContents(s, java_function);
             s << "        }" << endl;
         }
         s  << "    }" << endl << endl;
@@ -920,7 +924,8 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // Signals
     MetaJavaFunctionList signal_funcs = java_class->queryFunctions(MetaJavaClass::Signals
                                                                    | MetaJavaClass::ClassImplements
-                                                                   | MetaJavaClass::Visible);
+                                                                   | MetaJavaClass::Visible
+                                                                   | MetaJavaClass::NotRemovedFromJava);
     for (int i=0; i<signal_funcs.size(); ++i)
         writeSignal(s, signal_funcs.at(i));
 
@@ -935,7 +940,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
     // Just the private functions for abstract functions implemeneted in superclasses
     if (!java_class->isInterface() && java_class->isAbstract()) {
-        java_funcs = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions);
+        java_funcs = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions | MetaJavaClass::NotRemovedFromJava);
         foreach (MetaJavaFunction *java_function, java_funcs) {
             if (java_function->implementingClass() != java_class) {
                 writePrivateNativeFunction(s, java_function);
@@ -1052,19 +1057,33 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
     }
 
     if ((options & SkipReturnType) == 0) {
-        s << translateType(java_function->type(), (Option) options);
+        QString modified_type = java_function->typeReplaced(0);
+        if (modified_type.isEmpty())
+            s << translateType(java_function->type(), (Option) options);
+        else
+            s << modified_type;
         s << " ";
     }
 }
 
-void JavaGenerator::writeConstructorContents(QTextStream &s, const MetaJavaFunction *java_function,
-                                             const QHash<int, bool> &disabled_gc_arguments)
+void JavaGenerator::writeConstructorContents(QTextStream &s, const MetaJavaFunction *java_function)
 {
     // Write constructor
     s << " {" << endl
       << "        super((QPrivateConstructor)null);" << endl;
 
-    writeJavaCallThroughContents(s, java_function, disabled_gc_arguments);
+    writeJavaCallThroughContents(s, java_function);
+
+    // Write out expense checks if present...
+    const MetaJavaClass *java_class = java_function->implementingClass();
+    const ComplexTypeEntry *te = java_class->typeEntry();
+    if (te->expensePolicy().isValid()) {
+        s << endl;
+        const ExpensePolicy &ep = te->expensePolicy();
+        s << "        com.trolltech.qt.QtJambiInternal.countExpense(" << java_class->fullName()
+          << ".class, " << ep.cost << ", " << ep.limit << ");" << endl;
+    }
+
     s << "    }" << endl;
 
     // Write native constructor
@@ -1082,7 +1101,7 @@ void JavaGenerator::writeFunctionArguments(QTextStream &s, const MetaJavaFunctio
     for (int i=0; i<argument_count; ++i) {
         if (i != 0)
             s << ", ";
-        writeArgument(s, arguments.at(i), options);
+        writeArgument(s, java_function, arguments.at(i), options);
     }
 
 }

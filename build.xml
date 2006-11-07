@@ -546,21 +546,7 @@
 
     <target name="compile.autotests" depends="generator.autotests">
         <javac srcdir="${sourceDir}" destdir="${outputDir}" 
-               includes="
-               com/trolltech/autotests/MyQObject.java,
-               com/trolltech/autotests/QApplicationTest.java,
-               com/trolltech/autotests/RunTests.java,
-               com/trolltech/autotests/TestClassFunctionality.java,
-               com/trolltech/autotests/TestConnections.java,
-               com/trolltech/autotests/TestContainers.java,
-               com/trolltech/autotests/TestFileEngine.java,
-               com/trolltech/autotests/TestNativePointer.java,
-               com/trolltech/autotests/TestQFlags.java,
-               com/trolltech/autotests/TestQObject.java,
-               com/trolltech/autotests/TestQVariant.java,
-               com/trolltech/autotests/TestSignalMapper.java,
-               com/trolltech/autotests/TestThreads.java,
-               com/trolltech/autotests/VirtualFunctions.java" />
+               includes="com/trolltech/autotests/**.java" />
     </target>
 
     <target name="deploy.clean" depends="init">
@@ -569,11 +555,15 @@
     </target>
 
     <target name="deploy.jar" description="JARs the Task" depends="init">
-        <jar destfile="${deployDir}/qtjambi.jar" basedir="${outputDir}">
+        <jar destfile="${deployDir}/qtjambi.jar">
             <manifest>
                 <attribute name="Built-By" value="Trolltech ASA - ${TODAY}"/>
                 <attribute name="Main-Class" value="com.trolltech.launcher.Launcher"/>
             </manifest>
+            <fileset dir="${outputDir}" />
+            <fileset dir="${sourceDir}">
+                <include name="com/trolltech/**" />
+            </fileset>
         </jar>
     </target>
 
@@ -611,6 +601,7 @@
             <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/>
             <classpath>
                 <pathelement location="${outputDir}" />
+                <pathelement location="${sourceDir}" />
             </classpath>
             <formatter type="xml"/>
             <batchtest fork="true" todir="${reportDir}">

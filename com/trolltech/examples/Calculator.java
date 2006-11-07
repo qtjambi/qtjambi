@@ -134,15 +134,6 @@ public class Calculator extends QMainWindow {
                 return quotient;
             }
         });
-        infixFunctions.add(new Function("+") {
-            public double result(double[] args) {
-                double sum = 0;
-                for (int i = 0; i < args.length; i++) {
-                    sum += args[i];
-                }
-                return sum;
-            }
-        });
 
         infixFunctions.add(new Function("-") {
             public double result(double[] args) {
@@ -151,6 +142,16 @@ public class Calculator extends QMainWindow {
                     difference -= args[i];
                 }
                 return difference;
+            }
+        });
+        
+        infixFunctions.add(new Function("+") {
+            public double result(double[] args) {
+                double sum = 0;
+                for (int i = 0; i < args.length; i++) {
+                    sum += args[i];
+                }
+                return sum;
             }
         });
     }
@@ -307,7 +308,7 @@ public class Calculator extends QMainWindow {
             delimiter += function.name;
 
         }
-        StringTokenizer tokenizer = new StringTokenizer(expression, delimiter, true);
+        StringTokenizer tokenizer = new StringTokenizer(expression.trim(), delimiter, true);
 
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
@@ -325,7 +326,8 @@ public class Calculator extends QMainWindow {
                     if (stack.peek() == null) {
                         throw new ParseException("Missing left side parenthesis");
                     }
-                    stack.peek().add(tmp[i]);
+                    if(!tmp[i].equals(""))
+                        stack.peek().add(tmp[i]);
                 }
             }
         }

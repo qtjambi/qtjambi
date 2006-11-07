@@ -266,13 +266,13 @@ public class ItemviewChart extends QMainWindow {
 
         QRegion itemRegion(final QModelIndex index) {
             if (!index.isValid())
-                return new QRegion();
+                return null;
 
             if (index.column() != 1)
-                return new QRegion();
+                return null;
 
             if (toDouble(model().data(index)) <= 0.0)
-                return new QRegion();
+                return null;
 
             double startAngle = 0.0;
             for (int row = 0; row < model().rowCount(rootIndex()); ++row) {
@@ -295,7 +295,7 @@ public class ItemviewChart extends QMainWindow {
                 }
             }
 
-            return new QRegion();
+            return null;
         }
 
         protected int horizontalOffset() {
@@ -478,7 +478,7 @@ public class ItemviewChart extends QMainWindow {
                     QModelIndex index = model().index(row, column, rootIndex());
                     QRegion region = itemRegion(index);
 
-                    if (!region.intersect(new QRegion(contentsRect)).isEmpty())
+                    if (region != null && region.intersects(contentsRect))
                         indexes.add(index);
                 }
             }

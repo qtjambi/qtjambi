@@ -145,6 +145,56 @@ static bool function_less_than(const MetaJavaFunction *f1, const MetaJavaFunctio
     return s1 < s2;
 }
 
+void MetaJavaBuilder::checkFunctionModifications()
+{
+    TypeDatabase *types = TypeDatabase::instance();
+    TypeEntryHash entryHash = types->entries();
+    QList<TypeEntry *> entries = entryHash.values();
+    foreach (TypeEntry *entry, entries) {
+        if (entry == 0)
+            continue;
+        if (!entry->isComplex() || entry->codeGeneration() == TypeEntry::GenerateNothing) 
+            continue;
+        
+        ComplexTypeEntry *centry = static_cast<ComplexTypeEntry *>(entry);
+        FunctionModificationList modifications = centry->functionModifications();
+
+        foreach (FunctionModification modification, modifications) {
+            QString signature = modification.signature;
+            
+            QString name = signature.trimmed();
+            name = name.mid(0, signature.indexOf("("));
+
+            MetaJavaClass *clazz = m_java_classes.findClass(centry->qualifiedCppName());
+            if (clazz == 0)
+                continue;
+
+            MetaJavaFunctionList functions = clazz->functions();
+            bool found = false;
+            QStringList possibleSignatures;
+            foreach (MetaJavaFunction *function, functions) {
+                if (function->minimalSignature() == signature) {
+                    found = true; 
+                    break;
+                }
+
+                if (function->originalName() == name) 
+                    possibleSignatures.append(function->minimalSignature());
+            }
+
+            if (!found) {
+                QString warning 
+                    = QString("signature '%1' for function modification in '%2' not found. Possible candidates: %3")
+                        .arg(signature)
+                        .arg(clazz->qualifiedCppName())
+                        .arg(possibleSignatures.join(", "));
+
+                ReportHandler::warning(warning);
+            }
+        }
+    }
+}
+
 bool MetaJavaBuilder::build()
 {
     Q_ASSERT(!m_file_name.isEmpty());
@@ -265,6 +315,7 @@ bool MetaJavaBuilder::build()
 
     figureOutEnumValues();
     figureOutDefaultEnumArguments();
+    checkFunctionModifications();
 
     dumpLog();
 
@@ -391,14 +442,10 @@ int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
             MetaJavaEnumValue *ev = 0;
 
             if (java_enum && (ev = java_enum->values().find(s))) {
-                if (!ev->isValueSet())
-                    qDebug() << "value is not set..." << s << ev->name();
                 v = ev->value();
                 matched = true;
 
             } else if (java_enum && (ev = java_enum->enclosingClass()->findEnumValue(s, java_enum))) {
-                if (!ev->isValueSet())
-                    qDebug() << "value is not set... (take two)" << s << ev->name();
                 v = ev->value();
                 matched = true;
 
@@ -789,7 +836,6 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
 
             if (!java_function->isDestructor()
                 && !java_function->isInvalid()
-                && !java_class->hasFunctionNotRemoved(java_function)
                 && (!java_function->isConstructor() || !java_function->isPrivate())) {
 
                 if (java_class->typeEntry()->designatedInterface() && !java_function->isPublic()
@@ -799,6 +845,11 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
                     ReportHandler::warning(warn);
 
                     java_function->setVisibility(MetaJavaClass::Public);
+                }
+
+                if (!java_function->isFinalInJava() 
+                    && java_function->isRemovedFrom(java_class, CodeSnip::JavaCode)) {
+                    *java_function += MetaJavaAttributes::FinalInCpp;
                 }
 
                 java_class->addFunction(java_function);
@@ -925,6 +976,7 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
         m_rejected_functions.insert(class_name + "::" + function_name, GenerationDisabled);
         return 0;
     }
+
 
     Q_ASSERT(function_item->functionType() == CodeModel::Normal
              || function_item->functionType() == CodeModel::Signal
@@ -1070,10 +1122,9 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
     }
 
     // If we where not able to translate the default argument make it
-    // reset all default arguments befor this one too.
+    // reset all default arguments before this one too.
     for (int i=0; i<first_default_argument; ++i)
         java_arguments[i]->setDefaultValueExpression(QString());
-
 
     if (ReportHandler::debugLevel() == ReportHandler::FullDebug)
         foreach(MetaJavaArgument *arg, java_arguments)
@@ -1321,13 +1372,10 @@ QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaT
 {
     QString function_name = fnc->name();
     QString class_name = implementing_class->name();
-    FunctionModificationList mods = fnc->modifications(implementing_class);
-    foreach (const FunctionModification &mod, mods) {
-        if (mod.isReplaceExpression()) {
-            if (mod.renamed_default_expressions.contains(argument_index))
-                return mod.renamed_default_expressions.value(argument_index);
-        }
-    }
+
+    QString replaced_expression = fnc->replacedDefaultExpression(implementing_class, argument_index + 1);
+    if (!replaced_expression.isEmpty())
+        return replaced_expression;
 
     QString expr = item->defaultValueExpression();
     if (type->isPrimitive()) {
@@ -1501,7 +1549,7 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
         // template instantiation is the class that implements the function..
         f->setImplementingClass(subclass);
 
-        if (subclass->hasFunctionNotRemoved(f) || f->isConstructor()) {
+        if (f->isRemovedFromAllLanguages(subclass) || f->isConstructor()) {
             delete f;
             continue;
         }

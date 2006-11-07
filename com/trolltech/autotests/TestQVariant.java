@@ -57,7 +57,7 @@ public class TestQVariant extends QApplicationTest {
 
     @Test
     public void run_QVariantByteArray() {
-        Object variant = "this is my string";
+        Object variant = new QByteArray("this is my string");
         String expectedString = "this is my string";
         double expectedDouble = 0.0;
         QByteArray expectedByteArray = new QByteArray("this is my string");
@@ -78,7 +78,7 @@ public class TestQVariant extends QApplicationTest {
         List<Object> expectedList = new ArrayList<Object>();
         Map<String, Object> expectedMap = new HashMap<String, Object>();
 
-        testQVariant("QByteArray", variant, expectedDouble, false, expectedString, true, expectedByteArray, true, expectedInt, false, expectedBool, false, expectedBitArray,
+        testQVariant("QByteArray", variant, expectedDouble, true, expectedString, true, expectedByteArray, true, expectedInt, true, expectedBool, false, expectedBitArray,
                 false, expectedChar, false, expectedDate, false, expectedTime, false, expectedDateTime, false, expectedPoint, false, expectedPointF, false, expectedRect, false, expectedRectF, false,
                 expectedRegExp, false, expectedSize, false, expectedSizeF, false, expectedList, false, expectedMap, false);
     }
@@ -86,7 +86,7 @@ public class TestQVariant extends QApplicationTest {
     @Test
     public void run_QVariantObject() {
         Object variant = new QObject();
-        String expectedString = variant.toString();
+        String expectedString = "";
         double expectedDouble = 0.0;
         QByteArray expectedByteArray = new QByteArray("");
         int expectedInt = 0;
@@ -143,7 +143,7 @@ public class TestQVariant extends QApplicationTest {
     public void run_QVariantByteArrayDouble() {
         Object variant = new QByteArray("456.789");;
         String expectedString = "456.789";
-        double expectedDouble = 0.0;
+        double expectedDouble = 456.789;
         QByteArray expectedByteArray = new QByteArray("456.789");
         int expectedInt = 0;
         boolean expectedBool = false;
@@ -162,7 +162,7 @@ public class TestQVariant extends QApplicationTest {
         List<Object> expectedList = new ArrayList<Object>();
         Map<String, Object> expectedMap = new HashMap<String, Object>();
 
-        testQVariant("Byte array double", variant, expectedDouble, false, expectedString, true, expectedByteArray, true, expectedInt, false, expectedBool, false,
+        testQVariant("Byte array double", variant, expectedDouble, true, expectedString, true, expectedByteArray, true, expectedInt, true, expectedBool, false,
                 expectedBitArray, false, expectedChar, false, expectedDate, false, expectedTime, false, expectedDateTime, false, expectedPoint, false, expectedPointF, false, expectedRect, false,
                 expectedRectF, false, expectedRegExp, false, expectedSize, false, expectedSizeF, false, expectedList, false, expectedMap, false);
     }
@@ -178,7 +178,7 @@ public class TestQVariant extends QApplicationTest {
         QBitArray expectedBitArray = new QBitArray();
         char expectedChar = 0;
         QDate expectedDate = new QDate();
-        QTime expectedTime = new QTime(0, 0);
+        QTime expectedTime = new QTime();
         QDateTime expectedDateTime = new QDateTime(expectedDate, expectedTime);
         QPoint expectedPoint = new QPoint();
         QPointF expectedPointF = new QPointF();
@@ -406,10 +406,15 @@ public class TestQVariant extends QApplicationTest {
 
     @Test
     public void run_primitives() {
-        DataPrimitive[] data = { new DataPrimitive(new Long(3), "currentQInt64"), new DataPrimitive(new Long(4), "currentQUInt64"), new DataPrimitive(new Integer(5), "currentQInt32"),
-                new DataPrimitive(new Integer(6), "currentQUInt32"), new DataPrimitive(new Character((char) 7), "currentQInt16"), new DataPrimitive(new Character((char) 8), "currentQUInt16"),
-                new DataPrimitive(new Byte((byte) 9), "currentQInt8"), new DataPrimitive(new Byte((byte) 10), "currentQUInt8"), new DataPrimitive(new Float((float) 11), "currentFloat"),
-                new DataPrimitive(new Double(12), "currentDouble") };
+        DataPrimitive[] data = { new DataPrimitive(new Long(3), "currentQInt64"),
+                new DataPrimitive(new Long(4), "currentQUInt64"), new DataPrimitive(new Integer(5), "currentQInt32"),
+                new DataPrimitive(new Integer(6), "currentQUInt32"),
+                new DataPrimitive(new Character((char) 7), "currentQInt16"),
+                new DataPrimitive(new Character((char) 8), "currentQUInt16"),
+                new DataPrimitive(new Byte((byte) 9), "currentQInt8"),
+                new DataPrimitive(new Byte((byte) 10), "currentQUInt8"),
+                new DataPrimitive(new Float((float) 11), "currentFloat"),
+                new DataPrimitive(new Double((double)12), "currentDouble") };
 
         for (int i = 0; i < data.length; i++) {
             Object value = data[i].value;
@@ -455,6 +460,7 @@ public class TestQVariant extends QApplicationTest {
 
         char the_short = (char) ++value;
         v.pushThrough(the_short);
+        
         assertEquals(v.currentQInt16(), the_short);
 
         char the_ushort = (char) ++value;

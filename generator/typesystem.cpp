@@ -39,32 +39,39 @@ struct StackElement
         TypeEntryMask        = 0xff,
 
         // Simple tags (0x100, 0x200, ... , 0xf00)
-        ExtraIncludes           = 0x100,
-        Include                 = 0x200,
-        ModifyFunction          = 0x300,
-        ModifyField             = 0x400,
-        Root                    = 0x500,
-        CustomMetaConstructor   = 0x600,
-        CustomMetaDestructor    = 0x700,
-        ArgumentMap             = 0x800,
-        SuppressedWarning       = 0x900,
-        Rejection               = 0xa00,
-        LoadTypesystem          = 0xb00,
-        RejectEnumValue         = 0xc00,
-        SimpleMask              = 0xf00,
+        ExtraIncludes               = 0x100,
+        Include                     = 0x200,
+        ModifyFunction              = 0x300,
+        ModifyField                 = 0x400,
+        Root                        = 0x500,
+        CustomMetaConstructor       = 0x600,
+        CustomMetaDestructor        = 0x700,
+        ArgumentMap                 = 0x800,
+        SuppressedWarning           = 0x900,
+        Rejection                   = 0xa00,
+        LoadTypesystem              = 0xb00,
+        RejectEnumValue             = 0xc00,
+        SimpleMask                  = 0xf00,
 
         // Code snip tags (0x1000, 0x2000, ... , 0xf000)
         InjectCode =           0x1000,
         InjectCodeInFunction = 0x2000,
         CodeSnipMask =         0xf000,
 
-        // Function modifier tags (0x10000, 0x20000, ... , 0xf0000)
+        // Function modifier tags (0x010000, 0x020000, ... , 0xf00000)
         Access                   = 0x010000,
         Removal                  = 0x020000,
         Rename                   = 0x040000,
-        DisableGC                = 0x080000,
-        ReplaceDefaultExpression = 0x100000,
-        FunctionModifiers        = 0xff0000
+        ModifyArgument           = 0x080000,
+        FunctionModifiers        = 0xff0000,
+
+        // Argument modifier tags (0x01000000 ... 0xf0000000)
+        ConversionRule           = 0x01000000,
+        ReplaceType              = 0x02000000,
+        ReplaceDefaultExpression = 0x04000000,
+        RemoveArgument           = 0x08000000,    
+        DisableGC                = 0x10000000,
+        ArgumentModifiers        = 0xff000000        
     };
 
     StackElement() : entry(0), type(None) { }
@@ -196,6 +203,9 @@ bool Handler::endElement(const QString &, const QString &, const QString &)
     case StackElement::EnumTypeEntry:
         m_current_enum = 0;
         break;
+    case StackElement::ConversionRule:
+        m_function_mods.last().argument_mods.last().conversion_rule = m_current_data;
+        break;
     default:
         break;
     }
@@ -231,7 +241,8 @@ bool Handler::characters(const QString &ch)
     StackElement &element = m_stack.top();
     if (element.type & StackElement::CodeSnipMask
         || element.type & StackElement::CustomMetaConstructor
-        || element.type & StackElement::CustomMetaDestructor)
+        || element.type & StackElement::CustomMetaDestructor
+        || element.type & StackElement::ConversionRule)
         m_current_data += ch;
     return true;
 }
@@ -269,6 +280,10 @@ bool Handler::startElement(const QString &, const QString &n,
         tagNames["disable-gc"] = StackElement::DisableGC;
         tagNames["replace-default-expression"] = StackElement::ReplaceDefaultExpression;
         tagNames["reject-enum-value"] = StackElement::RejectEnumValue;
+        tagNames["replace-type"] = StackElement::ReplaceType;
+        tagNames["conversion-rule"] = StackElement::ConversionRule;
+        tagNames["modify-argument"] = StackElement::ModifyArgument;
+        tagNames["remove-argument"] = StackElement::RemoveArgument;
     }
 
     if (!tagNames.contains(tagName)) {
@@ -308,9 +323,13 @@ bool Handler::startElement(const QString &, const QString &n,
             // fall through
         case StackElement::ValueTypeEntry:
             attributes["default-superclass"] = m_defaultSuperclass;
+            attributes["polymorphic-base"] = QString("no");
+            attributes["polymorphic-id-expression"] = QString();
             // fall through
         case StackElement::NamespaceTypeEntry:
             attributes["package"] = m_defaultPackage;
+            attributes["expense-cost"] = "1";
+            attributes["expense-limit"] = "none";
             break;
         default:
             ; // nada
@@ -434,10 +453,26 @@ bool Handler::startElement(const QString &, const QString &n,
                 ctype->setJavaPackage(attributes["package"]);
                 ctype->setDefaultSuperclass(attributes["default-superclass"]);
 
+                // The expense policy
+                QString limit = attributes["expense-limit"];
+                if (!limit.isEmpty() && limit != "none") {
+                    ExpensePolicy ep;
+                    ep.limit = limit.toInt();
+                    ep.cost = attributes["expense-cost"];
+                    ctype->setExpensePolicy(ep);
+                }
+
+                bool polymorphic = attributes["polymorphic-base"].toLower() == "yes"
+                                   ? true : false;
+
+                ctype->setIsPolymorphicBase(polymorphic);
+                ctype->setPolymorphicIdValue(attributes["polymorphic-id-expression"]);
+
                 // ctype->setInclude(Include(Include::IncludePath, ctype->name()));
                 ctype = ctype->designatedInterface();
                 if (ctype != 0)
                     ctype->setJavaPackage(attributes["package"]);
+
             }
             break;
         default:
@@ -471,19 +506,18 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["name"] = QString();
             attributes["generate"] = "yes";
             break;
-        case StackElement::DisableGC:
-            attributes["argument"] = QString();
-            break;
         case StackElement::SuppressedWarning:
             attributes["text"] = QString();
             break;
         case StackElement::ReplaceDefaultExpression:
-            attributes["index"] = QString();
             attributes["with"] = QString();
             break;
         case StackElement::ModifyFunction:
             attributes["signature"] = QString();
             attributes["class"] = "java";
+            break;
+        case StackElement::ModifyArgument:
+            attributes["index"] = QString();
             break;
         case StackElement::ModifyField:
             attributes["name"] = QString();
@@ -505,6 +539,9 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["name"] = topElement.entry->name().toLower() + "_delete";
             attributes["param-name"] = "copy";
             break;
+        case StackElement::ReplaceType:            
+            attributes["modified-type"] = QString();
+            break;
         case StackElement::InjectCode:
             if (topElement.type == StackElement::ModifyFunction) {
                 FunctionModification mod = m_function_mods.last();
@@ -525,7 +562,7 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::RejectEnumValue:
             attributes["name"] = "";
-            break;
+            break;        
         case StackElement::ArgumentMap:
             attributes["position"] = "1";
             attributes["meta-name"] = QString();
@@ -592,13 +629,56 @@ bool Handler::startElement(const QString &, const QString &n,
             }
 
             } break;
+        case StackElement::ReplaceType:
+            {
+                if (topElement.type != StackElement::ModifyArgument) {
+                    m_error = "Type replacement can only be specified for argument modifications";
+                    return false;
+                }
 
+                if (attributes["modified-type"].isEmpty()) {
+                    m_error = "Type replacement requires 'modified-type' attribute";
+                    return false;
+                }
+
+                m_function_mods.last().argument_mods.last().modified_type = attributes["modified-type"];
+            }
+            break;
+        case StackElement::ConversionRule:
+            {
+                if (topElement.type != StackElement::ModifyArgument) {
+                    m_error = "Conversion rules can only be specified for argument modification";
+                    return false;
+                }
+            }
+            break;
+        case StackElement::ModifyArgument:
+            {
+                if (topElement.type != StackElement::ModifyFunction) {
+                    m_error = "argument modification requires function modification as parent";
+                    return false;
+                }
+
+                QString index = attributes["index"];
+                if (index == "return")
+                    index = "0";
+                else if (index == "this")
+                    index = "-1";
+
+                bool ok = false;
+                int idx = index.toInt(&ok);
+                if (!ok) {
+                    m_error = QString("Cannot convert '%1' to integer").arg(index);
+                    return false;
+                }
+
+                m_function_mods.last().argument_mods.append(ArgumentModification(idx));
+            }
+            break;
         case StackElement::DisableGC:
             {
-                QString argument = attributes["argument"];
-
-                if (topElement.type != StackElement::ModifyFunction) {
-                    m_error = "disable-gc requires modify-function as parent";
+                if (topElement.type != StackElement::ModifyArgument) {
+                    m_error = "disable-gc requires argument modification as parent";
                     return false;
                 }
 
@@ -608,24 +688,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                if (argument.isEmpty()) {
-                    m_error = "You need to specify an argument index or 'this' "
-                              "for disable gc in java function modifications";
-                    return false;
-                } else if (argument.toLower() == "this") {
-                    argument = QString::number(FunctionModification::DisableGarbageCollectionForThis);
-                } else if (argument.toLower() == "return") {
-                    argument = QString::number(FunctionModification::DisableGarbageCollectionForReturn);
-                }
-
-                bool ok = false;
-                int arg_index = argument.toInt(&ok);
-                if (!ok && arg_index >= -2) {
-                    m_error = "Argument must be index, 'this' or 'return': '" + argument + "'";
-                    return false;
-                }
-
-                m_function_mods.last().disable_gc_argument_indexes[arg_index] = true;
+                m_function_mods.last().argument_mods.last().disable_gc = true;
             }
             break;
         case StackElement::SuppressedWarning:
@@ -725,6 +788,20 @@ bool Handler::startElement(const QString &, const QString &n,
                 m_function_mods.last().modifiers |= mod;
             }
             break;
+        case StackElement::RemoveArgument:
+            if (topElement.type != StackElement::ModifyArgument) {
+                m_error = "Removing argument requires argument modification as parent";
+                return false;
+            }
+
+            if (m_function_mods.last().language != CodeSnip::JavaCode) {
+                m_error = "Arguments can only be removed from Java API";
+                return false;
+            }
+
+            m_function_mods.last().argument_mods.last().removed = true;
+
+            break;
 
         case StackElement::ModifyField:
             {
@@ -784,18 +861,12 @@ bool Handler::startElement(const QString &, const QString &n,
             }
             break;
         case StackElement::ReplaceDefaultExpression:
-            if (!(topElement.type & StackElement::ModifyFunction)) {
-                m_error = "Replace default expression only allowed as child of modify function";
+            if (!(topElement.type & StackElement::ModifyArgument)) {
+                m_error = "Replace default expression only allowed as child of argument modification";
                 return false;
             }
 
-            if (attributes["index"].isEmpty()) {
-                m_error = "No index specified for replace default expression";
-                return false;
-            }
-
-            m_function_mods.last().modifiers |= FunctionModification::ReplaceExpression;
-            m_function_mods.last().renamed_default_expressions[attributes["index"].toUInt()] = attributes["with"];
+            m_function_mods.last().argument_mods.last().replaced_default_expression = attributes["with"];
             break;
         case StackElement::CustomMetaConstructor:
         case StackElement::CustomMetaDestructor:

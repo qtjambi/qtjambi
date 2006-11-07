@@ -14,10 +14,12 @@
 #define QT_NO_STL
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
+#include <QtNetwork/QtNetwork>
 #include "sql.h"
 #include <QtSvg/qsvgrenderer.h>
 #include <QtSvg/qsvgwidget.h>
 #include <QtSvg/qgraphicssvgitem.h>
+#include <QtXml/QtXml>
 
 #define GL_ACCUM                          0x0100
 #define GL_LOAD                           0x0101

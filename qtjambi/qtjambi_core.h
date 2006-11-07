@@ -58,6 +58,12 @@ inline void *qtjambi_from_jlong(jlong ptr)
     }
 }
 
+typedef bool (*QtJambiPolymorphicHandler)(const void *object, char **class_name, char **package);
+
+QTJAMBI_EXPORT void qtjambi_register_polymorphic_id(const char *lookup, QtJambiPolymorphicHandler handler);
+QTJAMBI_EXPORT void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
+                                                   char **class_name, char **package);
+
 QTJAMBI_EXPORT bool qtjambi_initialize_vm(); // implemented in qtjambi_functions.cpp
 
 QTJAMBI_EXPORT bool qtjambi_exception_check(JNIEnv *env);
@@ -75,6 +81,8 @@ QTJAMBI_EXPORT QObject *qtjambi_to_qobject(JNIEnv *env, jobject java_object);
 QTJAMBI_EXPORT int qtjambi_to_enum(JNIEnv *env, jobject java_object);
 
 QTJAMBI_EXPORT QString qtjambi_to_qstring(JNIEnv *env, jstring java_string);
+
+//QTJAMBI_EXPORT jobject qtjambi_from_qstyleoption(JNIEnv *env, const QStyleOption *so);
 
 QTJAMBI_EXPORT void qtjambi_register_callbacks();
 
@@ -106,6 +114,8 @@ inline void *qtjambi_to_interface(JNIEnv *env,
     );
 }
 
+QTJAMBI_EXPORT
+jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className, char *packageName, const char *lookupName);
 
 QTJAMBI_EXPORT
 jobject qtjambi_from_object(JNIEnv *env, const QRect &rect, const char *className, const char *packageName);
@@ -113,8 +123,8 @@ jobject qtjambi_from_object(JNIEnv *env, const QRect &rect, const char *classNam
 QTJAMBI_EXPORT
 jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className, const char *packageName);
 
-QTJAMBI_EXPORT
-jobject qtjambi_from_object(JNIEnv *env, const QEvent *qt_object, const char *className, const char *packageName);
+/*QTJAMBI_EXPORT
+jobject qtjambi_from_object(JNIEnv *env, const QEvent *qt_object, const char *className, const char *packageName);*/
 
 QTJAMBI_EXPORT
 jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *className, const char *packageName);

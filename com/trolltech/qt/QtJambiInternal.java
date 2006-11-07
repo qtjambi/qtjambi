@@ -947,5 +947,29 @@ public class QtJambiInternal {
             painters.remove(widget);
         }
     }
+    
+    private static class MutableInteger {
+        int value;
+    }
+    
+    private static HashMap<Class, MutableInteger> expensesTable;
+    public static void countExpense(Class cl, int cost, int limit) {
+        if (expensesTable == null)
+            expensesTable = new HashMap<Class, MutableInteger>();
+        
+        MutableInteger mi = expensesTable.get(cl);
+        if (mi == null) {
+            mi = new MutableInteger();
+            expensesTable.put(cl, mi);
+        }
+        
+        mi.value += cost;
+        if (mi.value > limit) {
+            mi.value = 0;
+            System.gc();
+            
+            System.out.println("collected because of " + cl);
+        }        
+    }
 
 }

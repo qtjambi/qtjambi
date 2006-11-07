@@ -1,0 +1,126 @@
+<typesystem package="com.trolltech.qt.xml" default-superclass="com.trolltech.qt.QtObject">
+    <inject-code>
+        com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
+    </inject-code>
+    
+    <enum-type name="QDomNode::NodeType" />
+    <enum-type name="QDomImplementation::InvalidDataPolicy" />
+
+    <value-type name="QDomAttr" />   
+    <value-type name="QDomCDATASection" />
+    <value-type name="QDomCharacterData" />
+    <value-type name="QDomComment" />
+    <value-type name="QDomDocument" />
+    <value-type name="QDomDocumentFragment" />
+    <value-type name="QDomDocumentType" />
+    <value-type name="QDomEntity" />
+    <value-type name="QDomEntityReference" />
+    <value-type name="QDomImplementation" />
+    <value-type name="QDomNamedNodeMap" />
+    <value-type name="QDomNode" />
+    <value-type name="QDomNodeList" />
+    <value-type name="QDomNotation" />
+    <value-type name="QDomProcessingInstruction" />
+    <value-type name="QDomText" />
+    <value-type name="QXmlAttributes" />    
+    <value-type name="QXmlParseException" />
+    
+    <value-type name="QXmlNamespaceSupport">
+        <custom-constructor>
+            QXmlNamespaceSupport *clone = new QXmlNamespaceSupport;
+            clone->setPrefix("", copy->uri(""));
+            
+            QStringList prefixes = copy->prefixes();
+            for (int i=0; i&lt;prefixes.size(); ++i) 
+                clone->setPrefix(prefixes.at(i), copy->uri(prefixes.at(i)));
+                
+            return clone;
+        </custom-constructor>
+        <custom-destructor>
+            delete (QXmlNamespaceSupport *)copy;
+        </custom-destructor>           
+    </value-type>
+
+    <value-type name="QDomElement">
+        <modify-function class="native" signature="attributeNS(const QString, const QString &amp;, const QString &amp;) const">
+            <modify-argument index="1">
+                <conversion-rule>
+                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>
+        <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, const QString &amp;)">
+            <modify-argument index="1">
+                <conversion-rule>
+                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>
+        <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, int)">
+            <modify-argument index="1">
+                <conversion-rule>
+                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>
+        <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, uint)">
+            <modify-argument index="1">
+                <conversion-rule>
+                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>                        
+        <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, long long)">
+            <modify-argument index="1">
+                <conversion-rule>
+                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>        
+        <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, unsigned long long)">
+            <modify-argument index="1">
+                <conversion-rule>
+                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>        
+        <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, double)">
+            <modify-argument index="1">
+                <conversion-rule>
+                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>        
+        <modify-function signature="setAttribute(const QString &amp;, unsigned int)">
+            <remove />
+        </modify-function>
+        <modify-function signature="setAttribute(const QString &amp;, unsigned long long)">
+            <remove />
+        </modify-function>        
+        <modify-function signature="setAttributeNS(const QString, const QString &amp;, unsigned int)">
+            <remove />
+        </modify-function>
+        <modify-function signature="setAttributeNS(const QString, const QString &amp;, unsigned long long)">
+            <remove />
+        </modify-function>        
+        
+    </value-type>
+    
+    <interface-type name="QXmlContentHandler" />
+    <interface-type name="QXmlDTDHandler" />
+    <interface-type name="QXmlDeclHandler" />
+    <interface-type name="QXmlEntityResolver" />
+    <interface-type name="QXmlErrorHandler" />
+    <interface-type name="QXmlLexicalHandler" />
+    
+    <object-type name="QXmlDefaultHandler" />
+    <object-type name="QXmlInputSource" />
+    <object-type name="QXmlLocator" />        
+    <object-type name="QXmlSimpleReader" />
+    
+    <object-type name="QXmlReader">
+        <modify-function class="java" signature="parse(const QXmlInputSource &amp;)">
+            <remove exclusive="yes" />
+        </modify-function>
+    </object-type>
+</typesystem>

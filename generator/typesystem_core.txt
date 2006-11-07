@@ -124,7 +124,9 @@
   <rejection class="QObject" function-name="userData"/>
   <rejection class="QObject" function-name="destroyed"/>
   <rejection class="QObject" function-name="connect"/>
+  <rejection class="QObject" function-name="connectNotify"/>
   <rejection class="QObject" function-name="disconnect"/>
+  <rejection class="QObject" function-name="disconnectNotify"/>
   <rejection class="QObject" function-name="registerUserData"/>
   <rejection class="QObject" function-name="sender"/>
   <rejection class="QTimer" function-name="singleShot"/>
@@ -359,17 +361,17 @@
     <reject-enum-value name="WA_NoBackground"/>
   </enum-type>
   
-  <value-type name="QBasicTimer"/>
-  <value-type name="QBitArray"/>
+  <value-type name="QBasicTimer"/>  
   <value-type name="QByteArrayMatcher"/>
   <value-type name="QDate"/>
   <value-type name="QDateTime"/>
   <value-type name="QDir">
     <modify-function signature="QDir(QString,QString,QFlags&lt;QDir::SortFlag&gt;,QFlags&lt;QDir::Filter&gt;)">
-        <replace-default-expression index="2" with="Name | IgnoreCase" />
+        <modify-argument index="3">
+            <replace-default-expression with="Name | IgnoreCase" />
+        </modify-argument>
     </modify-function>  
   </value-type>
-  <value-type name="QLocale"/>  
   <value-type name="QMetaEnum"/>
   <value-type name="QPoint"/>
   <value-type name="QPointF"/>
@@ -382,13 +384,42 @@
   <value-type name="QPersistentModelIndex"/>
   <value-type name="QUuid"/>
 
+  <value-type name="QLocale">  
+    <modify-function signature="toString(unsigned long long) const">
+        <remove />
+    </modify-function>
+    <modify-function signature="toString(unsigned short) const">
+        <remove />        
+    </modify-function>    
+    <modify-function signature="toString(unsigned int) const">
+        <remove />
+    </modify-function>    
+  </value-type>
+  
+  <value-type name="QBitArray">
+    <modify-function signature="operator[](int)const">
+        <remove/>
+    </modify-function>
+    <modify-function signature="operator[](uint)const">
+        <remove/>
+    </modify-function>    
+    <modify-function signature="operator[](uint)">
+        <remove/>
+    </modify-function>        
+  </value-type>
+
   <object-type name="QAbstractItemModel">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>
     </extra-includes>  
     <modify-function signature="match(QModelIndex,int,QVariant,int,QFlags&lt;Qt::MatchFlag&gt;)const">
-        <replace-default-expression index="4" with="Qt.MatchStartsWith | Qt.MatchWrap" />         
+        <modify-argument index="5">
+            <replace-default-expression with="Qt.MatchStartsWith | Qt.MatchWrap" />         
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="createIndex(int, int, int)const">
+        <remove/>
     </modify-function>
     <inject-code class="java">
     private native boolean setData_native(long id, int row, int col, Object value, int role);
@@ -461,6 +492,12 @@
         <include file-name="QDateTime" location="global"/>
         <include file-name="QDir" location="global"/>
     </extra-includes>
+    <modify-function signature="operator!=(const QFileInfo &amp;)const">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator==(const QFileInfo &amp;)const">
+        <remove />
+    </modify-function>    
   </value-type>
   
   <value-type name="QByteArray">
@@ -484,13 +521,45 @@
     </modify-function>
     <modify-function signature="operator const char *()const">
         <remove />
+    </modify-function>
+    <modify-function signature="begin()const">
+        <remove />
+    </modify-function>    
+    <modify-function signature="end()const">
+        <remove />
+    </modify-function>        
+    <modify-function signature="number(uint,int)">
+        <remove />
+    </modify-function>
+    <modify-function signature="number(unsigned long long,int)">
+        <remove />
+    </modify-function>    
+    <modify-function signature="setNum(uint,int)">
+        <remove/>
+    </modify-function>
+    <modify-function signature="setNum(unsigned short,int)">
+        <remove/>
+    </modify-function>    
+    <modify-function signature="setNum(unsigned long long,int)">
+        <remove/>
+    </modify-function>    
+    <modify-function signature="data()const">
+        <remove/>
+    </modify-function>
+    <modify-function signature="operator[](int)const">
+        <remove/>
+    </modify-function>
+    <modify-function signature="operator[](uint)const">
+        <remove/>
+    </modify-function>    
+    <modify-function signature="operator[](uint)">
+        <remove/>
     </modify-function>    
   </value-type>
+  
+  
 
   <object-type name="QAbstractEventDispatcher"/>  
-  <object-type name="QBuffer"/>
-  <object-type name="QChildEvent"/>
-  <object-type name="QDynamicPropertyChangeEvent"/>
   <object-type name="QEventLoop"/>
   <object-type name="QFile" memory-managed="yes"/>
   <object-type name="QIODevice"/>
@@ -510,7 +579,6 @@
   <object-type name="QTextDecoder"/>
   <object-type name="QTextEncoder"/>
   <object-type name="QTimeLine"/> 
-  <object-type name="QTimerEvent"/>
   <object-type name="QTranslator"/>
   <object-type name="QWaitCondition"/>
 
@@ -522,9 +590,12 @@
   
   <object-type name="QTextCodec::ConverterState">
     <include file-name="QTextCodec" location="global"/>
-    <modify-function signature="ConverterState(QFlags&lt;QTextCodec::ConversionFlag&gt;)">
-        <replace-default-expression index="0" />         
-    </modify-function>    
+  </object-type>
+
+  <object-type name="QBuffer">  
+    <modify-function signature="buffer()">
+        <remove />
+    </modify-function>
   </object-type>
   
   <object-type name="QTimer">
@@ -567,7 +638,9 @@
 
   <object-type name="QAbstractFileEngineHandler">
     <modify-function class="shell" signature="create(const QString &amp;) const">
-        <disable-gc argument="return" />
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
   </object-type>
   
@@ -607,14 +680,6 @@
         <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
     
-    <modify-function class="java" signature="connectNotify(const char *)"> 
-        <access modifier="private" />
-    </modify-function>
-    
-    <modify-function class="java" signature="disconnectNotify(const char *)"> 
-        <access modifier="private" />
-    </modify-function>
-            
     <inject-code class="java">
     private static QObject m_currentSender = null;    
     { 
@@ -895,7 +960,9 @@
     </modify-function>     
     
     <modify-function class="java" signature="postEvent(QObject*,QEvent*)">
-      <disable-gc argument="2" />  
+        <modify-argument index="2">
+            <disable-gc />  
+        </modify-argument>
     </modify-function>    
     <inject-code class="java">
     protected static QCoreApplication m_instance = null;
@@ -959,47 +1026,66 @@
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
-    <modify-function signature="registerFormat(const QString&amp;,ReadFunc,WriteFunc,Qt::CaseSensitivity)">
-        <remove/>
-    </modify-function>
   </object-type>
 
-  <object-type name="QEvent"/>
-
+  <object-type name="QEvent" polymorphic-base="yes" 
+               polymorphic-id-expression="%1->type() == QEvent::None"/>
+  <object-type name="QChildEvent"
+               polymorphic-id-expression="%1->type() == QEvent::ChildAdded || %1->type() == QEvent::ChildPolished || %1->type() == QEvent::ChildRemoved" />
+  <object-type name="QTimerEvent"
+               polymorphic-id-expression="%1->type() == QEvent::Timer" />
+  <object-type name="QDynamicPropertyChangeEvent"
+               polymorphic-id-expression="%1->type() == QEvent::DynamicPropertyChange"/>  
+               
   <object-type name="QDataStream" memory-managed="yes">  
-    <modify-function signature="operator&gt;&gt;(char *&amp;)">
+    <modify-function signature="operator&gt;&gt;(char &amp;*)">
         <rename to="operator_shift_right_char_star"/>
     </modify-function>  
     <modify-function signature="operator&gt;&gt;(double&amp;)">
         <rename to="operator_shift_right_double"/>
     </modify-function>
+    <modify-function signature="operator&gt;&gt;(int&amp;)">
+        <rename to="operator_shift_right_int"/>
+    </modify-function>                
     <modify-function signature="operator&gt;&gt;(uint&amp;)">
-        <rename to="operator_shift_right_uint"/>
-    </modify-function>    
+        <remove/>
+    </modify-function> 
     <modify-function signature="operator&gt;&gt;(bool&amp;)">
         <rename to="operator_shift_right_bool"/>
     </modify-function>    
     <modify-function signature="operator&gt;&gt;(float&amp;)">
         <rename to="operator_shift_right_float"/>
     </modify-function>    
+    <modify-function signature="operator&gt;&gt;(short&amp;)">
+        <rename to="operator_shift_right_short"/>
+    </modify-function>                
     <modify-function signature="operator&gt;&gt;(unsigned short&amp;)">
-        <rename to="operator_shift_right_unsigned_short"/>
+        <remove />
     </modify-function>        
     <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)">
-        <rename to="operator_shift_right_unsigned_long_long"/>
+        <remove />
     </modify-function>        
     <modify-function signature="operator&gt;&gt;(long long&amp;)">
         <rename to="operator_shift_right_long_long"/>
     </modify-function>            
-    <modify-function signature="operator&gt;&gt;(short&amp;)">
-        <rename to="operator_shift_right_short"/>
-    </modify-function>            
-    <modify-function signature="operator&gt;&gt;(int&amp;)">
-        <rename to="operator_shift_right_int"/>
-    </modify-function>            
-    <modify-function signature="operator&gt;&gt;(unsigned int&amp;)">
-        <rename to="operator_shift_right_unsigned_int"/>
-    </modify-function>                
+    <modify-function signature="operator&gt;&gt;(unsigned char&amp;)">
+        <remove/>
+    </modify-function>    
+    <modify-function signature="operator&gt;&gt;(signed char&amp;)">
+        <rename to="operator_shift_right_char"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(unsigned int)">    
+        <remove/>
+    </modify-function>     
+    <modify-function signature="operator&lt;&lt;(unsigned short)">    
+        <remove/>
+    </modify-function>         
+    <modify-function signature="operator&lt;&lt;(unsigned char)">    
+        <remove/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(unsigned long long)">    
+        <remove/>
+    </modify-function>
   </object-type>
   <object-type name="QFSFileEngine">
 	<extra-includes>
@@ -1009,8 +1095,11 @@
 
   <object-type name="QTextStream" memory-managed="yes">
     <include file-name="qtextstream.h" location="global"/>        
+    <modify-function signature="QTextStream(QByteArray *, QFlags&lt;QIODevice::OpenModeFlag>)">
+        <remove/>
+    </modify-function>
     <modify-function signature="operator&gt;&gt;(QChar&amp;)">
-        <rename to="operator_shift_right_QChar"/>
+        <remove />
     </modify-function>
     <modify-function signature="operator&lt;&lt;(const void*)">
         <remove/>
@@ -1036,10 +1125,10 @@
     <modify-function signature="operator&gt;&gt;(unsigned long&amp;)">
         <rename to="operator_shift_right_unsigned_long"/>
     </modify-function>    
-    <modify-function signature="operator&gt;&gt;(qlonglong&amp;)">
+    <modify-function signature="operator&gt;&gt;(long long&amp;)">
         <rename to="operator_shift_right_qlonglong"/>
     </modify-function>    
-    <modify-function signature="operator&gt;&gt;(qulonglong&amp;)">
+    <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)">
         <rename to="operator_shift_right_qulonglong"/>
     </modify-function>    
     <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)">
@@ -1060,6 +1149,24 @@
         <modify-function signature="operator&gt;&gt;(char *)">
         <rename to="operator_shift_right_char_star"/>
     </modify-function>    
+    <modify-function signature="operator&lt;&lt;(unsigned int)">    
+        <remove/>
+    </modify-function>     
+    <modify-function signature="operator&lt;&lt;(unsigned short)">    
+        <remove/>
+    </modify-function>         
+    <modify-function signature="operator&lt;&lt;(unsigned long long)">    
+        <remove/>
+    </modify-function>    
+    <modify-function signature="operator&lt;&lt;(const QChar &amp;)">    
+        <remove/>
+    </modify-function>        
+    <modify-function signature="operator&lt;&lt;(signed long)">    
+        <remove/>
+    </modify-function>            
+    <modify-function signature="operator&lt;&lt;(unsigned long)">    
+        <remove/>
+    </modify-function>            
   </object-type>
   
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'" />

@@ -22,6 +22,7 @@ enum JNISignatureFormat {
     SlashesAndStuff     // Used for looking up functions through jni
 };
 
+QString jni_signature(const QString &full_name, JNISignatureFormat format);
 QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format = Underscores);
 
 class CppImplGenerator : public CppGenerator
@@ -77,11 +78,15 @@ public:
                        const MetaJavaClass *java_class,
                        const MetaJavaType *function_return_type,
                        const QString &qt_name,
-                       const QString &java_name);
+                       const QString &java_name,
+                       const MetaJavaFunction *java_function,
+                       int argument_index);
     void writeJavaToQt(QTextStream &s,
                        const MetaJavaType *java_type,
                        const QString &qt_name,
                        const QString &java_name,
+                       const MetaJavaFunction *java_function,
+                       int argument_index,
                        Option option = OriginalName);
 
     void writeFinalFunction(QTextStream &s,
@@ -103,7 +108,16 @@ public:
                        const MetaJavaType *java_type,
                        const QString &qt_name,
                        const QString &java_name,
+                       const MetaJavaFunction *java_function,
+                       int argument_index,
                        Option option = NoOption);
+
+    bool writeConversionRule(QTextStream &s,
+                             CodeSnip::Language target_language,
+                             const MetaJavaFunction *java_function,
+                             int argument_index,
+                             const QString &qt_name,
+                             const QString &java_name);
 
     void writeFieldAccessors(QTextStream &s, const MetaJavaField *java_field);
 
@@ -118,15 +132,23 @@ public:
     void writeQtToJavaContainer(QTextStream &s,
                                 const MetaJavaType *java_type,
                                 const QString &qt_name,
-                                const QString &java_name);
+                                const QString &java_name,
+                                const MetaJavaFunction *java_function,
+                                int argument_index);
     void writeJavaToQtContainer(QTextStream &s,
                                 const MetaJavaType *java_type,
                                 const QString &qt_name,
-                                const QString &java_name);
+                                const QString &java_name,
+                                const MetaJavaFunction *java_function,
+                                int argument_index);
 
     bool hasCustomDestructor(const MetaJavaClass *java_class) const;
 
     QString translateType(const MetaJavaType *java_type, Option option = NoOption) const;
+
+private:
+    QString fromObject(const TypeEntry *centry, const QString &var_name);
+
 
 };
 

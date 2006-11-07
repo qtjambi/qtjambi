@@ -84,6 +84,18 @@ struct CodeSnip
 };
 typedef QList<CodeSnip> CodeSnipList;
 
+struct ArgumentModification
+{
+    ArgumentModification(int idx) : disable_gc(false), index(idx) {}
+
+    int index;    
+    uint disable_gc : 1;
+    uint removed : 1;
+    QString modified_type;
+    QString conversion_rule;
+    QString replaced_default_expression;
+};
+
 struct FunctionModification
 {
     enum Modifiers {
@@ -100,11 +112,6 @@ struct FunctionModification
         ReplaceExpression =     0x0100
     };
 
-    enum DisableGarbageCollectionArgument {
-        DisableGarbageCollectionForReturn = -1,
-        DisableGarbageCollectionForThis = 0
-    };
-
     FunctionModification() : modifiers(0) { }
 
     bool isAccessModifier() const { return modifiers & AccessModifierMask; }
@@ -119,8 +126,6 @@ struct FunctionModification
     bool isCodeInjection() const { return modifiers & CodeInjection; }
     bool isRenameModifier() const { return modifiers & Rename; }
     bool isRemoveModifier() const { return modifiers & Remove; }
-    bool isDisableGCModifier() const { return disable_gc_argument_indexes.count() > 0; }
-    bool isReplaceExpression() const { return modifiers & ReplaceExpression; }
 
     void setRenamedTo(const QString &name) { renamedToName = name; }
     QString renamedTo() const { return renamedToName; }
@@ -130,9 +135,8 @@ struct FunctionModification
     uint modifiers;
     CodeSnipList snips;
     CodeSnip::Language language;
-    QHash<int, bool> disable_gc_argument_indexes;
-    QHash<int, QString> renamed_default_expressions;
-
+    
+    QList<ArgumentModification> argument_mods;
 };
 typedef QList<FunctionModification> FunctionModificationList;
 
@@ -150,6 +154,13 @@ struct FieldModification
     uint modifiers;
 };
 typedef QList<FieldModification> FieldModificationList;
+
+struct ExpensePolicy {
+    ExpensePolicy() : limit(-1) { }
+    int limit;
+    QString cost;
+    bool isValid() const { return limit >= 0; }
+};
 
 class InterfaceTypeEntry;
 class ObjectTypeEntry;
@@ -473,7 +484,8 @@ public:
     ComplexTypeEntry(const QString &name, Type t)
         : TypeEntry(QString(name).replace("::", "_"), t),
           m_qualified_cpp_name(name),
-          m_qobject(false)
+          m_qobject(false),
+          m_polymorphic_base(false)
     {
         Include inc;
         inc.name = "QVariant";
@@ -550,6 +562,22 @@ public:
 
     virtual QString qualifiedCppName() const { return m_qualified_cpp_name; }
 
+
+    void setIsPolymorphicBase(bool on)
+    {
+        m_polymorphic_base = on;
+    }
+    bool isPolymorphicBase() const { return m_polymorphic_base; }
+
+    void setPolymorphicIdValue(const QString &value)
+    {
+        m_polymorphic_id_value = value;
+    }
+    QString polymorphicIdValue() const { return m_polymorphic_id_value; }
+
+    void setExpensePolicy(const ExpensePolicy &policy) { m_expense_policy = policy; }
+    const ExpensePolicy &expensePolicy() const { return m_expense_policy; }
+
 private:
     IncludeList m_extra_includes;
     Include m_include;
@@ -560,8 +588,11 @@ private:
     QString m_package;
     QString m_default_superclass;
     QString m_qualified_cpp_name;
+    bool m_polymorphic_base;
+    QString m_polymorphic_id_value;
     uint m_qobject : 1;
     QString m_lookup_name;
+    ExpensePolicy m_expense_policy;
 };
 
 
@@ -648,7 +679,7 @@ public:
 
     QString jniName() const { return "jchar"; }
     QString javaName() const { return "char"; }
-    QString javaPackage() const { return ""; }
+    QString javaPackage() const { return ""; }    
 
     virtual bool isNativeIdBased() const { return false; }
 };
@@ -773,6 +804,9 @@ public:
 
     bool isSuppressedWarning(const QString &s)
     {
+        if (!m_suppressWarnings)
+            return false;
+
         foreach (const QString &_warning, m_suppressedWarnings) {
             QString warning(QString(_warning).replace("\\*", "&place_holder_for_asterisk;"));
 

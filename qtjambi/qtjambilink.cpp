@@ -194,7 +194,7 @@ Q_GLOBAL_STATIC(RefCountingHash, gRefCountHash);
 #endif
 
 QtJambiLink::~QtJambiLink()
-{
+{    
     cleanUpAll();
 }
 

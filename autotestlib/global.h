@@ -22,5 +22,6 @@
 #include "threads.h"
 #include "tulip.h"
 #include "variants.h"
+#include "polymorphictype.h"
 
 #endif

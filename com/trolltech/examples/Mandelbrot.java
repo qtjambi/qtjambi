@@ -79,11 +79,10 @@ public class Mandelbrot extends QWidget {
             double scaleFactor = pixmapScale / currentScale;
             int newWidth = (int) (pixmap.width() * scaleFactor);
             int newHeight = (int) (pixmap.height() * scaleFactor);
-            int newX = pixmapOffset.x() 
-                       + (pixmap.width() - newWidth) / 2;
-            int newY = pixmapOffset.y() 
-                       + (pixmap.height() - newHeight) / 2;
-
+            
+            int newX = pixmapOffset.x() + (pixmap.width() - newWidth) / 2;
+            int newY = pixmapOffset.y() + (pixmap.height() - newHeight) / 2;
+            
             painter.save();
             painter.translate(newX, newY);
             painter.scale(scaleFactor, scaleFactor);
@@ -92,7 +91,11 @@ public class Mandelbrot extends QWidget {
             QRect exposed = invertedMatrix.mapRect(rect());
             exposed = exposed.adjusted(-1, -1, 1, 1);
 
-            painter.drawPixmap(exposed, pixmap, exposed);
+            if(scaleFactor>=0)
+                painter.drawPixmap(pixmapOffset, pixmap);
+            else
+                painter.drawPixmap(exposed, pixmap, exposed);
+            
             painter.restore();
         }
 
@@ -310,8 +313,11 @@ public class Mandelbrot extends QWidget {
                     if (allBlack && pass == 0) {
                         pass = 4;
                     } else {
+                        synchronized (this) {
                         if (!restart) {
-                            renderedImage.emit(image, scaleFactor);
+                            //renderedImage.emit(image, scaleFactor);
+                            updatePixmap(image, scaleFactor);
+                        }
                         }
                         ++pass;
                     }

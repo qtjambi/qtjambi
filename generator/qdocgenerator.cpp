@@ -107,10 +107,9 @@ void QDocGenerator::writeOverload(QTextStream &s,
     if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
         return;
 
-    QHash<int, bool> disabled_params;
     uint included_attributes = 0;
     uint excluded_attributes = 0;
-    setupForFunction(java_function, &included_attributes, &excluded_attributes, &disabled_params);
+    setupForFunction(java_function, &included_attributes, &excluded_attributes);
 
     if (arg_count < java_function->arguments().size()) {
         // see JavaGenerator::writeFunctionOverloads()
@@ -128,18 +127,23 @@ void QDocGenerator::writeOverload(QTextStream &s,
     s << "<method java=\"" << protect(signature.toUtf8()) << "\"" << endl
       << "    cpp=\"" << protect(java_function->signature().toUtf8()) << "\"";
 
-    if (disabled_params.count() > 0) {
-        s << endl << "    steals-ownership-of=\"";
-        MetaJavaArgumentList arguments = java_function->arguments();
-        for (int i=0; i<arg_count; ++i) {
-            if (disabled_params.value(i + 1, false)) {
-                const MetaJavaArgument *arg = arguments.at(i);
-                if (i > 0)
-                    s << ",";
-                s << protect(arg->argumentName().toUtf8());
+    MetaJavaArgumentList arguments = java_function->arguments();
+    bool first = true;
+    foreach (MetaJavaArgument *argument, arguments) {
+        if (java_function->disabledGarbageCollection(java_function->implementingClass(), 
+                                                     argument->argumentIndex() + 1)) {        
+            if (first) {
+                s << endl << "    steals-ownership-of=\"";
+                first = false;
+            } else {
+                s << ",";
             }
+            
+            s << protect(argument->argumentName().toUtf8());
+            
         }
-        s << "\"";
+        if (!first)                                                     
+            s << "\"";
     }
     s << " />" << endl;
 }
@@ -169,17 +173,16 @@ void QDocGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field)
 {
-    QHash<int, bool> disabled_params;
     uint included_attributes = 0;
     uint excluded_attributes = 0;
-    setupForFunction(java_field->getter(), &included_attributes, &excluded_attributes, &disabled_params);
+    setupForFunction(java_field->getter(), &included_attributes, &excluded_attributes);
     s << "<variablegetter java=\"" << protect(functionSignature(java_field->getter(), included_attributes, excluded_attributes).toUtf8())
       << "\"" << endl
       << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
 
     included_attributes = 0;
     excluded_attributes = 0;
-    setupForFunction(java_field->setter(), &included_attributes, &excluded_attributes, &disabled_params);
+    setupForFunction(java_field->setter(), &included_attributes, &excluded_attributes);
     s << "<variablesetter java=\"" << protect(functionSignature(java_field->setter(), included_attributes, excluded_attributes).toUtf8())
       << "\"" << endl
       << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;

@@ -46,7 +46,7 @@ void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const MetaJavaFuncti
 void CppHeaderGenerator::writeSignalWrappers(QTextStream &s, const MetaJavaClass *java_class)
 {
     MetaJavaFunctionList signal_funcs =
-        java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible);
+        java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible | MetaJavaClass::NotRemovedFromJava);
 
     if (signal_funcs.size() > 0) {
         s << endl << "public slots:" << endl;
@@ -59,7 +59,7 @@ void CppHeaderGenerator::writeSignalWrappers(QTextStream &s, const MetaJavaClass
 void CppHeaderGenerator::writeWrapperClass(QTextStream &s, const MetaJavaClass *java_class)
 {
     MetaJavaFunctionList signal_functions =
-        java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible);
+        java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible | MetaJavaClass::NotRemovedFromJava);
     if (signal_functions.size() == 0)
         return ;
 

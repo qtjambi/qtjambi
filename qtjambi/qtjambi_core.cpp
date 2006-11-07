@@ -33,6 +33,8 @@
 #include <QtCore/QSettings>
 #include <QtCore/QFileInfo>
 
+#include <QtGui/QStyleOption>
+
 #include <stdio.h>
 
 
@@ -194,6 +196,37 @@ bool qtjambi_exception_check(JNIEnv *env)
     return false;
 }
 
+
+extern uint qHash(const char *);
+struct CharPtr
+{
+    CharPtr(const char *_ptr) { ptr = _ptr; }
+    bool operator==(CharPtr other) const { return strcmp(other.ptr, ptr) == 0; }
+    const char *ptr;
+};
+uint qHash(CharPtr ptr) { return qHash(ptr.ptr); }
+
+
+typedef QMultiHash<CharPtr, QtJambiPolymorphicHandler> PolymorphicIdHash;
+Q_GLOBAL_STATIC(PolymorphicIdHash, g_polymorphic_ids);
+Q_GLOBAL_STATIC(QReadWriteLock, g_polymorphic_id_lock);
+
+void qtjambi_register_polymorphic_id(const char *lookup, QtJambiPolymorphicHandler handler)
+{
+    QWriteLocker locker(g_polymorphic_id_lock());
+    g_polymorphic_ids()->insert(lookup, handler);
+}
+
+void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
+                                    char **class_name, char **package)
+{
+    QReadLocker locker(g_polymorphic_id_lock());
+    QList<QtJambiPolymorphicHandler> handlers = g_polymorphic_ids()->values(lookup);
+    for (int i=0; i<handlers.size(); ++i) {
+        if (handlers[i](object, class_name, package)) 
+            break;
+    }   
+}
 
 /*!
  * Fetches the current environment based on the global Virtual
@@ -409,72 +442,19 @@ void *qtjambi_to_interface(JNIEnv *env,
     return reinterpret_cast<void *>(ret);
 }
 
-
 jobject qtjambi_from_object(JNIEnv *env, const QRect &rect, const char *className, const char *packageName)
 {
     return qtjambi_from_object(env, &rect, className, packageName);
 }
 
-jobject qtjambi_from_object(JNIEnv *env, const QEvent *qt_object, const char *className, const char *packageName)
+jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className, char *packageName, const char *lookupName) 
 {
-    if (qt_object != 0) {
-        switch (qt_object->type()) {
-        case QEvent::AccessibilityDescription:
-            className = "QAccessibleEvent";
-            packageName = "com/trolltech/qt/gui/";
-            break;
-        case QEvent::AccessibilityHelp: className = "QAccessibleEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::ActionAdded: className = "QActionEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::ActionChanged: className = "QActionEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::ActionRemoved: className = "QActionEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::ChildAdded: className = "QChildEvent"; packageName = "com/trolltech/qt/core/"; break;
-        case QEvent::ChildPolished: className = "QChildEvent"; packageName = "com/trolltech/qt/core/"; break;
-        case QEvent::ChildRemoved: className = "QChildEvent"; packageName = "com/trolltech/qt/core/"; break;
-        case QEvent::Clipboard: className = "QClipboardEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Close: className = "QCloseEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::ContextMenu: className = "QContextMenuEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::DragEnter: className = "QDragEnterEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::DragLeave: className = "QDragLeaveEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::DragMove: className = "QDragMoveEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Drop: className = "QDropEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::FileOpen: className = "QFileOpenEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::FocusIn: className = "QFocusEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::FocusOut: className = "QFocusEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Hide: className = "QHideEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::HoverEnter: className = "QHoverEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::HoverLeave: className = "QHoverEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::HoverMove: className = "QHoverEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::IconDrag: className = "QIconDragEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::InputMethod: className = "QInputMethodEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::KeyPress: className = "QKeyEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::KeyRelease: className = "QKeyEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::MouseButtonDblClick: className = "QMouseEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::MouseButtonPress: className = "QMouseEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::MouseButtonRelease: className = "QMouseEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::MouseMove: className = "QMouseEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Move: className = "QMoveEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Paint: className = "QPaintEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Resize: className = "QResizeEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Shortcut: className = "QShortcutEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::ShortcutOverride: className = "QKeyEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Show: className = "QShowEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::StatusTip: className = "QStatusTipEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::TabletMove: className = "QTabletMoveEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::TabletPress: className = "QTabletPressEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::TabletRelease: className = "QTabletReleaseEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Timer: className = "QTimerEvent"; packageName = "com/trolltech/qt/core/"; break;
-        case QEvent::ToolTip: className = "QHelpEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::WhatsThis: className = "QHelpEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::Wheel: className = "QWheelEvent"; packageName = "com/trolltech/qt/gui/"; break;
-        case QEvent::WindowStateChange:
-            className = "QWindowStateChangeEvent";
-            packageName = "com/trolltech/qt/gui/";
-            break;
-        default:
-            break;
-        }
-    }
-    return qtjambi_from_object(env, reinterpret_cast<const void *>(qt_object), className, packageName);
+    char *class_name = className;
+    char *package = packageName;
+    if (qt_object != 0)
+        qtjambi_resolve_polymorphic_id(lookupName, qt_object, &class_name, &package);    
+
+    return qtjambi_from_object(env, qt_object, class_name, package);
 }
 
 jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className, const char *packageName)
@@ -484,8 +464,11 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
         return 0;
 
     jclass clazz = resolveClass(env, className, packageName);
+    QTJAMBI_EXCEPTION_CHECK(env);
     if (clazz != 0)
         returned = env->AllocObject(clazz);
+
+    QTJAMBI_EXCEPTION_CHECK(env);
     if (returned == 0)
         return 0;
 
@@ -937,6 +920,9 @@ QThread *qtjambi_find_thread_in_table(JNIEnv *env, jobject thread)
 
 QThread *qtjambi_to_thread(JNIEnv *env, jobject thread)
 {
+    if(thread==0)
+        return 0;
+
     QThread *qt_thread = qtjambi_find_thread_in_table(env, thread);
     if (qt_thread)
         return qt_thread;

@@ -32,6 +32,8 @@
 
 #define QTQUALIFY(RETURNTYPE, METHOD) QTJAMBINAME(qt, QtObject, RETURNTYPE, METHOD)
 
+#include <QDebug>
+
 QTQUALIFY(void, dispose)(JNIEnv *env, jobject java)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, java);

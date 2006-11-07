@@ -207,15 +207,15 @@
   <enum-type name="QSizePolicy::PolicyFlag"/>
   <enum-type name="QSizePolicy::SizePolicyMasks"/>
   <enum-type name="QStandardItem::ItemType"/>
-  <enum-type name="QStyle::SubControl" flags="QStyle::SubControls" force-integer="yes"/>
-  <enum-type name="QStyle::ComplexControl"/>
-  <enum-type name="QStyle::ContentsType" />
-  <enum-type name="QStyle::ControlElement" />
-  <enum-type name="QStyle::PixelMetric" />
-  <enum-type name="QStyle::PrimitiveElement" />
-  <enum-type name="QStyle::StandardPixmap" />
+  <enum-type name="QStyle::SubControl" flags="QStyle::SubControls" extensible="yes" force-integer="yes"/>
+  <enum-type name="QStyle::ComplexControl" extensible="yes"/>
+  <enum-type name="QStyle::ContentsType" extensible="yes"/>
+  <enum-type name="QStyle::ControlElement" extensible="yes"/>
+  <enum-type name="QStyle::PixelMetric" extensible="yes"/>
+  <enum-type name="QStyle::PrimitiveElement" extensible="yes"/>
+  <enum-type name="QStyle::StandardPixmap" extensible="yes"/>
   <enum-type name="QStyle::StateFlag" flags="QStyle::State"/>
-  <enum-type name="QStyle::SubElement" />
+  <enum-type name="QStyle::SubElement" extensible="yes"/>
   <enum-type name="QStyleHintReturn::HintReturnType"/>
   <enum-type name="QStyleHintReturn::StyleOptionType"/>
   <enum-type name="QStyleHintReturn::StyleOptionVersion"/>
@@ -225,7 +225,8 @@
   <enum-type name="QStyleHintReturnMask::StyleOptionVersion"/>
   <enum-type name="QStyleHintReturnMask::enum_1"/>
   <enum-type name="QStyleHintReturnMask::enum_2"/>
-  <enum-type name="QStyleOption::OptionType"/>
+  <enum-type name="QStyleOption::StyleOptionType" />
+  <enum-type name="QStyleOption::OptionType" extensible="yes"/>
   <enum-type name="QStyleOption::StyleOptionVersion"/>
   <enum-type name="QStyleOption::enum_2"/>
   <enum-type name="QStyleOptionButton::ButtonFeature" flags="QStyleOptionButton::ButtonFeatures"/>
@@ -339,6 +340,8 @@
   <enum-type name="QStyleOptionViewItem::StyleOptionVersion"/>
   <enum-type name="QStyleOptionViewItem::enum_1"/>
   <enum-type name="QStyleOptionViewItem::enum_2"/>
+  <enum-type name="QStyleOptionViewItemV2::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionViewItemV2::ViewItemFeature" flags="QStyleOptionViewItemV2::ViewItemFeatures" />
   <enum-type name="QSystemTrayIcon::ActivationReason"/>
   <enum-type name="QSystemTrayIcon::MessageIcon"/>
   <enum-type name="QTabBar::Shape"/>
@@ -445,7 +448,7 @@
     <reject-enum-value name="TicksRight"/>
   </enum-type>
 
-  <enum-type name="QStyle::StyleHint">
+  <enum-type name="QStyle::StyleHint" extensible="yes">
     <reject-enum-value name="SH_ScrollBar_StopMouseOverSlider"/>
   </enum-type>
 
@@ -456,31 +459,64 @@
     <reject-enum-value name="FontSizeIncrement"/>
   </enum-type>
 
-   <value-type name="QStyleOption"/>
-  <value-type name="QStyleOptionButton"/>
-  <value-type name="QStyleOptionComboBox"/>
-  <value-type name="QStyleOptionComplex"/>
-  <value-type name="QStyleOptionDockWidget"/>
-  <value-type name="QStyleOptionFocusRect"/>
-  <value-type name="QStyleOptionFrame"/>
-  <value-type name="QStyleOptionFrameV2"/>
-  <value-type name="QStyleOptionGroupBox"/>
-  <value-type name="QStyleOptionHeader"/>
-  <value-type name="QStyleOptionMenuItem"/>
-  <value-type name="QStyleOptionProgressBar"/>
-  <value-type name="QStyleOptionProgressBarV2"/>
-  <value-type name="QStyleOptionRubberBand"/>
-  <value-type name="QStyleOptionSlider"/>
-  <value-type name="QStyleOptionSpinBox"/>
-  <value-type name="QStyleOptionTab"/>
-  <value-type name="QStyleOptionTabBarBase"/>
-  <value-type name="QStyleOptionTabV2"/>
-  <value-type name="QStyleOptionTabWidgetFrame"/>
-  <value-type name="QStyleOptionTitleBar"/>
-  <value-type name="QStyleOptionToolBar"/>
-  <value-type name="QStyleOptionToolBox"/>
-  <value-type name="QStyleOptionToolButton"/>
-  <value-type name="QStyleOptionViewItem"/>  
+  <value-type name="QStyleOption" polymorphic-base="yes" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Default" />
+  <value-type name="QStyleOptionGraphicsItem" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_GraphicsItem"/>
+  <value-type name="QStyleOptionSizeGrip" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_SizeGrip"/>
+  <value-type name="QStyleOptionButton" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Button" />
+  <value-type name="QStyleOptionComboBox" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ComboBox" />
+  <value-type name="QStyleOptionComplex" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Complex" />
+  <value-type name="QStyleOptionDockWidget" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_DockWidget" />
+  <value-type name="QStyleOptionFocusRect" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_FocusRect" />
+  <value-type name="QStyleOptionFrame" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Frame &amp;&amp; %1-&gt;version == 1" />
+  <value-type name="QStyleOptionFrameV2" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Frame &amp;&amp; %1-&gt;version == 2" />
+  <value-type name="QStyleOptionGroupBox" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_GroupBox" />
+  <value-type name="QStyleOptionHeader" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Header"/>
+  <value-type name="QStyleOptionMenuItem" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_MenuItem"/>
+  <value-type name="QStyleOptionProgressBar" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ProgressBar &amp;&amp; %1-&gt;version == 1"/>
+  <value-type name="QStyleOptionProgressBarV2" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ProgressBar &amp;&amp; %1-&gt;version == 2"/>
+  <value-type name="QStyleOptionRubberBand" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_RubberBand"/>
+  <value-type name="QStyleOptionSlider" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Slider"/>
+  <value-type name="QStyleOptionSpinBox" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_SpinBox"/>
+  <value-type name="QStyleOptionTab" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Tab &amp;&amp; %1-&gt;version == 1"/>
+  <value-type name="QStyleOptionTabV2" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Tab &amp;&amp; %1-&gt;version == 2"/>              
+  <value-type name="QStyleOptionTabBarBase" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_TabBarBase"/> 
+  <value-type name="QStyleOptionTabWidgetFrame" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_TabWidgetFrame"/>
+  <value-type name="QStyleOptionTitleBar" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_TitleBar"/>
+  <value-type name="QStyleOptionToolBar" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ToolBar"/>
+  <value-type name="QStyleOptionToolBox" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ToolBox"/>
+  <value-type name="QStyleOptionToolButton" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ToolButton"/>
+  <value-type name="QStyleOptionViewItem" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 1"/>  
+  <value-type name="QStyleOptionViewItemV2" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 2"/>  
+                 
+              
   <value-type name="QTextFragment"/>  
   <value-type name="QBitmap"/>  
   <value-type name="QTextInlineObject"/>
@@ -501,7 +537,7 @@
   <value-type name="QKeySequence"/> 
   <value-type name="QPicture"/>
   <value-type name="QPolygonF"/>
-  <value-type name="QRegion"/>
+  <value-type name="QRegion" expense-limit="4096"/>
   <value-type name="QTextBlock"/>
   <value-type name="QTextBlockFormat"/>
   <value-type name="QTextCharFormat"/>
@@ -542,11 +578,13 @@
   </value-type>
 
   <value-type name="QPixmap">
-    <modify-function signature="QPixmap(const char * [])">
+    <modify-function signature="QPixmap(const char **)">
         <access modifier="private"/>
     </modify-function>
     <modify-function signature="fill(const QColor &amp;)"> 
-      <replace-default-expression index="0" with="QColor.white"/>
+      <modify-argument index="1">
+        <replace-default-expression with="QColor.white"/>
+      </modify-argument>
     </modify-function>
     <inject-code>
         public QPixmap(String xpm[]) 
@@ -668,12 +706,21 @@
     </extra-includes>
   </value-type>
 
-  <value-type name="QImage">
+  <value-type name="QImage" expense-limit="67108864" expense-cost="height()*bytesPerLine()">
     <modify-function signature="QImage(const char *, const char *)">
         <remove />
     </modify-function>
-    <modify-function signature="QImage(const char *[])">
+    <modify-function signature="QImage(const char **)">
         <access modifier="private"/>
+    </modify-function>
+    <modify-function signature="bits()const">
+        <remove/>
+    </modify-function>
+    <modify-function signature="scanLine(int)const">
+        <remove/>
+    </modify-function>
+    <modify-function signature="QImage(const unsigned char *, int, int, QImage::Format)">
+        <remove/>
     </modify-function>
     <inject-code>
         public QImage(String xpm[]) 
@@ -802,6 +849,12 @@
     <custom-destructor>
         delete copy;
     </custom-destructor>
+    <modify-function signature="operator!=(const QFontMetricsF &amp;)">
+        <remove/>
+    </modify-function>
+    <modify-function signature="operator==(const QFontMetricsF &amp;)">
+        <remove/>
+    </modify-function>        
   </value-type>
 
   <value-type name="QFontMetrics">
@@ -811,6 +864,12 @@
     <custom-destructor>
         delete copy;
     </custom-destructor>
+    <modify-function signature="operator!=(const QFontMetrics &amp;)">
+        <remove/>
+    </modify-function>
+    <modify-function signature="operator==(const QFontMetrics &amp;)">
+        <remove/>
+    </modify-function>    
   </value-type>
 
   <value-type name="QGradient">
@@ -827,6 +886,9 @@
     <custom-destructor>
     delete copy;
     </custom-destructor>
+    <modify-function signature="operator==(const QGradient &amp;)">
+        <remove/>
+    </modify-function>        
   </value-type>
 
   <value-type name="QLinearGradient">
@@ -848,9 +910,25 @@
     <modify-function signature="children()const">	
       <rename to="childItems"/>
     </modify-function>
-  </interface-type>
+    <modify-function signature="paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)">
+       <modify-argument index="2"> 
+           <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionGraphicsItem", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+           </conversion-rule>       
+        <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionGraphicsItem" />
+       </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)">
+         <modify-argument index="2">
+            <conversion-rule>
+                const QStyleOptionGraphicsItem *%out = (QStyleOptionGraphicsItem *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>
+         </modify-argument>
+    </modify-function>
+  </interface-type>  
   
-  <object-type name="QAbstractGraphicsShapeItem"/>
+  <object-type name="QAbstractGraphicsShapeItem" />
+    
   <object-type name="QAbstractItemView"/>  
   <object-type name="QAbstractPageSetupDialog"/>
   <object-type name="QAbstractPrintDialog"/>
@@ -860,7 +938,6 @@
   <object-type name="QAccessibleBridge"/>
   <object-type name="QAccessibleBridgeFactoryInterface"/>
   <object-type name="QAccessibleBridgePlugin"/>
-  <object-type name="QAccessibleEvent"/>
   <object-type name="QAccessibleFactoryInterface"/>
   <object-type name="QAccessibleInterface"/>
   <object-type name="QAccessibleInterfaceEx"/>
@@ -868,16 +945,12 @@
   <object-type name="QAccessibleObjectEx"/>
   <object-type name="QAccessiblePlugin"/>
   <object-type name="QAccessibleWidget"/>
-  <object-type name="QAccessibleWidgetEx"/>
-  <object-type name="QActionEvent"/>
+  <object-type name="QAccessibleWidgetEx"/>  
   <object-type name="QActionGroup"/>
   <object-type name="QCDEStyle"/>
   <object-type name="QCheckBox"/>
   <object-type name="QCleanlooksStyle"/>
-  <object-type name="QClipboardEvent"/>
-  <object-type name="QCloseEvent"/>  
   <object-type name="QCommonStyle"/>
-  <object-type name="QContextMenuEvent"/>
   <object-type name="QDataWidgetMapper"/>
   <object-type name="QDateEdit"/>
   <object-type name="QDesktopServices"/>
@@ -885,13 +958,7 @@
   <object-type name="QDialogButtonBox"/>
   <object-type name="QDirModel"/>
   <object-type name="QDoubleValidator"/>
-  <object-type name="QDragEnterEvent"/>
-  <object-type name="QDragLeaveEvent"/>
-  <object-type name="QDragMoveEvent"/>
-  <object-type name="QDropEvent"/>
   <object-type name="QFileIconProvider"/>
-  <object-type name="QFileOpenEvent"/>
-  <object-type name="QFocusEvent"/>
   <object-type name="QFocusFrame"/>
   <object-type name="QFontComboBox"/>
   <object-type name="QFontDialog"/>
@@ -903,20 +970,9 @@
   <object-type name="QGraphicsPixmapItem"/>
   <object-type name="QGraphicsPolygonItem"/>
   <object-type name="QGraphicsRectItem"/>
-  <object-type name="QGraphicsSceneContextMenuEvent"/>
-  <object-type name="QGraphicsSceneDragDropEvent"/>
-  <object-type name="QGraphicsSceneEvent"/>
-  <object-type name="QGraphicsSceneHelpEvent"/>
-  <object-type name="QGraphicsSceneHoverEvent"/>
-  <object-type name="QGraphicsSceneMouseEvent"/>
-  <object-type name="QGraphicsSceneWheelEvent"/>
   <object-type name="QGraphicsSimpleTextItem"/>
   <object-type name="QHBoxLayout"/>
   <object-type name="QHeaderView"/>
-  <object-type name="QHelpEvent"/>
-  <object-type name="QHideEvent"/>
-  <object-type name="QHoverEvent"/>
-  <object-type name="QIconDragEvent"/>
   <object-type name="QIconEngine"/>
   <object-type name="QIconEngineFactoryInterface"/>
   <object-type name="QIconEnginePlugin"/>
@@ -926,7 +982,6 @@
   <object-type name="QInputContextFactory"/>
   <object-type name="QInputContextFactoryInterface"/>
   <object-type name="QInputContextPlugin"/>
-  <object-type name="QInputMethodEvent"/>
   <object-type name="QIntValidator"/>
   <object-type name="QItemDelegate"/>  
   <object-type name="QItemEditorCreatorBase"/>
@@ -937,7 +992,6 @@
   <object-type name="QMenu"/>
   <object-type name="QMenuBar"/>
   <object-type name="QMotifStyle"/>
-  <object-type name="QMoveEvent"/>
   <object-type name="QPainterPathStroker"/>
   <object-type name="QPictureFormatInterface"/>
   <object-type name="QPictureFormatPlugin"/>
@@ -950,32 +1004,24 @@
   <object-type name="QPushButton"/>
   <object-type name="QReadWriteLock"/>
   <object-type name="QRegExpValidator"/>
-  <object-type name="QResizeEvent"/>
   <object-type name="QScrollArea"/>
   <object-type name="QSessionManager"/>
   <object-type name="QShortcut"/>
-  <object-type name="QShortcutEvent"/>
-  <object-type name="QShowEvent"/>
   <object-type name="QSizeGrip"/>
   <object-type name="QSound"/>  
   <object-type name="QSpacerItem"/>
   <object-type name="QStandardItem"/>
   <object-type name="QStatusBar"/>
-  <object-type name="QStatusTipEvent"/>
   <object-type name="QStringListModel"/>
-  <object-type name="QStyle"/>
   <object-type name="QStyleFactory"/>
   <object-type name="QStyleFactoryInterface"/>
   <object-type name="QStyleHintReturn"/>
   <object-type name="QStyleHintReturnMask"/>
-  <object-type name="QStyleOptionGraphicsItem"/>
-  <object-type name="QStyleOptionSizeGrip"/>
   <object-type name="QStylePainter"/>
   <object-type name="QStylePlugin"/>
   <object-type name="QSyntaxHighlighter"/>
   <object-type name="QSystemTrayIcon"/>
   <object-type name="QTableView"/>
-  <object-type name="QTabletEvent"/>
   <object-type name="QTextBlockGroup"/>
   <object-type name="QTextBlockUserData"/>
   <object-type name="QTextItem"/>
@@ -983,7 +1029,6 @@
   <object-type name="QTextObject"/>
   <object-type name="QTextObjectInterface"/>
   <object-type name="QTimeEdit"/>
-  <object-type name="QToolBarChangeEvent"/>
   <object-type name="QToolBox"/>
   <object-type name="QToolButton"/>
   <object-type name="QToolTip"/>
@@ -995,13 +1040,100 @@
   <object-type name="QVBoxLayout"/>
   <object-type name="QValidator"/>
   <object-type name="QWhatsThis"/>
-  <object-type name="QWhatsThisClickedEvent"/>
-  <object-type name="QWheelEvent"/>
   <object-type name="QWidgetAction"/>
   <object-type name="QWidgetItem"/>
-  <object-type name="QWindowStateChangeEvent"/>
   <object-type name="QWindowsStyle"/>
   <object-type name="QWorkspace"/>
+  
+  <object-type name="QActionEvent"
+           polymorphic-id-expression="%1->type() == QEvent::ActionAdded || %1->type() == QEvent::ActionRemoved || %1->type() == QEvent::ActionChanged" />
+  <object-type name="QClipboardEvent"
+           polymorphic-id-expression="%1->type() == QEvent::Clipboard" />
+  <object-type name="QCloseEvent"
+           polymorphic-id-expression="%1->type() == QEvent::Close"/>  
+  <object-type name="QContextMenuEvent"
+           polymorphic-id-expression="%1->type() == QEvent::ContextMenu"/>
+  <object-type name="QDragEnterEvent"
+           polymorphic-id-expression="%1->type() == QEvent::DragEnter"/>
+  <object-type name="QDragLeaveEvent"
+           polymorphic-id-expression="%1->type() == QEvent::DragLeave"/>
+  <object-type name="QDragMoveEvent"
+           polymorphic-id-expression="%1->type() == QEvent::DragMove"/>
+  <object-type name="QDropEvent"
+           polymorphic-id-expression="%1->type() == QEvent::Drop"/>
+  <object-type name="QFileOpenEvent"
+           polymorphic-id-expression="%1->type() == QEvent::FileOpen"/>
+  <object-type name="QFocusEvent"
+           polymorphic-id-expression="%1->type() == QEvent::FocusIn || %1->type() == QEvent::FocusOut">
+        <modify-function signature="reason()const">
+            <remove/>
+        </modify-function>                   
+  </object-type>
+           
+  <object-type name="QGraphicsSceneContextMenuEvent"
+               polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneContextMenu"/>
+  <object-type name="QGraphicsSceneDragDropEvent"
+               polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneDragEnter || %1->type() == QEvent::GraphicsSceneDragLeave || %1->type() == QEvent::GraphicsSceneDragMove || %1->type() == QEvent::GraphicsSceneDrop"/>
+  <object-type name="QGraphicsSceneEvent"/>
+  <object-type name="QGraphicsSceneHelpEvent"
+               polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneHelp"/>
+  <object-type name="QGraphicsSceneHoverEvent"
+               polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneHoverEnter || %1->type() == QEvent::GraphicsSceneHoverLeave || %1->type() == QEvent::GraphicsSceneHoverMove"/>
+  <object-type name="QGraphicsSceneMouseEvent"
+               polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneMouseDoubleClick || %1->type() == QEvent::GraphicsSceneMouseMove || %1->type() == QEvent::GraphicsSceneMousePress || %1->type() == QEvent::GraphicsSceneMouseRelease"/>
+  <object-type name="QGraphicsSceneWheelEvent"
+               polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneWheel"/>
+  <object-type name="QHelpEvent" 
+               polymorphic-id-expression="%1->type() == QEvent::ToolTip || %1->type() == QEvent::WhatsThis"/>
+  <object-type name="QHideEvent" 
+               polymorphic-id-expression="%1->type() == QEvent::Hide"/>
+  <object-type name="QHoverEvent"
+               polymorphic-id-expression="%1->type() == QEvent::HoverEnter || %1->type() == QEvent::HoverLeave || %1->type() == QEvent::HoverMove"/>
+  <object-type name="QIconDragEvent"
+               polymorphic-id-expression="%1->type() == QEvent::IconDrag"/>
+  <object-type name="QInputMethodEvent"
+               polymorphic-id-expression="%1->type() == QEvent::InputMethod"/>
+  <object-type name="QMoveEvent"
+               polymorphic-id-expression="%1->type() == QEvent::Move"/>
+  <object-type name="QResizeEvent"
+               polymorphic-id-expression="%1->type() == QEvent::Resize"/>
+  <object-type name="QShortcutEvent"
+               polymorphic-id-expression="%1->type() == QEvent::Shortcut">
+        <modify-function signature="isAmbiguous()">
+            <remove />
+        </modify-function>               
+        <modify-function signature="shortcutId()">
+            <remove />
+        </modify-function>                    
+        <modify-function signature="key()">
+            <remove />
+        </modify-function>                          
+  </object-type>
+  <object-type name="QShowEvent"
+               polymorphic-id-expression="%1->type() == QEvent::Show"/>
+  <object-type name="QStatusTipEvent"
+               polymorphic-id-expression="%1->type() == QEvent::StatusTip"/>
+  <object-type name="QTabletEvent"
+               polymorphic-id-expression="%1->type() == QEvent::TabletMove || %1->type() == QEvent::TabletPress || %1->type() == QEvent::TabletRelease"/>
+  <object-type name="QToolBarChangeEvent"
+               polymorphic-id-expression="%1->type() == QEvent::ToolBarChange"/>
+  <object-type name="QWhatsThisClickedEvent"
+               polymorphic-id-expression="%1->type() == QEvent::WhatsThisClicked"/>
+  <object-type name="QWheelEvent"
+               polymorphic-id-expression="%1->type() == QEvent::Wheel"/>
+  <object-type name="QWindowStateChangeEvent"
+               polymorphic-id-expression="%1->type() == QEvent::WindowStateChange"/>
+  <object-type name="QDragResponseEvent" 
+               polymorphic-id-expression="%1->type() == QEvent::DragResponse"/>
+  <object-type name="QInputEvent" />  
+  <object-type name="QKeyEvent" 
+               polymorphic-id-expression="%1->type() == QEvent::KeyPress || %1->type() == QEvent::KeyRelease"/>
+  <object-type name="QMouseEvent" 
+               polymorphic-id-expression="%1->type() == QEvent::MouseButtonDblClick || %1->type() == QEvent::MouseButtonPress || %1->type() == QEvent::MouseButtonRelease || %1->type() == QEvent::MouseMove"/>
+  <object-type name="QPaintEvent" 
+               polymorphic-id-expression="%1->type() == QEvent::Paint"/>
+  <object-type name="QAccessibleEvent"
+               polymorphic-id-expression="%1->type() == QEvent::AccessibilityDescription || %1->type() == QEvent::AccessibilityHelp"/>
   
   <object-type name="QAbstractButton">
     <inject-code class="java">
@@ -1009,40 +1141,236 @@
     </inject-code>
   </object-type>
 
+  <object-type name="QStyle">
+    <modify-function signature="drawControl(QStyle::ControlElement, const QStyleOption *, QPainter *, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="drawControl(QStyle::ControlElement, const QStyleOption *, QPainter *, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+
+    <modify-function signature="drawComplexControl(QStyle::ComplexControl, const QStyleOptionComplex *, QPainter *, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionComplex" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionComplex", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="drawComplexControl(QStyle::ComplexControl, const QStyleOptionComplex *, QPainter *, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+
+    <modify-function signature="drawPrimitive(QStyle::PrimitiveElement, const QStyleOption *, QPainter *, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="drawPrimitive(QStyle::PrimitiveElement, const QStyleOption *, QPainter *, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+
+    <modify-function signature="hitTestComplexControl(QStyle::ComplexControl, const QStyleOptionComplex *, const QPoint &amp;, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionComplex" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionComplex", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="hitTestComplexControl(QStyle::ComplexControl, const QStyleOptionComplex *, const QPoint &amp;, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="pixelMetric(QStyle::PixelMetric, const QStyleOption *, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="pixelMetric(QStyle::PixelMetric, const QStyleOption *, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+
+    <modify-function signature="sizeFromContents(QStyle::ContentsType, const QStyleOption *, const QSize &amp;, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+       </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="sizeFromContents(QStyle::ContentsType, const QStyleOption *, const QSize &amp;, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+
+    <modify-function signature="standardIcon(QStyle::StandardPixmap, const QStyleOption *, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="standardIcon(QStyle::StandardPixmap, const QStyleOption *, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>>
+    </modify-function>
+    
+    <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption *, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption *, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="styleHint(QStyle::StyleHint, const QStyleOption *, const QWidget *, QStyleHintReturn *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="styleHint(QStyle::StyleHint, const QStyleOption *, const QWidget *, QStyleHintReturn *) const">    
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="subControlRect(QStyle::ComplexControl, const QStyleOptionComplex *, QStyle::SubControl, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionComplex" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionComplex", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="subControlRect(QStyle::ComplexControl, const QStyleOptionComplex *, QStyle::SubControl, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOptionComplex *%out = (QStyleOptionComplex *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="subElementRect(QStyle::SubElement, const QStyleOption *, const QWidget *) const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="subElementRect(QStyle::SubElement, const QStyleOption *, const QWidget *) const">
+        <modify-argument index="2">
+            <conversion-rule>
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>        
+        </modify-argument>
+    </modify-function>     
+  </object-type>
+
 
   <object-type name="QColorDialog">
     <modify-function signature="getColor(const QColor &amp;, QWidget *)">
-      <replace-default-expression index="0" with="QColor.white"/>      
+      <modify-argument index="1">
+        <replace-default-expression with="QColor.white"/>      
+      </modify-argument>
     </modify-function>
   </object-type>
   
   <object-type name="QLayout">  
     <modify-function signature="addItem(QLayoutItem *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addChildLayout(QLayout *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addChildLayout(QLayout *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="itemAt(int) const">
-        <disable-gc argument="return" />
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>            
   </object-type>
 
   <object-type name="QStackedLayout">  
     <modify-function signature="addItem(QLayoutItem *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addChildLayout(QLayout *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addChildLayout(QLayout *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="itemAt(int) const">
-        <disable-gc argument="return" />
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addWidget(QWidget *)">
         <rename to="addStackedWidget"/>
@@ -1051,43 +1379,67 @@
   
   <object-type name="QBoxLayout">  
     <modify-function signature="addItem(QLayoutItem *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addChildLayout(QLayout *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addChildLayout(QLayout *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="insertLayout(int, QLayout *, int)">
-        <disable-gc argument="2" />
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
     <modify-function signature="insertItem(int, QLayoutItem *)">
-        <disable-gc argument="2" />
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>            
     </modify-function>    
     <modify-function signature="addLayout(QLayout *, int)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>            
   </object-type>
 
   <object-type name="QGridLayout">  
     <modify-function signature="addItem(QLayoutItem *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addItem(QLayoutItem *, int, int, int, int, QFlags&lt;Qt::AlignmentFlag&gt;)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
-    <modify-function signature="addLayout(QLayout *, int, int, Qt::Alignment)">
-        <disable-gc argument="1" />
+    <modify-function signature="addLayout(QLayout *, int, int, QFlags&lt;Qt::AlignmentFlag&gt;)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
-    <modify-function signature="addLayout(QLayout *, int, int, int, int, Qt::Alignment)">
-        <disable-gc argument="1" />
+    <modify-function signature="addLayout(QLayout *, int, int, int, int, QFlags&lt;Qt::AlignmentFlag&gt;)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>            
     <modify-function signature="addChildLayout(QLayout *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addChildLayout(QLayout *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
   </object-type>
   
@@ -1194,7 +1546,7 @@
     }    
     </inject-code>
     
-    <modify-function signature="getItem(QWidget *, const QString &amp;, const QString &amp;, const QStringList &amp;, int, bool, bool *, QFlags&lt;Qt::WindowType>)">
+    <modify-function signature="getItem(QWidget *, const QString &amp;, const QString &amp;, const QStringList&lt;QString> &amp;, int, bool, bool *, QFlags&lt;Qt::WindowType>)">
         <rename to="getItem_internal"/>
         <access modifier="private" />
     </modify-function>
@@ -1273,28 +1625,44 @@
 
   <object-type name="QGraphicsScene">
     <modify-function signature="addItem(QGraphicsItem *)">
-      <disable-gc argument="1"/>
+      <modify-argument index="1">
+        <disable-gc />
+      </modify-argument>
     </modify-function>   
     <modify-function signature="addEllipse(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)">
-      <disable-gc argument="return"/>
+      <modify-argument index="return">
+        <disable-gc />
+      </modify-argument>
     </modify-function>
     <modify-function signature="addLine(const QLineF &amp;, const QPen &amp;)">
-      <disable-gc argument="return"/>
+      <modify-argument index="return">
+        <disable-gc />
+      </modify-argument>
     </modify-function>
     <modify-function signature="addPath(const QPainterPath &amp;, const QPen &amp;, const QBrush &amp;)">
-      <disable-gc argument="return"/>
+      <modify-argument index="return">
+        <disable-gc />
+      </modify-argument>
     </modify-function>
     <modify-function signature="addPixmap(const QPixmap &amp;)">
-      <disable-gc argument="return"/>
+        <modify-argument index="return">
+            <disable-gc/>
+        </modify-argument>
     </modify-function>
     <modify-function signature="addPolygon(const QPolygonF &amp;, const QPen &amp;, const QBrush &amp;)">
-      <disable-gc argument="return"/>
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addRect(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)">
-      <disable-gc argument="return"/>
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addText(const QString &amp;, const QFont &amp;)">
-      <disable-gc argument="return"/>
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
   </object-type>
 
@@ -1306,20 +1674,33 @@
   </object-type>
 
   <object-type name="QTreeWidget">
-    <modify-function signature="addTopLevelItem(QTreeWidgetItem *)">
-        <disable-gc argument="1" />
+    <modify-function signature="indexOfTopLevelItem(QTreeWidgetItem *)">
+        <remove/>
     </modify-function>
-    <modify-function signature="addTopLevelItems(const QList &amp;)">
-        <disable-gc argument="1" />
+    <modify-function signature="addTopLevelItem(QTreeWidgetItem *)">
+        <modify-argument index="1">
+            <disable-gc/>
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addTopLevelItems(const QList&lt;QTreeWidgetItem*> &amp;)">
+        <modify-argument index="1">
+            <disable-gc/>
+        </modify-argument>    
     </modify-function>    
     <modify-function signature="insertTopLevelItem(int, QTreeWidgetItem *)">
-        <disable-gc argument="2" />
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
-    <modify-function signature="insertTopLevelItems(int, const QList &amp;)">
-        <disable-gc argument="2" />
+    <modify-function signature="insertTopLevelItems(int, const QList&lt;QTreeWidgetItem*> &amp;)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
     </modify-function>        
     <modify-function signature="setHeaderItem(QTreeWidgetItem *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>                
   </object-type>
   
@@ -1331,22 +1712,32 @@
 
   <object-type name="QTableWidgetItem">
     <modify-function class="shell" signature="clone() const">
-        <disable-gc argument="return" />
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
   </object-type>
 
   <object-type name="QListWidgetItem">
     <modify-function signature="QListWidgetItem(QListWidget *, int)">
-        <disable-gc argument="this" />
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="QListWidgetItem(const QString &amp;, QListWidget *, int)">
-        <disable-gc argument="this" />
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
     <modify-function signature="QListWidgetItem(const QIcon &amp;, const QString &amp;, QListWidget *, int)">
-        <disable-gc argument="this" />
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>    
     </modify-function>    
     <modify-function class="shell" signature="clone() const">
-        <disable-gc argument="return" />
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
   </object-type>
 
@@ -1371,46 +1762,72 @@
         <remove exclusive="yes" />
     </modify-function>
     <modify-function signature="QTreeWidgetItem(QTreeWidget *,int)">
-        <disable-gc argument="this" />
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
-    <modify-function signature="QTreeWidgetItem(QTreeWidget *,const QStringList &amp;,int)">
-        <disable-gc argument="this" />
+    <modify-function signature="QTreeWidgetItem(QTreeWidget *,const QStringList&lt;QString> &amp;,int)">
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
     <modify-function signature="QTreeWidgetItem(QTreeWidget *,QTreeWidgetItem *,int)">
-        <disable-gc argument="this" />
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>
     </modify-function>        
     <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,int)">
-        <disable-gc argument="this" />
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
-    <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,const QStringList &amp;,int)">
-        <disable-gc argument="this" />
+    <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,const QStringList&lt;QString> &amp;,int)">
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
     <modify-function signature="QTreeWidgetItem(QTreeWidgetItem *,QTreeWidgetItem *,int)">
-        <disable-gc argument="this" />
+        <modify-argument index="this">
+            <disable-gc />
+        </modify-argument>    
     </modify-function>            
     <modify-function class="shell" signature="clone() const">
-        <disable-gc argument="return" />
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="addChild(QTreeWidgetItem *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
-    <modify-function signature="addChildren(const QList &amp;)">
-        <disable-gc argument="1" />
+    <modify-function signature="addChildren(const QList&lt;QTreeWidgetItem*> &amp;)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
     <modify-function signature="insertChild(int, QTreeWidgetItem *)">
-        <disable-gc argument="2" />
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
-    <modify-function signature="insertChildren(int, const QList &amp;)">
-        <disable-gc argument="2" />
+    <modify-function signature="insertChildren(int, const QList&lt;QTreeWidgetItem*> &amp;)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
     </modify-function>        
   </object-type>
 
   <object-type name="QListWidget">
     <modify-function signature="addItem(QListWidgetItem *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>
     <modify-function signature="insertItem(int, QListWidgetItem *)">
-        <disable-gc argument="2" />
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>            
     </modify-function>    
   </object-type>
 
@@ -1440,6 +1857,9 @@
     <extra-includes>
         <include file-name="QRect" location="global"/>
     </extra-includes>                
+    <modify-function signature="setFormat(const QByteArray &amp;)const">
+        <remove/>
+    </modify-function>
   </object-type>
     
   <object-type name="QProxyModel">
@@ -1468,6 +1888,9 @@
         <include file-name="QRect" location="global"/>
         <include file-name="QSize" location="global"/>
     </extra-includes>   
+    <modify-function signature="cacheMode()">
+        <remove />
+    </modify-function>
   </object-type>
     
   <object-type name="QPageSetupDialog">
@@ -1538,8 +1961,6 @@
     </extra-includes>      
   </object-type>
 
-  <object-type name="QDragResponseEvent">
-  </object-type>
 
   <object-type name="QAbstractScrollArea">
   </object-type>
@@ -1561,16 +1982,24 @@
 
   <object-type name="QTableWidget">
     <modify-function signature="setHorizontalHeaderItem(int, QTableWidgetItem *)">
-        <disable-gc argument="2" />
+        <modify-argument index="2">
+            <disable-gc/>
+        </modify-argument>
     </modify-function>
     <modify-function signature="setItem(int, int, QTableWidgetItem *)">
-        <disable-gc argument="3" />
+        <modify-argument index="3">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
     <modify-function signature="setItemPrototype(const QTableWidgetItem *)">
-        <disable-gc argument="1" />
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
     <modify-function signature="setVerticalHeaderItem(int, QTableWidgetItem *)">
-        <disable-gc argument="2" />
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
     </modify-function>    
   </object-type>
 
@@ -1604,8 +2033,10 @@
   </object-type>
   
   <object-type name="QSplashScreen">
-    <modify-function signature="showMessage(const QString &amg;, int, const QColor &amp;)">
-      <replace-default-expression index="2" with="QColor.black"/>
+    <modify-function signature="showMessage(const QString &amp;, int, const QColor &amp;)">
+      <modify-argument index="3">
+        <replace-default-expression with="QColor.black"/>
+      </modify-argument>
     </modify-function>
   </object-type>
   
@@ -1784,10 +2215,6 @@
     </extra-includes>
   </object-type>
   
-  <object-type name="QInputEvent" />  
-  <object-type name="QKeyEvent" />
-  <object-type name="QMouseEvent" />
-  <object-type name="QPaintEvent" />
     
   <object-type name="QPrinter" memory-managed="yes">
     <custom-constructor>
@@ -1871,6 +2298,18 @@
     <modify-function class="java" signature="drawRects(const QRectF *, int)">
         <rename to="drawRects_float"/>
         <access modifier="private"/>
+    </modify-function>    
+    <modify-function class="java" signature="drawLines(const QVector&lt;QPoint> &amp;)">
+        <rename to="drawPointPairs"/>
+    </modify-function>    
+    <modify-function class="java" signature="drawLines(const QVector&lt;QPointF> &amp;)">
+        <rename to="drawPointPairsF"/>
+    </modify-function>
+    <modify-function class="java" signature="drawLines(const QVector&lt;QLineF> &amp;)">
+        <rename to="drawLinesF"/>
+    </modify-function>
+    <modify-function class="java" signature="drawRects(const QVector&lt;QRectF> &amp;)">
+        <rename to="drawRectsF"/>
     </modify-function>    
     <inject-code class="java">
     public final void drawRects(com.trolltech.qt.core.QRect rects[]) 

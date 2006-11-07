@@ -83,9 +83,5 @@
     \o -a
     \o Updates the files regardless of modification date.
 
-    \row
-    \o -f
-    \o Overrides safety checks, forcing an update of the files.
-
     \endtable
 */

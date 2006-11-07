@@ -43,7 +43,7 @@
     distribute the native libraries by including them in a \c .jar
     file. \QJ solves this problem by searching the classpath in
     addition to the traditional locations, using the \c
-    com.trolltech.UtilitiesLoadLibrary() function. So to distribute
+    com.trolltech.qt.Utilities.loadLibrary() function. So to distribute
     native libraries, all you have to do is to include them in the JAR
     bundle.
 

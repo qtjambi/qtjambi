@@ -126,6 +126,7 @@ public class SvgCards extends QGraphicsView {
             return rectangle;
         }
 
+        @Override
         public void paint(QPainter painter, QStyleOptionGraphicsItem option, 
                           QWidget widget) {
 

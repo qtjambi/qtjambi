@@ -163,6 +163,8 @@ public:
     void setInstantiationInCpp(bool incpp) { m_cpp_instantiation = incpp; }
     bool hasInstantiationInCpp() const { return hasInstantiations() && m_cpp_instantiation; }
 
+    QString minimalSignature() const;
+
     // true when the type is a QtObject subclass
     bool hasNativeId() const;
 
@@ -380,6 +382,8 @@ public:
 
     QString modifiedName() const;
 
+    QString minimalSignature() const;
+
     QString marshalledName() const;
 
     // true if one or more of the arguments are of QtObject subclasses
@@ -441,6 +445,14 @@ public:
 
     MetaJavaFunction *copy() const;
 
+    QString replacedDefaultExpression(const MetaJavaClass *cls, int idx) const;
+    QString conversionRule(CodeSnip::Language language, int idx) const;
+    bool disabledGarbageCollection(const MetaJavaClass *cls, CodeSnip::Language language, int idx) const;
+    bool disabledGarbageCollection(const MetaJavaClass *cls, int idx) const;
+    QString typeReplaced(int argument_index) const;
+    bool isRemovedFromAllLanguages(const MetaJavaClass *) const;
+    bool isRemovedFrom(const MetaJavaClass *, CodeSnip::Language language) const;
+
     bool hasModifications(const MetaJavaClass *implementor) const;
     FunctionModificationList modifications(const MetaJavaClass *implementor) const;
 
@@ -448,6 +460,8 @@ public:
     // interface that declares it.
     const MetaJavaClass *interfaceClass() const { return m_interface_class; }
     void setInterfaceClass(const MetaJavaClass *cl) { m_interface_class = cl; }
+
+    
 
 private:
     QString m_name;
@@ -551,7 +565,9 @@ public:
         NonEmptyFunctions       = 0x040000,   // Only functions with JNI implementations
         VirtualInJavaFunctions  = 0x080000,   // Only functions which are virtual in Java
         AbstractFunctions       = 0x100000,   // Only abstract functions
-        WasVisible              = 0x200000    // Only functions that were public or protected in the original code
+        WasVisible              = 0x200000,   // Only functions that were public or protected in the original code
+        NotRemovedFromJava      = 0x400000,   // Only functions that have not been removed from Java
+        NotRemovedFromShell     = 0x800000    // Only functions that have not been removed from the shell class
     };
 
     MetaJavaClass()
@@ -581,7 +597,6 @@ public:
     void addFunction(MetaJavaFunction *function);
     bool hasFunction(const MetaJavaFunction *f) const;
     bool hasFunction(const QString &str) const;
-    bool hasFunctionNotRemoved(const MetaJavaFunction *f) const;
     bool hasSignal(const MetaJavaFunction *f) const;
 
     bool hasConstructors() const;
@@ -633,11 +648,12 @@ public:
     QString package() const { return m_type_entry->javaPackage(); }
     bool isInterface() const { return m_type_entry->isInterface(); }
     bool isNamespace() const { return m_type_entry->isNamespace(); }
-    bool isQObject() const { return m_type_entry->isQObject(); }
+    bool isQObject() const { return m_type_entry->isQObject(); }    
     QString qualifiedCppName() const { return m_type_entry->qualifiedCppName(); }
 
     bool hasInconsistentFunctions() const;
     bool hasSignals() const;
+    bool inheritsFrom(const MetaJavaClass *other) const;
 
     void setForceShellClass(bool on) { m_force_shell_class = on; }
     bool generateShellClass() const

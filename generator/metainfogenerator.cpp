@@ -183,11 +183,69 @@ void MetaInfoGenerator::buildSkipList()
     }
 }
 
+QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QString &package,
+                                                       const MetaJavaClassList &classes)
+{
+    QStringList handlers;
+    foreach (MetaJavaClass *cls, classes) {            
+        const ComplexTypeEntry *centry = cls->typeEntry();
+        if (!centry->isPolymorphicBase())
+            continue;
+
+        MetaJavaClassList classList = this->classes();
+        bool first = true;
+        foreach (MetaJavaClass *clazz, classList) {
+            if (clazz->package() == package && clazz->inheritsFrom(cls)) {
+                if (!clazz->typeEntry()->polymorphicIdValue().isEmpty()) {
+                    // On first find, open the function
+                    if (first) {
+                        first = false;
+
+                        QString handler = jni_signature(cls->fullName(), Underscores);
+                        handlers.append(handler);
+
+                        s << "static bool polymorphichandler_" << handler
+                          << "(const void *ptr, char **class_name, char **package)" << endl
+                          << "{" << endl
+                          << "    Q_ASSERT(ptr != 0);" << endl
+                          << "    " << cls->qualifiedCppName() << " *object = (" 
+                          << cls->qualifiedCppName() << " *)ptr;" << endl;
+                    }
+
+                    // For each, add case label
+                    s << "    if (" 
+                      << clazz->typeEntry()->polymorphicIdValue().replace("%1", "object")
+                      << ") {" << endl
+                      << "        *class_name = \"" << clazz->name() << "\";" << endl
+                      << "        *package    = \"" << clazz->package().replace(".", "/") << "/\";" << endl
+                      << "        return true;" << endl
+                      << "    }" << endl;
+                } else {
+                    QString warning = QString("class '%1' inherits from polymorphic class '%2', but has no polymorphic value set")
+                        .arg(clazz->name())
+                        .arg(cls->name());                        
+
+                    ReportHandler::warning(warning);
+                }
+            }
+        }  
+
+        // Close the function if it has been opened
+        if (!first) {
+            s << "    return false;" << endl
+              << "}" << endl;
+        }
+    }
+
+    return handlers;
+}
+
 void MetaInfoGenerator::writeCppFile()
 {
     TypeEntryHash entries = TypeDatabase::instance()->entries();
     TypeEntryHash::iterator it;
 
+    MetaJavaClassList classes_with_polymorphic_id;
     MetaJavaClassList classList = classes();
     QHash<QString, QFile *> fileHash;
     foreach (MetaJavaClass *cls, classList) {
@@ -217,15 +275,20 @@ void MetaInfoGenerator::writeCppFile()
         if (s.device() != 0) {
             if (cls->typeEntry()->isObject() && !cls->typeEntry()->isQObject() && !cls->isInterface())
                 writeDestructors(s, cls);
-            writeCustomStructors(s, cls->typeEntry());
+            writeCustomStructors(s, cls->typeEntry());           
         }
+
+        if (cls->typeEntry()->isPolymorphicBase())
+            classes_with_polymorphic_id.append(cls);
     }
 
+    QHash<QString, QStringList> handlers_to_register;
     foreach (QString package, fileHash.keys()) {
         QFile *f = fileHash.value(package, 0);
         if (f != 0) {
             QTextStream s(f);
             writeSignalsAndSlots(s, package);
+            handlers_to_register[package] = writePolymorphicHandler(s, package, classes_with_polymorphic_id);
         }
     }
 
@@ -259,16 +322,23 @@ void MetaInfoGenerator::writeCppFile()
         if (f != 0) {
             QTextStream s(f);
             writeInitialization(s, cls->typeEntry(), shouldGenerate(cls));
-
         }
     }
 
+    foreach (QString package, fileHash.keys()) {
+        QFile *f = fileHash.value(package, 0);
+        if (f != 0) {
+            QTextStream s(f);
 
-    foreach (QFile *f, fileHash.values()) {
-        QTextStream s(f);
-        s << "}" << endl << endl;
-        f->close();
-        delete f;
+            foreach (QString handler, handlers_to_register.value(package, QStringList())) {
+                s << "    qtjambi_register_polymorphic_id(\"" << handler << "\","
+                  << "polymorphichandler_" << handler << ");" << endl;
+            }
+            
+            s << "}" << endl << endl;
+            f->close();
+            delete f;
+        }
     }
 }
 
@@ -463,6 +533,7 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const MetaJavaCla
     writeInclude(s, Include(Include::IncludePath, "QReadLocker"));
     writeInclude(s, Include(Include::IncludePath, "QWriteLocker"));
     writeInclude(s, Include(Include::IncludePath, "qtjambi_cache.h"));
+    writeInclude(s, Include(Include::IncludePath, "qtjambi_core.h"));
     s << endl;
 
     foreach (MetaJavaClass *cls, classList) {
@@ -497,7 +568,13 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
     if (!entry->preferredConversion())
         return ;
 
-    QString javaName = entry->javaPackage().replace(".", "/") + "/" + entry->lookupName();
+    QString javaPackage = entry->javaPackage();
+
+    QString javaName =  entry->lookupName();
+    if(!javaPackage.isEmpty()){
+        javaName.prepend(javaPackage.replace(".", "/") + "/");
+    }
+
     QString qtName = entry->name();
 
     s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl
