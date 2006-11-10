@@ -195,6 +195,45 @@ void MetaJavaBuilder::checkFunctionModifications()
     }
 }
 
+MetaJavaClass *MetaJavaBuilder::argumentToClass(ArgumentModelItem argument)
+{
+    MetaJavaClass *returned = 0;
+    bool ok = false;
+    MetaJavaType *type = translateType(argument->type(), &ok);
+    if (ok && type != 0 && type->typeEntry() != 0 && type->typeEntry()->isComplex()) {
+        const TypeEntry *entry = type->typeEntry();
+        returned = m_java_classes.findClass(entry->name());  
+    }
+    delete type;
+    return returned;
+}
+
+/**
+ * Checks the argument of a hash function and flags the type if it is a complex type 
+ */
+void MetaJavaBuilder::registerHashFunction(FunctionModelItem function_item) 
+{
+    ArgumentList arguments = function_item->arguments();
+    if (arguments.size() == 1) {
+        if (MetaJavaClass *cls = argumentToClass(arguments.at(0)))
+            cls->setHasHashFunction(true);        
+    }
+}
+
+/**
+ * Checks the argument of an equals operator and flags the type if it is a complex type
+ */
+void MetaJavaBuilder::registerEqualsOperator(FunctionModelItem function_item) 
+{
+    ArgumentList arguments = function_item->arguments();
+    if (arguments.size() == 2) {
+        MetaJavaClass *class_one = argumentToClass(arguments.at(0));
+        MetaJavaClass *class_two = argumentToClass(arguments.at(1));
+        if (class_one != 0 && class_one == class_two)
+            class_one->setHasEqualsOperator(true);
+    }
+}
+
 bool MetaJavaBuilder::build()
 {
     Q_ASSERT(!m_file_name.isEmpty());
@@ -312,6 +351,19 @@ bool MetaJavaBuilder::build()
         }
     }
 
+    {
+        FunctionList hash_functions = m_dom->findFunctions("qHash");    
+        foreach (FunctionModelItem item, hash_functions) {
+            registerHashFunction(item);
+        }
+    }
+
+    {
+        FunctionList equal_functions = m_dom->findFunctions("operator==");
+        foreach (FunctionModelItem item, equal_functions) {
+            registerEqualsOperator(item);
+        }
+    }
 
     figureOutEnumValues();
     figureOutDefaultEnumArguments();
@@ -851,6 +903,9 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
                     && java_function->isRemovedFrom(java_class, CodeSnip::JavaCode)) {
                     *java_function += MetaJavaAttributes::FinalInCpp;
                 }
+
+                if (java_function->name() == "operator_equal")
+                    java_class->setHasEqualsOperator(true);
 
                 java_class->addFunction(java_function);
             } else if (java_function->isDestructor() && !java_function->isPublic()) {

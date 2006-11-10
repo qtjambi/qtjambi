@@ -19,6 +19,7 @@ import java.util.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.network.QHostAddress;
 import com.trolltech.autotests.generated.*;
 
 import static org.junit.Assert.*;
@@ -154,6 +155,63 @@ public class TestClassFunctionality extends QApplicationTest {
         private void slot() {
             slot_called = true;
         }
+    }
+    
+    @Test
+    public void testEquals()
+    {
+        QHostAddress address1 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
+        QHostAddress address2 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
+        QHostAddress address3 = new QHostAddress(QHostAddress.SpecialAddress.Broadcast);
+        QByteArray array = new QByteArray("127.0.0.1");
+        
+        assertFalse(address1 == address2);
+        assertFalse(address2 == address3);        
+        assertTrue(address1.equals(address2));
+        assertTrue(address2.equals(address1));
+        assertTrue(address3.equals(address3));
+        assertEquals(false, address1.equals(address3));
+        assertFalse(address2.equals(array));
+    }
+    
+    @Test 
+    public void testHashCodeAndEquals()
+    {
+        Hashtable<QHostAddress, QByteArray> address_hash = new Hashtable<QHostAddress, QByteArray>();
+        
+        QHostAddress address1 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
+        QHostAddress address2 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
+        QHostAddress address3 = new QHostAddress(QHostAddress.SpecialAddress.Broadcast);
+        
+        QByteArray ba_address1 = new QByteArray("127.0.0.1 - 1");
+        QByteArray ba_address2 = new QByteArray("127.0.0.1 - 2");
+        QByteArray ba_address3 = new QByteArray("255.255.255.255");
+        
+        address_hash.put(address1, ba_address1);
+        assertFalse(address_hash.containsKey(new QHostAddress(QHostAddress.SpecialAddress.Broadcast)));
+        assertTrue(address_hash.containsKey(new QHostAddress(QHostAddress.SpecialAddress.LocalHost)));        
+        assertTrue(address_hash.get(new QHostAddress(QHostAddress.SpecialAddress.LocalHost)) == ba_address1);
+        
+        address_hash.put(address2, ba_address2); // overwrites the first entry of this type
+        address_hash.put(address3, ba_address3);
+        assertTrue(address_hash.containsKey(address1));
+        assertTrue(address_hash.containsKey(new QHostAddress(QHostAddress.SpecialAddress.Broadcast)));
+        
+        QHostAddress lookup_key1 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
+        QHostAddress lookup_key2 = new QHostAddress(QHostAddress.SpecialAddress.Broadcast);                
+     
+        QByteArray value = address_hash.get(lookup_key1);
+        assertTrue(value == ba_address2);
+        
+        value = address_hash.get(lookup_key2);
+        assertTrue(value == ba_address3);
+    }
+    
+    @Test
+    public void testToString()
+    {
+        QByteArray ba = new QByteArray("Pretty flowers ∆ÿ≈");
+        assertEquals("Pretty flowers ∆ÿ≈", ba.toString());
     }
 
     @Test
@@ -473,40 +531,6 @@ public class TestClassFunctionality extends QApplicationTest {
 
         assertEquals(seq.count(), 1);
         assertEquals(seq.operator_subscript(0), Qt.Modifier.CTRL.value() | Qt.Key.Key_A.value());
-
-        // The result can be checked in the resulting
-        // "tmp__testclass_func_result.png" file
-        QPixmap pm = new QPixmap(100, 100);
-        pm.fill(QColor.blue);
-
-        QPainter p = new QPainter();
-        p.begin(pm);
-        p.setPen(new QPen(QColor.red));
-        p.setBrush(new QBrush(QColor.green));
-
-        QRect rects[] = new QRect[2];
-        rects[0] = new QRect(0, 0, 10, 10);
-        rects[1] = new QRect(90, 90, 10, 10);
-        p.drawRects(rects);
-
-        QRectF rectfs[] = new QRectF[1];
-        rectfs[0] = new QRectF(10.1, 10.1, 10.1, 10.1);
-        p.drawRects(rectfs);
-
-        QPoint points[] = new QPoint[4];
-        points[0] = new QPoint(45, 45);
-        points[1] = new QPoint(55, 45);
-        points[2] = new QPoint(55, 55);
-        points[3] = new QPoint(45, 55);
-        p.drawPolygon(points);
-
-        QLineF linefs[] = new QLineF[2];
-        linefs[0] = new QLineF(100, 0, 90, 10);
-        linefs[1] = new QLineF(90, 10, 100, 20);
-        p.drawLines(linefs);
-        p.end();
-
-        pm.save("tmp__testclass_func_result.png", "PNG");
 
         SenderTester tester = new SenderTester();
         QTimer.singleShot(1000, tester, "timeoutSlot()");

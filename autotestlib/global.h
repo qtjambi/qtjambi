@@ -23,5 +23,6 @@
 #include "tulip.h"
 #include "variants.h"
 #include "polymorphictype.h"
+#include "paintengine.h"
 
 #endif

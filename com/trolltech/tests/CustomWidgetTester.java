@@ -13,6 +13,7 @@ public class CustomWidgetTester extends QWidget {
 
     
 //    @QtPropertyDesignable("true")
+    @QtPropertyOrder(0)
     public String text() {
         return text;
     }
@@ -34,6 +35,7 @@ public class CustomWidgetTester extends QWidget {
     }
     
     
+    @QtPropertyOrder(1)
     public QPoint position() {
         return position;
     }

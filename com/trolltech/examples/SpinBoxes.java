@@ -26,7 +26,13 @@ public class SpinBoxes extends QWidget {
     private QGroupBox doubleSpinBoxesGroup;
     private QLabel meetingLabel;
 
+
     public SpinBoxes() {
+        this(null);
+    }
+
+    public SpinBoxes(QWidget parent) {
+        super(parent);
         createSpinBoxes();
         createDateTimeEdits();
         createDoubleSpinBoxes();
@@ -185,7 +191,7 @@ public class SpinBoxes extends QWidget {
         QApplication.exec();
     }
     // REMOVE-START
-    
+
     public static String exampleName() {
         return "Spin Boxes";
     }

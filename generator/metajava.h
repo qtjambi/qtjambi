@@ -419,6 +419,7 @@ public:
     MetaJavaArgumentList arguments() const { return m_arguments; }
     void setArguments(const MetaJavaArgumentList &arguments) { m_arguments = arguments; }
     void addArgument(MetaJavaArgument *argument) { m_arguments << argument; }
+    int actualMinimumArgumentCount() const;
 
     void setInvalid(bool on) { m_invalid = on; }
     bool isInvalid() const { return m_invalid; }
@@ -452,6 +453,7 @@ public:
     QString typeReplaced(int argument_index) const;
     bool isRemovedFromAllLanguages(const MetaJavaClass *) const;
     bool isRemovedFrom(const MetaJavaClass *, CodeSnip::Language language) const;
+    bool argumentRemoved(int) const;
 
     bool hasModifications(const MetaJavaClass *implementor) const;
     FunctionModificationList modifications(const MetaJavaClass *implementor) const;
@@ -579,6 +581,8 @@ public:
           m_functions_fixed(false),
           m_has_public_destructor(true),
           m_force_shell_class(false),
+          m_has_hash_function(false),
+          m_has_equals_operator(false),
           m_enclosing_class(0),
           m_base_class(0),
           m_extracted_interface(0),
@@ -608,6 +612,7 @@ public:
     bool hasPublicDestructor() const { return m_has_public_destructor; }
     void setHasPublicDestructor(bool on) { m_has_public_destructor = on; }
 
+    MetaJavaFunctionList queryFunctionsByName(const QString &name) const;
     MetaJavaFunctionList queryFunctions(uint query) const;
     inline MetaJavaFunctionList allVirtualFunctions() const;
     inline MetaJavaFunctionList allFinalFunctions() const;
@@ -690,6 +695,12 @@ public:
     ComplexTypeEntry *typeEntry() { return m_type_entry; }
     void setTypeEntry(ComplexTypeEntry *type) { m_type_entry = type; }
 
+    void setHasHashFunction(bool on) { m_has_hash_function = on; }
+    bool hasHashFunction() const { return m_has_hash_function; }
+
+    void setHasEqualsOperator(bool on) { m_has_equals_operator = on; }
+    bool hasEqualsOperator() const { return m_has_equals_operator; }
+
 private:
     uint m_namespace : 1;
     uint m_qobject : 1;
@@ -699,6 +710,9 @@ private:
     uint m_functions_fixed : 1;
     uint m_has_public_destructor : 1;
     uint m_force_shell_class : 1;
+    
+    uint m_has_hash_function : 1;
+    uint m_has_equals_operator : 1;
 
     const MetaJavaClass *m_enclosing_class;
     MetaJavaClass *m_base_class;
@@ -715,25 +729,30 @@ private:
 
 inline MetaJavaFunctionList MetaJavaClass::allVirtualFunctions() const
 {
-    return queryFunctions(VirtualFunctions);
+    return queryFunctions(VirtualFunctions
+                          | NotRemovedFromShell);
 }
 
 inline MetaJavaFunctionList MetaJavaClass::allFinalFunctions() const
 {
-    return queryFunctions(FinalInJavaFunctions|FinalInCppFunctions);
+    return queryFunctions(FinalInJavaFunctions
+                          | FinalInCppFunctions
+                          | NotRemovedFromJava);
 }
 
 inline MetaJavaFunctionList MetaJavaClass::cppInconsistentFunctions() const
 {
-    return queryFunctions(MetaJavaClass::Inconsistent
-                          | MetaJavaClass::NormalFunctions
-                          | MetaJavaClass::Visible);
+    return queryFunctions(Inconsistent
+                          | NormalFunctions
+                          | Visible
+                          | NotRemovedFromShell);
 }
 
 inline MetaJavaFunctionList MetaJavaClass::cppSignalFunctions() const
 {
-    return queryFunctions(MetaJavaClass::Signals
-                          | MetaJavaClass::Visible);
+    return queryFunctions(Signals
+                          | Visible
+                          | NotRemovedFromJava);
 }
 
 #endif // METAJAVA_H

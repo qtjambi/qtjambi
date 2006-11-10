@@ -15,8 +15,9 @@
 #include "reporthandler.h"
 #include "docparser.h"
 
-#include <QDir>
-#include <QTextStream>
+#include <QtCore/QDir>
+#include <QtCore/QTextStream>
+#include <QtCore/QVariant>
 #include <QDebug>
 
 JavaGenerator::JavaGenerator()
@@ -288,13 +289,15 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
     for (int i=0; i<arguments.count(); ++i) {
         const MetaJavaArgument *arg = arguments.at(i);
 
-        if (i > 0 || (!java_function->isStatic() && !java_function->isConstructor()))
-            s << ", ";
+        if (!java_function->argumentRemoved(i+1)) {
+            if (i > 0 || (!java_function->isStatic() && !java_function->isConstructor()))
+                s << ", ";
 
-        if (!arg->type()->hasNativeId())
-            writeArgument(s, java_function, arg, EnumAsInts);
-        else
-            s << "long " << arg->argumentName();
+            if (!arg->type()->hasNativeId())
+                writeArgument(s, java_function, arg, EnumAsInts);
+            else
+                s << "long " << arg->argumentName();
+        }
     }
     s << ")";
 
@@ -326,42 +329,45 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, -1) && !java_function->isConstructor())
         s << "        this.disableGarbageCollection();" << endl;
 
+    
     for (int i=0; i<arguments.count(); ++i) {
         MetaJavaArgument *arg = arguments.at(i);
         MetaJavaType *type = arg->type();
+        
+        if (!java_function->argumentRemoved(i+1)) {
+            if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, i+1)) {
+                s << "        "
+                << "if (" << arg->argumentName() << " != null) {" << endl;
 
-        if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, i+1)) {
-            s << "        "
-              << "if (" << arg->argumentName() << " != null) {" << endl;
+                if (arg->type()->isContainer())
+                    writeDisableGCForContainer(s, arg, "            ");
+                else
+                    s << "            " << arg->argumentName() << ".disableGarbageCollection();" << endl;
+                s << "        }" << endl;
+            }
 
-            if (arg->type()->isContainer())
-                writeDisableGCForContainer(s, arg, "            ");
-            else
-                s << "            " << arg->argumentName() << ".disableGarbageCollection();" << endl;
-            s << "        }" << endl;
-        }
+            if (type->isArray()) {
+                s << "        "
+                << "if (" << arg->argumentName() << ".length != " << type->arrayElementCount() << ")" << endl
+                << "            "
+                << "throw new IllegalArgumentException(\"Wrong number of elements in array. Found: \" + "
+                << arg->argumentName() << ".length + \", expected: " << type->arrayElementCount() << "\");"
+                << endl << endl;
+            }
 
-        if (type->isArray()) {
-            s << "        "
-              << "if (" << arg->argumentName() << ".length != " << type->arrayElementCount() << ")" << endl
-              << "            "
-              << "throw new IllegalArgumentException(\"Wrong number of elements in array. Found: \" + "
-              << arg->argumentName() << ".length + \", expected: " << type->arrayElementCount() << "\");"
-              << endl << endl;
-        }
-
-        if (type->isEnum()) {
-            EnumTypeEntry *et = (EnumTypeEntry *) type->typeEntry();
-            if (et->forceInteger()) {
-                if (!et->lowerBound().isEmpty()) {
-                    s << "        if (" << arg->argumentName() << " < " << et->lowerBound() << ")" << endl
-                      << "            throw new IllegalArgumentException(\"Argument " << arg->argumentName()
-                      << " is less than lowerbound " << et->lowerBound() << "\");" << endl;
-                }
-                if (!et->upperBound().isEmpty()) {
-                    s << "        if (" << arg->argumentName() << " > " << et->upperBound() << ")" << endl
-                      << "            throw new IllegalArgumentException(\"Argument " << arg->argumentName()
-                      << " is greated than upperbound " << et->upperBound() << "\");" << endl;
+            if (type->isEnum()) {
+                EnumTypeEntry *et = (EnumTypeEntry *) type->typeEntry();
+                if (et->forceInteger()) {
+                    if (!et->lowerBound().isEmpty()) {
+                        s << "        if (" << arg->argumentName() << " < " << et->lowerBound() << ")" << endl
+                        << "            throw new IllegalArgumentException(\"Argument " << arg->argumentName()
+                        << " is less than lowerbound " << et->lowerBound() << "\");" << endl;
+                    }
+                    if (!et->upperBound().isEmpty()) {
+                        s << "        if (" << arg->argumentName() << " > " << et->upperBound() << ")" << endl
+                        << "            throw new IllegalArgumentException(\"Argument " << arg->argumentName()
+                        << " is greated than upperbound " << et->upperBound() << "\");" << endl;
+                    }
                 }
             }
         }
@@ -401,21 +407,23 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
         const MetaJavaArgument *arg = arguments.at(i);
         const MetaJavaType *type = arg->type();
 
-        if (i > 0 || (!java_function->isStatic() && !java_function->isConstructor()))
-            s << ", ";
+        if (!java_function->argumentRemoved(i+1)) {
+            if (i > 0 || (!java_function->isStatic() && !java_function->isConstructor()))
+                s << ", ";
 
-        if (type->isJavaEnum() || type->isJavaFlags()) {
-            s << arg->argumentName() << ".value()";
-        } else if (!type->hasNativeId()) {
-            s << arg->argumentName();
-        } else {
-            s << arg->argumentName() << " == null ? ";
-            // Try to call default constructor for value types...
-            if (type->isValue() && hasDefaultConstructor(type))
-                s << "new " << type->typeEntry()->qualifiedJavaName() << "().nativeId()";
-            else
-                s << "0";
-            s << " : " << arg->argumentName() << ".nativeId()";
+            if (type->isJavaEnum() || type->isJavaFlags()) {
+                s << arg->argumentName() << ".value()";
+            } else if (!type->hasNativeId()) {
+                s << arg->argumentName();
+            } else {
+                s << arg->argumentName() << " == null ? ";
+                // Try to call default constructor for value types...
+                if (type->isValue() && hasDefaultConstructor(type))
+                    s << "new " << type->typeEntry()->qualifiedJavaName() << "().nativeId()";
+                else
+                    s << "0";
+                s << " : " << arg->argumentName() << ".nativeId()";
+            }
         }
     }
     s << ")";
@@ -614,22 +622,77 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     } else {
         s << ";" << endl << endl;
     }
+}
 
-    MetaJavaArgumentList arguments = java_function->arguments();
-    int argument_count = arguments.count();
-    if (java_function->name() == "operator_equal") {
-        if (argument_count != 1
-            || arguments.at(0)->type()->name() != java_function->ownerClass()->name()
-            || java_function->ownerClass()->hasFunction("equals"))
-            return;
+void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
+                                                         const MetaJavaClass *cls) 
+{      
+    if (cls->hasEqualsOperator() && cls->hasHashFunction()) {
+        MetaJavaFunctionList equal_functions = cls->queryFunctionsByName("equals");
+        bool found = false;
+        foreach (const MetaJavaFunction *function, equal_functions) {
+            if (function->actualMinimumArgumentCount() == 1
+                && function->arguments().at(0)->type()->typeEntry()->isComplex()) {
+                found = true;
+                break;
+            }
+        }
 
-        s << "    public boolean equals(Object other) {" << endl
-          << "        if (other != null && other instanceof " << java_function->ownerClass()->name() << ")" << endl
-          << "            return operator_equal((" << java_function->ownerClass()->name() << ") other);" << endl
-          << "        return false;" << endl
-          << "    }" << endl;
+        if (!found) {
+            s << endl
+              << "    public boolean equals(Object other) {" << endl
+              << "        if (nativeId() == 0)" << endl
+              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object\");" << endl
+              << "        return !(other instanceof " << cls->fullName() 
+              << ") ? false : __qt_equals(nativeId(), ((" << cls->fullName() << ")other).nativeId());" << endl
+              << "    }" << endl
+              << "    private static native boolean __qt_equals(long __this_nativeId, long other);" << endl << endl; 
+        }
     }
 
+    if (cls->hasHashFunction()) {
+        MetaJavaFunctionList hashcode_functions = cls->queryFunctionsByName("hashCode");
+        bool found = false;
+        foreach (const MetaJavaFunction *function, hashcode_functions) {
+            if (function->actualMinimumArgumentCount() == 0) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            s << endl
+              << "    public int hashCode() {" << endl
+              << "        if (nativeId() == 0)" << endl
+              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object\");" << endl
+              << "        return __qt_hashCode(nativeId());" << endl
+              << "    }" << endl
+              << "    private static native int __qt_hashCode(long __this_nativeId);" << endl << endl;
+        }
+    }
+
+    // Qt has a standard toString() conversion in QVariant?
+    QVariant::Type type = QVariant::nameToType(cls->qualifiedCppName().toLatin1());
+    if (QVariant(type).canConvert(QVariant::String)) {
+        MetaJavaFunctionList tostring_functions = cls->queryFunctionsByName("toString");
+        bool found = false;
+        foreach (const MetaJavaFunction *function, tostring_functions) {
+            if (function->actualMinimumArgumentCount() == 0) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            s << endl
+              << "    public String toString() {" << endl
+              << "        if (nativeId() == 0)" << endl
+              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object\");" << endl
+              << "        return __qt_toString(nativeId());" << endl
+              << "    }" << endl
+              << "    private static native String __qt_toString(long __this_nativeId);" << endl << endl;
+        }
+    }
 }
 
 void JavaGenerator::writeEnumOverload(QTextStream &s, const MetaJavaFunction *java_function,
@@ -758,50 +821,55 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
         else
             s << java_function->name();
         s << "(";
+
+        int written_arguments = 0;
         for (int j=0; j<argument_count; ++j) {
-            if (j != 0)
-                s << ", ";
-            if (j < used_arguments) {
-                s << arguments.at(j)->argumentName();
-            } else {
-                MetaJavaType *arg_type = 0;
-                QString modified_type = java_function->typeReplaced(arguments.at(j)->argumentIndex()+1);
-                if (modified_type.isEmpty()) {
-                    arg_type = arguments.at(j)->type();
-                    if (arg_type->isNativePointer()) {
-                        s << "(com.trolltech.qt.QNativePointer)";
+            if (!java_function->argumentRemoved(j+1)) {
+                if (written_arguments++ > 0)
+                    s << ", ";
+
+                if (j < used_arguments) {
+                    s << arguments.at(j)->argumentName();
+                } else {
+                    MetaJavaType *arg_type = 0;
+                    QString modified_type = java_function->typeReplaced(j+1);
+                    if (modified_type.isEmpty()) {
+                        arg_type = arguments.at(j)->type();
+                        if (arg_type->isNativePointer()) {
+                            s << "(com.trolltech.qt.QNativePointer)";
+                        } else {
+                            const TypeEntry *type = arguments.at(j)->type()->typeEntry();
+                            if (type->designatedInterface())
+                                type = type->designatedInterface();
+                            if (!type->isEnum() && !type->isFlags())
+                                s << "(" << type->qualifiedJavaName() << ")";
+                        }
                     } else {
-                        const TypeEntry *type = arguments.at(j)->type()->typeEntry();
-                        if (type->designatedInterface())
-                            type = type->designatedInterface();
-                        if (!type->isEnum() && !type->isFlags())
-                            s << "(" << type->qualifiedJavaName() << ")";
+                        s << "(" << modified_type << ")";
                     }
-                } else {
-                    s << "(" << modified_type << ")";
-                }
 
-                QString defaultExpr = arguments.at(j)->defaultValueExpression();
+                    QString defaultExpr = arguments.at(j)->defaultValueExpression();
 
-                int pos = defaultExpr.indexOf(".");
-                if (pos > 0) {
-                    QString someName = defaultExpr.left(pos);
-                    ComplexTypeEntry *ctype =
-                        TypeDatabase::instance()->findComplexType(someName);
-                    QString replacement;
-                    if (ctype != 0 && ctype->isVariant())
-                        replacement = "com.trolltech.qt.QVariant.";
-                    else if (ctype != 0)
-                        replacement = ctype->javaPackage() + "." + ctype->javaName() + ".";
-                    else
-                        replacement = someName + ".";
-                    defaultExpr = defaultExpr.replace(someName + ".", replacement);
-                }
+                    int pos = defaultExpr.indexOf(".");
+                    if (pos > 0) {
+                        QString someName = defaultExpr.left(pos);
+                        ComplexTypeEntry *ctype =
+                            TypeDatabase::instance()->findComplexType(someName);
+                        QString replacement;
+                        if (ctype != 0 && ctype->isVariant())
+                            replacement = "com.trolltech.qt.QVariant.";
+                        else if (ctype != 0)
+                            replacement = ctype->javaPackage() + "." + ctype->javaName() + ".";
+                        else
+                            replacement = someName + ".";
+                        defaultExpr = defaultExpr.replace(someName + ".", replacement);
+                    }
 
-                if (arg_type != 0 && arg_type->isFlags()) {
-                    s << "new " << arg_type->fullName() << "(" << defaultExpr << ")";
-                } else {
-                    s << defaultExpr;
+                    if (arg_type != 0 && arg_type->isFlags()) {
+                        s << "new " << arg_type->fullName() << "(" << defaultExpr << ")";
+                    } else {
+                        s << defaultExpr;
+                    }
                 }
             }
         }
@@ -832,6 +900,9 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         s << m_doc_parser->documentation(java_class) << endl << endl;
     }
 
+    if (!java_class->isFinal())
+        s << "@com.trolltech.qt.QtJambiInternalClass" << endl;
+
     if (java_class->isInterface()) {
         s << "public interface ";
     } else {
@@ -841,6 +912,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
         if (java_class->isFinal())
             s << "final ";
+            
 
         if (java_class->isNamespace()) {
             s << "interface ";
@@ -1007,6 +1079,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         }
     }
 
+    writeJavaLangObjectOverrideFunctions(s, java_class);
     writeExtraFunctions(s, java_class);
 
     s << "}" << endl;
@@ -1099,9 +1172,11 @@ void JavaGenerator::writeFunctionArguments(QTextStream &s, const MetaJavaFunctio
         argument_count = arguments.size();
 
     for (int i=0; i<argument_count; ++i) {
-        if (i != 0)
-            s << ", ";
-        writeArgument(s, java_function, arguments.at(i), options);
+        if (!java_function->argumentRemoved(i+1)) {
+            if (i != 0)
+                s << ", ";
+            writeArgument(s, java_function, arguments.at(i), options);
+        }
     }
 
 }

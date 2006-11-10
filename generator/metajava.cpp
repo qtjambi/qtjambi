@@ -312,6 +312,19 @@ QString MetaJavaFunction::signature() const
     return s;
 }
 
+int MetaJavaFunction::actualMinimumArgumentCount() const
+{
+    MetaJavaArgumentList arguments = this->arguments();
+
+    int count = 0;
+    for (int i=0; i<arguments.size(); ++i && ++count) {
+        if (argumentRemoved(i + 1)) --count;
+        else if (!arguments.at(i)->defaultValueExpression().isEmpty()) break;        
+    }    
+
+    return count;
+}
+
 QString MetaJavaFunction::replacedDefaultExpression(const MetaJavaClass *cls, int key) const
 {
     FunctionModificationList modifications = this->modifications(cls);
@@ -328,7 +341,6 @@ QString MetaJavaFunction::replacedDefaultExpression(const MetaJavaClass *cls, in
     return QString();
 }
 
-#include <QDebug>
 QString MetaJavaFunction::conversionRule(CodeSnip::Language language, int key) const
 {
     FunctionModificationList modifications = this->modifications(declaringClass());
@@ -346,6 +358,23 @@ QString MetaJavaFunction::conversionRule(CodeSnip::Language language, int key) c
     }
 
     return QString();
+}
+
+bool MetaJavaFunction::argumentRemoved(int key) const
+{
+    FunctionModificationList modifications = this->modifications(declaringClass());
+    foreach (FunctionModification modification, modifications) {
+        QList<ArgumentModification> argument_modifications = modification.argument_mods;
+        foreach (ArgumentModification argument_modification, argument_modifications) {
+            if (argument_modification.index == key) {
+                if (argument_modification.removed) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;    
 }
 
 bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int key) const
@@ -598,6 +627,21 @@ MetaJavaClass *MetaJavaClass::extractInterface()
     }
 
     return m_extracted_interface;
+}
+
+/*******************************************************************************
+ * Returns a list of all the functions with a given name
+ */
+MetaJavaFunctionList MetaJavaClass::queryFunctionsByName(const QString &name) const
+{
+    MetaJavaFunctionList returned;
+    MetaJavaFunctionList functions = this->functions();
+    foreach (MetaJavaFunction *function, functions) {
+        if (function->name() == name)
+            returned.append(function);
+    }
+
+    return returned;
 }
 
 /*******************************************************************************

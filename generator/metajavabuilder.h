@@ -60,6 +60,8 @@ public:
     MetaJavaFunction *traverseFunction(FunctionModelItem function);
     MetaJavaField *traverseField(VariableModelItem field, const MetaJavaClass *cls);
     void checkFunctionModifications();
+    void registerHashFunction(FunctionModelItem function_item);
+    void registerEqualsOperator(FunctionModelItem function_item);
 
     QString translateDefaultValue(ArgumentModelItem item, MetaJavaType *type,
                                                MetaJavaFunction *fnc, MetaJavaClass *,
@@ -77,6 +79,8 @@ public:
     bool isEnum(const QStringList &qualified_name);
 
 protected:
+    MetaJavaClass *argumentToClass(ArgumentModelItem);
+
     QString m_file_name;
 
     MetaJavaClassList m_java_classes;

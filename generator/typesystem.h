@@ -86,7 +86,7 @@ typedef QList<CodeSnip> CodeSnipList;
 
 struct ArgumentModification
 {
-    ArgumentModification(int idx) : disable_gc(false), index(idx) {}
+    ArgumentModification(int idx) : removed(false), disable_gc(false), index(idx) {}
 
     int index;    
     uint disable_gc : 1;

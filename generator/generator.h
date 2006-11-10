@@ -49,6 +49,7 @@ public:
         SkipTemplateParameters  = 0x04000,
         SkipAttributes          = 0x08000,
         OriginalTypeDescription = 0x10000,
+        SkipRemovedArguments    = 0x20000,
 
         ForceValueType          = ExcludeReference | ExcludeConst
     };

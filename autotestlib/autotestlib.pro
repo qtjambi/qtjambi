@@ -13,5 +13,6 @@ HEADERS += \
         signalsandslots.h \
         destruction.h \
         interfaces.h \
+        paintengine.h \
 
 

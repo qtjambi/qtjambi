@@ -42,7 +42,7 @@ public class PropertySheet {
 
     private static class Property implements Comparable {
         QtPropertyManager.Entry entry;
-        
+
         String groupName;
         int subclassLevel;
         boolean changed;
@@ -55,8 +55,16 @@ public class PropertySheet {
                 return -1;
             else if (subclassLevel < p.subclassLevel)
                 return 1;
-            else
-                return entry.name.compareTo(p.entry.name);
+            else {
+                int order = entry.sortOrder - p.entry.sortOrder;
+                if (order == 0)
+                    return entry.name.compareTo(p.entry.name);
+                return order;
+            }
+        }
+        
+        public String toString() {
+            return "{" + groupName + ":" + entry.name + "}";            
         }
     }
 
@@ -66,12 +74,12 @@ public class PropertySheet {
         build();
     };
 
-    public static PropertySheet createPropertySheet(QObject object) {
+    public static PropertySheet createPropertySheet(QObject object) {        
         return new PropertySheet(object);
     }
 
     public int count() {
-        return properties.length;
+        return properties.size();
     }
 
     public boolean hasReset(int index) {
@@ -79,8 +87,8 @@ public class PropertySheet {
     }
 
     public int indexOf(String name) {
-        for (int i=0; i<properties.length; ++i) {
-            Property p = properties[i];
+        for (int i=0; i<properties.size(); ++i) {
+            Property p = properties.get(i);
             if (p.entry.name.equals(name))
                 return i;
         }
@@ -92,16 +100,16 @@ public class PropertySheet {
     }
 
     public boolean isChanged(int index) {
-        return properties[index].changed;
+        return properties.get(index).changed;
     }
 
     public boolean isVisible(int index) {
-        return properties[index].entry.isDesignable(object);
+        return properties.get(index).entry.isDesignable(object);
     }
 
     public Object property(int index) {
         try {
-            Method getter = properties[index].entry.read;
+            Method getter = properties.get(index).entry.read;
             Object result = getter.invoke(object);
 
             if (QtEnumerator.class.isAssignableFrom(getter.getReturnType())
@@ -156,11 +164,11 @@ public class PropertySheet {
     }
 
     public String propertyGroup(int index) {
-        return properties[index].groupName;
+        return properties.get(index).groupName;
     }
 
     public String propertyName(int index) {
-        return properties[index].entry.name;
+        return properties.get(index).entry.name;
     }
 
     public boolean reset(int index) {
@@ -172,13 +180,15 @@ public class PropertySheet {
     }
 
     public void setChanged(int index, boolean changed) {
-        properties[index].changed = changed;
+        if (index < 0)
+            return;
+        properties.get(index).changed = changed;
     }
 
     // @SuppressWarnings("all")
     public void setProperty(int index, Object value) {
         try {
-            Method m = properties[index].entry.write;
+            Method m = properties.get(index).entry.write;
             Class argClass = m.getParameterTypes()[0];
             if (QFlags.class.isAssignableFrom(argClass)) {
                 Constructor c = argClass.getConstructor(int.class);
@@ -187,7 +197,7 @@ public class PropertySheet {
                 Method resolve = argClass.getMethod("resolve", int.class);
                 value = resolve.invoke(argClass, ((Integer) value).intValue());
             }
-            properties[index].entry.write.invoke(object, value);
+            properties.get(index).entry.write.invoke(object, value);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -208,21 +218,20 @@ public class PropertySheet {
         } catch (Exception e) { }
         return null;
     }
-    
+
     private void build(Class cl, Set<String> names, int level, Collection<Property> properties) {
         if (cl == null)
             return;
         build(cl.getSuperclass(), names, level + 1, properties);
 
         String groupName = groupNameForClass(cl);
-
         try {
-            HashMap<String, QtPropertyManager.Entry> entries = QtPropertyManager.findProperties(cl);
+            Map<String, QtPropertyManager.Entry> entries = QtPropertyManager.findProperties(cl);
             for (QtPropertyManager.Entry e : entries.values()) {
                 Property p = new Property();
                 p.entry = e;
                 p.groupName = groupName;
-                p.subclassLevel = level;            
+                p.subclassLevel = level;
                 properties.add(p);
             }
         } catch (QMalformedQtPropertyException ex) {
@@ -231,29 +240,29 @@ public class PropertySheet {
     }
 
     private static String groupNameForClass(Class cl) {
-        String groupName;
         String className = cl.getName();
+        
         if (className.indexOf('.') < 0) {
-            groupName = className;
+            return className;
         } else {
             int index = className.lastIndexOf('.');
-            groupName = className.substring(index + 1) + "  -  " + className.substring(0, index);
+            String name = className.substring(index + 1);
+            String groupName = className.substring(0, index);
+            if (groupName.startsWith("com.trolltech.qt."))
+                return name;
+            return name + "; " + groupName; 
         }
-        return groupName;
     }
 
     private void build() {
         TreeSet<Property> properties = new TreeSet<Property>();
         build(object.getClass(), new HashSet<String>(), 0, properties);
 
-        this.properties = new Property[properties.size()];
-        int index = 0;
-        Iterator<Property> it = properties.iterator();
-        while (it.hasNext())
-            this.properties[index++] = it.next();
+        this.properties = new ArrayList<Property>();
+        this.properties.addAll(properties);
     }
 
-    private Property properties[];
+    private List<Property> properties;
 
     private QObject object;
 }

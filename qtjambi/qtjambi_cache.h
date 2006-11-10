@@ -31,7 +31,7 @@ QString getJavaName(const QString &qt_name);
 QString getJavaSignature(const QString &qt_name);
 PtrDestructorFunction destructor(const QString &java_name);
 
-jclass resolveClass(JNIEnv *env, const char *className, const char *package);
+QTJAMBI_EXPORT jclass resolveClass(JNIEnv *env, const char *className, const char *package);
 jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature, jclass clazz,
                       bool isStatic = false);
 jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature,

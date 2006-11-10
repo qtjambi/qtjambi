@@ -34,6 +34,7 @@ public class StyleSheet extends QMainWindow {
         QApplication.exec();
     }
 
+
     public StyleSheet() {
         ui.setupUi(this);
 
@@ -45,7 +46,7 @@ public class StyleSheet extends QMainWindow {
 
         ui.exitAction.triggered.connect(this, "close()");
         ui.aboutQtAction.triggered.connect(QApplication.instance(), "aboutQt()");
-        
+
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
@@ -116,7 +117,7 @@ public class StyleSheet extends QMainWindow {
             ui.applyButton.setEnabled(false);
         }
     }
-    
+
     // REMOVE-START
 
     public static String exampleName() {

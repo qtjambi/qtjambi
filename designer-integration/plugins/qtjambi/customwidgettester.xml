@@ -1,0 +1,16 @@
+<qt-jambi-custom-widget-list>
+
+
+  <qt-jambi-custom-widget 
+    class="com.trolltech.tests.CustomWidgetTester"
+    name="Custom Test Widget"
+    group=""
+    icon="classpath:com/trolltech/images/close.png"
+    tool-tip="A Custom tester widget..."
+    whats-this="Whats this indeed?" 
+    container="false"
+    import="com.trolltech.tests.CustomWidgetTester"    
+  />
+
+
+</qt-jambi-custom-widget-list>

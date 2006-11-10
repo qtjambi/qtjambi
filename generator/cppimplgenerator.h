@@ -124,6 +124,7 @@ public:
     void writeFromNativeFunction(QTextStream &s,
                                  const MetaJavaClass *java_class);
     void writeFromArrayFunction(QTextStream &s, const MetaJavaClass *java_class);
+    void writeJavaLangObjectOverrideFunctions(QTextStream &s, const MetaJavaClass *cls);
 
     void writeInterfaceCastFunction(QTextStream &s,
                                     const MetaJavaClass *java_class,

@@ -26,12 +26,13 @@ public class CollidingMice extends QWidget {
     public static void main(String args[]) {
         QApplication.initialize(args);
 
-        CollidingMice collidingMice = new CollidingMice();
+        CollidingMice collidingMice = new CollidingMice(null);
         collidingMice.show();
         QApplication.exec();
     }
 
-    public CollidingMice() {
+    public CollidingMice(QWidget parent) {
+        super(parent);
         
         QGraphicsScene scene = new QGraphicsScene();
         scene.setSceneRect(-300, -300, 600, 600);

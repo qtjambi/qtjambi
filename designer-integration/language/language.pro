@@ -6,8 +6,19 @@ CONFIG  += qt warn_on plugin designer
 DESTDIR = $$PWD/../plugins/designer
 TARGET = JambiLanguage
 
-HEADERS += jambilanguageplugin.h 
-SOURCES += jambilanguageplugin.cpp
+HEADERS += \ 
+	jambilanguageplugin.h \
+	jambipropertysheet.h \
+	jambiresourcebrowser.h \
+	jnilayer.h \
+
+
+SOURCES += \ 
+	jambilanguageplugin.cpp \ 
+ 	jambipropertysheet.cpp \
+ 	jambiresourcebrowser.cpp \
+	jnilayer.cpp \
+
 
 # Use the name table from UIC
 JUIC_DIR = ../../juic

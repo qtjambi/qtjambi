@@ -43,7 +43,7 @@ public class CustomWidget {
         return group;
     }
 
-    public void setGroup(String group) {
+    public void setGroup(String group) {        
         this.group = group;
     }
 
@@ -90,11 +90,27 @@ public class CustomWidget {
     public void setWhatsThis(String whatsThis) {
         this.whatsThis = whatsThis;
     }
+    
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append("CustomWidget(").append(pluginClass.toString());
+        
+        if (name != null && name.length() != 0) s.append(",name=").append(name);
+        if (group != null && group.length() != 0) s.append(",group=").append(group);
+        if (tooltip != null && tooltip.length() != 0) s.append(",toolTip=").append(tooltip);
+        if (whatsThis != null && whatsThis.length() != 0) s.append(",whatsThis=").append(whatsThis);
+        if (includeFile != null && includeFile.length() != 0) s.append(",include=").append(includeFile);
+        if (icon != null && !icon.isNull()) s.append(",icon=").append(icon);
+        
+        s.append(")");
+        
+        return s.toString();
+    }
 
     private Class pluginClass;
     private String name;
     private boolean container;
-    private String group = "Qt Jambi";
+    private String group;
     private String tooltip;
     private String whatsThis;
     private String includeFile;

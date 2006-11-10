@@ -215,6 +215,11 @@ public class QtPropertyManager {
         }
     }
     
+    private static int sortOrder(Method m) {
+        QtPropertyOrder o = m.getAnnotation(QtPropertyOrder.class);
+        return o != null ? o.value() : 0;
+    }
+    
     public static HashMap<String, Entry> findProperties(Class cl) throws QMalformedQtPropertyException {
         HashMap<String, Entry> entries = new HashMap<String, Entry>();
         Method methods[] = cl.getDeclaredMethods();
@@ -235,7 +240,9 @@ public class QtPropertyManager {
             
             if (e.read != null) {
                 checkDesignable(e);
+                e.sortOrder = sortOrder(e.read);
             }
+            
             
             if (e.writable) {
                 if (e.write == null)

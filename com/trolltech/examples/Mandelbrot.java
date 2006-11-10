@@ -35,7 +35,7 @@ public class Mandelbrot extends QWidget {
     final double ZoomOutFactor = 1 / ZoomInFactor;
     final int ScrollStep = 20;
 
-    private Signal2<QImage, Double> renderedImage = 
+    private Signal2<QImage, Double> renderedImage =
             new Signal2<QImage, Double>();
 
     public static void main(String args[]) {
@@ -46,6 +46,11 @@ public class Mandelbrot extends QWidget {
     }
 
     public Mandelbrot() {
+        this(null);
+    }
+
+    public Mandelbrot(QWidget widget) {
+        super(widget);
         centerX = DefaultCenterX;
         centerY = DefaultCenterY;
         pixmapScale = DefaultScale;
@@ -67,7 +72,7 @@ public class Mandelbrot extends QWidget {
         if (pixmap.isNull()) {
             String message = tr("Rendering initial image, please wait...");
             painter.setPen(QColor.white);
-            painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(), 
+            painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(),
                              message);
             painter.end();
 
@@ -79,10 +84,10 @@ public class Mandelbrot extends QWidget {
             double scaleFactor = pixmapScale / currentScale;
             int newWidth = (int) (pixmap.width() * scaleFactor);
             int newHeight = (int) (pixmap.height() * scaleFactor);
-            
+
             int newX = pixmapOffset.x() + (pixmap.width() - newWidth) / 2;
             int newY = pixmapOffset.y() + (pixmap.height() - newHeight) / 2;
-            
+
             painter.save();
             painter.translate(newX, newY);
             painter.scale(scaleFactor, scaleFactor);
@@ -95,11 +100,11 @@ public class Mandelbrot extends QWidget {
                 painter.drawPixmap(pixmapOffset, pixmap);
             else
                 painter.drawPixmap(exposed, pixmap, exposed);
-            
+
             painter.restore();
         }
 
-        String text = tr("Use mouse wheel to zoom.") 
+        String text = tr("Use mouse wheel to zoom.")
                       + tr("Press and hold left mouse button to scroll.");
         QFontMetrics metrics = painter.fontMetrics();
         int textWidth = metrics.width(text);
@@ -229,7 +234,7 @@ public class Mandelbrot extends QWidget {
             }
         }
 
-        synchronized void render(double centerX, double centerY, 
+        synchronized void render(double centerX, double centerY,
                                  double scaleFactor, QSize resultSize) {
             this.centerX = centerX;
             this.centerY = centerY;
@@ -300,7 +305,7 @@ public class Mandelbrot extends QWidget {
 
                             if (numIterations < MaxIterations) {
                                 int index = numIterations % ColormapSize;
-                                image.setPixel(x + halfWidth, y + halfHeight, 
+                                image.setPixel(x + halfWidth, y + halfHeight,
                                                colormap[index]);
 
                                 allBlack = false;

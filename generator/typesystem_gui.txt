@@ -68,7 +68,8 @@
   <rejection class="QWidget" function-name="handle"/>
   <rejection class="QWidget" function-name="styleChange"/>
   <rejection class="QWidget" function-name="winId"/>
-  <rejection class="QActionGroup" function-name="selected"/>            
+  <rejection class="QActionGroup" function-name="selected"/> 
+  <rejection class="QPaintEngine" function-name="fix_neg_rect"/>           
 
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
   <enum-type name="QAbstractItemView::CursorAction"/>
@@ -1255,7 +1256,7 @@
     </modify-function>
     
     <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption *, const QWidget *) const">
-        <modify-argument index="2">
+        <modify-argument index="2">            
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
                 jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
@@ -2101,86 +2102,265 @@
   </object-type>
   
   <object-type name="QPaintEngine">
+    <extra-includes>
+        <include file-name="QVarLengthArray" location="global" />
+    </extra-includes>
+    
     <modify-function class="java" signature="drawLines(const QLine *, int)">
-        <rename to="drawLines_int"/>
-        <access modifier="private"/>
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.gui.QLine[]" />
+            <conversion-rule>                
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %2, 
+                                                       "QLine", "com/trolltech/qt/gui/");
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                /* nothing */
+            </conversion-rule>
+        </modify-argument>
     </modify-function>
+    <modify-function class="native" signature="drawLines(const QLine *, int)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QVarLengthArray&lt;QLine, 32> __lines;                
+                int __size = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+                for (int i=0; i&lt;__size; ++i)
+                    __lines.append(*(QLine *)qtjambi_to_object(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i)));
+                const QLine *%out = %1 == 0 ? 0 : __lines.constData();                    
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+    
     <modify-function class="java" signature="drawLines(const QLineF *, int)">
-        <rename to="drawLines_float"/>
-        <access modifier="private"/>    
-    </modify-function>    
-    <modify-function class="java" signature="drawRects(const QRectF *, int)">
-        <rename to="drawRects_float"/>
-        <access modifier="private"/>    
-    </modify-function>        
-    <modify-function class="java" signature="drawRects(const QRect *, int)">
-        <rename to="drawRects_int"/>
-        <access modifier="private"/>    
-    </modify-function>            
-    <modify-function class="java" signature="drawPoints(const QPointF *, int)">
-        <rename to="drawPoints_float"/>
-        <access modifier="private"/>    
-    </modify-function>            
-    <modify-function class="java" signature="drawPoints(const QPoint *, int)">
-        <rename to="drawPoints_int"/>
-        <access modifier="private"/>        
-    </modify-function>                
-    <modify-function class="java" signature="drawPolygon(const QPoint *, int, QPaintEngine::PolygonDrawMode)">
-        <rename to="drawPolygon_int"/>
-        <access modifier="private"/>
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.gui.QLineF[]" />
+            <conversion-rule>                
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %2, 
+                                                       "QLineF", "com/trolltech/qt/gui/");
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                /* nothing */
+            </conversion-rule>
+        </modify-argument>
     </modify-function>
-    <modify-function class="java" signature="drawPolygon(const QPointF *, int, QPaintEngine::PolygonDrawMode)">
-        <rename to="drawPolygon_float"/>
-        <access modifier="private"/>
+    <modify-function class="native" signature="drawLines(const QLineF *, int)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QVarLengthArray&lt;QLineF, 32> __data;                
+                int __size = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+                for (int i=0; i&lt;__size; ++i)
+                    __data.append(*(QLineF *)qtjambi_to_object(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i)));
+                const QLineF *%out = %1 == 0 ? 0 : __data.constData();                    
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+    
+    <modify-function class="java" signature="drawRects(const QRectF *, int)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.core.QRectF[]" />
+            <conversion-rule>                
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %2, 
+                                                       "QRectF", "com/trolltech/qt/core/");
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                /* nothing */
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="drawRects(const QRectF *, int)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QVarLengthArray&lt;QRectF, 32> __data;
+                int __size = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+                for (int i=0; i&lt;__size; ++i)
+                    __data.append(*(QRectF *)qtjambi_to_object(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i)));
+                const QRectF *%out = %1 == 0 ? 0 : __data.constData();
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+        
+    <modify-function class="java" signature="drawRects(const QRect *, int)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.core.QRect[]" />
+            <conversion-rule>                
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %2, 
+                                                       "QRect", "com/trolltech/qt/core/");
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                /* nothing */
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="drawRects(const QRect *, int)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QVarLengthArray&lt;QRect, 32> __data;
+                int __size = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+                for (int i=0; i&lt;__size; ++i)
+                    __data.append(*(QRect *)qtjambi_to_object(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i)));
+                const QRect *%out = %1 == 0 ? 0 : __data.constData();
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+        
+    <modify-function class="java" signature="drawPoints(const QPoint *, int)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.core.QPoint[]" />
+            <conversion-rule>                
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %2, 
+                                                       "QPoint", "com/trolltech/qt/core/");
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                /* nothing */
+            </conversion-rule>
+        </modify-argument>
     </modify-function>    
-    <inject-code class="java">
-    public final void drawLines(QLineF lines[]) 
-    {
-        drawLines_float(QLineF.nativePointerArray(lines), lines.length);
-    }
-    </inject-code>
-    <inject-code class="java">        
-    public final void drawLines(QLine lines[])
-    {
-        drawLines_int(QLine.nativePointerArray(lines), lines.length);
-    }
-    </inject-code>
-    <inject-code class="java">
-    public final void drawRects(com.trolltech.qt.core.QRect rects[])
-    {
-        drawRects_int(com.trolltech.qt.core.QRect.nativePointerArray(rects), rects.length);
-    }
-    </inject-code>
-    <inject-code class="java">
-    public final void drawRects(com.trolltech.qt.core.QRectF rects[])
-    {
-        drawRects_float(com.trolltech.qt.core.QRectF.nativePointerArray(rects), rects.length);
-    }
-    </inject-code>    
-    <inject-code class="java">
-    public final void drawPoints(com.trolltech.qt.core.QPoint points[])
-    {
-        drawPoints_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
-    }
-    </inject-code>
-    <inject-code class="java">
-    public final void drawPoints(com.trolltech.qt.core.QPointF points[])
-    {
-        drawPoints_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
-    }
-    </inject-code>    
-    <inject-code class="java">
-    public final void drawPolygon(com.trolltech.qt.core.QPoint points[], QPaintEngine.PolygonDrawMode mode)
-    {
-        drawPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length, mode);
-    }
-    </inject-code>
-    <inject-code class="java">
-    public final void drawPolygon(com.trolltech.qt.core.QPointF points[], QPaintEngine.PolygonDrawMode mode)
-    {
-        drawPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length, mode);
-    }
-    </inject-code>    
+    <modify-function class="native" signature="drawPoints(const QPoint *, int)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QVarLengthArray&lt;QPoint, 32> __data;
+                int __size = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+                for (int i=0; i&lt;__size; ++i)
+                    __data.append(*(QPoint *)qtjambi_to_object(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i)));
+                const QPoint *%out = %1 == 0 ? 0 : __data.constData();
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+        
+    <modify-function class="java" signature="drawPoints(const QPointF *, int)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.core.QPointF[]" />
+            <conversion-rule>                
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %2, 
+                                                       "QPointF", "com/trolltech/qt/core/");
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                /* nothing */
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="drawPoints(const QPointF *, int)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QVarLengthArray&lt;QPointF, 32> __data;
+                int __size = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+                for (int i=0; i&lt;__size; ++i)
+                    __data.append(*(QPointF *)qtjambi_to_object(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i)));
+                const QPointF *%out = %1 == 0 ? 0 : __data.constData();
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+    
+    <modify-function class="java" signature="drawPolygon(const QPoint *, int, QPaintEngine::PolygonDrawMode)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.core.QPoint[]" />
+            <conversion-rule>                
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %2, 
+                                                       "QPoint", "com/trolltech/qt/core/");
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                /* nothing */
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>    
+    <modify-function class="native" signature="drawPolygon(const QPoint *, int, QPaintEngine::PolygonDrawMode)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QVarLengthArray&lt;QPoint, 32> __data;
+                int __size = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+                for (int i=0; i&lt;__size; ++i)
+                    __data.append(*(QPoint *)qtjambi_to_object(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i)));
+                const QPoint *%out = %1 == 0 ? 0 : __data.constData();
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+        
+    <modify-function class="java" signature="drawPolygon(const QPointF *, int, QPaintEngine::PolygonDrawMode)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.core.QPointF[]" />
+            <conversion-rule>                
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %2, 
+                                                       "QPointF", "com/trolltech/qt/core/");
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                /* nothing */
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="drawPolygon(const QPointF *, int, QPaintEngine::PolygonDrawMode)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QVarLengthArray&lt;QPointF, 32> __data;
+                int __size = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+                for (int i=0; i&lt;__size; ++i)
+                    __data.append(*(QPointF *)qtjambi_to_object(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i)));
+                const QPointF *%out = %1 == 0 ? 0 : __data.constData();
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
   </object-type>
   
   <object-type name="QAbstractTableModel">
@@ -2244,66 +2424,52 @@
     public void setBrush(QPixmap pm) { setBrush(new QBrush(pm)); }
     </inject-code>
     <modify-function class="java" signature="drawConvexPolygon(const QPoint *, int)">
-        <rename to="drawConvexPolygon_int"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>
     <modify-function class="java" signature="drawConvexPolygon(const QPointF *, int)">
-        <rename to="drawConvexPolygon_float"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>    
     <modify-function class="java" signature="drawLines(const QLine *, int)">
-        <rename to="drawLines_int"/>
-        <access modifier="private"/>        
+        <remove />
     </modify-function>    
     <modify-function class="java" signature="drawLines(const QLineF *, int)">
-        <rename to="drawLines_float"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>
     <modify-function class="java" signature="drawLines(const QPoint *, int)">
-        <rename to="drawLines_point_pairs_int"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>
     <modify-function class="java" signature="drawLines(const QPointF *, int)">
-        <rename to="drawLines_point_pairs_float"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>
     <modify-function class="java" signature="drawPoints(const QPoint *, int)">
-        <rename to="drawPoints_int"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>
     <modify-function class="java" signature="drawPoints(const QPointF *, int)">
-        <rename to="drawPoints_float"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>    
     <modify-function class="java" signature="drawPolygon(const QPoint *, int, Qt::FillRule)">
-        <rename to="drawPolygon_int"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>
     <modify-function class="java" signature="drawPolygon(const QPointF *, int, Qt::FillRule)">
-        <rename to="drawPolygon_float"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>    
     <modify-function class="java" signature="drawPolyline(const QPoint *, int)">
-        <rename to="drawPolyline_int"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>
     <modify-function class="java" signature="drawPolyline(const QPointF *, int)">
-        <rename to="drawPolyline_float"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>    
     <modify-function class="java" signature="drawRects(const QRect *, int)">
-        <rename to="drawRects_int"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>
     <modify-function class="java" signature="drawRects(const QRectF *, int)">
-        <rename to="drawRects_float"/>
-        <access modifier="private"/>
+        <remove />
     </modify-function>    
     <modify-function class="java" signature="drawLines(const QVector&lt;QPoint> &amp;)">
-        <rename to="drawPointPairs"/>
+        <rename to="drawLinesFromPoints"/>
     </modify-function>    
     <modify-function class="java" signature="drawLines(const QVector&lt;QPointF> &amp;)">
-        <rename to="drawPointPairsF"/>
+        <rename to="drawLinesFromPointsF"/>
     </modify-function>
     <modify-function class="java" signature="drawLines(const QVector&lt;QLineF> &amp;)">
         <rename to="drawLinesF"/>
@@ -2311,90 +2477,6 @@
     <modify-function class="java" signature="drawRects(const QVector&lt;QRectF> &amp;)">
         <rename to="drawRectsF"/>
     </modify-function>    
-    <inject-code class="java">
-    public final void drawRects(com.trolltech.qt.core.QRect rects[]) 
-    {
-        drawRects_int(com.trolltech.qt.core.QRect.nativePointerArray(rects), rects.length);
-    }
-    </inject-code>
-    <inject-code class="java">
-
-    public final void drawRects(com.trolltech.qt.core.QRectF rects[])
-    {
-        drawRects_float(com.trolltech.qt.core.QRectF.nativePointerArray(rects), rects.length);
-    }
-
-    public final void drawPolygon(com.trolltech.qt.core.QPoint points[]) 
-    { 
-        drawPolygon(points, com.trolltech.qt.core.Qt.FillRule.OddEvenFill); 
-    }    
-
-    public final void drawPolygon(com.trolltech.qt.core.QPointF points[]) 
-    { 
-        drawPolygon(points, com.trolltech.qt.core.Qt.FillRule.OddEvenFill); 
-    }    
-
-    public final void drawPolygon(com.trolltech.qt.core.QPoint points[], com.trolltech.qt.core.Qt.FillRule mode) 
-    { 
-        drawPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length, mode);
-    }    
-
-    public final void drawPolygon(com.trolltech.qt.core.QPointF points[], com.trolltech.qt.core.Qt.FillRule mode) 
-    { 
-        drawPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length, mode);
-    }    
-
-    public final void drawPoints(com.trolltech.qt.core.QPoint points[])
-    {
-        drawPoints_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
-    }
-
-    public final void drawPoints(com.trolltech.qt.core.QPointF points[])
-    {
-        drawPoints_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
-    }
-
-    public final void drawLines(QLine lines[])
-    {
-        drawLines_int(QLine.nativePointerArray(lines), lines.length);
-    }
-
-    public final void drawLines(QLineF lines[])
-    {
-        drawLines_float(QLineF.nativePointerArray(lines), lines.length);
-    }
-
-    public final void drawLines(com.trolltech.qt.core.QPoint pointPairs[])
-    {
-        drawLines_point_pairs_int(com.trolltech.qt.core.QPoint.nativePointerArray(pointPairs), pointPairs.length / 2);
-    }
-
-    public final void drawLines(com.trolltech.qt.core.QPointF pointPairs[])
-    {
-        drawLines_point_pairs_float(com.trolltech.qt.core.QPointF.nativePointerArray(pointPairs), pointPairs.length / 2);
-    }
-
-    public final void drawPolyline(com.trolltech.qt.core.QPoint points[])
-    {
-        drawPolyline_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
-    }
-
-    public final void drawPolyline(com.trolltech.qt.core.QPointF points[])
-    {
-        drawPolyline_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
-    }
-
-    public final void drawConvexPolygon(com.trolltech.qt.core.QPoint points[])
-    {
-        drawConvexPolygon_int(com.trolltech.qt.core.QPoint.nativePointerArray(points), points.length);
-    }
-
-    public final void drawConvexPolygon(com.trolltech.qt.core.QPointF points[])
-    {
-        drawConvexPolygon_float(com.trolltech.qt.core.QPointF.nativePointerArray(points), points.length);
-    }
-    </inject-code>    
-
     <inject-code>
     public QPainter(QWidget widget) {
         this();

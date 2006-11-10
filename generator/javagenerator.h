@@ -57,7 +57,7 @@ public:
     void writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg,
                                     const QString &indent);
     void writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function);
-
+    void writeJavaLangObjectOverrideFunctions(QTextStream &s, const MetaJavaClass *cls);
     bool hasDefaultConstructor(const MetaJavaType *type);
 
     void retrieveModifications(const MetaJavaFunction *f, const MetaJavaClass *java_class,

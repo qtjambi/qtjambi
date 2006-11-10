@@ -322,6 +322,7 @@
 
   <enum-type name="QDataStream::Version">
     <reject-enum-value name="Qt_4_1"/>
+    <reject-enum-value name="Qt_4_3"/>
   </enum-type>
 
   <enum-type name="QDir::SortFlag" flags="QDir::SortFlags">
@@ -346,6 +347,8 @@
 
   <enum-type name="QLocale::Language">
     <reject-enum-value name="LastLanguage"/>
+    <reject-enum-value name="NorwegianBokmal"/>
+    <reject-enum-value name="Nynorsk"/>
   </enum-type>
 
   <enum-type name="QLocale::Country">
@@ -507,11 +510,6 @@
             this();         
             append(s);                        
         }
-
-        public String toString() {
-            return com.trolltech.qt.QVariant.toString(this);
-        }
-
     </inject-code> 
     <extra-includes>
         <include file-name="QNoImplicitBoolCast" location="global"/>

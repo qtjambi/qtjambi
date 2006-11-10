@@ -114,6 +114,29 @@ inline void *qtjambi_to_interface(JNIEnv *env,
     );
 }
 
+template <typename T>
+inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array, 
+                                       int size, char *className, char *packageName)
+{
+    if (array == 0)
+        return 0;
+
+    jclass clazz = resolveClass(env, className, packageName);
+    QTJAMBI_EXCEPTION_CHECK(env);
+    if (clazz == 0)
+        return 0;
+
+    jobjectArray returned = env->NewObjectArray(size, clazz, 0);
+    if (returned != 0) {
+        for (int i=0; i<size; ++i) {
+            jobject java_object = qtjambi_from_object(env, array + i, className, packageName);
+            env->SetObjectArrayElement(returned, i, java_object);
+        }
+    }
+
+    return returned;
+}
+
 QTJAMBI_EXPORT
 jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className, char *packageName, const char *lookupName);
 

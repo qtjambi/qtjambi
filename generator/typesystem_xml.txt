@@ -10,7 +10,95 @@
     <value-type name="QDomCDATASection" />
     <value-type name="QDomCharacterData" />
     <value-type name="QDomComment" />
-    <value-type name="QDomDocument" />
+    <value-type name="QDomDocument">
+
+        <extra-includes>
+            <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+            <include file-name="com.trolltech.qt.QNativePointer.Type" location="java"/>
+            <include file-name="com.trolltech.qt.core.QIODevice" location="java"/>
+            <include file-name="com.trolltech.qt.core.QByteArray" location="java"/>
+        </extra-includes>
+
+        <inject-code>
+    public class Result {
+        private Result(boolean success, QNativePointer errorMessage, QNativePointer errorLine, QNativePointer errorColumn){
+            this.success = success;
+            this.errorMessage = errorMessage.stringValue();
+            this.errorLine = errorLine.intValue();
+            this.errorColumn = errorColumn.intValue();
+        }
+
+        private boolean success;
+        private String errorMessage;
+        private int errorLine;
+        private int errorColumn;
+
+        public boolean success(){
+            return success;
+        }
+
+        public boolean failure(){
+            return !success;
+        }
+
+        public String errorMessage(){
+            return errorMessage;
+        }
+
+        public int errorLine(){
+            return errorLine;
+        }
+
+        public int errorColumn(){
+            return errorColumn;
+        }
+    }
+        </inject-code>
+
+        <!--bool setContent(QIODevice* dev, bool namespaceProcessing, QString *errorMsg=0, int *errorLine=0, int *errorColumn=0 ); -->
+        <modify-function class="java" signature="setContent(QIODevice*, bool, QString*, int*, int*)">
+            <access modifier="private" />
+            <rename to="setContent_private" />
+        </modify-function>
+        <inject-code class="java">
+    public Result setContent(QIODevice device, boolean namespaceProcessing){
+        QNativePointer errorStr = new QNativePointer(Type.String);
+        QNativePointer errorLine = new QNativePointer(Type.Int);
+        QNativePointer errorColumn = new QNativePointer(Type.Int);
+        return new Result(setContent_private(device, namespaceProcessing, errorStr, errorLine, errorColumn), errorStr, errorLine, errorColumn);
+    }
+        </inject-code>
+
+        <!--bool setContent(const QByteArray& text, bool namespaceProcessing, QString *errorMsg=0, int *errorLine=0, int *errorColumn=0 ); -->
+        <modify-function class="java" signature="setContent(QByteArray, bool, QString*, int*, int*)">
+            <access modifier="private" />
+            <rename to="setContent_private" />
+        </modify-function>
+        <inject-code class="java">
+    public Result setContent(QByteArray text, boolean namespaceProcessing){
+        QNativePointer errorStr = new QNativePointer(Type.String);
+        QNativePointer errorLine = new QNativePointer(Type.Int);
+        QNativePointer errorColumn = new QNativePointer(Type.Int);
+        return new Result(setContent_private(text, namespaceProcessing, errorStr, errorLine, errorColumn), errorStr, errorLine, errorColumn);
+    }
+        </inject-code>
+
+        <!--bool setContent(const QString& text, bool namespaceProcessing, QString *errorMsg=0, int *errorLine=0, int *errorColumn=0 );-->
+        <modify-function class="java" signature="setContent(QString, bool, QString*, int*, int*)">
+            <access modifier="private" />
+            <rename to="setContent_private" />
+        </modify-function>
+        <inject-code class="java">
+    public Result setContent(String text, boolean namespaceProcessing){
+        QNativePointer errorStr = new QNativePointer(Type.String);
+        QNativePointer errorLine = new QNativePointer(Type.Int);
+        QNativePointer errorColumn = new QNativePointer(Type.Int);
+        return new Result(setContent_private(text, namespaceProcessing, errorStr, errorLine, errorColumn), errorStr, errorLine, errorColumn);
+    }
+        </inject-code>
+
+
+    </value-type>
     <value-type name="QDomDocumentFragment" />
     <value-type name="QDomDocumentType" />
     <value-type name="QDomEntity" />
@@ -22,9 +110,17 @@
     <value-type name="QDomNotation" />
     <value-type name="QDomProcessingInstruction" />
     <value-type name="QDomText" />
-    <value-type name="QXmlAttributes" />    
     <value-type name="QXmlParseException" />
     
+    <value-type name="QXmlAttributes">  
+      <modify-function signature="index(const QLatin1String&amp;) const">
+        <remove/>
+      </modify-function>
+      <modify-function signature="value(const QLatin1String&amp;) const">
+        <remove/>
+      </modify-function>
+    </value-type>
+
     <value-type name="QXmlNamespaceSupport">
         <custom-constructor>
             QXmlNamespaceSupport *clone = new QXmlNamespaceSupport;
