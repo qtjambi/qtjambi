@@ -9,43 +9,98 @@
     Jambi programming practices.
 
     In addition to the examples, Qt Jambi includes a small selection
-    of \l {Demos}{demos} that deliberately show off Qt Jambi's
-    features. You might want to look at these as well.
+    of \l {Qt Jambi Demonstrations}{demos} that deliberately show off
+    Qt Jambi's features. You might want to look at these as well.
 
     Examples marked with an asterisk (\raisedaster) are fully
     documented. It is our goal to fully document all examples in a
     future release.
 
-    \section1 Examples
+    Categories:
+
+    \tableofcontents
+
+    \section1 Widget Examples
 
     \list
-    \o \l{Analog Clock Example}{Analog Clock}\raisedaster
-    \o \l{Application Example}{Application}\raisedaster
-    \o \l{Cached Table Example}{Cached Table}\raisedaster
-    \o \l{Calculator UI Example}{Calculator UI}\raisedaster
-    \o \l{Colliding Mice Example}{Colliding Mice}\raisedaster
-    \o \l{Custom Sort/Filter Model Example}{Custom Sort/Filter Model}\raisedaster
-    \o \l{Elastic Nodes Example}{Elastic Nodes}
-    \o \l{Generator Example}{Generator}\raisedaster
-    \o \l{Item View Chart Example}{Item View Chart}\raisedaster
-    \o \l{Line Edits Example}{Line Edits}\raisedaster
-    \o \l{Mandelbrot Example}{Mandelbrot}\raisedaster
-    \o \l{Resource System Example}{Resource System}\raisedaster
-    \o \l{Simple UI Example}{Simple UI}\raisedaster
-    \o \l{Spin Boxes Example}{Spin Boxes}\raisedaster
-    \o \l{SVG Cards Example}{SVG Cards}\raisedaster
-    \o \l{Syntax Highlighter Example}{Syntax Highlighter}\raisedaster
-    \o \l{System Tray Icon Example}{System Tray Icon}\raisedaster
-    \o \l{Tetrix Example}{Tetrix}\raisedaster
-    \o \l{Wiggly Example}{Wiggly}\raisedaster
+        \o \l{Analog Clock Example}{Analog Clock}\raisedaster
+        \o \l{Line Edits Example}{Line Edits}\raisedaster
+        \o \l{Shaped Clock Example}{Shaped Clock}\raisedaster
+        \o \l{Spin Boxes Example}{Spin Boxes}\raisedaster
+        \o \l{Tetrix Example}{Tetrix}\raisedaster
+        \o \l{Wiggly Example}{Wiggly}\raisedaster
     \endlist
 
-    \section1 Demos
+    \section1 Main Window Examples
 
     \list
-    \o \l{Image Viewer}
-    \o \l{Text Edit}
-    \o \l{Vector Deformation}
+        \o \l{Application Example}{Application}\raisedaster
+        \o \l{Menus Example}{Menus}\raisedaster
+    \endlist
+
+    \section1 Item View Examples
+
+    \list
+       \o \l{Custom Sort/Filter Model Example}{Custom Sort/Filter Model}\raisedaster
+       \o \l{Item View Chart Example}{Item View Chart}\raisedaster
+    \endlist
+
+    \section1 Painting Examples
+
+    \list
+        \o \l{SVG Cards Example}{SVG Cards}\raisedaster
+    \endlist
+
+    \section1 Graphics View Examples
+
+    \list
+        \o \l{Colliding Mice Example}{Colliding Mice}\raisedaster
+        \o \l{Elastic Nodes Example}{Elastic Nodes}
+    \endlist
+
+    \section1 Rich Text Examples
+
+    \list
+        \o \l{Syntax Highlighter Example}{Syntax Highlighter}\raisedaster
+    \endlist
+
+    \section1 Desktop Examples
+
+    \list
+        \o \l{Screenshot Example}{Screenshot}\raisedaster
+        \o \l{System Tray Icon Example}{System Tray Icon}\raisedaster
+    \endlist
+
+    \section1 Thread Examples
+
+    \list
+        \o \l{Mandelbrot Example}{Mandelbrot}\raisedaster
+    \endlist
+
+    \section1 Drag and Drop Examples
+
+    \list
+        \o \l{Fridge Magnets Example}{Fridge Magnets}\raisedaster
+    \endlist
+
+    \section1 SQL Examples
+
+    \list
+        \o \l{Cached Table Example}{Cached Table}\raisedaster
+    \endlist
+
+    \section1 Qt Designer Examples
+
+    \list
+        \o \l{Calculator UI Example}{Calculator UI}\raisedaster
+        \o \l{Simple UI Example}{Simple UI}\raisedaster
+    \endlist
+
+    \section1 Miscellaneous Examples
+
+    \list
+        \o \l{Generator Example}{Generator}\raisedaster
+        \o \l{Resource System Example}{Resource System}\raisedaster
     \endlist
 */
 

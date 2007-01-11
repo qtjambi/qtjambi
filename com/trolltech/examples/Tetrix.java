@@ -73,9 +73,9 @@ class TetrixBoard extends QFrame
     private TetrixPiece nextPiece = new TetrixPiece();
     private TetrixShape board[] = new TetrixShape[BoardWidth * BoardHeight];
 
-    public Signal1<Integer> scoreChanged;
-    public Signal1<Integer> levelChanged;
-    public Signal1<Integer> linesRemovedChanged;
+    public Signal1<Integer> scoreChanged = new Signal1<Integer>();
+    public Signal1<Integer> levelChanged = new Signal1<Integer>();
+    public Signal1<Integer> linesRemovedChanged = new Signal1<Integer>();
 
     public TetrixBoard(QWidget parent)
     {
@@ -560,6 +560,7 @@ class TetrixPiece
     }
 }
 
+@QtJambiExample(name = "Tetrix")
 public class Tetrix extends QWidget
 {
     public Tetrix() {
@@ -648,15 +649,4 @@ public class Tetrix extends QWidget
 
         QApplication.exec();
     }
-    // REMOVE-START
-
-    public static String exampleName() {
-        return "Tetrix";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

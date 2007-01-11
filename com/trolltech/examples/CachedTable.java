@@ -18,29 +18,37 @@ import com.trolltech.qt.gui.*;
 import com.trolltech.qt.sql.QSqlDatabase;
 import com.trolltech.qt.sql.QSqlTableModel;
 
+@QtJambiExample(name = "Cached Table",
+                canInstantiate = "call-static-method:checkSqlLite")
 public class CachedTable extends QDialog {
     private QPushButton submitButton = null;
     private QPushButton revertButton = null;
     private QPushButton quitButton = null;
     private QSqlTableModel model = null;
-    
+
     public static void main(String[] args) {
         QApplication.initialize(args);
+
+        if (!checkSqlLite()) {
+            System.out.println("Missing support for SQL");
+            return;
+        }
+
         CachedTable table = new CachedTable(null);
         table.show();
-        table.exec();       
+        table.exec();
     }
-    
-    public CachedTable(QWidget parent) 
+
+    public CachedTable(QWidget parent)
     {
         super(parent);
-        
+
         if (!SqlCommon.createConnection())
-            throw new RuntimeException("Couldn't connect to SQLITE server");                   
-            
-        
+            throw new RuntimeException("Couldn't connect to SQLITE server");
+
+
         String tableName = "person";
-        
+
         model = new QSqlTableModel(this);
         model.setTable(tableName);
         model.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit);
@@ -52,7 +60,7 @@ public class CachedTable extends QDialog {
 
         QTableView view = new QTableView();
         view.setModel(model);
-        
+
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         submitButton = new QPushButton(tr("Submit"));
@@ -60,7 +68,7 @@ public class CachedTable extends QDialog {
         revertButton = new QPushButton(tr("&Revert"));
         quitButton = new QPushButton(tr("Quit"));
 
-        submitButton.clicked.connect(this, "submit()");               
+        submitButton.clicked.connect(this, "submit()");
         revertButton.clicked.connect(model, "revertAll()");
         quitButton.clicked.connect(this, "close()");
 
@@ -77,8 +85,8 @@ public class CachedTable extends QDialog {
 
         setWindowTitle(tr("Cached Table"));
     }
-    
-    protected void submit() 
+
+    protected void submit()
     {
         model.database().transaction();
         if (model.submitAll()) {
@@ -87,17 +95,10 @@ public class CachedTable extends QDialog {
             model.database().rollback();
             QMessageBox.warning(this, tr("Cached Table"),
                                 tr("The database reported an error: ") + model.lastError().text());
-        }        
-    }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Cached Table";
+        }
     }
 
-    public static boolean canInstantiate() {
+    public static boolean checkSqlLite() {
         return QSqlDatabase.isDriverAvailable("QSQLITE");
     }
-
-    // REMOVE-END
 }

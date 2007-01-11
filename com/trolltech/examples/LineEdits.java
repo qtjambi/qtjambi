@@ -16,6 +16,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Line Edits")
 public class LineEdits extends QWidget {
 
     private QLineEdit echoLineEdit;
@@ -32,11 +33,11 @@ public class LineEdits extends QWidget {
 
         QApplication.exec();
     }
-    
+
     public LineEdits() {
         this(null);
     }
-    
+
     public LineEdits(QWidget parent) {
         super(parent);
         QGroupBox echoGroup = new QGroupBox(tr("Echo"));
@@ -207,15 +208,4 @@ public class LineEdits extends QWidget {
             accessLineEdit.setReadOnly(true);
         }
     }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Line Edits";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

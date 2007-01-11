@@ -16,6 +16,7 @@ package com.trolltech.demos;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.*;
+import com.trolltech.examples.*;
 
 import javax.media.opengl.*;
 
@@ -32,9 +33,9 @@ class GLWidget extends QGLWidget
     GLContext ctx = null;
 
 
-    public Signal1<Integer> xRotationChanged;
-    public Signal1<Integer> yRotationChanged;
-    public Signal1<Integer> zRotationChanged;
+    public Signal1<Integer> xRotationChanged = new Signal1<Integer>();
+    public Signal1<Integer> yRotationChanged = new Signal1<Integer>();
+    public Signal1<Integer> zRotationChanged = new Signal1<Integer>();
 
     public GLWidget(QWidget parent) {
         super(parent);
@@ -46,13 +47,13 @@ class GLWidget extends QGLWidget
         trolltechGreen = QColor.fromCmykF(0.40, 0.0, 1.0, 0.0);
         trolltechPurple = QColor.fromCmykF(0.39, 0.39, 0.0, 0.0);
     }
-    
+
     protected void disposed()
     {
         makeCurrent();
         func.glDeleteLists(object, 1);
     }
-    
+
     public QSize minimumSizeHint()
     {
         return new QSize(50, 50);
@@ -247,6 +248,8 @@ class GLWidget extends QGLWidget
     }
 }
 
+@QtJambiExample(name = "Open GL",
+                canInstantiate = "call-static-method:checkJoglSupport")
 public class HelloGL extends QWidget
 {
     GLWidget glWidget = null;
@@ -296,7 +299,7 @@ public class HelloGL extends QWidget
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
-    public static boolean canInstantiate() {
+    public static boolean checkJoglSupport() {
         try {
             Class.forName("javax.media.opengl.GL");
             return true;
@@ -307,7 +310,13 @@ public class HelloGL extends QWidget
 
     public static void main(String args[])
     {
-        QApplication.initialize(args);        
+        QApplication.initialize(args);
+
+        if (!checkJoglSupport()) {
+            QMessageBox.critical(null, "OpenGL Missing", "This Example requires OpenGL for Java\nAvalable at: <i>https://jogl.dev.java.net/</i>");
+            return;
+        }
+
         HelloGL window = new HelloGL();
         window.show();
         QApplication.exec();

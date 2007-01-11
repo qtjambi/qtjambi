@@ -13,12 +13,11 @@
 
 package com.trolltech.launcher;
 
-import java.io.File;
-import java.io.PrintStream;
-import java.util.*;
-
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+
+import java.io.*;
+import java.util.*;
 
 public class Launcher extends QWidget {
     private abstract class HtmlUpdater extends Worker {
@@ -29,7 +28,7 @@ public class Launcher extends QWidget {
         protected void execute() {
             QModelIndex i = ui.list.selectionModel().currentIndex();
             Launchable l = null;
-            if (i.isValid())
+            if (i != null)
                 l = m_model.at(i);
             updateHtml(l == null ? "n/a" : html(l));
         }
@@ -78,7 +77,7 @@ public class Launcher extends QWidget {
         ui.button_content.clicked.connect(this, "slotSwapContent()");
         ui.button_launch.clicked.connect(this, "slotLaunch()");
         ui.button_documentation.clicked.connect(this, "openDocumentation()");
-        updateStyle(this, new Style());
+        updateStyle(this, new Style(this));
 
         setWindowTitle("Qt Jambi Examples and Demos");
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
@@ -115,7 +114,7 @@ public class Launcher extends QWidget {
             launch_close();
 
         // Enable components...
-        boolean enable = current.isValid();
+        boolean enable = current != null;
         ui.container.setEnabled(enable);
         ui.button_launch.setEnabled(enable);
         ui.button_content.setEnabled(enable);
@@ -174,12 +173,13 @@ public class Launcher extends QWidget {
     private String loadDefaultText() {
         QFile f = new QFile("classpath:com/trolltech/launcher/launcher.html");
         assert f.exists();
+        String content = null;
         if (f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly))) {
-            String s = f.readAll().toString();
+            content = f.readAll().toString();
             f.close();
-            return s;
         }
-        return null;
+        f.dispose();
+        return content;
     }
 
 
@@ -226,6 +226,8 @@ public class Launcher extends QWidget {
     /**
      * Some hardcoded logic to figure out which style we should be
      * using by default.
+     *
+     * @return A string representing the default style...
      */
     private static String styleForCurrentSystem() {
         int os = com.trolltech.qt.QSysInfo.operatingSystem();
@@ -325,11 +327,8 @@ public class Launcher extends QWidget {
         Launcher l = new Launcher();
         l.show();
         QApplication.exec();
-
-
         l.dispose();
-        QApplication.instance().dispose();
 
-        System.exit(0);
+        System.gc();
     }
 }

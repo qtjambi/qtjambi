@@ -16,16 +16,16 @@ package com.trolltech.demos.imageviewer;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QAbstractItemView.ScrollHint;
 
 public class MainWindow extends QMainWindow {
 
     public MainWindow() {
         ui.setupUi(this);
-               
-        patchPixmaps();
+
         setupTableView();
         setupView();
-        
+
         readSettings();
     }
 
@@ -91,7 +91,7 @@ public class MainWindow extends QMainWindow {
     public void on_actionExit_triggered() {
         close();
     }
-   
+
     public void on_actionClose_triggered() {
         view.setImage(null);
     }
@@ -115,17 +115,24 @@ public class MainWindow extends QMainWindow {
         dirModel = new QDirModel();
         dirModel.setLazyChildCount(true);
         dirModel.setFilter(new QDir.Filters(QDir.Filter.Dirs, QDir.Filter.Drives, QDir.Filter.NoDotAndDotDot));
+        
         ui.dirView.setModel(dirModel);
+
         for (int i=1; i<ui.dirView.header().count(); ++i)
-            ui.dirView.header().hideSection(i);
+            ui.dirView.hideColumn(i);
         ui.dirView.header().hide();
 
+        ui.dirView.header().setStretchLastSection(false);
+        ui.dirView.header().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
+        
         QFileInfo info = new QFileInfo("com/trolltech/images");
         QModelIndex initial = dirModel.index(info.absoluteFilePath());
-        if (initial != null && initial.isValid()) {
+        if (initial != null) {
             ui.dirView.setCurrentIndex(initial);
             ui.dirView.activated.emit(initial);
         }
+        
+        ui.dirView.scrollTo(ui.dirView.currentIndex(),ScrollHint.PositionAtCenter);
     }
 
     private void setupView() {
@@ -147,48 +154,16 @@ public class MainWindow extends QMainWindow {
                             ui.groupBox);
     }
 
-    // We need to manually locate the pixmaps until Juic generates the right
-    // code for this
-    private void patchPixmaps() {
-        String trolltechPrefix = "classpath:com/trolltech/";
-        String prefix = trolltechPrefix + "demos/imageviewer/";
-
-        QPixmap pixmapBlack = new QPixmap(prefix + "circle_black_16.png");
-        QPixmap pixmapWhite= new QPixmap(prefix + "circle_white_16.png");
-        QPixmap pixmapRed = new QPixmap(prefix + "circle_red_16.png");
-        QPixmap pixmapBlue= new QPixmap(prefix + "circle_blue_16.png");
-        QPixmap pixmapGreen= new QPixmap(prefix + "circle_green_16.png");
-        QPixmap pixmapCyan = new QPixmap(prefix + "circle_cyan_16.png");
-        QPixmap pixmapYellow = new QPixmap(prefix + "circle_yellow_16.png");
-        QPixmap pixmapMagenta = new QPixmap(prefix + "circle_magenta_16.png");
-        QPixmap pixmapZoomIn = new QPixmap(prefix + "zoomin.png");
-        QPixmap pixmapZoomOut = new QPixmap(prefix + "zoomout.png");
-        QPixmap pixmapSave = new QPixmap(trolltechPrefix + "images/save.png");
-        QPixmap pixmapClose = new QPixmap(trolltechPrefix + "images/close.png");
-
-        ui.actionZoom_In.setIcon(pixmapZoomIn);
-        ui.actionZoom_Out.setIcon(pixmapZoomOut);
-        ui.actionSave.setIcon(pixmapSave);
-        ui.actionClose.setIcon(pixmapClose);
-
-        ui.labelBlack.setPixmap(pixmapBlack);
-        ui.labelWhite.setPixmap(pixmapWhite);
-        ui.labelRed.setPixmap(pixmapRed);
-        ui.labelBlue.setPixmap(pixmapBlue);
-        ui.labelGreen.setPixmap(pixmapGreen);
-        ui.labelCyan.setPixmap(pixmapCyan);
-        ui.labelYellow.setPixmap(pixmapYellow);
-        ui.labelMagenta.setPixmap(pixmapMagenta);
-    }
-
     public void closeEvent(QCloseEvent event) {
         writeSettings();
     }
-    
+
     public void readSettings(){
         QSettings settings = new QSettings("Trolltech", "ImageViewer Example");
-        resize((QSize)settings.value("size", new QSize(400, 400)));
-        move((QPoint)settings.value("pos", new QPoint(200, 200)));
+        resize((QSize)settings.value("size", new QSize(1000, 500)));
+        QPoint point = (QPoint)settings.value("pos", null);
+        if(point!=null)
+            move(point);
         restoreState((QByteArray)settings.value("state", null));
         settings.sync();
     }
@@ -200,7 +175,7 @@ public class MainWindow extends QMainWindow {
         settings.setValue("state", saveState());
         settings.sync();
     }
-    
+
     private Ui_MainWindow ui = new Ui_MainWindow();
     private QDirModel dirModel;
     private ImageTableModel imageModel;

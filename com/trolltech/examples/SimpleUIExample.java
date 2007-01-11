@@ -15,6 +15,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Qt Designer and JUIC")
 public class SimpleUIExample extends QMainWindow {
 
     public static void main(String[] args) {
@@ -54,15 +55,4 @@ public class SimpleUIExample extends QMainWindow {
 
         mainWindowUi.textBrowser.setText(result);
     }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Simple UI Example";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

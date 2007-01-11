@@ -23,13 +23,6 @@ public class QModelIndex
         this.model = model;
     }
 
-    public QModelIndex() {
-        row = -1;
-        column = -1;
-        internalId = 0;
-        model = null;
-    }
-
     public int row() { return row; }
     public int column() { return column; }
     public long internalId() { return internalId; }
@@ -55,10 +48,6 @@ public class QModelIndex
         return model;
     }
 
-    public boolean isValid() {
-        return (row >= 0) && (column >= 0) && (model != null);
-    }
-
     public boolean equals(Object other) {
         if (!(other instanceof QModelIndex))
             return false;
@@ -67,6 +56,21 @@ public class QModelIndex
             && oi.column == column
             && oi.internalId == internalId
             && oi.model == model;
+    }
+
+    public int hashCode() {
+        return row << 4 + column + internalId;
+    }
+
+    public String toString() {
+        return new StringBuilder()
+                .append("QModelIndex(row=")
+                .append(row)
+                .append(",col=")
+                .append(column)
+                .append(",internal=")
+                .append(internalId)
+                .append(")").toString();
     }
 
     private int row;

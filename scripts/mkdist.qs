@@ -1,7 +1,7 @@
 const packageDir = os_name() == OS_NAME_WINDOWS
                    ? "d:/tmp/package-builder"
                    : "/tmp/package-builder";
-const version = "1.0.0-tp3";
+const version = "1.0.0-beta";
 const javaDir = packageDir + "/qtjambi/" + version;
 const javadocName = "qtjambi-javadoc-" + version + ".jar";
 
@@ -285,15 +285,12 @@ function compileNativeLibraries() {
     verbose("Native libraries:");
 
     verbose(" - running qmake");
-    execute([command.qmake, "-r", "CONFIG+=release", "-after", "CONFIG-=debug"]);
+    execute([command.qmake, "-r", "CONFIG+=release", "-after", "CONFIG-=debug debug_and_release"]);
 
     verbose(" - running make");
     var make = [command.make];
     if (option.teambuilder)
         make.push("-j20");
-
-    if (os_name() == OS_NAME_WINDOWS)
-        make.push("release");
 
     execute(make);
 }

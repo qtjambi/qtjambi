@@ -165,7 +165,7 @@ public:
 
     QString minimalSignature() const;
 
-    // true when the type is a QtObject subclass
+    // true when the type is a QtJambiObject subclass
     bool hasNativeId() const;
 
     // returns true if the typs is used as a non complex primitive, no & or *'s
@@ -285,7 +285,10 @@ public:
     QString defaultValueExpression() const { return m_expression; }
     void setDefaultValueExpression(const QString &expr) { m_expression = expr; }
 
-    QString toString() const { return type()->name() + " " + name() +
+    QString originalDefaultValueExpression() const { return m_original_expression; }
+    void setOriginalDefaultValueExpression(const QString &expr) { m_original_expression = expr; }
+
+    QString toString() const { return type()->name() + " " + MetaJavaVariable::name() +
                                            (m_expression.isEmpty() ? "" :  " = " + m_expression); }
 
     int argumentIndex() const { return m_argument_index; }
@@ -298,9 +301,10 @@ public:
 
 private:
     // Just to force people to call argumentName() And indexedName();
-    QString name() const { return QString(); }
+    QString name() const;
 
     QString m_expression;
+    QString m_original_expression;
     int m_argument_index;
 };
 
@@ -316,6 +320,8 @@ public:
 
     const MetaJavaFunction *getter() const;
     const MetaJavaFunction *setter() const;
+
+    FieldModificationList modifications() const;
 
     MetaJavaField *copy() const;
 
@@ -386,7 +392,7 @@ public:
 
     QString marshalledName() const;
 
-    // true if one or more of the arguments are of QtObject subclasses
+    // true if one or more of the arguments are of QtJambiObject subclasses
     bool argumentsHaveNativeId() const
     {
         foreach (const MetaJavaArgument *arg, m_arguments) {
@@ -433,7 +439,7 @@ public:
     void setFunctionType(FunctionType type) { m_function_type = type; }
 
     QString signature() const;
-    QString javaSignature() const;
+    QString javaSignature(bool minimal = false) const;
 
     bool isConstant() const { return m_constant; }
     void setConstant(bool constant) { m_constant = constant; }
@@ -447,6 +453,7 @@ public:
     MetaJavaFunction *copy() const;
 
     QString replacedDefaultExpression(const MetaJavaClass *cls, int idx) const;
+    bool removedDefaultExpression(const MetaJavaClass *cls, int idx) const;
     QString conversionRule(CodeSnip::Language language, int idx) const;
     bool disabledGarbageCollection(const MetaJavaClass *cls, CodeSnip::Language language, int idx) const;
     bool disabledGarbageCollection(const MetaJavaClass *cls, int idx) const;
@@ -463,7 +470,7 @@ public:
     const MetaJavaClass *interfaceClass() const { return m_interface_class; }
     void setInterfaceClass(const MetaJavaClass *cl) { m_interface_class = cl; }
 
-    
+
 
 private:
     QString m_name;
@@ -653,7 +660,7 @@ public:
     QString package() const { return m_type_entry->javaPackage(); }
     bool isInterface() const { return m_type_entry->isInterface(); }
     bool isNamespace() const { return m_type_entry->isNamespace(); }
-    bool isQObject() const { return m_type_entry->isQObject(); }    
+    bool isQObject() const { return m_type_entry->isQObject(); }
     QString qualifiedCppName() const { return m_type_entry->qualifiedCppName(); }
 
     bool hasInconsistentFunctions() const;
@@ -661,26 +668,10 @@ public:
     bool inheritsFrom(const MetaJavaClass *other) const;
 
     void setForceShellClass(bool on) { m_force_shell_class = on; }
-    bool generateShellClass() const
-    {
-        return m_force_shell_class ||
-            (!isFinal()
-               && (hasVirtualFunctions()
-                  || hasInconsistentFunctions()
-                  || hasNonPublicFunctions()
-                  || hasFieldAccessors()
-                  || this->typeEntry()->isObject()));
-    }
+    bool generateShellClass() const;
 
     bool hasVirtualFunctions() const { return !isFinal() && m_has_virtuals; }
-
-    bool hasNonPublicFunctions() const {
-        foreach (MetaJavaFunction *func, m_functions) {
-            if (!func->isPublic())
-                return true;
-        }
-        return false;
-    }
+    bool hasProtectedFunctions() const;
 
     bool hasFieldAccessors() const;
 
@@ -710,7 +701,7 @@ private:
     uint m_functions_fixed : 1;
     uint m_has_public_destructor : 1;
     uint m_force_shell_class : 1;
-    
+
     uint m_has_hash_function : 1;
     uint m_has_equals_operator : 1;
 
@@ -730,7 +721,7 @@ private:
 inline MetaJavaFunctionList MetaJavaClass::allVirtualFunctions() const
 {
     return queryFunctions(VirtualFunctions
-                          | NotRemovedFromShell);
+                          | NotRemovedFromJava);
 }
 
 inline MetaJavaFunctionList MetaJavaClass::allFinalFunctions() const
@@ -745,7 +736,7 @@ inline MetaJavaFunctionList MetaJavaClass::cppInconsistentFunctions() const
     return queryFunctions(Inconsistent
                           | NormalFunctions
                           | Visible
-                          | NotRemovedFromShell);
+                          | NotRemovedFromJava);
 }
 
 inline MetaJavaFunctionList MetaJavaClass::cppSignalFunctions() const

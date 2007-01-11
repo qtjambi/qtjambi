@@ -88,6 +88,6 @@ public class Threads implements Runnable {
 
         System.out.println("All done...");
 
-        QApplication.exec();
+        //QApplication.exec();
     }
 };

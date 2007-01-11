@@ -179,8 +179,8 @@ public class TestThreads extends QApplicationTest{
         ping.object.other = pong.object;
         pong.object.other = ping.object;
         
-        assertTrue(ping.object.ping.connect(pong.object, "pong()"));
-        assertTrue(pong.object.ping.connect(ping.object, "pong()"));
+        ping.object.ping.connect(pong.object, "pong()");
+        pong.object.ping.connect(ping.object, "pong()");
         
         ping.join(1000);
         pong.join(1000);

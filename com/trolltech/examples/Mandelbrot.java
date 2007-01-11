@@ -16,6 +16,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Mandelbrot")
 public class Mandelbrot extends QWidget {
 
     private RenderThread thread = new RenderThread();
@@ -197,7 +198,11 @@ public class Mandelbrot extends QWidget {
         pixmapOffset = new QPoint();
         lastDragPosition = new QPoint();
         pixmapScale = scaleFactor;
-        update();
+        QApplication.invokeLater(new Runnable() {
+            public void run() {
+                update();
+            }
+        });
     }
 
     protected void zoom(double zoomFactor) {

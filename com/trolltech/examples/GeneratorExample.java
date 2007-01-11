@@ -20,6 +20,7 @@ import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import com.trolltech.examples.generator.MyWidget;
 
+@QtJambiExample(name = "Generator Example")
 public class GeneratorExample extends QWidget {
     
     public GeneratorExample(QWidget w)

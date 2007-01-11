@@ -14,5 +14,6 @@ public abstract class QApplicationTest {
     @AfterClass
     public static void testDispose() throws Exception {
         QApplication.quit();
+        QApplication.instance().dispose();        
     }
 }

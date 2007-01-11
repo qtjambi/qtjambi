@@ -2,7 +2,9 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = qtjambi juic qtjambi_core qtjambi_gui qtjambi_sql qtjambi_opengl \
-	  qtjambi_svg qtjambi_network qtjambi_xml
+	  qtjambi_svg qtjambi_network qtjambi_xml 
+
+SUBDIRS += qtjambi_designer designer-integration
 
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs

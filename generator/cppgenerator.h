@@ -33,9 +33,11 @@ public:
                                 const QString &name_prefix = QString(),
                                 Option option = NoOption,
                                 const QString &classname_prefix = QString(),
-                                const QStringList &extra_arguments = QStringList());
+                                const QStringList &extra_arguments = QStringList(),
+                                int numArguments = -1);
     static void writeFunctionArguments(QTextStream &s, const MetaJavaArgumentList &arguments,
-                                Option option = NoOption);
+                                Option option = NoOption,
+                                int numArguments = -1);
 
     QString signalWrapperPrefix() const { return "__qt_signalwrapper_"; }
 

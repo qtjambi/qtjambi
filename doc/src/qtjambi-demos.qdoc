@@ -1,0 +1,34 @@
+/*!
+    \page demos.html
+    \title Qt Jambi Demonstrations
+
+    This is the list of demonstrations in Qt Jambi's \c demos
+    directory.  These are larger and more complicated programs than
+    the \l{Qt Jambi Examples} and are used to highlight certain
+    features of Qt Jambi.
+
+    \section1 Painting
+
+    \list
+    \o \l {Vector Deformation} demonstrates effects that are made
+       possible with a vector-oriented paint engine.
+    \o \l {Path Stroking} shows Qt Jambi's built-in dash patterns
+       and shows how custom patterns can be used to extend the range of
+       available patterns.
+    \endlist
+
+    \section1 Rich Text
+
+    \list
+    \o \l {Text Edit} shows Qt Jambi's rich text editing features and provides
+       an environment for experimenting with them.
+    \endlist
+
+    \section1 Main Window
+
+    \list
+    \o \l {Image Viewer} shows how Qt Jambi can be used to make an
+       application with standard GUI features such as menus, tool bars,
+       and dock windows.
+    \endlist
+*/

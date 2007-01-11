@@ -22,6 +22,7 @@ import com.trolltech.qt.gui.QPushButton;
 public class Button extends QPushButton {
 
     private int counter = 0;
+    Signal1<String> clicked = new Signal1<String>();
 
     public void mousePressEvent(QMouseEvent e) {
     	setText("[" + e.x() + ", " + e.y() + "]");
@@ -35,6 +36,7 @@ public class Button extends QPushButton {
 
     public void mouseReleaseEvent(QMouseEvent e) {
     	setText("Clicked " + String.valueOf(++counter) + " times...");
+        clicked.emit("hello");
     	super.mouseReleaseEvent(e);
     }	
 
@@ -42,12 +44,17 @@ public class Button extends QPushButton {
     	System.out.println("object disposed...\n");
     	super.disposed();
     }
+    
+    protected void testString(String s) {
+        System.out.println("s = " + s);
+    }
 
     public static void main(String args[]) {
     	QApplication.initialize(args);
 	
     	Button b = new Button();
     	b.setText("Not clicked");
+        b.clicked.connect(b, "testString(String)");
     	b.show();
 
     	QApplication.exec();

@@ -5,14 +5,20 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 public class CustomWidgetTester extends QWidget {
+
+    public Signal1<String> textChanged = new Signal1<String>();
+    public Signal1<String> positionChanged = new Signal1<String>();
     
     public CustomWidgetTester(QWidget parent) {
         super(parent);
         resetText();
     }
 
+    public CustomWidgetTester() {
+        this(null);
+    }
+
     
-//    @QtPropertyDesignable("true")
     @QtPropertyOrder(0)
     public String text() {
         return text;
@@ -22,19 +28,16 @@ public class CustomWidgetTester extends QWidget {
     public void setText(String text) {
         this.text = text;
         update();
-    }   
+        textChanged.emit(text);
+    }
     
     
     @QtPropertyResetter
     public void resetText() {
-        this.text = "Qt Jambi Dummy Widget..";
+        setText("Qt Jambi Dummy Widget..");
     }
-    
-    public void setFoobar(String foobar) {
-        
-    }
-    
-    
+
+
     @QtPropertyOrder(1)
     public QPoint position() {
         return position;
@@ -48,7 +51,12 @@ public class CustomWidgetTester extends QWidget {
     public void setPosition(QPoint position) {
         this.position = position;
         update();
+        positionChanged.emit("x=" + position.x() + ", y=" + position.y());
     }
+
+
+    public void setPositionX(int x) { setPosition(new QPoint(x, position.y())); }
+    public void setPositionY(int y) { setPosition(new QPoint(position.x(), y)); }
     
     public QSize sizeHint() {
         return new QSize(200, 200);
@@ -57,6 +65,8 @@ public class CustomWidgetTester extends QWidget {
     protected void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter();
         p.begin(this);
+
+        p.setPen(new QPen(palette().brush(QPalette.ColorRole.WindowText), 0));
         
         p.drawText(position.x(), position.y(), text);
         

@@ -1,4 +1,4 @@
-<typesystem package="com.trolltech.qt.opengl" default-superclass="com.trolltech.qt.QtObject">  
+<typesystem package="com.trolltech.qt.opengl" default-superclass="com.trolltech.qt.QtJambiObject">  
   <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtOpenGL");
   </inject-code>
@@ -16,11 +16,53 @@
      <include file-name="qgl.h" location="global"/>
   </namespace-type>
   
-  <value-type name="QGLColormap"/>
-  <value-type name="QGLFormat"/>
+  <value-type name="QGLColormap">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QtJambiInternal" location="java" />
+    </extra-includes>
+  
+    <modify-function signature="operator=(QGLColormap)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QGLColormap" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="setEntries(int,const unsigned int*,int)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public final void setEntries(int colors[], int base) {
+            setEntries(colors.length, QtJambiInternal.intArrayToNativePointer(colors), base);
+        }
+        
+        public final void setEntries(int colors[]) {
+            setEntries(colors, 0);
+        }
+    </inject-code>  
+  </value-type>
+  <value-type name="QGLFormat">
+    <modify-function signature="operator=(QGLFormat)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QGLFormat" />
+        </insert-template>
+    </inject-code>
+    
+  </value-type>
   
   <object-type name="QGLColormapData"/>
-  <object-type name="QGLContext"/>  
+  <object-type name="QGLContext">  
+    <modify-function signature="getProcAddress(QString)const">
+        <remove />
+    </modify-function>    
+  </object-type>
   <object-type name="QGLFramebufferObject"/>
   <object-type name="QGLPixelBuffer">
     <extra-includes>

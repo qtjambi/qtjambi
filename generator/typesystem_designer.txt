@@ -1,0 +1,25 @@
+<typesystem package="com.trolltech.tools.designer" default-superclass="com.trolltech.qt.QtJambiObject">
+
+  <object-type name="QDesignerResourceBrowserInterface">
+    <include file-name="abstractresourcebrowser.h" location="global"/>
+  </object-type>
+
+  <interface-type name="QDesignerPropertySheetExtension">
+    <include file-name="QtDesigner/QtDesigner" location="global"/>
+  </interface-type>
+
+  <object-type name="JambiPropertySheet">
+    <include file-name="jambipropertysheet.h" location="local"/>
+  </object-type>
+
+  <interface-type name="QDesignerMemberSheetExtension">
+    <include file-name="QtDesigner/QtDesigner" location="global"/>
+  </interface-type>
+
+  <object-type name="JambiMemberSheet">
+    <include file-name="jambimembersheet.h" location="local"/>
+  </object-type>
+  
+  <object-type name="JambiResourceBrowser" />
+
+</typesystem>

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-public class QVariant extends QtObject {
+public class QVariant extends QtJambiObject {
 
     // Java types
     public static final int Invalid = 0;
@@ -111,7 +111,7 @@ public class QVariant extends QtObject {
     {
         if (obj instanceof Number)
             return true;
-        else if (obj instanceof QtObject || obj instanceof String)
+        else if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Double.value());
         else
             return false;
@@ -122,7 +122,7 @@ public class QVariant extends QtObject {
         if (obj instanceof Number) {
             setOk(ok, true);
             return ((Number) obj).doubleValue();
-        } else if (obj instanceof String || obj instanceof QtObject) {
+        } else if (obj instanceof String || obj instanceof QtJambiObject) {
             return __qt_toDouble(obj, ok);        
         } else {
             setOk(ok, false);
@@ -137,7 +137,7 @@ public class QVariant extends QtObject {
     }
     public static String toString(Object obj)
     {
-        if (obj instanceof QtObject) {
+        if (obj instanceof QtJambiObject) {
             return __qt_toString(obj);
         }            
         return obj != null ? obj.toString() : "";        
@@ -148,7 +148,7 @@ public class QVariant extends QtObject {
     {
         if (obj instanceof Boolean || obj instanceof Number)
             return true;
-        else if (obj instanceof QtObject || obj instanceof String)
+        else if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Boolean.value());
         else
             return false;
@@ -159,7 +159,7 @@ public class QVariant extends QtObject {
             return (Boolean) obj;
         } else if (obj instanceof Number) {
             return ((Number) obj).intValue() != 0;        
-        } else if (obj instanceof QtObject || obj instanceof String) {            
+        } else if (obj instanceof QtJambiObject || obj instanceof String) {            
             return __qt_toBoolean(obj);
         } else {
             return false;        
@@ -169,14 +169,14 @@ public class QVariant extends QtObject {
     
     public static boolean canConvertToByteArray(Object obj) 
     {
-        if (obj instanceof QtObject)
+        if (obj instanceof QtJambiObject)
             return __qt_canConvert(obj, Types.ByteArray.value());
         else
             return false;
     }
     public static QByteArray toByteArray(Object obj)
     {
-        if (obj instanceof QtObject) {
+        if (obj instanceof QtJambiObject) {
             QByteArray returned = (QByteArray) __qt_convert(Types.ByteArray.value(), obj);
             if (returned != null) {
                 return returned;
@@ -188,14 +188,14 @@ public class QVariant extends QtObject {
     
     public static boolean canConvertToBitArray(Object obj)
     {
-        if (obj instanceof QtObject)
+        if (obj instanceof QtJambiObject)
             return __qt_canConvert(obj, Types.BitArray.value());
         else
             return false;
     }
     public static QBitArray toBitArray(Object obj)
     {
-        if (obj instanceof QtObject) {
+        if (obj instanceof QtJambiObject) {
             QBitArray returned = (QBitArray) __qt_convert(Types.BitArray.value(), obj);
             if (returned != null) {
                 return returned;
@@ -209,7 +209,7 @@ public class QVariant extends QtObject {
     {
         if (obj instanceof Character)
             return true;
-        else if (obj instanceof QtObject)
+        else if (obj instanceof QtJambiObject)
             return __qt_canConvert(obj, Types.Char.value());
         else
             return false;
@@ -218,7 +218,7 @@ public class QVariant extends QtObject {
     {
         if (obj instanceof Character)
             return (Character) obj;
-        else if (obj instanceof QtObject || obj instanceof String)
+        else if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_toChar(obj);
         else        
             return 0;        
@@ -227,14 +227,14 @@ public class QVariant extends QtObject {
     
     public static boolean canConvertToDate(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Date.value());
         else
             return false;
     }
     public static QDate toDate(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QDate returned = (QDate) __qt_convert(Types.Date.value(), obj);
             if (returned != null) {
                 return returned;
@@ -245,14 +245,14 @@ public class QVariant extends QtObject {
     
     public static boolean canConvertToDateTime(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.DateTime.value());
         else
             return false;
     }    
     public static QDateTime toDateTime(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QDateTime returned = (QDateTime) __qt_convert(Types.DateTime.value(), obj);
             if (returned != null) {
                 return returned;
@@ -266,7 +266,7 @@ public class QVariant extends QtObject {
     {
         if (obj instanceof Number)
             return true;
-        else if (obj instanceof QtObject || obj instanceof String)
+        else if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Int.value());
         else
             return false;
@@ -278,7 +278,7 @@ public class QVariant extends QtObject {
         if (obj instanceof Number) {
             setOk(ok, true);
             return ((Number) obj).intValue();
-        } else if (obj instanceof QtObject || obj instanceof String) {
+        } else if (obj instanceof QtJambiObject || obj instanceof String) {
             return __qt_toInt(obj, ok);
         } else {
             setOk(ok, false);
@@ -289,14 +289,14 @@ public class QVariant extends QtObject {
      
     public static boolean canConvertToLine(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Line.value());
         else
             return false;
     }
     public static QLine toLine(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QLine returned = (QLine) __qt_convert(Types.Line.value(), obj);
             if (returned != null) {
                 return returned;
@@ -307,14 +307,14 @@ public class QVariant extends QtObject {
     }
     public static boolean canConvertToLineF(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.LineF.value());
         else
             return false;
     }    
     public static QLineF toLineF(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QLineF returned = (QLineF) __qt_convert(Types.LineF.value(), obj);
             if (returned != null) {
                 return returned;
@@ -326,14 +326,14 @@ public class QVariant extends QtObject {
 
     public static boolean canConvertToLocale(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Locale.value());
         else
             return false;
     }
     public static QLocale toLocale(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QLocale returned = (QLocale) __qt_convert(Types.Locale.value(), obj);
             if (returned != null) {
                 return returned;
@@ -344,14 +344,14 @@ public class QVariant extends QtObject {
     
     public static boolean canConvertToPoint(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Point.value());
         else
             return false;
     }    
     public static QPoint toPoint(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QPoint returned = (QPoint) __qt_convert(Types.Point.value(), obj);
             if (returned != null) {
                 return returned;
@@ -362,14 +362,14 @@ public class QVariant extends QtObject {
 
     public static boolean canConvertToPointF(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.PointF.value());
         else
             return false;
     }    
     public static QPointF toPointF(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QPointF returned = (QPointF) __qt_convert(Types.PointF.value(), obj);
             if (returned != null) {
                 return returned;
@@ -380,14 +380,14 @@ public class QVariant extends QtObject {
     
     public static boolean canConvertToRect(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Rect.value());
         else
             return false;
     }    
     public static QRect toRect(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QRect returned = (QRect) __qt_convert(Types.Rect.value(), obj);
             if (returned != null) {
                 return returned;
@@ -398,14 +398,14 @@ public class QVariant extends QtObject {
 
     public static boolean canConvertToRectF(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.RectF.value());
         else
             return false;
     }    
     public static QRectF toRectF(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QRectF returned = (QRectF) __qt_convert(Types.RectF.value(), obj);
             if (returned != null) {
                 return returned;
@@ -416,14 +416,14 @@ public class QVariant extends QtObject {
 
     public static boolean canConvertToRegExp(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.RegExp.value());
         else
             return false;
     }    
     public static QRegExp toRegExp(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QRegExp returned = (QRegExp) __qt_convert(Types.RegExp.value(), obj);
             if (returned != null) {
                 return returned;
@@ -434,14 +434,14 @@ public class QVariant extends QtObject {
 
     public static boolean canConvertToSize(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Size.value());
         else
             return false;
     }    
     public static QSize toSize(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QSize returned = (QSize) __qt_convert(Types.Size.value(), obj);
             if (returned != null) {
                 return returned;
@@ -452,14 +452,14 @@ public class QVariant extends QtObject {
     
     public static boolean canConvertToSizeF(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.SizeF.value());
         else
             return false;
     }    
     public static QSizeF toSizeF(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QSizeF returned = (QSizeF) __qt_convert(Types.SizeF.value(), obj);
             if (returned != null) {
                 return returned;
@@ -470,14 +470,14 @@ public class QVariant extends QtObject {
 
     public static boolean canConvertToTime(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String)
+        if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Time.value());
         else
             return false;
     }    
     public static QTime toTime(Object obj)
     {
-        if (obj instanceof QtObject || obj instanceof String) {
+        if (obj instanceof QtJambiObject || obj instanceof String) {
             QTime returned = (QTime) __qt_convert(Types.Time.value(), obj);
             if (returned != null) {
                 return returned;
@@ -490,7 +490,7 @@ public class QVariant extends QtObject {
     {
         if (obj instanceof Number)
             return true;
-        else if (obj instanceof QtObject || obj instanceof String)
+        else if (obj instanceof QtJambiObject || obj instanceof String)
             return __qt_canConvert(obj, Types.Long.value());
         else
             return false;
@@ -501,7 +501,7 @@ public class QVariant extends QtObject {
         if (obj instanceof Number) {
             setOk(ok, true);
             return ((Number) obj).longValue();
-        } else if (obj instanceof QtObject || obj instanceof String) {
+        } else if (obj instanceof QtJambiObject || obj instanceof String) {
             return __qt_toLong(obj, ok);
         } else {
             setOk(ok, false);

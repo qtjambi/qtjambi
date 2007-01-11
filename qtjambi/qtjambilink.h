@@ -53,9 +53,8 @@ private:
  */
 class QTJAMBI_EXPORT QtJambiLink
 {
-    inline QtJambiLink(JNIEnv *env, jobject jobj)
-        : m_environment(env),
-          m_java_object(jobj),
+    inline QtJambiLink(jobject jobj)
+        : m_java_object(jobj),
           m_wrapper(0),
           m_has_been_finalized(false),
           m_qobject_deleted(false),
@@ -76,7 +75,7 @@ public:
     /* Returns the pointer value as an object, will assert if pointer
        is a QObject */
     inline void *object() const { Q_ASSERT(!isQObject()); return m_pointer; }
-    void resetObject();
+    void resetObject(JNIEnv *env);
 
     /* Returns the pointer value for the signal wrapper, will assert if pointer is not a QObject */
     inline QObject *signalWrapper() const { Q_ASSERT(isQObject()); return m_wrapper; }
@@ -93,9 +92,6 @@ public:
 
     inline bool isCached() const { return m_in_cache; }
 
-    inline JNIEnv *environment() const { return m_environment; }
-    inline void setEnvironment(JNIEnv *env) { m_environment = env; }
-
     /* Returns true if this link holds a global reference to the java
        object, meaning that the java object will not be
        finalized. This is for widgets mostly. */
@@ -108,18 +104,21 @@ public:
 
     /* Deletes any global references to the java object so that it can
        be finalized by the virtual machine */
-    void releaseJavaObject();
+    void releaseJavaObject(JNIEnv *env);
 
     /* Deletes the native object */
-    void deleteNativeObject();
+    void deleteNativeObject(JNIEnv *env);
 
     /* Triggered by native jni functions when a java object has been
        finalized. */
-    void javaObjectFinalized();
+    void javaObjectFinalized(JNIEnv *env);
 
     /* Called by the native jni fucntion when the java object has been
        disposed */
-    void javaObjectDisposed();
+    void javaObjectDisposed(JNIEnv *env);
+
+    void registerSubObject(void *);
+    void unregisterSubObject(void *);
 
     inline bool hasBeenFinalized() const { return m_has_been_finalized; }
     inline bool readyForDelete() const { return !isQObject() || (hasBeenFinalized() && qobjectDeleted()); }
@@ -139,7 +138,9 @@ public:
 
     void disableGarbageCollection(JNIEnv *env, jobject java);
 
-    static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name, 
+    void setGlobalRef(JNIEnv *env, bool global);
+
+    static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,
         bool enter_in_cache);
     static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object, bool owner);
     static QtJambiLink *createWrapperForQObject(JNIEnv *env, QObject *o, const char *class_name,
@@ -159,11 +160,10 @@ public:
 
 private:
     void setNativeId();
-    void cleanUpAll();
-    void removeFromCache();
-    void aboutToMakeObjectInvalid();
+    void cleanUpAll(JNIEnv *env);
+    void removeFromCache(JNIEnv *env);
+    void aboutToMakeObjectInvalid(JNIEnv *env);
 
-    JNIEnv *m_environment;
     jobject m_java_object;
     void *m_pointer;
     int m_meta_type;

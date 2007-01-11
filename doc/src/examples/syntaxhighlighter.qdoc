@@ -246,9 +246,8 @@
     \quotefromfile SyntaxHighlighter.java
     \skipto main
     \printuntil }
-    \skipto REMOVE-END
-    \skipto }
-    \printuntil /^\}/
+    \skipto /^\}/
+    \printline /^\}/
 
     Finally, we provide a \c main() method to create and show the
     main application window when the example is run.

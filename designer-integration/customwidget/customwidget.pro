@@ -8,3 +8,7 @@ TARGET=JambiCustomWidget
 
 HEADERS += jambicustomwidget.h
 SOURCES += jambicustomwidget.cpp
+
+CONFIG(debug, debug|release) {
+    TARGET = $$member(TARGET, 0)_debuglib
+}

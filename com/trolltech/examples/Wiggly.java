@@ -69,6 +69,7 @@ class WigglyWidget extends QWidget {
     }
 }
 
+@QtJambiExample(name = "Wiggly")
 public class Wiggly extends QDialog {
     public Wiggly(QWidget parent) {
         super(parent);

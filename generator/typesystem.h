@@ -46,112 +46,191 @@ struct Include
 };
 typedef QList<Include> IncludeList;
 
-struct CustomFunction
-{
-    CustomFunction(const QString &n = QString()) : name(n) { }
+typedef QMap<int, QString> ArgumentMap;
 
-    QString name;
-    QString param_name;
-    QString code;
+class TemplateInstance;
+
+class CodeSnipFragment{
+    private:
+        const QString m_code;
+        TemplateInstance *m_instance;
+
+    public:
+        CodeSnipFragment(const QString &code)
+    : m_code(code),
+        m_instance(0)
+        {}
+
+        CodeSnipFragment(TemplateInstance *instance)
+    : m_instance(instance)
+        {}
+
+        QString code() const;
 };
 
-typedef QMap<int, QString> ArgumentMap;
-struct CodeSnip
+class CodeSnipAbstract{
+    public:
+        QString code() const;
+
+        void addCode(const QString &code){
+            codeList.append(new CodeSnipFragment(code));
+        }
+
+        void addTemplateInstance(TemplateInstance *ti){
+            codeList.append(new CodeSnipFragment(ti));
+        }
+
+    protected:
+        QList<CodeSnipFragment*> codeList;
+};
+
+class CustomFunction : public CodeSnipAbstract
 {
-    enum Language {
-        JavaCode,
-        NativeCode,
-        ShellCode,
-        ShellDeclaration,
-        PackageInitializer
-    };
+    public:
+        CustomFunction(const QString &n = QString()) : name(n) { }
 
-    enum Position {
-        Beginning,
-        End
-    };
+        QString name;
+        QString param_name;
+};
 
-    CodeSnip() : language(JavaCode) { }
-    CodeSnip(Language lang, const QString &c) : language(lang), code(c) { }
+class TemplateEntry : public CodeSnipAbstract
+{
+    public:
+        TemplateEntry(const QString &name)
+    : m_name(name)
+        {};
 
-    // Very simple, easy to make code ugly if you try
-    QString formattedCode(const QString &_defaultIndent);
+        QString name() const{
+            return m_name;
+        };
 
-    Language language;
-    QString code;
-    Position position;
-    ArgumentMap argumentMap;
+    private:
+        QString m_name;
+};
+typedef QHash<QString, TemplateEntry *> TemplateEntryHash;
+
+class TemplateInstance
+{
+    public:
+        TemplateInstance(const QString &name)
+           : m_name(name)
+        {}
+
+        void addReplaceRule(const QString &name, const QString &value){
+            replaceRules[name]=value;
+        }
+
+        QString expandCode() const;
+
+        QString name() const {
+            return m_name;
+        }
+
+    private:
+        const QString m_name;
+        QHash<QString, QString> replaceRules;
+};
+
+
+class CodeSnip : public CodeSnipAbstract
+{
+    public:
+        enum Language {
+            JavaCode,
+            NativeCode,
+            ShellCode,
+            ShellDeclaration,
+            PackageInitializer
+        };
+
+        enum Position {
+            Beginning,
+            End
+        };
+
+        CodeSnip() : language(JavaCode) { }
+        CodeSnip(Language lang) : language(lang) { }
+
+        // Very simple, easy to make code ugly if you try
+        QString formattedCode(const QString &_defaultIndent);
+
+        Language language;
+        Position position;
+        ArgumentMap argumentMap;
 };
 typedef QList<CodeSnip> CodeSnipList;
 
-struct ArgumentModification
+class ArgumentModification : public CodeSnipAbstract
 {
-    ArgumentModification(int idx) : removed(false), disable_gc(false), index(idx) {}
+    public:
+        ArgumentModification(int idx) : removed_default_expression(false), removed(false), disable_gc(false), index(idx) {}
 
-    int index;    
-    uint disable_gc : 1;
-    uint removed : 1;
-    QString modified_type;
-    QString conversion_rule;
-    QString replaced_default_expression;
+        int index;
+        uint disable_gc : 1;
+        uint removed : 1;
+        uint removed_default_expression : 1;
+        QString modified_type;
+        QString replaced_default_expression;
 };
 
-struct FunctionModification
-{
+struct Modification {
     enum Modifiers {
         Private =               0x0001,
         Protected =             0x0002,
         Public =                0x0003,
         Friendly =              0x0004,
-        AccessModifierMask =    0x0007,
+        AccessModifierMask =    0x000f,
 
-        Remove =                0x0010,
-        CodeInjection =         0x0020,
-        Rename =                0x0040,
-        Exclusive =             0x0080,
-        ReplaceExpression =     0x0100
+        Readable =              0x0010,
+        Writable =              0x0020,
+
+        Remove =                0x0100,
+        CodeInjection =         0x0200,
+        Rename =                0x0400,
+        Exclusive =             0x0800,
+        ReplaceExpression =     0x1000
     };
 
-    FunctionModification() : modifiers(0) { }
+    Modification() : modifiers(0) { }
 
     bool isAccessModifier() const { return modifiers & AccessModifierMask; }
     Modifiers accessModifier() const { return Modifiers(modifiers & AccessModifierMask); }
     bool isPrivate() const { return accessModifier() == Private; }
-    bool isExclusive() const { return modifiers & Exclusive; }
     bool isProtected() const { return accessModifier() == Protected; }
     bool isPublic() const { return accessModifier() == Public; }
     bool isFriendly() const { return accessModifier() == Friendly; }
     QString accessModifierString() const;
 
-    bool isCodeInjection() const { return modifiers & CodeInjection; }
-    bool isRenameModifier() const { return modifiers & Rename; }
-    bool isRemoveModifier() const { return modifiers & Remove; }
-
     void setRenamedTo(const QString &name) { renamedToName = name; }
     QString renamedTo() const { return renamedToName; }
+    bool isRenameModifier() const { return modifiers & Rename; }
+
+    uint modifiers;
+    QString renamedToName;
+};
+
+struct FunctionModification: public Modification
+{
+    FunctionModification() { }
+
+    bool isCodeInjection() const { return modifiers & CodeInjection; }
+    bool isRemoveModifier() const { return modifiers & Remove; }
+    bool isExclusive() const { return modifiers & Exclusive; }
 
     QString signature;
-    QString renamedToName;
-    uint modifiers;
     CodeSnipList snips;
     CodeSnip::Language language;
-    
+
     QList<ArgumentModification> argument_mods;
 };
 typedef QList<FunctionModification> FunctionModificationList;
 
-struct FieldModification
+struct FieldModification: public Modification
 {
-    enum Modifiers {
-        Readable        = 0x0001,
-        Writable        = 0x0002
-    };
-
     bool isReadable() const { return modifiers & Readable; }
     bool isWritable() const { return modifiers & Writable; }
 
     QString name;
-    uint modifiers;
 };
 typedef QList<FieldModification> FieldModificationList;
 
@@ -256,7 +335,6 @@ public:
     }
 
     virtual InterfaceTypeEntry *designatedInterface() const { return 0; }
-
 
     void setCustomConstructor(const CustomFunction &func) { m_customConstructor = func; }
     CustomFunction customConstructor() const { return m_customConstructor; }
@@ -381,13 +459,13 @@ private:
 class EnumTypeEntry : public TypeEntry
 {
 public:
-    EnumTypeEntry(const QString &name)
-        : TypeEntry(name, EnumType), m_qualified_cpp_name(name), m_flags(0), m_extensible(false)
+    EnumTypeEntry(const QString &nspace, const QString &enumName)
+        : TypeEntry(nspace + QLatin1String("::") + enumName, EnumType),
+          m_flags(0),
+          m_extensible(false)
     {
-        QStringList splitted = name.split("::");
-        Q_ASSERT(splitted.size() == 2);
-        m_qualifier = splitted.at(0);
-        m_java_name = splitted.at(1);
+        m_qualifier = nspace;
+        m_java_name = enumName;
     }
 
     QString javaPackage() const { return m_package_name; }
@@ -402,8 +480,6 @@ public:
     }
 
     QString jniName() const;
-
-    QString qualifiedCppName() const { return m_qualified_cpp_name; }
 
     QString qualifier() const { return m_qualifier; }
 
@@ -430,7 +506,6 @@ public:
     void setForceInteger(bool force) { m_force_integer = force; }
 
 private:
-    QString m_qualified_cpp_name;
     QString m_package_name;
     QString m_qualifier;
     QString m_java_name;
@@ -530,6 +605,9 @@ public:
     {
         return m_lookup_name.isEmpty() ? javaName() : m_lookup_name;
     }
+
+    QString jniName() const { return "jobject"; }
+
 
     Include include() const { return m_include; }
     void setInclude(const Include &inc) { m_include = inc; }
@@ -679,7 +757,7 @@ public:
 
     QString jniName() const { return "jchar"; }
     QString javaName() const { return "char"; }
-    QString javaPackage() const { return ""; }    
+    QString javaPackage() const { return ""; }
 
     virtual bool isNativeIdBased() const { return false; }
 };
@@ -726,21 +804,17 @@ class ObjectTypeEntry : public ComplexTypeEntry
 {
 public:
     ObjectTypeEntry(const QString &name)
-        : ComplexTypeEntry(name, ObjectType), m_interface(0), m_memory_managed(false)
+        : ComplexTypeEntry(name, ObjectType), m_interface(0)
     {
     }
 
     InterfaceTypeEntry *designatedInterface() const { return m_interface; }
     void setDesignatedInterface(InterfaceTypeEntry *entry) { m_interface = entry; }
 
-    bool isMemoryManaged() const { return m_memory_managed; }
-    void setMemoryManaged(bool mm) { m_memory_managed = mm; }
-
     virtual bool isNativeIdBased() const { return true; }
 
 private:
     InterfaceTypeEntry *m_interface;
-    uint m_memory_managed : 1;
 };
 
 class CustomTypeEntry : public ComplexTypeEntry
@@ -796,6 +870,9 @@ public:
 
     void addType(TypeEntry *e) { m_entries[e->qualifiedCppName()] = e; }
 
+    TemplateEntry *findTemplate(const QString &name) { return m_templates[name]; }
+    void addTemplate(TemplateEntry *t) { m_templates[t->name()] = t; }
+
     void setSuppressWarnings(bool on) { m_suppressWarnings = on; }
     void addSuppressedWarning(const QString &s)
     {
@@ -836,6 +913,7 @@ public:
 private:
     bool m_suppressWarnings;
     TypeEntryHash m_entries;
+    TemplateEntryHash m_templates;
     QStringList m_suppressedWarnings;
 
     QList<TypeRejection> m_rejections;

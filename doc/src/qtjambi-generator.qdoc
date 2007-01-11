@@ -428,8 +428,6 @@
     class, the \c default-superclass attribute can be used to specify
     a superclass for the given type, in the generated Java API.
 
-    See also: \l {Using Qt's Documentation#Type Mapping}{Type Mapping}
-
     \row
     \o \bold object-type \target object-type
     \o
@@ -441,17 +439,12 @@
     \code
         <typesystem ...>
             <object-type name="..."
-                memory-managed="yes | no" (optional)
                 package ="..." (optional)
                 default-superclass ="..." (optional)/>
         </typesystem>
     \endcode
 
-    The \c name attribute is the fully qualified C++ class name, the
-    optional \c memory-managed attribute specifies whether the type
-    should be memory managed in Java or not.
-
-    See also: \l {Using Qt's Documentation#Type Mapping}{Type Mapping}
+    The \c name attribute is the fully qualified C++ class name.
 
     \row
     \o \bold interface-type \target interface-type
@@ -466,17 +459,15 @@
     \code
         <typesystem ...>
             <interface-type name="..."
-                memory-managed="yes | no" (optional)
                 package ="..." (optional)
                 default-superclass ="..." (optional)/>
         </typesystem>
      \endcode
 
-    The \c name attribute is the fully qualified C++ class name, the
-    optional \c memory-managed attribute specifies whether the type
-    should be memory managed in Java or not. If there is no C++ base
-    class, the \c default-superclass attribute can be used to specify
-    a superclass in the generated Java API, for the given class.
+    The \c name attribute is the fully qualified C++ class name. If
+    there is no C++ base class, the \c default-superclass attribute
+    can be used to specify a superclass in the generated Java API, for
+    the given class.
 
     \row
     \o \bold suppress-warning \target suppress-warning

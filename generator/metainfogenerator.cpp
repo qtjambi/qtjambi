@@ -108,36 +108,49 @@ void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &pack
             MetaJavaFunctionList functions = cls->functions();
             foreach (MetaJavaFunction *f, functions) {
                 if (f->implementingClass() == cls && (f->isSignal() || f->isSlot())) {
-                    Option option = Option(SkipAttributes | SkipReturnType | SkipName);
-                    QString qtName;
-                    {
+                    
+                    MetaJavaArgumentList arguments = f->arguments();
+                    int numOverloads = arguments.size();
+                    for (int i=arguments.size()-1; i>=0; --i) {                       
+                        if (arguments.at(i)->defaultValueExpression().isEmpty()) {
+                            numOverloads = arguments.size() - i - 1;
+                            break; 
+                        }
+                    }                    
 
-                        QTextStream qtNameStream(&qtName);
-                        CppGenerator::writeFunctionSignature(qtNameStream, f, 0, QString(),
-                            Option(option | OriginalName | OriginalTypeDescription));
+                    for (int i=0; i<=numOverloads; ++i) {
+                        Option option = Option(SkipAttributes | SkipReturnType | SkipName);
+                        QString qtName;
+                        {
+
+                            QTextStream qtNameStream(&qtName);
+                            CppGenerator::writeFunctionSignature(qtNameStream, f, 0, QString(),
+                                Option(option | OriginalName | OriginalTypeDescription),
+                                QString(), QStringList(), arguments.size() - i);
+                        }
+                        qtName = f->implementingClass()->qualifiedCppName() + "::" + qtName;
+                        qtName = QMetaObject::normalizedSignature(qtName.toLatin1().constData());
+
+                        QString javaFunctionName = functionSignature(f, 0, 0, option);
+                        QString javaObjectName = f->isSignal()
+                                                ? f->name()
+                                                : javaFunctionName;
+
+                        javaFunctionName = f->implementingClass()->fullName() + "." + javaFunctionName;
+                        javaObjectName   = f->implementingClass()->fullName() + "." + javaObjectName;
+
+                        QString javaSignature = "(";
+                        MetaJavaArgumentList args = f->arguments();
+                        foreach (MetaJavaArgument *arg, args) {
+                            javaSignature += jni_signature(arg->type(), SlashesAndStuff);
+                        }
+                        javaSignature += ")" + jni_signature(f->type(), SlashesAndStuff);
+
+                        strs.append(qtName);
+                        strs.append(javaFunctionName);
+                        strs.append(javaObjectName);
+                        strs.append(javaSignature);
                     }
-                    qtName = f->implementingClass()->qualifiedCppName() + "::" + qtName;
-                    qtName = QMetaObject::normalizedSignature(qtName.toLatin1().constData());
-
-                    QString javaFunctionName = functionSignature(f, 0, 0, option);
-                    QString javaObjectName = f->isSignal()
-                                            ? f->name()
-                                            : javaFunctionName;
-
-                    javaFunctionName = f->implementingClass()->fullName() + "." + javaFunctionName;
-                    javaObjectName   = f->implementingClass()->fullName() + "." + javaObjectName;
-
-                    QString javaSignature = "(";
-                    MetaJavaArgumentList args = f->arguments();
-                    foreach (MetaJavaArgument *arg, args) {
-                        javaSignature += jni_signature(arg->type(), SlashesAndStuff);
-                    }
-                    javaSignature += ")" + jni_signature(f->type(), SlashesAndStuff);
-
-                    strs.append(qtName);
-                    strs.append(javaFunctionName);
-                    strs.append(javaObjectName);
-                    strs.append(javaSignature);
                 }
             }
         }
@@ -163,7 +176,8 @@ void MetaInfoGenerator::writeRegisterSignalsAndSlots(QTextStream &s)
 {
     s << "    for (int i=0;i<sns_count; ++i) {" << endl
       << "        registerQtToJava(qtNames[i], javaFunctionNames[i]);" << endl
-      << "        registerJavaToQt(javaObjectNames[i], qtNames[i]);" << endl
+      << "        if (getQtName(javaObjectNames[i]).length() < QByteArray(qtNames[i]).size())" << endl
+      << "            registerJavaToQt(javaObjectNames[i], qtNames[i]);" << endl
       << "        registerJavaSignature(qtNames[i], javaSignatures[i]);" << endl
       << "    }" << endl;
 }
@@ -292,7 +306,8 @@ void MetaInfoGenerator::writeCppFile()
         }
     }
 
-    // Primitive types must be added to all packages
+    // Primitive types must be added to all packages, in case the other packages are
+    // not referenced from the generated code.
     foreach (QFile *f, fileHash.values()) {
         QTextStream s(f);
         for (it=entries.begin(); it!=entries.end(); ++it) {
@@ -406,6 +421,9 @@ void MetaInfoGenerator::writeDestructors(QTextStream &s, const MetaJavaClass *cl
 
 void MetaInfoGenerator::writeCustomStructors(QTextStream &s, const TypeEntry *entry)
 {
+    if (!entry->preferredConversion())
+        return ;
+
     CustomFunction customConstructor = entry->customConstructor();
     CustomFunction customDestructor = entry->customDestructor();
 
@@ -415,14 +433,14 @@ void MetaInfoGenerator::writeCustomStructors(QTextStream &s, const TypeEntry *en
           << "const " << entry->qualifiedCppName() << " *" << customConstructor.param_name
           << ")" << endl
           << "{" << endl;
-        writeCodeBlock(s, customConstructor.code);
+        writeCodeBlock(s, customConstructor.code());
         s << "}" << endl << endl;
 
         s << "static void " << customDestructor.name << "("
           << "const " << entry->qualifiedCppName() << " *" << customDestructor.param_name
           << ")" << endl
           << "{" << endl;
-        writeCodeBlock(s, customDestructor.code);
+        writeCodeBlock(s, customDestructor.code());
         s << "}" << endl << endl;
     }
 }
@@ -434,7 +452,7 @@ static void generateInitializer(QTextStream &s, const QString &package, CodeSnip
 
     foreach (const CodeSnip &snip, snips)
         if (snip.position == pos)
-            s << snip.code;
+            s << snip.code();
 }
 
 void MetaInfoGenerator::writeLibraryInitializers()

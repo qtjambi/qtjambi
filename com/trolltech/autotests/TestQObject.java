@@ -14,6 +14,7 @@
 package com.trolltech.autotests;
 
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.*;
 
 import static org.junit.Assert.*;
 import org.junit.*;
@@ -111,4 +112,146 @@ public class TestQObject extends QApplicationTest{
         assertNotNull(root.findChild(QFile.class));
         assertNotNull(root.findChild());
     }
+
+    public static class DyingObject extends QObject {
+        public DyingObject() { alive.add(id); }
+        public void disposed() { alive.remove(alive.indexOf(id)); }
+        static List<Integer> alive = new ArrayList<Integer>();
+        static int counter = 0;
+        public int id = ++counter;
+    }
+
+
+    private static void oneObject() {
+        oneObject_helper();
+        System.gc();
+    }
+
+    private static void oneObject_helper() {
+        new DyingObject();
+    }
+
+    private static void objectWithParent() {
+        objectWithParent_helper();
+        System.gc();
+    }
+
+    private static void objectWithParent_helper() {
+        new DyingObject().setParent(new DyingObject());
+    }
+
+    private static void objectWithUnParent() {
+        objectWithUnParent_helper();
+        System.gc();
+    }
+
+    private static void objectWithUnParent_helper() {
+        DyingObject p = new DyingObject();
+        DyingObject o = new DyingObject();
+        o.setParent(p);
+        o.setParent(null);
+    }
+
+    private static void threadExecutor(Runnable r, boolean qthread) {
+        Thread t = qthread ? new QThread(r) : new Thread(r);
+        t.start();
+        try {
+            t.join(1000);
+        } catch (Exception e) { e.printStackTrace(); }
+        System.gc();
+    }
+
+    @Test
+    public void disposal_oneObject() {
+        DyingObject.alive.clear();
+        oneObject();
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_objectWithParent() {
+        DyingObject.alive.clear();
+        objectWithParent();
+        QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_objectWithUnParent() {
+        DyingObject.alive.clear();
+        objectWithUnParent();
+        QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_disposeInThread() {
+        DyingObject.alive.clear();
+        threadExecutor(runnable_disposeInThread, false);
+        assertEquals(0, DyingObject.alive.size());
+
+        threadExecutor(runnable_disposeInThread, true);
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_gcInQThread_oneObject() {
+        DyingObject.alive.clear();
+        threadExecutor(runnable_oneObject, true);
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_gcInQThread_objectWithParent() {
+        DyingObject.alive.clear();
+        threadExecutor(runnable_objectWithParent, true);
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_gcInQThread_objectWithUnParent() {
+        DyingObject.alive.clear();
+        threadExecutor(runnable_objectWithUnParent, true);
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_gcInThread_oneObject() {
+        // Will warn about leaking the C++ object.
+        DyingObject.alive.clear();
+        threadExecutor(runnable_oneObject, false);
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_gcInThread_objectWithParent() {
+        // Will warn once about leaking the C++ object. The child will not be collected
+        DyingObject.alive.clear();
+        threadExecutor(runnable_objectWithParent, false);
+        assertEquals(1, DyingObject.alive.size());
+    }
+
+    @Test
+    public void disposal_gcInThread_objectWithUnParent() {
+        // Will warn twice about leaking the C++ object, but both objects will be collected
+        DyingObject.alive.clear();
+        threadExecutor(runnable_objectWithUnParent, false);
+        assertEquals(0, DyingObject.alive.size());
+    }
+
+    private Runnable runnable_disposeInThread = new Runnable() {
+        public void run() { new DyingObject().dispose(); }
+    };
+
+    private Runnable runnable_oneObject = new Runnable() {
+        public void run() { oneObject(); }
+    };
+
+    private Runnable runnable_objectWithParent = new Runnable() {
+        public void run() { objectWithParent(); }
+    };
+
+    private Runnable runnable_objectWithUnParent = new Runnable() {
+        public void run() { objectWithUnParent(); }
+    };
 }

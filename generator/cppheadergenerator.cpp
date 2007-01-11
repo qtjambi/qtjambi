@@ -39,7 +39,7 @@ void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const MetaJavaFuncti
 {
     s << "    ";
     writeFunctionSignature(s, signal, 0, signalWrapperPrefix(), 
-                           Option(OriginalName | OriginalTypeDescription));
+                           Option(OriginalName | OriginalTypeDescription | IncludeDefaultExpression));
     s << ";" << endl;
 }
 
@@ -227,7 +227,7 @@ void CppHeaderGenerator::writeInjectedCode(QTextStream &s, const MetaJavaClass *
     CodeSnipList code_snips = java_class->typeEntry()->codeSnips();
     foreach (const CodeSnip &cs, code_snips) {
         if (cs.language == CodeSnip::ShellDeclaration) {
-            s << cs.code << endl;
+            s << cs.code() << endl;
         }
     }
 }

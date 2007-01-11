@@ -16,6 +16,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Spin Boxes")
 public class SpinBoxes extends QWidget {
     private QDateTimeEdit meetingEdit;
     private QDoubleSpinBox doubleSpinBox;
@@ -190,15 +191,4 @@ public class SpinBoxes extends QWidget {
 
         QApplication.exec();
     }
-    // REMOVE-START
-
-    public static String exampleName() {
-        return "Spin Boxes";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

@@ -92,9 +92,9 @@ class EventReceiver extends QWidget {
             customEventType = event.type();
             customEventString = ce.s;
         } else if (event.type() == QEvent.Type.Paint) {
-            QtObject new_event = null;
+            QtJambiObject new_event = null;
             try {
-                new_event = QtObject.reassignNativeResources(event, QPaintEvent.class);
+                new_event = QtJambiObject.reassignNativeResources(event, QPaintEvent.class);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -129,6 +129,27 @@ class Accessor extends QObject
 
 public class TestClassFunctionality extends QApplicationTest {
     
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+        
+        TestClassFunctionality test = new TestClassFunctionality();
+        test.testVirtualCallToFixup();
+        test.testFinalCallToFixup();
+        test.testFinalCallToValidate();
+        test.testVirtualCallToValidate();
+        test.run_callPrivateVirtualFunction();
+        test.run_copyConstructor();
+        test.run_cppAndJavaObjects();
+        test.run_injectedCode();
+        test.run_invokeLater_mainThread();
+        test.run_senderNotNull();
+        test.run_settersAndGetters();
+        test.run_testCallQtJambiInternalNativeFunctions();
+        test.run_testDestruction();
+        test.run_testOwnershipTranfer();
+        test.run_XPMConstructors();
+    }
+    
     @BeforeClass
     public static void testInitialize() throws Exception {
         String args[] = new String[3];
@@ -136,6 +157,87 @@ public class TestClassFunctionality extends QApplicationTest {
         args[1] = "B";
         args[2] = "C";
         QApplication.initialize(new String[] {});
+    }
+    
+    static class GraphicsSceneSubclassSubclass extends GraphicsSceneSubclass {
+        public static QGraphicsItemInterface items[];
+        public static QStyleOptionGraphicsItem options[];
+
+        @Override
+        protected void drawItems(QPainter painter, QGraphicsItemInterface[] items, QStyleOptionGraphicsItem[] options, QWidget widget) {
+            GraphicsSceneSubclassSubclass.items = items;                        
+            GraphicsSceneSubclassSubclass.options = options;            
+                        
+            options[1].setLevelOfDetail(3.0);                                  
+            super.drawItems(painter, items, options, widget);
+        }              
+    }
+        
+    @Test 
+    public void testGraphicsSceneDrawItemsInjections() {
+        GraphicsSceneSubclassSubclass gsss = new GraphicsSceneSubclassSubclass();
+        QGraphicsView view = new QGraphicsView();
+        QGraphicsEllipseItem item1 = new QGraphicsEllipseItem(new QRectF(1.0, 2.0, 3.0, 4.0));
+        item1.setZValue(2.0);
+        QGraphicsEllipseItem item2 = new QGraphicsEllipseItem(new QRectF(2.0, 3.0, 4.0, 5.0));
+        item2.setZValue(1.0);
+        gsss.addItem(item1);
+        gsss.addItem(item2);
+        
+        view.setScene(gsss);
+        view.show();
+        
+        QApplication.processEvents();
+        
+        assertTrue(GraphicsSceneSubclassSubclass.items != null);
+        assertTrue(GraphicsSceneSubclassSubclass.options != null);
+        assertEquals(2, GraphicsSceneSubclassSubclass.items.length);
+        assertEquals(2, GraphicsSceneSubclassSubclass.options.length);
+        assertTrue(GraphicsSceneSubclassSubclass.items[0] == item2);
+        assertTrue(GraphicsSceneSubclassSubclass.items[1] == item1);
+        
+        QRectF brect = GraphicsSceneSubclassSubclass.items[0].boundingRect();
+        assertEquals(2.0, brect.left());
+        assertEquals(3.0, brect.top());
+        assertEquals(4.0, brect.width());
+        assertEquals(5.0, brect.height());
+
+        brect = GraphicsSceneSubclassSubclass.items[1].boundingRect();
+        assertEquals(1.0, brect.left());
+        assertEquals(2.0, brect.top());
+        assertEquals(3.0, brect.width());
+        assertEquals(4.0, brect.height());
+        
+        assertEquals(2, gsss.numItems());
+        
+        brect = gsss.firstBoundingRect();
+        assertEquals(2.0, brect.left());
+        assertEquals(3.0, brect.top());
+        assertEquals(4.0, brect.width());
+        assertEquals(5.0, brect.height());
+
+        brect = gsss.secondBoundingRect();
+        assertEquals(1.0, brect.left());
+        assertEquals(2.0, brect.top());
+        assertEquals(3.0, brect.width());
+        assertEquals(4.0, brect.height());        
+        
+        assertTrue(gsss.firstItem() == item2);
+        assertTrue(gsss.secondItem() == item1);
+        
+        assertEquals(QStyleOption.OptionType.SO_GraphicsItem.value(), gsss.firstStyleOptionType());
+        assertEquals(QStyleOption.OptionType.SO_GraphicsItem.value(), gsss.secondStyleOptionType());
+        assertEquals(QStyleOptionGraphicsItem.StyleOptionVersion.Version.value(), gsss.firstStyleOptionVersion());
+        assertEquals(QStyleOptionGraphicsItem.StyleOptionVersion.Version.value(), gsss.secondStyleOptionVersion());
+        
+        QStyleOption option = gsss.firstStyleOption();
+        assertTrue(option instanceof QStyleOptionGraphicsItem);
+        assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 1.0);
+        
+        option = gsss.secondStyleOption();
+        assertTrue(option instanceof QStyleOptionGraphicsItem);
+        assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 3.0);
+        
     }
     
     static class TestQObject extends QObject {
@@ -210,51 +312,32 @@ public class TestClassFunctionality extends QApplicationTest {
     @Test
     public void testToString()
     {
-        QByteArray ba = new QByteArray("Pretty flowers ∆ÿ≈");
-        assertEquals("Pretty flowers ∆ÿ≈", ba.toString());
+        QByteArray ba = new QByteArray("Pretty flowers √¶√∏√•");
+        assertEquals("Pretty flowers √¶√∏√•", ba.toString());
     }
 
     @Test
     public void run_testCallQtJambiInternalNativeFunctions() {
-
-        Method method = null;
-        try {
-            method = QtJambiInternal.class.getDeclaredMethod("setField", QObject.class, Field.class, QObject.AbstractSignal.class);
-        } catch (NoSuchMethodException e) {
-            assertEquals(e, null);
-        }
-
-        assertTrue(method != null);
-
+        
         Field field = null;
         try {
             field = TestQObject.class.getDeclaredField("a");
         } catch (NoSuchFieldException e) {
             assertEquals(e, null);
         }
-
         assertTrue(field != null);
 
-        TestQObject test_qobject = new TestQObject();
+        Method method = null;
         try {
-            method.setAccessible(true);
-            method.invoke(null, test_qobject, field, null);
-        } catch (Exception e) {
-            assertEquals(e, null);
-        }
-
-        assertTrue(test_qobject.signalIsNull());
-
-        try {
-            method = QtJambiInternal.class.getDeclaredMethod("fetchSignal", QObject.class, Field.class);
+            method = QtJambiInternal.class.getDeclaredMethod("fetchSignal", QSignalEmitter.class, Field.class);
         } catch (NoSuchMethodException e) {
             assertEquals(e, null);
         }
 
-        test_qobject = new TestQObject();
+        TestQObject test_qobject = new TestQObject();
         try {
             method.setAccessible(true);
-            QObject.AbstractSignal signal = (QObject.AbstractSignal) method.invoke(null, test_qobject, field);
+            QSignalEmitter.AbstractSignal signal = (QObject.AbstractSignal) method.invoke(null, test_qobject, field);
             assertTrue(test_qobject.signalIsEqualTo(signal));
         } catch (Exception e) {
             assertEquals(e, null);
@@ -478,13 +561,14 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(receiver.paintRectMatched);
         assertEquals(receiver.paintEventType, QEvent.Type.Paint);
 
-        String[] expected = { "com.trolltech.qt.gui.QSizeGrip", "com.trolltech.qt.gui.QGridLayout", "com.trolltech.qt.gui.QDirModel", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction",
-                "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction",
-                "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QListView", "com.trolltech.qt.gui.QTreeView", "com.trolltech.qt.gui.QToolButton",
-                "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QLabel",
-                "com.trolltech.qt.gui.QLabel", "com.trolltech.qt.gui.QLabel", "com.trolltech.qt.gui.QDialogButtonBox", "com.trolltech.qt.gui.QComboBox", "com.trolltech.qt.gui.QLineEdit",
-                "com.trolltech.qt.gui.QComboBox" };
-
+        String[] expected = { "com.trolltech.qt.gui.QSizeGrip", "com.trolltech.qt.core.QAbstractItemModel$ConcreteWrapper", "com.trolltech.qt.gui.QLabel", "com.trolltech.qt.gui.QLabel",
+                "com.trolltech.qt.gui.QLabel", "com.trolltech.qt.gui.QDialogButtonBox", "com.trolltech.qt.gui.QComboBox", "com.trolltech.qt.gui.QCompleter", "com.trolltech.qt.gui.QLineEdit",
+                "com.trolltech.qt.gui.QCompleter", "com.trolltech.qt.gui.QComboBox", "com.trolltech.qt.gui.QActionGroup", "com.trolltech.qt.gui.QSplitter", "com.trolltech.qt.gui.QFrame",
+                "com.trolltech.qt.core.QTimeLine", "com.trolltech.qt.core.QTimeLine", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction",
+                "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QToolButton",
+                "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QPushButton", "com.trolltech.qt.gui.QToolButton",
+                "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QGridLayout", "com.trolltech.qt.gui.QWidget"};
+        
         QFileDialog d = new QFileDialog();
         children = d.children();
 
@@ -495,7 +579,7 @@ public class TestClassFunctionality extends QApplicationTest {
             assertEquals(c.getClass().getName(), expected[i++]);
 
             // Test one of them with instanceof, just to be on the safe side
-            if (i == 25) {
+            if (i == 9) {
                 assertTrue(c instanceof QLineEdit);
 
                 QLineEdit le = (QLineEdit) c;
@@ -626,6 +710,75 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(fe != null);
         assertTrue(fe instanceof IllegalArgumentException);
     }
+    
+    static class MySpinBox extends QDoubleSpinBox {
+        
+        public String receivedString;
+        public int receivedPos;
+
+        @Override
+        public String fixup(String input) {
+            receivedString = input;
+            return "As aught of " + input.substring(2, 8) + " birth";
+        }
+        
+        @Override
+        public QValidator.State validate(QValidator.QValidationData data) 
+        {
+            receivedString = data.string;
+            receivedPos = data.position;
+            
+            data.string = "The " + data.string.substring(9, 13) + " where Death has set his seal";
+            data.position += 13;
+            
+            return QValidator.State.Acceptable;
+        }
+        
+        
+    }
+    
+    @Test public void testVirtualCallToFixup() {
+        MySpinBox spinBox = new MySpinBox();
+        SpinBoxHandler handler = new SpinBoxHandler();
+        
+        handler.tryFixup(spinBox, "Immortal love, forever full");
+                
+        assertEquals("Immortal love, forever full", spinBox.receivedString);
+        assertEquals("As aught of mortal birth", handler.my_returned_string());
+    }
+    
+    @Test public void testVirtualCallToValidate() {
+        MySpinBox spinBox = new MySpinBox();
+        SpinBoxHandler handler = new SpinBoxHandler();
+        
+        handler.tryValidate(spinBox, "Immortal love, forever full", 15);
+        assertEquals("Immortal love, forever full", spinBox.receivedString);
+        assertEquals(15, spinBox.receivedPos);
+        assertEquals("The love where Death has set his seal", handler.my_returned_string());
+        assertEquals(28, handler.my_returned_pos());
+        assertEquals(QValidator.State.Acceptable, handler.my_returned_state());
+    }
+    
+    @Test public void testFinalCallToFixup() {
+        SpinBoxSubclass sbs = new SpinBoxSubclass();
+        
+        String returned = sbs.fixup("Thou dost hang canary birds in parlour windows");        
+        assertEquals("And Thou art dead", returned);
+        assertEquals("Thou dost hang canary birds in parlour windows", sbs.my_received_string());
+    }
+    
+    @Test public void testFinalCallToValidate() {
+        SpinBoxSubclass sbs = new SpinBoxSubclass();
+        
+        QValidator.QValidationData data = new QValidator.QValidationData("dream and you have a sloppy body from being brought to bed of crocuses", 14);
+        QValidator.State returned = sbs.validate(data);
+        
+        assertEquals(QValidator.State.Intermediate, returned);
+        assertEquals("dream and you have a sloppy body from being brought to bed of crocuses", sbs.my_received_string());
+        assertEquals(14, sbs.my_received_pos());
+        assertEquals("The silence of that dreamless sleep", data.string);
+        assertEquals(27, data.position);        
+    }
 
     // Tests the ownership transfer that we need to have objects like
     // QEvent stay alive after they are posted to the event queue...
@@ -754,7 +907,8 @@ public class TestClassFunctionality extends QApplicationTest {
     @SuppressWarnings("unused")
     private static boolean invokeLater_in_otherThread;
 
-    private static Invokable invokable_in_otherThread;
+    @SuppressWarnings("unused")
+    private static Invokable invokable_in_otherThread;    
 
     /**
      * Same as the test above, except that the invokable is now created in a
@@ -763,7 +917,7 @@ public class TestClassFunctionality extends QApplicationTest {
      * executed by the correct thread.
      */
     //FIXME @Test
-    public void run_invokeLater_otherThread() {
+    /*public void run_invokeLater_otherThread() {
         Thread thread = new Thread() {
             public void run() {
                 invokable_in_otherThread = new Invokable();
@@ -785,5 +939,5 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(invokable_in_otherThread.wasRun());
         assertEquals(invokable_in_otherThread.thread, QCoreApplication.instance().thread());
 
-    }
+    }*/
 }

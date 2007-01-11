@@ -13,12 +13,12 @@
 
 package com.trolltech.examples;
 
-import java.util.List;
-import java.util.Random;
-
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+import java.util.*;
+
+@QtJambiExample(name = "Colliding Mice")
 public class CollidingMice extends QWidget {
 
     static final int MOUSE_COUNT = 7;
@@ -33,14 +33,14 @@ public class CollidingMice extends QWidget {
 
     public CollidingMice(QWidget parent) {
         super(parent);
-        
-        QGraphicsScene scene = new QGraphicsScene();
+
+        QGraphicsScene scene = new QGraphicsScene(this);
         scene.setSceneRect(-300, -300, 600, 600);
         scene.setItemIndexMethod(QGraphicsScene.ItemIndexMethod.NoIndex);
 
         for (int i = 0; i < MOUSE_COUNT; ++i) {
             Mouse mouse = new Mouse(this);
-            mouse.setPos(Math.sin((i * 6.28) / MOUSE_COUNT) * 200, 
+            mouse.setPos(Math.sin((i * 6.28) / MOUSE_COUNT) * 200,
                          Math.cos((i * 6.28) / MOUSE_COUNT) * 200);
             scene.addItem(mouse);
         }
@@ -61,7 +61,7 @@ public class CollidingMice extends QWidget {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(400, 300);
     }
-    
+
     public class Mouse extends QGraphicsItem {
 
         double angle = 0;
@@ -73,7 +73,7 @@ public class CollidingMice extends QWidget {
         static final double TWO_PI = Math.PI * 2;
 
         public Mouse(QObject parent) {
-            color = new QColor(generator.nextInt(256), generator.nextInt(256), 
+            color = new QColor(generator.nextInt(256), generator.nextInt(256),
                                generator.nextInt(256));
             rotate(generator.nextDouble() * 360);
 
@@ -88,8 +88,8 @@ public class CollidingMice extends QWidget {
 
         private double adjust = 0.5;
         private QRectF boundingRect = new QRectF(-20 - adjust, -22 - adjust,
-                                                 40 + adjust, 83 + adjust); 
-        public QRectF boundingRect() {            
+                                                 40 + adjust, 83 + adjust);
+        public QRectF boundingRect() {
             return boundingRect;
         }
 
@@ -106,14 +106,14 @@ public class CollidingMice extends QWidget {
         {
             tail.cubicTo(-5, 22, -5, 22, 0, 25);
             tail.cubicTo(5, 27, 5, 32, 0, 30);
-            tail.cubicTo(-5, 32, -5, 42, 0, 35);            
+            tail.cubicTo(-5, 32, -5, 42, 0, 35);
         }
-        
+
         @Override
-        public void paint(QPainter painter, 
-                          QStyleOptionGraphicsItem styleOptionGraphicsItem, 
+        public void paint(QPainter painter,
+                          QStyleOptionGraphicsItem styleOptionGraphicsItem,
                           QWidget widget) {
-            
+
             // Body
             painter.setBrush(color);
             painter.drawEllipse(-10, -20, 20, 40);
@@ -151,22 +151,22 @@ public class CollidingMice extends QWidget {
         private QPolygonF polygon = new QPolygonF();
         private QPointF origo = new QPointF(0, 0);
         public void move() {
-            // Don't move too far away            
-            QLineF lineToCenter = new QLineF(origo, 
+            // Don't move too far away
+            QLineF lineToCenter = new QLineF(origo,
                                              mapFromScene(0, 0));
             if (lineToCenter.length() > 150) {
-                double angleToCenter = Math.acos(lineToCenter.dx() 
+                double angleToCenter = Math.acos(lineToCenter.dx()
                                                  / lineToCenter.length());
                 if (lineToCenter.dy() < 0)
                     angleToCenter = TWO_PI - angleToCenter;
-                angleToCenter = normalizeAngle((Math.PI - angleToCenter) 
+                angleToCenter = normalizeAngle((Math.PI - angleToCenter)
                                                + Math.PI / 2);
 
                 if (angleToCenter < Math.PI && angleToCenter > Math.PI / 4) {
                     // Rotate left
                     angle += (angle < -Math.PI / 2) ? 0.25 : -0.25;
-                } else if (angleToCenter >= Math.PI 
-                           && angleToCenter < (Math.PI + Math.PI / 2 
+                } else if (angleToCenter >= Math.PI
+                           && angleToCenter < (Math.PI + Math.PI / 2
                                                + Math.PI / 4)) {
                     // Rotate right
                     angle += (angle < Math.PI / 2) ? 0.25 : -0.25;
@@ -189,19 +189,19 @@ public class CollidingMice extends QWidget {
                 if (item == this)
                     continue;
 
-                QLineF lineToMouse = new QLineF(origo, 
+                QLineF lineToMouse = new QLineF(origo,
                                                 mapFromItem(item, 0, 0));
-                double angleToMouse = Math.acos(lineToMouse.dx() 
+                double angleToMouse = Math.acos(lineToMouse.dx()
                                                 / lineToMouse.length());
                 if (lineToMouse.dy() < 0)
                     angleToMouse = TWO_PI - angleToMouse;
-                angleToMouse = normalizeAngle((Math.PI - angleToMouse) 
+                angleToMouse = normalizeAngle((Math.PI - angleToMouse)
                                               + Math.PI / 2);
 
                 if (angleToMouse >= 0 && angleToMouse < (Math.PI / 2)) {
                     // Rotate right
                     angle += 0.5;
-                } else if (angleToMouse <= TWO_PI 
+                } else if (angleToMouse <= TWO_PI
                            && angleToMouse > (TWO_PI - Math.PI / 2)) {
                     // Rotate left
                     angle -= 0.5;
@@ -233,15 +233,4 @@ public class CollidingMice extends QWidget {
             return angle;
         }
     }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Colliding Mice";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

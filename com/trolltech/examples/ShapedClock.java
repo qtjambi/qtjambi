@@ -1,0 +1,127 @@
+/****************************************************************************
+ **
+ **  (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+ **
+ ** This file is part of $PRODUCT$.
+ **
+ ** $JAVA_LICENSE$
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
+
+package com.trolltech.examples;
+
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.Qt.MouseButton;
+import com.trolltech.qt.core.Qt.WindowFlags;
+import com.trolltech.qt.gui.*;
+
+@QtJambiExample(name = "Shaped Clock")
+public class ShapedClock extends QWidget {
+
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+        ShapedClock shapedClock = new ShapedClock(null);
+        shapedClock.show();
+        QApplication.exec();
+    }
+
+    private QPoint dragPosition = new QPoint();
+    private static QPolygon hourHand;
+    private static QPolygon minuteHand;
+
+    public ShapedClock(QWidget parent) {
+        super(parent, new WindowFlags(Qt.WindowType.FramelessWindowHint));
+        QTimer timer = new QTimer(this);
+        timer.timeout.connect(this, "update()");
+        timer.start(1000);
+
+        hourHand = new QPolygon();
+        hourHand.append(new QPoint(7, 8));
+        hourHand.append(new QPoint(-7, 8));
+        hourHand.append(new QPoint(0, -40));
+
+        minuteHand = new QPolygon();
+        minuteHand.append(new QPoint(7, 8));
+        minuteHand.append(new QPoint(-7, 8));
+        minuteHand.append(new QPoint(0, -70));
+
+        setWindowTitle(tr("Shaped Analog Clock"));
+    }
+
+    public void mousePressEvent(QMouseEvent event) {
+        if (event.button() == MouseButton.LeftButton) {
+            QPoint topLeft = frameGeometry().topLeft();
+            dragPosition.setX(event.globalPos().x() - topLeft.x());
+            dragPosition.setY(event.globalPos().y() - topLeft.y());
+            event.accept();
+        }
+    }
+
+    public void mouseMoveEvent(QMouseEvent event) {
+        if (event.buttons().isSet(MouseButton.LeftButton)) {
+            move(new QPoint(event.globalPos().x() - dragPosition.x(), 
+                            event.globalPos().y() - dragPosition.y()));
+            event.accept();
+        }
+    }
+
+    public void paintEvent(QPaintEvent event) {
+
+        QColor hourColor = new QColor(127, 0, 127);
+        QColor minuteColor = new QColor(0, 127, 127, 191);
+
+        int side = Math.min(width(), height());
+        QTime time = QTime.currentTime();
+
+        QPainter painter = new QPainter(this);
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing);
+        painter.translate(width() / 2, height() / 2);
+        painter.scale(side / 200.0, side / 200.0);
+
+        painter.setPen(QPen.NoPen);
+        painter.setBrush(hourColor);
+
+        painter.save();
+        painter.rotate(30.0 * ((time.hour() + time.minute() / 60.0)));
+        painter.drawConvexPolygon(hourHand);
+        painter.restore();
+
+        painter.setPen(hourColor);
+
+        for (int i = 0; i < 12; ++i) {
+            painter.drawLine(88, 0, 96, 0);
+            painter.rotate(30.0);
+        }
+
+        painter.setPen(QPen.NoPen);
+        painter.setBrush(minuteColor);
+
+        painter.save();
+        painter.rotate(6.0 * (time.minute() + time.second() / 60.0));
+        painter.drawConvexPolygon(minuteHand);
+        painter.restore();
+
+        painter.setPen(minuteColor);
+
+        for (int j = 0; j < 60; ++j) {
+            if ((j % 5) != 0)
+                painter.drawLine(92, 0, 96, 0);
+            painter.rotate(6.0);
+        }
+    }
+
+    public void resizeEvent(QResizeEvent event) {
+        int side = Math.min(width(), height());
+        QRegion maskedRegion;
+        maskedRegion = new QRegion((width() - side) / 2, (height() - side) / 2,
+                                    side, side, QRegion.RegionType.Ellipse);
+        setMask(maskedRegion);
+    }
+
+    public QSize sizeHint() {
+        return new QSize(100, 100);
+    }
+}

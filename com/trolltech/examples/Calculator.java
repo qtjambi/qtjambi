@@ -16,6 +16,7 @@ package com.trolltech.examples;
 import java.util.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Calculator")
 public class Calculator extends QMainWindow {
 
     public static void main(String[] args) {
@@ -44,24 +45,24 @@ public class Calculator extends QMainWindow {
         String item = QInputDialog.getItem(this, tr("Ui selector"), 
                                            tr("Ui configurations:"), uiTypes,
                                            0, false);
-        if (item != null) {
-            if (item.equals("Simple")) {
-                Ui_CalculatorSimple uiSimple = new Ui_CalculatorSimple();
-                uiSimple.setupUi(this);
-                lineEdit = uiSimple.lineEdit;
-                textBrowser = uiSimple.textBrowser;
-            } else if (item.equals("Normal")) {
-                Ui_CalculatorNormal uiNormal = new Ui_CalculatorNormal();
-                uiNormal.setupUi(this);
-                lineEdit = uiNormal.lineEdit;
-                textBrowser = uiNormal.textBrowser;
-            } else if (item.equals("Dockable")) {
-                Ui_CalculatorDockable uiDockable = new Ui_CalculatorDockable();
-                uiDockable.setupUi(this);
-                lineEdit = uiDockable.lineEdit;
-                textBrowser = uiDockable.textBrowser;
-            }
+                
+        if (item == null || item.equals("Simple")) {
+            Ui_CalculatorSimple uiSimple = new Ui_CalculatorSimple();
+            uiSimple.setupUi(this);
+            lineEdit = uiSimple.lineEdit;
+            textBrowser = uiSimple.textBrowser;
+        } else if (item.equals("Normal")) {
+            Ui_CalculatorNormal uiNormal = new Ui_CalculatorNormal();
+            uiNormal.setupUi(this);
+            lineEdit = uiNormal.lineEdit;
+            textBrowser = uiNormal.textBrowser;
+        } else if (item.equals("Dockable")) {
+            Ui_CalculatorDockable uiDockable = new Ui_CalculatorDockable();
+            uiDockable.setupUi(this);
+            lineEdit = uiDockable.lineEdit;
+            textBrowser = uiDockable.textBrowser;
         }
+        
 
         Function function= new Function("abs") {
             public double result(double[] args) throws ParseException {

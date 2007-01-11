@@ -1,4 +1,4 @@
-<typesystem package="com.trolltech.qt.xml" default-superclass="com.trolltech.qt.QtObject">
+<typesystem package="com.trolltech.qt.xml" default-superclass="com.trolltech.qt.QtJambiObject">
     <inject-code>
         com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
     </inject-code>
@@ -6,10 +6,50 @@
     <enum-type name="QDomNode::NodeType" />
     <enum-type name="QDomImplementation::InvalidDataPolicy" />
 
-    <value-type name="QDomAttr" />   
-    <value-type name="QDomCDATASection" />
-    <value-type name="QDomCharacterData" />
-    <value-type name="QDomComment" />
+    <value-type name="QDomAttr">
+        <modify-function signature="operator=(QDomAttr)">
+            <access modifier="private"/>
+            <rename to="operator_assign_private"/>
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomAttr" />
+            </insert-template>            
+        </inject-code>    
+    </value-type>   
+    <value-type name="QDomCDATASection">
+        <modify-function signature="operator=(QDomCDATASection)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomCDATASection" />
+            </insert-template>            
+        </inject-code>        
+    </value-type>
+    <value-type name="QDomCharacterData">
+        <modify-function signature="operator=(QDomCharacterData)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />        
+        </modify-function>    
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomCharacterData" />
+            </insert-template>            
+        </inject-code>            
+    </value-type>
+    <value-type name="QDomComment">
+        <modify-function signature="operator=(QDomComment)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />        
+        </modify-function>    
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomComment" />
+            </insert-template>            
+        </inject-code>                
+    </value-type>
     <value-type name="QDomDocument">
 
         <extra-includes>
@@ -27,89 +67,294 @@
             this.errorLine = errorLine.intValue();
             this.errorColumn = errorColumn.intValue();
         }
+        public boolean success;
+        public String errorMessage;
+        public int errorLine;
+        public int errorColumn;
 
-        private boolean success;
-        private String errorMessage;
-        private int errorLine;
-        private int errorColumn;
-
-        public boolean success(){
-            return success;
         }
-
-        public boolean failure(){
-            return !success;
-        }
-
-        public String errorMessage(){
-            return errorMessage;
-        }
-
-        public int errorLine(){
-            return errorLine;
-        }
-
-        public int errorColumn(){
-            return errorColumn;
-        }
-    }
         </inject-code>
+        
+        <template name="xml.domdocument_setContent">
+            public final Result setContent(%ARGUMENTS){
+                QNativePointer errorStr = new QNativePointer(Type.String);
+                QNativePointer errorLine = new QNativePointer(Type.Int);
+                QNativePointer errorColumn = new QNativePointer(Type.Int);
+                
+                boolean success = setContent(%CALL_ARGUMENTS, errorStr, errorLine, errorColumn);
+                return new Result(success, errorStr, errorLine, errorColumn);
+            }            
+        </template>
 
         <!--bool setContent(QIODevice* dev, bool namespaceProcessing, QString *errorMsg=0, int *errorLine=0, int *errorColumn=0 ); -->
         <modify-function class="java" signature="setContent(QIODevice*, bool, QString*, int*, int*)">
             <access modifier="private" />
-            <rename to="setContent_private" />
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>            
         </modify-function>
         <inject-code class="java">
-    public Result setContent(QIODevice device, boolean namespaceProcessing){
-        QNativePointer errorStr = new QNativePointer(Type.String);
-        QNativePointer errorLine = new QNativePointer(Type.Int);
-        QNativePointer errorColumn = new QNativePointer(Type.Int);
-        return new Result(setContent_private(device, namespaceProcessing, errorStr, errorLine, errorColumn), errorStr, errorLine, errorColumn);
-    }
+            <insert-template name="xml.domdocument_setContent">
+                <replace from="%ARGUMENTS" to="QIODevice dev, boolean namespaceProcessing" />
+                <replace from="%CALL_ARGUMENTS" to="dev, namespaceProcessing" />
+            </insert-template>
         </inject-code>
 
         <!--bool setContent(const QByteArray& text, bool namespaceProcessing, QString *errorMsg=0, int *errorLine=0, int *errorColumn=0 ); -->
         <modify-function class="java" signature="setContent(QByteArray, bool, QString*, int*, int*)">
             <access modifier="private" />
-            <rename to="setContent_private" />
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>
+            
         </modify-function>
         <inject-code class="java">
-    public Result setContent(QByteArray text, boolean namespaceProcessing){
-        QNativePointer errorStr = new QNativePointer(Type.String);
-        QNativePointer errorLine = new QNativePointer(Type.Int);
-        QNativePointer errorColumn = new QNativePointer(Type.Int);
-        return new Result(setContent_private(text, namespaceProcessing, errorStr, errorLine, errorColumn), errorStr, errorLine, errorColumn);
-    }
+            <insert-template name="xml.domdocument_setContent">
+                <replace from="%ARGUMENTS" to="QByteArray text, boolean namespaceProcessing" />
+                <replace from="%CALL_ARGUMENTS" to="text, namespaceProcessing" />
+            </insert-template>            
         </inject-code>
 
         <!--bool setContent(const QString& text, bool namespaceProcessing, QString *errorMsg=0, int *errorLine=0, int *errorColumn=0 );-->
         <modify-function class="java" signature="setContent(QString, bool, QString*, int*, int*)">
             <access modifier="private" />
-            <rename to="setContent_private" />
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>            
         </modify-function>
         <inject-code class="java">
-    public Result setContent(String text, boolean namespaceProcessing){
-        QNativePointer errorStr = new QNativePointer(Type.String);
-        QNativePointer errorLine = new QNativePointer(Type.Int);
-        QNativePointer errorColumn = new QNativePointer(Type.Int);
-        return new Result(setContent_private(text, namespaceProcessing, errorStr, errorLine, errorColumn), errorStr, errorLine, errorColumn);
-    }
+            <insert-template name="xml.domdocument_setContent">
+                <replace from="%ARGUMENTS" to="String text, boolean namespaceProcessing" />
+                <replace from="%CALL_ARGUMENTS" to="text, namespaceProcessing" />
+            </insert-template>            
         </inject-code>
 
+        <modify-function signature="setContent(QXmlInputSource*,QXmlReader*,QString*,int*,int*)">
+            <access modifier="private" />
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>            
+        </modify-function>
+        <inject-code>
+            <insert-template name="xml.domdocument_setContent">
+                <replace from="%ARGUMENTS" to="QXmlInputSource source, QXmlReader reader" />
+                <replace from="%CALL_ARGUMENTS" to="source, reader" />
+            </insert-template>
+        </inject-code>
 
+        <modify-function signature="setContent(QString,QString*,int*,int*)">
+            <access modifier="private" />
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>            
+        </modify-function>
+        <inject-code>
+            <insert-template name="xml.domdocument_setContent">
+                <replace from="%ARGUMENTS" to="String text" />
+                <replace from="%CALL_ARGUMENTS" to="text" />
+            </insert-template>
+        </inject-code>
+        
+        <modify-function signature="setContent(QByteArray,QString*,int*,int*)">
+            <access modifier="private" />
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>                        
+        </modify-function>
+        <inject-code>
+            <insert-template name="xml.domdocument_setContent">
+                <replace from="%ARGUMENTS" to="QByteArray buffer" />
+                <replace from="%CALL_ARGUMENTS" to="buffer" />
+            </insert-template>
+        </inject-code>        
+        
+        <modify-function signature="setContent(QIODevice*,QString*,int*,int*)">
+            <access modifier="private" />
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>                        
+        </modify-function>
+        <inject-code>
+            <insert-template name="xml.domdocument_setContent">
+                <replace from="%ARGUMENTS" to="QIODevice dev" />
+                <replace from="%CALL_ARGUMENTS" to="dev" />
+            </insert-template>
+        </inject-code>        
+        
+        <modify-function signature="operator=(QDomDocument)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomDocument" />
+            </insert-template>
+        </inject-code>
     </value-type>
-    <value-type name="QDomDocumentFragment" />
-    <value-type name="QDomDocumentType" />
-    <value-type name="QDomEntity" />
-    <value-type name="QDomEntityReference" />
-    <value-type name="QDomImplementation" />
-    <value-type name="QDomNamedNodeMap" />
-    <value-type name="QDomNode" />
-    <value-type name="QDomNodeList" />
-    <value-type name="QDomNotation" />
-    <value-type name="QDomProcessingInstruction" />
-    <value-type name="QDomText" />
+    <value-type name="QDomDocumentFragment">
+        <modify-function signature="operator=(QDomDocumentFragment)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomDocumentFragment" />
+            </insert-template>            
+        </inject-code>        
+    </value-type>
+    <value-type name="QDomDocumentType" >
+        <modify-function signature="operator=(QDomDocumentType)">
+            <access modifier="private"/>
+            <rename to="operator_assign_private"/>        
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomDocumentType" />
+            </insert-template>            
+        </inject-code>            
+        
+    </value-type>
+    <value-type name="QDomEntity">
+        <modify-function signature="operator=(QDomEntity)">
+            <access modifier="private"/>
+            <rename to="operator_assign_private"/>
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomEntity" />
+            </insert-template>            
+        </inject-code>            
+    </value-type>
+    <value-type name="QDomEntityReference">
+        <modify-function signature="operator=(QDomEntityReference)">
+            <access modifier="private"/>
+            <rename to="operator_assign_private"/>
+        </modify-function>        
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomEntityReference" />
+            </insert-template>            
+        </inject-code>                
+    </value-type>
+    <value-type name="QDomImplementation">
+        <modify-function signature="operator=(QDomImplementation)">
+            <access modifier="private"/>
+            <rename to="operator_assign_private"/>        
+        </modify-function>        
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomImplementation" />
+            </insert-template>            
+        </inject-code>            
+    </value-type>
+    <value-type name="QDomNamedNodeMap">
+        <modify-function signature="operator=(QDomNamedNodeMap)">
+            <access modifier="private"/>
+            <rename to="operator_assign_private"/>
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomNamedNodeMap" />
+            </insert-template>            
+        </inject-code>    
+    </value-type>
+    <value-type name="QDomNode">
+        <modify-function signature="operator=(QDomNode)">
+            <access modifier="private"/>
+            <rename to="operator_assign_private"/>
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomNode" />
+            </insert-template>            
+        </inject-code>        
+    </value-type>
+    <value-type name="QDomNodeList">
+        <modify-function signature="operator=(const QDomNodeList &amp;)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomNodeList" />
+            </insert-template>            
+        </inject-code>    
+    </value-type>
+    <value-type name="QDomNotation">
+        <modify-function signature="operator=(QDomNotation)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomNotation" />
+            </insert-template>            
+        </inject-code>
+    </value-type>
+    <value-type name="QDomProcessingInstruction">
+        <modify-function signature="operator=(QDomProcessingInstruction)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />        
+        </modify-function>    
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomProcessingInstruction" />
+            </insert-template>            
+        </inject-code>            
+    </value-type>
+    <value-type name="QDomText">
+        <modify-function signature="operator=(const QDomText &amp;)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomText" />
+            </insert-template>            
+        </inject-code>
+    </value-type>
     <value-type name="QXmlParseException" />
     
     <value-type name="QXmlAttributes">  
@@ -122,6 +367,9 @@
     </value-type>
 
     <value-type name="QXmlNamespaceSupport">
+        <extra-includes>
+            <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+        </extra-includes>
         <custom-constructor>
             QXmlNamespaceSupport *clone = new QXmlNamespaceSupport;
             clone->setPrefix("", copy->uri(""));
@@ -135,55 +383,110 @@
         <custom-destructor>
             delete (QXmlNamespaceSupport *)copy;
         </custom-destructor>           
+        <modify-function signature="processName(QString,bool,QString&amp;,QString&amp;)const">
+            <access modifier="private" />
+        </modify-function>
+        <inject-code>
+            public static class ProcessedName {
+                public ProcessedName(String nsuri, String localName) {
+                    this.nsuri = nsuri;
+                    this.localName = localName;
+                }
+                public String nsuri;
+                public String localName;
+            }
+            public ProcessedName processName(String qname, boolean isAttribute) {
+                QNativePointer nsUri = new QNativePointer(QNativePointer.Type.String);
+                QNativePointer localName = new QNativePointer(QNativePointer.Type.String);
+                processName(qname, isAttribute, nsUri, localName);
+                
+                return new ProcessedName(nsUri.stringValue(), localName.stringValue());
+            }
+        </inject-code>
+        
+        <modify-function signature="splitName(QString,QString&amp;,QString&amp;)const">
+            <access modifier="private" />
+        </modify-function>
+        <inject-code>
+            public static class SplitName {
+                public SplitName(String prefix, String localname) {
+                    this.prefix = prefix;
+                    this.localname = localname;
+                }
+                public String prefix;
+                public String localname;
+            }
+            public SplitName splitName(String qname) {
+                QNativePointer prefix = new QNativePointer(QNativePointer.Type.String);
+                QNativePointer localName = new QNativePointer(QNativePointer.Type.String);
+                splitName(qname, prefix, localName);
+                
+                return new SplitName(prefix.stringValue(), localName.stringValue());
+            }
+        </inject-code>
     </value-type>
 
     <value-type name="QDomElement">
+        <modify-function signature="operator=(QDomElement)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QDomElement" />
+            </insert-template>            
+        </inject-code>
+        
+        <template name="xml.constQString_to_constQStringRef">
+            QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+        </template>
+
         <modify-function class="native" signature="attributeNS(const QString, const QString &amp;, const QString &amp;) const">
             <modify-argument index="1">
                 <conversion-rule>
-                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                    <insert-template name="xml.constQString_to_constQStringRef" />                            
                 </conversion-rule>
             </modify-argument>
         </modify-function>
         <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, const QString &amp;)">
             <modify-argument index="1">
                 <conversion-rule>
-                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                    <insert-template name="xml.constQString_to_constQStringRef" />
                 </conversion-rule>
             </modify-argument>
         </modify-function>
         <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, int)">
             <modify-argument index="1">
                 <conversion-rule>
-                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                    <insert-template name="xml.constQString_to_constQStringRef" />                    
                 </conversion-rule>
             </modify-argument>
         </modify-function>
         <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, uint)">
             <modify-argument index="1">
                 <conversion-rule>
-                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                    <insert-template name="xml.constQString_to_constQStringRef" />
                 </conversion-rule>
             </modify-argument>
         </modify-function>                        
         <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, long long)">
             <modify-argument index="1">
                 <conversion-rule>
-                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                    <insert-template name="xml.constQString_to_constQStringRef" />                                    
                 </conversion-rule>
             </modify-argument>
         </modify-function>        
         <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, unsigned long long)">
             <modify-argument index="1">
                 <conversion-rule>
-                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                    <insert-template name="xml.constQString_to_constQStringRef" />
                 </conversion-rule>
             </modify-argument>
         </modify-function>        
         <modify-function class="native" signature="setAttributeNS(const QString, const QString &amp;, double)">
             <modify-argument index="1">
                 <conversion-rule>
-                    QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                    <insert-template name="xml.constQString_to_constQStringRef" />
                 </conversion-rule>
             </modify-argument>
         </modify-function>        
@@ -218,5 +521,35 @@
         <modify-function class="java" signature="parse(const QXmlInputSource &amp;)">
             <remove exclusive="yes" />
         </modify-function>
+        
+        <modify-function signature="property(QString,bool*)const">
+            <remove exclusive="yes" />
+        </modify-function>
+        <modify-function signature="setProperty(QString,void*)">
+            <remove exclusive="yes" />
+        </modify-function>
+                
+        <modify-function signature="feature(QString,bool*)const">
+            <modify-argument index="2">
+                <remove-argument />
+                <conversion-rule>
+                    // nothing
+                </conversion-rule>
+            </modify-argument>            
+        </modify-function>
+        <modify-function class="native" signature="feature(QString,bool*)const">
+            <modify-argument index="2">
+                <conversion-rule>
+                    bool *%out = 0;
+                </conversion-rule>
+            </modify-argument>
+            <modify-argument index="0">
+                <conversion-rule>
+                    bool %out = (bool) %in;
+                    if (%2 != 0) *%2 = hasFeature(%1);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>
+                
     </object-type>
 </typesystem>

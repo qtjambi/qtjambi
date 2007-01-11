@@ -153,15 +153,15 @@ void MetaJavaBuilder::checkFunctionModifications()
     foreach (TypeEntry *entry, entries) {
         if (entry == 0)
             continue;
-        if (!entry->isComplex() || entry->codeGeneration() == TypeEntry::GenerateNothing) 
+        if (!entry->isComplex() || entry->codeGeneration() == TypeEntry::GenerateNothing)
             continue;
-        
+
         ComplexTypeEntry *centry = static_cast<ComplexTypeEntry *>(entry);
         FunctionModificationList modifications = centry->functionModifications();
 
         foreach (FunctionModification modification, modifications) {
             QString signature = modification.signature;
-            
+
             QString name = signature.trimmed();
             name = name.mid(0, signature.indexOf("("));
 
@@ -173,17 +173,17 @@ void MetaJavaBuilder::checkFunctionModifications()
             bool found = false;
             QStringList possibleSignatures;
             foreach (MetaJavaFunction *function, functions) {
-                if (function->minimalSignature() == signature) {
-                    found = true; 
+                if (function->minimalSignature() == signature && function->implementingClass() == clazz) {
+                    found = true;
                     break;
                 }
 
-                if (function->originalName() == name) 
-                    possibleSignatures.append(function->minimalSignature());
+                if (function->originalName() == name)
+                    possibleSignatures.append(function->minimalSignature() + " in " + function->implementingClass()->name());
             }
 
             if (!found) {
-                QString warning 
+                QString warning
                     = QString("signature '%1' for function modification in '%2' not found. Possible candidates: %3")
                         .arg(signature)
                         .arg(clazz->qualifiedCppName())
@@ -202,28 +202,28 @@ MetaJavaClass *MetaJavaBuilder::argumentToClass(ArgumentModelItem argument)
     MetaJavaType *type = translateType(argument->type(), &ok);
     if (ok && type != 0 && type->typeEntry() != 0 && type->typeEntry()->isComplex()) {
         const TypeEntry *entry = type->typeEntry();
-        returned = m_java_classes.findClass(entry->name());  
+        returned = m_java_classes.findClass(entry->name());
     }
     delete type;
     return returned;
 }
 
 /**
- * Checks the argument of a hash function and flags the type if it is a complex type 
+ * Checks the argument of a hash function and flags the type if it is a complex type
  */
-void MetaJavaBuilder::registerHashFunction(FunctionModelItem function_item) 
+void MetaJavaBuilder::registerHashFunction(FunctionModelItem function_item)
 {
     ArgumentList arguments = function_item->arguments();
     if (arguments.size() == 1) {
         if (MetaJavaClass *cls = argumentToClass(arguments.at(0)))
-            cls->setHasHashFunction(true);        
+            cls->setHasHashFunction(true);
     }
 }
 
 /**
  * Checks the argument of an equals operator and flags the type if it is a complex type
  */
-void MetaJavaBuilder::registerEqualsOperator(FunctionModelItem function_item) 
+void MetaJavaBuilder::registerEqualsOperator(FunctionModelItem function_item)
 {
     ArgumentList arguments = function_item->arguments();
     if (arguments.size() == 2) {
@@ -314,7 +314,7 @@ bool MetaJavaBuilder::build()
             if (!cls->hasConstructors() && !cls->isFinal() && !cls->isInterface() && !cls->isNamespace())
                 cls->addDefaultConstructor();
         }
-
+    
         if (cls->isAbstract() && !cls->isInterface()) {
             cls->typeEntry()->setLookupName(cls->typeEntry()->javaName() + "$ConcreteWrapper");
         }
@@ -352,7 +352,7 @@ bool MetaJavaBuilder::build()
     }
 
     {
-        FunctionList hash_functions = m_dom->findFunctions("qHash");    
+        FunctionList hash_functions = m_dom->findFunctions("qHash");
         foreach (FunctionModelItem item, hash_functions) {
             registerHashFunction(item);
         }
@@ -534,6 +534,8 @@ void MetaJavaBuilder::figureOutEnumValuesForClass(MetaJavaClass *java_class,
 
     MetaJavaEnumList enums = java_class->enums();
     foreach (MetaJavaEnum *e, enums) {
+        if (!e)
+            ReportHandler::warning("Bad enum in class " + java_class->name());
         MetaJavaEnumValueList lst = e->values();
         int value = 0;
         for (int i=0; i<lst.size(); ++i) {
@@ -598,6 +600,10 @@ void MetaJavaBuilder::figureOutDefaultEnumArguments()
                                    .arg(expr);
                     } else if (lst.size() == 2) {
                         MetaJavaClass *cl = m_java_classes.findClass(lst.at(0));
+                        if (!cl) {
+                            ReportHandler::warning("Missing required class for enums: " + lst.at(0));
+                            continue;
+                        }
                         new_expr = QString("%1.%2.%3")
                                    .arg(cl->typeEntry()->qualifiedJavaName())
                                    .arg(arg->type()->name())
@@ -611,6 +617,10 @@ void MetaJavaBuilder::figureOutDefaultEnumArguments()
                         static_cast<const FlagsTypeEntry *>(arg->type()->typeEntry());
                     EnumTypeEntry *enumEntry = flagsEntry->originator();
                     MetaJavaEnum *java_enum = m_java_classes.findEnum(enumEntry);
+                    if (!java_enum) {
+                        ReportHandler::warning("Unknown required enum " + enumEntry->qualifiedCppName());
+                        continue;
+                    }
 
                     int value = figureOutEnumValue(expr, 0, java_enum);
                     new_expr = QString::number(value);
@@ -899,7 +909,7 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
                     java_function->setVisibility(MetaJavaClass::Public);
                 }
 
-                if (!java_function->isFinalInJava() 
+                if (!java_function->isFinalInJava()
                     && java_function->isRemovedFrom(java_class, CodeSnip::JavaCode)) {
                     *java_function += MetaJavaAttributes::FinalInCpp;
                 }
@@ -1161,7 +1171,11 @@ MetaJavaFunction *MetaJavaBuilder::traverseFunction(FunctionModelItem function_i
         ArgumentModelItem arg = arguments.at(i);
         MetaJavaArgument *java_arg = java_arguments.at(i);
         if (arg->defaultValue()) {
-            QString expr = translateDefaultValue(arg, java_arg->type(), java_function, m_current_class, i);
+            QString expr = arg->defaultValueExpression();
+            if (!expr.isEmpty())
+                java_arg->setOriginalDefaultValueExpression(expr);
+
+            expr = translateDefaultValue(arg, java_arg->type(), java_function, m_current_class, i);
             if (expr.isEmpty()) {
                 first_default_argument = i;
             } else {
@@ -1429,6 +1443,8 @@ QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaT
     QString class_name = implementing_class->name();
 
     QString replaced_expression = fnc->replacedDefaultExpression(implementing_class, argument_index + 1);
+    if (fnc->removedDefaultExpression(implementing_class, argument_index +1))
+        return "";
     if (!replaced_expression.isEmpty())
         return replaced_expression;
 
@@ -1462,7 +1478,7 @@ QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaT
     } else {
 
         // constructor or functioncall can be a bit tricky...
-        if (expr == "QVariant()") {
+        if (expr == "QVariant()" || expr == "QModelIndex()") {
             return "null";
         } else if (expr == "QString()") {
             return "\"\"";
@@ -1585,6 +1601,7 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
         }
     }
 
+    MetaJavaFunctionList funcs = subclass->functions();
     foreach (const MetaJavaFunction *function, template_class->functions()) {
         MetaJavaFunction *f = function->copy();
         f->setArguments(MetaJavaArgumentList());
@@ -1604,14 +1621,13 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
         // template instantiation is the class that implements the function..
         f->setImplementingClass(subclass);
 
-        if (f->isRemovedFromAllLanguages(subclass) || f->isConstructor()) {
+        if (f->isConstructor()) {
             delete f;
             continue;
         }
 
         // if the instantiation has a function named the same as an existing
         // function we have shadowing so we need to skip it.
-        MetaJavaFunctionList funcs = subclass->functions();
         bool found = false;
         for (int i=0; i<funcs.size(); ++i) {
             if (funcs.at(i)->name() == f->name()) {
@@ -1619,8 +1635,10 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
                 continue;
             }
         }
-        if (found)
+        if (found) {
+            delete f;
             continue;
+        }
 
         subclass->addFunction(f);
     }

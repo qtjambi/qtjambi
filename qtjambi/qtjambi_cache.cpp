@@ -15,6 +15,7 @@
 #include <qtjambifunctiontable.h>
 #include <qtjambitypemanager.h>
 #include <qtjambilink.h>
+#include <qtjambi_core.h>
 
 #include <QtCore/QHash>
 #include <QtCore/QReadWriteLock>
@@ -153,7 +154,7 @@ jclass resolveClass(JNIEnv *env, const char *className, const char *package)
         QByteArray ba(package);
         ba += className;
 
-        returned = env->FindClass(ba.constData());
+        returned = qtjambi_find_class(env, ba.constData());
 
 #ifndef QTJAMBI_NOCACHE
         QWriteLocker locker(gStaticLock());
@@ -453,25 +454,29 @@ jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char
 /*******************************************************************************
  * Function Table Cache
  */
-QHash<QString, QtJambiFunctionTable *> functionTableCache;
+typedef QHash<QString, QtJambiFunctionTable *> FunctionTableHash;
+Q_GLOBAL_STATIC(FunctionTableHash, functionTableCache);
 
 QtJambiFunctionTable *findFunctionTable(const QString &className)
 {
     QReadLocker locker(gStaticLock());
-    QtJambiFunctionTable *table = functionTableCache.value(className);
+    Q_ASSERT(functionTableCache());
+    QtJambiFunctionTable *table = functionTableCache()->value(className);
     return table;
 }
 
 void storeFunctionTable(const QString &className, QtJambiFunctionTable *table)
 {
     QWriteLocker locker(gStaticLock());
-    functionTableCache.insert(className, table);
+    Q_ASSERT(functionTableCache());
+    functionTableCache()->insert(className, table);
 }
 
 void removeFunctionTable(QtJambiFunctionTable *table)
 {
     QWriteLocker locker(gStaticLock());
-    functionTableCache.remove(table->className());
+    if (functionTableCache())
+        functionTableCache()->remove(table->className());
 }
 
 
@@ -497,7 +502,7 @@ StaticCache *StaticCache::instance(JNIEnv *env)
 #define IMPLEMENT_RESOLVE_DEFAULT_FUNCTION(structName, qualifiedClassName, constructorSignature) \
     void StaticCache::resolve##structName##_internal() {                                        \
         Q_ASSERT(!structName.class_ref);                                                      \
-        structName.class_ref = ref_class(env->FindClass(qualifiedClassName));                 \
+        structName.class_ref = ref_class(qtjambi_find_class(env, qualifiedClassName));        \
         Q_ASSERT(structName.class_ref);                                                       \
         structName.constructor =                                                              \
             env->GetMethodID(structName.class_ref, "<init>", constructorSignature);           \
@@ -512,7 +517,7 @@ void StaticCache::resolveArrayList_internal()
 {
     Q_ASSERT(!ArrayList.class_ref);
 
-    ArrayList.class_ref = ref_class(env->FindClass("java/util/ArrayList"));
+    ArrayList.class_ref = ref_class(qtjambi_find_class(env, "java/util/ArrayList"));
     Q_ASSERT(ArrayList.class_ref);
 
     ArrayList.constructor = env->GetMethodID(ArrayList.class_ref, "<init>", "(I)V");
@@ -523,7 +528,7 @@ void StaticCache::resolveStack_internal()
 {
     Q_ASSERT(!Stack.class_ref);
 
-    Stack.class_ref = ref_class(env->FindClass("java/util/Stack"));
+    Stack.class_ref = ref_class(qtjambi_find_class(env, "java/util/Stack"));
     Q_ASSERT(Stack.class_ref);
 
     Stack.constructor = env->GetMethodID(Stack.class_ref, "<init>", "()V");
@@ -534,7 +539,7 @@ void StaticCache::resolveLinkedList_internal()
 {
     Q_ASSERT(!LinkedList.class_ref);
 
-    LinkedList.class_ref = ref_class(env->FindClass("java/util/LinkedList"));
+    LinkedList.class_ref = ref_class(qtjambi_find_class(env, "java/util/LinkedList"));
     Q_ASSERT(LinkedList.class_ref);
 
     LinkedList.constructor = env->GetMethodID(LinkedList.class_ref, "<init>", "()V");
@@ -545,7 +550,7 @@ void StaticCache::resolveMap_internal()
 {
     Q_ASSERT(!Map.class_ref);
 
-    Map.class_ref = ref_class(env->FindClass("java/util/Map"));
+    Map.class_ref = ref_class(qtjambi_find_class(env, "java/util/Map"));
     Q_ASSERT(Map.class_ref);
 
     Map.put = env->GetMethodID(Map.class_ref, "put",
@@ -563,7 +568,7 @@ void StaticCache::resolveMapEntry_internal()
 {
     Q_ASSERT(!MapEntry.class_ref);
 
-    MapEntry.class_ref = ref_class(env->FindClass("java/util/Map$Entry"));
+    MapEntry.class_ref = ref_class(qtjambi_find_class(env, "java/util/Map$Entry"));
     Q_ASSERT(MapEntry.class_ref);
 
     MapEntry.getKey = env->GetMethodID(MapEntry.class_ref, "getKey", "()Ljava/lang/Object;");
@@ -577,7 +582,7 @@ void StaticCache::resolveHashMap_internal()
 {
     Q_ASSERT(!HashMap.class_ref);
 
-    HashMap.class_ref = ref_class(env->FindClass("java/util/HashMap"));
+    HashMap.class_ref = ref_class(qtjambi_find_class(env, "java/util/HashMap"));
     Q_ASSERT(HashMap.class_ref);
 
     HashMap.constructor = env->GetMethodID(HashMap.class_ref, "<init>", "(I)V");
@@ -588,7 +593,7 @@ void StaticCache::resolveTreeMap_internal()
 {
     Q_ASSERT(!TreeMap.class_ref);
 
-    TreeMap.class_ref = ref_class(env->FindClass("java/util/TreeMap"));
+    TreeMap.class_ref = ref_class(qtjambi_find_class(env, "java/util/TreeMap"));
     Q_ASSERT(TreeMap.class_ref);
 
     TreeMap.constructor = env->GetMethodID(TreeMap.class_ref, "<init>", "()V");
@@ -599,7 +604,7 @@ void StaticCache::resolveNullPointerException_internal()
 {
     Q_ASSERT(!NullPointerException.class_ref);
 
-    NullPointerException.class_ref = ref_class(env->FindClass("java/lang/NullPointerException"));
+    NullPointerException.class_ref = ref_class(qtjambi_find_class(env, "java/lang/NullPointerException"));
     Q_ASSERT(NullPointerException.class_ref);
 }
 
@@ -607,7 +612,7 @@ void StaticCache::resolveCollection_internal()
 {
     Q_ASSERT(!Collection.class_ref);
 
-    Collection.class_ref = ref_class(env->FindClass("java/util/Collection"));
+    Collection.class_ref = ref_class(qtjambi_find_class(env, "java/util/Collection"));
     Q_ASSERT(Collection.class_ref);
 
     Collection.add = env->GetMethodID(Collection.class_ref, "add", "(Ljava/lang/Object;)Z");
@@ -624,7 +629,7 @@ void StaticCache::resolvePair_internal()
 {
     Q_ASSERT(!Pair.class_ref);
 
-    Pair.class_ref = ref_class(env->FindClass("com/trolltech/qt/QPair"));
+    Pair.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QPair"));
     Q_ASSERT(Pair.class_ref);
 
     Pair.constructor = env->GetMethodID(Pair.class_ref, "<init>", "(Ljava/lang/Object;Ljava/lang/Object;)V");
@@ -641,7 +646,7 @@ void StaticCache::resolveInteger_internal()
 {
     Q_ASSERT(!Integer.class_ref);
 
-    Integer.class_ref = ref_class(env->FindClass("java/lang/Integer"));
+    Integer.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Integer"));
     Q_ASSERT(Integer.class_ref);
 
     Integer.constructor = env->GetMethodID(Integer.class_ref, "<init>", "(I)V");
@@ -656,7 +661,7 @@ void StaticCache::resolveDouble_internal()
 {
     Q_ASSERT(!Double.class_ref);
 
-    Double.class_ref = ref_class(env->FindClass("java/lang/Double"));
+    Double.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Double"));
     Q_ASSERT(Double.class_ref);
 
     Double.constructor = env->GetMethodID(Double.class_ref, "<init>", "(D)V");
@@ -671,7 +676,7 @@ void StaticCache::resolveMethod_internal()
 {
     Q_ASSERT(!Method.class_ref);
 
-    Method.class_ref = ref_class(env->FindClass("java/lang/reflect/Method"));
+    Method.class_ref = ref_class(qtjambi_find_class(env, "java/lang/reflect/Method"));
     Q_ASSERT(Method.class_ref);
 
     Method.getDeclaringClass = env->GetMethodID(Method.class_ref, "getDeclaringClass",
@@ -689,7 +694,7 @@ void StaticCache::resolveModifier_internal()
 {
     Q_ASSERT(!Modifier.class_ref);
 
-    Modifier.class_ref = ref_class(env->FindClass("java/lang/reflect/Modifier"));
+    Modifier.class_ref = ref_class(qtjambi_find_class(env, "java/lang/reflect/Modifier"));
     Q_ASSERT(Modifier.class_ref);
 
     Modifier.isNative = env->GetStaticMethodID(Modifier.class_ref, "isNative", "(I)Z");
@@ -701,7 +706,7 @@ void StaticCache::resolveObject_internal()
 {
     Q_ASSERT(!Object.class_ref);
 
-    Object.class_ref = ref_class(env->FindClass("java/lang/Object"));
+    Object.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Object"));
     Q_ASSERT(Object.class_ref);
 
     Object.equals = env->GetMethodID(Object.class_ref, "equals", "(Ljava/lang/Object;)Z");
@@ -715,7 +720,7 @@ void StaticCache::resolveNativePointer_internal()
 {
     Q_ASSERT(!NativePointer.class_ref);
 
-    NativePointer.class_ref = ref_class(env->FindClass("com/trolltech/qt/QNativePointer"));
+    NativePointer.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QNativePointer"));
     Q_ASSERT(NativePointer.class_ref);
 
     NativePointer.fromNative = env->GetStaticMethodID(NativePointer.class_ref,
@@ -731,24 +736,24 @@ void StaticCache::resolveNativePointer_internal()
 }
 
 
-void StaticCache::resolveQtObject_internal()
+void StaticCache::resolveQtJambiObject_internal()
 {
-    Q_ASSERT(!QtObject.class_ref);
+    Q_ASSERT(!QtJambiObject.class_ref);
 
-    QtObject.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtObject"));
-    Q_ASSERT(QtObject.class_ref);
+    QtJambiObject.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiObject"));
+    Q_ASSERT(QtJambiObject.class_ref);
 
-    QtObject.native_id = env->GetFieldID(QtObject.class_ref, "native__id", "J");
-    Q_ASSERT(QtObject.native_id);
+    QtJambiObject.native_id = env->GetFieldID(QtJambiObject.class_ref, "native__id", "J");
+    Q_ASSERT(QtJambiObject.native_id);
 
-    QtObject.disposed = env->GetMethodID(QtObject.class_ref, "disposed", "()V");
+    QtJambiObject.disposed = env->GetMethodID(QtJambiObject.class_ref, "disposed", "()V");
 }
 
 void StaticCache::resolveBoolean_internal()
 {
     Q_ASSERT(!Boolean.class_ref);
 
-    Boolean.class_ref = ref_class(env->FindClass("java/lang/Boolean"));
+    Boolean.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Boolean"));
     Q_ASSERT(Boolean.class_ref);
 
     Boolean.constructor = env->GetMethodID(Boolean.class_ref, "<init>", "(Z)V");
@@ -768,7 +773,7 @@ void StaticCache::resolveLong_internal()
 {
     Q_ASSERT(!Long.class_ref);
 
-    Long.class_ref = ref_class(env->FindClass("java/lang/Long"));
+    Long.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Long"));
     Q_ASSERT(Long.class_ref);
 
     Long.longValue = env->GetMethodID(Long.class_ref, "longValue", "()J");
@@ -782,7 +787,7 @@ void StaticCache::resolveFloat_internal()
 {
     Q_ASSERT(!Float.class_ref);
 
-    Float.class_ref = ref_class(env->FindClass("java/lang/Float"));
+    Float.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Float"));
     Q_ASSERT(Float.class_ref);
 
     Float.floatValue = env->GetMethodID(Float.class_ref, "floatValue", "()F");
@@ -793,7 +798,7 @@ void StaticCache::resolveShort_internal()
 {
     Q_ASSERT(!Short.class_ref);
 
-    Short.class_ref = ref_class(env->FindClass("java/lang/Short"));
+    Short.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Short"));
     Q_ASSERT(Short.class_ref);
 
     Short.shortValue = env->GetMethodID(Short.class_ref, "shortValue", "()S");
@@ -804,7 +809,7 @@ void StaticCache::resolveByte_internal()
 {
     Q_ASSERT(!Byte.class_ref);
 
-    Byte.class_ref = ref_class(env->FindClass("java/lang/Byte"));
+    Byte.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Byte"));
     Q_ASSERT(Byte.class_ref);
 
     Byte.byteValue = env->GetMethodID(Byte.class_ref, "byteValue", "()B");
@@ -815,7 +820,7 @@ void StaticCache::resolveCharacter_internal()
 {
     Q_ASSERT(!Character.class_ref);
 
-    Character.class_ref = ref_class(env->FindClass("java/lang/Character"));
+    Character.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Character"));
     Q_ASSERT(Character.class_ref);
 
     Character.charValue = env->GetMethodID(Character.class_ref, "charValue", "()C");
@@ -826,7 +831,7 @@ void StaticCache::resolveClass_internal()
 {
     Q_ASSERT(!Class.class_ref);
 
-    Class.class_ref = ref_class(env->FindClass("java/lang/Class"));
+    Class.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Class"));
     Q_ASSERT(Class.class_ref);
 
     Class.getName = env->GetMethodID(Class.class_ref, "getName", "()Ljava/lang/String;");
@@ -843,86 +848,134 @@ void StaticCache::resolveSystem_internal()
 {
     Q_ASSERT(!System.class_ref);
 
-    System.class_ref = ref_class(env->FindClass("java/lang/System"));
+    System.class_ref = ref_class(qtjambi_find_class(env, "java/lang/System"));
     Q_ASSERT(System.class_ref);
 
     System.gc = env->GetStaticMethodID(System.class_ref, "gc", "()V");
-
     Q_ASSERT(System.gc);
+
+    System.getProperty = env->GetStaticMethodID(System.class_ref, "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
+    Q_ASSERT(System.getProperty);
 }
 
+void StaticCache::resolveURL_internal() 
+{
+    Q_ASSERT(!URL.class_ref);
+
+    URL.class_ref = ref_class(qtjambi_find_class(env, "java/net/URL"));
+    Q_ASSERT(URL.class_ref);
+
+    URL.constructor = env->GetMethodID(URL.class_ref, "<init>", "(Ljava/lang/String;)V");
+    Q_ASSERT(URL.constructor);
+}
+
+void StaticCache::resolveURLClassLoader_internal() 
+{
+    Q_ASSERT(!URLClassLoader.class_ref);
+
+    URLClassLoader.class_ref = ref_class(qtjambi_find_class(env, "java/net/URLClassLoader"));
+    Q_ASSERT(URLClassLoader.class_ref);
+
+    URLClassLoader.newInstance = env->GetStaticMethodID(URLClassLoader.class_ref, "newInstance", "([Ljava/net/URL;Ljava/lang/ClassLoader;)Ljava/net/URLClassLoader;");
+    Q_ASSERT(URLClassLoader.newInstance);
+
+    URLClassLoader.addURL = env->GetMethodID(URLClassLoader.class_ref, "addURL", "(Ljava/net/URL;)V");
+    Q_ASSERT(URLClassLoader.addURL);
+}
+
+void StaticCache::resolveClassLoader_internal() 
+{
+    Q_ASSERT(!ClassLoader.class_ref);
+
+    ClassLoader.class_ref = ref_class(qtjambi_find_class(env, "java/lang/ClassLoader"));
+    Q_ASSERT(ClassLoader.class_ref);
+
+    ClassLoader.loadClass = env->GetMethodID(ClassLoader.class_ref, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+    Q_ASSERT(ClassLoader.loadClass);
+}
 
 void StaticCache::resolveQtJambiUtils_internal()
 {
     Q_ASSERT(!QtJambiUtils.class_ref);
 
-    QtJambiUtils.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtJambiUtils"));
+    QtJambiUtils.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiUtils"));
     Q_ASSERT(QtJambiUtils.class_ref);
 
     QtJambiUtils.isImplementedInJava =
         env->GetStaticMethodID(QtJambiUtils.class_ref, "isImplementedInJava",
                                "(Ljava/lang/reflect/Method;)Z");
+     Q_ASSERT(QtJambiUtils.isImplementedInJava);
 
-    Q_ASSERT(QtJambiUtils.isImplementedInJava);
+    QtJambiUtils.findGeneratedSuperclass =
+        env->GetStaticMethodID(QtJambiUtils.class_ref, "findGeneratedSuperclass",
+                               "(Ljava/lang/Object;)Ljava/lang/Class;");
+    Q_ASSERT(QtJambiUtils.findGeneratedSuperclass);
 }
 
+void StaticCache::resolveQSignalEmitter_internal() 
+{
+    Q_ASSERT(!QSignalEmitter.class_ref);
 
-void StaticCache::resolveQObject_internal()
+    QSignalEmitter.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QSignalEmitter"));
+    Q_ASSERT(QSignalEmitter.class_ref);
+
+    QSignalEmitter.disconnect = env->GetMethodID(QSignalEmitter.class_ref, "disconnect",
+        "(Ljava/lang/Object;)V");
+}
+
+void StaticCache::resolveQObject_internal() 
 {
     Q_ASSERT(!QObject.class_ref);
 
-    QObject.class_ref = ref_class(env->FindClass("com/trolltech/qt/core/QObject"));
+    QObject.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QObject"));
     Q_ASSERT(QObject.class_ref);
-
-    QObject.disconnect = env->GetMethodID(QObject.class_ref, "disconnect",
-                                          "(Lcom/trolltech/qt/core/QObject;)V");
 }
 
-void StaticCache::resolveInternalSignal_internal()
+void StaticCache::resolveAbstractSignal_internal()
 {
-    Q_ASSERT(!InternalSignal.class_ref);
+    Q_ASSERT(!AbstractSignal.class_ref);
 
-    InternalSignal.class_ref =
-        ref_class(env->FindClass("com/trolltech/qt/QtJambiInternal$InternalSignal"));
-    Q_ASSERT(InternalSignal.class_ref);
+    AbstractSignal.class_ref =
+        ref_class(qtjambi_find_class(env, "com/trolltech/qt/QSignalEmitter$AbstractSignal"));
+    Q_ASSERT(AbstractSignal.class_ref);
 
-    InternalSignal.m_in_cpp_emission = env->GetFieldID(InternalSignal.class_ref,
-                                                       "m_in_cpp_emission", "Z");
-    Q_ASSERT(InternalSignal.m_in_cpp_emission);
+    AbstractSignal.inCppEmission = env->GetFieldID(AbstractSignal.class_ref,
+                                                   "inCppEmission", "Z");
+    Q_ASSERT(AbstractSignal.inCppEmission);
 
-    InternalSignal.connect = env->GetMethodID(InternalSignal.class_ref,
+    AbstractSignal.connect = env->GetMethodID(AbstractSignal.class_ref,
                                               "connect",
-                                              "(Lcom/trolltech/qt/core/QObject;"
+                                              "(Ljava/lang/Object;"
                                                "Ljava/lang/String;"
-                                               "Lcom/trolltech/qt/core/Qt$ConnectionType;)Z");
-    Q_ASSERT(InternalSignal.connect);
+                                               "Lcom/trolltech/qt/core/Qt$ConnectionType;)V");
+    Q_ASSERT(AbstractSignal.connect);
 
-    InternalSignal.connectSignalMethod = env->GetMethodID(InternalSignal.class_ref,
+    AbstractSignal.connectSignalMethod = env->GetMethodID(AbstractSignal.class_ref,
                                                           "connectSignalMethod",
-                                                          "(Ljava/lang/reflect/Method;Ljava/lang/Object;I)Z");
-    Q_ASSERT(InternalSignal.connectSignalMethod);
+                                                          "(Ljava/lang/reflect/Method;Ljava/lang/Object;I)V");
+    Q_ASSERT(AbstractSignal.connectSignalMethod);
 
-    InternalSignal.removeConnection = env->GetMethodID(InternalSignal.class_ref,
+    AbstractSignal.removeConnection = env->GetMethodID(AbstractSignal.class_ref,
                                                        "removeConnection",
                                                        "(Ljava/lang/Object;Ljava/lang/reflect/Method;)Z");
-    Q_ASSERT(InternalSignal.removeConnection);
+    Q_ASSERT(AbstractSignal.removeConnection);
 }
 
 void StaticCache::resolveQtJambiInternal_internal()
 {
-    QtJambiInternal.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtJambiInternal"));
+    QtJambiInternal.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiInternal"));
     Q_ASSERT(QtJambiInternal.class_ref);
 
     QtJambiInternal.lookupSignal = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                           "lookupSignal",
-                                                          "(Lcom/trolltech/qt/core/QObject;"
+                                                          "(Lcom/trolltech/qt/QSignalEmitter;"
                                                            "Ljava/lang/String;"
-                                                          ")Lcom/trolltech/qt/QtJambiInternal$InternalSignal;");
+                                                          ")Lcom/trolltech/qt/QSignalEmitter$AbstractSignal;");
     Q_ASSERT(QtJambiInternal.lookupSignal);
 
     QtJambiInternal.lookupSlot = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                         "lookupSlot",
-                                                        "(Lcom/trolltech/qt/core/QObject;"
+                                                        "(Ljava/lang/Object;"
                                                          "Ljava/lang/String;"
                                                         ")Ljava/lang/reflect/Method;");
     Q_ASSERT(QtJambiInternal.lookupSlot);
@@ -931,13 +984,19 @@ void StaticCache::resolveQtJambiInternal_internal()
                                                       "endPaint",
                                                       "(Lcom/trolltech/qt/gui/QWidget;)V");
     Q_ASSERT(QtJambiInternal.endPaint);
+
+    QtJambiInternal.findEmitMethod = env->GetStaticMethodID(QtJambiInternal.class_ref,
+                                                           "findEmitMethod",
+                                                           "(Lcom/trolltech/qt/QSignalEmitter$AbstractSignal;)Ljava/lang/reflect/Method;");
+    Q_ASSERT(QtJambiInternal.findEmitMethod);
+
 }
 
 void StaticCache::resolveString_internal()
 {
     Q_ASSERT(!String.class_ref);
 
-    String.class_ref = ref_class(env->FindClass("java/lang/String"));
+    String.class_ref = ref_class(qtjambi_find_class(env, "java/lang/String"));
     Q_ASSERT(String.class_ref);
 }
 
@@ -945,18 +1004,24 @@ void StaticCache::resolveThread_internal()
 {
     Q_ASSERT(!Thread.class_ref);
 
-    Thread.class_ref = ref_class(env->FindClass("java/lang/Thread"));
+    Thread.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Thread"));
     Q_ASSERT(Thread.class_ref);
 
     Thread.currentThread = env->GetStaticMethodID(Thread.class_ref, "currentThread", "()Ljava/lang/Thread;");
     Q_ASSERT(Thread.currentThread);
+
+    Thread.getContextClassLoader = env->GetMethodID(Thread.class_ref, "getContextClassLoader", "()Ljava/lang/ClassLoader;");    
+    Q_ASSERT(Thread.getContextClassLoader);
+
+    Thread.setContextClassLoader = env->GetMethodID(Thread.class_ref, "setContextClassLoader", "(Ljava/lang/ClassLoader;)V");
+    Q_ASSERT(Thread.setContextClassLoader);
 }
 
 void StaticCache::resolveQModelIndex_internal()
 {
     Q_ASSERT(!QModelIndex.class_ref);
 
-    QModelIndex.class_ref = ref_class(env->FindClass("com/trolltech/qt/core/QModelIndex"));
+    QModelIndex.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QModelIndex"));
     Q_ASSERT(QModelIndex.class_ref);
 
     QModelIndex.constructor = env->GetMethodID(QModelIndex.class_ref,
@@ -979,10 +1044,27 @@ void StaticCache::resolveQtEnumerator_internal()
 {
     Q_ASSERT(!QtEnumerator.class_ref);
 
-    QtEnumerator.class_ref = ref_class(env->FindClass("com/trolltech/qt/QtEnumerator"));
+    QtEnumerator.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtEnumerator"));
     Q_ASSERT(QtEnumerator.class_ref);
 
     QtEnumerator.value = env->GetMethodID(QtEnumerator.class_ref, "value", "()I");
     Q_ASSERT(QtEnumerator.value);
 
+}
+
+void StaticCache::resolveValidationData_internal()
+{
+    Q_ASSERT(!ValidationData.class_ref);
+
+    ValidationData.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QValidator$QValidationData"));
+    Q_ASSERT(ValidationData.class_ref);
+
+    ValidationData.constructor = env->GetMethodID(ValidationData.class_ref, "<init>", "(Ljava/lang/String;I)V");
+    Q_ASSERT(ValidationData.constructor);
+
+    ValidationData.string = env->GetFieldID(ValidationData.class_ref, "string", "Ljava/lang/String;");
+    Q_ASSERT(ValidationData.string);
+
+    ValidationData.position = env->GetFieldID(ValidationData.class_ref, "position", "I");
+    Q_ASSERT(ValidationData.position);
 }

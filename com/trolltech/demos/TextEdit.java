@@ -13,9 +13,11 @@
 
 package com.trolltech.demos;
 
+import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Text Edit")
 public class TextEdit extends QMainWindow {
     private String fileName;
     private QTextEdit textEdit;
@@ -381,7 +383,7 @@ public class TextEdit extends QMainWindow {
 
     public void fileOpen() {
         String fn = QFileDialog.getOpenFileName(this, "Open File...", "",
-                "HTML-Files (*.htm *.html);;All Files (*)");
+                new QFileDialog.Filter("HTML-Files (*.htm *.html);;All Files (*)"));
         if (fn.length() != 0)
             load(fn);
     }
@@ -406,7 +408,7 @@ public class TextEdit extends QMainWindow {
 
     public boolean fileSaveAs() {
         String fn = QFileDialog.getSaveFileName(this, "Save as...", "",
-                "HTML-Files (*.htm *.html);;All Files (*)");
+                new QFileDialog.Filter("HTML-Files (*.htm *.html);;All Files (*)"));
         if (fn.length() == 0)
             return false;
         setCurrentFileName(fn);
@@ -424,7 +426,7 @@ public class TextEdit extends QMainWindow {
 
     public void filePrintPdf() {
         String fileName = QFileDialog.getSaveFileName(this, "Export PDF", "",
-                "*.pdf");
+                new QFileDialog.Filter("*.pdf"));
         if (fileName.length() == 0)
             return;
         QPrinter printer = new QPrinter(QPrinter.PrinterMode.HighResolution);

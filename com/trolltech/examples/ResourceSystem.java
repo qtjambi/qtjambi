@@ -95,6 +95,8 @@ class ResourceItem extends QTreeWidgetItem
     }
 }
 
+@QtJambiExample(name = "Resource System",
+                canInstantiate = "call-static-method:notWebstart")
 public class ResourceSystem extends QWidget
 {
     private QLabel m_currentImage = null;
@@ -103,9 +105,13 @@ public class ResourceSystem extends QWidget
     private boolean m_shown = false;
     private String m_jar_name = null;
 
+    public Signal1<String> pathChanged = new Signal1<String>();
+
     public ResourceSystem()
     {
         setupUI();
+
+        pathChanged.connect(this, "setPreviewFile(String)");
     }
 
     private void setupUI()
@@ -173,9 +179,15 @@ public class ResourceSystem extends QWidget
         QFileInfo info = selected_item.getInfo();
 
         if (info.exists() && !info.isDir()) {
-            QPixmap pm = new QPixmap(info.absoluteFilePath());
-            m_currentImage.setPixmap(pm);
+            pathChanged.emit(info.absoluteFilePath());
         }
+    }
+
+    public void setPreviewFile(String path) {
+        QPixmap pm = new QPixmap(path);
+        if (pm.width() > 100 || pm.height() > 100)
+            pm = pm.scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation);
+        m_currentImage.setPixmap(pm);
 
     }
 
@@ -225,6 +237,12 @@ public class ResourceSystem extends QWidget
         }
     }
 
+
+    public static boolean notWebstart() {
+        return System.getProperty("com.trolltech.launcher.webstart") == null;
+    }
+
+
     public static void main(String[] args)
     {
         QApplication.initialize(args);
@@ -232,15 +250,5 @@ public class ResourceSystem extends QWidget
         w.show();
         QApplication.exec();
     }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Resource System";
-    }
 
-    public static boolean canInstantiate() {
-        return System.getProperty("com.trolltech.launcher.webstart") == null;
-    }
-
-    // REMOVE-END
 }

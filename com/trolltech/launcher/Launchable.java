@@ -15,6 +15,7 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.examples.QtJambiExample;
 
 import java.lang.reflect.*;
 
@@ -62,20 +63,20 @@ public class Launchable {
                 stop = true;
             }
         } while (!stop);
-        
+
 		source = source.replace("&", "&amp;");
 	    source = source.replace("<", "&lt;");
 	    source = source.replace(">", "&gt;");
-	    
+
 	    source = source.replace("\t", "   ");
-	    
+
 	    for (int i=0; i<KEYWORDS.length; ++i) {
 	    	String keyword = KEYWORDS[i];
 	    	source = source.replace(keyword, "<font color=olive>" + keyword + "</font>");
 	    }
 	    source = source.replace("(int ", "(<font color=olive><b>int </b></font>");
 	    source = source.replaceAll("(\\d\\d?)", "<font color=navy>$1</font>");
-	    
+
 	    String commentRe = "(//+[.[^\n]]*\n)";
 	    source = source.replaceAll(commentRe, "<font color=darkgreen><i>$1</i></font>");
 
@@ -91,10 +92,12 @@ public class Launchable {
     private QWidget m_widget;
     private String m_description;
     private String m_name;
+    private String m_className;
     private String m_source;
 
-    private Launchable(String name) {
-	m_name = name;
+    private Launchable(String name, String className) {
+        m_name = name;
+        m_className = className;
     }
 
     public QWidget widget() {
@@ -104,14 +107,6 @@ public class Launchable {
     }
 
     public String name() {
-        try {   
-            Class cl = Class.forName(m_name);
-            Method exampleName = cl.getMethod("exampleName");
-            if (exampleName != null) {
-                return exampleName.invoke(null).toString();
-            }
-        } catch (Exception e) {
-        }
         return m_name;
     }
 
@@ -134,7 +129,7 @@ public class Launchable {
     }
 
     private final String resourceFile(String fileType) {
-	QFile f = new QFile("classpath:" + m_name.replace(".", "/") + "." + fileType);
+	QFile f = new QFile("classpath:" + m_className.replace(".", "/") + "." + fileType);
 	if (f.exists() && f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text)))
 	    return f.readAll().toString();
 	return null;
@@ -166,7 +161,7 @@ public class Launchable {
 	    throw new RuntimeException("widget shouldn't exist at this point");
 
 	try {
-	    Class cl = Class.forName(m_name);
+	    Class<?> cl = Class.forName(m_className);
 
 	    try {
 		cl.getConstructor();
@@ -182,32 +177,50 @@ public class Launchable {
 
     public static Launchable create(String className) {
 	try {
-            Class cl = Class.forName(className);
-            if (Modifier.isPublic(cl.getModifiers())
-                    && QWidget.class.isAssignableFrom(cl)) {
+            Class<?> cl = Class.forName(className);
 
-                try {
-                    Method canInstantiate = cl.getMethod("canInstantiate");
-                    if (!(Boolean) canInstantiate.invoke(null))
+            if (Modifier.isPublic(cl.getModifiers()) && QWidget.class.isAssignableFrom(cl)) {
+                QtJambiExample info = (QtJambiExample) cl.getAnnotation(QtJambiExample.class);
+                if (info != null) {
+
+                    Constructor constructor = null;
+                    try {
+                        constructor = cl.getConstructor();
+                    } catch (Exception e) {
+                        constructor = cl.getConstructor(QWidget.class);
+                    }
+    
+                    String visibleName = className;
+
+                    boolean canIndeed = false;
+                    String can = info.canInstantiate();
+                    if (can.equals("false") || can.equals("no")) {
+                        canIndeed = false;
+                    } else if (can.startsWith("call-static-method:")) {
+                        try {
+                            Method checkMethod = cl.getMethod(can.substring(19));
+                            canIndeed = (Boolean) checkMethod.invoke(cl);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else { // Nothing specified or something else...
+                        canIndeed = true;
+                    }
+
+                    if (!canIndeed)
                         return null;
-                } catch (NoSuchMethodException e) {
-                    // supposed to happen.
-                } catch (Exception e) {
-                    return null;
+
+                    if (info.name().length() > 0)
+                        visibleName = info.name();
+                    
+                    if (constructor != null
+                            && Modifier.isPublic(constructor.getModifiers())) {
+                        Launchable l = new Launchable(visibleName, className);
+                        return l;
+                    }
+                    
                 }
 
-                Constructor constructor = null;
-                try {
-                    constructor = cl.getConstructor();
-                } catch (Exception e) {
-                    constructor = cl.getConstructor(QWidget.class);
-                }
-
-                if (constructor != null
-                        && Modifier.isPublic(constructor.getModifiers())) {
-                    Launchable l = new Launchable(className);
-                    return l;
-                }
             }
         } catch (Throwable e) {
             System.out.println("failed: " + className + ": "

@@ -26,19 +26,20 @@ QTJAMBI_EXPORT void registerJavaToQt(const QString &java_name, const QString &qt
 QTJAMBI_EXPORT void registerDestructor(const QString &java_name, PtrDestructorFunction destructor);
 QTJAMBI_EXPORT void registerJavaSignature(const QString &qt_name, const QString &java_signature);
 
-QString getQtName(const QString &java_name);
+QTJAMBI_EXPORT QString getQtName(const QString &java_name);
 QString getJavaName(const QString &qt_name);
 QString getJavaSignature(const QString &qt_name);
 PtrDestructorFunction destructor(const QString &java_name);
 
 QTJAMBI_EXPORT jclass resolveClass(JNIEnv *env, const char *className, const char *package);
-jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature, jclass clazz,
+QTJAMBI_EXPORT jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature, jclass clazz,
                       bool isStatic = false);
-jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature,
+
+QTJAMBI_EXPORT jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature,
                       const char *className, const char *package, bool isStatic = false);
-jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signature, jclass clazz,
+QTJAMBI_EXPORT jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signature, jclass clazz,
                         bool isStatic = false);
-jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signature,
+QTJAMBI_EXPORT jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signature,
                         const char *className, const char *package, bool isStatic = false);
 
 QtJambiFunctionTable *findFunctionTable(const QString &className);
@@ -154,12 +155,12 @@ struct QTJAMBI_EXPORT StaticCache
         jclass class_ref;
         jfieldID native_id;
         jmethodID disposed;
-    } QtObject;
+    } QtJambiObject;
 
     struct {
         jclass class_ref;
         jmethodID disconnect;
-    } QObject;
+    } QSignalEmitter;
 
     struct {
         jclass class_ref;
@@ -170,6 +171,7 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jmethodID gc;
+        jmethodID getProperty;
     } System;
 
     struct {
@@ -180,7 +182,24 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
+        jmethodID newInstance;
+        jmethodID addURL;
+    } URLClassLoader;
+
+    struct {
+        jclass class_ref;
+        jmethodID constructor;
+    } URL;
+
+    struct {
+        jclass class_ref;
+        jmethodID loadClass;
+    } ClassLoader;
+
+    struct {
+        jclass class_ref;
         jmethodID isImplementedInJava;
+        jmethodID findGeneratedSuperclass;
     } QtJambiUtils;
 
     struct {
@@ -227,22 +246,29 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
-        jfieldID m_in_cpp_emission;
+        jfieldID inCppEmission;
         jmethodID connect;
         jmethodID connectSignalMethod;
-        jmethodID removeConnection;
-    } InternalSignal;
+        jmethodID removeConnection;        
+    } AbstractSignal;
+
+    struct {
+        jclass class_ref;
+    } QObject;
 
     struct {
         jclass class_ref;
         jmethodID lookupSlot;
         jmethodID lookupSignal;
-        jmethodID endPaint;
+        jmethodID endPaint;  
+        jmethodID findEmitMethod;
     } QtJambiInternal;
 
     struct {
         jclass class_ref;
         jmethodID currentThread;
+        jmethodID getContextClassLoader;
+        jmethodID setContextClassLoader;
     } Thread;
 
     struct {
@@ -259,9 +285,17 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID value;
     } QtEnumerator;
 
+    struct {
+        jclass class_ref;
+        jmethodID constructor;
+        jfieldID string;
+        jfieldID position;
+    } ValidationData;
 
+
+    DECLARE_RESOLVE_FUNCTIONS(QObject);
     DECLARE_RESOLVE_FUNCTIONS(QtJambiInternal);
-    DECLARE_RESOLVE_FUNCTIONS(InternalSignal);
+    DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(QtEnumerator);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
@@ -284,16 +318,20 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(NullPointerException);
     DECLARE_RESOLVE_FUNCTIONS(Object);
     DECLARE_RESOLVE_FUNCTIONS(Pair);
-    DECLARE_RESOLVE_FUNCTIONS(QObject);
+    DECLARE_RESOLVE_FUNCTIONS(QSignalEmitter);
     DECLARE_RESOLVE_FUNCTIONS(QModelIndex);
     DECLARE_RESOLVE_FUNCTIONS(QtJambiUtils);
-    DECLARE_RESOLVE_FUNCTIONS(QtObject);
+    DECLARE_RESOLVE_FUNCTIONS(QtJambiObject);
     DECLARE_RESOLVE_FUNCTIONS(Short);
     DECLARE_RESOLVE_FUNCTIONS(Stack);
     DECLARE_RESOLVE_FUNCTIONS(String);
     DECLARE_RESOLVE_FUNCTIONS(System);
     DECLARE_RESOLVE_FUNCTIONS(Thread);
     DECLARE_RESOLVE_FUNCTIONS(TreeMap);
+    DECLARE_RESOLVE_FUNCTIONS(ValidationData);
+    DECLARE_RESOLVE_FUNCTIONS(ClassLoader);
+    DECLARE_RESOLVE_FUNCTIONS(URLClassLoader);
+    DECLARE_RESOLVE_FUNCTIONS(URL);
 
 public:
     static StaticCache *instance(JNIEnv *env);

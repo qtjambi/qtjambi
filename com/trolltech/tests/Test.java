@@ -27,7 +27,7 @@ public class Test
         System.out.println(" -> ok");
         
         System.out.println("Creating style...");
-        QStyle style = new Style();
+        QStyle style = new Style(box);
         System.out.println(" -> ok");
         box.setStyle(style);
         System.out.println(" -> ok to set style");

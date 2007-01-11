@@ -30,18 +30,18 @@ QtJambiFunctionTable::QtJambiFunctionTable(const QString &className,
 
 QtJambiFunctionTable::~QtJambiFunctionTable()
 {
+    removeFunctionTable(this);
     delete [] m_method_ids;
 }
 
 void QtJambiFunctionTable::ref()
 {
     ++m_reference_count;
+    Q_ASSERT(m_reference_count > 0);
 }
 
 void QtJambiFunctionTable::deref()
 {
-    if (!--m_reference_count) {
-        removeFunctionTable(this);
-        delete this;
-    }
+    --m_reference_count;
+    Q_ASSERT(m_reference_count >= 0);
 }

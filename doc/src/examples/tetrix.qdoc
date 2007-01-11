@@ -122,9 +122,8 @@
 
     \skipto main(
     \printuntil }
-    \skipto REMOVE-END
-    \skipto }
-    \printuntil /^\}/
+    \skipto /^\}/
+    \printline /^\}/
 
     \section1 TetrixPiece Class Definition
 

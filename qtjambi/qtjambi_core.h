@@ -60,15 +60,20 @@ inline void *qtjambi_from_jlong(jlong ptr)
 
 typedef bool (*QtJambiPolymorphicHandler)(const void *object, char **class_name, char **package);
 
+QTJAMBI_EXPORT void qtjambi_set_java_connect_override(bool override);
+
 QTJAMBI_EXPORT void qtjambi_register_polymorphic_id(const char *lookup, QtJambiPolymorphicHandler handler);
 QTJAMBI_EXPORT void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
                                                    char **class_name, char **package);
 
-QTJAMBI_EXPORT bool qtjambi_initialize_vm(); // implemented in qtjambi_functions.cpp
+QTJAMBI_EXPORT bool qtjambi_initialize_vm();
+QTJAMBI_EXPORT bool qtjambi_destroy_vm();
 
 QTJAMBI_EXPORT bool qtjambi_exception_check(JNIEnv *env);
 
 QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
+
+QTJAMBI_EXPORT jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName);
 
 QTJAMBI_EXPORT QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object);
 
@@ -115,7 +120,7 @@ inline void *qtjambi_to_interface(JNIEnv *env,
 }
 
 template <typename T>
-inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array, 
+inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array,
                                        int size, char *className, char *packageName)
 {
     if (array == 0)
@@ -129,7 +134,7 @@ inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array,
     jobjectArray returned = env->NewObjectArray(size, clazz, 0);
     if (returned != 0) {
         for (int i=0; i<size; ++i) {
-            jobject java_object = qtjambi_from_object(env, array + i, className, packageName);
+            jobject java_object = qtjambi_from_object(env, array + i, className, packageName, true);
             env->SetObjectArrayElement(returned, i, java_object);
         }
     }
@@ -138,19 +143,21 @@ inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array,
 }
 
 QTJAMBI_EXPORT
-jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className, char *packageName, const char *lookupName);
+jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className,
+                            char *packageName, const char *lookupName, bool makeCopyOfValueTypes);
 
 QTJAMBI_EXPORT
-jobject qtjambi_from_object(JNIEnv *env, const QRect &rect, const char *className, const char *packageName);
-
-QTJAMBI_EXPORT
-jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className, const char *packageName);
-
-/*QTJAMBI_EXPORT
-jobject qtjambi_from_object(JNIEnv *env, const QEvent *qt_object, const char *className, const char *packageName);*/
+jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className,
+                            const char *packageName, bool makeCopyOfValueTypes);
 
 QTJAMBI_EXPORT
 jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *className, const char *packageName);
+
+
+// Convenience overloads so you won't have to remember / write the
+// package string for QObjects and QWidgets
+QTJAMBI_EXPORT jobject qtjambi_from_QObject(JNIEnv *env, QObject *qt_object);
+QTJAMBI_EXPORT jobject qtjambi_from_QWidget(JNIEnv *env, QWidget *widget);
 
 QTJAMBI_EXPORT jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className);
 
@@ -162,10 +169,11 @@ QTJAMBI_EXPORT int qtjambi_to_enumerator(JNIEnv *env, jobject value);
 QTJAMBI_EXPORT
 jstring qtjambi_from_qstring(JNIEnv *env, const QString &s);
 
+QTJAMBI_EXPORT
+void qtjambi_invalidate_object(JNIEnv *env, jobject java_object);
 
 QTJAMBI_EXPORT
-QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject,
-                              bool memory_managed);
+QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject);
 
 QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,
@@ -205,7 +213,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                                          const char **methodSignatures);
 
 QTJAMBI_EXPORT QString qtjambi_class_name(JNIEnv *env, jclass java_class);
-QTJAMBI_EXPORT QString qtjambi_class_name(JNIEnv *env, jobject java_object);
+QTJAMBI_EXPORT QString qtjambi_object_class_name(JNIEnv *env, jobject java_object);
 
 QTJAMBI_EXPORT void qtjambi_metacall(JNIEnv *env, QEvent *event);
 
@@ -417,13 +425,13 @@ bool qtjambi_connect_cpp_to_java(JNIEnv *,
 inline void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue *args)
 {
     StaticCache *sc = StaticCache::instance(env);
-    sc->resolveInternalSignal();
-    env->SetBooleanField(signal_info.object, sc->InternalSignal.m_in_cpp_emission, true);
+    sc->resolveAbstractSignal();
+    env->SetBooleanField(signal_info.object, sc->AbstractSignal.inCppEmission, true);
     if (args == 0)
         env->CallVoidMethod(signal_info.object, signal_info.methodId);
     else
         env->CallVoidMethodA(signal_info.object, signal_info.methodId, args);
-    env->SetBooleanField(signal_info.object, sc->InternalSignal.m_in_cpp_emission, false);
+    env->SetBooleanField(signal_info.object, sc->AbstractSignal.inCppEmission, false);
 }
 
 #endif // QTJAMBI_CORE_H

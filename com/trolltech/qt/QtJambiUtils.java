@@ -34,9 +34,9 @@ public class QtJambiUtils {
             System.err.println("isImplementedInJava: " 
                                + method + " - "
                                + method.getDeclaringClass() + " - " 
-                               + method.getDeclaringClass().getAnnotation(QtJambiInternalClass.class));
+                               + method.getDeclaringClass().getAnnotation(QtJambiGeneratedClass.class));
         }
-        return method.getDeclaringClass().getAnnotation(QtJambiInternalClass.class) == null;        
+        return method.getDeclaringClass().getAnnotation(QtJambiGeneratedClass.class) == null;        
     }
 
     
@@ -141,14 +141,7 @@ public class QtJambiUtils {
             return;
         }
 
-        boolean ok = ((QObject.AbstractSignal) signal_object).connect(receiver, methodSignature(method));
-        if (!ok) {
-            throw new RuntimeException("Autoconnection failed for: " 
-                    + signal.getDeclaringClass().getName() + "."
-                    + signal.getName() 
-                    + " to " + receiver.getClass().getName() + "." 
-                    + methodSignature(method));
-        }
+        ((QSignalEmitter.AbstractSignal) signal_object).connect(receiver, methodSignature(method));
     }
 
     /**
@@ -189,5 +182,14 @@ public class QtJambiUtils {
     public static void removeSearchPathForResourceEngine(String path)
     {
         QClassPathEngine.removeSearchPath(path);
+    }
+    
+    public static Class findGeneratedSuperclass(Object obj){
+        Class<?> clazz = obj.getClass();
+        while(clazz!=null && !clazz.isAnnotationPresent(QtJambiGeneratedClass.class)){
+            clazz = clazz.getSuperclass();
+        }
+
+        return clazz;
     }
 }

@@ -162,8 +162,6 @@
     \quotefromfile LineEdits.java
     \skipto main(
     \printuntil }
-    \skipto REMOVE-END
-    \skipto }
-    \printuntil /^\}/
-
+    \skipto /^\}/
+    \printline /^\}/
 */

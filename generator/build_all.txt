@@ -6,4 +6,5 @@
   <load-typesystem name="typesystem_svg.txt" generate="yes" />
   <load-typesystem name="typesystem_network.txt" generate="yes" />
   <load-typesystem name="typesystem_xml.txt" generate="yes" />
+  <load-typesystem name="typesystem_designer.txt" generate="yes" />
 </typesystem>

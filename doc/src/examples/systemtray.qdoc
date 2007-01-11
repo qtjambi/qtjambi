@@ -175,9 +175,8 @@
     \quotefromfile SystemTrayExample.java
     \skipto main
     \printuntil }
-    \skipto REMOVE-END
-    \skipto }
-    \printuntil }
+    \skipto /^\}/
+    \printline /^\}/
 
     Finally, we provide a \c main() method to create and show the
     editor widget when the example is run.

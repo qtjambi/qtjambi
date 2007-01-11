@@ -6,6 +6,7 @@
 
 #include <QtPlugin>
 #include <QtCore/QtDebug>
+#include <QtCore/QMetaObject>
 
 #include <qapplication.h>
 
@@ -24,36 +25,55 @@ static void resolve(JNIEnv *env) {
     if (class_CustomWidget)
         return;
 
-    class_CustomWidget = (jclass) env->NewGlobalRef(env->FindClass("com/trolltech/tools/designer/CustomWidget"));
+    class_CustomWidget = (jclass) env->NewGlobalRef(qtjambi_find_class(env, "com/trolltech/tools/designer/CustomWidget"));
     Q_ASSERT(class_CustomWidget);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_createWidget = env->GetMethodID(class_CustomWidget, "createWidget", "(Lcom/trolltech/qt/gui/QWidget;)Lcom/trolltech/qt/gui/QWidget;");
     Q_ASSERT(method_createWidget);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_group = env->GetMethodID(class_CustomWidget, "group", "()Ljava/lang/String;");
     Q_ASSERT(method_group);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_icon = env->GetMethodID(class_CustomWidget, "icon", "()Lcom/trolltech/qt/gui/QIcon;");
     Q_ASSERT(method_icon);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_includeFile = env->GetMethodID(class_CustomWidget, "includeFile", "()Ljava/lang/String;");
     Q_ASSERT(method_includeFile);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_isContainer = env->GetMethodID(class_CustomWidget, "isContainer", "()Z");
     Q_ASSERT(method_isContainer);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_name = env->GetMethodID(class_CustomWidget, "name", "()Ljava/lang/String;");
     Q_ASSERT(method_name);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_tooltip = env->GetMethodID(class_CustomWidget, "tooltip", "()Ljava/lang/String;");
     Q_ASSERT(method_tooltip);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_whatsThis = env->GetMethodID(class_CustomWidget, "whatsThis", "()Ljava/lang/String;");
     Q_ASSERT(method_whatsThis);
+    if (qtjambi_exception_check(env))
+        return;
 
     method_pluginClass = env->GetMethodID(class_CustomWidget, "pluginClass", "()Ljava/lang/Class;");
     Q_ASSERT(method_whatsThis);
-
+    if (qtjambi_exception_check(env))
+        return;
 }
 
 JambiCustomWidget::JambiCustomWidget(jobject object):
@@ -65,8 +85,7 @@ JambiCustomWidget::JambiCustomWidget(jobject object):
     JNIEnv *env = qtjambi_current_environment();
     resolve(env);
     m_object = env->NewGlobalRef(object);
-
-    QTJAMBI_EXCEPTION_CHECK(env);
+    qtjambi_exception_check(env);
 }
 
 JambiCustomWidget::~JambiCustomWidget()
@@ -97,6 +116,7 @@ void JambiCustomWidget::initialize(QDesignerFormEditorInterface *core)
         return;
 
     m_core = core;
+
 //     JambiLanguageExtension *lang = static_cast<JambiLanguageExtension*> (language()); // ### wrong
 //     if (! lang)
 //         return;
@@ -208,7 +228,6 @@ QIcon JambiCustomWidget::icon() const
     return i;
 }
 
-
 JambiCustomWidgetCollection::JambiCustomWidgetCollection()
 {
     qtjambi_initialize_vm();
@@ -216,22 +235,33 @@ JambiCustomWidgetCollection::JambiCustomWidgetCollection()
     JNIEnv *env = qtjambi_current_environment();
     Q_ASSERT (env != 0);
 
-    jclass cl = env->FindClass("com/trolltech/tools/designer/CustomWidgetManager");
+    jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/CustomWidgetManager");
     if (qtjambi_exception_check(env))
         return;
 
     jmethodID method_instance = env->GetStaticMethodID(cl, "instance", "()Lcom/trolltech/tools/designer/CustomWidgetManager;");
-
-    if (qtjambi_exception_check(env))
-        return;
+    QTJAMBI_EXCEPTION_CHECK(env);
+    Q_ASSERT(method_instance);
 
     m_id_customWidgets = env->GetMethodID(cl, "customWidgets", "()Ljava/util/List;");
-    if (qtjambi_exception_check(env))
-        return;
+    QTJAMBI_EXCEPTION_CHECK(env);
+    Q_ASSERT(m_id_customWidgets);
 
     m_manager = env->NewGlobalRef(env->CallStaticObjectMethod(cl, method_instance));
-    if (qtjambi_exception_check(env))
-        return;
+    QTJAMBI_EXCEPTION_CHECK(env);
+    Q_ASSERT(m_manager);
+
+    initializeWidgets(env);
+    m_id_loadPlugins = env->GetMethodID(cl, "loadPlugins", "(Ljava/lang/String;)V");
+    QTJAMBI_EXCEPTION_CHECK(env);
+    Q_ASSERT(m_id_loadPlugins);
+
+    env->DeleteLocalRef(cl);
+}
+
+void JambiCustomWidgetCollection::initializeWidgets(JNIEnv *env) 
+{
+    m_widgets.clear(); 
 
     jobject widgetList = env->CallObjectMethod(m_manager, m_id_customWidgets);
     jobjectArray widgetArray = qtjambi_collection_toArray(env, widgetList);
@@ -242,9 +272,25 @@ JambiCustomWidgetCollection::JambiCustomWidgetCollection()
         m_widgets << new JambiCustomWidget(widget);
     }
 
-    env->DeleteLocalRef(cl);
     env->DeleteLocalRef(widgetArray);
     env->DeleteLocalRef(widgetList);
+}
+
+void JambiCustomWidgetCollection::loadPlugins(const QString &path, QObject *widgetFactory) 
+{
+    JNIEnv *env = qtjambi_current_environment();
+
+    jstring jPath = qtjambi_from_qstring(env, path);
+    Q_ASSERT(jPath);
+
+    env->CallVoidMethod(m_manager, m_id_loadPlugins, jPath);
+    initializeWidgets(env);
+
+    env->DeleteLocalRef(jPath);
+
+    // Make sure widget factory is updated. This depends on an internal implementation, but
+    // there doesn't seem to be any public api doing the same.
+    QMetaObject::invokeMethod(widgetFactory, "loadPlugins");
 }
 
 JambiCustomWidgetCollection::~JambiCustomWidgetCollection()

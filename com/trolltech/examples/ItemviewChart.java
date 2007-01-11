@@ -13,15 +13,15 @@
 
 package com.trolltech.examples;
 
-import java.util.Vector;
-
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+import java.util.*;
+
+@QtJambiExample(name = "Itemview Charts")
 public class ItemviewChart extends QMainWindow {
 
     private QAbstractItemModel model;
-    private QAbstractItemView pieChart;
 
     public static void main(String args[]) {
         QApplication.initialize(args);
@@ -72,7 +72,7 @@ public class ItemviewChart extends QMainWindow {
     private void setupViews() {
         QSplitter splitter = new QSplitter();
         QTableView table = new QTableView();
-        pieChart = new PieView(this);
+        QAbstractItemView pieChart = new PieView(this);
         splitter.addWidget(table);
         splitter.addWidget(pieChart);
         splitter.setStretchFactor(0, 0);
@@ -96,7 +96,7 @@ public class ItemviewChart extends QMainWindow {
     private void openFile(String path) {
         String fileName;
         if (path.equals(""))
-            fileName = QFileDialog.getOpenFileName(this, tr("Choose a data file"), "", "*.cht");
+            fileName = QFileDialog.getOpenFileName(this, tr("Choose a data file"), "", new QFileDialog.Filter("*.cht"));
         else
             fileName = path;
 
@@ -107,20 +107,20 @@ public class ItemviewChart extends QMainWindow {
                 QTextStream stream = new QTextStream(file);
                 String line;
 
-                model.removeRows(0, model.rowCount(new QModelIndex()), new QModelIndex());
+                model.removeRows(0, model.rowCount(null), null);
 
                 int row = 0;
                 do {
                     line = stream.readLine();
                     if (!line.equals("")) {
 
-                        model.insertRows(row, 1, new QModelIndex());
+                        model.insertRows(row, 1, null);
 
                         String[] pieces = line.split(",");
 
-                        model.setData(model.index(row, 0, new QModelIndex()), pieces[0].trim());
-                        model.setData(model.index(row, 1, new QModelIndex()), pieces[1].trim());
-                        model.setData(model.index(row, 0, new QModelIndex()), new QColor(pieces[2].trim()), Qt.ItemDataRole.DecorationRole);
+                        model.setData(model.index(row, 0, null), pieces[0].trim());
+                        model.setData(model.index(row, 1, null), pieces[1].trim());
+                        model.setData(model.index(row, 0, null), new QColor(pieces[2].trim()), Qt.ItemDataRole.DecorationRole);
                         row++;
 
                     }
@@ -134,18 +134,18 @@ public class ItemviewChart extends QMainWindow {
 
     @SuppressWarnings("unused")
     private void saveFile() {
-        String fileName = QFileDialog.getSaveFileName(this, tr("Save file as"), "", "*.cht");
+        String fileName = QFileDialog.getSaveFileName(this, tr("Save file as"), "", new QFileDialog.Filter("*.cht"));
 
         if (!fileName.equals("")) {
             QFile file = new QFile(fileName);
             QTextStream stream = new QTextStream(file);
 
             if (file.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly, QFile.OpenModeFlag.Text))) {
-                for (int row = 0; row < model.rowCount(new QModelIndex()); ++row) {
+                for (int row = 0; row < model.rowCount(null); ++row) {
 
-                    stream.operator_shift_left(model.data(model.index(row, 0, new QModelIndex()), Qt.ItemDataRole.DisplayRole).toString() + ",");
-                    stream.operator_shift_left(model.data(model.index(row, 1, new QModelIndex()), Qt.ItemDataRole.DisplayRole).toString() + ",");
-                    stream.operator_shift_left(((QColor) model.data(model.index(row, 0, new QModelIndex()), Qt.ItemDataRole.DecorationRole)).name());
+                    stream.operator_shift_left(model.data(model.index(row, 0, null), Qt.ItemDataRole.DisplayRole).toString() + ",");
+                    stream.operator_shift_left(model.data(model.index(row, 1, null), Qt.ItemDataRole.DisplayRole).toString() + ",");
+                    stream.operator_shift_left(((QColor) model.data(model.index(row, 0, null), Qt.ItemDataRole.DecorationRole)).name());
                     stream.operator_shift_left("\n");
                 }
             }
@@ -202,7 +202,7 @@ public class ItemviewChart extends QMainWindow {
 
         public QModelIndex indexAt(final QPoint point) {
             if (validItems == 0)
-                return new QModelIndex();
+                return null;
 
             int wx = point.x() + horizontalScrollBar().value();
             int wy = point.y() + verticalScrollBar().value();
@@ -213,7 +213,7 @@ public class ItemviewChart extends QMainWindow {
                 double d = Math.pow(Math.pow(cx, 2) + Math.pow(cy, 2), 0.5);
 
                 if (d == 0 || d > pieSize / 2)
-                    return new QModelIndex();
+                    return null;
 
                 double angle = (180 / Math.PI) * Math.acos(cx / d);
                 if (cy < 0)
@@ -237,7 +237,7 @@ public class ItemviewChart extends QMainWindow {
                 }
             }
 
-            return new QModelIndex();
+            return null;
         }
 
         protected boolean isIndexHidden(final QModelIndex index) {
@@ -245,27 +245,20 @@ public class ItemviewChart extends QMainWindow {
         }
 
         QRect itemRect(final QModelIndex index) {
-            if (!index.isValid())
+            if (index == null)
                 return new QRect();
 
             if (index.column() != 1)
                 return new QRect();
 
             if (toDouble(model().data(index)) > 0.0) {
-
-                int listItem = 0;
-                for (int row = index.row() - 1; row >= 0; --row) {
-                    if (toDouble(model().data(model().index(row, 1, rootIndex()))) > 0.0)
-                        listItem++;
-                }
-
                 return new QRect(margin, margin, pieSize, pieSize);
             }
             return new QRect();
         }
 
         QRegion itemRegion(final QModelIndex index) {
-            if (!index.isValid())
+            if (index == null)
                 return null;
 
             if (index.column() != 1)
@@ -317,7 +310,7 @@ public class ItemviewChart extends QMainWindow {
             super.mouseMoveEvent(event);
 
             QModelIndex underMouseIndex = indexAt(event.pos());
-            if (!underMouseIndex.isValid())
+            if (underMouseIndex == null)
                 setSelection(rect, selectionCommand(underMouseIndex, event));
             viewport().update();
         }
@@ -501,7 +494,7 @@ public class ItemviewChart extends QMainWindow {
                     model().index(lastRow, lastColumn, rootIndex()));
                 selectionModel().select(selection, command);
             } else {
-                QModelIndex noIndex = new QModelIndex();
+                QModelIndex noIndex = null;
                 QItemSelection selection = new QItemSelection(noIndex, noIndex);
                 selectionModel().select(selection, command);
             }
@@ -540,7 +533,7 @@ public class ItemviewChart extends QMainWindow {
                 for (int row = range.top(); row <= range.bottom(); ++row) {
                     for (int col = range.left(); col <= range.right(); ++col) {
                         QModelIndex index = model().index(row, col, rootIndex());
-                        region.operator_add_assign(new QRegion(visualRect(index)));
+                        region = region.united(new QRegion(visualRect(index)));
                     }
                 }
             }
@@ -559,16 +552,4 @@ public class ItemviewChart extends QMainWindow {
         }
         return 0;
     }
-
-    // REMOVE-START
-
-    public static String exampleName() {
-        return "ItemView With Chart";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

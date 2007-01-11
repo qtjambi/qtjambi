@@ -19,11 +19,7 @@
 #include <QtDesigner/QtDesigner>
 #include <QtDesigner/QExtensionFactory>
 
-#include "jambiresourcebrowser.h"
-
 #include <jni.h>
-
-class JavaNameTable;
 
 class JambiLanguagePlugin: public QObject, public QDesignerFormEditorPluginInterface
 {
@@ -44,6 +40,27 @@ private:
     QDesignerFormEditorInterface *m_core;
 };
 
+
+class JambiExtraInfoExtension : public QObject, QDesignerExtraInfoExtension
+{
+public:
+    JambiExtraInfoExtension(QWidget *widget, QDesignerFormEditorInterface *core);
+
+    virtual QDesignerFormEditorInterface *core() const { return m_core; }
+    virtual QWidget *widget() const { return m_widget; }
+
+    virtual bool saveUiExtraInfo(DomUi *ui);
+    virtual bool loadUiExtraInfo(DomUi *ui);
+
+    virtual bool saveWidgetExtraInfo(DomWidget *ui_widget);
+    virtual bool loadWidgetExtraInfo(DomWidget *ui_widget);
+
+private:
+    QWidget *m_widget;
+    QDesignerFormEditorInterface *m_core;
+};
+
+
 class JambiLanguage: public QObject, public JambiLanguageExtension
 {
     Q_OBJECT
@@ -62,8 +79,9 @@ public:
     virtual QString enumerator(const QString &name) const;
     virtual QString neutralEnumerator(const QString &name) const;
 
+    virtual QString uiExtension() const { return "jui"; }
+
 private:
-    JavaNameTable *m_name_table;
 };
 
 class JambiExtensionFactory: public QExtensionFactory

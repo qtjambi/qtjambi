@@ -1,4 +1,4 @@
-<typesystem package="com.trolltech.qt.sql" default-superclass="com.trolltech.qt.QtObject">
+<typesystem package="com.trolltech.qt.sql" default-superclass="com.trolltech.qt.QtJambiObject">
   <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtSql");
   </inject-code>
@@ -20,6 +20,50 @@
         <include file-name="QStringList" location="global" />
         <include file-name="QSize" location="global" />
     </extra-includes>  
+    <modify-function signature="contains(QString)">
+        <modify-argument index="1">
+            <replace-default-expression with="defaultConnection()" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addDatabase(QString,QString)">
+        <modify-argument index="2">
+            <replace-default-expression with="defaultConnection()" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addDatabase(QSqlDriver *,QString)">
+        <modify-argument index="2">
+            <replace-default-expression with="defaultConnection()" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="database(QString,bool)">
+        <modify-argument index="1">
+            <replace-default-expression with="defaultConnection()" />
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="operator=(QSqlDatabase)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <modify-field name="defaultConnection">
+        <access modifier="private"/>
+        <rename to="defaultConnection_private" />
+    </modify-field>
+    <inject-code>
+        public static String defaultConnection() {
+            com.trolltech.qt.QNativePointer np = defaultConnection_private();
+            
+            String returned = "";
+            int i=0;
+            while (np.byteAt(i) != 0) returned += (char) np.byteAt(i++);
+            return returned;            
+        }
+    </inject-code>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QSqlDatabase" />
+        </insert-template>            
+    </inject-code>           
   </value-type>  
   <value-type name="QSqlQuery">
     <extra-includes>
@@ -28,16 +72,65 @@
         <include file-name="QStringList" location="global" />
         <include file-name="QSize" location="global" />
     </extra-includes>  
+    <modify-function signature="operator=(const QSqlQuery &amp;)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QSqlQuery" />
+        </insert-template>            
+    </inject-code>    
   </value-type>  
   <value-type name="QSqlRecord">
     <extra-includes>
         <include file-name="QSqlField" location="global" />
     </extra-includes>
+    <modify-function signature="operator=(QSqlRecord)">
+        <access modifier="private"/>
+        <rename to="operator_assign_private"/>
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QSqlRecord" />
+        </insert-template>            
+    </inject-code>    
+    
   </value-type>
-  <value-type name="QSqlError" />
-  <value-type name="QSqlIndex" />  
+  <value-type name="QSqlError">
+    <modify-function signature="operator=(QSqlError)">
+        <rename to="operator_assign_private"/>
+        <access modifier="private"/>        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QSqlError" />
+        </insert-template>            
+    </inject-code>        
+  </value-type>
+  <value-type name="QSqlIndex">  
+    <modify-function signature="operator=(QSqlIndex)">
+        <rename to="operator_assign_private"/>
+        <access modifier="private"/>        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QSqlIndex" />
+        </insert-template>            
+    </inject-code>      
+  </value-type>
   <value-type name="QSqlRelation" />
-  <value-type name="QSqlField" />  
+  <value-type name="QSqlField">
+    <modify-function signature="operator=(QSqlField)">
+        <rename to="operator_assign_private"/>
+        <access modifier="private"/>
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QSqlField" />
+        </insert-template>            
+    </inject-code>
+  </value-type>  
   
   <object-type name="QSqlDriver">  
     <extra-includes>
@@ -73,6 +166,10 @@
         <include file-name="QStringList" location="global" />
         <include file-name="QSize" location="global" />
       </extra-includes>
+      <modify-function signature="virtual_hook(int,void*)">
+        <remove />
+      </modify-function>
+      
   </object-type>
   <object-type name="QSqlTableModel">  
     <extra-includes>
@@ -80,6 +177,69 @@
         <include file-name="QStringList" location="global" />
         <include file-name="QSize" location="global" />
     </extra-includes>  
+
+    <template name="sql.convert_sqlrecord_reference_to_java">
+        jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "QSqlRecord", "com/trolltech/qt/sql/", false);
+        Q_ASSERT(%out);
+    </template>
+    
+    <template name="sql.convert_sqlrecord_reference_from_java">
+        QSqlRecord *__ptr_record = (QSqlRecord *) qtjambi_to_object(__jni_env, %in);
+        
+        QSqlRecord dummy;
+        QSqlRecord &amp;%out = __ptr_record == 0 ? dummy : *__ptr_record;
+    </template>
+    
+    <modify-function signature="beforeInsert(QSqlRecord&amp;)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
+            <conversion-rule>
+                <insert-template name="sql.convert_sqlrecord_reference_to_java" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="beforeInsert(QSqlRecord&amp;)">
+        <modify-argument index="1">
+            <conversion-rule>
+                <insert-template name="sql.convert_sqlrecord_reference_from_java" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="beforeUpdate(int,QSqlRecord&amp;)">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
+            <conversion-rule>
+                <insert-template name="sql.convert_sqlrecord_reference_to_java" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="beforeUpdate(int,QSqlRecord&amp;)">
+        <modify-argument index="2">
+            <conversion-rule>
+                <insert-template name="sql.convert_sqlrecord_reference_from_java" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="primeInsert(int,QSqlRecord&amp;)">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
+            <conversion-rule>
+                <insert-template name="sql.convert_sqlrecord_reference_to_java" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="primeInsert(int,QSqlRecord&amp;)">
+        <modify-argument index="2">
+            <conversion-rule>
+                <insert-template name="sql.convert_sqlrecord_reference_from_java" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    
+    
+
   </object-type>  
   <object-type name="QSqlDriverCreatorBase">
     <extra-includes>
@@ -102,6 +262,5 @@
 
   <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />  
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />  
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: unsupported default value 'QLatin1String(defaultConnection)' of argument in function '*', class 'QSqlDatabase'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />    
 </typesystem>

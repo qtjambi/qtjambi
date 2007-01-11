@@ -14,5 +14,10 @@ HEADERS += \
         destruction.h \
         interfaces.h \
         paintengine.h \
+        injectedcode.h 
 
 
+SOURCES += injectedcode.cpp
+
+
+QT += sql xml

@@ -1,321 +1,342 @@
-const version = "0.0.3";
-const depot_version = "1.0.0-tp3";
 
-// Set up P4
-const client = "eclipse-package-builder" + (os_name() == OS_NAME_WINDOWS ? "" : "-linux");
-const cygdrive = (os_name() == OS_NAME_WINDOWS ? "/cygdrive/c" : "")
-const cygdrive_slash = (os_name() == OS_NAME_WINDOWS ? cygdrive + "/" : "")
+// *** Constants
+const version           = "0.0.4";
+const depotVersion      = "1.0.0-beta";
+const eclipseBranch     = "main";
+const packageDir        = os_name() == OS_NAME_WINDOWS
+                            ? "c:/package-builder/tmp"
+                            : "/home/eblomfel/package-builder/tmp";                        
+const eclipsePackages   = os_name() == OS_NAME_WINDOWS
+                            ? "c:/package-builder/eclipse_packages"
+                            : "/home/eblomfel/eclipse_package";
+const dirSeparator      = os_name() == OS_NAME_WINDOWS ? ";" : ":";                                              
+const execPrefix = os_name() == OS_NAME_WINDOWS ? "release/" : "./";
 
-// Set up constants
-const rootDir = "/package-builder";
-const destDir = rootDir + "/output";
+const jarFilesDest = packageDir + "/jarFiles";
+var jarFilesDir = new Dir(jarFilesDest);
+jarFilesDir.mkdirs(jarFilesDest);
 
-const qtjambidir = rootDir + "/qtjambi/" + depot_version;
-const eclipsedir = qtjambidir + "/eclipse-stable";
+// *** Commands
+var command = new Object();
+command.chmod = find_executable("chmod");
+command.p4 = find_executable("p4");
+command.qmake = find_executable("qmake");
+command.rm = find_executable("rm");
+command.make = make_from_qmakespec();
+command.javac = find_executable("javac");
+command.jar = find_executable("jar");
+command.cp = find_executable("cp");
+command.zip = find_executable("zip");
+command.gzip = find_executable("gzip");
+command.tar = find_executable("tar");
+command.unzip = find_executable("unzip");
 
-const javaScriptDir = qtjambidir + "/scripts";
+// *** Options
+var option = new Object();
+option.verbose = array_contains(args, "--verbose");
+option.qtdir = findQtDir();
 
-const generatorDir = eclipsedir + "/qswt/designer";
-const generatorExe = generatorDir
-                     + (os_name() == OS_NAME_WINDOWS ? "/release/designer.exe" : "/designer");
-
-const generatedDir = generatorDir + "/qtdesigner";
-const generatedExe = os_name() == OS_NAME_WINDOWS ? "qtdesigner.dll" : "libqtdesigner.so";
-
-const qtdesignerPackageDir = eclipsedir + "/com.trolltech.qtdesigner";
-const qtjavaPackageDir = eclipsedir + "/com.trolltech.qtjambi";
-const qtdesignerJavaSrcRoot = qtdesignerPackageDir + "/src";
-const qtjavaJavaSrcRoot = qtjavaPackageDir + "/src";
-const eclipseRoot = "/source/eclipse_packages";
-
-const qtjavaSources = [qtjavaJavaSrcRoot + "/com/trolltech/qtjambi"];
-
-const qtdesignerSources = [qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/editors",
-                           qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/views",
-                           qtdesignerJavaSrcRoot + "/com/trolltech/qtdesigner/"];
-
-const directoriesP4 = [qtjambidir,
-                       eclipsedir,
-		       qtdesignerPackageDir,
-                       javaScriptDir,
-                       qtjavaPackageDir];
-
-
-const qtjavaJarDest = rootDir + "/plugins/com.trolltech.qtjambi_" + version + ".jar";
-const qtdesignerBinDir = "com/trolltech/qtdesigner";
-const qtjavaBinDir = "com/trolltech/qtjambi";
-const qtdesignerJarDest = rootDir + "/plugins/com.trolltech.qtdesigner_" + version + ".jar";
-
-const zipDest = (os_name() == OS_NAME_WINDOWS
-                    ? destDir + "/qt-jambi-eclipse-integration-win32-" + version + ".zip"
-                    : destDir + "/qt-jambi-eclipse-integration-linux-" + version + ".tar");
-zipContents = ["plugins/com.trolltech.qtdesigner_" + version + ".jar",
-               "plugins/com.trolltech.qtjambi_" + version + ".jar"];
-
-
-  const vcRedistributableDir = "/Progra~1/Micros~1.net/SDK/v1.1/Bin"
-if (os_name() == OS_NAME_WINDOWS) {
-  zipContents.push("register_eclipse_integration.bat");
-  zipContents.push(generatedExe);
-  zipContents.push("msvcp71.dll");
-  zipContents.push("msvcr71.dll");
+function verbose(s) {
+    if (option.verbose)
+        print(s);
 }
 
 
-const qtjavaJarContents = ["plugin.xml",
-                           "icons/designer.gif",
-                           "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Bottom.ui",
-                           "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Bottom.png",
-                           "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Right.ui",
-                           "com/trolltech/qtjambi/templates/Dialog_with_Buttons_Right.png",
-                           "com/trolltech/qtjambi/templates/Main_Window.ui",
-                           "com/trolltech/qtjambi/templates/Main_Window.png",
-                           "com/trolltech/qtjambi/templates/templates.txt",
-                           "com/trolltech/qtjambi/templates/Widget.ui",
-                           "com/trolltech/qtjambi/templates/Widget.png"];
-
-const qtdesignerJarContents = ["plugin.xml",
-                               "icons/designer.gif",
-                               qtdesignerBinDir + "/editors/actionicons/adjustsize.png",
-                               qtdesignerBinDir + "/editors/actionicons/buddytool.png",
-                               qtdesignerBinDir + "/editors/actionicons/editbreaklayout.png",
-                               qtdesignerBinDir + "/editors/actionicons/editgrid.png",
-                               qtdesignerBinDir + "/editors/actionicons/edithlayout.png",
-                               qtdesignerBinDir + "/editors/actionicons/edithlayoutsplit.png",
-                               qtdesignerBinDir + "/editors/actionicons/editlower.png",
-                               qtdesignerBinDir + "/editors/actionicons/editraise.png",
-                               qtdesignerBinDir + "/editors/actionicons/editvlayout.png",
-                               qtdesignerBinDir + "/editors/actionicons/editvlayoutsplit.png",
-                               qtdesignerBinDir + "/editors/actionicons/resourceeditortool.png",
-                               qtdesignerBinDir + "/editors/actionicons/signalslottool.png",
-                               qtdesignerBinDir + "/editors/actionicons/tabordertool.png",
-                               qtdesignerBinDir + "/editors/actionicons/widgettool.png"];
-
-var java_files_qtjava = [];
-var java_files_qtdesigner = [];
-
-
-commandP4 = find_executable("p4");
-commandQmake = find_executable("qmake");
-commandRM = find_executable("rm");
-commandMake = make_from_qmakespec();
-commandJavac = find_executable("javac");
-commandJar = find_executable("jar");
-commandCp = find_executable("cp");
-commandZip = find_executable("zip");
-commandGZip = find_executable("gzip");
-commandTar = find_executable("tar");
-commandWGet = find_executable("wget");
-commandUnzip = find_executable("unzip");
-
-// Actions to sync P4 tree
-const actionsP4 = [
-                    [commandP4, "sync -f ", directoriesP4, "/..."]
-                  ];
-
-// Actions to generate activeX control
-const actionsAX = [
-                    ["cd", generatorDir],
-                    [commandQmake, "-config", " release"],
-                    [commandMake + (os_name() == OS_NAME_WINDOWS ? " release" : "")],
-                    [generatorExe],
-                    ["cd", generatedDir],
-                    [commandQmake, "-config", " release"],
-                    [commandMake + (os_name() == OS_NAME_WINDOWS ? " release" : "")]
-                  ];
-
-
-// Actions to compile Java
-const javaCommand_qtjava =
-    os_name() == OS_NAME_WINDOWS
-     ? [commandJavac, "-source 1.4 -target 1.4 -cp ", qtjavaJavaSrcRoot + PATH_SEPARATOR + qtdesignerJavaSrcRoot + PATH_SEPARATOR + eclipseRoot + " ", java_files_qtjava]
-     : [commandJavac, "-source 1.4 -target 1.4 ", java_files_qtjava];
-const javaCommand_qtdesigner =
-    os_name() == OS_NAME_WINDOWS
-     ? [commandJavac, "-source 1.4 -target 1.4 -cp ", qtjavaJavaSrcRoot + PATH_SEPARATOR + qtdesignerJavaSrcRoot + PATH_SEPARATOR + eclipseRoot + " ", java_files_qtdesigner]
-     : [commandJavac, "-source 1.4 -target 1.4 ", java_files_qtdesigner];
-
-
-const actionsJava = [
-                     ["cd", qtdesignerJavaSrcRoot],
-                     ["files", qtdesignerJavaSrcRoot, "java", java_files_qtdesigner],
-                     javaCommand_qtdesigner,
-                     ["cd", qtjavaJavaSrcRoot],
-                     ["files", qtjavaJavaSrcRoot, "java", java_files_qtjava],
-                     javaCommand_qtjava
-                    ];
-
-qtdesignerJarContentsStr = [""];
-qtjavaJarContentsStr = [""];
-
-platformSpecificCommand = [];
-if (os_name() != OS_NAME_WINDOWS) {
-    platformSpecificCommand.push(commandJar);
-    platformSpecificCommand.push("-uf ");
-    platformSpecificCommand.push(qtdesignerJarDest);
-    platformSpecificCommand.push(" ");
-    platformSpecificCommand.push(generatedExe);
+function findQtDir() {
+    var qtdir = array_get_next_value(args, "--qt");
+    if (!qtdir)
+        qtdir = System.getenv("QTDIR");
+    if (!File.exists(qtdir))
+        throw "Qt library '%1' does not exist".arg(option.qtdir);
+    
+    while (qtdir.indexOf("\\") >= 0) {
+        qtdir = qtdir.replace("\\", "/");
+    }        
+        
+    return qtdir;
 }
 
-if (os_name() == OS_NAME_WINDOWS) {
-    packageCommand = [
-                      ["cd", rootDir],
-                      [commandCp, "-f ", cygdrive + vcRedistributableDir + "/" + "msvcp71.dll", " ."],
-                      [commandCp, "-f ", cygdrive + vcRedistributableDir + "/" + "msvcr71.dll", " ."],
-                      [commandCp, "-f ", cygdrive + qtjambidir + "/scripts/register_eclipse_integration.bat", " ."],
-                      [commandCp, "-f ", cygdrive + generatedDir + "/release/" + generatedExe, " ."],
-                      [commandZip, cygdrive + zipDest + " ", zipContents],
-    ];
-} else {
-    packageCommand = [
-                      ["cd", rootDir],
-                      [commandTar, "rf", " " + cygdrive + zipDest + " ",zipContents],
-                      [commandRM, "-f ", cygdrive + zipDest + ".gz"],
-                      [commandGZip, cygdrive + zipDest]
-    ];
+/*******************************************************************************
+ * Display the help options
+ */
+function displayHelp() {
+    print("Options:" +
+          "\n  --help, -help, -h    This help" +
+          "\n  --verbose            Verbose output" +
+          "\n");
 }
 
-// Actions to package qtdesigner
-const actionsPackage = [
-                        ["md", rootDir + "/plugins"],
-                        ["md", destDir],
-                        ["cd", qtdesignerJavaSrcRoot],
-                        [commandCp, "-f", " ../plugin.xml", " ."],
-                        [commandCp, "-f -r", " ../icons", " ."],
-                        ["files", qtdesignerJavaSrcRoot, "class", qtdesignerJarContents],
-                        ["join", qtdesignerJarContentsStr, qtdesignerJarContents],
-                        [commandJar, "-cfm ", qtdesignerJarDest, " ../META-INF/MANIFEST.MF ", qtdesignerJarContentsStr],
-                        ["cd", generatedDir],
-                        platformSpecificCommand,
-                        ["cd", "/home/qt/qtjambi/qtjambi-linux-preview/lib"],
-                        ["cd", qtjavaJavaSrcRoot],
-                        [commandCp, "-f", " ../plugin.xml", " ."],
-                        [commandCp, "-f -r", " ../icons", " ."],
-                        [commandCp, "-f -r", " ../resources/com", " ."],
-                        ["files", qtjavaJavaSrcRoot, "class", qtjavaJarContents],
-                        ["join", qtjavaJarContentsStr, qtjavaJarContents],
-                        [commandJar, "-cfm ", qtjavaJarDest, " ../META-INF/MANIFEST.MF ", qtjavaJarContentsStr],
-                        [commandRM, "-f ", cygdrive + zipDest],
-                       ];
 
+function prepareSourceTree() {
+    verbose("Preparing source tree:");
+    var client = "eclipse-package-builder" + (os_name() == OS_NAME_WINDOWS ? "" : "-linux");
 
-// Total build
-const buildActions = [actionsP4,
-                      actionsAX,
-                      actionsJava,
-                      actionsPackage,
-                      packageCommand];
-
-
-// Functions
-function appendParam(strings, param)
-{
-    if (strings.length == 0)
-        strings.push(new Array());
-    if (!(param instanceof Array))
-        param = new Array(param);
-
-    var str = "";
-    for (var i=strings.length-1; i>=0; --i) {
-        var appended = "";
-        if (i >= param.length) {
-            appended = param[param.length - 1];
-        } else {
-            appended = param[i];
-        }
-
-        if (str == "" && param.length > strings.length)
-            str = strings[i];
-
-        strings[i] += appended;
-    }
-
-    if (param.length > strings.length) {
-        for (var i=strings.length;i<param.length;++i) {
-            strings.push(str + param[i]);
-        }
-    }
-    return strings;
-}
-
-function mdAction(action)
-{
-    print("md " + action[1]);
-    var dir = new Dir(action[1]);
-    dir.mkdirs(action[1]);
-}
-
-function cdAction(action)
-{
-    print("cd to " + action[1]);
-    var dir = new Dir(action[1]);
-    if (dir.exists)
-      dir.setCurrent();
-}
-
-function executeAction(action)
-{
-    var executeStrings = new Array();
-
-    for (var i=1;i<action.length;++i) {
-        executeStrings = appendParam(executeStrings, action[i]);
-    }
-
-    if (executeStrings.length == 0) {
-        print("executing: " + action[0]);
-        execute(action[0]);
-    } else {
-        for (var i=0;i<executeStrings.length;++i) {
-            print("executing: " + new Array(action[0]).concat(executeStrings[i].split(" ")));
-            execute(new Array(action[0]).concat(executeStrings[i].split(" ")));
-        }
-    }
-}
-
-function filesAction(action)
-{
-    print("Finding files in " + action[1] + " with extension " + action[2]);
-
-    var array = find_files(action[1], [action[2]]);
-    for (i=0;i<array.length;++i)
-        action[3].push(array[i].substring(action[1].length + 1));
-}
-
-function joinAction(action)
-{
-    action[1][0] = action[2].join(" ");
-}
-
-function decideAction(action)
-{
-    if (action.length == 3 && action[0] == "join")
-        joinAction(action);
-    else if (action.length == 4 && action[0] == "files")
-        filesAction(action);
-    else if (action.length == 2 && action[0] == "md")
-        mdAction(action);
-    else if (action.length == 2 && action[0] == "cd")
-        cdAction(action);
-    else if (action.length > 0)
-        executeAction(action);
-}
-
-function executeList(action_list)
-{
-    for (var i=0; i<action_list.length;++i) {
-        decideAction(action_list[i]);
-    }
-}
-
-function build(build_action_lists)
-{
     System.setenv("P4PORT", "p4.troll.no:866");
     System.setenv("P4CLIENT", client);
-    for (var i=0; i<build_action_lists.length; ++i) {
-        executeList(build_action_lists[i]);
+
+    verbose(" - creating directory");
+    var dir = new Dir(packageDir);
+    dir.mkdirs(packageDir);
+    dir.setCurrent();
+
+    verbose(" - sync'ing source tree");
+    execute([command.p4, "sync", "-f",
+             "//depot/qtjambi/" + depotVersion + "/...",
+             "//depot/eclipse/..."]);
+
+    execute([command.chmod, "-R", "u+w", "."]);   
+}
+
+function compileJavaFiles(rootDir, classpath, subDirectory, outputDir) {
+    verbose("-- compiling .java files");
+    verbose("--      from: '" + rootDir + "/" + subDirectory + "'");
+    verbose("--        to: '" + outputDir + "'");
+    
+    files = find_files(rootDir + "/" + subDirectory, ["java"]);             
+    
+    for (i=0;i<files.length; ++i) {
+        verbose("--       -- : " + files[i]);
+        execute([command.javac, 
+                "-cp", rootDir + dirSeparator + classpath,
+                "-d", outputDir,
+                files[i]]);
+    }
+}
+  
+function makeJarFile(path, manifestFile, files) {
+    verbose("-- making jar-file: " + path);
+    execute([command.jar, "-cfm", path, manifestFile].concat(files));
+}
+
+function cygwinnify(input) {
+    if (os_name() == OS_NAME_WINDOWS) {
+        if (input.startsWith("/"))
+           input = "/cygdrive/c" + input;
+        else 
+            input = input.replace("c:", "/cygdrive/c");
+    }
+    
+    return input;
+}
+
+// *** Copies files in "files" array to "destDir" into the subdir you get
+// *** by removing "rootPath" from the file path
+function copyFiles(files, rootPath, destDir) {
+    for (var i=0; i<files.length; ++i) {
+        var subPath = files[i].right(files[i].length - rootPath.length - 1);
+        if (subPath.lastIndexOf("/") == -1) { 
+            subPath = ""; 
+        } else {
+            subPath = subPath.left(subPath.lastIndexOf("/"));
+            var dir = new Dir(subPath);
+            verbose("-- creating directory '" + destDir + "/" + subPath + "'");
+            dir.mkdirs(destDir + "/" + subPath);
+        }
+        
+        
+        verbose("-- copying\n"
+                + "--    from: " + files[i].right(files[i].length - files[i].lastIndexOf("/") - 1) + "\n" 
+                + "--      to: " + destDir + "/" + subPath); 
+        execute([command.cp, cygwinnify(files[i]), cygwinnify(destDir + "/" + subPath)]);
     }
 }
 
+function buildJambi() {
+    verbose("Building Qt Jambi package");
+    var jambiRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtjambi";
+    var classPath = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtproject/src" 
+                    + dirSeparator + eclipsePackages;
+    var classFileOutput = packageDir + "/tempClassFiles";
+    
+    var dir = new Dir(classFileOutput);
+    dir.mkdirs(classFileOutput);
+    
+    compileJavaFiles(jambiRootDir + "/src", classPath, "com/trolltech/qtjambi", classFileOutput);
+    
+    // Find files to put in package
+    var qtjambiPackageDest = packageDir + "/tempQtJambiPackage";
+    var qtjambiPackageDir = new Dir(qtjambiPackageDest);
+    qtjambiPackageDir.mkdirs(qtjambiPackageDest);
+    
+    dir.setCurrent();   
+    var filesInPackage = find_files(classFileOutput, ["class"]);  // .class files
+    copyFiles(filesInPackage, classFileOutput, qtjambiPackageDest);
+    
+    // Icons
+    var iconsDir = jambiRootDir + "/icons";
+    filesInPackage = find_files(iconsDir, ["gif"]);
+    copyFiles(filesInPackage, jambiRootDir, qtjambiPackageDest);    
+    
+    // Resources
+    var resourcesDir = jambiRootDir + "/resources";
+    filesInPackage = find_files(resourcesDir, ["png", "ui", "txt", "java_template"]);
+    copyFiles(filesInPackage, resourcesDir, qtjambiPackageDest);
+    
+    copyFiles([jambiRootDir + "/plugin.xml"], jambiRootDir, qtjambiPackageDest);            
+    qtjambiPackageDir.setCurrent();
+            
+    makeJarFile(jarFilesDest + "/com.trolltech.qtjambi_" + version + ".jar",
+                jambiRootDir + "/META-INF/MANIFEST.MF",
+                ["plugin.xml", "com", "icons"]);                
+}
 
-// RUN!
-build(buildActions);
+function buildDesignerCommon() {
+    verbose("Building common designer package");
+    
+    var designerRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner";
+        
+    var designerPackageDest = packageDir + "/tempQtDesignerPackage";
+    var designerPackageDir = new Dir(designerPackageDest);
+    designerPackageDir.mkdirs(designerPackageDest);
+    designerPackageDir.setCurrent();
+    
+    // Icons
+    var iconsDir = designerRootDir + "/icons";
+    var files = find_files(iconsDir, ["gif"]);  
+    copyFiles(files, designerRootDir, designerPackageDest);
+    
+    // Action icons
+    var sourceDir = designerRootDir + "/src";
+    files = find_files(sourceDir, ["png"]);
+    copyFiles(files, sourceDir, designerPackageDest);    
+    copyFiles([designerRootDir + "/plugin.xml"], designerRootDir, designerPackageDest);
+    
+    makeJarFile(jarFilesDest + "/com.trolltech.qtdesigner_" + version + ".jar", 
+                designerRootDir + "/META-INF/MANIFEST.MF",
+                ["plugin.xml", "com", "icons"]);
+}
+
+function generateDesignerCode() {
+    verbose("-- generating code for designer package");
+    
+    var generatorPath = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer";    
+    var dir = new Dir(generatorPath);
+    dir.setCurrent();        
+    
+    execute([command.qmake, "-config", "release"]);
+    execute([command.make]);
+    execute([execPrefix + "designer"]);
+    
+    var generatedPath = generatorPath + "/qtdesigner";
+    dir = new Dir(generatedPath);
+    dir.setCurrent();
+    
+    execute([command.qmake, "DESTDIR = .", "-config", "release"]);
+    execute([command.make]);            
+}
+
+function compileDesignerJavaCode(destDir) {
+    var sourcePath = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner/src";
+    compileJavaFiles(sourcePath, eclipsePackages, "com/trolltech/qtdesigner", destDir + "/bin");
+}
+
+function buildDesignerPlatform() {
+    verbose("Building Windows designer package");
+    var qswtDir = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer/qtdesigner";    
+    var designerPackageDest = packageDir + "/tempQtDesignerWindowsPackage";
+    var dir = new Dir(designerPackageDest + "/bin");
+    dir.mkdirs(designerPackageDest + "/bin");
+    
+    dir = new Dir(designerPackageDest);    
+    dir.mkdirs(designerPackageDest);
+
+    var files = ["bin"];
+    if (os_name() != OS_NAME_WINDOWS) { // linux        
+        var dlls = ["libQtCore.so", "libQtDesigner.so", "libQtDesignerComponents.so", 
+                    "libQtAssistantClient.so", "libQtGui.so", "libQtXml.so"]; 
+	var suffixes = ["", ".4", ".4.3", ".4.3.0"];
+	for (var i=0; i<dlls.length; ++i) {
+		for (var j=0; j<suffixes.length; ++j) {
+			copyFiles([option.qtdir + "/lib/" + dlls[i] + suffixes[j]], option.qtdir + "/lib", designerPackageDest);
+			files.push(dlls[i] + suffixes[j]);
+		}
+        }
+
+    }
+    
+
+    generateDesignerCode();            
+    compileDesignerJavaCode(designerPackageDest);
+    
+    var jarFileName = os_name() == OS_NAME_WINDOWS 
+                        ? "com.trolltech.qtdesigner.win32.x86_" + version + ".jar"
+                        : "com.trolltech.qtdesigner.linux.x86_" + version + ".jar";
+    var designerRootDir = os_name() == OS_NAME_WINDOWS 
+                          ? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32.x86"
+                          : packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86";
+    dir.setCurrent();                          
+    
+    makeJarFile(jarFilesDest + "/" + jarFileName, 
+                designerRootDir + "/META-INF/MANIFEST.MF",
+                files);
+            
+    
+}
+
+function buildDesigner() {
+    buildDesignerCommon();
+    buildDesignerPlatform();
+}
+
+function makePlatformSpecificPackageLinux(destDir) {
+   verbose("-- gztar'ing package");
+   dir = new Dir(destDir);
+   dir.setCurrent();
+   execute([command.tar, "cfz", "qtjambi-eclipse-integration-linux-" + depotVersion + ".tar.gz", "plugins"]);
+
+}
+
+function makePlatformSpecificPackageWindows(destDir) {
+    var qswtDir = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer/qtdesigner";    
+    var jambiScriptDir = packageDir + "/qtjambi/" + depotVersion + "/scripts";
+    
+    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32.x86_" + version;
+    var dir = new Dir(dllDest);
+    dir.mkdirs(dllDest);
+    
+    copyFiles([qswtDir + "/" + execPrefix + "qtdesigner.dll"], qswtDir + "/" + execPrefix, dllDest);
+    copyFiles([jambiScriptDir + "/register_eclipse_integration.bat"], jambiScriptDir, destDir);
+    
+    var qtLibraries = ["QtCore4.dll", "QtDesigner4.dll", "QtDesignerComponents4.dll", 
+                       "QtAssistantClient4.dll", "QtGui4.dll", "QtXml4.dll"];
+    for (var i=0; i<qtLibraries.length; ++i) {
+        copyFiles([option.qtdir + "/bin/" + qtLibraries[i]], option.qtdir + "/bin", dllDest);
+    }
+    
+    verbose("-- zipping package");
+    dir = new Dir(destDir);
+    dir.setCurrent();
+    execute([command.zip, "-r", "qtjambi-eclipse-integration-win32-" + depotVersion + ".zip", "*"]);
+}
+
+function buildPackage() {
+    verbose("Building .zip file");
+    var packageDest = packageDir + "/output";
+    var pluginsDir = packageDest + "/plugins";
+    var dir = new Dir(pluginsDir);
+    if (dir.fileExists("."))
+       print("WARNING: output dir already exists. delete the entire " + packageDir + " folder before running this script for best results");
+    dir.mkdirs(pluginsDir);
+    
+    
+    var files = find_files(jarFilesDest, ["jar"]);
+    copyFiles(files, jarFilesDest, pluginsDir);            
+        
+    eval("makePlatformSpecificPackage" + os_name() + "(packageDest);");            
+        
+    
+}
+
+function build() {
+    prepareSourceTree();
+            
+    buildDesigner();
+    buildJambi();
+    buildPackage();
+}
+
+if (array_contains(args, "-help") || array_contains(args, "-h")) {
+    displayHelp();
+} else {
+    build();
+}

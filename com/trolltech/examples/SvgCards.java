@@ -17,6 +17,8 @@ import com.trolltech.qt.gui.*;
 import com.trolltech.qt.svg.*;
 import java.util.*;
 
+@QtJambiExample(name = "SVG Card Deck",
+                canInstantiate = "call-static-method:notWebstart")
 public class SvgCards extends QGraphicsView {
     private static String[] CARDS = {
         "black_joker",
@@ -106,7 +108,7 @@ public class SvgCards extends QGraphicsView {
             manager.stoppedMove(this);
         }
 
-        public void paint(QPainter painter, QStyleOptionGraphicsItem option, 
+        public void paint(QPainter painter, QStyleOptionGraphicsItem option,
                           QWidget widget) {
             painter.setOpacity(opacity);
             super.paint(painter, option, widget);
@@ -127,7 +129,7 @@ public class SvgCards extends QGraphicsView {
         }
 
         @Override
-        public void paint(QPainter painter, QStyleOptionGraphicsItem option, 
+        public void paint(QPainter painter, QStyleOptionGraphicsItem option,
                           QWidget widget) {
 
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
@@ -137,7 +139,7 @@ public class SvgCards extends QGraphicsView {
             gradient.setColorAt(0, new QColor(0, 0, 0, 127));
             gradient.setColorAt(1, new QColor(255, 255, 255, 127));
             painter.setBrush(new QBrush(gradient));
-            painter.drawRoundRect(rectangle, (int) (25 * rectangle.height() 
+            painter.drawRoundRect(rectangle, (int) (25 * rectangle.height()
                                                     / rectangle.width()), 25);
             painter.save();
 
@@ -150,7 +152,7 @@ public class SvgCards extends QGraphicsView {
 
             painter.restore();
 
-            painter.drawText(new QPointF(rectangle.x() + 20, rectangle.y() + 40), 
+            painter.drawText(new QPointF(rectangle.x() + 20, rectangle.y() + 40),
                              status);
         }
 
@@ -227,14 +229,14 @@ public class SvgCards extends QGraphicsView {
             addCard(random.nextInt(50));
             --cardsToLoad;
             if (cardsToLoad != 0) {
-                double percent = (totalCards - cardsToLoad) 
+                double percent = (totalCards - cardsToLoad)
                                  / (double) totalCards * 100.0;
                 manager.setOperation("Loading Cards : " + (int) percent + "% ");
             } else {
                 manager.setOperation("Click on a Card");
 	    }
             viewport().update();
-            QApplication.invokeLater(new Runnable() { 
+            QApplication.invokeLater(new Runnable() {
                     public void run() { loadCards(); } });
         }
     }
@@ -243,13 +245,13 @@ public class SvgCards extends QGraphicsView {
         scene = new QGraphicsScene(this);
         setScene(scene);
 
-        deck = new CardDeck("classpath:com/trolltech/images/svg-cards.svg", 
+        deck = new CardDeck("classpath:com/trolltech/images/svg-cards.svg",
                             this);
         manager = new CardManager();
         random = new Random();
 
         CardBox box = new CardBox();
-        box.setPos(sceneRect().width() - box.boundingRect().width() - 10, 
+        box.setPos(sceneRect().width() - box.boundingRect().width() - 10,
                    sceneRect().height()- box.boundingRect().height() - 10);
         box.setZValue(99);
         scene.addItem(box);
@@ -267,7 +269,7 @@ public class SvgCards extends QGraphicsView {
 
         QPixmapCache.setCacheLimit(5 * 1024);
 
-        QApplication.invokeLater(new Runnable() { 
+        QApplication.invokeLater(new Runnable() {
                     public void run() { loadCards(); } });
     }
 
@@ -304,15 +306,7 @@ public class SvgCards extends QGraphicsView {
         QApplication.exec();
     }
 
-    // REMOVE-START
-
-    public static String exampleName() {
-        return "SVG Cards Example";
-    }
-
-    public static boolean canInstantiate() {
+    public static boolean notWebstart() {
         return System.getProperty("com.trolltech.launcher.webstart") == null;
     }
-
-    // REMOVE-END
 }

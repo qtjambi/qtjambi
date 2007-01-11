@@ -29,11 +29,12 @@ class SignalsAndSlotsSubclass extends SignalsAndSlots
     public int java_slot3_2_called = 0;
     public int java_slot4_called = 0;
     public int java_non_slot_called = 0;
+    public int java_slot5_called = 0;
 
-    public Signal0 signal4;
+    public Signal0 signal4 = new Signal0();
     
     public class NonQObjectSubclass {
-        Signal0 s = new Signal0();
+        public Signal1<String> s = new Signal1<String>();
     }
     
     public NonQObjectSubclass getSubclassObject() {
@@ -54,12 +55,28 @@ class SignalsAndSlotsSubclass extends SignalsAndSlots
     {
         java_slot3_2_called += Integer.parseInt(k);
     }
+    
+    public void unnormalized_signature(String s, int i) 
+    {
+        java_slot5_called = i * 3;
+    }
 
     @QtBlockedSlot()
     public void non_slot() {
         java_non_slot_called ++;
     }
 
+}
+
+class NonQObject {
+    @SuppressWarnings("unused")
+    private void foobar(String foo, int bar) {
+        receivedBar = bar;
+        receivedFoo = foo;
+    }
+    
+    public String receivedFoo;
+    public int receivedBar;
 }
 
 public class TestConnections extends QApplicationTest implements Qt
@@ -69,11 +86,59 @@ public class TestConnections extends QApplicationTest implements Qt
     }
     
     @Test public void run_signalInNonQObject() {
-        SignalsAndSlotsSubclass b = new SignalsAndSlotsSubclass();        
-        SignalsAndSlotsSubclass.NonQObjectSubclass sc = b.getSubclassObject();
-        sc.s.connect(b, "slot1_1()");
-        sc.s.emit();
-        assertEquals(1, b.slot1_1_called());
+        SignalsAndSlotsSubclass b = new SignalsAndSlotsSubclass();
+        
+        Exception e = null;
+        try {
+            SignalsAndSlotsSubclass.NonQObjectSubclass sc = b.getSubclassObject();  
+            sc.s.connect(this, "reciveSignal(String)");
+        } catch (RuntimeException f) {
+            e = f;
+        }
+        
+        assertTrue(e != null);
+        assertEquals(e.getMessage(), "Signals must be declared as members of QSignalEmitter subclasses");
+    }
+    
+    public void reciveSignal(String s){
+
+    }
+    
+    class SignalEmitter extends QSignalEmitter {
+        public Signal2<String, Integer> mySignal = new Signal2<String, Integer>(); 
+    }
+    
+    @Test public void run_connectFromNonQObjects() {
+        NonQObject nonQObject = new NonQObject();
+        SignalEmitter signalEmitter = new SignalEmitter();
+        
+        signalEmitter.mySignal.connect(nonQObject, "foobar(String, int)");
+        
+        signalEmitter.mySignal.emit("one-two-three", 123);
+        
+        assertEquals("one-two-three", nonQObject.receivedFoo);
+        assertEquals(123, nonQObject.receivedBar);
+    }
+    
+    @Test public void run_connectToNonQObjects() {
+        SignalsAndSlotsSubclass sas = new SignalsAndSlotsSubclass();
+        NonQObject o = new NonQObject();
+        
+        sas.signal6.connect(o, "foobar(String, int)");
+        sas.signal6.emit("I have this many friends:", 100);
+        
+        assertEquals(o.receivedFoo, "I have this many friends:");
+        assertEquals(o.receivedBar, 100);
+    }
+    
+    @Test public void run_shouldConnectToUnnormalizedSignatures() {
+        SignalsAndSlotsSubclass sas = new SignalsAndSlotsSubclass();
+        sas.connectSignal6ToUnnormalizedSignature();                
+        sas.signal6.connect(sas, "slot1_1()");
+        sas.signal6.emit("abc", 11);
+        
+        assertEquals(33, sas.java_slot5_called);
+        assertEquals(1, sas.slot1_1_called());
     }
 
     @Test public void run_shouldNotConnectToBlockedSlots()
@@ -486,11 +551,11 @@ public class TestConnections extends QApplicationTest implements Qt
             assertEquals(obj3.slot2_called(), 0);
             assertEquals(obj3.slot3_called(), 0);
 
-            assertTrue(obj1.signal1.connect(obj1, "slot1_1()"));
-            assertTrue(obj1.signal1.connect(obj1, "slot1_2()"));
-            assertTrue(obj1.signal1.connect(obj1, "slot1_3()"));
-            assertTrue(obj1.signal2.connect(obj1, "slot2(int)"));
-            assertTrue(obj1.signal3.connect(obj1, "slot3(String)"));
+            obj1.signal1.connect(obj1, "slot1_1()");
+            obj1.signal1.connect(obj1, "slot1_2()");
+            obj1.signal1.connect(obj1, "slot1_3()");
+            obj1.signal2.connect(obj1, "slot2(int)");
+            obj1.signal3.connect(obj1, "slot3(String)");
             assertEquals(obj1.slot1_1_called(), 0);
             assertEquals(obj1.slot1_2_called(), 0);
             assertEquals(obj1.slot1_3_called(), 0);
@@ -528,8 +593,8 @@ public class TestConnections extends QApplicationTest implements Qt
             assertEquals(obj3.slot1_2_called(), 2);
             assertEquals(obj3.slot1_3_called(), 0);
 
-            assertTrue(obj1.signal1.connect(obj2, "slot1_1()"));
-            assertTrue(obj1.signal1.connect(obj1, "slot1_2()"));
+            obj1.signal1.connect(obj2, "slot1_1()");
+            obj1.signal1.connect(obj1, "slot1_2()");
 
             Accessor.emit_signal(obj1.signal1);
             assertEquals(obj1.slot1_1_called(), 3);
@@ -553,7 +618,7 @@ public class TestConnections extends QApplicationTest implements Qt
             SignalsAndSlots obj1 = new SignalsAndSlots();
             obj1.setupSignals(obj1, 2);
 
-            assertTrue(obj1.signal3.connect(obj1, "slot3(String)"));
+            obj1.signal3.connect(obj1, "slot3(String)");
 
             obj1.signal2.emit(15);
             assertEquals(obj1.slot1_1_called(), 0);
@@ -583,7 +648,7 @@ public class TestConnections extends QApplicationTest implements Qt
             SignalsAndSlotsSubclass obj1 = new SignalsAndSlotsSubclass();
 
 
-            assertTrue(obj1.signal2.connect(obj1, "slot2(int)"));
+            obj1.signal2.connect(obj1, "slot2(int)");
 
             obj1.setupSignals(obj1, 2);
 
@@ -595,15 +660,15 @@ public class TestConnections extends QApplicationTest implements Qt
             assertEquals(obj1.java_slot2_called, 68);
             assertEquals(obj1.slot2_called(), 12);
 
-            assertTrue(obj1.signal3.connect(obj1, "slot3_2(String)"));
-            assertTrue(obj1.signal3.connect(obj1, "slot3_2(String)"));
+            obj1.signal3.connect(obj1, "slot3_2(String)");
+            obj1.signal3.connect(obj1, "slot3_2(String)");
 
             obj1.emit_signal_3("17");
             assertEquals(obj1.java_slot3_2_called, 34);
             assertEquals(obj1.slot3_called(), 17);
 
-            assertTrue(obj1.signal4.connect(obj1, "slot4()"));
-            assertTrue(obj1.signal1.connect(obj1.signal4));
+            obj1.signal4.connect(obj1, "slot4()");
+            obj1.signal1.connect(obj1.signal4);
 
             obj1.emit_signal_1();
             assertEquals(obj1.slot1_1_called(), 1);
@@ -613,7 +678,7 @@ public class TestConnections extends QApplicationTest implements Qt
 
             assertTrue(obj1.signal1.disconnect(obj1.signal4));
 
-            assertTrue(obj1.signal4.connect(obj1.signal1));
+            obj1.signal4.connect(obj1.signal1);
             obj1.emit_signal_4();
             assertEquals(obj1.java_slot4_called, 2);
             assertEquals(obj1.slot1_1_called(), 2);
@@ -685,10 +750,10 @@ public class TestConnections extends QApplicationTest implements Qt
         assertTrue(widget.isEnabled());
 
         MyQObject obj = new MyQObject();
-        assertTrue(obj.signalMyQObject.connect(widget, "show()"));
-        assertTrue(obj.signalNoParams.connect(widget, "hide()"));
-        assertTrue(obj.signalBoolean.connect(widget, "setEnabled(boolean)"));
-        assertTrue(obj.signalInteger.connect(widget, "close()"));
+        obj.signalMyQObject.connect(widget, "show()");
+        obj.signalNoParams.connect(widget, "hide()");
+        obj.signalBoolean.connect(widget, "setEnabled(boolean)");
+        obj.signalInteger.connect(widget, "close()");
         obj.javaSignalMyQObject(obj);
         assertTrue(widget.isVisible());
 
@@ -758,18 +823,18 @@ public class TestConnections extends QApplicationTest implements Qt
         assertEquals(sz2.width(), sz.width());
         assertEquals(sz2.height(), sz.height());
 
-        assertTrue(obj.signalInteger.connect(b1, "setFocus()"));
-        assertTrue(obj.signalNoParams.connect(b2, "setFocus()"));
-        assertTrue(obj.signalDouble.connect(b1, "hide()"));
-        assertTrue(obj.signalDouble.connect(b2, "hide()"));
-        assertTrue(obj.signalDoubleInteger.connect(widget, "close()"));
-        assertTrue(obj.signalLong.connect(b1, "show()"));
-        assertTrue(obj.signalLong.connect(b2, "show()"));
-        assertTrue(obj.signalMixed1.connect(widget, "hide()"));
-        assertTrue(obj.signalString.connect(le, "setText(String)"));
-        assertTrue(le.textChanged.connect(obj, "javaSlotString(String)"));
-        assertTrue(QApplication.instance().focusChanged.connect(obj, "javaSlotFocusChanged(QWidget, QWidget)"));
-        assertTrue(obj.signalQSize.connect(b2, "setIconSize(QSize)"));
+        obj.signalInteger.connect(b1, "setFocus()");
+        obj.signalNoParams.connect(b2, "setFocus()");
+        obj.signalDouble.connect(b1, "hide()");
+        obj.signalDouble.connect(b2, "hide()");
+        obj.signalDoubleInteger.connect(widget, "close()");
+        obj.signalLong.connect(b1, "show()");
+        obj.signalLong.connect(b2, "show()");
+        obj.signalMixed1.connect(widget, "hide()");
+        obj.signalString.connect(le, "setText(String)");
+        le.textChanged.connect(obj, "javaSlotString(String)");
+        QApplication.instance().focusChanged.connect(obj, "javaSlotFocusChanged(QWidget, QWidget)");
+        obj.signalQSize.connect(b2, "setIconSize(QSize)");
 
         obj.javaSignalint(123);
 
@@ -807,20 +872,20 @@ public class TestConnections extends QApplicationTest implements Qt
 
 
         assertTrue(obj.signalString.disconnect(le, "setText(String)"));
-        assertTrue(obj.signalString.connect(le, "selectAll()"));
+        obj.signalString.connect(le, "selectAll()");
 
         obj.javaSignalString("ABC");
         assertEquals(le.text(), "Line edit text");
         assertEquals(obj.slotResult, "Line edit text");
 
         assertTrue(obj.signalString.disconnect(le, "selectAll()"));
-        assertTrue(obj.signalString.connect(le, "cut()"));
+        obj.signalString.connect(le, "cut()");
 
         obj.javaSignalString("DEF");
         assertEquals(le.text(), "");
         assertEquals(obj.slotResult, "");
 
-        assertTrue(obj.signalString.connect(le, "paste()"));
+        obj.signalString.connect(le, "paste()");
         obj.javaSignalString("GHI");
         assertEquals(le.text(), "Line edit text");
         assertEquals(obj.slotResult, "Line edit text");
@@ -843,8 +908,8 @@ public class TestConnections extends QApplicationTest implements Qt
             obj = new MyQObject();
             MyQObject obj2 = new MyQObject();
 
-            assertTrue(obj.signalBoolean.connect(obj2.signalBoolean));
-            assertTrue(obj2.signalBoolean.connect(obj, "javaSlotboolean(boolean)"));
+            obj.signalBoolean.connect(obj2.signalBoolean);
+            obj2.signalBoolean.connect(obj, "javaSlotboolean(boolean)");
 
             obj.javaSignalboolean(false);
             assertTrue(obj.slotResult instanceof Boolean);
@@ -882,7 +947,7 @@ public class TestConnections extends QApplicationTest implements Qt
              Class[] parameterTypes)
      {
 
-        assertTrue(((QObject.AbstractSignal)signal).connect(receiver, slot));
+        ((QSignalEmitter.AbstractSignal)signal).connect(receiver, slot);
         if (parameters == null)
             parameters = new Object[0];
 
@@ -1135,8 +1200,7 @@ public class TestConnections extends QApplicationTest implements Qt
          Class<?> ce = null;
          String msg = null;
          try {
-             boolean b = ((QObject.AbstractSignal)signal).connect(receiver, slotSignature);
-             assertEquals(b, false);
+             ((QSignalEmitter.AbstractSignal)signal).connect(receiver, slotSignature);             
          } catch (Exception e) {
              ce = e.getClass();
              msg = e.getMessage();
@@ -1177,13 +1241,13 @@ public class TestConnections extends QApplicationTest implements Qt
                  NullPointerException.class, null);
 
          test_borkedConnections("Too many slot params", sender, sender.signalBoolean,
-                 receiver, "javaSlotMixed1(String, double, int, Integer)", null, null);
+                 receiver, "javaSlotMixed1(String, double, int, Integer)", RuntimeException.class, "Signature of signal");
 
          test_borkedConnections("Wrong parameter types, narrowing", sender, sender.signalDouble,
-                 receiver, "javaSlotInteger(Integer)", null, null);
+                 receiver, "javaSlotInteger(Integer)", RuntimeException.class, "Signature of signal");
 
          test_borkedConnections("Wrong parameter types, widening", sender, sender.signalInteger,
-                 receiver, "javaSlotDouble(Double)", null, null);
+                 receiver, "javaSlotDouble(Double)", RuntimeException.class, "Signature of signal");
      }
 
 
@@ -1191,21 +1255,21 @@ public class TestConnections extends QApplicationTest implements Qt
     	  MyQObject sender = new MyQObject();
     	  MyQObject receiver = new MyQObject();
 
-    	  assertTrue(sender.signalBoolean.connect(receiver, "javaSlotboolean(boolean)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalBoolean.connect(receiver, "javaSlotBoolean(java.lang.Boolean)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalCharacter.connect(receiver, "javaSlotchar(char)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalCharacter.connect(receiver, "javaSlotCharacter(java.lang.Character)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalShort.connect(receiver, "javaSlotshort(short)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalShort.connect(receiver, "javaSlotShort(java.lang.Short)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalInteger.connect(receiver, "javaSlotint(int)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalInteger.connect(receiver, "javaSlotInteger(java.lang.Integer)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalLong.connect(receiver, "javaSlotlong(long)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalLong.connect(receiver, "javaSlotLong(java.lang.Long)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalFloat.connect(receiver, "javaSlotfloat(float)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalFloat.connect(receiver, "javaSlotFloat(java.lang.Float)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalDouble.connect(receiver, "javaSlotdouble(double)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalDouble.connect(receiver, "javaSlotDouble(java.lang.Double)", Qt.ConnectionType.QueuedConnection));
-    	  assertTrue(sender.signalString.connect(receiver, "javaSlotString(java.lang.String)", Qt.ConnectionType.QueuedConnection));
+    	  sender.signalBoolean.connect(receiver, "javaSlotboolean(boolean)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalBoolean.connect(receiver, "javaSlotBoolean(java.lang.Boolean)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalCharacter.connect(receiver, "javaSlotchar(char)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalCharacter.connect(receiver, "javaSlotCharacter(java.lang.Character)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalShort.connect(receiver, "javaSlotshort(short)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalShort.connect(receiver, "javaSlotShort(java.lang.Short)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalInteger.connect(receiver, "javaSlotint(int)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalInteger.connect(receiver, "javaSlotInteger(java.lang.Integer)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalLong.connect(receiver, "javaSlotlong(long)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalLong.connect(receiver, "javaSlotLong(java.lang.Long)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalFloat.connect(receiver, "javaSlotfloat(float)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalFloat.connect(receiver, "javaSlotFloat(java.lang.Float)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalDouble.connect(receiver, "javaSlotdouble(double)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalDouble.connect(receiver, "javaSlotDouble(java.lang.Double)", Qt.ConnectionType.QueuedConnection);
+    	  sender.signalString.connect(receiver, "javaSlotString(java.lang.String)", Qt.ConnectionType.QueuedConnection);
 
     	  // Boolean
     	  receiver.slotResult = null;
@@ -1271,5 +1335,10 @@ public class TestConnections extends QApplicationTest implements Qt
     	  sender.javaSignalString("once upon a time...");
     	  QCoreApplication.processEvents();
     	  assertEquals(receiver.slotResult, "once upon a time...");
+      }
+
+      public static void main(String args[]) {
+           QCoreApplication.initialize(args);
+           new TestConnections().run_javaDisconnectReceiverShouldDisconnectCpp();          
       }
 }

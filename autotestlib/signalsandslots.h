@@ -100,6 +100,11 @@ public:
         connect(this, SIGNAL(signal2(int)), this, SLOT(slot2(int)));
     }
 
+    void connectSignal6ToUnnormalizedSignature()
+    {
+        connect(this, SIGNAL(  signal6( const QString &, int   ) ), this, SLOT(          unnormalized_signature(   String,   int   )));
+    }
+
     void disconnectAllFromObject()
     {
         disconnect();
@@ -137,13 +142,14 @@ signals:
     void signal1();
     void signal2(int);
     void signal3(const QString &);
+    void signal6(const QString &, int);
 
 public slots:
     void slot1_1() { slot1_1_called++; }
     virtual void slot1_2() { slot1_2_called++; }
     void slot1_3() { slot1_3_called++; }
     virtual void slot2(int i) { slot2_called += i; }
-    void slot3(const QString &str) { slot3_called += str.toInt(); }
+    void slot3(const QString &str) { slot3_called += str.toInt(); }    
 };
 
 #endif // SIGNALSANDSLOTS_H

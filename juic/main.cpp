@@ -16,7 +16,6 @@
 #include "uic.h"
 #include "option.h"
 #include "driver.h"
-#include "javanametable.h"
 
 #include <QDateTime>
 #include <QDir>
@@ -128,14 +127,6 @@ int main(int argc, char *argv[])
             }
             options.out_dir = QString::fromLocal8Bit(argv[arg]);
 
-        } else if (opt == QLatin1String("-x")) {
-            ++arg;
-            if (!argv[arg]) {
-                showHelp(argv[0]);
-                return 1;
-            }
-            JavaNameTable::instance()->loadXmlFile(QString::fromLocal8Bit(argv[arg]));
-
         } else if (opt == QLatin1String("-cp")) {
             options.process_directory = true;
 
@@ -155,6 +146,12 @@ int main(int argc, char *argv[])
 
     options.file_name = QDir::cleanPath(options.file_name);
 
+    // Force update single files
+    {
+        QFileInfo info(options.file_name);
+        options.process_all |= (info.exists() && info.isFile());
+    }
+
     if (options.process_directory) {
         int error_code;
 
@@ -165,7 +162,7 @@ int main(int argc, char *argv[])
         }
 
         if (num_processed_files == 0) {
-            fprintf(stdout, "juic: no .ui files found in CLASSPATH\n");
+            fprintf(stdout, "juic: no .jui files found in CLASSPATH\n");
         } else if (num_updated_files == 0) {
             fprintf(stdout, "juic: all files up to date\n");
         } else {
@@ -199,6 +196,8 @@ QStringList resolveFileInfoList(char *, const QStringList &list)
 
 bool ensurePath(const QString &path)
 {
+    if (path.isEmpty())
+        return true;
     if (!QFileInfo(path).exists()) {
         QDir dir;
         if (!dir.mkpath(path)) {
@@ -247,7 +246,7 @@ void showHelp(const char *appName)
             "  -x <xml file>            load custom configuration file\n"
             "  -p <package>             package of generated class file, relative to output dir\n"
             "  -tr <func>               use func() for i18n\n"
-            "  -cp <optional path>      updates all .ui files based on the input path. $CLASSPATH\n"
+            "  -cp <optional path>      updates all .jui files based on the input path. $CLASSPATH\n"
             "                           is used if no argument is specified.\n"
             "  -pf<optional prefix>     set the prefix of the names of generated classes. The\n"
             "                           default is 'Ui_'. Omit the optional argument for no\n"
@@ -302,7 +301,13 @@ JuicError runJuic(const QFileInfo &uiFile, const Options &options)
 
     ++num_processed_files;
 
-    QString outFileName = options.out_dir + "/" + QString(options.package).replace(".", "/") + "/" + javaFileName;
+    QString outFileName;
+    if (!options.out_dir.isEmpty())
+        outFileName += options.out_dir + "/";
+    if (!options.package.isEmpty())
+        outFileName += QString(options.package).replace(".", "/") + "/";
+    outFileName += javaFileName;
+
     QFileInfo outFileInfo(outFileName);
 
     // File already generated
@@ -319,7 +324,7 @@ JuicError runJuic(const QFileInfo &uiFile, const Options &options)
     }
 
     // Remove the existing file. This is needed for Windows so the case of the letters in
-    // the file name are the same as in the class name just in case it has changed   
+    // the file name are the same as in the class name just in case it has changed
     if (outFileInfo.exists()) {
         QFile::remove(outFileInfo.filePath());
     }
@@ -419,7 +424,7 @@ bool shouldProcess(const QFileInfo &file, const Options &options)
 
 JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const Options &options)
 {
-    QFileInfoList uiFiles = dir.entryInfoList(QStringList() << "*.ui", QDir::Files);
+    QFileInfoList uiFiles = dir.entryInfoList(QStringList() << "*.jui", QDir::Files);
 
     JuicError error = NoError;
     for (int i=0; i<uiFiles.size(); ++i) {

@@ -27,11 +27,8 @@ public class TestSignalMapper extends QApplicationTest{
      */
     private static class Receiver extends QObject {
         public int lastInteger;
-
         public String lastString;
-
         public QObject lastQObject;
-
         public QWidget lastQWidget;
 
         public void slotInteger(int i) {
@@ -79,6 +76,28 @@ public class TestSignalMapper extends QApplicationTest{
             emitters[i].emitSignal();
             assertEquals(receiver.lastInteger, i);
         }
+        
+        Thread thread = new Thread("Reciver Thread"){
+            public void run() {
+                new QEventLoop().exec();
+            }
+        };
+         
+        receiver.moveToThread(thread);
+        thread.start();
+        
+        
+        for (int i = 0; i < 10; ++i) {
+            emitters[i].emitSignal();
+            
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+    
+            assertEquals(receiver.lastInteger, i);
+        }  
     }
 
     @Test

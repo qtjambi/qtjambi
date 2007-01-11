@@ -20,6 +20,7 @@ import com.trolltech.qt.core.Qt.ItemFlags;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.xml.*;
 
+@QtJambiExample(name = "Dom Bookmarks")
 public class DomBookmarks extends QMainWindow {
 
     public static void main(String args[]) {
@@ -57,7 +58,7 @@ public class DomBookmarks extends QMainWindow {
     @SuppressWarnings("unused")
     private void open() {
         String fileName = QFileDialog.getOpenFileName(this, tr("Open Bookmark File"), QDir
-                .currentPath(), tr("XBEL Files (*.xbel *.xml)"));
+                .currentPath(), new QFileDialog.Filter(tr("XBEL Files (*.xbel *.xml)")));
         if (fileName.equals(""))
             return;
 
@@ -75,7 +76,7 @@ public class DomBookmarks extends QMainWindow {
     @SuppressWarnings("unused")
     private void saveAs() {
         String fileName = QFileDialog.getSaveFileName(this, tr("Save Bookmark File"), QDir
-                .currentPath(), tr("XBEL Files (*.xbel *.xml)"));
+                .currentPath(), new QFileDialog.Filter(tr("XBEL Files (*.xbel *.xml)")));
         if (fileName.equals(""))
             return;
 
@@ -155,13 +156,13 @@ public class DomBookmarks extends QMainWindow {
 
         private boolean read(QIODevice device) {
             QDomDocument.Result res = domDocument.setContent(device, true);
-            if(res.failure()){
+            if(!res.success){
                 QMessageBox.information(window(), tr("DOM Bookmarks"), tr("Parse error at line "
-                        + res.errorLine() + ", column " + res.errorColumn() + ":\n"
-                        + res.errorMessage() + ""));
+                        + res.errorLine + ", column " + res.errorColumn + ":\n"
+                        + res.errorMessage + ""));
                 return false;
             }
-           
+
             QDomElement root = domDocument.documentElement();
 
             if (!root.tagName().equals("xbel")) {
@@ -270,15 +271,4 @@ public class DomBookmarks extends QMainWindow {
             return item;
         }
     }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Dom Bookmarks";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

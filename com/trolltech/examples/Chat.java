@@ -15,21 +15,21 @@ package com.trolltech.examples;
 
 import java.util.*;
 
-import com.trolltech.qt.QNativePointer;
-import com.trolltech.qt.QNativePointer.Type;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.MatchFlag;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
 
+@QtJambiExample(name = "Chat")
 public class Chat extends QDialog {
 
     public static void main(String[] args) {
 
-        QApplication.initialize(args);
+        QApplication.initialize(args);        
         Chat chat = new Chat();
         chat.show();
         QApplication.exec();
+        
     }
 
     private Ui_ChatDialog ui = new Ui_ChatDialog();
@@ -114,11 +114,15 @@ public class Chat extends QDialog {
         if (nick.equals(""))
             return;
 
-        List<QListWidgetItem> items = ui.listWidget.findItems(nick, MatchFlag.MatchExactly);
+        List<QListWidgetItem> items = ui.listWidget.findItems(nick, MatchFlag.MatchExactly);        
 
-        if (items.isEmpty())
-            return;
-
+        // temporary workaround, should be replaced by items.get(0).displose();
+        for (int i = 0; i < ui.listWidget.count(); i++) {
+            if (ui.listWidget.item(i).data(0).equals(items.get(0).data(0))) {
+                ui.listWidget.takeItem(i).dispose();
+            }
+        }
+        
         QColor color = ui.textEdit.textColor();
         ui.textEdit.setTextColor(QColor.gray);
         ui.textEdit.append(tr("* %1$s has left", nick));
@@ -253,10 +257,7 @@ class Connection extends QTcpSocket {
     static final int TransferTimeout = 30 * 1000;
     static final int PongTimeout = 60 * 1000;
     static final int PingInterval = 5 * 1000;
-    static final QNativePointer SeparatorToken = new QNativePointer(Type.Char);
-    static {
-        SeparatorToken.setCharValue(' ');
-    }
+    static final char SeparatorToken = ' ';
 
     private enum ConnectionState {
         WaitingForGreeting, ReadingGreeting, ReadyForUse
@@ -406,7 +407,7 @@ class Connection extends QTcpSocket {
 
         while (bytesAvailable() > 0 && buffer.size() < maxSize) {
             buffer.append(read(1));
-            if (buffer.endsWith(SeparatorToken))
+            if (buffer.endsWith("" + SeparatorToken))
                 break;
 
         }
@@ -415,7 +416,7 @@ class Connection extends QTcpSocket {
 
     private int dataLengthForCurrentDataType() {
         if (bytesAvailable() <= 0 || readDataIntoBuffer(MaxBufferSize) <= 0
-                || !buffer.endsWith(SeparatorToken))
+                || !buffer.endsWith("" + SeparatorToken))
             return 0;
 
         buffer.chop(1);
@@ -596,27 +597,25 @@ class PeerManager extends QObject {
     void readBroadcastDatagram() {
 
         while (broadcastSocket.hasPendingDatagrams()) {
-            QHostAddress senderIp = new QHostAddress();
-
-            QByteArray datagram = new QByteArray();
-            datagram.resize((int) broadcastSocket.pendingDatagramSize());
-            if (broadcastSocket.readDatagram(datagram.data(), datagram.size(), senderIp
-                    .nativePointer(), new QNativePointer(Type.Int)) == -1)
+            byte datagram[] = new byte[(int) broadcastSocket.pendingDatagramSize()];
+            QUdpSocket.HostInfo info = new QUdpSocket.HostInfo();
+            if (broadcastSocket.readDatagram(datagram, info) == -1)
                 continue;
 
-            List<QByteArray> list = datagram.split((byte) '@');
+            QByteArray baDatagram = new QByteArray(datagram);
+            List<QByteArray> list = baDatagram.split((byte) '@');
             if (list.size() != 2)
                 continue;
 
-            char senderServerPort = list.get(1).toUShort();
+            char senderServerPort = list.get(1).toChar();
 
-            if (isLocalHostAddress(senderIp) && senderServerPort == serverPort)
+            if (isLocalHostAddress(info.address) && senderServerPort == serverPort)
                 continue;
 
-            if (!client.hasConnection(senderIp, -1)) {
+            if (!client.hasConnection(info.address, -1)) {
                 Connection connection = new Connection(this);
                 newConnection.emit(connection);
-                connection.connectToHost(senderIp, senderServerPort);
+                connection.connectToHost(info.address, senderServerPort);
             }
         }
     }

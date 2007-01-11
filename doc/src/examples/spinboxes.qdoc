@@ -184,8 +184,6 @@
 
     \skipto main(
     \printuntil }
-    \skipto REMOVE-END
-    \skipto }
-    \printuntil /^\}/
-
+    \skipto /^\}/
+    \printline /^\}/
 */

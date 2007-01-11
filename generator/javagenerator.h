@@ -89,6 +89,7 @@ public:
 
     bool documentationEnabled() const { return m_docs_enabled; }
     void setDocumentationEnabled(bool e) { m_docs_enabled = e; }
+    void generate();
 
 private:
     QString subDirectoryForPackage(const QString &package) const { return QString(package).replace(".", "/"); }
@@ -98,6 +99,7 @@ protected:
     QString m_doc_directory;
     DocParser *m_doc_parser;
     bool m_docs_enabled;
+    QList<const MetaJavaFunction *> m_nativepointer_functions;
 };
 
 #endif // JAVAGENERATOR_H

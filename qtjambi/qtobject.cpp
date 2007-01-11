@@ -30,7 +30,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPolygon>
 
-#define QTQUALIFY(RETURNTYPE, METHOD) QTJAMBINAME(qt, QtObject, RETURNTYPE, METHOD)
+#define QTQUALIFY(RETURNTYPE, METHOD) QTJAMBINAME(qt, QtJambiObject, RETURNTYPE, METHOD)
 
 #include <QDebug>
 
@@ -38,8 +38,7 @@ QTQUALIFY(void, dispose)(JNIEnv *env, jobject java)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, java);
     if (link) {
-        link->setEnvironment(env);
-        link->javaObjectDisposed();
+        link->javaObjectDisposed(env);
     }
 }
 
@@ -67,17 +66,17 @@ QTQUALIFY(jobject,_1_1qt_1reassignLink)(JNIEnv *env, jclass, jlong old_native_id
     QtJambiLink *new_link = 0;
     if (link->isQObject()) {
         QObject *qobject = link->qobject();
-        link->resetObject();
+        link->resetObject(env);
         new_link = QtJambiLink::createLinkForQObject(env, new_object, qobject, !link->isGlobalReference());
     } else {
         void *ptr = link->pointer();
         bool wasCached = link->isCached();
-        QString java_name = qtjambi_class_name(env, clazz);        
-        link->resetObject();
+        QString java_name = qtjambi_class_name(env, clazz);
+        link->resetObject(env);
 
-        // Create new link. 
+        // Create new link.
         new_link = QtJambiLink::createLinkForObject(env, new_object, ptr, java_name, wasCached);
-        new_link->setMetaType(link->metaType());        
+        new_link->setMetaType(link->metaType());
     }
 
     delete link;
@@ -89,8 +88,7 @@ QTQUALIFY(void,finalize)(JNIEnv *env, jobject java)
     Q_ASSERT(env != 0);
 
     if (QtJambiLink *link = QtJambiLink::findLink(env, java)) {
-        link->setEnvironment(env);
-        link->javaObjectFinalized();
+        link->javaObjectFinalized(env);
     }
 }
 

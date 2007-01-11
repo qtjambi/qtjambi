@@ -18,11 +18,10 @@
 #include <reporthandler.h>
 
 #include <QtXml>
-#include <QHash>
-#include <QStack>
 
-struct StackElement
+class StackElement
 {
+    public:
     enum ElementType {
         None = 0x0,
 
@@ -51,6 +50,9 @@ struct StackElement
         Rejection                   = 0xa00,
         LoadTypesystem              = 0xb00,
         RejectEnumValue             = 0xc00,
+        Template                    = 0xd00,
+        TemplateInstanceEnum        = 0xe00,
+        Replace                     = 0xf00,
         SimpleMask                  = 0xf00,
 
         // Code snip tags (0x1000, 0x2000, ... , 0xf000)
@@ -69,15 +71,23 @@ struct StackElement
         ConversionRule           = 0x01000000,
         ReplaceType              = 0x02000000,
         ReplaceDefaultExpression = 0x04000000,
-        RemoveArgument           = 0x08000000,    
+        RemoveArgument           = 0x08000000,
         DisableGC                = 0x10000000,
-        ArgumentModifiers        = 0xff000000        
+        RemoveDefaultExpression  = 0x20000000,
+        ArgumentModifiers        = 0xff000000
     };
 
-    StackElement() : entry(0), type(None) { }
+    StackElement(StackElement *p) : entry(0), type(None), parent(p){ }
 
     TypeEntry *entry;
     ElementType type;
+    StackElement *parent;
+
+    union {
+        TemplateInstance *templateInstance;
+        TemplateEntry *templateEntry;
+        CustomFunction *customFunction;
+    } value;
 };
 
 class Handler : public QXmlDefaultHandler
@@ -87,6 +97,41 @@ public:
         : m_database(database), m_generate(generate ? TypeEntry::GenerateAll : TypeEntry::GenerateForSubclass)
     {
         m_current_enum = 0;
+        current = 0;
+
+        tagNames["rejection"] = StackElement::Rejection;
+        tagNames["primitive-type"] = StackElement::PrimitiveTypeEntry;
+        tagNames["object-type"] = StackElement::ObjectTypeEntry;
+        tagNames["value-type"] = StackElement::ValueTypeEntry;
+        tagNames["interface-type"] = StackElement::InterfaceTypeEntry;
+        tagNames["namespace-type"] = StackElement::NamespaceTypeEntry;
+        tagNames["enum-type"] = StackElement::EnumTypeEntry;
+        tagNames["extra-includes"] = StackElement::ExtraIncludes;
+        tagNames["include"] = StackElement::Include;
+        tagNames["inject-code"] = StackElement::InjectCode;
+        tagNames["modify-function"] = StackElement::ModifyFunction;
+        tagNames["modify-field"] = StackElement::ModifyField;
+        tagNames["access"] = StackElement::Access;
+        tagNames["remove"] = StackElement::Removal;
+        tagNames["rename"] = StackElement::Rename;
+        tagNames["typesystem"] = StackElement::Root;
+        tagNames["custom-constructor"] = StackElement::CustomMetaConstructor;
+        tagNames["custom-destructor"] = StackElement::CustomMetaDestructor;
+        tagNames["argument-map"] = StackElement::ArgumentMap;
+        tagNames["suppress-warning"] = StackElement::SuppressedWarning;
+        tagNames["load-typesystem"] = StackElement::LoadTypesystem;
+        tagNames["disable-gc"] = StackElement::DisableGC;
+        tagNames["replace-default-expression"] = StackElement::ReplaceDefaultExpression;
+        tagNames["reject-enum-value"] = StackElement::RejectEnumValue;
+        tagNames["replace-type"] = StackElement::ReplaceType;
+        tagNames["conversion-rule"] = StackElement::ConversionRule;
+        tagNames["modify-argument"] = StackElement::ModifyArgument;
+        tagNames["remove-argument"] = StackElement::RemoveArgument;
+        tagNames["remove-default-expression"] = StackElement::RemoveDefaultExpression;
+        tagNames["template"] = StackElement::Template;
+        tagNames["insert-template"] = StackElement::TemplateInstanceEnum;
+        tagNames["replace"] = StackElement::Replace;
+
     }
 
     bool startElement(const QString &namespaceURI, const QString &localName,
@@ -105,7 +150,7 @@ private:
                               QHash<QString, QString> *acceptedAttributes);
 
     TypeDatabase *m_database;
-    QStack<StackElement> m_stack;
+    StackElement* current;
     QString m_defaultPackage;
     QString m_defaultSuperclass;
     QString m_error;
@@ -114,9 +159,10 @@ private:
     EnumTypeEntry *m_current_enum;
 
     CodeSnipList m_code_snips;
-    QString m_current_data;
     FunctionModificationList m_function_mods;
     FieldModificationList m_field_mods;
+
+    QHash<QString, StackElement::ElementType> tagNames;
 };
 
 bool Handler::error(const QXmlParseException &e)
@@ -161,19 +207,15 @@ void Handler::fetchAttributeValues(const QString &name, const QXmlAttributes &at
 
 bool Handler::endElement(const QString &, const QString &, const QString &)
 {
-    if (m_stack.isEmpty())
+    if (!current)
         return true;
 
-    StackElement element = m_stack.top();
-
-    CodeSnip snip;
-
-    switch (element.type) {
+    switch (current->type) {
     case StackElement::ObjectTypeEntry:
     case StackElement::ValueTypeEntry:
     case StackElement::InterfaceTypeEntry:
         {
-            ComplexTypeEntry *centry = static_cast<ComplexTypeEntry *>(element.entry);
+            ComplexTypeEntry *centry = static_cast<ComplexTypeEntry *>(current->entry);
             centry->setFunctionModifications(m_function_mods);
             centry->setFieldModifications(m_field_mods);
             centry->setCodeSnips(m_code_snips);
@@ -188,62 +230,83 @@ bool Handler::endElement(const QString &, const QString &, const QString &)
         break;
     case StackElement::CustomMetaConstructor:
         {
-            CustomFunction func = element.entry->customConstructor();
-            func.code = m_current_data;
-            element.entry->setCustomConstructor(func);
+            current->entry->setCustomConstructor(*current->value.customFunction);
+            delete current->value.customFunction;
         }
         break;
     case StackElement::CustomMetaDestructor:
         {
-            CustomFunction func = element.entry->customDestructor();
-            func.code = m_current_data;
-            element.entry->setCustomDestructor(func);
+            current->entry->setCustomDestructor(*current->value.customFunction);
+            delete current->value.customFunction;
         }
         break;
     case StackElement::EnumTypeEntry:
         m_current_enum = 0;
         break;
-    case StackElement::ConversionRule:
-        m_function_mods.last().argument_mods.last().conversion_rule = m_current_data;
+    case StackElement::Template:
+        m_database->addTemplate(current->value.templateEntry);
+        break;
+    case StackElement::TemplateInstanceEnum:
+        if(current->parent->type == StackElement::InjectCode){
+            m_code_snips.last().addTemplateInstance(current->value.templateInstance);
+        }else if(current->parent->type == StackElement::Template){
+            current->parent->value.templateEntry->addTemplateInstance(current->value.templateInstance);
+        }else if(current->parent->type == StackElement::CustomMetaConstructor || current->parent->type == StackElement::CustomMetaConstructor){
+            current->parent->value.customFunction->addTemplateInstance(current->value.templateInstance);
+        }else if(current->parent->type == StackElement::ConversionRule){
+            m_function_mods.last().argument_mods.last().addTemplateInstance(current->value.templateInstance);
+        }
         break;
     default:
         break;
     }
 
-    m_stack.pop();
-
-    if (!m_stack.isEmpty()) {
-        StackElement &parent = m_stack.top();
-
-        if (element.type & StackElement::CodeSnipMask) {
-            switch (parent.type) {
-            case StackElement::Root:
-                ((TypeSystemTypeEntry *) parent.entry)->snips.last().code = m_current_data;
-                break;
-            case StackElement::ModifyFunction:
-                m_function_mods.last().snips.last().code = m_current_data;
-                break;
-            case StackElement::ObjectTypeEntry:
-            case StackElement::ValueTypeEntry:
-                m_code_snips.last().code = m_current_data;
-                break;
-            default:
-                Q_ASSERT(false);
-            };
-        }
-    }
+    StackElement *child = current;
+    current=current->parent;
+    delete(child);
 
     return true;
 }
 
 bool Handler::characters(const QString &ch)
 {
-    StackElement &element = m_stack.top();
-    if (element.type & StackElement::CodeSnipMask
-        || element.type & StackElement::CustomMetaConstructor
-        || element.type & StackElement::CustomMetaDestructor
-        || element.type & StackElement::ConversionRule)
-        m_current_data += ch;
+    if(current->type == StackElement::Template){
+        current->value.templateEntry->addCode(ch);
+        return true;
+    }
+
+    if (current->type == StackElement::CustomMetaConstructor || current->type == StackElement::CustomMetaDestructor){
+        current->value.customFunction->addCode(ch);
+        return true;
+    }
+
+    if (current->type == StackElement::ConversionRule){
+        m_function_mods.last().argument_mods.last().addCode(ch);
+        return true;
+    }
+
+    if  (current->parent){
+        if (current->type & StackElement::CodeSnipMask) {
+            if (current->type & StackElement::CodeSnipMask) {
+                switch (current->parent->type) {
+                    case StackElement::Root:
+                        ((TypeSystemTypeEntry *) current->parent->entry)->snips.last().addCode(ch);
+                        break;
+                    case StackElement::ModifyFunction:
+                        m_function_mods.last().snips.last().addCode(ch);
+                        break;
+                    case StackElement::ObjectTypeEntry:
+                    case StackElement::ValueTypeEntry:
+                        m_code_snips.last().addCode(ch);
+                        break;
+                    default:
+                        Q_ASSERT(false);
+                };
+            }
+            return true;
+        }
+    }
+
     return true;
 }
 
@@ -251,49 +314,17 @@ bool Handler::startElement(const QString &, const QString &n,
                            const QString &, const QXmlAttributes &atts)
 {
     QString tagName = n.toLower();
-    StackElement element;
-    m_current_data = QString();
 
-    static QHash<QString, StackElement::ElementType> tagNames;
-    if (tagNames.isEmpty()) {
-        tagNames["rejection"] = StackElement::Rejection;
-        tagNames["primitive-type"] = StackElement::PrimitiveTypeEntry;
-        tagNames["object-type"] = StackElement::ObjectTypeEntry;
-        tagNames["value-type"] = StackElement::ValueTypeEntry;
-        tagNames["interface-type"] = StackElement::InterfaceTypeEntry;
-        tagNames["namespace-type"] = StackElement::NamespaceTypeEntry;
-        tagNames["enum-type"] = StackElement::EnumTypeEntry;
-        tagNames["extra-includes"] = StackElement::ExtraIncludes;
-        tagNames["include"] = StackElement::Include;
-        tagNames["inject-code"] = StackElement::InjectCode;
-        tagNames["modify-function"] = StackElement::ModifyFunction;
-        tagNames["modify-field"] = StackElement::ModifyField;
-        tagNames["access"] = StackElement::Access;
-        tagNames["remove"] = StackElement::Removal;
-        tagNames["rename"] = StackElement::Rename;
-        tagNames["typesystem"] = StackElement::Root;
-        tagNames["custom-constructor"] = StackElement::CustomMetaConstructor;
-        tagNames["custom-destructor"] = StackElement::CustomMetaDestructor;
-        tagNames["argument-map"] = StackElement::ArgumentMap;
-        tagNames["suppress-warning"] = StackElement::SuppressedWarning;
-        tagNames["load-typesystem"] = StackElement::LoadTypesystem;
-        tagNames["disable-gc"] = StackElement::DisableGC;
-        tagNames["replace-default-expression"] = StackElement::ReplaceDefaultExpression;
-        tagNames["reject-enum-value"] = StackElement::RejectEnumValue;
-        tagNames["replace-type"] = StackElement::ReplaceType;
-        tagNames["conversion-rule"] = StackElement::ConversionRule;
-        tagNames["modify-argument"] = StackElement::ModifyArgument;
-        tagNames["remove-argument"] = StackElement::RemoveArgument;
-    }
+    StackElement *element = new StackElement(current);
 
     if (!tagNames.contains(tagName)) {
         m_error = QString("Unknown tag name: '%1'").arg(tagName);
         return false;
     }
 
-    element.type = tagNames[tagName];
-    if (element.type & StackElement::TypeEntryMask) {
-        if (m_stack.top().type != StackElement::Root) {
+    element->type = tagNames[tagName];
+    if (element->type & StackElement::TypeEntryMask) {
+        if (current->type != StackElement::Root) {
             m_error = "Nested types not supported";
             return false;
         }
@@ -301,7 +332,7 @@ bool Handler::startElement(const QString &, const QString &n,
         QHash<QString, QString> attributes;
         attributes["name"] = QString();
 
-        switch (element.type) {
+        switch (element->type) {
         case StackElement::PrimitiveTypeEntry:
             attributes["java-name"] = QString();
             attributes["jni-name"] = QString();
@@ -313,14 +344,11 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["lower-bound"] = QString();
             attributes["force-integer"] = "no";
             attributes["extensible"] = "no";
-            attributes["package"] = m_defaultPackage;
 
             break;
 
         case StackElement::InterfaceTypeEntry:
         case StackElement::ObjectTypeEntry:
-            attributes["memory-managed"] = "no";
-            // fall through
         case StackElement::ValueTypeEntry:
             attributes["default-superclass"] = m_defaultSuperclass;
             attributes["polymorphic-base"] = QString("no");
@@ -349,7 +377,7 @@ bool Handler::startElement(const QString &, const QString &n,
             ReportHandler::warning(QString("Duplicate type entry: '%1'").arg(name));
         }
 
-        switch (element.type) {
+        switch (element->type) {
         case StackElement::PrimitiveTypeEntry:
             {
                 QString java_name = attributes["java-name"];
@@ -377,14 +405,21 @@ bool Handler::startElement(const QString &, const QString &n,
                     ReportHandler::warning(debug);
                 }
 
-                element.entry = type;
+                element->entry = type;
             }
             break;
-        case StackElement::EnumTypeEntry:
-            m_current_enum = new EnumTypeEntry(name);
-            element.entry = m_current_enum;
+        case StackElement::EnumTypeEntry: {
+            QStringList names = name.split(QLatin1String("::"));
+            if (names.size() != 2) {
+                ReportHandler::warning(QString("enum %1 is not on the pattern Qualifier::Name")
+                                       .arg(name));
+                break;
+            }
+
+            m_current_enum = new EnumTypeEntry(names.at(0), names.at(1));
+            element->entry = m_current_enum;
             m_current_enum->setCodeGeneration(m_generate);
-            m_current_enum->setJavaPackage(attributes["package"]);
+            m_current_enum->setJavaPackage(m_defaultPackage);
             m_current_enum->setUpperBound(attributes["upper-bound"]);
             m_current_enum->setLowerBound(attributes["lower-bound"]);
             m_current_enum->setForceInteger(attributes["force-integer"].toLower() == "yes");
@@ -413,7 +448,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 m_database->addType(ftype);
             }
-
+            }
             break;
 
         case StackElement::InterfaceTypeEntry:
@@ -425,31 +460,29 @@ bool Handler::startElement(const QString &, const QString &n,
                 itype->setCodeGeneration(m_generate);
                 otype->setDesignatedInterface(itype);
                 itype->setOrigin(otype);
-                element.entry = otype;
+                element->entry = otype;
             }
             // fall through
         case StackElement::NamespaceTypeEntry:
-            if (element.entry == 0) {
-                element.entry = new NamespaceTypeEntry(name);
-                element.entry->setCodeGeneration(m_generate);
+            if (element->entry == 0) {
+                element->entry = new NamespaceTypeEntry(name);
+                element->entry->setCodeGeneration(m_generate);
             }
             // fall through
         case StackElement::ObjectTypeEntry:
-            if (element.entry == 0) {
-                element.entry = new ObjectTypeEntry(name);
-                element.entry->setCodeGeneration(m_generate);
-                if (attributes["memory-managed"] == "yes")
-                    static_cast<ObjectTypeEntry *>(element.entry)->setMemoryManaged(true);
+            if (element->entry == 0) {
+                element->entry = new ObjectTypeEntry(name);
+                element->entry->setCodeGeneration(m_generate);
             }
             // fall through
         case StackElement::ValueTypeEntry:
             {
-                if (element.entry == 0) {
-                    element.entry = new ValueTypeEntry(name);
-                    element.entry->setCodeGeneration(m_generate);
+                if (element->entry == 0) {
+                    element->entry = new ValueTypeEntry(name);
+                    element->entry->setCodeGeneration(m_generate);
                 }
 
-                ComplexTypeEntry *ctype = static_cast<ComplexTypeEntry *>(element.entry);
+                ComplexTypeEntry *ctype = static_cast<ComplexTypeEntry *>(element->entry);
                 ctype->setJavaPackage(attributes["package"]);
                 ctype->setDefaultSuperclass(attributes["default-superclass"]);
 
@@ -479,25 +512,29 @@ bool Handler::startElement(const QString &, const QString &n,
             Q_ASSERT(false);
         };
 
-        Q_ASSERT(element.entry);
-        m_database->addType(element.entry);
-    } else if (element.type != StackElement::None) {
-        bool topLevel = element.type == StackElement::Root
-      || element.type == StackElement::SuppressedWarning
-      || element.type == StackElement::Rejection
-      || element.type == StackElement::LoadTypesystem
-      || element.type == StackElement::InjectCode;
+        if (element->entry)
+            m_database->addType(element->entry);
+        else
+            ReportHandler::warning(QString("Type: %1 was rejected by typesystem").arg(name));
 
-        if (!topLevel && m_stack.top().type == StackElement::Root) {
+    } else if (element->type != StackElement::None) {
+        bool topLevel = element->type == StackElement::Root
+      || element->type == StackElement::SuppressedWarning
+      || element->type == StackElement::Rejection
+      || element->type == StackElement::LoadTypesystem
+      || element->type == StackElement::InjectCode
+      || element->type == StackElement::Template;
+
+        if (!topLevel && current->type == StackElement::Root) {
             m_error = QString("Tag requires parent: '%1'").arg(tagName);
             return false;
         }
 
-        StackElement topElement = m_stack.isEmpty() ? StackElement() : m_stack.top();
-        element.entry = topElement.entry;
+        StackElement topElement = current==0 ? StackElement(0) : *current;
+        element->entry = topElement.entry;
 
         QHash<QString, QString> attributes;
-        switch (element.type) {
+        switch (element->type) {
         case StackElement::Root:
             attributes["package"] = QString();
             attributes["default-superclass"] = QString();
@@ -539,7 +576,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["name"] = topElement.entry->name().toLower() + "_delete";
             attributes["param-name"] = "copy";
             break;
-        case StackElement::ReplaceType:            
+        case StackElement::ReplaceType:
             attributes["modified-type"] = QString();
             break;
         case StackElement::InjectCode:
@@ -562,7 +599,7 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::RejectEnumValue:
             attributes["name"] = "";
-            break;        
+            break;
         case StackElement::ArgumentMap:
             attributes["position"] = "1";
             attributes["meta-name"] = QString();
@@ -577,6 +614,17 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::Removal:
             attributes["exclusive"] = "no";
+            break;
+        case StackElement::Template:
+            attributes["name"] = QString();
+            break;
+        case StackElement::TemplateInstanceEnum:
+            attributes["name"] = QString();
+            break;
+        case StackElement::Replace:
+            attributes["from"] = QString();
+            attributes["to"] = QString();
+            break;
         default:
             ; // nada
         };
@@ -584,13 +632,13 @@ bool Handler::startElement(const QString &, const QString &n,
         if (attributes.count() > 0)
             fetchAttributeValues(tagName, atts, &attributes);
 
-        switch (element.type) {
+        switch (element->type) {
         case StackElement::Root:
             m_defaultPackage = attributes["package"];
             m_defaultSuperclass = attributes["default-superclass"];
-            element.type = StackElement::Root;
-            element.entry = new TypeSystemTypeEntry(m_defaultPackage);
-            TypeDatabase::instance()->addType(element.entry);
+            element->type = StackElement::Root;
+            element->entry = new TypeSystemTypeEntry(m_defaultPackage);
+            TypeDatabase::instance()->addType(element->entry);
             break;
         case StackElement::LoadTypesystem:
             {
@@ -734,8 +782,15 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::Removal:
         case StackElement::Access:
             {
-                if (topElement.type != StackElement::ModifyFunction) {
+                if (element->type == StackElement::Removal
+                    && topElement.type != StackElement::ModifyFunction) {
                     m_error = "Function modification parent required";
+                    return false;
+                }
+
+                if (topElement.type != StackElement::ModifyField
+                    && topElement.type != StackElement::ModifyFunction) {
+                    m_error = "Function or field modification parent required";
                     return false;
                 }
 
@@ -745,20 +800,30 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
+                Modification *mod = 0;
+                if (topElement.type == StackElement::ModifyFunction)
+                    mod = &m_function_mods.last();
+                else
+                    mod = &m_field_mods.last();
+
                 QString modifier;
-                if (element.type == StackElement::Removal) {
+                if (element->type == StackElement::Removal) {
                     if (attributes["exclusive"].toLower() == "yes")
                         modifier = "exclusive-remove";
                     else
                         modifier = "remove";
-                } else if (element.type == StackElement::Rename) {
+                } else if (element->type == StackElement::Rename) {
                     modifier = "rename";
                     QString renamed_to = attributes["to"];
                     if (renamed_to.isEmpty()) {
                         m_error = "Rename modifier requires 'renamed-to' attribute";
                         return false;
                     }
-                    m_function_mods.last().setRenamedTo(renamed_to);
+
+                    if (topElement.type == StackElement::ModifyFunction)
+                        mod->setRenamedTo(renamed_to);
+                    else
+                        mod->setRenamedTo(renamed_to);
                 } else {
                     modifier = attributes["modifier"].toLower();
                 }
@@ -770,13 +835,13 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 static QHash<QString, FunctionModification::Modifiers> modifierNames;
                 if (modifierNames.isEmpty()) {
-                    modifierNames["private"] = FunctionModification::Private;
-                    modifierNames["public"] = FunctionModification::Public;
-                    modifierNames["protected"] = FunctionModification::Protected;
-                    modifierNames["friendly"] = FunctionModification::Friendly;
-                    modifierNames["remove"] = FunctionModification::Remove;
-                    modifierNames["exclusive-remove"] = FunctionModification::Modifiers(FunctionModification::Remove | FunctionModification::Exclusive);
-                    modifierNames["rename"] = FunctionModification::Rename;
+                    modifierNames["private"] = Modification::Private;
+                    modifierNames["public"] = Modification::Public;
+                    modifierNames["protected"] = Modification::Protected;
+                    modifierNames["friendly"] = Modification::Friendly;
+                    modifierNames["remove"] = Modification::Remove;
+                    modifierNames["exclusive-remove"] = Modification::Modifiers(Modification::Remove | Modification::Exclusive);
+                    modifierNames["rename"] = Modification::Rename;
                 }
 
                 if (!modifierNames.contains(modifier)) {
@@ -784,8 +849,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                FunctionModification::Modifiers mod = modifierNames[modifier];
-                m_function_mods.last().modifiers |= mod;
+                mod->modifiers |= modifierNames[modifier];
             }
             break;
         case StackElement::RemoveArgument:
@@ -866,18 +930,22 @@ bool Handler::startElement(const QString &, const QString &n,
                 return false;
             }
 
+            if (attributes["with"].isEmpty()) {
+               m_error = "Default expression replaced with empty string. Use remove-default-expression instead.";
+               return false;
+            }
+
             m_function_mods.last().argument_mods.last().replaced_default_expression = attributes["with"];
+            break;
+        case StackElement::RemoveDefaultExpression:
+            m_function_mods.last().argument_mods.last().removed_default_expression = true;
             break;
         case StackElement::CustomMetaConstructor:
         case StackElement::CustomMetaDestructor:
-
             {
-                CustomFunction func(attributes["name"]);
-                func.param_name = attributes["param-name"];
-                if (element.type == StackElement::CustomMetaConstructor)
-                    element.entry->setCustomConstructor(func);
-                else
-                    element.entry->setCustomDestructor(func);
+                CustomFunction *func = new CustomFunction(attributes["name"]);
+                func->param_name = attributes["param-name"];
+                element->value.customFunction = func;
             }
             break;
         case StackElement::InjectCode:
@@ -927,9 +995,9 @@ bool Handler::startElement(const QString &, const QString &n,
                     }
 
                     m_function_mods.last().snips << snip;
-                    element.type = StackElement::InjectCodeInFunction;
+                    element->type = StackElement::InjectCodeInFunction;
                 } else if (topElement.type == StackElement::Root) {
-                    ((TypeSystemTypeEntry *) element.entry)->snips << snip;
+                    ((TypeSystemTypeEntry *) element->entry)->snips << snip;
 
                 } else if (topElement.type != StackElement::Root) {
                     m_code_snips << snip;
@@ -955,7 +1023,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 Include::IncludeType loc = locationNames[location];
                 Include inc(loc, attributes["file-name"]);
 
-                ComplexTypeEntry *ctype = static_cast<ComplexTypeEntry *>(element.entry);
+                ComplexTypeEntry *ctype = static_cast<ComplexTypeEntry *>(element->entry);
                 if (topElement.type & StackElement::ComplexTypeEntryMask) {
                     ctype->setInclude(inc);
                 } else if (topElement.type == StackElement::ExtraIncludes) {
@@ -987,14 +1055,34 @@ bool Handler::startElement(const QString &, const QString &n,
                 m_database->addRejection(cls, function, field);
             }
             break;
+        case StackElement::Template:
+            element->value.templateEntry = new TemplateEntry(attributes["name"]);
+            break;
+        case StackElement::TemplateInstanceEnum:
+            if (!(topElement.type & StackElement::CodeSnipMask) &&
+                  (topElement.type != StackElement::Template) &&
+                  (topElement.type != StackElement::CustomMetaConstructor) &&
+                  (topElement.type != StackElement::CustomMetaDestructor) &&
+                  (topElement.type != StackElement::ConversionRule))
+            {
+                m_error = "Can only insert templates into code snippets, templates, custom-constructors, custom-destructors or conversion-rule.";
+                return false;
+            }
+            element->value.templateInstance = new TemplateInstance(attributes["name"]);
+            break;
+        case StackElement::Replace:
+            if (topElement.type != StackElement::TemplateInstanceEnum) {
+                m_error = "Can only insert replace rules into insert-template.";
+                return false;
+            }
+            element->parent->value.templateInstance->addReplaceRule(attributes["from"],attributes["to"]);
+            break;
         default:
             break; // nada
         };
     }
 
-    if (element.type != StackElement::None)
-        m_stack.push(element);
-
+    current = element;
     return true;
 }
 
@@ -1123,7 +1211,7 @@ QString Include::toString() const
         return "import " + name + ";";
 }
 
-QString FunctionModification::accessModifierString() const
+QString Modification::accessModifierString() const
 {
     if (isPrivate()) return "private";
     if (isProtected()) return "protected";
@@ -1264,8 +1352,10 @@ QString fixCppTypeName(const QString &name)
 QString CodeSnip::formattedCode(const QString &_defaultIndent)
 {
     QString returned;
-
-    QStringList lst = code.split("\n");
+    QStringList lst;
+    foreach(CodeSnipFragment *codeFrag, codeList){
+        lst = lst + codeFrag->code().split("\n");
+    }
 
     QString defaultIndent(_defaultIndent);
     QString indent = defaultIndent;
@@ -1293,3 +1383,33 @@ QString CodeSnip::formattedCode(const QString &_defaultIndent)
     return returned;
 }
 
+QString TemplateInstance::expandCode() const{
+    TemplateEntry *templateEntry = TypeDatabase::instance()->findTemplate(m_name);
+    if(templateEntry){
+        QString res = templateEntry->code();
+        foreach(QString key, replaceRules.keys()){
+            res.replace(key, replaceRules[key]);
+        }
+        return  res;
+    }
+    else{
+        ReportHandler::warning("insert-template referring to non-existing template '" + m_name + "'");
+    }
+    return QString();
+}
+
+
+QString CodeSnipAbstract::code() const{
+    QString res;
+    foreach(CodeSnipFragment *codeFrag, codeList){
+        res.append(codeFrag->code());
+    }
+    return res;
+}
+
+QString CodeSnipFragment::code() const{
+    if(m_instance)
+        return m_instance->expandCode();
+    else
+        return m_code;
+}

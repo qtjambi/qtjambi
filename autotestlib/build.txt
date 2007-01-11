@@ -1,7 +1,9 @@
-<typesystem package="com.trolltech.autotests.generated" default-superclass="com.trolltech.qt.QtObject">
+<typesystem package="com.trolltech.autotests.generated" default-superclass="com.trolltech.qt.QtJambiObject">
 
   <load-typesystem name="../generator/typesystem_core.txt" generate="no" />
   <load-typesystem name="../generator/typesystem_gui.txt" generate="no" />
+  <load-typesystem name="../generator/typesystem_sql.txt" generate="no" />
+  <load-typesystem name="../generator/typesystem_xml.txt" generate="no" />
 
   <value-type name="Tulip">
     <include file-name="tulip.h" location="local"/>
@@ -10,6 +12,8 @@
   <value-type name="Variants">
     <include file-name="variants.h" location="local"/>
   </value-type>
+
+  <enum-type name="TheGlobalEnum"/>
 
   <object-type name="SignalsAndSlots">
     <include file-name="signalsandslots.h" location="local"/>
@@ -37,8 +41,25 @@
   <object-type name="OrdinarySuperclass" />
   <object-type name="OrdinaryDestroyed" />
   <object-type name="QObjectDestroyed" />
+  <object-type name="SpinBoxHandler" />
+  <object-type name="SpinBoxSubclass" />
+  <object-type name="GraphicsSceneSubclass" />
+  <object-type name="IODeviceSubclass" />
+  <object-type name="XmlReaderSubclass" />
+  <object-type name="TextCodecSubclass">
+    <modify-function signature="TextCodecSubclass()">
+        <modify-argument index="-1">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+  </object-type>
+  <value-type name="PictureSubclass" />
 
   <object-type name="SetupLayout" />
+  <object-type name="GraphicsItemSubclass" />
+  <object-type name="ImageIOHandlerSubclass" />
+  <object-type name="AccessibleInterfaceSubclass" />
+  <object-type name="SqlTableModelSubclass" />
 
   <object-type name="Threads"/>
   
@@ -92,6 +113,10 @@
   
   <object-type name="CustomEvent" 
                polymorphic-id-expression="int(%1->type()) == QEvent::User + 1" />
+               
+  <object-type name="ValidatorSubclass" />
+               
+  <object-type name="SomeQObject" />                
   
   <value-type name="CustomStyleOption"
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_CustomBase + 1" /> 

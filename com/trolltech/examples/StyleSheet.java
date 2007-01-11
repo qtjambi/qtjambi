@@ -15,11 +15,11 @@ package com.trolltech.examples;
 
 import com.trolltech.examples.stylesheet.Ui_MainWindow;
 import com.trolltech.examples.stylesheet.Ui_StyleSheetEditor;
-import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.QIODevice.OpenModeFlag;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Style Sheets")
 public class StyleSheet extends QMainWindow {
 
     private Ui_MainWindow ui = new Ui_MainWindow();
@@ -38,7 +38,7 @@ public class StyleSheet extends QMainWindow {
     public StyleSheet() {
         ui.setupUi(this);
 
-        ui.nameLabel.setProperty(QNativePointer.createCharPointer("class"), "mandatory QLabel");
+        //ui.nameLabel.setProperty(QNativePointer.createCharPointer("class"), "mandatory QLabel");
 
         styleSheetEditor = new StyleSheetEditor(this);
 
@@ -118,15 +118,4 @@ public class StyleSheet extends QMainWindow {
         }
     }
 
-    // REMOVE-START
-
-    public static String exampleName() {
-        return "Style Sheet";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

@@ -32,7 +32,7 @@
 
     We define a static method to check for suitable database support:
 
-    \skipto public static boolean canInstantiate
+    \skipto public static boolean checkSqlLite
     \printuntil }
 
     We are also going to show how a table view can be used to cache
@@ -60,7 +60,7 @@
     to use another database, simply modify this function's code.
     \endtable
 
-    Apart from the static \c canInstantiate() method, the class
+    Apart from the static \c checkSqlLite() method, the class
     implementation consists of only the constructor and the
     \c submit() slot. In the constructor we create and customize the
     data model and the various window elements:

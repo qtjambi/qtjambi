@@ -6,7 +6,7 @@ import com.trolltech.qt.gui.*;
 
 public class CustomWidget {
     
-    public CustomWidget(Class pluginClass) throws NoSuchMethodException {
+    public CustomWidget(Class<?> pluginClass) throws NoSuchMethodException {
         this.pluginClass = pluginClass;
         
         try {
@@ -24,9 +24,13 @@ public class CustomWidget {
         // Try the parent constructor first...
         try {
             widget = (QWidget) constructor.newInstance(parent);
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace();
-        } 
+        }
+        
+        // Avoid Designer seg-fault when the constructor throws an exception
+        if (widget == null)
+            widget = new QWidget(parent);
         
         return widget;
     }

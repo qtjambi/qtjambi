@@ -14,8 +14,10 @@
 package com.trolltech.demos;
 
 import com.trolltech.demos.imageviewer.*;
+import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Image Viewer")
 public class ImageViewer extends MainWindow {
     
     public ImageViewer() {

@@ -46,7 +46,7 @@ class MyQObject extends QObject
     public Signal3<Integer[], Integer[][], Integer[][][]> signalManyArrays = new Signal3<Integer[], Integer[][], Integer[][][]>();
     public Signal1<List<String>> signalStringList = new Signal1<List<String>>();
     public Signal1<List<List<String>>> signalStringListList = new Signal1<List<List<String>>>();
-    public Signal0 destroyed;
+    public Signal0 destroyed = new Signal0();
     
      
     public MyQObject()

@@ -7,15 +7,15 @@ isEmpty(TARGET) {
 }
 
 TEMPLATE = lib
-DESTDIR = ../lib
-DLLDESTDIR = ../bin
+DESTDIR = $$PWD/../lib
+DLLDESTDIR = $$PWD/../bin
 
 
 CONFIG(debug, debug|release) {
     TARGET = $$member(TARGET, 0)_debuglib
 }
 
-INCLUDEPATH += ../qtjambi ../common
+INCLUDEPATH += $$PWD/../qtjambi $$PWD/../common
 
 macx:{
     LIBS += -framework JavaVm

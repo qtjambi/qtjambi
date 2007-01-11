@@ -19,6 +19,7 @@ import java.util.Vector;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Elastic Nodes")
 public class ElasticNodes extends QGraphicsView {
 
     public static void main(String args[]) {
@@ -31,31 +32,31 @@ public class ElasticNodes extends QGraphicsView {
     private int timerId;
     private Node centerNode;
     private Vector<Node> nodes = new Vector<Node>();
-    
+
     private static final QBrush BRUSH_DARK_GRAY = new QBrush(QColor.darkGray);
     private static final QPen QPEN_EDGE = new QPen(QColor.black, 1, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin);
     private static final QPen QPEN_BLACK = new QPen(QColor.black, 0);
-    
+
     private static QRadialGradient GRADIENT_SUNKEN;
     private static QRadialGradient GRADIENT_NORMAL;
-    
+
     private static QPainterPath NODE_SHAPE;
     static{
         NODE_SHAPE = new QPainterPath();
         NODE_SHAPE.addEllipse(-10, -10, 20, 20);
-        
+
         GRADIENT_SUNKEN = new QRadialGradient(-3, -3, 10);
         GRADIENT_SUNKEN.setCenter(3, 3);
         GRADIENT_SUNKEN.setFocalPoint(3, 3);
         GRADIENT_SUNKEN.setColorAt(1, new QColor(QColor.yellow).light(120));
         GRADIENT_SUNKEN.setColorAt(0, new QColor(QColor.darkYellow).light(120));
-    
+
         GRADIENT_NORMAL = new QRadialGradient(-3, -3, 10);
         GRADIENT_NORMAL.setColorAt(0, QColor.yellow);
         GRADIENT_NORMAL.setColorAt(1, QColor.darkYellow);
     }
-    
-    
+
+
     public ElasticNodes() {
         QGraphicsScene scene = new QGraphicsScene(this);
         scene.setItemIndexMethod(QGraphicsScene.ItemIndexMethod.NoIndex);
@@ -108,17 +109,17 @@ public class ElasticNodes extends QGraphicsView {
         node7.setPos(-50, 50);
         node8.setPos(0, 50);
         node9.setPos(50, 50);
-        
-        scale(0.8, 0.8);
-        
 
-    
+        scale(0.8, 0.8);
+
+
+
         for (QGraphicsItemInterface item : scene().items()) {
             if (item instanceof Node)
                 nodes.add((Node) item);
         }
-        
-        
+
+
         setMinimumSize(400, 400);
         setWindowTitle(tr("Elastic Nodes"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
@@ -349,18 +350,18 @@ public class ElasticNodes extends QGraphicsView {
         private double arrowSize = 10;
         private double penWidth = 1;
         private double extra = (penWidth + arrowSize) / 2.0;
-        
+
         private QRectF boundingRect = new QRectF();
-   
-        
+
+
         QPointF sourceArrowP1 = new QPointF();
         QPointF sourceArrowP2 = new QPointF();
         QPointF destArrowP1 = new QPointF();
         QPointF destArrowP2 = new QPointF();
-        
+
         QPolygonF pol1 = new QPolygonF();
-        QPolygonF pol2 = new QPolygonF(); 
-        
+        QPolygonF pol2 = new QPolygonF();
+
         public Edge(Node sourceNode, Node destNode) {
             // setAcceptedMouseButtons(LeftButton);
             source = sourceNode;
@@ -381,28 +382,28 @@ public class ElasticNodes extends QGraphicsView {
         private void adjust() {
             double dx = source.pos().x()-dest.pos().x();
             double dy = source.pos().y()-dest.pos().y();
-            
+
             double length = Math.sqrt(dx*dx+dy*dy);
             if (length == 0.0) return;
-            
+
             double paddingX = dx/length*10;
             double paddingY = dy/length*10;
-            
+
             removeFromIndex();
             sourcePoint.setX(source.pos().x() - paddingX);
             sourcePoint.setY(source.pos().y() - paddingY);
-                        
+
             destPoint.setX(dest.pos().x() + paddingX);
             destPoint.setY(dest.pos().y() + paddingY);
-            
+
             boundingRect.setBottomLeft(source.pos());
             boundingRect.setTopRight(dest.pos());
-            
+
             boundingRect = boundingRect.normalized();
 
             boundingRect.adjust(-extra, -extra, extra, extra);
             addToIndex();
-            
+
         }
 
         public QRectF boundingRect() {
@@ -416,10 +417,10 @@ public class ElasticNodes extends QGraphicsView {
 
             // Draw the line itself
             QLineF line = new QLineF(sourcePoint, destPoint);
-            
+
             painter.setPen(QPEN_EDGE);
             painter.drawLine(line);
-            
+
             // Draw the arrows if there's enough room
             double angle = Math.acos(line.dx() / line.length());
             if (line.dy() >= 0)
@@ -427,42 +428,31 @@ public class ElasticNodes extends QGraphicsView {
 
             sourceArrowP1.setX(sourcePoint.x() + Math.sin(angle + Math.PI / 3) * arrowSize);
             sourceArrowP1.setY(sourcePoint.y() + Math.cos(angle + Math.PI / 3) * arrowSize);
-            
+
             sourceArrowP2.setX(sourcePoint.x() + Math.sin(angle + Math.PI - Math.PI / 3) * arrowSize);
             sourceArrowP2.setY(sourcePoint.y() + Math.cos(angle + Math.PI - Math.PI / 3) * arrowSize);
-            
+
             destArrowP1.setX(destPoint.x() + Math.sin(angle - Math.PI / 3) * arrowSize);
             destArrowP1.setY(destPoint.y() + Math.cos(angle - Math.PI / 3) * arrowSize);
-            
+
             destArrowP2.setX(destPoint.x() + Math.sin(angle - Math.PI + Math.PI / 3) * arrowSize);
             destArrowP2.setY(destPoint.y() + Math.cos(angle - Math.PI + Math.PI / 3) * arrowSize);
 
 
             pol1.clear();
             pol2.clear();
-           
+
             pol1.append(line.p1());
             pol1.append(sourceArrowP1);
             pol1.append(sourceArrowP2);
-            
+
             pol2.append(line.p2());
             pol2.append(destArrowP1);
             pol2.append(destArrowP2);
-            
+
             painter.setBrush(QColor.black);
             painter.drawPolygon(pol1);
             painter.drawPolygon(pol2);
         }
     }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Elastic Nodes";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

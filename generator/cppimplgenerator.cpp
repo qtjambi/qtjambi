@@ -46,7 +46,7 @@ QString jni_signature(const MetaJavaFunction *function, JNISignatureFormat forma
 {
     QString returned = "(";
     MetaJavaArgumentList arguments = function->arguments();
-    foreach (const MetaJavaArgument *argument, arguments) {                   
+    foreach (const MetaJavaArgument *argument, arguments) {
         if (!function->argumentRemoved(argument->argumentIndex() + 1)) {
             QString modified_type = function->typeReplaced(argument->argumentIndex()+1);
 
@@ -57,18 +57,18 @@ QString jni_signature(const MetaJavaFunction *function, JNISignatureFormat forma
         }
     }
 
-    returned += ")"; 
-    
+    returned += ")";
+
     QString modified_type = function->typeReplaced(0);
-    if (modified_type.isEmpty())                    
-        returned += jni_signature(function->type(), format); 
+    if (modified_type.isEmpty())
+        returned += jni_signature(function->type(), format);
     else
         returned += jni_signature(modified_type, format);
 
     return returned;
 }
 
-QString jni_signature(const QString &_full_name, JNISignatureFormat format) 
+QString jni_signature(const QString &_full_name, JNISignatureFormat format)
 {
     QString signature;
     QString full_name = _full_name;
@@ -77,25 +77,6 @@ QString jni_signature(const QString &_full_name, JNISignatureFormat format)
         full_name.chop(2);
         signature = "[";
     }
-
-    if (format == Underscores) {
-        signature.replace("[", "_3");
-        signature += "L";
-        signature += QString(full_name).replace("_", "_1").replace('.', '_');
-        signature += "_2";
-    } else {
-        signature += "L";
-        signature += QString(full_name).replace("_", "_1").replace('.', '/');
-        signature += ";";
-    }
-
-    return signature;
-}
-
-QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
-{
-    if (!java_type)
-        return "V";
 
     static QHash<QString, QString> table;
     if (table.isEmpty()) {
@@ -109,12 +90,32 @@ QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
         table["double"] = "D";
     }
 
+    if (format == Underscores)
+        signature.replace("[", "_3");
+
+    if (table.contains(full_name)) {
+        signature += table[full_name];
+    } else if (format == Underscores) {
+        signature.replace("[", "_3");
+        signature += "L";
+        signature += QString(full_name).replace("_", "_1").replace('.', '_');
+        signature += "_2";
+    } else {
+        signature += "L";
+        signature += QString(full_name).replace('.', '/');
+        signature += ";";
+    }
+
+    return signature;
+}
+
+QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
+{
+    if (!java_type)
+        return "V";
+
     if (java_type->isArray()) {
         return "_3" + jni_signature(java_type->arrayElementType(), format);
-    } else if (java_type->isPrimitive()) {
-        QString signature = table.value(java_type->name());
-        Q_ASSERT(!signature.isEmpty());
-        return signature;
     } else if (java_type->isNativePointer()) {
         if (format == Underscores)
             return "Lcom_trolltech_qt_QNativePointer_2";
@@ -130,7 +131,7 @@ QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
             return "Ljava/lang/Thread;";
     }
 
-    
+
 
     QString name = java_type->name();
     if (java_type->isObject()) {
@@ -146,7 +147,7 @@ QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
         name = ft->originator()->javaQualifier() + "$" + ft->javaName();
     }
 
-    return jni_signature(java_type->package() + "." + name, format);
+    return jni_signature( (java_type->package().isEmpty() ? QString() : java_type->package() + ".") + name, format);
 }
 
 static QHash<QString, QString> table;
@@ -216,6 +217,30 @@ QString default_return_statement_java(const MetaJavaType *java_type)
     return "return 0";
 }
 
+QByteArray jniTypeName(const QString &name) {
+    static QHash<QString, const char *> table;
+    if (table.isEmpty()) {
+        table["jboolean"] = "Boolean";
+        table["jbyte"] = "Byte";
+        table["jchar"] = "Char";
+        table["jshort"] = "Short";
+        table["jint"] = "Int";
+        table["jlong"] = "Long";
+        table["jfloat"] = "Float";
+        table["jdouble"] = "Double";
+    }
+
+    return table[name];
+}
+
+QByteArray jniName(const QString &name) {
+    TypeEntry *entry = TypeDatabase::instance()->findType(name);
+    if (entry)
+        return entry->jniName().toLatin1();
+    else
+        return "jobject";
+}
+
 QByteArray jniTypeName(const MetaJavaType *java_type)
 {
     if (!java_type) {
@@ -223,18 +248,7 @@ QByteArray jniTypeName(const MetaJavaType *java_type)
     } else if (java_type->isJavaChar()) {
         return "Char";
     } else if (java_type->isPrimitive()) {
-        static QHash<QString, const char *> table;
-        if (table.isEmpty()) {
-            table["boolean"] = "Boolean";
-            table["byte"] = "Byte";
-            table["char"] = "Char";
-            table["short"] = "Short";
-            table["int"] = "Int";
-            table["long"] = "Long";
-            table["float"] = "Float";
-            table["double"] = "Double";
-        }
-        return table[java_type->name()];
+        return jniTypeName(java_type->typeEntry()->jniName());
     } else if (java_type->isIntegerEnum() || java_type->isIntegerFlags()) {
         return "Int";
     } else {
@@ -276,12 +290,21 @@ QByteArray callXxxMethod(const MetaJavaType *java_type)
     return "Call" + jniTypeName(java_type) + "Method";
 }
 
+QByteArray callXxxMethod(const QString &name) {
+    TypeEntry *entry = TypeDatabase::instance()->findType(name);
+    if (entry && entry->isPrimitive())
+        return "Call" + jniTypeName(entry->jniName()) + "Method";
+    else
+        return "CallObjectMethod";
+}
+
 QString jni_function_signature(QString package, QString class_name, const QString &function_name,
                                const QString &return_type)
 {
     QString s;
     s += "extern \"C\" JNIEXPORT ";
     s += return_type;
+    s += " JNICALL";
     s += " Java_";
     s += package.replace("_", "_1").replace(".", "_");
     s += '_';
@@ -311,8 +334,7 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunctio
             s << INDENT << "jvalue arguments[" << arguments.size() << "];" << endl;
         else
             s << INDENT << "jvalue *arguments = 0;" << endl;
-        s << INDENT << "Q_ASSERT(link && link->environment());" << endl
-          << INDENT << "JNIEnv *__jni_env = link->environment();" << endl
+        s << INDENT << "JNIEnv *__jni_env = qtjambi_current_environment();" << endl
           << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
 
         for (int i=0; i<arguments.size(); ++i) {
@@ -382,8 +404,7 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
       << "#include \"qtjambifunctiontable.h\"" << endl
       << "#include \"qtjambilink.h\"" << endl;
 
-    if (shellInclude)
-        writeShellSignatures(s, java_class);
+    writeShellSignatures(s, java_class);
 
     if (hasCustomDestructor(java_class))
         writeFinalDestructor(s, java_class);
@@ -487,11 +508,12 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
         if (!found) {
             s << endl
               << INDENT << jni_function_signature(cls->package(), cls->name(), "__qt_equals", "jboolean")
-              << "(JNIEnv *, jclass, jlong __this_nativeId, jlong other)" << endl
+              << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId, jlong other)" << endl
               << INDENT << "{" << endl;
             {
                 Indentation indent;
-                s << INDENT << cls->qualifiedCppName() << " *__qt_this = (" 
+                s << INDENT << "Q_UNUSED(__jni_env);" << endl
+                  << INDENT << cls->qualifiedCppName() << " *__qt_this = ("
                   << cls->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
                   << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
                   << INDENT << "Q_ASSERT(__qt_this);" << endl
@@ -518,11 +540,12 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
         if (!found) {
             s << endl
               << INDENT << jni_function_signature(cls->package(), cls->name(), "__qt_hashCode", "jint")
-              << "(JNIEnv *, jclass, jlong __this_nativeId)" << endl
+              << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
               << INDENT << "{" << endl;
             {
                 Indentation indent;
-                s << INDENT << cls->qualifiedCppName() << " *__qt_this = (" 
+                s << INDENT << "Q_UNUSED(__jni_env);" << endl
+                  << INDENT << cls->qualifiedCppName() << " *__qt_this = ("
                   << cls->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
                   << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
                   << INDENT << "Q_ASSERT(__qt_this);" << endl
@@ -551,7 +574,7 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
               << INDENT << "{" << endl;
             {
                 Indentation indent;
-                s << INDENT << cls->qualifiedCppName() << " *__qt_this = (" 
+                s << INDENT << cls->qualifiedCppName() << " *__qt_this = ("
                   << cls->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
                   << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
                   << INDENT << "Q_ASSERT(__qt_this);" << endl
@@ -570,7 +593,7 @@ void CppImplGenerator::writeExtraFunctions(QTextStream &s, const MetaJavaClass *
     CodeSnipList code_snips = class_type->codeSnips();
     foreach (const CodeSnip &snip, code_snips) {
         if (snip.language == CodeSnip::ShellCode || snip.language == CodeSnip::NativeCode) {
-            s << snip.code << endl;
+            s << snip.code() << endl;
         }
     }
 }
@@ -579,14 +602,9 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
 {
     bool has_constructors = java_class->hasConstructors();
 
-    // Match the query in the generation of the shell class implementation, so that we get the
-    // same index for each function
-    MetaJavaFunctionList virtual_functions = java_class->functionsInShellClass();
-    MetaJavaFunctionList inconsistents = java_class->cppInconsistentFunctions();
-    MetaJavaFunctionList signal_functions = java_class->cppSignalFunctions();
-
     // Write the function names...
-    if (has_constructors && virtual_functions.size()) {
+    if (has_constructors && java_class->hasVirtualFunctions()) {
+        MetaJavaFunctionList virtual_functions = java_class->functionsInShellClass();
         {
             Indentation indent;
 
@@ -642,7 +660,8 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
         }
     }
 
-    if (has_constructors && inconsistents.size()) {
+    if (has_constructors && java_class->hasInconsistentFunctions()) {
+        MetaJavaFunctionList inconsistents = java_class->cppInconsistentFunctions();
         // Write the inconsistent function names...
         {
             Indentation indent;
@@ -665,7 +684,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
                 if (i != 0)
                     s << ",";
                 s << endl << INDENT << "\""
-                  << jni_signature(function, SlashesAndStuff)                
+                  << jni_signature(function, SlashesAndStuff)
                   << "\"";
             }
             s << endl << "};" << endl << endl;
@@ -675,7 +694,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
     }
 
 
-
+    MetaJavaFunctionList signal_functions = java_class->cppSignalFunctions();
     if (signal_functions.size()) {
         Indentation indent;
         s << "static const char *qtjambi_signal_names[] = {";
@@ -739,11 +758,22 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const MetaJavaClass 
       << "{" << endl;
     {
         Indentation indent;
-        s << INDENT << "if (m_vtable)" << endl
+        s << "#ifdef QT_DEBUG" << endl
+          << INDENT << "if (m_vtable)" << endl
           << INDENT << "    m_vtable->deref();" << endl
-          << INDENT << "if (m_link) {" << endl
-          << INDENT << "    m_link->setEnvironment(qtjambi_current_environment());" << endl
-          << INDENT << "    m_link->resetObject();" << endl
+          << "#endif" << endl
+          << INDENT << "if (m_link) {" << endl;
+
+        MetaJavaClassList interfaces = java_class->interfaces();
+        if (interfaces.size() + (java_class->baseClass() != 0 ? 1 : 0) > 1) {
+            if (java_class->baseClass() != 0)
+                interfaces += java_class->baseClass();
+            foreach (MetaJavaClass *iface, interfaces) {
+                s << INDENT << "    m_link->unregisterSubObject((" << iface->qualifiedCppName() << " *) this);" << endl;
+            }
+        }
+
+        s << INDENT << "    m_link->resetObject(qtjambi_current_environment());" << endl
           << INDENT << "}"
           << endl;
     }
@@ -865,7 +895,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             MetaJavaArgumentList arguments = java_function->arguments();
             foreach (const MetaJavaArgument *argument, arguments) {
                 if (!java_function->argumentRemoved(argument->argumentIndex()+1)) {
-                    if (!argument->type()->isPrimitive() 
+                    if (!argument->type()->isPrimitive()
                         || !java_function->conversionRule(CodeSnip::NativeCode, argument->argumentIndex()+1).isEmpty()) {
                         writeQtToJava(s,
                                     argument->type(),
@@ -880,21 +910,40 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             for (int i=0; i<arguments.size(); ++i)
                 writeDisableGarbageCollection(s, java_function, "__java_" + arguments.at(i)->indexedName(), i+1, implementor);
 
+
             MetaJavaType *function_type = java_function->type();
+            QString new_return_type = java_function->typeReplaced(0);
+            bool has_function_type = ((function_type != 0
+                                      || !new_return_type.isEmpty())
+                                      && new_return_type != "void");
 
             s << INDENT;
-            if (function_type)
-                s << translateType(function_type) << " " << "__java_return_value = ";
-            s << "__jni_env->" << callXxxMethod(java_function->type())
-              << "(m_link->javaObject(__jni_env), method_id";
+            if (has_function_type) {
+                if (new_return_type.isEmpty()) {
+                    s << translateType(function_type);
+                } else {
+                    s << jniName(new_return_type);
+                }
+                s << " " << "__java_return_value = ";
+            }
+
+            s << "__jni_env->";
+            if (new_return_type.isEmpty()) {
+                s << callXxxMethod(java_function->type());
+            } else if (!has_function_type) {
+                s << "CallVoidMethod";
+            } else {
+                s << callXxxMethod(new_return_type);
+            }
+            s << "(m_link->javaObject(__jni_env), method_id";
             if (arguments.size() > 0)
                 s << ", ";
             writeFunctionCallArguments(s, java_function, "__java_", Option(NoCasts | SkipRemovedArguments));
             s << ");" << endl
               << INDENT << "qtjambi_exception_check(__jni_env);" << endl;
 
-            if (function_type) {
-                writeJavaToQt(s, function_type, "__qt_return_value", "__java_return_value", 
+            if (has_function_type) {
+                writeJavaToQt(s, function_type, "__qt_return_value", "__java_return_value",
                               java_function, 0);
             }
 
@@ -1026,6 +1075,11 @@ void CppImplGenerator::writeFunctionName(QTextStream &s,
     // Function signature
     bool callThrough = java_function->needsCallThrough();
     QString return_type = translateType(java_function->type(), EnumAsInts);
+    QString new_return_type = java_function->typeReplaced(0);
+    if (!new_return_type.isEmpty()) {
+        return_type = jniName(new_return_type);
+    }
+
     QString function_name;
 
     if (!callThrough)
@@ -1101,7 +1155,7 @@ void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const MetaJavaFun
     // Translate each of the function arguments into qt types
     MetaJavaArgumentList arguments = java_function->arguments();
     foreach (const MetaJavaArgument *argument, arguments) {
-        if (!argument->type()->isPrimitive() 
+        if (!argument->type()->isPrimitive()
             || !java_function->conversionRule(CodeSnip::NativeCode, argument->argumentIndex() + 1).isEmpty()) {
                 writeJavaToQt(s,
                             argument->type(),
@@ -1138,6 +1192,9 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
 
     const MetaJavaClass *cls = java_class ? java_class : java_function->ownerClass();
     const MetaJavaType *function_type = java_function->type();
+    QString new_return_type = java_function->typeReplaced(0);
+    bool has_function_type = new_return_type != "void"
+                             && (!new_return_type.isEmpty() || function_type != 0);
 
     const QString qt_object_name = java_function->isStatic() ? shellClassName(cls) : "__qt_this";
     const QString java_object_name = java_function->isStatic() ? "__jni_class" : "__jni_object";
@@ -1194,18 +1251,20 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
 
             // Call the Qt function on the java object
             s << "    ";
-            if (function_type) {
+            if (has_function_type) {
                 const QString qt_return_value = "__qt_return_value";
                 const QString java_return_value = "__java_return_value";
-                writeTypeInfo(s, function_type, EnumAsInts);
-                s << " " << qt_return_value
-                << " = ";
+                if (function_type) {
+                    writeTypeInfo(s, function_type, EnumAsInts);
+                    s << " " << qt_return_value
+                      << " = ";
+                }
 
                 writeFunctionCall(s, qt_object_name, java_function, function_prefix, option,
                                   extra_param);
                 s << endl;
 
-                writeQtToJava(s, function_type, qt_return_value, java_return_value, 
+                writeQtToJava(s, function_type, qt_return_value, java_return_value,
                               java_function, 0, EnumAsInts);
                 s << INDENT << "return " << java_return_value << ";";
 
@@ -1246,7 +1305,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
     // Setter
     if (mod.isWritable() && !java_field->type()->isConstant()) {
         // Write public override for protected fields
-        if (setter->isProtected()) {
+        if (setter->wasProtected()) {
             writeFunctionSignature(s, setter, setter->ownerClass());
             s << endl
               << "{" << endl;
@@ -1290,7 +1349,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
             else
                 src = argument->indexedName();
 
-            if (setter->isPublic())
+            if (setter->wasPublic())
                 writeAssignment(s, dest + java_field->name(), src, argument->type());
             else
                 s << INDENT << dest << setter->name() << "_setter(" << src << ");" << endl;
@@ -1300,7 +1359,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
 
     if (mod.isReadable()) {
         // Getter
-        if (getter->isProtected()) {
+        if (getter->wasProtected()) {
             writeFunctionSignature(s, getter, getter->ownerClass());
             s << endl
               << "{" << endl;
@@ -1338,7 +1397,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
             QString tmp_name = "__tmp_" + getter->name();
             s << tmp_name << " = ";
 
-            if (getter->isPublic())
+            if (getter->wasPublic())
                 qt_return_value += java_field->name();
             else
                 qt_return_value += getter->name() + "_getter()";
@@ -1367,6 +1426,8 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     MetaJavaArgumentList arguments = java_function->arguments();
     QString className = cls->name();
 
+    bool hasShellClass = cls->generateShellClass();
+
     s << INDENT << shellClassName(cls) << " *" << qt_object_name
       << " = new " << shellClassName(cls)
       << "(";
@@ -1376,8 +1437,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     s << INDENT << "QtJambiLink *__qt_java_link = ";
     if (cls->isQObject()) {
         s << "qtjambi_construct_qobject(__jni_env, " << java_object_name << ", "
-          << qt_object_name << ", "
-          << static_cast<const ObjectTypeEntry *>(cls->typeEntry())->isMemoryManaged() << ")";
+          << qt_object_name << ")";
     } else {
         s << "qtjambi_construct_object(__jni_env, " << java_object_name << ", " << qt_object_name;
         if (cls->typeEntry()->isValue())
@@ -1402,32 +1462,45 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     if (!cls->hasVirtualFunctions() && !cls->hasInconsistentFunctions() && !cls->typeEntry()->isObject())
         return;
 
-    // Set up the link object
-    s << INDENT << qt_object_name << "->m_link = __qt_java_link;" << endl
-      << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
+    if (hasShellClass) {
+        // Set up the link object
+        s << INDENT << qt_object_name << "->m_link = __qt_java_link;" << endl
+          << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
+
+        MetaJavaClassList interfaces = cls->interfaces();
+        if (interfaces.size() + (cls->baseClass() != 0 ? 1 : 0) > 1)  {
+            if (cls->baseClass() != 0)
+                interfaces += cls->baseClass();
+            foreach (MetaJavaClass *iface, interfaces) {
+                s << INDENT << qt_object_name << "->m_link->registerSubObject((" << iface->qualifiedCppName() << " *) " << qt_object_name << ");" << endl;
+            }
+        }
+    }
 
     if (!cls->hasVirtualFunctions() && !cls->hasInconsistentFunctions())
         return;
 
     // Set up the vtable
-    QString space(48, ' ');
-    s << "    " << qt_object_name << "->m_vtable = qtjambi_setup_vtable(__jni_env, " << endl
-      << space << "__jni_object, " << endl;
+    s << INDENT;
+    QString space(24, ' ');
+    if (hasShellClass)
+        s << qt_object_name << "->m_vtable = ";
+    s << "qtjambi_setup_vtable(__jni_env, " << endl << space << "__jni_object, " << endl;
 
-    if (cls->cppInconsistentFunctions().size()) {
+    if (cls->hasInconsistentFunctions()) {
         s << space << "qtjambi_inconsistent_count, " << endl
           << space << "qtjambi_inconsistent_names, " << endl
           << space << "qtjambi_inconsistent_signatures, " << endl;
     } else {
-        s << "0, 0, 0, // no inconsistent functions" << endl;
+        s << space << "0, 0, 0, // no inconsistent functions" << endl;
     }
 
-    if (cls->functionsInShellClass().size()) {
+    if (cls->hasVirtualFunctions()) {
         s << space << "qtjambi_method_count, " << endl
           << space << "qtjambi_method_names, " << endl
           << space << "qtjambi_method_signatures" << endl;
     } else {
-        s << "0, 0, 0 // no virtual functions" << endl;
+        s << space << "0, 0, 0 // no virtual functions" << endl;
     }
 
     s << space << ");" << endl;
@@ -1471,24 +1544,24 @@ void CppImplGenerator::writeSignalInitialization(QTextStream &s, const MetaJavaC
       << "}";
 }
 
-QString CppImplGenerator::fromObject(const TypeEntry *entry, 
+QString CppImplGenerator::fromObject(const TypeEntry *entry,
                                      const QString &var_name)
 {
     QString returned;
     QString package = entry->javaPackage();
-    const ComplexTypeEntry *centry = entry->isComplex() 
+    const ComplexTypeEntry *centry = entry->isComplex()
                                      ? static_cast<const ComplexTypeEntry *>(entry)
                                      : 0;
-   
+
     if (centry == 0 || centry->polymorphicIdValue().isEmpty()) {
-        returned = "qtjambi_from_object(__jni_env, " + var_name + ", \"" 
+        returned = "qtjambi_from_object(__jni_env, " + var_name + ", \""
                    + entry->lookupName()
-                   + "\", \"" + QString(package).replace(".", "/") + "/\");";
+                   + "\", \"" + QString(package).replace(".", "/") + "/\", true);";
     } else {
         MetaJavaClass *cls = classes().findClass(centry->qualifiedCppName());
         Q_ASSERT(cls != 0);
         while (cls != 0 && !cls->typeEntry()->isPolymorphicBase())
-            cls = cls->baseClass();        
+            cls = cls->baseClass();
 
         QString full_name;
         if (cls != 0) {
@@ -1498,10 +1571,10 @@ QString CppImplGenerator::fromObject(const TypeEntry *entry,
                                    .arg(centry->qualifiedCppName()));
         }
 
-        returned = "qtjambi_from_object(__jni_env, " + var_name + ", \"" 
+        returned = "qtjambi_from_object(__jni_env, " + var_name + ", \""
                    + centry->lookupName()
                    + "\", \"" + QString(package).replace(".", "/") + "/\","
-                   + "\"" + jni_signature(full_name, Underscores) + "\");";
+                   + "\"" + jni_signature(full_name, Underscores) + "\", true);";
     }
 
     return returned;
@@ -1579,11 +1652,11 @@ bool CppImplGenerator::writeConversionRule(QTextStream &s,
                                            const QString &qt_name,
                                            const QString &java_name)
 {
-    if (argument_index < 0 || java_function == 0) 
+    if (argument_index < 0 || java_function == 0)
         return false;
 
     QString conversion_rule = java_function->conversionRule(target_language, argument_index);
-    
+
     if (!conversion_rule.isEmpty()) {
         QString qt_name_var;
         QString java_name_var;
@@ -1601,7 +1674,7 @@ bool CppImplGenerator::writeConversionRule(QTextStream &s,
 
         MetaJavaArgumentList arguments = java_function->arguments();
         for (int i=0; i<arguments.size(); ++i) {
-            conversion_rule = conversion_rule.replace("%" + QString::number(i+1), 
+            conversion_rule = conversion_rule.replace("%" + QString::number(i+1),
                                                       arguments.at(i)->indexedName());
         }
 
@@ -1625,9 +1698,9 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
                                      const MetaJavaFunction *java_function,
                                      int argument_index)
 {
-    if (writeConversionRule(s, CodeSnip::NativeCode, java_function, argument_index, 
+    if (writeConversionRule(s, CodeSnip::NativeCode, java_function, argument_index,
                             qt_name, java_name)) {
-        return;   
+        return;
     }
 
     s << INDENT << shellClassName(java_class) << " *" << qt_name << " = ("
@@ -1653,9 +1726,9 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
                                      int argument_index,
                                      Option options)
 {
-    if (java_function && writeConversionRule(s, CodeSnip::NativeCode, 
+    if (java_function && writeConversionRule(s, CodeSnip::NativeCode,
                                              java_function, argument_index, qt_name, java_name)) {
-        return;   
+        return;
     }
 
     if (java_type->isVariant()) {
@@ -1871,9 +1944,9 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
                                      int argument_index,
                                      Option option)
 {
-    if (java_function && writeConversionRule(s, CodeSnip::JavaCode, 
+    if (java_function && writeConversionRule(s, CodeSnip::JavaCode,
                                              java_function, argument_index, qt_name, java_name)) {
-        return;   
+        return;
     }
 
     if (java_type->isArray() && java_type->arrayElementType()->isPrimitive()) {
@@ -1997,7 +2070,7 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
         } else if (java_type->isValue()) {
             s << fromObject(java_type->typeEntry(), "&" + qt_name) << endl;
         } else {
-            s << fromObject(java_type->typeEntry(), 
+            s << fromObject(java_type->typeEntry(),
                             (java_type->isReference() ? "&" : "") + qt_name) << endl;
         }
     }
@@ -2013,9 +2086,9 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
                                               const MetaJavaFunction *java_function,
                                               int argument_index)
 {
-    if (java_function && writeConversionRule(s, CodeSnip::JavaCode, 
+    if (java_function && writeConversionRule(s, CodeSnip::JavaCode,
                                             java_function, argument_index, qt_name, java_name)) {
-        return;   
+        return;
     }
 
     Q_ASSERT(java_type->isContainer());
@@ -2137,7 +2210,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
                                               const MetaJavaFunction *java_function,
                                               int argument_index)
 {
-    if (java_function && writeConversionRule(s, CodeSnip::JavaCode, 
+    if (java_function && writeConversionRule(s, CodeSnip::JavaCode,
                                              java_function, argument_index, qt_name, java_name)) {
         return;
     }
@@ -2310,7 +2383,7 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
             writeTypeInfo(s, argument->type());
             s << ")";
         }
-            if (!argument->type()->isPrimitive() 
+            if (!argument->type()->isPrimitive()
                 || !java_function->conversionRule(CodeSnip::NativeCode, argument->argumentIndex()+1).isEmpty()) {
             s << prefix;
         }

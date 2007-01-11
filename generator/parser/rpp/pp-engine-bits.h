@@ -347,6 +347,10 @@ _InputIterator pp::handle_include (bool __skip_current_path, _InputIterator __fi
 
   std::string filename (__first, end_name);
 
+#ifdef Q_OS_WIN
+  std::replace(filename.begin(), filename.end(), '/', '\\');
+#endif
+
   std::string filepath;
   FILE *fp = find_include_file (filename, &filepath, quote == '>' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, __skip_current_path);
 

@@ -21,7 +21,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.trolltech.autotests.generated.Variants;
-import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.*;
 
@@ -375,20 +374,13 @@ public class TestQVariant extends QApplicationTest {
 
     @Test
     public void run_QByteArray_toString() {
-        QNativePointer np = new QNativePointer(QNativePointer.Type.Byte, 6);
-        np.setByteAt(0, (byte) 'a');
-        np.setByteAt(1, (byte) 'e');
-        np.setByteAt(2, (byte) 'r');
-        np.setByteAt(3, (byte) 'y');
-        np.setByteAt(4, (byte) 'n');
-        np.setByteAt(5, (byte) 0);
-
+        byte data[] = {'a', 'e', 'r', 'y', 'n'};
+        
         // Normal construction
-        assertEquals(new QByteArray(np).toString(), "aeryn");
-
-        // Using char *, int constructor
-        np.setByteAt(5, (byte) 'c');
-        assertEquals(new QByteArray(np, 5).toString(), "aeryn");
+        assertEquals(new QByteArray(data).toString(), "aeryn");
+        
+        // String construction
+        assertEquals(new QByteArray("aeryn").toString(), "aeryn");
 
         // Using int, char constructor
         assertEquals(new QByteArray(5, (byte) 'a').toString(), "aaaaa");

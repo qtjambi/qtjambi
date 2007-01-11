@@ -33,6 +33,7 @@ import com.trolltech.qt.gui.QSystemTrayIcon;
 import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QWidget;
 
+@QtJambiExample(name = "System Tray Example")
 public class SystemTrayExample extends QWidget {
 
     private QSystemTrayIcon trayIcon;
@@ -114,7 +115,7 @@ public class SystemTrayExample extends QWidget {
         types.add("Critical");
         typeCombo.addItems(types);
         typeCombo.setCurrentIndex(2);
- 
+
         QPushButton balloonButton = new QPushButton(tr("Balloon message"));
         balloonButton.setToolTip(tr("Click here to balloon the message"));
         balloonButton.clicked.connect(this, "showMessage()");
@@ -148,7 +149,7 @@ public class SystemTrayExample extends QWidget {
         layout.addWidget(iconLabel, 7, 0);
         layout.addWidget(iconCombo, 7, 1);
         setLayout(layout);
-        
+
         setWindowTitle(tr("System Tray Example"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
@@ -171,12 +172,12 @@ public class SystemTrayExample extends QWidget {
     protected void showMessage() {
         // #ifdef Q_WS_MAC
         if (QSysInfo.macVersion() != 0) {
-            QMessageBox.information(this, tr("System tray example"), 
+            QMessageBox.information(this, tr("System tray example"),
                     tr("Balloon tips are not supported on Mac OS X"));
         } else {
             QSystemTrayIcon.MessageIcon icon;
             icon = QSystemTrayIcon.MessageIcon.resolve(typeCombo.currentIndex());
-            trayIcon.showMessage(titleEdit.text(), messageEdit.toPlainText(), 
+            trayIcon.showMessage(titleEdit.text(), messageEdit.toPlainText(),
                                  icon, 10000);
             trayIcon.setToolTip(titleEdit.text());
         }
@@ -198,12 +199,12 @@ public class SystemTrayExample extends QWidget {
         default:
         case 0:
             iconName = "classpath:com/trolltech/examples/images/icon_16x16.png";
-            break;                
-       
+            break;
+
         case 1:
             iconName = "classpath:com/trolltech/examples/images/icon_22x22.png";
             break;
-        
+
         case 2:
             iconName = "classpath:com/trolltech/examples/images/icon_32x32.png";
             break;
@@ -212,16 +213,4 @@ public class SystemTrayExample extends QWidget {
         trayIcon.setIcon(new QIcon(pixmap));
     }
 
-   
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "System Tray Example";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

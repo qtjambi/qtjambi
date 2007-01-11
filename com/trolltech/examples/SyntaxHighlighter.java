@@ -18,6 +18,7 @@ import java.util.Vector;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Syntax Highlighter")
 public class SyntaxHighlighter extends QMainWindow {
 
     private QTextEdit editor;
@@ -66,7 +67,7 @@ public class SyntaxHighlighter extends QMainWindow {
     public void openFile(String fileName) {
         if (fileName.equals(""))
             fileName = QFileDialog
-                    .getOpenFileName(this, tr("Open File"), "", "Java Files (*.java)");
+                    .getOpenFileName(this, tr("Open File"), "", new QFileDialog.Filter("Java Files (*.java)"));
 
         if (!fileName.equals("")) {
             QFile file = new QFile(fileName);
@@ -90,7 +91,7 @@ public class SyntaxHighlighter extends QMainWindow {
         QFile file = new QFile(
                "classpath:com/trolltech/examples/SyntaxHighlighter.java");
 
-        if (file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, 
+        if (file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly,
                                          QFile.OpenModeFlag.Text)))
             editor.setPlainText(file.readAll().toString());
     }
@@ -152,7 +153,7 @@ public class SyntaxHighlighter extends QMainWindow {
 
             super(parent);
 
-            HighlightingRule rule; 
+            HighlightingRule rule;
             QBrush brush;
             QRegExp pattern;
 
@@ -161,18 +162,18 @@ public class SyntaxHighlighter extends QMainWindow {
             keywordFormat.setFontWeight(QFont.Weight.Bold.value());
 
             // All the java keywords
-            String[] keywords = { "abstract", "continue", "for", "new", 
-                                  "switch", "assert", "default", "goto", 
+            String[] keywords = { "abstract", "continue", "for", "new",
+                                  "switch", "assert", "default", "goto",
                                   "package", "synchronized", "boolean",
-                                  "do", "if", "private", "this", "break", 
-                                  "double", "implements", "protected", 
-                                  "throw", "byte", "else", "import", 
-                                  "public", "throws", "case", "enum", 
-                                  "instanceof", "return", "transient", 
-                                  "catch", "extends", "int", "short", 
-                                  "try", "char", "final", "interface", 
-                                  "static", "void", "class", "finally", 
-                                  "long", "strictfp", "volatile", "const", 
+                                  "do", "if", "private", "this", "break",
+                                  "double", "implements", "protected",
+                                  "throw", "byte", "else", "import",
+                                  "public", "throws", "case", "enum",
+                                  "instanceof", "return", "transient",
+                                  "catch", "extends", "int", "short",
+                                  "try", "char", "final", "interface",
+                                  "static", "void", "class", "finally",
+                                  "long", "strictfp", "volatile", "const",
                                   "float", "native", "super", "while" };
 
             for (String keyword : keywords) {
@@ -185,7 +186,7 @@ public class SyntaxHighlighter extends QMainWindow {
             brush = new QBrush(QColor.darkMagenta);
             pattern = new QRegExp("\\bQ[A-Za-z]+\\b");
             classFormat.setForeground(brush);
-            classFormat.setFontWeight(QFont.Weight.Bold.value());            
+            classFormat.setFontWeight(QFont.Weight.Bold.value());
             rule = new HighlightingRule(pattern, classFormat);
             highlightingRules.add(rule);
 
@@ -247,15 +248,4 @@ public class SyntaxHighlighter extends QMainWindow {
             }
         }
     }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Syntax Highlighter";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

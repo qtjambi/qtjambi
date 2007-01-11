@@ -22,6 +22,7 @@
 #include <QReadWriteLock>
 #include <QThread>
 #include <QWriteLocker>
+#include <QCoreApplication>
 
 // #define DEBUG_REFCOUNTING
 
@@ -41,19 +42,32 @@ inline static void deleteWeakObject(JNIEnv *env, jobject object)
 #endif
 }
 
+void QtJambiLink::registerSubObject(void *ptr) {
+    QWriteLocker locker(gUserObjectCacheLock());
+    Q_ASSERT(gUserObjectCache());
+    gUserObjectCache()->insert(ptr, this);
+}
+
+void QtJambiLink::unregisterSubObject(void *ptr) {
+    QWriteLocker locker(gUserObjectCacheLock());
+
+    int i = gUserObjectCache() ? gUserObjectCache()->remove(ptr) : 1;
+    Q_ASSERT(i == 1);
+    Q_UNUSED(i);
+}
+
 QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object,
-                                             bool java_owns_qobject)
+                                               bool java_owns_qobject)
 {
     Q_ASSERT(env);
     Q_ASSERT(java);
     Q_ASSERT(object);
 
     // Initialize the link
-    QtJambiLink *link = new QtJambiLink(env,
-                                      java_owns_qobject
-                                      ? env->NewWeakGlobalRef(java)
-                                      : env->NewGlobalRef(java)
-                                      );
+    QtJambiLink *link = new QtJambiLink(java_owns_qobject
+                                        ? env->NewWeakGlobalRef(java)
+                                        : env->NewGlobalRef(java)
+                                        );
     link->m_is_qobject = true;
     link->m_global_ref = !java_owns_qobject;
     link->m_pointer = object;
@@ -74,9 +88,9 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
 
 
     // Set the native__id field of the java object
-    StaticCache *sc = StaticCache::instance(link->environment());
-    sc->resolveQtObject();
-    env->SetLongField(link->m_java_object, sc->QtObject.native_id, reinterpret_cast<jlong>(link));
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiObject();
+    env->SetLongField(link->m_java_object, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
 
     return link;
 }
@@ -94,7 +108,7 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
         return 0;
     }
 
-    jmethodID constructorId = resolveMethod(env, "<init>", "(Lcom/trolltech/qt/QtObject$QPrivateConstructor;)V",
+    jmethodID constructorId = resolveMethod(env, "<init>", "(Lcom/trolltech/qt/QtJambiObject$QPrivateConstructor;)V",
         class_name, package_name, false);
     Q_ASSERT(constructorId);
 
@@ -111,7 +125,7 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     Q_ASSERT(ptr);
 
     // Initialize the link
-    QtJambiLink *link = new QtJambiLink(env, env->NewWeakGlobalRef(java));
+    QtJambiLink *link = new QtJambiLink(env->NewWeakGlobalRef(java));
     link->m_is_qobject = false;
     link->m_global_ref = false;
     link->m_pointer = ptr;
@@ -122,14 +136,15 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     // becomes free, so we cannot cache the pointer.
     if (enter_in_cache) {
         QWriteLocker locker(gUserObjectCacheLock());
+        Q_ASSERT(gUserObjectCache());
         gUserObjectCache()->insert(ptr, link);
         link->m_in_cache = true;
     }
 
     // Set the native__id field of the java object
-    StaticCache *sc = StaticCache::instance(link->environment());
-    sc->resolveQtObject();
-    env->SetLongField(link->m_java_object, sc->QtObject.native_id, reinterpret_cast<jlong>(link));
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiObject();
+    env->SetLongField(link->m_java_object, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
 
     return link;
 }
@@ -140,12 +155,13 @@ QtJambiLink *QtJambiLink::findLinkForUserObject(const void *ptr)
         return 0;
 
     QReadLocker locker(gUserObjectCacheLock());
+    Q_ASSERT(gUserObjectCache());
     return gUserObjectCache()->value(ptr, 0);
 }
 
 QtJambiLink *QtJambiLink::findLinkForQObject(QObject *o)
 {
-    if (o == 0) 
+    if (o == 0)
         return 0;
 
     QtJambiLinkUserData *p = static_cast<QtJambiLinkUserData *>(o->userData(qtjambi_user_data_id));
@@ -159,28 +175,26 @@ QtJambiLink *QtJambiLink::findLink(JNIEnv *env, jobject java)
         return 0;
 
     StaticCache *sc = StaticCache::instance(env);
-    sc->resolveQtObject();
-    return reinterpret_cast<QtJambiLink *>(env->GetLongField(java, sc->QtObject.native_id));
+    sc->resolveQtJambiObject();
+    return reinterpret_cast<QtJambiLink *>(env->GetLongField(java, sc->QtJambiObject.native_id));
 }
 
 
-void QtJambiLink::releaseJavaObject()
+void QtJambiLink::releaseJavaObject(JNIEnv *env)
 {
-    if (!m_java_object || !environment()) {
-        m_java_object = 0;
+    if (!m_java_object)
         return;
-    }
 
-    aboutToMakeObjectInvalid();
+    aboutToMakeObjectInvalid(env);
 
     if (isGlobalReference()) {
-        environment()->DeleteGlobalRef(m_java_object);
+        env->DeleteGlobalRef(m_java_object);
     } else {
         // Check if garbage collector has removed the object
-        jobject localRef = environment()->NewLocalRef(m_java_object);
-        if (!environment()->IsSameObject(localRef, 0)) {
-            deleteWeakObject(environment(), m_java_object);
-            environment()->DeleteLocalRef(localRef);
+        jobject localRef = env->NewLocalRef(m_java_object);
+        if (!env->IsSameObject(localRef, 0)) {
+            deleteWeakObject(env, m_java_object);
+            env->DeleteLocalRef(localRef);
         }
     }
 
@@ -194,23 +208,51 @@ Q_GLOBAL_STATIC(RefCountingHash, gRefCountHash);
 #endif
 
 QtJambiLink::~QtJambiLink()
-{    
-    cleanUpAll();
+{
+    JNIEnv *env = qtjambi_current_environment();
+    cleanUpAll(env);
 }
 
 
-void QtJambiLink::aboutToMakeObjectInvalid()
-{    
-    if (environment() != 0 && m_pointer != 0 && m_java_object != 0 && !m_object_invalid) {
-        StaticCache *sc = StaticCache::instance(environment());
-        sc->resolveQtObject();
-        environment()->CallVoidMethod(m_java_object, sc->QtObject.disposed);
-        environment()->SetLongField(m_java_object, sc->QtObject.native_id, 0);
+void QtJambiLink::aboutToMakeObjectInvalid(JNIEnv *env)
+{
+    if (env != 0 && m_pointer != 0 && m_java_object != 0 && !m_object_invalid) {
+        StaticCache *sc = StaticCache::instance(env);
+        sc->resolveQtJambiObject();
+        env->CallVoidMethod(m_java_object, sc->QtJambiObject.disposed);
+        qtjambi_exception_check(env);
+        env->SetLongField(m_java_object, sc->QtJambiObject.native_id, 0);
+        QTJAMBI_EXCEPTION_CHECK(env);
         m_object_invalid = true;
     }
 }
 
-void QtJambiLink::deleteNativeObject()
+void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)
+{
+    if (global == m_global_ref)
+        return;
+
+    Q_ASSERT_X(m_java_object, "QtJambiLink::setGlobalRef()", "Java object required");
+
+    // Delete the global reference and make it a weak one
+    if (!global) {
+        jobject localRef = env->NewWeakGlobalRef(m_java_object);
+        env->DeleteGlobalRef(m_java_object);
+
+        m_global_ref = false;
+        m_java_object = localRef;
+
+    // Delete the weak ref and replace it with a global ref
+    } else {
+        jobject globalRef = env->NewGlobalRef(m_java_object);
+        env->DeleteWeakGlobalRef(m_java_object);
+
+        m_global_ref = true;
+        m_java_object = globalRef;
+    }
+}
+
+void QtJambiLink::deleteNativeObject(JNIEnv *env)
 {
 #ifdef DEBUG_REFCOUNTING
     {
@@ -221,27 +263,69 @@ void QtJambiLink::deleteNativeObject()
     }
 #endif
 
-    if (environment() == 0) {
-        m_pointer = 0;
-        return;
-    }
-
     Q_ASSERT(m_pointer);
 
-    aboutToMakeObjectInvalid();
+    aboutToMakeObjectInvalid(env);
+
 
     if (isQObject()) {
         if (m_java_object && isGlobalReference()) {
-            environment()->DeleteGlobalRef(m_java_object);
+            env->DeleteGlobalRef(m_java_object);
             m_java_object = 0;
         }
 
         QObject *qobj = qobject();
+        QThread *objectThread = qobj->thread();
 
-        if (QThread::currentThread() == qobj->thread())
+        // Explicit dispose from current thread, delete object
+        if (QThread::currentThread() == objectThread) {
+//             printf(" - straight up delete %s [%s]\n",
+//                    qPrintable(qobj->objectName()),
+//                    qobj->metaObject()->className());
             delete qobj;
-        else
+
+        // We're in the main thread and we'll have an event loop
+        // running, so its safe to call delete later.
+        } else if (QCoreApplication::instance() &&
+                   QCoreApplication::instance()->thread() == objectThread) {
+//             printf(" - deleteLater in main thread %s [%s]\n",
+//                    qPrintable(qobj->objectName()),
+//                    qobj->metaObject()->className());
             qobj->deleteLater();
+
+        // If the QObject is in a non-main thread, check if that
+        // thread is a QThread, in which case it will run an eventloop
+        // and thus, do cleanup, hence deleteLater() is safe;
+        // Otherwise issue a warning.
+        } else {
+            jobject t = qtjambi_from_thread(env, objectThread);
+            jclass cl = env->GetObjectClass(t);
+
+            if (qtjambi_class_name(env, cl) == QLatin1String("com.trolltech.qt.QThread")) {
+//                 printf(" - delete later in QThread=%p %s [%s]\n",
+//                        objectThread,
+//                        qPrintable(qobj->objectName()),
+//                        qobj->metaObject()->className());
+                qobj->deleteLater();
+            } else {
+                qWarning("QObjects can only be implicitly garbage collected when owned"
+                         " by a QThread, native resource ('%s' [%s]) is leaked",
+                         qPrintable(qobj->objectName()),
+                         qobj->metaObject()->className());
+            }
+
+//             StaticCache *sc = StaticCache::instance(env);
+//             sc->resolveQThread();
+//             if (env->IsSameObject(cl, sc->QThread.class_ref)) {
+//                 qobj->deleteLater();
+
+//             } else {
+//                 // ## Resolve QThreadAffinityException...
+//                 // Message: "QObjects can only be implicitly garbage collected when owned by a QThread".
+//                 qWarning("something really bad happened...");
+//             }
+
+        }
         m_pointer = 0;
 
     } else {
@@ -251,29 +335,30 @@ void QtJambiLink::deleteNativeObject()
             m_destructor_function(m_pointer);
         m_pointer = 0;
     }
+
 }
 
-void QtJambiLink::cleanUpAll()
+void QtJambiLink::cleanUpAll(JNIEnv *env)
 {
     if (m_java_object != 0)
-        releaseJavaObject();
+        releaseJavaObject(env);
 
     if (m_pointer)
-        deleteNativeObject();
+        deleteNativeObject(env);
 }
 
-void QtJambiLink::javaObjectFinalized()
+void QtJambiLink::javaObjectFinalized(JNIEnv *env)
 {
-    cleanUpAll();
+    cleanUpAll(env);
     setAsFinalized();
     if (readyForDelete())
         delete this;
 }
 
-void QtJambiLink::javaObjectDisposed()
+void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 {
     if (m_pointer)
-        deleteNativeObject();
+        deleteNativeObject(env);
 }
 
 
@@ -292,11 +377,11 @@ void QtJambiLink::setMetaType(int metaType)
 }
 
 
-void QtJambiLink::resetObject() {
-    aboutToMakeObjectInvalid();
+void QtJambiLink::resetObject(JNIEnv *env) {
+    aboutToMakeObjectInvalid(env);
 
     if (m_in_cache)
-        removeFromCache();
+        removeFromCache(env);
     m_pointer = 0;
 
     if (m_wrapper) {
@@ -332,13 +417,13 @@ jmethodID QtJambiLink::findMethod(JNIEnv *env, jobject javaRef, const QString &m
     return id;
 }
 
-void QtJambiLink::removeFromCache()
+void QtJambiLink::removeFromCache(JNIEnv *env)
 {
     QWriteLocker locker(gUserObjectCacheLock());
 
-    releaseJavaObject();
+    releaseJavaObject(env);
 
-    if (m_pointer != 0 && gUserObjectCache()->contains(m_pointer)) {
+    if (m_pointer != 0 && gUserObjectCache() && gUserObjectCache()->contains(m_pointer)) {
         int count = gUserObjectCache()->remove(m_pointer);
         Q_ASSERT(count == 1);
         Q_UNUSED(count);
@@ -419,12 +504,12 @@ void QtJambiLink::disableGarbageCollection(JNIEnv *env, jobject obj)
 }
 
 QtJambiLinkUserData::~QtJambiLinkUserData()
-{    
+{
     if (m_link) {
-        m_link->setEnvironment(qtjambi_current_environment());        
-        m_link->releaseJavaObject();
+        JNIEnv *env = qtjambi_current_environment();
+        m_link->releaseJavaObject(env);
         m_link->setAsQObjectDeleted();
-        m_link->resetObject();
+        m_link->resetObject(env);
 
         if (m_link->readyForDelete())
             delete m_link;

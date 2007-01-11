@@ -21,7 +21,6 @@
 #include <qglobal.h>
 
 #include <QtCore/QAbstractItemModel>
-#include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QEvent>
 #include <QtCore/QLibrary>
@@ -42,9 +41,13 @@
 static QString locate_vm();
 typedef jint (JNICALL *PtrGetDefaultJavaVMInitArgs)(void *);
 typedef jint (JNICALL *PtrCreateJavaVM)(JavaVM **, void **, void *);
+typedef jint (JNICALL *PtrGetCreatedJavaVMs)(JavaVM **vmBuf, jsize bufLen, jsize *nVMs);
 
 static PtrGetDefaultJavaVMInitArgs ptrGetDefaultJavaVMInitArgs;
 static PtrCreateJavaVM ptrCreateJavaVM;
+static PtrGetCreatedJavaVMs ptrGetCreatedJavaVMs;
+
+static bool java_connection_override;
 
 // C-style wrapper for qInstallMsgHandler so the launcher launcher can look it up dynamically
 // without bothering with knowing the name mangling
@@ -83,7 +86,6 @@ Q_GLOBAL_STATIC(QReadWriteLock, qtjambi_thread_table_lock);
 #ifdef JOBJECT_REFCOUNT
 #  include <QtCore/QReadWriteLock>
 #  include <QtCore/QWriteLocker>
-#  include <QtCore/QDebug>
     Q_GLOBAL_STATIC(QReadWriteLock, gRefCountLock);
 
     static void jobjectRefCount(bool create)
@@ -100,7 +102,7 @@ Q_GLOBAL_STATIC(QReadWriteLock, qtjambi_thread_table_lock);
 
         Q_ASSERT(refs >= 0);
 
-        qDebug() << s;
+        fprintf(stderr, qPrintable(s));
     }
 
 #  define REF_JOBJECT jobjectRefCount(true)
@@ -188,7 +190,7 @@ static inline int javaObjectVariant()
 bool qtjambi_exception_check(JNIEnv *env)
 {
     if (env->ExceptionCheck()) {
-        qDebug("QtJambi: Exception pending in native code");
+        fprintf(stderr, "QtJambi: Exception pending in native code");
         env->ExceptionDescribe();
         env->ExceptionClear();
         return true;
@@ -223,9 +225,9 @@ void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
     QReadLocker locker(g_polymorphic_id_lock());
     QList<QtJambiPolymorphicHandler> handlers = g_polymorphic_ids()->values(lookup);
     for (int i=0; i<handlers.size(); ++i) {
-        if (handlers[i](object, class_name, package)) 
+        if (handlers[i](object, class_name, package))
             break;
-    }   
+    }
 }
 
 /*!
@@ -239,10 +241,14 @@ JNIEnv *qtjambi_current_environment()
     Q_ASSERT(qtjambi_vm);
     int result = qtjambi_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_4);
     if (result == JNI_EDETACHED) {
-      // ### TODO: Attach thread, atleast when in adopt_current?
-        return 0;
+        if (qtjambi_vm->AttachCurrentThreadAsDaemon(reinterpret_cast<void **>(&env), 0) < 0) {
+            qWarning("Failed attaching current thread");
+            return 0;
+        }
+
+    } else {
+        Q_ASSERT(result == JNI_OK);
     }
-    Q_ASSERT(result == JNI_OK);
     return env;
 }
 
@@ -255,7 +261,7 @@ QString qtjambi_class_name(JNIEnv *env, jclass java_class)
     return QtJambiTypeManager::jstringToQString(env, name);
 }
 
-QString qtjambi_class_name(JNIEnv *env, jobject java_object)
+QString qtjambi_object_class_name(JNIEnv *env, jobject java_object)
 {
     return qtjambi_class_name(env, env->GetObjectClass(java_object));
 }
@@ -400,9 +406,9 @@ QObject *qtjambi_to_qobject(JNIEnv *env, jobject java_object)
         return 0;
 
     StaticCache *sc = StaticCache::instance(env);
-    sc->resolveQtObject();
+    sc->resolveQtJambiObject();
 
-    jlong id = env->GetLongField(java_object, sc->QtObject.native_id);
+    jlong id = env->GetLongField(java_object, sc->QtJambiObject.native_id);
     return id == 0
                ? 0
                : (reinterpret_cast<QtJambiLink *>(id))->qobject();
@@ -442,22 +448,19 @@ void *qtjambi_to_interface(JNIEnv *env,
     return reinterpret_cast<void *>(ret);
 }
 
-jobject qtjambi_from_object(JNIEnv *env, const QRect &rect, const char *className, const char *packageName)
-{
-    return qtjambi_from_object(env, &rect, className, packageName);
-}
-
-jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className, char *packageName, const char *lookupName) 
+jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className,
+                            char *packageName, const char *lookupName, bool makeCopyOfValueTypes)
 {
     char *class_name = className;
     char *package = packageName;
     if (qt_object != 0)
-        qtjambi_resolve_polymorphic_id(lookupName, qt_object, &class_name, &package);    
+        qtjambi_resolve_polymorphic_id(lookupName, qt_object, &class_name, &package);
 
-    return qtjambi_from_object(env, qt_object, class_name, package);
+    return qtjambi_from_object(env, qt_object, class_name, package, makeCopyOfValueTypes);
 }
 
-jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className, const char *packageName)
+jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className,
+                            const char *packageName, bool makeCopyOfValueTypes)
 {
     jobject returned = 0;
     if (qt_object == 0)
@@ -472,7 +475,7 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
     if (returned == 0)
         return 0;
 
-    int metaType = QMetaType::type(className);
+    int metaType = makeCopyOfValueTypes ? QMetaType::type(className) : QMetaType::Void;
 
     // If it's not a value type, we just link to the pointer directly.
     void *copy = 0;
@@ -500,6 +503,12 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
     }
 
     return returned;
+}
+
+void qtjambi_invalidate_object(JNIEnv *env, jobject java_object)
+{
+    QtJambiLink *link = QtJambiLink::findLink(env, java_object);
+    link->resetObject(env);
 }
 
 static bool qtjambi_connect_callback(void **raw_data);
@@ -536,6 +545,14 @@ static void qtjambi_setup_connections(JNIEnv *, QtJambiLink *link)
     }
 }
 
+jobject qtjambi_from_QObject(JNIEnv *env, QObject *qt_object) {
+    return qtjambi_from_qobject(env, qt_object, "QObject", "com/trolltech/qt/core/");
+}
+
+jobject qtjambi_from_QWidget(JNIEnv *env, QWidget *widget) {
+    return qtjambi_from_qobject(env, widget, "QWidget", "com/trolltech/qt/gui/");
+}
+
 jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *className, const char *packageName)
 {
     if (qt_object == 0)
@@ -558,7 +575,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
         // more specific version than anything we can find)
         while (mo != 0) {
             // Never go further down the hierarchy than the requested class
-            if (QLatin1String(className) == QLatin1String(mo->className()))
+            if (qstrcmp(className, mo->className()) == 0)
                 break;
 
             QString javaName = getJavaName(QLatin1String(mo->className()));
@@ -568,7 +585,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
                 javaPackageName = QtJambiTypeManager::package(javaName).toLatin1();
 
                 // Make sure the requested class is a superclass of this one
-                while (mo != 0 && QLatin1String(mo->className()) == QLatin1String(className))
+                while (mo != 0 && qstrcmp(mo->className(), className) == 0)
                     mo = mo->superClass();
 
                 // If we found the requested class in the hierarchy, then choose the most
@@ -595,7 +612,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
 
 jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className)
 {
-    jclass cl = env->FindClass(className);
+    jclass cl = qtjambi_find_class(env, className);
     Q_ASSERT(cl);
 
     jmethodID method = env->GetStaticMethodID(cl, "resolve_internal", "(I)Ljava/lang/Object;");
@@ -606,7 +623,7 @@ jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className)
 
 jobject qtjambi_from_flags(JNIEnv *env, int qt_flags, const char *className)
 {
-    jclass cl = env->FindClass(className);
+    jclass cl = qtjambi_find_class(env, className);
     Q_ASSERT(cl);
 
     jmethodID method = env->GetMethodID(cl, "<init>", "(I)V");
@@ -623,8 +640,7 @@ int qtjambi_to_enumerator(JNIEnv *env, jobject value)
 }
 
 
-QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject,
-                              bool memory_managed)
+QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject)
 {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveThread();
@@ -655,7 +671,7 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
         }
     }
 
-    return QtJambiLink::createLinkForQObject(env, java_object, qobject, memory_managed);
+    return QtJambiLink::createLinkForQObject(env, java_object, qobject, !qobject->parent());
 }
 
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,
@@ -754,7 +770,11 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
     QtJambiFunctionTable *table = findFunctionTable(qclass_name);
 
     if (table) {
+
+#ifdef QT_DEBUG
         table->ref();
+#endif
+
         return table;
     } else {
         table = new QtJambiFunctionTable(qclass_name, count);
@@ -767,8 +787,10 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                    (qclass_name + "::" + names[i] + signatures[i]).toLatin1());
 
         QTJAMBI_EXCEPTION_CHECK(env);
-        jobject method_object = env->ToReflectedMethod(object_class, method_id, true);
-        Q_ASSERT(method_object);
+        jobject method_object = env->ToReflectedMethod(object_class, method_id, false);
+        Q_ASSERT_X(method_object,
+                 "vtable setup failed on conversion to reflected method...",
+                 (qclass_name + "::" + names[i] + signatures[i]).toLatin1());
 
         QTJAMBI_EXCEPTION_CHECK(env);
         if (env->CallStaticBooleanMethod(sc->QtJambiUtils.class_ref,
@@ -792,8 +814,10 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                    (qclass_name + "::" + names[i] + signatures[i]).toLatin1());
 
         QTJAMBI_EXCEPTION_CHECK(env);
-        jobject method_object = env->ToReflectedMethod(object_class, method_id, true);
-        Q_ASSERT(method_object);
+        jobject method_object = env->ToReflectedMethod(object_class, method_id, false);
+        Q_ASSERT_X(method_object,
+                 "vtable setup failed on conversion to reflected method of inconsisten function",
+                 (qclass_name + "::" + names[i] + signatures[i]).toLatin1());
 
         QTJAMBI_EXCEPTION_CHECK(env);
         if (env->CallStaticBooleanMethod(sc->QtJambiUtils.class_ref,
@@ -811,6 +835,12 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
     return table;
 }
 
+jclass qtjambi_find_generated_superclass(JNIEnv *env,  jobject obj){
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiUtils();
+    return (jclass)env->CallStaticObjectMethod(sc->QtJambiUtils.class_ref, sc->QtJambiUtils.findGeneratedSuperclass, obj);
+}
+
 void qtjambi_resolve_signals(JNIEnv *env,
                              jobject java_object,
                              QtJambiSignalInfo *infos,
@@ -818,19 +848,21 @@ void qtjambi_resolve_signals(JNIEnv *env,
                              char **names,
                              int *argument_counts)
 {
-    jclass clazz = env->GetObjectClass(java_object);
+    Q_ASSERT(java_object);
+    jclass clazz = qtjambi_find_generated_superclass(env,  java_object);
+
     QTJAMBI_EXCEPTION_CHECK(env);
     Q_ASSERT(clazz);
 
     for (int i=0; i<count; ++i) {
-        QByteArray class_name = QByteArray("QObject$Signal")
+        QByteArray class_name = QByteArray("QSignalEmitter$Signal")
                                 + QByteArray::number(argument_counts[i]);
         QByteArray signature("(");
         for (int j=0;j<argument_counts[i]; ++j)
             signature.append("Ljava/lang/Object;");
         signature.append(")V");
 
-        QByteArray field_signature = QByteArray("Lcom/trolltech/qt/core/" + class_name + QByteArray(";"));
+        QByteArray field_signature = QByteArray("Lcom/trolltech/qt/" + class_name + QByteArray(";"));
         jfieldID fieldId = env->GetFieldID(clazz, names[i], field_signature.constData());
         QTJAMBI_EXCEPTION_CHECK(env);
         Q_ASSERT(fieldId);
@@ -841,7 +873,7 @@ void qtjambi_resolve_signals(JNIEnv *env,
 
         infos[i].object = env->NewWeakGlobalRef(signal);
         infos[i].methodId = resolveMethod(env, "emit", signature.constData(),
-                                          class_name.constData(), "com/trolltech/qt/core/");
+                                          class_name.constData(), "com/trolltech/qt/");
     }
 }
 
@@ -1083,6 +1115,124 @@ bool qtjambi_is_created_by_java(QObject *qobject)
     return userData && userData->link()->createdByJava();
 }
 
+static QString qtjambi_urlbase(JNIEnv *env) {
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveSystem();
+    jstring classPath = (jstring) env->CallStaticObjectMethod(sc->System.class_ref, sc->System.getProperty, qtjambi_from_qstring(env, "com.trolltech.qtjambi.internal.urlbase"));
+    if (classPath != 0)
+        return qtjambi_to_qstring(env, classPath);
+    else
+        return QString();
+}
+
+Q_GLOBAL_STATIC_WITH_ARGS(jobject, gClassLoader, (0));
+Q_GLOBAL_STATIC(QString, oldUrlBase);
+Q_GLOBAL_STATIC(QReadWriteLock, gClassLoaderLock);
+jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
+{
+    // This should do the trick when running outside Eclipse,
+    // or in the context of a previously loaded class
+    jclass returned = env->FindClass(qualifiedName);
+    if (returned == 0) {
+        jthrowable exception = env->ExceptionOccurred();
+        env->ExceptionClear();
+       
+        // Check internal property which is set in Eclipse integration
+        QString qtClassPath = qtjambi_urlbase(env); 
+        if (!qtClassPath.isEmpty()) {
+            QString qtClassName = QString::fromLatin1(qualifiedName).replace('/', '.');
+            StaticCache *sc = StaticCache::instance(env);
+            sc->resolveClassLoader();
+
+            jobject classLoader = 0;
+            QString oldBase;
+            {
+                QReadLocker locker(gClassLoaderLock());
+                classLoader = *gClassLoader();
+                oldBase = *oldUrlBase();
+            }
+
+            if (classLoader == 0) {
+                // No class loader instantiated? 
+                // We have to make a URL loader, because the default is created with
+                // the wrong class path in Eclipse. 
+
+                QWriteLocker locker(gClassLoaderLock());
+                classLoader = *gClassLoader();
+                if (classLoader == 0) {
+                    sc->resolveURLClassLoader();
+                    sc->resolveURL();
+                    sc->resolveThread();
+
+                    jobject currentThread = env->CallStaticObjectMethod(sc->Thread.class_ref, sc->Thread.currentThread);
+                    Q_ASSERT(currentThread);
+
+                    jobject contextClassLoader = env->CallObjectMethod(currentThread, sc->Thread.getContextClassLoader);
+                    Q_ASSERT(currentThread);
+
+                    QStringList urlList = qtClassPath.split(";");
+                    jobjectArray urls = env->NewObjectArray(urlList.size(), sc->URL.class_ref, 0);
+                    Q_ASSERT(urls);
+
+                    for (int i=0; i<urlList.size(); ++i) {
+                        jobject url = env->NewObject(sc->URL.class_ref, sc->URL.constructor, qtjambi_from_qstring(env, urlList.at(i)));
+                        Q_ASSERT(url);
+
+                        env->SetObjectArrayElement(urls, i, url);
+                    }
+
+                    classLoader = env->CallStaticObjectMethod(sc->URLClassLoader.class_ref, sc->URLClassLoader.newInstance, urls, contextClassLoader);
+                    Q_ASSERT(classLoader);
+
+                    classLoader = env->NewGlobalRef(classLoader);
+                    Q_ASSERT(classLoader);
+
+                    *gClassLoader() = classLoader;
+                    *oldUrlBase() = qtClassPath;
+                    oldBase = qtClassPath;
+                }
+            } 
+            
+            if (classLoader != 0 && oldBase != qtClassPath) {
+                // If the class path has changed after the class loader
+                // was created, we need to update the class loader.
+                // This is needed to load custom widgets in the current project.
+
+                QWriteLocker locker(gClassLoaderLock());
+                sc->resolveURLClassLoader();
+                sc->resolveURL();
+                
+                QStringList oldUrlList = oldUrlBase()->split(";");
+                QStringList urlList = qtClassPath.split(";");
+                for (int i=0; i<urlList.size(); ++i) {
+                    if (!oldUrlList.contains(urlList.at(i))) {
+                        jobject url = env->NewObject(sc->URL.class_ref, sc->URL.constructor, qtjambi_from_qstring(env, urlList.at(i)));
+                        env->CallVoidMethod(classLoader, sc->URLClassLoader.addURL, url);
+                    }
+                }
+
+                *oldUrlBase() = qtClassPath;
+            }
+           
+            // Look up the class in our custom class loader
+            jstring className = qtjambi_from_qstring(env, qtClassName);
+            returned = (jclass) env->CallObjectMethod(classLoader, sc->ClassLoader.loadClass, className);
+        } else {
+	  env->Throw(exception);
+	}
+    }
+
+    return returned;
+}
+
+bool qtjambi_destroy_vm()
+{
+    if (!qtjambi_vm)
+        return false;
+
+    return qtjambi_vm->DestroyJavaVM() == 0;
+}
+
 bool qtjambi_initialize_vm()
 {
     if (qtjambi_vm)
@@ -1102,10 +1252,11 @@ bool qtjambi_initialize_vm()
 
     ptrCreateJavaVM = (PtrCreateJavaVM) lib.resolve("JNI_CreateJavaVM");
     ptrGetDefaultJavaVMInitArgs = (PtrGetDefaultJavaVMInitArgs) lib.resolve("JNI_GetDefaultJavaVMInitArgs");
+    ptrGetCreatedJavaVMs = (PtrGetCreatedJavaVMs) lib.resolve("JNI_GetCreatedJavaVMs");
 
     Q_ASSERT(ptrCreateJavaVM);
     Q_ASSERT(ptrGetDefaultJavaVMInitArgs);
-
+    Q_ASSERT(ptrGetCreatedJavaVMs);
 
 
     QList<QByteArray> options;
@@ -1135,8 +1286,16 @@ bool qtjambi_initialize_vm()
         return false;
     }
 
+    qtjambi_vm = 0;
+    JavaVM *vms[256];
+    jsize nVMs;
     JNIEnv *env;
-    if (ptrCreateJavaVM(&qtjambi_vm, (void**) &env, &vm_args)) {
+    if (!ptrGetCreatedJavaVMs(vms, 256, &nVMs)) {
+        if (nVMs > 0)
+            qtjambi_vm = vms[0];
+    }
+
+    if (qtjambi_vm == 0 && ptrCreateJavaVM(&qtjambi_vm, (void**) &env, &vm_args)) {
         qWarning("QtJambi: failed to create vm");
         delete [] vm_options;
         return false;
@@ -1281,8 +1440,30 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
     Q_ASSERT(data->sender);
     Q_ASSERT(data->signal);
 
+    BasicConnectionData data_normalized =
+        { data->sender, data->signal, data->receiver, data->method };
+    QByteArray signal_normalized = QMetaObject::normalizedSignature(data->signal);
+    data_normalized.signal = signal_normalized.data();
+
+    QByteArray method_normalized;
+    method_normalized = QMetaObject::normalizedSignature(data->method);
+    data_normalized.method = data->method != 0 ? method_normalized.data() : 0;
+    data = &data_normalized;
+
     QtJambiLink *sender_link = QtJambiLink::findLinkForQObject(data->sender);
     QtJambiLink *receiver_link = QtJambiLink::findLinkForQObject(data->receiver);
+
+    if (java_connection_override) {
+        if (!sender_link) {
+            jobject jSender = qtjambi_from_QObject(jni_env, data->sender);
+            sender_link = QtJambiLink::findLink(jni_env, jSender);
+        }
+
+        if (!receiver_link) {
+            jobject jReciever = qtjambi_from_QObject(jni_env, data->receiver);
+            receiver_link = QtJambiLink::findLink(jni_env, jReciever);
+        }
+    }
 
     // If neither object has a link to Java, nothing to resolve
     if (sender_link == 0 && receiver_link == 0)
@@ -1305,13 +1486,15 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
     }
 
     if (receiver_link == 0 && data->receiver != 0) {
-        if (!create_java_objects)
-            return false;
+        if (!create_java_objects) // don't create new java objects for disconnects
+            return false;         // because unless there's a java object there isn't
+                                  // a connection in java
 
         receiver_link = QtJambiLink::findLink(jni_env,
                                               qtjambi_from_qobject(jni_env, data->receiver,
                                                                    "QObject", "com/trolltech/qt/core/"));
     }
+
     if (sender_link == 0 && data->sender != 0) {
         if (!create_java_objects)
             return false;
@@ -1353,7 +1536,13 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
             signal_name.chop(signal_name.size() - signal_name.indexOf(QLatin1Char('(')));
             signal_name = signal_name.mid(signal_name.lastIndexOf(QLatin1Char('.')) + 1);
         }
-        if (signal_name.isEmpty())
+
+        int ltPos = signal_name.indexOf(QLatin1Char('<'));
+        if (ltPos >= 1) {
+            signal_name = signal_name.left(ltPos);
+        }
+
+        if (signal_name.isEmpty()) // private and compat signals
             return false;
 
         StaticCache *sc = StaticCache::instance(jni_env);
@@ -1364,7 +1553,6 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
                                             resolved_data->java_sender,
                                             qtjambi_from_qstring(jni_env, signal_name));
     }
-
     if (resolved_data->java_signal == 0)  // unmapped signal, cannot be resolved by us
         return false;
 
@@ -1398,17 +1586,35 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
                 int paren_pos = slot_name.indexOf(QLatin1Char('('));
                 slot_name = slot_name.mid(slot_name.lastIndexOf(QLatin1Char('.'), paren_pos) + 1);
             }
-            // Private and compat signals...
-            if (slot_name.isEmpty())
+            if (slot_name.isEmpty()) // Private and compat slots...
                 return false;
 
             StaticCache *sc = StaticCache::instance(jni_env);
             sc->resolveQtJambiInternal();
-            resolved_data->java_method =
-                jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
-                                                sc->QtJambiInternal.lookupSlot,
-                                                resolved_data->java_receiver,
-                                                qtjambi_from_qstring(jni_env, slot_name));
+            sc->resolveAbstractSignal();
+
+            // If the slot is actually a signal in Java, we must handle it by finding the
+            // ref to the emit() method. Otherwise we find the function specified.
+            if (slot_name.indexOf("(") < 0) {
+                resolved_data->java_receiver =
+                    jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
+                                                    sc->QtJambiInternal.lookupSignal,
+                                                    resolved_data->java_receiver,
+                                                    qtjambi_from_qstring(jni_env, slot_name));
+                if (resolved_data->java_receiver == 0)
+                    return false;
+
+                resolved_data->java_method =
+                    jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
+                                                    sc->QtJambiInternal.findEmitMethod,
+                                                    resolved_data->java_receiver);
+            } else {
+                resolved_data->java_method =
+                    jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
+                                                    sc->QtJambiInternal.lookupSlot,
+                                                    resolved_data->java_receiver,
+                                                    qtjambi_from_qstring(jni_env, slot_name));
+            }
         }
 
         if (resolved_data->java_method == 0)
@@ -1431,8 +1637,8 @@ static void qtjambi_disconnect_all(JNIEnv *jni_env, QObject *sender, QObject *re
             : 0;
 
         StaticCache *sc = StaticCache::instance(jni_env);
-        sc->resolveQObject();
-        jni_env->CallVoidMethod(java_sender, sc->QObject.disconnect, java_receiver);
+        sc->resolveQSignalEmitter();
+        jni_env->CallVoidMethod(java_sender, sc->QSignalEmitter.disconnect, java_receiver);
     }
 }
 
@@ -1443,20 +1649,20 @@ static bool qtjambi_disconnect_callback(void **raw_data)
     JNIEnv *jni_env = qtjambi_current_environment();
     Q_ASSERT(jni_env != 0);
 
-
     BasicConnectionData *data = reinterpret_cast<BasicConnectionData *>(raw_data);
     Q_ASSERT(data->sender);
     if (data->method == 0 && data->signal == 0) {
         qtjambi_disconnect_all(jni_env, data->sender, data->receiver);
     } else {
+
         ResolvedConnectionData resolved_data;
         if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, false, false))
             return false;
 
         StaticCache *sc = StaticCache::instance(jni_env);
-        sc->resolveInternalSignal();
+        sc->resolveAbstractSignal();
         jni_env->CallBooleanMethod(resolved_data.java_signal,
-                                sc->InternalSignal.removeConnection,
+                                sc->AbstractSignal.removeConnection,
                                 resolved_data.java_receiver,
                                 resolved_data.java_method);
         QTJAMBI_EXCEPTION_CHECK(jni_env);
@@ -1488,9 +1694,9 @@ static bool qtjambi_connect_callback(void **raw_data)
         return false;
 
     StaticCache *sc = StaticCache::instance(jni_env);
-    sc->resolveInternalSignal();
+    sc->resolveAbstractSignal();
     bool result = jni_env->CallBooleanMethod(resolved_data.java_signal,
-                                             sc->InternalSignal.connectSignalMethod,
+                                             sc->AbstractSignal.connectSignalMethod,
                                              resolved_data.java_method,
                                              resolved_data.java_receiver,
                                              *data->type);
@@ -1500,11 +1706,54 @@ static bool qtjambi_connect_callback(void **raw_data)
     return result;
 }
 
+static bool qtjambi_event_notify(void **data)
+{
+    QEvent *event = (QEvent *) data[1];
+    bool *result = (bool *) data[2];
+
+    switch (event->type()) {
+
+    case 512:
+        qtjambi_metacall(qtjambi_current_environment(), event);
+        *result = true;
+        return true;
+
+    case QEvent::ChildAdded:
+    case QEvent::ChildRemoved:
+        {
+            QChildEvent *e = static_cast<QChildEvent *>(event);
+
+//             QObject *parent = reinterpret_cast<QObject *>(data[0]);
+//             printf("(child) [%s :  %s] %s [%s : %s]\n",
+//                    qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),
+//                    e->added() ? "added to" : "removed from",
+//                    qPrintable(parent->objectName()), parent->metaObject()->className());
+
+            // We're not interested in objects that don't have a link as the GC won't
+            // be interferring with them anyway.
+            QtJambiLink *link = QtJambiLink::findLinkForQObject(e->child());
+            if (link)
+                link->setGlobalRef(qtjambi_current_environment(), e->added());
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    return false;
+}
+
 void qtjambi_register_callbacks()
 {
+
     QInternal::registerCallback(QInternal::ConnectCallback,    qtjambi_connect_callback);
     QInternal::registerCallback(QInternal::DisconnectCallback, qtjambi_disconnect_callback);
     QInternal::registerCallback(QInternal::AdoptCurrentThread, qtjambi_adopt_current_thread);
+
+#if QT_VERSION >= 0x040300
+    QInternal::registerCallback(QInternal::EventNotifyCallback, qtjambi_event_notify);
+#endif
 }
 
 
@@ -1513,4 +1762,10 @@ void qtjambi_end_paint(JNIEnv *env, jobject widget)
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
     env->CallStaticVoidMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.endPaint, widget);
+}
+
+
+void qtjambi_set_java_connect_override(bool override)
+{
+    java_connection_override = override;
 }

@@ -19,9 +19,9 @@
 #include "reporthandler.h"
 #include "metajavabuilder.h"
 #include "typesystem.h"
-#include "juicdatagenerator.h"
 #include "classlistgenerator.h"
 #include "qdocgenerator.h"
+#include "uiconverter.h"
 
 #include <QDir>
 
@@ -42,8 +42,8 @@ int main(int argc, char *argv[])
     QString out_dir = "..";
     QString pp_file = ".preprocessed.tmp";
     QStringList rebuild_classes;
-    QString juic_file = "../juic/juic.xml";
     QString doc_dir = "../../main/doc/jdoc";
+    QString ui_file_name;
     bool print_stdout = false;
 
     bool no_java = false;
@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     bool build_class_list = false;
     bool build_qdoc_japi = false;
     bool docs_enabled = false;
+    bool do_ui_convert = false;
 
     for (int i=1; i<argc; ++i) {
         QString arg(argv[i]);
@@ -73,8 +74,6 @@ int main(int argc, char *argv[])
                 ReportHandler::setDebugLevel(ReportHandler::MediumDebug);
             else if (level == "full")
                 ReportHandler::setDebugLevel(ReportHandler::FullDebug);
-        } else if (arg.startsWith("--juic-file=")) {
-            juic_file = arg.mid(12);
         } else if (arg.startsWith("--no-java")) {
             no_java = true;
         } else if (arg.startsWith("--no-cpp-h")) {
@@ -96,7 +95,7 @@ int main(int argc, char *argv[])
         } else if (arg.startsWith("--dump-object-tree")) {
             dump_object_tree = true;
         } else if (arg.startsWith("--rebuild-only")) {
-            Q_ASSERT(argc < i);
+            Q_ASSERT(argc > i);
             QStringList classes = QString(argv[i+1]).split(",", QString::SkipEmptyParts);
             TypeDatabase::instance()->setRebuildClasses(classes);
             ++i;
@@ -105,13 +104,9 @@ int main(int argc, char *argv[])
             doc_dir = argv[++i];
         } else if (arg.startsWith("--jdoc-enabled")) {
             docs_enabled = true;
-        } else if (arg.startsWith("--test-typeparser")) {
-            Q_ASSERT(argc > i);
-            QString s = argv[i+1];
-            printf("%s   --->   %s\n",
-                   qPrintable(s),
-                   qPrintable(TypeParser::parse(s).toString()));
-            return 0;
+        } else if (arg.startsWith("--convert-to-jui=")) {
+            ui_file_name = arg.mid(17);
+            do_ui_convert = true;
         } else {
             if (fileName.isEmpty())
                 fileName = QString(argv[i]);
@@ -134,7 +129,6 @@ int main(int argc, char *argv[])
         printf("  --debug-level=[sparse|medium|full]\n"
                "  --dump-object-tree                \n"
                "  --help, -h or -?                  \n"
-               "  --juic-file=[name]                \n"
                "  --no-cpp-h                        \n"
                "  --no-cpp-impl                     \n"
                "  --no-java                         \n"
@@ -142,6 +136,7 @@ int main(int argc, char *argv[])
                "  --no-suppress-warnings            \n"
                "  --output-directory=[dir]          \n"
                "  --print-stdout                    \n"
+               "  --ui-to-jui=[.ui-filename]        \n"
                );
         return 0;
     }
@@ -162,6 +157,14 @@ int main(int argc, char *argv[])
 
     if (dump_object_tree) {
         dumpMetaJavaTree(builder.classes());
+        return 0;
+    }
+
+    // Ui conversion...
+    if (do_ui_convert) {
+        UiConverter converter;
+        converter.setClasses(builder.classes());
+        converter.convertToJui(ui_file_name);
         return 0;
     }
 
@@ -226,11 +229,6 @@ int main(int argc, char *argv[])
         generatePriFile(out_dir, "cpp", builder.classes(),
                         metainfo);
     }
-
-    JuicDataGenerator juicg;
-    juicg.setClasses(builder.classes());
-    juicg.setFileName(juic_file);
-    juicg.generate();
 
     printf("Classes in typesystem: %d\n"
            "Generated:\n"

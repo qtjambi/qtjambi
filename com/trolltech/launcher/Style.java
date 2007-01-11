@@ -56,6 +56,10 @@ public class Style extends QWindowsStyle {
         GRADIENT_DARK.setColorAt(1, TT_BG_GREEN_LIGHT);
     }
 
+    public Style(QObject parent) {
+        setParent(parent);
+    }
+
     public static boolean isOn(QStyle.State state) {
         return state.isSet(QStyle.StateFlag.State_On);
     }

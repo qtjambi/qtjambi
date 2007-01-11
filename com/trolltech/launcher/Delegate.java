@@ -22,6 +22,7 @@ public class Delegate extends QItemDelegate {
     public static final int MARGE_VER = 6;
 
     public Delegate(LaunchableListModel model) {
+        super(model);
         m_model = model;
     }
 

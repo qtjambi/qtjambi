@@ -447,9 +447,9 @@ QString QtJambiTypeManager::demangle(const QString &_typeName)
 bool QtJambiTypeManager::isQtSubclass(JNIEnv *env, const QString &className, const QString &package)
 {
     StaticCache *sc = StaticCache::instance(env);
-    sc->resolveQtObject();
+    sc->resolveQtJambiObject();
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
-    return (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QtObject.class_ref)));
+    return (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QtJambiObject.class_ref)));
 }
 
 bool QtJambiTypeManager::isQObjectSubclass(JNIEnv *env, const QString &className, const QString &package)
@@ -818,7 +818,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(JNIEnv *env, const
     if (!qtName.isEmpty() && !qtName.endsWith(QLatin1Char('*')))
         metaType = QMetaType::type(qtName.toLatin1().constData());
 
-    // Value types are resolved and object types that inherit QtObject are attempted to be resolved.
+    // Value types are resolved and object types that inherit QtJambiObject are attempted to be resolved.
     // Otherwise we return 0. We will attempt to map any class which begins with java/lang to
     // a value type
     int type = 0;
@@ -1079,8 +1079,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
 
                     // Map null pointers to null object
                     if (*qobject != 0)
-                        success = qtjambi_construct_qobject(mEnvironment, javaObject, *qobject,
-                                                           false);
+                        success = qtjambi_construct_qobject(mEnvironment, javaObject, *qobject);
                     else
                         success = true;
                 } else if (type & Value) {

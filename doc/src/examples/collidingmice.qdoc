@@ -49,12 +49,13 @@
     \printline }
 
     Then we create a QObject instance that will act as a timer. We
-    override the implementation of the QObject::timerEvent() method
-    to receive the timer events it generates. We start our timer by
-    calling QObject's \l {QObject::startTimer()}{startTimer()}
-    method; making a timer event occur every 1000/33
-    milliseconds. Whenever a mouse receives a timer event it will call
-    the \c move() method which we will come back to later.
+    override the implementation of the \l
+    {QObject::timerEvent()}{QObject.timerEvent()} method to receive
+    the timer events it generates. We start our timer by calling
+    QObject's \l {QObject::startTimer()}{startTimer()} method; making
+    a timer event occur every 1000/33 milliseconds. Whenever a mouse
+    receives a timer event it will call the \c move() method which we
+    will come back to later.
 
     When writing your own graphics item, you must implement the pure
     virtual \l {QGraphicsItem::boundingRect()}{boundingRect()} and \l
@@ -78,13 +79,13 @@
 
     Note the painting of the ears: Whenever a mouse item collides with
     other mice items its ears are filled with red; otherwise they are
-    filled with dark yellow. We use the
-    QGraphicsScene::collidingItems() method to check if there are
-    any colliding mice.  The actual collision detection is handled by
-    the Graphics View framework using shape-shape intersection. All we
-    have to do is to ensure that the \l
-    {QGraphicsItem::shape()}{QGraphicsItem.shape()} method returns
-    an accurate shape for our item:
+    filled with dark yellow. We use the \l
+    {QGraphicsScene::collidingItems()}{QGraphicsScene.collidingItems()}
+    method to check if there are any colliding mice.  The actual
+    collision detection is handled by the Graphics View framework
+    using shape-shape intersection. All we have to do is to ensure
+    that the \l {QGraphicsItem::shape()}{QGraphicsItem.shape()} method
+    returns an accurate shape for our item:
 
     \quotefromfile CollidingMice.java
     \skipto shape()
@@ -238,9 +239,8 @@
     \quotefromfile CollidingMice.java
     \skipto main
     \printuntil }
-    \skipto // REMOVE-END
-    \skipto }
-    \printline }
+    \skipto /^\}/
+    \printline /^\}/
 
     The \c main() method is provided to create and show the main
     application window when the example is run.

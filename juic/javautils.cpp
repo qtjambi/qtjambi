@@ -15,16 +15,22 @@
 
 QString javaFixString(const QString &str)
 {
-    QByteArray utf8 = str.toUtf8();
-    uchar cbyte;
+    const ushort *chars = str.utf16();
     QString result;
 
-    for (int i = 0; i < utf8.length(); ++i) {
-        cbyte = utf8.at(i);
-        if (cbyte >= 0x80) {
-            result += QLatin1String("\\") + QString::number(cbyte, 8);
+    for (int i = 0; i < str.length(); ++i) {
+        ushort c = chars[i];
+        if (c >= 0x0080) {
+            QString num = QString::number(c, 16);
+            int padding = 4 - num.length();
+            if (padding <= 0) {
+                qWarning("juic: bad unicode character %x became %s\n", c, qPrintable(num));
+                return "";
+            }
+
+            result += QLatin1String("\\u") + QString(padding, '0') + QString::number(c, 16);
         } else {
-            switch(cbyte) {
+            switch(c) {
             case '\\':
                 result += QLatin1String("\\\\"); break;
             case '\"':
@@ -34,7 +40,7 @@ QString javaFixString(const QString &str)
             case '\n':
                 result += QLatin1String("\\n\"+\n\""); break;
             default:
-                result += QChar(cbyte);
+                result += QChar(c);
             }
         }
     }

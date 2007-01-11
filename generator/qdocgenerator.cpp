@@ -130,19 +130,19 @@ void QDocGenerator::writeOverload(QTextStream &s,
     MetaJavaArgumentList arguments = java_function->arguments();
     bool first = true;
     foreach (MetaJavaArgument *argument, arguments) {
-        if (java_function->disabledGarbageCollection(java_function->implementingClass(), 
-                                                     argument->argumentIndex() + 1)) {        
+        if (java_function->disabledGarbageCollection(java_function->implementingClass(),
+                                                     argument->argumentIndex() + 1)) {
             if (first) {
                 s << endl << "    steals-ownership-of=\"";
                 first = false;
             } else {
                 s << ",";
             }
-            
+
             s << protect(argument->argumentName().toUtf8());
-            
+
         }
-        if (!first)                                                     
+        if (!first)
             s << "\"";
     }
     s << " />" << endl;
@@ -196,10 +196,6 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
       << "   java-extends=\"" << protect(java_class->baseClass() ? java_class->baseClass()->name().toUtf8() : "") << "\"" << endl
       << "   package=\"" << protect(java_class->package().toUtf8()) << "\"" << endl;
 
-    if (java_class->typeEntry()->isObject()) {
-        const ObjectTypeEntry *ot = static_cast<const ObjectTypeEntry *>(java_class->typeEntry());
-        s << "   memory-managed=\"" << ot->isMemoryManaged() << "\"" << endl;
-    }
 
     MetaJavaClassList interfaces = java_class->interfaces();
     if (interfaces.count() > 0) {

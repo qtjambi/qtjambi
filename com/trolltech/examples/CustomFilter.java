@@ -16,6 +16,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Custom Filter")
 public class CustomFilter extends QWidget {
 
     public static void main(String[] args) {
@@ -64,11 +65,11 @@ public class CustomFilter extends QWidget {
         filterPatternLabel.setBuddy(filterPatternLineEdit);
 
         filterSyntaxComboBox = new QComboBox();
-        filterSyntaxComboBox.addItem(tr("Regular expression"), 
+        filterSyntaxComboBox.addItem(tr("Regular expression"),
                                      QRegExp.PatternSyntax.RegExp);
-        filterSyntaxComboBox.addItem(tr("Wildcard"), 
+        filterSyntaxComboBox.addItem(tr("Wildcard"),
                                      QRegExp.PatternSyntax.Wildcard);
-        filterSyntaxComboBox.addItem(tr("Fixed string"), 
+        filterSyntaxComboBox.addItem(tr("Fixed string"),
                                      QRegExp.PatternSyntax.FixedString);
 
         filterCaseSensitivityCheckBox = new QCheckBox(
@@ -84,9 +85,9 @@ public class CustomFilter extends QWidget {
         toLabel.setBuddy(toDateEdit);
 
         filterPatternLineEdit.textChanged.connect(this, "textFilterChanged()");
-        filterSyntaxComboBox.currentIndexChanged.connect(this, 
+        filterSyntaxComboBox.currentIndexChanged.connect(this,
                                                          "textFilterChanged()");
-        filterCaseSensitivityCheckBox.toggled.connect(this, 
+        filterCaseSensitivityCheckBox.toggled.connect(this,
                                                       "textFilterChanged()");
         fromDateEdit.dateChanged.connect(this, "dateFilterChanged()");
         toDateEdit.dateChanged.connect(this, "dateFilterChanged()");
@@ -125,7 +126,7 @@ public class CustomFilter extends QWidget {
         dateFilterChanged();
     }
 
-    private void addMail(QAbstractItemModel model, String subject, 
+    private void addMail(QAbstractItemModel model, String subject,
                          String sender, QDateTime date) {
         model.insertRow(0);
         model.setData(model.index(0, 0), subject);
@@ -140,26 +141,26 @@ public class CustomFilter extends QWidget {
         model.setHeaderData(1, Qt.Orientation.Horizontal, tr("Sender"));
         model.setHeaderData(2, Qt.Orientation.Horizontal, tr("Date"));
 
-        addMail(model, "Happy New Year!", "Grace K. <grace@software-inc.com>", 
+        addMail(model, "Happy New Year!", "Grace K. <grace@software-inc.com>",
                 new QDateTime(new QDate(2006, 12, 31), new QTime(17, 03)));
-        addMail(model, "Radically new concept", 
-                "Grace K. <grace@software-inc.com>", 
+        addMail(model, "Radically new concept",
+                "Grace K. <grace@software-inc.com>",
                 new QDateTime(new QDate(2006, 12, 22), new QTime(9, 44)));
-        addMail(model, "Accounts", "pascale@nospam.com", 
+        addMail(model, "Accounts", "pascale@nospam.com",
                 new QDateTime(new QDate(2006, 12, 31), new QTime(12, 50)));
-        addMail(model, "Expenses", "Joe Bloggs <joe@bloggs.com>", 
+        addMail(model, "Expenses", "Joe Bloggs <joe@bloggs.com>",
                 new QDateTime(new QDate(2006, 12, 25), new QTime(11, 39)));
-        addMail(model, "Re: Expenses", "Andy <andy@nospam.com>", 
+        addMail(model, "Re: Expenses", "Andy <andy@nospam.com>",
                 new QDateTime(new QDate(2007, 01, 02), new QTime(16, 05)));
-        addMail(model, "Re: Accounts", "Joe Bloggs <joe@bloggs.com>", 
+        addMail(model, "Re: Accounts", "Joe Bloggs <joe@bloggs.com>",
                 new QDateTime(new QDate(2007, 01, 03), new QTime(14, 18)));
-        addMail(model, "Re: Accounts", "Andy <andy@nospam.com>", 
+        addMail(model, "Re: Accounts", "Andy <andy@nospam.com>",
                 new QDateTime(new QDate(2007, 01, 03), new QTime(14, 26)));
-        addMail(model, "Sports", "Linda Smith <linda.smith@nospam.com>", 
+        addMail(model, "Sports", "Linda Smith <linda.smith@nospam.com>",
                 new QDateTime(new QDate(2007, 01, 05), new QTime(11, 33)));
         addMail(model, "AW: Sports", "Rolf Newschweinstein <rolfn@nospam.com>",
                 new QDateTime(new QDate(2007, 01, 05), new QTime(12, 00)));
-        addMail(model, "RE: Sports", "Petra Schmidt <petras@nospam.com>", 
+        addMail(model, "RE: Sports", "Petra Schmidt <petras@nospam.com>",
                 new QDateTime(new QDate(2007, 01, 05), new QTime(12, 01)));
 
         return model;
@@ -177,7 +178,7 @@ public class CustomFilter extends QWidget {
         else
             caseSensitivity = Qt.CaseSensitivity.CaseInsensitive;
 
-        QRegExp regExp = new QRegExp(filterPatternLineEdit.text(), 
+        QRegExp regExp = new QRegExp(filterPatternLineEdit.text(),
                                      caseSensitivity, syntax);
         proxyModel.setFilterRegExp(regExp);
     }
@@ -206,7 +207,7 @@ public class CustomFilter extends QWidget {
             filterChanged();
         }
 
-        protected boolean filterAcceptsRow(int sourceRow, 
+        protected boolean filterAcceptsRow(int sourceRow,
                                            QModelIndex sourceParent) {
             QModelIndex index0;
             QModelIndex index1;
@@ -215,12 +216,12 @@ public class CustomFilter extends QWidget {
             index0 = sourceModel().index(sourceRow, 0, sourceParent);
             index1 = sourceModel().index(sourceRow, 1, sourceParent);
             index2 = sourceModel().index(sourceRow, 2, sourceParent);
-            
+
             QRegExp filter = filterRegExp();
             QAbstractItemModel model = sourceModel();
             boolean matchFound;
 
-            matchFound = filter.indexIn(model.data(index0).toString()) != -1 
+            matchFound = filter.indexIn(model.data(index0).toString()) != -1
                          || filter.indexIn(model.data(index1).toString()) != -1;
 
             return matchFound && dateInRange((QDateTime) (model.data(index2)));
@@ -232,9 +233,9 @@ public class CustomFilter extends QWidget {
             Object leftData = sourceModel().data(left);
             Object rightData = sourceModel().data(right);
 
-            if (leftData instanceof QDateTime 
+            if (leftData instanceof QDateTime
                 && rightData instanceof QDateTime) {
-                
+
                 QDateTime leftDate = (QDateTime) leftData;
                 QDateTime rightDate = (QDateTime) rightData;
 
@@ -257,19 +258,8 @@ public class CustomFilter extends QWidget {
         }
 
         private boolean dateInRange(QDateTime date) {
-            return (!minDate.isValid() || date.operator_greater(minDate)) 
+            return (!minDate.isValid() || date.operator_greater(minDate))
                     && (!maxDate.isValid() || date.operator_less(maxDate));
         }
     }
-    // REMOVE-START
-    
-    public static String exampleName() {
-        return "Custom Filter";
-    }
-
-    public static boolean canInstantiate() {
-        return true;
-    }
-
-    // REMOVE-END
 }

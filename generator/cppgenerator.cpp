@@ -75,15 +75,27 @@ void CppGenerator::writeTypeInfo(QTextStream &s, const MetaJavaType *type, Optio
 
 void CppGenerator::writeFunctionArguments(QTextStream &s,
                                           const MetaJavaArgumentList &arguments,
-                                          Option option)
+                                          Option option,
+                                          int numArguments)
 {
-    for (int i=0; i<arguments.size(); ++i) {
+    if (numArguments < 0) numArguments = arguments.size();
+
+    for (int i=0; i<numArguments; ++i) {
         if (i != 0)
             s << ", ";
         MetaJavaArgument *arg = arguments.at(i);
         writeTypeInfo(s, arg->type(), option);
         if (!(option & SkipName))
             s << " " << arg->indexedName();
+        if ((option & IncludeDefaultExpression) && !arg->originalDefaultValueExpression().isEmpty()) {
+            s << " = "; 
+
+            QString expr = arg->originalDefaultValueExpression();
+            if (arg->type()->typeEntry()->isEnum() && expr.indexOf("::") < 0)
+                s << ((EnumTypeEntry *)arg->type()->typeEntry())->qualifier() << "::";
+
+            s << expr; 
+        }
     }
 }
 
@@ -107,7 +119,8 @@ void CppGenerator::writeFunctionSignature(QTextStream &s,
                                           const QString &name_prefix,
                                           Option option,
                                           const QString &classname_prefix,
-                                          const QStringList &extra_arguments)
+                                          const QStringList &extra_arguments,
+                                          int numArguments)
 {
 // ### remove the implementor
     MetaJavaType *function_type = java_function->type();
@@ -153,7 +166,7 @@ void CppGenerator::writeFunctionSignature(QTextStream &s,
 
     s << "(";
 
-    writeFunctionArguments(s, java_function->arguments(), option);
+    writeFunctionArguments(s, java_function->arguments(), option, numArguments);
 
     // The extra arguments...
     for (int i=0; i<extra_arguments.size(); ++i) {

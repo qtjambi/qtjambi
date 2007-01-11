@@ -33,10 +33,10 @@
 
     \quotefromfile ItemviewChart.java
     \skipto public class
-    \printuntil pieChart
+    \printuntil private
 
-    We define private variables for the model and custom view, so that we can
-    access and modify them as required.
+    We define private variables for the model so that we can access
+    and modify it as required.
 
     The constructor sets up the user interface, connecting actions used in the
     menus to slots in the class, constructs a model, and arranges the views in
@@ -248,11 +248,11 @@
 
     \skipto if
     \printuntil startAngle += sliceAngle
-    \printuntil new QModelIndex()
+    \printuntil return null;
     \printuntil }
 
     If the point did not lie within any parts of the view that
-    correspond to model indexes, an invalid model index is returned.
+    correspond to model indexes, null is returned.
 
     The \c itemRect() function is used to obtain rectangles defined in view
     coordinates that correspond to model indexes:
@@ -272,11 +272,13 @@
     to the specified model index:
 
     \skipto QRegion itemRegion
-    \printuntil new QRegion()
+    \printuntil return null;
+    \printuntil return null;
+    \printuntil return null;
 
-    We are only interested in items in the second column in the model that
-    contain positive double values, so we return empty regions for all other
-    model indexes.
+    We are only interested in items in the second column in the model
+    that contain positive double values, so we return null for all
+    other model indexes.
 
     For each suitable model index, we use a QPainterPath to define the
     geometry of the item, and convert it to a filled polygon to construct a
@@ -284,10 +286,10 @@
 
     \skipto double
     \printuntil startAngle += angle
-    \printuntil return new QRegion()
+    \printuntil return null;
     \printuntil }
 
-    If the model index supplied was invalid, an empty QRegion is returned.
+    If the model index supplied was invalid, null is returned.
 
     The \c visualRect() function returns the rectangle that corresponds to a given
     model index in viewport coordinates, calling the \c itemRect() function to

@@ -19,7 +19,7 @@ import com.trolltech.qt.gui.*;
 
 public class View extends QWidget
 {
-    public Signal1<Boolean> valid;
+    public Signal1<Boolean> valid = new Signal1<Boolean>();
 
     public View(QWidget parent) {
         super(parent);
@@ -93,6 +93,7 @@ public class View extends QWidget
         return new QSize(500, 500);
     }
 
+    private QBrush brush = new QBrush();
     protected void paintEvent(QPaintEvent e) {
         try {
         if (modified == null)
@@ -111,7 +112,8 @@ public class View extends QWidget
                 p.translate(posx, posy);
                 p.scale(zoom, zoom);
                 p.setPen(QPen.NoPen);
-                p.setBrush(new QBrush(QPixmap.fromImage(modified)));
+                brush.setTextureImage(modified);
+                p.setBrush(brush);
                 p.drawRect(0, 0, modified.width(), modified.height());
             }
             p.restore();

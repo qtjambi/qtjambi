@@ -69,7 +69,9 @@
     {QInputDialog::getItem()}{getItem()} method returns the text of
     the current item; otherwise it returns \c null.
 
-    \skipto if (item != null)
+    \skipto if
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     Once we know which user interface the user prefer, we can create

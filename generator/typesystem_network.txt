@@ -1,4 +1,4 @@
-<typesystem package="com.trolltech.qt.network" default-superclass="com.trolltech.qt.QtObject">
+<typesystem package="com.trolltech.qt.network" default-superclass="com.trolltech.qt.QtJambiObject">
   <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
   </inject-code>
@@ -20,32 +20,234 @@
   <enum-type name="QUdpSocket::BindFlag" flags="QUdpSocket::BindMode" />
   <enum-type name="QUrlInfo::PermissionSpec" />
   <enum-type name="QHostInfo::HostInfoError" />
+      
+  <template name="network.read_char*_long_long">
+        public final int read(byte data[]) {
+            if (data.length == 0) return 0;
+            
+            com.trolltech.qt.QNativePointer np = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Byte, data.length);
+            int len = (int) read(np, data.length);
+            for (int i=0; i&lt;len; ++i) data[i] = np.byteAt(i);
+            
+            return len;
+        }      
+  </template>
    
   <object-type name="QAbstractSocket" />
-  <object-type name="QFtp" />
-  <object-type name="QHttp" />
+  <object-type name="QFtp">
+    <modify-function signature="read(char*,long long)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="network.read_char*_long_long" />
+    </inject-code>
+  </object-type>
+  <object-type name="QHttp">
+    <modify-function signature="read(char*,long long)">
+        <access modifier="private" />
+    </modify-function>  
+    <inject-code>
+        <insert-template name="network.read_char*_long_long" />
+    </inject-code>  
+  </object-type>
   <object-type name="QTcpServer">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>
     <modify-function signature="listen(QHostAddress,unsigned short)">
         <modify-argument index="1">
             <replace-default-expression with="new com.trolltech.qt.network.QHostAddress(com.trolltech.qt.network.QHostAddress.SpecialAddress.Any)" />
         </modify-argument>
     </modify-function>
+    <modify-function signature="waitForNewConnection(int,bool*)">
+        <access modifier="private" />
+        <modify-argument index="1">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>        
+    </modify-function>
+    <inject-code>
+        public enum Result {
+            Success,
+            Failure,
+            TimedOut
+        }
+        public final Result waitForNewConnection(int msec) {
+            QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
+            boolean success = waitForNewConnection(msec, np);
+            
+            return (np.booleanValue() 
+                      ? Result.TimedOut
+                      : (success ? Result.Success : Result.Failure));                        
+        }
+        
+        public final Result waitForNewConnection() {
+            return waitForNewConnection(0);
+        }
+    </inject-code>    
   </object-type>
+  
   <object-type name="QTcpSocket" />
-  <object-type name="QUdpSocket" />  
+  <object-type name="QUdpSocket">  
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>        
+    <modify-function signature="readDatagram(char*,long long,QHostAddress*,unsigned short*)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public static class HostInfo {
+            public HostInfo() {
+                address = new QHostAddress();
+                port = 0;
+            }
+            public QHostAddress address;
+            public char port;
+        }
+        public final int readDatagram(byte data[], HostInfo info) {
+            QNativePointer np = new QNativePointer(QNativePointer.Type.Byte, data.length);
+            QNativePointer address = info != null &amp;&amp; info.address != null ? info.address.nativePointer() : null;
+            QNativePointer port = new QNativePointer(QNativePointer.Type.Char);
+            
+            int len = (int) readDatagram(np, data.length, address, port);
+            if (info != null) info.port = port.charValue();       
+            for (int i=0; i&lt;len; ++i) data[i] = np.byteAt(i);
+            
+            return len;
+        }
+    </inject-code>
+    
+    <modify-function signature="writeDatagram(const char*,long long,QHostAddress,unsigned short)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public int writeDatagram(byte data[], QHostAddress address, char port) {
+            QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
+            return (int) writeDatagram(np, data.length, address, port);
+        }
+    </inject-code>
+  </object-type>
   <object-type name="QHttpHeader" />
     
-  <value-type name="QHostAddress" />  
-  <value-type name="QHostInfo" />
-  <value-type name="QHttpRequestHeader" />
-  <value-type name="QHttpResponseHeader" />
-  <value-type name="QNetworkAddressEntry" />
-  <value-type name="QNetworkInterface" />
-  <value-type name="QNetworkProxy" />
-  <value-type name="QUrlInfo" />
+  <value-type name="QHostAddress">
+    <modify-function signature="QHostAddress(unsigned char*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator=(QString)">
+        <rename to="operator_assign_private" />
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="String" />
+            <replace from="%OUT_TYPE" to="QHostAddress" />
+        </insert-template>            
+    </inject-code>
+    <modify-function signature="operator=(QHostAddress)">
+        <rename to="operator_assign_private" />
+        <access modifier="private" />        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QHostAddress" />
+        </insert-template>            
+    </inject-code>
+    <modify-function signature="setAddress(unsigned char*)">
+        <remove />
+    </modify-function>
+
+
+  </value-type>  
+  <value-type name="QHostInfo">
+        <modify-function signature="operator=(QHostInfo)">
+            <access modifier="private" />
+            <rename to="operator_assign_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QHostInfo" />
+            </insert-template>            
+        </inject-code>
+        <modify-function signature="lookupHost(QString,QObject*,const char*)">
+            <remove />
+        </modify-function>
+  </value-type>
+  <value-type name="QHttpRequestHeader">
+    <modify-function signature="operator=(QHttpRequestHeader)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QHttpRequestHeader" />
+        </insert-template>            
+    </inject-code>  
+  </value-type>
+  <value-type name="QHttpResponseHeader">
+    <modify-function signature="operator=(QHttpResponseHeader)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QHttpResponseHeader" />
+        </insert-template>            
+    </inject-code>    
+  </value-type>
+  <value-type name="QNetworkAddressEntry">
+    <modify-function signature="operator=(QNetworkAddressEntry)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QNetworkAddressEntry" />
+        </insert-template>            
+    </inject-code>
+  </value-type>
+  
+  <value-type name="QNetworkInterface">
+    <modify-function signature="operator=(QNetworkInterface)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QNetworkInterface" />
+        </insert-template>            
+    </inject-code>      
+  </value-type>
+  
+  <value-type name="QNetworkProxy">
+    <modify-function signature="operator=(QNetworkProxy)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QNetworkProxy" />
+        </insert-template>            
+    </inject-code>    
+  </value-type>
+  <value-type name="QUrlInfo">
+    <modify-function signature="operator=(QUrlInfo)  ">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QUrlInfo" />
+        </insert-template>            
+    </inject-code>  
+  </value-type>
   <value-type name="QIPv6Address">
     <modify-function signature="operator[](int)const">
         <remove/>
     </modify-function>
+    <modify-function signature="operator[](int)">
+        <remove/>
+    </modify-function>    
   </value-type>
 </typesystem>

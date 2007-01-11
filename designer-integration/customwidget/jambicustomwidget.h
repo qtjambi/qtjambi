@@ -53,9 +53,15 @@ public:
 
     QList<QDesignerCustomWidgetInterface*> customWidgets() const;
 
+public slots:
+    void loadPlugins(const QString &path, QObject *widgetFactory);
+
 private:
+    void initializeWidgets(JNIEnv *env);
+
     jobject m_manager;
     jmethodID m_id_customWidgets;
+    jmethodID m_id_loadPlugins;
 
     QList<QDesignerCustomWidgetInterface *> m_widgets;
 };

@@ -3,26 +3,28 @@ TARGET = qtjambi
 include(qtjambi_base.pri)
 
 SOURCES += \
+	qnativepointer.cpp \
 	qsysinfo.cpp \
 	qtinfo.cpp \
 	qtjambi_cache.cpp \
 	qtjambi_core.cpp \
 	qtjambi_functions.cpp \
+	qtjambi_utils.cpp \
 	qtjambifunctiontable.cpp \
 	qtjambilink.cpp \
 	qtjambitypemanager.cpp \
 	qtobject.cpp \
-    qnativepointer.cpp \
-    qvariant.cpp 
+	qvariant.cpp \
 
 
 HEADERS += \
 	qtjambi_cache.h \
 	qtjambi_core.h \
+	qtjambi_global.h \
+	qtjambi_utils.h \
 	qtjambifunctiontable.h \
 	qtjambilink.h \
 	qtjambitypemanager.h \
-	qtjambi_global.h
 
 DEFINES += QTJAMBI_EXPORT
 

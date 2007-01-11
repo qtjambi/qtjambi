@@ -25,48 +25,54 @@ win32-msvc2005:{
 
 # Input
 HEADERS += \
-	cppgenerator.h \
-	cppimplgenerator.h \
-	customtypes.h \
-	docparser.h \
-	javagenerator.h \
-	juicdatagenerator.h \
-	reporthandler.h \
-	typeparser.h \
         classlistgenerator.h \
+        cppgenerator.h \
         cppheadergenerator.h \
+        cppimplgenerator.h \
+        customtypes.h \
+        docparser.h \
         generator.h \
+        javagenerator.h \
         main.h \
         metainfogenerator.h \
         metajava.h \
         metajavabuilder.h \
-        typesystem.h \
         qdocgenerator.h \
+        reporthandler.h \
+        typeparser.h \
+        typesystem.h \
+        uiconverter.h \
 
 SOURCES += \
-	cppgenerator.cpp \
-	cppimplgenerator.cpp \
-	customtypes.cpp \
-	docparser.cpp \
-	juicdatagenerator.cpp \
-	main.cpp \
-	reporthandler.cpp \
-	typeparser.cpp \
-	typesystem.cpp \
         classlistgenerator.cpp \
+        cppgenerator.cpp \
         cppheadergenerator.cpp \
+        cppimplgenerator.cpp \
+        customtypes.cpp \
+        docparser.cpp \
         generator.cpp \
         javagenerator.cpp \
+        main.cpp \
         metainfogenerator.cpp \
         metajava.cpp \
         metajavabuilder.cpp \
         qdocgenerator.cpp \
+        reporthandler.cpp \
+        typeparser.cpp \
+        typesystem.cpp \
+        uiconverter.cpp \
 
 QT = core xml
 
 win32{
-	PRECOMPILED_HEADER = generator_pch.h
-	CONFIG += precompile_header
+        PRECOMPILED_HEADER = generator_pch.h
+        CONFIG += precompile_header
+}
+
+win32-msvc.net {
+        QMAKE_CXXFLAGS += /Zm500
+        QMAKE_CXXFLAGS -= -Zm200
+        QMAKE_CFLAGS -= -Zm200
 }
 
 mac {

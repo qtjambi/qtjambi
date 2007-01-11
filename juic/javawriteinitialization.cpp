@@ -19,7 +19,6 @@
 #include "uic.h"
 #include "databaseinfo.h"
 #include "globaldefs.h"
-#include "javanametable.h"
 
 #include <QTextStream>
 #include <QtDebug>
@@ -410,8 +409,6 @@ void WriteInitialization::acceptLayout(DomLayout *node)
 
 void WriteInitialization::acceptSpacer(DomSpacer *node)
 {
-    JavaNameTable *names = JavaNameTable::instance();
-
     QHash<QString, DomProperty *> properties = propertyMap(node->elementProperty());
     QString varName = driver->findOrInsertSpacer(node);
 
@@ -420,24 +417,24 @@ void WriteInitialization::acceptSpacer(DomSpacer *node)
 
     QString sizeType = properties.contains(QLatin1String("sizeType"))
         ? properties.value(QLatin1String("sizeType"))->elementEnum()
-        : QString::fromLatin1("Expanding");
+        : QString::fromLatin1("com.trolltech.qt.gui.QSizePolicy.Policy.Expanding");
 
     QString orientation = properties.contains(QLatin1String("orientation"))
         ? properties.value(QLatin1String("orientation"))->elementEnum() : QString();
 
-    bool isVspacer = orientation == QLatin1String("Qt::Vertical")
-        || orientation == QLatin1String("Vertical");
+    bool isVspacer = orientation.endsWith(QLatin1String("Vertical"));
 
     output << option.indent << varName << " = new QSpacerItem(";
 
     if (sizeHint)
         output << sizeHint->elementWidth() << ", " << sizeHint->elementHeight() << ", ";
 
-    if (sizeType.startsWith(QLatin1String("QSizePolicy::")) == false)
-        sizeType.prepend(QLatin1String("QSizePolicy::"));
+    QString minimum = QLatin1String("com.trolltech.qt.gui.QSizePolicy.Policy.Minimum");
 
-    sizeType = names->javaEnum(sizeType);
-    QString minimum = names->javaEnum(QLatin1String("QSizePolicy::Minimum"));
+    if (minimum.contains(QLatin1String("::")))
+        fprintf(stderr, "Malformed enum value %s, C++ syntax not allowed\n", qPrintable(minimum));
+    if (sizeType.contains(QLatin1String("::")))
+        fprintf(stderr, "Malformed enum value %s, C++ syntax not allowed\n", qPrintable(sizeType));
 
     if (isVspacer)
         output << minimum << ", " << sizeType << ");\n";
@@ -678,36 +675,28 @@ void WriteInitialization::writeProperties(const QString &varName,
             break;
         case DomProperty::Enum:
             propertyValue = p->elementEnum();
-            if (!propertyValue.contains(QLatin1String("::")))
-                propertyValue.prepend(className + QLatin1String(QLatin1String("::")));
-            propertyValue = JavaNameTable::instance()->javaEnum(propertyValue);
+            if (propertyValue.contains(QLatin1String("::")))
+                fprintf(stderr, "Malformed enum value %s, C++ syntax not allowed\n",
+                        qPrintable(propertyValue));
             break;
         case DomProperty::Set: {
             propertyValue = p->elementSet();
 
+            if (propertyValue.contains(QLatin1String("::"))) {
+                fprintf(stderr, "Malformed QFlags value %s, C++ syntax not allowed\n",
+                        qPrintable(propertyValue));
+            }
+
             QStringList vals = propertyValue.split(QLatin1Char('|'), QString::SkipEmptyParts);
 
-            // Find the name of the flags type...
             QString flagsName;
-            for (int i=0; i<vals.size(); ++i) {
-                flagsName = JavaNameTable::instance()->javaFlagsName(vals.at(i));
-                if (!flagsName.isEmpty())
-                    break;
+            if (vals.size()) {
+                int dotPos = vals.at(0).lastIndexOf(QLatin1Char('.'));
+                if (dotPos >= 0)
+                    flagsName = vals.at(0).left(dotPos);
             }
 
-            // change to java names.
-            for (QStringList::iterator it = vals.begin(); it != vals.end(); ++it)
-                *it = JavaNameTable::instance()->javaEnum(*it);
-
-            // Take out the empty ones... This is potentially very dangerous...
-            for (QStringList::iterator it = vals.begin(); it != vals.end(); ) {
-                if (it->isEmpty())
-                    it = vals.erase(it);
-                else
-                    ++it;
-            }
-
-            propertyValue = QString::fromLatin1("new %1(%2)").arg(flagsName).arg(vals.join(","));
+            propertyValue = QString::fromLatin1("%1.createQFlags(%2)").arg(flagsName).arg(vals.join(","));
             }
             break;
         case DomProperty::Font: {
@@ -966,7 +955,7 @@ void WriteInitialization::writeColorGroup(DomColorGroup *colorGroup, const QStri
     for (int i=0; i<roles.size(); ++i) {
         DomColorRole *role = roles.at(i);
         output << option.indent << paletteName << ".setColor(" << group
-               << ", QPalette.ColorRole." << roleNames[i]
+               << ", QPalette.ColorRole." << role->attributeRole()
                << ", " << domBrush2QString(role->elementBrush())
                << ");\n";
     }
@@ -1317,16 +1306,37 @@ void WriteInitialization::acceptConnection(DomConnection *connection)
             senderClassName = QLatin1String("QAction");
         }
 
-        QString sig = JavaNameTable::instance()->javaSignal(connection->elementSignal(), senderClassName);
-        QString slt = JavaNameTable::instance()->javaSignature(connection->elementSlot());
+        QString signalName, slotSignature;
 
-        if (sig.isEmpty () || slt.isEmpty()) {
-            // ### warn
+        QString signal = connection->elementSignal();
+
+        // Java connection, no type mapping...
+        int ltPos = signal.indexOf(QLatin1Char('<'));
+        if (ltPos >= 1 || !signal.contains(QLatin1Char('('))) {
+            signalName = ltPos >= 1 ? signal.left(ltPos) : signal;
+            slotSignature = connection->elementSlot();
+
+        // C++ signature on connection...
+        } else {
+            fprintf(stderr,
+                    "Malformed signal/slot connection '%s::%s -> %s::%s', C++ syntax not allowed",
+                    qPrintable(senderClassName),
+                    qPrintable(connection->elementSignal()),
+                    qPrintable(connection->elementReceiver()),
+                    qPrintable(connection->elementSlot()));
+        }
+
+        if (signalName.isEmpty () || slotSignature.isEmpty()) {
+            fprintf(stderr, "Connection rejected: %s::%s -> %s::%s\n",
+                    qPrintable(senderClassName),
+                    qPrintable(connection->elementSignal()),
+                    qPrintable(connection->elementReceiver()),
+                    qPrintable(connection->elementSlot()));
             return;
         }
 
-        output << option.indent << connection->elementSender() << "." << sig << ".connect("
-               << connection->elementReceiver() << ", " << javaFixString(slt) << ");\n";
+        output << option.indent << connection->elementSender() << "." << signalName << ".connect("
+               << connection->elementReceiver() << ", " << javaFixString(slotSignature) << ");\n";
     }
 }
 

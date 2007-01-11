@@ -30,28 +30,29 @@ class Generator : public QObject
 
 public:
     enum Option {
-        NoOption                = 0x00000,
-        BoxedPrimitive          = 0x00001,
-        ExcludeConst            = 0x00002,
-        ExcludeReference        = 0x00004,
-        UseNativeIds            = 0x00008,
+        NoOption                 = 0x00000,
+        BoxedPrimitive           = 0x00001,
+        ExcludeConst             = 0x00002,
+        ExcludeReference         = 0x00004,
+        UseNativeIds             = 0x00008, 
 
-        EnumAsInts              = 0x00010,
-        SkipName                = 0x00020,
-        NoCasts                 = 0x00040,
-        SkipReturnType          = 0x00080,
-        OriginalName            = 0x00100,
-        ShowStatic              = 0x00200,
-        UnderscoreSpaces        = 0x00400,
-        ForceEnumCast           = 0x00800,
-        ArrayAsPointer          = 0x01000,
-        VirtualCall             = 0x02000,
-        SkipTemplateParameters  = 0x04000,
-        SkipAttributes          = 0x08000,
-        OriginalTypeDescription = 0x10000,
-        SkipRemovedArguments    = 0x20000,
+        EnumAsInts               = 0x00010,
+        SkipName                 = 0x00020,
+        NoCasts                  = 0x00040,
+        SkipReturnType           = 0x00080,
+        OriginalName             = 0x00100,
+        ShowStatic               = 0x00200,
+        UnderscoreSpaces         = 0x00400,
+        ForceEnumCast            = 0x00800,
+        ArrayAsPointer           = 0x01000,
+        VirtualCall              = 0x02000,
+        SkipTemplateParameters   = 0x04000,
+        SkipAttributes           = 0x08000,
+        OriginalTypeDescription  = 0x10000,
+        SkipRemovedArguments     = 0x20000,
+        IncludeDefaultExpression = 0x40000,
 
-        ForceValueType          = ExcludeReference | ExcludeConst
+        ForceValueType           = ExcludeReference | ExcludeConst
     };
 
     Generator();

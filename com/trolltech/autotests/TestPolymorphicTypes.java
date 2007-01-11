@@ -77,7 +77,7 @@ public class TestPolymorphicTypes extends QWidget
     public void testGetButtonStyleOption()
     {
         QStyleOption opt = PolymorphicType.getButtonStyleOption();
-        assertEquals(opt.type(), QStyleOption.OptionType.SO_Button.value());
+        assertEquals(QStyleOption.OptionType.SO_Button.value(), opt.type());
         assertTrue(opt instanceof QStyleOptionButton);
     }
 
@@ -86,7 +86,7 @@ public class TestPolymorphicTypes extends QWidget
     {
         QStyleOption opt = PolymorphicType.getCustomStyleOption(30);
         assertTrue(opt instanceof CustomStyleOption);
-        assertEquals(opt.type(), QStyleOption.OptionType.SO_CustomBase.value() + 1);        
+        assertEquals(QStyleOption.OptionType.SO_CustomBase.value() + 1, opt.type());        
         
         CustomStyleOption customOpt = (CustomStyleOption) opt;
         assertEquals(customOpt.m_something(), 30);

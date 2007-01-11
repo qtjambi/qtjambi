@@ -346,6 +346,8 @@ public class QNativePointer {
      * @return a char **
      */
     public static QNativePointer createCharPointerPointer(String strings[]) {
+        if (strings == null)
+            return null;
         QNativePointer ptrs = new QNativePointer(Type.Byte, strings.length + 1, 2);
         for (int j = 0; j < strings.length; ++j) {
             String string = strings[j];
@@ -361,6 +363,8 @@ public class QNativePointer {
      * @return The char *
      */
     public static QNativePointer createCharPointer(String string) {
+        if (string == null)
+            return null;
         QNativePointer s = new QNativePointer(QNativePointer.Type.Byte, string.length() + 1);
         for (int i = 0; i < string.length(); ++i)
             s.setByteAt(i, (byte) string.charAt(i));

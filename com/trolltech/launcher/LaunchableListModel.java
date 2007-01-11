@@ -34,7 +34,7 @@ class LaunchableListModel extends QAbstractListModel {
     }
 
     public Launchable at(QModelIndex index) {
-        if (!index.isValid())
+        if (index == null)
             throw new ArrayIndexOutOfBoundsException("invalid index");
         return at(index.row());
     }

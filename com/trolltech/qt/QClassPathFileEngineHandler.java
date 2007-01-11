@@ -96,13 +96,18 @@ class QJarEntryEngine extends QAbstractFileEngine
 
         long sz = size();
         long i = 0;
-        long bytes_to_read = 0;
+        int bytes_to_read = 0;
 
         if (sz > 0) {
             do {
-                bytes_to_read = Math.min(sz - i, BUFFER_SIZE);
-                bytes_to_read = read(buffer, bytes_to_read);
-                if (bytes_to_read > 0 && newFile.write(buffer, bytes_to_read) != bytes_to_read)
+                bytes_to_read = (int) Math.min(sz - i, BUFFER_SIZE);
+                bytes_to_read = (int) read(buffer, bytes_to_read);
+                
+                byte bytes[] = new byte[bytes_to_read]; 
+                for (int j=0; j<bytes_to_read; ++j)
+                    bytes[j] = buffer.byteAt(j);
+                    
+                if (bytes_to_read > 0 && newFile.write(bytes) != bytes_to_read)
                     return false;
             } while (i < sz && bytes_to_read > 0);
         }
@@ -457,51 +462,6 @@ class QJarEntryEngine extends QAbstractFileEngine
     }
 }
 
-
-// For class path entries in the OS file system. Uses the FS engine, but converts filenames to match the syntax of
-// resource file specifications
-class QDirEntryEngine extends QFSFileEngine
-{
-    private String m_path = "";
-    private String m_fileName = "";
-
-    public QDirEntryEngine(String path, String fileName)
-    {
-        super(path + "/" + fileName);
-
-        m_path = path;
-        m_fileName = fileName;
-    }
-
-    public String fileName(FileName file)
-    {
-        String fileName = m_fileName;
-
-        int pos;
-        switch (file) {
-        case LinkName:
-        case CanonicalName:
-            return super.fileName(FileName.AbsoluteName);
-        case CanonicalPathName:
-            return super.fileName(FileName.AbsolutePathName);
-        case DefaultName:
-            return QClassPathEngine.FileNamePrefix + m_path + QClassPathEngine.FileNameDelim + fileName;
-        case BaseName:
-            pos = m_fileName.lastIndexOf('/', m_fileName.length() - 2);
-            return pos >= 0 ? m_fileName.substring(pos + 1) : fileName;
-        case AbsoluteName:
-            return QClassPathEngine.FileNamePrefix + m_path + QClassPathEngine.FileNameDelim + fileName;
-        case AbsolutePathName:
-            return QClassPathEngine.FileNamePrefix + m_path + QClassPathEngine.FileNameDelim + fileName(FileName.PathName);
-        case PathName:
-            pos = m_fileName.lastIndexOf('/', m_fileName.length() - 2);
-            return pos >= 0 ? m_fileName.substring(0, pos) : "/";
-        default:
-            throw new IllegalArgumentException("Unknown filename type: " + file);
-        }
-    }
-}
-
 class QClassPathEngine extends QAbstractFileEngine
 {
     public final static String FileNameDelim = "#";
@@ -628,24 +588,7 @@ class QClassPathEngine extends QAbstractFileEngine
     {
         if (m_engines.size() == 0)
             return "";
-
-        String fn = m_engines.get(0).fileName(file);
-
-        if (fn.endsWith("/") && fn.length() > 1)
-            fn = fn.substring(0, fn.length() - 1);
-        for (int i=1; i<m_engines.size(); ++i) {
-            String tmp = m_engines.get(i).fileName(file);
-            if (tmp.endsWith("/") && tmp.length() > 1)
-                tmp = tmp.substring(0, tmp.length() - 2);
-
-            if (!fn.equals(tmp)) {
-                fn = "";
-                break ;
-            }
-        }
-        if (fn.length() > 0)
-            return fn;
-
+        
         String result = "";
         if (file == FileName.DefaultName) {
             result = QClassPathEngine.FileNamePrefix + m_fileName;
@@ -837,7 +780,7 @@ class QClassPathEngine extends QAbstractFileEngine
         if (file.isDir()
             && file.exists()
             && new QFileInfo(qtified_path + "/" + fileName).exists()) {
-            addEngine(new QDirEntryEngine(qtified_path, fileName));
+            addEngine(new QFSFileEngine(qtified_path + "/" + fileName));
         } else {
             JarFile jarFile;
             try {

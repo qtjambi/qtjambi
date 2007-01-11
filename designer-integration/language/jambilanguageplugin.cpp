@@ -12,23 +12,41 @@
 ****************************************************************************/
 
 #include "jambilanguageplugin.h"
-#include "jambipropertysheet.h"
-
-#include "javanametable.h"
 
 #include "qtjambi_core.h"
+#include "qtjambi_utils.h"
 
 #include <QtDebug>
 #include <QtPlugin>
 
 
-#include <QtGui/QMessageBox>
+#include <QtGui>
 
+
+jclass class_ResourceBrowser;
+
+jmethodID method_ResourceBrowser;
+
+static ClassData jni_class_table[] = {
+    { &class_ResourceBrowser, "com/trolltech/tools/designer/ResourceBrowser" },
+    { 0, 0 }
+};
+
+static MethodData jni_method_table[] = {
+    { &class_ResourceBrowser, &method_ResourceBrowser, "<init>", "(Lcom/trolltech/qt/gui/QWidget;)V" },
+    { 0, 0, 0, 0 }
+};
 
 JambiLanguagePlugin::JambiLanguagePlugin():
     m_core(0)
 {
     printf("JambiLanguagePlugin: created\n");
+
+    qtjambi_initialize_vm();
+    JNIEnv *env = qtjambi_current_environment();
+    qtjambi_set_java_connect_override(true);
+    qtjambi_resolve_classes(env, jni_class_table);
+    qtjambi_resolve_methods(env, jni_method_table);
 }
 
 JambiLanguagePlugin::~JambiLanguagePlugin()
@@ -52,13 +70,12 @@ void JambiLanguagePlugin::initialize(QDesignerFormEditorInterface *core)
 
     mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerLanguageExtension));
     mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerPropertySheetExtension));
-
-    qtjambi_initialize_vm();
+    mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerMemberSheetExtension));
+    mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerExtraInfoExtension));
 }
 
 QAction *JambiLanguagePlugin::action() const
 {
-    printf("action being called...\n");
     return 0;
 }
 
@@ -70,7 +87,6 @@ QDesignerFormEditorInterface *JambiLanguagePlugin::core() const
 JambiLanguage::JambiLanguage(QObject *parent)
     : QObject(parent)
 {
-    m_name_table = JavaNameTable::instance();
     printf("JambiLanguage: created\n");
 }
 
@@ -85,7 +101,6 @@ QDialog *JambiLanguage::createFormWindowSettingsDialog(QDesignerFormWindowInterf
 
 QString JambiLanguage::classNameOf(QObject *object) const
 {
-    printf("JambiLanguage: classname of: %s\n", object->metaObject()->className());
     QtJambiLink *link = QtJambiLink::findLinkForQObject(object);
     if (link && link->createdByJava()) {
         JNIEnv *env = qtjambi_current_environment();
@@ -98,28 +113,73 @@ QString JambiLanguage::classNameOf(QObject *object) const
 
 QString JambiLanguage::enumerator(const QString &name) const
 {
-    QString javaName = m_name_table->javaEnum(name);
-    printf("JambiLanguage: enumerator: %s -> %s\n", qPrintable(name), qPrintable(javaName));
-    return javaName.isEmpty() ? name : javaName.split('.').last();
+    return name;
 }
 
 QString JambiLanguage::neutralEnumerator(const QString &name) const
 {
-    QString cppName = m_name_table->cppEnum(name);
-    printf("JambiLanguage: neutralEnumerator: %s -> %s\n", qPrintable(name), qPrintable(cppName));
-    return cppName.isEmpty() ? name : cppName;
+    return name;
 }
 
 QDesignerResourceBrowserInterface *JambiLanguage::createResourceBrowser(QWidget *parentWidget)
 {
-    printf("JambiLanguage::createResourceBrowser()\n");
-    return new JambiResourceBrowser(parentWidget);
+    JNIEnv *env = qtjambi_current_environment();
+    jobject jParent = qtjambi_from_QWidget(env, parentWidget);
+    QTJAMBI_EXCEPTION_CHECK(env);
+
+    jobject jWidget = env->NewObject(class_ResourceBrowser, method_ResourceBrowser, jParent);
+    QTJAMBI_EXCEPTION_CHECK(env);
+
+    QObject *widget = qtjambi_to_qobject(env, jWidget);
+    QTJAMBI_EXCEPTION_CHECK(env);
+
+    QDesignerResourceBrowserInterface *iface =
+        qobject_cast<QDesignerResourceBrowserInterface *>(widget);
+    Q_ASSERT(iface);
+
+    return iface;
 }
 
 bool JambiLanguage::isLanguageResource(const QString &path) const
 {
-    printf("JambiLanguage::isLanguageResource... %s\n", qPrintable(path));
     return path.startsWith("classpath:");
+}
+
+
+JambiExtraInfoExtension::JambiExtraInfoExtension(QWidget *widget,
+                                                 QDesignerFormEditorInterface *core)
+    : m_widget(widget),
+      m_core(core)
+{
+    printf("JambiExtraInfoExtension::created...\n");
+}
+
+
+bool JambiExtraInfoExtension::saveUiExtraInfo(DomUi *ui)
+{
+    printf("JambiExtraInfoExtension::saveUiExtraInfo...\n");
+    return false;
+}
+
+
+bool JambiExtraInfoExtension::loadUiExtraInfo(DomUi *ui)
+{
+    printf("JambiExtraInfoExtension::loadUiExtraInfo()\n");
+    return false;
+}
+
+
+bool JambiExtraInfoExtension::saveWidgetExtraInfo(DomWidget *ui_widget)
+{
+    printf("JambiExtraInfoExtension::saveWidgetExtraInfo()\n");
+    return false;
+}
+
+
+bool JambiExtraInfoExtension::loadWidgetExtraInfo(DomWidget *ui_widget)
+{
+    printf("JambiExtraInfoExtension::loadWidgetExtraInfo()\n");
+    return false;
 }
 
 
@@ -128,7 +188,7 @@ JambiExtensionFactory::JambiExtensionFactory(JambiLanguagePlugin *plugin, QExten
     QExtensionFactory(parent),
     m_jambi(plugin)
 {
-    printf("JambiExtensionFactory()\n");
+    printf("JambiExtensionFactory\n");
 }
 
 
@@ -139,12 +199,55 @@ JambiExtensionFactory::~JambiExtensionFactory()
 
 QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
 {
-     if (iid == Q_TYPEID(QDesignerLanguageExtension) && qobject_cast<QDesignerFormEditorInterface*> (object))
+    if (iid == Q_TYPEID(QDesignerLanguageExtension) && qobject_cast<QDesignerFormEditorInterface*> (object))
         return new JambiLanguage(parent);
 
-    else if (iid == Q_TYPEID(QDesignerPropertySheetExtension)
-             && qtjambi_is_created_by_java(object)) {
-        return new JambiPropertySheet(m_jambi, object, parent);
+    else if (iid == Q_TYPEID(QDesignerPropertySheetExtension)) {
+
+        JNIEnv *env = qtjambi_current_environment();
+        jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/PropertySheet");
+        Q_ASSERT(cl);
+
+        jmethodID id = env->GetMethodID(cl, "<init>", "(Lcom/trolltech/qt/core/QObject;"
+                                                       "Lcom/trolltech/qt/core/QObject;)V");
+        Q_ASSERT(id);
+
+        jobject jps = env->NewObject(cl, id,
+                                     qtjambi_from_QObject(env, object),
+                                     qtjambi_from_QObject(env, parent)
+                                     );
+
+        QObject *qps = qtjambi_to_qobject(env, jps);
+        Q_ASSERT(qps);
+
+        QDesignerPropertySheetExtension *p = qobject_cast<QDesignerPropertySheetExtension *>(qps);
+        Q_ASSERT(p);
+
+        return qps;
+    } else if (iid == Q_TYPEID(QDesignerMemberSheetExtension)) {
+        JNIEnv *env = qtjambi_current_environment();
+        jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/MemberSheet");
+        Q_ASSERT(cl);
+
+        jmethodID id = env->GetMethodID(cl, "<init>", "(Lcom/trolltech/qt/core/QObject;"
+                                                       "Lcom/trolltech/qt/core/QObject;)V");
+        Q_ASSERT(id);
+
+        jobject jps = env->NewObject(cl, id,
+                                     qtjambi_from_QObject(env, object),
+                                     qtjambi_from_QObject(env, parent)
+                                     );
+
+        QObject *qps = qtjambi_to_qobject(env, jps);
+        Q_ASSERT(qps);
+
+        QDesignerMemberSheetExtension *p = qobject_cast<QDesignerMemberSheetExtension *>(qps);
+        Q_ASSERT(p);
+
+        return qps;
+    } else if (iid == Q_TYPEID(QDesignerExtraInfoExtension)) {
+        QWidget *w = qobject_cast<QWidget *>(object);
+        return new JambiExtraInfoExtension(w, m_jambi->core());
     }
 
     return 0;

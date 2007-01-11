@@ -1,6 +1,8 @@
 package com.trolltech.tools.designer;
 
 import java.io.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.*;
 
 import com.trolltech.qt.core.*;
@@ -41,12 +43,21 @@ public class CustomWidgetManager {
         splitIntoList(System.getProperty("com.trolltech.qt.plugin-path"), paths);
         
         for (String path : paths) {
-            loadPlugins(path);
+            loadPluginsFromPath(path + "/qtjambi");
         }
     }
     
+    @SuppressWarnings("unused")
     private void loadPlugins(String path) {
-        QDir dir = new QDir(path + "/qtjambi");
+        customWidgets.clear();
+        String paths[] = path.split(System.getProperty("path.separator"));
+        for (int i=0; i<paths.length; ++i) {
+            loadPluginsFromPath(paths[i]);
+        }
+    }
+    
+    private void loadPluginsFromPath(String path) {        
+        QDir dir = new QDir(path);
         if (!new QFileInfo(dir.absolutePath()).exists()) {
             System.err.println("CustomWidgetManager: plugin path doesn't exist: " + path);
             return;
@@ -81,7 +92,20 @@ public class CustomWidgetManager {
             }
             
             try {
-                Class type = Class.forName(e.attribute("class"));                
+                Class type = null;
+                try {
+                    type = Class.forName(e.attribute("class"));
+                } catch (ClassNotFoundException f) {
+                    String classpaths[] = System.getProperty("com.trolltech.qtjambi.internal.current.classpath").split(System.getProperty("path.separator"));
+                    
+                    URL urls[] = new URL[classpaths.length];
+                    for (int j=0; j<classpaths.length; ++j) {
+                        urls[j] = new File(classpaths[j]).toURI().toURL();
+                    }
+                    
+                    URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
+                    type = loader.loadClass(e.attribute("class"));
+                }
                 CustomWidget customWidget = new CustomWidget(type);                
                 customWidgets.add(customWidget);
                 

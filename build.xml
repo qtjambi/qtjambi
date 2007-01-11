@@ -1,5 +1,5 @@
-<project default="compile" basedir=".">
-
+<project default="all" basedir=".">
+    <property environment="env"/> 
     <property name="MailLogger.mailhost" value="smtp.trolltech.com" />
     <property name="MailLogger.from" value="[ant-mail]" />
     <property name="MailLogger.failure.notify" value="true" />
@@ -16,7 +16,8 @@
         <property name="htmlDir"   value="/var/www/junit/" />
 
         <property name="jambiLib" value="./lib" />
-        <property name="qtLib" value="./../../qt-4.2.0/lib" />
+	<property name="qt"       value="${env.QTDIR}" />
+        <property name="qtLib"    value="${env.QTDIR}/lib" />
 
         <property name="deployDir" value="./deploy" />
     </target>
@@ -43,6 +44,13 @@
             <arg line="sync ..." />
         </exec>
     </target>
+
+    <target name="sync.qt" depends="init">
+        <exec executable="p4" dir="${qt}">
+            <arg line="sync ..." />
+        </exec>
+    </target>
+
 
     <target name="generator" depends="prepare">
         <exec executable="qmake" dir="generator"/>
@@ -77,7 +85,22 @@
         </exec>
     </target>
 
+    <target name="generator.designern" >
+        <exec executable="${basedir}/generator/generator" dir="qtjambi_designer">
+            <arg line="designer.h typesystem_designer.txt" />
+        </exec>
+	<exec executable="qmake" dir="qtjambi_designer" />
+        <exec executable="make"  dir="qtjambi_designer" />
+    </target>
+
+
     <target name="compile" depends="generator, compile.java" />
+
+    <target name="compile.qt" depends="init">
+        <exec executable="${qt}/configure" dir="${qt}" />
+        <exec executable="make"      dir="${qt}" />
+    </target>
+
 
     <target name="compile.java" depends="juic">
         <javac srcdir="${sourceDir}" destdir="${outputDir}" 

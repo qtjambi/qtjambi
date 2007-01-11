@@ -1,8 +1,134 @@
-<typesystem package="com.trolltech.qt.gui" default-superclass="com.trolltech.qt.QtObject">
+<typesystem package="com.trolltech.qt.gui" default-superclass="com.trolltech.qt.QtJambiObject">
   <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
   </inject-code>
+  
+    <template name="gui.getter_returning_nativepointer">
+        public final %RETURN_TYPE %FUNCTION_NAME() {
+            QNativePointer np = %FUNCTION_NAME_private();
+            %RETURN_TYPE tmp = np == null ? null : %RETURN_TYPE.fromNativePointer(np);
+            return tmp == null ? null : new %RETURN_TYPE(tmp);
+        }    
+        
+    </template>
+    
+    <template name="gui.init_style_option">
+        protected final void initStyleOption(%TYPE option) {
+            initStyleOption(option.nativePointer());
+        }
+    </template>
 
+    <template name="gui.convert_validationdata_to_java">
+        StaticCache *sc = StaticCache::instance(__jni_env);
+        sc->resolveValidationData();
+        jstring __qt_converted_input = qtjambi_from_qstring(__jni_env, %STRING);
+        jobject %out = __jni_env->NewObject(sc->ValidationData.class_ref, sc->ValidationData.constructor, __qt_converted_input, %POS);
+        jobject __java_validation_data = %out;
+    </template>        
+
+    <template name="gui.cleanup_validationdata_from_java">
+        __jni_env->SetIntField(%1, sc->ValidationData.position, *__position_ptr);
+        __jni_env->SetObjectField(%1, sc->ValidationData.string, qtjambi_from_qstring(__jni_env, *__string_ptr));
+    </template>
+    
+    <template name="gui.convert_validationdata_to_string">
+        StaticCache *sc = StaticCache::instance(__jni_env);
+        sc->resolveValidationData();
+        jstring __java_string = (jstring) __jni_env->GetObjectField(%in, sc->ValidationData.string);
+        QString %out = __java_string == 0 ? QString() : qtjambi_to_qstring(__jni_env, __java_string);
+        QString *__string_ptr = &amp;%out;                
+    </template>        
+
+    <template name="gui.convert_validationdata_to_pos">
+        int %out = __jni_env->GetIntField(%1, sc->ValidationData.position);                
+        int *__position_ptr = &amp;%out;
+    </template>
+
+    <template name="gui.cleanup_validationdata_to_java">
+        jstring __java_string = (jstring) __jni_env->GetObjectField(__java_validation_data, sc->ValidationData.string);
+        %STRING = __java_string == 0 ? QString() : qtjambi_to_qstring(__jni_env, __java_string);
+        %POS = __jni_env->GetIntField(__java_validation_data, sc->ValidationData.position);
+    </template>
+    
+    <template name="gui.convert_object_array_to_java">
+        jobjectArray %out = 0;
+    
+        {
+            jclass __resolved_class = resolveClass(__jni_env, "%CLASSNAME_ARRAY", "%PACKAGE_ARRAY");
+            QTJAMBI_EXCEPTION_CHECK(__jni_env);
+            Q_ASSERT(__resolved_class != 0);    
+            
+            %out = %in == 0 ? 0 : __jni_env->NewObjectArray(%LENGTH, __resolved_class, 0);
+            QTJAMBI_EXCEPTION_CHECK(__jni_env);
+            if (%out != 0) {
+                for (int i=0; i&lt;%LENGTH; ++i) {
+                    __jni_env->SetObjectArrayElement(%out, i, qtjambi_from_object(__jni_env, %REFERENCE %in[i], "%CLASSNAME", "%PACKAGE", %LOOKUP true));
+                }
+            }                  
+       }
+    </template>
+    
+    <template name="gui.convert_graphicsitem_array_to_java">
+        <insert-template name="gui.convert_object_array_to_java">
+            <replace from="%CLASSNAME_ARRAY" to="QGraphicsItemInterface" />
+            <replace from="%PACKAGE_ARRAY" to="com/trolltech/qt/gui/" />
+            <replace from="%CLASSNAME" to="QGraphicsItem$ConcreteWrapper" />
+            <replace from="%PACKAGE" to="com/trolltech/qt/gui/" />
+            <replace from="%LOOKUP" to="" />
+            <replace from="%REFERENCE" to="" />
+        </insert-template>
+    </template>
+
+    <template name="gui.convert_styleoptiongraphicsitem_array_to_java">
+        <insert-template name="gui.convert_object_array_to_java">
+            <replace from="%CLASSNAME_ARRAY" to="QStyleOptionGraphicsItem" />
+            <replace from="%PACKAGE_ARRAY" to="com/trolltech/qt/gui/" />
+            <replace from="%CLASSNAME" to="QStyleOptionGraphicsItem" />
+            <replace from="%PACKAGE" to="com/trolltech/qt/gui/" /> 
+            <replace from="%LOOKUP" to="&quot;Lcom_trolltech_qt_gui_QStyleOption_2&quot;," />
+            <replace from="%REFERENCE" to="&amp;" />
+        </insert-template>
+    </template>
+
+    <template name="gui.convert_interface_array_from_java">    
+        %CLASSNAME *%out = 0;
+        QVarLengthArray&lt;%CLASSNAME, 256> __interfaceArray(__length);                
+        if (%in != 0) {
+            for (int i=0; i&lt;__length; ++i) {
+                __interfaceArray[i] = (%CLASSNAME) %CONVERSION_FUNCTION(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i) %EXTRA);
+            }
+        }
+        %out = %in == 0 ? 0 : __interfaceArray.data();    
+    </template>
+
+    <template name="gui.convert_object_array_from_java">    
+        %CLASSNAME *%out = 0;
+        QVarLengthArray&lt;%CLASSNAME, 256> __array(__length);                
+        if (%in != 0) {
+            for (int i=0; i&lt;__length; ++i) {
+                __array[i] = *(%CLASSNAME *) %CONVERSION_FUNCTION(__jni_env, __jni_env->GetObjectArrayElement((jobjectArray) %in, i) %EXTRA);
+            }
+        }
+        %out = %in == 0 ? 0 : __array.data();    
+    </template>
+    
+    <template name="gui.convert_graphicsitem_array_from_java">
+        <insert-template name="gui.convert_interface_array_from_java">
+            <replace from="%CLASSNAME" to="QGraphicsItem *" />
+            <replace from="%EXTRA" to=", &quot;QGraphicsItemInterface&quot;, &quot;com/trolltech/qt/gui/&quot;, &quot;__qt_cast_to_QGraphicsItem&quot;" />
+            <replace from="%CONVERSION_FUNCTION" to="qtjambi_to_interface" />
+        </insert-template>            
+    </template>
+
+        
+    <template name="gui.convert_styleoptiongraphicsitem_array_from_java">
+        <insert-template name="gui.convert_object_array_from_java">
+            <replace from="%CLASSNAME" to="QStyleOptionGraphicsItem" />
+            <replace from="%EXTRA" to="" />
+            <replace from="%CONVERSION_FUNCTION" to="qtjambi_to_object" />
+        </insert-template>
+    </template>
+          
   <rejection class="*" function-name="d_func"/>
 
   <rejection class="*" field-name="d_ptr"/>
@@ -67,9 +193,10 @@
   <rejection class="QWidget" function-name="find"/>
   <rejection class="QWidget" function-name="handle"/>
   <rejection class="QWidget" function-name="styleChange"/>
-  <rejection class="QWidget" function-name="winId"/>
+  <rejection class="QWidget" function-name="internalWinId"/>
   <rejection class="QActionGroup" function-name="selected"/> 
   <rejection class="QPaintEngine" function-name="fix_neg_rect"/>           
+  <rejection class="QTabletEvent" field-name="mExtra" />
 
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
   <enum-type name="QAbstractItemView::CursorAction"/>
@@ -126,7 +253,7 @@
   <enum-type name="QFont::Weight"/>
   <enum-type name="QFontComboBox::FontFilter" flags="QFontComboBox::FontFilters"/>
   <enum-type name="QFrame::FrameFlags"/>
-  <enum-type name="QFrame::Shadow"/>
+  <enum-type name="QFrame::Shadow" extensible="yes"/>
   <enum-type name="QFrame::Shape"/>
   <enum-type name="QFrame::StyleMask"/>
   <enum-type name="QFrame::enum_1"/>
@@ -461,7 +588,17 @@
   </enum-type>
 
   <value-type name="QStyleOption" polymorphic-base="yes" 
-              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Default" />
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Default">
+    <modify-function signature="operator=(QStyleOption)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QStyleOption" />
+        </insert-template>            
+    </inject-code>                    
+  </value-type>              
   <value-type name="QStyleOptionGraphicsItem" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_GraphicsItem"/>
   <value-type name="QStyleOptionSizeGrip" 
@@ -478,8 +615,21 @@
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_FocusRect" />
   <value-type name="QStyleOptionFrame" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Frame &amp;&amp; %1-&gt;version == 1" />
+              
   <value-type name="QStyleOptionFrameV2" 
-              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Frame &amp;&amp; %1-&gt;version == 2" />
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Frame &amp;&amp; %1-&gt;version == 2">
+    <modify-function signature="operator=(QStyleOptionFrame)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>              
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="QStyleOptionFrame" />
+            <replace from="%OUT_TYPE" to="QStyleOptionFrameV2" />
+        </insert-template>
+    </inject-code>                  
+  </value-type>              
+              
   <value-type name="QStyleOptionGroupBox" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_GroupBox" />
   <value-type name="QStyleOptionHeader" 
@@ -488,8 +638,21 @@
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_MenuItem"/>
   <value-type name="QStyleOptionProgressBar" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ProgressBar &amp;&amp; %1-&gt;version == 1"/>
+              
   <value-type name="QStyleOptionProgressBarV2" 
-              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ProgressBar &amp;&amp; %1-&gt;version == 2"/>
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ProgressBar &amp;&amp; %1-&gt;version == 2">
+    <modify-function signature="operator=(QStyleOptionProgressBar)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>              
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="QStyleOptionProgressBar" />
+            <replace from="%OUT_TYPE" to="QStyleOptionProgressBarV2" />
+        </insert-template>
+    </inject-code>    
+  </value-type>              
+  
   <value-type name="QStyleOptionRubberBand" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_RubberBand"/>
   <value-type name="QStyleOptionSlider" 
@@ -499,7 +662,18 @@
   <value-type name="QStyleOptionTab" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Tab &amp;&amp; %1-&gt;version == 1"/>
   <value-type name="QStyleOptionTabV2" 
-              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Tab &amp;&amp; %1-&gt;version == 2"/>              
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Tab &amp;&amp; %1-&gt;version == 2">
+    <modify-function signature="operator=(const QStyleOptionTab &amp;)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="QStyleOptionTab" />
+            <replace from="%OUT_TYPE" to="QStyleOptionTabV2" />
+        </insert-template>            
+    </inject-code>              
+  </value-type>             
   <value-type name="QStyleOptionTabBarBase" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_TabBarBase"/> 
   <value-type name="QStyleOptionTabWidgetFrame" 
@@ -515,50 +689,443 @@
   <value-type name="QStyleOptionViewItem" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 1"/>  
   <value-type name="QStyleOptionViewItemV2" 
-              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 2"/>  
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 2">  
+    <modify-function signature="operator=(QStyleOptionViewItem)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="QStyleOptionViewItem" />
+            <replace from="%OUT_TYPE" to="QStyleOptionViewItemV2" />
+        </insert-template>            
+    </inject-code>      
+  </value-type>              
                  
               
-  <value-type name="QTextFragment"/>  
-  <value-type name="QBitmap"/>  
+  <value-type name="QTextFragment">  
+    <modify-function signature="operator=(QTextFragment)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTextFragment" />
+        </insert-template>            
+    </inject-code>  
+  </value-type>
+  <value-type name="QBitmap">  
+    <modify-function signature="operator=(const QPixmap &amp;)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="QPixmap" />
+            <replace from="%OUT_TYPE" to="QBitmap" />
+        </insert-template>            
+    </inject-code>
+    
+    <modify-function signature="QBitmap(QString,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public QBitmap(String fileName, String format) {
+            this(fileName, format == null ? null : com.trolltech.qt.QNativePointer.createCharPointer(format));
+        }
+        
+        public QBitmap(String fileName) {
+            this(fileName, (String) null);
+        }
+    </inject-code>
+    
+    <modify-function signature="fromData(QSize,const unsigned char*,QImage::Format)">
+        <access modifier="private" />        
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public static QBitmap fromData(com.trolltech.qt.core.QSize size, byte bits[], QImage.Format monoFormat) {
+            return fromData(size, com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(bits), monoFormat);
+        }
+        
+        public static QBitmap fromData(com.trolltech.qt.core.QSize size, byte bits[]) {
+            return fromData(size, bits, QImage.Format.Format_MonoLSB);
+        }
+    </inject-code>    
+  </value-type>
   <value-type name="QTextInlineObject"/>
   <value-type name="QSizePolicy"/>
   <value-type name="QTableWidgetSelectionRange"/>
-  <value-type name="QTextDocumentFragment"/>
-  <value-type name="QTextOption"/>
-  <value-type name="QTextLine"/>
+  <value-type name="QTextDocumentFragment">
+    <modify-function signature="operator=(QTextDocumentFragment)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTextDocumentFragment" />
+        </insert-template>            
+    </inject-code>        
+  </value-type>
+  <value-type name="QTextOption">
+    <modify-function signature="operator=(const QTextOption &amp;)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTextOption" />
+        </insert-template>            
+    </inject-code>    
+  </value-type>
+  <value-type name="QTextLine">
+    <modify-function signature="cursorToX(int*,QTextLine::Edge)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="draw(QPainter*,QPointF,const QTextLayout_FormatRange*)const">
+        <access modifier="private" />
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>        
+    </modify-function>
+    <inject-code>
+        public final void draw(QPainter painter, com.trolltech.qt.core.QPointF position) {
+            draw(painter, position, null);
+        }
+    </inject-code>    
+  </value-type>
   <value-type name="QTextTableFormat"/>
   <value-type name="QTextImageFormat"/>
   <value-type name="QTextFrameFormat"/>
   <value-type name="QTextLength"/>
   <value-type name="QItemSelectionRange"/>
   <value-type name="QLine"/>
-  <value-type name="QLineF"/>
-  <value-type name="QPainterPath"/>  
-  <value-type name="QPalette"/>
-  <value-type name="QKeySequence"/> 
-  <value-type name="QPicture"/>
-  <value-type name="QPolygonF"/>
-  <value-type name="QRegion" expense-limit="4096"/>
-  <value-type name="QTextBlock"/>
+  <value-type name="QLineF">
+    <modify-function signature="intersect(QLineF,QPointF*)const  ">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public final QLineF.IntersectType intersect(QLineF line, com.trolltech.qt.core.QPointF intersectionPoint) {
+            return intersect(line, intersectionPoint != null ? intersectionPoint.nativePointer() : null);
+        }
+    </inject-code>    
+  </value-type>
+  <value-type name="QPainterPath">  
+    <modify-function signature="operator=(QPainterPath)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QPainterPath" />
+        </insert-template>            
+    </inject-code>    
+  </value-type>
+  <value-type name="QPalette">
+    <modify-function signature="operator=(const QPalette&amp;)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QPalette" />
+        </insert-template>            
+    </inject-code>
+  </value-type>
+  <value-type name="QKeySequence"> 
+    <modify-function signature="operator=(QKeySequence)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QKeySequence" />
+        </insert-template>            
+    </inject-code>      
+  </value-type>
+  <value-type name="QPicture">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+        <include file-name="com.trolltech.qt.core.QIODevice" location="java" />
+    </extra-includes>
+    <modify-function signature="load(QIODevice*,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>                
+        public final boolean load(QIODevice dev) {
+            return load(dev, (com.trolltech.qt.QNativePointer) null);
+        }
+    </inject-code>
+    
+    <modify-function signature="load(QString,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public final boolean load(String fileName) {
+            return load(fileName, (com.trolltech.qt.QNativePointer) null);
+        }
+    </inject-code>
+    
+    <modify-function signature="operator=(QPicture)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QPicture" />
+        </insert-template>            
+    </inject-code>
+    
+    <modify-function signature="save(QIODevice*,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public final boolean save(QIODevice dev) {
+            return save(dev, (com.trolltech.qt.QNativePointer) null);
+        }
+    </inject-code>
+    
+    <modify-function signature="save(QString,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>        
+        public final boolean save(String fileName) {
+            return save(fileName, (com.trolltech.qt.QNativePointer) null);
+        }
+    </inject-code>
+    
+    <modify-function class="java" signature="setData(const char*,uint)">
+        <modify-argument index="1">
+            <replace-type modified-type="byte[]" />
+            <conversion-rule>
+                jbyteArray %out = __jni_env->NewByteArray(%2);
+                __jni_env->SetByteArrayRegion(%out, 0, %2, (jbyte *) %in);
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                // nothing
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="setData(const char*,uint)">
+        <modify-argument index="1">
+            <conversion-rule>
+                char *%out = (char *) __jni_env->GetByteArrayElements((jbyteArray) %in, 0);
+                char *__ptr = %out;
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                int %out = %1 == 0 ? 0 : __jni_env->GetArrayLength((jarray) %1);
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="0">
+            __jni_env->ReleaseByteArrayElements(__ptr);
+        </modify-argument>        
+    </modify-function>    
+    
+    <modify-function signature="pictureFormat(QString)">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="data()const">
+        <access modifier="private"/>
+        <rename to="data_private"/>
+    </modify-function>
+    <inject-code>
+        public final byte[] data() {
+            QNativePointer npData = data_private();
+            if (npData == null) return null;            
+            byte returned[] = new byte[size()];
+            for (int i=0; i&lt;returned.length; ++i) returned[i] = npData.byteAt(i);
+            return returned;
+        }
+    </inject-code>
+  </value-type>
+  <value-type name="QPolygonF">
+    <modify-function signature="constData()const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="data()">
+        <remove />
+    </modify-function>
+    <modify-function signature="data()const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="first()">
+        <remove />
+    </modify-function>      
+
+    <modify-function signature="last()">
+        <remove />
+    </modify-function> 
+    
+    <modify-function signature="operator[](int)">
+        <remove />
+    </modify-function>
+    
+  </value-type>
+  <value-type name="QRegion" expense-limit="4096">
+    <modify-function signature="operator&amp;=(QRegion)">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator+=(QRegion)">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator-=(QRegion)">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator=(QRegion)">
+        <rename to="operator_assign_private" />
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QRegion" />
+        </insert-template>            
+    </inject-code>
+    <modify-function signature="operator^=(QRegion)">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator|=(QRegion)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setRects(const QRect*,int)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public void setRects(com.trolltech.qt.core.QRect[] rects) {
+            setRects(com.trolltech.qt.core.QRect.nativePointerArray(rects), rects.length);
+        }
+    </inject-code>
+  </value-type>
+  <value-type name="QTextBlock">
+    <modify-function signature="operator=(QTextBlock)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTextBlock" />
+        </insert-template>            
+    </inject-code>
+  </value-type>
   <value-type name="QTextBlockFormat"/>
   <value-type name="QTextCharFormat"/>
-  <value-type name="QTextFormat"/>
+  <value-type name="QTextFormat">
+    <modify-function signature="operator=(QTextFormat)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />   
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTextFormat" />
+        </insert-template>            
+    </inject-code>    
+  </value-type>
+  
   <value-type name="QTextListFormat"/>
-
   <value-type name="QPolygon">
     <modify-function signature="QPolygon(int, const int *)">
       <remove/>
     </modify-function>
-  </value-type>
+    <modify-function signature="constData()const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="data()">
+        <remove />
+    </modify-function>
 
-  <value-type name="QIcon">
-    <modify-function signature="pixmap(int,QIcon::Mode,QIcon::State)const">
+    <modify-function signature="data()const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="first()">
+        <remove />
+    </modify-function>       
+    
+    <modify-function signature="last()">
         <remove />
     </modify-function> 
+    
+    <modify-function signature="operator[](int)">
+        <remove />
+    </modify-function>
+  </value-type>
+
+  <value-type name="QIcon">    
+    <modify-function signature="operator=(QIcon)">
+        <access modifier="private"/>
+        <rename to="operator_assign_private"/>
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QIcon" />
+        </insert-template>            
+    </inject-code>
   </value-type>  
 
   <value-type name="QTextFrame::iterator">
     <include file-name="QTextFrame" location="global"/>
+    <modify-function signature="operator=(QTextFrame_iterator)">
+        <rename to="operator_assign_private" />
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTextFrame_iterator" />
+        </insert-template>            
+    </inject-code>
+    
+    <modify-function signature="operator++()">
+        <access modifier="private" />
+        <rename to="operator_increment_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTextFrame_iterator" />
+            <replace from="%FUNCTION_NAME" to="operator_increment" />
+            <replace from="%ARGUMENTS" to="" />
+            <replace from="%ARGUMENT_NAMES" to="" />
+        </insert-template>                
+    </inject-code>
+    
+    <modify-function signature="operator--()">
+        <access modifier="private" />
+        <rename to="operator_decrement_private" />    
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTextFrame_iterator" />
+            <replace from="%FUNCTION_NAME" to="operator_decrement" />
+            <replace from="%ARGUMENTS" to="" />
+            <replace from="%ARGUMENT_NAMES" to="" />
+        </insert-template>        
+    </inject-code>    
+
   </value-type>
 
   <value-type name="QTreeWidgetItemIterator">  
@@ -568,10 +1135,93 @@
     <custom-destructor>
     delete copy;
     </custom-destructor>
-   </value-type>
+    <modify-function signature="operator+=(int)">
+        <access modifier="private" />
+        <rename to="operator_add_assign_private" />        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.unary_other_type">
+            <replace from="%IN_TYPE" to="int" />
+            <replace from="%OUT_TYPE" to="QTreeWidgetItemIterator"/>
+            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
+        </insert-template>                
+    </inject-code>
+    <modify-function signature="operator-=(int)">
+        <access modifier="private" />
+        <rename to="operator_subtract_assign_private" />                
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.unary_other_type">
+            <replace from="%IN_TYPE" to="int" />
+            <replace from="%OUT_TYPE" to="QTreeWidgetItemIterator"/>
+            <replace from="%FUNCTION_NAME" to="operator_subtract_assign" />
+        </insert-template>                
+    </inject-code>    
+    <modify-function signature="operator=(QTreeWidgetItemIterator)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTreeWidgetItemIterator" />
+        </insert-template>            
+    </inject-code>           
 
+    <modify-function signature="operator++()">
+        <access modifier="private" />
+        <rename to="operator_increment_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTreeWidgetItemIterator" />
+            <replace from="%FUNCTION_NAME" to="operator_increment" />
+            <replace from="%ARGUMENTS" to="" />
+            <replace from="%ARGUMENT_NAMES" to="" />
+        </insert-template>        
+    </inject-code>
+    
+    <modify-function signature="operator--()">
+        <access modifier="private" />
+        <rename to="operator_decrement_private" />    
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTreeWidgetItemIterator" />
+            <replace from="%FUNCTION_NAME" to="operator_decrement" />
+            <replace from="%ARGUMENTS" to="" />
+            <replace from="%ARGUMENT_NAMES" to="" />
+        </insert-template>
+    </inject-code>        
+   </value-type>
+   
   <value-type name="QTextBlock::iterator">
     <include file-name="QTextBlock" location="global"/>
+    
+    <modify-function signature="operator++()">
+        <access modifier="private" />
+        <rename to="operator_increment_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTextBlock_iterator" />
+            <replace from="%FUNCTION_NAME" to="operator_increment" />
+            <replace from="%ARGUMENTS" to="" />
+            <replace from="%ARGUMENT_NAMES" to="" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="operator--()">
+        <access modifier="private" />
+        <rename to="operator_decrement_private" />    
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTextBlock_iterator" />
+            <replace from="%FUNCTION_NAME" to="operator_decrement" />
+            <replace from="%ARGUMENTS" to="" />
+            <replace from="%ARGUMENT_NAMES" to="" />
+        </insert-template>
+    </inject-code>        
   </value-type>
 
   <value-type name="QAbstractTextDocumentLayout::PaintContext">
@@ -594,39 +1244,204 @@
         }
     </inject-code>
   
+    <template name="gui.pixmap_save">
+        public final boolean save(%INPUT_TYPE %INPUT_NAME, String format, int quality) {
+            return private_save(%INPUT_NAME, com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
+        }
+        public final boolean save(%INPUT_TYPE %INPUT_NAME, String format) {
+            return save(%INPUT_NAME, format, -1);
+        }    
+        public final boolean save(%INPUT_TYPE %INPUT_NAME) {
+            return save(%INPUT_NAME, null);
+        }        
+    </template>
+
+    <template name="gui.pixmap_loadconstructor">
+        public %RETURN_TYPE %FUNCTION_NAME(%INPUT_TYPE %INPUT_NAME, String format, Qt.ImageConversionFlags flags) {
+            %FUNCTION_CALL(%OUTPUT_NAME, format == null ? null : QNativePointer.createCharPointer(format), flags);
+        }
+        
+        public %RETURN_TYPE %FUNCTION_NAME(%INPUT_TYPE %INPUT_NAME, String format, Qt.ImageConversionFlag ... flags) {
+            %FUNCTION_CALL(%INPUT_NAME, format, new Qt.ImageConversionFlags(flags));
+        }
+        
+        public %RETURN_TYPE %FUNCTION_NAME(%INPUT_TYPE %INPUT_NAME, String format) {
+            %FUNCTION_CALL(%INPUT_NAME, format, Qt.ImageConversionFlag.AutoColor);
+        }
+        
+        public %RETURN_TYPE %FUNCTION_NAME(%INPUT_TYPE %INPUT_NAME) {
+            %FUNCTION_CALL(%INPUT_NAME, null);
+        }
+    </template>
+    
+    <template name="gui.pixmap_load">
+        <insert-template name="gui.pixmap_loadconstructor">
+            <replace from="%RETURN_TYPE" to="final boolean" />            
+            <replace from="%FUNCTION_CALL" to="return %FUNCTION_NAME" />
+        </insert-template>
+    </template>
+    
+    <template name="gui.pixmap_constructor">
+        <insert-template name="gui.pixmap_loadconstructor">
+            <replace from="%RETURN_TYPE" to="" />
+            <replace from="%FUNCTION_NAME" to="QPixmap" />
+            <replace from="%FUNCTION_CALL" to="this" />
+            <replace from="%INPUT_TYPE" to="String" />
+            <replace from="%INPUT_NAME" to="fileName" />
+            <replace from="%OUTPUT_NAME" to="fileName" />
+        </insert-template>
+    </template>
+  
     <extra-includes>
         <include file-name="QBitmap" location="global"/>
         <include file-name="QMatrix" location="global"/>
+        <include file-name="com.trolltech.qt.core.Qt" location="java" />
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>
-    <modify-function class="java" signature="save(const QString &amp;, const char *, int) const">
-        <access modifier="private"/>
-        <rename to="private_save"/>
-    </modify-function>
     <modify-function class="java" signature="save(QIODevice *, const char *, int) const">
         <access modifier="private"/>
         <rename to="private_save"/>
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>        
     </modify-function>
     <inject-code>
-    public boolean save(com.trolltech.qt.core.QIODevice fileName, String format, int quality) {
-        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
-    }
-    public boolean save(com.trolltech.qt.core.QIODevice fileName, String format) {
-        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format));
-    }
-    public boolean save(String fileName, String format, int quality) {
-        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
-    }
-    public boolean save(String fileName, String format) {
-        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format));
-    }
+        <insert-template name="gui.pixmap_save">
+            <replace from="%INPUT_TYPE" to="com.trolltech.qt.core.QIODevice" />
+            <replace from="%INPUT_NAME" to="dev" />
+        </insert-template>
     </inject-code>
+
+    <modify-function class="java" signature="save(const QString &amp;, const char *, int) const">
+        <access modifier="private"/>
+        <rename to="private_save"/>
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>                
+    </modify-function>    
+    <inject-code>
+        <insert-template name="gui.pixmap_save">
+            <replace from="%INPUT_TYPE" to="String" />
+            <replace from="%INPUT_NAME" to="fileName" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="QPixmap(QString,const char*,QFlags&lt;Qt::ImageConversionFlag>)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>        
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.pixmap_constructor" />
+    </inject-code>
+    
+    <modify-function signature="load(QString,const char*,QFlags&lt;Qt::ImageConversionFlag>)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>            
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.pixmap_load">
+            <replace from="%FUNCTION_NAME" to="load" />
+            <replace from="%INPUT_TYPE" to="String" />
+            <replace from="%INPUT_NAME" to="fileName" />
+            <replace from="%OUTPUT_NAME" to="fileName" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="loadFromData(const unsigned char*,uint,const char*,QFlags&lt;Qt::ImageConversionFlag>)">
+        <access modifier="private" />
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>                
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.pixmap_load">
+            <replace from="%FUNCTION_NAME" to="loadFromData" />
+            <replace from="%INPUT_TYPE" to="byte[]" />
+            <replace from="%INPUT_NAME" to="data" />
+            <replace from="%OUTPUT_NAME" to="com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length" />
+        </insert-template>    
+    </inject-code>
+    
+    <modify-function signature="loadFromData(QByteArray,const char*,QFlags&lt;Qt::ImageConversionFlag>)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>                
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.pixmap_load">
+            <replace from="%FUNCTION_NAME" to="loadFromData" />
+            <replace from="%INPUT_TYPE" to="com.trolltech.qt.core.QByteArray" />
+            <replace from="%INPUT_NAME" to="data" />            
+            <replace from="%OUTPUT_NAME" to="data" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="operator=(QPixmap)">
+        <access modifier="private"/>
+        <rename to="operator_assign_private"/>
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QPixmap" />
+            <replace from="final" to="" />
+        </insert-template>            
+    </inject-code>
+    
   </value-type>
 
   <value-type name="QTextCursor">
     <extra-includes>
         <include file-name="QTextBlock" location="global"/>
         <include file-name="QTextDocumentFragment" location="global"/>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>  
+    <modify-function signature="operator=(QTextCursor)">    
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTextCursor" />
+        </insert-template>            
+    </inject-code>
+    <modify-function signature="selectedTableCells(int*,int*,int*,int*)const">
+        <access modifier="private" />
+    </modify-function>    
+    <inject-code>
+        public final QTableArea selectedTableCells() {
+            QNativePointer firstRow = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer numRows = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer firstColumn = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer numColumns = new QNativePointer(QNativePointer.Type.Int);
+            
+            selectedTableCells(firstRow, numRows, firstColumn, numColumns);
+            
+            return new QTableArea(firstRow.intValue(), firstColumn.intValue(), numRows.intValue(), numColumns.intValue());
+        }
+    </inject-code>    
   </value-type>
 
   <value-type name="QTextLayout::FormatRange">
@@ -644,21 +1459,146 @@
   </value-type>
   
   <value-type name="QItemSelection"> 
-    <inject-code class="shell-declaration">
-    QList&lt;QItemSelectionRange&gt; &amp;operator=(const QList&lt;QItemSelectionRange&gt; &amp;other)
-    {
-        return ((QList&lt;QItemSelectionRange&gt; *)this)-&gt;operator=(other);
-    }    
+    <modify-function signature="split(QItemSelectionRange,QItemSelectionRange,QItemSelection*)">
+        <access modifier="private" />
+    </modify-function>
+    <modify-function signature="operator=(const QList&lt;QItemSelectionRange>&amp;)">
+      <remove/>
+    </modify-function>
+    <inject-code>
+        public static void split(QItemSelectionRange range, QItemSelectionRange other, QItemSelection result) {
+            com.trolltech.qt.QNativePointer np = result.nativePointer();
+            split(range, other, np);
+        }
     </inject-code>
+    <modify-function signature="back()">
+        <remove />
+    </modify-function>        
+    <modify-function signature="first()">
+        <remove />
+    </modify-function>        
+    <modify-function signature="front()">
+        <remove />
+    </modify-function>        
+    <modify-function signature="last()">
+        <remove />
+    </modify-function>        
+    <modify-function signature="operator[](int)">
+        <remove />
+    </modify-function>        
+    
   </value-type>
 
   <value-type name="QMatrix">
-    <extra-includes>
-        <include file-name="QPainterPath" location="global"/>
-    </extra-includes>
+        <extra-includes>
+            <include file-name="QPainterPath" location="global"/>
+            <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+        </extra-includes>
+        <modify-function signature="inverted(bool*)const">
+            <access modifier="private" />
+            <modify-argument index="1">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <inject-code>
+            /**
+             * Returns an inverted copy of this matrix.
+             *
+             * @return The inverse of the matrix.
+             * @throws IllegalArgumentException If this matrix is not invertible.
+             */
+            public final QMatrix inverted() {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);                
+                QMatrix returned = inverted(ok);
+                if (!ok.booleanValue())
+                    throw new IllegalArgumentException("Matrix is not invertible");                    
+                return returned;                    
+            }
+        </inject-code>
+                
+        <modify-function signature="map(int,int,int*,int*)const">
+            <remove />
+        </modify-function>
+        
+        <modify-function signature="map(double,double,double*,double*)const">
+            <remove />
+        </modify-function>
+        
+        <modify-function signature="operator*=(QMatrix)">
+            <access modifier="private"/>
+            <rename to="operator_multiply_assign_private"/>
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.unary_self_type">
+                <replace from="%FUNCTION_NAME" to="operator_multiply_assign" />
+                <replace from="%TYPE" to="QMatrix" />
+            </insert-template>
+        </inject-code>
+        
+        <modify-function signature="operator=(QMatrix)">
+            <access modifier="private"/>
+            <rename to="operator_assign_private"/>                    
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.operator_assign_self_type">
+                <replace from="%TYPE" to="QMatrix" />
+            </insert-template>            
+        </inject-code>
+        
+        <modify-function signature="rotate(double)">
+            <access modifier="private"/>
+            <rename to="rotate_private"/>
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.unary_other_type">
+                <replace from="%FUNCTION_NAME" to="rotate" />
+                <replace from="%OUT_TYPE" to="QMatrix" />
+                <replace from="%IN_TYPE" to="double" />
+            </insert-template>            
+        </inject-code>        
+        
+        <modify-function signature="scale(double,double)">
+            <access modifier="private"/>
+            <rename to="scale_private"/>        
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.private_function_return_self">
+                <replace from="%RETURN_TYPE" to="QMatrix" />
+                <replace from="%FUNCTION_NAME" to="scale" />
+                <replace from="%ARGUMENTS" to="double sx, double sy" />
+                <replace from="%ARGUMENT_NAMES" to="sx, sy" />
+            </insert-template>                
+        </inject-code>        
+        
+        <modify-function signature="shear(double,double)">
+            <access modifier="private"/>
+            <rename to="shear_private"/>                
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.private_function_return_self">
+                <replace from="%RETURN_TYPE" to="QMatrix" />
+                <replace from="%FUNCTION_NAME" to="shear" />
+                <replace from="%ARGUMENTS" to="double sh, double sv" />
+                <replace from="%ARGUMENT_NAMES" to="sh, sv" />
+            </insert-template>                            
+        </inject-code>
+                
+        <modify-function signature="translate(double,double)">
+            <access modifier="private"/>
+            <rename to="translate_private"/>                
+        </modify-function>
+        <inject-code>
+            <insert-template name="core.private_function_return_self">
+                <replace from="%RETURN_TYPE" to="QMatrix" />
+                <replace from="%FUNCTION_NAME" to="translate" />
+                <replace from="%ARGUMENTS" to="double dx, double dy" />
+                <replace from="%ARGUMENT_NAMES" to="dx, dy" />
+            </insert-template>            
+        </inject-code>
   </value-type>
 
-  <value-type name="QConicalGradient">
+  <value-type name="QConicalGradient"
+              polymorphic-id-expression="%1-&gt;type() == QGradient::ConicalGradient">
     <custom-constructor>
     return new QConicalGradient(copy->center(), copy->angle());
     </custom-constructor>
@@ -674,9 +1614,20 @@
     <custom-destructor>
     delete copy;
     </custom-destructor>
+    <modify-function signature="operator=(QFontInfo)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QFontInfo" />
+        </insert-template>
+    </inject-code>
+    
   </value-type>
 
-  <value-type name="QRadialGradient">
+  <value-type name="QRadialGradient"
+              polymorphic-id-expression="%1-&gt;type() == QGradient::RadialGradient">
     <custom-constructor>
     return new QRadialGradient(copy->center(), copy->radius(), copy->focalPoint());
     </custom-constructor>
@@ -699,14 +1650,32 @@
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>    
+    <modify-function signature="operator=(QFont)">
+        <rename to="operator_assign_private"/>
+        <access modifier="private"/>        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QFont" />
+        </insert-template>            
+    </inject-code>    
   </value-type>
 
   <value-type name="QTextTableCell">
     <extra-includes>
         <include file-name="QTextCursor" location="global"/>
     </extra-includes>
+    <modify-function signature="operator=(QTextTableCell)">
+        <rename to="operator_assign_private"/>
+        <access modifier="private"/>        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QTextTableCell" />
+        </insert-template>            
+    </inject-code>
   </value-type>
-
+  
   <value-type name="QImage" expense-limit="67108864" expense-cost="height()*bytesPerLine()">
     <modify-function signature="QImage(const char *, const char *)">
         <remove />
@@ -728,34 +1697,185 @@
         {
             this(com.trolltech.qt.QNativePointer.createCharPointerPointer(xpm));
         }
-    </inject-code>
-    
+    </inject-code>    
     <extra-includes>
         <include file-name="QStringList" location="global"/>
         <include file-name="QMatrix" location="global"/>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>
     <modify-function class="java" signature="save(const QString &amp;, const char *, int) const">
         <access modifier="private"/>
         <rename to="private_save"/>
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>        
     </modify-function>
+    <inject-code>
+        <insert-template name="gui.pixmap_save">
+            <replace from="%INPUT_TYPE" to="String" />
+            <replace from="%INPUT_NAME" to="fileName" />
+        </insert-template>
+    </inject-code>
+    
+    <inject-code>
+        public final byte[] copyOfBytes() {
+            QNativePointer bits = bits();
+            byte bytes[] = new byte[numBytes()];
+            for (int i=0;i&lt;bytes.length;++i) bytes[i] = bits.byteAt(i);            
+            return bytes;
+        }
+    </inject-code>
+    
+    
     <modify-function class="java" signature="save(QIODevice *, const char *, int) const">
         <access modifier="private"/>
         <rename to="private_save"/>
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>        
     </modify-function>
     <inject-code>
-    public boolean save(com.trolltech.qt.core.QIODevice fileName, String format, int quality) {
-        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
-    }
-    public boolean save(com.trolltech.qt.core.QIODevice fileName, String format) {
-        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format));
-    }
-    public boolean save(String fileName, String format, int quality) {
-        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format), quality);
-    }
-    public boolean save(String fileName, String format) {
-        return private_save(fileName,  com.trolltech.qt.QNativePointer.createCharPointer(format));
-    }
+        <insert-template name="gui.pixmap_save">
+            <replace from="%INPUT_TYPE" to="com.trolltech.qt.core.QIODevice" />
+            <replace from="%INPUT_NAME" to="dev" />
+        </insert-template>
     </inject-code>
+    
+    <modify-function signature="QImage(unsigned char*,int,int,QImage::Format)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public QImage(byte data[], int width, int height, Format format) {
+            this(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), width, height, format);
+        }
+    </inject-code>
+    
+    <modify-function signature="QImage(QString,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public QImage(String fileName, String format) {
+            this(fileName, format == null ? null : QNativePointer.createCharPointer(format));
+        }
+        
+        public QImage(String fileName) {
+            this(fileName, (String) null);
+        }
+    </inject-code>
+    
+    <template name="gui.image_load">
+        public final boolean %FUNCTION_NAME(%ARGUMENT_TYPE %ARGUMENT_NAME, String format) {
+            return %FUNCTION_NAME(%OUT_ARGUMENT_NAME, format != null ? QNativePointer.createCharPointer(format) : null);
+        }
+        
+        public final boolean %FUNCTION_NAME(%ARGUMENT_TYPE %ARGUMENT_NAME) {
+            return %FUNCTION_NAME(%ARGUMENT_NAME, (String) null);
+        }
+    </template>
+    <modify-function signature="load(QString,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.image_load">
+            <replace from="%FUNCTION_NAME" to="load" />
+            <replace from="%ARGUMENT_TYPE" to="String" />
+            <replace from="%ARGUMENT_NAME" to="fileName" />
+            <replace from="%OUT_ARGUMENT_NAME" to="fileName" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="load(QIODevice*,const char*)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.image_load">
+            <replace from="%FUNCTION_NAME" to="load" />
+            <replace from="%ARGUMENT_TYPE" to="com.trolltech.qt.core.QIODevice" />
+            <replace from="%ARGUMENT_NAME" to="device" />
+            <replace from="%OUT_ARGUMENT_NAME" to="device" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="loadFromData(const unsigned char*,int,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.image_load">
+            <replace from="%FUNCTION_NAME" to="loadFromData" />
+            <replace from="%ARGUMENT_TYPE" to="byte[]" />
+            <replace from="%ARGUMENT_NAME" to="data" />
+            <replace from="%OUT_ARGUMENT_NAME" to="com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length" />
+        </insert-template>    
+    </inject-code>
+    
+    <modify-function signature="loadFromData(QByteArray,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.image_load">
+            <replace from="%FUNCTION_NAME" to="loadFromData" />
+            <replace from="%ARGUMENT_TYPE" to="com.trolltech.qt.core.QByteArray" />
+            <replace from="%ARGUMENT_NAME" to="data" />
+            <replace from="%OUT_ARGUMENT_NAME" to="data" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="operator=(QImage)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QImage" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="setText(const char*,const char*,QString)">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="text(const char*,const char*)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="fromData(QByteArray,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.image_load">
+            <replace from="%FUNCTION_NAME" to="fromData" />
+            <replace from="%ARGUMENT_TYPE" to="com.trolltech.qt.core.QByteArray" />
+            <replace from="%ARGUMENT_NAME" to="data" />
+            <replace from="%OUT_ARGUMENT_NAME" to="data" />
+            <replace from="boolean" to="QImage" />
+            <replace from="final" to="static" />
+        </insert-template>        
+    </inject-code>
+    
+    <modify-function signature="fromData(const unsigned char*,int,const char*)">
+        <remove />
+    </modify-function>        
   </value-type>
 
   <value-type name="QColormap">
@@ -768,12 +1888,58 @@
     <custom-destructor>
     delete copy;
     </custom-destructor>    
+    <modify-function signature="operator=(QColormap)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QColormap" />
+        </insert-template>            
+    </inject-code>
   </value-type>
 
-  <value-type name="QCursor">
+  <value-type name="QCursor">  
+    <template name="gui.cursor_bitmap_getter">
+        <insert-template name="gui.getter_returning_nativepointer">
+            <replace from="%RETURN_TYPE" to="QBitmap" />
+        </insert-template>        
+    </template>
+  
     <extra-includes>
         <include file-name="QPixmap" location="global"/>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
     </extra-includes>
+    <modify-function signature="bitmap()const">
+        <access modifier="private" />
+        <rename to="bitmap_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.cursor_bitmap_getter">
+            <replace from="%FUNCTION_NAME" to="bitmap" />
+        </insert-template>
+    </inject-code>    
+    
+    <modify-function signature="mask()const">
+        <access modifier="private" />
+        <rename to="mask_private" />    
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.cursor_bitmap_getter">
+            <replace from="%FUNCTION_NAME" to="mask" />
+        </insert-template>
+    </inject-code>    
+    
+    <modify-function signature="operator=(QCursor)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />                
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QCursor" />
+        </insert-template>            
+    </inject-code>    
+    
   </value-type>
       
   <value-type name="QFontDatabase">
@@ -801,18 +1967,48 @@
     }
     public static final QPen NoPen = new QPen(com.trolltech.qt.core.Qt.PenStyle.NoPen);
     </inject-code>
+    <modify-function signature="operator=(QPen)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QPen" />
+        </insert-template>            
+    </inject-code>    
   </value-type>  
   
   <value-type name="QBrush">
     <modify-function class="java" signature="QBrush(Qt::GlobalColor, Qt::BrushStyle)">
       <remove/>
-    </modify-function>
+    </modify-function>    
       <extra-includes>
         <include file-name="QPixmap" location="global"/>
-    </extra-includes>    
+    </extra-includes>  
+    
     <inject-code class="java">
     public static final QBrush NoBrush = new QBrush(com.trolltech.qt.core.Qt.BrushStyle.NoBrush);
     </inject-code>
+    
+    <modify-function signature="operator=(const QBrush &amp;)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QBrush" />
+        </insert-template>            
+    </inject-code>
+    
+    <modify-function signature="gradient()const">
+        <!-- Use custom constructors already defined for gradient -->
+        <modify-argument index="0">
+            <replace-type modified-type="com.trolltech.qt.gui.QGradient" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QGradient", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QGradient_2", true);
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
   </value-type>
 
   <value-type name="QColor">
@@ -841,9 +2037,60 @@
     public static final QColor color0 = new QColor(com.trolltech.qt.core.Qt.GlobalColor.color0);
     public static final QColor color1 = new QColor(com.trolltech.qt.core.Qt.GlobalColor.color1);
     </inject-code>
+    <modify-function signature="QColor(const char*)">
+        <remove />
+    </modify-function>
+        
+    <modify-function signature="getCmyk(int*,int*,int*,int*,int*)">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="getCmykF(double*,double*,double*,double*,double*)">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="getHsv(int*,int*,int*,int*)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="getHsvF(double*,double*,double*,double*)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="getRgb(int*,int*,int*,int*)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="getRgbF(double*,double*,double*,double*)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="operator=(Qt::GlobalColor)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="com.trolltech.qt.core.Qt.GlobalColor" />
+            <replace from="%OUT_TYPE" to="QColor" />
+        </insert-template>                
+    </inject-code>
+    
+    <modify-function signature="operator=(QColor)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QColor" />
+        </insert-template>                
+    </inject-code>        
   </value-type>
  
   <value-type name="QFontMetricsF">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>
     <custom-constructor>
         return new QFontMetricsF(*copy);
     </custom-constructor>
@@ -856,6 +2103,73 @@
     <modify-function signature="operator==(const QFontMetricsF &amp;)">
         <remove/>
     </modify-function>        
+    
+    <template name="gui.fontmetricsf_boundingrect">
+        <insert-template name="gui.fontmetrics_tabarray_function">
+            <replace from="%RETURN_TYPE" to="com.trolltech.qt.core.QRectF" />
+            <replace from="%FUNCTION_NAME" to="boundingRect" />
+            <replace from="%RECT_ARGUMENTS" to="%RECT_ARGUMENTS, " />
+            <replace from="%RECT_CALL_ARGUMENTS" to="%RECT_CALL_ARGUMENTS, " />
+        </insert-template>
+    </template>
+
+    
+    <modify-function signature="boundingRect(QRectF,int,QString,int,int*)const">
+        <access modifier="private" />
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>                
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.fontmetricsf_boundingrect">
+            <replace from="%RECT_ARGUMENTS" to="com.trolltech.qt.core.QRectF rect" />
+            <replace from="%RECT_CALL_ARGUMENTS" to="rect" />
+        </insert-template>    
+    </inject-code>
+
+    <modify-function signature="operator=(QFontMetrics)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="QFontMetrics" />
+            <replace from="%OUT_TYPE" to="QFontMetricsF" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="operator=(QFontMetricsF)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QFontMetricsF" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="size(int,QString,int,int*)const">
+        <access modifier="private" />
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>        
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>                
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.fontmetrics_tabarray_function">
+            <replace from="%RETURN_TYPE" to="com.trolltech.qt.core.QSizeF" />
+            <replace from="%FUNCTION_NAME" to="size" />
+            <replace from="%RECT_ARGUMENTS" to="" />
+            <replace from="%RECT_CALL_ARGUMENTS" to="" />
+        </insert-template>
+    </inject-code>        
+    
+
   </value-type>
 
   <value-type name="QFontMetrics">
@@ -871,18 +2185,105 @@
     <modify-function signature="operator==(const QFontMetrics &amp;)">
         <remove/>
     </modify-function>    
+    
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>
+    
+    <template name="gui.fontmetrics_tabarray_function">
+        public final %RETURN_TYPE %FUNCTION_NAME(%RECT_ARGUMENTSint flags, String text, int tabStops, int tabArray[]) {
+            QNativePointer np = tabArray == null ? null : new QNativePointer(QNativePointer.Type.Int, tabArray.length + 1);
+            if (np != null) {
+                for (int i=0; i&lt;tabArray.length; ++i) np.setIntAt(i, tabArray[i]);
+                np.setIntAt(tabArray.length, 0);
+            }
+            return %FUNCTION_NAME(%RECT_CALL_ARGUMENTSflags, text, tabStops, np);
+        }
+        
+        public final %RETURN_TYPE %FUNCTION_NAME(%RECT_ARGUMENTSint flags, String text, int tabStops) {
+            return %FUNCTION_NAME(%RECT_CALL_ARGUMENTSflags, text, tabStops, (int []) null);
+        }        
+        
+        public final %RETURN_TYPE %FUNCTION_NAME(%RECT_ARGUMENTSint flags, String text) {
+            return %FUNCTION_NAME(%RECT_CALL_ARGUMENTSflags, text, 0);
+        }                
+    </template>
+    
+    <template name="gui.fontmetrics_boundingrect">
+        <insert-template name="gui.fontmetrics_tabarray_function">
+            <replace from="%RETURN_TYPE" to="com.trolltech.qt.core.QRect" />
+            <replace from="%FUNCTION_NAME" to="boundingRect" />
+            <replace from="%RECT_ARGUMENTS" to="%RECT_ARGUMENTS, " />
+            <replace from="%RECT_CALL_ARGUMENTS" to="%RECT_CALL_ARGUMENTS, " />
+        </insert-template>
+    </template>
+    
+    <modify-function signature="boundingRect(int,int,int,int,int,QString,int,int*)const">
+        <access modifier="private" />
+        <modify-argument index="7">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="8">
+            <remove-default-expression />
+        </modify-argument>        
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.fontmetrics_boundingrect">
+            <replace from="%RECT_ARGUMENTS" to="int x, int y, int width, int height" />
+            <replace from="%RECT_CALL_ARGUMENTS" to="x, y, width, height" />
+        </insert-template>
+    </inject-code>
+        
+    <modify-function signature="boundingRect(QRect,int,QString,int,int*)const">
+        <access modifier="private" />
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>                
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.fontmetrics_boundingrect">
+            <replace from="%RECT_ARGUMENTS" to="com.trolltech.qt.core.QRect rect" />
+            <replace from="%RECT_CALL_ARGUMENTS" to="rect" />
+        </insert-template>    
+    </inject-code>
+    
+    <modify-function signature="operator=(QFontMetrics)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.operator_assign_self_type">
+            <replace from="%TYPE" to="QFontMetrics" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="size(int,QString,int,int*)const">
+        <access modifier="private" />
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>        
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>                
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.fontmetrics_tabarray_function">
+            <replace from="%RETURN_TYPE" to="com.trolltech.qt.core.QSize" />
+            <replace from="%FUNCTION_NAME" to="size" />
+            <replace from="%RECT_ARGUMENTS" to="" />
+            <replace from="%RECT_CALL_ARGUMENTS" to="" />
+        </insert-template>
+    </inject-code>        
   </value-type>
 
-  <value-type name="QGradient">
-    <custom-constructor>
-    if (copy->type() == QGradient::LinearGradient) {
-        const QLinearGradient *lg_copy = static_cast&lt;const QLinearGradient *&gt;(copy);
-        QLinearGradient *lg = new QLinearGradient(lg_copy->start(), lg_copy->finalStop());
-        lg->setSpread(copy->spread());
-        lg->setStops(copy->stops());
-        return (void *) lg;
-    }
-    return 0;
+  <value-type name="QGradient" polymorphic-base="yes" 
+              polymorphic-id-expression="%1-&gt;type() == QGradient::NoGradient">
+    <custom-constructor>  
+    qWarning("Copying empty QGradient object");
+    return new QGradient();
     </custom-constructor>
     <custom-destructor>
     delete copy;
@@ -892,7 +2293,8 @@
     </modify-function>        
   </value-type>
 
-  <value-type name="QLinearGradient">
+  <value-type name="QLinearGradient"
+              polymorphic-id-expression="%1-&gt;type() == QGradient::LinearGradient">
     <custom-constructor>
     QLinearGradient *lg = new QLinearGradient(copy->start(), copy->finalStop());
     lg->setSpread(copy->spread());
@@ -914,7 +2316,7 @@
     <modify-function signature="paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)">
        <modify-argument index="2"> 
            <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionGraphicsItem", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionGraphicsItem", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
            </conversion-rule>       
         <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionGraphicsItem" />
        </modify-argument>
@@ -940,7 +2342,78 @@
   <object-type name="QAccessibleBridgeFactoryInterface"/>
   <object-type name="QAccessibleBridgePlugin"/>
   <object-type name="QAccessibleFactoryInterface"/>
-  <object-type name="QAccessibleInterface"/>
+  <object-type name="QAccessibleInterface">
+    <inject-code>
+        public static class Target {            
+            public Target(int childIndex, QAccessibleInterface target) {
+                this.childIndex = childIndex;
+                this.target = target;
+            }
+        
+            public QAccessibleInterface target;
+            public int childIndex;
+        }
+    </inject-code>  
+    
+    <template name="gui.accessible_interface_to_target">            
+        jclass __target_class = resolveClass(__jni_env, "QAccessibleInterface$Target", "com/trolltech/qt/gui/");
+        QTJAMBI_EXCEPTION_CHECK(__jni_env);
+        Q_ASSERT(__target_class);        
+        
+        jmethodID __target_constructor = resolveMethod(__jni_env, "&lt;init>", "(ILcom/trolltech/qt/gui/QAccessibleInterface;)V", "QAccessibleInterface$Target", "com/trolltech/qt/gui/");
+        QTJAMBI_EXCEPTION_CHECK(__jni_env);
+        Q_ASSERT(__target_constructor);        
+        
+        jobject __java_interface = %TARGET != 0 ? qtjambi_from_object(__jni_env, %TARGET, "QAccessibleInterface$ConcreteWrapper", "com/trolltech/qt/gui/", true) : 0;
+                                                                        
+        jobject %OUTPUT = __jni_env->NewObject(__target_class, __target_constructor, %CHILD_INDEX, __java_interface);
+    </template>
+    
+    <modify-function signature="navigate(QAccessible::RelationFlag,int,QAccessibleInterface**)const">
+        <modify-argument index="3">
+            <remove-argument />
+            <conversion-rule>
+                // nothing
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="0">
+            <replace-type modified-type="com.trolltech.qt.gui.QAccessibleInterface$Target" />
+            <conversion-rule>
+                <insert-template name="gui.accessible_interface_to_target">
+                    <replace from="%TARGET" to="__qt_interface" />
+                    <replace from="%CHILD_INDEX" to="%in" />
+                    <replace from="%OUTPUT" to="%out" />
+                </insert-template>
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="navigate(QAccessible::RelationFlag,int,QAccessibleInterface**)const">
+        <modify-argument index="3">
+            <conversion-rule>
+                QAccessibleInterface *__qt_interface = 0;
+                QAccessibleInterface **%out = &amp;__qt_interface;            
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="0">
+            <conversion-rule>
+                jfieldID __childIndex_id = resolveField(__jni_env, "childIndex", "I", "QAccessibleInterface$Target", "com/trolltech/qt/gui/");
+                Q_ASSERT(__childIndex_id);
+                
+                jfieldID __target_id = resolveField(__jni_env, "target", "Lcom/trolltech/qt/gui/QAccessibleInterface;", "QAccessibleInterface$Target", "com/trolltech/qt/gui/");
+                Q_ASSERT(__target_id);
+
+                jint %out = __jni_env->GetIntField(%in, __childIndex_id);
+                
+                jobject __java_interface = __jni_env->GetObjectField(%in, __target_id);
+                QtJambiLink *__qt_link = __java_interface != 0 ? QtJambiLink::findLink(__jni_env, __java_interface) : 0;
+                if (__qt_link != 0) __qt_link->disableGarbageCollection(__jni_env, __java_interface);
+                QAccessibleInterface *__qt_interface = __qt_link != 0 ? (QAccessibleInterface *) __qt_link->pointer() : 0;
+                                
+                if (%3 != 0) *%3 = __qt_interface;                
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>    
+  </object-type>
   <object-type name="QAccessibleInterfaceEx"/>
   <object-type name="QAccessibleObject"/>
   <object-type name="QAccessibleObjectEx"/>
@@ -949,20 +2422,116 @@
   <object-type name="QAccessibleWidgetEx"/>  
   <object-type name="QActionGroup"/>
   <object-type name="QCDEStyle"/>
-  <object-type name="QCheckBox"/>
+  <object-type name="QCheckBox">
+    <modify-function signature="initStyleOption(QStyleOptionButton*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionButton" />
+        </insert-template>
+    </inject-code>
+  </object-type>
   <object-type name="QCleanlooksStyle"/>
   <object-type name="QCommonStyle"/>
   <object-type name="QDataWidgetMapper"/>
   <object-type name="QDateEdit"/>
-  <object-type name="QDesktopServices"/>
+  <object-type name="QDesktopServices">
+    <modify-function signature="setUrlHandler(QString,QObject*,const char*)">
+        <remove />
+    </modify-function>    
+  </object-type>
   <object-type name="QDialog"/>  
   <object-type name="QDialogButtonBox"/>
   <object-type name="QDirModel"/>
   <object-type name="QDoubleValidator"/>
   <object-type name="QFileIconProvider"/>
-  <object-type name="QFocusFrame"/>
+  <object-type name="QFocusFrame">
+    <modify-function signature="initStyleOption(QStyleOption*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOption" />
+        </insert-template>
+    </inject-code>  
+  </object-type>
   <object-type name="QFontComboBox"/>
-  <object-type name="QFontDialog"/>
+  
+  <object-type name="QFontDialog">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>
+    <inject-code>
+        public static final class Result {
+            public Result(QFont font, boolean ok) {
+                this.font = font;
+                this.ok = ok;
+            }            
+            public QFont font;
+            public boolean ok;
+        }    
+    </inject-code>    
+    <template name="gui.fontdialog_get_font_general">
+        public static Result getFont(%FONT_ARGUMENT %COMMA QWidget parent %STRING_ARGUMENT) {
+            QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
+            QFont returned = getFont(np, %FONT_CALL_ARGUMENT %COMMA parent %STRING_CALL_ARGUMENT);
+            return new Result(returned, np.booleanValue());
+        }                
+    </template>
+    
+    <template name="gui.fontdialog_get_font_nocaption">
+        <insert-template name="gui.fontdialog_get_font_general">
+            <replace from="%STRING_ARGUMENT" to="" />
+            <replace from="%STRING_CALL_ARGUMENT" to="" />
+        </insert-template>
+        
+        public static Result getFont(%FONT_ARGUMENT) {
+            return getFont(%FONT_CALL_ARGUMENT %COMMA (QWidget) null);
+        }
+    </template>
+  
+    <modify-function signature="getFont(bool*,QFont,QWidget*,QString)">
+        <access modifier="private" />        
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.fontdialog_get_font_general">
+            <replace from="%FONT_ARGUMENT %COMMA" to="QFont initial," />
+            <replace from="%STRING_ARGUMENT" to=", String caption" />
+            <replace from="%FONT_CALL_ARGUMENT %COMMA" to="initial," />
+            <replace from="%STRING_CALL_ARGUMENT" to=", caption" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="getFont(bool*,QWidget*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.fontdialog_get_font_nocaption">
+            <replace from="%FONT_ARGUMENT" to="" />
+            <replace from="%COMMA" to="" />
+            <replace from="%FONT_CALL_ARGUMENT" to="" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="getFont(bool*,QFont,QWidget*)">
+        <access modifier="private" />
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>        
+    </modify-function>     
+    <inject-code>
+        <insert-template name="gui.fontdialog_get_font_nocaption">
+            <replace from="%FONT_ARGUMENT" to="QFont initial" />
+            <replace from="%COMMA" to=", " />
+            <replace from="%FONT_CALL_ARGUMENT" to="initial" />
+        </insert-template>
+    </inject-code>    
+  </object-type>
+  
   <object-type name="QGraphicsEllipseItem"/>
   <object-type name="QGraphicsItemAnimation"/>
   <object-type name="QGraphicsItemGroup"/>
@@ -973,7 +2542,16 @@
   <object-type name="QGraphicsRectItem"/>
   <object-type name="QGraphicsSimpleTextItem"/>
   <object-type name="QHBoxLayout"/>
-  <object-type name="QHeaderView"/>
+  <object-type name="QHeaderView">
+    <modify-function signature="initStyleOption(QStyleOptionHeader*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionHeader" />
+        </insert-template>
+    </inject-code>  
+  </object-type>
   <object-type name="QIconEngine"/>
   <object-type name="QIconEngineFactoryInterface"/>
   <object-type name="QIconEnginePlugin"/>
@@ -984,30 +2562,243 @@
   <object-type name="QInputContextFactoryInterface"/>
   <object-type name="QInputContextPlugin"/>
   <object-type name="QIntValidator"/>
-  <object-type name="QItemDelegate"/>  
+  <object-type name="QItemDelegate">  
+    <modify-function signature="doLayout(QStyleOptionViewItem,QRect*,QRect*,QRect*,bool)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="selected(QPixmap,QPalette,bool)const">
+        <remove />
+    </modify-function>
+    
+  </object-type>
   <object-type name="QItemEditorCreatorBase"/>
   <object-type name="QItemEditorFactory"/>
   <object-type name="QItemSelectionModel"/>
   <object-type name="QListView"/>
   <object-type name="QMainWindow"/>
-  <object-type name="QMenu"/>
-  <object-type name="QMenuBar"/>
+  <object-type name="QMenu">
+    <modify-function signature="initStyleOption(QStyleOptionMenuItem*,const QAction*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        protected final void initStyleOption(com.trolltech.qt.gui.QStyleOptionMenuItem option, QAction action) {
+            initStyleOption(option.nativePointer(), action);
+        }
+    </inject-code>  
+
+    <template name="gui.addAction">
+        public final QAction addAction(%EXTRA String text, Object receiver, String method %END_EXTRA) {
+            QAction returned = addAction(%CALL_EXTRA text %END_CALL_EXTRA);
+            %POST_CALL            
+            returned.triggered.connect(receiver, method);
+            
+            return returned;
+        }
+        
+        public final QAction addAction(%EXTRA String text, com.trolltech.qt.core.QObject.AbstractSignal signal %END_EXTRA) {
+            QAction returned = addAction(%CALL_EXTRA text %END_CALL_EXTRA);
+            %POST_CALL
+            returned.triggered.connect(signal);
+            return returned;
+        }
+    </template>        
+    
+    <template name="gui.addAction_with_shortcut">
+        <insert-template name="gui.addAction">
+            <replace from="%POST_CALL" to="returned.setShortcut(shortcut);" />
+            <replace from=" %END_EXTRA" to=", QKeySequence shortcut" />
+            <replace from=" %END_CALL_EXTRA" to="" />
+        </insert-template>
+        
+        public final QAction addAction(%EXTRA String text, Object receiver, String method) {
+            return addAction(%CALL_EXTRA text, receiver, method, new QKeySequence(0));
+        }        
+        
+        public final QAction addAction(%EXTRA String text, com.trolltech.qt.core.QObject.AbstractSignal signal) {
+            return addAction(%CALL_EXTRA text, signal, new QKeySequence(0));
+        }
+    </template>
+    
+    <modify-function signature="addAction(QString,const QObject*,const char*,QKeySequence)">
+        <remove />        
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.addAction_with_shortcut">
+            <replace from="%EXTRA " to="" />
+            <replace from="%CALL_EXTRA " to="" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="addAction(QIcon,QString,const QObject*,const char*,QKeySequence)">
+        <remove />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.addAction_with_shortcut">
+            <replace from="%EXTRA" to="QIcon icon," />
+            <replace from="%CALL_EXTRA" to="icon," />
+        </insert-template>    
+    </inject-code>
+    
+  </object-type>
+  
+  <object-type name="QMenuBar">  
+    <modify-function signature="addAction(QString,const QObject*,const char*)">
+        <remove />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.addAction">
+            <replace from="%POST_CALL" to="" />
+            <replace from=" %END_EXTRA" to="" />
+            <replace from=" %END_CALL_EXTRA" to="" />        
+            <replace from="%EXTRA " to="" />
+            <replace from="%CALL_EXTRA " to="" />            
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="initStyleOption(QStyleOptionMenuItem*,const QAction*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        protected final void initStyleOption(com.trolltech.qt.gui.QStyleOptionMenuItem option, QAction action) {
+            initStyleOption(option.nativePointer(), action);
+        }
+    </inject-code>      
+  </object-type>
   <object-type name="QMotifStyle"/>
   <object-type name="QPainterPathStroker"/>
   <object-type name="QPictureFormatInterface"/>
   <object-type name="QPictureFormatPlugin"/>
-  <object-type name="QPictureIO"/>
-  <object-type name="QPixmapCache"/>
+ 
+  <object-type name="QPictureIO">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>
+    <modify-function signature="QPictureIO(QIODevice*,const char*)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public QPictureIO(com.trolltech.qt.core.QIODevice ioDevice, String format) {
+            this(ioDevice, QNativePointer.createCharPointer(format));
+        }
+    </inject-code>
+    
+    <modify-function signature="QPictureIO(QString,const char*)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public QPictureIO(String fileName, String format) {
+            this(fileName, QNativePointer.createCharPointer(format));
+        }
+    </inject-code>        
+        
+    <modify-function signature="format()const">
+        <access modifier="private" />
+        <rename to="format_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.return_string_instead_of_char*">
+            <replace from="%FUNCTION_NAME" to="format" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="parameters()const">
+        <access modifier="private" />
+        <rename to="parameters_private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.return_string_instead_of_char*">
+            <replace from="%FUNCTION_NAME" to="parameters" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="setFormat(const char*)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.call_with_string_instead_of_char*">
+            <replace from="%FUNCTION_NAME" to="setFormat" />
+            <replace from="%ARG_NAME" to="format" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="setParameters(const char*)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="core.call_with_string_instead_of_char*">
+            <replace from="%FUNCTION_NAME" to="setParameters" />
+            <replace from="%ARG_NAME" to="parameters" />
+        </insert-template>
+    </inject-code>      
+  </object-type>
+  
+  <object-type name="QPixmapCache">
+    <modify-function signature="find(QString)">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="find(QString,QPixmap&amp;)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public static boolean find(String key, QPixmap pm) {
+            return find(key, pm.nativePointer());
+        }
+    </inject-code>
+  
+  </object-type>
   <object-type name="QPlastiqueStyle"/>
   <object-type name="QPrintDialog"/>  
   <object-type name="QPrintEngine"/>
-  <object-type name="QProgressBar"/>
-  <object-type name="QPushButton"/>
+  <object-type name="QProgressBar">
+    <modify-function signature="initStyleOption(QStyleOptionProgressBar*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionProgressBar" />
+        </insert-template>
+    </inject-code>
+  </object-type>
+  <object-type name="QPushButton">
+    <modify-function signature="initStyleOption(QStyleOptionButton*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionButton" />
+        </insert-template>
+    </inject-code>  
+  </object-type>
   <object-type name="QReadWriteLock"/>
   <object-type name="QRegExpValidator"/>
   <object-type name="QScrollArea"/>
   <object-type name="QSessionManager"/>
-  <object-type name="QShortcut"/>
+  <object-type name="QShortcut">
+    <modify-function signature="QShortcut(QKeySequence,QWidget*,const char*,const char*,Qt::ShortcutContext)">
+        <access modifier="private" />
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>        
+    </modify-function>    
+    <inject-code>
+        public QShortcut(QKeySequence key, QWidget parent) {
+            this(key, parent, null, null, com.trolltech.qt.core.Qt.ShortcutContext.WindowShortcut);
+        }        
+        
+        public QShortcut(QKeySequence key, QWidget parent, com.trolltech.qt.core.Qt.ShortcutContext context) {
+            this(key, parent, null, null, context);
+        }
+    </inject-code>
+    
+  </object-type>
   <object-type name="QSizeGrip"/>
   <object-type name="QSound"/>  
   <object-type name="QSpacerItem"/>
@@ -1031,7 +2822,16 @@
   <object-type name="QTextObjectInterface"/>
   <object-type name="QTimeEdit"/>
   <object-type name="QToolBox"/>
-  <object-type name="QToolButton"/>
+  <object-type name="QToolButton">
+    <modify-function signature="initStyleOption(QStyleOptionToolButton*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionToolButton" />
+        </insert-template>
+    </inject-code>  
+  </object-type>
   <object-type name="QToolTip"/>
   <object-type name="QTreeView"/>
   <object-type name="QUndoCommand"/>
@@ -1039,7 +2839,93 @@
   <object-type name="QUndoStack"/>
   <object-type name="QUndoView"/>
   <object-type name="QVBoxLayout"/>
-  <object-type name="QValidator"/>
+  <object-type name="QValidator">
+    <inject-code>
+        public static class QValidationData {
+            public QValidationData(String input, int pos) {
+                string = input;
+                position = pos;
+            }
+            public String string;
+            public int position;
+        }    
+    </inject-code>
+  
+    <modify-function class="java" signature="fixup(QString&amp;)const">
+        <modify-argument index="1">
+            <replace-type modified-type="java.lang.String" />
+            <conversion-rule>
+                jobject %out = (jobject) qtjambi_from_qstring(__jni_env, %in);
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="0">
+            <replace-type modified-type="java.lang.String"/>
+            <conversion-rule>
+                jobject %out = (jobject) qtjambi_from_qstring(__jni_env, *__qt_converted);
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="fixup(QString&amp;)const">
+        <modify-argument index="1">
+            <conversion-rule>
+                QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                QString *__qt_converted = &amp;%out;
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="0">
+            <conversion-rule>                
+                %1 = qtjambi_to_qstring(__jni_env, (jstring) %in);
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>    
+    
+    <modify-function class="java" signature="validate(QString&amp;,int&amp;)const">               
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.gui.QValidator$QValidationData" />
+            <conversion-rule>
+                <insert-template name="gui.convert_validationdata_to_java">
+                    <replace from="%STRING" to="%1" />
+                    <replace from="%POS" to="%2" />
+                </insert-template>
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                // nothing needed
+            </conversion-rule>            
+        </modify-argument>
+        <modify-argument index="0">
+            <conversion-rule>
+                <insert-template name="gui.cleanup_validationdata_from_java" />
+                jint %out = %in;            
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+    <modify-function class="native" signature="validate(QString&amp;,int&amp;)const">
+        <modify-argument index="1">
+            <conversion-rule>
+                <insert-template name="gui.convert_validationdata_to_string" />
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                <insert-template name="gui.convert_validationdata_to_pos">
+                    <replace from="%VALIDATIONDATA" to="%1" />
+                </insert-template>
+            </conversion-rule>            
+        </modify-argument>
+        <modify-argument index="0">
+            <conversion-rule>
+                <insert-template name="gui.cleanup_validationdata_to_java">
+                    <replace from="%STRING" to="%1" />
+                    <replace from="%POS" to="%2" />
+                </insert-template>
+                QValidator::State %out = (QValidator::State) qtjambi_to_enumerator(__jni_env, %in);                
+            </conversion-rule>                
+        </modify-argument>
+    </modify-function>    
+  </object-type>
   <object-type name="QWhatsThis"/>
   <object-type name="QWidgetAction"/>
   <object-type name="QWidgetItem"/>
@@ -1061,7 +2947,21 @@
   <object-type name="QDragMoveEvent"
            polymorphic-id-expression="%1->type() == QEvent::DragMove"/>
   <object-type name="QDropEvent"
-           polymorphic-id-expression="%1->type() == QEvent::Drop"/>
+           polymorphic-id-expression="%1->type() == QEvent::Drop">
+    <modify-function signature="encodedData(const char*)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="format(int)const">
+        <remove />
+    </modify-function>
+    
+    <modify-function signature="provides(const char*)const">
+        <remove />
+    </modify-function>
+    
+               
+  </object-type>
   <object-type name="QFileOpenEvent"
            polymorphic-id-expression="%1->type() == QEvent::FileOpen"/>
   <object-type name="QFocusEvent"
@@ -1100,6 +3000,7 @@
                polymorphic-id-expression="%1->type() == QEvent::Resize"/>
   <object-type name="QShortcutEvent"
                polymorphic-id-expression="%1->type() == QEvent::Shortcut">
+        <!-- All these have const overloads that are used instead -->
         <modify-function signature="isAmbiguous()">
             <remove />
         </modify-function>               
@@ -1142,19 +3043,31 @@
     </inject-code>
   </object-type>
 
+  <template name="gui::qstyleoption_from_object">
+    jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
+  </template>
+
+  <template name="gui::qstyleoptioncomplex_from_object">
+    jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionComplex", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
+  </template>
+
+  <template name="gui::qstyleoption_to_object">
+    QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+  </template>
+
   <object-type name="QStyle">
     <modify-function signature="drawControl(QStyle::ControlElement, const QStyleOption *, QPainter *, const QWidget *) const">
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoption_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="drawControl(QStyle::ControlElement, const QStyleOption *, QPainter *, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>
@@ -1163,14 +3076,14 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionComplex" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionComplex", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoptioncomplex_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="drawComplexControl(QStyle::ComplexControl, const QStyleOptionComplex *, QPainter *, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>
@@ -1179,14 +3092,14 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoption_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="drawPrimitive(QStyle::PrimitiveElement, const QStyleOption *, QPainter *, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>
@@ -1195,14 +3108,14 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionComplex" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionComplex", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoptioncomplex_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="hitTestComplexControl(QStyle::ComplexControl, const QStyleOptionComplex *, const QPoint &amp;, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>
@@ -1211,14 +3124,14 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoption_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="pixelMetric(QStyle::PixelMetric, const QStyleOption *, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>
@@ -1227,14 +3140,14 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoption_from_object" />
             </conversion-rule>
        </modify-argument>
     </modify-function>
     <modify-function class="native" signature="sizeFromContents(QStyle::ContentsType, const QStyleOption *, const QSize &amp;, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>
@@ -1243,30 +3156,30 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoption_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="standardIcon(QStyle::StandardPixmap, const QStyleOption *, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
-        </modify-argument>>
+        </modify-argument>
     </modify-function>
     
     <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption *, const QWidget *) const">
         <modify-argument index="2">            
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoption_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption *, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>
@@ -1275,14 +3188,14 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoption_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="styleHint(QStyle::StyleHint, const QStyleOption *, const QWidget *, QStyleHintReturn *) const">    
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>
@@ -1291,7 +3204,7 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionComplex" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionComplex", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoptioncomplex_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
@@ -1307,17 +3220,74 @@
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                <insert-template name="gui::qstyleoption_from_object" />
             </conversion-rule>
         </modify-argument>
     </modify-function>
     <modify-function class="native" signature="subElementRect(QStyle::SubElement, const QStyleOption *, const QWidget *) const">
         <modify-argument index="2">
             <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+                <insert-template name="gui::qstyleoption_to_object" />
             </conversion-rule>        
         </modify-argument>
     </modify-function>     
+    
+    <modify-function signature="generatedIconPixmap(QIcon::Mode,QPixmap,const QStyleOption*)const">
+        <modify-argument index="3">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                <insert-template name="gui::qstyleoption_from_object" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="generatedIconPixmap(QIcon::Mode,QPixmap,const QStyleOption*)const">
+        <modify-argument index="3">
+            <conversion-rule>
+                <insert-template name="gui::qstyleoption_to_object" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="polish(QPalette&amp;)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.gui.QPalette" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "QPalette", "com/trolltech/qt/gui/", false);
+                jobject __invalidate_me = %out;
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="polish(QPalette&amp;)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QtJambiLink *link = QtJambiLink::findLink(__jni_env, %in);
+                Q_ASSERT(link != 0);
+                      
+                QPalette dummy;                                     
+                QPalette &amp;%out = link != 0 ? * (QPalette *) link->pointer() : dummy;
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="0">
+            // In case someone keeps a reference to this object
+            qtjambi_invalidate_object(__jni_env, __invalidate_me);
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap,const QStyleOption*,const QWidget*)const">
+        <modify-argument index="2">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
+            <conversion-rule>
+                <insert-template name="gui::qstyleoption_from_object" />                
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="standardIconImplementation(QStyle::StandardPixmap,const QStyleOption*,const QWidget*)const">
+        <modify-argument index="2">
+            <conversion-rule>
+                <insert-template name="gui::qstyleoption_to_object" />
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>    
   </object-type>
 
 
@@ -1327,6 +3297,9 @@
         <replace-default-expression with="QColor.white"/>      
       </modify-argument>
     </modify-function>
+    <modify-function signature="getRgba(uint,bool*,QWidget*)">
+        <remove />
+    </modify-function>    
   </object-type>
   
   <object-type name="QLayout">  
@@ -1358,16 +3331,6 @@
             <disable-gc />
         </modify-argument>
     </modify-function>
-    <modify-function signature="addChildLayout(QLayout *)">
-        <modify-argument index="1">
-            <disable-gc />
-        </modify-argument>
-    </modify-function>
-    <modify-function signature="addChildLayout(QLayout *)">
-        <modify-argument index="1">
-            <disable-gc />
-        </modify-argument>
-    </modify-function>
     <modify-function signature="itemAt(int) const">
         <modify-argument index="return">
             <disable-gc />
@@ -1380,16 +3343,6 @@
   
   <object-type name="QBoxLayout">  
     <modify-function signature="addItem(QLayoutItem *)">
-        <modify-argument index="1">
-            <disable-gc />
-        </modify-argument>
-    </modify-function>
-    <modify-function signature="addChildLayout(QLayout *)">
-        <modify-argument index="1">
-            <disable-gc />
-        </modify-argument>
-    </modify-function>
-    <modify-function signature="addChildLayout(QLayout *)">
         <modify-argument index="1">
             <disable-gc />
         </modify-argument>
@@ -1432,23 +3385,96 @@
             <disable-gc />
         </modify-argument>
     </modify-function>            
-    <modify-function signature="addChildLayout(QLayout *)">
-        <modify-argument index="1">
-            <disable-gc />
-        </modify-argument>
+    
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>
+    <modify-function signature="getItemPosition(int,int*,int*,int*,int*)">
+        <access modifier="private" />
     </modify-function>
-    <modify-function signature="addChildLayout(QLayout *)">
-        <modify-argument index="1">
-            <disable-gc />
-        </modify-argument>
-    </modify-function>
+    <inject-code>        
+        public final QTableArea getItemPosition(int index) {
+            QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer column = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
+            
+            getItemPosition(index, row, column, rowSpan, columnSpan);
+            
+            return new QTableArea(row.intValue(), column.intValue(), rowSpan.intValue(), columnSpan.intValue());
+        }
+    </inject-code>    
   </object-type>
   
   <object-type name="QGraphicsView">
     <extra-includes>
       <include file-name="QPainterPath" location="global"/>
-    </extra-includes>
+      <include file-name="QVarLengthArray" location="global" />      
+    </extra-includes>    
+    
+    <modify-function class="java" signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*)">
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                // nothing
+            </conversion-rule>
+        </modify-argument>    
+        <modify-argument index="3">
+            <replace-type modified-type="com.trolltech.qt.gui.QGraphicsItemInterface[]" />
+            <conversion-rule>
+                <insert-template name="gui.convert_graphicsitem_array_to_java">
+                    <replace from="%LENGTH" to="%2" />
+                </insert-template>
+            </conversion-rule>
+        </modify-argument>        
+        <modify-argument index="4">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionGraphicsItem[]" />
+            <conversion-rule>
+                <insert-template name="gui.convert_styleoptiongraphicsitem_array_to_java">
+                    <replace from="%LENGTH" to="%2" />
+                </insert-template>
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    
+    <modify-function class="native" signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*)">
+        <modify-argument index="2">
+            <conversion-rule>
+                <insert-template name="core.get_array_length">
+                    <replace from="%ARRAY" to="%3" />
+                </insert-template>
+                int __length = %out;
+            </conversion-rule>
+        </modify-argument>    
+        <modify-argument index="3">
+            <conversion-rule>
+                <insert-template name="gui.convert_graphicsitem_array_from_java" />              
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="4">
+            <conversion-rule>
+                <insert-template name="gui.convert_styleoptiongraphicsitem_array_from_java" />
+            </conversion-rule>        
+        </modify-argument>        
+    </modify-function>        
   </object-type>
+
+  <template name="gui.inputDialog_get_input">
+    public static %RETURN_TYPE %FUNCTION_NAME(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, %EXTRA, com.trolltech.qt.core.Qt.WindowFlags f) {
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        %RETURN_TYPE result = %FUNCTION_NAME_internal(parent, title, label, %CALL, ok, f);
+        return ok.booleanValue() ? result : null;
+    }
+
+    public static %RETURN_TYPE %FUNCTION_NAME(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, %EXTRA, com.trolltech.qt.core.Qt.WindowType ... f) {
+        return %FUNCTION_NAME(parent, title, label, %CALL, new com.trolltech.qt.core.Qt.WindowFlags(f));
+    }    
+
+    public static %RETURN_TYPE %FUNCTION_NAME(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, %EXTRA) {
+        return %FUNCTION_NAME(parent, title, label, %CALL, com.trolltech.qt.core.Qt.WindowType.Widget);
+    }
+    
+  </template>
   
   <object-type name="QInputDialog">
     <modify-function signature="getDouble(QWidget *, const QString &amp;, const QString &amp;, double, double, double, int, bool *, QFlags&lt;Qt::WindowType>)">
@@ -1456,47 +3482,29 @@
         <access modifier="private" />
     </modify-function>
     <inject-code>
-    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue, int decimals, com.trolltech.qt.core.Qt.WindowType ... f) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        double result = getDouble_internal(parent, title, label, value, minValue, maxValue, decimals, ok, f);
-        return ok.booleanValue() ? result : null;
-    }
-    
-    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        double result = getDouble_internal(parent, title, label, value, minValue, maxValue, 1, ok);
-        return ok.booleanValue() ? result : null;
-    }
+        <insert-template name="gui.inputDialog_get_input">
+            <replace from="%RETURN_TYPE" to="Double" />
+            <replace from="%EXTRA" to="double value, double minValue, double maxValue, int decimals" />
+            <replace from="%FUNCTION_NAME" to="getDouble" />
+            <replace from="%CALL" to="value, minValue, maxValue, decimals" />
+        </insert-template>    
 
-    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue, int decimals) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        double result = getDouble_internal(parent, title, label, value, minValue, maxValue, decimals, ok);
-        return ok.booleanValue() ? result : null;
-    }    
+        public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue) {
+            return getDouble(parent, title, label, value, minValue, maxValue, 1);
+        }            
+        
+        public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue) {        
+            return getDouble(parent, title, label, value, minValue, (double)2147483647);
+        }
 
-    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        double result = getDouble_internal(parent, title, label, value, minValue, (double)2147483647, (int)1, ok);
-        return ok.booleanValue() ? result : null;
-    }    
 
-    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        double result = getDouble_internal(parent, title, label, value, (double)-2147483647, (double)2147483647, (int)1, ok);
-        return ok.booleanValue() ? result : null;
-    }    
+        public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value) {
+            return getDouble(parent, title, label, value, (double)-2147483647);
+        }    
     
-    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        double result = getDouble_internal(parent, title, label, 0.0, (double)-2147483647, (double)2147483647, (int)1, ok);
-        return ok.booleanValue() ? result : null;
-    }    
-    
-    public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, double value, double minValue, double maxValue, int decimals, com.trolltech.qt.core.Qt.WindowFlags f) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        double result = getDouble_internal(parent, title, label, value, minValue, maxValue, decimals, ok, f);
-        return ok.booleanValue() ? result : null;
-    }        
+        public static Double getDouble(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
+            return getDouble(parent, title, label, 0.0);
+        }        
     </inject-code>
     
     <modify-function signature="getInteger(QWidget *, const QString &amp;, const QString &amp;, int, int, int, int, bool *, QFlags&lt;Qt::WindowType>)">
@@ -1504,47 +3512,28 @@
         <access modifier="private" />
     </modify-function>
     <inject-code>
-    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue, int step, com.trolltech.qt.core.Qt.WindowType ... f) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, maxValue, step, ok, f);
-        return ok.booleanValue() ? result : null;
-    }
+        <insert-template name="gui.inputDialog_get_input">
+            <replace from="%RETURN_TYPE" to="Integer" />
+            <replace from="%EXTRA" to="int value, int minValue, int maxValue, int step" />
+            <replace from="%FUNCTION_NAME" to="getInteger" />
+            <replace from="%CALL" to="value, minValue, maxValue, step" />
+        </insert-template>            
 
-    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue, int step) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, maxValue, step, ok);
-        return ok.booleanValue() ? result : null;
-    }
+        public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue) {
+            return getInteger(parent, title, label, value, minValue, maxValue, 1);
+        }
+        
+        public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue) {
+            return getInteger(parent, title, label, value, minValue, (int)2147483647);
+        }
 
-    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, maxValue, 1, ok);
-        return ok.booleanValue() ? result : null;
-    }
+        public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value) {
+            return getInteger(parent, title, label, value, (int)-2147483647);
+        }
 
-    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, (int)2147483647, 1, ok);
-        return ok.booleanValue() ? result : null;
-    }
-
-    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, (int)-2147483647, (int)2147483647, 1, ok);
-        return ok.booleanValue() ? result : null;
-    }
-
-    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, 0, (int)-2147483647, (int)2147483647, 1, ok);
-        return ok.booleanValue() ? result : null;
-    }
-
-    public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, int value, int minValue, int maxValue, int step, com.trolltech.qt.core.Qt.WindowFlags f) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        int result = com.trolltech.qt.gui.QInputDialog.getInteger_internal(parent, title, label, value, minValue, maxValue, step, ok, f);
-        return ok.booleanValue() ? result : null;
-    }    
+        public static Integer getInteger(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
+            return getInteger(parent, title, label, 0);
+        }
     </inject-code>
     
     <modify-function signature="getItem(QWidget *, const QString &amp;, const QString &amp;, const QStringList&lt;QString> &amp;, int, bool, bool *, QFlags&lt;Qt::WindowType>)">
@@ -1552,36 +3541,20 @@
         <access modifier="private" />
     </modify-function>
     <inject-code>
-    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current, boolean editable, com.trolltech.qt.core.Qt.WindowType ... f) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, current, editable, ok, new com.trolltech.qt.core.Qt.WindowFlags(f));
-        return ok.booleanValue() ? result : null;
-    }
+        <insert-template name="gui.inputDialog_get_input">
+            <replace from="%RETURN_TYPE" to="String" />
+            <replace from="%EXTRA" to="java.util.List&lt;java.lang.String> list, int current, boolean editable" />
+            <replace from="%FUNCTION_NAME" to="getItem" />
+            <replace from="%CALL" to="list, current, editable" />
+        </insert-template>            
+        
+        public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current) {
+            return getItem(parent, title, label, list, current, true);
+        }
 
-    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current, boolean editable) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, current, editable, ok);
-        return ok.booleanValue() ? result : null;
-    }
-    
-    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, current, true, ok);
-        return ok.booleanValue() ? result : null;
-    }
-
-    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, 0, true, ok);
-        return ok.booleanValue() ? result : null;
-    }
-
-    public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list, int current, boolean editable, com.trolltech.qt.core.Qt.WindowFlags f) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getItem_internal(parent, title, label, list, current, editable, ok, f);
-        return ok.booleanValue() ? result : null;
-    }
-    
+        public static java.lang.String getItem(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, java.util.List&lt;java.lang.String> list) {
+            return getItem(parent, title, label, list, 0);
+        }    
     </inject-code>
     
     <modify-function signature="getText(QWidget *, const QString &amp;, const QString &amp;, QLineEdit::EchoMode, const QString &amp;, bool *, QFlags&lt;Qt::WindowType>)">
@@ -1589,42 +3562,29 @@
         <access modifier="private" />
     </modify-function>
     <inject-code>
-    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo, java.lang.String text, com.trolltech.qt.core.Qt.WindowType ... f) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, echo, text, ok, f);
-        return ok.booleanValue() ? result : null;
-    }
-
-    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo, java.lang.String text) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, echo, text, ok);
-        return ok.booleanValue() ? result : null;
-    }
-
-    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, echo, "", ok);
-        return ok.booleanValue() ? result : null;
-    }
+        <insert-template name="gui.inputDialog_get_input">
+            <replace from="%RETURN_TYPE" to="String" />
+            <replace from="%EXTRA" to="com.trolltech.qt.gui.QLineEdit.EchoMode echo, java.lang.String text" />
+            <replace from="%FUNCTION_NAME" to="getText" />
+            <replace from="%CALL" to="echo, text" />
+        </insert-template>            
     
-    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, com.trolltech.qt.gui.QLineEdit.EchoMode.Normal, "", ok);
-        return ok.booleanValue() ? result : null;
-    }
 
-    public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo, java.lang.String text, com.trolltech.qt.core.Qt.WindowFlags f) {
-        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-        String result = com.trolltech.qt.gui.QInputDialog.getText_internal(parent, title, label, echo, text, ok, f);
-        return ok.booleanValue() ? result : null;
-    }
+        public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, com.trolltech.qt.gui.QLineEdit.EchoMode echo) {
+            return getText(parent, title, label, echo, "");
+        }
     
-    </inject-code>
-    
+        public static java.lang.String getText(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label) {
+            return getText(parent, title, label, com.trolltech.qt.gui.QLineEdit.EchoMode.Normal);
+        }
+    </inject-code>    
   </object-type>
   
 
   <object-type name="QGraphicsScene">
+    <extra-includes>
+        <include file-name="QVarLengthArray" location="global" />
+    </extra-includes>
     <modify-function signature="addItem(QGraphicsItem *)">
       <modify-argument index="1">
         <disable-gc />
@@ -1663,8 +3623,58 @@
     <modify-function signature="addText(const QString &amp;, const QFont &amp;)">
         <modify-argument index="return">
             <disable-gc />
+        </modify-argument>        
+    </modify-function>
+                   
+    <modify-function class="java" signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*,QWidget*)">
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                // nothing
+            </conversion-rule>
+        </modify-argument>
+    
+        <modify-argument index="3">
+            <replace-type modified-type="com.trolltech.qt.gui.QGraphicsItemInterface[]" />
+            <conversion-rule>
+                <insert-template name="gui.convert_graphicsitem_array_to_java">
+                    <replace from="%LENGTH" to="%2" />
+                </insert-template>
+            </conversion-rule>
+        </modify-argument>
+        
+        <modify-argument index="4">
+            <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionGraphicsItem[]" />
+            <conversion-rule>
+                <insert-template name="gui.convert_styleoptiongraphicsitem_array_to_java">
+                    <replace from="%LENGTH" to="%2" />
+                </insert-template>
+            </conversion-rule>
         </modify-argument>
     </modify-function>
+    
+    <modify-function class="native" signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*,QWidget*)">
+        <modify-argument index="2">
+            <conversion-rule>
+                <insert-template name="core.get_array_length">
+                    <replace from="%ARRAY" to="%3" />
+                </insert-template>
+                int __length = %out;
+            </conversion-rule>
+        </modify-argument>
+    
+        <modify-argument index="3">
+            <conversion-rule>
+                <insert-template name="gui.convert_graphicsitem_array_from_java" />              
+            </conversion-rule>
+        </modify-argument>
+
+        <modify-argument index="4">
+            <conversion-rule>
+                <insert-template name="gui.convert_styleoptiongraphicsitem_array_from_java" />
+            </conversion-rule>        
+        </modify-argument>        
+    </modify-function>    
   </object-type>
 
 
@@ -1835,7 +3845,36 @@
   <object-type name="QWidget">
     <extra-includes>
         <include file-name="QIcon" location="global"/>
-    </extra-includes>          
+        <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+    </extra-includes>        
+    <modify-function signature="getContentsMargins(int*,int*,int*,int*)const  ">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public static class ContentsMargins {
+            public ContentsMargins(int left, int top, int right, int bottom) {
+                this.left = left;
+                this.top = top;
+                this.right = right;
+                this.bottom = bottom;
+            }            
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+        
+        public final ContentsMargins getContentsMargins() {
+            QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
+            
+            getContentsMargins(left, top, right, bottom);
+            return new ContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+        }
+    </inject-code>
+    
   </object-type>
 
 
@@ -1846,6 +3885,90 @@
   </object-type>
 
   <object-type name="QAbstractSpinBox">
+    <modify-function signature="initStyleOption(QStyleOptionSpinBox*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionSpinBox" />
+            <replace from="final" to="" />
+        </insert-template>
+    </inject-code>
+
+    <modify-function class="java" signature="fixup(QString&amp;)const">
+        <modify-argument index="1">
+            <replace-type modified-type="java.lang.String" />
+            <conversion-rule>
+                jobject %out = (jobject) qtjambi_from_qstring(__jni_env, %in);
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="0">
+            <replace-type modified-type="java.lang.String"/>
+            <conversion-rule>
+                jobject %out = (jobject) qtjambi_from_qstring(__jni_env, *__qt_converted);
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="fixup(QString&amp;)const">
+        <modify-argument index="1">
+            <conversion-rule>
+                QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);
+                QString *__qt_converted = &amp;%out;
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="0">
+            <conversion-rule>                
+                %1 = qtjambi_to_qstring(__jni_env, (jstring) %in);
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>    
+    
+    <modify-function class="java" signature="validate(QString&amp;,int&amp;)const">               
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.gui.QValidator$QValidationData" />
+            <conversion-rule>
+                <insert-template name="gui.convert_validationdata_to_java">
+                    <replace from="%STRING" to="%1" />
+                    <replace from="%POS" to="%2" />
+                </insert-template>
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule>
+                // nothing needed
+            </conversion-rule>            
+        </modify-argument>
+        <modify-argument index="0">
+            <conversion-rule>
+                <insert-template name="gui.cleanup_validationdata_from_java" />
+                jint %out = %in;            
+            </conversion-rule>
+        </modify-argument>        
+    </modify-function>
+    <modify-function class="native" signature="validate(QString&amp;,int&amp;)const">
+        <modify-argument index="1">
+            <conversion-rule>
+                <insert-template name="gui.convert_validationdata_to_string" />
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="2">
+            <conversion-rule>
+                <insert-template name="gui.convert_validationdata_to_pos">
+                    <replace from="%VALIDATIONDATA" to="%1" />
+                </insert-template>
+            </conversion-rule>            
+        </modify-argument>
+        <modify-argument index="0">
+            <conversion-rule>
+                <insert-template name="gui.cleanup_validationdata_to_java">
+                    <replace from="%STRING" to="%1" />
+                    <replace from="%POS" to="%2" />
+                </insert-template>
+                QValidator::State %out = (QValidator::State) qtjambi_to_enumerator(__jni_env, %in);                
+            </conversion-rule>                
+        </modify-argument>
+    </modify-function>    
   </object-type>
 
   <object-type name="QTextFrame">
@@ -1861,6 +3984,31 @@
     <modify-function signature="setFormat(const QByteArray &amp;)const">
         <remove/>
     </modify-function>
+    <modify-function signature="read(QImage*)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.gui.QImage" />
+            <conversion-rule>
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QImage", "com/trolltech/qt/gui/", false);
+                
+                QtJambiLink *__link = %out != 0 ? QtJambiLink::findLink(__jni_env, %out) : 0;                
+            </conversion-rule>                
+        </modify-argument>
+    </modify-function>
+    <modify-function class="native" signature="read(QImage*)">
+        <modify-argument index="1">
+            <conversion-rule>
+                QImage *%out = (QImage *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>                
+        </modify-argument>
+        <modify-argument index="0">
+            <conversion-rule>
+                // Invalidate object
+                if (__link != 0) __link->resetObject(__jni_env);
+                bool %out = (bool) %in;
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+    
   </object-type>
     
   <object-type name="QProxyModel">
@@ -1878,7 +4026,11 @@
         <include file-name="QSize" location="global"/>
         <include file-name="QStringList" location="global"/>
         <include file-name="QImage" location="global"/>
-    </extra-includes>              
+    </extra-includes>             
+    <modify-function signature="read(QImage*) ">
+        <remove />
+    </modify-function>
+    
   </object-type>
   
   <object-type name="QMovie">
@@ -1897,7 +4049,16 @@
   <object-type name="QPageSetupDialog">
   </object-type>
 
-  <object-type name="QTabWidget"/>
+  <object-type name="QTabWidget">
+    <modify-function signature="initStyleOption(QStyleOptionTabWidgetFrame*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionTabWidgetFrame" />
+        </insert-template>
+    </inject-code>  
+  </object-type>
   <object-type name="QDrag">
     <extra-includes>
         <include file-name="QPoint" location="global"/>
@@ -1905,7 +4066,17 @@
     </extra-includes>                  
   </object-type>
   
-  <object-type name="QDateTimeEdit"/>
+  <object-type name="QDateTimeEdit">
+    <modify-function signature="initStyleOption(QStyleOptionSpinBox*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionSpinBox" />
+        </insert-template>
+    </inject-code>    
+      
+  </object-type>
 
   <object-type name="QSortFilterProxyModel">
     <extra-includes>
@@ -1915,7 +4086,16 @@
     </extra-includes>            
   </object-type>
 
-  <object-type name="QSlider"/>
+  <object-type name="QSlider">
+    <modify-function signature="initStyleOption(QStyleOptionSlider*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionSlider" />
+        </insert-template>
+    </inject-code>    
+  </object-type>
 
   <object-type name="QInputContext">
     <extra-includes>
@@ -1928,9 +4108,168 @@
   </object-type>
 
   <object-type name="QLabel">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>
+    <modify-function signature="picture()const">
+        <access modifier="private"/>
+        <rename to="picture_private"/>
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.getter_returning_nativepointer">
+            <replace from="%RETURN_TYPE" to="QPicture" />
+            <replace from="%FUNCTION_NAME" to="picture" />
+        </insert-template>
+        
+    </inject-code>
+    
+    <modify-function signature="pixmap()const">
+        <access modifier="private"/>
+        <rename to="pixmap_private"/>    
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.getter_returning_nativepointer">
+            <replace from="%RETURN_TYPE" to="QPixmap" />
+            <replace from="%FUNCTION_NAME" to="pixmap" />
+        </insert-template>    
+    </inject-code>    
   </object-type>
 
   <object-type name="QFileDialog">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+    </extra-includes>
+    <inject-code>
+        public static class Filter {
+            public Filter(String filter) {
+                this.filter = filter;
+            }
+            public String filter;
+            public String selectedFilter = "";
+        };    
+    </inject-code>
+    <template name="gui.filedialog_get_xxx_filename">
+        public static %TYPE %FUNCTION_NAME(QWidget parent, String caption, String dir, Filter filter, Options options) {
+            QNativePointer np = filter != null ? new QNativePointer(QNativePointer.Type.String) : null;
+            %TYPE returned = %FUNCTION_NAME(parent, caption, dir, filter != null ? filter.filter : "", np, options);
+            if (filter != null) 
+                filter.selectedFilter = np.stringValue();
+            return returned;
+        }
+        
+        public static %TYPE %FUNCTION_NAME(QWidget parent, String caption, String dir, Filter filter, Option ... options) {
+            return %FUNCTION_NAME(parent, caption, dir, filter, new Options(options));
+        }
+        
+        public static %TYPE %FUNCTION_NAME(QWidget parent, String caption, String dir, Filter filter) {
+            return %FUNCTION_NAME(parent, caption, dir, filter, new Options(0));
+        }
+
+        public static %TYPE %FUNCTION_NAME(QWidget parent, String caption, String dir) {
+            return %FUNCTION_NAME(parent, caption, dir, null);
+        }
+        
+        public static %TYPE %FUNCTION_NAME(QWidget parent, String caption) {
+            return %FUNCTION_NAME(parent, caption, null);
+        }
+
+        public static %TYPE %FUNCTION_NAME(QWidget parent) {
+            return %FUNCTION_NAME(parent, null);
+        }
+
+        public static %TYPE %FUNCTION_NAME() {
+            return %FUNCTION_NAME(null);
+        }
+                
+    </template>
+  
+    <extra-includes>
+        <include file-name="QUrl" location="global" />
+    </extra-includes>
+    <modify-function signature="getOpenFileName(QWidget*,QString,QString,QString,QString*,QFlags&lt;QFileDialog::Option>)">
+        <access modifier="private" />
+        <modify-argument index="1">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-default-expression />
+        </modify-argument>        
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.filedialog_get_xxx_filename">
+            <replace from="%FUNCTION_NAME" to="getOpenFileName" />
+            <replace from="%TYPE" to="String" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="getOpenFileNames(QWidget*,QString,QString,QString,QString*,QFlags&lt;QFileDialog::Option>)">
+        <access modifier="private" />
+        <modify-argument index="1">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-default-expression />
+        </modify-argument>    
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.filedialog_get_xxx_filename">
+            <replace from="%FUNCTION_NAME" to="getOpenFileNames" />
+            <replace from="%TYPE" to="java.util.List&lt;String>" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="getSaveFileName(QWidget*,QString,QString,QString,QString*,QFlags&lt;QFileDialog::Option>)">
+        <access modifier="private" />
+        <modify-argument index="1">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-default-expression />
+        </modify-argument>    
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.filedialog_get_xxx_filename">
+            <replace from="%FUNCTION_NAME" to="getSaveFileName" />
+            <replace from="%TYPE" to="String" />
+        </insert-template>
+    </inject-code>    
+    
   </object-type>
 
   <object-type name="QErrorMessage">
@@ -1940,6 +4279,14 @@
     <extra-includes>
         <include file-name="QIcon" location="global"/>
     </extra-includes>        
+    <modify-function signature="initStyleOption(QStyleOptionTab*,int)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public final void initStyleOption(QStyleOptionTab option, int tabIndex) {
+            initStyleOption(option.nativePointer(), tabIndex);
+        }
+    </inject-code>      
   </object-type>
 
   <object-type name="QStandardItemModel">
@@ -1950,16 +4297,63 @@
   </object-type>
 
   <object-type name="QRadioButton">
+    <modify-function signature="initStyleOption(QStyleOptionButton*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionButton" />
+        </insert-template>
+    </inject-code>  
   </object-type>
 
   <object-type name="QScrollBar">
+    <modify-function signature="initStyleOption(QStyleOptionSlider*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionSlider" />
+        </insert-template>
+    </inject-code>    
   </object-type>
 
   <object-type name="QClipboard">
     <extra-includes>
         <include file-name="QImage" location="global"/>
         <include file-name="QPixmap" location="global"/>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>      
+    <modify-function signature="setMimeData(QMimeData *, QClipboard::Mode)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="text(QString&amp;,QClipboard::Mode)const">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public static class Text {            
+            public String text;
+            public String subtype;
+        }
+        public final Text text(String subtype, Mode mode) {
+            QNativePointer np = new QNativePointer(QNativePointer.Type.String);
+            np.setStringValue(subtype != null ? subtype : "");            
+            
+            Text returned = new Text();
+            returned.text = text(np, mode);                        
+            returned.subtype = np.stringValue();
+            return returned;            
+        }
+        
+        public final Text text(String subtype) {
+            return text(subtype, Mode.Clipboard);
+        }
+    </inject-code>        
   </object-type>
 
 
@@ -1973,6 +4367,14 @@
   </object-type>
 
   <object-type name="QRubberBand">
+    <modify-function signature="initStyleOption(QStyleOptionRubberBand*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionRubberBand" />
+        </insert-template>
+    </inject-code>  
   </object-type>
 
   <object-type name="QTextLayout">
@@ -2003,19 +4405,70 @@
         </modify-argument>
     </modify-function>    
   </object-type>
-
+  
   <object-type name="QTextDocument">
     <extra-includes>
         <include file-name="QTextBlock" location="global"/>
         <include file-name="QTextFormat" location="global"/>
         <include file-name="QTextCursor" location="global"/>
     </extra-includes>  
+    <modify-function signature="redo(QTextCursor*)">
+        <access modifier="private" />        
+    </modify-function>
+    <inject-code>
+        public final void redo(QTextCursor cursor) {
+            redo(cursor.nativePointer());
+        }
+    </inject-code>
+    
+    <modify-function signature="undo(QTextCursor*)">
+        <access modifier="private" />        
+    </modify-function>
+    <inject-code>
+        public final void undo(QTextCursor cursor) {
+            undo(cursor.nativePointer());
+        } 
+    </inject-code>
+    
+    
   </object-type>
 
   <object-type name="QSplitter">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+    </extra-includes>
+    <modify-function signature="getRange(int,int*,int*)const">
+        <access modifier="private"/>
+    </modify-function>
+    <inject-code>
+        public static class Range {
+            public Range(int min, int max) {
+                minimum = min;
+                maximum = max;
+            }
+            public int minimum;
+            public int maximum;
+        }
+        public Range getRange(int index) {
+            QNativePointer min = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer max = new QNativePointer(QNativePointer.Type.Int);
+            
+            getRange(index, min, max);
+            
+            return new Range(min.intValue(), max.intValue());
+        }
+    </inject-code>
   </object-type>
   
   <object-type name="QGroupBox">
+    <modify-function signature="initStyleOption(QStyleOptionGroupBox*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionGroupBox" />
+        </insert-template>
+    </inject-code>  
   </object-type>
 
   <object-type name="QStackedWidget">
@@ -2025,9 +4478,25 @@
   </object-type>
 
   <object-type name="QDial">
+    <modify-function signature="initStyleOption(QStyleOptionSlider*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionSlider" />
+        </insert-template>
+    </inject-code>    
   </object-type>
 
   <object-type name="QLineEdit">
+    <modify-function signature="initStyleOption(QStyleOptionFrame*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionFrame" />
+        </insert-template>
+    </inject-code>  
   </object-type>
   
   <object-type name="QLCDNumber">
@@ -2043,6 +4512,14 @@
   
   
   <object-type name="QDockWidget">
+    <modify-function signature="initStyleOption(QStyleOptionDockWidget*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionDockWidget" />
+        </insert-template>
+    </inject-code>        
   </object-type>
 
   <object-type name="QAbstractProxyModel">
@@ -2071,8 +4548,8 @@
   <object-type name="QSpinBox">
     <modify-function signature="valueChanged(const QString &amp;)">
         <rename to="valueStringChanged"/>
-    </modify-function>
-  </object-type>
+    </modify-function>    
+  </object-type>  
   
   <object-type name="QTextBrowser">
     <modify-function signature="highlighted(const QString &amp;)">
@@ -2099,6 +4576,32 @@
   </object-type>
     
   <object-type name="QToolBar">
+  
+    <modify-function signature="addAction(QIcon,QString,const QObject*,const char*)">
+        <remove />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.addAction">
+            <replace from="%POST_CALL" to="" />
+            <replace from=" %END_EXTRA" to="" />
+            <replace from=" %END_CALL_EXTRA" to="" />        
+            <replace from="%EXTRA" to="QIcon icon," />
+            <replace from="%CALL_EXTRA" to="icon," />            
+        </insert-template>        
+    </inject-code>
+    
+    <modify-function signature="addAction(QString,const QObject*,const char*)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.addAction">
+            <replace from="%POST_CALL" to="" />
+            <replace from=" %END_EXTRA" to="" />
+            <replace from=" %END_CALL_EXTRA" to="" />        
+            <replace from="%EXTRA " to="" />
+            <replace from="%CALL_EXTRA " to="" />            
+        </insert-template>    
+    </inject-code>    
   </object-type>
   
   <object-type name="QPaintEngine">
@@ -2378,6 +4881,14 @@
   </object-type>
   
   <object-type name="QComboBox">
+    <modify-function signature="initStyleOption(QStyleOptionComboBox*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionComboBox" />
+        </insert-template>
+    </inject-code>  
     <modify-function class="java" signature="activated(int)">>
         <rename to="activatedIndex"/>        
     </modify-function>
@@ -2396,7 +4907,7 @@
   </object-type>
   
     
-  <object-type name="QPrinter" memory-managed="yes">
+  <object-type name="QPrinter">
     <custom-constructor>
         return (void *) copy;
     </custom-constructor>
@@ -2477,6 +4988,73 @@
     <modify-function class="java" signature="drawRects(const QVector&lt;QRectF> &amp;)">
         <rename to="drawRectsF"/>
     </modify-function>    
+
+    <template name="gui.painter_draw_text_general">
+        public final void drawText(%RECT_ARGUMENTS, int flags, String text, %RECT_TYPE boundingRect) {
+            drawText(%RECT_CALL_ARGUMENTS, flags, text, boundingRect == null ? null : boundingRect.nativePointer());
+        }
+        
+        public final void drawText(%RECT_ARGUMENTS, int flags, String text) {
+            drawText(%RECT_CALL_ARGUMENTS, flags, text, (%RECT_TYPE) null);
+        }    
+    </template>    
+    
+    <template name="gui.painter_draw_text_qrect">
+        <insert-template name="gui.painter_draw_text_general">
+            <replace from="%RECT_ARGUMENTS" to="%RECT_TYPE rectangle" />
+            <replace from="%RECT_CALL_ARGUMENTS" to="rectangle" />
+        </insert-template>
+    </template>
+    <modify-function signature="drawText(QRect,int,QString,QRect*)">
+        <access modifier="private" />
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>        
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.painter_draw_text_qrect">
+            <replace from="%RECT_TYPE" to="com.trolltech.qt.core.QRect" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="drawText(QRectF,int,QString,QRectF*)">
+        <access modifier="private" />
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>            
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.painter_draw_text_qrect">
+            <replace from="%RECT_TYPE" to="com.trolltech.qt.core.QRectF" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="drawText(int,int,int,int,int,QString,QRect*)">
+        <access modifier="private" />
+        <modify-argument index="7">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.painter_draw_text_general">
+            <replace from="%RECT_TYPE" to="com.trolltech.qt.core.QRect" />
+            <replace from="%RECT_ARGUMENTS" to="int x, int y, int width, int height" />
+            <replace from="%RECT_CALL_ARGUMENTS" to="x, y, width, height" />
+        </insert-template>
+    </inject-code>
+    
+    <modify-function signature="redirected(const QPaintDevice*,QPoint*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public static QPaintDeviceInterface redirected(QPaintDeviceInterface device, com.trolltech.qt.core.QPoint offset) {
+            return redirected(device, offset == null ? null : offset.nativePointer());
+        }
+    </inject-code>
+        
     <inject-code>
     public QPainter(QWidget widget) {
         this();
@@ -2489,7 +5067,7 @@
     </inject-code>
   </object-type>  
     
-  <object-type name="QApplication" memory-managed="yes">
+  <object-type name="QApplication">
     <extra-includes>
       <include file-name="QBasicTimer" location="global"/>
       <include file-name="qtjambi_cache.h" location="local"/>
@@ -2498,6 +5076,7 @@
       <include file-name="QPalette" location="global"/>
       <include file-name="QIcon" location="global"/>
       <include file-name="QLocale" location="global"/>
+      <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
     </extra-includes>  
     <inject-code class="java">
     public static void initialize(String args[])
@@ -2506,6 +5085,7 @@
             throw new RuntimeException("QApplication can only be initialized once");
             
         m_instance = new QApplication(args);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
     }
     
     public static void aboutQtJambi() {
@@ -2525,23 +5105,60 @@
     }
     </inject-code>
     <modify-function class="java" signature="QApplication(int &amp;, char  **, int)">
-      <access modifier="private"/>
+        <access modifier="private"/>
     </modify-function>    
-    <modify-function class="shell" signature="notify(QObject *, QEvent *)"> 
-        <inject-code class="shell">        
-        <argument-map position="2" meta-name="event"/>
-	if (event->type() == 512) {
-            qtjambi_metacall(0, event);
-            return true;
-        }
-        </inject-code>
-    </modify-function>
     <modify-function class="java" signature="QApplication(int &amp;, char **, QApplication::Type, int)">
-	<remove/>
+	    <remove/>
     </modify-function>
     <modify-function class="java" signature="QApplication(int &amp;, char **, bool, int)">
-	<remove/>
+	    <remove/>
     </modify-function>
+    
+    <template name="gui.application_char_pointer_function">
+        public static %RETURN_TYPE %FUNCTION_NAME(%PRE_ARGUMENTS %COMMA QByteArray className) {
+            return %FUNCTION_NAME(%PRE_CALL_ARGUMENTS %COMMA className == null ? null : className.data());
+        }
+    </template>       
+        
+    <modify-function signature="font(const char*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setFont(QFont,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public static void setFont(QFont font) {
+            setFont(font, null);
+        }
+    </inject-code>
+    <modify-function signature="palette(const char*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setPalette(QPalette,const char*)">
+        <access modifier="private" />
+        <modify-argument index="2">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        public static void setPalette(QPalette palette) {
+            setPalette(palette, null);
+        }
+    </inject-code>
+    
+    <modify-function signature="overrideCursor()">
+        <access modifier="private" />
+        <rename to="overrideCursor_private" />
+    </modify-function>
+    <inject-code>
+        public static QCursor overrideCursor() {
+            QNativePointer np = overrideCursor_private();
+            return np == null ? null : QCursor.fromNativePointer(np);
+        }
+    </inject-code>            
   </object-type>
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type '*' is specified in typesystem, but not declared" />

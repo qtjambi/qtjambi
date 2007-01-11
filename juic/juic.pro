@@ -10,17 +10,13 @@ DEFINES += QT_UIC_JAVA_GENERATOR QT_UIC
 HEADERS += javawritedeclaration.h \
     javawriteincludes.h \
     javawriteinitialization.h \
-    javanametable.h \
     javautils.h
 
 SOURCES += javawritedeclaration.cpp \
     javawriteincludes.cpp \
     javawriteinitialization.cpp \
-    javanametable.cpp \
     javautils.cpp \
     main.cpp
-
-RESOURCES += juic.qrc
 
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
@@ -39,3 +35,8 @@ mac {
 }
 	
 
+win32-msvc.net{
+    QMAKE_CXXFLAGS += -Zm1000
+    QMAKE_CXXFLAGS -= -Zm200
+    QMAKE_CFLAGS -= -Zm200
+}

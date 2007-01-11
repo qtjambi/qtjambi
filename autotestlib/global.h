@@ -24,5 +24,7 @@
 #include "variants.h"
 #include "polymorphictype.h"
 #include "paintengine.h"
+#include "injectedcode.h"
+#include "enums.h"
 
 #endif

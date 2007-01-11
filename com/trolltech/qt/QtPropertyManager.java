@@ -12,10 +12,10 @@ public class QtPropertyManager {
     };
     
     @SuppressWarnings("unused")
-    private static final void __qt_default_true() { }
+    private static void __qt_default_true() { }
     
     @SuppressWarnings("unused")
-    private static final void __qt_default_false() { }
+    private static void __qt_default_false() { }
     
     private static Method DEFAULT_TRUE = null;
     private static Method DEFAULT_FALSE = null;
@@ -115,13 +115,13 @@ public class QtPropertyManager {
         return name;        
     }
     
-    private static Method findMethod(Class c, String name, Class ... args) {
+    private static Method findMethod(Class<?> c, String name, Class ... args) {
         try { return c.getMethod(name, args); } catch (Exception e) { }
         return null;
     }  
     
     @SuppressWarnings("unchecked")
-    private static boolean hasOtherAnnotations(Method m, String name, Class expectedAnnotation) {
+    private static boolean hasOtherAnnotations(Method m, Class expectedAnnotation) {
         for (Class c : QT_PROPERTY_ANNOTATION_CLASSES) {
             if (c != expectedAnnotation && m.isAnnotationPresent(c))
                 return true;
@@ -156,7 +156,7 @@ public class QtPropertyManager {
                 throw new QMalformedQtPropertyException(name,
                         "Wrong type on property read method, expected: " + type, getMethod);
             }
-            if (hasOtherAnnotations(getMethod, name, QtPropertyReader.class))
+            if (hasOtherAnnotations(getMethod, QtPropertyReader.class))
                 return null;
             QtPropertyReader rp = getMethod.getAnnotation(QtPropertyReader.class);
             if (rp != null && !rp.name().equals(name))
@@ -175,7 +175,7 @@ public class QtPropertyManager {
         
         if (m != null) {
             // Verify that we don't have other annotation tags on this method.
-            if (hasOtherAnnotations(m, name, QtPropertyWriter.class))
+            if (hasOtherAnnotations(m, QtPropertyWriter.class))
                 return null;
         
             // Verify that the writer annotation matches this one...
@@ -219,6 +219,25 @@ public class QtPropertyManager {
         QtPropertyOrder o = m.getAnnotation(QtPropertyOrder.class);
         return o != null ? o.value() : 0;
     }
+
+    public static HashMap<String, Entry> findPropertiesRecursive(Class cl) throws QMalformedQtPropertyException {
+        HashMap<String, Entry> map = findProperties(cl);
+
+        cl = cl.getSuperclass();
+        while (cl != null) {
+
+            HashMap<String, Entry> more = findProperties(cl);
+
+            for (Entry e : more.values()) {
+                if (!map.containsKey(e.name))
+                    map.put(e.name, e);
+            }
+
+            cl = cl.getSuperclass();
+        }
+
+        return map;
+    }
     
     public static HashMap<String, Entry> findProperties(Class cl) throws QMalformedQtPropertyException {
         HashMap<String, Entry> entries = new HashMap<String, Entry>();
@@ -252,8 +271,7 @@ public class QtPropertyManager {
             }
         }
         
-//        for (String s : entries.keySet()) {
-//            Entry e = entries.get(s);           
+//            Entry e = entries.get(s);
 //            System.out.printf("entry: %s\n"
 //                    + " - readable=%s\n"
 //                    + " - writable=%s\n"
@@ -331,11 +349,14 @@ public class QtPropertyManager {
      * 
      * T isX()  <-> setX(T)
      * T hasX() <-> setX(T)
+     *
+     *
+     * @param entries The entryset to add to
+     * @param cl The class in which to look
+     * @param methods The methods for the class...
      */
     private static void findNamePatternProperties(HashMap<String, Entry> entries, Class cl, Method methods[]) {
-        for (int i=0; i<methods.length; ++i) {
-            Method method = methods[i];
-            
+        for (Method method : methods) {
             // Traditional set / [get|is|has] pair...
             String n = method.getName();
             if (n.startsWith("set")
@@ -367,13 +388,41 @@ public class QtPropertyManager {
                     Entry e = new Entry(propertyName);
                     e.read = getMethod;
                     e.write = method;
-                    
+
                     e.readable = true;
                     e.writable = true;
-                    
+
                     entries.put(propertyName, e);
                 }
             }
+        }
+    }
+
+    public static void main(String args[]) throws Exception {
+        if (args.length == 0) {
+            System.out.println("Please specify class name");
+            return;
+        }
+
+        HashMap<String, Entry> entries = findPropertiesRecursive(Class.forName(args[0]));
+        for (Entry e : entries.values()) {
+
+            System.out.print(e.name);
+
+            if (e.read != null) {
+                System.out.print(" readable");
+            }
+            if (e.write != null) {
+                System.out.print(" writable");
+            }
+            if (e.reset != null) {
+                System.out.print(" resettable");
+            }
+            if (e.isDesignable(null)) {
+                System.out.print(" designable");
+            }
+
+            System.out.println();
         }
     }
 }

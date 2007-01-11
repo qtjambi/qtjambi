@@ -13,6 +13,7 @@
 
 package com.trolltech.demos;
 
+import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -387,6 +388,7 @@ class PathDeformRenderer extends ArthurFrame
     }
 }
 
+@QtJambiExample(name = "Deform")
 public class Deform extends QWidget
 {
     private PathDeformRenderer m_renderer;
