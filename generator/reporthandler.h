@@ -14,7 +14,8 @@
 #ifndef REPORTHANDLER_H
 #define REPORTHANDLER_H
 
-#include <QString>
+#include <QtCore/QString>
+#include <QtCore/QSet>
 
 class ReportHandler
 {
@@ -48,6 +49,7 @@ private:
     static int m_suppressed_count;
     static DebugLevel m_debug_level;
     static QString m_context;
+    static QSet<QString> m_reported_warnings;
 };
 
 #endif // REPORTHANDLER_H

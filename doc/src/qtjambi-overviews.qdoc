@@ -1,14 +1,27 @@
 /*!
     \page qtjambi-overviews.html
 
-    \title All Qt Jambi Overviews and HOWTOs
+    \title Qt Technology Overviews
+
+    Note that this documentation is under development. The documents
+    listed below have been written for Qt C++, but the concepts are the
+    same for Qt Jambi.
 
     \list
-    \o \l {Deploying Qt Jambi Applications}
-    \o \l {Installing Qt Jambi}
-    \o \l {Java User Interface Compiler (JUIC)}
-    \o \l {Qt Jambi Eclipse Integration}
-    \o \l {The Qt Jambi Generator}
-    \o \l {The Qt Jambi Type System}
+    \o \l {Layout Classes}{Layout Management}
+    \o \l {The Paint System}{Paint System}
+    \o \l {Drag and Drop}
+    \o \l {Internationalization with Qt}{Internationalization}
+    \o \l {Introduction to D-BUS}{Inter-process Communication}
+    \o \l {Thread Support in Qt}{Multithreaded Programming}
+    \o \l {The Qt 4 Main Window Classes}{Main Window Architecture}
+    \o \l {Rich Text Processing}
+    \o \l {Model/View Programming}
+    \o \l {QtNetwork Module}{Network Module}
+    \o \l {QtOpenGL Module}{OpenGL Module}
+    \o \l {QtSql Module}{SQL Module}
+    \o \l {QtSvg Module}{SVG Module}
+    \o \l {QtXml Module}{XML Module}
+    \o \l {ActiveQt Framework}
     \endlist
 */

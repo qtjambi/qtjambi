@@ -475,6 +475,7 @@ public:
 private:
     QString m_name;
     QString m_original_name;
+    QString m_cached_minimal_signature;
 
     FunctionType m_function_type;
     MetaJavaType *m_type;

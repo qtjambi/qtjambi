@@ -78,7 +78,7 @@
     an object of the corresponding class. Note that you must run the
     user interface compiler for Qt (juic) to generate the latter
     class. For example, if the form created in \QD is saved as \c
-    CalculatorSimple.ui, running juic on the file will generate the
+    CalculatorSimple.jui, running juic on the file will generate the
     corresponding \c Ui_CalculatorSimple.java file that defines the
     public \c Ui_CalculatorSimple class. The latter file must be
     located in the same directory as the application executable to be

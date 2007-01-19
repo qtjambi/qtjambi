@@ -8,7 +8,7 @@ nmake distclean
 qmake -r 
 nmake
 bin\juic -cp . -a -e eclipse-stable\
-javac @java_files
+javac -J-mx1024m @java_files
 
 
 REM autotest stuff

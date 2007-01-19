@@ -185,7 +185,7 @@ QString MetaJavaFunction::marshalledName() const
         } else if (arg->type()->isIntegerEnum() || arg->type()->isIntegerFlags()) {
             returned += "int";
         } else {
-            returned += arg->type()->name().replace("[]", "_3");
+            returned += arg->type()->name().replace("[]", "_3").replace(".", "_");
         }
     }
     return returned;
@@ -477,6 +477,9 @@ QString MetaJavaFunction::typeReplaced(int key) const
 
 QString MetaJavaFunction::minimalSignature() const
 {
+    if (!m_cached_minimal_signature.isEmpty())
+        return m_cached_minimal_signature;
+
     QString minimalSignature = originalName() + "(";
     MetaJavaArgumentList arguments = this->arguments();
 
@@ -493,6 +496,8 @@ QString MetaJavaFunction::minimalSignature() const
         minimalSignature += "const";
 
     minimalSignature = QMetaObject::normalizedSignature(minimalSignature.toLocal8Bit().constData());
+
+    const_cast<MetaJavaFunction *>(this)->m_cached_minimal_signature = minimalSignature;
 
     return minimalSignature;
 }
@@ -652,9 +657,8 @@ MetaJavaClass *MetaJavaClass::extractInterface()
             }
         }
 
-        addInterface(iface);
-
         m_extracted_interface = iface;
+        addInterface(iface);        
     }
 
     return m_extracted_interface;
@@ -1213,6 +1217,9 @@ void MetaJavaClass::addInterface(MetaJavaClass *interface)
 {
     Q_ASSERT(!m_interfaces.contains(interface));
     m_interfaces << interface;
+
+    if (m_extracted_interface != 0 && m_extracted_interface != interface)
+        m_extracted_interface->addInterface(interface);
 
     foreach (MetaJavaFunction *function, interface->functions())
         if (!hasFunction(function) && !function->isConstructor()) {

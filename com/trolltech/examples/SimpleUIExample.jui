@@ -1,4 +1,4 @@
-<ui version="4.0" >
+<ui version="4.0" language="jambi" >
  <class>SimpleUIExample</class>
  <widget class="QDialog" name="SimpleUIExample" >
   <property name="geometry" >

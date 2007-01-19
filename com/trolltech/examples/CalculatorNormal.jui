@@ -1,4 +1,4 @@
-<ui version="4.0" >
+<ui version="4.0" language="jambi" >
  <class>CalculatorNormal</class>
  <widget class="QMainWindow" name="CalculatorNormal" >
   <property name="geometry" >

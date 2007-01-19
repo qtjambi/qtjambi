@@ -27,6 +27,10 @@ public class ScrollingHTMLView extends QWidget {
 
     private QPixmap background;
 
+    public ScrollingHTMLView() {
+        this(null);
+    }
+
     public ScrollingHTMLView(QWidget parent) {
         super(parent);
         setAutoFillBackground(false);

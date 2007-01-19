@@ -191,7 +191,21 @@ QString UiConverter::translateEnumValue(const QString &cppEnumValue) {
         return QString();
     }
 
-    return javaEnum->fullName() + QLatin1String(".") + names.at(1);
+    MetaJavaEnumValueList enumValues = javaEnum->values();
+    MetaJavaEnumValue *enumValue = enumValues.find(names.at(1));
+    int value = enumValue->value();
+
+    if (javaEnum->typeEntry()->isEnumValueRejected(enumValue->name())) {
+        for (int i=0; i<enumValues.size(); ++i) {
+            MetaJavaEnumValue *ev = enumValues.at(i);
+            if (ev->value() == value) {
+                enumValue = ev;
+                break;
+            }
+        }
+    }
+
+    return javaEnum->fullName() + QLatin1String(".") + enumValue->name();
 }
 
 const MetaJavaFunction *UiConverter::findFunction(MetaJavaClass *javaClass,

@@ -47,8 +47,6 @@ static PtrGetDefaultJavaVMInitArgs ptrGetDefaultJavaVMInitArgs;
 static PtrCreateJavaVM ptrCreateJavaVM;
 static PtrGetCreatedJavaVMs ptrGetCreatedJavaVMs;
 
-static bool java_connection_override;
-
 // C-style wrapper for qInstallMsgHandler so the launcher launcher can look it up dynamically
 // without bothering with knowing the name mangling
 extern "C" QTJAMBI_EXPORT QtMsgHandler wrap_qInstallMsgHandler(QtMsgHandler handler)
@@ -558,8 +556,8 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
     if (qt_object == 0)
         return 0;
 
-
     QtJambiLink *link = QtJambiLink::findLinkForQObject(qt_object);
+
     if (!link) {
         const QMetaObject *mo = qt_object->metaObject();
 
@@ -1136,9 +1134,9 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
     if (returned == 0) {
         jthrowable exception = env->ExceptionOccurred();
         env->ExceptionClear();
-       
+
         // Check internal property which is set in Eclipse integration
-        QString qtClassPath = qtjambi_urlbase(env); 
+        QString qtClassPath = qtjambi_urlbase(env);
         if (!qtClassPath.isEmpty()) {
             QString qtClassName = QString::fromLatin1(qualifiedName).replace('/', '.');
             StaticCache *sc = StaticCache::instance(env);
@@ -1153,9 +1151,9 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
             }
 
             if (classLoader == 0) {
-                // No class loader instantiated? 
+                // No class loader instantiated?
                 // We have to make a URL loader, because the default is created with
-                // the wrong class path in Eclipse. 
+                // the wrong class path in Eclipse.
 
                 QWriteLocker locker(gClassLoaderLock());
                 classLoader = *gClassLoader();
@@ -1191,8 +1189,8 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
                     *oldUrlBase() = qtClassPath;
                     oldBase = qtClassPath;
                 }
-            } 
-            
+            }
+
             if (classLoader != 0 && oldBase != qtClassPath) {
                 // If the class path has changed after the class loader
                 // was created, we need to update the class loader.
@@ -1201,7 +1199,7 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
                 QWriteLocker locker(gClassLoaderLock());
                 sc->resolveURLClassLoader();
                 sc->resolveURL();
-                
+
                 QStringList oldUrlList = oldUrlBase()->split(";");
                 QStringList urlList = qtClassPath.split(";");
                 for (int i=0; i<urlList.size(); ++i) {
@@ -1213,7 +1211,7 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
 
                 *oldUrlBase() = qtClassPath;
             }
-           
+
             // Look up the class in our custom class loader
             jstring className = qtjambi_from_qstring(env, qtClassName);
             returned = (jclass) env->CallObjectMethod(classLoader, sc->ClassLoader.loadClass, className);
@@ -1453,21 +1451,19 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
     QtJambiLink *sender_link = QtJambiLink::findLinkForQObject(data->sender);
     QtJambiLink *receiver_link = QtJambiLink::findLinkForQObject(data->receiver);
 
-    if (java_connection_override) {
-        if (!sender_link) {
+    // If neither object has a link to Java, nothing to resolve
+    if (sender_link == 0 && receiver_link == 0) {
+
+        // Java signature on signal, so we need to go through java.
+        if (signal_normalized.at(signal_normalized.length() - 1) != ')') {
             jobject jSender = qtjambi_from_QObject(jni_env, data->sender);
             sender_link = QtJambiLink::findLink(jni_env, jSender);
-        }
-
-        if (!receiver_link) {
             jobject jReciever = qtjambi_from_QObject(jni_env, data->receiver);
             receiver_link = QtJambiLink::findLink(jni_env, jReciever);
+        } else {
+            return false; // don't meddle
         }
     }
-
-    // If neither object has a link to Java, nothing to resolve
-    if (sender_link == 0 && receiver_link == 0)
-        return false; // don't meddle
 
     // If both the signal and the slot exists in C++ then we make a c++ connection,
     // but we will also have to make sure java emit makes c++ emit. This is both
@@ -1764,8 +1760,9 @@ void qtjambi_end_paint(JNIEnv *env, jobject widget)
     env->CallStaticVoidMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.endPaint, widget);
 }
 
-
-void qtjambi_set_java_connect_override(bool override)
+void qtjambi_debug_trace(const char *location, const char *file, int line)
 {
-    java_connection_override = override;
+    static int should = getenv("QTJAMBI_DEBUG_TRACE") != 0;
+    if (should)
+        printf("%s; ( %s:%d )\n", location, file, line);
 }

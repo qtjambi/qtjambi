@@ -94,40 +94,34 @@ public class QUiLoader {
         if (!version.equals("4.0"))
             throw new QUiLoaderException("Unsupported version: " + version + ", expected 4.0");
 
-        String cls = parseClass(ui);
         widget = parseWidget(ui.namedItem("widget").toElement(), this.parent);
 
         parseConnections(ui.namedItem("connections").toElement());
         parseTabOrder(ui.namedItem("tabstops").toElement());
     }
 
-    private String parseClass(QDomElement ui) throws Exception {
-        QDomNodeList list = ui.childNodes();
-        for (int i=0; i<list.count(); ++i) {
-            QDomNode node = list.at(i);
-            if (node.nodeName().equals("class")) {
-                assert !node.isNull();
-                QDomNode child = node.firstChild();
-                if (!child.isCharacterData())
-                    throw new QUiLoaderException("Expected text data in 'class' node");
-                return child.nodeValue();
-            }
-        }
-
-        return null;
-    }
-
     private QWidget parseWidget(QDomElement widgetNode, QObject parent) throws Exception {
         // Create the widget
         String cls = widgetNode.attribute("class");
         String name = widgetNode.attribute("name");
+
         Class<? extends QObject> cl = loadClass(cls);
         QWidget widget = (QWidget) createInstance(cl, parent);
         widget.setObjectName(name);
 
-        if (name.equals("centralwidget") && parent instanceof QMainWindow) {
-            System.out.println("reassigning to central widget");
-            ((QMainWindow) parent).setCentralWidget(widget);
+        if (parent instanceof QMainWindow) {
+            QMainWindow mainWindow = (QMainWindow) parent;
+            if (name.equals("centralwidget"))
+                mainWindow.setCentralWidget(widget);
+            else if (name.equals("menubar"))
+                mainWindow.setMenuBar((QMenuBar) widget);
+            else if (name.equals("statusbar"))
+                mainWindow.setStatusBar((QStatusBar) widget);
+            else
+                System.err.println("unhandled child of main window..." + widget + ", " + widget.objectName());
+        } else if (parent instanceof QTabWidget) {
+            String title = widgetNode.namedItem("attribute").firstChild().firstChild().nodeValue();
+            ((QTabWidget ) parent).addTab(widget, title);
         }
 
         // Parse its properties...
@@ -144,8 +138,9 @@ public class QUiLoader {
 
         // the layout...
         QDomNode layoutNode = widgetNode.namedItem("layout");
-        if (!layoutNode.isNull())
-            parseLayout(layoutNode.toElement(), widget);
+        if (!layoutNode.isNull()) {
+            widget.setLayout(parseLayout(layoutNode.toElement(), widget));
+        }
 
         return widget;
     }
@@ -158,12 +153,12 @@ public class QUiLoader {
         }
     }
 
-    private void parseLayout(QDomElement layoutNode, QWidget parent) throws Exception {
+    private QLayout parseLayout(QDomElement layoutNode, QObject parent) throws Exception {
         Class<? extends QObject> cls = loadClass(layoutNode.attribute("class"));
         QLayout layout = (QLayout) createInstance(cls, parent);
-        parseProperties(new QObjectPropertyReceiver(layout), layoutNode.childNodes());
+        assert layout != null;
 
-        parent.setLayout(layout);
+        parseProperties(new QObjectPropertyReceiver(layout), layoutNode.childNodes());
 
         // The items
         QDomNodeList list = layoutNode.childNodes();
@@ -172,38 +167,48 @@ public class QUiLoader {
             if (node.nodeName().equals("item")) {
                 QDomElement itemNode = node.toElement();
 
-                QSpacerItem spacer = null;
+                QLayoutItemInterface layoutItem = null;
                 QWidget widget = null;
+                QLayout sublayout = null;
 
                 QDomNode child = itemNode.firstChild();
-                if (child.nodeName().equals("widget")) {
+                String nodeName = child.nodeName();
+
+                if (nodeName.equals("widget"))
                     widget = parseWidget(child.toElement(), layout);
-                } else if (child.nodeName().equals("spacer")) {
-                    spacer = parseSpacer(child.toElement(), layout);
-                }
+                else if (nodeName.equals("spacer"))
+                    layoutItem = parseSpacer(child.toElement());
+                else if (nodeName.equals("layout"))
+                    sublayout = parseLayout(child.toElement(), layout);
+
 
                 if (layout instanceof QGridLayout) {
                     int row = parseInt(itemNode.attribute("row"), 0);
                     int col = parseInt(itemNode.attribute("column"), 0);
                     int colspan = parseInt(itemNode.attribute("colspan"), 1);
                     int rowspan = parseInt(itemNode.attribute("rowspan"), 1);
-
+                   
                     if (widget != null)
                         ((QGridLayout) layout).addWidget(widget, row, col, rowspan, colspan);
-                    else if (spacer != null)
-                        ((QGridLayout) layout).addItem(spacer, row, col, rowspan, colspan);
+                    else if (layoutItem != null)
+                        ((QGridLayout) layout).addItem(layoutItem, row, col, rowspan, colspan);
+                    else if (sublayout != null)
+                        ((QGridLayout) layout).addLayout(sublayout, row, col, rowspan, colspan);
                 } else {
                     if (widget != null)
                         layout.addWidget(widget);
-                    else if (spacer != null)
-                        layout.addItem(spacer);
+                    else if (layoutItem != null)
+                        layout.addItem(layoutItem);
+                    else if (sublayout != null)
+                        ((QBoxLayout) layout).addLayout(sublayout);
                 }
-
             }
         }
+
+        return layout;
     }
 
-    private QSpacerItem parseSpacer(QDomElement e, QObject parent) throws QUiLoaderException {
+    private QSpacerItem parseSpacer(QDomElement e) throws QUiLoaderException {
         SpacerPropertyReceiver spacer = new SpacerPropertyReceiver();
         parseProperties(spacer, e.childNodes());
         return spacer.spacerItem();
@@ -234,7 +239,6 @@ public class QUiLoader {
     }
 
     private QObject createInstance(Class<? extends QObject> cl, QObject parent) throws QUiLoaderException {
-
         try {
             if (QWidget.class.isAssignableFrom(cl)) {
                 if (parent instanceof QWidget) {
@@ -242,14 +246,18 @@ public class QUiLoader {
                 } else {
                     return cl.getConstructor().newInstance();
                 }
-            } else if (QLayout.class.isAssignableFrom(cl) && parent instanceof QWidget) {
-                Constructor ctor = cl.getConstructor(QWidget.class);
-                return (QObject) ctor.newInstance(parent);
+            } else if (QLayout.class.isAssignableFrom(cl)) {
+                if (parent instanceof QWidget) {
+                    Constructor ctor = cl.getConstructor(QWidget.class);
+                    return (QObject) ctor.newInstance(parent);
+                } else {
+                    return (QLayout) cl.getConstructor().newInstance();
+                }
             } else {
                 return cl.getConstructor(QObject.class).newInstance();
             }
         } catch (Exception e) {
-            throw new QUiLoaderException("Failed to create widget", e);
+            throw new QUiLoaderException("Failed to create instance", e);
         }
     }
 
@@ -282,6 +290,8 @@ public class QUiLoader {
                 else
                     window.setGeometry(r);
                 return;
+            } else if (property.equals("html") && o instanceof QTextEdit) {
+                ((QTextEdit) o).setHtml((String) value);
             }
 
             if (value == null)
@@ -349,9 +359,13 @@ public class QUiLoader {
         }
 
         for (int i=0; i<list.size() - 1; ++i) {
-            QWidget w1 = (QWidget) widget.findChild(QWidget.class, list.get(i));
-            QWidget w2 = (QWidget) widget.findChild(QWidget.class, list.get(i+1));
-            QWidget.setTabOrder(w1, w2);
+//            try {
+                QWidget w1 = (QWidget) widget.findChild(QWidget.class, list.get(i));
+                QWidget w2 = (QWidget) widget.findChild(QWidget.class, list.get(i+1));
+                QWidget.setTabOrder(w1, w2);
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//            }
         }
     }
 
@@ -390,10 +404,8 @@ public class QUiLoader {
     public static void main(String args[]) throws Exception {
         QApplication.initialize(args);
 
-        for (String s : args) {
-            QWidget w = load(new QFile(s));
-            w.show();
-        }
+        QWidget w = load(new QFile(args[0]));
+        w.show();
 
         QApplication.exec();
     }

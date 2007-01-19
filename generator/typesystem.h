@@ -26,6 +26,14 @@ class QTextStream;
 class EnumTypeEntry;
 class FlagsTypeEntry;
 
+extern QString strings_Object;
+extern QString strings_String;
+extern QString strings_Thread;
+extern QString strings_char;
+extern QString strings_java_lang;
+extern QString strings_jchar;
+extern QString strings_jobject;
+
 struct Include
 {
     enum IncludeType {
@@ -375,9 +383,9 @@ class ThreadTypeEntry : public TypeEntry
 public:
     ThreadTypeEntry() : TypeEntry("QThread", ThreadType) { setCodeGeneration(GenerateNothing); }
 
-    QString jniName() const { return "jobject"; }
-    QString javaName() const { return "Thread"; }
-    QString javaPackage() const { return "java.lang"; }
+    QString jniName() const { return strings_jobject; }
+    QString javaName() const { return strings_Thread; }
+    QString javaPackage() const { return strings_java_lang; }
 };
 
 class VoidTypeEntry : public TypeEntry
@@ -443,7 +451,7 @@ public:
 
     QString javaObjectFullName() const { return javaObjectPackage() + "." + javaObjectName(); }
     QString javaObjectName() const;
-    QString javaObjectPackage() const { return "java.lang"; }
+    QString javaObjectPackage() const { return strings_java_lang; }
 
     virtual bool preferredConversion() const { return m_preferred_conversion; }
     virtual void setPreferredConversion(bool b) { m_preferred_conversion = b; }
@@ -455,6 +463,18 @@ private:
 };
 
 
+
+
+struct EnumValueRedirection
+{
+    EnumValueRedirection(const QString &rej, const QString &us)
+        : rejected(rej),
+          used(us)
+    {
+    }
+    QString rejected;
+    QString used;
+};
 
 class EnumTypeEntry : public TypeEntry
 {
@@ -502,6 +522,9 @@ public:
     bool isEnumValueRejected(const QString &name) { return m_rejected_enums.contains(name); }
     void addEnumValueRejection(const QString &name) { m_rejected_enums << name; }
 
+    void addEnumValueRedirection(const QString &rejected, const QString &usedValue);
+    QString enumValueRedirection(const QString &value) const;
+
     bool forceInteger() const { return m_force_integer; }
     void setForceInteger(bool force) { m_force_integer = force; }
 
@@ -514,6 +537,7 @@ private:
     QString m_upper_bound;
 
     QStringList m_rejected_enums;
+    QList<EnumValueRedirection> m_enum_redirections;
 
     FlagsTypeEntry *m_flags;
 
@@ -606,7 +630,7 @@ public:
         return m_lookup_name.isEmpty() ? javaName() : m_lookup_name;
     }
 
-    QString jniName() const { return "jobject"; }
+    QString jniName() const { return strings_jobject; }
 
 
     Include include() const { return m_include; }
@@ -740,9 +764,9 @@ public:
         setCodeGeneration(GenerateNothing);
     }
 
-    QString jniName() const { return "jobject"; }
-    QString javaName() const { return "String"; }
-    QString javaPackage() const { return "java.lang"; }
+    QString jniName() const { return strings_jobject; }
+    QString javaName() const { return strings_String; }
+    QString javaPackage() const { return strings_java_lang; }
 
     virtual bool isNativeIdBased() const { return false; }
 };
@@ -755,9 +779,9 @@ public:
         setCodeGeneration(GenerateNothing);
     }
 
-    QString jniName() const { return "jchar"; }
-    QString javaName() const { return "char"; }
-    QString javaPackage() const { return ""; }
+    QString jniName() const { return strings_jchar; }
+    QString javaName() const { return strings_char; }
+    QString javaPackage() const { return QString(); }
 
     virtual bool isNativeIdBased() const { return false; }
 };
@@ -767,9 +791,9 @@ class VariantTypeEntry: public ValueTypeEntry
 public:
     VariantTypeEntry(const QString &name) : ValueTypeEntry(name, VariantType) { }
 
-    QString jniName() const { return "jobject"; }
-    QString javaName() const { return "Object"; }
-    QString javaPackage() const { return "java.lang"; }
+    QString jniName() const { return strings_jobject; }
+    QString javaName() const { return strings_Object; }
+    QString javaPackage() const { return strings_java_lang; }
 
     virtual bool isNativeIdBased() const { return false; }
 };
@@ -840,6 +864,7 @@ struct TypeRejection
     QString class_name;
     QString function_name;
     QString field_name;
+    QString enum_name;
 };
 
 class TypeDatabase
@@ -863,10 +888,11 @@ public:
     PrimitiveTypeEntry *findJavaPrimitiveType(const QString &java_name);
 
     void addRejection(const QString &class_name, const QString &function_name,
-                      const QString &field_name);
+                      const QString &field_name, const QString &enum_name);
     bool isClassRejected(const QString &class_name);
     bool isFunctionRejected(const QString &class_name, const QString &function_name);
     bool isFieldRejected(const QString &class_name, const QString &field_name);
+    bool isEnumRejected(const QString &class_name, const QString &enum_name);
 
     void addType(TypeEntry *e) { m_entries[e->qualifiedCppName()] = e; }
 

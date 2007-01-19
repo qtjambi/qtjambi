@@ -17,7 +17,7 @@ then
 fi
 
 echo Running generator
-LD_LIBRARY_PATH=../lib ../bin/generator mywidget.h typesystem_mywidget.txt --juic-file=juic.xml 
+LD_LIBRARY_PATH=../lib ../bin/generator global.h typesystem_generatorexample.txt --juic-file=juic.xml 
 
 
 # Compile the library

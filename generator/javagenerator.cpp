@@ -141,6 +141,9 @@ void JavaGenerator::writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_en
     for (int i=0; i<values.size(); ++i) {
         MetaJavaEnumValue *value = values.at(i);
 
+        if (java_enum->typeEntry()->isEnumValueRejected(value->name()))
+            continue;
+
         if (m_doc_parser)
             s << m_doc_parser->documentation(value);
 
@@ -171,6 +174,9 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
 
     for (int i=0; i<values.size(); ++i) {
         MetaJavaEnumValue *enum_value = values.at(i);
+
+        if (java_enum->typeEntry()->isEnumValueRejected(enum_value->name()))
+            continue;
 
         if (m_doc_parser)
             s << m_doc_parser->documentation(enum_value);
@@ -212,8 +218,8 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
     for (int i=0; i<values.size(); ++i) {
         MetaJavaEnumValue *e = values.at(i);
 
-//         if (entry->isEnumValueRejected(e->name()))
-//             continue;
+        if (java_enum->typeEntry()->isEnumValueRejected(e->name()))
+            continue;
 
         s << "            case " << e->value() << ": return " << e->name() << ";" << endl;
     }
@@ -975,7 +981,10 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // implementing interfaces...
     MetaJavaClassList interfaces = java_class->interfaces();
     if (!interfaces.isEmpty()) {
-        s << endl << "    implements ";
+        if (java_class->isInterface())
+            s << ", ";
+        else
+            s << endl << "    implements ";
         for (int i=0; i<interfaces.size(); ++i) {
             MetaJavaClass *iface = interfaces.at(i);
             if (i != 0)

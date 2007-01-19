@@ -113,7 +113,7 @@ QString rename_operator(const QString &oper)
         } else if (te) {
             return "operator_cast_" + typeInfo.qualified_name.join("_");
         } else {
-            ReportHandler::warning(QString("Unknown operator '%1'").arg(op));
+            ReportHandler::warning(QString("unknown operator '%1'").arg(op));
             return "operator " + op;
         }
     }
@@ -314,7 +314,7 @@ bool MetaJavaBuilder::build()
             if (!cls->hasConstructors() && !cls->isFinal() && !cls->isInterface() && !cls->isNamespace())
                 cls->addDefaultConstructor();
         }
-    
+
         if (cls->isAbstract() && !cls->isInterface()) {
             cls->typeEntry()->setLookupName(cls->typeEntry()->javaName() + "$ConcreteWrapper");
         }
@@ -502,7 +502,7 @@ int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
                 matched = true;
 
             } else {
-                ReportHandler::warning("Unhandled enum value: " + s + " in "
+                ReportHandler::warning("unhandled enum value: " + s + " in "
                                        + java_enum->enclosingClass()->name() + "::"
                                        + java_enum->name());
             }
@@ -513,7 +513,7 @@ int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
     }
 
     if (!matched) {
-        ReportHandler::warning("Unmatched enum " + stringValue);
+        ReportHandler::warning("unmatched enum " + stringValue);
         returnValue = oldValuevalue;
 
     }
@@ -535,7 +535,7 @@ void MetaJavaBuilder::figureOutEnumValuesForClass(MetaJavaClass *java_class,
     MetaJavaEnumList enums = java_class->enums();
     foreach (MetaJavaEnum *e, enums) {
         if (!e)
-            ReportHandler::warning("Bad enum in class " + java_class->name());
+            ReportHandler::warning("bad enum in class " + java_class->name());
         MetaJavaEnumValueList lst = e->values();
         int value = 0;
         for (int i=0; i<lst.size(); ++i) {
@@ -549,18 +549,38 @@ void MetaJavaBuilder::figureOutEnumValuesForClass(MetaJavaClass *java_class,
         if (!ete->forceInteger()) {
             QHash<int, MetaJavaEnumValue *> entries;
             foreach (MetaJavaEnumValue *v, lst) {
-//                 if (ete->isEnumValueRejected(v->name()))
-//                     continue;
-                if (entries.contains(v->value())) {
-                    ReportHandler::warning(QString("duplicate enum values: %1::%2, %3 and %4 are %5")
-                                           .arg(java_class->name())
-                                           .arg(e->name())
-                                           .arg(v->name())
-                                           .arg(entries[v->value()]->name())
-                                           .arg(v->value()));
+
+                bool vRejected = ete->isEnumValueRejected(v->name());
+
+                MetaJavaEnumValue *current = entries.value(v->value());
+                if (current) {
+                    bool currentRejected = ete->isEnumValueRejected(current->name());
+                    if (!currentRejected && !vRejected) {
+                        ReportHandler::warning(
+                            QString("duplicate enum values: %1::%2, %3 and %4 are %5")
+                            .arg(java_class->name())
+                            .arg(e->name())
+                            .arg(v->name())
+                            .arg(entries[v->value()]->name())
+                            .arg(v->value()));
+                        continue;
+                    }
                 }
-                entries[v->value()] = v;
+
+                if (!vRejected)
+                    entries[v->value()] = v;
             }
+
+            // Entries now contain all the original entries, no
+            // rejected ones... Use this to generate the enumValueRedirection table.
+            foreach (MetaJavaEnumValue *reject, lst) {
+                if (!ete->isEnumValueRejected(reject->name()))
+                    continue;
+
+                MetaJavaEnumValue *used = entries.value(reject->value());
+                ete->addEnumValueRedirection(reject->name(), used->name());
+            }
+
         }
     }
 
@@ -590,6 +610,11 @@ void MetaJavaBuilder::figureOutDefaultEnumArguments()
                 if (expr.isEmpty())
                     continue;
 
+                if (!java_function->replacedDefaultExpression(java_function->implementingClass(),
+                    arg->argumentIndex()+1).isEmpty()) {
+                    continue;
+                }
+
                 QString new_expr = expr;
                 if (arg->type()->isEnum()) {
                     QStringList lst = expr.split(QLatin1String("::"));
@@ -601,7 +626,7 @@ void MetaJavaBuilder::figureOutDefaultEnumArguments()
                     } else if (lst.size() == 2) {
                         MetaJavaClass *cl = m_java_classes.findClass(lst.at(0));
                         if (!cl) {
-                            ReportHandler::warning("Missing required class for enums: " + lst.at(0));
+                            ReportHandler::warning("missing required class for enums: " + lst.at(0));
                             continue;
                         }
                         new_expr = QString("%1.%2.%3")
@@ -609,7 +634,7 @@ void MetaJavaBuilder::figureOutDefaultEnumArguments()
                                    .arg(arg->type()->name())
                                    .arg(lst.at(1));
                     } else {
-                        ReportHandler::warning("Bad default value passed to enum " + expr);
+                        ReportHandler::warning("bad default value passed to enum " + expr);
                     }
 
                 } else if(arg->type()->isFlags()) {
@@ -618,7 +643,7 @@ void MetaJavaBuilder::figureOutDefaultEnumArguments()
                     EnumTypeEntry *enumEntry = flagsEntry->originator();
                     MetaJavaEnum *java_enum = m_java_classes.findEnum(enumEntry);
                     if (!java_enum) {
-                        ReportHandler::warning("Unknown required enum " + enumEntry->qualifiedCppName());
+                        ReportHandler::warning("unknown required enum " + enumEntry->qualifiedCppName());
                         continue;
                     }
 
@@ -660,6 +685,14 @@ MetaJavaEnum *MetaJavaBuilder::traverseEnum(EnumModelItem enum_item, MetaJavaCla
     QString qualified_name = enum_item->qualifiedName().join("::");
     TypeEntry *type_entry = TypeDatabase::instance()->findType(qualified_name);
 
+    Q_ASSERT(m_current_class != 0);
+    QString enum_name = enum_item->name();
+    QString class_name = m_current_class->typeEntry()->qualifiedCppName();
+    if (m_current_class && TypeDatabase::instance()->isEnumRejected(class_name, enum_name)) {
+        m_rejected_enums.insert(qualified_name, GenerationDisabled);
+        return 0;
+    }
+
     if (!type_entry || !type_entry->isEnum()) {
         ReportHandler::warning(QString("enum '%1::%2' does not have a type entry or is not an enum")
                                .arg(m_current_class->name())
@@ -681,9 +714,6 @@ MetaJavaEnum *MetaJavaBuilder::traverseEnum(EnumModelItem enum_item, MetaJavaCla
     ReportHandler::debugMedium(QString(" - traversing enum %1").arg(java_enum->fullName()));
 
     foreach (EnumeratorModelItem value, enum_item->enumerators()) {
-
-        if (((EnumTypeEntry *) type_entry)->isEnumValueRejected(value->name()))
-            continue;
 
         MetaJavaEnumValue *java_enum_value = new MetaJavaEnumValue;
         java_enum_value->setName(value->name());
@@ -732,7 +762,7 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
     }
 
     if (reason != NoReason) {
-        m_rejected_classes.insert(class_name, reason);
+        m_rejected_classes.insert(full_class_name, reason);
         return false;
     }
 
@@ -745,6 +775,7 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
     java_class->setBaseClassNames(class_item->baseClasses());
     *java_class += MetaJavaAttributes::Public;
 
+    MetaJavaClass *old_current_class = m_current_class;
     m_current_class = java_class;
 
     if (type->isContainer()) {
@@ -782,7 +813,7 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
 
     m_template_args.clear();
 
-    m_current_class = 0;
+    m_current_class = old_current_class;
 
     // Set the default include file name
     if (!type->include().isValid()) {
@@ -885,13 +916,13 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
             }
 
             if (java_function->isSignal() && !java_class->isQObject()) {
-                QString warn = QString("Signal '%1' in non-QObject class '%2'")
+                QString warn = QString("signal '%1' in non-QObject class '%2'")
                     .arg(java_function->name()).arg(java_class->name());
                 ReportHandler::warning(warn);
             }
 
             if (java_function->isSignal() && java_class->hasSignal(java_function)) {
-                QString warn = QString("Signal '%1' in class '%2' is overloaded.")
+                QString warn = QString("signal '%1' in class '%2' is overloaded.")
                     .arg(java_function->name()).arg(java_class->name());
                 ReportHandler::warning(warn);
             }
@@ -929,6 +960,10 @@ bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
 {
     Q_ASSERT(!java_class->isInterface());
 
+    if (m_setup_inheritance_done.contains(java_class))
+        return true;
+    m_setup_inheritance_done.insert(java_class);
+
     QStringList base_classes = java_class->baseClassNames();
 
     TypeDatabase *types = TypeDatabase::instance();
@@ -953,7 +988,7 @@ bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
                 return true;
             }
 
-            ReportHandler::warning(QString("Template baseclass '%1' of '%2' is not known")
+            ReportHandler::warning(QString("template baseclass '%1' of '%2' is not known")
                                    .arg(base_name)
                                    .arg(java_class->name()));
             return false;
@@ -991,7 +1026,7 @@ bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
     if (primary >= 0) {
         MetaJavaClass *base_class = m_java_classes.findClass(base_classes.at(primary));
         if (!base_class) {
-            ReportHandler::warning(QString("Unknown baseclass for '%1': '%2'")
+            ReportHandler::warning(QString("unknown baseclass for '%1': '%2'")
                                    .arg(java_class->name())
                                    .arg(base_classes.at(primary)));
             return false;
@@ -1004,15 +1039,27 @@ bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
             continue;
 
         if (i != primary) {
+            MetaJavaClass *base_class = m_java_classes.findClass(base_classes.at(i));
+            if (base_class == 0) {
+                ReportHandler::warning(QString("class not found for setup inheritance '%1'").arg(base_class->name()));
+                return false;
+            }
+
+            setupInheritance(base_class);
+
             QString interface_name = InterfaceTypeEntry::interfaceName(base_classes.at(i));
             MetaJavaClass *iface = m_java_classes.findClass(interface_name);
             if (!iface) {
-                ReportHandler::warning(QString("Unknown interface for '%1': '%2'")
+                ReportHandler::warning(QString("unknown interface for '%1': '%2'")
                                        .arg(java_class->name())
                                        .arg(interface_name));
                 return false;
             }
             java_class->addInterface(iface);
+
+            MetaJavaClassList interfaces = iface->interfaces();
+            foreach (MetaJavaClass *iface, interfaces)
+                java_class->addInterface(iface);
         }
     }
 
@@ -1266,7 +1313,7 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
     QStringList qualifier_list = typeInfo.qualified_name;
 
     if (qualifier_list.isEmpty()) {
-        ReportHandler::warning(QString("Horribly broken type '%1'").arg(_typei.toString()));
+        ReportHandler::warning(QString("horribly broken type '%1'").arg(_typei.toString()));
         *ok = false;
         return 0;
     }
@@ -1594,7 +1641,7 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
             temporary_type->setIndirections(i.indirections);
             template_types << temporary_type;
         } else {
-            ReportHandler::warning(QString("Unknown type used as template argument: %1 in %2")
+            ReportHandler::warning(QString("unknown type used as template argument: %1 in %2")
                                    .arg(i.toString())
                                    .arg(info.toString()));
             return false;
@@ -1657,7 +1704,7 @@ static void write_reject_log_file(const QString &name,
 {
     QFile f(name);
     if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        ReportHandler::warning(QString("Failed to write log file: '%1'")
+        ReportHandler::warning(QString("failed to write log file: '%1'")
                                .arg(f.fileName()));
         return;
     }

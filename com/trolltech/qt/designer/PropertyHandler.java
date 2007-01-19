@@ -4,6 +4,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.xml.*;
 
+import java.lang.reflect.*;
 import java.util.*;
 
 
@@ -90,6 +91,28 @@ class ColorPropertyHandler extends PropertyHandler {
 
 class EnumPropertyHandler extends PropertyHandler {
     public Object create(QDomElement e) throws QUiLoaderException {
+        String name = childStringValue(e);
+        return enumForValue(name);
+    }
+
+    @SuppressWarnings("unchecked")
+    static Object enumForValue(String name) throws QUiLoaderException {
+        int valuePos = name.lastIndexOf('.');
+        int enumPos = name.lastIndexOf('.', valuePos-1);
+        if (enumPos > 0 && valuePos > 0) {
+
+            System.out.println("name: " + name + ", " + valuePos + ", " + enumPos);
+
+            String className = name.substring(0, enumPos);
+            String enumName = name.substring(enumPos+1, valuePos);
+            String enumValue = name.substring(valuePos + 1);
+            try {
+                Class cl = Class.forName(className + '$' + enumName);
+                return Enum.valueOf(cl, enumValue);
+            } catch (Exception ex) {
+                throw new QUiLoaderException("Converting enum '" + name + "' failed...", ex);
+            }
+        }
         return null;
     }
 }
@@ -102,7 +125,6 @@ class FontPropertyHandler extends PropertyHandler {
         f.setPointSize(childIntValue(e, "pointsize"));
         f.setItalic(childBoolValue(e, "italic"));
         f.setBold(childBoolValue(e, "bold"));
-
         return f;
     }
 
@@ -210,6 +232,26 @@ class RectPropertyHandler extends PropertyHandler {
 class SetPropertyHandler extends PropertyHandler {
 
     public Object create(QDomElement e) throws QUiLoaderException {
+        String flagsValues[] = childStringValue(e).split("\\|");
+
+        Object enumsPreprocess[] = new Object[flagsValues.length];
+        for (int i=0; i<enumsPreprocess.length; ++i) {
+            enumsPreprocess[i] = EnumPropertyHandler.enumForValue(flagsValues[i]);
+        }
+
+        if (enumsPreprocess.length > 0) {
+            try {
+                Class<?> cl = enumsPreprocess[0].getClass();
+                Object enumValues = Array.newInstance(cl, enumsPreprocess.length);
+                for (int i=0; i<enumsPreprocess.length; ++i)
+                    Array.set(enumValues, i, enumsPreprocess[i]);
+
+                Method m = cl.getMethod("createQFlags", enumValues.getClass());
+                return m.invoke(cl, enumValues);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
         return null;
     }
 }
@@ -230,8 +272,16 @@ class SizePolicyPropertyHandler extends PropertyHandler {
         String hSizeType = e.attribute("hsizetype");
         int hStretch = childIntValue(e, "horstretch");
         int vStretch = childIntValue(e, "verstretch");
-        QSizePolicy policy = new QSizePolicy(QSizePolicy.Policy.valueOf(hSizeType),
-                                             QSizePolicy.Policy.valueOf(vSizeType));
+
+        QSizePolicy.Policy hPolicy = hSizeType.length() == 0
+                ? QSizePolicy.Policy.resolve(childIntValue(e, "hsizetype"))
+                : QSizePolicy.Policy.valueOf(hSizeType);
+
+        QSizePolicy.Policy vPolicy = vSizeType.length() == 0
+                ? QSizePolicy.Policy.resolve(childIntValue(e, "vsizetype"))
+                : QSizePolicy.Policy.valueOf(vSizeType);
+
+        QSizePolicy policy = new QSizePolicy(hPolicy, vPolicy);
         policy.setHorizontalStretch((byte) hStretch);
         policy.setVerticalStretch((byte) vStretch);
 

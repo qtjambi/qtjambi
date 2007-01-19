@@ -1,4 +1,4 @@
-<ui version="4.0" >
+<ui version="4.0" language="jambi" >
  <class>CalculatorDockable</class>
  <widget class="QMainWindow" name="CalculatorDockable" >
   <property name="geometry" >

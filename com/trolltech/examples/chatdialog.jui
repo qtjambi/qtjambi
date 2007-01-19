@@ -1,4 +1,4 @@
-<ui version="4.0" >
+<ui version="4.0" language="jambi" >
  <class>ChatDialog</class>
  <widget class="QDialog" name="ChatDialog" >
   <property name="geometry" >

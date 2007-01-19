@@ -4,6 +4,7 @@
   </inject-code>
 
   <rejection class="QGLWidget" function-name="setMouseTracking"/>
+  <rejection class="QGLColormap::QGLColormapData" />
   
   <primitive-type name="GLuint" java-name="int" preferred-conversion="no" jni-name="jint"/>
   <primitive-type name="GLint" java-name="int" preferred-conversion="no" jni-name="jint"/>

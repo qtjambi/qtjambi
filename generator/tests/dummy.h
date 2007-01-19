@@ -23,6 +23,8 @@
 
 #include <../../qtjambi_designer/designer.h>
 
+#include <../../qtjambi_gui/qtreemodel.h>
+
 #define GL_ACCUM                          0x0100
 #define GL_LOAD                           0x0101
 #define GL_RETURN                         0x0102

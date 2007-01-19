@@ -18,7 +18,8 @@ import com.trolltech.qt.gui.*;
 
 public class CustomListView extends QListView
 {
-    CustomListView(QWidget parent) { super(parent); }
+    public CustomListView(QWidget parent) { super(parent); }
+    public CustomListView() { this(null); }
 
     public QSize sizeHint() {
 	QSize s = new QSize(sizeHintForColumn(0), sizeHintForRow(0) /** model().rowCount()*/);

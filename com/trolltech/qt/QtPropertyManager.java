@@ -1,5 +1,7 @@
 package com.trolltech.qt;
 
+import com.trolltech.qt.gui.*;
+
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -64,7 +66,7 @@ public class QtPropertyManager {
             return null;
         }
     }
-    
+
     private static String matchAndLowercase(String s, String prefix) {
         if (s.length() == prefix.length() + 1) 
             return String.valueOf(Character.toLowerCase(s.charAt(prefix.length()))); 
@@ -279,7 +281,16 @@ public class QtPropertyManager {
 //                    + " - designable=%s\n",
 //                    e.name, e.read, e.write, e.reset, e.designable);
 //        }        
-//        
+//
+
+        // Hardcode some classes for now...
+        List<Entry> set = customSetForClass(cl);
+        if (set != null) {
+            for (Entry e : set) {
+                entries.put(e.name, e);
+            }
+        }
+
         return entries;
     }
 
@@ -398,6 +409,26 @@ public class QtPropertyManager {
         }
     }
 
+    private static List<Entry> customSetForClass(Class<?> cl) {
+        try {
+            if (cl == QTextEdit.class) {
+                List<Entry> list = new ArrayList<Entry>();
+
+                Entry html = new Entry("html");
+                html.read = cl.getMethod("toHtml");
+                html.write = cl.getMethod("setHtml", String.class);
+                html.designable = DEFAULT_TRUE;
+
+                list.add(html);
+
+                return list;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static void main(String args[]) throws Exception {
         if (args.length == 0) {
             System.out.println("Please specify class name");
@@ -405,22 +436,21 @@ public class QtPropertyManager {
         }
 
         HashMap<String, Entry> entries = findPropertiesRecursive(Class.forName(args[0]));
+
         for (Entry e : entries.values()) {
 
-            System.out.print(e.name);
+            System.out.print(e.read != null ? " R" : "  ");
+            System.out.print(e.write != null ? " W" : "  ");
+            System.out.print(e.reset != null ? " =" : "  ");
+            System.out.print(e.isDesignable(null) ? " D" : "  ");
 
-            if (e.read != null) {
-                System.out.print(" readable");
-            }
-            if (e.write != null) {
-                System.out.print(" writable");
-            }
-            if (e.reset != null) {
-                System.out.print(" resettable");
-            }
-            if (e.isDesignable(null)) {
-                System.out.print(" designable");
-            }
+            Class cl = null;
+            if (e.read != null)
+                cl = e.read.getDeclaringClass();
+            else if (e.write != null)
+                cl = e.write.getDeclaringClass();
+            
+            System.out.printf(" :: %30s ; " + cl, e.name);
 
             System.out.println();
         }

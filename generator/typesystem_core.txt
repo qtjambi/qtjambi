@@ -203,7 +203,17 @@
   <rejection class="qGreater"/>
   <rejection class="qLess"/>
   <rejection class="std"/>
-
+  <rejection class="QAbstractFileEngine::ExtensionOption" />
+  <rejection class="QAbstractFileEngine::ExtensionReturn" />
+  <rejection class="QByteArray::Data" />
+  <rejection class="QIntForType" />
+  <rejection class="QList::Node" />
+  <rejection class="QList::const_iterator" />
+  <rejection class="QList::iterator" />
+  <rejection class="QMetaTypeId2" />
+  <rejection class="QMutableSetIterator" />
+  <rejection class="QSubString" />
+  <rejection class="QUintForType" />
 
   <rejection class="QAbstractEventDispatcher" function-name="filterEvent"/>
   <rejection class="QAbstractEventDispatcher" function-name="setEventFilter"/>
@@ -258,7 +268,13 @@
   <rejection class="QVector" function-name="front"/>
   <rejection class="QVector" function-name="insert"/>
   <rejection class="QVector" function-name="malloc"/>
+  <rejection class="QVector" function-name="alloc" />
   <rejection class="QVector" function-name="operator+="/>
+  <rejection class="QAbstractFileEngineIterator" function-name="entryInfo" />
+  
+  <rejection class="QAbstractFileEngineIterator" enum-name="EntryInfoType" />
+  <rejection class="QDataStream" enum-name="ByteOrder" />
+  
 
   <namespace-type name="Qt"/>
 
@@ -304,7 +320,9 @@
   <primitive-type name="QBitRef" java-name="boolean" preferred-conversion="no" jni-name="jboolean"/>
 
   <primitive-type name="QBool" java-name="boolean" preferred-conversion="no" jni-name="bool" />
-            
+
+  <primitive-type name="jobject" java-name="java.lang.Object" jni-name="jobject" />
+
   <enum-type name="Qt::enum_1"/>
   <enum-type name="Qt::enum_2"/>
 
@@ -399,6 +417,9 @@
   <enum-type name="Qt::WindowModality"/>
   <enum-type name="Qt::WindowState" flags="Qt::WindowStates"/>
   <enum-type name="Qt::WindowType" flags="Qt::WindowFlags"/>
+  <enum-type name="QDirIterator::IteratorFlag" flags="QDirIterator::IteratorFlags" />
+  <enum-type name="Qt::EventPriority" />
+  <enum-type name="Qt::MaskMode" />
 
   <enum-type name="QCoreApplication::Encoding">
     <reject-enum-value name="DefaultCodec"/>
@@ -523,7 +544,7 @@
   <value-type name="QDir">
     <modify-function signature="QDir(QString,QString,QFlags&lt;QDir::SortFlag&gt;,QFlags&lt;QDir::Filter&gt;)">
         <modify-argument index="3">
-            <replace-default-expression with="Name | IgnoreCase" />
+            <replace-default-expression with="SortFlag.Name, SortFlag.IgnoreCase" />
         </modify-argument>
     </modify-function>  
     <modify-function signature="operator=(QDir)">
@@ -1084,6 +1105,8 @@
     
   </value-type>  
 
+  <object-type name="QDirIterator" />
+  <object-type name="QAbstractFileEngineIterator" />
   <object-type name="QAbstractItemModel">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
@@ -1091,7 +1114,7 @@
     </extra-includes>  
     <modify-function signature="match(QModelIndex,int,QVariant,int,QFlags&lt;Qt::MatchFlag&gt;)const">
         <modify-argument index="5">
-            <replace-default-expression with="Qt.MatchStartsWith | Qt.MatchWrap" />         
+            <replace-default-expression with="Qt.MatchFlag.MatchStartsWith, Qt.MatchFlag.MatchWrap" />         
         </modify-argument>
     </modify-function>
     <modify-function signature="createIndex(int, int, int)const">
@@ -3051,7 +3074,11 @@
   <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QPointer&lt;*&gt;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QVector&lt;*&gt;'" />
-
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: enum 'QDataStream::ByteOrder' does not have a type entry or is not an enum" />
+  <suppress-warning text="* private virtual function '*' in 'QAbstractListModel'" />  
+  <suppress-warning text="* private virtual function '*' in 'QAbstractTableModel'" />  
+  <suppress-warning text="* private virtual function '*' in 'QListWidget'" />  
+  <suppress-warning text="* private virtual function '*' in 'QTreeWidget'" />  
+  <suppress-warning text="* private virtual function '*' in 'QFontDialog'" />  
+  <suppress-warning text="* private virtual function '*' in 'QTableWidget'" />  
   
 </typesystem>

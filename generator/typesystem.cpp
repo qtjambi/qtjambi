@@ -19,6 +19,14 @@
 
 #include <QtXml>
 
+QString strings_Object = QLatin1String("Object");
+QString strings_String = QLatin1String("String");
+QString strings_Thread = QLatin1String("Thread");
+QString strings_char = QLatin1String("char");
+QString strings_java_lang = QLatin1String("java.lang");
+QString strings_jchar = QLatin1String("jchar");
+QString strings_jobject = QLatin1String("jobject");
+
 class StackElement
 {
     public:
@@ -611,6 +619,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["class"] = "*";
             attributes["function-name"] = "*";
             attributes["field-name"] = "*";
+            attributes["enum-name"] = "*";
             break;
         case StackElement::Removal:
             attributes["exclusive"] = "no";
@@ -1047,12 +1056,13 @@ bool Handler::startElement(const QString &, const QString &n,
                 QString cls = attributes["class"];
                 QString function = attributes["function-name"];
                 QString field = attributes["field-name"];
-                if (cls == "*" && function == "*" && field == "*") {
+                QString enum_ = attributes["enum-name"];
+                if (cls == "*" && function == "*" && field == "*" && enum_ == "*") {
                     m_error = "bad reject entry, neither 'class', 'function-name' nor "
                               "'field' specified";
                     return false;
                 }
-                m_database->addRejection(cls, function, field);
+                m_database->addRejection(cls, function, field, enum_);
             }
             break;
         case StackElement::Template:
@@ -1290,6 +1300,19 @@ QString FlagsTypeEntry::jniName() const
     return "jint";
 }
 
+void EnumTypeEntry::addEnumValueRedirection(const QString &rejected, const QString &usedValue)
+{
+    m_enum_redirections << EnumValueRedirection(rejected, usedValue);
+}
+
+QString EnumTypeEntry::enumValueRedirection(const QString &value) const
+{
+    for (int i=0; i<m_enum_redirections.size(); ++i)
+        if (m_enum_redirections.at(i).rejected == value)
+            return m_enum_redirections.at(i).used;
+    return QString();
+}
+
 QString FlagsTypeEntry::qualifiedJavaName() const
 {
     return javaPackage() + "." + m_enum->javaQualifier() + "." + javaName();
@@ -1297,12 +1320,13 @@ QString FlagsTypeEntry::qualifiedJavaName() const
 
 
 void TypeDatabase::addRejection(const QString &class_name, const QString &function_name,
-                                const QString &field_name)
+                                const QString &field_name, const QString &enum_name)
 {
     TypeRejection r;
     r.class_name = class_name;
     r.function_name = function_name;
     r.field_name = field_name;
+    r.enum_name = enum_name;
 
     m_rejections << r;
 }
@@ -1313,9 +1337,21 @@ bool TypeDatabase::isClassRejected(const QString &class_name)
         return !m_rebuild_classes.contains(class_name);
 
     foreach (const TypeRejection &r, m_rejections)
-        if (r.class_name == class_name && r.function_name == "*" && r.field_name == "*") {
+        if (r.class_name == class_name && r.function_name == "*" && r.field_name == "*" && r.enum_name == "*") {
             return true;
         }
+    return false;
+}
+
+bool TypeDatabase::isEnumRejected(const QString &class_name, const QString &enum_name)
+{
+    foreach (const TypeRejection &r, m_rejections) {
+        if (r.enum_name == enum_name
+            && (r.class_name == class_name || r.class_name == "*")) {
+            return true;
+        }
+    }
+
     return false;
 }
 

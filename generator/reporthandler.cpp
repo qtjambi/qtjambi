@@ -18,6 +18,8 @@ int ReportHandler::m_warning_count = 0;
 int ReportHandler::m_suppressed_count = 0;
 QString ReportHandler::m_context;
 ReportHandler::DebugLevel ReportHandler::m_debug_level = NoDebug;
+QSet<QString> ReportHandler::m_reported_warnings;
+
 
 void ReportHandler::warning(const QString &text)
 {
@@ -26,9 +28,11 @@ void ReportHandler::warning(const QString &text)
     TypeDatabase *db = TypeDatabase::instance();
     if (db && db->isSuppressedWarning(warningText)) {
         ++m_suppressed_count;
-    } else {
+    } else if (!m_reported_warnings.contains(warningText)) {
         qDebug(qPrintable(warningText));
         ++m_warning_count;
+
+        m_reported_warnings.insert(warningText);
     }
 }
 

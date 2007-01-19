@@ -19,6 +19,8 @@
 #include <QtDebug>
 #include <QtPlugin>
 
+#include <QtDesigner/private/ui4_p.h>
+
 
 #include <QtGui>
 
@@ -44,7 +46,6 @@ JambiLanguagePlugin::JambiLanguagePlugin():
 
     qtjambi_initialize_vm();
     JNIEnv *env = qtjambi_current_environment();
-    qtjambi_set_java_connect_override(true);
     qtjambi_resolve_classes(env, jni_class_table);
     qtjambi_resolve_methods(env, jni_method_table);
 }
@@ -93,6 +94,20 @@ JambiLanguage::JambiLanguage(QObject *parent)
 JambiLanguage::~JambiLanguage()
 {
 }
+
+QDialog *JambiLanguage::createPromotionDialog(QDesignerFormEditorInterface *,
+                                                      const QString &,
+                                                      QString *,
+                                                      QWidget *)
+{
+    return 0;
+}
+
+QDialog *JambiLanguage::createPromotionDialog(QDesignerFormEditorInterface *,QWidget *)
+{
+    return 0;
+}
+
 
 QDialog *JambiLanguage::createFormWindowSettingsDialog(QDesignerFormWindowInterface *, QWidget *)
 {
@@ -155,16 +170,25 @@ JambiExtraInfoExtension::JambiExtraInfoExtension(QWidget *widget,
 }
 
 
-bool JambiExtraInfoExtension::saveUiExtraInfo(DomUi *ui)
+bool JambiExtraInfoExtension::saveUiExtraInfo(DomUI *ui)
 {
-    printf("JambiExtraInfoExtension::saveUiExtraInfo...\n");
+    ui->setAttributeLanguage(QLatin1String("jambi"));
     return false;
 }
 
 
-bool JambiExtraInfoExtension::loadUiExtraInfo(DomUi *ui)
+bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
 {
-    printf("JambiExtraInfoExtension::loadUiExtraInfo()\n");
+    if (!ui->hasAttributeLanguage()
+        || ui->attributeLanguage().toLower() != QLatin1String("jambi")) {
+        QMessageBox::warning(0,
+                             QLatin1String("Incompatible UI file"),
+                             QLatin1String("The UI file that is being loaded does not contain a "
+                                           "language attribute or the language attribute is "
+                                           "not <code>jambi</code>. The form may not load "
+                                           "properly")
+                             );
+    }
     return false;
 }
 
@@ -203,6 +227,9 @@ QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &
         return new JambiLanguage(parent);
 
     else if (iid == Q_TYPEID(QDesignerPropertySheetExtension)) {
+
+        if (qstrcmp(object->metaObject()->className(), "Spacer") == 0)
+            return 0;
 
         JNIEnv *env = qtjambi_current_environment();
         jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/PropertySheet");

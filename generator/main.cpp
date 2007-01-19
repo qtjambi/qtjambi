@@ -107,6 +107,12 @@ int main(int argc, char *argv[])
         } else if (arg.startsWith("--convert-to-jui=")) {
             ui_file_name = arg.mid(17);
             do_ui_convert = true;
+
+            if (!QFileInfo(ui_file_name).exists()) {
+                printf(".ui file '%s' does not exist\n", qPrintable(ui_file_name));
+                display_help = true;
+            }
+
         } else {
             if (fileName.isEmpty())
                 fileName = QString(argv[i]);

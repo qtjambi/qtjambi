@@ -235,7 +235,7 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
                       << "        return true;" << endl
                       << "    }" << endl;
                 } else {
-                    QString warning = QString("class '%1' inherits from polymorphic class '%2', but has no polymorphic value set")
+                    QString warning = QString("class '%1' inherits from polymorphic class '%2', but has no polymorphic id set")
                         .arg(clazz->name())
                         .arg(cls->name());                        
 

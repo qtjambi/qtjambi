@@ -30,13 +30,16 @@
 
 #ifdef QT_NO_DEBUG
 #  define QTJAMBI_EXCEPTION_CHECK(env)
+#  define QTJAMBI_DEBUG_TRACE(location)
 #else
 #  define QTJAMBI_EXCEPTION_CHECK(env) \
       if (env->ExceptionCheck()) { \
           printf("QtJambi: exception pending at %s, %d\n", __FILE__, __LINE__); \
           env->ExceptionDescribe(); \
       }
+#  define QTJAMBI_DEBUG_TRACE(location) qtjambi_debug_trace(location, __FILE__, __LINE__);
 #endif
+
 
 class QVariant;
 class QRect;
@@ -59,8 +62,6 @@ inline void *qtjambi_from_jlong(jlong ptr)
 }
 
 typedef bool (*QtJambiPolymorphicHandler)(const void *object, char **class_name, char **package);
-
-QTJAMBI_EXPORT void qtjambi_set_java_connect_override(bool override);
 
 QTJAMBI_EXPORT void qtjambi_register_polymorphic_id(const char *lookup, QtJambiPolymorphicHandler handler);
 QTJAMBI_EXPORT void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
@@ -218,6 +219,8 @@ QTJAMBI_EXPORT QString qtjambi_object_class_name(JNIEnv *env, jobject java_objec
 QTJAMBI_EXPORT void qtjambi_metacall(JNIEnv *env, QEvent *event);
 
 QTJAMBI_EXPORT bool qtjambi_is_created_by_java(QObject *qobject);
+
+QTJAMBI_EXPORT void qtjambi_debug_trace(const char *location, const char *file, int line);
 
 // Boxing functions
 inline jobject qtjambi_from_int(JNIEnv *env, int int_value) {

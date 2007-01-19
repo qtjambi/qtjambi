@@ -14,7 +14,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
     public ResourceBrowser(QWidget parent) {
         super(parent);
 
-        searchClassPath();
+        try {
 
         QAbstractItemModel model;
 
@@ -91,11 +91,11 @@ public class ResourceBrowser extends JambiResourceBrowser {
         view.expandAll();
         
         selection.selectionChanged.connect(this, "selectionChanged()");
-        setupSearchConnections();
 
         setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu);
         addAction("Reset resourcelist", "reindex()");
         addAction("Edit searchpath", "changeSearchPath()");
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     @Override
@@ -119,6 +119,9 @@ public class ResourceBrowser extends JambiResourceBrowser {
     }
 
     protected void showEvent(QShowEvent arg) {
+        if (!shown)
+            reindex();
+        shown = true;
         filterEdit.setFocus();
     }
 
@@ -206,8 +209,10 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private void reindex() {
         filterModel.setSourceModel(null);
         browserModel = null;
-        walker.kill();
-        walker = null;
+        if (walker != null) {
+            walker.kill();
+            walker = null;
+        }
         searchClassPath();
         filterModel.setSourceModel(browserModel);
         setupSearchConnections();
@@ -265,4 +270,5 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private String currentPath;
     private QLineEdit filterEdit;
     private HourGlass hourGlass;
+    private boolean shown;
 }

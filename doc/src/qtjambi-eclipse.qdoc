@@ -3,162 +3,171 @@
 
     \title Qt Jambi Eclipse Integration
 
-    Qt Jambi comes with an integration for the Eclipse IDE that
-    provides access to the Qt Jambi documentation and Qt Designer.
+    Qt Jambi comes with a plugin for the Eclipse IDE, providing access
+    to the Qt Jambi documentation and Qt Designer from within the
+    Eclipse environment. The integration is currently supported on
+    Windows and Linux. In addition, Mac OS X support is under
+    development.
 
-    \section1 Installing the Qt Jambi Eclipse Integration
+    \tableofcontents
 
-    To install the Qt Jambi Eclipse Integration, you need to get the
-    Qt Jambi Eclipse Integration package. This is a \c .zip file for
-    Windows and a \c .tar.gz file for linux, that contains the
-    documentation, the Eclipse plugins and the native libraries
-    required by the plugins to run Qt Designer.
+    \section1 Installation
+
+    To install the Qt Jambi plugin, you need the Qt Jambi Eclipse
+    Integration package. This is a \c .zip file for Windows and a \c
+    .tar.gz file for Linux, containing the documentation, the Eclipse
+    plugins and the native libraries required to run Qt Designer.
 
     Unpack the package in the Eclipse root folder to install the
-    package. On Windows you also need to run the \c
-    register_eclipse_integration.bat file. On Linux there are no
-    additional steps.
+    package. That's all on Linux, but on Windows you also need to run
+    the \c register_eclipse_integration.bat file to complete the
+    installation.
 
-    Qt Jambi Eclipse integration for Mac OS X is being worked on.
-    
-    \section1 Setting up Qt Jambi 
-    
-    The first step in using the Qt Jambi plugin, is to edit your preferences. 
-    Open the Qt Jambi section in the preferences, and hit the "Browse" button
-    in order to locate the folder holding your installation of Qt Jambi. When
-    you have located the correct directory, hit the "Validate" button to check
-    that Qt Jambi has been installed properly. 
-    
-    \img eclipse-settings.png
-    
-    When you are editing forms with Qt Designer, the Qt Jambi plugin will 
-    automatically generate Java classes for these forms. By default, all
-    generated files will be placed in a separate source folder in your
-    project. The Qt Jambi preferences also has the option of tailoring this
-    behavior to suit your needs.
-    
-    Note that the same preferences can be set on a per-project-basis, by 
-    selecting "Properties" on your project and finding the Qt Jambi page.
-    In the project properties, you may also turn on and off the Juic Builder,
-    which is the tool that generates Java classes from form files.
-    
-    \section1 Creating New Qt Jambi Projects
-    
-    Create a new Qt Jambi Project by selecting "New Project" in the "File" menu, 
-    selecting the "Qt Jambi Gui Project" option from the "Qt Jambi" folder and
-    clicking on the "Next" button. 
-        
-    This will open a wizard which guides you through the steps of creating a new
-    Qt Jambi project. Most of the steps are identical to those taken when creating
-    ordinary Java projects. In the final step of the wizard, you will be asked for
-    the name and package of the main class in your application, and for the
-    layout of the application's main window.
-    
-    \img eclipse-select-template.png
-    
-    When you have entered the information and clicked the "Finish" button, the 
-    project will be added to your workspace. If you have set the path to your
-    Qt Jambi installation correctly in the preferences (see previous section),
-    the project will have the correct build path settings for using the 
-    Qt Jambi classes and for running your application from within the Eclipse
-    environment.        
+    \section1 Preferences
 
-    \section1 Creating New Forms with Qt Designer
+    Before you can start using the Qt Jambi plugin, you must specify
+    the location of your Qt JAmbi installation: Open the Qt Jambi
+    section in \gui Preferences, and hit the \gui Browse button in
+    order to locate the folder containing the installation. When you
+    have located the correct directory, hit the \gui Validate button
+    to check that Qt Jambi has been installed properly.
 
-    To create a new \c .ui file with Qt Designer go into the \gui File
+    \image eclipse-settings.png
+
+    The plugin will automatically generate Java classes for forms
+    edited with Qt Designer. By default, the generated files will be
+    located in a separate source folder in your project. Use the Qt
+    Jambi preferences to alter this location.
+
+    Note that the same preferences can be set on a per-project basis:
+    Just select \gui Properties for your project and find the Qt Jambi
+    page. Using the project properties, you may also disable and
+    enable the Juic Builder, the tool generating the Java classes from
+    the Qt Designer forms.
+
+    \section1 Creating Qt Jambi Projects
+
+    To create a new Qt Jambi project, you simply select \gui New
+    Project in the \gui File menu. Then select the \gui {Qt Jambi Gui
+    Project} option from the Qt Jambi folder and click the \gui Next
+    button.
+
+    This will open a wizard guiding you through the steps of creating
+    a new Qt Jambi project. Most of these are identical to the steps
+    you take to create ordinary Java projects. Then, in the end, you
+    will be asked for the name and package of the main class in your
+    application, and for the layout of the application's main window.
+
+    \image eclipse-select-template.png
+
+    When you have entered this information, click the \gui Finish
+    button to add the project to your workspace. Provided that you
+    have set the correct path to your Qt Jambi installation (see the
+    previous section for details), the project will have the correct
+    build path settings for using the Qt Jambi classes and for running
+    your application from within the Eclipse environment.
+
+    \section1 Using Qt Designer within Eclipse
+
+    By default, Qt Designer's property editor and widget box are not
+    shown within the Eclipse environment, i.e., they must be
+    explicitly enabled by the user. This can be done by selecting \gui
+    {Show View} from the \gui Windows menu and \gui Other from the
+    entry's submenu.
+
+    \image eclipse-window-others.png
+
+    Then a dialog box where it is possible to select and enable the
+    different Qt Designer components, will appear.
+
+    \image eclipse-window-show-view.png
+
+    For your convenience, the Qt Jambi plugin also comes with a user
+    interface perspective, which opens the Qt Designer views for you:
+    Select the \gui {Open Perspective} entry in the \gui Window
+    menu. Then select the \gui {Qt Designer UI} perspective from the
+    \gui Other... entry's submenu.
+
+    \section2 Creating New Forms
+
+    To create a new \c .jui file with Qt Designer go into the \gui File
     menu and select \gui New and then \gui Other, as shown in the
     screenshot below.
 
-    \img eclipse-file-new.png
+    \image eclipse-file-new.png
 
     This will pop up a dialog allowing you to select a wizard:
 
-    \img eclipse-form-wizard.png
+    \image eclipse-form-wizard.png
 
     Choose the \gui {Qt Designer Form} from the \gui {Qt Jambi}
     directory and click \gui Next. This will bring up a dialog box to
     query for the file name and location as shown in the screenshot
     below:
 
-    \img eclipse-create-form.png
+    \image eclipse-create-form.png
 
-    \section1 Using Qt Designer in the Eclipse Integration
+    \section2 Adding Custom Widgets
 
-    The Qt Designer plugin views, such as the Qt Property Editor and
-    the Qt Widget Box, are not shown by default so they need to be
-    explicitly enabled by the user. This is done in the \gui Windows
-    menu by selecting \gui {Show View} and then \gui Other, like shown
-    in the screen shot below.
+    In addition to the many standard widgets found in the Qt Designer
+    Widget Box, you can also add your own custom widgets and use them
+    in your application.
 
-    \img eclipse-window-others.png
+    The first step is to add a text file to your project with the \c
+    .xml extension.  This file must reside inside the \c
+    plugins/qtjambi folder in your project. You may add as many such
+    \c .xml files to the folder as you wish, and each file may contain
+    as many custom widget declarations as you like.
 
-    This will bring up a dialog box where it is possible to select and
-    enable the different Qt Designer components.
+    \image eclipse-custom-widget-xml.png
 
-    \img eclipse-window-show-view.png
-    
-    For your convenience, the plugin also comes with a "Qt Designer UI" 
-    perspective, which opens the Qt Designer views for you. Select
-    to open perspective "Other..." and then select the "Qt Designer UI"
-    perspective from the list.
-    
-    \section1 Resource Browser
-    
-    Resources in Qt Jambi are preferably handled using a special "classpath:" 
-    prefix to file names which tell Qt Jambi to search for them in the current 
-    class paths. This means that resources can be bundled in your application
-    just as easily as class files.
-    
-    \img eclipse-resource-browser.png
-    
-    If you have set the correct path to Qt Jambi in your preferences, the 
-    resource browser will be populated with images collected from the source
-    folders of your project. You can add search paths explicitly by right
-    clicking in the browser and selecting "Edit searchpath".
-    
-    When you are selecting an image to set on e.g. a label or button, you 
-    will be able to select it from the resource browser, and the correct
-    path and prefix will be set in the generated file, as long as the 
-    class paths contain the folder in which the image was found.
-    
-    \section1 Custom Widgets
-    
-    In addition to the many standard widgets found in the Qt Designer Widget Box,
-    you can also add your own custom widgets and use them in your application.
-    
-    The first step is to add a text file to your project with the extension ".xml".
-    This must reside inside the folder "plugins/qtjambi" in your project. You may
-    add as many such xml files to the folder as you wish, and as many custom widget
-    declarations as you like to each xml file.
-    
-    \img eclipse-custom-widget-xml.png
-    
-    In this example, we are adding the widget customwidgets.MyOwnCustomWidget to 
-    the widget box. The widget is part of the project and contains a layout
-    with a QLabel inside. The label contains the text "Hello World".
-    
-    When you are editing a form in the project, the custom widget will show up in the
-    widget box under the heading selected in the xml file.
-    
-    \img eclipse-custom-widget-select.png
-    
+    In this example, we are adding the \c
+    customwidgets.MyOwnCustomWidget widget to the widget box. The
+    widget is part of the project and contains a layout with a QLabel
+    inside. The label contains the text "Hello World".
+
+    When you are editing a form in the project, the custom widget will
+    show up in the widget box under the name specified in the \c .xml
+    file.
+
+    \image eclipse-custom-widget-select.png
+
     To use the custom widget, click and drag into your form like any other.
-    
-    \img eclipse-custom-widget.png
-    
-    A simpler way of adding custom widgets to your project is currently being worked
-    on.
 
-    \section1 UIC for Qt Jambi
+    \image eclipse-custom-widget.png
 
-    Qt Jambi comes with its own version of UIC, the user interface
-    compiler, a tool that produces Qt Jambi source code from a user
-    interface (\c .ui) definition file. This tool is integrated into
-    the Eclipse IDE as a custom build tool which will update all \c
-    .ui files when they are changed. This build tool will be executed
-    prior to the Eclipse built-in incremental builder which means that
-    all source code is ensured to be up to date after a editing in Qt
-    Designer.
+    Note that this feature, adding custom widgets to a project, is
+    under development. The goal is to make it easier to use.
 
-    
+    \section2 The Java User Interface Compiler
+
+    Qt Jambi comes with a Java user interface compiler (JUIC), a tool
+    that produces Qt Jambi source code from user interface definition
+    files (\c .jui files). JUIC is integrated into the Eclipse IDE as a
+    custom build tool that will update all source files whenever the
+    \c .jui files are changed (note that it is executed prior to the
+    Eclipse built-in incremental builder which means that all source
+    code is guaranteed to be up to date after a editing a form in Qt
+    Designer).
+
+    \section1 Adding Resources
+
+    Qt Jambi provides a uniform syntax for accessing resources in the
+    Java classpath, no matter whether they are located directly on the
+    disk or in a JAR bundle. Resources are identified by a \c
+    classpath: prefix.
+
+    \image eclipse-resource-editor.png
+
+    If you have set the correct path to Qt Jambi in your preferences,
+    the resource editor will be populated with images collected from
+    the source folders of your project. You can add search paths, by
+    right clicking in the editor and selecting \gui {Edit Search
+    Path} entry in the context menu.
+
+    When you, for example, want to put an image onto a label or a
+    button, you will be able to select it from the resource
+    editor. Provided that the classpath contains the folder in which
+    the image was found, the correct path and prefix will be set
+    automatically in the generated file.
 */

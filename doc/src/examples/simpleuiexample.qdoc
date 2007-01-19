@@ -2,7 +2,7 @@
   \page qtjambi-simpleuiexample.html
   \title Simple UI Example
 
-  The Simple UI Example shows how user interface (\c{.ui}) files created with
+  The Simple UI Example shows how user interface (\c{.jui}) files created with
   \QD can be used to implement user interfaces for applications.
 
   \image simpleui-example.png
@@ -38,7 +38,7 @@
   \skipto private void showDialog() {
   \printuntil dialogUi.setupUi(dialog);
 
-  The dialog itself uses a user interface class generated from a \c{.ui} file,
+  The dialog itself uses a user interface class generated from a \c{.jui} file,
   which we set up in a similar way to before. Here, we call the
   \c Ui_SimpleUIExample instance's \c setupUi() method on the newly-constructed
   QDialog instance.

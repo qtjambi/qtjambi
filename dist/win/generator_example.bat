@@ -10,7 +10,7 @@ echo Note that JAVADIR must be given *without* quotes
 :after_no_jni_h_in_javadir
 
 echo Running generator
-..\bin\generator mywidget.h typesystem_mywidget.txt --juic-file=juic.xml 2>&1 > log
+..\bin\generator global.h typesystem_generatorexample.txt --juic-file=juic.xml 2>&1 > log
 IF NOT "%ERRORLEVEL%" == "0" goto end
 
 echo Compiling Native library

@@ -1,0 +1,127 @@
+<typesystem package="com.trolltech.examples.generator" default-superclass="com.trolltech.qt.QtJambiObject">
+    <load-typesystem name=":/trolltech/generator/typesystem_core.txt" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_gui.txt" generate="no" />
+
+    <template name="from_nativepointer_to_value_type">
+            public final %RETURN_TYPE% %FUNCTION_NAME%() {
+                return %RETURN_TYPE%.fromNativePointer(%ORIGINAL_FUNCTION_NAME%());
+            }            
+    </template>
+
+    <namespace-type name="Game">    
+        <include file-name="gamenamespace.h" location="local" />
+    </namespace-type>
+    
+    <enum-type name="Game::AnimationType" extensible="yes" />
+    <enum-type name="Game::ObjectFlag" flags="Game::ObjectFlags" />
+    <enum-type name="Game::WalkingDirection" />
+
+    <enum-type name="Game::ActionType" extensible="yes">
+        <reject-enum-value name="Take" />        
+    </enum-type>
+
+    <interface-type name="AbstractGameObject">
+        <modify-function signature="perform(Game::ActionType,AbstractGameObject**,int)">            
+            <modify-argument index="2">
+                <replace-type modified-type="com.trolltech.examples.generator.AbstractGameObject[]" />                                
+                <conversion-rule>
+                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %3, 
+                                                       "AbstractGameObject", 
+                                                       "com/trolltech/examples/generator/");
+                </conversion-rule>
+            </modify-argument>            
+            <modify-argument index="3">
+                <remove-argument />
+                <conversion-rule>
+                    // intentionally empty
+                </conversion-rule>                
+            </modify-argument>
+        </modify-function>
+        <modify-function class="native" signature="perform(Game::ActionType,AbstractGameObject**,int)">            
+            <modify-argument index="2">
+                <conversion-rule>
+                QVector&lt;AbstractGameObject *> gameObjects;
+                
+                int arrayLength = __jni_env->GetArrayLength((jarray) %in);
+                for (int i=0; i&lt;arrayLength; ++i) {
+                    jobject gameObject = __jni_env->GetObjectArrayElement((jobjectArray) %in, i);
+                    gameObjects.append((AbstractGameObject *) qtjambi_to_object(__jni_env, gameObject));        
+                }
+                
+                AbstractGameObject **%out = gameObjects.data();
+                </conversion-rule>
+           </modify-argument>
+            <modify-argument index="3">
+                <conversion-rule>
+                    int %out = __jni_env->GetArrayLength((jarray) %2);
+                </conversion-rule>                
+            </modify-argument>           
+        </modify-function>           
+        
+    </interface-type>
+    
+    <object-type name="GameAction" polymorphic-base="yes">
+        <modify-function class="shell" signature="clone() const">
+            <modify-argument index="return">
+                <disable-gc />
+            </modify-argument>
+        </modify-function>
+    </object-type>
+    <object-type name="GameAnimation" />
+    <object-type name="GameGrammar" />
+    <object-type name="GameObject">
+        <modify-function signature="rposition()">
+            <access modifier="private" />
+            <rename to="rposition_private" />
+        </modify-function>
+        <inject-code>
+            <insert-template name="from_nativepointer_to_value_type">
+                <replace from="%RETURN_TYPE%" to="Point3D" />
+                <replace from="%FUNCTION_NAME%" to="rposition" />
+                <replace from="%ORIGINAL_FUNCTION_NAME%" to="rposition_private" />
+            </insert-template>
+        </inject-code>
+        
+        <modify-function signature="setAnimation(GameAnimation *)">
+            <modify-argument index="1">
+                <disable-gc />
+            </modify-argument>
+        </modify-function>       
+    </object-type>
+    <object-type name="LookAction" polymorphic-id-expression="%1->type() == Game::Look"/>
+    <object-type name="PickUpAction" polymorphic-id-expression="%1->type() == Game::PickUp"/>    
+    <object-type name="UseAction" polymorphic-id-expression="%1->type() == Game::Use"/>
+    
+    <object-type name="GameScene">
+        <extra-includes>
+            <include file-name="QStyleOptionGraphicsItem" location="global" />
+        </extra-includes>
+        
+        <modify-function signature="setEgoObject(AbstractGameObject *)">
+            <modify-argument index="1">
+                <disable-gc />
+            </modify-argument>
+        </modify-function>    
+        <modify-function signature="addGameObject(AbstractGameObject *)">
+            <modify-argument index="1">
+                <disable-gc />
+            </modify-argument>
+        </modify-function>            
+    </object-type>    
+    
+    <value-type name="Point3D">
+        <modify-function signature="rx()">
+            <remove />
+        </modify-function>
+        <modify-function signature="ry()">
+            <remove />
+        </modify-function>
+        <modify-function signature="rz()">
+            <remove />
+        </modify-function>
+    </value-type>
+    
+    <suppress-warning text="*GameObject::enum_1*" />
+    <suppress-warning text="*class 'GameAction' inherits from polymorphic class 'GameAction'*" />
+    
+</typesystem>

@@ -20,6 +20,7 @@
 ./com/trolltech/examples/ElasticNodes.java
 ./com/trolltech/examples/FridgeMagnets.java
 ./com/trolltech/examples/ItemviewChart.java
+./com/trolltech/examples/TreeModel.java
 ./com/trolltech/examples/LineEdits.java
 ./com/trolltech/examples/Mandelbrot.java
 ./com/trolltech/examples/Menus.java
@@ -293,6 +294,7 @@
 ./com/trolltech/qt/gui/QListView.java
 ./com/trolltech/qt/gui/QListWidget.java
 ./com/trolltech/qt/gui/QListWidgetItem.java
+./com/trolltech/qt/gui/QTreeModel.java
 ./com/trolltech/qt/gui/QMainWindow.java
 ./com/trolltech/qt/gui/QMatrix.java
 ./com/trolltech/qt/gui/QMenu.java

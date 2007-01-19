@@ -2,6 +2,9 @@
     <inject-code>
         com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
     </inject-code>
+
+    <rejection class="QXmlAttributes::Attribute" />
+    <rejection class="QDomNode" field-name="impl" />    
     
     <enum-type name="QDomNode::NodeType" />
     <enum-type name="QDomImplementation::InvalidDataPolicy" />

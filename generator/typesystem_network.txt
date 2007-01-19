@@ -156,9 +156,7 @@
     </inject-code>
     <modify-function signature="setAddress(unsigned char*)">
         <remove />
-    </modify-function>
-
-
+    </modify-function>    
   </value-type>  
   <value-type name="QHostInfo">
         <modify-function signature="operator=(QHostInfo)">
@@ -250,4 +248,7 @@
         <remove/>
     </modify-function>    
   </value-type>
+  
+  <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
+  
 </typesystem>

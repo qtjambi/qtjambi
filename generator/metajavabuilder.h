@@ -19,6 +19,8 @@
 #include "typesystem.h"
 #include "typeparser.h"
 
+#include <QtCore/QSet>
+
 class MetaJavaBuilder
 {
 public:
@@ -102,6 +104,8 @@ protected:
     QHash<QString, MetaJavaEnumValue *> m_enum_values;
 
     MetaJavaClass *m_current_class;
+
+    QSet<MetaJavaClass *> m_setup_inheritance_done;
 };
 
 #endif // METAJAVABUILDER_H

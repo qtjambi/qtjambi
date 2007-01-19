@@ -173,7 +173,10 @@
   <rejection class="QWidgetData"/>
   <rejection class="QWindowSurface"/>
   <rejection class="QWindowsXPStyle"/>
-
+  <rejection class="QWindowsVistaStyle" />
+  <rejection class="QWSEmbedWidget" />
+  <rejection class="QRegion::QRegionData" />
+    
   <rejection class="QAbstractItemDelegate" function-name="operator="/>
   <rejection class="QAccessible" function-name="installFactory"/>
   <rejection class="QAccessible" function-name="installRootObjectHandler"/>
@@ -196,7 +199,10 @@
   <rejection class="QWidget" function-name="internalWinId"/>
   <rejection class="QActionGroup" function-name="selected"/> 
   <rejection class="QPaintEngine" function-name="fix_neg_rect"/>           
-  <rejection class="QTabletEvent" field-name="mExtra" />
+  <rejection class="QTreeModel" function-name="node"/>
+  <rejection class="QTreeModel" function-name="initializeNode"/>
+  
+  <rejection class="QTabletEvent" field-name="mExtra" />  
 
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
   <enum-type name="QAbstractItemView::CursorAction"/>
@@ -508,6 +514,15 @@
   <enum-type name="QValidator::State"/>
   <enum-type name="QWidget::WidgetMode"/>
   <enum-type name="QWorkspace::WindowOrder"/>
+  <enum-type name="QDoubleValidator::Notation" />
+  <enum-type name="QGraphicsScene::SceneLayer" flags="QGraphicsScene::SceneLayers" />
+  <enum-type name="QGraphicsSvgItem::enum_1" />
+  <enum-type name="QStyleOptionToolBoxV2::SelectedPosition" />
+  <enum-type name="QStyleOptionToolBoxV2::StyleOptionVersion" />
+  <enum-type name="QStyleOptionToolBoxV2::TabPosition" />
+  <enum-type name="QStyleOptionViewItemV3::StyleOptionVersion" />
+  <enum-type name="QTransform::TransformationCodes" />  
+  <enum-type name="QTreeWidgetItem::ChildIndicatorPolicy" />
 
   <enum-type name="QAccessible::Action">
     <reject-enum-value name="FirstStandardAction"/>
@@ -527,6 +542,12 @@
   <enum-type name="QDialogButtonBox::StandardButton" flags="QDialogButtonBox::StandardButtons">
     <reject-enum-value name="FirstButton"/>
     <reject-enum-value name="LastButton"/>
+    <reject-enum-value name="YesAll" />             
+    <reject-enum-value name="NoAll" />
+    <reject-enum-value name="Default" />        
+    <reject-enum-value name="Escape" />
+    <reject-enum-value name="FlagMask" />
+    <reject-enum-value name="ButtonMask" />    
   </enum-type>
 
 
@@ -587,6 +608,49 @@
     <reject-enum-value name="FontSizeIncrement"/>
   </enum-type>
 
+  <!-- ### QTransform is missing functions due to QNativePointer API -->
+  <value-type name="QTransform">
+    <modify-function signature="inverted(bool*)const">
+        <remove />
+    </modify-function>
+    <modify-function signature="map(int,int,int*,int*)const">
+        <remove />
+    </modify-function>
+    <modify-function signature="map(double,double,double*,double*)const">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator*=(QTransform)">
+        <remove />
+    </modify-function>
+    <modify-function signature="operator=(QTransform)">
+        <remove />
+    </modify-function>
+    <modify-function signature="rotate(double)">
+        <remove />
+    </modify-function>
+    <modify-function signature="rotateRadians(double)">
+        <remove />
+    </modify-function>
+    <modify-function signature="scale(double,double)">
+        <remove />
+    </modify-function>
+    <modify-function signature="shear(double,double)">
+        <remove />
+    </modify-function>
+    <modify-function signature="translate(double,double)">
+        <remove />
+    </modify-function>
+    <modify-function signature="quadToQuad(QPolygonF,QPolygonF,QTransform&amp;)">
+        <remove />
+    </modify-function>
+    <modify-function signature="quadToSquare(QPolygonF,QTransform&amp;)">
+        <remove />
+    </modify-function>
+    <modify-function signature="squareToQuad(QPolygonF,QTransform&amp;)">
+        <remove />
+    </modify-function>  
+  </value-type>  
+  
   <value-type name="QStyleOption" polymorphic-base="yes" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Default">
     <modify-function signature="operator=(QStyleOption)">
@@ -683,13 +747,26 @@
   <value-type name="QStyleOptionToolBar" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ToolBar"/>
   <value-type name="QStyleOptionToolBox" 
-              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ToolBox"/>
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ToolBox &amp;&amp; %1->version == 1"/>
+  <value-type name="QStyleOptionToolBoxV2"
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ToolBox &amp;&amp; %1->version == 2">
+    <modify-function signature="operator=(QStyleOptionToolBox)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="QStyleOptionToolBox" />
+            <replace from="%OUT_TYPE" to="QStyleOptionToolBoxV2" />
+        </insert-template>            
+    </inject-code>              
+  </value-type>              
   <value-type name="QStyleOptionToolButton" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ToolButton"/>
   <value-type name="QStyleOptionViewItem" 
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 1"/>  
   <value-type name="QStyleOptionViewItemV2" 
-              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 2">  
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 2">                
     <modify-function signature="operator=(QStyleOptionViewItem)">
         <access modifier="private" />
         <rename to="operator_assign_private" />        
@@ -698,11 +775,23 @@
         <insert-template name="core.operator_assign_other_type">
             <replace from="%IN_TYPE" to="QStyleOptionViewItem" />
             <replace from="%OUT_TYPE" to="QStyleOptionViewItemV2" />
+            <replace from="final" to="" />
         </insert-template>            
     </inject-code>      
   </value-type>              
-                 
-              
+  <value-type name="QStyleOptionViewItemV3" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_ViewItem &amp;&amp; %1->version == 3">
+    <modify-function signature="operator=(QStyleOptionViewItem)">
+        <access modifier="private" />
+        <rename to="operator_assign_private" />        
+    </modify-function>    
+    <inject-code>
+        <insert-template name="core.operator_assign_other_type">
+            <replace from="%IN_TYPE" to="QStyleOptionViewItem" />
+            <replace from="%OUT_TYPE" to="QStyleOptionViewItemV3" />
+        </insert-template>            
+    </inject-code>                    
+  </value-type>              
   <value-type name="QTextFragment">  
     <modify-function signature="operator=(QTextFragment)">
         <access modifier="private" />
@@ -1227,6 +1316,7 @@
   <value-type name="QAbstractTextDocumentLayout::PaintContext">
     <include file-name="QAbstractTextDocumentLayout" location="global"/>
   </value-type>
+  <value-type name="QAbstractTextDocumentLayout::Selection" />
 
   <value-type name="QPixmap">
     <modify-function signature="QPixmap(const char **)">
@@ -2575,6 +2665,7 @@
   <object-type name="QItemEditorCreatorBase"/>
   <object-type name="QItemEditorFactory"/>
   <object-type name="QItemSelectionModel"/>
+  <object-type name="QTreeModel"/>
   <object-type name="QListView"/>
   <object-type name="QMainWindow"/>
   <object-type name="QMenu">
@@ -2802,7 +2893,54 @@
   <object-type name="QSizeGrip"/>
   <object-type name="QSound"/>  
   <object-type name="QSpacerItem"/>
-  <object-type name="QStandardItem"/>
+  <object-type name="QStandardItem">
+    <modify-function signature="appendColumn(const QList&lt;QStandardItem *> &amp;)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="appendRow(const QList&lt;QStandardItem *> &amp;)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>    
+    <modify-function signature="appendRow(QStandardItem *)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertColumn(int, const QList&lt;QStandardItem *> &amp;)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertRow(int, const QList&lt;QStandardItem *> &amp;)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>    
+    <modify-function signature="insertRow(int, QStandardItem *)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setChild(int,int,QStandardItem *)">
+        <modify-argument index="3">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setChild(int,QStandardItem *)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>    
+    </modify-function>
+    
+    <modify-function class="shell" signature="clone()const">
+        <modify-argument index="return">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QStatusBar"/>
   <object-type name="QStringListModel"/>
   <object-type name="QStyleFactory"/>
@@ -4294,6 +4432,62 @@
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>
     </extra-includes>        
+    
+    <modify-function signature="appendColumn(const QList&lt;QStandardItem *>&amp;)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="appendRow(const QList&lt;QStandardItem *>&amp;)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="appendRow(QStandardItem *)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>        
+    </modify-function>
+    <modify-function signature="insertColumn(int, const QList&lt;QStandardItem *>&amp;)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertRow(int, const QList&lt;QStandardItem *>&amp;)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertRow(int, QStandardItem *)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>        
+    </modify-function>
+    <modify-function signature="setHorizontalHeaderItem(int, QStandardItem *)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setItem(int, int, QStandardItem *)">
+        <modify-argument index="3">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setItem(int, QStandardItem *)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setItemPrototype(const QStandardItem *)">
+        <modify-argument index="1">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>    
+    <modify-function signature="setVerticalHeaderItem(int, QStandardItem *)">
+        <modify-argument index="2">
+            <disable-gc />
+        </modify-argument>
+    </modify-function>    
   </object-type>
 
   <object-type name="QRadioButton">
@@ -5164,7 +5358,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type '*' is specified in typesystem, but not declared" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'" />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private const\*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private const\*'" />  
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QTextEngine\*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QFontEngine\*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QPixmap::Type'" />  
@@ -5185,5 +5379,9 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWidget::windowSurface', unmatched return type 'QWindowSurface*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWidget::setWindowSurface', unmatched parameter type 'QWindowSurface*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: enum 'QStyleOption::StyleOptionType' does not have a type entry or is not an enum"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unhandled enum value: ~FlagMask in QMessageBox::StandardButton" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unmatched enum ~FlagMask" />
+  <suppress-warning text="WARNING(MetaInfoGenerator) :: class 'QGraphicsSceneEvent' inherits from polymorphic class 'QEvent', but has no polymorphic id set" />
+  <suppress-warning text="WARNING(MetaInfoGenerator) :: class 'QInputEvent' inherits from polymorphic class 'QEvent', but has no polymorphic id set" />
   
 </typesystem>

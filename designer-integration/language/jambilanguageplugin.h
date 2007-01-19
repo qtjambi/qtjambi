@@ -18,8 +18,10 @@
 
 #include <QtDesigner/QtDesigner>
 #include <QtDesigner/QExtensionFactory>
+#include <QtDesigner/QDesignerResourceBrowserInterface>
 
 #include <jni.h>
+
 
 class JambiLanguagePlugin: public QObject, public QDesignerFormEditorPluginInterface
 {
@@ -43,14 +45,16 @@ private:
 
 class JambiExtraInfoExtension : public QObject, QDesignerExtraInfoExtension
 {
+    Q_OBJECT
+    Q_INTERFACES(QDesignerExtraInfoExtension)
 public:
     JambiExtraInfoExtension(QWidget *widget, QDesignerFormEditorInterface *core);
 
     virtual QDesignerFormEditorInterface *core() const { return m_core; }
     virtual QWidget *widget() const { return m_widget; }
 
-    virtual bool saveUiExtraInfo(DomUi *ui);
-    virtual bool loadUiExtraInfo(DomUi *ui);
+    virtual bool saveUiExtraInfo(DomUI *ui);
+    virtual bool loadUiExtraInfo(DomUI *ui);
 
     virtual bool saveWidgetExtraInfo(DomWidget *ui_widget);
     virtual bool loadWidgetExtraInfo(DomWidget *ui_widget);
@@ -80,6 +84,10 @@ public:
     virtual QString neutralEnumerator(const QString &name) const;
 
     virtual QString uiExtension() const { return "jui"; }
+
+    virtual QDialog *createPromotionDialog(QDesignerFormEditorInterface *, const QString &,
+                                           QString *, QWidget *);
+    virtual QDialog *createPromotionDialog(QDesignerFormEditorInterface *,QWidget *);
 
 private:
 };

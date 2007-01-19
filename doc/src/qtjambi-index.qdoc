@@ -26,7 +26,10 @@
         Getting Started
         </th>
         <th bgcolor="#a2c511" width="33%">
-        Development
+        General
+        </th>
+        <th bgcolor="#a2c511" width="33%">
+        Developer Resources
         </th>
         </tr>
         <tr>
@@ -39,26 +42,11 @@
         </td>
         <td valign="top">
         <ul>
-        <li><a href="qtjambi-juic.html">JUIC</a></li>
-        <li><a href="qtjambi-generator.html">Generator</a></li>
-        <li><a href="qtjambi-deployment.html">Deploying Applications</a></li>
-        </ul>
-        </td>
-        <tr>
-        <th bgcolor="#a2c511" width="33%">
-        Reference
-        </th>
-        <th bgcolor="#a2c511" width="33%">
-        Resources
-        </th>
-        </tr>
-        </tr>
-        <tr>
-        <td valign="top">
-        <ul>
-        <li><a href="qtjambi-classes.html">Classes</a></li>
-        <li><a href="qtjambi-typesystem.html">Type System</a></li>
-        <li><a href="../../../index.html">Qt API Javadoc</a></li>
+        <li><a href="aboutqt.html">About Qt</a></li>
+        <li><a href="trolltech.html">About Trolltech</a></li>
+        <li><a href="commercialeditions.html">Commercial Edition</a></li>
+        <li><a href="opensourceedition.html">Open Source Edition</a></li>
+        <li><a href="http://www.trolltech.com/developer/faqs/">Frequently Asked Questions</a></li>
         </ul>
         </td>
         <td valign="top">
@@ -66,6 +54,77 @@
         <li><a href="http://lists.trolltech.com">Qt Mailing Lists</a></li>
         <li><a href="http://www.trolltech.com/developer/community">Qt Community Web Sites</a></li>
         <li><a href="http://doc.trolltech.com/qq/">Qt Quarterly</a></li>
+        <li><a href="bughowto.html">How to Report a Bug</a></li>
+        <li><a href="http://www.trolltech.com/developer/">Other Online Resources</a></li>
+        </ul>
+        </td>
+        </tr>
+        <tr>
+        <th bgcolor="#a2c511" width="33%">
+        Reference
+        </th>
+        <th bgcolor="#a2c511" width="33%">
+        Tools
+        </th>
+        <th bgcolor="#a2c511" width="33%">
+        Licences & Credits
+        </th>
+        </tr>
+        <tr>
+        <td valign="top">
+        <ul>
+        <li><a href="qtjambi-classes.html">Classes</a></li>
+        <li><a href="../../../index.html">Qt API Javadoc</a></li>
+        <li><a href="qtjambi-typesystem.html">Type System</a></li>
+        </ul>
+        </td>
+        <td valign="top">
+        <ul>
+        <li><a href="qtjambi-designer.html">Qt Designer</a></li>
+        <li><a href="linguist-manual.html">Qt Linguist</a></li>
+        <li><a href="qtjambi-generator.html">Generator</a></li>
+        <li><a href="qtjambi-juic.html">JUIC</a></li>
+        </ul>
+        </td>
+        <td valign="top">
+        <ul>
+        <li><a href="gpl.html">GNU General Public License</a></li>
+        <li><a href="3rdparty.html">Third-Party Licenses Used in Qt</a></li>
+        <li><a href="licenses.html">Other Licenses Used in Qt</a></li>
+        <li><a href="credits.html">Credits</a></li>
+        </ul>
+        </td>
+        </tr>
+        <tr>
+        <th bgcolor="#a2c511" width="33%">
+        Overviews
+        </th>
+        <th bgcolor="#a2c511" width="33%">
+        Add-ons
+        </th>
+        <th bgcolor="#a2c511" width="33%">
+        Services
+        </th>
+        </tr>
+        <tr>
+        <td valign="top">
+        <ul>
+        <li><a href="gallery.html">Qt Widget Gallery</a></li>
+        <li><a href="qtjambi-overviews.html">Qt Technology Overviews</a></li>
+        <li><a href="qtjambi-deployment.html">Deploying Qt Jambi Applications</a></li>
+        </ul>
+        </td>
+        <td valign="top">
+        <ul>
+        <li><a href="http://www.trolltech.com/products/qt/addon/solutions/">Qt Solutions</a></li>
+        <li><a href="http://www.trolltech.com/products/qt/3rdparty/">Partner Add-ons</a></li>
+        <li><a href="http://www.trolltech.com/developer/downloads/freesoftware">Contributed Qt Components</a></li>
+        </ul>
+        </td>
+        <td valign="top">
+        <ul>
+        <li><a href="http://www.trolltech.com/support/">Support</a></li>
+        <li><a href="http://www.trolltech.com/support/training/">Training</a></li>
         </ul>
         </td>
         </tr>
@@ -81,4 +140,6 @@
     word "subscribe". Other inquiries can be directed through the \l
     {http://www.trolltech.com/company/contact-info}{ regular
     channels}.
+
+
 */

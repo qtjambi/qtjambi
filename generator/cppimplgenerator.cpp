@@ -165,6 +165,7 @@ QString default_return_statement_qt(const MetaJavaType *java_type)
         table["long"] = "0";
         table["float"] = "0f";
         table["double"] = "0.0";
+        table["java.lang.Object"] = "0";
     }
 
     QString signature = table.value(java_type->typeEntry()->javaName());
@@ -207,6 +208,7 @@ QString default_return_statement_java(const MetaJavaType *java_type)
         table["long"] = "0";
         table["float"] = "0f";
         table["double"] = "0.0";
+        table["java.lang.Object"] = "0";
     }
 
     QString signature = table.value(java_type->typeEntry()->javaName());
@@ -217,6 +219,8 @@ QString default_return_statement_java(const MetaJavaType *java_type)
     return "return 0";
 }
 
+/* Used to decide how which of the Call[Xxx]Method functions to call
+ */
 QByteArray jniTypeName(const QString &name) {
     static QHash<QString, const char *> table;
     if (table.isEmpty()) {
@@ -228,6 +232,7 @@ QByteArray jniTypeName(const QString &name) {
         table["jlong"] = "Long";
         table["jfloat"] = "Float";
         table["jdouble"] = "Double";
+        table["jobject"] = "Object";
     }
 
     return table[name];
@@ -876,13 +881,18 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
     s << endl
       << "{" << endl;
 
+    Indentation indent;
+
+    QString java_function_signature = java_function->signature();
+    s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << implementor->name() << "::"
+      << java_function_signature << "\");" << endl;
+
     writeCodeInjections(s, java_function, implementor, CodeSnip::Beginning);
 
     //     s << "    printf(\"%s : %s\\n\", \"" << java_function->enclosingClass()->name() << "\""
     //       << ", \"" << java_function->name() << "\");" << endl;
 
     if (!java_function->isFinalInCpp()) {
-        Indentation indent;
         s << INDENT << "jmethodID method_id = m_vtable->method(" << id << ");" << endl;
         s << INDENT << "if (method_id) {" << endl;
 
@@ -972,17 +982,15 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
               << INDENT << "qtjambi_end_paint(env, m_link->javaObject(env));" << endl;
         }
 
-        s << "}" << endl << endl;
-
     } else {
-        {
-            Indentation indent;
-            writeBaseClassFunctionCall(s, java_function, implementor);
-            writeCodeInjections(s, java_function, implementor, CodeSnip::End);
-        }
+        writeBaseClassFunctionCall(s, java_function, implementor);
+        writeCodeInjections(s, java_function, implementor, CodeSnip::End);
+    }
+
+        s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) -> leaving: "  << implementor->name() << "::"
+          << java_function_signature << "\");" << endl;
 
         s << "}" << endl << endl;
-    }
 
 }
 
@@ -1102,7 +1110,7 @@ void CppImplGenerator::writeFunctionName(QTextStream &s,
             if (!argument->type()->hasNativeId()) {
                 QString modified_type = java_function->typeReplaced(argument->argumentIndex()+1);
                 if (modified_type.isEmpty())
-                    s << jni_signature(argument->type());
+                    s << jni_signature(argument->type(), Underscores);
                 else
                     s << jni_signature(modified_type, Underscores);
             } else {
@@ -1188,9 +1196,12 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
     if (java_function->isModifiedRemoved(MetaJavaFunction::CppNativeFunction))
         return;
 
-    s << "// " << java_function->signature() << endl;
-
     const MetaJavaClass *cls = java_class ? java_class : java_function->ownerClass();
+
+    QString java_function_signature = cls->name() + "::" + java_function->signature();
+
+    s << "// " << java_function_signature << endl;
+
     const MetaJavaType *function_type = java_function->type();
     QString new_return_type = java_function->typeReplaced(0);
     bool has_function_type = new_return_type != "void"
@@ -1206,6 +1217,8 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
     writeFinalFunctionArguments(s, java_function, java_object_name);
 
     Indentation indent;
+
+    s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(native) entering: " << java_function_signature << "\");" << endl;
 
     // Avoid compiler warnings when the variables are unused
     {
@@ -1274,6 +1287,9 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
             }
         }
     }
+
+    s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(native) -> leaving: " << java_function_signature << "\");" << endl;
+
     s << endl << "}";
     s << endl << endl;
 }
