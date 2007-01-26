@@ -15,6 +15,7 @@ package com.trolltech.demos.imageviewer;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -27,19 +28,21 @@ public class ImageTableModel extends QAbstractItemModel {
     public static final int SIZE_COL = 3;
 
     private Thread thread;
-    public ImageTableModel() {
-        
+    public ImageTableModel(QObject parent) {
+        super(parent);
+
         mapper.mappedInteger.connect(this, "updateRow(int)");
-        
-        thread = new Thread() {
-            public void run() {
-                while (true) {
-                    try {
-                        loadQueue.take().loadThumbNail();
-                    } catch (InterruptedException e) { }
+
+        thread = new QThread(new Runnable() {
+                public void run() {
+                    while (true) {
+                        try {
+                            loadQueue.take().loadThumbNail();
+                        } catch (InterruptedException e) { }
+                    }
                 }
             }
-        };
+        );
         thread.setDaemon(true);
         thread.start();
     }
@@ -147,7 +150,7 @@ public class ImageTableModel extends QAbstractItemModel {
             if(pixmaps!=null){
                 for (LazyPixmap pixmap : pixmaps) {
                     synchronized (pixmap) {
-                        pixmap.dispose();    
+                        pixmap.dispose();
                     }
                 }
             }

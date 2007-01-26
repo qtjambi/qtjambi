@@ -31,7 +31,7 @@ void JuicDataGenerator::generate()
 
     QFile f(m_file_name);
     if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        ReportHandler::warning("Failed to open " + m_file_name);
+        ReportHandler::warning("failed to open " + m_file_name);
         return;
     }
 
@@ -253,7 +253,7 @@ QString create_java_signature(MetaJavaType *t)
         s = "java.lang.Thread";
         break;
     default:
-        ReportHandler::warning(QString("Unhandled usage pattern %1").arg(t->typeUsagePattern()));
+        ReportHandler::warning(QString("unhandled usage pattern %1").arg(t->typeUsagePattern()));
         break;
     };
 

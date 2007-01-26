@@ -21,24 +21,27 @@
 #include <qglobal.h>
 
 #include <QtCore/QAbstractItemModel>
+#include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QEvent>
+#include <QtCore/QFileInfo>
 #include <QtCore/QLibrary>
 #include <QtCore/QMetaMethod>
 #include <QtCore/QMetaObject>
+#include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtCore/QThread>
 #include <QtCore/QVariant>
-#include <QtCore/QSettings>
-#include <QtCore/QFileInfo>
 
 #include <QtGui/QStyleOption>
 
 #include <stdio.h>
 
 
-
+#ifndef Q_OS_DARWIN
 static QString locate_vm();
+#endif
+
 typedef jint (JNICALL *PtrGetDefaultJavaVMInitArgs)(void *);
 typedef jint (JNICALL *PtrCreateJavaVM)(JavaVM **, void **, void *);
 typedef jint (JNICALL *PtrGetCreatedJavaVMs)(JavaVM **vmBuf, jsize bufLen, jsize *nVMs);
@@ -781,16 +784,20 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
     for (int i=0; i<count; ++i) {
         QTJAMBI_EXCEPTION_CHECK(env);
         jmethodID method_id = env->GetMethodID(object_class, names[i], signatures[i]);
-        Q_ASSERT_X(method_id, "vtable setup failed",
-                   (qclass_name + "::" + names[i] + signatures[i]).toLatin1());
+        if (!method_id) {
+            fprintf(stderr, "vtable setup failed: %s::%s %s\n",
+                    qPrintable(qclass_name), names[i], signatures[i]);
+            qtjambi_exception_check(env);
+        }
 
-        QTJAMBI_EXCEPTION_CHECK(env);
         jobject method_object = env->ToReflectedMethod(object_class, method_id, false);
-        Q_ASSERT_X(method_object,
-                 "vtable setup failed on conversion to reflected method...",
-                 (qclass_name + "::" + names[i] + signatures[i]).toLatin1());
+        if (!method_object) {
+            fprintf(stderr,
+                    "vtable setup conversion to reflected method failed: %s::%s %s\n",
+                    qPrintable(qclass_name), names[i], signatures[i]);
+            qtjambi_exception_check(env);
+        }
 
-        QTJAMBI_EXCEPTION_CHECK(env);
         if (env->CallStaticBooleanMethod(sc->QtJambiUtils.class_ref,
                                          sc->QtJambiUtils.isImplementedInJava,
                                          method_object)) {
@@ -808,14 +815,25 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
         QTJAMBI_EXCEPTION_CHECK(env);
         jmethodID method_id = env->GetMethodID(object_class, inconsistentNames[i],
                                                inconsistentSignatures[i]);
-        Q_ASSERT_X(method_id, "vtable setup failed for inconsistent function",
-                   (qclass_name + "::" + names[i] + signatures[i]).toLatin1());
+        if (!method_id) {
+            fprintf(stderr, "inconsistent function setup failed: %s::%s %s\n",
+                    qPrintable(qclass_name),
+                    inconsistentNames[i],
+                    inconsistentSignatures[i]);
+            qtjambi_exception_check(env);
+        }
 
         QTJAMBI_EXCEPTION_CHECK(env);
         jobject method_object = env->ToReflectedMethod(object_class, method_id, false);
-        Q_ASSERT_X(method_object,
-                 "vtable setup failed on conversion to reflected method of inconsisten function",
-                 (qclass_name + "::" + names[i] + signatures[i]).toLatin1());
+        if (!method_object) {
+            fprintf(stderr,
+                    "inconsistent function conversion to reflected method failed: "
+                    "%s:%s %s\n",
+                    qPrintable(qclass_name),
+                    inconsistentNames[i],
+                    inconsistentSignatures[i]);
+            qtjambi_exception_check(env);
+        }
 
         QTJAMBI_EXCEPTION_CHECK(env);
         if (env->CallStaticBooleanMethod(sc->QtJambiUtils.class_ref,
@@ -1236,6 +1254,11 @@ bool qtjambi_initialize_vm()
     if (qtjambi_vm)
         return true;
 
+#ifdef Q_OS_DARWIN
+    ptrCreateJavaVM = JNI_CreateJavaVM;
+    ptrGetDefaultJavaVMInitArgs =  JNI_GetDefaultJavaVMInitArgs;
+    ptrGetCreatedJavaVMs = JNI_GetCreatedJavaVMs;
+#else
     QString libvm = locate_vm();
     if (libvm.isEmpty()) {
         qWarning("Jambi: failed to initialize...");
@@ -1255,7 +1278,8 @@ bool qtjambi_initialize_vm()
     Q_ASSERT(ptrCreateJavaVM);
     Q_ASSERT(ptrGetDefaultJavaVMInitArgs);
     Q_ASSERT(ptrGetCreatedJavaVMs);
-
+#endif
+    
 
     QList<QByteArray> options;
 
@@ -1266,6 +1290,10 @@ bool qtjambi_initialize_vm()
 #ifndef QT_NO_DEBUG
     options << "-Xcheck:jni";
     options << "-Dcom.trolltech.qt.debug=true";
+#endif
+
+#ifdef Q_OS_DARWIN
+    // options << "-XstartOnFirstThread";
 #endif
 
     JavaVMOption *vm_options = new JavaVMOption[options.size()];
@@ -1400,13 +1428,6 @@ static QString locate_vm()
     }
 
     return QString();
-}
-
-#else
-
-static QString locate_vm()
-{
-    return QString("no vm available...");
 }
 
 #endif
@@ -1642,6 +1663,10 @@ static bool qtjambi_disconnect_callback(void **raw_data)
 {
     Q_ASSERT(raw_data != 0);
 
+    // ### try to avoid...
+    if (QCoreApplication::closingDown())
+        return false;
+
     JNIEnv *jni_env = qtjambi_current_environment();
     Q_ASSERT(jni_env != 0);
 
@@ -1719,7 +1744,7 @@ static bool qtjambi_event_notify(void **data)
         {
             QChildEvent *e = static_cast<QChildEvent *>(event);
 
-//             QObject *parent = reinterpret_cast<QObject *>(data[0]);
+            QObject *parent = reinterpret_cast<QObject *>(data[0]);
 //             printf("(child) [%s :  %s] %s [%s : %s]\n",
 //                    qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),
 //                    e->added() ? "added to" : "removed from",
@@ -1728,8 +1753,15 @@ static bool qtjambi_event_notify(void **data)
             // We're not interested in objects that don't have a link as the GC won't
             // be interferring with them anyway.
             QtJambiLink *link = QtJambiLink::findLinkForQObject(e->child());
-            if (link)
-                link->setGlobalRef(qtjambi_current_environment(), e->added());
+            if (link) {
+                if (link->qobject()) {
+                    link->setGlobalRef(qtjambi_current_environment(), e->added());
+                } else if (event->type() == QEvent::ChildAdded) {
+                    qWarning("%s [%s] was garbage collected before it was reparented to %s [%s]",
+                             qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),
+                             qPrintable(parent->objectName()), parent->metaObject()->className());
+                }
+            }
         }
         break;
 
@@ -1763,6 +1795,9 @@ void qtjambi_end_paint(JNIEnv *env, jobject widget)
 void qtjambi_debug_trace(const char *location, const char *file, int line)
 {
     static int should = getenv("QTJAMBI_DEBUG_TRACE") != 0;
-    if (should)
-        printf("%s; ( %s:%d )\n", location, file, line);
+    if (should) {
+        fprintf(stderr, "%s; ( %s:%d )\n", location, file, line);
+        fflush(stderr);
+
+    }
 }

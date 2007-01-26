@@ -17,7 +17,7 @@ then
 fi
 
 echo Running generator
-LD_LIBRARY_PATH=../lib ../bin/generator global.h typesystem_generatorexample.txt --juic-file=juic.xml 
+LD_LIBRARY_PATH=../lib ../bin/generator global.h typesystem_generatorexample.txt
 
 
 # Compile the library
@@ -29,7 +29,7 @@ make
 # Compile the Java sources
 echo Compiling Java Sources
 cd ..
-javac -cp qtjambi.jar com/trolltech/examples/*.java com/trolltech/examples/generator/*.java 
+javac -target 1.5 -cp qtjambi.jar:. com/trolltech/examples/*.java com/trolltech/examples/generator/*.java 
 
 
 echo Compilation done...

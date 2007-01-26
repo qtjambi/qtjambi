@@ -71,9 +71,25 @@ public class Utilities {
             } catch (Error e) {
                 if (VERBOSE_LOADING) e.printStackTrace();
             }
-
+            
             Runtime rt = Runtime.getRuntime();
-
+            
+            String jambiPath = System.getProperty("com.trolltech.qt.internal.jambipath");
+            String jambiPaths[] = jambiPath.split(File.pathSeparator);
+            for (String path : jambiPaths) {
+                File f = new File(path, lib);
+                if (f.exists()) {
+                    rt.load(f.getAbsolutePath());
+                    if (VERBOSE_LOADING)
+                        System.out.println("Loaded(" + lib + ") using jambi path");
+                    return true;
+                }
+            }
+            
+            if (VERBOSE_LOADING && jambiPath.length() > 0) {
+                System.out.println("Failed to find " + lib + " in " + jambiPath); 
+            }
+            
             // First look in the library path for the libraries...
             String libraryPath = System.getProperty("java.library.path");
             String libraryPaths[] = libraryPath.split(File.pathSeparator);

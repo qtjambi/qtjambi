@@ -1626,7 +1626,7 @@ MetaJavaEnumValue *MetaJavaClassList::findEnumValue(const QString &name) const
     if (cl)
         return cl->findEnumValue(enumName, 0);
 
-    ReportHandler::warning(QString("No matching enum '%1'").arg(name));
+    ReportHandler::warning(QString("no matching enum '%1'").arg(name));
     return 0;
 }
 

@@ -10,19 +10,19 @@ echo Note that JAVADIR must be given *without* quotes
 :after_no_jni_h_in_javadir
 
 echo Running generator
-..\bin\generator global.h typesystem_generatorexample.txt --juic-file=juic.xml 2>&1 > log
+..\bin\generator global.h typesystem_generatorexample.txt > log 2>&1 
 IF NOT "%ERRORLEVEL%" == "0" goto end
 
 echo Compiling Native library
-qmake 2>&1 > log
+qmake -config release > log 2>&1
 IF NOT "%ERRORLEVEL%" == "0" goto end
-nmake 2>&1 > log
+nmake > log 2>&1 
 IF NOT "%ERRORLEVEL%" == "0" goto end
 
 
 echo Compiling Java Sources
 cd ..
-javac -cp qtjambi.jar com\trolltech\examples\*.java com\trolltech\examples\generator\*.java 2>&1 > log
+javac -target 1.5 -cp qtjambi.jar;. com\trolltech\examples\*.java com\trolltech\examples\generator\*.java > log 2>&1 
 IF NOT "%ERRORLEVEL%" == "0" goto end
 
 

@@ -3,7 +3,7 @@
 #define JAMBI_CUSTOM_WIDGET_H
 
 #include <QtDesigner/QtDesigner>
-#include <jni.h>
+#include <qtjambi_global.h>
 
 class JambiCustomWidget: public QObject, public QDesignerCustomWidgetInterface
 {

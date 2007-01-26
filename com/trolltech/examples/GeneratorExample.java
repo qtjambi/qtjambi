@@ -81,34 +81,33 @@ class ChickenObject extends GameObject {
 }
 
 @QtJambiExample(name = "Generator Example")
-public class GeneratorExample {
+public class GeneratorExample extends GameScene {
     
     private static final String resourcesLocation = "classpath:com/trolltech/examples/generator/images/"; 
        
     public GeneratorExample()
     {               
-        GameScene scene = new GameScene(null);
         int w = 0; int h = 0;
         
         // Set up scene
         {
-            scene.setCacheMode(QGraphicsView.CacheModeFlag.CacheBackground);
-            scene.setDescription("You are standing next to a restaurant and it is sunny outside.");
+            setCacheMode(QGraphicsView.CacheModeFlag.CacheBackground);
+            setDescription("You are standing next to a restaurant and it is sunny outside.");
             
             QImage img = new QImage(resourcesLocation + "background.png");
-            scene.setBackground(img);
+            setBackground(img);
             
-            scene.setHorizon(250.0);
+            setHorizon(250.0);
             w = img.width(); h = img.height();
-            scene.setSceneRect(new QRectF(0.0, 0.0, w, h));
+            setSceneRect(new QRectF(0.0, 0.0, w, h));
         }
         
         // Player avatar
-        scene.setEgoObject(makeEgo(scene, w, h));
+        setEgoObject(makeEgo(w, h));
         
         // Inventory command
-        scene.grammar().addVerb("inventory", new InventoryAction());
-        scene.grammar().addVerb("inv", new InventoryAction());
+        grammar().addVerb("inventory", new InventoryAction());
+        grammar().addVerb("inv", new InventoryAction());
                
         
         // Make boundary
@@ -123,18 +122,18 @@ public class GeneratorExample {
             path.lineTo(new QPointF(0, 200));
             path.closeSubpath();
             
-            GameObject boundary = new GameObject(scene, "boundary");
+            GameObject boundary = new GameObject(this, "boundary");
             boundary.setVisible(false);
             boundary.setShape(path);                        
             boundary.setFlags(Game.ObjectFlag.Blocking);
          
 
-            scene.addGameObject(boundary);
+            addGameObject(boundary);
         }
         
         // Make chicken
         {
-            GameObject chicken = new ChickenObject(scene, "a rubber chicken with a pulley in the middle");
+            GameObject chicken = new ChickenObject(this, "a rubber chicken with a pulley in the middle");
             
             chicken.setDescription("It's a rubber chicken with a pulley in the middle.");
             chicken.addName("rubber chicken");
@@ -155,15 +154,14 @@ public class GeneratorExample {
             a.addFrame(new QImage(resourcesLocation + "chicken.png"));
             chicken.setAnimation(a);
 
-            scene.addGameObject(chicken);
+            addGameObject(chicken);
         }
      
-        scene.setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
-        scene.setWindowTitle(scene.tr("Generator Example"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+        setWindowTitle(tr("Generator Example"));
         
-        scene.message("Press any letter to write a command and enter when you are done. Use the arrow keys to move around." 
+        message("Press any letter to write a command and enter when you are done. Use the arrow keys to move around." 
                      +" Hit enter when you are done reading this message.");
-        scene.show();        
     }
     
     private GameAnimation makeAnimation(Game.AnimationType type, String nameTemplate, int startIdx, int endIdx) {
@@ -178,8 +176,8 @@ public class GeneratorExample {
         return a;
     }
     
-    private GameObject makeEgo(GameScene scene, int w, int h) {
-        GameObject ego = new GameObject(scene);
+    private GameObject makeEgo(int w, int h) {
+        GameObject ego = new GameObject(this);
         
         ego.setPosition(new Point3D(w / 2.0, 350.0, 0.0));
         ego.setVisible(true);
@@ -195,7 +193,8 @@ public class GeneratorExample {
     @SuppressWarnings("unused")
     public static void main(String[] args) {
         QApplication.initialize(args);               
-        GeneratorExample ex = new GeneratorExample();        
+        GeneratorExample ex = new GeneratorExample();
+        ex.show();
         QApplication.exec();
         
     }

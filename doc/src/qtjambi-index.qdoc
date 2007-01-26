@@ -14,7 +14,7 @@
     The technology provides new possibilities for both Java and C++
     programmers: It enables Java developers to take the advantage of
     Qt's features from within Java Standard Edition 5.0 and Java
-    Enterprise Edition 5.0 as well as later versions.In addition, \QJ
+    Enterprise Edition 5.0 as well as later versions. In addition, \QJ
     also enables C++ programmers to easily integrate their Qt code
     with Java by providing the \QJ generator.
 
@@ -44,8 +44,6 @@
         <ul>
         <li><a href="aboutqt.html">About Qt</a></li>
         <li><a href="trolltech.html">About Trolltech</a></li>
-        <li><a href="commercialeditions.html">Commercial Edition</a></li>
-        <li><a href="opensourceedition.html">Open Source Edition</a></li>
         <li><a href="http://www.trolltech.com/developer/faqs/">Frequently Asked Questions</a></li>
         </ul>
         </td>
@@ -74,8 +72,9 @@
         <td valign="top">
         <ul>
         <li><a href="qtjambi-classes.html">Classes</a></li>
-        <li><a href="../../../index.html">Qt API Javadoc</a></li>
+        <li><a href="../../../index.html">Qt Jambi API Javadoc</a></li>
         <li><a href="qtjambi-typesystem.html">Type System</a></li>
+        <li><a href="http://doc.trolltech.com/qt/index.html">Qt C++ Reference Documenation</a></li>
         </ul>
         </td>
         <td valign="top">
@@ -88,10 +87,8 @@
         </td>
         <td valign="top">
         <ul>
-        <li><a href="gpl.html">GNU General Public License</a></li>
         <li><a href="3rdparty.html">Third-Party Licenses Used in Qt</a></li>
         <li><a href="licenses.html">Other Licenses Used in Qt</a></li>
-        <li><a href="credits.html">Credits</a></li>
         </ul>
         </td>
         </tr>
@@ -109,7 +106,7 @@
         <tr>
         <td valign="top">
         <ul>
-        <li><a href="gallery.html">Qt Widget Gallery</a></li>
+        <li><a href="http://doc.trolltech.com/qt/gallery.html">Qt Widget Gallery</a></li>
         <li><a href="qtjambi-overviews.html">Qt Technology Overviews</a></li>
         <li><a href="qtjambi-deployment.html">Deploying Qt Jambi Applications</a></li>
         </ul>

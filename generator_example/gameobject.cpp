@@ -186,11 +186,11 @@ void GameObject::perform(Game::ActionType action, AbstractGameObject **args, int
                 showDescription();
             }
         } else {
-            qWarning("GameObject::performAction: LookAt action does not take any arguments");
+            qWarning("GameObject::perform: LookAt action does not take any arguments");
         }
         break ;
     default:
-        qWarning("GameObject::performAction: Unhandled action '%d'", int(action));
+        qWarning("GameObject::perform: Unhandled action '%d'", int(action));
         break;
     }
 }

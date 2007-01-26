@@ -16,3 +16,5 @@ LIBS += -luser32 -ladvapi32
 CONFIG -= qt
 
 RC_FILE=launcher_launcher.rc
+
+console:DEFINES += QT_CONSOLE_BUILD

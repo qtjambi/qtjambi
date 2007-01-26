@@ -102,7 +102,7 @@ public class ClassPathWalker extends QObject implements Runnable {
         thread.start();
     }
 
-    public void kill() {
+    public synchronized void kill() {
         stopped = true;
     }
 
@@ -111,11 +111,11 @@ public class ClassPathWalker extends QObject implements Runnable {
     }
 
 
-    public static void setRoots(List<String> r) {
+    public synchronized static void setRoots(List<String> r) {
         roots = r;
     }
 
-    public static List<String> roots() {
+    public synchronized static List<String> roots() {
         return roots;
     }
 
@@ -142,9 +142,11 @@ public class ClassPathWalker extends QObject implements Runnable {
                     Qt.TransformationMode.SmoothTransformation);
             image.dispose();                                   	
 
-            if (stopped)
-                return;
-            resourceFound.emit(name, smallImage);
+            synchronized (this) {
+                if (stopped)
+                    return;
+                resourceFound.emit(name, smallImage);
+            }
         }
     }
 

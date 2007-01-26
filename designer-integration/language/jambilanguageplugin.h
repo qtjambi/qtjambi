@@ -20,9 +20,6 @@
 #include <QtDesigner/QExtensionFactory>
 #include <QtDesigner/QDesignerResourceBrowserInterface>
 
-#include <jni.h>
-
-
 class JambiLanguagePlugin: public QObject, public QDesignerFormEditorPluginInterface
 {
     Q_OBJECT

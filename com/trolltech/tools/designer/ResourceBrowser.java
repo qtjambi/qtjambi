@@ -3,7 +3,6 @@ package com.trolltech.tools.designer;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.*;
-import com.trolltech.qt.QtJambiUtils;
 
 import java.util.*;
 
@@ -11,8 +10,17 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
     private static final boolean UNFILTERED = Utilities.matchProperty("unfiltered");
 
+    protected void disposed() {
+        walker.kill();
+        try {
+            walker.thread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public ResourceBrowser(QWidget parent) {
-        super(parent);
+        super(parent);        
 
         try {
 
@@ -131,9 +139,10 @@ public class ResourceBrowser extends JambiResourceBrowser {
         
         
         List<String> roots = ClassPathWalker.roots();
-        
-        for (String root : roots) 
-            QtJambiUtils.removeSearchPathForResourceEngine(root);
+        if (roots != null) {
+            for (String root : roots) 
+                QtJambiUtils.removeSearchPathForResourceEngine(root);
+        }
                 
         roots = Arrays.asList(rootArray);
         for (String root : roots)
@@ -230,7 +239,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
         }
     }
 
-    private static void searchClassPath() {
+    private void searchClassPath() {
         if (walker != null)
             return;
 
@@ -262,8 +271,8 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private QLabel preview;
     private QLabel pathText;
     private QLabel sizeText;
-    private static ClassPathWalker walker;
-    private static ResourceBrowserModel browserModel;
+    private ClassPathWalker walker;
+    private ResourceBrowserModel browserModel;
     private QSortFilterProxyModel filterModel;
     private QTreeView view;
     private String path;

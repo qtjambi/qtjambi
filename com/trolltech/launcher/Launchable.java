@@ -141,7 +141,10 @@ public class Launchable {
     private void loadDescription() {
 	m_description = resourceFile("html");
 	if (m_description == null)
-	    m_description = "<i>No description</i>";
+	    m_description = "<h1 align=\"center\">" + m_name + "</h1>" +
+        "<p>The '<i>" + m_name + "</i>' demo does not have a description.</p>" +
+        "<p>Investigate this demo futher:<ul><li>Run it, by clicking the '<i>Launch</i>' button.</li>" +
+        "<li>Look at the source code, by clicking the '<i>View Source</i>' button.</li></ul></p>";
     }
 
     /**

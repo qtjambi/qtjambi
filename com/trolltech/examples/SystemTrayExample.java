@@ -58,6 +58,11 @@ public class SystemTrayExample extends QWidget {
     }
 
     public SystemTrayExample() {
+        this(null);
+    }
+    
+    public SystemTrayExample(QWidget parent) {
+        super(parent);
         if (!QSystemTrayIcon.isSystemTrayAvailable())
             QMessageBox.warning(this, tr("System tray is unavailable"),
                                       tr("System tray unavailable"));
@@ -93,7 +98,7 @@ public class SystemTrayExample extends QWidget {
         trayIcon.setToolTip("System trayIcon example");
         trayIcon.setContextMenu(trayIconMenu);
 
-        trayIcon.activated.connect(this, "activated(int)");
+        trayIcon.activated.connect(this, "activated(com.trolltech.qt.gui.QSystemTrayIcon$ActivationReason)");
         trayIcon.messageClicked.connect(this, "balloonClicked()");
 
         changeIcon(0);
@@ -187,8 +192,8 @@ public class SystemTrayExample extends QWidget {
         infoDisplay.append(tr("Balloon message was clicked"));
     }
 
-    protected void activated(int reason) {
-        String name = QSystemTrayIcon.MessageIcon.resolve(reason).name();
+    public void activated(QSystemTrayIcon.ActivationReason reason) {
+        String name = QSystemTrayIcon.MessageIcon.resolve(reason.value()).name();
         if (name != null)
             infoDisplay.append("Activated - Reason " + name);
     }

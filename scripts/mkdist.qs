@@ -4,6 +4,7 @@ const packageDir = os_name() == OS_NAME_WINDOWS
 const version = "1.0.0-beta";
 const javaDir = packageDir + "/qtjambi/" + version;
 const javadocName = "qtjambi-javadoc-" + version + ".jar";
+const jdocName = "qtjambi-jdoc-" + version + ".jar";
 
 const regexp_mainfunction = /void *main *\( *String *\w* *\[ *\] *\)/
 
@@ -20,7 +21,7 @@ option.verbose = array_contains(args, "--verbose");
 option.nocompilercheck = array_contains(args, "--no-compiler-check");
 option.teambuilder = array_contains(args, "--teambuilder");
 option.startDir = new Dir().absPath;
-option.javadocLocation = array_get_next_value(args, "--javadoc");
+option.javadocHTTP = array_get_next_value(args, "--javadoc");
 
 var packageMap = new Object();
 packageMap[OS_NAME_WINDOWS] = "win";
@@ -60,9 +61,12 @@ if (option.packageonly) {
     option.nosync = true;
 }
 
-if (!option.javadocLocation) {
-    option.javadocLocation = "http://anarki/~gunnar/packages/" + javadocName;
+if (!option.javadocHTTP) {
+    option.javadocHTTP = "http://anarki/~gunnar/packages";
 }
+
+option.javadocLocation = option.javadocHTTP + "/" + javadocName;
+option.jdocLocation = option.javadocHTTP + "/" + jdocName;
 
 const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtSvg", "QtDesigner", "QtDesignerComponents", "QtNetwork", "QtAssistantClient"];
 const qtBinaryNames = ["designer", "linguist"];
@@ -93,6 +97,8 @@ if (array_contains(args, "-help") || array_contains(args, "-h")) {
 
     findQtLibraries();
     prepareSourceTree();
+
+    unpackJDocFiles();
 
     var dir = new Dir(javaDir);
     dir.setCurrent();
@@ -250,7 +256,7 @@ function compileAndRunGenerator() {
     execute(make);
 
     verbose(" - running");
-    execute(command.generator);
+    execute([command.generator, "--jdoc-enabled", "--jdoc-dir", "../doc/jdoc"]);
 
     dir.cdUp();
     dir.setCurrent();
@@ -376,6 +382,11 @@ function copyQtBinaries() {
     for (var i=0; i<qtBinaries.length; ++i) {
         execute([command.cp, "-R", qtBinaries[i], targetBinDir]);
     }
+
+    print(" - image format plugins");
+
+    // Qt image format plugins
+    execute([command.cp, "-R", option.qtdir + "/plugins", "."]);
 }
 
 
@@ -391,12 +402,36 @@ function createJarFile() {
     for_all_files(javaDir, function(name) {
         if (name.indexOf("trolltech/qt/") >= 0 && name.endsWith(".class"))
             fileList.push(name.substring(cutPoint));
+        else if (name.indexOf("trolltech/tools/designer/") >= 0 && name.endsWith(".class"))
+            fileList.push(name.substring(cutPoint));
     });
 
     // Write the content file.
     File.write(tmpfile, fileList.join("\n"));
     execute([command.jar, "-cf", "qtjambi.jar", "@" + tmpfile]);
     execute([command.rm, tmpfile]);
+}
+
+
+function unpackJDocFiles() {
+    print(" - Downloading .jdoc files: " + option.jdocLocation);
+
+    var dir = new Dir(javaDir + "/doc/jdoc");
+    dir.mkdirs();
+    dir.setCurrent();
+
+    if (os_name() == OS_NAME_MACOSX) {
+        execute([command.curl, "-O", option.jdocLocation]);
+    } else {
+        execute([command.wget, option.jdocLocation]);
+    }
+
+    // Unpack the jdocs...
+    execute([command.jar, "-xf", jdocName]);
+
+    dir.cdUp();
+    dir.cdUp();
+    dir.setCurrent();
 }
 
 
@@ -467,10 +502,13 @@ function moveFiles() {
     if (os_name() == OS_NAME_MACOSX) {
         files.push("dist/mac/qtjambi.sh");
         files.push(["dist/mac/generator_example.sh", "generator_example"]);
+        files.push("dist/mac/designer.sh");
     } else if (os_name() == OS_NAME_WINDOWS) {
+        files.push("dist/win/designer.bat");
         files.push("dist/win/qtjambi.exe");
         files.push(["dist/win/generator_example.bat", "generator_example"]);
     } else {
+        files.push("dist/linux/designer.sh");
         files.push("dist/linux/qtjambi.sh");
         files.push(["dist/linux/generator_example.sh", "generator_example"]);
     }
@@ -521,14 +559,18 @@ function removeFiles() {
                 "libbenchmark",
                 "qtjambi",
                 "qtjambi_core",
+                "qtjambi_designer",
                 "qtjambi_generator",
                 "qtjambi_generator_tests",
                 "qtjambi_gui",
+                "qtjambi_network",
                 "qtjambi_opengl",
                 "qtjambi_sql",
                 "qtjambi_svg",
+                "qtjambi_xml",
                 "scripts",
                 "uic4",
+                "tools",
                 "whitepaper"
     ];
 
@@ -552,6 +594,10 @@ function removeFiles() {
             || name.endsWith(".log"))
             files.push(name);
         else if (name.indexOf("/lib/") >=0 && name.endsWith(".dll"))
+            files.push(name);
+        else if (name.indexOf("com_trolltech_") >= 0 && name.endsWith(".lib"))
+            files.push(name);
+        else if (name.indexOf("/plugins/") >= 0 && name.endsWith(".lib"))
             files.push(name);
     });
 

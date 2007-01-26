@@ -2,7 +2,7 @@
 // *** Constants
 const version           = "0.0.4";
 const depotVersion      = "1.0.0-beta";
-const eclipseBranch     = "main";
+const eclipseBranch     = "qtjambi-1.0.0-beta";
 const packageDir        = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/tmp"
                             : "/home/eblomfel/package-builder/tmp";                        
@@ -169,7 +169,7 @@ function buildJambi() {
     
     // Resources
     var resourcesDir = jambiRootDir + "/resources";
-    filesInPackage = find_files(resourcesDir, ["png", "ui", "txt", "java_template"]);
+    filesInPackage = find_files(resourcesDir, ["png", "jui", "txt", "java_template"]);
     copyFiles(filesInPackage, resourcesDir, qtjambiPackageDest);
     
     copyFiles([jambiRootDir + "/plugin.xml"], jambiRootDir, qtjambiPackageDest);            

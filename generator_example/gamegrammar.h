@@ -30,7 +30,7 @@ protected:
     virtual AbstractGameObject *object();
     
     virtual bool filler();
-    virtual bool and();
+    virtual bool and_token();
     virtual QString currentToken(int token_count = 1) const;
     virtual void nextToken();
 

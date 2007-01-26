@@ -98,7 +98,7 @@ QString jni_signature(const QString &_full_name, JNISignatureFormat format)
     } else if (format == Underscores) {
         signature.replace("[", "_3");
         signature += "L";
-        signature += QString(full_name).replace("_", "_1").replace('.', '_');
+        signature += QString(full_name).replace("_", "_1").replace('.', '_').replace("$", "_00024");
         signature += "_2";
     } else {
         signature += "L";
@@ -821,7 +821,7 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunctio
                 if (pos >= 0 && pos < java_function->arguments().count()) {
                     code = code.replace(meta_name, java_function->arguments().at(pos)->indexedName());
                 } else {
-                    QString debug = QString("Argument map specifies invalid argument index %1"
+                    QString debug = QString("argument map specifies invalid argument index %1"
                                             "for function '%2'")
                                             .arg(pos + 1).arg(java_function->name());
                     ReportHandler::warning(debug);
@@ -961,16 +961,24 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             writeDisableGarbageCollection(s, java_function, "__java_return_value", 0, implementor);
 
             s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
+
+            s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) -> leaving: "  << implementor->name()
+              << "::" << java_function_signature << "\");" << endl;
+
             if (function_type)
                 s << INDENT << "return __qt_return_value;" << endl;
 
         }
 
         s << INDENT << "} else {" << endl;
+
         {
             Indentation indent;
+            s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) -> super() and leaving: "
+              << implementor->name() << "::" << java_function_signature << "\");" << endl;
             writeBaseClassFunctionCall(s, java_function, implementor);
         }
+
 
         s << INDENT << "}" << endl;
 
@@ -986,9 +994,6 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
         writeBaseClassFunctionCall(s, java_function, implementor);
         writeCodeInjections(s, java_function, implementor, CodeSnip::End);
     }
-
-        s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) -> leaving: "  << implementor->name() << "::"
-          << java_function_signature << "\");" << endl;
 
         s << "}" << endl << endl;
 
@@ -1279,16 +1284,22 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
 
                 writeQtToJava(s, function_type, qt_return_value, java_return_value,
                               java_function, 0, EnumAsInts);
+
+                s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(native) -> leaving: "
+                  << java_function_signature << "\");" << endl;
+
                 s << INDENT << "return " << java_return_value << ";";
 
             } else {
                 writeFunctionCall(s, qt_object_name, java_function, function_prefix, option,
                                   extra_param);
+
+                s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(native) -> leaving: "
+                  << java_function_signature << "\");" << endl;
             }
         }
     }
 
-    s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(native) -> leaving: " << java_function_signature << "\");" << endl;
 
     s << endl << "}";
     s << endl << endl;
@@ -1428,9 +1439,21 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
 
 void CppImplGenerator::writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls)
 {
-    if (cls->hasConstructors())
-        s << INDENT << "static void qtjambi_destructor(void *ptr) { delete ("
-          << shellClassName(cls) << " *)ptr; }" << endl << endl;
+  if (cls->hasConstructors()) {
+      s << INDENT << "static void qtjambi_destructor(void *ptr)" << endl 
+	<< INDENT << "{" << endl;
+      
+      {
+	Indentation indent;
+	if (!cls->isQObject() && !cls->generateShellClass()) {
+	  s << INDENT << "QtJambiLink *link = QtJambiLink::findLinkForUserObject(ptr);" << endl
+            << INDENT << "if (link) link->resetObject(qtjambi_current_environment());" << endl;
+	}
+	s << INDENT << "delete (" << shellClassName(cls) << " *)ptr;" << endl;
+      }
+
+      s << INDENT << "}" << endl << endl;
+  }
 }
 
 void CppImplGenerator::writeFinalConstructor(QTextStream &s,
@@ -1583,7 +1606,7 @@ QString CppImplGenerator::fromObject(const TypeEntry *entry,
         if (cls != 0) {
             full_name = cls->fullName();
         } else {
-            ReportHandler::warning(QString("class '%1' has polymorphic value but no id")
+            ReportHandler::warning(QString("class '%1' has polymorphic id but does not inherit a polymorphic class")
                                    .arg(centry->qualifiedCppName()));
         }
 
@@ -2211,7 +2234,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         s << INDENT << "}" << endl;
 
     } else {
-        ReportHandler::warning(QString("Unable to generate container type %1, type=%2")
+        ReportHandler::warning(QString("unable to generate container type %1, type=%2")
                                .arg(java_type->name()).arg(type->type()));
     }
 
@@ -2330,7 +2353,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
         s << INDENT << "}" << endl;
 
     } else {
-        ReportHandler::warning(QString("Unable to generate container type %1, %2")
+        ReportHandler::warning(QString("unable to generate container type %1, %2")
                                .arg(java_type->name()).arg(type->type()));
     }
 

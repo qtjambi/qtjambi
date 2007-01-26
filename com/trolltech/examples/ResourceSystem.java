@@ -131,7 +131,7 @@ public class ResourceSystem extends QWidget
         bt1.setChecked(true);
         QRadioButton bt2 = new QRadioButton("Browse just ResourceSystem.jar");
 
-        QButtonGroup group = new QButtonGroup();
+        QButtonGroup group = new QButtonGroup(this);
         group.addButton(bt1);
         group.addButton(bt2);
         group.setId(bt1, 0);
@@ -219,8 +219,9 @@ public class ResourceSystem extends QWidget
             QMessageBox.warning(this, "Couldn't open root dir", "Problem reading from class path");
             return ;
         }
-
         new ResourceItem(m_selection, info, true);
+        
+        
     }
 
     protected void disposed()

@@ -1294,11 +1294,6 @@ public class TestInjectedCode extends QApplicationTest {
     @Test
     public void testQBitmapStringStringConstructor() {
         {
-            QBitmap bm = new QBitmap("classpath:com/trolltech/examples/images/cheese.png", "JPEG");
-            assertTrue(bm.isNull());
-        }
-        
-        {
             QBitmap bm = new QBitmap("classpath:com/trolltech/examples/images/cheese.png", "PNG");
             assertFalse(bm.isNull());
             assertEquals(94, bm.width());

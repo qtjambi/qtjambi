@@ -1,4 +1,0 @@
-<class name="QAccessibleInterfaceEx">
-    <method name="public abstract java.lang.Object invokeMethodEx(com.trolltech.qt.gui.QAccessible.Method method__0, int child__1, java.util.List&lt;java.lang.Object&gt; params__2)"/>
-    <method name="public java.lang.Object virtual_hook(java.lang.Object data__0)"/>
-</class>

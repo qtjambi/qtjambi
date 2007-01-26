@@ -20,7 +20,6 @@
 ./com/trolltech/examples/ElasticNodes.java
 ./com/trolltech/examples/FridgeMagnets.java
 ./com/trolltech/examples/ItemviewChart.java
-./com/trolltech/examples/TreeModel.java
 ./com/trolltech/examples/LineEdits.java
 ./com/trolltech/examples/Mandelbrot.java
 ./com/trolltech/examples/Menus.java
@@ -36,6 +35,7 @@
 ./com/trolltech/examples/SyntaxHighlighter.java
 ./com/trolltech/examples/SystemTrayExample.java
 ./com/trolltech/examples/Tetrix.java
+./com/trolltech/examples/TreeModel.java
 ./com/trolltech/examples/Ui_CalculatorDockable.java
 ./com/trolltech/examples/Ui_CalculatorNormal.java
 ./com/trolltech/examples/Ui_CalculatorSimple.java
@@ -92,6 +92,7 @@
 ./com/trolltech/qt/core/QAbstractEventDispatcher.java
 ./com/trolltech/qt/core/QAbstractFileEngine.java
 ./com/trolltech/qt/core/QAbstractFileEngineHandler.java
+./com/trolltech/qt/core/QAbstractFileEngineIterator.java
 ./com/trolltech/qt/core/QAbstractItemModel.java
 ./com/trolltech/qt/core/QAbstractListModel.java
 ./com/trolltech/qt/core/QBasicTimer.java
@@ -105,6 +106,7 @@
 ./com/trolltech/qt/core/QDate.java
 ./com/trolltech/qt/core/QDateTime.java
 ./com/trolltech/qt/core/QDir.java
+./com/trolltech/qt/core/QDirIterator.java
 ./com/trolltech/qt/core/QDynamicPropertyChangeEvent.java
 ./com/trolltech/qt/core/QEvent.java
 ./com/trolltech/qt/core/QEventLoop.java
@@ -166,6 +168,7 @@
 ./com/trolltech/qt/gui/QAbstractTableModel.java
 ./com/trolltech/qt/gui/QAbstractTextDocumentLayout.java
 ./com/trolltech/qt/gui/QAbstractTextDocumentLayout_PaintContext.java
+./com/trolltech/qt/gui/QAbstractTextDocumentLayout_Selection.java
 ./com/trolltech/qt/gui/QAccessible.java
 ./com/trolltech/qt/gui/QAccessibleBridge.java
 ./com/trolltech/qt/gui/QAccessibleEvent.java
@@ -294,7 +297,6 @@
 ./com/trolltech/qt/gui/QListView.java
 ./com/trolltech/qt/gui/QListWidget.java
 ./com/trolltech/qt/gui/QListWidgetItem.java
-./com/trolltech/qt/gui/QTreeModel.java
 ./com/trolltech/qt/gui/QMainWindow.java
 ./com/trolltech/qt/gui/QMatrix.java
 ./com/trolltech/qt/gui/QMenu.java
@@ -390,9 +392,11 @@
 ./com/trolltech/qt/gui/QStyleOptionTitleBar.java
 ./com/trolltech/qt/gui/QStyleOptionToolBar.java
 ./com/trolltech/qt/gui/QStyleOptionToolBox.java
+./com/trolltech/qt/gui/QStyleOptionToolBoxV2.java
 ./com/trolltech/qt/gui/QStyleOptionToolButton.java
 ./com/trolltech/qt/gui/QStyleOptionViewItem.java
 ./com/trolltech/qt/gui/QStyleOptionViewItemV2.java
+./com/trolltech/qt/gui/QStyleOptionViewItemV3.java
 ./com/trolltech/qt/gui/QStylePainter.java
 ./com/trolltech/qt/gui/QSyntaxHighlighter.java
 ./com/trolltech/qt/gui/QSystemTrayIcon.java
@@ -442,6 +446,8 @@
 ./com/trolltech/qt/gui/QToolBox.java
 ./com/trolltech/qt/gui/QToolButton.java
 ./com/trolltech/qt/gui/QToolTip.java
+./com/trolltech/qt/gui/QTransform.java
+./com/trolltech/qt/gui/QTreeModel.java
 ./com/trolltech/qt/gui/QTreeView.java
 ./com/trolltech/qt/gui/QTreeWidget.java
 ./com/trolltech/qt/gui/QTreeWidgetItem.java

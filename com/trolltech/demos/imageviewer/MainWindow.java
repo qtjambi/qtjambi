@@ -102,7 +102,7 @@ public class MainWindow extends QMainWindow {
     }
 
     private void setupTableView() {
-        imageModel = new ImageTableModel();
+        imageModel = new ImageTableModel(this);
         ui.tableView.setModel(imageModel);
         ui.tableView.setIconSize(LazyPixmap.SMALL_SIZE);
 
@@ -112,7 +112,7 @@ public class MainWindow extends QMainWindow {
     public void setupDirModel() {
         if (dirModel != null)
             return;
-        dirModel = new QDirModel();
+        dirModel = new QDirModel(this);
         dirModel.setLazyChildCount(true);
         dirModel.setFilter(new QDir.Filters(QDir.Filter.Dirs, QDir.Filter.Drives, QDir.Filter.NoDotAndDotDot));
         

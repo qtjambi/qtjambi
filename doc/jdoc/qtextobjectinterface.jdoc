@@ -1,4 +1,0 @@
-<class name="QTextObjectInterface">
-    <method name="public abstract void drawObject(com.trolltech.qt.gui.QPainter painter__0, com.trolltech.qt.core.QRectF rect__1, com.trolltech.qt.gui.QTextDocument doc__2, int posInDocument__3, com.trolltech.qt.gui.QTextFormat format__4)"/>
-    <method name="public abstract com.trolltech.qt.core.QSizeF intrinsicSize(com.trolltech.qt.gui.QTextDocument doc__0, int posInDocument__1, com.trolltech.qt.gui.QTextFormat format__2)"/>
-</class>

@@ -100,9 +100,6 @@ class EnumPropertyHandler extends PropertyHandler {
         int valuePos = name.lastIndexOf('.');
         int enumPos = name.lastIndexOf('.', valuePos-1);
         if (enumPos > 0 && valuePos > 0) {
-
-            System.out.println("name: " + name + ", " + valuePos + ", " + enumPos);
-
             String className = name.substring(0, enumPos);
             String enumName = name.substring(enumPos+1, valuePos);
             String enumValue = name.substring(valuePos + 1);
@@ -112,8 +109,9 @@ class EnumPropertyHandler extends PropertyHandler {
             } catch (Exception ex) {
                 throw new QUiLoaderException("Converting enum '" + name + "' failed...", ex);
             }
+        } else {
+            throw new QUiLoaderException("Converting enum '" + name + "' failed", null);
         }
-        return null;
     }
 }
 
@@ -235,19 +233,23 @@ class SetPropertyHandler extends PropertyHandler {
         String flagsValues[] = childStringValue(e).split("\\|");
 
         Object enumsPreprocess[] = new Object[flagsValues.length];
+        Class enumClass = null;
         for (int i=0; i<enumsPreprocess.length; ++i) {
             enumsPreprocess[i] = EnumPropertyHandler.enumForValue(flagsValues[i]);
+            if (enumsPreprocess[i] != null)
+                enumClass = enumsPreprocess[i].getClass();
         }
+
+        assert enumClass != null;
 
         if (enumsPreprocess.length > 0) {
             try {
-                Class<?> cl = enumsPreprocess[0].getClass();
-                Object enumValues = Array.newInstance(cl, enumsPreprocess.length);
+                Object enumValues = Array.newInstance(enumClass, enumsPreprocess.length);
                 for (int i=0; i<enumsPreprocess.length; ++i)
                     Array.set(enumValues, i, enumsPreprocess[i]);
 
-                Method m = cl.getMethod("createQFlags", enumValues.getClass());
-                return m.invoke(cl, enumValues);
+                Method m = enumClass.getMethod("createQFlags", enumValues.getClass());
+                return m.invoke(enumClass, enumValues);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

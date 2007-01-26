@@ -179,8 +179,8 @@ bool JambiExtraInfoExtension::saveUiExtraInfo(DomUI *ui)
 
 bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
 {
-    if (!ui->hasAttributeLanguage()
-        || ui->attributeLanguage().toLower() != QLatin1String("jambi")) {
+    if (ui->hasAttributeLanguage()
+        && ui->attributeLanguage().toLower() != QLatin1String("jambi")) {
         QMessageBox::warning(0,
                              QLatin1String("Incompatible UI file"),
                              QLatin1String("The UI file that is being loaded does not contain a "

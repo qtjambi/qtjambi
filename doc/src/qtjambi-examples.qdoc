@@ -43,6 +43,7 @@
     \list
        \o \l{Custom Sort/Filter Model Example}{Custom Sort/Filter Model}\raisedaster
        \o \l{Item View Chart Example}{Item View Chart}\raisedaster
+       \o \l{Tree Model Example}{Tree Model}
     \endlist
 
     \section1 Painting Examples
@@ -99,8 +100,10 @@
     \section1 Miscellaneous Examples
 
     \list
-        \o \l{Generator Example}{Generator}\raisedaster
+        \o \l{Qt Jambi Generator Example}{Generator}\raisedaster
         \o \l{Resource System Example}{Resource System}\raisedaster
+        \o \l{Style Sheet Example}{Style Sheet}
+        \o \l{Chat Example}{Chat}
     \endlist
 */
 

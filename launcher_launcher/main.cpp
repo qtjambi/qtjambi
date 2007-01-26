@@ -40,7 +40,7 @@ static void clean_up()
 static int bug_out(const char *title)
 {
     clean_up();
-    MessageBoxA(NULL,        
+    MessageBoxA(NULL,
         "Qt Jambi requires Java 1.5.0 or higher to be preinstalled\n"
         "to work. If Java is installed then make sure that the\n"
         "'java.exe' executable is available in the PATH environment.\n",
@@ -255,7 +255,7 @@ static bool launch_launcher(JNIEnv *jni_env)
 {
     const char *launcher = "com/trolltech/launcher/Launcher";
 
-    jclass launcher_class = jni_env->FindClass(launcher);    
+    jclass launcher_class = jni_env->FindClass(launcher);
     if (jni_env->ExceptionOccurred()) {
         //jni_env->ExceptionDescribe();
         jni_env->ExceptionClear(); // DestroyVM will crash if there's an exception on stack
@@ -264,17 +264,17 @@ static bool launch_launcher(JNIEnv *jni_env)
     jmethodID main_function = 0;
     if (launcher_class != 0)
         main_function = jni_env->GetStaticMethodID(launcher_class, "main", "([Ljava/lang/String;)V");
-    else 
-        return bug_out("Cannot find com.trolltech.launcher.Launcher") != 0; 
+    else
+        return bug_out("Cannot find com.trolltech.launcher.Launcher") != 0;
     if (jni_env->ExceptionOccurred()) {
         //jni_env->ExceptionDescribe();
         jni_env->ExceptionClear(); // DestroyVM will crash if there's an exception on stack
     }
-   
+
     if (main_function != 0)
         jni_env->CallStaticVoidMethod(launcher_class, main_function, jobject(0));
     else
-        return bug_out("Cannot find main function in Launcher class") != 0; 
+        return bug_out("Cannot find main function in Launcher class") != 0;
 
     // Fail on exception
     if (jni_env->ExceptionOccurred()) {
@@ -326,15 +326,15 @@ static bool check_java_version(JNIEnv *env)
     jstring key = env->NewStringUTF("java.version");
 
     jclass clazz = env->FindClass("java/lang/System");
-    if (env->ExceptionOccurred() || clazz == 0) 
+    if (env->ExceptionOccurred() || clazz == 0)
         return false;
 
     jmethodID methodId = env->GetStaticMethodID(clazz, "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
-    if (env->ExceptionOccurred() || methodId == 0) 
+    if (env->ExceptionOccurred() || methodId == 0)
         return false;
 
     jstring prop = (jstring) env->CallStaticObjectMethod(clazz, methodId, key);
-    if (env->ExceptionOccurred() || prop == 0) 
+    if (env->ExceptionOccurred() || prop == 0)
         return false;
 
     jsize len = env->GetStringUTFLength(prop);
@@ -350,10 +350,10 @@ static bool check_java_version(JNIEnv *env)
     return true;
 }
 
-static LONG find_best_registry_key_a(PHKEY key) 
+static LONG find_best_registry_key_a(PHKEY key)
 {
     char *sub_key = "SOFTWARE\\JAVASOFT\\JAVA RUNTIME ENVIRONMENT";
-    char best_key[255]; 
+    char best_key[255];
     size_t best_len = 0;
     DWORD sz = 255;
 
@@ -377,7 +377,7 @@ static LONG find_best_registry_key_a(PHKEY key)
                 size_t upper_limit = len > best_len ? best_len : len;
                 for (size_t i=0; i<upper_limit; ++i) {
                     if (got_key[i] > best_key[i]) {
-                        best_len = 0; 
+                        best_len = 0;
                         break ;
                     }
                 }
@@ -396,16 +396,16 @@ static LONG find_best_registry_key_a(PHKEY key)
         RegCloseKey(parent_key);
         return result;
     } else {
-        return ERROR_SUCCESS + 1; // just anything that's different from ERROR_SUCCESS here to indicate failure    
+        return ERROR_SUCCESS + 1; // just anything that's different from ERROR_SUCCESS here to indicate failure
     }
 }
 
 static HMODULE search_registry_for_jvm_dll_a()
-{    
+{
     char *runtime_value = "RUNTIMELIB";
     char *sub_key = "SOFTWARE\\JAVASOFT\\JAVA RUNTIME ENVIRONMENT\\1.5";
 
-    HKEY key;        
+    HKEY key;
 
     // Default to version 1.5 if it is installed
     LONG result = RegOpenKeyExA(HKEY_LOCAL_MACHINE, sub_key, NULL, KEY_READ, &key);
@@ -422,14 +422,14 @@ static HMODULE search_registry_for_jvm_dll_a()
     RegCloseKey(key);
     if (result != ERROR_SUCCESS || type != REG_SZ)
         return 0;
-   
-    return LoadLibraryA(path);    
+
+    return LoadLibraryA(path);
 }
 
-static LONG find_best_registry_key_w(PHKEY key) 
+static LONG find_best_registry_key_w(PHKEY key)
 {
     wchar_t *sub_key = L"SOFTWARE\\JAVASOFT\\JAVA RUNTIME ENVIRONMENT";
-    wchar_t best_key[255]; 
+    wchar_t best_key[255];
     size_t best_len = 0;
     DWORD sz = 255;
 
@@ -453,7 +453,7 @@ static LONG find_best_registry_key_w(PHKEY key)
                 size_t upper_limit = len > best_len ? best_len : len;
                 for (size_t i=0; i<upper_limit; ++i) {
                     if (got_key[i] > best_key[i]) {
-                        best_len = 0; 
+                        best_len = 0;
                         break ;
                     }
                 }
@@ -472,16 +472,16 @@ static LONG find_best_registry_key_w(PHKEY key)
         RegCloseKey(parent_key);
         return result;
     } else {
-        return ERROR_SUCCESS + 1; // just anything that's different from ERROR_SUCCESS here to indicate failure    
+        return ERROR_SUCCESS + 1; // just anything that's different from ERROR_SUCCESS here to indicate failure
     }
 }
 
 static HMODULE search_registry_for_jvm_dll_w()
-{    
+{
     wchar_t *runtime_value = L"RUNTIMELIB";
     wchar_t *sub_key = L"SOFTWARE\\JAVASOFT\\JAVA RUNTIME ENVIRONMENT\\1.5";
 
-    HKEY key;        
+    HKEY key;
 
     // Default to version 1.5 if it is installed
     LONG result = RegOpenKeyExW(HKEY_LOCAL_MACHINE, sub_key, NULL, KEY_READ, &key);
@@ -498,8 +498,8 @@ static HMODULE search_registry_for_jvm_dll_w()
     RegCloseKey(key);
     if (result != ERROR_SUCCESS || type != REG_SZ)
         return 0;
-   
-    return LoadLibraryW(path);    
+
+    return LoadLibraryW(path);
 }
 
 #if defined(_DEBUG)
@@ -508,8 +508,11 @@ static HMODULE search_registry_for_jvm_dll_w()
 #  define NOPTIONS 2
 #endif
 
+#ifdef QT_CONSOLE_BUILD
+int main(int, char**)
+#else
 int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
-//int main(int, char**)
+#endif
 {
     JNIEnv *jni_env;
     JavaVM *vm;
@@ -621,7 +624,7 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         if (!check_java_version(jni_env))
             return bug_out("Wrong Java version detected");
-        
+
     }
 
     {

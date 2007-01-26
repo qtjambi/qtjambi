@@ -103,6 +103,8 @@ public class TreeModel extends QTreeView
         // such case is when the view collapses a subtree and it is no
         // longer visible.
         collapsed.connect(model, "releaseChildren(QModelIndex)");
+        setWindowTitle("A Qt Jambi Tree Model");
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
     public static void main(String args[]) {

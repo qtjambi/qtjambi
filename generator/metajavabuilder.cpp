@@ -578,6 +578,13 @@ void MetaJavaBuilder::figureOutEnumValuesForClass(MetaJavaClass *java_class,
                     continue;
 
                 MetaJavaEnumValue *used = entries.value(reject->value());
+                if (!used) {
+                    ReportHandler::warning(
+                        QString::fromLatin1("Rejected enum has no alternative...: %1::%2\n")
+                        .arg(java_class->name())
+                        .arg(reject->name()));
+                    continue;
+                }
                 ete->addEnumValueRedirection(reject->name(), used->name());
             }
 
@@ -914,6 +921,11 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
                 *java_class -= MetaJavaAttributes::Final;
                 java_class->setHasNonPrivateConstructor(true);
             }
+
+            // Classes with virtual destructors should always have a shell class
+            // (since we aren't registering the destructors, we need this extra check)
+            if (java_function->isDestructor() && !java_function->isFinal())
+                java_class->setForceShellClass(true);
 
             if (java_function->isSignal() && !java_class->isQObject()) {
                 QString warn = QString("signal '%1' in non-QObject class '%2'")

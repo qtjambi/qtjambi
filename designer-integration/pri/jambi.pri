@@ -10,7 +10,6 @@ isEmpty(TARGET) {
 
 macx:{
     LIBS += -framework JavaVm
-    QMAKE_EXTENSION_SHLIB = jnilib
 } else {
     INCLUDEPATH += $(JAVADIR)/include
     win32 {
@@ -47,6 +46,12 @@ CONFIG(debug, debug|release) {
     LIB_QTJAMBI = $$join(LIB_QTJAMBI,,,_debuglib)
 }
 
-INCLUDEPATH += $$PWD/../../qtjambi
-LIBS += -L$$PWD/../../lib -l$${LIB_QTJAMBI}
 
+INCLUDEPATH += $$PWD/../../qtjambi
+
+macx:{
+    LIBS += ../../lib/lib$${LIB_QTJAMBI}.jnilib
+} else {
+    LIBS += -L$$PWD/../../lib -l$${LIB_QTJAMBI}
+}
+        

@@ -23,11 +23,12 @@
     <interface-type name="AbstractGameObject">
         <modify-function signature="perform(Game::ActionType,AbstractGameObject**,int)">            
             <modify-argument index="2">
-                <replace-type modified-type="com.trolltech.examples.generator.AbstractGameObject[]" />                                
+                <replace-type modified-type="com.trolltech.examples.generator.AbstractGameObjectInterface[]" />                                
                 <conversion-rule>
-                jobjectArray %out = qtjambi_from_array(__jni_env, %in, %3, 
-                                                       "AbstractGameObject", 
-                                                       "com/trolltech/examples/generator/");
+                jobjectArray %out = qtjambi_from_interface_array(__jni_env, %in, %3, 
+                                                                 "AbstractGameObjectInterface",
+                                                                 "AbstractGameObject$ConcreteWrapper", 
+                                                                 "com/trolltech/examples/generator/");
                 </conversion-rule>
             </modify-argument>            
             <modify-argument index="3">
@@ -44,8 +45,15 @@
                 
                 int arrayLength = __jni_env->GetArrayLength((jarray) %in);
                 for (int i=0; i&lt;arrayLength; ++i) {
-                    jobject gameObject = __jni_env->GetObjectArrayElement((jobjectArray) %in, i);
-                    gameObjects.append((AbstractGameObject *) qtjambi_to_object(__jni_env, gameObject));        
+                    jobject javaGameObject = __jni_env->GetObjectArrayElement((jobjectArray) %in, i);
+                    QtJambiLink *link = QtJambiLink::findLink(__jni_env, javaGameObject);
+                    
+                    AbstractGameObject *gameObject = (AbstractGameObject* ) qtjambi_to_interface(__jni_env, 
+                                                                                link, 
+                                                                                "AbstractGameObjectInterface", 
+                                                                                "com/trolltech/examples/generator/", 
+                                                                                "__qt_cast_to_AbstractGameObject");
+                    gameObjects.append(gameObject);
                 }
                 
                 AbstractGameObject **%out = gameObjects.data();
@@ -68,7 +76,13 @@
         </modify-function>
     </object-type>
     <object-type name="GameAnimation" />
-    <object-type name="GameGrammar" />
+    <object-type name="GameGrammar">
+        <modify-function signature="addVerb(const QString &amp;, GameAction *)">
+	    <modify-argument index="2">
+               <disable-gc />
+            </modify-argument>
+	</modify-function>
+    </object-type>
     <object-type name="GameObject">
         <modify-function signature="rposition()">
             <access modifier="private" />

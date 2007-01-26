@@ -22,12 +22,11 @@ public:
         // All my children
         for (int i=0; i<nodes.size(); ++i) {
             Node *n = nodes.at(i);
-            release(env);
+            n->release(env);
             delete n;
         }
 
         // The free memory..
-        qDeleteAll(nodes);
         nodes = QVector<Node *>();
     }
 

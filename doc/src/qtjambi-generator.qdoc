@@ -30,6 +30,8 @@
     generated Java API (see the \l {The Qt Jambi Type System}{type
     system} documentation for details).
 
+    See also: \l {Qt Jambi Generator Example}
+
     \table 100 %
     \header \o {2,1} Command Line Options
     \row
@@ -48,6 +50,12 @@
     \o Specifies the location of the information file that is used
     together with \QJ's implementation of UIC (\c juic) to generate
     code for custom libraries.
+
+    \row
+    \o --convert-to-jui=[uifile]
+    \o Converts the given \c .ui file to a Java user interface file
+    (\c .jui). The \c .jui file format's datastructure is based on
+    Java syntax.
 
     \row
     \o --no-cpp-h
@@ -241,6 +249,8 @@
     the \c generator directory of the \QJ package.
 
     \tableofcontents
+
+    See also: \l {Qt Jambi Generator Example}
 
     \section1 Alphabetical List
 

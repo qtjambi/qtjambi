@@ -128,23 +128,21 @@ void QDocGenerator::writeOverload(QTextStream &s,
       << "    cpp=\"" << protect(java_function->signature().toUtf8()) << "\"";
 
     MetaJavaArgumentList arguments = java_function->arguments();
-    bool first = true;
+    bool wroteOwnershipStolen = false;
     foreach (MetaJavaArgument *argument, arguments) {
         if (java_function->disabledGarbageCollection(java_function->implementingClass(),
                                                      argument->argumentIndex() + 1)) {
-            if (first) {
+            if (!wroteOwnershipStolen) {
                 s << endl << "    steals-ownership-of=\"";
-                first = false;
+                wroteOwnershipStolen = true;
             } else {
                 s << ",";
             }
-
             s << protect(argument->argumentName().toUtf8());
-
         }
-        if (!first)
-            s << "\"";
     }
+    if (wroteOwnershipStolen)
+        s << "\"";
     s << " />" << endl;
 }
 

@@ -68,7 +68,7 @@
         <modify-argument index="return">
            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
             </conversion-rule>
         </modify-argument>        
     </modify-function>
@@ -83,7 +83,7 @@
         <modify-argument index="return">
            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
             </conversion-rule>
         </modify-argument>        
     </modify-function>
@@ -98,7 +98,7 @@
         <modify-argument index="return">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
             <conversion-rule>
-                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2");
+                jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
             </conversion-rule>
         </modify-argument>        
     </modify-function>

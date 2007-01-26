@@ -11,17 +11,11 @@
     \o \l {Layout Classes}{Layout Management}
     \o \l {The Paint System}{Paint System}
     \o \l {Drag and Drop}
-    \o \l {Internationalization with Qt}{Internationalization}
-    \o \l {Introduction to D-BUS}{Inter-process Communication}
+    \omit \o \l {Internationalization with Qt}{Internationalization} \endomit
+    \omit \o \l {Introduction to D-BUS}{Inter-process Communication} \endomit
     \o \l {Thread Support in Qt}{Multithreaded Programming}
     \o \l {The Qt 4 Main Window Classes}{Main Window Architecture}
     \o \l {Rich Text Processing}
     \o \l {Model/View Programming}
-    \o \l {QtNetwork Module}{Network Module}
-    \o \l {QtOpenGL Module}{OpenGL Module}
-    \o \l {QtSql Module}{SQL Module}
-    \o \l {QtSvg Module}{SVG Module}
-    \o \l {QtXml Module}{XML Module}
-    \o \l {ActiveQt Framework}
     \endlist
 */

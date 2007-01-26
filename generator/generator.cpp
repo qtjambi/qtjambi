@@ -76,7 +76,7 @@ void Generator::verifyDirectoryFor(const QFile &file)
     QDir dir = QFileInfo(file).dir();
     if (!dir.exists()) {
         if (!dir.mkpath(dir.absolutePath()))
-            ReportHandler::warning(QString("Unable to create directory '%1'")
+            ReportHandler::warning(QString("unable to create directory '%1'")
                                    .arg(dir.absolutePath()));
     }
 }

@@ -110,7 +110,7 @@
     \section2 Adding Custom Widgets
 
     In addition to the many standard widgets found in the Qt Designer
-    Widget Box, you can also add your own custom widgets and use them
+    widget box, you can also add your own custom widgets and use them
     in your application.
 
     The first step is to add a text file to your project with the \c

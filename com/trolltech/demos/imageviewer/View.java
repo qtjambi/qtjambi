@@ -252,7 +252,7 @@ public class View extends QWidget
     private QImage original;
     private QImage modified;
 
-    private Worker delayedUpdate = new Worker() {
+    private Worker delayedUpdate = new Worker(this) {
         public void execute() {
             update();
         }

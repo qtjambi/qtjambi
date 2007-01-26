@@ -20,8 +20,26 @@ import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
-class QJarEntryEngine extends QAbstractFileEngine
+interface QClassPathEntry {
+    public String classPathEntryName();
+}
+
+class QFSEntryEngine extends QFSFileEngine implements QClassPathEntry {
+    private String m_classPathEntryFileName;
+    
+    public QFSEntryEngine(String file, String classPathEntryFileName) {
+        super(file);
+        m_classPathEntryFileName = classPathEntryFileName;
+    }
+    
+    public String classPathEntryName() {
+        return m_classPathEntryFileName;
+    }    
+}
+
+class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 {
+    private String m_classPathEntryFileName = null;
     private String m_jarFileName = null;
     private String m_entryFileName = null;
 
@@ -35,13 +53,14 @@ class QJarEntryEngine extends QAbstractFileEngine
     private int m_openMode;
     private boolean m_valid = false;
 
-    public QJarEntryEngine(JarFile jarFile, String jarFileName, String fileName)
+    public QJarEntryEngine(JarFile jarFile, String jarFileName, String fileName, String classPathEntryFileName)
     {
         super();
 
         if (jarFile != null && jarFileName.length() > 0) {
             m_jarFile = jarFile;
             m_jarFileName = jarFileName;
+            m_classPathEntryFileName = classPathEntryFileName;
 
             setFileName(fileName);
         }
@@ -69,6 +88,10 @@ class QJarEntryEngine extends QAbstractFileEngine
         m_entryFileName = fileName;
         m_entry = m_jarFile.getJarEntry(m_entryFileName);
         m_valid = m_entry != null;
+    }
+    
+    public String classPathEntryName() {
+        return m_classPathEntryFileName;
     }
 
     public boolean isValid()
@@ -589,19 +612,36 @@ class QClassPathEngine extends QAbstractFileEngine
         if (m_engines.size() == 0)
             return "";
         
+        String classPathEntry = "";
+        if (m_engines.size() == 1) {
+            QAbstractFileEngine engine = m_engines.get(0);
+            
+            if (engine instanceof QClassPathEntry)
+                classPathEntry = ((QClassPathEntry) engine).classPathEntryName();
+            else
+                throw new RuntimeException("Bogus engine in class path file engine");
+            
+        } else {
+            classPathEntry = "*";
+        } 
+        
         String result = "";
         if (file == FileName.DefaultName) {
             result = QClassPathEngine.FileNamePrefix + m_fileName;
-        } else if (file == FileName.AbsoluteName || file == FileName.CanonicalName || file == FileName.LinkName) {
-            result = QClassPathEngine.FileNamePrefix + "*" + FileNameDelim + m_baseName;
+        } else if (file == FileName.CanonicalName || file == FileName.LinkName) {
+            result = fileName(FileName.CanonicalPathName) + "/" + fileName(FileName.BaseName);
+        } else if (file == FileName.AbsoluteName || file == FileName.LinkName) {
+            result = QClassPathEngine.FileNamePrefix + classPathEntry + FileNameDelim + m_baseName;
         } else if (file == FileName.BaseName) {
             int pos = m_baseName.lastIndexOf("/", m_baseName.length() - 2);
             result = pos >= 0 ? m_baseName.substring(pos + 1) : m_baseName;
         } else if (file == FileName.PathName) {
             int pos = m_baseName.lastIndexOf("/", m_baseName.length() - 2);
             result = pos >= 0 ? m_baseName.substring(0, pos) : "/";
-        } else if (file == FileName.AbsolutePathName || file == FileName.CanonicalPathName) {
-            result = QClassPathEngine.FileNamePrefix + "*" + FileNameDelim + fileName(FileName.PathName);
+        } else if (file == FileName.AbsolutePathName) {
+            result = QClassPathEngine.FileNamePrefix + classPathEntry + FileNameDelim + fileName(FileName.PathName);
+        } else if (file == FileName.CanonicalPathName) {
+            result = m_engines.get(0).fileName(file);
         } else {
             throw new IllegalArgumentException("Unknown file name type: " + file);
         }
@@ -775,12 +815,12 @@ class QClassPathEngine extends QAbstractFileEngine
     private void addFromPath(String path, String fileName)
     {
         String qtified_path = path.replace(File.separator, "/");
-
+        
         QFileInfo file = new QFileInfo(qtified_path);
         if (file.isDir()
             && file.exists()
             && new QFileInfo(qtified_path + "/" + fileName).exists()) {
-            addEngine(new QFSFileEngine(qtified_path + "/" + fileName));
+            addEngine(new QFSEntryEngine(qtified_path + "/" + fileName, path));
         } else {
             JarFile jarFile;
             try {
@@ -793,7 +833,7 @@ class QClassPathEngine extends QAbstractFileEngine
             while (fileName.startsWith("/"))
                 fileName = fileName.substring(1);
 
-            QJarEntryEngine engine = new QJarEntryEngine(jarFile, qtified_path, fileName);
+            QJarEntryEngine engine = new QJarEntryEngine(jarFile, qtified_path, fileName, path);
 
             if (engine.isValid())
                 addEngine(engine);
@@ -813,7 +853,7 @@ class QClassPathEngine extends QAbstractFileEngine
 
         String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
         for (String p : paths)
-            classpaths.add(p);
+            classpaths.add(p);       
 
         try {
             Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");

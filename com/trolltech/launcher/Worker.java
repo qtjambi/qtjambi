@@ -19,7 +19,11 @@ public abstract class Worker extends QObject {
     
     protected abstract void execute();
 
-    public void start() {	
+    public Worker(QObject parent) {
+        super(parent);
+    }
+
+    public void start() {
 	if (m_is_running)
 	    stop();
 	m_is_running = true;

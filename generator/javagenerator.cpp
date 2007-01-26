@@ -529,10 +529,16 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
         }
     }
 
+    // Insert Javadoc
     if (m_doc_parser) {
         QString signature = functionSignature(java_function,
                                               include_attributes,
                                               exclude_attributes);
+        QString docs = m_doc_parser->documentationForSignal(signature);
+        if (docs.isEmpty()) {
+            signature.replace(QLatin1String("public"), QLatin1String("protected"));
+            docs = m_doc_parser->documentationForSignal(signature);
+        }
         s << m_doc_parser->documentationForSignal(signature);
     }
 

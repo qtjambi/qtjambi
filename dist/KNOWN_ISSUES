@@ -18,7 +18,10 @@ This is list of known issues for Qt Jambi.
    main thread. This will cause the process to issue a warning on
    application shutdown: "QObject::killTimer: timers cannot be stopped
    from another thread". We are looking into solutions for this.
-   
+
+ - Qt Jambi does currently not load plugins automatically unless the user
+   specifies the environment variable QT_PLUGIN_PATH to be
+   $JAMBI_INSTALL_DIR/plugins   
 
 This is a list of known issues for the Qt Jambi Eclipse integration:
 

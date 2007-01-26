@@ -15,12 +15,18 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.*;
 
 import java.io.*;
 import java.util.*;
 
 public class Launcher extends QWidget {
     private abstract class HtmlUpdater extends Worker {
+
+        public HtmlUpdater(QObject parent) {
+            super(parent);
+        }
+
         protected abstract String html(Launchable l);
 
         protected abstract void updateHtml(String s);
@@ -39,7 +45,7 @@ public class Launcher extends QWidget {
         }
     }
 
-    private HtmlUpdater m_source_updater = new HtmlUpdater() {
+    private HtmlUpdater m_source_updater = new HtmlUpdater(this) {
             protected String html(Launchable l) {
                 return l.source();
             }
@@ -49,7 +55,7 @@ public class Launcher extends QWidget {
             }
 	};
 
-    private HtmlUpdater m_description_updater = new HtmlUpdater() {
+    private HtmlUpdater m_description_updater = new HtmlUpdater(this) {
             protected String html(Launchable l) {
                 return l.description();
             }
@@ -69,6 +75,7 @@ public class Launcher extends QWidget {
         ui.setupUi(this);
         ui.list.setModel(m_model);
         ui.list.setItemDelegate(new Delegate(m_model));
+        ui.list.setCurrentIndex(null);
 
         setupExamples();
         setupStyles();
@@ -142,8 +149,8 @@ public class Launcher extends QWidget {
 
     public void openDocumentation() {
         QUrl url = new QUrl();
-        url.setPath(new QFileInfo("doc/html/com/trolltech/qt/qtjambi-index.html").absoluteFilePath());
-        QDesktopServices.openUrl(url);
+        url.setUrl("file://" + new QFileInfo("doc/html/com/trolltech/qt/qtjambi-index.html").absoluteFilePath()); 
+	QDesktopServices.openUrl(url);
     }
 
     /**
@@ -255,6 +262,9 @@ public class Launcher extends QWidget {
         String checkedByDefault = styleForCurrentSystem();
 
         for (String styleKey : styleKeys) {
+            if (styleKey.equals("WindowsVista")
+                && QSysInfo.windowsVersion() != QSysInfo.Windows_VISTA)
+                continue;
             QRadioButton button = new QRadioButton(styleKey);
             layout.addWidget(button);
             button.clicked.connect(this, "styleChanged()");
@@ -321,6 +331,10 @@ public class Launcher extends QWidget {
 
     public static void main(String args[]) {
         QApplication.initialize(args == null ? start_qt() : args);
+
+        // ### not an optimal solution, but at least it makes the launcher run the
+        // image viewer demos and sql demos properly...
+        QApplication.addLibraryPath(new QFileInfo(".").absoluteFilePath() + "/plugins");
 
         systemPalette = QApplication.palette();
 

@@ -13,20 +13,36 @@ import com.trolltech.qt.core.QObject;
  * Each QObject has thread affinity, a thread that it belongs to, which is
  * accessible through its thread() method. Accessing an object from outside
  * this thread is forbidden to avoid concurrency problems.
+ *
+ * Qt Jambi checks if threading affinity is violated in each member of each QObject subclass. It is
+ * possible to disable this check by setting the VM runtime parameter
+ * <code>com.trolltech.qt.thread-check</code> to <code>false</code>.
  * 
- * @See com.trolltech.qt.QObject#thread() 
+ * @See com.trolltech.qt.core.QObject#thread()
  * @See <a href="../threads.html">Threading support in Qt</a>
  * 
  * @author gunnar
  */
 public class QThreadAffinityException extends RuntimeException {
-    
+
+
+    /**
+     * Creates a new QThreadAffinityException with the given message, object and thread.
+     * @param message Describes the affinity exception.
+     * @param object The object that was accessed.
+     * @param thread The thread from which the access was made.
+     */
     public QThreadAffinityException(String message, QObject object, Thread thread) {
         super(message);
         this.object = object;
         this.thread = thread;
     }
-    
+
+
+    /**
+     * Returns a string representation of this exception.
+     * @return This exception as a string.
+     */
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append(getMessage());

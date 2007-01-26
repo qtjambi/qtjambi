@@ -1,0 +1,10 @@
+/*!
+    \page qtjambi-chat.html
+    \title Chat Example
+
+    The Chat example shows how to implement a peer-to-peer chat
+    client.
+
+    \image chat-example.png
+
+*/

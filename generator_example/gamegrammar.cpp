@@ -112,14 +112,14 @@ AbstractGameObject *GameGrammar::object()
     if (gameObject != 0 && gameObject->isVisible() 
         && (m_scene->egoHasInInventory(gameObject) || m_scene->inProximityOfEgo(gameObject))) {
         while (--i) nextToken();
-        while (and()) ;
+        while (and_token()) ;
         return gameObject;
     } else {
         return 0;
     }
 }
 
-bool GameGrammar::and() 
+bool GameGrammar::and_token() 
 {
     if (currentToken() == "and"
         || currentToken() == ",") {

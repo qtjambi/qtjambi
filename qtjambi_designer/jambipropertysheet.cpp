@@ -53,7 +53,7 @@ static void resolve(JNIEnv *env)
 static QVariant qVariantEnum(JNIEnv *env, jobject value)
 {
     EnumType et;
-    et.value = env->GetIntField(value, field_value);
+    et.value = (int) env->GetIntField(value, field_value);
     et.items = jmap_to_qmap(env, env->GetObjectField(value, field_names));
 
     QVariant variant;
@@ -66,7 +66,7 @@ static QVariant qVariantEnum(JNIEnv *env, jobject value)
 static QVariant qVariantFlag(JNIEnv *env, jobject value)
 {
     FlagType ft;
-    ft.value = env->GetIntField(value, field_value);
+    ft.value = (int) env->GetIntField(value, field_value);
     ft.items = jmap_to_qmap(env, env->GetObjectField(value, field_names));
 
     QVariant variant;
