@@ -35,6 +35,7 @@
 #include "compiler_utils.h"
 #include "lexer.h"
 #include "binder.h"
+#include "tokens.h"
 
 #include <qdebug.h>
 
@@ -135,12 +136,23 @@ void DeclaratorCompiler::visitParameterDeclaration(ParameterDeclarationAST *node
   p.name = decl_cc.id();
   p.type = CompilerUtils::typeDescription(node->type_specifier, node->declarator, _M_binder);
   if (node->expression != 0)
-    {
-      p.defaultValue = true;
+    {            
       const Token &start = _M_token_stream->token((int) node->expression->start_token);
-      const Token &end = _M_token_stream->token((int) node->expression->end_token);
+      const Token &end = _M_token_stream->token((int) node->expression->end_token);      
       int length = (int) (end.position - start.position);
-      p.defaultValueExpression = QString::fromUtf8(&start.text[start.position], length).trimmed();
+    
+      p.defaultValueExpression = QString();
+      QString source = QString::fromUtf8(&start.text[start.position], length).trimmed();
+      QStringList list = source.split("\n");
+
+        
+      for (int i=0; i<list.size(); ++i) {
+          if (!list.at(i).startsWith("#"))
+              p.defaultValueExpression += list.at(i).trimmed();          
+      }
+
+      p.defaultValue = p.defaultValueExpression.size() > 0;
+
     }
 
   _M_parameters.append(p);
