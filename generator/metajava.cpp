@@ -150,6 +150,9 @@ bool MetaJavaFunction::isModifiedRemoved(int types) const
                 return true;
             else
                 break ;
+
+        case CodeSnip::PackageInitializer:
+            break;
         }
     }
 
@@ -1059,20 +1062,6 @@ void MetaJavaClass::addDefaultConstructor()
 bool MetaJavaClass::hasFunction(const MetaJavaFunction *f) const
 {
     return functions_contains(m_functions, f);
-}
-
-static MetaJavaFunctionList functions_equal(const MetaJavaFunctionList &l,
-                                            const MetaJavaFunction *func)
-{
-    MetaJavaFunctionList returned;
-    foreach (MetaJavaFunction *f, l) {
-        int cmp = f->compareTo(func);
-        if ((cmp & MetaJavaFunction::EqualName)
-            && (cmp & MetaJavaFunction::EqualArguments))
-            returned.append(f);
-    }
-
-    return returned;
 }
 
 /* Goes through the list of functions and returns a list of all

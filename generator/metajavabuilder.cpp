@@ -126,25 +126,6 @@ MetaJavaBuilder::MetaJavaBuilder()
 {
 }
 
-static bool function_less_than(const MetaJavaFunction *f1, const MetaJavaFunction *f2)
-{
-    QString s1 = f1->name();
-    QString s2 = f2->name();
-
-    MetaJavaArgumentList l1 = f1->arguments();
-    MetaJavaArgumentList l2 = f2->arguments();
-
-    int count = qMax(l1.count(), l2.count());
-    for (int i=0; i<count; ++i) {
-        if (i < l1.count())
-            s1 += " " + l1.at(i)->type()->name();
-        if (i < l2.count())
-            s2 += " " + l2.at(i)->type()->name();
-    }
-
-    return s1 < s2;
-}
-
 void MetaJavaBuilder::checkFunctionModifications()
 {
     TypeDatabase *types = TypeDatabase::instance();

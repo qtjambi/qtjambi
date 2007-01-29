@@ -596,6 +596,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 case CodeSnip::NativeCode: attributes["class"] = "native"; break;
                 case CodeSnip::ShellCode: attributes["class"] = "shell"; break;
                 case CodeSnip::ShellDeclaration: attributes["class"] = "shell-declaration"; break;
+                case CodeSnip::PackageInitializer: break;
                 };
             } else if (topElement.type == StackElement::Root) {
                 attributes["class"] = "library-initializer";
