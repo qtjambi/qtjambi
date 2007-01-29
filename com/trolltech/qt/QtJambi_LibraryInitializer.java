@@ -18,6 +18,7 @@ abstract class QtJambi_LibraryInitializer
     static {
         Utilities.loadSystemLibraries();
         Utilities.loadQtLibrary("QtCore");
+        Utilities.loadQtLibrary("QtGui");
         Utilities.loadJambiLibrary("qtjambi");
 
         // ### Shouldn't we be using the class' static initializer combined with

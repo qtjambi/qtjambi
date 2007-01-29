@@ -149,8 +149,9 @@ public class Launcher extends QWidget {
 
     public void openDocumentation() {
         QUrl url = new QUrl();
-        url.setUrl("file://" + new QFileInfo("doc/html/com/trolltech/qt/qtjambi-index.html").absoluteFilePath()); 
-	QDesktopServices.openUrl(url);
+        url.setScheme("file");
+        url.setUrl(new QFileInfo("doc/html/com/trolltech/qt/qtjambi-index.html").absoluteFilePath());
+        QDesktopServices.openUrl(url);
     }
 
     /**

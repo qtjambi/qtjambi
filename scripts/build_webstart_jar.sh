@@ -2,8 +2,8 @@
 
 
 BASE_DIR=$PWD
-WEBSITE=http://anarki.troll.no/~eblomfel/packages
-PACKAGE=1.0.0-tp3
+WEBSITE=http://anarki.troll.no/~gunnar/packages
+PACKAGE=1.0.0-beta
 
 
 echo Preparing directory
@@ -25,8 +25,6 @@ echo Creating linux jar file
 echo libstdc++.so.5>>qt_system_libs
 cp qtjambi-linux-$PACKAGE/lib/lib*.so* .
 rm libQtDesigner*
-rm libQtNetwork*
-rm libQtXml*
 jar -cf qtjambi-linux.jar lib*.so* qt_system_libs
 
 cp qtjambi-linux.jar $BASE_DIR

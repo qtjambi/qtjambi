@@ -208,7 +208,7 @@ function buildDesignerCommon() {
 
 function generateDesignerCode() {
     verbose("-- generating code for designer package");
-    
+       
     var generatorPath = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer";    
     var dir = new Dir(generatorPath);
     dir.setCurrent();        
@@ -230,8 +230,25 @@ function compileDesignerJavaCode(destDir) {
     compileJavaFiles(sourcePath, eclipsePackages, "com/trolltech/qtdesigner", destDir + "/bin");
 }
 
+function buildLinuxQtJarFile() {
+    verbose("Building Linux Qt library package");
+    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux.x86_4.3.0";
+    var linuxQtRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt.linux.x86";
+    var dir = new Dir(linuxQtDest + "/lib");
+    dir.mkdirs(linuxQtDest + "/lib");
+
+    var dlls = ["libQtCore.so", "libQtDesigner.so", "libQtDesignerComponents.so", 
+                "libQtAssistantClient.so", "libQtGui.so", "libQtXml.so"];
+    var suffixes = ["", ".4", ".4.3", ".4.3.0"];
+    for (var i=0; i<dlls.length; ++i) {
+        for (var j=0; j<suffixes.length; ++j) {
+	    copyFiles([option.qtdir + "/lib/" + dlls[i] + suffixes[j]], option.qtdir, linuxQtDest);
+	}
+    }
+}
+
 function buildDesignerPlatform() {
-    verbose("Building Windows designer package");
+    verbose("Building platform designer package");
     var qswtDir = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer/qtdesigner";    
     var designerPackageDest = packageDir + "/tempQtDesignerWindowsPackage";
     var dir = new Dir(designerPackageDest + "/bin");
@@ -240,36 +257,39 @@ function buildDesignerPlatform() {
     dir = new Dir(designerPackageDest);    
     dir.mkdirs(designerPackageDest);
 
-    var files = ["bin"];
-    if (os_name() != OS_NAME_WINDOWS) { // linux        
-        var dlls = ["libQtCore.so", "libQtDesigner.so", "libQtDesignerComponents.so", 
-                    "libQtAssistantClient.so", "libQtGui.so", "libQtXml.so"]; 
-	var suffixes = ["", ".4", ".4.3", ".4.3.0"];
-	for (var i=0; i<dlls.length; ++i) {
-		for (var j=0; j<suffixes.length; ++j) {
-			copyFiles([option.qtdir + "/lib/" + dlls[i] + suffixes[j]], option.qtdir + "/lib", designerPackageDest);
-			files.push(dlls[i] + suffixes[j]);
-		}
-        }
-
-    }
-    
-
     generateDesignerCode();            
     compileDesignerJavaCode(designerPackageDest);
-    
-    var jarFileName = os_name() == OS_NAME_WINDOWS 
-                        ? "com.trolltech.qtdesigner.win32.x86_" + version + ".jar"
-                        : "com.trolltech.qtdesigner.linux.x86_" + version + ".jar";
+
     var designerRootDir = os_name() == OS_NAME_WINDOWS 
-                          ? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32.x86"
-                          : packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86";
-    dir.setCurrent();                          
-    
-    makeJarFile(jarFilesDest + "/" + jarFileName, 
-                designerRootDir + "/META-INF/MANIFEST.MF",
-                files);
-            
+	? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32.x86"
+	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86";
+
+    if (os_name() != OS_NAME_WINDOWS) {
+	var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux.x86_" + version;
+	dir = new Dir(pluginsDir);
+	dir.mkdirs(pluginsDir);
+	var suffixes = ["", ".4", ".4.3", ".4.3.0"];
+	for (var i=0; i<suffixes.length; ++i) { 
+	    copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86/lib/libqtdesigner.so" 
+                      + suffixes[i]],
+                      packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86", 
+                      pluginsDir);
+	}
+
+	var files = find_files(designerPackageDest, ["class"]);
+	copyFiles(files, designerPackageDest, pluginsDir);
+	copyFiles([designerRootDir + "/META-INF/MANIFEST.MF"], designerRootDir, pluginsDir);
+                  
+    } else {   
+	var files = ["bin"]; 
+	var jarFileName = "com.trolltech.qtdesigner.win32.x86_" + version + ".jar";
+
+	dir.setCurrent();                          
+
+	makeJarFile(jarFilesDest + "/" + jarFileName, 
+		    designerRootDir + "/META-INF/MANIFEST.MF",
+		    files);
+    }            
     
 }
 
@@ -319,7 +339,7 @@ function buildPackage() {
     dir.mkdirs(pluginsDir);
     
     
-    var files = find_files(jarFilesDest, ["jar"]);
+    var files = find_files(jarFilesDest, ["jar"]);    
     copyFiles(files, jarFilesDest, pluginsDir);            
         
     eval("makePlatformSpecificPackage" + os_name() + "(packageDest);");            
@@ -329,8 +349,9 @@ function buildPackage() {
 
 function build() {
     prepareSourceTree();
-            
     buildDesigner();
+    if (os_name() != OS_NAME_WINDOWS)
+       buildLinuxQtJarFile();            
     buildJambi();
     buildPackage();
 }

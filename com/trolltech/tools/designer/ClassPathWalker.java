@@ -140,6 +140,18 @@ public class ClassPathWalker extends QObject implements Runnable {
             QImage smallImage = image.scaled(size,
                     Qt.AspectRatioMode.KeepAspectRatio,
                     Qt.TransformationMode.SmoothTransformation);
+
+	    // aspect ration makes one dimension < 1, thus, problems...
+	    if (smallImage.isNull()) {
+		smallImage = image.scaled(size,
+                    Qt.AspectRatioMode.IgnoreAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation);
+	    }
+
+	    if (smallImage.isNull()) {
+		continue;
+	    }
+	    
             image.dispose();                                   	
 
             synchronized (this) {

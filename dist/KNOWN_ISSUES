@@ -1,5 +1,8 @@
 This is list of known issues for Qt Jambi. 
 
+ - In Qt Designer when using the Qt Jambi language plugin, previewing a
+   a QDialogButtonBox will show all buttons, rather than the selected ones.
+
  - If you start a main window application from the demo launcher on Mac OS X, 
    and then close the window, the menu bar may not be properly removed. If
    you click on one of the menus, the application will crash.

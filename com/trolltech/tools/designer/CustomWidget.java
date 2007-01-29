@@ -5,33 +5,26 @@ import java.lang.reflect.*;
 import com.trolltech.qt.gui.*;
 
 public class CustomWidget {
-    
+
     public CustomWidget(Class<?> pluginClass) throws NoSuchMethodException {
         this.pluginClass = pluginClass;
-        
-        try {
-            constructor = pluginClass.getConstructor(QWidget.class);
-        } catch (NoSuchMethodException e) { 
-            throw new NoSuchMethodException(pluginClass.getName() + "(QWidget parent) constructor missing");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        constructor = pluginClass.getConstructor(QWidget.class);
     }
-    
+
     public QWidget createWidget(QWidget parent) {
         QWidget widget = null;
-        
+
         // Try the parent constructor first...
         try {
             widget = (QWidget) constructor.newInstance(parent);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         // Avoid Designer seg-fault when the constructor throws an exception
         if (widget == null)
             widget = new QWidget(parent);
-        
+
         return widget;
     }
 
@@ -47,7 +40,7 @@ public class CustomWidget {
         return group;
     }
 
-    public void setGroup(String group) {        
+    public void setGroup(String group) {
         this.group = group;
     }
 
@@ -67,7 +60,7 @@ public class CustomWidget {
         this.includeFile = includeFile;
     }
 
-    public String name() {        
+    public String name() {
         return name;
     }
 
@@ -94,20 +87,20 @@ public class CustomWidget {
     public void setWhatsThis(String whatsThis) {
         this.whatsThis = whatsThis;
     }
-    
+
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append("CustomWidget(").append(pluginClass.toString());
-        
+
         if (name != null && name.length() != 0) s.append(",name=").append(name);
         if (group != null && group.length() != 0) s.append(",group=").append(group);
         if (tooltip != null && tooltip.length() != 0) s.append(",toolTip=").append(tooltip);
         if (whatsThis != null && whatsThis.length() != 0) s.append(",whatsThis=").append(whatsThis);
         if (includeFile != null && includeFile.length() != 0) s.append(",include=").append(includeFile);
         if (icon != null && !icon.isNull()) s.append(",icon=").append(icon);
-        
+
         s.append(")");
-        
+
         return s.toString();
     }
 

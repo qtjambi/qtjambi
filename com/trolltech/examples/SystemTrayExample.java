@@ -160,7 +160,7 @@ public class SystemTrayExample extends QWidget {
     }
 
     public void closeEvent(QCloseEvent e) {
-        trayIcon.dispose();
+        
     }
 
     protected void updateMenu() {

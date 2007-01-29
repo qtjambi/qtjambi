@@ -71,6 +71,8 @@ public class DomBookmarks extends QMainWindow {
 
         if (xbelTree.read(file))
             statusBar().showMessage(tr("File loaded"), 2000);
+        
+        file.dispose();
     }
 
     @SuppressWarnings("unused")
@@ -89,6 +91,8 @@ public class DomBookmarks extends QMainWindow {
 
         if (xbelTree.write(file))
             statusBar().showMessage(tr("File saved"), 2000);
+        
+        file.dispose();
     }
 
     @SuppressWarnings("unused")

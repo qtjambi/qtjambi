@@ -12,41 +12,49 @@ import com.trolltech.qt.xml.*;
 /**
  * The CustomWidgetManager class is used by the designer custom widget plugin to
  * load Java Widgets and expose them to designer.
- * 
+ *
  * @author gunnar
  */
 public class CustomWidgetManager {
-    
+
     private CustomWidgetManager() {
         loadPlugins();
     }
-    
+
     public static CustomWidgetManager instance() {
         if (instance == null)
             instance = new CustomWidgetManager();
-        return instance; 
+        return instance;
     }
-    
+
     public List<CustomWidget> customWidgets() {
         return customWidgets;
     }
-    
+
     private void splitIntoList(String s, List<String> lst) {
-        if (s != null) 
+        if (s != null)
             Collections.addAll(lst, s.split(File.pathSeparator));
     }
-    
+
     private void loadPlugins() {
+        warnings.clear();
         List<String> paths = new ArrayList<String>();
-        
+
         splitIntoList(System.getenv("QT_PLUGIN_PATH"), paths);
         splitIntoList(System.getProperty("com.trolltech.qt.plugin-path"), paths);
-        
+
         for (String path : paths) {
             loadPluginsFromPath(path + "/qtjambi");
         }
+
+        if (warnings.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : warnings)
+                sb.append(s).append("\n");
+            QMessageBox.warning(null, "Custom widgets loading!", sb.toString());
+        }
     }
-    
+
     @SuppressWarnings("unused")
     private void loadPlugins(String path) {
         customWidgets.clear();
@@ -55,60 +63,67 @@ public class CustomWidgetManager {
             loadPluginsFromPath(paths[i]);
         }
     }
-    
-    private void loadPluginsFromPath(String path) {        
+
+    private void loadPluginsFromPath(String path) {
         QDir dir = new QDir(path);
         if (!new QFileInfo(dir.absolutePath()).exists()) {
-            System.err.println("CustomWidgetManager: plugin path doesn't exist: " + path);
+            warn("CustomWidgetManager: plugin path doesn't exist: " + path);
             return;
         }
-        
+
         List<String> nameFilters = new ArrayList<String>();
         nameFilters.add("*.xml");
         List<QFileInfo> plugins = dir.entryInfoList(nameFilters);
-        
+
         for (QFileInfo fi : plugins) {
             loadPlugin(fi.absoluteFilePath());
         }
     }
-    
+
     private void loadPlugin(String fileName) {
         QDomDocument doc = new QDomDocument();
         doc.setContent(new QFile(fileName));
-        
+
         QDomElement root = doc.firstChild().toElement();
-        
+
         QDomNodeList entries = root.childNodes();
-        
+
         for (int i=0; i<entries.size(); ++i) {
-            String errorPrefix = fileName + " : entry " + (i+1); 
-                
+            String errorPrefix = fileName + " : entry " + (i+1);
+
             QDomElement e = entries.at(i).toElement();
-            
+
             String className = e.attribute("class");
             if (className.length() == 0) {
                 warn(errorPrefix + "; missing 'class' attribute");
                 continue;
             }
-            
+
             try {
                 Class type = null;
                 try {
                     type = Class.forName(e.attribute("class"));
                 } catch (ClassNotFoundException f) {
-                    String classpaths[] = System.getProperty("com.trolltech.qtjambi.internal.current.classpath").split(System.getProperty("path.separator"));
-                    
-                    URL urls[] = new URL[classpaths.length];
-                    for (int j=0; j<classpaths.length; ++j) {
-                        urls[j] = new File(classpaths[j]).toURI().toURL();
-                    }
-                    
-                    URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
-                    type = loader.loadClass(e.attribute("class"));
+		    String classPathsProperty = System.getProperty("com.trolltech.qtjambi.internal.current.classpath");
+		    if (classPathsProperty != null) {
+			String classpaths[] = classPathsProperty.split(System.getProperty("path.separator"));
+
+			URL urls[] = new URL[classpaths.length];
+			for (int j=0; j<classpaths.length; ++j) {
+			    urls[j] = new File(classpaths[j]).toURI().toURL();
+			}
+
+			URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
+			type = loader.loadClass(e.attribute("class"));
+		    }
                 }
-                CustomWidget customWidget = new CustomWidget(type);                
+
+                if (type == null)
+                    throw new NullPointerException("Failed to load class: " + className);
+
+                CustomWidget customWidget = new CustomWidget(type);
                 customWidgets.add(customWidget);
-                
+
                 // The simple properties...
                 String group = e.attribute("group");
                 if (group.length() == 0)
@@ -127,10 +142,10 @@ public class CustomWidgetManager {
                     if (icon.isNull()) {
                         warn(errorPrefix + "; icon '" + iconPath + "' not loaded");
                         icon = null;
-                    }                        
+                    }
                 }
                 customWidget.setIcon(icon);
-                
+
                 // is it a container?
                 boolean isContainer = false;
                 String container = e.attribute("container");
@@ -139,30 +154,34 @@ public class CustomWidgetManager {
                     isContainer = container.equals("yes") || container.equals("true");
                 }
                 customWidget.setContainer(isContainer);
-                
+
             } catch (Exception ex) {
+                warn("class=" + className
+                     + ", file=" + fileName
+                     + ", error=" + ex.getMessage());
                 ex.printStackTrace();
             }
         }
-    }        
-    
-    private void warn(String s) {
-        System.err.println("CustomWidgetManager: " + s);
     }
-    
+
+    private void warn(String s) {
+        warnings.add(s);
+    }
+
     private List<CustomWidget> customWidgets = new ArrayList<CustomWidget>();
-    
+    private List<String> warnings = new ArrayList<String>();
+
     private static CustomWidgetManager instance;
-    
-    
-    
+
+
+
     public static void main(String[] args) {
         QApplication.initialize(args);
-        
+
         List<CustomWidget> list = instance().customWidgets();
         for (CustomWidget w : list)
             w.createWidget(null).show();
-        
+
         QApplication.exec();
     }
 

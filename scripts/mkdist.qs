@@ -599,6 +599,8 @@ function removeFiles() {
             files.push(name);
         else if (name.indexOf("/plugins/") >= 0 && name.endsWith(".lib"))
             files.push(name);
+	else if (name.endsWith(".debug"))
+	    files.push(name);
     });
 
     for (var i=0; i<files.length; ++i)

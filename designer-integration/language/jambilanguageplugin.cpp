@@ -24,6 +24,7 @@
 
 #include <QtGui>
 
+#define printf
 
 jclass class_ResourceBrowser;
 

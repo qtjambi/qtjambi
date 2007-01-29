@@ -173,10 +173,11 @@ class ArgumentModification : public CodeSnipAbstract
     public:
         ArgumentModification(int idx) : removed_default_expression(false), removed(false), disable_gc(false), index(idx) {}
 
-        int index;
-        uint disable_gc : 1;
-        uint removed : 1;
         uint removed_default_expression : 1;
+        uint removed : 1;
+        uint disable_gc : 1;
+        int index;
+
         QString modified_type;
         QString replaced_default_expression;
 };
@@ -690,9 +691,9 @@ private:
     QString m_package;
     QString m_default_superclass;
     QString m_qualified_cpp_name;
+    uint m_qobject : 1;
     bool m_polymorphic_base;
     QString m_polymorphic_id_value;
-    uint m_qobject : 1;
     QString m_lookup_name;
     ExpensePolicy m_expense_policy;
 };
