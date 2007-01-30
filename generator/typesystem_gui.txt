@@ -285,6 +285,7 @@
   <enum-type name="QGraphicsView::CacheModeFlag" flags="QGraphicsView::CacheMode"/>
   <enum-type name="QGraphicsView::DragMode"/>
   <enum-type name="QGraphicsView::ViewportAnchor"/>
+  <enum-type name="QGraphicsView::ViewportUpdateMode" />
   <enum-type name="QIcon::Mode"/>
   <enum-type name="QIcon::State"/>
   <enum-type name="QImage::Format"/>
@@ -625,10 +626,10 @@
     <modify-function signature="operator=(QTransform)">
         <remove />
     </modify-function>
-    <modify-function signature="rotate(double)">
+    <modify-function signature="rotate(double,Qt::Axis)">
         <remove />
     </modify-function>
-    <modify-function signature="rotateRadians(double)">
+    <modify-function signature="rotateRadians(double,Qt::Axis)">
         <remove />
     </modify-function>
     <modify-function signature="scale(double,double)">
@@ -2643,6 +2644,7 @@
     </inject-code>  
   </object-type>
   <object-type name="QIconEngine"/>
+  <object-type name="QIconEngineV2"/>
   <object-type name="QIconEngineFactoryInterface"/>
   <object-type name="QIconEnginePlugin"/>
   <object-type name="QImageIOHandlerFactoryInterface"/>

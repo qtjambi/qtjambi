@@ -369,6 +369,7 @@
   <enum-type name="QUrl::ParsingMode"/>
   <enum-type name="QUuid::Variant"/>
   <enum-type name="QUuid::Version"/>
+  <enum-type name="Qt::Axis" />
   <enum-type name="Qt::AnchorAttribute"/>
   <enum-type name="Qt::ApplicationAttribute"/>
   <enum-type name="Qt::ArrowType"/>
@@ -445,9 +446,8 @@
   </enum-type>
 
 
-  <enum-type name="QDataStream::Version">
+  <enum-type name="QDataStream::Version"> 
     <reject-enum-value name="Qt_4_1"/>
-    <reject-enum-value name="Qt_4_3"/>
   </enum-type>
 
   <enum-type name="QDir::SortFlag" flags="QDir::SortFlags">

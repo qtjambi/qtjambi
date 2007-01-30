@@ -7,6 +7,7 @@
     <rejection class="QDomNode" field-name="impl" />    
     
     <enum-type name="QDomNode::NodeType" />
+    <enum-type name="QDomNode::EncodingPolicy" />
     <enum-type name="QDomImplementation::InvalidDataPolicy" />
 
     <value-type name="QDomAttr">
