@@ -3391,23 +3391,28 @@
             <replace-type modified-type="com.trolltech.qt.gui.QPalette" />
             <conversion-rule>
                 jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "QPalette", "com/trolltech/qt/gui/", false);
-                jobject __invalidate_me = %out;
+                __invalidate_me = %out;
             </conversion-rule>
         </modify-argument>
+    </modify-function>
+    <modify-function class="shell" signature="polish(QPalette&amp;)">
+        <inject-code position="beginning">
+            jobject __invalidate_me;
+        </inject-code>
+        <inject-code position="end">
+            // In case someone keeps a reference to this object
+            qtjambi_invalidate_object(qtjambi_current_environment(), __invalidate_me);
+        </inject-code>
     </modify-function>
     <modify-function class="native" signature="polish(QPalette&amp;)">
         <modify-argument index="1">
             <conversion-rule>
                 QtJambiLink *link = QtJambiLink::findLink(__jni_env, %in);
                 Q_ASSERT(link != 0);
-                      
-                QPalette dummy;                                     
+
+                QPalette dummy;
                 QPalette &amp;%out = link != 0 ? * (QPalette *) link->pointer() : dummy;
             </conversion-rule>
-        </modify-argument>
-        <modify-argument index="0">
-            // In case someone keeps a reference to this object
-            qtjambi_invalidate_object(__jni_env, __invalidate_me);
         </modify-argument>
     </modify-function>
     
