@@ -31,8 +31,6 @@ macx:{
     }
 }
 
-CONFIG += release
-
 # make install related...
 !isEmpty(INSTALL_PREFIX) {
     target.path = $$INSTALL_PREFIX
@@ -71,8 +69,14 @@ include(../cpp/com_trolltech_examples_generator/com_trolltech_examples_generator
 HEADERS += \ 
          mywidget.h
 
-SOURCES += \
-         mywidget.cpp		
+SOURCES += gameaction.cpp \
+           gameanimation.cpp \
+           gamegrammar.cpp \
+           gameobject.cpp \
+           gamescene.cpp \
+           lookaction.cpp \
+           pickupaction.cpp \
+           useaction.cpp \
 
 mac { 
     CONFIG += ppc x86
