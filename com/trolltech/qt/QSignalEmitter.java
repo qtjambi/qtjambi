@@ -356,7 +356,7 @@ public class QSignalEmitter {
 
         protected final void emit_helper(Object... args) {
             currentSender = QSignalEmitter.this;            
-            if (currentSender.signalsBlocked())
+            if (QSignalEmitter.this.signalsBlocked())
                 return;
 
             if (inEmit)
