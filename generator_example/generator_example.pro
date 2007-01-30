@@ -64,10 +64,17 @@ DEFINES += QT_QTJAMBI_IMPORT
 win32-msvc2005:CONFIG += embed_manifest_dll
 include(../cpp/com_trolltech_examples_generator/com_trolltech_examples_generator.pri)
 
-
-
-HEADERS += \ 
-         mywidget.h
+HEADERS += gameaction.h \
+           gameanimation.h \
+           gamegrammar.h \
+           gamenamespace.h \
+           gameobject.h \
+           gamescene.h \
+           lookaction.h \
+           pickupaction.h \
+           useaction.h \
+           point3d.h \
+           abstractgameobject.h \
 
 SOURCES += gameaction.cpp \
            gameanimation.cpp \
