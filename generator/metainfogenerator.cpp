@@ -289,7 +289,7 @@ void MetaInfoGenerator::writeCppFile()
         if (s.device() != 0) {
             if (cls->typeEntry()->isObject() && !cls->typeEntry()->isQObject() && !cls->isInterface())
                 writeDestructors(s, cls);
-            writeCustomStructors(s, cls->typeEntry());           
+            writeCustomStructors(s, cls->typeEntry());
         }
 
         if (cls->typeEntry()->isPolymorphicBase())
@@ -325,8 +325,8 @@ void MetaInfoGenerator::writeCppFile()
                  ( (shouldGenerate(entry) && entry->isPrimitive())
                    || entry->isString()
                    || entry->isChar())) {
-                writeInitialization(s, entry);
-            }
+                        writeInitialization(s, entry, 0);
+                   }
         }
         writeRegisterSignalsAndSlots(s);
     }
@@ -336,7 +336,7 @@ void MetaInfoGenerator::writeCppFile()
 
         if (f != 0) {
             QTextStream s(f);
-            writeInitialization(s, cls->typeEntry(), shouldGenerate(cls));
+            writeInitialization(s, cls->typeEntry(), cls, shouldGenerate(cls));
         }
     }
 
@@ -399,24 +399,31 @@ void MetaInfoGenerator::writeCodeBlock(QTextStream &s, const QString &code)
     }
 }
 
-void MetaInfoGenerator::writeDestructors(QTextStream &s, const MetaJavaClass *cls)
+const MetaJavaClass* MetaInfoGenerator::lookupClassWithPublicDestructor(const MetaJavaClass *cls)
 {
-    const ComplexTypeEntry *entry = cls->typeEntry();
-    s << "void destructor_" << entry->javaPackage().replace(".", "_")  << "_"
-      << entry->lookupName().replace(".", "_").replace("$", "_") << "(void *ptr)" << endl
-      << "{" << endl;
-
-    // We can only delete classes with public destructors.
     while (cls != 0) {
         if (cls->hasPublicDestructor()) {
-            s << "    delete reinterpret_cast<" << cls->qualifiedCppName() << " *>(ptr);" << endl;
-            cls = 0;
+            return cls;
         } else {
             cls = cls->baseClass();
         }
     }
+    return 0;
+}
 
-    s << "}" << endl << endl;
+void MetaInfoGenerator::writeDestructors(QTextStream &s, const MetaJavaClass *cls)
+{
+    // We can only delete classes with public destructors
+    const MetaJavaClass *clsWithPublicDestructor = lookupClassWithPublicDestructor(cls);
+    if(clsWithPublicDestructor != 0)
+    {
+        const ComplexTypeEntry *entry = cls->typeEntry();
+        s   << "void destructor_" << entry->javaPackage().replace(".", "_")  << "_"
+            << entry->lookupName().replace(".", "_").replace("$", "_") << "(void *ptr)" << endl
+            << "{" << endl
+            << "    delete reinterpret_cast<" << clsWithPublicDestructor->qualifiedCppName() << " *>(ptr);" << endl
+            << "}" << endl << endl;
+    }
 }
 
 void MetaInfoGenerator::writeCustomStructors(QTextStream &s, const TypeEntry *entry)
@@ -572,7 +579,7 @@ void MetaInfoGenerator::writeInitializationFunctionName(QTextStream &s)
     s << "void __metainfo_init()";
 }
 
-void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *entry,
+void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *entry, const MetaJavaClass *cls,
                                             bool registerMetaType)
 {
     QString constructorName = entry->customConstructor().name;
@@ -599,9 +606,11 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
       << "    registerJavaToQt(\"" << javaName << "\", \"" << qtName << "\");" << endl;
     if (entry->isComplex() && entry->isObject() && !((ComplexTypeEntry *)entry)->isQObject() && !entry->isInterface()) {
         QString patchedName = QString(javaName).replace("/", "_").replace("$", "_");
-        s << "    registerDestructor(\"" << "### FIXME " << javaName << "\", destructor_" << patchedName << ");"
-          << endl;
 
+        if(lookupClassWithPublicDestructor(cls))
+        {
+            s << "    registerDestructor(\"" << "### FIXME " << javaName << "\", destructor_" << patchedName << ");" << endl;
+        }
     }
 
     if (!registerMetaType)

@@ -58,7 +58,7 @@ private:
     void writeInclude(QTextStream &s, const Include &inc);
     void writeIncludeStatements(QTextStream &s, const MetaJavaClassList &classList, const QString &package);
     void writeInitializationFunctionName(QTextStream &s);
-    void writeInitialization(QTextStream &s, const TypeEntry *entry, bool registerMetaType = true);
+    void writeInitialization(QTextStream &s, const TypeEntry *entry, const MetaJavaClass *cls, bool registerMetaType = true);
     void writeCustomStructors(QTextStream &s, const TypeEntry *entry);
     void writeDestructors(QTextStream &s, const MetaJavaClass *cls);
     void writeCodeBlock(QTextStream &s, const QString &code);
@@ -72,6 +72,8 @@ private:
     QString m_filenameStub;
 
     QHash<OutputDirectoryType, QString> m_out_dir;
+
+    const MetaJavaClass* lookupClassWithPublicDestructor(const MetaJavaClass *cls);
 };
 
 #endif // METAINFOGENERATOR_H
