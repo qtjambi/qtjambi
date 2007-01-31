@@ -94,7 +94,9 @@
         %JNITYPEArray %out = __jni_env->New%JAVATYPEArray((int) %len);
         __jni_env->Set%JAVATYPEArrayRegion(%out, 0, (int) %len, (%JNITYPE *) %in);
         %JNITYPE *__ptr = (%JNITYPE *) %in;
+        Q_UNUSED(__ptr);
         %JNITYPEArray __array = %out;
+        Q_UNUSED(__array);
     </template>
     
     <template name="core.cleanup_convert_primitive_array_to_java">
