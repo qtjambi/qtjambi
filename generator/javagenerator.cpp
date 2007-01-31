@@ -327,14 +327,28 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
     }
 }
 
-void JavaGenerator::writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg,
-                                               const QString &indent)
+static QString function_call_for_ownership(TypeSystem::Ownership owner) 
+{
+    if (owner == TypeSystem::CppOwnership) {
+        return "disableGarbageCollection()";
+    } else if (owner == TypeSystem::JavaOwnership) {
+        return "enableGarbageCollection()";
+    } else if (owner == TypeSystem::SplitOwnership) {
+        return "splitOwnership()";
+    } else {
+        Q_ASSERT(false);
+        return "bogus()";
+    }
+}
+
+void JavaGenerator::writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership owner, 
+                                               MetaJavaArgument *arg, const QString &indent)
 {
     Q_ASSERT(arg->type()->isContainer());
 
     s << indent << "for (" << arg->type()->instantiations().at(0)->fullName() << " i : "
                 << arg->argumentName() << ")" << endl
-      << indent << "    if (i != null) i.disableGarbageCollection();" << endl;
+      << indent << "    if (i != null) i." << function_call_for_ownership(owner) << ";" << endl;
 }
 
 void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function)
@@ -349,22 +363,26 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
     MetaJavaArgumentList arguments = java_function->arguments();
 
-    if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, -1) && !java_function->isConstructor())
-        s << "        this.disableGarbageCollection();" << endl;
-
+    if (!java_function->isConstructor()) {
+        TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, -1);
+        if (owner != TypeSystem::InvalidOwnership)
+            s << "        this." << function_call_for_ownership(owner) << ";" << endl;
+    }
+       
     for (int i=0; i<arguments.count(); ++i) {
         MetaJavaArgument *arg = arguments.at(i);
         MetaJavaType *type = arg->type();
 
         if (!java_function->argumentRemoved(i+1)) {
-            if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, i+1)) {
+            TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, i+1);
+            if (owner != TypeSystem::InvalidOwnership) {
                 s << "        "
                 << "if (" << arg->argumentName() << " != null) {" << endl;
 
                 if (arg->type()->isContainer())
-                    writeDisableGCForContainer(s, arg, "            ");
+                    writeOwnershipForContainer(s, owner, arg, "            ");
                 else
-                    s << "            " << arg->argumentName() << ".disableGarbageCollection();" << endl;
+                    s << "            " << arg->argumentName() << "." << function_call_for_ownership(owner) << ";" << endl;
                 s << "        }" << endl;
             }
 
@@ -410,7 +428,8 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
         && (!new_return_type.isEmpty() || return_type != 0);
 
     if (has_return_type) {
-        if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, 0)) {
+        TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, 0);
+        if (owner != TypeSystem::InvalidOwnership) {
             if (new_return_type.isEmpty())
                 s << translateType(return_type);
             else
@@ -462,22 +481,26 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     if (return_type && (return_type->isJavaEnum() || return_type->isJavaFlags()))
         s << ")";
 
-    if (has_return_type && java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, 0)) {
+    TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, 0);
+    if (has_return_type && owner != TypeSystem::InvalidOwnership) {
         s << ";" << endl
-          << "        if (__qt_return_value != null) __qt_return_value.disableGarbageCollection();" << endl
+          << "        if (__qt_return_value != null) __qt_return_value." << function_call_for_ownership(owner) << ";" << endl
           << "        return __qt_return_value";
     }
     s << ";" << endl;
 
-    if (java_function->disabledGarbageCollection(java_function->implementingClass(), CodeSnip::JavaCode, -1) && java_function->isConstructor())
-        s << "        this.disableGarbageCollection();" << endl;
+    if (java_function->isConstructor()) {
+        TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, -1);
+        if (owner != TypeSystem::InvalidOwnership && java_function->isConstructor())
+            s << "        this." << function_call_for_ownership(owner) << ";" << endl;
+    }
 }
 
 void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_function)
 {
     Q_ASSERT(java_function->isSignal());
 
-    if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
+    if (java_function->isModifiedRemoved(TypeSystem::JavaCode))
         return ;
 
     MetaJavaArgumentList arguments = java_function->arguments();
@@ -508,24 +531,22 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
     QString signalName = java_function->name();
     FunctionModificationList mods = java_function->modifications(java_function->implementingClass());
     foreach (FunctionModification mod, mods) {
-        if (mod.language == CodeSnip::JavaCode) {
-            if (mod.isAccessModifier()) {
-                exclude_attributes |= MetaJavaAttributes::Public
-                                    | MetaJavaAttributes::Protected
-                                    | MetaJavaAttributes::Private
-                                    | MetaJavaAttributes::Friendly;
+        if (mod.isAccessModifier()) {
+            exclude_attributes |= MetaJavaAttributes::Public
+                                | MetaJavaAttributes::Protected
+                                | MetaJavaAttributes::Private
+                                | MetaJavaAttributes::Friendly;
 
-                if (mod.isPublic())
-                    include_attributes |= MetaJavaAttributes::Public;
-                else if (mod.isProtected())
-                    include_attributes |= MetaJavaAttributes::Protected;
-                else if (mod.isPrivate())
-                    include_attributes |= MetaJavaAttributes::Private;
-                else if (mod.isFriendly())
-                    include_attributes |= MetaJavaAttributes::Friendly;
+            if (mod.isPublic())
+                include_attributes |= MetaJavaAttributes::Public;
+            else if (mod.isProtected())
+                include_attributes |= MetaJavaAttributes::Protected;
+            else if (mod.isPrivate())
+                include_attributes |= MetaJavaAttributes::Private;
+            else if (mod.isFriendly())
+                include_attributes |= MetaJavaAttributes::Friendly;
 
-                exclude_attributes &= ~(include_attributes);
-            }
+            exclude_attributes &= ~(include_attributes);
         }
     }
 
@@ -561,24 +582,22 @@ void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
 {
     FunctionModificationList mods = java_function->modifications(java_class);
     foreach (FunctionModification mod, mods) {
-        if (mod.language == CodeSnip::JavaCode) {
-            if (mod.isAccessModifier()) {
-                *exclude_attributes |= MetaJavaAttributes::Public
-                                    | MetaJavaAttributes::Protected
-                                    | MetaJavaAttributes::Private
-                                    | MetaJavaAttributes::Friendly;
+        if (mod.isAccessModifier()) {
+            *exclude_attributes |= MetaJavaAttributes::Public
+                                | MetaJavaAttributes::Protected
+                                | MetaJavaAttributes::Private
+                                | MetaJavaAttributes::Friendly;
 
-                if (mod.isPublic())
-                    *include_attributes |= MetaJavaAttributes::Public;
-                else if (mod.isProtected())
-                    *include_attributes |= MetaJavaAttributes::Protected;
-                else if (mod.isPrivate())
-                    *include_attributes |= MetaJavaAttributes::Private;
-                else if (mod.isFriendly())
-                    *include_attributes |= MetaJavaAttributes::Friendly;
+            if (mod.isPublic())
+                *include_attributes |= MetaJavaAttributes::Public;
+            else if (mod.isProtected())
+                *include_attributes |= MetaJavaAttributes::Protected;
+            else if (mod.isPrivate())
+                *include_attributes |= MetaJavaAttributes::Private;
+            else if (mod.isFriendly())
+                *include_attributes |= MetaJavaAttributes::Friendly;
 
-                *exclude_attributes &= ~(*include_attributes);
-            }
+            *exclude_attributes &= ~(*include_attributes);
         }
     }
 }
@@ -626,7 +645,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
                                   uint included_attributes, uint excluded_attributes)
 {
 
-    if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
+    if (java_function->isModifiedRemoved(TypeSystem::JavaCode))
         return ;
     QString functionName = java_function->name();
     setupForFunction(java_function, &included_attributes, &excluded_attributes);
@@ -1293,7 +1312,7 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const MetaJavaClass *jav
 
     CodeSnipList code_snips = class_type->codeSnips();
     foreach (const CodeSnip &snip, code_snips) {
-        if (snip.language == CodeSnip::JavaCode) {
+        if (snip.language == TypeSystem::JavaCode) {
             s << snip.code() << endl;
         }
     }

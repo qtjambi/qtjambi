@@ -359,13 +359,6 @@ public:
         NotEqual                    = 0x1000
     };
 
-    enum FunctionContext {
-        JavaFunction        = 0x1,
-        CppShellFunction    = 0x2,
-        CppNativeFunction   = 0x4,
-        AllTypes            = 0xf
-    };
-
     MetaJavaFunction()
         : m_function_type(NormalFunction),
           m_type(0),
@@ -403,7 +396,7 @@ public:
         return false;
     }
 
-    bool isModifiedRemoved(int types = AllTypes) const;
+    bool isModifiedRemoved(int types = TypeSystem::All) const;
 
     MetaJavaType *type() const { return m_type; }
     void setType(MetaJavaType *type) { m_type = type; }
@@ -454,12 +447,17 @@ public:
 
     QString replacedDefaultExpression(const MetaJavaClass *cls, int idx) const;
     bool removedDefaultExpression(const MetaJavaClass *cls, int idx) const;
-    QString conversionRule(CodeSnip::Language language, int idx) const;
-    bool disabledGarbageCollection(const MetaJavaClass *cls, CodeSnip::Language language, int idx) const;
-    bool disabledGarbageCollection(const MetaJavaClass *cls, int idx) const;
+    QString conversionRule(TypeSystem::Language language, int idx) const;
+
+    // Returns whether garbage collection is disabled for the argument in any context
+    bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int key) const;
+
+    // Returns the ownership rules for the given argument in the given context
+    TypeSystem::Ownership ownership(const MetaJavaClass *cls, TypeSystem::Language language, int idx) const;
+
     QString typeReplaced(int argument_index) const;
     bool isRemovedFromAllLanguages(const MetaJavaClass *) const;
-    bool isRemovedFrom(const MetaJavaClass *, CodeSnip::Language language) const;
+    bool isRemovedFrom(const MetaJavaClass *, TypeSystem::Language language) const;
     bool argumentRemoved(int) const;
 
     bool hasModifications(const MetaJavaClass *implementor) const;

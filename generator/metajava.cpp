@@ -128,32 +128,8 @@ bool MetaJavaFunction::isModifiedRemoved(int types) const
         if (!mod.isRemoveModifier())
             continue;
 
-        if (!mod.isExclusive())
+        if ((mod.removal & types) == types)
             return true;
-
-        switch (mod.language) {
-        case CodeSnip::JavaCode:
-            if (types & JavaFunction)
-                return true;
-            else
-                break ;
-
-        case CodeSnip::ShellDeclaration:
-        case CodeSnip::ShellCode:
-            if (types & CppShellFunction)
-                return true;
-            else
-                break ;
-
-        case CodeSnip::NativeCode:
-            if (types & CppNativeFunction)
-                return true;
-            else
-                break ;
-
-        case CodeSnip::PackageInitializer:
-            break;
-        }
     }
 
     return false;
@@ -367,18 +343,18 @@ bool MetaJavaFunction::removedDefaultExpression(const MetaJavaClass *cls, int ke
 }
 
 
-QString MetaJavaFunction::conversionRule(CodeSnip::Language language, int key) const
+QString MetaJavaFunction::conversionRule(TypeSystem::Language language, int key) const
 {
     FunctionModificationList modifications = this->modifications(declaringClass());
     foreach (FunctionModification modification, modifications) {
-        if (modification.language == language) {
-            QList<ArgumentModification> argument_modifications = modification.argument_mods;
-            foreach (ArgumentModification argument_modification, argument_modifications) {
-                if (argument_modification.index == key) {
-                    if (!argument_modification.code().isEmpty()) {
-                        return argument_modification.code();
-                    }
-                }
+        QList<ArgumentModification> argument_modifications = modification.argument_mods;
+        foreach (ArgumentModification argument_modification, argument_modifications) {
+            if (argument_modification.index != key)
+                continue;
+
+            foreach (CodeSnip snip, argument_modification.conversion_rules) {
+                if (snip.language == language && !snip.code().isEmpty())
+                    return snip.code();
             }
         }
     }
@@ -409,53 +385,45 @@ bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int k
     foreach (FunctionModification modification, modifications) {
         QList<ArgumentModification> argument_modifications = modification.argument_mods;
         foreach (ArgumentModification argument_modification, argument_modifications) {
-            if (argument_modification.index == key
-                && argument_modification.disable_gc) {
-                return true;
+            if (argument_modification.index != key)
+                continue;
+    
+            foreach (TypeSystem::Ownership ownership, argument_modification.ownerships.values()) {
+                if (ownership == TypeSystem::CppOwnership)
+                    return true;
             }
+
         }
     }
 
     return false;
 }
 
-bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, CodeSnip::Language language, int key) const
+TypeSystem::Ownership MetaJavaFunction::ownership(const MetaJavaClass *cls, TypeSystem::Language language, int key) const
 {
     FunctionModificationList modifications = this->modifications(cls);
     foreach (FunctionModification modification, modifications) {
-        if (modification.language == language) {
-            QList<ArgumentModification> argument_modifications = modification.argument_mods;
-            foreach (ArgumentModification argument_modification, argument_modifications) {
-                if (argument_modification.index == key
-                    && argument_modification.disable_gc) {
-                    return true;
-                }
-            }
+        QList<ArgumentModification> argument_modifications = modification.argument_mods;
+        foreach (ArgumentModification argument_modification, argument_modifications) {
+            if (argument_modification.index == key) 
+                return argument_modification.ownerships.value(language, TypeSystem::InvalidOwnership);
         }
     }
 
-    return false;
+    return TypeSystem::InvalidOwnership;
 }
 
 bool MetaJavaFunction::isRemovedFromAllLanguages(const MetaJavaClass *cls) const
 {
-    FunctionModificationList modifications = this->modifications(cls);
-    foreach (FunctionModification modification, modifications) {
-        if (modification.isRemoveModifier() && !modification.isExclusive())
-            return true;
-    }
-
-    return false;
+    return isRemovedFrom(cls, TypeSystem::All);
 }
 
-bool MetaJavaFunction::isRemovedFrom(const MetaJavaClass *cls, CodeSnip::Language language) const
+bool MetaJavaFunction::isRemovedFrom(const MetaJavaClass *cls, TypeSystem::Language language) const
 {
     FunctionModificationList modifications = this->modifications(cls);
     foreach (FunctionModification modification, modifications) {
-        if (modification.isRemoveModifier()) {
-            if (!modification.isExclusive() || modification.language == language)
-                return true;
-        }
+        if ((modification.removal & language) == language)
+            return true;
     }
 
     return false;
@@ -1074,11 +1042,11 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
 
     foreach (MetaJavaFunction *f, m_functions) {
 
-        if ((query & NotRemovedFromJava) && f->isRemovedFrom(f->declaringClass(), CodeSnip::JavaCode)) {
+        if ((query & NotRemovedFromJava) && f->isRemovedFrom(f->declaringClass(), TypeSystem::JavaCode)) {
             continue;
         }
 
-        if ((query & NotRemovedFromShell) && f->isRemovedFrom(f->declaringClass(), CodeSnip::ShellCode)) {
+        if ((query & NotRemovedFromShell) && f->isRemovedFrom(f->declaringClass(), TypeSystem::ShellCode)) {
             continue;
         }
 

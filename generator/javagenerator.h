@@ -54,7 +54,7 @@ public:
     void writeFunctionArguments(QTextStream &s, const MetaJavaFunction *java_function,
         int count = -1, uint options = 0);
     void writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function);
-    void writeDisableGCForContainer(QTextStream &s, MetaJavaArgument *arg,
+    void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, MetaJavaArgument *arg,
                                     const QString &indent);
     void writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function);
     void writeJavaLangObjectOverrideFunctions(QTextStream &s, const MetaJavaClass *cls);

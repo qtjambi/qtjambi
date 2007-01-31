@@ -2021,132 +2021,114 @@
     
     <modify-function signature="readData(char*,long long)">
         <modify-argument index="0">
-            <replace-type modified-type="int" />
-            <conversion-rule>
+            <replace-type modified-type="int" />            
+            <conversion-rule class="native">
                 <insert-template name="core.iodevice_cleanup" />                                    
             </conversion-rule>
-        </modify-argument>
-        <modify-argument index="1">
-            <replace-type modified-type="byte[]" />
-            <conversion-rule>
-                <insert-template name="core.iodevice_convert_char*_to_byte[]">
-                    <replace from="%len" to="%2" />
-                </insert-template>
-            </conversion-rule>
-        </modify-argument>
-        <modify-argument index="2">
-            <remove-argument />
-            <conversion-rule>
-                // nothing
-            </conversion-rule>
-        </modify-argument>
-    </modify-function>
-    <modify-function class="native" signature="readData(char*,long long)">
-        <modify-argument index="0">
-            <replace-type modified-type="int" />
-            <conversion-rule>                
+            <conversion-rule class="shell">
                 qint64 %out = %in;
                 <insert-template name="core.iodevice_cleanup_to_java">
                     <replace from="%len" to="(int) %in" />
                 </insert-template>                        
-            </conversion-rule>
-        </modify-argument>    
-        <modify-argument index="1">
-            <conversion-rule>                
-                <insert-template name="core.iodevice_convert_byte[]_to_char*" />
-            </conversion-rule>
+            </conversion-rule>            
         </modify-argument>
+        
+        <modify-argument index="1">
+            <replace-type modified-type="byte[]" />
+            <conversion-rule class="shell">
+                <insert-template name="core.iodevice_convert_char*_to_byte[]">
+                    <replace from="%len" to="%2" />
+                </insert-template>
+            </conversion-rule>
+            <conversion-rule class="native">
+                <insert-template name="core.iodevice_convert_byte[]_to_char*" />
+            </conversion-rule>            
+        </modify-argument>
+        
         <modify-argument index="2">
-            <conversion-rule>
+            <remove-argument />
+            <conversion-rule class="shell">
+                // nothing
+            </conversion-rule>
+            <conversion-rule class="native">
                 <insert-template name="core.get_array_length">
                     <replace from="%ARRAY" to="%1" />
                 </insert-template>
-            </conversion-rule>
-        </modify-argument>        
+            </conversion-rule>            
+        </modify-argument>
     </modify-function>
     
     <modify-function signature="writeData(const char*,long long)">
         <modify-argument index="1">
             <replace-type modified-type="byte[]" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="core.iodevice_convert_char*_to_byte[]">
                     <replace from="%len" to="%2" />
                 </insert-template>
             </conversion-rule>
+            <conversion-rule class="native">
+                <insert-template name="core.iodevice_convert_byte[]_to_char*" />
+            </conversion-rule>            
         </modify-argument>
+        
         <modify-argument index="2">
             <remove-argument />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 // nothing
             </conversion-rule>
+            <conversion-rule class="native">
+                <insert-template name="core.get_array_length">
+                    <replace from="%ARRAY" to="%1" />
+                </insert-template>
+            </conversion-rule>            
         </modify-argument>
+        
         <modify-argument index="0">
             <replace-type modified-type="int" />        
-            <conversion-rule>
+            <conversion-rule class="native">
                 <insert-template name="core.iodevice_cleanup" />                    
             </conversion-rule>
         </modify-argument>    
     </modify-function>
-    <modify-function class="native" signature="writeData(const char*,long long)">
-        <modify-argument index="1">
-            <conversion-rule>                
-                <insert-template name="core.iodevice_convert_byte[]_to_char*" />
-            </conversion-rule>
-        </modify-argument>
-        <modify-argument index="2">
-            <conversion-rule>
-                <insert-template name="core.get_array_length">
-                    <replace from="%ARRAY" to="%1" />
-                </insert-template>
-            </conversion-rule>
-        </modify-argument>        
-    </modify-function>
-    
+        
     <modify-function signature="readLineData(char*,long long)">
         <modify-argument index="1">
             <replace-type modified-type="byte[]" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="core.iodevice_convert_char*_to_byte[]">
                     <replace from="%len" to="%2" />
                 </insert-template>
             </conversion-rule>
+            <conversion-rule class="native">
+                <insert-template name="core.iodevice_convert_byte[]_to_char*" />
+            </conversion-rule>            
         </modify-argument>
+        
         <modify-argument index="2">
             <remove-argument />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 // nothing
             </conversion-rule>
-        </modify-argument>
-        <modify-argument index="0">
-            <replace-type modified-type="int" />
-            <conversion-rule>
-                <insert-template name="core.iodevice_cleanup" />                    
-            </conversion-rule>
-        </modify-argument>    
-    </modify-function>   
-    <modify-function class="native" signature="readLineData(char*,long long)">    
-        <modify-argument index="1">
-            <conversion-rule>                
-                <insert-template name="core.iodevice_convert_byte[]_to_char*" />
-            </conversion-rule>
-        </modify-argument>
-        <modify-argument index="2">
-            <conversion-rule>
+            <conversion-rule class="native">
                 <insert-template name="core.get_array_length">
                     <replace from="%ARRAY" to="%1" />
                 </insert-template>
-            </conversion-rule>
-        </modify-argument>        
+            </conversion-rule>            
+        </modify-argument>
+        
         <modify-argument index="0">
-            <conversion-rule>
+            <replace-type modified-type="int" />
+            <conversion-rule class="native">
+                <insert-template name="core.iodevice_cleanup" />                    
+            </conversion-rule>
+            <conversion-rule class="shell">
                 qint64 %out = %in;
                 <insert-template name="core.iodevice_cleanup_to_java">
                     <replace from="%len" to="(int) %in" />
                 </insert-template>                        
-            </conversion-rule>
-        </modify-argument>
-    </modify-function>   
-    
+            </conversion-rule>            
+        </modify-argument>    
+    </modify-function>       
   </object-type>
   
   <object-type name="QLibraryInfo"/>
@@ -2158,7 +2140,7 @@
   <object-type name="QTextCodec">          
     <modify-function signature="QTextCodec()">
         <modify-argument index="-1">
-            <disable-gc />
+            <define-ownership class="java" owner="c++" />
         </modify-argument>
     </modify-function>
   
@@ -2177,7 +2159,7 @@
     <modify-function signature="convertFromUnicode(const QChar*,int,QTextCodec_ConverterState*)const">
         <modify-argument index="1">
             <replace-type modified-type="char[]" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 // Convert directly QChar * -> ushort *
                 <insert-template name="core.convert_primitive_array_to_java">
                     <replace from="%JNITYPE" to="jchar" />
@@ -2185,9 +2167,18 @@
                     <replace from="%len" to="%2" />
                 </insert-template>
             </conversion-rule>
+            <conversion-rule class="native">
+                // Convert directly ushort * -> QChar *
+                <insert-template name="core.convert_primitive_array_from_java">
+                    <replace from="%CTYPE" to="ushort" />
+                    <replace from="%JAVATYPE" to="Char" />
+                    <replace from="%JNITYPE" to="jchar" />
+                </insert-template>
+            </conversion-rule>            
         </modify-argument>        
+        
         <modify-argument index="0">
-            <conversion-rule>
+            <conversion-rule class="native">
                 jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "QByteArray", "com/trolltech/qt/core/", true);
                 <insert-template name="core.cleanup_convert_primitive_array_from_java">
                     <replace from="%JNITYPE" to="jchar" />
@@ -2196,32 +2187,28 @@
             </conversion-rule>
         </modify-argument>
     </modify-function>
-    <modify-function class="native" signature="convertFromUnicode(const QChar*,int,QTextCodec_ConverterState*)const">
-        <modify-argument index="1">
-            <conversion-rule>
-                // Convert directly ushort * -> QChar *
-                <insert-template name="core.convert_primitive_array_from_java">
-                    <replace from="%CTYPE" to="ushort" />
-                    <replace from="%JAVATYPE" to="Char" />
-                    <replace from="%JNITYPE" to="jchar" />
-                </insert-template>
-            </conversion-rule>
-        </modify-argument>
-    </modify-function>
-    
+        
     <modify-function signature="convertToUnicode(const char*,int,QTextCodec_ConverterState*)const">        
         <modify-argument index="1">
             <replace-type modified-type="byte[]" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="core.convert_primitive_array_to_java">
                     <replace from="%JNITYPE" to="jbyte" />
                     <replace from="%JAVATYPE" to="Byte" />
                     <replace from="%len" to="%2" />
                 </insert-template>                
             </conversion-rule>
+            <conversion-rule class="native">               
+                <insert-template name="core.convert_primitive_array_from_java">
+                    <replace from="%CTYPE" to="char" />
+                    <replace from="%JAVATYPE" to="Byte" />
+                    <replace from="%JNITYPE" to="jbyte" />
+                </insert-template>
+            </conversion-rule>            
         </modify-argument>
+        
         <modify-argument index="0">
-            <conversion-rule>
+            <conversion-rule class="native">
                 jstring %out = qtjambi_from_qstring(__jni_env, %in);
                 <insert-template name="core.cleanup_convert_primitive_array_from_java">
                     <replace from="%JNITYPE" to="jbyte" />
@@ -2230,18 +2217,7 @@
             </conversion-rule>
         </modify-argument>        
     </modify-function>
-    <modify-function class="native" signature="convertToUnicode(const char*,int,QTextCodec_ConverterState*)const">        
-        <modify-argument index="1">
-            <conversion-rule>               
-                <insert-template name="core.convert_primitive_array_from_java">
-                    <replace from="%CTYPE" to="char" />
-                    <replace from="%JAVATYPE" to="Byte" />
-                    <replace from="%JNITYPE" to="jbyte" />
-                </insert-template>
-            </conversion-rule>
-        </modify-argument>
-    </modify-function>
-            
+                
     <modify-function signature="codecForName(const char*)  ">
         <access modifier="private" />
     </modify-function>
@@ -2291,26 +2267,35 @@
     <template name="core.qtranslator_latin1_char*_to_string">
         jstring %out = qtjambi_from_qstring(__jni_env, QString::fromLatin1(%in));
     </template>
-    <modify-function class="java" signature="translate(const char*,const char*,const char*)const">
+    <modify-function signature="translate(const char*,const char*,const char*)const">
         <modify-argument index="1">
             <replace-type modified-type="java.lang.String" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="core.qtranslator_latin1_char*_to_string" />        
             </conversion-rule>
+            <conversion-rule class="native">
+                <insert-template name="core.qtranslator_string_to_latin1_char*" />
+            </conversion-rule>            
         </modify-argument>
         
         <modify-argument index="2">
             <replace-type modified-type="java.lang.String" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="core.qtranslator_latin1_char*_to_string" />
             </conversion-rule>
+            <conversion-rule class="native">
+                <insert-template name="core.qtranslator_string_to_latin1_char*" />
+            </conversion-rule>            
         </modify-argument>
 
         <modify-argument index="3">
             <replace-type modified-type="java.lang.String" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="core.qtranslator_latin1_char*_to_string" />
             </conversion-rule>
+            <conversion-rule class="native">
+                <insert-template name="core.qtranslator_string_to_latin1_char*" />
+            </conversion-rule>            
         </modify-argument>
         
     </modify-function>
@@ -2318,31 +2303,7 @@
     <template name="core.qtranslator_string_to_latin1_char*">
         QByteArray ba_%out = qtjambi_to_qstring(__jni_env, (jstring) %in).toLatin1();
         const char *%out = ba_%out.constData();
-    </template>
-    
-    <modify-function class="native" signature="translate(const char*,const char*,const char*)const">
-        <modify-argument index="1">
-            <replace-type modified-type="java.lang.String" />
-            <conversion-rule>
-                <insert-template name="core.qtranslator_string_to_latin1_char*" />
-            </conversion-rule>
-        </modify-argument>
-        
-        <modify-argument index="2">
-            <replace-type modified-type="java.lang.String" />
-            <conversion-rule>
-                <insert-template name="core.qtranslator_string_to_latin1_char*" />
-            </conversion-rule>
-        </modify-argument>
-
-        <modify-argument index="3">
-            <replace-type modified-type="java.lang.String" />
-            <conversion-rule>
-                <insert-template name="core.qtranslator_string_to_latin1_char*" />
-            </conversion-rule>
-        </modify-argument>
-        
-    </modify-function>        
+    </template>    
   </object-type>
   
   <object-type name="QWaitCondition"/>
@@ -2446,9 +2407,9 @@
   </object-type>
 
   <object-type name="QAbstractFileEngineHandler">
-    <modify-function class="shell" signature="create(const QString &amp;) const">
+    <modify-function signature="create(const QString &amp;) const">
         <modify-argument index="return">
-            <disable-gc />
+            <define-ownership owner="c++" class="shell" />
         </modify-argument>
     </modify-function>
   </object-type>
@@ -2526,7 +2487,7 @@
         <include file-name="QStringList" location="global"/>
         <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>
-    <modify-function class="java" signature="QCoreApplication(int &amp;, char  **)">
+    <modify-function signature="QCoreApplication(int &amp;, char  **)">
       <access modifier="private" />
     </modify-function>     
     
@@ -2568,9 +2529,9 @@
         }
     </inject-code>
     
-    <modify-function class="java" signature="postEvent(QObject*,QEvent*)">
+    <modify-function signature="postEvent(QObject*,QEvent*)">
         <modify-argument index="2">
-            <disable-gc />  
+            <define-ownership class="java" owner="c++" />  
         </modify-argument>
     </modify-function>    
     <inject-code class="java">
@@ -2628,7 +2589,7 @@
 
     private static com.trolltech.qt.QNativePointer argc, argv;
     </inject-code>
-    <modify-function class="shell" signature="notify(QObject *, QEvent *)"> 
+    <modify-function signature="notify(QObject *, QEvent *)"> 
         <inject-code class="shell">        
         <argument-map position="2" meta-name="event"/>
 	#if QT_VERSION &lt; 0x040300

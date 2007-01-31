@@ -491,6 +491,11 @@ int QtJambiLink::indexQtSlot(const QByteArray &slot) const
 
 void QtJambiLink::disableGarbageCollection(JNIEnv *env, jobject obj)
 {
+    setCppOwnership(env, obj);
+}
+
+void QtJambiLink::setCppOwnership(JNIEnv *env, jobject obj)
+{
     if (isGlobalReference())
         return;
 
@@ -501,6 +506,16 @@ void QtJambiLink::disableGarbageCollection(JNIEnv *env, jobject obj)
 
     m_java_object = global_ref;
     m_global_ref = true;
+}
+
+void QtJambiLink::setJavaOwnership(JNIEnv *env, jobject obj)
+{
+    Q_ASSERT(false); // not implemented
+}
+
+void QtJambiLink::setSplitOwnership(JNIEnv *env, jobject obj)
+{
+    Q_ASSERT(false); // not implemented
 }
 
 QtJambiLinkUserData::~QtJambiLinkUserData()

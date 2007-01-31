@@ -58,6 +58,28 @@ typedef QMap<int, QString> ArgumentMap;
 
 class TemplateInstance;
 
+namespace TypeSystem {
+    enum Language {
+        NoLanguage          = 0x0000,
+        JavaCode            = 0x0001,
+        NativeCode          = 0x0002,        
+        ShellCode           = 0x0004,
+        ShellDeclaration    = 0x0008,
+        PackageInitializer  = 0x0010,
+
+        // masks
+        All                 = 0xffff,
+        JavaAndNativeCode   = 0x0003
+    };
+
+    enum Ownership {
+        InvalidOwnership,
+        SplitOwnership,
+        JavaOwnership,
+        CppOwnership
+    };
+};
+
 class CodeSnipFragment{
     private:
         const QString m_code;
@@ -143,43 +165,46 @@ class TemplateInstance
 class CodeSnip : public CodeSnipAbstract
 {
     public:
-        enum Language {
-            JavaCode,
-            NativeCode,
-            ShellCode,
-            ShellDeclaration,
-            PackageInitializer
-        };
-
         enum Position {
             Beginning,
             End
         };
 
-        CodeSnip() : language(JavaCode) { }
-        CodeSnip(Language lang) : language(lang) { }
+        CodeSnip() : language(TypeSystem::JavaCode) { }
+        CodeSnip(TypeSystem::Language lang) : language(lang) { }
 
         // Very simple, easy to make code ugly if you try
         QString formattedCode(const QString &_defaultIndent);
 
-        Language language;
+        TypeSystem::Language language;
         Position position;
         ArgumentMap argumentMap;
 };
 typedef QList<CodeSnip> CodeSnipList;
 
-class ArgumentModification : public CodeSnipAbstract
+struct ArgumentModification 
 {
-    public:
-        ArgumentModification(int idx) : removed_default_expression(false), removed(false), disable_gc(false), index(idx) {}
+    ArgumentModification(int idx) : removed_default_expression(false), removed(false), index(idx) 
+    {}
 
-        uint removed_default_expression : 1;
-        uint removed : 1;
-        uint disable_gc : 1;
-        int index;
+    // Should the default expression be removed?
+    uint removed_default_expression : 1;
+    uint removed : 1;
 
-        QString modified_type;
-        QString replaced_default_expression;
+    // The index of this argument
+    int index;
+
+    // The text given for the new type of the argument
+    QString modified_type;
+
+    // The text of the new default expression of the argument
+    QString replaced_default_expression;
+    
+    // The new definition of ownership for a specific argument
+    QHash<TypeSystem::Language, TypeSystem::Ownership> ownerships;        
+
+    // Different conversion rules
+    CodeSnipList conversion_rules;
 };
 
 struct Modification {
@@ -193,11 +218,9 @@ struct Modification {
         Readable =              0x0010,
         Writable =              0x0020,
 
-        Remove =                0x0100,
-        CodeInjection =         0x0200,
-        Rename =                0x0400,
-        Exclusive =             0x0800,
-        ReplaceExpression =     0x1000
+        CodeInjection =         0x0100,
+        Rename =                0x0200,
+        ReplaceExpression =     0x0800
     };
 
     Modification() : modifiers(0) { }
@@ -220,15 +243,14 @@ struct Modification {
 
 struct FunctionModification: public Modification
 {
-    FunctionModification() { }
+    FunctionModification() : removal(TypeSystem::NoLanguage) { }
 
     bool isCodeInjection() const { return modifiers & CodeInjection; }
-    bool isRemoveModifier() const { return modifiers & Remove; }
-    bool isExclusive() const { return modifiers & Exclusive; }
+    bool isRemoveModifier() const { return removal != TypeSystem::NoLanguage; }
 
     QString signature;
     CodeSnipList snips;
-    CodeSnip::Language language;
+    TypeSystem::Language removal;
 
     QList<ArgumentModification> argument_mods;
 };

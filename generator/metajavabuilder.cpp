@@ -942,7 +942,7 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
                 }
 
                 if (!java_function->isFinalInJava()
-                    && java_function->isRemovedFrom(java_class, CodeSnip::JavaCode)) {
+                    && java_function->isRemovedFrom(java_class, TypeSystem::JavaCode)) {
                     *java_function += MetaJavaAttributes::FinalInCpp;
                 }
 

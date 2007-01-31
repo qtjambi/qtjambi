@@ -175,7 +175,7 @@ void CppHeaderGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 */
 void CppHeaderGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_function)
 {
-    if (java_function->isModifiedRemoved(MetaJavaFunction::CppShellFunction))
+    if (java_function->isModifiedRemoved(TypeSystem::ShellCode))
         return;
 
     s << "    ";
@@ -186,7 +186,7 @@ void CppHeaderGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *j
 void CppHeaderGenerator::writePublicFunctionOverride(QTextStream &s,
                                                      const MetaJavaFunction *java_function)
 {
-    if (java_function->isModifiedRemoved(MetaJavaFunction::CppNativeFunction))
+    if (java_function->isModifiedRemoved(TypeSystem::NativeCode))
         return;
 
     s << "    ";
@@ -198,7 +198,7 @@ void CppHeaderGenerator::writePublicFunctionOverride(QTextStream &s,
 void CppHeaderGenerator::writeVirtualFunctionOverride(QTextStream &s,
                                                       const MetaJavaFunction *java_function)
 {
-    if (java_function->isModifiedRemoved(MetaJavaFunction::CppNativeFunction))
+    if (java_function->isModifiedRemoved(TypeSystem::NativeCode))
         return;
 
     s << "    ";
@@ -226,7 +226,7 @@ void CppHeaderGenerator::writeInjectedCode(QTextStream &s, const MetaJavaClass *
 {
     CodeSnipList code_snips = java_class->typeEntry()->codeSnips();
     foreach (const CodeSnip &cs, code_snips) {
-        if (cs.language == CodeSnip::ShellDeclaration) {
+        if (cs.language == TypeSystem::ShellDeclaration) {
             s << cs.code() << endl;
         }
     }

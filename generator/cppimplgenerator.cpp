@@ -597,7 +597,7 @@ void CppImplGenerator::writeExtraFunctions(QTextStream &s, const MetaJavaClass *
 
     CodeSnipList code_snips = class_type->codeSnips();
     foreach (const CodeSnip &snip, code_snips) {
-        if (snip.language == CodeSnip::ShellCode || snip.language == CodeSnip::NativeCode) {
+        if (snip.language == TypeSystem::ShellCode || snip.language == TypeSystem::NativeCode) {
             s << snip.code() << endl;
         }
     }
@@ -729,7 +729,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
 
 void CppImplGenerator::writeShellConstructor(QTextStream &s, const MetaJavaFunction *java_function)
 {
-    if (java_function->isModifiedRemoved(MetaJavaFunction::CppShellFunction))
+    if (java_function->isModifiedRemoved(TypeSystem::ShellCode))
         return;
 
     const MetaJavaClass *cls = java_function->ownerClass();
@@ -799,13 +799,14 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunctio
     }
 
     foreach (FunctionModification mod, mods) {
-        if (mod.language != CodeSnip::ShellCode)
-            continue ;
         if (mod.snips.count() <= 0)
             continue ;
 
         foreach (CodeSnip snip, mod.snips) {
             if (snip.position != position)
+                continue ;
+
+            if (snip.language != TypeSystem::ShellCode)
                 continue ;
 
             if (position == CodeSnip::End)
@@ -835,21 +836,34 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunctio
     }
 }
 
-void CppImplGenerator::writeDisableGarbageCollection(QTextStream &s,
-                                                     const MetaJavaFunction *java_function,
-                                                     const QString &var_name,
-                                                     int var_index,
-                                                     const MetaJavaClass *implementor)
+static QString function_call_for_ownership(TypeSystem::Ownership owner, const QString &var_name) 
 {
-    bool disabled = false;
+    if (owner == TypeSystem::CppOwnership) {
+        return "setCppOwnership(__jni_env, " + var_name + ")";
+    } else if (owner == TypeSystem::JavaOwnership) {
+        return "setJavaOwnership(__jni_env, " + var_name + ")";
+    } else if (owner == TypeSystem::SplitOwnership) {
+        return "setSplitOwnership(__jni_env, " + var_name + ")";
+    } else {
+        Q_ASSERT(false);
+        return "bogus()";
+    }
+}
+
+void CppImplGenerator::writeOwnership(QTextStream &s,
+                                      const MetaJavaFunction *java_function,
+                                      const QString &var_name,
+                                      int var_index,
+                                      const MetaJavaClass *implementor)
+{
+    TypeSystem::Ownership owner = TypeSystem::InvalidOwnership;
     const MetaJavaClass *cls = implementor;
-    while (cls != 0 && !disabled) {
-        if (disabled = java_function->disabledGarbageCollection(cls, CodeSnip::ShellCode, var_index))
-            break;
+    while (cls != 0 && owner == TypeSystem::InvalidOwnership) {
+        owner = java_function->ownership(cls, TypeSystem::ShellCode, var_index);
         cls = cls->baseClass();
     }
 
-    if (!disabled)
+    if (owner == TypeSystem::InvalidOwnership)
         return;
 
     if (var_index != -1) {
@@ -858,15 +872,16 @@ void CppImplGenerator::writeDisableGarbageCollection(QTextStream &s,
             Indentation indent;
             s << INDENT << "QtJambiLink *__link = QtJambiLink::findLink(__jni_env, "
                         << var_name << ");" << endl
-            << INDENT << "Q_ASSERT(__link != 0);" << endl
-            << INDENT << "__link->disableGarbageCollection(__jni_env, " << var_name << ");" << endl;
+            << INDENT << "Q_ASSERT(__link != 0);" << endl;
+
+            s << INDENT << "__link->" << function_call_for_ownership(owner, var_name) << ";" << endl;
         }
         s << INDENT << "}" << endl;
     } else {
         s << INDENT << "if (m_link) {" << endl;
         {
             Indentation indent;
-            s << INDENT << "m_link->disableGarbageCollection(__jni_env, m_link->javaObject(__jni_env));" << endl;
+            s << INDENT << "m_link->" << function_call_for_ownership(owner, "m_link->javaObject(__jni_env)") << ";" << endl;
         }
         s << INDENT << "}" << endl;
     }
@@ -906,7 +921,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             foreach (const MetaJavaArgument *argument, arguments) {
                 if (!java_function->argumentRemoved(argument->argumentIndex()+1)) {
                     if (!argument->type()->isPrimitive()
-                        || !java_function->conversionRule(CodeSnip::NativeCode, argument->argumentIndex()+1).isEmpty()) {
+                        || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex()+1).isEmpty()) {
                         writeQtToJava(s,
                                     argument->type(),
                                     argument->indexedName(),
@@ -918,7 +933,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             }
 
             for (int i=0; i<arguments.size(); ++i)
-                writeDisableGarbageCollection(s, java_function, "__java_" + arguments.at(i)->indexedName(), i+1, implementor);
+                writeOwnership(s, java_function, "__java_" + arguments.at(i)->indexedName(), i+1, implementor);
 
 
             MetaJavaType *function_type = java_function->type();
@@ -957,8 +972,8 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
                               java_function, 0);
             }
 
-            writeDisableGarbageCollection(s, java_function, "this", -1, implementor);
-            writeDisableGarbageCollection(s, java_function, "__java_return_value", 0, implementor);
+            writeOwnership(s, java_function, "this", -1, implementor);
+            writeOwnership(s, java_function, "__java_return_value", 0, implementor);
 
             s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
 
@@ -1169,7 +1184,7 @@ void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const MetaJavaFun
     MetaJavaArgumentList arguments = java_function->arguments();
     foreach (const MetaJavaArgument *argument, arguments) {
         if (!argument->type()->isPrimitive()
-            || !java_function->conversionRule(CodeSnip::NativeCode, argument->argumentIndex() + 1).isEmpty()) {
+            || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex() + 1).isEmpty()) {
                 writeJavaToQt(s,
                             argument->type(),
                             "__qt_" + argument->indexedName(),
@@ -1198,7 +1213,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
 {
     Q_ASSERT(java_class);
 
-    if (java_function->isModifiedRemoved(MetaJavaFunction::CppNativeFunction))
+    if (java_function->isModifiedRemoved(TypeSystem::NativeCode))
         return;
 
     const MetaJavaClass *cls = java_class ? java_class : java_function->ownerClass();
@@ -1685,7 +1700,7 @@ void CppImplGenerator::writeInterfaceCastFunction(QTextStream &s,
 }
 
 bool CppImplGenerator::writeConversionRule(QTextStream &s,
-                                           CodeSnip::Language target_language,
+                                           TypeSystem::Language target_language,
                                            const MetaJavaFunction *java_function,
                                            int argument_index,
                                            const QString &qt_name,
@@ -1700,7 +1715,8 @@ bool CppImplGenerator::writeConversionRule(QTextStream &s,
         QString qt_name_var;
         QString java_name_var;
 
-        if (target_language == CodeSnip::JavaCode) {
+        if ((argument_index == 0 && target_language == TypeSystem::NativeCode)
+             || (argument_index != 0 && target_language == TypeSystem::ShellCode)) {
             qt_name_var = "%in";
             java_name_var = "%out";
         } else {
@@ -1737,10 +1753,10 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
                                      const MetaJavaFunction *java_function,
                                      int argument_index)
 {
-    if (writeConversionRule(s, CodeSnip::NativeCode, java_function, argument_index,
-                            qt_name, java_name)) {
-        return;
-    }
+    // Conversion to C++: Shell code for return values, native code for arguments
+    TypeSystem::Language lang = argument_index == 0 ? TypeSystem::ShellCode : TypeSystem::NativeCode;
+    if (writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name))
+        return;    
 
     s << INDENT << shellClassName(java_class) << " *" << qt_name << " = ("
       << shellClassName(java_class) << " *) ";
@@ -1765,8 +1781,19 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
                                      int argument_index,
                                      Option options)
 {
-    if (java_function && writeConversionRule(s, CodeSnip::NativeCode,
-                                             java_function, argument_index, qt_name, java_name)) {
+    // Conversion to C++: Shell code for return values, native code for arguments
+    TypeSystem::Language lang = argument_index == 0 ? TypeSystem::ShellCode : TypeSystem::NativeCode;
+    if (java_function && writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name))
+        return;    
+
+    if (java_type == 0) {
+        QString warn = QString("no conversion possible for argument '%1' in function '%2::%3' for "
+                               "language '%4'")
+                               .arg(argument_index)
+                               .arg(java_function->implementingClass()->name())
+                               .arg(java_function->name())
+                               .arg(int(lang));
+        ReportHandler::warning(warn);
         return;
     }
 
@@ -1983,10 +2010,22 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
                                      int argument_index,
                                      Option option)
 {
-    if (java_function && writeConversionRule(s, CodeSnip::JavaCode,
-                                             java_function, argument_index, qt_name, java_name)) {
+    // Conversion to Java: Native code for return values, shell code for arguments
+    TypeSystem::Language lang = argument_index == 0 ? TypeSystem::NativeCode : TypeSystem::ShellCode;
+    if (java_function && writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name))
+        return;    
+
+    if (java_type == 0) {
+        QString warn = QString("no conversion possible for argument '%1' in function '%2::%3' for "
+                               "language '%4'")
+                               .arg(argument_index)
+                               .arg(java_function->implementingClass()->name())
+                               .arg(java_function->name())
+                               .arg(int(lang));
+        ReportHandler::warning(warn);
         return;
     }
+
 
     if (java_type->isArray() && java_type->arrayElementType()->isPrimitive()) {
         MetaJavaType *elementType = java_type->arrayElementType();
@@ -2125,8 +2164,19 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
                                               const MetaJavaFunction *java_function,
                                               int argument_index)
 {
-    if (java_function && writeConversionRule(s, CodeSnip::JavaCode,
-                                            java_function, argument_index, qt_name, java_name)) {
+    // Language for conversion to Java: Native code for return values and Shell code for arguments
+    TypeSystem::Language lang = argument_index == 0 ? TypeSystem::NativeCode : TypeSystem::ShellCode;
+    if (java_function && writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name))
+        return;
+
+    if (java_type == 0) {
+        QString warn = QString("no conversion possible for argument '%1' in function '%2::%3' for "
+                               "language '%4'")
+                               .arg(argument_index)
+                               .arg(java_function->implementingClass()->name())
+                               .arg(java_function->name())
+                               .arg(int(lang));
+        ReportHandler::warning(warn);
         return;
     }
 
@@ -2249,10 +2299,22 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
                                               const MetaJavaFunction *java_function,
                                               int argument_index)
 {
-    if (java_function && writeConversionRule(s, CodeSnip::JavaCode,
-                                             java_function, argument_index, qt_name, java_name)) {
+    // Conversion to C++: Shell code for return value, native code for arguments
+    TypeSystem::Language lang = argument_index == 0 ? TypeSystem::ShellCode : TypeSystem::NativeCode;
+    if (java_function && writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name)) 
+        return;
+
+    if (java_type == 0) {
+        QString warn = QString("no conversion possible for argument '%1' in function '%2::%3' for "
+                               "language '%4'")
+                               .arg(argument_index)
+                               .arg(java_function->implementingClass()->name())
+                               .arg(java_function->name())
+                               .arg(int(lang));
+        ReportHandler::warning(warn);
         return;
     }
+
 
     Q_ASSERT(java_type->isContainer());
     const ContainerTypeEntry *type =
@@ -2416,14 +2478,14 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
             }
         }
 
-        if ((!(options & NoCasts) && !enum_as_int)
-            || ((options & ForceEnumCast) && argument->type()->isEnum())) {
+        if ((!(options & NoCasts) && !enum_as_int) || ((options & ForceEnumCast) && argument->type()->isEnum())) {
             s << "(";
             writeTypeInfo(s, argument->type());
             s << ")";
         }
-            if (!argument->type()->isPrimitive()
-                || !java_function->conversionRule(CodeSnip::NativeCode, argument->argumentIndex()+1).isEmpty()) {
+
+        if (!argument->type()->isPrimitive() 
+            || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex()+1).isEmpty()) {
             s << prefix;
         }
         s << argument->indexedName();

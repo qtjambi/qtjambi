@@ -104,7 +104,7 @@ void QDocGenerator::writeOverload(QTextStream &s,
                                   const MetaJavaFunction *java_function,
                                   int arg_count)
 {
-    if (java_function->isModifiedRemoved(MetaJavaFunction::JavaFunction))
+    if (java_function->isModifiedRemoved(TypeSystem::JavaCode))
         return;
 
     uint included_attributes = 0;

@@ -138,6 +138,10 @@ public:
 
     void disableGarbageCollection(JNIEnv *env, jobject java);
 
+    void setCppOwnership(JNIEnv *env, jobject java);
+    void setJavaOwnership(JNIEnv *env, jobject java);
+    void setSplitOwnership(JNIEnv *env, jobject java);
+
     void setGlobalRef(JNIEnv *env, bool global);
 
     static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,

@@ -80,7 +80,7 @@ class StackElement
         ReplaceType              = 0x02000000,
         ReplaceDefaultExpression = 0x04000000,
         RemoveArgument           = 0x08000000,
-        DisableGC                = 0x10000000,
+        DefineOwnership          = 0x10000000,
         RemoveDefaultExpression  = 0x20000000,
         ArgumentModifiers        = 0xff000000
     };
@@ -128,7 +128,7 @@ public:
         tagNames["argument-map"] = StackElement::ArgumentMap;
         tagNames["suppress-warning"] = StackElement::SuppressedWarning;
         tagNames["load-typesystem"] = StackElement::LoadTypesystem;
-        tagNames["disable-gc"] = StackElement::DisableGC;
+        tagNames["define-ownership"] = StackElement::DefineOwnership;
         tagNames["replace-default-expression"] = StackElement::ReplaceDefaultExpression;
         tagNames["reject-enum-value"] = StackElement::RejectEnumValue;
         tagNames["replace-type"] = StackElement::ReplaceType;
@@ -262,7 +262,7 @@ bool Handler::endElement(const QString &, const QString &, const QString &)
         }else if(current->parent->type == StackElement::CustomMetaConstructor || current->parent->type == StackElement::CustomMetaConstructor){
             current->parent->value.customFunction->addTemplateInstance(current->value.templateInstance);
         }else if(current->parent->type == StackElement::ConversionRule){
-            m_function_mods.last().argument_mods.last().addTemplateInstance(current->value.templateInstance);
+            m_function_mods.last().argument_mods.last().conversion_rules.last().addTemplateInstance(current->value.templateInstance);
         }
         break;
     default:
@@ -289,7 +289,7 @@ bool Handler::characters(const QString &ch)
     }
 
     if (current->type == StackElement::ConversionRule){
-        m_function_mods.last().argument_mods.last().addCode(ch);
+        m_function_mods.last().argument_mods.last().conversion_rules.last().addCode(ch);
         return true;
     }
 
@@ -557,9 +557,12 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ReplaceDefaultExpression:
             attributes["with"] = QString();
             break;
+        case StackElement::DefineOwnership:
+            attributes["class"] = "java";
+            attributes["owner"] = "";
+            break;
         case StackElement::ModifyFunction:
             attributes["signature"] = QString();
-            attributes["class"] = "java";
             break;
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
@@ -587,24 +590,12 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ReplaceType:
             attributes["modified-type"] = QString();
             break;
-        case StackElement::InjectCode:
-            if (topElement.type == StackElement::ModifyFunction) {
-                FunctionModification mod = m_function_mods.last();
-
-                switch (mod.language) {
-                case CodeSnip::JavaCode: attributes["class"] = "java"; break;
-                case CodeSnip::NativeCode: attributes["class"] = "native"; break;
-                case CodeSnip::ShellCode: attributes["class"] = "shell"; break;
-                case CodeSnip::ShellDeclaration: attributes["class"] = "shell-declaration"; break;
-                case CodeSnip::PackageInitializer: break;
-                };
-            } else if (topElement.type == StackElement::Root) {
-                attributes["class"] = "library-initializer";
-
-            } else {
-                attributes["class"] = "java";
-            }
+        case StackElement::InjectCode:            
+            attributes["class"] = "java";
             attributes["position"] = "beginning";
+            break;
+        case StackElement::ConversionRule:
+            attributes["class"] = "";
             break;
         case StackElement::RejectEnumValue:
             attributes["name"] = "";
@@ -623,7 +614,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["enum-name"] = "*";
             break;
         case StackElement::Removal:
-            attributes["exclusive"] = "no";
+            attributes["class"] = "all";
             break;
         case StackElement::Template:
             attributes["name"] = QString();
@@ -708,7 +699,25 @@ bool Handler::startElement(const QString &, const QString &n,
                     m_error = "Conversion rules can only be specified for argument modification";
                     return false;
                 }
-            }
+
+                static QHash<QString, TypeSystem::Language> languageNames;
+                if (languageNames.isEmpty()) {
+                    languageNames["native"] = TypeSystem::NativeCode;
+                    languageNames["shell"] = TypeSystem::ShellCode;
+                }
+
+                CodeSnip snip;
+                QString languageAttribute = attributes["class"].toLower();
+                TypeSystem::Language lang = languageNames.value(languageAttribute, TypeSystem::NoLanguage);
+                if (lang == TypeSystem::NoLanguage) {
+                    m_error = QString("unsupported class attribute: '%1'").arg(languageAttribute);
+                    return false;
+                }
+
+                snip.language = lang;
+                m_function_mods.last().argument_mods.last().conversion_rules.append(snip);
+            }            
+
             break;
         case StackElement::ModifyArgument:
             {
@@ -733,20 +742,41 @@ bool Handler::startElement(const QString &, const QString &n,
                 m_function_mods.last().argument_mods.append(ArgumentModification(idx));
             }
             break;
-        case StackElement::DisableGC:
-            {
+        case StackElement::DefineOwnership:
+            {                
                 if (topElement.type != StackElement::ModifyArgument) {
-                    m_error = "disable-gc requires argument modification as parent";
+                    m_error = "define-ownership requires argument modification as parent";
                     return false;
                 }
 
-                CodeSnip::Language lang = m_function_mods.last().language;
-                if (lang != CodeSnip::JavaCode && lang != CodeSnip::ShellCode) {
-                    m_error = "You can only disable garbage collection in java and shell code";
+                static QHash<QString, TypeSystem::Language> languageNames;
+                if (languageNames.isEmpty()) {
+                    languageNames["java"] = TypeSystem::JavaCode;
+                    languageNames["shell"] = TypeSystem::ShellCode;
+                }
+
+                QString classAttribute = attributes["class"].toLower();
+                TypeSystem::Language lang = languageNames.value(classAttribute, TypeSystem::NoLanguage);
+                if (lang == TypeSystem::NoLanguage) {
+                    m_error = QString("unsupported class attribute: '%1'").arg(classAttribute);
                     return false;
                 }
 
-                m_function_mods.last().argument_mods.last().disable_gc = true;
+                static QHash<QString, TypeSystem::Ownership> ownershipNames;
+                if (ownershipNames.isEmpty()) {
+                    ownershipNames["java"] = TypeSystem::JavaOwnership;
+                    ownershipNames["c++"] = TypeSystem::CppOwnership;
+                    ownershipNames["split"] = TypeSystem::SplitOwnership;
+                }
+
+                QString ownershipAttribute = attributes["owner"].toLower();
+                TypeSystem::Ownership owner = ownershipNames.value(ownershipAttribute, TypeSystem::InvalidOwnership);
+                if (owner == TypeSystem::InvalidOwnership) {
+                    m_error = QString("unsupported owner attribute: '%1'").arg(ownershipAttribute);
+                    return false;
+                }
+
+                m_function_mods.last().argument_mods.last().ownerships[lang] = owner;
             }
             break;
         case StackElement::SuppressedWarning:
@@ -788,25 +818,35 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
             }
             break;
-        case StackElement::Rename:
         case StackElement::Removal:
-        case StackElement::Access:
             {
-                if (element->type == StackElement::Removal
-                    && topElement.type != StackElement::ModifyFunction) {
+                if (topElement.type != StackElement::ModifyFunction) {
                     m_error = "Function modification parent required";
                     return false;
                 }
 
-                if (topElement.type != StackElement::ModifyField
-                    && topElement.type != StackElement::ModifyFunction) {
-                    m_error = "Function or field modification parent required";
+                static QHash<QString, TypeSystem::Language> languageNames;
+                if (languageNames.isEmpty()) {
+                    languageNames["java"] = TypeSystem::JavaAndNativeCode;
+                    languageNames["all"] = TypeSystem::All;
+                }
+
+                QString languageAttribute = attributes["class"].toLower();
+                TypeSystem::Language lang = languageNames.value(languageAttribute, TypeSystem::NoLanguage);
+                if (lang == TypeSystem::NoLanguage) {
+                    m_error = QString("unsupported class attribute: '%1'").arg(languageAttribute);
                     return false;
                 }
 
-                if (m_function_mods.last().language != CodeSnip::JavaCode) {
-                    m_error = "Function renaming, removal, and access modification only supported for java "
-                              "functions";
+                m_function_mods.last().removal = lang;
+            }
+            break;
+        case StackElement::Rename:        
+        case StackElement::Access:
+            {
+                if (topElement.type != StackElement::ModifyField
+                    && topElement.type != StackElement::ModifyFunction) {
+                    m_error = "Function or field modification parent required";
                     return false;
                 }
 
@@ -817,12 +857,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     mod = &m_field_mods.last();
 
                 QString modifier;
-                if (element->type == StackElement::Removal) {
-                    if (attributes["exclusive"].toLower() == "yes")
-                        modifier = "exclusive-remove";
-                    else
-                        modifier = "remove";
-                } else if (element->type == StackElement::Rename) {
+                if (element->type == StackElement::Rename) {
                     modifier = "rename";
                     QString renamed_to = attributes["to"];
                     if (renamed_to.isEmpty()) {
@@ -849,8 +884,6 @@ bool Handler::startElement(const QString &, const QString &n,
                     modifierNames["public"] = Modification::Public;
                     modifierNames["protected"] = Modification::Protected;
                     modifierNames["friendly"] = Modification::Friendly;
-                    modifierNames["remove"] = Modification::Remove;
-                    modifierNames["exclusive-remove"] = Modification::Modifiers(Modification::Remove | Modification::Exclusive);
                     modifierNames["rename"] = Modification::Rename;
                 }
 
@@ -865,11 +898,6 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::RemoveArgument:
             if (topElement.type != StackElement::ModifyArgument) {
                 m_error = "Removing argument requires argument modification as parent";
-                return false;
-            }
-
-            if (m_function_mods.last().language != CodeSnip::JavaCode) {
-                m_error = "Arguments can only be removed from Java API";
                 return false;
             }
 
@@ -898,7 +926,7 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ModifyFunction:
             {
                 if (!(topElement.type & StackElement::ComplexTypeEntryMask)) {
-                    m_error = "Modify function requires type as parent";
+                    m_error = "Modify function requires complex type as parent";
                     return false;
                 }
                 QString signature = attributes["signature"];
@@ -909,28 +937,8 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                static QHash<QString, CodeSnip::Language> languageNames;
-                if (languageNames.isEmpty()) {
-                    languageNames["java"] = CodeSnip::JavaCode;
-                    languageNames["native"] = CodeSnip::NativeCode;
-                    languageNames["shell"] = CodeSnip::ShellCode;
-                    languageNames["shell-declaration"] = CodeSnip::ShellDeclaration;
-                }
-
-                QString className = attributes["class"].toLower();
-                if (!languageNames.contains(className)) {
-                    m_error = QString("Invalid class specifier: '%1'").arg(className);
-                    return false;
-                }
-
                 FunctionModification mod;
-                mod.language = languageNames.value(className);
                 mod.signature = signature;
-
-                QString debug = QString("Adding function modification for '%1' in language '%2' == %3")
-                                .arg(signature).arg(className).arg(int(mod.language));
-                ReportHandler::debugMedium(debug);
-
                 m_function_mods << mod;
             }
             break;
@@ -960,13 +968,20 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::InjectCode:
             {
-                static QHash<QString, CodeSnip::Language> languageNames;
+                if (((topElement.type & StackElement::ComplexTypeEntryMask) == 0)
+                    && (topElement.type != StackElement::ModifyFunction)
+                    && (topElement.type != StackElement::Root)) {
+                    m_error = "wrong parent type for code injection";
+                    return false;
+                }
+
+                static QHash<QString, TypeSystem::Language> languageNames;
                 if (languageNames.isEmpty()) {
-                    languageNames["java"] = CodeSnip::JavaCode;
-                    languageNames["native"] = CodeSnip::NativeCode;
-                    languageNames["shell"] = CodeSnip::ShellCode;
-                    languageNames["shell-declaration"] = CodeSnip::ShellDeclaration;
-                    languageNames["library-initializer"] = CodeSnip::PackageInitializer;
+                    languageNames["java"] = TypeSystem::JavaCode;
+                    languageNames["native"] = TypeSystem::NativeCode;
+                    languageNames["shell"] = TypeSystem::ShellCode;
+                    languageNames["shell-declaration"] = TypeSystem::ShellDeclaration;
+                    languageNames["library-initializer"] = TypeSystem::PackageInitializer;
                 }
 
                 QString className = attributes["class"].toLower();
@@ -993,15 +1008,9 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 if (topElement.type == StackElement::ModifyFunction) {
                     FunctionModification mod = m_function_mods.last();
-                    if (mod.language != CodeSnip::ShellCode) {
-                        m_error = "Code injection in functions only supported for shell functions";
+                    if (snip.language == TypeSystem::ShellDeclaration) {
+                        m_error = "no function implementation in shell declaration in which to inject code";
                         return false;
-                    }
-
-                    if (mod.language != snip.language) {
-                        ReportHandler::warning("Code injected in function modification has "
-                                               "different class than parent while modifying "
-                                               "'%1'.");
                     }
 
                     m_function_mods.last().snips << snip;

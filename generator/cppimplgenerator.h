@@ -99,11 +99,11 @@ public:
                                  const MetaJavaFunction *java_function,
                                  const QString &qt_object_name,
                                  const MetaJavaClass *java_class);
-    void writeDisableGarbageCollection(QTextStream &s,
-                                       const MetaJavaFunction *java_function,
-                                       const QString &var_name,
-                                       int var_index,
-                                       const MetaJavaClass *implementor);
+    void writeOwnership(QTextStream &s,
+                        const MetaJavaFunction *java_function,
+                        const QString &var_name,
+                        int var_index,
+                        const MetaJavaClass *implementor);
     void writeQtToJava(QTextStream &s,
                        const MetaJavaType *java_type,
                        const QString &qt_name,
@@ -113,7 +113,7 @@ public:
                        Option option = NoOption);
 
     bool writeConversionRule(QTextStream &s,
-                             CodeSnip::Language target_language,
+                             TypeSystem::Language target_language,
                              const MetaJavaFunction *java_function,
                              int argument_index,
                              const QString &qt_name,

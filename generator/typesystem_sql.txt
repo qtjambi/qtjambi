@@ -193,53 +193,38 @@
     <modify-function signature="beforeInsert(QSqlRecord&amp;)">
         <modify-argument index="1">
             <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="sql.convert_sqlrecord_reference_to_java" />
             </conversion-rule>
-        </modify-argument>
-    </modify-function>
-    <modify-function class="native" signature="beforeInsert(QSqlRecord&amp;)">
-        <modify-argument index="1">
-            <conversion-rule>
+            <conversion-rule class="native">
                 <insert-template name="sql.convert_sqlrecord_reference_from_java" />
-            </conversion-rule>
+            </conversion-rule>            
         </modify-argument>
     </modify-function>
     
     <modify-function signature="beforeUpdate(int,QSqlRecord&amp;)">
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="sql.convert_sqlrecord_reference_to_java" />
             </conversion-rule>
-        </modify-argument>
-    </modify-function>
-    <modify-function class="native" signature="beforeUpdate(int,QSqlRecord&amp;)">
-        <modify-argument index="2">
-            <conversion-rule>
+            <conversion-rule class="native">
                 <insert-template name="sql.convert_sqlrecord_reference_from_java" />
-            </conversion-rule>
+            </conversion-rule>            
         </modify-argument>
     </modify-function>
     
     <modify-function signature="primeInsert(int,QSqlRecord&amp;)">
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
-            <conversion-rule>
+            <conversion-rule class="shell">
                 <insert-template name="sql.convert_sqlrecord_reference_to_java" />
             </conversion-rule>
-        </modify-argument>
-    </modify-function>
-    <modify-function class="native" signature="primeInsert(int,QSqlRecord&amp;)">
-        <modify-argument index="2">
-            <conversion-rule>
+            <conversion-rule class="native">
                 <insert-template name="sql.convert_sqlrecord_reference_from_java" />
-            </conversion-rule>
+            </conversion-rule>            
         </modify-argument>
     </modify-function>
-    
-    
-
   </object-type>  
   <object-type name="QSqlDriverCreatorBase">
     <extra-includes>
