@@ -4229,6 +4229,11 @@
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>
     </extra-includes>            
+    <modify-function signature="match(QModelIndex, int, QVariant, int, QFlags&lt;Qt::MatchFlag>) const">
+        <modify-argument index="5">
+            <replace-default-expression with="Qt.MatchFlag.MatchStartsWith, Qt.MatchFlag.MatchWrap" />
+        </modify-argument>
+    </modify-function>   
   </object-type>
 
   <object-type name="QSlider">
