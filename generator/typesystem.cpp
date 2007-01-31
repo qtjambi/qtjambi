@@ -1427,7 +1427,7 @@ QString TemplateInstance::expandCode() const{
         foreach(QString key, replaceRules.keys()){
             res.replace(key, replaceRules[key]);
         }
-        return  res;
+        return "// TEMPLATE - " + m_name + " - START" + res + "// TEMPLATE - " + m_name + " - END";
     }
     else{
         ReportHandler::warning("insert-template referring to non-existing template '" + m_name + "'");
