@@ -48,7 +48,7 @@ public:
     bool build();
 
     void figureOutEnumValuesForClass(MetaJavaClass *java_class, QSet<MetaJavaClass *> *classes);
-    int figureOutEnumValue(const QString &name, int value, MetaJavaEnum *java_enum);
+    int figureOutEnumValue(const QString &name, int value, MetaJavaEnum *java_enum, MetaJavaFunction *java_function = 0);
     void figureOutEnumValues();
     void figureOutDefaultEnumArguments();
 

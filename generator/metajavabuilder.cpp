@@ -440,7 +440,8 @@ Operator findOperator(QString *s) {
 
 int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
                                         int oldValuevalue,
-                                        MetaJavaEnum *java_enum)
+                                        MetaJavaEnum *java_enum,
+                                        MetaJavaFunction *java_function)
 {
     if (stringValue.isEmpty())
         return oldValuevalue;
@@ -482,7 +483,7 @@ int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
                 v = ev->value();
                 matched = true;
 
-            } else {
+            } else {            
                 ReportHandler::warning("unhandled enum value: " + s + " in "
                                        + java_enum->enclosingClass()->name() + "::"
                                        + java_enum->name());
@@ -494,9 +495,16 @@ int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
     }
 
     if (!matched) {
-        ReportHandler::warning("unmatched enum " + stringValue);
-        returnValue = oldValuevalue;
+        QString warn = QString("unmatched enum %1").arg(stringValue);
 
+        if (java_function != 0) {
+            warn += QString(" when parsing default value of '%1' in class '%2'")
+                .arg(java_function->name())
+                .arg(java_function->implementingClass()->name());
+        }
+
+        ReportHandler::warning(warn);
+        returnValue = oldValuevalue;
     }
 
     return returnValue;
@@ -635,7 +643,7 @@ void MetaJavaBuilder::figureOutDefaultEnumArguments()
                         continue;
                     }
 
-                    int value = figureOutEnumValue(expr, 0, java_enum);
+                    int value = figureOutEnumValue(expr, 0, java_enum, java_function);
                     new_expr = QString::number(value);
 
                 } else if (arg->type()->isPrimitive()) {
