@@ -81,7 +81,7 @@
 
     <target name="generator.example" >
         <exec executable="${basedir}/generator/generator" dir="generator_example">
-            <arg line="mywidget.h typesystem_mywidget.txt --juic-file=juic.xml" />
+            <arg line="global.h typesystem_generatorexample.txt" />
         </exec>
     </target>
 
@@ -165,6 +165,7 @@
         <junit printsummary="yes" haltonfailure="no">
             <!-- comment --> 
             <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/>
+	    <jvmarg value="-Dcom.trolltech.qt.debug=true"/>
             <classpath>
                 <pathelement location="${outputDir}" />
                 <pathelement location="${sourceDir}" />
