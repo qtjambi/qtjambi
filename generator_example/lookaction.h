@@ -9,6 +9,7 @@ public:
     inline LookAction() : GameAction(Game::Look) 
     {
     }
+    virtual ~LookAction(){}
 
     virtual bool perform(GameScene *scene);
     virtual GameAction *clone() const;  

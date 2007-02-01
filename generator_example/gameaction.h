@@ -14,6 +14,7 @@ public:
     inline GameAction(Game::ActionType type) : m_type(type) 
     {
     }
+    virtual ~GameAction(){}
 
     virtual bool perform(GameScene *scene);
     virtual GameAction *clone() const = 0;

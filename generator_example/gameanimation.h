@@ -47,8 +47,8 @@ signals:
 private:
     QList<QImage> m_frames;
     Game::AnimationType m_type;
-    bool m_looping;
     int m_speed;
+    bool m_looping;
     int m_current_frame;
     QTime m_time;    
 };

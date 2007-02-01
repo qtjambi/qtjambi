@@ -9,6 +9,7 @@ public:
     inline UseAction() : GameAction(Game::Use) 
     {
     }
+    virtual ~UseAction(){}
 
     virtual GameAction *clone() const;  
 };

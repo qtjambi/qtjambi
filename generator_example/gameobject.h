@@ -105,15 +105,15 @@ private:
     QString m_name;
     QString m_description;
     Point3D m_position;
+    Game::WalkingDirection m_direction;
     qreal m_size_in_depth;
+    GameScene *m_scene;
+    Game::AnimationType m_current_animation;
     qreal m_movement_factor;
     qreal m_old_factor;
     QHash<Game::AnimationType, GameAnimation *> m_animations;
     QStringList m_other_names;
     Game::ObjectFlags m_flags;
-    GameScene *m_scene;
-    Game::WalkingDirection m_direction;
-    Game::AnimationType m_current_animation;
     QTime m_time;
     QPainterPath m_shape;
 };

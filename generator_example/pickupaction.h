@@ -9,6 +9,7 @@ public:
     inline PickUpAction() : GameAction(Game::PickUp) 
     {
     }
+    virtual ~PickUpAction(){}
 
     virtual bool perform(GameScene *scene);
     virtual GameAction *clone() const;  

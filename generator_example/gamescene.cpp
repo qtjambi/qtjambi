@@ -129,8 +129,8 @@ void GameScene::drawForeground(QPainter *painter, const QRectF &)
     if (!m_message.isEmpty()) {
         QFontMetrics fm(font());
 
-        double w = sceneRect().width() / 2.0;
-        QRect brect = fm.boundingRect(0, 0, w, sceneRect().height(), Qt::TextWordWrap, m_message.at(0));
+        int w = (int)(sceneRect().width() / 2.0);
+        QRect brect = fm.boundingRect(0, 0, w, (int)sceneRect().height(), Qt::TextWordWrap, m_message.at(0));
 
         QRectF rect(sceneRect().width() / 2.0 - brect.width() / 2.0, sceneRect().height() / 2.0 - brect.height() / 2.0,
                     brect.width(), brect.height());        

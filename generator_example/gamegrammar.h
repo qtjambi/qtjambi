@@ -13,7 +13,7 @@ class GameGrammar
 {
 public:
     GameGrammar(GameScene *scene);
-    ~GameGrammar();
+    virtual ~GameGrammar();
 
     void registerGameObject(AbstractGameObject *gameObject);
     void addNameToGameObject(AbstractGameObject *gameObject, const QString &other_name);
