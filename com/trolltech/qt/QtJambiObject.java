@@ -73,12 +73,33 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
 
 
     /**
+     * This is an internal function. Calling it can have unexpected results.  
+     * 
      * Disables garbage collection for this object. This should be
      * used when objects created in java are passed to C++ functions
      * that take ownership of the objects. Both the Java and C++ part
      * of the object will then be cleaned up by C++.
      */
     public final native void disableGarbageCollection();
+    
+    /**
+     * This is an internal function. Calling it can have unexpected results.  
+     * 
+     * Reenables garbage collection for this object. Should be used
+     * on objects for which disableGarbageCollection() has previously
+     * been called. After calling this function, the object ownership will be
+     * reset to default.
+     */
+    public final native void reenableGarbageCollection();
+    
+    /**
+     * This is an internal function. Calling it can have unexpected results.
+     * 
+     * Forces Java ownership of both the Java object and its C++ resources.
+     * The C++ resources will be cleaned up when the Java object is finalized.
+     */
+    public final native void setJavaOwnership();
+    
 
     /**
      * Internal function which fetches a wrapper around the pointer to
