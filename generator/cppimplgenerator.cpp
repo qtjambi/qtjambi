@@ -1256,6 +1256,12 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
         QString debug = QString("protected function '%1' in final class '%2'")
             .arg(java_function->signature()).arg(java_class->name());
         ReportHandler::warning(debug);
+        // Avoid compiler warnings for unused parameters
+        MetaJavaArgumentList arguments = java_function->arguments();
+
+        foreach (const MetaJavaArgument *argument, arguments) {
+            s << INDENT << "Q_UNUSED(" << argument->indexedName() << ")" << endl;
+        }
         s << INDENT << default_return_statement_qt(java_function->type()) << ";";
 
     } else {
