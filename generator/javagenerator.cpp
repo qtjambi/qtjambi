@@ -415,7 +415,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
     if (!java_function->isConstructor() && !java_function->isStatic()) {
         s << "        if (nativeId() == 0)" << endl
-          << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object\");" << endl;
+          << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl;
     }
 
 
@@ -703,7 +703,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
             s << endl
               << "    public boolean equals(Object other) {" << endl
               << "        if (nativeId() == 0)" << endl
-              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object\");" << endl
+              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
               << "        return !(other instanceof " << cls->fullName()
               << ") ? false : __qt_equals(nativeId(), ((" << cls->fullName() << ")other).nativeId());" << endl
               << "    }" << endl
@@ -725,7 +725,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
             s << endl
               << "    public int hashCode() {" << endl
               << "        if (nativeId() == 0)" << endl
-              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object\");" << endl
+              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
               << "        return __qt_hashCode(nativeId());" << endl
               << "    }" << endl
               << "    private static native int __qt_hashCode(long __this_nativeId);" << endl << endl;
@@ -748,7 +748,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
             s << endl
               << "    public String toString() {" << endl
               << "        if (nativeId() == 0)" << endl
-              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object\");" << endl
+              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
               << "        return __qt_toString(nativeId());" << endl
               << "    }" << endl
               << "    private static native String __qt_toString(long __this_nativeId);" << endl << endl;
