@@ -267,12 +267,12 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
 
     aboutToMakeObjectInvalid(env);
 
+    if (m_java_object && isGlobalReference()) {
+        env->DeleteGlobalRef(m_java_object);
+        m_java_object = 0;
+    }
 
-    if (isQObject()) {
-        if (m_java_object && isGlobalReference()) {
-            env->DeleteGlobalRef(m_java_object);
-            m_java_object = 0;
-        }
+    if (isQObject() && m_ownership == JavaOwnership) {
 
         QObject *qobj = qobject();
         QThread *objectThread = qobj->thread();
@@ -331,7 +331,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
     } else {
         if (m_pointer != 0 && m_meta_type != QMetaType::Void)
             QMetaType::destroy(m_meta_type, m_pointer);
-        else if (m_destructor_function)
+        else if (m_ownership == JavaOwnership && m_destructor_function)
             m_destructor_function(m_pointer);
         m_pointer = 0;
     }
@@ -496,30 +496,48 @@ void QtJambiLink::disableGarbageCollection(JNIEnv *env, jobject obj)
 
 void QtJambiLink::setCppOwnership(JNIEnv *env, jobject obj)
 {
-    if (isGlobalReference())
-        return;
+    if (!isGlobalReference()) {
+        jobject global_ref = env->NewGlobalRef(obj);
 
-    jobject global_ref = env->NewGlobalRef(obj);
+        if (m_java_object)
+            deleteWeakObject(env, m_java_object);
 
-    if (m_java_object)
-        deleteWeakObject(env, m_java_object);
+        m_java_object = global_ref;
+        m_global_ref = true;
+    }
+    m_ownership = CppOwnership;
+}
 
-    m_java_object = global_ref;
-    m_global_ref = true;
+void QtJambiLink::setDefaultOwnership(JNIEnv *env, jobject obj) 
+{
+    if (createdByJava())
+        setJavaOwnership(env, obj);
+    else
+        setSplitOwnership(env, obj);
 }
 
 void QtJambiLink::setJavaOwnership(JNIEnv *env, jobject obj)
 {
-    Q_ASSERT(false); // not implemented
-    Q_UNUSED(env)
-    Q_UNUSED(obj)
+    if (isGlobalReference()) {
+        jobject weak_ref = env->NewWeakGlobalRef(obj);
+        if (m_java_object)
+            env->DeleteGlobalRef(m_java_object),
+        m_java_object = weak_ref;
+        m_global_ref = false;
+    }
+    m_ownership = JavaOwnership;
 }
 
 void QtJambiLink::setSplitOwnership(JNIEnv *env, jobject obj)
 {
-    Q_ASSERT(false); // not implemented
-    Q_UNUSED(env)
-    Q_UNUSED(obj)
+    if (isGlobalReference()) {
+        jobject weak_ref = env->NewWeakGlobalRef(obj);
+        if (m_java_object)
+            env->DeleteGlobalRef(m_java_object),
+        m_java_object = weak_ref;
+        m_global_ref = false;
+    }
+    m_ownership = SplitOwnership;
 }
 
 QtJambiLinkUserData::~QtJambiLinkUserData()

@@ -62,11 +62,18 @@ class QTJAMBI_EXPORT QtJambiLink
           m_object_invalid(false),
           m_in_cache(false),
           m_connected_to_java(false),
-          m_destructor_function(0)
+          m_destructor_function(0),
+          m_ownership(SplitOwnership) // Default to split, because it's safest
     {
     };
 
 public:
+    enum Ownership {
+        JavaOwnership, // Weak ref to java object, deleteNativeObject deletes c++ object
+        CppOwnership,  // Strong ref to java object until c++ object is deleted, deleteNativeObject does *not* delete c++ obj. 
+        SplitOwnership // Weak ref to java object, deleteNativeObject does *not* delete c++ object
+    };
+
     ~QtJambiLink();
 
     /* Returns the pointer value, wether its a QObject or plain object */
@@ -141,6 +148,7 @@ public:
     void setCppOwnership(JNIEnv *env, jobject java);
     void setJavaOwnership(JNIEnv *env, jobject java);
     void setSplitOwnership(JNIEnv *env, jobject java);
+    void setDefaultOwnership(JNIEnv *env, jobject java);
 
     void setGlobalRef(JNIEnv *env, bool global);
 
@@ -182,6 +190,7 @@ private:
     uint m_object_invalid : 1;
     uint m_in_cache : 1;
     uint m_connected_to_java : 1;
+    uint m_ownership : 2;
 
     PtrDestructorFunction m_destructor_function;
 };

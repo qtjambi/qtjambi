@@ -98,3 +98,17 @@ QTQUALIFY(void, disableGarbageCollection)(JNIEnv *env, jobject object)
         link->disableGarbageCollection(env, object);
     }
 }
+
+QTQUALIFY(void, reenableGarbageCollection)(JNIEnv *env, jobject object) 
+{
+    if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {
+        link->setDefaultOwnership(env, object);
+    }
+}
+
+QTQUALIFY(void, setJavaOwnership)(JNIEnv *env, jobject object) 
+{
+    if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {
+        link->setJavaOwnership(env, object);
+    }
+}
