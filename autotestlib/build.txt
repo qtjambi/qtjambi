@@ -49,7 +49,7 @@
   <object-type name="TextCodecSubclass">
     <modify-function signature="TextCodecSubclass()">
         <modify-argument index="-1">
-            <disable-gc />
+            <define-ownership class="java" owner="c++" />
         </modify-argument>
     </modify-function>
   </object-type>
@@ -64,49 +64,40 @@
   <object-type name="Threads"/>
   
   <object-type name="PolymorphicType">
+    
     <modify-function signature="getButtonStyleOption()">
         <modify-argument index="return">
            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
-            <conversion-rule>
+            <conversion-rule class="native">
                 jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
             </conversion-rule>
-        </modify-argument>        
-    </modify-function>
-    <modify-function class="native" signature="getButtonStyleOption()">
-        <modify-argument index="return">
-            <conversion-rule>
+            <conversion-rule class="shell">
                 QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
-            </conversion-rule>       
+            </conversion-rule>                   
         </modify-argument>        
     </modify-function>
+    
     <modify-function signature="getCustomStyleOption(int)">
         <modify-argument index="return">
            <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
-            <conversion-rule>
+            <conversion-rule class="native">
                 jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
             </conversion-rule>
+            <conversion-rule class="shell">
+                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
+            </conversion-rule>                   
         </modify-argument>        
     </modify-function>
-    <modify-function class="native" signature="getCustomStyleOption(int)">
-        <modify-argument index="return">
-            <conversion-rule>
-                QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
-            </conversion-rule>       
-        </modify-argument>        
-    </modify-function>    
+    
     <modify-function signature="getUnmappedCustomStyleOption()">
         <modify-argument index="return">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
-            <conversion-rule>
+            <conversion-rule class="native">
                 jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOption", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
             </conversion-rule>
-        </modify-argument>        
-    </modify-function>
-    <modify-function class="native" signature="getUnmappedCustomStyleOption()">
-        <modify-argument index="return">
-            <conversion-rule>
+            <conversion-rule class="shell">
                 QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
-            </conversion-rule>       
+            </conversion-rule>                   
         </modify-argument>        
     </modify-function>
   </object-type>
