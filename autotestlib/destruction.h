@@ -18,7 +18,14 @@ public:
         // nanana
     }
 
-    virtual ~OrdinaryDestroyed() { }
+    virtual ~OrdinaryDestroyed() 
+    { 
+        increaseDestroyedCount();
+    }
+
+    virtual OrdinaryDestroyed *virtualGetObjectJavaOwnership() { return new OrdinaryDestroyed(); }
+    virtual OrdinaryDestroyed *virtualGetObjectCppOwnership() { return new OrdinaryDestroyed(); }
+    virtual void virtualSetDefaultOwnership(OrdinaryDestroyed *) { }
 
     static void deleteFromCpp(OrdinaryDestroyed *destroyed)
     {
@@ -29,6 +36,40 @@ public:
     {
         delete destroyed;
     }
+
+    static void setDestroyedCount(int count) { m_destroyed = count; }
+    static void increaseDestroyedCount() { m_destroyed++; }
+    static int destroyedCount() { return m_destroyed; }
+
+    static OrdinaryDestroyed *callGetObjectJavaOwnership(OrdinaryDestroyed *_this) 
+    {
+        return _this->virtualGetObjectJavaOwnership();
+    }
+
+    static OrdinaryDestroyed *callGetObjectCppOwnership(OrdinaryDestroyed *_this) 
+    {
+        return _this->virtualGetObjectCppOwnership();
+    }
+
+    static void callGetObjectJavaOwnership(OrdinaryDestroyed *_this, OrdinaryDestroyed *obj) 
+    {
+        return _this->virtualSetDefaultOwnership(obj);
+    }
+
+    // Set in type system
+    static OrdinaryDestroyed *getObjectJavaOwnership() { return new OrdinaryDestroyed(); }
+
+    // Default ownership
+    static OrdinaryDestroyed *getObjectSplitOwnership() { return new OrdinaryDestroyed(); }
+
+    // Set in type system
+    static OrdinaryDestroyed *getObjectCppOwnership() { return new OrdinaryDestroyed(); }
+
+    // Set in type system
+    static void setDefaultOwnership(OrdinaryDestroyed *) { }
+
+private:
+    static int m_destroyed;
 };
 
 class QObjectDestroyed: public QObject

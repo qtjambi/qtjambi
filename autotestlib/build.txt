@@ -39,7 +39,38 @@
   </object-type>
 
   <object-type name="OrdinarySuperclass" />
-  <object-type name="OrdinaryDestroyed" />
+  <object-type name="OrdinaryDestroyed">
+    <modify-function signature="getObjectJavaOwnership()">
+        <modify-argument index="return">
+            <define-ownership class="java" owner="java" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="getObjectCppOwnership()">
+        <modify-argument index="return">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setDefaultOwnership(OrdinaryDestroyed *)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="default" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="virtualGetObjectJavaOwnership()">
+        <modify-argument index="return">
+            <define-ownership class="java" owner="java" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="virtualGetObjectCppOwnership()">
+        <modify-argument index="return">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="virtualSetDefaultOwnership(OrdinaryDestroyed *)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="default" />
+        </modify-argument>
+    </modify-function>    
+  </object-type>
   <object-type name="QObjectDestroyed" />
   <object-type name="SpinBoxHandler" />
   <object-type name="SpinBoxSubclass" />

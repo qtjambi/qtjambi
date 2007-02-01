@@ -17,7 +17,8 @@ HEADERS += \
         injectedcode.h 
 
 
-SOURCES += injectedcode.cpp
+SOURCES += injectedcode.cpp \
+           destruction.cpp
 
 
 QT += sql xml
