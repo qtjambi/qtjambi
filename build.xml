@@ -83,6 +83,8 @@
         <exec executable="${basedir}/generator/generator" dir="generator_example">
             <arg line="global.h typesystem_generatorexample.txt" />
         </exec>
+        <exec executable="qmake" dir="generator_example" />
+        <exec executable="make"  dir="generator_example" />
     </target>
 
     <target name="generator.designern" >
