@@ -511,11 +511,15 @@ void QtJambiLink::setCppOwnership(JNIEnv *env, jobject obj)
 void QtJambiLink::setJavaOwnership(JNIEnv *env, jobject obj)
 {
     Q_ASSERT(false); // not implemented
+    Q_UNUSED(env)
+    Q_UNUSED(obj)
 }
 
 void QtJambiLink::setSplitOwnership(JNIEnv *env, jobject obj)
 {
     Q_ASSERT(false); // not implemented
+    Q_UNUSED(env)
+    Q_UNUSED(obj)
 }
 
 QtJambiLinkUserData::~QtJambiLinkUserData()
