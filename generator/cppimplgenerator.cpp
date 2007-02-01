@@ -1006,6 +1006,14 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
         }
 
     } else {
+        if(java_function->isRemovedFrom(implementor, TypeSystem::JavaCode)){
+            // Avoid compiler warnings for unused parameters
+            MetaJavaArgumentList arguments = java_function->arguments();
+
+            foreach (const MetaJavaArgument *argument, arguments) {
+                s << INDENT << "Q_UNUSED(" << argument->indexedName() << ")" << endl;
+            }
+        }
         writeBaseClassFunctionCall(s, java_function, implementor);
         writeCodeInjections(s, java_function, implementor, CodeSnip::End);
     }
