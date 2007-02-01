@@ -1012,6 +1012,7 @@
             <conversion-rule class="native">
                 char *%out = (char *) __jni_env->GetByteArrayElements((jbyteArray) %in, 0);
                 char *__ptr = %out;
+                Q_UNUSED(__ptr)
             </conversion-rule>                        
         </modify-argument>
         
@@ -2364,7 +2365,8 @@
 
   <value-type name="QGradient" polymorphic-base="yes" 
               polymorphic-id-expression="%1-&gt;type() == QGradient::NoGradient">
-    <custom-constructor>  
+    <custom-constructor>
+    Q_UNUSED(copy)
     qWarning("Copying empty QGradient object");
     return new QGradient();
     </custom-constructor>
@@ -4948,15 +4950,8 @@
         <include file-name="QTextCursor" location="global"/>
     </extra-includes>
   </object-type>
-  
-    
+
   <object-type name="QPrinter">
-    <custom-constructor>
-        return (void *) copy;
-    </custom-constructor>
-    <custom-destructor>
-        Q_UNUSED(copy);
-    </custom-destructor>
   </object-type>
 
   <object-type name="QAction">
