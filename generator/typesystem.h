@@ -74,7 +74,7 @@ namespace TypeSystem {
 
     enum Ownership {
         InvalidOwnership,
-        SplitOwnership,
+        DefaultOwnership,
         JavaOwnership,
         CppOwnership
     };

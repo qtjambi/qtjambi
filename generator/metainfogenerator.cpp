@@ -609,7 +609,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
         if(lookupClassWithPublicDestructor(cls))
         {
-            s << "    registerDestructor(\"" << "### FIXME " << javaName << "\", destructor_" << patchedName << ");" << endl;
+            s << "    registerDestructor(\"" << javaName << "\", destructor_" << patchedName << ");" << endl;
         }
     }
 

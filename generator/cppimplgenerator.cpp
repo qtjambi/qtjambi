@@ -842,8 +842,8 @@ static QString function_call_for_ownership(TypeSystem::Ownership owner, const QS
         return "setCppOwnership(__jni_env, " + var_name + ")";
     } else if (owner == TypeSystem::JavaOwnership) {
         return "setJavaOwnership(__jni_env, " + var_name + ")";
-    } else if (owner == TypeSystem::SplitOwnership) {
-        return "setSplitOwnership(__jni_env, " + var_name + ")";
+    } else if (owner == TypeSystem::DefaultOwnership) {
+        return "setDefaultOwnership(__jni_env, " + var_name + ")";
     } else {
         Q_ASSERT(false);
         return "bogus()";
@@ -1522,6 +1522,11 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
           << INDENT << "return;" << endl;
     }
     s << INDENT << "}" << endl;
+
+
+    // Make sure all objects created by Java are owned completely by Java.
+    // All other objects will default to split ownership.
+    s << INDENT << "__qt_java_link->setJavaOwnership(__jni_env, " << java_object_name << ");" << endl;
 
     if (hasCustomDestructor(cls)) {
         s << INDENT << "__qt_java_link->setDestructorFunction(qtjambi_destructor);" << endl;

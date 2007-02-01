@@ -766,7 +766,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 if (ownershipNames.isEmpty()) {
                     ownershipNames["java"] = TypeSystem::JavaOwnership;
                     ownershipNames["c++"] = TypeSystem::CppOwnership;
-                    ownershipNames["split"] = TypeSystem::SplitOwnership;
+                    ownershipNames["default"] = TypeSystem::DefaultOwnership;
                 }
 
                 QString ownershipAttribute = attributes["owner"].toLower();

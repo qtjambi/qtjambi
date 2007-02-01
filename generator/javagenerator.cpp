@@ -332,9 +332,10 @@ static QString function_call_for_ownership(TypeSystem::Ownership owner)
     if (owner == TypeSystem::CppOwnership) {
         return "disableGarbageCollection()";
     } else if (owner == TypeSystem::JavaOwnership) {
-        return "enableGarbageCollection()";
-    } else if (owner == TypeSystem::SplitOwnership) {
-        return "splitOwnership()";
+        return "setJavaOwnership()";
+    } else if (owner == TypeSystem::DefaultOwnership) {
+        return "reenableGarbageCollection()";
+
     } else {
         Q_ASSERT(false);
         return "bogus()";
