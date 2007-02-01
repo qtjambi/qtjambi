@@ -420,6 +420,7 @@ public class QUiLoader {
         return uiWidget;
     }
 
+    @SuppressWarnings("unused")
     private Object swapObject(Object o) {
         Object x = object;
         object = o;
@@ -436,6 +437,7 @@ public class QUiLoader {
     private QWidget topParent;
     private QWidget uiWidget;
 
+    @SuppressWarnings("unused")
     private int parseDepth;
     private Object parent;
     private Object object;

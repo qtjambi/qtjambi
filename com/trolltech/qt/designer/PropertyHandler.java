@@ -233,7 +233,7 @@ class SetPropertyHandler extends PropertyHandler {
         String flagsValues[] = childStringValue(e).split("\\|");
 
         Object enumsPreprocess[] = new Object[flagsValues.length];
-        Class enumClass = null;
+        Class<?> enumClass = null;
         for (int i=0; i<enumsPreprocess.length; ++i) {
             enumsPreprocess[i] = EnumPropertyHandler.enumForValue(flagsValues[i]);
             if (enumsPreprocess[i] != null)
