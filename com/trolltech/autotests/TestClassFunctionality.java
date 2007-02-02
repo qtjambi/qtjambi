@@ -561,31 +561,7 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(receiver.paintRectMatched);
         assertEquals(receiver.paintEventType, QEvent.Type.Paint);
 
-        String[] expected = { "com.trolltech.qt.gui.QSizeGrip", "com.trolltech.qt.core.QAbstractItemModel$ConcreteWrapper", "com.trolltech.qt.gui.QLabel", "com.trolltech.qt.gui.QLabel",
-                "com.trolltech.qt.gui.QLabel", "com.trolltech.qt.gui.QDialogButtonBox", "com.trolltech.qt.gui.QComboBox", "com.trolltech.qt.gui.QCompleter", "com.trolltech.qt.gui.QLineEdit",
-                "com.trolltech.qt.gui.QCompleter", "com.trolltech.qt.gui.QComboBox", "com.trolltech.qt.gui.QActionGroup", "com.trolltech.qt.gui.QSplitter", "com.trolltech.qt.gui.QFrame",
-                "com.trolltech.qt.core.QTimeLine", "com.trolltech.qt.core.QTimeLine", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction",
-                "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QAction", "com.trolltech.qt.gui.QToolButton",
-                "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QPushButton", "com.trolltech.qt.gui.QToolButton",
-                "com.trolltech.qt.gui.QToolButton", "com.trolltech.qt.gui.QGridLayout", "com.trolltech.qt.gui.QWidget"};
-        
         QFileDialog d = new QFileDialog();
-        children = d.children();
-
-        assertEquals(children.size(), expected.length);
-
-        int i = 0;
-        for (QObject c : children) {
-            assertEquals(c.getClass().getName(), expected[i++]);
-
-            // Test one of them with instanceof, just to be on the safe side
-            if (i == 9) {
-                assertTrue(c instanceof QLineEdit);
-
-                QLineEdit le = (QLineEdit) c;
-                assertTrue(le.editingFinished != null);
-            }
-        }
 
         QWidget some_widget = new QWidget();
         {
@@ -619,6 +595,8 @@ public class TestClassFunctionality extends QApplicationTest {
         SenderTester tester = new SenderTester();
         QTimer.singleShot(1000, tester, "timeoutSlot()");
 
+        System.gc();
+
         try {
             while (tester.timeouted.elapsed() < 1500) {
                 QApplication.processEvents();
@@ -626,7 +604,7 @@ public class TestClassFunctionality extends QApplicationTest {
         } catch (Exception e) {
             assertTrue(false);
         }
-
+        
         assertTrue(tester.msec >= 1000);
         assertTrue(tester.msec <= 1500);
     }
