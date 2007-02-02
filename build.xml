@@ -87,6 +87,8 @@
         <exec executable="make"  dir="generator_example" />
     </target>
 
+    <target name="generator.all" depends="generator.autotests, generator.example, generator" />
+
     <target name="generator.designern" >
         <exec executable="${basedir}/generator/generator" dir="qtjambi_designer">
             <arg line="designer.h typesystem_designer.txt" />
@@ -189,6 +191,6 @@
         </junitreport>
     </target>
 
-    <target name="all" depends="sync, generator, compile, test.make, test ,deploy.linux" />
+    <target name="all" depends="sync, generator.all, compile, test.make, test ,deploy.linux" />
 
 </project>
