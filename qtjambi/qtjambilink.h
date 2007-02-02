@@ -190,9 +190,9 @@ private:
     uint m_object_invalid : 1;
     uint m_in_cache : 1;
     uint m_connected_to_java : 1;
-    uint m_ownership : 2;
-
+    
     PtrDestructorFunction m_destructor_function;
+    uint m_ownership : 2;
 };
 
 inline jobject QtJambiLink::javaObject(JNIEnv *env) const
