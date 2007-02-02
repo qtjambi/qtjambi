@@ -672,7 +672,7 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
         }
     }
 
-    return QtJambiLink::createLinkForQObject(env, java_object, qobject, !qobject->parent());
+    return QtJambiLink::createLinkForQObject(env, java_object, qobject);
 }
 
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,
@@ -1755,7 +1755,10 @@ static bool qtjambi_event_notify(void **data)
             QtJambiLink *link = QtJambiLink::findLinkForQObject(e->child());
             if (link) {
                 if (link->qobject()) {
-                    link->setGlobalRef(qtjambi_current_environment(), e->added());
+	 	  if (e->added())
+ 		    link->setCppOwnership(qtjambi_current_environment(), link->javaObject(qtjambi_current_environment()));
+		  else
+		    link->setDefaultOwnership(qtjambi_current_environment(), link->javaObject(qtjambi_current_environment()));
                 } else if (event->type() == QEvent::ChildAdded) {
                     qWarning("%s [%s] was garbage collected before it was reparented to %s [%s]",
                              qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),

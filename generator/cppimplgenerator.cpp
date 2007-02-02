@@ -1524,9 +1524,14 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     s << INDENT << "}" << endl;
 
 
-    // Make sure all objects created by Java are owned completely by Java.
-    // All other objects will default to split ownership.
-    s << INDENT << "__qt_java_link->setJavaOwnership(__jni_env, " << java_object_name << ");" << endl;
+    if (cls->isQObject()) {
+        // Make sure all objects created by Java are owned by java only if
+        // parent object has not been set.
+        // All other objects will default to split ownership.
+        s << INDENT << "if(!__qt_this->QObject::parent()){" << endl;
+        s << INDENT << "    __qt_java_link->setJavaOwnership(__jni_env, " << java_object_name << ");" << endl;
+        s << INDENT << "}" << endl;
+    }
 
     if (hasCustomDestructor(cls)) {
         s << INDENT << "__qt_java_link->setDestructorFunction(qtjambi_destructor);" << endl;

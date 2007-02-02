@@ -56,20 +56,16 @@ void QtJambiLink::unregisterSubObject(void *ptr) {
     Q_UNUSED(i);
 }
 
-QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object,
-                                               bool java_owns_qobject)
+QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object)
 {
     Q_ASSERT(env);
     Q_ASSERT(java);
     Q_ASSERT(object);
 
     // Initialize the link
-    QtJambiLink *link = new QtJambiLink(java_owns_qobject
-                                        ? env->NewWeakGlobalRef(java)
-                                        : env->NewGlobalRef(java)
-                                        );
+    QtJambiLink *link = new QtJambiLink(env->NewWeakGlobalRef(java));
     link->m_is_qobject = true;
-    link->m_global_ref = !java_owns_qobject;
+    link->m_global_ref = false;
     link->m_pointer = object;
 
     // Fetch the user data id
@@ -92,6 +88,8 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     sc->resolveQtJambiObject();
     env->SetLongField(link->m_java_object, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
 
+    link->setCppOwnership(env, link->m_java_object);
+
     return link;
 }
 
@@ -113,7 +111,7 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
     Q_ASSERT(constructorId);
 
     jobject java_object = env->NewObject(object_class, constructorId, 0);
-    return createLinkForQObject(env, java_object, object, false);
+    return createLinkForQObject(env, java_object, object);
 }
 
 

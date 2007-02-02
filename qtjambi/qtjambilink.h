@@ -154,7 +154,7 @@ public:
 
     static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,
         bool enter_in_cache);
-    static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object, bool owner);
+    static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object);
     static QtJambiLink *createWrapperForQObject(JNIEnv *env, QObject *o, const char *class_name,
         const char *package_name);
 
