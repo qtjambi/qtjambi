@@ -322,6 +322,10 @@ function makePlatformSpecificPackageWindows(destDir) {
     for (var i=0; i<qtLibraries.length; ++i) {
         copyFiles([option.qtdir + "/bin/" + qtLibraries[i]], option.qtdir + "/bin", dllDest);
     }
+
+    copyFiles(["c:/winnt/system32/msvcp71.dll", "c:/winnt/system32/msvcr71.dll"],
+              "c:/winnt/system32",
+              dllDest);
     
     verbose("-- zipping package");
     dir = new Dir(destDir);
