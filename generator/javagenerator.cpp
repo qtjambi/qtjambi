@@ -1095,8 +1095,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     }
 
     // the static fromNativePointer function...
-    if (!java_class->isNamespace() && !java_class->isInterface()
-        && !type->isObject()) {
+    if (!java_class->isNamespace() && !java_class->isInterface()) {
         s << endl
           << "    public static native " << java_class->name() << " fromNativePointer("
           << "com.trolltech.qt.QNativePointer nativePointer);" << endl;

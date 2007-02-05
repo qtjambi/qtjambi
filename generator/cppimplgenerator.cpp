@@ -476,9 +476,7 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             writeFieldAccessors(s, field);
     }
 
-
-    if (!java_class->isQObject())
-        writeFromNativeFunction(s, java_class);
+    writeFromNativeFunction(s, java_class);
 
     if (java_class->typeEntry()->isValue())
         writeFromArrayFunction(s, java_class);
