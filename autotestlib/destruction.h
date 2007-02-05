@@ -51,7 +51,7 @@ public:
         return _this->virtualGetObjectCppOwnership();
     }
 
-    static void callGetObjectJavaOwnership(OrdinaryDestroyed *_this, OrdinaryDestroyed *obj) 
+    static void callSetDefaultOwnership(OrdinaryDestroyed *_this, OrdinaryDestroyed *obj) 
     {
         return _this->virtualSetDefaultOwnership(obj);
     }
@@ -64,9 +64,8 @@ public:
 
     // Set in type system
     static OrdinaryDestroyed *getObjectCppOwnership() { return new OrdinaryDestroyed(); }
-
-    // Set in type system
     static void setDefaultOwnership(OrdinaryDestroyed *) { }
+
 
 private:
     static int m_destroyed;
