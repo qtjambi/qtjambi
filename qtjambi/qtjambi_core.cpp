@@ -469,8 +469,13 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
 
     jclass clazz = resolveClass(env, className, packageName);
     QTJAMBI_EXCEPTION_CHECK(env);
-    if (clazz != 0)
-        returned = env->AllocObject(clazz);
+    if (clazz != 0) {
+        jmethodID constructorId = resolveMethod(env, "<init>", "(Lcom/trolltech/qt/QtJambiObject$QPrivateConstructor;)V",
+            className, packageName, false);
+        Q_ASSERT(constructorId);
+
+        returned = env->NewObject(clazz, constructorId, 0);
+    }
 
     QTJAMBI_EXCEPTION_CHECK(env);
     if (returned == 0)
