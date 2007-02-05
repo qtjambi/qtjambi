@@ -150,7 +150,7 @@ bool MetaJavaFunction::needsCallThrough() const
     if (type() && (type()->isArray() || type()->isJavaEnum() || type()->isJavaFlags()))
         return true;
 
-    for (int i=-1; i<arguments().size(); ++i) {
+    for (int i=-1; i<=arguments().size(); ++i) {
         TypeSystem::Ownership owner = this->ownership(implementingClass(), TypeSystem::JavaCode, i);
         if (owner != TypeSystem::InvalidOwnership)
             return true;
