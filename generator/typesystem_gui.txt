@@ -4205,11 +4205,11 @@
         }
         
         public static %TYPE %FUNCTION_NAME(QWidget parent, String caption) {
-            return %FUNCTION_NAME(parent, caption, null);
+            return %FUNCTION_NAME(parent, caption, "");
         }
 
         public static %TYPE %FUNCTION_NAME(QWidget parent) {
-            return %FUNCTION_NAME(parent, null);
+            return %FUNCTION_NAME(parent, "");
         }
 
         public static %TYPE %FUNCTION_NAME() {
