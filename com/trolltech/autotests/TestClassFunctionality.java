@@ -581,6 +581,20 @@ public class TestClassFunctionality extends QApplicationTest {
         }
         some_widget.dispose();
     }
+    
+    @Test
+    public void testDialog(){
+        String[] childrenClassList = {"QGridLayout","QLabel","QComboBox","QLabel","QComboBox","QLabel","QComboBox","QPushButton","QTableWidget","QLabel", "QPushButton"};
+        
+        TestDialog dialog = new TestDialog();
+        dialog.show();
+        int i = 0;
+        for (QObject o : dialog.children()) {
+            assertTrue(o.getClass().getName().endsWith("." + childrenClassList[i]));
+            i++;
+        }
+        dialog.hide();
+    }
 
     @Test
     public void run_injectedCode() {

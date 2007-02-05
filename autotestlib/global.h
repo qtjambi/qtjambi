@@ -26,5 +26,6 @@
 #include "paintengine.h"
 #include "injectedcode.h"
 #include "enums.h"
+#include "testdialog.h"
 
 #endif

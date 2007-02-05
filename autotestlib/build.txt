@@ -152,5 +152,6 @@
   <value-type name="CustomStyleOption"
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_CustomBase + 1" /> 
  
+  <object-type name="TestDialog" />
    
 </typesystem>
