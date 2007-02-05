@@ -115,7 +115,10 @@ public class TestQObject extends QApplicationTest{
 
     public static class DyingObject extends QObject {
         public DyingObject() { alive.add(id); }
+        
+        @Override
         public void disposed() { alive.remove(alive.indexOf(id)); }
+        
         static List<Integer> alive = new ArrayList<Integer>();
         static int counter = 0;
         public int id = ++counter;
@@ -165,6 +168,16 @@ public class TestQObject extends QApplicationTest{
     public void disposal_oneObject() {
         DyingObject.alive.clear();
         oneObject();
+        
+        for (int i=0; i<10; ++i) {
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                // exceptions are an idiotic concept
+            }
+            System.gc();
+        }                        
+        
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -179,8 +192,17 @@ public class TestQObject extends QApplicationTest{
     @Test
     public void disposal_objectWithUnParent() {
         DyingObject.alive.clear();
-        objectWithUnParent();
+        objectWithUnParent();        
         QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
+        for (int i=0; i<10; ++i) {
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                // exceptions are an idiotic concept
+            }
+            System.gc();
+        }                
+        
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -205,6 +227,14 @@ public class TestQObject extends QApplicationTest{
     public void disposal_gcInQThread_objectWithParent() {
         DyingObject.alive.clear();
         threadExecutor(runnable_objectWithParent, true);
+        for (int i=0; i<10; ++i) {
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                // exceptions are an idiotic concept
+            }
+            System.gc();
+        }                        
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -236,6 +266,14 @@ public class TestQObject extends QApplicationTest{
         // Will warn twice about leaking the C++ object, but both objects will be collected
         DyingObject.alive.clear();
         threadExecutor(runnable_objectWithUnParent, false);
+        for (int i=0; i<10; ++i) {
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                // exceptions are an idiotic concept
+            }
+            System.gc();
+        }                        
         assertEquals(0, DyingObject.alive.size());
     }
 
