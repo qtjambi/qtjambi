@@ -1036,20 +1036,17 @@ public class TestInjectedCode extends QApplicationTest {
     @Test
     public void testQTextCursorSelectedTableCells() {
         QTextDocument document = new QTextDocument();        
-        QTextBlock block = document.begin();
-        QTextCursor cursor = new QTextCursor(block);
-
-        cursor.movePosition(QTextCursor.MoveOperation.Start);
+        QTextCursor cursor = new QTextCursor(document);
         cursor.insertTable(15, 20);
                        
-        cursor.select(QTextCursor.SelectionType.Document);
-        //cursor.movePosition(QTextCursor.MoveOperation.End, QTextCursor.MoveMode.KeepAnchor);
-        
-        assertTrue(cursor.hasSelection());
-        
+        cursor.movePosition(QTextCursor.MoveOperation.Start); 
+        cursor.movePosition(QTextCursor.MoveOperation.NextBlock); 
+        cursor.movePosition(QTextCursor.MoveOperation.NextBlock, QTextCursor.MoveMode.KeepAnchor);        
+        assertTrue(cursor.hasComplexSelection());
+                
         QTableArea cells = cursor.selectedTableCells();        
-        assertEquals(15, cells.columnCount);
-        assertEquals(20, cells.rowCount);        
+        assertEquals(2, cells.columnCount);
+        assertEquals(1, cells.rowCount);        
         assertEquals(0, cells.column);
         assertEquals(0, cells.row);
     }
@@ -1401,9 +1398,6 @@ public class TestInjectedCode extends QApplicationTest {
         assertTrue(codec == null);
     }    
     
-/* These will crash the JVM currently, so they're out
-  
-      
     @Test
     public void testTextCodecConvertToUnicode() {
         TextCodecSubclassSubclass tcss = new TextCodecSubclassSubclass();
@@ -1427,7 +1421,6 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals("asa", new String(tcss.receivedChar));
     }
     
-*/       
     @Test 
     public void testCrashReminder() {
         assertEquals("The JVM will crash when you instantiate a QTextCodec subclass", 
@@ -1439,10 +1432,8 @@ public class TestInjectedCode extends QApplicationTest {
         QApplication.initialize(args);
         
         TestInjectedCode test = new TestInjectedCode();
+        test.testQTextCursorSelectedTableCells();
         
-        test.testOperatorAssignOtherTypeTemplate();
-        //test.testQMenuAddActionJavaSlot();
-        //test.testTextCodecConvertFromUnicode();
     }
     
     @Test
