@@ -150,6 +150,8 @@ public:
     void setSplitOwnership(JNIEnv *env, jobject java);
     void setDefaultOwnership(JNIEnv *env, jobject java);
 
+    Ownership ownership() const { return Ownership(m_ownership); }
+
     void setGlobalRef(JNIEnv *env, bool global);
 
     static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,

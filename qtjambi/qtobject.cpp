@@ -67,7 +67,17 @@ QTQUALIFY(jobject,_1_1qt_1reassignLink)(JNIEnv *env, jclass, jlong old_native_id
     if (link->isQObject()) {
         QObject *qobject = link->qobject();
         link->resetObject(env);
-        new_link = QtJambiLink::createLinkForQObject(env, new_object, qobject, !link->isGlobalReference());
+        new_link = QtJambiLink::createLinkForQObject(env, new_object, qobject);
+        switch (link->ownership()) {
+        case QtJambiLink::JavaOwnership: 
+            new_link->setJavaOwnership(env, new_object);
+            break;
+        case QtJambiLink::SplitOwnership: 
+            new_link->setSplitOwnership(env, new_object); 
+            break;
+        default: // default is cpp ownership for qobjects    
+            break;
+        } 
     } else {
         void *ptr = link->pointer();
         bool wasCached = link->isCached();
