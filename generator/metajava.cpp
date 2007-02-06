@@ -348,6 +348,29 @@ bool MetaJavaFunction::removedDefaultExpression(const MetaJavaClass *cls, int ke
     return false;
 }
 
+bool MetaJavaFunction::nullPointersDisabled(const MetaJavaClass *mainClass, int argument_idx) const
+{
+    const MetaJavaClass *cls = mainClass;
+    if (cls == 0) 
+        cls = implementingClass();
+
+    do {
+        FunctionModificationList modifications = this->modifications(cls);
+        foreach (FunctionModification modification, modifications) {
+            QList<ArgumentModification> argument_modifications = modification.argument_mods;
+            foreach (ArgumentModification argument_modification, argument_modifications) {
+                if (argument_modification.index == argument_idx
+                    && argument_modification.no_null_pointers) {
+                    return true;
+                }
+            }
+        }
+
+        cls = cls->baseClass();
+    } while (cls != 0 && mainClass == 0); // Once when mainClass != 0, or once for all base classes of implementing class
+
+    return false;
+}
 
 QString MetaJavaFunction::conversionRule(TypeSystem::Language language, int key) const
 {

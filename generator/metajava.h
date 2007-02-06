@@ -449,6 +449,8 @@ public:
     bool removedDefaultExpression(const MetaJavaClass *cls, int idx) const;
     QString conversionRule(TypeSystem::Language language, int idx) const;
 
+    bool nullPointersDisabled(const MetaJavaClass *cls = 0, int argument_idx = 0) const;
+
     // Returns whether garbage collection is disabled for the argument in any context
     bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int key) const;
 

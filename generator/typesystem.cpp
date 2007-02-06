@@ -82,6 +82,7 @@ class StackElement
         RemoveArgument           = 0x08000000,
         DefineOwnership          = 0x10000000,
         RemoveDefaultExpression  = 0x20000000,
+        NoNullPointers           = 0x40000000,
         ArgumentModifiers        = 0xff000000
     };
 
@@ -139,6 +140,7 @@ public:
         tagNames["template"] = StackElement::Template;
         tagNames["insert-template"] = StackElement::TemplateInstanceEnum;
         tagNames["replace"] = StackElement::Replace;
+        tagNames["no-null-pointer"] = StackElement::NoNullPointers;
 
     }
 
@@ -740,6 +742,16 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
 
                 m_function_mods.last().argument_mods.append(ArgumentModification(idx));
+            }
+            break;
+        case StackElement::NoNullPointers:
+            {
+                if (topElement.type != StackElement::ModifyArgument) {
+                    m_error = "no-null-pointer requires argument modification as parent";
+                    return false;
+                }
+
+                m_function_mods.last().argument_mods.last().no_null_pointers = true;
             }
             break;
         case StackElement::DefineOwnership:

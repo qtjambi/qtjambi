@@ -151,10 +151,11 @@ QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
 }
 
 static QHash<QString, QString> table;
-QString default_return_statement_qt(const MetaJavaType *java_type)
+QString default_return_statement_qt(const MetaJavaType *java_type, Generator::Option options = Generator::NoOption)
 {
+    QString returnStr = ((options & Generator::NoReturnStatement) == 0 ? "return" : "");
     if (!java_type)
-        return "return";
+        return returnStr;
 
     if (table.isEmpty()) {
         table["boolean"] = "false";
@@ -171,25 +172,25 @@ QString default_return_statement_qt(const MetaJavaType *java_type)
     QString signature = table.value(java_type->typeEntry()->javaName());
 
     if (!signature.isEmpty())
-        return "return " + signature;
+        return returnStr + " " + signature;
 
     Q_ASSERT(!java_type->isPrimitive());
     if (java_type->isVariant())
-        return "return QVariant()";
+        return returnStr + " QVariant()";
     if (java_type->isJavaString())
-        return "return QString()";
+        return returnStr + " QString()";
     if (java_type->isJavaChar())
-        return "return QChar()";
+        return returnStr + " QChar()";
     else if (java_type->isEnum())
-        return "return " + java_type->typeEntry()->name() + "(0)";
+        return returnStr + " " + java_type->typeEntry()->name() + "(0)";
     else if (java_type->isValue())
-        return "return " + java_type->typeEntry()->name() + "()";
+        return returnStr + " " + java_type->typeEntry()->name() + "()";
     else if (java_type->isContainer() && ((ContainerTypeEntry *)java_type->typeEntry())->type() == ContainerTypeEntry::StringListContainer)
-        return "return " + java_type->typeEntry()->name() + "()";
+        return returnStr + " " + java_type->typeEntry()->name() + "()";
     else if (java_type->isContainer())
-        return "return " + java_type->cppSignature() + "()";
+        return returnStr + " " + java_type->cppSignature() + "()";
     else
-        return "return 0";
+        return returnStr + " 0";
 }
 
 QString default_return_statement_java(const MetaJavaType *java_type)
@@ -958,6 +959,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             } else {
                 s << callXxxMethod(new_return_type);
             }
+           
             s << "(m_link->javaObject(__jni_env), method_id";
             if (arguments.size() > 0)
                 s << ", ";
@@ -968,7 +970,22 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             if (has_function_type) {
                 writeJavaToQt(s, function_type, "__qt_return_value", "__java_return_value",
                               java_function, 0);
-            }
+
+                if (java_function->nullPointersDisabled()) {
+                    s << INDENT << "if (__java_return_value == 0) {" << endl;
+
+                    {
+                        Indentation indent;
+                        s << INDENT << "fprintf(stderr, \"QtJambi: Unexpected null pointer returned from override of '" << java_function->name() << "' in class '%s'\\n\"," << endl
+                          << INDENT << "        qPrintable(qtjambi_object_class_name(__jni_env, m_link->javaObject(__jni_env))));" << endl;            
+                        s << INDENT << "__qt_return_value = ";
+                        writeBaseClassFunctionCall(s, java_function, implementor, NoReturnStatement);
+                        s << endl;
+                    }
+
+                    s << INDENT << "}" << endl;
+                }
+            } 
 
             writeOwnership(s, java_function, "this", -1, implementor);
             writeOwnership(s, java_function, "__java_return_value", 0, implementor);
@@ -1080,11 +1097,12 @@ void CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
                                                   Option options)
 {
     bool static_call = !(options & VirtualCall);
-    s << INDENT;
+    if ((options & NoReturnStatement) == 0)
+        s << INDENT;
     if (java_function->isAbstract() && static_call) {
-        s << default_return_statement_qt(java_function->type()) << ";" << endl;
+        s << default_return_statement_qt(java_function->type(), options) << ";" << endl;
     } else {
-        if (java_function->type())
+        if (java_function->type() && (options & NoReturnStatement) == 0)
             s << "return ";
         if (static_call) {
             const MetaJavaClass *implementor = java_function->implementingClass();

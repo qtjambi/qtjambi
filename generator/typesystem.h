@@ -190,6 +190,7 @@ struct ArgumentModification
     // Should the default expression be removed?
     uint removed_default_expression : 1;
     uint removed : 1;
+    uint no_null_pointers : 1;
 
     // The index of this argument
     int index;

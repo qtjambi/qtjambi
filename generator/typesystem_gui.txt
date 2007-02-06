@@ -2964,7 +2964,7 @@
   <object-type name="QUndoGroup"/>
   <object-type name="QUndoStack"/>
   <object-type name="QUndoView"/>
-  <object-type name="QVBoxLayout"/>
+  <object-type name="QVBoxLayout" />
   <object-type name="QValidator">
     <inject-code>
         public static class QValidationData {
@@ -3366,6 +3366,11 @@
   </object-type>
   
   <object-type name="QLayout">  
+    <modify-function signature="addWidget(QWidget *)">
+        <modify-argument index="1">
+            <no-null-pointer />
+        </modify-argument>
+    </modify-function>    
     <modify-function signature="addItem(QLayoutItem *)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />
@@ -3405,6 +3410,11 @@
   </object-type>
   
   <object-type name="QBoxLayout">  
+    <modify-function signature="addWidget(QWidget *, int, QFlags&lt;Qt::AlignmentFlag>)">
+        <modify-argument index="1">
+            <no-null-pointer />
+        </modify-argument>
+    </modify-function>  
     <modify-function signature="addItem(QLayoutItem *)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />

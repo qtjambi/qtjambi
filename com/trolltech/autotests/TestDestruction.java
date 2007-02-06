@@ -27,7 +27,7 @@ class MyOrdinaryDestroyed extends OrdinaryDestroyed
     
 }
 
-
+@SuppressWarnings("unused")
 public class TestDestruction extends QApplicationTest {
     @Test
     public void testJavaCreationJavaOwnership() 

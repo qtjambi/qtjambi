@@ -419,6 +419,12 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
           << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl;
     }
 
+    for (int i=0; i<arguments.size(); ++i) {
+        if (java_function->nullPointersDisabled(java_function->implementingClass(), i + 1)) {
+            s << "        if (" << arguments.at(i)->argumentName() << " == null)" << endl
+              << "            throw new NullPointerException(\"Argument '" << arguments.at(i)->argumentName() << "': null not expected.\");" << endl;
+        }
+    }
 
     s << "        ";
 

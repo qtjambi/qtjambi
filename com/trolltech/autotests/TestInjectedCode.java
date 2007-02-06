@@ -67,7 +67,6 @@ import com.trolltech.qt.gui.QShortcut;
 import com.trolltech.qt.gui.QStyleOptionButton;
 import com.trolltech.qt.gui.QStyleOptionGraphicsItem;
 import com.trolltech.qt.gui.QTableArea;
-import com.trolltech.qt.gui.QTextBlock;
 import com.trolltech.qt.gui.QTextCursor;
 import com.trolltech.qt.gui.QTextDocument;
 import com.trolltech.qt.gui.QValidator;

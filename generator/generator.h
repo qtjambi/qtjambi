@@ -51,6 +51,7 @@ public:
         OriginalTypeDescription  = 0x10000,
         SkipRemovedArguments     = 0x20000,
         IncludeDefaultExpression = 0x40000,
+        NoReturnStatement        = 0x80000,
 
         ForceValueType           = ExcludeReference | ExcludeConst
     };
