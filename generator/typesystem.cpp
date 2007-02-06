@@ -553,6 +553,9 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["name"] = QString();
             attributes["generate"] = "yes";
             break;
+        case StackElement::NoNullPointers:
+            attributes["default-value"] = QString();
+            break;
         case StackElement::SuppressedWarning:
             attributes["text"] = QString();
             break;
@@ -751,7 +754,12 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                m_function_mods.last().argument_mods.last().no_null_pointers = true;
+                m_function_mods.last().argument_mods.last().no_null_pointers = true;                
+                if (m_function_mods.last().argument_mods.last().index == 0) {
+                    m_function_mods.last().argument_mods.last().null_pointer_default_value = attributes["default-value"];
+                } else if (!attributes["default-value"].isEmpty()) {
+                    ReportHandler::warning("default values for null pointer guards are only effective for return values");
+                }                
             }
             break;
         case StackElement::DefineOwnership:

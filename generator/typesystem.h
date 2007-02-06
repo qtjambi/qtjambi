@@ -184,7 +184,7 @@ typedef QList<CodeSnip> CodeSnipList;
 
 struct ArgumentModification 
 {
-    ArgumentModification(int idx) : removed_default_expression(false), removed(false), index(idx) 
+    ArgumentModification(int idx) : removed_default_expression(false), removed(false), no_null_pointers(false), index(idx)
     {}
 
     // Should the default expression be removed?
@@ -197,6 +197,12 @@ struct ArgumentModification
 
     // The text given for the new type of the argument
     QString modified_type;
+
+    // The code to be used to construct a return value when no_null_pointers is true and
+    // the returned value is null. If no_null_pointers is true and this string is 
+    // empty, then the base class implementation will be used (or a default construction
+    // if there is no implementation)
+    QString null_pointer_default_value;
 
     // The text of the new default expression of the argument
     QString replaced_default_expression;

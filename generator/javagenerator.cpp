@@ -476,7 +476,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
                 s << arg->argumentName() << " == null ? ";
                 // Try to call default constructor for value types...
                 if (type->isValue() && hasDefaultConstructor(type))
-                    s << "new " << type->typeEntry()->qualifiedJavaName() << "().nativeId()";
+                    s << "(" << arg->argumentName() << " = new " << type->typeEntry()->qualifiedJavaName() << "()).nativeId()";
                 else
                     s << "0";
                 s << " : " << arg->argumentName() << ".nativeId()";

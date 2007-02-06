@@ -979,7 +979,11 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
                         s << INDENT << "fprintf(stderr, \"QtJambi: Unexpected null pointer returned from override of '" << java_function->name() << "' in class '%s'\\n\"," << endl
                           << INDENT << "        qPrintable(qtjambi_object_class_name(__jni_env, m_link->javaObject(__jni_env))));" << endl;            
                         s << INDENT << "__qt_return_value = ";
-                        writeBaseClassFunctionCall(s, java_function, implementor, NoReturnStatement);
+                        QString defaultValue = java_function->nullPointerDefaultValue();
+                        if (!defaultValue.isEmpty())
+                            s << defaultValue << ";";
+                        else
+                            writeBaseClassFunctionCall(s, java_function, implementor, NoReturnStatement);
                         s << endl;
                     }
 
@@ -2002,13 +2006,22 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
             }
 
         } else {
+            if (argument_index == 0) {
+                s << "(" << java_name << " != 0 ? ";
+            }
             s << "*"
               << "(" << qualified_class_name << " *)";
             if ((options & UseNativeIds) == 0)
                 s << "qtjambi_to_object(__jni_env, ";
             else
                 s << "qtjambi_from_jlong(";
-            s << java_name << ");" << endl;
+            s << java_name;
+
+            if (argument_index == 0) {
+                s << ") : " << qualified_class_name << "());" << endl;
+            } else {                
+                s << ");" << endl;
+            }
 
         }
     }
