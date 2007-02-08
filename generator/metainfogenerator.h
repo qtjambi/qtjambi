@@ -57,7 +57,7 @@ private:
     void writeLibraryInitializers();
     void writeInclude(QTextStream &s, const Include &inc);
     void writeIncludeStatements(QTextStream &s, const MetaJavaClassList &classList, const QString &package);
-    void writeInitializationFunctionName(QTextStream &s);
+    void writeInitializationFunctionName(QTextStream &s, const QString &package, bool fullSignature);
     void writeInitialization(QTextStream &s, const TypeEntry *entry, const MetaJavaClass *cls, bool registerMetaType = true);
     void writeCustomStructors(QTextStream &s, const TypeEntry *entry);
     void writeDestructors(QTextStream &s, const MetaJavaClass *cls);

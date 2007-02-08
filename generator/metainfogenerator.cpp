@@ -317,7 +317,7 @@ void MetaInfoGenerator::writeCppFile()
         }
 
         // Initialization function: Registers meta types
-        writeInitializationFunctionName(s);
+        writeInitializationFunctionName(s, fileHash.key(f, ""), true);
         s << endl << "{" << endl;
         for (it=entries.begin(); it!=entries.end(); ++it) {
             TypeEntry *entry = it.value();
@@ -378,7 +378,7 @@ void MetaInfoGenerator::writeHeaderFile()
             QTextStream s(&file);
             s << "#ifndef " << filenameStub().toUpper() << "_H" << endl;
             s << "#define " << filenameStub().toUpper() << "_H" << endl << endl;
-            writeInitializationFunctionName(s);
+            writeInitializationFunctionName(s, cls->package(), true);
             s << ";" << endl << "#endif" << endl << endl;
 
             fileHash.insert(cls->package(), true);
@@ -491,7 +491,9 @@ void MetaInfoGenerator::writeLibraryInitializers()
               << "#include \"qtjambi_global.h\"" << endl << endl
               << signature << "(JNIEnv *, jclass)" << endl
               << "{" << endl
-              << "    __metainfo_init();" << endl
+              << "    "; 
+            writeInitializationFunctionName(s, package, false);
+            s << ";" << endl
               << "}" << endl << endl;
         }
 
@@ -574,9 +576,11 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const MetaJavaCla
     }
 }
 
-void MetaInfoGenerator::writeInitializationFunctionName(QTextStream &s)
+void MetaInfoGenerator::writeInitializationFunctionName(QTextStream &s, const QString &package, bool fullSignature)
 {
-    s << "void __metainfo_init()";
+    if (fullSignature)
+        s << "void ";
+    s << "__metainfo_init_" << QString(package).replace(".", "_") << "()";
 }
 
 void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *entry, const MetaJavaClass *cls,
