@@ -350,7 +350,7 @@ bool MetaJavaFunction::removedDefaultExpression(const MetaJavaClass *cls, int ke
 
 QString MetaJavaFunction::nullPointerDefaultValue(const MetaJavaClass *mainClass, int argument_idx) const
 {
-    Q_ASSERT(nullPointersDisabled(cls, argument_idx));
+    Q_ASSERT(nullPointersDisabled(mainClass, argument_idx));
 
     const MetaJavaClass *cls = mainClass;
     if (cls == 0) 
