@@ -86,10 +86,11 @@ public class Utilities {
                         return true;
                     }
                 }
-            }
-
-            if (VERBOSE_LOADING && jambiPath.length() > 0) {
-                System.out.println("Failed to find " + lib + " in " + jambiPath);
+                
+                if (VERBOSE_LOADING && jambiPath.length() > 0) {
+                    System.out.println("Failed to find " + lib + " in " + jambiPath);
+                }
+                
             }
 
             // First look in the library path for the libraries...
