@@ -56,7 +56,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     public QJarEntryEngine(JarFile jarFile, String jarFileName, String fileName, String classPathEntryFileName)
     {
         super();
-
+        
         if (jarFile != null && jarFileName.length() > 0) {
             m_jarFile = jarFile;
             m_jarFileName = jarFileName;
@@ -814,30 +814,57 @@ class QClassPathEngine extends QAbstractFileEngine
 
     private void addFromPath(String path, String fileName)
     {
-        String qtified_path = path.replace(File.separator, "/");
+        URL url = null;
+        try {
+            url = new URL(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ;
+        }
         
-        QFileInfo file = new QFileInfo(qtified_path);
-        if (file.isDir()
-            && file.exists()
-            && new QFileInfo(qtified_path + "/" + fileName).exists()) {
-            addEngine(new QFSEntryEngine(qtified_path + "/" + fileName, path));
-        } else {
-            JarFile jarFile;
-            try {
-                jarFile = new JarFile(path.replace("/", File.separator));
-            } catch (IOException e) {
+        // If the path is on the internets, we need to download it (this is for jar files,
+        // won't help us if the file itself is remote.)
+        if (!url.getProtocol().equals("file")) {
+            File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+            tmpDir = new File(tmpDir, "QtJambi_" + QtJambi.VERSION_STRING);
+            
+            File tmpFile = new File(tmpDir, url.getFile().substring(url.getFile().lastIndexOf('/')));
+            
+        }
+        
+        String qtified_path = url.getFile().replace(File.separator, "/");
+        JarFile jarFile = null;
+        
+        // If it is a plain file on the disk, just read it from the disk                        
+        if (url.getProtocol().equals("file")) {
+            QFileInfo file = new QFileInfo(qtified_path);
+            if (file.isDir()
+                    && file.exists()
+                    && new QFileInfo(qtified_path + "/" + fileName).exists()) {
+                addEngine(new QFSEntryEngine(qtified_path + "/" + fileName, path));
                 return ;
             }
 
-            fileName = QDir.cleanPath(fileName);
-            while (fileName.startsWith("/"))
-                fileName = fileName.substring(1);
-
-            QJarEntryEngine engine = new QJarEntryEngine(jarFile, qtified_path, fileName, path);
-
-            if (engine.isValid())
-                addEngine(engine);
         }
+
+        try {
+            url = new URL("jar:" + url.toString() + "!/");                      
+            jarFile = ((JarURLConnection) url.openConnection()).getJarFile();// JarFile(path.replace("/", File.separator));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ;
+        }            
+        
+        // Otherwise, it is a jar file            
+
+        fileName = QDir.cleanPath(fileName);
+        while (fileName.startsWith("/"))
+            fileName = fileName.substring(1);
+
+        QJarEntryEngine engine = new QJarEntryEngine(jarFile, qtified_path, fileName, path);
+
+        if (engine.isValid())
+            addEngine(engine);
     }
 
     private void addEngine(QAbstractFileEngine engine)
@@ -853,17 +880,23 @@ class QClassPathEngine extends QAbstractFileEngine
 
         String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
         for (String p : paths)
-            classpaths.add(p);       
+            classpaths.add("file:" + p);       
 
         try {
             Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
             while (urls.hasMoreElements()) {
                 URL url = (URL) urls.nextElement();
-                if (url.getProtocol().equals("jar")) {
-                    String f = new URL(url.getFile()).getFile();
-                    int bang = f.indexOf("!");
-                    String jarFile = f.substring(0, bang).replace("%20", " ");
-                    classpaths.add(jarFile);
+                                
+                if (url.getProtocol().equals("jar")) try {
+                    
+                    String f = url.getFile();
+                    int bang = f.indexOf("!");                    
+                    if (bang >= 0)
+                        f = f.substring(0, bang);
+                                       
+                    classpaths.add(f);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         } catch (Exception e) {
