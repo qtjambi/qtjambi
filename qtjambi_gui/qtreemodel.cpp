@@ -90,7 +90,7 @@ QTreeModel::QTreeModel(QObject *parent)
 
 Node *QTreeModel::node(const QModelIndex &index) const
 {
-    Node *n = index.isValid()
+    Node *n = index.isValid() && index.internalPointer() != 0 
               ? (Node *) index.internalPointer()
               : (Node *) m_root;
     if (!n->initialized)
@@ -135,7 +135,7 @@ QModelIndex QTreeModel::parent(const QModelIndex &index) const
     \internal
 */
 QVariant QTreeModel::data(const QModelIndex &index, int role) const
-{
+{    
     return data(node(index)->value, role);
 }
 
