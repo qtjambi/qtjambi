@@ -53,12 +53,23 @@
 
 
     <target name="generator" depends="prepare">
-        <exec executable="qmake" dir="generator"/>
+	<exec executable="make" dir="generator">
+	   <arg line="clean"/>
+	</exec>
+	<exec executable="qmake" dir="generator">
+	   <arg line="-config release"/>
+	</exec>
         <exec executable="make" dir="generator"/>
         <exec executable="${basedir}/generator/generator" dir="generator"/>
+    </target>
+
+    <target name="compile.qtjambi" depends="prepare">
+	<exec executable="make" dir=".">
+	   <arg line="dist clean"/>
+	</exec>
         <exec executable="qmake" dir=".">
-            <arg line="-r"/>
-        </exec>
+	   <arg line="-r"/>
+	</exec>
         <exec executable="make" dir="."/>
     </target>
 
@@ -75,6 +86,9 @@
         <exec executable="${basedir}/generator/generator" dir="autotestlib">
             <arg line="global.h build.txt" />
         </exec>
+	<exec executable="make" dir="autotestlib">
+	   <arg line="clean"/>
+	</exec>
         <exec executable="qmake" dir="autotestlib" />
         <exec executable="make"  dir="autotestlib" />
     </target>
@@ -83,6 +97,9 @@
         <exec executable="${basedir}/generator/generator" dir="generator_example">
             <arg line="global.h typesystem_generatorexample.txt" />
         </exec>
+	<exec executable="make" dir="generator_example">
+	   <arg line="clean"/>
+	</exec>
         <exec executable="qmake" dir="generator_example" />
         <exec executable="make"  dir="generator_example" />
     </target>
@@ -93,14 +110,20 @@
         <exec executable="${basedir}/generator/generator" dir="qtjambi_designer">
             <arg line="designer.h typesystem_designer.txt" />
         </exec>
+	<exec executable="make" dir="autotestlib">
+	   <arg line="clean"/>
+	</exec>
 	<exec executable="qmake" dir="qtjambi_designer" />
         <exec executable="make"  dir="qtjambi_designer" />
     </target>
 
 
-    <target name="compile" depends="generator, compile.java" />
+    <target name="compile" depends="generator, compile.qtjambi, compile.java" />
 
     <target name="compile.qt" depends="init">
+        <exec executable="make" dir="${qt}">
+	    <arg line="dist clean" />
+	</exec>
         <exec executable="${qt}/configure" dir="${qt}" />
         <exec executable="make"      dir="${qt}" />
     </target>
