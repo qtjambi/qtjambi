@@ -1767,6 +1767,9 @@
     <modify-function signature="QImage(const char **)">
         <access modifier="private"/>
     </modify-function>
+    <modify-function signature="QImage(const unsigned char*,int,int,int,QImage::Format)">
+	    <remove />
+    </modify-function>
     <modify-function signature="bits()const">
         <remove/>
     </modify-function>
