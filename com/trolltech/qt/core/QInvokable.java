@@ -13,6 +13,7 @@ class QInvokable extends QObject {
     static QEvent.Type INVOKABLE_EVENT = QEvent.Type.resolve(QEvent.Type.User.value() + 1);
 
     QInvokable(Runnable r) {
+        disableGarbageCollection();
         moveToThread(QCoreApplication.instance().thread());
         runnable = r;
     }
