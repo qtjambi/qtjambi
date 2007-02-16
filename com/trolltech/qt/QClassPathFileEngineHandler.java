@@ -503,19 +503,36 @@ class QClassPathEngine extends QAbstractFileEngine
     {
         setFileName(fileName);
     }
+    
+    private static String makeUrl(String path) {
+        boolean hasProtocol = false;
+        try {
+            URL url = new URL(path);
+            if (url.getProtocol().length() > 0) {
+                hasProtocol = true;
+            }
+        } catch (Exception e) {
+        }
+        
+        if (!hasProtocol) 
+            path = "file:" + path;
+        
+        return path;
+    }
 
     public static void addSearchPath(String path)
     {
         if (classpaths == null)
             findClassPaths();
-        classpaths.add(path);
+        
+        classpaths.add(makeUrl(path));
     }
 
     public static void removeSearchPath(String path)
     {
         if (classpaths == null)
             findClassPaths();
-        classpaths.remove(path);
+        classpaths.remove(makeUrl(path));
     }
 
     public void setFileName(String fileName)
@@ -543,7 +560,7 @@ class QClassPathEngine extends QAbstractFileEngine
                 addFromPath(path, m_baseName);
             }
         } else {
-            addFromPath(m_selectedSource, m_baseName);
+            addFromPath(makeUrl(m_selectedSource), m_baseName);
         }
     }
 
@@ -851,12 +868,10 @@ class QClassPathEngine extends QAbstractFileEngine
             url = new URL("jar:" + url.toString() + "!/");                      
             jarFile = ((JarURLConnection) url.openConnection()).getJarFile();// JarFile(path.replace("/", File.separator));
         } catch (IOException e) {
-            e.printStackTrace();
+            // It happens...
             return ;
         }            
         
-        // Otherwise, it is a jar file            
-
         fileName = QDir.cleanPath(fileName);
         while (fileName.startsWith("/"))
             fileName = fileName.substring(1);
@@ -880,7 +895,7 @@ class QClassPathEngine extends QAbstractFileEngine
 
         String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
         for (String p : paths)
-            classpaths.add("file:" + p);       
+            classpaths.add(makeUrl(p));        
 
         try {
             Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
