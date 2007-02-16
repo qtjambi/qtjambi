@@ -838,17 +838,7 @@ class QClassPathEngine extends QAbstractFileEngine
             e.printStackTrace();
             return ;
         }
-        
-        // If the path is on the internets, we need to download it (this is for jar files,
-        // won't help us if the file itself is remote.)
-        if (!url.getProtocol().equals("file")) {
-            File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-            tmpDir = new File(tmpDir, "QtJambi_" + QtJambi.VERSION_STRING);
-            
-            File tmpFile = new File(tmpDir, url.getFile().substring(url.getFile().lastIndexOf('/')));
-            
-        }
-        
+                
         String qtified_path = url.getFile().replace(File.separator, "/");
         JarFile jarFile = null;
         
