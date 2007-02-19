@@ -2486,7 +2486,16 @@ void CppImplGenerator::writeFunctionCall(QTextStream &s, const QString &object_n
                                          const QStringList &extra_arguments)
 {
     QString function_name = option & OriginalName ? java_function->originalName() : java_function->name();
-    s << object_name << (java_function->isStatic() ? "::" : "->")
+
+    MetaJavaClassList interfaces = java_function->implementingClass()->interfaces();
+
+    QString classPrefix; 
+    if (prefix.isEmpty() 
+        && !java_function->implementingClass()->interfaces().isEmpty()
+        && !java_function->implementingClass()->inheritsFrom(java_function->declaringClass())) {
+        classPrefix = java_function->declaringClass()->qualifiedCppName() + "::";         
+    }
+    s << object_name << (java_function->isStatic() ? QLatin1String("::") : QLatin1String("->") + classPrefix)
       << prefix << function_name << "(";
     writeFunctionCallArguments(s, java_function, "__qt_");
 

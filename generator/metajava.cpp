@@ -1473,7 +1473,12 @@ void MetaJavaClass::fixFunctions()
                     if (sf->isFinalInJava() && !sf->isPrivate()) {
                         // Shadowed funcion, need to make base class
                         // function non-virtual
-                        *sf -= MetaJavaAttributes::FinalInJava;
+                        if (f->implementingClass() != sf->implementingClass() && f->implementingClass()->inheritsFrom(sf->implementingClass())) {
+                            *sf -= MetaJavaAttributes::FinalInJava;
+                            /*qDebug("Shadowd: %s in %s and %s in %s", qPrintable(sf->name()), qPrintable(sf->implementingClass()->name()), 
+                                                                 qPrintable(f->name()), qPrintable(f->implementingClass()->name()));*/
+                        }
+
 //                         printf("   --- shadowing... force final in java\n");
                     }
 
