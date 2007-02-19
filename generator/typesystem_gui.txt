@@ -3157,7 +3157,21 @@
   
   <object-type name="QAbstractButton">
     <inject-code class="java">
+        /**
+         * Sets the shortcut to the key sequence for the given key string. For example "Ctrl+O" gives CTRL+'O'. 
+         * The strings "Ctrl", "Shift", "Alt" and "Meta" are recognized, as well as their translated equivalents in the 
+         * "QShortcut" context (using QObject::tr()). Up to four key codes may be entered by separating them with commas, 
+         * e.g. "Alt+X,Ctrl+S,Q".
+         * @param key The description of the key sequence. Typically used with tr() so key sequences can be locale aware.
+         */
         public void setShortcut(String key) { setShortcut(new QKeySequence(key)); }
+        
+        /**
+         * Sets the shortcut to the key sequence for the given key. The result will depend on the currently running platform.
+         * The key sequence will be based on the first element in the list of key bindings for the key. 
+         * @param key The key for which to select a key sequence 
+         */  
+        public void setShortcut(QKeySequence.StandardKey key) { setShortcut(new QKeySequence(key)); }
     </inject-code>
   </object-type>
 
@@ -4969,8 +4983,23 @@
 
   <object-type name="QAction">
     <inject-code class="java">
-    public void setShortcut(String str) { setShortcut(new QKeySequence(str)); }
-    public void setIcon(QPixmap pm) { setIcon(new QIcon(pm)); }
+        /**
+         * Sets the shortcut to the key sequence for the given key string. For example "Ctrl+O" gives CTRL+'O'. 
+         * The strings "Ctrl", "Shift", "Alt" and "Meta" are recognized, as well as their translated equivalents in the 
+         * "QShortcut" context (using QObject::tr()). Up to four key codes may be entered by separating them with commas, 
+         * e.g. "Alt+X,Ctrl+S,Q".
+         * @param key The description of the key sequence. Typically used with tr() so key sequences can be locale aware.
+         */
+        public void setShortcut(String key) { setShortcut(new QKeySequence(key)); }
+        
+        /**
+         * Sets the shortcut to the key sequence for the given key. The result will depend on the currently running platform.
+         * The key sequence will be based on the first element in the list of key bindings for the key. 
+         * @param key The key for which to select a key sequence 
+         */  
+        public void setShortcut(QKeySequence.StandardKey key) { setShortcut(new QKeySequence(key)); }
+        
+        public void setIcon(QPixmap pm) { setIcon(new QIcon(pm)); }
     </inject-code>
   </object-type>
 

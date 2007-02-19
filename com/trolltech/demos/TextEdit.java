@@ -123,12 +123,12 @@ public class TextEdit extends QMainWindow {
 
         QAction a = new QAction(new QIcon(rsrcPath + "/filenew.png"), "&New",
                 this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_N.value()));
+        a.setShortcut(QKeySequence.StandardKey.New);
         a.triggered.connect(this, "fileNew()");
         menu.addAction(a);
 
         a = new QAction(new QIcon(rsrcPath + "/fileopen.png"), "&Open...", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_O.value()));
+        a.setShortcut(QKeySequence.StandardKey.Open);
         a.triggered.connect(this, "fileOpen()");
         tb.addAction(a);
         menu.addAction(a);
@@ -137,7 +137,7 @@ public class TextEdit extends QMainWindow {
 
         actionSave = a = new QAction(new QIcon(rsrcPath + "/filesave.png"),
                 "&Save", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_S.value()));
+        a.setShortcut(QKeySequence.StandardKey.Save);
         a.triggered.connect(this, "fileSave()");
         a.setEnabled(false);
         tb.addAction(a);
@@ -150,14 +150,14 @@ public class TextEdit extends QMainWindow {
 
         a = new QAction(new QIcon(rsrcPath + "/fileprint.png"), "&Print...",
                 this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_P.value()));
+        a.setShortcut(QKeySequence.StandardKey.Print);
         a.triggered.connect(this, "filePrint()");
         tb.addAction(a);
         menu.addAction(a);
 
         a = new QAction(new QIcon(rsrcPath + "/exportpdf.png"),
                 "&Export PDF...", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_D.value()));
+        a.setShortcut("Ctrl + D");
         a.triggered.connect(this, "filePrintPdf()");
         tb.addAction(a);
         menu.addAction(a);
@@ -165,7 +165,7 @@ public class TextEdit extends QMainWindow {
         menu.addSeparator();
 
         a = new QAction("&Quit", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_Q.value()));
+        a.setShortcut("Ctrl + Q");
         a.triggered.connect(this, "close()");
         menu.addAction(a);
     }
@@ -181,28 +181,28 @@ public class TextEdit extends QMainWindow {
         QAction a;
         a = actionUndo = new QAction(new QIcon(rsrcPath + "/editundo.png"),
                 "&Undo", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_Z.value()));
+        a.setShortcut(QKeySequence.StandardKey.Undo);
         tb.addAction(a);
         menu.addAction(a);
         a = actionRedo = new QAction(new QIcon(rsrcPath + "/editredo.png"),
                 "&Redo", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_Y.value()));
+        a.setShortcut(QKeySequence.StandardKey.Redo);
         tb.addAction(a);
         menu.addAction(a);
         menu.addSeparator();
         a = actionCut = new QAction(new QIcon(rsrcPath + "/editcut.png"),
                 "Cu&t", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_X.value()));
+        a.setShortcut(QKeySequence.StandardKey.Cut);
         tb.addAction(a);
         menu.addAction(a);
         a = actionCopy = new QAction(new QIcon(rsrcPath + "/editcopy.png"),
                 "&Copy", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_C.value()));
+        a.setShortcut(QKeySequence.StandardKey.Copy);
         tb.addAction(a);
         menu.addAction(a);
         a = actionPaste = new QAction(new QIcon(rsrcPath + "/editpaste.png"),
                 "&Paste", this);
-        a.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_V.value()));
+        a.setShortcut(QKeySequence.StandardKey.Paste);
         tb.addAction(a);
         menu.addAction(a);
         actionPaste.setEnabled(QApplication.clipboard().text().length() > 0);
@@ -218,7 +218,7 @@ public class TextEdit extends QMainWindow {
 
         actionTextBold = new QAction(new QIcon(rsrcPath + "/textbold.png"),
                 "&Bold", this);
-        actionTextBold.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_B.value()));
+        actionTextBold.setShortcut("Ctrl + B");
         QFont bold = new QFont();
         bold.setBold(true);
         actionTextBold.setFont(bold);
@@ -229,7 +229,7 @@ public class TextEdit extends QMainWindow {
 
         actionTextItalic = new QAction(new QIcon(rsrcPath + "/textitalic.png"),
                 "&Italic", this);
-        actionTextItalic.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_I.value()));
+        actionTextItalic.setShortcut("Ctrl + I");
         QFont italic = new QFont();
         italic.setItalic(true);
         actionTextItalic.setFont(italic);
@@ -240,7 +240,7 @@ public class TextEdit extends QMainWindow {
 
         actionTextUnderline = new QAction(
                 new QIcon(rsrcPath + "/textunder.png"), "&Underline", this);
-        actionTextUnderline.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_U.value()));
+        actionTextUnderline.setShortcut("Ctrl + U");
         QFont underline = new QFont();
         underline.setUnderline(true);
         actionTextUnderline.setFont(underline);
@@ -256,19 +256,19 @@ public class TextEdit extends QMainWindow {
 
         actionAlignLeft = new QAction(new QIcon(rsrcPath + "/textleft.png"),
                 "&Left", grp);
-        actionAlignLeft.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_L.value()));
+        actionAlignLeft.setShortcut("Ctrl + L");
         actionAlignLeft.setCheckable(true);
         actionAlignCenter = new QAction(
                 new QIcon(rsrcPath + "/textcenter.png"), "C&enter", grp);
-        actionAlignCenter.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_E.value()));
+        actionAlignCenter.setShortcut("Ctrl + E");
         actionAlignCenter.setCheckable(true);
         actionAlignRight = new QAction(new QIcon(rsrcPath + "/textright.png"),
                 "&Right", grp);
-        actionAlignRight.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_R.value()));
+        actionAlignRight.setShortcut("Ctrl + R");
         actionAlignRight.setCheckable(true);
         actionAlignJustify = new QAction(new QIcon(rsrcPath
                 + "/textjustify.png"), "&Justify", grp);
-        actionAlignJustify.setShortcut(new QKeySequence(Qt.Modifier.CTRL.value(), Qt.Key.Key_J.value()));
+        actionAlignJustify.setShortcut("Ctrl + J");
         actionAlignJustify.setCheckable(true);
 
         tb.addActions(grp.actions());
