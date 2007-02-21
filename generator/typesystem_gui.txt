@@ -128,7 +128,7 @@
             <replace from="%CONVERSION_FUNCTION" to="qtjambi_to_object" />
         </insert-template>
     </template>
-          
+
   <rejection class="*" function-name="d_func"/>
 
   <rejection class="*" field-name="d_ptr"/>
@@ -610,10 +610,36 @@
   </enum-type>
 
   <!-- ### QTransform is missing functions due to QNativePointer API -->
+
   <value-type name="QTransform">
+    <extra-includes>
+        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
+        <include file-name="com.trolltech.qt.core.Qt.Axis" location="java" />
+    </extra-includes>
+
     <modify-function signature="inverted(bool*)const">
-        <remove />
+        <access modifier="private" />
+        <modify-argument index="1">
+            <remove-default-expression />
+        </modify-argument>
     </modify-function>
+    <inject-code> 
+    /**
+     * Returns an inverted copy of this transformation.
+     *
+     * @return The inverse of the transformation.
+     * @throws IllegalArgumentException If this transformation is not invertible.
+     */
+    public final QTransform inverted() {
+        QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+        QTransform returned = inverted(ok);
+        if (!ok.booleanValue())
+            throw new IllegalArgumentException("Transformation is not invertible");
+        return returned;
+    }
+    </inject-code>
+
+
     <modify-function signature="map(int,int,int*,int*)const">
         <remove />
     </modify-function>
@@ -626,21 +652,113 @@
     <modify-function signature="operator=(QTransform)">
         <remove />
     </modify-function>
+
     <modify-function signature="rotate(double,Qt::Axis)">
-        <remove />
-    </modify-function>
+        <modify-argument index="1">
+            <remove-default-expression />
+        </modify-argument>
+        <access modifier="private" />
+        <rename to="rotatePrivate" />
+    </modify-function> 
+    <inject-code>
+    /**
+     * Rotates the transformation around the given axis.
+     *
+     * @return The rotated transformation.
+     */
+    public QTransform rotate(double angle, Axis axis){
+        rotatePrivate(angle, axis);
+        return this;
+    }
+
+    /**
+     * Rotates the transformation around the z-axis.
+     *
+     * @return The rotated transformation.
+     */
+    public QTransform rotate(double angle){
+        rotatePrivate(angle, Axis.ZAxis);
+        return this;
+    }
+    </inject-code>
+
     <modify-function signature="rotateRadians(double,Qt::Axis)">
-        <remove />
+        <modify-argument index="1">
+            <remove-default-expression />
+        </modify-argument>
+        <access modifier="private" />
+        <rename to="rotateRadiansPrivate" />
     </modify-function>
+    <inject-code>
+    /**
+     * Rotates the transformation around the given axis.
+     *
+     * @return The rotated transformation.
+     */
+    public QTransform rotateRadians(double angle, Axis axis){
+        rotateRadiansPrivate(angle, axis);
+        return this;
+    }
+
+    /**
+     * Rotates the transformation around the z-axis.
+     *
+     * @return The rotated transformation.
+     */
+    public QTransform rotateRadians(double angle){
+        rotateRadiansPrivate(angle, Axis.ZAxis);
+        return this;
+    }
+    </inject-code>
+
     <modify-function signature="scale(double,double)">
-        <remove />
+        <access modifier="private" />
+        <rename to="scalePrivate" />
     </modify-function>
+    <inject-code>
+    /**
+     * Scales the transformation using x and y.
+     *
+     * @return The scaled transformation.
+     */
+    public QTransform scale(double x, double y){
+        scalePrivate(x, y);
+        return this;
+    }
+    </inject-code>
+
     <modify-function signature="shear(double,double)">
-        <remove />
+        <access modifier="private" />
+        <rename to="shearPrivate" />
     </modify-function>
+    <inject-code>
+    /**
+      * Shears the transformation using x and y.
+      *
+      * @return The sheared transformation.
+      */
+     public QTransform shear(double x, double y){
+        shearPrivate(x, y);
+        return this;
+    }
+    </inject-code>
+
     <modify-function signature="translate(double,double)">
-        <remove />
+        <access modifier="private" />
+        <rename to="translatePrivate" />
     </modify-function>
+    <inject-code>
+    /**
+     * Translates the transformation using x and y.
+     *
+     * @return The translated transformation.
+     */
+    public QTransform translate(double x, double y){
+        translatePrivate(x, y);
+        return this;
+    }
+    </inject-code>
+
     <modify-function signature="quadToQuad(QPolygonF,QPolygonF,QTransform&amp;)">
         <remove />
     </modify-function>
