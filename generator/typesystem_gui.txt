@@ -646,6 +646,7 @@
     </modify-function>
     <modify-function signature="operator*=(QTransform)">
         <access modifier="private" />
+        <rename to="operator_multiply_assign_private" />
     </modify-function>
     <inject-code>
     /**
@@ -653,14 +654,15 @@
      * 
      * @return this
      */
-    public final QTransform operator_multiply_assign(QMatrix other) {
-        operator_multiply_assign(other);
+    public final QTransform operator_multiply_assign(QTransform other) {
+        operator_multiply_assign_private(other);
         return this;
     }
     </inject-code>
 
     <modify-function signature="operator=(QTransform)">
         <access modifier="private" />
+        <rename to="operator_assign_private" />
     </modify-function>
     <inject-code>
     /**
@@ -668,8 +670,8 @@
      * 
      * @return this
      */
-    public final QTransform operator_assign(QMatrix other) {
-        operator_assign(other);
+    public final QTransform operator_assign(QTransform other) {
+        operator_assign_private(other);
         return this;
     }
     </inject-code>
