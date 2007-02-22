@@ -609,8 +609,6 @@
     <reject-enum-value name="FontSizeIncrement"/>
   </enum-type>
 
-  <!-- ### QTransform is missing functions due to QNativePointer API -->
-
   <value-type name="QTransform">
     <extra-includes>
         <include file-name="com.trolltech.qt.QNativePointer" location="java" />
@@ -647,11 +645,34 @@
         <remove />
     </modify-function>
     <modify-function signature="operator*=(QTransform)">
-        <remove />
+        <access modifier="private" />
     </modify-function>
+    <inject-code>
+    /**
+     * Multiply this and the other QTransform, and assign it to this.
+     * 
+     * @return this
+     */
+    public final QTransform operator_multiply_assign(QMatrix other) {
+        operator_multiply_assign(other);
+        return this;
+    }
+    </inject-code>
+
     <modify-function signature="operator=(QTransform)">
-        <remove />
+        <access modifier="private" />
     </modify-function>
+    <inject-code>
+    /**
+     * Assignes the other QTranform to this.
+     * 
+     * @return this
+     */
+    public final QTransform operator_assign(QMatrix other) {
+        operator_assign(other);
+        return this;
+    }
+    </inject-code>
 
     <modify-function signature="rotate(double,Qt::Axis)">
         <modify-argument index="1">
@@ -666,7 +687,7 @@
      *
      * @return The rotated transformation.
      */
-    public QTransform rotate(double angle, Axis axis){
+    public final QTransform rotate(double angle, Axis axis){
         rotatePrivate(angle, axis);
         return this;
     }
@@ -676,7 +697,7 @@
      *
      * @return The rotated transformation.
      */
-    public QTransform rotate(double angle){
+    public final QTransform rotate(double angle){
         rotatePrivate(angle, Axis.ZAxis);
         return this;
     }
@@ -695,7 +716,7 @@
      *
      * @return The rotated transformation.
      */
-    public QTransform rotateRadians(double angle, Axis axis){
+    public final QTransform rotateRadians(double angle, Axis axis){
         rotateRadiansPrivate(angle, axis);
         return this;
     }
@@ -705,7 +726,7 @@
      *
      * @return The rotated transformation.
      */
-    public QTransform rotateRadians(double angle){
+    public final QTransform rotateRadians(double angle){
         rotateRadiansPrivate(angle, Axis.ZAxis);
         return this;
     }
@@ -721,7 +742,7 @@
      *
      * @return The scaled transformation.
      */
-    public QTransform scale(double x, double y){
+    public final QTransform scale(double x, double y){
         scalePrivate(x, y);
         return this;
     }
@@ -737,7 +758,7 @@
       *
       * @return The sheared transformation.
       */
-     public QTransform shear(double x, double y){
+     public final QTransform shear(double x, double y){
         shearPrivate(x, y);
         return this;
     }
@@ -753,21 +774,71 @@
      *
      * @return The translated transformation.
      */
-    public QTransform translate(double x, double y){
+    public final QTransform translate(double x, double y){
         translatePrivate(x, y);
         return this;
     }
     </inject-code>
 
     <modify-function signature="quadToQuad(QPolygonF,QPolygonF,QTransform&amp;)">
-        <remove />
+        <access modifier="private" />
+        <rename to="quadToQuadPrivate" />
     </modify-function>
+    <inject-code>
+    /**
+     * Creates a transformation mapping one arbitrary quad into another.
+     *
+     * @return The transformation.
+     * @throws IllegalArgumentException If this transformation is not possible.
+     */
+    public final QTransform quadToQuad(QPolygonF from, QPolygonF to) {
+        QNativePointer result = new QNativePointer(com.trolltech.qt.QNativePointer.Type.Pointer);
+        if (quadToQuadPrivate(from, to, result)) {
+            return fromNativePointer(result);
+        } else
+            throw new IllegalArgumentException("Transformation is not possible");
+    }
+    </inject-code>
+
     <modify-function signature="quadToSquare(QPolygonF,QTransform&amp;)">
-        <remove />
+        <access modifier="private" />
+        <rename to="quadToSquarePrivate" />
     </modify-function>
+    <inject-code>
+    /**
+     * Creates a transformation that maps a quad to a unit square.
+     *
+     * @return The transformation.
+     * @throws IllegalArgumentException If this transformation is not possible.
+     */
+    public final QTransform quadToSquare(QPolygonF quad) {
+        QNativePointer result = new QNativePointer(com.trolltech.qt.QNativePointer.Type.Pointer);
+        if (quadToSquarePrivate(quad, result)) {
+            return fromNativePointer(result);
+        } else
+            throw new IllegalArgumentException("Transformation is not possible");
+    }
+    </inject-code>
+
     <modify-function signature="squareToQuad(QPolygonF,QTransform&amp;)">
-        <remove />
-    </modify-function>  
+        <access modifier="private" />
+        <rename to="squareToQuadPrivate" />
+    </modify-function>
+    <inject-code>
+    /**
+     * Creates a transformation that maps a unit square to a the given quad.
+     *
+     * @return The transformation.
+     * @throws IllegalArgumentException If this transformation is not possible.
+     */
+    public final QTransform squareToQuad(QPolygonF quad) {
+        QNativePointer result = new QNativePointer(com.trolltech.qt.QNativePointer.Type.Pointer);
+        if (squareToQuadPrivate(quad, result)) {
+            return fromNativePointer(result);
+        } else
+            throw new IllegalArgumentException("Transformation is not possible");
+    }
+    </inject-code>
   </value-type>  
   
   <value-type name="QStyleOption" polymorphic-base="yes" 
