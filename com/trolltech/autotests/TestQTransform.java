@@ -2,8 +2,7 @@ package com.trolltech.autotests;
 
 import java.util.Vector;
 
-import com.trolltech.qt.core.QPoint;
-import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 import static org.junit.Assert.*;
@@ -215,7 +214,7 @@ public class TestQTransform extends QApplicationTest {
 		// FIXME missing equal operator
 		assertEquals(tranInv.map(pt).x(), matInv.map(pt).x());
 		assertEquals(tranInv.map(pt).x(), matInv.map(pt).x());
-
+		
 		QPainterPath path = new QPainterPath();
 		path.moveTo(55, 60);
 		path.lineTo(110, 110);
@@ -223,5 +222,38 @@ public class TestQTransform extends QApplicationTest {
 		path.closeSubpath();
 		assertTrue(tranInv.map(path).operator_equal(matInv.map(path)));
 	}
-
+	
+	@Test
+	public void squareToQuad() {
+		QTransform transform = new QTransform();
+		QPolygonF pol = new QPolygonF();
+		
+		System.gc();
+		QPointF p1 = new QPointF(0,0);
+		pol.append(p1);
+		QPointF p2 = new QPointF(5,0);
+		pol.append(p2);
+		QPointF p3 = new QPointF(5,10);
+		pol.append(p3);
+		QPointF p4 = new QPointF(0,10);
+		pol.append(p4);
+		
+		
+		QTransform res = transform.squareToQuad(pol);
+		
+		assertTrue(transform.operator_multiply(res).operator_equal(res));
+		
+		QPolygonF polRes = new QPolygonF();
+		polRes.append(new QPointF(0,0));
+		polRes.append(new QPointF(1,0));
+		polRes.append(new QPointF(1,1));
+		polRes.append(new QPointF(0,1));
+		
+		assertTrue(res.map(polRes).operator_equal(pol.toList()));
+		
+		QTransform inverted = res.inverted();
+		QPolygonF ident = inverted.map(pol);
+		
+		assertTrue(ident.operator_equal(polRes.toList()));
+	}
 }
