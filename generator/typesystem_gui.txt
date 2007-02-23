@@ -654,10 +654,10 @@
      * 
      * @return this
      */
-    public final QTransform operator_multiply_assign(QTransform other) {
-        operator_multiply_assign_private(other);
-        return this;
-    }
+        <insert-template name="core.unary_self_type">
+            <replace from="%FUNCTION_NAME" to="operator_multiply_assign" />
+            <replace from="%TYPE" to="QTransform" />
+        </insert-template>
     </inject-code>
 
     <modify-function signature="operator=(QTransform)">
@@ -670,10 +670,10 @@
      * 
      * @return this
      */
-    public final QTransform operator_assign(QTransform other) {
-        operator_assign_private(other);
-        return this;
-    }
+        <insert-template name="core.unary_self_type">
+            <replace from="%FUNCTION_NAME" to="operator_assign" />
+            <replace from="%TYPE" to="QTransform" />
+        </insert-template>
     </inject-code>
 
     <modify-function signature="rotate(double,Qt::Axis)">
@@ -681,7 +681,7 @@
             <remove-default-expression />
         </modify-argument>
         <access modifier="private" />
-        <rename to="rotatePrivate" />
+        <rename to="rotate_private" />
     </modify-function> 
     <inject-code>
     /**
@@ -689,20 +689,24 @@
      *
      * @return The rotated transformation.
      */
-    public final QTransform rotate(double angle, Axis axis){
-        rotatePrivate(angle, axis);
-        return this;
-    }
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTransform" />
+            <replace from="%FUNCTION_NAME" to="rotate" />
+            <replace from="%ARGUMENTS" to="double angle, Axis axis" />
+            <replace from="%ARGUMENT_NAMES" to="angle, axis" />
+        </insert-template>
 
     /**
      * Rotates the transformation around the z-axis.
      *
      * @return The rotated transformation.
      */
-    public final QTransform rotate(double angle){
-        rotatePrivate(angle, Axis.ZAxis);
-        return this;
-    }
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTransform" />
+            <replace from="%FUNCTION_NAME" to="rotate" />
+            <replace from="%ARGUMENTS" to="double angle" />
+            <replace from="%ARGUMENT_NAMES" to="angle" />
+        </insert-template>
     </inject-code>
 
     <modify-function signature="rotateRadians(double,Qt::Axis)">
@@ -710,7 +714,7 @@
             <remove-default-expression />
         </modify-argument>
         <access modifier="private" />
-        <rename to="rotateRadiansPrivate" />
+        <rename to="rotateRadians_private" />
     </modify-function>
     <inject-code>
     /**
@@ -718,25 +722,29 @@
      *
      * @return The rotated transformation.
      */
-    public final QTransform rotateRadians(double angle, Axis axis){
-        rotateRadiansPrivate(angle, axis);
-        return this;
-    }
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTransform" />
+            <replace from="%FUNCTION_NAME" to="rotateRadians" />
+            <replace from="%ARGUMENTS" to="double angle, Axis axis" />
+            <replace from="%ARGUMENT_NAMES" to="angle, axis" />
+        </insert-template>
 
     /**
      * Rotates the transformation around the z-axis.
      *
      * @return The rotated transformation.
      */
-    public final QTransform rotateRadians(double angle){
-        rotateRadiansPrivate(angle, Axis.ZAxis);
-        return this;
-    }
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTransform" />
+            <replace from="%FUNCTION_NAME" to="rotateRadians" />
+            <replace from="%ARGUMENTS" to="double angle" />
+            <replace from="%ARGUMENT_NAMES" to="angle" />
+        </insert-template>
     </inject-code>
 
     <modify-function signature="scale(double,double)">
         <access modifier="private" />
-        <rename to="scalePrivate" />
+        <rename to="scale_private" />
     </modify-function>
     <inject-code>
     /**
@@ -744,15 +752,17 @@
      *
      * @return The scaled transformation.
      */
-    public final QTransform scale(double x, double y){
-        scalePrivate(x, y);
-        return this;
-    }
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTransform" />
+            <replace from="%FUNCTION_NAME" to="scale" />
+            <replace from="%ARGUMENTS" to="double x, double y" />
+            <replace from="%ARGUMENT_NAMES" to="x, y" />
+        </insert-template>
     </inject-code>
 
     <modify-function signature="shear(double,double)">
         <access modifier="private" />
-        <rename to="shearPrivate" />
+        <rename to="shear_private" />
     </modify-function>
     <inject-code>
     /**
@@ -760,15 +770,17 @@
       *
       * @return The sheared transformation.
       */
-     public final QTransform shear(double x, double y){
-        shearPrivate(x, y);
-        return this;
-    }
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTransform" />
+            <replace from="%FUNCTION_NAME" to="shear" />
+            <replace from="%ARGUMENTS" to="double x, double y" />
+            <replace from="%ARGUMENT_NAMES" to="x, y" />
+        </insert-template>
     </inject-code>
 
     <modify-function signature="translate(double,double)">
         <access modifier="private" />
-        <rename to="translatePrivate" />
+        <rename to="translate_private" />
     </modify-function>
     <inject-code>
     /**
@@ -776,10 +788,12 @@
      *
      * @return The translated transformation.
      */
-    public final QTransform translate(double x, double y){
-        translatePrivate(x, y);
-        return this;
-    }
+        <insert-template name="core.private_function_return_self">
+            <replace from="%RETURN_TYPE" to="QTransform" />
+            <replace from="%FUNCTION_NAME" to="translate" />
+            <replace from="%ARGUMENTS" to="double x, double y" />
+            <replace from="%ARGUMENT_NAMES" to="x, y" />
+        </insert-template>
     </inject-code>
 
     <modify-function signature="quadToQuad(QPolygonF,QPolygonF,QTransform&amp;)">
