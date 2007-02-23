@@ -808,9 +808,10 @@
      * @throws IllegalArgumentException If this transformation is not possible.
      */
     public final QTransform quadToQuad(QPolygonF from, QPolygonF to) {
-        QNativePointer result = new QNativePointer(com.trolltech.qt.QNativePointer.Type.Pointer);
-        if (quadToQuadPrivate(from, to, result)) {
-            return fromNativePointer(result);
+        QTransform res = new QTransform();
+        QNativePointer resPointer = res.nativePointer();
+        if (quadToQuadPrivate(from, to, resPointer)) {
+            return res;
         } else
             throw new IllegalArgumentException("Transformation is not possible");
     }
@@ -828,9 +829,10 @@
      * @throws IllegalArgumentException If this transformation is not possible.
      */
     public final QTransform quadToSquare(QPolygonF quad) {
-        QNativePointer result = new QNativePointer(com.trolltech.qt.QNativePointer.Type.Pointer);
-        if (quadToSquarePrivate(quad, result)) {
-            return fromNativePointer(result);
+        QTransform res = new QTransform();
+        QNativePointer resPointer = res.nativePointer();
+        if (quadToSquarePrivate(quad, resPointer)) {
+            return res;
         } else
             throw new IllegalArgumentException("Transformation is not possible");
     }
@@ -848,9 +850,10 @@
      * @throws IllegalArgumentException If this transformation is not possible.
      */
     public final QTransform squareToQuad(QPolygonF quad) {
-        QNativePointer result = new QNativePointer(com.trolltech.qt.QNativePointer.Type.Pointer);
-        if (squareToQuadPrivate(quad, result)) {
-            return fromNativePointer(result);
+        QTransform res = new QTransform();
+        QNativePointer resPointer = res.nativePointer();
+        if (squareToQuadPrivate(quad, resPointer)) {
+            return res;
         } else
             throw new IllegalArgumentException("Transformation is not possible");
     }
