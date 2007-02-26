@@ -489,6 +489,7 @@
   <enum-type name="Qt::WidgetAttribute">
     <reject-enum-value name="WA_ForceAcceptDrops"/>
     <reject-enum-value name="WA_NoBackground"/>
+    <reject-enum-value name="WA_MacMetalStyle"/>
   </enum-type>
   
   <value-type name="QBasicTimer"/>  
