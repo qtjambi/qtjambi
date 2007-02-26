@@ -26,7 +26,7 @@ cd generator_example
 qmake
 nmake
 cd ..
-javac com\trolltech\examples\generator\MyWidget.java com\trolltech\examples\GeneratorExample.java
+javac com\trolltech\examples\generator\*.java com\trolltech\examples\GeneratorExample.java
 
 
 
