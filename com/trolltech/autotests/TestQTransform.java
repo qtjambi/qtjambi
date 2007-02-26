@@ -239,7 +239,7 @@ public class TestQTransform extends QApplicationTest {
 		pol.append(p4);
 		
 		
-		QTransform res = transform.squareToQuad(pol);
+		QTransform res = QTransform.squareToQuad(pol);
 		
 		assertTrue(transform.operator_multiply(res).operator_equal(res));
 		
