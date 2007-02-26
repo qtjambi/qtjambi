@@ -24,8 +24,6 @@
 
 #include <QtGui>
 
-#define printf
-
 jclass class_ResourceBrowser;
 jclass class_MemberSheet;
 
@@ -225,6 +223,7 @@ bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
 
 bool JambiExtraInfoExtension::saveWidgetExtraInfo(DomWidget *ui_widget)
 {
+    Q_UNUSED(ui_widget)
     printf("JambiExtraInfoExtension::saveWidgetExtraInfo()\n");
     return false;
 }
@@ -232,6 +231,7 @@ bool JambiExtraInfoExtension::saveWidgetExtraInfo(DomWidget *ui_widget)
 
 bool JambiExtraInfoExtension::loadWidgetExtraInfo(DomWidget *ui_widget)
 {
+    Q_UNUSED(ui_widget)
     printf("JambiExtraInfoExtension::loadWidgetExtraInfo()\n");
     return false;
 }
