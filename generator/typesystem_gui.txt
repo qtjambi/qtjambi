@@ -807,7 +807,7 @@
      * @return The transformation.
      * @throws IllegalArgumentException If this transformation is not possible.
      */
-    public final QTransform quadToQuad(QPolygonF from, QPolygonF to) {
+    public static final QTransform quadToQuad(QPolygonF from, QPolygonF to) {
         QTransform res = new QTransform();
         QNativePointer resPointer = res.nativePointer();
         if (quadToQuadPrivate(from, to, resPointer)) {
@@ -828,7 +828,7 @@
      * @return The transformation.
      * @throws IllegalArgumentException If this transformation is not possible.
      */
-    public final QTransform quadToSquare(QPolygonF quad) {
+    public static final QTransform quadToSquare(QPolygonF quad) {
         QTransform res = new QTransform();
         QNativePointer resPointer = res.nativePointer();
         if (quadToSquarePrivate(quad, resPointer)) {
@@ -849,7 +849,7 @@
      * @return The transformation.
      * @throws IllegalArgumentException If this transformation is not possible.
      */
-    public final QTransform squareToQuad(QPolygonF quad) {
+    public static final QTransform squareToQuad(QPolygonF quad) {
         QTransform res = new QTransform();
         QNativePointer resPointer = res.nativePointer();
         if (squareToQuadPrivate(quad, resPointer)) {
