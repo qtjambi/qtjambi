@@ -89,12 +89,16 @@ public class SpinBoxes extends QWidget {
         QLabel dateLabel = new QLabel();
         QDateTimeEdit dateEdit = new QDateTimeEdit(QDate.currentDate());
         dateEdit.setDateRange(new QDate(2005, 1, 1), new QDate(2010, 12, 31));
-        dateLabel.setText(String.format(tr("Appointment date (between %0$s and %1$s):"), dateEdit.minimumDate().toString(Qt.DateFormat.ISODate), dateEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
+        dateLabel.setText(String.format(tr("Appointment date (between %0$s and %1$s):"),
+                                        dateEdit.minimumDate().toString(Qt.DateFormat.ISODate),
+                                        dateEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
 
         QLabel timeLabel = new QLabel();
         QDateTimeEdit timeEdit = new QDateTimeEdit(QTime.currentTime());
         timeEdit.setTimeRange(new QTime(9, 0, 0, 0), new QTime(16, 30, 0, 0));
-        timeLabel.setText(String.format(tr("Appointment time (between %0$s and %1$s):"), timeEdit.minimumTime().toString(Qt.DateFormat.ISODate), timeEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
+        timeLabel.setText(String.format(tr("Appointment time (between %0$s and %1$s):"),
+                                        timeEdit.minimumTime().toString(Qt.DateFormat.ISODate),
+                                        timeEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
 
         meetingLabel = new QLabel();
         meetingEdit = new QDateTimeEdit(QDateTime.currentDateTime());
