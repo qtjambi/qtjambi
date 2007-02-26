@@ -7,7 +7,12 @@
 
 class Node {
 public:
-    Node() : value(0), initialized(0)  { }
+    enum State {
+        ChildCountQueried =  0x0001,
+        ChildrenQueried =    0x0002,
+    };
+
+    Node() : value(0), state(0)  { }
     ~Node() {
         if (nodes.size()) {
             JNIEnv *env = qtjambi_current_environment();
@@ -22,19 +27,30 @@ public:
         // All my children
         for (int i=0; i<nodes.size(); ++i) {
             Node *n = nodes.at(i);
-            n->release(env);
-            delete n;
+            if (n) {
+                n->release(env);
+                delete n;
+            }
         }
 
         // The free memory..
         nodes = QVector<Node *>();
+
+        state = 0;
     }
+
+    void setState(State s) { state |= s; }
+    void clearState(State s) { state &= ~s; }
+    bool checkState(State s) const { return state & s; }
+
+    bool isChildCountQueried() const { return checkState(ChildCountQueried); }
+    bool isChildrenQueried() const { return checkState(ChildrenQueried); }
 
     QModelIndex parent;
     QVector<Node *> nodes;
     jobject value;
 
-    uint initialized : 1;
+    uint state;
 };
 
 /*!
@@ -90,10 +106,10 @@ QTreeModel::QTreeModel(QObject *parent)
 
 Node *QTreeModel::node(const QModelIndex &index) const
 {
-    Node *n = index.isValid() && index.internalPointer() != 0 
+    Node *n = index.isValid() && index.internalPointer() != 0
               ? (Node *) index.internalPointer()
               : (Node *) m_root;
-    if (!n->initialized)
+    if (!n->isChildCountQueried())
         initializeNode(n, index);
     return n;
 }
@@ -120,7 +136,12 @@ int QTreeModel::columnCount(const QModelIndex &) const
 */
 QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
 {
-    return createIndex(row, 0, node(parent)->nodes.at(row));
+    Node *parentNode = node(parent);
+
+    if (!parentNode->isChildrenQueried())
+        queryChildren(parentNode, parent);
+
+    return createIndex(row, 0, parentNode->nodes.at(row));
 }
 
 /*!
@@ -135,7 +156,7 @@ QModelIndex QTreeModel::parent(const QModelIndex &index) const
     \internal
 */
 QVariant QTreeModel::data(const QModelIndex &index, int role) const
-{    
+{
     return data(node(index)->value, role);
 }
 
@@ -232,21 +253,43 @@ void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int
 /*!
     \internal
 */
-void QTreeModel::initializeNode(Node *node, const QModelIndex &index) const
+void QTreeModel::initializeNode(Node *node, const QModelIndex &) const
 {
+    Q_ASSERT(!node->isChildCountQueried());
     int count = childCount(node->value);
     node->nodes.resize(count);
+    node->setState(Node::ChildCountQueried);
+
+//     JNIEnv *env = qtjambi_current_environment();
+
+//     for (int i=0; i<count; ++i) {
+//         Node *childNode = new Node();
+//         childNode->value = env->NewGlobalRef(child(node->value, i));
+//         childNode->parent = index;
+//         node->nodes[i] = childNode;
+//     }
+
+}
+
+/*!
+    \internal
+*/
+
+void QTreeModel::queryChildren(Node *parentNode, const QModelIndex &parentIndex) const
+{
+    Q_ASSERT(!parentNode->isChildrenQueried());
 
     JNIEnv *env = qtjambi_current_environment();
 
+    int count = parentNode->nodes.size();
     for (int i=0; i<count; ++i) {
         Node *childNode = new Node();
-        childNode->value = env->NewGlobalRef(child(node->value, i));
-        childNode->parent = index;
-        node->nodes[i] = childNode;
+        childNode->value = env->NewGlobalRef(child(parentNode->value, i));
+        childNode->parent = parentIndex;
+        parentNode->nodes[i] = childNode;
     }
 
-    node->initialized = true;
+    parentNode->setState(Node::ChildrenQueried);
 }
 
 /*!
@@ -264,18 +307,19 @@ void QTreeModel::initializeNode(Node *node, const QModelIndex &index) const
 void QTreeModel::releaseChildren(const QModelIndex &index)
 {
     Node *n = node(index);
-
     JNIEnv *env = qtjambi_current_environment();
 
-    QVector<Node *>::const_iterator end = n->nodes.end();
-    for (QVector<Node *>::const_iterator it = n->nodes.begin(); it != end; ++it) {
-        Node *c = *it;
-        for (int i=0; i<c->nodes.size(); ++i) {
-            c->nodes.at(i)->release(env);
+    int count = n->nodes.size();
+    for (int i=0; i<count; ++i) {
+        Node *childNode = n->nodes.at(i);
+        if (childNode) {
+            childNode->release(env);
+            delete childNode;
+            n->nodes.replace(i, 0);
         }
-        c->nodes = QVector<Node *>();
-        c->initialized = false;
     }
+
+    n->clearState(Node::ChildrenQueried);
 }
 
 

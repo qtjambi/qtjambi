@@ -39,6 +39,7 @@ private slots:
 
 private:
     void initializeNode(Node *n, const QModelIndex &index) const;
+    void queryChildren(Node *parentNode, const QModelIndex &parentIndex) const;
     Node *node(const QModelIndex &index) const;
 
 
