@@ -17,31 +17,12 @@ import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+import static com.trolltech.qt.gui.QKeySequence.StandardKey;
+
 @QtJambiExample(name = "Text Edit")
 public class TextEdit extends QMainWindow {
-    private String fileName;
-    private QTextEdit textEdit;
-    private QAction actionSave;
-    private QAction actionUndo;
-    private QAction actionRedo;
-    private QAction actionCut;
-    private QAction actionCopy;
-    private QAction actionPaste;
-    private QAction actionTextBold;
-    private QAction actionTextItalic;
-    private QAction actionTextUnderline;
-    private QAction actionTextColor;
-    private QAction actionAlignLeft;
-    private QAction actionAlignRight;
-    private QAction actionAlignCenter;
-    private QAction actionAlignJustify;
-    private QComboBox comboStyle;
-    private QComboBox comboFont;
-    private QComboBox comboSize;
-    private String rsrcPath = "classpath:com/trolltech/images/textedit/win";
-    private boolean initialized = false;
 
-    void init() {
+    private void init() {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         setupFileActions();
@@ -113,7 +94,24 @@ public class TextEdit extends QMainWindow {
             e.ignore();
     }
 
-    void setupFileActions() {
+    private QAction action(String name, String image, Object shortcut, String slot,
+                           QMenu menu, QToolBar toolBar) {
+        QAction a = new QAction(name, this);
+
+        if (image != null) a.setIcon(new QIcon(rsrcPath + "/" + image + ".png"));
+        if (menu != null) menu.addAction(a);
+        if (toolBar != null) toolBar.addAction(a);
+        if (slot != null) a.triggered.connect(this, slot);
+
+        if (shortcut instanceof String)
+            a.setShortcut((String) shortcut);
+        else if (shortcut instanceof QKeySequence.StandardKey)
+            a.setShortcuts((QKeySequence.StandardKey) shortcut);
+
+        return a;
+    }
+
+    private void setupFileActions() {
         QToolBar tb = new QToolBar(this);
         tb.setWindowTitle("File Actions");
         addToolBar(tb);
@@ -121,176 +119,95 @@ public class TextEdit extends QMainWindow {
         QMenu menu = new QMenu("&File", this);
         menuBar().addMenu(menu);
 
-        QAction a = new QAction(new QIcon(rsrcPath + "/filenew.png"), "&New",
-                this);
-        a.setShortcut(QKeySequence.StandardKey.New);
-        a.triggered.connect(this, "fileNew()");
-        menu.addAction(a);
-
-        a = new QAction(new QIcon(rsrcPath + "/fileopen.png"), "&Open...", this);
-        a.setShortcut(QKeySequence.StandardKey.Open);
-        a.triggered.connect(this, "fileOpen()");
-        tb.addAction(a);
-        menu.addAction(a);
-
+        action("&New", "filenew", StandardKey.New, "fileNew()", menu, null);
+        action("Open", "fileopen", StandardKey.Open, "fileOpen()", menu, tb);
         menu.addSeparator();
-
-        actionSave = a = new QAction(new QIcon(rsrcPath + "/filesave.png"),
-                "&Save", this);
-        a.setShortcut(QKeySequence.StandardKey.Save);
-        a.triggered.connect(this, "fileSave()");
-        a.setEnabled(false);
-        tb.addAction(a);
-        menu.addAction(a);
-
-        a = new QAction("Save &As...", this);
-        a.triggered.connect(this, "fileSaveAs()");
-        menu.addAction(a);
+        actionSave = action("&Save", "filesave", StandardKey.Save, "fileSave()", menu, tb);
+        action("Save &As...", null, null, "fileSaveAs()", menu, null);
         menu.addSeparator();
-
-        a = new QAction(new QIcon(rsrcPath + "/fileprint.png"), "&Print...",
-                this);
-        a.setShortcut(QKeySequence.StandardKey.Print);
-        a.triggered.connect(this, "filePrint()");
-        tb.addAction(a);
-        menu.addAction(a);
-
-        a = new QAction(new QIcon(rsrcPath + "/exportpdf.png"),
-                "&Export PDF...", this);
-        a.setShortcut("Ctrl + D");
-        a.triggered.connect(this, "filePrintPdf()");
-        tb.addAction(a);
-        menu.addAction(a);
-
+        action("&Print", "fileprint", StandardKey.Print, "filePrint()", menu, tb);
+        action("&Exprt PDF...", "exportpdf", null, "filePrintPdf()", menu, tb);
         menu.addSeparator();
-
-        a = new QAction("&Quit", this);
-        a.setShortcut("Ctrl + Q");
-        a.triggered.connect(this, "close()");
-        menu.addAction(a);
+        action("&Quit", null, "Ctrl+Q", "close()", menu, null);
     }
 
-    void setupEditActions() {
-        QToolBar tb = new QToolBar(this);
-        tb.setWindowTitle("Edit Actions");
-        addToolBar(tb);
+    private void setupEditActions() {
+        QToolBar b = new QToolBar(this);
+        b.setWindowTitle("Edit Actions");
+        addToolBar(b);
 
-        QMenu menu = new QMenu("&Edit", this);
-        menuBar().addMenu(menu);
+        QMenu m = new QMenu("&Edit", this);
+        menuBar().addMenu(m);
 
-        QAction a;
-        a = actionUndo = new QAction(new QIcon(rsrcPath + "/editundo.png"),
-                "&Undo", this);
-        a.setShortcut(QKeySequence.StandardKey.Undo);
-        tb.addAction(a);
-        menu.addAction(a);
-        a = actionRedo = new QAction(new QIcon(rsrcPath + "/editredo.png"),
-                "&Redo", this);
-        a.setShortcut(QKeySequence.StandardKey.Redo);
-        tb.addAction(a);
-        menu.addAction(a);
-        menu.addSeparator();
-        a = actionCut = new QAction(new QIcon(rsrcPath + "/editcut.png"),
-                "Cu&t", this);
-        a.setShortcut(QKeySequence.StandardKey.Cut);
-        tb.addAction(a);
-        menu.addAction(a);
-        a = actionCopy = new QAction(new QIcon(rsrcPath + "/editcopy.png"),
-                "&Copy", this);
-        a.setShortcut(QKeySequence.StandardKey.Copy);
-        tb.addAction(a);
-        menu.addAction(a);
-        a = actionPaste = new QAction(new QIcon(rsrcPath + "/editpaste.png"),
-                "&Paste", this);
-        a.setShortcut(QKeySequence.StandardKey.Paste);
-        tb.addAction(a);
-        menu.addAction(a);
+        actionUndo = action("&Undo", "editundo", StandardKey.Undo, null, m, b);
+        actionRedo = action("&Redo", "editredo", StandardKey.Redo, null, m, b);
+        actionCut = action("Cu&t", "editcut", StandardKey.Cut, null, m, b);
+        actionCopy = action("&Copy", "editcopy", StandardKey.Copy, null, m, b);
+        actionPaste = action("&Paste", "editpaste", StandardKey.Paste, null, m, b);
+
         actionPaste.setEnabled(QApplication.clipboard().text().length() > 0);
     }
 
-    void setupTextActions() {
-        QToolBar tb = new QToolBar(this);
-        tb.setWindowTitle("Format Actions");
-        addToolBar(tb);
+    private void updateActionVisuals(QAction a, boolean bold, boolean underline, boolean italic, boolean checkable) {
+        QFont font = new QFont();
+        font.setBold(bold);
+        font.setUnderline(underline);
+        font.setItalic(italic);
+        a.setFont(font);
+        a.setCheckable(checkable);
+    }
 
-        QMenu menu = new QMenu("F&ormat", this);
-        menuBar().addMenu(menu);
+    private QAction actionGroupEntry(String name, String image, String shortcut, QActionGroup grp) {
+        QAction action = new QAction(name, grp);
+        action.setIcon(new QIcon(rsrcPath + "/" + image + ".png"));
+        action.setCheckable(true);
+        return action;
+    }
 
-        actionTextBold = new QAction(new QIcon(rsrcPath + "/textbold.png"),
-                "&Bold", this);
-        actionTextBold.setShortcut("Ctrl + B");
-        QFont bold = new QFont();
-        bold.setBold(true);
-        actionTextBold.setFont(bold);
-        actionTextBold.triggered.connect(this, "textBold()");
-        tb.addAction(actionTextBold);
-        menu.addAction(actionTextBold);
-        actionTextBold.setCheckable(true);
+    private void setupTextActions() {
+        QToolBar b = new QToolBar(this);
+        b.setWindowTitle("Format Actions");
+        addToolBar(b);
 
-        actionTextItalic = new QAction(new QIcon(rsrcPath + "/textitalic.png"),
-                "&Italic", this);
-        actionTextItalic.setShortcut("Ctrl + I");
-        QFont italic = new QFont();
-        italic.setItalic(true);
-        actionTextItalic.setFont(italic);
-        actionTextItalic.triggered.connect(this, "textItalic()");
-        tb.addAction(actionTextItalic);
-        menu.addAction(actionTextItalic);
-        actionTextItalic.setCheckable(true);
+        QMenu m = new QMenu("F&ormat", this);
+        menuBar().addMenu(m);
 
-        actionTextUnderline = new QAction(
-                new QIcon(rsrcPath + "/textunder.png"), "&Underline", this);
-        actionTextUnderline.setShortcut("Ctrl + U");
-        QFont underline = new QFont();
-        underline.setUnderline(true);
-        actionTextUnderline.setFont(underline);
-        actionTextUnderline.triggered.connect(this, "textUnderline()");
-        tb.addAction(actionTextUnderline);
-        menu.addAction(actionTextUnderline);
-        actionTextUnderline.setCheckable(true);
+        actionTextBold = action("&Bold", "textbold", "Ctrl+B", "textBold()", m, b);
+        actionTextItalic = action("&Italic", "textitalic", "Ctrl+I", "textItalic()", m, b);
+        actionTextUnderline = action("&Underline", "textunder", "Ctrl+U", "textUnderline()", m, b);
+        m.addSeparator();
 
-        menu.addSeparator();
+        updateActionVisuals(actionTextBold, true, false, false, true);
+        updateActionVisuals(actionTextItalic, false, true, false, true);
+        updateActionVisuals(actionTextUnderline, false, false, true, true);
 
         QActionGroup grp = new QActionGroup(this);
         grp.triggered.connect(this, "textAlign(QAction)");
 
-        actionAlignLeft = new QAction(new QIcon(rsrcPath + "/textleft.png"),
-                "&Left", grp);
-        actionAlignLeft.setShortcut("Ctrl + L");
-        actionAlignLeft.setCheckable(true);
-        actionAlignCenter = new QAction(
-                new QIcon(rsrcPath + "/textcenter.png"), "C&enter", grp);
-        actionAlignCenter.setShortcut("Ctrl + E");
-        actionAlignCenter.setCheckable(true);
-        actionAlignRight = new QAction(new QIcon(rsrcPath + "/textright.png"),
-                "&Right", grp);
-        actionAlignRight.setShortcut("Ctrl + R");
-        actionAlignRight.setCheckable(true);
-        actionAlignJustify = new QAction(new QIcon(rsrcPath
-                + "/textjustify.png"), "&Justify", grp);
-        actionAlignJustify.setShortcut("Ctrl + J");
-        actionAlignJustify.setCheckable(true);
+        actionAlignLeft = actionGroupEntry("&Left", "textleft", "Ctrl+L", grp);
+        actionAlignCenter = actionGroupEntry("C&enter", "textcenter", "Ctrl+E", grp);
+        actionAlignRight = actionGroupEntry("&Right", "textright", "Ctrl+R", grp);
+        actionAlignJustify = actionGroupEntry("&Justify", "textjustify", "Ctrl+J", grp);
+        b.addActions(grp.actions());
+        m.addActions(grp.actions());
 
-        tb.addActions(grp.actions());
-        menu.addActions(grp.actions());
-
-        menu.addSeparator();
+        m.addSeparator();
 
         QPixmap pix = new QPixmap(16, 16);
         pix.fill(QColor.black);
         actionTextColor = new QAction(new QIcon(pix), "&Color...", this);
         actionTextColor.triggered.connect(this, "textColor()");
-        tb.addAction(actionTextColor);
-        menu.addAction(actionTextColor);
+        b.addAction(actionTextColor);
+        m.addAction(actionTextColor);
 
-        tb = new QToolBar(this);
-        tb.setAllowedAreas(new Qt.ToolBarAreas(Qt.ToolBarArea.TopToolBarArea, Qt.ToolBarArea.BottomToolBarArea));
-        tb.setWindowTitle("Format Actions");
+        b = new QToolBar(this);
+        b.setAllowedAreas(new Qt.ToolBarAreas(Qt.ToolBarArea.TopToolBarArea, Qt.ToolBarArea.BottomToolBarArea));
+        b.setWindowTitle("Format Actions");
         addToolBarBreak(Qt.ToolBarArea.TopToolBarArea);
-        addToolBar(tb);
+        addToolBar(b);
 
-        comboStyle = new QComboBox(tb);
-        tb.addWidget(comboStyle);
+        comboStyle = new QComboBox(b);
+        b.addWidget(comboStyle);
         comboStyle.addItem("Standard", null);
         comboStyle.addItem("Bullet List (Disc)", null);
         comboStyle.addItem("Bullet List (Circle)", null);
@@ -300,8 +217,8 @@ public class TextEdit extends QMainWindow {
         comboStyle.addItem("Ordered List (Alpha upper)", null);
         comboStyle.activatedIndex.connect(this, "textStyle(int)");
 
-        comboFont = new QComboBox(tb);
-        tb.addWidget(comboFont);
+        comboFont = new QComboBox(b);
+        b.addWidget(comboFont);
         comboFont.setEditable(true);
         QFontDatabase db = new QFontDatabase();
         comboFont.addItems(db.families());
@@ -309,9 +226,9 @@ public class TextEdit extends QMainWindow {
         comboFont.setCurrentIndex(comboFont.findText(QApplication.font()
                 .family(), new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
 
-        comboSize = new QComboBox(tb);
+        comboSize = new QComboBox(b);
         comboSize.setObjectName("comboSize");
-        tb.addWidget(comboSize);
+        b.addWidget(comboSize);
         comboSize.setEditable(true);
 
         for (int i = 0; i < QFontDatabase.standardSizes().size(); ++i) {
@@ -325,7 +242,7 @@ public class TextEdit extends QMainWindow {
                 new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
     }
 
-    boolean load(String f) {
+    public boolean load(String f) {
         if (!QFile.exists(f))
             return false;
         QFile file = new QFile(f);
@@ -345,13 +262,12 @@ public class TextEdit extends QMainWindow {
         return true;
     }
 
-    boolean maybeSave() {
+    public boolean maybeSave() {
         if (!textEdit.document().isModified())
             return true;
         QMessageBox.StandardButton ret = QMessageBox.warning(this,
                                       "Application",
-                                      "The document has been modified.\n"
-                                      + "Save your changes?",
+                                      "The document has been modified.\nSave your changes?",
                                       new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Discard, QMessageBox.StandardButton.Cancel));
         if (ret == QMessageBox.StandardButton.Yes)
             return fileSave();
@@ -360,7 +276,7 @@ public class TextEdit extends QMainWindow {
         return true;
     }
 
-    void setCurrentFileName(String fileName) {
+    public void setCurrentFileName(String fileName) {
         this.fileName = fileName;
         textEdit.document().setModified(false);
 
@@ -400,9 +316,7 @@ public class TextEdit extends QMainWindow {
         ts.operator_shift_left(textEdit.document().toHtml(
                 new QByteArray("UTF-8")));
         textEdit.document().setModified(false);
-
         file.close();
-
         return true;
     }
 
@@ -567,6 +481,28 @@ public class TextEdit extends QMainWindow {
             actionAlignJustify.setChecked(true);
     }
 
+    private String fileName;
+    private QTextEdit textEdit;
+    private QAction actionSave;
+    private QAction actionUndo;
+    private QAction actionRedo;
+    private QAction actionCut;
+    private QAction actionCopy;
+    private QAction actionPaste;
+    private QAction actionTextBold;
+    private QAction actionTextItalic;
+    private QAction actionTextUnderline;
+    private QAction actionTextColor;
+    private QAction actionAlignLeft;
+    private QAction actionAlignRight;
+    private QAction actionAlignCenter;
+    private QAction actionAlignJustify;
+    private QComboBox comboStyle;
+    private QComboBox comboFont;
+    private QComboBox comboSize;
+    private String rsrcPath = "classpath:com/trolltech/images/textedit/win";
+    private boolean initialized = false;
+
     static public void main(String args[]) {
         QApplication.initialize(args);
 
@@ -577,8 +513,6 @@ public class TextEdit extends QMainWindow {
         }
         mw.show();
 
-
         QApplication.exec();
     }
-
 }
