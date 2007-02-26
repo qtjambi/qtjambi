@@ -467,7 +467,9 @@
   <enum-type name="QStyleOptionToolBox::enum_2"/>
   <enum-type name="QStyleOptionToolButton::StyleOptionType"/>
   <enum-type name="QStyleOptionToolButton::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionToolButton::ToolButtonFeature" flags="QStyleOptionToolButton::ToolButtonFeatures"/>
+  <enum-type name="QStyleOptionToolButton::ToolButtonFeature" flags="QStyleOptionToolButton::ToolButtonFeatures">
+    <reject-enum-value name="MenuButtonPopup" />
+  </enum-type>
   <enum-type name="QStyleOptionToolButton::enum_1"/>
   <enum-type name="QStyleOptionToolButton::enum_2"/>
   <enum-type name="QStyleOptionViewItem::Position"/>
