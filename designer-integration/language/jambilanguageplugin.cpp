@@ -27,16 +27,24 @@
 #define printf
 
 jclass class_ResourceBrowser;
+jclass class_MemberSheet;
 
 jmethodID method_ResourceBrowser;
+jmethodID method_signalMatchesSlot;
 
 static ClassData jni_class_table[] = {
     { &class_ResourceBrowser, "com/trolltech/tools/designer/ResourceBrowser" },
+    { &class_MemberSheet, "com/trolltech/tools/designer/MemberSheet" },
     { 0, 0 }
 };
 
 static MethodData jni_method_table[] = {
     { &class_ResourceBrowser, &method_ResourceBrowser, "<init>", "(Lcom/trolltech/qt/gui/QWidget;)V" },
+    { 0, 0, 0, 0 }
+};
+
+static MethodData jni_static_method_table[] = {
+    { &class_MemberSheet, &method_signalMatchesSlot, "signalMatchesSlot", "(Ljava/lang/String;Ljava/lang/String;)Z" },
     { 0, 0, 0, 0 }
 };
 
@@ -49,6 +57,7 @@ JambiLanguagePlugin::JambiLanguagePlugin():
     JNIEnv *env = qtjambi_current_environment();
     qtjambi_resolve_classes(env, jni_class_table);
     qtjambi_resolve_methods(env, jni_method_table);
+    qtjambi_resolve_static_methods(env, jni_static_method_table);
 }
 
 JambiLanguagePlugin::~JambiLanguagePlugin()
@@ -159,6 +168,26 @@ QDesignerResourceBrowserInterface *JambiLanguage::createResourceBrowser(QWidget 
 bool JambiLanguage::isLanguageResource(const QString &path) const
 {
     return path.startsWith("classpath:");
+}
+
+
+bool JambiLanguage::signalMatchesSlot(const QString &signal, const QString &slot) const
+{
+    JNIEnv *env = qtjambi_current_environment();
+
+    jstring signalString = qtjambi_from_qstring(env, signal);
+    QTJAMBI_EXCEPTION_CHECK(env);
+
+    jstring slotString = qtjambi_from_qstring(env, slot);
+    QTJAMBI_EXCEPTION_CHECK(env);
+
+    bool result = env->CallBooleanMethod(class_MemberSheet,
+                                         method_signalMatchesSlot,
+                                         signalString,
+                                         slotString);
+    qtjambi_exception_check(env);
+
+    return result;
 }
 
 

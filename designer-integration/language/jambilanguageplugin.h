@@ -34,7 +34,6 @@ public:
     virtual QAction *action() const;
 
     virtual QDesignerFormEditorInterface *core() const;
-
 private:
     QDesignerFormEditorInterface *m_core;
 };
@@ -86,6 +85,7 @@ public:
                                            QString *, QWidget *);
     virtual QDialog *createPromotionDialog(QDesignerFormEditorInterface *,QWidget *);
 
+    virtual bool signalMatchesSlot(const QString &signal, const QString &slot) const;
 private:
 };
 

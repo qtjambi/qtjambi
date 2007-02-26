@@ -150,7 +150,7 @@ public class MemberSheet extends JambiMemberSheet {
         return entries.get(index).signature();
     }
 
-    public boolean signalMatchesSlot(String signal, String slot) {
+    public static boolean signalMatchesSlot(String signal, String slot) {
 
         // void slots always match...
         if (slot.contains("()"))
