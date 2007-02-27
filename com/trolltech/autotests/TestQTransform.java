@@ -208,7 +208,6 @@ public class TestQTransform extends QApplicationTest {
 		QTransform tranInv = tran1.inverted();
 		QMatrix matInv = mat1.inverted();
 
-		QRect rect = new QRect(43, 70, 200, 200);
 		QPoint pt = new QPoint(43, 66);
 
 		// FIXME missing equal operator
