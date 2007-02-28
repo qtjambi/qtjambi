@@ -216,8 +216,9 @@ bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
                                            "not <code>jambi</code>. The form may not load "
                                            "properly")
                              );
+        return false;
     }
-    return false;
+    return true;
 }
 
 
