@@ -37,7 +37,7 @@ void WriteDeclaration::acceptUI(DomUI *node)
     QString className = qualifiedClassName;
 
     QString varName = driver->findOrInsertWidget(node->elementWidget());
-    QString widgetClassName = node->elementWidget()->attributeClass();
+    QString widgetName = node->elementWidget()->attributeClass();
 
     QString package = driver->option().javaPackage;
 
@@ -58,6 +58,19 @@ void WriteDeclaration::acceptUI(DomUI *node)
             << "\n";
 
     WriteInitialization(uic).acceptUI(node);
+
+    extern bool generate_java_main_function;
+    if (generate_java_main_function) {
+        QString uiName = option.prefix + className;
+        output << "    public static void main(String args[]) {" << endl
+               << "        QApplication.initialize(args);" << endl
+               << "        " << uiName << " ui = new " << uiName << "();" << endl
+               << "        " << widgetName << " widget = new " << widgetName << "();" << endl
+               << "        ui.setupUi(widget);" << endl
+               << "        widget.show();" << endl
+               << "        QApplication.exec();" << endl
+               << "    }" << endl;
+    }
 
     output << "}\n\n";
 }

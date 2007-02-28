@@ -47,7 +47,10 @@ enum JuicError {
 
 struct Options
 {
-    Options() : process_all(false), process_directory(false) {
+    Options()
+        : process_all(false),
+          process_directory(false)
+    {
         prefix = QLatin1String("Ui_");
     }
 
@@ -61,6 +64,8 @@ struct Options
     bool process_all;
     bool process_directory;
 };
+
+bool generate_java_main_function;
 
 void showHelp(const char *appName);
 bool ensurePath(const QString &path);
@@ -133,9 +138,11 @@ int main(int argc, char *argv[])
         } else if (opt.startsWith(QLatin1String("-pf"))) {
             options.prefix = opt.right(opt.size() - 3);
 
+        } else if (opt.startsWith(QLatin1String("--generate-main-method"))) {
+            generate_java_main_function = true;
+
         } else if (options.file_name.isEmpty()) {
             options.file_name = QString::fromLocal8Bit(argv[arg]);
-
 
         } else {
             showHelp(argv[0]);
