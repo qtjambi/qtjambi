@@ -23,6 +23,7 @@ public:
     void release(JNIEnv *env) {
         // Release myself
         env->DeleteGlobalRef(value);
+        QTJAMBI_EXCEPTION_CHECK(env);
 
         // All my children
         for (int i=0; i<nodes.size(); ++i) {
@@ -137,10 +138,10 @@ int QTreeModel::columnCount(const QModelIndex &) const
 QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
 {
     Node *parentNode = node(parent);
-
+    QTJAMBI_EXCEPTION_CHECK(qtjambi_current_environment());
     if (!parentNode->isChildrenQueried())
         queryChildren(parentNode, parent);
-
+    QTJAMBI_EXCEPTION_CHECK(qtjambi_current_environment());
     return createIndex(row, 0, parentNode->nodes.at(row));
 }
 
@@ -217,7 +218,6 @@ void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int
 {
     Node *n = node(parentIndex);
 
-
     if (first < 0 || last > n->nodes.size() || first > last) {
         printf("QTreeModel::childrenRemoved(), bad input, first=%d, last=%d, childCount=%d\n",
                first, last, n->nodes.size());
@@ -257,18 +257,9 @@ void QTreeModel::initializeNode(Node *node, const QModelIndex &) const
 {
     Q_ASSERT(!node->isChildCountQueried());
     int count = childCount(node->value);
+    QTJAMBI_EXCEPTION_CHECK(qtjambi_current_environment());
     node->nodes.resize(count);
     node->setState(Node::ChildCountQueried);
-
-//     JNIEnv *env = qtjambi_current_environment();
-
-//     for (int i=0; i<count; ++i) {
-//         Node *childNode = new Node();
-//         childNode->value = env->NewGlobalRef(child(node->value, i));
-//         childNode->parent = index;
-//         node->nodes[i] = childNode;
-//     }
-
 }
 
 /*!
@@ -280,11 +271,16 @@ void QTreeModel::queryChildren(Node *parentNode, const QModelIndex &parentIndex)
     Q_ASSERT(!parentNode->isChildrenQueried());
 
     JNIEnv *env = qtjambi_current_environment();
-
     int count = parentNode->nodes.size();
     for (int i=0; i<count; ++i) {
         Node *childNode = new Node();
-        childNode->value = env->NewGlobalRef(child(parentNode->value, i));
+
+        jobject c = child(parentNode->value, i);
+        QTJAMBI_EXCEPTION_CHECK(env);
+
+        childNode->value = env->NewGlobalRef(c);
+        QTJAMBI_EXCEPTION_CHECK(env);
+
         childNode->parent = parentIndex;
         parentNode->nodes[i] = childNode;
     }
@@ -310,6 +306,10 @@ void QTreeModel::releaseChildren(const QModelIndex &index)
     JNIEnv *env = qtjambi_current_environment();
 
     int count = n->nodes.size();
+
+    // Need to emit the proper signals here so that the QTreeView will
+    // update its cache properly.
+    beginRemoveRows(index, 0, count-1);
     for (int i=0; i<count; ++i) {
         Node *childNode = n->nodes.at(i);
         if (childNode) {
@@ -318,6 +318,11 @@ void QTreeModel::releaseChildren(const QModelIndex &index)
             n->nodes.replace(i, 0);
         }
     }
+    endRemoveRows();
+
+    // Reinsert the rows we "took" out
+    beginInsertRows(index, 0, count-1);
+    endInsertRows();
 
     n->clearState(Node::ChildrenQueried);
 }
