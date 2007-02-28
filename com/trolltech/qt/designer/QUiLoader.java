@@ -56,6 +56,19 @@ public class QUiLoader {
         }
     }
 
+    private class ListWidgetItemPropertyReceiver implements PropertyReceiver {
+        String text;
+        QIcon icon;
+        public void setProperty(String name, Object value) {
+            if (name.equals("text")) text = (String) value;
+            else if (name.equals("icon")) icon = (QIcon) value;
+        }
+
+        QListWidgetItem listWidgetItem() {
+            return new QListWidgetItem(icon, text);
+        }
+    }
+
     public static QWidget load(QIODevice device) throws QUiLoaderException {
         return load(device, null);
     }
@@ -100,15 +113,15 @@ public class QUiLoader {
     private void parse(QDomNode domNode) throws QUiLoaderException {
         String name = domNode.nodeName();
 
-//        ++parseDepth;
-//        for (int i=0; i< parseDepth; ++i) {
-//            System.out.print("  ");
-//        }
-//        System.out.print(name + ", parent=");
-//        if (parent instanceof QObject)
-//            System.out.println(((QObject) parent).objectName() + " [" + parent.getClass() + "]");
-//        else
-//            System.out.println(parent);
+       ++parseDepth;
+       for (int i=0; i< parseDepth; ++i) {
+           System.out.print("  ");
+       }
+       System.out.print(name + ", parent=");
+       if (parent instanceof QObject)
+           System.out.println(((QObject) parent).objectName() + " [" + parent.getClass() + "]");
+       else
+           System.out.println(parent);
 
         if (name.equals("ui")) parseUiRoot(domNode);
         else if (name.equals("widget")) parseWidget(domNode);
@@ -120,16 +133,16 @@ public class QUiLoader {
         else if (name.equals("taborder")) parseTabOrder(domNode);
         else if (!ignorableStrings.contains(name)) throw new QUiLoaderException("Unknown tag: " + name);
 
-//        if (object != null) {
-//            for (int i=0; i< parseDepth; ++i) {
-//                System.out.print("  ");
-//            }
-//            if (object instanceof QObject)
-//                System.out.println(" - object: " + ((QObject) object).objectName() + ", " + object.getClass());
-//            else
-//                System.out.println(" - object: " + object);
-//        }
-//        --parseDepth;
+       if (object != null) {
+           for (int i=0; i< parseDepth; ++i) {
+               System.out.print("  ");
+           }
+           if (object instanceof QObject)
+               System.out.println(" - object: " + ((QObject) object).objectName() + ", " + object.getClass());
+           else
+               System.out.println(" - object: " + object);
+       }
+       --parseDepth;
     }
 
     private void parseUiRoot(QDomNode node) throws QUiLoaderException {
@@ -222,6 +235,16 @@ public class QUiLoader {
     }
 
     private void parseItem(QDomNode node) throws QUiLoaderException {
+        if (parent instanceof QLayout) {
+            parseLayoutItem(node);
+        } else if (parent instanceof QListWidget) {
+            parseListWidgetItem(node);
+        } else {
+            System.err.println("Unhandled 'item' for '" + parent + "'");
+        }
+    }
+
+    private void parseLayoutItem(QDomNode node) throws QUiLoaderException {
 
         QDomElement itemNode = node.toElement();
 
@@ -259,6 +282,14 @@ public class QUiLoader {
         }
 
 
+    }
+
+    private void parseListWidgetItem(QDomNode node) throws QUiLoaderException {
+        ListWidgetItemPropertyReceiver item = new ListWidgetItemPropertyReceiver();
+        PropertyReceiver oldReceiver = swapPropertyReceiver(item);
+        parseChildren(node, parent);
+        QListWidget listWidget = (QListWidget) parent;
+        listWidget.addItem(item.listWidgetItem());
     }
 
     private void parseSpacer(QDomNode node) throws QUiLoaderException {
