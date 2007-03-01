@@ -23,6 +23,8 @@
 
 #define JUIC_NO_EMBEDDED_ICON
 
+extern bool generate_java_main_function;
+
 namespace Java {
 
 WriteDeclaration::WriteDeclaration(Uic *uic)
@@ -59,7 +61,6 @@ void WriteDeclaration::acceptUI(DomUI *node)
 
     WriteInitialization(uic).acceptUI(node);
 
-    extern bool generate_java_main_function;
     if (generate_java_main_function) {
         QString uiName = option.prefix + className;
         output << "    public static void main(String args[]) {" << endl
