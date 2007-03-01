@@ -4298,7 +4298,6 @@ bool Parser::parseQ_PROPERTY(DeclarationAST *&node)
 
   int firstToken = token_stream.cursor();
   while (token_stream.lookAhead() != ')') {
-    Token &tok = token_stream[token_stream.cursor()];
     token_stream.nextToken();
   }
   QPropertyAST *ast = CreateNode<QPropertyAST>(_M_pool);

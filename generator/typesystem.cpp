@@ -456,6 +456,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 ftype->setFlagsName(lst.at(1));
                 m_current_enum->setFlags(ftype);
 
+                m_database->addFlagsType(ftype);
                 m_database->addType(ftype);
             }
             }
@@ -595,7 +596,7 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ReplaceType:
             attributes["modified-type"] = QString();
             break;
-        case StackElement::InjectCode:            
+        case StackElement::InjectCode:
             attributes["class"] = "java";
             attributes["position"] = "beginning";
             break;
@@ -721,7 +722,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 snip.language = lang;
                 m_function_mods.last().argument_mods.last().conversion_rules.append(snip);
-            }            
+            }
 
             break;
         case StackElement::ModifyArgument:
@@ -754,16 +755,16 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                m_function_mods.last().argument_mods.last().no_null_pointers = true;                
+                m_function_mods.last().argument_mods.last().no_null_pointers = true;
                 if (m_function_mods.last().argument_mods.last().index == 0) {
                     m_function_mods.last().argument_mods.last().null_pointer_default_value = attributes["default-value"];
                 } else if (!attributes["default-value"].isEmpty()) {
                     ReportHandler::warning("default values for null pointer guards are only effective for return values");
-                }                
+                }
             }
             break;
         case StackElement::DefineOwnership:
-            {                
+            {
                 if (topElement.type != StackElement::ModifyArgument) {
                     m_error = "define-ownership requires argument modification as parent";
                     return false;
@@ -861,7 +862,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 m_function_mods.last().removal = lang;
             }
             break;
-        case StackElement::Rename:        
+        case StackElement::Rename:
         case StackElement::Access:
             {
                 if (topElement.type != StackElement::ModifyField
@@ -1403,6 +1404,13 @@ bool TypeDatabase::isFieldRejected(const QString &class_name, const QString &fie
             return true;
     return false;
 }
+
+FlagsTypeEntry *TypeDatabase::findFlagsType(const QString &name) const
+{
+    FlagsTypeEntry *fte = (FlagsTypeEntry *) m_entries.value(name);
+    return fte ? fte : (FlagsTypeEntry *) m_flags_entries.value(name);
+}
+
 
 /*!
  * The Visual Studio 2002 compiler doesn't support these symbols,

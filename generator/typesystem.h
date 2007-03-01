@@ -62,7 +62,7 @@ namespace TypeSystem {
     enum Language {
         NoLanguage          = 0x0000,
         JavaCode            = 0x0001,
-        NativeCode          = 0x0002,        
+        NativeCode          = 0x0002,
         ShellCode           = 0x0004,
         ShellDeclaration    = 0x0008,
         PackageInitializer  = 0x0010,
@@ -182,7 +182,7 @@ class CodeSnip : public CodeSnipAbstract
 };
 typedef QList<CodeSnip> CodeSnipList;
 
-struct ArgumentModification 
+struct ArgumentModification
 {
     ArgumentModification(int idx) : removed_default_expression(false), removed(false), no_null_pointers(false), index(idx)
     {}
@@ -199,16 +199,16 @@ struct ArgumentModification
     QString modified_type;
 
     // The code to be used to construct a return value when no_null_pointers is true and
-    // the returned value is null. If no_null_pointers is true and this string is 
+    // the returned value is null. If no_null_pointers is true and this string is
     // empty, then the base class implementation will be used (or a default construction
     // if there is no implementation)
     QString null_pointer_default_value;
 
     // The text of the new default expression of the argument
     QString replaced_default_expression;
-    
+
     // The new definition of ownership for a specific argument
-    QHash<TypeSystem::Language, TypeSystem::Ownership> ownerships;        
+    QHash<TypeSystem::Language, TypeSystem::Ownership> ownerships;
 
     // Different conversion rules
     CodeSnipList conversion_rules;
@@ -912,7 +912,7 @@ public:
     inline NamespaceTypeEntry *findNamespaceType(const QString &name);
     ContainerTypeEntry *findContainerType(const QString &name);
 
-    TypeEntry *findType(const QString &name) { return m_entries[name]; }
+    TypeEntry *findType(const QString &name) { return m_entries.value(name); }
     TypeEntryHash entries() { return m_entries; }
 
     PrimitiveTypeEntry *findJavaPrimitiveType(const QString &java_name);
@@ -925,6 +925,10 @@ public:
     bool isEnumRejected(const QString &class_name, const QString &enum_name);
 
     void addType(TypeEntry *e) { m_entries[e->qualifiedCppName()] = e; }
+
+    TypeEntryHash flagsEntries() const { return m_flags_entries; }
+    FlagsTypeEntry *findFlagsType(const QString &name) const;
+    void addFlagsType(FlagsTypeEntry *fte) { m_flags_entries[fte->originalName()] = fte; }
 
     TemplateEntry *findTemplate(const QString &name) { return m_templates[name]; }
     void addTemplate(TemplateEntry *t) { m_templates[t->name()] = t; }
@@ -969,6 +973,7 @@ public:
 private:
     bool m_suppressWarnings;
     TypeEntryHash m_entries;
+    TypeEntryHash m_flags_entries;
     TemplateEntryHash m_templates;
     QStringList m_suppressedWarnings;
 

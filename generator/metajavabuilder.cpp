@@ -1716,19 +1716,47 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
     return true;
 }
 
+TypeEntry *findEntry(TypeDatabase *db, const QString &name, MetaJavaClass *cls)
+{
+    QStringList prefixes;
+    prefixes << QString();
+    prefixes << QLatin1String("Qt");
+    prefixes << cls->name();
+
+    // Add baseclasses to cls too...
+
+    for (int i=0; i<prefixes.size(); ++i) {
+        QString n = name;
+        if (!prefixes.at(i).isEmpty())
+            n = prefixes.at(i) + "::" + n;
+
+        TypeEntry *t = db->findType(n);
+        if (t) return t;
+
+        t = db->findFlagsType(n);
+        if (t) return t;
+    }
+
+    return 0;
+}
+
 void MetaJavaBuilder::parseQ_Property(MetaJavaClass *java_class, const QStringList &declarations)
 {
+    TypeDatabase *typedb = TypeDatabase::instance();
+
     for (int i=0; i<declarations.size(); ++i) {
         QString p = declarations.at(i);
 
         QStringList l = p.split(QLatin1String(" "));
-        TypeEntry *t = TypeDatabase::instance()->findType(l.at(0));
 
+        TypeEntry *t = findEntry(typedb, l.at(0), java_class);
         if (!t) {
-            ReportHandler::warning(QString("Unable to decide type of property: '%1'")
-                                   .arg(l.at(0)));
+            ReportHandler::warning(QString("Unable to decide type of property: '%1' in class '%2'")
+                                   .arg(l.at(0)).arg(java_class->name()));
             continue;
         }
+
+        QString typeName = l.at(0);
 
         QPropertySpec *spec = new QPropertySpec(t);
         spec->setName(l.at(1));
