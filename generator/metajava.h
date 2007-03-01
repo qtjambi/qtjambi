@@ -32,6 +32,7 @@ class MetaJavaVariable;
 class MetaJavaArgument;
 class MetaJavaEnumValue;
 class MetaJavaEnum;
+class QPropertySpec;
 
 typedef QList<MetaJavaField *> MetaJavaFieldList;
 typedef QList<MetaJavaArgument *> MetaJavaArgumentList;
@@ -53,27 +54,30 @@ public:
     MetaJavaAttributes() : m_attributes(0) { };
 
     enum Attribute {
-        None                        = 0x0000,
+        None                        = 0x00000000,
 
-        Private                     = 0x0001,
-        Protected                   = 0x0002,
-        Public                      = 0x0004,
-        Friendly                    = 0x0008,
-        Visibility                  = 0x000f,
+        Private                     = 0x00000001,
+        Protected                   = 0x00000002,
+        Public                      = 0x00000004,
+        Friendly                    = 0x00000008,
+        Visibility                  = 0x0000000f,
 
-        Native                      = 0x0010,
-        Abstract                    = 0x0020,
-        Static                      = 0x0040,
+        Native                      = 0x00000010,
+        Abstract                    = 0x00000020,
+        Static                      = 0x00000040,
 
-        FinalInJava                 = 0x0080,
-        FinalInCpp                  = 0x0100,
-        ForceShellImplementation    = 0x0200,
+        FinalInJava                 = 0x00000080,
+        FinalInCpp                  = 0x00000100,
+        ForceShellImplementation    = 0x00000200,
 
-        GetterFunction              = 0x0400,
-        SetterFunction              = 0x0800,
+        GetterFunction              = 0x00000400,
+        SetterFunction              = 0x00000800,
 
-        FinalOverload               = 0x1000,
-        InterfaceFunction           = 0x2000,
+        FinalOverload               = 0x00001000,
+        InterfaceFunction           = 0x00002000,
+
+        PropertyReader              = 0x00004000,
+        PropertyWriter              = 0x00008000,
 
         Final                       = FinalInJava | FinalInCpp
     };
@@ -99,6 +103,9 @@ public:
     bool isForcedShellImplementation() const { return m_attributes & ForceShellImplementation; }
     bool isInterfaceFunction() const { return m_attributes & InterfaceFunction; }
     bool isFinalOverload() const { return m_attributes & FinalOverload; }
+
+    bool isPropertyReader() const { return m_attributes & PropertyReader; }
+    bool isPropertyWriter() const { return m_attributes & PropertyWriter; }
 
     bool isPrivate() const { return m_attributes & Private; }
     bool isProtected() const { return m_attributes & Protected; }
@@ -258,7 +265,6 @@ private:
     short m_indirections : 4;
 };
 
-
 class MetaJavaVariable
 {
 public:
@@ -345,18 +351,18 @@ public:
     };
 
     enum CompareResult {
-        EqualName                   = 0x0001,
-        EqualArguments              = 0x0002,
-        EqualAttributes             = 0x0004,
-        EqualImplementor            = 0x0008,
-        EqualReturnType             = 0x0010,
-        EqualDefaultValueOverload   = 0x0020,
+        EqualName                   = 0x00000001,
+        EqualArguments              = 0x00000002,
+        EqualAttributes             = 0x00000004,
+        EqualImplementor            = 0x00000008,
+        EqualReturnType             = 0x00000010,
+        EqualDefaultValueOverload   = 0x00000020,
 
-        NameLessThan                = 0x1000,
+        NameLessThan                = 0x00001000,
 
         PrettySimilar               = EqualName | EqualArguments,
-        Equal                       = 0x001f,
-        NotEqual                    = 0x1000
+        Equal                       = 0x0000001f,
+        NotEqual                    = 0x00001000
     };
 
     MetaJavaFunction()
@@ -366,6 +372,7 @@ public:
           m_implementing_class(0),
           m_declaring_class(0),
           m_interface_class(0),
+          m_property_spec(0),
           m_constant(false),
           m_invalid(false)
     {
@@ -471,7 +478,8 @@ public:
     const MetaJavaClass *interfaceClass() const { return m_interface_class; }
     void setInterfaceClass(const MetaJavaClass *cl) { m_interface_class = cl; }
 
-
+    void setPropertySpec(QPropertySpec *spec) { m_property_spec = spec; }
+    QPropertySpec *propertySpec() const { return m_property_spec; }
 
 private:
     QString m_name;
@@ -484,6 +492,7 @@ private:
     const MetaJavaClass *m_implementing_class;
     const MetaJavaClass *m_declaring_class;
     const MetaJavaClass *m_interface_class;
+    QPropertySpec *m_property_spec;
     MetaJavaArgumentList m_arguments;
     uint m_constant : 1;
     uint m_invalid  : 1;
@@ -694,6 +703,12 @@ public:
     void setHasEqualsOperator(bool on) { m_has_equals_operator = on; }
     bool hasEqualsOperator() const { return m_has_equals_operator; }
 
+    void addPropertySpec(QPropertySpec *spec) { m_property_specs << spec; }
+    QList<QPropertySpec *> propertySpecs() const { return m_property_specs; }
+
+    QPropertySpec *propertySpecForRead(const QString &name) const;
+    QPropertySpec *propertySpecForWrite(const QString &name) const;
+
 private:
     uint m_namespace : 1;
     uint m_qobject : 1;
@@ -715,9 +730,44 @@ private:
     MetaJavaClassList m_interfaces;
     MetaJavaClass *m_extracted_interface;
     MetaJavaClass *m_primary_interface_implementor;
+    QList<QPropertySpec *> m_property_specs;
 
     QStringList m_base_class_names;
     ComplexTypeEntry *m_type_entry;
+};
+
+class QPropertySpec {
+public:
+    QPropertySpec(TypeEntry *type)
+        : m_type(type),
+          m_index(-1)
+    {
+    }
+
+    const TypeEntry *type() const { return m_type; }
+
+    QString name() const { return m_name; }
+    void setName(const QString &name) { m_name = name; }
+
+    QString read() const { return m_read; }
+    void setRead(const QString &read) { m_read = read; }
+
+    QString write() const { return m_write; }
+    void setWrite(const QString &write) { m_write = write; }
+
+    QString designable() const { return m_designable; }
+    void setDesignable(const QString &designable) { m_designable = designable; }
+
+    int index() const { return m_index; }
+    void setIndex(int index) { m_index = index; }
+
+private:
+    QString m_name;
+    QString m_read;
+    QString m_write;
+    QString m_designable;
+    TypeEntry *m_type;
+    int m_index;
 };
 
 inline MetaJavaFunctionList MetaJavaClass::allVirtualFunctions() const

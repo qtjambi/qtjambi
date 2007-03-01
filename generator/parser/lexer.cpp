@@ -214,7 +214,7 @@ void Lexer::scan_preprocessor()
 
   while (*cursor && *cursor != '\n')
     ++cursor;
-  
+
   if (*cursor != '\n')
       reportError("expected newline");
 }
@@ -1672,6 +1672,21 @@ void Lexer::scanKeyword10()
 	}
       break;
 
+    case 'Q':
+        if (*(cursor + 1) == '_' &&
+            *(cursor + 2) == 'P' &&
+            *(cursor + 3) == 'R' &&
+            *(cursor + 4) == 'O' &&
+            *(cursor + 5) == 'P' &&
+            *(cursor + 6) == 'E' &&
+            *(cursor + 7) == 'R' &&
+            *(cursor + 8) == 'T' &&
+            *(cursor + 9) == 'Y')
+          {
+            token_stream[(int) index++].kind = Token_Q_PROPERTY;
+            return;
+          }
+        break;
     }
   token_stream[(int) index++].kind = Token_identifier;
 }

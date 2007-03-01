@@ -115,6 +115,7 @@ struct UsingAST;
 struct UsingDirectiveAST;
 struct WhileStatementAST;
 struct WinDeclSpecAST;
+struct QPropertyAST;
 
 struct AST
 {
@@ -195,6 +196,7 @@ struct AST
       Kind_UsingDirective,
       Kind_WhileStatement,
       Kind_WinDeclSpec,
+      Kind_QPropertyAST,
 
       NODE_KIND_COUNT
     };
@@ -834,6 +836,11 @@ struct WinDeclSpecAST: public AST
 
   std::size_t specifier;
   std::size_t modifier;
+};
+
+struct QPropertyAST : public DeclarationAST
+{
+  DECLARE_AST_NODE(QPropertyAST)
 };
 
 template <class _Tp>

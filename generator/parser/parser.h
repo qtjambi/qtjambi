@@ -166,6 +166,8 @@ public:
   bool parseWhileStatement(StatementAST *&node);
   bool parseWinDeclSpec(WinDeclSpecAST *&node);
 
+  bool parseQ_PROPERTY(DeclarationAST *&node);
+
   bool skipUntil(int token);
   bool skipUntilDeclaration();
   bool skipUntilStatement();

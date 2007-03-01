@@ -483,7 +483,7 @@ int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
                 v = ev->value();
                 matched = true;
 
-            } else {            
+            } else {
                 ReportHandler::warning("unhandled enum value: " + s + " in "
                                        + java_enum->enclosingClass()->name() + "::"
                                        + java_enum->name());
@@ -790,6 +790,8 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
         m_template_args.append(param_type);
     }
 
+    parseQ_Property(java_class, class_item->propertyDeclarations());
+
     traverseFunctions(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
     traverseEnums(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
     traverseFields(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
@@ -891,6 +893,21 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
         MetaJavaFunction *java_function = traverseFunction(function);
 
         if (java_function) {
+
+            if (QPropertySpec *read = java_class->propertySpecForRead(java_function->name())) {
+                *java_function += MetaJavaAttributes::PropertyReader;
+                java_function->setPropertySpec(read);
+//                 printf("%s is reader for %s\n",
+//                        qPrintable(java_function->name()),
+//                        qPrintable(read->name()));
+            } else if (QPropertySpec *write =
+                       java_class->propertySpecForWrite(java_function->name())) {
+                *java_function += MetaJavaAttributes::PropertyWriter;
+                java_function->setPropertySpec(write);
+//                 printf("%s is writer for %s\n",
+//                        qPrintable(java_function->name()),
+//                        qPrintable(write->name()));
+            }
 
             // Set the default value of the declaring class. This may be changed
             // in fixFunctions later on
@@ -1697,6 +1714,37 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
     }
 
     return true;
+}
+
+void MetaJavaBuilder::parseQ_Property(MetaJavaClass *java_class, const QStringList &declarations)
+{
+    for (int i=0; i<declarations.size(); ++i) {
+        QString p = declarations.at(i);
+
+        QStringList l = p.split(QLatin1String(" "));
+        TypeEntry *t = TypeDatabase::instance()->findType(l.at(0));
+
+        if (!t) {
+            ReportHandler::warning(QString("Unable to decide type of property: '%1'")
+                                   .arg(l.at(0)));
+            continue;
+        }
+
+        QPropertySpec *spec = new QPropertySpec(t);
+        spec->setName(l.at(1));
+        spec->setIndex(i);
+
+        for (int pos=2; pos+1<l.size(); pos+=2) {
+            if (l.at(pos) == QLatin1String("READ"))
+                spec->setRead(l.at(pos+1));
+            else if (l.at(pos) == QLatin1String("WRITE"))
+                spec->setWrite(l.at(pos+1));
+            else if (l.at(pos) == QLatin1String("DESIGNABLE"))
+                spec->setDesignable(l.at(pos+1));
+        }
+
+        java_class->addPropertySpec(spec);
+    }
 }
 
 

@@ -353,7 +353,7 @@ QString MetaJavaFunction::nullPointerDefaultValue(const MetaJavaClass *mainClass
     Q_ASSERT(nullPointersDisabled(mainClass, argument_idx));
 
     const MetaJavaClass *cls = mainClass;
-    if (cls == 0) 
+    if (cls == 0)
         cls = implementingClass();
 
     do {
@@ -378,7 +378,7 @@ QString MetaJavaFunction::nullPointerDefaultValue(const MetaJavaClass *mainClass
 bool MetaJavaFunction::nullPointersDisabled(const MetaJavaClass *mainClass, int argument_idx) const
 {
     const MetaJavaClass *cls = mainClass;
-    if (cls == 0) 
+    if (cls == 0)
         cls = implementingClass();
 
     do {
@@ -443,7 +443,7 @@ bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int k
         foreach (ArgumentModification argument_modification, argument_modifications) {
             if (argument_modification.index != key)
                 continue;
-    
+
             foreach (TypeSystem::Ownership ownership, argument_modification.ownerships.values()) {
                 if (ownership == TypeSystem::CppOwnership)
                     return true;
@@ -461,7 +461,7 @@ TypeSystem::Ownership MetaJavaFunction::ownership(const MetaJavaClass *cls, Type
     foreach (FunctionModification modification, modifications) {
         QList<ArgumentModification> argument_modifications = modification.argument_mods;
         foreach (ArgumentModification argument_modification, argument_modifications) {
-            if (argument_modification.index == key) 
+            if (argument_modification.index == key)
                 return argument_modification.ownerships.value(language, TypeSystem::InvalidOwnership);
         }
     }
@@ -685,7 +685,7 @@ MetaJavaClass *MetaJavaClass::extractInterface()
         }
 
         m_extracted_interface = iface;
-        addInterface(iface);        
+        addInterface(iface);
     }
 
     return m_extracted_interface;
@@ -934,6 +934,23 @@ bool MetaJavaClass::generateShellClass() const
              || hasProtectedFunctions()
              || hasFieldAccessors()));
 }
+
+QPropertySpec *MetaJavaClass::propertySpecForRead(const QString &name) const
+{
+    for (int i=0; i<m_property_specs.size(); ++i)
+        if (name == m_property_specs.at(i)->read())
+            return m_property_specs.at(i);
+    return 0;
+}
+
+QPropertySpec *MetaJavaClass::propertySpecForWrite(const QString &name) const
+{
+    for (int i=0; i<m_property_specs.size(); ++i)
+        if (name == m_property_specs.at(i)->write())
+            return m_property_specs.at(i);
+    return 0;
+}
+
 
 
 static bool functions_contains(const MetaJavaFunctionList &l, const MetaJavaFunction *func)
@@ -1475,7 +1492,7 @@ void MetaJavaClass::fixFunctions()
                         // function non-virtual
                         if (f->implementingClass() != sf->implementingClass() && f->implementingClass()->inheritsFrom(sf->implementingClass())) {
                             *sf -= MetaJavaAttributes::FinalInJava;
-                            /*qDebug("Shadowd: %s in %s and %s in %s", qPrintable(sf->name()), qPrintable(sf->implementingClass()->name()), 
+                            /*qDebug("Shadowd: %s in %s and %s in %s", qPrintable(sf->name()), qPrintable(sf->implementingClass()->name()),
                                                                  qPrintable(f->name()), qPrintable(f->implementingClass()->name()));*/
                         }
 

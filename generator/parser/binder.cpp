@@ -707,6 +707,15 @@ void Binder::visitUsingDirective(UsingDirectiveAST *node)
   DefaultVisitor::visitUsingDirective(node);
 }
 
+void Binder::visitQProperty(QPropertyAST *node)
+{
+    const Token &start = _M_token_stream->token((int) node->start_token);
+    const Token &end = _M_token_stream->token((int) node->end_token);
+    QString property = QString::fromLatin1(start.text + start.position,
+                                           end.position - start.position);
+    _M_current_class->addPropertyDeclaration(property);
+}
+
 void Binder::applyStorageSpecifiers(const ListNode<std::size_t> *it, MemberModelItem item)
 {
   if (it == 0)

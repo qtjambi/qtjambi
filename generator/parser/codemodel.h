@@ -326,6 +326,9 @@ public:
   void setClassType(CodeModel::ClassType type);
   CodeModel::ClassType classType() const;
 
+  void addPropertyDeclaration(const QString &propertyDeclaration);
+  QStringList propertyDeclarations() const { return _M_propertyDeclarations; }
+
 protected:
   _ClassModelItem(CodeModel *model, int kind = __node_kind)
     : _ScopeModelItem(model, kind), _M_classType(CodeModel::Class) {}
@@ -334,6 +337,8 @@ private:
   QStringList _M_baseClasses;
   TemplateParameterList _M_templateParameters;
   CodeModel::ClassType _M_classType;
+
+  QStringList _M_propertyDeclarations;
 
 private:
   _ClassModelItem(const _ClassModelItem &other);

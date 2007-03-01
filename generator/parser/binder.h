@@ -72,6 +72,7 @@ protected:
   virtual void visitTypedef(TypedefAST *);
   virtual void visitUsing(UsingAST *);
   virtual void visitUsingDirective(UsingDirectiveAST *);
+  virtual void visitQProperty(QPropertyAST *);
 
 private:
 

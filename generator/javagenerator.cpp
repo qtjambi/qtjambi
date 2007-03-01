@@ -667,6 +667,18 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
         s << m_doc_parser->documentationForFunction(signature) << endl;
     }
 
+    const QPropertySpec *spec = java_function->propertySpec();
+    if (spec) {
+        if (java_function->isPropertyReader()) {
+            s << "    @QtPropertyReader(name=\"" << spec->name() << "\")" << endl;
+            if (spec->index() >= 0)
+                s << "    @QtPropertyOrder(" << spec->index() << ")" << endl;
+            if (!spec->designable().isEmpty())
+                s << "    @QtPropertyDesignable(\"" << spec->designable() << "\")" << endl;
+        } else if (java_function->isPropertyWriter())
+            s << "    @QtPropertyWriter(name=\"" << spec->name() << "\")" << endl;
+    }
+
     if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
         && (java_function->isPrivate()
             || ((included_attributes & MetaJavaAttributes::Private) != 0))) {
@@ -963,7 +975,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             s << inc.toString() << endl;
         }
     }
-    s << "import com.trolltech.qt.QtBlockedSlot;" << endl;
+    s << "import com.trolltech.qt.*;" << endl;
 
     s << endl;
 

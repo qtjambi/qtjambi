@@ -11,6 +11,8 @@
 **
 ****************************************************************************/
 
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+
 /* This file is part of KDevelop
     Copyright (C) 2002-2005 Roberto Raggi <roberto@kdevelop.org>
 
@@ -1884,6 +1886,10 @@ bool Parser::parseMemberSpecification(DeclarationAST *&node)
       return true;
     }
   else if (parseAccessSpecifier(node))
+    {
+      return true;
+    }
+  else if (parseQ_PROPERTY(node))
     {
       return true;
     }
@@ -4274,6 +4280,30 @@ bool Parser::parseThrowExpression(ExpressionAST *&node)
   parseAssignmentExpression(ast->expression);
 
   UPDATE_POS(ast, start, token_stream.cursor());
+  node = ast;
+
+  return true;
+}
+
+bool Parser::parseQ_PROPERTY(DeclarationAST *&node)
+{
+  if (token_stream.lookAhead() != Token_Q_PROPERTY)
+    return false;
+
+  if (token_stream.lookAhead(1) != '(')
+    return false;
+
+  token_stream.nextToken();
+  token_stream.nextToken();
+
+  int firstToken = token_stream.cursor();
+  while (token_stream.lookAhead() != ')') {
+    Token &tok = token_stream[token_stream.cursor()];
+    QString ident = QString::fromLatin1(tok.text + tok.position, tok.size);
+    token_stream.nextToken();
+  }
+  QPropertyAST *ast = CreateNode<QPropertyAST>(_M_pool);
+  UPDATE_POS(ast, firstToken, token_stream.cursor());
   node = ast;
 
   return true;

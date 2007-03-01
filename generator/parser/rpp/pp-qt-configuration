@@ -7,7 +7,6 @@
 #define QT_NO_DEPRECATED
 
 // not yet supported
-#define Q_PROPERTY(a)
 #define Q_SLOTS slots
 #define Q_SIGNALS signals
 #define Q_ENUMS(a)

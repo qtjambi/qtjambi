@@ -36,6 +36,7 @@
 static char const * const _S_token_names[] = {
   "K_DCOP",
   "Q_OBJECT",
+  "Q_PROPERTY",
   "__attribute__",
   "__typeof",
   "and",

@@ -356,6 +356,12 @@ CodeModel::ClassType _ClassModelItem::classType() const
   return _M_classType;
 }
 
+void _ClassModelItem::addPropertyDeclaration(const QString &propertyDeclaration)
+{
+    _M_propertyDeclarations << propertyDeclaration;
+}
+
+
 // ---------------------------------------------------------------------------
 FunctionModelItem _ScopeModelItem::declaredFunction(FunctionModelItem item)
 {
