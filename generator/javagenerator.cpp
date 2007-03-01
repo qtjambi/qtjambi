@@ -668,7 +668,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     }
 
     const QPropertySpec *spec = java_function->propertySpec();
-    if (spec) {
+    if (spec && java_function->modifiedName() == java_function->originalName()) {
         if (java_function->isPropertyReader()) {
             s << "    @QtPropertyReader(name=\"" << spec->name() << "\")" << endl;
             if (spec->index() >= 0)
