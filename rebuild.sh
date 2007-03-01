@@ -2,19 +2,28 @@
 
 me=$(dirname $0)
 
-echo "Rebuid Jambi"
-
-find $me -name Makefile* -exec rm {} \;
-
-p4 sync ...
+if [ " $1" = " -b" ]
+then
+  shift 1
+  echo "Building Jambi"
+else  
+  echo "Rebuilding Jambi"
+  find $me -name Makefile* -exec rm {} \;
+  p4 sync ...
+fi
 
 cd generator
-qmake && make release || exit 1
+qmake && make -s release || exit 1
 ./generator || exit 1
 cd ..
 
-qmake -r || exit 1
-make || exit 1
+cd juic
+qmake && make -s  || exit 1
+cd ..
 
-$me/bin/juic -cp . -a -e eclipse-integration || exit 1
+qmake -r || exit 1
+make -s || exit 1
+
+$me/bin/juic -cp . -a -e eclipse-integration ||  exit 1
 javac @java_files || exit 1
+echo "Done"
