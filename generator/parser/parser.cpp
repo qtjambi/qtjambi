@@ -4299,12 +4299,18 @@ bool Parser::parseQ_PROPERTY(DeclarationAST *&node)
   int firstToken = token_stream.cursor();
   while (token_stream.lookAhead() != ')') {
     Token &tok = token_stream[token_stream.cursor()];
-    QString ident = QString::fromLatin1(tok.text + tok.position, tok.size);
     token_stream.nextToken();
   }
   QPropertyAST *ast = CreateNode<QPropertyAST>(_M_pool);
   UPDATE_POS(ast, firstToken, token_stream.cursor());
   node = ast;
+
+//   const Token &t1 = token_stream[firstToken];
+//   const Token &t2 = token_stream[token_stream.cursor()];
+//   printf("property: %s\n",
+//          qPrintable(QString::fromLatin1(t1.text + t1.position, t2.position - t1.position)));
+
+  token_stream.nextToken();
 
   return true;
 }
