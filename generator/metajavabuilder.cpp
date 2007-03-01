@@ -895,18 +895,22 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
         if (java_function) {
 
             if (QPropertySpec *read = java_class->propertySpecForRead(java_function->name())) {
-                *java_function += MetaJavaAttributes::PropertyReader;
-                java_function->setPropertySpec(read);
-//                 printf("%s is reader for %s\n",
-//                        qPrintable(java_function->name()),
-//                        qPrintable(read->name()));
+                if (read->type() == java_function->type()->typeEntry()) {
+                    *java_function += MetaJavaAttributes::PropertyReader;
+                    java_function->setPropertySpec(read);
+//                     printf("%s is reader for %s\n",
+//                            qPrintable(java_function->name()),
+//                            qPrintable(read->name()));
+                }
             } else if (QPropertySpec *write =
                        java_class->propertySpecForWrite(java_function->name())) {
-                *java_function += MetaJavaAttributes::PropertyWriter;
-                java_function->setPropertySpec(write);
-//                 printf("%s is writer for %s\n",
-//                        qPrintable(java_function->name()),
-//                        qPrintable(write->name()));
+                if (write->type() == java_function->arguments().at(0)->type()->typeEntry()) {
+                    *java_function += MetaJavaAttributes::PropertyWriter;
+                    java_function->setPropertySpec(write);
+//                     printf("%s is writer for %s\n",
+//                            qPrintable(java_function->name()),
+//                            qPrintable(write->name()));
+                }
             }
 
             // Set the default value of the declaring class. This may be changed
