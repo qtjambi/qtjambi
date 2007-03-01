@@ -61,15 +61,15 @@ public class QtJambiInternal {
 
         final void execute() {
             boolean updateSender = sender!=null;
-            QObject oldSender = null;
+            long oldSender = 0;
             if (updateSender) {
-                oldSender = QtJambiInternal.swapQObjectSender((QObject) connection.receiver,
-                                                               sender, true);
+                oldSender = QtJambiInternal.swapQObjectSender(((QObject) connection.receiver).nativeId(),
+                                                               sender.nativeId(), true);
             }
             invokeSlot(connection.receiver, connection.slotId,
                     connection.returnType, arguments, connection.convertTypes);
             if (updateSender) {
-                QtJambiInternal.swapQObjectSender((QObject) connection.receiver,
+                QtJambiInternal.swapQObjectSender(((QObject) connection.receiver).nativeId(),
                                                   oldSender, false);
             }
         }
@@ -252,12 +252,12 @@ public class QtJambiInternal {
             return findFunctionRecursive(cls, functionName, argumentTypes);
     }
 
-    private static native QObject nativeSwapQObjectSender(long receiver_id,
+    private static native long nativeSwapQObjectSender(long receiver_id,
             long sender_id, boolean returnPreviousSender);
 
-    public static QObject swapQObjectSender(QObject receiver, QObject newSender, boolean returnPreviousSender) {
-        return nativeSwapQObjectSender(receiver.nativeId(),
-                newSender != null ? newSender.nativeId() : 0, returnPreviousSender);
+    public static long swapQObjectSender(long receiver, long newSender, boolean returnPreviousSender) {
+    	return nativeSwapQObjectSender(receiver,
+    			newSender != 0 ? newSender : 0, returnPreviousSender);
     }
 
     public static void disconnect(QSignalEmitter sender, Object receiver) {

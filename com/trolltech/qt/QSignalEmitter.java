@@ -388,10 +388,10 @@ public class QSignalEmitter {
                                 && ((QSignalEmitter) c.receiver).thread() == thread())) {
                     try {
                         boolean updateSender = c.receiver instanceof QObject && QSignalEmitter.this instanceof QObject;
-                        QObject oldSender = null;
+                        long oldSender = 0;
                         if (updateSender) {
-                            oldSender = QtJambiInternal.swapQObjectSender((QObject) c.receiver,
-                                                                           (QObject) QSignalEmitter.this, true);
+                            oldSender = QtJambiInternal.swapQObjectSender(((QObject) c.receiver).nativeId(),
+                                                                           ((QObject) QSignalEmitter.this).nativeId(), true);
                         }
 
                         if (args.length == c.convertTypes.length) {
@@ -411,7 +411,7 @@ public class QSignalEmitter {
                         }
 
                         if (updateSender) {
-                            QtJambiInternal.swapQObjectSender((QObject) c.receiver,
+                            QtJambiInternal.swapQObjectSender(((QObject) c.receiver).nativeId(),
                                                               oldSender, false);
                         }
 

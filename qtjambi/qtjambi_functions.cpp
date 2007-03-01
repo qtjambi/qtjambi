@@ -55,10 +55,11 @@ Java_com_trolltech_qt_QThreadManager_releaseNativeResources(JNIEnv *env, jclass)
 }
 
 
-extern "C" JNIEXPORT jobject JNICALL
+extern "C" JNIEXPORT jlong JNICALL
 Java_com_trolltech_qt_QtJambiInternal_nativeSwapQObjectSender
 (JNIEnv *env, jclass, jlong r, jlong s, jboolean return_previous_sender)
 {
+    Q_UNUSED(env)
     QObject *the_receiver = reinterpret_cast<QObject *>(qtjambi_from_jlong(r));
     QObject *the_sender = reinterpret_cast<QObject *>(qtjambi_from_jlong(s));
     if (the_receiver == 0)
@@ -70,9 +71,8 @@ Java_com_trolltech_qt_QtJambiInternal_nativeSwapQObjectSender
 
     QObject *prev = d->currentSender;
     d->currentSender = the_sender;
-    return return_previous_sender
-           ? qtjambi_from_qobject(env, prev, "QObject", "com/trolltech/qt/core/")
-           : 0;
+
+    return (return_previous_sender) ? (long)prev : 0;
 }
 
 
