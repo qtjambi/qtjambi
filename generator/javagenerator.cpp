@@ -272,7 +272,6 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
 
 void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function)
 {
-
     int exclude_attributes = MetaJavaAttributes::Public | MetaJavaAttributes::Protected;
     int include_attributes = MetaJavaAttributes::Private;
 
@@ -327,7 +326,7 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const MetaJavaFun
     }
 }
 
-static QString function_call_for_ownership(TypeSystem::Ownership owner) 
+static QString function_call_for_ownership(TypeSystem::Ownership owner)
 {
     if (owner == TypeSystem::CppOwnership) {
         return "disableGarbageCollection()";
@@ -342,7 +341,7 @@ static QString function_call_for_ownership(TypeSystem::Ownership owner)
     }
 }
 
-void JavaGenerator::writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership owner, 
+void JavaGenerator::writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership owner,
                                                MetaJavaArgument *arg, const QString &indent)
 {
     Q_ASSERT(arg->type()->isContainer());
@@ -369,7 +368,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
         if (owner != TypeSystem::InvalidOwnership)
             s << "        this." << function_call_for_ownership(owner) << ";" << endl;
     }
-       
+
     for (int i=0; i<arguments.count(); ++i) {
         MetaJavaArgument *arg = arguments.at(i);
         MetaJavaType *type = arg->type();
@@ -673,6 +672,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
             || ((included_attributes & MetaJavaAttributes::Private) != 0))) {
         s << "    @SuppressWarnings(\"unused\")" << endl;
     }
+
     s << "    ";
     s << functionSignature(java_function, included_attributes, excluded_attributes);
 
@@ -963,6 +963,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             s << inc.toString() << endl;
         }
     }
+    s << "import com.trolltech.qt.QtBlockedSlot;" << endl;
 
     s << endl;
 
@@ -1111,17 +1112,17 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     if (signal_funcs.size() > 0) {
         s << endl
           << "   @Override" << endl
-          << "   protected boolean __qt_signalInitialization(String name) {" << endl
+          << "   @QtBlockedSlot protected boolean __qt_signalInitialization(String name) {" << endl
           << "       return (__qt_signalInitialization(nativeId(), name)" << endl
           << "               || super.__qt_signalInitialization(name));" << endl
           << "   } " << endl
-          << "   private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
+          << "   @QtBlockedSlot private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
     }
 
     // Add dummy constructor for use when constructing subclasses
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         s << endl
-          << "    "
+          << "    @QtBlockedSlot "
           << "protected "
           << java_class->name()
           << "(QPrivateConstructor p) { super(p); } "
@@ -1144,7 +1145,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     } else {
         foreach (MetaJavaClass *cls, interfaces) {
             s << endl
-              << "    public native long __qt_cast_to_"
+              << "    @QtBlockedSlot public native long __qt_cast_to_"
               << static_cast<const InterfaceTypeEntry *>(cls->typeEntry())->origin()->javaName()
               << "(long ptr);" << endl;
         }
@@ -1246,6 +1247,13 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
 
     if ((options & SkipAttributes) == 0) {
         if (java_function->isEmptyFunction()) s << "@Deprecated ";
+
+        if (!java_function->isConstructor()
+            && !java_function->isSlot()
+            && !java_function->isSignal()
+            && !java_function->isStatic()
+            && !(included_attributes & MetaJavaAttributes::Static))
+            s << "@QtBlockedSlot ";
 
         if (attr & MetaJavaAttributes::Public) s << "public ";
         else if (attr & MetaJavaAttributes::Protected) s << "protected ";

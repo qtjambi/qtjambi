@@ -193,10 +193,11 @@ public class MemberSheet extends JambiMemberSheet {
 
     private static boolean shouldReject(Method m) {
         if (m.isAnnotationPresent(QtBlockedSlot.class)) return true;
-        if (Modifier.isStatic(m.getModifiers())) return true;
 
-        // Assume a get'er function...
-        if (m.getReturnType() != void.class && m.getParameterTypes().length == 0) return true;
+        int mods = m.getModifiers();
+        if (Modifier.isStatic(mods)) return true;
+
+        if (blockedSlotClasses.contains(m.getDeclaringClass())) return true;
 
         String n = m.getName();
         if (n.startsWith("__qt_")) return true;
@@ -245,6 +246,7 @@ public class MemberSheet extends JambiMemberSheet {
     private QObject object;
 
     private static HashMap<String, String> typeMap;
+    private static HashSet<Class> blockedSlotClasses;
     static {
         typeMap = new HashMap<String, String>();
         typeMap.put("java.lang.Boolean", "boolean");
@@ -255,6 +257,11 @@ public class MemberSheet extends JambiMemberSheet {
         typeMap.put("java.lang.Long", "long");
         typeMap.put("java.lang.Float", "float");
         typeMap.put("java.lang.Double", "double");
+
+        blockedSlotClasses = new HashSet<Class>();
+        blockedSlotClasses.add(QtJambiObject.class);
+        blockedSlotClasses.add(QSignalEmitter.class);
+        blockedSlotClasses.add(Object.class);
     }
 
 }

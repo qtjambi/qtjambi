@@ -4147,7 +4147,7 @@
             public int bottom;
         }
         
-        public final ContentsMargins getContentsMargins() {
+        @QtBlockedSlot public final ContentsMargins getContentsMargins() {
             QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
             QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
             QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
