@@ -222,22 +222,21 @@ public class QtPropertyManager {
         return o != null ? o.value() : 0;
     }
 
+
+    private static void findPropertiesRecursive_helper(HashMap<String, Entry> map, Class cl)
+        throws QMalformedQtPropertyException {
+        if (cl == null)
+            return;
+
+        findPropertiesRecursive_helper(map, cl.getSuperclass());
+
+        for (Entry e : findProperties(cl).values())
+            map.put(e.name, e);
+    }
+
     public static HashMap<String, Entry> findPropertiesRecursive(Class cl) throws QMalformedQtPropertyException {
-        HashMap<String, Entry> map = findProperties(cl);
-
-        cl = cl.getSuperclass();
-        while (cl != null) {
-
-            HashMap<String, Entry> more = findProperties(cl);
-
-            for (Entry e : more.values()) {
-                if (!map.containsKey(e.name))
-                    map.put(e.name, e);
-            }
-
-            cl = cl.getSuperclass();
-        }
-
+        HashMap<String, Entry> map = new HashMap<String, Entry>();
+        findPropertiesRecursive_helper(map, cl);
         return map;
     }
 
@@ -264,7 +263,6 @@ public class QtPropertyManager {
                 e.sortOrder = sortOrder(e.read);
             }
 
-
             if (e.writable) {
                 if (e.write == null)
                     e.write = findWriteMethodForProperty(cl, e.name, e.type());
@@ -280,15 +278,12 @@ public class QtPropertyManager {
 //                    + " - reset=%s\n"
 //                    + " - designable=%s\n",
 //                    e.name, e.read, e.write, e.reset, e.designable);
-//        }
-//
 
         // Hardcode some classes for now...
         List<Entry> set = customSetForClass(cl);
         if (set != null) {
-            for (Entry e : set) {
+            for (Entry e : set)
                 entries.put(e.name, e);
-            }
         }
 
         return entries;
@@ -413,16 +408,22 @@ public class QtPropertyManager {
         try {
             if (cl == QTextEdit.class) {
                 List<Entry> list = new ArrayList<Entry>();
-
                 Entry html = new Entry("html");
                 html.read = cl.getMethod("toHtml");
                 html.write = cl.getMethod("setHtml", String.class);
                 html.designable = DEFAULT_TRUE;
-
                 list.add(html);
-
+                return list;
+            } else if (cl == QDialog.class) {
+                List<Entry> list = new ArrayList<Entry>();
+                Entry modal = new Entry("modal");
+                modal.read = cl.getMethod("isModal");
+                modal.write = cl.getMethod("setModal", boolean.class);
+                modal.designable = DEFAULT_TRUE;
+                list.add(modal);
                 return list;
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
