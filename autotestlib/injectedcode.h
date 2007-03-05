@@ -129,6 +129,7 @@ public:
 
 protected:
     qint64 readData(char *data, qint64 maxSize) {
+        Q_UNUSED(maxSize);
         char *inp = "I am a boy";
         for (int i=0; i<int(strlen(inp)); ++i)
             data[i] = inp[i];
@@ -146,6 +147,7 @@ protected:
     }
 
     qint64 readLineData(char *data, qint64 maxSize) {
+        Q_UNUSED(maxSize)
         char *inp = "Confucius say: Don't go outside with wet hair";
         for (int i=0; i<int(strlen(inp)); ++i)
             data[i] = inp[i];

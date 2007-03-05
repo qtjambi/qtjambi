@@ -4,7 +4,9 @@
 class AbstractClass
 {
 public:
-    virtual void abstractFunction(const QString &something) = 0;    
+    virtual ~AbstractClass(){};
+
+    virtual void abstractFunction(const QString &something) = 0;
 
     virtual AbstractClass *getAbstractClass() = 0;
 
@@ -23,7 +25,7 @@ public:
         setS(something);
     }
 
-    virtual AbstractClass *getAbstractClass() 
+    virtual AbstractClass *getAbstractClass()
     {
         return 0;
     }
@@ -37,7 +39,7 @@ public:
         return new NonAbstractSubclass;
     }
 
-    void doVirtualCall(AbstractClass *cls, const QString &something) 
+    void doVirtualCall(AbstractClass *cls, const QString &something)
     {
         cls->abstractFunction(something);
     }

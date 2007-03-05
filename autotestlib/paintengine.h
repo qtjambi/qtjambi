@@ -4,7 +4,7 @@
 class CustomPaintEngine: public QPaintEngine
 {
 public:
-    void callDrawLines(const QLine &first_line, int size) 
+    void callDrawLines(const QLine &first_line, int size)
     {
         QLine *lines = 0;
         if (size > 0) {
@@ -12,14 +12,14 @@ public:
             lines[0] = first_line;
             for (int i=1; i<size; ++i)
                 lines[i] = QLine();
-        } 
+        }
 
         drawLines(lines, size);
 
         delete[] lines;
     }
 
-    void callDrawLineFs(const QLineF &first_line, int size) 
+    void callDrawLineFs(const QLineF &first_line, int size)
     {
         QLineF *lines = 0;
         if (size > 0) {
@@ -27,14 +27,14 @@ public:
             lines[0] = first_line;
             for (int i=1; i<size; ++i)
                 lines[i] = QLineF();
-        } 
+        }
 
         drawLines(lines, size);
 
         delete[] lines;
     }
 
-    void callDrawRectFs(const QRectF &first_rect, int size) 
+    void callDrawRectFs(const QRectF &first_rect, int size)
     {
         QRectF *rects = 0;
         if (size > 0) {
@@ -42,14 +42,14 @@ public:
             rects[0] = first_rect;
             for (int i=1; i<size; ++i)
                 rects[i] = QRectF();
-        } 
+        }
 
         drawRects(rects, size);
 
         delete[] rects;
     }
 
-    void callDrawRects(const QRect &first_rect, int size) 
+    void callDrawRects(const QRect &first_rect, int size)
     {
         QRect *rects = 0;
         if (size > 0) {
@@ -57,14 +57,14 @@ public:
             rects[0] = first_rect;
             for (int i=1; i<size; ++i)
                 rects[i] = QRect();
-        } 
+        }
 
         drawRects(rects, size);
 
         delete[] rects;
     }
 
-    void callDrawPointFs(const QPointF &first_point, int size) 
+    void callDrawPointFs(const QPointF &first_point, int size)
     {
         QPointF *points = 0;
         if (size > 0) {
@@ -72,14 +72,14 @@ public:
             points[0] = first_point;
             for (int i=1; i<size; ++i)
                 points[i] = QPointF();
-        } 
+        }
 
         drawPoints(points, size);
 
         delete[] points;
     }
 
-    void callDrawPoints(const QPoint &first_point, int size) 
+    void callDrawPoints(const QPoint &first_point, int size)
     {
         QPoint *points = 0;
         if (size > 0) {
@@ -87,7 +87,7 @@ public:
             points[0] = first_point;
             for (int i=1; i<size; ++i)
                 points[i] = QPoint();
-        } 
+        }
 
         drawPoints(points, size);
 
@@ -95,7 +95,7 @@ public:
     }
 
 
-    void callDrawPolygonFs(const QPointF &first_point, int size) 
+    void callDrawPolygonFs(const QPointF &first_point, int size)
     {
         QPointF *points = 0;
         if (size > 0) {
@@ -103,14 +103,14 @@ public:
             points[0] = first_point;
             for (int i=1; i<size; ++i)
                 points[i] = QPointF();
-        } 
+        }
 
         drawPolygon(points, size, QPaintEngine::OddEvenMode);
 
         delete[] points;
     }
 
-    void callDrawPolygons(const QPoint &first_point, int size) 
+    void callDrawPolygons(const QPoint &first_point, int size)
     {
         QPoint *points = 0;
         if (size > 0) {
@@ -118,7 +118,7 @@ public:
             points[0] = first_point;
             for (int i=1; i<size; ++i)
                 points[i] = QPoint();
-        } 
+        }
 
         drawPolygon(points, size, QPaintEngine::OddEvenMode);
 
@@ -130,7 +130,7 @@ public:
 class OtherCustomPaintEngine: public QPaintEngine
 {
 public:
-    void drawLines(const QLine *lines, int size) 
+    void drawLines(const QLine *lines, int size)
     {
         if (lines == 0) {
             line = QLine();
@@ -145,73 +145,73 @@ public:
     {
         if (lines == 0) {
             lineF = QLineF();
-            length = -1; 
+            length = -1;
         } else {
             lineF = lines[0];
             length = size;
         }
     }
 
-    void drawRects(const QRectF *rects, int size) 
+    void drawRects(const QRectF *rects, int size)
     {
         if (rects == 0) {
             rectF = QRectF();
-            length = -1; 
+            length = -1;
         } else {
             rectF = rects[0];
             length = size;
         }
     }
 
-    void drawRects(const QRect *rects, int size) 
+    void drawRects(const QRect *rects, int size)
     {
         if (rects == 0) {
             rect = QRect();
-            length = -1; 
+            length = -1;
         } else {
             rect = rects[0];
             length = size;
         }
-    }    
+    }
 
-    void drawPoints(const QPointF *points, int size) 
+    void drawPoints(const QPointF *points, int size)
     {
         if (points == 0) {
             pointF = QPointF();
-            length = -1; 
+            length = -1;
         } else {
             pointF = points[0];
             length = size;
         }
     }
 
-    void drawPoints(const QPoint *points, int size) 
+    void drawPoints(const QPoint *points, int size)
     {
         if (points == 0) {
             point = QPoint();
-            length = -1; 
+            length = -1;
         } else {
             point = points[0];
             length = size;
         }
     }
 
-    void drawPolygon(const QPointF *points, int size, PolygonDrawMode) 
+    void drawPolygon(const QPointF *points, int size, PolygonDrawMode)
     {
         if (points == 0) {
             pointF = QPointF();
-            length = -1; 
+            length = -1;
         } else {
             pointF = points[0];
             length = size;
         }
     }
 
-    void drawPolygon(const QPoint *points, int size, PolygonDrawMode) 
+    void drawPolygon(const QPoint *points, int size, PolygonDrawMode)
     {
         if (points == 0) {
             point = QPoint();
-            length = -1; 
+            length = -1;
         } else {
             point = points[0];
             length = size;

@@ -25,7 +25,7 @@
 #endif
 
 #ifndef emit
-#  define emit 
+#  define emit
 #endif
 
 class SignalsAndSlots: public QObject
@@ -80,22 +80,22 @@ public:
         return connect(this, SIGNAL(signal5), this, SLOT(slot3(const QString &)));
     }
 
-    void connectSignal1ToSlot1_1() 
+    void connectSignal1ToSlot1_1()
     {
         connectSignal1ToSlot1_1In(this);
     }
 
-    void connectSignal1ToSlot1_1In(QObject *other) 
+    void connectSignal1ToSlot1_1In(QObject *other)
     {
         connect(this, SIGNAL(signal1()), other, SLOT(slot1_1()));
     }
 
-    void disconnectSignal1FromSlot1_1() 
+    void disconnectSignal1FromSlot1_1()
     {
         disconnect(this, SIGNAL(signal1()), this, SLOT(slot1_1()));
     }
 
-    void connectSignal2ToSlot2() 
+    void connectSignal2ToSlot2()
     {
         connect(this, SIGNAL(signal2(int)), this, SLOT(slot2(int)));
     }
@@ -120,12 +120,12 @@ public:
         disconnect(SIGNAL(signal1()), receiver);
     }
 
-    void disconnectAllFromReceiver(QObject *receiver) 
+    void disconnectAllFromReceiver(QObject *receiver)
     {
         disconnect(0, receiver);
     }
 
-    static SignalsAndSlots *createConnectedObject() 
+    static SignalsAndSlots *createConnectedObject()
     {
         SignalsAndSlots *sas = new SignalsAndSlots;
         QObject::connect(sas, SIGNAL(signal1()), sas, SLOT(slot1_1()));
@@ -149,7 +149,7 @@ public slots:
     virtual void slot1_2() { slot1_2_called++; }
     void slot1_3() { slot1_3_called++; }
     virtual void slot2(int i) { slot2_called += i; }
-    void slot3(const QString &str) { slot3_called += str.toInt(); }    
+    void slot3(const QString &str) { slot3_called += str.toInt(); }
 };
 
 #endif // SIGNALSANDSLOTS_H

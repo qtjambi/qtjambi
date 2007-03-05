@@ -6,6 +6,8 @@ void GraphicsSceneSubclass::drawItems(QPainter *painter,
                                      const QStyleOptionGraphicsItem options[],
                                      QWidget *widget)
 {
+    Q_UNUSED(painter)
+    Q_UNUSED(widget)
     this->numItems = numItems;
 
     firstBoundingRect = items[0]->boundingRect();

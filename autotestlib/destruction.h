@@ -18,8 +18,8 @@ public:
         // nanana
     }
 
-    virtual ~OrdinaryDestroyed() 
-    { 
+    virtual ~OrdinaryDestroyed()
+    {
         increaseDestroyedCount();
     }
 
@@ -41,17 +41,17 @@ public:
     static void increaseDestroyedCount() { m_destroyed++; }
     static int destroyedCount() { return m_destroyed; }
 
-    static OrdinaryDestroyed *callGetObjectJavaOwnership(OrdinaryDestroyed *_this) 
+    static OrdinaryDestroyed *callGetObjectJavaOwnership(OrdinaryDestroyed *_this)
     {
         return _this->virtualGetObjectJavaOwnership();
     }
 
-    static OrdinaryDestroyed *callGetObjectCppOwnership(OrdinaryDestroyed *_this) 
+    static OrdinaryDestroyed *callGetObjectCppOwnership(OrdinaryDestroyed *_this)
     {
         return _this->virtualGetObjectCppOwnership();
     }
 
-    static void callSetDefaultOwnership(OrdinaryDestroyed *_this, OrdinaryDestroyed *obj) 
+    static void callSetDefaultOwnership(OrdinaryDestroyed *_this, OrdinaryDestroyed *obj)
     {
         return _this->virtualSetDefaultOwnership(obj);
     }
@@ -81,7 +81,7 @@ public:
         delete destroyed;
     }
 
-    static void deleteFromCppOther(QObject *destroyed) 
+    static void deleteFromCppOther(QObject *destroyed)
     {
         delete destroyed;
     }

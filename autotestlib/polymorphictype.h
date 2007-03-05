@@ -50,35 +50,35 @@ public:
     static QEvent *getCustomEvent(int i) { return new CustomEvent(i); }
     static void sendPaintEvent(QWidget *w) { QApplication::sendEvent(w, getPaintEvent()); }
     static void sendCustomEvent(QWidget *w, int i) { QApplication::sendEvent(w, getCustomEvent(i)); }
-    
+
     static QStyleOption *getButtonStyleOption() { return new QStyleOptionButton(); }
     static QStyleOption *getCustomStyleOption(int i) { return new CustomStyleOption(i); }
     static QStyleOption *getUnmappedCustomStyleOption() { return new UnmappedCustomStyleOption(); }
-    static void sendButtonStyleOption(QWidget *w) 
-    { 
+    static void sendButtonStyleOption(QWidget *w)
+    {
         QImage img;
         QPainter p(&img);
-        w->style()->drawControl(QStyle::ControlElement(QStyle::CE_PushButton), 
+        w->style()->drawControl(QStyle::ControlElement(QStyle::CE_PushButton),
                                            getButtonStyleOption(),
                                            &p);
     }
-    static void sendCustomStyleOption(QWidget *w, int i) 
-    { 
+    static void sendCustomStyleOption(QWidget *w, int i)
+    {
         QImage img;
         QPainter p(&img);
-        w->style()->drawControl(QStyle::ControlElement(QStyle::CE_CustomBase + 1), 
+        w->style()->drawControl(QStyle::ControlElement(QStyle::CE_CustomBase + 1),
                                            getCustomStyleOption(i),
                                            &p);
     }
-    static void sendUnmappedCustomStyleOption(QWidget *w) 
-    { 
+    static void sendUnmappedCustomStyleOption(QWidget *w)
+    {
         QImage img;
         QPainter p(&img);
-        w->style()->drawControl(QStyle::ControlElement(QStyle::CE_CustomBase + 2), 
+        w->style()->drawControl(QStyle::ControlElement(QStyle::CE_CustomBase + 2),
                                            getUnmappedCustomStyleOption(),
                                            &p);
     }
-    
+
 
 };
 
