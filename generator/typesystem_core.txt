@@ -450,6 +450,7 @@
 
   <enum-type name="QDataStream::Version"> 
     <reject-enum-value name="Qt_4_1"/>
+    <reject-enum-value name="Qt_4_4"/>
   </enum-type>
 
   <enum-type name="QDir::SortFlag" flags="QDir::SortFlags">
