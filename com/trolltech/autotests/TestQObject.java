@@ -114,16 +114,29 @@ public class TestQObject extends QApplicationTest{
     }
 
     public static class DyingObject extends QObject {
-        public DyingObject() { alive.add(id); }
+        public DyingObject() {
+        	alive.add(id);
+        }
         
         @Override
-        public void disposed() { alive.remove(alive.indexOf(id)); }
+        public void disposed() {
+        	alive.remove((Integer)id);
+        }
+        
+        static public void waitForEmpty(int timeout){
+            // we need to wait for gc to collect the parent.
+        	while(timeout>0){
+        		try {
+                	Thread.sleep(10);
+            	} catch (Exception e) {}
+            	timeout-=10;
+        	}
+        }
         
         static List<Integer> alive = new ArrayList<Integer>();
         static int counter = 0;
         public int id = ++counter;
     }
-
 
     private static void oneObject() {
         oneObject_helper();
@@ -169,14 +182,10 @@ public class TestQObject extends QApplicationTest{
         DyingObject.alive.clear();
         oneObject();
         
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }                        
+        System.gc();
+        
+        // we need to wait for gc to collect the parent.
+        DyingObject.waitForEmpty(1000);
         
         assertEquals(0, DyingObject.alive.size());
     }
@@ -185,6 +194,11 @@ public class TestQObject extends QApplicationTest{
     public void disposal_objectWithParent() {
         DyingObject.alive.clear();
         objectWithParent();
+        System.gc();
+        
+        // we need to wait for gc to collect the parent.
+        DyingObject.waitForEmpty(1000);
+
         QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
         assertEquals(0, DyingObject.alive.size());
     }
@@ -194,14 +208,9 @@ public class TestQObject extends QApplicationTest{
         DyingObject.alive.clear();
         objectWithUnParent();        
         QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }                
+        
+        // we need to wait for gc to collect the parent.
+        DyingObject.waitForEmpty(1000);           
         
         assertEquals(0, DyingObject.alive.size());
     }
@@ -227,14 +236,10 @@ public class TestQObject extends QApplicationTest{
     public void disposal_gcInQThread_objectWithParent() {
         DyingObject.alive.clear();
         threadExecutor(runnable_objectWithParent, true);
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }                        
+        
+        // we need to wait for gc to collect the parent.
+        DyingObject.waitForEmpty(1000);
+        
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -242,6 +247,10 @@ public class TestQObject extends QApplicationTest{
     public void disposal_gcInQThread_objectWithUnParent() {
         DyingObject.alive.clear();
         threadExecutor(runnable_objectWithUnParent, true);
+        
+        // we need to wait for gc to collect the parent.
+        DyingObject.waitForEmpty(1000);
+        
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -266,14 +275,10 @@ public class TestQObject extends QApplicationTest{
         // Will warn twice about leaking the C++ object, but both objects will be collected
         DyingObject.alive.clear();
         threadExecutor(runnable_objectWithUnParent, false);
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }                        
+
+        // we need to wait for gc to collect the parent.
+        DyingObject.waitForEmpty(1000);
+        
         assertEquals(0, DyingObject.alive.size());
     }
 
