@@ -16,8 +16,8 @@
         <property name="htmlDir"   value="/var/www/junit/" />
 
         <property name="jambiLib" value="./lib" />
-	<property name="qt"       value="${env.QTDIR}" />
-        <property name="qtLib"    value="${env.QTDIR}/lib" />
+        <property name="qt"       value="${env.QTDIR}" />
+        <property name="qtLib"    value="${qt}/lib" />
 
         <property name="deployDir" value="./deploy" />
     </target>
@@ -40,37 +40,46 @@
     </target>
 
     <target name="sync" depends="init">
-        <exec executable="p4" dir="${basedir}">
-            <arg line="sync ..." />
+        <exec executable="p4">
+            <arg line="sync //depot/qtjambi/main/..." />
         </exec>
     </target>
 
     <target name="sync.qt" depends="init">
-        <exec executable="p4" dir="${qt}">
-            <arg line="sync ..." />
+        <exec executable="p4">
+            <arg line="sync //depot/qt/4.3/..." />
         </exec>
     </target>
 
+    <target name="qmake" depends="init">
+        <exec executable="make" dir=".">
+            <arg line="dist clean -s"/>
+        </exec>
+        <exec executable="qmake" dir=".">
+            <arg line="-r -config release"/>
+        </exec>
+        <exec executable="make" dir=".">
+            <arg line="dist clean -s"/>
+        </exec>
+    </target>
 
-    <target name="generator" depends="prepare">
-	<exec executable="make" dir="generator">
-	   <arg line="clean"/>
-	</exec>
-	<exec executable="qmake" dir="generator">
-	   <arg line="-config release"/>
-	</exec>
-        <exec executable="make" dir="generator"/>
+    <target name="compile.generator" depends="prepare">
+        <exec executable="make" dir="generator">
+            <arg line="clean -s"/>
+        </exec>
+        <exec executable="qmake" dir="generator">
+            <arg line="-config release"/>
+        </exec>
+        <exec executable="make" dir="generator">
+            <arg line="-s" />
+        </exec>
         <exec executable="${basedir}/generator/generator" dir="generator"/>
     </target>
 
     <target name="compile.qtjambi" depends="prepare">
-	<exec executable="make" dir=".">
-	   <arg line="dist clean"/>
-	</exec>
-        <exec executable="qmake" dir=".">
-	   <arg line="-r"/>
-	</exec>
-        <exec executable="make" dir="."/>
+        <exec executable="make" dir=".">
+            <arg line="-s"/>
+        </exec>
     </target>
 
     <target name="juic" depends="prepare">
@@ -86,58 +95,55 @@
         <exec executable="${basedir}/generator/generator" dir="autotestlib">
             <arg line="global.h build.txt" />
         </exec>
-	<exec executable="make" dir="autotestlib">
-	   <arg line="clean"/>
-	</exec>
+        <exec executable="make" dir="autotestlib">
+            <arg line="clean -s"/>
+        </exec>
         <exec executable="qmake" dir="autotestlib" />
-        <exec executable="make"  dir="autotestlib" />
+        <exec executable="make"  dir="autotestlib">
+           <arg line="-s" />
+       </exec>
     </target>
 
     <target name="generator.example" >
         <exec executable="${basedir}/generator/generator" dir="generator_example">
             <arg line="global.h typesystem_generatorexample.txt" />
         </exec>
-	<exec executable="make" dir="generator_example">
-	   <arg line="clean"/>
-	</exec>
-        <exec executable="qmake" dir="generator_example" />
-        <exec executable="make"  dir="generator_example" />
-    </target>
-
-    <target name="generator.all" depends="generator.autotests, generator.example, generator" />
-
-    <target name="generator.designern" >
-        <exec executable="${basedir}/generator/generator" dir="qtjambi_designer">
-            <arg line="designer.h typesystem_designer.txt" />
+        <exec executable="make" dir="generator_example">
+            <arg line="clean -s"/>
         </exec>
-	<exec executable="make" dir="autotestlib">
-	   <arg line="clean"/>
-	</exec>
-	<exec executable="qmake" dir="qtjambi_designer" />
-        <exec executable="make"  dir="qtjambi_designer" />
+        <exec executable="qmake" dir="generator_example" />
+        <exec executable="make" dir="generator_example">
+           <arg line="-s"/>
+        </exec>
     </target>
 
+    <target name="generator.all" depends="compile.generator, generator.autotests, generator.example" />
 
-    <target name="compile" depends="generator, compile.qtjambi, compile.java" />
+    <target name="compile" depends="qmake, generator.all, compile.qtjambi, compile.java" />
 
-    <target name="compile.qt" depends="init">
+    <target name="configure.qt" depends="init">
+        <exec executable="configure" dir="${qt}" />
+    </target>
+
+    <target name="compile.qt" depends="init, sync.qt, configure.qt">
         <exec executable="make" dir="${qt}">
-	    <arg line="dist clean" />
-	</exec>
-        <exec executable="${qt}/configure" dir="${qt}" />
-        <exec executable="make"      dir="${qt}" />
+            <arg line="dist clean -s" />
+        </exec>
+        <exec executable="make" dir="${qt}">
+           <arg line="-s"/>
+        </exec>
     </target>
 
 
     <target name="compile.java" depends="juic">
         <javac srcdir="${sourceDir}" destdir="${outputDir}">
             <include name="com/**/**.java"/>
-	    <exclude name="com/trolltech/tools/**/**.java"/>
-	    <exclude name="com/trolltech/demos/HelloGL.java" />
-	</javac>
+            <exclude name="com/trolltech/tools/**/**.java"/>
+            <exclude name="com/trolltech/demos/HelloGL.java" />
+        </javac>
     </target>
 
-    <target name="compile.autotests" depends="init, generator.autotests">
+    <target name="compile.autotests" depends="init">
         <javac srcdir="${sourceDir}" destdir="${outputDir}" 
                includes="com/trolltech/autotests/**.java" />
     </target>
@@ -186,13 +192,11 @@
         <delete file="jambi-devel.tar" />
     </target>
 
-    <target name="test.make" depends="init, generator.autotests, compile, compile.autotests" />
-
     <target name="test" depends="prepare.report" >
         <junit printsummary="yes" haltonfailure="no">
             <!-- comment --> 
             <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/>
-	    <jvmarg value="-Dcom.trolltech.qt.debug=true"/>
+            <jvmarg value="-Dcom.trolltech.qt.debug=true"/>
             <classpath>
                 <pathelement location="${outputDir}" />
                 <pathelement location="${sourceDir}" />
@@ -214,6 +218,6 @@
         </junitreport>
     </target>
 
-    <target name="all" depends="sync, generator.all, compile, test.make, test ,deploy.linux" />
+    <target name="all" depends="sync, compile, test ,deploy.linux" />
 
 </project>
