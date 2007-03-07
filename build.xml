@@ -18,12 +18,14 @@
         <property name="jambiLib" value="./lib" />
         <property name="qt"       value="${env.QTDIR}" />
         <property name="qtLib"    value="${qt}/lib" />
+        <property name="config"    value="debug" />
 
         <property name="deployDir" value="./deploy" />
     </target>
 
     <target name="clean" depends="init">
         <delete dir="${outputDir}" />
+        <delete dir="${jambiLib}" />
     </target>
 
     <target name="clean.report" depends="init">
@@ -56,7 +58,7 @@
             <arg line="dist clean -s"/>
         </exec>
         <exec executable="qmake" dir=".">
-            <arg line="-r -config release"/>
+            <arg line="-r -config ${config}"/>
         </exec>
         <exec executable="make" dir=".">
             <arg line="dist clean -s"/>
@@ -98,7 +100,9 @@
         <exec executable="make" dir="autotestlib">
             <arg line="clean -s"/>
         </exec>
-        <exec executable="qmake" dir="autotestlib" />
+        <exec executable="qmake" dir="autotestlib">
+            <arg line="-r -config ${config}"/>
+        </exec>
         <exec executable="make"  dir="autotestlib">
            <arg line="-s" />
        </exec>
@@ -111,18 +115,18 @@
         <exec executable="make" dir="generator_example">
             <arg line="clean -s"/>
         </exec>
-        <exec executable="qmake" dir="generator_example" />
+        <exec executable="qmake" dir="generator_example" >
+            <arg line="-r -config  ${config}"/>
+        </exec>
         <exec executable="make" dir="generator_example">
            <arg line="-s"/>
         </exec>
     </target>
 
-    <target name="generator.all" depends="compile.generator, generator.autotests, generator.example" />
-
-    <target name="compile" depends="qmake, generator.all, compile.qtjambi, compile.java" />
+    <target name="compile" depends="qmake, compile.generator, compile.qtjambi, generator.autotests, generator.example,  compile.java" />
 
     <target name="configure.qt" depends="init">
-        <exec executable="configure" dir="${qt}" />
+        <exec executable="${qt}/configure" dir="${qt}" />
     </target>
 
     <target name="compile.qt" depends="init, sync.qt, configure.qt">
@@ -218,6 +222,6 @@
         </junitreport>
     </target>
 
-    <target name="all" depends="sync, compile, test ,deploy.linux" />
+    <target name="all" depends="sync, compile, deploy.linux" />
 
 </project>
