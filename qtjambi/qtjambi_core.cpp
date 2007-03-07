@@ -50,6 +50,8 @@ static PtrGetDefaultJavaVMInitArgs ptrGetDefaultJavaVMInitArgs;
 static PtrCreateJavaVM ptrCreateJavaVM;
 static PtrGetCreatedJavaVMs ptrGetCreatedJavaVMs;
 
+static QString vm_location_override;
+
 // C-style wrapper for qInstallMsgHandler so the launcher launcher can look it up dynamically
 // without bothering with knowing the name mangling
 extern "C" QTJAMBI_EXPORT QtMsgHandler wrap_qInstallMsgHandler(QtMsgHandler handler)
@@ -1253,7 +1255,6 @@ bool qtjambi_destroy_vm()
 
     return qtjambi_vm->DestroyJavaVM() == 0;
 }
-
 bool qtjambi_initialize_vm()
 {
     if (qtjambi_vm)
@@ -1284,7 +1285,7 @@ bool qtjambi_initialize_vm()
     Q_ASSERT(ptrGetDefaultJavaVMInitArgs);
     Q_ASSERT(ptrGetCreatedJavaVMs);
 #endif
-    
+
 
     QList<QByteArray> options;
 
@@ -1356,10 +1357,11 @@ bool qtjambi_initialize_vm()
 #ifdef Q_OS_LINUX
 static QString locate_vm()
 {
-    QString jpath = qgetenv("JAVADIR");
-    QString jmach = QLatin1String("i386");
+    QString jpath = !vm_location_override.isEmpty() ?
+                    vm_location_override.append(QLatin1String("/lib/")) :
+                    qgetenv("JAVADIR").append(QLatin1String("/jre/lib/"));
 
-    jpath += QLatin1String("/jre/lib/");
+    QString jmach = QLatin1String("i386");
     jpath += jmach;
 
     jpath = QDir::cleanPath(jpath);
@@ -1379,10 +1381,12 @@ static QString locate_vm()
 // Windows version
 static QString locate_vm()
 {
-
     QString javaHome;
+ 
+    if(!vm_location_override.isEmpty()) {
+        javaHome = vm_location_override;
 
-    {
+    if (javaHome.isEmpty()) {
         QStringList roots, locations;
         roots << "HKEY_LOCAL_MACHINE"
               << "HKEY_CURRENT_USER";
@@ -1808,4 +1812,9 @@ void qtjambi_debug_trace(const char *location, const char *file, int line)
         fflush(stderr);
 
     }
+}
+
+void qtjambi_set_vm_location_override(const QString &location)
+{
+    vm_location_override = location;
 }

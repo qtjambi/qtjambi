@@ -69,6 +69,7 @@ QTJAMBI_EXPORT void qtjambi_resolve_polymorphic_id(const char *lookup, const voi
 
 QTJAMBI_EXPORT bool qtjambi_initialize_vm();
 QTJAMBI_EXPORT bool qtjambi_destroy_vm();
+extern "C" QTJAMBI_EXPORT void qtjambi_set_vm_location_override(const QString &location);
 
 QTJAMBI_EXPORT bool qtjambi_exception_check(JNIEnv *env);
 
@@ -140,13 +141,13 @@ inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array,
         }
     }
 
-    return returned;    
+    return returned;
 }
 
 template <typename T>
-inline jobjectArray qtjambi_from_interface_array(JNIEnv *env, T *array, 
+inline jobjectArray qtjambi_from_interface_array(JNIEnv *env, T *array,
                                                  int size, char *interfaceName, char *className,
-                                                 char *packageName) 
+                                                 char *packageName)
 {
     if (array == 0)
         return 0;
@@ -164,7 +165,7 @@ inline jobjectArray qtjambi_from_interface_array(JNIEnv *env, T *array,
         }
     }
 
-    return returned;    
+    return returned;
 }
 
 QTJAMBI_EXPORT
@@ -460,5 +461,7 @@ inline void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info,
         env->CallVoidMethodA(signal_info.object, signal_info.methodId, args);
     env->SetBooleanField(signal_info.object, sc->AbstractSignal.inCppEmission, false);
 }
+
+
 
 #endif // QTJAMBI_CORE_H
