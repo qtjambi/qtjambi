@@ -1,19 +1,10 @@
 package com.trolltech.qt;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import com.trolltech.qt.QtJambiInternal.*;
+import com.trolltech.qt.core.*;
 
-import com.trolltech.qt.QtJambiInternal.QMetaCallEvent;
-import com.trolltech.qt.core.QCoreApplication;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.Qt;
+import java.lang.reflect.*;
+import java.util.*;
 
 
 public class QSignalEmitter {    
@@ -415,9 +406,12 @@ public class QSignalEmitter {
                                                               oldSender, false);
                         }
 
+                    } catch (InvocationTargetException e) {
+                        System.err.println("Exception caught after invoking slot");
+                        e.getCause().printStackTrace();
+                        
                     } catch (Exception e) {
-                        System.err.println("Exception caught while after "
-                                           + "invoking slot:");
+                        System.err.println("Exception caught after invoking slot:");
                         e.printStackTrace();
                     }
                 } else {
