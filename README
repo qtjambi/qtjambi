@@ -33,6 +33,14 @@ How to build....
 	com/trolltech/examples
 	com/trolltech/demos
 
+6. Troubleshooting:
+   * If you only have Qt built in debug you need to run jambi in debug
+     too. This is done by starting the virtual machine with the option:
+     -Dcom.trolltech.qt.debug=true.
+
+   * If you get load issues, try to run jambi with
+     -Dcom.trolltech.qt.verbose-loading=true to see which library fails
+
 
 To compile/run the launcher:
 
