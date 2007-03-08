@@ -1383,7 +1383,7 @@ static QString locate_vm()
 {
     QString javaHome;
  
-    if(!vm_location_override.isEmpty()) {
+    if(!vm_location_override.isEmpty())
         javaHome = vm_location_override;
 
     if (javaHome.isEmpty()) {
