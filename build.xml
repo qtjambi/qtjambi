@@ -126,7 +126,9 @@
     <target name="compile" depends="qmake, compile.generator, compile.qtjambi, generator.autotests, generator.example,  compile.java" />
 
     <target name="configure.qt" depends="init">
-        <exec executable="${qt}/configure" dir="${qt}" />
+        <exec executable="${qt}/configure" dir="${qt}">
+	    <arg line="-${config} -no-qt3support -silent" />
+	</exec>
     </target>
 
     <target name="compile.qt" depends="init, sync.qt, configure.qt">
