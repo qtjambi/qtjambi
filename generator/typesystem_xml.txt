@@ -9,6 +9,9 @@
     <enum-type name="QDomNode::NodeType" />
     <enum-type name="QDomNode::EncodingPolicy" />
     <enum-type name="QDomImplementation::InvalidDataPolicy" />
+    <enum-type name="QXmlStreamReader::Error" />
+    <enum-type name="QXmlStreamReader::TokenType" />
+
 
     <value-type name="QDomAttr">
         <modify-function signature="operator=(QDomAttr)">
@@ -360,6 +363,49 @@
         </inject-code>
     </value-type>
     <value-type name="QXmlParseException" />
+    <value-type name="QXmlStreamAttribute" />
+    <value-type name="QXmlStreamAttributes">
+        <modify-function signature="constData()const">
+            <remove />
+        </modify-function>    
+
+        <modify-function signature="data()">
+            <remove />
+        </modify-function>
+
+        <modify-function signature="data()const">
+            <remove />
+        </modify-function>    
+        
+        <modify-function signature="first()">
+            <remove />
+        </modify-function>       
+        
+        <modify-function signature="last()">
+            <remove />
+        </modify-function> 
+
+        <modify-function signature="operator[](int)">
+            <remove />
+        </modify-function>
+        
+        <modify-function signature="value(const QString &amp;, const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>            
+        <modify-function signature="value(const QLatin1String &amp;, const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>            
+        <modify-function signature="value(const QLatin1String &amp;)const">
+            <remove />            
+        </modify-function>            
+        <modify-function signature="operator=(const QVector&lt;QXmlStreamAttribute>&amp;)">
+            <remove/>
+        </modify-function>
+        
+    </value-type>
+    <value-type name="QXmlStreamNamespaceDeclaration" />
+    <value-type name="QXmlStreamNotationDeclaration" />
+    <value-type name="QXmlStreamEntityDeclaration" />
     
     <value-type name="QXmlAttributes">  
       <modify-function signature="index(const QLatin1String&amp;) const">
@@ -520,6 +566,12 @@
     <object-type name="QXmlInputSource" />
     <object-type name="QXmlLocator" />        
     <object-type name="QXmlSimpleReader" />
+    <object-type name="QXmlStreamReader" />
+    <object-type name="QXmlStreamWriter">
+        <modify-function signature="QXmlStreamWriter(QString *)">
+            <remove />
+        </modify-function>
+    </object-type>
     
     <object-type name="QXmlReader">
         <modify-function signature="parse(const QXmlInputSource &amp;)">

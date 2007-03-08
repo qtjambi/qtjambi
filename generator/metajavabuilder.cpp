@@ -923,9 +923,11 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
 
             java_function->setOriginalAttributes(java_function->attributes());
 
-            if ((java_function->isConstructor() || java_function->isDestructor())
-                && (java_function->isPrivate() || java_function->isInvalid())
-                && !java_class->hasNonPrivateConstructor()) {
+            bool isInvalidDestructor = java_function->isDestructor() && java_function->isPrivate();
+            bool isInvalidConstructor = java_function->isConstructor() 
+                && (java_function->isPrivate() || java_function->isInvalid());
+            if ((isInvalidDestructor || isInvalidConstructor)
+                && !java_class->hasNonPrivateConstructor()) { 
                 *java_class += MetaJavaAttributes::Final;
             } else if (java_function->isConstructor() && !java_function->isPrivate()) {
                 *java_class -= MetaJavaAttributes::Final;

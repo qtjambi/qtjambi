@@ -297,10 +297,25 @@ inline jlong qtjambi_to_long(JNIEnv *env, jobject long_object)
     return env->CallLongMethod(long_object, sc->Long.longValue);
 }
 
-inline jobject qtjambi_from_long(JNIEnv *env, qint64 long_value) {
+inline jobject qtjambi_from_long(JNIEnv *env, qint64 long_value) 
+{
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveLong();
     return env->NewObject(sc->Long.class_ref, sc->Long.constructor, long_value);
+}
+
+inline jchar qtjambi_to_char(JNIEnv *env, jobject char_object) 
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveCharacter();
+    return env->CallCharMethod(char_object, sc->Character.charValue);
+}
+
+inline jobject qtjambi_from_char(JNIEnv *env, jchar char_value) 
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveCharacter();
+    return env->NewObject(sc->Character.class_ref, sc->Character.constructor, char_value);
 }
 
 inline float qtjambi_to_float(JNIEnv *env, jobject float_object)

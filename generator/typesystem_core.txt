@@ -130,6 +130,7 @@
   <rejection class="QCache"/>
   <rejection class="QCharRef"/>
   <rejection class="QDebug"/>
+  <rejection class="QExplicitlySharedDataPointer" />
   <rejection class="QFactoryInterface"/>
   <rejection class="QFlag"/>
   <rejection class="QFlags"/>
@@ -423,6 +424,7 @@
   <enum-type name="QDirIterator::IteratorFlag" flags="QDirIterator::IteratorFlags" />
   <enum-type name="Qt::EventPriority" />
   <enum-type name="Qt::MaskMode" />
+  <enum-type name="QCryptographicHash::Algorithm" />
 
   <enum-type name="QCoreApplication::Encoding">
     <reject-enum-value name="DefaultCodec"/>
@@ -494,6 +496,7 @@
   </enum-type>
   
   <value-type name="QBasicTimer"/>  
+  <value-type name="QStringRef" />
   <value-type name="QByteArrayMatcher">
     <modify-function signature="operator=(QByteArrayMatcher)">
         <rename to="operator_assign_private"/>
@@ -2132,7 +2135,8 @@
         </modify-argument>    
     </modify-function>       
   </object-type>
-  
+
+  <object-type name="QCryptographicHash" />
   <object-type name="QLibraryInfo"/>
   <object-type name="QMutex"/>  
   <object-type name="QSemaphore"/>

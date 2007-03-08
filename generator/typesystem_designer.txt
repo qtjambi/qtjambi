@@ -31,6 +31,9 @@
   <rejection class="QDesignerWidgetFactoryInterface" />
   <rejection class="QExtensionManager" />
   <rejection class="QFormBuilder" />
+  <rejection class="QDesignerDynamicPropertySheetExtension" />
+  <rejection class="QDesignerPromotionInterface" />
+  <rejection class="QDesignerScriptExtension" />
 
   <object-type name="QDesignerResourceBrowserInterface">
     <include file-name="abstractresourcebrowser.h" location="global"/>

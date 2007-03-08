@@ -15,11 +15,12 @@
   <enum-type name="QHostAddress::SpecialAddress" />
   <enum-type name="QHttp::Error" />
   <enum-type name="QHttp::State" />
+  <enum-type name="QHttp::ConnectionMode" />
   <enum-type name="QNetworkInterface::InterfaceFlag" flags="QNetworkInterface::InterfaceFlags" />
   <enum-type name="QNetworkProxy::ProxyType" />
   <enum-type name="QUdpSocket::BindFlag" flags="QUdpSocket::BindMode" />
   <enum-type name="QUrlInfo::PermissionSpec" />
-  <enum-type name="QHostInfo::HostInfoError" />
+  <enum-type name="QHostInfo::HostInfoError" />    
       
   <template name="network.read_char*_long_long">
         public final int read(byte data[]) {
@@ -130,7 +131,6 @@
     </inject-code>
   </object-type>
   <object-type name="QHttpHeader" />
-    
   <value-type name="QHostAddress">
     <modify-function signature="QHostAddress(unsigned char*)">
         <remove />
@@ -248,6 +248,8 @@
         <remove/>
     </modify-function>    
   </value-type>
+  
+  <value-type name="QAuthenticator" />
   
   <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
   

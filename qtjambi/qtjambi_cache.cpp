@@ -825,6 +825,9 @@ void StaticCache::resolveCharacter_internal()
 
     Character.charValue = env->GetMethodID(Character.class_ref, "charValue", "()C");
     Q_ASSERT(Character.charValue);
+
+    Character.constructor = env->GetMethodID(Character.class_ref, "<init>", "(C)V");
+    Q_ASSERT(Character.constructor);
 }
 
 void StaticCache::resolveClass_internal()

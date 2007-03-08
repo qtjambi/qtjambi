@@ -235,6 +235,7 @@
   <enum-type name="QSql::Location" />
   <enum-type name="QSql::ParamTypeFlag" flags="QSql::ParamType" />
   <enum-type name="QSql::TableType" />
+  <enum-type name="QSql::NumericalPrecisionPolicy" />
   <enum-type name="QSqlDriver::DriverFeature" />
   <enum-type name="QSqlDriver::IdentifierType" />
   <enum-type name="QSqlDriver::StatementType" />

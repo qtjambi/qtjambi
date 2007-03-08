@@ -229,6 +229,7 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jmethodID charValue;
+        jmethodID constructor;
     } Character;
 
     struct {

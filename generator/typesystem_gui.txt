@@ -142,6 +142,8 @@
   <rejection class="QAccessiblePlugin"/>
   <rejection class="QBrushData"/>
   <rejection class="QIconEngineFactoryInterface"/>
+  <rejection class="QIconEngineFactoryInterfaceV2"/>
+  <rejection class="QIconEnginePluginV2"/>
   <rejection class="QIconEnginePlugin"/>
   <rejection class="QImageIOHandlerFactoryInterface"/>
   <rejection class="QImageIOPlugin"/>
@@ -201,6 +203,8 @@
   <rejection class="QPaintEngine" function-name="fix_neg_rect"/>           
   <rejection class="QTreeModel" function-name="node"/>
   <rejection class="QTreeModel" function-name="initializeNode"/>
+  <rejection class="QTreeModel" function-name="queryChildren"/>
+  <rejection class="QAccessible" function-name="cast_helper" />
   
   <rejection class="QTabletEvent" field-name="mExtra" />  
 
@@ -227,6 +231,13 @@
   <enum-type name="QAccessible::Role"/>
   <enum-type name="QAccessible::StateFlag" flags="QAccessible::State"/>
   <enum-type name="QAccessible::Text"/>
+  <enum-type name="QAccessible2::BoundaryType" />
+  <enum-type name="QAccessible2::CoordinateType" />
+  <enum-type name="QAccessible2::InterfaceType" />
+  <enum-type name="QMdiArea::AreaOption" flags="QMdiArea::AreaOptions" />
+  <enum-type name="QMdiArea::WindowOrder" />
+  <enum-type name="QMdiSubWindow::SubWindowOption" flags="QMdiSubWindow::SubWindowOptions" />
+ 
   <enum-type name="QAction::ActionEvent"/>
   <enum-type name="QAction::MenuRole"/>
   <enum-type name="QApplication::ColorSpec"/>
@@ -284,8 +295,9 @@
   <enum-type name="QGraphicsTextItem::enum_1"/>
   <enum-type name="QGraphicsView::CacheModeFlag" flags="QGraphicsView::CacheMode"/>
   <enum-type name="QGraphicsView::DragMode"/>
+  <enum-type name="QGraphicsView::OptimizationFlag" flags="QGraphicsView::OptimizationFlags" />
   <enum-type name="QGraphicsView::ViewportAnchor"/>
-  <enum-type name="QGraphicsView::ViewportUpdateMode" />
+  <enum-type name="QGraphicsView::ViewportUpdateMode" />  
   <enum-type name="QIcon::Mode"/>
   <enum-type name="QIcon::State"/>
   <enum-type name="QImage::Format"/>
@@ -312,6 +324,7 @@
   <enum-type name="QListView::ViewMode"/>
   <enum-type name="QListWidgetItem::ItemType"/>
   <enum-type name="QListWidgetItem::enum_1"/>
+  <enum-type name="QMainWindow::DockOption" flags="QMainWindow::DockOptions" />
   <enum-type name="QMessageBox::Button"/>
   <enum-type name="QMessageBox::ButtonRole"/>
   <enum-type name="QMessageBox::Icon"/>
@@ -340,6 +353,7 @@
   <enum-type name="QSessionManager::RestartHint"/>
   <enum-type name="QSizePolicy::Policy"/>
   <enum-type name="QSizePolicy::PolicyFlag"/>
+  <enum-type name="QSizePolicy::ControlType" flags="QSizePolicy::ControlTypes" />
   <enum-type name="QSizePolicy::SizePolicyMasks"/>
   <enum-type name="QStandardItem::ItemType"/>
   <enum-type name="QStyle::SubControl" flags="QStyle::SubControls" extensible="yes" force-integer="yes"/>
@@ -354,6 +368,9 @@
   <enum-type name="QStyleHintReturn::HintReturnType"/>
   <enum-type name="QStyleHintReturn::StyleOptionType"/>
   <enum-type name="QStyleHintReturn::StyleOptionVersion"/>
+  <enum-type name="QStyleHintReturnVariant::StyleOptionType" />
+  <enum-type name="QStyleHintReturnVariant::StyleOptionVersion" />
+
   <enum-type name="QStyleHintReturn::enum_1"/>
   <enum-type name="QStyleHintReturn::enum_2"/>
   <enum-type name="QStyleHintReturnMask::StyleOptionType"/>
@@ -379,6 +396,7 @@
   <enum-type name="QStyleOptionComplex::enum_2"/>
   <enum-type name="QStyleOptionDockWidget::StyleOptionType"/>
   <enum-type name="QStyleOptionDockWidget::StyleOptionVersion"/>
+  <enum-type name="QStyleOptionDockWidgetV2::StyleOptionVersion" />
   <enum-type name="QStyleOptionDockWidget::enum_1"/>
   <enum-type name="QStyleOptionDockWidget::enum_2"/>
   <enum-type name="QStyleOptionFocusRect::StyleOptionType"/>
@@ -387,7 +405,7 @@
   <enum-type name="QStyleOptionFocusRect::enum_2"/>
   <enum-type name="QStyleOptionFrame::StyleOptionType"/>
   <enum-type name="QStyleOptionFrame::StyleOptionVersion"/>
- <enum-type name="QStyleOptionFrame::enum_1"/>
+  <enum-type name="QStyleOptionFrame::enum_1"/>
   <enum-type name="QStyleOptionFrame::enum_2"/>
   <enum-type name="QStyleOptionFrameV2::FrameFeature" flags="QStyleOptionFrameV2::FrameFeatures"/>
   <enum-type name="QStyleOptionFrameV2::StyleOptionVersion"/>
@@ -526,6 +544,14 @@
   <enum-type name="QStyleOptionViewItemV3::StyleOptionVersion" />
   <enum-type name="QTransform::TransformationCodes" />  
   <enum-type name="QTreeWidgetItem::ChildIndicatorPolicy" />
+  <enum-type name="QWizard::WizardOption" flags="QWizard::WizardOptions" />
+  <enum-type name="QWizard::WizardPixmap" />
+  <enum-type name="QWizard::WizardStyle" />
+
+  <enum-type name="QWizard::WizardButton">
+    <reject-enum-value name="NStandardButtons" />
+    <reject-enum-value name="NButtons" />
+  </enum-type>
 
   <enum-type name="QAccessible::Action">
     <reject-enum-value name="FirstStandardAction"/>
@@ -610,6 +636,10 @@
   <enum-type name="QTextFormat::Property">
     <reject-enum-value name="FontSizeIncrement"/>
   </enum-type>
+  
+  <namespace-type name="QAccessible2">
+        <include file-name="qaccessible2.h" location="global" />
+  </namespace-type>
 
   <value-type name="QTransform">
     <extra-includes>
@@ -886,6 +916,8 @@
               polymorphic-id-expression="%1-&gt;type == QStyleOptionComplex::Type &amp;&amp; %1-&gt;version == QStyleOptionComplex::Version" />
   <value-type name="QStyleOptionDockWidget" 
               polymorphic-id-expression="%1-&gt;type == QStyleOptionDockWidget::Type &amp;&amp; %1-&gt;version == QStyleOptionDockWidget::Version" />
+  <value-type name="QStyleOptionDockWidgetV2" 
+              polymorphic-id-expression="%1-&gt;type == QStyleOptionDockWidgetV2::Type &amp;&amp; %1-&gt;version == QStyleOptionDockWidgetV2::Version" /> 
   <value-type name="QStyleOptionFocusRect" 
               polymorphic-id-expression="%1-&gt;type == QStyleOptionFocusRect::Type &amp;&amp; %1-&gt;version == QStyleOptionFocusRect::Version" />
   <value-type name="QStyleOptionFrame" 
@@ -2636,6 +2668,12 @@
   <object-type name="QAccessibleBridgeFactoryInterface"/>
   <object-type name="QAccessibleBridgePlugin"/>
   <object-type name="QAccessibleFactoryInterface"/>
+  <object-type name="QAccessible2Interface" />
+  <object-type name="QAccessibleEditableTextInterface" />
+  <object-type name="QAccessibleSimpleEditableTextInterface" />
+  <object-type name="QAccessibleTextInterface" />
+  <object-type name="QAccessibleValueInterface" />
+  
   <object-type name="QAccessibleInterface">
     <inject-code>
         public static class Target {            
@@ -2736,6 +2774,8 @@
   <object-type name="QDirModel"/>
   <object-type name="QDoubleValidator"/>
   <object-type name="QFileIconProvider"/>
+  <object-type name="QWizard" />
+  <object-type name="QWizardPage" />
   <object-type name="QFocusFrame">
     <modify-function signature="initStyleOption(QStyleOption*)const">
         <access modifier="private" />
@@ -2844,8 +2884,6 @@
   </object-type>
   <object-type name="QIconEngine"/>
   <object-type name="QIconEngineV2"/>
-  <object-type name="QIconEngineFactoryInterface"/>
-  <object-type name="QIconEnginePlugin"/>
   <object-type name="QImageIOHandlerFactoryInterface"/>
   <object-type name="QImageIOPlugin"/>
   <object-type name="QImageWriter"/>
@@ -2868,7 +2906,10 @@
   <object-type name="QItemSelectionModel"/>
   <object-type name="QTreeModel"/>
   <object-type name="QListView"/>
+  <object-type name="QColumnView"/>
   <object-type name="QMainWindow"/>
+  <object-type name="QMdiArea" />
+  <object-type name="QMdiSubWindow" />
   <object-type name="QMenu">
     <modify-function signature="initStyleOption(QStyleOptionMenuItem*,const QAction*)const">
         <access modifier="private" />
@@ -3147,6 +3188,7 @@
   <object-type name="QStyleFactory"/>
   <object-type name="QStyleFactoryInterface"/>
   <object-type name="QStyleHintReturn"/>
+  <object-type name="QStyleHintReturnVariant" />
   <object-type name="QStyleHintReturnMask"/>
   <object-type name="QStylePainter"/>
   <object-type name="QStylePlugin"/>
