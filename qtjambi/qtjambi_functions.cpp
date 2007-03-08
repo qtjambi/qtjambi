@@ -20,7 +20,7 @@ class QObjectPrivateAccessor : public QObjectData
 {
 public:
     virtual ~QObjectPrivateAccessor() { }
-    int thread;
+    QThreadData *thread;
     QObject *currentSender;
 };
 
@@ -72,7 +72,7 @@ Java_com_trolltech_qt_QtJambiInternal_nativeSwapQObjectSender
     QObject *prev = d->currentSender;
     d->currentSender = the_sender;
 
-    return (return_previous_sender) ? (long)prev : 0;
+    return return_previous_sender ? long(prev) : 0L;
 }
 
 

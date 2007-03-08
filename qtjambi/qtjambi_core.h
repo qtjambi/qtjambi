@@ -14,6 +14,10 @@
 #ifndef QTJAMBI_CORE_H
 #define QTJAMBI_CORE_H
 
+#ifdef QT3_SUPPORT
+#  error Qt must be configured without Qt 3 support in order to build Qt Jambi
+#endif
+
 #include "qtjambi_global.h"
 
 #include "qtjambi_cache.h"
