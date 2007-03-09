@@ -16,6 +16,8 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QVarLengthArray>
 
+class QThreadData;
+
 class QObjectPrivateAccessor : public QObjectData
 {
 public:
