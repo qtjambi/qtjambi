@@ -611,9 +611,13 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
         }
 
         link = QtJambiLink::createWrapperForQObject(env, qt_object, className, packageName);
+        if (link == 0) {
+            qWarning("Qt Jambi: Couldn't created wrapper for class %s%s", packageName, className);
+            return 0;
+        }
+
         qtjambi_setup_connections(env, link);
     }
-    Q_ASSERT(link);
 
     return link->javaObject(env);
 }
@@ -1294,7 +1298,7 @@ bool qtjambi_initialize_vm()
     options << class_path;
 
 #ifndef QT_NO_DEBUG
-    options << "-Xcheck:jni";
+    //options << "-Xcheck:jni";
     options << "-Dcom.trolltech.qt.debug=true";
 #endif
 

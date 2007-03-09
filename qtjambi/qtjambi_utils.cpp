@@ -2,14 +2,17 @@
 #include "qtjambi_utils.h"
 #include "qtjambi_core.h"
 
-
-void qtjambi_resolve_classes(JNIEnv *env, ClassData *data)
+bool qtjambi_resolve_classes(JNIEnv *env, ClassData *data)
 {
     // Resolve Data...
     for (int i=0; data[i].cl; ++i) {
-        *data[i].cl = (jclass) env->NewGlobalRef(qtjambi_find_class(env, data[i].name));
-        Q_ASSERT_X(*data[i].cl, "Failed to resolve class", data[i].name);
+        jclass cl = qtjambi_find_class(env, data[i].name);
+
+        if (cl == 0) return false;
+        *data[i].cl =(jclass) env->NewGlobalRef(cl);
     }
+
+    return true;
 }
 
 

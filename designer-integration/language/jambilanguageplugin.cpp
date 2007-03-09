@@ -53,9 +53,12 @@ JambiLanguagePlugin::JambiLanguagePlugin():
 
     qtjambi_initialize_vm();
     JNIEnv *env = qtjambi_current_environment();
-    qtjambi_resolve_classes(env, jni_class_table);
-    qtjambi_resolve_methods(env, jni_method_table);
-    qtjambi_resolve_static_methods(env, jni_static_method_table);
+    if (qtjambi_resolve_classes(env, jni_class_table)) {
+        qtjambi_resolve_methods(env, jni_method_table);
+        qtjambi_resolve_static_methods(env, jni_static_method_table);
+    } else {
+        qWarning("Qt Jambi: Cannot load JambiLanguagePlugin due to missing class files");
+    }
 }
 
 JambiLanguagePlugin::~JambiLanguagePlugin()
@@ -149,6 +152,9 @@ QDesignerResourceBrowserInterface *JambiLanguage::createResourceBrowser(QWidget 
     JNIEnv *env = qtjambi_current_environment();
     jobject jParent = qtjambi_from_QWidget(env, parentWidget);
     QTJAMBI_EXCEPTION_CHECK(env);
+
+    if (class_ResourceBrowser == 0 || method_ResourceBrowser == 0)
+        return 0;
 
     jobject jWidget = env->NewObject(class_ResourceBrowser, method_ResourceBrowser, jParent);
     QTJAMBI_EXCEPTION_CHECK(env);
@@ -264,7 +270,8 @@ QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &
 
         JNIEnv *env = qtjambi_current_environment();
         jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/PropertySheet");
-        Q_ASSERT(cl);
+        if (cl == 0)
+            return 0;
 
         jmethodID id = env->GetMethodID(cl, "<init>", "(Lcom/trolltech/qt/core/QObject;"
                                                        "Lcom/trolltech/qt/core/QObject;)V");
@@ -285,7 +292,8 @@ QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &
     } else if (iid == Q_TYPEID(QDesignerMemberSheetExtension)) {
         JNIEnv *env = qtjambi_current_environment();
         jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/MemberSheet");
-        Q_ASSERT(cl);
+        if (cl == 0)
+            return 0;
 
         jmethodID id = env->GetMethodID(cl, "<init>", "(Lcom/trolltech/qt/core/QObject;"
                                                        "Lcom/trolltech/qt/core/QObject;)V");
