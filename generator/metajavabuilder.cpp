@@ -1618,7 +1618,7 @@ MetaJavaType *MetaJavaBuilder::inheritTemplateType(const QList<MetaJavaType *> &
 {
 
     if (!java_type || (!java_type->typeEntry()->isTemplateArgument() && !java_type->hasInstantiations()))
-        return java_type;
+        return java_type ? java_type->copy() : 0;
 
     MetaJavaType *returned = java_type->copy();
 

@@ -267,7 +267,7 @@ MetaJavaFunction *MetaJavaFunction::copy() const
     cpy->setDeclaringClass(declaringClass());
     if (type())
         cpy->setType(type()->copy());
-	cpy->setConstant(isConstant());
+    cpy->setConstant(isConstant());
     cpy->setOriginalAttributes(originalAttributes());
 
     foreach (MetaJavaArgument *arg, arguments())
