@@ -22,6 +22,7 @@ class QObjectPrivateAccessor : public QObjectData
 {
 public:
     virtual ~QObjectPrivateAccessor() { }
+    QList<QObject *> unused;
     QThreadData *thread;
     QObject *currentSender;
 };
