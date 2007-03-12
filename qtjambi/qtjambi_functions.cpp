@@ -16,6 +16,12 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QVarLengthArray>
 
+#ifdef QTJAMBI_SANITY_CHECK
+#include <QtCore/QObject>
+#include <QtCore/private/qobject_p.h>
+#include <QtCore/QPointer>
+#endif
+
 class QThreadData;
 
 class QObjectPrivateAccessor : public QObjectData
@@ -25,6 +31,20 @@ public:
     QList<QObject *> unused;
     QThreadData *thread;
     QObject *currentSender;
+
+    int currentSenderSignalIdStart;
+    int currentSenderSignalIdEnd;
+    QList< QPointer<QObject> > eventFilters;
+    struct ExtraData
+    {
+#ifndef QT_NO_USERDATA
+        QVector<QObjectUserData *> userData;
+#endif
+        QList<QByteArray> propertyNames;
+        QList<QVariant> propertyValues;
+    };
+    ExtraData *extraData;
+    QString objectName;
 };
 
 
@@ -72,6 +92,11 @@ Java_com_trolltech_qt_QtJambiInternal_nativeSwapQObjectSender
     if (d == 0)
         return 0;
 
+#ifdef QTJAMBI_SANITY_CHECK
+    Q_ASSERT(sizeof(QObjectPrivateAccessor) == sizeof(QObjectPrivate));
+    Q_ASSERT(d->currentSender == ((QObjectPrivate *) d)->currentSender);
+#endif
+
     QObject *prev = d->currentSender;
     d->currentSender = the_sender;
 
@@ -84,6 +109,12 @@ Java_com_trolltech_qt_QtJambiInternal_sender(JNIEnv *env, jclass, jobject obj)
 {
     QObject *qobject = qtjambi_to_qobject(env, obj);
     QObjectPrivateAccessor *d = (reinterpret_cast<QObjectAccessor *>(qobject))->d_ptr;
+
+#ifdef QTJAMBI_SANITY_CHECK
+    Q_ASSERT(sizeof(QObjectPrivateAccessor) == sizeof(QObjectPrivate));
+    Q_ASSERT(d->currentSender == ((QObjectPrivate *) d)->currentSender);
+#endif
+
     return qtjambi_from_qobject(env, d->currentSender, "QObject", "com.trolltech.qt.core");
 }
 
