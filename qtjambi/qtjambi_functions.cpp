@@ -15,11 +15,11 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QVarLengthArray>
+#include <QtCore/QPointer>
 
 #ifdef QTJAMBI_SANITY_CHECK
 #include <QtCore/QObject>
 #include <QtCore/private/qobject_p.h>
-#include <QtCore/QPointer>
 #endif
 
 class QThreadData;
