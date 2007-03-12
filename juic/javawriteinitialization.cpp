@@ -785,9 +785,9 @@ void WriteInitialization::writeProperties(const QString &varName,
             DomSizePolicy *sp = p->elementSizePolicy();
             QString spName = driver->unique(QLatin1String("sizePolicy"));
 
-            const char *name = "com.trolltech.qt.gui.QSizePolicy.Policy.resolve(%1)";
-            QString vSizeType = QString::fromLatin1(name).arg(sp->elementVSizeType());
-            QString hSizeType = QString::fromLatin1(name).arg(sp->elementHSizeType());
+            const char *name = "com.trolltech.qt.gui.QSizePolicy.Policy.%1";
+            QString vSizeType = QString::fromLatin1(name).arg(sp->attributeVSizeType());
+            QString hSizeType = QString::fromLatin1(name).arg(sp->attributeHSizeType());
 
             output << option.indent << "QSizePolicy " << spName << " = "
                    << "new QSizePolicy(" << hSizeType << ", " << vSizeType << ");\n";
