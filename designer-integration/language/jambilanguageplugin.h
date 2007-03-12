@@ -36,6 +36,7 @@ public:
     virtual QDesignerFormEditorInterface *core() const;
 private:
     QDesignerFormEditorInterface *m_core;
+    bool m_vmLoaded;
 };
 
 
@@ -87,6 +88,7 @@ public:
 
     virtual bool signalMatchesSlot(const QString &signal, const QString &slot) const;
 private:
+
 };
 
 class JambiExtensionFactory: public QExtensionFactory

@@ -230,33 +230,34 @@ QIcon JambiCustomWidget::icon() const
 
 JambiCustomWidgetCollection::JambiCustomWidgetCollection()
 {
-    qtjambi_initialize_vm();
+    if(qtjambi_initialize_vm()){
 
-    JNIEnv *env = qtjambi_current_environment();
-    Q_ASSERT (env != 0);
-
-    jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/CustomWidgetManager");
-    if (qtjambi_exception_check(env))
-        return;
-
-    jmethodID method_instance = env->GetStaticMethodID(cl, "instance", "()Lcom/trolltech/tools/designer/CustomWidgetManager;");
-    QTJAMBI_EXCEPTION_CHECK(env);
-    Q_ASSERT(method_instance);
-
-    m_id_customWidgets = env->GetMethodID(cl, "customWidgets", "()Ljava/util/List;");
-    QTJAMBI_EXCEPTION_CHECK(env);
-    Q_ASSERT(m_id_customWidgets);
-
-    m_manager = env->NewGlobalRef(env->CallStaticObjectMethod(cl, method_instance));
-    QTJAMBI_EXCEPTION_CHECK(env);
-    Q_ASSERT(m_manager);
-
-    initializeWidgets(env);
-    m_id_loadPlugins = env->GetMethodID(cl, "loadPlugins", "(Ljava/lang/String;)V");
-    QTJAMBI_EXCEPTION_CHECK(env);
-    Q_ASSERT(m_id_loadPlugins);
-
-    env->DeleteLocalRef(cl);
+        JNIEnv *env = qtjambi_current_environment();
+        Q_ASSERT (env != 0);
+    
+        jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/CustomWidgetManager");
+        if (qtjambi_exception_check(env))
+            return;
+    
+        jmethodID method_instance = env->GetStaticMethodID(cl, "instance", "()Lcom/trolltech/tools/designer/CustomWidgetManager;");
+        QTJAMBI_EXCEPTION_CHECK(env);
+        Q_ASSERT(method_instance);
+    
+        m_id_customWidgets = env->GetMethodID(cl, "customWidgets", "()Ljava/util/List;");
+        QTJAMBI_EXCEPTION_CHECK(env);
+        Q_ASSERT(m_id_customWidgets);
+    
+        m_manager = env->NewGlobalRef(env->CallStaticObjectMethod(cl, method_instance));
+        QTJAMBI_EXCEPTION_CHECK(env);
+        Q_ASSERT(m_manager);
+    
+        initializeWidgets(env);
+        m_id_loadPlugins = env->GetMethodID(cl, "loadPlugins", "(Ljava/lang/String;)V");
+        QTJAMBI_EXCEPTION_CHECK(env);
+        Q_ASSERT(m_id_loadPlugins);
+    
+        env->DeleteLocalRef(cl);
+    }
 }
 
 void JambiCustomWidgetCollection::initializeWidgets(JNIEnv *env) 

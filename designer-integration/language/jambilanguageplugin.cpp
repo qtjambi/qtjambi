@@ -23,6 +23,7 @@
 
 
 #include <QtGui>
+#include <QMessageBox>
 
 jclass class_ResourceBrowser;
 jclass class_MemberSheet;
@@ -47,17 +48,22 @@ static MethodData jni_static_method_table[] = {
 };
 
 JambiLanguagePlugin::JambiLanguagePlugin():
-    m_core(0)
+    m_core(0),
+    m_vmLoaded(false)
 {
-    printf("JambiLanguagePlugin: created\n");
-
-    qtjambi_initialize_vm();
-    JNIEnv *env = qtjambi_current_environment();
-    if (qtjambi_resolve_classes(env, jni_class_table)) {
-        qtjambi_resolve_methods(env, jni_method_table);
-        qtjambi_resolve_static_methods(env, jni_static_method_table);
+    if (qtjambi_initialize_vm()) {
+        JNIEnv *env = qtjambi_current_environment();
+        if (qtjambi_resolve_classes(env, jni_class_table)) {
+            qtjambi_resolve_methods(env, jni_method_table);
+            qtjambi_resolve_static_methods(env, jni_static_method_table);
+            m_vmLoaded = true;
+        } else {
+            qWarning("Qt Jambi: Cannot load JambiLanguagePlugin due to missing class files");
+        }
     } else {
-        qWarning("Qt Jambi: Cannot load JambiLanguagePlugin due to missing class files");
+       QMessageBox::information(0, tr("Qt Jambi Plugin"),
+                          tr("Could not locate the java virtual machine.\n\nQt Jambi plugins have been disabled."),
+                          QMessageBox::Close);
     }
 }
 
@@ -72,6 +78,9 @@ bool JambiLanguagePlugin::isInitialized() const
 
 void JambiLanguagePlugin::initialize(QDesignerFormEditorInterface *core)
 {
+    if (!m_vmLoaded)
+        return;
+
     if (m_core)
         return;
 
