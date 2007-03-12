@@ -267,8 +267,8 @@ public class QUiLoader {
                 grid.addWidget((QWidget) child, row, col, rowspan, colspan);
             } else if (child instanceof QLayout) {
                 grid.addLayout((QLayout) child, row, col, rowspan, colspan);
-            } else if (child instanceof QLayoutItem) {
-                grid.addItem((QLayoutItem) child, row, col, rowspan, colspan);
+            } else if (child instanceof QLayoutItemInterface) {
+                grid.addItem((QLayoutItemInterface) child, row, col, rowspan, colspan);
             }
 
         } else {
