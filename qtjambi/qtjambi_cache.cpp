@@ -711,8 +711,10 @@ void StaticCache::resolveObject_internal()
 
     Object.equals = env->GetMethodID(Object.class_ref, "equals", "(Ljava/lang/Object;)Z");
     Object.toString = env->GetMethodID(Object.class_ref, "toString", "()Ljava/lang/String;");
+    Object.hashCode = env->GetMethodID(Object.class_ref, "hashCode", "()I");
     Q_ASSERT(Object.equals);
     Q_ASSERT(Object.toString);
+    Q_ASSERT(Object.hashCode);
 }
 
 
@@ -861,7 +863,7 @@ void StaticCache::resolveSystem_internal()
     Q_ASSERT(System.getProperty);
 }
 
-void StaticCache::resolveURL_internal() 
+void StaticCache::resolveURL_internal()
 {
     Q_ASSERT(!URL.class_ref);
 
@@ -872,7 +874,7 @@ void StaticCache::resolveURL_internal()
     Q_ASSERT(URL.constructor);
 }
 
-void StaticCache::resolveURLClassLoader_internal() 
+void StaticCache::resolveURLClassLoader_internal()
 {
     Q_ASSERT(!URLClassLoader.class_ref);
 
@@ -886,7 +888,7 @@ void StaticCache::resolveURLClassLoader_internal()
     Q_ASSERT(URLClassLoader.addURL);
 }
 
-void StaticCache::resolveClassLoader_internal() 
+void StaticCache::resolveClassLoader_internal()
 {
     Q_ASSERT(!ClassLoader.class_ref);
 
@@ -915,7 +917,7 @@ void StaticCache::resolveQtJambiUtils_internal()
     Q_ASSERT(QtJambiUtils.findGeneratedSuperclass);
 }
 
-void StaticCache::resolveQSignalEmitter_internal() 
+void StaticCache::resolveQSignalEmitter_internal()
 {
     Q_ASSERT(!QSignalEmitter.class_ref);
 
@@ -926,7 +928,7 @@ void StaticCache::resolveQSignalEmitter_internal()
         "(Ljava/lang/Object;)V");
 }
 
-void StaticCache::resolveQObject_internal() 
+void StaticCache::resolveQObject_internal()
 {
     Q_ASSERT(!QObject.class_ref);
 
@@ -1013,7 +1015,7 @@ void StaticCache::resolveThread_internal()
     Thread.currentThread = env->GetStaticMethodID(Thread.class_ref, "currentThread", "()Ljava/lang/Thread;");
     Q_ASSERT(Thread.currentThread);
 
-    Thread.getContextClassLoader = env->GetMethodID(Thread.class_ref, "getContextClassLoader", "()Ljava/lang/ClassLoader;");    
+    Thread.getContextClassLoader = env->GetMethodID(Thread.class_ref, "getContextClassLoader", "()Ljava/lang/ClassLoader;");
     Q_ASSERT(Thread.getContextClassLoader);
 
     Thread.setContextClassLoader = env->GetMethodID(Thread.class_ref, "setContextClassLoader", "(Ljava/lang/ClassLoader;)V");

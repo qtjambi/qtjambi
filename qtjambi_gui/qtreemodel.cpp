@@ -115,6 +115,21 @@ Node *QTreeModel::node(const QModelIndex &index) const
     return n;
 }
 
+
+Node *QTreeModel::node(jobject object) const
+{
+    JNIEnv *env = qtjambi_current_environment();
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveObject();
+
+    JObject_key key = {
+        object,
+        env->CallIntMethod(object, sc->Object.hashCode)
+    };
+
+    return m_nodes.value(key, 0);
+}
+
 /*!
     \internal
 */
@@ -122,6 +137,7 @@ int QTreeModel::rowCount(const QModelIndex &parent) const
 {
     return node(parent)->nodes.size();
 }
+
 
 /*!
     \internal
@@ -132,9 +148,11 @@ int QTreeModel::columnCount(const QModelIndex &) const
     return 1;
 }
 
+
 /*!
     \internal
 */
+
 QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
 {
     Node *parentNode = node(parent);
@@ -145,6 +163,7 @@ QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
     return createIndex(row, 0, parentNode->nodes.at(row));
 }
 
+
 /*!
     \internal
 */
@@ -152,6 +171,7 @@ QModelIndex QTreeModel::parent(const QModelIndex &index) const
 {
     return node(index)->parent;
 }
+
 
 /*!
     \internal
@@ -161,12 +181,32 @@ QVariant QTreeModel::data(const QModelIndex &index, int role) const
     return data(node(index)->value, role);
 }
 
+
 /*!
     Translates the given index to a value node and returns the node.
 */
-jobject QTreeModel::indexToValue(const QModelIndex &index) const {
+jobject QTreeModel::indexToValue(const QModelIndex &index) const
+{
     return node(index)->value;
 }
+
+
+/*!
+    Returns the model index for \a object.
+*/
+QModelIndex QTreeModel::valueToIndex(jobject object) const
+{
+    Node *n = node(object);
+    if (n) {
+        Node *parent = node(n->parent);
+        for (int i=0; i<parent->nodes.size(); ++i) {
+            if (parent->nodes.at(i) == n)
+                return createIndex(i, 0, n);
+        }
+    }
+    return QModelIndex();
+}
+
 
 /*!
     \internal
@@ -237,16 +277,7 @@ void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int
     }
 
     beginInsertRows(parentIndex, first, last);
-
     n->nodes.insert(first, increase, 0);
-
-    for (int i=first; i<=last; ++i) {
-        Node *childNode = new Node();
-        childNode->parent = parentIndex;
-        childNode->value = child(n->value, i);
-        n->nodes[i] = childNode;
-    }
-
     endInsertRows();
 }
 
@@ -271,6 +302,9 @@ void QTreeModel::queryChildren(Node *parentNode, const QModelIndex &parentIndex)
     Q_ASSERT(!parentNode->isChildrenQueried());
 
     JNIEnv *env = qtjambi_current_environment();
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveObject();
+
     int count = parentNode->nodes.size();
     for (int i=0; i<count; ++i) {
         Node *childNode = new Node();
@@ -283,6 +317,13 @@ void QTreeModel::queryChildren(Node *parentNode, const QModelIndex &parentIndex)
 
         childNode->parent = parentIndex;
         parentNode->nodes[i] = childNode;
+
+        JObject_key key = {
+            childNode->value,
+            env->CallIntMethod(childNode->value, sc->Object.hashCode)
+        };
+
+        const_cast<QTreeModel *>(this)->m_nodes.insert(key, childNode);
     }
 
     parentNode->setState(Node::ChildrenQueried);
@@ -304,6 +345,8 @@ void QTreeModel::releaseChildren(const QModelIndex &index)
 {
     Node *n = node(index);
     JNIEnv *env = qtjambi_current_environment();
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveObject();
 
     int count = n->nodes.size();
 
@@ -313,6 +356,11 @@ void QTreeModel::releaseChildren(const QModelIndex &index)
     for (int i=0; i<count; ++i) {
         Node *childNode = n->nodes.at(i);
         if (childNode) {
+            JObject_key key = {
+                childNode->value,
+                env->CallIntMethod(childNode->value, sc->Object.hashCode)
+            };
+            m_nodes.remove(key);
             childNode->release(env);
             delete childNode;
             n->nodes.replace(i, 0);
@@ -373,3 +421,17 @@ QIcon QTreeModel::icon(jobject) const
 
     Returns a string representation of the given \a value.
 */
+
+
+bool operator==(const JObject_key &a, const JObject_key &b)
+{
+    if (a.hashCode == b.hashCode) {
+        JNIEnv *env = qtjambi_current_environment();
+        return env->IsSameObject(a.obj, b.obj);
+    }
+    return false;
+}
+
+uint qHash(const JObject_key &key) {
+    return key.hashCode;
+}

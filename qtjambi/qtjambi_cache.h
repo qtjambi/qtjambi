@@ -177,6 +177,7 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jmethodID equals;
+        jmethodID hashCode;
         jmethodID toString;
     } Object;
 
@@ -250,7 +251,7 @@ struct QTJAMBI_EXPORT StaticCache
         jfieldID inCppEmission;
         jmethodID connect;
         jmethodID connectSignalMethod;
-        jmethodID removeConnection;        
+        jmethodID removeConnection;
     } AbstractSignal;
 
     struct {
@@ -261,7 +262,7 @@ struct QTJAMBI_EXPORT StaticCache
         jclass class_ref;
         jmethodID lookupSlot;
         jmethodID lookupSignal;
-        jmethodID endPaint;  
+        jmethodID endPaint;
         jmethodID findEmitMethod;
     } QtJambiInternal;
 

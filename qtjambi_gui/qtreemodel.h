@@ -2,9 +2,18 @@
 #define QTJAMBITREEMODEL_H
 
 #include <QtCore/QAbstractItemModel>
+#include <QtCore/QHash>
 #include <qtjambi_global.h>
 
 class Node;
+
+struct JObject_key {
+    jobject obj;
+    uint hashCode;
+};
+
+uint qHash(const JObject_key &key);
+bool operator==(const JObject_key &a, const JObject_key &b);
 
 class QTreeModel : public QAbstractItemModel
 {
@@ -20,6 +29,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
 
     jobject indexToValue(const QModelIndex &index) const;
+    QModelIndex valueToIndex(jobject object) const;
 
     void childrenRemoved(const QModelIndex &parent, int first, int last);
     void childrenInserted(const QModelIndex &parent, int first, int last);
@@ -41,8 +51,9 @@ private:
     void initializeNode(Node *n, const QModelIndex &index) const;
     void queryChildren(Node *parentNode, const QModelIndex &parentIndex) const;
     Node *node(const QModelIndex &index) const;
+    Node *node(jobject object) const;
 
-
+    QHash<JObject_key, Node *> m_nodes;
     Node *m_root;
     uint m_invalidation : 1;
 };
