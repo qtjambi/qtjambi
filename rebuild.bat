@@ -5,7 +5,7 @@ nmake release
 release\generator
 cd ..
 nmake distclean
-qmake -r 
+qmake -r -config sanitycheck
 nmake
 bin\juic -cp . -a -e eclipse-stable\
 javac -J-mx1024m @java_files
