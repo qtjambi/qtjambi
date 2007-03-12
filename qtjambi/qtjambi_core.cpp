@@ -1357,27 +1357,34 @@ bool qtjambi_initialize_vm()
     return true;
 }
 
-
 #ifdef Q_OS_LINUX
 static QString locate_vm()
 {
-    QString jpath = !vm_location_override.isEmpty() ?
-                    vm_location_override.append(QLatin1String("/lib/")) :
-                    qgetenv("JAVADIR").append(QLatin1String("/jre/lib/"));
+    QList<QString> envVariables;
+    envVariables << "JAVADIR"  << "JAVAHOME" << "JDK_HOME" << "JAVA_HOME" << "JAVA_DIR";
 
-    QString jmach = QLatin1String("i386");
-    jpath += jmach;
+    for (int i = 0; i < envVariables.size(); ++i) {
+        QString jpath = !vm_location_override.isEmpty() ?
+	  vm_location_override.append(QLatin1String("/lib/")) :
+	  qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"));
 
-    jpath = QDir::cleanPath(jpath);
+	QString jmach = QLatin1String("i386");
+	jpath += jmach;
+	
+	jpath = QDir::cleanPath(jpath);
+	
+	if (! jpath.endsWith(QLatin1Char('/')))
+	  jpath += QLatin1Char('/');
+	
+	QFileInfo file(jpath + "/client/libjvm.so");
+	
+	if(file.exists())
+	  return file.absoluteFilePath();
+    }
 
-    if (! jpath.endsWith(QLatin1Char('/')))
-        jpath += QLatin1Char('/');
+    qWarning("QtJambi: failed to locate the JVM. Make sure JAVADIR is set, and pointing to your Java installation.");
 
-    QLibrary libverify_so(jpath + "/libverify.so");
-    QLibrary libjava_so(jpath + "/libjava.so");
-    QLibrary libjvm_so(jpath + "/client/libjvm.so");
-
-    return jpath + "/client/libjvm.so";
+    return QString();
 }
 
 #elif defined(Q_OS_WIN)
