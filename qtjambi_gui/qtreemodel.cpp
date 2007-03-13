@@ -12,7 +12,7 @@ public:
         ChildrenQueried =    0x0002,
     };
 
-    Node() : value(0), state(0)  { }
+    Node() : parent(0), value(0), state(0) { }
     ~Node() {
         if (nodes.size()) {
             JNIEnv *env = qtjambi_current_environment();
@@ -47,7 +47,7 @@ public:
     bool isChildCountQueried() const { return checkState(ChildCountQueried); }
     bool isChildrenQueried() const { return checkState(ChildrenQueried); }
 
-    QModelIndex parent;
+    Node *parent;
     QVector<Node *> nodes;
     jobject value;
 
@@ -158,11 +158,12 @@ QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
     Node *parentNode = node(parent);
     QTJAMBI_EXCEPTION_CHECK(qtjambi_current_environment());
     if (!parentNode->isChildrenQueried())
-        queryChildren(parentNode, parent);
+        queryChildren(parentNode);
     QTJAMBI_EXCEPTION_CHECK(qtjambi_current_environment());
     Q_ASSERT_X(row < parentNode->nodes.size(),
                "QTreeModel::index()",
-               qPrintable(QString::fromLatin1("size was: %1, node=%2")
+               qPrintable(QString::fromLatin1("index %1 of %2, node=%3")
+                          .arg(row)
                           .arg(parentNode->nodes.size())
                           .arg(text(parentNode->value))));
     Q_ASSERT_X(parentNode->nodes.at(row),
@@ -178,7 +179,19 @@ QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
 */
 QModelIndex QTreeModel::parent(const QModelIndex &index) const
 {
-    return node(index)->parent;
+    Node *child = node(index);
+    Node *parent = child->parent;
+
+    if (parent == m_root)
+        return QModelIndex();
+
+    Node *grandParent = parent->parent;
+
+    for (int i=0; i<grandParent->nodes.size(); ++i)
+        if (grandParent->nodes.at(i) == parent)
+            return createIndex(i, 0, parent);
+
+    return QModelIndex();
 }
 
 
@@ -207,7 +220,7 @@ QModelIndex QTreeModel::valueToIndex(jobject object) const
 {
     Node *n = node(object);
     if (n) {
-        Node *parent = node(n->parent);
+        Node *parent = n->parent;
         for (int i=0; i<parent->nodes.size(); ++i) {
             if (parent->nodes.at(i) == n)
                 return createIndex(i, 0, n);
@@ -289,7 +302,7 @@ void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int
 
     // Need to keep the stuff in sync...
     if (parentNode->isChildrenQueried())
-        queryChildren(parentNode, parentIndex, first, increase);
+        queryChildren(parentNode, first, increase);
 
     endInsertRows();
 }
@@ -310,8 +323,7 @@ void QTreeModel::initializeNode(Node *node, const QModelIndex &) const
     \internal
 */
 
-void QTreeModel::queryChildren(Node *parentNode, const QModelIndex &parentIndex,
-                               int start, int length) const
+void QTreeModel::queryChildren(Node *parentNode, int start, int length) const
 {
     if (start < 0) start = 0;
     if (length < 0) length = parentNode->nodes.size();
@@ -334,7 +346,7 @@ void QTreeModel::queryChildren(Node *parentNode, const QModelIndex &parentIndex,
         childNode->value = env->NewGlobalRef(c);
         QTJAMBI_EXCEPTION_CHECK(env);
 
-        childNode->parent = parentIndex;
+        childNode->parent = parentNode;
         parentNode->nodes[i] = childNode;
 
         JObject_key key = {

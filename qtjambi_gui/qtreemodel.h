@@ -49,8 +49,7 @@ private slots:
 
 private:
     void initializeNode(Node *n, const QModelIndex &index) const;
-    void queryChildren(Node *parentNode, const QModelIndex &parentIndex,
-                       int start = -1, int length = -1) const;
+    void queryChildren(Node *parentNode, int start = -1, int length = -1) const;
     Node *node(const QModelIndex &index) const;
     Node *node(jobject object) const;
 
