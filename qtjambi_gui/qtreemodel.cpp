@@ -160,6 +160,15 @@ QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
     if (!parentNode->isChildrenQueried())
         queryChildren(parentNode, parent);
     QTJAMBI_EXCEPTION_CHECK(qtjambi_current_environment());
+    Q_ASSERT_X(row < parentNode->nodes.size(),
+               "QTreeModel::index()",
+               qPrintable(QString::fromLatin1("size was: %1, node=%2")
+                          .arg(parentNode->nodes.size())
+                          .arg(text(parentNode->value))));
+    Q_ASSERT_X(parentNode->nodes.at(row),
+               "QTreeModel::indeX()",
+               "all child nodes must be queried ahead of time...");
+
     return createIndex(row, 0, parentNode->nodes.at(row));
 }
 
@@ -256,19 +265,18 @@ void QTreeModel::childrenRemoved(const QModelIndex &parentIndex, int first, int 
 
 void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int last)
 {
-    Node *n = node(parentIndex);
+    Node *parentNode = node(parentIndex);
 
-    if (first < 0 || last > n->nodes.size() || first > last) {
-        printf("QTreeModel::childrenRemoved(), bad input, first=%d, last=%d, childCount=%d\n",
-               first, last, n->nodes.size());
+    if (first < 0 || last > parentNode->nodes.size() || first > last) {
+        printf("QTreeModel::childrenInserted(), bad input, first=%d, last=%d, childCount=%d\n",
+               first, last, parentNode->nodes.size());
         return;
     }
 
     int increase = last - first + 1;
-    int oldSize = n->nodes.size();
+    int oldSize = parentNode->nodes.size();
 
-    int newSize = childCount(n->value);
-
+    int newSize = childCount(parentNode->value);
     if (increase != newSize - oldSize) {
         printf("QTreeModel::childrenInserted(), inconsistent childCount=%d vs oldCount=%d,"
                " first=%d, last=%d\n",
@@ -277,7 +285,12 @@ void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int
     }
 
     beginInsertRows(parentIndex, first, last);
-    n->nodes.insert(first, increase, 0);
+    parentNode->nodes.insert(first, increase, 0);
+
+    // Need to keep the stuff in sync...
+    if (parentNode->isChildrenQueried())
+        queryChildren(parentNode, parentIndex, first, increase);
+
     endInsertRows();
 }
 
@@ -297,16 +310,22 @@ void QTreeModel::initializeNode(Node *node, const QModelIndex &) const
     \internal
 */
 
-void QTreeModel::queryChildren(Node *parentNode, const QModelIndex &parentIndex) const
+void QTreeModel::queryChildren(Node *parentNode, const QModelIndex &parentIndex,
+                               int start, int length) const
 {
-    Q_ASSERT(!parentNode->isChildrenQueried());
+    if (start < 0) start = 0;
+    if (length < 0) length = parentNode->nodes.size();
+
+    Q_ASSERT(start + length <= parentNode->nodes.size());
 
     JNIEnv *env = qtjambi_current_environment();
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveObject();
 
-    int count = parentNode->nodes.size();
-    for (int i=0; i<count; ++i) {
+
+    int top = start + length;
+
+    for (int i=start; i<top; ++i) {
         Node *childNode = new Node();
 
         jobject c = child(parentNode->value, i);

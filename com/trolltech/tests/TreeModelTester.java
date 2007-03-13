@@ -13,14 +13,6 @@ class Node extends QObject {
 
         System.out.println("new node: " + s);
 
-        startTimer(2000);
-    }
-
-    protected void timerEvent(QTimerEvent e) {
-        ++counter;
-        System.out.println("updated: " + this);
-        QModelIndex index = model.valueToIndex(this);
-        model.dataChanged.emit(index, index);
     }
 
     public String toString() { return text + ":" + counter; }
@@ -34,20 +26,23 @@ class Node extends QObject {
 class Model extends QTreeModel {
 
     public Object child(Object parent, int index) {
+        System.out.println(" ---> child of " + parent + " at " + index);
         if (parent == null)
             return root;
         return ((Node) parent).children.get(index);
     }
 
     public int childCount(Object parent) {
-        if (parent == null)
-            return 1;
-        return ((Node) parent).children.size();
+        int count = parent == null ? 1 : ((Node) parent).children.size();
+        System.out.println(" ---> childCount for " + parent + ", count=" + count);
+        return count;
     }
 
     public String text(Object value) {
-        return value.toString();
+        return "" + value;
     }
+
+    public Node root() { return root; }
 
     private Node root = new Node("Root", this);
 }
@@ -91,12 +86,11 @@ public class TreeModelTester extends QTreeView {
 
             int size = n.children.size();
 
-            Node child = new Node(names[(int) (Math.random() * 4)], model);
+            Node child = new Node(names[(int) (Math.random() * names.length)], model);
             n.children.add(child);
 
             model.childrenInserted(i, size, size);
         }
-
     }
 
     private void remove() {
@@ -106,6 +100,9 @@ public class TreeModelTester extends QTreeView {
         for (QModelIndex i : pos) {
             Node n = (Node) model.indexToValue(i);
             assert n != null;
+
+            if (n == model.root())
+                continue;
 
             QModelIndex parentIndex = model.parent(i);
             Node parent = (Node) model.indexToValue(parentIndex);
@@ -134,7 +131,6 @@ public class TreeModelTester extends QTreeView {
 
     public static void main(String args[]) {
         QApplication.initialize(args);
-
         TreeModelTester w = new TreeModelTester();
         w.show();
 
