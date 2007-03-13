@@ -21,11 +21,12 @@
         <property name="config"    value="debug" />
 
         <property name="deployDir" value="./deploy" />
+
+        <property name="eclipseDir" value="../../eclipse/main" />
     </target>
 
     <target name="clean" depends="init">
         <delete dir="${outputDir}" />
-        <delete dir="${jambiLib}" />
     </target>
 
     <target name="clean.report" depends="init">
@@ -54,6 +55,7 @@
     </target>
 
     <target name="qmake" depends="init">
+        <delete dir="${jambiLib}" />
         <exec executable="make" dir=".">
             <arg line="dist clean -s"/>
         </exec>
@@ -144,7 +146,7 @@
     <target name="compile.java" depends="juic">
         <javac srcdir="${sourceDir}" destdir="${outputDir}">
             <include name="com/**/**.java"/>
-            <exclude name="com/trolltech/tools/**/**.java"/>
+            <exclude name="com/trolltech/tools/generator/**/**.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java" />
         </javac>
     </target>
@@ -167,7 +169,10 @@
             </manifest>
             <fileset dir="${outputDir}" />
             <fileset dir="${sourceDir}">
-                <include name="com/trolltech/**" />
+                <include name="com/trolltech/**/*.png" />
+                <include name="com/trolltech/**/*.html" />
+                <include name="com/trolltech/**/*.svg" />
+                <include name="com/trolltech/examples/ResourceSystem.jar" />
             </fileset>
         </jar>
     </target>
@@ -183,8 +188,24 @@
                 <include name="*.so*" />
             </fileset>
         </copy>
+        <copy todir="${deployDir}/plugins">
+            <fileset dir="./plugins">
+                <include name="**" />
+            </fileset>
+        </copy>
         <copy file="bin/juic" todir="${deployDir}/bin" />
-        <chmod file="${deployDir}/bin/juic" perm="+x"/>
+
+        <copy file="${qt}/bin/designer" todir="${deployDir}/bin" />
+
+        <copy todir="${deployDir}">
+            <fileset dir="./dist/linux">
+                <include name="*" />
+            </fileset>
+        </copy>
+        <chmod file="${deployDir}/bin/*" perm="+x"/>
+        <chmod file="${deployDir}/designer.sh" perm="+x"/>
+        <chmod file="${deployDir}/generator_example.sh" perm="+x"/>
+        <chmod file="${deployDir}/qtjambi.sh" perm="+x"/>
     </target>
 
     <target name="deploy.zip" depends="init">
@@ -225,5 +246,33 @@
     </target>
 
     <target name="all" depends="sync, compile, deploy.linux" />
+
+
+    <target name="eclipse" depends="eclipse.qt, eclipse.qtdesignerplugins">
+
+    </target>
+
+    <target name="eclipse.qt" depends="init">
+        <delete dir="${eclipseDir}/com.trolltech.qt.linux.x86/lib" />
+        <copy todir="${eclipseDir}/com.trolltech.qt.linux.x86/lib">
+            <fileset dir="${qtLib}">
+                <include name="libQtCore.so*" />
+                <include name="libQtGui.so*" />
+                <include name="libQtXml.so*" />
+                <include name="libQtScript.so*" />
+                <include name="libQtDesigner.so*" />
+                <include name="libQtDesignerComponents.so*" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="eclipse.qtdesignerplugins" depends="init">
+        <delete dir="${eclipseDir}/com.trolltech.qtdesignerplugins" />
+        <copy todir="${eclipseDir}/com.trolltech.qtdesignerplugins">
+            <fileset dir="./plugins/designer">
+                <include name="*" />
+            </fileset>
+        </copy>
+    </target>
 
 </project>
