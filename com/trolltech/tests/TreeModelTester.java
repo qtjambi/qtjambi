@@ -5,14 +5,14 @@ import com.trolltech.qt.gui.*;
 
 import java.util.*;
 
-class Node extends QObject {
+/**
+ * A pretty basic node implementation...
+ */
+class Node {
 
     public Node(String s, Model model) {
         this.text = s;
         this.model = model;
-
-        System.out.println("new node: " + s);
-
     }
 
     public String toString() { return text + ":" + counter; }
@@ -23,21 +23,35 @@ class Node extends QObject {
     Model model;
 }
 
+/**
+ * An example model implementation. It reimplements child(), childCount() and text() to
+ * represent the data in a tree of Node's
+ */
 class Model extends QTreeModel {
 
+    /**
+     * Called to query the child of parent at index. If parent is null we have only one child,
+     * the root.
+     */
     public Object child(Object parent, int index) {
-        System.out.println(" ---> child of " + parent + " at " + index);
         if (parent == null)
             return root;
         return ((Node) parent).children.get(index);
     }
 
+    /**
+     * Called to query the number of children of the given object or the number of root objects if
+     * parent is null.
+     */
     public int childCount(Object parent) {
         int count = parent == null ? 1 : ((Node) parent).children.size();
-        System.out.println(" ---> childCount for " + parent + ", count=" + count);
         return count;
     }
 
+    /**
+     * Convenience virtual function to get the textual value of an object. I could also
+     * implement icon() for pixmap data or the data() function for other types of roles.
+     */
     public String text(Object value) {
         return "" + value;
     }
@@ -47,6 +61,10 @@ class Model extends QTreeModel {
     private Node root = new Node("Root", this);
 }
 
+/**
+ * A simple test application. It adds 3 actions, "add", "remove" and "increment" to test
+ * that we can add, remove and change the value of nodes in the tree.
+ */
 public class TreeModelTester extends QTreeView {
 
     public TreeModelTester() {
@@ -75,10 +93,13 @@ public class TreeModelTester extends QTreeView {
         addAction(increment);
     }
 
+    public void setModel(Model model) {
+        this.model = model;
+        super.setModel(model);
+    }
+
 
     private void add() {
-        System.out.println("adding...");
-
         List<QModelIndex> pos = selectedIndexes();
         for (QModelIndex i : pos) {
             Node n = (Node) model.indexToValue(i);
@@ -94,8 +115,6 @@ public class TreeModelTester extends QTreeView {
     }
 
     private void remove() {
-        System.out.println("removing...");
-
         List<QModelIndex> pos = selectedIndexes();
         for (QModelIndex i : pos) {
             Node n = (Node) model.indexToValue(i);
@@ -109,14 +128,10 @@ public class TreeModelTester extends QTreeView {
 
             parent.children.remove(n);
             model.childrenRemoved(parentIndex, i.row(), i.row());
-
-            n.dispose();
         }
     }
 
     private void increment() {
-        System.out.println("increment");
-
         List<QModelIndex> pos = selectedIndexes();
         for (QModelIndex i : pos) {
             Node n = (Node) model.indexToValue(i);
@@ -132,7 +147,18 @@ public class TreeModelTester extends QTreeView {
     public static void main(String args[]) {
         QApplication.initialize(args);
         TreeModelTester w = new TreeModelTester();
+        w.setWindowTitle("Tree Model Tester");
         w.show();
+
+        if (args.length > 0 && args[0].equals("--extra-view")) {
+            for (int i=0; i<3; ++i) {
+                TreeModelTester t = new TreeModelTester();
+                t.setWindowTitle("Extra view: " + (i+1));
+                t.disableGarbageCollection();
+                t.show();
+                t.setModel(w.model);
+            }
+        }
 
         QApplication.exec();
     }
