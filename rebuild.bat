@@ -4,7 +4,7 @@ qmake
 nmake release
 release\generator
 cd ..
-nmake distclean
+del makefil* /s
 qmake -r -config sanitycheck
 nmake
 bin\juic -cp . -a -e eclipse-stable\
