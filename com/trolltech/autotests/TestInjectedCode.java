@@ -14,29 +14,8 @@ import com.trolltech.autotests.generated.SqlTableModelSubclass;
 import com.trolltech.autotests.generated.TextCodecSubclass;
 import com.trolltech.autotests.generated.ValidatorSubclass;
 import com.trolltech.autotests.generated.XmlReaderSubclass;
-import com.trolltech.qt.QNativePointer;
-import com.trolltech.qt.QVariant;
-import com.trolltech.qt.core.QBuffer;
-import com.trolltech.qt.core.QByteArray;
-import com.trolltech.qt.core.QDataStream;
-import com.trolltech.qt.core.QDate;
-import com.trolltech.qt.core.QDateTime;
-import com.trolltech.qt.core.QDir;
-import com.trolltech.qt.core.QFile;
-import com.trolltech.qt.core.QIODevice;
-import com.trolltech.qt.core.QLocale;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.QPoint;
-import com.trolltech.qt.core.QPointF;
-import com.trolltech.qt.core.QRect;
-import com.trolltech.qt.core.QRectF;
-import com.trolltech.qt.core.QSize;
-import com.trolltech.qt.core.QTemporaryFile;
-import com.trolltech.qt.core.QTextCodec;
-import com.trolltech.qt.core.QTextCodec_ConverterState;
-import com.trolltech.qt.core.QTime;
-import com.trolltech.qt.core.QUrl;
-import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.*;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.QAccessible;
 import com.trolltech.qt.gui.QAccessibleInterface;
 import com.trolltech.qt.gui.QAction;
@@ -71,6 +50,7 @@ import com.trolltech.qt.gui.QTextCursor;
 import com.trolltech.qt.gui.QTextDocument;
 import com.trolltech.qt.gui.QValidator;
 import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.gui.QClipboard.Mode;
 import com.trolltech.qt.network.QHttp;
 import com.trolltech.qt.network.QTcpServer;
 import com.trolltech.qt.opengl.QGLColormap;
@@ -601,14 +581,18 @@ public class TestInjectedCode extends QApplicationTest {
         assertFalse(cursor.atStart());
     }
     
+        
     @Test
     public void testQClipboardTextSpecificSubtype() {
         QMimeData data = new QMimeData();
         data.setHtml("some text"); // text/html
         
         QClipboard clipboard = QApplication.clipboard();
-        clipboard.clear();
         
+        clipboard.setText("text 1 2 3");
+        
+        clipboard.clear();
+                
         QClipboard.Text text = clipboard.text("html");
         assertEquals("html", text.subtype);
         assertEquals("", text.text);
@@ -646,14 +630,16 @@ public class TestInjectedCode extends QApplicationTest {
         data.setHtml("some text"); // text/html
         
         QClipboard clipboard = QApplication.clipboard();
+        
+        clipboard.setText("text 1 2 3");
+        
         clipboard.clear();
         
-        QClipboard.Text text = clipboard.text("");
-        assertEquals("", text.subtype);
+        QClipboard.Text text = clipboard.text(""); 
+        //assertEquals("", text.subtype); // If subtype is null, any subtype is acceptable, and subtype is set to the chosen subtype.
         assertEquals("", text.text);
 
         text = clipboard.text((String) null);
-        assertEquals("", text.subtype);
         assertEquals("", text.text);
         
         clipboard.setMimeData(data);
