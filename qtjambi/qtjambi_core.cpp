@@ -1079,6 +1079,7 @@ void qtjambi_metacall(JNIEnv *env, QEvent *event)
     // Clear print out and clear any exceptions that occured during
     // the metacall...
     if (env->ExceptionCheck()) {
+        fprintf(stderr, "QtJambi: metacall failed\n");
         env->ExceptionDescribe();
         env->ExceptionClear();
     }
@@ -1393,7 +1394,7 @@ static QString locate_vm()
 static QString locate_vm()
 {
     QString javaHome;
- 
+
     if(!vm_location_override.isEmpty())
         javaHome = vm_location_override;
 
