@@ -225,6 +225,10 @@ public class QUiLoader {
         } else if (parent instanceof QTabWidget) {
             String title = widgetNode.namedItem("attribute").firstChild().firstChild().nodeValue();
             ((QTabWidget ) parent).addTab(widget, title);
+            
+        // QDockWidgets don't have a special layout, so add it properly
+        } else if (parent instanceof QDockWidget) {
+            ((QDockWidget) parent).setWidget(widget);
         }
 
         PropertyReceiver oldReceiver = swapPropertyReceiver(new QObjectPropertyReceiver(widget));
