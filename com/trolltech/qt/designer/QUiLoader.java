@@ -69,6 +69,29 @@ public class QUiLoader {
         }
     }
 
+    private class AttributeReceiver implements PropertyReceiver {
+
+        private QMainWindow mainWindow() {
+            QWidget toplevel = parent instanceof QWidget ? ((QWidget) parent).window() : null;
+            if (toplevel instanceof QMainWindow)
+                return (QMainWindow) toplevel;
+            return null;
+        }
+
+        public void setProperty(String name, Object value) {
+            if (name.equals("toolBarArea")) {
+                QMainWindow mw = mainWindow();
+                if (mw != null && parent instanceof QToolBar)
+                    mw.addToolBar(Qt.ToolBarArea.resolve((Integer) value), (QToolBar) parent);
+            } else if (name.equals("dockWidgetArea")) {
+                QMainWindow mw = mainWindow();
+                if (mw != null && parent instanceof QDockWidget)
+                    mw.addDockWidget(Qt.DockWidgetArea.resolve((Integer) value), (QDockWidget) parent);
+            }
+
+        }
+    }
+
     public static QWidget load(QIODevice device) throws QUiLoaderException {
         return load(device, null);
     }
@@ -99,6 +122,11 @@ public class QUiLoader {
         parseChildren(doc, topParent);
 
         uiWidget = (QWidget) object;
+
+        // Reassign ownership to toplevel parent...
+        for (QAction a : actions.values()) {
+            a.setParent(uiWidget);
+        }
     }
 
     private void parseChildren(QDomNode node, Object parent) throws QUiLoaderException {
@@ -131,6 +159,9 @@ public class QUiLoader {
         else if (name.equals("spacer")) parseSpacer(domNode);
         else if (name.equals("connections")) parseConnections(domNode);
         else if (name.equals("taborder")) parseTabOrder(domNode);
+        else if (name.equals("addaction")) parseAddAction(domNode);
+        else if (name.equals("attribute")) parseAttribute(domNode);
+        else if (name.equals("action")) parseAction(domNode);
         else if (!ignorableStrings.contains(name)) throw new QUiLoaderException("Unknown tag: " + name);
 
        if (object != null) {
@@ -370,19 +401,22 @@ public class QUiLoader {
                 else
                     window.setGeometry(r);
                 return;
-            } else if (property.equals("html") && o instanceof QTextEdit) {
-                ((QTextEdit) o).setHtml((String) value);
+            } else if (property.equals("shortcut") && o instanceof QAction
+                    && value instanceof String) {
+                ((QAction) o).setShortcut((String) value);
+                return;
             }
 
             if (value == null)
                 System.out.println("Null value for: " + property + ", " + entry + ", " + value);
             if (entry == null)
-                System.out.println("No property entry for: " + property + ", " + value);
+                System.out.println("No property entry for: " + property + ", " + value + " in " + o);
 
             if (null != entry && value != null) {
                 entry.write.invoke(o, value);
             }
         } catch (Exception e) {
+            System.err.println("setProperty failed: value=" + value + ", name=" + property + ", on=" + o);
             e.printStackTrace();
         }
 
@@ -447,6 +481,55 @@ public class QUiLoader {
         }
     }
 
+    private void parseAddAction(QDomNode node) {
+        QDomElement e = node.toElement();
+
+        if (e.isNull())
+            return;
+
+        String name = e.attribute("name");
+        QAction action = existingAction(name);
+
+        if (parent instanceof QWidget) {
+            ((QWidget) parent).addAction(action);
+        }
+    }
+
+    private QAction existingAction(String name) {
+        QAction action = actions.get(name);
+        if (action == null) {
+            action = new QAction(null);
+            action.setObjectName(name);
+            actions.put(name, action);
+        }
+        return action;
+    }
+
+    private void parseAttribute(QDomNode node) throws QUiLoaderException {
+        AttributeReceiver attr = new AttributeReceiver();
+        PropertyReceiver defaultReceiver = swapPropertyReceiver(attr);
+
+        parseProperty(node);
+
+        swapPropertyReceiver(defaultReceiver);
+    }
+
+    private void parseAction(QDomNode node) throws QUiLoaderException {
+        QDomElement e = node.toElement();
+        if (e.isNull())
+            return;
+
+        String name = e.attribute("name");
+        QAction action = existingAction(name);
+
+        QObjectPropertyReceiver rcv = new QObjectPropertyReceiver(action);
+        PropertyReceiver old = swapPropertyReceiver(rcv);
+
+        parseChildren(node,  action);
+        
+        swapPropertyReceiver(old);
+    }
+
     private QWidget widget() {
         return uiWidget;
     }
@@ -475,6 +558,7 @@ public class QUiLoader {
     private PropertyReceiver propertyReceiver;
 
     private HashSet<QWidget> widgetPool = new HashSet<QWidget>();
+    private HashMap<String, QAction> actions = new HashMap<String, QAction>();
 
     private static HashSet<String> ignorableStrings;
     private static HashMap<String, PropertyHandler> typeHandlers;
