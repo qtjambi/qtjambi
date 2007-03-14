@@ -90,6 +90,18 @@ public class PropertySheet extends JambiPropertySheet {
         super(parent);
         this.object = object;
         build();
+
+        
+    }
+
+    private void objectDestroyed() {
+        dispose();
+    }
+
+    @Override
+    protected void disposed() {
+        System.out.println("PropertySheet disposed...");
+        super.disposed();
     }
 
     public boolean canAddDynamicProperty(String propertyName, Object value) {
@@ -301,12 +313,24 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     private void build() {
+
+        Class cl = object.getClass();
+        List<Property> cached = cachedProperties.get(cl);
+        if (cached != null) {
+            this.properties = cached;
+            return;
+        }
+
         TreeSet<Property> properties = new TreeSet<Property>();
         build(object.getClass(), 0, properties);
 
         this.properties = new ArrayList<Property>();
         this.properties.addAll(properties);
+
+        cachedProperties.put(cl, this.properties);
     }
+
+    private static HashMap<Class, List<Property>> cachedProperties = new HashMap<Class, List<Property>>();
 
     private List<Property> properties;
 

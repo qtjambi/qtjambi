@@ -293,6 +293,7 @@ QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &
 
         QObject *qps = qtjambi_to_qobject(env, jps);
         Q_ASSERT(qps);
+        QObject::connect(object, SIGNAL(destroyed()), qps, SLOT(deleteLater()));
 
         QDesignerPropertySheetExtension *p = qobject_cast<QDesignerPropertySheetExtension *>(qps);
         Q_ASSERT(p);
