@@ -835,7 +835,7 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunctio
     }
 }
 
-static QString function_call_for_ownership(TypeSystem::Ownership owner, const QString &var_name) 
+static QString function_call_for_ownership(TypeSystem::Ownership owner, const QString &var_name)
 {
     if (owner == TypeSystem::CppOwnership) {
         return "setCppOwnership(__jni_env, " + var_name + ")";
@@ -959,7 +959,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
             } else {
                 s << callXxxMethod(new_return_type);
             }
-           
+
             s << "(m_link->javaObject(__jni_env), method_id";
             if (arguments.size() > 0)
                 s << ", ";
@@ -969,7 +969,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
 
             if (has_function_type) {
                 writeJavaToQt(s, function_type, "__qt_return_value", "__java_return_value",
-                              java_function, 0);
+                              java_function, 0, GlobalRefJObject);
 
                 if (java_function->nullPointersDisabled()) {
                     s << INDENT << "if (__java_return_value == 0) {" << endl;
@@ -977,7 +977,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
                     {
                         Indentation indent;
                         s << INDENT << "fprintf(stderr, \"QtJambi: Unexpected null pointer returned from override of '" << java_function->name() << "' in class '%s'\\n\"," << endl
-                          << INDENT << "        qPrintable(qtjambi_object_class_name(__jni_env, m_link->javaObject(__jni_env))));" << endl;            
+                          << INDENT << "        qPrintable(qtjambi_object_class_name(__jni_env, m_link->javaObject(__jni_env))));" << endl;
                         s << INDENT << "__qt_return_value = ";
                         QString defaultValue = java_function->nullPointerDefaultValue();
                         if (!defaultValue.isEmpty())
@@ -989,7 +989,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
 
                     s << INDENT << "}" << endl;
                 }
-            } 
+            }
 
             writeOwnership(s, java_function, "this", -1, implementor);
             writeOwnership(s, java_function, "__java_return_value", 0, implementor);
@@ -1489,9 +1489,9 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
 void CppImplGenerator::writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls)
 {
   if (cls->hasConstructors()) {
-      s << INDENT << "static void qtjambi_destructor(void *ptr)" << endl 
+      s << INDENT << "static void qtjambi_destructor(void *ptr)" << endl
 	<< INDENT << "{" << endl;
-      
+
       {
 	Indentation indent;
 	if (!cls->isQObject() && !cls->generateShellClass()) {
@@ -1803,7 +1803,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
     // Conversion to C++: Shell code for return values, native code for arguments
     TypeSystem::Language lang = argument_index == 0 ? TypeSystem::ShellCode : TypeSystem::NativeCode;
     if (writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name))
-        return;    
+        return;
 
     s << INDENT << shellClassName(java_class) << " *" << qt_name << " = ("
       << shellClassName(java_class) << " *) ";
@@ -1831,7 +1831,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
     // Conversion to C++: Shell code for return values, native code for arguments
     TypeSystem::Language lang = argument_index == 0 ? TypeSystem::ShellCode : TypeSystem::NativeCode;
     if (java_function && writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name))
-        return;    
+        return;
 
     if (java_type == 0) {
         QString warn = QString("no conversion possible for argument '%1' in function '%2::%3' for "
@@ -1953,6 +1953,9 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
 
                 s << "qtjambi_to_" << pentry->javaName() << "(__jni_env, " << java_name << ");" << endl;
 
+            } else if ((options & GlobalRefJObject) && type->jniName() == QLatin1String("jobject")) {
+                printf("reached this part....\n");
+                s << "__jni_env->NewGlobalRef(" << java_name << ");" << endl;
             } else {
                 s << java_name << ';' << endl;
             }
@@ -2019,7 +2022,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
 
             if (argument_index == 0) {
                 s << ") : " << qualified_class_name << "());" << endl;
-            } else {                
+            } else {
                 s << ");" << endl;
             }
 
@@ -2069,7 +2072,7 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
     // Conversion to Java: Native code for return values, shell code for arguments
     TypeSystem::Language lang = argument_index == 0 ? TypeSystem::NativeCode : TypeSystem::ShellCode;
     if (java_function && writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name))
-        return;    
+        return;
 
     if (java_type == 0) {
         QString warn = QString("no conversion possible for argument '%1' in function '%2::%3' for "
@@ -2357,7 +2360,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
 {
     // Conversion to C++: Shell code for return value, native code for arguments
     TypeSystem::Language lang = argument_index == 0 ? TypeSystem::ShellCode : TypeSystem::NativeCode;
-    if (java_function && writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name)) 
+    if (java_function && writeConversionRule(s, lang, java_function, argument_index, qt_name, java_name))
         return;
 
     if (java_type == 0) {
@@ -2489,11 +2492,11 @@ void CppImplGenerator::writeFunctionCall(QTextStream &s, const QString &object_n
 
     MetaJavaClassList interfaces = java_function->implementingClass()->interfaces();
 
-    QString classPrefix; 
-    if (prefix.isEmpty() 
+    QString classPrefix;
+    if (prefix.isEmpty()
         && !java_function->implementingClass()->interfaces().isEmpty()
         && !java_function->implementingClass()->inheritsFrom(java_function->declaringClass())) {
-        classPrefix = java_function->declaringClass()->qualifiedCppName() + "::";         
+        classPrefix = java_function->declaringClass()->qualifiedCppName() + "::";
     }
     s << object_name << (java_function->isStatic() ? QLatin1String("::") : QLatin1String("->") + classPrefix)
       << prefix << function_name << "(";
@@ -2549,7 +2552,7 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
             s << ")";
         }
 
-        if (!argument->type()->isPrimitive() 
+        if (!argument->type()->isPrimitive()
             || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex()+1).isEmpty()) {
             s << prefix;
         }

@@ -53,6 +53,8 @@ public:
         IncludeDefaultExpression = 0x00040000,
         NoReturnStatement        = 0x00080000,
 
+        GlobalRefJObject         = 0x00100000,
+
         ForceValueType           = ExcludeReference | ExcludeConst
     };
 

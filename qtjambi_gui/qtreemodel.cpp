@@ -340,10 +340,7 @@ void QTreeModel::queryChildren(Node *parentNode, int start, int length) const
     for (int i=start; i<top; ++i) {
         Node *childNode = new Node();
 
-        jobject c = child(parentNode->value, i);
-        QTJAMBI_EXCEPTION_CHECK(env);
-
-        childNode->value = env->NewGlobalRef(c);
+        childNode->value = child(parentNode->value, i);
         QTJAMBI_EXCEPTION_CHECK(env);
 
         childNode->parent = parentNode;
