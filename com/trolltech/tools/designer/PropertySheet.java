@@ -94,16 +94,6 @@ public class PropertySheet extends JambiPropertySheet {
         
     }
 
-    private void objectDestroyed() {
-        dispose();
-    }
-
-    @Override
-    protected void disposed() {
-        System.out.println("PropertySheet disposed...");
-        super.disposed();
-    }
-
     public boolean canAddDynamicProperty(String propertyName, Object value) {
         return false;
     }
