@@ -141,15 +141,15 @@ public class QUiLoader {
     private void parse(QDomNode domNode) throws QUiLoaderException {
         String name = domNode.nodeName();
 
-       ++parseDepth;
-       for (int i=0; i< parseDepth; ++i) {
-           System.out.print("  ");
-       }
-       System.out.print(name + ", parent=");
-       if (parent instanceof QObject)
-           System.out.println(((QObject) parent).objectName() + " [" + parent.getClass() + "]");
-       else
-           System.out.println(parent);
+//       ++parseDepth;
+//       for (int i=0; i< parseDepth; ++i) {
+//           System.out.print("  ");
+//       }
+//       System.out.print(name + ", parent=");
+//       if (parent instanceof QObject)
+//           System.out.println(((QObject) parent).objectName() + " [" + parent.getClass() + "]");
+//       else
+//           System.out.println(parent);
 
         if (name.equals("ui")) parseUiRoot(domNode);
         else if (name.equals("widget")) parseWidget(domNode);
@@ -164,16 +164,16 @@ public class QUiLoader {
         else if (name.equals("action")) parseAction(domNode);
         else if (!ignorableStrings.contains(name)) throw new QUiLoaderException("Unknown tag: " + name);
 
-       if (object != null) {
-           for (int i=0; i< parseDepth; ++i) {
-               System.out.print("  ");
-           }
-           if (object instanceof QObject)
-               System.out.println(" - object: " + ((QObject) object).objectName() + ", " + object.getClass());
-           else
-               System.out.println(" - object: " + object);
-       }
-       --parseDepth;
+//       if (object != null) {
+//           for (int i=0; i< parseDepth; ++i) {
+//               System.out.print("  ");
+//           }
+//           if (object instanceof QObject)
+//               System.out.println(" - object: " + ((QObject) object).objectName() + ", " + object.getClass());
+//           else
+//               System.out.println(" - object: " + object);
+//       }
+//       --parseDepth;
     }
 
     private void parseUiRoot(QDomNode node) throws QUiLoaderException {
@@ -202,6 +202,11 @@ public class QUiLoader {
 
         Class<? extends QObject> cl = loadClass(cls);
         QWidget widget = (QWidget) createInstance(cl, parent);
+
+        // Menus are referred to via the addaction tag so we need to add its action.
+        if (widget instanceof QMenu) {
+            actions.put(name, ((QMenu) widget).menuAction());
+        }
 
         // To avoid that the widgets get deleted because there are no refs to them, we pool
         // them in a set. This is not a problem in practice as one does not loose the refs to
@@ -492,6 +497,17 @@ public class QUiLoader {
             return;
 
         String name = e.attribute("name");
+
+        // Special case separators based on the parent...
+        if (name.equals("separator")) {
+            if (parent instanceof QMenu) {
+                ((QMenu) parent).addSeparator();
+            } else if (parent instanceof QToolBar) {
+                ((QToolBar) parent).addSeparator();
+            }
+            return;
+        }
+
         QAction action = existingAction(name);
 
         if (parent instanceof QWidget) {
