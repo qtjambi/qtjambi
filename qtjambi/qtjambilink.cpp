@@ -33,6 +33,24 @@ Q_GLOBAL_STATIC(LinkHash, gUserObjectCache);
 
 int qtjambi_user_data_id = -1;
 
+
+static int user_data_id() 
+{
+  {
+    QReadLocker read_lock(gStaticUserDataIdLock());
+    if (qtjambi_user_data_id >= 0)
+      return qtjambi_user_data_id;
+  }
+
+  {
+    QWriteLocker lock(gStaticUserDataIdLock());
+    if (qtjambi_user_data_id == -1)
+      qtjambi_user_data_id = QObject::registerUserData();
+    return qtjambi_user_data_id;
+  }
+  
+}
+
 inline static void deleteWeakObject(JNIEnv *env, jobject object)
 {
 #ifdef Q_CC_MINGW
@@ -69,19 +87,7 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     link->m_pointer = object;
 
     // Fetch the user data id
-    {
-        QReadLocker read_lock(gStaticUserDataIdLock());
-        if (qtjambi_user_data_id >= 0)
-            object->setUserData(qtjambi_user_data_id, new QtJambiLinkUserData(link));
-    }
-
-    {
-        QWriteLocker lock(gStaticUserDataIdLock());
-        if (qtjambi_user_data_id == -1)
-            qtjambi_user_data_id = QObject::registerUserData();
-        object->setUserData(qtjambi_user_data_id, new QtJambiLinkUserData(link));
-    }
-
+    object->setUserData(user_data_id(), new QtJambiLinkUserData(link));
 
     // Set the native__id field of the java object
     StaticCache *sc = StaticCache::instance(env);
@@ -97,7 +103,7 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
 QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, const char *class_name,
                                                 const char *package_name)
 {
-    Q_ASSERT(!object->userData(qtjambi_user_data_id));
+    Q_ASSERT(!object->userData(user_data_id()));
 
     jclass object_class = resolveClass(env, class_name, package_name);
     if (object_class == 0) {
@@ -162,7 +168,7 @@ QtJambiLink *QtJambiLink::findLinkForQObject(QObject *o)
     if (o == 0)
         return 0;
 
-    QtJambiLinkUserData *p = static_cast<QtJambiLinkUserData *>(o->userData(qtjambi_user_data_id));
+    QtJambiLinkUserData *p = static_cast<QtJambiLinkUserData *>(o->userData(user_data_id()));
     return p == 0 ? 0 : p->link();
 }
 
