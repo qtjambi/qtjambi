@@ -225,7 +225,11 @@ public class QUiLoader {
                 mainWindow.setMenuBar((QMenuBar) widget);
             else if (name.equals("statusbar"))
                 mainWindow.setStatusBar((QStatusBar) widget);
-            else
+
+            // These are added when positioned via their attribute, see AttributeReceiver above
+            else if (widget instanceof QToolBar || widget instanceof QDockWidget);
+
+            else 
                 System.err.println("unhandled child of main window..." + widget + ", " + widget.objectName());
         } else if (parent instanceof QTabWidget) {
             String title = widgetNode.namedItem("attribute").firstChild().firstChild().nodeValue();
