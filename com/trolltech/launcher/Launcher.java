@@ -15,12 +15,12 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.*;
 
 import java.io.*;
 import java.util.*;
 
 public class Launcher extends QWidget {
+
     private abstract class HtmlUpdater extends Worker {
 
         public HtmlUpdater(QObject parent) {
@@ -68,6 +68,7 @@ public class Launcher extends QWidget {
     private Ui_Launcher ui = new Ui_Launcher();
     private LaunchableListModel m_model = new LaunchableListModel();
     private Launchable m_current;
+    private boolean firstStyleSetup = true;
 
     private static QPalette systemPalette;
 
@@ -257,25 +258,26 @@ public class Launcher extends QWidget {
      * put them in the styles group box
      */
     private void setupStyles() {
+
+        try { ((Object) null).hashCode(); } catch (Exception e) { e.printStackTrace(); }
+
         List<String> styleKeys = QStyleFactory.keys();
 
         QLayout layout = ui.group_styles.layout();
         String checkedByDefault = styleForCurrentSystem();
 
         for (String styleKey : styleKeys) {
-            if (styleKey.equals("WindowsVista")
-                && QSysInfo.windowsVersion() != QSysInfo.Windows_VISTA)
-                continue;
             QRadioButton button = new QRadioButton(styleKey);
             layout.addWidget(button);
-            button.clicked.connect(this, "styleChanged()");
-
             if (styleKey.equalsIgnoreCase(checkedByDefault))
                 button.setChecked(true);
+            button.clicked.connect(this, "styleChanged()");
         }
 
-        styleChanged();
 
+        if (!firstStyleSetup)
+            styleChanged();
+        firstStyleSetup = false;
     }
 
     /**
