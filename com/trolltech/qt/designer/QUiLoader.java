@@ -513,7 +513,9 @@ public class QUiLoader {
     public static void main(String args[]) throws QUiLoaderException {
         QApplication.initialize(args);
 
-        QWidget w = load(new QFile(args[0]));
+        QFile file = new QFile(args[0]);
+        QWidget w = load(file);
+        file.dispose();
         w.show();
 
         QApplication.exec();
