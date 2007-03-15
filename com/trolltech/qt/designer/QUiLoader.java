@@ -56,7 +56,7 @@ public class QUiLoader {
         }
     }
 
-    private class ListWidgetItemPropertyReceiver implements PropertyReceiver {
+    private class ContentItemPropertyReceiver implements PropertyReceiver {
         String text;
         QIcon icon;
         public void setProperty(String name, Object value) {
@@ -284,9 +284,21 @@ public class QUiLoader {
             parseLayoutItem(node);
         } else if (parent instanceof QListWidget) {
             parseListWidgetItem(node);
+        } else if (parent instanceof QComboBox) {
+            parseComboBoxItem(node);
         } else {
             System.err.println("Unhandled 'item' for '" + parent + "'");
         }
+    }
+
+    private void parseComboBoxItem(QDomNode node) throws QUiLoaderException {
+        ContentItemPropertyReceiver item = new ContentItemPropertyReceiver();
+        PropertyReceiver oldReceiver = swapPropertyReceiver(item);
+        parseChildren(node, parent);
+        swapPropertyReceiver(oldReceiver);
+
+        QComboBox box = (QComboBox) parent;
+        box.addItem(item.icon, item.text);
     }
 
     private void parseLayoutItem(QDomNode node) throws QUiLoaderException {
@@ -330,7 +342,7 @@ public class QUiLoader {
     }
 
     private void parseListWidgetItem(QDomNode node) throws QUiLoaderException {
-        ListWidgetItemPropertyReceiver item = new ListWidgetItemPropertyReceiver();
+        ContentItemPropertyReceiver item = new ContentItemPropertyReceiver();
         PropertyReceiver oldReceiver = swapPropertyReceiver(item);
         parseChildren(node, parent);
         QListWidget listWidget = (QListWidget) parent;
@@ -389,6 +401,9 @@ public class QUiLoader {
 
     private Class<? extends QObject> loadClass(String cls) throws QUiLoaderException {
         Class<? extends QObject> cl;
+
+        if (cls.equals("Line")) return Line.class;
+
         try {
             cl = Class.forName(cls).asSubclass(QObject.class);
         } catch (ClassNotFoundException e) {
