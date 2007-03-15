@@ -159,6 +159,7 @@ public class QUiLoader {
         else if (name.equals("spacer")) parseSpacer(domNode);
         else if (name.equals("connections")) parseConnections(domNode);
         else if (name.equals("taborder")) parseTabOrder(domNode);
+        else if (name.equals("tabstops")) parseTabOrder(domNode);
         else if (name.equals("addaction")) parseAddAction(domNode);
         else if (name.equals("attribute")) parseAttribute(domNode);
         else if (name.equals("action")) parseAction(domNode);
@@ -213,7 +214,7 @@ public class QUiLoader {
         // objects before they are assigned to a layout that _is_ assigned to a widget. Here
         // we need it because the layouts are not assigned to a widget before their child widgets
         // get collected, and they thus, don't have a parent...
-        widgetPool.add(widget);
+        widgetPool.put(name, widget);
 
         widget.setObjectName(name);
 
@@ -446,11 +447,13 @@ public class QUiLoader {
                 String receiverName = el.namedItem("receiver").firstChild().nodeValue();
                 String slotSignature = el.namedItem("slot").firstChild().nodeValue();
 
-                QObject sender = uiWidget.findChild(QObject.class, senderName);
+                QObject sender = widgetPool.get(senderName);
+                if (sender == null)
+                    sender = actions.get(senderName);
                 if (sender == null)
                     throw new QUiLoaderException("Unknown sender: '" + senderName + "'");
 
-                QObject receiver = uiWidget.findChild(QObject.class, receiverName);
+                QObject receiver = widgetPool.get(receiverName);
                 if (receiver == null)
                     throw new QUiLoaderException("Unknown sender: '" + receiverName + "'");
 
@@ -488,8 +491,8 @@ public class QUiLoader {
         }
 
         for (int i=0; i<list.size() - 1; ++i) {
-            QWidget w1 = (QWidget) uiWidget.findChild(QWidget.class, list.get(i));
-            QWidget w2 = (QWidget) uiWidget.findChild(QWidget.class, list.get(i+1));
+            QWidget w1 = widgetPool.get(list.get(i));
+            QWidget w2 = widgetPool.get(list.get(i+1));
             QWidget.setTabOrder(w1, w2);
         }
     }
@@ -581,7 +584,7 @@ public class QUiLoader {
     private Object object;
     private PropertyReceiver propertyReceiver;
 
-    private HashSet<QWidget> widgetPool = new HashSet<QWidget>();
+    private HashMap<String, QWidget> widgetPool = new HashMap<String, QWidget>();
     private HashMap<String, QAction> actions = new HashMap<String, QAction>();
 
     private static HashSet<String> ignorableStrings;
@@ -622,7 +625,10 @@ public class QUiLoader {
         QApplication.initialize(args);
 
         QFile file = new QFile(args[0]);
+        long t1 = System.currentTimeMillis();
         QWidget w = load(file);
+        long t2 = System.currentTimeMillis();
+        System.out.println("loading took: " + (t2 - t1));
         file.dispose();
         w.show();
 
