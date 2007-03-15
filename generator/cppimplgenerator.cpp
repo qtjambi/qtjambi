@@ -1954,7 +1954,6 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
                 s << "qtjambi_to_" << pentry->javaName() << "(__jni_env, " << java_name << ");" << endl;
 
             } else if ((options & GlobalRefJObject) && type->jniName() == QLatin1String("jobject")) {
-                printf("reached this part....\n");
                 s << "__jni_env->NewGlobalRef(" << java_name << ");" << endl;
             } else {
                 s << java_name << ';' << endl;
