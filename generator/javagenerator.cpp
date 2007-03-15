@@ -670,13 +670,13 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     const QPropertySpec *spec = java_function->propertySpec();
     if (spec && java_function->modifiedName() == java_function->originalName()) {
         if (java_function->isPropertyReader()) {
-            s << "    @QtPropertyReader(name=\"" << spec->name() << "\")" << endl;
+            s << "    @com.trolltech.qt.QtPropertyReader(name=\"" << spec->name() << "\")" << endl;
             if (spec->index() >= 0)
-                s << "    @QtPropertyOrder(" << spec->index() << ")" << endl;
+                s << "    @com.trolltech.qt.QtPropertyOrder(" << spec->index() << ")" << endl;
             if (!spec->designable().isEmpty())
-                s << "    @QtPropertyDesignable(\"" << spec->designable() << "\")" << endl;
+                s << "    @com.trolltech.qt.QtPropertyDesignable(\"" << spec->designable() << "\")" << endl;
         } else if (java_function->isPropertyWriter())
-            s << "    @QtPropertyWriter(name=\"" << spec->name() << "\")" << endl;
+            s << "    @com.trolltech.qt.QtPropertyWriter(name=\"" << spec->name() << "\")" << endl;
     }
 
     if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
@@ -975,8 +975,6 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             s << inc.toString() << endl;
         }
     }
-    s << "import com.trolltech.qt.*;" << endl;
-
     s << endl;
 
     if (m_doc_parser) {
@@ -1124,17 +1122,17 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     if (signal_funcs.size() > 0) {
         s << endl
           << "   @Override" << endl
-          << "   @QtBlockedSlot protected boolean __qt_signalInitialization(String name) {" << endl
+          << "   @com.trolltech.qt.QtBlockedSlot protected boolean __qt_signalInitialization(String name) {" << endl
           << "       return (__qt_signalInitialization(nativeId(), name)" << endl
           << "               || super.__qt_signalInitialization(name));" << endl
           << "   } " << endl
-          << "   @QtBlockedSlot private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
+          << "   @com.trolltech.qt.QtBlockedSlot private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
     }
 
     // Add dummy constructor for use when constructing subclasses
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         s << endl
-          << "    @QtBlockedSlot "
+          << "    @com.trolltech.qt.QtBlockedSlot "
           << "protected "
           << java_class->name()
           << "(QPrivateConstructor p) { super(p); } "
@@ -1157,7 +1155,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     } else {
         foreach (MetaJavaClass *cls, interfaces) {
             s << endl
-              << "    @QtBlockedSlot public native long __qt_cast_to_"
+              << "    @com.trolltech.qt.QtBlockedSlot public native long __qt_cast_to_"
               << static_cast<const InterfaceTypeEntry *>(cls->typeEntry())->origin()->javaName()
               << "(long ptr);" << endl;
         }
@@ -1265,7 +1263,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
             && !java_function->isSignal()
             && !java_function->isStatic()
             && !(included_attributes & MetaJavaAttributes::Static))
-            s << "@QtBlockedSlot ";
+            s << "@com.trolltech.qt.QtBlockedSlot ";
 
         if (attr & MetaJavaAttributes::Public) s << "public ";
         else if (attr & MetaJavaAttributes::Protected) s << "protected ";

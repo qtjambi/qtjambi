@@ -2470,19 +2470,19 @@
     </extra-includes>
     
     <inject-code class="java">    
-    @QtBlockedSlot public java.util.List&lt;QObject> findChildren() { return findChildren(null, (QRegExp) null); }
-    @QtBlockedSlot public java.util.List&lt;QObject> findChildren(Class&lt;?> cl) { return findChildren(cl, (QRegExp) null); }    
-    @QtBlockedSlot public java.util.List&lt;QObject> findChildren(Class&lt;?> cl, String name) { 
+    @com.trolltech.qt.QtBlockedSlot public java.util.List&lt;QObject> findChildren() { return findChildren(null, (QRegExp) null); }
+    @com.trolltech.qt.QtBlockedSlot public java.util.List&lt;QObject> findChildren(Class&lt;?> cl) { return findChildren(cl, (QRegExp) null); }    
+    @com.trolltech.qt.QtBlockedSlot public java.util.List&lt;QObject> findChildren(Class&lt;?> cl, String name) { 
         return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
     }    
     
-    @QtBlockedSlot public java.util.List&lt;QObject> findChildren(Class&lt;?> cl, QRegExp name) {
+    @com.trolltech.qt.QtBlockedSlot public java.util.List&lt;QObject> findChildren(Class&lt;?> cl, QRegExp name) {
         return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
     }
 
-    @QtBlockedSlot public QObject findChild() { return findChild(null, null); }
-    @QtBlockedSlot public QObject findChild(Class&lt;?> cl) { return findChild(cl, null); }
-    @QtBlockedSlot public QObject findChild(Class&lt;?> cl, String name) {    
+    @com.trolltech.qt.QtBlockedSlot public QObject findChild() { return findChild(null, null); }
+    @com.trolltech.qt.QtBlockedSlot public QObject findChild(Class&lt;?> cl) { return findChild(cl, null); }
+    @com.trolltech.qt.QtBlockedSlot public QObject findChild(Class&lt;?> cl, String name) {    
         return com.trolltech.qt.QtJambiInternal.findChild(this, cl, name);
     }
     </inject-code>
