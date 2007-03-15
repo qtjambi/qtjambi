@@ -129,7 +129,7 @@
 
     <target name="configure.qt" depends="init">
         <exec executable="${qt}/configure" dir="${qt}">
-	    <arg line="-${config} -no-qt3support -silent" />
+	    <arg line="-${config} -no-qt3support -silent -no-rpath" />
 	</exec>
     </target>
 
@@ -178,16 +178,29 @@
     </target>
 
     <target name="deploy.linux" depends="deploy.clean, deploy.jar">
+        <mkdir dir="${deployDir}/lib" />
+	<exec executable="sh">
+	    <arg line='-c "cp -d ${jambiLib}/*.so* ${deployDir}/lib/."' />
+	</exec>
+
+	<exec executable="sh">
+	    <arg line='-c "cp -d ${qtLib}/*.so* ${deployDir}/lib/."' />
+	</exec>
+
+<!--
         <copy todir="${deployDir}/lib">
-            <fileset dir="${jambiLib}">
+            <fileset dir="${jambiLib}" followsymlinks="no">
                 <include name="*.so*" />
             </fileset>
         </copy>
+
         <copy todir="${deployDir}/lib">
-            <fileset dir="${qtLib}">
+            <fileset dir="${qtLib}" followsymlinks="no">
                 <include name="*.so*" />
             </fileset>
         </copy>
+
+-->
         <copy todir="${deployDir}/plugins">
             <fileset dir="./plugins">
                 <include name="**" />
@@ -254,6 +267,7 @@
 
     <target name="eclipse.qt" depends="init">
         <delete dir="${eclipseDir}/com.trolltech.qt.linux.x86/lib" />
+	<!--
         <copy todir="${eclipseDir}/com.trolltech.qt.linux.x86/lib">
             <fileset dir="${qtLib}">
                 <include name="libQtCore.so*" />
@@ -263,7 +277,27 @@
                 <include name="libQtDesigner.so*" />
                 <include name="libQtDesignerComponents.so*" />
             </fileset>
-        </copy>
+        </copy> -->
+	<mkdir dir="${eclipseDir}/com.trolltech.qt.linux.x86/lib" />
+	<exec executable="sh">
+	    <arg line='-c "cp -d ${qtLib}/libQtCore.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
+	</exec>
+	<exec executable="sh">
+	    <arg line='-c "cp -d ${qtLib}/libQtGui.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
+	</exec>
+	<exec executable="sh">
+	    <arg line='-c "cp -d ${qtLib}/libQtXml.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
+	</exec>
+	<exec executable="sh">
+	    <arg line='-c "cp -d ${qtLib}/libQtScript.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
+	</exec>
+	<exec executable="sh">
+	    <arg line='-c "cp -d ${qtLib}/libQtDesigner.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
+	</exec>
+	<exec executable="sh">
+	    <arg line='-c "cp -d ${qtLib}/libQtDesignerComponents.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
+	</exec>
+
     </target>
 
     <target name="eclipse.qtdesignerplugins" depends="init">
