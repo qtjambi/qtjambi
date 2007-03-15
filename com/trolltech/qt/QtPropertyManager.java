@@ -234,9 +234,15 @@ public class QtPropertyManager {
             map.put(e.name, e);
     }
 
+    private static HashMap<Class, HashMap<String, Entry>> recursivePropertyTable = new HashMap<Class, HashMap<String, Entry>>();
+
     public static HashMap<String, Entry> findPropertiesRecursive(Class cl) throws QMalformedQtPropertyException {
-        HashMap<String, Entry> map = new HashMap<String, Entry>();
-        findPropertiesRecursive_helper(map, cl);
+        HashMap<String, Entry> map = recursivePropertyTable.get(cl);
+        if (map == null) {
+            map = new HashMap<String, Entry>();
+            findPropertiesRecursive_helper(map, cl);
+            recursivePropertyTable.put(cl, map);
+        }
         return map;
     }
 
