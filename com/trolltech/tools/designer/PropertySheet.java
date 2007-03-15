@@ -1,6 +1,7 @@
 package com.trolltech.tools.designer;
 
 import com.trolltech.qt.*;
+import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
 import java.lang.reflect.*;
@@ -44,9 +45,14 @@ public class PropertySheet extends JambiPropertySheet {
         INVISIBLE_PROPERTIES.add("rootModelIndex");
         INVISIBLE_PROPERTIES.add("validator");
         INVISIBLE_PROPERTIES.add("actionGroup");
-
-        
     }
+
+    private static String LAYOUT_LEFT_MARGIN = "layoutLeftMargin";
+    private static String LAYOUT_RIGHT_MARGIN = "layoutRightMargin";
+    private static String LAYOUT_BOTTOM_MARGIN = "layoutBottomMargin";
+    private static String LAYOUT_TOP_MARGIN = "layoutTopMargin";
+    private static String LAYOUT_HORIZONTAL_SPACING = "layoutHorizontalSpacing";
+    private static String LAYOUT_VERTICAL_SPACING = "layoutVerticalSpacing";
 
     private static class Property implements Comparable {
         QtPropertyManager.Entry entry;
@@ -77,13 +83,92 @@ public class PropertySheet extends JambiPropertySheet {
         }
     }
 
+    public class LayoutProperty extends Property {
+        public LayoutProperty(String name) {
+            groupName = "Layout";
+            subclassLevel = 1024; // Just an arbitrary high number...
+
+            entry = new QtPropertyManager.Entry(name);
+            try {
+                entry.read = LayoutProperty.class.getMethod("read");
+                entry.write = LayoutProperty.class.getMethod("write", int.class);
+                entry.designable = LayoutProperty.class.getMethod("designable");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public int read() {
+            if (!designable())
+                return 0;
+            QLayout layout = ((QWidget) object).layout();
+            if (entry.name == LAYOUT_RIGHT_MARGIN) {
+                QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
+                layout.getContentsMargins(null, null, np, null);
+                return np.intValue();
+            }
+            if (entry.name == LAYOUT_LEFT_MARGIN) {
+                QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
+                layout.getContentsMargins(np, null, null, null);
+                return np.intValue();
+            }
+            if (entry.name == LAYOUT_BOTTOM_MARGIN) {
+                QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
+                layout.getContentsMargins(null, null, null, np);
+                return np.intValue();
+            }
+            if (entry.name == LAYOUT_TOP_MARGIN) {
+                QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
+                layout.getContentsMargins(null, np, null, null);
+                return np.intValue();
+            }
+            if (entry.name == LAYOUT_HORIZONTAL_SPACING) return ((QGridLayout) layout).horizontalSpacing();
+            if (entry.name == LAYOUT_VERTICAL_SPACING) return ((QGridLayout) layout).verticalSpacing();
+            return 0;
+        }
+
+        public void write(int x) {
+            QLayout layout = ((QWidget) object).layout();
+            if (entry.name.endsWith("Margin")) {
+                QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
+                QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
+                QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
+                QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
+
+                layout.getContentsMargins(left, top, right, bottom);
+
+                if (entry.name == LAYOUT_RIGHT_MARGIN) right.setIntValue(x);
+                if (entry.name == LAYOUT_LEFT_MARGIN) left.setIntValue(x);
+                if (entry.name == LAYOUT_TOP_MARGIN) top.setIntValue(x);
+                if (entry.name == LAYOUT_BOTTOM_MARGIN) bottom.setIntValue(x);
+
+                layout.setContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+            } else if (entry.name == LAYOUT_HORIZONTAL_SPACING) {
+                ((QGridLayout) layout).setHorizontalSpacing(x);
+            } else if (entry.name == LAYOUT_VERTICAL_SPACING) {
+                ((QGridLayout) layout).setVerticalSpacing(x);
+            }
+        }
+
+        public boolean designable() {
+            if (object instanceof QWidget && ((QWidget) object).layout() != null) {
+                QLayout l = ((QWidget) object).layout();
+                return entry.name == LAYOUT_HORIZONTAL_SPACING
+                    || entry.name == LAYOUT_VERTICAL_SPACING
+                        ? l instanceof QGridLayout
+                        : true;
+            }
+            return false;
+        }
+    }
+
 
     public PropertySheet(QObject object, QObject parent) {
         super(parent);
         this.object = object;
         build();
 
-        
+
     }
 
     public boolean canAddDynamicProperty(String propertyName, Object value) {
@@ -129,14 +214,17 @@ public class PropertySheet extends JambiPropertySheet {
 
     public boolean isVisible(int index) {
         Property p = properties.get(index);
-        return p.entry.isDesignable(object) && p.entry.write != null || p.visible;
+        return p.entry.isDesignable(invokationTarget(p)) && p.entry.write != null || p.visible;
     }
 
     public Object readProperty(int index) {
         try {
             Property p = properties.get(index);
+
+            Object target = invokationTarget(p);
+
             Method getter = p.entry.read;
-            Object result = getter.invoke(object);
+            Object result = getter.invoke(target);
 
             if (result == null)
                 result = defaultConstruct(p.entry.type());
@@ -244,7 +332,8 @@ public class PropertySheet extends JambiPropertySheet {
                     throw new NullPointerException("Enum value cannot be null");
                 value = resolve.invoke(null, (Integer) value);
             }
-            properties.get(index).entry.write.invoke(object, value);
+            Property p = properties.get(index);
+            p.entry.write.invoke(invokationTarget(p), value);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -295,6 +384,12 @@ public class PropertySheet extends JambiPropertySheet {
         }
     }
 
+    private Object invokationTarget(Property p) {
+        if (p instanceof LayoutProperty)
+            return p;
+        return object;
+    }
+
     private void build() {
         Class cl = object.getClass();
         TreeSet<Property> properties = new TreeSet<Property>();
@@ -302,6 +397,13 @@ public class PropertySheet extends JambiPropertySheet {
 
         this.properties = new ArrayList<Property>();
         this.properties.addAll(properties);
+
+        this.properties.add(new LayoutProperty("layoutLeftMargin"));
+        this.properties.add(new LayoutProperty("layoutRightMargin"));
+        this.properties.add(new LayoutProperty("layoutBottomMargin"));
+        this.properties.add(new LayoutProperty("layoutTopMargin"));
+        this.properties.add(new LayoutProperty("layoutHorizontalSpacing"));
+        this.properties.add(new LayoutProperty("layoutVerticalSpacing"));
     }
 
     private List<Property> properties;
