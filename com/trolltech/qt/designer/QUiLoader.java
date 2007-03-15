@@ -443,6 +443,9 @@ public class QUiLoader {
             } else if (property.equals("buddy") && o instanceof QLabel) {
                 buddies.put((QLabel) o, (String) value);
                 return;
+            } else if (property.equals("icon") && o instanceof QWidget && ((QWidget) o).isWindow()) {
+                ((QWidget) o).setWindowIcon((QIcon) value);
+                return;
             }
 
             if (value == null)
