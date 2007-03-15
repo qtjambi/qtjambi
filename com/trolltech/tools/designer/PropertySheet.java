@@ -31,22 +31,11 @@ public class PropertySheet extends JambiPropertySheet {
         INVISIBLE_PROPERTIES.add("hidden");
         INVISIBLE_PROPERTIES.add("inputContext");
         INVISIBLE_PROPERTIES.add("layout");
-        INVISIBLE_PROPERTIES.add("maximumHeight");
-        INVISIBLE_PROPERTIES.add("maximumWidth");
-        INVISIBLE_PROPERTIES.add("minimumHeight");
-        INVISIBLE_PROPERTIES.add("minimumWidth");
-        INVISIBLE_PROPERTIES.add("updatesEnabled");
-        INVISIBLE_PROPERTIES.add("visible");
         INVISIBLE_PROPERTIES.add("windowFlags");
-        INVISIBLE_PROPERTIES.add("windowIcon");
         INVISIBLE_PROPERTIES.add("windowIconText");
-        INVISIBLE_PROPERTIES.add("windowModality");
         INVISIBLE_PROPERTIES.add("windowModified");
-        INVISIBLE_PROPERTIES.add("windowOpacity");
         INVISIBLE_PROPERTIES.add("windowRole");
         INVISIBLE_PROPERTIES.add("windowState");
-        INVISIBLE_PROPERTIES.add("windowTitle");
-
         INVISIBLE_PROPERTIES.add("parent");
         INVISIBLE_PROPERTIES.add("cornerWidget");
         INVISIBLE_PROPERTIES.add("menu");
@@ -55,6 +44,8 @@ public class PropertySheet extends JambiPropertySheet {
         INVISIBLE_PROPERTIES.add("rootModelIndex");
         INVISIBLE_PROPERTIES.add("validator");
         INVISIBLE_PROPERTIES.add("actionGroup");
+
+        
     }
 
     private static class Property implements Comparable {
@@ -63,6 +54,7 @@ public class PropertySheet extends JambiPropertySheet {
         String groupName;
         int subclassLevel;
         boolean changed;
+        boolean visible;
 
         public int compareTo(Object arg0) {
             assert arg0 instanceof Property;
@@ -136,7 +128,8 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public boolean isVisible(int index) {
-        return properties.get(index).entry.isDesignable(object);
+        Property p = properties.get(index);
+        return p.entry.isDesignable(object) && p.entry.write != null || p.visible;
     }
 
     public Object readProperty(int index) {
@@ -262,7 +255,7 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public void setVisible(int index, boolean visible) {
-        // ignore...
+        properties.get(index).visible = visible;
     }
 
     private void build(Class cl, int level, Collection<Property> properties) {
@@ -303,24 +296,13 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     private void build() {
-
         Class cl = object.getClass();
-        List<Property> cached = cachedProperties.get(cl);
-        if (cached != null) {
-            this.properties = cached;
-            return;
-        }
-
         TreeSet<Property> properties = new TreeSet<Property>();
         build(object.getClass(), 0, properties);
 
         this.properties = new ArrayList<Property>();
         this.properties.addAll(properties);
-
-        cachedProperties.put(cl, this.properties);
     }
-
-    private static HashMap<Class, List<Property>> cachedProperties = new HashMap<Class, List<Property>>();
 
     private List<Property> properties;
 
