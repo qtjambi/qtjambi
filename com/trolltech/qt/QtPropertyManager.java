@@ -22,7 +22,7 @@ public class QtPropertyManager {
     private static Method DEFAULT_TRUE = null;
     private static Method DEFAULT_FALSE = null;
 
-    {
+    static {
         try {
             DEFAULT_TRUE = QtPropertyManager.class.getDeclaredMethod("__qt_default_true");
             DEFAULT_FALSE = QtPropertyManager.class.getDeclaredMethod("__qt_default_false");
@@ -450,12 +450,12 @@ public class QtPropertyManager {
             System.out.print(e.write != null ? " W" : "  ");
             System.out.print(e.reset != null ? " =" : "  ");
 
-            if (e.designable == DEFAULT_TRUE)
+            if (e.designable == DEFAULT_TRUE || e.designable == null)
                 System.out.print(" D");
-            else if (e.designable != DEFAULT_FALSE && e.designable != null)
-                System.out.print(" *");
-            else
+            else if (e.designable == DEFAULT_FALSE)
                 System.out.print("  ");
+            else
+                System.out.print(" *");
 
             Class cl = null;
             if (e.read != null)
