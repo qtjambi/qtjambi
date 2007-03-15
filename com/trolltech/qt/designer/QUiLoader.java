@@ -31,7 +31,7 @@ public class QUiLoader {
         QObject object;
         QObjectPropertyReceiver(QObject o) { this.object = o; }
         public void setProperty(String name, Object value) {
-             QUiLoader.setProperty(object, name, value);
+             self().setProperty(object, name, value);
         }
     }
 
@@ -126,6 +126,12 @@ public class QUiLoader {
         // Reassign ownership to toplevel parent...
         for (QAction a : actions.values()) {
             a.setParent(uiWidget);
+        }
+
+        // Setup buddies...
+        for (Map.Entry<QLabel, String> e : buddies.entrySet()) {
+            QWidget buddy = widgetPool.get(e.getValue());
+            e.getKey().setBuddy(buddy);
         }
     }
 
@@ -418,7 +424,7 @@ public class QUiLoader {
         return cl;
     }
 
-    private static void setProperty(QObject o, String property, Object value) {
+    private void setProperty(QObject o, String property, Object value) {
         try {
             QtPropertyManager.Entry entry = QtPropertyManager.findPropertiesRecursive(o.getClass()).get(property);
 
@@ -433,6 +439,9 @@ public class QUiLoader {
             } else if (property.equals("shortcut") && o instanceof QAction
                     && value instanceof String) {
                 ((QAction) o).setShortcut((String) value);
+                return;
+            } else if (property.equals("buddy") && o instanceof QLabel) {
+                buddies.put((QLabel) o, (String) value);
                 return;
             }
 
@@ -589,6 +598,8 @@ public class QUiLoader {
         return r;
     }
 
+    private QUiLoader self() { return this; }
+
     private QIODevice inputDevice;
     private QWidget topParent;
     private QWidget uiWidget;
@@ -601,6 +612,7 @@ public class QUiLoader {
 
     private HashMap<String, QWidget> widgetPool = new HashMap<String, QWidget>();
     private HashMap<String, QAction> actions = new HashMap<String, QAction>();
+    private HashMap<QLabel, String> buddies = new HashMap<QLabel, String>();
 
     private static HashSet<String> ignorableStrings;
     private static HashMap<String, PropertyHandler> typeHandlers;
@@ -608,6 +620,7 @@ public class QUiLoader {
 
     static {
         typeHandlers = new HashMap<String, PropertyHandler>();
+        typeHandlers.put("cstring", new StringPropertyHandler());
         typeHandlers.put("rect", new RectPropertyHandler());
         typeHandlers.put("string", new StringPropertyHandler());
         typeHandlers.put("number", new NumberPropertyHandler());
