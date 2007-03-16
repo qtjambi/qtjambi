@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--************************************************************************
+**
+** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of the $MODULE$ of the Qt Toolkit.
+**
+** $TROLLTECH_DUAL_LICENSE$
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+**************************************************************************-->
+<widgetbox version="4.2">
+    <category name="Layouts">
+        <widget class="QWidget"  name="Vertical Layout" icon="win/editvlayout.png">
+            <property name="objectName">
+                <string notr="true">verticalLayout</string>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>160</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <layout class="QVBoxLayout" >
+            </layout>
+        </widget>
+
+        <widget class="QWidget"  name="Horizontal Layout" icon="win/edithlayout.png">
+            <property name="objectName">
+                <string notr="true">horizontalLayout</string>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>160</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <layout class="QHBoxLayout" >
+            </layout>
+        </widget>
+
+        <widget class="QWidget"  name="Grid Layout" icon="win/editgrid.png">
+            <property name="objectName">
+                <string notr="true">gridLayout</string>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>160</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <layout class="QGridLayout" >
+            </layout>
+        </widget>
+
+    </category>
+
+    <category name="Spacers">
+        <widget class="Spacer"  name="Horizontal Spacer" icon="widgets/spacer.png">
+            <property name="orientation" >
+                <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+            </property>
+            <property name="objectName">
+                <string notr="true">horizontalSpacer</string>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>40</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </widget>
+
+        <widget class="Spacer"  name="Vertical Spacer" icon="widgets/vspacer.png">
+            <property name="orientation" >
+                <enum>com.trolltech.qt.core.Qt.Orientation.Vertical</enum>
+            </property>
+            <property name="objectName">
+                <string notr="true">verticalSpacer</string>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>20</width>
+                    <height>40</height>
+                </rect>
+            </property>
+        </widget>
+    </category>
+
+    <category name="Buttons">
+        <widget class="QPushButton"  name="Push Button" icon="widgets/pushbutton.png">
+            <property name="text" >
+                <string>PushButton</string>
+            </property>
+            <property name="objectName">
+                <string notr="true">pushButton</string>
+            </property>
+        </widget>
+
+        <widget class="QToolButton" name="Tool Button" icon="widgets/toolbutton.png">
+            <property name="objectName">
+                <string notr="true">toolButton</string>
+            </property>
+            <property name="text" >
+                <string>...</string>
+            </property>
+        </widget>
+
+        <widget class="QRadioButton" name="Radio Button" icon="widgets/radiobutton.png">
+            <property name="text" >
+                <string>RadioButton</string>
+            </property>
+            <property name="objectName">
+                <string notr="true">radioButton</string>
+            </property>
+        </widget>
+
+        <widget class="QCheckBox" name="Check Box" icon="widgets/checkbox.png">
+            <property name="text" >
+                <string>CheckBox</string>
+            </property>
+            <property name="objectName">
+                <string notr="true">checkBox</string>
+            </property>
+        </widget>
+        <widget class="QDialogButtonBox" name="Button Box" icon="widgets/dialogbuttonbox.png">
+            <property name="standardButtons" >
+                <set>QDialogButtonBox::Ok|QDialogButtonBox::Cancel</set>
+            </property>
+            <property name="objectName">
+                <string notr="true">buttonBox</string>
+            </property>
+        </widget>
+    </category>
+
+    <category name="Item Views (Model-Based)">
+        <widget class="QListView" name="List View" icon="widgets/listbox.png">
+            <property name="objectName">
+                <string notr="true">listView</string>
+            </property>
+        </widget>
+
+        <widget class="QTreeView" name="Tree View" icon="widgets/listview.png">
+            <property name="objectName">
+                <string notr="true">treeView</string>
+            </property>
+        </widget>
+
+        <widget class="QTableView" name="Table View" icon="widgets/table.png">
+            <property name="objectName">
+                <string notr="true">tableView</string>
+            </property>
+        </widget>
+
+        <widget class="QColumnView" name="Column View" icon="widgets/columnview.png">
+            <property name="objectName">
+                <string notr="true">columnView</string>
+            </property>
+        </widget>
+    </category>
+
+    <category name="Item Widgets (Item-Based)">
+        <widget class="QListWidget" name="List Widget" icon="widgets/listbox.png">
+            <property name="objectName">
+                <string notr="true">listWidget</string>
+            </property>
+        </widget>
+        <widget class="QTreeWidget" name="Tree Widget" icon="widgets/listview.png">
+            <property name="objectName">
+                <string notr="true">treeWidget</string>
+            </property>
+        </widget>
+
+        <widget class="QTableWidget" name="Table Widget" icon="widgets/table.png">
+            <property name="objectName">
+                <string notr="true">tableWidget</string>
+            </property>
+        </widget>
+    </category>
+
+    <category name="Containers">
+        <widget class="QGroupBox" name="Group Box" icon="widgets/groupbox.png">
+            <property name="title" >
+                <string>GroupBox</string>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>120</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">groupBox</string>
+            </property>
+        </widget>
+
+        <widget class="QToolBox" name="Tool Box" icon="widgets/toolbox.png">
+            <property name="currentIndex" >
+                <number>0</number>
+            </property>
+            <property name="objectName">
+                <string notr="true">toolBox</string>
+            </property>
+            <widget class="QWidget" name="page" >
+                <attribute name="label">
+                    <string>Page 1</string>
+                </attribute>
+            </widget>
+            <widget class="QWidget" name="page" >
+                <attribute name="label">
+                    <string>Page 2</string>
+                </attribute>
+            </widget>
+        </widget>
+
+        <widget class="QTabWidget" name="Tab Widget" icon="widgets/tabwidget.png">
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>120</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">tabWidget</string>
+            </property>
+            <widget class="QWidget" name="tab">
+                <attribute name="title">
+                    <string>Tab 1</string>
+                </attribute>
+            </widget>
+            <widget class="QWidget" name="tab">
+                <attribute name="title">
+                    <string>Tab 2</string>
+                </attribute>
+            </widget>
+        </widget>
+
+        <widget class="QStackedWidget" name="Stacked Widget" icon="widgets/widgetstack.png">
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>120</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">stackedWidget</string>
+            </property>
+            <widget class="QWidget" name="page" />
+            <widget class="QWidget" name="page" />
+        </widget>
+
+        <widget class="QFrame" name="Frame" icon="widgets/frame.png">
+            <property name="frameShadow" >
+                <enum>QFrame::Raised</enum>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>120</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <property name="frameShape" >
+                <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="objectName">
+                <string notr="true">frame</string>
+            </property>
+        </widget>
+
+        <widget class="QWidget" name="Widget" icon="widgets/widget.png">
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>120</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">widget</string>
+            </property>
+        </widget>
+
+        <widget class="QDockWidget" name="Dock Widget" icon="widgets/frame.png">
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>120</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">dockWidget</string>
+            </property>
+            <widget class="QWidget" name="dockWidgetContents" />
+        </widget>
+    </category>
+
+    <category name="Input Widgets">
+
+        <widget class="QComboBox" name="Combo Box" icon="widgets/combobox.png">
+            <property name="geometry" >
+                <rect>
+                    <x>119</x>
+                    <y>28</y>
+                    <width>41</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">comboBox</string>
+            </property>
+        </widget>
+
+        <widget class="QFontComboBox" name="Font Combo Box" icon="widgets/fontcombobox.png">
+            <property name="geometry" >
+                <rect>
+                    <x>119</x>
+                    <y>28</y>
+                    <width>41</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">fontComboBox</string>
+            </property>
+        </widget>
+
+        <widget class="QLineEdit" name="Line Edit" icon="widgets/lineedit.png">
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>1</y>
+                    <width>113</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">lineEdit</string>
+            </property>
+        </widget>
+
+        <widget class="QTextEdit" name="Text Edit" icon="widgets/textedit.png">
+            <property name="objectName">
+                <string notr="true">textEdit</string>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>104</width>
+                    <height>64</height>
+                </rect>
+            </property>
+        </widget>
+
+        <widget class="QSpinBox" name="Spin Box" icon="widgets/spinbox.png">
+            <property name="geometry" >
+                <rect>
+                    <x>119</x>
+                    <y>0</y>
+                    <width>42</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">spinBox</string>
+            </property>
+        </widget>
+
+        <widget class="QDoubleSpinBox" name="Double Spin Box" icon="widgets/spinbox.png">
+            <property name="geometry" >
+                <rect>
+                    <x>119</x>
+                    <y>0</y>
+                    <width>62</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">doubleSpinBox</string>
+            </property>
+        </widget>
+
+        <widget class="QTimeEdit" name="Time Edit" icon="widgets/datetimeedit.png">
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>28</y>
+                    <width>118</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">timeEdit</string>
+            </property>
+        </widget>
+
+        <widget class="QDateEdit" name="Date Edit" icon="widgets/datetimeedit.png">
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>28</y>
+                    <width>110</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">dateEdit</string>
+            </property>
+        </widget>
+
+        <widget class="QDateTimeEdit" name="Date/Time Edit" icon="widgets/datetimeedit.png">
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>28</y>
+                    <width>194</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">dateTimeEdit</string>
+            </property>
+        </widget>
+
+        <widget class="QDial" name="Dial" icon="widgets/dial.png" >
+            <property name="geometry" >
+                <rect>
+                    <x>110</x>
+                    <y>0</y>
+                    <width>50</width>
+                    <height>64</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">dial</string>
+            </property>
+        </widget>
+
+        <widget class="QScrollBar" name="Horizontal Scroll Bar" icon="widgets/hscrollbar.png">
+            <property name="orientation" >
+                <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>126</y>
+                    <width>160</width>
+                    <height>16</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">horizontalScrollBar</string>
+            </property>
+        </widget>
+
+        <widget class="QScrollBar" name="Vertical Scroll Bar" icon="widgets/vscrollbar.png">
+            <property name="orientation" >
+                <enum>com.trolltech.qt.core.Qt.Orientation.Vertical</enum>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>126</y>
+                    <width>16</width>
+                    <height>160</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">verticalScrollBar</string>
+            </property>
+        </widget>
+
+        <widget class="QSlider" name="Horizontal Slider" icon="widgets/hslider.png">
+            <property name="orientation" >
+                <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>126</y>
+                    <width>160</width>
+                    <height>16</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">horizontalSlider</string>
+            </property>
+        </widget>
+
+        <widget class="QSlider" name="Vertical Slider" icon="widgets/vslider.png">
+            <property name="orientation" >
+                <enum>com.trolltech.qt.core.Qt.Orientation.Vertical</enum>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>126</y>
+                    <width>16</width>
+                    <height>160</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">verticalSlider</string>
+            </property>
+        </widget>
+
+    </category>
+
+
+    <category name="Display Widgets">
+
+        <widget class="QLabel" name="Label" icon="widgets/label.png">
+            <property name="text">
+                <string>TextLabel</string>
+            </property>
+            <property name="objectName">
+                <string notr="true">label</string>
+            </property>
+        </widget>
+
+        <widget class="QTextBrowser" name="Text Browser" icon="widgets/textedit.png">
+            <property name="objectName">
+                <string notr="true">textBrowser</string>
+            </property>
+        </widget>
+
+        <widget class="QGraphicsView" name="Graphics View" icon="widgets/graphicsview.png">
+            <property name="objectName">
+                <string notr="true">graphicsView</string>
+            </property>
+        </widget>
+
+        <widget class="QCalendarWidget" name="Calendar" icon="widgets/calendarwidget.png">
+            <property name="objectName">
+                <string notr="true">calendarWidget</string>
+            </property>
+        </widget>
+
+        <widget class="QLCDNumber" name="LCD Number" icon="widgets/lcdnumber.png">
+            <property name="objectName">
+                <string notr="true">lcdNumber</string>
+            </property>
+        </widget>
+
+        <widget class="QProgressBar" name="Progress Bar" icon="widgets/progress.png">
+            <property name="value" >
+                <number>24</number>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>9</x>
+                    <y>38</y>
+                    <width>118</width>
+                    <height>23</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">progressBar</string>
+            </property>
+        </widget>
+
+        <widget class="QFrame" name="Horizontal Line" icon="widgets/line.png">
+            <property name="frameShape" >
+                <enum>com.trolltech.qt.gui.QFrame.Shape.HLine</enum>
+            </property>
+            <property name="frameShadow" >
+                <enum>com.trolltech.qt.gui.QFrame.Shadow.Sunken</enum>
+            </property>
+            <property name="objectName">
+                <string notr="true">line</string>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>9</x>
+                    <y>67</y>
+                    <width>118</width>
+                    <height>3</height>
+                </rect>
+            </property>
+        </widget>
+
+        <widget class="QFrame" name="Vertical Line" icon="widgets/vline.png">
+            <property name="frameShape" >
+                <enum>com.trolltech.qt.gui.QFrame.Shape.VLine</enum>
+            </property>
+            <property name="frameShadow" >
+                <enum>com.trolltech.qt.gui.QFrame.Shadow.Sunken</enum>
+            </property>
+            <property name="objectName">
+                <string notr="true">line</string>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>133</x>
+                    <y>9</y>
+                    <width>3</width>
+                    <height>61</height>
+                </rect>
+            </property>
+        </widget>
+    </category>
+</widgetbox>
