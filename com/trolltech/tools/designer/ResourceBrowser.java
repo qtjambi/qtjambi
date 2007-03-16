@@ -11,11 +11,13 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private static final boolean UNFILTERED = Utilities.matchProperty("unfiltered");
 
     protected void disposed() {
-        walker.kill();
-        try {
-            walker.thread().join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (walker != null) {
+            walker.kill();
+            try {
+                walker.thread().join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
     
