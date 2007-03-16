@@ -205,6 +205,8 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public boolean isChanged(int index) {
+        if (index < 0)
+            return false;
         return properties.get(index).changed;
     }
 
@@ -213,11 +215,15 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public boolean isVisible(int index) {
+        if (index < 0)
+            return false;
         Property p = properties.get(index);
         return p.entry.isDesignable(invokationTarget(p)) && p.entry.write != null || p.visible;
     }
 
     public Object readProperty(int index) {
+        if (index < 0)
+            return null;
         try {
             Property p = properties.get(index);
 
@@ -297,6 +303,8 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public String propertyGroup(int index) {
+        if (index < 0)
+            return null;
         return properties.get(index).groupName;
     }
 
@@ -320,6 +328,8 @@ public class PropertySheet extends JambiPropertySheet {
 
     // @SuppressWarnings("all")
     public void writeProperty(int index, Object value) {
+        if (index < 0)
+            return;
         try {
             Method m = properties.get(index).entry.write;
             Class<?> argClass = m.getParameterTypes()[0];
@@ -340,10 +350,11 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public void setPropertyGroup(int index, String group) {
-
     }
 
     public void setVisible(int index, boolean visible) {
+        if (index < 0)
+            return;
         properties.get(index).visible = visible;
     }
 
