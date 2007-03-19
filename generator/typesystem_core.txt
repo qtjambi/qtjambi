@@ -191,6 +191,7 @@
   <rejection class="QSharedDataPointer"/>
   <rejection class="QStack"/>
   <rejection class="QSysInfo"/>
+  <rejection class="QStringRef"/>
   <rejection class="QTextStreamManipulator"/>    
   <rejection class="QThreadStorage"/>
   <rejection class="QThreadStorageData"/>

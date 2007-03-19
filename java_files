@@ -1,5 +1,6 @@
 ./com/trolltech/demos/ArthurFrame.java
 ./com/trolltech/demos/Deform.java
+./com/trolltech/demos/HttpServerExample.java
 ./com/trolltech/demos/ImageViewer.java
 ./com/trolltech/demos/PathStrokeWidget.java
 ./com/trolltech/demos/TextEdit.java
@@ -15,6 +16,7 @@
 ./com/trolltech/examples/Calculator.java
 ./com/trolltech/examples/Chat.java
 ./com/trolltech/examples/CollidingMice.java
+./com/trolltech/examples/ConfigDialog.java
 ./com/trolltech/examples/CustomFilter.java
 ./com/trolltech/examples/DomBookmarks.java
 ./com/trolltech/examples/ElasticNodes.java
@@ -102,6 +104,7 @@
 ./com/trolltech/qt/core/QByteArrayMatcher.java
 ./com/trolltech/qt/core/QChildEvent.java
 ./com/trolltech/qt/core/QCoreApplication.java
+./com/trolltech/qt/core/QCryptographicHash.java
 ./com/trolltech/qt/core/QDataStream.java
 ./com/trolltech/qt/core/QDate.java
 ./com/trolltech/qt/core/QDateTime.java
@@ -152,6 +155,7 @@
 ./com/trolltech/qt/core/QWaitCondition.java
 ./com/trolltech/qt/core/Qt.java
 ./com/trolltech/qt/core/QtJambi_LibraryInitializer.java
+./com/trolltech/qt/designer/Line.java
 ./com/trolltech/qt/designer/PropertyHandler.java
 ./com/trolltech/qt/designer/QUiLoader.java
 ./com/trolltech/qt/designer/QUiLoaderException.java
@@ -170,12 +174,18 @@
 ./com/trolltech/qt/gui/QAbstractTextDocumentLayout_PaintContext.java
 ./com/trolltech/qt/gui/QAbstractTextDocumentLayout_Selection.java
 ./com/trolltech/qt/gui/QAccessible.java
+./com/trolltech/qt/gui/QAccessible2.java
+./com/trolltech/qt/gui/QAccessible2Interface.java
 ./com/trolltech/qt/gui/QAccessibleBridge.java
+./com/trolltech/qt/gui/QAccessibleEditableTextInterface.java
 ./com/trolltech/qt/gui/QAccessibleEvent.java
 ./com/trolltech/qt/gui/QAccessibleInterface.java
 ./com/trolltech/qt/gui/QAccessibleInterfaceEx.java
 ./com/trolltech/qt/gui/QAccessibleObject.java
 ./com/trolltech/qt/gui/QAccessibleObjectEx.java
+./com/trolltech/qt/gui/QAccessibleSimpleEditableTextInterface.java
+./com/trolltech/qt/gui/QAccessibleTextInterface.java
+./com/trolltech/qt/gui/QAccessibleValueInterface.java
 ./com/trolltech/qt/gui/QAccessibleWidget.java
 ./com/trolltech/qt/gui/QAccessibleWidgetEx.java
 ./com/trolltech/qt/gui/QAction.java
@@ -196,6 +206,7 @@
 ./com/trolltech/qt/gui/QColor.java
 ./com/trolltech/qt/gui/QColorDialog.java
 ./com/trolltech/qt/gui/QColormap.java
+./com/trolltech/qt/gui/QColumnView.java
 ./com/trolltech/qt/gui/QComboBox.java
 ./com/trolltech/qt/gui/QCommonStyle.java
 ./com/trolltech/qt/gui/QCompleter.java
@@ -266,6 +277,7 @@
 ./com/trolltech/qt/gui/QIcon.java
 ./com/trolltech/qt/gui/QIconDragEvent.java
 ./com/trolltech/qt/gui/QIconEngine.java
+./com/trolltech/qt/gui/QIconEngineV2.java
 ./com/trolltech/qt/gui/QImage.java
 ./com/trolltech/qt/gui/QImageIOHandler.java
 ./com/trolltech/qt/gui/QImageReader.java
@@ -299,6 +311,8 @@
 ./com/trolltech/qt/gui/QListWidgetItem.java
 ./com/trolltech/qt/gui/QMainWindow.java
 ./com/trolltech/qt/gui/QMatrix.java
+./com/trolltech/qt/gui/QMdiArea.java
+./com/trolltech/qt/gui/QMdiSubWindow.java
 ./com/trolltech/qt/gui/QMenu.java
 ./com/trolltech/qt/gui/QMenuBar.java
 ./com/trolltech/qt/gui/QMessageBox.java
@@ -367,11 +381,13 @@
 ./com/trolltech/qt/gui/QStyleFactory.java
 ./com/trolltech/qt/gui/QStyleHintReturn.java
 ./com/trolltech/qt/gui/QStyleHintReturnMask.java
+./com/trolltech/qt/gui/QStyleHintReturnVariant.java
 ./com/trolltech/qt/gui/QStyleOption.java
 ./com/trolltech/qt/gui/QStyleOptionButton.java
 ./com/trolltech/qt/gui/QStyleOptionComboBox.java
 ./com/trolltech/qt/gui/QStyleOptionComplex.java
 ./com/trolltech/qt/gui/QStyleOptionDockWidget.java
+./com/trolltech/qt/gui/QStyleOptionDockWidgetV2.java
 ./com/trolltech/qt/gui/QStyleOptionFocusRect.java
 ./com/trolltech/qt/gui/QStyleOptionFrame.java
 ./com/trolltech/qt/gui/QStyleOptionFrameV2.java
@@ -466,9 +482,12 @@
 ./com/trolltech/qt/gui/QWidgetItem.java
 ./com/trolltech/qt/gui/QWindowStateChangeEvent.java
 ./com/trolltech/qt/gui/QWindowsStyle.java
+./com/trolltech/qt/gui/QWizard.java
+./com/trolltech/qt/gui/QWizardPage.java
 ./com/trolltech/qt/gui/QWorkspace.java
 ./com/trolltech/qt/gui/QtJambi_LibraryInitializer.java
 ./com/trolltech/qt/network/QAbstractSocket.java
+./com/trolltech/qt/network/QAuthenticator.java
 ./com/trolltech/qt/network/QFtp.java
 ./com/trolltech/qt/network/QHostAddress.java
 ./com/trolltech/qt/network/QHostInfo.java
@@ -549,6 +568,13 @@
 ./com/trolltech/qt/xml/QXmlParseException.java
 ./com/trolltech/qt/xml/QXmlReader.java
 ./com/trolltech/qt/xml/QXmlSimpleReader.java
+./com/trolltech/qt/xml/QXmlStreamAttribute.java
+./com/trolltech/qt/xml/QXmlStreamAttributes.java
+./com/trolltech/qt/xml/QXmlStreamEntityDeclaration.java
+./com/trolltech/qt/xml/QXmlStreamNamespaceDeclaration.java
+./com/trolltech/qt/xml/QXmlStreamNotationDeclaration.java
+./com/trolltech/qt/xml/QXmlStreamReader.java
+./com/trolltech/qt/xml/QXmlStreamWriter.java
 ./com/trolltech/qt/xml/QtJambi_LibraryInitializer.java
 ./com/trolltech/tools/designer/ClassPathWalker.java
 ./com/trolltech/tools/designer/CustomWidget.java
