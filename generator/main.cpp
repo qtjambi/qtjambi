@@ -116,8 +116,11 @@ int main(int argc, char *argv[])
         } else {
             if (fileName.isEmpty())
                 fileName = QString(argv[i]);
-            else
+            else if (typesystemFileName.isEmpty())
                 typesystemFileName = QString(argv[i]);
+            else {
+                display_help = true;
+            }
         }
     }
 
