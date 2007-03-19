@@ -46,6 +46,7 @@ public class PropertySheet extends JambiPropertySheet {
         INVISIBLE_PROPERTIES.add("rootModelIndex");
         INVISIBLE_PROPERTIES.add("validator");
         INVISIBLE_PROPERTIES.add("actionGroup");
+        INVISIBLE_PROPERTIES.add("buddy");
     }
 
 
@@ -283,7 +284,7 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     private Object invokationTarget(Property p) {
-        if (p instanceof LayoutProperty)
+        if (p.isPropertyInvokationTarget())
             return p;
         return object;
     }
@@ -304,6 +305,11 @@ public class PropertySheet extends JambiPropertySheet {
             this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_TOP_MARGIN));
             this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_HORIZONTAL_SPACING));
             this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_VERTICAL_SPACING));
+        }
+
+        if (object instanceof QLabel) {
+            QLabel label = (QLabel) object;
+            this.properties.add(new BuddyProperty(label));
         }
     }
 

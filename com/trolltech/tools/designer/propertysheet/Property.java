@@ -23,6 +23,10 @@ public class Property implements Comparable {
     public boolean changed;
     public boolean visible;
 
+    public boolean isPropertyInvokationTarget() {
+        return false;
+    }
+
     public int compareTo(Object arg0) {
         assert arg0 instanceof Property;
         Property p = (Property) arg0;

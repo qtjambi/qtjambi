@@ -103,4 +103,10 @@ public class LayoutProperty extends Property {
         }
         return false;
     }
+
+
+    @Override
+    public boolean isPropertyInvokationTarget() {
+        return true;
+    }
 }
