@@ -3,6 +3,7 @@ package com.trolltech.tools.designer;
 import com.trolltech.qt.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.tools.designer.propertysheet.*;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -45,121 +46,6 @@ public class PropertySheet extends JambiPropertySheet {
         INVISIBLE_PROPERTIES.add("rootModelIndex");
         INVISIBLE_PROPERTIES.add("validator");
         INVISIBLE_PROPERTIES.add("actionGroup");
-    }
-
-    private static String LAYOUT_LEFT_MARGIN = "layoutLeftMargin";
-    private static String LAYOUT_RIGHT_MARGIN = "layoutRightMargin";
-    private static String LAYOUT_BOTTOM_MARGIN = "layoutBottomMargin";
-    private static String LAYOUT_TOP_MARGIN = "layoutTopMargin";
-    private static String LAYOUT_HORIZONTAL_SPACING = "layoutHorizontalSpacing";
-    private static String LAYOUT_VERTICAL_SPACING = "layoutVerticalSpacing";
-
-    private static class Property implements Comparable {
-        QtPropertyManager.Entry entry;
-
-        String groupName;
-        int subclassLevel;
-        boolean changed;
-        boolean visible;
-
-        public int compareTo(Object arg0) {
-            assert arg0 instanceof Property;
-            Property p = (Property) arg0;
-
-            if (subclassLevel > p.subclassLevel)
-                return -1;
-            else if (subclassLevel < p.subclassLevel)
-                return 1;
-            else {
-                int order = entry.sortOrder - p.entry.sortOrder;
-                if (order == 0)
-                    return entry.name.compareTo(p.entry.name);
-                return order;
-            }
-        }
-
-        public String toString() {
-            return "{" + groupName + ":" + entry.name + "}";
-        }
-    }
-
-    public class LayoutProperty extends Property {
-        public LayoutProperty(String name) {
-            groupName = "Layout";
-            subclassLevel = 1024; // Just an arbitrary high number...
-
-            entry = new QtPropertyManager.Entry(name);
-            try {
-                entry.read = LayoutProperty.class.getMethod("read");
-                entry.write = LayoutProperty.class.getMethod("write", int.class);
-                entry.designable = LayoutProperty.class.getMethod("designable");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        public int read() {
-            if (!designable())
-                return 0;
-            QLayout layout = ((QWidget) object).layout();
-            if (entry.name == LAYOUT_RIGHT_MARGIN) {
-                QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-                layout.getContentsMargins(null, null, np, null);
-                return np.intValue();
-            }
-            if (entry.name == LAYOUT_LEFT_MARGIN) {
-                QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-                layout.getContentsMargins(np, null, null, null);
-                return np.intValue();
-            }
-            if (entry.name == LAYOUT_BOTTOM_MARGIN) {
-                QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-                layout.getContentsMargins(null, null, null, np);
-                return np.intValue();
-            }
-            if (entry.name == LAYOUT_TOP_MARGIN) {
-                QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-                layout.getContentsMargins(null, np, null, null);
-                return np.intValue();
-            }
-            if (entry.name == LAYOUT_HORIZONTAL_SPACING) return ((QGridLayout) layout).horizontalSpacing();
-            if (entry.name == LAYOUT_VERTICAL_SPACING) return ((QGridLayout) layout).verticalSpacing();
-            return 0;
-        }
-
-        public void write(int x) {
-            QLayout layout = ((QWidget) object).layout();
-            if (entry.name.endsWith("Margin")) {
-                QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
-                QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
-                QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
-                QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
-
-                layout.getContentsMargins(left, top, right, bottom);
-
-                if (entry.name == LAYOUT_RIGHT_MARGIN) right.setIntValue(x);
-                if (entry.name == LAYOUT_LEFT_MARGIN) left.setIntValue(x);
-                if (entry.name == LAYOUT_TOP_MARGIN) top.setIntValue(x);
-                if (entry.name == LAYOUT_BOTTOM_MARGIN) bottom.setIntValue(x);
-
-                layout.setContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
-            } else if (entry.name == LAYOUT_HORIZONTAL_SPACING) {
-                ((QGridLayout) layout).setHorizontalSpacing(x);
-            } else if (entry.name == LAYOUT_VERTICAL_SPACING) {
-                ((QGridLayout) layout).setVerticalSpacing(x);
-            }
-        }
-
-        public boolean designable() {
-            if (object instanceof QWidget && ((QWidget) object).layout() != null) {
-                QLayout l = ((QWidget) object).layout();
-                return entry.name == LAYOUT_HORIZONTAL_SPACING
-                    || entry.name == LAYOUT_VERTICAL_SPACING
-                        ? l instanceof QGridLayout
-                        : true;
-            }
-            return false;
-        }
     }
 
 
@@ -345,6 +231,7 @@ public class PropertySheet extends JambiPropertySheet {
             Property p = properties.get(index);
             p.entry.write.invoke(invokationTarget(p), value);
         } catch (Exception e) {
+            System.out.println("Writing property failed: " + properties.get(index).entry.name + " for " + object + " with " + value);
             e.printStackTrace();
         }
     }
@@ -409,12 +296,15 @@ public class PropertySheet extends JambiPropertySheet {
         this.properties = new ArrayList<Property>();
         this.properties.addAll(properties);
 
-        this.properties.add(new LayoutProperty("layoutLeftMargin"));
-        this.properties.add(new LayoutProperty("layoutRightMargin"));
-        this.properties.add(new LayoutProperty("layoutBottomMargin"));
-        this.properties.add(new LayoutProperty("layoutTopMargin"));
-        this.properties.add(new LayoutProperty("layoutHorizontalSpacing"));
-        this.properties.add(new LayoutProperty("layoutVerticalSpacing"));
+        if (object instanceof QWidget) {
+            QWidget widget = (QWidget) object;
+            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_LEFT_MARGIN));
+            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_RIGHT_MARGIN));
+            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_BOTTOM_MARGIN));
+            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_TOP_MARGIN));
+            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_HORIZONTAL_SPACING));
+            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_VERTICAL_SPACING));
+        }
     }
 
     private List<Property> properties;
