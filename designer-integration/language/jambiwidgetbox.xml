@@ -137,7 +137,7 @@
         </widget>
         <widget class="QDialogButtonBox" name="Button Box" icon="widgets/dialogbuttonbox.png">
             <property name="standardButtons" >
-                <set>QDialogButtonBox::Ok|QDialogButtonBox::Cancel</set>
+                <set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok|com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</set>
             </property>
             <property name="objectName">
                 <string notr="true">buttonBox</string>
