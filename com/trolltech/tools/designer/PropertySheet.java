@@ -311,6 +311,14 @@ public class PropertySheet extends JambiPropertySheet {
             QLabel label = (QLabel) object;
             this.properties.add(new BuddyProperty(label));
         }
+
+        if (object instanceof QTabWidget) {
+            QTabWidget tab = (QTabWidget) object;
+            this.properties.add(new TabWidgetProperty(tab, TabWidgetProperty.CURRENT_TAB_NAME));
+            this.properties.add(new TabWidgetProperty(tab, TabWidgetProperty.CURRENT_TAB_TEXT));
+            this.properties.add(new TabWidgetProperty(tab, TabWidgetProperty.CURRENT_TAB_TOOLTIP));
+            this.properties.add(new TabWidgetProperty(tab, TabWidgetProperty.CURRENT_TAB_ICON));
+        }
     }
 
     private List<Property> properties;

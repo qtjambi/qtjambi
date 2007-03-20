@@ -16,7 +16,7 @@ package com.trolltech.tools.designer.propertysheet;
 import com.trolltech.qt.*;
 import com.trolltech.qt.gui.*;
 
-public class LayoutProperty extends Property {
+public class LayoutProperty extends FakeProperty {
     private QWidget object;
 
     public static String LAYOUT_LEFT_MARGIN = "layoutLeftMargin";
@@ -27,24 +27,28 @@ public class LayoutProperty extends Property {
     public static String LAYOUT_VERTICAL_SPACING = "layoutVerticalSpacing";
 
     public LayoutProperty(QWidget widget, String name) {
+        super(name);
         this.object = widget;
         groupName = "Layout";
         subclassLevel = 1024; // Just an arbitrary high number...
 
-        entry = new QtPropertyManager.Entry(name);
         try {
-            entry.read = LayoutProperty.class.getMethod("read");
-            entry.write = LayoutProperty.class.getMethod("write", int.class);
             entry.designable = LayoutProperty.class.getMethod("designable");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public int read() {
+    private QWidget widget() {
+        if (object instanceof QTabWidget)
+            return ((QTabWidget) object).currentWidget();
+        return object;
+    }
+
+    public Object read() {
         if (!designable())
             return 0;
-        QLayout layout = object.layout();
+        QLayout layout = widget().layout();
         if (entry.name == LAYOUT_RIGHT_MARGIN) {
             QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
             layout.getContentsMargins(null, null, np, null);
@@ -70,8 +74,9 @@ public class LayoutProperty extends Property {
         return 0;
     }
 
-    public void write(int x) {
-        QLayout layout = object.layout();
+    public void write(Object value) {
+        int x = (Integer) value;
+        QLayout layout = widget().layout();
         if (entry.name.endsWith("Margin")) {
             QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
             QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
@@ -94,7 +99,8 @@ public class LayoutProperty extends Property {
     }
 
     public boolean designable() {
-        if (object.layout() != null) {
+        QWidget widget = widget();
+        if (widget != null && widget.layout() != null) {
             QLayout l = object.layout();
             return entry.name == LAYOUT_HORIZONTAL_SPACING
                     || entry.name == LAYOUT_VERTICAL_SPACING
@@ -102,11 +108,5 @@ public class LayoutProperty extends Property {
                     : true;
         }
         return false;
-    }
-
-
-    @Override
-    public boolean isPropertyInvokationTarget() {
-        return true;
     }
 }
