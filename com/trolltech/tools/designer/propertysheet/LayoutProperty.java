@@ -31,12 +31,6 @@ public class LayoutProperty extends FakeProperty {
         this.object = widget;
         groupName = "Layout";
         subclassLevel = 1024; // Just an arbitrary high number...
-
-        try {
-            entry.designable = LayoutProperty.class.getMethod("designable");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private QWidget widget() {

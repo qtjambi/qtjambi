@@ -23,6 +23,7 @@ public abstract class FakeProperty extends Property {
         try {
             entry.read = FakeProperty.class.getMethod("read");
             entry.write = FakeProperty.class.getMethod("write", Object.class);
+            entry.designable = FakeProperty.class.getMethod("designable");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -35,6 +36,8 @@ public abstract class FakeProperty extends Property {
 
     public abstract Object read();
     public abstract void write(Object value);
+
+    public boolean designable() { return true; }
 
     protected int decideSubclassLevel(Class cl) {
         // Dynamically figure out superclass, just in case it _ever_ changes...
