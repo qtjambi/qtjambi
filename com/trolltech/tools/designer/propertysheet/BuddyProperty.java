@@ -13,6 +13,7 @@
 
 package com.trolltech.tools.designer.propertysheet;
 
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 public class BuddyProperty extends FakeProperty {
@@ -26,14 +27,16 @@ public class BuddyProperty extends FakeProperty {
 
     public Object read() {
         QWidget buddy = label.buddy();
-        if (buddy != null)
+        if (buddy != null) {
+            QByteArray ba = new QByteArray(buddy.objectName());
             return buddy.objectName();
-        return null;
+        }
+        return new QByteArray("");
     }
 
     public void write(Object name) {
         QWidget window = label.window();
-        QWidget w = (QWidget) window.findChild(QWidget.class, (String) name);
+        QWidget w = (QWidget) window.findChild(QWidget.class, name.toString());
         if (w != null)
             label.setBuddy(w);
     }
