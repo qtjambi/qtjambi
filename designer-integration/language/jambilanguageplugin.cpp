@@ -108,7 +108,6 @@ QDesignerFormEditorInterface *JambiLanguagePlugin::core() const
 JambiLanguage::JambiLanguage(QObject *parent)
     : QObject(parent)
 {
-    printf("JambiLanguage: created\n");
 }
 
 JambiLanguage::~JambiLanguage()
@@ -209,7 +208,6 @@ JambiExtraInfoExtension::JambiExtraInfoExtension(QWidget *widget,
     : m_widget(widget),
       m_core(core)
 {
-    printf("JambiExtraInfoExtension::created...\n");
 }
 
 
@@ -240,7 +238,6 @@ bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
 bool JambiExtraInfoExtension::saveWidgetExtraInfo(DomWidget *ui_widget)
 {
     Q_UNUSED(ui_widget)
-    printf("JambiExtraInfoExtension::saveWidgetExtraInfo()\n");
     return false;
 }
 
@@ -248,7 +245,6 @@ bool JambiExtraInfoExtension::saveWidgetExtraInfo(DomWidget *ui_widget)
 bool JambiExtraInfoExtension::loadWidgetExtraInfo(DomWidget *ui_widget)
 {
     Q_UNUSED(ui_widget)
-    printf("JambiExtraInfoExtension::loadWidgetExtraInfo()\n");
     return false;
 }
 
@@ -258,7 +254,6 @@ JambiExtensionFactory::JambiExtensionFactory(JambiLanguagePlugin *plugin, QExten
     QExtensionFactory(parent),
     m_jambi(plugin)
 {
-    printf("JambiExtensionFactory\n");
 }
 
 
