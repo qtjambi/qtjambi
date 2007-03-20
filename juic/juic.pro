@@ -40,3 +40,7 @@ win32-msvc.net{
     QMAKE_CXXFLAGS -= -Zm200
     QMAKE_CFLAGS -= -Zm200
 }
+
+linux-g++ {
+    QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
+}
