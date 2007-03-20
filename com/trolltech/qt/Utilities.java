@@ -50,6 +50,17 @@ public class Utilities {
     }
 
     public static void loadQtLibrary(String library) {
+    	String excludeLibraries = System.getProperty("com.trolltech.qt.exclude-libraries");
+    	if(excludeLibraries != null){
+    		StringTokenizer tokenizer = new StringTokenizer(System.getProperty("com.trolltech.qt.exclude-libraries"), File.pathSeparator);
+    		while(tokenizer.hasMoreElements()){
+    			if(library.equals(tokenizer.nextElement())){
+    				if (VERBOSE_LOADING)
+    					System.out.println("Skipped library (" + library + ") since it is listed in com.trolltech.qt.exclude-libraries");
+    				return;
+    			}
+    		}
+    	}
         String lib = qtLibraryName(library);
         loadLibrary(lib);
     }
