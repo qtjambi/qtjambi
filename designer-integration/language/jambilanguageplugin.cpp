@@ -202,6 +202,16 @@ bool JambiLanguage::signalMatchesSlot(const QString &signal, const QString &slot
     return result;
 }
 
+QString JambiLanguage::widgetBoxContents() const
+{
+    QFile f(":/jambiwidgetbox.xml");
+    if (f.open(QFile::ReadOnly)) {
+        return QString::fromLatin1(f.readAll());
+    }
+    qWarning("JambiLanguage::widgetBoxContents(), Failed to load widget box contents...");
+    return QString();
+}
+
 
 JambiExtraInfoExtension::JambiExtraInfoExtension(QWidget *widget,
                                                  QDesignerFormEditorInterface *core)

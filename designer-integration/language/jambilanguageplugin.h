@@ -87,6 +87,9 @@ public:
     virtual QDialog *createPromotionDialog(QDesignerFormEditorInterface *,QWidget *);
 
     virtual bool signalMatchesSlot(const QString &signal, const QString &slot) const;
+
+    virtual QString widgetBoxContents() const;
+
 private:
 
 };
