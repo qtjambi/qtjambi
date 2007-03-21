@@ -258,9 +258,6 @@ public class Launcher extends QWidget {
      * put them in the styles group box
      */
     private void setupStyles() {
-
-        try { ((Object) null).hashCode(); } catch (Exception e) { e.printStackTrace(); }
-
         List<String> styleKeys = QStyleFactory.keys();
 
         QLayout layout = ui.group_styles.layout();
