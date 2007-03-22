@@ -24,7 +24,7 @@ public class Utilities {
 
     private static final boolean VERBOSE_LOADING =
         System.getProperty("com.trolltech.qt.verbose-loading") != null;
-
+        
     /**
      * Returns true if the system property name contains any of the specified
      * substrings. If substrings is null or empty the function returns true
@@ -72,10 +72,31 @@ public class Utilities {
     	loadLibrary(lib);
     }
 
+    
+    
     public static boolean loadLibrary(String lib) {
         try {
+        	if(Boolean.parseBoolean(System.getProperty("com.trolltech.qt.implicit-loading", "true"))){
+	        	try {
+					String basePath = Utilities.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+	
+					if (!basePath.endsWith(File.separator))
+						basePath = basePath.substring(0, basePath.lastIndexOf(File.separator));
+	
+					String libraryPath = basePath + File.separator + "lib" + File.separator + lib;
+	
+					Runtime.getRuntime().load(libraryPath);
+					if (VERBOSE_LOADING)
+						System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
+					return true;
+				} catch (Error e) {
+					if (VERBOSE_LOADING)
+						e.printStackTrace();
+				}
+        	}
+			
             try {
-                String stripped = stripLibraryName(lib);
+            	String stripped = stripLibraryName(lib);
                 System.loadLibrary(stripped);
                 if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") in standard way as " + stripped);
                 return true;
@@ -83,6 +104,9 @@ public class Utilities {
                 if (VERBOSE_LOADING) e.printStackTrace();
             }
 
+            
+            
+            
             Runtime rt = Runtime.getRuntime();
 
             String jambiPath = System.getProperty("com.trolltech.qt.internal.jambipath");
@@ -90,6 +114,7 @@ public class Utilities {
                 String jambiPaths[] = jambiPath.split(File.pathSeparator);
                 for (String path : jambiPaths) {
                     File f = new File(path, lib);
+                    
                     if (f.exists()) {
                         rt.load(f.getAbsolutePath());
                         if (VERBOSE_LOADING)
