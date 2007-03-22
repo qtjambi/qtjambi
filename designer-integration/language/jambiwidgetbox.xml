@@ -66,7 +66,7 @@
     <category name="Spacers">
         <widget class="Spacer"  name="Horizontal Spacer" icon="widgets/spacer.png">
             <property name="orientation" >
-                <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
             </property>
             <property name="objectName">
                 <string notr="true">horizontalSpacer</string>
@@ -83,7 +83,7 @@
 
         <widget class="Spacer"  name="Vertical Spacer" icon="widgets/vspacer.png">
             <property name="orientation" >
-                <enum>com.trolltech.qt.core.Qt.Orientation.Vertical</enum>
+                <enum>Qt::Vertical</enum>
             </property>
             <property name="objectName">
                 <string notr="true">verticalSpacer</string>
