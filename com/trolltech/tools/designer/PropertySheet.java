@@ -75,7 +75,10 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public boolean hasReset(int index) {
-        return false;
+        if (index < 0)
+            return true;
+        Property p = properties.get(index);
+        return p.entry.reset != null;
     }
 
     public int indexOf(String name) {
@@ -200,6 +203,17 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public boolean reset(int index) {
+        if (hasReset(index)) {
+            try {
+                Property p = properties.get(index);
+                Object o = invokationTarget(p);
+                p.entry.reset.invoke(o);
+                return true;
+            } catch (Exception e) {
+                System.err.println("Resetting property failed: " + properties.get(index).entry.name + " for " + object);
+                e.printStackTrace();
+            }
+        }
         return false;
     }
 
