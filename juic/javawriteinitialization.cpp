@@ -579,6 +579,9 @@ void WriteInitialization::writeProperties(const QString &varName,
 
     output << option.indent << varName << ".setObjectName(" << javaFixString(varName) << ");\n";
 
+    int leftMargin, topMargin, rightMargin, bottomMargin;
+    leftMargin = topMargin = rightMargin = bottomMargin = -1;
+
     for (int i=0; i<lst.size(); ++i) {
         DomProperty *p = lst.at(i);
         QString propertyName = p->attributeName();
@@ -630,6 +633,22 @@ void WriteInitialization::writeProperties(const QString &varName,
 
             output << option.indent << varName << ".setFrameShape(" << shape << ");\n";
             output << option.indent << varName << ".setFrameShadow(QFrame.Shadow.Sunken);\n";
+            continue;
+
+        } else if (propertyName == QLatin1String("leftMargin")
+                   && p->kind() == DomProperty::Number) {
+            leftMargin = p->elementNumber();
+            continue;
+        } else if (propertyName == QLatin1String("topMargin") && p->kind() == DomProperty::Number) {
+            topMargin = p->elementNumber();
+            continue;
+        } else if (propertyName == QLatin1String("rightMargin")
+                   && p->kind() == DomProperty::Number) {
+            rightMargin = p->elementNumber();
+            continue;
+        } else if (propertyName == QLatin1String("bottomMargin")
+                   && p->kind() == DomProperty::Number) {
+            bottomMargin = p->elementNumber();
             continue;
         }
 
@@ -906,6 +925,16 @@ void WriteInitialization::writeProperties(const QString &varName,
             (*o) << ");\n";
         }
     }
+
+    if (leftMargin != -1 || topMargin != -1 || rightMargin != -1 || bottomMargin != -1) {
+        QString objectName = varName;
+        output << option.indent << objectName << QLatin1String("->setContentsMargins(")
+               << QString::number(leftMargin) << QLatin1String(", ")
+               << QString::number(topMargin) << QLatin1String(", ")
+               << QString::number(rightMargin) << QLatin1String(", ")
+               << QString::number(bottomMargin) << QLatin1String(");\n");
+    }
+
 }
 
 QString WriteInitialization::domColor2QString(DomColor *c)
