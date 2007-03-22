@@ -78,6 +78,7 @@ public:
 
         PropertyReader              = 0x00004000,
         PropertyWriter              = 0x00008000,
+        PropertyResetter            = 0x00010000,
 
         Final                       = FinalInJava | FinalInCpp
     };
@@ -106,6 +107,7 @@ public:
 
     bool isPropertyReader() const { return m_attributes & PropertyReader; }
     bool isPropertyWriter() const { return m_attributes & PropertyWriter; }
+    bool isPropertyResetter() const { return m_attributes & PropertyResetter; }
 
     bool isPrivate() const { return m_attributes & Private; }
     bool isProtected() const { return m_attributes & Protected; }
@@ -708,6 +710,7 @@ public:
 
     QPropertySpec *propertySpecForRead(const QString &name) const;
     QPropertySpec *propertySpecForWrite(const QString &name) const;
+    QPropertySpec *propertySpecForReset(const QString &name) const;
 
 private:
     uint m_namespace : 1;
@@ -758,6 +761,9 @@ public:
     QString designable() const { return m_designable; }
     void setDesignable(const QString &designable) { m_designable = designable; }
 
+    QString reset() const { return m_reset; }
+    void setReset(const QString &reset) { m_reset = reset; }
+
     int index() const { return m_index; }
     void setIndex(int index) { m_index = index; }
 
@@ -766,6 +772,7 @@ private:
     QString m_read;
     QString m_write;
     QString m_designable;
+    QString m_reset;
     TypeEntry *m_type;
     int m_index;
 };

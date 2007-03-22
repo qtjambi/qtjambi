@@ -675,8 +675,14 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
                 s << "    @com.trolltech.qt.QtPropertyOrder(" << spec->index() << ")" << endl;
             if (!spec->designable().isEmpty())
                 s << "    @com.trolltech.qt.QtPropertyDesignable(\"" << spec->designable() << "\")" << endl;
-        } else if (java_function->isPropertyWriter())
+        } else if (java_function->isPropertyWriter()) {
             s << "    @com.trolltech.qt.QtPropertyWriter(name=\"" << spec->name() << "\")" << endl;
+        } else if (java_function->isPropertyResetter()) {
+            s << "    @com.trolltech.qt.QtPropertyResetter(name=\"" << spec->name() << "\")"
+              << endl;
+        }
+
+
     }
 
     if (((excluded_attributes & MetaJavaAttributes::Private) == 0)

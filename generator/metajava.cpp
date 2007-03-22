@@ -951,6 +951,15 @@ QPropertySpec *MetaJavaClass::propertySpecForWrite(const QString &name) const
     return 0;
 }
 
+QPropertySpec *MetaJavaClass::propertySpecForReset(const QString &name) const
+{
+    for (int i=0; i<m_property_specs.size(); ++i) {
+        if (name == m_property_specs.at(i)->reset())
+            return m_property_specs.at(i);
+    }
+    return 0;
+}
+
 
 
 static bool functions_contains(const MetaJavaFunctionList &l, const MetaJavaFunction *func)

@@ -911,6 +911,13 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
 //                            qPrintable(java_function->name()),
 //                            qPrintable(write->name()));
                 }
+            } else if (QPropertySpec *reset =
+                       java_class->propertySpecForReset(java_function->name())) {
+                *java_function += MetaJavaAttributes::PropertyResetter;
+                java_function->setPropertySpec(reset);
+//                     printf("%s is resetter for %s\n",
+//                            qPrintable(java_function->name()),
+//                            qPrintable(reset->name()));
             }
 
             // Set the default value of the declaring class. This may be changed
@@ -924,10 +931,10 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
             java_function->setOriginalAttributes(java_function->attributes());
 
             bool isInvalidDestructor = java_function->isDestructor() && java_function->isPrivate();
-            bool isInvalidConstructor = java_function->isConstructor() 
+            bool isInvalidConstructor = java_function->isConstructor()
                 && (java_function->isPrivate() || java_function->isInvalid());
             if ((isInvalidDestructor || isInvalidConstructor)
-                && !java_class->hasNonPrivateConstructor()) { 
+                && !java_class->hasNonPrivateConstructor()) {
                 *java_class += MetaJavaAttributes::Final;
             } else if (java_function->isConstructor() && !java_function->isPrivate()) {
                 *java_class -= MetaJavaAttributes::Final;
@@ -1775,6 +1782,8 @@ void MetaJavaBuilder::parseQ_Property(MetaJavaClass *java_class, const QStringLi
                 spec->setWrite(l.at(pos+1));
             else if (l.at(pos) == QLatin1String("DESIGNABLE"))
                 spec->setDesignable(l.at(pos+1));
+            else if (l.at(pos) == QLatin1String("RESET"))
+                spec->setReset(l.at(pos+1));
         }
 
         java_class->addPropertySpec(spec);
