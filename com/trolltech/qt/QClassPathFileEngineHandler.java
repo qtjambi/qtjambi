@@ -522,17 +522,21 @@ class QClassPathEngine extends QAbstractFileEngine
 
     public static void addSearchPath(String path)
     {
-        if (classpaths == null)
-            findClassPaths();
-        
-        classpaths.add(makeUrl(path));
+    	synchronized(QClassPathEngine.class){ 
+	        if (classpaths == null)
+	            findClassPaths();
+	        
+	        classpaths.add(makeUrl(path));
+    	}
     }
 
     public static void removeSearchPath(String path)
     {
-        if (classpaths == null)
-            findClassPaths();
-        classpaths.remove(makeUrl(path));
+    	synchronized(QClassPathEngine.class){ 
+	        if (classpaths == null)
+	            findClassPaths();
+	        classpaths.remove(makeUrl(path));
+    	}
     }
 
     public void setFileName(String fileName)
@@ -553,12 +557,14 @@ class QClassPathEngine extends QAbstractFileEngine
         }
 
         if (m_selectedSource.equals("*")) {
-            if (classpaths == null)
-                findClassPaths();
-
-            for (String path : classpaths) {
-                addFromPath(path, m_baseName);
-            }
+        	synchronized(QClassPathEngine.class){ 
+	            if (classpaths == null)
+	                findClassPaths();
+	
+	            for (String path : classpaths) {
+	                addFromPath(path, m_baseName);
+	            }
+        	}
         } else {
             addFromPath(makeUrl(m_selectedSource), m_baseName);
         }
@@ -881,32 +887,34 @@ class QClassPathEngine extends QAbstractFileEngine
     }
 
     private static void findClassPaths() {
-        classpaths = new HashSet<String>();
-
-        String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
-        for (String p : paths)
-            classpaths.add(makeUrl(p));        
-
-        try {
-            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
-            while (urls.hasMoreElements()) {
-                URL url = (URL) urls.nextElement();
-                                
-                if (url.getProtocol().equals("jar")) try {
-                    
-                    String f = url.getFile();
-                    int bang = f.indexOf("!");                    
-                    if (bang >= 0)
-                        f = f.substring(0, bang);
-                                       
-                    classpaths.add(f);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    	synchronized(QClassPathEngine.class){ 
+	        classpaths = new HashSet<String>();
+	
+	        String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
+	        for (String p : paths)
+	            classpaths.add(makeUrl(p));        
+	
+	        try {
+	            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
+	            while (urls.hasMoreElements()) {
+	                URL url = (URL) urls.nextElement();
+	                                
+	                if (url.getProtocol().equals("jar")) try {
+	                    
+	                    String f = url.getFile();
+	                    int bang = f.indexOf("!");                    
+	                    if (bang >= 0)
+	                        f = f.substring(0, bang);
+	                                       
+	                    classpaths.add(f);
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
     }
 }
 
