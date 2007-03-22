@@ -102,8 +102,6 @@ void WriteInitialization::acceptUI(DomUI *node)
             fprintf(stderr, "'%s' isn't a valid widget\n", b.buddy.toLatin1().data());
             continue;
         }
-
-
         output << option.indent << b.objName << ".setBuddy(" << b.buddy << ");\n";
     }
 
@@ -650,6 +648,13 @@ void WriteInitialization::writeProperties(const QString &varName,
                    && p->kind() == DomProperty::Number) {
             bottomMargin = p->elementNumber();
             continue;
+        } else if (propertyName == QLatin1String("buddy") &&
+                   uic->customWidgetsInfo()->extends(className, QLatin1String("QLabel"))) {
+            QString name = p->elementCstring();
+            if (name.isEmpty())
+                name = p->elementString()->text();
+            m_buddies.append(Buddy(varName, name));
+            continue;
         }
 
         bool stdset = m_stdsetdef;
@@ -682,11 +687,7 @@ void WriteInitialization::writeProperties(const QString &varName,
                   .arg(c->elementBlue()); }
             break;
         case DomProperty::Cstring:
-            if (propertyName == QLatin1String("buddy") && uic->customWidgetsInfo()->extends(className, QLatin1String("QLabel"))) {
-                m_buddies.append(Buddy(varName, p->elementCstring()));
-            } else {
-                propertyValue = javaFixString(p->elementCstring());
-            }
+            propertyValue = javaFixString(p->elementCstring());
             break;
         case DomProperty::Cursor:
             propertyValue = QString::fromLatin1("new QCursor(%1)")
