@@ -19,6 +19,7 @@ import com.trolltech.qt.core.*;
 public abstract class FakeProperty extends Property {
 
     public FakeProperty(String name) {
+        attribute = true;
         entry = new QtPropertyManager.Entry(name);
         try {
             entry.read = FakeProperty.class.getMethod("read");

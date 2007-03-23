@@ -14,6 +14,9 @@
 package com.trolltech.tools.designer.propertysheet;
 
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.core.*;
+
+import java.util.*;
 
 public class TabWidgetProperty extends FakeProperty {
 
@@ -51,4 +54,14 @@ public class TabWidgetProperty extends FakeProperty {
     }
 
     private QTabWidget tab;
+
+    public static void initialize(List<Property> properties, QObject object) {
+        if (object instanceof QTabWidget) {
+            QTabWidget tab = (QTabWidget) object;
+            properties.add(new TabWidgetProperty(tab, CURRENT_TAB_NAME));
+            properties.add(new TabWidgetProperty(tab, CURRENT_TAB_TEXT));
+            properties.add(new TabWidgetProperty(tab, CURRENT_TAB_TOOLTIP));
+            properties.add(new TabWidgetProperty(tab, CURRENT_TAB_ICON));
+        }
+    }
 }

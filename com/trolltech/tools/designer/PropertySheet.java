@@ -1,7 +1,6 @@
 package com.trolltech.tools.designer;
 
 import com.trolltech.qt.*;
-import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.tools.designer.propertysheet.*;
 
@@ -24,7 +23,9 @@ class NamedIntSet {
 
 public class PropertySheet extends JambiPropertySheet {
 
+    private static List<Class<? extends Property>> CUSTOM_PROPERTIES = new ArrayList<Class<? extends Property>>();
     private static Set<String> INVISIBLE_PROPERTIES;
+
     static {
         INVISIBLE_PROPERTIES = new HashSet<String>();
         INVISIBLE_PROPERTIES.add("backgroundRole");
@@ -47,6 +48,15 @@ public class PropertySheet extends JambiPropertySheet {
         INVISIBLE_PROPERTIES.add("validator");
         INVISIBLE_PROPERTIES.add("actionGroup");
         INVISIBLE_PROPERTIES.add("buddy");
+
+        addCustomProperty(WidgetLayoutProperty.class);
+        addCustomProperty(LayoutProperty.class);
+        addCustomProperty(TabWidgetProperty.class);
+        addCustomProperty(BuddyProperty.class);
+    }
+
+    public static void addCustomProperty(Class<? extends Property> handler) {
+        CUSTOM_PROPERTIES.add(handler);
     }
 
 
@@ -54,8 +64,6 @@ public class PropertySheet extends JambiPropertySheet {
         super(parent);
         this.object = object;
         build();
-
-
     }
 
     public boolean canAddDynamicProperty(String propertyName, Object value) {
@@ -91,7 +99,9 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public boolean isAttribute(int index) {
-        return false;
+        if (index < 0)
+            return false;
+        return properties.get(index).attribute;
     }
 
     public boolean isChanged(int index) {
@@ -218,7 +228,10 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public void setAttribute(int index, boolean attribute) {
-
+        if (index < 0)
+            return;
+        Property p = properties.get(index);
+        p.attribute = true;        
     }
 
     public void setChanged(int index, boolean changed) {
@@ -311,27 +324,13 @@ public class PropertySheet extends JambiPropertySheet {
         this.properties = new ArrayList<Property>();
         this.properties.addAll(properties);
 
-        if (object instanceof QWidget) {
-            QWidget widget = (QWidget) object;
-            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_LEFT_MARGIN));
-            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_RIGHT_MARGIN));
-            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_BOTTOM_MARGIN));
-            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_TOP_MARGIN));
-            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_HORIZONTAL_SPACING));
-            this.properties.add(new LayoutProperty(widget, LayoutProperty.LAYOUT_VERTICAL_SPACING));
-        }
-
-        if (object instanceof QLabel) {
-            QLabel label = (QLabel) object;
-            this.properties.add(new BuddyProperty(label));
-        }
-
-        if (object instanceof QTabWidget) {
-            QTabWidget tab = (QTabWidget) object;
-            this.properties.add(new TabWidgetProperty(tab, TabWidgetProperty.CURRENT_TAB_NAME));
-            this.properties.add(new TabWidgetProperty(tab, TabWidgetProperty.CURRENT_TAB_TEXT));
-            this.properties.add(new TabWidgetProperty(tab, TabWidgetProperty.CURRENT_TAB_TOOLTIP));
-            this.properties.add(new TabWidgetProperty(tab, TabWidgetProperty.CURRENT_TAB_ICON));
+        for (Class<? extends Property> c : CUSTOM_PROPERTIES) {
+            try {
+                Method m = c.getMethod("initialize", List.class, QObject.class);
+                m.invoke(null, this.properties, object);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

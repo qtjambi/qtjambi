@@ -22,6 +22,7 @@ public class Property implements Comparable {
     public int subclassLevel;
     public boolean changed;
     public boolean visible;
+    public boolean attribute;
 
     public boolean isPropertyInvokationTarget() {
         return false;

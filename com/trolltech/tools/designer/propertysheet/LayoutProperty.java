@@ -13,65 +13,49 @@
 
 package com.trolltech.tools.designer.propertysheet;
 
-import com.trolltech.qt.*;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.*;
+
+import java.util.*;
 
 public class LayoutProperty extends FakeProperty {
-    private QWidget object;
 
-    public static String LAYOUT_LEFT_MARGIN = "layoutLeftMargin";
-    public static String LAYOUT_RIGHT_MARGIN = "layoutRightMargin";
-    public static String LAYOUT_BOTTOM_MARGIN = "layoutBottomMargin";
-    public static String LAYOUT_TOP_MARGIN = "layoutTopMargin";
-    public static String LAYOUT_HORIZONTAL_SPACING = "layoutHorizontalSpacing";
-    public static String LAYOUT_VERTICAL_SPACING = "layoutVerticalSpacing";
+    private static final String RIGHT_MARGIN       = "rightMargin";
+    private static final String LEFT_MARGIN        = "leftMargin";
+    private static final String TOP_MARGIN         = "topMargin";
+    private static final String BOTTOM_MARGIN      = "bottomMargin";
+    private static final String VERTICAL_SPACING   = "verticalSpacing";
+    private static final String HORIZONTAL_SPACING = "horizontalSpacing";
 
-    public LayoutProperty(QWidget widget, String name) {
+    public LayoutProperty(QLayout layout, String name) {
         super(name);
-        this.object = widget;
-        groupName = "Layout";
-        subclassLevel = 1024; // Just an arbitrary high number...
-    }
+        this.layout = layout;
 
-    private QWidget widget() {
-        if (object instanceof QTabWidget)
-            return ((QTabWidget) object).currentWidget();
-        return object;
+        attribute = false;
+
+        System.out.println("created " + name + " for " + layout);
     }
 
     public Object read() {
-        if (!designable())
-            return 0;
-        QLayout layout = widget().layout();
-        if (entry.name == LAYOUT_RIGHT_MARGIN) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            layout.getContentsMargins(null, null, np, null);
-            return np.intValue();
+        if (entry.name.endsWith("Margin")) {
+            QRect c = layout.contentsRect();
+            QRect g = layout.geometry();
+            if (entry.name == RIGHT_MARGIN) return g.right() - c.right();
+            if (entry.name == LEFT_MARGIN) return g.left() - c.left();
+            if (entry.name == TOP_MARGIN) return g.top() - c.top();
+            if (entry.name == BOTTOM_MARGIN) return g.bottom() - c.bottom();
         }
-        if (entry.name == LAYOUT_LEFT_MARGIN) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            layout.getContentsMargins(np, null, null, null);
-            return np.intValue();
-        }
-        if (entry.name == LAYOUT_BOTTOM_MARGIN) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            layout.getContentsMargins(null, null, null, np);
-            return np.intValue();
-        }
-        if (entry.name == LAYOUT_TOP_MARGIN) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            layout.getContentsMargins(null, np, null, null);
-            return np.intValue();
-        }
-        if (entry.name == LAYOUT_HORIZONTAL_SPACING) return ((QGridLayout) layout).horizontalSpacing();
-        if (entry.name == LAYOUT_VERTICAL_SPACING) return ((QGridLayout) layout).verticalSpacing();
-        return 0;
+        if (entry.name == VERTICAL_SPACING) return ((QGridLayout) layout).verticalSpacing();
+        if (entry.name == HORIZONTAL_SPACING) return ((QGridLayout) layout).horizontalSpacing();
+        return null;
     }
 
     public void write(Object value) {
-        int x = (Integer) value;
-        QLayout layout = widget().layout();
+        System.out.println("writin property: " + entry.name + " to " + layout.objectName());
+        changed = true;
         if (entry.name.endsWith("Margin")) {
+            int x = (Integer) value;
             QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
             QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
             QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
@@ -79,28 +63,30 @@ public class LayoutProperty extends FakeProperty {
 
             layout.getContentsMargins(left, top, right, bottom);
 
-            if (entry.name == LAYOUT_RIGHT_MARGIN) right.setIntValue(x);
-            if (entry.name == LAYOUT_LEFT_MARGIN) left.setIntValue(x);
-            if (entry.name == LAYOUT_TOP_MARGIN) top.setIntValue(x);
-            if (entry.name == LAYOUT_BOTTOM_MARGIN) bottom.setIntValue(x);
+            if (entry.name == RIGHT_MARGIN) right.setIntValue(x);
+            if (entry.name == LEFT_MARGIN) left.setIntValue(x);
+            if (entry.name == TOP_MARGIN) top.setIntValue(x);
+            if (entry.name == BOTTOM_MARGIN) bottom.setIntValue(x);
 
             layout.setContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
-        } else if (entry.name == LAYOUT_HORIZONTAL_SPACING) {
-            ((QGridLayout) layout).setHorizontalSpacing(x);
-        } else if (entry.name == LAYOUT_VERTICAL_SPACING) {
-            ((QGridLayout) layout).setVerticalSpacing(x);
         }
     }
 
-    public boolean designable() {
-        QWidget widget = widget();
-        if (widget != null && widget.layout() != null) {
-            QLayout l = object.layout();
-            return entry.name == LAYOUT_HORIZONTAL_SPACING
-                    || entry.name == LAYOUT_VERTICAL_SPACING
-                    ? l instanceof QGridLayout
-                    : true;
+    public static void initialize(List<Property> properties, QObject object) {
+        if (object instanceof QLayout) {
+            QLayout l = (QLayout) object;
+            properties.add(new LayoutProperty(l, RIGHT_MARGIN));
+            properties.add(new LayoutProperty(l, LEFT_MARGIN));
+            properties.add(new LayoutProperty(l, TOP_MARGIN));
+            properties.add(new LayoutProperty(l, BOTTOM_MARGIN));
+
+
+            if (object instanceof QGridLayout) {
+                properties.add(new LayoutProperty(l, VERTICAL_SPACING));
+                properties.add(new LayoutProperty(l, HORIZONTAL_SPACING));
+            }
         }
-        return false;
     }
+
+    private QLayout layout;
 }

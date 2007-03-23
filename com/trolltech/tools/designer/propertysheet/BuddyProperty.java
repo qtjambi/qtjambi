@@ -16,6 +16,8 @@ package com.trolltech.tools.designer.propertysheet;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+import java.util.*;
+
 public class BuddyProperty extends FakeProperty {
     public BuddyProperty(QLabel label) {
         super("buddy");
@@ -42,4 +44,11 @@ public class BuddyProperty extends FakeProperty {
     }
 
     private QLabel label;
+
+    public static void initialize(List<Property> properties, QObject object) {
+        if (object instanceof QLabel) {
+            QLabel label = (QLabel) object;
+            properties.add(new BuddyProperty(label));
+        }
+    }
 }
