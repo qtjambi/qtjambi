@@ -68,8 +68,9 @@ public class WidgetLayoutProperty extends FakeProperty {
 
     public void write(Object value) {
         PropertySheet sheet = layoutPropertySheet();
-        if (sheet != null)
+        if (sheet != null) {
             sheet.setProperty(sheet.indexOf(alterEgoName), value);
+        }
     }
 
     public boolean designable() {

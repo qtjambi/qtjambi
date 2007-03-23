@@ -275,6 +275,7 @@ public class PropertySheet extends JambiPropertySheet {
             }
             Property p = properties.get(index);
             p.entry.write.invoke(invokationTarget(p), value);
+            p.changed = true;
         } catch (Exception e) {
             System.out.println("Writing property failed: " + properties.get(index).entry.name + " for " + object + " with " + value);
             e.printStackTrace();

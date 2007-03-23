@@ -446,6 +446,12 @@ public class QUiLoader {
             } else if (property.equals("icon") && o instanceof QWidget && ((QWidget) o).isWindow()) {
                 ((QWidget) o).setWindowIcon((QIcon) value);
                 return;
+            } else if (property.endsWith("Margin") && o instanceof QLayout) {
+                writeLayoutMargin((QLayout) o, property, value);
+                return;
+            } else if (property.endsWith("Spacing") && o instanceof QGridLayout) {
+                writeLayoutSpacing((QGridLayout) o, property, value);
+                return;
             }
 
             if (value == null)
@@ -461,6 +467,29 @@ public class QUiLoader {
             e.printStackTrace();
         }
 
+    }
+
+    private void writeLayoutMargin(QLayout l, String property, Object value) {
+        int val = (Integer) value;
+        int x = (Integer) value;
+        QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
+
+        l.getContentsMargins(left, top, right, bottom);
+
+        if (property.equals("rightMargin")) right.setIntValue(x);
+        else if (property.equals("leftMargin")) left.setIntValue(x);
+        else if (property.equals("topMargin")) top.setIntValue(x);
+        else if (property.equals("bottomMargin")) bottom.setIntValue(x);
+
+        l.setContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+    }
+
+    private void writeLayoutSpacing(QGridLayout o, String property, Object value) {
+        if (property.equals("verticalSpacing")) o.setVerticalSpacing((Integer) value);
+        else if (property.equals("horizontalSpacing")) o.setHorizontalSpacing((Integer) value);
     }
 
     private void parseConnections(QDomNode node) throws QUiLoaderException {

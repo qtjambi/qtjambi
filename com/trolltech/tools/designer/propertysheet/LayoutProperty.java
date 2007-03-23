@@ -43,12 +43,12 @@ public class LayoutProperty extends FakeProperty {
             if (entry.name == TOP_MARGIN) return c.top() - g.top();
             if (entry.name == BOTTOM_MARGIN) return g.bottom() - c.bottom();
         }
-        if (entry.name == VERTICAL_SPACING) return ((QGridLayout) layout).verticalSpacing();
-        if (entry.name == HORIZONTAL_SPACING) return ((QGridLayout) layout).horizontalSpacing();
         return null;
     }
 
     public void write(Object value) {
+
+        System.out.println("writing: " + entry.name);
         changed = true;
         if (entry.name.endsWith("Margin")) {
             int x = (Integer) value;
@@ -60,17 +60,15 @@ public class LayoutProperty extends FakeProperty {
             layout.getContentsMargins(left, top, right, bottom);
 
             if (entry.name == RIGHT_MARGIN) right.setIntValue(x);
-            if (entry.name == LEFT_MARGIN) left.setIntValue(x);
-            if (entry.name == TOP_MARGIN) top.setIntValue(x);
-            if (entry.name == BOTTOM_MARGIN) bottom.setIntValue(x);
+            else if (entry.name == LEFT_MARGIN) left.setIntValue(x);
+            else if (entry.name == TOP_MARGIN) top.setIntValue(x);
+            else if (entry.name == BOTTOM_MARGIN) bottom.setIntValue(x);
 
             layout.setContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
         }
     }
 
     public boolean designable() {
-        if (entry.name == VERTICAL_SPACING || entry.name == HORIZONTAL_SPACING)
-            return layout instanceof QGridLayout;
         return true;
     }
 
@@ -81,10 +79,6 @@ public class LayoutProperty extends FakeProperty {
             properties.add(new LayoutProperty(l, LEFT_MARGIN));
             properties.add(new LayoutProperty(l, TOP_MARGIN));
             properties.add(new LayoutProperty(l, BOTTOM_MARGIN));
-            if (object instanceof QGridLayout) {
-                properties.add(new LayoutProperty(l, VERTICAL_SPACING));
-                properties.add(new LayoutProperty(l, HORIZONTAL_SPACING));
-            }
         }
     }
 
