@@ -75,7 +75,7 @@ public class WidgetLayoutProperty extends FakeProperty {
 
     public boolean designable() {
         PropertySheet sheet = layoutPropertySheet();
-        return sheet != null ? sheet.isVisible(sheet.indexOf(alterEgoName)) : false;
+        return sheet != null && sheet.isVisible(sheet.indexOf(alterEgoName));
     }
 
     private PropertySheet layoutPropertySheet() {
