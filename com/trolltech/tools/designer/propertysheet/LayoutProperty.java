@@ -47,8 +47,6 @@ public class LayoutProperty extends FakeProperty {
     }
 
     public void write(Object value) {
-
-        System.out.println("writing: " + entry.name);
         changed = true;
         if (entry.name.endsWith("Margin")) {
             int x = (Integer) value;
