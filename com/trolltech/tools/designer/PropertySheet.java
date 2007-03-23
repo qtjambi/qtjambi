@@ -59,11 +59,28 @@ public class PropertySheet extends JambiPropertySheet {
         CUSTOM_PROPERTIES.add(handler);
     }
 
-
-    public PropertySheet(QObject object, QObject parent) {
+    private PropertySheet(QObject object, QObject parent) {
         super(parent);
         this.object = object;
         build();
+    }
+
+    public static PropertySheet get(QObject object) {
+        return propertySheets.get(object);
+    }
+
+    public static PropertySheet create(QObject object, QObject parent) {
+        PropertySheet sheet = propertySheets.get(object);
+        if (sheet == null) {
+            sheet = new PropertySheet(object, parent);
+            propertySheets.put(object, sheet);
+        }
+        return sheet;
+    }
+
+    @Override
+    protected void disposed() {
+        propertySheets.remove(object);
     }
 
     public boolean canAddDynamicProperty(String propertyName, Object value) {
@@ -335,6 +352,7 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     private List<Property> properties;
-
     private QObject object;
+
+    private static HashMap<QObject, PropertySheet> propertySheets = new HashMap<QObject, PropertySheet>();
 }

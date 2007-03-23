@@ -13,99 +13,20 @@
 
 package com.trolltech.tools.designer.propertysheet;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.tools.designer.*;
 
 import java.util.*;
 
 public class WidgetLayoutProperty extends FakeProperty {
-    private QWidget object;
 
-    public static String LAYOUT_LEFT_MARGIN = "layoutLeftMargin";
-    public static String LAYOUT_RIGHT_MARGIN = "layoutRightMargin";
-    public static String LAYOUT_BOTTOM_MARGIN = "layoutBottomMargin";
-    public static String LAYOUT_TOP_MARGIN = "layoutTopMargin";
-    public static String LAYOUT_HORIZONTAL_SPACING = "layoutHorizontalSpacing";
-    public static String LAYOUT_VERTICAL_SPACING = "layoutVerticalSpacing";
-
-    public WidgetLayoutProperty(QWidget widget, String name) {
-        super(name);
-        this.object = widget;
-        groupName = "Layout";
-        subclassLevel = 1024; // Just an arbitrary high number...
-    }
-
-    private QWidget widget() {
-        if (object instanceof QTabWidget)
-            return ((QTabWidget) object).currentWidget();
-        return object;
-    }
-
-    public Object read() {
-        if (!designable())
-            return 0;
-        QLayout layout = widget().layout();
-        if (entry.name == LAYOUT_RIGHT_MARGIN) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            layout.getContentsMargins(null, null, np, null);
-            return np.intValue();
-        }
-        if (entry.name == LAYOUT_LEFT_MARGIN) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            layout.getContentsMargins(np, null, null, null);
-            return np.intValue();
-        }
-        if (entry.name == LAYOUT_BOTTOM_MARGIN) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            layout.getContentsMargins(null, null, null, np);
-            return np.intValue();
-        }
-        if (entry.name == LAYOUT_TOP_MARGIN) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            layout.getContentsMargins(null, np, null, null);
-            return np.intValue();
-        }
-        if (entry.name == LAYOUT_HORIZONTAL_SPACING) return ((QGridLayout) layout).horizontalSpacing();
-        if (entry.name == LAYOUT_VERTICAL_SPACING) return ((QGridLayout) layout).verticalSpacing();
-        return 0;
-    }
-
-    public void write(Object value) {
-        int x = (Integer) value;
-        QLayout layout = widget().layout();
-        if (entry.name.endsWith("Margin")) {
-            QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
-
-            layout.getContentsMargins(left, top, right, bottom);
-
-            if (entry.name == LAYOUT_RIGHT_MARGIN) right.setIntValue(x);
-            if (entry.name == LAYOUT_LEFT_MARGIN) left.setIntValue(x);
-            if (entry.name == LAYOUT_TOP_MARGIN) top.setIntValue(x);
-            if (entry.name == LAYOUT_BOTTOM_MARGIN) bottom.setIntValue(x);
-
-            layout.setContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
-        } else if (entry.name == LAYOUT_HORIZONTAL_SPACING) {
-            ((QGridLayout) layout).setHorizontalSpacing(x);
-        } else if (entry.name == LAYOUT_VERTICAL_SPACING) {
-            ((QGridLayout) layout).setVerticalSpacing(x);
-        }
-    }
-
-    public boolean designable() {
-        QWidget widget = widget();
-        if (widget != null && widget.layout() != null) {
-            QLayout l = object.layout();
-            return entry.name == LAYOUT_HORIZONTAL_SPACING
-                    || entry.name == LAYOUT_VERTICAL_SPACING
-                    ? l instanceof QGridLayout
-                    : true;
-        }
-        return false;
-    }
+    public static final String LAYOUT_LEFT_MARGIN = "layoutLeftMargin";
+    public static final String LAYOUT_RIGHT_MARGIN = "layoutRightMargin";
+    public static final String LAYOUT_BOTTOM_MARGIN = "layoutBottomMargin";
+    public static final String LAYOUT_TOP_MARGIN = "layoutTopMargin";
+    public static final String LAYOUT_HORIZONTAL_SPACING = "layoutHorizontalSpacing";
+    public static final String LAYOUT_VERTICAL_SPACING = "layoutVerticalSpacing";
 
     public static void initialize(List<Property> properties, QObject object) {
         if (object instanceof QTabWidget
@@ -124,4 +45,43 @@ public class WidgetLayoutProperty extends FakeProperty {
             properties.add(new WidgetLayoutProperty(widget, LAYOUT_VERTICAL_SPACING));
         }
     }
+
+
+    public WidgetLayoutProperty(QWidget widget, String name) {
+        super(name);
+        this.widget = widget;
+        groupName = "Layout";
+        subclassLevel = 1024; // Just an arbitrary high number...
+
+        if (name == LAYOUT_LEFT_MARGIN) alterEgoName = LayoutProperty.LEFT_MARGIN;
+        else if (name == LAYOUT_RIGHT_MARGIN) alterEgoName = LayoutProperty.RIGHT_MARGIN;
+        else if (name == LAYOUT_BOTTOM_MARGIN) alterEgoName = LayoutProperty.BOTTOM_MARGIN;
+        else if (name == LAYOUT_TOP_MARGIN) alterEgoName = LayoutProperty.TOP_MARGIN;
+        else if (name == LAYOUT_HORIZONTAL_SPACING) alterEgoName = LayoutProperty.HORIZONTAL_SPACING;
+        else if (name == LAYOUT_VERTICAL_SPACING) alterEgoName = LayoutProperty.VERTICAL_SPACING;
+    }
+
+    public Object read() {
+        PropertySheet sheet = layoutPropertySheet();
+        return sheet != null ? sheet.property(sheet.indexOf(alterEgoName)) : null;
+    }
+
+    public void write(Object value) {
+        PropertySheet sheet = layoutPropertySheet();
+        if (sheet != null)
+            sheet.setProperty(sheet.indexOf(alterEgoName), value);
+    }
+
+    public boolean designable() {
+        PropertySheet sheet = layoutPropertySheet();
+        return sheet != null ? sheet.isVisible(sheet.indexOf(alterEgoName)) : false;
+    }
+
+    private PropertySheet layoutPropertySheet() {
+        QLayout layout = widget.layout();
+        return layout != null ? PropertySheet.get(layout) : null;
+    }
+
+    private QWidget widget;
+    private String alterEgoName;
 }

@@ -287,14 +287,15 @@ QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &
         if (cl == 0)
             return 0;
 
-        jmethodID id = env->GetMethodID(cl, "<init>", "(Lcom/trolltech/qt/core/QObject;"
-                                                       "Lcom/trolltech/qt/core/QObject;)V");
+        jmethodID id = env->GetStaticMethodID(cl, "create",
+                                              "(Lcom/trolltech/qt/core/QObject;"
+                                              "Lcom/trolltech/qt/core/QObject;)Lcom/trolltech/tools/designer/PropertySheet;");
         Q_ASSERT(id);
 
-        jobject jps = env->NewObject(cl, id,
-                                     qtjambi_from_QObject(env, object),
-                                     qtjambi_from_QObject(env, parent)
-                                     );
+        jobject jps = env->CallStaticObjectMethod(cl, id,
+                                                  qtjambi_from_QObject(env, object),
+                                                  qtjambi_from_QObject(env, parent)
+                                                  );
 
         QObject *qps = qtjambi_to_qobject(env, jps);
         Q_ASSERT(qps);

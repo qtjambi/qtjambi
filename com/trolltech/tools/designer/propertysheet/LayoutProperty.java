@@ -21,20 +21,17 @@ import java.util.*;
 
 public class LayoutProperty extends FakeProperty {
 
-    private static final String RIGHT_MARGIN       = "rightMargin";
-    private static final String LEFT_MARGIN        = "leftMargin";
-    private static final String TOP_MARGIN         = "topMargin";
-    private static final String BOTTOM_MARGIN      = "bottomMargin";
-    private static final String VERTICAL_SPACING   = "verticalSpacing";
-    private static final String HORIZONTAL_SPACING = "horizontalSpacing";
+    public static final String RIGHT_MARGIN       = "rightMargin";
+    public static final String LEFT_MARGIN        = "leftMargin";
+    public static final String TOP_MARGIN         = "topMargin";
+    public static final String BOTTOM_MARGIN      = "bottomMargin";
+    public static final String VERTICAL_SPACING   = "verticalSpacing";
+    public static final String HORIZONTAL_SPACING = "horizontalSpacing";
 
     public LayoutProperty(QLayout layout, String name) {
         super(name);
         this.layout = layout;
-
         attribute = false;
-
-        System.out.println("created " + name + " for " + layout);
     }
 
     public Object read() {
@@ -42,8 +39,8 @@ public class LayoutProperty extends FakeProperty {
             QRect c = layout.contentsRect();
             QRect g = layout.geometry();
             if (entry.name == RIGHT_MARGIN) return g.right() - c.right();
-            if (entry.name == LEFT_MARGIN) return g.left() - c.left();
-            if (entry.name == TOP_MARGIN) return g.top() - c.top();
+            if (entry.name == LEFT_MARGIN) return c.left() - g.left();
+            if (entry.name == TOP_MARGIN) return c.top() - g.top();
             if (entry.name == BOTTOM_MARGIN) return g.bottom() - c.bottom();
         }
         if (entry.name == VERTICAL_SPACING) return ((QGridLayout) layout).verticalSpacing();
@@ -52,7 +49,6 @@ public class LayoutProperty extends FakeProperty {
     }
 
     public void write(Object value) {
-        System.out.println("writin property: " + entry.name + " to " + layout.objectName());
         changed = true;
         if (entry.name.endsWith("Margin")) {
             int x = (Integer) value;
@@ -72,6 +68,12 @@ public class LayoutProperty extends FakeProperty {
         }
     }
 
+    public boolean designable() {
+        if (entry.name == VERTICAL_SPACING || entry.name == HORIZONTAL_SPACING)
+            return layout instanceof QGridLayout;
+        return true;
+    }
+
     public static void initialize(List<Property> properties, QObject object) {
         if (object instanceof QLayout) {
             QLayout l = (QLayout) object;
@@ -79,8 +81,6 @@ public class LayoutProperty extends FakeProperty {
             properties.add(new LayoutProperty(l, LEFT_MARGIN));
             properties.add(new LayoutProperty(l, TOP_MARGIN));
             properties.add(new LayoutProperty(l, BOTTOM_MARGIN));
-
-
             if (object instanceof QGridLayout) {
                 properties.add(new LayoutProperty(l, VERTICAL_SPACING));
                 properties.add(new LayoutProperty(l, HORIZONTAL_SPACING));
