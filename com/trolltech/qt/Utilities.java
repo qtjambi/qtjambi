@@ -19,12 +19,14 @@ public class Utilities {
 
     public static OperatingSystem operatingSystem = decideOperatingSystem();
     public static Configuration configuration = decideConfiguration();
+    public static boolean implicitLoading = !matchProperty("com.trolltech.qt.implicit-loading", "false");
+    public static String libSubPath = decideLibSubPath();
 
     private static final String DEBUG_SUFFIX = "_debuglib";
 
     private static final boolean VERBOSE_LOADING =
         System.getProperty("com.trolltech.qt.verbose-loading") != null;
-        
+
     /**
      * Returns true if the system property name contains any of the specified
      * substrings. If substrings is null or empty the function returns true
@@ -72,29 +74,33 @@ public class Utilities {
     	loadLibrary(lib);
     }
 
-    
-    
+
     public static boolean loadLibrary(String lib) {
         try {
-        	if(Boolean.parseBoolean(System.getProperty("com.trolltech.qt.implicit-loading", "true"))){
-	        	try {
-					String basePath = Utilities.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-	
-					if (!basePath.endsWith(File.separator))
-						basePath = basePath.substring(0, basePath.lastIndexOf(File.separator));
-	
-					String libraryPath = basePath + File.separator + "lib" + File.separator + lib;
-	
-					Runtime.getRuntime().load(libraryPath);
-					if (VERBOSE_LOADING)
-						System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
-					return true;
-				} catch (Error e) {
-					if (VERBOSE_LOADING)
-						e.printStackTrace();
-				}
-        	}
-			
+            if(implicitLoading){
+                try {
+                    URI uri = Utilities.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+
+                    String basePath;
+                    File path = new File(uri);
+                    if (path.isDirectory())
+                        basePath = path.getAbsolutePath();
+                    else
+                        basePath = path.getParentFile().getAbsolutePath();
+
+                    String libraryPath = basePath + File.separator + libSubPath + File.separator + lib;
+                    if (new File(libraryPath).exists()) {
+                        Runtime.getRuntime().load(libraryPath);
+                        if (VERBOSE_LOADING)
+                            System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
+                    }
+                    return true;
+                } catch (Error e) {
+                    if (VERBOSE_LOADING)
+                        e.printStackTrace();
+                }
+            }
+
             try {
             	String stripped = stripLibraryName(lib);
                 System.loadLibrary(stripped);
@@ -104,9 +110,9 @@ public class Utilities {
                 if (VERBOSE_LOADING) e.printStackTrace();
             }
 
-            
-            
-            
+
+
+
             Runtime rt = Runtime.getRuntime();
 
             String jambiPath = System.getProperty("com.trolltech.qt.internal.jambipath");
@@ -114,7 +120,7 @@ public class Utilities {
                 String jambiPaths[] = jambiPath.split(File.pathSeparator);
                 for (String path : jambiPaths) {
                     File f = new File(path, lib);
-                    
+
                     if (f.exists()) {
                         rt.load(f.getAbsolutePath());
                         if (VERBOSE_LOADING)
@@ -122,11 +128,11 @@ public class Utilities {
                         return true;
                     }
                 }
-                
+
                 if (VERBOSE_LOADING && jambiPath.length() > 0) {
                     System.out.println("Failed to find " + lib + " in " + jambiPath);
                 }
-                
+
             }
 
             // First look in the library path for the libraries...
@@ -207,6 +213,12 @@ public class Utilities {
         if (System.getProperty("com.trolltech.qt.debug") != null)
             return Configuration.Debug;
         return Configuration.Release;
+    }
+
+    private static String decideLibSubPath() {
+        return operatingSystem == OperatingSystem.Windows
+                                ? "bin"
+                                : "lib";
     }
 
 
