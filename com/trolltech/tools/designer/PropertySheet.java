@@ -235,6 +235,7 @@ public class PropertySheet extends JambiPropertySheet {
                 Property p = properties.get(index);
                 Object o = invokationTarget(p);
                 p.entry.reset.invoke(o);
+                p.changed = false;
                 return true;
             } catch (Exception e) {
                 System.err.println("Resetting property failed: " + properties.get(index).entry.name + " for " + object);
