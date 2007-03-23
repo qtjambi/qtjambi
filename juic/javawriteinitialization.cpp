@@ -929,7 +929,7 @@ void WriteInitialization::writeProperties(const QString &varName,
 
     if (leftMargin != -1 || topMargin != -1 || rightMargin != -1 || bottomMargin != -1) {
         QString objectName = varName;
-        output << option.indent << objectName << QLatin1String("->setContentsMargins(")
+        output << option.indent << objectName << QLatin1String(".setContentsMargins(")
                << QString::number(leftMargin) << QLatin1String(", ")
                << QString::number(topMargin) << QLatin1String(", ")
                << QString::number(rightMargin) << QLatin1String(", ")
