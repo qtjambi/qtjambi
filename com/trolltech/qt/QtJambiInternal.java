@@ -60,17 +60,32 @@ public class QtJambiInternal {
         }
 
         final void execute() {
-            boolean updateSender = sender!=null;
+            boolean updateSender = sender != null;
             long oldSender = 0;
+            QSignalEmitter oldEmitter = null;
             if (updateSender) {
                 oldSender = QtJambiInternal.swapQObjectSender(((QObject) connection.receiver).nativeId(),
                                                                sender.nativeId(), true);
+                oldEmitter = QSignalEmitter.currentSender.get();
+                QSignalEmitter.currentSender.set(sender);
             }
-            invokeSlot(connection.receiver, connection.slotId,
-                    connection.returnType, arguments, connection.convertTypes);
+            try {
+                connection.slot.invoke(connection.receiver, arguments);
+            } catch (IllegalAccessException e) {
+                QtJambiInternal.invokeSlot(connection.receiver, connection.slotId,
+                                           connection.returnType,
+                                           connection.args, connection.convertTypes);
+            } catch (InvocationTargetException e) {
+                System.err.printf("Exception while executing queued connection: sender=%s, receiver=%s %s\n",
+                        sender != null ? sender.getClass().getName() : "N/A",
+                        connection.receiver,
+                        connection.slot.toString());
+                e.getCause().printStackTrace();
+            }
             if (updateSender) {
                 QtJambiInternal.swapQObjectSender(((QObject) connection.receiver).nativeId(),
                                                   oldSender, false);
+                QSignalEmitter.currentSender.set(oldEmitter);
             }
         }
 

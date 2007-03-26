@@ -7,10 +7,8 @@ import java.lang.reflect.*;
 import java.util.*;
 
 
-public class QSignalEmitter {    
-    private static QSignalEmitter currentSender = null;
-    private boolean signalsBlocked = false;
-    
+public class QSignalEmitter {
+
     /**
      * Internal superclass of all signals
      */
@@ -346,7 +344,7 @@ public class QSignalEmitter {
         }
 
         protected final void emit_helper(Object... args) {
-            currentSender = QSignalEmitter.this;            
+
             if (QSignalEmitter.this.signalsBlocked())
                 return;
 
@@ -377,6 +375,8 @@ public class QSignalEmitter {
                                 && c.receiver instanceof QSignalEmitter
                                 && ((QSignalEmitter) c.receiver).thread() == Thread.currentThread()
                                 && ((QSignalEmitter) c.receiver).thread() == thread())) {
+                    QSignalEmitter oldEmitter = currentSender.get();
+                    currentSender.set(QSignalEmitter.this);
                     try {
                         boolean updateSender = c.receiver instanceof QObject && QSignalEmitter.this instanceof QObject;
                         long oldSender = 0;
@@ -414,6 +414,7 @@ public class QSignalEmitter {
                         System.err.println("Exception caught after invoking slot:");
                         e.printStackTrace();
                     }
+                    currentSender.set(oldEmitter);
                 } else {
 
                     QObject sender = null;
@@ -434,7 +435,6 @@ public class QSignalEmitter {
             }
 
             inEmit = false;
-            currentSender = null;            
         }
 
         private boolean matchSlot(Method slot) {
@@ -774,7 +774,7 @@ public class QSignalEmitter {
      * @return Current sender, or null if a signal is not currently being emitted.
      */
     public static QSignalEmitter signalSender() {
-        return currentSender;
+        return currentSender.get();
     }
     
     /**
@@ -792,5 +792,7 @@ public class QSignalEmitter {
     public final void disconnect(Object other) {
         QtJambiInternal.disconnect(this, other);
     }
-    
+
+    static ThreadLocal<QSignalEmitter> currentSender = new ThreadLocal<QSignalEmitter>();
+    private boolean signalsBlocked = false;
 }
