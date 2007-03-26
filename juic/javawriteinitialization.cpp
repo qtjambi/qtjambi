@@ -671,7 +671,7 @@ void WriteInitialization::writeProperties(const QString &varName,
         } else {
             setFunction = QLatin1String(".setProperty(\"")
                 + propertyName
-                + QLatin1String("\", QVariant(");
+                + QLatin1String("\", ");
         }
 
         switch (p->kind()) {
@@ -921,8 +921,6 @@ void WriteInitialization::writeProperties(const QString &varName,
                 o = &refreshOut;
 
             (*o) << option.indent << varName << setFunction << propertyValue;
-            if (!stdset)
-                (*o) << ")";
             (*o) << ");\n";
         }
     }
