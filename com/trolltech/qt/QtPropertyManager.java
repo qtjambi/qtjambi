@@ -132,8 +132,7 @@ public class QtPropertyManager {
         return false;
     }
 
-    private static Method findReadMethodForProperty(Class cl, String name, Class type)
-        throws QMalformedQtPropertyException {
+    private static Method findReadMethodForProperty(Class cl, String name, Class type) {
 
         // setX() / x() pair; Qt style
         Method getMethod = findMethod(cl, name);
@@ -155,8 +154,8 @@ public class QtPropertyManager {
         // Verify the type of the property...
         if (getMethod != null) {
             if (type != null && !type.equals(getMethod.getReturnType())) {
-                throw new QMalformedQtPropertyException(name,
-                        "Wrong type on property read method, expected: " + type, getMethod);
+                throw new QPropertyException("Wrong type on read method of '" + name + "', expected: "
+                                             + type + ", method=" + getMethod);
             }
             if (hasOtherAnnotations(getMethod, QtPropertyReader.class))
                 return null;
@@ -170,8 +169,7 @@ public class QtPropertyManager {
 
 
 
-    private static Method findWriteMethodForProperty(Class cl, String name, Class type)
-        throws QMalformedQtPropertyException {
+    private static Method findWriteMethodForProperty(Class cl, String name, Class type) {
         name = upcaseFirst(name);
         Method m = findMethod(cl, "set" + name, type);
 
@@ -223,8 +221,7 @@ public class QtPropertyManager {
     }
 
 
-    private static void findPropertiesRecursive_helper(HashMap<String, Entry> map, Class cl)
-        throws QMalformedQtPropertyException {
+    private static void findPropertiesRecursive_helper(HashMap<String, Entry> map, Class cl) {
         if (cl == null)
             return;
 
@@ -236,7 +233,7 @@ public class QtPropertyManager {
 
     private static HashMap<Class, HashMap<String, Entry>> recursivePropertyTable = new HashMap<Class, HashMap<String, Entry>>();
 
-    public static HashMap<String, Entry> findPropertiesRecursive(Class cl) throws QMalformedQtPropertyException {
+    public static HashMap<String, Entry> findPropertiesRecursive(Class cl) {
         HashMap<String, Entry> map = recursivePropertyTable.get(cl);
         if (map == null) {
             map = new HashMap<String, Entry>();
@@ -246,7 +243,7 @@ public class QtPropertyManager {
         return map;
     }
 
-    public static HashMap<String, Entry> findProperties(Class cl) throws QMalformedQtPropertyException {
+    public static HashMap<String, Entry> findProperties(Class cl) {
         HashMap<String, Entry> entries = new HashMap<String, Entry>();
         Method methods[] = cl.getDeclaredMethods();
         findReadAnnotatedProperties(entries, methods);
@@ -331,7 +328,7 @@ public class QtPropertyManager {
         }
     }
 
-    private static void findReadAnnotatedProperties(HashMap<String, Entry> entries, Method[] methods) throws QMalformedQtPropertyException {
+    private static void findReadAnnotatedProperties(HashMap<String, Entry> entries, Method[] methods) {
         // Find all the annotated read methods
         for (Method method : methods) {
             QtPropertyReader read = method.getAnnotation(QtPropertyReader.class);
@@ -341,7 +338,7 @@ public class QtPropertyManager {
 
             Entry e = entries.get(propertyName);
             if (e != null)
-                throw new QMalformedQtPropertyException(propertyName, "Duplicate property: " + e.read, method);
+                throw new QPropertyException("Duplicate property '" + propertyName + "', " + e.read + " and " + method);
 
             e = new Entry(propertyName);
             e.readable = read.enabled();
@@ -434,6 +431,62 @@ public class QtPropertyManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static Object readProperty(Object object, String name) {
+        HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
+        Entry e = entries.get(name);
+        if (e == null)
+            throw new QPropertyException("Property '" + name + "' not found in " + object);
+
+        if (e.read == null)
+            throw new QPropertyException("Property '" + name + "' is not readable");
+
+        try {
+            return e.read.invoke(object);
+        } catch (Exception ex) {
+            System.err.println("Failed to read property '" + name + "' in " + object);
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    public static void writeProperty(Object object, String name, Object value) {
+        HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
+        Entry e = entries.get(name);
+        if (e == null)
+            throw new QPropertyException("Property '" + name + "' not found in " + object);
+
+        if (e.write == null)
+            throw new QPropertyException("Property '" + name + "' is not writable");
+
+        try {
+            e.write.invoke(object, value);
+        } catch (Exception ex) {
+            System.err.println("Failed to write property '" + name + "' in " + object);
+            ex.printStackTrace();
+        }
+    }
+
+
+    public static void resetProperty(Object object, String name) {
+        HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
+        Entry e = entries.get(name);
+        if (e == null)
+            throw new QPropertyException("Property '" + name + "' not found in " + object);
+
+        if (e.reset == null)
+            throw new QPropertyException("Property '" + name + "' is not resettable");
+
+        try {
+            e.reset.invoke(object);
+        } catch (Exception ex) {
+            System.err.println("Failed to reset property '" + name + "' in " + object);
+            ex.printStackTrace();
+        }
     }
 
     public static void main(String args[]) throws Exception {

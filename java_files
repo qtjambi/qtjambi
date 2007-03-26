@@ -58,7 +58,6 @@
 ./com/trolltech/launcher/Worker.java
 ./com/trolltech/qt/QClassPathFileEngineHandler.java
 ./com/trolltech/qt/QFlags.java
-./com/trolltech/qt/QMalformedQtPropertyException.java
 ./com/trolltech/qt/QNativePointer.java
 ./com/trolltech/qt/QNoImplementationException.java
 ./com/trolltech/qt/QNoNativeResourcesException.java
@@ -79,11 +78,13 @@
 ./com/trolltech/qt/QtInfo.java
 ./com/trolltech/qt/QtJambi.java
 ./com/trolltech/qt/QtJambiGeneratedClass.java
+./com/trolltech/qt/QtJambiGuiInternal.java
 ./com/trolltech/qt/QtJambiInterface.java
 ./com/trolltech/qt/QtJambiInternal.java
 ./com/trolltech/qt/QtJambiObject.java
 ./com/trolltech/qt/QtJambiUtils.java
 ./com/trolltech/qt/QtJambi_LibraryInitializer.java
+./com/trolltech/qt/QPropertyException.java
 ./com/trolltech/qt/QtPropertyDesignable.java
 ./com/trolltech/qt/QtPropertyManager.java
 ./com/trolltech/qt/QtPropertyOrder.java

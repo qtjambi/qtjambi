@@ -249,7 +249,7 @@ public class PropertySheet extends JambiPropertySheet {
         if (index < 0)
             return;
         Property p = properties.get(index);
-        p.attribute = true;        
+        p.attribute = true;
     }
 
     public void setChanged(int index, boolean changed) {
@@ -309,7 +309,7 @@ public class PropertySheet extends JambiPropertySheet {
                 p.subclassLevel = level;
                 properties.add(p);
             }
-        } catch (QMalformedQtPropertyException ex) {
+        } catch (QPropertyException ex) {
             ex.printStackTrace();
         }
     }

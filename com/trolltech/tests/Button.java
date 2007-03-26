@@ -22,40 +22,43 @@ import com.trolltech.qt.gui.QPushButton;
 public class Button extends QPushButton {
 
     private int counter = 0;
-    Signal1<String> clicked = new Signal1<String>();
+    Signal1<String> clicked_string = new Signal1<String>();
 
     public void mousePressEvent(QMouseEvent e) {
     	setText("[" + e.x() + ", " + e.y() + "]");
     	super.mousePressEvent(e);
-    }	
+    }
 
     public void mouseMoveEvent(QMouseEvent e) {
-    	setText("[" + e.x() + ", " + e.y() + "]");	
+    	setText("[" + e.x() + ", " + e.y() + "]");
     	super.mouseMoveEvent(e);
     }
 
     public void mouseReleaseEvent(QMouseEvent e) {
     	setText("Clicked " + String.valueOf(++counter) + " times...");
-        clicked.emit("hello");
+        clicked_string.emit("hello");
     	super.mouseReleaseEvent(e);
-    }	
+    }
 
     protected void disposed() {
     	System.out.println("object disposed...\n");
     	super.disposed();
     }
-    
+
     protected void testString(String s) {
         System.out.println("s = " + s);
     }
 
     public static void main(String args[]) {
     	QApplication.initialize(args);
-	
+
     	Button b = new Button();
     	b.setText("Not clicked");
-        b.clicked.connect(b, "testString(String)");
+        b.clicked_string.connect(b, "testString(String)");
     	b.show();
+
+        b.setProperty("text", "Text was set dynamically...");
+        System.out.println("text is: " + b.property("text"));
 
     	QApplication.exec();
     }

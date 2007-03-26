@@ -2485,6 +2485,15 @@
     @com.trolltech.qt.QtBlockedSlot public QObject findChild(Class&lt;?> cl, String name) {    
         return com.trolltech.qt.QtJambiInternal.findChild(this, cl, name);
     }
+
+    @com.trolltech.qt.QtBlockedSlot public void setProperty(String name, Object value) {
+        com.trolltech.qt.QtPropertyManager.writeProperty(this, name, value);
+    }
+
+    @com.trolltech.qt.QtBlockedSlot public Object property(String name) {
+        return com.trolltech.qt.QtPropertyManager.readProperty(this, name);
+    }
+
     </inject-code>
   </object-type>
 
