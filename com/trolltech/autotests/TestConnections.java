@@ -13,16 +13,16 @@
 
 package com.trolltech.autotests;
 
+import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.autotests.generated.*;
+import static org.junit.Assert.*;
+import org.junit.*;
 
 import java.lang.reflect.*;
 import java.util.*;
-import static org.junit.Assert.*;
 
-import org.junit.*;
 class SignalsAndSlotsSubclass extends SignalsAndSlots
 {
     public int java_slot2_called = 0;
@@ -1337,8 +1337,25 @@ public class TestConnections extends QApplicationTest implements Qt
     	  assertEquals(receiver.slotResult, "once upon a time...");
       }
 
+    private class ConnectInEmitTester extends QSignalEmitter {
+        Signal0 signal = new Signal0();
+        boolean gotThusFar;
+        public void function() {
+            signal.connect(this, "function()");
+            gotThusFar = true;
+        }
+    }
+
+    @Test public void testConnectInEmit() {
+        ConnectInEmitTester c = new ConnectInEmitTester();
+        c.signal.connect(c, "function()");
+        c.signal.emit();
+        assertFalse(c.gotThusFar);
+    }
+
       public static void main(String args[]) {
-           QCoreApplication.initialize(args);
+          QCoreApplication.initialize(args);
+          new TestConnections().testConnectInEmit();
            new TestConnections().run_javaDisconnectReceiverShouldDisconnectCpp();          
       }
 }

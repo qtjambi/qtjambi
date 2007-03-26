@@ -13,8 +13,8 @@
 
 package com.trolltech.qt;
 
-public class QNoSuchSignalException extends RuntimeException
-{       
+public class QNoSuchSignalException extends ConnectionException
+{
     private static final long serialVersionUID = 1L;
 
     public QNoSuchSignalException(String extraMessage)    

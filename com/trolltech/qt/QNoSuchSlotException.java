@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class QNoSuchSlotException extends RuntimeException {
+public class QNoSuchSlotException extends ConnectionException {
     private static final long serialVersionUID = 1L;
     private Object reciver;
     private String slotSignature;

@@ -101,6 +101,8 @@ public class QSignalEmitter {
          */
         public final void connect(Object receiver, String method,
                                      Qt.ConnectionType type) {
+            if (inEmit)
+                throw new ConnectionException("Cannot connect to signal while its being emitted");
             if (receiver == null)
                 throw new NullPointerException("Receiver must be non-null");
             
@@ -123,6 +125,8 @@ public class QSignalEmitter {
         public final boolean disconnect(Object receiver, String method) {
             if (method != null && receiver == null)
                 throw new IllegalArgumentException("Receiver cannot be null if you specify a method");
+            if (inEmit)
+                throw new ConnectionException("Cannot disconnect to signal while its being emitted");
 
             Method slotMethod = null;
             if (method != null) {
@@ -191,6 +195,8 @@ public class QSignalEmitter {
          *                                    signatures are incompatible.
          */
         public final void connect(AbstractSignal signalOut, Qt.ConnectionType type) {
+            if (inEmit)
+                throw new ConnectionException("Cannot connect to signal while its being emitted");
             connectSignalMethod(QtJambiInternal.findEmitMethod(signalOut), signalOut,
                     type.value());
         }
@@ -203,6 +209,8 @@ public class QSignalEmitter {
          * @return true if the two signals were successfully disconnected, or false otherwise.
          */
         public final boolean disconnect(AbstractSignal signalOut) {
+            if (inEmit)
+                throw new ConnectionException("Cannot connect to signal while its being emitted");
             return removeConnection(signalOut, QtJambiInternal.findEmitMethod(signalOut));
         }
 
