@@ -985,16 +985,23 @@ void StaticCache::resolveQtJambiInternal_internal()
                                                         ")Ljava/lang/reflect/Method;");
     Q_ASSERT(QtJambiInternal.lookupSlot);
 
-    QtJambiInternal.endPaint = env->GetStaticMethodID(QtJambiInternal.class_ref,
-                                                      "endPaint",
-                                                      "(Lcom/trolltech/qt/gui/QWidget;)V");
-    Q_ASSERT(QtJambiInternal.endPaint);
-
-    QtJambiInternal.findEmitMethod = env->GetStaticMethodID(QtJambiInternal.class_ref,
+     QtJambiInternal.findEmitMethod = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                            "findEmitMethod",
                                                            "(Lcom/trolltech/qt/QSignalEmitter$AbstractSignal;)Ljava/lang/reflect/Method;");
     Q_ASSERT(QtJambiInternal.findEmitMethod);
 
+}
+
+
+void StaticCache::resolveQtJambiGuiInternal_internal()
+{
+    QtJambiGuiInternal.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiGuiInternal"));
+    Q_ASSERT(QtJambiGuiInternal.class_ref);
+
+    QtJambiGuiInternal.endPaint = env->GetStaticMethodID(QtJambiGuiInternal.class_ref,
+                                                      "endPaint",
+                                                      "(Lcom/trolltech/qt/gui/QWidget;)V");
+    Q_ASSERT(QtJambiGuiInternal.endPaint);
 }
 
 void StaticCache::resolveString_internal()

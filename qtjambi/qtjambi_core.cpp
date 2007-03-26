@@ -1371,14 +1371,14 @@ static QString locate_vm()
 
 	QString jmach = QLatin1String("i386");
 	jpath += jmach;
-	
+
 	jpath = QDir::cleanPath(jpath);
-	
+
 	if (! jpath.endsWith(QLatin1Char('/')))
 	  jpath += QLatin1Char('/');
-	
+
 	QFileInfo file(jpath + "/client/libjvm.so");
-	
+
 	if(file.exists())
 	  return file.absoluteFilePath();
     }
@@ -1812,8 +1812,9 @@ void qtjambi_register_callbacks()
 void qtjambi_end_paint(JNIEnv *env, jobject widget)
 {
     StaticCache *sc = StaticCache::instance(env);
-    sc->resolveQtJambiInternal();
-    env->CallStaticVoidMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.endPaint, widget);
+    sc->resolveQtJambiGuiInternal();
+    env->CallStaticVoidMethod(sc->QtJambiGuiInternal.class_ref, sc->QtJambiGuiInternal.endPaint, widget);
+    QTJAMBI_EXCEPTION_CHECK(env);
 }
 
 void qtjambi_debug_trace(const char *location, const char *file, int line)

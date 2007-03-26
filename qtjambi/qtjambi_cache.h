@@ -262,9 +262,13 @@ struct QTJAMBI_EXPORT StaticCache
         jclass class_ref;
         jmethodID lookupSlot;
         jmethodID lookupSignal;
-        jmethodID endPaint;
         jmethodID findEmitMethod;
     } QtJambiInternal;
+
+    struct {
+        jclass class_ref;
+        jmethodID endPaint;
+    } QtJambiGuiInternal;
 
     struct {
         jclass class_ref;
@@ -295,15 +299,13 @@ struct QTJAMBI_EXPORT StaticCache
     } ValidationData;
 
 
-    DECLARE_RESOLVE_FUNCTIONS(QObject);
-    DECLARE_RESOLVE_FUNCTIONS(QtJambiInternal);
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
-    DECLARE_RESOLVE_FUNCTIONS(QtEnumerator);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
     DECLARE_RESOLVE_FUNCTIONS(Byte);
     DECLARE_RESOLVE_FUNCTIONS(Character);
     DECLARE_RESOLVE_FUNCTIONS(Class);
+    DECLARE_RESOLVE_FUNCTIONS(ClassLoader);
     DECLARE_RESOLVE_FUNCTIONS(Collection);
     DECLARE_RESOLVE_FUNCTIONS(Double);
     DECLARE_RESOLVE_FUNCTIONS(Float);
@@ -320,20 +322,23 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(NullPointerException);
     DECLARE_RESOLVE_FUNCTIONS(Object);
     DECLARE_RESOLVE_FUNCTIONS(Pair);
-    DECLARE_RESOLVE_FUNCTIONS(QSignalEmitter);
     DECLARE_RESOLVE_FUNCTIONS(QModelIndex);
-    DECLARE_RESOLVE_FUNCTIONS(QtJambiUtils);
+    DECLARE_RESOLVE_FUNCTIONS(QObject);
+    DECLARE_RESOLVE_FUNCTIONS(QSignalEmitter);
+    DECLARE_RESOLVE_FUNCTIONS(QtEnumerator);
+    DECLARE_RESOLVE_FUNCTIONS(QtJambiGuiInternal);
+    DECLARE_RESOLVE_FUNCTIONS(QtJambiInternal);
     DECLARE_RESOLVE_FUNCTIONS(QtJambiObject);
+    DECLARE_RESOLVE_FUNCTIONS(QtJambiUtils);
     DECLARE_RESOLVE_FUNCTIONS(Short);
     DECLARE_RESOLVE_FUNCTIONS(Stack);
     DECLARE_RESOLVE_FUNCTIONS(String);
     DECLARE_RESOLVE_FUNCTIONS(System);
     DECLARE_RESOLVE_FUNCTIONS(Thread);
     DECLARE_RESOLVE_FUNCTIONS(TreeMap);
-    DECLARE_RESOLVE_FUNCTIONS(ValidationData);
-    DECLARE_RESOLVE_FUNCTIONS(ClassLoader);
-    DECLARE_RESOLVE_FUNCTIONS(URLClassLoader);
     DECLARE_RESOLVE_FUNCTIONS(URL);
+    DECLARE_RESOLVE_FUNCTIONS(URLClassLoader);
+    DECLARE_RESOLVE_FUNCTIONS(ValidationData);
 
 public:
     static StaticCache *instance(JNIEnv *env);

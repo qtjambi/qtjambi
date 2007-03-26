@@ -5394,7 +5394,7 @@
     }
 
     public boolean begin(QWidget widget) {
-        return com.trolltech.qt.QtJambiInternal.beginPaint(widget, this);
+        return com.trolltech.qt.QtJambiGuiInternal.beginPaint(widget, this);
     }
     </inject-code>
   </object-type>  
@@ -5421,7 +5421,7 @@
     }
     
     public static void aboutQtJambi() {
-        com.trolltech.qt.QtJambiInternal.aboutQtJambi();
+        com.trolltech.qt.QtJambiGuiInternal.aboutQtJambi();
     }
 
     public static QApplication instance() {
