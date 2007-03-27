@@ -104,18 +104,18 @@ public class CustomWidgetManager {
                 try {
                     type = Class.forName(e.attribute("class"));
                 } catch (ClassNotFoundException f) {
-		    String classPathsProperty = System.getProperty("com.trolltech.qtjambi.internal.current.classpath");
-		    if (classPathsProperty != null) {
-			String classpaths[] = classPathsProperty.split(System.getProperty("path.separator"));
+                    String classPathsProperty = System.getProperty("com.trolltech.qtjambi.internal.current.classpath");
+                    if (classPathsProperty != null) {
+                        String classpaths[] = classPathsProperty.split(System.getProperty("path.separator"));
 
-			URL urls[] = new URL[classpaths.length];
-			for (int j=0; j<classpaths.length; ++j) {
-			    urls[j] = new File(classpaths[j]).toURI().toURL();
-			}
+                        URL urls[] = new URL[classpaths.length];
+                        for (int j=0; j<classpaths.length; ++j) {
+                            urls[j] = new File(classpaths[j]).toURI().toURL();
+                        }
 
-			URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
-			type = loader.loadClass(e.attribute("class"));
-		    }
+                        URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
+                        type = loader.loadClass(e.attribute("class"));
+                    }
                 }
 
                 if (type == null)
