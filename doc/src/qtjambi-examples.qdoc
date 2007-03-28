@@ -20,6 +20,18 @@
 
     \tableofcontents
 
+    \section1 Tutorial
+
+    \list
+        \o \l{Qt Jambi Tutorial 1 - Hello World!}{Tutorial 1: Hello World!}\raisedaster
+        \o \l{Qt Jambi Tutorial 2 - Calling it Quits}{Tutorial 2: Calling it Quits}\raisedaster
+        \o \l{Qt Jambi Tutorial 3 - Family Values}{Tutorial 3: Family Values}\raisedaster
+        \o \l{Qt Jambi Tutorial 4 - Let There Be Widgets}{Tutorial 4: Let There Be Widgets}\raisedaster
+        \o \l{Qt Jambi Tutorial 5 - Building Blocks}{Tutorial 5: Building Blocks}\raisedaster
+        \o \l{Qt Jambi Tutorial 6 - Building Blocks Galore!}{Tutorial 6: Building Blocks Galore!}\raisedaster
+        \o \l{Qt Jambi Tutorial 7 - One Thing Leads to Another}{Tutorial 7: One Thing Leads to Another}\raisedaster
+    \endlist
+
     \section1 Widget Examples
 
     \list
@@ -43,6 +55,7 @@
     \list
        \o \l{Custom Sort/Filter Model Example}{Custom Sort/Filter Model}\raisedaster
        \o \l{Item View Chart Example}{Item View Chart}\raisedaster
+       \o \l{Star Delegate Example}{Star Delegate}\raisedaster 
        \o \l{Tree Model Example}{Tree Model}
     \endlist
 
@@ -106,4 +119,3 @@
         \o \l{Chat Example}{Chat}
     \endlist
 */
-
