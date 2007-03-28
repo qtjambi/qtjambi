@@ -5,7 +5,7 @@ import com.trolltech.qt.gui.*;
 
 class StarRating
 {
-    private int starCount, maxCount, mode;
+    private int starCount, maxCount;
     private static QPolygonF starPolygon, diamondPolygon;
 
     public static final int ReadOnly = 0, ReadWrite = 1, PaintingFactor = 20;
