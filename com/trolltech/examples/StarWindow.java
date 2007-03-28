@@ -5,7 +5,8 @@ import com.trolltech.qt.core.*;
 
 import java.util.*;
 
-class StarWindow extends QWidget {
+@QtJambiExample(name = "Star Delegate")
+public class StarWindow extends QWidget {
     private QTableWidget table;
 
     private Object tableContent[][] = {
@@ -16,15 +17,21 @@ class StarWindow extends QWidget {
           new StarRating(4) },
         { tr("Barbie Girl"), tr("Pop"), tr("Aqua"), new StarRating(5) }
     };
+    
+    public StarWindow() {
+        this(null);
+    }
 
-    public StarWindow()
+    public StarWindow(QWidget parent)
     {
+        super(parent);
         createTable();
 
         QGridLayout layout = new QGridLayout();
         layout.addWidget(table, 0, 0);
         setLayout(layout);
         setWindowTitle(tr("Star Delegate"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
     public void createTable()
