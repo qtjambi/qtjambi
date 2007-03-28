@@ -14,6 +14,8 @@
 package com.trolltech.qt;
 
 import com.trolltech.qt.QNativePointer;
+import com.trolltech.qt.core.QCoreApplication;
+
 import java.lang.reflect.*;
 
 /**
@@ -52,7 +54,10 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
         /* intentionally empty */
     }
 
-    public String tr(String str) { return str; }
+    public String tr(String str) {
+    	String scope = getClass().getCanonicalName();
+    	return QCoreApplication.translate(scope, str);
+    }
 
     /**
      * Called before the java object is removed by the garbage collector. As the 
