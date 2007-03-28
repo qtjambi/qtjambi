@@ -245,8 +245,8 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
                  flags |= FileFlag.DirectoryType.value();
              else
                  flags |= FileFlag.FileType.value();
-             
     
+             
              return new FileFlags((flags | FileFlag.ExistsFlag.value()) & type.value());
         } catch (Exception e) {
             e.printStackTrace();
@@ -626,6 +626,8 @@ class QClassPathEngine extends QAbstractFileEngine
 
         if (fileName(FileName.PathName).equals("/"))
             flags.set(QAbstractFileEngine.FileFlag.RootFlag);
+
+        flags.clear(FileFlag.LocalDiskFlag);
 
         return flags;
     }
