@@ -15,8 +15,8 @@
 
     To install the Qt Jambi plugin, you need the Qt Jambi Eclipse
     Integration package. This is a \c .zip file for Windows and a \c
-    .tar.gz file for Linux the Eclipse plugins and the native 
-    libraries required to run Qt Designer.
+    .tar.gz file for Linux. They contain the Eclipse plugins and the
+    native libraries required to run Qt Designer.
 
     Unpack the package in the Eclipse root folder to install the
     package. That's all on Linux, but on Windows you also need to run
@@ -31,7 +31,7 @@
     order to locate the folder containing the installation. When you
     have located the correct directory, hit the \gui Validate button
     to check that Qt Jambi has been installed properly. After setting
-    the location of Qt Jambi you may have to restart Eclipse in order
+    the location of Qt Jambi, you may have to restart Eclipse in order
     for the Jambi plugins to be loaded properly.
 
     \image eclipse-settings.png
@@ -130,13 +130,13 @@
 
     In the above example, we are adding the \c
     customwidgets.MyOwnCustomWidget widget to the widget box. The
-    widget is part of the project and contains a layout with a QLabel
-    inside. The label contains the text "Hello World".
+    widget is part of the project and contains a layout with a QLabel,
+    which contains the text "Hello World".
     
     When you have added a custom widget to a project, it will show up
     in the widget box under a heading with the same name as the project.
-    The widget box will only contain custom widgets for the project
-    for which a .jui file is currently being edited.
+    The widget box will only contain custom widgets for the current project
+    (i.e., the project to which the .jui file that is edited belongs).
 
     \image eclipse-custom-widget-select.png
 
@@ -144,12 +144,11 @@
 
     \image eclipse-custom-widget.png
 
-    Note that to avoid problems, you should always remove a widget from the
-    custom widgets before deleting it from a project. Please also note that
-    once a custom widget has been added to a project, its appearance will not always
-    reflect changes you make to the actual underlying widget, due to caching. If you 
-    need to update a custom widget, you may have to restart Eclipse for the changes
-    to have a visual effect in the editor. 
+    Note that to avoid problems, you should always remove a widget
+    from the custom widgets before deleting it from a project. If you
+    change the widget's code after it has been added to a project, the
+    widget might not be immediately updated in designer; you may have
+    to restart Eclipse for the changes to be visible in the editor. 
 
     \section2 The Java User Interface Compiler
 
