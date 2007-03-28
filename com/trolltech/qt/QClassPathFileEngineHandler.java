@@ -787,12 +787,7 @@ class QClassPathEngine extends QAbstractFileEngine
 
     public boolean isRelativePath()
     {
-        for (QAbstractFileEngine engine : m_engines) {
-            if (engine.isRelativePath())
-                return true;
-        }
-
-        return false;
+    	return false;
     }
 
     public boolean isSequential()
@@ -930,7 +925,7 @@ public class QClassPathFileEngineHandler extends QAbstractFileEngineHandler
     }
 
     public QAbstractFileEngine create(String fileName)
-    {
+    {    	
         if (fileName.startsWith(QClassPathEngine.FileNamePrefix))
             return new QClassPathEngine(fileName);
         else
