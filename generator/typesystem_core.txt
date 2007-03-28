@@ -40,8 +40,7 @@
         <replace from="%OUT_TYPE" to="%TYPE" />    
     </insert-template>
   </template>  
-  
-  
+
   <template name="core.operator_assign_self_type">
     <insert-template name="core.unary_self_type">
         <replace from="%FUNCTION_NAME" to="operator_assign" />
@@ -578,289 +577,87 @@
   </value-type>
   
   <value-type name="QPoint">
-    <modify-function signature="operator*=(double)">
-        <access modifier="private" />
-        <rename to="operator_multiply_assign_private" />
-    </modify-function>
+    <modify-function signature="operator*=(double)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator/=(double)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator+=(QPoint)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator-=(QPoint)"> <access modifier="private" /> </modify-function>
+
     <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="double" />
-            <replace from="%OUT_TYPE" to="QPoint" />
-            <replace from="%FUNCTION_NAME" to="operator_multiply_assign" />
-        </insert-template>                
+	public final QPoint multiply(double d) { operator_multiply_assign(d); return this; }
+	public final QPoint divide(double d) { operator_divide_assign(d); return this; }
+	public final QPoint add(QPoint p) { operator_add_assign(p); return this; }
+	public final QPoint subtract(QPoint p) { operator_subtract_assign(p); return this; }
     </inject-code>
     
-    <modify-function signature="operator+=(QPoint)">
-        <access modifier="private" />
-        <rename to="operator_add_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QPoint" />
-            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="operator-=(QPoint)">
-        <access modifier="private" />
-        <rename to="operator_subtract_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QPoint" />
-            <replace from="%FUNCTION_NAME" to="operator_subtract_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="operator/=(double)">
-        <access modifier="private" />
-        <rename to="operator_divide_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="double" />
-            <replace from="%OUT_TYPE" to="QPoint" />
-            <replace from="%FUNCTION_NAME" to="operator_divide_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="rx()">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="ry()">
-        <remove />
-    </modify-function>      
+    <modify-function signature="rx()"> <remove /> </modify-function>
+    <modify-function signature="ry()"> <remove /> </modify-function>      
   </value-type>
   
   <value-type name="QPointF">
-    <modify-function signature="operator*=(double)">
-        <access modifier="private" />
-        <rename to="operator_multiply_assign_private" />
-    </modify-function>
+    <modify-function signature="operator*=(double)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator/=(double)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator+=(QPointF)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator-=(QPointF)"> <access modifier="private" /> </modify-function>
+
     <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="double" />
-            <replace from="%OUT_TYPE" to="QPointF" />
-            <replace from="%FUNCTION_NAME" to="operator_multiply_assign" />
-        </insert-template>                
+	public final QPointF multiply(double d) { operator_multiply_assign(d); return this; }
+	public final QPointF divide(double d) { operator_divide_assign(d); return this; }
+	public final QPointF add(QPointF p) { operator_add_assign(p); return this; }
+	public final QPointF subtract(QPointF p) { operator_subtract_assign(p); return this; }
     </inject-code>
     
-    <modify-function signature="operator+=(QPointF)">
-        <access modifier="private" />
-        <rename to="operator_add_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QPointF" />
-            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="operator-=(QPointF)">
-        <access modifier="private" />
-        <rename to="operator_subtract_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QPointF" />
-            <replace from="%FUNCTION_NAME" to="operator_subtract_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="operator/=(double)">
-        <access modifier="private" />
-        <rename to="operator_divide_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="double" />
-            <replace from="%OUT_TYPE" to="QPointF" />
-            <replace from="%FUNCTION_NAME" to="operator_divide_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="rx()">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="ry()">
-        <remove />
-    </modify-function>    
+    <modify-function signature="rx()"> <remove /> </modify-function>
+    <modify-function signature="ry()"> <remove /> </modify-function>      
   </value-type>
+
+  
   <value-type name="QRect">
-    <modify-function signature="getCoords(int*,int*,int*,int*)const">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="getRect(int*,int*,int*,int*)const">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="operator&amp;=(QRect)">
-        <access modifier="private" />
-        <rename to="operator_and_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QRect" />
-            <replace from="%FUNCTION_NAME" to="operator_and_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="operator|=(QRect)  ">
-        <access modifier="private" />
-        <rename to="operator_or_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QRect" />
-            <replace from="%FUNCTION_NAME" to="operator_or_assign" />
-        </insert-template>
-    </inject-code>    
+    <modify-function signature="getCoords(int*,int*,int*,int*)const"> <remove /> </modify-function>
+    <modify-function signature="getRect(int*,int*,int*,int*)const"> <remove /> </modify-function>
+    <modify-function signature="operator&amp;=(QRect)"> <remove/> </modify-function>
+    <modify-function signature="operator|=(QRect)"> <remove/> </modify-function>
+    <modify-function signature="operator&amp;(QRect)const"> <remove/> </modify-function>
+    <modify-function signature="operator|(QRect)const"> <remove/> </modify-function>
+
   </value-type>
   <value-type name="QRectF">
-    <modify-function signature="getCoords(double*,double*,double*,double*)const">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="getRect(double*,double*,double*,double*)const">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="operator&amp;=(QRectF)">
-        <access modifier="private" />
-        <rename to="operator_and_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QRectF" />
-            <replace from="%FUNCTION_NAME" to="operator_and_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="operator|=(QRectF)  ">
-        <access modifier="private" />
-        <rename to="operator_or_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QRectF" />
-            <replace from="%FUNCTION_NAME" to="operator_or_assign" />
-        </insert-template>
-    </inject-code>
-    
+    <modify-function signature="getCoords(double*,double*,double*,double*)const"> <remove /> </modify-function>
+    <modify-function signature="getRect(double*,double*,double*,double*)const"> <remove /> </modify-function>
+    <modify-function signature="operator&amp;=(QRectF)"> <remove/> </modify-function>
+    <modify-function signature="operator|=(QRectF)"> <remove/> </modify-function>
+    <modify-function signature="operator&amp;(QRectF)const"> <remove/> </modify-function>
+    <modify-function signature="operator|(QRectF)const"> <remove/> </modify-function>
   </value-type>
+
+
   <value-type name="QSize">
-    <modify-function signature="operator*=(double)">
-        <access modifier="private" />
-        <rename to="operator_multiply_assign_private" />
-    </modify-function>
+    <modify-function signature="operator*=(double)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator/=(double)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator+=(QSize)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator-=(QSize)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="rheight()"> <remove /> </modify-function>
+    <modify-function signature="rwidth()"> <remove /> </modify-function>     
     <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="double" />
-            <replace from="%OUT_TYPE" to="QSize" />
-            <replace from="%FUNCTION_NAME" to="operator_multiply_assign" />
-        </insert-template>
+        public final QSize multiply(double d) { operator_multiply_assign(d); return this; }
+        public final QSize divide(double d) { operator_divide_assign(d); return this; }
+        public final QSize add(QSize s) { operator_add_assign(s); return this; }
+        public final QSize subtract(QSize s) { operator_subtract_assign(s); return this; }
     </inject-code>
-    
-    <modify-function signature="operator+=(QSize)">
-        <access modifier="private" />
-        <rename to="operator_add_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QSize" />
-            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="operator-=(QSize)">
-        <access modifier="private" />
-        <rename to="operator_subtract_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QSize" />
-            <replace from="%FUNCTION_NAME" to="operator_subtract_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="operator/=(double)">
-        <access modifier="private" />
-        <rename to="operator_divide_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="double" />
-            <replace from="%OUT_TYPE" to="QSize" />
-            <replace from="%FUNCTION_NAME" to="operator_divide_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="rheight()">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="rwidth()">
-        <remove />
-    </modify-function>     
   </value-type>
-  
+
   <value-type name="QSizeF">
-  <modify-function signature="operator*=(double)">
-        <access modifier="private" />
-        <rename to="operator_multiply_assign_private" />
-    </modify-function>
+    <modify-function signature="operator*=(double)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator/=(double)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator+=(QSizeF)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="operator-=(QSizeF)"> <access modifier="private" /> </modify-function>
+    <modify-function signature="rheight()"> <remove /> </modify-function>
+    <modify-function signature="rwidth()"> <remove /> </modify-function>     
     <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="double" />
-            <replace from="%OUT_TYPE" to="QSizeF" />
-            <replace from="%FUNCTION_NAME" to="operator_multiply_assign" />
-        </insert-template>
+        public final QSizeF multiply(double d) { operator_multiply_assign(d); return this; }
+        public final QSizeF divide(double d) { operator_divide_assign(d); return this; }
+        public final QSizeF add(QSizeF s) { operator_add_assign(s); return this; }
+        public final QSizeF subtract(QSizeF s) { operator_subtract_assign(s); return this; }
     </inject-code>
-    
-    <modify-function signature="operator+=(QSizeF)">
-        <access modifier="private" />
-        <rename to="operator_add_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QSizeF" />
-            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="operator-=(QSizeF)">
-        <access modifier="private" />
-        <rename to="operator_subtract_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QSizeF" />
-            <replace from="%FUNCTION_NAME" to="operator_subtract_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="operator/=(double)">
-        <access modifier="private" />
-        <rename to="operator_divide_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="double" />
-            <replace from="%OUT_TYPE" to="QSizeF" />
-            <replace from="%FUNCTION_NAME" to="operator_divide_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="rheight()">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="rwidth()">
-        <remove />
-    </modify-function>  
   </value-type>
   
   <value-type name="QStringMatcher">

@@ -12,12 +12,12 @@
  ****************************************************************************/
 package com.trolltech.demos;
 
-import java.util.*;
-
-import com.trolltech.examples.QtJambiExample;
+import com.trolltech.examples.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.gui.QSizePolicy.Policy;
+import com.trolltech.qt.gui.QSizePolicy.*;
+
+import java.util.*;
 
 @QtJambiExample(name = "Path Stroke")
 public class PathStrokeWidget extends QWidget {
@@ -456,7 +456,7 @@ public class PathStrokeWidget extends QWidget {
 
                 QPointF pos = m_points.elementAt(i);
                 QPointF vec = m_vectors.elementAt(i);
-                pos.operator_add_assign(vec);
+                pos.add(vec);
                 if (pos.x() < left || pos.x() > right) {
                     vec.setX(-vec.x());
                     pos.setX(pos.x() < left ? left : right);

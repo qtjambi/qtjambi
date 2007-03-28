@@ -13,10 +13,10 @@
 
 package com.trolltech.examples;
 
-import java.io.UnsupportedEncodingException;
-
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+
+import java.io.*;
 
 @QtJambiExample(name = "Drag and Drop")
 public class FridgeMagnets extends QWidget {
@@ -127,7 +127,7 @@ public class FridgeMagnets extends QWidget {
                 newLabel.move(position);
                 newLabel.show();
 
-                position.operator_add_assign(new QPoint(newLabel.width(), 0));
+                position.add(new QPoint(newLabel.width(), 0));
             }
 
             event.acceptProposedAction();

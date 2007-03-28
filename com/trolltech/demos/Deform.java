@@ -102,14 +102,14 @@ class PathDeformRenderer extends ArthurFrame
             for (int i=0; i<m_text.length(); ++i) {
                 QPainterPath path = new QPainterPath();
                 path.addText(advance, f, m_text.substring(i, i + 1));
-                m_pathBounds.operator_or_assign(path.boundingRect());
+                m_pathBounds = path.boundingRect();
                 paths.add(path);
-                advance.operator_add_assign(new QPointF(fm.width(m_text.substring(i, i + 1)), 0));
+                advance.add(new QPointF(fm.width(m_text.substring(i, i + 1)), 0));
             }
         } else {
             QPainterPath path = new QPainterPath();
             path.addText(advance, f, m_text);
-            m_pathBounds.operator_or_assign(path.boundingRect());
+            m_pathBounds = path.boundingRect();
             paths.add(path);
         }
 
@@ -197,7 +197,7 @@ class PathDeformRenderer extends ArthurFrame
     {
         if (e.timerId() == m_repaintTimer.timerId()) {
             if ((new QLineF(new QPointF(0,0), m_direction)).length() > 1)
-                m_direction.operator_multiply_assign(0.995);
+                m_direction.multiply(0.995);
 
             double time = m_repaintTracker.restart();
 
@@ -211,7 +211,7 @@ class PathDeformRenderer extends ArthurFrame
                 dy = dy * time * 0.1;
             }
 
-            m_pos.operator_add_assign(new QPointF(dx, dy));
+            m_pos.add(new QPointF(dx, dy));
 
             if (m_pos.x() - m_radius < 0) {
                 m_direction.setX(-m_direction.x());
@@ -230,7 +230,7 @@ class PathDeformRenderer extends ArthurFrame
             }
 
             QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
-            update(rectBefore.operator_or(rectAfter));
+            update(rectBefore.intersected(rectAfter));
             QApplication.syncX();
         }
     }
@@ -244,7 +244,7 @@ class PathDeformRenderer extends ArthurFrame
 
         if ((new QLineF(m_pos, new QPointF(e.pos()))).length() <= m_radius) {
             m_offset = new QPointF(m_pos.x(), m_pos.y());
-            m_offset.operator_subtract_assign(new QPointF(e.pos()));
+            m_offset.subtract(new QPointF(e.pos()));
         }
 
         mouseMoveEvent(e);
@@ -263,19 +263,19 @@ class PathDeformRenderer extends ArthurFrame
         QRect rectBefore = circle_bounds(m_pos, m_radius, m_fontSize);
         if (e.type() == QEvent.Type.MouseMove) {
             QPointF epos = new QPointF(e.pos());
-            epos.operator_add_assign(m_offset);
+            epos.add(m_offset);
             QLineF line = new QLineF(m_pos, epos);
             line.setLength(line.length() * .1);
             QPointF dir = new QPointF(line.dx(), line.dy());
-            m_direction.operator_add_assign(dir);
-            m_direction.operator_multiply_assign(0.5);
+            m_direction.add(dir);
+            m_direction.multiply(0.5);
         }
 
         m_pos = new QPointF(e.pos());
-        m_pos.operator_add_assign(m_offset);
+        m_pos.add(m_offset);
         QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
 
-        update(rectBefore.operator_or(rectAfter));
+        update(rectBefore.intersected(rectAfter));
     }
 
     private void deformElement(QPainterPath_Element e, QPointF offset, double pts[])

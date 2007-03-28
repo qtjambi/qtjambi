@@ -1727,7 +1727,7 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals(2, p.x());
         assertEquals(3, p.y());
 
-        QPoint self = p.operator_multiply_assign(3).operator_add_assign(new QPoint(3, 6)).operator_divide_assign(3).operator_subtract_assign(new QPoint(2, 1));
+        QPoint self = p.multiply(3).add(new QPoint(3, 6)).divide(3).subtract(new QPoint(2, 1));
         assertEquals(1, self.x());
         assertEquals(4, self.y());
         assertEquals(1, p.x());
@@ -1740,7 +1740,7 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals(2, p.x());
         assertEquals(3, p.y());
         
-        QPoint self = p.operator_add_assign(new QPoint(5, 6));
+        QPoint self = p.add(new QPoint(5, 6));
         assertEquals(7, self.x());
         assertEquals(9, self.y());
         assertEquals(7, p.x());
@@ -1753,7 +1753,7 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals(2, p.x());
         assertEquals(3, p.y());
         
-        QPoint self = p.operator_multiply_assign(3);
+        QPoint self = p.multiply(3);
         assertEquals(6, self.x());
         assertEquals(9, self.y());
         assertEquals(6, p.x());

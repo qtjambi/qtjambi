@@ -170,8 +170,8 @@ public class Mandelbrot extends QWidget {
 
     public void mouseMoveEvent(QMouseEvent event) {
         if (event.buttons().isSet(Qt.MouseButton.LeftButton)) {
-            pixmapOffset.operator_add_assign(event.pos());
-            pixmapOffset.operator_subtract_assign(lastDragPosition);
+            pixmapOffset.add(event.pos());
+            pixmapOffset.subtract(lastDragPosition);
 
             lastDragPosition = event.pos();
             update();
@@ -180,8 +180,8 @@ public class Mandelbrot extends QWidget {
 
     public void mouseReleaseEvent(QMouseEvent event) {
         if (event.button() == Qt.MouseButton.LeftButton) {
-            pixmapOffset.operator_add_assign(event.pos());
-            pixmapOffset.operator_subtract_assign(lastDragPosition);
+            pixmapOffset.add(event.pos());
+            pixmapOffset.subtract(lastDragPosition);
             lastDragPosition = new QPoint();
 
             int deltaX = (width() - pixmap.width()) / 2 - pixmapOffset.x();
