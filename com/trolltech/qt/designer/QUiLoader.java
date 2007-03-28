@@ -353,6 +353,7 @@ public class QUiLoader {
         parseChildren(node, parent);
         QListWidget listWidget = (QListWidget) parent;
         listWidget.addItem(item.listWidgetItem());
+        swapPropertyReceiver(oldReceiver);
     }
 
     private void parseSpacer(QDomNode node) throws QUiLoaderException {
@@ -470,7 +471,6 @@ public class QUiLoader {
     }
 
     private void writeLayoutMargin(QLayout l, String property, Object value) {
-        int val = (Integer) value;
         int x = (Integer) value;
         QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
         QNativePointer right = new QNativePointer(QNativePointer.Type.Int);

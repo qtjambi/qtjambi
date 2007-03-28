@@ -336,7 +336,6 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     private void build() {
-        Class cl = object.getClass();
         TreeSet<Property> properties = new TreeSet<Property>();
         build(object.getClass(), 0, properties);
 

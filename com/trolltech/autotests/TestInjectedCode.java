@@ -50,7 +50,6 @@ import com.trolltech.qt.gui.QTextCursor;
 import com.trolltech.qt.gui.QTextDocument;
 import com.trolltech.qt.gui.QValidator;
 import com.trolltech.qt.gui.QWidget;
-import com.trolltech.qt.gui.QClipboard.Mode;
 import com.trolltech.qt.network.QHttp;
 import com.trolltech.qt.network.QTcpServer;
 import com.trolltech.qt.opengl.QGLColormap;

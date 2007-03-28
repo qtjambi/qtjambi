@@ -30,8 +30,7 @@ public class BuddyProperty extends FakeProperty {
     public Object read() {
         QWidget buddy = label.buddy();
         if (buddy != null) {
-            QByteArray ba = new QByteArray(buddy.objectName());
-            return buddy.objectName();
+            return new QByteArray(buddy.objectName());
         }
         return new QByteArray("");
     }

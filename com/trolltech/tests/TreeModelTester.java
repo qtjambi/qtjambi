@@ -98,7 +98,7 @@ public class TreeModelTester extends QTreeView {
         super.setModel(model);
     }
 
-
+    @SuppressWarnings("unused")
     private void add() {
         List<QModelIndex> pos = selectedIndexes();
         for (QModelIndex i : pos) {
@@ -114,6 +114,7 @@ public class TreeModelTester extends QTreeView {
         }
     }
 
+    @SuppressWarnings("unused")
     private void remove() {
         List<QModelIndex> pos = selectedIndexes();
         for (QModelIndex i : pos) {
@@ -131,6 +132,7 @@ public class TreeModelTester extends QTreeView {
         }
     }
 
+    @SuppressWarnings("unused")
     private void increment() {
         List<QModelIndex> pos = selectedIndexes();
         for (QModelIndex i : pos) {
