@@ -1,72 +1,17 @@
 package com.trolltech.autotests;
 
-import java.util.List;
-
-import org.junit.Test;
-
-import com.trolltech.autotests.generated.AccessibleInterfaceSubclass;
-import com.trolltech.autotests.generated.GraphicsItemSubclass;
-import com.trolltech.autotests.generated.IODeviceSubclass;
-import com.trolltech.autotests.generated.ImageIOHandlerSubclass;
-import com.trolltech.autotests.generated.PictureSubclass;
-import com.trolltech.autotests.generated.SomeQObject;
-import com.trolltech.autotests.generated.SqlTableModelSubclass;
-import com.trolltech.autotests.generated.TextCodecSubclass;
-import com.trolltech.autotests.generated.ValidatorSubclass;
-import com.trolltech.autotests.generated.XmlReaderSubclass;
+import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.QAccessible;
-import com.trolltech.qt.gui.QAccessibleInterface;
-import com.trolltech.qt.gui.QAction;
-import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QBitmap;
-import com.trolltech.qt.gui.QBrush;
-import com.trolltech.qt.gui.QClipboard;
-import com.trolltech.qt.gui.QColor;
-import com.trolltech.qt.gui.QCursor;
-import com.trolltech.qt.gui.QFontMetrics;
-import com.trolltech.qt.gui.QGradient;
-import com.trolltech.qt.gui.QGridLayout;
-import com.trolltech.qt.gui.QImage;
-import com.trolltech.qt.gui.QKeySequence;
-import com.trolltech.qt.gui.QLineF;
-import com.trolltech.qt.gui.QLinearGradient;
-import com.trolltech.qt.gui.QMenu;
-import com.trolltech.qt.gui.QMimeData;
-import com.trolltech.qt.gui.QPainter;
-import com.trolltech.qt.gui.QPicture;
-import com.trolltech.qt.gui.QPictureIO;
-import com.trolltech.qt.gui.QPixmap;
-import com.trolltech.qt.gui.QPixmapCache;
-import com.trolltech.qt.gui.QPushButton;
-import com.trolltech.qt.gui.QRadialGradient;
-import com.trolltech.qt.gui.QRegion;
-import com.trolltech.qt.gui.QShortcut;
-import com.trolltech.qt.gui.QStyleOptionButton;
-import com.trolltech.qt.gui.QStyleOptionGraphicsItem;
-import com.trolltech.qt.gui.QTableArea;
-import com.trolltech.qt.gui.QTextCursor;
-import com.trolltech.qt.gui.QTextDocument;
-import com.trolltech.qt.gui.QValidator;
-import com.trolltech.qt.gui.QWidget;
-import com.trolltech.qt.network.QHttp;
-import com.trolltech.qt.network.QTcpServer;
-import com.trolltech.qt.opengl.QGLColormap;
-import com.trolltech.qt.sql.QSqlDatabase;
-import com.trolltech.qt.sql.QSqlField;
-import com.trolltech.qt.sql.QSqlRecord;
-import com.trolltech.qt.xml.QDomDocument;
-import com.trolltech.qt.xml.QDomElement;
-import com.trolltech.qt.xml.QXmlContentHandlerInterface;
-import com.trolltech.qt.xml.QXmlDTDHandlerInterface;
-import com.trolltech.qt.xml.QXmlDeclHandlerInterface;
-import com.trolltech.qt.xml.QXmlEntityResolverInterface;
-import com.trolltech.qt.xml.QXmlErrorHandlerInterface;
-import com.trolltech.qt.xml.QXmlInputSource;
-import com.trolltech.qt.xml.QXmlLexicalHandlerInterface;
-
+import com.trolltech.qt.gui.*;
+import com.trolltech.qt.network.*;
+import com.trolltech.qt.opengl.*;
+import com.trolltech.qt.sql.*;
+import com.trolltech.qt.xml.*;
 import static org.junit.Assert.*;
+import org.junit.*;
+
+import java.util.*;
 
 public class TestInjectedCode extends QApplicationTest {
     
@@ -1192,37 +1137,19 @@ public class TestInjectedCode extends QApplicationTest {
                 
         {
             QDataStream stream = new QDataStream(ba, QIODevice.OpenModeFlag.WriteOnly);                
-            byte bytes[] = new QByteArray("abra ka dabra").toByteArray();
-            stream.writeBytes(bytes, bytes.length);
+            byte bytes[] = "abra ka dabra".getBytes();
+            stream.writeInt(bytes.length);
+            stream.writeBytes(bytes);
         }
         
         {
-            QDataStream stream = new QDataStream(ba);            
-            byte bytes[] = stream.readBytes();
-            assertEquals("abra ka dabra".length(), bytes.length);
-            assertEquals("abra ka dabra", new QByteArray(bytes).toString());
+            QDataStream stream = new QDataStream(ba);
+            byte bytes[] = new byte[stream.readInt()];
+            stream.readBytes(bytes);
+            String s = new String(bytes);
+            assertEquals("abra ka dabra".length(), s.length());
+            assertEquals("abra ka dabra", s);
         }
-        
-        {
-            boolean caught = false;           
-            QDataStream stream = new QDataStream(ba, QIODevice.OpenModeFlag.WriteOnly);
-            
-            try {
-                stream.writeBytes(null, 0);
-            } catch (Exception e) {
-                caught = true;
-            }
-            
-            assertTrue(caught);
-        }
-        
-        {
-            QByteArray empty = new QByteArray();
-            
-            QDataStream stream = new QDataStream(empty);            
-            byte bytes[] = stream.readBytes();
-            assertEquals(0, bytes.length);
-        }       
     }
     
     
@@ -1232,25 +1159,24 @@ public class TestInjectedCode extends QApplicationTest {
             QByteArray ba = new QByteArray();
             
             QDataStream stream = new QDataStream(ba, QIODevice.OpenModeFlag.WriteOnly);
-            stream.operator_shift_left(1.2);
-            stream.operator_shift_left(3.2);
+            stream.writeDouble(1.2);
+            stream.writeDouble(3.2);
             stream.dispose();
             
             stream = new QDataStream(ba);
             
-            double f[] = new double[2];
-            stream.operator_shift_right(f);
-            
-            assertEquals(1.2, f[0]);
-            assertEquals(3.2, f[1]);
+            double f1 = stream.readDouble();
+            double f2 = stream.readDouble();
+            assertEquals(1.2, f1);
+            assertEquals(3.2, f2);
         }
 
         for (int i=0; i<100; ++i) {
             QDataStream stream = new QDataStream(new QByteArray(), QIODevice.OpenModeFlag.WriteOnly);                                                
             System.gc();
             
-            stream.operator_shift_left(1.2);
-            stream.operator_shift_left(3.2);            
+            stream.writeDouble(1.2);
+            stream.writeDouble(3.2);            
         }
         
     }
@@ -1292,39 +1218,6 @@ public class TestInjectedCode extends QApplicationTest {
         }
     }
     
-    @Test
-    public void testQDataStreamWriteRawData() {
-        OtherIODeviceSubclass device = new OtherIODeviceSubclass();
-        assertTrue(device.open(QIODevice.OpenModeFlag.WriteOnly));
-        QDataStream stream = new QDataStream(device);
-
-        QByteArray ba = new QByteArray("onetwothree");        
-        while (ba.size() > 0)
-            ba.remove(0, stream.writeRawData(ba.toByteArray()));
-        
-        assertEquals("onetwothree", device.ba.toString());
-    }
-    
-    @Test
-    public void testQDataStreamReadRawData() {
-        
-        OtherIODeviceSubclass device = new OtherIODeviceSubclass();
-        assertTrue(device.open(QIODevice.OpenModeFlag.ReadOnly));
-        QDataStream stream = new QDataStream(device);
-        
-        int i = 1;
-        byte bytes[] = new byte[128];
-        QByteArray ba = new QByteArray();
-        while (i > 0) {
-            i = stream.readRawData(bytes);
-            for (int j=0; j<i; ++j)
-                ba.append(bytes[j]);                
-        }
-        assertEquals(3, ba.size());
-        
-        assertEquals(ba.toString(), new QByteArray(device.bytes).toString());
-        
-    }
 
     @Test
     public void testQBufferRetainBuffer() {

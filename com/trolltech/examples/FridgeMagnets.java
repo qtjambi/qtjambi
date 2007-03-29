@@ -202,15 +202,9 @@ public class FridgeMagnets extends QWidget {
         }
     }
 
-    public int readInt(QDataStream stream) {
-        int[] array = new int[1];
-        stream.operator_shift_right(array);
-        return array[0];
-    }
-
     public String readString(QDataStream stream) {
-        byte[] data = new byte[readInt(stream)];
-        stream.readRawData(data);
+        byte[] data = new byte[stream.readInt()];
+        stream.readBytes(data);
         String res = "";
         try {
             res = new String(data, "UTF-16");
@@ -220,26 +214,22 @@ public class FridgeMagnets extends QWidget {
     }
 
     public QPoint readQPoint(QDataStream stream) {
-        return new QPoint(readInt(stream), readInt(stream));
-    }
-
-    public void writeInt(QDataStream stream, int number) {
-        stream.operator_shift_left(number);
+        return new QPoint(stream.readInt(), stream.readInt());
     }
 
     public void writeString(QDataStream stream, String string) {
         byte[] data;
         try {
             data = string.getBytes("UTF-16");
-            writeInt(stream, data.length);
-            stream.writeRawData(data);
+            stream.writeInt(data.length);
+            stream.writeBytes(data);
         } catch (UnsupportedEncodingException e) {
-            writeInt(stream, 0);
+            stream.writeInt(0);
         }
     }
 
     public void writeQPoint(QDataStream stream, QPoint point) {
-        writeInt(stream, point.x());
-        writeInt(stream, point.y());
+        stream.writeInt(point.x());
+        stream.writeInt(point.y());
     }
 }

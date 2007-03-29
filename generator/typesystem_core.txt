@@ -2433,7 +2433,7 @@
     <extra-includes>
         <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>
-    
+
     <template name="core.datastream_operator_shift_right">
         <insert-template name="core.stream_operator_shift_right">
             <replace from="%STREAM_TYPE" to="QDataStream" />
@@ -2446,117 +2446,86 @@
         </insert-template>
     </template>    
 
-    <modify-function signature="operator&gt;&gt;(uint&amp;)">
-        <remove/>
-    </modify-function> 
-    <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)">
-        <remove />        
-    </modify-function>        
-    <modify-function signature="operator&gt;&gt;(unsigned char&amp;)">
-        <remove/>
-    </modify-function>    
-    <modify-function signature="operator&lt;&lt;(unsigned int)">    
-        <remove/>
-    </modify-function>     
-    <modify-function signature="operator&lt;&lt;(unsigned char)">    
-        <remove/>
-    </modify-function>
-    <modify-function signature="operator&lt;&lt;(unsigned long long)">    
-        <remove/>
-    </modify-function>
-        
-    <modify-function signature="operator&gt;&gt;(char &amp;*)">
-        <remove />
-    </modify-function>  
-    
-    <modify-function signature="operator&gt;&gt;(double&amp;)">
-        <rename to="operator_shift_right_double"/>
-        <access modifier="private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.datastream_operator_shift_right_primitive">
-            <replace from="%TYPE" to="double" />
-            <replace from="%NATIVEPOINTER_TYPE" to="Double" />
-        </insert-template>
-    </inject-code>    
-    
+    <modify-function signature="operator&lt;&lt;(bool)"> <rename to="writeBoolean" /> </modify-function>
+    <modify-function signature="operator&lt;&lt;(signed char)"> <rename to="writeByte" /> </modify-function>
+    <modify-function signature="operator&lt;&lt;(int)"> <rename to="writeInt" /> </modify-function>
+    <modify-function signature="operator&lt;&lt;(long long)"> <rename to="writeLong" /> </modify-function>
+    <modify-function signature="operator&lt;&lt;(float)"> <rename to="writeFloat" /> </modify-function>
+    <modify-function signature="operator&lt;&lt;(double)"> <rename to="writeDouble" /> </modify-function>
+    <modify-function signature="operator&lt;&lt;(short)"> <rename to="writeShort_char" /> <access modifier="private"/> </modify-function>
+
+    <modify-function signature="operator&lt;&lt;(const char*)"> <remove /> </modify-function>
+    <modify-function signature="operator&lt;&lt;(unsigned char)"> <remove/> </modify-function>
+    <modify-function signature="operator&lt;&lt;(unsigned int)"> <remove/> </modify-function>     
+    <modify-function signature="operator&lt;&lt;(unsigned long long)"> <remove/> </modify-function>
+    <modify-function signature="operator&lt;&lt;(unsigned short)"> <remove/> </modify-function>
+
+    <modify-function signature="operator&gt;&gt;(char &amp;*)"> <remove /> </modify-function>  
+    <modify-function signature="operator&gt;&gt;(uint&amp;)"> <remove/> </modify-function> 
+    <modify-function signature="operator&gt;&gt;(unsigned char&amp;)"> <remove/> </modify-function>    
+    <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)"> <remove /> </modify-function>   
+
+    <modify-function signature="readRawData(char*,int)"> <remove /> </modify-function>
+    <modify-function signature="readBytes(char*&amp;,uint)"> <remove /> </modify-function>
+    <modify-function signature="writeRawData(const char*,int)"> <remove /> </modify-function>
+    <modify-function signature="writeBytes(const char*,uint)"> <remove /> </modify-function>
+
     <modify-function signature="operator&gt;&gt;(int&amp;)">
         <rename to="operator_shift_right_int"/>
         <access modifier="private" />
     </modify-function>                
-    <inject-code>
-        <insert-template name="core.datastream_operator_shift_right_primitive">
-            <replace from="%TYPE" to="int" />
-            <replace from="%NATIVEPOINTER_TYPE" to="Int" />
-        </insert-template>
-    </inject-code>        
     
     <modify-function signature="operator&gt;&gt;(bool&amp;)">
         <rename to="operator_shift_right_boolean" />
         <access modifier="private" />
-    </modify-function>                
-    <inject-code>
-        <insert-template name="core.datastream_operator_shift_right_primitive">
-            <replace from="%TYPE" to="boolean" />
-            <replace from="%NATIVEPOINTER_TYPE" to="Boolean" />
-        </insert-template>
-    </inject-code>        
+    </modify-function>
     
-    <modify-function signature="operator&gt;&gt;(float&amp;)">
-        <rename to="operator_shift_right_float"/>
-        <access modifier="private" />
-    </modify-function>                
-    <inject-code>
-        <insert-template name="core.datastream_operator_shift_right_primitive">
-            <replace from="%TYPE" to="float" />
-            <replace from="%NATIVEPOINTER_TYPE" to="Float" />
-        </insert-template>
-    </inject-code>        
-
     <modify-function signature="operator&gt;&gt;(short&amp;)">
-        <rename to="operator_shift_right_short"/>
+       <rename to="operator_shift_right_short"/>
         <access modifier="private" />
     </modify-function>                
-    <inject-code>
-        <insert-template name="core.datastream_operator_shift_right_primitive">
-            <replace from="%TYPE" to="short" />
-            <replace from="%NATIVEPOINTER_TYPE" to="Short" />
-        </insert-template>
-    </inject-code>        
-    
+
     <modify-function signature="operator&gt;&gt;(long long&amp;)">
         <rename to="operator_shift_right_long"/>
         <access modifier="private" />
     </modify-function>                
-    <inject-code>
-        <insert-template name="core.datastream_operator_shift_right_primitive">
-            <replace from="%TYPE" to="long" />
-            <replace from="%NATIVEPOINTER_TYPE" to="Long" />
-        </insert-template>
-    </inject-code>        
         
     <modify-function signature="operator&gt;&gt;(signed char&amp;)">
         <rename to="operator_shift_right_byte"/>
         <access modifier="private" />
     </modify-function>                
-    <inject-code>
-        <insert-template name="core.datastream_operator_shift_right_primitive">
-            <replace from="%TYPE" to="byte" />
-            <replace from="%NATIVEPOINTER_TYPE" to="Byte" />
-        </insert-template>
-    </inject-code>        
 
     <modify-function signature="operator&gt;&gt;(unsigned short&amp;)">
         <rename to="operator_shift_right_char" />        
         <access modifier="private" />
     </modify-function>                
+
+    <modify-function signature="operator&gt;&gt;(float&amp;)">
+        <rename to="operator_shift_right_float"/>
+        <access modifier="private" />
+    </modify-function>                
+
+    <modify-function signature="operator&gt;&gt;(double&amp;)">
+        <rename to="operator_shift_right_double"/>
+        <access modifier="private" />
+    </modify-function>                
+
     <inject-code>
-        <insert-template name="core.datastream_operator_shift_right_primitive">
-            <replace from="%TYPE" to="char" />
-            <replace from="%NATIVEPOINTER_TYPE" to="Char" />
-        </insert-template>
-    </inject-code>        
-    
+        private QNativePointer srb = new QNativePointer(QNativePointer.Type.Byte, 32) {
+            {
+                setVerificationEnabled(false);
+            }
+        };
+        public final boolean readBoolean() { operator_shift_right_boolean(srb); return srb.booleanValue(); }
+        public final byte    readByte()    { operator_shift_right_byte(srb);    return srb.byteValue(); }
+        public final short   readShort()   { operator_shift_right_short(srb);   return srb.shortValue(); }
+        public final int     readInt()     { operator_shift_right_int(srb);     return srb.intValue(); }
+        public final long    readLong()    { operator_shift_right_long(srb);    return srb.longValue(); }
+        public final float   readFloat()   { operator_shift_right_float(srb);   return srb.floatValue(); }
+        public final double  readDouble()  { operator_shift_right_double(srb);  return srb.doubleValue(); }
+        public final QDataStream writeShort(short s) { writeShort_char((char) s); return this; }
+    </inject-code>    
+
     <template name="core.stream_constructor_bytearray">
         // Hold reference to byte array which goes away when the stream dies 
         @SuppressWarnings("unused")
@@ -2579,72 +2548,45 @@
             <replace from="%CLASSNAME" to="QDataStream" />
         </insert-template>
     </inject-code>
-    
-    <modify-function signature="operator&lt;&lt;(const char*)">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="operator&lt;&lt;(short)">
-        <access modifier="private" />
-        <rename to="operator_shift_left_short" />
-    </modify-function>
+   
     <inject-code>
-        public final QDataStream operator_shift_left(short i) {
-            return operator_shift_left_short((char) i);
+        public final int writeBytes(byte buffer[]) { return writeBytes(buffer, buffer.length); }
+        public final native int writeBytes(byte buffer[], int length);
+        public final int readBytes(byte buffer[]) { return readBytes(buffer, buffer.length); }
+        public final native int readBytes(byte buffer[], int length);
+    </inject-code>
+
+    <inject-code>
+        extern "C" JNIEXPORT int JNICALL Java_com_trolltech_qt_core_QDataStream_readBytes_1native
+        (JNIEnv *env, jobject, jlong stream, jbyteArray array, jint length)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::readBytes_native");
+            char *rawBuffer = (char *) env->GetByteArrayElements(array, 0);
+        
+            QDataStream *qtStream = (QDataStream *) qtjambi_from_jlong(stream);
+            int read = qtStream->readRawData(rawBuffer, length);
+        
+            env->ReleaseByteArrayElements(array, (jbyte *) rawBuffer, 0);
+            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QDataStream::readBytes_native");
+            return qMin(read, (int) length);
+        }
+        
+        extern "C" JNIEXPORT int JNICALL Java_com_trolltech_qt_core_QDataStream_writeBytes_1native
+        (JNIEnv *env, jobject, jlong stream, jbyteArray array, jint length)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::writeBytes_native");
+            char *rawBuffer = (char *) env->GetByteArrayElements(array, 0);
+        
+            QDataStream *qtStream = (QDataStream *) qtjambi_from_jlong(stream);
+            int wrote = qtStream->writeRawData(rawBuffer, length);
+        
+            env->ReleaseByteArrayElements(array, (jbyte *) rawBuffer, 0);
+            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QDataStream::writeBytes_native");
+            return qMin(wrote, (int) length);
         }
     </inject-code>
-    
-    <modify-function signature="readBytes(char&amp;*,uint&amp;)">
-        <access modifier="private" />
-    </modify-function>
-    <inject-code>
-        public final byte[] readBytes() {
-            QNativePointer len = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer s = new QNativePointer(QNativePointer.Type.Byte, 1, 2);
-            readBytes(s, len);
-            
-            int length = len.intValue();
-            if (length > 0) {
-                byte bytes[] = new byte[length];
-                QNativePointer p = s.pointerValue();                
-                for (int i=0; i&lt;length; ++i)
-                    bytes[i] = p.byteAt(i);
-                return bytes;
-            } else {            
-                return new byte[0];
-            }
-        }
-    </inject-code>
-    
-    <modify-function signature="readRawData(char*,int)">
-        <access modifier="private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.read_with_byte[]_instead_of_char*_and_int">
-            <replace from="%FUNCTION_NAME" to="readRawData" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="writeBytes(const char*,uint)">
-        <access modifier="private" />
-    </modify-function>
-    <inject-code>
-        public final QDataStream writeBytes(byte s[], int len) {            
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Byte, len);
-            for (int i=0; i&lt;len; ++i) np.setByteAt(i, s[i]);
-            return writeBytes(np, len);
-        }
-    </inject-code>
-    
-    <modify-function signature="writeRawData(const char*,int)">
-        <access modifier="private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.write_with_byte[]_instead_of_char*_and_int">
-            <replace from="%FUNCTION_NAME" to="writeRawData" />
-        </insert-template>
-    </inject-code>                
   </object-type>
+
   <object-type name="QFSFileEngine">
 	<extra-includes>
            <include file-name="QDateTime" location="global" />
