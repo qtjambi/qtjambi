@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="nb_NO">
-<defaultcodec></defaultcodec>
 <context>
     <name>com.trolltech.examples.Application</name>
     <message>
@@ -1533,6 +1532,89 @@ Save your changes?</source>
 This example needs SQLite support. Please read the Qt SQL driver documentation for information how to build it.
 
 Click Cancel to exit.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>com.trolltech.examples.StarWindow</name>
+    <message>
+        <location filename="StarWindow.java" line="13"/>
+        <source>Mass in B-Minor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="13"/>
+        <source>Baroque</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="13"/>
+        <source>JS Bach</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="15"/>
+        <source>Sex Bomb</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="18"/>
+        <source>Pop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="15"/>
+        <source>Tom Jones</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="16"/>
+        <source>Three More Foxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="16"/>
+        <source>jazz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="16"/>
+        <source>Maynard Ferguson</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="18"/>
+        <source>Barbie Girl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="18"/>
+        <source>Aqua</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="33"/>
+        <source>Star Delegate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="50"/>
+        <source>Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="51"/>
+        <source>Genre</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="52"/>
+        <source>Artist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="StarWindow.java" line="53"/>
+        <source>Rating</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
