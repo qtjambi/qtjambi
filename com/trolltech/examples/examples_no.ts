@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS><TS version="1.1" language="nb_NO">
+<defaultcodec></defaultcodec>
 <context>
     <name>com.trolltech.examples.Application</name>
     <message>
@@ -264,22 +265,22 @@ Save your changes?</source>
     <message>
         <location filename="Calculator.java" line="45"/>
         <source>Ui selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafisk grensesnitt velger</translation>
     </message>
     <message>
         <location filename="Calculator.java" line="46"/>
         <source>Ui configurations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafisk grensesnitt konfigurasjon</translation>
     </message>
     <message>
         <location filename="Calculator.java" line="270"/>
         <source>Function selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Funksjons velger</translation>
     </message>
     <message>
         <location filename="Calculator.java" line="271"/>
         <source>Available functions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilgjengelige funksjoner:</translation>
     </message>
 </context>
 <context>
@@ -315,27 +316,27 @@ Save your changes?</source>
     <message>
         <location filename="ConfigDialog.java" line="38"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Lukk</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="60"/>
         <source>Config Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurasjons Dialog</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="66"/>
         <source>Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurasjon</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="73"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Oppdater</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="80"/>
         <source>Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Spørring</translation>
     </message>
 </context>
 <context>
@@ -343,37 +344,37 @@ Save your changes?</source>
     <message>
         <location filename="ConfigDialog.java" line="97"/>
         <source>Server configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Server konfigurasjon</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="99"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Server:</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="101"/>
         <source>Trolltech (Australia)</source>
-        <translation type="unfinished"></translation>
+        <translation>Trolltech (Australia)</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="102"/>
         <source>Trolltech (Germany)</source>
-        <translation type="unfinished"></translation>
+        <translation>Trolltech (Tyskland)</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="103"/>
         <source>Trolltech (Norway)</source>
-        <translation type="unfinished"></translation>
+        <translation>Trolltech (Norge)</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="104"/>
         <source>Trolltech (People&apos;s Republic of China)</source>
-        <translation type="unfinished"></translation>
+        <translation>Trolltech (Kina)</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="105"/>
         <source>Trolltech (USA)</source>
-        <translation type="unfinished"></translation>
+        <translation>Trolltech (USA)</translation>
     </message>
 </context>
 <context>
@@ -381,47 +382,47 @@ Save your changes?</source>
     <message>
         <location filename="ConfigDialog.java" line="167"/>
         <source>Look for packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Let etter pakke</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="169"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Navn:</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="172"/>
         <source>Released after:</source>
-        <translation type="unfinished"></translation>
+        <translation>Utgitt etter:</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="175"/>
         <source>Releases</source>
-        <translation type="unfinished"></translation>
+        <translation>Utgivelser:</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="176"/>
         <source>Upgrades</source>
-        <translation type="unfinished"></translation>
+        <translation>Oppgraderinger</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="179"/>
         <source>Return up to </source>
-        <translation type="unfinished"></translation>
+        <translation>Lever opp til</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="180"/>
         <source> results</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultat</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="181"/>
         <source>Return only the first result</source>
-        <translation type="unfinished"></translation>
+        <translation>Returner bare første resultat</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="186"/>
         <source>Start query</source>
-        <translation type="unfinished"></translation>
+        <translation>Start spørring</translation>
     </message>
 </context>
 <context>
@@ -429,47 +430,47 @@ Save your changes?</source>
     <message>
         <location filename="ConfigDialog.java" line="126"/>
         <source>Package selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pakke utvalg</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="127"/>
         <source>Update system</source>
-        <translation type="unfinished"></translation>
+        <translation>Oppdater systemet</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="128"/>
         <source>Update applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Oppdater programmene</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="129"/>
         <source>Update documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Oppdater dokumentasjon</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="131"/>
         <source>Existing packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksisterendes pakker</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="135"/>
         <source>Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="137"/>
         <source>QSA</source>
-        <translation type="unfinished"></translation>
+        <translation>QSA</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="139"/>
         <source>Teambuilder</source>
-        <translation type="unfinished"></translation>
+        <translation>Teambuilder</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="141"/>
         <source>Start update</source>
-        <translation type="unfinished"></translation>
+        <translation>Start oppdatering</translation>
     </message>
 </context>
 <context>
