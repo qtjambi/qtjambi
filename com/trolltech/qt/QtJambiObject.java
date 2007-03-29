@@ -55,7 +55,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     }
 
     public String tr(String str) {
-    	String scope = getClass().getCanonicalName();
+    	String scope = getClass().getName();
     	return QCoreApplication.translate(scope, str);
     }
 
