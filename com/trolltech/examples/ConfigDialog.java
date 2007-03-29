@@ -177,8 +177,8 @@ public class ConfigDialog extends QDialog {
 			QCheckBox upgradesCheckBox = new QCheckBox(tr("Upgrades"));
 
 			QSpinBox hitsSpinBox = new QSpinBox();
-			hitsSpinBox.setPrefix(tr("Return up to "));
-			hitsSpinBox.setSuffix(tr(" results"));
+			hitsSpinBox.setPrefix(tr("Return up to") + " ");
+			hitsSpinBox.setSuffix(" " + tr("results"));
 			hitsSpinBox.setSpecialValueText(tr("Return only the first result"));
 			hitsSpinBox.setMinimum(1);
 			hitsSpinBox.setMaximum(100);
