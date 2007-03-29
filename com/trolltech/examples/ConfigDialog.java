@@ -58,6 +58,7 @@ public class ConfigDialog extends QDialog {
 		setLayout(mainLayout);
 
 		setWindowTitle(tr("Config Dialog"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));        
 	}
 
 	private void createIcons() {
