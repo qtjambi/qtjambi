@@ -143,10 +143,10 @@ public class ItemviewChart extends QMainWindow {
             if (file.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly, QFile.OpenModeFlag.Text))) {
                 for (int row = 0; row < model.rowCount(null); ++row) {
 
-                    stream.operator_shift_left(model.data(model.index(row, 0, null), Qt.ItemDataRole.DisplayRole).toString() + ",");
-                    stream.operator_shift_left(model.data(model.index(row, 1, null), Qt.ItemDataRole.DisplayRole).toString() + ",");
-                    stream.operator_shift_left(((QColor) model.data(model.index(row, 0, null), Qt.ItemDataRole.DecorationRole)).name());
-                    stream.operator_shift_left("\n");
+                    stream.writeString(model.data(model.index(row, 0, null), Qt.ItemDataRole.DisplayRole).toString() + ",");
+                    stream.writeString(model.data(model.index(row, 1, null), Qt.ItemDataRole.DisplayRole).toString() + ",");
+                    stream.writeString(((QColor) model.data(model.index(row, 0, null), Qt.ItemDataRole.DecorationRole)).name());
+                    stream.writeString("\n");
                 }
             }
 

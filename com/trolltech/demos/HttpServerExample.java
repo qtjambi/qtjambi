@@ -103,13 +103,13 @@ public class HttpServerExample extends QWidget {
 					QTextStream os = new QTextStream(socket);
 					os.setCodec("utf-8");
 
-					os.operator_shift_left("HTTP/1.0 200 Ok\r\n");
-					os.operator_shift_left("Content-Type: text/html; charset=\"utf-8\"\r\n");
-					os.operator_shift_left("\r\n");
+					os.writeString("HTTP/1.0 200 Ok\r\n");
+					os.writeString("Content-Type: text/html; charset=\"utf-8\"\r\n");
+					os.writeString("\r\n");
 					if (text != null && !text.equals("")) {
-						os.operator_shift_left(text);
+						os.writeString(text);
 					} else {
-						os.operator_shift_left("<h1>This page is empty</h1>");
+						os.writeString("<h1>This page is empty</h1>");
 					}
 					socket.close();
 				}

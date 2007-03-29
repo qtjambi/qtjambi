@@ -281,7 +281,7 @@ public class Application extends QMainWindow {
 
         QTextStream out = new QTextStream(file);
         QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.WaitCursor));
-        out.operator_shift_left(textEdit.toPlainText());
+        out.writeString(textEdit.toPlainText());
         QApplication.restoreOverrideCursor();
 
         setCurrentFile(fileName);

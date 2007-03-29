@@ -13,30 +13,32 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.launcher.Style;
-import com.trolltech.qt.gui.*;
+import com.trolltech.qt.core.*;
+import static org.junit.Assert.*;
 
 public class Test
 {
-    public static void main(String args[]) throws Exception
-    {
-        QApplication.initialize(args);
-        
-        System.out.println("Created groupbox...");
-        QGroupBox box = new QGroupBox();
-        System.out.println(" -> ok");
-        
-        System.out.println("Creating style...");
-        QStyle style = new Style(box);
-        System.out.println(" -> ok");
-        box.setStyle(style);
-        System.out.println(" -> ok to set style");
-        box.setTitle("Hey there...");
-        
-        System.out.println(" -> ok to set tilte..");
-        
-        box.show();
-        
-        QApplication.exec();
+    @org.junit.Test
+    public void testQDataStreamReadWriteBytes() {
+        QByteArray ba = new QByteArray();
+
+        {
+            QDataStream stream = new QDataStream(ba, QIODevice.OpenModeFlag.WriteOnly);
+            byte bytes[] = "abra ka dabra".getBytes();
+            stream.writeInt(bytes.length);
+            stream.writeBytes(bytes);
+        }
+
+        {
+            QDataStream stream = new QDataStream(ba);
+            byte bytes[] = new byte[stream.readInt()];
+            stream.readBytes(bytes);
+            String s = new String(bytes);
+            assertEquals("abra ka dabra".length(), s.length());
+            assertEquals("abra ka dabra", s);
+        }
+
+        System.gc();
     }
+
 }

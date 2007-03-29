@@ -312,9 +312,9 @@ public class TextEdit extends QMainWindow {
         if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly)))
             return false;
         QTextStream ts = new QTextStream(file);
-        ts.setCodec(QTextCodec.codecForName(new QByteArray("UTF-8")));
-        ts.operator_shift_left(textEdit.document().toHtml(
-                new QByteArray("UTF-8")));
+        QByteArray codecName = new QByteArray("UTF-8");
+        ts.setCodec(QTextCodec.codecForName(codecName));
+        ts.writeString(textEdit.document().toHtml(codecName));
         textEdit.document().setModified(false);
         file.close();
         return true;
