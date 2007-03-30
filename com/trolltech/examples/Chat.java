@@ -13,12 +13,12 @@
 
 package com.trolltech.examples;
 
-import java.util.*;
-
 import com.trolltech.qt.core.*;
-import com.trolltech.qt.core.Qt.MatchFlag;
+import com.trolltech.qt.core.Qt.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
+
+import java.util.*;
 
 @QtJambiExample(name = "Chat")
 public class Chat extends QDialog {
@@ -436,13 +436,13 @@ class Connection extends QTcpSocket {
             return false;
         }
 
-        if (buffer.operator_equal("PING ")) {
+        if (buffer.equals("PING ")) {
             currentDataType = DataType.Ping;
-        } else if (buffer.operator_equal("PONG ")) {
+        } else if (buffer.equals("PONG ")) {
             currentDataType = DataType.Pong;
-        } else if (buffer.operator_equal("MESSAGE ")) {
+        } else if (buffer.equals("MESSAGE ")) {
             currentDataType = DataType.PlainText;
-        } else if (buffer.operator_equal("GREETING ")) {
+        } else if (buffer.equals("GREETING ")) {
             currentDataType = DataType.Greeting;
         } else {
             currentDataType = DataType.Undefined;
@@ -574,7 +574,7 @@ class PeerManager extends QObject {
 
     private boolean isLocalHostAddress(final QHostAddress address) {
         for (QHostAddress localAddress : ipAddresses) {
-            if (address.operator_equal(localAddress))
+            if (address.equals(localAddress))
                 return true;
         }
         return false;
@@ -626,7 +626,7 @@ class PeerManager extends QObject {
         for (QNetworkInterface networkInterface : QNetworkInterface.allInterfaces()) {
             for (QNetworkAddressEntry entry : networkInterface.addressEntries()) {
                 QHostAddress broadcastAddress = entry.broadcast();
-                if (!broadcastAddress.operator_equal(QHostAddress.SpecialAddress.Null)) {
+                if (!broadcastAddress.equals(QHostAddress.SpecialAddress.Null)) {
                     broadcastAddresses.add(broadcastAddress);
                     ipAddresses.add(entry.ip());
                 }

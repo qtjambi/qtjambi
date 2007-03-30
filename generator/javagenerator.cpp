@@ -587,8 +587,10 @@ void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
                                           uint *include_attributes) const
 {
     FunctionModificationList mods = java_function->modifications(java_class);
+//     printf("name: %s has %d mods\n", qPrintable(java_function->signature()), mods.size());
     foreach (FunctionModification mod, mods) {
         if (mod.isAccessModifier()) {
+//             printf(" -> access mod to %x\n", mod.modifiers);
             *exclude_attributes |= MetaJavaAttributes::Public
                                 | MetaJavaAttributes::Protected
                                 | MetaJavaAttributes::Private
@@ -710,31 +712,34 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     }
 }
 
+static void write_equals_parts(QTextStream &s, const MetaJavaFunctionList &lst, char prefix, bool *first) {
+    foreach (MetaJavaFunction *f, lst) {
+        MetaJavaArgument *arg = f->arguments().at(0);
+        QString type = arg->type()->typeEntry()->qualifiedJavaName();
+        s << "        " << (*first ? "if" : "else if") << " (other instanceof " << type << ")" << endl
+          << "            return ";
+        if (prefix != 0) s << prefix;
+        s << f->name() << "((" << type << ") other);" << endl;
+        *first = false;
+    }
+}
+
 void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
                                                          const MetaJavaClass *cls)
 {
-    if (cls->hasEqualsOperator() && cls->hasHashFunction()) {
-        MetaJavaFunctionList equal_functions = cls->queryFunctionsByName("equals");
-        bool found = false;
-        foreach (const MetaJavaFunction *function, equal_functions) {
-            if (function->actualMinimumArgumentCount() == 1
-                && function->arguments().at(0)->type()->typeEntry()->isComplex()) {
-                found = true;
-                break;
-            }
-        }
+    MetaJavaFunctionList eq_functions = cls->equalsFunctions();
+    MetaJavaFunctionList neq_functions = cls->notEqualsFunctions();
 
-        if (!found) {
-            s << endl
-              << "    public boolean equals(Object other) {" << endl
-              << "        if (nativeId() == 0)" << endl
-              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
-              << "        return !(other instanceof " << cls->fullName()
-              << ") ? false : __qt_equals(nativeId(), ((" << cls->fullName() << ")other).nativeId());" << endl
-              << "    }" << endl
-              << "    private static native boolean __qt_equals(long __this_nativeId, long other);" << endl << endl;
-        }
+    if (eq_functions.size() || neq_functions.size()) {
+        s << endl
+          << "    public boolean equals(Object other) {" << endl;
+        bool first = true;
+        write_equals_parts(s, eq_functions, (char) 0, &first);
+        write_equals_parts(s, neq_functions, '!', &first);
+        s << "        return false;" << endl
+          << "    }" << endl << endl;
     }
+
 
     if (cls->hasHashFunction()) {
         MetaJavaFunctionList hashcode_functions = cls->queryFunctionsByName("hashCode");
@@ -1138,7 +1143,6 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // Add dummy constructor for use when constructing subclasses
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         s << endl
-          << "    @com.trolltech.qt.QtBlockedSlot "
           << "protected "
           << java_class->name()
           << "(QPrivateConstructor p) { super(p); } "

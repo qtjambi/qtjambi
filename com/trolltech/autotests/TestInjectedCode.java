@@ -613,11 +613,11 @@ public class TestInjectedCode extends QApplicationTest {
         
         assertEquals(ref2.width(), image.width());
         assertEquals(ref2.height(), image.height());
-        assertTrue(ref2.operator_equal(image));
+        assertTrue(ref2.equals(image));
         
         assertEquals(ref1.width(), iihss.image.width());
         assertEquals(ref1.height(), iihss.image.height());
-        assertTrue(ref1.operator_equal(iihss.image));
+        assertTrue(ref1.equals(iihss.image));
         
     }
     
@@ -939,7 +939,7 @@ public class TestInjectedCode extends QApplicationTest {
         QImage bmImage = bm.toImage();
         QImage otherImage = cursor.bitmap().toImage();
         
-        assertTrue(bmImage.operator_equal(otherImage));
+        assertTrue(bmImage.equals(otherImage));
     }
     
     @Test
@@ -959,7 +959,7 @@ public class TestInjectedCode extends QApplicationTest {
         byte bytes[] = img.copyOfBytes();        
         QImage img2 = new QImage(bytes, img.width(), img.height(), img.format());
                 
-        assertTrue(img.operator_equal(img2));
+        assertTrue(img.equals(img2));
     }
     
     @Test
@@ -1006,7 +1006,7 @@ public class TestInjectedCode extends QApplicationTest {
         QImage imgSave = pmSave.toImage();
         QImage imgLoad = pmLoad.toImage();
         
-        assertTrue(imgSave.operator_equal(imgLoad));
+        assertTrue(imgSave.equals(imgLoad));
 
         buffer = new QBuffer();
         buffer.open(QIODevice.OpenModeFlag.WriteOnly);
@@ -1675,14 +1675,14 @@ public class TestInjectedCode extends QApplicationTest {
     public void testOperatorAssignOtherTypeTemplate() {
         QDir in = new QDir("classpath:com/trolltech/");
         QDir other = new QDir("classpath:com/trolltech/examples/");
-        assertFalse(other.operator_equal(in));
+        assertFalse(other.equals(in));
         
         String out = "classpath:com/trolltech/examples/";
         QDir self = in.operator_assign(out);        
-        assertTrue(self.operator_equal(in));        
+        assertTrue(self.equals(in));
         assertEquals(self.absolutePath(), in.absolutePath());
                         
-        assertTrue(other.operator_equal(in));
+        assertTrue(other.equals(in));
         assertEquals(other.count(), in.count());
         assertEquals(other.absolutePath(), in.absolutePath());
     }
@@ -1709,9 +1709,9 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals(30, out.time().minute());
                 
         QDateTime self = out.operator_assign(in);
-        assertTrue(self.operator_equal(out));
-        assertTrue(self.operator_equal(in));
-        assertTrue(in.operator_equal(out));
+        assertTrue(self.equals(out));
+        assertTrue(self.equals(in));
+        assertTrue(in.equals(out));
 
         assertEquals(30, out.date().day());
         assertEquals(11, out.date().month());

@@ -13,16 +13,14 @@
 
 package com.trolltech.autotests;
 
-import java.lang.reflect.Method;
-import java.util.*;
-
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.trolltech.autotests.generated.Variants;
-import com.trolltech.qt.QVariant;
+import com.trolltech.autotests.generated.*;
+import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
+import static org.junit.Assert.*;
+import org.junit.*;
+
+import java.lang.reflect.*;
+import java.util.*;
 
 public class TestQVariant extends QApplicationTest {
 
@@ -318,11 +316,11 @@ public class TestQVariant extends QApplicationTest {
         assertEquals(QVariant.toDouble(object), expectedDouble);
         assertEquals(QVariant.toInt(object), expectedInt);
         assertEquals(QVariant.toBoolean(object), expectedBool);
-        assertTrue(QVariant.toBitArray(object).operator_equal(expectedBitArray));
+        assertTrue(QVariant.toBitArray(object).equals(expectedBitArray));
         assertEquals(QVariant.toChar(object), expectedChar);
-        assertTrue(QVariant.toDate(object).operator_equal(expectedDate));
-        assertTrue(QVariant.toTime(object).operator_equal(expectedTime));
-        assertTrue(QVariant.toDateTime(object).operator_equal(expectedDateTime));
+        assertTrue(QVariant.toDate(object).equals(expectedDate));
+        assertTrue(QVariant.toTime(object).equals(expectedTime));
+        assertTrue(QVariant.toDateTime(object).equals(expectedDateTime));
         QVariant.toDateTime(object);
         assertEquals(QVariant.toPoint(object).x(), expectedPoint.x());
         assertEquals(QVariant.toPoint(object).y(), expectedPoint.y());
@@ -336,7 +334,7 @@ public class TestQVariant extends QApplicationTest {
         assertEquals(QVariant.toRectF(object).top(), expectedRectF.top());
         assertEquals(QVariant.toRectF(object).bottom(), expectedRectF.bottom());
         assertEquals(QVariant.toRectF(object).right(), expectedRectF.right());
-        assertTrue(QVariant.toRegExp(object).operator_equal(expectedRegExp));
+        assertTrue(QVariant.toRegExp(object).equals(expectedRegExp));
         assertEquals(QVariant.toSize(object).width(), expectedSize.width());
         assertEquals(QVariant.toSize(object).height(), expectedSize.height());
         assertEquals(QVariant.toSizeF(object).width(), expectedSizeF.width());

@@ -498,39 +498,6 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
 void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, const MetaJavaClass *cls)
 {
-    if (cls->hasEqualsOperator() && cls->hasHashFunction()) {
-        MetaJavaFunctionList equal_functions = cls->queryFunctionsByName("equals");
-        bool found = false;
-        foreach (const MetaJavaFunction *function, equal_functions) {
-            if (function->actualMinimumArgumentCount() == 1
-                && function->arguments().at(0)->type()->typeEntry()->isComplex()) {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            s << endl
-              << INDENT << jni_function_signature(cls->package(), cls->name(), "__qt_equals", "jboolean")
-              << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId, jlong other)" << endl
-              << INDENT << "{" << endl;
-            {
-                Indentation indent;
-                s << INDENT << "Q_UNUSED(__jni_env);" << endl
-                  << INDENT << cls->qualifiedCppName() << " *__qt_this = ("
-                  << cls->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
-                  << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
-                  << INDENT << "Q_ASSERT(__qt_this);" << endl
-                  << INDENT << cls->qualifiedCppName() << " *__qt_other = ("
-                  << cls->qualifiedCppName() << " *) qtjambi_from_jlong(other);" << endl
-                  << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
-                  << INDENT << "Q_ASSERT(__qt_other);" << endl
-                  << INDENT << "return *__qt_this == *__qt_other;" << endl;
-            }
-            s << INDENT << "}" << endl;
-        }
-    }
-
     if (cls->hasHashFunction()) {
         MetaJavaFunctionList hashcode_functions = cls->queryFunctionsByName("hashCode");
         bool found = false;

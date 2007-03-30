@@ -201,20 +201,6 @@ void MetaJavaBuilder::registerHashFunction(FunctionModelItem function_item)
     }
 }
 
-/**
- * Checks the argument of an equals operator and flags the type if it is a complex type
- */
-void MetaJavaBuilder::registerEqualsOperator(FunctionModelItem function_item)
-{
-    ArgumentList arguments = function_item->arguments();
-    if (arguments.size() == 2) {
-        MetaJavaClass *class_one = argumentToClass(arguments.at(0));
-        MetaJavaClass *class_two = argumentToClass(arguments.at(1));
-        if (class_one != 0 && class_one == class_two)
-            class_one->setHasEqualsOperator(true);
-    }
-}
-
 bool MetaJavaBuilder::build()
 {
     Q_ASSERT(!m_file_name.isEmpty());
@@ -339,16 +325,12 @@ bool MetaJavaBuilder::build()
         }
     }
 
-    {
-        FunctionList equal_functions = m_dom->findFunctions("operator==");
-        foreach (FunctionModelItem item, equal_functions) {
-            registerEqualsOperator(item);
-        }
-    }
-
     figureOutEnumValues();
     figureOutDefaultEnumArguments();
     checkFunctionModifications();
+
+    foreach (MetaJavaClass *cls, m_java_classes)
+        setupEquals(cls);
 
     dumpLog();
 
@@ -1788,6 +1770,82 @@ void MetaJavaBuilder::parseQ_Property(MetaJavaClass *java_class, const QStringLi
 
         java_class->addPropertySpec(spec);
     }
+}
+
+static void hide_functions(const MetaJavaFunctionList &l) {
+    foreach (MetaJavaFunction *f, l) {
+        FunctionModification mod;
+        mod.signature = f->minimalSignature();
+        mod.modifiers = FunctionModification::Private;
+        ((ComplexTypeEntry *) f->implementingClass()->typeEntry())->addFunctionModification(mod);
+    }
+}
+
+static void remove_function(MetaJavaFunction *f) {
+    FunctionModification mod;
+    mod.removal = TypeSystem::All;
+    mod.signature = f->minimalSignature();
+    ((ComplexTypeEntry *) f->implementingClass()->typeEntry())->addFunctionModification(mod);
+}
+
+void MetaJavaBuilder::setupEquals(MetaJavaClass *cls)
+{
+    MetaJavaFunctionList equals;
+    MetaJavaFunctionList nequals;
+
+    QString op_equals = QLatin1String("operator_equal");
+    QString op_nequals = QLatin1String("operator_not_equal");
+
+    MetaJavaFunctionList functions = cls->queryFunctions(MetaJavaClass::ClassImplements
+                                                         | MetaJavaClass::NotRemovedFromJava);
+    foreach (MetaJavaFunction *f, functions) {
+        if (f->name() == op_equals)
+            equals << f;
+        else if (f->name() == op_nequals)
+            nequals << f;
+    }
+
+    if (equals.size() || nequals.size()) {
+        if (!cls->hasHashFunction()) {
+            ReportHandler::warning(QString::fromLatin1("Class '%1' has equals operators but no qHash() function")
+                                   .arg(cls->name()));
+        }
+
+        hide_functions(equals);
+        hide_functions(nequals);
+
+        // We only need == if we have both == and !=, and one == for
+        // each signature type, like QDateTime::==(QDate) and (QTime)
+        // if such a thing exists...
+        QSet<QString> func_signatures;
+        MetaJavaFunctionList eq_functions;
+        foreach (MetaJavaFunction *f, equals) {
+            QString signature = f->minimalSignature().mid(11); // strip out "operator=="
+            signature = signature.left(signature.lastIndexOf(QLatin1Char(')')));
+            if (func_signatures.contains(signature)) {
+                remove_function(f);
+                continue;
+            }
+            func_signatures << signature;
+            eq_functions << f;
+        }
+
+        MetaJavaFunctionList neq_functions;
+        foreach (MetaJavaFunction *f, nequals) {
+            QString signature = f->minimalSignature().mid(11); // strip out "operator!="
+            signature = signature.left(signature.lastIndexOf(QLatin1Char(')')));
+            if (func_signatures.contains(signature)) {
+                remove_function(f);
+                continue;
+            }
+            func_signatures << signature;
+            neq_functions << f;
+        }
+
+        cls->setEqualsFunctions(eq_functions);
+        cls->setNotEqualsFunctions(neq_functions);
+    }
+
 }
 
 

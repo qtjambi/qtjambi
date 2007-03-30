@@ -714,6 +714,11 @@ public:
     QPropertySpec *propertySpecForReset(const QString &name) const;
 
     QList<ReferenceCount> referenceCounts() const;
+    void setEqualsFunctions(const MetaJavaFunctionList &lst) { m_equals_functions = lst; }
+    MetaJavaFunctionList equalsFunctions() const { return m_equals_functions; }
+
+    void setNotEqualsFunctions(const MetaJavaFunctionList &lst) { m_nequals_functions = lst; }
+    MetaJavaFunctionList notEqualsFunctions() const { return m_nequals_functions; }
 
 private:
     uint m_namespace : 1;
@@ -737,6 +742,8 @@ private:
     MetaJavaClass *m_extracted_interface;
     MetaJavaClass *m_primary_interface_implementor;
     QList<QPropertySpec *> m_property_specs;
+    MetaJavaFunctionList m_equals_functions;
+    MetaJavaFunctionList m_nequals_functions;
 
     QStringList m_base_class_names;
     ComplexTypeEntry *m_type_entry;

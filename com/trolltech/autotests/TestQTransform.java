@@ -1,12 +1,11 @@
 package com.trolltech.autotests;
 
-import java.util.Vector;
-
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-
 import static org.junit.Assert.*;
 import org.junit.*;
+
+import java.util.*;
 
 public class TestQTransform extends QApplicationTest {
 
@@ -114,7 +113,7 @@ public class TestQTransform extends QApplicationTest {
 	public void mapRect() {
 		for (Data d : makeData()) {
 			assertTrue(d.name, new QPolygon(d.matrix.mapRect(d.src))
-					.operator_equal(d.res.toList()));
+					.equals(d.res.toList()));
 		}
 	}
 
@@ -146,7 +145,7 @@ public class TestQTransform extends QApplicationTest {
 	@Test
 	public void mapToPolygon() {
 		for (Data d : makeData()) {
-			assertTrue(d.name, d.matrix.mapToPolygon(d.src).operator_equal(
+			assertTrue(d.name, d.matrix.mapToPolygon(d.src).equals(
 					d.res.toList()));
 		}
 	}
@@ -158,10 +157,10 @@ public class TestQTransform extends QApplicationTest {
 		QTransform res = new QTransform(1, 2, 3, 4, 75, 106);
 		m.translate(10, 20);
 
-		assertTrue(m.operator_equal(res));
+		assertTrue(m.equals(res));
 
 		m.translate(-10, -20);
-		assertTrue(m.operator_equal(res2));
+		assertTrue(m.equals(res2));
 	}
 
 	@Test
@@ -170,9 +169,9 @@ public class TestQTransform extends QApplicationTest {
 		QTransform res2 = new QTransform(m.toAffine());
 		QTransform res = new QTransform(10, 20, 60, 80, 5, 6);
 		m.scale(10, 20);
-		assertTrue(m.operator_equal(res));
+		assertTrue(m.equals(res));
 		m.scale(1. / 10., 1. / 20.);
-		assertTrue(m.operator_equal(res2));
+		assertTrue(m.equals(res2));
 	}
 
 	@Test
@@ -193,17 +192,17 @@ public class TestQTransform extends QApplicationTest {
 		dummy.setMatrix(mat1.m11(), mat1.m12(), 0, mat1.m21(), mat1.m22(), 0,
 				mat1.dx(), mat1.dy(), 1);
 
-		assertTrue(tran1.operator_equal(dummy));
-		assertTrue(tran1.inverted().operator_equal(dummy.inverted()));
-		assertTrue(tran1.inverted().operator_equal(
+		assertTrue(tran1.equals(dummy));
+		assertTrue(tran1.inverted().equals(dummy.inverted()));
+		assertTrue(tran1.inverted().equals(
 				new QTransform(mat1.inverted())));
-		assertTrue(tran2.inverted().operator_equal(
+		assertTrue(tran2.inverted().equals(
 				new QTransform(mat2.inverted())));
 
 		QMatrix mat3 = mat1.operator_multiply(mat2);
 		QTransform tran3 = tran1.operator_multiply(tran2);
-		assertTrue(new QTransform(mat3).operator_equal(tran3));
-		assertTrue(mat3.operator_equal(tran3.toAffine()));
+		assertTrue(new QTransform(mat3).equals(tran3));
+		assertTrue(mat3.equals(tran3.toAffine()));
 
 		QTransform tranInv = tran1.inverted();
 		QMatrix matInv = mat1.inverted();
@@ -219,7 +218,7 @@ public class TestQTransform extends QApplicationTest {
 		path.lineTo(110, 110);
 		path.quadTo(220, 50, 10, 20);
 		path.closeSubpath();
-		assertTrue(tranInv.map(path).operator_equal(matInv.map(path)));
+		assertTrue(tranInv.map(path).equals(matInv.map(path)));
 	}
 	
 	@Test
@@ -240,7 +239,7 @@ public class TestQTransform extends QApplicationTest {
 		
 		QTransform res = QTransform.squareToQuad(pol);
 		
-		assertTrue(transform.operator_multiply(res).operator_equal(res));
+		assertTrue(transform.operator_multiply(res).equals(res));
 		
 		QPolygonF polRes = new QPolygonF();
 		polRes.append(new QPointF(0,0));
@@ -248,11 +247,11 @@ public class TestQTransform extends QApplicationTest {
 		polRes.append(new QPointF(1,1));
 		polRes.append(new QPointF(0,1));
 		
-		assertTrue(res.map(polRes).operator_equal(pol.toList()));
+		assertTrue(res.map(polRes).equals(pol.toList()));
 		
 		QTransform inverted = res.inverted();
 		QPolygonF ident = inverted.map(pol);
 		
-		assertTrue(ident.operator_equal(polRes.toList()));
+		assertTrue(ident.equals(polRes.toList()));
 	}
 }

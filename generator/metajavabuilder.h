@@ -63,10 +63,9 @@ public:
     MetaJavaField *traverseField(VariableModelItem field, const MetaJavaClass *cls);
     void checkFunctionModifications();
     void registerHashFunction(FunctionModelItem function_item);
-    void registerEqualsOperator(FunctionModelItem function_item);
 
     void parseQ_Property(MetaJavaClass *java_class, const QStringList &declarations);
-
+    void setupEquals(MetaJavaClass *java_class);
 
     QString translateDefaultValue(ArgumentModelItem item, MetaJavaType *type,
                                                MetaJavaFunction *fnc, MetaJavaClass *,
