@@ -158,8 +158,8 @@
     instructions}).
 
     \code
-        javac com/trolltech/examples/tutorial/t1/HelloWorld.java
-	java com.trolltech.examples.tutorial.t1.HelloWorld.java
+        javac com/trolltech/examples/tutorial/HelloWorld.java
+	java com.trolltech.examples.tutorial.HelloWorld.java
     \endcode
 
     \section1 Running the Application
@@ -248,8 +248,7 @@
     When you run this program, you will see an even smaller window than in
     Chapter 1, filled with an even smaller button.
 
-    See \l{tutorial/t1}{Chapter 1} for how to create a makefile and
-    build the application.
+    See \l{tutorial/t1}{Chapter 1} for how to compile and run the application.
 
     \section1 Exercises
 
@@ -560,9 +559,9 @@
     \skipto public LCDRange
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
-    The code in the constructor is lifted straight from the \c
-    BlocksGalore constructor in Chapter 5. The only differences are that
-    the \gui{Quit} button is left out and the class is renamed.
+    The code in the constructor is lifted straight from the \c Blocks
+    constructor in Chapter 5. The only differences are that the
+    \gui{Quit} button is left out and the class is renamed.
 
     \quotefromfile tutorial/BlocksGalore.java
 
@@ -584,15 +583,10 @@
     adding widgets to the layout, and QGridLayout will fit them into
     the grid.
 
-    We use a QVBoxLayout to lay out the \gui Quit button the grid
-    layout.  The QWidget.addLayout() method is similar to the
+    We use a QVBoxLayout to lay out the \gui Quit button and the grid
+    layout. The QWidget.addLayout() method is similar to the
     QWidget.addWidget() method, making the given layout a child of the
     main layout.
-
-    Take note of that it is not insignificant where we install the
-    layout; if we installed the layout after having laid out the
-    LCDRange widgets in the grid, Java might have garbage collected
-    them as they go out of scope unreferenced in the inner loop.
 
     We then proceed to create the LCDRange widgets:
 
@@ -631,13 +625,11 @@
     \image tutorial7-example.png Screenshot of Chapter 7
 
     This example shows how to create custom widgets with signals and
-    slots, and how to connect them together in more complex ways. For the
-    first time, the source is split among several files which we've placed
-    in the \c examples/tutorial/t7 directory.
+    slots, and how to connect them together in more complex ways.
 
     \section1 Line by Line Walkthrough
 
-    This file is mainly lifted from \c main.cpp in Chapter 6; only
+    This file is mainly lifted from \c BlocksGalore in Chapter 6; only
     the non-trivial changes are noted here.
 
     \quotefromfile tutorial/ConnectedSliders.java
@@ -691,18 +683,17 @@
 
     Let's take a closer look at what happens when the user operates
     the slider. The slider sees that its value has changed and emits
-    the \l{QSlider::valueChanged()}{valueChanged} signal. That signal
-    is connected both to the \l{QLCDNumber::display()}{display()} slot
-    of the QLCDNumber and to the \c valueChanged signal of the \c
-    LCDRange.
+    the QSlider.valueChanged signal. That signal is connected both to
+    the QLCDNumber.display() slot and to the \c valueChanged signal of
+    the \c LCDRange.
 
     Thus, when the signal is emitted, \c LCDRange emits its own \c
     valueChanged signal. In addition, QLCDNumber.display() is called
     and shows the new number.
 
-    Note that you're not guaranteed any particular order of
-    execution; \c LCDRange::valueChanged() may be emitted before or
-    after QLCDNumber::display() is called.
+    Note that you're not guaranteed any particular order of execution;
+    \c LCDRange.valueChanged may be emitted before or after
+    QLCDNumber.display() is called.
 
     \skipto value()
     \printuntil }
@@ -733,8 +724,8 @@
 
     When we create the nine \c LCDRange objects, we connect them using
     the \l{signals and slots} mechanism. Each has its \c
-    valueChanged() signal connected to the previous one's \c
-    setValue() slot. Because \c LCDRange emits the \c valueChanged()
+    valueChanged signal connected to the previous one's \c
+    setValue() slot. Because \c LCDRange emits the \c valueChanged
     signal when its value changes, we are here creating a chain of
     signals and slots.
 
