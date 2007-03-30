@@ -2691,11 +2691,35 @@
         public final QTextStream writeShort(short s) { writeShort_char((char) s); return this; }
         public final String readString() { return readString_native(nativeId()); }
         public final void writeString(String string) { writeString_native(nativeId(), string); }
-        private final native String readString_native();
-        private final native void writeString_native(String string);
+        private final native String readString_native(long id);
+        private final native void writeString_native(long id, String string);
     </inject-code>    
 
-     
+    <inject-code class="native">
+        extern "C" JNIEXPORT jstring JNICALL Java_com_trolltech_qt_core_QTextStream_readString_1native
+        (JNIEnv *env, jobject, jlong id)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QTextStream::readString()");
+            QTextStream *stream = (QTextStream *) qtjambi_from_jlong(id);
+            QString str;
+            (*stream) >> str;
+            jstring s = qtjambi_from_qstring(env, str);
+            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QTextStream::readString()");
+            return s;
+        }
+        
+        extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_core_QTextStream_writeString_1native
+        (JNIEnv *env, jobject, jlong id, jstring str)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QTextStream::writeString()");
+            QString qstr = qtjambi_to_qstring(env, str);
+            QTextStream *stream = (QTextStream *) qtjambi_from_jlong(id);
+            (*stream) &lt;&lt; qstr;
+            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QTextStream::readString()");
+        }
+    </inject-code>
+    
+         
   </object-type>
   
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'" />
