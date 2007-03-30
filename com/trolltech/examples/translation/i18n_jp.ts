@@ -22,8 +22,8 @@
         <translation>等角投影法</translation>
     </message>
     <message>
-        <source>Language: %1</source>
-        <translation>言語: %1</translation>
+        <source>Language: %1$s</source>
+        <translation>言語: %1$s</translation>
     </message>
     <message>
         <source>English</source>

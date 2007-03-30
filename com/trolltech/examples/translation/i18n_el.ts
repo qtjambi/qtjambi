@@ -22,8 +22,8 @@
         <translation>Ισομετρική</translation>
     </message>
     <message>
-        <source>Language: %1</source>
-        <translation>Γλώσσα: %1</translation>
+        <source>Language: %1$s</source>
+        <translation>Γλώσσα: %1$s</translation>
     </message>
     <message>
         <source>English</source>

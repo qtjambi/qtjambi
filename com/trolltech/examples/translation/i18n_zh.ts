@@ -22,8 +22,8 @@
         <translation>第三个</translation>
     </message>
     <message>
-        <source>Language: %1</source>
-        <translation>语言: %1</translation>
+        <source>Language: %1$s</source>
+        <translation>语言: %1$s</translation>
     </message>
     <message>
         <source>English</source>

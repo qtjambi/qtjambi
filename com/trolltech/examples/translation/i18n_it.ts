@@ -14,8 +14,8 @@
         <translation>Isometrica</translation>
     </message>
     <message>
-        <source>Language: %1</source>
-        <translation>Lingua: %1</translation>
+        <source>Language: %1$s</source>
+        <translation>Lingua: %1$s</translation>
     </message>
     <message>
         <source>English</source>

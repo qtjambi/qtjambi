@@ -26,8 +26,8 @@
         <translation>Deutsch</translation>
     </message>
     <message>
-        <source>Language: %1</source>
-        <translation>Sprache: %1</translation>
+        <source>Language: %1$s</source>
+        <translation>Sprache: %1$s</translation>
     </message>
     <message>
         <source>Oblique</source>

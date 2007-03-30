@@ -22,8 +22,8 @@
         <translation>Třetí</translation>
     </message>
     <message>
-        <source>Language: %1</source>
-        <translation>Jayzk: %1</translation>
+        <source>Language: %1$s</source>
+        <translation>Jayzk: %1$s</translation>
     </message>
     <message>
         <source>English</source>

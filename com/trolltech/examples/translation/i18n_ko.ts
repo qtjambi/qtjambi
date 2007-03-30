@@ -22,8 +22,8 @@
         <translation>등측도</translation>
     </message>
     <message>
-        <source>Language: %1</source>
-        <translation>언어 : %1</translation>
+        <source>Language: %1$s</source>
+        <translation>언어 : %1$s</translation>
     </message>
     <message>
         <source>English</source>

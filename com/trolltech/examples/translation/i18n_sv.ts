@@ -22,8 +22,8 @@
         <translation>Tredje</translation>
     </message>
     <message>
-        <source>Language: %1</source>
-        <translation>Språk: %1</translation>
+        <source>Language: %1$s</source>
+        <translation>Språk: %1$s</translation>
     </message>
     <message>
         <source>English</source>
