@@ -82,12 +82,16 @@ namespace TypeSystem {
 
 struct ReferenceCount 
 {
-    enum Action {
-        Invalid = 0x0,
-        Add     = 0x1,
-        AddAll  = 0x2,
-        Remove  = 0x4,
-        Set     = 0x8
+    enum Action { // Should be bitsafe against Flag
+        Invalid    = 0x00,
+        Add        = 0x01,
+        AddAll     = 0x02,
+        Remove     = 0x04,
+        Set        = 0x08,
+    };
+
+    enum Flag { // Should be bitsafe against Action
+        ThreadSafe = 0x10
     };
 
     Action action;

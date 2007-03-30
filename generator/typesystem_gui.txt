@@ -4200,6 +4200,24 @@
         }
     </inject-code>
     
+    <modify-function signature="addAction(QAction *)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+
+    <modify-function signature="addActions(const QList&lt;QAction *> &amp;)">
+        <modify-argument index="1">
+            <reference-count action="add-all" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+
+    <modify-function signature="removeAction(QAction *)">
+        <modify-argument index="1">
+            <reference-count action="remove" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+    
   </object-type>
 
 

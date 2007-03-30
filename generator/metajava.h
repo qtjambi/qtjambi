@@ -457,7 +457,7 @@ public:
     QString replacedDefaultExpression(const MetaJavaClass *cls, int idx) const;
     bool removedDefaultExpression(const MetaJavaClass *cls, int idx) const;
     QString conversionRule(TypeSystem::Language language, int idx) const;
-    QList<ReferenceCount> referenceCounts(int idx = -2) const;
+    QList<ReferenceCount> referenceCounts(const MetaJavaClass *cls, int idx = -2) const;
 
     bool nullPointersDisabled(const MetaJavaClass *cls = 0, int argument_idx = 0) const;
     QString nullPointerDefaultValue(const MetaJavaClass *cls = 0, int argument_idx = 0) const;

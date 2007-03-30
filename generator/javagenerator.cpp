@@ -18,6 +18,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QTextStream>
 #include <QtCore/QVariant>
+#include <QtCore/QRegExp>
 #include <QDebug>
 
 JavaGenerator::JavaGenerator()
@@ -425,17 +426,28 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
         }
     }
 
+    QList<ReferenceCount> referenceCounts;
+    for (int i=0; i<arguments.size() + 1; ++i) {
+        referenceCounts = java_function->referenceCounts(java_function->implementingClass(),
+                                                         i == 0 ? -1 : i);
+
+        foreach (ReferenceCount refCount, referenceCounts)
+            writeReferenceCount(s, refCount, i == 0 ? "this" : arguments.at(i-1)->argumentName());
+    }
+
     s << "        ";
 
-
+    referenceCounts = java_function->referenceCounts(java_function->implementingClass(), 0);
     MetaJavaType *return_type = java_function->type();
     QString new_return_type = java_function->typeReplaced(0);
     bool has_return_type = new_return_type != "void"
         && (!new_return_type.isEmpty() || return_type != 0);
+    TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, 0);
+    bool needs_return_variable = has_return_type 
+        && (owner != TypeSystem::InvalidOwnership || referenceCounts.size() > 0);
 
     if (has_return_type) {
-        TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, 0);
-        if (owner != TypeSystem::InvalidOwnership) {
+        if (needs_return_variable) {
             if (new_return_type.isEmpty())
                 s << translateType(return_type);
             else
@@ -487,8 +499,11 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     if (return_type && (return_type->isJavaEnum() || return_type->isJavaFlags()))
         s << ")";
 
-    TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, 0);
-    if (has_return_type && owner != TypeSystem::InvalidOwnership) {
+    foreach (ReferenceCount referenceCount, referenceCounts) {
+        writeReferenceCount(s, referenceCount, "__qt_return_value");
+    }
+
+    if (needs_return_variable) {
         s << ";" << endl
           << "        if (__qt_return_value != null) __qt_return_value." << function_call_for_ownership(owner) << ";" << endl
           << "        return __qt_return_value";
@@ -649,6 +664,32 @@ void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
     retrieveModifications(java_function, java_class, excluded_attributes, included_attributes);
 }
 
+void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &refCount,
+                                        const QString &argumentName) 
+{
+    if (refCount.action != ReferenceCount::Set)
+        s << "        if (" << argumentName << " != null) {" << endl;
+    else
+        s << "        {" << endl;
+
+    switch (refCount.action) {
+    case ReferenceCount::Add:
+        s << "            " << refCount.variableName << ".add(" << argumentName << ");" << endl;
+        break;
+    case ReferenceCount::AddAll:
+        s << "            " << refCount.variableName << ".addAll(" << argumentName << ");" << endl;
+        break;
+    case ReferenceCount::Remove:
+        s << "            while (" << refCount.variableName << ".contains(" << argumentName << "))" << endl
+          << "                " << refCount.variableName << ".remove(" << argumentName << ");" << endl;
+        break;
+    case ReferenceCount::Set:
+        s << "            " << refCount.variableName << " = " << argumentName << ";" << endl;
+    };
+
+    s << "        }" << endl;
+}
+
 void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_function,
                                   uint included_attributes, uint excluded_attributes)
 {
@@ -661,6 +702,24 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     if (!java_function->ownerClass()->isInterface()) {
         writeEnumOverload(s, java_function, included_attributes, excluded_attributes);
         writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);
+    }
+
+    if (QRegExp("^(set|add|remove|install).*").exactMatch(java_function->name())) {
+        MetaJavaArgumentList arguments = java_function->arguments();
+
+        bool hasObjectTypeArgument = false;
+        foreach (MetaJavaArgument *argument, arguments) {
+            if (argument->type()->isObject() 
+                && !java_function->disabledGarbageCollection(java_function->implementingClass(), argument->argumentIndex()+1)) {
+                hasObjectTypeArgument = true;
+                break;
+            }
+        }
+            
+        if (hasObjectTypeArgument
+            && java_function->referenceCounts(java_function->implementingClass()).size() == 0) {
+            m_reference_count_candidate_functions.append(java_function);
+        }
     }
 
     QString signature = functionSignature(java_function, included_attributes, excluded_attributes);
@@ -1049,6 +1108,38 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
     s << endl << "{" << endl;
 
+    // Define variables for reference count mechanism
+    QList<ReferenceCount> referenceCounts = java_class->referenceCounts();
+    QHash<QString, int> variables;
+    foreach (ReferenceCount refCount, referenceCounts)
+        variables[refCount.variableName] |= refCount.action | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0);
+    foreach (QString variableName, variables.keys()) {
+        int actions = variables.value(variableName) & ~ReferenceCount::ThreadSafe;
+        bool threadSafe = variables.value(variableName) & ReferenceCount::ThreadSafe;
+
+        if (((actions & ReferenceCount::Add) == 0) != ((actions & ReferenceCount::Remove) == 0)) {
+            QString warn = QString("either add or remove specified for reference count variable '%1' in '%2' but not both")
+                .arg(variableName).arg(java_class->fullName());
+            ReportHandler::warning(warn);
+        }
+
+        if (actions != ReferenceCount::Set) {
+            s << "    java.util.Collection<Object> " << variableName << " = ";
+            
+            if (threadSafe)
+                s << "java.util.Collections.synchronizedCollection(";               
+            s << "new java.util.ArrayList<Object>()";
+            if (threadSafe)
+                s << ")";
+            s << ";" << endl;
+        } else {
+            
+            s << "    ";
+            if (threadSafe)
+                s << "synchronized ";
+            s << "Object " << variableName << " = null;" << endl;
+        }
+    }
 
     if (!java_class->isInterface() && !java_class->isNamespace()
         && (java_class->baseClass() == 0 || java_class->package() != java_class->baseClass()->package())) {
@@ -1186,8 +1277,8 @@ void JavaGenerator::generate()
 {
     Generator::generate();
 
-    const MetaJavaClass *last_class = 0;
-    if (!m_nativepointer_functions.isEmpty()) {
+    {
+        const MetaJavaClass *last_class = 0;
         QFile file("mjb_nativepointer_api.log");
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
@@ -1213,6 +1304,22 @@ void JavaGenerator::generate()
 
             m_nativepointer_functions.clear();
         }
+    }
+
+    {
+        QFile file("mjb_reference_count_candidates.log");
+        if (file.open(QFile::WriteOnly)) {
+            QTextStream s(&file);
+
+            s << "The following functions have a signature pattern which may imply that" << endl
+              << "they need to apply reference counting to their arguments (" 
+              << m_reference_count_candidate_functions.size() << " functions) : " << endl;
+
+              foreach (const MetaJavaFunction *f, m_reference_count_candidate_functions) {
+                  s << f->implementingClass()->fullName() << " : " << f->minimalSignature() << endl;
+              }
+        }
+        file.close();
     }
 }
 

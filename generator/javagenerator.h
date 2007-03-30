@@ -58,6 +58,7 @@ public:
                                     const QString &indent);
     void writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function);
     void writeJavaLangObjectOverrideFunctions(QTextStream &s, const MetaJavaClass *cls);
+    void writeReferenceCount(QTextStream &s, const ReferenceCount &refCount, const QString &argumentName);
     bool hasDefaultConstructor(const MetaJavaType *type);
 
     void retrieveModifications(const MetaJavaFunction *f, const MetaJavaClass *java_class,
@@ -100,6 +101,7 @@ protected:
     DocParser *m_doc_parser;
     bool m_docs_enabled;
     QList<const MetaJavaFunction *> m_nativepointer_functions;
+    QList<const MetaJavaFunction *> m_reference_count_candidate_functions;
 };
 
 #endif // JAVAGENERATOR_H

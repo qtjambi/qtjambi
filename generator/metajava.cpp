@@ -137,6 +137,8 @@ bool MetaJavaFunction::isModifiedRemoved(int types) const
 
 bool MetaJavaFunction::needsCallThrough() const
 {
+    if (referenceCounts(implementingClass()).size() > 0)
+        return true;
     if (ownerClass()->isInterface())
         return false;
     if (argumentsHaveNativeId() || !isStatic())
@@ -317,11 +319,11 @@ int MetaJavaFunction::actualMinimumArgumentCount() const
 }
 
 // Returns reference counts for argument at idx, or all arguments if idx == -2
-QList<ReferenceCount> MetaJavaFunction::referenceCounts(int idx) const
+QList<ReferenceCount> MetaJavaFunction::referenceCounts(const MetaJavaClass *cls, int idx) const
 {
     QList<ReferenceCount> returned;
     
-    FunctionModificationList mods = modifications(implementingClass());
+    FunctionModificationList mods = this->modifications(cls);
     foreach (FunctionModification mod, mods) {
         QList<ArgumentModification> argument_mods = mod.argument_mods;
         foreach (ArgumentModification argument_mod, argument_mods) {
@@ -733,7 +735,7 @@ QList<ReferenceCount> MetaJavaClass::referenceCounts() const
 
     MetaJavaFunctionList functions = this->functions();
     foreach (MetaJavaFunction *function, functions) {
-        returned += function->referenceCounts();
+        returned += function->referenceCounts(this);
     }
 
     return returned;
