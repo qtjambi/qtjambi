@@ -1109,13 +1109,20 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     s << endl << "{" << endl;
 
     // Define variables for reference count mechanism
-    QList<ReferenceCount> referenceCounts = java_class->referenceCounts();
     QHash<QString, int> variables;
-    foreach (ReferenceCount refCount, referenceCounts)
-        variables[refCount.variableName] |= refCount.action | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0);
+    foreach (MetaJavaFunction *function, java_class->functions()) {
+        QList<ReferenceCount> referenceCounts = function->referenceCounts(java_class);
+        foreach (ReferenceCount refCount, referenceCounts) {
+            variables[refCount.variableName] |= refCount.action 
+                                                | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
+                                                | (function->isStatic() ? ReferenceCount::Static : 0);
+        }
+    }
+
     foreach (QString variableName, variables.keys()) {
-        int actions = variables.value(variableName) & ~ReferenceCount::ThreadSafe;
+        int actions = variables.value(variableName) & ~(ReferenceCount::FlagsMask);
         bool threadSafe = variables.value(variableName) & ReferenceCount::ThreadSafe;
+        bool isStatic = variables.value(variableName) & ReferenceCount::Static;
 
         if (((actions & ReferenceCount::Add) == 0) != ((actions & ReferenceCount::Remove) == 0)) {
             QString warn = QString("either add or remove specified for reference count variable '%1' in '%2' but not both")
@@ -1123,8 +1130,12 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             ReportHandler::warning(warn);
         }
 
+        s << "    private ";
+        if (isStatic)
+            s << "static ";
+
         if (actions != ReferenceCount::Set) {
-            s << "    java.util.Collection<Object> " << variableName << " = ";
+            s << "java.util.Collection<Object> " << variableName << " = ";
             
             if (threadSafe)
                 s << "java.util.Collections.synchronizedCollection(";               
@@ -1134,7 +1145,6 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             s << ";" << endl;
         } else {
             
-            s << "    ";
             if (threadSafe)
                 s << "synchronized ";
             s << "Object " << variableName << " = null;" << endl;
