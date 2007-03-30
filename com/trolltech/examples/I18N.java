@@ -71,7 +71,7 @@ public class I18N extends QDialog {
 	}
 
 	public void closeEvent(QCloseEvent event) {
-		QApplication.quit();
+		hideAll();
 	}
 
 	protected void checkBoxToggled() {
@@ -161,10 +161,9 @@ class MainWindow extends QMainWindow {
 		centralWidget.setLayout(mainLayout);
 
 		exitAction = new QAction(tr("E&xit"), this);
-		exitAction.triggered.connect(QApplication.instance(), "quit()");
+		exitAction.triggered.connect(this, "close()");
 
 		fileMenu = menuBar().addMenu(tr("&File"));
-		fileMenu.setPalette(new QPalette(QColor.red));
 		fileMenu.addAction(exitAction);
 
 		setWindowTitle(String.format(tr("Language: %1$s"), tr("English")));
