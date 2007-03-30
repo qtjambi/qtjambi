@@ -26,9 +26,7 @@
     features are never used in this tutorial.
 
     Chapter one starts with a minimal "Hello world" program and the
-    following chapters introduce new concepts. By Chapter 14, the
-    "Hello world" program from Chapter 1 will have turned into a
-    650-line game.
+    following chapters introduce new concepts. 
 
     The tutorial's source code is located in Qt Jambis's \c
     com/trolltech/examples/tutorial directory.
