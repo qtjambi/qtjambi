@@ -83,6 +83,7 @@ class StackElement
         DefineOwnership          = 0x10000000,
         RemoveDefaultExpression  = 0x20000000,
         NoNullPointers           = 0x40000000,
+        ReferenceCount           = 0x80000000,
         ArgumentModifiers        = 0xff000000
     };
 
@@ -141,7 +142,7 @@ public:
         tagNames["insert-template"] = StackElement::TemplateInstanceEnum;
         tagNames["replace"] = StackElement::Replace;
         tagNames["no-null-pointer"] = StackElement::NoNullPointers;
-
+        tagNames["reference-count"] = StackElement::ReferenceCount;
     }
 
     bool startElement(const QString &namespaceURI, const QString &localName,
@@ -632,6 +633,11 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["from"] = QString();
             attributes["to"] = QString();
             break;
+        case StackElement::ReferenceCount:
+            attributes["action"] = QString();
+            attributes["variable-name"] = QString();
+            attributes["thread-safe"] = QString("no");
+            break;
         default:
             ; // nada
         };
@@ -985,6 +991,43 @@ bool Handler::startElement(const QString &, const QString &n,
                 CustomFunction *func = new CustomFunction(attributes["name"]);
                 func->param_name = attributes["param-name"];
                 element->value.customFunction = func;
+            }
+            break;
+        case StackElement::ReferenceCount:
+            {
+                if (topElement.type != StackElement::ModifyArgument) {
+                    m_error = "reference-count must be child of modify-argument";
+                    return false;
+                }
+
+                ReferenceCount rc;
+                rc.threadSafe = (attributes["thread-safe"] == "yes");
+                if (!rc.threadSafe && attributes["thread-safe"] != "no") {
+                    m_error = "thread-safe attribute must be either 'yes' or 'no'";
+                    return false;
+                }
+                
+                rc.variableName = attributes["variable-name"];
+                if (rc.variableName.isEmpty()) {
+                    m_error = "variable-name attribute must be specified";
+                    return false;
+                }
+
+                static QHash<QString, ReferenceCount::Action> actions;
+                if (actions.isEmpty()) {
+                    actions["add"] = ReferenceCount::Add;
+                    actions["add-all"] = ReferenceCount::AddAll;
+                    actions["remove"] = ReferenceCount::Remove;
+                    actions["set"] = ReferenceCount::Set;
+                }
+                rc.action = actions.value(attributes["action"], ReferenceCount::Invalid);
+                if (rc.action == ReferenceCount::Invalid) {
+                    m_error = "unrecognized value for action attribute. supported actions:";
+                    foreach (QString action, actions.keys())
+                        m_error += " " + action;
+                }
+                
+                m_function_mods.last().argument_mods.last().referenceCounts.append(rc);
             }
             break;
         case StackElement::InjectCode:

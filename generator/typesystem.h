@@ -80,6 +80,22 @@ namespace TypeSystem {
     };
 };
 
+struct ReferenceCount 
+{
+    enum Action {
+        Invalid = 0x0,
+        Add     = 0x1,
+        AddAll  = 0x2,
+        Remove  = 0x4,
+        Set     = 0x8
+    };
+
+    Action action;
+    QString variableName;
+
+    uint threadSafe : 1;
+};
+
 class CodeSnipFragment{
     private:
         const QString m_code;
@@ -194,6 +210,9 @@ struct ArgumentModification
 
     // The index of this argument
     int index;
+
+    // Reference count flags for this argument
+    QList<ReferenceCount> referenceCounts;
 
     // The text given for the new type of the argument
     QString modified_type;
