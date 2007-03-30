@@ -316,6 +316,24 @@ int MetaJavaFunction::actualMinimumArgumentCount() const
     return count;
 }
 
+// Returns reference counts for argument at idx, or all arguments if idx == -2
+QList<ReferenceCount> MetaJavaFunction::referenceCounts(int idx) const
+{
+    QList<ReferenceCount> returned;
+    
+    FunctionModificationList mods = modifications(implementingClass());
+    foreach (FunctionModification mod, mods) {
+        QList<ArgumentModification> argument_mods = mod.argument_mods;
+        foreach (ArgumentModification argument_mod, argument_mods) {
+            if (argument_mod.index != idx && idx != -2)
+                continue;
+            returned += argument_mod.referenceCounts;
+        }
+    }
+
+    return returned;
+}
+
 QString MetaJavaFunction::replacedDefaultExpression(const MetaJavaClass *cls, int key) const
 {
     FunctionModificationList modifications = this->modifications(cls);
@@ -701,6 +719,21 @@ MetaJavaFunctionList MetaJavaClass::queryFunctionsByName(const QString &name) co
     foreach (MetaJavaFunction *function, functions) {
         if (function->name() == name)
             returned.append(function);
+    }
+
+    return returned;
+}
+
+/*******************************************************************************
+ * Returns all reference count modifications for any function in the class
+ */
+QList<ReferenceCount> MetaJavaClass::referenceCounts() const
+{
+    QList<ReferenceCount> returned;
+
+    MetaJavaFunctionList functions = this->functions();
+    foreach (MetaJavaFunction *function, functions) {
+        returned += function->referenceCounts();
     }
 
     return returned;
