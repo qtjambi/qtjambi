@@ -1,3 +1,16 @@
+/****************************************************************************
+ **
+ ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+ **
+ ** This file is part of $PRODUCT$.
+ **
+ ** $JAVA_LICENSE$
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
+
 package com.trolltech.examples;
 
 import java.util.*;
@@ -54,6 +67,7 @@ public class I18N extends QDialog {
 		mainLayout.addWidget(buttonBox);
 		setLayout(mainLayout);
 		setWindowTitle("I18N");
+		setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 	}
 
 	public void closeEvent(QCloseEvent event) {
@@ -154,6 +168,8 @@ class MainWindow extends QMainWindow {
 		fileMenu.addAction(exitAction);
 
 		setWindowTitle(String.format(tr("Language: %1$s"), tr("English")));
+		setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+		
 		statusBar().showMessage(tr("Internationalization Example"));
 
 		if (tr("LTR").equals("RTL"))
