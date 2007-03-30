@@ -1555,9 +1555,9 @@
   <value-type name="QAbstractTextDocumentLayout::Selection" />
 
   <value-type name="QPixmap">
-    <modify-function signature="QPixmap(const char **)">
-        <access modifier="private"/>
-    </modify-function>
+    <modify-function signature="QPixmap(const char **)"> <access modifier="private"/> </modify-function>
+    <modify-function signature="operator!()const"> <remove/> </modify-function>
+
     <modify-function signature="fill(const QColor &amp;)"> 
       <modify-argument index="1">
         <replace-default-expression with="QColor.white"/>

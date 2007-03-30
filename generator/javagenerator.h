@@ -30,7 +30,7 @@ public:
 
     QString translateType(const MetaJavaType *java_type, Option option = NoOption);
 
-    void writeArgument(QTextStream &s, 
+    void writeArgument(QTextStream &s,
                        const MetaJavaFunction *java_function,
                        const MetaJavaArgument *java_argument,
                        uint options = 0);
@@ -68,13 +68,15 @@ public:
                               uint excluded_attributes,
                               Option option = NoOption,
                               int arg_count = -1);
-    void setupForFunction(const MetaJavaFunction *java_function, 
+    void setupForFunction(const MetaJavaFunction *java_function,
        uint *included_attributes, uint *excluded_attributes) const;
 
     virtual QString subDirectoryForClass(const MetaJavaClass *java_class) const
     { return subDirectoryForPackage(java_class->package()); }
 
     virtual QString fileNameForClass(const MetaJavaClass *java_class) const;
+
+    bool isComparable(const MetaJavaClass *cls) const;
 
 #if 0
     void write1_dot_5_enum(QTextStream &s, const MetaJavaEnum *java_enum);

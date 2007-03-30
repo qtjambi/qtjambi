@@ -786,6 +786,36 @@ static void write_equals_parts(QTextStream &s, const MetaJavaFunctionList &lst, 
     }
 }
 
+static void write_compareto_parts(QTextStream &s, const MetaJavaFunctionList &lst, int value, bool *first) {
+    foreach (MetaJavaFunction *f, lst) {
+        MetaJavaArgument *arg = f->arguments().at(0);
+        QString type = arg->type()->typeEntry()->qualifiedJavaName();
+        s << "        " << (*first ? "if" : "else if") << " (other instanceof " << type << " && "
+          << f->name() << "((" << type << ") other)) return " << value << ";" << endl;
+        *first = false;
+    }
+}
+
+bool JavaGenerator::isComparable(const MetaJavaClass *cls) const
+{
+    MetaJavaFunctionList eq_functions = cls->equalsFunctions();
+    MetaJavaFunctionList neq_functions = cls->notEqualsFunctions();
+
+    // Write the comparable functions
+    MetaJavaFunctionList ge_functions = cls->greaterThanFunctions();
+    MetaJavaFunctionList geq_functions = cls->greaterThanEqFunctions();
+    MetaJavaFunctionList le_functions = cls->lessThanFunctions();
+    MetaJavaFunctionList leq_functions = cls->lessThanEqFunctions();
+
+    bool hasEquals = eq_functions.size() || neq_functions.size();
+    bool isComparable = hasEquals
+                        ? ge_functions.size() || geq_functions.size() || le_functions.size() || leq_functions.size()
+                        : geq_functions.size() == 1 && leq_functions.size() == 1;
+
+    return isComparable;
+}
+
+
 void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
                                                          const MetaJavaClass *cls)
 {
@@ -800,6 +830,52 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
         write_equals_parts(s, neq_functions, '!', &first);
         s << "        return false;" << endl
           << "    }" << endl << endl;
+    }
+
+    // Write the comparable functions
+    MetaJavaFunctionList ge_functions = cls->greaterThanFunctions();
+    MetaJavaFunctionList geq_functions = cls->greaterThanEqFunctions();
+    MetaJavaFunctionList le_functions = cls->lessThanFunctions();
+    MetaJavaFunctionList leq_functions = cls->lessThanEqFunctions();
+
+    bool hasEquals = eq_functions.size() || neq_functions.size();
+    bool comparable = isComparable(cls);
+    if (comparable) {
+        s << "    public int compareTo(Object other) {" << endl;
+
+        if (hasEquals) {
+            s << "        if (equals(other)) return 0;" << endl;
+            bool first = false;
+
+            if (le_functions.size()) {
+                write_compareto_parts(s, le_functions, -1, &first);
+                s << "        else return 1;" << endl;
+            } else if (ge_functions.size()) {
+                write_compareto_parts(s, ge_functions, 1, &first);
+                s << "        else return -1;" << endl;
+            } else if (leq_functions.size()) {
+                write_compareto_parts(s, leq_functions, -1, &first);
+                s << "        else return 1;" << endl;
+            } else if (geq_functions.size()) {
+                write_compareto_parts(s, geq_functions, 1, &first);
+                s << "        else return -1;" << endl;
+            }
+        } else if (le_functions.size() == 1) {
+            QString className = cls->typeEntry()->qualifiedJavaName();
+            s << "        if (operator_less((" << className << ") other)) return -1;" << endl
+              << "        else if (((" << className << ") other).operator_less(this)) return 1;" << endl
+              << "        else return 0;" << endl;
+
+        } else if (geq_functions.size() == 1 && leq_functions.size()) {
+            QString className = cls->typeEntry()->qualifiedJavaName();
+            s << "        boolean less = operator_less_or_equal((" << className << ") other);" << endl
+              << "        boolean greater = operator_greater_or_equal((" << className << ") other);" << endl
+              << "        if (less && greater) return 0;" << endl
+              << "        else if (less) return -1;" << endl
+              << "        else return 1;" << endl;
+        }
+
+        s << "    }" << endl;
     }
 
 
@@ -1095,18 +1171,29 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     }
 
     // implementing interfaces...
+    bool implements = false;
     MetaJavaClassList interfaces = java_class->interfaces();
     if (!interfaces.isEmpty()) {
         if (java_class->isInterface())
             s << ", ";
-        else
+        else {
             s << endl << "    implements ";
+            implements = true;
+        }
         for (int i=0; i<interfaces.size(); ++i) {
             MetaJavaClass *iface = interfaces.at(i);
             if (i != 0)
                 s << "," << endl << "            ";
             s << iface->package() << "." << iface->name();
         }
+    }
+
+    if (isComparable(java_class)) {
+        if (!implements)
+            s << endl << "    implements ";
+        else
+            s << "," << endl << "            ";
+        s << "java.lang.Comparable";
     }
 
     s << endl << "{" << endl;

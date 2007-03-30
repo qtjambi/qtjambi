@@ -329,8 +329,10 @@ bool MetaJavaBuilder::build()
     figureOutDefaultEnumArguments();
     checkFunctionModifications();
 
-    foreach (MetaJavaClass *cls, m_java_classes)
+    foreach (MetaJavaClass *cls, m_java_classes) {
         setupEquals(cls);
+        setupComparable(cls);
+    }
 
     dumpLog();
 
@@ -1788,6 +1790,24 @@ static void remove_function(MetaJavaFunction *f) {
     ((ComplexTypeEntry *) f->implementingClass()->typeEntry())->addFunctionModification(mod);
 }
 
+static MetaJavaFunctionList filter_functions(const MetaJavaFunctionList &lst, QSet<QString> *signatures)
+{
+    MetaJavaFunctionList functions;
+    foreach (MetaJavaFunction *f, lst) {
+        QString signature = f->minimalSignature();
+        int start = signature.indexOf(QLatin1Char('(')) + 1;
+        int end = signature.lastIndexOf(QLatin1Char(')'));
+        signature = signature.mid(start, end - start);
+        if (signatures->contains(signature)) {
+            remove_function(f);
+            continue;
+        }
+        (*signatures) << signature;
+        functions << f;
+    }
+    return functions;
+}
+
 void MetaJavaBuilder::setupEquals(MetaJavaClass *cls)
 {
     MetaJavaFunctionList equals;
@@ -1818,32 +1838,74 @@ void MetaJavaBuilder::setupEquals(MetaJavaClass *cls)
         // each signature type, like QDateTime::==(QDate) and (QTime)
         // if such a thing exists...
         QSet<QString> func_signatures;
-        MetaJavaFunctionList eq_functions;
-        foreach (MetaJavaFunction *f, equals) {
-            QString signature = f->minimalSignature().mid(11); // strip out "operator=="
-            signature = signature.left(signature.lastIndexOf(QLatin1Char(')')));
-            if (func_signatures.contains(signature)) {
-                remove_function(f);
-                continue;
-            }
-            func_signatures << signature;
-            eq_functions << f;
-        }
+        cls->setEqualsFunctions(filter_functions(equals, &func_signatures));
+        cls->setNotEqualsFunctions(filter_functions(nequals, &func_signatures));
+    }
+}
 
-        MetaJavaFunctionList neq_functions;
-        foreach (MetaJavaFunction *f, nequals) {
-            QString signature = f->minimalSignature().mid(11); // strip out "operator!="
-            signature = signature.left(signature.lastIndexOf(QLatin1Char(')')));
-            if (func_signatures.contains(signature)) {
-                remove_function(f);
-                continue;
-            }
-            func_signatures << signature;
-            neq_functions << f;
-        }
+void MetaJavaBuilder::setupComparable(MetaJavaClass *cls)
+{
+    MetaJavaFunctionList greater;
+    MetaJavaFunctionList greaterEquals;
+    MetaJavaFunctionList less;
+    MetaJavaFunctionList lessEquals;
 
-        cls->setEqualsFunctions(eq_functions);
-        cls->setNotEqualsFunctions(neq_functions);
+    QString op_greater = QLatin1String("operator_greater");
+    QString op_greater_eq = QLatin1String("operator_greater_or_equal");
+    QString op_less = QLatin1String("operator_less");
+    QString op_less_eq = QLatin1String("operator_less_or_equal");
+
+    MetaJavaFunctionList functions = cls->queryFunctions(MetaJavaClass::ClassImplements
+                                                         | MetaJavaClass::NotRemovedFromJava);
+    foreach (MetaJavaFunction *f, functions) {
+        if (f->name() == op_greater)
+            greater << f;
+        else if (f->name() == op_greater_eq)
+            greaterEquals << f;
+        else if (f->name() == op_less)
+            less << f;
+        else if (f->name() == op_less_eq)
+            lessEquals << f;
+    }
+
+    bool hasEquals = cls->equalsFunctions().size() || cls->notEqualsFunctions().size();
+
+    // Conditions for comparrable is:
+    //     >, ==, <             - The basic case
+    //     >, ==                - Less than becomes else case
+    //     <, ==                - Greater than becomes else case
+    //     >=, <=               - if (<= && >=) -> equal
+    bool isComparable = greater.size() || greaterEquals.size() || less.size() || lessEquals.size()
+                        || greaterEquals.size() == 1 || lessEquals.size() == 1;
+
+    if (isComparable) {
+        hide_functions(greater);
+        hide_functions(greaterEquals);
+        hide_functions(less);
+        hide_functions(lessEquals);
+
+        QSet<QString> signatures;
+
+        // The three upper cases, prefer the <, == approach
+        if (hasEquals && (greater.size() || less.size())) {
+            cls->setLessThanFunctions(filter_functions(less, &signatures));
+            cls->setGreaterThanFunctions(filter_functions(greater, &signatures));
+            filter_functions(greaterEquals, &signatures);
+            filter_functions(lessEquals, &signatures);
+        } else if (hasEquals && (greaterEquals.size() || lessEquals.size())) {
+            cls->setLessThanEqFunctions(filter_functions(lessEquals, &signatures));
+            cls->setGreaterThanEqFunctions(filter_functions(greaterEquals, &signatures));
+        } else if (less.size() == 1) {
+            cls->setLessThanFunctions(filter_functions(less, &signatures));
+            filter_functions(greater, &signatures);
+            filter_functions(greaterEquals, &signatures);
+            filter_functions(lessEquals, &signatures);
+        } else if (greaterEquals.size() == 1 || lessEquals.size() == 1) {
+            cls->setGreaterThanEqFunctions(greaterEquals);
+            cls->setLessThanEqFunctions(lessEquals);
+            filter_functions(less, &signatures);
+            filter_functions(greater, &signatures);
+        }
     }
 
 }

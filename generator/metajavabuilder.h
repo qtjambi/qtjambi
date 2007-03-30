@@ -66,6 +66,7 @@ public:
 
     void parseQ_Property(MetaJavaClass *java_class, const QStringList &declarations);
     void setupEquals(MetaJavaClass *java_class);
+    void setupComparable(MetaJavaClass *java_class);
 
     QString translateDefaultValue(ArgumentModelItem item, MetaJavaType *type,
                                                MetaJavaFunction *fnc, MetaJavaClass *,

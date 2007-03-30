@@ -239,7 +239,7 @@ public class CustomFilter extends QWidget {
                 QDateTime leftDate = (QDateTime) leftData;
                 QDateTime rightDate = (QDateTime) rightData;
 
-                result = leftDate.operator_less(rightDate);
+                result = leftDate.compareTo(rightDate) < 0;
             } else {
 
                 QRegExp emailPattern = new QRegExp("([\\w\\.]*@[\\w\\.]*)");
@@ -258,8 +258,7 @@ public class CustomFilter extends QWidget {
         }
 
         private boolean dateInRange(QDateTime date) {
-            return (!minDate.isValid() || date.operator_greater(minDate))
-                    && (!maxDate.isValid() || date.operator_less(maxDate));
+            return (minDate.compareTo(date) < 0 && maxDate.compareTo(date) > 0);
         }
     }
 }

@@ -714,11 +714,24 @@ public:
     QPropertySpec *propertySpecForReset(const QString &name) const;
 
     QList<ReferenceCount> referenceCounts() const;
+
     void setEqualsFunctions(const MetaJavaFunctionList &lst) { m_equals_functions = lst; }
     MetaJavaFunctionList equalsFunctions() const { return m_equals_functions; }
 
     void setNotEqualsFunctions(const MetaJavaFunctionList &lst) { m_nequals_functions = lst; }
     MetaJavaFunctionList notEqualsFunctions() const { return m_nequals_functions; }
+
+    void setLessThanFunctions(const MetaJavaFunctionList &lst) { m_less_than_functions = lst; }
+    MetaJavaFunctionList lessThanFunctions() const { return m_less_than_functions; }
+
+    void setGreaterThanFunctions(const MetaJavaFunctionList &lst) { m_greater_than_functions = lst; }
+    MetaJavaFunctionList greaterThanFunctions() const { return m_greater_than_functions; }
+
+    void setLessThanEqFunctions(const MetaJavaFunctionList &lst) { m_less_than_eq_functions = lst; }
+    MetaJavaFunctionList lessThanEqFunctions() const { return m_less_than_eq_functions; }
+
+    void setGreaterThanEqFunctions(const MetaJavaFunctionList &lst) { m_greater_than_eq_functions = lst; }
+    MetaJavaFunctionList greaterThanEqFunctions() const { return m_greater_than_eq_functions; }
 
 private:
     uint m_namespace : 1;
@@ -744,6 +757,11 @@ private:
     QList<QPropertySpec *> m_property_specs;
     MetaJavaFunctionList m_equals_functions;
     MetaJavaFunctionList m_nequals_functions;
+
+    MetaJavaFunctionList m_less_than_functions;
+    MetaJavaFunctionList m_greater_than_functions;
+    MetaJavaFunctionList m_less_than_eq_functions;
+    MetaJavaFunctionList m_greater_than_eq_functions;
 
     QStringList m_base_class_names;
     ComplexTypeEntry *m_type_entry;
