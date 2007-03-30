@@ -14,7 +14,6 @@
 package com.trolltech.examples.tutorial;
 
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.core.*;
 
 public class FamilyValues
 {
