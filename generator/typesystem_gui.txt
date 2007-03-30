@@ -4206,8 +4206,20 @@
         </modify-argument>
     </modify-function>
 
+    <modify-function signature="insertAction(QAction *, QAction *)">
+        <modify-argument index="2">
+            <reference-count action="add" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+
     <modify-function signature="addActions(const QList&lt;QAction *> &amp;)">
         <modify-argument index="1">
+            <reference-count action="add-all" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+
+    <modify-function signature="insertActions(QAction *, const QList&lt;QAction *> &amp;)">
+        <modify-argument index="2">
             <reference-count action="add-all" variable-name="__rcActions" />
         </modify-argument>
     </modify-function>
@@ -4916,6 +4928,13 @@
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>
     </extra-includes>
+    
+    <modify-function signature="setSourceModel(QAbstractItemModel *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcSourceModel" />
+        </modify-argument>
+    </modify-function>
+    
   </object-type>
 
   <object-type name="QDesktopWidget">

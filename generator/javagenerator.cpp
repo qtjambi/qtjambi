@@ -704,12 +704,12 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
         writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);
     }
 
-    if (QRegExp("^(set|add|remove|install).*").exactMatch(java_function->name())) {
+    if (QRegExp("^(insert|set|add|remove|install).*").exactMatch(java_function->name())) {
         MetaJavaArgumentList arguments = java_function->arguments();
 
         bool hasObjectTypeArgument = false;
         foreach (MetaJavaArgument *argument, arguments) {
-            if (argument->type()->isObject() 
+            if (argument->type()->typeEntry()->isObject() 
                 && !java_function->disabledGarbageCollection(java_function->implementingClass(), argument->argumentIndex()+1)) {
                 hasObjectTypeArgument = true;
                 break;
@@ -718,6 +718,9 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
             
         if (hasObjectTypeArgument
             && java_function->referenceCounts(java_function->implementingClass()).size() == 0) {
+                if (java_function->name().startsWith("insert"))
+                    qDebug("has obj type: %s", qPrintable(java_function->name()));
+
             m_reference_count_candidate_functions.append(java_function);
         }
     }
