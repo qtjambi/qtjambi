@@ -463,7 +463,7 @@ public:
     QString nullPointerDefaultValue(const MetaJavaClass *cls = 0, int argument_idx = 0) const;
 
     // Returns whether garbage collection is disabled for the argument in any context
-    bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int key) const;
+    bool disabledGarbageCollection(const MetaJavaClass *cls, int key) const;
 
     // Returns the ownership rules for the given argument in the given context
     TypeSystem::Ownership ownership(const MetaJavaClass *cls, TypeSystem::Language language, int idx) const;
