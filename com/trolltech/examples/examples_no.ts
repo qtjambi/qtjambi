@@ -183,26 +183,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Application.java" line="244"/>
-        <source>The document has been modified.
-Save your changes?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Application.java" line="261"/>
-        <source>Cannot read file %1$s:
-%2$s.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="Application.java" line="271"/>
         <source>File loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Application.java" line="278"/>
-        <source>Cannot write file %1$s:
-%2$s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -213,6 +195,21 @@ Save your changes?</source>
     <message>
         <location filename="Application.java" line="305"/>
         <source>%1$s[*] - %2$s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Application.java" line="244"/>
+        <source>The document has been modified.\nSave your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Application.java" line="261"/>
+        <source>Cannot read file %1$s:\n%2$s.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Application.java" line="278"/>
+        <source>Cannot write file %1$s:\n%2$s.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -323,17 +320,17 @@ Save your changes?</source>
         <translation>Konfigurasjons Dialog</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="66"/>
+        <location filename="ConfigDialog.java" line="67"/>
         <source>Configuration</source>
         <translation>Konfigurasjon</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="73"/>
+        <location filename="ConfigDialog.java" line="74"/>
         <source>Update</source>
         <translation>Oppdater</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="80"/>
+        <location filename="ConfigDialog.java" line="81"/>
         <source>Query</source>
         <translation>Spørring</translation>
     </message>
@@ -341,37 +338,37 @@ Save your changes?</source>
 <context>
     <name>com.trolltech.examples.ConfigDialog$ConfigurationPage</name>
     <message>
-        <location filename="ConfigDialog.java" line="97"/>
+        <location filename="ConfigDialog.java" line="98"/>
         <source>Server configuration</source>
         <translation>Server konfigurasjon</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="99"/>
+        <location filename="ConfigDialog.java" line="100"/>
         <source>Server:</source>
         <translation>Server:</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="101"/>
+        <location filename="ConfigDialog.java" line="102"/>
         <source>Trolltech (Australia)</source>
         <translation>Trolltech (Australia)</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="102"/>
+        <location filename="ConfigDialog.java" line="103"/>
         <source>Trolltech (Germany)</source>
         <translation>Trolltech (Tyskland)</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="103"/>
+        <location filename="ConfigDialog.java" line="104"/>
         <source>Trolltech (Norway)</source>
         <translation>Trolltech (Norge)</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="104"/>
+        <location filename="ConfigDialog.java" line="105"/>
         <source>Trolltech (People&apos;s Republic of China)</source>
         <translation>Trolltech (Kina)</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="105"/>
+        <location filename="ConfigDialog.java" line="106"/>
         <source>Trolltech (USA)</source>
         <translation>Trolltech (USA)</translation>
     </message>
@@ -379,95 +376,105 @@ Save your changes?</source>
 <context>
     <name>com.trolltech.examples.ConfigDialog$QueryPage</name>
     <message>
-        <location filename="ConfigDialog.java" line="167"/>
+        <location filename="ConfigDialog.java" line="168"/>
         <source>Look for packages</source>
         <translation>Let etter pakke</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="169"/>
+        <location filename="ConfigDialog.java" line="170"/>
         <source>Name:</source>
         <translation>Navn:</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="172"/>
+        <location filename="ConfigDialog.java" line="173"/>
         <source>Released after:</source>
         <translation>Utgitt etter:</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="175"/>
+        <location filename="ConfigDialog.java" line="176"/>
         <source>Releases</source>
         <translation>Utgivelser:</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="176"/>
+        <location filename="ConfigDialog.java" line="177"/>
         <source>Upgrades</source>
         <translation>Oppgraderinger</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="179"/>
         <source>Return up to </source>
-        <translation>Lever opp til</translation>
+        <translation type="obsolete">Lever opp til</translation>
     </message>
     <message>
         <location filename="ConfigDialog.java" line="180"/>
         <source> results</source>
-        <translation>Resultat</translation>
+        <translation type="obsolete">Resultat</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="181"/>
+        <location filename="ConfigDialog.java" line="182"/>
         <source>Return only the first result</source>
         <translation>Returner bare første resultat</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="186"/>
+        <location filename="ConfigDialog.java" line="187"/>
         <source>Start query</source>
         <translation>Start spørring</translation>
+    </message>
+    <message>
+        <location filename="ConfigDialog.java" line="180"/>
+        <source>Return up to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ConfigDialog.java" line="181"/>
+        <source>results</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>com.trolltech.examples.ConfigDialog$UpdatePage</name>
     <message>
-        <location filename="ConfigDialog.java" line="126"/>
+        <location filename="ConfigDialog.java" line="127"/>
         <source>Package selection</source>
         <translation>Pakke utvalg</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="127"/>
+        <location filename="ConfigDialog.java" line="128"/>
         <source>Update system</source>
         <translation>Oppdater systemet</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="128"/>
+        <location filename="ConfigDialog.java" line="129"/>
         <source>Update applications</source>
         <translation>Oppdater programmene</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="129"/>
+        <location filename="ConfigDialog.java" line="130"/>
         <source>Update documentation</source>
         <translation>Oppdater dokumentasjon</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="131"/>
+        <location filename="ConfigDialog.java" line="132"/>
         <source>Existing packages</source>
         <translation>Eksisterendes pakker</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="135"/>
+        <location filename="ConfigDialog.java" line="136"/>
         <source>Qt</source>
         <translation>Qt</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="137"/>
+        <location filename="ConfigDialog.java" line="138"/>
         <source>QSA</source>
         <translation>QSA</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="139"/>
+        <location filename="ConfigDialog.java" line="140"/>
         <source>Teambuilder</source>
         <translation>Teambuilder</translation>
     </message>
     <message>
-        <location filename="ConfigDialog.java" line="141"/>
+        <location filename="ConfigDialog.java" line="142"/>
         <source>Start update</source>
         <translation>Start oppdatering</translation>
     </message>
@@ -916,6 +923,74 @@ Save your changes?</source>
     <message>
         <location filename="LineEdits.java" line="140"/>
         <source>Line Edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>com.trolltech.examples.MainWindow</name>
+    <message>
+        <location filename="I18N.java" line="169"/>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="154"/>
+        <source>First</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="155"/>
+        <source>Second</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="156"/>
+        <source>Third</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="163"/>
+        <source>E&amp;xit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="166"/>
+        <source>&amp;File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="169"/>
+        <source>Language: %1$s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="172"/>
+        <source>Internationalization Example</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="174"/>
+        <source>LTR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="179"/>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="180"/>
+        <source>Perspective</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="181"/>
+        <source>Isometric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="I18N.java" line="182"/>
+        <source>Oblique</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1528,10 +1603,7 @@ Save your changes?</source>
     </message>
     <message>
         <location filename="SqlCommon.java" line="33"/>
-        <source>Unable to establish a database connection.
-This example needs SQLite support. Please read the Qt SQL driver documentation for information how to build it.
-
-Click Cancel to exit.</source>
+        <source>Unable to establish a database connection.\nThis example needs SQLite support. Please read the Qt SQL driver documentation for information how to build it.\n\nClick Cancel to exit.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1632,7 +1704,7 @@ Click Cancel to exit.</source>
     </message>
     <message>
         <location filename="StyleSheet.java" line="66"/>
-        <source>The &lt;b&gt;Style Sheet&lt;/b&gt; example shows how widgets can be styled using &lt;a href=&quot;http://doc.trolltech.com/4.2/stylesheet.html&quot;&gt;Qt Style Sheets&lt;/a&gt;. Click &lt;b&gt;File|Edit Style Sheet&lt;/b&gt; to pop up the style editor, and either choose an existing style sheet or design your own.</source>
+        <source>The &lt;b&gt;Style Sheet&lt;/b&gt; example shows how widgets can be styled using &lt;a href=\&quot;http://doc.trolltech.com/4.2/stylesheet.html\&quot;&gt;Qt Style Sheets&lt;/a&gt;. Click &lt;b&gt;File|Edit Style Sheet&lt;/b&gt; to pop up the style editor, and either choose an existing style sheet or design your own.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1774,6 +1846,58 @@ Click Cancel to exit.</source>
     <message>
         <location filename="SystemTrayExample.java" line="192"/>
         <source>Balloon message was clicked</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>com.trolltech.examples.tutorial.Blocks</name>
+    <message>
+        <location filename="tutorial/Blocks.java" line="23"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tutorial/Blocks.java" line="41"/>
+        <source>Building Blocks</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>com.trolltech.examples.tutorial.BlocksGalore</name>
+    <message>
+        <location filename="tutorial/BlocksGalore.java" line="23"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tutorial/BlocksGalore.java" line="33"/>
+        <source>Building Blocks Galore</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>com.trolltech.examples.tutorial.ConnectedSliders</name>
+    <message>
+        <location filename="tutorial/ConnectedSliders.java" line="23"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tutorial/ConnectedSliders.java" line="47"/>
+        <source>One Thing Leads to Another</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>com.trolltech.examples.tutorial.Widgets</name>
+    <message>
+        <location filename="tutorial/Widgets.java" line="24"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tutorial/Widgets.java" line="30"/>
+        <source>Let There Be Widgets</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
