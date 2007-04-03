@@ -6,7 +6,9 @@ import java.util.*;
 
 import org.junit.*;
 
+import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QRectF;
 import com.trolltech.qt.gui.*;
 
 public class TestReferenceCounting extends QApplicationTest {
@@ -176,7 +178,7 @@ public class TestReferenceCounting extends QApplicationTest {
 		
 		assertEquals(COUNT, deleted);
 		assertEquals(0, w.actions().size());
-	}*/
+	}
 
 	@Test public void testQAbstractProxyModelSetSourceModel() {
 		deleted = 0;
@@ -306,5 +308,229 @@ public class TestReferenceCounting extends QApplicationTest {
 		assertEquals(1, deleted);
 		assertEquals(null, proxy.sourceModel());
 	}
+	
+	@Test public void testQAbstractProxyModelSetSourceModel() {
+		deleted = 0;
+		
+		QSortFilterProxyModel proxy = new QSortFilterProxyModel() {
+
+			@Override
+			public QModelIndex mapFromSource(QModelIndex sourceIndex) {
+				
+				return null;
+			}
+
+			@Override
+			public QModelIndex mapToSource(QModelIndex proxyIndex) {
+				
+				return null;
+			}
+
+			@Override
+			public int columnCount(QModelIndex parent) {
+				
+				return 0;
+			}
+
+			@Override
+			public QModelIndex index(int row, int column, QModelIndex parent) {
+				
+				return null;
+			}
+
+			@Override
+			public QModelIndex parent(QModelIndex child) {
+				
+				return null;
+			}
+
+			@Override
+			public int rowCount(QModelIndex parent) {
+				
+				return 0;
+			}
+			
+		};
+		
+		{
+			QStandardItemModel model = new QStandardItemModel() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			
+			model.setObjectName("source model");
+			
+			proxy.setSourceModel(model);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertEquals(0, deleted);
+		assertEquals("source model", proxy.sourceModel().objectName());
+	}
+
+	@Test public void testQAbstractProxyModelSetSourceModelNull() {
+		deleted = 0;
+		
+		QSortFilterProxyModel proxy = new QSortFilterProxyModel() {
+
+			@Override
+			public QModelIndex mapFromSource(QModelIndex sourceIndex) {
+				
+				return null;
+			}
+
+			@Override
+			public QModelIndex mapToSource(QModelIndex proxyIndex) {
+				
+				return null;
+			}
+
+			@Override
+			public int columnCount(QModelIndex parent) {
+				
+				return 0;
+			}
+
+			@Override
+			public QModelIndex index(int row, int column, QModelIndex parent) {
+				
+				return null;
+			}
+
+			@Override
+			public QModelIndex parent(QModelIndex child) {
+				
+				return null;
+			}
+
+			@Override
+			public int rowCount(QModelIndex parent) {
+				
+				return 0;
+			}
+			
+		};
+		
+		{
+			QStandardItemModel model = new QStandardItemModel() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			
+			model.setObjectName("source model");
+			
+			proxy.setSourceModel(model);
+			proxy.setSourceModel(null);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertEquals(1, deleted);
+		assertEquals(null, proxy.sourceModel());
+	}*/
+	
+	@Test public void testQStackedLayoutAddStackedWidget() {
+		QStackedLayout layout = new QStackedLayout();
+		
+		deleted = 0;
+		for (int i=0; i<COUNT; ++i) {
+			QWidget widget = new QWidget() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			layout.addStackedWidget(widget);
+			
+			System.gc();
+		}
+		
+		assertEquals(COUNT, layout.count());
+		assertEquals(0, deleted);
+	}
+	
+	@Test public void testQStackLayoutRemoveWidget() {
+		QStackedLayout layout = new QStackedLayout();
+		
+		deleted = 0;
+		for (int i=0; i<COUNT; ++i) {
+			QWidget widget = new QWidget() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			layout.addStackedWidget(widget);
+			layout.removeWidget(widget);
+			
+			System.gc();
+		}
+
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertEquals(0, layout.count());
+		assertEquals(COUNT, deleted);
+	}
+	
+	@Test public void testQStackLayoutAddWidget() {
+		QStackedLayout layout = new QStackedLayout();
+		
+		deleted = 0;
+		for (int i=0; i<COUNT; ++i) {
+			QWidget widget = new QWidget() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			layout.addWidget(widget);
+			
+			System.gc();
+		}
+
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertEquals(COUNT, layout.count());
+		assertEquals(0, deleted);
+	}
+	
+	@Test public void testQStackLayoutAddRemoveWidget() {
+		QStackedLayout layout = new QStackedLayout();
+		
+		deleted = 0;
+		for (int i=0; i<COUNT; ++i) {
+			QWidget widget = new QWidget() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			layout.addWidget(widget);
+			layout.removeWidget(widget);
+			
+			System.gc();
+		}
+
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertEquals(0, layout.count());
+		assertEquals(COUNT, deleted);
+	}
+
 
 }
