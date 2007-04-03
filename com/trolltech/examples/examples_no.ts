@@ -199,17 +199,20 @@
     </message>
     <message>
         <location filename="Application.java" line="244"/>
-        <source>The document has been modified.\nSave your changes?</source>
+        <source>The document has been modified.
+Save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Application.java" line="261"/>
-        <source>Cannot read file %1$s:\n%2$s.</source>
+        <source>Cannot read file %1$s:
+%2$s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Application.java" line="278"/>
-        <source>Cannot write file %1$s:\n%2$s.</source>
+        <source>Cannot write file %1$s:
+%2$s.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1603,7 +1606,10 @@
     </message>
     <message>
         <location filename="SqlCommon.java" line="33"/>
-        <source>Unable to establish a database connection.\nThis example needs SQLite support. Please read the Qt SQL driver documentation for information how to build it.\n\nClick Cancel to exit.</source>
+        <source>Unable to establish a database connection.
+This example needs SQLite support. Please read the Qt SQL driver documentation for information how to build it.
+
+Click Cancel to exit.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1704,7 +1710,7 @@
     </message>
     <message>
         <location filename="StyleSheet.java" line="66"/>
-        <source>The &lt;b&gt;Style Sheet&lt;/b&gt; example shows how widgets can be styled using &lt;a href=\&quot;http://doc.trolltech.com/4.2/stylesheet.html\&quot;&gt;Qt Style Sheets&lt;/a&gt;. Click &lt;b&gt;File|Edit Style Sheet&lt;/b&gt; to pop up the style editor, and either choose an existing style sheet or design your own.</source>
+        <source>The &lt;b&gt;Style Sheet&lt;/b&gt; example shows how widgets can be styled using &lt;a href=&quot;http://doc.trolltech.com/4.2/stylesheet.html&quot;&gt;Qt Style Sheets&lt;/a&gt;. Click &lt;b&gt;File|Edit Style Sheet&lt;/b&gt; to pop up the style editor, and either choose an existing style sheet or design your own.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
