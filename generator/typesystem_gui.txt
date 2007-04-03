@@ -2635,7 +2635,7 @@
     delete copy;
     </custom-destructor>
   </value-type>
-    
+     
   <interface-type name="QLayoutItem"/>
   <interface-type name="QPaintDevice"/>
 
@@ -2653,6 +2653,18 @@
            </conversion-rule>           
            <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionGraphicsItem" />
        </modify-argument>
+    </modify-function>
+    <modify-function signature="installSceneEventFilter(QGraphicsItem *)">
+        <modify-argument index="1">
+            <!-- Safe to ignore because items in a scene are memory managed by the scene --> 
+            <reference-count action="ignore" /> 
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="removeSceneEventFilter(QGraphicsItem *)">
+        <modify-argument index="1">
+            <!-- Safe to ignore because items in a scene are memory managed by the scene --> 
+            <reference-count action="ignore" /> 
+        </modify-argument>
     </modify-function>
   </interface-type>  
   
@@ -3638,8 +3650,15 @@
     <modify-function signature="addWidget(QWidget *)">
         <modify-argument index="1">
             <no-null-pointer />
+            <reference-count variable-name="__rcWidgets" action="add" access="friendly" />
         </modify-argument>
     </modify-function>    
+    <modify-function signature="removeWidget(QWidget *)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <reference-count variable-name="__rcWidgets" action="remove" access="friendly" />
+        </modify-argument>
+    </modify-function>
     <modify-function signature="addItem(QLayoutItem *)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />
@@ -3675,7 +3694,23 @@
     </modify-function>
     <modify-function signature="addWidget(QWidget *)">
         <rename to="addStackedWidget"/>
+        <modify-argument index="1">
+            <no-null-pointer />
+            <reference-count action="add" declare-variable="no" variable-name="__rcWidgets" />
+        </modify-argument>
     </modify-function>    
+    <modify-function signature="insertWidget(int,QWidget*)">
+        <modify-argument index="2">
+            <no-null-pointer />
+            <reference-count action="add" declare-variable="no" variable-name="__rcWidgets" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCurrentWidget(QWidget*)">
+        <modify-argument index="1">
+            <!-- Safe to ignore because current widget must have been added to layout already -->
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
   </object-type>
   
   <object-type name="QBoxLayout">  
@@ -4428,6 +4463,13 @@
             <replace-default-expression with="Qt.MatchFlag.MatchStartsWith, Qt.MatchFlag.MatchWrap" />
         </modify-argument>
     </modify-function>   
+
+    <modify-function signature="setSourceModel(QAbstractItemModel *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcSourceModel" />
+        </modify-argument>
+    </modify-function>
+    
   </object-type>
 
   <object-type name="QSlider">

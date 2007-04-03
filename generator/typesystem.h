@@ -82,25 +82,43 @@ namespace TypeSystem {
 
 struct ReferenceCount 
 {
-    enum Action { // Should be bitsafe against Flag (stay within one byte)
-        Invalid    = 0x00,
-        Add        = 0x01,
-        AddAll     = 0x02,
-        Remove     = 0x04,
-        Set        = 0x08
+    enum Action { // 0x01 - 0xff
+        Invalid     = 0x00,
+        Add         = 0x01,
+        AddAll      = 0x02,
+        Remove      = 0x04,
+        Set         = 0x08,
+        Ignore      = 0x10,
+
+        ActionsMask = 0xff,
+
+        Padding     = 0xffffffff
     };
 
-    enum Flag { // Should be bitsafe against Action 
-        ThreadSafe = 0x100,
-        Static = 0x200,
+    enum Flag { // 0x100 - 0xf00
+        ThreadSafe      = 0x100,
+        Static          = 0x200,
+        DeclareVariable = 0x400,
 
-        FlagsMask = 0xf00
+        FlagsMask       = 0xf00
+    };
+
+    enum Access { // 0x1000 - 0xf000
+        Private     = 0x1000,
+        Protected   = 0x2000,
+        Friendly    = 0x3000,
+        Public      = 0x4000,
+
+        AccessMask  = 0xf000
     };
 
     Action action;
     QString variableName;
 
     uint threadSafe : 1;
+    uint declareVariable : 1;
+
+    uint access;
 };
 
 class CodeSnipFragment{

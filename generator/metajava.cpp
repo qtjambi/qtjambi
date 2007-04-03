@@ -137,10 +137,10 @@ bool MetaJavaFunction::isModifiedRemoved(int types) const
 
 bool MetaJavaFunction::needsCallThrough() const
 {
-    if (referenceCounts(implementingClass()).size() > 0)
-        return true;
     if (ownerClass()->isInterface())
         return false;
+    if (referenceCounts(implementingClass()).size() > 0)
+        return true;
     if (argumentsHaveNativeId() || !isStatic())
         return true;
 

@@ -637,6 +637,8 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["action"] = QString();
             attributes["variable-name"] = QString();
             attributes["thread-safe"] = QString("no");
+            attributes["declare-variable"] = QString("yes");
+            attributes["access"] = QString("private");
             break;
         default:
             ; // nada
@@ -1001,15 +1003,9 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
 
                 ReferenceCount rc;
-                rc.threadSafe = (attributes["thread-safe"] == "yes");
-                if (!rc.threadSafe && attributes["thread-safe"] != "no") {
+                rc.threadSafe = (attributes["thread-safe"].toLower() == "yes");
+                if (!rc.threadSafe && attributes["thread-safe"].toLower() != "no") {
                     m_error = "thread-safe attribute must be either 'yes' or 'no'";
-                    return false;
-                }
-                
-                rc.variableName = attributes["variable-name"];
-                if (rc.variableName.isEmpty()) {
-                    m_error = "variable-name attribute must be specified";
                     return false;
                 }
 
@@ -1019,8 +1015,35 @@ bool Handler::startElement(const QString &, const QString &n,
                     actions["add-all"] = ReferenceCount::AddAll;
                     actions["remove"] = ReferenceCount::Remove;
                     actions["set"] = ReferenceCount::Set;
+                    actions["ignore"] = ReferenceCount::Ignore;
                 }
-                rc.action = actions.value(attributes["action"], ReferenceCount::Invalid);
+                rc.action = actions.value(attributes["action"].toLower(), ReferenceCount::Invalid);
+
+                rc.variableName = attributes["variable-name"];
+                if (rc.action != ReferenceCount::Ignore && rc.variableName.isEmpty()) {
+                    m_error = "variable-name attribute must be specified";
+                    return false;
+                }
+
+                rc.declareVariable = (attributes["declare-variable"].toLower() == "yes");
+                if (!rc.declareVariable && attributes["declare-variable"].toLower() != "no") {
+                    m_error = "declare-variable must be either 'yes' or 'no'";
+                    return false;
+                }
+
+                static QHash<QString, int> accessRights;
+                if (accessRights.isEmpty()) {
+                    accessRights["private"] = ReferenceCount::Private;
+                    accessRights["public"] = ReferenceCount::Public;
+                    accessRights["protected"] = ReferenceCount::Protected;
+                    accessRights["friendly"] = ReferenceCount::Friendly;
+                }
+                rc.access = accessRights.value(attributes["access"].toLower(), 0);
+                if (rc.access == 0) {
+                    m_error = "unrecognized access value: " + attributes["access"];
+                    return false;
+                }
+
                 if (rc.action == ReferenceCount::Invalid) {
                     m_error = "unrecognized value for action attribute. supported actions:";
                     foreach (QString action, actions.keys())

@@ -718,9 +718,6 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
             
         if (hasObjectTypeArgument
             && java_function->referenceCounts(java_function->implementingClass()).size() == 0) {
-                if (java_function->name().startsWith("insert"))
-                    qDebug("has obj type: %s", qPrintable(java_function->name()));
-
             m_reference_count_candidate_functions.append(java_function);
         }
     }
@@ -1204,15 +1201,22 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         QList<ReferenceCount> referenceCounts = function->referenceCounts(java_class);
         foreach (ReferenceCount refCount, referenceCounts) {
             variables[refCount.variableName] |= refCount.action 
+                                                | refCount.access
                                                 | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
-                                                | (function->isStatic() ? ReferenceCount::Static : 0);
+                                                | (function->isStatic() ? ReferenceCount::Static : 0)
+                                                | (refCount.declareVariable ? ReferenceCount::DeclareVariable : 0);
         }
     }
 
     foreach (QString variableName, variables.keys()) {
-        int actions = variables.value(variableName) & ~(ReferenceCount::FlagsMask);
+        int actions = variables.value(variableName) & ReferenceCount::ActionsMask;
         bool threadSafe = variables.value(variableName) & ReferenceCount::ThreadSafe;
         bool isStatic = variables.value(variableName) & ReferenceCount::Static;
+        bool declareVariable = variables.value(variableName) & ReferenceCount::DeclareVariable;
+        int access = variables.value(variableName) & ReferenceCount::AccessMask;
+
+        if (actions == ReferenceCount::Ignore || !declareVariable)
+            continue;
 
         if (((actions & ReferenceCount::Add) == 0) != ((actions & ReferenceCount::Remove) == 0)) {
             QString warn = QString("either add or remove specified for reference count variable '%1' in '%2' but not both")
@@ -1220,11 +1224,23 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             ReportHandler::warning(warn);
         }
 
-        s << "    private ";
+        s << "    @SuppressWarnings(\"unused\") ";
+
+        switch (access) {
+        case ReferenceCount::Private:
+            s << "private "; break;
+        case ReferenceCount::Protected:
+            s << "protected "; break;
+        case ReferenceCount::Public:
+            s << "public "; break;
+        default:
+            ; // friendly
+        }
+
         if (isStatic)
             s << "static ";
 
-        if (actions != ReferenceCount::Set) {
+        if (actions != ReferenceCount::Set && actions != ReferenceCount::Ignore) {
             s << "java.util.Collection<Object> " << variableName << " = ";
             
             if (threadSafe)
@@ -1233,7 +1249,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             if (threadSafe)
                 s << ")";
             s << ";" << endl;
-        } else {
+        } else if (actions != ReferenceCount::Ignore) {
             
             if (threadSafe)
                 s << "synchronized ";
