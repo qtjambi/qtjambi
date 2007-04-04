@@ -6,9 +6,11 @@ import java.util.*;
 
 import org.junit.*;
 
+import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QRectF;
+import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.gui.*;
 
 public class TestReferenceCounting extends QApplicationTest {
@@ -436,7 +438,7 @@ public class TestReferenceCounting extends QApplicationTest {
 		
 		assertEquals(1, deleted);
 		assertEquals(null, proxy.sourceModel());
-	}*/
+	}
 	
 	@Test public void testQStackedLayoutAddStackedWidget() {
 		QStackedLayout layout = new QStackedLayout();
@@ -530,7 +532,287 @@ public class TestReferenceCounting extends QApplicationTest {
 		
 		assertEquals(0, layout.count());
 		assertEquals(COUNT, deleted);
+	}*/
+		
+	@Test public void testQComboBoxSetCompleter() {
+		QComboBox box = new QComboBox();
+		QLineEdit lineEdit = new QLineEdit();	
+		box.setLineEdit(lineEdit);
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			box.setCompleter(completer);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(box.completer() != null);
+		assertEquals(0, deleted);
+	}
+	
+	@Test public void testQComboBoxSetCompleterNull() {
+		QComboBox box = new QComboBox();
+		QLineEdit lineEdit = new QLineEdit();	
+		box.setLineEdit(lineEdit);
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			box.setCompleter(completer);
+			box.setCompleter(null);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(box.completer() == null);
+		assertEquals(1, deleted);
+		
+	}
+	
+	@Test public void testQComboBoxSetCompleterNoLineEdit() {
+		QComboBox box = new QComboBox();
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			box.setCompleter(completer);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(box.completer() == null);
+		assertEquals(1, deleted);		
+	}
+	
+	@Test public void testQLineEditSetCompleter() {
+		QLineEdit lineEdit = new QLineEdit();
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			lineEdit.setCompleter(completer);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(lineEdit.completer() != null);
+		assertEquals(0, deleted);		
+	}
+	
+	@Test public void testQLineEditSetCompleterNull() {
+		QLineEdit lineEdit = new QLineEdit();
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			lineEdit.setCompleter(completer);
+			lineEdit.setCompleter(null);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(lineEdit.completer() == null);
+		assertEquals(1, deleted);		
+	}
+	
+	@Test public void testQComboBoxLineEditSetCompleterNull() {
+		QComboBox box = new QComboBox();
+		QLineEdit lineEdit = new QLineEdit();
+		
+		box.setLineEdit(lineEdit);
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			lineEdit.setCompleter(completer);
+			box.lineEdit().setCompleter(null);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(lineEdit.completer() == null);
+		assertEquals(1, deleted);		
 	}
 
+	@Test public void testQLineEditComboBoxSetCompleter() {
+		QComboBox box = new QComboBox();
+		QLineEdit lineEdit = new QLineEdit();
+		
+		box.setLineEdit(lineEdit);
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			box.lineEdit().setCompleter(completer);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(lineEdit.completer() != null);
+		assertEquals(0, deleted);		
+	}
+	
+	@Test public void testQLineEditComboBoxSetCompleterNull() {
+		QComboBox box = new QComboBox();
+		QLineEdit lineEdit = new QLineEdit();
+		
+		box.setLineEdit(lineEdit);
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			box.lineEdit().setCompleter(completer);
+			lineEdit.setCompleter(null);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(lineEdit.completer() == null);
+		assertEquals(1, deleted);		
+	}
 
+	
+	@Test public void testQComboBoxSetItemDelegate() {
+		QComboBox box = new QComboBox();
+		
+		deleted = 0;
+		{ 			
+			QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
+	
+				@Override
+				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+				}
+	
+				@Override
+				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+					return null;
+				}
+				
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+				
+			};
+						
+			box.setItemDelegate(delegate);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(box.itemDelegate() != null);
+		assertEquals(0, deleted);
+	}
+	
+	@Test public void testQComboBoxSetItemDelegateNull() {
+		QComboBox box = new QComboBox();
+		
+		deleted = 0;
+		{ 			
+			QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
+	
+				@Override
+				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+				}
+	
+				@Override
+				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+					return null;
+				}
+				
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+				
+			};
+			QAbstractItemDelegate delegate2 = new QAbstractItemDelegate() {
+				
+				@Override
+				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+				}
+	
+				@Override
+				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+					return null;
+				}
+				
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+				
+			};
+
+						
+			box.setItemDelegate(delegate);
+			box.setItemDelegate(delegate2);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(box.itemDelegate() != null);
+		assertEquals(1, deleted);
+	}
 }
