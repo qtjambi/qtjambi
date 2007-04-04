@@ -7,17 +7,23 @@ import java.util.*;
 import org.junit.*;
 
 import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QRectF;
 import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt.KeyboardModifiers;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QItemSelectionModel.SelectionFlags;
 
 public class TestReferenceCounting extends QApplicationTest {
 	private static final int COUNT = 200;
 	
 	private int deleted = 0;
-	/*@Test public void testQWidgetAddAction() {
+	@Test public void testQWidgetAddAction() {
 		QWidget w = new QWidget();
 		
 		deleted = 0;
@@ -311,7 +317,7 @@ public class TestReferenceCounting extends QApplicationTest {
 		assertEquals(null, proxy.sourceModel());
 	}
 	
-	@Test public void testQAbstractProxyModelSetSourceModel() {
+	@Test public void testQSortFilterProxyModelSetSourceModel() {
 		deleted = 0;
 		
 		QSortFilterProxyModel proxy = new QSortFilterProxyModel() {
@@ -375,7 +381,7 @@ public class TestReferenceCounting extends QApplicationTest {
 		assertEquals("source model", proxy.sourceModel().objectName());
 	}
 
-	@Test public void testQAbstractProxyModelSetSourceModelNull() {
+	@Test public void testQSortFilterProxyModelSetSourceModelNull() {
 		deleted = 0;
 		
 		QSortFilterProxyModel proxy = new QSortFilterProxyModel() {
@@ -532,7 +538,7 @@ public class TestReferenceCounting extends QApplicationTest {
 		
 		assertEquals(0, layout.count());
 		assertEquals(COUNT, deleted);
-	}*/
+	}
 		
 	@Test public void testQComboBoxSetCompleter() {
 		QComboBox box = new QComboBox();
@@ -557,6 +563,30 @@ public class TestReferenceCounting extends QApplicationTest {
 		assertTrue(box.completer() != null);
 		assertEquals(0, deleted);
 	}
+
+	@Test public void testQComboBoxEditableSetCompleter() {
+		QComboBox box = new QComboBox();
+		box.setEditable(true);
+		
+		deleted = 0;
+		{
+			QCompleter completer = new QCompleter() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			box.setCompleter(completer);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(box.completer() != null);
+		assertEquals(0, deleted);
+	}
+
 	
 	@Test public void testQComboBoxSetCompleterNull() {
 		QComboBox box = new QComboBox();
@@ -815,4 +845,557 @@ public class TestReferenceCounting extends QApplicationTest {
 		assertTrue(box.itemDelegate() != null);
 		assertEquals(1, deleted);
 	}
+	
+	@Test public void testQComboBoxSetModel() {
+		QComboBox box = new QComboBox();
+		
+		deleted = 0;
+		{
+			QStandardItemModel model = new QStandardItemModel() {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			box.setModel(model);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(box.model() != null);
+		assertEquals(0, deleted);
+
+	}
+	
+	@Test public void testQComboBoxSetValidator() {
+		QComboBox box = new QComboBox();
+		box.setEditable(true);
+		
+		deleted = 0;
+		{
+			QValidator validator = new QValidator((QObject)null) {
+				@Override 
+				public void disposed() {
+					deleted++;
+				}
+
+				@Override
+				public State validate(QValidationData arg__1) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
+			
+			box.setValidator(validator);
+		}
+
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();		
+		
+		assertTrue(box.validator() != null);
+		assertEquals(0, deleted);
+	}
+	
+	@Test public void testQComboBoxSetValidatorNull() {
+		QComboBox box = new QComboBox();
+		box.setEditable(true);
+		
+		deleted = 0;
+		{
+			QValidator validator = new QValidator((QObject)null) {
+				@Override 
+				public void disposed() {
+					deleted++;
+				}
+
+				@Override
+				public State validate(QValidationData arg__1) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
+			
+			box.setValidator(validator);
+			box.setValidator(null);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(box.validator() == null);
+		assertEquals(1, deleted);
+	}
+	
+	@Test public void testQComboBoxLineEditSetValidator() {
+		QComboBox box = new QComboBox();
+		box.setEditable(true);
+		
+		deleted = 0;
+		{
+			QValidator validator = new QValidator((QObject)null) {
+				@Override 
+				public void disposed() {
+					deleted++;
+				}
+
+				@Override
+				public State validate(QValidationData arg__1) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
+			
+			box.setValidator(validator);
+			box.lineEdit().setValidator(null);
+		}
+
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+				
+		assertTrue(box.validator() == null);
+		assertEquals(1, deleted);
+	}
+	
+	@Test public void testQButtonGroupAddButton() {
+		QButtonGroup group = new QButtonGroup();
+		
+		deleted = 0;
+		for (int i=0; i<COUNT; ++i) {
+			group.addButton(new QPushButton("button" + i) {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			});
+			System.gc();
+		}
+				
+		assertEquals(COUNT, group.buttons().size());
+		assertEquals(0, deleted);
+		assertEquals("button10", group.buttons().get(10).text());
+		
+	}
+
+	@Test public void testQButtonGroupAddButtonId() {
+		QButtonGroup group = new QButtonGroup();
+		
+		deleted = 0;
+		for (int i=0; i<COUNT; ++i) {
+			group.addButton(new QPushButton("button" + i) {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			}, i);
+			System.gc();
+		}
+				
+		assertEquals(COUNT, group.buttons().size());
+		assertEquals(0, deleted);
+		assertEquals(10, group.id(group.buttons().get(10)));
+		assertEquals("button10", group.buttons().get(10).text());		
+	}
+	
+	@Test public void testQButtonGroupRemoveButton() {
+		QButtonGroup group = new QButtonGroup();
+		
+		deleted = 0;
+		for (int i=0; i<COUNT; ++i) {
+			QPushButton button = new QPushButton("button" + i) {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			}; 
+			group.addButton(button);
+			group.removeButton(button);
+			System.gc();
+		}
+				
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+
+		assertEquals(0, group.buttons().size());
+		assertEquals(COUNT, deleted);
+	}
+	
+	@Test public void testQAbstractItemViewSetItemDelegate() {
+		QAbstractItemView view = new QAbstractItemView() {
+
+			@Override
+			protected int horizontalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QModelIndex indexAt(QPoint point) {
+				return null;
+			}
+
+			@Override
+			protected boolean isIndexHidden(QModelIndex index) {
+				return false;
+			}
+
+			@Override
+			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+				return null;
+			}
+
+			@Override
+			public void scrollTo(QModelIndex index, ScrollHint hint) {
+			}
+
+			@Override
+			protected void setSelection(QRect rect, SelectionFlags command) {
+			}
+
+			@Override
+			protected int verticalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QRect visualRect(QModelIndex index) {
+				return null;
+			}
+
+			@Override
+			protected QRegion visualRegionForSelection(QItemSelection selection) {
+				return null;
+			}
+						
+		};
+		
+		deleted = 0;
+		{
+			QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
+
+				@Override
+				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+				
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+				
+			};
+			
+			view.setItemDelegate(delegate);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(view.itemDelegate() != null);
+		assertEquals(0, deleted);
+		
+	}
+
+	@Test public void testQAbstractItemViewSetItemDelegateNull() {
+		QAbstractItemView view = new QAbstractItemView() {
+
+			@Override
+			protected int horizontalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QModelIndex indexAt(QPoint point) {
+				return null;
+			}
+
+			@Override
+			protected boolean isIndexHidden(QModelIndex index) {
+				return false;
+			}
+
+			@Override
+			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+				return null;
+			}
+
+			@Override
+			public void scrollTo(QModelIndex index, ScrollHint hint) {
+			}
+
+			@Override
+			protected void setSelection(QRect rect, SelectionFlags command) {
+			}
+
+			@Override
+			protected int verticalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QRect visualRect(QModelIndex index) {
+				return null;
+			}
+
+			@Override
+			protected QRegion visualRegionForSelection(QItemSelection selection) {
+				return null;
+			}
+						
+		};
+		
+		deleted = 0;
+		{
+			QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
+
+				@Override
+				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+				
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+				
+			};
+			
+			view.setItemDelegate(delegate);
+			view.setItemDelegate(null);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(view.itemDelegate() == null);
+		assertEquals(1, deleted);
+	}
+
+	@Test public void testQAbstractItemViewSetModel() {
+		QAbstractItemView view = new QAbstractItemView() {
+
+			@Override
+			protected int horizontalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QModelIndex indexAt(QPoint point) {
+				return null;
+			}
+
+			@Override
+			protected boolean isIndexHidden(QModelIndex index) {
+				return false;
+			}
+
+			@Override
+			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+				return null;
+			}
+
+			@Override
+			public void scrollTo(QModelIndex index, ScrollHint hint) {
+			}
+
+			@Override
+			protected void setSelection(QRect rect, SelectionFlags command) {
+			}
+
+			@Override
+			protected int verticalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QRect visualRect(QModelIndex index) {
+				return null;
+			}
+
+			@Override
+			protected QRegion visualRegionForSelection(QItemSelection selection) {
+				return null;
+			}
+						
+		};
+		
+		deleted = 0;
+		{
+			QStandardItemModel model = new QStandardItemModel() {
+				@Override 
+				public void disposed() {
+					deleted++;
+				}
+			};
+			
+			view.setModel(model);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(view.model() != null);
+		assertEquals(0, deleted);		
+	}
+	
+	@Test public void testQAbstractItemViewSetSelectionModelThenSetModel() {
+		QAbstractItemView view = new QAbstractItemView() {
+
+			@Override
+			protected int horizontalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QModelIndex indexAt(QPoint point) {
+				return null;
+			}
+
+			@Override
+			protected boolean isIndexHidden(QModelIndex index) {
+				return false;
+			}
+
+			@Override
+			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+				return null;
+			}
+
+			@Override
+			public void scrollTo(QModelIndex index, ScrollHint hint) {
+			}
+
+			@Override
+			protected void setSelection(QRect rect, SelectionFlags command) {
+			}
+
+			@Override
+			protected int verticalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QRect visualRect(QModelIndex index) {
+				return null;
+			}
+
+			@Override
+			protected QRegion visualRegionForSelection(QItemSelection selection) {
+				return null;
+			}
+						
+		};
+		
+		deleted = 0;
+		{
+			QItemSelectionModel model = new QItemSelectionModel(view.model()) {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			
+			view.setSelectionModel(model);
+			view.setModel(new QStandardItemModel());
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(view.selectionModel() != null);
+		assertEquals(1, deleted);
+		
+	}
+
+	@Test public void testQAbstractItemViewSetSelectionModel() {
+		QAbstractItemView view = new QAbstractItemView() {
+
+			@Override
+			protected int horizontalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QModelIndex indexAt(QPoint point) {
+				return null;
+			}
+
+			@Override
+			protected boolean isIndexHidden(QModelIndex index) {
+				return false;
+			}
+
+			@Override
+			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+				return null;
+			}
+
+			@Override
+			public void scrollTo(QModelIndex index, ScrollHint hint) {
+			}
+
+			@Override
+			protected void setSelection(QRect rect, SelectionFlags command) {
+			}
+
+			@Override
+			protected int verticalOffset() {
+				return 0;
+			}
+
+			@Override
+			public QRect visualRect(QModelIndex index) {
+				return null;
+			}
+
+			@Override
+			protected QRegion visualRegionForSelection(QItemSelection selection) {
+				return null;
+			}
+						
+		};
+		
+		deleted = 0;
+		{
+			QItemSelectionModel model = new QItemSelectionModel(view.model()) {
+				@Override
+				public void disposed() {
+					deleted++;
+				}
+			};
+			
+			view.setSelectionModel(model);
+		}
+		
+		long millis = System.currentTimeMillis();
+		while (System.currentTimeMillis() - millis < 1000)
+			System.gc();
+		
+		assertTrue(view.selectionModel() != null);
+		assertEquals(0, deleted);
+		
+	}
+
 }
