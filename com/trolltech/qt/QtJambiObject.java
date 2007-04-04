@@ -54,11 +54,45 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
         /* intentionally empty */
     }
 
-    public String tr(String str) {
+    /**
+     * Returns a translated version of source, or source itself if there is no appropriate translated version.
+     * 
+     * @param source the source text to translate.
+     * @return translated version of the source text.
+     */
+    public String tr(String source) {
     	String scope = getClass().getName();
-    	return QCoreApplication.translate(scope, str);
+    	return QCoreApplication.translate(scope, source);
     }
 
+    /**
+     * Returns a translated version of source, or source itself if there is no appropriate translated version.
+     * The comment is used to help translators translate the source text.
+     * 
+     * @param source the source text to translate.
+     * @param comment helps the translator translate the source text.
+     * @return translated version of the source text.
+     */
+    public String tr(String source, String comment) {
+    	String scope = getClass().getName();
+    	return QCoreApplication.translate(scope, source, comment);
+    }
+    
+    /**
+     * Returns a translated version of source, or source itself if there is no appropriate translated version.
+     * If %n accurs in the source text, it will be substituted with count.
+     * The comment is used to help translators translate the source text.
+     * 
+     * @param source the source text to translate.
+     * @param comment helps the translator translate the source text.
+     * @param count in source %n will be substituted by count.
+     * @return translated version of the source text.
+     */
+    public String tr(String source, String comment, int count) {
+    	String scope = getClass().getName();
+    	return QCoreApplication.translate(scope, source, comment, count);
+    }
+    
     /**
      * Called before the java object is removed by the garbage collector. As the 
      * native resources belonging to an object may be cleaned up prior to the 
