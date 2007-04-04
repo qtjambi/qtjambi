@@ -2325,17 +2325,13 @@
         </modify-argument>           
     </modify-function>
     <inject-code>
-        public static String translate(String context, String sourceText, String comment, Encoding encoding) {
+        public static String translate(String context, String sourceText, String comment) {
             return translate(context != null ? QNativePointer.createCharPointer(context) : null, 
                              sourceText != null ? QNativePointer.createCharPointer(sourceText) : null,
                              comment != null ? QNativePointer.createCharPointer(comment) : null,
-                             encoding);   
+                             Encoding.CodecForTr);
         }
-        
-        public static String translate(String context, String sourceText, String comment) {
-            return translate(context, sourceText, comment, Encoding.CodecForTr);
-        }
-        
+
         public static String translate(String context, String sourceText) {
             return translate(context, sourceText, null);
         }
@@ -2345,11 +2341,11 @@
         <access modifier="private" />
     </modify-function>
     <inject-code>
-        public static String translate(String context, String sourceText, String comment, Encoding encoding, int n) {
+        public static String translate(String context, String sourceText, String comment, int n) {
             return translate(context != null ? QNativePointer.createCharPointer(context) : null, 
                              sourceText != null ? QNativePointer.createCharPointer(sourceText) : null,
                              comment != null ? QNativePointer.createCharPointer(comment) : null,
-                             encoding, n);           
+                             Encoding.CodecForTr, n);
         }
     </inject-code>
     
