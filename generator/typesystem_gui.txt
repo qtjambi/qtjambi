@@ -2670,7 +2670,34 @@
   
   <object-type name="QAbstractGraphicsShapeItem" />
     
-  <object-type name="QAbstractItemView"/>  
+  <object-type name="QAbstractItemView">
+    <modify-function signature="setIndexWidget(const QModelIndex &amp;,QWidget *)">
+        <modify-argument index="2">
+            <!-- Safe to ignore because view reparents widget -->
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setItemDelegate(QAbstractItemDelegate *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcItemDelegate" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setModel(QAbstractItemModel *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcItemModel" />            
+        </modify-argument>
+        <inject-code class="java" position="end">
+            // setModel() creates a new selection model for the object
+            __rcItemSelectionModel = null;
+        </inject-code>
+    </modify-function>    
+    <modify-function signature="setSelectionModel(QItemSelectionModel *)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <reference-count action="set" variable-name="__rcItemSelectionModel" />            
+        </modify-argument>
+    </modify-function>
+  </object-type>  
   <object-type name="QAbstractPageSetupDialog"/>
   <object-type name="QAbstractPrintDialog"/>
   <object-type name="QAbstractSlider"/>  
@@ -4946,6 +4973,11 @@
             <reference-count action="set" variable-name="__rcCompleter" access="friendly" />
         </modify-argument>
     </modify-function>
+     <modify-function signature="setValidator(const QValidator *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcValidator" access="friendly" />
+        </modify-argument>
+    </modify-function>
     <inject-code>
         <insert-template name="gui.init_style_option">
             <replace from="%TYPE" to="QStyleOptionFrame" />
@@ -5033,6 +5065,29 @@
     </modify-function>
     <modify-function signature="buttonReleased(int)">
         <rename to="buttonIdReleased"/>
+    </modify-function>
+    <modify-function signature="addButton(QAbstractButton *)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcButtons" />
+            <no-null-pointer />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addButton(QAbstractButton *, int)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcButtons" />
+            <no-null-pointer />
+        </modify-argument>
+    </modify-function>    
+    <modify-function signature="removeButton(QAbstractButton *)">
+        <modify-argument index="1">
+            <reference-count action="remove" variable-name="__rcButtons" />
+            <no-null-pointer />
+        </modify-argument>
+    </modify-function>    
+    <modify-function signature="setId(QAbstractButton *,int)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
     </modify-function>
   </object-type>
     
@@ -5304,10 +5359,35 @@
             <reference-count declare-variable="no" conditional="(lineEdit() != null)" variable-name="lineEdit().__rcCompleter" action="set" />
         </modify-argument>
     </modify-function>
+    <modify-function signature="setValidator(const QValidator*)">
+        <modify-argument index="1">
+            <reference-count declare-variable="no" conditional="(lineEdit() != null)" variable-name="lineEdit().__rcValidator" action="set" />
+        </modify-argument>
+    </modify-function>
     <modify-function signature="setItemDelegate(QAbstractItemDelegate *)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />
             <no-null-pointer />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setView(QAbstractItemView *)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <!-- Safe to ignore because combo box reparents view -->
+            <reference-count action="ignore" />
+        </modify-argument> 
+    </modify-function>
+    <modify-function signature="setLineEdit(QLineEdit *)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <!-- Safe to ignore because combo box reparents line edit -->
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setModel(QAbstractItemModel *)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <reference-count action="set" variable-name="__rcModel" />
         </modify-argument>
     </modify-function>
     <inject-code>
