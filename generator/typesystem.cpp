@@ -639,6 +639,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["thread-safe"] = QString("no");
             attributes["declare-variable"] = QString("yes");
             attributes["access"] = QString("private");
+            attributes["conditional"] = QString("");
             break;
         default:
             ; // nada
@@ -1030,6 +1031,8 @@ bool Handler::startElement(const QString &, const QString &n,
                     m_error = "declare-variable must be either 'yes' or 'no'";
                     return false;
                 }
+
+                rc.conditional = attributes["conditional"];
 
                 static QHash<QString, int> accessRights;
                 if (accessRights.isEmpty()) {

@@ -667,10 +667,21 @@ void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
 void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &refCount,
                                         const QString &argumentName) 
 {
-    if (refCount.action != ReferenceCount::Set)
-        s << "        if (" << argumentName << " != null) {" << endl;
-    else
-        s << "        {" << endl;
+    if (refCount.action != ReferenceCount::Set) {
+        s << "        if (" << argumentName << " != null";
+
+        if (!refCount.conditional.isEmpty())
+            s << " && " << refCount.conditional;
+        
+        s << ") {" << endl;
+     } else {
+        s << "        ";
+
+        if (!refCount.conditional.isEmpty())
+            s << "if (" << refCount.conditional << ") ";
+
+        s << "{" << endl;
+     }
 
     switch (refCount.action) {
     case ReferenceCount::Add:

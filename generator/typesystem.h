@@ -114,6 +114,7 @@ struct ReferenceCount
 
     Action action;
     QString variableName;
+    QString conditional;
 
     uint threadSafe : 1;
     uint declareVariable : 1;
