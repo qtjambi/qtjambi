@@ -1052,7 +1052,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     foreach (QString action, actions.keys())
                         m_error += " " + action;
                 }
-                
+
                 m_function_mods.last().argument_mods.last().referenceCounts.append(rc);
             }
             break;
@@ -1247,13 +1247,23 @@ bool TypeDatabase::parseFile(const QString &filename, bool generate)
     Q_ASSERT(file.exists());
     QXmlInputSource source(&file);
 
+    int count = m_entries.size();
+
     QXmlSimpleReader reader;
     Handler handler(this, generate);
 
     reader.setContentHandler(&handler);
     reader.setErrorHandler(&handler);
 
-    return reader.parse(&source, false);
+    bool ok = reader.parse(&source, false);
+
+    int newCount = m_entries.size();
+
+    ReportHandler::debugSparse(QString::fromLatin1("Parsed: '%1', %2 new entries")
+                               .arg(filename)
+                               .arg(newCount - count));
+
+    return ok;
 }
 
 QString PrimitiveTypeEntry::javaObjectName() const
