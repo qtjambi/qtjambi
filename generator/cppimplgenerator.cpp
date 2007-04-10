@@ -1269,11 +1269,13 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
             QStringList extra_param;
             Option option = NoOption;
 
+            bool hasShell = cls->generateShellClass();
+
             if (java_function->isFinalOverload()) {
                 // no prefix
-            } else if (java_function->isFinalInCpp() && !java_function->wasPublic()) {
+            } else if (java_function->isFinalInCpp() && !java_function->wasPublic() && hasShell) {
                 function_prefix = "__public_";
-            } else if (!java_function->isFinalInCpp() && !java_function->isStatic()) {
+            } else if (!java_function->isFinalInCpp() && !java_function->isStatic() && hasShell) {
                 function_prefix = "__override_";
                 extra_param.append("__do_static_call");
                 s << INDENT
@@ -1627,7 +1629,11 @@ QString CppImplGenerator::fromObject(const TypeEntry *entry,
                    + "\", \"" + QString(package).replace(".", "/") + "/\", true);";
     } else {
         MetaJavaClass *cls = classes().findClass(centry->qualifiedCppName());
-        Q_ASSERT(cls != 0);
+        if (!cls) {
+            qFatal("CppImplGenerator::fromObject(): class '%s' could not be resolved...",
+                   qPrintable(centry->qualifiedCppName()));
+        }
+
         while (cls != 0 && !cls->typeEntry()->isPolymorphicBase())
             cls = cls->baseClass();
 
