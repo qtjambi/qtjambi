@@ -555,7 +555,13 @@
         
     </value-type>
     
-    <interface-type name="QXmlContentHandler" />
+    <interface-type name="QXmlContentHandler">
+        <modify-function signature="setDocumentLocator(QXmlLocator*)">
+            <modify-argument index="1">
+                <define-ownership class="shell" owner="c++" />
+            </modify-argument>
+        </modify-function>
+    </interface-type>
     <interface-type name="QXmlDTDHandler" />
     <interface-type name="QXmlDeclHandler" />
     <interface-type name="QXmlEntityResolver" />

@@ -1356,6 +1356,11 @@
             <replace from="%TYPE" to="QTextBlock" />
         </insert-template>            
     </inject-code>
+    <modify-function signature="setUserData(QTextBlockUserData *)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+     </modify-function>
   </value-type>
   <value-type name="QTextBlockFormat"/>
   <value-type name="QTextCharFormat"/>
@@ -2702,7 +2707,13 @@
   <object-type name="QAbstractPrintDialog"/>
   <object-type name="QAbstractSlider"/>  
   <object-type name="QAbstractTextDocumentLayout"/>
-  <object-type name="QAccessible"/>
+  <object-type name="QAccessible">
+    <modify-function signature="setRootObject(QObject *)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QAccessibleBridge"/>
   <object-type name="QAccessibleBridgeFactoryInterface"/>
   <object-type name="QAccessibleBridgePlugin"/>
@@ -3222,7 +3233,33 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QStatusBar"/>
+  <object-type name="QStatusBar">   
+    <modify-function signature="addPermanentWidget(QWidget *, int)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addWidget(QWidget *, int)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="removeWidget(QWidget *)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertPermanentWidget(int, QWidget *, int)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertWidget(int, QWidget *, int)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QStringListModel"/>
   <object-type name="QStyleFactory"/>
   <object-type name="QStyleFactoryInterface"/>
@@ -3251,13 +3288,60 @@
             <replace from="%TYPE" to="QStyleOptionToolButton" />
         </insert-template>
     </inject-code>  
+    <modify-function signature="setDefaultAction(QAction *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDefaultAction" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setMenu(QMenu *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcMenu" />
+        </modify-argument>
+    </modify-function>
   </object-type>
   <object-type name="QToolTip"/>
   <object-type name="QTreeView"/>
   <object-type name="QUndoCommand"/>
-  <object-type name="QUndoGroup"/>
+  <object-type name="QUndoGroup">
+    <modify-function signature="addStack(QUndoStack*)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcStacks" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="removeStack(QUndoStack*)">
+        <modify-argument index="1">
+            <reference-count action="remove" variable-name="__rcStacks" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setActiveStack(QUndoStack*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QUndoStack"/>
-  <object-type name="QUndoView"/>
+  <object-type name="QUndoView">
+    <modify-function signature="setGroup(QUndoGroup *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcGroupOrStack" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setStack(QUndoStack *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcGroupOrStack" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="QUndoView(QUndoGroup *,QWidget *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcGroupOrStack" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="QUndoView(QUndoStack *,QWidget *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcGroupOrStack" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QVBoxLayout" />
   <object-type name="QValidator">
     <inject-code>
@@ -3383,8 +3467,19 @@
   <object-type name="QGraphicsSceneContextMenuEvent"
                polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneContextMenu"/>
   <object-type name="QGraphicsSceneDragDropEvent"
-               polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneDragEnter || %1->type() == QEvent::GraphicsSceneDragLeave || %1->type() == QEvent::GraphicsSceneDragMove || %1->type() == QEvent::GraphicsSceneDrop"/>
-  <object-type name="QGraphicsSceneEvent"/>
+               polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneDragEnter || %1->type() == QEvent::GraphicsSceneDragLeave || %1->type() == QEvent::GraphicsSceneDragMove || %1->type() == QEvent::GraphicsSceneDrop">
+    <modify-function signature="setMimeData(const QMimeData *)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setSource(QWidget *)">
+        <remove />
+    </modify-function>
+  </object-type>
+  <object-type name="QGraphicsSceneEvent">
+    <modify-function signature="setWidget(QWidget *)">
+        <remove />
+    </modify-function>
+  </object-type>
   <object-type name="QGraphicsSceneHelpEvent"
                polymorphic-id-expression="%1->type() == QEvent::GraphicsSceneHelp"/>
   <object-type name="QGraphicsSceneHoverEvent"
@@ -4151,7 +4246,22 @@
     </modify-function>
     <modify-function signature="highlighted(const QModelIndex &amp;)">
         <rename to="highlightedIndex"/>
-    </modify-function>    
+    </modify-function>
+    <modify-function signature="setModel(QAbstractItemModel *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcModel" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setPopup(QAbstractItemView *)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setWidget(QWidget *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcWidget" />
+        </modify-argument>
+    </modify-function>
   </object-type>
 
 
@@ -4542,7 +4652,16 @@
         </insert-template>
         
     </inject-code>
-    
+    <modify-function signature="setBuddy(QWidget *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcBuddy" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setMovie(QMovie *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcMovie" />
+        </modify-argument>
+    </modify-function>
     <modify-function signature="pixmap()const">
         <access modifier="private"/>
         <rename to="pixmap_private"/>    
@@ -4915,6 +5034,16 @@
     </extra-includes>
     <modify-function signature="getRange(int,int*,int*)const">
         <access modifier="private"/>
+    </modify-function>
+    <modify-function signature="addWidget(QWidget *)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertWidget(QWidget *)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
     </modify-function>
     <inject-code>
         public static class Range {
