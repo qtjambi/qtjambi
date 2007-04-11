@@ -497,15 +497,7 @@
   <value-type name="QBasicTimer"/>  
   <value-type name="QStringRef" />
   <value-type name="QByteArrayMatcher">
-    <modify-function signature="operator=(QByteArrayMatcher)">
-        <rename to="operator_assign_private"/>
-        <access modifier="private" />        
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QByteArrayMatcher" />
-        </insert-template>            
-    </inject-code>
+    <modify-function signature="operator=(QByteArrayMatcher)" remove="all"/>
   </value-type>
   
   <value-type name="QDate">    
@@ -536,15 +528,7 @@
   </value-type>
   
   <value-type name="QDateTime">
-    <modify-function signature="operator=(QDateTime)">
-        <rename to="operator_assign_private"/>
-        <access modifier="private" />        
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QDateTime" />
-        </insert-template>            
-    </inject-code>
+    <modify-function signature="operator=(QDateTime)" remove="all"/>
   </value-type>
   
   <value-type name="QDir">
@@ -553,27 +537,14 @@
             <replace-default-expression with="SortFlag.Name, SortFlag.IgnoreCase" />
         </modify-argument>
     </modify-function>  
-    <modify-function signature="operator=(QDir)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
+    <modify-function signature="operator=(QDir)" remove="all"/>
+    <modify-function signature="operator=(QString)" remove="all"/>
+
+    <modify-function signature="operator[](int)const" access="private"/>
+
     <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QDir" />
-        </insert-template>                
+    @com.trolltech.qt.QtBlockedSlot public String at(int i) { return operator_subscript(i); }
     </inject-code>
-        
-    <modify-function signature="operator=(QString)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>   
-    <inject-code>
-        <insert-template name="core.operator_assign_other_type">
-            <replace from="%IN_TYPE" to="String" />
-            <replace from="%OUT_TYPE" to="QDir" />
-        </insert-template>                
-    </inject-code>
-    
   </value-type>
   
   <value-type name="QPoint">
@@ -858,17 +829,21 @@
     <modify-function signature="operator[](int)const" remove="all"/>
     <modify-function signature="operator[](uint)const" remove="all"/>
     <modify-function signature="operator[](uint)" remove="all"/>
+    <modify-function signature="isDetached()const" remove="all"/>
+    <modify-function signature="detach()" remove="all"/>
 
     <modify-function signature="operator&amp;=(QBitArray)" access="private"/>
     <modify-function signature="operator=(QBitArray)" access="private"/>
     <modify-function signature="operator^=(QBitArray)" access="private"/>
     <modify-function signature="operator|=(QBitArray)" access="private"/>
+    <modify-function signature="operator~()const" access="private"/>
 
     <inject-code>
-    public void xor(QBitArray other) { operator_xor_assign(other); }
-    public void and(QBitArray other) { operator_and_assign(other); }
-    public void or(QBitArray other) { operator_or_assign(other); }
-    public void set(QBitArray other) { operator_assign(other); }
+    @com.trolltech.qt.QtBlockedSlot public void xor(QBitArray other) { operator_xor_assign(other); }
+    @com.trolltech.qt.QtBlockedSlot public void and(QBitArray other) { operator_and_assign(other); }
+    @com.trolltech.qt.QtBlockedSlot public void or(QBitArray other) { operator_or_assign(other); }
+    @com.trolltech.qt.QtBlockedSlot public void set(QBitArray other) { operator_assign(other); }
+    @com.trolltech.qt.QtBlockedSlot public QBitArray inverted() { return operator_negate(); }
     </inject-code>
   </value-type>  
 
@@ -1071,82 +1046,75 @@
     <extra-includes>
         <include file-name="QNoImplicitBoolCast" location="global"/>
     </extra-includes>
-    <modify-function signature="operator const void *()const">
-        <remove />
-    </modify-function>
-    <modify-function signature="operator const char *()const">
-        <remove />
-    </modify-function>
-    <modify-function signature="begin()const">
-        <remove />
-    </modify-function>    
-    <modify-function signature="end()const">
-        <remove />
-    </modify-function>        
-    <modify-function signature="begin()">
-        <remove />
-    </modify-function>    
-    <modify-function signature="end()">
-        <remove />
-    </modify-function>            
-    <modify-function signature="number(uint,int)">
-        <remove />
-    </modify-function>
-    <modify-function signature="number(unsigned long long,int)">
-        <remove />
-    </modify-function>    
-    <modify-function signature="setNum(uint,int)">
-        <remove/>
-    </modify-function>
-    <modify-function signature="setNum(unsigned short,int)">
-        <remove/>
-    </modify-function>    
-    <modify-function signature="setNum(unsigned long long,int)">
-        <remove/>
-    </modify-function>    
-    <modify-function signature="data()const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="operator[](int)const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="operator[](uint)const">
-        <remove/>
-    </modify-function>    
-    <modify-function signature="operator[](uint)">
-        <remove/>
-    </modify-function>
-    <modify-function signature="toUInt(bool*, int) const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="toULong(bool*, int) const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="toULongLong(bool*, int) const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="toLong(bool*, int) const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="toLongLong(bool*, int) const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="toShort(bool*, int) const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="constBegin()const">
-        <remove />
-    </modify-function>
-    <modify-function signature="constData()const">
-        <remove />
-    </modify-function>
-    <modify-function signature="constEnd()const">
-        <remove />
-    </modify-function>
 
-    <modify-function signature="toUShort(bool*, int) const">
-        <rename to="toChar_private" />
-        <access modifier="private" />
+    <!-- removed functions -->
+    <modify-function signature="begin()" remove="all"/>
+    <modify-function signature="begin()const" remove="all"/>
+    <modify-function signature="constBegin()const" remove="all"/>
+    <modify-function signature="constData()const" remove="all"/>
+    <modify-function signature="constEnd()const" remove="all"/>
+    <modify-function signature="count()const" remove="all"/>
+    <modify-function signature="data()const" remove="all"/>
+    <modify-function signature="detach()" remove="all"/>
+    <modify-function signature="end()" remove="all"/>
+    <modify-function signature="end()const" remove="all"/>
+    <modify-function signature="isDetached()const" remove="all"/>
+    <modify-function signature="number(uint,int)" remove="all"/>
+    <modify-function signature="number(unsigned long long,int)" remove="all"/>
+    <modify-function signature="operator const char *()const" remove="all"/>
+    <modify-function signature="operator const void *()const" remove="all"/>
+    <modify-function signature="operator+=(const char*)" remove="all"/>
+    <modify-function signature="operator=(const char*)" remove="all"/>
+    <modify-function signature="operator[](int)const" remove="all"/>
+    <modify-function signature="operator[](uint)" remove="all"/>
+    <modify-function signature="operator[](uint)const" remove="all"/>
+    <modify-function signature="push_back(char)" remove="all"/>
+    <modify-function signature="push_back(const QByteArray&amp;)" remove="all"/>
+    <modify-function signature="push_back(const char*)" remove="all"/>
+    <modify-function signature="push_front(char)" remove="all"/>
+    <modify-function signature="push_front(const QByteArray&amp;)" remove="all"/>
+    <modify-function signature="push_front(const char*)" remove="all"/>
+    <modify-function signature="setNum(uint,int)" remove="all"/>
+    <modify-function signature="setNum(unsigned long long,int)" remove="all"/>
+    <modify-function signature="setNum(unsigned short,int)" remove="all"/>
+    <modify-function signature="toLong(bool*, int) const" remove="all"/>
+    <modify-function signature="toLongLong(bool*, int) const" remove="all"/>
+    <modify-function signature="toShort(bool*, int) const" remove="all"/>
+    <modify-function signature="toUInt(bool*, int) const" remove="all"/>
+    <modify-function signature="toULong(bool*, int) const" remove="all"/>
+    <modify-function signature="toULongLong(bool*, int) const" remove="all"/>
+
+    <!-- functions made private... -->
+    <modify-function signature="operator=(QByteArray)" access="private"/>
+    <modify-function signature="operator+=(QByteArray)" access="private"/>
+    <modify-function signature="operator+=(QString)" access="private"/>
+    <modify-function signature="operator+=(char)" access="private"/>
+
+    <!-- Injected code ... -->
+    <inject-code>
+    @com.trolltech.qt.QtBlockedSlot public QByteArray add(QByteArray other) { 
+        operator_add_assign(other);
+        return this;
+    }
+    @com.trolltech.qt.QtBlockedSlot public QByteArray add(String other) { 
+        operator_add_assign(other);
+        return this;
+    }
+    @com.trolltech.qt.QtBlockedSlot public QByteArray add(byte other) { 
+        operator_add_assign(other);
+        return this;
+    }
+    @com.trolltech.qt.QtBlockedSlot public QByteArray set(QByteArray other) { 
+        operator_assign(other);
+        return this;
+    }
+    </inject-code>
+
+
+
+    <modify-function signature="toUShort(bool*, int) const" 
+      rename="toChar_private" 
+      access="private">
         <modify-argument index="1">
             <remove-default-expression />
         </modify-argument>
@@ -1155,9 +1123,9 @@
         </modify-argument>
     </modify-function>
 
-    <modify-function signature="toInt(bool*, int) const">
-        <rename to="toInt_private" />
-        <access modifier="private" />
+    <modify-function signature="toInt(bool*, int) const"
+      rename="toInt_private"
+      access="private">
         <modify-argument index="1">
             <remove-default-expression />
         </modify-argument>
@@ -1182,9 +1150,7 @@
         </modify-argument>
     </modify-function>
 
-    <modify-function signature="QByteArray(const char*)">
-        <remove />
-    </modify-function>
+    <modify-function signature="QByteArray(const char*)" remove="all"/>
     
     <modify-function signature="QByteArray(const char*,int)">
         <access modifier="private" />
@@ -1325,71 +1291,8 @@
         </insert-template>        
     </inject-code>
     
-    <modify-function signature="insert(int,const char*)">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="lastIndexOf(const char*,int)const">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="operator+=(QByteArray)">
-        <access modifier="private" />
-        <rename to="operator_add_assign_private" />            
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QByteArray" />
-            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="operator+=(const char*)">
-        <remove />
-    </modify-function>
-    
-    <modify-function signature="operator+=(QString)">
-        <access modifier="private" />
-        <rename to="operator_add_assign_private" />            
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="String" />
-            <replace from="%OUT_TYPE" to="QByteArray" />
-            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="operator+=(char)">
-        <access modifier="private" />
-        <rename to="operator_add_assign_private" />            
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="byte" />
-            <replace from="%OUT_TYPE" to="QByteArray" />
-            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="operator=(const char*)">
-        <remove />
-    </modify-function>
-    <inject-code>        
-        public final QByteArray operator_assign(String str) {
-            return operator_assign(new QByteArray(str));
-        }
-    </inject-code>
-    
-    <modify-function signature="operator=(QByteArray)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />        
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QByteArray" />
-        </insert-template>            
-    </inject-code>
+    <modify-function signature="insert(int,const char*)" remove="all"/>    
+    <modify-function signature="lastIndexOf(const char*,int)const" remove="all"/>
     
     <modify-function signature="prepend(QByteArray)">
         <access modifier="private" />
@@ -1423,24 +1326,6 @@
         }
     </inject-code>
     
-    <modify-function signature="push_back(const char*)">
-        <remove />
-    </modify-function>
-    <inject-code>
-        public void push_back(String str) {
-            push_back(new QByteArray(str));
-        }
-    </inject-code>
-    
-    <modify-function signature="push_front(const char*)">
-        <remove />
-    </modify-function>
-    <inject-code>
-        public void push_front(String str) {
-            push_front(new QByteArray(str));
-        }
-    </inject-code>
-        
     <modify-function signature="remove(int,int)">
         <access modifier="private" />
         <rename to="remove_private" />
