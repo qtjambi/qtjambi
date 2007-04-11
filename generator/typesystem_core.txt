@@ -632,38 +632,16 @@
   </value-type>
   
   <value-type name="QStringMatcher">
-    <modify-function signature="operator=(QStringMatcher)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QStringMatcher" />
-        </insert-template>            
-    </inject-code>        
+    <modify-function signature="operator=(QStringMatcher)" remove="all"/>
   </value-type>
+
   <value-type name="QTime"/>  
+
   <value-type name="QPersistentModelIndex">
-    <modify-function signature="operator=(QPersistentModelIndex)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QPersistentModelIndex" />
-        </insert-template>            
-    </inject-code>    
-    <modify-function signature="operator=(QModelIndex)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_other_type">
-            <replace from="%OUT_TYPE" to="QPersistentModelIndex" />
-            <replace from="%IN_TYPE" to="QModelIndex" />
-        </insert-template>            
-    </inject-code>        
+    <modify-function signature="operator=(QPersistentModelIndex)" remove="all"/>
+    <modify-function signature="operator=(QModelIndex)" remove="all"/>
   </value-type>
+
   <value-type name="QUuid">
     <modify-function signature="QUuid(const char*)">
         <remove />
@@ -671,31 +649,12 @@
   </value-type>
 
   <value-type name="QLocale">  
-    <modify-function signature="toString(unsigned long long) const">
-        <remove />
-    </modify-function>
-    <modify-function signature="toString(unsigned short) const">
-        <remove />        
-    </modify-function>    
-    <modify-function signature="toString(unsigned int) const">
-        <remove />
-    </modify-function>    
-    <modify-function signature="toUInt(QString,bool*,int)const">
-        <remove />
-    </modify-function>    
-    <modify-function signature="toULongLong(QString,bool*,int)const">
-        <remove />
-    </modify-function>
-
-    <modify-function signature="operator=(QLocale)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QLocale" />
-        </insert-template>                    
-    </inject-code>
+    <modify-function signature="toString(unsigned long long) const" remove="all"/>
+    <modify-function signature="toString(unsigned short) const" remove="all"/>
+    <modify-function signature="toString(unsigned int) const" remove="all"/>
+    <modify-function signature="toUInt(QString,bool*,int)const" remove="all"/>
+    <modify-function signature="toULongLong(QString,bool*,int)const" remove="all"/>
+    <modify-function signature="operator=(QLocale)" remove="all"/>
     
     <extra-includes>
         <include file-name="com.trolltech.qt.QNativePointer" location="java" />
@@ -920,41 +879,15 @@
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
-    <modify-function signature="operator=(QUrl)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QUrl" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="operator=(QString)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_other_type">
-            <replace from="%IN_TYPE" to="String" />
-            <replace from="%OUT_TYPE" to="QUrl" />
-        </insert-template>
-    </inject-code>            
+    <modify-function signature="operator=(QUrl)" remove="all"/>
+    <modify-function signature="operator=(QString)" remove="all"/>
   </value-type>
   
   <value-type name="QRegExp">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
-    <modify-function signature="operator=(QRegExp)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QRegExp" />
-        </insert-template>
-    </inject-code>
+    <modify-function signature="operator=(QRegExp)" remove="all"/>
   </value-type>
 
   <value-type name="QFileInfo">
@@ -962,21 +895,9 @@
         <include file-name="QDateTime" location="global"/>
         <include file-name="QDir" location="global"/>
     </extra-includes>
-    <modify-function signature="operator!=(const QFileInfo &amp;)const">
-        <remove />
-    </modify-function>
-    <modify-function signature="operator==(const QFileInfo &amp;)const">
-        <remove />
-    </modify-function>    
-    <modify-function signature="operator=(QFileInfo)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QFileInfo" />
-        </insert-template>
-    </inject-code>
+    <modify-function signature="operator!=(const QFileInfo &amp;)const" remove="all"/>
+    <modify-function signature="operator==(const QFileInfo &amp;)const" remove="all"/>
+    <modify-function signature="operator=(QFileInfo)" remove="all"/>
   </value-type>
 
   <value-type name="QByteArray">
