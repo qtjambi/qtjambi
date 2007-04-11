@@ -854,59 +854,22 @@
   </value-type>
   
   <value-type name="QBitArray">
-    <modify-function signature="operator[](int)const">
-        <remove/>
-    </modify-function>
-    <modify-function signature="operator[](uint)const">
-        <remove/>
-    </modify-function>    
-    <modify-function signature="operator[](uint)">
-        <remove/>
-    </modify-function>
-    <modify-function signature="operator&amp;=(QBitArray)">
-        <access modifier="private" />
-        <rename to="operator_and_assign_private" />
-    </modify-function>
+    <modify-function signature="operator[](int)" remove="all"/>
+    <modify-function signature="operator[](int)const" remove="all"/>
+    <modify-function signature="operator[](uint)const" remove="all"/>
+    <modify-function signature="operator[](uint)" remove="all"/>
+
+    <modify-function signature="operator&amp;=(QBitArray)" access="private"/>
+    <modify-function signature="operator=(QBitArray)" access="private"/>
+    <modify-function signature="operator^=(QBitArray)" access="private"/>
+    <modify-function signature="operator|=(QBitArray)" access="private"/>
+
     <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QBitArray" />
-            <replace from="%FUNCTION_NAME" to="operator_and_assign" />
-        </insert-template>
+    public void xor(QBitArray other) { operator_xor_assign(other); }
+    public void and(QBitArray other) { operator_and_assign(other); }
+    public void or(QBitArray other) { operator_or_assign(other); }
+    public void set(QBitArray other) { operator_assign(other); }
     </inject-code>
-    
-    <modify-function signature="operator=(QBitArray)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QBitArray" />
-        </insert-template>
-    </inject-code>
-    
-    
-    <modify-function signature="operator^=(QBitArray)">
-        <access modifier="private" />
-        <rename to="operator_xor_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QBitArray" />
-            <replace from="%FUNCTION_NAME" to="operator_xor_assign" />
-        </insert-template>
-    </inject-code>
-    
-    <modify-function signature="operator|=(QBitArray)">
-        <access modifier="private" />
-        <rename to="operator_or_assign_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_self_type">
-            <replace from="%TYPE" to="QBitArray" />
-            <replace from="%FUNCTION_NAME" to="operator_or_assign" />
-        </insert-template>
-    </inject-code>
-    
   </value-type>  
 
   <object-type name="QDirIterator" />

@@ -570,6 +570,9 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::ModifyFunction:
             attributes["signature"] = QString();
+            attributes["access"] = QString();
+            attributes["remove"] = QString();
+            attributes["rename"] = QString();
             break;
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
@@ -969,6 +972,39 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 FunctionModification mod;
                 mod.signature = signature;
+
+                QString access = attributes["access"].toLower();
+                if (!access.isEmpty()) {
+                    if (access == QLatin1String("private"))
+                        mod.modifiers |= Modification::Private;
+                    else if (access == QLatin1String("protected"))
+                        mod.modifiers |= Modification::Protected;
+                    else if (access == QLatin1String("public"))
+                        mod.modifiers |= Modification::Public;
+                    else {
+                        m_error = QString::fromLatin1("Bad access type '%1'").arg(access);
+                        return false;
+                    }
+                }
+
+                QString remove = attributes["remove"].toLower();
+                if (!remove.isEmpty()) {
+                    if (remove == QLatin1String("all"))
+                        mod.removal = TypeSystem::All;
+                    else if (remove == QLatin1String("java"))
+                        mod.removal = TypeSystem::JavaAndNativeCode;
+                    else {
+                        m_error = QString::fromLatin1("Bad removal type '%1'").arg(remove);
+                        return false;
+                    }
+                }
+
+                QString rename = attributes["rename"];
+                if (!rename.isEmpty()) {
+                    mod.renamedToName = rename;
+                    mod.modifiers |= Modification::Rename;
+                }
+
                 m_function_mods << mod;
             }
             break;
