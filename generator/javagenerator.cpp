@@ -416,7 +416,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
     if (!java_function->isConstructor() && !java_function->isStatic()) {
         s << "        if (nativeId() == 0)" << endl
-          << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl;
+          << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl;
     }
 
     for (int i=0; i<arguments.size(); ++i) {
@@ -443,7 +443,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     bool has_return_type = new_return_type != "void"
         && (!new_return_type.isEmpty() || return_type != 0);
     TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, 0);
-    bool needs_return_variable = has_return_type 
+    bool needs_return_variable = has_return_type
         && (owner != TypeSystem::InvalidOwnership || referenceCounts.size() > 0);
 
     if (has_return_type) {
@@ -665,14 +665,14 @@ void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
 }
 
 void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &refCount,
-                                        const QString &argumentName) 
+                                        const QString &argumentName)
 {
     if (refCount.action != ReferenceCount::Set) {
         s << "        if (" << argumentName << " != null";
 
         if (!refCount.conditional.isEmpty())
             s << " && " << refCount.conditional;
-        
+
         s << ") {" << endl;
      } else {
         s << "        ";
@@ -720,13 +720,13 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
 
         bool hasObjectTypeArgument = false;
         foreach (MetaJavaArgument *argument, arguments) {
-            if (argument->type()->typeEntry()->isObject() 
+            if (argument->type()->typeEntry()->isObject()
                 && !java_function->disabledGarbageCollection(java_function->implementingClass(), argument->argumentIndex()+1)) {
                 hasObjectTypeArgument = true;
                 break;
             }
         }
-            
+
         if (hasObjectTypeArgument
             && java_function->referenceCounts(java_function->implementingClass()).size() == 0) {
             m_reference_count_candidate_functions.append(java_function);
@@ -901,7 +901,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
             s << endl
               << "    public int hashCode() {" << endl
               << "        if (nativeId() == 0)" << endl
-              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
+              << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
               << "        return __qt_hashCode(nativeId());" << endl
               << "    }" << endl
               << "    private static native int __qt_hashCode(long __this_nativeId);" << endl << endl;
@@ -924,7 +924,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
             s << endl
               << "    public String toString() {" << endl
               << "        if (nativeId() == 0)" << endl
-              << "            throw new com.trolltech.qt.QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
+              << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
               << "        return __qt_toString(nativeId());" << endl
               << "    }" << endl
               << "    private static native String __qt_toString(long __this_nativeId);" << endl << endl;
@@ -1126,6 +1126,8 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
     s << "package " << java_class->package() << ";" << endl << endl;
 
+    s << "import com.trolltech.qt.*;" << endl << endl;
+
     QList<Include> includes = java_class->typeEntry()->extraIncludes();
     foreach (const Include &inc, includes) {
         if (inc.type == Include::JavaImport) {
@@ -1138,7 +1140,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         s << m_doc_parser->documentation(java_class) << endl << endl;
     }
 
-    s << "@com.trolltech.qt.QtJambiGeneratedClass" << endl;
+    s << "@QtJambiGeneratedClass" << endl;
 
     if (java_class->isInterface()) {
         s << "public interface ";
@@ -1175,7 +1177,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
                 s << " extends " << sc;
         }
     } else if (java_class->isInterface()) {
-        s << " extends com.trolltech.qt.QtJambiInterface";
+        s << " extends QtJambiInterface";
     }
 
     // implementing interfaces...
@@ -1211,7 +1213,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     foreach (MetaJavaFunction *function, java_class->functions()) {
         QList<ReferenceCount> referenceCounts = function->referenceCounts(java_class);
         foreach (ReferenceCount refCount, referenceCounts) {
-            variables[refCount.variableName] |= refCount.action 
+            variables[refCount.variableName] |= refCount.action
                                                 | refCount.access
                                                 | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
                                                 | (function->isStatic() ? ReferenceCount::Static : 0)
@@ -1253,15 +1255,15 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
         if (actions != ReferenceCount::Set && actions != ReferenceCount::Ignore) {
             s << "java.util.Collection<Object> " << variableName << " = ";
-            
+
             if (threadSafe)
-                s << "java.util.Collections.synchronizedCollection(";               
+                s << "java.util.Collections.synchronizedCollection(";
             s << "new java.util.ArrayList<Object>()";
             if (threadSafe)
                 s << ")";
             s << ";" << endl;
         } else if (actions != ReferenceCount::Ignore) {
-            
+
             if (threadSafe)
                 s << "synchronized ";
             s << "Object " << variableName << " = null;" << endl;
@@ -1344,18 +1346,18 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         s << endl
           << "    public static native " << java_class->name() << " fromNativePointer("
-          << "com.trolltech.qt.QNativePointer nativePointer);" << endl;
+          << "QNativePointer nativePointer);" << endl;
     }
 
     // The __qt_signalInitialization() function
     if (signal_funcs.size() > 0) {
         s << endl
           << "   @Override" << endl
-          << "   @com.trolltech.qt.QtBlockedSlot protected boolean __qt_signalInitialization(String name) {" << endl
+          << "   @QtBlockedSlot protected boolean __qt_signalInitialization(String name) {" << endl
           << "       return (__qt_signalInitialization(nativeId(), name)" << endl
           << "               || super.__qt_signalInitialization(name));" << endl
           << "   } " << endl
-          << "   @com.trolltech.qt.QtBlockedSlot private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
+          << "   @QtBlockedSlot private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
     }
 
     // Add dummy constructor for use when constructing subclasses
@@ -1370,7 +1372,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // Add a function that converts an array of the value type to a QNativePointer
     if (java_class->typeEntry()->isValue()) {
         s << endl
-          << "    public static native com.trolltech.qt.QNativePointer nativePointerArray(" << java_class->name()
+          << "    public static native QNativePointer nativePointerArray(" << java_class->name()
           << " array[]);" << endl;
     }
 
@@ -1383,7 +1385,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     } else {
         foreach (MetaJavaClass *cls, interfaces) {
             s << endl
-              << "    @com.trolltech.qt.QtBlockedSlot public native long __qt_cast_to_"
+              << "    @QtBlockedSlot public native long __qt_cast_to_"
               << static_cast<const InterfaceTypeEntry *>(cls->typeEntry())->origin()->javaName()
               << "(long ptr);" << endl;
         }
@@ -1439,7 +1441,7 @@ void JavaGenerator::generate()
             QTextStream s(&file);
 
             s << "The following functions have a signature pattern which may imply that" << endl
-              << "they need to apply reference counting to their arguments (" 
+              << "they need to apply reference counting to their arguments ("
               << m_reference_count_candidate_functions.size() << " functions) : " << endl;
 
               foreach (const MetaJavaFunction *f, m_reference_count_candidate_functions) {
@@ -1507,7 +1509,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
             && !java_function->isSignal()
             && !java_function->isStatic()
             && !(included_attributes & MetaJavaAttributes::Static))
-            s << "@com.trolltech.qt.QtBlockedSlot ";
+            s << "@QtBlockedSlot ";
 
         if (attr & MetaJavaAttributes::Public) s << "public ";
         else if (attr & MetaJavaAttributes::Protected) s << "protected ";
@@ -1544,7 +1546,7 @@ void JavaGenerator::writeConstructorContents(QTextStream &s, const MetaJavaFunct
     if (te->expensePolicy().isValid()) {
         s << endl;
         const ExpensePolicy &ep = te->expensePolicy();
-        s << "        com.trolltech.qt.QtJambiInternal.countExpense(" << java_class->fullName()
+        s << "        QtJambiInternal.countExpense(" << java_class->fullName()
           << ".class, " << ep.cost << ", " << ep.limit << ");" << endl;
     }
 
