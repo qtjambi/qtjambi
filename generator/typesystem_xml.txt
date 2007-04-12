@@ -254,6 +254,15 @@
     </value-type>
 
     <value-type name="QXmlStreamAttributes">
+        <modify-function signature="operator+(QVector&lt;QXmlStreamAttribute>)const" remove="all"/>
+        <modify-function signature="operator&lt;&lt;(QVector&lt;QXmlStreamAttribute>)" remove="all"/>
+        <modify-function signature="operator&lt;&lt;(QXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="operator[](int)const" remove="all"/>
+        <modify-function signature="push_back(QXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="pop_back()" remove="all"/>
+        <modify-function signature="push_front(QXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="pop_front()" remove="all"/>
+
         <modify-function signature="constData()const">
             <remove />
         </modify-function>    
