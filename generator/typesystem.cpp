@@ -740,7 +740,9 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ModifyArgument:
             {
                 if (topElement.type != StackElement::ModifyFunction) {
-                    m_error = "argument modification requires function modification as parent";
+                    m_error = QString::fromLatin1("argument modification requires function"
+                                                  " modification as parent, was %1")
+                              .arg(topElement.type, 0, 16);
                     return false;
                 }
 
@@ -959,7 +961,8 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ModifyFunction:
             {
                 if (!(topElement.type & StackElement::ComplexTypeEntryMask)) {
-                    m_error = "Modify function requires complex type as parent";
+                    m_error = QString::fromLatin1("Modify function requires complex type as parent"
+                                                  ", was=%1").arg(topElement.type, 0, 16);
                     return false;
                 }
                 QString signature = attributes["signature"];
