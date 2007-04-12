@@ -14,53 +14,23 @@
 
 
     <value-type name="QDomAttr">
-        <modify-function signature="operator=(QDomAttr)">
-            <access modifier="private"/>
-            <rename to="operator_assign_private"/>
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomAttr" />
-            </insert-template>            
-        </inject-code>    
+        <modify-function signature="operator=(QDomAttr)" remove="all"/>
     </value-type>   
-    <value-type name="QDomCDATASection">
-        <modify-function signature="operator=(QDomCDATASection)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomCDATASection" />
-            </insert-template>            
-        </inject-code>        
-    </value-type>
-    <value-type name="QDomCharacterData">
-        <modify-function signature="operator=(QDomCharacterData)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />        
-        </modify-function>    
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomCharacterData" />
-            </insert-template>            
-        </inject-code>            
-    </value-type>
-    <value-type name="QDomComment">
-        <modify-function signature="operator=(QDomComment)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />        
-        </modify-function>    
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomComment" />
-            </insert-template>            
-        </inject-code>                
-    </value-type>
-    <value-type name="QDomDocument">
 
+    <value-type name="QDomCDATASection">
+        <modify-function signature="operator=(QDomCDATASection)" remove="all"/>
+    </value-type>
+
+    <value-type name="QDomCharacterData">
+        <modify-function signature="operator=(QDomCharacterData)" remove="all"/>
+    </value-type>
+
+    <value-type name="QDomComment">
+        <modify-function signature="operator=(QDomComment)" remove="all"/>
+    </value-type>
+
+    <value-type name="QDomDocument">
         <extra-includes>
-            <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
             <include file-name="com.trolltech.qt.QNativePointer.Type" location="java"/>
             <include file-name="com.trolltech.qt.core.QIODevice" location="java"/>
             <include file-name="com.trolltech.qt.core.QByteArray" location="java"/>
@@ -230,140 +200,59 @@
             </insert-template>
         </inject-code>        
         
-        <modify-function signature="operator=(QDomDocument)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomDocument" />
-            </insert-template>
-        </inject-code>
+        <modify-function signature="operator=(QDomDocument)" remove="all"/>
     </value-type>
+
     <value-type name="QDomDocumentFragment">
-        <modify-function signature="operator=(QDomDocumentFragment)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomDocumentFragment" />
-            </insert-template>            
-        </inject-code>        
+        <modify-function signature="operator=(QDomDocumentFragment)" remove="all"/>
     </value-type>
+
     <value-type name="QDomDocumentType" >
-        <modify-function signature="operator=(QDomDocumentType)">
-            <access modifier="private"/>
-            <rename to="operator_assign_private"/>        
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomDocumentType" />
-            </insert-template>            
-        </inject-code>            
-        
+        <modify-function signature="operator=(QDomDocumentType)" remove="all"/>
     </value-type>
+
     <value-type name="QDomEntity">
-        <modify-function signature="operator=(QDomEntity)">
-            <access modifier="private"/>
-            <rename to="operator_assign_private"/>
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomEntity" />
-            </insert-template>            
-        </inject-code>            
+        <modify-function signature="operator=(QDomEntity)" remove="all"/>
     </value-type>
+
     <value-type name="QDomEntityReference">
-        <modify-function signature="operator=(QDomEntityReference)">
-            <access modifier="private"/>
-            <rename to="operator_assign_private"/>
-        </modify-function>        
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomEntityReference" />
-            </insert-template>            
-        </inject-code>                
+        <modify-function signature="operator=(QDomEntityReference)" remove="all"/>
     </value-type>
+
     <value-type name="QDomImplementation">
-        <modify-function signature="operator=(QDomImplementation)">
-            <access modifier="private"/>
-            <rename to="operator_assign_private"/>        
-        </modify-function>        
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomImplementation" />
-            </insert-template>            
-        </inject-code>            
+        <modify-function signature="operator=(QDomImplementation)" remove="all"/>
     </value-type>
+
     <value-type name="QDomNamedNodeMap">
-        <modify-function signature="operator=(QDomNamedNodeMap)">
-            <access modifier="private"/>
-            <rename to="operator_assign_private"/>
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomNamedNodeMap" />
-            </insert-template>            
-        </inject-code>    
+        <modify-function signature="operator=(QDomNamedNodeMap)" remove="all"/>
     </value-type>
+
     <value-type name="QDomNode">
-        <modify-function signature="operator=(QDomNode)">
-            <access modifier="private"/>
-            <rename to="operator_assign_private"/>
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomNode" />
-            </insert-template>            
-        </inject-code>        
+        <modify-function signature="operator=(QDomNode)" remove="all"/>
     </value-type>
+
     <value-type name="QDomNodeList">
-        <modify-function signature="operator=(const QDomNodeList &amp;)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomNodeList" />
-            </insert-template>            
-        </inject-code>    
+        <modify-function signature="operator=(const QDomNodeList &amp;)" remove="all"/>
     </value-type>
+
     <value-type name="QDomNotation">
-        <modify-function signature="operator=(QDomNotation)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomNotation" />
-            </insert-template>            
-        </inject-code>
+        <modify-function signature="operator=(QDomNotation)" remove="all"/>
     </value-type>
+
     <value-type name="QDomProcessingInstruction">
-        <modify-function signature="operator=(QDomProcessingInstruction)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />        
-        </modify-function>    
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomProcessingInstruction" />
-            </insert-template>            
-        </inject-code>            
+        <modify-function signature="operator=(QDomProcessingInstruction)" remove="all"/>
     </value-type>
+
     <value-type name="QDomText">
-        <modify-function signature="operator=(const QDomText &amp;)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomText" />
-            </insert-template>            
-        </inject-code>
+        <modify-function signature="operator=(const QDomText &amp;)" remove="all"/>
     </value-type>
+
     <value-type name="QXmlParseException" />
-    <value-type name="QXmlStreamAttribute" />
+
+    <value-type name="QXmlStreamAttribute">
+        <modify-function signature="operator=(QXmlStreamAttribute)" remove="all"/>
+    </value-type>
+
     <value-type name="QXmlStreamAttributes">
         <modify-function signature="constData()const">
             <remove />
@@ -403,9 +292,18 @@
         </modify-function>
         
     </value-type>
-    <value-type name="QXmlStreamNamespaceDeclaration" />
-    <value-type name="QXmlStreamNotationDeclaration" />
-    <value-type name="QXmlStreamEntityDeclaration" />
+
+    <value-type name="QXmlStreamNamespaceDeclaration">
+        <modify-function signature="operator=(QXmlStreamNamespaceDeclaration)" remove="all"/>
+    </value-type>
+
+    <value-type name="QXmlStreamNotationDeclaration">
+        <modify-function signature="operator=(QXmlStreamNotationDeclaration)" remove="all"/>
+    </value-type>
+
+    <value-type name="QXmlStreamEntityDeclaration">
+        <modify-function signature="operator=(QXmlStreamEntityDeclaration)" remove="all"/>
+    </value-type>
     
     <value-type name="QXmlAttributes">  
       <modify-function signature="index(const QLatin1String&amp;) const">
@@ -477,15 +375,7 @@
     </value-type>
 
     <value-type name="QDomElement">
-        <modify-function signature="operator=(QDomElement)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QDomElement" />
-            </insert-template>            
-        </inject-code>
+        <modify-function signature="operator=(QDomElement)" remove="all"/>
         
         <template name="xml.constQString_to_constQStringRef">
             QString %out = qtjambi_to_qstring(__jni_env, (jstring) %in);

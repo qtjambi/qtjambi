@@ -130,12 +130,14 @@
         }
     </inject-code>
   </object-type>
-  <object-type name="QHttpHeader" />
+
+  <object-type name="QHttpHeader">
+    <modify-function signature="operator=(QHttpHeader)" remove="all"/>
+  </object-type>
 
   <value-type name="QHostAddress">
     <modify-function signature="QHostAddress(unsigned char*)" remove="all"/>
     <modify-function signature="setAddress(unsigned char*)" remove="all"/>
-    <modify-function signature="operator=(QHttpHeader)" remove="all"/>
     <modify-function signature="operator=(QString)" remove="all"/>
     <modify-function signature="operator=(QHostAddress)" remove="all"/>
   </value-type>  

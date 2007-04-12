@@ -2796,6 +2796,7 @@
   <object-type name="QSound"/>  
   <object-type name="QSpacerItem"/>
   <object-type name="QStandardItem">
+    <modify-function signature="operator=(QStandardItem)" remove="all"/>
     <modify-function signature="appendColumn(const QList&lt;QStandardItem *> &amp;)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />

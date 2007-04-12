@@ -19,20 +19,8 @@
   </namespace-type>
   
   <value-type name="QGLColormap">
-    <extra-includes>
-        <include file-name="com.trolltech.qt.QtJambiInternal" location="java" />
-    </extra-includes>
-  
-    <modify-function signature="operator=(QGLColormap)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QGLColormap" />
-        </insert-template>
-    </inject-code>
-    
+    <modify-function signature="operator=(QGLColormap)" remove="all"/>
+
     <modify-function signature="setEntries(int,const unsigned int*,int)">
         <access modifier="private" />
     </modify-function>
@@ -46,17 +34,9 @@
         }
     </inject-code>  
   </value-type>
+
   <value-type name="QGLFormat">
-    <modify-function signature="operator=(QGLFormat)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QGLFormat" />
-        </insert-template>
-    </inject-code>
-    
+    <modify-function signature="operator=(QGLFormat)" remove="all"/>
   </value-type>
   
   <object-type name="QGLColormapData"/>

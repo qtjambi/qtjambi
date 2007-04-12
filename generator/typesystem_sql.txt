@@ -46,10 +46,7 @@
         </modify-argument>
     </modify-function>
     
-    <modify-function signature="operator=(QSqlDatabase)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
+    <modify-function signature="operator=(QSqlDatabase)" remove="all"/>
     <modify-field name="defaultConnection">
         <access modifier="private"/>
         <rename to="defaultConnection_private" />
@@ -64,12 +61,8 @@
             return returned;            
         }
     </inject-code>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QSqlDatabase" />
-        </insert-template>            
-    </inject-code>           
   </value-type>  
+
   <value-type name="QSqlQuery">
     <extra-includes>
         <include file-name="QSqlError" location="global" />
@@ -77,64 +70,28 @@
         <include file-name="QStringList" location="global" />
         <include file-name="QSize" location="global" />
     </extra-includes>  
-    <modify-function signature="operator=(const QSqlQuery &amp;)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QSqlQuery" />
-        </insert-template>            
-    </inject-code>    
+    <modify-function signature="operator=(QSqlQuery)" remove="all"/>
   </value-type>  
+
   <value-type name="QSqlRecord">
     <extra-includes>
         <include file-name="QSqlField" location="global" />
     </extra-includes>
-    <modify-function signature="operator=(QSqlRecord)">
-        <access modifier="private"/>
-        <rename to="operator_assign_private"/>
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QSqlRecord" />
-        </insert-template>            
-    </inject-code>    
-    
+    <modify-function signature="operator=(QSqlRecord)" remove="all"/>
   </value-type>
+
   <value-type name="QSqlError">
-    <modify-function signature="operator=(QSqlError)">
-        <rename to="operator_assign_private"/>
-        <access modifier="private"/>        
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QSqlError" />
-        </insert-template>            
-    </inject-code>        
+    <modify-function signature="operator=(QSqlError)" remove="all"/>
   </value-type>
+
   <value-type name="QSqlIndex">  
-    <modify-function signature="operator=(QSqlIndex)">
-        <rename to="operator_assign_private"/>
-        <access modifier="private"/>        
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QSqlIndex" />
-        </insert-template>            
-    </inject-code>      
+    <modify-function signature="operator=(QSqlIndex)" remove="all"/>
   </value-type>
+
   <value-type name="QSqlRelation" />
+
   <value-type name="QSqlField">
-    <modify-function signature="operator=(QSqlField)">
-        <rename to="operator_assign_private"/>
-        <access modifier="private"/>
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QSqlField" />
-        </insert-template>            
-    </inject-code>
+    <modify-function signature="operator=(QSqlField)" remove="all"/>
   </value-type>  
   
   <object-type name="QSqlDriver">  
