@@ -434,7 +434,7 @@ public class PathStrokeWidget extends QWidget {
             vm.scale(3, 3);
 
             for (int i = 0; i < count; ++i) {
-                m_vectors.add(m.operator_multiply(vm).map(new QPointF(.1f, .25f)));
+                m_vectors.add(m.multiplied(vm).map(new QPointF(.1f, .25f)));
                 m.rotate(rot);
                 m_points.add(m.map(new QPointF(0 + center.x(), 100 + center.y())));
 

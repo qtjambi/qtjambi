@@ -117,6 +117,8 @@
 
   <rejection class="*" function-name="d_func"/>
   <rejection class="*" function-name="data_ptr"/>
+  <rejection class="*" function-name="detach"/>
+  <rejection class="*" function-name="isDetached"/>
 
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
@@ -789,8 +791,6 @@
     <modify-function signature="operator[](int)const" remove="all"/>
     <modify-function signature="operator[](uint)const" remove="all"/>
     <modify-function signature="operator[](uint)" remove="all"/>
-    <modify-function signature="isDetached()const" remove="all"/>
-    <modify-function signature="detach()" remove="all"/>
 
     <modify-function signature="operator&amp;=(QBitArray)" access="private"/>
     <modify-function signature="operator=(QBitArray)" access="private"/>
@@ -977,10 +977,8 @@
     <modify-function signature="constEnd()const" remove="all"/>
     <modify-function signature="count()const" remove="all"/>
     <modify-function signature="data()const" remove="all"/>
-    <modify-function signature="detach()" remove="all"/>
     <modify-function signature="end()" remove="all"/>
     <modify-function signature="end()const" remove="all"/>
-    <modify-function signature="isDetached()const" remove="all"/>
     <modify-function signature="number(uint,int)" remove="all"/>
     <modify-function signature="number(unsigned long long,int)" remove="all"/>
     <modify-function signature="operator const char *()const" remove="all"/>
