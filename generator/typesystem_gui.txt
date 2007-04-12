@@ -1284,34 +1284,17 @@
 
   <value-type name="QTextFrame::iterator">
     <include file-name="QTextFrame" location="global"/>
+    <modify-function signature="operator++(int)" remove="all"/>
+    <modify-function signature="operator--(int)" remove="all"/>
     <modify-function signature="operator=(QTextFrame_iterator)" remove="all"/>
 
-    <modify-function signature="operator++()">
-        <access modifier="private" />
-        <rename to="operator_increment_private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.private_function_return_self">
-            <replace from="%RETURN_TYPE" to="QTextFrame_iterator" />
-            <replace from="%FUNCTION_NAME" to="operator_increment" />
-            <replace from="%ARGUMENTS" to="" />
-            <replace from="%ARGUMENT_NAMES" to="" />
-        </insert-template>                
-    </inject-code>
-    
-    <modify-function signature="operator--()">
-        <access modifier="private" />
-        <rename to="operator_decrement_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.private_function_return_self">
-            <replace from="%RETURN_TYPE" to="QTextFrame_iterator" />
-            <replace from="%FUNCTION_NAME" to="operator_decrement" />
-            <replace from="%ARGUMENTS" to="" />
-            <replace from="%ARGUMENT_NAMES" to="" />
-        </insert-template>        
-    </inject-code>    
+    <modify-function signature="operator++()" access="private"/>
+    <modify-function signature="operator--()" access="private"/>
 
+    <inject-code>
+        @QtBlockedSlot public final void next() { operator_increment(); }
+        @QtBlockedSlot public final void previous() { operator_decrement(); }
+    </inject-code>
   </value-type>
 
   <value-type name="QTreeWidgetItemIterator">  
@@ -1321,85 +1304,37 @@
     <custom-destructor>
     delete copy;
     </custom-destructor>
-    <modify-function signature="operator+=(int)">
-        <access modifier="private" />
-        <rename to="operator_add_assign_private" />        
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="int" />
-            <replace from="%OUT_TYPE" to="QTreeWidgetItemIterator"/>
-            <replace from="%FUNCTION_NAME" to="operator_add_assign" />
-        </insert-template>                
-    </inject-code>
-    <modify-function signature="operator-=(int)">
-        <access modifier="private" />
-        <rename to="operator_subtract_assign_private" />                
-    </modify-function>    
-    <inject-code>
-        <insert-template name="core.unary_other_type">
-            <replace from="%IN_TYPE" to="int" />
-            <replace from="%OUT_TYPE" to="QTreeWidgetItemIterator"/>
-            <replace from="%FUNCTION_NAME" to="operator_subtract_assign" />
-        </insert-template>                
-    </inject-code>    
     <modify-function signature="operator=(QTreeWidgetItemIterator)" remove="all"/>
+    <modify-function signature="operator++(int)" remove="all"/>
+    <modify-function signature="operator--(int)" remove="all"/>
 
-    <modify-function signature="operator++()">
-        <access modifier="private" />
-        <rename to="operator_increment_private" />
-    </modify-function>
+    <modify-function signature="operator+=(int)" access="private"/>
+    <modify-function signature="operator-=(int)" access="private"/>
+    <modify-function signature="operator++()" access="private"/>
+    <modify-function signature="operator--()" access="private"/>
+    <modify-function signature="operator*()const" access="private"/>
+
     <inject-code>
-        <insert-template name="core.private_function_return_self">
-            <replace from="%RETURN_TYPE" to="QTreeWidgetItemIterator" />
-            <replace from="%FUNCTION_NAME" to="operator_increment" />
-            <replace from="%ARGUMENTS" to="" />
-            <replace from="%ARGUMENT_NAMES" to="" />
-        </insert-template>        
+        @QtBlockedSlot public final void next(int i) { operator_add_assign(i); }
+        @QtBlockedSlot public final void previous(int i) { operator_subtract_assign(i); }
+        @QtBlockedSlot public final void next() { operator_increment(); }
+        @QtBlockedSlot public final void previous() { operator_decrement(); }
+        @QtBlockedSlot public final QTreeWidgetItem current() { return operator_multiply(); }
     </inject-code>
-    
-    <modify-function signature="operator--()">
-        <access modifier="private" />
-        <rename to="operator_decrement_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.private_function_return_self">
-            <replace from="%RETURN_TYPE" to="QTreeWidgetItemIterator" />
-            <replace from="%FUNCTION_NAME" to="operator_decrement" />
-            <replace from="%ARGUMENTS" to="" />
-            <replace from="%ARGUMENT_NAMES" to="" />
-        </insert-template>
-    </inject-code>        
    </value-type>
    
   <value-type name="QTextBlock::iterator">
     <include file-name="QTextBlock" location="global"/>
     
-    <modify-function signature="operator++()">
-        <access modifier="private" />
-        <rename to="operator_increment_private" />
-    </modify-function>
+    <modify-function signature="operator++()" access="private"/>
+    <modify-function signature="operator--()" access="private"/>
+    <modify-function signature="operator++(int)" remove="all"/>
+    <modify-function signature="operator--(int)" remove="all"/>
+
     <inject-code>
-        <insert-template name="core.private_function_return_self">
-            <replace from="%RETURN_TYPE" to="QTextBlock_iterator" />
-            <replace from="%FUNCTION_NAME" to="operator_increment" />
-            <replace from="%ARGUMENTS" to="" />
-            <replace from="%ARGUMENT_NAMES" to="" />
-        </insert-template>
+        @QtBlockedSlot public final void next() { operator_increment(); }
+        @QtBlockedSlot public final void previous() { operator_decrement(); }
     </inject-code>
-    
-    <modify-function signature="operator--()">
-        <access modifier="private" />
-        <rename to="operator_decrement_private" />    
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.private_function_return_self">
-            <replace from="%RETURN_TYPE" to="QTextBlock_iterator" />
-            <replace from="%FUNCTION_NAME" to="operator_decrement" />
-            <replace from="%ARGUMENTS" to="" />
-            <replace from="%ARGUMENT_NAMES" to="" />
-        </insert-template>
-    </inject-code>        
   </value-type>
 
   <value-type name="QAbstractTextDocumentLayout::PaintContext">

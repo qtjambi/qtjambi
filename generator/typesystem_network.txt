@@ -131,115 +131,44 @@
     </inject-code>
   </object-type>
   <object-type name="QHttpHeader" />
+
   <value-type name="QHostAddress">
-    <modify-function signature="QHostAddress(unsigned char*)">
-        <remove />
-    </modify-function>
-    <modify-function signature="operator=(QString)">
-        <rename to="operator_assign_private" />
-        <access modifier="private" />
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_other_type">
-            <replace from="%IN_TYPE" to="String" />
-            <replace from="%OUT_TYPE" to="QHostAddress" />
-        </insert-template>            
-    </inject-code>
-    <modify-function signature="operator=(QHostAddress)">
-        <rename to="operator_assign_private" />
-        <access modifier="private" />        
-    </modify-function>
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QHostAddress" />
-        </insert-template>            
-    </inject-code>
-    <modify-function signature="setAddress(unsigned char*)">
-        <remove />
-    </modify-function>    
+    <modify-function signature="QHostAddress(unsigned char*)" remove="all"/>
+    <modify-function signature="setAddress(unsigned char*)" remove="all"/>
+    <modify-function signature="operator=(QHttpHeader)" remove="all"/>
+    <modify-function signature="operator=(QString)" remove="all"/>
+    <modify-function signature="operator=(QHostAddress)" remove="all"/>
   </value-type>  
+
   <value-type name="QHostInfo">
-        <modify-function signature="operator=(QHostInfo)">
-            <access modifier="private" />
-            <rename to="operator_assign_private" />
-        </modify-function>
-        <inject-code>
-            <insert-template name="core.operator_assign_self_type">
-                <replace from="%TYPE" to="QHostInfo" />
-            </insert-template>            
-        </inject-code>
-        <modify-function signature="lookupHost(QString,QObject*,const char*)">
-            <remove />
-        </modify-function>
+        <modify-function signature="operator=(QHostInfo)" remove="all"/>
+        <modify-function signature="lookupHost(QString,QObject*,const char*)" remove="all"/>
   </value-type>
+
   <value-type name="QHttpRequestHeader">
-    <modify-function signature="operator=(QHttpRequestHeader)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />        
-    </modify-function>    
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QHttpRequestHeader" />
-        </insert-template>            
-    </inject-code>  
+    <modify-function signature="operator=(QHttpRequestHeader)" remove="all"/>
   </value-type>
+
   <value-type name="QHttpResponseHeader">
-    <modify-function signature="operator=(QHttpResponseHeader)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />        
-    </modify-function>    
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QHttpResponseHeader" />
-        </insert-template>            
-    </inject-code>    
+    <modify-function signature="operator=(QHttpResponseHeader)" remove="all"/>
   </value-type>
+
   <value-type name="QNetworkAddressEntry">
-    <modify-function signature="operator=(QNetworkAddressEntry)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />        
-    </modify-function>    
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QNetworkAddressEntry" />
-        </insert-template>            
-    </inject-code>
+    <modify-function signature="operator=(QNetworkAddressEntry)" remove="all"/>
   </value-type>
   
   <value-type name="QNetworkInterface">
-    <modify-function signature="operator=(QNetworkInterface)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />        
-    </modify-function>    
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QNetworkInterface" />
-        </insert-template>            
-    </inject-code>      
+    <modify-function signature="operator=(QNetworkInterface)" remove="all"/>
   </value-type>
   
   <value-type name="QNetworkProxy">
-    <modify-function signature="operator=(QNetworkProxy)">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />        
-    </modify-function>    
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QNetworkProxy" />
-        </insert-template>            
-    </inject-code>    
+    <modify-function signature="operator=(QNetworkProxy)" remove="all"/>
   </value-type>
+
   <value-type name="QUrlInfo">
-    <modify-function signature="operator=(QUrlInfo)  ">
-        <access modifier="private" />
-        <rename to="operator_assign_private" />        
-    </modify-function>    
-    <inject-code>
-        <insert-template name="core.operator_assign_self_type">
-            <replace from="%TYPE" to="QUrlInfo" />
-        </insert-template>            
-    </inject-code>  
+    <modify-function signature="operator=(QUrlInfo)" remove="all"/>
   </value-type>
+
   <value-type name="QIPv6Address">
     <modify-function signature="operator[](int)const">
         <remove/>
@@ -249,7 +178,9 @@
     </modify-function>    
   </value-type>
   
-  <value-type name="QAuthenticator" />
+  <value-type name="QAuthenticator">
+    <modify-function signature="operator=(QAuthenticator)" remove="all"/>
+  </value-type>
   
   <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
   
