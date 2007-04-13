@@ -56,6 +56,8 @@ public:
     void writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function);
     void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, MetaJavaArgument *arg,
                                     const QString &indent);
+    void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, MetaJavaType *type,
+                                    const QString &arg_name, const QString &indent);
     void writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function);
     void writeJavaLangObjectOverrideFunctions(QTextStream &s, const MetaJavaClass *cls);
     void writeReferenceCount(QTextStream &s, const ReferenceCount &refCount, const QString &argumentName);

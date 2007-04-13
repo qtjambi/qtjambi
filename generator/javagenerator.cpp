@@ -343,13 +343,20 @@ static QString function_call_for_ownership(TypeSystem::Ownership owner)
 }
 
 void JavaGenerator::writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership owner,
+                                               MetaJavaType *type, const QString &arg_name, const QString &indent) 
+{
+    Q_ASSERT(type->isContainer());
+
+    s << indent << "for (" << type->instantiations().at(0)->fullName() << " i : "
+                << arg_name << ")" << endl
+      << indent << "    if (i != null) i." << function_call_for_ownership(owner) << ";" << endl;
+
+}
+
+void JavaGenerator::writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership owner,
                                                MetaJavaArgument *arg, const QString &indent)
 {
-    Q_ASSERT(arg->type()->isContainer());
-
-    s << indent << "for (" << arg->type()->instantiations().at(0)->fullName() << " i : "
-                << arg->argumentName() << ")" << endl
-      << indent << "    if (i != null) i." << function_call_for_ownership(owner) << ";" << endl;
+    writeOwnershipForContainer(s, owner, arg->type(), arg->argumentName(), indent);
 }
 
 void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function)
@@ -505,8 +512,13 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
 
     if (needs_return_variable) {
         s << ";" << endl
-          << "        if (__qt_return_value != null) __qt_return_value." << function_call_for_ownership(owner) << ";" << endl
-          << "        return __qt_return_value";
+          << "        if (__qt_return_value != null) {" << endl;
+        if (return_type->isContainer())
+            writeOwnershipForContainer(s, owner, return_type, "__qt_return_value", "            ");
+        else
+            s << "          __qt_return_value." << function_call_for_ownership(owner) << ";" << endl;
+        s << "        }" << endl;
+        s << "        return __qt_return_value";
     }
     s << ";" << endl;
 
@@ -715,7 +727,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
         writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);
     }
 
-    if (QRegExp("^(insert|set|add|remove|install).*").exactMatch(java_function->name())) {
+    if (QRegExp("^(insert|set|take|add|remove|install).*").exactMatch(java_function->name())) {
         MetaJavaArgumentList arguments = java_function->arguments();
 
         bool hasObjectTypeArgument = false;

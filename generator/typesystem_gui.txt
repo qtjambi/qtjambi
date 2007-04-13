@@ -2546,7 +2546,14 @@
   <object-type name="QIconEngineV2"/>
   <object-type name="QImageIOHandlerFactoryInterface"/>
   <object-type name="QImageIOPlugin"/>
-  <object-type name="QImageWriter"/>
+  <object-type name="QImageWriter">
+  <modify-function signature="setDevice(QIODevice*)">
+    <modify-argument index="1">
+        <reference-count action="set" variable-name="__rcDevice" />
+    </modify-argument>
+  </modify-function>
+
+  </object-type>
   <object-type name="QInputContextFactory"/>
   <object-type name="QInputContextFactoryInterface"/>
   <object-type name="QInputContextPlugin"/>
@@ -3385,6 +3392,12 @@
             <no-null-pointer />
             <reference-count variable-name="__rcWidgets" action="add" access="friendly" />
         </modify-argument>
+    </modify-function>
+    <modify-function signature="addChildWidget(QWidget *)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <reference-count variable-name="__rcWidgets" action="add" access="friendly" />
+        </modify-argument>
     </modify-function>    
     <modify-function signature="removeWidget(QWidget *)">
         <modify-argument index="1">
@@ -3411,7 +3424,22 @@
         <modify-argument index="return">
             <define-ownership class="java" owner="c++" />
         </modify-argument>
-    </modify-function>            
+    </modify-function>
+    <modify-function signature="setAlignment(QWidget*,QFlags&lt;Qt::AlignmentFlag>)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setAlignment(QLayout*,QFlags&lt;Qt::AlignmentFlag>)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setMenuBar(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcMenuBar" />
+        </modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QStackedLayout">  
@@ -3812,6 +3840,20 @@
     <modify-function signature="QAbstractItemDelegate(const QAbstractItemDelegate&amp;)">
         <remove/>
     </modify-function>
+    <modify-function signature="setEditorData(QWidget*,QModelIndex)const">
+        <modify-argument index="1">
+            <!-- Safe to ignore because this implementation is documented to do nothing -->
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setModelData(QWidget*,QAbstractItemModel*,QModelIndex)const">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QTableWidgetItem">
@@ -3938,6 +3980,21 @@
             <define-ownership class="java" owner="c++" />
         </modify-argument>
     </modify-function>        
+    <modify-function signature="removeChild(QTreeWidgetItem*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="java" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="takeChild(int)">
+        <modify-argument index="return">
+            <define-ownership class="java" owner="java" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="takeChildren()">
+        <modify-argument index="return">
+            <define-ownership class="java" owner="java" />
+        </modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QListWidget">
@@ -4243,7 +4300,10 @@
   <object-type name="QInputContext">
     <extra-includes>
         <include file-name="QTextFormat" location="global"/>
-    </extra-includes>        
+    </extra-includes> 
+    <modify-function signature="setFocusWidget(QWidget*)">
+        <remove />
+    </modify-function>
   </object-type>
   
     
@@ -4653,8 +4713,8 @@
             <reference-count action="ignore" />
         </modify-argument>
     </modify-function>
-    <modify-function signature="insertWidget(QWidget *)">
-        <modify-argument index="1">
+    <modify-function signature="insertWidget(int, QWidget *)">
+        <modify-argument index="2">
             <reference-count action="ignore" />
         </modify-argument>
     </modify-function>
