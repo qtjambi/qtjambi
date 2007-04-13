@@ -117,4 +117,15 @@ public class TestI18N extends QApplicationTest {
         assertEquals(translator.translate("\u06a0", "translate this æøå"), "OVERSETT DETTE ÆØÅ");
         assertEquals(translator.translate("\u03c0", "translate this \u03c0", "Comment"), "OVERSETT DETTE Π");
     }
+    
+    @Test
+    public void TestQTranslatorAdvancedStrings() {
+        QTranslator translator = new QTranslator();
+        assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
+        assertEquals(translator.translate("strings", "a" + "b" + "c"), "abc");
+        assertEquals(translator.translate("strings", "c" 
+                    +"a" + "" + 
+                    "b"), "cab");
+        
+    }
 }

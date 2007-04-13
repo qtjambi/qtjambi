@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="en_AU">
-<defaultcodec></defaultcodec>
 <context encoding="UTF-8">
     <name>com.trolltech.autotests.TestI18N$SimpleNotTranslated</name>
     <message encoding="UTF-8">
         <location filename="TestI18N.java" line="35"/>
         <source>Hello è</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Halloys è</translation>
     </message>
     <message>
         <location filename="TestI18N.java" line="30"/>
@@ -32,12 +31,12 @@
     <message encoding="UTF-8">
         <location filename="TestI18N.java" line="31"/>
         <source>π</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ok Pi</translation>
     </message>
     <message encoding="UTF-8">
         <location filename="TestI18N.java" line="32"/>
         <source>ڠ</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ok Arabisk</translation>
     </message>
 </context>
 <context>
@@ -148,10 +147,23 @@ to</translation>
         <translation>oversett dette ڠ</translation>
     </message>
 </context>
+<context>
+    <name>strings</name>
+    <message>
+        <location filename="TestI18N.java" line="125"/>
+        <source>abc</source>
+        <translation>abc</translation>
+    </message>
+    <message>
+        <location filename="TestI18N.java" line="128"/>
+        <source>cab</source>
+        <translation type="unfinished">cab</translation>
+    </message>
+</context>
 <context encoding="UTF-8">
     <name>øæå</name>
     <message encoding="UTF-8">
-        <location filename="TestI18N.java" line="99"/>
+        <location filename="TestI18N.java" line="116"/>
         <source>translate this</source>
         <translation>oversett dette</translation>
     </message>
@@ -163,11 +175,17 @@ to</translation>
         <source>translate this π</source>
         <translation>oversett dette π</translation>
     </message>
+    <message encoding="UTF-8">
+        <location filename="TestI18N.java" line="118"/>
+        <source>translate this π</source>
+        <comment>Comment</comment>
+        <translation type="unfinished">oversett dette π</translation>
+    </message>
 </context>
 <context encoding="UTF-8">
     <name>ڠ</name>
     <message encoding="UTF-8">
-        <location filename="TestI18N.java" line="100"/>
+        <location filename="TestI18N.java" line="117"/>
         <source>translate this æøå</source>
         <translation>oversett dette æøå</translation>
     </message>
