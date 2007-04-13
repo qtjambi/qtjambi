@@ -73,4 +73,48 @@ public class TestI18N extends QApplicationTest {
             assertEquals(tr("My mother 123"), "Min mor 123");
         }
     }
+    
+    @Test
+    public void TestQTranslatorNotTranslated() {
+        QTranslator translator = new QTranslator();
+        assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
+        assertEquals(translator.translate("my context", "do not translate this"), "");
+        assertEquals(translator.translate("my context", "do not translate this æøå"), "");
+        assertEquals(translator.translate("my context", "do not translate this \u06a0"), "");
+    }
+
+    @Test
+    public void TestQTranslatorTranslated() {
+        QTranslator translator = new QTranslator();
+        assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
+        assertEquals(translator.translate("my context", "translate this"), "oversett dette");
+        assertEquals(translator.translate("my context", "translate this æøå"), "oversett dette æøå");
+        assertEquals(translator.translate("my context", "translate this \u06a0"), "oversett dette \u06a0");
+    }
+
+    @Test
+    public void TestQTranslatorTranslatedContext() {
+        QTranslator translator = new QTranslator();
+        assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
+        assertEquals(translator.translate("øæå", "translate this"), "oversett dette");
+        assertEquals(translator.translate("\u06a0", "translate this æøå"), "oversett dette æøå");
+        assertEquals(translator.translate("\u03c0", "translate this \u03c0"), "oversett dette \u03c0");
+    }
+    
+    
+    @Test
+    public void TestReimplementQTranslator() {
+        QTranslator translator = new QTranslator(){
+
+            @Override
+            public String translate(String context, String sourceText, String comment) {
+                return super.translate(context, sourceText, comment).toUpperCase();
+            }
+            
+        };
+        assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
+        assertEquals(translator.translate("øæå", "translate this"), "OVERSETT DETTE");
+        assertEquals(translator.translate("\u06a0", "translate this æøå"), "OVERSETT DETTE ÆØÅ");
+        assertEquals(translator.translate("\u03c0", "translate this \u03c0", "Comment"), "OVERSETT DETTE Π");
+    }
 }
