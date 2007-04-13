@@ -1813,9 +1813,6 @@
   </object-type>
   <object-type name="QTimeLine"/> 
   <object-type name="QTranslator">
-    <extra-includes>
-        <include file-name="com.trolltech.qt.QNativePointer" location="java" />
-    </extra-includes>
     <modify-function signature="load(const unsigned char*,int)">
         <access modifier="private" />        
     </modify-function>
@@ -1824,58 +1821,12 @@
             return load(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
         }
     </inject-code>
-    
     <modify-function signature="translate(const char*,const char*,const char*,int)const">
-        <access modifier="private" />
+        <remove />
     </modify-function>
-    <inject-code>
-        public final String translate(String context, String sourceText, String comment, int n) {
-            return translate(context != null ? QNativePointer.createCharPointer(context) : null,
-                             sourceText != null ? QNativePointer.createCharPointer(sourceText) : null,
-                             comment != null ? QNativePointer.createCharPointer(comment) : null, n);
-        }
-    </inject-code>
-    
-    <template name="core.qtranslator_latin1_char*_to_string">
-        jstring %out = qtjambi_from_qstring(__jni_env, QString::fromLatin1(%in));
-    </template>
     <modify-function signature="translate(const char*,const char*,const char*)const">
-        <modify-argument index="1">
-            <replace-type modified-type="java.lang.String" />
-            <conversion-rule class="shell">
-                <insert-template name="core.qtranslator_latin1_char*_to_string" />        
-            </conversion-rule>
-            <conversion-rule class="native">
-                <insert-template name="core.qtranslator_string_to_latin1_char*" />
-            </conversion-rule>            
-        </modify-argument>
-        
-        <modify-argument index="2">
-            <replace-type modified-type="java.lang.String" />
-            <conversion-rule class="shell">
-                <insert-template name="core.qtranslator_latin1_char*_to_string" />
-            </conversion-rule>
-            <conversion-rule class="native">
-                <insert-template name="core.qtranslator_string_to_latin1_char*" />
-            </conversion-rule>            
-        </modify-argument>
-
-        <modify-argument index="3">
-            <replace-type modified-type="java.lang.String" />
-            <conversion-rule class="shell">
-                <insert-template name="core.qtranslator_latin1_char*_to_string" />
-            </conversion-rule>
-            <conversion-rule class="native">
-                <insert-template name="core.qtranslator_string_to_latin1_char*" />
-            </conversion-rule>            
-        </modify-argument>
-        
+        <remove />
     </modify-function>
-    
-    <template name="core.qtranslator_string_to_latin1_char*">
-        QByteArray ba_%out = qtjambi_to_qstring(__jni_env, (jstring) %in).toLatin1();
-        const char *%out = ba_%out.constData();
-    </template>    
   </object-type>
   
   <object-type name="QWaitCondition"/>
@@ -2095,10 +2046,11 @@
     </modify-function>
     <inject-code>
         public static String translate(String context, String sourceText, String comment) {
-            return translate(context != null ? QNativePointer.createCharPointer(context) : null, 
-                             sourceText != null ? QNativePointer.createCharPointer(sourceText) : null,
-                             comment != null ? QNativePointer.createCharPointer(comment) : null,
-                             Encoding.CodecForTr);
+            QTextCodec codec = QTextCodec.codecForName("UTF-8");
+            return translate(context != null ? codec.fromUnicode(context).data() : null,
+                             sourceText != null ? codec.fromUnicode(sourceText).data() : null,
+                             comment != null ? codec.fromUnicode(comment).data() : null,
+                             Encoding.UnicodeUTF8);
         }
 
         public static String translate(String context, String sourceText) {
@@ -2111,10 +2063,11 @@
     </modify-function>
     <inject-code>
         public static String translate(String context, String sourceText, String comment, int n) {
-            return translate(context != null ? QNativePointer.createCharPointer(context) : null, 
-                             sourceText != null ? QNativePointer.createCharPointer(sourceText) : null,
-                             comment != null ? QNativePointer.createCharPointer(comment) : null,
-                             Encoding.CodecForTr, n);
+            QTextCodec codec = QTextCodec.codecForName("UTF-8");
+            return translate(context != null ? codec.fromUnicode(context).data() : null,
+                             sourceText != null ? codec.fromUnicode(sourceText).data() : null,
+                             comment != null ? codec.fromUnicode(comment).data() : null,
+                             Encoding.UnicodeUTF8, n);
         }
     </inject-code>
     
