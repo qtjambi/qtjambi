@@ -428,8 +428,9 @@
   <enum-type name="Qt::MaskMode" />
   <enum-type name="QCryptographicHash::Algorithm" />
 
+
   <enum-type name="QCoreApplication::Encoding">
-    <reject-enum-value name="DefaultCodec"/>
+    <reject-enum-value name="DefaultCodec"/> 
   </enum-type>
 
   <enum-type name="Qt::AlignmentFlag" flags="Qt::Alignment">
@@ -1835,12 +1836,30 @@
             return load(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
         }
     </inject-code>
+
     <modify-function signature="translate(const char*,const char*,const char*,int)const">
         <remove />
     </modify-function>
+
     <modify-function signature="translate(const char*,const char*,const char*)const">
-        <remove />
+        <access modifier="private" />
+        <modify-argument index="3">
+            <remove-default-expression />
+        </modify-argument>   
     </modify-function>
+    <inject-code>
+        public String translate(String context, String sourceText, String comment) {
+            QTextCodec codec = QTextCodec.codecForName("UTF-8");
+            return translate(context != null ? codec.fromUnicode(context).data() : null,
+                             sourceText != null ? codec.fromUnicode(sourceText).data() : null,
+                             comment != null ? codec.fromUnicode(comment).data() : null);
+        }
+
+        public String translate(String context, String sourceText) {
+            return translate(context, sourceText, null);
+        }
+    </inject-code>
+
   </object-type>
   
   <object-type name="QWaitCondition"/>
@@ -2074,7 +2093,7 @@
             return translate(context != null ? codec.fromUnicode(context).data() : null,
                              sourceText != null ? codec.fromUnicode(sourceText).data() : null,
                              comment != null ? codec.fromUnicode(comment).data() : null,
-                             Encoding.UnicodeUTF8);
+                             Encoding.CodecForTr);
         }
 
         public static String translate(String context, String sourceText) {
@@ -2091,7 +2110,7 @@
             return translate(context != null ? codec.fromUnicode(context).data() : null,
                              sourceText != null ? codec.fromUnicode(sourceText).data() : null,
                              comment != null ? codec.fromUnicode(comment).data() : null,
-                             Encoding.UnicodeUTF8, n);
+                             Encoding.CodecForTr, n);
         }
     </inject-code>
     
