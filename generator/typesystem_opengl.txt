@@ -56,6 +56,9 @@
         <include file-name="QImage" location="global"/>
         <include file-name="QPixmap" location="global"/>
     </extra-includes>
+    <modify-function signature="setContext(QGLContext*,const QGLContext*,bool)">
+        <remove /> <!--- Obsolete -->
+    </modify-function>
   </object-type>  
  
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QGLColormap::QGLColormapData\*'" />

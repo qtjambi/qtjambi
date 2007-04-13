@@ -2327,7 +2327,13 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QAccessibleBridge"/>
+  <object-type name="QAccessibleBridge">
+    <modify-function signature="setRootObject(QAccessibleInterface *)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QAccessibleBridgeFactoryInterface"/>
   <object-type name="QAccessibleBridgePlugin"/>
   <object-type name="QAccessibleFactoryInterface"/>
@@ -2569,13 +2575,44 @@
     
   </object-type>
   <object-type name="QItemEditorCreatorBase"/>
-  <object-type name="QItemEditorFactory"/>
+  <object-type name="QItemEditorFactory">
+    <modify-function signature="setDefaultFactory(QItemEditorFactory*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QItemSelectionModel"/>
   <object-type name="QTreeModel"/>
   <object-type name="QListView"/>
   <object-type name="QColumnView"/>
   <object-type name="QMainWindow"/>
-  <object-type name="QMdiArea" />
+  <object-type name="QMdiArea">
+    <modify-function signature="addSubWindow(QWidget*,QFlags&lt;Qt::WindowType>)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="removeSubWindow(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="setActiveSubWindow(QMdiSubWindow*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="setupViewport(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  
+  </object-type>
   <object-type name="QMdiSubWindow" />
   <object-type name="QMenu">
     <modify-function signature="initStyleOption(QStyleOptionMenuItem*,const QAction*)const">
@@ -2676,12 +2713,20 @@
     </extra-includes>
     <modify-function signature="QPictureIO(QIODevice*,const char*)">
         <access modifier="private" />
+         <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDevice" />
+        </modify-argument>
     </modify-function>
     <inject-code>
         public QPictureIO(com.trolltech.qt.core.QIODevice ioDevice, String format) {
             this(ioDevice, QNativePointer.createCharPointer(format));
         }
     </inject-code>
+    <modify-function signature="setIODevice(QIODevice*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDevice" />
+        </modify-argument>
+    </modify-function>
     
     <modify-function signature="QPictureIO(QString,const char*)">
         <access modifier="private" />
@@ -2773,7 +2818,13 @@
   </object-type>
   <object-type name="QReadWriteLock"/>
   <object-type name="QRegExpValidator"/>
-  <object-type name="QScrollArea"/>
+  <object-type name="QScrollArea">
+    <modify-function signature="setWidget(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>    
+  </object-type>
   <object-type name="QSessionManager"/>
   <object-type name="QShortcut">
     <modify-function signature="QShortcut(QKeySequence,QWidget*,const char*,const char*,Qt::ShortcutContext)">
@@ -3038,10 +3089,27 @@
     </modify-function>    
   </object-type>
   <object-type name="QWhatsThis"/>
-  <object-type name="QWidgetAction"/>
+  <object-type name="QWidgetAction">
+    <modify-function signature="setDefaultWidget(QWidget*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>   
+  </object-type>
   <object-type name="QWidgetItem"/>
   <object-type name="QWindowsStyle"/>
-  <object-type name="QWorkspace"/>
+  <object-type name="QWorkspace">
+    <modify-function signature="addWindow(QWidget*,QFlags&lt;Qt::WindowType>)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setActiveWindow(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   
   <object-type name="QActionEvent"
            polymorphic-id-expression="%1->type() == QEvent::ActionAdded || %1->type() == QEvent::ActionRemoved || %1->type() == QEvent::ActionChanged" />
@@ -3408,6 +3476,11 @@
     <modify-function signature="addItem(QLayoutItem *)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="removeItem(QLayoutItem *)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="java" />
         </modify-argument>
     </modify-function>
     <modify-function signature="addChildLayout(QLayout *)">
@@ -4232,6 +4305,11 @@
     <modify-function signature="cacheMode()">
         <remove />
     </modify-function>
+    <modify-function signature="setDevice(QIODevice*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDevice" />
+        </modify-argument>
+    </modify-function>
   </object-type>
     
   <object-type name="QPageSetupDialog">
@@ -4308,6 +4386,24 @@
   
     
   <object-type name="QProgressDialog">
+    <modify-function signature="setBar(QProgressBar*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCancelButton(QPushButton*)">
+        <modify-argument index="1">
+            <!-- Safe to ignore because button is reparented -->
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setLabel(QLabel*)">
+        <modify-argument index="1">
+            <!-- Safe to ignore because label is reparented -->
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+   
   </object-type>
 
   <object-type name="QLabel">
@@ -4482,6 +4578,25 @@
         </insert-template>
     </inject-code>    
     
+    <modify-function signature="setIconProvider(QFileIconProvider*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcIconProvider" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="setItemDelegate(QAbstractItemDelegate*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcItemDelegate" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="setProxyModel(QAbstractProxyModel*)">
+        <modify-argument index="1">
+            <!-- Reparented -->
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+       
   </object-type>
 
   <object-type name="QErrorMessage">
@@ -4626,6 +4741,39 @@
 
 
   <object-type name="QAbstractScrollArea">
+    <modify-function signature="addScrollBarWidget(QWidget*,QFlags&lt;Qt::AlignmentFlag>)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCornerWidget(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setHorizontalScrollBar(QScrollBar*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="setVerticalScrollBar(QScrollBar*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="setViewport(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="setupViewport(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QPaintEngineState">
@@ -4688,6 +4836,12 @@
             redo(cursor.nativePointer());
         }
     </inject-code>
+    
+    <modify-function signature="setDocumentLayout(QAbstractTextDocumentLayout*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
     
     <modify-function signature="undo(QTextCursor*)">
         <access modifier="private" />        

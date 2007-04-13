@@ -359,8 +359,58 @@ void JavaGenerator::writeOwnershipForContainer(QTextStream &s, TypeSystem::Owner
     writeOwnershipForContainer(s, owner, arg->type(), arg->argumentName(), indent);
 }
 
+
+void JavaGenerator::writeInjectedCode(QTextStream &s, const MetaJavaFunction *java_function, 
+                                      CodeSnip::Position position)
+{
+    FunctionModificationList mods;
+    const MetaJavaClass *cls = java_function->implementingClass();
+    while (cls != 0) {
+        mods += java_function->modifications(cls);
+
+        if (cls == cls->baseClass())
+            break;
+        cls = cls->baseClass();
+    }
+
+    foreach (FunctionModification mod, mods) {
+        if (mod.snips.count() <= 0)
+            continue ;
+
+        foreach (CodeSnip snip, mod.snips) {
+            if (snip.position != position)
+                continue ;
+
+            if (snip.language != TypeSystem::JavaCode)
+                continue ;
+
+            QString code = snip.formattedCode("    ");
+            ArgumentMap map = snip.argumentMap;
+            ArgumentMap::iterator it = map.begin();
+            for (;it!=map.end();++it) {
+                int pos = it.key() - 1;
+                QString meta_name = it.value();
+
+                if (pos >= 0 && pos < java_function->arguments().count()) {
+                    code = code.replace(meta_name, java_function->arguments().at(pos)->argumentName());
+                } else {
+                    QString debug = QString("argument map specifies invalid argument index %1"
+                                            "for function '%2'")
+                                            .arg(pos + 1).arg(java_function->name());
+                    ReportHandler::warning(debug);
+                }
+
+            }
+            s << code << endl;
+        }
+    }
+}
+
+
 void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function)
 {
+    writeInjectedCode(s, java_function, CodeSnip::Beginning);
+
     if (java_function->implementingClass()->isQObject()
         && !java_function->isStatic()
         && !java_function->isConstructor()
@@ -527,6 +577,8 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
         if (owner != TypeSystem::InvalidOwnership && java_function->isConstructor())
             s << "        this." << function_call_for_ownership(owner) << ";" << endl;
     }
+
+    writeInjectedCode(s, java_function, CodeSnip::End);
 }
 
 void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_function)
@@ -730,16 +782,22 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
     if (QRegExp("^(insert|set|take|add|remove|install).*").exactMatch(java_function->name())) {
         MetaJavaArgumentList arguments = java_function->arguments();
 
+        const MetaJavaClass *c = java_function->implementingClass();
         bool hasObjectTypeArgument = false;
         foreach (MetaJavaArgument *argument, arguments) {
+            TypeSystem::Ownership java_ownership = java_function->ownership(c, TypeSystem::JavaCode, argument->argumentIndex()+1);
+            TypeSystem::Ownership shell_ownership = java_function->ownership(c, TypeSystem::ShellCode, argument->argumentIndex()+1);
+
             if (argument->type()->typeEntry()->isObject()
-                && !java_function->disabledGarbageCollection(java_function->implementingClass(), argument->argumentIndex()+1)) {
+                && java_ownership == TypeSystem::InvalidOwnership
+                && shell_ownership == TypeSystem::InvalidOwnership) {
                 hasObjectTypeArgument = true;
                 break;
             }
         }
 
         if (hasObjectTypeArgument
+            && !java_function->isAbstract()
             && java_function->referenceCounts(java_function->implementingClass()).size() == 0) {
             m_reference_count_candidate_functions.append(java_function);
         }

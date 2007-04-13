@@ -611,7 +611,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["name"] = "";
             break;
         case StackElement::ArgumentMap:
-            attributes["position"] = "1";
+            attributes["index"] = "1";
             attributes["meta-name"] = QString();
             break;
         case StackElement::Rename:
@@ -828,7 +828,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
 
                 bool ok;
-                int pos = attributes["position"].toInt(&ok);
+                int pos = attributes["index"].toInt(&ok);
                 if (!ok) {
                     m_error = QString("Can't convert position '%1' to integer")
                               .arg(attributes["position"]);

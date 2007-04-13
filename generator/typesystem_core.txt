@@ -1983,6 +1983,10 @@
   </object-type>
   
   <object-type name="QSignalMapper">
+    <inject-code>
+        private java.util.Hashtable&lt;QObject, com.trolltech.qt.gui.QWidget> __rcWidgetForObject = new java.util.Hashtable&lt;QObject, com.trolltech.qt.gui.QWidget>();
+        private java.util.Hashtable&lt;QObject, QObject> __rcObjectForObject = new java.util.Hashtable&lt;QObject, QObject>();
+    </inject-code>
     <modify-function signature="mapped(const QString &amp;)">
         <rename to="mappedString"/>
     </modify-function>
@@ -1995,6 +1999,49 @@
     <modify-function signature="mapped(QWidget *)">
         <rename to="mappedQWidget"/>
     </modify-function>
+    <modify-function signature="removeMappings(QObject*)">
+        <modify-argument index="1">
+            <reference-count action="remove" variable-name="__rcMappings" />
+        </modify-argument>
+        <inject-code class="java" position="end">
+            <argument-map index="1" meta-name="%1" />
+            if (__rcWidgetForObject.containsKey(%1)) __rcWidgetForObject.remove(%1);
+            if (__rcObjectForObject.containsKey(%1)) __rcObjectForObject.remove(%1);
+        </inject-code>
+    </modify-function>
+    <modify-function signature="setMapping(QObject*,QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcMappings" />
+        </modify-argument>
+        <inject-code class="java" position="end">
+            <argument-map index="1" meta-name="%1" />
+            <argument-map index="2" meta-name="%2" />
+            __rcWidgetForObject.put(%1,%2);
+        </inject-code>
+    </modify-function>  
+    <modify-function signature="setMapping(QObject*,QObject*)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcMappings" />
+        </modify-argument>
+        <inject-code class="java" position="end">
+            <argument-map index="1" meta-name="%1" />
+            <argument-map index="2" meta-name="%2" />
+            __rcObjectForObject.put(%1,%2);
+        </inject-code>
+    </modify-function>
+   
+    <modify-function signature="setMapping(QObject*,QString)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcMappings" />
+        </modify-argument>
+    </modify-function>
+   
+    <modify-function signature="setMapping(QObject*,int)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcMappings" />
+        </modify-argument>
+    </modify-function>
+   
   </object-type>  
   
   <object-type name="QObject">
@@ -2176,7 +2223,7 @@
     </inject-code>
     <modify-function signature="notify(QObject *, QEvent *)"> 
         <inject-code class="shell">        
-        <argument-map position="2" meta-name="event"/>
+        <argument-map index="2" meta-name="event"/>
 	#if QT_VERSION &lt; 0x040300
 	if (event->type() == 512) {
             qtjambi_metacall(0, event);

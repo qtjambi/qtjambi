@@ -30,6 +30,9 @@ public:
 
     QString translateType(const MetaJavaType *java_type, Option option = NoOption);
 
+    void writeInjectedCode(QTextStream &s, 
+                           const MetaJavaFunction *java_function,
+                           CodeSnip::Position position);
     void writeArgument(QTextStream &s,
                        const MetaJavaFunction *java_function,
                        const MetaJavaArgument *java_argument,
