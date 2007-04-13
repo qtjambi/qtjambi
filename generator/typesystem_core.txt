@@ -1710,6 +1710,20 @@
   <object-type name="QSystemLocale"/>
   <object-type name="QTemporaryFile"/>
   <object-type name="QTextCodec">          
+    <inject-code class="java">
+    static {
+        setCodecForTr(QTextCodec.codecForName("UTF-8"));
+    }
+    </inject-code>
+
+    <modify-function signature="setCodecForTr(QTextCodec*)">
+        <access modifier="private" />
+    </modify-function>
+
+    <modify-function signature="codecForTr()">
+        <remove />
+    </modify-function>
+
     <modify-function signature="QTextCodec()">
         <modify-argument index="-1">
             <define-ownership class="java" owner="c++" />
