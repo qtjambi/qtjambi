@@ -448,6 +448,21 @@ public class QtJambiInternal {
     static {
         threadAsserts = !Utilities.matchProperty("com.trolltech.qt.thread-check", "false", "no");
     }
+    
+    public static void setField(Object owner, Class<?> declaringClass, String fieldName, Object newValue) {
+    	
+    	Field f = null;
+    	try {
+    		f = declaringClass.getDeclaredField(fieldName);
+    		f.setAccessible(true);
+    		f.set(owner, newValue);
+    	} catch (Exception e) {
+    		if (!setFieldNative(owner, f, newValue)) {
+    			throw new RuntimeException("Cannot set field '" + fieldName);
+    		}
+    	}    	
+    }
+    public static native boolean setFieldNative(Object owner, Field field, Object newValue);
 
     public static void threadCheck(QObject obj) {
     	if (threadAsserts)

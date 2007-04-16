@@ -250,3 +250,19 @@ extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_QtJambiInternal_invokeSl
     };
 }
 
+extern "C" JNIEXPORT jboolean JNICALL Java_com_trolltech_qt_QtJambiInternal_setFieldNative
+(JNIEnv *env,
+ jclass,
+ jobject owner,
+ jobject field,
+ jobject newValue) 
+{
+    if (owner == 0 || field == 0) return false;
+
+    jfieldID id = env->FromReflectedField(field);
+    if (id == 0) return false;
+
+    env->SetObjectField(owner, id, newValue);
+    return true;
+}
+

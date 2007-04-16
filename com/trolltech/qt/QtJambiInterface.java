@@ -25,4 +25,8 @@ public interface QtJambiInterface {
     public long nativeId();    
     
     public void disableGarbageCollection();
+    
+    public void setJavaOwnership();
+    public void reenableGarbageCollection();
+    public QNativePointer nativePointer();
 }

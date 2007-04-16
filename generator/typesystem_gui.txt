@@ -2306,7 +2306,7 @@
         </modify-argument>
         <inject-code class="java" position="end">
             // setModel() creates a new selection model for the object
-            __rcItemSelectionModel = null;
+            com.trolltech.qt.QtJambiInternal.setField(this, com.trolltech.qt.gui.QAbstractItemView.class, "__rcItemSelectionModel", null); 
         </inject-code>
     </modify-function>    
     <modify-function signature="setSelectionModel(QItemSelectionModel *)">
