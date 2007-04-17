@@ -64,8 +64,8 @@ public class DomBookmarks extends QMainWindow {
 
         QFile file = new QFile(fileName);
         if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text))) {
-            QMessageBox.warning(this, tr("SAX Bookmarks"), tr("Cannot read file " + fileName
-                    + ":\n" + file.errorString() + "."));
+            QMessageBox.warning(this, tr("SAX Bookmarks"), String.format(tr("Cannot read file: %s"), fileName)
+                    + " :\n" + file.errorString() + ".");
             return;
         }
 
@@ -84,8 +84,8 @@ public class DomBookmarks extends QMainWindow {
 
         QFile file = new QFile(fileName);
         if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly, QFile.OpenModeFlag.Text))) {
-            QMessageBox.warning(this, tr("SAX Bookmarks"), tr("Cannot write file " + fileName
-                    + ":\n" + file.errorString() + "."));
+            QMessageBox.warning(this, tr("SAX Bookmarks"), String.format(tr("Cannot write file: %s"), fileName)
+                    + " :\n" + file.errorString() + ".");
             return;
         }
 
@@ -161,9 +161,9 @@ public class DomBookmarks extends QMainWindow {
         private boolean read(QIODevice device) {
             QDomDocument.Result res = domDocument.setContent(device, true);
             if(!res.success){
-                QMessageBox.information(window(), tr("DOM Bookmarks"), tr("Parse error at line "
-                        + res.errorLine + ", column " + res.errorColumn + ":\n"
-                        + res.errorMessage + ""));
+                QMessageBox.information(window(), tr("DOM Bookmarks"),
+                        String.format(tr("Parse error at line %s, column %s :"),  res.errorLine, res.errorColumn)
+                        + "\n" + res.errorMessage);
                 return false;
             }
 
