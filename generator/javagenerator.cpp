@@ -359,9 +359,7 @@ void JavaGenerator::writeOwnershipForContainer(QTextStream &s, TypeSystem::Owner
     writeOwnershipForContainer(s, owner, arg->type(), arg->argumentName(), indent);
 }
 
-
-void JavaGenerator::writeInjectedCode(QTextStream &s, const MetaJavaFunction *java_function, 
-                                      CodeSnip::Position position)
+static FunctionModificationList get_function_modifications_for_class_hierarchy(const MetaJavaFunction *java_function)
 {
     FunctionModificationList mods;
     const MetaJavaClass *cls = java_function->implementingClass();
@@ -372,7 +370,13 @@ void JavaGenerator::writeInjectedCode(QTextStream &s, const MetaJavaFunction *ja
             break;
         cls = cls->baseClass();
     }
+    return mods;
+}
 
+void JavaGenerator::writeInjectedCode(QTextStream &s, const MetaJavaFunction *java_function, 
+                                      CodeSnip::Position position)
+{
+    FunctionModificationList mods = get_function_modifications_for_class_hierarchy(java_function);
     foreach (FunctionModification mod, mods) {
         if (mod.snips.count() <= 0)
             continue ;
@@ -500,8 +504,20 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     bool has_return_type = new_return_type != "void"
         && (!new_return_type.isEmpty() || return_type != 0);
     TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, 0);
+
+    bool has_code_injections_at_the_end = false;
+    FunctionModificationList mods = get_function_modifications_for_class_hierarchy(java_function);
+    foreach (FunctionModification mod, mods) {
+        foreach (CodeSnip snip, mod.snips) {
+            if (snip.position == CodeSnip::End && snip.language == TypeSystem::JavaCode) {
+                has_code_injections_at_the_end = true;
+                break;
+            }
+        }
+    }
+
     bool needs_return_variable = has_return_type
-        && (owner != TypeSystem::InvalidOwnership || referenceCounts.size() > 0);
+        && (owner != TypeSystem::InvalidOwnership || referenceCounts.size() > 0 || has_code_injections_at_the_end);
 
     if (has_return_type) {
         if (needs_return_variable) {
@@ -560,25 +576,26 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
         writeReferenceCount(s, referenceCount, "__qt_return_value");
     }
 
-    if (needs_return_variable) {
-        s << ";" << endl
-          << "        if (__qt_return_value != null) {" << endl;
-        if (return_type->isContainer())
-            writeOwnershipForContainer(s, owner, return_type, "__qt_return_value", "            ");
-        else
-            s << "          __qt_return_value." << function_call_for_ownership(owner) << ";" << endl;
-        s << "        }" << endl;
-        s << "        return __qt_return_value";
-    }
     s << ";" << endl;
+    writeInjectedCode(s, java_function, CodeSnip::End);
+
+    if (needs_return_variable) {
+        if (owner != TypeSystem::InvalidOwnership) {
+            s << "        if (__qt_return_value != null) {" << endl;
+            if (return_type->isContainer())
+                writeOwnershipForContainer(s, owner, return_type, "__qt_return_value", "            ");
+            else
+                s << "          __qt_return_value." << function_call_for_ownership(owner) << ";" << endl;
+            s << "        }" << endl;
+        }
+        s << "        return __qt_return_value;" << endl;
+    }
 
     if (java_function->isConstructor()) {
         TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, -1);
         if (owner != TypeSystem::InvalidOwnership && java_function->isConstructor())
             s << "        this." << function_call_for_ownership(owner) << ";" << endl;
     }
-
-    writeInjectedCode(s, java_function, CodeSnip::End);
 }
 
 void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_function)
@@ -731,6 +748,16 @@ void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
 void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &refCount,
                                         const QString &argumentName)
 {
+    if (refCount.action == ReferenceCount::Ignore) return;
+    QString refCountVariableName = refCount.variableName;
+    if (!refCount.declareVariable.isEmpty() && refCount.action != ReferenceCount::Set) {
+        s << "        java.util.Collection<Object> __rcTmp = (java.util.Collection<Object>)com.trolltech.qt.QtJambiInternal.fetchField(this," << endl
+          << "                                                                     " << refCount.declareVariable << ".class," << endl
+          << "                                                                     \"" << refCountVariableName << "\");" << endl;
+        refCountVariableName = "__rcTmp";
+    }
+
+
     if (refCount.action != ReferenceCount::Set) {
         s << "        if (" << argumentName << " != null";
 
@@ -749,17 +776,22 @@ void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &re
 
     switch (refCount.action) {
     case ReferenceCount::Add:
-        s << "            " << refCount.variableName << ".add(" << argumentName << ");" << endl;
+        s << "            " << refCountVariableName << ".add(" << argumentName << ");" << endl;
         break;
     case ReferenceCount::AddAll:
-        s << "            " << refCount.variableName << ".addAll(" << argumentName << ");" << endl;
+        s << "            " << refCountVariableName << ".addAll(" << argumentName << ");" << endl;
         break;
     case ReferenceCount::Remove:
-        s << "            while (" << refCount.variableName << ".contains(" << argumentName << "))" << endl
-          << "                " << refCount.variableName << ".remove(" << argumentName << ");" << endl;
+        s << "            while (" << refCountVariableName << ".contains(" << argumentName << "))" << endl
+          << "                " << refCountVariableName << ".remove(" << argumentName << ");" << endl;
         break;
-    case ReferenceCount::Set:
-        s << "            " << refCount.variableName << " = " << argumentName << ";" << endl;
+    case ReferenceCount::Set: 
+        {
+            if (refCount.declareVariable.isEmpty())
+                s << "            " << refCount.variableName << " = " << argumentName << ";" << endl;
+            else
+                s << "            com.trolltech.qt.QtJambiInternal.setField(this, " << refCount.declareVariable << ".class, \"" << refCountVariableName << "\", " << argumentName << ");" << endl;
+        }
     };
 
     s << "        }" << endl;
@@ -1287,7 +1319,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
                                                 | refCount.access
                                                 | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
                                                 | (function->isStatic() ? ReferenceCount::Static : 0)
-                                                | (refCount.declareVariable ? ReferenceCount::DeclareVariable : 0);
+                                                | (refCount.declareVariable.isEmpty() ? ReferenceCount::DeclareVariable : 0);
         }
     }
 
@@ -1433,7 +1465,7 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // Add dummy constructor for use when constructing subclasses
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         s << endl
-          << "protected "
+          << "    protected "
           << java_class->name()
           << "(QPrivateConstructor p) { super(p); } "
           << endl << endl;

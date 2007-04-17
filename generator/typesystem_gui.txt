@@ -2289,6 +2289,10 @@
   <object-type name="QAbstractGraphicsShapeItem" />
     
   <object-type name="QAbstractItemView">
+    <inject-code>
+        private java.util.Hashtable&lt;Integer, QAbstractItemDelegate> __rcDelegatesForColumns = new java.util.Hashtable&lt;Integer, QAbstractItemDelegate>();
+        private java.util.Hashtable&lt;Integer, QAbstractItemDelegate> __rcDelegatesForRows = new java.util.Hashtable&lt;Integer, QAbstractItemDelegate>();
+    </inject-code>
     <modify-function signature="setIndexWidget(const QModelIndex &amp;,QWidget *)">
         <modify-argument index="2">
             <!-- Safe to ignore because view reparents widget -->
@@ -2315,6 +2319,27 @@
             <reference-count action="set" variable-name="__rcItemSelectionModel" />            
         </modify-argument>
     </modify-function>
+    <modify-function signature="setItemDelegateForColumn(int,QAbstractItemDelegate*)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <inject-code position="end">
+            <argument-map index="1" meta-name="%1" />
+            <argument-map index="2" meta-name="%2" />
+            __rcDelegatesForColumns.put(%1,%2);
+        </inject-code>
+    </modify-function>
+    <modify-function signature="setItemDelegateForRow(int,QAbstractItemDelegate*)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>    
+        <inject-code position="end">
+            <argument-map index="1" meta-name="%1" />
+            <argument-map index="2" meta-name="%2" />
+            __rcDelegatesForRows.put(%1,%2);
+        </inject-code>
+    </modify-function>
+
   </object-type>  
   <object-type name="QAbstractPageSetupDialog"/>
   <object-type name="QAbstractPrintDialog"/>
@@ -2423,7 +2448,26 @@
   <object-type name="QAccessiblePlugin"/>
   <object-type name="QAccessibleWidget"/>
   <object-type name="QAccessibleWidgetEx"/>  
-  <object-type name="QActionGroup"/>
+  <object-type name="QActionGroup">
+    <modify-function signature="addAction(QAction*)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcActions" />
+        </modify-argument>
+        <inject-code position="end">
+            <argument-map index="1" meta-name="%1" />
+            com.trolltech.qt.QtJambiInternal.setField(%1, QAction.class, "__rcActionGroup", this);
+        </inject-code>
+    </modify-function>
+    <modify-function signature="removeAction(QAction*)">
+        <modify-argument index="1">
+            <reference-count action="remove" variable-name="__rcActions" />
+        </modify-argument>
+        <inject-code position="end">
+            <argument-map index="1" meta-name="%1" />
+            com.trolltech.qt.QtJambiInternal.setField(%1, QAction.class, "__rcActionGroup", null);
+        </inject-code>        
+    </modify-function>
+  </object-type>
   <object-type name="QCDEStyle"/>
   <object-type name="QCheckBox">
     <modify-function signature="initStyleOption(QStyleOptionButton*)const">
@@ -2624,6 +2668,11 @@
             <replace from="%TYPE" to="QStyleOptionHeader" />
         </insert-template>
     </inject-code>  
+    <modify-function signature="setModel(QAbstractItemModel*)">
+        <modify-argument index="1">
+            <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcModel" />
+        </modify-argument>
+    </modify-function>
   </object-type>
   <object-type name="QIconEngine"/>
   <object-type name="QIconEngineV2"/>
@@ -2677,7 +2726,24 @@
   <object-type name="QItemSelectionModel"/>
   <object-type name="QTreeModel"/>
   <object-type name="QListView"/>
-  <object-type name="QColumnView"/>
+  <object-type name="QColumnView">
+    <modify-function signature="setPreviewWidget(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setModel(QAbstractItemModel*)">
+        <modify-argument index="1">
+            <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemModel" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setSelectionModel(QItemSelectionModel*)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemSelectionModel" />
+        </modify-argument>
+    </modify-function>    
+  </object-type>
   <object-type name="QMainWindow">
     <modify-function signature="addDockWidget(Qt::DockWidgetArea,QDockWidget*,Qt::Orientation)">
         <modify-argument index="2">
@@ -3192,7 +3258,29 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QTableView"/>
+  <object-type name="QTableView">
+    <modify-function signature="setHorizontalHeader(QHeaderView*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setVerticalHeader(QHeaderView*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setModel(QAbstractItemModel*)">
+        <modify-argument index="1">
+            <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemModel" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setSelectionModel(QItemSelectionModel*)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemSelectionModel" />
+        </modify-argument>
+    </modify-function>  
+  </object-type>
   <object-type name="QTextBlockGroup"/>
   <object-type name="QTextBlockUserData"/>
   <object-type name="QTextItem"/>
@@ -3248,7 +3336,24 @@
     </modify-function>
   </object-type>
   <object-type name="QToolTip"/>
-  <object-type name="QTreeView"/>
+  <object-type name="QTreeView">
+    <modify-function signature="setHeader(QHeaderView*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+   </modify-function>
+   <modify-function signature="setModel(QAbstractItemModel*)">
+        <modify-argument index="1">
+            <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemModel" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setSelectionModel(QItemSelectionModel*)">
+        <modify-argument index="1">
+            <no-null-pointer />
+            <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemSelectionModel" />
+        </modify-argument>
+    </modify-function>  
+  </object-type>
   <object-type name="QUndoCommand"/>
   <object-type name="QUndoGroup">
     <modify-function signature="addStack(QUndoStack*)">
@@ -3737,19 +3842,19 @@
     <modify-function signature="addWidget(QWidget *)">
         <modify-argument index="1">
             <no-null-pointer />
-            <reference-count variable-name="__rcWidgets" action="add" access="friendly" />
+            <reference-count variable-name="__rcWidgets" action="add" />
         </modify-argument>
     </modify-function>
     <modify-function signature="addChildWidget(QWidget *)">
         <modify-argument index="1">
             <no-null-pointer />
-            <reference-count variable-name="__rcWidgets" action="add" access="friendly" />
+            <reference-count variable-name="__rcWidgets" action="add" />
         </modify-argument>
     </modify-function>    
     <modify-function signature="removeWidget(QWidget *)">
         <modify-argument index="1">
             <no-null-pointer />
-            <reference-count variable-name="__rcWidgets" action="remove" access="friendly" />
+            <reference-count variable-name="__rcWidgets" action="remove" />
         </modify-argument>
     </modify-function>
     <modify-function signature="addItem(QLayoutItem *)">
@@ -3809,13 +3914,13 @@
         <rename to="addStackedWidget"/>
         <modify-argument index="1">
             <no-null-pointer />
-            <reference-count action="add" declare-variable="no" variable-name="__rcWidgets" />
+            <reference-count action="add" declare-variable="QLayout" variable-name="__rcWidgets" />
         </modify-argument>
     </modify-function>    
     <modify-function signature="insertWidget(int,QWidget*)">
         <modify-argument index="2">
             <no-null-pointer />
-            <reference-count action="add" declare-variable="no" variable-name="__rcWidgets" />
+            <reference-count action="add" declare-variable="QLayout" variable-name="__rcWidgets" />
         </modify-argument>
     </modify-function>
     <modify-function signature="setCurrentWidget(QWidget*)">
@@ -3851,7 +3956,27 @@
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />
         </modify-argument>
-    </modify-function>            
+    </modify-function>
+    <modify-function signature="addWidget(QWidget*,int,QFlags&lt;Qt::AlignmentFlag>)">
+        <modify-argument index="1">
+            <reference-count declare-variable="QLayout" action="add" variable-name="__rcWidgets" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertWidget(int,QWidget*,int,QFlags&lt;Qt::AlignmentFlag>)">
+        <modify-argument index="2">
+            <reference-count declare-variable="QLayout" action="add" variable-name="__rcWidgets" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setStretchFactor(QWidget*,int)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setStretchFactor(QLayout*,int)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QGridLayout">  
@@ -3875,7 +4000,21 @@
             <define-ownership class="java" owner="c++" />
         </modify-argument>
     </modify-function>            
-    
+        <modify-function signature="addWidget(QWidget*,int,int,QFlags&lt;Qt::AlignmentFlag>)">
+            <modify-argument index="1">
+                <reference-count declare-variable="QLayout" action="add" variable-name="__rcWidgets" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="addWidget(QWidget*,int,int,int,int,QFlags&lt;Qt::AlignmentFlag>)">
+            <modify-argument index="1">
+                <reference-count declare-variable="QLayout" action="add" variable-name="__rcWidgets" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="addWidget(QWidget*)">
+            <modify-argument index="1">
+                <reference-count declare-variable="QLayout" action="add" variable-name="__rcWidgets" />
+            </modify-argument>
+        </modify-function>
     <extra-includes>
         <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>
@@ -4185,7 +4324,58 @@
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />
         </modify-argument>
-    </modify-function>                
+    </modify-function>
+    <modify-function signature="removeItemWidget(QTreeWidgetItem*,int)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="default" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCurrentItem(QTreeWidgetItem*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCurrentItem(QTreeWidgetItem*,int)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setItemExpanded(const QTreeWidgetItem*,bool)">
+        <remove />
+    </modify-function>
+    <modify-function signature="isItemExpanded(const QTreeWidgetItem*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setItemHidden(const QTreeWidgetItem*,bool)">
+        <remove />
+    </modify-function>
+    <modify-function signature="isItemHidden(const QTreeWidgetItem*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="isItemSelected(const QTreeWidgetItem*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setItemSelected(const QTreeWidgetItem*,bool)">  
+        <remove />    
+    </modify-function>
+    <modify-function signature="setItemSpanning(const QTreeWidgetItem*,bool)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setItemWidget(QTreeWidgetItem*,int,QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>        
+    </modify-function>
+    <modify-function signature="setModel(QAbstractItemModel*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>    
   </object-type>
   
   <object-type name="QAbstractItemDelegate">
@@ -4359,7 +4549,43 @@
         <modify-argument index="2">
             <define-ownership class="java" owner="c++" />
         </modify-argument>            
+    </modify-function>
+    <modify-function signature="removeItemWidget(QListWidgetItem*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="default" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCurrentItem(QListWidgetItem*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setItemHidden(const QListWidgetItem*,bool)">
+        <remove />
+    </modify-function>
+    <modify-function signature="isItemHidden(const QListWidgetItem*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setItemSelected(const QListWidgetItem*,bool)">
+        <remove />
+    </modify-function>
+    <modify-function signature="isItemSelected(const QListWidgetItem*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setItemWidget(QListWidgetItem*,QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
     </modify-function>    
+    <modify-function signature="setModel(QAbstractItemModel*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+
   </object-type>
 
   <object-type name="QWidget">
@@ -4620,7 +4846,12 @@
         <include file-name="QPixmap" location="global"/>
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>
-    </extra-includes>              
+    </extra-includes>            
+    <modify-function signature="setModel(QAbstractItemModel*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcModel" />
+        </modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QImageReader">  
@@ -5206,9 +5437,29 @@
         <modify-argument index="2">
             <define-ownership class="java" owner="c++" />
         </modify-argument>
-    </modify-function>    
+    </modify-function> 
+    <modify-function signature="setCellWidget(int,int,QWidget*)">
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCurrentItem(QTableWidgetItem*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setItemSelected(const QTableWidgetItem*,bool)">
+        <remove />
+    </modify-function>
+    <modify-function signature="isItemSelected(const QTableWidgetItem*)">
+        <remove />
+    </modify-function>
+    <modify-function signature="setModel(QAbstractItemModel*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
   </object-type>
-  
   <object-type name="QTextDocument">
     <extra-includes>
         <include file-name="QTextBlock" location="global"/>
@@ -5334,12 +5585,12 @@
     </modify-function>
     <modify-function signature="setCompleter(QCompleter *)">
         <modify-argument index="1">
-            <reference-count action="set" variable-name="__rcCompleter" access="friendly" />
+            <reference-count action="set" variable-name="__rcCompleter" />
         </modify-argument>
     </modify-function>
      <modify-function signature="setValidator(const QValidator *)">
         <modify-argument index="1">
-            <reference-count action="set" variable-name="__rcValidator" access="friendly" />
+            <reference-count action="set" variable-name="__rcValidator" />
         </modify-argument>
     </modify-function>
     <inject-code>
@@ -5753,12 +6004,12 @@
     </modify-function>
     <modify-function signature="setCompleter(QCompleter*)">
         <modify-argument index="1">
-            <reference-count declare-variable="no" conditional="(lineEdit() != null)" variable-name="lineEdit().__rcCompleter" action="set" />
+            <reference-count variable-name="__rcCompleter" action="set" />
         </modify-argument>
     </modify-function>
     <modify-function signature="setValidator(const QValidator*)">
         <modify-argument index="1">
-            <reference-count declare-variable="no" conditional="(lineEdit() != null)" variable-name="lineEdit().__rcValidator" action="set" />
+            <reference-count variable-name="__rcValidator" action="set" />
         </modify-argument>
     </modify-function>
     <modify-function signature="setItemDelegate(QAbstractItemDelegate *)">
@@ -5832,6 +6083,8 @@
 
   <object-type name="QAction">
     <inject-code class="java">
+        private QActionGroup __rcActionGroup = null;
+    
         /**
          * Sets the shortcut to the key sequence for the given key string. For example "Ctrl+O" gives CTRL+'O'. 
          * The strings "Ctrl", "Shift", "Alt" and "Meta" are recognized, as well as their translated equivalents in the 
@@ -5854,6 +6107,25 @@
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcMenu" />
         </modify-argument>
+    </modify-function>
+    <modify-function signature="setActionGroup(QActionGroup*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <inject-code position="end">
+            <argument-map index="1" meta-name="%1" />
+            java.util.Collection&lt;Object> __rcTmp = null;
+            if (__rcActionGroup != null) {
+                __rcTmp = (java.util.Collection&lt;Object>)com.trolltech.qt.QtJambiInternal.fetchField(__rcActionGroup, QActionGroup.class, "__rcActions");
+                while (__rcTmp.contains(this))
+                    __rcTmp.remove(this);
+            }
+            __rcActionGroup = %1;
+            if (__rcActionGroup != null) {
+                __rcTmp = (java.util.Collection&lt;Object>)com.trolltech.qt.QtJambiInternal.fetchField(__rcActionGroup, QActionGroup.class, "__rcActions");
+                __rcTmp.add(this);
+            }                        
+        </inject-code>    
     </modify-function>
   </object-type>
 
@@ -6002,9 +6274,9 @@
     
     
     <inject-code>
-        private static java.util.Stack&lt;QPaintDevice> __rcRedirections = new java.util.Stack&lt;QPaintDevice>();
+        private static java.util.Stack&lt;QPaintDeviceInterface> __rcRedirections = new java.util.Stack&lt;QPaintDeviceInterface>();
     </inject-code>
-    <modify-function signature="setRedirected(QPaintDevice*, QPaintDevice*, const QPoint &amp;)">
+    <modify-function signature="setRedirected(const QPaintDevice*, QPaintDevice*, const QPoint &amp;)">
         <modify-argument index="1">
             <reference-count action="ignore" />
         </modify-argument>
@@ -6164,5 +6436,6 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: unmatched enum ~FlagMask" />
   <suppress-warning text="WARNING(MetaInfoGenerator) :: class 'QGraphicsSceneEvent' inherits from polymorphic class 'QEvent', but has no polymorphic id set" />
   <suppress-warning text="WARNING(MetaInfoGenerator) :: class 'QInputEvent' inherits from polymorphic class 'QEvent', but has no polymorphic id set" />
-  
+  <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcMenus' in 'com.trolltech.qt.gui.QMenu' but not both" />
+  <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcMenus' in 'com.trolltech.qt.gui.QMenuBar' but not both" />
 </typesystem>

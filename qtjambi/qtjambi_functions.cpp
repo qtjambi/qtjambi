@@ -266,3 +266,17 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_trolltech_qt_QtJambiInternal_setF
     return true;
 }
 
+extern "C" JNIEXPORT jobject JNICALL Java_com_trolltech_qt_QtJambiInternal_fetchFieldNative
+(JNIEnv *env,
+ jclass,
+ jobject owner,
+ jobject field) 
+{
+    if (owner == 0 || field == 0) return 0;
+
+    jfieldID id = env->FromReflectedField(field);
+    if (id == 0) return 0;
+
+    return env->GetObjectField(owner, id);
+}
+

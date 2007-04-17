@@ -234,7 +234,7 @@ public class DomBookmarks extends QMainWindow {
             item.setText(0, title);
 
             boolean folded = (element.attribute("folded") != "no");
-            setItemExpanded(item, !folded);
+            item.setExpanded(!folded);
 
             QDomElement child = element.firstChildElement();
             while (!child.isNull()) {

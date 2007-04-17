@@ -82,6 +82,7 @@ namespace TypeSystem {
 
 struct ReferenceCount 
 {
+    ReferenceCount() : threadSafe(false), access(Public) { }
     enum Action { // 0x01 - 0xff
         Invalid     = 0x00,
         Add         = 0x01,
@@ -115,10 +116,10 @@ struct ReferenceCount
     Action action;
     QString variableName;
     QString conditional;
+    QString declareVariable;
 
     uint threadSafe : 1;
-    uint declareVariable : 1;
-
+ 
     uint access;
 };
 

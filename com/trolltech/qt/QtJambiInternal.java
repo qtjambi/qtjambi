@@ -463,6 +463,19 @@ public class QtJambiInternal {
     	}    	
     }
     public static native boolean setFieldNative(Object owner, Field field, Object newValue);
+    
+    public static Object fetchField(Object owner, Class<?> declaringClass, String fieldName) {
+    	
+    	Field f = null;
+    	try {
+    		f = declaringClass.getDeclaredField(fieldName);
+    		f.setAccessible(true);
+    		return f.get(owner);
+    	} catch (Exception e) {
+    		return fetchFieldNative(owner, f);
+    	}
+    }
+    public static native Object fetchFieldNative(Object owner, Field field);
 
     public static void threadCheck(QObject obj) {
     	if (threadAsserts)

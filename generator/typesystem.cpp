@@ -640,7 +640,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["action"] = QString();
             attributes["variable-name"] = QString();
             attributes["thread-safe"] = QString("no");
-            attributes["declare-variable"] = QString("yes");
+            attributes["declare-variable"] = QString();
             attributes["access"] = QString("private");
             attributes["conditional"] = QString("");
             break;
@@ -1065,12 +1065,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                rc.declareVariable = (attributes["declare-variable"].toLower() == "yes");
-                if (!rc.declareVariable && attributes["declare-variable"].toLower() != "no") {
-                    m_error = "declare-variable must be either 'yes' or 'no'";
-                    return false;
-                }
-
+                rc.declareVariable = attributes["declare-variable"];
                 rc.conditional = attributes["conditional"];
 
                 static QHash<QString, int> accessRights;
