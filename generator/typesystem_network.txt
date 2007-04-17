@@ -50,6 +50,11 @@
     <inject-code>
         <insert-template name="network.read_char*_long_long" />
     </inject-code>  
+    <modify-function signature="setSocket(QTcpSocket*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcSocket" />
+        </modify-argument>
+    </modify-function>
   </object-type>
   <object-type name="QTcpServer">
     <extra-includes>

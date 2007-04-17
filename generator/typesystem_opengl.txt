@@ -44,6 +44,10 @@
     <modify-function signature="getProcAddress(QString)const">
         <remove />
     </modify-function>    
+    <modify-field name="currentCtx" read="false" write="false" />
+    <modify-function signature="setDevice(QPaintDevice*)">
+        <remove />
+    </modify-function>
   </object-type>
   <object-type name="QGLFramebufferObject"/>
   <object-type name="QGLPixelBuffer">

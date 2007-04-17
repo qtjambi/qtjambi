@@ -900,6 +900,11 @@
     <modify-function signature="operator!=(const QFileInfo &amp;)const" remove="all"/>
     <modify-function signature="operator==(const QFileInfo &amp;)const" remove="all"/>
     <modify-function signature="operator=(QFileInfo)" remove="all"/>
+    <modify-function signature="setFile(QFile)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
   </value-type>
 
   <value-type name="QByteArray">
@@ -1719,7 +1724,21 @@
 
     <modify-function signature="setCodecForTr(QTextCodec*)">
         <access modifier="private" />
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcCodecForTr" />
+        </modify-argument>
     </modify-function>
+    <modify-function signature="setCodecForCStrings(QTextCodec*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcCodecForCStrings" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCodecForLocale(QTextCodec*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcCodecForLocale" />
+        </modify-argument>
+    </modify-function>
+    
 
     <modify-function signature="codecForTr()">
         <remove />
@@ -1980,6 +1999,11 @@
     <modify-function signature="finished(int, QProcess::ExitStatus)">
         <rename to="finishedWithStatusCode" />
     </modify-function>
+    <modify-function signature="setStandardOutputProcess(QProcess*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcStandardOutputProcess" />
+        </modify-argument>
+    </modify-function>
   </object-type>
   
   <object-type name="QSignalMapper">
@@ -2045,6 +2069,22 @@
   </object-type>  
   
   <object-type name="QObject">
+    <modify-function signature="installEventFilter(QObject*)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcEventFilters" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="removeEventFilter(QObject*)">
+        <modify-argument index="1">
+            <reference-count action="remove" variable-name="__rcEventFilters" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setParent(QObject*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+
     <modify-function signature="deleteLater()">
         <rename to="disposeLater"/>
     </modify-function>
@@ -2243,7 +2283,9 @@
   <object-type name="QEvent" polymorphic-base="yes" 
                polymorphic-id-expression="%1->type() == QEvent::None"/>
   <object-type name="QChildEvent"
-               polymorphic-id-expression="%1->type() == QEvent::ChildAdded || %1->type() == QEvent::ChildPolished || %1->type() == QEvent::ChildRemoved" />
+               polymorphic-id-expression="%1->type() == QEvent::ChildAdded || %1->type() == QEvent::ChildPolished || %1->type() == QEvent::ChildRemoved">
+    <modify-field name="c" read="false" write="false" />
+  </object-type>
   <object-type name="QTimerEvent"
                polymorphic-id-expression="%1->type() == QEvent::Timer" />
   <object-type name="QDynamicPropertyChangeEvent"
@@ -2253,6 +2295,16 @@
     <extra-includes>
         <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>
+    <modify-function signature="setDevice(QIODevice*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDevice" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="unsetDevice()">
+        <inject-code position="end">
+            __rcDevice = null;
+        </inject-code>
+    </modify-function>
 
     <template name="core.datastream_operator_shift_right">
         <insert-template name="core.stream_operator_shift_right">
@@ -2493,6 +2545,8 @@
     <inject-code>
         public final void setCodec(String codecName) {
             setCodec(QNativePointer.createCharPointer(codecName));
+            if (codec() != __rcCodec)
+                __rcCodec = null;
         }
     </inject-code>    
 
@@ -2538,7 +2592,23 @@
             QTJAMBI_DEBUG_TRACE("(native) -> leaving: QTextStream::readString()");
         }
     </inject-code>
+
+    <modify-function signature="setCodec(QTextCodec *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcCodec" />
+        </modify-argument>
+    </modify-function>
     
+    <modify-function signature="QTextStream(QIODevice *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDevice" />
+        </modify-argument>
+    </modify-function>    
+    <modify-function signature="setDevice(QIODevice *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDevice" />
+        </modify-argument>
+    </modify-function>
          
   </object-type>
   
