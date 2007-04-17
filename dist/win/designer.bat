@@ -8,7 +8,7 @@ set QT_PLUGIN_PATH=%cd%\plugins
 set PATH=%cd%\bin
 set CLASSPATH=%cd%;%cd%\qtjambi.jar
 
-%cd%\bin\designer
+"%cd%\bin\designer"
 
 set PATH=%OLD_PATH%
 set QT_PLUGIN_PATH=%OLD_PLUGIN_PATH%
