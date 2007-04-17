@@ -43,6 +43,12 @@
         \o \l{Wiggly Example}{Wiggly}\raisedaster
     \endlist
 
+    \section1 Dialog Examples
+
+    \list
+        \o \l{Config Dialog Example}{Config Example}
+    \endlist
+
     \section1 Main Window Examples
 
     \list
@@ -62,6 +68,7 @@
     \section1 Painting Examples
 
     \list
+        \o \l{Path Stroking}{Path Stroke}
         \o \l{SVG Cards Example}{SVG Cards}\raisedaster
     \endlist
 
@@ -85,10 +92,22 @@
         \o \l{System Tray Icon Example}{System Tray Icon}\raisedaster
     \endlist
 
+    \section1 Tool Examples
+
+    \list
+        \o \l{I18N Example}{I18N}
+    \endlist
+
     \section1 Thread Examples
 
     \list
         \o \l{Mandelbrot Example}{Mandelbrot}\raisedaster
+    \endlist
+
+    \section1 Network Examples
+
+    \list
+        \o \l{Simple HTTP Server Example}{Simple HTTP Server}
     \endlist
 
     \section1 Drag and Drop Examples

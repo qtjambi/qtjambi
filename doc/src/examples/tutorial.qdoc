@@ -70,14 +70,14 @@
     \quotefromfile tutorial/HelloWorld.java
 
     \skipto package
-    \printuntil core
+    \printuntil gui
 
-    To use Qt Jambi classes, you need to import at least the \c
-    core and \c gui packages, which includes the QApplication class.
-    QApplication manages various application-wide resources and is
-    needed to run a Qt Jambi application. The \c gui package contain
-    GUI related classes, such as widgets, which is a user interface
-    object that can process user input and draw graphics.
+    To use Qt Jambi classes, you need to import at least the\c gui
+    package, which includes the QApplication class.  QApplication
+    manages various application-wide resources and is needed to run a
+    Qt Jambi application. The \c gui package contain GUI related
+    classes, such as widgets, which is a user interface object that
+    can process user input and draw graphics.
   
     \skipto main
     \printuntil {
