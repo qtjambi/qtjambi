@@ -741,12 +741,8 @@ jstring qtjambi_from_qstring(JNIEnv *env, const QString &s)
 
 QString qtjambi_to_qstring(JNIEnv *env, jstring java_string)
 {
-    if (java_string == 0) {
-        StaticCache *sc = StaticCache::instance(env);
-        sc->resolveNullPointerException();
-        env->ThrowNew(sc->NullPointerException.class_ref, "String is null pointer");
-        return QLatin1String("");
-    }
+    if (java_string == 0)
+        return QString();
 
     QString result;
     int length = env->GetStringLength(java_string);
