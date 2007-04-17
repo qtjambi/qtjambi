@@ -127,7 +127,7 @@ public class ItemviewChart extends QMainWindow {
                 } while (!line.equals(""));
 
                 file.close();
-                statusBar().showMessage(tr("Loaded " + fileName), 2000);
+                statusBar().showMessage(String.format(tr("Loaded %s"), fileName), 2000);
             }
         }
     }
@@ -151,7 +151,7 @@ public class ItemviewChart extends QMainWindow {
             }
 
             file.close();
-            statusBar().showMessage(tr("Saved " + fileName), 2000);
+            statusBar().showMessage(String.format(tr("Saved %s"), fileName), 2000);
         }
     }
 
