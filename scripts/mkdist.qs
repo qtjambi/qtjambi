@@ -273,7 +273,7 @@ function compileJavaFiles() {
     execute(javaDir + "/bin/juic -cp .");
 
     verbose(" - building");
-    execute([command.javac, "@java_files"]);
+    execute([command.javac, "-target", "1.5", "@java_files"]);
 
     try {
         execute([command.javac, "com/trolltech/demos/HelloGL.java"]);
