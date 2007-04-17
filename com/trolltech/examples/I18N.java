@@ -86,11 +86,12 @@ public class I18N extends QDialog {
             window = new MainWindow(this);
             window.visible.connect(checkBox, "setChecked(boolean)");
 
-            translator.setParent(window);
             window.setPalette(new QPalette(colorForLanguage(checkBox.text())));
 
             window.installEventFilter(this);
             mainWindowForCheckBoxMap.put(checkBox, window);
+            
+            QApplication.removeTranslator(translator);
         }
         window.setVisible(checkBox.isChecked());
     }
@@ -118,9 +119,8 @@ public class I18N extends QDialog {
         QTranslator translator = new QTranslator();
 
         translator.load("classpath:com/trolltech/examples/translation/" + qmFile);
-        QApplication.installTranslator(translator);
-
-        return tr("English");
+        
+        return translator.translate("com.trolltech.examples.I18N", "English");
     }
 
     private QColor colorForLanguage(final String language) {
