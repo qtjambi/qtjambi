@@ -22,7 +22,7 @@
 
         <property name="deployDir" value="./deploy" />
 
-        <property name="eclipseDir" value="../../eclipse/main" />
+        <property name="eclipseDir" value="../../eclipse/stable" />
     </target>
 
     <target name="clean" depends="init">
@@ -317,6 +317,12 @@
                 <include name="*" />
             </fileset>
         </copy>
+    </target>
+
+    <target name="documentation">
+        <exec executable="qdoc3" dir="doc/config">
+            <arg line="qtjambi.qdocconf" />
+        </exec>
     </target>
 
 </project>
