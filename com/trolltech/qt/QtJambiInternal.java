@@ -233,23 +233,27 @@ public class QtJambiInternal {
             found = true;
             for (int i = 0; i < a.length; ++i) {
                 String arg = a[i].getName();
-
+                
                 Class t = a[i];
-                int dims = 0;
-                while (t.isArray()) {
-                    dims++;
-                    t = t.getComponentType();
-                }
-                if (dims > 0)
-                    arg = arg.substring(2, arg.length() - 1) + "[]";
-                for (int j = 0; j < dims - 1; ++j)
-                    arg = arg.substring(1) + "[]";
+                
+                if(t.isArray()){
+                    String brackets = "";
+                    
+                    do {
+                        t = t.getComponentType();
+                        brackets += "[]";
+                    }
+                    while(t.isArray());
 
+                    arg = t.getName() + brackets;
+                }
+                
                 if (argumentTypes[i].indexOf('.') < 0) {
                     arg = arg.substring(arg.lastIndexOf('.') + 1);
                 }
-
+                
                 if (!arg.equals(argumentTypes[i])) {
+                    
                     found = false;
                     break;
                 }

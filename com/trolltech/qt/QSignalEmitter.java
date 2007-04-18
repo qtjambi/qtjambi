@@ -450,8 +450,9 @@ public class QSignalEmitter {
             Class<?> signalArguments[] = resolveSignal();
             int signalArrayDims[] = arrayDimensions();
 
-            if (slotArguments.length > signalArguments.length)
+            if (slotArguments.length > signalArguments.length){
                 return false;
+            }
 
             for (int i = 0; i < slotArguments.length; ++i) {
                 if (!matchTwoTypes(slotArguments[i],
@@ -464,17 +465,23 @@ public class QSignalEmitter {
             return true;
         }
 
+        private boolean matchTwoTypes(Class<?> slotArgument, Class<?> signalArgument, int signalArrayDims) {
+            return matchTwoTypes(slotArgument, signalArgument, signalArrayDims, false);
+        }
+        
         private boolean matchTwoTypes(Class<?> slotArgument,
-                Class<?> signalArgument, int signalArrayDims) {
+                                      Class<?> signalArgument, 
+                                      int signalArrayDims,
+                                      boolean wasArray) {
+        
             if (slotArgument.isArray() || signalArrayDims < 0) {
                 int slotArrayDims = 0;
                 while (slotArgument.isArray()) {
                     slotArgument = slotArgument.getComponentType();
                     ++slotArrayDims;
                 }
-
-                return slotArrayDims == signalArrayDims && matchTwoTypes(slotArgument, signalArgument, 0);
-            } else if (slotArgument.isPrimitive()) {
+                return slotArrayDims == signalArrayDims && matchTwoTypes(slotArgument, signalArgument, 0, true);
+            } else if (slotArgument.isPrimitive() && !wasArray) {
                 return matchTwoTypes(QtJambiInternal.getComplexType(slotArgument),
                         signalArgument, signalArrayDims);
             } else if (!slotArgument.isAssignableFrom(signalArgument)) {
