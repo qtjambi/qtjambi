@@ -1353,6 +1353,60 @@ public class TestConnections extends QApplicationTest implements Qt
         assertFalse(c.gotThusFar);
     }
 
+    class ArrayConnection extends SignalEmitter{
+
+        public Signal1<String> test1 =  new Signal1<String>();
+        public Signal1<String[]> test2 = new Signal1<String[]>();
+        public Signal1<String[][]> test3 = new Signal1<String[][]>();
+        public Signal1<Byte[]> test4 = new Signal1<Byte[]>();
+        
+        String[] a = {"one", "two"};
+        String[][] b = {a, a};
+        Byte[] c = {1, 2, 3};
+        
+
+        public void slot1(String[] str){
+            for (int i = 0; i < str.length; i++) {
+                assertEquals(a[i], str[i]);
+            }
+        }
+        
+        public void slot2(String[][] str){
+            for (int i = 0; i < str.length; i++) {
+                String[] strings = str[i];
+                for (int j = 0; j < strings.length; j++) {
+                    assertEquals(a[j], strings[j]);
+                }   
+            }
+        }
+        
+        public void slot3(Byte[] bb){
+            for (int i = 0; i < bb.length; i++) {
+                assertEquals(c[i], bb[i]);
+            }
+        }
+    }
+    
+    @Test public void testConnectArrays() {
+        ArrayConnection test = new ArrayConnection();    
+        
+        test.test1.connect(System.out, "println(java.lang.String)");
+        test.test2.connect(test, "slot1(String[])");
+        test.test3.connect(test, "slot2(java.lang.String[][])");
+        test.test4.connect(test, "slot3(Byte[])");
+        
+        try {
+            test.test3.connect(test, "slot2(String[][][])");
+            assertTrue(false);
+        } catch (RuntimeException e) {}
+        
+        test.test1.emit("hello");
+        
+        test.test2.emit(test.a);
+        test.test3.emit(test.b);
+        test.test4.emit(test.c);
+    }
+    
       public static void main(String args[]) {
           QCoreApplication.initialize(args);
           new TestConnections().testConnectInEmit();
