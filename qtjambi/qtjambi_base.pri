@@ -21,11 +21,11 @@ macx:{
     LIBS += -framework JavaVm
     QMAKE_EXTENSION_SHLIB = jnilib
 } else {
-    INCLUDEPATH += $(JAVADIR)/include
+    INCLUDEPATH += $$(JAVADIR)/include
     win32 { 
-        INCLUDEPATH += $(JAVADIR)/include/win32
+        INCLUDEPATH += $$(JAVADIR)/include/win32
     } else {
-        INCLUDEPATH += $(JAVADIR)/include/linux
+        INCLUDEPATH += $$(JAVADIR)/include/linux
     }
 }
 
