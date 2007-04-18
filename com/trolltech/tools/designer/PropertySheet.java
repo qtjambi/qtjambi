@@ -1,6 +1,7 @@
 package com.trolltech.tools.designer;
 
 import com.trolltech.qt.*;
+import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.tools.designer.propertysheet.*;
 
@@ -25,6 +26,7 @@ public class PropertySheet extends JambiPropertySheet {
 
     private static List<Class<? extends Property>> CUSTOM_PROPERTIES = new ArrayList<Class<? extends Property>>();
     private static Set<String> INVISIBLE_PROPERTIES;
+    private static Map<Class, Object> RESETTABLE_TYPES;
 
     static {
         INVISIBLE_PROPERTIES = new HashSet<String>();
@@ -53,6 +55,51 @@ public class PropertySheet extends JambiPropertySheet {
         addCustomProperty(LayoutProperty.class);
         addCustomProperty(TabWidgetProperty.class);
         addCustomProperty(BuddyProperty.class);
+
+        // Custom reset...
+        RESETTABLE_TYPES = new HashMap<Class, Object>();
+
+        RESETTABLE_TYPES.put(boolean.class,     false);
+        RESETTABLE_TYPES.put(byte.class,        (byte) 0);
+        RESETTABLE_TYPES.put(char.class,        (char) 0);
+        RESETTABLE_TYPES.put(short.class,       (short) 0);
+        RESETTABLE_TYPES.put(int.class,         (short) 0);
+        RESETTABLE_TYPES.put(long.class,        0);
+        RESETTABLE_TYPES.put(float.class,       0f);
+        RESETTABLE_TYPES.put(double.class,      0.0);
+
+        RESETTABLE_TYPES.put(String.class,      null);
+
+        RESETTABLE_TYPES.put(QColor.class,      null);
+        RESETTABLE_TYPES.put(QFont.class,       null);
+        RESETTABLE_TYPES.put(QIcon.class,       null);
+        RESETTABLE_TYPES.put(QPalette.class,    null);
+        RESETTABLE_TYPES.put(QPixmap.class,     null);
+        RESETTABLE_TYPES.put(QPoint.class,      null);
+        RESETTABLE_TYPES.put(QRect.class,       null);
+        RESETTABLE_TYPES.put(QSize.class,       null);
+        RESETTABLE_TYPES.put(QSizePolicy.class, null);
+        RESETTABLE_TYPES.put(QKeySequence.class,null);
+
+        // Enums...
+        RESETTABLE_TYPES.put(QFrame.Shape.class,            QFrame.Shape.StyledPanel);
+        RESETTABLE_TYPES.put(QFrame.Shadow.class,           QFrame.Shadow.Sunken);
+        RESETTABLE_TYPES.put(Qt.ScrollBarPolicy.class,      Qt.ScrollBarPolicy.ScrollBarAsNeeded);
+        RESETTABLE_TYPES.put(Qt.WindowModality.class,       Qt.WindowModality.NonModal);
+        RESETTABLE_TYPES.put(Qt.FocusPolicy.class,          Qt.FocusPolicy.NoFocus);
+        RESETTABLE_TYPES.put(Qt.ContextMenuPolicy.class,    Qt.ContextMenuPolicy.DefaultContextMenu);
+        RESETTABLE_TYPES.put(Qt.LayoutDirection.class,      Qt.LayoutDirection.LeftToRight);
+        RESETTABLE_TYPES.put(Qt.TextElideMode.class,        Qt.TextElideMode.ElideNone);
+        RESETTABLE_TYPES.put(QTabWidget.TabPosition.class,  QTabWidget.TabPosition.North);
+        RESETTABLE_TYPES.put(QTabWidget.TabShape.class,     QTabWidget.TabShape.Rounded);
+        RESETTABLE_TYPES.put(QLineEdit.EchoMode.class,      QLineEdit.EchoMode.Normal);
+        RESETTABLE_TYPES.put(QComboBox.InsertPolicy.class,  QComboBox.InsertPolicy.InsertAtBottom);
+        RESETTABLE_TYPES.put(QComboBox.SizeAdjustPolicy.class, QComboBox.SizeAdjustPolicy.AdjustToContentsOnFirstShow);
+        RESETTABLE_TYPES.put(QFontDatabase.WritingSystem.class, QFontDatabase.WritingSystem.Any);
+
+        // Flags...
+        RESETTABLE_TYPES.put(QDialogButtonBox.StandardButtons.class, QDialogButtonBox.StandardButton.NoButton);
+
     }
 
     public static void addCustomProperty(Class<? extends Property> handler) {
@@ -103,7 +150,7 @@ public class PropertySheet extends JambiPropertySheet {
         if (index < 0)
             return true;
         Property p = properties.get(index);
-        return p.entry.reset != null;
+        return p.entry.reset != null || RESETTABLE_TYPES.containsKey(p.entry.type());
     }
 
     public int indexOf(String name) {
@@ -233,9 +280,13 @@ public class PropertySheet extends JambiPropertySheet {
         if (hasReset(index)) {
             try {
                 Property p = properties.get(index);
-                Object o = invokationTarget(p);
-                p.entry.reset.invoke(o);
-                p.changed = false;
+                if (p.entry.reset != null) {
+                    Object o = invokationTarget(p);
+                    p.entry.reset.invoke(o);
+                    p.changed = false;
+                } else if (RESETTABLE_TYPES.containsKey(p.entry.type())) {
+                    writeProperty(index, RESETTABLE_TYPES.get(p.entry.type()));
+                }
                 return true;
             } catch (Exception e) {
                 System.err.println("Resetting property failed: " + properties.get(index).entry.name + " for " + object);
