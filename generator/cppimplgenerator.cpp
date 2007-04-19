@@ -304,19 +304,23 @@ QByteArray callXxxMethod(const QString &name) {
         return "CallObjectMethod";
 }
 
-QString jni_function_signature(QString package, QString class_name, const QString &function_name,
-                               const QString &return_type)
+QString jni_function_signature(QString package, QString class_name,
+                               const QString &function_name,
+                               const QString &return_type,
+                               const QString &mangled_arguments = QString())
 {
     QString s;
     s += "extern \"C\" JNIEXPORT ";
     s += return_type;
     s += " JNICALL";
-    s += " Java_";
+    s += " QTJAMBI_FUNCTION_PREFIX(Java_";
     s += package.replace("_", "_1").replace(".", "_");
     s += '_';
     s += class_name.replace("_", "_1");
     s += '_';
     s += QString(function_name).replace("_", "_1");
+    s += mangled_arguments;
+    s += ")";
     return s;
 }
 
@@ -1110,29 +1114,30 @@ void CppImplGenerator::writeFunctionName(QTextStream &s,
     else
         function_name = java_function->marshalledName();
 
-    s << jni_function_signature(cls->package(), cls->name(), function_name, return_type);
+    QString args = "__";
 
-    s << "__";
     if (callThrough && !java_function->isStatic() && !java_function->isConstructor())
-        s << "J";
+        args += "J";
 
-    if (arguments.isEmpty())
-        return;
-
-
-    foreach (const MetaJavaArgument *argument, arguments) {
-        if (!java_function->argumentRemoved(argument->argumentIndex() + 1)) {
-            if (!argument->type()->hasNativeId()) {
-                QString modified_type = java_function->typeReplaced(argument->argumentIndex()+1);
-                if (modified_type.isEmpty())
-                    s << jni_signature(argument->type(), Underscores);
-                else
-                    s << jni_signature(modified_type, Underscores);
-            } else {
-                s << "J";
+    if (!arguments.isEmpty()) {
+        foreach (const MetaJavaArgument *argument, arguments) {
+            if (!java_function->argumentRemoved(argument->argumentIndex() + 1)) {
+                if (!argument->type()->hasNativeId()) {
+                    QString modified_type = java_function->typeReplaced(argument->argumentIndex()+1);
+                    if (modified_type.isEmpty())
+                        args += jni_signature(argument->type(), Underscores);
+                    else
+                        args += jni_signature(modified_type, Underscores);
+                } else {
+                    args += "J";
+                }
             }
         }
     }
+
+    s << jni_function_signature(cls->package(), cls->name(), function_name,
+                                return_type, args);
+
 }
 
 void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const MetaJavaFunction *java_function,
@@ -1707,9 +1712,10 @@ void CppImplGenerator::writeInterfaceCastFunction(QTextStream &s,
       << jni_function_signature(java_class->package(),
                                 java_class->name(),
                                 QString("__qt_cast_to_%1").arg(interface_name),
-                                "jlong");
+                                "jlong",
+                                "__J");
 
-    s << "__J" << endl
+    s << endl
       << "(JNIEnv *," << endl
       << " jobject," << endl
       << " jlong ptr)" << endl

@@ -75,7 +75,7 @@ JavaVM *qtjambi_vm = 0;
  * This function is called by the Virtual Machine when it loads the
  * library. We need this to get a hold of the global VM pointer
  */
-extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *)
+extern "C" JNIEXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(JNI_OnLoad)(JavaVM *vm, void *)
 {
     qtjambi_vm = vm;
     return JNI_VERSION_1_4;

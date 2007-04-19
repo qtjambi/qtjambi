@@ -27,6 +27,8 @@ public class Utilities {
     private static final boolean VERBOSE_LOADING =
         System.getProperty("com.trolltech.qt.verbose-loading") != null;
 
+    private static String EXCLUDE_STRING = "com.trolltech.qt.exclude-libraries";
+
     /**
      * Returns true if the system property name contains any of the specified
      * substrings. If substrings is null or empty the function returns true
@@ -52,16 +54,20 @@ public class Utilities {
     }
 
     public static void loadQtLibrary(String library) {
-    	String excludeLibraries = System.getProperty("com.trolltech.qt.exclude-libraries");
-    	if(excludeLibraries != null){
-    		StringTokenizer tokenizer = new StringTokenizer(System.getProperty("com.trolltech.qt.exclude-libraries"), File.pathSeparator);
-    		while(tokenizer.hasMoreElements()){
-    			if(library.equals(tokenizer.nextElement())){
-    				if (VERBOSE_LOADING)
-    					System.out.println("Skipped library (" + library + ") since it is listed in com.trolltech.qt.exclude-libraries");
-    				return;
-    			}
-    		}
+    	String excludeLibraries = System.getProperty(EXCLUDE_STRING);
+    	if (excludeLibraries != null) {
+            StringTokenizer tokenizer = new StringTokenizer(excludeLibraries,
+                                                            File.pathSeparator);
+            while (tokenizer.hasMoreElements()) {
+                if (library.equals(tokenizer.nextElement())) {
+                    if (VERBOSE_LOADING) {
+                        System.out.println("Skipped library (" + library
+                                           + ") since it is listed in "
+                                           + excludeLibraries);
+                    }
+                    return;
+                }
+            }
     	}
         String lib = qtLibraryName(library);
         loadLibrary(lib);
@@ -76,6 +82,7 @@ public class Utilities {
 
 
     public static boolean loadLibrary(String lib) {
+//         try { throw new Exception(); } catch (Exception e) { e.printStackTrace(); }
         try {
             if(implicitLoading){
                 try {

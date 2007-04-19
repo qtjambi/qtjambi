@@ -11,7 +11,6 @@
 **
 ****************************************************************************/
 
-#include "qtjambilink.h"
 #include "qtjambi_core.h"
 
 #include <QtCore/QMetaType>
@@ -30,11 +29,11 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPolygon>
 
-#define QTQUALIFY(RETURNTYPE, METHOD) QTJAMBINAME(qt, QtJambiObject, RETURNTYPE, METHOD)
-
 #include <QDebug>
 
-QTQUALIFY(void, dispose)(JNIEnv *env, jobject java)
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_dispose)
+    (JNIEnv *env, jobject java)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, java);
     if (link) {
@@ -42,7 +41,9 @@ QTQUALIFY(void, dispose)(JNIEnv *env, jobject java)
     }
 }
 
-QTQUALIFY(jobject,nativePointer)(JNIEnv *env, jobject javaRef)
+extern "C" JNIEXPORT jobject JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_nativePointer)
+    (JNIEnv *env, jobject javaRef)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, javaRef);
 
@@ -52,7 +53,9 @@ QTQUALIFY(jobject,nativePointer)(JNIEnv *env, jobject javaRef)
         return 0;
 }
 
-QTQUALIFY(jobject,_1_1qt_1reassignLink)(JNIEnv *env, jclass, jlong old_native_id, jclass clazz, jobject constructor)
+extern "C" JNIEXPORT jobject JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject__1_1qt_1reassignLink)
+    (JNIEnv *env, jclass, jlong old_native_id, jclass clazz, jobject constructor)
 {
     QtJambiLink *link = reinterpret_cast<QtJambiLink *>(old_native_id);
     Q_ASSERT(link);
@@ -69,15 +72,15 @@ QTQUALIFY(jobject,_1_1qt_1reassignLink)(JNIEnv *env, jclass, jlong old_native_id
         link->resetObject(env);
         new_link = QtJambiLink::createLinkForQObject(env, new_object, qobject);
         switch (link->ownership()) {
-        case QtJambiLink::JavaOwnership: 
+        case QtJambiLink::JavaOwnership:
             new_link->setJavaOwnership(env, new_object);
             break;
-        case QtJambiLink::SplitOwnership: 
-            new_link->setSplitOwnership(env, new_object); 
+        case QtJambiLink::SplitOwnership:
+            new_link->setSplitOwnership(env, new_object);
             break;
-        default: // default is cpp ownership for qobjects    
+        default: // default is cpp ownership for qobjects
             break;
-        } 
+        }
     } else {
         void *ptr = link->pointer();
         bool wasCached = link->isCached();
@@ -93,7 +96,9 @@ QTQUALIFY(jobject,_1_1qt_1reassignLink)(JNIEnv *env, jclass, jlong old_native_id
     return new_object;
 }
 
-QTQUALIFY(void,finalize)(JNIEnv *env, jobject java)
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_finalize)
+    (JNIEnv *env, jobject java)
 {
     Q_ASSERT(env != 0);
 
@@ -102,21 +107,27 @@ QTQUALIFY(void,finalize)(JNIEnv *env, jobject java)
     }
 }
 
-QTQUALIFY(void, disableGarbageCollection)(JNIEnv *env, jobject object)
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_disableGarbageCollection)
+    (JNIEnv *env, jobject object)
 {
     if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {
         link->disableGarbageCollection(env, object);
     }
 }
 
-QTQUALIFY(void, reenableGarbageCollection)(JNIEnv *env, jobject object) 
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_reenableGarbageCollection)
+    (JNIEnv *env, jobject object)
 {
     if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {
         link->setDefaultOwnership(env, object);
     }
 }
 
-QTQUALIFY(void, setJavaOwnership)(JNIEnv *env, jobject object) 
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_ycom_trolltech_qt_QtJambiObject_setJavaOwnership)
+    (JNIEnv *env, jobject object)
 {
     if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {
         link->setJavaOwnership(env, object);

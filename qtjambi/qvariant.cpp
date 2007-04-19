@@ -34,9 +34,9 @@
 #include <QtCore/QBitArray>
 #include <QtCore/QByteArray>
 
-#define QTQUALIFY(RETURNTYPE, METHOD) QTJAMBINAME(qt, QVariant, RETURNTYPE, METHOD)
-
-QTQUALIFY(jobject,_1_1qt_1convert)(JNIEnv *env, jclass, jint type, jobject object)
+extern "C" JNIEXPORT jobject JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1convert)
+    (JNIEnv *env, jclass, jint type, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
     if (v.convert(QVariant::Type(type)))
@@ -45,7 +45,9 @@ QTQUALIFY(jobject,_1_1qt_1convert)(JNIEnv *env, jclass, jint type, jobject objec
         return 0;
 }
 
-QTQUALIFY(jboolean, _1_1qt_1canConvert)(JNIEnv *env, jclass, jobject obj, jint type)
+extern "C" JNIEXPORT jboolean JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1canConvert)
+    (JNIEnv *env, jclass, jobject obj, jint type)
 {
     QVariant v = qtjambi_to_qvariant(env, obj);
     return v.canConvert(QVariant::Type(type));
@@ -62,7 +64,9 @@ static inline void setOk(JNIEnv *env, jobjectArray ok, bool isOk)
     }
 }
 
-QTQUALIFY(jdouble,_1_1qt_1toDouble)(JNIEnv *env, jclass, jobject object, jobjectArray ok)
+extern "C" JNIEXPORT jdouble JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toDouble)
+    (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
     bool isOk = false;
@@ -71,7 +75,9 @@ QTQUALIFY(jdouble,_1_1qt_1toDouble)(JNIEnv *env, jclass, jobject object, jobject
     return returned;
 }
 
-QTQUALIFY(jint,_1_1qt_1toInt)(JNIEnv *env, jclass, jobject object, jobjectArray ok)
+extern "C" JNIEXPORT jint JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toInt)
+    (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
     bool isOk = false;
@@ -80,7 +86,9 @@ QTQUALIFY(jint,_1_1qt_1toInt)(JNIEnv *env, jclass, jobject object, jobjectArray 
     return returned;
 }
 
-QTQUALIFY(jlong,_1_1qt_1toLong)(JNIEnv *env, jclass, jobject object, jobjectArray ok)
+extern "C" JNIEXPORT jlong JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toLong)
+    (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
     bool isOk = false;
@@ -89,19 +97,25 @@ QTQUALIFY(jlong,_1_1qt_1toLong)(JNIEnv *env, jclass, jobject object, jobjectArra
     return returned;
 }
 
-QTQUALIFY(jobject,_1_1qt_1toString)(JNIEnv *env, jclass, jobject object)
+extern "C" JNIEXPORT jobject JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toString)
+    (JNIEnv *env, jclass, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
     return QtJambiTypeManager::qStringToJstring(env, v.toString());
 }
 
-QTQUALIFY(jboolean,_1_1qt_1toBoolean)(JNIEnv *env, jclass, jobject object)
+extern "C" JNIEXPORT jboolean JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toBoolean)
+    (JNIEnv *env, jclass, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
     return v.toBool();
 }
 
-QTQUALIFY(jchar,_1_1qt_1toChar)(JNIEnv *env, jclass, jobject object)
+extern "C" JNIEXPORT jchar JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toChar)
+    (JNIEnv *env, jclass, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
     QChar c = v.toChar();

@@ -24,10 +24,6 @@
 
 class QtJambiLink;
 
-// Create fully qualified c++ function name
-#define QTJAMBINAME(QTLIBRARY, CLASSNAME, RETURNTYPE, METHOD) \
-extern "C" JNIEXPORT RETURNTYPE JNICALL Java_com_trolltech_##QTLIBRARY##_##CLASSNAME##_##METHOD
-
 #define PACKAGEPATH "com/trolltech/"
 #define EXCEPTIONPATHN PACKAGEPATH"exceptions/"
 #define EXCEPTIONPATH(CLASS) EXCEPTIONPATHN#CLASS
@@ -70,7 +66,7 @@ class QTJAMBI_EXPORT QtJambiLink
 public:
     enum Ownership {
         JavaOwnership, // Weak ref to java object, deleteNativeObject deletes c++ object
-        CppOwnership,  // Strong ref to java object until c++ object is deleted, deleteNativeObject does *not* delete c++ obj. 
+        CppOwnership,  // Strong ref to java object until c++ object is deleted, deleteNativeObject does *not* delete c++ obj.
         SplitOwnership // Weak ref to java object, deleteNativeObject does *not* delete c++ object
     };
 
@@ -192,7 +188,7 @@ private:
     uint m_object_invalid : 1;
     uint m_in_cache : 1;
     uint m_connected_to_java : 1;
-    
+
     PtrDestructorFunction m_destructor_function;
     uint m_ownership : 2;
 };

@@ -1,7 +1,7 @@
 
 
-!macx:!exists($(JAVADIR)) {
-  error("Please set your JAVADIR environment variable to point to the directory of your Java SDK:\nCurrent JAVADIR: $(JAVADIR)")
+!macx:!exists($$(JAVADIR)) {
+  error("Please set your JAVADIR environment variable to point to the directory of your Java SDK:\nCurrent JAVADIR: $$(JAVADIR)")
 }
 
 isEmpty(TARGET) {
@@ -11,11 +11,11 @@ isEmpty(TARGET) {
 macx:{
     LIBS += -framework JavaVm
 } else {
-    INCLUDEPATH += $(JAVADIR)/include
+    INCLUDEPATH += $$(JAVADIR)/include
     win32 {
-        INCLUDEPATH += $(JAVADIR)/include/win32
+        INCLUDEPATH += $$(JAVADIR)/include/win32
     } else {
-        INCLUDEPATH += $(JAVADIR)/include/linux
+        INCLUDEPATH += $$(JAVADIR)/include/linux
     }
 }
 

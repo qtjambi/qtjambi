@@ -108,15 +108,15 @@ void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &pack
             MetaJavaFunctionList functions = cls->functions();
             foreach (MetaJavaFunction *f, functions) {
                 if (f->implementingClass() == cls && (f->isSignal() || f->isSlot())) {
-                    
+
                     MetaJavaArgumentList arguments = f->arguments();
                     int numOverloads = arguments.size();
-                    for (int i=arguments.size()-1; i>=0; --i) {                       
+                    for (int i=arguments.size()-1; i>=0; --i) {
                         if (arguments.at(i)->defaultValueExpression().isEmpty()) {
                             numOverloads = arguments.size() - i - 1;
-                            break; 
+                            break;
                         }
-                    }                    
+                    }
 
                     for (int i=0; i<=numOverloads; ++i) {
                         Option option = Option(SkipAttributes | SkipReturnType | SkipName);
@@ -201,7 +201,7 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
                                                        const MetaJavaClassList &classes)
 {
     QStringList handlers;
-    foreach (MetaJavaClass *cls, classes) {            
+    foreach (MetaJavaClass *cls, classes) {
         const ComplexTypeEntry *centry = cls->typeEntry();
         if (!centry->isPolymorphicBase())
             continue;
@@ -222,12 +222,12 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
                           << "(const void *ptr, char **class_name, char **package)" << endl
                           << "{" << endl
                           << "    Q_ASSERT(ptr != 0);" << endl
-                          << "    " << cls->qualifiedCppName() << " *object = (" 
+                          << "    " << cls->qualifiedCppName() << " *object = ("
                           << cls->qualifiedCppName() << " *)ptr;" << endl;
                     }
 
                     // For each, add case label
-                    s << "    if (" 
+                    s << "    if ("
                       << clazz->typeEntry()->polymorphicIdValue().replace("%1", "object")
                       << ") {" << endl
                       << "        *class_name = \"" << clazz->name() << "\";" << endl
@@ -237,12 +237,12 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
                 } else {
                     QString warning = QString("class '%1' inherits from polymorphic class '%2', but has no polymorphic id set")
                         .arg(clazz->name())
-                        .arg(cls->name());                        
+                        .arg(cls->name());
 
                     ReportHandler::warning(warning);
                 }
             }
-        }  
+        }
 
         // Close the function if it has been opened
         if (!first) {
@@ -349,7 +349,7 @@ void MetaInfoGenerator::writeCppFile()
                 s << "    qtjambi_register_polymorphic_id(\"" << handler << "\","
                   << "polymorphichandler_" << handler << ");" << endl;
             }
-            
+
             s << "}" << endl << endl;
             f->close();
             delete f;
@@ -465,8 +465,11 @@ static void generateInitializer(QTextStream &s, const QString &package, CodeSnip
 void MetaInfoGenerator::writeLibraryInitializers()
 {
     // from cppimplgenerator.cpp
-    extern QString jni_function_signature(QString package, QString class_name, const QString &function_name,
-                                          const QString &return_type);
+    extern QString jni_function_signature(QString package,
+                                          QString class_name,
+                                          const QString &function_name,
+                                          const QString &return_type,
+                                          const QString &mangled_arguments = QString());
 
     // We need to generate a library initializer in Java for all packages
     // that have generated classes in Java, and in C++ for all packages
@@ -491,7 +494,7 @@ void MetaInfoGenerator::writeLibraryInitializers()
               << "#include \"qtjambi_global.h\"" << endl << endl
               << signature << "(JNIEnv *, jclass)" << endl
               << "{" << endl
-              << "    "; 
+              << "    ";
             writeInitializationFunctionName(s, package, false);
             s << ";" << endl
               << "}" << endl << endl;
