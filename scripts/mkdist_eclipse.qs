@@ -1,13 +1,13 @@
 
 // *** Constants
-const version           = "0.0.4";
-const depotVersion      = "1.0.0-beta";
-const eclipseBranch     = "qtjambi-1.0.0-beta";
+const version           = "0.0.6";
+const depotVersion      = "main";
+const eclipseBranch     = "stable";
 const packageDir        = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/tmp"
                             : "/home/eblomfel/package-builder/tmp";                        
 const eclipsePackages   = os_name() == OS_NAME_WINDOWS
-                            ? "c:/package-builder/eclipse_packages"
+                            ? "c:/package-builder/eclipse_classes"
                             : "/home/eblomfel/eclipse_package";
 const dirSeparator      = os_name() == OS_NAME_WINDOWS ? ";" : ":";                                              
 const execPrefix = os_name() == OS_NAME_WINDOWS ? "release/" : "./";
@@ -151,7 +151,7 @@ function buildJambi() {
     var dir = new Dir(classFileOutput);
     dir.mkdirs(classFileOutput);
     
-    compileJavaFiles(jambiRootDir + "/src", classPath, "com/trolltech/qtjambi", classFileOutput);
+    compileJavaFiles(jambiRootDir + "/src", classPath, "com/trolltech", classFileOutput);
     
     // Find files to put in package
     var qtjambiPackageDest = packageDir + "/tempQtJambiPackage";
@@ -182,12 +182,17 @@ function buildJambi() {
 
 function buildDesignerCommon() {
     verbose("Building common designer package");
-    
+   
     var designerRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner";
-        
-    var designerPackageDest = packageDir + "/tempQtDesignerPackage";
+    designerPackageDest = packageDir + "/tempQtDesignerPackage";
+    
+    var dir = new Dir(designerPackageDest + "/bin");
+    dir.mkdirs(designerPackageDest + "/bin");
+    
+    generateDesignerCode();            
+    compileDesignerJavaCode(designerPackageDest);
+    
     var designerPackageDir = new Dir(designerPackageDest);
-    designerPackageDir.mkdirs(designerPackageDest);
     designerPackageDir.setCurrent();
     
     // Icons
@@ -198,12 +203,62 @@ function buildDesignerCommon() {
     // Action icons
     var sourceDir = designerRootDir + "/src";
     files = find_files(sourceDir, ["png"]);
-    copyFiles(files, sourceDir, designerPackageDest);    
+    copyFiles(files, sourceDir, designerPackageDest + "/bin");
+    
+    // Classes
+    files = find_files(designerRootDir + "/bin", ["class"]);
+    copyFiles(files, designerRootDir, designerPackageDest);    
     copyFiles([designerRootDir + "/plugin.xml"], designerRootDir, designerPackageDest);
     
     makeJarFile(jarFilesDest + "/com.trolltech.qtdesigner_" + version + ".jar", 
                 designerRootDir + "/META-INF/MANIFEST.MF",
-                ["plugin.xml", "com", "icons"]);
+                ["plugin.xml", "icons", "bin"]);
+}
+
+function buildQtBundle() {
+    verbose("Building Qt plugin");
+    
+    var bundleRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt";
+    var bundleDest = packageDir + "/tempQtBundle";
+    
+    var dir = new Dir(bundleDest + "/bin");
+    dir.mkdirs(bundleDest + "/bin");
+    
+    var srcPath = bundleRootDir + "/src";
+    compileJavaFiles(srcPath, eclipsePackages, "com/trolltech/qt", bundleDest + "/bin");
+    
+    copyFiles([bundleRootDir + "/plugin.xml"], bundleRootDir, bundleDest);
+    
+    dir = new Dir(bundleDest);
+    dir.setCurrent();
+    
+    makeJarFile(jarFilesDest + "/com.trolltech.qt_" + version + ".jar",
+                bundleRootDir + "/META-INF/MANIFEST.MF",
+                ["bin", "plugin.xml"]);
+}
+
+function buildDesignerQtJambiFragment() {
+    verbose("Building Qt Jambi fragment for designer plugin");
+    
+    var fragmentRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.qtjambi";
+    var fragmentPackageDest = packageDir + "/tempQtJambiFragment";
+    
+    var dir = new Dir(fragmentPackageDest + "/bin");
+    dir.mkdirs(fragmentPackageDest + "/bin");
+    
+    var srcPath = fragmentRootDir + "/src";
+    var separator = os_name() == OS_NAME_WINDOWS ? ";" : ":";
+    compileJavaFiles(srcPath, packageDir + "/tempClassFiles" + separator + packageDir + "/tempQtDesignerPackage/bin" + separator + eclipsePackages, 
+                    "com/trolltech/qtdesigner/qtjambi", fragmentPackageDest + "/bin");
+    
+    copyFiles([fragmentRootDir  +"/fragment.xml"], fragmentRootDir, fragmentPackageDest);
+    
+    dir = new Dir(fragmentPackageDest);
+    dir.setCurrent();
+            
+    makeJarFile(jarFilesDest + "/com.trolltech.qtdesigner.qtjambi_" + version + ".jar",
+                fragmentRootDir + "/META-INF/MANIFEST.MF",
+                ["bin", "fragment.xml"]);
 }
 
 function generateDesignerCode() {
@@ -238,7 +293,7 @@ function buildLinuxQtJarFile() {
     dir.mkdirs(linuxQtDest + "/lib");
 
     var dlls = ["libQtCore.so", "libQtDesigner.so", "libQtDesignerComponents.so", 
-                "libQtAssistantClient.so", "libQtGui.so", "libQtXml.so"];
+                "libQtAssistantClient.so", "libQtGui.so", "libQtXml.so", "libQtScript.so"];
     var suffixes = ["", ".4", ".4.3", ".4.3.0"];
     for (var i=0; i<dlls.length; ++i) {
         for (var j=0; j<suffixes.length; ++j) {
@@ -250,47 +305,27 @@ function buildLinuxQtJarFile() {
 function buildDesignerPlatform() {
     verbose("Building platform designer package");
     var qswtDir = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer/qtdesigner";    
-    var designerPackageDest = packageDir + "/tempQtDesignerWindowsPackage";
-    var dir = new Dir(designerPackageDest + "/bin");
-    dir.mkdirs(designerPackageDest + "/bin");
-    
-    dir = new Dir(designerPackageDest);    
-    dir.mkdirs(designerPackageDest);
-
-    generateDesignerCode();            
-    compileDesignerJavaCode(designerPackageDest);
+    var designerPackageDest = packageDir + "/tempQtDesignerPackage";
 
     var designerRootDir = os_name() == OS_NAME_WINDOWS 
 	? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32.x86"
 	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86";
 
     if (os_name() != OS_NAME_WINDOWS) {
-	var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux.x86_" + version;
-	dir = new Dir(pluginsDir);
-	dir.mkdirs(pluginsDir);
-	var suffixes = ["", ".4", ".4.3", ".4.3.0"];
-	for (var i=0; i<suffixes.length; ++i) { 
-	    copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86/lib/libqtdesigner.so" 
-                      + suffixes[i]],
-                      packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86", 
-                      pluginsDir);
-	}
-
-	var files = find_files(designerPackageDest, ["class"]);
-	copyFiles(files, designerPackageDest, pluginsDir);
-	copyFiles([designerRootDir + "/META-INF/MANIFEST.MF"], designerRootDir, pluginsDir);
-                  
+	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux.x86_" + version;
+	    dir = new Dir(pluginsDir);
+	    dir.mkdirs(pluginsDir);
+	    var suffixes = ["", ".4", ".4.3", ".4.3.0"];
+	    for (var i=0; i<suffixes.length; ++i) { 
+	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86/lib/libqtdesigner.so" 
+                        + suffixes[i]],
+                        packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86", 
+                        pluginsDir);
+	    }
+	    copyFiles([designerRootDir + "/META-INF/MANIFEST.MF"], designerRootDir, pluginsDir);                  
     } else {   
-	var files = ["bin"]; 
-	var jarFileName = "com.trolltech.qtdesigner.win32.x86_" + version + ".jar";
-
-	dir.setCurrent();                          
-
-	makeJarFile(jarFilesDest + "/" + jarFileName, 
-		    designerRootDir + "/META-INF/MANIFEST.MF",
-		    files);
-    }            
-    
+        // nothing needed atm
+    }    
 }
 
 function buildDesigner() {
@@ -318,19 +353,50 @@ function makePlatformSpecificPackageWindows(destDir) {
     copyFiles([jambiScriptDir + "/register_eclipse_integration.bat"], jambiScriptDir, destDir);
     
     var qtLibraries = ["QtCore4.dll", "QtDesigner4.dll", "QtDesignerComponents4.dll", 
-                       "QtAssistantClient4.dll", "QtGui4.dll", "QtXml4.dll"];
+                       "QtAssistantClient4.dll", "QtGui4.dll", "QtXml4.dll", "QtScript4.dll"];
     for (var i=0; i<qtLibraries.length; ++i) {
         copyFiles([option.qtdir + "/bin/" + qtLibraries[i]], option.qtdir + "/bin", dllDest);
     }
 
-    copyFiles(["c:/winnt/system32/msvcp71.dll", "c:/winnt/system32/msvcr71.dll"],
-              "c:/winnt/system32",
+    copyFiles(["c:/windows/system32/msvcp71.dll", "c:/windows/system32/msvcr71.dll"],
+              "c:/windows/system32",
               dllDest);
     
     verbose("-- zipping package");
     dir = new Dir(destDir);
     dir.setCurrent();
     execute([command.zip, "-r", "qtjambi-eclipse-integration-win32-" + depotVersion + ".zip", "*"]);
+}
+
+
+function buildDesignerPlugins() {
+    verbose("Building designer plugin directory");
+    var packageDest = packageDir + "/output/plugins/com.trolltech.qtdesignerplugins";
+    var jambiDir = packageDir + "/qtjambi/" + depotVersion;
+    var designerIntegrationDir = packageDir + "/qtjambi/" + depotVersion + "/designer-integration";
+    var pluginsSrc = packageDir + "/qtjambi/" + depotVersion + "/plugins/designer";
+    
+    var dir = new Dir(packageDest);
+    dir.mkdirs(packageDest);
+    
+    
+    dir = new Dir(jambiDir + "/qtjambi");
+    dir.setCurrent();
+    execute([command.qmake, "-config", "release"]);
+    execute([command.make]);
+    
+    dir = new Dir(designerIntegrationDir);
+    dir.setCurrent();
+    execute([command.qmake, "-r", "-config", "release"]);
+    execute([command.make]);
+    
+    var files;
+    if (os_name() == OS_NAME_WINDOWS) 
+        files = [pluginsSrc + "/JambiCustomWidget.dll", pluginsSrc + "/JambiLanguage.dll"];
+    else 
+        files = [pluginsSrc + "/libJambiCustomWidget.so", pluginsSrc + "/libJambiLanguage.so"];
+        
+   copyFiles(files, pluginsSrc, packageDest);
 }
 
 function buildPackage() {
@@ -340,15 +406,14 @@ function buildPackage() {
     var dir = new Dir(pluginsDir);
     if (dir.fileExists("."))
        print("WARNING: output dir already exists. delete the entire " + packageDir + " folder before running this script for best results");
-    dir.mkdirs(pluginsDir);
+    dir.mkdirs(pluginsDir);    
+    buildDesignerPlugins();
     
     
     var files = find_files(jarFilesDest, ["jar"]);    
     copyFiles(files, jarFilesDest, pluginsDir);            
         
-    eval("makePlatformSpecificPackage" + os_name() + "(packageDest);");            
-        
-    
+    eval("makePlatformSpecificPackage" + os_name() + "(packageDest);");   
 }
 
 function build() {
@@ -357,6 +422,8 @@ function build() {
     if (os_name() != OS_NAME_WINDOWS)
        buildLinuxQtJarFile();            
     buildJambi();
+    buildDesignerQtJambiFragment();
+    buildQtBundle();
     buildPackage();
 }
 
