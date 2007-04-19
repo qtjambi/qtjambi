@@ -45,9 +45,9 @@ enum JuicError {
     DriverFailed                    = 0x07
 };
 
-struct Options
+struct CmdOptions
 {
-    Options()
+    CmdOptions()
         : process_all(false),
           process_directory(false)
     {
@@ -69,13 +69,13 @@ bool generate_java_main_function;
 
 void showHelp(const char *appName);
 bool ensurePath(const QString &path);
-JuicError traverseAll(const Options &options);
-JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const Options &options);
+JuicError traverseAll(const CmdOptions &options);
+JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const CmdOptions &options);
 QString findClassName(const QFileInfo &file);
 
-bool shouldProcess(const QFileInfo &info, const Options &options);
+bool shouldProcess(const QFileInfo &info, const CmdOptions &options);
 
-JuicError runJuic(const QFileInfo &uiFile, const Options &options);
+JuicError runJuic(const QFileInfo &uiFile, const CmdOptions &options);
 QStringList resolveFileInfoList(char *argv0, const QStringList &filenames);
 
 static int num_processed_files;
@@ -83,7 +83,7 @@ static int num_updated_files;
 
 int main(int argc, char *argv[])
 {
-    Options options;
+    CmdOptions options;
     options.application_name = QString::fromLocal8Bit(argv[0]);
 
     int arg = 1;
@@ -279,7 +279,7 @@ static bool isGeneratedFile(const QFileInfo &generated_file)
     return false;
 }
 
-JuicError runJuic(const QFileInfo &uiFile, const Options &options)
+JuicError runJuic(const QFileInfo &uiFile, const CmdOptions &options)
 {
     Driver driver;
     driver.option().generator = Option::JavaGenerator;
@@ -361,7 +361,7 @@ JuicError runJuic(const QFileInfo &uiFile, const Options &options)
 }
 
 
-JuicError process(const QString &rootPath, const QFileInfo &file, const Options &options)
+JuicError process(const QString &rootPath, const QFileInfo &file, const CmdOptions &options)
 {
     QString absFilePath = QDir::convertSeparators(file.absoluteFilePath());
     Q_ASSERT(absFilePath.length() > rootPath.length());
@@ -372,7 +372,7 @@ JuicError process(const QString &rootPath, const QFileInfo &file, const Options 
     if (package == QLatin1String("."))
         package = QString();
 
-    Options new_options = options;
+    CmdOptions new_options = options;
     new_options.package = package;
 
     return runJuic(file, new_options);
@@ -401,7 +401,7 @@ static bool has_match(const QFileInfo &file, const QString &pattern)
     return (segments.last().isEmpty() || pos >= potential.length());
 }
 
-bool shouldProcess(const QFileInfo &file, const Options &options)
+bool shouldProcess(const QFileInfo &file, const CmdOptions &options)
 {
     QStringList included = options.included, excluded = options.excluded;
 
@@ -429,14 +429,14 @@ bool shouldProcess(const QFileInfo &file, const Options &options)
 }
 
 
-JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const Options &options)
+JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const CmdOptions &options)
 {
     QFileInfoList uiFiles = dir.entryInfoList(QStringList() << "*.jui", QDir::Files);
 
     JuicError error = NoError;
     for (int i=0; i<uiFiles.size(); ++i) {
         if (shouldProcess(uiFiles.at(i), options)) {
-            Options new_options = options;
+            CmdOptions new_options = options;
             if (new_options.out_dir.isEmpty())
                 new_options.out_dir = rootPath;
 
@@ -459,7 +459,7 @@ JuicError traverseClassPath(const QString &rootPath, const QDir &dir, const Opti
 }
 
 
-JuicError traverseAll(const Options &options)
+JuicError traverseAll(const CmdOptions &options)
 {
 
     QString classPath = QString(getenv("CLASSPATH"));
