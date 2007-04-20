@@ -46,7 +46,7 @@
 #if defined (Q_CC_MINGW)
 #  define QTJAMBI_FUNCTION_PREFIX(name) _##name
 #else
-#  define QTJAMBI_FUNCTION_PREFIX(name) ##name
+#  define QTJAMBI_FUNCTION_PREFIX(name) name
 #endif
 
 typedef void (*PtrDestructorFunction)(void *);
