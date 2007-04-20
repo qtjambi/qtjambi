@@ -60,7 +60,7 @@
             <arg line="dist clean -s"/>
         </exec>
         <exec executable="qmake" dir=".">
-            <arg line="-r -config ${config}"/>
+            <arg line="-r -config ${config} sanitycheck"/>
         </exec>
         <exec executable="make" dir=".">
             <arg line="dist clean -s"/>
@@ -129,7 +129,7 @@
 
     <target name="configure.qt" depends="init">
         <exec executable="${qt}/configure" dir="${qt}">
-	    <arg line="-${config} -no-qt3support -silent -no-rpath" />
+            <arg line="-${config} -no-qt3support -fast -release -no-rpath -no-xfixes -fast -shared" />
 	</exec>
     </target>
 
