@@ -19,9 +19,8 @@ echo "qdoc3 found in: $LOCAL_QDOC"
 export JAMBI=$PWD/..
 
 # Clean the directory
-cd  $JAMBI/doc
+cd  $JAMBI/doc/html
 rm -Rf *
-mkdir html
 
 # Generating the QDoc JAPI file
 cd $JAMBI/generator
