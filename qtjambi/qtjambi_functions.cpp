@@ -29,7 +29,7 @@ class QObjectPrivateAccessor : public QObjectData
 public:
     virtual ~QObjectPrivateAccessor() { }
     QList<QObject *> unused;
-    QThreadData *thread;
+    QThreadData *thread;  
     QObject *currentSender;
 
     int currentSenderSignalIdStart;
@@ -44,7 +44,9 @@ public:
         QList<QVariant> propertyValues;
     };
     ExtraData *extraData;
+    mutable int connectedSignals;
     QString objectName;
+    
 };
 
 
@@ -93,6 +95,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_nativeSwapQObjectS
         return 0;
 
 #ifdef QTJAMBI_SANITY_CHECK
+
     Q_ASSERT(sizeof(QObjectPrivateAccessor) == sizeof(QObjectPrivate));
     Q_ASSERT(d->currentSender == ((QObjectPrivate *) d)->currentSender);
 #endif
