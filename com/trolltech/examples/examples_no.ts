@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="nb_NO">
+<defaultcodec></defaultcodec>
 <context>
     <name>com.trolltech.examples.Application</name>
     <message>
@@ -592,7 +593,7 @@ Save your changes?</source>
     </message>
     <message>
         <location filename="DomBookmarks.java" line="67"/>
-        <source>Cannot read file </source>
+        <source>Cannot read file: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -607,7 +608,7 @@ Save your changes?</source>
     </message>
     <message>
         <location filename="DomBookmarks.java" line="87"/>
-        <source>Cannot write file </source>
+        <source>Cannot write file: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -685,7 +686,7 @@ Save your changes?</source>
     </message>
     <message>
         <location filename="DomBookmarks.java" line="165"/>
-        <source>Parse error at line </source>
+        <source>Parse error at line %s, column %s :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -730,6 +731,14 @@ Save your changes?</source>
     <message>
         <location filename="GeneratorExample.java" line="161"/>
         <source>Generator Example</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>com.trolltech.examples.I18N</name>
+    <message>
+        <location filename="I18N.java" line="123"/>
+        <source>English</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -792,8 +801,8 @@ Save your changes?</source>
     </message>
     <message>
         <location filename="ItemviewChart.java" line="130"/>
-        <source>Loaded </source>
-        <translation type="unfinished"></translation>
+        <source>Loaded %s</source>
+        <translation type="unfinished">Lastet %s</translation>
     </message>
     <message>
         <location filename="ItemviewChart.java" line="137"/>
@@ -802,7 +811,7 @@ Save your changes?</source>
     </message>
     <message>
         <location filename="ItemviewChart.java" line="154"/>
-        <source>Saved </source>
+        <source>Saved %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -932,67 +941,67 @@ Save your changes?</source>
 <context>
     <name>com.trolltech.examples.MainWindow</name>
     <message>
-        <location filename="I18N.java" line="169"/>
+        <location filename="I18N.java" line="170"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="154"/>
+        <location filename="I18N.java" line="155"/>
         <source>First</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="155"/>
+        <location filename="I18N.java" line="156"/>
         <source>Second</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="156"/>
+        <location filename="I18N.java" line="157"/>
         <source>Third</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="163"/>
+        <location filename="I18N.java" line="164"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="166"/>
+        <location filename="I18N.java" line="167"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="169"/>
+        <location filename="I18N.java" line="170"/>
         <source>Language: %1$s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="172"/>
+        <location filename="I18N.java" line="173"/>
         <source>Internationalization Example</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="174"/>
+        <location filename="I18N.java" line="175"/>
         <source>LTR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="179"/>
+        <location filename="I18N.java" line="180"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="180"/>
+        <location filename="I18N.java" line="181"/>
         <source>Perspective</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="181"/>
+        <location filename="I18N.java" line="182"/>
         <source>Isometric</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="I18N.java" line="182"/>
+        <location filename="I18N.java" line="183"/>
         <source>Oblique</source>
         <translation type="unfinished"></translation>
     </message>
