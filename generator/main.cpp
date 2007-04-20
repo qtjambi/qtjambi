@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
             TypeDatabase::instance()->setRebuildClasses(classes);
             ++i;
         } else if (arg.startsWith("--jdoc-dir")) {
-            Q_ASSERT(argc < i);
+            Q_ASSERT(argc > i);
             doc_dir = argv[++i];
         } else if (arg.startsWith("--jdoc-enabled")) {
             docs_enabled = true;
