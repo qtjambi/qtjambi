@@ -1,7 +1,7 @@
 const packageDir = os_name() == OS_NAME_WINDOWS
                    ? "d:/tmp/package-builder"
                    : "/tmp/package-builder";
-const version = "1.0.0-beta";
+const version = "1.0.0-beta2";
 const javaDir = packageDir + "/qtjambi/" + version;
 const javadocName = "qtjambi-javadoc-" + version + ".jar";
 const jdocName = "qtjambi-jdoc-" + version + ".jar";
