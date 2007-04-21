@@ -52,6 +52,7 @@ public:
         SkipRemovedArguments     = 0x00020000,
         IncludeDefaultExpression = 0x00040000,
         NoReturnStatement        = 0x00080000,
+        NoBlockedSlot            = 0x00100000,
 
         GlobalRefJObject         = 0x00100000,
 

@@ -655,7 +655,7 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
     // Insert Javadoc
     if (m_doc_parser) {
         QString signature = functionSignature(java_function,
-                                              include_attributes,
+                                              include_attributes | NoBlockedSlot,
                                               exclude_attributes);
         QString docs = m_doc_parser->documentationForSignal(signature);
         if (docs.isEmpty()) {
@@ -837,9 +837,11 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
         }
     }
 
-    QString signature = functionSignature(java_function, included_attributes, excluded_attributes);
 
     if (m_doc_parser) {
+        QString signature = functionSignature(java_function,
+                                              included_attributes | NoBlockedSlot,
+                                              excluded_attributes);
         s << m_doc_parser->documentationForFunction(signature) << endl;
     }
 
@@ -1054,7 +1056,8 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const MetaJavaFunction *ja
     if (generate_enum_overload >= 0) {
         if (m_doc_parser) {
             // steal documentation from main function
-            QString signature = functionSignature(java_function, include_attributes,
+            QString signature = functionSignature(java_function,
+                                                  include_attributes | NoBlockedSlot,
                                                   exclude_attributes);
             s << m_doc_parser->documentationForFunction(signature) << endl;
         }
@@ -1608,7 +1611,8 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
     if ((options & SkipAttributes) == 0) {
         if (java_function->isEmptyFunction()) s << "@Deprecated ";
 
-        if (!java_function->isConstructor()
+        if (!(attr & NoBlockedSlot)
+            && !java_function->isConstructor()
             && !java_function->isSlot()
             && !java_function->isSignal()
             && !java_function->isStatic()

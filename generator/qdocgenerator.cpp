@@ -107,7 +107,7 @@ void QDocGenerator::writeOverload(QTextStream &s,
     if (java_function->isModifiedRemoved(TypeSystem::JavaCode))
         return;
 
-    uint included_attributes = 0;
+    uint included_attributes = NoBlockedSlot;
     uint excluded_attributes = 0;
     setupForFunction(java_function, &included_attributes, &excluded_attributes);
 
@@ -171,14 +171,14 @@ void QDocGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field)
 {
-    uint included_attributes = 0;
+    uint included_attributes = NoBlockedSlot;
     uint excluded_attributes = 0;
     setupForFunction(java_field->getter(), &included_attributes, &excluded_attributes);
     s << "<variablegetter java=\"" << protect(functionSignature(java_field->getter(), included_attributes, excluded_attributes).toUtf8())
       << "\"" << endl
       << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
 
-    included_attributes = 0;
+    included_attributes = NoBlockedSlot;
     excluded_attributes = 0;
     setupForFunction(java_field->setter(), &included_attributes, &excluded_attributes);
     s << "<variablesetter java=\"" << protect(functionSignature(java_field->setter(), included_attributes, excluded_attributes).toUtf8())
