@@ -343,7 +343,7 @@ static QString function_call_for_ownership(TypeSystem::Ownership owner)
 }
 
 void JavaGenerator::writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership owner,
-                                               MetaJavaType *type, const QString &arg_name, const QString &indent) 
+                                               MetaJavaType *type, const QString &arg_name, const QString &indent)
 {
     Q_ASSERT(type->isContainer());
 
@@ -373,7 +373,7 @@ static FunctionModificationList get_function_modifications_for_class_hierarchy(c
     return mods;
 }
 
-void JavaGenerator::writeInjectedCode(QTextStream &s, const MetaJavaFunction *java_function, 
+void JavaGenerator::writeInjectedCode(QTextStream &s, const MetaJavaFunction *java_function,
                                       CodeSnip::Position position)
 {
     FunctionModificationList mods = get_function_modifications_for_class_hierarchy(java_function);
@@ -785,13 +785,15 @@ void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &re
         s << "            while (" << refCountVariableName << ".contains(" << argumentName << "))" << endl
           << "                " << refCountVariableName << ".remove(" << argumentName << ");" << endl;
         break;
-    case ReferenceCount::Set: 
+    case ReferenceCount::Set:
         {
             if (refCount.declareVariable.isEmpty())
                 s << "            " << refCount.variableName << " = " << argumentName << ";" << endl;
             else
                 s << "            com.trolltech.qt.QtJambiInternal.setField(this, " << refCount.declareVariable << ".class, \"" << refCountVariableName << "\", " << argumentName << ");" << endl;
         }
+    default:
+        break;
     };
 
     s << "        }" << endl;
