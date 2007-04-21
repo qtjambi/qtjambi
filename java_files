@@ -21,6 +21,7 @@
 ./com/trolltech/examples/DomBookmarks.java
 ./com/trolltech/examples/ElasticNodes.java
 ./com/trolltech/examples/FridgeMagnets.java
+./com/trolltech/examples/I18N.java
 ./com/trolltech/examples/ItemviewChart.java
 ./com/trolltech/examples/LineEdits.java
 ./com/trolltech/examples/Mandelbrot.java
@@ -32,6 +33,10 @@
 ./com/trolltech/examples/SimpleUIExample.java
 ./com/trolltech/examples/SpinBoxes.java
 ./com/trolltech/examples/SqlCommon.java
+./com/trolltech/examples/StarDelegate.java
+./com/trolltech/examples/StarEditor.java
+./com/trolltech/examples/StarRating.java
+./com/trolltech/examples/StarWindow.java
 ./com/trolltech/examples/StyleSheet.java
 ./com/trolltech/examples/SvgCards.java
 ./com/trolltech/examples/SyntaxHighlighter.java
@@ -47,6 +52,13 @@
 ./com/trolltech/examples/Wiggly.java
 ./com/trolltech/examples/stylesheet/Ui_MainWindow.java
 ./com/trolltech/examples/stylesheet/Ui_StyleSheetEditor.java
+./com/trolltech/examples/tutorial/Blocks.java
+./com/trolltech/examples/tutorial/BlocksGalore.java
+./com/trolltech/examples/tutorial/ConnectedSliders.java
+./com/trolltech/examples/tutorial/FamilyValues.java
+./com/trolltech/examples/tutorial/HelloWorld.java
+./com/trolltech/examples/tutorial/Quit.java
+./com/trolltech/examples/tutorial/Widgets.java
 ./com/trolltech/launcher/CustomListView.java
 ./com/trolltech/launcher/Delegate.java
 ./com/trolltech/launcher/Launchable.java
@@ -56,6 +68,7 @@
 ./com/trolltech/launcher/Style.java
 ./com/trolltech/launcher/Ui_Launcher.java
 ./com/trolltech/launcher/Worker.java
+./com/trolltech/qt/ConnectionException.java
 ./com/trolltech/qt/QClassPathFileEngineHandler.java
 ./com/trolltech/qt/QFlags.java
 ./com/trolltech/qt/QNativePointer.java
@@ -67,6 +80,7 @@
 ./com/trolltech/qt/QNonVirtualOverridingException.java
 ./com/trolltech/qt/QPaintingOutsidePaintEventException.java
 ./com/trolltech/qt/QPair.java
+./com/trolltech/qt/QPropertyException.java
 ./com/trolltech/qt/QSignalEmitter.java
 ./com/trolltech/qt/QSysInfo.java
 ./com/trolltech/qt/QThread.java
@@ -84,7 +98,6 @@
 ./com/trolltech/qt/QtJambiObject.java
 ./com/trolltech/qt/QtJambiUtils.java
 ./com/trolltech/qt/QtJambi_LibraryInitializer.java
-./com/trolltech/qt/QPropertyException.java
 ./com/trolltech/qt/QtPropertyDesignable.java
 ./com/trolltech/qt/QtPropertyManager.java
 ./com/trolltech/qt/QtPropertyOrder.java
@@ -139,6 +152,7 @@
 ./com/trolltech/qt/core/QSizeF.java
 ./com/trolltech/qt/core/QSocketNotifier.java
 ./com/trolltech/qt/core/QStringMatcher.java
+./com/trolltech/qt/core/QStringRef.java
 ./com/trolltech/qt/core/QSystemLocale.java
 ./com/trolltech/qt/core/QTemporaryFile.java
 ./com/trolltech/qt/core/QTextCodec.java

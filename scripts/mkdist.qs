@@ -22,6 +22,7 @@ option.nocompilercheck = array_contains(args, "--no-compiler-check");
 option.teambuilder = array_contains(args, "--teambuilder");
 option.startDir = new Dir().absPath;
 option.javadocHTTP = array_get_next_value(args, "--javadoc");
+option.noJavadocDownload = array_contains(args, "--no-javadoc-download");
 
 var packageMap = new Object();
 packageMap[OS_NAME_WINDOWS] = "win";
@@ -97,8 +98,6 @@ if (array_contains(args, "-help") || array_contains(args, "-h")) {
 
     findQtLibraries();
     prepareSourceTree();
-
-    unpackJDocFiles();
 
     var dir = new Dir(javaDir);
     dir.setCurrent();
@@ -413,28 +412,6 @@ function createJarFile() {
 }
 
 
-function unpackJDocFiles() {
-    print(" - Downloading .jdoc files: " + option.jdocLocation);
-
-    var dir = new Dir(javaDir + "/doc/jdoc");
-    dir.mkdirs();
-    dir.setCurrent();
-
-    if (os_name() == OS_NAME_MACOSX) {
-        execute([command.curl, "-O", option.jdocLocation]);
-    } else {
-        execute([command.wget, option.jdocLocation]);
-    }
-
-    // Unpack the jdocs...
-    execute([command.jar, "-xf", jdocName]);
-
-    dir.cdUp();
-    dir.cdUp();
-    dir.setCurrent();
-}
-
-
 /*******************************************************************************
  * Copy Qt docs and run qdoc-conf on the main bundle...
  */
@@ -449,10 +426,14 @@ function createDocs() {
     docDir.mkdirs();
     docDir.setCurrent();
 
-    if (os_name() == OS_NAME_MACOSX)
-        execute([command.curl, "-O", option.javadocLocation]);
-    else
-        execute([command.wget, option.javadocLocation]);
+    if (!option.noJavadocDownload) {
+        if (os_name() == OS_NAME_MACOSX)
+            execute([command.curl, "-O", option.javadocLocation]);
+        else
+            execute([command.wget, option.javadocLocation]);
+    } else {
+        execute([command.cp, option.startDir + "/" + javadocName, docDir.absPath]);
+    }
 
     execute([command.jar, "-xf", javadocName]);
     execute([command.rm, javadocName]);
@@ -545,6 +526,7 @@ function removeFiles() {
                 "com/trolltech/qt",
                 "com/trolltech/tests",
                 "com/trolltech/tools",
+                "com/trolltech/extensions",
                 "common",
                 "cpp",
                 "designer-integration",
