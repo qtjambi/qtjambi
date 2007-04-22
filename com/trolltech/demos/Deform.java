@@ -102,14 +102,14 @@ class PathDeformRenderer extends ArthurFrame
             for (int i=0; i<m_text.length(); ++i) {
                 QPainterPath path = new QPainterPath();
                 path.addText(advance, f, m_text.substring(i, i + 1));
-                m_pathBounds = path.boundingRect();
+                m_pathBounds = m_pathBounds.united(path.boundingRect());
                 paths.add(path);
                 advance.add(new QPointF(fm.width(m_text.substring(i, i + 1)), 0));
             }
         } else {
             QPainterPath path = new QPainterPath();
             path.addText(advance, f, m_text);
-            m_pathBounds = path.boundingRect();
+            m_pathBounds = m_pathBounds.united(path.boundingRect());
             paths.add(path);
         }
 
