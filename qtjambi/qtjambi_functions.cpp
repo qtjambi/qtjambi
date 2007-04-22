@@ -29,7 +29,7 @@ class QObjectPrivateAccessor : public QObjectData
 public:
     virtual ~QObjectPrivateAccessor() { }
     QList<QObject *> unused;
-    QThreadData *thread;  
+    QThreadData *thread;
     QObject *currentSender;
 
     int currentSenderSignalIdStart;
@@ -46,7 +46,7 @@ public:
     ExtraData *extraData;
     mutable int connectedSignals;
     QString objectName;
-    
+
 };
 
 
@@ -60,14 +60,10 @@ extern "C" JNIEXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize(JNIEnv *, jclass))
 {
     // ### remove for final release
-#if QT_VERSION == 0x040200
-    QCoreApplication::postEvent((QObject *) 0xFeedFace, (QEvent *) 0x00c0ffee);
+#if QT_VERSION >= 0x040300
+    QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, 0);
 #else
-    if (qstrcmp(qVersion(), "4.2.0") == 0) {
-        QCoreApplication::postEvent((QObject *) 0xFeedFace, (QEvent *) 0x00c0ffee);
-    } else {
-        QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, 0);
-    }
+#error "Qt Jambi requires 4.3"
 #endif
     qtjambi_register_callbacks();
 }
@@ -95,7 +91,6 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_nativeSwapQObjectS
         return 0;
 
 #ifdef QTJAMBI_SANITY_CHECK
-
     Q_ASSERT(sizeof(QObjectPrivateAccessor) == sizeof(QObjectPrivate));
     Q_ASSERT(d->currentSender == ((QObjectPrivate *) d)->currentSender);
 #endif
