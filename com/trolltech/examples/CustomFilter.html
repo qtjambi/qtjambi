@@ -67,8 +67,7 @@ body { color: black; }</style>
                 return matchFound &amp;&amp; dateInRange((QDateTime) (model.data(index2)));
             }
             private boolean dateInRange(QDateTime date) {
-                return (!minDate.isValid() || date.operator_greater(minDate))
-                        &amp;&amp; (!maxDate.isValid() || date.operator_less(maxDate));
+                return (minDate.compareTo(date) &lt; 0 &amp;&amp; maxDate.compareTo(date) &gt; 0);
             }</pre>
 <p>The filterAcceptsRow() method is expected to return true if the given row should be included in the model. In our example, a row is accepted if either the subject or the sender contains the given regular expression, and the date is valid.</p>
 <pre>&nbsp;           protected boolean lessThan(QModelIndex left, QModelIndex right) {
@@ -83,7 +82,7 @@ body { color: black; }</style>
                     QDateTime leftDate = (QDateTime) leftData;
                     QDateTime rightDate = (QDateTime) rightData;
     
-                    result = leftDate.operator_less(rightDate);
+                    result = leftDate.compareTo(rightDate) &lt; 0;
                 } else {
     
                     QRegExp emailPattern = new QRegExp(&quot;([\\w\\.]*@[\\w\\.]*)&quot;);

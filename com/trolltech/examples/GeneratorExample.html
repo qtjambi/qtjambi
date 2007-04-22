@@ -334,7 +334,7 @@ body { color: black; }</style>
 <h3>Moving ownership from Java to C++</h3>
 <p>In most cases, we want objects created in Java to be garbage collected when there are no more Java references to them. On the other hand, there are a few cases where a C++ function takes ownership of an object, making it possible for the garbage collector to cause objects to disappear or the application to crash.</p>
 <p>The solution is to use the type system specification to supply the generator with information that a certain function changes the ownership rules of an object, using the <tt>disable-gc</tt> tag.</p>
-<p>The functions we must take care of in our library are the <tt>GameScene</tt> class's <tt>setEgoObject()</tt> and <tt>addGameObject()</tt> functions, as well as the <tt>setAnimation()</tt> function in the <tt>GameObject</tt> class. Enter the following code into the <tt>GameScene</tt> type specification:</p>
+<p>The functions we must take care of in our library are the <tt>GameScene</tt> class's <tt>setEgoObject()</tt> and <tt>addGameObject()</tt> functions, as well as the <tt>setAnimation()</tt> function in the <tt>GameObject</tt> class, and the <tt>addVerb()</tt> function in the <tt>GameGrammar</tt> class. Enter the following code into the <tt>GameScene</tt> type specification:</p>
 <pre>&nbsp;       &lt;modify-function signature=&quot;setEgoObject(AbstractGameObject *)&quot;&gt;
             &lt;modify-argument index=&quot;1&quot;&gt;
                 &lt;disable-gc /&gt;

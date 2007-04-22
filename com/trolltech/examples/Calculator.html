@@ -85,7 +85,7 @@ body { color: black; }</style>
 <p>Each calculator operation is represented by a <tt>Function</tt> object. The <tt>Function</tt> class is a convenience class providing the functionality that is common for all operations. In addition, we define a operation specific <tt>result()</tt> method for each object, providing the operation's calculations. See the example code for more details.</p>
 <a name="connecting-to-the-user-interface"></a>
 <h2>Connecting to the User Interface</h2>
-<p>In addition to creating the user interface, <tt>setupUi()</tt> automatically calls the QtJavaUtils.connectSlotsByName() method, connecting signals from widgets on the form to methods in our code. To indicate which widgets and signals in the user interface that should be connected to each method, we use a predefined naming convention. For example:</p>
+<p>In addition to creating the user interface, <tt>setupUi()</tt> automatically calls the QtJambiUtils.connectSlotsByName() method, connecting signals from widgets on the form to methods in our code. To indicate which widgets and signals in the user interface that should be connected to each method, we use a predefined naming convention. For example:</p>
 <pre>&nbsp;       public void on_button_equal_clicked() {
             String expression = lineEdit.text();
             String result = &quot;&quot;;

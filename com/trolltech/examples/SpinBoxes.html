@@ -95,13 +95,17 @@ body { color: black; }</style>
             QLabel dateLabel = new QLabel();
             QDateTimeEdit dateEdit = new QDateTimeEdit(QDate.currentDate());
             dateEdit.setDateRange(new QDate(2005, 1, 1), new QDate(2010, 12, 31));
-            dateLabel.setText(String.format(tr(&quot;Appointment date (between %0$s and %1$s):&quot;), dateEdit.minimumDate().toString(Qt.DateFormat.ISODate), dateEdit.maximumDate().toString(Qt.DateFormat.ISODate)));</pre>
+            dateLabel.setText(String.format(tr(&quot;Appointment date (between %0$s and %1$s):&quot;),
+                                            dateEdit.minimumDate().toString(Qt.DateFormat.ISODate),
+                                            dateEdit.maximumDate().toString(Qt.DateFormat.ISODate)));</pre>
 <p>The first spin box is a QDateEdit widget that is able to accept dates within a given range specified using QDate values. The arrow buttons and <b>Up</b> and <b>Down</b> keys can be used to increase and decrease the values for year, month, and day when the cursor is in the relevant section.</p>
 <p>The second spin box is a QTimeEdit widget:</p>
 <pre>&nbsp;           QLabel timeLabel = new QLabel();
             QDateTimeEdit timeEdit = new QDateTimeEdit(QTime.currentTime());
             timeEdit.setTimeRange(new QTime(9, 0, 0, 0), new QTime(16, 30, 0, 0));
-            timeLabel.setText(String.format(tr(&quot;Appointment time (between %0$s and %1$s):&quot;), timeEdit.minimumTime().toString(Qt.DateFormat.ISODate), timeEdit.maximumTime().toString(Qt.DateFormat.ISODate)));</pre>
+            timeLabel.setText(String.format(tr(&quot;Appointment time (between %0$s and %1$s):&quot;),
+                                            timeEdit.minimumTime().toString(Qt.DateFormat.ISODate),
+                                            timeEdit.maximumTime().toString(Qt.DateFormat.ISODate)));</pre>
 <p>Acceptable values for the time are defined using QTime values.</p>
 <p>The third spin box is a QDateTimeEdit widget that can display both date and time values, and we place a label above it to indicate the range of allowed times for a meeting. These widgets will be updated when the user changes a format string.</p>
 <pre>&nbsp;           meetingLabel = new QLabel();

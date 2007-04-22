@@ -135,7 +135,7 @@ body { color: black; }</style>
         }</pre>
 <p>Finally, we create the editor's various window elements and use a QGridLayout to organize them. The QGridLayout class takes the space made available to it, divides it up into rows and columns, and puts each widget it manages into the correct cell.</p>
 <pre>&nbsp;       public void closeEvent(QCloseEvent e) {
-            trayIcon.dispose();
+            
         }</pre>
 <p>It is important to note that QObject subclasses normally have a lifetime beyond what is visible to the garbage collector. To ensure that such a object is deleted, you must either assign the object to a parent (child widgets are automatically disposed of by their parents upon destruction) or call the <tt>dispose()</tt> method explicitly.</p>
 <p>Since we use the QSystemTrayIcon class (which is a QObject subclass) without giving our icon a parent, we must reimplement QWidget's closeEvent() method to dispose the icon when the application is terminated.</p>

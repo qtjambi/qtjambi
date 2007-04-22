@@ -134,7 +134,7 @@ body { color: black; }</style>
                     newLabel.move(position);
                     newLabel.show();
     
-                    position.operator_add_assign(new QPoint(newLabel.width(), 0));
+                    position.add(new QPoint(newLabel.width(), 0));
                 }
     
                 event.acceptProposedAction();
@@ -144,44 +144,11 @@ body { color: black; }</style>
         }</pre>
 <p>If the event's MIME type is <tt>text/plain</tt>, i.e., if QMimeData.hasText() returns true, we retrieve its text and split it into words. For each word we create a new <tt>DragLabel</tt> action and show it at the event's position plus an offset depending on the number of words in the text. In the end we accept the proposed action.</p>
 <p>If the event has any other type, we call the event's ignore() method allowing the event to be propagated further.</p>
-<pre>&nbsp;       public int readInt(QDataStream stream) {
-            int[] array = new int[1];
-            stream.operator_shift_right(array);
-            return array[0];
-        }
-        public String readString(QDataStream stream) {
-            byte[] data = new byte[readInt(stream)];
-            stream.readRawData(data);
-            String res = &quot;&quot;;
-            try {
-                res = new String(data, &quot;UTF-16&quot;);
-            } catch (UnsupportedEncodingException e) {
-            }
-            return res;
-        }
-        public QPoint readQPoint(QDataStream stream) {
-            return new QPoint(readInt(stream), readInt(stream));
-        }</pre>
+<pre></pre>
 <p>The public <tt>readInt()</tt>, <tt>readString()</tt> and <tt>readQPoint()</tt> convenience methods are provided to read data from a given QDataStream object.</p>
 <p>Please note that these convenience methods are only required due to a temporary limitation in QDataStream. Typically, you would use a streaming operator to read data from a stream. The current Qt Jambi implementation of QDataStream has no such operator, but this will be implemented in the final release.</p>
 <p>When reading integers, we use QDataStream's <tt>operator_shift_right()</tt> method to read a '\0'-terminated string from the stream. When reading strings, we use the readRawData() method provided by QDataStream, filling the given buffer with data from the stream. Note that the buffer must be preallocated, and that the data is not encoded. When reading QPoint objects from the given stream, we simply use our own <tt>readInt()</tt> method to retrieve the coordinates.</p>
-<pre>&nbsp;       public void writeInt(QDataStream stream, int number) {
-            stream.operator_shift_left(number);
-        }
-        public void writeString(QDataStream stream, String string) {
-            byte[] data;
-            try {
-                data = string.getBytes(&quot;UTF-16&quot;);
-                writeInt(stream, data.length);
-                stream.writeRawData(data);
-            } catch (UnsupportedEncodingException e) {
-                writeInt(stream, 0);
-            }
-        }
-        public void writeQPoint(QDataStream stream, QPoint point) {
-            writeInt(stream, point.x());
-            writeInt(stream, point.y());
-        }</pre>
+<pre></pre>
 <p>The public <tt>writeInt()</tt>, <tt>writeString()</tt> and <tt>writeQPoint()</tt> convenience methods are provided to write the given data <i>to</i> the specified stream.</p>
 <p>Like the corresponding <tt>readInt()</tt>, <tt>readString()</tt> and <tt>readQPoint()</tt> methods, these are only required due to a temporary limitation in QDataStream. Typically, you would use a streaming operator to write data to a stream. The current Qt Jambi implementation of QDataStream has no such operator, but this will be implemented in the final release.</p>
 <pre>&nbsp;       public static void main(String args[]) {
