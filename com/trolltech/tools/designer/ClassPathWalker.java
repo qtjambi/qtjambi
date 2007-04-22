@@ -39,8 +39,11 @@ public class ClassPathWalker extends QObject implements Runnable {
     public ClassPathWalker() {
         if (roots == null) {
             String classpath = System.getProperty("java.class.path");
-            roots = new ArrayList<String>();
-            Collections.addAll(roots, classpath.split(java.io.File.pathSeparator));
+            List<String> r = new ArrayList<String>();
+            Collections.addAll(r, classpath.split(java.io.File.pathSeparator));
+            setRoots(r);
+            
+            addRootsFromSettings();
         }
     }
 
@@ -109,10 +112,22 @@ public class ClassPathWalker extends QObject implements Runnable {
     public void setPixmapSize(QSize size) {
         this.size = size;
     }
+    
+    public synchronized static void addRootsFromSettings() {
+    	QSettings settings = new QSettings("Trolltech", "Qt Jambi Resource Browser");
+        Object path = settings.value("Extra paths");
+        if (roots != null && path != null && path instanceof String) {
+        	String paths[] = ((String)path).split(java.io.File.pathSeparator);
+        	for (String p : paths) { 
+        		QtJambiUtils.addSearchPathForResourceEngine(p);
+        		roots.add(p);
+        	}
+        }    	
+    }
 
 
     public synchronized static void setRoots(List<String> r) {
-        roots = r;
+        roots = r;        
     }
 
     public synchronized static List<String> roots() {

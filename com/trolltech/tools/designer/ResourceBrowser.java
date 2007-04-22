@@ -149,11 +149,13 @@ public class ResourceBrowser extends JambiResourceBrowser {
                 QtJambiUtils.removeSearchPathForResourceEngine(root);
         }
                 
-        roots = Arrays.asList(rootArray);
+        roots = new ArrayList<String>();
+        Collections.addAll(roots, rootArray);
         for (String root : roots)
             QtJambiUtils.addSearchPathForResourceEngine(root);
-        
+                
         ClassPathWalker.setRoots(roots);
+        ClassPathWalker.addRootsFromSettings();
         reindex();                
     }
     
@@ -232,6 +234,29 @@ public class ResourceBrowser extends JambiResourceBrowser {
         setupSearchConnections();
     }
 
+    private void updateSettings(List<String> newPaths, List<String> oldRoots) {
+        String newExtraPath = "";
+        QSettings settings = new QSettings("Trolltech", "Qt Jambi Resource Browser");
+        Object oldExtraPath = settings.value("Extra paths");
+        
+        List<String> oldExtraPaths = new ArrayList<String>();
+        if (oldExtraPath != null && oldExtraPath instanceof String) {
+        	Collections.addAll(oldExtraPaths, ((String) oldExtraPath).split(java.io.File.pathSeparator));
+        	
+        }
+
+        for (String newPath : newPaths) {
+        	if (!oldRoots.contains(newPath) || oldExtraPaths.contains(newPath)) {
+        		if (!newExtraPath.isEmpty())
+        			newExtraPath += java.io.File.pathSeparator;
+        		newExtraPath += newPath;
+        	}
+        }
+    	
+    	settings.setValue("Extra paths", newExtraPath);
+    	settings.sync();
+    }
+    
     @SuppressWarnings("unused")
     private void changeSearchPath() {
         SearchPathDialog pathDialog = new SearchPathDialog(this);
@@ -252,10 +277,13 @@ public class ResourceBrowser extends JambiResourceBrowser {
             // Add new roots to ClassPathFileEngine
             {
             	for (String path : newPaths) {
-            		if (!oldRoots.contains(path))
+            		if (!oldRoots.contains(path)) {
             			QtJambiUtils.addSearchPathForResourceEngine(path);
+            		}
             	}
             }
+            
+            updateSettings(newPaths, oldRoots);
             
             ClassPathWalker.setRoots(newPaths);            
             reindex();
