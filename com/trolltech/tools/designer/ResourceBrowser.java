@@ -122,10 +122,13 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private void reselectCurrent() {
         if (currentPath == null)
             return;
-        QModelIndex index = browserModel.indexForPath(currentPath);
-        if (index != null && !UNFILTERED)
+        QModelIndex index = null;
+        if (browserModel != null)
+        	index = browserModel.indexForPath(currentPath);
+        if (filterModel != null && index != null && !UNFILTERED)
             index = filterModel.mapFromSource(index);
-        selection.setCurrentIndex(index, QItemSelectionModel.SelectionFlag.SelectCurrent);
+        if (selection != null)
+        	selection.setCurrentIndex(index, QItemSelectionModel.SelectionFlag.SelectCurrent);
     }
 
     protected void showEvent(QShowEvent arg) {
@@ -236,7 +239,25 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
         if (pathDialog.exec() == QDialog.DialogCode.Accepted.value()) {
             List<String> newPaths = pathDialog.paths();
-            ClassPathWalker.setRoots(newPaths);
+            
+            // Remove roots that are no longer wanted from ClassPathFileEngine
+            List<String> oldRoots = ClassPathWalker.roots();
+            {            	
+            	for (String root : oldRoots) {
+            		if (!newPaths.contains(root))
+            			QtJambiUtils.removeSearchPathForResourceEngine(root);
+            	}
+            }
+            
+            // Add new roots to ClassPathFileEngine
+            {
+            	for (String path : newPaths) {
+            		if (!oldRoots.contains(path))
+            			QtJambiUtils.addSearchPathForResourceEngine(path);
+            	}
+            }
+            
+            ClassPathWalker.setRoots(newPaths);            
             reindex();
         }
     }
