@@ -683,7 +683,7 @@
     already have for the function in question.
 
     \code
-    <conversion-rule>
+    <conversion-rule class="shell">
         jobjectArray %out = qtjambi_from_interface_array(__jni_env, %in, %3,
                                                         "AbstractGameObjectInterface",
                                                         "AbstractGameObject$ConcreteWrapper",
@@ -715,9 +715,9 @@
     slightly more complicated:
 
     \code
-    <modify-function class="native" signature="perform(Game::ActionType,AbstractGameObject**,int)">
+    <modify-function signature="perform(Game::ActionType,AbstractGameObject**,int)">
         <modify-argument index="2">
-                <conversion-rule>
+                <conversion-rule class="native">
                     QVector&lt;AbstractGameObject *> gameObjects;
 
                     int arrayLength = __jni_env->GetArrayLength((jarray) %in);
@@ -782,7 +782,7 @@
     left empty:
 
     \code
-        <conversion-rule>
+        <conversion-rule class="shell">
             // intentionally empty
         </conversion-rule>
     \endcode
@@ -791,7 +791,7 @@
     will retrieve the length from the Java array:
 
     \code
-        <conversion-rule>
+        <conversion-rule class="native">
             int %out = __jni_env->GetArrayLength((jarray) %2);
         </conversion-rule>
     \endcode
@@ -810,7 +810,7 @@
 
     The solution is to use the type system specification to supply the
     generator with information that a certain function changes the
-    ownership rules of an object, using the \c disable-gc tag.
+    ownership rules of an object, using the \c define-ownership tag.
 
     The functions we must take care of in our library are the \c
     GameScene class's \c setEgoObject() and \c addGameObject()
@@ -822,7 +822,7 @@
     \code
         <modify-function signature="setEgoObject(AbstractGameObject *)">
             <modify-argument index="1">
-                <disable-gc />
+                <define-ownership class="java" owner="c++" />
             </modify-argument>
         </modify-function>
     \endcode
@@ -839,9 +839,9 @@
 
     \code
         <object-type name="GameAction" polymorphic-base="yes">
-            <modify-function class="shell" signature="clone() const">
+            <modify-function signature="clone() const">
                 <modify-argument index="return">
-                    <disable-gc />
+                    <define-ownership class="shell" ownership="c++" />
                 </modify-argument>
             </modify-function>
         </object-type>
