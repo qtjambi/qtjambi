@@ -255,7 +255,7 @@
     \section1 Alphabetical List
 
     \l {access}, \l {argument-map}, \l {conversion-rule}, \l
-    {custom-constructor}, \l {custom-destructor}, \l {disable-gc}, \l
+    {custom-constructor}, \l {custom-destructor}, \l {define-ownership}, \l
     {enum-type}, \l {extra-includes}, \l {include}, \l {inject-code},
     \l {insert-template}, \l {interface-type}, \l
     {load-typesystem}{load-typesystem (multiple type system)}, \l
@@ -740,33 +740,20 @@
 
     \code
         <object-type ...>
-            <modify-function class="shell | native | java
-                | shell-declaration" (optional)
-                signature="...">
+            <modify-function signature="..."
+                             remove="all | java"
+                             access="public | private | protected"
+                             rename="..." >
         </object-type>
     \endcode
-
-    The \c class attribute specifies which module of the generated
-    code that will be affected by the modification. This is only a
-    hint to the generator, as certain modifications are irrelevant for
-    certain modules while others usually span across all modules in
-    order to be effective (e.g. the \l remove modifier will affect all
-    modules unless its \c exclusive attribute is set to true).
-
-    The \c class attribute accepts the following values:
-
-    \list
-        \o \c java: The generated java code
-        \o \c native: The generated JNI-based methods
-        \o \c shell: The generated shell class
-        \o \c shell-declaration: Only used for injecting code. The
-        code will be injected into the generated header file
-        containing the shell class definition.
-    \endlist
 
     The \c signature attribute is a normalized C++ signature,
     excluding return values but including potential \c const
     declarations.
+    
+    The \c remove, \c access and \c rename attributes are optional
+    attributes for added convenience, and they serve the same 
+    purpose as the tags \l remove, \l access and \l rename. 
 
     \row
     \o \bold  include
@@ -896,7 +883,7 @@
     function's arguments the modification affects, and is a child of
     the \l modify-function node. Use the \l remove-argument, \l
     replace-default-expression, \l remove-default-expression, \l
-    replace-type, and \l disable-gc nodes to specify the details of
+    replace-type, \l reference-count and \l define-ownership nodes to specify the details of
     the modification.
 
     \code
@@ -921,14 +908,13 @@
 
     \code
         <modify-function ...>
-            <remove exclusive=" Yes | No"(optional)/>
+            <remove class="all | java" />
         </modify-function>
     \endcode
 
-    If the \c exclusive attribute is set to "Yes", the function is
-    only removed for the part of the generated code specified by the
-    \l modify-function's \c class attribute; the default value is
-    "No".
+    If the \c class attribute is set to "java", the function is
+    only removed for the generated java code; the default value is
+    "all".
 
     \row
     \o \bold  access \target access
@@ -976,13 +962,13 @@
     \code
         <modify-function...>
             <inject-code ...>
-                <argument-map position="numeric value"
+                <argument-map index="numeric value"
                     meta-name="string value">
             </inject-code>
         </modify-function>
     \endcode
 
-    The \c position attribute is an index, starting at 1, indicating
+    The \c index attribute is an index, starting at 1, indicating
     the argument position to which this argument mapping applies. The
     \c meta-name attribute is the name used within the code injection
     to adress the argument at the given position.
@@ -1064,24 +1050,70 @@
     Typically, when changing the type of an argument, some conversion
     rules must be specified. This can be done using the \l
     conversion-rule node.
-
+    
     \row
-    \o \bold disable-gc \target disable-gc
+    \o \bold reference-count \target reference-count
     \o
-
-    The \c disable-gc node indicates that the argument object will not
-    be garbage collected once it has been passed to the function, and is a
-    child of the \l modify-argument node.
-
+    
+    The \c reference-count tag indicates that the function holds
+    a reference to the argument object without assuming ownership
+    of it. 
+    
     \code
         <modify-argument ...>
-             <disable-gc />
+            <reference-count action="add | add-all | remove | set | ignore" 
+                             variable-name="..."
+                             declare-variable="..."
+                             conditional="..."
+                             access="public | private | protected | friendly" />
         </modify-argument>
     \endcode
+    
+    The \c action attribute specifies the action to be taken. \c add, \c add-all and 
+    \c remove are collection actions. They will, respectively, add a single object
+    to a list of references, add all objects in a collection to a list of references 
+    or remove a single object from a list of references. \c set will assign the argument
+    to the variable containing the reference (the argument must be a collection if 
+    the variable is also used for any of the collection specific actions.) \c ignore 
+    will not inject any code, but will cause the method in question to be removed from
+    the log of possible reference counting API.
+    
+    The \c variable-name attribute specifies the name used for the variable that holds the
+    reference(s). 
+    
+    The \c declare-variable attribute can be used to specify the fully qualified name of 
+    the class that owns the reference. This attribute is optional, and should only 
+    be specified if the variable should not be declared in the current class. 
+    The specified must be in the superclass hierarchy of the current class.
+    
+    The \c conditional attribute is optional, and specifies a conditional expression which 
+    must be true in order for the action of the \c reference-count tag to be taken.
+    
+    The \c access attribute gives the visibility of the variable. Only applicable if 
+    \c declare-variable is not specified. The default value of \c access is \c private.
 
-    Note that this node will only have an effect when the associated
-    \c modify-function node's \c class attribute is either "java" or
-    "shell".
+    \row
+    \o \bold define-ownership \target define-ownership
+    \o
+ 
+    The \c define-ownership tag indicates that the function changes the 
+    ownership rules of the arguemnt object. The \c class attribute
+    specifies the class of function in which to inject the ownership
+    altering code. The \c owner attribute specifies the new ownership
+    of the object. It accepts the following values:
+    
+    \list
+        \o \c java: Java will assume full ownership of the object. The native resources will be deleted when the Java object is finalized.
+        \o \c c++: The native code assumes full ownership of the object. The Java object will not be garbage collected.
+        \o \c default: The object will get default ownership, depending on how it was created.
+    \endlist
+    
+    \code
+        <modify-argument ...>
+             <define-ownership class="java | shell" 
+                               owner="java | c++ | default" />
+        </modify-argument>
+    \endcode
 
     \row
     \o \bold conversion-rule \target conversion-rule
@@ -1093,7 +1125,7 @@
 
     \code
         <modify-argument ...>
-             <conversion-rule>
+             <conversion-rule class="shell | native">
                 // the code
              </conversion-rule>
         </modify-argument>
@@ -1103,7 +1135,7 @@
     replace-type and \l remove-argument nodes. The given code is used
     instead of the generator's conversion code in the following
     situations (defined by the \l modify-argument node's \c index
-    attribute and the \l modify-function node's \c class attribute as
+    attribute and the \c class attribute as
     well the function implementation and where the
     function is called from):
 
@@ -1129,7 +1161,7 @@
          </tr>
          <tr valign="top" bgcolor="#f0f0f0">
              <td>return</td>
-             <td>java</td>
+             <td>shell</td>
              <td>C++</td>
              <td>Java</td>
          </tr>
@@ -1150,7 +1182,7 @@
     must be declared explicitly, for example:
 
     \code
-        <conversion-rule>
+        <conversion-rule class="native">
             bool %out = (bool) %in;
         </conversion-rule>
     \endcode
@@ -1180,7 +1212,7 @@
     custom-constructor and \l custom-destructor nodes. For example;
 
     \code
-        <inject-code class=java position="beginning">
+        <inject-code class="java" position="beginning">
             <insert-template name="my_template" />
         </inject-code>
     \endcode
