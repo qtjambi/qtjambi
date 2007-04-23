@@ -80,84 +80,43 @@ public class Utilities {
     	loadLibrary(lib);
     }
 
-
-    public static boolean loadLibrary(String lib) {
-//         try { throw new Exception(); } catch (Exception e) { e.printStackTrace(); }
+    private static boolean loadFromEnv(String env, String lib){
         try {
-            if(implicitLoading){
-                try {
-                    URI uri = Utilities.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-
-                    String basePath;
-                    File path = new File(uri);
-                    if (path.isDirectory())
-                        basePath = path.getAbsolutePath();
-                    else
-                        basePath = path.getParentFile().getAbsolutePath();
-
-                    String libraryPath = basePath + File.separator + libSubPath + File.separator + lib;
-                    if (new File(libraryPath).exists()) {
-                        Runtime.getRuntime().load(libraryPath);
-                        if (VERBOSE_LOADING)
-                            System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
-                    }
-                    return true;
-                } catch (Error e) {
-                    if (VERBOSE_LOADING)
-                        e.printStackTrace();
-                }
-            }
-
-            try {
-            	String stripped = stripLibraryName(lib);
-                System.loadLibrary(stripped);
-                if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") in standard way as " + stripped);
-                return true;
-            } catch (Error e) {
-                if (VERBOSE_LOADING) e.printStackTrace();
-            }
-
-
-
-
-            Runtime rt = Runtime.getRuntime();
-
-            String jambiPath = System.getProperty("com.trolltech.qt.internal.jambipath");
-            if (jambiPath != null) {
-                String jambiPaths[] = jambiPath.split(File.pathSeparator);
-                for (String path : jambiPaths) {
+            String envPath = System.getProperty(env);
+            if (envPath != null) {
+                String envPaths[] = envPath.split(File.pathSeparator);
+                for (String path : envPaths) {
                     File f = new File(path, lib);
-
+   
                     if (f.exists()) {
-                        rt.load(f.getAbsolutePath());
+                        Runtime.getRuntime().load(f.getAbsolutePath());
                         if (VERBOSE_LOADING)
-                            System.out.println("Loaded(" + lib + ") using jambi path");
+                            System.out.println("Loaded(" + lib + ") using java env: " + env);
                         return true;
                     }
                 }
-
-                if (VERBOSE_LOADING && jambiPath.length() > 0) {
-                    System.out.println("Failed to find " + lib + " in " + jambiPath);
-                }
-
-            }
-
-            // First look in the library path for the libraries...
-            String libraryPath = System.getProperty("java.library.path");
-            String libraryPaths[] = libraryPath.split(File.pathSeparator);
-            for (String path : libraryPaths) {
-                File f = new File(path, lib);
-                if (f.exists()) {
-                    rt.load(f.getAbsolutePath());
-                    if (VERBOSE_LOADING)
-                        System.out.println("Loaded(" + lib + ") using absolute path");
-                    return true;
+                if (VERBOSE_LOADING && envPath.length() > 0) {
+                    System.out.println("Failed to find " + lib + " in " + envPath);
                 }
             }
+        } catch (Throwable e) {
+            return false;
+        }
+        return false;
+    }
+    
 
-            // If not in the library path, try to search in the classpath,
-            // including .jar files and unpack to a temp directory, then load
-            // from there.
+    public static boolean loadLibrary(String lib) {
+
+        if(loadFromEnv("com.trolltech.qt.library-path" , lib))
+            return true;
+        
+        if(loadFromEnv("com.trolltech.qt.internal.jambipath" , lib))
+            return true;
+        
+        // Try to search in the classpath, including .jar files and unpack to a temp directory, then load
+        // from there.
+        try {
             URL libUrl = Thread.currentThread().getContextClassLoader().getResource(lib);
             if (libUrl == null)
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
@@ -170,13 +129,51 @@ public class Utilities {
                 tmpLibDir.mkdirs();
                 copy(libUrl, destLib);
             }
-            rt.load(destLib.getAbsolutePath());
+            Runtime.getRuntime().load(destLib.getAbsolutePath());
             if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") using cached");
-        } catch (Throwable t) {
-            if (VERBOSE_LOADING) t.printStackTrace();
-            return false;
+        } catch (Throwable e) {
+            if (VERBOSE_LOADING) e.printStackTrace();
         }
-        return true;
+        
+        // Try to load using relative path (relative to qtjambi.jar or root of package where class file are loaded from
+        if(implicitLoading){
+            try {
+                URI uri = Utilities.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+
+                String basePath;
+                File path = new File(uri);
+                if (path.isDirectory())
+                    basePath = path.getAbsolutePath();
+                else
+                    basePath = path.getParentFile().getAbsolutePath();
+
+                String libraryPath = basePath + File.separator + libSubPath + File.separator + lib;
+                if (new File(libraryPath).exists()) {
+                    Runtime.getRuntime().load(libraryPath);
+                    if (VERBOSE_LOADING)
+                        System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
+                }
+                return true;
+            } catch (Throwable e) {
+                if (VERBOSE_LOADING)
+                    e.printStackTrace();
+            }
+        }            
+
+        // Try to load in standard way.
+        try {
+            String stripped = stripLibraryName(lib);
+            System.loadLibrary(stripped);
+            if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") in standard way as " + stripped);
+            return true;
+        } catch (Throwable e) {
+            if (VERBOSE_LOADING) e.printStackTrace();
+        }
+        
+        if(loadFromEnv("java.library.path" , lib))
+            return true;
+                        
+        return false;
     }
 
 
