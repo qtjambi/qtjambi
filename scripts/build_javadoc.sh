@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if  [ "$QTJAMBI_VERSION" = "" ]; then
-     export QTJAMBI_VERSION=1.0.0-beta2
+     export QTJAMBI_VERSION=main
 fi
 
 if [ "$QDOC" = "" ]; then
@@ -20,7 +20,12 @@ export JAMBI=$PWD/..
 
 # Clean the directory
 cd  $JAMBI/doc/html
-rm -Rf *
+if [ $? = 0 ]; then
+    rm -Rf *
+else
+    echo "Cannot find $JAMBI/doc/html. The script must be run in the scripts folder."
+    exit 1
+fi
 
 # Generating the QDoc JAPI file
 cd $JAMBI/generator
