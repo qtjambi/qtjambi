@@ -98,6 +98,7 @@ function compileJavaFiles(rootDir, classpath, subDirectory, outputDir) {
     for (i=0;i<files.length; ++i) {
         verbose("--       -- : " + files[i]);
         execute([command.javac,
+                "-target", "1.5",
                 "-cp", rootDir + dirSeparator + classpath,
                 "-d", outputDir,
                 files[i]]);
