@@ -64,7 +64,7 @@
 
     \quotefromfile StarDelegate.java
     \skipto /paint/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     The function is invoked once for each item, represented by a
     QModelIndex object from the model. If the data stored in the item
@@ -84,7 +84,7 @@
     called when the user starts editing an item:
 
     \skipto /createEditor/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     If the item is a \c StarRating, we create a \c StarEditor. The
     editor must have the \a parent; if not, it would be displayed as a
@@ -96,7 +96,7 @@
 
     \quotefromfile StarDelegate.java
     \skipto /setEditorData/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     We simply call \c setStarRating() on the editor.
 
@@ -105,7 +105,7 @@
     the model:
 
     \skipto /setModelData/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     The editing is finished when the user clicks on the editor.
     Since we propagate the mouse click event (i.e., do not accept it),
@@ -116,7 +116,7 @@
 
     \quotefromfile StarDelegate.java
     \skipto /sizeHint/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     We simply forward the call to \c StarRating.
 
@@ -134,9 +134,9 @@
 
     Let's start with the constructor:
 
-    \quotefromfile StarEditor.java
-    \skipto /StarEditor/
-    \printuntil /^\s\s\s\s\}/
+    \quotefromfile StarDelegate.java
+    \skipto /public StarEditor/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     We enable \l{QWidget.setMouseTracking()}{mouse tracking} on
     the widget so we can follow the cursor even when the user doesn't
@@ -149,20 +149,20 @@
     QWidget:
 
     \skipto /paintEvent/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     We simply call \c StarRating.paint() to draw the stars, just
     like we did when implementing \c StarDelegate.
 
     \skipto /mouseMoveEvent/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     In the mouse event handler, we call \c setRating() on the
     private data member \c starCount to reflect the current cursor
     position, and we call QWidget.update() to force a repaint.
 
     \skipto /int starAtPosition/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     The \c starAtPosition() function uses basic linear algebra to
     find out which star is under the cursor.
@@ -179,15 +179,15 @@
 
     The constructor initializes \c starCount and \c maxStarCount:
 
-    \quotefromfile StarRating.java
+    \quotefromfile StarDelegate.java
     \skipto /StarRating\(int rating, int/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     The \c paint() function paints the stars in this \c StarRating
     object on a paint device:
 
     \skipto /paint\(/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     We first set the pen and brush we will use for painting. The
     \c mode parameter can be either \c ReadWrite or \c ReadOnly. If \c
@@ -201,9 +201,9 @@
     The \c sizeHint() function returns the preferred size for an area
     to paint the stars on:
 
-    \quotefromfile StarRating.java
+    \quotefromfile StarDelegate.java
     \skipto /QSize sizeHint/
-    \printuntil /^\s\s\s\s\}/
+    \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     The preferred size is just enough to paint the maximum number of
     stars. The function is called by both \c StarDelegate.sizeHint()
@@ -216,7 +216,7 @@
 
     The table is set up in the \c createTable() function:
 
-    \quotefromfile StarWindow.java
+    \quotefromfile StarDelegate.java
     \skipto /void createTable/
     \printuntil /SelectRows/
 
