@@ -841,7 +841,7 @@
     
     </inject-code>
     <inject-code class="native">
-    extern "C" JNIEXPORT jint Java_com_trolltech_qt_core_QAbstractItemModel_setData_1native
+    extern "C" JNIEXPORT jint QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_setData_1native)
     (JNIEnv *__jni_env,
      jobject,
      int __this_nativeId,
@@ -855,7 +855,7 @@
         return __qt_this->setData(index, qt_value, role);
     }
 
-    extern "C" JNIEXPORT jobject Java_com_trolltech_qt_core_QAbstractItemModel_data_1native
+    extern "C" JNIEXPORT jobject QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_data_1native)
     (JNIEnv *__jni_env,
      jobject,
      int __this_nativeId,
@@ -2429,7 +2429,7 @@
     </inject-code>
 
     <template name="core.qdatastream_readorwrite_bytes">
-        extern "C" JNIEXPORT int JNICALL Java_com_trolltech_qt_core_QDataStream_%FUNCTION_NAME%_1native
+        extern "C" JNIEXPORT int JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_%FUNCTION_NAME%_1native)
         (JNIEnv *env, jobject, jlong stream, jbyteArray array, jint length)
         {
             QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%_native");
@@ -2570,7 +2570,7 @@
     </inject-code>    
 
     <inject-code class="native">
-        extern "C" JNIEXPORT jstring JNICALL Java_com_trolltech_qt_core_QTextStream_readString_1native
+        extern "C" JNIEXPORT jstring JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_readString_1native)
         (JNIEnv *env, jobject, jlong id)
         {
             QTJAMBI_DEBUG_TRACE("(native) entering: QTextStream::readString()");
@@ -2582,7 +2582,7 @@
             return s;
         }
         
-        extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_core_QTextStream_writeString_1native
+        extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_writeString_1native)
         (JNIEnv *env, jobject, jlong id, jstring str)
         {
             QTJAMBI_DEBUG_TRACE("(native) entering: QTextStream::writeString()");

@@ -1213,8 +1213,8 @@
     </inject-code>
 
     <inject-code class="native">
-      extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_gui_QPolygon_add_1private
-      (JNIEnv *__jni_env, jobject, long nativeId, int x, int y)
+      extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QPolygon_add_1private)
+      (JNIEnv *__jni_env, jobject, jlong nativeId, jint x, jint y)
       {
           QPolygon *polygon = (QPolygon *) qtjambi_from_jlong(nativeId);
           if (!polygon)
@@ -1266,8 +1266,8 @@
     </inject-code>
 
     <inject-code class="native">
-      extern "C" JNIEXPORT void JNICALL Java_com_trolltech_qt_gui_QPolygonF_add_1private
-      (JNIEnv *__jni_env, jobject, long nativeId, double x, double y)
+      extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QPolygonF_add_1private)
+      (JNIEnv *__jni_env, jobject, jlong nativeId, jdouble x, jdouble y)
       {
           QPolygonF *polygon = (QPolygonF *) qtjambi_from_jlong(nativeId);
           if (!polygon)
