@@ -347,7 +347,7 @@ function makePlatformSpecificPackageWindows(destDir) {
     var qswtDir = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer/qtdesigner";
     var jambiScriptDir = packageDir + "/qtjambi/" + depotVersion + "/scripts";
 
-    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32.x86_" + jambiVersion;
+    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32.x86_" + version;
     var dir = new Dir(dllDest);
     dir.mkdirs(dllDest);
 
@@ -367,7 +367,7 @@ function makePlatformSpecificPackageWindows(destDir) {
     verbose("-- zipping package");
     dir = new Dir(destDir);
     dir.setCurrent();
-    execute([command.zip, "-r", "qtjambi-eclipse-integration-win32-" + depotVersion + ".zip", "*"]);
+    execute([command.zip, "-r", "qtjambi-eclipse-integration-win32-" + jambiVersion + ".zip", "*"]);
 }
 
 
