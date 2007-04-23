@@ -20,3 +20,9 @@ On Mac OS X this example requires that the Qt version you are
 compiling against is a release version of the Qt source package,
 configure without frameworks.
 
+------------------------------------------------------------------------
+
+The scripts mentioned above are not part of the source package. Please
+refer to the online docs for this example for how to run manually build
+it.
+
