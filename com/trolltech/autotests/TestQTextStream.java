@@ -14,10 +14,43 @@
 package com.trolltech.autotests;
 
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.QPolygonF;
+
 import static org.junit.Assert.*;
 import org.junit.*;
 
 public class TestQTextStream {
+	
+	@Test public void testQPolygonF() {
+		QPolygonF p = new QPolygonF();
+		p.add(new QPointF(10, 11));
+		p.add(new QPointF(12, 13));
+		p.add(new QPointF(14, 15));
+		
+		QByteArray ba = new QByteArray();
+		QFile f = new QTemporaryFile();
+		
+		{
+			f.open(QFile.OpenModeFlag.WriteOnly);
+			QDataStream stream = new QDataStream(f);
+			p.writeTo(stream);
+			f.close();
+		}
+		
+		{
+			f.open(QFile.OpenModeFlag.ReadOnly);
+			QDataStream stream = new QDataStream(f);
+			QPolygonF p2 = new QPolygonF();
+			p2.readFrom(stream);
+			
+			assertEquals(10, p2.at(0).x());
+			assertEquals(11, p2.at(0).y());
+			assertEquals(12, p2.at(1).x());
+			assertEquals(13, p2.at(1).y());
+			assertEquals(14, p2.at(2).x());
+			assertEquals(15, p2.at(2).y());			
+		}
+	}
     
     @Test public void testString() {
         QFile f = new QTemporaryFile();

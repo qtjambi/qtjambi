@@ -452,8 +452,8 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             writeVirtualFunctionOverride(s, function, java_class);
         }
 
-        writeExtraFunctions(s, java_class);
     }
+    writeExtraFunctions(s, java_class);
 
     // Signals
     MetaJavaFunctionList signal_functions =
@@ -2476,18 +2476,29 @@ void CppImplGenerator::writeFunctionCall(QTextStream &s, const QString &object_n
         && !java_function->implementingClass()->inheritsFrom(java_function->declaringClass())) {
         classPrefix = java_function->declaringClass()->qualifiedCppName() + "::";
     }
-    s << object_name << (java_function->isStatic() ? QLatin1String("::") : QLatin1String("->") + classPrefix)
-      << prefix << function_name << "(";
-    writeFunctionCallArguments(s, java_function, "__qt_");
 
-    // The extra arguments...
-    for (int i=0; i<extra_arguments.size(); ++i) {
-        if (i > 0 || java_function->arguments().size() != 0)
-            s << ", ";
-        s << extra_arguments.at(i);
+    if (java_function->isInGlobalScope()) {
+        s << "if (" << object_name << " != 0) "
+          << "::" << prefix << function_name << "(";
+        writeFunctionCallArguments(s, java_function, "__qt_");
+        s << ", *" << object_name << ");";
+    } else {
+        s << object_name << (java_function->isStatic() ? QLatin1String("::") : QLatin1String("->") + classPrefix)
+          << prefix << function_name << "(";
+        writeFunctionCallArguments(s, java_function, "__qt_");
+
+        // The extra arguments...
+        for (int i=0; i<extra_arguments.size(); ++i) {
+            if (i > 0 || java_function->arguments().size() != 0)
+                s << ", ";
+            s << extra_arguments.at(i);
+        }
+
+        s << ");";
     }
 
-    s << ");";
+    s << endl;
+
 }
 
 

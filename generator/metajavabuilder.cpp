@@ -201,6 +201,51 @@ void MetaJavaBuilder::registerHashFunction(FunctionModelItem function_item)
     }
 }
 
+void MetaJavaBuilder::traverseStreamOperator(FunctionModelItem item)
+{
+    ArgumentList arguments = item->arguments();
+    if (arguments.size() == 2 && item->accessPolicy() == CodeModel::Public) {
+        MetaJavaClass *streamClass = argumentToClass(arguments.at(0));
+        MetaJavaClass *streamedClass = argumentToClass(arguments.at(1));
+
+        if (streamClass != 0 && streamedClass != 0 
+            && (streamClass->name() == "QDataStream" || streamClass->name() == "QTextStream")) {
+            MetaJavaFunction *streamFunction = new MetaJavaFunction;
+
+            QString name = item->name();
+            streamFunction->setOriginalName(name);
+            streamFunction->setFunctionType(MetaJavaFunction::GlobalScopeFunction);
+
+            if (name.endsWith("<<"))
+                streamFunction->setName("writeTo");
+            else
+                streamFunction->setName("readFrom");
+
+            streamFunction->setConstant(item->isConstant());
+            *streamFunction += MetaJavaAttributes::Final;
+            *streamFunction += MetaJavaAttributes::Public;
+
+            bool ok = false;
+            MetaJavaType *argumentType = translateType(arguments.at(0)->type(), &ok);
+            if (ok) {
+                MetaJavaArgument *argument = new MetaJavaArgument;
+                argument->setType(argumentType);
+                argument->setName("stream");
+                argument->setArgumentIndex(0);
+
+                streamFunction->setArguments(MetaJavaArgumentList() << argument);
+            }
+
+            streamFunction->setDeclaringClass(streamedClass);
+            streamFunction->setImplementingClass(streamedClass);
+            streamFunction->setOriginalAttributes(streamFunction->attributes());
+            
+            streamedClass->addFunction(streamFunction);
+            streamedClass->typeEntry()->addExtraInclude(streamClass->typeEntry()->include());
+        }
+    }
+}
+
 bool MetaJavaBuilder::build()
 {
     Q_ASSERT(!m_file_name.isEmpty());
@@ -322,6 +367,13 @@ bool MetaJavaBuilder::build()
         FunctionList hash_functions = m_dom->findFunctions("qHash");
         foreach (FunctionModelItem item, hash_functions) {
             registerHashFunction(item);
+        }
+    }
+
+    {
+        FunctionList stream_operators = m_dom->findFunctions("operator<<") + m_dom->findFunctions("operator>>");
+        foreach (FunctionModelItem item, stream_operators) {
+            traverseStreamOperator(item);
         }
     }
 

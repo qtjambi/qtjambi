@@ -349,7 +349,8 @@ public:
         NormalFunction,
         SignalFunction,
         EmptyFunction,
-        SlotFunction
+        SlotFunction,
+        GlobalScopeFunction
     };
 
     enum CompareResult {
@@ -433,7 +434,8 @@ public:
     bool isInvalid() const { return m_invalid; }
     bool isDestructor() const { return functionType() == DestructorFunction; }
     bool isConstructor() const { return functionType() == ConstructorFunction; }
-    bool isNormal() const { return functionType() == NormalFunction || isSlot(); }
+    bool isNormal() const { return functionType() == NormalFunction || isSlot() || isInGlobalScope(); }
+    bool isInGlobalScope() const { return functionType() == GlobalScopeFunction; }
     bool isSignal() const { return functionType() == SignalFunction; }
     bool isSlot() const { return functionType() == SlotFunction; }
     bool isEmptyFunction() const { return functionType() == EmptyFunction; }

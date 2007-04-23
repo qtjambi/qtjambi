@@ -59,6 +59,7 @@ public:
     void traverseEnums(ScopeModelItem item, MetaJavaClass *parent);
     void traverseFunctions(ScopeModelItem item, MetaJavaClass *parent);
     void traverseFields(ScopeModelItem item, MetaJavaClass *parent);
+    void traverseStreamOperator(FunctionModelItem function_item);
     MetaJavaFunction *traverseFunction(FunctionModelItem function);
     MetaJavaField *traverseField(VariableModelItem field, const MetaJavaClass *cls);
     void checkFunctionModifications();
