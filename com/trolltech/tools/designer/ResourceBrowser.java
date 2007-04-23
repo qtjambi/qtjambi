@@ -247,7 +247,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
         for (String newPath : newPaths) {
         	if (!oldRoots.contains(newPath) || oldExtraPaths.contains(newPath)) {
-        		if (!newExtraPath.isEmpty())
+        		if (!newExtraPath.equals(""))
         			newExtraPath += java.io.File.pathSeparator;
         		newExtraPath += newPath;
         	}
