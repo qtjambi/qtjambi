@@ -296,7 +296,7 @@ function buildLinuxQtJarFile() {
 
     var dlls = ["libQtCore.so", "libQtDesigner.so", "libQtDesignerComponents.so",
                 "libQtAssistantClient.so", "libQtGui.so", "libQtXml.so", "libQtScript.so"];
-    var suffixes = ["", ".4", ".4.3", ".4.3.0"];
+    var suffixes = [".4"];
     for (var i=0; i<dlls.length; ++i) {
         for (var j=0; j<suffixes.length; ++j) {
 	    copyFiles([option.qtdir + "/lib/" + dlls[i] + suffixes[j]], option.qtdir, linuxQtDest);
