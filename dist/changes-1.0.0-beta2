@@ -179,6 +179,10 @@ ____________________
    
  - Reduce the number of inconsistent functions generated for interface types.
 
+ - Stream operators that are declared in the global scope and that take a 
+   QDataStream or QTextStream as first argument will be implemented as 
+   Java methods writeTo() and readFrom() in the class of the second argument.
+
 ____________________
 
 Fixes: 
