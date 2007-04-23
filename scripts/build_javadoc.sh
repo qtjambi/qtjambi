@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if  [ "$QTJAMBI_VERSION" = "" ]; then
-     export QTJAMBI_VERSION=main
+     export QTJAMBI_VERSION=1.0.0-beta2
 fi
 
 if [ "$QDOC" = "" ]; then
