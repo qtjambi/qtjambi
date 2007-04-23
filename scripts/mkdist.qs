@@ -215,6 +215,8 @@ function findQtLibraries() {
 
     for (var i=0; i<qtBinaryNames.length; ++i) {
         var binName = option.qtdir + "/bin/" + qtBinaryNames[i] +  exe_extension;
+        if (!File.exists(binName) && os_name() == OS_NAME_MACOSX) 
+            binName = option.qtdir + "/bin/" + qtBinaryNames[i];
         if (!File.exists(binName))
             throw "Binary file '%1' does not exist".arg(binName);
         qtBinaries.push(binName);
@@ -285,7 +287,7 @@ function compileJavaFiles() {
     execute(javaDir + "/bin/juic -cp .");
 
     verbose(" - building");
-    execute([command.javac, "-target", "1.5", "@java_files"]);
+    execute([command.javac, "-J-mx1024m", "-target", "1.5", "@java_files"]);
 
     try {
         execute([command.javac, "com/trolltech/demos/HelloGL.java"]);
@@ -581,6 +583,7 @@ function removeFiles(packageType) {
                   "qtjambi",
                   "qtjambi_core",
                   "qtjambi_designer",
+                  "qtjambi_generator",
                   "qtjambi_gui",
                   "qtjambi_network",
                   "qtjambi_opengl",
