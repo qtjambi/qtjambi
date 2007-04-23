@@ -23,8 +23,8 @@ option.teambuilder = array_contains(args, "--teambuilder");
 option.startDir = new Dir().absPath;
 option.javadocHTTP = array_get_next_value(args, "--javadoc");
 option.noJavadocDownload = array_contains(args, "--no-javadoc-download");
-option.sourcePackage = !array_contains(args, "--no-source-package");
-option.cppPackage = !array_contains(args, "--no-binary-package");
+option.sourcePackages = !array_contains(args, "--no-source-packages");
+option.binaryPackages = !array_contains(args, "--no-binary-packages");
 
 var packageMap = new Object();
 packageMap[OS_NAME_WINDOWS] = "win";
@@ -72,7 +72,7 @@ option.javadocLocation = option.javadocHTTP + "/" + javadocName;
 option.jdocLocation = option.javadocHTTP + "/" + jdocName;
 
 const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtSvg", "QtDesigner", "QtDesignerComponents", "QtNetwork", "QtAssistantClient"];
-const qtBinaryNames = ["designer", "linguist"];
+const qtBinaryNames = ["designer", "linguist", "lrelease", "lupdate"];
 var qtReleaseLibraries = [];
 var qtDebugLibraries = [];
 var qtBinaries = [];
@@ -84,24 +84,27 @@ if (array_contains(args, "-help") || array_contains(args, "-h")) {
     displayHelp();
 } else {
 
+    for (var i in option)
+        if (option[i])
+            verbose("'%1': %2".arg(i).arg(option[i]));
+    verbose("reusing package tree: " + (packageTreeReuse ? "yes" : "no"));
+    verbose("");
+    for (var i in command)
+        verbose("using command '%1' in: %2".arg(i).arg(command[i]));
+
+    verbose("");
+
+
     if (!packageTreeReuse)
         deletePackageDir();
 
-    if (option.sourcePackage) {
+    if (option.sourcePackages) {
         createSourcePackage("preview");
         createSourcePackage("gpl");
     }
 
-    if (option.sourcePackage) {
-        for (var i in option)
-            if (option[i])
-                verbose("'%1': %2".arg(i).arg(option[i]));
-        verbose("reusing package tree: " + (packageTreeReuse ? "yes" : "no"));
-        verbose("");
-        for (var i in command)
-            verbose("using command '%1' in: %2".arg(i).arg(command[i]));
-
-        verbose("");
+    if (option.binaryPackages) {
+        prepareSourceTree()
 
         if (!option.nocompilercheck)
             checkCompiler();
@@ -349,6 +352,10 @@ function createPackage() {
 
     verbose(" - removing files");
     removeFiles();
+
+    verbose(" - platform stuff");
+    if (os_name() == OS_NAME_MACOSX)
+        fixInstallName();
 
     verbose(" - bundling");
     createBundle();
@@ -694,16 +701,32 @@ function createSourcePackage(type) {
     }
 }
 
-// function createPlatformArchive() {
-//     var dir = new Dir(javaDir);
+/* mac specific stuff */
 
-//     if (os_name() == OS_NAME_WINDOWS) {
-//         dir.cd("bin");
-//         execute[command.jar, "-cf",
-//     }
+function fixInstallName() {
+    var tool = find_executable("install_name_tool");
 
-// }
+    var dir = new Dir(javaDir);
+    dir.cd("lib");
+    dir.setCurrent();
 
+    function fix(name) {
+        execute(["find", ".", "-name", '"*lib"', "-exec",
+                 "install_name_tool", "-change", name, "@loader_path/" + name, "{}",
+                 ";"]);
+    }
+
+    fix("libQtAssistantClient.4.dylib");
+    fix("libQtCore.4.dylib");
+    fix("libQtDesigner.4.dylib");
+    fix("libQtGui.4.dylib");
+    fix("libQtNetwork.4.dylib");
+    fix("libQtOpenGL.4.dylib");
+    fix("libQtSql.4.dylib");
+    fix("libQtSvg.4.dylib");
+    fix("libQtXml.4.dylib");
+    fix("libqtjambi.1.jnilib");
+}
 
 /*******************************************************************************
  * Display the help options
@@ -727,3 +750,4 @@ function verbose(s) {
     if (option.verbose)
         print(s);
 }
+
