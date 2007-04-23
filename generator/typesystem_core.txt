@@ -2397,6 +2397,55 @@
         public final double  readDouble()  { operator_shift_right_double(srb);  return srb.doubleValue(); }
         public final QDataStream writeShort(short s) { writeShort_char((char) s); return this; }
     </inject-code>    
+    
+    <inject-code>
+        private native String readString_private(long nativeId);
+        private native void writeString_private(long nativeId, String string);
+        
+        public final String readString() {
+            if (nativeId() == 0)
+                throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+            return readString_private(nativeId());
+        }
+        
+        public final void writeString(String string) {
+            if (nativeId() == 0)
+                throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+            writeString_private(nativeId(), string);
+        }
+    </inject-code>
+    
+    <inject-code class="native">
+        extern "C" JNIEXPORT jstring JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_readString_1private)
+        (JNIEnv *env, jobject, jlong stream)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%_native");        
+            QDataStream *qtStream = (QDataStream *) qtjambi_from_jlong(stream);
+            
+            jstring returned = 0;
+            if (qtStream != 0) {
+                QString qtString;
+                operator&gt;&gt;(*qtStream, qtString);
+                
+                returned = qtjambi_from_qstring(env, qtString);
+            } 
+            
+            return returned;
+        }
+        
+        extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_writeString_1private)
+        (JNIEnv *env, jobject, jlong stream, jstring string)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%_native");        
+            QDataStream *qtStream = (QDataStream *) qtjambi_from_jlong(stream);
+            
+            if (qtStream != 0) {
+                QString qtString = qtjambi_to_qstring(env, string);
+                operator&lt;&lt;(*qtStream, qtString);                
+            }
+        }
+        
+    </inject-code>
 
     <template name="core.stream_constructor_bytearray">
         // Hold reference to byte array which goes away when the stream dies 

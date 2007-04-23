@@ -101,8 +101,9 @@ public class FridgeMagnets extends QWidget {
             QDataStream dataStream = new QDataStream(itemData, 
                    new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly));
 
-            String text = readString(dataStream);
-            QPoint offset = readQPoint(dataStream);
+            String text = dataStream.readString();
+            QPoint offset = new QPoint();
+            offset.readFrom(dataStream);
 
             DragLabel newLabel = new DragLabel(text, this);
             newLabel.move(new QPoint(event.pos().x() - offset.x(), 
@@ -177,10 +178,10 @@ public class FridgeMagnets extends QWidget {
             dataStream = new QDataStream(itemData, 
                     new QIODevice.OpenMode(QIODevice.OpenModeFlag.WriteOnly));
 
-            writeString(dataStream, labelText);
+            dataStream.writeString(labelText);
             QPoint position = new QPoint(event.pos().x() - rect().topLeft().x(), 
                                          event.pos().y() - rect().topLeft().y());
-            writeQPoint(dataStream, position);
+            position.writeTo(dataStream);
 
             QMimeData mimeData = new QMimeData();
             mimeData.setData("application/x-fridgemagnet", itemData);
@@ -200,36 +201,5 @@ public class FridgeMagnets extends QWidget {
             else
                 show();
         }
-    }
-
-    public String readString(QDataStream stream) {
-        byte[] data = new byte[stream.readInt()];
-        stream.readBytes(data);
-        String res = "";
-        try {
-            res = new String(data, "UTF-16");
-        } catch (UnsupportedEncodingException e) {
-        }
-        return res;
-    }
-
-    public QPoint readQPoint(QDataStream stream) {
-        return new QPoint(stream.readInt(), stream.readInt());
-    }
-
-    public void writeString(QDataStream stream, String string) {
-        byte[] data;
-        try {
-            data = string.getBytes("UTF-16");
-            stream.writeInt(data.length);
-            stream.writeBytes(data);
-        } catch (UnsupportedEncodingException e) {
-            stream.writeInt(0);
-        }
-    }
-
-    public void writeQPoint(QDataStream stream, QPoint point) {
-        stream.writeInt(point.x());
-        stream.writeInt(point.y());
     }
 }
