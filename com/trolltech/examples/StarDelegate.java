@@ -32,6 +32,8 @@ public class StarDelegate extends QWidget {
         setLayout(layout);
         setWindowTitle(tr("Star Delegate"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+        
+        setMinimumSize(550, 200);
     }
 
     public void createTable()
