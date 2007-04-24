@@ -126,7 +126,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_reenableGarbageColle
 }
 
 extern "C" JNIEXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_ycom_trolltech_qt_QtJambiObject_setJavaOwnership)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_setJavaOwnership)
     (JNIEnv *env, jobject object)
 {
     if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {
