@@ -124,22 +124,19 @@ function createBinaryPackages(licenseType) {
     if (!option.nocppbuild) compileNativeLibraries();
     if (!option.nojavabuild) compileJavaFiles();
 
-    dir.cdUp();
-    dir.setCurrent();
+    var parentDir = new Dir(javaDir);
+    parentDir.cdUp();
+
     verbose(" - making backup of " + javaDir);
+    parentDir.setCurrent();
     execute([command.cp, "-R", javaDir, "qtjambi-backup"]);
+
     createPackage("gpl");
 
-    print("created gpl");
-
-    dir.setCurrent();
-
-    execute("pwd");
-    print(Process.stdout);
-
-    print(javaDir);
-
+    verbose(" - reusing backup of " + javaDir);
+    parentDir.setCurrent();
     execute([command.cp, "-R", "qtjambi-backup", javaDir]);
+
     createPackage("preview");
 }
 
@@ -355,6 +352,8 @@ function deletePackageDir()
  * Creates the package...
  */
 function createPackage(licenseType) {
+    new Dir(javaDir).setCurrent();
+
     verbose("Creating package:");
 
     verbose(" - copying qt binaries");
