@@ -14,10 +14,9 @@
     \page qtjambi-tutorial.html
 
     \startpage {qtjambi-index.html}{Qt Jambi Reference Documentation}
-    \nextpage {qtjambi-tutorial/t1}{Chapter 1}
+    \nextpage {qtjambi-tutorial1.html}{Chapter 1}
 
     \title Qt Jambi Tutorial
-    \ingroup howto
 
     This tutorial gives an introduction to GUI programming using the
     Qt Jambi toolkit. It doesn't cover everything; the emphasis is on
@@ -34,21 +33,21 @@
     Tutorial chapters:
 
     \list 1
-    \o \l{qtjambi-tutorial/t1}{Hello World!}
-    \o \l{qtjambi-tutorial/t2}{Calling it Quits}
-    \o \l{qtjambi-tutorial/t3}{Family Values}
-    \o \l{qtjambi-tutorial/t4}{Let There Be Widgets}
-    \o \l{qtjambi-tutorial/t5}{Building Blocks}
-    \o \l{qtjambi-tutorial/t6}{Building Blocks Galore!}
-    \o \l{qtjambi-tutorial/t7}{One Thing Leads to Another}
+    \o \l{qtjambi-tutorial1.html}{Hello World!}
+    \o \l{qtjambi-tutorial2.html}{Calling it Quits}
+    \o \l{qtjambi-tutorial3.html}{Family Values}
+    \o \l{qtjambi-tutorial4.html}{Let There Be Widgets}
+    \o \l{qtjambi-tutorial5.html}{Building Blocks}
+    \o \l{qtjambi-tutorial6.html}{Building Blocks Galore!}
+    \o \l{qtjambi-tutorial7.html}{One Thing Leads to Another}
    \endlist
 */
 
-/*! \example qtjambi-tutorial/t1
+/*! \page qtjambi-tutorial1.html
 
     \contentspage Qt Jambi Tutorial
     \previouspage Qt Jambi Tutorial
-    \nextpage {qtjambi-tutorial/t2}{Chapter 2}
+    \nextpage {qtjambi-tutorial2.html}{Chapter 2}
 
     \title Qt Jambi Tutorial 1 - Hello World!
 
@@ -175,17 +174,17 @@
     example, \c {-geometry 100x200+10+20}).
 */
 
-/*! \example qtjambi-tutorial/t2
+/*! \page qtjambi-tutorial2.html
 
     \contentspage Qt Jambi Tutorial
-    \previouspage {qtjambi-tutorial/t1}{Chapter 1}
-    \nextpage {qtjambi-tutorial/t3}{Chapter 3}
+    \previouspage {qtjambi-tutorial1.html}{Chapter 1}
+    \nextpage {qtjambi-tutorial3.html}{Chapter 3}
 
     \title Qt Jambi Tutorial 2 - Calling it Quits
 
     \image tutorial2-example.png Screenshot of Chapter 2
 
-    Having created a window in \l{tutorial/t1}{Chapter 1,} we will
+    Having created a window in \l{qtjambi-tutorial1}{Chapter 1,} we will
     now go on to make the application quit properly when the user tells it to.
 
     We will also use a font that is more exciting than the default
@@ -260,11 +259,11 @@
     from QAbstractButton.]
 */
 
-/*! \example qtjambi-tutorial/t3
+/*! \page qtjambi-tutorial3.html
 
     \contentspage Qt Jambi Tutorial
-    \previouspage {qtjambi-tutorial/t2}{Chapter 2}
-    \nextpage {qtjambi-tutorial/t4}{Chapter 4}
+    \previouspage {qtjambi-tutorial2.html}{Chapter 2}
+    \nextpage {qtjambi-tutorial4.html}{Chapter 4}
 
     \title Qt Jambi Tutorial 3 - Family Values
 
@@ -342,11 +341,11 @@
     What happens if you try to make the window really small?
 */
 
-/*! \example qtjambi-tutorial/t4
+/*! \page qtjambi-tutorial4.html
 
     \contentspage Qt Jambi Tutorial
-    \previouspage {qtjambi-tutorial/t3}{Chapter 3}
-    \nextpage {qtjambi-tutorial/t5}{Chapter 5}
+    \previouspage {qtjambi-tutorial3.html}{Chapter 3}
+    \nextpage {qtjambi-tutorial5.html}{Chapter 5}
 
     \title Qt Jambi Tutorial 4 - Let There Be Widgets
 
@@ -425,11 +424,11 @@
     Try to add more buttons or put in other widgets than QPushButton.
 */
 
-/*! \example qtjambi-tutorial/t5
+/*! \page qtjambi-tutorial5.html
 
     \contentspage Qt Jambi Tutorial
-    \previouspage {qtjambi-tutorial/t4}{Chapter 4}
-    \nextpage {qtjambi-tutorial/t6}{Chapter 6}
+    \previouspage {qtjambi-tutorial4.html}{Chapter 4}
+    \nextpage {qtjambi-tutorial6.html}{Chapter 6}
 
     \title Qt Jambi Tutorial 5 - Building Blocks
 
@@ -522,11 +521,11 @@
     Try to make the application quit when the LCD number overflows.
 */
 
-/*! \example qtjambi-tutorial/t6
+/*! \page qtjambi-tutorial6.html
 
     \contentspage Qt Jambi Tutorial
-    \previouspage {qtjambi-tutorial/t5}{Chapter 5}
-    \nextpage {qtjambi-tutorial/t7}{Chapter 7}
+    \previouspage {qtjambi-tutorial5.html}{Chapter 5}
+    \nextpage {qtjambi-tutorial7.html}{Chapter 7}
 
     \title Qt Jambi Tutorial 6 - Building Blocks Galore!
 
@@ -615,10 +614,10 @@
     Initialize each slider with a different/random value on startup.
 */
 
-/*! \example qtjambi-tutorial/t7
+/*! \page qtjambi-tutorial7.html
 
     \contentspage Qt Jambi Tutorial
-    \previouspage {qtjambi-tutorial/t6}{Chapter 6}
+    \previouspage {qtjambi-tutorial6.html}{Chapter 6}
 
     \title Qt Jambi Tutorial 7 - One Thing Leads to Another
 
