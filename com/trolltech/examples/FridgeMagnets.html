@@ -105,8 +105,9 @@ body { color: black; }</style>
                 QDataStream dataStream = new QDataStream(itemData, 
                        new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly));
     
-                String text = readString(dataStream);
-                QPoint offset = readQPoint(dataStream);
+                String text = dataStream.readString();
+                QPoint offset = new QPoint();
+                offset.readFrom(dataStream);
     
                 DragLabel newLabel = new DragLabel(text, this);
                 newLabel.move(new QPoint(event.pos().x() - offset.x(), 
@@ -207,32 +208,40 @@ body { color: black; }</style>
                 dataStream = new QDataStream(itemData, 
                         new QIODevice.OpenMode(QIODevice.OpenModeFlag.WriteOnly));
     
-                writeString(dataStream, labelText);
+                dataStream.writeString(labelText);
                 QPoint position = new QPoint(event.pos().x() - rect().topLeft().x(), 
                                              event.pos().y() - rect().topLeft().y());
-                writeQPoint(dataStream, position);</pre>
-<p>Mouse events occur when a mouse button is pressed or released inside a widget, or when the mouse cursor is moved. By reimplementing the mousePressEvent() method we ensure that we will receive mouse press events for the fridge magnet widget.</p>
-<p>Whenever we receive such an event, we will first create a byte array to store our item data, and a QDataStream object to stream the data to the byte array (i.e., we use our custom <tt>writeString()</tt> and <tt>writeQPoint()</tt> methods to write the magnets text and position to the byte array).</p>
-<pre>&nbsp;               QMimeData mimeData = new QMimeData();
+                position.writeTo(dataStream);
+    
+                QMimeData mimeData = new QMimeData();
                 mimeData.setData(&quot;application/x-fridgemagnet&quot;, itemData);
-                mimeData.setText(labelText);</pre>
-<p>Then we create a new QMimeData object. As mentioned above, QMimeData objects associate the data that they hold with the corresponding MIME types to ensure that information can be safely transferred between applications. The setData() method sets the data associated with a given MIME type. In our case, we associate our item data with the custom <tt>&quot;application/x-fridgemagnet&quot;</tt> type.</p>
-<p>Note that we also associate the magnet's text with the <tt>text/plain</tt> MIME type using QMimeData's setText() method. We have already seen how our main widget detects both these MIME types with its event handlers.</p>
-<pre>&nbsp;               QDrag drag = new QDrag(this);
+                mimeData.setText(labelText);
+    
+                QDrag drag = new QDrag(this);
                 drag.setMimeData(mimeData);
     
                 drag.setHotSpot(new QPoint(event.pos().x() - rect().topLeft().x(), 
                                            event.pos().y() - rect().topLeft().y()));
                 drag.setPixmap(pixmap());
     
-                hide();</pre>
-<p>Finally, we create a QDrag object. It is the QDrag class that handles most of the details of a drag and drop operation, providing support for MIME-based drag and drop data transfer. The data to be transferred by the drag and drop operation is contained in a QMimeData object. When we call QDrag's setMimeData() method the ownership of our item data is transferred to the QDrag object.</p>
-<p>We also specify the cursor's hot spot, i.e., its position while the drag is in progress, to be the top-left corner of our fridge magnet. We call the QDrag.setPixmap() method to set the pixmap used to represent the data during the drag and drop operation. Typically, this pixmap shows an icon that represents the MIME type of the data being transferred, but any pixmap can be used. In this example, we have chosen to use the fridge magnet image itself to make the magnet appear as moving, immediately hiding the activated widget.</p>
-<pre>&nbsp;               if (drag.start(Qt.DropAction.MoveAction) == Qt.DropAction.MoveAction)
+                hide();
+    
+                if (drag.start(Qt.DropAction.MoveAction) == Qt.DropAction.MoveAction)
                     close();
                 else
                     show();
-            }</pre>
+            }
+        }
+    }</pre>
+<p>Mouse events occur when a mouse button is pressed or released inside a widget, or when the mouse cursor is moved. By reimplementing the mousePressEvent() method we ensure that we will receive mouse press events for the fridge magnet widget.</p>
+<p>Whenever we receive such an event, we will first create a byte array to store our item data, and a QDataStream object to stream the data to the byte array (i.e., we use our custom <tt>writeString()</tt> and <tt>writeQPoint()</tt> methods to write the magnets text and position to the byte array).</p>
+<pre></pre>
+<p>Then we create a new QMimeData object. As mentioned above, QMimeData objects associate the data that they hold with the corresponding MIME types to ensure that information can be safely transferred between applications. The setData() method sets the data associated with a given MIME type. In our case, we associate our item data with the custom <tt>&quot;application/x-fridgemagnet&quot;</tt> type.</p>
+<p>Note that we also associate the magnet's text with the <tt>text/plain</tt> MIME type using QMimeData's setText() method. We have already seen how our main widget detects both these MIME types with its event handlers.</p>
+<pre></pre>
+<p>Finally, we create a QDrag object. It is the QDrag class that handles most of the details of a drag and drop operation, providing support for MIME-based drag and drop data transfer. The data to be transferred by the drag and drop operation is contained in a QMimeData object. When we call QDrag's setMimeData() method the ownership of our item data is transferred to the QDrag object.</p>
+<p>We also specify the cursor's hot spot, i.e., its position while the drag is in progress, to be the top-left corner of our fridge magnet. We call the QDrag.setPixmap() method to set the pixmap used to represent the data during the drag and drop operation. Typically, this pixmap shows an icon that represents the MIME type of the data being transferred, but any pixmap can be used. In this example, we have chosen to use the fridge magnet image itself to make the magnet appear as moving, immediately hiding the activated widget.</p>
+<pre></pre>
 <p>Then we start the drag using QDrag's start() method requesting that the magnet is moved when the drag is completed. The method returns the performed drop action; if this action is equal to Qt.DropAction.MoveAction we will close the acttvated fridge magnet widget because we then create a new one (with the same data) at the drop position (see the implementation of our main widgets <a href="#drop">dropEvent()</a> method). Otherwise, e.g., if the drop is outside our main widget, we simply show the widget in its original position.</p>
 </body>
 </html>

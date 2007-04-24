@@ -275,7 +275,7 @@ body { color: black; }</style>
         &lt;/interface-type&gt;</pre>
 <p>The modified type name is the fully qualified name of the substitute class, with square brackets to indicate that the type is an array. At this point, we cannot expect the function to work properly, as the generated code will try to convert a C++ array of <tt>AbstractGameObject</tt> pointers to a Java array with the same conversion routine used for converting to <tt>QNativePointer</tt>, and the other way around. To make it work, we must provide the generator with new conversion code for this particular argument using the <a href="qtjambi-typesystem.html#conversion-rule">conversion-rule</a> tag.</p>
 <p>We start by providing code to convert the argument from C++ to Java. This is the case where code written in C++ calls the virtual function, and the function has been reimplemented in Java. The code above should be added to the <a href="qtjambi-typesystem.html#modify-argument">modify-argument</a> tag that we already have for the function in question.</p>
-<pre>&nbsp;   &lt;conversion-rule&gt;
+<pre>&nbsp;   &lt;conversion-rule class=&quot;shell&quot;&gt;
         jobjectArray %out = qtjambi_from_interface_array(__jni_env, %in, %3,
                                                         &quot;AbstractGameObjectInterface&quot;,
                                                         &quot;AbstractGameObject$ConcreteWrapper&quot;,
@@ -289,9 +289,9 @@ body { color: black; }</style>
 <li><tt>AbstractGameObject$ConcreteWrapper</tt> which will be used as the default Java class in cases where the object was created by C++ code. The <tt>$ConcreteWrapper</tt> part is required because the class <tt>AbstractGameObject</tt> is abstract.</li>
 </ul>
 <p>Then we must remember to provide a similar rule for converting the argument from Java to C++. This code is used in the case where the Java code calls the C++ implementation of the function, and is slightly more complicated:</p>
-<pre>&nbsp;   &lt;modify-function class=&quot;native&quot; signature=&quot;perform(Game::ActionType,AbstractGameObject**,int)&quot;&gt;
+<pre>&nbsp;   &lt;modify-function signature=&quot;perform(Game::ActionType,AbstractGameObject**,int)&quot;&gt;
         &lt;modify-argument index=&quot;2&quot;&gt;
-                &lt;conversion-rule&gt;
+                &lt;conversion-rule class=&quot;native&quot;&gt;
                     QVector&amp;lt;AbstractGameObject *&gt; gameObjects;
 
                     int arrayLength = __jni_env-&gt;GetArrayLength((jarray) %in);
@@ -322,30 +322,30 @@ body { color: black; }</style>
             &lt;remove-argument /&gt;
         &lt;/modify-argument&gt;</pre>
 <p>Just like when we modified the type of an argument, we need to provide the generator with rules for how to convert the length argument between Java and C++. Since the argument has been removed in the Java API, the conversion rule for passing it into Java will be left empty:</p>
-<pre>&nbsp;       &lt;conversion-rule&gt;
+<pre>&nbsp;       &lt;conversion-rule class=&quot;shell&quot;&gt;
             // intentionally empty
         &lt;/conversion-rule&gt;</pre>
 <p>In the conversion rule for passing the length argument into C++ we will retrieve the length from the Java array:</p>
-<pre>&nbsp;       &lt;conversion-rule&gt;
+<pre>&nbsp;       &lt;conversion-rule class=&quot;native&quot;&gt;
             int %out = __jni_env-&gt;GetArrayLength((jarray) %2);
         &lt;/conversion-rule&gt;</pre>
 <p>The <tt>perform()</tt> function can now be called and overridden from C++ with its new API.</p>
 <a name="moving-ownership-from-java-to-c"></a>
 <h3>Moving ownership from Java to C++</h3>
 <p>In most cases, we want objects created in Java to be garbage collected when there are no more Java references to them. On the other hand, there are a few cases where a C++ function takes ownership of an object, making it possible for the garbage collector to cause objects to disappear or the application to crash.</p>
-<p>The solution is to use the type system specification to supply the generator with information that a certain function changes the ownership rules of an object, using the <tt>disable-gc</tt> tag.</p>
+<p>The solution is to use the type system specification to supply the generator with information that a certain function changes the ownership rules of an object, using the <tt>define-ownership</tt> tag.</p>
 <p>The functions we must take care of in our library are the <tt>GameScene</tt> class's <tt>setEgoObject()</tt> and <tt>addGameObject()</tt> functions, as well as the <tt>setAnimation()</tt> function in the <tt>GameObject</tt> class, and the <tt>addVerb()</tt> function in the <tt>GameGrammar</tt> class. Enter the following code into the <tt>GameScene</tt> type specification:</p>
 <pre>&nbsp;       &lt;modify-function signature=&quot;setEgoObject(AbstractGameObject *)&quot;&gt;
             &lt;modify-argument index=&quot;1&quot;&gt;
-                &lt;disable-gc /&gt;
+                &lt;define-ownership class=&quot;java&quot; owner=&quot;c++&quot; /&gt;
             &lt;/modify-argument&gt;
         &lt;/modify-function&gt;</pre>
 <p>This argument modification specify that any object passed into <tt>setEgoObject()</tt> will be owned by C++ from that point on, i.e., the garbage collector will no longer touch it. We do the same for the other two functions.</p>
 <p>In addition, the <tt>clone()</tt> function in <tt>GameAction</tt> takes ownership of the returned object when it is called from C++ and reimplemented in Java. For that reason, we write a function modification disabling garbage collection for the return value:</p>
 <pre>&nbsp;       &lt;object-type name=&quot;GameAction&quot; polymorphic-base=&quot;yes&quot;&gt;
-            &lt;modify-function class=&quot;shell&quot; signature=&quot;clone() const&quot;&gt;
+            &lt;modify-function signature=&quot;clone() const&quot;&gt;
                 &lt;modify-argument index=&quot;return&quot;&gt;
-                    &lt;disable-gc /&gt;
+                    &lt;define-ownership class=&quot;shell&quot; ownership=&quot;c++&quot; /&gt;
                 &lt;/modify-argument&gt;
             &lt;/modify-function&gt;
         &lt;/object-type&gt;</pre>
