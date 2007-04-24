@@ -751,9 +751,9 @@
     excluding return values but including potential \c const
     declarations.
     
-    The \c remove, \c access and \c rename attributes are optional
-    attributes for added convenience, and they serve the same 
-    purpose as the tags \l remove, \l access and \l rename. 
+	The \c remove, \c access and \c rename attributes are optional
+	attributes for added convenience; they serve the same purpose as
+	the tags \l remove, \l access and \l rename. 
 
     \row
     \o \bold  include
@@ -1069,14 +1069,16 @@
         </modify-argument>
     \endcode
     
-    The \c action attribute specifies the action to be taken. \c add, \c add-all and 
-    \c remove are collection actions. They will, respectively, add a single object
-    to a list of references, add all objects in a collection to a list of references 
-    or remove a single object from a list of references. \c set will assign the argument
-    to the variable containing the reference (the argument must be a collection if 
-    the variable is also used for any of the collection specific actions.) \c ignore 
-    will not inject any code, but will cause the method in question to be removed from
-    the log of possible reference counting API.
+	The \c action attribute specifies the action to be taken. \c add,
+	\c add-all and \c remove are collection actions. They will add a
+	single object to a list of references, add all objects in a
+	collection to a list of references or remove a single object from
+	a list of references. \c set will assign the argument to the
+	variable containing the reference (the argument must be a
+	collection if the variable is also used for any of the collection
+	specific actions.) \c ignore will not inject any code, but will
+	cause the method in question to be removed from the log of
+	possible reference counting API.
     
     The \c variable-name attribute specifies the name used for the variable that holds the
     reference(s). 
