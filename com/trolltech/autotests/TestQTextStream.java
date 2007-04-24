@@ -24,7 +24,7 @@ public class TestQTextStream {
 	@Test public void testQPolygonF() {
 		QPolygonF p = new QPolygonF();
 		p.add(new QPointF(10, 11));
-		p.add(new QPointF(12, 13));
+		p.add(new QPointF(12.2, 13.3));
 		p.add(new QPointF(14, 15));
 		
 		QByteArray ba = new QByteArray();
@@ -43,12 +43,12 @@ public class TestQTextStream {
 			QPolygonF p2 = new QPolygonF();
 			p2.readFrom(stream);
 			
-			assertEquals(10, p2.at(0).x());
-			assertEquals(11, p2.at(0).y());
-			assertEquals(12, p2.at(1).x());
-			assertEquals(13, p2.at(1).y());
-			assertEquals(14, p2.at(2).x());
-			assertEquals(15, p2.at(2).y());			
+			assertEquals(10.0, p2.at(0).x());
+			assertEquals(11.0, p2.at(0).y());
+			assertEquals(12.2, p2.at(1).x());
+			assertEquals(13.3, p2.at(1).y());
+			assertEquals(14.0, p2.at(2).x());
+			assertEquals(15.0, p2.at(2).y());			
 		}
 	}
     
