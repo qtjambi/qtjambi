@@ -34,9 +34,6 @@
 ./com/trolltech/examples/SpinBoxes.java
 ./com/trolltech/examples/SqlCommon.java
 ./com/trolltech/examples/StarDelegate.java
-./com/trolltech/examples/StarEditor.java
-./com/trolltech/examples/StarRating.java
-./com/trolltech/examples/StarWindow.java
 ./com/trolltech/examples/StyleSheet.java
 ./com/trolltech/examples/SvgCards.java
 ./com/trolltech/examples/SyntaxHighlighter.java
