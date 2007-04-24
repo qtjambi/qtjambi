@@ -310,7 +310,7 @@ function compileJavaFiles() {
     execute([command.javac, "-J-mx1024m", "-target", "1.5", "@java_files"]);
 
     try {
-        execute([command.javac, "com/trolltech/demos/HelloGL.java"]);
+        execute([command.javac, "-J-mx1024m", "-target", "1.5", "com/trolltech/demos/HelloGL.java"]);
     } catch (e) {
         print("warning: failed to compile HelloGL demo, see 'hellogl_error.log' for details\n");
         File.write("hellogl_error.log", e);
