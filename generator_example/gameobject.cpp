@@ -91,8 +91,6 @@ Game::ObjectFlags GameObject::objectFlags() const
     return m_flags;
 }
 
-static QPointF oldPos;
-
 bool GameObject::canMove(const Point3D &pos)
 {
     bool returned = true;
