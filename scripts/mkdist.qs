@@ -71,7 +71,7 @@ if (!option.javadocHTTP) {
 option.javadocLocation = option.javadocHTTP + "/" + javadocName;
 option.jdocLocation = option.javadocHTTP + "/" + jdocName;
 
-const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtSvg", "QtDesigner", "QtDesignerComponents", "QtNetwork", "QtAssistantClient"];
+const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtSvg", "QtScript", "QtDesigner", "QtDesignerComponents", "QtNetwork", "QtAssistantClient"];
 const qtBinaryNames = ["designer", "linguist", "lrelease", "lupdate"];
 var qtReleaseLibraries = [];
 var qtDebugLibraries = [];
@@ -104,24 +104,44 @@ if (array_contains(args, "-help") || array_contains(args, "-h")) {
     }
 
     if (option.binaryPackages) {
-        prepareSourceTree()
-
-        if (!option.nocompilercheck)
-            checkCompiler();
-
-        findQtLibraries();
-
-        var dir = new Dir(javaDir);
-        dir.setCurrent();
-
-        if (!option.nogenerator) compileAndRunGenerator();
-        if (!option.nocppbuild) compileNativeLibraries();
-        if (!option.nojavabuild) compileJavaFiles();
-
-        createPackage();
+        createBinaryPackages();
     }
 }
 
+
+function createBinaryPackages(licenseType) {
+    prepareSourceTree();
+
+    if (!option.nocompilercheck)
+        checkCompiler();
+
+    findQtLibraries();
+
+    var dir = new Dir(javaDir);
+    dir.setCurrent();
+
+    if (!option.nogenerator) compileAndRunGenerator();
+    if (!option.nocppbuild) compileNativeLibraries();
+    if (!option.nojavabuild) compileJavaFiles();
+
+    dir.cdUp();
+    dir.setCurrent();
+    verbose(" - making backup of " + javaDir);
+    execute([command.cp, "-R", javaDir, "qtjambi-backup"]);
+    createPackage("gpl");
+
+    print("created gpl");
+
+    dir.setCurrent();
+
+    execute("pwd");
+    print(Process.stdout);
+
+    print(javaDir);
+
+    execute([command.cp, "-R", "qtjambi-backup", javaDir]);
+    createPackage("preview");
+}
 
 /*******************************************************************************
  * Check the compiler as we can only do the .net 2003 on windows
@@ -215,7 +235,7 @@ function findQtLibraries() {
 
     for (var i=0; i<qtBinaryNames.length; ++i) {
         var binName = option.qtdir + "/bin/" + qtBinaryNames[i] +  exe_extension;
-        if (!File.exists(binName) && os_name() == OS_NAME_MACOSX) 
+        if (!File.exists(binName) && os_name() == OS_NAME_MACOSX)
             binName = option.qtdir + "/bin/" + qtBinaryNames[i];
         if (!File.exists(binName))
             throw "Binary file '%1' does not exist".arg(binName);
@@ -334,7 +354,7 @@ function deletePackageDir()
 /*******************************************************************************
  * Creates the package...
  */
-function createPackage() {
+function createPackage(licenseType) {
     verbose("Creating package:");
 
     verbose(" - copying qt binaries");
@@ -347,20 +367,20 @@ function createPackage() {
     createDocs();
 
     verbose(" - expand macros");
-    expandMacros(preview_header);
+    expandMacros(licenseType == "gpl" ? gpl_header : preview_header);
 
     verbose(" - moving files around");
-    moveFiles();
+    moveFiles("binary", licenseType);
 
     verbose(" - removing files");
-    removeFiles();
+    removeFiles(licenseType);
 
     verbose(" - platform stuff");
     if (os_name() == OS_NAME_MACOSX)
         fixInstallName();
 
     verbose(" - bundling");
-    createBundle();
+    createBundle(licenseType);
 
 //     verbose(" - create platform archive");
 //     createPlatformArchive();
@@ -635,12 +655,12 @@ function removeFiles(packageType) {
 /*******************************************************************************
  * Creates the bundle...
  */
-function createBundle() {
+function createBundle(licenseType) {
     var dir = new Dir(javaDir);
     dir.cdUp();
     dir.setCurrent();
 
-    var packageName = "qtjambi-" + option.packageName + "-" + version;
+    var packageName = "qtjambi-" + licenseType + "-" + option.packageName + "-" + version;
 
     execute([command.mv, version, packageName]);
 
@@ -707,14 +727,18 @@ function createSourcePackage(type) {
 /* mac specific stuff */
 
 function fixInstallName() {
-    var tool = find_executable("install_name_tool");
-
     var dir = new Dir(javaDir);
     dir.cd("lib");
     dir.setCurrent();
 
+    verbose(" - fixing install name");
+
+    execute("pwd");
+    execute("ls -la");
+    execute("otool -L *");
+
     function fix(name) {
-        execute(["find", ".", "-name", '"*lib"', "-exec",
+        execute(["find", ".", "name", '*lib', "-exec",
                  "install_name_tool", "-change", name, "@loader_path/" + name, "{}",
                  ";"]);
     }
