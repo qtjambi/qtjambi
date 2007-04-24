@@ -122,6 +122,8 @@ public:
 
 
 private:
+    static QString processInternalTypeName(const QString &typeName, int *indirections = 0);
+
 private:
     QHash<void *, QString> mOwnedVariables_internal;
 

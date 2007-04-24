@@ -762,6 +762,15 @@ QtJambiTypeManager::Type QtJambiTypeManager::valueTypePattern(const QString &jav
     return Type(type | t);
 }
 
+QString QtJambiTypeManager::processInternalTypeName(const QString &_internalTypeName,
+                                                      int *_indirections)
+{
+    int indirections = _internalTypeName.count(QLatin1Char('*'));
+    if (_indirections != 0)
+        *_indirections = indirections; 
+    return _internalTypeName.left(_internalTypeName.length() - indirections);
+}
+
 QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(JNIEnv *env,
                                                             const QString &_internalTypeName)
 {
@@ -769,7 +778,8 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(JNIEnv *env,
     if (_internalTypeName == QLatin1String("void"))
         return None;
 
-    int indirections = _internalTypeName.count(QLatin1Char('*'));
+    int indirections = 0;
+    QString internalTypeName = processInternalTypeName(_internalTypeName, &indirections);
 
     // If we have more than one indirection we always use the QNativePointer pattern
     if (indirections > 1)
@@ -777,7 +787,6 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(JNIEnv *env,
 
     // Or we need to resolve the type
     int type = 0;
-    QString internalTypeName(_internalTypeName.left(_internalTypeName.length() - indirections));
 
     QString javaName = getJavaName(internalTypeName);
     int metaType = QMetaType::type(internalTypeName.toLatin1().constData());
@@ -957,7 +966,7 @@ QString QtJambiTypeManager::getExternalTypeName(const QString &internalTypeName,
     // Handle types in the type system, so: primitives and direct mappings.
     // Primitives need to be converted to objects for return types, so we
     // have to do some more work for them.
-    QString javaName = getJavaName(internalTypeName);
+    QString javaName = getJavaName(processInternalTypeName(internalTypeName));
     if (ctx == ArgumentType && !javaName.isEmpty())
         return javaName;
 
