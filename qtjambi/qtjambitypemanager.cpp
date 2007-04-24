@@ -922,13 +922,14 @@ QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
     // so: primitives, boxed primitives and direct mappings of Qt types
     QString qtName = getQtName(externalTypeName);
 
-    if (!qtName.isEmpty())
-        return qtName;
-
+    
     // If not we must do some more work.
     QString strClassName = className(externalTypeName);
     QString strPackage = package(externalTypeName);
     Type type = typeIdOfExternal(mEnvironment, strClassName, strPackage);
+    if (!qtName.isEmpty() && type & Value)
+        return qtName;
+
     if (type == None) {
         return QString();
     } else if (type & TypeMask) {
