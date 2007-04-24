@@ -1460,7 +1460,7 @@ public class TestInjectedCode extends QApplicationTest {
     public void testByteArrayPushBackString() {
         QByteArray ba = new QByteArray("hello");
         
-        // ba.push_back("h nice");
+        ba.append("h nice");
         assertEquals("helloh nice", ba.toString());                
     }
     
@@ -1468,7 +1468,7 @@ public class TestInjectedCode extends QApplicationTest {
     public void testByteArrayPushFrontString() {
         QByteArray ba = new QByteArray("hello");
         
-        // push_front("c")
+        ba.prepend("c");
         assertEquals("chello", ba.toString());        
     }
 
