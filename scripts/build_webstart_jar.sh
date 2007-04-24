@@ -3,7 +3,7 @@
 
 BASE_DIR=$PWD
 WEBSITE=http://anarki.troll.no/~gunnar/packages
-PACKAGE=1.0.0-beta
+PACKAGE=1.0.0-beta2
 
 
 echo Preparing directory
@@ -28,3 +28,5 @@ rm libQtDesigner*
 jar -cf qtjambi-linux.jar lib*.so* qt_system_libs
 
 cp qtjambi-linux.jar $BASE_DIR
+
+cd $BASE_DIR

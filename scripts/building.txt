@@ -36,6 +36,10 @@ Building the Qt package
 
  - Qt 4.1.3 is missing some symbols when compiled without Qt 3 support. To
    fix this, copy qprinter.cpp from Qt 4.1 depot into the Qt 4.1.3 package.
+
+ - On Linux, setup rpath by adding:
+      QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
+   to the .qmake.conf file...
     
  - Make using:
     make sub-src sub-tools
