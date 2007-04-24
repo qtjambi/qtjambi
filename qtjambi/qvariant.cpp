@@ -46,7 +46,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1convert)
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1canConvert)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1canConvert)
     (JNIEnv *env, jclass, jobject obj, jint type)
 {
     QVariant v = qtjambi_to_qvariant(env, obj);
@@ -65,7 +65,7 @@ static inline void setOk(JNIEnv *env, jobjectArray ok, bool isOk)
 }
 
 extern "C" JNIEXPORT jdouble JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toDouble)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toDouble)
     (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
@@ -76,7 +76,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toDouble)
 }
 
 extern "C" JNIEXPORT jint JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toInt)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toInt)
     (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
@@ -87,7 +87,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toInt)
 }
 
 extern "C" JNIEXPORT jlong JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toLong)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toLong)
     (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
@@ -98,7 +98,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toLong)
 }
 
 extern "C" JNIEXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toString)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toString)
     (JNIEnv *env, jclass, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
@@ -106,7 +106,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toString)
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toBoolean)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toBoolean)
     (JNIEnv *env, jclass, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
@@ -114,7 +114,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toBoolean)
 }
 
 extern "C" JNIEXPORT jchar JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1toChar)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toChar)
     (JNIEnv *env, jclass, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
