@@ -13,9 +13,11 @@
 
 package com.trolltech.examples;
 
+import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Application")
 public class Application extends QMainWindow {
 
     private String curFile;
@@ -222,18 +224,18 @@ public class Application extends QMainWindow {
 
     private void readSettings()
     {
-//        QSettings settings("Trolltech", "Application Example");
-//        QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-//        QSize size = settings.value("size", QSize(400, 400)).toSize();
-//        resize(size);
-//        move(pos);
+    	QSettings settings = new QSettings("Trolltech", "Application Example");
+        QPoint pos = QVariant.toPoint(settings.value("pos", new QPoint(200, 200)));
+        QSize size = QVariant.toSize(settings.value("size", new QSize(400, 400)));
+        resize(size);
+        move(pos);
     }
 
     private void writeSettings()
     {
-//        QSettings settings("Trolltech", "Application Example");
-//        settings.setValue("pos", pos());
-//        settings.setValue("size", size());
+        QSettings settings = new QSettings("Trolltech", "Application Example");
+        settings.setValue("pos", pos());
+        settings.setValue("size", size());
     }
 
     private boolean maybeSave()

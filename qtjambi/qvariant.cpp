@@ -35,7 +35,7 @@
 #include <QtCore/QByteArray>
 
 extern "C" JNIEXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant_1_1qt_1convert)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1convert)
     (JNIEnv *env, jclass, jint type, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
