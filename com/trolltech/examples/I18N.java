@@ -18,7 +18,8 @@ import java.util.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-@QtJambiExample(name = "I18N")
+@QtJambiExample(name = "I18N",
+                canInstantiate = "call-static-method:notWebstart")
 public class I18N extends QDialog {
 
     static public void main(String args[]) {
@@ -79,7 +80,7 @@ public class I18N extends QDialog {
 
         MainWindow window = mainWindowForCheckBoxMap.get(checkBox);
         if (window == null) {
-            QTranslator translator = new QTranslator();
+            QTranslator translator = new QTranslator(this);
             translator.load("classpath:com/trolltech/examples/translation/" + qmFileForCheckBoxMap.get(checkBox));
             QApplication.installTranslator(translator);
 
@@ -116,10 +117,8 @@ public class I18N extends QDialog {
     }
 
     private String languageName(final String qmFile) {
-        QTranslator translator = new QTranslator();
-
+        QTranslator translator = new QTranslator(this);
         translator.load("classpath:com/trolltech/examples/translation/" + qmFile);
-
         return translator.translate("com.trolltech.examples.I18N", "English");
     }
 
@@ -194,4 +193,9 @@ class MainWindow extends QMainWindow {
     protected void closeEvent(QCloseEvent event) {
         visible.emit(false);
     }
+
+    public static boolean notWebstart() {
+        return System.getProperty("com.trolltech.launcher.webstart") == null;
+    }
+
 }
