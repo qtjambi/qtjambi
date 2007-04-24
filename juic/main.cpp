@@ -245,25 +245,25 @@ void showHelp(const char *appName)
     fprintf(stderr, "Qt Jambi user interface compiler %s.\n", QT_VERSION_STR);
     if (error)
         fprintf(stderr, "%s: %s\n", appName, error);
-
     fprintf(stderr, "Usage: %s [OPTION]... <UIFILE>\n\n"
             "  -h, -help                display this help and exit\n"
             "  -v, -version             display version\n"
             "  -d <dir>                 output directory\n"
             "  -x <xml file>            load custom configuration file\n"
-            "  -p <package>             package of generated class file, relative to output dir\n"
+            "  -p <package>             package of generated class file, relative to output\n"
+            "                           dir\n"
             "  -tr <func>               use func() for i18n\n"
-            "  -cp <optional path>      updates all .jui files based on the input path. $CLASSPATH\n"
-            "                           is used if no argument is specified.\n"
-            "  -pf<optional prefix>     set the prefix of the names of generated classes. The\n"
-            "                           default is 'Ui_'. Omit the optional argument for no\n"
-            "                           prefix.\n"
-            "  -i <paths>               when used with 'cp' argument, only includes the files and\n"
-            "                           traverses the directories specified. The paths should\n"
-            "                           be separated by '%c'.\n"
-            "  -e <paths>               when used with 'cp' argument, excludes the files and does\n"
-            "                           not traverse the directories specified. The paths should be\n"
-            "                           separated by '%c'.\n"
+            "  -cp <optional path>      updates all .jui files based on the input path.\n"
+            "                           $CLASSPATH is used if no argument is specified.\n"
+            "  -pf<optional prefix>     set the prefix of the names of generated classes.\n"
+            "                           The default is 'Ui_'. Omit the optional argument\n"
+            "                           for no prefix.\n"
+            "  -i <paths>               when used with 'cp' argument, only includes the\n"
+            "                           files and traverses the directories specified. The\n"
+            "                           paths should be separated by '%c'.\n"
+            "  -e <paths>               when used with 'cp' argument, excludes the files\n"
+            "                           and does not traverse the directories specified. The\n" 
+            "                           paths should be separated by '%c'.\n"
             "  -a                       update files regardless of modification date.\n"
             "\n", appName, ENV_SPLITTER, ENV_SPLITTER);
 }
