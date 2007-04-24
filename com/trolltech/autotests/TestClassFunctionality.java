@@ -13,18 +13,16 @@
 
 package com.trolltech.autotests;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
+import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.network.QHostAddress;
-import com.trolltech.autotests.generated.*;
-
+import com.trolltech.qt.network.*;
 import static org.junit.Assert.*;
-
 import org.junit.*;
+
+import java.lang.reflect.*;
+import java.util.*;
 
 class OrdinarySubclass extends OrdinaryDestroyed {
     private TestClassFunctionality tc = null;
@@ -604,7 +602,7 @@ public class TestClassFunctionality extends QApplicationTest {
         QKeySequence seq = act.shortcut();
 
         assertEquals(seq.count(), 1);
-        assertEquals(seq.operator_subscript(0), Qt.Modifier.CTRL.value() | Qt.Key.Key_A.value());
+        assertEquals(seq.at(0), Qt.Modifier.CTRL.value() | Qt.Key.Key_A.value());
 
         SenderTester tester = new SenderTester();
         QTimer.singleShot(1000, tester, "timeoutSlot()");
