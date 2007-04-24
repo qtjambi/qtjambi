@@ -90,6 +90,7 @@ class ColorPropertyHandler extends PropertyHandler {
 
 
 class EnumPropertyHandler extends PropertyHandler {
+
     public Object create(QDomElement e) throws QUiLoaderException {
         String name = childStringValue(e);
         return enumForValue(name);
@@ -97,6 +98,11 @@ class EnumPropertyHandler extends PropertyHandler {
 
     @SuppressWarnings("unchecked")
     static Object enumForValue(String name) throws QUiLoaderException {
+
+        Object hcValue = hardcodedValues.get(name);
+        if (hcValue != null)
+            return hcValue;
+
         int valuePos = name.lastIndexOf('.');
         int enumPos = name.lastIndexOf('.', valuePos-1);
         if (enumPos > 0 && valuePos > 0) {
@@ -113,6 +119,15 @@ class EnumPropertyHandler extends PropertyHandler {
             throw new QUiLoaderException("Converting enum '" + name + "' failed", null);
         }
     }
+
+    private static HashMap<String,Object> hardcodedValues = new HashMap<String,Object>();
+    static {
+        hardcodedValues.put("TopToolBarArea", Qt.ToolBarArea.TopToolBarArea.value());
+        hardcodedValues.put("BottomToolBarArea", Qt.ToolBarArea.BottomToolBarArea.value());
+        hardcodedValues.put("RightToolBarArea", Qt.ToolBarArea.RightToolBarArea.value());
+        hardcodedValues.put("LeftToolBarArea", Qt.ToolBarArea.LeftToolBarArea.value());
+    }
+
 }
 
 

@@ -30,9 +30,12 @@ static QString enumify(const QString &value, const char *enumName)
 {
     bool isNumber = false;
     int i = value.toInt(&isNumber);
+
+    printf("enumify: %s -> %s, %d\n", qPrintable(value), enumName, isNumber);
+
     if (isNumber)
         return QString::fromLatin1("%1.resolve(%2)").arg(enumName).arg(i);
-    return value;
+    return QString::fromLatin1("%1.%2").arg(enumName).arg(value);
 }
 
 
@@ -224,7 +227,7 @@ void WriteInitialization::acceptWidget(DomWidget *node)
         } else if (uic->customWidgetsInfo()->extends(className, QLatin1String("QToolBar"))) {
             QString area;
             if (DomProperty *pstyle = attributes.value(QLatin1String("toolBarArea"))) {
-                area += QString::number(pstyle->elementNumber());
+                area += pstyle->elementEnum();
             }
 
             area = enumify(area, "com.trolltech.qt.core.Qt.ToolBarArea");
