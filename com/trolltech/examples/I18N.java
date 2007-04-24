@@ -129,6 +129,10 @@ public class I18N extends QDialog {
         int blue = 156 + ((hashValue >> 12) & 0x3F);
         return new QColor(red, green, blue);
     }
+
+    public static boolean notWebstart() {
+        return System.getProperty("com.trolltech.launcher.webstart") == null;
+    }
 }
 
 class MainWindow extends QMainWindow {
@@ -193,9 +197,4 @@ class MainWindow extends QMainWindow {
     protected void closeEvent(QCloseEvent event) {
         visible.emit(false);
     }
-
-    public static boolean notWebstart() {
-        return System.getProperty("com.trolltech.launcher.webstart") == null;
-    }
-
 }
