@@ -72,9 +72,9 @@ for (var i=0; i<input.length; ++i) {
     }
 }
 
-Process.execute([command.p4, "add", "com/trolltech/examples/...html"]);
-Process.execute([command.p4, "revert", "-a", "com/trolltech/examples/...html"]);
-Process.execute([command.p4, "opened", "com/trolltech/examples/..."]);
+Process.execute([command.p4, "add", "com/trolltech/...html"]);
+Process.execute([command.p4, "revert", "-a", "com/trolltech/...html"]);
+Process.execute([command.p4, "opened", "com/trolltech/...html"]);
 print("HTML files pending after update...:\n" + Process.stdout);
 
 for (var i=0; i<errors.length; ++i)
