@@ -91,6 +91,8 @@ Game::ObjectFlags GameObject::objectFlags() const
     return m_flags;
 }
 
+static QPointF oldPos;
+
 bool GameObject::canMove(const Point3D &pos)
 {
     bool returned = true;
@@ -101,11 +103,23 @@ bool GameObject::canMove(const Point3D &pos)
         QImage img = a->currentFrame();
         w = img.width(); h = img.height();
     }
-    QPainterPath walkPath(this->pos() + QPointF(-w / 2.0, h / 2.0));
-    walkPath.lineTo(this->pos() + QPointF(w / 2.0, h / 2.0));    
-    walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(w / 2.0, h / 2.0));
-    walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(-w / 2.0, h / 2.0));
-    walkPath.closeSubpath();
+
+    QPainterPath walkPath;
+    if (m_direction != Game::Left && m_direction != Game::Right) {
+        walkPath = QPainterPath(this->pos() + QPointF(-w / 2.0, h / 2.0));
+        walkPath.lineTo(this->pos() + QPointF(w / 2.0, h / 2.0));    
+        walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(w / 2.0, h / 2.0));
+        walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(-w / 2.0, h / 2.0));
+        walkPath.closeSubpath();
+    } else {
+        if (m_direction == Game::Left) w *= -1;
+        oldPos = QPointF(pos.x(), pos.y());
+        walkPath = QPainterPath(this->pos() + QPointF(w / 2.0, h / 2.0));
+        walkPath.lineTo(this->pos() + QPointF(w / 2.0, h / 2.0 + 1.0));    
+        walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(w / 2.0, h / 2.0));
+        walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(w / 2.0, h / 2.0 + 1.0));
+        walkPath.closeSubpath();
+    }
 
     QList<QGraphicsItem *> items = m_scene->scene()->items();
     foreach (QGraphicsItem *item, items) {
