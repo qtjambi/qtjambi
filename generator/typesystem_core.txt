@@ -2471,24 +2471,32 @@
     </inject-code>
    
     <inject-code>
-        public final int writeBytes(byte buffer[]) { return writeBytes(buffer, buffer.length); }
-        public final native int writeBytes(byte buffer[], int length);
-        public final int readBytes(byte buffer[]) { return readBytes(buffer, buffer.length); }
-        public final native int readBytes(byte buffer[], int length);
+    private native int writeBytes(long id, byte buffer[], int length);
+    private native int readBytes(long id, byte buffer[], int length);
+
+    public final int writeBytes(byte buffer[]) { return writeBytes(buffer, buffer.length); }
+    public final int writeBytes(byte buffer[], int length) {
+        return writeBytes(nativeId(), buffer, length);
+    }
+
+    public final int readBytes(byte buffer[]) { return readBytes(buffer, buffer.length); }
+    public final int readBytes(byte buffer[], int length) {
+        return readBytes(nativeId(), buffer, length);
+    }
     </inject-code>
 
     <template name="core.qdatastream_readorwrite_bytes">
-        extern "C" JNIEXPORT int JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_%FUNCTION_NAME%_1native)
+        extern "C" JNIEXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_%FUNCTION_NAME%_native)
         (JNIEnv *env, jobject, jlong stream, jbyteArray array, jint length)
         {
-            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%_native");
+            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%");
             char *rawBuffer = (char *) env->GetByteArrayElements(array, 0);
         
             QDataStream *qtStream = (QDataStream *) qtjambi_from_jlong(stream);
             int count = qtStream->%QT_FUNCTION_NAME%(rawBuffer, length);
         
             env->ReleaseByteArrayElements(array, (jbyte *) rawBuffer, 0);
-            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QDataStream::%FUNCTION_NAME%_native");
+            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QDataStream::%FUNCTION_NAME%");
             return qMin(count, (int) length);
         }
     </template>
