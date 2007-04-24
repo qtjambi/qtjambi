@@ -250,6 +250,7 @@ public class TextEdit extends QMainWindow {
             return false;
 
         QByteArray data = file.readAll();
+        file.dispose();
         QTextCodec codec = QTextCodec.codecForHtml(data);
         String str = codec.toUnicode(data);
 
@@ -317,6 +318,7 @@ public class TextEdit extends QMainWindow {
         ts.writeString(textEdit.document().toHtml(codecName));
         textEdit.document().setModified(false);
         file.close();
+        file.dispose();
         return true;
     }
 
