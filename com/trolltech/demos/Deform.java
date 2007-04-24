@@ -230,7 +230,7 @@ class PathDeformRenderer extends ArthurFrame
             }
 
             QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
-            update(rectBefore.intersected(rectAfter));
+            update(rectBefore.united(rectAfter));
             QApplication.syncX();
         }
     }
@@ -275,7 +275,7 @@ class PathDeformRenderer extends ArthurFrame
         m_pos.add(m_offset);
         QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
 
-        update(rectBefore.intersected(rectAfter));
+        update(rectBefore.united(rectAfter));
     }
 
     private void deformElement(QPainterPath_Element e, QPointF offset, double pts[])
