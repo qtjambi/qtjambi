@@ -30,9 +30,6 @@ static QString enumify(const QString &value, const char *enumName)
 {
     bool isNumber = false;
     int i = value.toInt(&isNumber);
-
-    printf("enumify: %s -> %s, %d\n", qPrintable(value), enumName, isNumber);
-
     if (isNumber)
         return QString::fromLatin1("%1.resolve(%2)").arg(enumName).arg(i);
     return QString::fromLatin1("%1.%2").arg(enumName).arg(value);
