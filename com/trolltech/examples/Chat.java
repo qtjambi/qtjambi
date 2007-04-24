@@ -105,7 +105,7 @@ public class Chat extends QDialog {
 
         QColor color = ui.textEdit.textColor();
         ui.textEdit.setTextColor(QColor.gray);
-        ui.textEdit.append(tr("* %1$s has joined", nick));
+        ui.textEdit.append(String.format(tr("* %1$s has joined"), nick));
         ui.textEdit.setTextColor(color);
         ui.listWidget.addItem(nick);
     }
@@ -125,7 +125,7 @@ public class Chat extends QDialog {
         
         QColor color = ui.textEdit.textColor();
         ui.textEdit.setTextColor(QColor.gray);
-        ui.textEdit.append(tr("* %1$s has left", nick));
+        ui.textEdit.append(String.format(tr("* %1$s has left"), nick));
         ui.textEdit.setTextColor(color);
     }
 
