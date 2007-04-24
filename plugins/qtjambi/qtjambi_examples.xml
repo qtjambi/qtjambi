@@ -16,11 +16,6 @@
   />
 
   <qt-jambi-custom-widget 
-    class="com.trolltech.examples.Mandelbrot"
-    group="Qt Jambi Examples"
-  />
-
-  <qt-jambi-custom-widget 
     class="com.trolltech.examples.SpinBoxes"
     group="Qt Jambi Examples"
   />
