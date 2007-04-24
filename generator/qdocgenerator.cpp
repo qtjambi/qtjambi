@@ -149,7 +149,8 @@ void QDocGenerator::writeOverload(QTextStream &s,
 void QDocGenerator::write(QTextStream &s, const MetaJavaEnumValue *java_enum_value)
 {
     s << "<enum-value java=\"" << protect(java_enum_value->name().toUtf8()) << "\"" << endl
-      << "    cpp=\"" << protect(java_enum_value->name().toUtf8()) << "\"/>" << endl;
+      << "    cpp=\"" << protect(java_enum_value->name().toUtf8()) << "\"" << endl
+      << "    value=\"" << java_enum_value->value() << "\"/>" << endl;
 }
 
 void QDocGenerator::write(QTextStream &s, const MetaJavaEnum *java_enum)
