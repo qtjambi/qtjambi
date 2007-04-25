@@ -14,16 +14,16 @@ cd webstart_builder
 
 
 echo Getting Package
-wget $WEBSITE/qtjambi-linux-$PACKAGE.tar.gz
+wget $WEBSITE/qtjambi-preview-linux-$PACKAGE.tar.gz
 
 
 echo Extracting
-tar -xzf qtjambi-linux-$PACKAGE.tar.gz
+tar -xzf qtjambi-preview-linux-$PACKAGE.tar.gz
 
 
 echo Creating linux jar file
 echo libstdc++.so.5>>qt_system_libs
-cp qtjambi-linux-$PACKAGE/lib/lib*.so* .
+cp qtjambi-preview-linux-$PACKAGE/lib/lib*.so* .
 rm libQtDesigner*
 jar -cf qtjambi-linux.jar lib*.so* qt_system_libs
 
