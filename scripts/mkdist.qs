@@ -726,32 +726,19 @@ function createSourcePackage(type) {
 /* mac specific stuff */
 
 function fixInstallName() {
+    verbose(" - fixing install name");
+
     var dir = new Dir(javaDir);
     dir.cd("lib");
     dir.setCurrent();
 
-    verbose(" - fixing install name");
-
-    execute("pwd");
-    execute("ls -la");
-    execute("otool -L *");
-
-    function fix(name) {
-        execute(["find", ".", "name", '*lib', "-exec",
-                 "install_name_tool", "-change", name, "@loader_path/" + name, "{}",
-                 ";"]);
+    var files = dir.entryList("lib*");
+    for (var i=0; i<files.length; ++i) {
+        var file = files[i];
+        for (var j=0; j<files.length; ++j) {
+            Process.execute(["install_name_tool", "-change", file, "@loader_path/" + file, files[j]]);
+        }
     }
-
-    fix("libQtAssistantClient.4.dylib");
-    fix("libQtCore.4.dylib");
-    fix("libQtDesigner.4.dylib");
-    fix("libQtGui.4.dylib");
-    fix("libQtNetwork.4.dylib");
-    fix("libQtOpenGL.4.dylib");
-    fix("libQtSql.4.dylib");
-    fix("libQtSvg.4.dylib");
-    fix("libQtXml.4.dylib");
-    fix("libqtjambi.1.jnilib");
 }
 
 /*******************************************************************************
