@@ -392,18 +392,22 @@ function expandMacros(header) {
 
     var this_year = new Date().getYear();
 
+
     function replace(a, b) {
         for_all_files(packageDir, function(name) {
-            replace_in_file(name, a, b);
+            multireplace_in_file(name, a, b);
         }, extensions);
     }
 
-    replace("\\$THISYEAR\\$", this_year);
-    replace("\\$TROLLTECH\\$", "Trolltech ASA");
-    replace("\\$PRODUCT\\$", "Qt Jambi");
-    replace("\\$LICENSE\\$", header);
-    replace("\\$JAVA_LICENSE\\$", header);
-    replace("\\$CPP_LICENSE\\$", header);
+    var from = [];
+    var to = [];
+    from.push("\\$THISYEAR\\$");        to.push(this_year);
+    from.push("\\$TROLLTECH\\$");       to.push("Trolltech ASA");
+    from.push("\\$PRODUCT\\$");         to.push("Qt Jambi");
+    from.push("\\$LICENSE\\$");         to.push(header);
+    from.push("\\$JAVA_LICENSE\\$");    to.push(header);
+    from.push("\\$CPP_LICENSE\\$");     to.push(header);
+    replace(from, to);
 }
 
 
