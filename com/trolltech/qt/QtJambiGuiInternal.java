@@ -24,22 +24,20 @@ public class QtJambiGuiInternal {
     public static void aboutQtJambi() {
         QMessageBox mb = new QMessageBox(QApplication.activeWindow());
         mb.setWindowTitle("About Qt Jambi");
-        mb
-                .setText("<h3>About Qt Jambi</h3>"
-                        + "<p>Qt Jambi is a Java toolkit based on Qt, a C++ toolkit for"
-                        + " cross-platform application development.</p>"
-                        + "<p>This program uses Qt version "
-                        + QtInfo.versionString()
-                        + ".</p>"
-                        + "<p>Qt Jambi provides single-source "
-                        + "portability across MS&nbsp;Windows, Mac&nbsp;OS&nbsp;X, "
-                        + "Linux, and all major commercial Unix variants"
-                        + "<p>Qt Jambi is a Trolltech product. See "
-                        + "<tt>http://www.trolltech.com/</tt> for more information.</p>");
+        mb.setText("<h3>About Qt Jambi</h3>"
+                   + "<p>Qt Jambi is a Java toolkit based on Qt, a C++ toolkit for"
+                   + " cross-platform application development.</p>"
+                   + "<p>This program uses Qt version "
+                   + QtInfo.versionString()
+                   + ".</p>"
+                   + "<p>Qt Jambi provides single-source "
+                   + "portability across MS&nbsp;Windows, Mac&nbsp;OS&nbsp;X, "
+                   + "Linux, and all major commercial Unix variants"
+                   + "<p>Qt Jambi is a Trolltech product. See "
+                   + "<tt>http://www.trolltech.com/</tt> for more information.</p>");
         mb.setIconPixmap(new QPixmap(
                 "classpath:com/trolltech/images/qt-logo.png"));
         mb.exec();
-        mb.dispose();
     }
 
 
