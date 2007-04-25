@@ -21,6 +21,7 @@
 #include <QList>
 #include <QHash>
 #include <QVector>
+#include <QMetaType>
 
 class QtJambiLink;
 
@@ -51,6 +52,7 @@ class QTJAMBI_EXPORT QtJambiLink
 {
     inline QtJambiLink(jobject jobj)
         : m_java_object(jobj),
+          m_meta_type(QMetaType::Void),
           m_wrapper(0),
           m_has_been_finalized(false),
           m_qobject_deleted(false),
