@@ -14,12 +14,14 @@ class QInvokable extends QObject {
 
     QInvokable(Runnable r) {
         disableGarbageCollection();
-        moveToThread(QCoreApplication.instance().thread());
-        runnable = r;
+        if(QCoreApplication.instance().nativeId() != 0) {
+            moveToThread(QCoreApplication.instance().thread());
+            runnable = r;
+        }
     }
 
     public final boolean event(com.trolltech.qt.core.QEvent e) {
-        if (e.type() == INVOKABLE_EVENT) {
+        if (e.type() == INVOKABLE_EVENT && runnable != null) {
             runnable.run();
             disposeLater();
             return true;
