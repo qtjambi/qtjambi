@@ -27,6 +27,8 @@ public class Mandelbrot extends QWidget {
     private double centerY;
     private double pixmapScale;
     private double currentScale;
+    
+    private boolean abort = false;
 
     final double DefaultCenterX = -0.637011f;
     final double DefaultCenterY = -0.0395159f;
@@ -49,7 +51,16 @@ public class Mandelbrot extends QWidget {
     public Mandelbrot() {
         this(null);
     }
-
+    
+    protected void disposed() {
+        synchronized (thread) {
+            abort = true;
+            try {
+                thread.join();
+            } catch (InterruptedException e) { }
+        }
+    }
+    
     public Mandelbrot(QWidget widget) {
         super(widget);
         centerX = DefaultCenterX;
@@ -125,7 +136,7 @@ public class Mandelbrot extends QWidget {
 
     protected void closeEvent(QCloseEvent event) {
         synchronized (thread) {
-            thread.abort = true;
+            abort = true;
             thread.notify();
         }
         super.closeEvent(event);
@@ -198,9 +209,13 @@ public class Mandelbrot extends QWidget {
         pixmapOffset = new QPoint();
         lastDragPosition = new QPoint();
         pixmapScale = scaleFactor;
+
         QApplication.invokeLater(new Runnable() {
             public void run() {
-                update();
+                synchronized (thread) {
+                    if(!abort)
+                        update();
+                }
             }
         });
     }
@@ -224,14 +239,12 @@ public class Mandelbrot extends QWidget {
         private double scaleFactor;
         private QSize resultSize;
         private boolean restart;
-        private boolean abort;
 
         final int ColormapSize = 512;
         int[] colormap = new int[ColormapSize];
 
         RenderThread() {
             restart = false;
-            abort = false;
 
             for (int i = 0; i < ColormapSize; ++i) {
                 double wave = 380.0 + (i * 400.0 / ColormapSize);
@@ -241,6 +254,7 @@ public class Mandelbrot extends QWidget {
 
         synchronized void render(double centerX, double centerY,
                                  double scaleFactor, QSize resultSize) {
+
             this.centerX = centerX;
             this.centerY = centerY;
             this.scaleFactor = scaleFactor;
