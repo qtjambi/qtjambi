@@ -111,7 +111,6 @@ bool GameObject::canMove(const Point3D &pos)
         walkPath.closeSubpath();
     } else {
         if (m_direction == Game::Left) w *= -1;
-        oldPos = QPointF(pos.x(), pos.y());
         walkPath = QPainterPath(this->pos() + QPointF(w / 2.0, h / 2.0));
         walkPath.lineTo(this->pos() + QPointF(w / 2.0, h / 2.0 + 1.0));    
         walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(w / 2.0, h / 2.0));
