@@ -225,6 +225,8 @@ void WriteInitialization::acceptWidget(DomWidget *node)
             QString area;
             if (DomProperty *pstyle = attributes.value(QLatin1String("toolBarArea"))) {
                 area += pstyle->elementEnum();
+                if (area.isEmpty())
+                    area += QString::number(pstyle->elementNumber());
             }
 
             area = enumify(area, "com.trolltech.qt.core.Qt.ToolBarArea");
