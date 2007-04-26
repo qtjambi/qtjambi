@@ -2486,7 +2486,7 @@
     </inject-code>
 
     <template name="core.qdatastream_readorwrite_bytes">
-        extern "C" JNIEXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_%FUNCTION_NAME%_native)
+        extern "C" JNIEXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_%FUNCTION_NAME%)
         (JNIEnv *env, jobject, jlong stream, jbyteArray array, jint length)
         {
             QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%");
