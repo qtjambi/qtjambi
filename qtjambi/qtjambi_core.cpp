@@ -349,7 +349,7 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
     } else if (env->IsSameObject(sc->Double.class_ref, object_class)) {
         return env->CallDoubleMethod(java_object, sc->Double.doubleValue);
     } else if (env->IsSameObject(sc->Long.class_ref, object_class)) {
-        return env->CallLongMethod(java_object, sc->Long.longValue);
+        return (qint64) env->CallLongMethod(java_object, sc->Long.longValue);
     } else if (env->IsSameObject(sc->Boolean.class_ref, object_class)) {
         return QVariant((bool) env->CallBooleanMethod(java_object, sc->Boolean.booleanValue));
     }
