@@ -107,7 +107,8 @@ public class Utilities {
     
 
     public static boolean loadLibrary(String lib) {
-
+        if (VERBOSE_LOADING) System.out.println("\nGoing to load: " + lib);
+        
         if(loadFromEnv("com.trolltech.qt.library-path" , lib))
             return true;
         
@@ -173,6 +174,8 @@ public class Utilities {
         if(loadFromEnv("java.library.path" , lib))
             return true;
                         
+        
+        if (VERBOSE_LOADING) System.out.println("Loading: " + lib + " failed.\n");
         return false;
     }
 
