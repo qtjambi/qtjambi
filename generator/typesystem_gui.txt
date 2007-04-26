@@ -3994,11 +3994,12 @@
 
     <modify-function signature="polish(QPalette&amp;)">
         <inject-code class="shell" position="beginning">
-            jobject __invalidate_me;
+            jobject __invalidate_me = 0;
         </inject-code>
         <inject-code class="shell" position="end">
             // In case someone keeps a reference to this object
-            qtjambi_invalidate_object(qtjambi_current_environment(), __invalidate_me);
+            if (__invalidate_me != 0)
+                qtjambi_invalidate_object(qtjambi_current_environment(), __invalidate_me);
         </inject-code>            
     
         <modify-argument index="1">
