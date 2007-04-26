@@ -302,9 +302,12 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         // and thus, do cleanup, hence deleteLater() is safe;
         // Otherwise issue a warning.
         } else {
-            jobject t = qtjambi_from_thread(env, objectThread);
+            jobject t = env->NewLocalRef(qtjambi_from_thread(env, objectThread));
             if (t) {
+                QTJAMBI_EXCEPTION_CHECK(env);
+//                printf("name %s, %s, %p", qPrintable(objectThread->objectName()), objectThread->metaObject()->className(), t);;
                 jclass cl = env->GetObjectClass(t);
+//                qDebug() << ".. au ..";
 
                 if (qtjambi_class_name(env, cl) == QLatin1String("com.trolltech.qt.QThread")) {
     //                 printf(" - delete later in QThread=%p %s [%s]\n",
@@ -333,6 +336,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
             else {
                 delete qobj;
             }
+            env->DeleteLocalRef(t);
         }
         m_pointer = 0;
 
