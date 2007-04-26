@@ -303,32 +303,36 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         // Otherwise issue a warning.
         } else {
             jobject t = qtjambi_from_thread(env, objectThread);
-            jclass cl = env->GetObjectClass(t);
+            if (t) {
+                jclass cl = env->GetObjectClass(t);
 
-            if (qtjambi_class_name(env, cl) == QLatin1String("com.trolltech.qt.QThread")) {
-//                 printf(" - delete later in QThread=%p %s [%s]\n",
-//                        objectThread,
-//                        qPrintable(qobj->objectName()),
-//                        qobj->metaObject()->className());
-                qobj->deleteLater();
-            } else {
-                qWarning("QObjects can only be implicitly garbage collected when owned"
-                         " by a QThread, native resource ('%s' [%s]) is leaked",
-                         qPrintable(qobj->objectName()),
-                         qobj->metaObject()->className());
+                if (qtjambi_class_name(env, cl) == QLatin1String("com.trolltech.qt.QThread")) {
+    //                 printf(" - delete later in QThread=%p %s [%s]\n",
+    //                        objectThread,
+    //                        qPrintable(qobj->objectName()),
+    //                        qobj->metaObject()->className());
+                    qobj->deleteLater();
+                } else {
+                    qWarning("QObjects can only be implicitly garbage collected when owned"
+                            " by a QThread, native resource ('%s' [%s]) is leaked",
+                            qPrintable(qobj->objectName()),
+                            qobj->metaObject()->className());
+                }
+
+    //             StaticCache *sc = StaticCache::instance(env);
+    //             sc->resolveQThread();
+    //             if (env->IsSameObject(cl, sc->QThread.class_ref)) {
+    //                 qobj->deleteLater();
+
+    //             } else {
+    //                 // ## Resolve QThreadAffinityException...
+    //                 // Message: "QObjects can only be implicitly garbage collected when owned by a QThread".
+    //                 qWarning("something really bad happened...");
+    //             }
             }
-
-//             StaticCache *sc = StaticCache::instance(env);
-//             sc->resolveQThread();
-//             if (env->IsSameObject(cl, sc->QThread.class_ref)) {
-//                 qobj->deleteLater();
-
-//             } else {
-//                 // ## Resolve QThreadAffinityException...
-//                 // Message: "QObjects can only be implicitly garbage collected when owned by a QThread".
-//                 qWarning("something really bad happened...");
-//             }
-
+            else {
+                delete qobj;
+            }
         }
         m_pointer = 0;
 
