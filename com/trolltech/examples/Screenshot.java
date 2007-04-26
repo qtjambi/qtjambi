@@ -102,6 +102,10 @@ public class Screenshot extends QWidget {
         if (delaySpinBox.value() != 0)
             QApplication.beep();
 
+        if(originalPixmap != null) {
+            originalPixmap.dispose();
+        }
+        
         originalPixmap = QPixmap.grabWindow(
                 QApplication.desktop().winId());
         updateScreenshotLabel();
