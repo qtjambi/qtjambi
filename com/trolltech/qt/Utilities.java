@@ -100,6 +100,7 @@ public class Utilities {
                 }
             }
         } catch (Throwable e) {
+            if (VERBOSE_LOADING) System.out.println("Failed to load " + lib + " from " + env);
             return false;
         }
         return false;
@@ -119,8 +120,9 @@ public class Utilities {
         // from there.
         try {
             URL libUrl = Thread.currentThread().getContextClassLoader().getResource(lib);
-            if (libUrl == null)
+            if (libUrl == null) {
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
+            }
 
             File tmpDir = new File(System.getProperty("java.io.tmpdir"));
             File tmpLibDir = new File(tmpDir, "QtJambi_" + QtJambi.VERSION_STRING);
@@ -153,8 +155,9 @@ public class Utilities {
                     Runtime.getRuntime().load(libraryPath);
                     if (VERBOSE_LOADING)
                         System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
+                    return true;    
                 }
-                return true;
+                
             } catch (Throwable e) {
                 if (VERBOSE_LOADING)
                     e.printStackTrace();
