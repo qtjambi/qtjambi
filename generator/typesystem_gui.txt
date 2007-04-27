@@ -643,7 +643,6 @@
 
   <value-type name="QTransform">
     <modify-function signature="operator=(QTransform)" remove="all"/>
-    <modify-function signature="operator/(double)" remove="all"/>
     <modify-function signature="map(int,int,int*,int*)const" remove="all"/>
     <modify-function signature="map(double,double,double*,double*)const" remove="all"/>
 
@@ -2258,7 +2257,7 @@
   <interface-type name="QPaintDevice"/>
 
   <interface-type name="QGraphicsItem">
-    <modify-function signature="QGraphicsItem(QGraphicsItem *)">
+    <modify-function signature="QGraphicsItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null)
@@ -2321,7 +2320,7 @@
   </interface-type>  
   
   <object-type name="QAbstractGraphicsShapeItem">
-    <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*)">
+    <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
@@ -2691,19 +2690,19 @@
   </object-type>
   
   <object-type name="QGraphicsEllipseItem">
-    <modify-function signature="QGraphicsEllipseItem(QGraphicsItem*)">
+    <modify-function signature="QGraphicsEllipseItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>     
-    <modify-function signature="QGraphicsEllipseItem(const QRectF &amp;,QGraphicsItem*)">
+    <modify-function signature="QGraphicsEllipseItem(const QRectF &amp;,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>      
-    <modify-function signature="QGraphicsEllipseItem(qreal,qreal,qreal,qreal,QGraphicsItem*)">
+    <modify-function signature="QGraphicsEllipseItem(double,double,double,double,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="5" meta-name="%5" />
             if (%5 != null) disableGarbageCollection();
@@ -2724,7 +2723,7 @@
     </modify-function>  
   </object-type>
   <object-type name="QGraphicsItemGroup">
-    <modify-function signature="QGraphicsItemGroup(QGraphicsItem*)">
+    <modify-function signature="QGraphicsItemGroup(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
@@ -2747,19 +2746,19 @@
     </modify-function>
   </object-type>
   <object-type name="QGraphicsLineItem">
-    <modify-function signature="QGraphicsLineItem(QGraphicsItem*)">
+    <modify-function signature="QGraphicsLineItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>  
-    <modify-function signature="QGraphicsLineItem(const QLineF &amp;,QGraphicsItem*)">
+    <modify-function signature="QGraphicsLineItem(const QLineF &amp;,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>
-    <modify-function signature="QGraphicsLineItem(qreal,qreal,qreal,qreal,QGraphicsItem*)">
+    <modify-function signature="QGraphicsLineItem(double,double,double,double,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="5" meta-name="%5" />
             if (%5 != null) disableGarbageCollection();
@@ -2767,13 +2766,13 @@
     </modify-function>            
   </object-type>
   <object-type name="QGraphicsPathItem">
-    <modify-function signature="QGraphicsPathItem(QGraphicsItem*)">
+    <modify-function signature="QGraphicsPathItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>  
-    <modify-function signature="QGraphicsPathItem(const QPainterPath &amp;,QGraphicsItem*)">
+    <modify-function signature="QGraphicsPathItem(const QPainterPath &amp;,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
@@ -2781,13 +2780,13 @@
     </modify-function>      
   </object-type>
   <object-type name="QGraphicsPixmapItem">
-    <modify-function signature="QGraphicsPixmapItem(QGraphicsItem*)">
+    <modify-function signature="QGraphicsPixmapItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>  
-    <modify-function signature="QGraphicsPixmapItem(const QPixmap &amp;,QGraphicsItem*)">
+    <modify-function signature="QGraphicsPixmapItem(const QPixmap &amp;,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
@@ -2795,13 +2794,13 @@
     </modify-function>      
   </object-type>
   <object-type name="QGraphicsPolygonItem">
-    <modify-function signature="QGraphicsPolygonItem(QGraphicsItem*)">
+    <modify-function signature="QGraphicsPolygonItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>  
-    <modify-function signature="QGraphicsPolygonItem(const QPolygonF &amp;,QGraphicsItem*)">
+    <modify-function signature="QGraphicsPolygonItem(const QPolygonF &amp;,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
@@ -2809,19 +2808,19 @@
     </modify-function>      
   </object-type>
   <object-type name="QGraphicsRectItem">
-    <modify-function signature="QGraphicsRectItem(QGraphicsItem*)">
+    <modify-function signature="QGraphicsRectItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>
-    <modify-function signature="QGraphicsRectItem(qreal,qreal,qreal,qreal,QGraphicsItem*)">
+    <modify-function signature="QGraphicsRectItem(double,double,double,double,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="5" meta-name="%5" />
             if (%5 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>
-    <modify-function signature="QGraphicsRectItem(const QRectF &amp;,QGraphicsItem*)">
+    <modify-function signature="QGraphicsRectItem(const QRectF &amp;,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
@@ -2829,13 +2828,13 @@
     </modify-function>                    
   </object-type>
   <object-type name="QGraphicsSimpleTextItem">
-    <modify-function signature="QGraphicsSimpleTextItem(QGraphicsItem*)">
+    <modify-function signature="QGraphicsSimpleTextItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>  
-    <modify-function signature="QGraphicsSimpleTextItem(const QString &amp;,QGraphicsItem*)">
+    <modify-function signature="QGraphicsSimpleTextItem(const QString &amp;,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
@@ -4575,16 +4574,16 @@
     <modify-function signature="setItemExpanded(const QTreeWidgetItem*,bool)">
         <remove />
     </modify-function>
-    <modify-function signature="isItemExpanded(const QTreeWidgetItem*)">
+    <modify-function signature="isItemExpanded(const QTreeWidgetItem*)const">
         <remove />
     </modify-function>
     <modify-function signature="setItemHidden(const QTreeWidgetItem*,bool)">
         <remove />
     </modify-function>
-    <modify-function signature="isItemHidden(const QTreeWidgetItem*)">
+    <modify-function signature="isItemHidden(const QTreeWidgetItem*)const">
         <remove />
     </modify-function>
-    <modify-function signature="isItemSelected(const QTreeWidgetItem*)">
+    <modify-function signature="isItemSelected(const QTreeWidgetItem*)const">
         <remove />
     </modify-function>
     <modify-function signature="setItemSelected(const QTreeWidgetItem*,bool)">  
@@ -4667,13 +4666,13 @@
     <extra-includes>
       <include file-name="QTextCursor" location="global"/>
     </extra-includes>
-    <modify-function signature="QGraphicsTextItem(QGraphicsItem*)">
+    <modify-function signature="QGraphicsTextItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>  
-    <modify-function signature="QGraphicsTextItem(const QString &amp;,QGraphicsItem*)">
+    <modify-function signature="QGraphicsTextItem(const QString &amp;,QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
@@ -4813,13 +4812,13 @@
     <modify-function signature="setItemHidden(const QListWidgetItem*,bool)">
         <remove />
     </modify-function>
-    <modify-function signature="isItemHidden(const QListWidgetItem*)">
+    <modify-function signature="isItemHidden(const QListWidgetItem*)const">
         <remove />
     </modify-function>
     <modify-function signature="setItemSelected(const QListWidgetItem*,bool)">
         <remove />
     </modify-function>
-    <modify-function signature="isItemSelected(const QListWidgetItem*)">
+    <modify-function signature="isItemSelected(const QListWidgetItem*)const">
         <remove />
     </modify-function>
     <modify-function signature="takeItem(int)">
@@ -6585,7 +6584,7 @@
             __rcRedirections.push(%2);
         </inject-code>
     </modify-function>
-    <modify-function signature="restoreRedirected()">
+    <modify-function signature="restoreRedirected(const QPaintDevice*)">
         <inject-code position="end">
             if (!__rcRedirections.empty()) __rcRedirections.pop(); 
             if (!__rcRedirections.empty()) __rcRedirections.pop();
