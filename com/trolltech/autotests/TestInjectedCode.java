@@ -1298,7 +1298,7 @@ public class TestInjectedCode extends QApplicationTest {
         codec = QTextCodec.codecForName("Magic Text Codec Which Successfully Improves What You've Written");
         assertTrue(codec == null);
     }    
-    
+  
     @Test
     public void testTextCodecConvertToUnicode() {
         TextCodecSubclassSubclass tcss = new TextCodecSubclassSubclass();
@@ -1320,13 +1320,6 @@ public class TestInjectedCode extends QApplicationTest {
         assertTrue(state == tcss.receivedState);
         assertTrue(state == tcss.receivedState());
         assertEquals("asa", new String(tcss.receivedChar));
-    }
-    
-    @Test 
-    public void testCrashReminder() {
-        assertEquals("The JVM will crash when you instantiate a QTextCodec subclass", 
-                     "because it's a global static which will cause jambi to attach the vm to a thread as" +
-                     " it's shutting down");
     }
     
     public static void main(String args[]) {

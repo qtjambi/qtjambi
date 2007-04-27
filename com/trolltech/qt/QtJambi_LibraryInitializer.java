@@ -28,6 +28,8 @@ abstract class QtJambi_LibraryInitializer
 
         initialize();
         QThreadManager.initialize();
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(new QtJambi_LibraryShutdown()));
     }
 
     static void init() {}

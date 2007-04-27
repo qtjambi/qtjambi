@@ -72,6 +72,16 @@ public:
 JavaVM *qtjambi_vm = 0;
 
 /*!
+ * This function is called by Qt Jambi shutdown hook to indicate that
+ * the library is being unloaded. It prevents any access to the 
+ * current JNIEnv *.
+ */
+void qtjambi_shutdown() 
+{
+    qtjambi_vm = 0;
+}
+
+/*!
  * This function is called by the Virtual Machine when it loads the
  * library. We need this to get a hold of the global VM pointer
  */
@@ -241,14 +251,14 @@ void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
 JNIEnv *qtjambi_current_environment()
 {
     JNIEnv *env;
-    Q_ASSERT(qtjambi_vm);
+    if (qtjambi_vm == 0) 
+        return 0;
     int result = qtjambi_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_4);
     if (result == JNI_EDETACHED) {
         if (qtjambi_vm->AttachCurrentThreadAsDaemon(reinterpret_cast<void **>(&env), 0) < 0) {
             qWarning("Failed attaching current thread");
             return 0;
-        }
-
+        } 
     } else {
         Q_ASSERT(result == JNI_OK);
     }

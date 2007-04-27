@@ -287,3 +287,13 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_fetchFieldNative)
     return env->GetObjectField(owner, id);
 }
 
+void qtjambi_shutdown();
+
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_run)
+(JNIEnv *, 
+ jobject)
+{
+    qtjambi_shutdown();
+}
+

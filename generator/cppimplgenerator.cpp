@@ -748,7 +748,8 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const MetaJavaClass 
             }
         }
 
-        s << INDENT << "    m_link->resetObject(qtjambi_current_environment());" << endl
+        s << INDENT << "    JNIEnv *__jni_env = qtjambi_current_environment();" << endl
+          << INDENT << "    if (__jni_env != 0) m_link->resetObject(__jni_env);" << endl
           << INDENT << "}"
           << endl;
     }
