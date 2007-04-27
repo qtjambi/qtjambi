@@ -370,6 +370,15 @@ public class QSignalEmitter {
 
                 if (inCppEmission && slotIsCppEmit(c))
                     continue;
+                
+                if (args.length == c.convertTypes.length) {
+                    c.args = args;
+                } else {
+                    if (c.args == null)
+                        c.args = new Object[c.convertTypes.length];
+                    System.arraycopy(args, 0, c.args, 0,
+                            c.args.length);
+                }
 
                 // We do a direct connection in three cases:
                 // 1. If the connection is explicitly set to be direct
@@ -391,15 +400,6 @@ public class QSignalEmitter {
                         if (updateSender) {
                             oldSender = QtJambiInternal.swapQObjectSender(((QObject) c.receiver).nativeId(),
                                                                            ((QObject) QSignalEmitter.this).nativeId(), true);
-                        }
-
-                        if (args.length == c.convertTypes.length) {
-                            c.args = args;
-                        } else {
-                            if (c.args == null)
-                                c.args = new Object[c.convertTypes.length];
-                            System.arraycopy(args, 0, c.args, 0,
-                                    c.args.length);
                         }
 
                         try {
@@ -429,9 +429,8 @@ public class QSignalEmitter {
                     if(c.receiver instanceof QObject && QSignalEmitter.this instanceof QObject) {
                         sender = (QObject) QSignalEmitter.this;
                     }
-
-                    QMetaCallEvent event = new QMetaCallEvent(c, sender, args);
-
+                    
+                    QMetaCallEvent event = new QMetaCallEvent(c, sender, c.args);
                     QObject eventReceiver = null;
                     if (c.receiver instanceof QObject)
                         eventReceiver = (QObject) c.receiver;

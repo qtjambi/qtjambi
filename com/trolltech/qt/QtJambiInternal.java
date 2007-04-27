@@ -74,12 +74,15 @@ public class QtJambiInternal {
                 QtJambiInternal.invokeSlot(connection.receiver, connection.slotId,
                                            connection.returnType,
                                            connection.args, connection.convertTypes);
-            } catch (InvocationTargetException e) {
+            } catch (Exception e) {
                 System.err.printf("Exception while executing queued connection: sender=%s, receiver=%s %s\n",
                         sender != null ? sender.getClass().getName() : "N/A",
                         connection.receiver,
                         connection.slot.toString());
-                e.getCause().printStackTrace();
+                if (e.getCause() != null)
+                	e.getCause().printStackTrace();
+                else
+                	e.printStackTrace();
             }
             if (updateSender) {
                 QtJambiInternal.swapQObjectSender(((QObject) connection.receiver).nativeId(),
