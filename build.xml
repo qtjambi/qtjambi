@@ -10,20 +10,22 @@
     <tstamp/>
 
     <target name="init">
-        <property name="sourceDir" value="." />
-        <property name="outputDir" value="classes" />
-        <property name="reportDir" value="reports" />
-        <property name="htmlDir"   value="/var/www/junit/" />
 
-        <property name="jambiLib" value="./lib" />
-        <property name="qt"       value="${env.QTDIR}" />
-        <property name="qtLib"    value="${qt}/lib" />
-        <property name="config"    value="debug" />
-
-        <property name="deployDir" value="./deploy" />
-
-        <property name="eclipseDir" value="../../eclipse/stable" />
     </target>
+
+    <property name="sourceDir" value="." />
+    <property name="outputDir" value="classes" />
+    <property name="reportDir" value="reports" />
+    <property name="htmlDir"   value="/var/www/junit/" />
+
+    <property name="jambiLib" value="./lib" />
+    <property name="qt"       value="${env.QTDIR}" />
+    <property name="qtLib"    value="${qt}/lib" />
+    <property name="config"    value="debug" />
+
+    <property name="deployDir" value="./deploy" />
+
+    <property name="eclipseDir" value="../../eclipse/stable" />
 
     <target name="clean" depends="init">
         <delete dir="${outputDir}" />
@@ -60,14 +62,14 @@
             <arg line="dist clean -s"/>
         </exec>
         <exec executable="qmake" dir=".">
-            <arg line="-r -config ${config} sanitycheck"/>
+            <arg line="-r -config ${config} -config sanitycheck"/>
         </exec>
         <exec executable="make" dir=".">
             <arg line="dist clean -s"/>
         </exec>
     </target>
 
-    <target name="compile.generator" depends="prepare">
+    <target name="compile.generator">
         <exec executable="make" dir="generator">
             <arg line="clean -s"/>
         </exec>
@@ -106,7 +108,7 @@
             <arg line="-r -config ${config}"/>
         </exec>
         <exec executable="make"  dir="autotestlib">
-           <arg line="-s" />
+            <arg line="-s" />
        </exec>
     </target>
 
@@ -234,7 +236,7 @@
              basedir="${deployDir}"/>
     </target>
 
-    <target name="deploy.tar.gz" depends="deploy.linux">
+    <target name="deploy.tar.gz">
         <tar tarfile="jambi-devel.tar" basedir="${deployDir}"/>
         <gzip zipfile="jambi-devel.tar.gz" src="jambi-devel.tar"/>
         <delete file="jambi-devel.tar" />
