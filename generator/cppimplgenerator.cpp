@@ -960,6 +960,8 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
 
                     s << INDENT << "}" << endl;
                 }
+            } else if (!java_function->conversionRule(TypeSystem::ShellCode, 0).isEmpty()) {
+                writeConversionRule(s, TypeSystem::ShellCode, java_function, 0, "<invalid>", "<invalid>");
             }
 
             writeOwnership(s, java_function, "this", -1, implementor);

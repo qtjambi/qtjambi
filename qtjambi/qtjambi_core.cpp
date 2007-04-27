@@ -516,7 +516,8 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
 void qtjambi_invalidate_object(JNIEnv *env, jobject java_object)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, java_object);
-    link->resetObject(env);
+    if (link != 0)
+        link->resetObject(env);
 }
 
 static bool qtjambi_connect_callback(void **raw_data);

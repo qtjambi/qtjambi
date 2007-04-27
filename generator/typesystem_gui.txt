@@ -3993,20 +3993,11 @@
     </modify-function>
 
     <modify-function signature="polish(QPalette&amp;)">
-        <inject-code class="shell" position="beginning">
-            jobject __invalidate_me = 0;
-        </inject-code>
-        <inject-code class="shell" position="end">
-            // In case someone keeps a reference to this object
-            if (__invalidate_me != 0)
-                qtjambi_invalidate_object(qtjambi_current_environment(), __invalidate_me);
-        </inject-code>            
-    
         <modify-argument index="1">
             <replace-type modified-type="com.trolltech.qt.gui.QPalette" />
             <conversion-rule class="shell">
                 jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "QPalette", "com/trolltech/qt/gui/", false);
-                __invalidate_me = %out;
+                jobject __invalidate_me = %out;
             </conversion-rule>
             <conversion-rule class="native">
                 QtJambiLink *link = QtJambiLink::findLink(__jni_env, %in);
@@ -4015,7 +4006,13 @@
                 QPalette dummy;
                 QPalette &amp;%out = link != 0 ? * (QPalette *) link->pointer() : dummy;
             </conversion-rule>            
-        </modify-argument>        
+        </modify-argument>       
+        <modify-argument index="0">
+            <conversion-rule class="shell">
+                if (__invalidate_me != 0)
+                    qtjambi_invalidate_object(__jni_env, __invalidate_me);
+            </conversion-rule>
+        </modify-argument> 
     </modify-function>
     
     <modify-function signature="standardIconImplementation(QStyle::StandardPixmap,const QStyleOption*,const QWidget*)const">

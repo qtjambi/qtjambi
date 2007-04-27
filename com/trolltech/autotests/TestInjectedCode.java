@@ -405,6 +405,30 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals(QColor.green.rgba(), img.pixel(4, 4));
         assertEquals(QColor.red.rgba(), img.pixel(12, 4));
     }    
+
+    private QPalette savedPalette = null;
+    @Test
+    public void testQApplicationSetStyleOverridePolish() {
+    	savedPalette = null;
+    	
+    	QApplication.setStyle(new QPlastiqueStyle() { 
+    		public void polish(QPalette palette) { 
+    			savedPalette = palette; 
+    			super.polish(palette); 
+    		} 
+    	});
+    	
+    	// The palette is automatically invalidated after the virtual
+    	// call to polish
+    	assertEquals(0, savedPalette.nativeId());
+    }
+    
+    @Test 
+    public void testQApplicationSetStyleNotOverridePolish() {
+    	QApplication.setStyle(new QPlastiqueStyle());
+    	// got here, didn't crash
+    }
+    
     
     @Test
     public void testQXmlReaderFeature() {
