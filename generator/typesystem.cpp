@@ -1239,8 +1239,12 @@ TypeDatabase *TypeDatabase::instance()
 TypeDatabase::TypeDatabase() : m_suppressWarnings(true)
 {
     addType(new StringTypeEntry("QString"));
-
+ 
     StringTypeEntry *e = new StringTypeEntry("QLatin1String");
+    e->setPreferredConversion(false);
+    addType(e);
+
+    e = new StringTypeEntry("QStringRef");
     e->setPreferredConversion(false);
     addType(e);
 

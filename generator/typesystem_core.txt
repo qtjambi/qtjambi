@@ -499,7 +499,6 @@
   </enum-type>
   
   <value-type name="QBasicTimer"/>  
-  <value-type name="QStringRef" />
   <value-type name="QByteArrayMatcher">
     <modify-function signature="operator=(QByteArrayMatcher)" remove="all"/>
   </value-type>
