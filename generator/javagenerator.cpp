@@ -782,8 +782,7 @@ void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &re
         s << "            " << refCountVariableName << ".addAll(" << argumentName << ");" << endl;
         break;
     case ReferenceCount::Remove:
-        s << "            while (" << refCountVariableName << ".contains(" << argumentName << "))" << endl
-          << "                " << refCountVariableName << ".remove(" << argumentName << ");" << endl;
+        s << "            while (" << refCountVariableName << ".remove(" << argumentName << ")) ;" << endl;
         break;
     case ReferenceCount::Set:
         {
