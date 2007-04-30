@@ -82,6 +82,7 @@
         }
         public final Result waitForNewConnection(int msec) {
             QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
+            np.setBooleanValue(true);
             boolean success = waitForNewConnection(msec, np);
             
             return (np.booleanValue() 
