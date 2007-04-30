@@ -420,7 +420,7 @@ public class TestInjectedCode extends QApplicationTest {
     	
     	// The palette is automatically invalidated after the virtual
     	// call to polish
-    	assertEquals(0, savedPalette.nativeId());
+    	assertEquals(0l, savedPalette.nativeId());
     }
     
     @Test 
