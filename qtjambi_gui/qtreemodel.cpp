@@ -1,6 +1,7 @@
 #include "qtreemodel.h"
 
 #include <QtCore/QVector>
+#include <QtCore/QStack>
 #include <QtGui/QIcon>
 
 #include <qtjambi_core.h>
@@ -102,6 +103,7 @@ QTreeModel::QTreeModel(QObject *parent)
       m_root(new Node())
 {
     connect(this, SIGNAL(modelReset()), this, SLOT(wasReset()));
+    connect(this, SIGNAL(layoutChanged()), this, SLOT(wasChanged()));
     m_invalidation = false;
 }
 
@@ -238,6 +240,27 @@ void QTreeModel::wasReset()
     delete m_root;
     m_root = new Node();
 }
+
+
+/*!
+    \internal
+*/
+void QTreeModel::wasChanged()
+{
+    QStack<Node*> stk;
+    if (m_root)
+        stk.push(m_root);
+    while (!stk.isEmpty()) {
+        Node *node = stk.pop();
+        node->state = 0;
+        for (int i = 0; i < node->nodes.count(); ++i){
+            if (Node *tmp = node->nodes.at(i))
+                stk.push(tmp);
+        }
+    }
+}
+
+
 
 /*!
     \fn void QTreeModel::childrenRemoved(const QModelIndex &parent, int first, int last)

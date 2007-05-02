@@ -46,6 +46,7 @@ public slots:
 
 private slots:
     void wasReset();
+    void wasChanged();
 
 private:
     void initializeNode(Node *n, const QModelIndex &index) const;
