@@ -6,6 +6,8 @@
 
 #include <qtjambi_core.h>
 
+const char *string_IllegalArgumentException = "java/lang/IllegalArgumentException";
+
 class Node {
 public:
     enum State {
@@ -54,6 +56,16 @@ public:
 
     uint state;
 };
+
+
+void throwException(const QString &message, const char *exception) {
+    JNIEnv *env = qtjambi_current_environment();
+    jclass ex = env->FindClass(exception);
+    Q_ASSERT_X(ex,
+               "throwException",
+               qPrintable(QString("%1: %2").arg(exception).arg(message)));
+    env->ThrowNew(ex, message.toUtf8());
+}
 
 /*!
     \class QTreeModel
@@ -277,8 +289,10 @@ void QTreeModel::childrenRemoved(const QModelIndex &parentIndex, int first, int 
     Node *n = node(parentIndex);
 
     if (first < 0 || last >= n->nodes.size() || first > last) {
-        printf("QTreeModel::childrenRemoved(), bad input, first=%d, last=%d, childCount=%d\n",
-               first, last, n->nodes.size());
+        throwException(QString::fromLatin1("Bad input, first=%1, last=%2, "
+                                           "childCount=%3")
+                       .arg(first).arg(last).arg(n->nodes.size()),
+                       string_IllegalArgumentException);
         return;
     }
 
@@ -292,7 +306,7 @@ void QTreeModel::childrenRemoved(const QModelIndex &parentIndex, int first, int 
 /*!
     \fn void QTreeModel::childrenInserted(const QModelIndex &parent, int first, int last)
 
-    Inserts \a first - \a last + 1 nodes into the given \a parent,
+    Inserts \a last - \a first + 1 nodes into the given \a parent,
     before the node specified by \a first. Note that this function
     must be called when nodes have been inserted into the model.
 
@@ -304,8 +318,10 @@ void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int
     Node *parentNode = node(parentIndex);
 
     if (first < 0 || first > last) {
-        printf("QTreeModel::childrenInserted(), bad input, first=%d, last=%d, childCount=%d\n",
-               first, last, parentNode->nodes.size());
+        throwException(QString::fromLatin1("Bad input, first=%1, last=%2, "
+                                           "oldChildCount=%3")
+                       .arg(first).arg(last).arg(parentNode->nodes.size()),
+                       string_IllegalArgumentException);
         return;
     }
 
@@ -314,9 +330,10 @@ void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int
 
     int newSize = childCount(parentNode->value);
     if (increase != newSize - oldSize) {
-        printf("QTreeModel::childrenInserted(), inconsistent childCount=%d vs oldCount=%d,"
-               " first=%d, last=%d\n",
-               newSize, oldSize, first, last);
+        throwException(QString::fromLatin1("inconsistency between childCount() and expected child count. Expected %1, actual childCount() is %2")
+                       .arg(last - first + 1)
+                       .arg(newSize),
+                       string_IllegalArgumentException);
         return;
     }
 
