@@ -143,10 +143,15 @@ TypeInfo TypeInfo::resolveType (TypeInfo const &__type, CodeModelItem __scope)
 
     CodeModelItem __item = __model->findItem (__type.qualifiedName (), __scope);
 
-    if (TypeAliasModelItem __alias = model_dynamic_cast<TypeAliasModelItem> (__item))
-        return resolveType (TypeInfo::combine (__alias->type (), __type), __scope);
+    // Copy the type and replace with the proper qualified name
+    TypeInfo otherType(__type);
+    if (__item->qualifiedName().size())
+        otherType.setQualifiedName(__item->qualifiedName());
 
-    return __type;
+    if (TypeAliasModelItem __alias = model_dynamic_cast<TypeAliasModelItem> (__item))
+        return resolveType (TypeInfo::combine (__alias->type (), otherType), __scope);
+
+    return otherType;
 }
 
 QString TypeInfo::toString() const

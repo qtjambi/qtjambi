@@ -106,6 +106,14 @@ private:
 class TypeInfo
 {
 public:
+  TypeInfo(const TypeInfo &other)
+    : flags(other.flags),
+      m_qualifiedName(other.m_qualifiedName),
+      m_arrayElements(other.m_arrayElements),
+      m_arguments(other.m_arguments)
+  {
+  }
+
   TypeInfo():
     flags (0) {}
 
