@@ -303,7 +303,7 @@ void QTreeModel::childrenInserted(const QModelIndex &parentIndex, int first, int
 {
     Node *parentNode = node(parentIndex);
 
-    if (first < 0 || last > parentNode->nodes.size() || first > last) {
+    if (first < 0 || first > last) {
         printf("QTreeModel::childrenInserted(), bad input, first=%d, last=%d, childCount=%d\n",
                first, last, parentNode->nodes.size());
         return;
