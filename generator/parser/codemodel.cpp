@@ -143,10 +143,15 @@ TypeInfo TypeInfo::resolveType (TypeInfo const &__type, CodeModelItem __scope)
 
     CodeModelItem __item = __model->findItem (__type.qualifiedName (), __scope);
 
-    // Copy the type and replace with the proper qualified name
+    // Copy the type and replace with the proper qualified name. This
+    // only makes sence to do if we're actually getting a resolved
+    // type with a namespace. We only get this if the returned type
+    // has more than 2 entries in the qualified name... This test
+    // could be improved by returning if the type was found or not.
     TypeInfo otherType(__type);
-    if (__item->qualifiedName().size())
+    if (__item->qualifiedName().size() > 1) {
         otherType.setQualifiedName(__item->qualifiedName());
+    }
 
     if (TypeAliasModelItem __alias = model_dynamic_cast<TypeAliasModelItem> (__item))
         return resolveType (TypeInfo::combine (__alias->type (), otherType), __scope);
