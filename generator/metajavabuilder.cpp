@@ -208,7 +208,7 @@ void MetaJavaBuilder::traverseStreamOperator(FunctionModelItem item)
         MetaJavaClass *streamClass = argumentToClass(arguments.at(0));
         MetaJavaClass *streamedClass = argumentToClass(arguments.at(1));
 
-        if (streamClass != 0 && streamedClass != 0 
+        if (streamClass != 0 && streamedClass != 0
             && (streamClass->name() == "QDataStream" || streamClass->name() == "QTextStream")) {
             MetaJavaFunction *streamFunction = new MetaJavaFunction;
 
@@ -239,7 +239,7 @@ void MetaJavaBuilder::traverseStreamOperator(FunctionModelItem item)
             streamFunction->setDeclaringClass(streamedClass);
             streamFunction->setImplementingClass(streamedClass);
             streamFunction->setOriginalAttributes(streamFunction->attributes());
-            
+
             streamedClass->addFunction(streamFunction);
             streamedClass->typeEntry()->addExtraInclude(streamClass->typeEntry()->include());
         }
@@ -270,6 +270,8 @@ bool MetaJavaBuilder::build()
     Binder binder(&model, p.location());
     m_dom = binder.run(ast);
 
+    pushScope(model_dynamic_cast<ScopeModelItem>(m_dom));
+
     QHash<QString, ClassModelItem> typeMap = m_dom->classMap();
 
     // fix up QObject's in the type system..
@@ -287,20 +289,15 @@ bool MetaJavaBuilder::build()
     // Start the generation...
     foreach (ClassModelItem item, typeMap.values()) {
         MetaJavaClass *cls = traverseClass(item);
-        if (!cls)
-            continue;
+        addMetaJavaClass(cls);
+    }
 
-	    cls->setOriginalAttributes(cls->attributes());
-        if (cls->typeEntry()->isContainer()) {
-            m_templates << cls;
-        } else {
-            m_java_classes << cls;
-            if (cls->typeEntry()->designatedInterface()) {
-                MetaJavaClass *interface = cls->extractInterface();
-                m_java_classes << interface;
-                ReportHandler::debugSparse(QString(" -> interface '%1'").arg(interface->name()));
-            }
-        }
+
+    QHash<QString, NamespaceModelItem> namespaceMap = m_dom->namespaceMap();
+    foreach (NamespaceModelItem item, namespaceMap.values()) {
+        MetaJavaClass *java_class = traverseNamespace(item);
+        if (java_class)
+            m_java_classes << java_class;
     }
 
     foreach (MetaJavaClass *cls, m_java_classes) {
@@ -309,12 +306,6 @@ bool MetaJavaBuilder::build()
         }
     }
 
-    QHash<QString, NamespaceModelItem> namespaceMap = m_dom->namespaceMap();
-    foreach (NamespaceModelItem item, namespaceMap.values()) {
-        MetaJavaClass *java_class = traverseNamespace(item);
-        if (java_class)
-            m_java_classes << java_class;
-    }
 
     foreach (MetaJavaClass *cls, m_java_classes) {
         cls->fixFunctions();
@@ -392,6 +383,25 @@ bool MetaJavaBuilder::build()
 }
 
 
+void MetaJavaBuilder::addMetaJavaClass(MetaJavaClass *cls)
+{
+    if (!cls)
+        return;
+
+    cls->setOriginalAttributes(cls->attributes());
+    if (cls->typeEntry()->isContainer()) {
+        m_templates << cls;
+    } else {
+        m_java_classes << cls;
+        if (cls->typeEntry()->designatedInterface()) {
+            MetaJavaClass *interface = cls->extractInterface();
+            m_java_classes << interface;
+            ReportHandler::debugSparse(QString(" -> interface '%1'").arg(interface->name()));
+        }
+    }
+}
+
+
 MetaJavaClass *MetaJavaBuilder::traverseNamespace(NamespaceModelItem namespace_item)
 {
     NamespaceTypeEntry *type = TypeDatabase::instance()->findNamespaceType(namespace_item->name());
@@ -422,8 +432,22 @@ MetaJavaClass *MetaJavaBuilder::traverseNamespace(NamespaceModelItem namespace_i
 
     traverseEnums(model_dynamic_cast<ScopeModelItem>(namespace_item), java_class);
     // traverseFunctions(model_dynamic_cast<ScopeModelItem>(namespace_item), java_class);
+//     traverseClasses(model_dynamic_cast<ScopeModelItem>(namespace_item));
+
+    pushScope(model_dynamic_cast<ScopeModelItem>(namespace_item));
+    m_namespace_prefix = currentScope()->qualifiedName().join("::");
+
+
+    ClassList classes = namespace_item->classes();
+    foreach (ClassModelItem cls, classes) {
+        MetaJavaClass *mjc = traverseClass(cls);
+        addMetaJavaClass(mjc);
+    }
 
     m_current_class = 0;
+
+    popScope();
+    m_namespace_prefix = currentScope()->qualifiedName().join("::");
 
     return java_class;
 }
@@ -806,6 +830,7 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
     java_class->setTypeEntry(type);
     java_class->setBaseClassNames(class_item->baseClasses());
     *java_class += MetaJavaAttributes::Public;
+    java_class->setInNamespace(!m_namespace_prefix.isEmpty());
 
     MetaJavaClass *old_current_class = m_current_class;
     m_current_class = java_class;
@@ -888,7 +913,7 @@ MetaJavaField *MetaJavaBuilder::traverseField(VariableModelItem field, const Met
         ReportHandler::warning(QString("skipping field '%1::%2' with unmatched type '%3'")
                                .arg(m_current_class->name())
                                .arg(field_name)
-                               .arg(TypeInfo::resolveType(field_type, model()->toItem()).qualifiedName().join("::")));
+                               .arg(TypeInfo::resolveType(field_type, currentScope()->toItem()).qualifiedName().join("::")));
         delete java_field;
         return 0;
     }
@@ -1322,11 +1347,22 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
     Q_ASSERT(ok);
     *ok = true;
 
-    TypeInfo typei = TypeInfo::resolveType(_typei, model()->toItem());
+    TypeInfo typei;
+
+    // A tiny hack to work around the fact that Qt::HANDLE is
+    // typedef'ed by platform, so its different all over... For this
+    // reason we want to treat it as a primitive-type, but because the
+    // ::'s in there resolveType above gets confused...
+    if (_typei.toString() == QLatin1String("Qt::HANDLE"))
+        typei = _typei;
+    else
+        typei = TypeInfo::resolveType(_typei, currentScope()->toItem());
+
     if (typei.isFunctionPointer()) {
         *ok = false;
         return 0;
     }
+
     TypeParser::Info typeInfo = TypeParser::parse(typei.toString());
     if (typeInfo.is_busted) {
         *ok = false;

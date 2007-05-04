@@ -40,6 +40,11 @@ public:
     FileModelItem model() const { return m_dom; }
     void setModel(FileModelItem item) { m_dom = item; }
 
+
+    ScopeModelItem popScope() { return m_scopes.takeLast(); }
+    void pushScope(ScopeModelItem item) { m_scopes << item; }
+    ScopeModelItem currentScope() const { return m_scopes.last(); }
+
     QString fileName() const { return m_file_name; }
     void setFileName(const QString &fileName) { m_file_name = fileName; }
 
@@ -52,6 +57,7 @@ public:
     void figureOutEnumValues();
     void figureOutDefaultEnumArguments();
 
+    void addMetaJavaClass(MetaJavaClass *cls);
     MetaJavaClass *traverseClass(ClassModelItem item);
     bool setupInheritance(MetaJavaClass *java_class);
     MetaJavaClass *traverseNamespace(NamespaceModelItem item);
@@ -108,6 +114,8 @@ protected:
     QHash<QString, MetaJavaEnumValue *> m_enum_values;
 
     MetaJavaClass *m_current_class;
+    QList<ScopeModelItem> m_scopes;
+    QString m_namespace_prefix;
 
     QSet<MetaJavaClass *> m_setup_inheritance_done;
 };

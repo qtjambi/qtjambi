@@ -80,7 +80,7 @@ namespace TypeSystem {
     };
 };
 
-struct ReferenceCount 
+struct ReferenceCount
 {
     ReferenceCount() : threadSafe(false), access(Public) { }
     enum Action { // 0x01 - 0xff
@@ -119,7 +119,7 @@ struct ReferenceCount
     QString declareVariable;
 
     uint threadSafe : 1;
- 
+
     uint access;
 };
 
@@ -756,6 +756,12 @@ public:
     void setExpensePolicy(const ExpensePolicy &policy) { m_expense_policy = policy; }
     const ExpensePolicy &expensePolicy() const { return m_expense_policy; }
 
+    QString javaName() const { return m_java_name.isEmpty()
+                                   ? TypeEntry::javaName()
+                                   : m_java_name;
+    }
+    void setJavaName(const QString &name) { m_java_name = name; }
+
 private:
     IncludeList m_extra_includes;
     Include m_include;
@@ -766,6 +772,7 @@ private:
     QString m_package;
     QString m_default_superclass;
     QString m_qualified_cpp_name;
+    QString m_java_name;
     uint m_qobject : 1;
     bool m_polymorphic_base;
     QString m_polymorphic_id_value;

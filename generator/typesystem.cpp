@@ -364,6 +364,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["default-superclass"] = m_defaultSuperclass;
             attributes["polymorphic-base"] = QString("no");
             attributes["polymorphic-id-expression"] = QString();
+            attributes["java-name"] = QString();
             // fall through
         case StackElement::NamespaceTypeEntry:
             attributes["package"] = m_defaultPackage;
@@ -497,6 +498,10 @@ bool Handler::startElement(const QString &, const QString &n,
                 ComplexTypeEntry *ctype = static_cast<ComplexTypeEntry *>(element->entry);
                 ctype->setJavaPackage(attributes["package"]);
                 ctype->setDefaultSuperclass(attributes["default-superclass"]);
+
+                QString javaName = attributes["java-name"];
+                if (!javaName.isEmpty())
+                    ctype->setJavaName(javaName);
 
                 // The expense policy
                 QString limit = attributes["expense-limit"];
@@ -1239,7 +1244,7 @@ TypeDatabase *TypeDatabase::instance()
 TypeDatabase::TypeDatabase() : m_suppressWarnings(true)
 {
     addType(new StringTypeEntry("QString"));
- 
+
     StringTypeEntry *e = new StringTypeEntry("QLatin1String");
     e->setPreferredConversion(false);
     addType(e);
