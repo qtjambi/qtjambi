@@ -465,7 +465,10 @@ public class TestInjectedCode extends QApplicationTest {
     public void testQTcpServerWaitForConnection() {
         QTcpServer server = new QTcpServer();
         
-        QTcpServer.Result result = server.waitForNewConnection(1);
+        assertTrue(server.listen());
+        
+        QTcpServer.Result result = server.waitForNewConnection(100);
+        
         assertEquals(QTcpServer.Result.TimedOut, result);
     }
     
