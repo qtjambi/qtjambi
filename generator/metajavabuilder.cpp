@@ -830,7 +830,6 @@ MetaJavaClass *MetaJavaBuilder::traverseClass(ClassModelItem class_item)
     java_class->setTypeEntry(type);
     java_class->setBaseClassNames(class_item->baseClasses());
     *java_class += MetaJavaAttributes::Public;
-    java_class->setInNamespace(!m_namespace_prefix.isEmpty());
 
     MetaJavaClass *old_current_class = m_current_class;
     m_current_class = java_class;
