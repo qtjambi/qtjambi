@@ -66,6 +66,7 @@ public:
     void traverseFunctions(ScopeModelItem item, MetaJavaClass *parent);
     void traverseFields(ScopeModelItem item, MetaJavaClass *parent);
     void traverseStreamOperator(FunctionModelItem function_item);
+    void traverseCompareOperator(FunctionModelItem item);
     MetaJavaFunction *traverseFunction(FunctionModelItem function);
     MetaJavaField *traverseField(VariableModelItem field, const MetaJavaClass *cls);
     void checkFunctionModifications();
@@ -74,6 +75,7 @@ public:
     void parseQ_Property(MetaJavaClass *java_class, const QStringList &declarations);
     void setupEquals(MetaJavaClass *java_class);
     void setupComparable(MetaJavaClass *java_class);
+    void setupFunctionDefaults(MetaJavaFunction *java_function, MetaJavaClass *java_class);
 
     QString translateDefaultValue(ArgumentModelItem item, MetaJavaType *type,
                                                MetaJavaFunction *fnc, MetaJavaClass *,

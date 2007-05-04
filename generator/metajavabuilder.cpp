@@ -201,6 +201,37 @@ void MetaJavaBuilder::registerHashFunction(FunctionModelItem function_item)
     }
 }
 
+void MetaJavaBuilder::traverseCompareOperator(FunctionModelItem item) {
+    ArgumentList arguments = item->arguments();
+    if (arguments.size() == 2 && item->accessPolicy() == CodeModel::Public) {
+        MetaJavaClass *comparer_class = argumentToClass(arguments.at(0));
+        MetaJavaClass *compared_class = argumentToClass(arguments.at(1));
+        if (comparer_class != 0 && compared_class != 0) {
+            MetaJavaClass *old_current_class = m_current_class;
+            m_current_class = comparer_class;
+
+            MetaJavaFunction *java_function = traverseFunction(item);
+            if (java_function != 0 && !java_function->isInvalid()) {
+                // Strip away first argument, since that is the containing object
+                MetaJavaArgumentList arguments = java_function->arguments();
+                arguments.pop_front();
+                java_function->setArguments(arguments);
+
+                java_function->setFunctionType(MetaJavaFunction::GlobalScopeFunction);
+
+                java_function->setOriginalAttributes(java_function->attributes());
+                setupFunctionDefaults(java_function, comparer_class);
+
+                comparer_class->addFunction(java_function);
+            } else if (java_function != 0) {
+                delete java_function;
+            }
+
+            m_current_class = old_current_class;
+        }
+    }
+}
+
 void MetaJavaBuilder::traverseStreamOperator(FunctionModelItem item)
 {
     ArgumentList arguments = item->arguments();
@@ -210,38 +241,37 @@ void MetaJavaBuilder::traverseStreamOperator(FunctionModelItem item)
 
         if (streamClass != 0 && streamedClass != 0
             && (streamClass->name() == "QDataStream" || streamClass->name() == "QTextStream")) {
-            MetaJavaFunction *streamFunction = new MetaJavaFunction;
+            MetaJavaClass *old_current_class = m_current_class;
+            m_current_class = streamedClass;
+            MetaJavaFunction *streamFunction = traverseFunction(item);
 
-            QString name = item->name();
-            streamFunction->setOriginalName(name);
-            streamFunction->setFunctionType(MetaJavaFunction::GlobalScopeFunction);
+            if (streamFunction != 0 && !streamFunction->isInvalid()) {
+                QString name = item->name();
+                streamFunction->setFunctionType(MetaJavaFunction::GlobalScopeFunction);
 
-            if (name.endsWith("<<"))
-                streamFunction->setName("writeTo");
-            else
-                streamFunction->setName("readFrom");
+                if (name.endsWith("<<"))
+                    streamFunction->setName("writeTo");
+                else
+                    streamFunction->setName("readFrom");
 
-            streamFunction->setConstant(item->isConstant());
-            *streamFunction += MetaJavaAttributes::Final;
-            *streamFunction += MetaJavaAttributes::Public;
+                // Strip away last argument, since that is the containing object
+                MetaJavaArgumentList arguments = streamFunction->arguments();
+                arguments.pop_back();
+                streamFunction->setArguments(arguments);
 
-            bool ok = false;
-            MetaJavaType *argumentType = translateType(arguments.at(0)->type(), &ok);
-            if (ok) {
-                MetaJavaArgument *argument = new MetaJavaArgument;
-                argument->setType(argumentType);
-                argument->setName("stream");
-                argument->setArgumentIndex(0);
+                *streamFunction += MetaJavaAttributes::Final;
+                *streamFunction += MetaJavaAttributes::Public;
+                streamFunction->setOriginalAttributes(streamFunction->attributes());
 
-                streamFunction->setArguments(MetaJavaArgumentList() << argument);
+                streamFunction->setType(0);
+
+                setupFunctionDefaults(streamFunction, streamedClass);
+
+                streamedClass->addFunction(streamFunction);
+                streamedClass->typeEntry()->addExtraInclude(streamClass->typeEntry()->include());
+
+                m_current_class = old_current_class;
             }
-
-            streamFunction->setDeclaringClass(streamedClass);
-            streamFunction->setImplementingClass(streamedClass);
-            streamFunction->setOriginalAttributes(streamFunction->attributes());
-
-            streamedClass->addFunction(streamFunction);
-            streamedClass->typeEntry()->addExtraInclude(streamClass->typeEntry()->include());
         }
     }
 }
@@ -359,6 +389,17 @@ bool MetaJavaBuilder::build()
         foreach (FunctionModelItem item, hash_functions) {
             registerHashFunction(item);
         }
+    }
+
+    {
+        FunctionList compare_operators = m_dom->findFunctions("operator==") 
+                                         + m_dom->findFunctions("operator<=")
+                                         + m_dom->findFunctions("operator>=")
+                                         + m_dom->findFunctions("operator<")
+                                         + m_dom->findFunctions("operator>");
+        foreach (FunctionModelItem item, compare_operators) {
+            traverseCompareOperator(item);
+        }                                 
     }
 
     {
@@ -947,12 +988,33 @@ void MetaJavaBuilder::traverseFields(ScopeModelItem scope_item, MetaJavaClass *j
     }
 }
 
+void MetaJavaBuilder::setupFunctionDefaults(MetaJavaFunction *java_function, MetaJavaClass *java_class) 
+{
+    // Set the default value of the declaring class. This may be changed
+    // in fixFunctions later on
+    java_function->setDeclaringClass(java_class);
+
+    // Some of the queries below depend on the implementing class being set
+    // to function properly. Such as function modifications
+    java_function->setImplementingClass(java_class);
+
+    if (java_function->name() == "operator_equal")
+        java_class->setHasEqualsOperator(true);
+
+    if (!java_function->isFinalInJava()
+        && java_function->isRemovedFrom(java_class, TypeSystem::JavaCode)) {
+        *java_function += MetaJavaAttributes::FinalInCpp;
+    }
+}
+
 void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass *java_class)
 {
     foreach (FunctionModelItem function, scope_item->functions()) {
         MetaJavaFunction *java_function = traverseFunction(function);
 
         if (java_function) {
+
+            java_function->setOriginalAttributes(java_function->attributes());
 
             if (QPropertySpec *read = java_class->propertySpecForRead(java_function->name())) {
                 if (read->type() == java_function->type()->typeEntry()) {
@@ -980,15 +1042,6 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
 //                            qPrintable(reset->name()));
             }
 
-            // Set the default value of the declaring class. This may be changed
-            // in fixFunctions later on
-            java_function->setDeclaringClass(java_class);
-
-            // Some of the queries below depend on the implementing class being set
-            // to function properly. Such as function modifications
-            java_function->setImplementingClass(java_class);
-
-            java_function->setOriginalAttributes(java_function->attributes());
 
             bool isInvalidDestructor = java_function->isDestructor() && java_function->isPrivate();
             bool isInvalidConstructor = java_function->isConstructor()
@@ -1006,18 +1059,6 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
             if (java_function->isDestructor() && !java_function->isFinal())
                 java_class->setForceShellClass(true);
 
-            if (java_function->isSignal() && !java_class->isQObject()) {
-                QString warn = QString("signal '%1' in non-QObject class '%2'")
-                    .arg(java_function->name()).arg(java_class->name());
-                ReportHandler::warning(warn);
-            }
-
-            if (java_function->isSignal() && java_class->hasSignal(java_function)) {
-                QString warn = QString("signal '%1' in class '%2' is overloaded.")
-                    .arg(java_function->name()).arg(java_class->name());
-                ReportHandler::warning(warn);
-            }
-
             if (!java_function->isDestructor()
                 && !java_function->isInvalid()
                 && (!java_function->isConstructor() || !java_function->isPrivate())) {
@@ -1031,13 +1072,19 @@ void MetaJavaBuilder::traverseFunctions(ScopeModelItem scope_item, MetaJavaClass
                     java_function->setVisibility(MetaJavaClass::Public);
                 }
 
-                if (!java_function->isFinalInJava()
-                    && java_function->isRemovedFrom(java_class, TypeSystem::JavaCode)) {
-                    *java_function += MetaJavaAttributes::FinalInCpp;
+                setupFunctionDefaults(java_function, java_class);
+
+                if (java_function->isSignal() && java_class->hasSignal(java_function)) {
+                    QString warn = QString("signal '%1' in class '%2' is overloaded.")
+                        .arg(java_function->name()).arg(java_class->name());
+                    ReportHandler::warning(warn);
                 }
 
-                if (java_function->name() == "operator_equal")
-                    java_class->setHasEqualsOperator(true);
+                if (java_function->isSignal() && !java_class->isQObject()) {
+                    QString warn = QString("signal '%1' in non-QObject class '%2'")
+                        .arg(java_function->name()).arg(java_class->name());
+                    ReportHandler::warning(warn);
+                }
 
                 java_class->addFunction(java_function);
             } else if (java_function->isDestructor() && !java_function->isPublic()) {

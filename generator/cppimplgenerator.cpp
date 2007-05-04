@@ -2481,10 +2481,26 @@ void CppImplGenerator::writeFunctionCall(QTextStream &s, const QString &object_n
     }
 
     if (java_function->isInGlobalScope()) {
-        s << "if (" << object_name << " != 0) "
-          << "::" << prefix << function_name << "(";
+
+        // Global scope stream operators need the arguments to be reordered (this ref at end)
+        // so we special case them in order to simplify this code
+        bool stream_operator = java_function->originalName() == "operator<<" 
+                               || java_function->originalName() == "operator>>";
+
+        if (java_function->type() == 0) 
+            s << "if (" << object_name << " != 0) ";
+        else 
+            s << "(" << object_name << " != 0) ? ";
+        s << "::" << prefix << function_name << "(";
+        if (!stream_operator)
+            s << "*" << object_name << ", ";
         writeFunctionCallArguments(s, java_function, "__qt_");
-        s << ", *" << object_name << ");";
+        if (stream_operator)
+            s << ", *" << object_name;
+        s << ")";
+        if (java_function->type() != 0)
+            s << " : " << default_return_statement_qt(java_function->type(), Generator::Option(option | Generator::NoReturnStatement));
+        s << ";";
     } else {
         s << object_name << (java_function->isStatic() ? QLatin1String("::") : QLatin1String("->") + classPrefix)
           << prefix << function_name << "(";
