@@ -4610,9 +4610,6 @@
   </object-type>
   
   <object-type name="QAbstractItemDelegate">
-    <modify-function signature="QAbstractItemDelegate(const QAbstractItemDelegate&amp;)">
-        <remove/>
-    </modify-function>
     <modify-function signature="setEditorData(QWidget*,QModelIndex)const">
         <modify-argument index="1">
             <!-- Safe to ignore because this implementation is documented to do nothing -->
@@ -5745,7 +5742,7 @@
     <modify-function signature="setItemSelected(const QTableWidgetItem*,bool)">
         <remove />
     </modify-function>
-    <modify-function signature="isItemSelected(const QTableWidgetItem*)">
+    <modify-function signature="isItemSelected(const QTableWidgetItem*)const">
         <remove />
     </modify-function>
     <modify-function signature="setModel(QAbstractItemModel*)">
