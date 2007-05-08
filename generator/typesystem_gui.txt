@@ -3570,7 +3570,15 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QUndoStack"/>
+
+  <object-type name="QUndoStack">
+    <modify-function signature="push(QUndoCommand *)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
+
   <object-type name="QUndoView">
     <modify-function signature="setGroup(QUndoGroup *)">
         <modify-argument index="1">
