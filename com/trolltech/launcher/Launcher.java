@@ -331,6 +331,10 @@ public class Launcher extends QWidget {
 
     public static void main(String args[]) {
         QApplication.initialize(args == null ? start_qt() : args);
+        
+        QSplashScreen splashScreen = new SplashScreen();
+        splashScreen.show();
+        QApplication.processEvents();
 
         // ### not an optimal solution, but at least it makes the launcher run the
         // image viewer demos and sql demos properly...
@@ -340,6 +344,9 @@ public class Launcher extends QWidget {
 
         Launcher l = new Launcher();
         l.show();
+        
+        splashScreen.finish(l);
+        
         QApplication.exec();
         l.dispose();
 
