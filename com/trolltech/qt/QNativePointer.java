@@ -19,8 +19,8 @@ package com.trolltech.qt;
  *   access to the pointer through function calls. It is as such a
  *   low-level memory manager that should be used sparsely; its
  *   intended and legitimate use is for JNI bindings not handled by
- *   generator. Examples of such use can be found in the
- *   <a href="qtjambi-generator.html">generator</a>'s documentation.
+ *   generator. Examples can be found in the
+ *   <a href="qtjambi-generatorexample.html">generator example</a>.
  *   <p>
  *   QNativePointer does type checking of pointers. Also, if the
  *   pointer is pointing to an array, you must also specify the array
@@ -32,7 +32,7 @@ package com.trolltech.qt;
  *   when being garbage collected. However, if the ownership of the
  *   pointer is given to a c++ class, you do not want this behavior.
  *   The AutoDeleteMode enum values defines the ways in which
- *   deallocation of the pointer can be handled.
+ *   deletion of the pointer can be handled.
  *   <p>
  *   The data types that can be pointed to are defined by the Type
  *   enum. An allocation of an Integer pointer can, for example, be
@@ -47,29 +47,28 @@ package com.trolltech.qt;
  *   An array of length 5 is created in the following way:
  *   <p>
  *   <code>
- *      QNativePointer ptr =
- *          new QNativePointer(QNativePointer.Type.Int, 5);<br>
- *      for (int i = 0; i  &lt; 5, ++i)<br>
- *          ptr.setIntAt(i, i*i);<br>
+ *      QNativePointer ptr = new QNativePointer(QNativePointer.Type.Int, 5);<br>
+ *      for (int i = 0; i  &lt; 5, ++i)
+ *      <pre>    ptr.setIntAt(i, i*i);</pre><br>
  *   </code>
  *   <p>
  *   If you are creating a multi dimensional array, you have two
  *   possibilities. You can make QNativePointers of the Pointer type or
- *   use indirections. We recommend the use of indirections because
- *   they make type safe pointers. In the examples below we show both
- *   approaches when creating a two dimensional Char array.
+ *   specify the number indirections of a single QNativePointer.
+ *   We recommend the second alternative
+ *   since it creates type safe pointers. Here is an example using the first alternative:
  *   <p>
  *   <code>
- *      QNativePointer ptr = new QNativePointer(QNativePointer.Type.Pointer, 2);
- *      QNativePointer charArray1 = new QNativePointer(QNativePointer.Type.Char, 5);
+ *      QNativePointer ptr = new QNativePointer(QNativePointer.Type.Pointer, 2);<br>
+ *      QNativePointer charArray1 = new QNativePointer(QNativePointer.Type.Char, 5);<br>
  *      ptr.setPointerAt(0, carArray1);
- *      ...
  *   </code>
  *   <p>
- *   Here is the code for the second alternative:
+ *   And here is the code for the second:
  *   <p>
  *   <code>
- *      QNativePointer ptr = new QNativePointer(Type.Byte, 5, 2);
+ *      QNativePointer ptr = new QNativePointer(Type.Char, 5, 2);<br>
+ *      ptr.setPointerAt(0, createCharPointer(myString));
  *   </code>
  */
 public class QNativePointer {
@@ -149,7 +148,7 @@ public class QNativePointer {
 
     /**
      * Creates a native pointer of the specified <code>type</code>.
-     * It will be an array if </code>size<code> is larger than one and
+     * It will be an array if <code>size</code> is larger than one and
      * have an indirection of <code>indirections</code>. For instance,
      * the following Java statement will create a <code>**char</code>
      * pointer with the first array dimension of length 5:
