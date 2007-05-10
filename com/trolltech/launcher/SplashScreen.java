@@ -6,6 +6,8 @@ import com.trolltech.qt.gui.*;
 class SplashScreen extends QSplashScreen {
 
     private static final QSize SIZE = new QSize(600, 300);
+    private QPixmap cleanSplash;
+    private QPixmap logo;
 
     public SplashScreen() {
         QRect r = QApplication.desktop().rect();
@@ -15,7 +17,7 @@ class SplashScreen extends QSplashScreen {
 		                                   SIZE.width(), SIZE.height());
 
         QImage target = new QImage(SIZE, QImage.Format.Format_ARGB32_Premultiplied);
-        QPixmap logo = new QPixmap("classpath:com/trolltech/images/logo.png");
+        logo = new QPixmap("classpath:com/trolltech/images/logo.png");
         
         final int margin = 20;
         final int shadow = 50;        
@@ -50,8 +52,25 @@ class SplashScreen extends QSplashScreen {
         p.setOpacity(0.2);
         p.drawPixmap(1, -1, desktopBg);
         p.drawPixmap(-1, 1, desktopBg);
-        p.setOpacity(0.5);
-        p.fillRect(target.rect(), new QBrush(QColor.white));
+        p.setOpacity(1);
+        
+        QLinearGradient gradient = new QLinearGradient(0, 0, 0, tr.height());
+        
+        double alpha = 0.3;
+        QColor whiteAlpha = QColor.fromRgbF(1, 1, 1, alpha);
+        QColor whiteHighlight = QColor.fromRgbF(1, 1, 1);
+        QColor whiteBorder = QColor.fromRgbF(0.5, 0.5, 0.5, 0.8);
+        
+        double highlight = 0.84;
+        double size = 0.08;
+        
+        gradient.setColorAt(highlight - size, whiteAlpha);
+        gradient.setColorAt(highlight - size*0.9, whiteBorder);
+        gradient.setColorAt(highlight, whiteHighlight);
+        gradient.setColorAt(highlight + size*0.9, whiteBorder);
+        gradient.setColorAt(highlight + size, whiteAlpha);
+        
+        p.fillRect(target.rect(), new QBrush(gradient));
         p.restore();
         
         final QRectF rectRight = new QRectF(tr.left() - margin + tr.width() + 1, 
@@ -72,7 +91,7 @@ class SplashScreen extends QSplashScreen {
         
         p.setClipPath(clipPath);
         
-        final QColor dark = QColor.darkGray;
+        final QColor dark = QColor.black;
         final QColor light = QColor.transparent;               
        
         // Drop shadow: right shadow
@@ -130,6 +149,29 @@ class SplashScreen extends QSplashScreen {
 
         p.end();
 
-        setPixmap(QPixmap.fromImage(target));
+        cleanSplash = QPixmap.fromImage(target);
+        setPixmap(cleanSplash);
     }
+    
+    @SuppressWarnings("unused")
+    private void updateProgress(String progressMessage) {
+    	QPixmap pm = cleanSplash.copy();    	
+    	QPainter p = new QPainter(pm); 
+    	
+    	QFont font = p.font();
+    	font.setPixelSize(11);
+    	p.setFont(font);
+    	
+    	QFontMetrics metrics = new QFontMetrics(font);
+    	double textWidth = metrics.width(progressMessage);
+    	double textHeight = metrics.ascent();
+    	
+    	QRectF rect = new QRectF(logo.rect().adjusted(10, 0, 0, 0));
+    	p.drawText(rect, progressMessage, new QTextOption(new Qt.Alignment(Qt.AlignmentFlag.AlignLeft, Qt.AlignmentFlag.AlignBottom)));
+    	p.end();
+    	
+    	setPixmap(pm);        	
+    }
+    
+    
 }

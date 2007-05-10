@@ -69,17 +69,27 @@ public class Launcher extends QWidget {
     private LaunchableListModel m_model = new LaunchableListModel();
     private Launchable m_current;
     private boolean firstStyleSetup = true;
+    public Signal1<String> progressChanged = new Signal1<String>();
 
     private static QPalette systemPalette;
 
     public Launcher() {
+    }
+    
+    public void init() {
         ui.setupUi(this);
         ui.list.setModel(m_model);
         ui.list.setItemDelegate(new Delegate(m_model));
         ui.list.setCurrentIndex(null);
+        
+        progressChanged.emit("Setting up examples");
 
         setupExamples();
+        
+        progressChanged.emit("Setting up styles");
         setupStyles();
+        
+        progressChanged.emit("Making connections");
 
         ui.list.selectionModel().currentChanged.connect(this, "listSelectionChanged(QModelIndex,QModelIndex)");
         ui.button_content.clicked.connect(this, "slotSwapContent()");
@@ -90,6 +100,8 @@ public class Launcher extends QWidget {
         setWindowTitle("Qt Jambi Examples and Demos");
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
+        progressChanged.emit("Loading background");
+        
         QPixmap bg = new QPixmap("classpath:com/trolltech/launcher/fadlogo.png");
         ui.description.setBackground(bg);
         ui.source.setBackground(bg);
@@ -295,6 +307,7 @@ public class Launcher extends QWidget {
 
             String pkg = dirs[i].substring(10).replace("/", ".");
             for (QFileInfo info : classFiles) {
+            	progressChanged.emit("Setting up examples: " + info.baseName());
 
                 Launchable l = Launchable.create(pkg + "." + info.baseName());
                 if (l != null)
@@ -343,8 +356,9 @@ public class Launcher extends QWidget {
         systemPalette = QApplication.palette();
 
         Launcher l = new Launcher();
+        l.progressChanged.connect(splashScreen, "updateProgress(String)");
+        l.init();
         l.show();
-        
         splashScreen.finish(l);
         
         QApplication.exec();
