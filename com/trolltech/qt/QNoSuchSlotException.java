@@ -42,24 +42,41 @@ public class QNoSuchSlotException extends ConnectionException {
             return "Slot can't be an empty string";
         } else {
             String res = "\n\nCould not find slot with signature: " + slotSignature + "\n";
-            res += "Possible matching methods:\n";
+            
             Vector<Method> possibleMethods = findPossibleFunctionRecursive(reciver, slotSignature);
+            if(!possibleMethods.isEmpty()) {
+                res += "Possible matching methods:\n";
 
-            for (Iterator iter = possibleMethods.iterator(); iter.hasNext();) {
-                Method method = (Method) iter.next();
-                res += method.getName() + "(";
-                Class[] parameters = method.getParameterTypes();
-                for (int i = 0; i < parameters.length; i++) {
-                    if (i > 0)
-                        res += " ";
-                    res += parameters[i].getName();
+                for (Iterator iter = possibleMethods.iterator(); iter.hasNext();) {
+                    Method method = (Method) iter.next();
+                   
+                    res += "   " + methodToString(method) + "\n";
                 }
-                res += ")\n";
             }
             return res;
         }
     }
 
+    private String methodToString(Method method) {
+        Class a[] = method.getParameterTypes();
+
+        String args = "";
+        for (int i = 0; i < a.length; ++i) {
+            Class t = a[i];
+
+            String brackets = "";
+            if (t.isArray()) {
+                do {
+                    t = t.getComponentType();
+                    brackets += "[]";
+                } while (t.isArray());
+            }
+            args += i > 0 ? ", " : "" + t.getName() + brackets;
+        }
+        return method.getName() + "(" + args + ")";
+    }
+    
+    
     private static Vector<Method> findPossibleFunctionRecursive(Object reciver, String signature) {
         Class cls = reciver.getClass();
 
