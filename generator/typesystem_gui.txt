@@ -1690,6 +1690,7 @@
   <value-type name="QPainterPath::Element">
     <modify-field name="x" write="false"/>
     <modify-field name="y" write="false"/>
+    <modify-field name="type" write="false"/>
     <include file-name="QPainterPath" location="global"/>
     <modify-function signature="operator QPointF()const" access="private"/>
     <inject-code>
@@ -2440,7 +2441,7 @@
                                                                         
         jobject %OUTPUT = __jni_env->NewObject(__target_class, __target_constructor, %CHILD_INDEX, __java_interface);
     </template>
-    
+        
     <modify-function signature="navigate(QAccessible::RelationFlag,int,QAccessibleInterface**)const">
         <modify-argument index="3">
             <remove-argument />
