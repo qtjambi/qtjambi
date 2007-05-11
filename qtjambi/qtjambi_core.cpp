@@ -32,6 +32,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QThread>
 #include <QtCore/QVariant>
+#include <QtCore/QTextStream>
 
 #include <QtGui/QStyleOption>
 
@@ -1368,6 +1369,19 @@ bool qtjambi_initialize_vm()
 #ifdef Q_OS_LINUX
 static QString locate_vm()
 {
+    // If libjvm is already loaded, make sure we report the same jvm.
+    QFile file("/proc/self/maps");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&file);
+        QString line = in.readLine();
+        while (!line.isNull()) {
+            if(line.endsWith("libjvm.so")) {
+                return line.mid(line.indexOf('/'));
+            }
+            line = in.readLine();
+        }
+    }
+
     QList<QString> envVariables;
     envVariables << "JAVADIR"  << "JAVAHOME" << "JDK_HOME" << "JAVA_HOME" << "JAVA_DIR";
 
