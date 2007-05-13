@@ -4,17 +4,26 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.*;
 import javax.swing.*;
 
-public class QAwtHost extends QWidget {
+public class QAwtHost
+    extends QWidget
+    implements AWTEventListener {
 
     public QAwtHost(QWidget parent) {
         super(parent);
+
+        Toolkit.getDefaultToolkit().addAWTEventListener(this, -1l);
     }
 
     public QAwtHost() {
         this(null);
+    }
+
+    protected void disposed() {
+        Toolkit.getDefaultToolkit().removeAWTEventListener(this);
     }
 
     public void setComponent(Component component) {
@@ -42,10 +51,7 @@ public class QAwtHost extends QWidget {
         component.resize(e.size().width(), e.size().height());
     }
 
-
-
     protected void paintEvent(QPaintEvent e) {
-
         if (component == null)
             return;
 
@@ -72,9 +78,67 @@ public class QAwtHost extends QWidget {
         p.drawImage(0, 0, qbuffer);
     }
 
+    private MouseEvent translateMouseEvent(QMouseEvent e) {
+        int modifiers = 0;
+        Qt.KeyboardModifiers qmodifiers = e.modifiers();
+        if (qmodifiers.isSet(Qt.KeyboardModifier.ShiftModifier)) modifiers |= MouseEvent.SHIFT_MASK;
+        if (qmodifiers.isSet(Qt.KeyboardModifier.ControlModifier)) modifiers |= MouseEvent.CTRL_MASK;
+        if (qmodifiers.isSet(Qt.KeyboardModifier.AltModifier)) modifiers |= MouseEvent.ALT_MASK;
+        if (qmodifiers.isSet(Qt.KeyboardModifier.MetaModifier)) modifiers |= MouseEvent.META_MASK;
+
+        int id = 0;
+        QEvent.Type qid = e.type();
+        if (qid == QEvent.Type.MouseButtonPress) id = MouseEvent.MOUSE_PRESSED;
+        else if (qid == QEvent.Type.MouseButtonRelease) id = MouseEvent.MOUSE_RELEASED;
+
+        int button = 0;
+        Qt.MouseButton qbutton = e.button();
+        if (qbutton == Qt.MouseButton.LeftButton) button = MouseEvent.BUTTON1;
+        if (qbutton == Qt.MouseButton.RightButton) button = MouseEvent.BUTTON2;
+        if (qbutton == Qt.MouseButton.MidButton) button = MouseEvent.BUTTON3;
+
+        Qt.MouseButtons qbuttons = e.buttons();
+        if (qbuttons.isSet(Qt.MouseButton.LeftButton)) modifiers |= MouseEvent.BUTTON1_MASK;
+        if (qbuttons.isSet(Qt.MouseButton.RightButton)) modifiers |= MouseEvent.BUTTON2_MASK;
+        if (qbuttons.isSet(Qt.MouseButton.MidButton)) modifiers |= MouseEvent.BUTTON3_MASK;
+
+        MouseEvent me = new MouseEvent(component,                       // source
+                                       id,                              // id
+                                       System.currentTimeMillis(),      // when
+                                       modifiers,                       // mods
+                                       e.x(),                           // x
+                                       e.y(),                           // y
+                                       e.globalX(),                     // abs x
+                                       e.globalY(),                     // abs y
+                                       1,                               // click count
+                                       false,                           // popup trigger
+                                       button);
+        return me;
+    }
+
+
+    protected void mousePressEvent(QMouseEvent e) {
+        if (component == null)
+            return;
+        component.dispatchEvent(translateMouseEvent(e));
+        repaint();
+    }
+
+    protected void mouseReleaseEvent(QMouseEvent e) {
+        if (component == null)
+            return;
+        component.dispatchEvent(translateMouseEvent(e));
+        repaint();
+    }
+
+    public void eventDispatched(AWTEvent event) {
+        System.out.println("eventDispatched(): " + event);
+    }
+
     private Component component;
     private BufferedImage buffer;
     private QImage qbuffer;
+    private int mouseEventId;
 
     public static void main(String args[]) {
         QApplication.initialize(args);
