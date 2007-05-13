@@ -47,6 +47,7 @@ public class MainWindow extends QMainWindow {
         ui.greenMagentaBalance.setValue(0);
         ui.blueYellowBalance.setValue(0);
         ui.colorBalance.setValue(0);
+        ui.inverted.setChecked(false);
     }
 
     public void on_actionSave_triggered() {
@@ -115,7 +116,7 @@ public class MainWindow extends QMainWindow {
         dirModel = new QDirModel(this);
         dirModel.setLazyChildCount(true);
         dirModel.setFilter(new QDir.Filters(QDir.Filter.Dirs, QDir.Filter.Drives, QDir.Filter.NoDotAndDotDot));
-        
+
         ui.dirView.setModel(dirModel);
 
         for (int i=1; i<ui.dirView.header().count(); ++i)
@@ -124,14 +125,14 @@ public class MainWindow extends QMainWindow {
 
         ui.dirView.header().setStretchLastSection(false);
         ui.dirView.header().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
-        
+
         QFileInfo info = new QFileInfo("com/trolltech/images");
         QModelIndex initial = dirModel.index(info.absoluteFilePath());
         if (initial != null) {
             ui.dirView.setCurrentIndex(initial);
             ui.dirView.activated.emit(initial);
         }
-        
+
         ui.dirView.scrollTo(ui.dirView.currentIndex(),ScrollHint.PositionAtCenter);
     }
 
@@ -143,8 +144,7 @@ public class MainWindow extends QMainWindow {
         ui.greenMagentaBalance.valueChanged.connect(view, "setGreenMagenta(int)");
         ui.blueYellowBalance.valueChanged.connect(view, "setBlueYellow(int)");
         ui.colorBalance.valueChanged.connect(view, "setColorBalance(int)");
-        ui.actionZoom_In.triggered.connect(view, "increaseZoom()");
-        ui.actionZoom_Out.triggered.connect(view, "decreaseZoom()");
+        ui.inverted.toggled.connect(view, "setInvert(boolean)");
 
         QtJambiUtils.connect(view.valid, "setEnabled(boolean)",
                             ui.actionClose,
@@ -166,6 +166,7 @@ public class MainWindow extends QMainWindow {
             move(point);
         restoreState((QByteArray)settings.value("state", null));
         settings.sync();
+        settings.dispose();
     }
 
     public void writeSettings(){
@@ -174,6 +175,7 @@ public class MainWindow extends QMainWindow {
         settings.setValue("size", size());
         settings.setValue("state", saveState());
         settings.sync();
+        settings.dispose();
     }
 
     private Ui_MainWindow ui = new Ui_MainWindow();

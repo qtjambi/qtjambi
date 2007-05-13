@@ -48,8 +48,6 @@ public class View extends QWidget
 
     public void setImage(QImage original) {
         this.original = original != null ? original.convertToFormat(QImage.Format.Format_ARGB32_Premultiplied) : null;
-        zoom = 1;
-        calculatePos(original);
         resetImage();
 
         valid.emit(original != null);
@@ -79,13 +77,8 @@ public class View extends QWidget
         resetImage();
     }
 
-    public void increaseZoom() {
-        zoom = Math.min(1000, zoom * 1.1);
-        resetImage();
-    }
-
-    public void decreaseZoom() {
-        zoom = Math.max(1/1000.0, zoom * 0.9);
+    public void setInvert(boolean b) {
+        invert = b;
         resetImage();
     }
 
@@ -95,81 +88,42 @@ public class View extends QWidget
 
     private QBrush brush = new QBrush();
     protected void paintEvent(QPaintEvent e) {
-        try {
+        if (background == null) {
+            background = new QPixmap(size());
+            QPainter p = new QPainter(background);
+            QLinearGradient lg = new QLinearGradient(0, 0, 0, height());
+            lg.setColorAt(0.5, QColor.black);
+            lg.setColorAt(0.7, QColor.fromRgbF(0.5, 0.5, 0.6));
+            lg.setColorAt(1, QColor.fromRgbF(0.8, 0.8, 0.9));
+            p.fillRect(background.rect(), new QBrush(lg));
+            p.end();
+        }
+
+        QPainter p = new QPainter(this);
+        p.drawPixmap(0, 0, background);
+
         if (modified == null)
             updateImage();
 
-        QPainter p = new QPainter();
-        p.begin(this);
-
         if (modified != null) {
-            p.save();
+            p.setViewport(rect().adjusted(10, 10, -10, -10));
+            QRect rect = rectForImage(modified);
+
             p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform);
+            p.drawImage(rect, modified);
 
-            if (p.paintEngine().hasFeature(new QPaintEngine.PaintEngineFeatures(QPaintEngine.PaintEngineFeature.PixmapTransform)))
-                p.drawImage(new QRect(posx, posy, currentWidth, currentHeight), modified);
-            else {
-                p.translate(posx, posy);
-                p.scale(zoom, zoom);
-                p.setPen(QPen.NoPen);
-                brush.setTextureImage(modified);
-                p.setBrush(brush);
-                p.drawRect(0, 0, modified.width(), modified.height());
-            }
-            p.restore();
+            p.drawImage(0, height() - reflection.height() + 10, reflection);
+
         }
-
-        p.drawRect(0, 0, width()-1, height()-1);
-        p.end();
-        } catch (Exception ex) { ex.printStackTrace(); };
     }
 
     protected void resizeEvent(QResizeEvent e) {
-        calculatePos(modified);
-    }
+        if (background != null) {
+            background.dispose();
+            background = null;
+        }
 
-    protected void mousePressEvent(QMouseEvent e) {
-        mposx = e.x();
-        mposy = e.y();
-    }
-
-    protected void mouseMoveEvent(QMouseEvent e) {
-        posx += e.x() - mposx;
-        posy += e.y() - mposy;
-
-        mposx = e.x();
-        mposy = e.y();
-
-        update();
-    }
-
-    protected void wheelEvent(QWheelEvent e) {
-        if (original == null)
-            return;
-
-        int mposx = e.x();
-        int mposy = e.y();
-
-
-        int odx = mposx - posx;
-        int ody = mposy - posy;
-
-        double ozoom = zoom;
-
-        if (e.delta() > 0)
-            increaseZoom();
-        else
-            decreaseZoom();
-
-        // Don't do relative scale if the mouse is outside the image
-        if (mposx < posx || mposy < posy
-                || mposx > posx + original.width() * ozoom
-                || mposy > posy + original.height() * ozoom)
-            return;
-
-        posx -= (int) Math.round(odx / ozoom * zoom) - odx;
-        posy -= (int) Math.round(ody / ozoom * zoom) - ody;
-
+        resetImage();
     }
 
     private final void resetImage() {
@@ -185,27 +139,12 @@ public class View extends QWidget
         return QColor.fromRgbF(c.redF(), c.greenF(), c.blueF(), sign * value * 0.5 / 100);
     }
 
-    private void calculatePos(QPaintDeviceInterface img) {
-        if (img == null)
-            return;
-        int iw = img.width();
-        int ih = img.height();
-        int w = width();
-        int h = height();
-
-        posx = w / 2 - iw / 2;
-        posy = h / 2 - ih / 2;
-    }
-
     private void updateImage() {
         if (original == null)
             return;
 
         int oiw = original.width();
         int oih = original.height();
-
-        currentWidth = (int)(oiw * zoom);
-        currentHeight = (int)(oih * zoom);
 
         if (modified != null)
             modified.dispose();
@@ -231,26 +170,88 @@ public class View extends QWidget
             QColor c = decideColor(colorBalance, QColor.white, QColor.black);
             p.fillRect(0, 0, modified.width(), modified.height(), new QBrush(c));
         }
+
+        if (invert) {
+            p.setCompositionMode(QPainter.CompositionMode.CompositionMode_Difference);
+            p.fillRect(modified.rect(), new QBrush(QColor.white));
+        }
+
         p.end();
+
+        reflection = createReflection(modified);
     }
+
+    private QRect rectForImage(QImage image) {
+        QSize isize = image.size();
+        QSize size = size();
+
+        size.setHeight(size.height() * 3 / 4);
+        size.setWidth(size.width() * 3 / 4);
+
+        isize.scale(size, Qt.AspectRatioMode.KeepAspectRatio);
+
+        return new QRect(width() / 2 - isize.width() / 2,
+                         size.height() / 2 - isize.height() / 2,
+                         isize.width(), isize.height());
+    }
+
+    private QImage createReflection(QImage source) {
+        if (source == null)
+            return null;
+
+        QRect r = rectForImage(source);
+
+        QImage image = new QImage(width(),
+                                  height() - r.height() - r.y(),
+                                  QImage.Format.Format_ARGB32_Premultiplied);
+        image.fill(0);
+
+        double iw = image.width();
+        double ih = image.height();
+
+        QPainter pt = new QPainter(image);
+
+        pt.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform);
+        pt.setRenderHint(QPainter.RenderHint.Antialiasing);
+
+        pt.save(); {
+            QPolygonF imageQuad = new QPolygonF();
+            imageQuad.add(0, 0);
+            imageQuad.add(0, source.height());
+            imageQuad.add(source.width(), source.height());
+            imageQuad.add(source.width(), 0);
+            QPolygonF targetQuad = new QPolygonF();
+            targetQuad.add(0, ih);
+            targetQuad.add(iw / 2 - r.width() / 2, 0);
+            targetQuad.add(iw / 2 + r.width() / 2, 0);
+            targetQuad.add(iw, ih);
+            pt.setTransform(QTransform.quadToQuad(imageQuad, targetQuad));
+            pt.drawImage(imageQuad.boundingRect(), source);
+        } pt.restore();
+
+        QLinearGradient lg = new QLinearGradient(0, 0, 0, image.height());
+        lg.setColorAt(0.1, QColor.fromRgbF(0, 0, 0, 0.4));
+        lg.setColorAt(0.6, QColor.transparent);
+        pt.setCompositionMode(QPainter.CompositionMode.CompositionMode_DestinationIn);
+        pt.fillRect(image.rect(), new QBrush(lg));
+        pt.end();
+
+        return image;
+    }
+
+
 
     private int colorBalance;
     private int redCyan;
     private int greenMagenta;
     private int blueYellow;
 
-    private int posx;
-    private int posy;
-    private int currentWidth;
-    private int currentHeight;
-
-    private int mposx;
-    private int mposy;
-
-    double zoom = 1;
+    private boolean invert;
 
     private QImage original;
     private QImage modified;
+    private QImage reflection;
+    private QPixmap background;
 
     private Worker delayedUpdate = new Worker(this) {
         public void execute() {

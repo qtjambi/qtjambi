@@ -31,13 +31,6 @@
     <addaction name="actionAbout_Qt_Jambi" />
     <addaction name="actionAbout_Qt" />
    </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionZoom_In" />
-    <addaction name="actionZoom_Out" />
-   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -48,29 +41,15 @@
     <addaction name="actionExit" />
    </widget>
    <addaction name="menuFile" />
-   <addaction name="menuEdit" />
    <addaction name="menuHelp" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
-  <widget class="QToolBar" name="toolBar" >
-   <property name="windowTitle" >
-    <string>Zoom toolbar</string>
-   </property>
-   <property name="orientation" >
-    <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
-   </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
-   </attribute>
-   <addaction name="actionZoom_In" />
-   <addaction name="actionZoom_Out" />
-  </widget>
   <widget class="QDockWidget" name="treeDock" >
-   <property name="features" >
-    <set>com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetFloatable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetMovable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures</set>
-   </property>
    <property name="windowTitle" >
     <string>Directories</string>
+   </property>
+   <property name="features" >
+    <set>com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetFloatable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetMovable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures</set>
    </property>
    <attribute name="dockWidgetArea" >
     <number>1</number>
@@ -90,11 +69,11 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="tableDock" >
-   <property name="features" >
-    <set>com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetFloatable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetMovable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures</set>
-   </property>
    <property name="windowTitle" >
     <string>Images </string>
+   </property>
+   <property name="features" >
+    <set>com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetFloatable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetMovable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures</set>
    </property>
    <attribute name="dockWidgetArea" >
     <number>2</number>
@@ -133,23 +112,17 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="effectsDock" >
-   <property name="features" >
-    <set>com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetFloatable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetMovable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures</set>
-   </property>
    <property name="windowTitle" >
     <string>Image Effects</string>
+   </property>
+   <property name="features" >
+    <set>com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetFloatable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.DockWidgetMovable|com.trolltech.qt.gui.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures</set>
    </property>
    <attribute name="dockWidgetArea" >
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="effectsDockContents" >
     <layout class="QGridLayout" >
-     <property name="margin" >
-      <number>9</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
      <item row="0" column="0" >
       <widget class="QGroupBox" name="groupBox" >
        <property name="enabled" >
@@ -159,108 +132,13 @@
         <string>Color Balance</string>
        </property>
        <layout class="QGridLayout" >
-        <property name="margin" >
-         <number>9</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="labelMagenta" >
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="pixmap" >
-           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_magenta_16.png</pixmap>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0" >
-         <widget class="QLabel" name="labelWhite" >
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="pixmap" >
-           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_white_16.png</pixmap>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1" >
-         <widget class="QSlider" name="blueYellowBalance" >
-          <property name="minimum" >
-           <number>-100</number>
-          </property>
-          <property name="maximum" >
-           <number>100</number>
-          </property>
-          <property name="orientation" >
-           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0" >
          <widget class="QLabel" name="labelCyan" >
-          <property name="text" >
-           <string/>
-          </property>
           <property name="pixmap" >
            <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_cyan_16.png</pixmap>
           </property>
-         </widget>
-        </item>
-        <item row="0" column="2" >
-         <widget class="QLabel" name="labelRed" >
           <property name="text" >
            <string/>
-          </property>
-          <property name="pixmap" >
-           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_red_16.png</pixmap>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1" >
-         <widget class="QSlider" name="colorBalance" >
-          <property name="minimum" >
-           <number>-100</number>
-          </property>
-          <property name="maximum" >
-           <number>100</number>
-          </property>
-          <property name="orientation" >
-           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" >
-         <widget class="QSlider" name="greenMagentaBalance" >
-          <property name="minimum" >
-           <number>-100</number>
-          </property>
-          <property name="maximum" >
-           <number>100</number>
-          </property>
-          <property name="orientation" >
-           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" >
-         <widget class="QLabel" name="labelYellow" >
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="pixmap" >
-           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_yellow_16.png</pixmap>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="2" >
-         <widget class="QLabel" name="labelBlack" >
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="pixmap" >
-           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_black_16.png</pixmap>
           </property>
          </widget>
         </item>
@@ -277,27 +155,123 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="2" >
-         <widget class="QLabel" name="labelBlue" >
+        <item row="0" column="2" >
+         <widget class="QLabel" name="labelRed" >
+          <property name="pixmap" >
+           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_red_16.png</pixmap>
+          </property>
           <property name="text" >
            <string/>
           </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="labelMagenta" >
           <property name="pixmap" >
-           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_blue_16.png</pixmap>
+           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_magenta_16.png</pixmap>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" >
+         <widget class="QSlider" name="greenMagentaBalance" >
+          <property name="minimum" >
+           <number>-100</number>
+          </property>
+          <property name="maximum" >
+           <number>100</number>
+          </property>
+          <property name="orientation" >
+           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
           </property>
          </widget>
         </item>
         <item row="1" column="2" >
          <widget class="QLabel" name="labelGreen" >
+          <property name="pixmap" >
+           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_green_16.png</pixmap>
+          </property>
           <property name="text" >
            <string/>
           </property>
+         </widget>
+        </item>
+        <item row="2" column="0" >
+         <widget class="QLabel" name="labelYellow" >
           <property name="pixmap" >
-           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_green_16.png</pixmap>
+           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_yellow_16.png</pixmap>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
+         <widget class="QSlider" name="blueYellowBalance" >
+          <property name="minimum" >
+           <number>-100</number>
+          </property>
+          <property name="maximum" >
+           <number>100</number>
+          </property>
+          <property name="orientation" >
+           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2" >
+         <widget class="QLabel" name="labelBlue" >
+          <property name="pixmap" >
+           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_blue_16.png</pixmap>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" >
+         <widget class="QLabel" name="labelWhite" >
+          <property name="pixmap" >
+           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_white_16.png</pixmap>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" >
+         <widget class="QSlider" name="colorBalance" >
+          <property name="minimum" >
+           <number>-100</number>
+          </property>
+          <property name="maximum" >
+           <number>100</number>
+          </property>
+          <property name="orientation" >
+           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2" >
+         <widget class="QLabel" name="labelBlack" >
+          <property name="pixmap" >
+           <pixmap>classpath:*#/com/trolltech/demos/imageviewer/circle_black_16.png</pixmap>
+          </property>
+          <property name="text" >
+           <string/>
           </property>
          </widget>
         </item>
         <item row="4" column="1" >
+         <widget class="QCheckBox" name="inverted" >
+          <property name="text" >
+           <string>Inverted</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1" >
          <widget class="QPushButton" name="resetColorBalance" >
           <property name="text" >
            <string>Reset</string>
@@ -310,12 +284,12 @@
      <item row="1" column="0" >
       <spacer>
        <property name="orientation" >
-        <enum>com.trolltech.qt.core.Qt.Orientation.Vertical</enum>
+        <enum>Qt::Vertical</enum>
        </property>
        <property name="sizeHint" >
         <size>
-         <width>20</width>
-         <height>41</height>
+         <width>256</width>
+         <height>20</height>
         </size>
        </property>
       </spacer>
@@ -331,7 +305,10 @@
     <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionSave" />
    <addaction name="actionClose" />
