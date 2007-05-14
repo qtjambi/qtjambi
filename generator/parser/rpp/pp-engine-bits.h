@@ -205,7 +205,7 @@ inline pp::PP_DIRECTIVE_TYPE pp::find_directive (char const *__directive, std::s
 inline bool pp::file_exists (std::string const &__filename) const
 {
   struct stat __st;
-#if defined(WIN32)
+#if defined(PP_OS_WIN)
   return stat(__filename.c_str (), &__st) == 0;
 #else
   return lstat (__filename.c_str (), &__st) == 0;
@@ -347,7 +347,7 @@ _InputIterator pp::handle_include (bool __skip_current_path, _InputIterator __fi
 
   std::string filename (__first, end_name);
 
-#ifdef Q_OS_WIN
+#ifdef PP_OS_WIN
   std::replace(filename.begin(), filename.end(), '/', '\\');
 #endif
 
