@@ -617,6 +617,8 @@ public class QNativePointer {
      */
     public void setPointerAt(int pos, QNativePointer value) {
         verifyAccess(Type.Pointer, pos);
+        if(value != null)
+            value.setAutoDeleteMode(AutoDeleteMode.None);
         writePointer(m_ptr, pos, value == null ? 0 : value.m_ptr);
     }
     
