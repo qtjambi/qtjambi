@@ -108,8 +108,6 @@ public class QAwtHost
                                        modifiers,                       // mods
                                        e.x(),                           // x
                                        e.y(),                           // y
-                                       e.globalX(),                     // abs x
-                                       e.globalY(),                     // abs y
                                        1,                               // click count
                                        false,                           // popup trigger
                                        button);
@@ -151,22 +149,26 @@ public class QAwtHost
             if (i == 4) {
                 QAwtHost host = new QAwtHost();
                 layout.addWidget(host, 1, 1);
-
                 JButton button = new JButton();
                 button.setText("I'm a JButton");
                 button.setVisible(true);
                 host.setComponent(button);
-
             } else {
-                QWidget widget = new QWidget() {
+                QWidget widget = null;
+                if (i%3 == i/3) {
+                    widget = new QWidget() {
                         protected void paintEvent(QPaintEvent e) {
                             QPainter p = new QPainter(this);
                             p.setBrush(new QBrush(new QLinearGradient(-100, -100, 400, 400)));
                             p.drawRect(0, 0, width() - 1, height() - 1);
                         }
-
                         public QSize sizeHint() { return new QSize(100, 100); }
                     };
+                } else if (i % 2 == 0) {
+                    widget = new QTextEdit();
+                } else {
+                    widget = new QPushButton();
+                }
                 layout.addWidget(widget, i%3, i/3);
             }
         }
