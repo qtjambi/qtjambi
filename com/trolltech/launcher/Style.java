@@ -15,6 +15,8 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QStyle.ComplexControl;
+import com.trolltech.qt.gui.QStyle.ContentsType;
 
 public class Style extends QWindowsStyle {
     public static QLinearGradient GRADIENT_LIGHT = null;
@@ -38,7 +40,7 @@ public class Style extends QWindowsStyle {
     public static final double GROUPBOX_LINE_THICKNESS = 2;
     public static final int ROUND = 20;
     public static final int TEXT_PADDING = 5;
-    public static final int H_TEXT_PADDING = 10;
+    public static final int H_TEXT_PADDING = 20;
 
     public static final int DOT_TO_TEXT_PADDING = 4;
 
@@ -107,8 +109,50 @@ public class Style extends QWindowsStyle {
             break;
         }
     }
+    
+    private QRectF groupBoxLabelRect(QRect rect, QWidget w, String label) {
+    	if (w == null) 
+    		return new QRectF(rect);
+    	
+    	QFontMetrics metrics = new QFontMetrics(w.font());
+    	QRectF text_rect = new QRectF(metrics.boundingRect(ROUND, 0, rect.width() - ROUND * 2, 
+    			rect.height(), Qt.AlignmentFlag.AlignTop.value() | Qt.AlignmentFlag.AlignHCenter.value(),
+    			label));
+    	
+    	text_rect.adjust(-H_TEXT_PADDING, GROUPBOX_LINE_THICKNESS / 2.0, TEXT_PADDING * 2 + H_TEXT_PADDING, 
+    			TEXT_PADDING * 2);
+    	
+    	return text_rect;
+    }
 
-    private void drawGroupBox(QStyleOptionGroupBox opt, QPainter p, QWidget widget) {
+	@Override
+	public QRect subControlRect(ComplexControl cc, QStyleOptionComplex opt, int sc, QWidget w) {
+    	
+		if (cc == ComplexControl.CC_GroupBox && sc == SubControl.SC_GroupBoxLabel) {
+			QStyleOptionGroupBox sogb = (QStyleOptionGroupBox) opt;
+			String title = sogb.text();
+			QRect rect = opt.rect();
+			return groupBoxLabelRect(rect, w, title).toRect();
+		} else if (cc == ComplexControl.CC_GroupBox && sc == SubControl.SC_GroupBoxContents) {
+			QStyleOptionGroupBox sogb = (QStyleOptionGroupBox) opt;
+			String title = sogb.text();			
+		    QRectF label = groupBoxLabelRect(opt.rect(), w, title);		    
+		    return opt.rect().adjusted(0, title.length() > 0 ? (int) label.height() : 0, 0, 0);
+		}
+		return super.subControlRect(cc, opt, sc, w);
+	}
+	
+	private QRectF groupBoxContentsRect(QRect rect, QStyleOptionGroupBox opt, QWidget w) {
+        double lt2 = GROUPBOX_LINE_THICKNESS / 2.0;
+        double yoff = 0;        
+        if (opt.text().length() > 0 && w != null) {
+        	QFontMetrics metrics = new QFontMetrics(w.font());
+        	yoff = metrics.ascent();
+        }
+        return new QRectF(rect).adjusted(lt2, lt2 + yoff, -lt2, -lt2);	
+	}
+
+	private void drawGroupBox(QStyleOptionGroupBox opt, QPainter p, QWidget widget) {
 
         p.save();
 
@@ -125,16 +169,10 @@ public class Style extends QWindowsStyle {
         QPainterPath clipPath = new QPainterPath();
         clipPath.addRect(new QRectF(rect));
 
-        double yoff = 0;
-
         if(!title.equals("")){
-	        QRectF text_rect = new QRectF(p.boundingRect(ROUND, 0, rect.width() - ROUND * 2, rect
-	                .height(), Qt.AlignmentFlag.AlignTop.value()
-	                | Qt.AlignmentFlag.AlignHCenter.value(), title));
-
-	        text_rect = text_rect.adjusted(-H_TEXT_PADDING, GROUPBOX_LINE_THICKNESS / 2.0, TEXT_PADDING
-	                * 2 + H_TEXT_PADDING, TEXT_PADDING * 2);
-
+        	
+        	QRectF text_rect = groupBoxLabelRect(rect, widget, title);
+        	
 	        drawShadeButton(p, text_rect, state);
 
 	        p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), GROUPBOX_LINE_THICKNESS));
@@ -145,14 +183,13 @@ public class Style extends QWindowsStyle {
 	        p.setPen(Style.PEN_BLACK);
 	        Style.drawShadowText(p, text_rect.translated(-1, -1), title, 2, 2);
 	        clipPath.addRect(text_rect);
-	        yoff = p.fontMetrics().ascent();
+	        
         }
 
         if(!((QGroupBox)widget).isFlat()){
             p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), GROUPBOX_LINE_THICKNESS));
             p.setClipPath(clipPath);
-            double lt2 = GROUPBOX_LINE_THICKNESS / 2.0;
-            QRectF bound_rect = new QRectF(rect).adjusted(lt2, lt2 + yoff, -lt2, -lt2);
+            QRectF bound_rect = groupBoxContentsRect(rect, opt, widget);
             drawButtonOutline(p, bound_rect, state);
         }
         p.restore();
