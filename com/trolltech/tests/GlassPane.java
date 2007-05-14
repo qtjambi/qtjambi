@@ -64,25 +64,37 @@ public class GlassPane extends QWidget {
                 p.drawPixmap(0, 0, end);
                 p.drawPixmap(0, (int) (level * height()), start);
                 break;
-             case SplitHorizontal:
-                int h2 = start.height() / 2;
-                p.drawPixmap(0, 0, end);
-                p.drawPixmap(0, (int) (-level * height()), start.width(), h2,
-                             start,
-                             0, 0, start.width(), h2);
-                p.drawPixmap(0, (int) (level * height()) + h2, start.width(), h2,
-                             start,
-                             0, h2, start.width(), h2);
+            case SplitHorizontal:
+                if (level < 0.2) {
+                    level *= 5;
+                    p.drawLine(0, height() / 2, (int)(level * width()), height() / 2);
+                } else {
+                    level = (level - 0.2) / 0.8;
+                    int h2 = start.height() / 2;
+                    p.drawPixmap(0, 0, end);
+                    p.drawPixmap(0, (int) (-level * height()), start.width(), h2,
+                                 start,
+                                 0, 0, start.width(), h2);
+                    p.drawPixmap(0, (int) (level * height()) + h2, start.width(), h2,
+                                 start,
+                                 0, h2, start.width(), h2);
+                }
                 break;
             case SplitVertical:
-                int w2 = start.width() / 2;
-                p.drawPixmap(0, 0, end);
-                p.drawPixmap((int) (level * width()) + w2, 0, w2, start.height(),
-                             start,
-                             w2, 0, w2, start.height());
-                p.drawPixmap((int) (-level * height()), 0, w2, start.height(),
-                             start,
-                             0, 0, w2, start.height());
+                if (level < 0.2) {
+                    level *= 5;
+                    p.drawLine(width() / 2, 0, width() / 2, (int) (level * height()));
+                } else {
+                    level = (level - 0.2) / 0.8;
+                    int w2 = start.width() / 2;
+                    p.drawPixmap(0, 0, end);
+                    p.drawPixmap((int) (level * width()) + w2, 0, w2, start.height(),
+                                 start,
+                                 w2, 0, w2, start.height());
+                    p.drawPixmap((int) (-level * height()), 0, w2, start.height(),
+                                 start,
+                                 0, 0, w2, start.height());
+                }
                 break;
             }
         }
@@ -96,6 +108,7 @@ public class GlassPane extends QWidget {
 
     public static QWidget createPanel(String baseTitle) {
         QWidget widget = new QGroupBox(baseTitle);
+
         QGridLayout layout = new QGridLayout(widget);
         for (int i=0; i<6; ++i) {
             QLabel label = new QLabel(baseTitle + ": " + (i+1));
@@ -162,7 +175,6 @@ public class GlassPane extends QWidget {
             }
         }
     }
-
 
     private Overlay.Transition transition;
     private QWidget frontPanel;
