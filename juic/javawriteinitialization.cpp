@@ -657,6 +657,10 @@ void WriteInitialization::writeProperties(const QString &varName,
                 name = p->elementString()->text();
             m_buddies.append(Buddy(varName, name));
             continue;
+        } else if (propertyName == QLatin1String("icon") &&
+                   uic->customWidgetsInfo()->extends(className, QLatin1String("QWidget"))) {
+            output << option.indent << varName << ".setWindowIcon(" << pixCall(p) << ");\n";
+            continue;
         }
 
         bool stdset = m_stdsetdef;
@@ -1100,10 +1104,13 @@ QString WriteInitialization::pixCall(DomProperty *p) const
 {
     Q_ASSERT(p->kind() == DomProperty::IconSet || p->kind() == DomProperty::Pixmap);
 
+    QString pixFunc = uic->pixmapFunction();
+
     QString type, s;
     if (p->kind() == DomProperty::IconSet) {
         type = QLatin1String("QIcon");
         s = p->elementIconSet()->text();
+        pixFunc = "new QPixmap";
     } else {
         type = QLatin1String("QPixmap");
         s = p->elementPixmap()->text();
@@ -1114,7 +1121,6 @@ QString WriteInitialization::pixCall(DomProperty *p) const
     else if (findImage(s) != 0)
         return QLatin1String("icon(") + s + QLatin1String("_ID)");
 
-    QString pixFunc = uic->pixmapFunction();
     return "new " + type + QLatin1String("(") + pixFunc + QLatin1String("(") + javaFixString(s) + QLatin1String(")") + QLatin1String(")");
 }
 
