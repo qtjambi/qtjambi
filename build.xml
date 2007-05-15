@@ -25,7 +25,7 @@
 
     <property name="deployDir" value="./deploy" />
 
-    <property name="eclipseDir" value="../../eclipse/stable" />
+    <property name="eclipseDir" value="../../eclipse/main" />
 
     <target name="clean" depends="init">
         <delete dir="${outputDir}" />
