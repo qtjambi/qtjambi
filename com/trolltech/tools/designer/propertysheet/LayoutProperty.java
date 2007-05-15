@@ -50,19 +50,15 @@ public class LayoutProperty extends FakeProperty {
         changed = true;
         if (entry.name.endsWith("Margin")) {
             int x = (Integer) value;
-            QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
 
-            layout.getContentsMargins(left, top, right, bottom);
+            QContentsMargins margins = layout.getContentsMargins();
 
-            if (entry.name == RIGHT_MARGIN) right.setIntValue(x);
-            else if (entry.name == LEFT_MARGIN) left.setIntValue(x);
-            else if (entry.name == TOP_MARGIN) top.setIntValue(x);
-            else if (entry.name == BOTTOM_MARGIN) bottom.setIntValue(x);
+            if (entry.name == RIGHT_MARGIN) margins.right = x;
+            else if (entry.name == LEFT_MARGIN) margins.left = x;
+            else if (entry.name == TOP_MARGIN) margins.top = x;
+            else if (entry.name == BOTTOM_MARGIN) margins.bottom = x;
 
-            layout.setContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+            layout.setContentsMargins(margins);
         }
     }
 

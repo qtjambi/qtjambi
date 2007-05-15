@@ -2413,7 +2413,70 @@
   <object-type name="QAccessibleSimpleEditableTextInterface" />
   <object-type name="QAccessibleTextInterface" />
   <object-type name="QAccessibleValueInterface" />
-  <object-type name="QAccessibleTableInterface" />
+  <object-type name="QAccessibleTableInterface">
+    <modify-function signature="cellAtIndex(int,int*,int*,int*,int*,bool*)">
+        <modify-argument index="2">
+            <remove-argument />
+            <conversion-rule class="native">
+                int rowHolder;
+                int *%out = &amp;rowHolder;
+            </conversion-rule>
+            <conversion-rule class="shell">
+                // nothing
+            </conversion-rule>
+        </modify-argument>   
+        <modify-argument index="3">
+            <remove-argument />
+            <conversion-rule class="native">
+                int columnHolder;
+                int *%out = &amp;columnHolder;
+            </conversion-rule>
+            <conversion-rule class="shell">
+                // nothing
+            </conversion-rule>            
+        </modify-argument>   
+        <modify-argument index="4">
+            <remove-argument />
+            <conversion-rule class="native">
+                int rowSpanHolder;
+                int *%out = &amp;rowSpanHolder;
+            </conversion-rule>
+            <conversion-rule class="shell">
+                // nothing
+            </conversion-rule>
+        </modify-argument>   
+        <modify-argument index="5">
+            <remove-argument />
+            <conversion-rule class="native">
+                int columnSpanHolder;
+                int *%out = &amp;columnSpanHolder;
+            </conversion-rule>
+            <conversion-rule class="shell">
+                // nothing
+            </conversion-rule>            
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-argument />
+            <conversion-rule class="native">
+                bool okHolder = false;
+                bool *%out = &amp;okHolder;
+            </conversion-rule>
+            <conversion-rule class="shell">
+                // no conversion
+            </conversion-rule>
+        </modify-argument>
+        <modify-argument index="return">
+            <replace-type modified-type="com.trolltech.qt.gui.QTableArea" />
+            <conversion-rule class="native">
+                jobject %out = okHolder ? qtjambi_to_tablearea(__jni_env, rowHolder, columnHolder, rowSpanHolder, columnSpanHolder) : 0;
+            </conversion-rule>
+            <conversion-rule class="shell">
+                qtjambi_from_tablearea(__jni_env, %in, %2, %3, %4, %5);
+                if (%in == 0 &amp;&amp; %6 != 0) *%6 = false;
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+  </object-type>
   
   <object-type name="QAccessibleInterface">
     <inject-code>
@@ -3273,7 +3336,11 @@
     </inject-code>
   
   </object-type>
-  <object-type name="QPlastiqueStyle"/>
+  <object-type name="QPlastiqueStyle">
+    <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const">
+        <remove />
+    </modify-function>
+  </object-type>
   <object-type name="QPrintDialog"/>  
   <object-type name="QPrintEngine"/>
   <object-type name="QProgressBar">
@@ -4107,6 +4174,24 @@
             <reference-count action="set" variable-name="__rcMenuBar" />
         </modify-argument>
     </modify-function>
+    <modify-function signature="getContentsMargins(int*,int*,int*,int*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        @QtBlockedSlot public final QContentsMargins getContentsMargins() {
+            QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
+            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
+            
+            getContentsMargins(left, top, right, bottom);
+            return new QContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+        }
+        
+        @QtBlockedSlot public final void setContentsMargins(QContentsMargins margins) {
+            setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
+        }
+    </inject-code>
   </object-type>
 
   <object-type name="QStackedLayout">  
@@ -4896,32 +4981,23 @@
             <reference-count action="ignore" />
         </modify-argument>        
     </modify-function>           
-    <modify-function signature="getContentsMargins(int*,int*,int*,int*)const  ">
+    <modify-function signature="getContentsMargins(int*,int*,int*,int*)const">
         <access modifier="private" />
     </modify-function>
     <inject-code>
-        public static class ContentsMargins {
-            public ContentsMargins(int left, int top, int right, int bottom) {
-                this.left = left;
-                this.top = top;
-                this.right = right;
-                this.bottom = bottom;
-            }            
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
-        }
-        
-        @QtBlockedSlot public final ContentsMargins getContentsMargins() {
+        @QtBlockedSlot public final QContentsMargins getContentsMargins() {
             QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
             QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
             QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
             QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
             
             getContentsMargins(left, top, right, bottom);
-            return new ContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+            return new QContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
         }
+        
+        @QtBlockedSlot public final void setContentsMargins(QContentsMargins margins) {
+            setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
+        }        
     </inject-code>
     
     <modify-function signature="addAction(QAction *)">

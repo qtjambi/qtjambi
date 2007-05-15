@@ -643,6 +643,7 @@
   <value-type name="QPersistentModelIndex">
     <modify-function signature="operator=(QPersistentModelIndex)" remove="all"/>
     <modify-function signature="operator=(QModelIndex)" remove="all"/>
+    <modify-function signature="internalPointer()const" remove="all"/>
   </value-type>
 
   <value-type name="QUuid">
@@ -1707,7 +1708,17 @@
     </modify-function>       
   </object-type>
 
-  <object-type name="QCryptographicHash" />
+  <object-type name="QCryptographicHash">
+    <modify-function signature="addData(const char*,int)">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        public final void addData(byte data[]) {
+            QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
+            addData(np, data.length);
+        }
+    </inject-code>
+  </object-type>
   <object-type name="QLibraryInfo"/>
   <object-type name="QMutex"/>  
   <object-type name="QSemaphore"/>

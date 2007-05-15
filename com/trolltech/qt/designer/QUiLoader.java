@@ -472,19 +472,15 @@ public class QUiLoader {
 
     private void writeLayoutMargin(QLayout l, String property, Object value) {
         int x = (Integer) value;
-        QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
-        QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
-        QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
-        QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
 
-        l.getContentsMargins(left, top, right, bottom);
+        QContentsMargins margins = l.getContentsMargins();
 
-        if (property.equals("rightMargin")) right.setIntValue(x);
-        else if (property.equals("leftMargin")) left.setIntValue(x);
-        else if (property.equals("topMargin")) top.setIntValue(x);
-        else if (property.equals("bottomMargin")) bottom.setIntValue(x);
+        if (property.equals("rightMargin")) margins.right = x;
+        else if (property.equals("leftMargin")) margins.left = x;
+        else if (property.equals("topMargin")) margins.top = x;
+        else if (property.equals("bottomMargin")) margins.bottom = x; 
 
-        l.setContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+        l.setContentsMargins(margins);
     }
 
     private void writeLayoutSpacing(QGridLayout o, String property, Object value) {

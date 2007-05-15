@@ -186,9 +186,6 @@ void CppHeaderGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *j
 void CppHeaderGenerator::writePublicFunctionOverride(QTextStream &s,
                                                      const MetaJavaFunction *java_function)
 {
-    if (java_function->isModifiedRemoved(TypeSystem::NativeCode))
-        return;
-
     s << "    ";
     writeFunctionSignature(s, java_function, 0, "__public_", Option(EnumAsInts | ShowStatic | UnderscoreSpaces));
     s << ";" << endl;

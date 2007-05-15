@@ -220,6 +220,12 @@ QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *,
                                     const char *className);
 
 QTJAMBI_EXPORT
+jobject qtjambi_to_tablearea(JNIEnv *env, int row, int column, int rowCount, int columnCount);
+
+QTJAMBI_EXPORT
+void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *column, int *rowCount, int *columnCount);
+
+QTJAMBI_EXPORT
 void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections);
 
 QTJAMBI_EXPORT

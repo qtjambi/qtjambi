@@ -647,14 +647,14 @@ public class TestInjectedCode extends QApplicationTest {
         assertTrue(ref1.equals(iihss.image));
         
     }
-    
+        
     @Test
     public void testQWidgetGetContentsMargins() {
         QWidget w = new QWidget();
         
         w.setContentsMargins(10, 11, 12, 13);
         
-        QWidget.ContentsMargins cm = w.getContentsMargins();
+        QContentsMargins cm = w.getContentsMargins();
         assertEquals(cm.left, 10);
         assertEquals(cm.top, 11);
         assertEquals(cm.right, 12);

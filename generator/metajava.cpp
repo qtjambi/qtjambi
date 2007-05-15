@@ -1159,11 +1159,19 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
 
     foreach (MetaJavaFunction *f, m_functions) {
 
-        if ((query & NotRemovedFromJava) && f->isRemovedFrom(f->declaringClass(), TypeSystem::JavaCode)) {
+        if ((query & NotRemovedFromJava) && f->isRemovedFrom(f->implementingClass(), TypeSystem::JavaCode)) {
             continue;
         }
 
-        if ((query & NotRemovedFromShell) && f->isRemovedFrom(f->declaringClass(), TypeSystem::ShellCode)) {
+        if ((query & NotRemovedFromJava) && !f->isFinal() && f->isRemovedFrom(f->declaringClass(), TypeSystem::JavaCode)) {
+            continue;
+        }
+
+        if ((query & NotRemovedFromShell) && f->isRemovedFrom(f->implementingClass(), TypeSystem::ShellCode)) {
+            continue;
+        }
+
+        if ((query & NotRemovedFromShell) && !f->isFinal() && f->isRemovedFrom(f->declaringClass(), TypeSystem::ShellCode)) {
             continue;
         }
 

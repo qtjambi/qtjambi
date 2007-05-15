@@ -298,6 +298,14 @@ struct QTJAMBI_EXPORT StaticCache
         jfieldID position;
     } ValidationData;
 
+    struct {
+        jclass class_ref;
+        jmethodID constructor;
+        jfieldID row;
+        jfieldID column;
+        jfieldID rowCount;
+        jfieldID columnCount;
+    } QTableArea;
 
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
@@ -339,7 +347,8 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(URL);
     DECLARE_RESOLVE_FUNCTIONS(URLClassLoader);
     DECLARE_RESOLVE_FUNCTIONS(ValidationData);
-
+    DECLARE_RESOLVE_FUNCTIONS(QTableArea);
+   
 public:
     static StaticCache *instance(JNIEnv *env);
 

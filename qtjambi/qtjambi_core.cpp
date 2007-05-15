@@ -741,6 +741,26 @@ jobject qtjambi_from_cpointer(JNIEnv *env, const void *qt_object, int type, int 
                                        reinterpret_cast<jlong>(qt_object), type, indirections);
 }
 
+jobject qtjambi_to_tablearea(JNIEnv *env, int row, int column, int rowCount, int columnCount)
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQTableArea();
+    return env->NewObject(sc->QTableArea.class_ref, sc->QTableArea.constructor, row, column, rowCount, columnCount);
+}
+
+void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *column, int *rowCount, int *columnCount)
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQTableArea();
+    if (row != 0)
+        *row = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.row) : -1;
+    if (column != 0)
+        *column = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.column) : -1;
+    if (rowCount != 0)
+        *rowCount = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.rowCount) : -1;
+    if (columnCount != 0)
+        *columnCount = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.row) : -1;
+}
 
 jstring qtjambi_from_qstring(JNIEnv *env, const QString &s)
 {

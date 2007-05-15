@@ -68,8 +68,8 @@ namespace TypeSystem {
         PackageInitializer  = 0x0010,
 
         // masks
-        All                 = 0xffff,
-        JavaAndNativeCode   = 0x0003
+        All                 = JavaCode | NativeCode | ShellCode | ShellDeclaration | PackageInitializer,
+        JavaAndNativeCode   = JavaCode | NativeCode
     };
 
     enum Ownership {

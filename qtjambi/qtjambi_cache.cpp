@@ -1080,3 +1080,26 @@ void StaticCache::resolveValidationData_internal()
     ValidationData.position = env->GetFieldID(ValidationData.class_ref, "position", "I");
     Q_ASSERT(ValidationData.position);
 }
+
+void StaticCache::resolveQTableArea_internal() 
+{
+    Q_ASSERT(!QTableArea.class_ref);
+
+    QTableArea.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QTableArea"));
+    Q_ASSERT(QTableArea.class_ref);
+
+    QTableArea.constructor = env->GetMethodID(QTableArea.class_ref, "<init>", "(IIII)V");
+    Q_ASSERT(QTableArea.constructor);
+
+    QTableArea.row = env->GetFieldID(QTableArea.class_ref, "row", "I");
+    Q_ASSERT(QTableArea.row);
+
+    QTableArea.column = env->GetFieldID(QTableArea.class_ref, "column", "I");
+    Q_ASSERT(QTableArea.column);
+
+    QTableArea.rowCount = env->GetFieldID(QTableArea.class_ref, "rowCount", "I");
+    Q_ASSERT(QTableArea.rowCount);
+
+    QTableArea.columnCount = env->GetFieldID(QTableArea.class_ref, "columnCount", "I");
+    Q_ASSERT(QTableArea.columnCount);
+}
