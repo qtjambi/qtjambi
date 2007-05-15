@@ -2227,7 +2227,7 @@
     {
         String newArgs[] = new String[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);
-        newArgs[0] = "java app";        
+        newArgs[0] = "Qt Jambi application";
         argv = com.trolltech.qt.QNativePointer.createCharPointerPointer(newArgs);
         return argv;
     }
