@@ -2,6 +2,7 @@ package com.trolltech.tests;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QPainter.RenderHint;
 
 public class GlassPane extends QWidget {
 
@@ -13,7 +14,8 @@ public class GlassPane extends QWidget {
             ScrollUp,
             ScrollDown,
             SplitVertical,
-            SplitHorizontal
+            SplitHorizontal,
+            Rotate
         };
 
         public Overlay(QPixmap start, QPixmap end) {
@@ -95,6 +97,18 @@ public class GlassPane extends QWidget {
                                  start,
                                  0, 0, w2, start.height());
                 }
+                break;
+            case Rotate:
+                p.save();
+                p.eraseRect(start.rect());
+                
+                p.setRenderHint(RenderHint.SmoothPixmapTransform);
+                p.rotate(level * 90);
+                p.drawPixmap(0, 0, start);
+                
+                p.rotate(-90);
+                p.drawPixmap(0, 0, end);
+                p.restore();
                 break;
             }
         }
