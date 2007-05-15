@@ -2413,6 +2413,7 @@
   <object-type name="QAccessibleSimpleEditableTextInterface" />
   <object-type name="QAccessibleTextInterface" />
   <object-type name="QAccessibleValueInterface" />
+  <object-type name="QAccessibleTableInterface" />
   
   <object-type name="QAccessibleInterface">
     <inject-code>

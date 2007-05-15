@@ -46,9 +46,9 @@ void CppGenerator::writeTypeInfo(QTextStream &s, const MetaJavaType *type, Optio
         s << fixCppTypeName(te->qualifiedCppName());
     }
 
-    if (type->isContainer()
-        && (static_cast<const ContainerTypeEntry *>(te))->type()
-        != ContainerTypeEntry::StringListContainer) {
+    if (type->instantiations().size() > 0
+        && (!type->isContainer() 
+            || (static_cast<const ContainerTypeEntry *>(te))->type() != ContainerTypeEntry::StringListContainer)) {
         s << '<';
         QList<MetaJavaType *> args = type->instantiations();
         bool nested_template = false;
@@ -166,7 +166,7 @@ void CppGenerator::writeFunctionSignature(QTextStream &s,
 
     s << "(";
 
-    writeFunctionArguments(s, java_function->arguments(), option, numArguments);
+   writeFunctionArguments(s, java_function->arguments(), option, numArguments);
 
     // The extra arguments...
     for (int i=0; i<extra_arguments.size(); ++i) {

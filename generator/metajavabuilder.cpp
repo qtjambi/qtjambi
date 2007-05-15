@@ -353,7 +353,7 @@ bool MetaJavaBuilder::build()
         }
     }
 
-    foreach (TypeEntry *entry, m_used_types) {
+    foreach (const TypeEntry *entry, m_used_types) {
         if (entry->isPrimitive())
             continue;
 
@@ -1477,8 +1477,8 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
     if (qualified_name == "QFlags")
         qualified_name = typeInfo.toString();
 
-    TypeEntry *type = TypeDatabase::instance()->findType(qualified_name);
-
+    const TypeEntry *type = TypeDatabase::instance()->findType(qualified_name);
+    
     if (!type) {
         type = TypeDatabase::instance()->findContainerType(name);
 
@@ -1487,11 +1487,26 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
                 if (te->name() == qualified_name)
                     type = te;
             }
+        }
 
-            if (!type) {
-                *ok = false;
-                return 0;
+        // Last resort: Try finding the type by prefixing it with the current
+        // context and all baseclasses of the current context
+        if (!type && !TypeDatabase::instance()->isClassRejected(qualified_name) && m_current_class != 0) {
+            QStringList contexts;
+            contexts.append(m_current_class->qualifiedCppName());
+            while (!contexts.isEmpty() && type == 0) {
+                type = TypeDatabase::instance()->findType(contexts.at(0) + "::" + qualified_name);
+                ClassModelItem item = m_dom->findClass(contexts.at(0));
+                if (item != 0) {
+                    contexts += item->baseClasses();
+                }
+                contexts.pop_front();
             }
+        }
+     
+        if (!type) {
+            *ok = false;
+            return 0;
         }
     }
 
@@ -1509,9 +1524,8 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
     java_type->setOriginalTypeDescription(_typei.toString());
     decideUsagePattern(java_type);
 
-    if (java_type->isContainer()) {
-        ContainerTypeEntry::Type container_type =
-            static_cast<const ContainerTypeEntry *>(type)->type();
+    if (java_type->typeEntry()->isContainer()) {
+        ContainerTypeEntry::Type container_type = static_cast<const ContainerTypeEntry *>(type)->type();
 
         if (container_type == ContainerTypeEntry::StringListContainer) {
             TypeInfo info;
@@ -1601,7 +1615,7 @@ void MetaJavaBuilder::decideUsagePattern(MetaJavaType *java_type)
             java_type->setConstant(false);
         }
 
-    } else if (type->isContainer()) {
+    } else if (type->isContainer() && java_type->indirections() == 0) {
         java_type->setTypeUsagePattern(MetaJavaType::ContainerPattern);
 
     } else if (type->isTemplateArgument()) {

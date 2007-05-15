@@ -102,7 +102,7 @@ protected:
     FileModelItem m_dom;
 
     QList<TypeEntry *> m_template_args;
-    QSet<TypeEntry *> m_used_types;
+    QSet<const TypeEntry *> m_used_types;
 
     QMap<QString, RejectReason> m_rejected_classes;
     QMap<QString, RejectReason> m_rejected_enums;
