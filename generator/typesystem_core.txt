@@ -2690,5 +2690,20 @@
   <suppress-warning text="* private virtual function '*' in 'QTreeWidget'" />  
   <suppress-warning text="* private virtual function '*' in 'QFontDialog'" />  
   <suppress-warning text="* private virtual function '*' in 'QTableWidget'" />  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDateTime' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPersistentModelIndex' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUuid' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRect' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTime' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QLocale' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDir' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPointF' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSize' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFileInfo' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSizeF' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRegExp' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRectF' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDate' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPoint' has equals operators but no qHash() function" />
   
 </typesystem>

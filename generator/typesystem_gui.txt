@@ -520,6 +520,7 @@
   <enum-type name="QTextFormat::ObjectTypes"/>
   <enum-type name="QTextFormat::PageBreakFlag" flags="QTextFormat::PageBreakFlags"/>
   <enum-type name="QTextFrameFormat::Position"/>
+  <enum-type name="QTextFrameFormat::BorderStyle" />
   <enum-type name="QTextItem::RenderFlag" flags="QTextItem::RenderFlags"/>
   <enum-type name="QTextLayout::CursorMode"/>
   <enum-type name="QTextLength::Type"/>
@@ -534,6 +535,7 @@
   <enum-type name="QTreeWidgetItemIterator::IteratorFlag" flags="QTreeWidgetItemIterator::IteratorFlags"/>
   <enum-type name="QValidator::State"/>
   <enum-type name="QWidget::WidgetMode"/>
+  <enum-type name="QWidget::RenderFlag" flags="QWidget::RenderFlags" />
   <enum-type name="QWorkspace::WindowOrder"/>
   <enum-type name="QDoubleValidator::Notation" />
   <enum-type name="QGraphicsScene::SceneLayer" flags="QGraphicsScene::SceneLayers" />
@@ -542,7 +544,7 @@
   <enum-type name="QStyleOptionToolBoxV2::StyleOptionVersion" />
   <enum-type name="QStyleOptionToolBoxV2::TabPosition" />
   <enum-type name="QStyleOptionViewItemV3::StyleOptionVersion" />
-  <enum-type name="QTransform::TransformationCodes" />  
+  <enum-type name="QTransform::TransformationType"/>  
   <enum-type name="QTreeWidgetItem::ChildIndicatorPolicy" />
   <enum-type name="QWizard::WizardOption" flags="QWizard::WizardOptions" />
   <enum-type name="QWizard::WizardPixmap" />
@@ -579,10 +581,7 @@
     <reject-enum-value name="ButtonMask" />    
   </enum-type>
 
-
-  <enum-type name="QDockWidget::DockWidgetFeature" flags="QDockWidget::DockWidgetFeatures">
-    <reject-enum-value name="AllDockWidgetFeatures"/>
-  </enum-type>
+  <enum-type name="QDockWidget::DockWidgetFeature" flags="QDockWidget::DockWidgetFeatures" />
 
   <enum-type name="QFont::StyleHint">
     <reject-enum-value name="SansSerif"/>
@@ -4852,6 +4851,11 @@
     <extra-includes>
         <include file-name="QIcon" location="global"/>
     </extra-includes> 
+    <modify-function signature="render(QPaintDevice *, const QPoint &amp;, const QRegion &amp;, QFlags&lt;QWidget::RenderFlag>)">
+        <modify-argument index="4">
+            <replace-default-expression with="RenderFlag.DrawWindowBackground, RenderFlag.DrawChildren" />
+        </modify-argument>
+    </modify-function>    
     <modify-function signature="setFocusProxy(QWidget*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcFocusProxy" />
@@ -6738,4 +6742,33 @@
   <suppress-warning text="WARNING(MetaInfoGenerator) :: class 'QInputEvent' inherits from polymorphic class 'QEvent', but has no polymorphic id set" />
   <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcMenus' in 'com.trolltech.qt.gui.QMenu' but not both" />
   <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcMenus' in 'com.trolltech.qt.gui.QMenuBar' but not both" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QBrush' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFrame_iterator' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRegion' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPolygon' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextTableCell' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextLength' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPalette' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextBlock_iterator' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextBlock' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextCursor' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFont' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QMatrix' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPen' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QColor' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTransform' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPainterPath_Element' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPainterPath' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QItemSelection' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QKeySequence' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QLine' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPolygonF' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSizePolicy' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFragment' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFontMetrics' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QGradient' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFontMetricsF' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFormat' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QLineF' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QImage' has equals operators but no qHash() function" />
 </typesystem>

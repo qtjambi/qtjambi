@@ -3,6 +3,10 @@
     com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
   </inject-code>
   
+  <namespace-type name="QSsl">
+    <include file-name="qssl.h" location="global" />
+  </namespace-type>
+  
   <enum-type name="QAbstractSocket::NetworkLayerProtocol" />
   <enum-type name="QAbstractSocket::SocketError" />
   <enum-type name="QAbstractSocket::SocketState" />
@@ -21,6 +25,10 @@
   <enum-type name="QUdpSocket::BindFlag" flags="QUdpSocket::BindMode" />
   <enum-type name="QUrlInfo::PermissionSpec" />
   <enum-type name="QHostInfo::HostInfoError" />    
+  <enum-type name="QSsl::KeyType" />
+  <enum-type name="QSsl::EncodingFormat" />
+  <enum-type name="QSsl::Algorithm"/>
+  <enum-type name="QSsl::AlternateNameEntry"/>
       
   <template name="network.read_char*_long_long">
         public final int read(byte data[]) {
@@ -190,5 +198,8 @@
   </value-type>
   
   <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrlInfo' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrl' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QAuthenticator' has equals operators but no qHash() function" />
   
 </typesystem>
