@@ -125,7 +125,8 @@ public class Utilities {
             }
 
             File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-            File tmpLibDir = new File(tmpDir, "QtJambi_" + QtJambi.VERSION_STRING);
+            String user = System.getProperty("user.name");
+            File tmpLibDir = new File(tmpDir, "QtJambi_" + user + "_" + QtJambi.VERSION_STRING);
 
             File destLib = new File(tmpLibDir, lib);
             if (!destLib.exists()) {
