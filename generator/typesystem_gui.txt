@@ -178,6 +178,10 @@
   <rejection class="QWindowsVistaStyle" />
   <rejection class="QWSEmbedWidget" />
   <rejection class="QRegion::QRegionData" />
+  <rejection class="QAccessibleEditableTextInterface" />
+  <rejection class="QAccessibleSimpleEditableTextInterface" />
+  <rejection class="QAccessibleTextInterface" />
+  <rejection class="QAccessibleValueInterface" />
     
   <rejection class="QAbstractItemDelegate" function-name="operator="/>
   <rejection class="QAccessible" function-name="installFactory"/>
@@ -205,7 +209,15 @@
   <rejection class="QTreeModel" function-name="initializeNode"/>
   <rejection class="QTreeModel" function-name="queryChildren"/>
   <rejection class="QAccessible" function-name="cast_helper" />
-  
+  <rejection class="QAccessible2" />
+  <rejection class="QAccessibleInterface" function-name="backgroundColor" />
+  <rejection class="QAccessibleInterface" function-name="foregroundColor" />
+  <rejection class="QAccessibleInterface" function-name="textInterface" />
+  <rejection class="QAccessibleInterface" function-name="valueInterface" />    
+  <rejection class="QAccessibleInterface" function-name="tableInterface" />
+  <rejection class="QAccessibleInterface" function-name="editableTextInterface" />
+  <rejection class="QAccessibleInterface" function-name="cast_helper" />
+  <rejection class="QAccessibleInterfaceEx" function-name="interface_cast" />
   <rejection class="QTabletEvent" field-name="mExtra" />  
 
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
@@ -231,9 +243,6 @@
   <enum-type name="QAccessible::Role"/>
   <enum-type name="QAccessible::StateFlag" flags="QAccessible::State"/>
   <enum-type name="QAccessible::Text"/>
-  <enum-type name="QAccessible2::BoundaryType" />
-  <enum-type name="QAccessible2::CoordinateType" />
-  <enum-type name="QAccessible2::InterfaceType" />
   <enum-type name="QMdiArea::AreaOption" flags="QMdiArea::AreaOptions" />
   <enum-type name="QMdiArea::WindowOrder" />
   <enum-type name="QMdiSubWindow::SubWindowOption" flags="QMdiSubWindow::SubWindowOptions" />
@@ -636,10 +645,6 @@
     <reject-enum-value name="FontSizeIncrement"/>
   </enum-type>
   
-  <namespace-type name="QAccessible2">
-        <include file-name="qaccessible2.h" location="global" />
-  </namespace-type>
-
   <value-type name="QTransform">
     <modify-function signature="operator=(QTransform)" remove="all"/>
     <modify-function signature="map(int,int,int*,int*)const" remove="all"/>
@@ -2392,6 +2397,8 @@
     </modify-function>
   </object-type>
   <object-type name="QAccessible">
+    <modify-function signature="initialize()" remove="all" />
+    <modify-function signature="cleanup()" remove="all" />
     <modify-function signature="setRootObject(QObject *)">
         <modify-argument index="1">
             <reference-count action="ignore" />
@@ -2409,10 +2416,6 @@
   <object-type name="QAccessibleBridgePlugin"/>
   <object-type name="QAccessibleFactoryInterface"/>
   <object-type name="QAccessible2Interface" />
-  <object-type name="QAccessibleEditableTextInterface" />
-  <object-type name="QAccessibleSimpleEditableTextInterface" />
-  <object-type name="QAccessibleTextInterface" />
-  <object-type name="QAccessibleValueInterface" />
   <object-type name="QAccessibleTableInterface">
     <inject-code>
         public static class CellAtIndex extends QTableArea
@@ -2639,7 +2642,7 @@
             public QAccessibleInterface target;
             public int childIndex;
         }
-    </inject-code>  
+    </inject-code>         
     
     <template name="gui.accessible_interface_to_target">            
         jclass __target_class = resolveClass(__jni_env, "QAccessibleInterface$Target", "com/trolltech/qt/gui/");
