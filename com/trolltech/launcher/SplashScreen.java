@@ -11,7 +11,7 @@ class SplashScreen extends QSplashScreen {
 
     public SplashScreen() {
         QRect r = QApplication.desktop().rect();
-        QPixmap desktopBg = QPixmap.grabWindow(0,
+        QPixmap desktopBg = QPixmap.grabWindow(QApplication.desktop().winId(),
 		                                   r.width() / 2 - SIZE.width() / 2,
 		                                   r.height() / 2 - SIZE.height() / 2,
 		                                   SIZE.width(), SIZE.height());
