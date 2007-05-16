@@ -226,6 +226,12 @@ QTJAMBI_EXPORT
 void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *column, int *rowCount, int *columnCount);
 
 QTJAMBI_EXPORT
+jobject qtjambi_to_cellatindex(JNIEnv *env, int row, int column, int rowCount, int columnCount, bool isSelected);
+
+QTJAMBI_EXPORT
+void qtjambi_from_cellatindex(JNIEnv *env, jobject tableArea, int *row, int *column, int *rowCount, int *columnCount, bool *isSelected);
+
+QTJAMBI_EXPORT
 void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections);
 
 QTJAMBI_EXPORT

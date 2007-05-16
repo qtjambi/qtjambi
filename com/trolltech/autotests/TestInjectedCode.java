@@ -4,6 +4,7 @@ import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QAccessibleTableInterface.CellAtIndex;
 import com.trolltech.qt.network.*;
 import com.trolltech.qt.opengl.*;
 import com.trolltech.qt.sql.*;
@@ -405,7 +406,214 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals(QColor.green.rgba(), img.pixel(4, 4));
         assertEquals(QColor.red.rgba(), img.pixel(12, 4));
     }    
+    
+    private static class MyAccessibleTableInterface extends AccessibleTableInterfaceSubclass 
+    {
 
+		
+		@Override
+		public QAccessibleInterface accessibleAt(int row, int column) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public QAccessibleInterface caption() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int childIndex(int rowIndex, int columnIndex) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int columnCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public String columnDescription(int column) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public QAccessibleInterface columnHeader() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int columnIndex(int childIndex) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int columnSpan(int row, int column) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public boolean isColumnSelected(int column) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isRowSelected(int row) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isSelected(int row, int column) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public int rowCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public String rowDescription(int row) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public QAccessibleInterface rowHeader() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int rowIndex(int childIndex) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int rowSpan(int row, int column) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void selectColumn(int column) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void selectRow(int row) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public int selectedColumnCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int selectedColumns(int maxColumns, QNativePointer columns) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int selectedRowCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int selectedRows(int maxRows, QNativePointer rows) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public QAccessibleInterface summary() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void unselectColumn(int column) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void unselectRow(int row) {
+			
+		}
+
+		@Override
+		public CellAtIndex cellAtIndex(int index) {
+			return super.cellAtIndex(index + 1);
+		}
+    	
+    }
+    
+    @Test
+    public void testQAccessibleCellAtIndexIsSelectedFalse() 
+    {
+    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+    	
+    	QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
+    	QNativePointer col = new QNativePointer(QNativePointer.Type.Int);
+    	QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
+    	QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
+    	QNativePointer isSelected = new QNativePointer(QNativePointer.Type.Boolean);
+    	
+    	AccessibleTableInterfaceSubclass.callCellAtIndex(m, 10, row, col, rowSpan, columnSpan, isSelected);
+    	
+    	assertEquals(12, row.intValue());
+    	assertEquals(13, col.intValue());
+    	assertEquals(14, rowSpan.intValue());
+    	assertEquals(15, columnSpan.intValue());
+    	assertEquals(false, isSelected.booleanValue());
+    }
+
+    @Test
+    public void testQAccessibleCellAtIndexIsSelectedTrue() 
+    {
+    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+    	
+    	QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
+    	QNativePointer col = new QNativePointer(QNativePointer.Type.Int);
+    	QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
+    	QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
+    	QNativePointer isSelected = new QNativePointer(QNativePointer.Type.Boolean);
+    	
+    	AccessibleTableInterfaceSubclass.callCellAtIndex(m, 21, row, col, rowSpan, columnSpan, isSelected);
+    	
+    	assertEquals(23, row.intValue());
+    	assertEquals(24, col.intValue());
+    	assertEquals(25, rowSpan.intValue());
+    	assertEquals(26, columnSpan.intValue());
+    	assertEquals(true, isSelected.booleanValue());
+    }
+    
+    @Test
+    public void testQAccessibleCellAtIndexDontCrashOnNull() 
+    {
+    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();    	    	
+    	AccessibleTableInterfaceSubclass.callCellAtIndex(m, 10, null, null, null, null, null);    	
+    }    
+    
     private QPalette savedPalette = null;
     @Test
     public void testQApplicationSetStyleOverridePolish() {

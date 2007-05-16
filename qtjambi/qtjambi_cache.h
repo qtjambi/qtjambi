@@ -307,6 +307,12 @@ struct QTJAMBI_EXPORT StaticCache
         jfieldID columnCount;
     } QTableArea;
 
+    struct {
+        jclass class_ref;
+        jmethodID constructor;
+        jfieldID isSelected;
+    } CellAtIndex;
+
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
@@ -348,7 +354,8 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(URLClassLoader);
     DECLARE_RESOLVE_FUNCTIONS(ValidationData);
     DECLARE_RESOLVE_FUNCTIONS(QTableArea);
-   
+    DECLARE_RESOLVE_FUNCTIONS(CellAtIndex);
+
 public:
     static StaticCache *instance(JNIEnv *env);
 

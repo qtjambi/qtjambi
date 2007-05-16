@@ -153,5 +153,6 @@
               polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_CustomBase + 1" /> 
  
   <object-type name="TestDialog" />
-   
+
+  <object-type name="AccessibleTableInterfaceSubclass" />   
 </typesystem>

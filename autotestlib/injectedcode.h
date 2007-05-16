@@ -319,4 +319,13 @@ public:
     mutable QString myName;
 };
 
+class AccessibleTableInterfaceSubclass: public QAccessibleTableInterface
+{
+public:
+    virtual void cellAtIndex(int index, int *row, int *column, int *rowSpan,
+                             int *columnSpan, bool *isSelected);
+
+    static void callCellAtIndex(AccessibleTableInterfaceSubclass *obj, int index, int *row, int *col, int *rowSpan, int *columnSpan, bool *isSelected);
+};
+
 #endif

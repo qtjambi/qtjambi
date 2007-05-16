@@ -759,8 +759,27 @@ void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *colum
     if (rowCount != 0)
         *rowCount = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.rowCount) : -1;
     if (columnCount != 0)
-        *columnCount = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.row) : -1;
+        *columnCount = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.columnCount) : -1;
 }
+
+jobject qtjambi_to_cellatindex(JNIEnv *env, int row, int column, int rowCount, int columnCount, bool isSelected)
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveCellAtIndex();
+    return env->NewObject(sc->CellAtIndex.class_ref, sc->CellAtIndex.constructor, row, column, rowCount, columnCount, isSelected);
+}
+
+void qtjambi_from_cellatindex(JNIEnv *env, jobject cellAtIndex, int *row, int *column, int *rowCount, int *columnCount, bool *isSelected)
+{
+    qtjambi_from_tablearea(env, cellAtIndex, row, column, rowCount, columnCount);
+
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveCellAtIndex();
+
+    if (isSelected != 0)
+        *isSelected = cellAtIndex != 0 ? env->GetBooleanField(cellAtIndex, sc->CellAtIndex.isSelected) : false;
+}
+
 
 jstring qtjambi_from_qstring(JNIEnv *env, const QString &s)
 {

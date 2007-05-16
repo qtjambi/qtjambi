@@ -1103,3 +1103,17 @@ void StaticCache::resolveQTableArea_internal()
     QTableArea.columnCount = env->GetFieldID(QTableArea.class_ref, "columnCount", "I");
     Q_ASSERT(QTableArea.columnCount);
 }
+
+void StaticCache::resolveCellAtIndex_internal() 
+{
+    Q_ASSERT(!CellAtIndex.class_ref);
+
+    CellAtIndex.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QAccessibleTableInterface$CellAtIndex"));
+    Q_ASSERT(CellAtIndex.class_ref);
+
+    CellAtIndex.constructor = env->GetMethodID(CellAtIndex.class_ref, "<init>", "(IIIIZ)V");
+    Q_ASSERT(CellAtIndex.constructor);
+
+    CellAtIndex.isSelected = env->GetFieldID(CellAtIndex.class_ref, "isSelected", "Z");
+    Q_ASSERT(CellAtIndex.isSelected);
+}

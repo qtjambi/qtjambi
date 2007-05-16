@@ -26,3 +26,17 @@ void GraphicsSceneSubclass::drawItems(QPainter *painter,
     secondStyleOption = options[1];
 }
 
+void AccessibleTableInterfaceSubclass::cellAtIndex(int index, int *row, int *column, int *rowSpan,
+                                                   int *columnSpan, bool *isSelected)
+{
+    if (row != 0) *row = index + 1;
+    if (column != 0) *column = index + 2;
+    if (rowSpan != 0) *rowSpan = index + 3;
+    if (columnSpan != 0) *columnSpan = index + 4;
+    if (isSelected != 0) *isSelected = (index % 2) == 0;
+}
+
+void AccessibleTableInterfaceSubclass::callCellAtIndex(AccessibleTableInterfaceSubclass *obj, int index, int *row, int *col, int *rowSpan, int *columnSpan, bool *isSelected)
+{
+    obj->cellAtIndex(index, row, col, rowSpan, columnSpan, isSelected);
+}

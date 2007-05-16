@@ -2414,6 +2414,18 @@
   <object-type name="QAccessibleTextInterface" />
   <object-type name="QAccessibleValueInterface" />
   <object-type name="QAccessibleTableInterface">
+    <inject-code>
+        public static class CellAtIndex extends QTableArea
+        {
+            public CellAtIndex(int row, int column, int rowSpan, int columnSpan, boolean isSelected)
+            {
+                super(row, column, rowSpan, columnSpan);
+                this.isSelected = isSelected;
+            }
+            
+            public boolean isSelected;
+        }
+    </inject-code>
     <modify-function signature="cellAtIndex(int,int*,int*,int*,int*,bool*)">
         <modify-argument index="2">
             <remove-argument />
@@ -2458,21 +2470,20 @@
         <modify-argument index="6">
             <remove-argument />
             <conversion-rule class="native">
-                bool okHolder = false;
-                bool *%out = &amp;okHolder;
+                bool isSelectedHolder = false;
+                bool *%out = &amp;isSelectedHolder;
             </conversion-rule>
             <conversion-rule class="shell">
                 // no conversion
             </conversion-rule>
         </modify-argument>
         <modify-argument index="return">
-            <replace-type modified-type="com.trolltech.qt.gui.QTableArea" />
+            <replace-type modified-type="com.trolltech.qt.gui.QAccessibleTableInterface$CellAtIndex" />
             <conversion-rule class="native">
-                jobject %out = okHolder ? qtjambi_to_tablearea(__jni_env, rowHolder, columnHolder, rowSpanHolder, columnSpanHolder) : 0;
+                jobject %out = qtjambi_to_cellatindex(__jni_env, rowHolder, columnHolder, rowSpanHolder, columnSpanHolder, isSelectedHolder);
             </conversion-rule>
             <conversion-rule class="shell">
-                qtjambi_from_tablearea(__jni_env, %in, %2, %3, %4, %5);
-                if (%in == 0 &amp;&amp; %6 != 0) *%6 = false;
+                qtjambi_from_cellatindex(__jni_env, %in, %2, %3, %4, %5, %6);                
             </conversion-rule>
         </modify-argument>
     </modify-function>
