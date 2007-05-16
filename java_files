@@ -62,6 +62,7 @@
 ./com/trolltech/launcher/LaunchableListModel.java
 ./com/trolltech/launcher/Launcher.java
 ./com/trolltech/launcher/ScrollingHTMLView.java
+./com/trolltech/launcher/SplashScreen.java
 ./com/trolltech/launcher/Style.java
 ./com/trolltech/launcher/Ui_Launcher.java
 ./com/trolltech/launcher/Worker.java
