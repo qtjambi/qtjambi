@@ -290,8 +290,8 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_fetchFieldNative)
 void qtjambi_shutdown();
 
 extern "C" JNIEXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_run)
-(JNIEnv *, 
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_run_1helper)
+(JNIEnv *,
  jobject)
 {
     qtjambi_shutdown();
