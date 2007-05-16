@@ -1,7 +1,22 @@
 package com.trolltech.qt;
 
+import com.trolltech.qt.core.*;
+
 public class QtJambi_LibraryShutdown implements Runnable {
-	
-	public native void run();
+    public void run() {
+        QCoreApplication app = QCoreApplication.instance();
+
+        Thread appThread = app.thread();
+        QCoreApplication.quit();
+        try {
+            appThread.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        run_helper();
+    }
+
+    private native void run_helper();
 
 }
