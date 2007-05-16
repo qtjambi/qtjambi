@@ -24,6 +24,7 @@ public class ScrollingHTMLView extends QWidget {
 
     private QPixmap topFade = new QPixmap(1, 32);
     private QPixmap bottomFade = new QPixmap(1, 32);
+    private QPixmap rightFade = new QPixmap(32, 1);
 
     private QPixmap background;
     
@@ -36,7 +37,6 @@ public class ScrollingHTMLView extends QWidget {
 
     public ScrollingHTMLView(QWidget parent) {
         super(parent);
-        m_document.setTextWidth(-1);
         setAutoFillBackground(false);
 
         {
@@ -57,6 +57,16 @@ public class ScrollingHTMLView extends QWidget {
             lg.setColorAt(0, new QColor(255, 255, 255));
             lg.setColorAt(1, new QColor(0, 0, 0, 0));
             p.fillRect(bottomFade.rect(), new QBrush(lg));
+            p.end();
+        }
+        {
+            rightFade.fill(new QColor(0, 0, 0, 0));
+            QPainter p = new QPainter();
+            p.begin(rightFade);
+            QLinearGradient lg = new QLinearGradient(rightFade.width(), 0, 0, 0);
+            lg.setColorAt(0, new QColor(255, 255, 255));
+            lg.setColorAt(1, new QColor(0, 0, 0, 0));
+            p.fillRect(rightFade.rect(), new QBrush(lg));
             p.end();
         }
     }
@@ -103,6 +113,7 @@ public class ScrollingHTMLView extends QWidget {
         p.drawTiledPixmap(0, 0, width(), topFade.height(), topFade);
         p.drawTiledPixmap(0, height() - bottomFade.height(), width(), bottomFade.height(),
                           bottomFade);
+        p.drawTiledPixmap(width() - rightFade.width(), 0, rightFade.width(), height(), rightFade);  
         p.end();
     }
 
