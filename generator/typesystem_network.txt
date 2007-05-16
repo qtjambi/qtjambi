@@ -42,7 +42,35 @@
         }      
   </template>
    
-  <object-type name="QAbstractSocket" />
+  <object-type name="QAbstractSocket">
+    <modify-function signature="proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)">
+        <access modifier="private" />
+        <rename to="proxyAuthenticationRequiredPrivate" />
+    </modify-function>  
+    <inject-code>
+        public Signal2&lt;QNetworkProxy, QAuthenticator> proxyAuthenticationRequired;
+        {
+            proxyAuthenticationRequired = new Signal2&lt;QNetworkProxy, QAuthenticator>();
+            
+            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy,QAuthenticator)");
+            proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)");
+        }
+        
+        @SuppressWarnings("unused")
+        private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) 
+        {
+            proxyAuthenticationRequiredPrivate.emit(proxy, authenticator.nativePointer());
+        }
+        
+        @SuppressWarnings("unused")
+        private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator) 
+        {
+            // ### QAuthenticator auth = QAuthenticator.fromNativePointer(authenticator);           
+            proxyAuthenticationRequired.emit(proxy, QAuthenticator.fromNativePointer(authenticator));
+            // ### auth.invalidateObject(); <-- We need this function some how to set nativeId = 0 in case someone keeps a ref to it
+        }
+    </inject-code>
+  </object-type>
   <object-type name="QFtp">
     <modify-function signature="read(char*,long long)">
         <access modifier="private" />

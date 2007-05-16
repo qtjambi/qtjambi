@@ -638,6 +638,7 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
                                 | MetaJavaAttributes::Protected
                                 | MetaJavaAttributes::Private
                                 | MetaJavaAttributes::Friendly;
+            include_attributes &= ~(exclude_attributes);
 
             if (mod.isPublic())
                 include_attributes |= MetaJavaAttributes::Public;
@@ -647,8 +648,9 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
                 include_attributes |= MetaJavaAttributes::Private;
             else if (mod.isFriendly())
                 include_attributes |= MetaJavaAttributes::Friendly;
-
+            
             exclude_attributes &= ~(include_attributes);
+            
         }
     }
 
@@ -671,10 +673,9 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
     s << signalTypeName;
     s << " " << signalName << " = new " << signalTypeName << "();" << endl << endl;
 
-    s << "    @SuppressWarnings(\"unused\")" << endl;
     writeFunction(s, java_function,
                   MetaJavaAttributes::Private,
-                  MetaJavaAttributes::Visibility);
+                  0);
 }
 
 void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
