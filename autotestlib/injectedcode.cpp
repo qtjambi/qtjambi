@@ -40,3 +40,29 @@ void AccessibleTableInterfaceSubclass::callCellAtIndex(AccessibleTableInterfaceS
 {
     obj->cellAtIndex(index, row, col, rowSpan, columnSpan, isSelected);
 }
+
+int AccessibleTableInterfaceSubclass::selectedColumns(int maxColumns, QList<int> *columns)
+{
+    if (columns != 0)
+        columns->append(maxColumns);
+    return 0;
+}
+
+int AccessibleTableInterfaceSubclass::selectedRows(int maxRows, QList<int> *rows)
+{
+    if (rows != 0)
+        rows->append(maxRows);
+    return 0;
+}
+
+QList<int> AccessibleTableInterfaceSubclass::callSelectedColumns(AccessibleTableInterfaceSubclass *obj, int maxColumns, QList<int> columns) 
+{
+    obj->selectedColumns(maxColumns, &columns);
+    return columns;
+}
+
+QList<int> AccessibleTableInterfaceSubclass::callSelectedRows(AccessibleTableInterfaceSubclass *obj, int maxRows, QList<int> rows) 
+{
+    obj->selectedRows(maxRows, &rows);
+    return rows;
+}

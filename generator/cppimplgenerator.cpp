@@ -78,6 +78,11 @@ QString jni_signature(const QString &_full_name, JNISignatureFormat format)
         signature = "[";
     }
 
+    int start, end;
+    while ( (start = full_name.indexOf("<")) >= 0 && (end = full_name.indexOf(">")) >= 0 ) {
+        full_name.remove(start, end - start + 1);
+    }
+
     static QHash<QString, QString> table;
     if (table.isEmpty()) {
         table["boolean"] = "Z";

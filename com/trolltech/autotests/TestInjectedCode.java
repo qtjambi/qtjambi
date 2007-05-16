@@ -526,9 +526,9 @@ public class TestInjectedCode extends QApplicationTest {
 		}
 
 		@Override
-		public int selectedColumns(int maxColumns, QNativePointer columns) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int selectedColumns(int maxColumns, List<Integer> columns) {
+			columns.add(maxColumns);
+			return super.selectedColumns(maxColumns + 2, columns);
 		}
 
 		@Override
@@ -538,9 +538,9 @@ public class TestInjectedCode extends QApplicationTest {
 		}
 
 		@Override
-		public int selectedRows(int maxRows, QNativePointer rows) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int selectedRows(int maxRows, List<Integer> rows) {
+			rows.add(maxRows);
+			return super.selectedRows(maxRows - 2, rows);
 		}
 
 		@Override
@@ -566,6 +566,38 @@ public class TestInjectedCode extends QApplicationTest {
 		}
     	
     }
+    
+    @Test
+    public void testQAccessibleSelectedColumns()
+    {
+    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+
+    	List<Integer> ints = new ArrayList<Integer>();
+    	ints.add(43);
+    	
+    	ints = AccessibleTableInterfaceSubclass.callSelectedColumns(m, 55, ints);
+    	
+    	assertEquals(3, ints.size());
+    	assertEquals(43, ints.get(0));
+    	assertEquals(55, ints.get(1));
+    	assertEquals(57, ints.get(2));
+    }
+
+    @Test
+    public void testQAccessibleSelectedRows()
+    {
+    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+
+    	List<Integer> ints = new ArrayList<Integer>();
+    	ints.add(43);
+    	
+    	ints = AccessibleTableInterfaceSubclass.callSelectedRows(m, 55, ints);
+    	
+    	assertEquals(3, ints.size());
+    	assertEquals(43, ints.get(0));
+    	assertEquals(55, ints.get(1));
+    	assertEquals(53, ints.get(2));
+    }    
     
     @Test
     public void testQAccessibleCellAtIndexIsSelectedFalse() 

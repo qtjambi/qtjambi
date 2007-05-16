@@ -105,6 +105,7 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID add;
         jmethodID size;
         jmethodID toArray;
+        jmethodID clear;
     } Collection;
 
     struct {

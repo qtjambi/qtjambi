@@ -322,10 +322,14 @@ public:
 class AccessibleTableInterfaceSubclass: public QAccessibleTableInterface
 {
 public:
+    virtual int selectedColumns(int maxColumns, QList<int> *columns);
+    virtual int selectedRows(int maxRows, QList<int> *rows);
     virtual void cellAtIndex(int index, int *row, int *column, int *rowSpan,
                              int *columnSpan, bool *isSelected);
 
     static void callCellAtIndex(AccessibleTableInterfaceSubclass *obj, int index, int *row, int *col, int *rowSpan, int *columnSpan, bool *isSelected);
+    static QList<int> callSelectedRows(AccessibleTableInterfaceSubclass *obj, int maxRows, QList<int> rows);
+    static QList<int> callSelectedColumns(AccessibleTableInterfaceSubclass *obj, int maxColumns, QList<int> columns);
 };
 
 #endif

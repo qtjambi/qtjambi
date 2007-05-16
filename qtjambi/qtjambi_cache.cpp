@@ -618,10 +618,12 @@ void StaticCache::resolveCollection_internal()
     Collection.add = env->GetMethodID(Collection.class_ref, "add", "(Ljava/lang/Object;)Z");
     Collection.size = env->GetMethodID(Collection.class_ref, "size", "()I");
     Collection.toArray = env->GetMethodID(Collection.class_ref, "toArray", "()[Ljava/lang/Object;");
+    Collection.clear = env->GetMethodID(Collection.class_ref, "clear", "()V");
 
     Q_ASSERT(Collection.add);
     Q_ASSERT(Collection.size);
     Q_ASSERT(Collection.toArray);
+    Q_ASSERT(Collection.clear);
 }
 
 

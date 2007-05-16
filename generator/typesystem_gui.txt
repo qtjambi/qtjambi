@@ -2487,6 +2487,145 @@
             </conversion-rule>
         </modify-argument>
     </modify-function>
+            
+    <modify-function signature="selectedColumns(int,QList&lt;int>*)">
+        <modify-argument index="2">
+            <replace-type modified-type="java.util.List&lt;Integer>" />
+            <conversion-rule class="shell">
+                StaticCache *sc = StaticCache::instance(__jni_env);
+                sc->resolveArrayList();
+                sc->resolveCollection();
+                sc->resolveInteger();
+                
+                jobject columnsHolder = 0;
+                if (%in != 0) {
+                    columnsHolder = __jni_env->NewObject(sc->ArrayList.class_ref, sc->ArrayList.constructor, %in->size());
+                    qtjambi_exception_check(__jni_env);
+                    if (columnsHolder != 0) for (int i=0; i&lt;%in->size(); i++) {
+                        __jni_env->CallVoidMethod(columnsHolder, sc->Collection.add, qtjambi_from_int(__jni_env, %in->at(i)));
+                    }
+                    qtjambi_exception_check(__jni_env);
+                }
+                jobject %out = columnsHolder;
+            </conversion-rule>
+            <conversion-rule class="native">
+                StaticCache *sc = StaticCache::instance(__jni_env);
+                sc->resolveCollection();
+                
+                QList&lt;int> columnHolder;                
+                if (%in != 0) {
+                    jobjectArray columnsAsArray = (jobjectArray) __jni_env->CallObjectMethod(%in, sc->Collection.toArray);                    
+                    if (columnsAsArray != 0) {
+                        int len = __jni_env->GetArrayLength(columnsAsArray);
+                        for (int i=0; i&lt;len; ++i) {
+                            columnHolder.append(qtjambi_to_int(__jni_env, __jni_env->GetObjectArrayElement(columnsAsArray, i)));
+                        }
+                    }
+                    qtjambi_exception_check(__jni_env);
+                }
+                QList&lt;int> *%out = &amp;columnHolder;
+            </conversion-rule>                
+        </modify-argument>    
+        <modify-argument index="return">
+            <conversion-rule class="shell">
+                // Copy back 
+                if (columnsHolder != 0) {                    
+                    jobjectArray columnsAsArray = (jobjectArray) __jni_env->CallObjectMethod(columnsHolder, sc->Collection.toArray);
+                    if (columnsAsArray != 0) {
+                        int len = __jni_env->GetArrayLength(columnsAsArray);
+                        %2->clear();
+                        for (int i=0; i&lt;len; ++i) {
+                            %2->append(qtjambi_to_int(__jni_env, __jni_env->GetObjectArrayElement(columnsAsArray, i)));
+                        }
+                    }
+                }
+                
+                int %out = %in;
+            </conversion-rule>
+            <conversion-rule class="native">
+                // Copy back
+                if (%2 != 0) {
+                    __jni_env->CallVoidMethod(%2, sc->Collection.clear);
+                    for (int i=0; i&lt;columnHolder.size(); ++i) {
+                        __jni_env->CallVoidMethod(%2, sc->Collection.add, qtjambi_from_int(__jni_env, columnHolder.at(i)));
+                    }    
+                    qtjambi_exception_check(__jni_env);                    
+                }
+                
+                jint %out = %in;
+            </conversion-rule>
+        </modify-argument>    
+    </modify-function>
+    <modify-function signature="selectedRows(int,QList&lt;int>*)">
+        <modify-argument index="2">
+            <replace-type modified-type="java.util.List&lt;Integer>" />
+            <conversion-rule class="shell">
+                StaticCache *sc = StaticCache::instance(__jni_env);
+                sc->resolveArrayList();
+                sc->resolveCollection();
+                sc->resolveInteger();
+                
+                jobject rowsHolder = 0;
+                if (%in != 0) {
+                    rowsHolder = __jni_env->NewObject(sc->ArrayList.class_ref, sc->ArrayList.constructor, %in->size());
+                    qtjambi_exception_check(__jni_env);
+                    if (rowsHolder != 0) for (int i=0; i&lt;%in->size(); i++) {
+                        __jni_env->CallVoidMethod(rowsHolder, sc->Collection.add, qtjambi_from_int(__jni_env, %in->at(i)));
+                    }
+                    qtjambi_exception_check(__jni_env);
+                }
+                jobject %out = rowsHolder;
+            </conversion-rule>
+            <conversion-rule class="native">
+                StaticCache *sc = StaticCache::instance(__jni_env);
+                sc->resolveCollection();
+                
+                QList&lt;int> rowsHolder;                
+                if (%in != 0) {
+                    jobjectArray rowsAsArray = (jobjectArray) __jni_env->CallObjectMethod(%in, sc->Collection.toArray);                    
+                    if (rowsAsArray != 0) {
+                        int len = __jni_env->GetArrayLength(rowsAsArray);
+                        for (int i=0; i&lt;len; ++i) {
+                            rowsHolder.append(qtjambi_to_int(__jni_env, __jni_env->GetObjectArrayElement(rowsAsArray, i)));
+                        }
+                    }
+                    qtjambi_exception_check(__jni_env);
+                }
+                QList&lt;int> *%out = &amp;rowsHolder;
+            </conversion-rule>                
+        </modify-argument>    
+        <modify-argument index="return">
+            <conversion-rule class="shell">
+                // Copy back 
+                if (rowsHolder != 0) {                    
+                    jobjectArray rowsAsArray = (jobjectArray) __jni_env->CallObjectMethod(rowsHolder, sc->Collection.toArray);
+                    if (rowsAsArray != 0) {
+                        int len = __jni_env->GetArrayLength(rowsAsArray);
+                        %2->clear();
+                        for (int i=0; i&lt;len; ++i) {
+                            %2->append(qtjambi_to_int(__jni_env, __jni_env->GetObjectArrayElement(rowsAsArray, i)));
+                        }
+                    }
+                }
+                
+                int %out = %in;
+            </conversion-rule>
+            <conversion-rule class="native">
+                // Copy back
+                if (%2 != 0) {
+                    __jni_env->CallVoidMethod(%2, sc->Collection.clear);
+                    for (int i=0; i&lt;rowsHolder.size(); ++i) {
+                        __jni_env->CallVoidMethod(%2, sc->Collection.add, qtjambi_from_int(__jni_env, rowsHolder.at(i)));
+                    }    
+                    qtjambi_exception_check(__jni_env);                    
+                }
+                
+                jint %out = %in;
+            </conversion-rule>
+        </modify-argument>    
+    </modify-function>
+
+
   </object-type>
   
   <object-type name="QAccessibleInterface">
