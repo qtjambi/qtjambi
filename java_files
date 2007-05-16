@@ -149,7 +149,6 @@
 ./com/trolltech/qt/core/QSizeF.java
 ./com/trolltech/qt/core/QSocketNotifier.java
 ./com/trolltech/qt/core/QStringMatcher.java
-./com/trolltech/qt/core/QStringRef.java
 ./com/trolltech/qt/core/QSystemLocale.java
 ./com/trolltech/qt/core/QTemporaryFile.java
 ./com/trolltech/qt/core/QTextCodec.java
