@@ -16,6 +16,7 @@ CONFIG(debug, debug|release) {
 }
 
 INCLUDEPATH += $$PWD/../qtjambi $$PWD/../common
+DEPENDPATH += $$PWD/../qtjambi $$PWD/../common
 
 macx:{
     LIBS += -framework JavaVm
