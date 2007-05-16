@@ -868,6 +868,13 @@
         return qtjambi_from_qvariant(__jni_env, __qt_this->data(index, role));
     }
     </inject-code>
+
+    <modify-function signature="mimeData(QList&lt;QModelIndex&gt;)const">
+        <modify-argument index="0">
+            <define-ownership class="shell" owner="c++" />
+        </modify-argument>
+    </modify-function>
+
   </object-type>
   
   <object-type name="QAbstractListModel">
