@@ -649,6 +649,17 @@
     <modify-function signature="operator=(QTransform)" remove="all"/>
     <modify-function signature="map(int,int,int*,int*)const" remove="all"/>
     <modify-function signature="map(double,double,double*,double*)const" remove="all"/>
+    
+    <modify-function signature="operator*=(double)" access="private" />    
+    <modify-function signature="operator+=(double)" access="private"/>
+    <modify-function signature="operator-=(double)" access="private" />
+    <modify-function signature="operator/=(double)" access="private" />
+    <inject-code>
+        public final QTransform multiply(double d) { operator_multiply_assign(d); return this; }
+        public final QTransform add(double d) { operator_add_assign(d); return this; }
+        public final QTransform divide(double d) { operator_divide_assign(d); return this; }
+        public final QTransform subtract(double d) { operator_subtract_assign(d); return this; }
+    </inject-code>        
 
     <modify-function signature="operator*(QTransform)const" access="private"/>
     <modify-function signature="operator*=(QTransform)" access="private"/>
@@ -4254,6 +4265,94 @@
             </conversion-rule>            
         </modify-argument>
     </modify-function>
+    
+    <modify-function signature="combinedLayoutSpacing(QFlags&lt;QSizePolicy::ControlType>,QFlags&lt;QSizePolicy::ControlType>,Qt::Orientation,QStyleOption*,QWidget*)const">
+        <access modifier="private"/>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        @QtBlockedSlot public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
+                                                              com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget)
+        {
+            return combinedLayoutSpacing(controls1, controls2, orientation, option.nativePointer(), widget);
+        }
+        
+        @QtBlockedSlot public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
+                                                              com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option)
+        {
+            return combinedLayoutSpacing(controls1, controls2, orientation, option, null);
+        }
+
+        @QtBlockedSlot public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
+                                                              com.trolltech.qt.core.Qt.Orientation orientation)
+        {
+            return combinedLayoutSpacing(controls1, controls2, orientation, null);
+        }
+    </inject-code>
+                
+    <modify-function signature="layoutSpacing(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const">
+        <access modifier="private" />
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+    <inject-code>
+        @QtBlockedSlot public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
+                                                      com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget)
+        {
+            return layoutSpacing(control1, control2, orientation, option.nativePointer(), widget);
+        }
+        
+        @QtBlockedSlot public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
+                                                      com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option)
+        {
+            return layoutSpacing(control1, control2, orientation, option, null);
+        }
+
+        @QtBlockedSlot public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
+                                                      com.trolltech.qt.core.Qt.Orientation orientation)
+        {
+            return layoutSpacing(control1, control2, orientation, null);
+        }        
+    </inject-code>
+    
+    <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const">
+        <access modifier="private" />
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>    
+    <inject-code>
+        @QtBlockedSlot public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
+                                                                    com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget)
+        {
+            return layoutSpacing(control1, control2, orientation, option.nativePointer(), widget);
+        }
+        
+        @QtBlockedSlot public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
+                                                                    com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option)
+        {
+            return layoutSpacing(control1, control2, orientation, option, null);
+        }
+
+        @QtBlockedSlot public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
+                                                                    com.trolltech.qt.core.Qt.Orientation orientation)
+        {
+            return layoutSpacing(control1, control2, orientation, null);
+        }        
+    </inject-code>
+
   </object-type>
 
 
