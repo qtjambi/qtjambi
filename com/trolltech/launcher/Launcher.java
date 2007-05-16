@@ -78,6 +78,9 @@ public class Launcher extends QWidget {
     
     public void init() {
         ui.setupUi(this);
+        
+        ui.source.setWordWrap(false);
+        
         ui.list.setModel(m_model);
         ui.list.setItemDelegate(new Delegate(m_model));
         ui.list.setCurrentIndex(null);

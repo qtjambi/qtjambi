@@ -26,6 +26,9 @@ public class ScrollingHTMLView extends QWidget {
     private QPixmap bottomFade = new QPixmap(1, 32);
 
     private QPixmap background;
+    
+    private boolean wrap = true;
+    private int margine = 200;
 
     public ScrollingHTMLView() {
         this(null);
@@ -33,6 +36,7 @@ public class ScrollingHTMLView extends QWidget {
 
     public ScrollingHTMLView(QWidget parent) {
         super(parent);
+        m_document.setTextWidth(-1);
         setAutoFillBackground(false);
 
         {
@@ -66,6 +70,10 @@ public class ScrollingHTMLView extends QWidget {
         update();
     }
 
+    public void setWordWrap(boolean wrap) {
+        this.wrap = wrap;
+        m_document.setTextWidth(wrap ? width() - margine : -1);
+    }
 
     protected void paintEvent(QPaintEvent e) {
         int w = width(), h = height();
@@ -124,7 +132,7 @@ public class ScrollingHTMLView extends QWidget {
     }
 
     protected void resizeEvent(QResizeEvent e) {
-        m_document.setPageSize(new QSizeF(e.size().width() - 200, Integer.MAX_VALUE));
+        m_document.setTextWidth(wrap ? e.size().width() - margine : -1);
     }
 
     private static final int OFFSET_BASE = 32;
