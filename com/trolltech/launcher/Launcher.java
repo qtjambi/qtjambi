@@ -307,11 +307,12 @@ public class Launcher extends QWidget {
 
             String pkg = dirs[i].substring(10).replace("/", ".");
             for (QFileInfo info : classFiles) {
-            	progressChanged.emit("Setting up examples: " + info.baseName());
 
                 Launchable l = Launchable.create(pkg + "." + info.baseName());
-                if (l != null)
+                if (l != null) {
+                    progressChanged.emit("Setting up examples: " + info.baseName());
                     m_model.add(l);
+                }
             }
         }
     }
@@ -345,10 +346,13 @@ public class Launcher extends QWidget {
     public static void main(String args[]) {
         QApplication.initialize(args == null ? start_qt() : args);
         
-        QSplashScreen splashScreen = new SplashScreen();
+        SplashScreen splashScreen = new SplashScreen();
+        
         splashScreen.show();
+        splashScreen.setGeometry(splashScreen.splashScreenRect());
+        
         QApplication.processEvents();
-
+        
         // ### not an optimal solution, but at least it makes the launcher run the
         // image viewer demos and sql demos properly...
         QApplication.addLibraryPath(new QFileInfo(".").absoluteFilePath() + "/plugins");
