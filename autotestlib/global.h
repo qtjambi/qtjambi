@@ -14,12 +14,15 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-c#include "abstractclass.h"
+#include <qstring.h>
+
+#include "abstractclass.h"
 #include "destruction.h"
 #include "enums.h"
 #include "injectedcode.h"
 #include "interfaces.h"
 #include "namespace.h"
+#include "messagehandler.h"
 #include "nativepointertester.h"
 #include "paintengine.h"
 #include "polymorphictype.h"

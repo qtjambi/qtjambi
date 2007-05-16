@@ -22,6 +22,10 @@
 #include <QtCore/private/qobject_p.h>
 #endif
 
+static QtMsgHandler qt_message_handler;
+void qtjambi_messagehandler_proxy(QtMsgType type, const char *message);
+
+
 class QThreadData;
 
 class QObjectPrivateAccessor : public QObjectData
@@ -49,7 +53,6 @@ public:
 
 };
 
-
 class QObjectAccessor {
 public:
     virtual ~QObjectAccessor() { }
@@ -66,6 +69,8 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initia
 #error "Qt Jambi requires 4.3"
 #endif
     qtjambi_register_callbacks();
+
+    qt_message_handler = qInstallMsgHandler(qtjambi_messagehandler_proxy);
 }
 
 
@@ -297,3 +302,18 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_run_1help
     qtjambi_shutdown();
 }
 
+void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
+{
+    JNIEnv *env = qtjambi_current_environment();
+    jclass cls = env->FindClass("com/trolltech/qt/core/QMessageHandler");
+    QTJAMBI_EXCEPTION_CHECK(env);
+
+    jmethodID id = env->GetStaticMethodID(cls, "process", "(ILjava/lang/String;)Z");
+    QTJAMBI_EXCEPTION_CHECK(env);
+
+    jstring str = qtjambi_from_qstring(env, QString::fromLocal8Bit(message));
+
+    jboolean eaten = env->CallStaticBooleanMethod(cls, id, (jint) type, str);
+    if (!eaten)
+        qt_message_handler(type, message);
+}

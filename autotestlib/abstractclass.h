@@ -1,6 +1,8 @@
 #ifndef ABSTRACTCLASS_H
 #define ABSTRACTCLASS_H
 
+#include <qstring.h>
+
 class AbstractClass
 {
 public:
