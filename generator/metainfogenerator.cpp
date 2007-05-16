@@ -607,7 +607,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
         javaName.prepend(javaPackage.replace(".", "/") + "/");
     }
 
-    QString qtName = entry->name();
+    QString qtName = entry->qualifiedCppName();
 
     s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl
       << "    registerJavaToQt(\"" << javaName << "\", \"" << qtName << "\");" << endl;
@@ -636,7 +636,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
           << constructorName
           << "));" << endl;
     } else {
-        s << "    qRegisterMetaType<" << entry->qualifiedCppName() << ">(\"" << entry->name() << "\");" << endl;
+        s << "    qRegisterMetaType<" << entry->qualifiedCppName() << ">(\"" << entry->qualifiedCppName() << "\");" << endl;
     }
 
 }

@@ -6,21 +6,24 @@ include(../cpp/com_trolltech_autotests_generated/com_trolltech_autotests_generat
 INCLUDEPATH += ../cpp/com_trolltech_autotests_generated
 
 HEADERS += \ 
+	abstractclass.h \
+	destruction.h \
+	injectedcode.h \
+	interfaces.h \
+	namespace.h \
+	nativepointertester.h \
+	paintengine.h \
+	signalsandslots.h \
+	testdialog.h \
 	tulip.h \
 	variants.h \
-  	nativepointertester.h \
-        abstractclass.h \
-        signalsandslots.h \
-        destruction.h \
-        interfaces.h \
-        paintengine.h \
-        injectedcode.h \
-        testdialog.h
 
 
-SOURCES += injectedcode.cpp \
-           destruction.cpp \
-           testdialog.cpp
+SOURCES += \
+	destruction.cpp \
+	injectedcode.cpp \
+	namespace.cpp \
+	testdialog.cpp \
 
 
 QT += sql xml

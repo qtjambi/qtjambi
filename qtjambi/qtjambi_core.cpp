@@ -74,10 +74,10 @@ JavaVM *qtjambi_vm = 0;
 
 /*!
  * This function is called by Qt Jambi shutdown hook to indicate that
- * the library is being unloaded. It prevents any access to the 
+ * the library is being unloaded. It prevents any access to the
  * current JNIEnv *.
  */
-void qtjambi_shutdown() 
+void qtjambi_shutdown()
 {
     qtjambi_vm = 0;
 }
@@ -252,14 +252,14 @@ void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
 JNIEnv *qtjambi_current_environment()
 {
     JNIEnv *env;
-    if (qtjambi_vm == 0) 
+    if (qtjambi_vm == 0)
         return 0;
     int result = qtjambi_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_4);
     if (result == JNI_EDETACHED) {
         if (qtjambi_vm->AttachCurrentThreadAsDaemon(reinterpret_cast<void **>(&env), 0) < 0) {
             qWarning("Failed attaching current thread");
             return 0;
-        } 
+        }
     } else {
         Q_ASSERT(result == JNI_OK);
     }
@@ -473,6 +473,7 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className,
     return qtjambi_from_object(env, qt_object, class_name, package, makeCopyOfValueTypes);
 }
 
+
 jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className,
                             const char *packageName, bool makeCopyOfValueTypes)
 {
@@ -494,7 +495,13 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
     if (returned == 0)
         return 0;
 
-    int metaType = makeCopyOfValueTypes ? QMetaType::type(className) : QMetaType::Void;
+    int metaType = QMetaType::Void;
+
+    if (makeCopyOfValueTypes) {
+        QString java_full_name = QString::fromLatin1("%1%2").arg(packageName).arg(className);
+        QString qt_name = getQtName(java_full_name);
+        metaType = QMetaType::type(qt_name.toLatin1());
+    }
 
     // If it's not a value type, we just link to the pointer directly.
     void *copy = 0;
@@ -710,10 +717,15 @@ QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *ob
                                       const char *className)
 {
     int metaType = QMetaType::type(className);
+
     if (metaType != QMetaType::Void)
         return qtjambi_construct_object(env, java_object, object, metaType);
-    else
+    else {
+        jclass ex = env->FindClass("java/lang/Exception");
+        env->ThrowNew(ex, QString::fromLatin1("Qt Jambi failed to construct native instance"
+                                              " of type %1").arg(className).toLatin1());
         return 0;
+    }
 }
 
 void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections)

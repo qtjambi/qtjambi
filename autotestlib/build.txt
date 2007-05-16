@@ -155,4 +155,21 @@
   <object-type name="TestDialog" />
 
   <object-type name="AccessibleTableInterfaceSubclass" />   
+
+  <namespace-type name="NameSpace">
+    <include file-name="namespace.h" location="local"/>
+  </namespace-type>
+
+  <object-type name="NameSpace::ObjectA" java-name="ObjectA">
+    <include file-name="namespace.h" location="local"/>
+  </object-type>
+
+  <object-type name="NameSpace::ObjectB" java-name="ObjectB">
+    <include file-name="namespace.h" location="local"/>
+  </object-type>
+
+  <value-type name="NameSpace::ValueA" java-name="ValueA">
+    <include file-name="namespace.h" location="local"/>
+  </value-type>
+   
 </typesystem>

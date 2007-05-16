@@ -1494,7 +1494,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
 {
     const MetaJavaClass *cls = java_function->ownerClass();
     MetaJavaArgumentList arguments = java_function->arguments();
-    QString className = cls->name();
+    QString className = cls->typeEntry()->qualifiedCppName();
 
     bool hasShellClass = cls->generateShellClass();
 
@@ -2489,12 +2489,12 @@ void CppImplGenerator::writeFunctionCall(QTextStream &s, const QString &object_n
 
         // Global scope stream operators need the arguments to be reordered (this ref at end)
         // so we special case them in order to simplify this code
-        bool stream_operator = java_function->originalName() == "operator<<" 
+        bool stream_operator = java_function->originalName() == "operator<<"
                                || java_function->originalName() == "operator>>";
 
-        if (java_function->type() == 0) 
+        if (java_function->type() == 0)
             s << "if (" << object_name << " != 0) ";
-        else 
+        else
             s << "(" << object_name << " != 0) ? ";
         s << "::" << prefix << function_name << "(";
         if (!stream_operator)
