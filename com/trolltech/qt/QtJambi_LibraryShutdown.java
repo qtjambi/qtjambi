@@ -6,12 +6,14 @@ public class QtJambi_LibraryShutdown implements Runnable {
     public void run() {
         QCoreApplication app = QCoreApplication.instance();
 
-        Thread appThread = app.thread();
-        QCoreApplication.quit();
-        try {
-            appThread.join();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (app != null) {
+            Thread appThread = app.thread();
+            QCoreApplication.quit();
+            try {
+                appThread.join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         run_helper();
