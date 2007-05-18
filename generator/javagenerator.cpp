@@ -675,7 +675,7 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
 
     writeFunction(s, java_function,
                   MetaJavaAttributes::Private,
-                  0);
+                  MetaJavaAttributes::Visibility & ~MetaJavaAttributes::Private);
 }
 
 void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
