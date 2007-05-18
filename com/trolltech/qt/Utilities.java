@@ -3,6 +3,7 @@ package com.trolltech.qt;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.jar.*;
 
 public class Utilities {
 
@@ -87,7 +88,7 @@ public class Utilities {
                 String envPaths[] = envPath.split(File.pathSeparator);
                 for (String path : envPaths) {
                     File f = new File(path, lib);
-   
+
                     if (f.exists()) {
                         Runtime.getRuntime().load(f.getAbsolutePath());
                         if (VERBOSE_LOADING)
@@ -105,17 +106,17 @@ public class Utilities {
         }
         return false;
     }
-    
+
 
     public static boolean loadLibrary(String lib) {
         if (VERBOSE_LOADING) System.out.println("\nGoing to load: " + lib);
-        
+
         if(loadFromEnv("com.trolltech.qt.library-path" , lib))
             return true;
-        
+
         if(loadFromEnv("com.trolltech.qt.internal.jambipath" , lib))
             return true;
-        
+
         // Try to search in the classpath, including .jar files and unpack to a temp directory, then load
         // from there.
         try {
@@ -124,9 +125,7 @@ public class Utilities {
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
             }
 
-            File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-            String user = System.getProperty("user.name");
-            File tmpLibDir = new File(tmpDir, "QtJambi_" + user + "_" + QtJambi.VERSION_STRING);
+            File tmpLibDir = jambiTempDir();
 
             File destLib = new File(tmpLibDir, lib);
             if (!destLib.exists()) {
@@ -138,7 +137,7 @@ public class Utilities {
         } catch (Throwable e) {
             if (VERBOSE_LOADING) e.printStackTrace();
         }
-        
+
         // Try to load using relative path (relative to qtjambi.jar or root of package where class file are loaded from
         if(implicitLoading){
             try {
@@ -156,14 +155,14 @@ public class Utilities {
                     Runtime.getRuntime().load(libraryPath);
                     if (VERBOSE_LOADING)
                         System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
-                    return true;    
+                    return true;
                 }
-                
+
             } catch (Throwable e) {
                 if (VERBOSE_LOADING)
                     e.printStackTrace();
             }
-        }            
+        }
 
         // Try to load in standard way.
         try {
@@ -174,13 +173,19 @@ public class Utilities {
         } catch (Throwable e) {
             if (VERBOSE_LOADING) e.printStackTrace();
         }
-        
+
         if(loadFromEnv("java.library.path" , lib))
             return true;
-                        
-        
+
+
         if (VERBOSE_LOADING) System.out.println("Loading: " + lib + " failed.\n");
         return false;
+    }
+
+    private static File jambiTempDir() {
+        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+        String user = System.getProperty("user.name");
+        return new File(tmpDir, "QtJambi_" + user + "_" + QtJambi.VERSION_STRING);
     }
 
 
@@ -306,5 +311,62 @@ public class Utilities {
             }
         }
         return list;
+    }
+
+    public static String unpackPlugins() {
+        String pluginJars = System.getProperty("com.trolltech.qt.pluginjars");
+        if (pluginJars != null) {
+            File tmpDir = jambiTempDir();
+            String jars[] = pluginJars.split(File.pathSeparator);
+            String classpath = System.getProperty("java.class.path");
+            for (String jar : jars) {
+
+                if (new File(jar).exists()) {
+                    unpackPlugins(jar);
+                    continue;
+                }
+                
+                URL libUrl = Thread.currentThread().getContextClassLoader().getResource(jar);
+                if (libUrl == null) {
+                    System.err.println("Plugin archive: '" + jar + "' could not be resolved");
+                    continue;
+                }
+
+                try {
+                    if (new File(libUrl.toURI()).exists())
+                        unpackPlugins(jar);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+            return tmpDir.getAbsolutePath() + "/plugins";
+        }
+        return null;
+    }
+
+    private static void unpackPlugins(String jarName) {
+        try {
+            JarFile jar = new JarFile(jarName);
+            File tmpDir = jambiTempDir();
+
+            Enumeration<JarEntry> entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                InputStream stream = jar.getInputStream(entry);
+
+                if (entry.getName().startsWith("plugins") && !entry.isDirectory()) {
+                    File destination = new File(tmpDir.getAbsolutePath(), entry.getName());
+                    if (!destination.exists()) {
+                        File path = destination.getParentFile();
+                        if (!path.exists()) 
+                            path.mkdirs();
+                        copy(stream, new FileOutputStream(destination));
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

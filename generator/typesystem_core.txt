@@ -2232,6 +2232,9 @@
             
         m_instance = new QCoreApplication(args);
         m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
+        String path = Utilities.unpackPlugins();
+        if (path != null)
+            addLibraryPath(path);
     }
         
     @SuppressWarnings("unused")
