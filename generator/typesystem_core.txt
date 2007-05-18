@@ -1020,31 +1020,17 @@
 
     <!-- functions made private... -->
     <modify-function signature="operator=(QByteArray)" access="private"/>
-    <modify-function signature="operator+=(QByteArray)" access="private"/>
-    <modify-function signature="operator+=(QString)" access="private"/>
-    <modify-function signature="operator+=(char)" access="private"/>
+    <modify-function signature="operator+=(QByteArray)" remove="all"/>
+    <modify-function signature="operator+=(QString)" remove="all"/>
+    <modify-function signature="operator+=(char)" remove="all"/>
 
     <!-- Injected code ... -->
     <inject-code>
-    @com.trolltech.qt.QtBlockedSlot public QByteArray add(QByteArray other) { 
-        operator_add_assign(other);
-        return this;
-    }
-    @com.trolltech.qt.QtBlockedSlot public QByteArray add(String other) { 
-        operator_add_assign(other);
-        return this;
-    }
-    @com.trolltech.qt.QtBlockedSlot public QByteArray add(byte other) { 
-        operator_add_assign(other);
-        return this;
-    }
     @com.trolltech.qt.QtBlockedSlot public QByteArray set(QByteArray other) { 
         operator_assign(other);
         return this;
     }
     </inject-code>
-
-
 
     <modify-function signature="toUShort(bool*, int) const" 
       rename="toChar_private" 
