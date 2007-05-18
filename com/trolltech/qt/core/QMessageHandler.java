@@ -46,8 +46,10 @@ public abstract class QMessageHandler {
      * Installs the specified message handler as a receiver for message notification.
      */
     public static void installMessageHandler(QMessageHandler handler) {
-        if (handlers == null) 
+        if (handlers == null) {
             handlers = new ArrayList<QMessageHandler>();
+            installMessageHandlerProxy();
+        }
         handlers.add(handler);
     }
 
@@ -60,14 +62,19 @@ public abstract class QMessageHandler {
     }
 
     private static boolean process(int id, String message) {
+        if (handlers == null)
+            return false;
+
         switch (id) {
             case 0: for (QMessageHandler h : handlers) h.debug(message); break;
             case 1: for (QMessageHandler h : handlers) h.warning(message); break;
             case 2: for (QMessageHandler h : handlers) h.critical(message); break;
             case 3: for (QMessageHandler h : handlers) h.fatal(message); break;
         }
-        return handlers != null;
+        return true;
     }
+
+    private static native void installMessageHandlerProxy();
 
     private static List<QMessageHandler> handlers;
 }

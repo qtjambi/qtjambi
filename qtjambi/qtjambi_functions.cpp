@@ -23,7 +23,8 @@
 #endif
 
 static QtMsgHandler qt_message_handler;
-void qtjambi_messagehandler_proxy(QtMsgType type, const char *message);
+static bool qt_message_handler_installed;
+static void qtjambi_messagehandler_proxy(QtMsgType type, const char *message);
 
 
 class QThreadData;
@@ -69,8 +70,6 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initia
 #error "Qt Jambi requires 4.3"
 #endif
     qtjambi_register_callbacks();
-
-    qt_message_handler = qInstallMsgHandler(qtjambi_messagehandler_proxy);
 }
 
 
@@ -302,6 +301,16 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_run_1help
     qtjambi_shutdown();
 }
 
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QMessageHandler_installMessageHandlerProxy)
+(JNIEnv *, jclass)
+{
+    if (!qt_message_handler_installed) {
+        qt_message_handler = qInstallMsgHandler(qtjambi_messagehandler_proxy);
+        qt_message_handler_installed = true;
+    }
+}
+
 void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
 {
     JNIEnv *env = qtjambi_current_environment();
@@ -314,6 +323,6 @@ void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
     jstring str = qtjambi_from_qstring(env, QString::fromLocal8Bit(message));
 
     jboolean eaten = env->CallStaticBooleanMethod(cls, id, (jint) type, str);
-    if (!eaten)
+    if (!eaten && qt_message_handler)
         qt_message_handler(type, message);
 }
