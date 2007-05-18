@@ -65,9 +65,7 @@
         @SuppressWarnings("unused")
         private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator) 
         {
-            // ### QAuthenticator auth = QAuthenticator.fromNativePointer(authenticator);           
             proxyAuthenticationRequired.emit(proxy, QAuthenticator.fromNativePointer(authenticator));
-            // ### auth.invalidateObject(); <-- We need this function some how to set nativeId = 0 in case someone keeps a ref to it
         }
     </inject-code>
   </object-type>
