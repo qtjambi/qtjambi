@@ -18,6 +18,7 @@ import java.util.Vector;
 
 import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.Qt.ConnectionType;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.*;
 
@@ -27,9 +28,10 @@ public class Chips extends QWidget {
     QGraphicsScene scene;
     QSplitter h1Splitter;
     QSplitter h2Splitter;
+    Signal0 populateScene = new Signal0();
 
     public Chips(QWidget parent) {
-        populateScene();
+        scene = new QGraphicsScene();
 
         h1Splitter = new QSplitter();
         h2Splitter = new QSplitter();
@@ -61,11 +63,13 @@ public class Chips extends QWidget {
 
         setWindowTitle(tr("Chip Demo"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+        
+        populateScene.connect(this, "populateScene()", ConnectionType.QueuedConnection);
+        populateScene.emit();
+        
     }
 
     private void populateScene() {
-        scene = new QGraphicsScene();
-
         QImage image = new QImage("classpath:/com/trolltech/images/qt4logo.png");
 
         // Populate scene
@@ -86,6 +90,7 @@ public class Chips extends QWidget {
 
                 ++nitems;
             }
+            QApplication.processEvents();
         }
     }
 
