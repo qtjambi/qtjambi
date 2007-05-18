@@ -1179,7 +1179,7 @@ bool MetaJavaBuilder::setupInheritance(MetaJavaClass *java_class)
         if (i != primary) {
             MetaJavaClass *base_class = m_java_classes.findClass(base_classes.at(i));
             if (base_class == 0) {
-                ReportHandler::warning(QString("class not found for setup inheritance '%1'").arg(base_class->name()));
+                ReportHandler::warning(QString("class not found for setup inheritance '%1'").arg(base_classes.at(i)));
                 return false;
             }
 
