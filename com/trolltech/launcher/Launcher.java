@@ -75,23 +75,23 @@ public class Launcher extends QWidget {
 
     public Launcher() {
     }
-    
+
     public void init() {
         ui.setupUi(this);
-        
+
         ui.source.setWordWrap(false);
-        
+
         ui.list.setModel(m_model);
         ui.list.setItemDelegate(new Delegate(m_model));
         ui.list.setCurrentIndex(null);
-        
+
         progressChanged.emit("Setting up examples");
 
         setupExamples();
-        
+
         progressChanged.emit("Setting up styles");
         setupStyles();
-        
+
         progressChanged.emit("Making connections");
 
         ui.list.selectionModel().currentChanged.connect(this, "listSelectionChanged(QModelIndex,QModelIndex)");
@@ -104,7 +104,7 @@ public class Launcher extends QWidget {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         progressChanged.emit("Loading background");
-        
+
         QPixmap bg = new QPixmap("classpath:com/trolltech/launcher/fadlogo.png");
         ui.description.setBackground(bg);
         ui.source.setBackground(bg);
@@ -257,6 +257,8 @@ public class Launcher extends QWidget {
         int os = com.trolltech.qt.QSysInfo.operatingSystem();
         if (os == com.trolltech.qt.QSysInfo.OS_WIN32
             || os == com.trolltech.qt.QSysInfo.OS_WIN64) {
+            if (com.trolltech.qt.QSysInfo.windowsVersion() >= com.trolltech.qt.QSysInfo.Windows_VISTA)
+                return "WindowsVista";
             if (com.trolltech.qt.QSysInfo.windowsVersion() >= com.trolltech.qt.QSysInfo.Windows_XP)
                 return "WindowsXP";
             else
@@ -348,14 +350,14 @@ public class Launcher extends QWidget {
 
     public static void main(String args[]) {
         QApplication.initialize(args == null ? start_qt() : args);
-        
+
         SplashScreen splashScreen = new SplashScreen();
-        
+
         splashScreen.show();
         splashScreen.setGeometry(splashScreen.splashScreenRect());
-        
+
         QApplication.processEvents();
-        
+
         // ### not an optimal solution, but at least it makes the launcher run the
         // image viewer demos and sql demos properly...
         QApplication.addLibraryPath(new QFileInfo(".").absoluteFilePath() + "/plugins");
@@ -367,7 +369,7 @@ public class Launcher extends QWidget {
         l.init();
         l.show();
         splashScreen.finish(l);
-        
+
         QApplication.exec();
         l.dispose();
 
