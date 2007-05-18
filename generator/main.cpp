@@ -34,7 +34,7 @@ void test_typeparser(const QString &signature);
 
 int main(int argc, char *argv[])
 {
-    QString default_file = "tests/dummy.h";
+    QString default_file = "qtjambi_masterinclude.h";
     QString default_system = "build_all.txt";
 
     QString fileName;
