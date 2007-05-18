@@ -15,13 +15,15 @@ public class GlassPane extends QWidget {
             ScrollDown,
             SplitVertical,
             SplitHorizontal,
-            Rotate
+            Rotate,
+            Rect,
+            Flip
         };
 
         public Overlay(QPixmap start, QPixmap end) {
             this.start = start;
             this.end = end;
-            this.timeline = new QTimeLine();
+            this.timeline = new QTimeLine(700, this);
             transition = Transition.Fade;
 
             setAttribute(Qt.WidgetAttribute.WA_OpaquePaintEvent);
@@ -99,8 +101,7 @@ public class GlassPane extends QWidget {
                 }
                 break;
             case Rotate:
-                p.save();
-                p.eraseRect(start.rect());
+                p.eraseRect(rect());
                 
                 p.setRenderHint(RenderHint.SmoothPixmapTransform);
                 p.rotate(level * 90);
@@ -108,8 +109,31 @@ public class GlassPane extends QWidget {
                 
                 p.rotate(-90);
                 p.drawPixmap(0, 0, end);
-                p.restore();
                 break;
+            
+            case Rect:
+                int w = start.width();
+                int h = start.height();
+                
+                p.drawPixmap((int)(w/2 - w/2 * level), (int)(h/2 - h/2 * level), end, (int)(w/2 - w/2 * level), (int)(h/2 - h/2 * level), (int)(w * level) , (int)(h * level));
+                p.drawRoundRect((int)(w/2 - w/2 * level), (int)(h/2 - h/2 * level), (int)(w * level) , (int)(h * level), 10, 10);
+                break;
+                
+            case Flip:
+                double l = Math.sin(level * Math.PI/2);
+                                
+                p.eraseRect(rect());
+                p.setRenderHint(RenderHint.SmoothPixmapTransform);
+                if( l < 0.5 ) {
+                    p.translate(0, height() * l);
+                    p.scale(1, 1 - l * 2);
+                    p.drawPixmap(0, 0, start);
+                }
+                else {
+                    p.translate(0, height() * (1 - l));
+                    p.scale(1, (0.5 - l) * -2);
+                    p.drawPixmap(0, 0, end);
+                }
             }
         }
 
