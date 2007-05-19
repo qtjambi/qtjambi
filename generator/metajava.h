@@ -360,6 +360,7 @@ public:
         EqualImplementor            = 0x00000008,
         EqualReturnType             = 0x00000010,
         EqualDefaultValueOverload   = 0x00000020,
+        EqualModifiedName           = 0x00000040,
 
         NameLessThan                = 0x00001000,
 

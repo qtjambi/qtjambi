@@ -219,6 +219,11 @@ uint MetaJavaFunction::compareTo(const MetaJavaFunction *other) const
         result |= EqualName;
     }
 
+    // compare name after modification...
+    cmp = modifiedName().compare(other->modifiedName());
+    if (cmp == 0)
+        result |= EqualModifiedName;
+
     // Compare arguments...
     MetaJavaArgumentList min_arguments;
     MetaJavaArgumentList max_arguments;
@@ -322,7 +327,7 @@ int MetaJavaFunction::actualMinimumArgumentCount() const
 QList<ReferenceCount> MetaJavaFunction::referenceCounts(const MetaJavaClass *cls, int idx) const
 {
     QList<ReferenceCount> returned;
-    
+
     FunctionModificationList mods = this->modifications(cls);
     foreach (FunctionModification mod, mods) {
         QList<ArgumentModification> argument_mods = mod.argument_mods;
@@ -1452,14 +1457,21 @@ void MetaJavaClass::fixFunctions()
         QSet<MetaJavaFunction *> funcs_to_add;
         for (int sfi=0; sfi<super_funcs.size(); ++sfi) {
             MetaJavaFunction *sf = super_funcs.at(sfi);
+
+            if (sf->isRemovedFromAllLanguages(sf->implementingClass()))
+                continue;
+
             // we generally don't care about private functions, but we have to get the ones that are
             // virtual in case they override abstract functions.
             bool add = (sf->isNormal() || sf->isSignal() || sf->isEmptyFunction());
             for (int fi=0; fi<funcs.size(); ++fi) {
                 MetaJavaFunction *f = funcs.at(fi);
+                if (f->isRemovedFromAllLanguages(f->implementingClass()))
+                    continue;
+
                 uint cmp = f->compareTo(sf);
 
-                if (cmp & MetaJavaFunction::EqualName) {
+                if (cmp & MetaJavaFunction::EqualModifiedName) {
 //                     printf("   - %s::%s similar to %s::%s %x vs %x\n",
 //                            qPrintable(sf->implementingClass()->typeEntry()->qualifiedCppName()),
 //                            qPrintable(sf->name()),
@@ -1526,6 +1538,22 @@ void MetaJavaClass::fixFunctions()
 
                         // Set the class which first declares this function, afawk
                         f->setDeclaringClass(sf->declaringClass());
+
+                        if (sf->isFinalInJava() && !sf->isPrivate()) {
+                        // Shadowed funcion, need to make base class
+                        // function non-virtual
+                        if (f->implementingClass() != sf->implementingClass() && f->implementingClass()->inheritsFrom(sf->implementingClass())) {
+//                             *sf -= MetaJavaAttributes::FinalInJava;
+                            ReportHandler::warning(QString::fromLatin1("Shadowing: %1::%2 and %3::%4; Java code will not compile")
+                                                   .arg(sf->implementingClass()->name())
+                                                   .arg(sf->signature())
+                                                   .arg(f->implementingClass()->name())
+                                                   .arg(f->signature()));
+                        }
+
+//                         printf("   --- shadowing... force final in java\n");
+                    }
+
                     }
 
                     if (cmp & MetaJavaFunction::EqualDefaultValueOverload) {
@@ -1539,17 +1567,6 @@ void MetaJavaClass::fixFunctions()
                             arguments[i]->setDefaultValueExpression(QString());
                     }
 
-                    if (sf->isFinalInJava() && !sf->isPrivate()) {
-                        // Shadowed funcion, need to make base class
-                        // function non-virtual
-                        if (f->implementingClass() != sf->implementingClass() && f->implementingClass()->inheritsFrom(sf->implementingClass())) {
-                            *sf -= MetaJavaAttributes::FinalInJava;
-                            /*qDebug("Shadowd: %s in %s and %s in %s", qPrintable(sf->name()), qPrintable(sf->implementingClass()->name()),
-                                                                 qPrintable(f->name()), qPrintable(f->implementingClass()->name()));*/
-                        }
-
-//                         printf("   --- shadowing... force final in java\n");
-                    }
 
                     // Otherwise we have function shadowing and we can
                     // skip the thing...
