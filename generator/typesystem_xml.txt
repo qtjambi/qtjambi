@@ -15,21 +15,26 @@
 
     <value-type name="QDomAttr">
         <modify-function signature="operator=(QDomAttr)" remove="all"/>
+        <modify-function signature="nodeType()const" remove="all"/>
     </value-type>   
 
     <value-type name="QDomCDATASection">
         <modify-function signature="operator=(QDomCDATASection)" remove="all"/>
+        <modify-function signature="nodeType()const" remove="all"/>
     </value-type>
 
     <value-type name="QDomCharacterData">
         <modify-function signature="operator=(QDomCharacterData)" remove="all"/>
+        <modify-function signature="nodeType()const" remove="all"/>
     </value-type>
 
     <value-type name="QDomComment">
         <modify-function signature="operator=(QDomComment)" remove="all"/>
+        <modify-function signature="nodeType()const" remove="all"/>
     </value-type>
 
     <value-type name="QDomDocument">
+        <modify-function signature="nodeType()const" remove="all"/>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer.Type" location="java"/>
             <include file-name="com.trolltech.qt.core.QIODevice" location="java"/>
@@ -213,18 +218,22 @@
     </value-type>
 
     <value-type name="QDomDocumentFragment">
+        <modify-function signature="nodeType()const" remove="all"/>
         <modify-function signature="operator=(QDomDocumentFragment)" remove="all"/>
     </value-type>
 
     <value-type name="QDomDocumentType" >
+        <modify-function signature="nodeType()const" remove="all"/>
         <modify-function signature="operator=(QDomDocumentType)" remove="all"/>
     </value-type>
 
     <value-type name="QDomEntity">
+        <modify-function signature="nodeType()const" remove="all"/>
         <modify-function signature="operator=(QDomEntity)" remove="all"/>
     </value-type>
 
     <value-type name="QDomEntityReference">
+        <modify-function signature="nodeType()const" remove="all"/>
         <modify-function signature="operator=(QDomEntityReference)" remove="all"/>
     </value-type>
 
@@ -245,14 +254,17 @@
     </value-type>
 
     <value-type name="QDomNotation">
+        <modify-function signature="nodeType()const" remove="all"/>
         <modify-function signature="operator=(QDomNotation)" remove="all"/>
     </value-type>
 
     <value-type name="QDomProcessingInstruction">
+        <modify-function signature="nodeType()const" remove="all"/>
         <modify-function signature="operator=(QDomProcessingInstruction)" remove="all"/>
     </value-type>
 
     <value-type name="QDomText">
+        <modify-function signature="nodeType()const" remove="all"/>
         <modify-function signature="operator=(const QDomText &amp;)" remove="all"/>
     </value-type>
 
@@ -393,6 +405,7 @@
     </value-type>
 
     <value-type name="QDomElement">
+        <modify-function signature="nodeType()const" remove="all"/>
         <modify-function signature="operator=(QDomElement)" remove="all"/>
         
         <template name="xml.constQString_to_constQStringRef">
