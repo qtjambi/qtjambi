@@ -22,7 +22,7 @@ import java.util.*;
 public abstract class QMessageHandler {
 
     /**
-     * Implement this method to be notified about  debug messages.
+     * Implement this method to be notified about debug messages.
      */
     public abstract void debug(String message);
 
@@ -32,7 +32,7 @@ public abstract class QMessageHandler {
     public abstract void warning(String message);
 
     /**
-     * Implement this method to be notified about ciritcal messages
+     * Implement this method to be notified about critical messages
      */
     public abstract void critical(String message);
 
@@ -60,11 +60,11 @@ public abstract class QMessageHandler {
         if (handlers != null)
             handlers.remove(handler);
     }
-
+    
+    @SuppressWarnings("unused")
     private static boolean process(int id, String message) {
         if (handlers == null)
             return false;
-
         switch (id) {
             case 0: for (QMessageHandler h : handlers) h.debug(message); break;
             case 1: for (QMessageHandler h : handlers) h.warning(message); break;
