@@ -408,7 +408,7 @@ public class TextEdit extends QMainWindow {
             QTextListFormat listFmt = new QTextListFormat();
 
             if (cursor.currentList() != null) {
-                listFmt = cursor.currentList().format();
+                listFmt = cursor.currentList().textListFormat();
             } else {
                 listFmt.setIndent(blockFmt.indent() + 1);
                 blockFmt.setIndent(0);

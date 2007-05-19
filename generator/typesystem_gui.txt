@@ -1019,7 +1019,9 @@
   </value-type>
   <value-type name="QTextTableFormat"/>
   <value-type name="QTextImageFormat"/>
-  <value-type name="QTextFrameFormat"/>
+  <value-type name="QTextFrameFormat">
+    <modify-function signature="isValid()const" access="non-final" />
+  </value-type>
   <value-type name="QTextLength"/>
   <value-type name="QItemSelectionRange"/>
   <value-type name="QLine"/>
@@ -1177,9 +1179,13 @@
      </modify-function>
   </value-type>
   <value-type name="QTextBlockFormat"/>
-  <value-type name="QTextCharFormat"/>
+  <value-type name="QTextCharFormat">
+    <modify-function signature="isValid()const" access="non-final" />
+  </value-type>
   <value-type name="QTextFormat">
     <modify-function signature="operator=(QTextFormat)" remove="all"/>
+    <modify-function signature="isValid()const" access="non-final" />
+    
   </value-type>
   
   <value-type name="QTextListFormat"/>
@@ -2736,7 +2742,9 @@
         </inject-code>        
     </modify-function>
   </object-type>
-  <object-type name="QCDEStyle"/>
+  <object-type name="QCDEStyle">
+      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final" />
+  </object-type>
   <object-type name="QCheckBox">
     <modify-function signature="initStyleOption(QStyleOptionButton*)const">
         <access modifier="private" />
@@ -2747,8 +2755,12 @@
         </insert-template>
     </inject-code>
   </object-type>
-  <object-type name="QCleanlooksStyle"/>
-  <object-type name="QCommonStyle"/>
+  <object-type name="QCleanlooksStyle">
+    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final" />
+  </object-type>  
+  <object-type name="QCommonStyle">
+    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final" />
+  </object-type>  
   <object-type name="QDataWidgetMapper">
     <modify-function signature="addMapping(QWidget*,int)">
         <modify-argument index="1">
@@ -2783,9 +2795,8 @@
     </modify-function>    
   </object-type>
   <object-type name="QDialog">
-    <modify-function signature="setExtension(QWidget*)">    
-        <remove />
-    </modify-function>
+    <modify-function signature="setExtension(QWidget*)" remove="all" />
+    <modify-function signature="exec()" access="non-final" />
   </object-type>  
   <object-type name="QDialogButtonBox">
     <modify-function signature="addButton(QAbstractButton*,QDialogButtonBox::ButtonRole)">
@@ -3266,6 +3277,7 @@
     </modify-function>
   </object-type>
   <object-type name="QMenu">
+    <modify-function signature="addAction(QAction *)" remove="all" />
     <modify-function signature="addMenu(QMenu*)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcMenus" />
@@ -3359,6 +3371,7 @@
   </object-type>
   
   <object-type name="QMenuBar">  
+    <modify-function signature="addAction(QAction *)" remove="all" />
     <modify-function signature="addAction(QString,const QObject*,const char*)">
         <remove />
     </modify-function>
@@ -3410,7 +3423,9 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QMotifStyle"/>
+  <object-type name="QMotifStyle">
+    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final" />
+  </object-type>  
   <object-type name="QPainterPathStroker"/>
   <object-type name="QPictureFormatInterface"/>
   <object-type name="QPictureFormatPlugin"/>
@@ -3502,9 +3517,8 @@
   
   </object-type>
   <object-type name="QPlastiqueStyle">
-    <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const">
-        <remove />
-    </modify-function>
+    <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const" remove="all" />
+    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final" />    
   </object-type>
   <object-type name="QPrintDialog"/>  
   <object-type name="QPrintEngine"/>
@@ -3715,7 +3729,9 @@
   <object-type name="QTextBlockGroup"/>
   <object-type name="QTextBlockUserData"/>
   <object-type name="QTextItem"/>
-  <object-type name="QTextList"/>
+  <object-type name="QTextList">
+    <modify-function signature="format()const" rename="textListFormat" />
+  </object-type>
   <object-type name="QTextObject"/>
   <object-type name="QTextObjectInterface"/>
   <object-type name="QTimeEdit"/>
@@ -3925,7 +3941,9 @@
     </modify-function>   
   </object-type>
   <object-type name="QWidgetItem"/>
-  <object-type name="QWindowsStyle"/>
+  <object-type name="QWindowsStyle">
+    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final" />
+  </object-type>  
   <object-type name="QWorkspace">
     <modify-function signature="addWindow(QWidget*,QFlags&lt;Qt::WindowType>)">
         <modify-argument index="1">
@@ -3952,7 +3970,10 @@
   <object-type name="QDragLeaveEvent"
            polymorphic-id-expression="%1->type() == QEvent::DragLeave"/>
   <object-type name="QDragMoveEvent"
-           polymorphic-id-expression="%1->type() == QEvent::DragMove"/>
+           polymorphic-id-expression="%1->type() == QEvent::DragMove">
+    <modify-function signature="accept()" remove="all" />
+    <modify-function signature="ignore()" remove="all" />           
+  </object-type>           
   <object-type name="QDropEvent"
            polymorphic-id-expression="%1->type() == QEvent::Drop">
     <modify-function signature="encodedData(const char*)const">
@@ -4045,7 +4066,9 @@
                polymorphic-id-expression="%1->type() == QEvent::WindowStateChange"/>
   <object-type name="QDragResponseEvent" 
                polymorphic-id-expression="%1->type() == QEvent::DragResponse"/>
-  <object-type name="QInputEvent" />  
+  <object-type name="QInputEvent">  
+    <modify-function signature="modifiers()const" access="non-final" />
+  </object-type>
   <object-type name="QKeyEvent" 
                polymorphic-id-expression="%1->type() == QEvent::KeyPress || %1->type() == QEvent::KeyRelease"/>
   <object-type name="QMouseEvent" 
@@ -4088,6 +4111,7 @@
   </template>
 
   <object-type name="QStyle">
+    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final" />
     <modify-function signature="drawControl(QStyle::ControlElement, const QStyleOption *, QPainter *, const QWidget *) const">
         <modify-argument index="2">
             <replace-type modified-type="com.trolltech.qt.gui.QStyleOption" />
@@ -4369,6 +4393,8 @@
   </object-type>
   
   <object-type name="QLayout">  
+    <modify-function signature="setSpacing(int)" rename="setWidgetSpacing" />
+    <modify-function signature="spacing()const" rename="widgetSpacing" />
     <modify-function signature="addWidget(QWidget *)">
         <modify-argument index="1">
             <no-null-pointer />
@@ -4528,6 +4554,7 @@
   </object-type>
 
   <object-type name="QGridLayout">  
+    <modify-function signature="addWidget(QWidget *)" remove="all" />
     <modify-function signature="addItem(QLayoutItem *)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++" />
@@ -4588,6 +4615,7 @@
       <include file-name="QPainterPath" location="global"/>
       <include file-name="QVarLengthArray" location="global" />      
     </extra-includes>    
+    <modify-function signature="setupViewport(QWidget *)" access="non-final" />
     <modify-function signature="setScene(QGraphicsScene*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcScene" />
@@ -4865,6 +4893,8 @@
   </object-type>
 
   <object-type name="QTreeWidget">
+    <modify-function signature="isSortingEnabled()const" remove="all" />
+    <modify-function signature="setSortingEnabled(bool)" remove="all" />
     <modify-function signature="indexOfTopLevelItem(QTreeWidgetItem *)">
         <remove/>
     </modify-function>
@@ -4935,11 +4965,6 @@
     </modify-function>
     <modify-function signature="setItemSelected(const QTreeWidgetItem*,bool)">  
         <remove />    
-    </modify-function>
-    <modify-function signature="setItemSpanning(const QTreeWidgetItem*,bool)">
-        <modify-argument index="1">
-            <reference-count action="ignore" />
-        </modify-argument>
     </modify-function>
     <modify-function signature="setItemWidget(QTreeWidgetItem*,int,QWidget*)">
         <modify-argument index="1">
@@ -5189,7 +5214,75 @@
   <object-type name="QWidget">
     <extra-includes>
         <include file-name="QIcon" location="global"/>
+        <include file-name="QMessageBox" location="global" />
     </extra-includes> 
+    
+    <modify-function signature="setWindowTitle(const QString &amp;)">
+        <inject-code class="java">
+            <argument-map index="1" meta-name="%1" />
+            if (this instanceof QMessageBox) {
+                com.trolltech.qt.QtJambiInternal.threadCheck(this);
+                if (nativeId() == 0)
+                    throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+                __qt_QMessageBox_setWindowTitle(nativeId(), %1);
+                return ;
+            }
+        </inject-code>
+    </modify-function>
+    <inject-code class="java">
+        private native static void __qt_QMessageBox_setWindowTitle(long native_id, String windowTitle);
+    </inject-code>
+    <inject-code class="native">
+        extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QWidget__1_1qt_1QMessageBox_1setWindowTitle)
+        (JNIEnv *__jni_env,
+         jclass,
+         jlong __this_nativeId,
+         jobject title0)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QMessageBox::setWindowTitle(const QString &amp; title)");
+            QString __qt_title0 =  qtjambi_to_qstring(__jni_env, (jstring) title0);
+            QTJAMBI_EXCEPTION_CHECK(__jni_env);
+            QMessageBox *__qt_this = (QMessageBox *) qtjambi_from_jlong(__this_nativeId);
+            QTJAMBI_EXCEPTION_CHECK(__jni_env);
+            Q_ASSERT(__qt_this);
+            __qt_this->setWindowTitle((const QString&amp; )__qt_title0);
+            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QMessageBox::setWindowTitle(const QString &amp; title)");
+        }    
+    </inject-code>
+
+    <modify-function signature="setWindowModality(Qt::WindowModality)">
+        <inject-code class="java">
+            <argument-map index="1" meta-name="%1" />
+            if (this instanceof QMessageBox) {
+                com.trolltech.qt.QtJambiInternal.threadCheck(this);
+                if (nativeId() == 0)
+                    throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+                __qt_QMessageBox_setWindowModality(nativeId(), %1.value());
+                return ;
+            }
+        </inject-code>
+    </modify-function>
+    <inject-code class="java">
+        private native static void __qt_QMessageBox_setWindowModality(long native_id, int modality);
+    </inject-code>
+    <inject-code class="native">
+        extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QWidget__1_1qt_1QMessageBox_1setWindowModality)
+        (JNIEnv *__jni_env,
+         jclass,
+         jlong __this_nativeId,
+         jint windowModality0)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QMessageBox::setWindowModality(Qt::WindowModality modality)");
+            Qt::WindowModality __qt_windowModality0 = (Qt::WindowModality) windowModality0;
+            QTJAMBI_EXCEPTION_CHECK(__jni_env);
+            QMessageBox *__qt_this = (QMessageBox *) qtjambi_from_jlong(__this_nativeId);
+            QTJAMBI_EXCEPTION_CHECK(__jni_env);
+            Q_ASSERT(__qt_this);
+            __qt_this->setWindowModality((Qt::WindowModality )__qt_windowModality0);            
+            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QMessageBox::setWindowModality(Qt::WindowModality modality)");
+        }    
+    </inject-code>
+    
     <modify-function signature="render(QPaintDevice *, const QPoint &amp;, const QRegion &amp;, QFlags&lt;QWidget::RenderFlag>)">
         <modify-argument index="4">
             <replace-default-expression with="RenderFlag.DrawWindowBackground, RenderFlag.DrawChildren" />
@@ -5287,6 +5380,8 @@
 
 
   <object-type name="QMessageBox">
+    <modify-function signature="setWindowTitle(const QString &amp;)" remove="all" />
+    <modify-function signature="setWindowModality(Qt::WindowModality)" remove="all" /> 
     <extra-includes>
         <include file-name="QPixmap" location="global"/>
     </extra-includes>
@@ -5546,12 +5641,11 @@
   </object-type>
   
   <object-type name="QDateTimeEdit">
-    <modify-function signature="initStyleOption(QStyleOptionSpinBox*)const">
-        <access modifier="private" />
-    </modify-function>
+    <modify-function signature="initStyleOption(QStyleOptionSpinBox*)const" access="private" rename="initDateTimeEditStyleOption" />
     <inject-code>
         <insert-template name="gui.init_style_option">
             <replace from="%TYPE" to="QStyleOptionSpinBox" />
+            <replace from="initStyleOption" to="initDateTimeEditStyleOption" />
         </insert-template>
     </inject-code>    
       
@@ -5831,6 +5925,8 @@
   </object-type>
 
   <object-type name="QStandardItemModel">
+    <modify-function signature="insertColumn(int,const QModelIndex &amp;)" remove="all" />
+    <modify-function signature="insertRow(int,const QModelIndex &amp;)" remove="all" />
     <modify-function signature="parent()const" remove="all"/>
     <extra-includes>
         <include file-name="QStringList" location="global"/>
@@ -5981,6 +6077,7 @@
 
 
   <object-type name="QAbstractScrollArea">
+    <modify-function signature="setupViewport(QWidget *)" access="non-final" />    
     <modify-function signature="addScrollBarWidget(QWidget*,QFlags&lt;Qt::AlignmentFlag>)">
         <modify-argument index="1">
             <reference-count action="ignore" />
@@ -6026,6 +6123,12 @@
     <modify-function signature="initStyleOption(QStyleOptionRubberBand*)const">
         <access modifier="private" />
     </modify-function>
+    <modify-function signature="move(int,int)" rename="moveRubberBand" />
+    <modify-function signature="move(const QPoint &amp;)" rename="moveRubberBand" />
+    <modify-function signature="resize(int,int)" rename="resizeRubberBand" />
+    <modify-function signature="resize(const QSize &amp;)" rename="resizeRubberBand" />
+    <modify-function signature="setGeometry(int,int,int,int)" rename="setRubberBandGeometry" />
+    <modify-function signature="setGeometry(const QRect &amp;)" rename="setRubberBandGeometry" />
     <inject-code>
         <insert-template name="gui.init_style_option">
             <replace from="%TYPE" to="QStyleOptionRubberBand" />
@@ -6040,6 +6143,8 @@
   </object-type>  
 
   <object-type name="QTableWidget">
+    <modify-function signature="isSortingEnabled()const" remove="all" />
+    <modify-function signature="setSortingEnabled(bool)" remove="all" />  
     <modify-function signature="setHorizontalHeaderItem(int, QTableWidgetItem *)">
         <modify-argument index="2">
             <define-ownership class="java" owner="c++"/>
@@ -6246,6 +6351,7 @@
         <replace-default-expression with="QColor.black"/>
       </modify-argument>
     </modify-function>
+    <modify-function signature="repaint()" remove="all" />
   </object-type>
   
   
@@ -6354,6 +6460,8 @@
   </object-type>
     
   <object-type name="QToolBar">
+  
+    <modify-function signature="addAction(QAction *)" remove="all" />
   
     <modify-function signature="addAction(QIcon,QString,const QObject*,const char*)">
         <remove />

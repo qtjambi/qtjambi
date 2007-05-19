@@ -300,13 +300,13 @@ public class ItemviewChart extends QMainWindow {
             origin = event.pos();
             if (rubberBand == null)
                 rubberBand = new QRubberBand(QRubberBand.Shape.Rectangle, this);
-            rubberBand.setGeometry(new QRect(origin, new QSize()));
+            rubberBand.setRubberBandGeometry(new QRect(origin, new QSize()));
             rubberBand.show();
         }
 
         protected void mouseMoveEvent(QMouseEvent event) {
             QRect rect = new QRect(origin, event.pos()).normalized();
-            rubberBand.setGeometry(rect);
+            rubberBand.setRubberBandGeometry(rect);
             super.mouseMoveEvent(event);
 
             QModelIndex underMouseIndex = indexAt(event.pos());

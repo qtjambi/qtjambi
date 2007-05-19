@@ -806,7 +806,7 @@ MetaJavaFunctionList MetaJavaClass::functionsInShellClass() const
 MetaJavaFunctionList MetaJavaClass::publicOverrideFunctions() const
 {
     return queryFunctions(NormalFunctions | WasProtected | FinalInCppFunctions | NotRemovedFromJava)
-           + queryFunctions(Signals | WasProtected | FinalInCppFunctions | NotRemovedFromJava);
+         + queryFunctions(Signals | WasProtected | FinalInCppFunctions | NotRemovedFromJava);
 }
 
 MetaJavaFunctionList MetaJavaClass::virtualOverrideFunctions() const
@@ -1539,20 +1539,31 @@ void MetaJavaClass::fixFunctions()
                         // Set the class which first declares this function, afawk
                         f->setDeclaringClass(sf->declaringClass());
 
-                        if (sf->isFinalInJava() && !sf->isPrivate()) {
-                        // Shadowed funcion, need to make base class
-                        // function non-virtual
-                        if (f->implementingClass() != sf->implementingClass() && f->implementingClass()->inheritsFrom(sf->implementingClass())) {
-//                             *sf -= MetaJavaAttributes::FinalInJava;
-                            ReportHandler::warning(QString::fromLatin1("Shadowing: %1::%2 and %3::%4; Java code will not compile")
-                                                   .arg(sf->implementingClass()->name())
-                                                   .arg(sf->signature())
-                                                   .arg(f->implementingClass()->name())
-                                                   .arg(f->signature()));
-                        }
+                        if (sf->isFinalInJava() && !sf->isPrivate() && !f->isPrivate() && !sf->isStatic() && !f->isStatic()) {
+                            // Shadowed funcion, need to make base class
+                            // function non-virtual
+                            if (f->implementingClass() != sf->implementingClass() && f->implementingClass()->inheritsFrom(sf->implementingClass())) {
 
-//                         printf("   --- shadowing... force final in java\n");
-                    }
+                                // Check whether the superclass method has been redefined to non-final
+                            
+                                bool hasNonFinalModifier = false;
+                                FunctionModificationList mods = sf->modifications(sf->implementingClass());
+                                foreach (FunctionModification mod, mods) {
+                                    if (mod.isNonFinal()) {
+                                        hasNonFinalModifier = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!hasNonFinalModifier) {
+                                    ReportHandler::warning(QString::fromLatin1("Shadowing: %1::%2 and %3::%4; Java code will not compile")
+                                                        .arg(sf->implementingClass()->name())
+                                                        .arg(sf->signature())
+                                                        .arg(f->implementingClass()->name())
+                                                        .arg(f->signature()));
+                                }
+                            }
+                        }
 
                     }
 
@@ -1570,9 +1581,14 @@ void MetaJavaClass::fixFunctions()
 
                     // Otherwise we have function shadowing and we can
                     // skip the thing...
+                } else if (cmp & MetaJavaFunction::EqualName) {
+
+                    // In the case of function shadowing where the function name has been altered to
+                    // avoid conflict, we don't copy in the original.
+                    add = false;
                 }
 
-            }
+            } 
 
             if (add)
                 funcs_to_add << sf;

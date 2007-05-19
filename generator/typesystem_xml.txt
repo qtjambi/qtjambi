@@ -247,6 +247,7 @@
 
     <value-type name="QDomNode">
         <modify-function signature="operator=(QDomNode)" remove="all"/>
+        <modify-function signature="attributes()const" remove="all" />
     </value-type>
 
     <value-type name="QDomNodeList">
