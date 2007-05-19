@@ -591,6 +591,10 @@ function moveFiles(packageType, licenseType) {
 
         if (source.endsWith(".sh"))
             execute([command.chmod, "u+x", source]);
+        else if (source.endsWith(".cpp")
+                 || source.endsWith(".java")
+                 || source.endsWith(".h"))
+            execute([command.chmod, "u+rw", source]);
         execute([command.cp, source, target]);
     }
 }
