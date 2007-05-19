@@ -24,6 +24,7 @@ tar -xzf qtjambi-preview-linux-$PACKAGE.tar.gz
 echo Creating linux jar file
 echo libstdc++.so.5>>qt_system_libs
 cp qtjambi-preview-linux-$PACKAGE/lib/lib*.so* .
+cp -R qtjambi-preview-linux-$PACKAGE/plugins plugins
 rm libQtDesigner*
 jar -cf qtjambi-linux.jar lib*.so* qt_system_libs
 
