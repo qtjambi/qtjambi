@@ -25,3 +25,5 @@ win32-msvc.net{
 }
 
 RESOURCES += resources.qrc
+
+INCLUDEPATH += $$PWD $$QTDIR/QtDesigner

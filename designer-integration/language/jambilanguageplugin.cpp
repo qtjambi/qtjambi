@@ -19,8 +19,7 @@
 #include <QtDebug>
 #include <QtPlugin>
 
-#include <QtDesigner/private/ui4_p.h>
-
+#include <private/ui4_p.h>
 
 #include <QtGui>
 #include <QMessageBox>

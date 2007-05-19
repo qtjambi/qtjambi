@@ -1,4 +1,11 @@
-include($(QTDIR)/src/tools/uic/uic.pri)
+
+exists(uic.pri) {
+    # This part is included for the source package...
+    include(uic.pri)
+} else {
+    include($(QTDIR)/src/tools/uic/uic.pri)
+}
+
 
 QT = xml core
 CONFIG += console no_batch
