@@ -1,7 +1,7 @@
 const packageDir = os_name() == OS_NAME_WINDOWS
                    ? "d:/tmp/package-builder"
                    : "/tmp/package-builder";
-const version = "1.0.0-beta2";
+const version = "1.0.0";
 const javaDir = packageDir + "/qtjambi/" + version;
 const javadocName = "qtjambi-javadoc-" + version + ".jar";
 const jdocName = "qtjambi-jdoc-" + version + ".jar";
@@ -534,6 +534,33 @@ function moveFiles(packageType, licenseType) {
 
     if (packageType == "sourcepackage") {
         files.push("dist/BUILDING_SOURCE_PACKAGE");
+
+        // uic files
+        var prefix = option.qtdir + "/src/tools/uic/";
+        files.push([prefix + "uic.pri", "juic"]);
+        files.push([prefix + "customwidgetsinfo.h", "juic"]);
+        files.push([prefix + "databaseinfo.h", "juic"]);
+        files.push([prefix + "driver.h", "juic"]);
+        files.push([prefix + "globaldefs.h", "juic"]);
+        files.push([prefix + "option.h", "juic"]);
+        files.push([prefix + "treewalker.h", "juic"]);
+        files.push([prefix + "ui4.h", "juic"]);
+        files.push([prefix + "uic.h", "juic"]);
+        files.push([prefix + "utils.h", "juic"]);
+        files.push([prefix + "validator.h", "juic"]);
+        files.push([prefix + "customwidgetsinfo.cpp", "juic"]);
+        files.push([prefix + "databaseinfo.cpp", "juic"]);
+        files.push([prefix + "driver.cpp", "juic"]);
+        files.push([prefix + "treewalker.cpp", "juic"]);
+        files.push([prefix + "ui4.cpp", "juic"]);
+        files.push([prefix + "uic.cpp", "juic"]);
+        files.push([prefix + "validator.cpp", "juic"]);
+
+        // designer files...
+        new Dir("designer-integration/language/private").mkdir();
+        files.push([option.qtdir + "/tools/designer/src/lib/uilib/ui4_p.h",
+                    "designer-integration/language/private/ui4_p.h"]);
+
     } else {
         if (os_name() == OS_NAME_MACOSX) {
             files.push("dist/mac/qtjambi.sh");
@@ -566,8 +593,6 @@ function moveFiles(packageType, licenseType) {
             execute([command.chmod, "u+x", source]);
         execute([command.cp, source, target]);
     }
-
-
 }
 
 
