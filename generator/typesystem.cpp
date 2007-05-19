@@ -925,6 +925,8 @@ bool Handler::startElement(const QString &, const QString &n,
                     modifierNames["protected"] = Modification::Protected;
                     modifierNames["friendly"] = Modification::Friendly;
                     modifierNames["rename"] = Modification::Rename;
+                    modifierNames["final"] = Modification::Final;
+                    modifierNames["non-final"] = Modification::NonFinal;
                 }
 
                 if (!modifierNames.contains(modifier)) {
@@ -989,6 +991,10 @@ bool Handler::startElement(const QString &, const QString &n,
                         mod.modifiers |= Modification::Protected;
                     else if (access == QLatin1String("public"))
                         mod.modifiers |= Modification::Public;
+                    else if (access == QLatin1String("final"))
+                        mod.modifiers |= Modification::Final;
+                    else if (access == QLatin1String("non-final"))
+                        mod.modifiers |= Modification::NonFinal;
                     else {
                         m_error = QString::fromLatin1("Bad access type '%1'").arg(access);
                         return false;

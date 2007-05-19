@@ -700,11 +700,17 @@ void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
             else if (mod.isPrivate())
                 *include_attributes |= MetaJavaAttributes::Private;
             else if (mod.isFriendly())
-                *include_attributes |= MetaJavaAttributes::Friendly;
-
-            *exclude_attributes &= ~(*include_attributes);
+                *include_attributes |= MetaJavaAttributes::Friendly;        
+        } 
+        
+        if (mod.isFinal()) {
+            *include_attributes |= MetaJavaAttributes::FinalInJava;
+        } else if (mod.isNonFinal()) {
+            *exclude_attributes |= MetaJavaAttributes::FinalInJava;
         }
     }
+
+    *exclude_attributes &= ~(*include_attributes);
 }
 
 QString JavaGenerator::functionSignature(const MetaJavaFunction *java_function,
@@ -1623,11 +1629,13 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
         else if (attr & MetaJavaAttributes::Protected) s << "protected ";
         else if (attr & MetaJavaAttributes::Private) s << "private ";
 
-        if (attr & MetaJavaAttributes::Native) s << "native ";
-        else if (attr & MetaJavaAttributes::FinalInJava) s << "final ";
-        else if (attr & MetaJavaAttributes::Abstract) s << "abstract ";
+        bool isStatic = (attr & MetaJavaAttributes::Static);
 
-        if (attr & MetaJavaAttributes::Static) s << "static ";
+        if (attr & MetaJavaAttributes::Native) s << "native ";
+        else if (!isStatic && (attr & MetaJavaAttributes::FinalInJava)) s << "final ";
+        else if (!isStatic && (attr & MetaJavaAttributes::Abstract)) s << "abstract ";
+
+        if (isStatic) s << "static ";
     }
 
     if ((options & SkipReturnType) == 0) {

@@ -268,12 +268,15 @@ struct Modification {
         Friendly =              0x0004,
         AccessModifierMask =    0x000f,
 
-        Readable =              0x0010,
-        Writable =              0x0020,
+        Final =                 0x0010,
+        NonFinal =              0x0020,
 
-        CodeInjection =         0x0100,
-        Rename =                0x0200,
-        ReplaceExpression =     0x0800
+        Readable =              0x0100,
+        Writable =              0x0200,
+
+        CodeInjection =         0x1000,
+        Rename =                0x2000,
+        ReplaceExpression =     0x8000
     };
 
     Modification() : modifiers(0) { }
@@ -284,6 +287,8 @@ struct Modification {
     bool isProtected() const { return accessModifier() == Protected; }
     bool isPublic() const { return accessModifier() == Public; }
     bool isFriendly() const { return accessModifier() == Friendly; }
+    bool isFinal() const { return modifiers & Final; }
+    bool isNonFinal() const { return modifiers & NonFinal; }
     QString accessModifierString() const;
 
     void setRenamedTo(const QString &name) { renamedToName = name; }
