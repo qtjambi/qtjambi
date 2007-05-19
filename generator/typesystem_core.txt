@@ -811,6 +811,7 @@
   <object-type name="QDirIterator" />
   <object-type name="QAbstractFileEngineIterator" />
   <object-type name="QAbstractItemModel">
+    <modify-function signature="parent()const" remove="all"/>
     <extra-includes>
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>

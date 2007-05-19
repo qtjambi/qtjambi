@@ -18,5 +18,6 @@
 #define Q_OVERRIDE(a)
 #define Q_OS_OS2
 #define ULONG_MAX Integer.MAX_VALUE
+#define Q_NO_USING_KEYWORD
 
 #define QT_JAMBI_RUN

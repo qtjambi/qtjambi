@@ -2800,6 +2800,7 @@
     </modify-function>
   </object-type>
   <object-type name="QDirModel">
+     <modify-function signature="parent()const" remove="all"/>
     <modify-function signature="setIconProvider(QFileIconProvider*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcIconProvider" />
@@ -5435,6 +5436,7 @@
   </object-type>
     
   <object-type name="QProxyModel">
+    <modify-function signature="parent()const" remove="all"/>
     <extra-includes>
         <include file-name="QPixmap" location="global"/>
         <include file-name="QStringList" location="global"/>
@@ -5556,6 +5558,7 @@
   </object-type>
 
   <object-type name="QSortFilterProxyModel">
+     <modify-function signature="parent()const" remove="all"/>
     <extra-includes>
         <include file-name="QItemSelection" location="global"/>
         <include file-name="QStringList" location="global"/>
@@ -5828,6 +5831,7 @@
   </object-type>
 
   <object-type name="QStandardItemModel">
+    <modify-function signature="parent()const" remove="all"/>
     <extra-includes>
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>
