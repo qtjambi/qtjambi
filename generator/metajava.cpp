@@ -1207,7 +1207,7 @@ MetaJavaFunctionList MetaJavaClass::queryFunctions(uint query) const
             continue;
         }
 
-        if ((query & Inconsistent) && (f->isFinalInCpp() == f->isFinalInJava() || f->isStatic())) {
+        if ((query & Inconsistent) && (f->isFinalInJava() || !f->isFinalInCpp() || f->isStatic())) {
             continue;
         }
 
