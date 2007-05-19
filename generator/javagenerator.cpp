@@ -944,6 +944,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
 
     if (eq_functions.size() || neq_functions.size()) {
         s << endl
+          << "    @SuppressWarnings(\"unchecked\")" << endl
           << "    public boolean equals(Object other) {" << endl;
         bool first = true;
         write_equals_parts(s, eq_functions, (char) 0, &first);
