@@ -15,15 +15,15 @@
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
-#include "sql.h"
+#include <QtSql/QtSql>
 #include <QtSvg/qsvgrenderer.h>
 #include <QtSvg/qsvgwidget.h>
 #include <QtSvg/qgraphicssvgitem.h>
 #include <QtXml/QtXml>
 
-#include <../../qtjambi_designer/designer.h>
+#include <../qtjambi_designer/designer.h>
 
-#include <../../qtjambi_gui/qtreemodel.h>
+#include <../qtjambi_gui/qtreemodel.h>
 
 #define GL_ACCUM                          0x0100
 #define GL_LOAD                           0x0101
