@@ -506,9 +506,6 @@ function setupEvalPackages() {
 
 function createPackage(pkg) {
 
-    File.write("d:/files.txt", pkg.copyFiles.join("\n"));
-    File.write("d:/dirs.txt", pkg.mkdirs.join("\n"));
-
     verbose("Creating package: " + pkg.name);
     prepareSourceTree();
 
