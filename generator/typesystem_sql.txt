@@ -77,6 +77,7 @@
     <extra-includes>
         <include file-name="QSqlField" location="global" />
     </extra-includes>
+    <modify-function signature="append(QSqlField)" access="non-final"/>
     <modify-function signature="operator=(QSqlRecord)" remove="all"/>
   </value-type>
 
@@ -106,6 +107,8 @@
   </object-type>  
   
   <object-type name="QSqlQueryModel">    
+    <modify-function signature="indexInQuery(QModelIndex)const" access="non-final"/>
+    <modify-function signature="setQuery(QSqlQuery)" access="non-final"/>
     <extra-includes>
         <include file-name="QSqlError" location="global" />
         <include file-name="QSqlQuery" location="global" />
