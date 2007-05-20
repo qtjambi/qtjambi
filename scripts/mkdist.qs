@@ -1,34 +1,24 @@
 const packageDir = os_name() == OS_NAME_WINDOWS
                    ? "d:/tmp/package-builder"
                    : "/tmp/package-builder";
-const version = "1.0.0";
+const version = figureVersion();
 const javaDir = packageDir + "/qtjambi/" + version;
 const javadocName = "qtjambi-javadoc-" + version + ".jar";
 const jdocName = "qtjambi-jdoc-" + version + ".jar";
 
-const regexp_mainfunction = /void *main *\( *String *\w* *\[ *\] *\)/
-
 var command = new Object();
 var option = new Object();
 
-option.nocppbuild = array_contains(args, "--no-cpp-build");
-option.nogenerator = array_contains(args, "--no-generator");
-option.nojavabuild = array_contains(args, "--no-java-build");
-option.nosync = array_contains(args, "--no-sync");
-option.packageonly = array_contains(args, "--package-only");
 option.qtdir = findQtDir();
 option.verbose = array_contains(args, "--verbose");
-option.nocompilercheck = array_contains(args, "--no-compiler-check");
-option.teambuilder = array_contains(args, "--teambuilder");
 option.startDir = new Dir().absPath;
 option.javadocHTTP = array_get_next_value(args, "--javadoc");
 option.noJavadocDownload = array_contains(args, "--no-javadoc-download");
-option.sourcePackages = !array_contains(args, "--no-source-packages");
-option.binaryPackages = !array_contains(args, "--no-binary-packages");
-option.packageName = array_get_next_value(args, "--package-name");
-
-if (option.binaryPackages && !option.packageName)
-    throw "Missing package name (win32, win64, linux32, linxu64, mac)";
+option.sourcePackages = !array_contains(args, "--no-source");
+option.binaryPackages = !array_contains(args, "--no-binary");
+option.evalPackages = !array_contains(args, "--no-eval");
+option.qtEvalLocation = array_get_next_value(args, "--qt-eval");
+option.qtCommercialLocation = array_get_next_value(args, "--qt-commercial");
 
 command.chmod = find_executable("chmod");
 command.cp = find_executable("cp");
@@ -48,19 +38,6 @@ if (os_name() == OS_NAME_MACOSX)
 else
     command.wget = find_executable("wget");
 
-const packageTreeReuse = option.nosync
-                         || option.nogenerator
-                         || option.nocppbuild
-                         || option.nojavabuild
-                         || option.packageonly;
-
-if (option.packageonly) {
-    option.nocppbuild = true;
-    option.nogenerator = true;
-    option.nojavabuild = true;
-    option.nosync = true;
-}
-
 if (!option.javadocHTTP) {
     option.javadocHTTP = "http://anarki/~gunnar/packages";
 }
@@ -68,74 +45,477 @@ if (!option.javadocHTTP) {
 option.javadocLocation = option.javadocHTTP + "/" + javadocName;
 option.jdocLocation = option.javadocHTTP + "/" + jdocName;
 
-const qtLibraryNames = ["QtCore", "QtGui", "QtOpenGL", "QtSql", "QtXml", "QtSvg", "QtScript", "QtDesigner", "QtDesignerComponents", "QtNetwork", "QtAssistantClient"];
-const qtBinaryNames = ["designer", "linguist", "lrelease", "lupdate"];
-var qtReleaseLibraries = [];
-var qtDebugLibraries = [];
-var qtBinaries = [];
-
-var preview_header = File.read("../dist/preview_header.txt");
-var commercial_header = File.read("../dist/commercial_header.txt");
-var gpl_header = File.read("../dist/gpl_header.txt");
-
 if (array_contains(args, "-help") || array_contains(args, "-h")) {
     displayHelp();
 } else {
-
     for (var i in option)
         if (option[i])
             verbose("'%1': %2".arg(i).arg(option[i]));
-    verbose("reusing package tree: " + (packageTreeReuse ? "yes" : "no"));
     verbose("");
     for (var i in command)
         verbose("using command '%1' in: %2".arg(i).arg(command[i]));
+}
 
-    verbose("");
+var packages = [];
 
+verbose("Setting up packages...");
 
-    if (!packageTreeReuse)
-        deletePackageDir();
+if (option.sourcePackages) {
+    verbose(" - gpl source");
+    packages.push(setupGPLSourcePackage());
+    verbose(" - commercial source");
+    packages.push(setupCommercialSourcePackage());
+}
 
-    if (option.sourcePackages) {
-        createSourcePackage("commercial");
-        createSourcePackage("gpl");
+if (option.binaryPackages) {
+    if (!option.qtCommercialLocation) {
+        verbose("no --qt-commercial specified, using QTDIR at: " + option.qtdir);
+        option.qtCommercialLocation = option.qtdir;
     }
 
-    if (option.binaryPackages) {
-        createBinaryPackages();
+    if (!option.qtCommercialLocation)
+        throw "missing '--qt-commercial [location]' for location of binaries";
+
+    verbose(" - commercial binary");
+    packages.push(setupCommercialBinaryPackage());
+}
+
+if (option.evalPackages) {
+
+    if (!option.qtEvalLocation)
+        throw " missing '--qt-eval [location]' for location of binaries";
+
+    verbose(" - evaluation");
+    packages.push(setupEvalPackages());
+}
+
+
+for (var i=0; i<packages.length; ++i)
+    createPackage(packages[i]);
+
+/*******************************************************************************
+ *
+ * Creates and sets up the default package.
+ *
+ * The default package has the following properties:
+ *   - removeDirs               - directories to be removed
+ *   - removeFiles              - files to be removed.
+ *   - mkdirs                   - Directories to be created
+ *   - copyFiles                - Files to be copied. Each entry is either a
+ *                                String which is copied to packageroot or an
+ *                                array containing ["source", "targetdir"]
+ *
+ * The other setup functions are expected to add:
+ *   - qt                       - [binary] The location of a prebuilt Qt
+ *   - license                  - The license type, eval, commercial or gpl
+ *   - licenseHeader            - The license header matching 'license'
+ *   - packageName              - Name of the package, such as win32
+ *   - name                     - the complete name of the package
+ *   - binary                   - boolean indicating binary package
+ *
+ */
+function setupDefaultPackage() {
+    var pkg = {};
+
+    pkg.removeDirs = [
+                      "autotestlib",
+                      "com/trolltech/autotests",
+                      "com/trolltech/benchmarks",
+                      "com/trolltech/extensions",
+                      "com/trolltech/tests",
+                      "cpp",
+                      "dist",
+                      "doc/config",
+                      "doc/src",
+                      "eclipse-integration",
+                      "eclipse-stable",
+                      "jawt",
+                      "launcher_launcher",
+                      "libbenchmark",
+                      "scripts",
+                      "tools",
+                      "uic4",
+                      "whitepaper"
+    ];
+
+    pkg.removeFiles = [
+                       "rebuild.bat",
+                       "rebuild.sh",
+                       "build.xml"
+    ];
+
+    pkg.mkdirs = [
+                  "include"
+    ];
+
+    pkg.copyFiles = [
+                     // Include files...
+                     ["qtjambi/qtjambi_core.h", "include"],
+                     ["qtjambi/qtjambi_cache.h", "include"],
+                     ["qtjambi/qtjambi_global.h", "include"],
+                     ["qtjambi/qtjambilink.h", "include"],
+                     ["qtjambi/qtjambifunctiontable.h", "include"],
+                     ["qtjambi/qtjambitypemanager.h", "include"],
+
+                     // text files for main directory...
+                     "dist/KNOWN_ISSUES",
+                     "dist/README",
+                     "dist/changes-" + version
+    ];
+
+    pkg.version = version;
+
+    return pkg;
+}
+
+
+
+
+/*******************************************************************************
+ *
+ * Does the final steps of preparing the package...
+ *
+ */
+function finalizeDefaultPackage(pkg) {
+    pkg.name = packageName(pkg);
+}
+
+
+/*******************************************************************************
+ *
+ * Modifies a package with the content required for binary packages...
+ *
+ */
+function setupBinaryPackage(pkg) {
+    pkg.binary = true;
+
+    pkg.removeDirs.push(
+                   "com/trolltech/qt",
+                   "com/trolltech/tools",
+                   "common",
+                   "designer-integration",
+                   "generator",
+                   "juic",
+                   "qtjambi",
+                   "qtjambi_core",
+                   "qtjambi_designer",
+                   "qtjambi_generator",
+                   "qtjambi_gui",
+                   "qtjambi_network",
+                   "qtjambi_opengl",
+                   "qtjambi_sql",
+                   "qtjambi_svg",
+                   "qtjambi_xml"
+                   );
+
+    pkg.removeFiles.push(
+                         "Makefile",
+                         "java.pro",
+                         "java_files"
+                         );
+
+
+
+    pkg.copyFiles.push(
+                       [command.generator, "bin"]
+                       );
+
+    // System libraries...
+    if (os_name() == OS_NAME_WINDOWS) {
+        try {
+            pkg.copyFiles.push([find_executable("msvcr80.dll"), "bin"],
+                               [find_executable("msvcp80.dll"), "bin"]);
+        } catch (e) {
+            pkg.copyFiles.push([find_executable("msvcr71.dll"), "bin"],
+                               [find_executable("msvcp71.dll"), "bin"]);
+        }
+    } else if (os_name() == OS_NAME_LINUX) {
+        var locs = ["/lib", "/usr/lib"];
+        for (var i=0; i<locs.length; ++i) {
+            var name = locs[i] + "/libstdc++.so.5";
+            if (File.exists(name)) {
+                pkg.copyFiles.push([name, "lib"]);
+                break;
+            }
+        }
+    }
+
+    // Qt libraries...
+    const qtLibraryNames = [
+                            "QtAssistantClient",
+                            "QtCore",
+                            "QtDesigner",
+                            "QtDesignerComponents",
+                            "QtGui",
+                            "QtNetwork",
+                            "QtOpenGL",
+                            "QtScript",
+                            "QtSql",
+                            "QtSvg",
+                            "QtXml"
+    ];
+    const qtBinaryNames = ["designer", "linguist", "lrelease", "lupdate"];
+
+    var isWindows = os_name() == OS_NAME_WINDOWS;
+
+    var exe_extension = "";
+    var location = "lib";
+
+    var namePostfix = "";
+    var namePrefix = "lib";
+
+    if (os_name() == OS_NAME_WINDOWS) {
+        exe_extension = ".exe";
+        location = "bin";
+        namePostfix = "4.dll";
+        namePrefix = "";
+    } else if (os_name() == OS_NAME_MACOSX) {
+        namePostfix = ".4.dylib";
+        exe_extension = ".app";
+    } else {
+        namePostfix = ".so.4";
+    }
+
+    for (var i=0; i<qtLibraryNames.length; ++i) {
+        var libName = pkg.qt + "/" + location + "/"
+                      + namePrefix + qtLibraryNames[i] + namePostfix;
+
+        if (!File.exists(libName))
+            throw "Library '%1' does not exist".arg(libName);
+
+        pkg.copyFiles.push([libName, "lib"]);
+    }
+
+    for (var i=0; i<qtBinaryNames.length; ++i) {
+        var binName = pkg.qt + "/bin/" + qtBinaryNames[i] +  exe_extension;
+        if (!File.exists(binName) && os_name() == OS_NAME_MACOSX)
+            binName = pkg.qt + "/bin/" + qtBinaryNames[i];
+        if (!File.exists(binName))
+            throw "Binary file '%1' does not exist".arg(binName);
+        pkg.copyFiles.push(binName, "bin");
+    }
+
+    var tmp = [];
+    var cutLength = pkg.qt.length + 1;
+    // Qt plugins...
+    for_all_files(pkg.qt + "/plugins", function(name) {
+        if (name.endsWith(".so") || name.endsWith(".dll") || name.endsWith(".dylib")) {
+            tmp.push(name.mid(cutLength));
+        }
+    });
+    for (var i=0; i<tmp.length; ++i) {
+        var n = tmp[i];
+        pkg.copyFiles.push([pkg.qt + "/" + n, n]);
+        var p = new File(n).path;
+        if (!array_contains(pkg.mkdirs, p))
+            pkg.mkdirs.push(p);
+    }
+
+
+
+    if (os_name() == OS_NAME_MACOSX) {
+        pkg.copyFiles.push("dist/mac/qtjambi.sh");
+        pkg.copyFiles.push(["dist/mac/generator_example.sh", "generator_example"]);
+        pkg.copyFiles.push("dist/mac/designer.sh");
+    } else if (os_name() == OS_NAME_WINDOWS) {
+        pkg.copyFiles.push("dist/win/designer.bat");
+        pkg.copyFiles.push("dist/win/qtjambi.exe");
+        pkg.copyFiles.push(["dist/win/generator_example.bat", "generator_example"]);
+    } else {
+        pkg.copyFiles.push("dist/linux/designer.sh");
+        pkg.copyFiles.push("dist/linux/qtjambi.sh");
+        pkg.copyFiles.push(["dist/linux/generator_example.sh", "generator_example"]);
+    }
+
+    if (os_name() == OS_NAME_WINDOWS) {
+        var arch = System.getenv("PROCESSOR_ARCHITEW6432");
+        if (arch && arch.contains("64"))
+            pkg.packageName = "win64";
+        else
+            pkg.packageName = "win32";
+    } else if (os_name() == OS_NAME_LINUX) {
+        pkg.packageName = "linux";
+    } else {
+        pkg.packageName = "mac";
     }
 }
 
 
-function createBinaryPackages(licenseType) {
+
+/*******************************************************************************
+ *
+ * Modifies the package with the content required for binary packages...
+ *
+ */
+function setupSourcePackage(pkg) {
+    pkg.packageName = "source";
+    pkg.binary = false;
+
+    pkg.mkdirs.push(
+                    "designer-integration/language/private"
+                    );
+
+    var uicPrefix = option.qtdir + "/src/tools/uic/";
+    pkg.copyFiles.push(
+                       "dist/BUILDING_SOURCE_PACKAGE",
+
+                       // uic files
+                       [uicPrefix + "customwidgetsinfo.cpp", "juic"],
+                       [uicPrefix + "customwidgetsinfo.h", "juic"],
+                       [uicPrefix + "databaseinfo.cpp", "juic"],
+                       [uicPrefix + "databaseinfo.h", "juic"],
+                       [uicPrefix + "driver.cpp", "juic"],
+                       [uicPrefix + "driver.h", "juic"],
+                       [uicPrefix + "globaldefs.h", "juic"],
+                       [uicPrefix + "option.h", "juic"],
+                       [uicPrefix + "treewalker.cpp", "juic"],
+                       [uicPrefix + "treewalker.h", "juic"],
+                       [uicPrefix + "ui4.cpp", "juic"],
+                       [uicPrefix + "ui4.h", "juic"],
+                       [uicPrefix + "uic.cpp", "juic"],
+                       [uicPrefix + "uic.h", "juic"],
+                       [uicPrefix + "uic.pri", "juic"],
+                       [uicPrefix + "utils.h", "juic"],
+                       [uicPrefix + "validator.cpp", "juic"],
+                       [uicPrefix + "validator.h", "juic"],
+
+                       // designer files...
+                       [option.qtdir + "/tools/designer/src/lib/uilib/ui4_p.h",
+                        "designer-integration/language/private/ui4_p.h"]
+                       );
+
+}
+
+
+
+/*******************************************************************************
+ *
+ * Modifies the package with the content required for GPL packages...
+ *
+ */
+function setupGPLPackage(pkg) {
+    pkg.licenseHeader = File.read("../dist/gpl_header.txt");
+    pkg.license = "gpl";
+    pkg.copyFiles.push(
+                       "dist/LICENSE.GPL"
+                       );
+}
+
+
+
+/*******************************************************************************
+ *
+ * Modifies the package with the content required for commercial packages...
+ *
+ */
+function setupCommercialPackage(pkg) {
+    pkg.licenseHeader = File.read("../dist/commercial_header.txt");
+    pkg.license = "commercial";
+    pkg.copyFiles.push(
+                       "dist/LICENSE"
+                       );
+}
+
+
+
+/*******************************************************************************
+ *
+ * Creates and modifies the package with the content that is required for the
+ * GPL Source packages
+ *
+ */
+function setupGPLSourcePackage() {
+    var pkg = setupDefaultPackage();
+    setupSourcePackage(pkg);
+    setupGPLPackage(pkg);
+    finalizeDefaultPackage(pkg);
+    return pkg;
+}
+
+
+
+/*******************************************************************************
+ *
+ * Creates and modifies the package with the content that is required for the
+ * Commercial Source packages
+ *
+ */
+function setupCommercialSourcePackage() {
+    var pkg = setupDefaultPackage();
+    setupSourcePackage(pkg);
+    setupCommercialPackage(pkg);
+    finalizeDefaultPackage(pkg);
+    return pkg;
+}
+
+
+
+function setupCommercialBinaryPackage() {
+    var pkg = setupDefaultPackage();
+    pkg.qt = option.qtCommercialLocation;
+    setupCommercialPackage(pkg);
+    setupBinaryPackage(pkg);
+    finalizeDefaultPackage(pkg);
+    return pkg;
+}
+
+
+
+function setupEvalPackages() {
+    var pkg = setupDefaultPackage();
+    pkg.qt = option.qtEvalLocation;
+    setupBinaryPackage(pkg);
+    finalizeDefaultPackage(pkg);
+    return pkg;
+}
+
+
+function createPackage(pkg) {
+
+    verbose("Creating package: " + pkg.name);
     prepareSourceTree();
-
-    if (!option.nocompilercheck)
-        checkCompiler();
-
-    findQtLibraries();
 
     var dir = new Dir(javaDir);
     dir.setCurrent();
 
-    if (!option.nogenerator) compileAndRunGenerator();
-    if (!option.nocppbuild) compileNativeLibraries();
-    if (!option.nojavabuild) compileJavaFiles();
+    if (pkg.binary) {
+        verbose(" - compiling and running generator...");
+        compileAndRunGenerator();
 
-    var parentDir = new Dir(javaDir);
-    parentDir.cdUp();
+        verbose(" - compiling native libraries...");
+        compileNativeLibraries();
 
-    verbose(" - making backup of " + javaDir);
-    parentDir.setCurrent();
-    execute([command.cp, "-R", javaDir, "qtjambi-backup"]);
+        verbose(" - compiling java files...");
+        compileJavaFiles();
 
-    createPackage("gpl");
+        verbose(" - creating qtjambi.jar");
+        createJarFile();
 
-    verbose(" - reusing backup of " + javaDir);
-    parentDir.setCurrent();
-    execute([command.cp, "-R", "qtjambi-backup", javaDir]);
+        verbose(" - documentation...");
+        createDocs();
 
-    createPackage("commercial");
+
+        if (os_name() == OS_NAME_MACOSX) {
+            verbose(" - OSX install_name foo...");
+            fixInstallName();
+        }
+    }
+
+    verbose(" - moving files around...");
+    moveFiles(pkg);
+
+    verbose(" - removing unwanted content...");
+    removeFiles(pkg);
+
+    verbose(" - expanding macroes...");
+    expandMacros(pkg.licenseHeader);
+
+
+    verbose(" - bundling package...");
+    createBundle(pkg);
+
+
+    verbose(" - done!");
 }
 
 /*******************************************************************************
@@ -158,7 +538,7 @@ function checkCompiler() {
 
 function prepareSourceTree()
 {
-    verbose("Preparing source tree:");
+    deletePackageDir();
 
     var client = "package-builder" + (os_name() == OS_NAME_WINDOWS ? "" : "-linux");
 
@@ -191,66 +571,6 @@ function findQtDir() {
     return qtdir;
 }
 
-
-/*******************************************************************************
- * Checks that the necesary configuration is in place. This is primarly the
- * Qt version used for linking.
- */
-function findQtLibraries() {
-
-    var isWindows = os_name() == OS_NAME_WINDOWS;
-
-    var exe_extension = "";
-    var location = "lib";
-
-    var namePostfix = "";
-    var namePrefix = "lib";
-
-    if (os_name() == OS_NAME_WINDOWS) {
-        exe_extension = ".exe";
-        location = "bin";
-        namePostfix = "4.dll";
-        namePrefix = "";
-    } else if (os_name() == OS_NAME_MACOSX) {
-        namePostfix = ".4.dylib";
-        exe_extension = ".app";
-    } else {
-        namePostfix = ".so.4";
-    }
-
-    for (var i=0; i<qtLibraryNames.length; ++i) {
-        var libName = option.qtdir + "/" + location + "/"
-                      + namePrefix + qtLibraryNames[i] + namePostfix;
-
-        if (!File.exists(libName))
-            throw "Library '%1' does not exist".arg(libName);
-
-        qtReleaseLibraries.push(libName);
-    }
-
-    for (var i=0; i<qtBinaryNames.length; ++i) {
-        var binName = option.qtdir + "/bin/" + qtBinaryNames[i] +  exe_extension;
-        if (!File.exists(binName) && os_name() == OS_NAME_MACOSX)
-            binName = option.qtdir + "/bin/" + qtBinaryNames[i];
-        if (!File.exists(binName))
-            throw "Binary file '%1' does not exist".arg(binName);
-        qtBinaries.push(binName);
-    }
-
-    if (os_name() == OS_NAME_LINUX) {
-        var locs = ["/lib", "/usr/lib"];
-        for (var i=0; i<locs.length; ++i) {
-            var name = locs[i] + "/libstdc++.so.5";
-            if (File.exists(name)) {
-                qtReleaseLibraries.push(name);
-                break;
-            }
-        }
-        print("libs are: \n" + qtReleaseLibraries.join("\n"));
-    }
-}
-
-
 /*******************************************************************************
  * Finds the generator name
  */
@@ -268,23 +588,18 @@ function findGeneratorName() {
  * Compiles and runs the generator
  */
 function compileAndRunGenerator() {
-    verbose("Generator:");
-
     var dir = new Dir(javaDir);
     dir.cd("generator");
     dir.setCurrent();
 
-    verbose(" - running qmake");
+    verbose("   - running qmake");
     execute(command.qmake + " -config release");
 
-    verbose(" - building");
-
+    verbose("   - building");
     var make = [command.make];
-    if (option.teambuilder)
-        make.push("-j20");
     execute(make);
 
-    verbose(" - running");
+    verbose("   - running");
     execute([command.generator, "--jdoc-enabled", "--jdoc-dir", "../doc/jdoc"]);
 
     dir.cdUp();
@@ -298,10 +613,10 @@ function compileAndRunGenerator() {
 function compileJavaFiles() {
     verbose("Java files:");
 
-    verbose(" - running juic");
+    verbose("   - running juic");
     execute(javaDir + "/bin/juic -cp .");
 
-    verbose(" - building");
+    verbose("   - building");
     execute([command.javac, "-J-mx1024m", "-target", "1.5", "@java_files"]);
 
     try {
@@ -317,15 +632,11 @@ function compileJavaFiles() {
  * Compiles the native libraries
  */
 function compileNativeLibraries() {
-    verbose("Native libraries:");
-
-    verbose(" - running qmake");
+    verbose("   - running qmake");
     execute([command.qmake, "-r", "CONFIG+=release", "-after", "CONFIG-=debug debug_and_release"]);
 
-    verbose(" - running make");
+    verbose("   - running make");
     var make = [command.make];
-    if (option.teambuilder)
-        make.push("-j20");
 
     execute(make);
 }
@@ -343,50 +654,6 @@ function deletePackageDir()
   }
 
   dir.mkdirs();
-}
-
-
-/*******************************************************************************
- * Creates the package...
- */
-function createPackage(licenseType) {
-    new Dir(javaDir).setCurrent();
-
-    verbose("Creating package:");
-
-    verbose(" - copying qt binaries");
-    copyQtBinaries();
-
-    verbose(" - creating qtjambi.jar");
-    createJarFile();
-
-    verbose(" - documentation");
-    createDocs();
-
-    verbose(" - expand macros");
-
-    if (licenseType == "gpl")
-        expandMacros(gpl_header);
-    else if (licenseType == "commercial")
-        expandMacros(commercial_header);
-    else if (licenseType == "preview")
-        expandMacros(preview_header);
-
-    verbose(" - moving files around");
-    moveFiles("binary", licenseType);
-
-    verbose(" - removing files");
-    removeFiles(licenseType);
-
-    verbose(" - platform stuff");
-    if (os_name() == OS_NAME_MACOSX)
-        fixInstallName();
-
-    verbose(" - bundling");
-    createBundle(licenseType);
-
-//     verbose(" - create platform archive");
-//     createPlatformArchive();
 }
 
 
@@ -419,21 +686,6 @@ function expandMacros(header) {
  * Copies the Qt libraries into the bin/libs directories according to platform
  */
 function copyQtBinaries() {
-    var targetLibDir = javaDir + "/" + (os_name() == OS_NAME_WINDOWS ? "bin" : "lib");
-    var targetBinDir = javaDir + "/bin";
-
-    var allLibs = qtReleaseLibraries.concat(qtDebugLibraries);
-    for (var i=0; i<allLibs.length; ++i)
-        execute([command.cp, allLibs[i], targetLibDir]);
-
-    for (var i=0; i<qtBinaries.length; ++i) {
-        execute([command.cp, "-R", qtBinaries[i], targetBinDir]);
-    }
-
-    print(" - image format plugins");
-
-    // Qt image format plugins
-    execute([command.cp, "-R", option.qtdir + "/plugins", "."]);
 }
 
 
@@ -464,7 +716,6 @@ function createJarFile() {
  * Copy Qt docs and run qdoc-conf on the main bundle...
  */
 function createDocs() {
-
     var dir = new Dir(javaDir);
     dir.setCurrent();
 
@@ -494,112 +745,34 @@ function createDocs() {
 /*******************************************************************************
  * Moves required headers into include, the generator into bin and etc...
  */
-function moveFiles(packageType, licenseType) {
+function moveFiles(pkg) {
 
-    if (packageType != "sourcepackage")
-        execute([command.cp, command.generator, "bin"]);
+    new Dir(javaDir).setCurrent();
 
-    // Include files
-    new Dir(javaDir + "/include").mkdirs();
-    var includeFiles = ["qtjambi_core.h", "qtjambi_cache.h", "qtjambi_global.h", "qtjambilink.h", "qtjambifunctiontable.h", "qtjambitypemanager.h"];
-
-    for (var i=0; i<includeFiles.length; ++i)
-        execute([command.cp, "qtjambi/" + includeFiles[i], "include"]);
-
-
-    if (packageType != "sourcepackage") {
-        if (os_name() == OS_NAME_WINDOWS) {
-            try {
-                var runtimes = [
-                                find_executable("msvcr71.dll"),
-                                find_executable("msvcp71.dll")
-                ];
-                for (var i=0; i<runtimes.length; ++i)
-                    execute([command.cp, runtimes[i], "bin"]);
-            } catch (e) {
-                print("moveFiles: failed to copy MSVC.net 2003 runtimes\n" +
-                      "           executable will not run by default...\n" +
-                      "           " + e);
-            }
-        }
+    for (var i=0; i<pkg.mkdirs.length; ++i) {
+        new Dir(pkg.mkdirs[i]).mkdirs();
     }
 
-    // Files into root dir
-    var files = [
-                 "dist/KNOWN_ISSUES",
-                 "dist/README",
-                 "dist/changes-" + version
-    ];
-
-    if (licenseType == "gpl")
-        files.push("dist/LICENSE.GPL");
-    else
-        files.push("dist/LICENSE");
-
-    if (packageType == "sourcepackage") {
-        files.push("dist/BUILDING_SOURCE_PACKAGE");
-
-        // uic files
-        var prefix = option.qtdir + "/src/tools/uic/";
-        files.push([prefix + "uic.pri", "juic"]);
-        files.push([prefix + "customwidgetsinfo.h", "juic"]);
-        files.push([prefix + "databaseinfo.h", "juic"]);
-        files.push([prefix + "driver.h", "juic"]);
-        files.push([prefix + "globaldefs.h", "juic"]);
-        files.push([prefix + "option.h", "juic"]);
-        files.push([prefix + "treewalker.h", "juic"]);
-        files.push([prefix + "ui4.h", "juic"]);
-        files.push([prefix + "uic.h", "juic"]);
-        files.push([prefix + "utils.h", "juic"]);
-        files.push([prefix + "validator.h", "juic"]);
-        files.push([prefix + "customwidgetsinfo.cpp", "juic"]);
-        files.push([prefix + "databaseinfo.cpp", "juic"]);
-        files.push([prefix + "driver.cpp", "juic"]);
-        files.push([prefix + "treewalker.cpp", "juic"]);
-        files.push([prefix + "ui4.cpp", "juic"]);
-        files.push([prefix + "uic.cpp", "juic"]);
-        files.push([prefix + "validator.cpp", "juic"]);
-
-        // designer files...
-        new Dir("designer-integration/language/private").mkdir();
-        files.push([option.qtdir + "/tools/designer/src/lib/uilib/ui4_p.h",
-                    "designer-integration/language/private/ui4_p.h"]);
-
-    } else {
-        if (os_name() == OS_NAME_MACOSX) {
-            files.push("dist/mac/qtjambi.sh");
-            files.push(["dist/mac/generator_example.sh", "generator_example"]);
-            files.push("dist/mac/designer.sh");
-        } else if (os_name() == OS_NAME_WINDOWS) {
-            files.push("dist/win/designer.bat");
-            files.push("dist/win/qtjambi.exe");
-            files.push(["dist/win/generator_example.bat", "generator_example"]);
-        } else {
-            files.push("dist/linux/designer.sh");
-            files.push("dist/linux/qtjambi.sh");
-            files.push(["dist/linux/generator_example.sh", "generator_example"]);
-        }
-    }
-
-    for (var i=0; i<files.length; ++i) {
+    for (var i=0; i<pkg.copyFiles.length; ++i) {
         var source = "";
         var target = "";
 
-        if (files[i] is Array) {
-            source = files[i][0];
-            target = files[i][1];
+        if (pkg.copyFiles[i] is Array) {
+            source = pkg.copyFiles[i][0];
+            target = pkg.copyFiles[i][1];
         } else {
-            source = files[i];
+            source = pkg.copyFiles[i];
             target = ".";
         }
 
-        if (source.endsWith(".sh"))
-            execute([command.chmod, "u+x", source]);
-        else if (source.endsWith(".cpp")
-                 || source.endsWith(".java")
-                 || source.endsWith(".h"))
-            execute([command.chmod, "u+rw", source]);
         execute([command.cp, source, target]);
+
+        if (target.endsWith(".sh"))
+            execute([command.chmod, "u+x", target]);
+        else if (target.endsWith(".cpp")
+                 || target.endsWith(".java")
+                 || target.endsWith(".h"))
+            execute([command.chmod, "u+rw", target]);
     }
 }
 
@@ -607,65 +780,16 @@ function moveFiles(packageType, licenseType) {
 /*******************************************************************************
  * Removes all the parts that should not be used
  */
-function removeFiles(packageType) {
-    var dirs = [
-                "autotestlib",
-                "com/trolltech/autotests",
-                "com/trolltech/benchmarks",
-                "com/trolltech/tests",
-                "com/trolltech/extensions",
-                "cpp",
-                "dist",
-                "doc/config",
-                "doc/src",
-                "eclipse-integration",
-                "eclipse-stable",
-                "launcher_launcher",
-                "libbenchmark",
-                "scripts",
-                "uic4",
-                "tools",
-                "whitepaper"
-    ];
+function removeFiles(pkg) {
 
-    if (packageType != "sourcepackage") {
-        dirs.push(
-                  "com/trolltech/qt",
-                  "com/trolltech/tools",
-                  "common",
-                  "designer-integration",
-                  "generator",
-                  "juic",
-                  "qtjambi",
-                  "qtjambi_core",
-                  "qtjambi_designer",
-                  "qtjambi_generator",
-                  "qtjambi_gui",
-                  "qtjambi_network",
-                  "qtjambi_opengl",
-                  "qtjambi_sql",
-                  "qtjambi_svg",
-                  "qtjambi_xml"
-                  );
-    }
+    for (var i=0; i<pkg.removeDirs.length; ++i)
+        execute([command.rm, "-rf", pkg.removeDirs[i]]);
 
-    for (var i=0; i<dirs.length; ++i)
-        execute([command.rm, "-rf", dirs[i]]);
+    for (var i=0; i<pkg.removeFiles.length; ++i)
+        execute([command.rm, pkg.removeFiles[i]]);
 
-    var files = [
-                 "rebuild.bat",
-                 "rebuild.sh",
-                 "build.xml"
-    ];
-
-    if (packageType != "sourcepackage") {
-        files.push(
-                   "Makefile",
-                   "java.pro",
-                   "java_files"
-                   );
-    }
-
+    // Some files that were generated along the way...
+    var files = [];
     for_all_files(javaDir, function(name) {
         if (name.endsWith(".ilk")
             || name.endsWith(".pdb")
@@ -682,7 +806,6 @@ function removeFiles(packageType) {
 	else if (name.endsWith(".debug"))
 	    files.push(name);
     });
-
     for (var i=0; i<files.length; ++i)
         execute([command.rm, files[i]]);
 }
@@ -691,16 +814,14 @@ function removeFiles(packageType) {
 /*******************************************************************************
  * Creates the bundle...
  */
-function createBundle(licenseType) {
+function createBundle(pkg) {
     var dir = new Dir(javaDir);
     dir.cdUp();
     dir.setCurrent();
 
-    var packageName = "qtjambi-" + option.packageName + "-" + licenseType + "-" + version;
+    execute([command.mv, version, pkg.name]);
 
-    execute([command.mv, version, packageName]);
-
-    var packageFile = option.startDir + "/" + packageName;
+    var packageFile = option.startDir + "/" + pkg.name;
     if (os_name() == OS_NAME_WINDOWS)
         packageFile += ".zip";
     else
@@ -708,55 +829,9 @@ function createBundle(licenseType) {
 
     if (os_name() == OS_NAME_WINDOWS) {
         try  { execute([command.rm, packageFile]); } catch (e) { }
-        execute([command.zip, "-rq", packageFile, packageName]);
+        execute([command.zip, "-rq", packageFile, pkg.name]);
     } else {
-        execute([command.tar, "-czf", packageFile, packageName]);
-    }
-
-    verbose("created package...");
-}
-
-
-/************************************************************************
- * Create the source packages... Only difference is the license file..
- */
-function createSourcePackage(type) {
-
-    verbose("Creating source package: '" + type + "'");
-
-    prepareSourceTree();
-
-    var dir = new Dir(javaDir); // set correct dir...
-    dir.setCurrent();
-
-    moveFiles("sourcepackage", type);
-    removeFiles("sourcepackage");
-
-    verbose(" - expand macros");
-    expandMacros(type == "gpl" ? gpl_header : commercial_header);
-
-
-    dir.cdUp();
-    dir.setCurrent();
-
-    var packageName = "qtjambi-src-" + type + "-" + version;
-    verbose(" - creating bundle: " + packageName);
-
-    execute([command.mv, version, packageName]);
-
-
-    // .tar.gz file
-    {
-        var packageFile = packageName + ".tar.gz";
-        execute([command.tar, "-czf", packageFile, packageName]);
-        execute([command.cp, packageFile, option.startDir]);
-    }
-
-    // .zip file
-    {
-        var packageFile = option.startDir + "/" + packageName + ".zip";
-        try  { execute([command.rm, packageFile]); } catch (e) { }
-        execute([command.zip, "-rq", packageFile, packageName]);
+        execute([command.tar, "-czf", packageFile, pkg.name]);
     }
 }
 
@@ -777,6 +852,52 @@ function fixInstallName() {
         }
     }
 }
+
+/*******************************************************************************
+ *
+ * Looks in the file com/trolltech/qt/QtJambi.java for the version numbers
+ * and extracts them into the version string
+ *
+ */
+function figureVersion() {
+    var content = File.read("../com/trolltech/qt/QtJambi.java");
+
+    var regexp_major = /MAJOR_VERSION += +(\d) *;/;
+    var regexp_minor = /MINOR_VERSION += +(\d) *;/;
+    var regexp_patch = /PATCH_VERSION += +(\d) *;/;
+    var regexp_build = /BUILD_NUMBER += +(\d) *;/;
+
+    if (regexp_major.search(content) < 0) throw "failed to locate MAJOR_VERSION in QtJambi.java";
+    if (regexp_minor.search(content) < 0) throw "failed to locate MINOR_VERSION in QtJambi.java";
+    if (regexp_patch.search(content) < 0) throw "failed to locate PATCH_VERSION in QtJambi.java";
+    if (regexp_build.search(content) < 0) throw "failed to locate BUILD_NUMBER in QtJambi.java";
+
+    var str = regexp_major.cap(1)
+              + "." + regexp_minor.cap(1)
+              + "." + regexp_patch.cap(1) + "_";
+
+    var build = regexp_build.cap(1);
+    for (var i=2 - build.length; i>0; --i)
+        str += "0";
+    return str + build;
+}
+
+
+function packageName(pkg) {
+    var name = "qtjambi";
+
+    if (pkg.binary)
+        name += "-" + pkg.packageName;
+
+    name += "-" + pkg.license;
+    name += "-" + pkg.version;
+
+    if (!pkg.binary)
+        name += "-src";
+
+    return name;
+}
+
 
 /*******************************************************************************
  * Display the help options
@@ -800,4 +921,6 @@ function verbose(s) {
     if (option.verbose)
         print(s);
 }
+
+
 
