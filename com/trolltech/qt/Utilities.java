@@ -182,12 +182,12 @@ public class Utilities {
         return false;
     }
 
-    private static File jambiTempDir() {
+    public static File jambiTempDir() {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         String user = System.getProperty("user.name");
-        return new File(tmpDir, "QtJambi_" + user + "_" + QtJambi.VERSION_STRING);
+        String arch = System.getProperty("os.arch");
+        return new File(tmpDir, "QtJambi_" + user + "_" + arch + "_" + QtJambi.VERSION_STRING);
     }
-
 
     public static void copy(URL sourceUrl, String destination) throws IOException {
         copy(sourceUrl.openStream(), new FileOutputStream(destination));
@@ -325,7 +325,7 @@ public class Utilities {
                     unpackPlugins(jar);
                     continue;
                 }
-                
+
                 URL libUrl = Thread.currentThread().getContextClassLoader().getResource(jar);
                 if (libUrl == null) {
                     System.err.println("Plugin archive: '" + jar + "' could not be resolved");
@@ -358,7 +358,7 @@ public class Utilities {
                     File destination = new File(tmpDir.getAbsolutePath(), entry.getName());
                     if (!destination.exists()) {
                         File path = destination.getParentFile();
-                        if (!path.exists()) 
+                        if (!path.exists())
                             path.mkdirs();
                         copy(stream, new FileOutputStream(destination));
                     }
