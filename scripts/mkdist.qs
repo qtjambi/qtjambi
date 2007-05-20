@@ -19,6 +19,7 @@ option.binaryPackages = !array_contains(args, "--no-binary");
 option.evalPackages = !array_contains(args, "--no-eval");
 option.qtEvalLocation = array_get_next_value(args, "--qt-eval");
 option.qtCommercialLocation = array_get_next_value(args, "--qt-commercial");
+option.qtGPLLocation = array_get_next_value(args, "--qt-gpl");
 
 command.chmod = find_executable("chmod");
 command.cp = find_executable("cp");
@@ -73,8 +74,16 @@ if (option.binaryPackages) {
         option.qtCommercialLocation = option.qtdir;
     }
 
+    if (!option.qtGPLLocation) {
+        verbose("no --qt-gpl specified, using QTDIR at: " + option.qtdir);
+        option.qtGPLLocation = option.qtdir;
+    }
+
     if (!option.qtCommercialLocation)
         throw "missing '--qt-commercial [location]' for location of binaries";
+
+    verbose(" - gpl binary");
+    packages.push(setupGPLBinaryPackage());
 
     verbose(" - commercial binary");
     packages.push(setupCommercialBinaryPackage());
@@ -292,7 +301,7 @@ function setupBinaryPackage(pkg) {
             binName = pkg.qt + "/bin/" + qtBinaryNames[i];
         if (!File.exists(binName))
             throw "Binary file '%1' does not exist".arg(binName);
-        pkg.copyFiles.push(binName, "bin");
+        pkg.copyFiles.push([binName, "bin"]);
     }
 
     var tmp = [];
@@ -306,9 +315,14 @@ function setupBinaryPackage(pkg) {
     for (var i=0; i<tmp.length; ++i) {
         var n = tmp[i];
         pkg.copyFiles.push([pkg.qt + "/" + n, n]);
-        var p = new File(n).path;
-        if (!array_contains(pkg.mkdirs, p))
+        var p = n.split("/");
+        p.pop();
+
+        p = p.join("/");
+
+        if (!array_contains(pkg.mkdirs, p)) {
             pkg.mkdirs.push(p);
+        }
     }
 
 
@@ -437,6 +451,26 @@ function setupGPLSourcePackage() {
 /*******************************************************************************
  *
  * Creates and modifies the package with the content that is required for the
+ * GPL Binary packages
+ *
+ */
+function setupGPLBinaryPackage() {
+    var pkg = setupDefaultPackage();
+    pkg.qt = option.qtGPLLocation;
+    setupBinaryPackage(pkg);
+    setupGPLPackage(pkg);
+    finalizeDefaultPackage(pkg);
+    return pkg;
+}
+
+
+
+
+
+
+/*******************************************************************************
+ *
+ * Creates and modifies the package with the content that is required for the
  * Commercial Source packages
  *
  */
@@ -471,6 +505,9 @@ function setupEvalPackages() {
 
 
 function createPackage(pkg) {
+
+    File.write("d:/files.txt", pkg.copyFiles.join("\n"));
+    File.write("d:/dirs.txt", pkg.mkdirs.join("\n"));
 
     verbose("Creating package: " + pkg.name);
     prepareSourceTree();
@@ -617,10 +654,10 @@ function compileJavaFiles() {
     execute(javaDir + "/bin/juic -cp .");
 
     verbose("   - building");
-    execute([command.javac, "-J-mx1024m", "-target", "1.5", "@java_files"]);
+    execute([command.javac, "-J-Xmx1024m", "-target", "1.5", "@java_files"]);
 
     try {
-        execute([command.javac, "-J-mx1024m", "-target", "1.5", "com/trolltech/demos/HelloGL.java"]);
+        execute([command.javac, "-J-Xmx1024m", "-target", "1.5", "com/trolltech/demos/HelloGL.java"]);
     } catch (e) {
         print("warning: failed to compile HelloGL demo, see 'hellogl_error.log' for details\n");
         File.write("hellogl_error.log", e);
