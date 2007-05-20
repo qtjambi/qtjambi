@@ -25,12 +25,10 @@ option.javadocHTTP = array_get_next_value(args, "--javadoc");
 option.noJavadocDownload = array_contains(args, "--no-javadoc-download");
 option.sourcePackages = !array_contains(args, "--no-source-packages");
 option.binaryPackages = !array_contains(args, "--no-binary-packages");
+option.packageName = array_get_next_value(args, "--package-name");
 
-var packageMap = new Object();
-packageMap[OS_NAME_WINDOWS] = "win";
-packageMap[OS_NAME_LINUX] = "linux";
-packageMap[OS_NAME_MACOSX] = "mac";
-option.packageName = packageMap[os_name()];
+if (option.binaryPackages && !option.packageName)
+    throw "Missing package name (win32, win64, linux32, linxu64, mac)";
 
 command.chmod = find_executable("chmod");
 command.cp = find_executable("cp");
@@ -49,7 +47,6 @@ if (os_name() == OS_NAME_MACOSX)
     command.curl = find_executable("curl");
 else
     command.wget = find_executable("wget");
-
 
 const packageTreeReuse = option.nosync
                          || option.nogenerator
@@ -78,6 +75,7 @@ var qtDebugLibraries = [];
 var qtBinaries = [];
 
 var preview_header = File.read("../dist/preview_header.txt");
+var commercial_header = File.read("../dist/commercial_header.txt");
 var gpl_header = File.read("../dist/gpl_header.txt");
 
 if (array_contains(args, "-help") || array_contains(args, "-h")) {
@@ -99,7 +97,7 @@ if (array_contains(args, "-help") || array_contains(args, "-h")) {
         deletePackageDir();
 
     if (option.sourcePackages) {
-        createSourcePackage("preview");
+        createSourcePackage("commercial");
         createSourcePackage("gpl");
     }
 
@@ -137,7 +135,7 @@ function createBinaryPackages(licenseType) {
     parentDir.setCurrent();
     execute([command.cp, "-R", "qtjambi-backup", javaDir]);
 
-    createPackage("preview");
+    createPackage("commercial");
 }
 
 /*******************************************************************************
@@ -366,7 +364,13 @@ function createPackage(licenseType) {
     createDocs();
 
     verbose(" - expand macros");
-    expandMacros(licenseType == "gpl" ? gpl_header : preview_header);
+
+    if (licenseType == "gpl")
+        expandMacros(gpl_header);
+    else if (licenseType == "commercial")
+        expandMacros(commercial_header);
+    else if (licenseType == "preview")
+        expandMacros(preview_header);
 
     verbose(" - moving files around");
     moveFiles("binary", licenseType);
@@ -692,7 +696,7 @@ function createBundle(licenseType) {
     dir.cdUp();
     dir.setCurrent();
 
-    var packageName = "qtjambi-" + licenseType + "-" + option.packageName + "-" + version;
+    var packageName = "qtjambi-" + option.packageName + "-" + licenseType + "-" + version;
 
     execute([command.mv, version, packageName]);
 
@@ -729,7 +733,7 @@ function createSourcePackage(type) {
     removeFiles("sourcepackage");
 
     verbose(" - expand macros");
-    expandMacros(type == "gpl" ? gpl_header : preview_header);
+    expandMacros(type == "gpl" ? gpl_header : commercial_header);
 
 
     dir.cdUp();
