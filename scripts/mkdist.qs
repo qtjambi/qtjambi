@@ -343,7 +343,7 @@ function setupBinaryPackage(pkg) {
 
     if (os_name() == OS_NAME_WINDOWS) {
         var arch = System.getenv("PROCESSOR_ARCHITEW6432");
-        if (arch && arch.contains("64"))
+        if (arch && arch.indexOf("64") >= 0)
             pkg.packageName = "win64";
         else
             pkg.packageName = "win32";
@@ -633,8 +633,7 @@ function compileAndRunGenerator() {
     execute(command.qmake + " -config release");
 
     verbose("   - building");
-    var make = [command.make];
-    execute(make);
+    execute([command.make]);
 
     verbose("   - running");
     execute([command.generator, "--jdoc-enabled", "--jdoc-dir", "../doc/jdoc"]);
@@ -648,8 +647,6 @@ function compileAndRunGenerator() {
  * Compiles the native libraries
  */
 function compileJavaFiles() {
-    verbose("Java files:");
-
     verbose("   - running juic");
     execute(javaDir + "/bin/juic -cp .");
 
@@ -673,9 +670,7 @@ function compileNativeLibraries() {
     execute([command.qmake, "-r", "CONFIG+=release", "-after", "CONFIG-=debug debug_and_release"]);
 
     verbose("   - running make");
-    var make = [command.make];
-
-    execute(make);
+    execute([command.make]);
 }
 
 
@@ -802,14 +797,15 @@ function moveFiles(pkg) {
             target = ".";
         }
 
-        execute([command.cp, source, target]);
+        if (source.endsWith(".sh"))
+            execute([command.chmod, "u+x", source]);
+        else if (source.endsWith(".cpp")
+                 || source.endsWith(".java")
+                 || source.endsWith(".h")) {
+            execute([command.chmod, "u+rw", source]);
+        }
 
-        if (target.endsWith(".sh"))
-            execute([command.chmod, "u+x", target]);
-        else if (target.endsWith(".cpp")
-                 || target.endsWith(".java")
-                 || target.endsWith(".h"))
-            execute([command.chmod, "u+rw", target]);
+        execute([command.cp, source, target]);
     }
 }
 
