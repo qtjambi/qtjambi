@@ -1,4 +1,5 @@
 ./com/trolltech/demos/ArthurFrame.java
+./com/trolltech/demos/Chips.java
 ./com/trolltech/demos/Deform.java
 ./com/trolltech/demos/HttpServerExample.java
 ./com/trolltech/demos/ImageViewer.java
@@ -96,6 +97,7 @@
 ./com/trolltech/qt/QtJambiObject.java
 ./com/trolltech/qt/QtJambiUtils.java
 ./com/trolltech/qt/QtJambi_LibraryInitializer.java
+./com/trolltech/qt/QtJambi_LibraryShutdown.java
 ./com/trolltech/qt/QtPropertyDesignable.java
 ./com/trolltech/qt/QtPropertyManager.java
 ./com/trolltech/qt/QtPropertyOrder.java
@@ -133,6 +135,7 @@
 ./com/trolltech/qt/core/QInvokable.java
 ./com/trolltech/qt/core/QLibraryInfo.java
 ./com/trolltech/qt/core/QLocale.java
+./com/trolltech/qt/core/QMessageHandler.java
 ./com/trolltech/qt/core/QModelIndex.java
 ./com/trolltech/qt/core/QMutex.java
 ./com/trolltech/qt/core/QObject.java
@@ -186,18 +189,14 @@
 ./com/trolltech/qt/gui/QAbstractTextDocumentLayout_PaintContext.java
 ./com/trolltech/qt/gui/QAbstractTextDocumentLayout_Selection.java
 ./com/trolltech/qt/gui/QAccessible.java
-./com/trolltech/qt/gui/QAccessible2.java
 ./com/trolltech/qt/gui/QAccessible2Interface.java
 ./com/trolltech/qt/gui/QAccessibleBridge.java
-./com/trolltech/qt/gui/QAccessibleEditableTextInterface.java
 ./com/trolltech/qt/gui/QAccessibleEvent.java
 ./com/trolltech/qt/gui/QAccessibleInterface.java
 ./com/trolltech/qt/gui/QAccessibleInterfaceEx.java
 ./com/trolltech/qt/gui/QAccessibleObject.java
 ./com/trolltech/qt/gui/QAccessibleObjectEx.java
-./com/trolltech/qt/gui/QAccessibleSimpleEditableTextInterface.java
-./com/trolltech/qt/gui/QAccessibleTextInterface.java
-./com/trolltech/qt/gui/QAccessibleValueInterface.java
+./com/trolltech/qt/gui/QAccessibleTableInterface.java
 ./com/trolltech/qt/gui/QAccessibleWidget.java
 ./com/trolltech/qt/gui/QAccessibleWidgetEx.java
 ./com/trolltech/qt/gui/QAction.java
@@ -223,6 +222,7 @@
 ./com/trolltech/qt/gui/QCommonStyle.java
 ./com/trolltech/qt/gui/QCompleter.java
 ./com/trolltech/qt/gui/QConicalGradient.java
+./com/trolltech/qt/gui/QContentsMargins.java
 ./com/trolltech/qt/gui/QContextMenuEvent.java
 ./com/trolltech/qt/gui/QCursor.java
 ./com/trolltech/qt/gui/QDataWidgetMapper.java
@@ -511,6 +511,7 @@
 ./com/trolltech/qt/network/QNetworkAddressEntry.java
 ./com/trolltech/qt/network/QNetworkInterface.java
 ./com/trolltech/qt/network/QNetworkProxy.java
+./com/trolltech/qt/network/QSsl.java
 ./com/trolltech/qt/network/QTcpServer.java
 ./com/trolltech/qt/network/QTcpSocket.java
 ./com/trolltech/qt/network/QUdpSocket.java
