@@ -3,7 +3,8 @@ exists(uic.pri) {
     # This part is included for the source package...
     include(uic.pri)
 } else {
-    include($(QTDIR)/src/tools/uic/uic.pri)
+    QT_SOURCE_TREE=$$fromfile($$(QTDIR)/.qmake.cache,QT_SOURCE_TREE)
+    include($$QT_SOURCE_TREE/src/tools/uic/uic.pri)
 }
 
 
