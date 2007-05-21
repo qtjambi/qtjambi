@@ -80,7 +80,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     
     /**
      * Returns a translated version of source, or source itself if there is no appropriate translated version.
-     * If %n accurs in the source text, it will be substituted with count.
+     * If %n occurs in the source text, it will be substituted with count.
      * The comment is used to help translators translate the source text.
      * 
      * @param source the source text to translate.
