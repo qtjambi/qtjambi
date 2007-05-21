@@ -3098,7 +3098,9 @@
     </modify-function>
   </object-type>
   <object-type name="QIconEngine"/>
-  <object-type name="QIconEngineV2"/>
+  <object-type name="QIconEngineV2">
+    <modify-function signature="virtual_hook(int,void*)" remove="all" />
+  </object-type>
   <object-type name="QImageIOHandlerFactoryInterface"/>
   <object-type name="QImageIOPlugin"/>
   <object-type name="QImageWriter">
@@ -6459,9 +6461,16 @@
     </modify-function>
   </object-type>
     
-  <object-type name="QToolBar">
-  
+  <object-type name="QToolBar">  
     <modify-function signature="addAction(QAction *)" remove="all" />
+    <modify-function signature="initStyleOption(QStyleOptionToolBar*)const">
+        <access modifier="private" />
+    </modify-function>
+    <inject-code>
+        <insert-template name="gui.init_style_option">
+            <replace from="%TYPE" to="QStyleOptionToolBar" />
+        </insert-template>
+    </inject-code>
   
     <modify-function signature="addAction(QIcon,QString,const QObject*,const char*)">
         <remove />

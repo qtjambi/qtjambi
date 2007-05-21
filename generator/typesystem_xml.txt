@@ -542,6 +542,8 @@
                 __rcDevice = null; // clear() call removes device from stream
             </inject-code>
         </modify-function>
+        <modify-function signature="QXmlStreamReader(const char*)" remove="all" />
+        <modify-function signature="addData(const char*)" remove="all" />
     </object-type>
     <object-type name="QXmlStreamWriter">
         <modify-function signature="QXmlStreamWriter(QString *)">
