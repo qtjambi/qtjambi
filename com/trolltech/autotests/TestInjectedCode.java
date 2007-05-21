@@ -715,10 +715,12 @@ public class TestInjectedCode extends QApplicationTest {
     @Test
     public void testQHttpRead() {
         QHttp http = new QHttp("www.trolltech.com");        
-        http.get("/index.html");
+        http.get("/");
         
         byte bytes[] = new byte[32];
-        while (http.bytesAvailable() < 32) QApplication.processEvents();
+        while (http.bytesAvailable() < 32) { 
+            QApplication.processEvents();
+        }
         
         http.read(bytes);
         
