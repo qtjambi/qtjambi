@@ -568,12 +568,18 @@ bool MetaJavaFunction::hasModifications(const MetaJavaClass *implementor) const
 
 QString MetaJavaFunction::modifiedName() const
 {
-    FunctionModificationList mods = modifications(implementingClass());
-    foreach (FunctionModification mod, mods) {
-        if (mod.isRenameModifier())
-            return mod.renamedToName;
+    if (m_cached_modified_name.isEmpty()) {
+        FunctionModificationList mods = modifications(implementingClass());
+        foreach (FunctionModification mod, mods) {
+            if (mod.isRenameModifier()) {
+                m_cached_modified_name = mod.renamedToName;
+                break;
+            }
+        }
+        if (m_cached_modified_name.isEmpty())
+            m_cached_modified_name = name();
     }
-    return name();
+    return m_cached_modified_name;
 }
 
 QString MetaJavaFunction::javaSignature(bool minimal) const

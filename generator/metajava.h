@@ -491,6 +491,7 @@ private:
     QString m_name;
     QString m_original_name;
     QString m_cached_minimal_signature;
+    mutable QString m_cached_modified_name;
 
     FunctionType m_function_type;
     MetaJavaType *m_type;
@@ -500,8 +501,8 @@ private:
     const MetaJavaClass *m_interface_class;
     QPropertySpec *m_property_spec;
     MetaJavaArgumentList m_arguments;
-    uint m_constant : 1;
-    uint m_invalid  : 1;
+    uint m_constant                 : 1;
+    uint m_invalid                  : 1;
 };
 
 
