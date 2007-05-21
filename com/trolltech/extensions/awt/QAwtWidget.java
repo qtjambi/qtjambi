@@ -1,4 +1,4 @@
-package com.trolltech.awt;
+package com.trolltech.extensions.awt;
 
 import java.awt.*;
 import java.awt.event.*;
