@@ -4,6 +4,7 @@
   <load-typesystem name="../generator/typesystem_gui.txt" generate="no" />
   <load-typesystem name="../generator/typesystem_sql.txt" generate="no" />
   <load-typesystem name="../generator/typesystem_xml.txt" generate="no" />
+  <load-typesystem name="../generator/typesystem_network.txt" generate="no" />
 
   <value-type name="Tulip">
     <include file-name="tulip.h" location="local"/>
@@ -174,4 +175,5 @@
     <include file-name="namespace.h" location="local"/>
   </value-type>
    
+  <object-type name="AbstractSocketSubclass" />
 </typesystem>

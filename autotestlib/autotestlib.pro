@@ -28,4 +28,4 @@ SOURCES += \
 	testdialog.cpp \
 
 
-QT += sql xml
+QT += sql xml network

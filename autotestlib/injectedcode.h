@@ -5,6 +5,7 @@
 #include <QtGui/QtGui>
 #include <QtSql/QtSql>
 #include <QtXml/QtXml>
+#include <QtNetwork/QtNetwork>
 
 class SpinBoxHandler
 {
@@ -330,6 +331,24 @@ public:
     static void callCellAtIndex(AccessibleTableInterfaceSubclass *obj, int index, int *row, int *col, int *rowSpan, int *columnSpan, bool *isSelected);
     static QList<int> callSelectedRows(AccessibleTableInterfaceSubclass *obj, int maxRows, QList<int> rows);
     static QList<int> callSelectedColumns(AccessibleTableInterfaceSubclass *obj, int maxColumns, QList<int> columns);
+};
+
+class AbstractSocketSubclass: public QAbstractSocket
+{
+    Q_OBJECT
+public:
+    AbstractSocketSubclass(QAbstractSocket::SocketType socketType, QObject *parent) : QAbstractSocket(socketType, parent) { }
+
+    void connectProxyAuthenticationRequired(QAbstractSocket *socket);
+    void emitProxyAuthenticationRequired(QAbstractSocket *socket, const QNetworkProxy &proxy, QAuthenticator *authenticator);
+
+    inline void emitSignalAccessor(const QNetworkProxy &proxy, QAuthenticator *authenticator)
+    {
+        proxyAuthenticationRequired(proxy, authenticator);
+    }
+
+private slots:
+    void aSlot(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 };
 
 #endif

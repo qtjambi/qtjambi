@@ -48,26 +48,35 @@
         <rename to="proxyAuthenticationRequiredPrivate" />
     </modify-function>  
     <inject-code>
-        public Signal2&lt;QNetworkProxy, QAuthenticator> proxyAuthenticationRequired;
-        {
-            proxyAuthenticationRequired = new Signal2&lt;QNetworkProxy, QAuthenticator>();
-            
-            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy,QAuthenticator)");
-            proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)");
-        }
+        public Signal2&lt;QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2&lt;QNetworkProxy, QAuthenticator>();
+        private boolean inEmission = false;
         
         @SuppressWarnings("unused")
         private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) 
         {
-            proxyAuthenticationRequiredPrivate.emit(proxy, authenticator.nativePointer());
+            if (!inEmission) {           
+                inEmission = true;
+                proxyAuthenticationRequiredPrivate.emit(proxy, authenticator.nativePointer());
+                inEmission = false;
+            }
         }
         
         @SuppressWarnings("unused")
         private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator) 
         {
-            proxyAuthenticationRequired.emit(proxy, QAuthenticator.fromNativePointer(authenticator));
+            if (!inEmission) {
+                inEmission = true;
+                proxyAuthenticationRequired.emit(proxy, QAuthenticator.fromNativePointer(authenticator));
+                inEmission = false;
+            }
         }
     </inject-code>
+    <modify-function signature="QAbstractSocket(QAbstractSocket::SocketType, QObject *)">
+        <inject-code class="java" position="end">
+            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+    </modify-function>
   </object-type>
   <object-type name="QFtp">
     <modify-function signature="read(char*,long long)">
@@ -129,11 +138,26 @@
     </inject-code>    
   </object-type>
   
-  <object-type name="QTcpSocket" />
+  <object-type name="QTcpSocket">
+    <modify-function signature="QTcpSocket(QObject *)">
+        <inject-code class="java" position="end">
+            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+	        AbstractSignal sig = (AbstractSignal) QtJambiInternal.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");	
+            sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+    </modify-function>  
+  </object-type>
   <object-type name="QUdpSocket">  
     <extra-includes>
         <include file-name="com.trolltech.qt.QNativePointer" location="java" />
     </extra-includes>        
+    <modify-function signature="QUdpSocket(QObject *)">
+        <inject-code class="java" position="end">
+            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+	        AbstractSignal sig = (AbstractSignal) QtJambiInternal.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");	
+            sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+    </modify-function>      
     <modify-function signature="readDatagram(char*,long long,QHostAddress*,unsigned short*)">
         <access modifier="private" />
     </modify-function>
