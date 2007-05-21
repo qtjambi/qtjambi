@@ -52,6 +52,6 @@ inline NameSpace::ValueA NameSpace::ObjectA::vFunc(const NameSpace::ValueA &a) {
 inline NameSpace::ObjectA *NameSpace::ObjectA::aFuncPrefixed(NameSpace::ObjectA *a) { return a; }
 inline NameSpace::ObjectB *NameSpace::ObjectA::bFuncPrefixed(NameSpace::ObjectB *b) { return b; }
 inline NameSpace::ValueA NameSpace::ObjectA::vFuncPrefixed(const NameSpace::ValueA &a) { return a; }
-#endif QT_JAMBI_RUN
+#endif // QT_JAMBI_RUN
 
 #endif // NAMESPACE_H
