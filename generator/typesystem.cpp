@@ -266,6 +266,8 @@ bool Handler::endElement(const QString &, const QString &, const QString &)
             current->parent->value.customFunction->addTemplateInstance(current->value.templateInstance);
         }else if(current->parent->type == StackElement::ConversionRule){
             m_function_mods.last().argument_mods.last().conversion_rules.last().addTemplateInstance(current->value.templateInstance);
+        }else if(current->parent->type == StackElement::InjectCodeInFunction){
+            m_function_mods.last().snips.last().addTemplateInstance(current->value.templateInstance);
         }
         break;
     default:
@@ -901,7 +903,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     modifier = "rename";
                     QString renamed_to = attributes["to"];
                     if (renamed_to.isEmpty()) {
-                        m_error = "Rename modifier requires 'renamed-to' attribute";
+                        m_error = "Rename modifier requires 'to' attribute";
                         return false;
                     }
 
