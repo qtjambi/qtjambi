@@ -549,6 +549,24 @@
         <modify-function signature="QXmlStreamWriter(QString *)">
             <remove />
         </modify-function>
+        <modify-function signature="QXmlStreamWriter(QByteArray *)">
+            <access modifier="private" />
+        </modify-function>
+        <inject-code>
+            public QXmlStreamWriter(com.trolltech.qt.core.QByteArray array) {
+                this(array.nativePointer());
+                __rcDevice = array;
+            }
+        </inject-code>        
+        <modify-function signature="setCodec(const char *)">
+            <access modifier="private" />
+        </modify-function>
+        <inject-code>
+            public final void setCodec(String codecName) {
+                setCodec(QNativePointer.createCharPointer(codecName));
+                __rcCodec = null;                
+            }
+        </inject-code>
         <modify-function signature="setCodec(QTextCodec*)">
             <modify-argument index="1">
                 <reference-count action="set" variable-name="__rcCodec" />
