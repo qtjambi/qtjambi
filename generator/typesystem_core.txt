@@ -2013,6 +2013,9 @@
     </modify-function>
     <modify-function signature="startDetached(QString,QStringList&lt;QString>,QString,long long*)">
         <access modifier="private" />
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
     </modify-function>
     <inject-code>
         public static class DetachedProcessInfo {
@@ -2025,10 +2028,10 @@
             public long pid;
         }
         
-        public final DetachedProcessInfo startDetached(String program, List&lt;String> arguments, String workingDirectory) {
+        public final DetachedProcessInfo startDetached(String program, java.util.List&lt;String> arguments, String workingDirectory) {
             QNativePointer pid = new QNativePointer(QNativePointer.Type.Long);
             boolean success = startDetached(program, arguments, workingDirectory, pid);
-            return new DetachedProcessInfo(success, pid);
+            return new DetachedProcessInfo(success, pid.longValue());
         }
     </inject-code>
   </object-type>
