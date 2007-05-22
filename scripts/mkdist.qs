@@ -25,10 +25,8 @@ command.chmod = find_executable("chmod");
 command.cp = find_executable("cp");
 command.jar = find_executable("jar");
 command.javac = find_executable("javac");
-command.make = make_from_qmakespec();
 command.mv = find_executable("mv");
 command.p4 = find_executable("p4");
-command.qmake = find_executable("qmake");
 command.rm = find_executable("rm");
 command.tar = find_executable("tar");
 command.zip = find_executable("zip");
@@ -72,11 +70,6 @@ if (option.binaryPackages) {
     if (!option.qtCommercialLocation) {
         verbose("no --qt-commercial specified, using QTDIR at: " + option.qtdir);
         option.qtCommercialLocation = option.qtdir;
-    }
-
-    if (!option.qtGPLLocation) {
-        verbose("no --qt-gpl specified, using QTDIR at: " + option.qtdir);
-        option.qtGPLLocation = option.qtdir;
     }
 
     if (!option.qtCommercialLocation)
@@ -173,6 +166,8 @@ function setupDefaultPackage() {
     ];
 
     pkg.version = version;
+    pkg.make = make_from_qmakespec();
+    pkg.qmakespec = System.getenv("QMAKESPEC");
 
     return pkg;
 }
@@ -187,6 +182,7 @@ function setupDefaultPackage() {
  */
 function finalizeDefaultPackage(pkg) {
     pkg.name = packageName(pkg);
+    pkg.qmake = pkg.qt + "/bin/qmake";
 }
 
 
@@ -197,6 +193,9 @@ function finalizeDefaultPackage(pkg) {
  */
 function setupBinaryPackage(pkg) {
     pkg.binary = true;
+    pkg.maketool = make_from_qmakespec();
+    pkg.preCompileStep = function(pkg) { }
+    pkg.postCompileStep = function(pkg) { }
 
     pkg.removeDirs.push(
                    "com/trolltech/qt",
@@ -459,11 +458,40 @@ function setupGPLBinaryPackage() {
     pkg.qt = option.qtGPLLocation;
     setupBinaryPackage(pkg);
     setupGPLPackage(pkg);
+
+    pkg.maketool = find_executable("mingw32-make");
+    pkg.qmakespec = "win32-g++";
+    pkg.originalPath = System.getenv("PATH");
+
+    pkg.preCompileStep = function(pkg) {
+        setPathForMinGW(pkg);
+    }
+
+    pkg.postCompileStep = function(pkg) {
+        if (os_name() == OS_NAME_WINDOWS) {
+            System.setenv("PATH", pkg.originalPath);
+        }
+    }
+
     finalizeDefaultPackage(pkg);
     return pkg;
 }
 
 
+function setPathForMinGW(pkg) {
+    // setup mingw for compilation...
+    if (os_name() == OS_NAME_WINDOWS) {
+        // remove cygwin from path...
+        var path = pkg.originalPath.split(";");
+        var newPath = [pkg.qt + "/bin"];
+        for (var i=0; i<path.length; ++i) {
+            if (path[i].find("cygwin") < 0) {
+                newPath.push(path[i]);
+            }
+        }
+        System.setenv("PATH", newPath.join(";"));
+    }
+}
 
 
 
@@ -513,26 +541,31 @@ function createPackage(pkg) {
     dir.setCurrent();
 
     if (pkg.binary) {
+        verbose(" - pre compile step...");
+        pkg.preCompileStep(pkg);
+
         verbose(" - compiling and running generator...");
-        compileAndRunGenerator();
+        compileAndRunGenerator(pkg);
 
         verbose(" - compiling native libraries...");
-        compileNativeLibraries();
+        compileNativeLibraries(pkg);
 
         verbose(" - compiling java files...");
-        compileJavaFiles();
+        compileJavaFiles(pkg);
 
         verbose(" - creating qtjambi.jar");
-        createJarFile();
+        createJarFile(pkg);
 
         verbose(" - documentation...");
-        createDocs();
-
+        createDocs(pkg);
 
         if (os_name() == OS_NAME_MACOSX) {
             verbose(" - OSX install_name foo...");
             fixInstallName();
         }
+
+        verbose(" - post compile step...");
+        pkg.postCompileStep(pkg);
     }
 
     verbose(" - moving files around...");
@@ -621,16 +654,19 @@ function findGeneratorName() {
 /*******************************************************************************
  * Compiles and runs the generator
  */
-function compileAndRunGenerator() {
+function compileAndRunGenerator(pkg) {
     var dir = new Dir(javaDir);
     dir.cd("generator");
     dir.setCurrent();
 
+    System.setenv("QTDIR", pkg.qt);
+
     verbose("   - running qmake");
-    execute(command.qmake + " -config release");
+    execute([pkg.qmake, "-spec", pkg.qmakespec, "-config", "release"]);
 
     verbose("   - building");
-    execute([command.make]);
+    var make = [pkg.maketool];
+    execute(make);
 
     verbose("   - running");
     execute([command.generator, "--jdoc-enabled", "--jdoc-dir", "../doc/jdoc"]);
@@ -662,12 +698,13 @@ function compileJavaFiles() {
 /*******************************************************************************
  * Compiles the native libraries
  */
-function compileNativeLibraries() {
+function compileNativeLibraries(pkg) {
     verbose("   - running qmake");
-    execute([command.qmake, "-r", "CONFIG+=release", "-after", "CONFIG-=debug debug_and_release"]);
+    execute([pkg.qmake, "-spec", pkg.qmakespec, "-r", "CONFIG+=release", "-after", "CONFIG-=debug debug_and_release"]);
 
     verbose("   - running make");
-    execute([command.make]);
+    var make = [pkg.maketool];
+    execute(make);
 }
 
 
@@ -801,8 +838,8 @@ function moveFiles(pkg) {
                  || source.endsWith(".h")) {
             execute([command.chmod, "u+rw", source]);
         }
+        execute([command.cp, "-R", source, target]);
 
-        execute([command.cp, source, target]);
     }
 }
 
