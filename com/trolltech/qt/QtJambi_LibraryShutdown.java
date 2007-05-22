@@ -10,7 +10,7 @@ public class QtJambi_LibraryShutdown implements Runnable {
             Thread appThread = app.thread();
             QCoreApplication.quit();
             try {
-                appThread.join();
+                appThread.join(10000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
