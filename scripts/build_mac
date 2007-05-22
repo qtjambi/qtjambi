@@ -1,3 +1,2 @@
 #!/bin/sh
-~/depot/private/gunnar/qsengine_mac ~/depot/private/gunnar/utils.qs mkdist.qs -args --verbose --no-source-packages
-
+~/depot/private/gunnar/qsengine_mac ~/depot/private/gunnar/utils.qs mkdist.qs -args --verbose --no-source --no-eval --qt-commercial $QTDIR --qt-gpl $QTDIR

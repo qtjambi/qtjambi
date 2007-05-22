@@ -92,6 +92,9 @@ if (option.evalPackages) {
     packages.push(setupEvalPackages());
 }
 
+createPlatformJar(packages[0]);
+
+if (false)
 for (var i=0; i<packages.length; ++i)
     createPackage(packages[i]);
 
@@ -262,7 +265,7 @@ function setupBinaryPackage(pkg) {
                             "QtSvg",
                             "QtXml"
     ];
-    const qtBinaryNames = ["designer", "linguist", "lrelease", "lupdate"];
+    const qtBinaryNames = ["assistant", "designer", "linguist", "lrelease", "lupdate"];
 
     var isWindows = os_name() == OS_NAME_WINDOWS;
 
@@ -754,11 +757,6 @@ function expandMacros(header) {
 }
 
 
-/*******************************************************************************
- * Copies the Qt libraries into the bin/libs directories according to platform
- */
-function copyQtBinaries() {
-}
 
 
 /*******************************************************************************
@@ -821,7 +819,7 @@ function moveFiles(pkg) {
 
     var dir = new Dir(javaDir);
     dir.setCurrent();
-
+ 
     for (var i=0; i<pkg.mkdirs.length; ++i) {
         new Dir(pkg.mkdirs[i]).mkdirs();
     }
@@ -848,8 +846,8 @@ function moveFiles(pkg) {
 
 	try {
 	    new Dir(source).setCurrent(); // check if its a directory?
-	    execute([command.cp, "-R", source, target]);
-	    dir.setCurrent();
+	    dir.setCurrent(); // and set it back...
+	    execute([command.cp, "-R", source, javaDir + "/" + target]);
 	} catch (e) {
 	    execute([command.cp, source, target]); // straight copy as -R only does symbolic links...
 	}
@@ -908,6 +906,8 @@ function createPlatformJar(pkg) {
     // plugins...
     execute([command.jar, "-cf", name, "plugins"]);
 
+    var re_numeric = /\.\d\.jnilib/;
+
     // libraries...
     for_all_files(libDir, function(f) {
         if (f.endsWith(".dll")
@@ -919,6 +919,13 @@ function createPlatformJar(pkg) {
 		&& (f.indexOf("libqtjambi") >= 0 || f.indexOf("libcom_trolltech") >= 0)
 		&& !f.endsWith(".so"))
 		return;
+
+	    // Avoid symlinks on macosx...
+	    if (os_name() == OS_NAME_MACOSX
+                && f.indexOf("lib") >= 0
+                && re_numeric.search(f) >= 0)
+		return;
+
 	    // Skip util libs...
 	    if (f.indexOf("Assistant") >= 0
 		|| f.indexOf("Designer") >= 0
