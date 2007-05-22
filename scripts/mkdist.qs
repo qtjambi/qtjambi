@@ -291,7 +291,7 @@ function setupBinaryPackage(pkg) {
         if (!File.exists(libName))
             throw "Library '%1' does not exist".arg(libName);
 
-        pkg.copyFiles.push([libName, "lib"]);
+        pkg.copyFiles.push([libName, location]);
     }
 
     for (var i=0; i<qtBinaryNames.length; ++i) {
