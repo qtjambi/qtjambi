@@ -459,18 +459,20 @@ function setupGPLBinaryPackage() {
     setupBinaryPackage(pkg);
     setupGPLPackage(pkg);
 
-    pkg.maketool = find_executable("mingw32-make");
-    pkg.qmakespec = "win32-g++";
-    pkg.originalPath = System.getenv("PATH");
+    if (os_name() == OS_NAME_WINDOWS) {
+	pkg.maketool = find_executable("mingw32-make");
+	pkg.qmakespec = "win32-g++";
+	pkg.originalPath = System.getenv("PATH");
 
-    pkg.preCompileStep = function(pkg) {
-        setPathForMinGW(pkg);
-    }
+	pkg.preCompileStep = function(pkg) {
+	    setPathForMinGW(pkg);
+	}
 
-    pkg.postCompileStep = function(pkg) {
-        if (os_name() == OS_NAME_WINDOWS) {
-            System.setenv("PATH", pkg.originalPath);
-        }
+	pkg.postCompileStep = function(pkg) {
+	    if (os_name() == OS_NAME_WINDOWS) {
+		System.setenv("PATH", pkg.originalPath);
+	    }
+	}
     }
 
     finalizeDefaultPackage(pkg);
@@ -817,7 +819,8 @@ function createDocs() {
  */
 function moveFiles(pkg) {
 
-    new Dir(javaDir).setCurrent();
+    var dir = new Dir(javaDir);
+    dir.setCurrent();
 
     for (var i=0; i<pkg.mkdirs.length; ++i) {
         new Dir(pkg.mkdirs[i]).mkdirs();
@@ -842,7 +845,14 @@ function moveFiles(pkg) {
                  || source.endsWith(".h")) {
             execute([command.chmod, "u+rw", source]);
         }
-        execute([command.cp, "-R", source, target]);
+
+	try {
+	    new Dir(source).setCurrent(); // check if its a directory?
+	    execute([command.cp, "-R", source, target]);
+	    dir.setCurrent();
+	} catch (e) {
+	    execute([command.cp, source, target]); // straight copy as -R only does symbolic links...
+	}
 
     }
 }
@@ -890,10 +900,7 @@ function createPlatformJar(pkg) {
     var dir = new Dir(javaDir);
     dir.setCurrent();
 
-    execute("pwd");
-    print(Process.stdout);
-
-    var name = option.startDir + "/qtjambi-" + pkg.packageName + ".jar";
+    var name = option.startDir + "/" + pkg.name + ".jar";
 
     var libDir = os_name() == OS_NAME_WINDOWS ? "bin" : "lib";
     var postfix;
@@ -904,11 +911,21 @@ function createPlatformJar(pkg) {
     // libraries...
     for_all_files(libDir, function(f) {
         if (f.endsWith(".dll")
-            || f.endsWith(".so")
-            || f.endsWith(".dylib") || f.endsWith(".jnilib")) {
+            || f.indexOf(".so") >= 0
+            || f.indexOf(".dylib") >=0 || f.endsWith(".jnilib") >= 0) {
 
-            print([command.jar, "-uf", name, "-C", "bin", f.split("/").pop()].join(" "));
-            execute([command.jar, "-uf", name, "-C", "bin", f.split("/").pop()]);
+	    // Avoid symlinks on linux...
+	    if (os_name() == OS_NAME_LINUX 
+		&& (f.indexOf("libqtjambi") >= 0 || f.indexOf("libcom_trolltech") >= 0)
+		&& !f.endsWith(".so"))
+		return;
+	    // Skip util libs...
+	    if (f.indexOf("Assistant") >= 0
+		|| f.indexOf("Designer") >= 0
+		|| f.indexOf("Script") >= 0)
+		return;
+	    verbose("   - adding: " + f.split("/").pop());
+            execute([command.jar, "-uf", name, "-C", libDir, f.split("/").pop()]);
         }
         });
 
@@ -929,6 +946,7 @@ function createPlatformJar(pkg) {
         }
         file.close();
         execute([command.jar, "-uf", name, "qt_system_libs"]);
+	File.remove("qt_system_libs");
     }
 }
 
