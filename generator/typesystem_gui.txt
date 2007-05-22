@@ -2247,7 +2247,7 @@
     </inject-code>        
   </value-type>
 
-  <value-type name="QGradient" polymorphic-base="yes" 
+  <value-type name="QGradient" force-abstract="yes" polymorphic-base="yes" 
               polymorphic-id-expression="%1-&gt;type() == QGradient::NoGradient">
     <custom-constructor>
     Q_UNUSED(copy)

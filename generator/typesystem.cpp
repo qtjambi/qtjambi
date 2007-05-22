@@ -359,10 +359,12 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["extensible"] = "no";
 
             break;
-
-        case StackElement::InterfaceTypeEntry:
+        
         case StackElement::ObjectTypeEntry:
         case StackElement::ValueTypeEntry:
+            attributes["force-abstract"] = QString("no");
+            // fall throooough
+        case StackElement::InterfaceTypeEntry:
             attributes["default-superclass"] = m_defaultSuperclass;
             attributes["polymorphic-base"] = QString("no");
             attributes["polymorphic-id-expression"] = QString();
@@ -519,6 +521,11 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 ctype->setIsPolymorphicBase(polymorphic);
                 ctype->setPolymorphicIdValue(attributes["polymorphic-id-expression"]);
+
+                if (element->type == StackElement::ObjectTypeEntry || element->type == StackElement::ValueTypeEntry) {
+                    if (attributes["force-abstract"] == "yes")
+                        ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::ForceAbstract);
+                }
 
                 // ctype->setInclude(Include(Include::IncludePath, ctype->name()));
                 ctype = ctype->designatedInterface();

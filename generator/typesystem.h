@@ -661,11 +661,17 @@ private:
 class ComplexTypeEntry : public TypeEntry
 {
 public:
+    enum TypeFlag {
+        ForceAbstract = 0x1
+    };
+    typedef QFlags<TypeFlag> TypeFlags;
+
     ComplexTypeEntry(const QString &name, Type t)
         : TypeEntry(QString(name).replace("::", "_"), t),
           m_qualified_cpp_name(name),
           m_qobject(false),
-          m_polymorphic_base(false)
+          m_polymorphic_base(false),
+          m_type_flags(0)
     {
         Include inc;
         inc.name = "QVariant";
@@ -716,6 +722,16 @@ public:
 
     Include include() const { return m_include; }
     void setInclude(const Include &inc) { m_include = inc; }
+
+    void setTypeFlags(TypeFlags flags) 
+    {
+        m_type_flags = flags;
+    }
+
+    TypeFlags typeFlags() const
+    {
+        return m_type_flags;
+    }
 
     CodeSnipList codeSnips() const { return m_code_snips; }
     void setCodeSnips(const CodeSnipList &codeSnips) { m_code_snips = codeSnips; }
@@ -783,6 +799,7 @@ private:
     QString m_polymorphic_id_value;
     QString m_lookup_name;
     ExpensePolicy m_expense_policy;
+    TypeFlags m_type_flags;
 };
 
 

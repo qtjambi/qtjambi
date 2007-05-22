@@ -557,13 +557,19 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
             } else if (!type->hasNativeId()) {
                 s << arg->argumentName();
             } else {
-                s << arg->argumentName() << " == null ? ";
-                // Try to call default constructor for value types...
-                if (type->isValue() && hasDefaultConstructor(type))
-                    s << "(" << arg->argumentName() << " = new " << type->typeEntry()->qualifiedJavaName() << "()).nativeId()";
-                else
-                    s << "0";
-                s << " : " << arg->argumentName() << ".nativeId()";
+                bool force_abstract = type->typeEntry()->isComplex() && (((static_cast<const ComplexTypeEntry *>(type->typeEntry()))->typeFlags() & ComplexTypeEntry::ForceAbstract) != 0);
+                if (!force_abstract) {
+                    s << arg->argumentName() << " == null ? ";
+                    // Try to call default constructor for value types...
+                    if (type->isValue() && hasDefaultConstructor(type))
+                        s << "(" << arg->argumentName() << " = new " << type->typeEntry()->qualifiedJavaName() << "()).nativeId()";
+                    else
+                        s << "0";
+
+                    s << " : ";
+                } // else if (value type is abstract) then we will get a null pointer exception, which is all right
+
+                s << arg->argumentName() << ".nativeId()";
             }
         }
     }
@@ -1263,14 +1269,15 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             s << "public ";
         // else friendly
 
-        if (java_class->isFinal())
+        bool force_abstract = (java_class->typeEntry()->typeFlags() & ComplexTypeEntry::ForceAbstract) != 0;
+        if (java_class->isFinal() && !force_abstract)
             s << "final ";
 
 
         if (java_class->isNamespace()) {
             s << "interface ";
         } else {
-            if (java_class->isAbstract())
+            if (java_class->isAbstract() || force_abstract)
                 s << "abstract ";
             s << "class ";
         }
