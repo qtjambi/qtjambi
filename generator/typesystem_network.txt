@@ -87,6 +87,81 @@
     </inject-code>
   </object-type>
   <object-type name="QHttp">
+    <modify-function signature="proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)">
+        <access modifier="private" />
+        <rename to="proxyAuthenticationRequiredPrivate" />
+    </modify-function>  
+    <inject-code>
+        public Signal2&lt;QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2&lt;QNetworkProxy, QAuthenticator>();        
+        private boolean inEmission = false;
+        
+        @SuppressWarnings("unused")
+        private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) 
+        {
+            if (!inEmission) {           
+                inEmission = true;
+                proxyAuthenticationRequiredPrivate.emit(proxy, authenticator.nativePointer());
+                inEmission = false;
+            }
+        }
+        
+        @SuppressWarnings("unused")
+        private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator) 
+        {
+            if (!inEmission) {
+                inEmission = true;
+                proxyAuthenticationRequired.emit(proxy, QAuthenticator.fromNativePointer(authenticator));
+                inEmission = false;
+            }
+        }
+    </inject-code>
+    <modify-function signature="authenticationRequired(QString,unsigned short,QAuthenticator*)">
+        <access modifier="private" />
+        <rename to="authenticationRequiredPrivate" />
+    </modify-function>
+    <inject-code>
+        public Signal3&lt;String, Character, QAuthenticator> authenticationRequired = new Signal3&lt;String, Character, QAuthenticator>();
+        private boolean inEmissionAuthenticationRequired = false;
+        
+        @SuppressWarnings("unused")
+        private void emitAuthenticationRequiredPrivate(String hostName, char port, QAuthenticator authenticator) {
+            if (!inEmissionAuthenticationRequired) {
+                inEmissionAuthenticationRequired = true;
+                authenticationRequiredPrivate.emit(hostName, port, authenticator.nativePointer());
+                inEmissionAuthenticationRequired = false;
+            }                        
+        }
+        
+        @SuppressWarnings("unused")
+        private void emitAuthenticationRequired(String hostName, char port, QNativePointer authenticator) {
+            if (!inEmissionAuthenticationRequired) {
+                inEmissionAuthenticationRequired = true;
+                authenticationRequired.emit(hostName, port, QAuthenticator.fromNativePointer(authenticator));
+                inEmissionAuthenticationRequired = false;
+            }
+        }
+    </inject-code>        
+    <template name="QHttp.constructor.injection">
+        proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        authenticationRequired.connect(this, "emitAuthenticationRequiredPrivate(String, char, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, char, QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+    </template>        
+    <modify-function signature="QHttp(QObject *)">
+        <inject-code class="java" position="end">
+            <insert-template name="QHttp.constructor.injection" />
+        </inject-code>
+    </modify-function>  
+    <modify-function signature="QHttp(const QString &amp;, unsigned short, QObject *)">
+        <inject-code class="java" position="end">
+            <insert-template name="QHttp.constructor.injection" />
+        </inject-code>
+    </modify-function>
+    <modify-function signature="QHttp(const QString &amp;, QHttp::ConnectionMode, unsigned short, QObject *)">
+        <inject-code class="java" position="end">
+            <insert-template name="QHttp.constructor.injection" />
+        </inject-code>
+    </modify-function>        
     <modify-function signature="read(char*,long long)">
         <access modifier="private" />
     </modify-function>  
