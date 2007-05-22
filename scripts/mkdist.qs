@@ -20,6 +20,7 @@ option.evalPackages = !array_contains(args, "--no-eval");
 option.qtEvalLocation = array_get_next_value(args, "--qt-eval");
 option.qtCommercialLocation = array_get_next_value(args, "--qt-commercial");
 option.qtGPLLocation = array_get_next_value(args, "--qt-gpl");
+option.platformJar = !array_contains(args, "--no-platform-jar");
 
 command.chmod = find_executable("chmod");
 command.cp = find_executable("cp");
@@ -90,7 +91,6 @@ if (option.evalPackages) {
     verbose(" - evaluation");
     packages.push(setupEvalPackages());
 }
-
 
 for (var i=0; i<packages.length; ++i)
     createPackage(packages[i]);
@@ -577,6 +577,10 @@ function createPackage(pkg) {
     verbose(" - expanding macroes...");
     expandMacros(pkg.licenseHeader);
 
+    if (pkg.binary && option.platformJar) {
+        verbose(" - creating platform .jar...");
+        createPlatformJar(pkg);
+    }
 
     verbose(" - bundling package...");
     createBundle(pkg);
@@ -875,6 +879,57 @@ function removeFiles(pkg) {
     });
     for (var i=0; i<files.length; ++i)
         execute([command.rm, files[i]]);
+}
+
+/*******************************************************************************
+ *
+ * Creates the platform bundle...
+ *
+ */
+function createPlatformJar(pkg) {
+    var dir = new Dir(javaDir);
+    dir.setCurrent();
+
+    execute("pwd");
+    print(Process.stdout);
+
+    var name = option.startDir + "/qtjambi-" + pkg.packageName + ".jar";
+
+    var libDir = os_name() == OS_NAME_WINDOWS ? "bin" : "lib";
+    var postfix;
+
+    // plugins...
+    execute([command.jar, "-cf", name, "plugins"]);
+
+    // libraries...
+    for_all_files(libDir, function(f) {
+        if (f.endsWith(".dll")
+            || f.endsWith(".so")
+            || f.endsWith(".dylib") || f.endsWith(".jnilib")) {
+
+            print([command.jar, "-uf", name, "-C", "bin", f.split("/").pop()].join(" "));
+            execute([command.jar, "-uf", name, "-C", "bin", f.split("/").pop()]);
+        }
+        });
+
+    // qt_system_libs file...
+    if (os_name() != OS_NAME_MACOSX) {
+        var file = new File("qt_system_libs");
+        file.open(File.WriteOnly);
+        if (os_name() == OS_NAME_WINDOWS) {
+            if (pkg.packageName == "win32") {
+                file.writeLine("msvcr71.dll");
+                file.writeLine("msvcp71.dll");
+            } else {
+                file.writeLine("msvcr80.dll");
+                file.writeLine("msvcp80.dll");
+            }
+        } else if (os_name() == OS_NAME_LINUX) {
+            file.writeLine("libstdc++.so.5");
+        }
+        file.close();
+        execute([command.jar, "-uf", name, "qt_system_libs"]);
+    }
 }
 
 
