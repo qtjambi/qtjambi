@@ -2028,7 +2028,7 @@
             public long pid;
         }
         
-        public final DetachedProcessInfo startDetached(String program, java.util.List&lt;String> arguments, String workingDirectory) {
+        public static DetachedProcessInfo startDetached(String program, java.util.List&lt;String> arguments, String workingDirectory) {
             QNativePointer pid = new QNativePointer(QNativePointer.Type.Long);
             boolean success = startDetached(program, arguments, workingDirectory, pid);
             return new DetachedProcessInfo(success, pid.longValue());
