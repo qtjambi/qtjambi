@@ -173,6 +173,7 @@
             <reference-count action="set" variable-name="__rcSocket" />
         </modify-argument>
     </modify-function>
+    <modify-function signature="closeConnection()" remove="all"/>
   </object-type>
   <object-type name="QTcpServer">
     <extra-includes>
