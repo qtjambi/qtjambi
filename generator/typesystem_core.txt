@@ -339,7 +339,10 @@
   <enum-type name="QDataStream::Status"/>
   <enum-type name="QDir::Filter" flags="QDir::Filters"/>
   <enum-type name="QDirModel::Roles"/>
-  <enum-type name="QEvent::Type" extensible="yes"/>
+  <enum-type name="QEvent::Type" extensible="yes">
+    <reject-enum-value name="ApplicationActivated"/>
+    <reject-enum-value name="ApplicationDeactivated"/>
+  </enum-type>
   <enum-type name="QEventLoop::ProcessEventsFlag" flags="QEventLoop::ProcessEventsFlags"/>
   <enum-type name="QFile::FileError"/>
   <enum-type name="QFile::Permission" flags="QFile::Permissions"/>
