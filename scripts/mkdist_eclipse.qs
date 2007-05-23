@@ -1,9 +1,9 @@
 
 // *** Constants
-const version           = "0.0.6";
+const version           = "1.0.0";
 const depotVersion      = "main";
-const jambiVersion      = "1.0.0-beta2";
-const eclipseBranch     = "stable";
+const jambiVersion      = "4.3.0_01";
+const eclipseBranch     = "main";
 const packageDir        = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/tmp"
                             : "/home/qt/package-builder/tmp";
@@ -82,8 +82,7 @@ function prepareSourceTree() {
 
     verbose(" - sync'ing source tree");
     execute([command.p4, "sync", "-f",
-             "//depot/qtjambi/" + depotVersion + "/...",
-             "//depot/eclipse/..."]);
+             "..."]);
 
     execute([command.chmod, "-R", "u+w", "."]);
 }
