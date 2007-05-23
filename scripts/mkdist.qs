@@ -76,6 +76,9 @@ if (option.binaryPackages) {
     if (!option.qtCommercialLocation)
         throw "missing '--qt-commercial [location]' for location of binaries";
 
+    if (!option.qtGPLLocation)
+        throw "missing '--qt-gpl [location' for location of binaries";
+
     verbose(" - gpl binary");
     packages.push(setupGPLBinaryPackage());
 
@@ -185,7 +188,8 @@ function setupDefaultPackage() {
  */
 function finalizeDefaultPackage(pkg) {
     pkg.name = packageName(pkg);
-    pkg.qmake = pkg.qt + "/bin/qmake";
+    if (pkg.binary)
+        pkg.qmake = pkg.qt + "/bin/qmake";
 }
 
 
@@ -531,11 +535,12 @@ function setupCommercialBinaryPackage() {
 function setupEvalPackages() {
     var pkg = setupDefaultPackage();
     pkg.qt = option.qtEvalLocation;
+    pkg.license = "eval";
+    pkg.licenseHeader = File.read(option.startDir + "/../dist/eval_header.txt");
     setupBinaryPackage(pkg);
     finalizeDefaultPackage(pkg);
     return pkg;
 }
-
 
 function createPackage(pkg) {
 
@@ -915,7 +920,7 @@ function createPlatformJar(pkg) {
             || f.indexOf(".dylib") >=0 || f.endsWith(".jnilib") >= 0) {
 
 	    // Avoid symlinks on linux...
-	    if (os_name() == OS_NAME_LINUX 
+	    if (os_name() == OS_NAME_LINUX
 		&& (f.indexOf("libqtjambi") >= 0 || f.indexOf("libcom_trolltech") >= 0)
 		&& !f.endsWith(".so"))
 		return;
@@ -1032,16 +1037,10 @@ function figureVersion() {
 
 function packageName(pkg) {
     var name = "qtjambi";
-
-    if (pkg.binary)
-        name += "-" + pkg.packageName;
-
+    if (pkg.binary) name += "-" + pkg.packageName;
     name += "-" + pkg.license;
+    if (!pkg.binary) name += "-src";
     name += "-" + pkg.version;
-
-    if (!pkg.binary)
-        name += "-src";
-
     return name;
 }
 
