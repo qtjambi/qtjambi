@@ -65,7 +65,7 @@
             if (%2 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>      
-     
+    <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
   </object-type>
   
   <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
