@@ -7,6 +7,15 @@ import java.util.jar.*;
 
 public class Utilities {
 
+	public static final int MAJOR_VERSION = 4;
+    public static final int MINOR_VERSION = 3;
+    public static final int PATCH_VERSION = 0;
+
+    public static final int BUILD_NUMBER = 1;
+
+    public static final String VERSION_STRING = String.format("%1$d.%2$d.%3$d_%4$02d",
+            MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION, BUILD_NUMBER);
+    
     public enum OperatingSystem {
         Windows,
         MacOSX,
@@ -186,7 +195,7 @@ public class Utilities {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         String user = System.getProperty("user.name");
         String arch = System.getProperty("os.arch");
-        return new File(tmpDir, "QtJambi_" + user + "_" + arch + "_" + QtJambi.VERSION_STRING);
+        return new File(tmpDir, "QtJambi_" + user + "_" + arch + "_" + VERSION_STRING);
     }
 
     public static void copy(URL sourceUrl, String destination) throws IOException {

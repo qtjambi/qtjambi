@@ -89,7 +89,6 @@
 ./com/trolltech/qt/QtBlockedSlot.java
 ./com/trolltech/qt/QtEnumerator.java
 ./com/trolltech/qt/QtInfo.java
-./com/trolltech/qt/QtJambi.java
 ./com/trolltech/qt/QtJambiGeneratedClass.java
 ./com/trolltech/qt/QtJambiGuiInternal.java
 ./com/trolltech/qt/QtJambiInterface.java
