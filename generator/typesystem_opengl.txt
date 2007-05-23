@@ -48,6 +48,7 @@
     <modify-function signature="setDevice(QPaintDevice*)">
         <remove />
     </modify-function>
+    <modify-function signature="generateFontDisplayLists(QFont, int)" remove="all"/>
   </object-type>
   <object-type name="QGLFramebufferObject"/>
   <object-type name="QGLPixelBuffer">
@@ -63,6 +64,8 @@
     <modify-function signature="setContext(QGLContext*,const QGLContext*,bool)">
         <remove /> <!--- Obsolete -->
     </modify-function>
+    <modify-function signature="fontDisplayListBase(QFont, int)" remove="all"/>
+    <modify-function signature="setFormat(QGLFormat)" remove="all"/>
   </object-type>  
  
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QGLColormap::QGLColormapData\*'" />
