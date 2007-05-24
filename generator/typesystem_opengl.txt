@@ -12,7 +12,7 @@
   
   <enum-type name="QGL::FormatOption" flags="QGL::FormatOptions"/>
   <enum-type name="QGLFormat::OpenGLVersionFlag" flags="QGLFormat::OpenGLVersionFlags"/>
-  <enum-type name="QGLFramebufferObject::Attachments" />
+  <enum-type name="QGLFramebufferObject::Attachment" />
 
   <namespace-type name="QGL">
      <include file-name="qgl.h" location="global"/>

@@ -27,8 +27,9 @@
   <enum-type name="QHostInfo::HostInfoError" />    
   <enum-type name="QSsl::KeyType" />
   <enum-type name="QSsl::EncodingFormat" />
-  <enum-type name="QSsl::Algorithm"/>
-  <enum-type name="QSsl::AlternateNameEntry"/>
+  <enum-type name="QSsl::KeyAlgorithm"/>
+  <enum-type name="QSsl::AlternateNameEntryType"/>
+  <enum-type name="QSsl::SslProtocol" />
       
   <template name="network.read_char*_long_long">
         public final int read(byte data[]) {
