@@ -29,4 +29,6 @@ win32-msvc* {
 	DEFINES += _CRT_SECURE_NO_DEPRECATE
 
 	win32-msvc2005:CONFIG-=embed_manifest_exe
+} linux-g++* {
+    QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/lib
 }

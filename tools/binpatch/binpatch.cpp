@@ -3,6 +3,54 @@
 
 #include "binpatch.h"
 
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
+static void qStricmp_helper(const char *a, char *c, int len) {
+  while (a && len) { 
+    *c = (*a >= 'A' && *a <= 'Z') ? *a + ('a' - 'A') : *a;
+    ++a;
+    ++c;
+    --len;
+  }
+}
+
+int qStricmp(const char *a, const char *b) {
+
+  int la = strlen(a);
+  int lb = strlen(b);
+
+  char *ca = (char *) malloc(la);
+  char *cb = (char *) malloc(lb);
+
+  qStricmp_helper(a, ca, la);
+  qStricmp_helper(b, cb, lb);
+
+  int result = strcmp(ca, cb);
+  
+  free(ca);
+  free(cb);
+
+  return result;
+}
+
+int qStrnicmp(const char *a, const char *b, int len) {
+  int la = min(strlen(a), len);
+  int lb = min(strlen(b), len);
+
+  char *ca = (char *) malloc(la);
+  char *cb = (char *) malloc(lb);
+
+  qStricmp_helper(a, ca, la);
+  qStricmp_helper(b, cb, lb);
+
+  int result = strcmp(ca, cb);
+  
+  free(ca);
+  free(cb);
+
+  return result;
+}
+
 // returns positive value if it finds a null termination inside the buffer
 long BinPatch::getBufferStringLength(char *data, char *end)
 {
@@ -34,7 +82,7 @@ bool BinPatch::endsWithTokens(const char *data)
         while(token != NULL) {
             // check if it ends with the token
             if ((tlen >= strlen(token))
-                && (stricmp((data+tlen)-strlen(token), token) == 0))
+                && (qStricmp((data+tlen)-strlen(token), token) == 0))
                 return true;
             token = strtok(NULL, ";");
         }
@@ -65,7 +113,7 @@ bool BinPatch::patchHelper(char *inbuffer, const char *oldstr, const char *newst
                 break;
             }
 
-            if (strnicmp(inbuffer, oldstr, oldlen) == 0) {
+            if (qStrnicmp(inbuffer, oldstr, oldlen) == 0) {
                 if (useLength && (instart == inbuffer)) {
                     *rw = (long)(len+1); //we don't have access to the length byte, rewind all + 1!
                     write = false;
