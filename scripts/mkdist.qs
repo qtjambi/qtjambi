@@ -95,11 +95,9 @@ if (option.evalPackages) {
     packages.push(setupEvalPackages());
 }
 
-createPlatformJar(packages[0]);
-
-if (false)
 for (var i=0; i<packages.length; ++i)
-    createPackage(packages[i]);
+    if (packages[i])
+        createPackage(packages[i]);
 
 /*******************************************************************************
  *
@@ -464,6 +462,10 @@ function setupGPLBinaryPackage() {
     var pkg = setupDefaultPackage();
     pkg.qt = option.qtGPLLocation;
     setupBinaryPackage(pkg);
+
+    if (pkg.packageName == "win64")
+        return undefined;
+
     setupGPLPackage(pkg);
 
     if (os_name() == OS_NAME_WINDOWS) {
@@ -824,7 +826,7 @@ function moveFiles(pkg) {
 
     var dir = new Dir(javaDir);
     dir.setCurrent();
- 
+
     for (var i=0; i<pkg.mkdirs.length; ++i) {
         new Dir(pkg.mkdirs[i]).mkdirs();
     }
