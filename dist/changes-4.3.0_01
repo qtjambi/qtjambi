@@ -89,7 +89,7 @@ ____________________
 
  - Support pointers to container classes
 
- - Generator no longer produces "inconsisten functions", to work 
+ - Generator no longer produces "inconsistent functions", to work 
    around Java's limitation of not being able to do function
    shadowing. Each such case is instead handled by the typesystem.
 
