@@ -109,7 +109,11 @@ body { color: black; }</style>
                 QApplication.beep();</pre>
 <p>The <tt>shootScreen()</tt> method is called to take the screenshot. If the user has chosen to delay the screenshot, we make the application beep when the screenshot is taken using the static QApplication.beep() method.</p>
 <p>The QApplication class manages the GUI application's control flow and main settings. It contains the main event loop, where all events from the window system and other sources are processed and dispatched.</p>
-<pre>&nbsp;           originalPixmap = QPixmap.grabWindow(
+<pre>&nbsp;           if(originalPixmap != null) {
+                originalPixmap.dispose();
+            }
+            
+            originalPixmap = QPixmap.grabWindow(
                     QApplication.desktop().winId());
             updateScreenshotLabel();
     

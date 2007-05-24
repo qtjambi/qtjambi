@@ -452,14 +452,14 @@ body { color: black; }</style>
                 origin = event.pos();
                 if (rubberBand == null)
                     rubberBand = new QRubberBand(QRubberBand.Shape.Rectangle, this);
-                rubberBand.setGeometry(new QRect(origin, new QSize()));
+                rubberBand.setRubberBandGeometry(new QRect(origin, new QSize()));
                 rubberBand.show();
             }</pre>
 <p>We record the position of the mouse press in the instance's <tt>origin</tt> variable for later use. The rubber band initially has an invalid size; it will be resized if the user moves the mouse while the mouse button is held down.</p>
 <p>The <tt>mouseMoveEvent()</tt> implementation resizes the rubber band using the value previously stored in <tt>origin</tt>, taking care to normalize the newly-constructed rectangle first, and calls the base class's implementation of the function:</p>
 <pre>&nbsp;           protected void mouseMoveEvent(QMouseEvent event) {
                 QRect rect = new QRect(origin, event.pos()).normalized();
-                rubberBand.setGeometry(rect);
+                rubberBand.setRubberBandGeometry(rect);
                 super.mouseMoveEvent(event);
     
                 QModelIndex underMouseIndex = indexAt(event.pos());
