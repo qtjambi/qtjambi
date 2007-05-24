@@ -164,7 +164,6 @@ function setupDefaultPackage() {
                      ["qtjambi/qtjambitypemanager.h", "include"],
 
                      // text files for main directory...
-                     "dist/KNOWN_ISSUES",
                      "dist/README",
                      "dist/changes-" + version
     ];
