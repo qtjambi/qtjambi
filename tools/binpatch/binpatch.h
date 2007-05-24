@@ -1,6 +1,8 @@
 #ifndef BINPATCH_H
 #define BINPATCH_H
 
+#include <string.h>
+
 typedef unsigned long ulong;
 typedef unsigned int uint;
 
@@ -26,14 +28,13 @@ public:
 private:
     long getBufferStringLength(char *data, char *end);
     bool endsWithTokens(const char *data);
-
-    bool patchHelper(char *inbuffer, const char *oldstr, 
-        const char *newstr, size_t len, long *rw);
+    bool patchHelper(char *inbuffer, const char *oldstr, const char *newstr, size_t len, long *rw);
 
     bool useLength;
     bool insertReplace;
     char endTokens[1024];
     char fileName[1024];
+    char findBuffer[512+12];
 };
 
 #endif
