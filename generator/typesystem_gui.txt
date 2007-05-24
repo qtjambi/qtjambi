@@ -2282,6 +2282,7 @@
   <interface-type name="QPaintDevice"/>
 
   <interface-type name="QGraphicsItem">
+    <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
     <modify-function signature="QGraphicsItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1" />
