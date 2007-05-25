@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ -e binpatch ];
+then 
+    ./binpatch
+fi
+
 me=$(dirname $0)
 
 if ! java -version 2>&1 | grep -q "1\.[5-9]"
@@ -13,5 +18,5 @@ then
     echo the 32 bit Java Runtime Environment. See the README file for deatils.
 
 else
-    PATH=$me/bin:$PATH LD_LIBRARY_PATH=$me/lib:$LD_LIBRARY_PATH java -cp $me/qtjambi.jar:. com.trolltech.launcher.Launcher
+    PATH=$me/bin:$PATH QT_PLUGIN_PATH=$me/plugins java -cp $me/qtjambi.jar:. com.trolltech.launcher.Launcher
 fi

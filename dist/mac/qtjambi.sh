@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ -e binpatch ];
+then 
+    ./binpatch
+fi
+
 me=$(dirname $0)
 
 if ! java -version 2>&1 | grep -q "1\.[5-9]"
@@ -8,5 +13,5 @@ then
     echo "to work. If Java is installed then make sure that the 'java' executable"
     echo "is available in the PATH environment."
 else
-    PATH=$me/bin:$PATH DYLD_LIBRARY_PATH=$me/lib:$DYLD_LIBRARY_PATH java -XstartOnFirstThread -cp $me/qtjambi.jar:$me com.trolltech.launcher.Launcher
+    PATH=$me/bin:$PATH QT_PLUGIN_PATH=$me/plugins java -XstartOnFirstThread -cp $me/qtjambi.jar:$me com.trolltech.launcher.Launcher
 fi
