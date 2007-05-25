@@ -2362,6 +2362,7 @@
   </object-type>
     
   <object-type name="QAbstractItemView">
+    <modify-function signature="update()" remove="all"/>
     <inject-code>
         private java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt; __rcDelegatesForColumns = new java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt;();
         private java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt; __rcDelegatesForRows = new java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt;();
