@@ -129,11 +129,6 @@ void JambiCustomWidget::initialize(QDesignerFormEditorInterface *core)
         return;
 
     m_core = core;
-
-//     JambiLanguageExtension *lang = static_cast<JambiLanguageExtension*> (language()); // ### wrong
-//     if (! lang)
-//         return;
-
 }
 
 QString JambiCustomWidget::callStringMethod(jmethodID id) const
@@ -247,35 +242,35 @@ JambiCustomWidgetCollection::JambiCustomWidgetCollection()
 
         JNIEnv *env = qtjambi_current_environment();
         Q_ASSERT (env != 0);
-    
+
         jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/CustomWidgetManager");
         if (qtjambi_exception_check(env))
             return;
-    
+
         jmethodID method_instance = env->GetStaticMethodID(cl, "instance", "()Lcom/trolltech/tools/designer/CustomWidgetManager;");
         QTJAMBI_EXCEPTION_CHECK(env);
         Q_ASSERT(method_instance);
-    
+
         m_id_customWidgets = env->GetMethodID(cl, "customWidgets", "()Ljava/util/List;");
         QTJAMBI_EXCEPTION_CHECK(env);
         Q_ASSERT(m_id_customWidgets);
-    
+
         m_manager = env->NewGlobalRef(env->CallStaticObjectMethod(cl, method_instance));
         QTJAMBI_EXCEPTION_CHECK(env);
         Q_ASSERT(m_manager);
-    
+
         initializeWidgets(env);
         m_id_loadPlugins = env->GetMethodID(cl, "loadPlugins", "(Ljava/lang/String;)V");
         QTJAMBI_EXCEPTION_CHECK(env);
         Q_ASSERT(m_id_loadPlugins);
-    
+
         env->DeleteLocalRef(cl);
     }
 }
 
-void JambiCustomWidgetCollection::initializeWidgets(JNIEnv *env) 
+void JambiCustomWidgetCollection::initializeWidgets(JNIEnv *env)
 {
-    m_widgets.clear(); 
+    m_widgets.clear();
 
     jobject widgetList = env->CallObjectMethod(m_manager, m_id_customWidgets);
     jobjectArray widgetArray = qtjambi_collection_toArray(env, widgetList);
@@ -290,7 +285,7 @@ void JambiCustomWidgetCollection::initializeWidgets(JNIEnv *env)
     env->DeleteLocalRef(widgetList);
 }
 
-void JambiCustomWidgetCollection::loadPlugins(const QString &path, QObject *widgetFactory) 
+void JambiCustomWidgetCollection::loadPlugins(const QString &path, QObject *widgetFactory)
 {
     JNIEnv *env = qtjambi_current_environment();
 

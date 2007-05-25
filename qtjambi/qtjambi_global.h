@@ -18,6 +18,12 @@
 
 #include <qglobal.h>
 
+#if QT_VERSION < 0x040300
+#error "Qt Jambi requires 4.3"
+#endif
+    // ### remove for final release
+
+
 #if defined(Q_WS_WIN)
 #  if !defined(QTJAMBI_EXPORT) && !defined(QT_QTJAMBI_IMPORT)
 #    define QTJAMBI_EXPORT

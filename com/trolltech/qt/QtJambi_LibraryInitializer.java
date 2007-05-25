@@ -21,14 +21,12 @@ abstract class QtJambi_LibraryInitializer
         Utilities.loadQtLibrary("QtGui");
         Utilities.loadJambiLibrary("qtjambi");
 
-        // ### Shouldn't we be using the class' static initializer combined with
-        // and just touch the class? That's how jdb database drivers work, at least..
         QClassPathFileEngineHandler handler = new QClassPathFileEngineHandler();
         handler.disableGarbageCollection();
 
         initialize();
         QThreadManager.initialize();
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread(new QtJambi_LibraryShutdown()));
     }
 

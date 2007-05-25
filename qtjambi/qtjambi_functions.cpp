@@ -63,12 +63,7 @@ public:
 extern "C" JNIEXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize(JNIEnv *, jclass))
 {
-    // ### remove for final release
-#if QT_VERSION >= 0x040300
     QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, 0);
-#else
-#error "Qt Jambi requires 4.3"
-#endif
     qtjambi_register_callbacks();
 }
 
