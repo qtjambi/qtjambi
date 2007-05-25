@@ -540,6 +540,12 @@ function setupEvalPackages() {
     pkg.licenseHeader = File.read(option.startDir + "/../dist/eval_header.txt");
     pkg.copyFiles.push("dist/README.EVAL");
 
+    if (os_name() == OS_NAME_LINUX) {
+        pkg.copyFiles.push("dist/linux/binpatch");
+    } else if (os_name() == OS_NAME_MACOSX) {
+        pkg.copyFiles.push("dist/mac/binpatch");
+    }
+
     setupBinaryPackage(pkg);
     finalizeDefaultPackage(pkg);
     return pkg;
