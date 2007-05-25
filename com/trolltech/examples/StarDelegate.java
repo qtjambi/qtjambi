@@ -271,7 +271,7 @@ public class StarDelegate extends QWidget {
             if (mode == ReadWrite)
                 painter.setBrush(palette.highlight());
             else
-                painter.setBrush(palette.foreground());
+                painter.setBrush(palette.window());
 
             int yOffset = (rect.height() - PaintingFactor) / 2;
             painter.translate(rect.x(), rect.y() + yOffset);
