@@ -19,11 +19,16 @@ import com.trolltech.qt.core.*;
 import java.lang.reflect.*;
 import java.util.*;
 
-
+/**
+ * This class implements the functionality to emit signals. All
+ * objects in QtJambi can emit signals, so the class is inherited by
+ * QtJambiObject. 
+ */
 public class QSignalEmitter {
 
     /**
      * Internal superclass of all signals
+     * @exclude
      */
     public abstract class AbstractSignal {
 
@@ -42,6 +47,7 @@ public class QSignalEmitter {
 
         /**
          * Contains book holding info about a single connection
+         * @exclude
          */
         protected class Connection {
             public int      flags           = 0;
@@ -364,6 +370,9 @@ public class QSignalEmitter {
             return types;
         }
 
+        /**
+         * @exclude
+         */
         protected final void emit_helper(Object... args) {
 
             if (QSignalEmitter.this.signalsBlocked())
@@ -578,6 +587,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit() {
             emit_helper();
         }
@@ -594,6 +606,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1) {
             emit_helper(arg1);
         }
@@ -612,6 +627,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1, B arg2) {
             emit_helper(arg1, arg2);
         }
@@ -630,6 +648,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1, B arg2, C arg3) {
             emit_helper(arg1, arg2, arg3);
         }
@@ -650,6 +671,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1, B arg2, C arg3, D arg4) {
             emit_helper(arg1, arg2, arg3, arg4);
         }
@@ -670,6 +694,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1, B arg2, C arg3, D arg4, E arg5) {
             emit_helper(arg1, arg2, arg3, arg4, arg5);
         }
@@ -691,6 +718,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6) {
             emit_helper(arg1, arg2, arg3, arg4, arg5, arg6);
         }
@@ -713,6 +743,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6, G arg7) {
             emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         }
@@ -737,6 +770,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6,
                 G arg7, H arg8) {
             emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
@@ -763,6 +799,9 @@ public class QSignalEmitter {
             super();
         }
 
+        /**
+         * Emits the signal.
+         */
         public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6,
                 G arg7, H arg8, I arg9) {
             emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
@@ -777,10 +816,17 @@ public class QSignalEmitter {
      */
     public Thread thread() { return Thread.currentThread(); }
         
+    /**
+     * Returns true if this QSignalEmitter is blocked. If it is
+     * blocked, no signals will be emitted.
+     */
     public boolean signalsBlocked() {
         return signalsBlocked;
     }
     
+    /**
+     * Blocks this QSignalEmitter from emiting its signals.
+     */
     public boolean blockSignals(boolean b) {
         boolean returned = signalsBlocked;
         signalsBlocked = b;
@@ -788,8 +834,7 @@ public class QSignalEmitter {
     }
     
     /**
-     * Internal function to initialize the signals and slots mechanism. It will be called automatically by the connect
-     * method.
+     * @exclude 
      */
     protected boolean __qt_signalInitialization(String name) { 
         return false;

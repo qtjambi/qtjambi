@@ -21,53 +21,194 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+/**
+The QVariant class acts like a union for the most common Qt data types.
+<p>
+Because C++ forbids unions from including types that have
+non-default constructors or destructors, most interesting Qt
+classes cannot be used in unions. Without QVariant, this would be
+a problem for QObject::property() and for database work, etc.
+<p>
+A QVariant object holds a single value of a single type() at a
+time. (Some type()s are multi-valued, for example a string list.)
+You can find out what type, T, the variant holds, convert it to a
+different type using convert(), get its value using one of the
+toT() functions (e.g., toSize()) and check whether the type can
+be converted to a particular type using canConvert().
+<p>
+The methods named toT() (e.g., toInt(), toString()) are const. If
+you ask for the stored type, they return a copy of the stored
+object. If you ask for a type that can be generated from the
+stored type, toT() copies and converts and leaves the object
+itself unchanged. If you ask for a type that cannot be generated
+from the stored type, the result depends on the type; see the
+function documentation for details.
+<p>
+Here is some example code to demonstrate the use of QVariant:
+<p>
+<code>
+<pre>
+    QDataStream out(...);
+    QVariant v(123);                // The variant now contains an int
+    int x = v.toInt();              // x = 123
+    out &lt;&lt; v;                       // Writes a type tag and an int to out
+    v = QVariant("hello");          // The variant now contains a QByteArray
+    v = QVariant(tr("hello"));      // The variant now contains a QString
+    int y = v.toInt();              // y = 0 since v cannot be converted to an int
+    QString s = v.toString();       // s = tr("hello")  (see QObject::tr())
+    out &lt;&lt;v;                  // Writes a type tag and a QString to out
+    ...
+    QDataStream in(...);            // (opening the previously written stream)
+    in &gt;&gt; v;                  // Reads an Int variant
+    int z = v.toInt();              // z = 123
+    qDebug("Type is %s",            // prints "Type is int"
+            v.typeName());
+    v = v.toInt() + 100;            // The variant now hold the value 223
+    v = QVariant(QStringList());
+</pre>
+</code>
+<p>
+You can even store QList<QVariant> and QMap<QString, QVariant>
+values in a variant, so you can easily construct arbitrarily
+complex data structures of arbitrary types. This is very powerful
+and versatile, but may prove less memory and speed efficient than
+storing specific types in standard data structures.
+<p>
+QVariant also supports the notion of null values, where you have
+a defined type with no value set.
+<p>
+<code>
+<pre>
+    QVariant x, y(QString()), z(QString(""));
+    x.convert(QVariant::Int);
+    // x.isNull() == true
+    // y.isNull() == true, z.isNull() == false
+    // y.isEmpty() == true, z.isEmpty() == true
+</pre>
+</code
+<p>
+QVariant can be extended to support other types than those
+mentioned in the \l Type enum. See the \l QMetaType documentation
+for details.
+<p>
+<h2>A Note on GUI Types</h2>
+<p>
+Because QVariant is part of the QtCore library, it cannot provide
+conversion functions to data types defined in QtGui, such as
+QColor, QImage, and QPixmap. In other words, there is no \c
+toColor() function. Instead, you can use the QVariant::value() or
+the qVariantValue() template function. For example:
+<p>
+<code>
+<pre>
+    QVariant variant;
+    ...
+    QColor color = variant.value<QColor>();
+</pre>
+</code>
+<p>
+The inverse conversion (e.g., from QColor to QVariant) is
+automatic for all data types supported by QVariant, including
+GUI-related types:
+<p>
+<code>
+<pre>
+    QColor color = palette().background().color();
+    QVariant variant = color;
+</pre>
+</code>
+<p>
+Because of Java's introspection, you should only use the QVariant
+class when dealing with Qt Jambi classes that requires them.
+*/
 public class QVariant extends QtJambiObject {
 
     // Java types
+    /** An invalid Java data type*/
     public static final int Invalid = 0;
+    /** Java Double */
     public static final int Double = 6;
+    /** Java String */
     public static final int String = 10;
+    /** Java Boolean */
     public static final int Boolean = 1;
+    /** Java ByteArray */
     public static final int ByteArray = 12;
+    /** Java BitArray */
     public static final int BitArray = 13;
+    /** Java Char */
     public static final int Char = 7;
+    /** Java Date */
     public static final int Date = 14;
+    /** Java DateTime */
     public static final int DateTime = 16;
+    /** Java Int */
     public static final int Int = 2;
+    /** Java Line */
     public static final int Line = 23;
+    /** Java LineF */
     public static final int LineF = 24;
+    /** Java Locale */
     public static final int Locale = 18;
+    /** Java Long */
     public static final int Long = 4;
+    /** Java Point */
     public static final int Point = 25;
+    /** Java PointF */
     public static final int PointF = 26;
+    /** Java Rect */
     public static final int Rect = 19;
+    /** Java RectF */
     public static final int RectF = 20;
+    /** Java RegExp */
     public static final int RegExp = 27;
+    /** Java Size */
     public static final int Size = 21;
+    /** Java SizeF */
     public static final int SizeF = 22;
+    /** Java StringList */
     public static final int StringList = 11;
+    /** Java Time */
     public static final int Time = 15; 
 
     // Gui types
+    /** Java Font */
     public static final int Font = 64;
+    /** Java Pixmap */
     public static final int Pixmap = 65;
+    /** Java Brush */
     public static final int Brush = 66;
+    /** Java Color */
     public static final int Color = 67;
+    /** Java Palette */
     public static final int Palette = 68;
+    /** Java Icon */
     public static final int Icon = 69;
+    /** Java Image */
     public static final int Image = 70;
+    /** Java Polygon */
     public static final int Polygon = 71;
+    /** Java Region */
     public static final int Region = 72;
+    /** Java Bitmap */
     public static final int Bitmap = 73;
+    /** Java Cursor */
     public static final int Cursor = 74;
+    /** Java SizePolicy */
     public static final int SizePolicy = 75;
+    /** Java KeySequence */
     public static final int KeySequence = 76;
+    /** Java Pen */
     public static final int Pen = 77;
+    /** Java TextLength */
     public static final int TextLength = 78;
+    /** Java TextFormat */
     public static final int TextFormat = 79;
+    /** Java Usertype */
     public static final int UserType = 127;
 
     
+    /** This enum describes the data types of QVariant. */
     enum Types {
         Invalid(0),
         Double(6),
@@ -135,6 +276,10 @@ public class QVariant extends QtJambiObject {
     {
         return obj != null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
     public static String toString(Object obj)
     {
         if (obj instanceof QtJambiObject) {

@@ -19,7 +19,7 @@ import com.trolltech.qt.core.QCoreApplication;
 import java.lang.reflect.*;
 
 /**
- * The super class of all class types in Qt. Loading this class or any
+ * The super class of all class types in Qt Jambi. Loading this class or any
  * of its subclasses will imply a dependency on both the Qt Jambi
  * library and the Qt libraries.
  */
@@ -28,14 +28,23 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     static {
     	QtJambi_LibraryInitializer.init();
     }
-    
+
+    /**
+     * @exclude
+     */    
     protected static class QPrivateConstructor { }
 
+    /**
+     * Creates a new QtJambiObject.
+     */
     public QtJambiObject()
     {
         /* intentionally empty */
     }
 
+    /**
+     * @exclude
+     */
     public QtJambiObject(QPrivateConstructor p)
     {
         /* intentionally empty */
@@ -118,6 +127,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * used when objects created in java are passed to C++ functions
      * that take ownership of the objects. Both the Java and C++ part
      * of the object will then be cleaned up by C++.
+     * @exclude
      */
     public final native void disableGarbageCollection();
     
@@ -128,6 +138,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * on objects for which disableGarbageCollection() has previously
      * been called. After calling this function, the object ownership will be
      * reset to default.
+     * @exclude
      */
     public final native void reenableGarbageCollection();
     
@@ -136,6 +147,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * 
      * Forces Java ownership of both the Java object and its C++ resources.
      * The C++ resources will be cleaned up when the Java object is finalized.
+     * @exclude
      */
     public final native void setJavaOwnership();
     
@@ -144,6 +156,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * Internal function which fetches a wrapper around the pointer to
      * the native resources held by this object.
      * @return A QNativePointer object for the current object.
+     * @exclude
      */
     public final native QNativePointer nativePointer();
 
@@ -152,6 +165,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * object.
      * @return A long value which uniquely define the native resources
      * held by this object during their life time.
+     * @exclude
      */
     public final long nativeId() { return native__id; }
     

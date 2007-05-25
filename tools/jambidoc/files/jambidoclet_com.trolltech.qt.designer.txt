@@ -1,0 +1,56 @@
+
+
+$$QUiLoader.load(com.trolltech.qt.core.QIODevice)
+/**
+This is an overloaded method provided for convenience.
+
+*/
+
+
+$$QUiLoader.load(com.trolltech.qt.core.QIODevice, com.trolltech.qt.gui.QWidget)
+/**
+Loads a form from the given <tt>device</tt> and creates a new widget with the
+given <tt>parent</tt> widget to hold its contents.
+
+*/
+
+
+$$QUiLoader.main(java.lang.String[])
+/**
+Test method
+*/
+
+
+$$QUiLoaderException.QUiLoaderException(java.lang.String, java.lang.Throwable)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.designer.QUiLoaderException.
+
+<tt>message</tt>
+<tt>cause</tt>
+
+*/
+
+
+$$QUiLoaderException.QUiLoaderException(java.lang.String)
+/**
+Creates a new QUiLoaderException with the given <tt>message</tt>.
+
+*/
+
+
+$$Line.Line()
+/**
+@exclude
+*/
+
+
+$$Line.Line(com.trolltech.qt.gui.QWidget)
+/**
+@exclude
+*/
+
+
+$$Line.setOrientation(com.trolltech.qt.core.Qt.Orientation)
+/**
+@exclude
+*/

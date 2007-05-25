@@ -17,6 +17,9 @@ import com.trolltech.qt.gui.*;
 
 import java.util.*;
 
+/**
+ * @exclude
+ */
 public class QtJambiGuiInternal {
     /**
      * Shows an about box for Qt Jambi

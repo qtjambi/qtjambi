@@ -18,6 +18,9 @@ import com.trolltech.qt.core.*;
 import java.lang.reflect.*;
 import java.util.*;
 
+/**
+ * @exclude
+ */
 public class QtJambiInternal {
 
     static {
@@ -27,6 +30,9 @@ public class QtJambiInternal {
     public static final char SlotPrefix = '1';
     public static final char SignalPrefix = '2';
 
+    /**
+     *  @exclude
+     */
     public static class QMetaCallEvent extends QEvent {
 
         public static final QEvent.Type MetaCallEventType = QEvent.Type

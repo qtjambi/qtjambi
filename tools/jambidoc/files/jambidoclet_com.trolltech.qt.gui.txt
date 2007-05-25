@@ -1,0 +1,4937 @@
+
+
+$$QPictureIO.QPictureIO(com.trolltech.qt.core.QIODevice, java.lang.String)
+/**
+Constructs a QPictureIO object with the I/O device <tt>ioDevice</tt> and a
+<tt>format</tt> tag.
+
+*/
+
+
+$$QPictureIO.QPictureIO(java.lang.String, java.lang.String)
+/**
+Constructs a QPictureIO object with the file name <tt>fileName</tt> and a
+<tt>format</tt> tag.
+
+*/
+
+
+$$QPictureIO.format()
+/**
+Returns the picture format string or null if no format has been
+explicitly set.
+
+*/
+
+
+$$QPictureIO.parameters()
+/**
+Returns the picture's parameters string.
+
+*/
+
+
+$$QPictureIO.setFormat(java.lang.String)
+/**
+Sets the picture format to <tt>format</tt> for the picture to be read or
+written.
+<p>
+It is necessary to specify a format before writing an picture, but
+it is not necessary to specify a format before reading an picture.
+<p>
+If no format has been set, Qt guesses the picture format before
+reading it. If a format is set the picture will only be read if it
+has that format.
+
+*/
+
+
+$$QPictureIO.setParameters(java.lang.String)
+/**
+Sets the picture's parameter string to <tt>parameters</tt>. This is for
+picture handlers that require special parameters.
+<p>
+Although the current picture formats supported by Qt ignore the
+parameters string, it may be used in future extensions or by
+contributions (for example, JPEG).
+
+*/
+
+
+$$QToolButton.initStyleOption(com.trolltech.qt.gui.QStyleOptionToolButton)
+/**
+Initialize <tt>option</tt> with the values from this QToolButton. This method
+is useful for subclasses when they need a QStyleOptionToolButton, but don't
+want to fill in all the information themselves.
+
+*/
+
+
+$$QMdiArea.subWindowList()
+/**
+Returns a list of all subwindows in the MDI area.
+
+*/
+
+
+$$QDial.initStyleOption(com.trolltech.qt.gui.QStyleOptionSlider)
+/**
+Initialize <tt>option</tt> with the values from this QDial. This method
+is useful for subclasses when they need a QStyleOptionSlider, but don't want
+to fill in all the information themselves.
+
+*/
+
+
+$$QTabWidget.initStyleOption(com.trolltech.qt.gui.QStyleOptionTabWidgetFrame)
+/**
+Initialize <tt>option</tt> with the values from this QTabWidget. This method
+is useful for subclasses when they need a QStyleOptionSlider, but don't want
+to fill in all the information themselves.
+
+*/
+
+
+$$QToolBar.addAction(com.trolltech.qt.gui.QIcon, java.lang.String, java.lang.Object, java.lang.String)
+/**
+Creates a new action with the icon <tt>icon</tt> and text <tt>text</tt>. This
+action is added to the end of the toolbar. The action's QAction.triggered()
+signal is connected to <tt>method</tt> in <tt>receiver</tt>.
+<p>
+Finally, it returns the created action. 
+*/
+
+
+$$QToolBar.addAction(com.trolltech.qt.gui.QIcon, java.lang.String, com.trolltech.qt.QSignalEmitter.AbstractSignal)
+/**
+Creates a new action with the icon <tt>icon</tt> and text <tt>text</tt>. This
+action is added to the end of the toolbar. The action is triggered by
+<tt>signal</tt>. The created QAction is returned.
+
+*/
+
+
+$$QToolBar.addAction(java.lang.String, java.lang.Object, java.lang.String)
+/**
+Creates a new action with text <tt>text</tt>. This
+action is added to the end of the toolbar. The action's QAction.triggered()
+signal is connected to <tt>method</tt> in <tt>receiver</tt>. The created
+action is returned.
+
+*/
+
+
+$$QToolBar.addAction(java.lang.String, com.trolltech.qt.QSignalEmitter.AbstractSignal)
+/**
+Creates a new action with text <tt>text</tt>. It is connected to
+<tt>signal</tt> and returned.
+
+*/
+
+
+$$QGraphicsScene.collidingItems(com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+Returns a list of all items that collide with <tt>item</tt>. Collisions are
+determined by calling QGraphicsItem.collidesWithItem(); the collision
+detection is determined by \a mode. By default, all items whose shape
+intersects \a item or is contained inside \a item's shape are returned.
+<p>
+The items are returned in descending Z order (i.e., the first item in the
+list is the top-most item, and the last item is the bottom-most item).
+
+*/
+
+
+$$QGraphicsScene.items(com.trolltech.qt.gui.QPolygonF)
+/**
+Returns all visible items that are either inside or
+intersect with the polygon <tt>polygon</tt>.
+
+*/
+
+
+$$QGraphicsScene.items(double, double, double, double)
+/**
+This convenience function is equivalent to calling items(QRectF(<tt>x</tt>,
+<tt>y</tt>, <tt>w</tt>, <tt>h</tt>).
+
+*/
+
+
+$$QGraphicsScene.items(com.trolltech.qt.gui.QPainterPath)
+/**
+Returns all visible items that are either inside or
+intersect with the path <tt>path</tt>.
+
+*/
+
+
+$$QGraphicsScene.items(com.trolltech.qt.core.QRectF)
+/**
+Returns all visible items that are either inside or intersect with the
+specified <tt>rectangle</tt>.
+
+*/
+
+
+$$QComboBox.initStyleOption(com.trolltech.qt.gui.QStyleOptionComboBox)
+/**
+Initialize <tt>option</tt> with the values from this QComboBox. This method is
+useful for subclasses when they need a QStyleOptionComboBox, but don't want to
+fill in all the information themselves.
+
+*/
+
+
+$$QGraphicsItem.collidingItems()
+/**
+Returns a list of all items that collide with this item.
+
+*/
+
+
+$$QProgressBar.initStyleOption(com.trolltech.qt.gui.QStyleOptionProgressBar)
+/**
+Initialize <tt>option</tt> with the values from this QProgressBar. This method
+is useful for subclasses when they need a QStyleOptionProgressBar or
+QStyleOptionProgressBarV2, but don't want to fill in all the information
+themselves. This function will check the version of the
+QStyleOptionProgressBar and fill in the additional values for a
+QStyleOptionProgressBarV2.
+
+*/
+
+
+$$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double, double, int, com.trolltech.qt.core.Qt.WindowFlags)
+/**
+Static convenience function to get a floating point number from
+the user. <tt>title</tt> is the text which is displayed in the title
+bar of the dialog. <tt>label</tt> is the text which is shown to the user
+(it should say what should be entered). <tt>value</tt> is the default
+floating point number that the line edit will be set to.
+<tt>minValue</tt> and <tt>maxValue</tt> are the minimum and maximum values the
+user may choose, and <tt>decimals</tt> is the maximum number of decimal
+places the number may have.
+<p>
+The dialog's parent is <tt>parent</tt>. The dialog will be modal and uses
+the widget flags <tt>f</tt>.
+<p>
+This function returns the floating point number which has been
+entered by the user.
+
+*/
+
+
+$$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double, double, int, com.trolltech.qt.core.Qt.WindowType...)
+/**
+This is a overloaded function provided for convenience. 
+
+*/
+
+
+$$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double, double, int)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double, double)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int, int, int, com.trolltech.qt.core.Qt.WindowFlags)
+/**
+Static convenience function to get an integer input from the
+user. <tt>title</tt> is the text which is displayed in the title bar
+of the dialog.  <tt>label</tt> is the text which is shown to the user
+(it should say what should be entered). <tt>value</tt> is the default
+integer which the spin box will be set to.  <tt>minValue</tt> and
+<tt>maxValue</tt> are the minimum and maximum values the user may choose,
+and <tt>step</tt> is the amount by which the values change as the user
+presses the arrow buttons to increment or decrement the value.
+<p>
+The dialog's parent is <tt>parent</tt>. The dialog will be modal and uses
+the widget flags <tt>f</tt>.
+<p>
+This function returns the integer which has been entered by the user.
+
+*/
+
+
+$$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int, int, int, com.trolltech.qt.core.Qt.WindowType...)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int, int, int)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int, int)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>, int, boolean, com.trolltech.qt.core.Qt.WindowFlags)
+/**
+Static convenience function to let the user select an item from a
+string list. <tt>title</tt> is the text which is displayed in the title
+bar of the dialog. <tt>label</tt> is the text which is shown to the user (it
+should say what should be entered). <tt>list</tt> is the
+string list which is inserted into the combo box, and <tt>current</tt> is the number
+of the item which should be the current item. If <tt>editable</tt> is true
+the user can enter their own text; if <tt>editable</tt> is false the user
+may only select one of the existing items.
+<p>
+The dialog's parent is <tt>parent</tt>. The dialog will be modal and uses
+the widget flags <tt>f</tt>.
+<p>
+This function returns the text of the current item, or if
+<tt>editable</tt> is true, the current text of the combo box.
+
+*/
+
+
+$$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>, int, boolean, com.trolltech.qt.core.Qt.WindowType...)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>, int, boolean)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>, int)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QLineEdit.EchoMode, java.lang.String, com.trolltech.qt.core.Qt.WindowFlags)
+/**
+Static convenience function to get a string from the user.
+<tt>title</tt> is the text which is displayed in the title bar of the
+dialog. <tt>label</tt> is the text which is shown to the user (it should
+say what should be entered). <tt>text</tt> is the default text which is
+placed in the line edit. The <tt>mode</tt> is the echo mode the line
+edit will use. 
+<p>
+The dialog's parent is <tt>parent</tt>. The dialog will be
+modal and uses the widget flags <tt>f</tt>.
+<p>
+This function returns the text which has been entered in the line
+edit. It will not return an empty string.
+
+*/
+
+
+$$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QLineEdit.EchoMode, java.lang.String, com.trolltech.qt.core.Qt.WindowType...)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QLineEdit.EchoMode, java.lang.String)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QLineEdit.EchoMode)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QLineEdit.initStyleOption(com.trolltech.qt.gui.QStyleOptionFrame)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QRubberBand.initStyleOption(com.trolltech.qt.gui.QStyleOptionRubberBand)
+/**
+This is a overloaded function provided for convenience. 
+*/
+
+
+$$QCheckBox.initStyleOption(com.trolltech.qt.gui.QStyleOptionButton)
+/**
+Initialize <tt>option</tt> with the values from this QCheckBox. This method is
+useful for subclasses when they need a QStyleOptionButton, but don't want to
+fill in all the information themselves.
+
+*/
+
+
+$$QLabel.picture()
+/**
+Returns the label's picture or null if the label doesn't have a picture.
+
+*/
+
+
+$$QLabel.pixmap()
+/**
+Returns the label's pixmap or null if the label doesn't have a picture.
+
+*/
+
+
+$$QMenuBar.addAction(java.lang.String, java.lang.Object, java.lang.String)
+/**
+This convenience function creates a new action with the given <tt>text</tt>.
+The action's triggered() signal is connected to the <tt>receiver</tt>'s
+<tt>method</tt> slot. The function adds the newly created action to the menu's
+list of actions and returns it.
+
+*/
+
+
+$$QMenuBar.addAction(java.lang.String, com.trolltech.qt.QSignalEmitter.AbstractSignal)
+/**
+This convenience function creates a new action with the given <tt>text</tt>.
+The action's triggered() signal is connected to the <tt>signal</tt>. The
+function adds the newly created action to the menu's list of actions and
+returns it.
+
+*/
+
+
+$$QMenuBar.initStyleOption(com.trolltech.qt.gui.QStyleOptionMenuItem, com.trolltech.qt.gui.QAction)
+/**
+Initialize <tt>option</tt> with the values from the menu bar and information
+from <tt>action</tt>. This method is useful for subclasses when they need a
+QStyleOptionMenuItem, but don't want to fill in all the information
+themselves.
+
+*/
+
+
+$$QWorkspace.windowList()
+/**
+Returns a list of all visible or minimized child windows.
+
+*/
+
+
+$$QAbstractSpinBox.initStyleOption(com.trolltech.qt.gui.QStyleOptionSpinBox)
+/**
+Initialize <tt>option</tt> with the values from this QSpinBox. This method
+is useful for subclasses when they need a QStyleOptionSpinBox, but don't want
+to fill in all the information themselves.
+
+*/
+
+
+$$QLayoutItem.setAlign(com.trolltech.qt.core.Qt.AlignmentFlag...)
+/**
+Sets the alignment of this item to <tt>align</tt>.
+<p>
+<b>Note:</b> Item alignment is only supported by QLayoutItem subclasses
+where it would have a visual effect. Except for QSpacerItem, which provides
+blank space for layouts, all public Qt classes that inherit QLayoutItem
+support item alignment.
+
+*/
+
+
+$$QTabBar.initStyleOption(com.trolltech.qt.gui.QStyleOptionTab, int)
+/**
+Initialize <tt>option</tt> with the values from the tab at <tt>tabIndex</tt>.
+This method is useful for subclasses when they need a QStyleOptionTab or
+QStyleOptionTabV2, but don't want to fill in all the information themselves.
+This function will check the version of the QStyleOptionTab and fill in the
+additional values for a QStyleOptionTabV2.
+
+*/
+
+
+$$QSplitter.getRange(int)
+/**
+Returns the valid range of the splitter with index <tt>index</tt>.
+
+*/
+
+
+$$QStandardItemModel.findItems(java.lang.String, com.trolltech.qt.core.Qt.MatchFlags)
+/**
+Returns a list of items that match the given <tt>text</tt>, using the given
+<tt>flags</tt>.
+
+*/
+
+
+$$QStandardItemModel.findItems(java.lang.String)
+/**
+Returns a list of items that match the given <tt>text</tt>.
+
+*/
+
+
+$$QStyleOptionFrameV2.setFeatures(com.trolltech.qt.gui.QStyleOptionFrameV2.FrameFeature...)
+/**
+Sets this style option's frame <tt>features</tt>.
+
+*/
+
+
+$$QFontMetricsF.boundingRect(com.trolltech.qt.core.QRectF, int, java.lang.String, int, int[])
+/**
+This is an overloaded function provided for convenience.
+
+*/
+
+
+$$QFontMetricsF.boundingRect(com.trolltech.qt.core.QRectF, int, java.lang.String, int)
+/**
+Returns the bounding rectangle of the characters in the given <tt>text</tt>.
+This is the set of pixels the text would cover if drawn when constrained
+to the bounding rectangle specified by <tt>rect</tt>.
+<p>
+The <tt>flags</tt> argument is the bitwise OR of the following flags:
+<dir>
+<li> Qt::AlignLeft aligns to the left border, except for
+      Arabic and Hebrew where it aligns to the right.
+<li> Qt::AlignRight aligns to the right border, except for
+      Arabic and Hebrew where it aligns to the left.
+<li> Qt::AlignJustify produces justified text.
+<li> Qt::AlignHCenter aligns horizontally centered.
+<li> Qt::AlignTop aligns to the top border.
+<li> Qt::AlignBottom aligns to the bottom border.
+<li> Qt::AlignVCenter aligns vertically centered
+<li> Qt::AlignCenter (== <b>Qt::AlignHCenter | Qt::AlignVCenter</b>)
+<li> Qt::TextSingleLine ignores newline characters in the text.
+<li> Qt::TextExpandTabs expands tabs (see below)
+<li> Qt::TextShowMnemonic interprets "&amp;x" as <u>x</u>, i.e. underlined.
+<li> Qt::TextWordBreak breaks the text to fit the rectangle.
+</dir>
+<p>
+Qt::Horizontal alignment defaults to Qt::AlignLeft and vertical
+alignment defaults to Qt::AlignTop.
+<p>
+If several of the horizontal or several of the vertical alignment
+flags are set, the resulting alignment is undefined.
+<p>
+These flags are defined in Qt::AlignmentFlag.
+<p>
+If Qt::TextExpandTabs is set in <tt>flags</tt>, the following behavior is
+used to interpret tab characters in the text:
+<dir>
+<li> If <tt>tabArray</tt> is non-null, it specifies a 0-terminated sequence of
+     pixel-positions for tabs in the text.
+<li> If <tt>tabStops</tt> is non-zero, it is used as the tab spacing (in pixels).
+</dir>
+<p>
+Note that the bounding rectangle may extend to the left of (0, 0),
+e.g. for italicized fonts.
+<p>
+Newline characters are processed as line breaks.
+<p>
+Despite the different actual character heights, the heights of the
+bounding rectangles of "Yes" and "yes" are the same.
+<p>
+The bounding rectangle returned by this function is somewhat larger
+than that calculated by the simpler boundingRect() function. This
+function uses the minLeftBearing() maximum left and minRightBearing()
+right font bearings as is necessary for multi-line text to align
+correctly. Also, fontHeight() and lineSpacing() are used to calculate
+the height, rather than individual character heights.
+
+*/
+
+
+$$QFontMetricsF.boundingRect(com.trolltech.qt.core.QRectF, int, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFontMetricsF.size(int, java.lang.String, int, int[])
+/**
+Returns the size in pixels of the characters in the given
+<tt>text</tt>.
+<p>
+The <tt>flags</tt> argument is the bitwise OR of the following flags:
+<dir>
+<li> Qt::TextSingleLine ignores newline characters.
+<li> Qt::TextExpandTabs expands tabs (see below)
+<li> Qt::TextShowMnemonic interprets "&amp;x" as <u>x</u>, i.e.
+underlined.
+<li> Qt::TextWordBreak breaks the text to fit the rectangle.
+</dir>
+<p>
+These flags are defined in Qt::TextFlags.
+<p>
+If Qt::TextExpandTabs is set in <tt>flags</tt>, the following behavior is
+used to interpret tab characters in the text:
+<dir>
+<li> If <tt>tabArray</tt> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs in the text.
+<li> If <tt>tabStops</tt> is non-zero, it is used as the tab spacing (in pixels).
+</dir>
+<p>
+Newline characters are processed as line breaks.
+<p>
+Note: Despite the different actual character heights, the heights of
+the
+bounding rectangles of "Yes" and "yes" are the same.
+
+*/
+
+
+$$QFontMetricsF.size(int, java.lang.String, int)
+/**
+This is an overloaded function provided for convenience.
+
+*/
+
+
+$$QFontMetricsF.size(int, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+
+*/
+
+
+$$QGroupBox.initStyleOption(com.trolltech.qt.gui.QStyleOptionGroupBox)
+/**
+Initialize <tt>option</tt> with the values from this QGroupBox. This
+method is useful for subclasses when they need a QStyleOptionGroupBox,
+but don't want to fill in all the information themselves.
+
+*/
+
+
+$$QGraphicsView.items(int, int, int, int)
+/**
+This convenience function is equivalent to calling
+items(QRectF(<tt>x</tt>, <tt>y</tt>, <tt>w</tt>, <tt>h</tt>)).
+
+*/
+
+
+$$QGraphicsView.items(com.trolltech.qt.gui.QPainterPath)
+/**
+Returns a list of all the items that are either
+contained by or intersect with <tt>path</tt>.
+
+*/
+
+
+$$QGraphicsView.items(com.trolltech.qt.core.QRect)
+/**
+Returns a list of all the items that are either contained by or
+intersect with <tt>rect</tt>. <tt>rect</tt> is in viewport
+coordinates.
+
+*/
+
+
+$$QGraphicsView.items(com.trolltech.qt.gui.QPolygon)
+/**
+Returns a list of all the items that are either contained by or
+intersect with <tt>polygon</tt>. <tt>polygon</tt> is in viewport
+coordinates.
+
+*/
+
+
+$$QFileDialog.getOpenFileName(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter, com.trolltech.qt.gui.QFileDialog.Options)
+/**
+This is a convenience static function that returns an existing file
+selected by the user. If the user presses Cancel, it returns null.
+<p>
+The function creates a modal file dialog with the given
+<tt>parent</tt>
+widget. If the parent is not 0, the dialog will be shown centered over the
+parent widget.
+<p>
+The file dialog's working directory will be set to <tt>dir</tt>.  If
+<tt>dir</tt> includes a file name, the file will be selected. Only
+files that match the given <tt>filter</tt> are shown. The parameter
+<tt>dir</tt> can be an empty string. The <tt>options</tt> argument
+holds various options about how to run the dialog, see the
+QFileDialog. Option enum for more information on the flags you can
+pass.
+<p>
+The dialog's caption is set to <tt>caption</tt>. If <tt>caption</tt>
+is not specified then a default <tt>caption</tt> will be used.
+<p>
+Under Windows and Mac OS X, this static function will use the native
+file dialog and not a QFileDialog. On Mac OS X, the <tt>dir</tt> argument is
+ignored, the native dialog always displays the last visited directory.
+<p>
+Note that on Windows the dialog will spin a blocking modal event loop
+that will not dispatch any QTimers, and if parent is not 0 then it
+will
+position the dialog just under the parent's title bar.
+<p>
+Under Unix/X11, the normal behavior of the file dialog is to resolve
+and follow symlinks. For example, if \c{/usr/tmp} is a symlink to
+\c{/var/tmp}, the file dialog will change to \c{/var/tmp} after
+entering \c{/usr/tmp}. If <tt>options</tt> includes DontResolveSymlinks,
+the file dialog will treat symlinks as regular directories.
+
+*/
+
+
+$$QFileDialog.getOpenFileName(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter, com.trolltech.qt.gui.QFileDialog.Option...)
+/**
+This is an overloaded function provided for convenience.
+
+*/
+
+
+$$QFileDialog.getOpenFileName(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileName(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileName(com.trolltech.qt.gui.QWidget, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileName(com.trolltech.qt.gui.QWidget)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileName()
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileNames(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter, com.trolltech.qt.gui.QFileDialog.Options)
+/**
+This is a convenience static function that will return one or more
+existing files selected by the user.
+<p>
+This function creates a modal file dialog with the given
+<tt>parent</tt> widget. If the parent is not null, the dialog will be
+shown centered over the parent widget.
+<p>
+The file dialog's working directory will be set to <tt>dir</tt>. If
+dir includes a file name, the file will be selected. The filter is set
+to <tt>filter</tt> so that only those files which match the filter are
+shown. The filter selected is set to <tt>selectedFilter</tt>. The
+parameters <tt>dir</tt> parameter may be an empty string.
+<p>
+The dialog's caption is set to <tt>caption</tt>. If <tt>caption</tt>
+is not specified then a default caption will be used.
+<p>
+Under Windows and Mac OS X, this static function will use the native
+file dialog and not a QFileDialog. On Mac OS X, the <tt>dir</tt> argument
+is ignored, the native dialog always displays the last visited
+directory.
+<p>
+Note that on Windows the dialog will spin a blocking modal event loop
+that will not dispatch any QTimers, and if parent is not null then it
+will position the dialog just under the parent's title bar.
+<p>
+Under Unix/X11, the normal behavior of the file dialog is to resolve
+and follow symlinks. For example, if <b>/usr/tmp</b> is a symlink to
+<b>/var/tmp</b>, the file dialog will change to <b>/var/tmp</b> after
+entering <b>/usr/tmp</b>. The <tt>options</tt> argument holds various
+options about how to run the dialog, see the QFileDialog.Option enum
+for more information on the flags you can pass.
+<p>
+Note that if you want to iterate over the list of files, you should
+iterate over a copy. For example:
+
+*/
+
+
+$$QFileDialog.getOpenFileNames(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter, com.trolltech.qt.gui.QFileDialog.Option...)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileNames(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileNames(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileNames(com.trolltech.qt.gui.QWidget, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileNames(com.trolltech.qt.gui.QWidget)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getOpenFileNames()
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getSaveFileName(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter, com.trolltech.qt.gui.QFileDialog.Options)
+/**
+This is a convenience static function that will return a file name
+selected by the user. The file does not have to exist.
+<p>
+It creates a modal file dialog with the given <tt>parent</tt> widget. If the
+parent is not null, the dialog will be shown centered over the parent
+widget.
+<p>
+The file dialog's working directory will be set to <tt>dir</tt>. If
+<tt>dir</tt> includes a file name, the file will be selected. Only
+files that match the <tt>filter</tt> are shown. The parameter
+<tt>dir</tt> may be an empty string. The <tt>options</tt> argument
+holds various options about how to run the dialog, see the
+QFileDialog.Option enum for more information on the flags you can
+pass.
+<p>
+The dialog's caption is set to <tt>caption. If <tt>caption</tt> is not
+specified then a default caption will be used.
+<p>
+Under Windows and Mac OS X, this static function will use the native
+file dialog and not a QFileDialog.
+<p>
+Note that on Windows the dialog will spin a blocking modal event loop
+that will not dispatch any QTimers, and if parent is not 0 then it
+will position the dialog just under the parent's title bar.  On Mac OS
+X, the filter argument is ignored.
+<p>
+Under Unix/X11, the normal behavior of the file dialog is to resolve
+and follow symlinks. For example, if \c{/usr/tmp} is a symlink to
+<b>/var/tmp</b>, the file dialog will change to <b>/var/tmp</b> after
+entering <b>/usr/tmp</b>. If <tt>options</tt> includes DontResolveSymlinks,
+the file dialog will treat symlinks as regular directories.
+
+*/
+
+
+$$QFileDialog.getSaveFileName(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter, com.trolltech.qt.gui.QFileDialog.Option...)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getSaveFileName(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QFileDialog.Filter)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getSaveFileName(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getSaveFileName(com.trolltech.qt.gui.QWidget, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getSaveFileName(com.trolltech.qt.gui.QWidget)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFileDialog.getSaveFileName()
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QTreeWidget.findItems(java.lang.String, com.trolltech.qt.core.Qt.MatchFlags)
+/**
+Returns a list of items that match the given <tt>text</tt>, using the
+given <tt>flags</tt>.
+
+*/
+
+
+$$QTreeWidgetItemIterator.next(int)
+/**
+This function advances the iterator by <tt>i</tt> items.
+
+*/
+
+
+$$QTreeWidgetItemIterator.previous(int)
+/**
+Makes the iterator go backwards by <tt>i</tt> items.
+
+*/
+
+
+$$QTreeWidgetItemIterator.next()
+/**
+Advances the iterator by one item.
+
+
+*/
+
+
+$$QTreeWidgetItemIterator.previous()
+/**
+Makes the iterator go backwards by one item.
+
+
+*/
+
+
+$$QTreeWidgetItemIterator.current()
+/**
+Returns the current item.
+
+*/
+
+
+$$QFontDatabase.families()
+/**
+Returns a sorted list of the available font families.
+
+*/
+
+
+$$QFontDatabase.pointSizes(java.lang.String)
+/**
+Returns a list of the point sizes available for the font that has
+the specified <tt>family</tt>. The list may be empty.
+
+*/
+
+
+$$QPixmapCache.find(java.lang.String, com.trolltech.qt.gui.QPixmap)
+/**
+Looks for a cached pixmap associated with the <tt>key</tt> in the cache.
+If the pixmap is found, the function sets <tt>pm</tt> to that pixmap and
+returns true; otherwise it leaves <tt>pm</tt> alone and returns false.
+
+*/
+
+
+$$QFocusFrame.initStyleOption(com.trolltech.qt.gui.QStyleOption)
+/**
+Initialize <tt>option</tt> with the values from this QFocusFrame. This
+method is useful for subclasses when they need a QStyleOption, but
+don't want to fill in all the information themselves.
+
+*/
+
+
+$$QRadioButton.initStyleOption(com.trolltech.qt.gui.QStyleOptionButton)
+/**
+Initialize <tt>option</tt> with the values from this QRadioButton. This
+method is useful for subclasses when they need a QStyleOption, but
+don't want to fill in all the information themselves.
+
+*/
+
+
+$$QAccessibleInterfaceEx.invokeMethodEx(com.trolltech.qt.gui.QAccessible.Method, int, java.util.List<java.lang.Object>)
+/**
+This method is internal to Qt Jambi.
+
+*/
+
+
+$$QDockWidget.initStyleOption(com.trolltech.qt.gui.QStyleOptionDockWidget)
+/**
+Initialize <tt>option</tt> with the values from this QDockWidget. This
+method is useful for subclasses when they need a QStyleOption, but
+don't want to fill in all the information themselves.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_Selection.QAbstractTextDocumentLayout_Selection()
+/**
+Constructs a new QAbstractTextDocumentLayout_Selection object.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_Selection.setCursor(com.trolltech.qt.gui.QTextCursor)
+/**
+Sets the <tt>cursor</tt> of this
+QAbstractTextDocumentLayout_Selection.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_Selection.cursor()
+/**
+Returns the cursor of this QAbstractTextDocumentLayout_Selection.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_Selection.setFormat(com.trolltech.qt.gui.QTextCharFormat)
+/**
+Sets the <tt>format</tt> of this
+QAbstractTextDocumentLayout_Selection.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_Selection.format()
+/**
+Returns the format of this QAbstractTextDocumentLayout_Selection.
+
+*/
+
+
+$$QFontDialog.getFont(com.trolltech.qt.gui.QFont, com.trolltech.qt.gui.QWidget, java.lang.String)
+/**
+Executes a modal font dialog and returns a font.
+<p>
+If the user clicks OK, the selected font is returned. If the user
+clicks Cancel, the <tt>initial</tt> font is returned.
+<p>
+The dialog is constructed with the given <tt>parent</tt>.
+<tt>caption</tt> is shown as the window title of the dialog and
+<tt>initial</tt> is the initially selected font.
+<p>
+This static function is less flexible than the full QFontDialog
+object, but is convenient and easy to use.
+
+*/
+
+
+$$QFontDialog.getFont(com.trolltech.qt.gui.QWidget)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QFontDialog.getFont()
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QFontDialog.getFont(com.trolltech.qt.gui.QFont, com.trolltech.qt.gui.QWidget)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QFontDialog.getFont(com.trolltech.qt.gui.QFont)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QShortcut.QShortcut(com.trolltech.qt.gui.QKeySequence, com.trolltech.qt.gui.QWidget)
+/**
+This is an overloaded constructor provided for convenience.
+
+*/
+
+
+$$QShortcut.QShortcut(com.trolltech.qt.gui.QKeySequence, com.trolltech.qt.gui.QWidget, com.trolltech.qt.core.Qt.ShortcutContext)
+/**
+This is an overloaded constructor provided for convenience.
+
+*/
+
+
+$$QTextLine.draw(com.trolltech.qt.gui.QPainter, com.trolltech.qt.core.QPointF)
+/**
+This is an overloaded method provided for convenience.
+
+*/
+
+
+$$QMouseEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButton...)
+/**
+Sets the <tt>mouseState</tt> of this QMouseEvent.
+
+*/
+
+
+$$QTableArea.QTableArea(int, int, int, int)
+/**
+This constructor is internal to Qt Jambi.
+*/
+
+
+$$QApplication.QApplication(java.lang.String[])
+/**
+Initializes the window system and constructs an application object
+with the command line arguments in <tt>argv</tt>.
+
+*/
+
+
+$$QApplication.initialize(java.lang.String[])
+/**
+This method is internal to Qt Jambi.
+
+*/
+
+
+$$QApplication.aboutQtJambi()
+/**
+Displays a simple message box about Qt Jambi. The message includes the
+version number of Qt being used by the application.
+<p>
+This is useful for inclusion in the Help menu of an application.
+
+*/
+
+
+$$QApplication.instance()
+/**
+Returns the unique QApplication instance.
+
+*/
+
+
+$$QApplication.setFont(com.trolltech.qt.gui.QFont)
+/**
+Changes the default application font to <tt>font</tt>.
+
+*/
+
+
+$$QApplication.setPalette(com.trolltech.qt.gui.QPalette)
+/**
+Changes the default application palette to <tt>palette</tt>.
+
+*/
+
+
+$$QApplication.overrideCursor()
+/**
+Returns the active application override cursor.
+<p>
+This function returns null if no application cursor has been defined
+(i.e. the internal cursor stack is empty).
+
+*/
+
+
+$$QGradient.setStops(java.util.List<com.trolltech.qt.QPair<java.lang.Double, com.trolltech.qt.gui.QColor>>)
+/**
+Replaces the current set of stop points with the given <tt>stops</tt>.
+The positions of the points must be in the range 0 to 1, and must be
+sorted with the lowest point first.
+
+*/
+
+
+$$QDropEvent.setModState(com.trolltech.qt.core.Qt.KeyboardModifier...)
+/**
+This method sets the keyboard modifiers for this QDropEvent to <tt>modState</tt>.
+
+*/
+
+
+$$QDropEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButton...)
+/**
+Sets the mouse button state for this QDropEvent to
+<tt>mouseState</tt>.
+
+*/
+
+
+$$QDropEvent.setAct(com.trolltech.qt.core.Qt.DropAction...)
+/**
+Sets this QDropEvent's drop actions to <tt>act</tt>.
+
+<tt>act</tt>
+
+*/
+
+
+$$QWheelEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButton...)
+/**
+Sets the mouse button state of this QWheelEvent to
+<tt>mouseState</tt>.
+
+*/
+
+
+$$QSlider.initStyleOption(com.trolltech.qt.gui.QStyleOptionSlider)
+/**
+Initialize <tt>option</tt> with the values from this QSlider. This
+method is useful for subclasses when they need a QStyleOptionSlider,
+but don't want to fill in all the information themselves.
+
+*/
+
+
+$$QAbstractItemView.startDrag(com.trolltech.qt.core.Qt.DropAction...)
+/**
+Starts a drag by calling drag.start() using the given
+<tt>supportedActions</tt>.
+
+*/
+
+
+$$QFont.cacheStatistics()
+/**
+Internal function that dumps font cache statistics.
+
+*/
+
+
+$$QClipboard.text(java.lang.String, com.trolltech.qt.gui.QClipboard.Mode)
+/**
+Returns the clipboard text in subtype <tt>subtype</tt>, or an empty
+string if the clipboard does not contain any text. If <tt>subtype</tt>
+is null, any subtype is acceptable, and <tt>subtype</tt> is set to the
+chosen subtype.
+<p>
+The <tt>mode</tt> argument is used to control which part of the system
+clipboard is used.  If <tt>mode</tt> is QClipboard::Clipboard, the
+text is retrieved from the global clipboard.  If <tt>mode</tt> is
+QClipboard::Selection, the text is retrieved from the global mouse
+selection.
+<p>
+Common values for <tt>subtype</tt> are "plain" and "html".
+
+*/
+
+
+$$QClipboard.text(java.lang.String)
+/**
+Returns the clipboard text as plain text, or an empty string if the
+clipboard does not contain any text.
+<p>
+The <tt>mode</tt> argument is used to control which part of the system
+clipboard is used.  If <tt>mode</tt> is QClipboard.Clipboard, the text
+is retrieved from the global clipboard.  If <tt>mode</tt> is
+QClipboard::Selection, the text is retrieved from the global mouse
+selection. If <tt>mode</tt> is QClipboard.FindBuffer, the text is
+retrieved from the search string buffer.
+
+*/
+
+
+$$QKeySequence.toInt()
+/**
+For backward compatibility: returns the first keycode
+as integer. If the key sequence is empty, 0 is returned.
+
+*/
+
+
+$$QKeySequence.at(int)
+/**
+Returns the key at index <tt>i</tt> in this key sequence.
+
+*/
+
+
+$$QPixmap.QPixmap(java.lang.String[])
+/**
+Constructs a pixmap from the given <tt>xpm</tt> data, which must be a
+valid XPM image.
+<p>
+Errors are silently ignored.
+
+*/
+
+
+$$QPixmap.QPixmap(java.lang.String, java.lang.String, com.trolltech.qt.core.Qt.ImageConversionFlags)
+/**
+Constructs a pixmap from the file with the given <tt>fileName</tt>. If the
+file does not exist or is of an unknown format, the pixmap becomes a
+null pixmap.
+<p>
+The loader attempts to read the pixmap using the specified
+<tt>format</tt>. If the <tt>format</tt> is not specified (which is the default),
+the loader probes the file for a header to guess the file format.
+<p>
+The file name can either refer to an actual file on disk or to
+one of the application's embedded resources. See the
+\l{resources.html}{Resource System} overview for details on how
+to embed images and other resource files in the application's
+executable.
+<p>
+If the image needs to be modified to fit in a lower-resolution
+result (e.g. converting from 32-bit to 8-bit), use the
+<tt>flags</tt> to control the conversion.
+<p>
+The <tt>fileName, <tt>format</tt> and <tt>flags</tt> parameters are
+passed on to load(). This means that the data in <tt>fileName</tt> is
+not compiled into the binary. If <tt>fileName</tt> contains a relative
+path (e.g. the filename only) the relevant file must be found
+relative to the runtime working directory.
+
+*/
+
+
+$$QPixmap.QPixmap(java.lang.String, java.lang.String, com.trolltech.qt.core.Qt.ImageConversionFlag...)
+/**
+This is an overloaded constructor provided for convenience.
+
+*/
+
+
+$$QPixmap.QPixmap(java.lang.String, java.lang.String)
+/**
+This is an overloaded constructor provided for convenience.
+*/
+
+
+$$QPixmap.QPixmap(java.lang.String)
+/**
+This is an overloaded constructor provided for convenience.
+*/
+
+
+$$QPixmap.fromImage(com.trolltech.qt.gui.QImage, com.trolltech.qt.core.Qt.ImageConversionFlag...)
+/**
+Converts the given <tt>image</tt> to a pixmap using the specified <tt>flags</tt> to
+control the conversion. The flags argument is a bitwise-OR of the
+Qt.ImageConversionFlags. Passing 0 for flags sets all the default
+options.
+<p>
+In case of monochrome and 8-bit images, the image is first converted
+to a 32-bit pixmap and then filled with the colors in the color table.
+If this is too expensive an operation, you can use
+QBitmap.fromImage() instead.
+
+*/
+
+
+$$QPixmap.save(com.trolltech.qt.core.QIODevice, java.lang.String, int)
+/**
+This function writes a QPixmap to the given <tt>dev</tt> using the
+specified image file <tt>format</tt> and <tt>quality</tt> factor. This can be
+used, for example, to save a pixmap directly into a QByteArray:
+
+*/
+
+
+$$QPixmap.save(com.trolltech.qt.core.QIODevice, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.save(com.trolltech.qt.core.QIODevice)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.save(java.lang.String, java.lang.String, int)
+/**
+Saves the pixmap to the file with the given <tt>fileName</tt> using the
+specified image file <tt>format</tt> and <tt>quality</tt> factor. Returns true
+if successful; otherwise returns false.
+<p>
+The <tt>quality</tt> factor must be in the range [0,100] or -1. Specify
+0 to obtain small compressed files, 100 for large uncompressed
+files, and -1 to use the default settings.
+<p>
+If <tt>format</tt> is 0, an image format will be chosen from <tt>fileName</tt>'s
+suffix.
+
+*/
+
+
+$$QPixmap.save(java.lang.String, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.save(java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.load(java.lang.String, java.lang.String, com.trolltech.qt.core.Qt.ImageConversionFlags)
+/**
+Loads a pixmap from the file with the given <tt>fileName</tt>. Returns
+true if the pixmap was successfully loaded; otherwise returns
+false.
+<p>
+The loader attempts to read the pixmap using the specified
+<tt>format</tt>. If the <tt>format</tt> is not specified (which is the default),
+the loader probes the file for a header to guess the file format.
+<p>
+The file name can either refer to an actual file on disk or to one
+of the application's embedded resources. See the
+\l{resources.html}{Resource System} overview for details on how to
+embed pixmaps and other resource files in the application's
+executable.
+<p>
+If the data needs to be modified to fit in a lower-resolution
+result (e.g. converting from 32-bit to 8-bit), use the <tt>flags</tt> to
+control the conversion.
+<p>
+Note that QPixmaps are automatically added to the QPixmapCache
+when loaded from a file; the key used is internal and can not
+be acquired.
+
+*/
+
+
+$$QPixmap.load(java.lang.String, java.lang.String, com.trolltech.qt.core.Qt.ImageConversionFlag...)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.load(java.lang.String, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.load(java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.loadFromData(byte[], java.lang.String, com.trolltech.qt.core.Qt.ImageConversionFlags)
+/**
+Loads a pixmap from the binary
+<tt>data</tt>.  Returns true if the pixmap was loaded successfully;
+otherwise returns false.
+<p>
+The loader attempts to read the pixmap using the specified
+<tt>format</tt>. If the <tt>format</tt> is not specified (which is the default),
+the loader probes the file for a header to guess the file format.
+<p>
+If the data needs to be modified to fit in a lower-resolution
+result (e.g. converting from 32-bit to 8-bit), use the <tt>flags</tt> to
+control the conversion.
+
+*/
+
+
+$$QPixmap.loadFromData(byte[], java.lang.String, com.trolltech.qt.core.Qt.ImageConversionFlag...)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.loadFromData(byte[], java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.loadFromData(byte[])
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.loadFromData(com.trolltech.qt.core.QByteArray, java.lang.String, com.trolltech.qt.core.Qt.ImageConversionFlags)
+/**
+Loads a pixmap from the binary <tt>data</tt> using the specified
+<tt>format</tt> and conversion <tt>flags</tt>.
+
+*/
+
+
+$$QPixmap.loadFromData(com.trolltech.qt.core.QByteArray, java.lang.String, com.trolltech.qt.core.Qt.ImageConversionFlag...)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.loadFromData(com.trolltech.qt.core.QByteArray, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPixmap.loadFromData(com.trolltech.qt.core.QByteArray)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QMenu.initStyleOption(com.trolltech.qt.gui.QStyleOptionMenuItem, com.trolltech.qt.gui.QAction)
+/**
+Initialize <tt>option</tt> with the values from this menu and information
+from <tt>action</tt>. This method is useful for subclasses when they need a
+QStyleOptionMenuItem, but don't want to fill in all the information
+themselves.
+
+*/
+
+
+$$QMenu.addAction(java.lang.String, java.lang.Object, java.lang.String, com.trolltech.qt.gui.QKeySequence)
+/**
+This convenience function creates a new action with the text
+<tt>text</tt>. The action's QAction.triggered() signal is connected to
+the <tt>receiver</tt>'s <tt>method</tt> slot. The function adds the
+newly created action to the menu's list of actions and returns it.
+
+*/
+
+
+$$QMenu.addAction(java.lang.String, com.trolltech.qt.QSignalEmitter.AbstractSignal, com.trolltech.qt.gui.QKeySequence)
+/**
+This convenience function creates a new action with the text
+<tt>text</tt> and specified <tt>shortcut</tt>. The action's
+QAction.triggered() signal is connected to the <tt>signal</tt>. The
+function adds the newly created action to the menu's list of actions
+and returns it.
+
+*/
+
+
+$$QMenu.addAction(java.lang.String, java.lang.Object, java.lang.String)
+/**
+This convenience function creates a new action with the text
+<tt>text</tt>. The action's QAction.triggered() signal is connected to
+the <tt>receiver</tt>'s <tt>method</tt> slot. The function adds the
+newly created action to the menu's list of actions and returns it.
+ 
+*/
+
+
+$$QMenu.addAction(java.lang.String, com.trolltech.qt.QSignalEmitter.AbstractSignal)
+/**
+This convenience function creates a new action with the given
+<tt>text</tt>. It is connected to <tt>signal</tt>.
+
+<tt>text</tt>
+<tt>signal</tt>
+@return 
+*/
+
+
+$$QMenu.addAction(com.trolltech.qt.gui.QIcon, java.lang.String, java.lang.Object, java.lang.String, com.trolltech.qt.gui.QKeySequence)
+/**
+This function creates a new action with the given <tt>icon</tt>,
+<tt>shortcut</tt>, and <tt>text</tt>. It is connected to the
+<tt>receiver</tt>'s <tt>method</tt> slot. It returns the created
+action.
+
+*/
+
+
+$$QMenu.addAction(com.trolltech.qt.gui.QIcon, java.lang.String, com.trolltech.qt.QSignalEmitter.AbstractSignal, com.trolltech.qt.gui.QKeySequence)
+/**
+This function creates a new action with the given <tt>icon</tt>,
+<tt>shortcut</tt>, and <tt>text</tt>. It is connected to
+<tt>signal</tt>. It returns the created action.
+
+*/
+
+
+$$QMenu.addAction(com.trolltech.qt.gui.QIcon, java.lang.String, java.lang.Object, java.lang.String)
+/**
+This method creates a new action with the given <tt>icon</tt> and
+<tt>text</tt>. It is connected to the <tt>receiver</tt>'s
+<tt>method</tt> slot. It returns the created action.
+
+*/
+
+
+$$QMenu.addAction(com.trolltech.qt.gui.QIcon, java.lang.String, com.trolltech.qt.QSignalEmitter.AbstractSignal)
+/**
+This method creates an action with the given <tt>icon</tt> and <tt>text</tt>.
+It is connected to <tt>signal</tt> and returned.
+
+*/
+
+
+$$QTextEdit_ExtraSelection.QTextEdit_ExtraSelection()
+/**
+Creates a new QTextEdit_ExtraSelection.
+
+
+*/
+
+
+$$QTextEdit_ExtraSelection.setCursor(com.trolltech.qt.gui.QTextCursor)
+/**
+Sets this QTextEdit_ExtraSelection's <tt>cursor</tt>.
+
+*/
+
+
+$$QTextEdit_ExtraSelection.cursor()
+/**
+Returns the cursor of this QTextEdit_ExtraSelection.
+
+*/
+
+
+$$QTextEdit_ExtraSelection.setFormat(com.trolltech.qt.gui.QTextCharFormat)
+/**
+Sets the <tt>format</tt> of this QTextEdit_ExtraSelection.
+
+*/
+
+
+$$QTextEdit_ExtraSelection.format()
+/**
+Returns the format of this QTextEdit_ExtraSelection.
+
+*/
+
+
+$$QInputEvent.setModState(com.trolltech.qt.core.Qt.KeyboardModifier...)
+/**
+Sets this QInputEvent's keyboard modifiers to <tt>modState</tt>.
+
+*/
+
+
+$$QPainter.QPainter(com.trolltech.qt.gui.QWidget)
+/**
+Creates a QPainter with parent <tt>widget</tt>.
+
+*/
+
+
+$$QPainter.setBrush(com.trolltech.qt.gui.QColor)
+/**
+Sets the brush of this QPainter to a solid <tt>color</tt> brush.
+
+*/
+
+
+$$QPainter.setBrush(com.trolltech.qt.gui.QGradient)
+/**
+Sets this QPainter's brush to use <tt>gradient</tt>.
+
+<tt>gradient</tt>
+
+*/
+
+
+$$QPainter.setBrush(com.trolltech.qt.gui.QPixmap)
+/**
+Sets this QPainter's brush to use <tt>pm</tt>.
+
+*/
+
+
+$$QPainter.drawText(com.trolltech.qt.core.QRect, int, java.lang.String, com.trolltech.qt.core.QRect)
+/**
+Draws the given <tt>text</tt> within the provided <tt>rectangle</tt>.
+<p>
+The <tt>boundingRect</tt> (if not null) is set to the actual bounding
+rectangle of the output.  The <tt>flags</tt> argument is a bitwise OR of
+Qt.AlignmentFlags.
+
+*/
+
+
+$$QPainter.drawText(com.trolltech.qt.core.QRect, int, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+
+*/
+
+
+$$QPainter.drawText(com.trolltech.qt.core.QRectF, int, java.lang.String, com.trolltech.qt.core.QRectF)
+/**
+Draws the given <tt>text</tt> within the provided <tt>rectangle</tt>.
+<p>
+The <tt>boundingRect</tt> (if not null) is set to the actual bounding
+rectangle of the output.  The <tt>flags</tt> argument is a bitwise OR of
+Qt.AlignmentFlags.
+
+*/
+
+
+$$QPainter.drawText(com.trolltech.qt.core.QRectF, int, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+
+*/
+
+
+$$QPainter.drawText(int, int, int, int, int, java.lang.String, com.trolltech.qt.core.QRect)
+/**
+Draws the given <tt>text</tt> within the rectangle with origin
+(<tt>x</tt>, <tt>y</tt>), <tt>width</tt> and <tt>height</dd>.
+<p>
+The <tt>boundingRect</tt> (if not null) is set to the actual bounding
+rectangle of the output.  The <tt>flags</tt> argument is a bitwise OR
+of the following flags:
+
+*/
+
+
+$$QPainter.drawText(int, int, int, int, int, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPainter.redirected(com.trolltech.qt.gui.QPaintDeviceInterface, com.trolltech.qt.core.QPoint)
+/**
+Returns the replacement for given <tt>device</tt>. The optional out
+parameter <tt>offset</tt> returns the offset within the replaced
+device.
+
+*/
+
+
+$$QPainter.begin(com.trolltech.qt.gui.QWidget)
+/**
+This method initializes the painter to draw on <tt>widget</tt>.
+It returns true if successful; otherwise, it returns false.
+*/
+
+
+$$QTextLayout_FormatRange.QTextLayout_FormatRange()
+/**
+Creates a new QTextLayout_FormatRange.
+
+*/
+
+
+$$QTextLayout_FormatRange.setFormat(com.trolltech.qt.gui.QTextCharFormat)
+/**
+Sets this QTextLayout_FormatRange text char format to <tt>format</tt>.
+
+*/
+
+
+$$QTextLayout_FormatRange.format()
+/**
+Returns this QTextLayout_FormatRange's text char format.
+
+*/
+
+
+$$QTextLayout_FormatRange.setLength(int)
+/**
+Sets this QTextLayout_FormatRange's length to <tt>length</tt>.
+
+*/
+
+
+$$QTextLayout_FormatRange.length()
+/**
+Returns the length of this QTextLayout_FormatRange.
+
+*/
+
+
+$$QTextLayout_FormatRange.setStart(int)
+/**
+Sets the <tt>start</tt>, which is the beginning of the format range
+within the text layout's text, of this QTextLayout_FormatRange.
+
+*/
+
+
+$$QTextLayout_FormatRange.start()
+/**
+Returns the beginning of the format range within the text layout's
+text.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_PaintContext.QAbstractTextDocumentLayout_PaintContext()
+/**
+Creates a new QAbstractTextDocumentLayout_PaintContext object.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_PaintContext.setPalette(com.trolltech.qt.gui.QPalette)
+/**
+Sets the <tt>palette</tt> palette of this
+QAbstractTextDocumentLayout_PaintContext.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_PaintContext.palette()
+/**
+Returns the palette of this QAbstractTextDocumentLayout_PaintContext.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_PaintContext.setCursorPosition(int)
+/**
+Sets this QAbstractTextDocumentLayout_PaintContext's <tt>cursorPosition</tt>.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_PaintContext.cursorPosition()
+/**
+Returns this QAbstractTextDocumentLayout_PaintContext's cursor
+position.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_PaintContext.setClip(com.trolltech.qt.core.QRectF)
+/**
+Sets this QAbstractTextDocumentLayout_PaintContext's clip region to <tt>clip</tt>.
+
+*/
+
+
+$$QAbstractTextDocumentLayout_PaintContext.clip()
+/**
+Returns the clip region of this
+QAbstractTextDocumentLayout_PaintContext.
+
+*/
+
+
+$$QFontMetrics.boundingRect(int, int, int, int, int, java.lang.String, int, int[])
+/**
+Returns the bounding rectangle for the given <tt>text</tt> within the
+rectangle specified by the <tt>x</tt> and <tt>y</tt> coordinates, <tt>width</tt>, and
+<tt>height</tt>.
+<p>
+If Qt::TextExpandTabs is set in <tt>flags</tt> and <tt>tabArray</tt> is
+non-null, it specifies a 0-terminated sequence of pixel-positions
+for tabs; otherwise, if <tt>tabStops</tt> is non-zero, it is used as the
+tab spacing (in pixels).
+
+*/
+
+
+$$QFontMetrics.boundingRect(int, int, int, int, int, java.lang.String, int)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QFontMetrics.boundingRect(int, int, int, int, int, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QFontMetrics.boundingRect(com.trolltech.qt.core.QRect, int, java.lang.String, int, int[])
+/**
+Returns the bounding rectangle of the characters in the string
+specified by <tt>text</tt>, which is the set of pixels the text would
+cover if drawn at (0, 0). The drawing, and hence the bounding
+rectangle, is constrained to the rectangle <tt>rect</tt>.
+<p>
+The <tt>flags</tt> argument is the bitwise OR of the following flags:
+<p>
+<dir>
+<li> Qt.AlignLeft aligns to the left border, except for
+      Arabic and Hebrew where it aligns to the right.
+<li> Qt.AlignRight aligns to the right border, except for
+      Arabic and Hebrew where it aligns to the left.
+<li> Qt.AlignJustify produces justified text.
+<li> Qt.AlignHCenter aligns horizontally centered.
+<li> Qt.AlignTop aligns to the top border.
+<li> Qt.AlignBottom aligns to the bottom border.
+<li> Qt.AlignVCenter aligns vertically centered
+<li> Qt.AlignCenter 
+<li> Qt.TextSingleLine ignores newline characters in the text.
+<li> Qt.TextExpandTabs expands tabs (see below)
+<li> Qt.TextShowMnemonic interprets "&amp;x" as \underline{x}, i.e.
+underlined.
+<li> Qt.TextWordBreak breaks the text to fit the rectangle.
+</dir>
+<p>
+Qt::Horizontal alignment defaults to Qt::AlignLeft and vertical
+alignment defaults to Qt::AlignTop.
+<p>
+If several of the horizontal or several of the vertical alignment
+flags are set, the resulting alignment is undefined.
+<p>
+If Qt::TextExpandTabs is set in <tt>flags</tt>, then: if <tt>tabArray</tt> is
+non-null, it specifies a 0-terminated sequence of pixel-positions
+for tabs; otherwise if <tt>tabStops</tt> is non-zero, it is used as the
+tab spacing (in pixels).
+<p>
+Note that the bounding rectangle may extend to the left of (0, 0),
+e.g. for italicized fonts, and that the text output may cover
+<b>all</b> pixels in the bounding rectangle.
+<p>
+Newline characters are processed as line breaks.
+<p>
+Despite the different actual character heights, the heights of the
+bounding rectangles of "Yes" and "yes" are the same.
+<p>
+The bounding rectangle returned by this function is somewhat larger
+than that calculated by the simpler boundingRect() function. This
+function uses the minLeftBearing() maximum left  and
+minRightBearing() right font bearings as is
+necessary for multi-line text to align correctly. Also,
+fontHeight() and lineSpacing() are used to calculate the height,
+rather than individual character heights.
+
+*/
+
+
+$$QFontMetrics.boundingRect(com.trolltech.qt.core.QRect, int, java.lang.String, int)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFontMetrics.boundingRect(com.trolltech.qt.core.QRect, int, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QFontMetrics.size(int, java.lang.String, int, int[])
+/**
+Returns the size in pixels of <tt>text</tt>.
+<p>
+The <tt>flags</tt> argument is the bitwise OR of the following flags:
+<p>
+<dir>
+<li> Qt::TextSingleLine ignores newline characters.
+<li> Qt::TextExpandTabs expands tabs (see below)
+<li> Qt::TextShowMnemonic interprets "&amp;x" as \underline{x}, i.e.
+underlined.
+<li> Qt::TextWordBreak breaks the text to fit the rectangle.
+</dir>
+<p>
+If Qt::TextExpandTabs is set in <tt>flags</tt>, then: if <tt>tabArray</tt> is
+non-null, it specifies a 0-terminated sequence of pixel-positions
+for tabs; otherwise if <tt>tabStops</tt> is non-zero, it is used as the
+tab spacing (in pixels).
+<p>
+Newline characters are processed as line breaks.
+<p>
+Despite the different actual character heights, the heights of the
+bounding rectangles of "Yes" and "yes" are the same.
+
+*/
+
+
+$$QFontMetrics.size(int, java.lang.String, int)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QFontMetrics.size(int, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QGridLayout.getItemPosition(int)
+/**
+Returns the position information of the item with the given index.
+
+*/
+
+
+$$QWidget.getContentsMargins()
+/**
+Returns the widget's contents margins.
+
+*/
+
+
+$$QPicture.load(com.trolltech.qt.core.QIODevice)
+/**
+This is an overloaded member function, provided for convenience.
+
+<tt>dev</tt> is the device used for loading.
+
+*/
+
+
+$$QPicture.load(java.lang.String)
+/**
+Loads a picture from the file specified by fileName and returns true
+if successful; otherwise returns false.
+
+*/
+
+
+$$QPicture.save(com.trolltech.qt.core.QIODevice)
+/**
+This is an overloaded member function, provided for convenience.
+<p>
+<tt>dev</tt> is the device to use for saving.
+
+*/
+
+
+$$QPicture.save(java.lang.String)
+/**
+Saves a picture to the file specified by <tt>fileName</tt> and returns
+true if successful; otherwise returns false.
+
+*/
+
+
+$$QPicture.data()
+/**
+Returns the picture data.
+
+*/
+
+
+$$QRegion.setRects(com.trolltech.qt.core.QRect[])
+/**
+Sets the region using the array of rectangles specified by rects. The
+rectangles must be optimally Y-X sorted and follow these restrictions:
+<p>
+<dir>
+<li> The rectangles must not intersect.
+<li> All rectangles with a given top coordinate must have the same height.
+<li> No two rectangles may abut horizontally (they should be combined into a single wider rectangle in that case).
+<li> The rectangles must be sorted in ascending order, with Y as the major sort key and X as the minor sort key.
+</dir>
+
+*/
+
+
+$$QInputMethodEvent_Attribute.QInputMethodEvent_Attribute(com.trolltech.qt.gui.QInputMethodEvent.AttributeType, int, int, java.lang.Object)
+/**
+Constructs an input method attribute. <tt>t</tt> specifies the type of
+attribute, start (<tt>s</tt>) and length (<tt>l</tt>) the position of
+the attribute, and <tt>val</tt> the value of the attribute.
+
+*/
+
+
+$$QInputMethodEvent_Attribute.setLength(int)
+/**
+Sets the length of this QInputMethodEvent_Attribute.
+
+<tt>length</tt>
+
+*/
+
+
+$$QInputMethodEvent_Attribute.length()
+/**
+Returns the length of this QInputMethodEvent_Attribute.
+
+*/
+
+
+$$QInputMethodEvent_Attribute.setType(com.trolltech.qt.gui.QInputMethodEvent.AttributeType)
+/**
+Sets the <tt>type</tt> of this QInputMethodEvent_Attribute.
+
+*/
+
+
+$$QInputMethodEvent_Attribute.type()
+/**
+Returns the type of this QInputMethodEvent_Attribute.
+
+*/
+
+
+$$QInputMethodEvent_Attribute.setValue(java.lang.Object)
+/**
+Sets the value of this QInputMethodEvent_Attribute.
+
+*/
+
+
+$$QInputMethodEvent_Attribute.value()
+/**
+Returns the value of this QInputMethodEvent_Attribute.
+
+*/
+
+
+$$QInputMethodEvent_Attribute.setStart(int)
+/**
+Sets the <tt>start</tt> of this QInputMethodEvent_Attribute.
+
+*/
+
+
+$$QInputMethodEvent_Attribute.start()
+/**
+Returns the start of this QInputMethodEvent_Attribute.
+
+*/
+
+
+$$QTextDocument.redo(com.trolltech.qt.gui.QTextCursor)
+/**
+Redoes the last editing operation on the document if
+QTextDocument.isRedoAvailable() redo is available.
+<p>
+The provided <tt>cursor</tt> is positioned at the end of the location where
+the edition operation was redone.
+
+*/
+
+
+$$QTextDocument.undo(com.trolltech.qt.gui.QTextCursor)
+/**
+Undoes the last editing operation on the document if undo is
+available. The provided <tt>cursor</tt> is positioned at the end of the
+location where the edition operation was undone.
+<p>
+See the \l {Overview of Qt's Undo Framework}{Qt Undo Framework}
+documentation for details.
+
+*/
+
+
+$$QItemSelection.split(com.trolltech.qt.gui.QItemSelectionRange, com.trolltech.qt.gui.QItemSelectionRange, com.trolltech.qt.gui.QItemSelection)
+/**
+Splits the selection <tt>range</tt> using the selection <tt>other</tt> range.
+Removes all items in <tt>other</tt> from <tt>range</tt> and puts the result in
+<tt>result</tt>.
+
+*/
+
+
+$$QMatrix.rotate(double)
+/**
+Rotates the coordinate system the given <tt>other</tt> degrees
+counterclockwise.
+<p>
+Note that if you apply a QMatrix to a point defined in widget
+coordinates, the direction of the rotation will be clockwise
+because the y-axis points downwards.
+<p>
+Returns a reference to the matrix.
+
+*/
+
+
+$$QMatrix.scale(double, double)
+/**
+Scales the coordinate system by <tt>sx</tt> horizontally and
+<tt>sy</tt> vertically, and returns a reference to the matrix.
+
+*/
+
+
+$$QMatrix.shear(double, double)
+/**
+Shears the coordinate system by <tt>sh</tt> horizontally and
+<tt>sv</tt> vertically, and returns a reference to the matrix.
+
+*/
+
+
+$$QMatrix.translate(double, double)
+/**
+Moves the coordinate system <tt>dx</tt> along the x axis and
+<tt>dy</tt> along the y axis, and returns a reference to the matrix.
+
+*/
+
+
+$$QMatrix.multiply(com.trolltech.qt.gui.QMatrix)
+/**
+Returns the result of multiplying this matrix by <tt>other</tt>, and
+also store the result in this QMatrix.
+
+*/
+
+
+$$QMatrix.multiplied(com.trolltech.qt.gui.QMatrix)
+/**
+Returns the result of multiplying this matrix by <tt>other</tt>.
+
+*/
+
+
+$$QPolygonF.add(double, double)
+/**
+Adds the point (<tt>x</tt>, <tt>y</tt>) to the end of this polygon's
+point list.
+
+*/
+
+
+$$QPolygonF.add(com.trolltech.qt.core.QPointF)
+/**
+Adds <tt>pt</tt> to the end of this polygons point list.
+
+*/
+
+
+$$QPolygonF.add(com.trolltech.qt.gui.QPolygonF)
+/**
+Appends the points of <tt>p</tt> to the end of this polygons point
+list.
+
+*/
+
+
+$$QTextBlock_iterator.QTextBlock_iterator(com.trolltech.qt.gui.QTextBlock_iterator)
+/**
+Constructs a new QTextBlock_iterator by copying <tt>o</tt>.
+
+*/
+
+
+$$QTextBlock_iterator.QTextBlock_iterator()
+/**
+Creates a new QTextBlockIterator.
+
+*/
+
+
+$$QTextBlock_iterator.atEnd()
+/**
+Returns true if the iterator is at the end of the text block.
+
+*/
+
+
+$$QTextBlock_iterator.fragment()
+/**
+Returns the text fragment the iterator currently points to.
+
+*/
+
+
+$$QTextBlock_iterator.next()
+/**
+Advances the iterator to the next item in the hash.
+
+*/
+
+
+$$QTextBlock_iterator.previous()
+/**
+Makes the preceding item the current item.
+
+*/
+
+
+$$QBitmap.QBitmap(java.lang.String, java.lang.String)
+/**
+Constructs a bitmap from the file specified by the given
+<tt>fileName</tt>. If the file does not exist, or has an unknown
+format, the bitmap becomes a null bitmap.
+<p>
+The <tt>fileName</tt> and <tt>format</tt> parameters are passed on to
+the QPixmap::load() function. If the file format uses more than 1 bit
+per pixel, the resulting bitmap will be dithered automatically.
+
+*/
+
+
+$$QBitmap.QBitmap(java.lang.String)
+/**
+This is an overloaded constructor provided for convenience.
+
+*/
+
+
+$$QBitmap.fromData(com.trolltech.qt.core.QSize, byte[], com.trolltech.qt.gui.QImage.Format)
+/**
+Constructs a bitmap with the given <tt>size</tt>, and sets the
+contents to the <tt>bits</tt> supplied.
+<p>
+The bitmap data has to be byte aligned and provided in in the bit
+order specified by <tt>monoFormat</tt>. The mono format must be either
+QImage::Format_Mono or QImage::Format_MonoLSB. Use QImage::Format_Mono
+to specify data on the XBM format.
+
+*/
+
+
+$$QBitmap.fromData(com.trolltech.qt.core.QSize, byte[])
+/**
+This is an overloaded constructor provided for convenience.
+*/
+
+
+$$QLineF.intersect(com.trolltech.qt.gui.QLineF, com.trolltech.qt.core.QPointF)
+/**
+Returns a value indicating whether or not <b>this</b> line intersects
+with the given <tt>line</tt>.
+<p>
+The actual intersection point is extracted to
+<tt>intersectionPoint</tt> (if the pointer is valid). If the lines are
+parallel, the intersection point is undefined.
+
+*/
+
+
+$$QPainterPath.toFillPolygons()
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPainterPath.toFillPolygons(com.trolltech.qt.gui.QMatrix)
+/**
+Converts the path into a list of polygons using the 
+QMatrix <tt>matrix</tt>, and returns the list.
+<p>
+The function differs from the toFillPolygon() function in that it
+creates several polygons. It is provided because it is usually
+faster to draw several small polygons than to draw one large
+polygon, even though the total number of points drawn is the same.
+<p>
+The toFillPolygons() function differs from the toSubpathPolygons()
+function in that it create only polygon for subpaths that have
+overlapping bounding rectangles.
+<p>
+Like the toFillPolygon() function, this function uses a rewinding
+technique to make sure that overlapping subpaths can be filled
+using the correct fill rule. Note that rewinding inserts addition
+lines in the polygons so the outline of the fill polygon does not
+match the outline of the path.
+
+*/
+
+
+$$QPainterPath.toSubpathPolygons()
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QPainterPath.toSubpathPolygons(com.trolltech.qt.gui.QMatrix)
+/**
+Converts the path into a list of polygons using the QMatrix
+<tt>matrix</tt>, and returns the list.
+<p>
+This function creates one polygon for each subpath regardless of
+intersecting subpaths (i.e. overlapping bounding rectangles). To
+make sure that such overlapping subpaths are filled correctly, use
+the toFillPolygons() function instead.
+
+*/
+
+
+$$QCursor.bitmap()
+/**
+Returns the cursor bitmap, or null if it is one of the standard
+cursors.
+
+*/
+
+
+$$QCursor.mask()
+/**
+Returns the cursor bitmap mask, or null if it is one of the standard
+cursors.
+
+*/
+
+
+$$QPen.QPen(com.trolltech.qt.gui.QColor, double, com.trolltech.qt.core.Qt.PenStyle, com.trolltech.qt.core.Qt.PenCapStyle, com.trolltech.qt.core.Qt.PenJoinStyle)
+/**
+Constructs a pen with the specified <tt>color</tt>, <tt>width</tt>,
+pen style <tt>s</tt>, pen cap style <tt>c</tt>, and pen join style
+<tt>j</tt>
+
+*/
+
+
+$$QPen.QPen(com.trolltech.qt.gui.QColor, double, com.trolltech.qt.core.Qt.PenStyle, com.trolltech.qt.core.Qt.PenCapStyle)
+/**
+Constructs a pen with the specified <tt>color</tt>, <tt>width</tt>, pen style <tt>s</tt>,
+and <tt>c</tt> cap style.
+
+*/
+
+
+$$QPen.QPen(com.trolltech.qt.gui.QColor, double, com.trolltech.qt.core.Qt.PenStyle)
+/**
+This is an overloaded constructor provided for convenience.
+*/
+
+
+$$QPen.QPen(com.trolltech.qt.gui.QColor, double)
+/**
+This is an overloaded constructor provided for convenience.
+*/
+
+
+$$QImage.QImage(java.lang.String[])
+/**
+Constructs an image from the given <tt>xpm</tt> image.
+<p>
+Make sure that the image is a valid XPM image. Errors are silently
+ignored.
+
+*/
+
+
+$$QImage.QImage(byte[], int, int, com.trolltech.qt.gui.QImage.Format)
+/**
+Constructs an image with the given <tt>width</tt>, <tt>height</tt> and
+<tt>format</tt>, that uses an existing read-only memory buffer,
+<tt>data</tt>. The <tt>width</tt> and <tt>height</tt> must be
+specified in pixels, <tt>data</tt> must be 32-bit aligned, and each
+scanline of data in the image must also be 32-bit aligned.
+<p>
+The buffer must remain valid throughout the life of the QImage and all
+copies that have not been modified or otherwise detached from the
+original buffer. The image does not delete the buffer at destruction.
+<p>
+If the image is in an indexed color format, set the color table
+for the image using setColorTable().
+<p>
+Unlike the similar QImage constructor that takes a non-const data
+buffer, this version will never alter the contents of the buffer. For
+example, calling QImage::bits() will return a deep copy of the image,
+rather than the buffer passed to the constructor.  This allows for the
+efficiency of constructing a QImage from raw data, without the
+possibility of the raw data being changed.
+
+*/
+
+
+$$QImage.QImage(java.lang.String, java.lang.String)
+/**
+Constructs an image and tries to load the image from the file with the
+given <tt>fileName</tt>.
+<p>
+The loader attempts to read the image using the specified
+<tt>format</tt>. If the <tt>format</tt> is not specified (which is the
+default), the loader probes the file for a header to guess the file
+format.
+<p>
+If the loading of the image failed, this object is a null image.
+<p>
+The file name can either refer to an actual file on disk or to one of
+the application's embedded resources. See the
+\l{resources.html}{Resource System} overview for details on how to
+embed images and other resource files in the application's executable.
+
+*/
+
+
+$$QImage.QImage(java.lang.String)
+/**
+This is an overloaded constructor provided for convenience.
+
+*/
+
+
+$$QImage.convertToFormat(com.trolltech.qt.gui.QImage.Format, java.util.List<java.lang.Integer>)
+/**
+Returns a copy of the image converted to the given <tt>format</tt>,
+using the specified <tt>colorTable</tt>.
+<p>
+Conversion from 32 bit to 8 bit indexed is a slow operation and
+will use a straightforward nearest color approach, with no
+dithering.
+
+*/
+
+
+$$QImage.save(java.lang.String, java.lang.String, int)
+/**
+Saves the image to the file with the given <tt>fileName</tt>, using the
+given image file <tt>format</tt> and <tt>quality</tt> factor. If <tt>format</tt> is
+null, QImage will attempt to guess the format by looking at <tt>fileName</tt>'s
+suffix.
+<p>
+The <tt>quality</tt> factor must be in the range 0 to 100 or -1. Specify
+0 to obtain small compressed files, 100 for large uncompressed
+files, and -1 (the default) to use the default settings.
+<p>
+Returns true if the image was successfully saved; otherwise
+returns false.
+
+*/
+
+
+$$QImage.save(java.lang.String, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QImage.save(java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QImage.copyOfBytes()
+/**
+Returns a copy of the image data.
+
+@return 
+*/
+
+
+$$QImage.save(com.trolltech.qt.core.QIODevice, java.lang.String, int)
+/**
+This is an overloaded method provided for convenience.
+
+*/
+
+
+$$QImage.save(com.trolltech.qt.core.QIODevice, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QImage.save(com.trolltech.qt.core.QIODevice)
+/**
+This is an overloaded function provided for convenience.
+
+*/
+
+
+$$QImage.load(java.lang.String, java.lang.String)
+/**
+Loads an image from the file with the given <tt>fileName</tt>. Returns
+true if the image was successfully loaded; otherwise returns false.
+<p>
+The loader attempts to read the image using the specified
+<tt>format</tt>. If the <tt>format</tt> is null, the loader probes the
+file for a header to guess the file format.
+<p>
+The file name can either refer to an actual file on disk or to one of
+the application's embedded resources. See the
+\l{resources.html}{Resource System} overview for details on how to
+embed images and other resource files in the application's executable.
+ 
+*/
+
+
+$$QImage.load(java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QImage.load(com.trolltech.qt.core.QIODevice, java.lang.String)
+/**
+This is an overloaded function provided for convenience.
+*/
+
+
+$$QImage.load(com.trolltech.qt.core.QIODevice)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QImage.loadFromData(byte[], java.lang.String)
+/**
+Loads an image from the binary <tt>data</tt>. Returns true if the image
+was successfully loaded; otherwise returns false.
+<p>
+The loader attempts to read the image using the specified format. If
+the <tt>format</tt> is not specified (which is the default), the
+loader probes the file for a header to guess the file format.
+
+*/
+
+
+$$QImage.loadFromData(byte[])
+/**
+This is an overloaded method provided for convenience.
+
+*/
+
+
+$$QImage.loadFromData(com.trolltech.qt.core.QByteArray, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QImage.loadFromData(com.trolltech.qt.core.QByteArray)
+/**
+This is an overloaded method provided for convenience.
+*/
+
+
+$$QImage.fromData(com.trolltech.qt.core.QByteArray, java.lang.String)
+/**
+This is an overloaded method provided for convenience.
+<p>
+Loads an image from the given QByteArray <tt>data</tt>.
+
+*/
+
+
+$$QImage.fromData(com.trolltech.qt.core.QByteArray)
+/**
+This is an overloaded method provided for convenience.
+<p>
+Loads an image from the given QByteArray <tt>data</tt>.
+
+*/
+
+
+$$QPolygon.add(int, int)
+/**
+Adds the point (<tt>x</tt>, <tt>y</tt>) to the end of this QPolygon's
+point list.
+
+*/
+
+
+$$QPolygon.add(com.trolltech.qt.core.QPoint)
+/**
+Adds <tt>pt</tt> to this polygon's point list.
+
+*/
+
+
+$$QPolygon.add(com.trolltech.qt.gui.QPolygon)
+/**
+Adds the points in <tt>p</tt> to the end of this polygons point list.
+
+*/
+
+
+$$QPushButton.initStyleOption(com.trolltech.qt.gui.QStyleOptionButton)
+/**
+Initialize <tt>option</tt> with the values from this QPushButton. This
+method is useful for subclasses when they need a QStyleOptionButton,
+but don't want to fill in all the information themselves.
+
+*/
+
+
+$$QPaintEngineState.setDirtyFlags(com.trolltech.qt.gui.QPaintEngine.DirtyFlag...)
+/**
+Sets this QPaintEngineState's <tt>dirtyFlags</tt>.
+
+*/
+
+
+$$QHeaderView.initStyleOption(com.trolltech.qt.gui.QStyleOptionHeader)
+/**
+Initialize <tt>option</tt> with the values from this QHeaderView. This
+method is useful for subclasses when they need a QStyleOptionButton,
+but don't want to fill in all the information themselves.
+
+*/
+
+
+$$QScrollBar.initStyleOption(com.trolltech.qt.gui.QStyleOptionSlider)
+/**
+Initialize <tt>option</tt> with the values from this QScrollBar. This
+method is useful for subclasses when they need a QStyleOptionButton,
+but don't want to fill in all the information themselves.
+
+*/
+
+
+$$QAction.setIcon(com.trolltech.qt.gui.QPixmap)
+/**
+Sets this QAction's icon to <tt>pm</tt>.
+
+*/
+
+
+$$QPaintEngine.drawImage(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QImage, com.trolltech.qt.core.QRectF, com.trolltech.qt.core.Qt.ImageConversionFlag...)
+/**
+Reimplement this function to draw the part of the <tt>pm</tt>
+specified by the <tt>sr</tt> rectangle in the given <tt>r</tt> using
+the given conversion flags <tt>flags</tt>, to convert it to a pixmap.
+
+*/
+
+
+$$QPaintEngine.setGccaps(com.trolltech.qt.gui.QPaintEngine.PaintEngineFeature...)
+/**
+Sets this QPaintEngine's <tt>gccaps</tt>.
+
+*/
+
+
+$$QTextLayout.draw(com.trolltech.qt.gui.QPainter, com.trolltech.qt.core.QPointF, java.util.List<com.trolltech.qt.gui.QTextLayout_FormatRange>)
+/**
+Draws the whole layout on the painter <tt>p</tt> at the position
+specified by <tt>pos</tt>.  The rendered layout includes the given
+<tt>selections</tt>.
+
+*/
+
+
+$$QItemSelectionModel.selectedColumns()
+/**
+Returns the indexes in row 0 for columns where all rows are
+selected.
+
+*/
+
+
+$$QItemSelectionModel.selectedRows()
+/**
+Returns the indexes in column 0 for the rows where all
+columns are selected.
+
+*/
+
+
+$$QItemSelectionModel.select(com.trolltech.qt.core.QModelIndex, com.trolltech.qt.gui.QItemSelectionModel.SelectionFlag...)
+/**
+Selects the model item <tt>index</tt> using the specified
+<tt>command</tt>, and emits selectionChanged().
+
+*/
+
+
+$$QItemSelectionModel.select(com.trolltech.qt.gui.QItemSelection, com.trolltech.qt.gui.QItemSelectionModel.SelectionFlag...)
+/**
+Selects the item <tt>selection</tt> using the specified <tt>command</tt>, and
+emits selectionChanged().
+
+*/
+
+
+$$QTextCursor.selectedTableCells()
+/**
+Returns the selected table cells as a QTableArea.
+
+*/
+
+
+$$QGraphicsLineItem.QGraphicsLineItem(com.trolltech.qt.gui.QLineF, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
+
+<tt>line</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsLineItem.QGraphicsLineItem(com.trolltech.qt.gui.QLineF)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
+
+<tt>line</tt>
+
+*/
+
+
+$$QGraphicsLineItem.QGraphicsLineItem(com.trolltech.qt.gui.QLineF, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
+
+<tt>line</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QGraphicsLineItem.QGraphicsLineItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
+
+<tt>x1</tt>
+<tt>y1</tt>
+<tt>x2</tt>
+<tt>y2</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsLineItem.QGraphicsLineItem(double, double, double, double)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
+
+<tt>x1</tt>
+<tt>y1</tt>
+<tt>x2</tt>
+<tt>y2</tt>
+
+*/
+
+
+$$QGraphicsLineItem.QGraphicsLineItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
+
+<tt>x1</tt>
+<tt>y1</tt>
+<tt>x2</tt>
+<tt>y2</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QGraphicsSimpleTextItem.QGraphicsSimpleTextItem(java.lang.String, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsSimpleTextItem.
+
+<tt>text</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsSimpleTextItem.QGraphicsSimpleTextItem(java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsSimpleTextItem.
+
+<tt>text</tt>
+
+*/
+
+
+$$QGraphicsSimpleTextItem.QGraphicsSimpleTextItem(java.lang.String, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsSimpleTextItem.
+
+<tt>text</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QStyleOptionToolBoxV2.setPosition(com.trolltech.qt.gui.QStyleOptionToolBoxV2.TabPosition)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionToolBoxV2.setPosition.
+
+<tt>position</tt>
+
+*/
+
+
+$$QStyleOptionToolBoxV2.position()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionToolBoxV2.position.
+
+
+*/
+
+
+$$QGraphicsItem.QGraphicsItem(com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItem.
+
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsItem.QGraphicsItem()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItem.
+
+
+*/
+
+
+$$QGraphicsItem.QGraphicsItem(com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItem.
+
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QAccessibleWidgetEx.QAccessibleWidgetEx(com.trolltech.qt.gui.QWidget, com.trolltech.qt.gui.QAccessible.Role, java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.
+
+<tt>o</tt>
+<tt>r</tt>
+<tt>name</tt>
+
+*/
+
+
+$$QAccessibleWidgetEx.addControllingSignal(java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.addControllingSignal.
+
+<tt>signal</tt>
+
+*/
+
+
+$$QAccessibleWidgetEx.parentObject()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.parentObject.
+
+
+*/
+
+
+$$QAccessibleWidgetEx.setAccelerator(java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.setAccelerator.
+
+<tt>accel</tt>
+
+*/
+
+
+$$QAccessibleWidgetEx.setDescription(java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.setDescription.
+
+<tt>desc</tt>
+
+*/
+
+
+$$QAccessibleWidgetEx.setHelp(java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.setHelp.
+
+<tt>help</tt>
+
+*/
+
+
+$$QAccessibleWidgetEx.setValue(java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.setValue.
+
+<tt>value</tt>
+
+*/
+
+
+$$QAccessibleWidgetEx.widget()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.widget.
+
+
+*/
+
+
+$$QGraphicsEllipseItem.QGraphicsEllipseItem(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
+
+<tt>rect</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsEllipseItem.QGraphicsEllipseItem(com.trolltech.qt.core.QRectF)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
+
+<tt>rect</tt>
+
+*/
+
+
+$$QGraphicsEllipseItem.QGraphicsEllipseItem(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
+
+<tt>rect</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QGraphicsEllipseItem.QGraphicsEllipseItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
+
+<tt>x</tt>
+<tt>y</tt>
+<tt>w</tt>
+<tt>h</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsEllipseItem.QGraphicsEllipseItem(double, double, double, double)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
+
+<tt>x</tt>
+<tt>y</tt>
+<tt>w</tt>
+<tt>h</tt>
+
+*/
+
+
+$$QGraphicsEllipseItem.QGraphicsEllipseItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
+
+<tt>x</tt>
+<tt>y</tt>
+<tt>w</tt>
+<tt>h</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QGraphicsPathItem.QGraphicsPathItem(com.trolltech.qt.gui.QPainterPath, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPathItem.
+
+<tt>path</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsPathItem.QGraphicsPathItem(com.trolltech.qt.gui.QPainterPath)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPathItem.
+
+<tt>path</tt>
+
+*/
+
+
+$$QGraphicsPathItem.QGraphicsPathItem(com.trolltech.qt.gui.QPainterPath, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPathItem.
+
+<tt>path</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QShortcutEvent.setSequence(com.trolltech.qt.gui.QKeySequence)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.setSequence.
+
+<tt>sequence</tt>
+
+*/
+
+
+$$QShortcutEvent.sequence()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.sequence.
+
+
+*/
+
+
+$$QShortcutEvent.setSid(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.setSid.
+
+<tt>sid</tt>
+
+*/
+
+
+$$QShortcutEvent.sid()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.sid.
+
+
+*/
+
+
+$$QShortcutEvent.setAmbig(boolean)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.setAmbig.
+
+<tt>ambig</tt>
+
+*/
+
+
+$$QShortcutEvent.ambig()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.ambig.
+
+
+*/
+
+
+$$QGraphicsRectItem.QGraphicsRectItem(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
+
+<tt>rect</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsRectItem.QGraphicsRectItem(com.trolltech.qt.core.QRectF)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
+
+<tt>rect</tt>
+
+*/
+
+
+$$QGraphicsRectItem.QGraphicsRectItem(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
+
+<tt>rect</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QGraphicsRectItem.QGraphicsRectItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
+
+<tt>x</tt>
+<tt>y</tt>
+<tt>w</tt>
+<tt>h</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsRectItem.QGraphicsRectItem(double, double, double, double)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
+
+<tt>x</tt>
+<tt>y</tt>
+<tt>w</tt>
+<tt>h</tt>
+
+*/
+
+
+$$QGraphicsRectItem.QGraphicsRectItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
+
+<tt>x</tt>
+<tt>y</tt>
+<tt>w</tt>
+<tt>h</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QAccessibleObjectEx.QAccessibleObjectEx(com.trolltech.qt.core.QObject)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleObjectEx.
+
+<tt>object</tt>
+
+*/
+
+
+$$QStyleFactory.QStyleFactory()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleFactory.
+
+
+*/
+
+
+$$QDragResponseEvent.dragAccepted()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragResponseEvent.dragAccepted.
+
+
+*/
+
+
+$$QDragResponseEvent.setA(boolean)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragResponseEvent.setA.
+
+<tt>a</tt>
+
+*/
+
+
+$$QDragResponseEvent.a()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragResponseEvent.a.
+
+
+*/
+
+
+$$QStyleOptionDockWidgetV2.QStyleOptionDockWidgetV2(com.trolltech.qt.gui.QStyleOptionDockWidget)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.
+
+<tt>other</tt>
+
+*/
+
+
+$$QStyleOptionDockWidgetV2.QStyleOptionDockWidgetV2(com.trolltech.qt.gui.QStyleOptionDockWidgetV2)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.
+
+<tt>other</tt>
+
+*/
+
+
+$$QStyleOptionDockWidgetV2.QStyleOptionDockWidgetV2(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.
+
+<tt>version</tt>
+
+*/
+
+
+$$QStyleOptionDockWidgetV2.QStyleOptionDockWidgetV2()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.
+
+
+*/
+
+
+$$QStyleOptionDockWidgetV2.setVerticalTitleBar(boolean)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.setVerticalTitleBar.
+
+<tt>verticalTitleBar</tt>
+
+*/
+
+
+$$QStyleOptionDockWidgetV2.verticalTitleBar()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.verticalTitleBar.
+
+
+*/
+
+
+$$QDesktopServices.QDesktopServices()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDesktopServices.
+
+
+*/
+
+
+$$QGraphicsTextItem.QGraphicsTextItem(java.lang.String, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsTextItem.
+
+<tt>text</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsTextItem.QGraphicsTextItem(java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsTextItem.
+
+<tt>text</tt>
+
+*/
+
+
+$$QGraphicsTextItem.QGraphicsTextItem(java.lang.String, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsTextItem.
+
+<tt>text</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QAccessible2Interface.QAccessible2Interface()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessible2Interface.
+
+
+*/
+
+
+$$QAccessible.QAccessible()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessible.
+
+
+*/
+
+
+$$QStyleOptionViewItemV3.QStyleOptionViewItemV3(com.trolltech.qt.gui.QStyleOptionViewItemV3)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.
+
+<tt>other</tt>
+
+*/
+
+
+$$QStyleOptionViewItemV3.QStyleOptionViewItemV3()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.
+
+
+*/
+
+
+$$QStyleOptionViewItemV3.QStyleOptionViewItemV3(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.
+
+<tt>version</tt>
+
+*/
+
+
+$$QStyleOptionViewItemV3.QStyleOptionViewItemV3(com.trolltech.qt.gui.QStyleOptionViewItem)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.
+
+<tt>other</tt>
+
+*/
+
+
+$$QStyleOptionViewItemV3.widget()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.widget.
+
+
+*/
+
+
+$$QStyleOptionViewItemV3.setLocale(com.trolltech.qt.core.QLocale)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.setLocale.
+
+<tt>locale</tt>
+
+*/
+
+
+$$QStyleOptionViewItemV3.locale()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.locale.
+
+
+*/
+
+
+$$QAccessibleTextInterface.QAccessibleTextInterface()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.
+
+
+*/
+
+
+$$QAccessibleTextInterface.qAccessibleTextCastHelper()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.qAccessibleTextCastHelper.
+
+
+*/
+
+
+$$QAccessibleTextInterface.addSelection(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.addSelection.
+
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.attributes(int, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.attributes.
+
+<tt>offset</tt>
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.characterCount()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.characterCount.
+
+
+*/
+
+
+$$QAccessibleTextInterface.characterRect(int, com.trolltech.qt.gui.QAccessible2.CoordinateType)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.characterRect.
+
+<tt>offset</tt>
+<tt>coordType</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.cursorPosition()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.cursorPosition.
+
+
+*/
+
+
+$$QAccessibleTextInterface.offsetAtPoint(com.trolltech.qt.core.QPoint, com.trolltech.qt.gui.QAccessible2.CoordinateType)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.offsetAtPoint.
+
+<tt>point</tt>
+<tt>coordType</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.removeSelection(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.removeSelection.
+
+<tt>selectionIndex</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.scrollToSubstring(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.scrollToSubstring.
+
+<tt>startIndex</tt>
+<tt>endIndex</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.selection(int, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.selection.
+
+<tt>selectionIndex</tt>
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.selectionCount()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.selectionCount.
+
+
+*/
+
+
+$$QAccessibleTextInterface.setCursorPosition(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.setCursorPosition.
+
+<tt>position</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.setSelection(int, int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.setSelection.
+
+<tt>selectionIndex</tt>
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.text(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.text.
+
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.textAfterOffset(int, com.trolltech.qt.gui.QAccessible2.BoundaryType, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.textAfterOffset.
+
+<tt>offset</tt>
+<tt>boundaryType</tt>
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.textAtOffset(int, com.trolltech.qt.gui.QAccessible2.BoundaryType, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.textAtOffset.
+
+<tt>offset</tt>
+<tt>boundaryType</tt>
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleTextInterface.textBeforeOffset(int, com.trolltech.qt.gui.QAccessible2.BoundaryType, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.textBeforeOffset.
+
+<tt>offset</tt>
+<tt>boundaryType</tt>
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleSimpleEditableTextInterface.QAccessibleSimpleEditableTextInterface(com.trolltech.qt.gui.QAccessibleInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleSimpleEditableTextInterface.
+
+<tt>accessibleInterface</tt>
+
+*/
+
+
+$$QInputContextFactory.QInputContextFactory()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QInputContextFactory.
+
+
+*/
+
+
+$$QAbstractGraphicsShapeItem.QAbstractGraphicsShapeItem(com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAbstractGraphicsShapeItem.
+
+<tt>parent</tt>
+
+*/
+
+
+$$QAbstractGraphicsShapeItem.QAbstractGraphicsShapeItem()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAbstractGraphicsShapeItem.
+
+
+*/
+
+
+$$QAbstractGraphicsShapeItem.QAbstractGraphicsShapeItem(com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAbstractGraphicsShapeItem.
+
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QTreeModel.QTreeModel()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.
+
+
+*/
+
+
+$$QTreeModel.QTreeModel(com.trolltech.qt.core.QObject)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.
+
+<tt>parent</tt>
+
+*/
+
+
+$$QTreeModel.childrenInserted(com.trolltech.qt.core.QModelIndex, int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.childrenInserted.
+
+<tt>parent</tt>
+<tt>first</tt>
+<tt>last</tt>
+
+*/
+
+
+$$QTreeModel.childrenRemoved(com.trolltech.qt.core.QModelIndex, int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.childrenRemoved.
+
+<tt>parent</tt>
+<tt>first</tt>
+<tt>last</tt>
+
+*/
+
+
+$$QTreeModel.indexToValue(com.trolltech.qt.core.QModelIndex)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.indexToValue.
+
+<tt>index</tt>
+
+*/
+
+
+$$QTreeModel.releaseChildren(com.trolltech.qt.core.QModelIndex)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.releaseChildren.
+
+<tt>index</tt>
+
+*/
+
+
+$$QTreeModel.valueToIndex(java.lang.Object)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.valueToIndex.
+
+<tt>object</tt>
+
+*/
+
+
+$$QTreeModel.child(java.lang.Object, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.child.
+
+<tt>parent</tt>
+<tt>index</tt>
+
+*/
+
+
+$$QTreeModel.childCount(java.lang.Object)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.childCount.
+
+<tt>parent</tt>
+
+*/
+
+
+$$QTreeModel.icon(java.lang.Object)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.icon.
+
+<tt>value</tt>
+
+*/
+
+
+$$QTreeModel.text(java.lang.Object)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.text.
+
+<tt>value</tt>
+
+*/
+
+
+$$QLayoutItem.setAlign(com.trolltech.qt.core.Qt.Alignment)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayoutItem.setAlign.
+
+<tt>align</tt>
+
+*/
+
+
+$$QLayoutItem.align()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayoutItem.align.
+
+
+*/
+
+
+$$QGraphicsPolygonItem.QGraphicsPolygonItem(com.trolltech.qt.gui.QPolygonF, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPolygonItem.
+
+<tt>polygon</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsPolygonItem.QGraphicsPolygonItem(com.trolltech.qt.gui.QPolygonF)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPolygonItem.
+
+<tt>polygon</tt>
+
+*/
+
+
+$$QGraphicsPolygonItem.QGraphicsPolygonItem(com.trolltech.qt.gui.QPolygonF, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPolygonItem.
+
+<tt>polygon</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QStandardItemModel.setItem(int, com.trolltech.qt.gui.QStandardItem)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStandardItemModel.setItem.
+
+<tt>row</tt>
+<tt>item</tt>
+
+*/
+
+
+$$QStyleOptionFrameV2.setFeatures(com.trolltech.qt.gui.QStyleOptionFrameV2.FrameFeatures)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionFrameV2.setFeatures.
+
+<tt>features</tt>
+
+*/
+
+
+$$QStyleOptionFrameV2.features()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionFrameV2.features.
+
+
+*/
+
+
+$$QGraphicsItemGroup.QGraphicsItemGroup(com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItemGroup.
+
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsItemGroup.QGraphicsItemGroup()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItemGroup.
+
+
+*/
+
+
+$$QGraphicsItemGroup.QGraphicsItemGroup(com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItemGroup.
+
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QGraphicsPixmapItem.QGraphicsPixmapItem(com.trolltech.qt.gui.QPixmap, com.trolltech.qt.gui.QGraphicsItemInterface)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPixmapItem.
+
+<tt>pixmap</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QGraphicsPixmapItem.QGraphicsPixmapItem(com.trolltech.qt.gui.QPixmap)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPixmapItem.
+
+<tt>pixmap</tt>
+
+*/
+
+
+$$QGraphicsPixmapItem.QGraphicsPixmapItem(com.trolltech.qt.gui.QPixmap, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPixmapItem.
+
+<tt>pixmap</tt>
+<tt>parent</tt>
+<tt>scene</tt>
+
+*/
+
+
+$$QAccessibleBridge.QAccessibleBridge()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleBridge.
+
+
+*/
+
+
+$$QAccessibleValueInterface.QAccessibleValueInterface()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.
+
+
+*/
+
+
+$$QAccessibleValueInterface.qAccessibleValueCastHelper()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.qAccessibleValueCastHelper.
+
+
+*/
+
+
+$$QAccessibleValueInterface.currentValue()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.currentValue.
+
+
+*/
+
+
+$$QAccessibleValueInterface.maximumValue()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.maximumValue.
+
+
+*/
+
+
+$$QAccessibleValueInterface.minimumValue()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.minimumValue.
+
+
+*/
+
+
+$$QAccessibleValueInterface.setCurrentValue(java.lang.Object)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.setCurrentValue.
+
+<tt>value</tt>
+
+*/
+
+
+$$QFileDialog.setDirectory(com.trolltech.qt.core.QDir)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QFileDialog.setDirectory.
+
+<tt>directory</tt>
+
+*/
+
+
+$$QPixmapCache.QPixmapCache()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPixmapCache.
+
+
+*/
+
+
+$$QAccessibleEditableTextInterface.QAccessibleEditableTextInterface()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.
+
+
+*/
+
+
+$$QAccessibleEditableTextInterface.qAccessibleEditableTextCastHelper()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.qAccessibleEditableTextCastHelper.
+
+
+*/
+
+
+$$QAccessibleEditableTextInterface.copyText(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.copyText.
+
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleEditableTextInterface.cutText(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.cutText.
+
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleEditableTextInterface.deleteText(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.deleteText.
+
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+
+*/
+
+
+$$QAccessibleEditableTextInterface.insertText(int, java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.insertText.
+
+<tt>offset</tt>
+<tt>text</tt>
+
+*/
+
+
+$$QAccessibleEditableTextInterface.pasteText(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.pasteText.
+
+<tt>offset</tt>
+
+*/
+
+
+$$QAccessibleEditableTextInterface.replaceText(int, int, java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.replaceText.
+
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+<tt>text</tt>
+
+*/
+
+
+$$QAccessibleEditableTextInterface.setAttributes(int, int, java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.setAttributes.
+
+<tt>startOffset</tt>
+<tt>endOffset</tt>
+<tt>attributes</tt>
+
+*/
+
+
+$$QAccessibleInterfaceEx.QAccessibleInterfaceEx()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleInterfaceEx.
+
+
+*/
+
+
+$$QAccessibleInterfaceEx.interface_cast(com.trolltech.qt.gui.QAccessible2.InterfaceType)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleInterfaceEx.interface_cast.
+
+<tt>arg__1</tt>
+
+*/
+
+
+$$QAccessibleInterfaceEx.virtual_hook(java.lang.Object)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleInterfaceEx.virtual_hook.
+
+<tt>data</tt>
+
+*/
+
+
+$$QAccessibleInterface.QAccessibleInterface()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleInterface.
+
+
+*/
+
+
+$$QTextLine.cursorToX(int, com.trolltech.qt.gui.QTextLine.Edge)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextLine.cursorToX.
+
+<tt>cursorPos</tt>
+<tt>edge</tt>
+
+*/
+
+
+$$QMouseEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButtons)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QMouseEvent.setMouseState.
+
+<tt>mouseState</tt>
+
+*/
+
+
+$$QMouseEvent.mouseState()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QMouseEvent.mouseState.
+
+
+*/
+
+
+$$QMouseEvent.setB(com.trolltech.qt.core.Qt.MouseButton)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QMouseEvent.setB.
+
+<tt>b</tt>
+
+*/
+
+
+$$QMouseEvent.b()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QMouseEvent.b.
+
+
+*/
+
+
+$$QDragMoveEvent.setRect(com.trolltech.qt.core.QRect)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragMoveEvent.setRect.
+
+<tt>rect</tt>
+
+*/
+
+
+$$QDragMoveEvent.rect()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragMoveEvent.rect.
+
+
+*/
+
+
+$$QDropEvent.mdata()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.mdata.
+
+
+*/
+
+
+$$QDropEvent.setDefault_action(com.trolltech.qt.core.Qt.DropAction)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setDefault_action.
+
+<tt>default_action</tt>
+
+*/
+
+
+$$QDropEvent.default_action()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.default_action.
+
+
+*/
+
+
+$$QDropEvent.setModState(com.trolltech.qt.core.Qt.KeyboardModifiers)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setModState.
+
+<tt>modState</tt>
+
+*/
+
+
+$$QDropEvent.modState()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.modState.
+
+
+*/
+
+
+$$QDropEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButtons)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setMouseState.
+
+<tt>mouseState</tt>
+
+*/
+
+
+$$QDropEvent.mouseState()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.mouseState.
+
+
+*/
+
+
+$$QDropEvent.setDrop_action(com.trolltech.qt.core.Qt.DropAction)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setDrop_action.
+
+<tt>drop_action</tt>
+
+*/
+
+
+$$QDropEvent.drop_action()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.drop_action.
+
+
+*/
+
+
+$$QDropEvent.setP(com.trolltech.qt.core.QPoint)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setP.
+
+<tt>p</tt>
+
+*/
+
+
+$$QDropEvent.p()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.p.
+
+
+*/
+
+
+$$QDropEvent.setAct(com.trolltech.qt.core.Qt.DropActions)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setAct.
+
+<tt>act</tt>
+
+*/
+
+
+$$QDropEvent.act()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.act.
+
+
+*/
+
+
+$$QWheelEvent.setG(com.trolltech.qt.core.QPoint)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.setG.
+
+<tt>g</tt>
+
+*/
+
+
+$$QWheelEvent.g()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.g.
+
+
+*/
+
+
+$$QWheelEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButtons)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.setMouseState.
+
+<tt>mouseState</tt>
+
+*/
+
+
+$$QWheelEvent.mouseState()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.mouseState.
+
+
+*/
+
+
+$$QWheelEvent.setO(com.trolltech.qt.core.Qt.Orientation)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.setO.
+
+<tt>o</tt>
+
+*/
+
+
+$$QWheelEvent.o()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.o.
+
+
+*/
+
+
+$$QWheelEvent.setP(com.trolltech.qt.core.QPoint)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.setP.
+
+<tt>p</tt>
+
+*/
+
+
+$$QWheelEvent.p()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.p.
+
+
+*/
+
+
+$$QContextMenuEvent.setReas(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.setReas.
+
+<tt>reas</tt>
+
+*/
+
+
+$$QContextMenuEvent.reas()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.reas.
+
+
+*/
+
+
+$$QContextMenuEvent.setGp(com.trolltech.qt.core.QPoint)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.setGp.
+
+<tt>gp</tt>
+
+*/
+
+
+$$QContextMenuEvent.gp()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.gp.
+
+
+*/
+
+
+$$QContextMenuEvent.setP(com.trolltech.qt.core.QPoint)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.setP.
+
+<tt>p</tt>
+
+*/
+
+
+$$QContextMenuEvent.p()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.p.
+
+
+*/
+
+
+$$QInputEvent.setModState(com.trolltech.qt.core.Qt.KeyboardModifiers)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QInputEvent.setModState.
+
+<tt>modState</tt>
+
+*/
+
+
+$$QInputEvent.modState()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QInputEvent.modState.
+
+
+*/
+
+
+$$QPaintDevice.setPainters(char)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintDevice.setPainters.
+
+<tt>painters</tt>
+
+*/
+
+
+$$QPaintDevice.painters()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintDevice.painters.
+
+
+*/
+
+
+$$QWidget.style()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWidget.style.
+
+
+*/
+
+
+$$QWidget.languageChange()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWidget.languageChange.
+
+
+*/
+
+
+$$QTextDocumentFragment.toHtml()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextDocumentFragment.toHtml.
+
+
+*/
+
+
+$$QTextBlockUserData.QTextBlockUserData()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextBlockUserData.
+
+
+*/
+
+
+$$QItemEditorCreatorBase.QItemEditorCreatorBase()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemEditorCreatorBase.
+
+
+*/
+
+
+$$QTextDocument.setUseDesignMetrics(boolean)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextDocument.setUseDesignMetrics.
+
+<tt>b</tt>
+
+*/
+
+
+$$QTextDocument.undo()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextDocument.undo.
+
+
+*/
+
+
+$$QTextDocument.useDesignMetrics()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextDocument.useDesignMetrics.
+
+
+*/
+
+
+$$QPaintEvent.setM_rect(com.trolltech.qt.core.QRect)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.setM_rect.
+
+<tt>m_rect</tt>
+
+*/
+
+
+$$QPaintEvent.m_rect()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.m_rect.
+
+
+*/
+
+
+$$QPaintEvent.setM_erased(boolean)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.setM_erased.
+
+<tt>m_erased</tt>
+
+*/
+
+
+$$QPaintEvent.m_erased()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.m_erased.
+
+
+*/
+
+
+$$QPaintEvent.setM_region(com.trolltech.qt.gui.QRegion)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.setM_region.
+
+<tt>m_region</tt>
+
+*/
+
+
+$$QPaintEvent.m_region()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.m_region.
+
+
+*/
+
+
+$$QItemSelection.back()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemSelection.back.
+
+
+*/
+
+
+$$QItemSelection.first()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemSelection.first.
+
+
+*/
+
+
+$$QItemSelection.front()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemSelection.front.
+
+
+*/
+
+
+$$QItemSelection.last()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemSelection.last.
+
+
+*/
+
+
+$$QPolygonF.first()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPolygonF.first.
+
+
+*/
+
+
+$$QPolygonF.last()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPolygonF.last.
+
+
+*/
+
+
+$$QTabletEvent.setMUnique(long)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTabletEvent.setMUnique.
+
+<tt>mUnique</tt>
+
+*/
+
+
+$$QTabletEvent.mUnique()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTabletEvent.mUnique.
+
+
+*/
+
+
+$$QTabletEvent.setMHiResGlobalPos(com.trolltech.qt.core.QPointF)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTabletEvent.setMHiResGlobalPos.
+
+<tt>mHiResGlobalPos</tt>
+
+*/
+
+
+$$QTabletEvent.mHiResGlobalPos()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTabletEvent.mHiResGlobalPos.
+
+
+*/
+
+
+$$QPainterPath_Element.QPainterPath_Element()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPainterPath_Element.
+
+
+*/
+
+
+$$QPainterPath_Element.toPoint()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPainterPath_Element.toPoint.
+
+
+*/
+
+
+$$QIconEngineV2.QIconEngineV2()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QIconEngineV2.
+
+
+*/
+
+
+$$QKeyEvent.setK(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.setK.
+
+<tt>k</tt>
+
+*/
+
+
+$$QKeyEvent.k()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.k.
+
+
+*/
+
+
+$$QKeyEvent.setTxt(java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.setTxt.
+
+<tt>txt</tt>
+
+*/
+
+
+$$QKeyEvent.txt()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.txt.
+
+
+*/
+
+
+$$QKeyEvent.setC(char)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.setC.
+
+<tt>c</tt>
+
+*/
+
+
+$$QKeyEvent.c()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.c.
+
+
+*/
+
+
+$$QKeyEvent.setAutor(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.setAutor.
+
+<tt>autor</tt>
+
+*/
+
+
+$$QKeyEvent.autor()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.autor.
+
+
+*/
+
+
+$$QIconEngine.QIconEngine()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QIconEngine.
+
+
+*/
+
+
+$$QPainterPath.toFillPolygon(com.trolltech.qt.gui.QMatrix)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPainterPath.toFillPolygon.
+
+<tt>matrix</tt>
+
+*/
+
+
+$$QLayout.setAlignment(com.trolltech.qt.core.Qt.Alignment)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayout.setAlignment.
+
+<tt>a</tt>
+
+*/
+
+
+$$QPolygon.first()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPolygon.first.
+
+
+*/
+
+
+$$QPolygon.last()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPolygon.last.
+
+
+*/
+
+
+$$QTextItem.QTextItem()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.
+
+
+*/
+
+
+$$QTextItem.ascent()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.ascent.
+
+
+*/
+
+
+$$QTextItem.descent()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.descent.
+
+
+*/
+
+
+$$QTextItem.font()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.font.
+
+
+*/
+
+
+$$QTextItem.renderFlags()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.renderFlags.
+
+
+*/
+
+
+$$QTextItem.text()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.text.
+
+
+*/
+
+
+$$QTextItem.width()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.width.
+
+
+*/
+
+
+$$QPrintEngine.QPrintEngine()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPrintEngine.
+
+
+*/
+
+
+$$QPaintEngineState.QPaintEngineState()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngineState.
+
+
+*/
+
+
+$$QPaintEngineState.setDirtyFlags(com.trolltech.qt.gui.QPaintEngine.DirtyFlags)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngineState.setDirtyFlags.
+
+<tt>dirtyFlags</tt>
+
+*/
+
+
+$$QPaintEngineState.dirtyFlags()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngineState.dirtyFlags.
+
+
+*/
+
+
+$$QTextEdit.overwriteMode()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextEdit.overwriteMode.
+
+
+*/
+
+
+$$QTextEdit.setOverwriteMode(boolean)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextEdit.setOverwriteMode.
+
+<tt>overwrite</tt>
+
+*/
+
+
+$$QTextObjectInterface.QTextObjectInterface()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextObjectInterface.
+
+
+*/
+
+
+$$QTextObjectInterface.drawObject(com.trolltech.qt.gui.QPainter, com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QTextDocument, int, com.trolltech.qt.gui.QTextFormat)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextObjectInterface.drawObject.
+
+<tt>painter</tt>
+<tt>rect</tt>
+<tt>doc</tt>
+<tt>posInDocument</tt>
+<tt>format</tt>
+
+*/
+
+
+$$QTextObjectInterface.intrinsicSize(com.trolltech.qt.gui.QTextDocument, int, com.trolltech.qt.gui.QTextFormat)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextObjectInterface.intrinsicSize.
+
+<tt>doc</tt>
+<tt>posInDocument</tt>
+<tt>format</tt>
+
+*/
+
+
+$$QTextFrame_iterator.next()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextFrame_iterator.next.
+
+
+*/
+
+
+$$QTextFrame_iterator.previous()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextFrame_iterator.previous.
+
+
+*/
+
+
+$$QPaintEngine.setSelfDestruct(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.setSelfDestruct.
+
+<tt>selfDestruct</tt>
+
+*/
+
+
+$$QPaintEngine.selfDestruct()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.selfDestruct.
+
+
+*/
+
+
+$$QPaintEngine.setActive(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.setActive.
+
+<tt>active</tt>
+
+*/
+
+
+$$QPaintEngine.active()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.active.
+
+
+*/
+
+
+$$QPaintEngine.setGccaps(com.trolltech.qt.gui.QPaintEngine.PaintEngineFeatures)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.setGccaps.
+
+<tt>gccaps</tt>
+
+*/
+
+
+$$QPaintEngine.gccaps()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.gccaps.
+
+
+*/
+
+
+$$QContentsMargins.QContentsMargins(int, int, int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContentsMargins.
+
+<tt>left</tt>
+<tt>top</tt>
+<tt>right</tt>
+<tt>bottom</tt>
+
+*/

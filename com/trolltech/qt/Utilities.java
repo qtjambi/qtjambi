@@ -18,31 +18,51 @@ import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
+/**
+This class contains static members that gives information and performs Qt Jambi
+related tasks.
+*/
 public class Utilities {
 
+	/** The Qt Library's major version. */
 	public static final int MAJOR_VERSION = 4;
+	/** The Qt Library's minor version. */
     public static final int MINOR_VERSION = 3;
+	/** The Qt Library's patch version. */
     public static final int PATCH_VERSION = 0;
 
+	/** Qt Library build number */
     public static final int BUILD_NUMBER = 1;
 
+	/** A formated String with versioning*/
     public static final String VERSION_STRING = String.format("%1$d.%2$d.%3$d_%4$02d",
             MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION, BUILD_NUMBER);
     
+	/** Enum for defining the operation system. */
     public enum OperatingSystem {
+	/** Windows */
         Windows,
+	/** MacOSX */
         MacOSX,
+	/** Linux */
         Linux
     };
 
+	/** Defines whether Qt is build in Release or Debug. */
     public enum Configuration {
+	/** Release build. */
         Release,
+	/** Debug build. */
         Debug
     };
 
+	/** The operating system Qt Jambi is running on. */
     public static OperatingSystem operatingSystem = decideOperatingSystem();
+	/** The Configuration of Qt Jambi. */
     public static Configuration configuration = decideConfiguration();
+	/** Wheter Qt Jambi has implicit loading. */
     public static boolean implicitLoading = !matchProperty("com.trolltech.qt.implicit-loading", "false");
+	/** The library sub path. */
     public static String libSubPath = decideLibSubPath();
 
     private static final String DEBUG_SUFFIX = "_debuglib";

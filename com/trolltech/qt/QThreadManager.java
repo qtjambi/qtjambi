@@ -13,6 +13,9 @@
 
 package com.trolltech.qt;
 
+/**
+ * @exclude
+ */
 public class QThreadManager {
     
     private static class NativeResourcesReleaseThread extends Thread {

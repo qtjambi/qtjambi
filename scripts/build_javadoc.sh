@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if  [ "$QTJAMBI_VERSION" = "" ]; then
-     export QTJAMBI_VERSION=main
+     export QTJAMBI_VERSION=1.0.0-beta3
 fi
 
 if [ "$QDOC" = "" ]; then
@@ -45,7 +45,7 @@ cd $JAMBI/generator
 
 # Generating the Javadoc
 cd $JAMBI/doc/html
-javadoc -J-Xmx500m -sourcepath $JAMBI com.trolltech.qt com.trolltech.qt.core com.trolltech.qt.gui com.trolltech.qt.opengl com.trolltech.qt.sql com.trolltech.qt.opengl com.trolltech.qt.svg com.trolltech.qt.network com.trolltech.qt.xml com.trolltech.qt.designer
+javadoc -doclet jambidoc.JambiDoclet -J-Xmx500m -sourcepath $JAMBI com.trolltech.qt com.trolltech.qt.core com.trolltech.qt.gui com.trolltech.qt.opengl com.trolltech.qt.sql com.trolltech.qt.opengl com.trolltech.qt.svg com.trolltech.qt.network com.trolltech.qt.xml com.trolltech.qt.designer
 
 jar -cf qtjambi-javadoc-$QTJAMBI_VERSION.jar *
 

@@ -13,6 +13,10 @@
 
 package com.trolltech.qt;
 
+/**
+ * This class contains static functions to query information about the
+ * Qt library Qt Jambi links against.
+ */
 public class QtInfo {
     
     static {
@@ -57,7 +61,9 @@ public class QtInfo {
      */
     public native static int patchVersion();
     
-    
+    /**
+     * @exclude
+     */
     public static void main(String args[]) {
         System.out.println("major version: " + majorVersion());
         System.out.println("minor version: " + minorVersion());

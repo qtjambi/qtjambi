@@ -1,0 +1,102 @@
+
+
+$$QHttp.read(byte[])
+/**
+Reads from the response content into <tt>data</tt> and
+returns the number of bytes read. Returns -1 if an error occurred.
+
+*/
+
+
+$$QTcpServer.waitForNewConnection(int)
+/**
+Waits for at most <tt>msec</tt> milliseconds or until an incoming connection
+is available. Returns true if a connection is available; otherwise returns
+false.
+<p>
+This is a blocking function call. Its use is not adviced in a single-threaded
+GUI application, since the whole application will stop responding until the
+function returns.  waitForNewConnection() is mostly useful when there is no
+event loop available.
+<p>
+The non-blocking alternative is to connect to the newConnection()
+signal.
+
+*/
+
+
+$$QTcpServer.waitForNewConnection()
+/**
+This is an overloaded method provided for convenience.
+
+@return 
+*/
+
+
+$$QUdpSocket.readDatagram(byte[], com.trolltech.qt.network.QUdpSocket.HostInfo)
+/**
+Receives a datagram from the host described by <tt>info</tt> and stores it in
+<tt>data</tt>. Returns the size of the datagram on success; otherwise returns
+-1.
+
+*/
+
+
+$$QUdpSocket.writeDatagram(byte[], com.trolltech.qt.network.QHostAddress, char)
+/**
+Writes <tt>data</tt> to the host at <tt>address</tt> using the given
+<tt>port</tt>.
+
+*/
+
+
+$$QFtp.read(byte[])
+/**
+Reads from the data socket into <tt>data</tt> and returns the number of bytes
+read. Returns -1 if an error occurred.
+
+*/
+
+
+$$QHttpHeader.setValues(java.util.List<com.trolltech.qt.QPair<java.lang.String, java.lang.String>>)
+/**
+Sets the header entries to be the list of key value pairs in <tt>values</tt>.
+
+*/
+
+
+$$QIPv6Address.QIPv6Address()
+/**
+Constructs a new QIPv6Address.
+
+
+*/
+
+
+$$QIPv6Address.setC(byte[])
+/**
+Sets this QIPv6Address to <tt>c</tt>.
+
+*/
+
+
+$$QIPv6Address.c()
+/**
+Returns this QIPv6Address as a byte array.
+
+
+*/
+
+
+$$QHostAddress.QHostAddress(com.trolltech.qt.network.QIPv6Address)
+/**
+Creates a QHostAddress from the specified <tt>ip6Addr</tt> address.
+
+*/
+
+
+$$QHostAddress.setAddress(com.trolltech.qt.network.QIPv6Address)
+/**
+Sets the address of this QHostAddress to <tt>ip6Addr</tt>.
+
+*/
