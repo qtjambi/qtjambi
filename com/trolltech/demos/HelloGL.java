@@ -106,7 +106,7 @@ class GLWidget extends QGLWidget
         ctx = factory.createExternalGLContext();
         func = ctx.getGL();
 
-        qglClearColor(trolltechPurple.dark());
+        qglClearColor(trolltechPurple.darker());
         object = makeObject();
 
         func.glShadeModel(GL.GL_FLAT);
@@ -231,7 +231,7 @@ class GLWidget extends QGLWidget
 
     void extrude(double x1, double y1, double x2, double y2)
     {
-        qglColor(trolltechGreen.dark(250 + (int)(100 * x1)));
+        qglColor(trolltechGreen.darker(250 + (int)(100 * x1)));
         func.glVertex3d(x1, y1, +0.05);
         func.glVertex3d(x2, y2, +0.05);
         func.glVertex3d(x2, y2, -0.05);

@@ -196,7 +196,7 @@ public class FridgeMagnets extends QWidget {
 
             hide();
 
-            if (drag.start(Qt.DropAction.MoveAction) == Qt.DropAction.MoveAction)
+            if (drag.exec(Qt.DropAction.MoveAction) == Qt.DropAction.MoveAction)
                 close();
             else
                 show();

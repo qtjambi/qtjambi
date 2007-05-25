@@ -15,6 +15,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QPainter.RenderHint;
 
 @QtJambiExample(name = "Mandelbrot")
 public class Mandelbrot extends QWidget {
@@ -79,6 +80,7 @@ public class Mandelbrot extends QWidget {
     public void paintEvent(QPaintEvent event) {
         QPainter painter = new QPainter();
         painter.begin(this);
+        painter.setRenderHint(RenderHint.SmoothPixmapTransform);
         painter.fillRect(rect(), new QBrush(QColor.black));
 
         if (pixmap.isNull()) {
@@ -104,7 +106,7 @@ public class Mandelbrot extends QWidget {
             painter.translate(newX, newY);
             painter.scale(scaleFactor, scaleFactor);
 
-            QMatrix invertedMatrix = painter.matrix().inverted();
+            QMatrix invertedMatrix = painter.worldMatrix().inverted();
             QRect exposed = invertedMatrix.mapRect(rect());
             exposed = exposed.adjusted(-1, -1, 1, 1);
 

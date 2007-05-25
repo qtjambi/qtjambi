@@ -131,9 +131,9 @@ public class Chips extends QWidget {
 
         public void paint(QPainter painter, final QStyleOptionGraphicsItem option, QWidget widget) {
 
-            QColor fillColor = (option.state().isSet(QStyle.StateFlag.State_Selected)) ? color.dark(150) : color;
+            QColor fillColor = (option.state().isSet(QStyle.StateFlag.State_Selected)) ? color.darker(150) : color;
             if (option.state().isSet(QStyle.StateFlag.State_MouseOver))
-                fillColor = fillColor.light(125);
+                fillColor = fillColor.lighter(125);
 
             if (option.levelOfDetail() < 0.2) {
                 if (option.levelOfDetail() < 0.125) {
@@ -154,7 +154,7 @@ public class Chips extends QWidget {
                 width += 2;
 
             pen.setWidth(width);
-            painter.setBrush(new QBrush(fillColor.dark(option.state().isSet(QStyle.StateFlag.State_Sunken) ? 120 : 100)));
+            painter.setBrush(new QBrush(fillColor.darker(option.state().isSet(QStyle.StateFlag.State_Sunken) ? 120 : 100)));
 
             painter.drawRect(new QRect(14, 14, 79, 39));
             if (option.levelOfDetail() >= 1) {

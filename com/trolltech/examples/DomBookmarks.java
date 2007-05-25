@@ -140,7 +140,7 @@ public class DomBookmarks extends QMainWindow {
         private QDomDocument domDocument = new QDomDocument();
         private Hashtable<QTreeWidgetItem, QDomElement> domElementForItem = new Hashtable<QTreeWidgetItem, QDomElement>();
         private QIcon folderIcon = new QIcon();
-        private QIcon bookmarkIcon = new QIcon();
+        private QIcon bookmarkIcon;
 
         private XbelTree(QWidget parent) {
             super(parent);
@@ -150,12 +150,14 @@ public class DomBookmarks extends QMainWindow {
 
             header().setResizeMode(QHeaderView.ResizeMode.Stretch);
             setHeaderLabels(labels);
-
-            folderIcon.addPixmap(style().standardPixmap(QStyle.StandardPixmap.SP_DirClosedIcon),
-                    QIcon.Mode.Normal, QIcon.State.Off);
-            folderIcon.addPixmap(style().standardPixmap(QStyle.StandardPixmap.SP_DirOpenIcon),
-                    QIcon.Mode.Normal, QIcon.State.On);
-            bookmarkIcon.addPixmap(style().standardPixmap(QStyle.StandardPixmap.SP_FileIcon));
+            
+            folderIcon.addPixmap(style().standardIcon(QStyle.StandardPixmap.SP_DirClosedIcon).pixmap(new QSize(24,24),
+                    QIcon.Mode.Normal, QIcon.State.Off));
+            
+            folderIcon.addPixmap(style().standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon).pixmap(new QSize(24,24),
+                    QIcon.Mode.Normal, QIcon.State.On));
+            
+            bookmarkIcon = style().standardIcon(QStyle.StandardPixmap.SP_FileIcon); 
         }
 
         private boolean read(QIODevice device) {

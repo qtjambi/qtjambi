@@ -48,8 +48,8 @@ public class ElasticNodes extends QGraphicsView {
         GRADIENT_SUNKEN = new QRadialGradient(-3, -3, 10);
         GRADIENT_SUNKEN.setCenter(3, 3);
         GRADIENT_SUNKEN.setFocalPoint(3, 3);
-        GRADIENT_SUNKEN.setColorAt(1, new QColor(QColor.yellow).light(120));
-        GRADIENT_SUNKEN.setColorAt(0, new QColor(QColor.darkYellow).light(120));
+        GRADIENT_SUNKEN.setColorAt(1, new QColor(QColor.yellow).lighter(120));
+        GRADIENT_SUNKEN.setColorAt(0, new QColor(QColor.darkYellow).lighter(120));
 
         GRADIENT_NORMAL = new QRadialGradient(-3, -3, 10);
         GRADIENT_NORMAL.setColorAt(0, QColor.yellow);
@@ -197,7 +197,7 @@ public class ElasticNodes extends QGraphicsView {
         QLinearGradient gradient = new QLinearGradient(sceneRect.topLeft(), sceneRect.bottomRight());
         gradient.setColorAt(0, QColor.white);
         gradient.setColorAt(1, QColor.lightGray);
-        painter.fillRect(rect.intersect(sceneRect), new QBrush(gradient));
+        painter.fillRect(rect.intersected(sceneRect), new QBrush(gradient));
         painter.setBrush(QBrush.NoBrush);
         painter.drawRect(sceneRect);
 

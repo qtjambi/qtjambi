@@ -199,12 +199,12 @@ public class CustomFilter extends QWidget {
 
         private void setFilterMinimumDate(QDate date) {
             minDate = new QDateTime(date);
-            filterChanged();
+            invalidateFilter();
         }
 
         private void setFilterMaximumDate(QDate date) {
             maxDate = new QDateTime(date);
-            filterChanged();
+            invalidateFilter();
         }
 
         protected boolean filterAcceptsRow(int sourceRow,
