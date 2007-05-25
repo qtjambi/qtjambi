@@ -727,14 +727,20 @@ public class TestInjectedCode extends QApplicationTest {
     
     @Test
     public void testQHttpRead() {
-        QHttp http = new QHttp("www.trolltech.com");        
+        QHttp http = new QHttp("trolltech.com");        
         http.get("/");
         
+        long time = System.currentTimeMillis();
         byte bytes[] = new byte[32];
-        while (http.bytesAvailable() < 32) { 
+        
+        boolean timeout = false;        
+        while (http.bytesAvailable() < 32 && !timeout) { 
             QApplication.processEvents();
+            timeout = (System.currentTimeMillis() - time > 5000);
         }
         
+        assertTrue("Timeout", !timeout);
+    
         http.read(bytes);
         
         assertEquals("<!DOCTYPE", new QByteArray(bytes).left(9).toString()); 
@@ -1658,15 +1664,17 @@ public class TestInjectedCode extends QApplicationTest {
         
         assertTrue(file.open(QIODevice.OpenModeFlag.ReadOnly));
 
+        file.seek(file.bytesAvailable() - 7);
+        
         byte bytes[] = new byte[7];
         assertEquals(7, file.peek(bytes));
-        assertEquals((byte) 'p', bytes[0]);
-        assertEquals((byte) 'a', bytes[1]);
-        assertEquals((byte) 'c', bytes[2]);
-        assertEquals((byte) 'k', bytes[3]);
-        assertEquals((byte) 'a', bytes[4]);
-        assertEquals((byte) 'g', bytes[5]);
-        assertEquals((byte) 'e', bytes[6]);
+        assertEquals((byte) '/', bytes[0]);
+        assertEquals((byte) '/', bytes[1]);
+        assertEquals((byte) 't', bytes[2]);
+        assertEquals((byte) 'e', bytes[3]);
+        assertEquals((byte) 's', bytes[4]);
+        assertEquals((byte) 't', bytes[5]);
+        assertEquals((byte) '!', bytes[6]);
         
         file.close();
     }
@@ -1685,11 +1693,13 @@ public class TestInjectedCode extends QApplicationTest {
         
         assertTrue(file.open(QIODevice.OpenModeFlag.ReadOnly));
         
+        file.seek(file.bytesAvailable() - 2);
+        
         byte b = (byte) file.getByte();
-        assertEquals((byte) 'p', b);
+        assertEquals((byte) 't', b);
         
         b = (byte) file.getByte();
-        assertEquals((byte) 'a', b);
+        assertEquals((byte) '!', b);
         
         file.close();
     }
@@ -2002,3 +2012,6 @@ public class TestInjectedCode extends QApplicationTest {
     }
     
 }
+
+// next line is part of test.. leav it
+//test!
