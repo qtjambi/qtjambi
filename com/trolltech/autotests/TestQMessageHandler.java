@@ -15,8 +15,10 @@ package com.trolltech.autotests;
 
 import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.QApplication;
 
 import org.junit.*;
+
 import static org.junit.Assert.*;
 
 public class TestQMessageHandler extends QMessageHandler {
@@ -39,6 +41,18 @@ public class TestQMessageHandler extends QMessageHandler {
 
     }
 
+    @BeforeClass
+    public static void testInitialize() throws Exception {
+        
+        QApplication.initialize(new String[] {});
+    }
+
+    @AfterClass
+    public static void testDispose() throws Exception {
+        QApplication.quit();
+        QApplication.instance().dispose();        
+    }
+    
     @Test
     public void test() {
         QMessageHandler.installMessageHandler(this);
