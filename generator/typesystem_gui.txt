@@ -882,7 +882,9 @@
   
   <value-type name="QStyleOption" polymorphic-base="yes" polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Default">
     <modify-function signature="operator=(QStyleOption)" remove="all"/>
-  </value-type>              
+  
+      <modify-function signature="init(const QWidget*)" remove="all"/> <!--### Obsolete in 4.3-->
+  </value-type>
   <value-type name="QStyleOptionGraphicsItem" polymorphic-id-expression="%1-&gt;type == QStyleOptionGraphicsItem::Type &amp;&amp; %1-&gt;version == QStyleOptionGraphicsItem::Version"/>
   <value-type name="QStyleOptionSizeGrip" polymorphic-id-expression="%1-&gt;type == QStyleOptionSizeGrip::Type &amp;&amp; %1-&gt;version == QStyleOptionSizeGrip::Version"/>
   <value-type name="QStyleOptionButton" polymorphic-id-expression="%1-&gt;type == QStyleOptionButton::Type &amp;&amp; %1-&gt;version == QStyleOptionButton::Version"/>
@@ -996,7 +998,9 @@
     <modify-function signature="isValid()const" access="non-final"/>
   </value-type>
   <value-type name="QTextLength"/>
-  <value-type name="QItemSelectionRange"/>
+  <value-type name="QItemSelectionRange">
+      <modify-function signature="intersect(QItemSelectionRange)const" remove="all"/> <!--### Obsolete in 4.3-->
+  </value-type>
   <value-type name="QLine"/>
   <value-type name="QLineF">
     <modify-function signature="intersect(QLineF,QPointF*)const  ">
@@ -1013,6 +1017,11 @@
   </value-type>
   <value-type name="QPalette">
     <modify-function signature="operator=(const QPalette&amp;)" remove="all"/>
+  
+      <modify-function signature="QPalette(QColor, QColor, QColor, QColor, QColor, QColor, QColor)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="background()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="foreground()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
   <value-type name="QKeySequence">
     <modify-function signature="operator=(QKeySequence)" remove="all"/>
@@ -1120,6 +1129,11 @@
             return returned;
         }
     </inject-code>
+  
+      <modify-function signature="inputFormatList()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="inputFormats()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="outputFormatList()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="outputFormats()" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
   <value-type name="QRegion" expense-limit="4096">
@@ -1142,6 +1156,11 @@
             setRects(com.trolltech.qt.core.QRect.nativePointerArray(rects), rects.length);
         }
     </inject-code>
+  
+      <modify-function signature="eor(QRegion)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="intersect(QRegion)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="subtract(QRegion)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="unite(QRegion)const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
   <value-type name="QTextBlock">
     <modify-function signature="operator=(QTextBlock)" remove="all"/>
@@ -1154,6 +1173,9 @@
   <value-type name="QTextBlockFormat"/>
   <value-type name="QTextCharFormat">
     <modify-function signature="isValid()const" access="non-final"/>
+  
+      <modify-function signature="anchorName()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setAnchorName(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
   <value-type name="QTextFormat">
     <modify-function signature="operator=(QTextFormat)" remove="all"/>
@@ -1273,6 +1295,8 @@
 
   <value-type name="QIcon">    
     <modify-function signature="operator=(QIcon)" remove="all"/>
+  
+      <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>  
 
   <value-type name="QTextFrame::iterator">
@@ -1385,7 +1409,7 @@
     
     <template name="gui.pixmap_load">
         <insert-template name="gui.pixmap_loadconstructor">
-            <replace from="%RETURN_TYPE" to="final boolean"/>            
+            <replace from="%RETURN_TYPE" to="final boolean"/>
             <replace from="%FUNCTION_CALL" to="return %FUNCTION_NAME"/>
         </insert-template>
     </template>
@@ -1506,6 +1530,8 @@
             <replace from="%OUTPUT_NAME" to="data"/>
         </insert-template>
     </inject-code>
+  
+      <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
   <value-type name="QTextCursor">
@@ -1902,6 +1928,9 @@
     <modify-function signature="fromData(const unsigned char*,int,const char*)">
         <remove/>
     </modify-function>        
+  
+      <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="textLanguages()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
   <value-type name="QColormap">
@@ -2057,6 +2086,9 @@
         <remove/>
     </modify-function>
     
+  
+      <modify-function signature="dark(int)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="light(int)const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
  
   <value-type name="QFontMetricsF">
@@ -2309,6 +2341,10 @@
                 disableGarbageCollection();
         </inject-code>
     </modify-function>
+    <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </interface-type>  
   
   <object-type name="QAbstractGraphicsShapeItem">
@@ -2318,6 +2354,11 @@
             if (%1 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>    
+  
+      <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
     
   <object-type name="QAbstractItemView">
@@ -2325,7 +2366,6 @@
         private java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt; __rcDelegatesForColumns = new java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt;();
         private java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt; __rcDelegatesForRows = new java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt;();
     </inject-code>
-    <modify-function signature="update()" remove="all"/>
     <modify-function signature="setIndexWidget(const QModelIndex &amp;,QWidget *)">
         <modify-argument index="2">
             <!-- Safe to ignore because view reparents widget -->
@@ -2373,6 +2413,11 @@
         </inject-code>
     </modify-function>
 
+  
+      <modify-function signature="horizontalStepsPerItem()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setHorizontalStepsPerItem(int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setVerticalStepsPerItem(int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="verticalStepsPerItem()const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
   <object-type name="QAbstractPageSetupDialog"/>
   <object-type name="QAbstractPrintDialog"/>
@@ -2728,9 +2773,13 @@
   </object-type>
   <object-type name="QCleanlooksStyle">
     <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
+  
+      <modify-function signature="standardPixmap(QStyle::StandardPixmap,const QStyleOption*,const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
   <object-type name="QCommonStyle">
     <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
+  
+      <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*,const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
   <object-type name="QDataWidgetMapper">
     <modify-function signature="addMapping(QWidget*,int)">
@@ -2768,6 +2817,11 @@
   <object-type name="QDialog">
     <modify-function signature="setExtension(QWidget*)" remove="all"/>
     <modify-function signature="exec()" access="non-final"/>
+  
+      <modify-function signature="extension()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="orientation()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setOrientation(Qt::Orientation)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="showExtension(bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
   <object-type name="QDialogButtonBox">
     <modify-function signature="addButton(QAbstractButton*,QDialogButtonBox::ButtonRole)">
@@ -2990,6 +3044,11 @@
                 %1.reenableGarbageCollection();
         </inject-code>
     </modify-function>
+  
+      <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QGraphicsLineItem">
     <modify-function signature="QGraphicsLineItem(QGraphicsItem*,QGraphicsScene*)">
@@ -3010,6 +3069,11 @@
             if (%5 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>            
+  
+      <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QGraphicsPathItem">
     <modify-function signature="QGraphicsPathItem(QGraphicsItem*,QGraphicsScene*)">
@@ -3038,6 +3102,11 @@
             if (%2 != null) disableGarbageCollection();
         </inject-code>
     </modify-function>      
+  
+      <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QGraphicsPolygonItem">
     <modify-function signature="QGraphicsPolygonItem(QGraphicsItem*,QGraphicsScene*)">
@@ -3116,6 +3185,9 @@
     </modify-argument>
   </modify-function>
 
+  
+      <modify-function signature="description()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setDescription(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QInputContextFactory"/>
   <object-type name="QInputContextFactoryInterface"/>
@@ -3433,6 +3505,8 @@
   </object-type>
   <object-type name="QMotifStyle">
     <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
+  
+      <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
   <object-type name="QPainterPathStroker"/>
   <object-type name="QPictureFormatInterface"/>
@@ -3527,6 +3601,8 @@
   <object-type name="QPlastiqueStyle">
     <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const" remove="all"/>
     <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>    
+  
+      <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QPrintDialog"/>  
   <object-type name="QPrintEngine"/>
@@ -3733,12 +3809,16 @@
             <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemSelectionModel"/>
         </modify-argument>
     </modify-function>  
+  
+      <modify-function signature="sortByColumn(int)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QTextBlockGroup"/>
   <object-type name="QTextBlockUserData"/>
   <object-type name="QTextItem"/>
   <object-type name="QTextList">
     <modify-function signature="format()const" rename="textListFormat"/>
+  
+      <modify-function signature="isEmpty()const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QTextObject"/>
   <object-type name="QTextObjectInterface"/>
@@ -3808,6 +3888,8 @@
             <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemSelectionModel"/>
         </modify-argument>
     </modify-function>  
+  
+      <modify-function signature="sortByColumn(int)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QUndoCommand"/>
   <object-type name="QUndoGroup">
@@ -3951,6 +4033,8 @@
   <object-type name="QWidgetItem"/>
   <object-type name="QWindowsStyle">
     <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
+  
+      <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
   <object-type name="QWorkspace">
     <modify-function signature="addWindow(QWidget*,QFlags&lt;Qt::WindowType&gt;)">
@@ -4350,6 +4434,12 @@
         }        
     </inject-code>
 
+  
+    <inject-code class="shell-declaration"> <!-- Remove in Qt 5 -->
+QPixmap standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*) const { return 0; }
+    </inject-code>
+
+      <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
 
@@ -4443,6 +4533,9 @@
             setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
         }
     </inject-code>
+  
+      <modify-function signature="margin()const" remove="all"/> <!--### Obsolete in 4.3-->
+     <!-- <modify-function signature="setMargin(int)" remove="all"/> --> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QStackedLayout">  
@@ -4862,6 +4955,9 @@
     <extra-includes>
       <include file-name="QTextCharFormat" location="global"/>
     </extra-includes>
+  
+      <modify-function signature="isHeaderVisible()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setHeaderVisible(bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QTreeWidget">
@@ -4951,6 +5047,8 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>    
+  
+      <modify-function signature="items(const QMimeData*)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   
   <object-type name="QAbstractItemDelegate">
@@ -4968,6 +5066,8 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+  
+      <modify-function signature="elidedText(QFontMetrics, int, Qt::TextElideMode, QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QTableWidgetItem">
@@ -4977,6 +5077,11 @@
             <define-ownership class="shell" owner="c++"/>
         </modify-argument>
     </modify-function>    
+  
+      <modify-function signature="backgroundColor()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setBackgroundColor(QColor)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setTextColor(QColor)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="textColor()const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QListWidgetItem">
@@ -5001,6 +5106,11 @@
             <define-ownership class="shell" owner="c++"/>
         </modify-argument>
     </modify-function>
+  
+      <modify-function signature="backgroundColor()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setBackgroundColor(QColor)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setTextColor(QColor)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="textColor()const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QGraphicsTextItem">
@@ -5024,6 +5134,11 @@
             <reference-count action="set" variable-name="__rcDocument"/>
         </modify-argument>
     </modify-function>
+  
+      <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QCompleter">
@@ -5127,6 +5242,11 @@
             <define-ownership class="java" owner="default"/>
         </modify-argument>
     </modify-function>
+  
+      <modify-function signature="backgroundColor(int)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setBackgroundColor(int, QColor)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setTextColor(int, QColor)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="textColor(int)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QListWidget">
@@ -5348,6 +5468,15 @@
         </modify-argument>
     </modify-function>
     
+  
+      <modify-function signature="enabledChange(bool)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="fontChange(QFont)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="isEnabledToTLW()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="isTopLevel()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="paletteChange(QPalette)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setShown(bool)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="topLevelWidget()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="windowActivationChange(bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
 
@@ -5377,6 +5506,20 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+  
+      <modify-function signature="QMessageBox(QString,QString,QMessageBox::Icon,int,int,int,QWidget*,QFlags&lt;Qt::WindowType&gt;)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="buttonText(int)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setButtonText(int, QString)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="standardIcon(QMessageBox::Icon)" remove="all"/> <!--### Obsolete in 4.3-->
+
+      <modify-function signature="critical(QWidget*,QString,QString,int,int,int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="critical(QWidget*,QString,QString,QString,QString,QString,int,int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="information(QWidget*,QString,QString,int,int,int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="information(QWidget*,QString,QString,QString,QString,QString,int,int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="question(QWidget*, QString, QString, int, int, int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="question(QWidget*, QString, QString, QString, QString, QString, int, int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="warning(QWidget*, QString, QString, int, int, int)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="warning(QWidget*, QString, QString, QString, QString, QString, int, int)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QAbstractSpinBox">
@@ -5500,6 +5643,8 @@
             </conversion-rule>
         </modify-argument>        
     </modify-function>    
+  
+      <modify-function signature="name()const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
     
   <object-type name="QProxyModel">
@@ -5610,6 +5755,8 @@
             <define-ownership class="java" owner="c++"/>
         </modify-argument>
     </modify-function>                
+  
+    <modify-function signature="start(QFlags&lt;Qt::DropAction&gt;)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   
   <object-type name="QDateTimeEdit">
@@ -5642,6 +5789,9 @@
         </modify-argument>
     </modify-function>
     
+  
+      <modify-function signature="clear()" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="filterChanged()" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QSlider">
@@ -6776,6 +6926,11 @@
     <modify-function signature="highlighted(int)">
         <rename to="highlightedIndex"/>
     </modify-function>
+  
+      <modify-function signature="autoCompletion()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="autoCompletionCaseSensitivity()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setAutoCompletion(bool)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setAutoCompletionCaseSensitivity(Qt::CaseSensitivity)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
  
   <object-type name="QTextEdit">
@@ -7020,6 +7175,11 @@
             if (!__rcRedirections.empty()) __rcRedirections.pop();
         </inject-code>
     </modify-function>
+  
+      <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="matrixEnabled()const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setMatrixEnabled(bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
     
   <object-type name="QApplication">
@@ -7194,4 +7354,5 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFormat' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QLineF' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QImage' has equals operators but no qHash() function"/>
+  
 </typesystem>

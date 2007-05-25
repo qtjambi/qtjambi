@@ -532,6 +532,8 @@
     <modify-function signature="julianToGregorian(uint,int&amp;,int&amp;,int&amp;)">
         <remove/>
     </modify-function>    
+  
+    <modify-function signature="setYMD(int, int, int)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
   
   <value-type name="QDateTime">
@@ -552,6 +554,8 @@
     <inject-code>
     @com.trolltech.qt.QtBlockedSlot public String at(int i) { return operator_subscript(i); }
     </inject-code>
+  
+    <modify-function signature="addResourceSearchPath(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
   
   <value-type name="QPoint">
@@ -597,6 +601,9 @@
     <modify-function signature="operator&amp;(QRect)const"> <remove/> </modify-function>
     <modify-function signature="operator|(QRect)const"> <remove/> </modify-function>
 
+  
+    <modify-function signature="intersect(const QRect&amp;)const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="unite(const QRect&amp;)const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
   <value-type name="QRectF">
     <modify-function signature="getCoords(double*,double*,double*,double*)const"> <remove/> </modify-function>
@@ -605,6 +612,9 @@
     <modify-function signature="operator|=(QRectF)"> <remove/> </modify-function>
     <modify-function signature="operator&amp;(QRectF)const"> <remove/> </modify-function>
     <modify-function signature="operator|(QRectF)const"> <remove/> </modify-function>
+  
+    <modify-function signature="intersect(const QRectF&amp;)const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="unite(const QRectF&amp;)const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
 
@@ -895,6 +905,9 @@
     </extra-includes>
     <modify-function signature="operator=(QUrl)" remove="all"/>
     <modify-function signature="operator=(QString)" remove="all"/>
+  
+    <modify-function signature="fromPunycode(const QByteArray&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="toPunycode(const QString&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
   
   <value-type name="QRegExp">
@@ -917,6 +930,8 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+  
+    <modify-function signature="readLink()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
   <value-type name="QByteArray">
@@ -1499,6 +1514,9 @@
         }
     </inject-code>
     
+  
+    <modify-function signature="readLink()const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="readLink(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QIODevice">
     <extra-includes>
@@ -2034,6 +2052,9 @@
             return new DetachedProcessInfo(success, pid.longValue());
         }
     </inject-code>
+  
+    <modify-function signature="readChannelMode()const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="setReadChannelMode(QProcess::ProcessChannelMode)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   
   <object-type name="QSignalMapper">
@@ -2311,6 +2332,9 @@
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
+  
+    <modify-function signature="setSystemIniPath(const QString&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="setUserIniPath(const QString&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
   <object-type name="QEvent" polymorphic-base="yes" polymorphic-id-expression="%1-&gt;type() == QEvent::None"/>
@@ -2735,5 +2759,5 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRectF' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDate' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPoint' has equals operators but no qHash() function"/>
-  
+
 </typesystem>
