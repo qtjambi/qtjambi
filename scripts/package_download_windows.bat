@@ -19,9 +19,9 @@ wget http://ares.troll.no/~qt/packages/%QT_EVAL_PACKAGE%.zip
 REM
 REM Eval packages...
 REM 
-rm -rf %QT_COMMERCIAL_PACKAGE%
-unzip %QT_COMMERCIAL_PACKAGE%.zip
-unzip %QT_EVAL_PACKAGE%.zip
+rm -rf %QT_COMMERCIAL_PACKAGE% qt-eval-%QT_VERSION%
+unzip %QT_COMMERCIAL_PACKAGE%.zip > log
+unzip %QT_EVAL_PACKAGE%.zip > log
 mv %QT_COMMERCIAL_PACKAGE% qt-eval-%QT_VERSION%
 cd qt-eval-%QT_VERSION%
 echo empty>LICENSE.TROLL
@@ -30,12 +30,13 @@ nmake sub-src sub-tools
 nmake clean
 cd ..
 
-if %PROCESSOR_ARCHITEW6432% == "AMD64" then goto cleanup
+if "%PROCESSOR_ARCHITEW6432%" == "AMD64" then goto cleanup
 
 REM
 REM Commercial packages
 REM 
-unzip %QT_COMMERCIAL_PACKAGE%.zip
+rm -rf qt-commercial-%QT_VERSION%
+unzip %QT_COMMERCIAL_PACKAGE%.zip > log
 mv %QT_COMMERCIAL_PACKAGE% qt-commercial-%QT_VERSION%
 cd qt-commercial-%QT_VERSION%
 echo empty>LICENSE.TROLL
@@ -49,7 +50,8 @@ cd ..
 REM 
 REM Open Source packages
 REM 
-unzip %QT_OPENSOURCE_PACKAGE%.zip
+rm -rf qt-opensource-%QT_VERSION%
+unzip %QT_OPENSOURCE_PACKAGE%.zip > log
 mv %QT_OPENSOURCE_PACKAGE% qt-opensource-%QT_VERSION%
 set PATH=c:\mingw\bin
 cd qt-opensource-%QT_VERSION%
