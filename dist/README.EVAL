@@ -1,0 +1,9 @@
+About the Evalutation Version
+-----------------------------
+
+In order to properly run Qt Jambi Applications the binaries have to
+patched with the evaluation key. For windows this is done by the
+installer. For Mac OS X and Linux this is done by the various scripts,
+like qtjambi.sh. It can also be done explicitly by running the
+binpatch application supplied in the qtjambi package.
+

@@ -64,8 +64,9 @@ environment variable to include the qtjambi.jar file to get access to
 the library. To run the examples or launcher, you also need include the
 Qt Jambi root directory in the CLASSPATH.
 
-In addition to this, you need to set the correct environment for Qt
-Jambi to find the native libraries. 
+In the standard package structure, Qt Jambi will automatically locate
+the native libraries. For other directory structures, you need to set
+the correct environment for Qt Jambi to find the native libraries.
 
 Windows:
 	Set the PATH environment variable to include the bin directory
@@ -87,12 +88,6 @@ Mac OS X:
     It is necessary to pass the argument -XstartOnFirstThread to the
     java executable when running a Qt Jambi application. 
 
-Linux:
-    On 64 bit Ubuntu installations you need to install the ia32-sun-java5-bin
-    package and put /usr/lib/jvm/ia32-java-1.5.0-sun-1.5.0.06/jre/bin into your
-    PATH environment variable.
-    The final version will of course ship with sources, so you can compile and
-    run it with the full 64 bit version of java.
 
 Running the Qt Jambi Generator
 ------------------------------
@@ -105,21 +100,25 @@ directory.
 Reporting Bugs, Mailing List and Support
 ----------------------------------------
 
-Any inquiries or problems encountered with Qt Jambi should be reported
-to the 'Qt Jambi users' mailing list.
-
-Make sure you include information about your environment and versions.
+All Qt Jambi users are invited to join the Qt Jambi mailing list for
+discussions and assistance. 
 
 If you want to join the 'Qt Jambi users' mailing list, send a mail to
 qtjambi-interest-request@trolltech.com containing the single word
 "subscribe".
+
+Commercial customers and evaulators can report bugs to
+qt-bugs@trolltech.com and direct questions to support@trolltech.com
+
+For all issues, make sure you include information about your
+environment and versions.
 
 
 More information
 ----------------
 
 Please see 
-   http://www.trolltech.com/developer/downloads/qt/qtjambi-techpreview 
+   http://www.trolltech.com/jambi
 for more information about Qt Jambi.
 
 Please do not hesitate to contact us at sales@trolltech.com if you
