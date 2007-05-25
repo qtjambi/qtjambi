@@ -31,4 +31,6 @@ win32-msvc* {
 	win32-msvc2005:CONFIG-=embed_manifest_exe
 } linux-g++* {
     QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/lib
+} mac* {
+    CONFIG -= app_bundle
 }
