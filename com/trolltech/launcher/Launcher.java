@@ -351,10 +351,14 @@ public class Launcher extends QWidget {
     public static void main(String args[]) {
         QApplication.initialize(args == null ? start_qt() : args);
 
-        SplashScreen splashScreen = new SplashScreen();
 
-        splashScreen.show();
-        splashScreen.setGeometry(splashScreen.splashScreenRect());
+        SplashScreen splashScreen = null;
+
+        if (com.trolltech.qt.QSysInfo.macVersion() == 0) {
+            splashScreen = new SplashScreen();
+            splashScreen.show();
+            splashScreen.setGeometry(splashScreen.splashScreenRect());
+        }
 
         QApplication.processEvents();
 
@@ -365,10 +369,15 @@ public class Launcher extends QWidget {
         systemPalette = QApplication.palette();
 
         Launcher l = new Launcher();
-        l.progressChanged.connect(splashScreen, "updateProgress(String)");
+
+        if (splashScreen != null)
+            l.progressChanged.connect(splashScreen, "updateProgress(String)");
+
         l.init();
         l.show();
-        splashScreen.finish(l);
+
+        if (splashScreen != null)
+            splashScreen.finish(l);
 
         QApplication.exec();
         l.dispose();
