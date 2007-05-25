@@ -48,5 +48,3 @@ macx{
     CONFIG += ppc x86
     CONFIG -= precompile_header
 }
-
-VERSION  	= 4.3.0
