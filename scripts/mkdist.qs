@@ -1015,7 +1015,7 @@ function fixInstallName() {
  *
  */
 function figureVersion() {
-    var content = File.read("../com/trolltech/qt/QtJambi.java");
+    var content = File.read("../com/trolltech/qt/Utilities.java");
 
     var regexp_major = /MAJOR_VERSION += +(\d) *;/;
     var regexp_minor = /MINOR_VERSION += +(\d) *;/;
