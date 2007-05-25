@@ -39,10 +39,10 @@ class SplashScreen extends QSplashScreen {
         logo = new QPixmap("classpath:com/trolltech/images/logo.png");
 
         final int margin = 20;
-        final int shadow = 50;
+        final int shadow = 35;
         QRectF tr = new QRectF(0, 0, SIZE.width() - margin - shadow -1 , SIZE.height() - margin - shadow -1);
 
-        final int round = 40;
+        final int round = 10;
         final int round2 = round * 2;
 
         QPainterPath path = new QPainterPath();
@@ -80,7 +80,7 @@ class SplashScreen extends QSplashScreen {
         QColor whiteHighlight = QColor.fromRgbF(1, 1, 1);
         QColor whiteBorder = QColor.fromRgbF(0.5, 0.5, 0.5, 0.8);
 
-        double highlight = 0.84;
+        double highlight = 0.79;
         double size = 0.08;
 
         gradient.setColorAt(highlight - size, whiteAlpha);
@@ -157,8 +157,8 @@ class SplashScreen extends QSplashScreen {
         p.setClipPath(path);
 
         // The border
-        for (int i=30; i>=0; i-=3) {
-            int intensity = i * 255 / 30;
+        for (int i=20; i>=0; i-=3) {
+            int intensity = i * 255 / 20;
             QColor c = new QColor(intensity, intensity, intensity, (255 - intensity) / 3);
             p.setPen(new QPen(c, i));
             p.drawPath(path);
