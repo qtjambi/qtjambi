@@ -538,6 +538,8 @@ function setupEvalPackages() {
     pkg.qt = option.qtEvalLocation;
     pkg.license = "eval";
     pkg.licenseHeader = File.read(option.startDir + "/../dist/eval_header.txt");
+    pkg.copyFiles.push("dist/README.EVAL");
+
     setupBinaryPackage(pkg);
     finalizeDefaultPackage(pkg);
     return pkg;
