@@ -170,6 +170,16 @@ class SplashScreen extends QSplashScreen {
 
         cleanSplash = QPixmap.fromImage(target);
         setPixmap(cleanSplash);
+
+        if (com.trolltech.qt.QSysInfo.macVersion() > 0) {
+            QBitmap bm = new QBitmap(tr.size().toSize());
+            bm.fill(QColor.color0);
+            QPainter bmp = new QPainter(bm);
+            bmp.translate(-tr.x(), -tr.y());
+            bmp.fillPath(path, new QBrush(QColor.color1));
+            bmp.end();
+            setMask(bm);
+        }
     }
 
     public QRect splashScreenRect() {
