@@ -25,11 +25,11 @@ public class Chat extends QDialog {
 
     public static void main(String[] args) {
 
-        QApplication.initialize(args);        
+        QApplication.initialize(args);
         Chat chat = new Chat();
         chat.show();
         QApplication.exec();
-        
+
     }
 
     private Ui_ChatDialog ui = new Ui_ChatDialog();
@@ -114,7 +114,7 @@ public class Chat extends QDialog {
         if (nick.equals(""))
             return;
 
-        List<QListWidgetItem> items = ui.listWidget.findItems(nick, MatchFlag.MatchExactly);        
+        List<QListWidgetItem> items = ui.listWidget.findItems(nick, MatchFlag.MatchExactly);
 
         // temporary workaround, should be replaced by items.get(0).displose();
         for (int i = 0; i < ui.listWidget.count(); i++) {
@@ -122,7 +122,7 @@ public class Chat extends QDialog {
                 ui.listWidget.takeItem(i).dispose();
             }
         }
-        
+
         QColor color = ui.textEdit.textColor();
         ui.textEdit.setTextColor(QColor.gray);
         ui.textEdit.append(String.format(tr("* %1$s has left"), nick));
@@ -501,7 +501,7 @@ class Connection extends QTcpSocket {
 
 class PeerManager extends QObject {
     static final int BroadcastInterval = 2000;
-    static final char broadcastPort = 45000;
+    static final int broadcastPort = 45000;
 
     private Client client;
     private Vector<QHostAddress> broadcastAddresses = new Vector<QHostAddress>();
@@ -549,8 +549,10 @@ class PeerManager extends QObject {
         updateAddresses();
         serverPort = 0;
 
-        broadcastSocket.bind(new QHostAddress(QHostAddress.SpecialAddress.Any), broadcastPort,
-                QUdpSocket.BindFlag.ShareAddress, QUdpSocket.BindFlag.ReuseAddressHint);
+        broadcastSocket.bind(new QHostAddress(QHostAddress.SpecialAddress.Any),
+                             broadcastPort,
+                             new QUdpSocket.BindMode(QUdpSocket.BindFlag.ShareAddress,
+                                                     QUdpSocket.BindFlag.ReuseAddressHint));
 
         broadcastSocket.readyRead.connect(this, "readBroadcastDatagram()");
 
@@ -607,7 +609,7 @@ class PeerManager extends QObject {
             if (list.size() != 2)
                 continue;
 
-            char senderServerPort = list.get(1).toChar();
+            int senderServerPort = list.get(1).toChar();
 
             if (isLocalHostAddress(info.address) && senderServerPort == serverPort)
                 continue;
@@ -615,7 +617,7 @@ class PeerManager extends QObject {
             if (!client.hasConnection(info.address, -1)) {
                 Connection connection = new Connection(this);
                 newConnection.emit(connection);
-                connection.connectToHost(info.address, senderServerPort);
+                connection.connectToHost(info.address, senderServerPort, new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadWrite));
             }
         }
     }
@@ -641,7 +643,7 @@ class Server extends QTcpServer {
 
     public Server(QObject parent) {
         super(parent);
-        listen(new QHostAddress(QHostAddress.SpecialAddress.Any));
+        listen(new QHostAddress(QHostAddress.SpecialAddress.Any), 0);
     }
 
     public void incomingConnection(int socketDescriptor) {
