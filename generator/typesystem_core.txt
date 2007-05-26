@@ -1522,7 +1522,9 @@
     <extra-includes>
         <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
     </extra-includes>
-          
+
+    <modify-function signature="putChar(char)" rename="putByte"/>
+    <modify-function signature="ungetChar(char)" rename="ungetByte"/>          
     <modify-function signature="getChar(char*)">
         <access modifier="private"/>
         <rename to="getByte"/>
@@ -2318,17 +2320,6 @@
 
     private static com.trolltech.qt.QNativePointer argc, argv;
     </inject-code>
-    <modify-function signature="notify(QObject *, QEvent *)"> 
-        <inject-code class="shell">        
-        <argument-map index="2" meta-name="event"/>
-	#if QT_VERSION &lt; 0x040300
-	if (event-&gt;type() == 512) {
-            qtjambi_metacall(0, event);
-            return true;
-        }
-	#endif
-        </inject-code>
-    </modify-function>
   </object-type>
 
   <object-type name="QSettings">

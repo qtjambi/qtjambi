@@ -17,7 +17,7 @@ import com.trolltech.qt.gui.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 
-public class Line extends QFrame {
+class Line extends QFrame {
 
     public Line() {
         this(null);
