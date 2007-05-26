@@ -17,6 +17,7 @@ option.noJavadocDownload = array_contains(args, "--no-javadoc-download");
 option.sourcePackages = !array_contains(args, "--no-source");
 option.binaryPackages = !array_contains(args, "--no-binary");
 option.evalPackages = !array_contains(args, "--no-eval");
+option.gplPackages = !array_contains(args, "--no-gpl");
 option.qtEvalLocation = array_get_next_value(args, "--qt-eval");
 option.qtCommercialLocation = array_get_next_value(args, "--qt-commercial");
 option.qtGPLLocation = array_get_next_value(args, "--qt-gpl");
@@ -61,8 +62,10 @@ var packages = [];
 verbose("Setting up packages...");
 
 if (option.sourcePackages) {
-    verbose(" - gpl source");
-    packages.push(setupGPLSourcePackage());
+    if (option.gplPackages) {
+        verbose(" - gpl source");
+        packages.push(setupGPLSourcePackage());
+    }
     verbose(" - commercial source");
     packages.push(setupCommercialSourcePackage());
 }
@@ -76,11 +79,13 @@ if (option.binaryPackages) {
     if (!option.qtCommercialLocation)
         throw "missing '--qt-commercial [location]' for location of binaries";
 
-    if (!option.qtGPLLocation)
+    if (option.gplPackages && !option.qtGPLLocation)
         throw "missing '--qt-gpl [location' for location of binaries";
 
-    verbose(" - gpl binary");
-    packages.push(setupGPLBinaryPackage());
+    if (option.gplPackages) {
+        verbose(" - gpl binary");
+        packages.push(setupGPLBinaryPackage());
+    }
 
     verbose(" - commercial binary");
     packages.push(setupCommercialBinaryPackage());
