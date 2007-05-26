@@ -28,7 +28,7 @@ mv $QT_PACKAGE qt-commercial-$QT_VERSION
 cd qt-commercial-$QT_VERSION
 find . -exec touch \{\} \;
 touch LICENSE.TROLL
-./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD
+./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD -no-mmx -no-3dnow -no-sse -no-sse2
 make sub-src sub-tools
 make clean
 cd ..
@@ -47,7 +47,7 @@ mv $QT_PACKAGE qt-eval-$QT_VERSION
 cd qt-eval-$QT_VERSION
 find . -exec touch \{\} \;
 touch LICENSE.TROLL
-./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD  -DQT_EVAL
+./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD -DQT_EVAL -no-mmx -no-3dnow -no-sse -no-sse2
 make sub-src sub-tools
 make clean
 cd ..
