@@ -578,11 +578,6 @@ function createPackage(pkg) {
         verbose(" - documentation...");
         createDocs(pkg);
 
-        if (os_name() == OS_NAME_MACOSX) {
-            verbose(" - OSX install_name foo...");
-            fixInstallName();
-        }
-
         verbose(" - post compile step...");
         pkg.postCompileStep(pkg);
     }
@@ -595,6 +590,11 @@ function createPackage(pkg) {
 
     verbose(" - expanding macroes...");
     expandMacros(pkg.licenseHeader);
+
+    if (pkg.binary && os_name() == OS_NAME_MACOSX) {
+        verbose(" - OSX install_name foo...");
+        fixInstallName();
+    }
 
     if (pkg.binary && option.platformJar) {
         verbose(" - creating platform .jar...");
