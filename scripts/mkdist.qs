@@ -543,7 +543,8 @@ function setupEvalPackages() {
     pkg.qt = option.qtEvalLocation;
     pkg.license = "eval";
     pkg.licenseHeader = File.read(option.startDir + "/../dist/eval_header.txt");
-    pkg.copyFiles.push("dist/README.EVAL");
+    pkg.copyFiles.push("dist/README.EVAL",
+                       "dist/LICENSE.EVAL");
 
     if (os_name() == OS_NAME_LINUX) {
         pkg.copyFiles.push("dist/linux/binpatch");
