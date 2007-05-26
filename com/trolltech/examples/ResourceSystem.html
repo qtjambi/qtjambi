@@ -35,7 +35,7 @@ body { color: black; }</style>
 <pre>&nbsp;   searchPath = &quot;classpath:/&quot;;</pre>
 <p>Every entry of the class path has a root directory, so this directory is distributed over all parts of the class path; i.e. if the classpath contains two entries: <tt>/my_java_files/:/java_sdk/rt.jar</tt>, the root directory will contain all contents of <tt>/my_java_files</tt> as well as all contents in the root of <tt>rt.jar</tt>. We simply use QDir on the root directory and entryList() to get its contents.</p>
 <p>Since we also want the application to list the contents of <tt>ResourceSystem.jar</tt>, we will add this to the class path file engine in the default mode:</p>
-<pre>&nbsp;   QtJambiUtils.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());</pre>
+<pre>&nbsp;   QtJambInternal.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());</pre>
 <p>When the file is stored directly on the disk in the main file system, the canonical file path will return the actual, complete path and file name of the file. If it were stored within another <tt>.jar</tt> file, we wouldn't be able to add it to the class path without first extracting it (using the copy() method in QFile).</p>
 <p>In the alternative mode, we only want to search <tt>ResourceSystem.jar</tt>. This is accomplished by requesting the root from this specific <tt>.jar</tt> file:</p>
 <pre>&nbsp;   searchPath = &quot;classpath:&quot; + jarInfo.canonicalFilePath() + &quot;#/&quot;;</pre>

@@ -37,7 +37,7 @@ public class Utilities {
 	/** A formated String with versioning*/
     public static final String VERSION_STRING = String.format("%1$d.%2$d.%3$d_%4$02d",
             MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION, BUILD_NUMBER);
-    
+
 	/** Enum for defining the operation system. */
     public enum OperatingSystem {
 	/** Windows */
@@ -231,15 +231,15 @@ public class Utilities {
         return new File(tmpDir, "QtJambi_" + user + "_" + arch + "_" + VERSION_STRING);
     }
 
-    public static void copy(URL sourceUrl, String destination) throws IOException {
+    private  static void copy(URL sourceUrl, String destination) throws IOException {
         copy(sourceUrl.openStream(), new FileOutputStream(destination));
     }
 
-    public static void copy(URL sourceUrl, File destination) throws IOException {
+    private static void copy(URL sourceUrl, File destination) throws IOException {
         copy(sourceUrl.openStream(), new FileOutputStream(destination));
     }
 
-    public static void copy(String source, String destination) throws IOException {
+    private static void copy(String source, String destination) throws IOException {
         copy(new FileInputStream(source), new FileOutputStream(destination));
     }
 

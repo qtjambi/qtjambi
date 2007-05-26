@@ -94,7 +94,6 @@
 ./com/trolltech/qt/QtJambiInterface.java
 ./com/trolltech/qt/QtJambiInternal.java
 ./com/trolltech/qt/QtJambiObject.java
-./com/trolltech/qt/QtJambiUtils.java
 ./com/trolltech/qt/QtJambi_LibraryInitializer.java
 ./com/trolltech/qt/QtJambi_LibraryShutdown.java
 ./com/trolltech/qt/QtPropertyDesignable.java

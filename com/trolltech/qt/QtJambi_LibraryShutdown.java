@@ -15,7 +15,7 @@ package com.trolltech.qt;
 
 import com.trolltech.qt.core.*;
 
-public class QtJambi_LibraryShutdown implements Runnable {
+class QtJambi_LibraryShutdown implements Runnable {
     public void run() {
         QCoreApplication app = QCoreApplication.instance();
 

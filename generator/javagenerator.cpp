@@ -261,8 +261,6 @@ void JavaGenerator::writeEnum(QTextStream &s, const MetaJavaEnum *java_enum)
         s << "    public static class " << flagsName << " extends com.trolltech.qt.QFlags<"
           << java_enum->name() << "> {" << endl
           << "        private static final long serialVersionUID = 1L;" << endl
-          << "        public " << flagsName << "(" << flagsName << " other)"
-          << " { super(other); }" << endl
           << "        public " << flagsName << "(" << java_enum->name() << " ... args)"
           << " { super(args); }" << endl
           << "        public " << flagsName << "(int value) { setValue(value); }" << endl
@@ -654,9 +652,9 @@ void JavaGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_fun
                 include_attributes |= MetaJavaAttributes::Private;
             else if (mod.isFriendly())
                 include_attributes |= MetaJavaAttributes::Friendly;
-            
+
             exclude_attributes &= ~(include_attributes);
-            
+
         }
     }
 
@@ -706,9 +704,9 @@ void JavaGenerator::retrieveModifications(const MetaJavaFunction *java_function,
             else if (mod.isPrivate())
                 *include_attributes |= MetaJavaAttributes::Private;
             else if (mod.isFriendly())
-                *include_attributes |= MetaJavaAttributes::Friendly;        
-        } 
-        
+                *include_attributes |= MetaJavaAttributes::Friendly;
+        }
+
         if (mod.isFinal()) {
             *include_attributes |= MetaJavaAttributes::FinalInJava;
         } else if (mod.isNonFinal()) {

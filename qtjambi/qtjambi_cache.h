@@ -200,12 +200,6 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
-        jmethodID isImplementedInJava;
-        jmethodID findGeneratedSuperclass;
-    } QtJambiUtils;
-
-    struct {
-        jclass class_ref;
         jmethodID constructor;
         jmethodID booleanValue;
         jfieldID field_FALSE;
@@ -261,9 +255,11 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
-        jmethodID lookupSlot;
-        jmethodID lookupSignal;
         jmethodID findEmitMethod;
+        jmethodID findGeneratedSuperclass;
+        jmethodID isImplementedInJava;
+        jmethodID lookupSignal;
+        jmethodID lookupSlot;
     } QtJambiInternal;
 
     struct {
@@ -344,7 +340,6 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(QtJambiGuiInternal);
     DECLARE_RESOLVE_FUNCTIONS(QtJambiInternal);
     DECLARE_RESOLVE_FUNCTIONS(QtJambiObject);
-    DECLARE_RESOLVE_FUNCTIONS(QtJambiUtils);
     DECLARE_RESOLVE_FUNCTIONS(Short);
     DECLARE_RESOLVE_FUNCTIONS(Stack);
     DECLARE_RESOLVE_FUNCTIONS(String);

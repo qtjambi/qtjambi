@@ -13,7 +13,7 @@
 
 package com.trolltech.examples;
 
-import com.trolltech.qt.QtJambiUtils;
+import com.trolltech.qt.QtJambiInternal;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -206,7 +206,7 @@ public class ResourceSystem extends QWidget
         String searchPath = null;
         if (m_browse_class_path) {
             if (m_jar_name == null) {
-                QtJambiUtils.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());
+                QtJambiInternal.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());
                 m_jar_name = jarInfo.canonicalFilePath();
             }
             searchPath = "classpath:/";
@@ -220,14 +220,14 @@ public class ResourceSystem extends QWidget
             return ;
         }
         new ResourceItem(m_selection, info, true);
-        
-        
+
+
     }
 
     protected void disposed()
     {
         if (m_jar_name != null)
-            QtJambiUtils.removeSearchPathForResourceEngine(m_jar_name);
+            QtJambiInternal.removeSearchPathForResourceEngine(m_jar_name);
         super.disposed();
     }
 

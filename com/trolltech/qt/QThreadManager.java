@@ -16,15 +16,15 @@ package com.trolltech.qt;
 /**
  * @exclude
  */
-public class QThreadManager {
-    
+class QThreadManager {
+
     private static class NativeResourcesReleaseThread extends Thread {
         private int m_sleepTime = 100;
-        
-        public NativeResourcesReleaseThread() { 
+
+        public NativeResourcesReleaseThread() {
             setDaemon(true);
         }
-        
+
         public void run() {
             while (true) {
                 try { sleep(m_sleepTime); } catch (Exception e) { };
@@ -33,10 +33,10 @@ public class QThreadManager {
             }
         }
     }
-    
+
     public static void initialize() {
         new NativeResourcesReleaseThread().start();
     }
-    
-    public synchronized static native boolean releaseNativeResources(); 
+
+    public synchronized static native boolean releaseNativeResources();
 }

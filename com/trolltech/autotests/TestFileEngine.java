@@ -13,7 +13,7 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.QtJambiUtils;
+import com.trolltech.qt.QtJambiInternal;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -31,7 +31,7 @@ public class TestFileEngine extends QApplicationTest{
         assertTrue(info.exists());
 
         String search_path = info.canonicalFilePath();
-        QtJambiUtils.addSearchPathForResourceEngine(search_path);
+        QtJambiInternal.addSearchPathForResourceEngine(search_path);
 
         QFileInfo ne_info = new QFileInfo("classpath:*#TestClassFunctionality_nosuchfile.txt");
         assertTrue(!ne_info.exists());
@@ -146,6 +146,6 @@ public class TestFileEngine extends QApplicationTest{
         assertTrue(file.permissions().isSet(QFile.Permission.ReadUser));
         assertEquals(file.size(), 13L);
 
-        QtJambiUtils.removeSearchPathForResourceEngine(search_path);
+        QtJambiInternal.removeSearchPathForResourceEngine(search_path);
     }
 }

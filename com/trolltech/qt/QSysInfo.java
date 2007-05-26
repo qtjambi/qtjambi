@@ -14,11 +14,11 @@
 package com.trolltech.qt;
 
 public class QSysInfo {
-	
+
 	static {
 		QtJambi_LibraryInitializer.init();
 	}
-	
+
     // Windows enum values
     public static final int Windows_32s      = 0x0001;
     public static final int Windows_95       = 0x0002;
@@ -37,7 +37,7 @@ public class QSysInfo {
     public static final int Windows_CENET    = 0x0200;
     public static final int Windows_CE_based = 0x0f0;
 
-  
+
     // Mac OS X enum values
     public static final int MacOS_10_0 = 0x0002;
     public static final int MacOS_10_1 = 0x0003;
@@ -51,7 +51,7 @@ public class QSysInfo {
     public static final int MacOS_PANTHER 	= MacOS_10_3;
     public static final int MacOS_TIGER 	= MacOS_10_4;
 
-    
+
     // Operating system enum values.
     public static final int OS_AIX 	=  1;
     public static final int OS_BSD4 	=  2;
@@ -85,10 +85,4 @@ public class QSysInfo {
     public static native int windowsVersion();
     public static native int macVersion();
     public static native int operatingSystem();
-    
-    public static void main(String args[]) {
-        System.out.println("osversion: " + operatingSystem());
-        System.out.println("windows version: " + windowsVersion());
-        System.out.println("Mac OS X version: " + macVersion());
-    }
 }

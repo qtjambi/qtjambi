@@ -2182,6 +2182,9 @@
         return com.trolltech.qt.QtPropertyManager.readProperty(this, name);
     }
 
+    @com.trolltech.qt.QtBlockedSlot public void connectSlotsByName() {
+        com.trolltech.qt.QtJambiInternal.connectSlotsByName(this);
+    }
     </inject-code>
   </object-type>
 

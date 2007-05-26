@@ -33,9 +33,9 @@ public class ResourceBrowser extends JambiResourceBrowser {
             }
         }
     }
-    
+
     public ResourceBrowser(QWidget parent) {
-        super(parent);        
+        super(parent);
 
         try {
 
@@ -112,7 +112,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
         }
 
         view.expandAll();
-        
+
         selection.selectionChanged.connect(this, "selectionChanged()");
 
         setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu);
@@ -154,24 +154,24 @@ public class ResourceBrowser extends JambiResourceBrowser {
     @Override
     public void updateRootDirs(String paths) {
         String rootArray[] = paths.split(System.getProperty("path.separator"));
-        
-        
+
+
         List<String> roots = ClassPathWalker.roots();
         if (roots != null) {
-            for (String root : roots) 
-                QtJambiUtils.removeSearchPathForResourceEngine(root);
+            for (String root : roots)
+                QtJambiInternal.removeSearchPathForResourceEngine(root);
         }
-                
+
         roots = new ArrayList<String>();
         Collections.addAll(roots, rootArray);
         for (String root : roots)
-            QtJambiUtils.addSearchPathForResourceEngine(root);
-                
+            QtJambiInternal.addSearchPathForResourceEngine(root);
+
         ClassPathWalker.setRoots(roots);
         ClassPathWalker.addRootsFromSettings();
-        reindex();                
+        reindex();
     }
-    
+
     /**
      * Sets the specified index in the browser model to the selected
      * element...
@@ -251,11 +251,11 @@ public class ResourceBrowser extends JambiResourceBrowser {
         String newExtraPath = "";
         QSettings settings = new QSettings("Trolltech", "Qt Jambi Resource Browser");
         Object oldExtraPath = settings.value("Extra paths");
-        
+
         List<String> oldExtraPaths = new ArrayList<String>();
         if (oldExtraPath != null && oldExtraPath instanceof String) {
         	Collections.addAll(oldExtraPaths, ((String) oldExtraPath).split(java.io.File.pathSeparator));
-        	
+
         }
 
         for (String newPath : newPaths) {
@@ -265,11 +265,11 @@ public class ResourceBrowser extends JambiResourceBrowser {
         		newExtraPath += newPath;
         	}
         }
-    	
+
     	settings.setValue("Extra paths", newExtraPath);
     	settings.sync();
     }
-    
+
     @SuppressWarnings("unused")
     private void changeSearchPath() {
         SearchPathDialog pathDialog = new SearchPathDialog(this);
@@ -277,28 +277,28 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
         if (pathDialog.exec() == QDialog.DialogCode.Accepted.value()) {
             List<String> newPaths = pathDialog.paths();
-            
+
             // Remove roots that are no longer wanted from ClassPathFileEngine
             List<String> oldRoots = ClassPathWalker.roots();
-            {            	
+            {
             	for (String root : oldRoots) {
             		if (!newPaths.contains(root))
-            			QtJambiUtils.removeSearchPathForResourceEngine(root);
+            			QtJambiInternal.removeSearchPathForResourceEngine(root);
             	}
             }
-            
+
             // Add new roots to ClassPathFileEngine
             {
             	for (String path : newPaths) {
             		if (!oldRoots.contains(path)) {
-            			QtJambiUtils.addSearchPathForResourceEngine(path);
+            			QtJambiInternal.addSearchPathForResourceEngine(path);
             		}
             	}
             }
-            
+
             updateSettings(newPaths, oldRoots);
-            
-            ClassPathWalker.setRoots(newPaths);            
+
+            ClassPathWalker.setRoots(newPaths);
             reindex();
         }
     }

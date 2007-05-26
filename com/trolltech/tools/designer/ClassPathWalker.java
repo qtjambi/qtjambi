@@ -55,7 +55,7 @@ public class ClassPathWalker extends QObject implements Runnable {
             List<String> r = new ArrayList<String>();
             Collections.addAll(r, classpath.split(java.io.File.pathSeparator));
             setRoots(r);
-            
+
             addRootsFromSettings();
         }
     }
@@ -81,7 +81,7 @@ public class ClassPathWalker extends QObject implements Runnable {
             String dirPath = QDir.toNativeSeparators(dir.absolutePath());
             if (processedDirs.contains(dirPath))
                 continue;
-            processedDirs.add(dirPath);            
+            processedDirs.add(dirPath);
 
             traverse(dir, data.second);
 
@@ -125,22 +125,22 @@ public class ClassPathWalker extends QObject implements Runnable {
     public void setPixmapSize(QSize size) {
         this.size = size;
     }
-    
+
     public synchronized static void addRootsFromSettings() {
     	QSettings settings = new QSettings("Trolltech", "Qt Jambi Resource Browser");
         Object path = settings.value("Extra paths");
         if (roots != null && path != null && path instanceof String) {
         	String paths[] = ((String)path).split(java.io.File.pathSeparator);
-        	for (String p : paths) { 
-        		QtJambiUtils.addSearchPathForResourceEngine(p);
+        	for (String p : paths) {
+        		QtJambiInternal.addSearchPathForResourceEngine(p);
         		roots.add(p);
         	}
-        }    	
+        }
     }
 
 
     public synchronized static void setRoots(List<String> r) {
-        roots = r;        
+        roots = r;
     }
 
     public synchronized static List<String> roots() {
@@ -152,16 +152,16 @@ public class ClassPathWalker extends QObject implements Runnable {
      * Traverses the directory and emits a signal for all the files that match the fileExtensions.
      * @param dir The directory to find files in...
      */
-    private void traverse(QDir dir, String rootDir) {                
+    private void traverse(QDir dir, String rootDir) {
         QDir.Filters filters = new QDir.Filters();
         filters.set(QDir.Filter.Readable);
         filters.set(QDir.Filter.Files);
         List<String> imgs = dir.entryList(fileExtensions, filters);
 
         for (String name : imgs) {
-            name = dir.absoluteFilePath(name).substring(new QDir(rootDir).canonicalPath().length() + 1);            
+            name = dir.absoluteFilePath(name).substring(new QDir(rootDir).canonicalPath().length() + 1);
             name = "classpath:" + name;
-                        
+
             QImage image = new QImage(name);
             if (image.isNull())
                 continue;
@@ -179,8 +179,8 @@ public class ClassPathWalker extends QObject implements Runnable {
 	    if (smallImage.isNull()) {
 		continue;
 	    }
-	    
-            image.dispose();                                   	
+
+            image.dispose();
 
             synchronized (this) {
                 if (stopped)

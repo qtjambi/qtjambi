@@ -16,21 +16,13 @@ package com.trolltech.qt;
 /**
  * This class manages a set of QtEnumerator values. Each enum value
  * is treated as a flag that is either set or unset. You can set and
- * clear flags, and query which flags are set. 
+ * clear flags, and query which flags are set.
  */
-public abstract class QFlags<T extends QtEnumerator> 
+public abstract class QFlags<T extends QtEnumerator>
     implements QtEnumerator,
-               java.io.Serializable, 
+               java.io.Serializable,
                Cloneable
 {
-    
-     /**
-      * Creates a new QFlags, which us a copy of <tt>other</tt>.
-      */
-     protected QFlags(QFlags<T> other) {
-         set(other);
-     }
-    
      /**
       * Creates a new QFlags where the flags in <tt>args</tt> are set.
       */
@@ -44,7 +36,7 @@ public abstract class QFlags<T extends QtEnumerator>
      public final void set(QFlags<T> other) {
          value |= other.value();
      }
-     
+
      /**
       * Sets the flags in <tt>ts</tt>.
       */
@@ -52,13 +44,13 @@ public abstract class QFlags<T extends QtEnumerator>
          for (T t : ts)
              value |= t.value();
      }
-     
+
     /**
      * Returns true if flag <tt>other</tt> is set; otherwise, returns
      * false.
      */
      public final boolean isSet(QFlags<T> other) {
-         return (value & other.value()) == other.value();  
+         return (value & other.value()) == other.value();
      }
 
      /**
@@ -72,42 +64,42 @@ public abstract class QFlags<T extends QtEnumerator>
          }
          return true;
      }
-     
+
     /**
      * Clears the flag <tt>other</tt>.
      */
      public final void clear(QFlags<T> other) {
          value &= ~other.value();
      }
-     
+
      /**
       * Clears all flags in <tt>ts</tt>.
       *
       */
      public final void clear(T ... ts) {
          for (T t : ts)
-             value &= ~t.value(); 
+             value &= ~t.value();
      }
-         
+
     /**
      * Clears all flags.
      */
-     public final void clearAll() { 
-         value = 0; 
+     public final void clearAll() {
+         value = 0;
      }
 
     /**
      * Sets the value of this QFlags.
      */
-     public final void setValue(int value) { 
+     public final void setValue(int value) {
          this.value = value;
      }
-     
+
     /**
      * Returns the value of this QFlags.
      */
      public final int value() {
-         return value; 
+         return value;
      }
 
     /**
@@ -126,7 +118,7 @@ public abstract class QFlags<T extends QtEnumerator>
          String hexString = Integer.toHexString(value);
          return "0x" + ("00000000".substring(hexString.length())) + hexString;
      }
-     
+
      private int value;
 }
 

@@ -21,7 +21,7 @@ public class OnConnection extends QWidget
 
     public OnConnection() {
 	QVBoxLayout layout = new QVBoxLayout(this);
-	
+
 	QPushButton ok = new QPushButton("OK", this);
 	ok.setObjectName("okButton");
 	ok.setCheckable(true);
@@ -29,9 +29,9 @@ public class OnConnection extends QWidget
 
 	QPushButton cancel = new QPushButton("cancel", this);
 	cancel.setObjectName("cancelButton");
-	layout.addWidget(cancel);	
+	layout.addWidget(cancel);
 
-	QtJambiUtils.connectSlotsByName(this);
+	connectSlotsByName();
     }
 
     public void on_okButton_clicked() {
@@ -51,10 +51,10 @@ public class OnConnection extends QWidget
     public static void main(String args[])
     {
 	QApplication.initialize(args);
-	
+
 	OnConnection oc = new OnConnection();
 	oc.show();
-	
+
 	QApplication.exec();
     }
 }

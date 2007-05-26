@@ -120,7 +120,7 @@ void WriteInitialization::acceptUI(DomUI *node)
         output << "\n" << m_delayedInitialization << "\n";
 
     if (option.autoConnection)
-        output << "\n" << option.indent << "com.trolltech.qt.QtJambiUtils.connectSlotsByName(" << varName << ");\n";
+        output << "\n" << option.indent << varName << ".connectSlotsByName();\n";
 
     option.indent = oldIndent;
 

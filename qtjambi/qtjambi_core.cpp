@@ -832,7 +832,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
     sc->resolveClass();
     sc->resolveObject();
     sc->resolveMethod();
-    sc->resolveQtJambiUtils();
+    sc->resolveQtJambiInternal();
 
     QTJAMBI_EXCEPTION_CHECK(env);
     jstring jclass_name = (jstring) env->CallObjectMethod(object_class, sc->Class.getName);
@@ -868,8 +868,8 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
             qtjambi_exception_check(env);
         }
 
-        if (env->CallStaticBooleanMethod(sc->QtJambiUtils.class_ref,
-                                         sc->QtJambiUtils.isImplementedInJava,
+        if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref,
+                                         sc->QtJambiInternal.isImplementedInJava,
                                          method_object)) {
             table->setMethod(i, method_id);
 //             printf("Implemented: %s::%s\n",
@@ -906,8 +906,8 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
         }
 
         QTJAMBI_EXCEPTION_CHECK(env);
-        if (env->CallStaticBooleanMethod(sc->QtJambiUtils.class_ref,
-                                         sc->QtJambiUtils.isImplementedInJava,
+        if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref,
+                                         sc->QtJambiInternal.isImplementedInJava,
                                          method_object)) {
             QString errorMessage = QString("Function '%1' in class '%2'")
                                    .arg(inconsistentNames[i]).arg(qclass_name);
@@ -923,8 +923,8 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
 
 jclass qtjambi_find_generated_superclass(JNIEnv *env,  jobject obj){
     StaticCache *sc = StaticCache::instance(env);
-    sc->resolveQtJambiUtils();
-    return (jclass)env->CallStaticObjectMethod(sc->QtJambiUtils.class_ref, sc->QtJambiUtils.findGeneratedSuperclass, obj);
+    sc->resolveQtJambiInternal();
+    return (jclass)env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.findGeneratedSuperclass, obj);
 }
 
 void qtjambi_resolve_signals(JNIEnv *env,

@@ -901,24 +901,6 @@ void StaticCache::resolveClassLoader_internal()
     Q_ASSERT(ClassLoader.loadClass);
 }
 
-void StaticCache::resolveQtJambiUtils_internal()
-{
-    Q_ASSERT(!QtJambiUtils.class_ref);
-
-    QtJambiUtils.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiUtils"));
-    Q_ASSERT(QtJambiUtils.class_ref);
-
-    QtJambiUtils.isImplementedInJava =
-        env->GetStaticMethodID(QtJambiUtils.class_ref, "isImplementedInJava",
-                               "(Ljava/lang/reflect/Method;)Z");
-     Q_ASSERT(QtJambiUtils.isImplementedInJava);
-
-    QtJambiUtils.findGeneratedSuperclass =
-        env->GetStaticMethodID(QtJambiUtils.class_ref, "findGeneratedSuperclass",
-                               "(Ljava/lang/Object;)Ljava/lang/Class;");
-    Q_ASSERT(QtJambiUtils.findGeneratedSuperclass);
-}
-
 void StaticCache::resolveQSignalEmitter_internal()
 {
     Q_ASSERT(!QSignalEmitter.class_ref);
@@ -992,6 +974,15 @@ void StaticCache::resolveQtJambiInternal_internal()
                                                            "(Lcom/trolltech/qt/QSignalEmitter$AbstractSignal;)Ljava/lang/reflect/Method;");
     Q_ASSERT(QtJambiInternal.findEmitMethod);
 
+    QtJambiInternal.isImplementedInJava =
+        env->GetStaticMethodID(QtJambiInternal.class_ref, "isImplementedInJava",
+                               "(Ljava/lang/reflect/Method;)Z");
+     Q_ASSERT(QtJambiInternal.isImplementedInJava);
+
+    QtJambiInternal.findGeneratedSuperclass =
+        env->GetStaticMethodID(QtJambiInternal.class_ref, "findGeneratedSuperclass",
+                               "(Ljava/lang/Object;)Ljava/lang/Class;");
+    Q_ASSERT(QtJambiInternal.findGeneratedSuperclass);
 }
 
 
@@ -1083,7 +1074,7 @@ void StaticCache::resolveValidationData_internal()
     Q_ASSERT(ValidationData.position);
 }
 
-void StaticCache::resolveQTableArea_internal() 
+void StaticCache::resolveQTableArea_internal()
 {
     Q_ASSERT(!QTableArea.class_ref);
 
@@ -1106,7 +1097,7 @@ void StaticCache::resolveQTableArea_internal()
     Q_ASSERT(QTableArea.columnCount);
 }
 
-void StaticCache::resolveCellAtIndex_internal() 
+void StaticCache::resolveCellAtIndex_internal()
 {
     Q_ASSERT(!CellAtIndex.class_ref);
 

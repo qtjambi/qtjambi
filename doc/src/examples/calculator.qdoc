@@ -109,7 +109,7 @@
     \section1 Connecting to the User Interface
 
     In addition to creating the user interface, \c setupUi()
-    automatically calls the QtJambiUtils.connectSlotsByName() method,
+    automatically calls the QObject.connectSlotsByName() method,
     connecting signals from widgets on the form to methods in our
     code. To indicate which widgets and signals in the user interface
     that should be connected to each method, we use a predefined

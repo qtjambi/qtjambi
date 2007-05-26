@@ -68,7 +68,7 @@ Since we also want the application to list the contents of
 default mode:
 
 \code
-QtJambiUtils.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());
+QtJambiInternal.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());
 \endcode
 
 When the file is stored directly on the disk in the main file system, the

@@ -146,12 +146,9 @@ public class MainWindow extends QMainWindow {
         ui.colorBalance.valueChanged.connect(view, "setColorBalance(int)");
         ui.inverted.toggled.connect(view, "setInvert(boolean)");
 
-        QtJambiUtils.connect(view.valid, "setEnabled(boolean)",
-                            ui.actionClose,
-                            ui.actionSave,
-                            ui.actionZoom_In,
-                            ui.actionZoom_Out,
-                            ui.groupBox);
+        view.valid.connect(ui.actionClose, "setEnabled(boolean)");
+        view.valid.connect(ui.actionSave, "setEnabled(boolean)");
+        view.valid.connect(ui.groupBox, "setEnabled(boolean)");
     }
 
     public void closeEvent(QCloseEvent event) {
