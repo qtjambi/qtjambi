@@ -8,8 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += binpatch.h
-SOURCES += binpatch.cpp main.cpp
+SOURCES += main.cpp
 
 QT = 
 CONFIG -= qt
@@ -33,4 +32,5 @@ win32-msvc* {
     QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/lib
 } mac* {
     CONFIG -= app_bundle
+    CONFIG += ppc x86
 }
