@@ -27,10 +27,8 @@ tar xzf $QT_PACKAGE.tar.gz > /dev/null 2>&1
 mv $QT_PACKAGE qt-commercial-$QT_VERSION
 cd qt-commercial-$QT_VERSION
 find . -exec touch \{\} \;
-
-echo FGKXC-4M5-F4M-2CX-BCCUX-G9PV7-DF21 > .setup_commercial.tmp
-echo yes >> .setup_commercial.tmp
-./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD < .setup_commercial.tmp
+touch LICENSE.TROLL
+./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD
 make sub-src sub-tools
 make clean
 cd ..
@@ -48,10 +46,8 @@ cp -R $QT_EVAL_DIR/* $QT_PACKAGE
 mv $QT_PACKAGE qt-eval-$QT_VERSION
 cd qt-eval-$QT_VERSION
 find . -exec touch \{\} \;
-
-echo BGKXU-ZM5-R4M-2CX-BCCUX-G9PV7-7638 > .setup_eval.tmp
-echo yes >> .setup_eval.tmp
-./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD  -DQT_EVAL < .setup_eval.tmp
+touch LICENSE.TROLL
+./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD  -DQT_EVAL
 make sub-src sub-tools
 make clean
 cd ..
