@@ -356,7 +356,11 @@ function setupBinaryPackage(pkg) {
         else
             pkg.packageName = "win32";
     } else if (os_name() == OS_NAME_LINUX) {
-        pkg.packageName = "linux";
+        Process.execute("uname -a");
+        if (Process.stdout.indexOf("86"))
+            pkg.packageName = "linux32";
+        else
+            pkg.packageName = "linux64";
     } else {
         pkg.packageName = "mac";
     }
