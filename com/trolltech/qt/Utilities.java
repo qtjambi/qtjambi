@@ -176,12 +176,14 @@ public class Utilities {
             }
             Runtime.getRuntime().load(destLib.getAbsolutePath());
             if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") using cached");
+            return true;
         } catch (Throwable e) {
             if (VERBOSE_LOADING) e.printStackTrace();
         }
 
-        // Try to load using relative path (relative to qtjambi.jar or root of package where class file are loaded from
-        if(implicitLoading){
+        // Try to load using relative path (relative to qtjambi.jar or
+        // root of package where class file are loaded from
+        if (implicitLoading) {
             try {
                 URI uri = Utilities.class.getProtectionDomain().getCodeSource().getLocation().toURI();
 
@@ -357,28 +359,42 @@ public class Utilities {
 
     public static String unpackPlugins() {
         String pluginJars = System.getProperty("com.trolltech.qt.pluginjars");
+
+        if (VERBOSE_LOADING)
+            System.out.println("Loading plugins from: " + pluginJars);
+
+        List<URL> urls = new ArrayList<URL>();
+        try {
+            Enumeration<URL> bases = Thread.currentThread().getContextClassLoader().getResources("plugins");
+            while (bases.hasMoreElements())
+                urls.add(bases.nextElement());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (pluginJars != null) {
             File tmpDir = jambiTempDir();
             String jars[] = pluginJars.split(File.pathSeparator);
             String classpath = System.getProperty("java.class.path");
             for (String jar : jars) {
-
-                if (new File(jar).exists()) {
-                    unpackPlugins(jar);
-                    continue;
-                }
-
-                URL libUrl = Thread.currentThread().getContextClassLoader().getResource(jar);
-                if (libUrl == null) {
-                    System.err.println("Plugin archive: '" + jar + "' could not be resolved");
-                    continue;
-                }
-
                 try {
-                    if (new File(libUrl.toURI()).exists())
-                        unpackPlugins(jar);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
+                    File f = new File(jar);
+                    if (f.exists()) {
+                        unpackPlugins(new JarFile(f));
+                    } else {
+                        for (URL url : urls) {
+                            if (url.toString().contains(jar)) {
+                                URLConnection connection = url.openConnection();
+                                if (connection instanceof JarURLConnection)
+                                    unpackPlugins(((JarURLConnection) connection).getJarFile());
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    if (VERBOSE_LOADING) {
+                        System.out.println("could not load plugin archive...: " + jar);
+                        e.printStackTrace();
+                    }
                 }
             }
             return tmpDir.getAbsolutePath() + "/plugins";
@@ -386,29 +402,26 @@ public class Utilities {
         return null;
     }
 
-    private static void unpackPlugins(String jarName) {
-        try {
-            JarFile jar = new JarFile(jarName);
-            File tmpDir = jambiTempDir();
+    private static void unpackPlugins(JarFile jar) throws IOException {
+        File tmpDir = jambiTempDir();
 
-            Enumeration<JarEntry> entries = jar.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                InputStream stream = jar.getInputStream(entry);
+        Enumeration<JarEntry> entries = jar.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            InputStream stream = jar.getInputStream(entry);
 
-                if (entry.getName().startsWith("plugins") && !entry.isDirectory()) {
-                    File destination = new File(tmpDir.getAbsolutePath(), entry.getName());
-                    if (!destination.exists()) {
-                        File path = destination.getParentFile();
-                        if (!path.exists())
-                            path.mkdirs();
-                        copy(stream, new FileOutputStream(destination));
-                    }
+            if (entry.getName().startsWith("plugins") && !entry.isDirectory()) {
+                File destination = new File(tmpDir.getAbsolutePath(), entry.getName());
+                if (!destination.exists()) {
+                    File path = destination.getParentFile();
+                    if (!path.exists())
+                        path.mkdirs();
+                    copy(stream, new FileOutputStream(destination));
                 }
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+        if (VERBOSE_LOADING)
+            System.out.println("unpacked plugins from: " + jar);
     }
 }
