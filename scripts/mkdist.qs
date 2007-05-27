@@ -955,6 +955,10 @@ function createPlatformJar(pkg) {
 		|| f.indexOf("Designer") >= 0
 		|| f.indexOf("Script") >= 0)
 		return;
+
+              if (f.endsWith(".exe"))
+                  return;
+
 	    verbose("   - adding: " + f.split("/").pop());
             execute([command.jar, "-uf", name, "-C", libDir, f.split("/").pop()]);
         }
