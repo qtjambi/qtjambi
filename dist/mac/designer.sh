@@ -13,5 +13,5 @@ then
     echo "to work. If Java is installed then make sure that the 'java' executable"
     echo "is available in the PATH environment."
 else
-    PATH=$me/bin:$PATH QT_PLUGIN_PATH=$me/plugins CLASSPATH=$me/qtjambi.jar:$me bin/designer.app/Contents/MacOS/Designer
+    DYLD_LIBRARY_PATH=$me/lib PATH=$me/bin:$PATH QT_PLUGIN_PATH=$me/plugins CLASSPATH=$me/qtjambi.jar:$me bin/designer.app/Contents/MacOS/Designer
 fi
