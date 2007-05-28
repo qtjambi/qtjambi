@@ -1,1 +1,1 @@
-/home/qt/dev/private/gunnar/qsengine_linux /home/qt/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --no-source --qt-eval ~/qt-eval-4.3.0 --qt-commercial ~/qt-commercial-4.3.0 --qt-gpl ~/qt-commercial-4.3.0
+/home/qt/dev/private/gunnar/qsengine_linux /home/qt/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --qt-eval ~/qt-eval-4.3.0 --qt-commercial ~/qt-commercial-4.3.0 --qt-gpl ~/qt-commercial-4.3.0
