@@ -4935,3 +4935,423 @@ This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QConten
 <tt>bottom</tt>
 
 */
+
+
+$$QToolBar.initStyleOption(com.trolltech.qt.gui.QStyleOptionToolBar)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QToolBar.initStyleOption.
+
+<tt>option</tt>
+
+*/
+
+
+$$QDateTimeEdit.initDateTimeEditStyleOption(com.trolltech.qt.gui.QStyleOptionSpinBox)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDateTimeEdit.initDateTimeEditStyleOption.
+
+<tt>option</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.QAccessibleTableInterface()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.
+
+
+*/
+
+
+$$QAccessibleTableInterface.accessibleAt(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.accessibleAt.
+
+<tt>row</tt>
+<tt>column</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.caption()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.caption.
+
+
+*/
+
+
+$$QAccessibleTableInterface.childIndex(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.childIndex.
+
+<tt>rowIndex</tt>
+<tt>columnIndex</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.columnCount()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnCount.
+
+
+*/
+
+
+$$QAccessibleTableInterface.columnDescription(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnDescription.
+
+<tt>column</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.columnHeader()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnHeader.
+
+
+*/
+
+
+$$QAccessibleTableInterface.columnIndex(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnIndex.
+
+<tt>childIndex</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.columnSpan(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnSpan.
+
+<tt>row</tt>
+<tt>column</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.isColumnSelected(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.isColumnSelected.
+
+<tt>column</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.isRowSelected(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.isRowSelected.
+
+<tt>row</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.isSelected(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.isSelected.
+
+<tt>row</tt>
+<tt>column</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.rowCount()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowCount.
+
+
+*/
+
+
+$$QAccessibleTableInterface.rowDescription(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowDescription.
+
+<tt>row</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.rowHeader()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowHeader.
+
+
+*/
+
+
+$$QAccessibleTableInterface.rowIndex(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowIndex.
+
+<tt>childIndex</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.rowSpan(int, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowSpan.
+
+<tt>row</tt>
+<tt>column</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.selectColumn(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectColumn.
+
+<tt>column</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.selectRow(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectRow.
+
+<tt>row</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.selectedColumnCount()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectedColumnCount.
+
+
+*/
+
+
+$$QAccessibleTableInterface.selectedColumns(int, java.util.List<java.lang.Integer>)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectedColumns.
+
+<tt>maxColumns</tt>
+<tt>columns</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.selectedRowCount()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectedRowCount.
+
+
+*/
+
+
+$$QAccessibleTableInterface.selectedRows(int, java.util.List<java.lang.Integer>)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectedRows.
+
+<tt>maxRows</tt>
+<tt>rows</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.summary()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.summary.
+
+
+*/
+
+
+$$QAccessibleTableInterface.unselectColumn(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.unselectColumn.
+
+<tt>column</tt>
+
+*/
+
+
+$$QAccessibleTableInterface.unselectRow(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.unselectRow.
+
+<tt>row</tt>
+
+*/
+
+
+$$QStyle.combinedLayoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption, com.trolltech.qt.gui.QWidget)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.combinedLayoutSpacing.
+
+<tt>controls1</tt>
+<tt>controls2</tt>
+<tt>orientation</tt>
+<tt>option</tt>
+<tt>widget</tt>
+
+*/
+
+
+$$QStyle.combinedLayoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.combinedLayoutSpacing.
+
+<tt>controls1</tt>
+<tt>controls2</tt>
+<tt>orientation</tt>
+<tt>option</tt>
+
+*/
+
+
+$$QStyle.combinedLayoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.core.Qt.Orientation)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.combinedLayoutSpacing.
+
+<tt>controls1</tt>
+<tt>controls2</tt>
+<tt>orientation</tt>
+
+*/
+
+
+$$QStyle.layoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption, com.trolltech.qt.gui.QWidget)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacing.
+
+<tt>control1</tt>
+<tt>control2</tt>
+<tt>orientation</tt>
+<tt>option</tt>
+<tt>widget</tt>
+
+*/
+
+
+$$QStyle.layoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacing.
+
+<tt>control1</tt>
+<tt>control2</tt>
+<tt>orientation</tt>
+<tt>option</tt>
+
+*/
+
+
+$$QStyle.layoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacing.
+
+<tt>control1</tt>
+<tt>control2</tt>
+<tt>orientation</tt>
+
+*/
+
+
+$$QStyle.layoutSpacingImplementation(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption, com.trolltech.qt.gui.QWidget)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacingImplementation.
+
+<tt>control1</tt>
+<tt>control2</tt>
+<tt>orientation</tt>
+<tt>option</tt>
+<tt>widget</tt>
+
+*/
+
+
+$$QStyle.layoutSpacingImplementation(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacingImplementation.
+
+<tt>control1</tt>
+<tt>control2</tt>
+<tt>orientation</tt>
+<tt>option</tt>
+
+*/
+
+
+$$QStyle.layoutSpacingImplementation(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacingImplementation.
+
+<tt>control1</tt>
+<tt>control2</tt>
+<tt>orientation</tt>
+
+*/
+
+
+$$QTransform.multiply(double)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransform.multiply.
+
+<tt>d</tt>
+
+*/
+
+
+$$QTransform.add(double)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransform.add.
+
+<tt>d</tt>
+
+*/
+
+
+$$QTransform.divide(double)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransform.divide.
+
+<tt>d</tt>
+
+*/
+
+
+$$QTransform.subtract(double)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransform.subtract.
+
+<tt>d</tt>
+
+*/
+
+
+$$QWidget.setContentsMargins(com.trolltech.qt.gui.QContentsMargins)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWidget.setContentsMargins.
+
+<tt>margins</tt>
+
+*/
+
+
+$$QLayout.getContentsMargins()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayout.getContentsMargins.
+
+
+*/
+
+
+$$QLayout.setContentsMargins(com.trolltech.qt.gui.QContentsMargins)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayout.setContentsMargins.
+
+<tt>margins</tt>
+
+*/

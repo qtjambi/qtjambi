@@ -222,8 +222,9 @@ public class JambiDoclet
 		cons[1].setRawCommentText("Creates flags with the specified "+enumTypeName+" flags set."+newLineChar+
 								  "@param args an array with the values to set");
 		
-		cons[2].setRawCommentText("Creates a copy of the specified "+flags.name()+"."+newLineChar+
-								  "@param other the "+flags.name()+" that is to be copied into");
+		if (cons.length > 2)
+			cons[2].setRawCommentText("Creates a copy of the specified "+flags.name()+"."+newLineChar+
+									  "@param other the "+flags.name()+" that is to be copied into");
 	}
 	
 	private void documentFunction(ExecutableMemberDoc method)

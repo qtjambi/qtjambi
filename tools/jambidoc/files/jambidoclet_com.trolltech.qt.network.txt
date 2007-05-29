@@ -100,3 +100,268 @@ $$QHostAddress.setAddress(com.trolltech.qt.network.QIPv6Address)
 Sets the address of this QHostAddress to <tt>ip6Addr</tt>.
 
 */
+
+
+$$QHttp.QHttp(java.lang.String, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.
+
+<tt>hostname</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QHttp.QHttp(java.lang.String, int, com.trolltech.qt.core.QObject)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.
+
+<tt>hostname</tt>
+<tt>port</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QHttp.QHttp(java.lang.String, com.trolltech.qt.network.QHttp.ConnectionMode, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.
+
+<tt>hostname</tt>
+<tt>mode</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QHttp.QHttp(java.lang.String, com.trolltech.qt.network.QHttp.ConnectionMode, int, com.trolltech.qt.core.QObject)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.
+
+<tt>hostname</tt>
+<tt>mode</tt>
+<tt>port</tt>
+<tt>parent</tt>
+
+*/
+
+
+$$QHttp.setHost(java.lang.String, com.trolltech.qt.network.QHttp.ConnectionMode, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.setHost.
+
+<tt>hostname</tt>
+<tt>mode</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QHttp.setHost(java.lang.String, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.setHost.
+
+<tt>hostname</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QTcpServer.listen(com.trolltech.qt.network.QHostAddress, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QTcpServer.listen.
+
+<tt>address</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QTcpServer.serverPort()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QTcpServer.serverPort.
+
+
+*/
+
+
+$$QNetworkProxy.QNetworkProxy(com.trolltech.qt.network.QNetworkProxy.ProxyType, java.lang.String, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.
+
+<tt>type</tt>
+<tt>host</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QNetworkProxy.QNetworkProxy(com.trolltech.qt.network.QNetworkProxy.ProxyType, java.lang.String, int, java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.
+
+<tt>type</tt>
+<tt>host</tt>
+<tt>port</tt>
+<tt>username</tt>
+
+*/
+
+
+$$QNetworkProxy.QNetworkProxy(com.trolltech.qt.network.QNetworkProxy.ProxyType, java.lang.String, int, java.lang.String, java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.
+
+<tt>type</tt>
+<tt>host</tt>
+<tt>port</tt>
+<tt>username</tt>
+<tt>password</tt>
+
+*/
+
+
+$$QNetworkProxy.setPort(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.setPort.
+
+<tt>port</tt>
+
+*/
+
+
+$$QNetworkProxy.port()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.port.
+
+
+*/
+
+
+$$QUdpSocket.bind(com.trolltech.qt.network.QHostAddress, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.bind.
+
+<tt>address</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QUdpSocket.bind(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.bind.
+
+<tt>port</tt>
+
+*/
+
+
+$$QUdpSocket.bind(com.trolltech.qt.network.QHostAddress, int, com.trolltech.qt.network.QUdpSocket.BindMode)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.bind.
+
+<tt>address</tt>
+<tt>port</tt>
+<tt>mode</tt>
+
+*/
+
+
+$$QUdpSocket.bind(int, com.trolltech.qt.network.QUdpSocket.BindMode)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.bind.
+
+<tt>port</tt>
+<tt>mode</tt>
+
+*/
+
+
+$$QUdpSocket.writeDatagram(byte[], com.trolltech.qt.network.QHostAddress, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.writeDatagram.
+
+<tt>data</tt>
+<tt>address</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QUdpSocket.writeDatagram(com.trolltech.qt.core.QByteArray, com.trolltech.qt.network.QHostAddress, int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.writeDatagram.
+
+<tt>data</tt>
+<tt>address</tt>
+<tt>port</tt>
+
+*/
+
+
+$$QAbstractSocket.connectToHost(java.lang.String, int, com.trolltech.qt.core.QIODevice.OpenMode)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.connectToHost.
+
+<tt>host</tt>
+<tt>port</tt>
+<tt>mode</tt>
+
+*/
+
+
+$$QAbstractSocket.connectToHost(com.trolltech.qt.network.QHostAddress, int, com.trolltech.qt.core.QIODevice.OpenMode)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.connectToHost.
+
+<tt>host</tt>
+<tt>port</tt>
+<tt>mode</tt>
+
+*/
+
+
+$$QAbstractSocket.connectToHostImplementation(java.lang.String, int, com.trolltech.qt.core.QIODevice.OpenMode)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.connectToHostImplementation.
+
+<tt>host</tt>
+<tt>port</tt>
+<tt>mode</tt>
+
+*/
+
+
+$$QAbstractSocket.localPort()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.localPort.
+
+
+*/
+
+
+$$QAbstractSocket.peerPort()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.peerPort.
+
+
+*/
+
+
+$$QAbstractSocket.setLocalPort(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.setLocalPort.
+
+<tt>port</tt>
+
+*/
+
+
+$$QAbstractSocket.setPeerPort(int)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.setPeerPort.
+
+<tt>port</tt>
+
+*/

@@ -1,21 +1,5 @@
 
 
-$$QSocketNotifier.QSocketNotifier(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This constructor is internal to Qt Jambi.
-
-*/
-
-
-$$QBasicTimer.QBasicTimer(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This constructor is internal to Qt Jambi.
-
-<tt>p</tt>
-
-*/
-
-
 $$QStringRef.QStringRef(com.trolltech.qt.QNativePointer)
 /**
 Constructs a string reference to the given <tt>string</tt>.
@@ -53,13 +37,6 @@ and smaller than \a string's length, and <tt>length</tt> must be
 positive or 0 but smaller than the string's length minus the starting
 <tt>position</tt>; i.e, 0 <= position < string->length() and 0 <=
 length <= string->length() - position must both be satisfied.
-
-*/
-
-
-$$QStringRef.QStringRef(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This constructor is internal to Qt.
 
 */
 
@@ -186,50 +163,11 @@ terminator.
 */
 
 
-$$QSignalMapper.QSignalMapper(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This is an internal constructor of Qt Jambi. It should not be used
-directly.
-
-*/
-
-
-$$QSemaphore.QSemaphore(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This is an internal constructor of Qt Jambi. It should not be used
-directly.
-
-*/
-
-
-$$QWaitCondition.QWaitCondition(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This is an internal constructor of Qt Jambi. It should not be used
-directly.
-
-*/
-
-
-$$QPersistentModelIndex.QPersistentModelIndex(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This is an internal constructor of Qt Jambi. It should not be used
-directly.
-
-*/
-
 $$QPersistentModelIndex.compareTo(java.lang.Object)
 /**
 Compares this object with the specified object for order. Returns a
 negative integer, zero, or a positive integer as this object is less
 than, equal to, or greater than the specified object.
-
-*/
-
-
-$$QTimer.QTimer(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This is an internal constructor of Qt Jambi. It should not be used
-directly.
 
 */
 
@@ -263,14 +201,6 @@ This sample program automatically terminates after 10 minutes
 
 The <tt>obj</tt> is the receiving object and the <tt>member</tt> is the
 slot. The time interval is <tt>msec</tt> milliseconds.
-
-*/
-
-
-$$QUuid.QUuid(com.trolltech.qt.QtJambiObject.QPrivateConstructor)
-/**
-This is an internal constructor of Qt Jambi. It should not be used
-directly.
 
 */
 
@@ -2129,6 +2059,34 @@ Returns the signal sender associated with the string <tt>text</tt>.
 $$QMessageHandler.QMessageHandler()
 /**
 This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QMessageHandler.
+
+
+*/
+
+
+$$QCryptographicHash.addData(byte[])
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QCryptographicHash.addData.
+
+<tt>data</tt>
+
+*/
+
+
+$$QProcess.startDetached(java.lang.String, java.util.List<java.lang.String>, java.lang.String)
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QProcess.startDetached.
+
+<tt>program</tt>
+<tt>arguments</tt>
+<tt>workingDirectory</tt>
+
+*/
+
+
+$$QObject.connectSlotsByName()
+/**
+This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QObject.connectSlotsByName.
 
 
 */
