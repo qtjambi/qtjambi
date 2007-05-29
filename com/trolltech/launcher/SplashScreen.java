@@ -24,7 +24,7 @@ class SplashScreen extends QSplashScreen {
     private QRect splashScreenRect;
 
     public SplashScreen() {
-        QRect r = QApplication.desktop().rect();
+        QRect r = QApplication.desktop().screenGeometry();
         splashScreenRect = new QRect(r.width() / 2 - SIZE.width() / 2,
                                      r.height() / 2 - SIZE.height() / 2,
                                      SIZE.width(), SIZE.height());
