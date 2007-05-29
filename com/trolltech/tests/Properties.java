@@ -1,6 +1,6 @@
 package com.trolltech.tests;
 
-import com.trolltech.qt.*;;
+import com.trolltech.qt.*;
 import java.lang.reflect.*;
 import java.util.*;
 
