@@ -36,10 +36,6 @@ public class TestQFlags extends QApplicationTest {
         private Flags(MyEnum... flags) {
             super(flags);
         }
-
-        private Flags(Flags other) {
-            super(other);
-        }
     }
 
     @Test
@@ -50,8 +46,13 @@ public class TestQFlags extends QApplicationTest {
         assertEquals(new Flags(MyEnum.Three).value(), 3);
         assertEquals(new Flags(MyEnum.One, MyEnum.Four).value(), 5);
 
-        assertEquals(new Flags(new Flags(MyEnum.One, MyEnum.Four)).value(), 5);
-        assertEquals(new Flags(new Flags(MyEnum.Four)).value(), 4);
+        Flags flag = new Flags();
+        flag.set(new Flags(MyEnum.One, MyEnum.Four));
+        assertEquals(flag.value(), 5);
+        
+        flag.clearAll();
+        flag.set(new Flags(MyEnum.Four));
+        assertEquals(flag.value(), 4);
     }
 
     private static Flags createFlags(Flags other) {
