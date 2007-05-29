@@ -82,7 +82,9 @@ function prepareSourceTree() {
 
     verbose(" - sync'ing source tree");
     execute([command.p4, "sync", "-f",
-             "..."]);
+             "//depot/qtjambi/" + depotVersion + "/...",
+             "//depot/eclipse/" + eclipseBranch + "/...",
+             "//depot/ide/..."]);
 
     execute([command.chmod, "-R", "u+w", "."]);
 }
