@@ -19,6 +19,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QAccessibleTableInterface.CellAtIndex;
 import com.trolltech.qt.network.*;
+import com.trolltech.qt.network.QHostAddress.SpecialAddress;
 import com.trolltech.qt.opengl.*;
 import com.trolltech.qt.sql.*;
 import com.trolltech.qt.xml.*;
@@ -718,7 +719,9 @@ public class TestInjectedCode extends QApplicationTest {
     public void testQTcpServerWaitForConnection() {
         QTcpServer server = new QTcpServer();
         
-        assertTrue(server.listen());
+        QHostAddress address = new QHostAddress(SpecialAddress.Any);
+
+        assertTrue(server.listen(address, 0));
         
         QTcpServer.Result result = server.waitForNewConnection(100);
         
@@ -727,7 +730,7 @@ public class TestInjectedCode extends QApplicationTest {
     
     @Test
     public void testQHttpRead() {
-        QHttp http = new QHttp("trolltech.com");        
+        QHttp http = new QHttp("trolltech.com", 80);        
         http.get("/");
         
         long time = System.currentTimeMillis();
