@@ -47,7 +47,8 @@ public class DomBookmarks extends QMainWindow {
 
         createActions();
         createMenus();
-
+        
+        loadFile("classpath:com/trolltech/examples/frank.xbel");
         statusBar().showMessage(tr("Ready"));
 
         setWindowTitle(tr("DOM Bookmarks"));
@@ -55,13 +56,7 @@ public class DomBookmarks extends QMainWindow {
         resize(480, 320);
     }
 
-    @SuppressWarnings("unused")
-    private void open() {
-        String fileName = QFileDialog.getOpenFileName(this, tr("Open Bookmark File"), QDir
-                .currentPath(), new QFileDialog.Filter(tr("XBEL Files (*.xbel *.xml)")));
-        if (fileName.equals(""))
-            return;
-
+    private void loadFile(String fileName){
         QFile file = new QFile(fileName);
         if (!file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text))) {
             QMessageBox.warning(this, tr("SAX Bookmarks"), String.format(tr("Cannot read file: %s"), fileName)
@@ -73,6 +68,16 @@ public class DomBookmarks extends QMainWindow {
             statusBar().showMessage(tr("File loaded"), 2000);
         
         file.dispose();
+    }
+    
+    @SuppressWarnings("unused")
+    private void open() {
+        String fileName = QFileDialog.getOpenFileName(this, tr("Open Bookmark File"), QDir
+                .currentPath(), new QFileDialog.Filter(tr("XBEL Files (*.xbel *.xml)")));
+        if (fileName.equals(""))
+            return;
+
+        loadFile(fileName);
     }
 
     @SuppressWarnings("unused")
