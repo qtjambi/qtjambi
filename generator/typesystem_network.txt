@@ -174,7 +174,7 @@
         proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
         proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
         authenticationRequired.connect(this, "emitAuthenticationRequiredPrivate(String, int, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
-        authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, int, QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, char, QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
     </template>        
     <modify-function signature="QHttp(QObject *)">
         <inject-code class="java" position="end">
