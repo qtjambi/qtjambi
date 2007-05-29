@@ -21,7 +21,7 @@ import java.util.*;
 
 /**
  */
-public class ClassPathWalker extends QObject implements Runnable {
+public class ClassPathWalker extends QObject {
 
     static {
         List<QByteArray> formats = QImageReader.supportedImageFormats();
@@ -63,59 +63,83 @@ public class ClassPathWalker extends QObject implements Runnable {
     /**
      * Performs the traversal of the directory structure...
      */
-    public void run() {
-        beginSearching.emit();
+    @Override
+    protected void timerEvent(QTimerEvent e) {
 
-        Stack<QPair<QDir, String>> stack = new Stack<QPair<QDir, String>>();
-        for (String s : roots) {
-            QDir d = new QDir(s);
-            stack.push(new QPair<QDir, String>(d, d.absolutePath()));
-        }
+		if (stack.isEmpty()) {
+			killTimer(e.timerId());
+			doneSearching.emit();
+			return;
+		}
 
-        Set<String> processedDirs = new HashSet<String>();
+		QPair<Object, String> data = stack.pop();
+		if (data.first instanceof QDir) {
+			QDir dir = (QDir) data.first;
+			String dirPath = QDir.toNativeSeparators(dir.absolutePath());
+			if (processedDirs.contains(dirPath))
+				return;
+			processedDirs.add(dirPath);
 
-        while (!stopped && stack.size() != 0) {
+			QDir.Filters filters = new QDir.Filters();
+			filters.set(QDir.Filter.Readable);
+			filters.set(QDir.Filter.Files);
+			List<String> imgs = dir.entryList(fileExtensions, filters);
 
-            QPair<QDir, String> data = stack.pop();
-            QDir dir = data.first;
-            String dirPath = QDir.toNativeSeparators(dir.absolutePath());
-            if (processedDirs.contains(dirPath))
-                continue;
-            processedDirs.add(dirPath);
+			for (String file : imgs) {
+				stack.push(new QPair<Object, String>(new QFileInfo(dir.absoluteFilePath(file)), data.second));
+			}
 
-            traverse(dir, data.second);
+			filters.clear(QDir.Filter.Files);
+			filters.set(QDir.Filter.NoDotAndDotDot);
+			filters.set(QDir.Filter.Dirs);
+			List<String> dirs = dir.entryList(filters);
+			for (String dirName: dirs) {
+				stack.push(new QPair<Object, String>(new QDir(dir.absoluteFilePath(dirName)), data.second));
+			}
+		} else if (data.first instanceof QFileInfo) {
+			String name = ((QFileInfo) data.first).absoluteFilePath();
+			name = "classpath:"
+					+ name.substring(new QDir(data.second).canonicalPath()
+							.length() + 1);
+			QImage image = new QImage(name);
+			if (!image.isNull()) {
+				QImage smallImage = image.scaled(size,
+						Qt.AspectRatioMode.KeepAspectRatio,
+						Qt.TransformationMode.SmoothTransformation);
 
-            // Traverse the subdirs...
-            QDir.Filters filters = new QDir.Filters();
-            filters.set(QDir.Filter.NoDotAndDotDot);
-            filters.set(QDir.Filter.Dirs);
-            List<QFileInfo> dirs = dir.entryInfoList(filters);
-            for (QFileInfo info: dirs) {
-                QDir subDir = new QDir(info.absoluteFilePath());
-                stack.push(new QPair<QDir, String>(subDir, data.second));
-            }
-        }
-        if (!stopped)
-            doneSearching.emit();
-    }
+				// aspect ration makes one dimension < 1, thus, problems...
+				if (smallImage.isNull()) {
+					smallImage = image.scaled(size,
+							Qt.AspectRatioMode.IgnoreAspectRatio,
+							Qt.TransformationMode.SmoothTransformation);
+				}
+				
+				image.dispose();
+
+				if (!smallImage.isNull()) {
+                    resourceFound.emit(name, smallImage);
+				}
+			}
+		}
+	}
 
     /**
-     * Starts the traversal of the directory structure... This is done
-     * in a separate thread and feedback can be received through the
-     * resourceFound signal.
-     */
+	 * Starts the traversal of the directory structure... This is done in a
+	 * separate thread and feedback can be received through the resourceFound
+	 * signal.
+	 */
     public void start() {
-        if (thread != null) {
-            throw new RuntimeException("Already running");
-        }
-
-        thread = new Thread(this);
-        thread.setDaemon(false);
-        thread.setPriority(Thread.MIN_PRIORITY);
-        moveToThread(thread);
-
         stopped = false;
-        thread.start();
+        
+        stack = new Stack<QPair<Object, String>>();
+        for (String s : roots) {
+            QDir d = new QDir(s);
+            stack.push(new QPair<Object, String>(d, d.absolutePath()));
+        }
+        processedDirs = new HashSet<String>();
+
+        beginSearching.emit();
+        startTimer(50);
     }
 
     public synchronized void kill() {
@@ -153,47 +177,15 @@ public class ClassPathWalker extends QObject implements Runnable {
      * @param dir The directory to find files in...
      */
     private void traverse(QDir dir, String rootDir) {
-        QDir.Filters filters = new QDir.Filters();
-        filters.set(QDir.Filter.Readable);
-        filters.set(QDir.Filter.Files);
-        List<String> imgs = dir.entryList(fileExtensions, filters);
-
-        for (String name : imgs) {
-            name = dir.absoluteFilePath(name).substring(new QDir(rootDir).canonicalPath().length() + 1);
-            name = "classpath:" + name;
-
-            QImage image = new QImage(name);
-            if (image.isNull())
-                continue;
-            QImage smallImage = image.scaled(size,
-                    Qt.AspectRatioMode.KeepAspectRatio,
-                    Qt.TransformationMode.SmoothTransformation);
-
-	    // aspect ration makes one dimension < 1, thus, problems...
-	    if (smallImage.isNull()) {
-		smallImage = image.scaled(size,
-                    Qt.AspectRatioMode.IgnoreAspectRatio,
-                    Qt.TransformationMode.SmoothTransformation);
-	    }
-
-	    if (smallImage.isNull()) {
-		continue;
-	    }
-
-            image.dispose();
-
-            synchronized (this) {
-                if (stopped)
-                    return;
-                resourceFound.emit(name, smallImage);
-            }
-        }
     }
 
     private static List<String> roots;
-    private Thread thread;
+    //private Thread thread;
     private List<String> fileExtensions = imageFormats;
     private boolean stopped;
+    private Stack<QPair<Object, String>> stack;
+    private Set<String> processedDirs;
+
 
     private QSize size = new QSize(16, 16);
 }
