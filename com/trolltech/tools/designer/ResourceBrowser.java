@@ -23,17 +23,6 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
     private static final boolean UNFILTERED = Utilities.matchProperty("unfiltered");
 
-    protected void disposed() {
-        if (walker != null) {
-            walker.kill();
-            try {
-                walker.thread().join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public ResourceBrowser(QWidget parent) {
         super(parent);
 
@@ -145,10 +134,16 @@ public class ResourceBrowser extends JambiResourceBrowser {
     }
 
     protected void showEvent(QShowEvent arg) {
-        if (!shown)
-            reindex();
+        if (walker == null)
+        	reindex();
+        
+        if (!shown) {
+            setupSearchConnections();
+        }
+        
         shown = true;
         filterEdit.setFocus();
+        
     }
 
     @Override
@@ -225,14 +220,24 @@ public class ResourceBrowser extends JambiResourceBrowser {
         action.triggered.connect(this, method);
         addAction(action);
     }
+    
+    @SuppressWarnings("unused")
+    private void expand(QModelIndex parent) {
+    	if (UNFILTERED) {
+    		view.expand(parent);
+    	} else {
+    		QModelIndex filteredIndex = filterModel.mapFromSource(parent);
+    		this.view.expand(filteredIndex);
+    	}
+    }
 
     private void setupSearchConnections() {
         walker.beginSearching.connect(hourGlass, "start()");
         walker.doneSearching.connect(hourGlass, "stop()");
         walker.resourceFound.connect(hourGlass, "start()");
 
-        browserModel.rowsAdded.connect(view, "expandAll()");
-        browserModel.rowsAdded.connect(this, "reselectCurrent()");
+        browserModel.rowsAdded.connect(this, "expand(QModelIndex)");
+//        browserModel.rowsAdded.connect(this, "reselectCurrent()");
     }
 
     private void reindex() {
@@ -335,8 +340,8 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private QLabel preview;
     private QLabel pathText;
     private QLabel sizeText;
-    private ClassPathWalker walker;
-    private ResourceBrowserModel browserModel;
+    private static ClassPathWalker walker;
+    private static ResourceBrowserModel browserModel;
     private QSortFilterProxyModel filterModel;
     private QTreeView view;
     private String path;
