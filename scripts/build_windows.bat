@@ -1,1 +1,1 @@
-build --qt-gpl c:\qt\4.3.0 --qt-commercial d:\tmp\qt-commercial-4.3.0 --qt-eval d:\tmp\qt-eval-4.3.0
+build --qt-gpl c:\qt\4.3.0 --qt-commercial d:\tmp\qt-commercial-4.3.0 --qt-eval d:\tmp\qt-eval-4.3.0 --qt d:\tmp\qt-commercial-4.3.0
