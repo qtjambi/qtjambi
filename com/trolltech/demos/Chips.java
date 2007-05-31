@@ -22,7 +22,7 @@ import com.trolltech.qt.core.Qt.ConnectionType;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.*;
 
-@QtJambiExample(name = "4000 Chips")
+@QtJambiExample(name = "40000 Chips")
 public class Chips extends QWidget {
 
     QGraphicsScene scene;
