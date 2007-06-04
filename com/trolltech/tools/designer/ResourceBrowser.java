@@ -102,7 +102,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
         view.expandAll();
 
-        selection.selectionChanged.connect(this, "selectionChanged()");
+        selection.currentChanged.connect(this, "selectionChanged(QModelIndex, QModelIndex)");
 
         setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu);
         addAction("Reset resourcelist", "reindex()");
@@ -136,11 +136,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
     protected void showEvent(QShowEvent arg) {
         if (walker == null)
         	reindex();
-        
-        if (!shown) {
-            setupSearchConnections();
-        }
-        
+       
         shown = true;
         filterEdit.setFocus();
         
@@ -193,12 +189,14 @@ public class ResourceBrowser extends JambiResourceBrowser {
     }
 
     @SuppressWarnings("unused")
-    private void selectionChanged() {
-        QModelIndex index = selection.currentIndex();
-        if (!UNFILTERED)
-            index = filterModel.mapToSource(index);
-        setPreviewForIndex(index);
-        currentPath = null;
+    private void selectionChanged(QModelIndex current, QModelIndex old) {
+        QModelIndex index = current;
+        if (index != null) {
+            if (!UNFILTERED)
+                index = filterModel.mapToSource(index);
+            setPreviewForIndex(index);
+            currentPath = null;
+        }
     }
 
     @SuppressWarnings("unused")
@@ -239,12 +237,26 @@ public class ResourceBrowser extends JambiResourceBrowser {
         browserModel.rowsAdded.connect(this, "expand(QModelIndex)");
 //        browserModel.rowsAdded.connect(this, "reselectCurrent()");
     }
+    
+    @Override
+    protected void disposed() {
+        if (browserModel != null)
+            browserModel.dispose();
+        if (walker != null) {
+            walker.kill();        
+            walker.dispose();
+        }
+    }
 
     private void reindex() {
         filterModel.setSourceModel(null);
-        browserModel = null;
+        if (browserModel != null) {
+            browserModel.dispose();
+            browserModel = null;
+        }
         if (walker != null) {
             walker.kill();
+            walker.dispose();
             walker = null;
         }
         searchClassPath();
@@ -340,8 +352,8 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private QLabel preview;
     private QLabel pathText;
     private QLabel sizeText;
-    private static ClassPathWalker walker;
-    private static ResourceBrowserModel browserModel;
+    private ClassPathWalker walker;
+    private ResourceBrowserModel browserModel;
     private QSortFilterProxyModel filterModel;
     private QTreeView view;
     private String path;

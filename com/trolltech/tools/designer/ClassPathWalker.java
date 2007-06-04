@@ -65,10 +65,12 @@ public class ClassPathWalker extends QObject {
      */
     @Override
     protected void timerEvent(QTimerEvent e) {
-
+        if(stopped)
+            return;
+        
 		if (stack.isEmpty()) {
-			killTimer(e.timerId());
-			doneSearching.emit();
+            kill();
+			doneSearching.emit();            
 			return;
 		}
 
@@ -128,6 +130,7 @@ public class ClassPathWalker extends QObject {
 	 * separate thread and feedback can be received through the resourceFound
 	 * signal.
 	 */
+    private int timerId = 0;
     public void start() {
         stopped = false;
         
@@ -139,10 +142,13 @@ public class ClassPathWalker extends QObject {
         processedDirs = new HashSet<String>();
 
         beginSearching.emit();
-        startTimer(50);
+        timerId = startTimer(50);
     }
-
+    
     public synchronized void kill() {
+        if (timerId != 0)
+            killTimer(timerId);
+        timerId = 0;
         stopped = true;
     }
 
