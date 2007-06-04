@@ -82,9 +82,6 @@
     /usr/lib/jvm/ia32-java-1.5.0-sun-1.5.0.06/jre/bin into the \c PATH
     environment variable.
 
-    The final release will of course ship with sources, so you can
-    compile and run it with the full 64 bit version of Java.
-
     \endtable
 
     \section1 Running the Qt Jambi Generator
