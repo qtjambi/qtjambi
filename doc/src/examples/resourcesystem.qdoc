@@ -11,15 +11,15 @@ all directories or \c{.jar} files in the current class path. It also allows you
 to list the contents of directories in the class path, even if they are actually
 distributed over several different actual locations.
 
-You can tell Qt to use the class path file engine when specifying the file name.
-Simply prefix the name with \c{classpath:}, and Qt will automatically invoke the
+You can tell Qt Jambi to use the class path file engine when specifying the file name.
+Simply prefix the name with \c{classpath:}, and Qt Jambi will automatically invoke the
 class path file engine. If you wish to search for a file at a specific location
 in the class path, then a second request format is available:
 \c{classpath:<absolute path>#<filename>}. The first variable, the absolute path, can
 be the full path of a directory or \c{.jar} file, while the filename should be
-the resource you want to request. Qt will then only search the specific directory
+the resource you want to request. Qt Jambi will then only search the specific directory
 or \c{.jar} file for the file. This can be useful in cases when you want to work
-with \c{.jar} files inside of Qt.
+with \c{.jar} files inside of Qt Jambi.
 
 \section1 The Example
 
@@ -104,7 +104,7 @@ if (info.exists() && !info.isDir()) {
 What you will see when exploring this example, is that the bundled \c{.jar}
 file contains a couple of image files in the path
 \c{/com/trolltech/examples/images}. The same path will contain an image in the
-Qt package (at the location in the class path where Java found the
+Qt Jambi package (at the location in the class path where Java found the
 currently running class file).
 
 When running in the default mode, all three images will be selectable as if
