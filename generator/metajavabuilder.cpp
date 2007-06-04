@@ -1691,7 +1691,7 @@ QString MetaJavaBuilder::translateDefaultValue(ArgumentModelItem item, MetaJavaT
         if (expr == "QVariant()" || expr == "QModelIndex()") {
             return "null";
         } else if (expr == "QString()") {
-            return "\"\"";
+            return "null";
         } else if (expr.endsWith(")") && expr.contains("::")) {
             TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(expr.indexOf("::")));
             if (typeEntry)
