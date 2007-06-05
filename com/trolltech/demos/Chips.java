@@ -63,10 +63,10 @@ public class Chips extends QWidget {
 
         setWindowTitle(tr("Chip Demo"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
-        
+
         populateScene.connect(this, "populateScene()", ConnectionType.QueuedConnection);
         populateScene.emit();
-        
+
     }
 
     private void populateScene() {
@@ -238,7 +238,6 @@ public class Chips extends QWidget {
         QLabel label;
         QToolButton openGlButton;
         QToolButton antialiasButton;
-        QToolButton printButton;
         QToolButton resetButton;
         QSlider zoomSlider;
         QSlider rotateSlider;
@@ -319,14 +318,11 @@ public class Chips extends QWidget {
             openGlButton.setCheckable(true);
             openGlButton.setEnabled(QGLFormat.hasOpenGL());
 
-            printButton = new QToolButton();
-            printButton.setIcon(new QIcon(new QPixmap("classpath:/com/trolltech/images/" + "fileprint.png")));
 
             labelLayout.addWidget(label);
             labelLayout.addStretch();
             labelLayout.addWidget(antialiasButton);
             labelLayout.addWidget(openGlButton);
-            labelLayout.addWidget(printButton);
 
             QGridLayout topLayout = new QGridLayout();
             topLayout.addLayout(labelLayout, 0, 0);
@@ -347,7 +343,6 @@ public class Chips extends QWidget {
             rotateRightIcon.clicked.connect(this, "rotateRight()");
             zoomInIcon.clicked.connect(this, "zoomIn()");
             zoomOutIcon.clicked.connect(this, "zoomOut()");
-            printButton.clicked.connect(this, "print()");
 
             setupMatrix();
         }
@@ -388,15 +383,6 @@ public class Chips extends QWidget {
 
         void toggleAntialiasing() {
             graphicsView.setRenderHint(QPainter.RenderHint.Antialiasing, antialiasButton.isChecked());
-        }
-
-        void print() {
-            QPrinter printer = new QPrinter();
-            QPrintDialog dialog = new QPrintDialog(printer, this);
-            if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
-                QPainter painter = new QPainter(printer);
-                graphicsView.render(painter);
-            }
         }
 
         void zoomIn() {
