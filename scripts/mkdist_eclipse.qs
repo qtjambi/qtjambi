@@ -13,6 +13,9 @@ const eclipsePackages   = os_name() == OS_NAME_WINDOWS
 const dirSeparator      = os_name() == OS_NAME_WINDOWS ? ";" : ":";
 const execPrefix = os_name() == OS_NAME_WINDOWS ? "release/" : "./";
 
+const licenseLocation = packageDir + "/qtjambi/" + depotVersion + "/dist/eclipse";
+const licenseFile = licenseLocation + "/LICENSE.QT_JAMBI_ECLIPSE_INTEGRATION";
+
 const jarFilesDest = packageDir + "/jarFiles";
 var jarFilesDir = new Dir(jarFilesDest);
 jarFilesDir.mkdirs(jarFilesDest);
@@ -339,6 +342,9 @@ function buildDesigner() {
 
 function makePlatformSpecificPackageLinux(destDir) {
    verbose("-- gztar'ing package");
+   
+   copyFiles([licenseFile], licenseLocation, destDir);
+   
    dir = new Dir(destDir);
    dir.setCurrent();
    execute([command.tar, "cfz", "qtjambi-eclipse-integration-linux-" + jambiVersion + ".tar.gz", "plugins"]);
@@ -365,6 +371,8 @@ function makePlatformSpecificPackageWindows(destDir) {
     copyFiles(["c:/windows/system32/msvcp71.dll", "c:/windows/system32/msvcr71.dll"],
               "c:/windows/system32",
               dllDest);
+              
+    copyFiles([licenseFile], licenseLocation, destDir);
 
     verbose("-- zipping package");
     dir = new Dir(destDir);
