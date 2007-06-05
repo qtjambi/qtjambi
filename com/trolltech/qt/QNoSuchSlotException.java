@@ -71,7 +71,7 @@ public class QNoSuchSlotException extends ConnectionException {
                     brackets += "[]";
                 } while (t.isArray());
             }
-            args += i > 0 ? ", " : "" + t.getName() + brackets;
+            args += (i > 0 ? ", " : "") + t.getName() + brackets;
         }
         return method.getName() + "(" + args + ")";
     }
