@@ -480,6 +480,19 @@ function setupGPLBinaryPackage() {
 	pkg.maketool = find_executable("mingw32-make");
 	pkg.qmakespec = "win32-g++";
 	pkg.originalPath = System.getenv("PATH");
+        pkg.copyFiles.push([find_executable("mingwm10.dll"), "bin"]);
+
+
+        // take out msvc runtimes...
+        for (var i=0; i<pkg.copyFiles.length; ++i) {
+            var x = pkg.copyFiles[i];
+            if (x is Array) {
+                if (x[0].indexOf("msvc") >= 0) {
+                    pkg.copyFiles.splice(i, 1);
+                    --i;
+                }
+            }
+        }
 
 	pkg.preCompileStep = function(pkg) {
 	    setPathForMinGW(pkg);
@@ -758,7 +771,7 @@ function deletePackageDir()
 
 function expandMacros(header) {
 
-    var extensions = ["cpp", "h", "java", "html", "ui"];
+    var extensions = ["cpp", "h", "java", "html", "ui", "GPL"];
 
     var this_year = new Date().getYear();
 
@@ -969,7 +982,9 @@ function createPlatformJar(pkg) {
         var file = new File("qt_system_libs");
         file.open(File.WriteOnly);
         if (os_name() == OS_NAME_WINDOWS) {
-            if (pkg.packageName == "win32") {
+            if (pkg.license == "gpl") {
+                file.writeLine("mingwm10.dll");
+            } else if (pkg.packageName == "win32") {
                 file.writeLine("msvcr71.dll");
                 file.writeLine("msvcp71.dll");
             } else {
