@@ -33,7 +33,7 @@ public class Chat extends QDialog {
     }
 
     private Ui_ChatDialog ui = new Ui_ChatDialog();
-    private Client client = new Client();
+    private Client client = new Client(this);
     private String myNickName;
     private QTextTableFormat tableFormat = new QTextTableFormat();
 
@@ -150,7 +150,8 @@ class Client extends QObject {
     // nick
     Signal1<String> participantLeft__nick = new Signal1<String>();
 
-    Client() {
+    Client(QObject parent) {
+        super(parent);
         peerManager = new PeerManager(this);
         peerManager.setServerPort(server.serverPort());
         peerManager.startBroadcasting();
@@ -231,8 +232,10 @@ class Client extends QObject {
 
     void disconnected() {
         Connection connection = (Connection) signalSender();
-        if (connection != null)
+        if (connection != null) {
             removeConnection(connection);
+            connection.dispose();
+        }
     }
 
     void connectionError(QAbstractSocket.SocketError socketError) {
@@ -274,7 +277,7 @@ class Connection extends QTcpSocket {
 
     private String greetingMessage;
     private String username;
-    private QTimer pingTimer = new QTimer();
+    private QTimer pingTimer = new QTimer(this);
     private QTime pongTime = new QTime();
     private QByteArray buffer = new QByteArray();
     private ConnectionState state;
@@ -506,8 +509,8 @@ class PeerManager extends QObject {
     private Client client;
     private Vector<QHostAddress> broadcastAddresses = new Vector<QHostAddress>();
     private Vector<QHostAddress> ipAddresses = new Vector<QHostAddress>();
-    private QUdpSocket broadcastSocket = new QUdpSocket();
-    private QTimer broadcastTimer = new QTimer();
+    private QUdpSocket broadcastSocket = new QUdpSocket(this);
+    private QTimer broadcastTimer = new QTimer(this);
     private String username = "";
     private int serverPort;
 
