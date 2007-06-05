@@ -303,12 +303,6 @@ public class QSignalEmitter {
                     for (Field field : fields) {
                         if (AbstractSignal.class.isAssignableFrom(field.getType())) {
                             AbstractSignal sig = QtJambiInternal.fetchSignal(QSignalEmitter.this, field);
-                            if (sig == null) {
-                                throw new RuntimeException(
-                                        "Error reflecting on signal: "
-                                                + field.getName());
-                            }
-
                             if (sig == this) {
                                 found = true;
                                 name = field.getName();
