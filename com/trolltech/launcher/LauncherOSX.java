@@ -38,6 +38,12 @@ public class LauncherOSX {
 
 
     public static void main(String args[]) throws Exception {
+
+	if (!System.getProperty("os.name").toLowerCase().contains("mac os x")) {
+	    Launcher.main(args);
+	    return;
+	} 
+
         Utilities.loadSystemLibraries();
 
         Utilities.loadQtLibrary("QtCore");
@@ -73,16 +79,23 @@ public class LauncherOSX {
         cmd.append("java");
 
         // classpath...
-        cmd.append(" -cp " + tmp + "/qtjambi.jar;" + tmp + "/qtjambi-launcher.jar;" + plugins());
+        cmd.append(" -cp " + tmp + "/qtjambi.jar:" + tmp + "/qtjambi-launcher.jar");
 
         // library path...
         cmd.append(" -Djava.library.path=" + tmp);
 
+	cmd.append(" -XstartOnFirstThread");
+
         // the app itself...
         cmd.append(" com.trolltech.launcher.Launcher");
 
+	System.out.println(cmd.toString());
+
         ProcessBuilder procBuilder = new ProcessBuilder(cmd.toString().split(" "));
         procBuilder.environment().put("QT_PLUGIN_PATH", tmp + "/plugins");
+	procBuilder.environment().put("DYLD_LIBRARY_PATH", tmp);
         Process proc = procBuilder.start();
+
+	proc.waitFor();
     }
 }
