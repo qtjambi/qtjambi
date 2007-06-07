@@ -36,9 +36,9 @@ int file_length(FILE *f)
 int patchLibrary(const char *name)
 {
     printf(" - patching %s...\n", name);
-    
+
     FILE *f = fopen(name, "r");
-    
+
     if (!f) {
       printf("failed to open file...\n");
       return 0;
@@ -108,12 +108,12 @@ int main(int, char **) {
     memset(key, 0, 64);
     char *read = key;
 
-    do {
-        printf("Insert evaluation key (XXXXX-XXX-XXX-XXX-XXXXXX-XXXXX-XXXX):\n");
+//     do {
+        printf("Insert evaluation key:\n");
         read = fgets(key, 64, stdin);
         read[strlen(read) - 1] = '\0';
-    } while (read[5] != '-' || read[9] != '-' || read[13] != '-'
-             || read[17] != '-' || read[23] != '-' || read[29] != '-');
+//     } while (read[5] != '-' || read[9] != '-' || read[13] != '-'
+//              || read[17] != '-' || read[23] != '-' || read[29] != '-');
 
     memcpy(ekey_result + 12, read, 64);
 
