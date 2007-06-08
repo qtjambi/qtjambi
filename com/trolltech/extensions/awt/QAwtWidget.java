@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+import java.util.List;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -24,6 +25,86 @@ import com.trolltech.qt.gui.*;
 
 public class QAwtWidget extends Canvas {
 	private static boolean guard = false;
+	
+	private static class QFindChildAndPostMouseEvent extends QEvent {
+		private final static QEvent.Type FIND_CHILD_AND_POST_MOUSE_EVENT = QEvent.Type.resolve(QEvent.Type.User.value() + 1);
+				
+		public QFindChildAndPostMouseEvent() {
+			super(FIND_CHILD_AND_POST_MOUSE_EVENT);
+		}
+		
+		private QEvent.Type actualType = null;
+		public void setActualType(QEvent.Type type) { actualType = type; }
+		public QEvent.Type actualType() { return actualType; }
+		
+		private QPoint relativePoint = null;
+		public void setRelativePoint(QPoint point) { relativePoint = point; }
+		public QPoint relativePoint() { return relativePoint; }
+		
+		private QWidget topWidget = null;
+		public void setTopWidget(QWidget widget) { topWidget = widget; }
+		public QWidget topWidget() { return topWidget; }
+		
+		private Qt.MouseButton mouseButton = null;
+		public void setMouseButton(Qt.MouseButton mouseButton) { this.mouseButton = mouseButton; }
+		public Qt.MouseButton mouseButton() { return mouseButton; } 
+
+		private Qt.MouseButtons mouseButtons = null;
+		public void setMouseButtons(Qt.MouseButtons mouseButtons) { this.mouseButtons = mouseButtons; }
+		public Qt.MouseButtons mouseButtons() { return mouseButtons; }
+		
+		private Qt.KeyboardModifiers keyboardModifiers = null;
+		public void setKeyboardModifiers(Qt.KeyboardModifiers modifiers) { keyboardModifiers = modifiers; }
+		public Qt.KeyboardModifiers keyboardModifiers() { return keyboardModifiers; }
+		
+		private QWidget getHitWidget(QWidget parentWidget, QPoint relativePoint, QPoint outputPoint) {		
+			if (!parentWidget.rect().contains(relativePoint))
+				return null;
+			
+			List<QObject> childrens = parentWidget.children();
+			
+			for (QObject child : childrens) {
+				if (child instanceof QWidget) {
+					QWidget childWidget = (QWidget) child;
+					QPoint mapped = childWidget.mapFromParent(relativePoint);
+					
+					// ### Allow overlapping widgets with z vals
+					QWidget found = null;
+					if (childWidget.rect().contains(mapped))
+						found = getHitWidget(childWidget, mapped, outputPoint);
+					
+					if (found != null) {
+						outputPoint.setX(mapped.x());
+						outputPoint.setY(mapped.y());
+						return found;
+					}
+				}
+			}
+			
+			outputPoint.setX(relativePoint.x());
+			outputPoint.setY(relativePoint.y());
+			return parentWidget;
+		}		
+
+		private QWidget hitWidget = null;
+		public QWidget hitWidget() {
+			return hitWidget;
+		}
+		
+		public QMouseEvent mouseEvent() {
+			QPoint repositionedPoint = new QPoint();
+			hitWidget = getHitWidget(topWidget(), relativePoint(), repositionedPoint);
+			
+			System.err.println("hitWidget: " + hitWidget);
+			
+			if (hitWidget == null)
+				return null;
+			
+			return new QMouseEvent(actualType(), hitWidget.mapFromGlobal(repositionedPoint), 
+					mouseButton(), mouseButtons(), keyboardModifiers());
+		}
+		
+	}
 	
 	private class QtEventFilter extends QObject {
 		public QtEventFilter(QObject parent) {
@@ -35,14 +116,33 @@ public class QAwtWidget extends Canvas {
 		public boolean eventFilter(QObject receiver, QEvent event) {
 			System.err.println("Event: " + event);
 			
-			switch (event.type()) {
-			case MouseButtonPress:
-				button.setText(button.text() + "!");
-				break;
-			}
-						
+			if (!(receiver instanceof QWidget)) 
+				return false;
+								
 			if (!guard) {
 				guard = true;
+				
+				if (event instanceof QChildEvent) {
+					QObject child = ((QChildEvent) event).child();
+					switch (event.type()) {
+					case ChildAdded:
+						child.installEventFilter(this);
+						break;
+					case ChildRemoved:
+						child.removeEventFilter(this);
+						break;
+					default:
+						// Don't care
+					}
+				}
+				
+				if (event instanceof QFindChildAndPostMouseEvent) {
+					QMouseEvent mouseEvent = ((QFindChildAndPostMouseEvent) event).mouseEvent();
+					if (mouseEvent != null)
+						QApplication.postEvent(((QFindChildAndPostMouseEvent)event).hitWidget(), mouseEvent);
+					
+					return true;
+				}
 				
 				if (event instanceof QResizeEvent) {
 					sizeHint = containedWidget.sizeHint();
@@ -66,7 +166,7 @@ public class QAwtWidget extends Canvas {
 		
 		
 	}
-	
+		
 	private class QAwtMouseListener implements MouseListener {
 
 		public void mouseClicked(MouseEvent awtEvent) {			
@@ -79,13 +179,15 @@ public class QAwtWidget extends Canvas {
 		}
 
 		public void mousePressed(MouseEvent awtEvent) {
-			QMouseEvent mouseEvent = new QMouseEvent(QEvent.Type.MouseButtonPress,
-					pointToQPoint(awtEvent.getPoint()),
-					eventToMouseButton(awtEvent),
-					eventToMouseButtons(awtEvent),
-					eventToKeyboardModifiers(awtEvent));
-					
-			QApplication.postEvent(containedWidget, mouseEvent);
+			QFindChildAndPostMouseEvent event = new QFindChildAndPostMouseEvent();
+			event.setActualType(QEvent.Type.MouseButtonPress);
+			event.setTopWidget(containedWidget);
+			event.setRelativePoint(pointToQPoint(awtEvent.getPoint()));
+			event.setMouseButton(eventToMouseButton(awtEvent));
+			event.setMouseButtons(eventToMouseButtons(awtEvent));
+			event.setKeyboardModifiers(eventToKeyboardModifiers(awtEvent));
+								
+			QApplication.postEvent(containedWidget, event);
 		}
 
 		public void mouseReleased(MouseEvent awtEvent) {
@@ -103,7 +205,6 @@ public class QAwtWidget extends Canvas {
 	
 
 	static {
-		System.out.println("qtjambi_awt loading");
 		com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
 	    com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
 		com.trolltech.qt.Utilities.loadJambiLibrary("qtjambi");
@@ -112,8 +213,9 @@ public class QAwtWidget extends Canvas {
 		
 	private QWidget containedWidget;
 	private QSize sizeHint;
-	private QSize minimumSizeHint;	
-	private QPixmap widgetAppearance;
+	private QSize minimumSizeHint;
+	@SuppressWarnings("unused") private QPixmap widgetAppearance;
+	private QtEventFilter eventFilter;
 	public QAwtWidget(QWidget containedWidget) {
 		this.containedWidget = containedWidget;
 		sizeHint = containedWidget.sizeHint();
@@ -122,7 +224,19 @@ public class QAwtWidget extends Canvas {
 		
 		addMouseListener(new QAwtMouseListener());
 		widgetAppearance = QPixmap.grabWidget(containedWidget);
-		containedWidget.installEventFilter(new QtEventFilter(containedWidget));
+		eventFilter = new QtEventFilter(containedWidget);
+		
+		installEventFilter(eventFilter, containedWidget);
+	}
+	
+	private void installEventFilter(QtEventFilter eventFilter, QObject filtered) {
+		System.err.println("Installing event filter for " + filtered);
+		filtered.installEventFilter(eventFilter);				
+		List<QObject> childrens = filtered.children();
+		for (QObject child : childrens) {
+			
+			installEventFilter(eventFilter, child);			
+		}		
 	}
 
 	@SuppressWarnings("unused")
@@ -137,7 +251,6 @@ public class QAwtWidget extends Canvas {
 	@Override
 	public Rectangle getBounds() {
 		Rectangle rect = super.getBounds();
-		System.out.println("rect: " + rect.width + " " + rect.height);
 		return rect;
 	}
 
@@ -212,7 +325,6 @@ public class QAwtWidget extends Canvas {
 	}
 	
 	private void setButtonText() {
-		System.out.println("BBB");
 		button.setText(button.text() + "?");
 	}
 		
@@ -230,14 +342,13 @@ public class QAwtWidget extends Canvas {
 		QWidget w = new QWidget();
 		QLabel label = new QLabel("Directory:");
 		QLineEdit lineEdit = new QLineEdit();
-		button = new QPushButton();
+		button = new QPushButton(w);
 		button.setText("Qt button");
 		
 		QHBoxLayout layout = new QHBoxLayout(w);
 		layout.addWidget(label);
 		layout.addWidget(lineEdit);
 		layout.addWidget(button);
-		w.setGeometry(w.x(), w.y(), w.sizeHint().width(), w.sizeHint().height());
 		
 		JButton swingButton = new JButton();
 		swingButton.setText("Swing button");
@@ -251,6 +362,8 @@ public class QAwtWidget extends Canvas {
 		f.add(awtWidget);
 		f.add(awtButton);
 		f.setVisible(true);
+		
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		f.pack();
 		
