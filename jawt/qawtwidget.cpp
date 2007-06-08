@@ -20,7 +20,7 @@
 
 #include <windows.h>
 
-extern "C" JNIEXPORT void JNICALL Java_com_trolltech_awt_QAwtWidget_paint
+extern "C" JNIEXPORT void JNICALL Java_com_trolltech_extensions_awt_QAwtWidget_paint
 (JNIEnv *env, jobject widget, jobject graphics) 
 {
     JAWT awt;
