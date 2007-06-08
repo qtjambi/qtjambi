@@ -1,4 +1,7 @@
 <project default="all" basedir=".">
+
+    <taskdef name="juic" classname="com.trolltech.tools.JuicTask"/>
+
     <property environment="env"/> 
     <property name="MailLogger.mailhost" value="smtp.trolltech.com" />
     <property name="MailLogger.from" value="[ant-mail]" />
@@ -88,13 +91,25 @@
         </exec>
     </target>
 
-    <target name="juic" depends="prepare">
+    <target name="juic-old" depends="prepare">
         <exec executable="./bin/juic" dir=".">
             <arg line="-cp ." />
             <arg line="-a" />
             <arg line="-e eclipse-integration:eclipse-stable" />
             <arg line="-d ${sourceDir}" />
         </exec>
+    </target>
+
+    <target name="juic">
+        <juic message="Running Juic for all it is worth"
+	      outputDir="${sourceDir}"
+	      xmlConfigFile=""
+              trFunction=""
+              classNamePrefix=""
+              alwaysUpdate="true"
+	      classpath="." >
+	     <include name="com/**/**.jui"/>
+        </juic>
     </target>
 
     <target name="generator.autotests">
