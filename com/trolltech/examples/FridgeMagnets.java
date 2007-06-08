@@ -16,8 +16,6 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-import java.io.*;
-
 @QtJambiExample(name = "Drag and Drop")
 public class FridgeMagnets extends QWidget {
 

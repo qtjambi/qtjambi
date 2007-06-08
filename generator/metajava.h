@@ -476,6 +476,8 @@ public:
     bool isRemovedFrom(const MetaJavaClass *, TypeSystem::Language language) const;
     bool argumentRemoved(int) const;
 
+    bool needsSuppressUncheckedWarning() const;
+
     bool hasModifications(const MetaJavaClass *implementor) const;
     FunctionModificationList modifications(const MetaJavaClass *implementor) const;
 

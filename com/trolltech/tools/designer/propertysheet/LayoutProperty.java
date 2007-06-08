@@ -15,7 +15,6 @@ package com.trolltech.tools.designer.propertysheet;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.*;
 
 import java.util.*;
 

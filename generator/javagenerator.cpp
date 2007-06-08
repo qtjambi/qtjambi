@@ -759,7 +759,9 @@ void JavaGenerator::setupForFunction(const MetaJavaFunction *java_function,
 void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &refCount,
                                         const QString &argumentName)
 {
-    if (refCount.action == ReferenceCount::Ignore) return;
+    if (refCount.action == ReferenceCount::Ignore) 
+        return;
+
     QString refCountVariableName = refCount.variableName;
     if (!refCount.declareVariable.isEmpty() && refCount.action != ReferenceCount::Set) {
         s << "        java.util.Collection<Object> __rcTmp = (java.util.Collection<Object>)com.trolltech.qt.QtJambiInternal.fetchField(this," << endl
@@ -1622,6 +1624,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
 
     if ((options & SkipAttributes) == 0) {
         if (java_function->isEmptyFunction()) s << "@Deprecated ";
+        if (java_function->needsSuppressUncheckedWarning()) s << "@SuppressWarnings(\"unchecked\") "; 
 
         if (!(attr & NoBlockedSlot)
             && !java_function->isConstructor()

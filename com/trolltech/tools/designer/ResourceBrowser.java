@@ -135,11 +135,8 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
     protected void showEvent(QShowEvent arg) {
         if (walker == null)
-        	reindex();
-       
-        shown = true;
-        filterEdit.setFocus();
-        
+        	reindex();     
+        filterEdit.setFocus();      
     }
 
     @Override
@@ -360,5 +357,5 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private String currentPath;
     private QLineEdit filterEdit;
     private HourGlass hourGlass;
-    private boolean shown;
+    // private boolean shown;
 }

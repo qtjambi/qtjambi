@@ -13,7 +13,6 @@
 
 package com.trolltech.demos.imageviewer;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QAbstractItemView.ScrollHint;

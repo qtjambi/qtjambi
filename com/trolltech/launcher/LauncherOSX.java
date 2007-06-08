@@ -7,8 +7,8 @@ import java.net.*;
 
 public class LauncherOSX {
 
-    private static final String JAVA_PATH_MACOSX = "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Commands/java";
-    private static final String PLUGINS_JAR_MACOSX = "qtjambi-mac-gpl-" + Utilities.VERSION_STRING + ".jar";
+    // private static final String JAVA_PATH_MACOSX = "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Commands/java";
+    //private static final String PLUGINS_JAR_MACOSX = "qtjambi-mac-gpl-" + Utilities.VERSION_STRING + ".jar";
 
     private  static void copy(URL sourceUrl, String destination) throws IOException {
         URLConnection connection = sourceUrl.openConnection();
@@ -30,12 +30,12 @@ public class LauncherOSX {
         out.close();
     }
 
-    private static String plugins() {
+/*    private static String plugins() {
         if (System.getProperty("os.name").toLowerCase().contains("mac os x"))
             return PLUGINS_JAR_MACOSX;
         return null;
     }
-
+*/
 
     public static void main(String args[]) throws Exception {
 

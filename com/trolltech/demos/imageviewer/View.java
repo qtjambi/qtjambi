@@ -86,7 +86,6 @@ public class View extends QWidget
         return new QSize(500, 500);
     }
 
-    private QBrush brush = new QBrush();
     protected void paintEvent(QPaintEvent e) {
         if (background == null) {
             background = new QPixmap(size());
@@ -142,9 +141,6 @@ public class View extends QWidget
     private void updateImage() {
         if (original == null)
             return;
-
-        int oiw = original.width();
-        int oih = original.height();
 
         if (modified != null)
             modified.dispose();

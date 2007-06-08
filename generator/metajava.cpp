@@ -161,6 +161,18 @@ bool MetaJavaFunction::needsCallThrough() const
     return false;
 }
 
+bool MetaJavaFunction::needsSuppressUncheckedWarning() const
+{
+    for (int i=-1; i<=arguments().size(); ++i) {
+        QList<ReferenceCount> referenceCounts = this->referenceCounts(implementingClass(), i);
+        foreach (ReferenceCount referenceCount, referenceCounts) {
+            if (referenceCount.action != ReferenceCount::Set)
+                return true;
+        }
+    }
+    return false;
+}
+
 QString MetaJavaFunction::marshalledName() const
 {
     QString returned = "__qt_" + name();

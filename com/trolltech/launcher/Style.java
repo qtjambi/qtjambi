@@ -15,8 +15,6 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.gui.QStyle.ComplexControl;
-import com.trolltech.qt.gui.QStyle.ContentsType;
 
 public class Style extends QWindowsStyle {
     public static QLinearGradient GRADIENT_LIGHT = null;

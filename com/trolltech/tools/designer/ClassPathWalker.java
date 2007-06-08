@@ -181,7 +181,7 @@ public class ClassPathWalker extends QObject {
     /**
      * Traverses the directory and emits a signal for all the files that match the fileExtensions.
      * @param dir The directory to find files in...
-     */
+     */    @SuppressWarnings("unused")
     private void traverse(QDir dir, String rootDir) {
     }
 

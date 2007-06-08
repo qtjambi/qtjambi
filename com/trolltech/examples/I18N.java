@@ -122,14 +122,6 @@ public class I18N extends QDialog {
         return translator.translate("com.trolltech.examples.I18N", "English");
     }
 
-    private QColor colorForLanguage(final String language) {
-        int hashValue = language.hashCode();
-        int red = 156 + (hashValue & 0x3F);
-        int green = 156 + ((hashValue >> 6) & 0x3F);
-        int blue = 156 + ((hashValue >> 12) & 0x3F);
-        return new QColor(red, green, blue);
-    }
-
     public static boolean notWebstart() {
         return System.getProperty("com.trolltech.launcher.webstart") == null;
     }
