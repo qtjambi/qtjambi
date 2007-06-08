@@ -140,6 +140,17 @@ public class Style extends QWindowsStyle {
 		return super.subControlRect(cc, opt, sc, w);
 	}
 	
+	@Override
+	public QRect subElementRect(SubElement se, QStyleOption opt, QWidget w) {
+    	
+		if (se == SubElement.SE_CheckBoxFocusRect
+                    || se == SubElement.SE_CheckBoxClickRect
+                    || se == SubElement.SE_RadioButtonFocusRect
+                    || se == SubElement.SE_RadioButtonClickRect)
+                    return opt.rect();
+                return super.subElementRect(se, opt, w);
+        }
+
 	private QRectF groupBoxContentsRect(QRect rect, QStyleOptionGroupBox opt, QWidget w) {
         double lt2 = GROUPBOX_LINE_THICKNESS / 2.0;
         double yoff = 0;        
