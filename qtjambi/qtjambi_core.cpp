@@ -1202,6 +1202,15 @@ bool qtjambi_is_created_by_java(QObject *qobject)
     return userData && userData->link()->createdByJava();
 }
 
+static QString qtjambi_pathseparator(JNIEnv *env) 
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveSystem();
+    jstring pathSeparator = (jstring) env->CallStaticObjectMethod(sc->System.class_ref, sc->System.getProperty, qtjambi_from_qstring(env, "path.separator"));
+
+    return (pathSeparator != 0 ? qtjambi_to_qstring(env, pathSeparator) : QString());
+}
+
 static QString qtjambi_urlbase(JNIEnv *env) {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveSystem();
@@ -1225,6 +1234,7 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
         env->ExceptionClear();
 
         // Check internal property which is set in Eclipse integration
+        QString pathSeparator = qtjambi_pathseparator(env);
         QString qtClassPath = qtjambi_urlbase(env);
         if (!qtClassPath.isEmpty()) {
             QString qtClassName = QString::fromLatin1(qualifiedName).replace('/', '.');
@@ -1257,7 +1267,7 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
                     jobject contextClassLoader = env->CallObjectMethod(currentThread, sc->Thread.getContextClassLoader);
                     Q_ASSERT(currentThread);
 
-                    QStringList urlList = qtClassPath.split(";");
+                    QStringList urlList = qtClassPath.split(pathSeparator);
                     jobjectArray urls = env->NewObjectArray(urlList.size(), sc->URL.class_ref, 0);
                     Q_ASSERT(urls);
 
@@ -1289,8 +1299,11 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
                 sc->resolveURLClassLoader();
                 sc->resolveURL();
 
-                QStringList oldUrlList = oldUrlBase()->split(";");
-                QStringList urlList = qtClassPath.split(";");
+                QStringList oldUrlList = oldUrlBase()->split(pathSeparator);
+                QStringList urlList = qtClassPath.split(pathSeparator);
+
+
+
                 for (int i=0; i<urlList.size(); ++i) {
                     if (!oldUrlList.contains(urlList.at(i))) {
                         jobject url = env->NewObject(sc->URL.class_ref, sc->URL.constructor, qtjambi_from_qstring(env, urlList.at(i)));
