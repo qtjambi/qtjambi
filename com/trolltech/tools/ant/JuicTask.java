@@ -1,4 +1,4 @@
-package com.trolltech.tools;
+package com.trolltech.tools.ant;
 
 import java.io.File;
 import java.util.StringTokenizer;
