@@ -97,6 +97,7 @@
 
     \list
         \o \l{I18N Example}{I18N}
+        \o \l{Undo Framework Example}{Undo Framework}
     \endlist
 
     \section1 Thread Examples
@@ -115,6 +116,13 @@
 
     \list
         \o \l{Fridge Magnets Example}{Fridge Magnets}\raisedaster
+    \endlist
+
+
+    \section1 OpenGL Examples
+
+    \list
+        \o \l{2D Painting Example}{2D Painting}\raisedaster
     \endlist
 
     \section1 SQL Examples
