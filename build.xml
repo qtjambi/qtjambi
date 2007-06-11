@@ -1,6 +1,6 @@
 <project default="all" basedir=".">
 
-    <taskdef name="juic" classname="com.trolltech.tools.JuicTask"/>
+    <taskdef name="juic" classname="com.trolltech.tools.ant.JuicTask"/>
 
     <property environment="env"/> 
     <property name="MailLogger.mailhost" value="smtp.trolltech.com" />
