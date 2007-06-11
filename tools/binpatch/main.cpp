@@ -107,13 +107,37 @@ int main(int, char **) {
     char key[64];
     memset(key, 0, 64);
     char *read = key;
+    int found = false;
 
-//     do {
+    while (!found) {
         printf("Insert evaluation key:\n");
         read = fgets(key, 64, stdin);
-        read[strlen(read) - 1] = '\0';
-//     } while (read[5] != '-' || read[9] != '-' || read[13] != '-'
-//              || read[17] != '-' || read[23] != '-' || read[29] != '-');
+        int length = strlen(read) - 1;
+        read[length] = '\0';
+
+        if (length < 30 || length > 60) {
+            printf(" - invalid input...\n");
+            continue;
+        }
+
+        int dash_count = 0;
+        for (int i=0; read[i]; ++i)
+            if (read[i] == '-')
+                dash_count++;
+
+        if (dash_count != 6) {
+            printf(" - key on wrong format...\n");
+            continue;
+        }
+
+        if (!strstr(read, "Z4M") && !strstr(read, "R4M") && !strstr(read, "Q4M")) {
+            printf(" - not a valid Qt evaluation key...\n");
+            continue;
+        }
+
+        printf(" - evaluation key accepted\n");
+        found = true;
+    }
 
     memcpy(ekey_result + 12, read, 64);
 
