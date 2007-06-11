@@ -16,7 +16,7 @@
 #include "qtjambi_core.h"
 #include "qtjambi_utils.h"
 
-#include <QtDesigner/private/qdesigner_utils_p.h>
+#include <private/qdesigner_utils_p.h>
 
 jclass class_NamedIntSet;
 

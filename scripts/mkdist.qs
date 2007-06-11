@@ -378,7 +378,8 @@ function setupSourcePackage(pkg) {
     pkg.binary = false;
 
     pkg.mkdirs.push(
-                    "designer-integration/language/private"
+                    "designer-integration/language/private",
+                    "qtjambi_designer/private"
                     );
 
     var uicPrefix = option.qtdir + "/src/tools/uic/";
@@ -407,8 +408,15 @@ function setupSourcePackage(pkg) {
 
                        // designer files...
                        [option.qtdir + "/tools/designer/src/lib/uilib/ui4_p.h",
-                        "designer-integration/language/private/ui4_p.h"]
+                        "designer-integration/language/private/ui4_p.h"],
+
+                       // qtjambi_designer files...
+                       [option.qtdir + "/tools/designer/src/lib/shared/qdesigner_utils_p.h", "qtjambi_designer/private"]
+
                        );
+
+    File.write("d:/dirs.txt", pkg.mkdirs.join("\n"));
+    File.write("d:/files.txt", pkg.copyFiles.join("\n"));
 
 }
 
