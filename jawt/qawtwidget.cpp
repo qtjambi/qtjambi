@@ -20,7 +20,7 @@
 
 #include <windows.h>
 
-extern "C" JNIEXPORT void JNICALL Java_com_trolltech_extensions_awt_QAwtWidget_paint
+extern "C" JNIEXPORT void JNICALL Java_com_trolltech_extensions_awt_QAwtWidget_paintIt
 (JNIEnv *env, jobject widget, jobject graphics) 
 {
     JAWT awt;
@@ -101,7 +101,13 @@ extern "C" JNIEXPORT void JNICALL Java_com_trolltech_extensions_awt_QAwtWidget_p
     if (!BitBlt(hdc, 0, 0, pm->width(), pm->height(), hbitmap_hdc, 0, 0, SRCCOPY)) {
         printf("Goddamn you GDI\n");
     }
-    SelectObject(hdc, null_bitmap);
+    SelectObject(hbitmap_hdc, null_bitmap);
     DeleteObject(hbitmap);
+    DeleteObject(hbitmap_hdc);
+
+
+    ds->FreeDrawingSurfaceInfo(dsi);
+    ds->Unlock(ds);
+    awt.FreeDrawingSurface(ds);
     
 }

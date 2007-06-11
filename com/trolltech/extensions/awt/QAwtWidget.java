@@ -26,6 +26,14 @@ import com.trolltech.qt.gui.*;
 public class QAwtWidget extends Canvas {
 	private static boolean guard = false;
 	
+	private static class QUpdateAwtWidgetEvent extends QEvent {
+		private final static QEvent.Type UPDATE_AWT_WIDGET_EVENT = QEvent.Type.resolve(QEvent.Type.User.value() + 2);
+		
+		public QUpdateAwtWidgetEvent() {
+			super(UPDATE_AWT_WIDGET_EVENT);
+		}
+	}
+	
 	private static class QFindChildAndPostMouseEvent extends QEvent {
 		private final static QEvent.Type FIND_CHILD_AND_POST_MOUSE_EVENT = QEvent.Type.resolve(QEvent.Type.User.value() + 1);
 				
@@ -95,12 +103,10 @@ public class QAwtWidget extends Canvas {
 			QPoint repositionedPoint = new QPoint();
 			hitWidget = getHitWidget(topWidget(), relativePoint(), repositionedPoint);
 			
-			System.err.println("hitWidget: " + hitWidget);
-			
 			if (hitWidget == null)
 				return null;
 			
-			return new QMouseEvent(actualType(), hitWidget.mapFromGlobal(repositionedPoint), 
+			return new QMouseEvent(actualType(), repositionedPoint, 
 					mouseButton(), mouseButtons(), keyboardModifiers());
 		}
 		
@@ -112,15 +118,27 @@ public class QAwtWidget extends Canvas {
 		}
 
 		
+		
+		private boolean hasUpdateAwtEvent = false;
+		
 		@Override
 		public boolean eventFilter(QObject receiver, QEvent event) {
-			System.err.println("Event: " + event);
 			
+			System.out.println("instance thread: " + thread() + " application thread: " + QCoreApplication.instance().thread());
+			
+			boolean returned = false;
 			if (!(receiver instanceof QWidget)) 
 				return false;
 								
-			if (!guard) {
+			if (!guard) try {
 				guard = true;
+
+				if (event instanceof QUpdateAwtWidgetEvent) {
+					updateAwtWidget();
+					hasUpdateAwtEvent = false;
+					return true;
+				}
+				
 				
 				if (event instanceof QChildEvent) {
 					QObject child = ((QChildEvent) event).child();
@@ -134,16 +152,22 @@ public class QAwtWidget extends Canvas {
 					default:
 						// Don't care
 					}
+					updateAwtWidget();
 				}
 				
 				if (event instanceof QFindChildAndPostMouseEvent) {
 					QMouseEvent mouseEvent = ((QFindChildAndPostMouseEvent) event).mouseEvent();
-					if (mouseEvent != null)
+					if (mouseEvent != null) {
 						QApplication.postEvent(((QFindChildAndPostMouseEvent)event).hitWidget(), mouseEvent);
-					
-					return true;
+						if (!hasUpdateAwtEvent) {
+							QApplication.postEvent(containedWidget, new QUpdateAwtWidgetEvent());
+							hasUpdateAwtEvent = true;
+						}
+					}
+										
+					return true;			
 				}
-				
+								
 				if (event instanceof QResizeEvent) {
 					sizeHint = containedWidget.sizeHint();
 					minimumSizeHint = containedWidget.minimumSizeHint();
@@ -152,18 +176,60 @@ public class QAwtWidget extends Canvas {
 					setBounds(new Rectangle(rectangle.x, rectangle.y, 
 							sizeHint.width() > rectangle.width || true ? sizeHint.width() : rectangle.width, 
 						    sizeHint.height() > rectangle.height || true ? sizeHint.height() : rectangle.height));
-					getParent().doLayout();					
+					getParent().doLayout();
+					//updateAwtWidget();
 				}
 				
-				containedWidget.updateGeometry();
-				widgetAppearance = QPixmap.grabWidget(containedWidget);
-				repaint();
+				if (event instanceof QPaintEvent) {
+					//
+				}
+							
+						
+				updateAwtWidget();
+			} finally {
 				guard = false;
-			} 
+			}
 			
-			return false;
+			return returned;
 		}
+
+		private void updateAwtWidget() {
+			containedWidget.updateGeometry();
+			synchronized (widgetAppearance) {
+				widgetAppearance.dispose();
+				widgetAppearance = QPixmap.grabWidget(containedWidget);
+			}
+			repaint();
+		}
+
 		
+	}
+	
+	private class QAwtMouseMotionListener implements MouseMotionListener {
+
+		public void mouseDragged(MouseEvent awtEvent) {
+			QFindChildAndPostMouseEvent event = new QFindChildAndPostMouseEvent();
+			event.setActualType(QEvent.Type.MouseMove);
+			event.setTopWidget(containedWidget);
+			event.setRelativePoint(pointToQPoint(awtEvent.getPoint()));
+			event.setMouseButton(eventToMouseButton(awtEvent));
+			event.setMouseButtons(eventToMouseButtons(awtEvent));
+			event.setKeyboardModifiers(eventToKeyboardModifiers(awtEvent));
+								
+			QApplication.postEvent(containedWidget, event);						
+		}
+
+		public void mouseMoved(MouseEvent awtEvent) {
+			QFindChildAndPostMouseEvent event = new QFindChildAndPostMouseEvent();
+			event.setActualType(QEvent.Type.MouseMove);
+			event.setTopWidget(containedWidget);
+			event.setRelativePoint(pointToQPoint(awtEvent.getPoint()));
+			event.setMouseButton(eventToMouseButton(awtEvent));
+			event.setMouseButtons(eventToMouseButtons(awtEvent));
+			event.setKeyboardModifiers(eventToKeyboardModifiers(awtEvent));
+								
+			QApplication.postEvent(containedWidget, event);									
+		}
 		
 	}
 		
@@ -191,13 +257,15 @@ public class QAwtWidget extends Canvas {
 		}
 
 		public void mouseReleased(MouseEvent awtEvent) {
-			QMouseEvent mouseEvent = new QMouseEvent(QEvent.Type.MouseButtonRelease,
-					pointToQPoint(awtEvent.getPoint()),
-					eventToMouseButton(awtEvent),
-					eventToMouseButtons(awtEvent),
-					eventToKeyboardModifiers(awtEvent));
-					
-			QApplication.postEvent(containedWidget, mouseEvent);			
+			QFindChildAndPostMouseEvent event = new QFindChildAndPostMouseEvent();
+			event.setActualType(QEvent.Type.MouseButtonRelease);
+			event.setTopWidget(containedWidget);
+			event.setRelativePoint(pointToQPoint(awtEvent.getPoint()));
+			event.setMouseButton(eventToMouseButton(awtEvent));
+			event.setMouseButtons(eventToMouseButtons(awtEvent));
+			event.setKeyboardModifiers(eventToKeyboardModifiers(awtEvent));
+								
+			QApplication.postEvent(containedWidget, event);			
 		}
 		
 	}
@@ -223,6 +291,7 @@ public class QAwtWidget extends Canvas {
 		setVisible(true);
 		
 		addMouseListener(new QAwtMouseListener());
+		addMouseMotionListener(new QAwtMouseMotionListener());
 		widgetAppearance = QPixmap.grabWidget(containedWidget);
 		eventFilter = new QtEventFilter(containedWidget);
 		
@@ -230,7 +299,6 @@ public class QAwtWidget extends Canvas {
 	}
 	
 	private void installEventFilter(QtEventFilter eventFilter, QObject filtered) {
-		System.err.println("Installing event filter for " + filtered);
 		filtered.installEventFilter(eventFilter);				
 		List<QObject> childrens = filtered.children();
 		for (QObject child : childrens) {
@@ -256,7 +324,6 @@ public class QAwtWidget extends Canvas {
 
 	
 	private QPoint pointToQPoint(Point p) {
-		System.out.println("P: " + p.x + ", " + p.y);
 		return new QPoint(p.x, p.y);
 	}
 	
@@ -309,7 +376,12 @@ public class QAwtWidget extends Canvas {
 	
 
 	@Override
-	public native void paint(Graphics g);
+	public void paint(Graphics g) {
+		synchronized (widgetAppearance) {
+			paintIt(g);
+		}
+	}
+	private native void paintIt(Graphics g);
 	
 	@Override
 	public void setBounds(int x, int y, final int width, final int height) {
@@ -341,6 +413,8 @@ public class QAwtWidget extends Canvas {
 		
 		QWidget w = new QWidget();
 		QLabel label = new QLabel("Directory:");
+		label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);
+		
 		QLineEdit lineEdit = new QLineEdit();
 		button = new QPushButton(w);
 		button.setText("Qt button");
@@ -366,7 +440,7 @@ public class QAwtWidget extends Canvas {
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		f.pack();
-		
+				
 		QApplication.exec();
 	}
 
