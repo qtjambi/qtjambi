@@ -65,7 +65,9 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
 
     /**
      * Returns a translated version of source, or source itself if there is no appropriate translated version.
-     * 
+     * Note that if you need to translate in a static context, you can use QCoreApplication::translate(),
+	 * which is a static method.
+	 *
      * @param source the source text to translate.
      * @return translated version of the source text.
      */
@@ -77,6 +79,8 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     /**
      * Returns a translated version of source, or source itself if there is no appropriate translated version.
      * The comment is used to help translators translate the source text.
+     * Note that if you need to translate in a static context, you can use QCoreApplication::translate(),
+	 * which is a static method.
      * 
      * @param source the source text to translate.
      * @param comment helps the translator translate the source text.
@@ -91,6 +95,8 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * Returns a translated version of source, or source itself if there is no appropriate translated version.
      * If %n occurs in the source text, it will be substituted with count.
      * The comment is used to help translators translate the source text.
+     * Note that if you need to translate in a static context, you can use QCoreApplication::translate(),
+	 * which is a static method.
      * 
      * @param source the source text to translate.
      * @param comment helps the translator translate the source text.
