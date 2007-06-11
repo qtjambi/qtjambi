@@ -1,6 +1,9 @@
 How to build....
 
-1. Run rebuild.sh or rebuild.bat depending on your platform
+1. Set JAVADIR to point to the installation of your JDK
+2. Set QTDIR to point to Qt
+3. Add both Qt and Java to your path
+4. Run rebuild.sh or rebuild.bat depending on your platform
 
 -
 Enjoy
