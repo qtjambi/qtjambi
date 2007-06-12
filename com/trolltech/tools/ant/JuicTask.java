@@ -34,22 +34,22 @@ public class JuicTask extends MatchingTask {
         StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
             File dir = new File(tokenizer.nextToken());
-            String comandPart = "juic " + arguments;
+            String comandPart = "juic" + arguments;
 
             DirectoryScanner ds = getDirectoryScanner(dir);
             String[] files = ds.getIncludedFiles();
             for (int i = 0; i < files.length; i++) {
                 String file = files[i];
-                String packageString = file.substring(0, file.lastIndexOf(File.separator)).replaceAll(File.separator, ".") ;
+                String packageString = file.substring(0, file.lastIndexOf(File.separator)).replaceAll(File.separator, ".");
                 String comand = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + File.separator + file;
 
                 try {
                     Process process = Runtime.getRuntime().exec(comand);
                     int returnValue = process.waitFor();
                     if (returnValue == 0)
-                        System.out.println(file + " done.");
+                        System.out.println(file);
                     else
-                        System.out.println(file + " failed with error code: " + returnValue);
+                        throw new BuildException("juic exited with error: " + returnValue);
 
                 } catch (Exception e) {
                     e.printStackTrace();

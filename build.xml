@@ -2,6 +2,7 @@
 
     <taskdef name="juic"  classname="com.trolltech.tools.ant.JuicTask"/>
     <taskdef name="qmake" classname="com.trolltech.tools.ant.QMakeTask"/>
+    <taskdef name="make" classname="com.trolltech.tools.ant.MakeTask"/>
 
     <property environment="env"/> 
     <property name="MailLogger.mailhost" value="smtp.trolltech.com" />
@@ -62,24 +63,14 @@
 
     <target name="qmake" depends="init">
         <delete dir="${jambiLib}" />
-        <exec executable="make" dir=".">
-            <arg line="dist clean -s"/>
-        </exec>
-	<qmake recursive="true"
-	       config="${config} sanitycheck"/>
-        <exec executable="make" dir=".">
-            <arg line="dist clean -s"/>
-        </exec>
+	<qmake recursive="true" config="${config} sanitycheck"/>
+	<make target="distclean" silent="true"/>
     </target>
 
     <target name="compile.generator">
-        <exec executable="make" dir="generator">
-            <arg line="clean -s"/>
-        </exec>
-        <qmake config="release"/>
-        <exec executable="make" dir="generator">
-            <arg line="-s" />
-        </exec>
+        <qmake dir="generator" config="release"/>
+        <make dir="generator" target="clean" silent="true"/>
+        <make dir="generator" silent="true"/>
         <exec executable="${basedir}/generator/generator" dir="generator"/>
     </target>
 
@@ -105,14 +96,10 @@
         <exec executable="${basedir}/generator/generator" dir="autotestlib">
             <arg line="global.h build.txt" />
         </exec>
-        <exec executable="make" dir="autotestlib">
-            <arg line="clean -s"/>
-        </exec>
-        <qmake recursive="true"
-	       config="${config}"/>
-        <exec executable="make"  dir="autotestlib">
-            <arg line="-s" />
-       </exec>
+
+        <qmake recursive="true" config="${config}"/>
+	<make dir="autotestlib" silent="true" target="clean" />
+	<make dir="autotestlib" silent="true"/>
     </target>
 
     <target name="generator.example" >

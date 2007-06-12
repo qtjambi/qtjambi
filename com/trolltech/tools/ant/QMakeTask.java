@@ -1,6 +1,6 @@
 package com.trolltech.tools.ant;
 
-import java.io.File;
+import java.io.*;
 import java.util.StringTokenizer;
 
 import org.apache.tools.ant.BuildException;
@@ -9,6 +9,7 @@ import org.apache.tools.ant.Task;
 public class QMakeTask extends Task {
     private String msg = "";
     private String config = "";
+    private String dir = ".";
 
     private boolean recursive = false;
 
@@ -27,7 +28,13 @@ public class QMakeTask extends Task {
         String comand = "qmake" + arguments;
         System.out.println(comand);
         try {
-            Process process = Runtime.getRuntime().exec(comand);
+            Process process = Runtime.getRuntime().exec(comand, null, new File(dir));
+            
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = null;
+            while ( (line = br.readLine()) != null)
+                System.out.println(line);
+            
             int returnValue = process.waitFor();
             if (returnValue == 0)
                 System.out.println("OK");
@@ -46,6 +53,10 @@ public class QMakeTask extends Task {
 
     public void setConfig(String config) {
         this.config = config;
+    }
+    
+    public void setDir(String dir) {
+        this.dir = dir;
     }
 
     public void setRecursive(boolean recursive) {
