@@ -25,6 +25,7 @@ HEADERS += \
 	qtjambifunctiontable.h \
 	qtjambilink.h \
 	qtjambitypemanager.h \
+        qtjambidestructorevent.h \
 
 DEFINES += QTJAMBI_EXPORT
 

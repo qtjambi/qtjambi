@@ -1534,7 +1534,7 @@
       <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
-  <value-type name="QTextCursor">
+  <value-type name="QTextCursor" delete-in-main-thread="yes">
     <extra-includes>
         <include file-name="QTextBlock" location="global"/>
         <include file-name="QTextDocumentFragment" location="global"/>

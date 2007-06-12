@@ -16,6 +16,7 @@
 #include "qtjambi_cache.h"
 #include "qtjambi_core.h"
 #include "qtjambitypemanager.h"
+#include "qtjambidestructorevent.h"
 
 #include <QDebug>
 #include <QHash>
@@ -266,7 +267,6 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         qDebug("Deleting '%s' [count after: %d]", QMetaType::typeName(m_meta_type), currentCount);
     }
 #endif
-
     Q_ASSERT(m_pointer);
 
     aboutToMakeObjectInvalid(env);
@@ -341,13 +341,17 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         m_pointer = 0;
 
     } else {
-        if (m_pointer != 0 && m_meta_type != QMetaType::Void)
-            QMetaType::destroy(m_meta_type, m_pointer);
-        else if (m_ownership == JavaOwnership && m_destructor_function)
+	if (deleteInMainThread() && (QCoreApplication::instance() == 0 || QCoreApplication::instance()->thread() != QThread::currentThread())) {
+	    if (QCoreApplication::instance()) {
+		    QCoreApplication::postEvent(QCoreApplication::instance(), new QtJambiDestructorEvent(m_pointer, m_meta_type, m_ownership, m_destructor_function));
+	    }
+        } else if (m_pointer != 0 && m_meta_type != QMetaType::Void) {
+	    QMetaType::destroy(m_meta_type, m_pointer);
+        } else if (m_ownership == JavaOwnership && m_destructor_function) {
             m_destructor_function(m_pointer);
+        }
         m_pointer = 0;
     }
-
 }
 
 void QtJambiLink::cleanUpAll(JNIEnv *env)
@@ -560,7 +564,7 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
         m_link->setAsQObjectDeleted();
         m_link->resetObject(env);
 
-        if (m_link->readyForDelete())
-            delete m_link;
+	if (m_link->readyForDelete())
+	    delete m_link;
     }
 }

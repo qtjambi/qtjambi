@@ -17,6 +17,7 @@
 #include "qtjambilink.h"
 #include "qtjambitypemanager.h"
 #include "qnativepointer.h"
+#include "qtjambidestructorevent.h"
 
 #include <qglobal.h>
 
@@ -1839,6 +1840,11 @@ static bool qtjambi_event_notify(void **data)
     bool *result = (bool *) data[2];
 
     switch (event->type()) {
+    case 513:
+       // this is a delete event that has to happen in the gui thread.
+       Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
+       static_cast<QtJambiDestructorEvent *>(event)->callDestructor();
+       return true;
 
     case 512:
         qtjambi_metacall(qtjambi_current_environment(), event);

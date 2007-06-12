@@ -369,6 +369,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["polymorphic-base"] = QString("no");
             attributes["polymorphic-id-expression"] = QString();
             attributes["java-name"] = QString();
+	    attributes["delete-in-main-thread"] = QString("no");
             // fall through
         case StackElement::NamespaceTypeEntry:
             attributes["package"] = m_defaultPackage;
@@ -525,6 +526,11 @@ bool Handler::startElement(const QString &, const QString &n,
                 if (element->type == StackElement::ObjectTypeEntry || element->type == StackElement::ValueTypeEntry) {
                     if (attributes["force-abstract"] == "yes")
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::ForceAbstract);
+                }
+
+		if (element->type == StackElement::InterfaceTypeEntry || element->type == StackElement::ValueTypeEntry || element->type == StackElement::ObjectTypeEntry) {
+                    if (attributes["delete-in-main-thread"] == "yes")
+			ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::DeleteInMainThread);
                 }
 
                 // ctype->setInclude(Include(Include::IncludePath, ctype->name()));

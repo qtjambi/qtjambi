@@ -78,7 +78,7 @@ QString jni_signature(const QString &_full_name, JNISignatureFormat format)
         signature = "[";
     }
 
-    int start, end;
+    int start, end=-1;
     while ( (start = full_name.indexOf("<")) >= 0 && (end = full_name.indexOf(">")) >= 0 ) {
         full_name.remove(start, end - start + 1);
     }
@@ -1542,6 +1542,9 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
         s << INDENT << "__qt_java_link->setDestructorFunction(qtjambi_destructor);" << endl;
     }
 
+    if (cls->typeEntry()->typeFlags() & ComplexTypeEntry::DeleteInMainThread)
+	s << INDENT << "__qt_java_link->setDeleteInMainThread(true);" << endl;
+
     if (!cls->hasVirtualFunctions() && !cls->hasInconsistentFunctions() && !cls->typeEntry()->isObject())
         return;
 
@@ -1549,6 +1552,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
         // Set up the link object
         s << INDENT << qt_object_name << "->m_link = __qt_java_link;" << endl
           << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
+
 
         MetaJavaClassList interfaces = cls->interfaces();
         if (interfaces.size() + (cls->baseClass() != 0 ? 1 : 0) > 1)  {
