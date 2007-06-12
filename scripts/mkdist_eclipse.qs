@@ -1,9 +1,9 @@
 
 // *** Constants
 const version           = "1.0.0";
-const depotVersion      = "main";
+const depotVersion      = "4.3.0_01";
 const jambiVersion      = "4.3.0_01";
-const eclipseBranch     = "main";
+const eclipseBranch     = "stable";
 const packageDir        = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/tmp"
                             : "/home/qt/package-builder/tmp";
@@ -16,9 +16,16 @@ const execPrefix = os_name() == OS_NAME_WINDOWS ? "release/" : "./";
 const licenseLocation = packageDir + "/qtjambi/" + depotVersion + "/dist/eclipse";
 const licenseFile = "LICENSE.QT_JAMBI_ECLIPSE_INTEGRATION";
 
+const originalPath = System.getenv("PATH");
+
 const jarFilesDest = packageDir + "/jarFiles";
 var jarFilesDir = new Dir(jarFilesDest);
 jarFilesDir.mkdirs(jarFilesDest);
+
+const midlPath = "c:/progra~1/micros~1.net/common7/tools/bin/midl.exe";
+const vcPath = "c:/progra~1/micros~1.net/vc7/bin;c:/progra~1/micros~1.net/common7/ide";
+const vcInclude = "c:/progra~1/micros~1.net/vc7/include;c:/progra~1/micros~1.net/vc7/platformsdk/include;c:/progra~1/micros~1.net/sdk/v1.1/include";
+
 
 // *** Commands
 var command = new Object();
@@ -38,7 +45,14 @@ command.unzip = find_executable("unzip");
 // *** Options
 var option = new Object();
 option.verbose = array_contains(args, "--verbose");
+option.gpl = array_contains(args, "--gpl");
 option.qtdir = findQtDir();
+
+if (option.gpl)
+    command.make = find_executable("mingw32-make");
+
+
+const gplExtension = option.gpl ? "-mingw" : "";
 
 function verbose(s) {
     if (option.verbose)
@@ -67,9 +81,9 @@ function displayHelp() {
     print("Options:" +
           "\n  --help, -help, -h    This help" +
           "\n  --verbose            Verbose output" +
+          "\n  --gpl                Name package to be compatible with GPL" +
           "\n");
 }
-
 
 function prepareSourceTree() {
     verbose("Preparing source tree:");
@@ -267,6 +281,20 @@ function buildDesignerQtJambiFragment() {
                 ["bin", "fragment.xml"]);
 }
 
+
+function workAroundMissingMidl() {    
+    var currentPath = System.getenv("PATH");
+    System.setenv("PATH", vcPath + ";" + currentPath);
+    System.setenv("INCLUDE", vcInclude);
+    
+    execute([midlPath, "release/qtdesigner.idl", "/nologo", "/tlb", "release/qtdesigner.tlb"]);
+    
+    System.setenv("PATH", currentPath);
+    System.setenv("INCLUDE", "");
+    
+    execute([option.qtdir + "/bin/idc", "release/qtdesigner.dll", "/tlb", "release/qtdesigner.tlb"]);
+}
+
 function generateDesignerCode() {
     verbose("-- generating code for designer package");
 
@@ -284,6 +312,10 @@ function generateDesignerCode() {
 
     execute([command.qmake, "DESTDIR = .", "-config", "release"]);
     execute([command.make]);
+    
+    if (option.gpl) {
+        workAroundMissingMidl();
+    }
 }
 
 function compileDesignerJavaCode(destDir) {
@@ -347,7 +379,7 @@ function makePlatformSpecificPackageLinux(destDir) {
 
    dir = new Dir(destDir);
    dir.setCurrent();
-   execute([command.tar, "cfz", "qtjambi-eclipse-integration-linux-" + jambiVersion + ".tar.gz", "plugins", licenseFile]);
+   execute([command.tar, "cfz", "qtjambi-eclipse-integration-linux-" + jambiVersion + gplExtension + ".tar.gz", "plugins", licenseFile]);
 
 }
 
@@ -377,7 +409,7 @@ function makePlatformSpecificPackageWindows(destDir) {
     verbose("-- zipping package");
     dir = new Dir(destDir);
     dir.setCurrent();
-    execute([command.zip, "-r", "qtjambi-eclipse-integration-win32-" + jambiVersion + ".zip", "*"]);
+    execute([command.zip, "-r", "qtjambi-eclipse-integration-win32-" + jambiVersion + gplExtension + ".zip", "*"]);
 }
 
 
@@ -428,8 +460,25 @@ function buildPackage() {
     eval("makePlatformSpecificPackage" + os_name() + "(packageDest);");
 }
 
-function build() {
+function setPathForMinGW() {
+    // setup mingw for compilation...
+    if (os_name() == OS_NAME_WINDOWS) {
+        // remove cygwin from path...
+        var path = originalPath.split(";");
+        var newPath = [];
+        for (var i=0; i<path.length; ++i) {
+            if (path[i].find("cygwin") < 0) {
+                newPath.push(path[i]);
+            }
+        }
+        System.setenv("PATH", newPath.join(";"));
+    }
+}
+
+function build() {    
     prepareSourceTree();
+    if (option.gpl)
+        setPathForMinGW();
     buildQtBundle();
     buildDesigner();
     if (os_name() != OS_NAME_WINDOWS)
@@ -437,6 +486,8 @@ function build() {
     buildJambi();
     buildDesignerQtJambiFragment();
     buildPackage();
+    if (option.gpl && os_name() == OS_NAME_WINDOWS)
+        System.setenv("PATH", originalPath);
 }
 
 if (array_contains(args, "-help") || array_contains(args, "-h")) {
