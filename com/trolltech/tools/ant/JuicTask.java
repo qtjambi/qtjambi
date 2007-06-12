@@ -40,7 +40,8 @@ public class JuicTask extends MatchingTask {
             String[] files = ds.getIncludedFiles();
             for (int i = 0; i < files.length; i++) {
                 String file = files[i];
-                String comand = comandPart + " -p " + file.substring(0, file.lastIndexOf(File.separator)) + " " + dir.getAbsolutePath() + File.separator + file;
+                String packageString = file.substring(0, file.lastIndexOf(File.separator)).replaceAll(File.separator, ".") ;
+                String comand = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + File.separator + file;
 
                 try {
                     Process process = Runtime.getRuntime().exec(comand);
