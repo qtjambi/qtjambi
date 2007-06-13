@@ -12,12 +12,14 @@ public class MakeTask extends Task {
     private boolean silent = true;
   
     private String compilerName() {
-        String os = System.getProperty("os.name");
-        if(os.equalsIgnoreCase("linux"))
-            return "make";
-        if(os.equalsIgnoreCase("windows"))
+        switch(Util.OS()){
+        case Util.WINDOWS:
             return "nmake";
         
+        case Util.LINUX:
+            return "make";
+        }
+
         return "make";
     }
     

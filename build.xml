@@ -1,43 +1,23 @@
-<project default="all" basedir=".">
+<project default="qtjambi" basedir=".">
 
     <taskdef name="juic"  classname="com.trolltech.tools.ant.JuicTask"/>
     <taskdef name="qmake" classname="com.trolltech.tools.ant.QMakeTask"/>
-    <taskdef name="make" classname="com.trolltech.tools.ant.MakeTask"/>
+    <taskdef name="make"  classname="com.trolltech.tools.ant.MakeTask"/>
 
     <property environment="env"/> 
-    <property name="MailLogger.mailhost" value="smtp.trolltech.com" />
-    <property name="MailLogger.from" value="[ant-mail]" />
-    <property name="MailLogger.failure.notify" value="true" />
-    <property name="MailLogger.success.notify" value="true" />
-    <property name="MailLogger.failure.to" value="hfroilan@trolltech.com" />
-    <property name="MailLogger.success.to" value="hfroilan@trolltech.com" />
 
     <tstamp/>
 
-    <target name="init">
-
-    </target>
-
     <property name="sourceDir" value="." />
     <property name="outputDir" value="classes" />
-    <property name="reportDir" value="reports" />
-    <property name="htmlDir"   value="/var/www/junit/" />
 
     <property name="jambiLib" value="./lib" />
     <property name="qt"       value="${env.QTDIR}" />
     <property name="qtLib"    value="${qt}/lib" />
     <property name="config"    value="debug" />
 
-    <property name="deployDir" value="./deploy" />
-
-    <property name="eclipseDir" value="../../eclipse/main" />
-
-    <target name="clean" depends="init">
+    <target name="clean">
         <delete dir="${outputDir}" />
-    </target>
-
-    <target name="clean.report" depends="init">
-         <delete dir="${reportDir}" />
     </target>
 
     <target name="prepare" depends="clean">
@@ -45,39 +25,35 @@
         <mkdir dir="${outputDir}/com/trolltech/autotests" />
     </target>
 
-    <target name="prepare.report" depends="clean.report">
-        <mkdir dir="${reportDir}" />
-    </target>
-
-    <target name="sync" depends="init">
-        <exec executable="p4">
-            <arg line="sync //depot/qtjambi/main/..." />
-        </exec>
-    </target>
-
-    <target name="sync.qt" depends="init">
-        <exec executable="p4">
-            <arg line="sync //depot/qt/4.3/..." />
-        </exec>
-    </target>
-
-    <target name="qmake" depends="init">
+    <target name="qmake.qtjambi">
         <delete dir="${jambiLib}" />
 	<qmake recursive="true" config="${config} sanitycheck"/>
-	<make target="distclean" silent="true"/>
     </target>
 
-    <target name="compile.generator">
-        <qmake dir="generator" config="release"/>
-        <make dir="generator" target="clean" silent="true"/>
-        <make dir="generator" silent="true"/>
+    <target name="qmake.generator">
+	<qmake config="release"/>
+    </target>
+
+    <target name="compile.generator" depends="qmake.generator">
+        <make dir="generator" target="clean" />
+        <make dir="generator" />
+    </target>
+
+    <target name="generator.qtjambi" >
         <exec executable="${basedir}/generator/generator" dir="generator"/>
     </target>
 
-    <target name="compile.qtjambi" depends="prepare">
-        <exec executable="make" dir=".">
-            <arg line="-s"/>
+    <target name="generator.example" >
+        <exec executable="${basedir}/generator/generator" dir="generator_example">
+            <arg line="global.h typesystem_generatorexample.txt" />
         </exec>
+	<make dir="generator_example" target="clean" />
+        <qmake recursive="true" config="${config}"/>
+	<make dir="generator_example" />
+    </target>
+
+    <target name="compile.qtjambi" >
+	<make />
     </target>
 
     <target name="juic">
@@ -92,48 +68,6 @@
         </juic>
     </target>
 
-    <target name="generator.autotests">
-        <exec executable="${basedir}/generator/generator" dir="autotestlib">
-            <arg line="global.h build.txt" />
-        </exec>
-
-        <qmake recursive="true" config="${config}"/>
-	<make dir="autotestlib" silent="true" target="clean" />
-	<make dir="autotestlib" silent="true"/>
-    </target>
-
-    <target name="generator.example" >
-        <exec executable="${basedir}/generator/generator" dir="generator_example">
-            <arg line="global.h typesystem_generatorexample.txt" />
-        </exec>
-        <exec executable="make" dir="generator_example">
-            <arg line="clean -s"/>
-        </exec>
-        <qmake recursive="true"
-	       config="${config}"/>
-        <exec executable="make" dir="generator_example">
-           <arg line="-s"/>
-        </exec>
-    </target>
-
-    <target name="compile" depends="qmake, compile.generator, compile.qtjambi, generator.autotests, generator.example,  compile.java" />
-
-    <target name="configure.qt" depends="init">
-        <exec executable="${qt}/configure" dir="${qt}">
-            <arg line="-${config} -no-qt3support -fast -release -no-rpath -no-xfixes -fast -shared" />
-	</exec>
-    </target>
-
-    <target name="compile.qt" depends="init, sync.qt, configure.qt">
-        <exec executable="make" dir="${qt}">
-            <arg line="dist clean -s" />
-        </exec>
-        <exec executable="make" dir="${qt}">
-           <arg line="-s"/>
-        </exec>
-    </target>
-
-
     <target name="compile.java" depends="juic">
         <javac srcdir="${sourceDir}" destdir="${outputDir}">
             <include name="com/**/**.java"/>
@@ -143,24 +77,8 @@
         </javac>
     </target>
 
-    <target name="compile.autotests" depends="init">
-        <javac srcdir="${sourceDir}" destdir="${outputDir}" 
-               includes="com/trolltech/autotests/**.java" />
-    </target>
-
-    <target name="lrelease" depends="init">
-        <exec executable="lrelease">
-            <arg line="./com/trolltech/examples/examples_no.ts" />
-        </exec>
-    </target>
-
-    <target name="deploy.clean" depends="init">
-        <delete dir="${deployDir}" />
-        <mkdir dir="${deployDir}" />
-    </target>
-
-    <target name="deploy.jar" description="JARs the Task" depends="init">
-        <jar destfile="${deployDir}/qtjambi.jar">
+    <target name="deploy.jar" description="JARs the Task">
+        <jar destfile="qtjambi.jar">
             <manifest>
                 <attribute name="Built-By" value="Trolltech ASA - ${TODAY}"/>
                 <attribute name="Main-Class" value="com.trolltech.launcher.Launcher"/>
@@ -176,144 +94,6 @@
         </jar>
     </target>
 
-    <target name="deploy.linux" depends="deploy.clean, deploy.jar">
-        <mkdir dir="${deployDir}/lib" />
-	<exec executable="sh">
-	    <arg line='-c "cp -d ${jambiLib}/*.so* ${deployDir}/lib/."' />
-	</exec>
-
-	<exec executable="sh">
-	    <arg line='-c "cp -d ${qtLib}/*.so* ${deployDir}/lib/."' />
-	</exec>
-
-<!--
-        <copy todir="${deployDir}/lib">
-            <fileset dir="${jambiLib}" followsymlinks="no">
-                <include name="*.so*" />
-            </fileset>
-        </copy>
-
-        <copy todir="${deployDir}/lib">
-            <fileset dir="${qtLib}" followsymlinks="no">
-                <include name="*.so*" />
-            </fileset>
-        </copy>
-
--->
-        <copy todir="${deployDir}/plugins">
-            <fileset dir="./plugins">
-                <include name="**" />
-            </fileset>
-        </copy>
-        <copy file="bin/juic" todir="${deployDir}/bin" />
-
-        <copy file="${qt}/bin/designer" todir="${deployDir}/bin" />
-
-        <copy todir="${deployDir}">
-            <fileset dir="./dist/linux">
-                <include name="*" />
-            </fileset>
-        </copy>
-        <chmod file="${deployDir}/bin/*" perm="+x"/>
-        <chmod file="${deployDir}/designer.sh" perm="+x"/>
-        <chmod file="${deployDir}/generator_example.sh" perm="+x"/>
-        <chmod file="${deployDir}/qtjambi.sh" perm="+x"/>
-    </target>
-
-    <target name="deploy.zip" depends="init">
-        <zip destfile="jambi-devel.zip"
-             basedir="${deployDir}"/>
-    </target>
-
-    <target name="deploy.tar.gz">
-        <tar tarfile="jambi-devel.tar" basedir="${deployDir}"/>
-        <gzip zipfile="jambi-devel.tar.gz" src="jambi-devel.tar"/>
-        <delete file="jambi-devel.tar" />
-    </target>
-
-    <target name="test" depends="prepare.report" >
-        <junit printsummary="yes" haltonfailure="false">
-            <!-- comment --> 
-            <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/> 
-	    <jvmarg value="-Dcom.trolltech.qt.implicit-loading=false" />
-	    <jvmarg value="-Dcom.trolltech.qt.debug"/>
-
-            <classpath>
-                <pathelement location="${outputDir}" />
-                <pathelement location="${sourceDir}" /> 
-            </classpath>
-            <formatter type="xml"/>
-            <batchtest fork="true" todir="${reportDir}">
-                <fileset dir=".">
-                    <include name="**/autotests//Test*.java"/>
-                </fileset>
-            </batchtest>
-
-        </junit>
-
-        <junitreport todir="${reportDir}">
-            <fileset dir="${reportDir}">
-                <include name="TEST-*.xml"/>
-            </fileset>
-            <report format="frames" todir="${htmlDir}"/>
-        </junitreport>
-    </target>
-
-    <target name="all" depends="sync, compile, lrelease, deploy.linux" />
-
-
-    <target name="eclipse" depends="eclipse.qt, eclipse.qtdesignerplugins">
-
-    </target>
-
-    <target name="eclipse.qt" depends="init">
-        <delete dir="${eclipseDir}/com.trolltech.qt.linux.x86/lib" />
-	<!--
-        <copy todir="${eclipseDir}/com.trolltech.qt.linux.x86/lib">
-            <fileset dir="${qtLib}">
-                <include name="libQtCore.so*" />
-                <include name="libQtGui.so*" />
-                <include name="libQtXml.so*" />
-                <include name="libQtScript.so*" />
-                <include name="libQtDesigner.so*" />
-                <include name="libQtDesignerComponents.so*" />
-            </fileset>
-        </copy> -->
-	<mkdir dir="${eclipseDir}/com.trolltech.qt.linux.x86/lib" />
-	<exec executable="sh">
-	    <arg line='-c "cp -d ${qtLib}/libQtCore.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
-	</exec>
-	<exec executable="sh">
-	    <arg line='-c "cp -d ${qtLib}/libQtGui.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
-	</exec>
-	<exec executable="sh">
-	    <arg line='-c "cp -d ${qtLib}/libQtXml.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
-	</exec>
-	<exec executable="sh">
-	    <arg line='-c "cp -d ${qtLib}/libQtScript.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
-	</exec>
-	<exec executable="sh">
-	    <arg line='-c "cp -d ${qtLib}/libQtDesigner.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
-	</exec>
-	<exec executable="sh">
-	    <arg line='-c "cp -d ${qtLib}/libQtDesignerComponents.so* ${eclipseDir}/com.trolltech.qt.linux.x86/lib/."' />
-	</exec>
-
-    </target>
-
-    <target name="eclipse.qtdesignerplugins" depends="init">
-        <delete dir="${eclipseDir}/com.trolltech.qtdesignerplugins" />
-        <copy todir="${eclipseDir}/com.trolltech.qtdesignerplugins">
-            <fileset dir="./plugins/designer">
-                <include name="*" />
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="documentation">
-        <exec executable="qdoc3" dir="doc/config">
-            <arg line="qtjambi.qdocconf" />
-        </exec>
-    </target>
+    <target name="qtjambi" depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, deploy.jar" />
 
 </project>
