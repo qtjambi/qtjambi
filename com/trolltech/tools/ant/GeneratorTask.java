@@ -12,17 +12,16 @@ public class GeneratorTask extends Task{
     private String dir = ".";
     private boolean silent = true;
   
-    private String generatorPath() {
+    private String searchPath() {
         
-        File root = new File(".");
         String s = File.separator;
         switch(Util.OS()){
         case WINDOWS:
-            return root.getAbsolutePath() + s + "generator" + s + "release" + s + "generator";
+            return "." + s + "generator" + s + "release";
         
         case LINUX:
         case MAC:
-            return root.getAbsolutePath() + s + "generator" + s + "generator";
+            return "." + s + "generator";
         }
 
         return "";
@@ -30,11 +29,9 @@ public class GeneratorTask extends Task{
     
     public void execute() throws BuildException {
         System.out.println(msg);
-
         String arguments = " " + header + " " + typesystem;
         
-        
-        String comand = generatorPath() + arguments;
+        String comand = Util.LOCATE_EXEC("generator", searchPath(), null).getAbsolutePath() + arguments;
         
         System.out.println(dir + "  " + comand);
         try {

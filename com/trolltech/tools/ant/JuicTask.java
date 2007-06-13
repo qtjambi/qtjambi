@@ -34,7 +34,7 @@ public class JuicTask extends MatchingTask {
         StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
             File dir = new File(tokenizer.nextToken());
-            String comandPart = "juic" + arguments;
+            String comandPart = Util.LOCATE_EXEC("juic", "./bin", null).getAbsolutePath() + arguments;
 
             DirectoryScanner ds = getDirectoryScanner(dir);
             String[] files = ds.getIncludedFiles();

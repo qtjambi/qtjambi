@@ -1,9 +1,9 @@
 <project default="qtjambi" basedir=".">
 
-    <taskdef name="juic"      classname="com.trolltech.tools.ant.JuicTask"/>
-    <taskdef name="qmake"     classname="com.trolltech.tools.ant.QMakeTask"/>
-    <taskdef name="make"      classname="com.trolltech.tools.ant.MakeTask"/>
-    <taskdef name="generator" classname="com.trolltech.tools.ant.GeneratorTask"/>
+    <taskdef name="juic"      classpath="." classname="com.trolltech.tools.ant.JuicTask"/>
+    <taskdef name="qmake"     classpath="." classname="com.trolltech.tools.ant.QMakeTask"/>
+    <taskdef name="make"      classpath="." classname="com.trolltech.tools.ant.MakeTask"/>
+    <taskdef name="generator" classpath="." classname="com.trolltech.tools.ant.GeneratorTask"/>
 
     <property environment="env"/> 
 

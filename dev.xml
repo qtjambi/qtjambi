@@ -94,7 +94,7 @@
             <arg line="global.h build.txt" />
         </exec>
 
-        <qmake recursive="true" config="${config}"/>
+        <qmake dir="qutotestlib" recursive="true" config="${config}"/>
 	<make dir="autotestlib" target="clean" />
 	<make dir="autotestlib" silent="true"/>
     </target>
