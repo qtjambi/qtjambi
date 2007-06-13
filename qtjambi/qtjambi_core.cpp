@@ -1203,15 +1203,6 @@ bool qtjambi_is_created_by_java(QObject *qobject)
     return userData && userData->link()->createdByJava();
 }
 
-static QString qtjambi_pathseparator(JNIEnv *env) 
-{
-    StaticCache *sc = StaticCache::instance(env);
-    sc->resolveSystem();
-    jstring pathSeparator = (jstring) env->CallStaticObjectMethod(sc->System.class_ref, sc->System.getProperty, qtjambi_from_qstring(env, "path.separator"));
-
-    return (pathSeparator != 0 ? qtjambi_to_qstring(env, pathSeparator) : QString());
-}
-
 static QString qtjambi_urlbase(JNIEnv *env) {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveSystem();
@@ -1235,7 +1226,7 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
         env->ExceptionClear();
 
         // Check internal property which is set in Eclipse integration
-        QString pathSeparator = qtjambi_pathseparator(env);
+        QString pathSeparator = ";";
         QString qtClassPath = qtjambi_urlbase(env);
         if (!qtClassPath.isEmpty()) {
             QString qtClassName = QString::fromLatin1(qualifiedName).replace('/', '.');
