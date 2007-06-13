@@ -71,6 +71,19 @@ class PythonSlot {
         genericExecute(a, b, c, d, e, f, g, h, i);
     }
 
+    public static String signature(int count) {
+        StringBuilder s = new StringBuilder();
+        s.append("execute_").append(count).append('(');
+        for (int i=0; i<count; ++i) {
+            if (i != 0)
+                s.append(',');
+            s.append("Object");
+        }
+        s.append(')');
+        return s.toString();
+    }
+
+
     private PyMethod slot;
 }
 

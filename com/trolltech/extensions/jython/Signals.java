@@ -16,9 +16,9 @@ package com.trolltech.extensions.jython;
 import com.trolltech.qt.*;
 import org.python.core.*;
 
-public class ConnectFunction extends PyObject {
+public class Signals {
 
-    private String signature(int count) {
+    private static String signature(int count) {
         StringBuilder s = new StringBuilder();
         s.append("execute_").append(count).append('(');
         for (int i=0; i<count; ++i) {
@@ -30,21 +30,9 @@ public class ConnectFunction extends PyObject {
         return s.toString();
     }
 
-    @Override
-    public PyObject __call__(PyObject[] pyObjects, String[] strings) {
-
-        Object opaqueSignal = pyObjects[0].__tojava__(QSignalEmitter.AbstractSignal.class);
-        if (opaqueSignal.equals(Py.NoConversion))
-            throw new RuntimeException("QtJambi connect: First argument is not a signal");
-        QSignalEmitter.AbstractSignal signal = (QSignalEmitter.AbstractSignal) opaqueSignal;
-
-        PyMethod slot = null;
-        if (pyObjects[1] instanceof PyMethod)
-            slot = (PyMethod) pyObjects[1];
-        else
-            throw new RuntimeException("QtJambi connect: Second argument is not a member function");
-
-        PythonSlot receiver = new PythonSlot(slot);
+    public static void connect(QSignalEmitter.AbstractSignal signal,
+                               PyMethod method) {
+        PythonSlot receiver = new PythonSlot(method);
         if (signal instanceof QSignalEmitter.Signal0)
             ((QSignalEmitter.Signal0) signal).connect(receiver, signature(0));
         else if (signal instanceof QSignalEmitter.Signal1)
@@ -65,7 +53,63 @@ public class ConnectFunction extends PyObject {
             ((QSignalEmitter.Signal8) signal).connect(receiver, signature(8));
         else if (signal instanceof QSignalEmitter.Signal9)
             ((QSignalEmitter.Signal9) signal).connect(receiver, signature(9));
-
-        return null;
     }
+
+    public static void connect(PythonSignal signal, PyMethod method) {
+        PythonSlot receiver = new PythonSlot(method);
+        if (signal instanceof Signal0) {
+            ((Signal0) signal).signal.connect(receiver, signature(0));
+        } else if (signal instanceof Signal1) {
+            ((Signal1) signal).signal.connect(receiver, signature(1));
+        } else if (signal instanceof Signal2) {
+            ((Signal2) signal).signal.connect(receiver, signature(2));
+        } else if (signal instanceof Signal3) {
+            ((Signal3) signal).signal.connect(receiver, signature(3));
+        } else if (signal instanceof Signal4) {
+            ((Signal4) signal).signal.connect(receiver, signature(4));
+        } else if (signal instanceof Signal5) {
+            ((Signal5) signal).signal.connect(receiver, signature(5));
+        } else if (signal instanceof Signal6) {
+            ((Signal6) signal).signal.connect(receiver, signature(6));
+        } else if (signal instanceof Signal7) {
+            ((Signal7) signal).signal.connect(receiver, signature(7));
+        } else if (signal instanceof Signal8) {
+            ((Signal8) signal).signal.connect(receiver, signature(8));
+        } else if (signal instanceof Signal9) {
+            ((Signal9) signal).signal.connect(receiver, signature(9));
+        }
+    }
+
 }
+
+/*
+  testcase:
+
+from com.trolltech.qt.gui import *
+from com.trolltech.extensions.jython import *
+
+class MyButton (QPushButton):
+
+    def __init__(self):
+        self.setText("MyButton")
+        self.setCheckable(1)
+        self.bar = Signal1()
+        Signals.connect(self.bar, self.zoot);
+        Signals.connect(self.toggled, self.foo);
+
+        self.bar.emit('foobar');
+
+    def foo(self, on):
+        print("toggled, re-emitting: %s" % on)
+        self.bar.emit(on);
+
+    def zoot(self, on):
+        print("got %s from python signal" % on)
+
+
+QApplication.initialize([])
+button = MyButton();
+button.show();
+QApplication.exec();
+
+*/
