@@ -400,9 +400,16 @@ function makePlatformSpecificPackageWindows(destDir) {
         copyFiles([option.qtdir + "/bin/" + qtLibraries[i]], option.qtdir + "/bin", dllDest);
     }
 
-    copyFiles(["c:/windows/system32/msvcp71.dll", "c:/windows/system32/msvcr71.dll"],
-              "c:/windows/system32",
-              dllDest);
+    if (!option.gpl) {
+        copyFiles(["c:/windows/system32/msvcp71.dll", "c:/windows/system32/msvcr71.dll"],
+                  "c:/windows/system32",
+                  dllDest);
+    } else {
+        var mingwDllPath = find_executable("mingwm10.dll");
+        var idx = mingwDllPath.lastIndexOf("/");
+        var mingwDllDir = mingwDllPath.substring(0, idx);
+        copyFiles([mingwDllPath], mingwDllDir, dllDest);
+    }
 
     copyFiles([licenseLocation + "/" + licenseFile], licenseLocation, destDir);
 
