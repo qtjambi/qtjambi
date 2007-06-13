@@ -13,13 +13,9 @@ public class MakeTask extends Task {
   
     private String compilerName() {
         switch(Util.OS()){
-        case Util.WINDOWS:
+        case WINDOWS:
             return "nmake";
-        
-        case Util.LINUX:
-            return "make";
         }
-
         return "make";
     }
     

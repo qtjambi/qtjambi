@@ -17,11 +17,11 @@ public class GeneratorTask extends Task{
         File root = new File(".");
         String s = File.separator;
         switch(Util.OS()){
-        case Util.WINDOWS:
+        case WINDOWS:
             return root.getAbsolutePath() + s + "generator" + s + "release" + s + "generator";
         
-        case Util.LINUX:
-        case Util.MAC:
+        case LINUX:
+        case MAC:
             return root.getAbsolutePath() + s + "generator" + s + "generator";
         }
 
