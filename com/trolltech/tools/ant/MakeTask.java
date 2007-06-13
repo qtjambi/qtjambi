@@ -69,12 +69,5 @@ public class MakeTask extends Task {
     public void setDir(String dir) {
         this.dir = dir;
     }
-    
-    public static void main(String[] args){
-        MakeTask task = new MakeTask();
-        task.setTarget("clean");
-        task.setSilent(false);
-        task.execute();
-    }
 }
 
