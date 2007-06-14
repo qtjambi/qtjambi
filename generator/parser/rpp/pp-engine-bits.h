@@ -1098,7 +1098,12 @@ _InputIterator pp::handle_ifdef (bool check_undefined, _InputIterator __first, _
     {
       _InputIterator end_macro_name = skip_identifier (__first, __last);
 
-      std::size_t __size = std::distance (__first, end_macro_name);
+      std::size_t __size;
+#if defined(__SUNPRO_CC)
+      std::distance (__first, end_macro_name, __size);
+#else
+      __size = std::distance (__first, end_macro_name);
+#endif
       assert (__size < 256);
 
       char __buffer [256];
@@ -1125,7 +1130,13 @@ _InputIterator pp::handle_undef(_InputIterator __first, _InputIterator __last)
   _InputIterator end_macro_name = skip_identifier (__first, __last);
   assert (end_macro_name != __first);
 
-  std::size_t __size = std::distance (__first, end_macro_name);
+  std::size_t __size;
+#if defined(__SUNPRO_CC)
+  std::distance (__first, end_macro_name, __size);
+#else
+  __size = std::distance (__first, end_macro_name);
+#endif
+
   assert (__size < 256);
 
   char __buffer [256];

@@ -66,7 +66,12 @@ public:
   static pp_fast_string const *get (_InputIterator __first, _InputIterator __last)
   {
     ++N();
-    std::ptrdiff_t __size = std::distance (__first, __last);
+    std::ptrdiff_t __size;
+#if defined(__SUNPRO_CC)
+    std::distance (__first, __last, __size);
+#else
+    __size = std::distance (__first, __last);
+#endif
     assert (__size >= 0 && __size < 512);
 
     char *data = allocator_instance ().allocate (__size + 1);

@@ -86,6 +86,7 @@ public class SvgCards extends QGraphicsView {
             super();
             setElementId(card);
             setSharedRenderer(renderer);
+            setParent(renderer);
         }
 
         public void setManager(CardManager newManager) {
@@ -178,7 +179,7 @@ public class SvgCards extends QGraphicsView {
             super(parent);
 
             fileName = file;
-            renderer = new QSvgRenderer(fileName);
+            renderer = new QSvgRenderer(fileName, parent);
             cards = new LinkedList<Card>();
             for (int i = 0; i < CARDS.length; ++i) {
                 Card item = new Card(CARDS[i], renderer);

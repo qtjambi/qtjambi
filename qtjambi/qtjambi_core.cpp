@@ -17,7 +17,6 @@
 #include "qtjambilink.h"
 #include "qtjambitypemanager.h"
 #include "qnativepointer.h"
-#include "qtjambidestructorevent.h"
 
 #include <qglobal.h>
 
@@ -478,22 +477,7 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className,
 jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className,
                             const char *packageName, bool makeCopyOfValueTypes)
 {
-    jobject returned = 0;
     if (qt_object == 0)
-        return 0;
-
-    jclass clazz = resolveClass(env, className, packageName);
-    QTJAMBI_EXCEPTION_CHECK(env);
-    if (clazz != 0) {
-        jmethodID constructorId = resolveMethod(env, "<init>", "(Lcom/trolltech/qt/QtJambiObject$QPrivateConstructor;)V",
-            className, packageName, false);
-        Q_ASSERT(constructorId);
-
-        returned = env->NewObject(clazz, constructorId, 0);
-    }
-
-    QTJAMBI_EXCEPTION_CHECK(env);
-    if (returned == 0)
         return 0;
 
     int metaType = QMetaType::Void;
@@ -521,6 +505,24 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
         if (copy == 0)
             return 0;
     }
+
+    jobject returned = 0;
+    jclass clazz = resolveClass(env, className, packageName);
+    QTJAMBI_EXCEPTION_CHECK(env);
+    if (clazz != 0) {
+        jmethodID constructorId = resolveMethod(env,
+                                                "<init>",
+                                                "(Lcom/trolltech/qt/QtJambiObject$QPrivateConstructor;)V",
+                                                className,
+                                                packageName,
+                                                false);
+        Q_ASSERT(constructorId);
+        returned = env->NewObject(clazz, constructorId, 0);
+    }
+
+    QTJAMBI_EXCEPTION_CHECK(env);
+    if (returned == 0)
+        return 0;
 
     if (!qtjambi_construct_object(env, returned, copy, metaType, java_name, false)) {
         if (metaType != QMetaType::Void && copy != 0)
@@ -1422,7 +1424,86 @@ bool qtjambi_initialize_vm()
     return true;
 }
 
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_SOLARIS)
+#if defined(_ILP32) && (_FILE_OFFSET_BITS != 32)
+#define FILE_OFFSET_BITS_HACK 1
+#undef _FILE_OFFSET_BITS
+#define _FILE_OFFSET_BITS 32
+#else
+#define FILE_OFFSET_BITS_HACK 0
+#endif
+
+#include <dlfcn.h>
+#include <link.h>
+#include <limits.h>
+
+#if ((FILE_OFFSET_BITS_HACK + 0x0) == 0x1)
+#undef _FILE_OFFSET_BITS
+#define _FILE_OFFSET_BITS 64
+#endif
+
+static QString locate_vm()
+{
+    Link_map* lmap;
+
+    if (dlinfo(RTLD_SELF, RTLD_DI_LINKMAP, (void **) &lmap) == -1) {
+        qWarning(dlerror());
+        return QString();
+    }
+
+    while (lmap != NULL) {
+        QString line = lmap->l_name;
+        if (!line.isNull() && !line.isEmpty()) {
+            if (line.endsWith("libjvm.so")) {
+                return QString(line.mid(line.indexOf('/')));
+            }
+        }
+        lmap = lmap->l_next;
+    }
+
+    QList<QString> envVariables;
+    envVariables << "JAVADIR"  << "JAVAHOME" << "JDK_HOME" << "JAVA_HOME" << "JAVA_DIR";
+
+    for (int i = 0; i < envVariables.size(); ++i) {
+        QString jpath;
+        if (!vm_location_override.isEmpty())
+            jpath = vm_location_override.append(QLatin1String("/lib/"));
+        else
+            jpath = qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"));
+
+        QString jmach;
+#if defined(__sparc) || defined(__sparcv9)
+#ifdef _LP64
+        jmach = QLatin1String("sparcv9/server");
+#else
+        jmach = QLatin1String("sparc/client");
+#endif
+#else
+#ifdef _LP64
+        jmach = QLatin1String("amd64/server");
+#else
+        jmach = QLatin1String("i386/client");
+#endif
+#endif
+        jpath += jmach;
+
+        jpath = QDir::cleanPath(jpath);
+
+        if (! jpath.endsWith(QLatin1Char('/')))
+            jpath += QLatin1Char('/');
+
+        QFileInfo file(jpath + "libjvm.so");
+
+        if (file.exists())
+            return file.absoluteFilePath();
+    }
+
+    qWarning("QtJambi: failed to locate the JVM. Make sure JAVADIR is set, and pointing to your Java installation.");
+    return QString();
+}
+
+
+#elif defined(Q_OS_LINUX)
 static QString locate_vm()
 {
     // If libjvm is already loaded, make sure we report the same jvm.
@@ -1831,11 +1912,6 @@ static bool qtjambi_event_notify(void **data)
     bool *result = (bool *) data[2];
 
     switch (event->type()) {
-    case 513:
-       // this is a delete event that has to happen in the gui thread.
-       Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
-       static_cast<QtJambiDestructorEvent *>(event)->callDestructor();
-       return true;
 
     case 512:
         qtjambi_metacall(qtjambi_current_environment(), event);

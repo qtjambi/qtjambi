@@ -216,7 +216,12 @@ public:
 
             // ### rewrite: not safe
 
-            std::ptrdiff_t name_size = std::distance (name_begin, name_end);
+            std::ptrdiff_t name_size;
+#if defined(__SUNPRO_CC)
+             std::distance (name_begin, name_end, name_size);
+#else
+            name_size = std::distance (name_begin, name_end);
+#endif
             assert (name_size >= 0 && name_size < 512);
 
             char name_buffer[512], *cp = name_buffer;
@@ -288,7 +293,13 @@ public:
                             std::string __id;
                             __id.assign (__begin_id, __end_id);
 
-                            m = env.resolve (__id.c_str (), std::distance (__begin_id, __end_id));
+                            std::size_t x;
+#if defined(__SUNPRO_CC)
+                            std::distance (__begin_id, __end_id, x);
+#else
+                            x = std::distance (__begin_id, __end_id);
+#endif
+                            m = env.resolve (__id.c_str (), x);
                           }
 
                         if (! m)

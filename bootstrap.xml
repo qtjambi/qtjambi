@@ -1,0 +1,7 @@
+<project default="bootstrap" basedir=".">
+    <target name="bootstrap">
+        <javac srcdir=".">
+            <include name="com/trolltech/tools/ant/*.java"/>
+	</javac>
+    </target>
+</project>

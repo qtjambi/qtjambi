@@ -109,6 +109,9 @@ public class CollidingMice extends QWidget {
             tail.cubicTo(-5, 32, -5, 42, 0, 35);
         }
 
+        private QRectF pupilRect1 = new QRectF(-8 + mouseEyeDirection, -17, 4, 4);
+        private QRectF pupilRect2 = new QRectF(4 + mouseEyeDirection, -17, 4, 4);
+
         @Override
         public void paint(QPainter painter,
                           QStyleOptionGraphicsItem styleOptionGraphicsItem,
@@ -127,11 +130,11 @@ public class CollidingMice extends QWidget {
             // Nose
             brush.setColor(QColor.black);
             painter.setBrush(brush);
-            painter.drawEllipse(new QRectF(-2, -22, 4, 4));
+            painter.drawEllipse(-2, -22, 4, 4);
 
             // Pupils
-            painter.drawEllipse(new QRectF(-8.0 + mouseEyeDirection, -17, 4, 4));
-            painter.drawEllipse(new QRectF(4.0 + mouseEyeDirection, -17, 4, 4));
+            painter.drawEllipse(pupilRect1);
+            painter.drawEllipse(pupilRect2);
 
             // Ears
             if (scene().collidingItems(this).isEmpty())

@@ -32,7 +32,7 @@
     </target>
 
     <target name="qmake.generator">
-	<qmake config="release"/>
+	<qmake config="release" dir="generator"/>
     </target>
 
     <target name="compile.generator" depends="qmake.generator">
@@ -48,7 +48,6 @@
         <generator dir="generator_example"
 	           header="global.h"
                    typesystem="typesystem_generatorexample.txt" />
-	<make dir="generator_example" target="clean" />
         <qmake recursive="true" config="${config}" dir="generator_example" />
 	<make dir="generator_example" />
     </target>
@@ -75,6 +74,7 @@
             <exclude name="com/trolltech/tools/generator/**/**.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java" />
 	    <exclude name="com/trolltech/extensions/**/**.java" />
+	    <exclude name="com/trolltech/autotests/**/**.java" />
         </javac>
     </target>
 
@@ -95,6 +95,6 @@
         </jar>
     </target>
 
-    <target name="qtjambi" depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, deploy.jar" />
+    <target name="qtjambi" depends="prepare, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, generator.example, compile.java, deploy.jar" />
 
 </project>

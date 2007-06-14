@@ -14,6 +14,7 @@
 #ifndef JAMBIPROPERTYSHEET_H
 #define JAMBIPROPERTYSHEET_H
 
+#include <QtCore/QVariant>
 #include <QtDesigner/QtDesigner>
 
 class JambiLanguagePlugin;
