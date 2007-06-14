@@ -32,7 +32,7 @@ Building the Qt package
  - Configure using:
     Mac OS X: ./configure -no-qt3support -universal -release -no-rpath -fast -shared -no-framework -prefix $(pwd)
     Windows: configure -no-qt3support -release -fast -shared -no-dsp -no-vcproj
-    Linux: ./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared
+    Linux: ./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -no-xinerama -shared
 
  - Qt 4.1.3 is missing some symbols when compiled without Qt 3 support. To
    fix this, copy qprinter.cpp from Qt 4.1 depot into the Qt 4.1.3 package.
