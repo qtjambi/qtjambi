@@ -29,7 +29,8 @@ javac com\trolltech\autotests\*.java com\trolltech\autotests\generated\*.java
 
 REM generator example
 cd generator_example
-..\generator\release\generator global.h typesystem_generatorexample.txt
+..\generator\release\generator global.h typesystem_generatorexample.txt || ..\generator\debug\generator global.h typesystem_generatorexample.txt
+
 qmake
 %MAKE_TOOL% clean
 %MAKE_TOOL%
