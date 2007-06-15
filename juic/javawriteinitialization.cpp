@@ -424,17 +424,23 @@ void WriteInitialization::acceptSpacer(DomSpacer *node)
 
     bool isVspacer = orientation.endsWith(QLatin1String("Vertical"));
 
+    if (sizeType.contains(QLatin1String("::"))) {
+        QStringList lst = sizeType.split(QLatin1String("::"));
+        if (lst.size() == 2 && lst.at(0) == QLatin1String("QSizePolicy")) {
+            sizeType = QLatin1String("com.trolltech.qt.gui.QSizePolicy.Policy.") + lst.at(1);
+        } else {
+            fprintf(stderr, "Malformed enum value %s, C++ syntax not allowed\n",
+                    qPrintable(sizeType));
+            return;
+        }
+    }
+
     output << option.indent << varName << " = new QSpacerItem(";
 
     if (sizeHint)
         output << sizeHint->elementWidth() << ", " << sizeHint->elementHeight() << ", ";
 
     QString minimum = QLatin1String("com.trolltech.qt.gui.QSizePolicy.Policy.Minimum");
-
-    if (minimum.contains(QLatin1String("::")))
-        fprintf(stderr, "Malformed enum value %s, C++ syntax not allowed\n", qPrintable(minimum));
-    if (sizeType.contains(QLatin1String("::")))
-        fprintf(stderr, "Malformed enum value %s, C++ syntax not allowed\n", qPrintable(sizeType));
 
     if (isVspacer)
         output << minimum << ", " << sizeType << ");\n";
