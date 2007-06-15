@@ -42,7 +42,7 @@ public class LauncherOSX {
 	if (!System.getProperty("os.name").toLowerCase().contains("mac os x")) {
 	    Launcher.main(args);
 	    return;
-	} 
+	}
 
         Utilities.loadSystemLibraries();
 
@@ -76,7 +76,8 @@ public class LauncherOSX {
 
         StringBuffer cmd = new StringBuffer();
 
-        cmd.append("java");
+        String javaLocation = System.getProperty("java.home") + "/bin/";
+        cmd.append(javaLocation + "java");
 
         // classpath...
         cmd.append(" -cp " + tmp + "/qtjambi.jar:" + tmp + "/qtjambi-launcher.jar");
