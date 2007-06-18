@@ -36,7 +36,7 @@ public class Util {
         StringTokenizer tokenizer = new StringTokenizer(searchPath, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
             File exec = new File(tokenizer.nextToken() + File.separator + name);
-            if (exec.canExecute())
+            if (exec.isFile())
                 return exec;
         }
         throw new BuildException("Could not find executable: " + name);
