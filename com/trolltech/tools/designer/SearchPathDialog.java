@@ -140,10 +140,8 @@ public class SearchPathDialog extends QDialog {
 
     public void removeCurrent() {
         QListWidgetItem item = list.currentItem();
-        if (item != null) {
-            list.setCurrentItem(null);
-            item.dispose();
-        }
+        if (item != null)
+            list.takeItem(list.row(item));
     }
 
     private QPixmap pixmapForPath(String p) {
@@ -189,5 +187,7 @@ public class SearchPathDialog extends QDialog {
         spd.setPaths(list);
 
         spd.exec();
+
+        QApplication.quit();
     }
 }
