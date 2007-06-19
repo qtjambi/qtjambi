@@ -58,13 +58,10 @@
     </target>
 
     <target name="generator.autotests"
-            description="Run the generator on the autotests, qmake it, and compile it.">
+            description="Run the generator on the autotests.">
 	<generator dir="autotestlib"
 	           header="global.h"
                    typesystem="build.txt" />
-        <qmake dir="autotestlib" recursive="true" config="${config}"/>
-	<make dir="autotestlib" target="clean" />
-	<make dir="autotestlib" silent="true"/>
     </target>
 
     <target name="generator.example" 
@@ -106,14 +103,17 @@
     </target>
 
     <target name="compile.autotests" 
-            description="Compile autotests">
+            description="Compile Java and c++ files for autotests.">
+        <qmake dir="autotestlib" recursive="true" config="${config}"/>
+	<make dir="autotestlib" target="clean" />
+	<make dir="autotestlib" silent="true"/>
         <javac srcdir="${sourceDir}" destdir="${outputDir}" >
             <include name="com/trolltech/autotests/**.java" />
         </javac>
     </target>
 
     <target name="deploy.jar"
-            description="Make a jar file 'qtjambi.jar' that you can include in your project">
+            description="Make a jar file 'qtjambi.jar' that you can include in your project.">
         <jar destfile="qtjambi.jar">
             <manifest>
                 <attribute name="Built-By" value="${USER} - ${TODAY}"/>
@@ -131,7 +131,7 @@
     </target>
 
     <target name="test"
-            description="Runn the autotests that comes with Qt Jambi">
+            description="Runn the autotests that comes with Qt Jambi.">
         <junit printsummary="yes" haltonfailure="true">
             <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/> 
 	    <jvmarg value="-Dcom.trolltech.qt.debug"/>
@@ -149,6 +149,6 @@
         </junit>
     </target>
 
-    <target name="qtjambi" depends="prepare, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, generator.example, generator.autotests, compile.autotests, compile.java, deploy.jar" />
+    <target name="qtjambi" depends="prepare, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, generator.example, generator.autotests, compile.autotests, deploy.jar" />
 
 </project>
