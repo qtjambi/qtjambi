@@ -29,8 +29,8 @@
     of our calculator. QWidget does not support dock widgets;
     QMainWindow does.
 
-    \quotefromfile Calculator.java
-    \skipto class Calculator
+    \quotefromfile AdvancedCalculator.java
+    \skipto class AdvancedCalculator
     \printuntil functions
     \printuntil Function>();
 
@@ -50,7 +50,7 @@
     that the user can choose from, and the we use the QInputDialog
     class to retrieve the user's preferred alternative:
 
-    \skipto public Calculator()
+    \skipto public AdvancedCalculator()
     \printuntil Dockable
     \dots 8
     \skipto QInputDialog
