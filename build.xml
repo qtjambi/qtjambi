@@ -27,6 +27,7 @@
     <target name="clean"
             description="Clean everything.">
         <delete dir="${outputDir}" />
+        <delete dir="${jambiLib}" />
     </target>
 
     <target name="prepare" depends="clean"
@@ -64,13 +65,13 @@
                    typesystem="build.txt" />
     </target>
 
-    <target name="generator.example" 
+    <target name="generator.generator-example" 
             description="Run the generator on the generator example, qmake it, and compile it.">
         <generator dir="generator_example"
 	           header="global.h"
                    typesystem="typesystem_generatorexample.txt" />
         <qmake recursive="true" config="${config}" dir="generator_example" />
-	<make dir="generator_example" />
+
     </target>
 
     <target name="compile.qtjambi" 
@@ -99,6 +100,7 @@
             <exclude name="com/trolltech/demos/HelloGL.java" />
 	    <exclude name="com/trolltech/extensions/**/**.java" />
 	    <exclude name="com/trolltech/autotests/**/**.java" />
+            <exclude name="com/trolltech/examples/GeneratorExample.java" />
         </javac>
     </target>
 
@@ -109,6 +111,14 @@
 	<make dir="autotestlib" silent="true"/>
         <javac srcdir="${sourceDir}" destdir="${outputDir}" >
             <include name="com/trolltech/autotests/**.java" />
+        </javac>
+    </target>
+
+    <target name="compile.generator-example"
+            description="Compile Qt Jambi generator-example.">
+	<make dir="generator_example" />
+        <javac srcdir="${sourceDir}" destdir="${outputDir}" >
+            <include name="com/trolltech/examples/GeneratorExample.java" />
         </javac>
     </target>
 
@@ -149,6 +159,16 @@
         </junit>
     </target>
 
-    <target name="qtjambi" depends="prepare, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, generator.example, generator.autotests, compile.autotests, deploy.jar" />
+    <target name="generator-example"
+            description="Generate code for generator-example, and compile it."
+            depends="generator.generator-example, compile.generator-example" />
+
+    <target name="autotests"
+            description="Generate code for autotests, and compile it."
+            depends="generator.autotests, compile.autotests" />	   
+
+    <target name="qtjambi"
+            description="Make QT Jambi."
+            depends="prepare, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, deploy.jar" />
 
 </project>
