@@ -17,34 +17,48 @@
     <property name="qtLib"    value="${qt}/lib" />
     <property name="config"    value="debug" />
 
-    <target name="clean">
+    <target name="help"
+            description="Provide detailed help">
+        <echo>To get a description of all tasks, run: ant -projecthelp</echo>
+	<echo/>
+	<echo>To compile everything, just run ant</echo>
+    </target>
+
+    <target name="clean"
+            description="Clean everything.">
         <delete dir="${outputDir}" />
     </target>
 
-    <target name="prepare" depends="clean">
+    <target name="prepare" depends="clean"
+            description="Clean and create folders needed for a full rebuild.">
         <mkdir dir="${outputDir}" />
         <mkdir dir="${outputDir}/com/trolltech/autotests" />
     </target>
 
-    <target name="qmake.qtjambi">
+    <target name="qmake.qtjambi"
+            description="Run qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
 	<qmake recursive="true" config="${config} sanitycheck"/>
     </target>
 
-    <target name="qmake.generator">
+    <target name="qmake.generator"
+            description="Run qmake on the generator.">
 	<qmake config="release" dir="generator"/>
     </target>
 
-    <target name="compile.generator" depends="qmake.generator">
+    <target name="compile.generator" depends="qmake.generator"
+            description="Compile the Qt Jambi generator.">
         <make dir="generator" target="clean" />
         <make dir="generator" />
     </target>
 
-    <target name="generator.qtjambi" >
+    <target name="generator.qtjambi" 
+            description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
         <generator dir="generator" />
     </target>
 
-    <target name="generator.autotests">
+    <target name="generator.autotests"
+            description="Run the generator on the autotests, qmake it, and compile it.">
 	<generator dir="autotestlib"
 	           header="global.h"
                    typesystem="build.txt" />
@@ -53,7 +67,8 @@
 	<make dir="autotestlib" silent="true"/>
     </target>
 
-    <target name="generator.example" >
+    <target name="generator.example" 
+            description="Run the generator on the generator example, qmake it, and compile it.">
         <generator dir="generator_example"
 	           header="global.h"
                    typesystem="typesystem_generatorexample.txt" />
@@ -61,11 +76,13 @@
 	<make dir="generator_example" />
     </target>
 
-    <target name="compile.qtjambi" >
+    <target name="compile.qtjambi" 
+            description="Compile the c++ QT Jambi bindings">
 	<make />
     </target>
 
-    <target name="juic">
+    <target name="juic"
+            description="Generates Java source files out of JUI files, created by designer.">
         <juic message="Running Juic for all it is worth"
 	      outputDir="${sourceDir}"
 	      xmlConfigFile=""
@@ -77,7 +94,8 @@
         </juic>
     </target>
 
-    <target name="compile.java" depends="juic">
+    <target name="compile.java" depends="juic"
+            description="Compile the Qt Jambi's core java files.">
         <javac srcdir="${sourceDir}" destdir="${outputDir}">
             <include name="com/**/**.java"/>
             <exclude name="com/trolltech/tools/generator/**/**.java"/>
@@ -87,13 +105,15 @@
         </javac>
     </target>
 
-    <target name="compile.autotests" >
+    <target name="compile.autotests" 
+            description="Compile autotests">
         <javac srcdir="${sourceDir}" destdir="${outputDir}" >
             <include name="com/trolltech/autotests/**.java" />
         </javac>
     </target>
 
-    <target name="deploy.jar" description="JARs the Task">
+    <target name="deploy.jar"
+            description="Make a jar file 'qtjambi.jar' that you can include in your project">
         <jar destfile="qtjambi.jar">
             <manifest>
                 <attribute name="Built-By" value="${USER} - ${TODAY}"/>
@@ -110,7 +130,8 @@
         </jar>
     </target>
 
-    <target name="test">
+    <target name="test"
+            description="Runn the autotests that comes with Qt Jambi">
         <junit printsummary="yes" haltonfailure="true">
             <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/> 
 	    <jvmarg value="-Dcom.trolltech.qt.debug"/>
