@@ -28,7 +28,7 @@ public class Screenshot extends QWidget {
         QApplication.exec();
     }
 
-    QPixmap originalPixmap;
+    volatile QPixmap originalPixmap;
 
     QLabel screenshotLabel;
     QGroupBox optionsGroupBox;
@@ -102,9 +102,7 @@ public class Screenshot extends QWidget {
         if (delaySpinBox.value() != 0)
             QApplication.beep();
 
-        if(originalPixmap != null) {
-            originalPixmap.dispose();
-        }
+        originalPixmap = null;
         
         originalPixmap = QPixmap.grabWindow(
                 QApplication.desktop().winId());
