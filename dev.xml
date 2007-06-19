@@ -1,8 +1,9 @@
 <project default="all" basedir=".">
 
-    <taskdef name="juic"  classname="com.trolltech.tools.ant.JuicTask"/>
-    <taskdef name="qmake" classname="com.trolltech.tools.ant.QMakeTask"/>
-    <taskdef name="make" classname="com.trolltech.tools.ant.MakeTask"/>
+    <taskdef name="juic"      classpath="." classname="com.trolltech.tools.ant.JuicTask"/>
+    <taskdef name="qmake"     classpath="." classname="com.trolltech.tools.ant.QMakeTask"/>
+    <taskdef name="make"      classpath="." classname="com.trolltech.tools.ant.MakeTask"/>
+    <taskdef name="generator" classpath="." classname="com.trolltech.tools.ant.GeneratorTask"/>
 
     <property environment="env"/> 
     <property name="MailLogger.mailhost" value="smtp.trolltech.com" />
@@ -70,7 +71,7 @@
         <qmake dir="generator" config="release"/>
         <make dir="generator" target="clean" />
         <make dir="generator" />
-        <exec executable="${basedir}/generator/generator" dir="generator"/>
+	<generator dir="generator" />
     </target>
 
     <target name="compile.qtjambi" depends="prepare">
@@ -90,21 +91,19 @@
     </target>
 
     <target name="generator.autotests">
-        <exec executable="${basedir}/generator/generator" dir="autotestlib">
-            <arg line="global.h build.txt" />
-        </exec>
-
-        <qmake dir="qutotestlib" recursive="true" config="${config}"/>
+	<generator dir="autotestlib"
+	           header="global.h"
+                   typesystem="build.txt" />
+        <qmake dir="autotestlib" recursive="true" config="${config}"/>
 	<make dir="autotestlib" target="clean" />
 	<make dir="autotestlib" silent="true"/>
     </target>
 
     <target name="generator.example" >
-        <exec executable="${basedir}/generator/generator" dir="generator_example">
-            <arg line="global.h typesystem_generatorexample.txt" />
-        </exec>
-	<make dir="generator_example" target="clean" />
-        <qmake recursive="true" config="${config}"/>
+        <generator dir="generator_example"
+	           header="global.h"
+                   typesystem="typesystem_generatorexample.txt" />
+        <qmake recursive="true" config="${config}" dir="generator_example" />
 	<make dir="generator_example" />
     </target>
 
