@@ -1,7 +1,14 @@
 <project default="bootstrap" basedir=".">
     <target name="bootstrap">
-        <javac srcdir=".">
+        <mkdir dir="anttask" />
+    
+        <javac srcdir="." destdir="anttask">
             <include name="com/trolltech/tools/ant/*.java"/>
 	</javac>
+    
+        <jar destfile="anttask.jar">
+            <fileset dir="anttask" />
+        </jar>
+        <delete dir="anttask" />
     </target>
 </project>
