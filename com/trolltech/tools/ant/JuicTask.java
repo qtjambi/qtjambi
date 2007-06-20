@@ -1,11 +1,10 @@
 package com.trolltech.tools.ant;
 
-import java.io.File;
-import java.util.StringTokenizer;
+import org.apache.tools.ant.*;
+import org.apache.tools.ant.taskdefs.*;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.taskdefs.MatchingTask;
+import java.io.*;
+import java.util.*;
 
 public class JuicTask extends MatchingTask {
     private String msg = "";
@@ -15,6 +14,13 @@ public class JuicTask extends MatchingTask {
     private String trFunction = "";
     private String classNamePrefix = "";
     private boolean alwaysUpdate = false;
+
+    public String executableName() {
+        switch (Util.OS()) {
+            case WINDOWS: return "juic.exe";
+            default: return "juic";
+        }
+    }
 
     public void execute() throws BuildException {
         System.out.println(msg);
@@ -31,29 +37,31 @@ public class JuicTask extends MatchingTask {
         if (alwaysUpdate)
             arguments += " -a ";
 
+        String comandPart = Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath() + arguments;
+
         StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
             File dir = new File(tokenizer.nextToken());
-            String comandPart = Util.LOCATE_EXEC("juic", "./bin", null).getAbsolutePath() + arguments;
 
+            try {
             DirectoryScanner ds = getDirectoryScanner(dir);
             String[] files = ds.getIncludedFiles();
-            for (int i = 0; i < files.length; i++) {
-                String file = files[i];
-                String packageString = file.substring(0, file.lastIndexOf(File.separator)).replaceAll(File.separator, ".");
-                String comand = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + File.separator + file;
+                for (String file : files) {
 
-                try {
-                    Process process = Runtime.getRuntime().exec(comand);
-                    int returnValue = process.waitFor();
-                    if (returnValue == 0)
-                        System.out.println(file);
-                    else
-                        throw new BuildException("juic exited with error: " + returnValue);
+                    file = file.replaceAll("\\\\", "/");
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    String packageString = file.substring(0, file.lastIndexOf('/')).replaceAll("/", ".");
+                    String comand = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + '/' + file;
+
+                    try {
+                        Process process = Runtime.getRuntime().exec(comand);
+                        Util.redirectOutput(process, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
     }

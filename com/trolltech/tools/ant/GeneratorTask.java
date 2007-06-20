@@ -1,9 +1,8 @@
 package com.trolltech.tools.ant;
 
-import java.io.*;
+import org.apache.tools.ant.*;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
+import java.io.*;
 
 public class GeneratorTask extends Task{
     private String msg = "";
@@ -17,8 +16,7 @@ public class GeneratorTask extends Task{
         String s = File.separator;
         switch(Util.OS()){
         case WINDOWS:
-            return "." + s + "generator" + s + "release";
-        
+            return "generator\\release;generator\\debug";
         case LINUX:
         case MAC:
             return "." + s + "generator";
@@ -26,31 +24,25 @@ public class GeneratorTask extends Task{
 
         return "";
     }
+
+    private String generatorExecutable() {
+        switch (Util.OS()) { 
+            case WINDOWS: return "generator.exe";
+            default: return "generator";
+        }
+    }
     
     public void execute() throws BuildException {
         System.out.println(msg);
         String arguments = " " + header + " " + typesystem;
         
-        String comand = Util.LOCATE_EXEC("generator", searchPath(), null).getAbsolutePath() + arguments;
+        String comand = Util.LOCATE_EXEC(generatorExecutable(), searchPath(), null).getAbsolutePath() + arguments;
         
         System.out.println(dir + "  " + comand);
         try {
             Process process = Runtime.getRuntime().exec(comand, null, new File(dir) );
-            
-            if(!silent){
-                BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line = null;
-                while ( (line = br.readLine()) != null)
-                    System.out.println(line);
-            }
-            
-            int returnValue = process.waitFor();
-            if (returnValue == 0)
-                System.out.println("OK");
-            else {
-                throw new BuildException("Qt Jambi generator, exited with error: " + returnValue);
-            }
-
+            Util.redirectOutput(process, silent);
+            System.out.println("OK");
         } catch (Exception e) {
             e.printStackTrace();
         }

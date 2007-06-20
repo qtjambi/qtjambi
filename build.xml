@@ -87,19 +87,24 @@
               trFunction=""
               classNamePrefix=""
               alwaysUpdate="true"
-	      classpath="." >
+	      classpath=".">
 	     <include name="com/**/**.jui"/>
         </juic>
     </target>
 
     <target name="compile.java" depends="juic"
             description="Compile the Qt Jambi's core java files.">
-        <javac srcdir="${sourceDir}" destdir="${outputDir}">
+        <javac srcdir="${sourceDir}" 
+               destdir="${outputDir}"
+               memoryMaximumSize="1024m"
+               fork="true">
             <include name="com/**/**.java"/>
             <exclude name="com/trolltech/tools/generator/**/**.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java" />
 	    <exclude name="com/trolltech/extensions/**/**.java" />
 	    <exclude name="com/trolltech/autotests/**/**.java" />
+	    <exclude name="com/trolltech/manualtests/**/**.java" />
+	    <exclude name="com/trolltech/tests/**/**.java" />
             <exclude name="com/trolltech/examples/GeneratorExample.java" />
         </javac>
     </target>

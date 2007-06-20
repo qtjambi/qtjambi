@@ -1,9 +1,8 @@
 package com.trolltech.tools.ant;
 
-import java.io.*;
+import org.apache.tools.ant.*;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
+import java.io.*;
 
 public class MakeTask extends Task {
     private String msg = "";
@@ -24,27 +23,16 @@ public class MakeTask extends Task {
 
         String arguments = "";
         
-        if (silent)
+        if (silent && Util.OS() != Util.OS.WINDOWS)
             arguments += " -s";
 
         String comand = compilerName() + arguments + " " + target;
         
         System.out.println(dir + "  " + comand);
         try {
-            Process process = Runtime.getRuntime().exec(comand, null, new File(dir) );
-            
-            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = null;
-            while ( (line = br.readLine()) != null)
-                System.out.println(line);
-            
-            int returnValue = process.waitFor();
-            if (returnValue == 0)
-                System.out.println("OK");
-            else {
-                throw new BuildException("make exited with error: " + returnValue);
-            }
-
+            Process process = Runtime.getRuntime().exec(comand, null, new File(dir));
+            Util.redirectOutput(process, silent);
+            System.out.println("OK");
         } catch (Exception e) {
             e.printStackTrace();
         }

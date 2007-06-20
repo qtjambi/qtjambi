@@ -1,10 +1,9 @@
 package com.trolltech.tools.ant;
 
-import java.io.*;
-import java.util.StringTokenizer;
+import org.apache.tools.ant.*;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
+import java.io.*;
+import java.util.*;
 
 public class QMakeTask extends Task {
     private String msg = "";
@@ -29,18 +28,8 @@ public class QMakeTask extends Task {
         System.out.println(comand);
         try {
             Process process = Runtime.getRuntime().exec(comand, null, new File(dir));
-            
-            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = null;
-            while ( (line = br.readLine()) != null)
-                System.out.println(line);
-            
-            int returnValue = process.waitFor();
-            if (returnValue == 0)
-                System.out.println("OK");
-            else {
-                throw new BuildException("qmake exited with error: " + returnValue);
-            }
+            Util.redirectOutput(process, true);
+            System.out.println("OK");
 
         } catch (Exception e) {
             e.printStackTrace();
