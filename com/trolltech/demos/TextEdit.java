@@ -113,37 +113,37 @@ public class TextEdit extends QMainWindow {
 
     private void setupFileActions() {
         QToolBar tb = new QToolBar(this);
-        tb.setWindowTitle("File Actions");
+        tb.setWindowTitle(tr("File Actions"));
         addToolBar(tb);
 
-        QMenu menu = new QMenu("&File", this);
+        QMenu menu = new QMenu(tr("&File"), this);
         menuBar().addMenu(menu);
 
-        action("&New", "filenew", StandardKey.New, "fileNew()", menu, null);
-        action("Open", "fileopen", StandardKey.Open, "fileOpen()", menu, tb);
+        action(tr("&New"), "filenew", StandardKey.New, "fileNew()", menu, null);
+        action(tr("Open"), "fileopen", StandardKey.Open, "fileOpen()", menu, tb);
         menu.addSeparator();
-        actionSave = action("&Save", "filesave", StandardKey.Save, "fileSave()", menu, tb);
-        action("Save &As...", null, null, "fileSaveAs()", menu, null);
+        actionSave = action(tr("&Save"), "filesave", StandardKey.Save, "fileSave()", menu, tb);
+        action(tr("Save &As..."), null, null, "fileSaveAs()", menu, null);
         menu.addSeparator();
-        action("&Print", "fileprint", StandardKey.Print, "filePrint()", menu, tb);
-        action("&Exprt PDF...", "exportpdf", null, "filePrintPdf()", menu, tb);
+        action(tr("&Print"), "fileprint", StandardKey.Print, "filePrint()", menu, tb);
+        action(tr("&Exprt PDF..."), "exportpdf", null, "filePrintPdf()", menu, tb);
         menu.addSeparator();
-        action("&Quit", null, "Ctrl+Q", "close()", menu, null);
+        action(tr("&Quit"), null, "Ctrl+Q", "close()", menu, null);
     }
 
     private void setupEditActions() {
         QToolBar b = new QToolBar(this);
-        b.setWindowTitle("Edit Actions");
+        b.setWindowTitle(tr("Edit Actions"));
         addToolBar(b);
 
-        QMenu m = new QMenu("&Edit", this);
+        QMenu m = new QMenu(tr("&Edit"), this);
         menuBar().addMenu(m);
 
-        actionUndo = action("&Undo", "editundo", StandardKey.Undo, null, m, b);
-        actionRedo = action("&Redo", "editredo", StandardKey.Redo, null, m, b);
-        actionCut = action("Cu&t", "editcut", StandardKey.Cut, null, m, b);
-        actionCopy = action("&Copy", "editcopy", StandardKey.Copy, null, m, b);
-        actionPaste = action("&Paste", "editpaste", StandardKey.Paste, null, m, b);
+        actionUndo = action(tr("&Undo"), "editundo", StandardKey.Undo, null, m, b);
+        actionRedo = action(tr("&Redo"), "editredo", StandardKey.Redo, null, m, b);
+        actionCut = action(tr("Cu&t"), "editcut", StandardKey.Cut, null, m, b);
+        actionCopy = action(tr("&Copy"), "editcopy", StandardKey.Copy, null, m, b);
+        actionPaste = action(tr("&Paste"), "editpaste", StandardKey.Paste, null, m, b);
 
         actionPaste.setEnabled(QApplication.clipboard().text().length() > 0);
     }
@@ -166,15 +166,15 @@ public class TextEdit extends QMainWindow {
 
     private void setupTextActions() {
         QToolBar b = new QToolBar(this);
-        b.setWindowTitle("Format Actions");
+        b.setWindowTitle(tr("Format Actions"));
         addToolBar(b);
 
-        QMenu m = new QMenu("F&ormat", this);
+        QMenu m = new QMenu(tr("F&ormat"), this);
         menuBar().addMenu(m);
 
-        actionTextBold = action("&Bold", "textbold", "Ctrl+B", "textBold()", m, b);
-        actionTextItalic = action("&Italic", "textitalic", "Ctrl+I", "textItalic()", m, b);
-        actionTextUnderline = action("&Underline", "textunder", "Ctrl+U", "textUnderline()", m, b);
+        actionTextBold = action(tr("&Bold"), "textbold", "Ctrl+B", "textBold()", m, b);
+        actionTextItalic = action(tr("&Italic"), "textitalic", "Ctrl+I", "textItalic()", m, b);
+        actionTextUnderline = action(tr("&Underline"), "textunder", "Ctrl+U", "textUnderline()", m, b);
         m.addSeparator();
 
         updateActionVisuals(actionTextBold, true, false, false, true);
@@ -184,10 +184,10 @@ public class TextEdit extends QMainWindow {
         QActionGroup grp = new QActionGroup(this);
         grp.triggered.connect(this, "textAlign(QAction)");
 
-        actionAlignLeft = actionGroupEntry("&Left", "textleft", "Ctrl+L", grp);
-        actionAlignCenter = actionGroupEntry("C&enter", "textcenter", "Ctrl+E", grp);
-        actionAlignRight = actionGroupEntry("&Right", "textright", "Ctrl+R", grp);
-        actionAlignJustify = actionGroupEntry("&Justify", "textjustify", "Ctrl+J", grp);
+        actionAlignLeft = actionGroupEntry(tr("&Left"), "textleft", "Ctrl+L", grp);
+        actionAlignCenter = actionGroupEntry(tr("C&enter"), "textcenter", "Ctrl+E", grp);
+        actionAlignRight = actionGroupEntry(tr("&Right"), "textright", "Ctrl+R", grp);
+        actionAlignJustify = actionGroupEntry(tr("&Justify"), "textjustify", "Ctrl+J", grp);
         b.addActions(grp.actions());
         m.addActions(grp.actions());
 
@@ -202,19 +202,19 @@ public class TextEdit extends QMainWindow {
 
         b = new QToolBar(this);
         b.setAllowedAreas(new Qt.ToolBarAreas(Qt.ToolBarArea.TopToolBarArea, Qt.ToolBarArea.BottomToolBarArea));
-        b.setWindowTitle("Format Actions");
+        b.setWindowTitle(tr("Format Actions"));
         addToolBarBreak(Qt.ToolBarArea.TopToolBarArea);
         addToolBar(b);
 
         comboStyle = new QComboBox(b);
         b.addWidget(comboStyle);
-        comboStyle.addItem("Standard", null);
-        comboStyle.addItem("Bullet List (Disc)", null);
-        comboStyle.addItem("Bullet List (Circle)", null);
-        comboStyle.addItem("Bullet List (Square)", null);
-        comboStyle.addItem("Ordered List (Decimal)", null);
-        comboStyle.addItem("Ordered List (Alpha lower)", null);
-        comboStyle.addItem("Ordered List (Alpha upper)", null);
+        comboStyle.addItem(tr("Standard"), null);
+        comboStyle.addItem(tr("Bullet List (Disc)"), null);
+        comboStyle.addItem(tr("Bullet List (Circle)"), null);
+        comboStyle.addItem(tr("Bullet List (Square)"), null);
+        comboStyle.addItem(tr("Ordered List (Decimal)"), null);
+        comboStyle.addItem(tr("Ordered List (Alpha lower)"), null);
+        comboStyle.addItem(tr("Ordered List (Alpha upper)"), null);
         comboStyle.activatedIndex.connect(this, "textStyle(int)");
 
         comboFont = new QComboBox(b);
@@ -267,8 +267,8 @@ public class TextEdit extends QMainWindow {
         if (!textEdit.document().isModified())
             return true;
         QMessageBox.StandardButton ret = QMessageBox.warning(this,
-                                      "Application",
-                                      "The document has been modified.\nSave your changes?",
+                                      tr("Application"),
+                                      tr("The document has been modified.\nSave your changes?"),
                                       new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Discard, QMessageBox.StandardButton.Cancel));
         if (ret == QMessageBox.StandardButton.Yes)
             return fileSave();
@@ -299,8 +299,8 @@ public class TextEdit extends QMainWindow {
     }
 
     public void fileOpen() {
-        String fn = QFileDialog.getOpenFileName(this, "Open File...", "",
-                new QFileDialog.Filter("HTML-Files (*.htm *.html);;All Files (*)"));
+        String fn = QFileDialog.getOpenFileName(this, tr("Open File..."), "",
+                new QFileDialog.Filter(tr("HTML-Files (*.htm *.html);;All Files (*)")));
         if (fn.length() != 0)
             load(fn);
     }
@@ -323,8 +323,8 @@ public class TextEdit extends QMainWindow {
     }
 
     public boolean fileSaveAs() {
-        String fn = QFileDialog.getSaveFileName(this, "Save as...", "",
-                new QFileDialog.Filter("HTML-Files (*.htm *.html);;All Files (*)"));
+        String fn = QFileDialog.getSaveFileName(this, tr("Save as..."), "",
+                new QFileDialog.Filter(tr("HTML-Files (*.htm *.html);;All Files (*)")));
         if (fn.length() == 0)
             return false;
         setCurrentFileName(fn);
@@ -341,7 +341,7 @@ public class TextEdit extends QMainWindow {
     }
 
     public void filePrintPdf() {
-        String fileName = QFileDialog.getSaveFileName(this, "Export PDF", "",
+        String fileName = QFileDialog.getSaveFileName(this, tr("Export PDF"), "",
                 new QFileDialog.Filter("*.pdf"));
         if (fileName.length() == 0)
             return;
@@ -459,8 +459,8 @@ public class TextEdit extends QMainWindow {
     public void fontChanged(QFont f) {
         comboFont.setCurrentIndex(comboFont.findText(f.family(),
                 new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
-        comboSize.setCurrentIndex(comboSize.findText(new Integer(f.pointSize())
-                .toString(), new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
+        comboSize.setCurrentIndex(comboSize.findText(Integer.toString(f.pointSize()),
+                new Qt.MatchFlags(Qt.MatchFlag.MatchExactly, Qt.MatchFlag.MatchCaseSensitive)));
         actionTextBold.setChecked(f.bold());
         actionTextItalic.setChecked(f.italic());
         actionTextUnderline.setChecked(f.underline());
