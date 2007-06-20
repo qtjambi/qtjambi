@@ -1,14 +1,14 @@
 <project default="bootstrap" basedir=".">
     <target name="bootstrap">
-        <mkdir dir="anttask" />
+        <mkdir dir="ant-qtjambi" />
     
-        <javac srcdir="." destdir="anttask">
+        <javac srcdir="." destdir="ant-qtjambi">
             <include name="com/trolltech/tools/ant/*.java"/>
 	</javac>
     
-        <jar destfile="anttask.jar">
-            <fileset dir="anttask" />
+        <jar destfile="ant-qtjambi.jar">
+            <fileset dir="ant-qtjambi" />
         </jar>
-        <delete dir="anttask" />
+        <delete dir="ant-qtjambi" />
     </target>
 </project>
