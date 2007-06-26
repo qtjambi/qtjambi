@@ -1,0 +1,85 @@
+package com.trolltech.tests;
+
+import com.trolltech.qt.gui.*;
+import com.trolltech.qt.core.*;
+import com.trolltech.extensions.awt.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.*;
+
+class Renderer {
+    public static void render(Graphics2D g) {
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g.setColor(Color.red);
+        g.fillRect(0, 0, 100, 100);
+
+        g.setColor(Color.blue);
+        g.drawRect(50, 50, 75, 50);
+
+        g.fillOval(100, 200, 30, 30);
+
+        g.setColor(Color.green);
+        g.drawLine(200, 100, 300, 100);
+        g.drawString("Hello Dolly", 200, 100);
+
+        g.setPaint(new GradientPaint(100, 100, Color.blue, 200, 200, new Color(255, 255, 255, 63)));
+
+        GeneralPath path = new GeneralPath();
+        path.moveTo(100, 100);
+        path.curveTo(200, 100, 150, 150, 200, 200);
+        path.lineTo(100, 100);
+        g.fill(path);
+    }
+}
+
+public class GraphicsTest extends QWidget {
+
+    public static class Component extends JComponent {
+        public void paintComponent(Graphics g) {
+            Renderer.render((Graphics2D) g);
+        }
+
+        public Dimension getPreferredSize() {
+            return new Dimension(500, 400);
+        }
+    }
+
+
+    public GraphicsTest() {
+        this(null);
+    }
+
+    public GraphicsTest(QWidget parent) {
+        super(parent);
+    }
+
+    protected void paintEvent(QPaintEvent e) {
+        QPainter p = new QPainter(this);
+        com.trolltech.extensions.awt.QPainterGraphics g = new QPainterGraphics(p);
+
+        System.out.println();
+        Renderer.render(g);
+    }
+
+    public QSize sizeHint() {
+        return new QSize(500, 400);
+    }
+
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+
+        GraphicsTest w = new GraphicsTest();
+        w.show();
+
+        JFrame f = new JFrame();
+        Component comp = new Component();
+
+        f.getContentPane().add(comp);
+        f.pack();
+        f.setVisible(true);
+
+        QApplication.exec();
+    }
+}
