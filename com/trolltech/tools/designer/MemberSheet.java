@@ -69,7 +69,7 @@ public class MemberSheet extends JambiMemberSheet {
     private class SlotEntry implements Entry {
         Method method;
 
-        public String group() { return method.getClass().getName(); }
+        public String group() { return method.getDeclaringClass().getName(); }
         public String name() { return method.getName(); }
         public String signature() {
             StringBuilder s = new StringBuilder();
@@ -100,6 +100,9 @@ public class MemberSheet extends JambiMemberSheet {
     }
 
     public String declaredInClass(int i) {
+        if (i >= entries.size())
+            return null;
+
         return entries.get(i).group();
     }
 
@@ -113,10 +116,16 @@ public class MemberSheet extends JambiMemberSheet {
     }
 
     public boolean isSignal(int i) {
+        if (i >= entries.size())
+            return false;
+
         return !(entries.get(i) instanceof SlotEntry);
     }
 
     public boolean isSlot(int i) {
+        if (i >= entries.size())
+            return false;
+
         return entries.get(i) instanceof SlotEntry;
     }
 
@@ -125,10 +134,14 @@ public class MemberSheet extends JambiMemberSheet {
     }
 
     public String memberGroup(int i) {
+        if (i >= entries.size())
+            return null;
         return entries.get(i).group();
     }
 
     public String memberName(int i) {
+        if (i >= entries.size())
+            return null;
         return entries.get(i).name();
     }
 
@@ -151,6 +164,9 @@ public class MemberSheet extends JambiMemberSheet {
     }
 
     public static boolean signalMatchesSlot(String signal, String slot) {
+        if (signal.equals("<signal>") || slot.equals("<slot>")
+            || signal.length() == 0 || slot.length() == 0)
+            return true;
 
         // void slots always match...
         if (slot.contains("()"))
