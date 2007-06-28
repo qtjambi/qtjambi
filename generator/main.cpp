@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
                "  --no-suppress-warnings            \n"
                "  --output-directory=[dir]          \n"
                "  --print-stdout                    \n"
-               "  --ui-to-jui=[.ui-filename]        \n"
+               "  --convert-to-jui=[.ui-filename]   \n"
                );
         return 0;
     }
