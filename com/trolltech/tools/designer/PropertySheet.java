@@ -68,6 +68,7 @@ public class PropertySheet extends JambiPropertySheet {
         addCustomProperty(LayoutProperty.class);
         addCustomProperty(TabWidgetProperty.class);
         addCustomProperty(BuddyProperty.class);
+        addCustomProperty(GridLayoutMarginPropertyRemover.class);
 
         // Custom reset...
         RESETTABLE_TYPES = new HashMap<Class, Object>();
