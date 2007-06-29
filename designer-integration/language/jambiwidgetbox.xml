@@ -107,6 +107,9 @@
             <property name="objectName">
                 <string notr="true">pushButton</string>
             </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
+            </property>
         </widget>
 
         <widget class="QToolButton" name="Tool Button" icon="widgets/toolbutton.png">
@@ -115,6 +118,9 @@
             </property>
             <property name="text" >
                 <string>...</string>
+            </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
             </property>
         </widget>
 
@@ -125,6 +131,9 @@
             <property name="objectName">
                 <string notr="true">radioButton</string>
             </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
+            </property>
         </widget>
 
         <widget class="QCheckBox" name="Check Box" icon="widgets/checkbox.png">
@@ -134,6 +143,9 @@
             <property name="objectName">
                 <string notr="true">checkBox</string>
             </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
+            </property>
         </widget>
         <widget class="QDialogButtonBox" name="Button Box" icon="widgets/dialogbuttonbox.png">
             <property name="standardButtons" >
@@ -141,6 +153,9 @@
             </property>
             <property name="objectName">
                 <string notr="true">buttonBox</string>
+            </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
             </property>
         </widget>
     </category>
@@ -150,11 +165,17 @@
             <property name="objectName">
                 <string notr="true">listView</string>
             </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+            </property>
         </widget>
 
         <widget class="QTreeView" name="Tree View" icon="widgets/listview.png">
             <property name="objectName">
                 <string notr="true">treeView</string>
+            </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
             </property>
         </widget>
 
@@ -162,11 +183,17 @@
             <property name="objectName">
                 <string notr="true">tableView</string>
             </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+            </property>
         </widget>
 
         <widget class="QColumnView" name="Column View" icon="widgets/columnview.png">
             <property name="objectName">
                 <string notr="true">columnView</string>
+            </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
             </property>
         </widget>
     </category>
@@ -176,16 +203,25 @@
             <property name="objectName">
                 <string notr="true">listWidget</string>
             </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+            </property>
         </widget>
         <widget class="QTreeWidget" name="Tree Widget" icon="widgets/listview.png">
             <property name="objectName">
                 <string notr="true">treeWidget</string>
+            </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
             </property>
         </widget>
 
         <widget class="QTableWidget" name="Table Widget" icon="widgets/table.png">
             <property name="objectName">
                 <string notr="true">tableWidget</string>
+            </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
             </property>
         </widget>
     </category>
@@ -238,6 +274,9 @@
             </property>
             <property name="objectName">
                 <string notr="true">tabWidget</string>
+            </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
             </property>
             <widget class="QWidget" name="tab">
                 <attribute name="title">
@@ -581,17 +620,26 @@
             <property name="objectName">
                 <string notr="true">textBrowser</string>
             </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+            </property>
         </widget>
 
         <widget class="QGraphicsView" name="Graphics View" icon="widgets/graphicsview.png">
             <property name="objectName">
                 <string notr="true">graphicsView</string>
             </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+            </property>
         </widget>
 
         <widget class="QCalendarWidget" name="Calendar" icon="widgets/calendarwidget.png">
             <property name="objectName">
                 <string notr="true">calendarWidget</string>
+            </property>
+            <property name="focusPolicy">
+                <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
             </property>
         </widget>
 
