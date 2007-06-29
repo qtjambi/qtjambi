@@ -17,6 +17,7 @@ import com.trolltech.qt.core.*;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.io.*;
 
 /**
  * @exclude
@@ -29,6 +30,15 @@ public class QtJambiInternal {
 
     public static final char SlotPrefix = '1';
     public static final char SignalPrefix = '2';
+
+    public static void setupDefaultPluginPath() {
+        try {
+            String basePath = Utilities.filePathForClasses();
+            QCoreApplication.addLibraryPath(basePath + File.separatorChar + "plugins");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      *  @exclude

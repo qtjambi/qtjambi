@@ -7207,6 +7207,8 @@ QPixmap standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidge
         String path = Utilities.unpackPlugins();
         if (path != null)
             addLibraryPath(path);
+        else
+            QtJambiInternal.setupDefaultPluginPath();
     }
     
     public static void aboutQtJambi() {

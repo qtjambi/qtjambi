@@ -2274,6 +2274,8 @@
         String path = Utilities.unpackPlugins();
         if (path != null)
             addLibraryPath(path);
+        else
+            QtJambiInternal.setupDefaultPluginPath();
     }
         
     @SuppressWarnings("unused")

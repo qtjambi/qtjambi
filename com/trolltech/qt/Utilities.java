@@ -185,14 +185,7 @@ public class Utilities {
         // root of package where class file are loaded from
         if (implicitLoading) {
             try {
-                URI uri = Utilities.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-
-                String basePath;
-                File path = new File(uri);
-                if (path.isDirectory())
-                    basePath = path.getAbsolutePath();
-                else
-                    basePath = path.getParentFile().getAbsolutePath();
+                String basePath = filePathForClasses();
 
                 String libraryPath = basePath + File.separator + libSubPath + File.separator + lib;
                 if (new File(libraryPath).exists()) {
@@ -224,6 +217,18 @@ public class Utilities {
 
         if (VERBOSE_LOADING) System.out.println("Loading: " + lib + " failed.\n");
         return false;
+    }
+
+    static String filePathForClasses() throws URISyntaxException {
+        URI uri = Utilities.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+
+        String basePath;
+        File path = new File(uri);
+        if (path.isDirectory())
+            basePath = path.getAbsolutePath();
+        else
+            basePath = path.getParentFile().getAbsolutePath();
+        return basePath;
     }
 
     public static File jambiTempDir() {
