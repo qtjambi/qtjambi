@@ -37,7 +37,6 @@
     <target name="prepare" depends="clean"
             description="Clean and create folders needed for a full rebuild.">
         <mkdir dir="${outputDir}" />
-        <mkdir dir="${outputDir}/com/trolltech/autotests" />
     </target>
 
     <target name="qmake.qtjambi"
@@ -60,13 +59,6 @@
     <target name="generator.qtjambi" 
             description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
         <generator dir="generator" />
-    </target>
-
-    <target name="generator.autotests"
-            description="Run the generator on the autotests.">
-	<generator dir="autotestlib"
-	           header="global.h"
-                   typesystem="build.txt" />
     </target>
 
     <target name="generator.generator-example" 
@@ -113,16 +105,6 @@
         </javac>
     </target>
 
-    <target name="compile.autotests" 
-            description="Compile Java and c++ files for autotests.">
-        <qmake dir="autotestlib" recursive="true" config="${config}"/>
-	<make dir="autotestlib" target="clean" />
-	<make dir="autotestlib" silent="true"/>
-        <javac srcdir="${sourceDir}" destdir="${outputDir}" >
-            <include name="com/trolltech/autotests/**.java" />
-        </javac>
-    </target>
-
     <target name="compile.generator-example"
             description="Compile Qt Jambi generator-example.">
 	<make dir="generator_example" />
@@ -149,32 +131,9 @@
         </jar>
     </target>
 
-    <target name="test"
-            description="Runn the autotests that comes with Qt Jambi.">
-        <junit printsummary="yes" haltonfailure="true">
-            <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/> 
-	    <jvmarg value="-Dcom.trolltech.qt.debug"/>
-
-            <classpath>
-                <pathelement location="${outputDir}" />
-                <pathelement location="${sourceDir}" /> 
-            </classpath>
-
-            <batchtest fork="true">
-                <fileset dir=".">
-                    <include name="**/autotests//Test*.java"/>
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
-
     <target name="generator-example"
             description="Generate code for generator-example, and compile it."
             depends="generator.generator-example, compile.generator-example" />
-
-    <target name="autotests"
-            description="Generate code for autotests, and compile it."
-            depends="generator.autotests, compile.autotests" />	   
 
     <target name="qtjambi"
             description="Make QT Jambi."

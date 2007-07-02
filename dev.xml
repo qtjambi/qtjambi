@@ -41,11 +41,29 @@
 	</exec>
     </target>
 
+    <target name="generator.autotests"
+        <mkdir dir="${outputDir}/com/trolltech/autotests" />
+            description="Run the generator on the autotests.">
+	<generator dir="autotestlib"
+	           header="global.h"
+                   typesystem="build.txt" />
+    </target>
+
     <target name="compile.qt"
             depends="sync.qt, configure.qt"
             description="Sync, configure, and compile qt.">
 	<make dir="${qt}" target="distclean" />
 	<make dir="${qt}" />
+    </target>
+
+    <target name="compile.autotests" 
+            description="Compile Java and c++ files for autotests.">
+        <qmake dir="autotestlib" recursive="true" config="${config}"/>
+	<make dir="autotestlib" target="clean" />
+	<make dir="autotestlib" silent="true"/>
+        <javac srcdir="${sourceDir}" destdir="${outputDir}" >
+            <include name="com/trolltech/autotests/**.java" />
+        </javac>
     </target>
 
     <target name="lrelease"
@@ -208,5 +226,10 @@
         </jar>
         <delete dir="ant-qtjambi" />
     </target>
+
+
+    <target name="autotests"
+            description="Generate code for autotests, and compile it."
+            depends="generator.autotests, compile.autotests" />	   
 
 </project>
