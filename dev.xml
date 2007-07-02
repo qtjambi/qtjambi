@@ -42,8 +42,8 @@
     </target>
 
     <target name="generator.autotests"
-        <mkdir dir="${outputDir}/com/trolltech/autotests" />
             description="Run the generator on the autotests.">
+        <mkdir dir="${outputDir}/com/trolltech/autotests" />
 	<generator dir="autotestlib"
 	           header="global.h"
                    typesystem="build.txt" />
