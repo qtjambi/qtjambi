@@ -59,6 +59,7 @@ public:
   bool skipFunctionBody(StatementAST *&node);
 
 public:
+  bool parse_Attribute__();
   bool parseAbstractDeclarator(DeclaratorAST *&node);
   bool parseAccessSpecifier(DeclarationAST *&node);
   bool parseAdditiveExpression(ExpressionAST *&node);

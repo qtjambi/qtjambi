@@ -1228,21 +1228,7 @@ bool Parser::parseDeclarator(DeclaratorAST *&node)
 
         if (token_stream.lookAhead() == Token___attribute__)
           {
-            token_stream.nextToken();
-
-            ADVANCE('(', "(");
-
-            ExpressionAST *expr = 0;
-            parseExpression(expr);
-
-            if (token_stream.lookAhead() != ')')
-              {
-                reportError(("')' expected"));
-              }
-            else
-              {
-                token_stream.nextToken();
-              }
+	      parse_Attribute__();
           }
       }
 
@@ -1746,6 +1732,27 @@ bool Parser::parseParameterDeclaration(ParameterDeclarationAST *&node)
   return true;
 }
 
+bool Parser::parse_Attribute__() {
+    token_stream.nextToken();
+	    
+    ADVANCE('(', "(");
+	    
+    ExpressionAST *expr = 0;
+    parseExpression(expr);
+	    
+    if (token_stream.lookAhead() != ')')
+	{
+	    reportError(("')' expected"));
+	    return false;
+	}
+    else
+	{
+	    token_stream.nextToken();
+	}
+    return true;
+}
+
+
 bool Parser::parseClassSpecifier(TypeSpecifierAST *&node)
 {
   std::size_t start = token_stream.cursor();
@@ -1759,6 +1766,10 @@ bool Parser::parseClassSpecifier(TypeSpecifierAST *&node)
 
   WinDeclSpecAST *winDeclSpec = 0;
   parseWinDeclSpec(winDeclSpec);
+
+  if (token_stream.lookAhead() == Token___attribute__) {       
+      parse_Attribute__();
+  }
 
   while (token_stream.lookAhead() == Token_identifier
          && token_stream.lookAhead(1) == Token_identifier)
