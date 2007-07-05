@@ -22,7 +22,7 @@
 
 char *qtjambi_awt_title = "Qt Jambi/AWT";
 
-extern "C" JNIEXPORT void JNICALL Java_com_trolltech_awt_QAwtWidget_paint
+extern "C" JNIEXPORT void JNICALL Java_com_trolltech_extensions_awt_QAwtWidget_paintIt
 (JNIEnv *env, jobject widget, jobject ) 
 {
     JAWT awt;
@@ -35,24 +35,6 @@ extern "C" JNIEXPORT void JNICALL Java_com_trolltech_awt_QAwtWidget_paint
     jclass clazz = env->GetObjectClass(widget);
     if (clazz == 0) {
         fprintf(stderr, "%s [%s:%d]: Couldn't get JNI class interface of widget\n", qtjambi_awt_title, __FILE__, __LINE__);
-        return;
-    }
-
-    jfieldID id = env->GetFieldID(clazz, "containedWidget", "Lcom/trolltech/qt/gui/QWidget;");
-    if (id == 0) {
-        fprintf(stderr, "%s [%s:%d]: Couldn't get JNI field ID of field 'containedWidget'\n", qtjambi_awt_title, __FILE__, __LINE__);
-        return;
-    }
-
-    jobject qtWidget = env->GetObjectField(widget, id);
-    if (qtWidget == 0) {
-        fprintf(stderr, "%s [%s:%d]: Unexpected null value in field 'containedWidget'\n", qtjambi_awt_title, __FILE__, __LINE__);
-        return;
-    }
-
-    QWidget *w = (QWidget *) qtjambi_to_qobject(env, qtWidget);
-    if (w == 0) {
-        fprintf(stderr, "%s [%s:%d]: Couldn't convert contained widget to C++ object\n", qtjambi_awt_title, __FILE__, __LINE__);
         return;
     }
 
@@ -98,14 +80,16 @@ extern "C" JNIEXPORT void JNICALL Java_com_trolltech_awt_QAwtWidget_paint
 
             hdc = reinterpret_cast<JAWT_Win32DrawingSurfaceInfo *>(dsi->platformInfo)->hdc;
         
-            HDC hbitmap_hdc = CreateCompatibleDC(qt_win_display_dc());        
-            HGDIOBJ null_bitmap = SelectObject(hbitmap_hdc, pm->toWinHBITMAP(QPixmap::NoAlpha));
+            HDC hbitmap_hdc = CreateCompatibleDC(qt_win_display_dc());
+            HBITMAP bm = pm->toWinHBITMAP(QPixmap::NoAlpha);
+            HGDIOBJ null_bitmap = SelectObject(hbitmap_hdc, bm);
 
             if (!BitBlt(hdc, 0, 0, pm->width(), pm->height(), hbitmap_hdc, 0, 0, SRCCOPY)) {
                 fprintf(stderr, "%s [%s:%d]: Unable to blit to HDC: %p\n", qtjambi_awt_title, __FILE__, __LINE__, hdc);
             }
 
-            DeleteObject(SelectObject(hdc, null_bitmap));
+            SelectObject(hdc, null_bitmap);
+            DeleteObject(bm);
             DeleteDC(hbitmap_hdc);
             ds->FreeDrawingSurfaceInfo(dsi);
         }
