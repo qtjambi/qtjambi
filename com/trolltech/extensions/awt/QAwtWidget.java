@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.util.List;
 
 import com.trolltech.qt.QNativePointer;
+import com.trolltech.qt.QPair;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -114,9 +115,9 @@ public class QAwtWidget extends Canvas {
 			super(type);
 		}
 		
-		public boolean shouldActivateWindow() {
-			return false;
-		}
+		public void updateWidget(QWidget widget, QAwtWidget w) {
+			// intentionally empty
+		}		
 		
 		private QEvent.Type actualType = null;
 		public void setActualType(QEvent.Type type) { actualType = type; }
@@ -147,7 +148,7 @@ public class QAwtWidget extends Canvas {
 		public QPoint previousPosition() {
 			return previousPosition;
 		}
-		
+				
 		public QEvent event() {
 			QPoint repositionedPoint = new QPoint();
 			hitWidget = findHitWidget(topWidget(), relativePoint(), repositionedPoint);
@@ -169,10 +170,13 @@ public class QAwtWidget extends Canvas {
 		public QFindChildAndPostMouseEvent() {
 			super(FIND_CHILD_AND_POST_MOUSE_EVENT);
 		}
-		
-		public boolean shouldActivateWindow() {
-			return (actualType () == QEvent.Type.MouseButtonPress 
-					&& (hitWidget.focusPolicy().value() & Qt.FocusPolicy.ClickFocus.value()) != 0);
+
+		public void updateWidget(QWidget widget, QAwtWidget w) {
+			if (actualType() == QEvent.Type.MouseButtonPress) {
+				if ((widget.focusPolicy().value() & Qt.FocusPolicy.ClickFocus.value()) != 0) {					
+					w.setFocusWidget(widget, Qt.FocusReason.MouseFocusReason);
+				}
+			}
 		}
 								
 		private Qt.MouseButton mouseButton = null;
@@ -199,6 +203,11 @@ public class QAwtWidget extends Canvas {
 		}		
 	}
 		
+	private QPair<QWidget, Qt.FocusReason> focus;
+	private void setFocusWidget(QWidget focusWidget, Qt.FocusReason focusReason) {
+		focus = new QPair<QWidget, Qt.FocusReason>(focusWidget, focusReason);		
+	}
+	
 	private class QtEventFilter extends QObject {
 		public QtEventFilter(QObject parent) {
 			super(parent);
@@ -249,13 +258,12 @@ public class QAwtWidget extends Canvas {
 							hasUpdateAwtEvent = true;
 						}
 						
-						if (((QFindChildAndPostEvent)event).shouldActivateWindow())
-							hitWidget.activateWindow();
+						((QFindChildAndPostEvent)event).updateWidget(hitWidget, QAwtWidget.this);						
 					}
 					
 					return true;
-				} 
-				
+				} 				
+								
 				if (event instanceof QFindUnderMouseEvent) {
 					System.err.println("got it");
 					QFindUnderMouseEvent findUnderMouseEvent = (QFindUnderMouseEvent) event;
@@ -312,10 +320,25 @@ public class QAwtWidget extends Canvas {
 		}
 
 		private void updateAwtWidget() {
+			QWidget focusWidget = focus != null ? focus.first : null;
+			if (focusWidget != null) {
+				System.err.println("activating");
+				focusWidget.activateWindow();
+				focusWidget.setFocus(focus.second);
+			}
 			containedWidget.updateGeometry();
 			synchronized (QAwtWidget.this) {				
 				widgetAppearance.dispose();
 				widgetAppearance = QPixmap.grabWidget(containedWidget);
+			}
+			if (focusWidget != null) {
+				Container c = getParent();
+				while (c != null && !(c instanceof Window)) {
+					c = c.getParent();
+				}
+				if (c instanceof Window) {
+					((Window)c).toFront();
+				}
 			}
 			repaint();
 		}
