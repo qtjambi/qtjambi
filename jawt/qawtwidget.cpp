@@ -13,14 +13,47 @@
 
 #include <jawt.h>
 #include <jawt_md.h>
+#define private public
+#include <QtCore/QEvent>
+#undef private
 
 #include "qtjambi_core.h"
+
 
 #include <QtGui/QtGui>
 
 #include <windows.h>
 
 char *qtjambi_awt_title = "Qt Jambi/AWT";
+
+
+typedef QSet<void *> PendingEventSet;
+Q_GLOBAL_STATIC(PendingEventSet, g_pending_events)
+
+static bool qtjambi_awt_event_notify_callback(void **args) 
+{
+    QEvent *event = reinterpret_cast<QEvent *>(args[1]);
+    if (g_pending_events()->remove(event)) {
+        event->spont = true;
+    }
+
+    return false;
+}
+
+extern "C" JNIEXPORT jobject JNICALL Java_com_trolltech_extensions_awt_QAwtWidget_makeEventSpontaneous
+(JNIEnv *, jclass, jobject javaObject, jlong nativeId)
+{
+    static bool hasRegisteredCallback = false;
+    if (!hasRegisteredCallback) {
+        QInternal::registerCallback(QInternal::EventNotifyCallback, qtjambi_awt_event_notify_callback);
+        hasRegisteredCallback = true;
+    }
+
+    QEvent *event = reinterpret_cast<QEvent *>(qtjambi_from_jlong(nativeId));
+    if (event != 0) g_pending_events()->insert(event);
+
+    return javaObject;
+}
 
 extern "C" JNIEXPORT void JNICALL Java_com_trolltech_extensions_awt_QAwtWidget_paintIt
 (JNIEnv *env, jobject widget, jobject ) 
