@@ -1233,7 +1233,8 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
     const MetaJavaType *function_type = java_function->type();
     QString new_return_type = java_function->typeReplaced(0);
     bool has_function_type = new_return_type != "void"
-                             && (!new_return_type.isEmpty() || function_type != 0);
+                             && (!new_return_type.isEmpty() || function_type != 0)
+	                     && java_function->argumentReplaced(0).isEmpty();
 
     const QString qt_object_name = java_function->isStatic() ? shellClassName(cls) : "__qt_this";
     const QString java_object_name = java_function->isStatic() ? "__jni_class" : "__jni_object";
@@ -1330,7 +1331,9 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
             }
         }
     }
-
+    if(!java_function->argumentReplaced(0).isEmpty()) {
+	s << INDENT << "return 0;" << endl;
+    }
 
     s << endl << "}";
     s << endl << endl;

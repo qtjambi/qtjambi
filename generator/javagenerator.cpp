@@ -517,7 +517,8 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
     bool needs_return_variable = has_return_type
         && (owner != TypeSystem::InvalidOwnership || referenceCounts.size() > 0 || has_code_injections_at_the_end);
 
-    if (has_return_type) {
+    if (has_return_type && java_function->argumentReplaced(0).isEmpty()) {
+	
         if (needs_return_variable) {
             if (new_return_type.isEmpty())
                 s << translateType(return_type);
@@ -572,6 +573,12 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const MetaJavaF
         }
     }
     s << ")";
+
+    if ( !java_function->argumentReplaced(0).isEmpty() ) {
+	s << ";" << endl;
+	s << "        return " << java_function->argumentReplaced(0) << ";" << endl;
+	return;
+    }
 
     if (return_type && (return_type->isJavaEnum() || return_type->isJavaFlags()))
         s << ")";

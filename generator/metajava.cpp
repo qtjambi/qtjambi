@@ -455,6 +455,21 @@ QString MetaJavaFunction::conversionRule(TypeSystem::Language language, int key)
     return QString();
 }
 
+QString MetaJavaFunction::argumentReplaced(int key) const
+{
+    FunctionModificationList modifications = this->modifications(declaringClass());
+    foreach (FunctionModification modification, modifications) {
+        QList<ArgumentModification> argument_modifications = modification.argument_mods;
+        foreach (ArgumentModification argument_modification, argument_modifications) {
+            if (argument_modification.index == key && !argument_modification.replace_value.isEmpty()) {
+                return argument_modification.replace_value;
+            }
+        }
+    }
+
+    return "";
+}
+
 bool MetaJavaFunction::argumentRemoved(int key) const
 {
     FunctionModificationList modifications = this->modifications(declaringClass());
@@ -471,6 +486,7 @@ bool MetaJavaFunction::argumentRemoved(int key) const
 
     return false;
 }
+
 
 bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int key) const
 {

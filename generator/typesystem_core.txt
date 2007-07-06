@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <typesystem package="com.trolltech.qt.core" default-superclass="com.trolltech.qt.QtJambiObject">
   <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
@@ -2367,13 +2366,35 @@
         </insert-template>
     </template>    
 
-    <modify-function signature="operator&lt;&lt;(bool)"> <rename to="writeBoolean"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(signed char)"> <rename to="writeByte"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(int)"> <rename to="writeInt"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(long long)"> <rename to="writeLong"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(float)"> <rename to="writeFloat"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(double)"> <rename to="writeDouble"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(short)"> <rename to="writeShort_char"/> <access modifier="private"/> </modify-function>
+    <modify-function signature="operator&lt;&lt;(bool)"> 
+        <rename to="writeBoolean"/> 
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(signed char)"> 
+        <rename to="writeByte"/> 
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(int)">
+        <rename to="writeInt"/>
+        <modify-argument index="0" replace-value="this"/>                    
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(long long)"> 
+        <rename to="writeLong"/>
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(float)">
+        <rename to="writeFloat"/>
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(double)">
+        <rename to="writeDouble"/> 
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(short)">
+        <rename to="writeShort_char"/>
+        <access modifier="private"/> 
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
 
     <modify-function signature="operator&lt;&lt;(const char*)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(unsigned char)"> <remove/> </modify-function>
@@ -2392,42 +2413,50 @@
     <modify-function signature="writeBytes(const char*,uint)"> <remove/> </modify-function>
 
     <modify-function signature="operator&gt;&gt;(int&amp;)">
-        <rename to="operator_shift_right_int"/>
+        <rename to="operator_shift_right_int"/>  
+        <modify-argument index="0" replace-value="this"/>
         <access modifier="private"/>
     </modify-function>                
     
     <modify-function signature="operator&gt;&gt;(bool&amp;)">
-        <rename to="operator_shift_right_boolean"/>
+        <rename to="operator_shift_right_boolean"/>  
+        <modify-argument index="0" replace-value="this"/>
         <access modifier="private"/>
     </modify-function>
     
     <modify-function signature="operator&gt;&gt;(short&amp;)">
-       <rename to="operator_shift_right_short"/>
+        <rename to="operator_shift_right_short"/>  
+        <modify-argument index="0" replace-value="this"/> 
         <access modifier="private"/>
     </modify-function>                
 
     <modify-function signature="operator&gt;&gt;(long long&amp;)">
-        <rename to="operator_shift_right_long"/>
+        <rename to="operator_shift_right_long"/>  
+        <modify-argument index="0" replace-value="this"/> 
         <access modifier="private"/>
     </modify-function>                
         
     <modify-function signature="operator&gt;&gt;(signed char&amp;)">
-        <rename to="operator_shift_right_byte"/>
+        <rename to="operator_shift_right_byte"/>  
+        <modify-argument index="0" replace-value="this"/> 
         <access modifier="private"/>
     </modify-function>                
 
     <modify-function signature="operator&gt;&gt;(unsigned short&amp;)">
-        <rename to="operator_shift_right_char"/>        
+        <rename to="operator_shift_right_char"/>   
+        <modify-argument index="0" replace-value="this"/>        
         <access modifier="private"/>
     </modify-function>                
 
     <modify-function signature="operator&gt;&gt;(float&amp;)">
-        <rename to="operator_shift_right_float"/>
+        <rename to="operator_shift_right_float"/>  
+        <modify-argument index="0" replace-value="this"/> 
         <access modifier="private"/>
     </modify-function>                
 
     <modify-function signature="operator&gt;&gt;(double&amp;)">
-        <rename to="operator_shift_right_double"/>
+        <rename to="operator_shift_right_double"/>  
+        <modify-argument index="0" replace-value="this"/> 
         <access modifier="private"/>
     </modify-function>                
 
@@ -2609,39 +2638,64 @@
         </insert-template>
     </template>
 
-    <modify-function signature="operator&lt;&lt;(QBool)"> <rename to="writeBoolean"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(char)"> <rename to="writeByte"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(signed int)"> <rename to="writeInt"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(long long)"> <rename to="writeLong"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(float)"> <rename to="writeFloat"/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(double)"> <rename to="writeDouble"/> </modify-function> 
+    <modify-function signature="operator&lt;&lt;(QBool)"> 
+        <rename to="writeBoolean"/> 
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(char)">  
+        <modify-argument index="0" replace-value="this"/>
+        <rename to="writeByte"/> 
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(signed int)">
+        <rename to="writeInt"/>  
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(long long)"> 
+        <rename to="writeLong"/>  
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(float)"> 
+        <rename to="writeFloat"/>  
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function>
+    <modify-function signature="operator&lt;&lt;(double)"> 
+        <rename to="writeDouble"/>  
+        <modify-argument index="0" replace-value="this"/>
+    </modify-function> 
     <modify-function signature="operator&lt;&lt;(signed short)">
-      <rename to="writeShort_char"/>
+      <rename to="writeShort_char"/>  
+      <modify-argument index="0" replace-value="this"/>
       <access modifier="private"/>
     </modify-function>
 
     <modify-function signature="operator&gt;&gt;(char&amp;)">
-      <access modifier="private"/> 
+      <access modifier="private"/>   
+      <modify-argument index="0" replace-value="this"/>
       <rename to="operator_shift_right_byte"/>
     </modify-function>
     <modify-function signature="operator&gt;&gt;(signed short&amp;)">
-      <access modifier="private"/> 
+      <access modifier="private"/>   
+      <modify-argument index="0" replace-value="this"/>
       <rename to="operator_shift_right_short"/>
     </modify-function>
     <modify-function signature="operator&gt;&gt;(signed int&amp;)">
-      <access modifier="private"/> 
+      <access modifier="private"/>   
+      <modify-argument index="0" replace-value="this"/>
       <rename to="operator_shift_right_int"/>
     </modify-function>
     <modify-function signature="operator&gt;&gt;(long long&amp;)">
-      <access modifier="private"/> 
+      <access modifier="private"/>   
+      <modify-argument index="0" replace-value="this"/>
       <rename to="operator_shift_right_long"/>
     </modify-function>
     <modify-function signature="operator&gt;&gt;(float&amp;)">
-      <access modifier="private"/> 
+      <access modifier="private"/>   
+      <modify-argument index="0" replace-value="this"/>
       <rename to="operator_shift_right_float"/>
     </modify-function>
     <modify-function signature="operator&gt;&gt;(double&amp;)">
-      <access modifier="private"/> 
+      <access modifier="private"/>   
+      <modify-argument index="0" replace-value="this"/>
       <rename to="operator_shift_right_double"/>
     </modify-function>
   

@@ -476,6 +476,7 @@ public:
     bool isRemovedFrom(const MetaJavaClass *, TypeSystem::Language language) const;
     bool argumentRemoved(int) const;
 
+    QString argumentReplaced(int key) const;
     bool needsSuppressUncheckedWarning() const;
 
     bool hasModifications(const MetaJavaClass *implementor) const;

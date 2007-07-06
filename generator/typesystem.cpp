@@ -596,6 +596,7 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
+	    attributes["replace-value"] = QString();
             break;
         case StackElement::ModifyField:
             attributes["name"] = QString();
@@ -779,7 +780,16 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                m_function_mods.last().argument_mods.append(ArgumentModification(idx));
+		QString replace_value = attributes["replace-value"];
+
+		if (!replace_value.isEmpty() && idx != 0) {
+		    m_error = QString("replace-value is only supported for return values (index=0).");
+		    return false;
+		}
+
+		ArgumentModification argumentModification = ArgumentModification(idx);
+		argumentModification.replace_value = replace_value;
+                m_function_mods.last().argument_mods.append(argumentModification);
             }
             break;
         case StackElement::NoNullPointers:

@@ -244,6 +244,8 @@ struct ArgumentModification
     // The text given for the new type of the argument
     QString modified_type;
 
+    QString replace_value;
+
     // The code to be used to construct a return value when no_null_pointers is true and
     // the returned value is null. If no_null_pointers is true and this string is
     // empty, then the base class implementation will be used (or a default construction
