@@ -232,4 +232,8 @@
             description="Generate code for autotests, and compile it."
             depends="generator.autotests, compile.autotests" />	   
 
+    <target name="all"
+            description="Same as qtjambi + tests."
+            depends="qtjambi, generator.autotests, compile.autotests, test" />	   
+
 </project>
