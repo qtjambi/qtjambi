@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
     QStringList rebuild_classes;
     QString doc_dir = "../../main/doc/jdoc";
     QString ui_file_name;
+    QString include_paths;
     bool print_stdout = false;
 
     bool no_java = false;
@@ -92,6 +93,8 @@ int main(int argc, char *argv[])
             no_metainfo = true;
         } else if (arg.startsWith("--help") || arg.startsWith("-h") || arg.startsWith("-?")) {
             display_help = true;
+        } else if (arg.startsWith("--include-paths")) {
+            include_paths = arg.mid(16);
         } else if (arg.startsWith("--dump-object-tree")) {
             dump_object_tree = true;
         } else if (arg.startsWith("--rebuild-only")) {
@@ -132,28 +135,35 @@ int main(int argc, char *argv[])
 
     display_help = display_help || fileName.isEmpty() || typesystemFileName.isEmpty();
 
+#if defined(Q_OS_WIN32)
+    char path_splitter = ';';
+#else
+    char path_splitter = ':';
+#endif
+
     if (display_help) {
         printf("Usage:\n  %s [options] header-file typesystem-file\n", argv[0]);
         printf("Available options:\n");
-        printf("  --debug-level=[sparse|medium|full]\n"
-               "  --dump-object-tree                \n"
-               "  --help, -h or -?                  \n"
-               "  --no-cpp-h                        \n"
-               "  --no-cpp-impl                     \n"
-               "  --no-java                         \n"
-               "  --no-metainfo                     \n"
-               "  --no-suppress-warnings            \n"
-               "  --output-directory=[dir]          \n"
-               "  --print-stdout                    \n"
-               "  --convert-to-jui=[.ui-filename]   \n"
-               );
+        printf("  --debug-level=[sparse|medium|full]        \n"
+               "  --dump-object-tree                        \n"
+               "  --help, -h or -?                          \n"
+               "  --no-cpp-h                                \n"
+               "  --no-cpp-impl                             \n"
+               "  --no-java                                 \n"
+               "  --no-metainfo                             \n"
+               "  --no-suppress-warnings                    \n"
+               "  --output-directory=[dir]                  \n"
+               "  --include-paths=<path>[%c<path>%c...]   \n"
+               "  --print-stdout                            \n"
+               "  --convert-to-jui=[.ui-filename]           \n",
+               path_splitter, path_splitter);
         return 0;
     }
 
     if (!TypeDatabase::instance()->parseFile(typesystemFileName))
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 
-    if (!Preprocess::preprocess(fileName, pp_file)) {
+    if (!Preprocess::preprocess(fileName, pp_file, include_paths)) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
         return 1;
     }

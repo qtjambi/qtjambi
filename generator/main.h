@@ -21,7 +21,7 @@
 
 struct Preprocess
 {
-    static bool preprocess(const QString &sourceFile, const QString &targetFile)
+    static bool preprocess(const QString &sourceFile, const QString &targetFile, const QString &commandLineIncludes = QString())
     {
         rpp::pp_environment env;
         rpp::pp preprocess(env);
@@ -40,26 +40,44 @@ struct Preprocess
         file.close();
         preprocess.operator() (ba.constData(), ba.constData() + ba.size(), null_out);
 
+        QStringList includes;
+        includes << QString(".");
+
+#if defined(Q_OS_WIN32)
+        char *path_splitter = ";";
+#else
+        char *path_splitter = ":";
+#endif
+
+        // Environment INCLUDE
+        QString includePath = getenv("INCLUDE");
+        if (!includePath.isEmpty())
+            includes += includePath.split(path_splitter);        
+
+        // Includes from the command line
+        if (!commandLineIncludes.isEmpty())
+            includes += commandLineIncludes.split(path_splitter);        
+
+        // Include Qt
         QString qtdir = getenv ("QTDIR");
         if (qtdir.isEmpty()) {
-            fprintf(stderr, "Generator requires QTDIR to be set\n");
-            return false;
+            qWarning("QTDIR environment variable not set. This may cause problems with finding the necessary include files.");
+        } else {
+            qtdir += "/include";
+            includes << qtdir;
+            includes << (qtdir + "/QtXml");
+            includes << (qtdir + "/QtNetWork");
+            includes << (qtdir + "/QtCore");
+            includes << (qtdir + "/QtGui");
+            includes << (qtdir + "/QtOpenGL");
         }
 
-        qtdir += "/include";
+        foreach (QString include, includes)
+            preprocess.push_include_path(QDir::convertSeparators(include).toStdString());        
 
         QString currentDir = QDir::current().absolutePath();
         QFileInfo sourceInfo(sourceFile);
-        QDir::setCurrent(sourceInfo.absolutePath());
-
-        preprocess.push_include_path(".");
-        preprocess.push_include_path(QDir::convertSeparators(qtdir).toStdString());
-        preprocess.push_include_path(QDir::convertSeparators(qtdir + "/QtXml").toStdString());
-        preprocess.push_include_path(QDir::convertSeparators(qtdir + "/QtNetwork").toStdString());
-        preprocess.push_include_path(QDir::convertSeparators(qtdir + "/QtCore").toStdString());
-        preprocess.push_include_path(QDir::convertSeparators(qtdir + "/QtGui").toStdString());
-        preprocess.push_include_path(QDir::convertSeparators(qtdir + "/QtOpenGL").toStdString());
-
+        QDir::setCurrent(sourceInfo.absolutePath());        
 
         std::string result;
         result.reserve (20 * 1024); // 20K
