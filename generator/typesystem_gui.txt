@@ -6236,6 +6236,12 @@ QPixmap standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidge
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+
+    <inject-code>
+    public QPaintEngine paintEngine() {
+        throw new RuntimeException("Cannot open a painter directly on a QAbstractScrollArea, open QPainter on its viewport instead...");
+    }
+    </inject-code>
   </object-type>
 
   <object-type name="QPaintEngineState">
