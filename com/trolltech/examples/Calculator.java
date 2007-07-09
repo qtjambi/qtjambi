@@ -1,486 +1,385 @@
-/****************************************************************************
- **
- ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
- **
- ** This file is part of $PRODUCT$.
- **
- ** $JAVA_LICENSE$
- **
- ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- **
- ****************************************************************************/
-
 package com.trolltech.examples;
 
-import java.util.*;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.*;
 
-@QtJambiExample(name = "Calculator")
-public class Calculator extends QMainWindow {
+public class Calculator extends QWidget
+{
+    double sumInMemory;
+    double sumSoFar;
+    double factorSoFar;
+    String pendingAdditiveOperator = "";
+    String pendingMultiplicativeOperator = "";
+    boolean waitingForOperand;
 
-    public static void main(String[] args) {
+    QLineEdit display;
 
-        QApplication.initialize(args);
-        Calculator calculator = new Calculator();
-        calculator.show();
-        QApplication.exec();
-    }
+    public static int NumDigitButtons = 10;
+    Button digitButtons[] = new Button[NumDigitButtons];
 
-    private QLineEdit lineEdit;
-    private QTextBrowser textBrowser;
+    public Calculator()
+    {
+        sumInMemory = 0.0;
+        sumSoFar = 0.0;
+        factorSoFar = 0.0;
+        waitingForOperand = true;
 
-    private Vector<Function> infixFunctions = new Vector<Function>();
-    private Hashtable<String, Function> functions = new Hashtable<String, 
-                                                                  Function>();
+        display = new QLineEdit("0");
+        display.setReadOnly(true);
+        display.setAlignment(Qt.AlignmentFlag.AlignRight);
+        display.setMaxLength(15);
 
-    public Calculator() {
-        Vector<String> uiTypes = new Vector<String>(3);
-        uiTypes.add("Simple");
-        uiTypes.add("Normal");
-        uiTypes.add("Dockable");
+        QFont font = display.font();
+        font.setPointSize(font.pointSize() + 8);
+        display.setFont(font);
 
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
-                
-        String item = QInputDialog.getItem(this, tr("Ui selector"), 
-                                           tr("Ui configurations:"), uiTypes,
-                                           0, false);
-                
-        if (item == null || item.equals("Simple")) {
-            Ui_CalculatorSimple uiSimple = new Ui_CalculatorSimple();
-            uiSimple.setupUi(this);
-            lineEdit = uiSimple.lineEdit;
-            textBrowser = uiSimple.textBrowser;
-        } else if (item.equals("Normal")) {
-            Ui_CalculatorNormal uiNormal = new Ui_CalculatorNormal();
-            uiNormal.setupUi(this);
-            lineEdit = uiNormal.lineEdit;
-            textBrowser = uiNormal.textBrowser;
-        } else if (item.equals("Dockable")) {
-            Ui_CalculatorDockable uiDockable = new Ui_CalculatorDockable();
-            uiDockable.setupUi(this);
-            lineEdit = uiDockable.lineEdit;
-            textBrowser = uiDockable.textBrowser;
-        }
-        
+        QColor digitColor = new QColor(150, 205, 205);
+        QColor backspaceColor = new QColor(225, 185, 135);
+        QColor memoryColor = new QColor(100, 155, 155);
+        QColor operatorColor = new QColor(155, 175, 195);
 
-        Function function= new Function("abs") {
-            public double result(double[] args) throws ParseException {
-                checkNumberOfArguments(1,args);
-                return Math.abs(args[0]);
-            }
-        };
-        functions.put(function.name, function);
-
-        function= new Function("pow") {
-            public double result(double[] args) throws ParseException {
-                checkNumberOfArguments(2,args);
-                return Math.pow(args[0], args[1]);
-            }
-        };
-        functions.put(function.name, function);
-
-        function= new Function("cos") {
-            public double result(double[] args) throws ParseException {
-                checkNumberOfArguments(1,args);
-                return Math.cos(args[0]);
-            }
-        };
-
-        functions.put(function.name, function);
-
-        function= new Function("sin") {
-            public double result(double[] args) throws ParseException {
-                checkNumberOfArguments(1,args);
-                return Math.sin(args[0]);
-            }
-        };
-
-        functions.put(function.name, function);
-
-        function= new Function("random") {
-            public double result(double[] args) throws ParseException {
-                checkNumberOfArguments(0,args);
-                return Math.random();
-            }
-        };
-        functions.put(function.name, function);
-
-        function= new Function("min") {
-            public double result(double[] args) {
-                double minimum = args[0];
-                for (int i = 1; i < args.length; i++) {
-                    minimum = Math.min(minimum, args[i]);
-                }
-                return minimum;
-            }
-        };
-        functions.put(function.name, function);
-
-        infixFunctions.add(new Function("*") {
-            public double result(double[] args) {
-                double product = args[0];
-                for (int i = 1; i < args.length; i++) {
-                    product *= args[i];
-                }
-                return product;
-            }
-        });
-        infixFunctions.add(new Function("/") {
-            public double result(double[] args) {
-                double quotient = args[0];
-                for (int i = 1; i < args.length; i++) {
-                    quotient /= args[i];
-                }
-                return quotient;
-            }
-        });
-
-        infixFunctions.add(new Function("-") {
-            public double result(double[] args) {
-                double difference = args[0];
-                for (int i = 1; i < args.length; i++) {
-                    difference -= args[i];
-                }
-                return difference;
-            }
-        });
-        
-        infixFunctions.add(new Function("+") {
-            public double result(double[] args) {
-                double sum = 0;
-                for (int i = 0; i < args.length; i++) {
-                    sum += args[i];
-                }
-                return sum;
-            }
-        });
-    }
-
-    public void on_button_equal_clicked() {
-        String expression = lineEdit.text();
-        String result = "";
-        boolean error = false;
-        try {
-            result = Double.toString(evaluate(parse(expression)));
-        } catch (ParseException exception) {
-            result = "Error: <font color=\"red\">" 
-                     + exception.getMessage() + "</font>";
-            error = true;
+        for (int i = 0; i < NumDigitButtons; ++i) {
+            digitButtons[i] = createButton(String.valueOf(i), digitColor,
+                                           "digitClicked()");
         }
 
-        textBrowser.append(expression + "<b> = " + result + "</b><br>");
-        if (error)
-            result = expression;
-        lineEdit.setText(result);
+        Button pointButton = createButton(tr("."), digitColor, "pointClicked()");
+        Button changeSignButton = createButton(tr("\261"), digitColor, "changeSignClicked()");
+    
+        Button backspaceButton = createButton(tr("Backspace"), backspaceColor,
+                                       "backspaceClicked()");
+        Button clearButton = createButton(tr("Clear"), backspaceColor, "clear()");
+        Button clearAllButton = createButton(tr("Clear All"), backspaceColor.lighter(120),
+                                      "clearAll()");
+    
+        Button clearMemoryButton = createButton(tr("MC"), memoryColor,
+                                         "clearMemory()");
+        Button readMemoryButton = createButton(tr("MR"), memoryColor, "readMemory()");
+        Button setMemoryButton = createButton(tr("MS"), memoryColor, "setMemory()");
+        Button addToMemoryButton = createButton(tr("M+"), memoryColor, "addToMemory()");
+    
+        Button divisionButton = createButton(tr("\367"), operatorColor,
+                                      "multiplicativeOperatorClicked()");
+        Button timesButton = createButton(tr("\327"), operatorColor,
+                                   "multiplicativeOperatorClicked()");
+        Button minusButton = createButton(tr("-"), operatorColor,
+                                   "additiveOperatorClicked()");
+        Button plusButton = createButton(tr("+"), operatorColor,
+                                  "additiveOperatorClicked()");
+    
+        Button squareRootButton = createButton(tr("Sqrt"), operatorColor,
+                                        "unaryOperatorClicked()");
+        Button powerButton = createButton(tr("x\262"), operatorColor,
+                                   "unaryOperatorClicked()");
+        Button reciprocalButton = createButton(tr("1/x"), operatorColor,
+                                        "unaryOperatorClicked()");
+        Button equalButton = createButton(tr("="), operatorColor.lighter(120),
+                                   "equalClicked()");
+
+        QGridLayout mainLayout = new QGridLayout();
+        mainLayout.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize);
+
+        mainLayout.addWidget(display, 0, 0, 1, 6);
+        mainLayout.addWidget(backspaceButton, 1, 0, 1, 2);
+        mainLayout.addWidget(clearButton, 1, 2, 1, 2);
+        mainLayout.addWidget(clearAllButton, 1, 4, 1, 2);
+
+        mainLayout.addWidget(clearMemoryButton, 2, 0);
+        mainLayout.addWidget(readMemoryButton, 3, 0);
+        mainLayout.addWidget(setMemoryButton, 4, 0);
+        mainLayout.addWidget(addToMemoryButton, 5, 0);
+
+        for (int i = 1; i < NumDigitButtons; ++i) {
+            int row = ((9 - i) / 3) + 2;
+            int column = ((i - 1) % 3) + 1;
+            mainLayout.addWidget(digitButtons[i], row, column);
+        }
+
+        mainLayout.addWidget(digitButtons[0], 5, 1);
+        mainLayout.addWidget(pointButton, 5, 2);
+        mainLayout.addWidget(changeSignButton, 5, 3);
+        
+        mainLayout.addWidget(divisionButton, 2, 4);
+        mainLayout.addWidget(timesButton, 3, 4);
+        mainLayout.addWidget(minusButton, 4, 4);
+        mainLayout.addWidget(plusButton, 5, 4);
+        
+        mainLayout.addWidget(squareRootButton, 2, 5);
+        mainLayout.addWidget(powerButton, 3, 5);
+        mainLayout.addWidget(reciprocalButton, 4, 5);
+        mainLayout.addWidget(equalButton, 5, 5);
+        setLayout(mainLayout);
+
+        setWindowTitle(tr("Calculator"));
     }
 
-    public void type(String s) {
-        lineEdit.setText(lineEdit.text() + s);
-    }
-
-    public void typeAround(String s) {
-        lineEdit.setText(s + "(" + lineEdit.text() + ")");
-    }
-
-    public void on_button_1_clicked() {
-        type("1");
-    }
-
-    public void on_button_2_clicked() {
-        type("2");
-    }
-
-    public void on_button_3_clicked() {
-        type("3");
-    }
-
-    public void on_button_4_clicked() {
-        type("4");
-    }
-
-    public void on_button_5_clicked() {
-        type("5");
-    }
-
-    public void on_button_6_clicked() {
-        type("6");
-    }
-
-    public void on_button_7_clicked() {
-        type("7");
-    }
-
-    public void on_button_8_clicked() {
-        type("8");
-    }
-
-    public void on_button_9_clicked() {
-        type("9");
-    }
-
-    public void on_button_0_clicked() {
-        type("0");
-    }
-
-    public void on_button_add_clicked() {
-        type("+");
-    }
-
-    public void on_button_subtract_clicked() {
-        type("-");
-    }
-
-    public void on_button_multiply_clicked() {
-        type("*");
-    }
-
-    public void on_button_devide_clicked() {
-        type("/");
-    }
-
-    public void on_button_comma_clicked() {
-        type(".");
-    }
-
-    public void on_button_left_clicked() {
-        type("(");
-    }
-
-    public void on_button_right_clicked() {
-        type(")");
-    }
-
-    public void on_button_sin_clicked() {
-        typeAround("sin");
-    }
-
-    public void on_button_cos_clicked() {
-        typeAround("cos");
+    public void digitClicked()
+    {
+        Button clickedButton = (Button) QSignalEmitter.signalSender();
+        int digitValue = Integer.parseInt(clickedButton.text());
+        if (display.text().equals("0") && digitValue == 0.0)
+            return;
+    
+        if (waitingForOperand) {
+            display.clear();
+            waitingForOperand = false;
+        }
+        display.setText(display.text() + String.valueOf(digitValue));
     }
     
-    public void on_button_random_clicked() {
-        type("random()");
+    public void unaryOperatorClicked()
+    {
+        Button clickedButton = (Button) QSignalEmitter.signalSender();
+        String clickedOperator = clickedButton.text();
+        double operand = parseDouble(display.text());
+        double result = 0.0;
+    
+        if (clickedOperator.equals(tr("Sqrt"))) {
+            if (operand < 0.0) {
+                abortOperation();
+                return;
+            }
+            result = Math.sqrt(operand);
+        } else if (clickedOperator.equals(tr("x\262"))) {
+            result = Math.pow(operand, 2.0);
+        } else if (clickedOperator.equals(tr("1/x"))) {
+            if (operand == 0.0) {
+                abortOperation();
+                return;
+            }
+            result = 1.0 / operand;
+        }
+        display.setText(String.valueOf(result));
+        waitingForOperand = true;
     }
 
-    public void on_button_functions_clicked() {
-        Vector<String> functionKeys = new Vector<String>(functions.size());
-        functionKeys.addAll(functions.keySet());
-
-        String key = QInputDialog.getItem(this, tr("Function selector"), 
-                                          tr("Available functions:"), 
-                                          functionKeys, 0, false);
-        if (key != null) 
-            type(key);
+    public void additiveOperatorClicked()
+    {
+        Button clickedButton = (Button) QSignalEmitter.signalSender();
+        String clickedOperator = clickedButton.text();
+        double operand = parseDouble(display.text());
+    
+        if (pendingMultiplicativeOperator.length() != 0) {
+            if (!calculate(operand, pendingMultiplicativeOperator)) {
+                abortOperation();
+                return;
+            }
+            display.setText(String.valueOf(factorSoFar));
+            operand = factorSoFar;
+            factorSoFar = 0.0;
+            pendingMultiplicativeOperator = "";
+        }
+    
+        if (pendingAdditiveOperator.length() != 0) {
+            if (!calculate(operand, pendingAdditiveOperator)) {
+                abortOperation();
+                return;
+            }
+            display.setText(String.valueOf(sumSoFar));
+        } else {
+            sumSoFar = operand;
+        }
+    
+        pendingAdditiveOperator = clickedOperator;
+        waitingForOperand = true;
     }
 
-    public double evaluate(Object o) throws ParseException {
-        double result = 0;
-        if (o instanceof Vector) {
-            Vector vector = (Vector) o;
-            if (vector.isEmpty())
-                return 0;
-            return evaluate(vector.firstElement());
-        }
-
-        else if (o instanceof Function) {
-            Function function= (Function) o;
-            result = function.evaluateFunction();
-        }
-
-        else if (o instanceof String) {
-            try {
-                result = Double.parseDouble((String) o);
-            } catch (NumberFormatException exception) {
-                throw new ParseException(exception.getMessage());
+    public void multiplicativeOperatorClicked()
+    {
+        Button clickedButton = (Button) QSignalEmitter.signalSender();
+        String clickedOperator = clickedButton.text();
+        double operand = parseDouble(display.text());
+    
+        if (pendingMultiplicativeOperator.length() != 0) {
+            if (!calculate(operand, pendingMultiplicativeOperator)) {
+                abortOperation();
+                return;
             }
+            display.setText(String.valueOf(factorSoFar));
+        } else {
+            factorSoFar = operand;
         }
-        return result;
+
+        pendingMultiplicativeOperator = clickedOperator;
+        waitingForOperand = true;
     }
 
-    @SuppressWarnings("unchecked")
-    public Vector parse(String expression) throws ParseException {
-        Stack<Vector> stack = new Stack<Vector>();
-        stack.push(new Vector());
-
-        String delimiter = "()";
-        for (Iterator iterator = infixFunctions.iterator(); iterator.hasNext();) {
-            Function function= (Function) iterator.next();
-            delimiter += function.name;
-
+    private double parseDouble(String str)
+    {
+        double ret;
+        try {
+            ret = Double.parseDouble(str);
+        } catch (NumberFormatException e) {
+            ret = 0.0;
         }
-        StringTokenizer tokenizer = new StringTokenizer(expression.trim(), delimiter, true);
-
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-            if (token.equals("(")) {
-                stack.peek().add(new Vector());
-                stack.push((Vector) stack.peek().lastElement());
-            } else if (token.equals(")")) {
-                if (stack.isEmpty())
-                    throw new ParseException("Missing starting parenthesis");
-                prioritize(stack.pop());
-
-            } else {
-                String[] tmp = token.trim().split(" ");
-                for (int i = 0; i < tmp.length; i++) {
-                    if (stack.peek() == null) {
-                        throw new ParseException("Missing left side parenthesis");
-                    }
-                    if(!tmp[i].equals(""))
-                        stack.peek().add(tmp[i]);
-                }
-            }
-        }
-        if(stack.isEmpty())
-            throw new ParseException("Not enough staring parantheses");
-        prioritize(stack.peek());
-        if (stack.size() > 1)
-            throw new ParseException("Not enough closing parentheses");
-        return stack.peek();
+        return ret;
     }
 
-    @SuppressWarnings("unchecked")
-    private void prioritize(Vector vector) throws ParseException {
-
-        Function unaryMinusProt = new Function("unaryMinus") {
-            public double result(double[] args) {
-                return -args[0];
+    public void equalClicked()
+    {
+        double operand = parseDouble(display.text());
+    
+        if (pendingMultiplicativeOperator.length() != 0) {
+            if (!calculate(operand, pendingMultiplicativeOperator)) {
+                abortOperation();
+                return;
             }
-        };
-
-        Object[] vectorArray = vector.toArray();
-        int r = 0;
-        for (int i = 0; i < vectorArray.length; i++) {
-            Function function= functions.get(
-                    vectorArray[i].toString().toUpperCase());
-
-            if (function!= null) {
-                function= (Function) function.clone();
-                if((i - r + 1) >= vectorArray.length)
-                    throw new ParseException(
-                            "Could not find parameters for function: " 
-                            + function.name);
-                if (vectorArray[i - r + 1] instanceof Vector)
-                    function.arguments.addAll((Vector) vectorArray[i - r + 1]);
-                vector.remove(i - r + 1);
-                vector.set(i - r, function);
-                r += 1;
-            }
+            operand = factorSoFar;
+            factorSoFar = 0.0;
+            pendingMultiplicativeOperator = "";
         }
-
-        for (Iterator iterator = infixFunctions.iterator(); iterator.hasNext();) {
-            Function function= (Function) iterator.next();
-
-            vectorArray = vector.toArray();
-
-            r = 0;
-            for (int i = 0; i < vectorArray.length; i++) {
-                Object element = vectorArray[i];
-                if (element instanceof String) {
-                    if (element.equals(function.name)) {
-                        function= (Function) function.clone();
-                        if ((i - r - 1 < 0 && !element.equals("-")) 
-                            || i - r + 1 >= vector.size())
-                            throw new ParseException(
-                                    "Problems at infix function:" 
-                                     + function.name);
-
-                        if (i - r - 1 < 0) {
-                            Function minus = (Function) unaryMinusProt.clone();
-                            minus.arguments.add(vector.elementAt(i - r + 1));
-                            vector.set(i - r, minus);
-                            vector.remove(i - r + 1);
-                            r += 1;
-                            i++;
-                        } else {
-                            function.arguments.add(vector.elementAt(i - r - 1));
-
-                            if (vector.elementAt(i - r + 1).equals("-")) {
-
-                                Function minus = (Function) unaryMinusProt.clone();
-                                minus.arguments.add(vector.elementAt(i - r + 2));
-                                function.arguments.add(minus);
-
-                                vector.set(i - r, function);
-                                vector.remove(i - r + 2);
-                                vector.remove(i - r + 1);
-                                vector.remove(i - r - 1);
-                                r += 3;
-                                i++;
-
-                            } else {
-
-                                function.arguments.add(vector.elementAt(i - r + 1));
-
-                                vector.set(i - r, function);
-                                vector.remove(i - r + 1);
-                                vector.remove(i - r - 1);
-                                r += 2;
-                                i++;
-                            }
-                        }
-                    }
-                }
+        if (pendingAdditiveOperator.length() != 0) {
+            if (!calculate(operand, pendingAdditiveOperator)) {
+                abortOperation();
+                return;
             }
+            pendingAdditiveOperator = "";
+        } else {
+            sumSoFar = operand;
+        }
+    
+        display.setText(String.valueOf(sumSoFar));
+        sumSoFar = 0.0;
+        waitingForOperand = true;
+    }
+
+    public void pointClicked()
+    {
+        if (waitingForOperand)
+            display.setText("0");
+        if (!display.text().contains("."))
+            display.setText(display.text() + tr("."));
+        waitingForOperand = false;
+    }
+    
+    public void changeSignClicked()
+    {
+        String text = display.text();
+        double value = parseDouble(text);
+    
+        if (value > 0.0) {
+            text = tr("-") + text;
+        } else if (value < 0.0) {
+            text.substring(1);
+        }
+        display.setText(text);
+    }
+    
+    public void backspaceClicked()
+    {
+        if (waitingForOperand)
+            return;
+
+        String text = display.text();
+        text = text.substring(0, text.length() - 1);
+        if (text.length() == 0) {
+            text = "0";
+            waitingForOperand = true;
+        }
+        display.setText(text);
+    }
+
+    public void clear()
+    {
+        if (waitingForOperand)
+            return;
+    
+        display.setText("0");
+        waitingForOperand = true;
+    }
+    
+    public void clearAll()
+    {
+        sumSoFar = 0.0;
+        factorSoFar = 0.0;
+        pendingAdditiveOperator = "";
+        pendingMultiplicativeOperator = "";
+        display.setText("0");
+        waitingForOperand = true;
+    }
+    
+    public void clearMemory()
+    {
+        sumInMemory = 0.0;
+    }
+    
+    public void readMemory()
+    {
+        display.setText(String.valueOf(sumInMemory));
+        waitingForOperand = true;
+    }
+    
+    public void setMemory()
+    {
+        equalClicked();
+        sumInMemory = parseDouble(display.text());
+    }
+    
+    public void addToMemory()
+    {
+        equalClicked();
+        sumInMemory += parseDouble(display.text());
+    }
+
+    private Button createButton(String text,  QColor color,
+                                String slot)
+    {
+        Button button = new Button(text, color);
+        button.clicked.connect(this, slot);
+        return button;
+    }
+    
+    public void abortOperation()
+    {
+        clearAll();
+        display.setText(tr("####"));
+    }
+    
+    public boolean calculate(double rightOperand, String pendingOperator)
+    {
+        if (pendingOperator.equals(tr("+"))) {
+            sumSoFar += rightOperand;
+        } else if (pendingOperator.equals(tr("-"))) {
+            sumSoFar -= rightOperand;
+        } else if (pendingOperator.equals(tr("\327"))) {
+            factorSoFar *= rightOperand;
+        } else if (pendingOperator.equals(tr("\367"))) {
+            if (rightOperand == 0.0)
+                return false;
+            factorSoFar /= rightOperand;
+        }
+        return true;
+    }
+
+    class Button extends QToolButton
+    {
+        public Button(String text, QColor color)
+        {
+            setSizePolicy(QSizePolicy.Policy.Expanding,
+                          QSizePolicy.Policy.Preferred);
+            setText(text);
+
+            QPalette newPalette = palette();
+            newPalette.setColor(QPalette.ColorRole.Button, color);
+            setPalette(newPalette);
+        } 
+
+        public QSize sizeHint()
+        {
+            QSize size = super.sizeHint();
+            size.setHeight(size.height() + 20);
+            size.setWidth(Math.max(size.width(), size.height()));
+            return size;
         }
     }
 
-    private abstract class Function implements Cloneable {
-        Vector arguments;
-        String name;
+    public static void main(String args[])
+    {
+        QApplication.initialize(args);
 
-        public Function(String name) {
-            this.name = name.toUpperCase();
-        }
+        new Calculator().show();
 
-        public String toString() {
-            String signature = "";
-            signature += "{function_" + name + "_ ";
-            for (Iterator iterator = arguments.iterator(); iterator.hasNext();) {
-                signature += iterator.next();
-                if (iterator.hasNext())
-                    signature += " ";
-            }
-            signature += "}";
-            return signature;
-        }
-
-        protected Object clone() {
-            Function function= null;
-            try {
-                function = (Function) super.clone();
-                function.arguments = new Vector();
-            } catch (CloneNotSupportedException exception) {
-                exception.printStackTrace();
-            }
-
-            return function;
-        }
-
-        public double evaluateFunction() throws ParseException {
-            double[] args = new double[arguments.size()];
-            int i = 0;
-            for (Iterator iterator = arguments.iterator(); iterator.hasNext();) {
-                args[i] = evaluate(iterator.next());
-                i++;
-            }
-            return result(args);
-        }
-        
-        protected void checkNumberOfArguments(int size, double[] args) throws ParseException {
-            if(args.length!=size)
-                throw new ParseException("Wrong number of arguments to function " + name + ": Expected " + size + ".");
-        }
-        
-        public abstract double result(double[] args) throws ParseException;
-    }
-
-    class ParseException extends Exception {
-        private static final long serialVersionUID = 1L;
-
-        public ParseException(String error) {
-            super(error);
-        }
+        QApplication.exec(); 
     }
 }
