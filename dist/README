@@ -29,13 +29,17 @@ file from the root directory. This will verify your virtual machine
 version and set the correct environment for running Qt Jambi
 applications.
 
+If you have downloaded a source package, these files are not
+available. After building Qt Jambi, you can run the launcher manually:
+
+java com.trolltech.launcher.Launcher
 
 Running Qt Designer
 -------------------
 
 To run the Qt Designer with the Qt Jambi language and Qt Jambi custom
 widget plugins one has to run the designer.bat or designer.sh file in
-the jambi install directory. In order for Qt Designer to find your
+the Jambi install directory. In order for Qt Designer to find your
 java installation you may be required to set JAVADIR prior to
 running Qt Designer. 
 
@@ -44,7 +48,7 @@ Running Eclipse with the Qt Designer plugin
 -------------------------------------------
 
 To run Eclipse with the Qt Designer plugin you are required to set your
-LD_LIBRARY_PATH to the $JAMBI_INSTALL_DIR/lib. 
+LD_LIBRARY_PATH to the JAMBI_INSTALL_DIR/lib. 
 
 
 Documentation
@@ -59,10 +63,14 @@ access to the documentation run the launcher and click the
 Manually launching Qt Jambi applications
 ----------------------------------------
 
-If you want to manually run Qt Jambi you need to set your CLASSPATH
-environment variable to include the qtjambi.jar file to get access to
-the library. To run the examples or launcher, you also need include the
-Qt Jambi root directory in the CLASSPATH.
+Unless you have downloaded a source package, you need the qtjambi.jar
+file, which will be located in the Qt Jambi root directory. Set the
+CLASSPATH environment variable to include qtjambi.jar to get access to
+the library.
+
+The next step is to include the Qt Jambi root directory in the
+CLASSPATH. If you don't want to run the examples or launcher, this
+step is optional unless you have a source package.
 
 In the standard package structure, Qt Jambi will automatically locate
 the native libraries. For other directory structures, you need to set
@@ -107,7 +115,7 @@ If you want to join the 'Qt Jambi users' mailing list, send a mail to
 qtjambi-interest-request@trolltech.com containing the single word
 "subscribe".
 
-Commercial customers and evaulators can report bugs to
+Commercial customers and evaluators can report bugs to
 qt-bugs@trolltech.com and direct questions to support@trolltech.com
 
 For all issues, make sure you include information about your
