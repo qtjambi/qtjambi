@@ -46,17 +46,9 @@
     \o Specifies the output directory.
 
     \row
-    \o \c {-x <xml file>}
-    \o Loads a custom configuration file.
-
-    \row
     \o \c {-p <package>}
     \o Specifies a package for the generated \c .class file (relative
     to the output directory).
-
-    \row
-    \o \c {-tr <func>}
-    \o Use <func> for translating strings instead of tr().
 
     \row
     \o \c {-cp <path>}
