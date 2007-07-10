@@ -12,6 +12,7 @@
 ****************************************************************************/
 
 #include "main.h"
+#include "asttoxml.h"
 #include "cppheadergenerator.h"
 #include "cppimplgenerator.h"
 #include "javagenerator.h"
@@ -22,6 +23,7 @@
 #include "classlistgenerator.h"
 #include "qdocgenerator.h"
 #include "uiconverter.h"
+
 
 #include <QDir>
 
@@ -53,6 +55,7 @@ int main(int argc, char *argv[])
     bool no_metainfo = false;
     bool display_help = false;
     bool dump_object_tree = false;
+    bool ast_to_xml = false;
     bool build_class_list = false;
     bool build_qdoc_japi = false;
     bool docs_enabled = false;
@@ -97,6 +100,8 @@ int main(int argc, char *argv[])
             include_paths = arg.mid(16);
         } else if (arg.startsWith("--dump-object-tree")) {
             dump_object_tree = true;
+	} else if (arg.startsWith("--ast-to-xml")) {
+	    ast_to_xml = true;
         } else if (arg.startsWith("--rebuild-only")) {
             Q_ASSERT(argc > i);
             QStringList classes = QString(argv[i+1]).split(",", QString::SkipEmptyParts);
@@ -166,6 +171,11 @@ int main(int argc, char *argv[])
     if (!Preprocess::preprocess(fileName, pp_file, include_paths)) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
         return 1;
+    }
+
+    if (ast_to_xml) {
+	astToXML(pp_file);
+	return 0;
     }
 
     // Building the code inforamation...
