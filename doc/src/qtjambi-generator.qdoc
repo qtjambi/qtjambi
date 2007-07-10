@@ -899,6 +899,7 @@
     "this" if you want to modify the function's return value or the
     object the function is called upon, respectively.
 
+
     \row
     \o \bold  remove \target remove
     \o
@@ -1193,6 +1194,20 @@
     \o \bold  insert-template
     \o Documented in the \l {insert-template}{Using Code Templates} section
 
+    \row
+    \o \bold replace-value \target replace-value
+	\o
+
+	The \c replace-value attribute lets you replace the return
+	statement of a function with a fixed string. This attribute can
+	only be used for the argument at index 0, which is always the
+	function's return value.
+
+	Here is an example of how to use \c modify-argument:
+
+    \code
+        <modify-argument index="0" replace-value="this"/>
+    \endcode
 
     \endtable
 
