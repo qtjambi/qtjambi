@@ -101,12 +101,14 @@ public class SvgCards extends QGraphicsView {
             setZValue(10);
             opacity = 0.7;
             manager.startedMove(this);
+            super.mousePressEvent(event);
         }
 
         public void mouseReleaseEvent(QGraphicsSceneMouseEvent event) {
             opacity = 1.0;
             setZValue(5);
             manager.stoppedMove(this);
+            super.mouseReleaseEvent(event);
         }
 
         public void paint(QPainter painter, QStyleOptionGraphicsItem option,
