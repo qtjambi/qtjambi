@@ -37,6 +37,7 @@ void astToXML(QString name) {
 	}
 
     QXmlStreamWriter s( &outputFile);
+    s.setAutoFormatting( true );
 
     s.writeStartElement("code");
 
@@ -65,11 +66,14 @@ void astToXML(QString name) {
 	    QString qualified_name = item->qualifiedName().join("::");
 	    s.writeStartElement("enum");
 	    s.writeAttribute("name", qualified_name);
-
+	   
 	    EnumeratorList enumList = item->enumerators();
 	    for(int i=0; i < enumList.size() ; i++) {
-		s.writeStartElement("value");
+                s.writeStartElement("enumerator");
+		if( !enumList[i]->value().isEmpty() )
+		    s.writeAttribute("value", enumList[i]->value());
 		s.writeCharacters(enumList[i]->name());
+        
 		s.writeEndElement();
 	    }
 	    s.writeEndElement();
