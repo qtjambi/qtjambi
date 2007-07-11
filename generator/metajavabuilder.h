@@ -92,6 +92,8 @@ public:
     bool isQObject(const QString &qualified_name);
     bool isEnum(const QStringList &qualified_name);
 
+    void fixQObjectForScope  (TypeDatabase *types, 
+			      NamespaceModelItem item);
 protected:
     MetaJavaClass *argumentToClass(ArgumentModelItem);
 

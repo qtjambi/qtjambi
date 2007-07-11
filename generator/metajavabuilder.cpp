@@ -276,6 +276,25 @@ void MetaJavaBuilder::traverseStreamOperator(FunctionModelItem item)
     }
 }
 
+void MetaJavaBuilder::fixQObjectForScope(TypeDatabase *types, 
+					 NamespaceModelItem scope)
+{
+    foreach (ClassModelItem item, scope->classes()) {
+        QString qualified_name = item->qualifiedName().join("::");
+        TypeEntry *entry = types->findType(qualified_name);
+        if (entry) {
+	    if (isQObject(qualified_name) && entry->isComplex()) {
+                ((ComplexTypeEntry *) entry)->setQObject(true);
+	    }
+	}
+    }
+
+    foreach (NamespaceModelItem item, scope->namespaceMap().values()) {
+        if (scope != item)
+	  fixQObjectForScope(types, item);
+    }
+}
+
 bool MetaJavaBuilder::build()
 {
     Q_ASSERT(!m_file_name.isEmpty());
@@ -306,15 +325,7 @@ bool MetaJavaBuilder::build()
 
     // fix up QObject's in the type system..
     TypeDatabase *types = TypeDatabase::instance();
-    foreach (ClassModelItem item, typeMap.values()) {
-        QString qualified_name = item->qualifiedName().join("::");
-        TypeEntry *entry = types->findType(qualified_name);
-        if (entry) {
-            if (isQObject(qualified_name) && entry->isComplex()) {
-                ((ComplexTypeEntry *) entry)->setQObject(true);
-            }
-        }
-    }
+    fixQObjectForScope(types, model_dynamic_cast<NamespaceModelItem>(m_dom));
 
     // Start the generation...
     foreach (ClassModelItem item, typeMap.values()) {
@@ -1731,12 +1742,23 @@ bool MetaJavaBuilder::isQObject(const QString &qualified_name)
         return true;
 
     ClassModelItem class_item = m_dom->findClass(qualified_name);
+
+    if (!class_item) {
+      QStringList names = qualified_name.split(QLatin1String("::"));
+      NamespaceModelItem ns = model_dynamic_cast<NamespaceModelItem>(m_dom);
+      for (int i=0; i<names.size() - 1 && ns; ++i) 
+          ns = ns->namespaceMap().value(names.at(i));
+      if (ns && names.size() >= 2)
+          class_item = ns->findClass(names.at(names.size() - 1));
+    }
+    
     bool isqobject = class_item && class_item->extendsClass("QObject");
 
     if (class_item && !isqobject) {
         QStringList baseClasses = class_item->baseClasses();
         for (int i=0; i<baseClasses.count(); ++i) {
             isqobject = isQObject(baseClasses.at(i));
+
             if (isqobject)
                 break;
         }

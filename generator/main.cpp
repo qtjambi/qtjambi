@@ -421,7 +421,7 @@ void dumpMetaJavaClass(const MetaJavaClass *cls)
     printf("\nclass: %s, package: %s\n", qPrintable(cls->name()), qPrintable(cls->package()));
     if (cls->hasVirtualFunctions())
         printf("    shell based\n");
-    printf("  baseclass: %s\n", qPrintable(cls->baseClassName()));
+    printf("  baseclass: %s %s\n", qPrintable(cls->baseClassName()), cls->isQObject() ? "'QObject-type'" : "'not a QObject-type'");
     printf("  interfaces:");
     foreach (MetaJavaClass *iface, cls->interfaces())
         printf(" %s", qPrintable(iface->name()));
