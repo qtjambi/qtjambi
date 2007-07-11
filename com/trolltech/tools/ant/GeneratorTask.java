@@ -9,6 +9,7 @@ public class GeneratorTask extends Task{
     private String header = "";
     private String typesystem = "";
     private String dir = ".";
+    private String includePaths = "";
     private boolean silent = true;
   
     private String searchPath() {
@@ -34,7 +35,12 @@ public class GeneratorTask extends Task{
     
     public void execute() throws BuildException {
         System.out.println(msg);
-        String arguments = " " + header + " " + typesystem;
+        String arguments = "";
+        
+        if( !includePaths.equals("") ){
+            arguments += " --include-paths=" + includePaths; 
+        }
+        arguments += " " + header + " " + typesystem;
         
         String comand = Util.LOCATE_EXEC(generatorExecutable(), searchPath(), null).getAbsolutePath() + arguments;
         
@@ -66,5 +72,9 @@ public class GeneratorTask extends Task{
     
     public void setDir(String dir) {
         this.dir = dir;
+    }
+    
+    public void setIncludePaths(String includePaths) {
+        this.includePaths = includePaths;
     }
 }
