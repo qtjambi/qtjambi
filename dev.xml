@@ -12,7 +12,7 @@
     <property name="htmlDir"   value="/var/www/junit/" />
 <!--    <property name="config"    value="debug" /> -->
     <property name="deployDir" value="./deploy" />
-    <property name="eclipseDir" value="../../eclipse/main" />
+    <property name="eclipseDir" value="../eclipse/main" />
 
     <target name="clean.report"
             description="Clean report directory.">
