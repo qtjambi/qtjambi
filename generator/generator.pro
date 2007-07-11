@@ -42,6 +42,7 @@ HEADERS += \
         typeparser.h \
         typesystem.h \
         uiconverter.h \
+        asttoxml.h \
 
 SOURCES += \
         classlistgenerator.cpp \
@@ -61,6 +62,7 @@ SOURCES += \
         typeparser.cpp \
         typesystem.cpp \
         uiconverter.cpp \
+        asttoxml.cpp \
 
 QT = core xml
 
