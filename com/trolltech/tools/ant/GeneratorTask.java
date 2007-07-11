@@ -8,6 +8,7 @@ public class GeneratorTask extends Task{
     private String msg = "";
     private String header = "";
     private String typesystem = "";
+    private String outputDirectory = ".";
     private String dir = ".";
     private String includePaths = "";
     private boolean silent = true;
@@ -40,11 +41,16 @@ public class GeneratorTask extends Task{
         if( !includePaths.equals("") ){
             arguments += " --include-paths=" + includePaths; 
         }
+        
+        if( !outputDirectory.equals("")){
+            arguments += " --output-directory=" + outputDirectory; 
+        }
+        
         arguments += " " + header + " " + typesystem;
         
         String comand = Util.LOCATE_EXEC(generatorExecutable(), searchPath(), null).getAbsolutePath() + arguments;
         
-        System.out.println(dir + "  " + comand);
+        System.out.println(comand);
         try {
             Process process = Runtime.getRuntime().exec(comand, null, new File(dir) );
             Util.redirectOutput(process, silent);
@@ -70,11 +76,15 @@ public class GeneratorTask extends Task{
         this.silent = silent;
     }
     
-    public void setDir(String dir) {
-        this.dir = dir;
+    public void setOutputDirectory(String outputDirectory) {
+        this.outputDirectory = outputDirectory;
     }
     
     public void setIncludePaths(String includePaths) {
         this.includePaths = includePaths;
+    }
+    
+    public void setDir(String dir) {
+        this.dir = dir;
     }
 }
