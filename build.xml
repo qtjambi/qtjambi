@@ -1,14 +1,5 @@
 <project default="qtjambi" basedir=".">
 
-    <javac srcdir="." destdir=".">
-        <include name="com/trolltech/tools/ant/*.java"/>
-    </javac>
-    
-    <taskdef name="juic"      classpath=".:ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
-    <taskdef name="qmake"     classpath=".:ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
-    <taskdef name="make"      classpath=".:ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
-    <taskdef name="generator" classpath=".:ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
-
     <property environment="env"/> 
 
     <tstamp/>
@@ -20,6 +11,15 @@
     <property name="qt"       value="${env.QTDIR}" />
     <property name="qtLib"    value="${qt}/lib" />
     <property name="config"    value="debug" />
+
+    <javac srcdir="." destdir="${outputDir}">
+        <include name="com/trolltech/tools/ant/*.java"/>
+    </javac>
+    
+    <taskdef name="juic"      classpath="${outputDir}:ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
+    <taskdef name="qmake"     classpath="${outputDir}:ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
+    <taskdef name="make"      classpath="${outputDir}:ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
+    <taskdef name="generator" classpath="${outputDir}:ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
 
     <target name="help"
             description="Provide detailed help">
@@ -90,6 +90,7 @@
 
     <target name="compile.java" depends="juic"
             description="Compile the Qt Jambi's core java files.">
+        <mkdir dir="${outputDir}" />
         <javac srcdir="${sourceDir}" 
                destdir="${outputDir}"
                memoryMaximumSize="1024m"
