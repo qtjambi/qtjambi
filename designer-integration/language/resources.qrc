@@ -2,5 +2,12 @@
 <RCC version="1.0">
   <qresource prefix="">
     <file>jambiwidgetbox.xml</file>
+
+    <file>templates/forms/Dialog_with_Buttons_Bottom.jui</file>
+    <file>templates/forms/Dialog_with_Buttons_Right.jui</file>
+    <file>templates/forms/Dialog_without_Buttons.jui</file>
+    <file>templates/forms/Main_Window.jui</file>
+    <file>templates/forms/Widget.jui</file>
+
   </qresource>
 </RCC>
