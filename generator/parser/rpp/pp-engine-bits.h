@@ -565,6 +565,11 @@ _InputIterator pp::handle_define (_InputIterator __first, _InputIterator __last)
 
   while (__first != __last && *__first != '\n')
     {
+	if (*__first == '/') {
+	    __first = skip_comment_or_divop(__first, __last);
+	    env.current_line += skip_comment_or_divop.lines;
+	}
+
       if (*__first == '\\')
         {
           _InputIterator __begin = __first;
