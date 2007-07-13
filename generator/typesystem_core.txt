@@ -1907,7 +1907,13 @@
 
   </object-type>
   
-  <object-type name="QWaitCondition"/>
+  <object-type name="QWaitCondition">
+    <modify-function signature="wait(QMutex *, unsigned long)">
+        <modify-argument index="2">
+            <replace-default-expression with="Integer.MAX_VALUE" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
 
   <object-type name="QFileSystemWatcher">
     <extra-includes>
