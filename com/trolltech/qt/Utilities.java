@@ -64,6 +64,8 @@ public class Utilities {
     public static boolean implicitLoading = !matchProperty("com.trolltech.qt.implicit-loading", "false");
 	/** The library sub path. */
     public static String libSubPath = decideLibSubPath();
+    /** Use cached dynamic libraries or not */
+    public static boolean useCacheForDynamicLibraries = !matchProperty("com.trolltech.qt.use-cache-for-loading", "false");
 
     private static final String DEBUG_SUFFIX = "_debuglib";
 
@@ -170,7 +172,7 @@ public class Utilities {
             File tmpLibDir = jambiTempDir();
 
             File destLib = new File(tmpLibDir, lib);
-            if (!destLib.exists()) {
+            if (!destLib.exists() || !useCacheForDynamicLibraries) {
                 tmpLibDir.mkdirs();
                 copy(libUrl, destLib);
             }
