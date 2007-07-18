@@ -5,17 +5,12 @@
     <tstamp/>
 
     <property name="sourceDir" value="." />
-    <property name="outputDir" value="classes" />
 
     <property name="jambiLib" value="./lib" />
     <property name="qt"       value="${env.QTDIR}" />
     <property name="qtLib"    value="${qt}/lib" />
     <property name="config"    value="debug" />
 
-    <javac srcdir="." destdir="${outputDir}">
-        <include name="com/trolltech/tools/ant/*.java"/>
-    </javac>
-    
     <taskdef name="juic"      classpath="${outputDir}:ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
     <taskdef name="qmake"     classpath="${outputDir}:ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
     <taskdef name="make"      classpath="${outputDir}:ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
@@ -30,8 +25,12 @@
 
     <target name="clean"
             description="Clean everything.">
-        <delete dir="${outputDir}" />
-        <delete dir="${jambiLib}" />
+	<delete file="qtjambi.jar"/>
+	<delete file="qtjambi-launcher.jar"/>
+	<delete file="qtjambi-examples.jar"/>
+	<delete file="qtjambi-designer.jar"/>
+        <delete dir="bin"/>
+	<delete dir="lib"/>
     </target>
 
     <target name="prepare" depends="clean"
@@ -58,7 +57,7 @@
 
     <target name="generator.qtjambi" 
             description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
-        <generator dir="generator" />
+        <generator dir="generator" outputDirectory=""/>
     </target>
 
     <target name="generator.generator-example" 
@@ -88,6 +87,78 @@
         </juic>
     </target>
 
+    <target name="qtjambi.jar">
+        <javac srcdir="."
+               memoryMaximumSize="1024m"
+               fork="true">
+            <include name="com/trolltech/qt/*.java"/>
+            <include name="com/trolltech/qt/*/*.java"/>
+        </javac>
+
+        <jar destfile="qtjambi.jar"
+             basedir="."
+             includes="com/trolltech/qt/*.class,com/trolltech/qt/*/*.class"
+             includesfile="com/trolltech/images/qt-logo.png">
+            <manifest>
+                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="qtjambi-examples.jar">
+        <javac srcdir=".">
+            <include name="com/trolltech/demos/*.java"/>
+            <include name="com/trolltech/examples/*.java"/>
+            <exclude name="com/trolltech/examples/GeneratorExample.java"/>
+            <exclude name="com/trolltech/demos/HelloGL.java"/>
+        </javac>
+
+        <jar destfile="qtjambi-examples.jar"
+             basedir=".">
+            <include name="com/trolltech/examples/*"/>
+            <include name="com/trolltech/demos/*"/> 
+            <exclude name="com/trolltech/examples/*.java"/>
+            <exclude name="com/trolltech/demos/*.java"/>
+           <manifest>
+                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="qtjambi-launcher.jar">
+        <javac srcdir=".">
+            <include name="com/trolltech/launcher/*.java"/>
+        </javac>
+
+        <jar destfile="qtjambi-launcher.jar"
+             basedir=".">
+            <include name="com/trolltech/launcher/*"/> 
+            <exclude name="com/trolltech/launcher/*.java"/>
+           <manifest>
+                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="qtjambi-designer.jar">
+        <javac srcdir=".">
+            <include name="com/trolltech/tools/designer/*.java"/>
+        </javac>
+
+        <jar destfile="qtjambi-designer.jar"
+             basedir=".">
+            <include name="com/trolltech/tools/designer/*"/> 
+            <exclude name="com/trolltech/tools/designer/*.java"/>
+           <manifest>
+                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
+            </manifest>
+        </jar>
+    </target>
+
+   
+
+    
+
     <target name="compile.java" depends="juic"
             description="Compile the Qt Jambi's core java files.">
         <mkdir dir="${outputDir}" />
@@ -105,7 +176,7 @@
             <exclude name="com/trolltech/examples/GeneratorExample.java" />
         </javac>
     </target>
-
+    
     <target name="compile.generator-example"
             description="Compile Qt Jambi generator-example.">
 	<make dir="generator_example" />
@@ -114,30 +185,12 @@
         </javac>
     </target>
 
-    <target name="deploy.jar"
-            description="Make a jar file 'qtjambi.jar' that you can include in your project.">
-        <jar destfile="qtjambi.jar">
-            <manifest>
-                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
-                <attribute name="Main-Class" value="com.trolltech.launcher.Launcher"/>
-            </manifest>
-            <fileset dir="${outputDir}" />
-            <fileset dir="${sourceDir}">
-                <include name="com/trolltech/**/*.png" />
-                <include name="com/trolltech/**/*.html" />
-                <include name="com/trolltech/**/*.svg" />
-		<include name="com/trolltech/**/*.qm" />
-                <include name="com/trolltech/examples/ResourceSystem.jar" />
-            </fileset>
-        </jar>
-    </target>
-
     <target name="generator-example"
             description="Generate code for generator-example, and compile it."
             depends="generator.generator-example, compile.generator-example" />
 
     <target name="qtjambi"
             description="Make QT Jambi."
-            depends="prepare, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, deploy.jar" />
+            depends="prepare, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar" />
 
 </project>
