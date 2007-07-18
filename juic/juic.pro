@@ -38,7 +38,7 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
 }
 
 mac {
-    CONFIG += x86 ppc
+    contains(QT_CONFIG, x86):contains(QT_CONFIG, ppc):CONFIG += x86 ppc
     CONFIG -= precompile_header
 }
 	
