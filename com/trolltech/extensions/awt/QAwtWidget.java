@@ -265,12 +265,8 @@ public class QAwtWidget extends Canvas {
 				} 				
 								
 				if (event instanceof QFindUnderMouseEvent) {
-					System.err.println("got it");
 					QFindUnderMouseEvent findUnderMouseEvent = (QFindUnderMouseEvent) event;
-					QWidget hitWidget = findUnderMouseEvent.findHitWidget();
-					
-					System.err.println("hitWidget == " + hitWidget);
-					
+					QWidget hitWidget = findUnderMouseEvent.findHitWidget();					
 					if (hitWidget != currentWidgetUnderMouse) {
 						boolean requiresUpdate = false;
 						if (currentWidgetUnderMouse != null) { 
@@ -302,8 +298,7 @@ public class QAwtWidget extends Canvas {
 					setBounds(new Rectangle(rectangle.x, rectangle.y, 
 							sizeHint.width() > rectangle.width || true ? sizeHint.width() : rectangle.width, 
 						    sizeHint.height() > rectangle.height || true ? sizeHint.height() : rectangle.height));
-					getParent().doLayout();
-					//updateAwtWidget();
+					getParent().doLayout();					
 				}
 				
 				if (event instanceof QPaintEvent) {
@@ -324,7 +319,7 @@ public class QAwtWidget extends Canvas {
 			if (focusWidget != null) {
 				System.err.println("activating");
 				focusWidget.activateWindow();
-				focusWidget.setFocus(focus.second);
+				focusWidget.setFocus(focus.second);				
 			}
 			containedWidget.updateGeometry();
 			synchronized (QAwtWidget.this) {				
@@ -337,8 +332,8 @@ public class QAwtWidget extends Canvas {
 					c = c.getParent();
 				}
 				if (c instanceof Window) {
-					((Window)c).toFront();
-				}
+					//((Window)c).toFront();
+				}				
 			}
 			repaint();
 		}
@@ -459,7 +454,7 @@ public class QAwtWidget extends Canvas {
 		widgetAppearance = QPixmap.grabWidget(containedWidget);
 		eventFilter = new QtEventFilter(containedWidget);
 		
-		installEventFilter(eventFilter, containedWidget);
+		installEventFilter(eventFilter, containedWidget);		
 	}
 	
 	private void installEventFilter(QtEventFilter eventFilter, QObject filtered) {
