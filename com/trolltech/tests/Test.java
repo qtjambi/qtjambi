@@ -13,32 +13,35 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.qt.core.*;
-import static org.junit.Assert.*;
+import com.trolltech.qt.*;
 
-public class Test
-{
-    @org.junit.Test
-    public void testQDataStreamReadWriteBytes() {
-        QByteArray ba = new QByteArray();
+import java.io.*;
 
-        {
-            QDataStream stream = new QDataStream(ba, QIODevice.OpenModeFlag.WriteOnly);
-            byte bytes[] = "abra ka dabra".getBytes();
-            stream.writeInt(bytes.length);
-            stream.writeBytes(bytes);
+public class Test extends QSignalEmitter {
+
+
+
+    public static void main(String args[]) throws IOException, InterruptedException {
+        String command[] = { "nmake", "clean" };
+
+        File dir = new File("generator");
+
+        ProcessBuilder procBuilder = new ProcessBuilder(command);
+        procBuilder.directory(dir);
+        procBuilder.redirectErrorStream();
+
+        Process proc = procBuilder.start();
+        System.out.println("started process...");
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        String line = null;
+         while ( (line = br.readLine()) != null) {
+             System.out.println("line from process: " + line);
         }
 
-        {
-            QDataStream stream = new QDataStream(ba);
-            byte bytes[] = new byte[stream.readInt()];
-            stream.readBytes(bytes);
-            String s = new String(bytes);
-            assertEquals("abra ka dabra".length(), s.length());
-            assertEquals("abra ka dabra", s);
-        }
+        proc.waitFor();
 
-        System.gc();
+        System.out.println("all done...");
     }
 
 }

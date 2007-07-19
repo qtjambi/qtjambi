@@ -1341,8 +1341,10 @@ public class TestConnections extends QApplicationTest implements Qt
         Signal0 signal = new Signal0();
         boolean gotThusFar;
         public void function() {
-            signal.connect(this, "function()");
-            gotThusFar = true;
+            try {
+                signal.connect(this, "function()");
+                gotThusFar = true;
+            } catch (Exception e) { }
         }
     }
 
@@ -1350,7 +1352,7 @@ public class TestConnections extends QApplicationTest implements Qt
         ConnectInEmitTester c = new ConnectInEmitTester();
         c.signal.connect(c, "function()");
         c.signal.emit();
-        assertFalse(c.gotThusFar);
+        assertTrue(c.gotThusFar);
     }
 
     class ArrayConnection extends SignalEmitter{
@@ -1406,10 +1408,41 @@ public class TestConnections extends QApplicationTest implements Qt
         test.test3.emit(test.b);
         test.test4.emit(test.c);
     }
-    
-      public static void main(String args[]) {
-          QCoreApplication.initialize(args);
-          new TestConnections().testConnectInEmit();
-           new TestConnections().run_javaDisconnectReceiverShouldDisconnectCpp();          
-      }
+
+    static class Emitter extends QSignalEmitter implements Runnable {
+        Signal0 signal = new Signal0();
+        boolean goodExit = false;
+
+        public void run() {
+            for (int i=0; i<100000; ++i) {
+                signal.emit();
+            }
+            goodExit = true;
+        }
+
+        public void slot1() { }
+        public void slot2() { }
+    }
+
+    @Test public void concurrentEmitConnect() {
+        Emitter e = new Emitter();
+        Thread t = new Thread(e);
+        e.signal.connect(e, "slot1()");
+        t.start();
+
+        boolean finished = false;
+
+        try {
+            for (int i=0; i<100000; ++i) {
+                e.signal.connect(e, "slot2()");
+                e.signal.disconnect(e, "slot2()");
+            }
+            finished = true;
+            t.join();
+        } catch(Exception ex) {
+
+        }
+
+        assertTrue(e.goodExit);
+    }
 }

@@ -38,7 +38,6 @@ public class QSignalEmitter {
         private int                 arrayDimensions[]   = null;
         private String              name                = "";
         private Class<?>            declaringClass      = null;
-        private boolean             inEmit              = false;
         private boolean             connectedToCpp      = false;
         private boolean             inDisconnect        = false;
         
@@ -120,8 +119,6 @@ public class QSignalEmitter {
          */
         public final void connect(Object receiver, String method,
                                      Qt.ConnectionType type) {
-            if (inEmit)
-                throw new ConnectionException("Cannot connect to signal while its being emitted");
             if (receiver == null)
                 throw new NullPointerException("Receiver must be non-null");
             
@@ -144,8 +141,6 @@ public class QSignalEmitter {
         public final boolean disconnect(Object receiver, String method) {
             if (method != null && receiver == null)
                 throw new IllegalArgumentException("Receiver cannot be null if you specify a method");
-            if (inEmit)
-                throw new ConnectionException("Cannot disconnect to signal while its being emitted");
 
             Method slotMethod = null;
             if (method != null) {
@@ -214,8 +209,6 @@ public class QSignalEmitter {
          *                                    signatures are incompatible.
          */
         public final void connect(AbstractSignal signalOut, Qt.ConnectionType type) {
-            if (inEmit)
-                throw new ConnectionException("Cannot connect to signal while its being emitted");
             connectSignalMethod(QtJambiInternal.findEmitMethod(signalOut), signalOut,
                     type.value());
         }
@@ -228,8 +221,6 @@ public class QSignalEmitter {
          * @return true if the two signals were successfully disconnected, or false otherwise.
          */
         public final boolean disconnect(AbstractSignal signalOut) {
-            if (inEmit)
-                throw new ConnectionException("Cannot connect to signal while its being emitted");
             return removeConnection(signalOut, QtJambiInternal.findEmitMethod(signalOut));
         }
 
@@ -367,20 +358,20 @@ public class QSignalEmitter {
         /**
          * @exclude
          */
-        protected final void emit_helper(Object... args) {
+        protected synchronized final void emit_helper(Object... args) {
 
             if (QSignalEmitter.this.signalsBlocked())
                 return;
 
-            if (inEmit)
-                return;
+            List<Connection> cons = connections;
+            List<Connection> toRemove = null;
 
-            inEmit = true; // recursion block
-
-            for (Connection c : connections) {
+            for (Connection c : cons) {
                 // If the receiver has been deleted we take the connection out of the list
                 if (c.receiver instanceof QtJambiObject && ((QtJambiObject)c.receiver).nativeId() == 0) {
-                    connections.remove(c);
+                    if (toRemove == null)
+                        toRemove = new ArrayList<Connection>();
+                    toRemove.add(c);
                     continue;
                 }
 
@@ -392,8 +383,7 @@ public class QSignalEmitter {
                 } else {
                     if (c.args == null)
                         c.args = new Object[c.convertTypes.length];
-                    System.arraycopy(args, 0, c.args, 0,
-                            c.args.length);
+                    System.arraycopy(args, 0, c.args, 0, c.args.length);
                 }
 
                 // We do a direct connection in three cases:
@@ -457,7 +447,8 @@ public class QSignalEmitter {
                 }
             }
 
-            inEmit = false;
+            // Remove the ones marked for removal..
+            removeConnection_helper(toRemove);
         }
 
         private boolean matchSlot(Method slot) {
@@ -506,7 +497,7 @@ public class QSignalEmitter {
             return true;
         }
 
-        private void addConnection(Object receiver, Method slot,
+        private synchronized void addConnection(Object receiver, Method slot,
                 int connectionType) {
 
             if (!connectedToCpp) {
@@ -528,10 +519,19 @@ public class QSignalEmitter {
                 // if the slot turns out to be inaccessible
             }
 
-            connections.add(new Connection(receiver, slot, returnSig,(byte) connectionType));
+
+            List<Connection> newList = cloneConnections();
+            newList.add(new Connection(receiver, slot, returnSig,(byte) connectionType));
+            connections = newList;
         }
 
-        private boolean removeConnection(Object receiver, Method slot) {
+        private List<Connection> cloneConnections() {
+            List<Connection> newList = new ArrayList<Connection>();
+            newList.addAll(connections);
+            return newList;
+        }
+
+        private synchronized boolean removeConnection(Object receiver, Method slot) {
             if (inDisconnect)
                 return false;
             inDisconnect = true;
@@ -541,17 +541,19 @@ public class QSignalEmitter {
                 __qt_signalInitialization(name());
             }
 
-            ListIterator<Connection> i = connections.listIterator();
+            List<Connection> toRemove = null;
             boolean returned = false;
-            while (i.hasNext()) {
-                Connection c = i.next();
-
+            for (Connection c : connections) {
                 if ((receiver == null || c.receiver == receiver)
-                        && (slot == null || slot.equals(c.slot))) {
-                    i.remove();
+                    && (slot == null || slot.equals(c.slot))) {
+                    if (toRemove == null)
+                        toRemove = new ArrayList<Connection>();
+                    toRemove.add(c);
                     returned = true;
                 }
             }
+
+            removeConnection_helper(toRemove);
 
             if (QSignalEmitter.this instanceof QObject && (receiver instanceof QObject || receiver == null)) {
                 String methodSignature = null;
@@ -569,7 +571,16 @@ public class QSignalEmitter {
 
             inDisconnect = false;
             return returned;
-        }        
+        }
+
+        private void removeConnection_helper(List<Connection> toRemove) {
+            if (toRemove != null) {
+                List<Connection> newList = cloneConnections();
+                for (Connection c : toRemove)
+                    newList.remove(c);
+                connections = newList;
+            }
+        }
     }
     
     /**

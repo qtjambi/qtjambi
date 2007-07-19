@@ -21,6 +21,13 @@ import java.util.*;
  */
 public abstract class QMessageHandler {
 
+    static {
+        try {
+            // Make sure we load dependent libraries...
+            Class.forName("com.trolltech.qt.QtJambi_LibraryInitializer");
+        } catch (ClassNotFoundException e) { }
+    }
+
     /**
      * Implement this method to be notified about debug messages.
      */
