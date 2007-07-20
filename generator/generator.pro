@@ -77,8 +77,6 @@ win32-msvc.net {
         QMAKE_CFLAGS -= -Zm200
 }
 
-contains(QT_CONFIG, qt3support):message("foo...")
-
 mac {
     contains(QT_CONFIG, x86):contains(QT_CONFIG, ppc):CONFIG += x86 ppc
     CONFIG -= precompile_header
