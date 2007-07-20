@@ -25,17 +25,12 @@
 
     <target name="clean"
             description="Clean everything.">
-	<delete file="qtjambi.jar"/>
-	<delete file="qtjambi-launcher.jar"/>
-	<delete file="qtjambi-examples.jar"/>
-	<delete file="qtjambi-designer.jar"/>
-        <delete dir="bin"/>
-	<delete dir="lib"/>
-    </target>
-
-    <target name="prepare" depends="clean"
-            description="Clean and create folders needed for a full rebuild.">
-        <mkdir dir="${outputDir}" />
+	<delete file="qtjambi.jar" failonerror="false"/>
+	<delete file="qtjambi-launcher.jar" failonerror="false"/>
+	<delete file="qtjambi-examples.jar" failonerror="false"/>
+	<delete file="qtjambi-designer.jar" failonerror="false"/>
+        <delete dir="bin" failonerror="false"/>
+	<delete dir="lib" failonerror="false"/>
     </target>
 
     <target name="qmake.qtjambi"
@@ -191,6 +186,6 @@
 
     <target name="qtjambi"
             description="Make QT Jambi."
-            depends="prepare, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar" />
+            depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar" />
 
 </project>
