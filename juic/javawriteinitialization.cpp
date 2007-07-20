@@ -1321,7 +1321,8 @@ void WriteInitialization::initializeTableWidget(DomWidget *w)
 
 QString WriteInitialization::trCall(const QString &str, const QString &/*commentHint*/) const
 {
-    return javaFixString (str);
+    return QLatin1String("com.trolltech.qt.core.QCoreApplication.translate(\"")
+        + m_generatedClass + QLatin1String("\", ") + javaFixString(str) + QLatin1String(")");
 }
 
 void WriteInitialization::initializeMenu(DomWidget *w, const QString &/*parentWidget*/)
