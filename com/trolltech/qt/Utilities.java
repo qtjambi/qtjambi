@@ -64,8 +64,8 @@ public class Utilities {
     public static boolean implicitLoading = !matchProperty("com.trolltech.qt.implicit-loading", "false");
 	/** The library sub path. */
     public static String libSubPath = decideLibSubPath();
-    /** Use cached dynamic libraries or not */
-    public static boolean useCacheForDynamicLibraries = !matchProperty("com.trolltech.qt.use-cache-for-loading", "false");
+    /** Whether Qt Jambi should prefer to load libraries from its cache */
+    public static boolean loadFromCache = matchProperty("com.trolltech.qt.load-from-cache", "true");
 
     private static final String DEBUG_SUFFIX = "_debuglib";
 
@@ -172,12 +172,21 @@ public class Utilities {
             File tmpLibDir = jambiTempDir();
 
             File destLib = new File(tmpLibDir, lib);
-            if (!destLib.exists() || !useCacheForDynamicLibraries) {
+            
+            // If we prefer to load the cached copies of libraries *and* the library has
+            // previously been copied out, we just load it. Otherwise we copy it again
+            // (make sure default to updating the cache or we might end up in trouble.)
+            // For applications such as webstart, use the use-cache-property. 
+            if (!destLib.exists() || !loadFromCache) {
                 tmpLibDir.mkdirs();
                 copy(libUrl, destLib);
+                
+                if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") from class path");
+            } else if (VERBOSE_LOADING) {
+            	System.out.println("Loaded(" + lib + ") using cached");
             }
-            Runtime.getRuntime().load(destLib.getAbsolutePath());
-            if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") using cached");
+            
+            Runtime.getRuntime().load(destLib.getAbsolutePath());            
             return true;
         } catch (Throwable e) {
             if (VERBOSE_LOADING) e.printStackTrace();
