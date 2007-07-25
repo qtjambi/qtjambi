@@ -34,6 +34,9 @@
   <rejection class="QDesignerDynamicPropertySheetExtension" />
   <rejection class="QDesignerPromotionInterface" />
   <rejection class="QDesignerScriptExtension" />
+  
+  <primitive-type name="qdesigner_internal::FlagType" java-name="int" preferred-conversion="no" jni-name="jint" />
+  <primitive-type name="qdesigner_internal::EnumType" java-name="int" preferred-conversion="no" jni-name="jint" />
 
   <object-type name="QDesignerResourceBrowserInterface">
     <include file-name="abstractresourcebrowser.h" location="global"/>

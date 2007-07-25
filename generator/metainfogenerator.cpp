@@ -597,9 +597,6 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
                                        "constructor and destructor for type '%1'").arg(entry->name()));
      }
 
-    if (!entry->preferredConversion())
-        return ;
-
     QString javaPackage = entry->javaPackage();
 
     QString javaName =  entry->lookupName();
@@ -609,8 +606,11 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
     QString qtName = entry->qualifiedCppName();
 
-    s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl
-      << "    registerJavaToQt(\"" << javaName << "\", \"" << qtName << "\");" << endl;
+    s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl;
+    if (!entry->preferredConversion())
+        return ;
+
+    s << "    registerJavaToQt(\"" << javaName << "\", \"" << qtName << "\");" << endl;
     if (entry->isComplex() && entry->isObject() && !((ComplexTypeEntry *)entry)->isQObject() && !entry->isInterface()) {
         QString patchedName = QString(javaName).replace("/", "_").replace("$", "_");
 
