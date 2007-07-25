@@ -164,8 +164,7 @@ function copyFiles(files, rootPath, destDir) {
 function buildJambi() {
     verbose("Building Qt Jambi package");
     var jambiRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtjambi";
-    var classPath = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt/src"
-                    + dirSeparator + eclipsePackages;
+    var classPath = packageDir + "/tempQtBundle/bin" + dirSeparator + eclipsePackages;
     var classFileOutput = packageDir + "/tempClassFiles";
 
     var dir = new Dir(classFileOutput);
@@ -245,7 +244,7 @@ function buildQtBundle() {
     dir.mkdirs(bundleDest + "/bin");
 
     var srcPath = bundleRootDir + "/src";
-    compileJavaFiles(srcPath, eclipsePackages, "com/trolltech/qt", bundleDest + "/bin");
+    compileJavaFiles(srcPath, eclipsePackages, "com/trolltech", bundleDest + "/bin");
 
     copyFiles([bundleRootDir + "/plugin.xml"], bundleRootDir, bundleDest);
 
