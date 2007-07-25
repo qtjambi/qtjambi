@@ -1,15 +1,15 @@
 /****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $JAVA_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
+ **
+ ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+ **
+ ** This file is part of $PRODUCT$.
+ **
+ ** $JAVA_LICENSE$
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
 
 package com.trolltech.benchmarks;
 
@@ -17,143 +17,145 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.*;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class DrawRects {
-    
+
     private static class AwtWidget extends Component {
-    private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-    public void paint(Graphics g) {
-	    g.setColor(new Color(255, 0, 0));
+        public void paint(Graphics g) {
+            g.setColor(new Color(255, 0, 0));
 
-	    int runningTime = 1000;
+            int runningTime = 1000;
 
-	    for (int size=8; size<=512; size*=2) {
-		
-		long drawCount = 0;
-		long startTime = System.currentTimeMillis();
-		long endTime = startTime + runningTime;
-		while (System.currentTimeMillis() < endTime) {
-		    for (int j=0; j<100; ++j) {
-			g.fillRect(0, 0, size, size);
-			++drawCount;
-		    }
-		}
+            for (int size = 8; size <= 512; size *= 2) {
 
-		long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
-		System.out.printf("Awt:   rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
-	    }
+                long drawCount = 0;
+                long startTime = System.currentTimeMillis();
+                long endTime = startTime + runningTime;
+                while (System.currentTimeMillis() < endTime) {
+                    for (int j = 0; j < 100; ++j) {
+                        g.fillRect(0, 0, size, size);
+                        ++drawCount;
+                    }
+                }
 
-	    setVisible(false);
-	}
+                long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+                System.out.printf("Awt:   rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
+            }
 
-	public Dimension getPreferredSize() {
-	    return new Dimension(512, 512);
-	}
+            setVisible(false);
+        }
+
+        public Dimension getPreferredSize() {
+            return new Dimension(512, 512);
+        }
     }
 
 
     private static class QtWidget extends QWidget {
-	protected void paintEvent(QPaintEvent e) {
-	    
-	    QPainter p = new QPainter();
-	    p.begin(this);
+        protected void paintEvent(QPaintEvent e) {
 
-	    p.setPen(QPen.NoPen);
-	    p.setBrush(new QBrush(QColor.red));
+            QPainter p = new QPainter();
+            p.begin(this);
 
-	    int runningTime = 1000;
+            p.setPen(QPen.NoPen);
+            p.setBrush(new QBrush(QColor.red));
 
-	    for (int size=8; size<=512; size*=2) {		
-		long drawCount = 0;
-		long startTime = System.currentTimeMillis();
-		long endTime = startTime + runningTime;
-		while (System.currentTimeMillis() < endTime) {
-		    for (int j=0; j<100; ++j) {
-			p.drawRect(0, 0, size, size);
-			++drawCount;
-		    }
-		}
+            int runningTime = 1000;
 
-		long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
-		System.out.printf("Qt:    rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
-	    }
+            for (int size = 8; size <= 512; size *= 2) {
+                long drawCount = 0;
+                long startTime = System.currentTimeMillis();
+                long endTime = startTime + runningTime;
+                while (System.currentTimeMillis() < endTime) {
+                    for (int j = 0; j < 100; ++j) {
+                        p.drawRect(0, 0, size, size);
+                        ++drawCount;
+                    }
+                }
 
-	    p.end();
+                long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+                System.out.printf("Qt:    rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
+            }
 
-	    hide();
-	}
+            p.end();
 
-	public QSize sizeHint() {
-	    return new QSize(512, 512);
-	}
+            hide();
+        }
+
+        public QSize sizeHint() {
+            return new QSize(512, 512);
+        }
     }
 
     private static class QtGLWidget extends QGLWidget {
-	protected void paintEvent(QPaintEvent e) {
-	    
-	    QPainter p = new QPainter();
-	    p.begin(this);
+        protected void paintEvent(QPaintEvent e) {
 
-	    p.setPen(QPen.NoPen);
-	    p.setBrush(new QBrush(QColor.red));
+            QPainter p = new QPainter();
+            p.begin(this);
 
-	    int runningTime = 1000;
+            p.setPen(QPen.NoPen);
+            p.setBrush(new QBrush(QColor.red));
 
-	    for (int size=8; size<=512; size*=2) {		
-		long drawCount = 0;
-		long startTime = System.currentTimeMillis();
-		long endTime = startTime + runningTime;
-		while (System.currentTimeMillis() < endTime) {
-		    for (int j=0; j<100; ++j) {
-			p.drawRect(0, 0, size, size);
-			++drawCount;
-		    }
-		}
+            int runningTime = 1000;
 
-		long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
-		System.out.printf("Qt/GL: rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
-	    }
+            for (int size = 8; size <= 512; size *= 2) {
+                long drawCount = 0;
+                long startTime = System.currentTimeMillis();
+                long endTime = startTime + runningTime;
+                while (System.currentTimeMillis() < endTime) {
+                    for (int j = 0; j < 100; ++j) {
+                        p.drawRect(0, 0, size, size);
+                        ++drawCount;
+                    }
+                }
 
-	    p.end();
+                long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+                System.out.printf("Qt/GL: rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
+            }
 
-	    hide();
-	}
+            p.end();
 
-	public QSize sizeHint() {
-	    return new QSize(512, 512);
-	}
+            hide();
+        }
+
+        public QSize sizeHint() {
+            return new QSize(512, 512);
+        }
     }
-    
+
     public static void main(String args[]) {
-	{
-	    JFrame f = new JFrame();
-	    AwtWidget awt = new AwtWidget();
-	    f.add(awt);
+        {
+            JFrame f = new JFrame();
+            AwtWidget awt = new AwtWidget();
+            f.add(awt);
 
-	    f.pack();
+            f.pack();
 
-	    f.setVisible(true);
-	    
-	}
+            f.setVisible(true);
+
+        }
 
 
-	try { Thread.sleep(10 * 1000); } catch (Exception e) { }
+        try {
+            Thread.sleep(10 * 1000);
+        } catch (Exception e) {
+        }
 
-	{
-	    QApplication.initialize(args);
+        {
+            QApplication.initialize(args);
 
-	    QtWidget w = new QtWidget();
-	    w.show();
+            QtWidget w = new QtWidget();
+            w.show();
 
-	    QtGLWidget wgl = new QtGLWidget();
-	    wgl.show();
+            QtGLWidget wgl = new QtGLWidget();
+            wgl.show();
 
-	    QApplication.exec();
-	}
-
+            QApplication.exec();
+        }
 
 
     }

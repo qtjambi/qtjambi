@@ -17,11 +17,17 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.*;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
+
+
 
 public class DrawLines {
-    
+
+    private static int SIZE = 513;
+    private static int HOR_MULT = 0;
+    private static int VER_MULT = 1;
+
     private static class AwtWidget extends Component {
         
     private static final long serialVersionUID = 1L;
@@ -38,7 +44,7 @@ public class DrawLines {
 		long endTime = startTime + runningTime;
 		while (System.currentTimeMillis() < endTime) {
 		    for (int j=0; j<100; ++j) {
-			g.drawLine(0, 0, size, size);
+			g.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
 			++drawCount;
 		    }
 		}
@@ -51,7 +57,7 @@ public class DrawLines {
 	}
 
 	public Dimension getPreferredSize() {
-	    return new Dimension(512, 512);
+	    return new Dimension(SIZE, SIZE);
 	}
     }
 
@@ -66,13 +72,13 @@ public class DrawLines {
 
 	    int runningTime = 1000;
 
-	    for (int size=8; size<=512; size*=2) {		
+	    for (int size=8; size<=512; size*=2) {
 		long drawCount = 0;
 		long startTime = System.currentTimeMillis();
 		long endTime = startTime + runningTime;
 		while (System.currentTimeMillis() < endTime) {
 		    for (int j=0; j<100; ++j) {
-			p.drawLine(0, 0, size, size);
+			p.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
 			++drawCount;
 		    }
 		}
@@ -87,7 +93,7 @@ public class DrawLines {
 	}
 
 	public QSize sizeHint() {
-	    return new QSize(512, 512);
+	    return new QSize(SIZE, SIZE);
 	}
     }
 
@@ -101,13 +107,13 @@ public class DrawLines {
 	    
 	    int runningTime = 1000;
 
-	    for (int size=8; size<=512; size*=2) {		
+	    for (int size=8; size<=512; size*=2) {
 		long drawCount = 0;
 		long startTime = System.currentTimeMillis();
 		long endTime = startTime + runningTime;
 		while (System.currentTimeMillis() < endTime) {
 		    for (int j=0; j<100; ++j) {
-			p.drawLine(0, 0, size, size);
+			p.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
 			++drawCount;
 		    }
 		}
@@ -122,7 +128,7 @@ public class DrawLines {
 	}
 
 	public QSize sizeHint() {
-	    return new QSize(512, 512);
+	    return new QSize(SIZE, SIZE);
 	}
     }
     
