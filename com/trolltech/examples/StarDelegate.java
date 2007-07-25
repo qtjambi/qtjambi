@@ -30,7 +30,7 @@ public class StarDelegate extends QWidget {
           new StarRating(4) },
         { tr("Barbie Girl"), tr("Pop"), tr("Aqua"), new StarRating(5) }
     };
-    
+
     public StarDelegate() {
         this(null);
     }
@@ -45,7 +45,7 @@ public class StarDelegate extends QWidget {
         setLayout(layout);
         setWindowTitle(tr("Star Delegate"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
-        
+
         setMinimumSize(550, 200);
     }
 
@@ -271,7 +271,7 @@ public class StarDelegate extends QWidget {
             if (mode == ReadWrite)
                 painter.setBrush(palette.highlight());
             else
-                painter.setBrush(palette.window());
+                painter.setBrush(palette.text());
 
             int yOffset = (rect.height() - PaintingFactor) / 2;
             painter.translate(rect.x(), rect.y() + yOffset);
