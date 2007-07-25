@@ -2,7 +2,7 @@ pushd d:\tmp
 
 set OLD_PATH=%path%
 set OLD_QMAKESPEC=%qmakespec%
-set QT_VERSION=4.3.0
+set QT_VERSION=4.3.1
 set QT_COMMERCIAL_PACKAGE=qt-win-commercial-src-%QT_VERSION%
 set QT_GPL_PACKAGE=qt-win-opensource-src-%QT_VERSION%
 set QT_EVAL_PACKAGE=qt-win-evalpatches-src-%QT_VERSION%
