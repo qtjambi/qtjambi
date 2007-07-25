@@ -164,7 +164,7 @@ function copyFiles(files, rootPath, destDir) {
 function buildJambi() {
     verbose("Building Qt Jambi package");
     var jambiRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtjambi";
-    var classPath = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtproject/src"
+    var classPath = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt/src"
                     + dirSeparator + eclipsePackages;
     var classFileOutput = packageDir + "/tempClassFiles";
 
