@@ -200,6 +200,7 @@ public class SyntaxHighlighter extends QMainWindow {
             // String
             brush = new QBrush(QColor.blue, Qt.BrushStyle.SolidPattern);
             pattern = new QRegExp("\".*\"");
+            pattern.setMinimal(true);
             quotationFormat.setForeground(brush);
             rule = new HighlightingRule(pattern, quotationFormat);
             highlightingRules.add(rule);
