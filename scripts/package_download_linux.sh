@@ -3,7 +3,7 @@ set -v
 
 cd ~
 
-QT_VERSION=4.3.0
+QT_VERSION=4.3.1
 QT_PACKAGE=qt-x11-commercial-src-$QT_VERSION
 QT_EVAL=qt-win-evalpatches-src-$QT_VERSION
 QT_EVAL_DIR=qt-win-commercial-src-$QT_VERSION
