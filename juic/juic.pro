@@ -42,6 +42,6 @@ mac {
     CONFIG -= precompile_header
 }
 	
-linux-g++ {
+linux-g++* {
     QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
 }
