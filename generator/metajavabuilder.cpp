@@ -276,7 +276,7 @@ void MetaJavaBuilder::traverseStreamOperator(FunctionModelItem item)
     }
 }
 
-void MetaJavaBuilder::fixQObjectForScope(TypeDatabase *types, 
+void MetaJavaBuilder::fixQObjectForScope(TypeDatabase *types,
 					 NamespaceModelItem scope)
 {
     foreach (ClassModelItem item, scope->classes()) {
@@ -403,14 +403,14 @@ bool MetaJavaBuilder::build()
     }
 
     {
-        FunctionList compare_operators = m_dom->findFunctions("operator==") 
+        FunctionList compare_operators = m_dom->findFunctions("operator==")
                                          + m_dom->findFunctions("operator<=")
                                          + m_dom->findFunctions("operator>=")
                                          + m_dom->findFunctions("operator<")
                                          + m_dom->findFunctions("operator>");
         foreach (FunctionModelItem item, compare_operators) {
             traverseCompareOperator(item);
-        }                                 
+        }
     }
 
     {
@@ -999,7 +999,7 @@ void MetaJavaBuilder::traverseFields(ScopeModelItem scope_item, MetaJavaClass *j
     }
 }
 
-void MetaJavaBuilder::setupFunctionDefaults(MetaJavaFunction *java_function, MetaJavaClass *java_class) 
+void MetaJavaBuilder::setupFunctionDefaults(MetaJavaFunction *java_function, MetaJavaClass *java_class)
 {
     // Set the default value of the declaring class. This may be changed
     // in fixFunctions later on
@@ -1489,7 +1489,7 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
         qualified_name = typeInfo.toString();
 
     const TypeEntry *type = TypeDatabase::instance()->findType(qualified_name);
-    
+
     if (!type) {
         type = TypeDatabase::instance()->findContainerType(name);
 
@@ -1514,7 +1514,7 @@ MetaJavaType *MetaJavaBuilder::translateType(const TypeInfo &_typei, bool *ok)
                 contexts.pop_front();
             }
         }
-     
+
         if (!type) {
             *ok = false;
             return 0;
@@ -1589,7 +1589,8 @@ void MetaJavaBuilder::decideUsagePattern(MetaJavaType *java_type)
 
     } else if (type->isString()
                && java_type->indirections() == 0
-               && java_type->isConstant() == java_type->isReference()) {
+               && (java_type->isConstant() == java_type->isReference()
+                   || java_type->isConstant())) {
         java_type->setTypeUsagePattern(MetaJavaType::StringPattern);
 
     } else if (type->isChar()
@@ -1746,12 +1747,12 @@ bool MetaJavaBuilder::isQObject(const QString &qualified_name)
     if (!class_item) {
       QStringList names = qualified_name.split(QLatin1String("::"));
       NamespaceModelItem ns = model_dynamic_cast<NamespaceModelItem>(m_dom);
-      for (int i=0; i<names.size() - 1 && ns; ++i) 
+      for (int i=0; i<names.size() - 1 && ns; ++i)
           ns = ns->namespaceMap().value(names.at(i));
       if (ns && names.size() >= 2)
           class_item = ns->findClass(names.at(names.size() - 1));
     }
-    
+
     bool isqobject = class_item && class_item->extendsClass("QObject");
 
     if (class_item && !isqobject) {
