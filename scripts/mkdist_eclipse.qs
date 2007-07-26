@@ -1,8 +1,8 @@
 
 // *** Constants
 const version           = "1.0.1";
-const depotVersion      = "4.3.0_02";
-const jambiVersion      = "4.3.0_02";
+const depotVersion      = "4.3.1_01";
+const jambiVersion      = "4.3.1_01";
 const eclipseBranch     = "stable";
 const packageDir        = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/tmp"
