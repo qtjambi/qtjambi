@@ -59,9 +59,8 @@ set PATH=c:\mingw\bin
 cd qt-opensource-%QT_VERSION%
 set QMAKESPEC=win32-g++
 echo yes> .tmp
-configure -no-qt3support -release -shared -no-dsp -no-vcproj < .tmp
-mingw32-make sub-src sub-tools
-mingw32-make clean
+configure -no-qt3support -release -shared -no-vcproj -no-dsp< .tmp
+mingw32-make 
 cd ..
 
 
