@@ -38,7 +38,9 @@ if not "%errorlevel%" == "0" (
 )
 
 
-cls
+echo.
+echo.
+echo.
 echo Eval packages...
 echo.
 rm -rf %QT_COMMERCIAL_PACKAGE% qt-eval-%QT_VERSION%
@@ -53,7 +55,9 @@ nmake sub-src sub-tools
 nmake clean
 cd ..
 
-cls
+echo.
+echo.
+echo.
 echo Commercial packages
 echo.
 rm -rf qt-commercial-%QT_VERSION%
@@ -70,12 +74,29 @@ cd ..
 if "%PROCESSOR_ARCHITEW6432%" == "AMD64" then goto cleanup
 
 
-cls
+echo.
+echo.
+echo.
 echo Open Source packages
 echo. 
 rm -rf qt-opensource-%QT_VERSION%
 unzip %QT_GPL_PACKAGE%.zip > log
 mv %QT_GPL_PACKAGE% qt-opensource-%QT_VERSION%
+xcopy /s /i qt-commercial-%QT_VERSION%\tools\activeqt qt-opensource-%QT_VERSION%\tools\activeqt
+echo SUBDIRS += activeqt>> qt-opensource-%QT_VERSION%\tools\tools.pro
+xcopy /s /i qt-commercial-%QT_VERSION%\src\activeqt qt-opensource-%QT_VERSION%\src\activeqt
+echo a> .tmp
+xcopy /s /i qt-commercial-%QT_VERSION%\include\ActiveQt qt-opensource-%QT_VERSION%\include\ActiveQt< .tmp
+echo SUBDIRS += activeqt>> qt-opensource-%QT_VERSION%\src\src.pro
+cat qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro | sed 's/contains/!contains/' > qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro.tmp
+rm qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro
+mv qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro.tmp qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro
+cat qt-opensource-%QT_VERSION%\src\activeqt\control\control.pro | sed 's/contains/!contains/' > qt-opensource-%QT_VERSION%\src\activeqt\control\control.pro.tmp
+rm qt-opensource-%QT_VERSION%\src\activeqt\control\control.pro
+mv qt-opensource-%QT_VERSION%\src\activeqt\control\control.pro.tmp qt-opensource-%QT_VERSION%\src\activeqt\control\control.pro
+cat qt-opensource-%QT_VERSION%\tools\activeqt\activeqt.pro | sed 's/contains/!contains/' > qt-opensource-%QT_VERSION%\tools\activeqt\activeqt.pro.tmp
+rm qt-opensource-%QT_VERSION%\tools\activeqt\activeqt.pro
+mv qt-opensource-%QT_VERSION%\tools\activeqt\activeqt.pro.tmp qt-opensource-%QT_VERSION%\tools\activeqt\activeqt.pro
 set PATH=c:\mingw\bin
 set OLD_LIB=%LIB%
 set OLD_INCLUDE=%INCLUDE%
@@ -85,7 +106,8 @@ cd qt-opensource-%QT_VERSION%
 set QMAKESPEC=win32-g++
 echo yes> .tmp
 configure -no-qt3support -release -shared -no-vcproj -no-dsp< .tmp
-mingw32-make
+echo DEFINES *= QT_EDITION=QT_EDITION_DESKTOP>>.qmake.cache
+cd src && mingw32-make && cd ..\tools && mingw32-make && cd ..
 cd ..
 set LIB=%OLD_LIB%
 set INCLUDE=%OLD_INCLUDE%
