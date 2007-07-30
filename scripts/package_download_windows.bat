@@ -84,7 +84,7 @@ rm -rf qt-opensource-%QT_VERSION%
 unzip %QT_GPL_PACKAGE%.zip > log
 mv %QT_GPL_PACKAGE% qt-opensource-%QT_VERSION%
 xcopy /s /i qt-commercial-%QT_VERSION%\tools\activeqt qt-opensource-%QT_VERSION%\tools\activeqt
-echo SUBDIRS += src_activeqt>> qt-opensource-%QT_VERSION%\tools\tools.pro
+echo SUBDIRS += activeqt>> qt-opensource-%QT_VERSION%\tools\tools.pro
 xcopy /s /i qt-commercial-%QT_VERSION%\src\activeqt qt-opensource-%QT_VERSION%\src\activeqt
 echo a | xcopy /s /i qt-commercial-%QT_VERSION%\include\ActiveQt qt-opensource-%QT_VERSION%\include\ActiveQt< .tmp
 xcopy /s /i qt-commercial-%QT_VERSION%\src\tools\idc qt-opensource-%QT_VERSION%\src\tools\idc
@@ -108,8 +108,8 @@ cd qt-opensource-%QT_VERSION%
 set QMAKESPEC=win32-g++
 echo y | configure -no-qt3support -release -shared -no-vcproj -no-dsp
 echo DEFINES *= QT_EDITION=QT_EDITION_DESKTOP>>.qmake.cache
-bin\qmake -r
-mingw32-make sub-src sub-tools
+cd src && ..\bin\qmake -r && mingw32-make && cd .. 
+cd tools && ..\bin\qmake -r && mingw32-make && cd ..
 cd ..
 set LIB=%OLD_LIB%
 set INCLUDE=%OLD_INCLUDE%
