@@ -87,7 +87,9 @@ echo SUBDIRS += activeqt>> qt-opensource-%QT_VERSION%\tools\tools.pro
 xcopy /s /i qt-commercial-%QT_VERSION%\src\activeqt qt-opensource-%QT_VERSION%\src\activeqt
 echo a> .tmp
 xcopy /s /i qt-commercial-%QT_VERSION%\include\ActiveQt qt-opensource-%QT_VERSION%\include\ActiveQt< .tmp
+xcopy /s /i qt-commercial-%QT_VERSION%\src\tools\idc qt-opensource-%QT_VERSION%\src\tools\idc
 echo SUBDIRS += activeqt>> qt-opensource-%QT_VERSION%\src\src.pro
+echo SUBDIRS += src_tools_idc>> qt-opensource-%QT_VERSION%\src\src.pro
 cat qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro | sed 's/contains/!contains/' > qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro.tmp
 rm qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro
 mv qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro.tmp qt-opensource-%QT_VERSION%\src\activeqt\container\container.pro
