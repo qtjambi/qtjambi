@@ -1,18 +1,24 @@
 
-// *** Constants
+// Change these with every new version
 const version           = "1.0.1";
 const depotVersion      = "4.3.1_01";
 const jambiVersion      = "4.3.1_01";
 const eclipseBranch     = "stable";
+// --
+
+
+// ### Fixed path (must also be changed in client spec)
 const packageDir        = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/tmp"
                             : "/home/qt/package-builder/tmp";
+                            
+// ### Fixed path                            
 const eclipsePackages   = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/eclipse_classes"
                             : "/home/qt/eclipse_package";
+                            
 const dirSeparator      = os_name() == OS_NAME_WINDOWS ? ";" : ":";
 const execPrefix = os_name() == OS_NAME_WINDOWS ? "release/" : "./";
-
 const licenseLocation = packageDir + "/qtjambi/" + depotVersion + "/dist/eclipse";
 const licenseFile = "LICENSE.QT_JAMBI_ECLIPSE_INTEGRATION";
 
@@ -22,6 +28,7 @@ const jarFilesDest = packageDir + "/jarFiles";
 var jarFilesDir = new Dir(jarFilesDest);
 jarFilesDir.mkdirs(jarFilesDest);
 
+// ### Fixed paths (needed to build with mingw, but we should implement a search for vs i suppose)
 const midlPath = "c:/progra~1/micros~1.net/common7/tools/bin/midl.exe";
 const vcPath = "c:/progra~1/micros~1.net/vc7/bin;c:/progra~1/micros~1.net/common7/ide";
 const vcInclude = "c:/progra~1/micros~1.net/vc7/include;c:/progra~1/micros~1.net/vc7/platformsdk/include;c:/progra~1/micros~1.net/sdk/v1.1/include";
@@ -47,11 +54,10 @@ var option = new Object();
 option.verbose = array_contains(args, "--verbose");
 option.gpl = array_contains(args, "--gpl");
 option.qtdir = findQtDir();
-
 if (option.gpl)
     command.make = find_executable("mingw32-make");
 
-
+// Suffix for package names 
 const gplExtension = option.gpl ? "-mingw" : "";
 
 function verbose(s) {
