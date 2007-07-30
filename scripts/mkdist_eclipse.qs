@@ -292,12 +292,12 @@ function workAroundMissingMidl() {
     System.setenv("PATH", vcPath + ";" + currentPath);
     System.setenv("INCLUDE", vcInclude);
     
-    execute([midlPath, "release/qtdesigner.idl", "/nologo", "/tlb", "release/qtdesigner.tlb"]);
+    execute([midlPath, "tmp/obj/release_shared/qtdesigner.idl", "/nologo", "/tlb", "tmp/obj/release_shared/qtdesigner.tlb"]);
     
     System.setenv("PATH", currentPath);
     System.setenv("INCLUDE", "");
     
-    execute([option.qtdir + "/bin/idc", "release/qtdesigner.dll", "/tlb", "release/qtdesigner.tlb"]);
+    execute([option.qtdir + "/bin/idc", "release/qtdesigner.dll", "/tlb", "tmp/obj/release_shared/qtdesigner.tlb"]);
 }
 
 function generateDesignerCode() {
