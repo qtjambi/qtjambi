@@ -306,7 +306,7 @@ function generateDesignerCode() {
     var generatorPath = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer";
     var dir = new Dir(generatorPath);
     dir.setCurrent();
-
+    
     execute([command.qmake, "-config", "release"]);
     execute([command.make]);
     execute([execPrefix + "designer"]);
@@ -487,10 +487,16 @@ function setPathForMinGW() {
     }
 }
 
+function copyQmakeCache() {
+    verbose("Copy .qmake.cache");
+    copyFiles([option.qtdir + "/.qmake.cache"], option.qtdir, packageDir);
+}
+
 function build() {    
     prepareSourceTree();
     if (option.gpl)
         setPathForMinGW();
+    copyQmakeCache();        
     buildQtBundle();
     buildDesigner();
     if (os_name() != OS_NAME_WINDOWS)
