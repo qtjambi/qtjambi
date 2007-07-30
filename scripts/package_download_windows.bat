@@ -21,7 +21,8 @@ set QT_EVAL_PACKAGE=qt-win-evalpatches-src-%QT_VERSION%
 rm %QT_COMMERCIAL_PACKAGE%.zip
 rm %QT_GPL_PACKAGE%.zip
 rm %QT_EVAL_PACKAGE%.zip
-REM wget http://ares.troll.no/~qt/packages/%QT_COMMERCIAL_PACKAGE%.zip
+set ERRORLEVEL=0
+wget http://ares.troll.no/~qt/packages/%QT_COMMERCIAL_PACKAGE%.zip
 if not "%errorlevel%" == "0" (
    echo failed to download 'http://ares.troll.no/~qt/packages/%QT_COMMERCIAL_PACKAGE%.zip'
    goto cleanup
@@ -31,7 +32,7 @@ if not "%errorlevel%" == "0" (
    echo failed to download 'http://ares.troll.no/~qt/packages/%QT_GPL_PACKAGE%.zip'
    goto cleanup
 )
-REM wget http://ares.troll.no/~qt/packages/%QT_EVAL_PACKAGE%.zip
+wget http://ares.troll.no/~qt/packages/%QT_EVAL_PACKAGE%.zip
 if not "%errorlevel%" == "0" (
    echo failed to download 'http://ares.troll.no/~qt/packages/%QT_EVAL_PACKAGE%.zip'
    goto cleanup
@@ -43,33 +44,33 @@ echo.
 echo.
 echo Eval packages...
 echo.
-REM rm -rf %QT_COMMERCIAL_PACKAGE% qt-eval-%QT_VERSION%
-REM unzip %QT_COMMERCIAL_PACKAGE%.zip > log
-REM unzip %QT_EVAL_PACKAGE%.zip > log
-REM mv %QT_COMMERCIAL_PACKAGE% qt-eval-%QT_VERSION%
-REM cd qt-eval-%QT_VERSION%
-REM echo Trolltech employees and agents use this software under authority> LICENSE.TROLL
-REM echo from Trolltech ASA of Norway.>> LICENSE.TROLL
-REM configure -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_EVAL 
-REM nmake sub-src sub-tools
-REM nmake clean
-REM cd ..
+rm -rf %QT_COMMERCIAL_PACKAGE% qt-eval-%QT_VERSION%
+unzip %QT_COMMERCIAL_PACKAGE%.zip > log
+unzip %QT_EVAL_PACKAGE%.zip > log
+mv %QT_COMMERCIAL_PACKAGE% qt-eval-%QT_VERSION%
+cd qt-eval-%QT_VERSION%
+echo Trolltech employees and agents use this software under authority> LICENSE.TROLL
+echo from Trolltech ASA of Norway.>> LICENSE.TROLL
+configure -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_EVAL 
+nmake sub-src sub-tools
+nmake clean
+cd ..
 
 echo.
 echo.
 echo.
 echo Commercial packages
 echo.
-REM rm -rf qt-commercial-%QT_VERSION%
-REM unzip %QT_COMMERCIAL_PACKAGE%.zip > log
-REM mv %QT_COMMERCIAL_PACKAGE% qt-commercial-%QT_VERSION%
-REM cd qt-commercial-%QT_VERSION%
-REM echo Trolltech employees and agents use this software under authority> LICENSE.TROLL
-REM echo from Trolltech ASA of Norway.>> LICENSE.TROLL
-REM configure -no-qt3support -release -shared -no-dsp -no-vcproj
-REM nmake sub-src sub-tools
-REM nmake clean
-REM cd ..
+rm -rf qt-commercial-%QT_VERSION%
+unzip %QT_COMMERCIAL_PACKAGE%.zip > log
+mv %QT_COMMERCIAL_PACKAGE% qt-commercial-%QT_VERSION%
+cd qt-commercial-%QT_VERSION%
+echo Trolltech employees and agents use this software under authority> LICENSE.TROLL
+echo from Trolltech ASA of Norway.>> LICENSE.TROLL
+configure -no-qt3support -release -shared -no-dsp -no-vcproj
+nmake sub-src sub-tools
+nmake clean
+cd ..
 
 if "%PROCESSOR_ARCHITEW6432%" == "AMD64" then goto cleanup
 
@@ -83,10 +84,9 @@ rm -rf qt-opensource-%QT_VERSION%
 unzip %QT_GPL_PACKAGE%.zip > log
 mv %QT_GPL_PACKAGE% qt-opensource-%QT_VERSION%
 xcopy /s /i qt-commercial-%QT_VERSION%\tools\activeqt qt-opensource-%QT_VERSION%\tools\activeqt
-echo SUBDIRS += activeqt>> qt-opensource-%QT_VERSION%\tools\tools.pro
+echo SUBDIRS += src_activeqt>> qt-opensource-%QT_VERSION%\tools\tools.pro
 xcopy /s /i qt-commercial-%QT_VERSION%\src\activeqt qt-opensource-%QT_VERSION%\src\activeqt
-echo a> .tmp
-xcopy /s /i qt-commercial-%QT_VERSION%\include\ActiveQt qt-opensource-%QT_VERSION%\include\ActiveQt< .tmp
+echo a | xcopy /s /i qt-commercial-%QT_VERSION%\include\ActiveQt qt-opensource-%QT_VERSION%\include\ActiveQt< .tmp
 xcopy /s /i qt-commercial-%QT_VERSION%\src\tools\idc qt-opensource-%QT_VERSION%\src\tools\idc
 echo SUBDIRS += activeqt>> qt-opensource-%QT_VERSION%\src\src.pro
 echo SUBDIRS += src_tools_idc>> qt-opensource-%QT_VERSION%\src\src.pro
@@ -106,9 +106,9 @@ set LIB=
 set INCLUDE=
 cd qt-opensource-%QT_VERSION%
 set QMAKESPEC=win32-g++
-echo yes> .tmp
-configure -no-qt3support -release -shared -no-vcproj -no-dsp< .tmp
+echo y | configure -no-qt3support -release -shared -no-vcproj -no-dsp
 echo DEFINES *= QT_EDITION=QT_EDITION_DESKTOP>>.qmake.cache
+bin\qmake -r
 mingw32-make sub-src sub-tools
 cd ..
 set LIB=%OLD_LIB%
