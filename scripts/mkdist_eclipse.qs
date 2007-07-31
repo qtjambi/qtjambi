@@ -1,8 +1,9 @@
 
 // Change these with every new version
 const version           = "1.0.1";
-const depotVersion      = "4.3.1_01";
-const jambiVersion      = "4.3.1_01";
+const qtVersion         = "4.3.1";
+const depotVersion      = qtVersion + "_01";
+const jambiVersion      = qtVersion + "_01";
 const eclipseBranch     = "stable";
 // --
 
@@ -11,12 +12,12 @@ const eclipseBranch     = "stable";
 const packageDir        = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/tmp"
                             : "/home/qt/package-builder/tmp";
-                            
-// ### Fixed path                            
+
+// ### Fixed path
 const eclipsePackages   = os_name() == OS_NAME_WINDOWS
                             ? "c:/package-builder/eclipse_classes"
                             : "/home/qt/eclipse_package";
-                            
+
 const dirSeparator      = os_name() == OS_NAME_WINDOWS ? ";" : ":";
 const execPrefix = os_name() == OS_NAME_WINDOWS ? "release/" : "./";
 const licenseLocation = packageDir + "/qtjambi/" + depotVersion + "/dist/eclipse";
@@ -57,7 +58,7 @@ option.qtdir = findQtDir();
 if (option.gpl)
     command.make = find_executable("mingw32-make");
 
-// Suffix for package names 
+// Suffix for package names
 const gplExtension = option.gpl ? "-mingw" : "";
 
 function verbose(s) {
@@ -287,16 +288,16 @@ function buildDesignerQtJambiFragment() {
 }
 
 
-function workAroundMissingMidl() {    
+function workAroundMissingMidl() {
     var currentPath = System.getenv("PATH");
     System.setenv("PATH", vcPath + ";" + currentPath);
     System.setenv("INCLUDE", vcInclude);
-    
+
     execute([midlPath, "tmp/obj/release_shared/qtdesigner.idl", "/nologo", "/tlb", "tmp/obj/release_shared/qtdesigner.tlb"]);
-    
+
     System.setenv("PATH", currentPath);
     System.setenv("INCLUDE", "");
-    
+
     execute([option.qtdir + "/bin/idc", "release/qtdesigner.dll", "/tlb", "tmp/obj/release_shared/qtdesigner.tlb"]);
 }
 
@@ -306,7 +307,7 @@ function generateDesignerCode() {
     var generatorPath = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer";
     var dir = new Dir(generatorPath);
     dir.setCurrent();
-    
+
     execute([command.qmake, "-config", "release"]);
     execute([command.make]);
     execute([execPrefix + "designer"]);
@@ -317,7 +318,7 @@ function generateDesignerCode() {
 
     execute([command.qmake, "DESTDIR = .", "-config", "release"]);
     execute([command.make]);
-    
+
     if (option.gpl) {
         workAroundMissingMidl();
     }
@@ -331,7 +332,7 @@ function compileDesignerJavaCode(destDir) {
 
 function buildLinuxQtJarFile() {
     verbose("Building Linux Qt library package");
-    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux.x86_4.3.0";
+    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux.x86_" + qtVersion;
     var linuxQtRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt.linux.x86";
     var dir = new Dir(linuxQtDest + "/lib");
     dir.mkdirs(linuxQtDest + "/lib");
@@ -359,7 +360,7 @@ function buildDesignerPlatform() {
 	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux.x86_" + version;
 	    dir = new Dir(pluginsDir);
 	    dir.mkdirs(pluginsDir);
-	    var suffixes = ["", ".4", ".4.3", ".4.3.0"];
+	    var suffixes = ["", ".4", ".4.3", "." + qtVersion];
 	    for (var i=0; i<suffixes.length; ++i) {
 	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86/lib/libqtdesigner.so"
                         + suffixes[i]],
@@ -492,11 +493,11 @@ function copyQmakeCache() {
     copyFiles([option.qtdir + "/.qmake.cache"], option.qtdir, packageDir);
 }
 
-function build() {    
+function build() {
     prepareSourceTree();
     if (option.gpl)
         setPathForMinGW();
-    copyQmakeCache();        
+    copyQmakeCache();
     buildQtBundle();
     buildDesigner();
     if (os_name() != OS_NAME_WINDOWS)
