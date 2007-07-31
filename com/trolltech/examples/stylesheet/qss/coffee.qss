@@ -76,6 +76,13 @@ QLineEdit:focus, QFrame:focus {
     padding: 0px;
 }
 
+/* A QLabel is a QFrame ... */
+QLabel {
+    border: none;
+    padding: 0;
+    background: none;
+}
+
 /* Nice to have the background color change when hovered. */
 QRadioButton:hover, QCheckBox:hover {
     background-color: wheat;
