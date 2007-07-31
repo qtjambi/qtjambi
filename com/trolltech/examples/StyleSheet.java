@@ -38,7 +38,7 @@ public class StyleSheet extends QMainWindow {
     public StyleSheet() {
         ui.setupUi(this);
 
-        //ui.nameLabel.setProperty(QNativePointer.createCharPointer("class"), "mandatory QLabel");
+        ui.nameLabel.setProperty("class", "mandatory");
 
         styleSheetEditor = new StyleSheetEditor(this);
 

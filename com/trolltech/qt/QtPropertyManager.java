@@ -451,7 +451,7 @@ public class QtPropertyManager {
         HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
         Entry e = entries.get(name);
         if (e == null)
-            throw new QPropertyException("Property '" + name + "' not found in " + object);
+            throw new QNoSuchPropertyException("Property '" + name + "' not found in " + object);
 
         if (e.read == null)
             throw new QPropertyException("Property '" + name + "' is not readable");
@@ -471,7 +471,7 @@ public class QtPropertyManager {
         HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
         Entry e = entries.get(name);
         if (e == null)
-            throw new QPropertyException("Property '" + name + "' not found in " + object);
+            throw new QNoSuchPropertyException("Property '" + name + "' not found in " + object);
 
         if (e.write == null)
             throw new QPropertyException("Property '" + name + "' is not writable");
@@ -489,7 +489,7 @@ public class QtPropertyManager {
         HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
         Entry e = entries.get(name);
         if (e == null)
-            throw new QPropertyException("Property '" + name + "' not found in " + object);
+            throw new QNoSuchPropertyException("Property '" + name + "' not found in " + object);
 
         if (e.reset == null)
             throw new QPropertyException("Property '" + name + "' is not resettable");

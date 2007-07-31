@@ -2152,11 +2152,11 @@
     </modify-function>
     
     <modify-function signature="property(const char*)const">
-        <remove/>
+        <access modifier="private" />
     </modify-function>
     
     <modify-function signature="setProperty(const char*,QVariant)">
-        <remove/>
+        <access modifier="private" />        
     </modify-function>
     
     
@@ -2182,11 +2182,23 @@
     }
 
     @com.trolltech.qt.QtBlockedSlot public void setProperty(String name, Object value) {
-        com.trolltech.qt.QtPropertyManager.writeProperty(this, name, value);
+        try {
+            com.trolltech.qt.QtPropertyManager.writeProperty(this, name, value);
+        } catch (QNoSuchPropertyException e) {
+            // If property doesn't exist, we'll use the default Qt framework to
+            // insert a dynamic property. 
+            setProperty(QNativePointer.createCharPointer(name), value);
+        }
     }
 
     @com.trolltech.qt.QtBlockedSlot public Object property(String name) {
-        return com.trolltech.qt.QtPropertyManager.readProperty(this, name);
+        try {
+            return com.trolltech.qt.QtPropertyManager.readProperty(this, name);
+        } catch (QNoSuchPropertyException e) {
+            // If a property doesn't exist, we'll use the default Qt framework to
+            // read it as a dynamic property
+            return property(QNativePointer.createCharPointer(name));
+        }
     }
 
     @com.trolltech.qt.QtBlockedSlot public void connectSlotsByName() {

@@ -19,6 +19,6 @@ public class QPropertyException extends ConnectionException
 
     public QPropertyException(String extraMessage)
     {
-        super();
+        super(extraMessage);
     }
  }
