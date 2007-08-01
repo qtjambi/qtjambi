@@ -54,12 +54,15 @@ command.unzip = find_executable("unzip");
 var option = new Object();
 option.verbose = array_contains(args, "--verbose");
 option.gpl = array_contains(args, "--gpl");
+option.sixtyFour = System.getenv("ARCH") == "x86_64";
 option.qtdir = findQtDir();
 if (option.gpl)
     command.make = find_executable("mingw32-make");
 
 // Suffix for package names
 const gplExtension = option.gpl ? "-mingw" : "";
+
+const sixtyFourBitExtension = option.sixtyFour ? "-64-bit" : "";
 
 function verbose(s) {
     if (option.verbose)
@@ -89,6 +92,7 @@ function displayHelp() {
           "\n  --help, -help, -h    This help" +
           "\n  --verbose            Verbose output" +
           "\n  --gpl                Name package to be compatible with GPL" +
+          "\n  --64                 Name package to be 64 bit" +
           "\n");
 }
 
@@ -332,8 +336,8 @@ function compileDesignerJavaCode(destDir) {
 
 function buildLinuxQtJarFile() {
     verbose("Building Linux Qt library package");
-    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux.x86_" + qtVersion;
-    var linuxQtRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt.linux.x86";
+    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux." + System.getenv("ARCH") + "_" + qtVersion;
+    var linuxQtRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt.linux." + System.getenv("ARCH");
     var dir = new Dir(linuxQtDest + "/lib");
     dir.mkdirs(linuxQtDest + "/lib");
 
@@ -353,18 +357,18 @@ function buildDesignerPlatform() {
     var designerPackageDest = packageDir + "/tempQtDesignerPackage";
 
     var designerRootDir = os_name() == OS_NAME_WINDOWS
-	? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32.x86"
-	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86";
+                          ? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32." + System.getenv("ARCH")
+	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH");
 
     if (os_name() != OS_NAME_WINDOWS) {
-	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux.x86_" + version;
+	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux."+ System.getenv("ARCH") + "_" + version;
 	    dir = new Dir(pluginsDir);
 	    dir.mkdirs(pluginsDir);
 	    var suffixes = ["", ".4", ".4.3", "." + qtVersion];
 	    for (var i=0; i<suffixes.length; ++i) {
-	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86/lib/libqtdesigner.so"
+	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH") + "/lib/libqtdesigner.so"
                         + suffixes[i]],
-                        packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux.x86",
+                        packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH"),
                         pluginsDir);
 	    }
 	    copyFiles([designerRootDir + "/META-INF/MANIFEST.MF"], designerRootDir, pluginsDir);
@@ -393,7 +397,7 @@ function makePlatformSpecificPackageWindows(destDir) {
     var qswtDir = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer/qtdesigner";
     var jambiScriptDir = packageDir + "/qtjambi/" + depotVersion + "/scripts";
 
-    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32.x86_" + version;
+    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32." + System.getenv("ARCH") + "_" + version;
     var dir = new Dir(dllDest);
     dir.mkdirs(dllDest);
 
@@ -494,6 +498,9 @@ function copyQmakeCache() {
 }
 
 function build() {
+    verbose("Hello, making Qt Jambi Eclipse Integration");
+    if (option.gpl) verbose("  (the GPL version)");
+    if (option.sixtyFour) verbose("  (the 64 bit version)");
     prepareSourceTree();
     if (option.gpl)
         setPathForMinGW();
