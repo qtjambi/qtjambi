@@ -38,6 +38,8 @@
 #define DECLARE_AST_NODE(k) \
     enum { __node_kind = Kind_##k };
 
+class TokenStream;
+
 struct AccessSpecifierAST;
 struct AsmDefinitionAST;
 struct BaseClauseAST;
@@ -200,6 +202,8 @@ struct AST
 
       NODE_KIND_COUNT
     };
+
+  QString toString(TokenStream *stream) const;
 
   int kind;
 

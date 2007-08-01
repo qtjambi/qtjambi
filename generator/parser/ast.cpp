@@ -30,5 +30,13 @@
 */
 
 #include "ast.h"
+#include "lexer.h"
 
 // kate: space-indent on; indent-width 2; replace-tabs on;
+
+QString AST::toString(TokenStream *stream) const
+{
+    const Token &tk = stream->token((int) start_token);
+    const Token &end_tk = stream->token ((int) end_token);
+    return QString::fromLatin1(tk.text + tk.position, end_tk.position - tk.position);
+}
