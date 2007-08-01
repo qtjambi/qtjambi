@@ -73,6 +73,7 @@
         <ul>
         <li><a href="../../../index.html">Qt Jambi API Javadoc</a></li>
         <li><a href="qtjambi-typesystem.html">Type System</a></li>
+        <li><a href="qtjambi-signalsandslots.html">Signals and Slots</a></li>
         <li><a href="http://doc.trolltech.com/qt/index.html">Qt C++ Reference Documenation</a></li>
         </ul>
         </td>

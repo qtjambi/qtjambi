@@ -5,9 +5,11 @@ url                     = .
 indexes                 = qtjambi_qt.index
 
 outputdir               = ../html
-sourcedirs              = ../src
+sourcedirs              = ../src \
+                          ../src/snippets
 sources.fileextensions  = "*.java *.qdoc"
-exampledirs             = ../../com/trolltech/examples
+exampledirs             = ../../com/trolltech/examples \
+                          ../src
 imagedirs               = ../src/images
 
 extraimages.HTML        = qt-logo \

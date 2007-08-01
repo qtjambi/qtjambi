@@ -33,40 +33,67 @@
 
     \section1 Resolving Native Libraries
 
-    When using native libraries in Java, the recommended approach is
-    to call the \c System.loadLibrary() method to load the libraries
-    in a platform independent manner. This method requires the user to
-    specify some platform dependent environment variables, or
-    alternatively specify a runtime property for the virtual machine.
+    The Qt Jambi native libraries are located in the \c lib directory
+    in the Qt Jambi directory. If you have a prebuildt package, the Qt
+    libraries will also be available there. In case you have a source
+    package, you will find the necessary Qt libraries in the \c lib
+    directory in the Qt directory.
 
-    In general, using this method also requires that the libraries are
-    available in the file system, i.e., making it impossible to
-    distribute the native libraries by including them in a \c .jar
-    file. \QJ solves this problem by searching the classpath in
-    addition to the traditional locations, using the \c
-    com.trolltech.qt.Utilities.loadLibrary() function. So to distribute
-    native libraries, all you have to do is to include them in the JAR
-    bundle.
+    Qt Jambi searches the classpath for libraries. So to distribute
+    the libraries with your application, you can simply include them
+    in a JAR bundle, which is then placed in the classpath. You can
+    also place the libraries in the \c lib directory in the top
+    directory of the \c .jar file.
 
-    Since one native library may depend on another, e.g., QtCore
-    compiled with MSVC.NET 2003 will link against \c msvcr71.dll which
-    is not installed on Windows 2000 machines, it is important to
-    notice that all dependent libraries must be distributed as
-    well. Using \QJ, it is possible to specify dependent libraries by
-    listing them in a file called \c qt_system_libs which should be
-    located somewhere in the classpath root.
+    The Qt and Qt Jambi native libreries may depend on other
+    libraries, which must be distributed as well. It is possible to
+    specify dependent libraries by listing them in a file called \c
+    qt_system_libs which should be located somewhere in the classpath
+    root. One can also specify the libraries on the command line with
+    the \c {com.trolltech.qt.systemlibraries} variable, which should
+    contain paths to the libraries. The libraries are loaded in the
+    order listed in the file or on the command line.
 
-    There are tools on each platform for checking library
+    We present a table with the necessary libraries below:
+    
+    \table
+        \header \o Platform \o Native Libraries
+        \row
+            \o MSVC 6.0 on Windows 2000+
+            \o msvcrp60.dll and msvcrr60.dll
+        \row
+            \o MSVC 2002 on Windows XP
+            \o msvcrr70.dll and msvcrp70.dll
+        \row
+            \o MSVC 2003 on Windows XP
+            \o msvcrr71.dll and msvcrp71.dll
+        \row
+            \o MSVC 2005 on Windows XP
+            \o msvcrr80.dll and msvcrp80.dll
+        \row
+            \o Open Source Windows Version
+            \o mingwm10.dll
+        \row
+            \o Linux
+            \o libstdc++.so. Since there are different versions of
+               this library, you need to ship the library that the
+               application is linked against. You can check this
+               with the \c ldd utility.
+        \row
+            \o Mac OS X
+            \o No libraries are required on Mac OS X.
+    \endtable
+
+    There are also tools on each platform for checking library
     dependencies. UNIX systems has the \c ldd utility, Mac OS X
-    provides \c oTool. Windows has no standard tool, but a good freely
-    available application is the \l
-    {http://www.dependencywalker.com/}{Dependency Walker}.
+    provides \c oTool.  Windows has no standard tool, but a good
+    freely available application is the \l
+    {http://www.dependencywalker.com/}{Dependency Walker}. MSVC
+    includes its own application: \c depends.
 
-    \omit
-        (I would like to include a table here on necessary libraries for
-         all compilers/systems, Tools for this? check with compiler guys.)
-    \row \o
-    \endomit
+    If you still have problems, you can set the
+    \c{com.trolltech.qt.verbose-loading} system property, in which
+    case Qt Jambi will report which libraries are missing.
 
     \bold {The Qt Jambi Generator and Custom Libraries}
 
