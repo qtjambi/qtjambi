@@ -4,6 +4,10 @@ package of Qt Jambi
 For the purpose of this file, we assume that Qt Jambi is unpacked into
 a directory called JAMBI.
 
+If you have problems building, please consult the trouble shooting
+section in the Qt Jambi install document
+(http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html).
+
 ------------------------------------------------------------------------
 STEP 1: Generate the source code
 ------------------------------------------------------------------------
@@ -21,7 +25,7 @@ STEP 2: Build the C++ libraries and tools
 ------------------------------------------------------------------------
  - Go to the JAMBI directory
 
- - Run qmake recursivly on the source tree:
+ - Run qmake recursively on the source tree:
    > qmake -r
 
  - Make the sources
@@ -31,7 +35,7 @@ STEP 3: Generate the Ui_Xxx.java files
 ------------------------------------------------------------------------
  - Go to the JAMBI directory
 
- - Run juic recursivly in the current directory:
+ - Run juic recursively in the current directory:
    > bin/juic -cp .
 
 ------------------------------------------------------------------------

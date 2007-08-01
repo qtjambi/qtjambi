@@ -133,6 +133,7 @@
 
     \list
         \o \l{Cached Table Example}{Cached Table}\raisedaster
+        \o \l{DOM Bookmarks Example}{DOM Bookmarks}
     \endlist
 
     \section1 Qt Designer Examples

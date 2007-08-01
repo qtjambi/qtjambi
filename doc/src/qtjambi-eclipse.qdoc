@@ -17,15 +17,11 @@
     Integration package. This is a \c .zip file for Windows and a \c
     .tar.gz file for Linux. They contain the Eclipse plugins and the
     native libraries required to run Qt Designer.
-    Unpack the package in the Eclipse root folder to install the
-    package. In order to detect new plugins, Eclipse requires that
-    you run it with the -clean command line option the first time 
-    you start it after installing the Qt Jambi integration. You 
-    only need to do this the first time so Eclipse discovers that 
-    the plugin has been installed.
-    
-    That's all on Linux, but on Windows you also need to run
-    the \c register_eclipse_integration.bat file to complete the
+
+    Unpack the package in the Eclipse root folder, and then run
+    Eclipse with the \c {-clean} command line option (it is only
+    required to do this once). On Windows, you also need to run the \c
+    register_eclipse_integration.bat file to complete the
     installation.
 
     The Qt Jambi Integration requires Eclipse version 3.2 or higher.

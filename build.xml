@@ -24,14 +24,17 @@
     <taskdef name="generator" classpath="${outputDir}:ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
 
     <target name="help"
-            description="Provide detailed help">
-        <echo>To get a description of all tasks, run: ant -projecthelp</echo>
+            description="Provides detailed help.">
+	<echo>To build Qt Jambi, run ant without parameters.</echo>
+	<echo></echo>
+        <echo>To get a description of all tasks run: ant -projecthelp</echo>
 	<echo/>
-	<echo>To compile everything, just run ant</echo>
+	<echo>You can also see the Qt Jambi intallation document at:</echo>
+	<echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
     </target>
 
     <target name="clean"
-            description="Clean everything.">
+            description="Remove the Qt Jambi installation (deletes libraries, class files, and generated Java files).">
         <delete dir="${outputDir}" />
         <delete dir="${jambiLib}" />
     </target>
@@ -43,7 +46,7 @@
     </target>
 
     <target name="qmake.generator"
-            description="Run qmake on the generator.">
+            description="Run qmake on the generator project.">
 	<qmake config="release" dir="generator"/>
     </target>
 
@@ -54,13 +57,13 @@
     </target>
 
     <target name="generator.qtjambi" 
-            description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
+            description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found in the QTDIR variable.">
         <generator dir="generator"
 		   outputDirectory=".."/>
     </target>
 
     <target name="generator.generator-example" 
-            description="Run the generator on the generator example, qmake it, and compile it.">
+            description="Run the generator and qmake on the generator example.">
         <generator dir="generator_example"
 	           header="global.h"
                    typesystem="typesystem_generatorexample.txt" 
@@ -70,12 +73,12 @@
     </target>
 
     <target name="compile.qtjambi" 
-            description="Compile the c++ QT Jambi bindings">
+            description="Compile the c++ Qt Jambi bindings.">
 	<make />
     </target>
 
     <target name="juic"
-            description="Generates Java source files out of JUI files, created by designer.">
+            description="Generates Java source files from JUI files created by designer.">
         <juic message="Running Juic for all it is worth"
 	      outputDir="${sourceDir}"
 	      xmlConfigFile=""
@@ -114,7 +117,7 @@
     </target>
 
     <target name="deploy.jar"
-            description="Make a jar file 'qtjambi.jar' that you can include in your project.">
+            description="Make a .jar file (qtjambi.jar) containing the Qt Jambi classes and examples.">
         <jar destfile="qtjambi.jar">
             <manifest>
                 <attribute name="Built-By" value="${USER} - ${TODAY}"/>
@@ -132,11 +135,11 @@
     </target>
 
     <target name="generator-example"
-            description="Generate code for generator-example, and compile it."
+            description="Generate code for generator-example and compile it."
             depends="generator.generator-example, compile.generator-example" />
 
     <target name="qtjambi"
-            description="Make QT Jambi."
+            description="Build Qt Jambi."
             depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, deploy.jar" />
 
 </project>

@@ -13,10 +13,20 @@
 
 package com.trolltech.qt;
 
+/**
+ * QPropertyException's are thrown when the reading, writing, or reseting
+ * of Qt Jambi properties fails. See the QtPropertyManager class description
+ * for further information on when this excaption is thrown.
+ *
+ */
 public class QPropertyException extends ConnectionException
 {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Creates a new QPropertyException with the specified
+     * <tt>extraMessage</tt>.
+     */
     public QPropertyException(String extraMessage)
     {
         super(extraMessage);

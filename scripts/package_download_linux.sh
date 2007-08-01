@@ -1,53 +1,84 @@
 #!/bin/sh
-set -v
+function failure {
+    echo $1
+    exit
+}
 
-cd ~
+function download {
+    echo Downloading $1
+    if [ -e $1 ] 
+    then 
+	echo - deleting old file...
+	rm $1
+    fi
+    wget http://ares.troll.no/~qt/packages/$1 || failure "download of package $1 failed..."
+}
 
-QT_VERSION=4.3.1
-QT_PACKAGE=qt-x11-commercial-src-$QT_VERSION
+function unpack_and_build {
+    PACKAGE_NAME=$1
+    DIRECTORY_NAME=qt-$2
+    echo Building $DIRECTORY_NAME
+    echo - removing old contents...
+    rm -rf $PACKAGE_NAME $DIRECTORY_NAME
+    echo - Unpacking
+    tar xzf $PACKAGE_NAME.tar.gz > /dev/null 2>&1
+    mv $PACKAGE_NAME $DIRECTORY_NAME
+
+    if [ "$2" == "eval" ] 
+    then
+	echo - copying eval contents...
+	rm -rf $4 > /dev/null 2>&1
+	unzip $3.zip > /dev/null
+	cp -R $4/* $DIRECTORY_NAME 
+	CONFIGURE_EXTRA=-DQT_EVAL
+    else 
+	CONFIGURE_EXTRA=
+    fi
+
+    cd $DIRECTORY_NAME
+    find . -exec touch \{\} \;
+    touch LICENSE.TROLL
+
+    echo yes>input
+
+    echo - configuring
+    ./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD -no-mmx -no-3dnow -no-sse -no-sse2 $CONFIGURE_EXTRA<input
+    echo - building
+    cd src 
+      make || failure "failed to build source $DIRECTORY_NAME"
+      cd ..
+    cd tools
+      make || failure "failed to build tools in $DIRECTORY_NAME"
+      cd ..
+    make clean
+    cd ..
+}
+
+if [ -z "$QT_VERSION" ]
+then
+    echo Missing QT_VERSION environment variable
+    exit
+fi
+
+if [ -z "$QT_PACKAGE_DIRECTORY" ]
+then
+    echo Missing QT_PACKAGE_DIRECTORY variable
+    exit
+fi
+
+QT_COMMERCIAL=qt-x11-commercial-src-$QT_VERSION
 QT_EVAL=qt-win-evalpatches-src-$QT_VERSION
+QT_GPL=qt-x11-opensource-src-$QT_VERSION
 QT_EVAL_DIR=qt-win-commercial-src-$QT_VERSION
 
+cd $QT_PACKAGE_DIRECTORY
 
+echo Downloading packages...
+download $QT_COMMERCIAL.tar.gz
+download $QT_EVAL.zip
+download $QT_GPL.tar.gz
 
-#
-# Download files again...
-#
-rm $QT_PACKAGE.tar.gz $QT_EVAL.zip
-wget http://ares.troll.no/~qt/packages/$QT_PACKAGE.tar.gz
-wget http://ares.troll.no/~qt/packages/$QT_EVAL.zip
+unpack_and_build $QT_COMMERCIAL eval $QT_EVAL $QT_EVAL_DIR
+unpack_and_build $QT_GPL gpl
+unpack_and_build $QT_COMMERCIAL commercial
 
-
-
-#
-# The commercial version
-#
-rm -rf $QT_PACKAGE qt-commercial-$QT_VERSION
-tar xzf $QT_PACKAGE.tar.gz > /dev/null 2>&1
-mv $QT_PACKAGE qt-commercial-$QT_VERSION
-cd qt-commercial-$QT_VERSION
-find . -exec touch \{\} \;
-touch LICENSE.TROLL
-./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD -no-mmx -no-3dnow -no-sse -no-sse2
-make sub-src sub-tools
-make clean
-cd ..
-
-
-
-#
-# The eval version...
-#
-
-rm -rf $QT_PACKAGE $QT_EVAL_DIR qt-eval-$QT_VERSION
-tar xzf $QT_PACKAGE.tar.gz > /dev/null 2>&1
-unzip $QT_EVAL.zip
-cp -R $QT_EVAL_DIR/* $QT_PACKAGE
-mv $QT_PACKAGE qt-eval-$QT_VERSION
-cd qt-eval-$QT_VERSION
-find . -exec touch \{\} \;
-touch LICENSE.TROLL
-./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD -DQT_EVAL -no-mmx -no-3dnow -no-sse -no-sse2
-make sub-src sub-tools
-make clean
-cd ..

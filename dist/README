@@ -5,6 +5,9 @@ Qt Jambi is the Qt library made available to Java.
 
 Please make sure you read and understand the LICENSE file.
 
+If you have problems installing, please consult the trouble shooting
+section in the Qt Jambi install document
+(http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html).
 
 Requirements
 ------------
@@ -44,13 +47,6 @@ java installation you may be required to set JAVADIR prior to
 running Qt Designer. 
 
 
-Running Eclipse with the Qt Designer plugin
--------------------------------------------
-
-To run Eclipse with the Qt Designer plugin you are required to set your
-LD_LIBRARY_PATH to the JAMBI_INSTALL_DIR/lib. 
-
-
 Documentation
 -------------
 
@@ -88,6 +84,8 @@ Mac OS X:
 	Set the DYLD_LIBRARY_PATH environment variable to include the
 	lib directory in the Qt Jambi directory.
 
+Finally, the QT_PLUGIN_PATH variable must contain the path to the
+plugins directory in the Qt Jambi directory.
 
 Platform Notes
 --------------

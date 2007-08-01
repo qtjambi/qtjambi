@@ -18,6 +18,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * QtJambiGeneratedClass annotates classes or interfaces
+ * that are created by the Qt Jambi generator. It is used internally by
+ * Qt Jambi to check which Qt Jambi generated methods are
+ * overridden in Java. This makes it possible to only pass
+ * virtual calls from c++ to Java when necessary.
+ *
+ * @exclude
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface QtJambiGeneratedClass {

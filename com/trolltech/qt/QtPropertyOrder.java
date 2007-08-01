@@ -15,7 +15,15 @@ package com.trolltech.qt;
 
 import java.lang.annotation.*;
 
+/**
+ * The QtPropertyOrder annotation gives the property a value that can be used
+ * for sorting properties. The Qt Designer sorts properties with this value.
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QtPropertyOrder {
+    /**
+     * Returns the sort order of the property.
+     */
     public int value() default 0;
 }

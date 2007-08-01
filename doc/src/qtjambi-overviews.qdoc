@@ -17,5 +17,6 @@
     \o \l {The Qt 4 Main Window Classes}{Main Window Architecture}
     \o \l {Rich Text Processing}
     \o \l {Model/View Programming}
+    \o \l {How to Create Qt Plugins}{Plugin System}
     \endlist
 */

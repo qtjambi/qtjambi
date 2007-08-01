@@ -5,27 +5,28 @@
 
     Java provides a number of different features which makes it easier
     to deploy applications, such as the Web Start technology, Java
-    Archives (\c .jar files) and of course the virtual machine that
+    Archives (\c .jar files) and, of course, the virtual machine that
     enables you to compile your application to bytecode once and run
     on all architectures.
 
     The apparent challenge when deploying \QJ applications is that \QJ
     makes use of Qt's C++ libraries which means that platform
     dependent code must be distributed in addition to the platform
-    independent bytecode. \QJ provides a solution; all you have to do
-    is to include the native libraries in the JAR bundle.  To include
-    resources, the programmer must follow a particular syntax since
-    \QJ provides its own resource system. But note that this system
-    makes it easy to access any kind of resources (e.g., pixmaps,
-    translation files and xml data files), no matter whether they are
-    located directly on the disk or in a JAR bundle.
+    independent bytecode. \QJ provides a solution - all you have to do
+    is to include the native libraries in a JAR bundle.
+
+    To include resources, the programmer must follow a particular
+    syntax since \QJ provides its own resource system. But note that
+    this system makes it easy to access any kind of resource (e.g.,
+    pixmaps, translation files and xml data files), no matter whether
+    they are located, directly on the disk or in a JAR bundle.
 
     We will first take a look at how \QJ loads native libraries into
-    the application, and how to include resources using \QJ's resource
-    system. Then we will see how to create an executable \c .jar
-    file. We will also see how a \QJ application can be deployed using
-    the Web Start technology. For an example, please take a look at
-    our own Web Start application, "The \QJ Examples and Demos
+    the application, and how to include resources using Qt Jambi's
+    resource system. Then we will see how to create an executable \c
+    .jar file. We then explain how a \QJ application can be deployed
+    using the Web Start technology. For an example, please take a look
+    at our own Web Start application, "The \QJ Examples and Demos
     Launcher".
 
     \tableofcontents
@@ -55,10 +56,19 @@
     listing them in a file called \c qt_system_libs which should be
     located somewhere in the classpath root.
 
-    \table
-    \row \o
+    There are tools on each platform for checking library
+    dependencies. UNIX systems has the \c ldd utility, Mac OS X
+    provides \c oTool. Windows has no standard tool, but a good freely
+    available application is the \l
+    {http://www.dependencywalker.com/}{Dependency Walker}.
 
-    \bold {The \QJ Generator and Custom Libraries}
+    \omit
+        (I would like to include a table here on necessary libraries for
+         all compilers/systems, Tools for this? check with compiler guys.)
+    \row \o
+    \endomit
+
+    \bold {The Qt Jambi Generator and Custom Libraries}
 
     \QJ also supports distribution of custom native libraries using
     the same approach as for regular libraries. This makes it possible
@@ -67,21 +77,18 @@
 
     To generate code that maps a C++ library onto an equivalent Java
     API, \QJ provides its own generator. For more information, please
-    see the \l {The Qt Jambi Generator} documentation.
-
-    \endtable
-
+    see the \l {The \QJ Generator} documentation.
 
     \section1 Including Resources
 
-    \QJ provides a complete filesystem abstraction that allows a
+    \QJ provides a complete file system abstraction that allows a
     uniform syntax (based on the Java classpath) for accessing
-    resources, no matter whether they are located directly on the disk
-    or in a JAR bundle. While the standard Java API only supports
-    accessing resources in an undocumented subset of its file I/O
-    operations (which does not include the \c java.io.File class), Qt
-    Jambi allows resources to be used wherever a file name is
-    expected. Resources are identifed by a \c classpath: prefix.
+    resources, whether they are located directly on the disk or in a
+    JAR bundle. While the standard Java API only supports accessing
+    resources in an undocumented subset of its file I/O operations
+    (which does not include the \c java.io.File class), Qt Jambi
+    allows resources to be used wherever a file name is expected.
+    Resources are identified by a \c classpath: prefix.
 
     \image accessing-resources.png
 
@@ -98,19 +105,76 @@
     accessing resources and make the resources available by adding
     them to your JAR bundle.
 
+    \section1 Including Plugins
+
+    In addition to the Qt native libraries, you need to deploy Qt
+    plugins, such as JPEG support and SQL drivers. See the \l{How to
+    Create Qt Plugins}{plugins document} for more information about Qt
+    plugins.
+
+    The Qt plugins are located in the \c plugins directory in the
+    directory where \QJ is installed. They are placed in
+    subdirectories according to type, e.g., SQL drivers and image
+    formats.
+
+    Plugins are deployed in a \c .jar file following the same
+    directory structure as in the Jambi installation directory. When
+    running the application, the \c {com.trolltech.qt.pluginjars}
+    system property must be set to contain the path to the \c .jar
+    file containing the plugins. The plugins does not need to have
+    their own file, so it is, for instance, possible to deploy them in
+    the same file as your application.
+
     \section1 Creating an Executable .jar File
 
     To deploy \QJ applications using the executable \c .jar file
     approach is straight forward:
 
     \code
-        jar mcf myApplication.jar <manifest file> <my class files>
-                         <my resources> <native libraries>
+        jar mcf <manifest file> myApplication.jar <my class files>
+                         <my resources> <native libraries> <plugins>
     \endcode
 
-    Simply put all resources, native libraries and application \c
+    Simply put all resources, native libraries, and application \c
     .class files into one single \c .jar file. Remember to add a
-    mainfest file to make the file executable.
+    manifest file to make the file executable. 
+
+    For instance, if you were to create a file for the Application
+    example, the manifest file will look like this:
+
+    \code
+        Main-Class: com.trolltech.examples.Application
+
+    \endcode
+
+    Assuming your current directory is the Jambi directory, you can
+    create a \c .jar file on a Linux system with:
+
+    \code
+        jar mcf Manifest.text application.jar com/trolltech/images/*png
+        com/trolltech/examples/Application.class lib/*so
+        com/trolltech/qt/*class com/trolltech/qt/gui/*class
+        com/trolltech/qt/core/*class 
+    \endcode
+
+    Note that if you have a Qt Jambi source package, you also need to
+    include the Qt libraries from the \c lib directory in the Qt
+    directory.
+
+    On Windows and Mac OS X, one replaces the \c so file suffix with
+    \c dll or \c dylib. Remember that it might be necessary to
+    include libraries that \QJ depends on, see \l {Resolving Native
+    Libraries}. It is also a good idea to check library dependencies
+    and only include the necessary libraries to reduce the \c .jar
+    file size.
+
+    With the created JAR bundle, it is possible to run the Application
+    example on systems that do not have Qt or \QJ installed (a
+    Java installation must be present, of course): 
+
+    \code
+        java -jar application.jar
+    \endcode
 
     \section1 Creating a Web Start Application
 
@@ -145,7 +209,7 @@
         </resources>
      \endcode
 
-    For more infomation about deploying Web Start applications, please
+    For more information about deploying Web Start applications, please
     see the \l
     {http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/contents.html}{Java
     Web Start Developer's Guide}

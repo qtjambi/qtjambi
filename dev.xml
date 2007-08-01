@@ -46,7 +46,8 @@
         <mkdir dir="${outputDir}/com/trolltech/autotests" />
 	<generator dir="autotestlib"
 	           header="global.h"
-                   typesystem="build.txt" />
+                   typesystem="build.txt" 
+		   outputDirectory=".."/>
     </target>
 
     <target name="compile.qt"

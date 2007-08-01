@@ -18,6 +18,100 @@ import com.trolltech.qt.gui.*;
 import java.lang.reflect.*;
 import java.util.*;
 
+/**
+    The QtPropertyManager class implements the Qt Jambi Property
+    system. To the outer world, a property appears to be similar
+    to a data member; however, a property has features that
+    distinguishes it from a normal data member:
+    <p>
+    <ul>
+        <li>It has a read method. This must always exist.</li>
+        <li>A write method; this is optional.</li>
+        <li>A reset method that sets the property back to a
+            default state. This is also optional</li>
+        <li>It usually stores its value</li>
+        <li>It has a "designable" attribute that indicates whether it
+            makes sense to edit the property in a GUI builder
+            (e.g, the Qt Designer).</li>
+        <li>It is possible to access it by name
+            (i.e., its methods, value, and whether it is
+            designable)</li>
+    </ul>
+    <p>
+    When Qt Jambi resolves the properties of a class, it identifies
+    them by their read, write, and reset property methods.  The
+    methods of a property are identified by annotations or by
+    compliance with a method naming scheme. A property is set as
+    designable with an annotation. We take a look at the annotations
+    before we examine the scheme. For detailed usage of the
+    annotations see their javadoc.
+    <p>
+    <center>
+    <table border="1">
+        <tr>
+            <th>Annotation</th>
+            <th>Propety Method</th>
+        </tr>
+        <tr>
+            <td>QtPropertyReader</td>
+            <td>The property read method.</td>.
+        </tr>
+        <tr>
+            <td>QtPropertyWriter</td>
+            <td>The property write method.</td>
+        </tr>
+        <tr>
+            <td>QtPropertyResetter</td>
+            <td>The property reset method.</td>
+        </tr>
+        <tr>
+            <td>QtPropertyDesignable</td>
+            <td>Decides whether the property is suitable for
+                editing in a GUI builder.</td>
+        </tr>
+        <tr>
+            <td>QtPropertyOrder</td>
+            <td>Gives a value than can be used for
+                sorting properties.</td>
+        </tr>
+    </table>
+    </center>
+    <p>
+    The following table describe the property method naming scheme.
+    The names are given for a property with name <b>x</b> and value
+    <b>T</b>. Note that resetter methods can only be specified
+    with the QtPropertyResetter annotation.
+    <p>
+    <center>
+    <table border="1">
+        <tr>
+            <th>Method Name</th>
+            <th>Property Method</th>
+        </tr>
+        <tr>
+            <td>T getX() or T x() - for boolean values also T
+                isX() or T hasX()</td>
+            <td>Property reader</td>
+        </tr>
+        <tr>
+            <td>setX(T)</td>
+            <td>Property writer</td>
+        </tr>
+    </table>
+    </center>
+    <p>
+    The propery system is provided for convenience and provides the
+    same functionality as the native Qt system, which has advantages
+    over using ordinary data members and Java Reflection. The code
+    required to set, get, and reset properties are already
+    implemented. You can set and get a property's value without
+    knowing the method names, and the naming of property methods needs
+    not follow a specific naming scheme. You can also query a property
+    for whether it is designable, readable, or writeable.
+    <p>
+    (See property docs and possibly implement property example
+    (designer).)
+ */
 public class QtPropertyManager {
 
     private static Class QT_PROPERTY_ANNOTATION_CLASSES[] = new Class[] {
@@ -44,22 +138,45 @@ public class QtPropertyManager {
         }
     }
 
+    /**
+     * The Entry class is used to keep information
+     * about a property. QtPropertyManager can return an
+     * Entry list for each property in a class.
+     *
+     */
     public static class Entry {
+        /**
+         * Creates an Entry for a property named <tt>name</tt>.
+         */
         public Entry(String name) { this.name = name; }
 
+        /** The name of the property. */
         public String name;
 
+        /** The read method of the property. */
         public Method read;
+        /** The writemethod of the property. */
         public Method write;
+        /** The reset method of the property. */
         public Method reset;
-
+        /** A method that returns true if the property
+            can be edited in a GUI builder; otherwise, false. */
         public Method designable;
 
+        /** The sort order of the property. */
         public int sortOrder;
 
+        /** Indicates wether the property can be read. */
         boolean readable = true;
+        /** Indicates whether the property can be written to. */
         boolean writable = true;
 
+        /**
+         * Invokes the <tt>designable</tt> Method and returns the result.
+         * If <tt>designable</tt> is null or an invocation exception
+         * was thrown, it returns false. See the QtPropertyDesignable
+         * annotation on how to specify the <tt>designable</tt> method. 
+         */
         public boolean isDesignable(Object o) {
             if (designable == null || designable == DEFAULT_TRUE)
                 return true;
@@ -73,6 +190,7 @@ public class QtPropertyManager {
             return false;
         }
 
+        /** Returns the type of the property. */
         public Class type() {
             if (read != null) return read.getReturnType();
             if (write != null) return write.getParameterTypes()[0];
@@ -246,6 +364,13 @@ public class QtPropertyManager {
 
     private static HashMap<Class, HashMap<String, Entry>> recursivePropertyTable = new HashMap<Class, HashMap<String, Entry>>();
 
+    /**
+     * Returns a HashMap of properties declared by <tt>cl</tt> and its ancestors.
+     * The map keys are the property names. If two properties have
+     * the same name, it is the most direct ancestor (including
+     * <tt>cl</tt> itself) that is stored.
+     *
+     */
     public static HashMap<String, Entry> findPropertiesRecursive(Class cl) {
         HashMap<String, Entry> map = recursivePropertyTable.get(cl);
         if (map == null) {
@@ -256,6 +381,13 @@ public class QtPropertyManager {
         return map;
     }
 
+    /**
+     * Returns the properties of class <tt>cl</tt>. The properties
+     * are returned in a HashMap using the property names as keys.
+     * The Entry class keeps all information available for a
+     * property.
+     *
+     */
     public static HashMap<String, Entry> findProperties(Class cl) {
         HashMap<String, Entry> entries = new HashMap<String, Entry>();
         Method methods[] = cl.getDeclaredMethods();
@@ -446,7 +578,12 @@ public class QtPropertyManager {
         return null;
     }
 
-
+    /**
+     *  Returns the value of the proprty <tt>name</tt> of <tt>object</tt>.
+     *
+     *  It returns null if the property could not be read. If <tt>name</tt>
+     *  is not a property of <tt>object</tt>, a QPropertyException is thrown.
+     */
     public static Object readProperty(Object object, String name) {
         HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
         Entry e = entries.get(name);
@@ -466,7 +603,11 @@ public class QtPropertyManager {
         return null;
     }
 
-
+    /**
+     *  Sets the <tt>value</tt> of the property <tt>name</tt> in <tt>object</tt>.
+     *  It throws QPropertyException if the property is not defined for <tt>object</tt>
+     *  or the property is not writeable.
+     */
     public static void writeProperty(Object object, String name, Object value) {
         HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
         Entry e = entries.get(name);
@@ -484,7 +625,10 @@ public class QtPropertyManager {
         }
     }
 
-
+    /**
+     * Resets the property <tt>name</tt> in <tt>object</tt>. It throws QPropertyException
+     * if the property <tt>name</tt> is undefined or the propety cannot be reset.   
+     */
     public static void resetProperty(Object object, String name) {
         HashMap<String, Entry> entries = findPropertiesRecursive(object.getClass());
         Entry e = entries.get(name);

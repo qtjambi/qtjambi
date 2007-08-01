@@ -17,7 +17,20 @@ package com.trolltech.qt;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * QtPropertyDesignable specifies wether a proprety
+ * is suitable for editing in a GUI builder (e.g., the Qt Designer).
+ * It is the read method of the property that must be annotated.
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QtPropertyDesignable {
+    /**
+     * The value should be true or false depending on whether the
+     * property is designable. It can also be the name of a boolean
+     * method in the same class as the annotated method; it must
+     * return true if the property is to be designable; otherwise,
+     * false.
+     */
     String value() default "true";
 }
