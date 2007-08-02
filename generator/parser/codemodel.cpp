@@ -115,6 +115,12 @@ CodeModelItem CodeModel::findItem(const QStringList &qualifiedName, CodeModelIte
             if (i == qualifiedName.size () - 1)
               return tp->toItem ();
           }
+        else
+          {
+              // If we don't find the name in the scope chain we
+              // need to return an empty item to indicate failure...
+              return CodeModelItem();
+          }
       }
   }
 
@@ -149,7 +155,7 @@ TypeInfo TypeInfo::resolveType (TypeInfo const &__type, CodeModelItem __scope)
     // has more than 2 entries in the qualified name... This test
     // could be improved by returning if the type was found or not.
     TypeInfo otherType(__type);
-    if (__item->qualifiedName().size() > 1) {
+    if (__item && __item->qualifiedName().size() > 1) {
         otherType.setQualifiedName(__item->qualifiedName());
     }
 
