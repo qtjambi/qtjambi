@@ -260,6 +260,8 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID isImplementedInJava;
         jmethodID lookupSignal;
         jmethodID lookupSlot;
+	jmethodID writeSerializableJavaObject;
+	jmethodID readSerializableJavaObject;
     } QtJambiInternal;
 
     struct {

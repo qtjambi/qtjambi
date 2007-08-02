@@ -15,6 +15,7 @@ package com.trolltech.qt;
 
 import com.trolltech.qt.core.*;
 
+import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import java.io.*;
@@ -699,5 +700,35 @@ public class QtJambiInternal {
         return clazz;
     }
 
+    public static void writeSerializableJavaObject(QDataStream s, Object o) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(o);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        s.writeBytes(bos.toByteArray());
+    }
+    
+    public static Object readSerializableJavaObject(final QDataStream s) {
+        Object res = null;
+        try {
+            ObjectInputStream in = new ObjectInputStream(new InputStream(){
+                @Override
+                public int read() throws IOException {
+                    return s.readByte();
+                }
+            });
+            res  = in.readObject();
+            in.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        return res;
+    }
 }

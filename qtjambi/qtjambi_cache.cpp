@@ -983,8 +983,23 @@ void StaticCache::resolveQtJambiInternal_internal()
         env->GetStaticMethodID(QtJambiInternal.class_ref, "findGeneratedSuperclass",
                                "(Ljava/lang/Object;)Ljava/lang/Class;");
     Q_ASSERT(QtJambiInternal.findGeneratedSuperclass);
-}
+    
+    
+    QtJambiInternal.writeSerializableJavaObject = env->GetStaticMethodID(QtJambiInternal.class_ref,
+									 "writeSerializableJavaObject",
+									 "(Lcom/trolltech/qt/core/QDataStream;"
+									 "Ljava/lang/Object;"
+									 ")V");
+    Q_ASSERT(QtJambiInternal.writeSerializableJavaObject);
 
+
+    QtJambiInternal.readSerializableJavaObject = env->GetStaticMethodID(QtJambiInternal.class_ref,
+									 "readSerializableJavaObject",
+									 "(Lcom/trolltech/qt/core/QDataStream;)"
+									 "Ljava/lang/Object;");
+    Q_ASSERT(QtJambiInternal.readSerializableJavaObject);
+
+}
 
 void StaticCache::resolveQtJambiGuiInternal_internal()
 {

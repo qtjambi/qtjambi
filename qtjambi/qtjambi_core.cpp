@@ -130,69 +130,78 @@ struct JObjectWrapper
 {
     JObjectWrapper() : environment(0), object(0)
     {
-        Q_ASSERT(false);
     }
-
+    
     JObjectWrapper(const JObjectWrapper &wrapper)
     {
-        environment = wrapper.environment;
-        Q_ASSERT(environment);
-
-        object = environment->NewGlobalRef(wrapper.object);
-        Q_ASSERT(object);
-
-        REF_JOBJECT;
+        operator=(wrapper);
     }
-
+    
     JObjectWrapper(JNIEnv *env, jobject obj) : environment(env)
     {
-        Q_ASSERT(environment);
-        Q_ASSERT(obj);
-        object = environment->NewGlobalRef(obj);
-
+        Q_ASSERT(env != 0 && obj != 0 || env == 0 && obj == 0);
+        
+        if (object && environment)
+            object = environment->NewGlobalRef(obj);
+        else
+            object = 0;
+        
         REF_JOBJECT;
     }
-
+    
     ~JObjectWrapper()
     {
-        Q_ASSERT(environment);
-        Q_ASSERT(object);
-
         DEREF_JOBJECT;
-
-        environment->DeleteGlobalRef(object);
+        
+        if (environment && object)
+            environment->DeleteGlobalRef(object);
     }
 
+    void operator=(const JObjectWrapper &wrapper) {
+        if (wrapper.environment && wrapper.object) {
+            environment = wrapper.environment;
+            object = environment->NewGlobalRef(wrapper.object);
+        } else {
+            object = 0;
+            environment = 0;
+        } 
+        
+        REF_JOBJECT;        
+    }
+
+    
+    
     JNIEnv *environment;
     jobject object;
 };
 
 
 Q_DECLARE_METATYPE(JObjectWrapper)
-static void jobject_delete(JObjectWrapper *wrapper)
-{
-    Q_ASSERT(wrapper);
 
-    delete wrapper;
+void jobjectwrapper_save(QDataStream &stream, const void *_jObjectWrapper)
+{ 
+    JObjectWrapper *jObjectWrapper = (JObjectWrapper *) _jObjectWrapper;
+    JNIEnv *env = qtjambi_current_environment();
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiInternal();
+
+    jobject jstream = qtjambi_from_object(env, &stream, "QDataStream", "com/trolltech/qt/core/", false);
+    
+    env->CallStaticVoidMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.writeSerializableJavaObject, jstream, jObjectWrapper->object);
 }
 
-static void *jobject_create(JObjectWrapper *wrapper)
+void jobjectwrapper_load(QDataStream &stream, void *_jObjectWrapper)
 {
-    if (wrapper != 0)
-        return new JObjectWrapper(wrapper->environment, wrapper->object);
-    else
-        return 0;
-}
+    JObjectWrapper *jObjectWrapper = (JObjectWrapper *) _jObjectWrapper;
+    JNIEnv *env = qtjambi_current_environment();
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiInternal();
 
-static inline int javaObjectVariant()
-{
-    int type = QMetaType::type("JObjectWrapper");
-    if (type == QVariant::Invalid) {
-        type = QMetaType::registerType("JObjectWrapper",
-                                reinterpret_cast<QMetaType::Destructor>(jobject_delete),
-                                reinterpret_cast<QMetaType::Constructor>(jobject_create));
-    }
-    return type;
+    jobject jstream = qtjambi_from_object(env, &stream, "QDataStream", "com/trolltech/qt/core/", false);
+    
+    jobject res = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.readSerializableJavaObject, jstream);
+
+    *jObjectWrapper = JObjectWrapper(env, res);
 }
 
 
@@ -282,7 +291,7 @@ QString qtjambi_object_class_name(JNIEnv *env, jobject java_object)
 
 jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant)
 {
-    int type = javaObjectVariant();
+    int type = qMetaTypeId<JObjectWrapper>();
 
     StaticCache *sc = StaticCache::instance(env);
 
@@ -311,12 +320,10 @@ jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant)
     // generic java object
     if (qt_variant.userType() == type) {
         JObjectWrapper wrapper = qVariantValue<JObjectWrapper>(qt_variant);
-
         if (wrapper.object) {
             jclass cls = env->GetObjectClass(wrapper.object);
             QString classname = qtjambi_class_name(env, cls);
         }
-
         return env->NewLocalRef(wrapper.object);
     } else {
         QString qtType = QLatin1String(qt_variant.typeName());
@@ -393,7 +400,7 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
 
 
     if (type == QVariant::Invalid) {
-        type = javaObjectVariant();
+        type = qMetaTypeId<JObjectWrapper>();
         copy = &wrapper;
     }
 
@@ -401,7 +408,7 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
     if (destroyCopy)
         manager.destroyInternal(copy, QtJambiTypeManager::ArgumentType);
 
-//     qDebug() << fullName << className << returned.type() << returned.typeName();
+//  qDebug() << fullName << className << returned.type() << returned.typeName();
 
     return returned;
 }
@@ -1964,6 +1971,11 @@ void qtjambi_register_callbacks()
 #if QT_VERSION >= 0x040300
     QInternal::registerCallback(QInternal::EventNotifyCallback, qtjambi_event_notify);
 #endif
+
+    QMetaType::registerStreamOperators(QMetaType::typeName(qMetaTypeId<JObjectWrapper>()),
+				       reinterpret_cast<QMetaType::SaveOperator>(jobjectwrapper_save),
+				       reinterpret_cast<QMetaType::LoadOperator>(jobjectwrapper_load));
+
 }
 
 
