@@ -340,6 +340,13 @@ void Binder::visitFunctionDefinition(FunctionDefinitionAST *node)
   InitDeclaratorAST *init_declarator = node->init_declarator;
   DeclaratorAST *declarator = init_declarator->declarator;
 
+  // in the case of "void (func)()" or "void ((func))()" we need to
+  // skip to the inner most.  This is in line with how the declarator
+  // node is generated in 'parser.cpp'
+  while (declarator && declarator->sub_declarator)
+      declarator = declarator->sub_declarator;
+  Q_ASSERT(declarator->id);
+
   CodeModelFinder finder(model(), this);
 
   ScopeModelItem functionScope = finder.resolveScope(declarator->id, scope);
