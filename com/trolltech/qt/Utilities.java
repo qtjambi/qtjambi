@@ -125,10 +125,10 @@ public class Utilities {
     	loadLibrary(lib);
     }
 
-    private static boolean loadFromEnv(String env, String lib){
-	if (VERBOSE_LOADING) {
-	    System.out.println(".. from environment: " + env);
-	}
+    private static boolean loadFromEnv(String env, String lib) {
+        if (VERBOSE_LOADING) {
+            System.out.print(".. from environment: " + env + " ");
+        }
         try {
             String envPath = System.getProperty(env);
             if (envPath != null) {
@@ -139,21 +139,21 @@ public class Utilities {
                     if (f.exists()) {
                         Runtime.getRuntime().load(f.getAbsolutePath());
                         if (VERBOSE_LOADING)
-                            System.out.println("Loaded(" + lib + ") using java env: " + env);
+                            System.out.println("\n   Loaded from: " + path);
                         return true;
                     }
                 }
                 if (VERBOSE_LOADING && envPath.length() > 0) {
-                    System.out.println("Failed to find " + lib + " in " + env + "(" + envPath + ")" );
+                    System.out.println("\n   Failed to find " + lib + " in " + env + "(" + envPath + ")");
+                }
+            } else {
+                if (VERBOSE_LOADING) {
+                    System.out.println("(Skipped, environment was empty)");
                 }
             }
-	    else {
-		if (VERBOSE_LOADING) {
-                    System.out.println("Failed to find " + lib + "in. Environment " + env + " is empty.");
-                }
-	    }
         } catch (Throwable e) {
-            if (VERBOSE_LOADING) System.out.println("Failed to load " + lib + " from " + env);
+            if (VERBOSE_LOADING)
+                System.out.println("\n   Failed to load " + lib + " from " + env);
             return false;
         }
         return false;
@@ -161,20 +161,22 @@ public class Utilities {
 
 
     public static boolean loadLibrary(String lib) {
-        if (VERBOSE_LOADING) System.out.println("\nGoing to load: " + lib);
+        if (VERBOSE_LOADING)
+            System.out.println("\nGoing to load: " + lib);
 
-        if(loadFromEnv("com.trolltech.qt.library-path" , lib))
+        if (loadFromEnv("com.trolltech.qt.library-path", lib))
             return true;
 
-        if(loadFromEnv("com.trolltech.qt.internal.jambipath" , lib))
+        if (loadFromEnv("com.trolltech.qt.internal.jambipath", lib))
             return true;
 
-        // Try to search in the classpath, including .jar files and unpack to a temp directory, then load
+        // Try to search in the classpath, including .jar files and unpack to a
+        // temp directory, then load
         // from there.
         try {
-	    if (VERBOSE_LOADING) {
-		System.out.println(".. from classpath.");
-	    }
+            if (VERBOSE_LOADING) {
+                System.out.println(".. from classpath:");
+            }
             URL libUrl = Thread.currentThread().getContextClassLoader().getResource(lib);
             if (libUrl == null) {
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
@@ -183,35 +185,37 @@ public class Utilities {
             File tmpLibDir = jambiTempDir();
 
             File destLib = new File(tmpLibDir, lib);
-            
+
             // If we prefer to load the cached copies of libraries *and* the library has
             // previously been copied out, we just load it. Otherwise we copy it again
             // (make sure default to updating the cache or we might end up in trouble.)
-            // For applications such as webstart, use the use-cache-property. 
+            // For applications such as webstart, use the use-cache-property.
 
-	    if (!destLib.exists() || !loadFromCache) {
+            if (!destLib.exists() || !loadFromCache) {
                 tmpLibDir.mkdirs();
-		copy(libUrl, destLib);
+                copy(libUrl, destLib);
+                
+                Runtime.getRuntime().load(destLib.getAbsolutePath());
 
-		Runtime.getRuntime().load(destLib.getAbsolutePath());
-                            
-                if (VERBOSE_LOADING) System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
+                if (VERBOSE_LOADING)
+                    System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
             } else if (VERBOSE_LOADING) {
-		Runtime.getRuntime().load(destLib.getAbsolutePath());            
-            	System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
+                Runtime.getRuntime().load(destLib.getAbsolutePath());
+                System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
             }
 
             return true;
         } catch (Throwable e) {
-            if (VERBOSE_LOADING) e.printStackTrace();
+            if (VERBOSE_LOADING)
+                e.printStackTrace();
         }
 
         // Try to load using relative path (relative to qtjambi.jar or
         // root of package where class file are loaded from
         if (implicitLoading) {
-	    if (VERBOSE_LOADING) {
-		System.out.println(".. using relative path (com.trolltech.qt.implicit-loading).");
-	    }
+            if (VERBOSE_LOADING) {
+                System.out.println(".. using relative path (com.trolltech.qt.implicit-loading).");
+            }
             try {
                 String basePath = filePathForClasses();
 
@@ -230,23 +234,25 @@ public class Utilities {
         }
 
         // Try to load in standard way.
-	if (VERBOSE_LOADING) {
-	    System.out.println(".. in standard way.");
-	}
+        if (VERBOSE_LOADING) {
+            System.out.println(".. in standard way.");
+        }
         try {
             String stripped = stripLibraryName(lib);
             System.loadLibrary(stripped);
-            if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") in standard way as " + stripped);
+            if (VERBOSE_LOADING)
+                System.out.println("Loaded(" + lib + ") in standard way as " + stripped);
             return true;
         } catch (Throwable e) {
-            if (VERBOSE_LOADING) e.printStackTrace();
+            if (VERBOSE_LOADING)
+                e.printStackTrace();
         }
 
-        if(loadFromEnv("java.library.path" , lib))
+        if (loadFromEnv("java.library.path", lib))
             return true;
 
-
-        if (VERBOSE_LOADING) System.out.println("Loading: " + lib + " failed.\n");
+        if (VERBOSE_LOADING)
+            System.out.println("Loading: " + lib + " failed.\n");
         return false;
     }
 
