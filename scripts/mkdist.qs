@@ -1,5 +1,5 @@
 const packageDir = os_name() == OS_NAME_WINDOWS
-                   ? "d:/tmp/package-builder"
+                   ? "c:/tmp/package-builder"
                    : "/tmp/package-builder";
 const version = figureVersion();
 const javaDir = packageDir + "/qtjambi/" + version;
@@ -174,9 +174,6 @@ function setupDefaultPackage() {
     ];
 
     pkg.version = version;
-    pkg.make = make_from_qmakespec();
-    pkg.qmakespec = System.getenv("QMAKESPEC");
-
     return pkg;
 }
 
@@ -202,9 +199,19 @@ function finalizeDefaultPackage(pkg) {
  */
 function setupBinaryPackage(pkg) {
     pkg.binary = true;
-    pkg.maketool = make_from_qmakespec();
     pkg.preCompileStep = function(pkg) { }
     pkg.postCompileStep = function(pkg) { }
+
+    if (os_name() == OS_NAME_LINUX) {
+        pkg.maketool = find_executable("make");
+        pkg.qmakespec = "linux-g++";
+    } else if (os_name() == OS_NAME_MACOSX) {
+        pkg.maketool = find_executable("make");
+        pkg.qmakespec = "macx-g++";
+    } else {
+        pkg.maketool = find_executable("nmake");
+        pkg.qmakespec = "win32-msvc2005";
+    }
 
     pkg.removeDirs.push(
                    "com/trolltech/qt",

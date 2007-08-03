@@ -29,7 +29,7 @@ public class Utilities {
 	/** The Qt Library's minor version. */
     public static final int MINOR_VERSION = 3;
 	/** The Qt Library's patch version. */
-    public static final int PATCH_VERSION = 0;
+    public static final int PATCH_VERSION = 1;
 
 	/** Qt Library build number */
     public static final int BUILD_NUMBER = 1;
@@ -126,6 +126,9 @@ public class Utilities {
     }
 
     private static boolean loadFromEnv(String env, String lib){
+	if (VERBOSE_LOADING) {
+	    System.out.println(".. from environment: " + env);
+	}
         try {
             String envPath = System.getProperty(env);
             if (envPath != null) {
@@ -141,9 +144,14 @@ public class Utilities {
                     }
                 }
                 if (VERBOSE_LOADING && envPath.length() > 0) {
-                    System.out.println("Failed to find " + lib + " in " + envPath);
+                    System.out.println("Failed to find " + lib + " in " + env + "(" + envPath + ")" );
                 }
             }
+	    else {
+		if (VERBOSE_LOADING) {
+                    System.out.println("Failed to find " + lib + "in. Environment " + env + " is empty.");
+                }
+	    }
         } catch (Throwable e) {
             if (VERBOSE_LOADING) System.out.println("Failed to load " + lib + " from " + env);
             return false;
@@ -164,6 +172,9 @@ public class Utilities {
         // Try to search in the classpath, including .jar files and unpack to a temp directory, then load
         // from there.
         try {
+	    if (VERBOSE_LOADING) {
+		System.out.println(".. from classpath.");
+	    }
             URL libUrl = Thread.currentThread().getContextClassLoader().getResource(lib);
             if (libUrl == null) {
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
@@ -177,16 +188,19 @@ public class Utilities {
             // previously been copied out, we just load it. Otherwise we copy it again
             // (make sure default to updating the cache or we might end up in trouble.)
             // For applications such as webstart, use the use-cache-property. 
-            if (!destLib.exists() || !loadFromCache) {
+
+	    if (!destLib.exists() || !loadFromCache) {
                 tmpLibDir.mkdirs();
-                copy(libUrl, destLib);
-                
-                if (VERBOSE_LOADING) System.out.println("Loaded(" + lib + ") from class path");
+		copy(libUrl, destLib);
+
+		Runtime.getRuntime().load(destLib.getAbsolutePath());
+                            
+                if (VERBOSE_LOADING) System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
             } else if (VERBOSE_LOADING) {
-            	System.out.println("Loaded(" + lib + ") using cached");
+		Runtime.getRuntime().load(destLib.getAbsolutePath());            
+            	System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
             }
-            
-            Runtime.getRuntime().load(destLib.getAbsolutePath());            
+
             return true;
         } catch (Throwable e) {
             if (VERBOSE_LOADING) e.printStackTrace();
@@ -195,6 +209,9 @@ public class Utilities {
         // Try to load using relative path (relative to qtjambi.jar or
         // root of package where class file are loaded from
         if (implicitLoading) {
+	    if (VERBOSE_LOADING) {
+		System.out.println(".. using relative path (com.trolltech.qt.implicit-loading).");
+	    }
             try {
                 String basePath = filePathForClasses();
 
@@ -213,6 +230,9 @@ public class Utilities {
         }
 
         // Try to load in standard way.
+	if (VERBOSE_LOADING) {
+	    System.out.println(".. in standard way.");
+	}
         try {
             String stripped = stripLibraryName(lib);
             System.loadLibrary(stripped);
