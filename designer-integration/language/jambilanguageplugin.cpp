@@ -113,17 +113,28 @@ JambiLanguage::~JambiLanguage()
 {
 }
 
-QDialog *JambiLanguage::createPromotionDialog(QDesignerFormEditorInterface *,
-                                                      const QString &,
-                                                      QString *,
-                                                      QWidget *)
+static QMessageBox *no_feature(QWidget *parent)
 {
-    return 0;
+    QMessageBox *box = new QMessageBox(QMessageBox::Information,
+                                       QLatin1String("Promote to Custom Widget"),
+                                       QLatin1String("This feature is not availble in Qt Jambi"),
+                                       QMessageBox::Ok,
+                                       parent);
+    return box;
+
 }
 
-QDialog *JambiLanguage::createPromotionDialog(QDesignerFormEditorInterface *,QWidget *)
+QDialog *JambiLanguage::createPromotionDialog(QDesignerFormEditorInterface *,
+                                              const QString &,
+                                              QString *,
+                                              QWidget *parent)
 {
-    return 0;
+    return no_feature(parent);
+}
+
+QDialog *JambiLanguage::createPromotionDialog(QDesignerFormEditorInterface *,QWidget *parent)
+{
+    return no_feature(parent);
 }
 
 
