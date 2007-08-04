@@ -29,22 +29,19 @@ import java.util.*;
         <li>A write method; this is optional.</li>
         <li>A reset method that sets the property back to a
             default state. This is also optional</li>
-        <li>It usually stores its value</li>
+        <li>It usually stores its value.</li>
         <li>It has a "designable" attribute that indicates whether it
             makes sense to edit the property in a GUI builder
             (e.g, the Qt Designer).</li>
-        <li>It is possible to access it by name
-            (i.e., its methods, value, and whether it is
-            designable)</li>
     </ul>
     <p>
     When Qt Jambi resolves the properties of a class, it identifies
-    them by their read, write, and reset property methods.  The
+    them by their read, write, and reset property methods. The
     methods of a property are identified by annotations or by
     compliance with a method naming scheme. A property is set as
     designable with an annotation. We take a look at the annotations
     before we examine the scheme. For detailed usage of the
-    annotations see their javadoc.
+    annotations, see their javadoc.
     <p>
     <center>
     <table border="1">
@@ -71,14 +68,14 @@ import java.util.*;
         </tr>
         <tr>
             <td>QtPropertyOrder</td>
-            <td>Gives a value than can be used for
+            <td>Gives a value that can be used for
                 sorting properties.</td>
         </tr>
     </table>
     </center>
     <p>
     The following table describe the property method naming scheme.
-    The names are given for a property with name <b>x</b> and value
+    The names are given for a property with name <b>x</b> and type
     <b>T</b>. Note that resetter methods can only be specified
     with the QtPropertyResetter annotation.
     <p>
@@ -102,15 +99,13 @@ import java.util.*;
     <p>
     The propery system is provided for convenience and provides the
     same functionality as the native Qt system, which has advantages
-    over using ordinary data members and Java Reflection. The code
-    required to set, get, and reset properties are already
-    implemented. You can set and get a property's value without
-    knowing the method names, and the naming of property methods needs
-    not follow a specific naming scheme. You can also query a property
-    for whether it is designable, readable, or writeable.
-    <p>
-    (See property docs and possibly implement property example
-    (designer).)
+    over using ordinary data members and Java Reflection to access
+    them by name. The code required to set, get, and reset properties
+    are already implemented. You can set and get a property's value
+    without knowing the method names, and the naming of property
+    methods needs not follow a specific naming scheme. You can also
+    query a property for whether it is designable, readable, or
+    writeable.
  */
 public class QtPropertyManager {
 

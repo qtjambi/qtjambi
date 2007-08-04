@@ -77,13 +77,11 @@
 
     \endtable
 
-
     \section1 Building Qt Jambi from a Source Package
 
-    There are two options when building Qt Jambi: One can use \c
-    ant or build manually from the command line in a shell. We first
-    describe how to configure your system for building Qt Jambi and
-    then explain each approach in a separate section. Finally, we
+    This section describes how to build Qt Jambi from source. We first
+    explain how to configure your system, and then we go through the
+    procedure of building Qt Jambi from the command line.  Finally, we
     look at some common installation problems.
 
     \section2 Configuring the System for Qt Jambi
@@ -106,8 +104,7 @@
            where Java is installed.
     \row
         \o PATH
-        \o This variable must include the directories QTDIR/bin,
-           JAVADIR/bin, and JAMBI/bin.
+        \o This variable must include the directory JAVADIR/bin.
     \row
         \o 
             \list 
@@ -122,27 +119,24 @@
         \o This variable must include the JAMBI directory.
     \endtable
 
-    The first step is to extract the package. After that, we are
-    ready to start building Qt Jambi.
+    \section2 Building 
 
-    \section2 Building from the Command Line
-
-    We will go through the procedure of building Qt Jambi step-by-step
-    from the command line. We give shell transcripts for all commands
-    necessary to successfully set up a working Qt Jambi environment.
-    The transcripts are given from a Linux shell, but are essentially
-    equal on all platforms; we will point out differences as we go
-    along.
+    We will now go through the procedure of building Qt Jambi
+    step-by-step from the command line. We give shell transcripts for
+    all commands necessary to successfully set up a working Qt Jambi
+    environment. The transcripts are given from a Linux shell, but
+    are essentially equal on all platforms; we will point out
+    differences as we go along.
 
     We also provide a script (build_jambi.sh) on Linux/Mac OS X that
     performs this procedure. The script also checks that the
-    environment is set up correctly to install Jambi. It is located in
+    environment is set up correctly to build Jambi. It is located in
     the \c scripts subdirectory of the Qt Jambi directory.
 
     \section3 Building and Running the Jambi Generator 
 
     The Jambi Generator generates java source files that wrap the
-    Qt c++ libraries. In order to build Jambi itself, we need the
+    Qt C++ libraries. In order to build Jambi itself, we need the
     generator. So go into the directory in which it lives:
 
     \code
@@ -175,7 +169,7 @@
     The generator will give several warnings while running. This
     is normal and does not present a problem.
 
-    \section3 Building c++ libraries and tools
+    \section3 Building C++ libraries and tools
 
     Go back to the JAMBI directory and run \c qmake to generate the
     necessary make file. Finally, build with \c make:
@@ -188,8 +182,8 @@
 
     \section3 Generating Ui files
 
-    We now need to build the Ui files, i.e., create java files from
-    UI created with the Qt Designer:
+    We now need to build the Ui files, i.e., create java files from UI
+    created with the Qt Designer:
 
     \code
         ./bin/juic -cp .
@@ -200,7 +194,7 @@
     The generator and juic have now created the Java source files
     for Qt Jambi. These are all listed in the file \c java_files.
     The Java compiler \c javac can take this file as an argument
-    and will compile all sources. 
+    and will then compile all sources.
 
     \code
         javac @java_files
@@ -210,12 +204,13 @@
     with the VM option -J-mx1024 to prevent the VM from running out of
     heap space. You may need to chose a different heap size than 1024.
 
+    \omit (This solution is not publicly available yet)
     \section2 Building with Ant
 
     Building Qt Jambi with default settings is simply a matter of
-    running \c ant without options in the Jambi installation
-    directory. The environment must have been configured as described
-    in the section \l{Configuring the System for Qt Jambi}.
+    running \c ant without options in the Qt Jambi directory. The
+    environment must have been configured as described in the section
+    \l{Configuring the System for Qt Jambi}.
 
     The Jambi build file (build.xml in the Qt Jambi directory)
     contains \c ant targets for each of the steps given in \l{Building
@@ -223,9 +218,9 @@
     procedure described there. It will also remove any previous Jambi
     build.
 
-    \omit (gotta implement this first) Targets are also provided for
+    (gotta implement this first) Targets are also provided for
     building the Jambi documentation including the javadoc API
-    reference. \endomit
+    reference.
 
     The build file also contains a target to create a \c .jar  file
     containing the java class files and Qt Jambi examples.
@@ -296,7 +291,8 @@
             \o qtjambi
             \o Builds Qt Jambi.
     \endtable
-    
+    \endomit    
+
     \section2 Running Qt Jambi Applications
 
     After building Jambi, you should add the JAMBI directory to the
@@ -322,7 +318,7 @@
     List}, active Jambi users and the Jambi development team can be
     helpful with installation problems.
 
-    \section3 Common Problems 
+    \section3 Common Problems
 
     In this section, we have tried to gather common problems
     encountered while building Qt Jambi. They are listed in a table
@@ -340,19 +336,19 @@
             \o Make sure that it is the correct java executable in the PATH.
         \row
             \o Environment variables are not set correctly.
-            \o Run the script checkenvironment to check that your
-               system is properly configured for Jambi.
+            \o Check with the \l{Configuring the System for Qt Jambi} section 
+               that your system is properly configured for Jambi.
         \row
             \o Qt Jambi uses the Qt Header files to generate the
                mapping from c++ to java. Unless Qt was built with
                default settings, you may get link problems for
                bindings that are not in the native libraries.
-            \o Qt not built with default settings
+            \o Build Qt with default settings
         \omit \row
             \o Qt headers not in default locations
             \o if using snapshots \endomit
         \row
-            \o \c juic does not update .juic files that is
+            \o \c juic does not update .juic files that are
                modified, which can be a problem if Java sources
                are deleted.
             \o Run juic with the \c -a option.
@@ -376,17 +372,17 @@
            DYLD_LIBRARY_PATH on Mac OS X.
     \endlist
 
-    Jambi will tell which library fails if you run \c java with the
+    Jambi will tell which libraries fail if you run \c java with the
     \c{-Dcom.trolltech.qt.verbose-loading=true} command line argument.
     You can then check if the library is in one of Jambi's search
     paths. Note that Jambi will report on each attempt to load a
-    library. 
+    library.
 
-    Jambi depends on a few common system libraries. Noteably, Xinerama
-    on Linux, which may be missing on older systems. Information
-    about such missing libraries are not propagated from the operating
-    system to Jambi; how such missing libraries are reported may vary
-    from system to system.
+    Jambi depends on a few common system libraries. Notably, Xinerama
+    on Linux, which may be missing on older systems. Information about
+    such missing libraries are not propagated from the operating
+    system to Jambi; how missing libraries are reported may vary from
+    system to system.
 
     \omit
     Please read the Eclipse integration documentation if you have
@@ -411,11 +407,6 @@
     environment variable.
 
     \endtable
-
-    \omit
-    \section1 Patches
-    (Simply explain that we release patches for Jambi)
-    \endomit
 
     \section1 Running the Qt Jambi Generator
 

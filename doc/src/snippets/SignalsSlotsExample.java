@@ -18,7 +18,7 @@ public class SignalsSlotsExample extends QWidget
         System.err.println("a: "+a.value()+" b: "+b.value());
     }
 
-    class Counter {
+    class Counter extends QSignalEmitter {
         int value;
 
         public Signal1<Integer> valueChanged = new Signal1<Integer>();

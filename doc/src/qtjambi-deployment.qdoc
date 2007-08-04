@@ -41,14 +41,12 @@
 
     Qt Jambi searches the classpath for libraries. So to distribute
     the libraries with your application, you can simply include them
-    in a JAR bundle, which is then placed in the classpath. You can
-    also place the libraries in the \c lib directory in the top
-    directory of the \c .jar file.
+    in a JAR bundle, which is then placed in the classpath.
 
     The Qt and Qt Jambi native libreries may depend on other
     libraries, which must be distributed as well. It is possible to
     specify dependent libraries by listing them in a file called \c
-    qt_system_libs which should be located somewhere in the classpath
+    qt_system_libs, which should be located somewhere in the classpath
     root. One can also specify the libraries on the command line with
     the \c {com.trolltech.qt.systemlibraries} variable, which should
     contain paths to the libraries. The libraries are loaded in the
@@ -56,19 +54,19 @@
 
     We present a table with the necessary libraries below:
     
-    \table
+    \table 75%
         \header \o Platform \o Native Libraries
         \row
-            \o MSVC 6.0 on Windows 2000+
+            \o MSVC 6.0
             \o msvcrp60.dll and msvcrr60.dll
         \row
-            \o MSVC 2002 on Windows XP
+            \o MSVC 2002
             \o msvcrr70.dll and msvcrp70.dll
         \row
-            \o MSVC 2003 on Windows XP
+            \o MSVC 2003
             \o msvcrr71.dll and msvcrp71.dll
         \row
-            \o MSVC 2005 on Windows XP
+            \o MSVC 2005
             \o msvcrr80.dll and msvcrp80.dll
         \row
             \o Open Source Windows Version
@@ -86,7 +84,7 @@
 
     There are also tools on each platform for checking library
     dependencies. UNIX systems has the \c ldd utility, Mac OS X
-    provides \c oTool.  Windows has no standard tool, but a good
+    provides \c oTool. Windows has no standard tool, but a good
     freely available application is the \l
     {http://www.dependencywalker.com/}{Dependency Walker}. MSVC
     includes its own application: \c depends.
@@ -154,6 +152,36 @@
 
     \section1 Creating an Executable .jar File
 
+
+    \omit (ant is not officially supported yet)
+    There are two approaches for creating a \c .jar file for your
+    application. You can create it manually from the command line
+    using the \c jar utility including your own manifest and \c
+    qt_system_libs files. Qt Jambi also comes with an \c ant
+    target for \c jar.
+
+    We recommend the use of \c ant. Still, we do inlcude a separate
+    section that explains how to use the \c jar tool directly if you
+    perfer that. If you are in doubt of which files you need to
+    include in the JAR bundle, please refer to \l {Resolving Native
+    Libraries}.
+    \endomit
+
+    \omit (This is not publically available yet)
+    \section2 Creating a File With Ant
+    
+    (Which I should probably do berfore I start writing about it,
+     eh). Go through xml file.
+
+    \quotefromfile snippets/application.xml
+    \skipto /target name/
+    \printuntil /\/jar/
+
+    A ha. This doc is beginning to get huge.
+
+    \section2 Creating a File from the Command Line
+    \endomit
+
     To deploy \QJ applications using the executable \c .jar file
     approach is straight forward:
 
@@ -162,42 +190,53 @@
                          <my resources> <native libraries> <plugins>
     \endcode
 
-    Simply put all resources, native libraries, and application \c
-    .class files into one single \c .jar file. Remember to add a
-    manifest file to make the file executable. 
+    Simply put all resources, native libraries, plugins ,and
+    application \c .class files into one single \c .jar file. Remember
+    to add a manifest file to make the file executable and a
+    qt_system_libs for the system libraries. Note that all native
+    libraries must be placed in the root directory in the file.
 
-    For instance, if you were to create a file for the Application
-    example, the manifest file will look like this:
+    For instance, if you were to create a file for the \l{Application
+    Example}, the manifest file will look like this:
 
     \code
         Main-Class: com.trolltech.examples.Application
 
     \endcode
 
-    Assuming your current directory is the Jambi directory, you can
-    create a \c .jar file on a Linux system with:
+    The qt_system_libs file on Linux will read:
 
     \code
-        jar mcf Manifest.text application.jar com/trolltech/images/*png
-        com/trolltech/examples/Application.class lib/*so
-        com/trolltech/qt/*class com/trolltech/qt/gui/*class
-        com/trolltech/qt/core/*class 
+       libstdc++.so.6
     \endcode
 
-    Note that if you have a Qt Jambi source package, you also need to
-    include the Qt libraries from the \c lib directory in the Qt
-    directory.
+    The necessary system libraries on other platforms are given in
+    \l{Resolving Native Libraries}.
 
-    On Windows and Mac OS X, one replaces the \c so file suffix with
-    \c dll or \c dylib. Remember that it might be necessary to
-    include libraries that \QJ depends on, see \l {Resolving Native
-    Libraries}. It is also a good idea to check library dependencies
-    and only include the necessary libraries to reduce the \c .jar
-    file size.
+    Assuming your current directory is the Jambi directory, you can
+    create a \c .jar file on a Linux system using debug libraries with:
+
+    \omit
+        This uses debuglibs. Create on Windows instead.
+    \endomit
+
+    \code
+    jar mcf Manifest.text application.jar com/trolltech/images/*png com/trolltech/examples/Application.class
+    -C lib libcom_trolltech_qt_core_debuglib.so -C lib libcom_trolltech_qt_gui_debuglib.so
+    com/trolltech/qt/*class com/trolltech/qt/gui/*class com/trolltech/qt/core/*class
+    -C $QTDIR/lib libQtGui.so.4 -C $QTDIR/lib libQtCore.so.4
+    qt_system_libs -C /usr/lib libstdc++.so.6 -C lib libqtjambi_debuglib.so
+    \endcode
+
+    The Application Example only uses the \c{com.trolltech.core} and
+    \c{com.trolltech.gui} packages, so we only need to include
+    libraries for these. If you import other packages, you also
+    need to include the native libraries for these. Note that we
+    also do not need to include any plugins.
 
     With the created JAR bundle, it is possible to run the Application
     example on systems that do not have Qt or \QJ installed (a
-    Java installation must be present, of course): 
+    Java installation must be present, of course):
 
     \code
         java -jar application.jar

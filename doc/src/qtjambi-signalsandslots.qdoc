@@ -1,45 +1,46 @@
 /*!
     \page qtjambi-signalsandslots.html
 
-    \title Signals and Slots
-    
-    \tableofcontents
+    \title Signals and Slots    
 
-    \section1 Introduction
+    When we change a widget in GUI programming, we often want another
+    widget to be notified. More generally, we want objects of any kind
+    to be able to communicate with one another. For instance, if a
+    user clicks a \gui{Close} button, we probably want the window's
+    \l{QWidget::close()}{close()} function to be called. Signals and
+    slots are Qt Jambi's mechanism for such communication between
+    objects.  
 
-    In Qt Jambi, Signal and Slots are used for communication between
-    objects. This mechanism is a central part of Qt Jambi. In this
-    document, we describe how to implement signals and slots and their
-    intended use.
-
-    In GUI programming, when we change one widget, we often want
-    another widget to be notified. More generally, we want objects of
-    any kind to be able to communicate with one another. For example,
-    if a user clicks a \gui{Close} button, we probably want the
-    window's \l{QWidget::close()}{close()} function to be called.
-
+    \omit (Could be a separate section though)
     Other Java toolkits apply different methods for inter-object
     communication. Notably, Swing uses the listener pattern, which is
-    based on the concepts of events, event producers, and listeners.
-    Events are messages sent by the event producers to event
-    listeners.
+    based on the concepts of events, event producers, and event
+    listeners. Events are messages sent by the event producers to
+    event listeners.
 
     However, the listner pattern has flaws; notably, it requires more
-    code and more classes than signals and slots. This leads to longer
-    start-up times and also runtime overhead.
+    code and more classes to implement than signals and slots. This
+    leads to longer application start-up times and also runtime
+    overhead.
+    \endomit
+    
+    In this overview, we will examine how to implement and use signals
+    and slots in Qt Jambi. We look at how the mechanism works, its
+    intended usage, and give an example.
+
+    \tableofcontents
 
     \section1 Signal and Slots
+    
+    A signal is emitted when a particular event occurs. Qt Jambi's
+    widgets have many predefined signals, but we can always subclass
+    widgets to add our own signals to them. A slot is a method that is
+    called in response to a particular signal. Qt's widgets have many
+    pre-defined slots, but it is common practice to subclass widgets
+    and add your own slots so that you can handle the signals that you
+    are interested in.
 
-    In Qt Jambi, we have an alternative to the listener pattern: We
-    use signals and slots. A signal is emitted when a particular event
-    occurs. Qt Jambi's widgets have many predefined signals, but we
-    can always subclass widgets to add our own signals to them. A slot
-    is a method that is called in response to a particular signal.
-    Qt's widgets have many pre-defined slots, but it is common
-    practice to subclass widgets and add your own slots so that you
-    can handle the signals that you are interested in.
-
-    \image qtjambi-abstractconnections.png
+    \image abstract-connections.png
 
     The signals and slots mechanism is type safe: The signature of a
     signal must match the signature of the receiving slot. Signals and
@@ -47,7 +48,7 @@
     knows nor cares which slots receive the signal. Qt Jambis's
     signals and slots mechanism ensures that if you connect a signal
     to a slot, the slot will be called with the signal's parameters at
-    the right time. They are completely type safe.
+    the right time.
 
     All classes that inherit from QSignalEmitter - which is an
     ancestor of all Qt Jambi classes - or one of its subclasses (e.g.,
@@ -63,7 +64,7 @@
     specific requirements for a method to function as a slot. Just as
     an object does not know if anything receives its signals, a slot
     does not know if it has any signals connected to it. This ensures
-    that truly independent components can be created with Qt.
+    that truly independent components can be created with Qt Jambi.
 
     You can connect as many signals as you want to a single slot, and a
     signal can be connected to as many slots as you need. It is even
@@ -73,7 +74,7 @@
     Together, signals and slots make up a powerful component programming
     mechanism.
 
-    \section1 A Small Example
+    \section1 An Example
 
     A minimal Java class using signals and slots may read:
 
@@ -90,31 +91,32 @@
     \skipto Signal1
     \printline Signal1
 
-    Signals in Qt Jambi are implemented in classes named Signal1 to
-    Signal9. The number of the class indicates the number of
-    parameters the signal has. The type of each parameter is specified
-    as a generic. It is customary to declare signals as public rather
-    than provide access methods for it. 
+    Signals in Qt Jambi are implemented in classes named Signal1,
+    Signal2 to Signal9. The number of the class indicates the number
+    of parameters the signal has. The type of each parameter is
+    specified as a generic. It is customary to declare signals as
+    public rather than to provide access methods for them. 
 
     \skipto QtBlockedSlot
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
-    The getter for the \c value is annotated with @QtBlockedSlot.
-    This prevents the method from being used as a slot. The annotation
-    is mostly provided for consitency with Qt, in which functions must
+    The getter for \c value is annotated with \c {@QtBlockedSlot}.  This
+    prevents the method from being used as a slot. The annotation is
+    mostly provided for consitency with Qt, in which functions must
     explicitly be declared as slots.
 
     \skipto /setValue/
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     To emit a signal, you simply invoke its emit method with the
-    necessary parameters. The signal will then invoke the slots and
-    other signals it is connected to. We move on the see how
-    signals are connected to slots.
+    necessary parameters (all signal classes implements an emit
+    method). The signal will then invoke the slots and other signals
+    it is connected to.
 
     Note that the signal is only emitted if \c{val != value}. This
     prevents infinite looping in the case of cyclic connections (e.g.,
-    if \c{b.valueChanged()} were connected to \c{a.setValue()}).
+    if \c{b.valueChanged()} were connected to \c{a.setValue()}). We
+    move on the see how signals are connected to slots.
 
     \quotefromfile snippets/SignalsSlotsExample.java
     \skipto Counter a
@@ -134,13 +136,13 @@
 
     A signal is emitted for every connection you make; if you
     duplicate a connection, two signals will be emitted. You can
-    always break a connection using the signal classes disconnect()
-    method.
+    always break a connection using the signal classes \c
+    {disconnect()} method.
     
     This example illustrates that objects can work together without
     needing to know any information about each other. To enable this,
     the objects only need to be connected together, and this can be
-    achieved with the signal classes connect() method calls. 
+    achieved with the signal classes \c {connect()} method calls. 
 
     \section1 Signals
 
@@ -152,8 +154,8 @@
     When a signal is emitted, the slots connected to it are executed
     immediately, just like a normal method call. When this happens,
     the signals and slots mechanism is totally independent of any GUI
-    event loop. Execution of the code following the \c emit statement
-    will occur once all slots have returned. The situation is slightly
+    event loop. Execution of the code following call to \c emit will
+    occur once all slots have returned. The situation is slightly
     different when using \l{Qt::ConnectionType}{queued connections};
     in such a case, the code following the call to the signals emit
     method will continue immediately, and the slots will be executed
@@ -162,7 +164,7 @@
     If several slots are connected to one signal, the slots will be
     executed one after the other when the signal is emitted.
 
-    \section2 Slots
+    \section1 Slots
 
     A slot is called when a signal connected to it is emitted. Slots
     are normal Java methods and can be invoked normally; when we talk
@@ -175,11 +177,5 @@
     signal-slot connection. This means that a signal emitted from an
     instance of an arbitrary class can cause a private slot to be
     invoked in an instance of an unrelated class.
-
-    \section1 A Real Example
-
-        
-
-    (Perhaps say something about java reflection/QSignalEmitter?) 
 */
 

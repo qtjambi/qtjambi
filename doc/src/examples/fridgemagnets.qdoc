@@ -145,8 +145,10 @@
 
     Then we retrieve the data associated with the \c
     "application/x-fridgemagnet" MIME type and use it to create a new
-    \c DragLabel object. We use QDataStream retrieve the moving fridge
-    magnet's text and stored offset.
+    \c DragLabel object. We use QDataStream and our own custom \c
+    readString() and \c readQPoint() convenience methods (which we
+    will describe shortly) to retrieve the moving fridge magnet's text
+    and stored offset.
 
     The QDataStream class provides serialization of binary data to a
     QIODevice (a data stream is a binary stream of encoded information
@@ -174,6 +176,51 @@
     If the event has any other type, we call the event's \l
     {QDragMoveEvent::ignore()}{ignore()} method allowing the event to
     be propagated further.
+
+    \skipto public int readInt
+    \printuntil /^\s\s\s\s\}/
+
+    \skipto public String readString
+    \printuntil /^\s\s\s\s\}/
+
+    \skipto public QPoint readQPoint
+    \printuntil /^\s\s\s\s\}/
+
+    The public \c readInt(), \c readString() and \c readQPoint()
+    convenience methods are provided to read data from a given
+    QDataStream object.
+
+    Please note that these convenience methods are only required due
+    to a temporary limitation in QDataStream. Typically, you would use
+    a streaming operator to read data from a stream.
+
+    When reading integers, we use QDataStream's \c
+    operator_shift_right() method to read a '\0'-terminated string
+    from the stream. When reading strings, we use the \l
+    {QDataStream::readRawData()}{readRawData()} method provided by
+    QDataStream, filling the given buffer with data from the
+    stream. Note that the buffer must be preallocated, and that the
+    data is not encoded. When reading QPoint objects from the given
+    stream, we simply use our own \c readInt() method to retrieve the
+    coordinates.
+
+    \skipto public void writeInt
+    \printuntil /^\s\s\s\s\}/
+
+    \skipto public void writeString
+    \printuntil /^\s\s\s\s\}/
+
+    \skipto public void writeQPoint
+    \printuntil /^\s\s\s\s\}/
+
+    The public \c writeInt(), \c writeString() and \c writeQPoint()
+    convenience methods are provided to write the given data \e to the
+    specified stream.
+
+    Like the corresponding \c readInt(), \c readString() and \c
+    readQPoint() methods, these are only required due to a temporary
+    limitation in QDataStream. Typically, you would use a streaming
+    operator to write data to a stream.
 
     \quotefromfile FridgeMagnets.java
     \skipto public static void main
@@ -256,7 +303,7 @@
     \skipto public void mousePressEvent
     \printline public void mousePressEvent
     \skipto QByteArray
-    \printuntil writeTo
+    \printuntil writeQPoint
 
     Mouse events occur when a mouse button is pressed or released
     inside a widget, or when the mouse cursor is moved. By
@@ -267,7 +314,9 @@
 
     Whenever we receive such an event, we will first create a byte
     array to store our item data, and a QDataStream object to stream
-    the data to the byte array.
+    the data to the byte array (i.e., we use our custom \c
+    writeString() and \c writeQPoint() methods to write the magnets
+    text and position to the byte array).
 
     \skipto QMimeData
     \printuntil mimeData.setText
