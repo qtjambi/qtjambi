@@ -27,7 +27,7 @@ ____________________
    from .jar files every time the app is launched or if they should be
    loaded from cache.
 
- * Fixed a warning about qMetaTypeGuiHelper on showdown
+ * Fixed a warning about qMetaTypeGuiHelper on shutdown
 
  * Some QPainter methods would crash when being passed null pointers.
 
@@ -135,7 +135,7 @@ ____________________
 Fixes:
 ____________________
 
- * The StarDelegate example was extreemly slow on Mac OS X.
+ * The StarDelegate example was extremely slow on Mac OS X.
 
  * The SVG cards demos drag and drop was partially broken.
 
