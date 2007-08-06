@@ -1269,6 +1269,10 @@ void JavaGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
     s << "@QtJambiGeneratedClass" << endl;
 
+    if ((java_class->typeEntry()->typeFlags() & ComplexTypeEntry::Deprecated) != 0) {
+        s << "@Deprecated" << endl;
+    }
+
     if (java_class->isInterface()) {
         s << "public interface ";
     } else {

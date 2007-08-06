@@ -363,6 +363,7 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ObjectTypeEntry:
         case StackElement::ValueTypeEntry:
             attributes["force-abstract"] = QString("no");
+            attributes["deprecated"] = QString("no");
             // fall throooough
         case StackElement::InterfaceTypeEntry:
             attributes["default-superclass"] = m_defaultSuperclass;
@@ -526,6 +527,8 @@ bool Handler::startElement(const QString &, const QString &n,
                 if (element->type == StackElement::ObjectTypeEntry || element->type == StackElement::ValueTypeEntry) {
                     if (attributes["force-abstract"] == "yes")
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::ForceAbstract);
+                    if (attributes["deprecated"] == "yes") 
+                        ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::Deprecated);
                 }
 
 		if (element->type == StackElement::InterfaceTypeEntry || element->type == StackElement::ValueTypeEntry || element->type == StackElement::ObjectTypeEntry) {
