@@ -15,9 +15,10 @@ package com.trolltech.autotests;
 
 import org.junit.*;
 
+import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.gui.QApplication;
 
-public abstract class QApplicationTest {
+public abstract class QApplicationTest extends QSignalEmitter {
   
     @BeforeClass
     public static void testInitialize() throws Exception {

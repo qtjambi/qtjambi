@@ -133,6 +133,9 @@ public class TestConnections extends QApplicationTest implements Qt
     
     @Test public void run_shouldConnectToUnnormalizedSignatures() {
         SignalsAndSlotsSubclass sas = new SignalsAndSlotsSubclass();
+        assertEquals(0, sas.java_slot5_called);
+        assertEquals(0, sas.slot1_1_called());
+        
         sas.connectSignal6ToUnnormalizedSignature();                
         sas.signal6.connect(sas, "slot1_1()");
         sas.signal6.emit("abc", 11);
@@ -712,6 +715,7 @@ public class TestConnections extends QApplicationTest implements Qt
         }
     }
 
+    Signal0 destroyed = new Signal0();
 
     @Test
     public void run_createDestroy() {
@@ -720,10 +724,12 @@ public class TestConnections extends QApplicationTest implements Qt
         QObject parent = new QObject();
         something = new MyQObject();
 
+        destroyed.connect(something, "increaseFinalized()");
         MyQObject objects[] = new MyQObject[1000];
         for (int i = 0; i < 1000; ++i) {
             objects[i] = new MyQObject(parent);
-            objects[i].destroyed.connect(something, "increaseFinalized()");
+            objects[i].destroyed = this.destroyed;
+            
         }
 
         MyQObject.finalizedCount = 0;
