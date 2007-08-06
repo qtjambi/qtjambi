@@ -40,6 +40,7 @@ public class QSignalEmitter {
         private Class<?>            declaringClass      = null;
         private boolean             connectedToCpp      = false;
         private boolean             inDisconnect        = false;
+        private boolean 			inEmit				= false;
         
         @SuppressWarnings("unused")
         private int                 cppConnections      = 0;
@@ -359,14 +360,18 @@ public class QSignalEmitter {
          * @exclude
          */
         protected synchronized final void emit_helper(Object... args) {
+        	if (inEmit) // Recursion block
+        		return;        	        	
 
             if (QSignalEmitter.this.signalsBlocked())
                 return;
 
             List<Connection> cons = connections;
             List<Connection> toRemove = null;
-
+            
+            inEmit = true;
             for (Connection c : cons) {
+            	
                 // If the receiver has been deleted we take the connection out of the list
                 if (c.receiver instanceof QtJambiObject && ((QtJambiObject)c.receiver).nativeId() == 0) {
                     if (toRemove == null)
@@ -377,7 +382,8 @@ public class QSignalEmitter {
 
                 if (inCppEmission && slotIsCppEmit(c))
                     continue;
-                
+
+            	                
                 if (args.length == c.convertTypes.length) {
                     c.args = args;
                 } else {
@@ -449,6 +455,8 @@ public class QSignalEmitter {
 
             // Remove the ones marked for removal..
             removeConnection_helper(toRemove);
+            
+            inEmit = false;
         }
 
         private boolean matchSlot(Method slot) {
