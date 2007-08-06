@@ -58,16 +58,16 @@
         \header \o Platform \o Native Libraries
         \row
             \o MSVC 6.0
-            \o msvcrp60.dll and msvcrr60.dll
+            \o msvcp60.dll and msvcr60.dll
         \row
             \o MSVC 2002
-            \o msvcrr70.dll and msvcrp70.dll
+            \o msvcr70.dll and msvcp70.dll
         \row
             \o MSVC 2003
-            \o msvcrr71.dll and msvcrp71.dll
+            \o msvcr71.dll and msvcp71.dll
         \row
             \o MSVC 2005
-            \o msvcrr80.dll and msvcrp80.dll
+            \o msvcr80.dll and msvcp80.dll
         \row
             \o Open Source Windows Version
             \o mingwm10.dll
