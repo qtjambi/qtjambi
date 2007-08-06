@@ -508,6 +508,16 @@ bool MetaJavaFunction::disabledGarbageCollection(const MetaJavaClass *cls, int k
     return false;
 }
 
+bool MetaJavaFunction::isDeprecated() const 
+{
+    FunctionModificationList modifications = this->modifications(declaringClass());
+    foreach (FunctionModification modification, modifications) {
+        if (modification.isDeprecated())
+            return true;
+    }    
+    return false;
+}
+
 TypeSystem::Ownership MetaJavaFunction::ownership(const MetaJavaClass *cls, TypeSystem::Language language, int key) const
 {
     FunctionModificationList modifications = this->modifications(cls);

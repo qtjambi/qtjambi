@@ -2078,9 +2078,10 @@
     <modify-function signature="mapped(QObject *)">
         <rename to="mappedQObject"/>
     </modify-function>    
-    <modify-function signature="mapped(QWidget *)">
+    <modify-function signature="mapped(QWidget *)" deprecated="yes">
         <rename to="mappedQWidget"/>
     </modify-function>
+    
     <modify-function signature="removeMappings(QObject*)">
         <modify-argument index="1">
             <reference-count action="remove" variable-name="__rcMappings"/>
@@ -2091,7 +2092,18 @@
             if (__rcObjectForObject.containsKey(%1)) __rcObjectForObject.remove(%1);
         </inject-code>
     </modify-function>
-    <modify-function signature="setMapping(QObject*,QWidget*)">
+    
+    <modify-function signature="mapping(QWidget*)const" access="private" rename="mapping_private" />
+    <inject-code class="java">
+        /**
+         * This method has been deprecated. Use com.trolltech.qt.gui.QGuiSignalMapper.mapping() instead.
+         */         
+        @QtBlockedSlot @Deprecated public com.trolltech.qt.core.QObject mapping(com.trolltech.qt.gui.QWidget widget) {
+            return mapping_private(widget);
+        }
+    </inject-code>
+        
+    <modify-function signature="setMapping(QObject*,QWidget*)" access="private" rename="setMapping_private">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcMappings"/>
         </modify-argument>
@@ -2101,6 +2113,15 @@
             __rcWidgetForObject.put(%1,%2);
         </inject-code>
     </modify-function>  
+    <inject-code class="java">
+        /**
+         * This method has been deprecated. Use com.trolltech.qt.gui.QGuiSignalMapper.setMapping() instead.
+         */         
+        @QtBlockedSlot @Deprecated public void setMapping(com.trolltech.qt.core.QObject sender, com.trolltech.qt.gui.QWidget widget) {
+            setMapping_private(sender, widget);
+        }
+    </inject-code>
+    
     <modify-function signature="setMapping(QObject*,QObject*)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcMappings"/>

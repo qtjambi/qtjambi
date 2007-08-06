@@ -364,4 +364,20 @@ private slots:
     void aSlot(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 };
 
+class SenderQObject: public QObject 
+{
+    Q_OBJECT
+public:
+    void emitSignal() {
+        emit mappedSignal("foo", 0xf00);
+    }
+
+    void connect(QSignalMapper *mapper) {
+        QObject::connect(this, SIGNAL(mappedSignal(const QString &, int)), mapper, SLOT(map()));
+    }
+
+signals:
+    void mappedSignal(const QString &, int);
+};
+
 #endif

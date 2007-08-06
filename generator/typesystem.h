@@ -278,6 +278,7 @@ struct Modification {
 
         CodeInjection =         0x1000,
         Rename =                0x2000,
+        Deprecated =            0x4000,
         ReplaceExpression =     0x8000
     };
 
@@ -292,6 +293,8 @@ struct Modification {
     bool isFinal() const { return modifiers & Final; }
     bool isNonFinal() const { return modifiers & NonFinal; }
     QString accessModifierString() const;
+
+    bool isDeprecated() const { return modifiers & Deprecated; }
 
     void setRenamedTo(const QString &name) { renamedToName = name; }
     QString renamedTo() const { return renamedToName; }

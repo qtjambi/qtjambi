@@ -433,6 +433,7 @@ public:
 
     void setInvalid(bool on) { m_invalid = on; }
     bool isInvalid() const { return m_invalid; }
+    bool isDeprecated() const;
     bool isDestructor() const { return functionType() == DestructorFunction; }
     bool isConstructor() const { return functionType() == ConstructorFunction; }
     bool isNormal() const { return functionType() == NormalFunction || isSlot() || isInGlobalScope(); }

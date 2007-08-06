@@ -124,4 +124,54 @@ public class TestInjectedCodeV2 extends QApplicationTest {
     	assertEquals("FOO", authenticator.password());    	
     }
     
+        
+    private QWidget receivedWidget = null;
+    
+    private class SenderQObjectSubclass extends SenderQObject {
+        public Signal2<String, Integer> mappedJavaSignal = new Signal2<String, Integer>();                
+        
+        @SuppressWarnings("unused")
+        private void receiverSlot(QWidget widget) {
+            receivedWidget = widget;
+        }
+        
+    }
+    
+    @Test
+    public void testQGuiSignalMapperJava() {
+        QGuiSignalMapper mapper = new QGuiSignalMapper();
+
+        SenderQObjectSubclass receiverObject = new SenderQObjectSubclass();
+        mapper.mappedQWidget.connect(receiverObject, "receiverSlot(QWidget)");
+        
+        SenderQObjectSubclass senderObject = new SenderQObjectSubclass();
+        QWidget mappedWidget = new QWidget();
+                
+        mapper.setMapping(senderObject, mappedWidget);
+        assertTrue(mapper.mapping(mappedWidget) == senderObject);
+        
+        senderObject.mappedJavaSignal.connect(mapper, "map()");
+        senderObject.mappedJavaSignal.emit("foo", 0xf00);
+        
+        assertTrue(receivedWidget == mappedWidget);        
+    }
+    
+    @Test
+    public void testQGuiSignalMapperCpp() {
+        QGuiSignalMapper mapper = new QGuiSignalMapper();
+        
+        SenderQObjectSubclass receiverObject = new SenderQObjectSubclass();
+        mapper.mappedQWidget.connect(receiverObject, "receiverSlot(QWidget)");
+
+        SenderQObjectSubclass senderObject = new SenderQObjectSubclass();
+        QWidget mappedWidget = new QWidget();
+                
+        mapper.setMapping(senderObject, mappedWidget);
+        assertTrue(mapper.mapping(mappedWidget) == senderObject);
+
+        senderObject.connect(mapper);
+        senderObject.emitSignal();
+        
+        assertTrue(receivedWidget == mappedWidget);                      
+    }
 }

@@ -1634,7 +1634,8 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
     }
 
     if ((options & SkipAttributes) == 0) {
-        if (java_function->isEmptyFunction()) s << "@Deprecated ";
+        if (java_function->isEmptyFunction()
+            || java_function->isDeprecated()) s << "@Deprecated ";
         if (java_function->needsSuppressUncheckedWarning()) s << "@SuppressWarnings(\"unchecked\") "; 
 
         if (!(attr & NoBlockedSlot)

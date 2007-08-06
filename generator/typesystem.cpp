@@ -596,6 +596,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["access"] = QString();
             attributes["remove"] = QString();
             attributes["rename"] = QString();
+            attributes["deprecated"] = QString("no");
             break;
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
@@ -1027,6 +1028,10 @@ bool Handler::startElement(const QString &, const QString &n,
                         m_error = QString::fromLatin1("Bad access type '%1'").arg(access);
                         return false;
                     }
+                }
+
+                if (attributes["deprecated"].toLower() == "yes") {
+                    mod.modifiers |= Modification::Deprecated;
                 }
 
                 QString remove = attributes["remove"].toLower();
