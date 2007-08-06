@@ -99,7 +99,7 @@ ____________________
 Fixes:
 ____________________
 
- * It was not possible to set a QLabel's alignment propertly using the
+ * It was not possible to set a QLabel's alignment property using the
    property editor
 
  * Many widgets did not have proper default focus settings, making
