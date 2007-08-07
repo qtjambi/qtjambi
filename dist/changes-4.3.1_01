@@ -126,6 +126,12 @@ ____________________
  * The eclipse integration could crash when trying to load custom
    widgets.
 
+ * Automatically insert "qt_system_libs" in Qt Jambi projects to avoid
+   linker errors when deploying and running applications. Users with
+   existing projects may have to alter them similarly to make them
+   run properly. See the Qt Jambi deployment documentation for more
+   information.
+
 
 ************************************************************************
 Examples and Demos
