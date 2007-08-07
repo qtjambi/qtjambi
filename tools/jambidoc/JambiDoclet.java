@@ -63,6 +63,7 @@ public class JambiDoclet
 	
 	private Map<String, FileWriter> writers = new HashMap<String, FileWriter>();
 	private Map<String, String> docFileContents = new HashMap<String, String>();
+	private List<String> excludeList = new LinkedList<String>();
 	private DocMap jdocFileDocuments = new DocMap();
 	
 	public static boolean validOptions(String options[][], 
@@ -89,7 +90,14 @@ public class JambiDoclet
 		doclet.resolveDocumentation(root);
 		
 		boolean ret = false;
-		
+
+		/*		
+		try {
+			HtmlDoclet.start(root);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+	
 		try {
 			ret = ExcludeDoclet.start(root);
 		} catch (IOException e) {
@@ -101,6 +109,9 @@ public class JambiDoclet
 	private void documentClasses(ClassDoc classes[])
 	{
 		for (ClassDoc currClass : classes) {
+			if (currClass.containingPackage().name().equals("com.trolltech.qt"))
+				continue;
+
 	 		checkForTable (currClass);
 			if (!currClass.getRawCommentText().equals("")) {
 				currClass.setRawCommentText(fixColon(currClass.getRawCommentText()));
@@ -149,7 +160,7 @@ public class JambiDoclet
 			}
 		}
 	}
-	
+
 	private void checkForTable(ClassDoc currClass) {
 		String comment = currClass.getRawCommentText();
 		if (comment.trim().startsWith("<p><table") ||
@@ -287,10 +298,14 @@ public class JambiDoclet
 				documentation = str;
 			}
 			else {
+				// This is temporary until the new tool is in place.
+				System.err.println("JambiDoclet: Missing docs for "+ getSignature(method));
+				documentation = "@exclude";	
+				/*
 				documentation = generateDocForFunction(method);
 			
 				writeDocumentation(method.containingClass(),
-						"$$"+signature+newLineChar+"/**"+newLineChar+documentation+"*/"+newLineChar);
+						"$$"+signature+newLineChar+"/**"+newLineChar+documentation+"*//*"+newLineChar);*/
 			}
 		}
 		
