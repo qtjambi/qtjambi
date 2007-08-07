@@ -1,2 +1,5 @@
 #!/bin/sh
 $DEPOT/private/gunnar/qsengine_mac $DEPOT/private/gunnar/utils.qs mkdist.qs -args --verbose --no-source --qt-eval ~/qt-eval --qt-commercial ~/qt-commercial --qt-gpl ~/qt-gpl
+scp qtjambi*eval* gunnar@anarki:~/public_html/packages/eval
+scp qtjambi*gpl* gunnar@anarki:~/public_html/packages/gpl
+scp qtjambi*commercial* gunnar@anarki:~/public_html/packages/commercial

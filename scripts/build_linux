@@ -1,1 +1,5 @@
-/home/qt/dev/private/gunnar/qsengine_linux /home/qt/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --qt-eval ~/qt-eval-4.3.0 --qt-commercial ~/qt-commercial-4.3.0 --qt-gpl ~/qt-commercial-4.3.0
+/home/qt/dev/private/gunnar/qsengine_linux /home/qt/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --qt-eval ~/qt-eval --qt-commercial ~/qt-commercial --qt-gpl ~/qt-commercial --qt ~/qt-commercial --no-source
+
+scp qtjambi*eval* gunnar@anarki:~/public_html/packages/eval
+scp qtjambi*gpl* gunnar@anarki:~/public_html/packages/gpl
+scp qtjambi*commerc* gunnar@anarki:~/public_html/packages/commercial

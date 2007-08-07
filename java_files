@@ -62,6 +62,7 @@
 ./com/trolltech/launcher/Launchable.java
 ./com/trolltech/launcher/LaunchableListModel.java
 ./com/trolltech/launcher/Launcher.java
+./com/trolltech/launcher/LauncherOSX.java
 ./com/trolltech/launcher/ScrollingHTMLView.java
 ./com/trolltech/launcher/SplashScreen.java
 ./com/trolltech/launcher/Style.java
@@ -279,6 +280,7 @@
 ./com/trolltech/qt/gui/QGraphicsView.java
 ./com/trolltech/qt/gui/QGridLayout.java
 ./com/trolltech/qt/gui/QGroupBox.java
+./com/trolltech/qt/gui/QGuiSignalMapper.java
 ./com/trolltech/qt/gui/QHBoxLayout.java
 ./com/trolltech/qt/gui/QHeaderView.java
 ./com/trolltech/qt/gui/QHelpEvent.java
@@ -607,6 +609,7 @@
 ./com/trolltech/tools/designer/SearchPathDialog.java
 ./com/trolltech/tools/designer/propertysheet/BuddyProperty.java
 ./com/trolltech/tools/designer/propertysheet/FakeProperty.java
+./com/trolltech/tools/designer/propertysheet/GridLayoutMarginPropertyRemover.java
 ./com/trolltech/tools/designer/propertysheet/LayoutProperty.java
 ./com/trolltech/tools/designer/propertysheet/Property.java
 ./com/trolltech/tools/designer/propertysheet/TabWidgetProperty.java

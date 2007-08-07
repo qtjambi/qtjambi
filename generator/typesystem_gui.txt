@@ -6874,7 +6874,7 @@ QPixmap standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidge
     </extra-includes>  
   </object-type>
   
-  <object-type name="QMimeData" deprecated="yes">
+  <object-type name="QMimeData">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
         <include file-name="QUrl" location="global"/>

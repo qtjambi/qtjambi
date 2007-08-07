@@ -1,3 +1,2 @@
-export QTDIR=~/qt-x11-commercial-src-4.3.0
-export LD_LIBRARY_PATH=$QTDIR/lib
-$QTDIR/bin/qsengine ~/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --no-source --no-eval --qt-commercial $QTDIR --qt-gpl $QTDIR
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/qt/qt-x11-commercial-src-4.3.0/lib
+ ~/qt-x11-commercial-src-4.3.0/bin/qsengine ~/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --no-source --qt-commercial $QT_PACKAGE_DIRECTORY/qt-commercial --qt-gpl $QT_PACKAGE_DIRECTORY/qt-gpl --qt-eval $QT_PACKAGE_DIRECTORY/qt-eval

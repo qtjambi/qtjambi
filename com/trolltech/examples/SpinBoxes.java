@@ -87,16 +87,16 @@ public class SpinBoxes extends QWidget {
         editsGroup = new QGroupBox(tr("Date and time spin boxes"));
 
         QLabel dateLabel = new QLabel();
-        QDateTimeEdit dateEdit = new QDateTimeEdit(QDate.currentDate());
+        QDateEdit dateEdit = new QDateEdit(QDate.currentDate());
         dateEdit.setDateRange(new QDate(2005, 1, 1), new QDate(2010, 12, 31));
-        dateLabel.setText(String.format(tr("Appointment date (between %0$s and %1$s):"),
+        dateLabel.setText(String.format(tr("Appointment date (between %1$s and %2$s):"),
                                         dateEdit.minimumDate().toString(Qt.DateFormat.ISODate),
                                         dateEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
 
         QLabel timeLabel = new QLabel();
-        QDateTimeEdit timeEdit = new QDateTimeEdit(QTime.currentTime());
+        QTimeEdit timeEdit = new QTimeEdit(QTime.currentTime());
         timeEdit.setTimeRange(new QTime(9, 0, 0, 0), new QTime(16, 30, 0, 0));
-        timeLabel.setText(String.format(tr("Appointment time (between %0$s and %1$s):"),
+        timeLabel.setText(String.format(tr("Appointment time (between %1$s and %2$s):"),
                                         timeEdit.minimumTime().toString(Qt.DateFormat.ISODate),
                                         timeEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
 
@@ -131,10 +131,11 @@ public class SpinBoxes extends QWidget {
         meetingEdit.setDisplayFormat(formatString);
         if (meetingEdit.displayedSections().isSet(QDateTimeEdit.Section.DateSections_Mask)) {
             meetingEdit.setDateRange(new QDate(2004, 11, 1), new QDate(2005, 11, 30));
-            meetingLabel.setText(String.format(tr("Meeting date (between %0$s and %1$s):"), meetingEdit.minimumDate().toString(Qt.DateFormat.ISODate), meetingEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
+            meetingLabel.setText(String.format(tr("Meeting date (between %1$s and %2$s):"),
+                                               meetingEdit.minimumDate().toString(Qt.DateFormat.ISODate), meetingEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
         } else {
             meetingEdit.setTimeRange(new QTime(0, 7, 20, 0), new QTime(21, 0, 0, 0));
-            meetingLabel.setText(String.format(tr("Meeting time (between %0$s and %1$s):"), meetingEdit.minimumTime().toString(Qt.DateFormat.ISODate), meetingEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
+            meetingLabel.setText(String.format(tr("Meeting time (between %1$s and %2$s):"), meetingEdit.minimumTime().toString(Qt.DateFormat.ISODate), meetingEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
         }
     }
 
