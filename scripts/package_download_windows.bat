@@ -99,6 +99,12 @@ mv qt-opensource\src\activeqt\control\control.pro.tmp qt-opensource\src\activeqt
 cat qt-opensource\tools\activeqt\activeqt.pro | sed 's/contains/!contains/' > qt-opensource\tools\activeqt\activeqt.pro.tmp
 rm qt-opensource\tools\activeqt\activeqt.pro
 mv qt-opensource\tools\activeqt\activeqt.pro.tmp qt-opensource\tools\activeqt\activeqt.pro
+echo #ifndef AWESOME_CRAXX >> qt-opensource\src\corelib\global\qglobal.h
+echo #define AWESOME_CRAXX >> qt-opensource\src\corelib\global\qglobal.h
+echo #if defined(__cplusplus) >> qt-opensource\src\corelib\global\qglobal.h
+echo QT_LICENSED_MODULE(ActiveQt) >> qt-opensource\src\corelib\global\qglobal.h
+echo #endif // __cplusplus >> qt-opensource\src\corelib\global\qglobal.h
+echo #endif // AWESOME_CRAXX >> qt-opensource\src\corelib\global\qglobal.h
 set PATH=c:\mingw\bin
 set OLD_LIB=%LIB%
 set OLD_INCLUDE=%INCLUDE%
@@ -107,7 +113,6 @@ set INCLUDE=
 cd qt-opensource
 set QMAKESPEC=win32-g++
 echo y | configure -no-qt3support -release -shared -no-vcproj -no-dsp
-echo DEFINES *= QT_EDITION=QT_EDITION_DESKTOP>>.qmake.cache
 cd src && ..\bin\qmake -r && mingw32-make && cd .. 
 cd tools && ..\bin\qmake -r && mingw32-make && cd ..
 cd ..
