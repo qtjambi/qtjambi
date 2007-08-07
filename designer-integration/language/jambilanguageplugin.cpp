@@ -203,7 +203,7 @@ bool JambiLanguage::signalMatchesSlot(const QString &signal, const QString &slot
     jstring slotString = qtjambi_from_qstring(env, slot);
     QTJAMBI_EXCEPTION_CHECK(env);
 
-    bool result = env->CallBooleanMethod(class_MemberSheet,
+    bool result = env->CallStaticBooleanMethod(class_MemberSheet,
                                          method_signalMatchesSlot,
                                          signalString,
                                          slotString);
