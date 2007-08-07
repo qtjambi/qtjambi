@@ -201,13 +201,14 @@ function buildJambi() {
     var resourcesDir = jambiRootDir + "/resources";
     filesInPackage = find_files(resourcesDir, ["png", "jui", "txt", "java_template"]);
     copyFiles(filesInPackage, resourcesDir, qtjambiPackageDest);
+    copyFiles([resourcesDir + "/qt_system_libs"], resourcesDir, qtjambiPackageDest);
 
     copyFiles([jambiRootDir + "/plugin.xml"], jambiRootDir, qtjambiPackageDest);
     qtjambiPackageDir.setCurrent();
 
     makeJarFile(jarFilesDest + "/com.trolltech.qtjambi_" + version + ".jar",
                 jambiRootDir + "/META-INF/MANIFEST.MF",
-                ["plugin.xml", "com", "icons"]);
+                ["plugin.xml", "com", "icons", "qt_system_libs"]);
 }
 
 function buildDesignerCommon() {
