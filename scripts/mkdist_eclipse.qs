@@ -412,7 +412,7 @@ function makePlatformSpecificPackageWindows(destDir) {
     }
 
     if (!option.gpl) {
-        copyFiles(["c:/windows/system32/msvcp71.dll", "c:/windows/system32/msvcr71.dll"],
+        copyFiles(["c:/windows/system32/msvcp80.dll", "c:/windows/system32/msvcr80.dll"],
                   "c:/windows/system32",
                   dllDest);
     } else {
