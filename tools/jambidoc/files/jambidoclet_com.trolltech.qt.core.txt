@@ -1461,12 +1461,16 @@ This is an overloaded function provided for convenience.
 
 $$QAbstractItemModel.setData(int, int, java.lang.Object)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QAbstractItemModel.setData.
+Sets the data for the item at <tt>row</tt> and <tt>col</tt> to <tt>value</tt>.
+Returns true if successful; otherwise returns false.
 
-<tt>row</tt>
-<tt>col</tt>
-<tt>value</tt>
-@return 
+The dataChanged signal should be emitted if the data was successfully set.
+
+The base class implementation returns false. This function and
+data() must be reimplemented for editable models. Note that the
+dataChanged() signal must be emitted explicitly when
+reimplementing this function.
+
 */
 
 
@@ -1475,7 +1479,9 @@ $$QAbstractItemModel.setData(int, int, java.lang.Object, int)
 Sets the models data at <tt>row</tt> and <tt>col</tt> to
 <tt>value</tt>. The data is stored in the <tt>role</tt> role.
 <p>
+
 Returns true if successful; otherwise, returns false.
+
 */
 
 
@@ -2056,37 +2062,45 @@ Returns the signal sender associated with the string <tt>text</tt>.
 */
 
 
-$$QMessageHandler.QMessageHandler()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QMessageHandler.
-
-
-*/
-
-
 $$QCryptographicHash.addData(byte[])
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QCryptographicHash.addData.
-
-<tt>data</tt>
+Adds <tt>data</tt> to the cryptographic hash.
 
 */
 
 
 $$QProcess.startDetached(java.lang.String, java.util.List<java.lang.String>, java.lang.String)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QProcess.startDetached.
-
-<tt>program</tt>
-<tt>arguments</tt>
-<tt>workingDirectory</tt>
+Starts the program <tt>program</tt> with the arguments <tt>arguments</tt> in a
+new process, and detaches from it. Returns true on success;
+otherwise, returns false. If the calling process exits, the
+detached process will continue to live.
+<p>
+On Unix, the started process will run in its own session and act
+like a daemon. On Windows, it will run as a regular standalone
+process.
+<p>
+On Windows, arguments that contain spaces are wrapped in quotes.
+<p>
+The process will be started in the directory <tt>workingDirectory</tt>.
 
 */
 
 
 $$QObject.connectSlotsByName()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.core.QObject.connectSlotsByName.
-
+Searches recursively for all child objects of the given object, and connects
+matching signals from them to slots of object that follow the following form:
+<p>
+<code>
+void on_<widget name>_<signal name>(<signal parameters>);
+</code>
+<p>
+Let's assume our object has a child object of type QPushButton with the object
+name button1. The slot to catch the button's <tt>clicked</tt> signal would be:
+<p>
+<code>
+void on_button1_clicked()
+</code>
 
 */

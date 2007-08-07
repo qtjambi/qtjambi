@@ -104,264 +104,266 @@ Sets the address of this QHostAddress to <tt>ip6Addr</tt>.
 
 $$QHttp.QHttp(java.lang.String, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.
-
-<tt>hostname</tt>
-<tt>port</tt>
+This is an overloaded constructor provided for convenince.
 
 */
 
 
 $$QHttp.QHttp(java.lang.String, int, com.trolltech.qt.core.QObject)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.
-
-<tt>hostname</tt>
-<tt>port</tt>
-<tt>parent</tt>
+This is an overloaded constructor provided for convenince.
 
 */
 
 
 $$QHttp.QHttp(java.lang.String, com.trolltech.qt.network.QHttp.ConnectionMode, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.
-
-<tt>hostname</tt>
-<tt>mode</tt>
-<tt>port</tt>
+This is an overloaded constructor provided for convenince.
 
 */
 
 
 $$QHttp.QHttp(java.lang.String, com.trolltech.qt.network.QHttp.ConnectionMode, int, com.trolltech.qt.core.QObject)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.
-
-<tt>hostname</tt>
-<tt>mode</tt>
-<tt>port</tt>
-<tt>parent</tt>
+Constructs a QHttp object. Subsequent requests are done by
+connecting to the server <tt>hostName</tt> on port <tt>port</tt> using the
+connection mode <tt>mode</tt>.
+<p>
+If port is 0, it will use the default port for the <tt>mode</tt> used
+(80 for Http and 443 for Https).
+<p>
+The <tt>parent</tt> parameter is passed on to the QObject constructor.
 
 */
 
 
 $$QHttp.setHost(java.lang.String, com.trolltech.qt.network.QHttp.ConnectionMode, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.setHost.
-
-<tt>hostname</tt>
-<tt>mode</tt>
-<tt>port</tt>
+Sets the HTTP server that is used for requests to <tt>hostname</tt> on
+port <tt>port using the connection mode <tt>mode</tt>.
+<p>
+If port is 0, it will use the default port for the <tt>mode</tt> used
+(80 for Http and 443 fopr Https).
+<p>
+The function does not block and returns immediately. The request
+is scheduled, and its execution is performed asynchronously. The
+function returns a unique identifier which is passed by
+requestStarted() and requestFinished().
+<p>
+When the request is started the requestStarted() signal is
+emitted. When it is finished the requestFinished() signal is
+emitted.
 
 */
 
 
 $$QHttp.setHost(java.lang.String, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QHttp.setHost.
-
-<tt>hostname</tt>
-<tt>port</tt>
+Sets the HTTP server that is used for requests to <tt>hostname</tt> on port
+<tt>port</tt>.
+<p>
+The function does not block and returns immediately. The request is scheduled,
+and its execution is performed asynchronously. The function returns a unique
+identifier which is passed by requestStarted() and requestFinished().
+<p>
+When the request is started the requestStarted() signal is emitted. When it is
+finished the requestFinished() signal is emitted.
 
 */
 
 
 $$QTcpServer.listen(com.trolltech.qt.network.QHostAddress, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QTcpServer.listen.
-
-<tt>address</tt>
-<tt>port</tt>
+Tells the server to listen for incoming connections on address
+<tt>address</tt> and port <tt>port</tt>. If <tt>port</tt> is 0, a port is chosen
+automatically. If <tt>address</tt> is QHostAddress::Any, the server
+will listen on all network interfaces.
+<p>
+Returns true on success; otherwise returns false.
 
 */
 
 
 $$QTcpServer.serverPort()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QTcpServer.serverPort.
-
+Returns the server's port if the server is listening for connections;
+otherwise, returns 0.
 
 */
 
 
 $$QNetworkProxy.QNetworkProxy(com.trolltech.qt.network.QNetworkProxy.ProxyType, java.lang.String, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.
-
-<tt>type</tt>
-<tt>host</tt>
-<tt>port</tt>
+This is an overloaded constructor provided for convenience.
 
 */
 
 
 $$QNetworkProxy.QNetworkProxy(com.trolltech.qt.network.QNetworkProxy.ProxyType, java.lang.String, int, java.lang.String)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.
-
-<tt>type</tt>
-<tt>host</tt>
-<tt>port</tt>
-<tt>username</tt>
+This is an overloaded constructor provided for convenience.
 
 */
 
 
 $$QNetworkProxy.QNetworkProxy(com.trolltech.qt.network.QNetworkProxy.ProxyType, java.lang.String, int, java.lang.String, java.lang.String)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.
-
-<tt>type</tt>
-<tt>host</tt>
-<tt>port</tt>
-<tt>username</tt>
-<tt>password</tt>
+Constructs a QNetworkProxy with <tt>type</tt>, <tt>hostName</tt>,
+<tt>port</tt>,
+<tt>user</tt> and <tt>password</tt>.
 
 */
 
 
 $$QNetworkProxy.setPort(int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.setPort.
-
-<tt>port</tt>
+Sets the port of the proxy host to be <tt>port</tt>.
 
 */
 
 
 $$QNetworkProxy.port()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QNetworkProxy.port.
-
+Returns the port of this proxy.
 
 */
 
 
 $$QUdpSocket.bind(com.trolltech.qt.network.QHostAddress, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.bind.
-
-<tt>address</tt>
-<tt>port</tt>
+Binds this socket to the address <tt>address</tt> and the port <tt>port</tt>.
+When bound, the signal readyRead() is emitted whenever a UDP
+datagram arrives on the specified address and port. This function
+is useful to write UDP servers.
+<p>
+On success, the functions returns true and the socket enters
+BoundState; otherwise it returns false.
+<p>
+The socket is bound using the DefaultForPlatform BindMode.
 
 */
 
 
 $$QUdpSocket.bind(int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.bind.
-
-<tt>port</tt>
+Binds to QHostAddress:Any on port <tt>port</tt>.
 
 */
 
 
 $$QUdpSocket.bind(com.trolltech.qt.network.QHostAddress, int, com.trolltech.qt.network.QUdpSocket.BindMode)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.bind.
-
-<tt>address</tt>
-<tt>port</tt>
-<tt>mode</tt>
+Binds to <tt>address</tt> on port <tt>port</tt>, using the BindMode
+<tt>mode</tt>.
 
 */
 
 
 $$QUdpSocket.bind(int, com.trolltech.qt.network.QUdpSocket.BindMode)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.bind.
-
-<tt>port</tt>
-<tt>mode</tt>
+Binds to QHostAddress:Any on port <tt>port</tt>, using the BindMode
+<tt>mode</tt>.
 
 */
 
 
 $$QUdpSocket.writeDatagram(byte[], com.trolltech.qt.network.QHostAddress, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.writeDatagram.
-
-<tt>data</tt>
-<tt>address</tt>
-<tt>port</tt>
+Sends the datagram at <tt>data</tt> of size <tt>size</tt> to the host
+address <tt>address</tt> at port <tt>port</tt>. Returns the number of
+bytes sent on success; otherwise returns -1.
+<p>
+Datagrams are always written as one block. The maximum size of a
+datagram is highly platform-dependent, but can be as low as 8192
+bytes. If the datagram is too large, this function will return -1
+and error() will return DatagramTooLargeError.
+<p>
+Sending datagrams larger than 512 bytes is in general disadvised,
+as even if they are sent successfully, they are likely to be
+fragmented by the IP layer before arriving at their final
+destination.
+<p>
+<b>warning</b>: Calling this function on a connected UDP socket may
+result in an error and no packet being sent. If you are using a
+connected socket, use write() to send datagrams.
 
 */
 
 
 $$QUdpSocket.writeDatagram(com.trolltech.qt.core.QByteArray, com.trolltech.qt.network.QHostAddress, int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QUdpSocket.writeDatagram.
-
-<tt>data</tt>
-<tt>address</tt>
-<tt>port</tt>
+Sends the datagram <tt>datagram</tt> to the host address <tt>host</tt> and at
+port <tt>port</tt>.
 
 */
 
 
 $$QAbstractSocket.connectToHost(java.lang.String, int, com.trolltech.qt.core.QIODevice.OpenMode)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.connectToHost.
-
-<tt>host</tt>
-<tt>port</tt>
-<tt>mode</tt>
+Attempts to make a connection to <tt>host</tt> on the given <tt>port</tt>.
+<p>
+The socket is opened in the given <tt>mode</tt> and first enters
+HostLookupState, then performs a host name lookup of <tt>host</tt>.
+If the lookup succeeds, hostFound() is emitted and QAbstractSocket
+enters ConnectingState. It then attempts to connect to the address
+or addresses returned by the lookup. Finally, if a connection is
+established, QAbstractSocket enters ConnectedState and
+emits connected().
+<p>
+At any point, the socket can emit error() to signal that an error
+occurred.
+<p>
+<tt>host</tt> may be an IP address in string form (e.g.,
+"43.195.83.32"), or it may be a host name (e.g.,
+"www.trolltech.com"). QAbstractSocket will do a lookup only if
+required. <tt>port</tt> is in native byte order.
 
 */
 
 
 $$QAbstractSocket.connectToHost(com.trolltech.qt.network.QHostAddress, int, com.trolltech.qt.core.QIODevice.OpenMode)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.connectToHost.
-
-<tt>host</tt>
-<tt>port</tt>
-<tt>mode</tt>
+Attempts to make a connection to <tt>address</tt> on port <tt>port</tt> with open mode
+<tt>mode</tt>.
 
 */
 
 
 $$QAbstractSocket.connectToHostImplementation(java.lang.String, int, com.trolltech.qt.core.QIODevice.OpenMode)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.connectToHostImplementation.
-
-<tt>host</tt>
-<tt>port</tt>
-<tt>mode</tt>
+Contains the implementation of connectToHost().
+<p>
+Attempts to make a connection to <tt>host</tt> on the given
+<tt>port</tt>. The socket is opened in the given <tt>mode</tt>.
 
 */
 
 
 $$QAbstractSocket.localPort()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.localPort.
-
+Returns the host port number (in native byte order) of the local
+socket if available; otherwise returns 0.
 
 */
 
 
 $$QAbstractSocket.peerPort()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.peerPort.
-
+Returns the port of the connected peer if the socket is in
+ConnectedState; otherwise returns 0.
 
 */
 
 
 $$QAbstractSocket.setLocalPort(int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.setLocalPort.
-
-<tt>port</tt>
+Sets the local port of this QAbstractSocket to <tt>port</tt>.
 
 */
 
 
 $$QAbstractSocket.setPeerPort(int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.network.QAbstractSocket.setPeerPort.
-
-<tt>port</tt>
+Sets the peer port of this QAbstractSocket to <tt>port</tt>.
 
 */

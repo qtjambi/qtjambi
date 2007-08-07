@@ -21,16 +21,6 @@ Test method
 */
 
 
-$$QUiLoaderException.QUiLoaderException(java.lang.String, java.lang.Throwable)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.designer.QUiLoaderException.
-
-<tt>message</tt>
-<tt>cause</tt>
-
-*/
-
-
 $$QUiLoaderException.QUiLoaderException(java.lang.String)
 /**
 Creates a new QUiLoaderException with the given <tt>message</tt>.

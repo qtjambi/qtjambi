@@ -2774,9 +2774,7 @@ Returns the selected table cells as a QTableArea.
 
 $$QGraphicsLineItem.QGraphicsLineItem(com.trolltech.qt.gui.QLineF, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
-
-<tt>line</tt>
+Creates a new QGraphicsLineItem from <tt>line</tt> with the specified
 <tt>parent</tt>
 
 */
@@ -2784,122 +2782,91 @@ This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphi
 
 $$QGraphicsLineItem.QGraphicsLineItem(com.trolltech.qt.gui.QLineF)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
-
-<tt>line</tt>
+Creates a new QGraphicsLineItem from <tt>line</tt> with no parent (null).
 
 */
 
 
 $$QGraphicsLineItem.QGraphicsLineItem(com.trolltech.qt.gui.QLineF, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
-
-<tt>line</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsLineItem from <tt>line</tt> with the specified
+<tt>parent</tt>, and then adds it to <tt>scene</tt>.
 
 */
 
 
 $$QGraphicsLineItem.QGraphicsLineItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
 
-<tt>x1</tt>
-<tt>y1</tt>
-<tt>x2</tt>
-<tt>y2</tt>
-<tt>parent</tt>
+This is equal to QGraphicsLineItem(new QLineF(<tt>x1</tt>, <tt>y1</tt>,
+<tt>x2</tt>, <tt>y2</tt>), <tt>parent</tt>).
 
 */
 
 
 $$QGraphicsLineItem.QGraphicsLineItem(double, double, double, double)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
-
-<tt>x1</tt>
-<tt>y1</tt>
-<tt>x2</tt>
-<tt>y2</tt>
+This is equal to QGraphicsLineItem(new QLineF(<tt>x1</tt>, <tt>y1</tt>,
+   2802 <tt>x2</tt>, <tt>y2</tt>)).
 
 */
 
 
 $$QGraphicsLineItem.QGraphicsLineItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsLineItem.
-
-<tt>x1</tt>
-<tt>y1</tt>
-<tt>x2</tt>
-<tt>y2</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+This is equal to QGraphicsLineItem(new QLineF(<tt>x1</tt>, <tt>y1</tt>,
+<tt>x2</tt>, <tt>y2</tt>), <tt>parent</tt>, <tt>scene</tt>).
 
 */
 
 
 $$QGraphicsSimpleTextItem.QGraphicsSimpleTextItem(java.lang.String, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsSimpleTextItem.
-
-<tt>text</tt>
-<tt>parent</tt>
+Creates a new QGraphicsSimpleTextItem with the specified <tt>text</tt> and
+<tt>parent</tt>.
 
 */
 
 
 $$QGraphicsSimpleTextItem.QGraphicsSimpleTextItem(java.lang.String)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsSimpleTextItem.
-
-<tt>text</tt>
+Creates a new parentless QGraphicsSimpleTextItem with the specified <tt>text</tt>.
 
 */
 
 
 $$QGraphicsSimpleTextItem.QGraphicsSimpleTextItem(java.lang.String, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsSimpleTextItem.
-
-<tt>text</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsSimpleTextItem with the specified <tt>text</tt> and
+<tt>parent</tt>, and adds it to <tt>scene</tt>.
 
 */
 
 
 $$QStyleOptionToolBoxV2.setPosition(com.trolltech.qt.gui.QStyleOptionToolBoxV2.TabPosition)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionToolBoxV2.setPosition.
-
-<tt>position</tt>
+Sets the tab position of this QStyleOptionToolBoxV2 to <tt>position</tt>.
 
 */
 
 
 $$QStyleOptionToolBoxV2.position()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionToolBoxV2.position.
-
+Returns the tab position of this QStyleOptionToolBoxV2.
 
 */
 
 
 $$QGraphicsItem.QGraphicsItem(com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItem.
-
-<tt>parent</tt>
+Creates a new QGraphicsItem with the specified <tt>parent</tt>.
 
 */
 
 
 $$QGraphicsItem.QGraphicsItem()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItem.
+Creates a new QGraphicsItem with no parent.
 
 
 */
@@ -2907,214 +2874,107 @@ This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphi
 
 $$QGraphicsItem.QGraphicsItem(com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItem.
-
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsItem with the specified <tt>parent</tt> and adds it to
+<tt>scene</tt>.
 
 */
-
-
-$$QAccessibleWidgetEx.QAccessibleWidgetEx(com.trolltech.qt.gui.QWidget, com.trolltech.qt.gui.QAccessible.Role, java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.
-
-<tt>o</tt>
-<tt>r</tt>
-<tt>name</tt>
-
-*/
-
-
-$$QAccessibleWidgetEx.addControllingSignal(java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.addControllingSignal.
-
-<tt>signal</tt>
-
-*/
-
-
-$$QAccessibleWidgetEx.parentObject()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.parentObject.
-
-
-*/
-
-
-$$QAccessibleWidgetEx.setAccelerator(java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.setAccelerator.
-
-<tt>accel</tt>
-
-*/
-
-
-$$QAccessibleWidgetEx.setDescription(java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.setDescription.
-
-<tt>desc</tt>
-
-*/
-
-
-$$QAccessibleWidgetEx.setHelp(java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.setHelp.
-
-<tt>help</tt>
-
-*/
-
-
-$$QAccessibleWidgetEx.setValue(java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.setValue.
-
-<tt>value</tt>
-
-*/
-
-
-$$QAccessibleWidgetEx.widget()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleWidgetEx.widget.
-
-
-*/
-
 
 $$QGraphicsEllipseItem.QGraphicsEllipseItem(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
-
-<tt>rect</tt>
-<tt>parent</tt>
+Creates a new QGraphicsEllipseItem with the specified <tt>rect</tt> bounds and
+<tt>parent</tt>.
 
 */
 
 
 $$QGraphicsEllipseItem.QGraphicsEllipseItem(com.trolltech.qt.core.QRectF)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
-
-<tt>rect</tt>
+tes a new QGraphicsEllipseItem with the specified <tt>rect</tt> bounds.
 
 */
 
 
 $$QGraphicsEllipseItem.QGraphicsEllipseItem(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
-
-<tt>rect</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsEllipseItem with the specified <tt>rect</tt> bounds and
+<tt>parent</tt>, and then adds it to <tt>scene</tt>.
 
 */
 
 
 $$QGraphicsEllipseItem.QGraphicsEllipseItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
-
-<tt>x</tt>
-<tt>y</tt>
-<tt>w</tt>
-<tt>h</tt>
-<tt>parent</tt>
+Creates a new QGraphicsEllipseItem with top left corner in the point
+(<tt>x</tt>, <tt>y</tt>), width <tt>w</tt>, and height <tt>h</tt>, and the
+specified <tt>parent</tt>.
 
 */
 
 
 $$QGraphicsEllipseItem.QGraphicsEllipseItem(double, double, double, double)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
-
-<tt>x</tt>
-<tt>y</tt>
-<tt>w</tt>
-<tt>h</tt>
+Creates a new QGraphicsEllipseItem with top left corner in the point
+(<tt>x</tt>, <tt>y</tt>), width <tt>w</tt>.
 
 */
 
 
 $$QGraphicsEllipseItem.QGraphicsEllipseItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsEllipseItem.
-
-<tt>x</tt>
-<tt>y</tt>
-<tt>w</tt>
-<tt>h</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsEllipseItem with top left corner in the point
+(<tt>x</tt>, <tt>y</tt>), width <tt>w</tt>, and height <tt>h</tt>, and the
+specified <tt>parent</tt>. It is then added to <tt>scene</tt>.
 
 */
 
 
 $$QGraphicsPathItem.QGraphicsPathItem(com.trolltech.qt.gui.QPainterPath, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPathItem.
-
-<tt>path</tt>
-<tt>parent</tt>
+Creates a new QGraphicsPathItem from the specified <tt>path</tt> and
+<tt>parent</tt>.
 
 */
 
 
 $$QGraphicsPathItem.QGraphicsPathItem(com.trolltech.qt.gui.QPainterPath)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPathItem.
-
-<tt>path</tt>
+Creates a new QGraphicsPathItem from the specified <tt>path</tt>.
 
 */
 
 
 $$QGraphicsPathItem.QGraphicsPathItem(com.trolltech.qt.gui.QPainterPath, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPathItem.
-
-<tt>path</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsPathItem from the specified <tt>path</tt>,
+<tt>parent</tt>, and <tt>scene</tt>.
 
 */
 
 
 $$QShortcutEvent.setSequence(com.trolltech.qt.gui.QKeySequence)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.setSequence.
-
-<tt>sequence</tt>
+Constructs a shortcut event for the given <tt>sequence</tt>.
 
 */
 
 
 $$QShortcutEvent.sequence()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.sequence.
-
+Returns the key sequence (QKeySequence) for this QShortcutEvent.
 
 */
 
 
 $$QShortcutEvent.setSid(int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.setSid.
-
-<tt>sid</tt>
+Sets this QShortcutEvent's ID to <tt>sid</tt>.
 
 */
 
 
 $$QShortcutEvent.sid()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.sid.
+Returns this QShortcutEvent's ID.
 
 
 */
@@ -3122,504 +2982,152 @@ This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortc
 
 $$QShortcutEvent.setAmbig(boolean)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.setAmbig.
-
-<tt>ambig</tt>
+Sets this QShortcutEvent as having an ambiguous key sequence.
 
 */
 
 
 $$QShortcutEvent.ambig()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QShortcutEvent.ambig.
-
+Returns true if the key sequence that triggered the event is
+ambiguous.
 
 */
 
 
 $$QGraphicsRectItem.QGraphicsRectItem(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
-
-<tt>rect</tt>
-<tt>parent</tt>
+Creates a new QGraphicsRectItem with the specified bounds <tt>rect</tt> and
+<tt>parent</tt>.
 
 */
 
 
 $$QGraphicsRectItem.QGraphicsRectItem(com.trolltech.qt.core.QRectF)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
-
-<tt>rect</tt>
+Creates a new QGraphicsRectItem with the specified bounds <tt>rect</tt>.
 
 */
 
 
 $$QGraphicsRectItem.QGraphicsRectItem(com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
-
-<tt>rect</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsRectItem with the specified bounds <tt>rect</tt>,
+<tt>parent</tt>, and then adds it to <tt>scene</tt>.
 
 */
 
 
 $$QGraphicsRectItem.QGraphicsRectItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
-
-<tt>x</tt>
-<tt>y</tt>
-<tt>w</tt>
-<tt>h</tt>
-<tt>parent</tt>
+Creates a new QGraphicsRectItem of which top-left corner is (<tt>x</tt>,
+<tt>y</tt>), width is <tt>w</tt>, and height is <tt>h</tt>. It will have the
+specified <tt>parent</tt>.
 
 */
 
 
 $$QGraphicsRectItem.QGraphicsRectItem(double, double, double, double)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
-
-<tt>x</tt>
-<tt>y</tt>
-<tt>w</tt>
-<tt>h</tt>
+Creates a new QGraphicsRectItem of which top-left corner is (<tt>x</tt>,
+<tt>y</tt>), width is <tt>w</tt>, and height is <tt>h</tt>.
 
 */
 
 
 $$QGraphicsRectItem.QGraphicsRectItem(double, double, double, double, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsRectItem.
-
-<tt>x</tt>
-<tt>y</tt>
-<tt>w</tt>
-<tt>h</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsRectItem of which top-left corner is (<tt>x</tt>,
+<tt>y</tt>), width is <tt>w</tt>, and height is <tt>h</tt>. It will have the
+specified <tt>parent</tt> and <tt>scene</tt>.
 
 */
-
-
-$$QAccessibleObjectEx.QAccessibleObjectEx(com.trolltech.qt.core.QObject)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleObjectEx.
-
-<tt>object</tt>
-
-*/
-
-
-$$QStyleFactory.QStyleFactory()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleFactory.
-
-
-*/
-
-
-$$QDragResponseEvent.dragAccepted()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragResponseEvent.dragAccepted.
-
-
-*/
-
-
-$$QDragResponseEvent.setA(boolean)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragResponseEvent.setA.
-
-<tt>a</tt>
-
-*/
-
-
-$$QDragResponseEvent.a()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragResponseEvent.a.
-
-
-*/
-
 
 $$QStyleOptionDockWidgetV2.QStyleOptionDockWidgetV2(com.trolltech.qt.gui.QStyleOptionDockWidget)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.
-
-<tt>other</tt>
+Creates a new QStyleOptionDockWidgetV2, which is a copy of <tt>other</tt>.
 
 */
 
 
 $$QStyleOptionDockWidgetV2.QStyleOptionDockWidgetV2(com.trolltech.qt.gui.QStyleOptionDockWidgetV2)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.
-
-<tt>other</tt>
+Creates a new QStyleOptionDockWidgetV2, which is a copy of <tt>other</tt>.
 
 */
 
 
 $$QStyleOptionDockWidgetV2.QStyleOptionDockWidgetV2(int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.
-
-<tt>version</tt>
+Creates a new QStyleOptionDockWidgetV2 with the specified <tt>version</tt>.
 
 */
 
 
 $$QStyleOptionDockWidgetV2.QStyleOptionDockWidgetV2()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.
-
+Creates a new QStyleOptionDockWidgetV2, initializing the  member variables to
+their default values.
 
 */
 
 
 $$QStyleOptionDockWidgetV2.setVerticalTitleBar(boolean)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.setVerticalTitleBar.
-
-<tt>verticalTitleBar</tt>
+Sets this QStyleOptionDockWidgetV2's title bar to vertical if
+<tt>verticalTitleBar</tt> is true; otherwise, horizontal.
 
 */
 
 
 $$QStyleOptionDockWidgetV2.verticalTitleBar()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionDockWidgetV2.verticalTitleBar.
-
-
-*/
-
-
-$$QDesktopServices.QDesktopServices()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDesktopServices.
-
+Returns true if this QStyleOptionDockWidgetV2 has a vertical title
+bar; otherwise, false.
 
 */
 
 
 $$QGraphicsTextItem.QGraphicsTextItem(java.lang.String, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsTextItem.
-
-<tt>text</tt>
-<tt>parent</tt>
+Creates a new QGraphicsTextItem with the specified <tt>text</tt> and
+<tt>parent</tt> graphics item.
 
 */
 
 
 $$QGraphicsTextItem.QGraphicsTextItem(java.lang.String)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsTextItem.
-
-<tt>text</tt>
+Creates a new QGraphicsTextItem with the specified <tt>text</tt>.
 
 */
 
 
 $$QGraphicsTextItem.QGraphicsTextItem(java.lang.String, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsTextItem.
-
-<tt>text</tt>
-<tt>parent</tt>
-<tt>scene</tt>
-
-*/
-
-
-$$QAccessible2Interface.QAccessible2Interface()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessible2Interface.
-
-
-*/
-
-
-$$QAccessible.QAccessible()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessible.
-
+Creates a new QGraphicsTextItem with the specified <tt>text</tt>,
+<tt>parent</tt>, and <tt>scene</tt>.
 
 */
 
 
 $$QStyleOptionViewItemV3.QStyleOptionViewItemV3(com.trolltech.qt.gui.QStyleOptionViewItemV3)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.
-
-<tt>other</tt>
+Creates a new QStyleOptionViewItemV3 that is a copy of <tt>other</tt>.
 
 */
-
-
-$$QStyleOptionViewItemV3.QStyleOptionViewItemV3()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.
-
-
-*/
-
-
-$$QStyleOptionViewItemV3.QStyleOptionViewItemV3(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.
-
-<tt>version</tt>
-
-*/
-
-
-$$QStyleOptionViewItemV3.QStyleOptionViewItemV3(com.trolltech.qt.gui.QStyleOptionViewItem)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.
-
-<tt>other</tt>
-
-*/
-
-
-$$QStyleOptionViewItemV3.widget()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.widget.
-
-
-*/
-
-
-$$QStyleOptionViewItemV3.setLocale(com.trolltech.qt.core.QLocale)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.setLocale.
-
-<tt>locale</tt>
-
-*/
-
-
-$$QStyleOptionViewItemV3.locale()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionViewItemV3.locale.
-
-
-*/
-
-
-$$QAccessibleTextInterface.QAccessibleTextInterface()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.
-
-
-*/
-
-
-$$QAccessibleTextInterface.qAccessibleTextCastHelper()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.qAccessibleTextCastHelper.
-
-
-*/
-
-
-$$QAccessibleTextInterface.addSelection(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.addSelection.
-
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.attributes(int, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.attributes.
-
-<tt>offset</tt>
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.characterCount()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.characterCount.
-
-
-*/
-
-
-$$QAccessibleTextInterface.characterRect(int, com.trolltech.qt.gui.QAccessible2.CoordinateType)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.characterRect.
-
-<tt>offset</tt>
-<tt>coordType</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.cursorPosition()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.cursorPosition.
-
-
-*/
-
-
-$$QAccessibleTextInterface.offsetAtPoint(com.trolltech.qt.core.QPoint, com.trolltech.qt.gui.QAccessible2.CoordinateType)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.offsetAtPoint.
-
-<tt>point</tt>
-<tt>coordType</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.removeSelection(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.removeSelection.
-
-<tt>selectionIndex</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.scrollToSubstring(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.scrollToSubstring.
-
-<tt>startIndex</tt>
-<tt>endIndex</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.selection(int, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.selection.
-
-<tt>selectionIndex</tt>
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.selectionCount()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.selectionCount.
-
-
-*/
-
-
-$$QAccessibleTextInterface.setCursorPosition(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.setCursorPosition.
-
-<tt>position</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.setSelection(int, int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.setSelection.
-
-<tt>selectionIndex</tt>
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.text(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.text.
-
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.textAfterOffset(int, com.trolltech.qt.gui.QAccessible2.BoundaryType, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.textAfterOffset.
-
-<tt>offset</tt>
-<tt>boundaryType</tt>
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.textAtOffset(int, com.trolltech.qt.gui.QAccessible2.BoundaryType, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.textAtOffset.
-
-<tt>offset</tt>
-<tt>boundaryType</tt>
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleTextInterface.textBeforeOffset(int, com.trolltech.qt.gui.QAccessible2.BoundaryType, com.trolltech.qt.QNativePointer, com.trolltech.qt.QNativePointer)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTextInterface.textBeforeOffset.
-
-<tt>offset</tt>
-<tt>boundaryType</tt>
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleSimpleEditableTextInterface.QAccessibleSimpleEditableTextInterface(com.trolltech.qt.gui.QAccessibleInterface)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleSimpleEditableTextInterface.
-
-<tt>accessibleInterface</tt>
-
-*/
-
-
-$$QInputContextFactory.QInputContextFactory()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QInputContextFactory.
-
-
-*/
-
 
 $$QAbstractGraphicsShapeItem.QAbstractGraphicsShapeItem(com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAbstractGraphicsShapeItem.
-
-<tt>parent</tt>
+Constructs a QAbstractGraphicsShapeItem. <tt>parent<tt> is passed to QGraphicsItem's
+constructor.
 
 */
 
 
 $$QAbstractGraphicsShapeItem.QAbstractGraphicsShapeItem()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAbstractGraphicsShapeItem.
+Constructs a parentless QAbstractGraphicsShapeItem. 
 
 
 */
@@ -3627,1686 +3135,334 @@ This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAbstra
 
 $$QAbstractGraphicsShapeItem.QAbstractGraphicsShapeItem(com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAbstractGraphicsShapeItem.
-
-<tt>parent</tt>
-<tt>scene</tt>
+Constructs a new QAbstractGraphicsShapeItem with the specified <tt>parent</tt>
+and adds it to <tt>scene</tt>.
 
 */
-
-
-$$QTreeModel.QTreeModel()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.
-
-
-*/
-
-
-$$QTreeModel.QTreeModel(com.trolltech.qt.core.QObject)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.
-
-<tt>parent</tt>
-
-*/
-
-
-$$QTreeModel.childrenInserted(com.trolltech.qt.core.QModelIndex, int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.childrenInserted.
-
-<tt>parent</tt>
-<tt>first</tt>
-<tt>last</tt>
-
-*/
-
-
-$$QTreeModel.childrenRemoved(com.trolltech.qt.core.QModelIndex, int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.childrenRemoved.
-
-<tt>parent</tt>
-<tt>first</tt>
-<tt>last</tt>
-
-*/
-
-
-$$QTreeModel.indexToValue(com.trolltech.qt.core.QModelIndex)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.indexToValue.
-
-<tt>index</tt>
-
-*/
-
-
-$$QTreeModel.releaseChildren(com.trolltech.qt.core.QModelIndex)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.releaseChildren.
-
-<tt>index</tt>
-
-*/
-
-
-$$QTreeModel.valueToIndex(java.lang.Object)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.valueToIndex.
-
-<tt>object</tt>
-
-*/
-
-
-$$QTreeModel.child(java.lang.Object, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.child.
-
-<tt>parent</tt>
-<tt>index</tt>
-
-*/
-
-
-$$QTreeModel.childCount(java.lang.Object)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.childCount.
-
-<tt>parent</tt>
-
-*/
-
-
-$$QTreeModel.icon(java.lang.Object)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.icon.
-
-<tt>value</tt>
-
-*/
-
-
-$$QTreeModel.text(java.lang.Object)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTreeModel.text.
-
-<tt>value</tt>
-
-*/
-
 
 $$QLayoutItem.setAlign(com.trolltech.qt.core.Qt.Alignment)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayoutItem.setAlign.
-
-<tt>align</tt>
+Sets the alignment of this item to <tt>align</tt>.
+<p>
+<b>Note:</b> Item alignment is only supported by QLayoutItem subclasses
+where it would have a visual effect. Except for QSpacerItem, which provides
+blank space for layouts, all public Qt classes that inherit QLayoutItem
+support item alignment.
 
 */
 
 
 $$QLayoutItem.align()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayoutItem.align.
-
+Returns the alignment of this QlayoutItem.
 
 */
 
 
 $$QGraphicsPolygonItem.QGraphicsPolygonItem(com.trolltech.qt.gui.QPolygonF, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPolygonItem.
-
-<tt>polygon</tt>
-<tt>parent</tt>
+Creates a new QGraphicsPolygonItem of the specified <tt>polygon</tt> and
+<tt>parent</tt>.
 
 */
 
 
 $$QGraphicsPolygonItem.QGraphicsPolygonItem(com.trolltech.qt.gui.QPolygonF)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPolygonItem.
-
-<tt>polygon</tt>
+Creates a new QGraphicsPolygonItem from <tt>polygon</tt>.
 
 */
 
 
 $$QGraphicsPolygonItem.QGraphicsPolygonItem(com.trolltech.qt.gui.QPolygonF, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPolygonItem.
-
-<tt>polygon</tt>
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsPolygonItem from the given <tt>polygon</tt>, and with
+the specified <tt>parent</tt>. It is then added to <tt>scene</tt>.
 
 */
 
 
 $$QStandardItemModel.setItem(int, com.trolltech.qt.gui.QStandardItem)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStandardItemModel.setItem.
-
-<tt>row</tt>
-<tt>item</tt>
+This is an overloaded method provided for convenience. It is equal to
+<i>setItem(<tt>row</tt>, 0, <tt>item</tt>)</i>.
 
 */
 
 
 $$QStyleOptionFrameV2.setFeatures(com.trolltech.qt.gui.QStyleOptionFrameV2.FrameFeatures)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionFrameV2.setFeatures.
-
-<tt>features</tt>
+Sets the FrameFeatures of this QStyleOptionFrameV2 to <tt>features</tt>.
 
 */
 
 
 $$QStyleOptionFrameV2.features()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyleOptionFrameV2.features.
-
+Returns the  QStyleOptionFrameV2.FrameFeatures of this QStyleOptionFrameV2.
 
 */
 
 
 $$QGraphicsItemGroup.QGraphicsItemGroup(com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItemGroup.
-
-<tt>parent</tt>
+Creates a new QGraphicsItemGroup with the specified  <tt>parent</tt>.
 
 */
 
 
 $$QGraphicsItemGroup.QGraphicsItemGroup()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItemGroup.
-
+Creates a new parentless orphan QGraphicsItemGroup.
 
 */
 
 
 $$QGraphicsItemGroup.QGraphicsItemGroup(com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsItemGroup.
-
-<tt>parent</tt>
-<tt>scene</tt>
+Creates a new QGraphicsItemGroup with the specified <tt>parent</tt>, and then
+adds it to <tt>scene</tt>.
 
 */
 
 
 $$QGraphicsPixmapItem.QGraphicsPixmapItem(com.trolltech.qt.gui.QPixmap, com.trolltech.qt.gui.QGraphicsItemInterface)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPixmapItem.
-
-<tt>pixmap</tt>
-<tt>parent</tt>
+Creates a new QGraphicsPixmapItem from <tt>pixmap</tt> and with the specified
+<tt>parent</tt>.
 
 */
 
 
 $$QGraphicsPixmapItem.QGraphicsPixmapItem(com.trolltech.qt.gui.QPixmap)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPixmapItem.
-
-<tt>pixmap</tt>
+Creates a new QGraphicsPixmapItem from the given <tt>pixmap</tt>.
 
 */
 
 
 $$QGraphicsPixmapItem.QGraphicsPixmapItem(com.trolltech.qt.gui.QPixmap, com.trolltech.qt.gui.QGraphicsItemInterface, com.trolltech.qt.gui.QGraphicsScene)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QGraphicsPixmapItem.
-
-<tt>pixmap</tt>
-<tt>parent</tt>
-<tt>scene</tt>
-
-*/
-
-
-$$QAccessibleBridge.QAccessibleBridge()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleBridge.
-
-
-*/
-
-
-$$QAccessibleValueInterface.QAccessibleValueInterface()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.
-
-
-*/
-
-
-$$QAccessibleValueInterface.qAccessibleValueCastHelper()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.qAccessibleValueCastHelper.
-
-
-*/
-
-
-$$QAccessibleValueInterface.currentValue()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.currentValue.
-
-
-*/
-
-
-$$QAccessibleValueInterface.maximumValue()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.maximumValue.
-
-
-*/
-
-
-$$QAccessibleValueInterface.minimumValue()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.minimumValue.
-
-
-*/
-
-
-$$QAccessibleValueInterface.setCurrentValue(java.lang.Object)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleValueInterface.setCurrentValue.
-
-<tt>value</tt>
+Creates a new QGraphicsPixmapItem from the given <tt>pixmap</tt> and with
+the specified <tt>parent</tt>. It is added to <tt>scene</tt>.
 
 */
 
 
 $$QFileDialog.setDirectory(com.trolltech.qt.core.QDir)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QFileDialog.setDirectory.
-
-<tt>directory</tt>
-
-*/
-
-
-$$QPixmapCache.QPixmapCache()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPixmapCache.
-
-
-*/
-
-
-$$QAccessibleEditableTextInterface.QAccessibleEditableTextInterface()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.
-
-
-*/
-
-
-$$QAccessibleEditableTextInterface.qAccessibleEditableTextCastHelper()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.qAccessibleEditableTextCastHelper.
-
-
-*/
-
-
-$$QAccessibleEditableTextInterface.copyText(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.copyText.
-
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleEditableTextInterface.cutText(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.cutText.
-
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleEditableTextInterface.deleteText(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.deleteText.
-
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-
-*/
-
-
-$$QAccessibleEditableTextInterface.insertText(int, java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.insertText.
-
-<tt>offset</tt>
-<tt>text</tt>
-
-*/
-
-
-$$QAccessibleEditableTextInterface.pasteText(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.pasteText.
-
-<tt>offset</tt>
-
-*/
-
-
-$$QAccessibleEditableTextInterface.replaceText(int, int, java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.replaceText.
-
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-<tt>text</tt>
-
-*/
-
-
-$$QAccessibleEditableTextInterface.setAttributes(int, int, java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleEditableTextInterface.setAttributes.
-
-<tt>startOffset</tt>
-<tt>endOffset</tt>
-<tt>attributes</tt>
-
-*/
-
-
-$$QAccessibleInterfaceEx.QAccessibleInterfaceEx()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleInterfaceEx.
-
-
-*/
-
-
-$$QAccessibleInterfaceEx.interface_cast(com.trolltech.qt.gui.QAccessible2.InterfaceType)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleInterfaceEx.interface_cast.
-
-<tt>arg__1</tt>
-
-*/
-
-
-$$QAccessibleInterfaceEx.virtual_hook(java.lang.Object)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleInterfaceEx.virtual_hook.
-
-<tt>data</tt>
-
-*/
-
-
-$$QAccessibleInterface.QAccessibleInterface()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleInterface.
-
+Set the current directory of this QFileDialog to <tt>directory</tt>.
 
 */
 
 
 $$QTextLine.cursorToX(int, com.trolltech.qt.gui.QTextLine.Edge)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextLine.cursorToX.
-
-<tt>cursorPos</tt>
-<tt>edge</tt>
-
-*/
-
-
-$$QMouseEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButtons)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QMouseEvent.setMouseState.
-
-<tt>mouseState</tt>
-
-*/
-
-
-$$QMouseEvent.mouseState()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QMouseEvent.mouseState.
-
-
-*/
-
-
-$$QMouseEvent.setB(com.trolltech.qt.core.Qt.MouseButton)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QMouseEvent.setB.
-
-<tt>b</tt>
-
-*/
-
-
-$$QMouseEvent.b()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QMouseEvent.b.
-
-
-*/
-
-
-$$QDragMoveEvent.setRect(com.trolltech.qt.core.QRect)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragMoveEvent.setRect.
-
-<tt>rect</tt>
-
-*/
-
-
-$$QDragMoveEvent.rect()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDragMoveEvent.rect.
-
-
-*/
-
-
-$$QDropEvent.mdata()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.mdata.
-
-
-*/
-
-
-$$QDropEvent.setDefault_action(com.trolltech.qt.core.Qt.DropAction)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setDefault_action.
-
-<tt>default_action</tt>
-
-*/
-
-
-$$QDropEvent.default_action()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.default_action.
-
-
-*/
-
-
-$$QDropEvent.setModState(com.trolltech.qt.core.Qt.KeyboardModifiers)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setModState.
-
-<tt>modState</tt>
-
-*/
-
-
-$$QDropEvent.modState()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.modState.
-
-
-*/
-
-
-$$QDropEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButtons)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setMouseState.
-
-<tt>mouseState</tt>
-
-*/
-
-
-$$QDropEvent.mouseState()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.mouseState.
-
-
-*/
-
-
-$$QDropEvent.setDrop_action(com.trolltech.qt.core.Qt.DropAction)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setDrop_action.
-
-<tt>drop_action</tt>
-
-*/
-
-
-$$QDropEvent.drop_action()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.drop_action.
-
-
-*/
-
-
-$$QDropEvent.setP(com.trolltech.qt.core.QPoint)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setP.
-
-<tt>p</tt>
-
-*/
-
-
-$$QDropEvent.p()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.p.
-
-
-*/
-
-
-$$QDropEvent.setAct(com.trolltech.qt.core.Qt.DropActions)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.setAct.
-
-<tt>act</tt>
-
-*/
-
-
-$$QDropEvent.act()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDropEvent.act.
-
-
-*/
-
-
-$$QWheelEvent.setG(com.trolltech.qt.core.QPoint)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.setG.
-
-<tt>g</tt>
-
-*/
-
-
-$$QWheelEvent.g()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.g.
-
-
-*/
-
-
-$$QWheelEvent.setMouseState(com.trolltech.qt.core.Qt.MouseButtons)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.setMouseState.
-
-<tt>mouseState</tt>
-
-*/
-
-
-$$QWheelEvent.mouseState()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.mouseState.
-
-
-*/
-
-
-$$QWheelEvent.setO(com.trolltech.qt.core.Qt.Orientation)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.setO.
-
-<tt>o</tt>
-
-*/
-
-
-$$QWheelEvent.o()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.o.
-
-
-*/
-
-
-$$QWheelEvent.setP(com.trolltech.qt.core.QPoint)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.setP.
-
-<tt>p</tt>
-
-*/
-
-
-$$QWheelEvent.p()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWheelEvent.p.
-
-
-*/
-
-
-$$QContextMenuEvent.setReas(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.setReas.
-
-<tt>reas</tt>
-
-*/
-
-
-$$QContextMenuEvent.reas()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.reas.
-
-
-*/
-
-
-$$QContextMenuEvent.setGp(com.trolltech.qt.core.QPoint)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.setGp.
-
-<tt>gp</tt>
-
-*/
-
-
-$$QContextMenuEvent.gp()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.gp.
-
-
-*/
-
-
-$$QContextMenuEvent.setP(com.trolltech.qt.core.QPoint)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.setP.
-
-<tt>p</tt>
-
-*/
-
-
-$$QContextMenuEvent.p()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContextMenuEvent.p.
-
-
-*/
-
-
-$$QInputEvent.setModState(com.trolltech.qt.core.Qt.KeyboardModifiers)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QInputEvent.setModState.
-
-<tt>modState</tt>
-
-*/
-
-
-$$QInputEvent.modState()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QInputEvent.modState.
-
-
-*/
-
-
-$$QPaintDevice.setPainters(char)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintDevice.setPainters.
-
-<tt>painters</tt>
-
-*/
-
-
-$$QPaintDevice.painters()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintDevice.painters.
-
+Converts the cursor position <tt>cursorPos</tt> to the corresponding x position inside
+the line, taking account of the <tt>edge</tt>.
 
 */
 
 
 $$QWidget.style()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWidget.style.
-
-
-*/
-
-
-$$QWidget.languageChange()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWidget.languageChange.
-
+Returns the widget's style object, i.e., the style in which the widget is
+drawn.
 
 */
 
 
 $$QTextDocumentFragment.toHtml()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextDocumentFragment.toHtml.
-
-
-*/
-
-
-$$QTextBlockUserData.QTextBlockUserData()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextBlockUserData.
-
-
-*/
-
-
-$$QItemEditorCreatorBase.QItemEditorCreatorBase()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemEditorCreatorBase.
-
+Returns the contents of the document fragment as HTML, using the specified
+encoding (e.g., "UTF-8", "ISO 8859-1").
 
 */
 
 
 $$QTextDocument.setUseDesignMetrics(boolean)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextDocument.setUseDesignMetrics.
-
-<tt>b</tt>
+If <tt>b</tt> is true then the layout will use design metrics; otherwise it will
+use the metrics of the paint device (which is the default behavior).
 
 */
 
 
 $$QTextDocument.undo()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextDocument.undo.
-
+This is an overloaded member function, provided for convenience.
 
 */
 
 
 $$QTextDocument.useDesignMetrics()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextDocument.useDesignMetrics.
-
-
-*/
-
-
-$$QPaintEvent.setM_rect(com.trolltech.qt.core.QRect)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.setM_rect.
-
-<tt>m_rect</tt>
-
-*/
-
-
-$$QPaintEvent.m_rect()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.m_rect.
-
-
-*/
-
-
-$$QPaintEvent.setM_erased(boolean)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.setM_erased.
-
-<tt>m_erased</tt>
-
-*/
-
-
-$$QPaintEvent.m_erased()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.m_erased.
-
-
-*/
-
-
-$$QPaintEvent.setM_region(com.trolltech.qt.gui.QRegion)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.setM_region.
-
-<tt>m_region</tt>
-
-*/
-
-
-$$QPaintEvent.m_region()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEvent.m_region.
-
-
-*/
-
-
-$$QItemSelection.back()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemSelection.back.
-
-
-*/
-
-
-$$QItemSelection.first()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemSelection.first.
-
-
-*/
-
-
-$$QItemSelection.front()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemSelection.front.
-
-
-*/
-
-
-$$QItemSelection.last()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QItemSelection.last.
-
-
-*/
-
-
-$$QPolygonF.first()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPolygonF.first.
-
-
-*/
-
-
-$$QPolygonF.last()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPolygonF.last.
-
-
-*/
-
-
-$$QTabletEvent.setMUnique(long)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTabletEvent.setMUnique.
-
-<tt>mUnique</tt>
-
-*/
-
-
-$$QTabletEvent.mUnique()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTabletEvent.mUnique.
-
-
-*/
-
-
-$$QTabletEvent.setMHiResGlobalPos(com.trolltech.qt.core.QPointF)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTabletEvent.setMHiResGlobalPos.
-
-<tt>mHiResGlobalPos</tt>
-
-*/
-
-
-$$QTabletEvent.mHiResGlobalPos()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTabletEvent.mHiResGlobalPos.
-
-
-*/
-
-
-$$QPainterPath_Element.QPainterPath_Element()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPainterPath_Element.
-
-
-*/
-
-
-$$QPainterPath_Element.toPoint()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPainterPath_Element.toPoint.
-
-
-*/
-
-
-$$QIconEngineV2.QIconEngineV2()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QIconEngineV2.
-
-
-*/
-
-
-$$QKeyEvent.setK(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.setK.
-
-<tt>k</tt>
-
-*/
-
-
-$$QKeyEvent.k()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.k.
-
-
-*/
-
-
-$$QKeyEvent.setTxt(java.lang.String)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.setTxt.
-
-<tt>txt</tt>
-
-*/
-
-
-$$QKeyEvent.txt()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.txt.
-
-
-*/
-
-
-$$QKeyEvent.setC(char)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.setC.
-
-<tt>c</tt>
-
-*/
-
-
-$$QKeyEvent.c()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.c.
-
-
-*/
-
-
-$$QKeyEvent.setAutor(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.setAutor.
-
-<tt>autor</tt>
-
-*/
-
-
-$$QKeyEvent.autor()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QKeyEvent.autor.
-
-
-*/
-
-
-$$QIconEngine.QIconEngine()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QIconEngine.
-
+Returns true if this QTextDocument uses design metrics.
 
 */
 
 
 $$QPainterPath.toFillPolygon(com.trolltech.qt.gui.QMatrix)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPainterPath.toFillPolygon.
-
-<tt>matrix</tt>
-
-*/
-
-
-$$QLayout.setAlignment(com.trolltech.qt.core.Qt.Alignment)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayout.setAlignment.
-
-<tt>a</tt>
-
-*/
-
-
-$$QPolygon.first()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPolygon.first.
-
-
-*/
-
-
-$$QPolygon.last()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPolygon.last.
-
-
-*/
-
-
-$$QTextItem.QTextItem()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.
-
-
-*/
-
-
-$$QTextItem.ascent()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.ascent.
-
-
-*/
-
-
-$$QTextItem.descent()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.descent.
-
-
-*/
-
-
-$$QTextItem.font()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.font.
-
-
-*/
-
-
-$$QTextItem.renderFlags()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.renderFlags.
-
-
-*/
-
-
-$$QTextItem.text()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.text.
-
-
-*/
-
-
-$$QTextItem.width()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextItem.width.
-
-
-*/
-
-
-$$QPrintEngine.QPrintEngine()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPrintEngine.
-
-
-*/
-
-
-$$QPaintEngineState.QPaintEngineState()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngineState.
-
-
-*/
-
-
-$$QPaintEngineState.setDirtyFlags(com.trolltech.qt.gui.QPaintEngine.DirtyFlags)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngineState.setDirtyFlags.
-
-<tt>dirtyFlags</tt>
-
-*/
-
-
-$$QPaintEngineState.dirtyFlags()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngineState.dirtyFlags.
-
+This is an overloaded member function, provided for convenience.
 
 */
 
 
 $$QTextEdit.overwriteMode()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextEdit.overwriteMode.
-
+Returns this QTextEdit's overwrite mode.
+<p>
+If FALSE (the default) characters entered by the user are inserted with any
+characters to the right being moved out of the way. If TRUE, the editor is in
+overwrite mode, i.e. characters entered by the user overwrite any characters
+to the right of the cursor position. 
 
 */
 
 
 $$QTextEdit.setOverwriteMode(boolean)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextEdit.setOverwriteMode.
-
-<tt>overwrite</tt>
-
-*/
-
-
-$$QTextObjectInterface.QTextObjectInterface()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextObjectInterface.
-
-
-*/
-
-
-$$QTextObjectInterface.drawObject(com.trolltech.qt.gui.QPainter, com.trolltech.qt.core.QRectF, com.trolltech.qt.gui.QTextDocument, int, com.trolltech.qt.gui.QTextFormat)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextObjectInterface.drawObject.
-
-<tt>painter</tt>
-<tt>rect</tt>
-<tt>doc</tt>
-<tt>posInDocument</tt>
-<tt>format</tt>
-
-*/
-
-
-$$QTextObjectInterface.intrinsicSize(com.trolltech.qt.gui.QTextDocument, int, com.trolltech.qt.gui.QTextFormat)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextObjectInterface.intrinsicSize.
-
-<tt>doc</tt>
-<tt>posInDocument</tt>
-<tt>format</tt>
+This property holds the text edit's overwrite mode to <tt>overwrite</tt>.
+<p>
+If FALSE (the default) characters entered by the user are inserted with any
+characters to the right being moved out of the way. If TRUE, the editor is in
+overwrite mode, i.e. characters entered by the user overwrite any characters
+to the right of the cursor position. 
 
 */
 
 
 $$QTextFrame_iterator.next()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextFrame_iterator.next.
-
+Returns the next QTextFrame in this iterator.
 
 */
 
 
 $$QTextFrame_iterator.previous()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTextFrame_iterator.previous.
-
-
-*/
-
-
-$$QPaintEngine.setSelfDestruct(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.setSelfDestruct.
-
-<tt>selfDestruct</tt>
-
-*/
-
-
-$$QPaintEngine.selfDestruct()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.selfDestruct.
-
+Returns the previous QTextFrame in this iterator.
 
 */
 
 
 $$QPaintEngine.setActive(int)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.setActive.
-
-<tt>active</tt>
+Sets the active state of the paint engine to <tt>active</tt>.
 
 */
 
 
 $$QPaintEngine.active()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.active.
-
-
-*/
-
-
-$$QPaintEngine.setGccaps(com.trolltech.qt.gui.QPaintEngine.PaintEngineFeatures)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.setGccaps.
-
-<tt>gccaps</tt>
-
-*/
-
-
-$$QPaintEngine.gccaps()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QPaintEngine.gccaps.
-
-
-*/
-
-
-$$QContentsMargins.QContentsMargins(int, int, int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QContentsMargins.
-
-<tt>left</tt>
-<tt>top</tt>
-<tt>right</tt>
-<tt>bottom</tt>
+Returns the active state of this paint engine.
 
 */
 
 
 $$QToolBar.initStyleOption(com.trolltech.qt.gui.QStyleOptionToolBar)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QToolBar.initStyleOption.
-
-<tt>option</tt>
-
-*/
-
-
-$$QDateTimeEdit.initDateTimeEditStyleOption(com.trolltech.qt.gui.QStyleOptionSpinBox)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QDateTimeEdit.initDateTimeEditStyleOption.
-
-<tt>option</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.QAccessibleTableInterface()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.
-
-
-*/
-
-
-$$QAccessibleTableInterface.accessibleAt(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.accessibleAt.
-
-<tt>row</tt>
-<tt>column</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.caption()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.caption.
-
-
-*/
-
-
-$$QAccessibleTableInterface.childIndex(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.childIndex.
-
-<tt>rowIndex</tt>
-<tt>columnIndex</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.columnCount()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnCount.
-
-
-*/
-
-
-$$QAccessibleTableInterface.columnDescription(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnDescription.
-
-<tt>column</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.columnHeader()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnHeader.
-
-
-*/
-
-
-$$QAccessibleTableInterface.columnIndex(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnIndex.
-
-<tt>childIndex</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.columnSpan(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.columnSpan.
-
-<tt>row</tt>
-<tt>column</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.isColumnSelected(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.isColumnSelected.
-
-<tt>column</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.isRowSelected(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.isRowSelected.
-
-<tt>row</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.isSelected(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.isSelected.
-
-<tt>row</tt>
-<tt>column</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.rowCount()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowCount.
-
-
-*/
-
-
-$$QAccessibleTableInterface.rowDescription(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowDescription.
-
-<tt>row</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.rowHeader()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowHeader.
-
-
-*/
-
-
-$$QAccessibleTableInterface.rowIndex(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowIndex.
-
-<tt>childIndex</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.rowSpan(int, int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.rowSpan.
-
-<tt>row</tt>
-<tt>column</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.selectColumn(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectColumn.
-
-<tt>column</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.selectRow(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectRow.
-
-<tt>row</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.selectedColumnCount()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectedColumnCount.
-
-
-*/
-
-
-$$QAccessibleTableInterface.selectedColumns(int, java.util.List<java.lang.Integer>)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectedColumns.
-
-<tt>maxColumns</tt>
-<tt>columns</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.selectedRowCount()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectedRowCount.
-
-
-*/
-
-
-$$QAccessibleTableInterface.selectedRows(int, java.util.List<java.lang.Integer>)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.selectedRows.
-
-<tt>maxRows</tt>
-<tt>rows</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.summary()
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.summary.
-
-
-*/
-
-
-$$QAccessibleTableInterface.unselectColumn(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.unselectColumn.
-
-<tt>column</tt>
-
-*/
-
-
-$$QAccessibleTableInterface.unselectRow(int)
-/**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QAccessibleTableInterface.unselectRow.
-
-<tt>row</tt>
+Initialize <tt>option</tt> with the values from the menu bar and information from
+action. This method is useful for subclasses when they need a
+QStyleOptionMenuItem, but don't want to fill in all the information
+themselves.
 
 */
 
 
 $$QStyle.combinedLayoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption, com.trolltech.qt.gui.QWidget)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.combinedLayoutSpacing.
-
-<tt>controls1</tt>
-<tt>controls2</tt>
-<tt>orientation</tt>
-<tt>option</tt>
-<tt>widget</tt>
+Returns the spacing that should be used between <tt>controls1</tt> and
+<tt>controls2</tt> in a layout. <tt>orientation</tt> specifies whether the
+controls are laid out side by side or stacked vertically. The
+<tt>option</tt> parameter can be used to pass extra information about the
+parent widget. The <tt>widget</tt> parameter is optional and can also
+be used if <tt>option</tt> is 0.
+<p>
+<tt>controls1</tt> and <tt>controls2</tt> are OR-combination of zero or more
+\l{QSizePolicy::ControlTypes}{control types}.
+<p>
+This function is called by the layout system. It is used only if
+PM_LayoutHorizontalSpacing or PM_LayoutVerticalSpacing returns a
+negative value.
 
 */
 
 
 $$QStyle.combinedLayoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.combinedLayoutSpacing.
-
-<tt>controls1</tt>
-<tt>controls2</tt>
-<tt>orientation</tt>
-<tt>option</tt>
-
+This is an overloaded mthod provided for convenience.
 */
 
 
 $$QStyle.combinedLayoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.gui.QSizePolicy.ControlTypes, com.trolltech.qt.core.Qt.Orientation)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.combinedLayoutSpacing.
-
-<tt>controls1</tt>
-<tt>controls2</tt>
-<tt>orientation</tt>
-
+This is an overloaded mthod provided for convenience.
 */
 
 
 $$QStyle.layoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption, com.trolltech.qt.gui.QWidget)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacing.
-
-<tt>control1</tt>
-<tt>control2</tt>
-<tt>orientation</tt>
-<tt>option</tt>
-<tt>widget</tt>
-
+This is an overloaded mthod provided for convenience.
 */
 
 
 $$QStyle.layoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacing.
-
-<tt>control1</tt>
-<tt>control2</tt>
-<tt>orientation</tt>
-<tt>option</tt>
-
+This is an overloaded mthod provided for convenience.
 */
 
 
 $$QStyle.layoutSpacing(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacing.
-
-<tt>control1</tt>
-<tt>control2</tt>
-<tt>orientation</tt>
-
+This is an overloaded mthod provided for convenience.
 */
 
 
 $$QStyle.layoutSpacingImplementation(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption, com.trolltech.qt.gui.QWidget)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacingImplementation.
-
-<tt>control1</tt>
-<tt>control2</tt>
-<tt>orientation</tt>
-<tt>option</tt>
-<tt>widget</tt>
+This slot is called by layoutSpacing() to determine the spacing
+that should be used between <tt>control1</tt> and <tt>control2</tt> in a
+layout. <tt>orientation</tt> specifies whether the controls are laid
+out side by side or stacked vertically. The <tt>option</tt> parameter
+can be used to pass extra information about the parent widget.
+The <tt>widget</tt> parameter is optional and can also be used if
+<tt>option</tt> is 0.
+<p>
+If you want to provide custom layout spacings in a QStyle
+subclass, implement a slot called layoutSpacingImplementation()
+in your subclass. Be aware that this slot will only be called if
+PM_LayoutHorizontalSpacing or PM_LayoutVerticalSpacing returns a
+negative value.
+<p>
+The default implementation returns -1.
 
 */
 
 
 $$QStyle.layoutSpacingImplementation(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation, com.trolltech.qt.gui.QStyleOption)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacingImplementation.
-
-<tt>control1</tt>
-<tt>control2</tt>
-<tt>orientation</tt>
-<tt>option</tt>
-
+This is an overloaded method provided for convenience.
 */
 
 
 $$QStyle.layoutSpacingImplementation(com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.gui.QSizePolicy.ControlType, com.trolltech.qt.core.Qt.Orientation)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QStyle.layoutSpacingImplementation.
-
-<tt>control1</tt>
-<tt>control2</tt>
-<tt>orientation</tt>
-
+This is an overloaded method provided for convenience.
 */
 
 
 $$QTransform.multiply(double)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransform.multiply.
-
-<tt>d</tt>
+Multiplies this QTransform with <tt>d</tt>.
 
 */
 
 
 $$QTransform.add(double)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransform.add.
+Adds <tt>d</tt> to this QTransform.
 
 <tt>d</tt>
 
@@ -5315,43 +3471,40 @@ This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransf
 
 $$QTransform.divide(double)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransform.divide.
-
-<tt>d</tt>
+Divides this QTransform by <tt>d</tt>.
 
 */
 
 
 $$QTransform.subtract(double)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QTransform.subtract.
-
-<tt>d</tt>
+Subtracts <tt>d</tt> from this QTransform.
 
 */
 
 
 $$QWidget.setContentsMargins(com.trolltech.qt.gui.QContentsMargins)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QWidget.setContentsMargins.
-
-<tt>margins</tt>
+Sets the <tt>margins</tt> around the contents of the widget. The
+margins are used by the layout system, and may be used by subclasses
+to specify the area to draw in (e.g. excluding the frame).
+<p>
+Changing the margins will trigger a resizeEvent().
 
 */
 
 
 $$QLayout.getContentsMargins()
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayout.getContentsMargins.
-
+Returns the contents margins of this QLayout.
 
 */
 
 
 $$QLayout.setContentsMargins(com.trolltech.qt.gui.QContentsMargins)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.gui.QLayout.setContentsMargins.
-
-<tt>margins</tt>
+Sets the contents margins of this QLayout to <tt>margins</tt>.
 
 */
+
+

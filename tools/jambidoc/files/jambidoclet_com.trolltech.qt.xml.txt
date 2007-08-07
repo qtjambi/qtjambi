@@ -198,11 +198,7 @@ This is an overloaded method provided for convenience.
 
 $$QDomElement.setAttributeNS(java.lang.String, java.lang.String, double)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.xml.QDomElement.setAttributeNS.
-
-<tt>nsURI</tt>
-<tt>qName</tt>
-<tt>value</tt>
+This is an overloaded method provided for convenience.
 
 */
 
@@ -258,26 +254,25 @@ Creates a new QXmlDeclHandler.
 
 $$QXmlStreamAttributes.append(com.trolltech.qt.xml.QXmlStreamAttribute)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.xml.QXmlStreamAttributes.append.
-
-<tt>attribute</tt>
+Appends <tt>attribute</tt> to this QXmlStreamAttributes.
 
 */
 
 
 $$QXmlStreamWriter.QXmlStreamWriter(com.trolltech.qt.core.QByteArray)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.xml.QXmlStreamWriter.
-
-<tt>array</tt>
+Constructs a stream writer that writes into <tt>array</tt>. This is the
+same as creating an xml writer that operates on a QBuffer device
+which in turn operates on <tt>array</tt>.
 
 */
 
 
 $$QXmlStreamWriter.setCodec(java.lang.String)
 /**
-This is a JambiDoclet generated javadoc comment for com.trolltech.qt.xml.QXmlStreamWriter.setCodec.
-
-<tt>codecName</tt>
+Sets the codec for this stream to the QTextCodec for the encoding
+specified by <tt>codecName</tt>. Common values for \c codecName include
+"ISO 8859-1", "UTF-8", and "UTF-16". If the encoding isn't
+recognized, nothing happens.
 
 */
