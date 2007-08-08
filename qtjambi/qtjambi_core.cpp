@@ -140,12 +140,12 @@ struct JObjectWrapper
     JObjectWrapper(JNIEnv *env, jobject obj) : environment(env)
     {
         Q_ASSERT(env != 0 && obj != 0 || env == 0 && obj == 0);
-        
-        if (object && environment)
-            object = environment->NewGlobalRef(obj);
-        else
+        if (obj && env){
+            object = env->NewGlobalRef(obj);
+        }
+        else{
             object = 0;
-        
+        }
         REF_JOBJECT;
     }
     
@@ -1534,18 +1534,26 @@ static QString locate_vm()
 	  vm_location_override.append(QLatin1String("/lib/")) :
 	  qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"));
 
+#ifdef _LP64
+        QString jmach = QLatin1String("amd64");
+#else
 	QString jmach = QLatin1String("i386");
+#endif
+
 	jpath += jmach;
 
 	jpath = QDir::cleanPath(jpath);
 
 	if (! jpath.endsWith(QLatin1Char('/')))
-	  jpath += QLatin1Char('/');
+            jpath += QLatin1Char('/');
 
-	QFileInfo file(jpath + "/client/libjvm.so");
+	QFileInfo fileClient(jpath + "/client/libjvm.so");
+	if(fileClient.exists())
+            return fileClient.absoluteFilePath();
 
-	if(file.exists())
-	  return file.absoluteFilePath();
+	QFileInfo fileServer(jpath + "/server/libjvm.so");
+	if(fileServer.exists())
+            return fileServer.absoluteFilePath();
     }
 
     qWarning("QtJambi: failed to locate the JVM. Make sure JAVADIR is set, and pointing to your Java installation.");
