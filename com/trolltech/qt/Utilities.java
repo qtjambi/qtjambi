@@ -23,7 +23,8 @@ This class contains static members that gives information and performs Qt Jambi
 related tasks.
 */
 public class Utilities {
-
+    private static HashSet<String> LOADED_LIBS = new HashSet<String>();
+    
 	/** The Qt Library's major version. */
 	public static final int MAJOR_VERSION = 4;
 	/** The Qt Library's minor version. */
@@ -140,6 +141,7 @@ public class Utilities {
                         Runtime.getRuntime().load(f.getAbsolutePath());
                         if (VERBOSE_LOADING)
                             System.out.println("\n   Loaded from: " + path);
+                        LOADED_LIBS.add(lib);
                         return true;
                     }
                 }
@@ -159,8 +161,14 @@ public class Utilities {
         return false;
     }
 
-
     public static boolean loadLibrary(String lib) {
+        
+        if(LOADED_LIBS.contains(lib)){
+            if (VERBOSE_LOADING)
+                System.out.println("\nAlready loaded: " + lib + " skipping it.");
+            return true;
+        }
+        
         if (VERBOSE_LOADING)
             System.out.println("\nGoing to load: " + lib);
 
@@ -203,7 +211,7 @@ public class Utilities {
                 Runtime.getRuntime().load(destLib.getAbsolutePath());
                 System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
             }
-
+            LOADED_LIBS.add(lib);
             return true;
         } catch (Throwable e) {
             if (VERBOSE_LOADING)
@@ -224,6 +232,7 @@ public class Utilities {
                     Runtime.getRuntime().load(libraryPath);
                     if (VERBOSE_LOADING)
                         System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
+                    LOADED_LIBS.add(lib);
                     return true;
                 }
 
@@ -242,6 +251,7 @@ public class Utilities {
             System.loadLibrary(stripped);
             if (VERBOSE_LOADING)
                 System.out.println("Loaded(" + lib + ") in standard way as " + stripped);
+            LOADED_LIBS.add(lib);
             return true;
         } catch (Throwable e) {
             if (VERBOSE_LOADING)
