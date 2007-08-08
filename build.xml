@@ -10,7 +10,7 @@
     <property name="jambiLib" value="./lib" />
     <property name="qt"       value="${env.QTDIR}" />
     <property name="qtLib"    value="${qt}/lib" />
-    <property name="config"    value="debug" />
+    <property name="config"    value="release" />
 
     <mkdir dir="${outputDir}" />
 
@@ -42,7 +42,7 @@
     <target name="qmake.qtjambi"
             description="Run qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
-	<qmake recursive="true" config="${config} sanitycheck"/>
+	<qmake recursive="true" config="${config}"/>
     </target>
 
     <target name="qmake.generator"

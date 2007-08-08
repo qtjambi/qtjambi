@@ -1,4 +1,6 @@
 <project default="qtjambi" basedir=".">
+
+    <property name="config"    value="debug sanitycheck" />
     <import file="./build.xml"/>
 
     <property name="MailLogger.mailhost" value="smtp.trolltech.com" />
@@ -10,7 +12,6 @@
 
     <property name="reportDir" value="reports" />
     <property name="htmlDir"   value="/var/www/junit/" />
-<!--    <property name="config"    value="debug" /> -->
     <property name="deployDir" value="./deploy" />
     <property name="eclipseDir" value="../eclipse/main" />
 
