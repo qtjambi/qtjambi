@@ -318,14 +318,14 @@ public class PropertySheet extends JambiPropertySheet {
     }
 
     public void setChanged(int index, boolean changed) {
-        if (index < 0)
+        if (index < 0 || (index >= properties.size()))
             return;
         properties.get(index).changed = changed;
     }
 
     // @SuppressWarnings("all")
     public void writeProperty(int index, Object value) {
-        if (index < 0)
+        if (index < 0 || index >= properties.size())
             return;
         try {
             Method m = properties.get(index).entry.write;
