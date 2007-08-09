@@ -5,6 +5,7 @@ import com.trolltech.qt.core.*;
 
 import java.util.*;
 
+@QtJambiExample(name = "Undo Framework")
 public class UndoFramework extends QMainWindow
 {
     private QAction deleteAction;
@@ -206,7 +207,7 @@ public class UndoFramework extends QMainWindow
         }
 
         public DiagramType diagramType() {
-            return polygon() == boxPolygon ? DiagramType.Box : DiagramType.Triangle;
+            return polygon().subtracted(boxPolygon).isEmpty() ? DiagramType.Box : DiagramType.Triangle;
         }
     } 
 
@@ -363,8 +364,8 @@ public class UndoFramework extends QMainWindow
     }
 
     public static String createCommandString(DiagramItem item, QPointF pos)
-    {
-        return QCoreApplication.translate("DiagramItem", item.diagramType() == DiagramType.Box ? "Box" : "Triangle" +
+    {        
+        return QCoreApplication.translate("DiagramItem", (item.diagramType() == DiagramType.Box ? "Box" : "Triangle") +
                " at (" + pos.x() + ", " + pos.y() + ")");
     }
 
