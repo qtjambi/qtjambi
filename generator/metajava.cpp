@@ -1625,7 +1625,7 @@ void MetaJavaClass::fixFunctions()
 
                     // Otherwise we have function shadowing and we can
                     // skip the thing...
-                } else if (cmp & MetaJavaFunction::EqualName) {
+                } else if (cmp & MetaJavaFunction::EqualName && !sf->isSignal()) {
 
                     // In the case of function shadowing where the function name has been altered to
                     // avoid conflict, we don't copy in the original.
