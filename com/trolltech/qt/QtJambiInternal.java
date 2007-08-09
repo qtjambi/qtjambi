@@ -18,7 +18,6 @@ import com.trolltech.qt.core.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
-import java.io.*;
 
 /**
  * @exclude

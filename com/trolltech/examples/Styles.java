@@ -1,6 +1,5 @@
 package com.trolltech.examples;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -244,7 +243,6 @@ public class Styles extends QDialog
     {
         public void polish(QPalette palette)
         {
-            QColor brown = new QColor(212, 140, 95);
             QColor beige = new QColor(236, 182, 120);
             QColor slightlyOpaqueBlack = new QColor(0, 0, 0, 63);
             

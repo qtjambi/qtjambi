@@ -3,7 +3,6 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.*;
-import com.trolltech.qt.*;
 
 @QtJambiExample(name = "2D Painting")
 public class  Painting2D extends QWidget

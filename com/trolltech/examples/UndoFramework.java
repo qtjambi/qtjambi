@@ -124,6 +124,7 @@ public class UndoFramework extends QMainWindow
         undoStack.push(new MoveCommand(movedItem, oldPosition));
     }
 
+    @SuppressWarnings("unused")
     private void deleteItem()
     {
         if (diagramScene.selectedItems().isEmpty())
@@ -133,11 +134,13 @@ public class UndoFramework extends QMainWindow
         undoStack.push(deleteCommand);
     }
 
+    @SuppressWarnings("unused")
     private void itemMenuAboutToHide()
     {
         deleteAction.setEnabled(true);
     }
 
+    @SuppressWarnings("unused")
     private void itemMenuAboutToShow()
     {
         undoAction.setText(tr("Undo ") + undoStack.undoText());
@@ -145,12 +148,14 @@ public class UndoFramework extends QMainWindow
         deleteAction.setEnabled(!diagramScene.selectedItems().isEmpty());
     }
 
+    @SuppressWarnings("unused")
     private void addBox()
     {
         QUndoCommand addCommand = new AddCommand(DiagramType.Box, diagramScene);
         undoStack.push(addCommand);
     }
 
+    @SuppressWarnings("unused")
     private void addTriangle()
     {
         QUndoCommand addCommand = new AddCommand(DiagramType.Triangle,
@@ -158,6 +163,7 @@ public class UndoFramework extends QMainWindow
         undoStack.push(addCommand);
     }
 
+    @SuppressWarnings("unused")
     private void about()
     {
         QMessageBox.about(this, tr("About Undo"),
