@@ -4,6 +4,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.*;
 
+@QtJambiExample(name = "Calculator")
 public class Calculator extends QWidget
 {
     double sumInMemory;

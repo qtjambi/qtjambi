@@ -5,7 +5,7 @@ import com.trolltech.qt.core.*;
 
 import java.util.*;
 
-@QtJambiExample (name = "CalendarWidget")
+@QtJambiExample (name = "Calendar Widget")
 public class CalendarWidget extends QWidget {
     private QGroupBox previewGroupBox;
     private QGridLayout previewLayout;

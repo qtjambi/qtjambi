@@ -16,7 +16,7 @@ package com.trolltech.examples;
 import java.util.*;
 import com.trolltech.qt.gui.*;
 
-@QtJambiExample(name = "AdvancedCalculator")
+@QtJambiExample(name = "Advanced Calculator")
 public class AdvancedCalculator extends QMainWindow {
 
     public static void main(String[] args) {

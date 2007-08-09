@@ -3,7 +3,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-@QtJambiExample(name = "DigitalClock")
+@QtJambiExample(name = "Digital Clock")
 public class DigitalClock extends QLCDNumber
 {
     public DigitalClock()

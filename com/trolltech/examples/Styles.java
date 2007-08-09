@@ -3,6 +3,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Styles")
 public class Styles extends QDialog
 {
     private QPalette originalPalette;
