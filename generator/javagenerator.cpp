@@ -882,12 +882,6 @@ void JavaGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_f
 
     }
 
-    if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
-        && (java_function->isPrivate()
-            || ((included_attributes & MetaJavaAttributes::Private) != 0))) {
-        s << "    @SuppressWarnings(\"unused\")" << endl;
-    }
-
     s << "    ";
     s << functionSignature(java_function, included_attributes, excluded_attributes);
 
@@ -1083,11 +1077,6 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const MetaJavaFunction *ja
         }
 
         s << endl << "    ";
-        if (((exclude_attributes & MetaJavaAttributes::Private) == 0)
-            && (java_function->isPrivate()
-                || (include_attributes & MetaJavaAttributes::Private) != 0)) {
-            s << "@SuppressWarnings(\"unused\")" << endl << "    ";
-        }
 
         writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes, 0);
         s << java_function->name() << "(";
@@ -1170,12 +1159,6 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const MetaJavaFunctio
 
         if (m_doc_parser) {
             s << m_doc_parser->documentationForFunction(signature) << endl;
-        }
-
-        if (((excluded_attributes & MetaJavaAttributes::Private) == 0)
-            && (java_function->isPrivate()
-                || (included_attributes & MetaJavaAttributes::Private) != 0)) {
-            s << endl << "    @SuppressWarnings(\"unused\")";
         }
 
         s << "\n    " << signature << " {\n        ";
@@ -1634,9 +1617,21 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const MetaJavaFuncti
     }
 
     if ((options & SkipAttributes) == 0) {
-        if (java_function->isEmptyFunction()
+        if (java_function->isEmptyFunction()        
             || java_function->isDeprecated()) s << "@Deprecated ";
-        if (java_function->needsSuppressUncheckedWarning()) s << "@SuppressWarnings(\"unchecked\") "; 
+
+        bool needsSuppressUnusedWarning = (((excluded_attributes & MetaJavaAttributes::Private) == 0)
+                                            && (java_function->isPrivate()
+                                                || ((included_attributes & MetaJavaAttributes::Private) != 0)));
+
+        if (needsSuppressUnusedWarning && java_function->needsSuppressUncheckedWarning()) {
+            s << "@SuppressWarnings({\"unchecked\", \"unused\"}) ";
+        } else if (java_function->needsSuppressUncheckedWarning()) {
+            s << "@SuppressWarnings(\"unchecked\") "; 
+        } else if (needsSuppressUnusedWarning) {
+            s << "    @SuppressWarnings(\"unused\") ";
+        }
+
 
         if (!(attr & NoBlockedSlot)
             && !java_function->isConstructor()
