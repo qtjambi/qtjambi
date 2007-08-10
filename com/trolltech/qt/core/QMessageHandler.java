@@ -64,8 +64,21 @@ public abstract class QMessageHandler {
      * Removes the specified message handler as a receiver for message notification.
      */
     public static void removeMessageHandler(QMessageHandler handler) {
-        if (handlers != null)
+        if (handlers != null){
             handlers.remove(handler);
+            if(handlers.isEmpty()){
+                removeMessageHandlerProxy();
+                handlers = null;
+            }
+        }
+    }
+    
+    /**
+     * Removes all message handlers.
+     */
+    public static void removeAllMessageHandlers() {
+        removeMessageHandlerProxy();
+        handlers = null;
     }
     
     @SuppressWarnings("unused")
@@ -82,6 +95,7 @@ public abstract class QMessageHandler {
     }
 
     private static native void installMessageHandlerProxy();
+    private static native void removeMessageHandlerProxy();
 
     private static List<QMessageHandler> handlers;
 }

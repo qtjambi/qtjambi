@@ -13,9 +13,12 @@
 
 package com.trolltech.qt;
 
+import com.trolltech.qt.core.QMessageHandler;
+
 abstract class QtJambi_LibraryInitializer
 {
     static QClassPathFileEngineHandler handler;
+    static QMessageHandler messageHandler;
     
     static {
         Utilities.loadSystemLibraries();
@@ -24,7 +27,12 @@ abstract class QtJambi_LibraryInitializer
         Utilities.loadJambiLibrary("qtjambi");
 
         handler = new QClassPathFileEngineHandler();
-      
+        messageHandler = Utilities.messageHandler();
+        if(messageHandler != null){
+            QMessageHandler.installMessageHandler(messageHandler);
+        }
+        
+        
         initialize();
         QThreadManager.initialize();
 

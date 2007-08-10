@@ -306,6 +306,16 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QMessageHandler_installMessag
     }
 }
 
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QMessageHandler_removeMessageHandlerProxy)
+(JNIEnv *, jclass)
+{
+    if (qt_message_handler_installed) {
+        qInstallMsgHandler(0);
+        qt_message_handler_installed = false;
+    }
+}
+
 void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
 {
     JNIEnv *env = qtjambi_current_environment();
