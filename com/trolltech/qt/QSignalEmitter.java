@@ -283,7 +283,7 @@ public class QSignalEmitter {
             return arrayDimensions;
         }
 
-        private Class<?>[] resolveSignal() {
+        /* friendly */ Class<?>[] resolveSignal() {
             if (types == null) {
                 types = new Class[0]; // For signals with no parameters
                 arrayDimensions = new int[0];

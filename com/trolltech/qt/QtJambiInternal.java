@@ -538,23 +538,6 @@ public class QtJambiInternal {
 
 
     /**
-     * Returns the signature of the method m excluding the modifiers and the
-     * return type.
-     */
-    private static String methodSignature(Method m) {
-        Class params[] = m.getParameterTypes();
-        StringBuilder s = new StringBuilder();
-        s.append(m.getName()).append("(");
-        for (int i = 0; i < params.length; ++i) {
-            if (i != 0)
-                s.append(",");
-            s.append(params[i].getName());
-        }
-        s.append(")");
-        return s.toString();
-    }
-
-    /**
      * Returns the field entry for all declared signales in o and its base
      * classes.
      */
@@ -709,6 +692,167 @@ public class QtJambiInternal {
             e.printStackTrace();
         }
         s.writeBytes(bos.toByteArray());
+    }
+    
+    private static class MetaData {
+        public Method slots[];
+        public QSignalEmitter.AbstractSignal signals[];
+        
+        public int metaData[];
+        public byte stringData[];
+    }
+    
+    private final static int MethodAccessPrivate = 0x00;
+    private final static int MethodAccessProtected = 0x01;
+    private final static int MethodAccessPublic = 0x02;
+    private final static int MethodSignal = 0x04;
+    private final static int MethodSlot = 0x8;
+    
+    public static MetaData buildMetaData(QObject object) {
+        MetaData metaData = new MetaData();
+        
+        Class<?> clazz = object.getClass();
+        
+        List<Method> slots = new ArrayList<Method>();
+        List<QSignalEmitter.AbstractSignal> signals = new ArrayList<QSignalEmitter.AbstractSignal>();
+        while (!clazz.isAnnotationPresent(QtJambiGeneratedClass.class)) {
+            Method declaredMethods[] = clazz.getDeclaredMethods();
+            for (Method declaredMethod : declaredMethods) {
+                if (!declaredMethod.isAnnotationPresent(QtBlockedSlot.class)) 
+                    slots.add(declaredMethod);                
+            }
+            
+            Field declaredFields[] = clazz.getDeclaredFields();
+            for (Field declaredField : declaredFields) {
+                if (isSignal(declaredField.getType())) try {
+                    declaredField.setAccessible(true);                    
+                    signals.add((QSignalEmitter.AbstractSignal) declaredField.get(object));
+                } catch (Exception e) {
+                    signals.add((QSignalEmitter.AbstractSignal) fetchFieldNative(object, declaredField));
+                }                    
+            }
+        }
+        
+        {
+            int functionCount = slots.size() + signals.size();
+            
+            metaData.metaData = new int[10 + functionCount * 5 + 1]; // Header size(10) + functionCount*5 + EOD
+            
+            // Add static header
+            metaData.metaData[0] = 1; // Revision
+            // 0, 0, 0   (ints default to 0) 
+                        
+  
+            metaData.metaData[4] = functionCount;
+            metaData.metaData[5] = functionCount > 0 ? 10 : 0;
+            // 0, 0, 0, 0 (### enums and properties not supported yet) 
+                                                
+            int offset = 0;
+            int metaDataOffset = 10; // Function meta data always starts at offset 10 
+            Hashtable<String, Integer> strings = new Hashtable<String, Integer>();
+            
+            // Class name
+            {
+                clazz = object.getClass();
+                strings.put(clazz.getName(), 0); offset += clazz.getName().length() + 1;
+            }
+            
+            // Signals
+            for (QSignalEmitter.AbstractSignal signal : signals) {
+                // Signal name
+                offset += addString(metaData.metaData, strings, signal.name(), offset, metaDataOffset++);
+                
+                // Signal parameters
+                offset += addString(metaData.metaData, strings, signalParameters(signal), offset, metaDataOffset++);
+                
+                // Signal type (signals are always void in Qt Jambi)
+                offset += addString(metaData.metaData, strings, "", offset, metaDataOffset++);
+                
+                // Signal tag (### not implemented)
+                offset += addString(metaData.metaData, strings, "", offset, metaDataOffset++);
+                
+                // Signal flags (### implement access types)
+                int flags = (MethodAccessPublic | MethodSignal);
+                metaData.metaData[metaDataOffset++] = flags;
+            }
+            
+            // Slots
+            for (Method slot : slots) {
+                // Slot signature
+                offset += addString(metaData.metaData, strings, methodSignature(slot), offset, metaDataOffset++);
+                
+                // Slot parameters
+                offset += addString(metaData.metaData, strings, methodParameters(slot), offset, metaDataOffset++);
+                
+                // Slot type 
+                offset += addString(metaData.metaData, strings, slot.getReturnType().getName(), offset, metaDataOffset++);
+                
+                // Slot tag (### not implemented)
+                offset += addString(metaData.metaData, strings, "", offset, metaDataOffset++);
+                
+                // Slot flags
+                int flags = MethodSlot;
+                int modifiers = slot.getModifiers();
+                if ((modifiers & Modifier.PRIVATE) == Modifier.PRIVATE)
+                    flags |= MethodAccessPrivate;
+                else if ((modifiers & Modifier.PROTECTED) == Modifier.PROTECTED)
+                    flags |= MethodAccessProtected;
+                else if ((modifiers & Modifier.PUBLIC) == Modifier.PUBLIC)
+                    flags |= MethodAccessPublic;
+                
+                metaData.metaData[metaDataOffset++] = flags;
+            }
+            
+            // ### No properties yet
+            
+            // EOD
+            metaData.metaData[metaDataOffset++] = 0;            
+        }
+                        
+        return metaData;
+    }
+    
+    private static String bunchOfClassNamesInARow(Class<?> classes[]) {
+        String classNames = "";
+        
+        for (Class<?> clazz : classes) {
+            if (classNames.length() > 0)
+                classNames += ",";
+            classNames += clazz.getName();
+        }
+        
+        return classNames;
+    }
+    
+    private static String methodParameters(Method m) {
+        return bunchOfClassNamesInARow(m.getParameterTypes());
+    }
+    
+    /**
+     * Returns the signature of the method m excluding the modifiers and the
+     * return type.
+     */    
+    private static String methodSignature(Method m) {
+        return m.getName() + "(" + methodParameters(m) + ")";
+    }
+    
+    private static String signalParameters(QSignalEmitter.AbstractSignal signal) {
+        return bunchOfClassNamesInARow(signal.resolveSignal());
+    }
+    
+    private static int addString(int metaData[], 
+                                 Hashtable<String, Integer> strings,
+                                 String string,
+                                 int offset,
+                                 int metaDataOffset) {
+        if (strings.containsKey(string)) {
+            metaData[metaDataOffset] = strings.get(string);
+            return 0;
+        }
+        
+        metaData[metaDataOffset] = offset;
+        strings.put(string, offset);
+        return string.length() + 1;
     }
     
     public static Object readSerializableJavaObject(final QDataStream s) {
