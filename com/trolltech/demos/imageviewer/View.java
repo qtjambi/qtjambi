@@ -104,7 +104,7 @@ public class View extends QWidget
         if (modified == null)
             updateImage();
 
-        if (modified != null) {
+        if (modified != null && !modified.isNull()) {
             p.setViewport(rect().adjusted(10, 10, -10, -10));
             QRect rect = rectForImage(modified);
 
@@ -139,7 +139,7 @@ public class View extends QWidget
     }
 
     private void updateImage() {
-        if (original == null)
+        if (original == null || original.isNull())
             return;
 
         if (modified != null)
@@ -192,7 +192,7 @@ public class View extends QWidget
     }
 
     private QImage createReflection(QImage source) {
-        if (source == null)
+        if (source == null || source.isNull())
             return null;
 
         QRect r = rectForImage(source);
