@@ -160,6 +160,8 @@ private:
     void fetchAttributeValues(const QString &name, const QXmlAttributes &atts,
                               QHash<QString, QString> *acceptedAttributes);
 
+    bool importFileElement(const QXmlAttributes &atts);
+
     TypeDatabase *m_database;
     StackElement* current;
     QString m_defaultPackage;
@@ -216,8 +218,12 @@ void Handler::fetchAttributeValues(const QString &name, const QXmlAttributes &at
     }
 }
 
-bool Handler::endElement(const QString &, const QString &, const QString &)
+bool Handler::endElement(const QString &, const QString &localName, const QString &)
 {
+    QString tagName = localName.toLower();
+    if(tagName == "import-file")
+        return true;
+
     if (!current)
         return true;
 
@@ -323,10 +329,66 @@ bool Handler::characters(const QString &ch)
     return true;
 }
 
+bool Handler::importFileElement(const QXmlAttributes &atts)
+{
+    QString fileName = atts.value("name");
+    if(fileName.isEmpty()){
+        m_error = "Required attribute 'name' missing for include-file tag.";
+        return false;
+    }
+            
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        m_error = QString("Could not open file: '%1'").arg(fileName);
+        return false;
+    }
+    
+    QString quoteFrom = atts.value("quote-from-line");
+    bool foundFromOk = quoteFrom.isEmpty();
+    bool from = quoteFrom.isEmpty();
+
+    QString quoteTo = atts.value("quote-to-line");
+    bool foundToOk = quoteTo.isEmpty();
+    bool to = true;
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if(!from && line.contains(quoteFrom)) {
+            from = true;
+            foundFromOk = true;
+        }
+        if(from && to)
+            characters(line + "\n");
+        if(from && to && line.contains(quoteTo)) {
+            to = false;
+            foundToOk = true;
+            break;
+        }
+    }
+    if(!foundFromOk || !foundToOk){
+        QString fromError = QString("Could not find quote-from-line='%1' in file '%2'.").arg(quoteFrom).arg(fileName);
+        QString toError = QString("Could not find quote-to-line='%1' in file '%2'.").arg(quoteTo).arg(fileName); 
+
+        if(!foundToOk)
+            m_error = toError;
+        if(!foundFromOk)
+            m_error = fromError;
+        if(!foundFromOk && !foundToOk)
+            m_error = fromError + " " + toError;
+        return false;
+    }
+
+    return true;
+}
+
 bool Handler::startElement(const QString &, const QString &n,
                            const QString &, const QXmlAttributes &atts)
 {
     QString tagName = n.toLower();
+    if(tagName == "import-file"){
+        return importFileElement(atts);
+    }
 
     StackElement *element = new StackElement(current);
 
