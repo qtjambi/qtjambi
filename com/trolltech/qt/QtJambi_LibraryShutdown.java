@@ -18,10 +18,12 @@ import com.trolltech.qt.core.*;
 class QtJambi_LibraryShutdown implements Runnable {
     public void run() {
         QCoreApplication app = QCoreApplication.instance();
-
+        QtJambi_LibraryInitializer.handler.dispose();
+        QtJambi_LibraryInitializer.handler  = null;
         if (app != null) {
             Thread appThread = app.thread();
             QCoreApplication.quit();
+            
             try {
             	if (appThread != null)
                     appThread.join(500);

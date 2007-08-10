@@ -15,15 +15,16 @@ package com.trolltech.qt;
 
 abstract class QtJambi_LibraryInitializer
 {
+    static QClassPathFileEngineHandler handler;
+    
     static {
         Utilities.loadSystemLibraries();
         Utilities.loadQtLibrary("QtCore");
         Utilities.loadQtLibrary("QtGui");
         Utilities.loadJambiLibrary("qtjambi");
 
-        QClassPathFileEngineHandler handler = new QClassPathFileEngineHandler();
-        handler.disableGarbageCollection();
-
+        handler = new QClassPathFileEngineHandler();
+      
         initialize();
         QThreadManager.initialize();
 
