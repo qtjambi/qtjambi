@@ -24,6 +24,7 @@
 #include <../qtjambi_designer/designer.h>
 
 #include <../qtjambi_gui/qtreemodel.h>
+#include <../qtjambi_gui/qguisignalmapper.h>
 
 #define GL_ACCUM                          0x0100
 #define GL_LOAD                           0x0101

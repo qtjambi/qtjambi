@@ -140,7 +140,7 @@ public class TestSignalMapper extends QApplicationTest{
 
     @Test
     public void run_mappedQWidget() {
-        QSignalMapper mapper = new QSignalMapper();
+        QGuiSignalMapper mapper = new QGuiSignalMapper();
         Receiver receiver = new Receiver();
         Emitter emitters[] = new Emitter[10];
         QWidget widgets[] = new QWidget[10];
