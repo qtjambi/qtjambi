@@ -2335,7 +2335,18 @@
     public static void invokeLater(java.lang.Runnable runnable) {
         postEvent(new QInvokable(runnable), new QEvent(QInvokable.INVOKABLE_EVENT));
     }
-
+    
+    /**
+     * Executes the runnable's run() method in the main thread and waits for it to return. 
+     * If the current thread is not the main thread, an event loop must be running in the main
+     * thread, or this method will wait indefinitely.
+     */    
+    public static void invokeLaterAndWait(Runnable runnable) {
+        QSynchronousInvokable invokable = new QSynchronousInvokable(runnable);        	
+    	QCoreApplication.postEvent(invokable, new QEvent(QSynchronousInvokable.SYNCHRONOUS_INVOKABLE_EVENT));
+    	invokable.waitForInvoked();    		        
+        invokable.disposeLater();
+    }
 
     private static com.trolltech.qt.QNativePointer argc, argv;
     </inject-code>
