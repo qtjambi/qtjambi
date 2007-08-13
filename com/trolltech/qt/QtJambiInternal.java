@@ -695,9 +695,6 @@ public class QtJambiInternal {
     }
     
     private static class MetaData {
-        public Method slots[];
-        public QSignalEmitter.AbstractSignal signals[];
-        
         public int metaData[];
         public byte stringData[];
     }
@@ -708,29 +705,34 @@ public class QtJambiInternal {
     private final static int MethodSignal = 0x04;
     private final static int MethodSlot = 0x8;
     
-    public static MetaData buildMetaData(QObject object) {
+    public static boolean isGeneratedClass(Class<?> clazz) {
+        return clazz.isAnnotationPresent(QtJambiGeneratedClass.class);
+    }
+    
+    private native static String internalTypeName(String s, int varContext);
+    
+    // ### One per class
+    public static MetaData buildMetaData(Class<? extends QObject> clazz, QObject object) {
         MetaData metaData = new MetaData();
-        
-        Class<?> clazz = object.getClass();
-        
+                
         List<Method> slots = new ArrayList<Method>();
         List<QSignalEmitter.AbstractSignal> signals = new ArrayList<QSignalEmitter.AbstractSignal>();
-        while (!clazz.isAnnotationPresent(QtJambiGeneratedClass.class)) {
-            Method declaredMethods[] = clazz.getDeclaredMethods();
-            for (Method declaredMethod : declaredMethods) {
-                if (!declaredMethod.isAnnotationPresent(QtBlockedSlot.class)) 
-                    slots.add(declaredMethod);                
+        Method declaredMethods[] = clazz.getDeclaredMethods();
+        for (Method declaredMethod : declaredMethods) {
+            if (!declaredMethod.isAnnotationPresent(QtBlockedSlot.class) 
+                    && ((declaredMethod.getModifiers() & Modifier.STATIC) != Modifier.STATIC)) { 
+                slots.add(declaredMethod);             
             }
-            
-            Field declaredFields[] = clazz.getDeclaredFields();
-            for (Field declaredField : declaredFields) {
-                if (isSignal(declaredField.getType())) try {
-                    declaredField.setAccessible(true);                    
-                    signals.add((QSignalEmitter.AbstractSignal) declaredField.get(object));
-                } catch (Exception e) {
-                    signals.add((QSignalEmitter.AbstractSignal) fetchFieldNative(object, declaredField));
-                }                    
-            }
+        }
+        
+        Field declaredFields[] = clazz.getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            if (isSignal(declaredField.getType())) try {
+                declaredField.setAccessible(true);                    
+                signals.add((QSignalEmitter.AbstractSignal) declaredField.get(object));
+            } catch (Exception e) {
+                signals.add((QSignalEmitter.AbstractSignal) fetchFieldNative(object, declaredField));
+            }                    
         }
         
         {
@@ -750,26 +752,28 @@ public class QtJambiInternal {
             int offset = 0;
             int metaDataOffset = 10; // Function meta data always starts at offset 10 
             Hashtable<String, Integer> strings = new Hashtable<String, Integer>();
-            
+            List<String> stringsInOrder = new ArrayList<String>();
             // Class name
             {
-                clazz = object.getClass();
-                strings.put(clazz.getName(), 0); offset += clazz.getName().length() + 1;
+                stringsInOrder.add(clazz.getName());
+                strings.put(clazz.getName(), offset); offset += clazz.getName().length() + 1;                
             }
             
             // Signals
             for (QSignalEmitter.AbstractSignal signal : signals) {
                 // Signal name
-                offset += addString(metaData.metaData, strings, signal.name(), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, signal.name() + "(" + internalTypeName(signalParameters(signal), 1) + ")", offset, metaDataOffset++);
+                
+                
                 
                 // Signal parameters
-                offset += addString(metaData.metaData, strings, signalParameters(signal), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(signalParameters(signal),1), offset, metaDataOffset++);
                 
                 // Signal type (signals are always void in Qt Jambi)
-                offset += addString(metaData.metaData, strings, "", offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);
                 
                 // Signal tag (### not implemented)
-                offset += addString(metaData.metaData, strings, "", offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);
                 
                 // Signal flags (### implement access types)
                 int flags = (MethodAccessPublic | MethodSignal);
@@ -779,16 +783,18 @@ public class QtJambiInternal {
             // Slots
             for (Method slot : slots) {
                 // Slot signature
-                offset += addString(metaData.metaData, strings, methodSignature(slot), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(methodSignature(slot),1), offset, metaDataOffset++);
                 
                 // Slot parameters
-                offset += addString(metaData.metaData, strings, methodParameters(slot), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(methodParameters(slot),1), offset, metaDataOffset++);
                 
                 // Slot type 
-                offset += addString(metaData.metaData, strings, slot.getReturnType().getName(), offset, metaDataOffset++);
+                String returnType = slot.getReturnType().getName();
+                if (returnType.equals("void")) returnType = "";
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(returnType,2), offset, metaDataOffset++);
                 
                 // Slot tag (### not implemented)
-                offset += addString(metaData.metaData, strings, "", offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);
                 
                 // Slot flags
                 int flags = MethodSlot;
@@ -806,9 +812,20 @@ public class QtJambiInternal {
             // ### No properties yet
             
             // EOD
-            metaData.metaData[metaDataOffset++] = 0;            
+            metaData.metaData[metaDataOffset++] = 0;
+            
+            int stringDataOffset = 0;
+            metaData.stringData = new byte[offset + 1];
+            
+            for (String s : stringsInOrder) {                
+                assert stringDataOffset == strings.get(s);
+                System.arraycopy(s.getBytes(), 0, metaData.stringData, stringDataOffset, s.length());
+                stringDataOffset += s.length();
+                metaData.stringData[stringDataOffset++] = 0;                
+            }
+            
         }
-                        
+                                
         return metaData;
     }
     
@@ -842,9 +859,13 @@ public class QtJambiInternal {
     
     private static int addString(int metaData[], 
                                  Hashtable<String, Integer> strings,
+                                 List<String> stringsInOrder,
                                  String string,
                                  int offset,
                                  int metaDataOffset) {
+        if (string.equals("")) {
+            System.out.println("strings == " + strings + " contains " + strings.containsKey(string));
+        }
         if (strings.containsKey(string)) {
             metaData[metaDataOffset] = strings.get(string);
             return 0;
@@ -852,6 +873,7 @@ public class QtJambiInternal {
         
         metaData[metaDataOffset] = offset;
         strings.put(string, offset);
+        stringsInOrder.add(string);
         return string.length() + 1;
     }
     

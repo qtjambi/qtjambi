@@ -398,7 +398,6 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             s << "#include <QPainter>" << endl << endl;
     }
 
-
     if (shellInclude)
         s << "#include \"qtjambishell_" << java_class->name() << ".h\"" << endl;
 
@@ -430,6 +429,9 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
                 writeShellConstructor(s, function);
         }
         writeShellDestructor(s, java_class);
+
+        if (java_class->isQObject())
+            writeQObjectFunctions(s, java_class);
 
         // Functions in shell class
         MetaJavaFunctionList shell_functions = java_class->functionsInShellClass();
@@ -702,6 +704,37 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
     }
 }
 
+void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const MetaJavaClass *java_class)
+{
+    // QObject::metaObject()
+    s << "const QMetaObject *" << shellClassName(java_class) << "::metaObject() const" << endl
+      << "{" << endl
+      << "  if (m_dynamic_meta_object == 0) {" << endl
+      << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
+      << "      jobject __obj = m_link->javaObject(__jni_env);" << endl
+      << "      if (__obj == 0) m_dynamic_meta_object = " << java_class->qualifiedCppName() << "::metaObject();" << endl
+      << "      else m_dynamic_meta_object = qtjambi_metaobject_for_class(__jni_env, __jni_env->GetObjectClass(__obj), " << java_class->qualifiedCppName() << "::metaObject(), __obj);" << endl
+      << "  }" << endl
+      << "  return m_dynamic_meta_object;" << endl
+      << "}" << endl << endl;
+
+    // QObject::qt_metacast() ### Hello! Implement me while you're here.
+    s << "void *" << shellClassName(java_class) << "::qt_metacast(const char *_clname)" << endl
+      << "{" << endl
+      << "  if (!_clname) return 0;" << endl
+      << "  return " << java_class->qualifiedCppName() << "::qt_metacast(_clname);" << endl
+      << "}" << endl << endl;
+
+    // QObject::qt_metacall() ### Hello! Implement me while you're here.
+    s << "int " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)" << endl
+      << "{" << endl
+      << "  fprintf(stderr, \"Calling %d in " << java_class->qualifiedCppName() << " hello\\n\", _id);" << endl
+      << "  _id = " << java_class->qualifiedCppName() << "::qt_metacall(_c, _id, _a);" << endl
+      << "  // ### Not implemented" << endl
+      << "  return _id;" << endl
+      << "}" << endl << endl;
+}
+      
 void CppImplGenerator::writeShellConstructor(QTextStream &s, const MetaJavaFunction *java_function)
 {
     if (java_function->isModifiedRemoved(TypeSystem::ShellCode))
@@ -722,6 +755,9 @@ void CppImplGenerator::writeShellConstructor(QTextStream &s, const MetaJavaFunct
     s << ")," << endl;
     s << "      m_vtable(0)," << endl
         << "      m_link(0)" << endl;
+
+    if (cls->isQObject())
+        s << "      ,m_dynamic_meta_object(0)" << endl;
 
     s << "{" << endl;
 

@@ -17,6 +17,7 @@
 #include "qtjambilink.h"
 #include "qtjambitypemanager.h"
 #include "qnativepointer.h"
+#include "qdynamicmetaobject.h"
 
 #include <qglobal.h>
 
@@ -33,6 +34,7 @@
 #include <QtCore/QThread>
 #include <QtCore/QVariant>
 #include <QtCore/QTextStream>
+#include <QtCore/QMutex>
 
 #include <QtGui/QStyleOption>
 
@@ -2008,4 +2010,40 @@ void qtjambi_debug_trace(const char *location, const char *file, int line)
 void qtjambi_set_vm_location_override(const QString &location)
 {
     vm_location_override = location;
+}
+
+typedef QHash<QString, const QMetaObject *> MetaObjectHash;
+Q_GLOBAL_STATIC(MetaObjectHash, metaObjects);
+Q_GLOBAL_STATIC_WITH_ARGS(QMutex, metaObjectsLock, (QMutex::Recursive));
+
+const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class, const QMetaObject *original_meta_object, jobject object) 
+{
+    Q_ASSERT(object_class != 0);
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiInternal();
+
+    QString class_name = qtjambi_class_name(env, object_class);
+    Q_ASSERT(!class_name.isEmpty());
+
+    const QMetaObject *returned = 0;
+    {
+        QMutexLocker locker(metaObjectsLock());
+        returned = metaObjects()->value(class_name, 0);    
+        if (returned == 0) {
+            QMutexLocker locker(metaObjectsLock());
+            returned = metaObjects()->value(class_name, 0);
+            if (returned == 0) {
+                // Return original meta object for generated classes, and 
+                // create a new dynamic meta object for subclasses
+                if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) {
+                    returned = original_meta_object;
+                } else {
+                    returned = new QDynamicMetaObject(env, object_class, original_meta_object, object);
+                }
+                metaObjects()->insert(class_name, returned);
+            }
+        }
+    }
+
+    return returned;
 }

@@ -64,6 +64,7 @@ public:
                                const MetaJavaFunction *java_function,
                                const QString &qt_object_name,
                                const QString &java_object_name);
+    void writeQObjectFunctions(QTextStream &s, const MetaJavaClass *java_class);
     void writeFunctionCall(QTextStream &s,
                            const QString &variable_name,
                            const MetaJavaFunction *java_function,

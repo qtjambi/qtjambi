@@ -999,6 +999,28 @@ void StaticCache::resolveQtJambiInternal_internal()
 									 "Ljava/lang/Object;");
     Q_ASSERT(QtJambiInternal.readSerializableJavaObject);
 
+    QtJambiInternal.buildMetaData = env->GetStaticMethodID(QtJambiInternal.class_ref,
+                                                           "buildMetaData",
+                                                           "(Ljava/lang/Class;Lcom/trolltech/qt/core/QObject;)"
+                                                           "Lcom/trolltech/qt/QtJambiInternal$MetaData;");
+    Q_ASSERT(QtJambiInternal.buildMetaData);
+
+    QtJambiInternal.isGeneratedClass = env->GetStaticMethodID(QtJambiInternal.class_ref,
+                                                              "isGeneratedClass",
+                                                              "(Ljava/lang/Class;)Z");
+    Q_ASSERT(QtJambiInternal.isGeneratedClass);
+}
+
+void StaticCache::resolveMetaData_internal() 
+{
+    MetaData.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiInternal$MetaData"));
+    Q_ASSERT(MetaData.class_ref);
+
+    MetaData.metaData = env->GetFieldID(MetaData.class_ref, "metaData", "[I");
+    Q_ASSERT(MetaData.metaData);
+
+    MetaData.stringData = env->GetFieldID(MetaData.class_ref, "stringData", "[B");
+    Q_ASSERT(MetaData.stringData);
 }
 
 void StaticCache::resolveQtJambiGuiInternal_internal()

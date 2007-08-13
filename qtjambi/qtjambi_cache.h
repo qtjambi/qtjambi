@@ -260,9 +260,17 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID isImplementedInJava;
         jmethodID lookupSignal;
         jmethodID lookupSlot;
-	jmethodID writeSerializableJavaObject;
-	jmethodID readSerializableJavaObject;
+        jmethodID writeSerializableJavaObject;
+        jmethodID readSerializableJavaObject;
+        jmethodID buildMetaData;
+        jmethodID isGeneratedClass;
     } QtJambiInternal;
+
+    struct {
+        jclass class_ref;
+        jfieldID metaData;
+        jfieldID stringData;
+    } MetaData;
 
     struct {
         jclass class_ref;
@@ -353,6 +361,7 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(ValidationData);
     DECLARE_RESOLVE_FUNCTIONS(QTableArea);
     DECLARE_RESOLVE_FUNCTIONS(CellAtIndex);
+    DECLARE_RESOLVE_FUNCTIONS(MetaData);
 
 public:
     static StaticCache *instance(JNIEnv *env);

@@ -2813,9 +2813,13 @@
   </object-type>
   <object-type name="QDateEdit"/>
   <object-type name="QDesktopServices">
-    <modify-function signature="setUrlHandler(QString,QObject*,const char*)">
-        <remove/>
-    </modify-function>    
+    <modify-function signature="setUrlHandler(const QString &amp;, QObject *, const char *)" access="private" />
+    <inject-code>
+        public static void setUrlHandler(String scheme, com.trolltech.qt.core.QObject receiver, String method) 
+        {
+            setUrlHandler(scheme, receiver, QNativePointer.createCharPointer(method));
+        }
+    </inject-code>
   </object-type>
   <object-type name="QDialog">
     <modify-function signature="setExtension(QWidget*)" remove="all"/>

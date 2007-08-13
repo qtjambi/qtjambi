@@ -13,9 +13,12 @@
 
 #include "qtjambi_core.h"
 
+#include "qtjambitypemanager.h"
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QVarLengthArray>
 #include <QtCore/QPointer>
+#include <QtCore/QStringList>
 
 #ifdef QTJAMBI_SANITY_CHECK
 #include <QtCore/QObject>
@@ -316,6 +319,37 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QMessageHandler_removeMessage
     }
 }
 
+extern "C" JNIEXPORT jstring JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_internalTypeName)
+(JNIEnv *env, jclass, jstring s, jint varContext)
+{
+    QString signature = qtjambi_to_qstring(env, s);
+
+    int prefix_end = signature.indexOf("(");
+    QString prefix;
+    if (prefix_end > 0) {
+        prefix = signature.mid(0, prefix_end+1);
+        signature = signature.mid(prefix_end+1);
+    }
+
+    int postfix_start = signature.lastIndexOf(")");
+    QString postfix;
+    if (postfix_start > 0 && postfix_start > prefix_end) {
+        postfix = signature.mid(postfix_start);
+        signature = signature.mid(0, postfix_start);
+    }
+
+    QtJambiTypeManager manager(env);
+
+    QStringList allArgs = signature.split(",");
+    for (int i=0; i<allArgs.size(); ++i) {
+        if (!allArgs.at(i).isEmpty())
+            allArgs[i] = manager.getInternalTypeName(QString(allArgs.at(i)).replace('.', '/'), varContext == 1 ? QtJambiTypeManager::ArgumentType : QtJambiTypeManager::ReturnType);
+    }
+
+    return qtjambi_from_qstring(env, prefix + allArgs.join(",") + postfix);
+}
+
 void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
 {
     JNIEnv *env = qtjambi_current_environment();
@@ -331,3 +365,5 @@ void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
     if (!eaten && qt_message_handler)
         qt_message_handler(type, message);
 }
+
+

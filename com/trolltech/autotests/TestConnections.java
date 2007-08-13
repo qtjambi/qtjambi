@@ -1414,6 +1414,32 @@ public class TestConnections extends QApplicationTest implements Qt
         test.test3.emit(test.b);
         test.test4.emit(test.c);
     }
+    
+    
+    private static class MyUrlHandler extends QObject 
+    {
+        public String path = "not/the/right/path";
+        public void myHandler(QUrl url) {
+            path = url.path();
+        }
+        
+        public void myOtherHandler(QUrl url) {
+            path = url.host();
+        }
+    }
+    
+    @Test public void testUrlHandler() {
+        MyUrlHandler handler = new MyUrlHandler();
+        
+        QDesktopServices.setUrlHandler("superscheme", handler, "myHandler");        
+        QDesktopServices.openUrl(new QUrl("superscheme:host.com/my/super/scheme/path"));        
+        assertEquals("my/super/scheme/path", handler.path);
+        
+        QDesktopServices.unsetUrlHandler("superscheme");
+        QDesktopServices.setUrlHandler("superscheme", handler, "myOtherHandler");
+        QDesktopServices.openUrl(new QUrl("superscheme:superhost.com/not/a/valid"));
+        assertEquals("superhost.com", handler.path);
+    }
 
     static class Emitter extends QSignalEmitter implements Runnable {
         Signal0 signal = new Signal0();

@@ -65,7 +65,7 @@ void CppHeaderGenerator::writeWrapperClass(QTextStream &s, const MetaJavaClass *
 
     s << "class QtJambi_SignalWrapper_" << java_class->name() << ": public QObject" << endl
       << "{" << endl
-      << "    Q_OBJECT" << endl;
+      << "  Q_OBJECT" << endl;
     writeSignalWrappers(s, java_class);
     s << endl << "public:" << endl
       << "    QtJambiSignalInfo m_signals[" << signal_functions.size() << "];" << endl
@@ -127,6 +127,18 @@ void CppHeaderGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     s << "class " << shellClassName(java_class)
       << " : public " << java_class->qualifiedCppName() << endl
       << "{" << endl;
+
+    if (java_class->isQObject()) {
+      s << "public:" << endl
+        << "  Q_OBJECT_CHECK" << endl
+        << "  mutable const QMetaObject *m_dynamic_meta_object;" << endl
+        << "  const QMetaObject *metaObject() const;" << endl
+        << "  void *qt_metacast(const char *);" << endl
+        << "  QT_TR_FUNCTIONS" << endl
+        << "  virtual int qt_metacall(QMetaObject::Call, int, void **);" << endl
+        << "private:" << endl;
+    }
+
 
     s << "public:" << endl;
     foreach (const MetaJavaFunction *function, java_class->functions()) {
