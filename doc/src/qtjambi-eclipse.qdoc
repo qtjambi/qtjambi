@@ -6,8 +6,7 @@
     Qt Jambi comes with a plugin for the Eclipse IDE, providing access
     to the Qt Jambi documentation and Qt Designer from within the
     Eclipse environment. The integration is currently supported on
-    Windows and Linux. In addition, Mac OS X support is under
-    development.
+    Windows and Linux. Mac OS X support is under development.
 
     \tableofcontents
 
@@ -23,8 +22,10 @@
     required to do this once). On Windows, you also need to run the \c
     register_eclipse_integration.bat file to complete the
     installation.
+    
+    The Qt Jambi Integration requires Eclipse version 3.2 or higher
+    and a \l{Installing Qt Jambi}{prebuilt Qt Jambi package}. 
 
-    The Qt Jambi Integration requires Eclipse version 3.2 or higher.
     Note that we have experienced problems using KDE with Qt3. If you
     need to do this, you should not use the GTK Style. The style can
     be changed by opening the \gui Settings menu, selecting the \gui
