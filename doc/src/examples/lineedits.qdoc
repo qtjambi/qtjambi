@@ -141,7 +141,7 @@
 
     Each entry in the relevant combobox is associated with an input mask. We set
     a new mask by calling the \l{QLineEdit::setMask()}{QLineEdit.setMask()}
-    function with a suitable string; the mask is disabled if an empty string is
+    method with a suitable string; the mask is disabled if an empty string is
     used.
 
     The \c accessChanged() slot handles changes to the combobox in the
@@ -156,7 +156,7 @@
     \l{QLineEdit::setReadOnly()}{QLineEdit.setReadOnly()}. This allows the user
     to enable and disable input to the line edit.
 
-    Finally, we provide a \c main() function to create and show the \c
+    Finally, we provide a \c main() method to create and show the \c
     LineEdits widget when the example is run:
 
     \quotefromfile LineEdits.java

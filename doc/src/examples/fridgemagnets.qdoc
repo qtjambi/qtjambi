@@ -267,7 +267,7 @@
     constructor, or by using the \l {QPainter::begin()}{begin()}
     method as we do in this example. The \l {QPainter::end()}{end()}
     method deactivates it. The \l {QPainter::}{end()} method
-    deactivates it. Note that the latter function is called
+    deactivates it. Note that the latter method is called
     automatically upon destruction when the painter is actived by its
     constructor. The \l
     {QPainter::Antialiasing}{QPainter.RenderHint.Antialiasing} render

@@ -57,7 +57,7 @@
     The \c createConnection() method is a helper method provided
     for convenience. It opens a connection to an in-memory SQLITE
     database and creates a test table. If you want
-    to use another database, simply modify this function's code.
+    to use another database, simply modify this method's code.
     \endtable
 
     Apart from the static \c checkSqlLite() method, the class
@@ -71,9 +71,9 @@
 
     First we create the data model and set the SQL database table we
     want the model to operate on. Note that the
-    QSqlTableModel::setTable() function does not select data from the
+    QSqlTableModel::setTable() method does not select data from the
     table; it only fetches its field information. For that reason we
-    call the QSqlTableModel::select() function later on, populating
+    call the QSqlTableModel::select() method later on, populating
     the model with data from the table. The selection can be
     customized by specifying filters and sort conditions (see the
     QSqlTableModel class documentation for more details).
@@ -90,7 +90,7 @@
     QSqlTableModel::OnRowChange.
 
     Finally, we set up the labels displayed in the view header using
-    the \l {QSqlQueryModel::setHeaderData()}{setHeaderData()} function
+    the \l {QSqlQueryModel::setHeaderData()}{setHeaderData()} method
     the model inherits from the QSqlQueryModel class.
 
     \skipto QTableView
@@ -105,7 +105,7 @@
     view inherits from the QAbstractItemView class.
 
     We pass our model to the view, using the \l
-    {QAbstractItemView::setModel()}{setModel()} function, to make the
+    {QAbstractItemView::setModel()}{setModel()} method, to make the
     view present our data.
 
     \skipto submitButton
@@ -135,18 +135,18 @@
     Submit button to save their changes.
 
     First, we begin a transaction on the database using the
-    QSqlDatabase::transaction() function. A database transaction is a
+    QSqlDatabase::transaction() method. A database transaction is a
     unit of interaction with a database management system or similar
     system that is treated in a coherent and reliable way independent
     of other transactions. A pointer to the used database can be
-    obtained using the QSqlTableModel::database() function.
+    obtained using the QSqlTableModel::database() method.
 
     Then, we try to submit all the pending changes, i.e. the model's
     modified items. If no error occurs, we commit the transaction to
-    the database using the QSqlDatabase::commit() function (note that
-    on some databases, this function will not work if there is an
+    the database using the QSqlDatabase::commit() method (note that
+    on some databases, this method will not work if there is an
     active QSqlQuery on the database). Otherwise we perform a rollback
-    of the transaction using the QSqlDatabase::rollback() function and
+    of the transaction using the QSqlDatabase::rollback() method and
     post a warning to the user.
 
     \table 100%

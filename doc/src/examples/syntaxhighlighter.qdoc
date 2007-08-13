@@ -97,7 +97,7 @@
     regular expression and the specified format to a \c
     HighlightingRule object and add the object to our list of rules.
 
-    We also define highlighting rules for quotations and functions
+    We also define highlighting rules for quotations and methods
     using the same approach: The patterns have the form of regular
     expressions and are stored in \c HighlightingRule objects with the
     associated format.

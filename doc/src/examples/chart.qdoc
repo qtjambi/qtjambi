@@ -26,7 +26,7 @@
 
     \section1 ItemviewChart Class Implementation
 
-    The \c ItemviewChart class contains functions to handle the user interface and
+    The \c ItemviewChart class contains methods to handle the user interface and
     set up a model with data obtained from a file. It also contains the
     implementation of the \c PieView class
     (\l{#PieView Class Implementation}{shown later}).
@@ -48,7 +48,7 @@
     The data in the \c qtdata.cht file is accessed from the classpath via the
     \l{Resource System Example}{resource system}.
 
-    The \c setupModel() function provides an empty model with a reasonable number
+    The \c setupModel() method provides an empty model with a reasonable number
     of rows and columns:
 
     \skipto setupModel
@@ -60,7 +60,7 @@
     a useful minimum value, allowing the user to experiment by adding additional
     data to small data sets.
 
-    The \c setupViews() function arranges a table view alongside the custom pie
+    The \c setupViews() method arranges a table view alongside the custom pie
     view in a QSplitter widget, enabling the amount of space assigned to each
     to be adjusted by the user:
 
@@ -70,7 +70,7 @@
     We construct a selection model for both views to share, before setting the
     splitter as the central widget for the main window.
 
-    The \c openFile() and \c saveFile() functions are called when the user
+    The \c openFile() and \c saveFile() methods are called when the user
     selects the respective \gui{File|Open...} and \gui{File|Save As...} menu items.
     \c openFile() reads and parses data in a simple format, and populates the model
     with items. \c saveFile() exports the contents of the model to a file in the
@@ -78,46 +78,46 @@
 
     \section1 PieView Class Overview
 
-    There are a number of different groups of functions in the \c PieView class.
-    Some functions provide functionality defined in QAbstractItemView, and are
-    required for the view to function correctly. These typically handle
+    There are a number of different groups of methods in the \c PieView class.
+    Some methods provide functionality defined in QAbstractItemView, and are
+    required for the view to method correctly. These typically handle
     interaction between the view and its model, or indicate the mapping between
     model indexes and the visual location of items within the view.
 
     \list
     \o The \l{QAbstractItemView::}{dataChanged()},
        \l{QAbstractItemView::}{rowsInserted()}, and
-       \l{QAbstractItemView::}{rowsAboutToBeRemoved()} functions
+       \l{QAbstractItemView::}{rowsAboutToBeRemoved()} methods
        are the couterparts of the signals with the same signatures in the
        QAbstractItemModel class. These handle changes to the model's data and
        underlying structure specified by model indexes.
-    \o The \l{QAbstractItemView::}{edit()} function is called whenever the user
+    \o The \l{QAbstractItemView::}{edit()} method is called whenever the user
        attempts to edit an item.
        Since the base class implements the basic mechanism to do this, we don't
-       need to provide more than a simple reimplementation of this function.
+       need to provide more than a simple reimplementation of this method.
     \endlist
 
-    Each view class needs to provide implementations of functions that specify
+    Each view class needs to provide implementations of methods that specify
     how it arranges items in a view. These relate model indexes to the
     positions of corresponding visible items and the regions they occupy.
 
     \list
-    \o The \l{QAbstractItemView::}{indexAt()} function is used to relate a
+    \o The \l{QAbstractItemView::}{indexAt()} method is used to relate a
        position in the view to a model index. Since views manage their own item
-       placement, this function must be implemented.
+       placement, this method must be implemented.
     \o \l{QAbstractItemView::}{visualRect()} and
        \l{QAbstractItemView::}{visualRegionForSelection()} relate model indexes to
        rectangles and regions specified in the viewport's coordinate system, so
        that visible items can be displayed.
-    \o The \l{QAbstractItemView::}{isIndexHidden()} function is used in certain
+    \o The \l{QAbstractItemView::}{isIndexHidden()} method is used in certain
        types of view to support hidden items. We need to provide a default
        implementation even if he do not provide this feature.
     \o \c itemRect() and \c itemRegion() relate model indexes to rectangles
        and regions specified in the view's coordinate system. These are private
-       helper functions that make implementating other functions easier.
+       helper methods that make implementating other methods easier.
     \endlist
 
-    Three functions are needed to control which part of the view is shown in the
+    Three methods are needed to control which part of the view is shown in the
     viewport:
 
     \list
@@ -126,10 +126,10 @@
        horizontal and vertical displacements of the area in the view that is
        shown in the viewport. These can usually be related to values provided by
        the view's scroll bars.
-    \o The \l{QAbstractItemView::}{scrollTo()} function is used to navigate to a
+    \o The \l{QAbstractItemView::}{scrollTo()} method is used to navigate to a
        particular item in the view by scrolling the viewport. Although useful for
-       many views, we only provide a minimal implementation of this function.
-    \o The updateGeometries() function is called whenever the user scrolls the
+       many views, we only provide a minimal implementation of this method.
+    \o The updateGeometries() method is called whenever the user scrolls the
        viewport.
     \endlist
 
@@ -137,7 +137,7 @@
     and provide support for selections.
 
     \list
-    \o The \l{QAbstractItemView::}{moveCursor()} function is called when the user
+    \o The \l{QAbstractItemView::}{moveCursor()} method is called when the user
        presses a key corresponding to a
        \l{QAbstractItemView::CursorAction}{standard action}.
        It is up to the view to provide behavior that is appropriate for its
@@ -145,8 +145,8 @@
     \o \l{QAbstractItemView::}{setSelection()} must be implemented to relate a
        rectangle in view coordinates to a range of model indexes, and adjust the
        underlying selection model according to the specified selection mode. The
-       \c itemRect() and \c itemRegion() functions can be used to help implement
-       this function.
+       \c itemRect() and \c itemRegion() methods can be used to help implement
+       this method.
     \endlist
 
     A selection of event handlers are reimplemented to provide support for
@@ -155,17 +155,17 @@
     \list
     \o The \l{QAbstractItemView::}{mousePressEvent()},
        \l{QAbstractItemView::}{mouseMoveEvent()}, and
-       \l{QAbstractItemView::}{mouseReleaseEvent()} functions
+       \l{QAbstractItemView::}{mouseReleaseEvent()} methods
        handle item selection, but can also be used to provide support for drag
        and drop.
     \o We render the visible part of the view in the \l{QWidget::}{paintEvent()}
-       function.
-    \o The \l{QWidget::}{resizeEvent()} handler function is called whenever the
-       view changes size. This function is reimplemented to ensure that the
+       method.
+    \o The \l{QWidget::}{resizeEvent()} handler method is called whenever the
+       view changes size. This method is reimplemented to ensure that the
        region shown in the viewport corresponds to the scroll bar positions.
     \endlist
 
-    For convenience, we also implement a rows() function specific to this view
+    For convenience, we also implement a rows() method specific to this view
     that provides a convenient way to obtain the number of sibling of the item
     corresponding to a given model index.
 
@@ -228,7 +228,7 @@
     appropriate editing or selection actions can be performed.
 
     Since custom views manage the geometries of the items they display, the
-    \c indexAt() function must be implemented to perform this relation for each
+    \c indexAt() method must be implemented to perform this relation for each
     view, returning a model index corresponding to the item in which the given
     point lies, or an invalid model index if the point does not intersect with
     an item.
@@ -254,7 +254,7 @@
     If the point did not lie within any parts of the view that
     correspond to model indexes, null is returned.
 
-    The \c itemRect() function is used to obtain rectangles defined in view
+    The \c itemRect() method is used to obtain rectangles defined in view
     coordinates that correspond to model indexes:
 
     \skipto QRect itemRect
@@ -291,16 +291,16 @@
 
     If the model index supplied was invalid, null is returned.
 
-    The \c visualRect() function returns the rectangle that corresponds to a given
-    model index in viewport coordinates, calling the \c itemRect() function to
+    The \c visualRect() method returns the rectangle that corresponds to a given
+    model index in viewport coordinates, calling the \c itemRect() method to
     avoid duplicating effort:
 
     \skipto public QRect visualRect
     \printuntil }
 
-    The \c visualRegionForSelection() function is similar to \c visualRect() but,
+    The \c visualRegionForSelection() method is similar to \c visualRect() but,
     where \c visualRect(), \c itemRect(), and \c itemRegion() are only used to
-    obtain geometric information about individual items, this function is used to
+    obtain geometric information about individual items, this method is used to
     obtain regions that correspond to a number of selected items in viewport
     coordinates:
 
@@ -317,7 +317,7 @@
     We need to ensure that the viewport only shows the part of the visible part
     of the view's contents, represented by the positions of the scroll bars if
     they are shown. To do this, we need to implement the \c horizontalOffset() and
-    \c verticalOffset() functions to return the position of the top-left corner of
+    \c verticalOffset() methods to return the position of the top-left corner of
     the visible area relative to the top-left corner of the view's contents:
 
     \quotefromfile ItemviewChart.java
@@ -327,10 +327,10 @@
     \skipto protected int verticalOffset
     \printuntil }
 
-    Since the view does not contain scaled content, these functions simply return
+    Since the view does not contain scaled content, these methods simply return
     the corresponding scroll bar values.
 
-    The \c scrollTo() function is used to navigate to the item that corresponds to
+    The \c scrollTo() method is used to navigate to the item that corresponds to
     a particular model index:
 
     \quotefromfile ItemviewChart.java
@@ -341,18 +341,18 @@
     the displacement from the top-left of the viewport. The result is used to
     provide new values for the horizontal and vertical scroll bars.
 
-    The \c updateGeometries() function ensures that the scroll bars have the
+    The \c updateGeometries() method ensures that the scroll bars have the
     correct size when the size of the viewport changes:
 
     \skipto protected void updateGeometries
     \printuntil }
 
-    This function is called by the implementation of \c resizeEvent() handler
-    function.
+    This method is called by the implementation of \c resizeEvent() handler
+    method.
 
     \section2 Keyboard Navigation and Selections
 
-    In the moveCursor() function, we interpret standard keyboard actions
+    In the moveCursor() method, we interpret standard keyboard actions
     entered by the user, and update the current model index to refer to the
     corresponding current item in the view.
 
@@ -371,7 +371,7 @@
     the current index to "wrap around" from one end of the data set to the
     other.
 
-    Selections of items are handled by the \c setSelection() function, which
+    Selections of items are handled by the \c setSelection() method, which
     translates a QRect, given in viewport coordinates, to the corresponding
     QRect in view contents coordinates, and determines which items lie within
     this selection rectangle.
@@ -403,7 +403,7 @@
     We reimplement mouse event handlers for the view to control the way items
     are selected in the view.
 
-    In the \c mousePressEvent() function, we call the base class's function
+    In the \c mousePressEvent() method, we call the base class's method
     to ensure that various basic tasks are performed and, if necessary, we
     create a QRubberBand object that we will use to indicate the region the
     user has selected in the view:
@@ -420,7 +420,7 @@
     The \c mouseMoveEvent() implementation resizes the rubber band using the
     value previously stored in \c origin, taking care to normalize the
     newly-constructed rectangle first, and calls the base class's
-    implementation of the function:
+    implementation of the method:
 
     \skipto protected void mouseMoveEvent
     \printuntil }
@@ -429,7 +429,7 @@
     include the corresponding model index. We also update the visible part
     of the view to show any changes.
 
-    In the \c mouseReleaseEvent() function, we call the base class's
+    In the \c mouseReleaseEvent() method, we call the base class's
     implementation, hide the rubber band, and update the visible part of the
     view:
 

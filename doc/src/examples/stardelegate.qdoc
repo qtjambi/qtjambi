@@ -50,7 +50,7 @@
 
     \quotefromfile StarDelegate.java
 
-    The StarDelegate consists of public functions reimplemented
+    The StarDelegate consists of public methods reimplemented
     from QItemDelegate to provide custom rendering and editing.
 
     We provide the class with a constructor that takes a QWidget,
@@ -58,7 +58,7 @@
     demands that all objects that inherit QObject has a parent;
     otherwise the program will fail.
 
-    The \l{QAbstractItemDelegate.}{paint()} function is
+    The \l{QAbstractItemDelegate.}{paint()} method is
     reimplemented from QItemDelegate and is called whenever the view
     needs to repaint an item:
 
@@ -66,7 +66,7 @@
     \skipto /paint/
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
-    The function is invoked once for each item, represented by a
+    The method is invoked once for each item, represented by a
     QModelIndex object from the model. If the data stored in the item
     is a \c StarRating, we paint it ourselves; otherwise, we let
     QItemDelegate paint it for us. This ensures that the \c
@@ -80,7 +80,7 @@
     delegate encounters items it does not know how to paint, it will
     leave the view for that item empty.
 
-    The \l{QAbstractItemDelegate.}{createEditor()} function is
+    The \l{QAbstractItemDelegate.}{createEditor()} method is
     called when the user starts editing an item:
 
     \skipto /createEditor/
@@ -90,7 +90,7 @@
     editor must have the \a parent; if not, it would be displayed as a
     top-level window.
 
-    The \l{QAbstractItemDelegate.}{setEditorData()} function is
+    The \l{QAbstractItemDelegate.}{setEditorData()} method is
     called when an editor is created to initialize it with data from
     the model:
 
@@ -100,7 +100,7 @@
 
     We simply call \c setStarRating() on the editor.
 
-    The \l{QAbstractItemDelegate.}{setModelData()} function is
+    The \l{QAbstractItemDelegate.}{setModelData()} method is
     called when editing is finished, to commit data from the editor to
     the model:
 
@@ -112,7 +112,7 @@
     the view will close the editor for us when it receives the
     QMouseEvent.
 
-    The \c sizeHint() function returns an item's preferred size:
+    The \c sizeHint() method returns an item's preferred size:
 
     \quotefromfile StarDelegate.java
     \skipto /sizeHint/
@@ -127,9 +127,9 @@
     editor. When the editing is finished the value of the star rating
     can be retrieved with \c getRating().
 
-    The protected functions are reimplemented from QWidget to
-    handle mouse and paint events. The private function \c
-    starAtPosition() is a helper function that returns the number of
+    The protected methods are reimplemented from QWidget to
+    handle mouse and paint events. The private method \c
+    starAtPosition() is a helper method that returns the number of
     the star under the mouse pointer.
 
     Let's start with the constructor:
@@ -145,7 +145,7 @@
     obtain an opaque background. (Without the call, the view's
     background would shine through the editor.)
 
-    The \l{QWidget.}{paintEvent()} function is reimplemented from
+    The \l{QWidget.}{paintEvent()} method is reimplemented from
     QWidget:
 
     \skipto /paintEvent/
@@ -164,7 +164,7 @@
     \skipto /int starAtPosition/
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
-    The \c starAtPosition() function uses basic linear algebra to
+    The \c starAtPosition() method uses basic linear algebra to
     find out which star is under the cursor.
 
     \section1 StarRating Class Implementation
@@ -183,7 +183,7 @@
     \skipto /StarRating\(int rating, int/
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
-    The \c paint() function paints the stars in this \c StarRating
+    The \c paint() method paints the stars in this \c StarRating
     object on a paint device:
 
     \skipto /paint\(/
@@ -198,7 +198,7 @@
     paint diamonds in place of stars if the rating is less than the
     highest rating.
 
-    The \c sizeHint() function returns the preferred size for an area
+    The \c sizeHint() method returns the preferred size for an area
     to paint the stars on:
 
     \quotefromfile StarDelegate.java
@@ -206,7 +206,7 @@
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     The preferred size is just enough to paint the maximum number of
-    stars. The function is called by both \c StarDelegate.sizeHint()
+    stars. The method is called by both \c StarDelegate.sizeHint()
     and \c StarEditor.sizeHint().
 
     \section1 StarWindow Class Implementation
@@ -214,13 +214,13 @@
     StarWindow inherits QWidget and displays a table that has a
     star delegate installed.
 
-    The table is set up in the \c createTable() function:
+    The table is set up in the \c createTable() method:
 
     \quotefromfile StarDelegate.java
     \skipto /void createTable/
     \printuntil /SelectRows/
 
-    The \c createTable() function creates a QTableWidget and sets
+    The \c createTable() method creates a QTableWidget and sets
     a \c StarDelegate on it. We set
 
     \dots
@@ -228,7 +228,7 @@
     \skipto /^\s\s\s\s\}/
     \printuntil /\}/
 
-    The rest of the function fills the table with data including
+    The rest of the method fills the table with data including
     star ratings. \l{QAbstractItemView.}{DoubleClicked} and
     \l{QAbstractItemView.}{SelectedClicked} are set as
     \l{QAbstractItemView.editTriggers()}{edit triggers}, so that the

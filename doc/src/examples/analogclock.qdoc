@@ -33,7 +33,7 @@
 
     We also resize the widget so that it is displayed at a reasonable size.
 
-    The \c paintEvent() function is called whenever the widget's
+    The \c paintEvent() method is called whenever the widget's
     contents need to be updated. This happens when the widget is
     first shown, and when it is covered then exposed, but it is also
     executed when the widget's \l{QWidget::update()}{update()} slot
@@ -134,7 +134,7 @@
     These methods ensure that we don't do unnecessary work when the clock is
     not visible to the user.
 
-    Finally, we provide a \c main() function to create and show the analog clock
+    Finally, we provide a \c main() method to create and show the analog clock
     when the example is run:
 
     \skipto main(

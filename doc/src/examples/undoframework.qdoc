@@ -73,16 +73,16 @@
     The rest of the constructor sets up the DiagramScene and
     QGraphicsView.  Notice the syntax used for slots in inner classes.
 
-    Here is the \c createUndoView() function:
+    Here is the \c createUndoView() method:
 
     \skipto /void createUndoView/
     \printuntil /^\s\s\s\s\}/
 
     The QUndoView is a widget that displays the text, which is set
-    with the \l{QUndoCommand::}{setText()} function, for each
+    with the \l{QUndoCommand::}{setText()} method, for each
     QUndoCommand in the undo stack in a list.
 
-    Here is the \c createActions() function:
+    Here is the \c createActions() method:
 
     \skipto /void createActions/
     \printuntil /connect/
@@ -92,14 +92,14 @@
     \skipto undoAction
     \printuntil /redoAction\.triggered/
 
-    The \c createActions() function sets up all the examples actions
+    The \c createActions() method sets up all the examples actions
     in the manner shown above. We can connect our \c undoAction and \c
     redoAction directly to the stack's \c undo() and \c redo() slots
     as we disable the actions when the stack cannot undo and redo.
     For the other actions we have implemented slots in the \c
     UndoFramework class.
 
-    Here is the \c createMenues() function:
+    Here is the \c createMenues() method:
 
     \skipto /void createMenus/
     \printuntil /^\s\s\s\s\{/
@@ -153,7 +153,7 @@
     \skipto /void addBox/
     \printuntil /^\s\s\s\s\}/
 
-    The \c addBox() function creates an AddCommand and pushes it on
+    The \c addBox() method creates an AddCommand and pushes it on
     the undo stack.
 
     Here is the \c addTriangle() sot:
@@ -161,7 +161,7 @@
     \skipto /void addTriangle/
     \printuntil /^\s\s\s\s\}/
 
-    The \c addTriangle() function creates an AddCommand and pushes it
+    The \c addTriangle() method creates an AddCommand and pushes it
     on the undo stack.
 
     Here is the implementation of \c about():
@@ -187,7 +187,7 @@
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     We first create the DiagramItem to add to the DiagramScene.  The
-    \l{QUndoCommand::}{setText()} function let us set a QString that
+    \l{QUndoCommand::}{setText()} method let us set a QString that
     describes the command. We use this to get custom messages in the
     QUndoView and in the menu of the main window.
 
@@ -264,9 +264,9 @@
     consecutive moves of an item one MoveCommand, i.e, the item will
     be moved back to the start position of the first move.
 
-    Whenever a MoveCommand is created, this function is called to
+    Whenever a MoveCommand is created, this method is called to
     check if it should be merged with the previous command. It is the
-    previous command object that is kept on the stack. The function
+    previous command object that is kept on the stack. The method
     returns true if the command is merged; otherwise false.
 
     We first check whether it is the same item that has been moved
@@ -298,12 +298,12 @@
 
     \section1 The \c main() Function
 
-    The \c main() function of the program looks like this:
+    The \c main() method of the program looks like this:
 
     \skipto /void main/
     \printuntil /^\s\s\s\s\}/
 
-    The main function creates the \c MainWindow and shows it as a top
+    The main method creates the \c MainWindow and shows it as a top
     level window.
 
 */

@@ -43,7 +43,7 @@
     \skipto /class Helper/
     \printuntil /textPen/
 
-    Apart from the constructor, it only provides a \c paint() function
+    Apart from the constructor, it only provides a \c paint() method
     to paint using a painter supplied by one of our widget subclasses.
     We start with a look at the constructor.
 
@@ -53,7 +53,7 @@
     \skipto /public Helper/
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
-    The actual painting is performed in the \c paint() function. This takes
+    The actual painting is performed in the \c paint() method. This takes
     a QPainter that has already been set up to paint onto a paint device
     (either a QWidget or a QGLWidget), a QPaintEvent that provides information
     about the region to be painted, and a measure of the elapsed time (in
@@ -93,7 +93,7 @@
     \printuntil /helper/
 
     Apart from the constructor, the widget class only contains a
-    \l{QWidget::paintEvent()}{paintEvent()} function, that lets us draw
+    \l{QWidget::paintEvent()}{paintEvent()} method, that lets us draw
     customized content, and a slot that is used to animate its contents.
     One member variable keeps track of the \c Helper that the widget uses
     to paint its contents, and the other records the elapsed time since
@@ -120,7 +120,7 @@
 
     Since the \c Helper class does all of the actual painting, we only have
     to implement a paint event that sets up a QPainter for the widget and calls
-    the helper's \c paint() function:
+    the helper's \c paint() method:
 
     \skipto /void paintEvent/
     \printuntil /^\s\s\s\s\s\s\s\s\}/
@@ -159,7 +159,7 @@
     \printuntil /^\s\s\s\s\s\s\s\s\}/
 
     Since anti-aliasing will be enabled if available, we only need to set up
-    a QPainter on the widget and call the helper's \c paint() function to display
+    a QPainter on the widget and call the helper's \c paint() method to display
     the widget's contents.
 
     \section1 Painting2D Class

@@ -40,7 +40,7 @@
     edit to accept input and the text browser to display the
     calculations and results. For that reason, we declare
     corresponding variables in the application wide scope. We also
-    have to provide functions that correspond to the application's
+    have to provide methods that correspond to the application's
     user interface. All of this is taken care of in the \c Calculator
     class's constructor.
 

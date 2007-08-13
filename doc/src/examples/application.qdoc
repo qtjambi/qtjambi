@@ -363,7 +363,7 @@
 
     \section1 The main() Function
 
-    The \c main() function for this application is typical of
+    The \c main() method for this application is typical of
     applications that contain one main window:
 
     \skipto static void main

@@ -81,7 +81,7 @@
     \skipto main
     \printuntil {
 
-    The \c main() function is the entry point to the program. Almost
+    The \c main() method is the entry point to the program. Almost
     always when using Qt Jambi, \c main() only needs to perform some kind
     of initialization before passing the control to the Qt Jambi library,
     which then tells the program about the user's actions.
@@ -314,7 +314,7 @@
     \skipto setGeometry
     \printline setGeometry
 
-    The QWidget.setGeometry() function takes four arguments: The
+    The QWidget.setGeometry() method takes four arguments: The
     first two arguments are the x and y coordinates of the button's
     top-left corner. The coordinates are relative to the parent
     widget. The last two arguments are the button's width and height.
@@ -390,7 +390,7 @@
     Here we create and set up a child widget of this widget (the new
     widget's parent is \c this, i.e. the \c Widgets instance).
 
-    The \l{QtJambiObject.tr()}{tr()} function call around the string
+    The \l{QtJambiObject.tr()}{tr()} method call around the string
     literal "Quit" marks the string for translation, making it
     possible to change it at run-time based on the contents of a
     translation file. It is a good habit to use
@@ -488,7 +488,7 @@
     widgets are resized when the window is resized. Then we add the \c quit, \c lcd
     and \c slider widgets to the layout using QBoxLayout.addWidget().
 
-    The QWidget.setLayout() function installs the layout on \c
+    The QWidget.setLayout() method installs the layout on \c
     Blocks. The call to \l{QWidget.}{setLayout()} automatically sets
     the parent of the widgets in the layout so that they are children
     of \c Blocks. Because of this, we didn't need to specify \c this

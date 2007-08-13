@@ -94,7 +94,7 @@
 
     We place the label, LCD widgets, and the board into a QGridLayout
     along with some labels that we create with the \c createLabel() convenience
-    function:
+    method:
 
     \skipto QGridLayout
     \printuntil }
@@ -102,7 +102,7 @@
     Finally, we set the grid layout on the widget, give the window a title, and
     resize it to an appropriate size.
 
-    The \c createLabel() convenience function simply creates a new label on the
+    The \c createLabel() convenience method simply creates a new label on the
     heap, gives it an appropriate alignment, and returns it to the caller:
 
     \skipto createLabel
@@ -118,7 +118,7 @@
     \skipto private
     \printuntil layout
 
-    Finally, the \c main() function looks like this:
+    Finally, the \c main() method looks like this:
 
     \skipto main(
     \printuntil }
@@ -156,22 +156,22 @@
     \printuntil }
     \printuntil }
 
-    The \c setRandomShape() function is used to select a random shape for a piece:
+    The \c setRandomShape() method is used to select a random shape for a piece:
 
     \skipto setRandomShape
     \printuntil setShape
     \printuntil }
 
     For convenience, it simply chooses a random shape from the \c TetrixShape enum
-    and calls the \c setShape() function to perform the task of positioning the
+    and calls the \c setShape() method to perform the task of positioning the
     blocks.
 
-    The \c shape() function simply returns the contents of the \c pieceShape variable:
+    The \c shape() method simply returns the contents of the \c pieceShape variable:
 
     \skipto shape()
     \printuntil }
 
-    The \c setShape() function uses a look-up table of pieces to associated each
+    The \c setShape() method uses a look-up table of pieces to associated each
     shape with an array of block positions:
 
     \skipto setShape
@@ -181,44 +181,44 @@
     These positions are read from the table into the piece's own array of positions,
     and the piece's internal shape information is updated to use the new shape.
 
-    The \c minX() and \c maxX() functions return the minimum and maximum horizontal
+    The \c minX() and \c maxX() methods return the minimum and maximum horizontal
     coordinates occupied by the blocks that make up the piece:
 
     \skipto minX()
     \printuntil maxX()
     \printuntil }
 
-    Similarly, the \c minY() and \c maxY() functions return the minimum and maximum
+    Similarly, the \c minY() and \c maxY() methods return the minimum and maximum
     vertical coordinates occupied by the blocks:
 
     \skipto minY()
     \printuntil maxY()
     \printuntil }
 
-    The \c rotatedLeft() function returns a new piece with the same shape as an
+    The \c rotatedLeft() method returns a new piece with the same shape as an
     existing piece, but rotated counter-clockwise by 90 degrees:
 
     \skipto rotatedLeft()
     \printuntil return result
     \printuntil }
 
-    Similarly, the \c rotatedRight() function returns a new piece with the same
+    Similarly, the \c rotatedRight() method returns a new piece with the same
     shape as an existing piece, but rotated clockwise by 90 degrees:
 
     \skipto rotatedRight()
     \printuntil return result
     \printuntil }
 
-    These two functions enable each piece to create rotated copies of itself.
+    These two methods enable each piece to create rotated copies of itself.
 
-    The \c x() and \c y() functions return the x and y-coordinates of any given
+    The \c x() and \c y() methods return the x and y-coordinates of any given
     block in the shape:
 
     \skipto int x(
     \printuntil y(
     \printuntil }
 
-    The positions returned by these functions are defined on a grid that extends
+    The positions returned by these methods are defined on a grid that extends
     horizontally and vertically with coordinates from -2 to 2. Although the predefined
     coordinates for each piece only vary horizontally from -1 to 1 and vertically
     from -1 to 2, each piece can be rotated by 90, 180, and 270 degrees.
@@ -274,7 +274,7 @@
 
     The first (next) piece is also set up with a random shape.
 
-    The \c setNextPieceLabel() function is used to pass in an externally-constructed
+    The \c setNextPieceLabel() method is used to pass in an externally-constructed
     label to the board, so that it can be shown alongside the playing area:
 
     \skipto setNextPieceLabel
@@ -310,7 +310,7 @@
     We perform checks to ensure that the game can only be paused if it is already
     running and not already paused.
 
-    The \c paintEvent() function is straightforward to implement. We begin by
+    The \c paintEvent() method is straightforward to implement. We begin by
     calling the base class's implementation of \l{QWidget::}{paintEvent()} before
     constructing a QPainter for use on the board:
 
@@ -322,12 +322,12 @@
 
     If the game is paused, we want to hide the existing state of the board and
     show some text. We achieve this by painting text onto the widget and returning
-    early from the function. The rest of the painting is performed after this point.
+    early from the method. The rest of the painting is performed after this point.
 
     The position of the top of the board is found by subtracting the total height
     of each space on the board from the bottom of the frame's internal rectangle.
     For each space on the board that is occupied by a piece, we call the
-    \c drawSquare() function to draw a block at that position.
+    \c drawSquare() method to draw a block at that position.
 
     \skipto boardTop
     \printuntil }
@@ -353,7 +353,7 @@
     current shape to control, we simply pass on the event to the base class.
 
     We check whether the event is about any of the keys that the player uses to
-    control the current piece and, if so, we call the relevant function to handle
+    control the current piece and, if so, we call the relevant method to handle
     the input:
 
     \skipto if
@@ -376,13 +376,13 @@
     timer; otherwise we move the current piece down by one row. We let the base
     class handle other timer events that we receive.
 
-    The \c clearBoard() function simply fills the board with the
+    The \c clearBoard() method simply fills the board with the
     \c TetrixShape::NoShape value:
 
     \skipto clearBoard
     \printuntil }
 
-    The \c dropDown() function moves the current piece down as far as possible on
+    The \c dropDown() method moves the current piece down as far as possible on
     the board, either until it is touching the bottom of the playing area or it is
     stacked on top of another piece:
 
@@ -391,20 +391,20 @@
     \printuntil }
 
     The number of rows the piece has dropped is recorded and passed to the
-    \c pieceDropped() function so that the player's score can be updated.
+    \c pieceDropped() method so that the player's score can be updated.
 
-    The \c oneLineDown() function is used to move the current piece down by one row
+    The \c oneLineDown() method is used to move the current piece down by one row
     (line), either when the user presses the \gui{D} key or when the piece is
     scheduled to move:
 
     \skipto oneLineDown
     \printuntil }
 
-    If the piece cannot drop down by one line, we call the \c pieceDropped() function
+    If the piece cannot drop down by one line, we call the \c pieceDropped() method
     with zero as the argument to indicate that it cannot fall any further, and that
     the player should receive no extra points for the fall.
 
-    The \c pieceDropped() function itself is responsible for awarding points to the
+    The \c pieceDropped() method itself is responsible for awarding points to the
     player for positioning the current piece, checking for full rows on the board
     and, if no lines have been removed, creating a new piece to replace the current
     one:
@@ -440,7 +440,7 @@
     The next time that the \c timerEvent() handler is called, a new piece will be
     created and the game will continue.
 
-    The \c newPiece() function places the next available piece at the top of the
+    The \c newPiece() method places the next available piece at the top of the
     board, and creates a new piece with a random shape:
 
     \skipto newPiece()
@@ -451,7 +451,7 @@
     the piece can't move, so we unset its shape to prevent it from being drawn, stop
     the timer, and unset the \c isStarted flag.
 
-    The \c showNextPiece() function updates the label that shows the next piece to
+    The \c showNextPiece() method updates the label that shows the next piece to
     be dropped:
 
     \skipto showNextPiece
@@ -460,7 +460,7 @@
 
     We draw the piece's component blocks onto a pixmap that is then set on the label.
 
-    The \c tryMove() function is used to determine whether a piece can be positioned
+    The \c tryMove() method is used to determine whether a piece can be positioned
     at the specified coordinates:
 
     \skipto tryMove(
@@ -477,7 +477,7 @@
     current piece and its position, update the widget, and return \c true to indicate
     success.
 
-    The \c drawSquare() function draws the blocks (normally squares) that make up
+    The \c drawSquare() method draws the blocks (normally squares) that make up
     each piece using different colors for pieces with different shapes:
 
     \skipto drawSquare

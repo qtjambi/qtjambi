@@ -58,7 +58,7 @@
 
   \section1 The main() Function
 
-  The \c main() function is defined as part of the \c SimpleUIExample class.
+  The \c main() method is defined as part of the \c SimpleUIExample class.
   It constructs the necessary QApplication instance, constructs and shows an
   instance of the \c SimpleUIExample class, and executes the application's
   event loop:

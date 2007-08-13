@@ -20,11 +20,11 @@
     \skipto public class SpinBoxes
     \printuntil private QLabel
 
-    Private functions (shown later) are used to set up each type of spin box in
+    Private methods (shown later) are used to set up each type of spin box in
     the window. We use variables to keep track of various widgets so that they
     can be reconfigured when required.
 
-    The constructor simply calls private functions to set up the different types
+    The constructor simply calls private methods to set up the different types
     of spin box used in the example, and places each group in a layout:
 
     \skipto public SpinBoxes()
@@ -33,7 +33,7 @@
     We use the layout to manage the arrangement of the window's child widgets,
     and change the window title.
 
-    The \c createSpinBoxes() function constructs a QGroupBox and places three
+    The \c createSpinBoxes() method constructs a QGroupBox and places three
     QSpinBox widgets inside it with descriptive labels to indicate the types of
     input they expect.
 
@@ -66,10 +66,10 @@
 
     \printuntil }
 
-    The rest of the function sets up a layout for the group box and places each
+    The rest of the method sets up a layout for the group box and places each
     of the widgets inside it.
 
-    The \c createDateTimeEdits() function constructs another group box with a
+    The \c createDateTimeEdits() method constructs another group box with a
     selection of spin boxes used for editing dates and times.
 
     \skipto createDateTimeEdits()
@@ -128,7 +128,7 @@
     When the format string is changed, there will be an appropriate label and
     entry widget for dates, times, or both types of input.
 
-    The \c createDoubleSpinBoxes() function constructs three spin boxes that are
+    The \c createDoubleSpinBoxes() method constructs three spin boxes that are
     used to input double-precision floating point numbers:
 
     \skipto createDoubleSpinBoxes(
@@ -137,11 +137,11 @@
     Before the QDoubleSpinBox widgets are constructed, we create a spin box to
     control how many decimal places they show. By default, only two decimal places
     are shown in the following spin boxes, each of which is the equivalent of a
-    spin box in the group created by the \c createSpinBoxes() function.
+    spin box in the group created by the \c createSpinBoxes() method.
 
     The first double spin box shows a basic double-precision spin box with the
     same range, step size, and default value as the first spin box in the
-    \c createSpinBoxes() function:
+    \c createSpinBoxes() method:
 
     \skipto doubleLabel
     \printuntil setValue
@@ -165,7 +165,7 @@
     \skipto spinBoxLayout
     \printuntil }
 
-    The rest of the function places each of the widgets into a layout for the
+    The rest of the method places each of the widgets into a layout for the
     group box.
 
     The \c changePrecision() slot is called when the user changes the value in
@@ -174,12 +174,12 @@
     \skipto changePrecision(
     \printuntil }
 
-    This function simply uses the integer supplied by the signal to specify the
+    This method simply uses the integer supplied by the signal to specify the
     number of decimal places in each of the QDoubleSpinBox widgets. Each one
     of these will be updated automatically when their
     \l{QDoubleSpinBox::decimals}{decimals} property is changed.
 
-    Finally, we provide a \c main() function to create and show the \c
+    Finally, we provide a \c main() method to create and show the \c
     SpinBoxes widget when the example is run:
 
     \skipto main(

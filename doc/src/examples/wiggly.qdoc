@@ -55,7 +55,7 @@
     \printuntil }
     \printuntil /^\}/
 
-    We also provide a \c main() function to create and show the dialog
+    We also provide a \c main() method to create and show the dialog
     widget when the example is run.
 
     \section1 WigglyWidget Class Implementation
@@ -100,7 +100,7 @@
     \skipto setText
     \printuntil }
 
-    The \c paintEvent() function is called whenever a QPaintEvent is
+    The \c paintEvent() method is called whenever a QPaintEvent is
     sent to the widget. Paint events are sent to widgets that need to
     update themselves, for instance when part of a widget is exposed
     because a covering widget was moved. For the wiggly widget, a
@@ -126,7 +126,7 @@
     \printuntil painter.end
     \printuntil }
 
-    Each time the \c paintEvent() function is called, we create a
+    Each time the \c paintEvent() method is called, we create a
     QPainter object \c painter to draw the contents of the widget.
     For each character in \c text, we determine the color and the
     position on the wiggly line based on \c step. In addition, \c x
@@ -146,15 +146,15 @@
     \printuntil }
     \printuntil }
 
-    The \c timerEvent() function receives all the timer events that
+    The \c timerEvent() method receives all the timer events that
     are generated for this widget. If a timer event is sent from the
     widget's QBasicTimer, we increment \c step to make the text move,
     and call QWidget::update() to refresh the display. Any other
     timer event is passed on to the base class's implementation of
-    the \l{QWidget::timerEvent()}{timerEvent()} function.
+    the \l{QWidget::timerEvent()}{timerEvent()} method.
 
     The QWidget::update() slot does not cause an immediate repaint;
     instead the slot schedules a paint event for processing when Qt
     returns to the main event loop. The paint events are then handled
-    by \c{WigglyWidget}'s \c paintEvent() function.
+    by \c{WigglyWidget}'s \c paintEvent() method.
 */
