@@ -39,7 +39,9 @@
         \o \l{Calculator Example}{Calculator}\raisedaster
         \o \l{Calendar Widget Example}{Calendar Widget}\raisedaster
         \o \l{Digital Clock Example}{Digital Clock}\raisedaster
+        \o \l{Icons Example}{Icons}\raisedaster
         \o \l{Line Edits Example}{Line Edits}\raisedaster
+        \o \l{Scribble Example}{Scribble}\raisedaster
         \o \l{Shaped Clock Example}{Shaped Clock}\raisedaster
         \o \l{Spin Boxes Example}{Spin Boxes}\raisedaster
         \o \l{Styles Example}{Styles}\raisedaster
@@ -51,7 +53,9 @@
     \section1 Dialog Examples
 
     \list
-        \o \l{Config Dialog Example}{Config Example}
+        \o \l{Config Dialog Example}{Config Example}\raisedaster
+        \o \l{Extension Example}{Extension}\raisedaster
+        \o \l{Find Files Example}{Find Files}\raisedaster
     \endlist
 
     \section1 Main Window Examples
@@ -101,7 +105,7 @@
 
     \list
         \o \l{I18N Example}{I18N}
-        \o \l{Undo Framework Example}{Undo Framework}
+        \o \l{Undo Framework Example}{Undo Framework}\raisedaster
     \endlist
 
     \section1 Thread Examples
