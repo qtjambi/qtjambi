@@ -16,21 +16,24 @@ package com.trolltech.qt;
 import com.trolltech.qt.core.*;
 
 /**
- * The QThread class extends the java.lang.Thread class and should be used when QObjects are used
- * in threads.
- *
- * QObjects have object affinity, meaning that they belong to a given thread, accessible through
- * their thread() method. It is only allowed to access a QObject from the thread it belongs to.
- * To make this work together with garbage collection the class QThread has been introduced
- * to ensure that the native resources used by QObjects are freed when the garbage collector is run.
- * This is implemented by the garbage collector thread posting an event to the native QObject to
- * delete itself when the threads event loop is idle. Before exiting the thread will do flush
- * all events, causing all native QObjects to be deleted. 
- *
- * The QThread class also adds two convenience signals, starting and finished. Started is emitted
- * just before the runnable target is invoked. Finished is emitted just before the thread shuts
- * down; after the execution of the runnable target and after the flushing of the event loop.
- *
+ * The QThread class extends the java.lang.Thread class and should be used when
+ * QObjects, i.e., instances of classes that inherit from QObject, are used in
+ * threads. Thread may be used for all other classes that inherit from QtJambiObject.
+ * <p>
+ * QObjects have object affinity, i.e., they belong to a given thread, which is
+ * accessed through their thread() method. It is only allowed to access a QObject
+ * from the thread to which it belongs.
+ * <p>
+ * The QThread class was introduced to ensure that native resources are freed when
+ * QObjects are garbage collected. The garbage collector thread posts an event to
+ * the native QObject, which then deletes itself. Before exiting, the thread will
+ * flush all events - causing all native QObjects to be deleted. 
+ * <p>
+ * QThread has two convenience signals: starting and finished. Started is emitted
+ * just before the runnable target is invoked. Finished is emitted just before the
+ * thread shuts down - after the execution of the runnable target and the flushing
+ * of the event loop.
+ *   
  * @See com.trolltech.qt.core.QObject#thread()
  * @See com.trolltech.qt.QThreadAffinityException
  * @See <a href="../threads.html">Threading support in Qt</a>
