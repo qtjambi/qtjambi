@@ -11,7 +11,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.examples.
+package com.trolltech.examples;
 
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
