@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Collections;
@@ -63,6 +64,7 @@ public class JambiDoclet
 	
 	private Map<String, FileWriter> writers = new HashMap<String, FileWriter>();
 	private Map<String, String> docFileContents = new HashMap<String, String>();
+	private Map<String, String> packageDocs = new HashMap<String, String>();
 	private List<String> excludeList = new LinkedList<String>();
 	private DocMap jdocFileDocuments = new DocMap();
 	
@@ -75,7 +77,7 @@ public class JambiDoclet
 		}
 		return false;
 	}
-	
+
 	public static int optionLength(String option) {
 		return ExcludeDoclet.optionLength(option);
 	}
@@ -90,14 +92,14 @@ public class JambiDoclet
 		doclet.resolveDocumentation(root);
 		
 		boolean ret = false;
-
-		/*		
+	
+		/*
 		try {
 			HtmlDoclet.start(root);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}*/
-	
+			
 		try {
 			ret = ExcludeDoclet.start(root);
 		} catch (IOException e) {
@@ -109,8 +111,8 @@ public class JambiDoclet
 	private void documentClasses(ClassDoc classes[])
 	{
 		for (ClassDoc currClass : classes) {
-			if (currClass.containingPackage().name().equals("com.trolltech.qt"))
-				continue;
+			//if (currClass.containingPackage().name().equals("com.trolltech.qt"))
+			//	continue;
 
 	 		checkForTable (currClass);
 			if (!currClass.getRawCommentText().equals("")) {
@@ -169,8 +171,42 @@ public class JambiDoclet
 		}
 	}
 
+	private void fillPackageDocs()
+	{
+		packageDocs.put("com.trolltech.qt", "<body>Classes that implement the Qt Jambi framework.</body>");
+		packageDocs.put("com.trolltech.qt.core", "<body>Core non-GUI classes used by other modules.</body>");
+		packageDocs.put("com.trolltech.qt.gui", "<body>Graphical user interface components.</body>");
+		packageDocs.put("com.trolltech.qt.network", "<body>Classes for network programming.</body>");
+		packageDocs.put("com.trolltech.qt.opengl", "<body>OpenGL support classes.</body>");
+		packageDocs.put("com.trolltech.qt.sql", "<body>Classes for database integration using SQL.</body>");
+		packageDocs.put("com.trolltech.qt.svg", "<body>Classes for displaying the contents of SVG files.</body>");
+		packageDocs.put("com.trolltech.qt.xml", "<body>Classes for handling XML.</body>");
+		packageDocs.put("com.trolltech.qt.designer", "<body>Classes for extending Qt Designer</body>");
+	}
+
 	public void resolveDocumentation(RootDoc root)
 	{	
+		fillPackageDocs();
+
+		for (PackageDoc pack : root.specifiedPackages()) {
+			String name = pack.name();
+			System.err.println("Package name is: "+name);
+			String doc = packageDocs.get(name);
+			if (doc != null) {
+				String packageFile = qtJambiDir + "/" + name.replace(".", "/") + "/package.html";
+				//System.err.println("Package file is: " + packageFile);
+
+				try {
+					Writer writer = new FileWriter(packageFile);
+					writer.write(doc);
+					writer.flush();
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 		setupFileContents(root);
 		documentClasses(root.classes());
 		
@@ -258,6 +294,7 @@ public class JambiDoclet
 					loc + signature.length() + 6, currentDocs.indexOf("*/", loc));
 		} else {
 			if (method.name().equals("compareTo")) {
+				documentation = "{@inheritDoc}"
 			}
 			else if (method.isConstructor() && method.parameters().length > 0 &&
 				method.parameters()[0].typeName().equals("QtJambiObject.QPrivateConstructor")) {	
