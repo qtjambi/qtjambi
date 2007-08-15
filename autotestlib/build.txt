@@ -1,10 +1,10 @@
 <typesystem package="com.trolltech.autotests.generated" default-superclass="com.trolltech.qt.QtJambiObject">
 
-  <load-typesystem name="../generator/typesystem_core.txt" generate="no" />
-  <load-typesystem name="../generator/typesystem_gui.txt" generate="no" />
-  <load-typesystem name="../generator/typesystem_sql.txt" generate="no" />
-  <load-typesystem name="../generator/typesystem_xml.txt" generate="no" />
-  <load-typesystem name="../generator/typesystem_network.txt" generate="no" />
+  <load-typesystem name="../generator/typesystem_core.xml" generate="no" />
+  <load-typesystem name="../generator/typesystem_gui.xml" generate="no" />
+  <load-typesystem name="../generator/typesystem_sql.xml" generate="no" />
+  <load-typesystem name="../generator/typesystem_xml.xml" generate="no" />
+  <load-typesystem name="../generator/typesystem_network.xml" generate="no" />
 
   <value-type name="Tulip">
     <include file-name="tulip.h" location="local"/>
