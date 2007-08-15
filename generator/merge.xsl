@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0">
-  <xsl:output indent="yes"/>
+  <xsl:output method="xml" indent="yes"/>
   <xsl:param name="lang" />    
 
   <xsl:template match="processing-instruction()" />
@@ -30,7 +30,7 @@
             </xsl:element>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:copy-of select="$other" />
+             <xsl:copy-of select="$other" />
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
@@ -59,11 +59,11 @@
           <xsl:when test="$lang != ''">
           <xsl:element name="language">
             <xsl:attribute name="name" ><xsl:value-of select="$lang" /></xsl:attribute>
-            <xsl:copy-of select="$other/*" />  
+            <xsl:copy-of select="$other/node()" />  
           </xsl:element>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:copy-of select="$other/*" />
+            <xsl:copy-of select="$other/node()" />
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
