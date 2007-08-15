@@ -56,7 +56,7 @@
         <make dir="generator" />
     </target>
 
-    <target name="generator.qtjambi" 
+    <target name="generator.qtjambi" depends="merge.typesystem" 
             description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found in the QTDIR variable.">
         <generator dir="generator"
 		   outputDirectory=".."/>
@@ -134,12 +134,27 @@
         </jar>
     </target>
 
+    <target name="merge.typesystem">
+        <xslt in="generator/typesystem_opengl-common.xml" 
+              out="generator/typesystem_opengl.xml"
+              style="generator/merge.xsl">
+            <param name="source"
+                   expression="typesystem_opengl-java.xml"/>
+        </xslt>
+        <xslt in="generator/typesystem_xml-common.xml" 
+              out="generator/typesystem_xml.xml"
+              style="generator/merge.xsl">
+            <param name="source"
+                   expression="typesystem_xml-java.xml"/>
+        </xslt>
+    </target>
+
     <target name="generator-example"
             description="Generate code for generator-example and compile it."
             depends="generator.generator-example, compile.generator-example" />
 
     <target name="qtjambi"
             description="Build Qt Jambi."
-            depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, deploy.jar" />
+            depends="qmake.generator, compile.generator,generator.qtjambi, qmake.qtjambi, compile.qtjambi, compile.java, deploy.jar" />
 
 </project>
