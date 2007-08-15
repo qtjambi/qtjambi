@@ -1,0 +1,5 @@
+<typesystem package="com.trolltech.qt.network" default-superclass="com.trolltech.qt.QtJambiObject">
+    <inject-code>
+        com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
+    </inject-code>
+</typesystem>

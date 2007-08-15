@@ -1,0 +1,63 @@
+<typesystem>
+
+  <rejection class="QAbstractExtensionFactory" />
+  <rejection class="QAbstractExtensionManager" />
+  <rejection class="QAbstractFormBuilder" />
+  <rejection class="QDesignerActionEditorInterface" />
+  <rejection class="QDesignerBrushManagerInterface" />
+  <rejection class="QDesignerContainerExtension" />
+  <rejection class="QDesignerCustomWidgetCollectionInterface" />
+  <rejection class="QDesignerCustomWidgetInterface" />
+  <rejection class="QDesignerDnDItemInterface" />
+  <rejection class="QDesignerExtraInfoExtension" />
+  <rejection class="QDesignerFormEditorInterface" />
+  <rejection class="QDesignerFormEditorPluginInterface" />
+  <rejection class="QDesignerFormWindowCursorInterface" />
+  <rejection class="QDesignerFormWindowInterface" />
+  <rejection class="QDesignerFormWindowManagerInterface" />
+  <rejection class="QDesignerFormWindowToolInterface" />
+  <rejection class="QDesignerIconCacheInterface" />
+  <rejection class="QDesignerIntegrationInterface" />
+  <rejection class="QDesignerLanguageExtension" />
+  <rejection class="QDesignerLayoutDecorationExtension" />
+  <rejection class="QDesignerMetaDataBaseInterface" />
+  <rejection class="QDesignerMetaDataBaseItemInterface" />
+  <rejection class="QDesignerObjectInspectorInterface" />
+  <rejection class="QDesignerPropertyEditorInterface" />
+  <rejection class="QDesignerTaskMenuExtension" />
+  <rejection class="QDesignerWidgetBoxInterface" />
+  <rejection class="QDesignerWidgetDataBaseInterface" />
+  <rejection class="QDesignerWidgetDataBaseItemInterface" />
+  <rejection class="QDesignerWidgetFactoryInterface" />
+  <rejection class="QExtensionManager" />
+  <rejection class="QFormBuilder" />
+  <rejection class="QDesignerDynamicPropertySheetExtension" />
+  <rejection class="QDesignerPromotionInterface" />
+  <rejection class="QDesignerScriptExtension" />
+  
+  <primitive-type name="qdesigner_internal::FlagType" java-name="int" preferred-conversion="no" jni-name="jint" />
+  <primitive-type name="qdesigner_internal::EnumType" java-name="int" preferred-conversion="no" jni-name="jint" />
+
+  <object-type name="QDesignerResourceBrowserInterface">
+    <include file-name="abstractresourcebrowser.h" location="global"/>
+  </object-type>
+
+  <interface-type name="QDesignerPropertySheetExtension">
+    <include file-name="QtDesigner/QtDesigner" location="global"/>
+  </interface-type>
+
+  <object-type name="JambiPropertySheet">
+    <include file-name="jambipropertysheet.h" location="local"/>
+  </object-type>
+
+  <interface-type name="QDesignerMemberSheetExtension">
+    <include file-name="QtDesigner/QtDesigner" location="global"/>
+  </interface-type>
+
+  <object-type name="JambiMemberSheet">
+    <include file-name="jambimembersheet.h" location="local"/>
+  </object-type>
+  
+  <object-type name="JambiResourceBrowser" />
+
+</typesystem>

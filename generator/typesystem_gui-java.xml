@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<typesystem package="com.trolltech.qt.gui" default-superclass="com.trolltech.qt.QtJambiObject">
+    <inject-code>
+        com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+    </inject-code>
+</typesystem>

@@ -135,12 +135,33 @@
     </target>
 
     <target name="merge.typesystem">
-        <xslt in="generator/typesystem_opengl-common.xml" 
-              out="generator/typesystem_opengl.xml"
+        <xslt in="generator/typesystem_core-common.xml" 
+              out="generator/typesystem_core.xml"
               style="generator/merge.xsl"
               force="yes">
             <param name="source"
-                   expression="typesystem_opengl-java.xml"/>
+                   expression="typesystem_core-java.xml"/>
+        </xslt>
+        <xslt in="generator/typesystem_gui-common.xml" 
+              out="generator/typesystem_gui.xml"
+              style="generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_gui-java.xml"/>
+        </xslt>
+        <xslt in="generator/typesystem_network-common.xml" 
+              out="generator/typesystem_network.xml"
+              style="generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_network-java.xml"/>
+        </xslt>
+        <xslt in="generator/typesystem_svg-common.xml" 
+              out="generator/typesystem_svg.xml"
+              style="generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_svg-java.xml"/>
         </xslt>
         <xslt in="generator/typesystem_xml-common.xml" 
               out="generator/typesystem_xml.xml"
@@ -148,6 +169,27 @@
               force="yes">
             <param name="source"
                    expression="typesystem_xml-java.xml"/>
+        </xslt>
+        <xslt in="generator/typesystem_opengl-common.xml" 
+              out="generator/typesystem_opengl.xml"
+              style="generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_opengl-java.xml"/>
+        </xslt>
+        <xslt in="generator/typesystem_sql-common.xml" 
+              out="generator/typesystem_sql.xml"
+              style="generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_sql-java.xml"/>
+        </xslt>
+        <xslt in="generator/typesystem_designer-common.xml" 
+              out="generator/typesystem_designer.xml"
+              style="generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_designer-java.xml"/>
         </xslt>
     </target>
 

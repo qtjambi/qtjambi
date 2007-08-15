@@ -1,0 +1,7 @@
+<typesystem package="com.trolltech.qt.core" default-superclass="com.trolltech.qt.QtJambiObject">
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
+    com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+  </inject-code>
+  
+</typesystem>
