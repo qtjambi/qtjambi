@@ -2,4 +2,100 @@
     <inject-code>
         com.trolltech.qt.Utilities.loadQtLibrary("QtSql");
     </inject-code>
+
+
+    <value-type name="QSqlDatabase">
+        <modify-function signature="addDatabase(QSqlDriver*,QString)">
+            <modify-argument index="1">
+                <define-ownership class="java" owner="c++" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="contains(QString)">
+            <modify-argument index="1">
+                <replace-default-expression with="defaultConnection()" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="addDatabase(QString,QString)">
+            <modify-argument index="2">
+                <replace-default-expression with="defaultConnection()" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="addDatabase(QSqlDriver *,QString)">
+            <modify-argument index="2">
+                <replace-default-expression with="defaultConnection()" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="database(QString,bool)">
+            <modify-argument index="1">
+                <replace-default-expression with="defaultConnection()" />
+            </modify-argument>
+        </modify-function>
+        <modify-field name="defaultConnection">
+            <access modifier="private"/>
+            <rename to="defaultConnection_private" />
+        </modify-field>
+        <inject-code>
+        public static String defaultConnection() {
+            com.trolltech.qt.QNativePointer np = defaultConnection_private();
+            
+            String returned = "";
+            int i=0;
+            while (np.byteAt(i) != 0) returned += (char) np.byteAt(i++);
+            return returned;            
+        }
+        </inject-code>
+    </value-type>
+
+    <object-type name="QSqlTableModel">  
+        
+        <template name="sql.convert_sqlrecord_reference_to_java">
+            jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "QSqlRecord", "com/trolltech/qt/sql/", false);
+            Q_ASSERT(%out);
+        </template>
+        
+        <template name="sql.convert_sqlrecord_reference_from_java">
+            QSqlRecord *__ptr_record = (QSqlRecord *) qtjambi_to_object(__jni_env, %in);
+            
+            QSqlRecord dummy;
+            QSqlRecord &amp;%out = __ptr_record == 0 ? dummy : *__ptr_record;
+        </template>
+        
+        <modify-function signature="beforeInsert(QSqlRecord&amp;)">
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
+                <conversion-rule class="shell">
+                    <insert-template name="sql.convert_sqlrecord_reference_to_java" />
+                </conversion-rule>
+                <conversion-rule class="native">
+                    <insert-template name="sql.convert_sqlrecord_reference_from_java" />
+                </conversion-rule>            
+            </modify-argument>
+        </modify-function>
+        
+        <modify-function signature="beforeUpdate(int,QSqlRecord&amp;)">
+            <modify-argument index="2">
+                <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
+                <conversion-rule class="shell">
+                    <insert-template name="sql.convert_sqlrecord_reference_to_java" />
+                </conversion-rule>
+                <conversion-rule class="native">
+                    <insert-template name="sql.convert_sqlrecord_reference_from_java" />
+                </conversion-rule>            
+            </modify-argument>
+        </modify-function>
+        
+        <modify-function signature="primeInsert(int,QSqlRecord&amp;)">
+            <modify-argument index="2">
+                <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord" />
+                <conversion-rule class="shell">
+                    <insert-template name="sql.convert_sqlrecord_reference_to_java" />
+                </conversion-rule>
+                <conversion-rule class="native">
+                    <insert-template name="sql.convert_sqlrecord_reference_from_java" />
+                </conversion-rule>            
+            </modify-argument>
+        </modify-function>
+
+    </object-type>
+
 </typesystem>
