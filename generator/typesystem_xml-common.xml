@@ -243,7 +243,6 @@
     </object-type>
     <object-type name="QXmlInputSource" />
     <object-type name="QXmlLocator" />        
-    <object-type name="QXmlSimpleReader">'
     <object-type name="QXmlSimpleReader">
         <modify-function signature="setContentHandler(QXmlContentHandler*)">
             <modify-argument index="1">
@@ -277,7 +276,6 @@
         </modify-function>
     </object-type>
 
-    </object-type>
     <object-type name="QXmlStreamReader">
       <modify-function signature="QXmlStreamReader(const char*)" remove="all" />
       <modify-function signature="addData(const char*)" remove="all" />

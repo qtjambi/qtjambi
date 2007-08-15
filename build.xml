@@ -137,13 +137,15 @@
     <target name="merge.typesystem">
         <xslt in="generator/typesystem_opengl-common.xml" 
               out="generator/typesystem_opengl.xml"
-              style="generator/merge.xsl">
+              style="generator/merge.xsl"
+              force="yes">
             <param name="source"
                    expression="typesystem_opengl-java.xml"/>
         </xslt>
         <xslt in="generator/typesystem_xml-common.xml" 
               out="generator/typesystem_xml.xml"
-              style="generator/merge.xsl">
+              style="generator/merge.xsl"
+              force="yes">
             <param name="source"
                    expression="typesystem_xml-java.xml"/>
         </xslt>
