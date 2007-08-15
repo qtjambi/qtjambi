@@ -22,8 +22,8 @@
       </xsl:for-each>
   
       <xsl:variable name="other" select="document($source)/typesystem/*[not(self::object-type | self::value-type | self::interface-type)]" />  
-      <xsl:if test="$other != ''">
-        <xsl:choose>
+      <xsl:if test="$other">
+          <xsl:choose>
           <xsl:when test="$lang != ''">
             <xsl:element name="language">
               <xsl:attribute name="name" ><xsl:value-of select="$lang" /></xsl:attribute>
@@ -55,7 +55,7 @@
       <xsl:apply-templates select="node()" />
       
       <xsl:variable name="other" select="document($source)/typesystem/*[name() = $name][@name = current()/@name]" />
-      <xsl:if test="$other != ''">
+      <xsl:if test="$other">
         <xsl:choose>
           <xsl:when test="$lang != ''">
           <xsl:element name="language">
