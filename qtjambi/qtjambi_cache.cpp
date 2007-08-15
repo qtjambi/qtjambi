@@ -1009,6 +1009,10 @@ void StaticCache::resolveQtJambiInternal_internal()
                                                               "isGeneratedClass",
                                                               "(Ljava/lang/Class;)Z");
     Q_ASSERT(QtJambiInternal.isGeneratedClass);
+
+    QtJambiInternal.methodSignature = env->GetStaticMethodID(QtJambiInternal.class_ref, "methodSignature",
+                                                             "(Ljava/lang/reflect/Method;)Ljava/lang/String;");
+    Q_ASSERT(QtJambiInternal.methodSignature);
 }
 
 void StaticCache::resolveMetaData_internal() 
@@ -1021,6 +1025,12 @@ void StaticCache::resolveMetaData_internal()
 
     MetaData.stringData = env->GetFieldID(MetaData.class_ref, "stringData", "[B");
     Q_ASSERT(MetaData.stringData);
+
+    MetaData.signalsArray = env->GetFieldID(MetaData.class_ref, "signalsArray", "[Ljava/lang/reflect/Field;");
+    Q_ASSERT(MetaData.signalsArray);
+
+    MetaData.slotsArray = env->GetFieldID(MetaData.class_ref, "slotsArray", "[Ljava/lang/reflect/Method;");
+    Q_ASSERT(MetaData.slotsArray);
 }
 
 void StaticCache::resolveQtJambiGuiInternal_internal()

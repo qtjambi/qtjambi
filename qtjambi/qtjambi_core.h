@@ -501,4 +501,6 @@ inline void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info,
 
 QTJAMBI_EXPORT const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object, jobject object);
 
+QTJAMBI_EXPORT bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object);
+
 #endif // QTJAMBI_CORE_H

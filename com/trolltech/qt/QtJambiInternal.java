@@ -697,6 +697,8 @@ public class QtJambiInternal {
     private static class MetaData {
         public int metaData[];
         public byte stringData[];
+        public Field signalsArray[];
+        public Method slotsArray[];
     }
     
     private final static int MethodAccessPrivate = 0x00;
@@ -711,7 +713,6 @@ public class QtJambiInternal {
     
     private native static String internalTypeName(String s, int varContext);
     
-    // ### One per class
     public static MetaData buildMetaData(Class<? extends QObject> clazz, QObject object) {
         MetaData metaData = new MetaData();
                 
@@ -726,37 +727,51 @@ public class QtJambiInternal {
         }
         
         Field declaredFields[] = clazz.getDeclaredFields();
+        List<Field> signalFields = new ArrayList<Field>();
         for (Field declaredField : declaredFields) {
             if (isSignal(declaredField.getType())) try {
                 declaredField.setAccessible(true);                    
                 signals.add((QSignalEmitter.AbstractSignal) declaredField.get(object));
+                signalFields.add(declaredField);
             } catch (Exception e) {
                 signals.add((QSignalEmitter.AbstractSignal) fetchFieldNative(object, declaredField));
+                signalFields.add(declaredField);
             }                    
         }
+        metaData.signalsArray = signalFields.toArray(new Field[0]);
         
         {
             int functionCount = slots.size() + signals.size();
             
-            metaData.metaData = new int[10 + functionCount * 5 + 1]; // Header size(10) + functionCount*5 + EOD
+            metaData.metaData = new int[12 + functionCount * 5 + 1]; // Header size(10) + functionCount*5 + EOD
             
             // Add static header
             metaData.metaData[0] = 1; // Revision
-            // 0, 0, 0   (ints default to 0) 
+            // metaData[1] = 0 // class name  (ints default to 0) 
                         
+            metaData.metaData[2] = 1;  // class info count
+            metaData.metaData[3] = 10; // class info offset 
   
+            
+            // Functions always start at offset 12 (header has size 10, class info size 2)
             metaData.metaData[4] = functionCount;
-            metaData.metaData[5] = functionCount > 0 ? 10 : 0;
+            metaData.metaData[5] = functionCount > 0 ? 12 : 0;
             // 0, 0, 0, 0 (### enums and properties not supported yet) 
                                                 
             int offset = 0;
-            int metaDataOffset = 10; // Function meta data always starts at offset 10 
+            int metaDataOffset = 10; // Header is always 10 ints long
             Hashtable<String, Integer> strings = new Hashtable<String, Integer>();
             List<String> stringsInOrder = new ArrayList<String>();
             // Class name
             {
                 stringsInOrder.add(clazz.getName());
                 strings.put(clazz.getName(), offset); offset += clazz.getName().length() + 1;                
+            }
+            
+            // Class info
+            {
+                offset += addString(metaData.metaData, strings, stringsInOrder, "__qt__binding_shell_language", offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, "Qt Jambi", offset, metaDataOffset++);                 
             }
             
             // Signals
@@ -808,6 +823,7 @@ public class QtJambiInternal {
                 
                 metaData.metaData[metaDataOffset++] = flags;
             }
+            metaData.slotsArray = slots.toArray(new Method[0]);
             
             // ### No properties yet
             
@@ -825,7 +841,7 @@ public class QtJambiInternal {
             }
             
         }
-                                
+        
         return metaData;
     }
     
@@ -863,9 +879,6 @@ public class QtJambiInternal {
                                  String string,
                                  int offset,
                                  int metaDataOffset) {
-        if (string.equals("")) {
-            System.out.println("strings == " + strings + " contains " + strings.containsKey(string));
-        }
         if (strings.containsKey(string)) {
             metaData[metaDataOffset] = strings.get(string);
             return 0;

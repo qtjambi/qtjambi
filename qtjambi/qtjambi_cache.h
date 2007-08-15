@@ -264,12 +264,15 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID readSerializableJavaObject;
         jmethodID buildMetaData;
         jmethodID isGeneratedClass;
+        jmethodID methodSignature;
     } QtJambiInternal;
 
     struct {
         jclass class_ref;
         jfieldID metaData;
         jfieldID stringData;
+        jfieldID signalsArray;
+        jfieldID slotsArray;
     } MetaData;
 
     struct {

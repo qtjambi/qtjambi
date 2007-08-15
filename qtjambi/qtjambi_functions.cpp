@@ -324,17 +324,17 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_internalTypeName)
 (JNIEnv *env, jclass, jstring s, jint varContext)
 {
     QString signature = qtjambi_to_qstring(env, s);
-
+    
     int prefix_end = signature.indexOf("(");
     QString prefix;
-    if (prefix_end > 0) {
+    if (prefix_end >= 0) {
         prefix = signature.mid(0, prefix_end+1);
         signature = signature.mid(prefix_end+1);
     }
-
+    
     int postfix_start = signature.lastIndexOf(")");
     QString postfix;
-    if (postfix_start > 0 && postfix_start > prefix_end) {
+    if (postfix_start >= 0) {
         postfix = signature.mid(postfix_start);
         signature = signature.mid(0, postfix_start);
     }

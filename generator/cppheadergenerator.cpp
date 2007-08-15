@@ -131,7 +131,7 @@ void CppHeaderGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     if (java_class->isQObject()) {
       s << "public:" << endl
         << "  Q_OBJECT_CHECK" << endl
-        << "  mutable const QMetaObject *m_dynamic_meta_object;" << endl
+        << "  mutable const QMetaObject *m_meta_object;" << endl
         << "  const QMetaObject *metaObject() const;" << endl
         << "  void *qt_metacast(const char *);" << endl
         << "  QT_TR_FUNCTIONS" << endl
