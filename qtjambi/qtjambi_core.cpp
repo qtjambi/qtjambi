@@ -552,6 +552,15 @@ void qtjambi_invalidate_object(JNIEnv *env, jobject java_object)
 
 static bool qtjambi_connect_callback(void **raw_data);
 
+// Find the first in meta_object's line of ancestors (including meta_object itself) which
+// is a static meta object (hence, not one of Qt Jambi's fake meta objects)
+static const QMetaObject *qtjambi_find_first_static_metaobject(const QMetaObject *meta_object) 
+{
+    while (meta_object != 0 && qtjambi_metaobject_is_dynamic(meta_object))
+        meta_object = meta_object->superClass();        
+    return meta_object;
+}
+
 /* Called the first time a C++ created QObject is converted into Java.
    Any Java emissions of signals that have previously been connected to something
    must then be connected to their corresponding C++ signal emissions.
@@ -567,7 +576,7 @@ static void qtjambi_setup_connections(JNIEnv *, QtJambiLink *link)
     const QObject *qobject = link->qobject();
     Q_ASSERT(qobject);
 
-    const QMetaObject *mo = qobject->metaObject();
+    const QMetaObject *mo = qtjambi_find_first_static_metaobject(qobject->metaObject());
     Q_ASSERT(mo);
 
     for (int i=0; i<mo->methodCount(); ++i) {
@@ -600,7 +609,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
     QtJambiLink *link = QtJambiLink::findLinkForQObject(qt_object);
 
     if (!link) {
-        const QMetaObject *mo = qt_object->metaObject();
+        const QMetaObject *mo = qtjambi_find_first_static_metaobject(qt_object->metaObject());
 
         QByteArray javaClassName;
         QByteArray javaPackageName;
@@ -1688,10 +1697,10 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
     // for connections made in superclass constructors because C++ builds the
     // virtual table in stages.
     if (fail_on_cpp_resolve
-        && data->sender->metaObject()->indexOfSignal(data->signal + 1) >= 0
+        && qtjambi_find_first_static_metaobject(data->sender->metaObject())->indexOfSignal(data->signal + 1) >= 0
         && data->receiver != 0
         && data->method != 0
-        && data->receiver->metaObject()->indexOfSlot(data->method + 1) >= 0) {
+        && qtjambi_find_first_static_metaobject(data->receiver->metaObject())->indexOfSlot(data->method + 1) >= 0) {
         if (sender_link != 0 && !sender_link->connectedToJava()) { // connect java to c++
             qtjambi_setup_connections(jni_env, sender_link);
         }
@@ -1732,7 +1741,7 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
     }
 
     // Does the signal exist in C++? then we need to check if it's been renamed
-    const QMetaObject *mo = data->sender->metaObject();
+    const QMetaObject *mo = qtjambi_find_first_static_metaobject(data->sender->metaObject());
     const char *class_name = 0;
     int mox = mo->indexOfSignal(data->signal + 1);
     while (mox >= 0 && mo != 0 && class_name == 0) {
@@ -1782,7 +1791,7 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
     }
 
     if (resolved_data->java_receiver != 0 && data->method != 0) {
-        mo = data->receiver->metaObject();
+        mo = qtjambi_find_first_static_metaobject(data->receiver->metaObject());
         class_name = 0;
         int mox = mo->indexOfMethod(data->method + 1);
         while (mo != 0 && class_name == 0) {
