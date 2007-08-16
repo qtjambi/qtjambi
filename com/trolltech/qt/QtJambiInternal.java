@@ -741,8 +741,8 @@ public class QtJambiInternal {
                 // If we can't convert the type, we don't list it
                 String methodParameters = methodParameters(declaredMethod);
                 String returnType = declaredMethod.getReturnType().getName();                
-                if ((methodParameters.isEmpty() || !internalTypeName(methodParameters, 1).isEmpty())
-                    &&(returnType.isEmpty() || returnType.equals("void") || !internalTypeName(returnType, 0).isEmpty())) {                     
+                if ((methodParameters.equals("") || !internalTypeName(methodParameters, 1).equals(""))
+                    &&(returnType.equals("") || returnType.equals("void") || !internalTypeName(returnType, 0).equals(""))) {                     
                     slots.add(declaredMethod);             
                 }
             }
@@ -757,7 +757,7 @@ public class QtJambiInternal {
                 if (reader != null 
                     && declaredMethod.getParameterTypes().length == 0 
                     && declaredMethod.getReturnType() != Void.TYPE
-                    && !internalTypeName(declaredMethod.getReturnType().getName(), 0).isEmpty()) {
+                    && !internalTypeName(declaredMethod.getReturnType().getName(), 0).equals("")) {
                     propertyReaders.put(reader.name(), declaredMethod);
                 }
             }
@@ -773,7 +773,7 @@ public class QtJambiInternal {
                 if (writer != null 
                     && parameterTypes.length == 1
                     && declaredMethod.getReturnType() == Void.TYPE                     
-                    && !internalTypeName(methodParameters(declaredMethod), 1).isEmpty()) {
+                    && !internalTypeName(methodParameters(declaredMethod), 1).equals("")) {
                     propertyWriters.put(writer.name(), declaredMethod);
                 }
             }
@@ -809,7 +809,7 @@ public class QtJambiInternal {
             // If we can't convert all the types we don't list the signal
             if (signal != null) {
                 String signalParameters = signalParameters(signal);
-                if (signalParameters.isEmpty() || !internalTypeName(signalParameters, 1).isEmpty()) {
+                if (signalParameters.equals("") || !internalTypeName(signalParameters, 1).equals("")) {
                     signals.add(signal);
                     signalFields.add(declaredField);
                 }
