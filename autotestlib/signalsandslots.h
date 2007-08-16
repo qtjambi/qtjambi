@@ -137,8 +137,8 @@ public:
         return sas;
     }
 
-    void setByteArrayProperty(const QString &propertyName, const QByteArray &byteArray) {
-        setProperty(propertyName.toLatin1(), QVariant(byteArray));
+    bool setByteArrayProperty(const QString &propertyName, const QByteArray &byteArray) {
+        return setProperty(propertyName.toLatin1(), QVariant(byteArray));
     }
 
     QByteArray byteArrayProperty(const QString &propertyName) {
@@ -195,7 +195,7 @@ signals:
 public slots:
     void slot1_1() { slot1_1_called++; }
     virtual void slot1_2() { slot1_2_called++; }
-    void slot1_3() { slot1_3_called++; }
+    QByteArray slot1_3() { slot1_3_called++; }
     virtual void slot2(int i) { slot2_called += i; }
     void slot3(const QString &str) { slot3_called += str.toInt(); }
 

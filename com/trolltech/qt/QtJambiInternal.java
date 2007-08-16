@@ -820,7 +820,7 @@ public class QtJambiInternal {
         {
             int functionCount = slots.size() + signals.size();
             
-            metaData.metaData = new int[12 + functionCount * 5 + 1]; // Header size(10) + functionCount*5 + EOD
+            metaData.metaData = new int[12 + functionCount * 5 + 1 + propertyReaders.keySet().size() * 3]; // Header size(10) + functionCount*5 + EOD
             
             // Add static header
             metaData.metaData[0] = 1; // Revision
@@ -917,7 +917,7 @@ public class QtJambiInternal {
                 Method writer = propertyWriters.get(propertyNames[i]);
                 Method resetter = propertyResetters.get(propertyNames[i]);
                 
-                if (!reader.getReturnType().isAssignableFrom(writer.getParameterTypes()[0])) {
+                if (writer != null && !reader.getReturnType().isAssignableFrom(writer.getParameterTypes()[0])) {
                     System.err.println("QtJambiInternal.buildMetaData: Writer for property " 
                             + propertyNames[i] + " takes a type which is incompatible with reader's return type.");
                     writer = null;
@@ -977,8 +977,13 @@ public class QtJambiInternal {
      * Returns the signature of the method m excluding the modifiers and the
      * return type.
      */    
+    private static String methodSignature(Method m, boolean includeReturnType) {
+        return (includeReturnType ? m.getReturnType().getName() + " " : "")
+               + m.getName() + "(" + methodParameters(m) + ")";
+    }
+    
     private static String methodSignature(Method m) {
-        return m.getName() + "(" + methodParameters(m) + ")";
+        return methodSignature(m, false);
     }
     
     private static String signalParameters(QSignalEmitter.AbstractSignal signal) {

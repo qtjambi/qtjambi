@@ -1166,7 +1166,6 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
         return true;
 
     Q_ASSERT(out != 0);
-    Q_ASSERT(*out == 0);
 
     const jvalue *pval = reinterpret_cast<const jvalue *>(in);
 
@@ -1233,7 +1232,26 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
         qWarning("QtJambiTypeManager::convertExternalToInternal: Couldn't convert external type "
             " '%s'", qPrintable(externalTypeName));
     } else {
-        *out = constructInternal(internalTypeName, ctx, copy);
+        if (*out == 0) { // Construct a new one
+            *out = constructInternal(internalTypeName, ctx, copy);
+        } else { // Use QDataStream to copy the value over
+            int metaType = metaTypeOfInternal(internalTypeName, ctx);
+
+            if (metaType != int(QMetaType::Void)
+                && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
+
+                QByteArray ba;
+                /* write the copy to the stream */ {
+                    QDataStream stream(&ba, QIODevice::WriteOnly);
+                    QMetaType::save(stream, metaType, copy);
+                }
+
+                /* read it back into the destination */ {
+                    QDataStream stream(&ba, QIODevice::ReadOnly);
+                    QMetaType::load(stream, metaType, *out);
+                }
+            }
+        }
     }
 
     return success;

@@ -3,6 +3,7 @@
 #include "qtjambitypemanager.h"
 
 #include <QtCore/QHash>
+#include <QtCore/QVarLengthArray>
 
 
 QDynamicMetaObject::QDynamicMetaObject(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object, jobject object) 
@@ -92,7 +93,7 @@ void QDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject metho
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
 
-    jobject method_signature = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.methodSignature, method_object);
+    jobject method_signature = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.methodSignature2, method_object, true);
     Q_ASSERT(method_signature != 0);
 
     QString signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(method_signature));
@@ -196,10 +197,12 @@ int QDynamicMetaObject::readProperty(JNIEnv *env, jobject object, int _id, void 
         _id = static_cast<const QDynamicMetaObject *>(super_class)->readProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
-    jobject method_object = env->GetObjectArrayElement(m_property_readers, _id);
-    Q_ASSERT(method_object != 0);
+    if (_id < m_property_count) {
+        jobject method_object = env->GetObjectArrayElement(m_property_readers, _id);
+        Q_ASSERT(method_object != 0);
 
-    invokeMethod(env, object, method_object, _a);
+        invokeMethod(env, object, method_object, _a);
+    }
 
     return _id - m_property_count;
 }
@@ -210,10 +213,16 @@ int QDynamicMetaObject::writeProperty(JNIEnv *env, jobject object, int _id, void
     if (qtjambi_metaobject_is_dynamic(super_class))
         _id = static_cast<const QDynamicMetaObject *>(super_class)->writeProperty(env, object, _id, _a);
     if (_id < 0) return _id;
-
-    jobject method_object = env->GetObjectArrayElement(m_property_writers, _id);
-    if (method_object != 0)
-        invokeMethod(env, object, method_object, _a);
+   
+    if (_id < m_property_count) {
+        jobject method_object = env->GetObjectArrayElement(m_property_writers, _id);
+        if (method_object != 0) {
+            // invokeMethod expects a place holder for return value, but write property meta calls
+            // do not since all property writers return void by convention.
+            void *a[2] = { 0, _a[0] };
+            invokeMethod(env, object, method_object, a);
+        }
+    }
 
     return _id - m_property_count;
 }
@@ -225,9 +234,11 @@ int QDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, void
         _id = static_cast<const QDynamicMetaObject *>(super_class)->resetProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
-    jobject method_object = env->GetObjectArrayElement(m_property_resetters, _id);
-    if (method_object != 0)
-        invokeMethod(env, object, method_object, _a);
+    if (_id < m_property_count) {
+        jobject method_object = env->GetObjectArrayElement(m_property_resetters, _id);
+        if (method_object != 0)
+            invokeMethod(env, object, method_object, _a);
+    }
 
     return _id - m_property_count;
 }

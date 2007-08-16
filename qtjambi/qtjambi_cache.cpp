@@ -1013,6 +1013,10 @@ void StaticCache::resolveQtJambiInternal_internal()
     QtJambiInternal.methodSignature = env->GetStaticMethodID(QtJambiInternal.class_ref, "methodSignature",
                                                              "(Ljava/lang/reflect/Method;)Ljava/lang/String;");
     Q_ASSERT(QtJambiInternal.methodSignature);
+
+    QtJambiInternal.methodSignature2 = env->GetStaticMethodID(QtJambiInternal.class_ref, "methodSignature",
+                                                              "(Ljava/lang/reflect/Method;Z)Ljava/lang/String;");
+    Q_ASSERT(QtJambiInternal.methodSignature2);
 }
 
 void StaticCache::resolveMetaData_internal() 

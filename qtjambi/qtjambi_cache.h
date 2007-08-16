@@ -265,6 +265,7 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID buildMetaData;
         jmethodID isGeneratedClass;
         jmethodID methodSignature;
+        jmethodID methodSignature2;
     } QtJambiInternal;
 
     struct {

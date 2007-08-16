@@ -1518,4 +1518,106 @@ public class TestConnections extends QApplicationTest implements Qt
         assertEquals("objectName", list.get(0));
         assertEquals("cppProperty", list.get(1));
     }
+    
+    private static class SignalsAndSlotsWithProperties extends SignalsAndSlots {
+        private QByteArray javaProperty;
+        
+        @QtPropertyReader(name="javaProperty")
+        public QByteArray javaProperty() {
+            return javaProperty;
+        }
+        
+        @QtPropertyWriter(name="javaProperty")
+        public void setJavaProperty(QByteArray ba) {
+            javaProperty = ba;
+        }
+        
+        @QtPropertyResetter(name="javaProperty") 
+        public void resetJavaProperty() {
+            javaProperty = new QByteArray("HAY GUYS I INVENTED INTERNET"); 
+        }
+        
+    }
+    
+    private static class SignalsAndSlotsWithMoreProperties extends SignalsAndSlotsWithProperties {
+        private QByteArray otherJavaProperty;
+        
+        @QtPropertyReader(name="otherJavaProperty")
+        public QByteArray otherJavaProperty() {
+            return otherJavaProperty;
+        }
+        
+        @QtPropertyWriter(name="otherJavaProperty")
+        public void setOtherJavaProperty(QByteArray ba) {
+            otherJavaProperty = ba;
+        }
+        
+        @QtPropertyResetter(name="otherJavaProperty") 
+        public void resetOtherJavaProperty() {
+            otherJavaProperty = new QByteArray("HAY GUYS I INVENTED INTERNET"); 
+        }
+        
+        @QtPropertyReader(name="readOnlyProperty")
+        public QByteArray readOnlyProperty() {
+            return new QByteArray("it was a darker and stormier night than yesterday night, which was also dark and stormy");                                   
+        }
+    }
+    
+    @Test public void readWriteResetProperty() {
+        SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
+        
+        sas.setByteArrayProperty("javaProperty", new QByteArray("it was a dark and stormy night"));
+        QByteArray ba = QVariant.toByteArray(sas.property("javaProperty"));
+        assertEquals("it was a dark and stormy night", ba.toString());
+        assertEquals("it was a dark and stormy night", sas.javaProperty().toString());
+        
+        sas.setProperty("javaProperty", new QByteArray("it was a stormy, dark night"));
+        ba = sas.byteArrayProperty("javaProperty");
+        assertEquals("it was a stormy, dark night", sas.javaProperty().toString());
+        assertEquals("it was a stormy, dark night", ba.toString());        
+        
+        sas.resetProperty("javaProperty");
+        assertEquals("HAY GUYS I INVENTED INTERNET", sas.property("javaProperty").toString());
+        assertEquals("HAY GUYS I INVENTED INTERNET", sas.javaProperty().toString());
+        
+        sas.setByteArrayProperty("otherJavaProperty", new QByteArray("it was a cold and dry night"));
+        assertEquals("it was a cold and dry night", sas.property("otherJavaProperty").toString());
+        assertEquals("it was a cold and dry night", sas.byteArrayProperty("otherJavaProperty").toString());
+        assertEquals("it was a cold and dry night", sas.otherJavaProperty().toString());
+    }
+    
+    @Test public void readOnlyProperty() {
+        SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();        
+        assertEquals("it was a darker and stormier night than yesterday night, which was also dark and stormy", sas.byteArrayProperty("readOnlyProperty").toString());
+    }
+    
+    @Test public void propertyCount() {
+        SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
+        
+        assertEquals(5, sas.propertyCountFromMetaObject());
+        assertEquals(3, sas.propertyCountOfSuperClassFromMetaObject());
+    }
+    
+    @Test public void className() {
+        SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
+        
+        assertEquals("com.trolltech.autotests.TestConnections$SignalsAndSlotsWithMoreProperties",  
+                     sas.classNameFromMetaObject());
+        assertEquals("com.trolltech.autotests.TestConnections$SignalsAndSlotsWithProperties",  
+                sas.classNameOfSuperClassFromMetaObject());        
+    }
+    
+    @Test public void propertyNames() {
+        SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
+        
+        List<String> propertyNames = sas.propertyNamesFromMetaObject();
+        assertEquals(5, propertyNames.size());
+        assertEquals("objectName", propertyNames.get(0));
+        assertEquals("cppProperty", propertyNames.get(1));
+        assertEquals("javaProperty", propertyNames.get(2));
+        assertEquals("readOnlyProperty", propertyNames.get(3));
+        assertEquals("otherJavaProperty", propertyNames.get(4));
+        
+    }
+    
 }

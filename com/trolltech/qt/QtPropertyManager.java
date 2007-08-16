@@ -178,6 +178,7 @@ public class QtPropertyManager {
             else if (designable == DEFAULT_FALSE)
                 return false;
             try {
+                designable.setAccessible(true);
                 return (Boolean) designable.invoke(o);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -589,6 +590,7 @@ public class QtPropertyManager {
             throw new QPropertyException("Property '" + name + "' is not readable");
 
         try {
+            e.read.setAccessible(true);
             return e.read.invoke(object);
         } catch (Exception ex) {
             System.err.println("Failed to read property '" + name + "' in " + object);
@@ -613,6 +615,7 @@ public class QtPropertyManager {
             throw new QPropertyException("Property '" + name + "' is not writable");
 
         try {
+            e.write.setAccessible(true);
             e.write.invoke(object, value);
         } catch (Exception ex) {
             System.err.println("Failed to write property '" + name + "' in " + object);
@@ -634,6 +637,7 @@ public class QtPropertyManager {
             throw new QPropertyException("Property '" + name + "' is not resettable");
 
         try {
+            e.reset.setAccessible(true);
             e.reset.invoke(object);
         } catch (Exception ex) {
             System.err.println("Failed to reset property '" + name + "' in " + object);
