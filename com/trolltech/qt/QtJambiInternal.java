@@ -720,8 +720,18 @@ public class QtJambiInternal {
         List<QSignalEmitter.AbstractSignal> signals = new ArrayList<QSignalEmitter.AbstractSignal>();
         Method declaredMethods[] = clazz.getDeclaredMethods();
         for (Method declaredMethod : declaredMethods) {
+            
             if (!declaredMethod.isAnnotationPresent(QtBlockedSlot.class) 
-                    && ((declaredMethod.getModifiers() & Modifier.STATIC) != Modifier.STATIC)) { 
+                    && ((declaredMethod.getModifiers() & Modifier.STATIC) != Modifier.STATIC)) {
+                
+                // If we can't convert the type, we don't list it
+                String methodParameters = methodParameters(declaredMethod);
+                if (!methodParameters.isEmpty() && internalTypeName(methodParameters, 1).isEmpty())
+                    continue;
+                String returnType = declaredMethod.getReturnType().getName();
+                if (!returnType.isEmpty() && !returnType.equals("void") && internalTypeName(returnType, 0).isEmpty())
+                    continue;
+                
                 slots.add(declaredMethod);             
             }
         }
@@ -729,14 +739,22 @@ public class QtJambiInternal {
         Field declaredFields[] = clazz.getDeclaredFields();
         List<Field> signalFields = new ArrayList<Field>();
         for (Field declaredField : declaredFields) {
+            QSignalEmitter.AbstractSignal signal = null;
             if (isSignal(declaredField.getType())) try {
-                declaredField.setAccessible(true);                    
-                signals.add((QSignalEmitter.AbstractSignal) declaredField.get(object));
-                signalFields.add(declaredField);
-            } catch (Exception e) {
-                signals.add((QSignalEmitter.AbstractSignal) fetchFieldNative(object, declaredField));
-                signalFields.add(declaredField);
-            }                    
+                declaredField.setAccessible(true);      
+                signal = (QSignalEmitter.AbstractSignal) declaredField.get(object);
+            } catch (Exception e) {                
+                signal = (QSignalEmitter.AbstractSignal) fetchFieldNative(object, declaredField);                
+            }
+        
+            // If we can't convert all the types we don't list the signal
+            if (signal != null) {
+                String signalParameters = signalParameters(signal);
+                if (signalParameters.isEmpty() || !internalTypeName(signalParameters, 1).isEmpty()) {
+                    signals.add(signal);
+                    signalFields.add(declaredField);
+                }
+            }
         }
         metaData.signalsArray = signalFields.toArray(new Field[0]);
         
@@ -776,13 +794,15 @@ public class QtJambiInternal {
             
             // Signals
             for (QSignalEmitter.AbstractSignal signal : signals) {
+                String signalParameters = internalTypeName(signalParameters(signal), 1);
+                                                
                 // Signal name
-                offset += addString(metaData.metaData, strings, stringsInOrder, signal.name() + "(" + internalTypeName(signalParameters(signal), 1) + ")", offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, signal.name() + "(" + signalParameters + ")", offset, metaDataOffset++);
                 
                 
                 
                 // Signal parameters
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(signalParameters(signal),1), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, signalParameters, offset, metaDataOffset++);
                 
                 // Signal type (signals are always void in Qt Jambi)
                 offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);
@@ -806,7 +826,7 @@ public class QtJambiInternal {
                 // Slot type 
                 String returnType = slot.getReturnType().getName();
                 if (returnType.equals("void")) returnType = "";
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(returnType,2), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(returnType,0), offset, metaDataOffset++);
                 
                 // Slot tag (### not implemented)
                 offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);

@@ -942,8 +942,6 @@ QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
     } else if (externalTypeName == QLatin1String("java/lang/Object"))
         return QLatin1String("QVariant");
 
-    qWarning("QtJambiTypeManager::getInternalTypeName: "
-             "Couldn't find internal type name of '%s'", qPrintable(externalTypeName));
     return QString();
 }
 

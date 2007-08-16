@@ -343,8 +343,11 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_internalTypeName)
 
     QStringList allArgs = signature.split(",");
     for (int i=0; i<allArgs.size(); ++i) {
-        if (!allArgs.at(i).isEmpty())
-            allArgs[i] = manager.getInternalTypeName(QString(allArgs.at(i)).replace('.', '/'), varContext == 1 ? QtJambiTypeManager::ArgumentType : QtJambiTypeManager::ReturnType);
+        if (!allArgs.at(i).isEmpty()) {
+            allArgs[i] = manager.getInternalTypeName(QString(allArgs.at(i)).replace('.', '/'), QtJambiTypeManager::VariableContext(varContext));
+            if (allArgs[i].isEmpty()) // Can't convert type name, in which case we just return emptiness
+                return qtjambi_from_qstring(env, "");
+        }
     }
 
     return qtjambi_from_qstring(env, prefix + allArgs.join(",") + postfix);
