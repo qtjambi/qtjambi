@@ -10,7 +10,7 @@
     <property name="jambiLib" value="./lib" />
     <property name="qt"       value="${env.QTDIR}" />
     <property name="qtLib"    value="${qt}/lib" />
-    <property name="config"    value="" />
+    <property name="config"    value="release" />
 
     <mkdir dir="${outputDir}" />
 
