@@ -1031,6 +1031,15 @@ void StaticCache::resolveMetaData_internal()
 
     MetaData.slotsArray = env->GetFieldID(MetaData.class_ref, "slotsArray", "[Ljava/lang/reflect/Method;");
     Q_ASSERT(MetaData.slotsArray);
+
+    MetaData.propertyReadersArray = env->GetFieldID(MetaData.class_ref, "propertyReadersArray", "[Ljava/lang/reflect/Method;");
+    Q_ASSERT(MetaData.propertyReadersArray);
+
+    MetaData.propertyWritersArray = env->GetFieldID(MetaData.class_ref, "propertyWritersArray", "[Ljava/lang/reflect/Method;");
+    Q_ASSERT(MetaData.propertyWritersArray);
+
+    MetaData.propertyResettersArray = env->GetFieldID(MetaData.class_ref, "propertyResettersArray", "[Ljava/lang/reflect/Method;");
+    Q_ASSERT(MetaData.propertyResettersArray);
 }
 
 void StaticCache::resolveQtJambiGuiInternal_internal()

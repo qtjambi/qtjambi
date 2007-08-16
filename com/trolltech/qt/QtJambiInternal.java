@@ -697,8 +697,13 @@ public class QtJambiInternal {
     private static class MetaData {
         public int metaData[];
         public byte stringData[];
+        
         public Field signalsArray[];
         public Method slotsArray[];
+        
+        public Method propertyReadersArray[];
+        public Method propertyWritersArray[];
+        public Method propertyResettersArray[];
     }
     
     private final static int MethodAccessPrivate = 0x00;
@@ -706,6 +711,9 @@ public class QtJambiInternal {
     private final static int MethodAccessPublic = 0x02;
     private final static int MethodSignal = 0x04;
     private final static int MethodSlot = 0x8;
+    private final static int PropertyReadable = 0x1;
+    private final static int PropertyWritable = 0x2;
+    private final static int PropertyResettable = 0x4;    
     
     public static boolean isGeneratedClass(Class<?> clazz) {
         return clazz.isAnnotationPresent(QtJambiGeneratedClass.class);
@@ -718,7 +726,13 @@ public class QtJambiInternal {
                 
         List<Method> slots = new ArrayList<Method>();
         List<QSignalEmitter.AbstractSignal> signals = new ArrayList<QSignalEmitter.AbstractSignal>();
-        Method declaredMethods[] = clazz.getDeclaredMethods();
+        
+        Hashtable<String, Method> propertyReaders = new Hashtable<String, Method>();
+        Hashtable<String, Method> propertyWriters = new Hashtable<String, Method>();
+        Hashtable<String, Method> propertyDesignables = new Hashtable<String, Method>();
+        Hashtable<String, Method> propertyResetters = new Hashtable<String, Method>();
+        
+        Method declaredMethods[] = clazz.getDeclaredMethods();        
         for (Method declaredMethod : declaredMethods) {
             
             if (!declaredMethod.isAnnotationPresent(QtBlockedSlot.class) 
@@ -726,18 +740,63 @@ public class QtJambiInternal {
                 
                 // If we can't convert the type, we don't list it
                 String methodParameters = methodParameters(declaredMethod);
-                if (!methodParameters.isEmpty() && internalTypeName(methodParameters, 1).isEmpty())
-                    continue;
-                String returnType = declaredMethod.getReturnType().getName();
-                if (!returnType.isEmpty() && !returnType.equals("void") && internalTypeName(returnType, 0).isEmpty())
-                    continue;
-                
-                slots.add(declaredMethod);             
+                String returnType = declaredMethod.getReturnType().getName();                
+                if ((methodParameters.isEmpty() || !internalTypeName(methodParameters, 1).isEmpty())
+                    &&(returnType.isEmpty() || returnType.equals("void") || !internalTypeName(returnType, 0).isEmpty())) {                     
+                    slots.add(declaredMethod);             
+                }
             }
+
+            // Rules for readers:
+            // 1. Zero arguments
+            // 2. Return something other than void
+            // 3. We can convert the type            
+            {
+                QtPropertyReader reader = declaredMethod.getAnnotation(QtPropertyReader.class);
+                
+                if (reader != null 
+                    && declaredMethod.getParameterTypes().length == 0 
+                    && declaredMethod.getReturnType() != Void.TYPE
+                    && !internalTypeName(declaredMethod.getReturnType().getName(), 0).isEmpty()) {
+                    propertyReaders.put(reader.name(), declaredMethod);
+                }
+            }
+            
+            // Rules for writers:
+            // 1. Takes exactly one argument
+            // 2. Return void
+            // 3. We can convert the type
+            {
+                QtPropertyWriter writer = declaredMethod.getAnnotation(QtPropertyWriter.class);
+                
+                Class<?> parameterTypes[] = declaredMethod.getParameterTypes();
+                if (writer != null 
+                    && parameterTypes.length == 1
+                    && declaredMethod.getReturnType() == Void.TYPE                     
+                    && !internalTypeName(methodParameters(declaredMethod), 1).isEmpty()) {
+                    propertyWriters.put(writer.name(), declaredMethod);
+                }
+            }
+        
+            // Rules for resetters:
+            // 1. No arguments
+            // 2. Return void            
+            {
+                QtPropertyResetter resetter = declaredMethod.getAnnotation(QtPropertyResetter.class);
+                
+                if (resetter != null 
+                    && declaredMethod.getParameterTypes().length == 0
+                    && declaredMethod.getReturnType() == Void.TYPE) {
+                    propertyResetters.put(resetter.name(), declaredMethod);
+                } 
+            }
+
+            // ### Designable properties
+            
         }
         
         Field declaredFields[] = clazz.getDeclaredFields();
-        List<Field> signalFields = new ArrayList<Field>();
+        List<Field> signalFields = new ArrayList<Field>();        
         for (Field declaredField : declaredFields) {
             QSignalEmitter.AbstractSignal signal = null;
             if (isSignal(declaredField.getType())) try {
@@ -754,7 +813,7 @@ public class QtJambiInternal {
                     signals.add(signal);
                     signalFields.add(declaredField);
                 }
-            }
+            }            
         }
         metaData.signalsArray = signalFields.toArray(new Field[0]);
         
@@ -769,12 +828,16 @@ public class QtJambiInternal {
                         
             metaData.metaData[2] = 1;  // class info count
             metaData.metaData[3] = 10; // class info offset 
-  
-            
+              
             // Functions always start at offset 12 (header has size 10, class info size 2)
             metaData.metaData[4] = functionCount;
             metaData.metaData[5] = functionCount > 0 ? 12 : 0;
-            // 0, 0, 0, 0 (### enums and properties not supported yet) 
+            
+            
+            metaData.metaData[6] = propertyReaders.keySet().size();
+            metaData.metaData[7] = 12 + functionCount * 5; // Each function takes 5 ints 
+            
+            // 0, 0 (### enums not supported yet) 
                                                 
             int offset = 0;
             int metaDataOffset = 10; // Header is always 10 ints long
@@ -845,7 +908,36 @@ public class QtJambiInternal {
             }
             metaData.slotsArray = slots.toArray(new Method[0]);
             
-            // ### No properties yet
+            String propertyNames[] = propertyReaders.keySet().toArray(new String[0]);
+            metaData.propertyReadersArray = new Method[propertyNames.length]; 
+            metaData.propertyResettersArray = new Method[propertyNames.length];
+            metaData.propertyWritersArray = new Method[propertyNames.length];
+            for (int i=0; i<propertyNames.length; ++i) {
+                Method reader = propertyReaders.get(propertyNames[i]);
+                Method writer = propertyWriters.get(propertyNames[i]);
+                Method resetter = propertyResetters.get(propertyNames[i]);
+                
+                if (!reader.getReturnType().isAssignableFrom(writer.getParameterTypes()[0])) {
+                    System.err.println("QtJambiInternal.buildMetaData: Writer for property " 
+                            + propertyNames[i] + " takes a type which is incompatible with reader's return type.");
+                    writer = null;
+                }
+                
+                // Name
+                offset += addString(metaData.metaData, strings, stringsInOrder, propertyNames[i], offset, metaDataOffset++);
+                
+                // Type
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(reader.getReturnType().getName(), 0), offset, metaDataOffset++);
+                
+                // Flags
+                metaData.metaData[metaDataOffset++] = PropertyReadable 
+                    | (writer != null ? PropertyWritable : 0)
+                    | (resetter != null ? PropertyResettable : 0);
+                                
+                metaData.propertyReadersArray[i] = reader;
+                metaData.propertyWritersArray[i] = writer;
+                metaData.propertyResettersArray[i] = resetter;
+            }
             
             // EOD
             metaData.metaData[metaDataOffset++] = 0;

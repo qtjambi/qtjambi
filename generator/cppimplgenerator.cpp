@@ -739,8 +739,17 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const MetaJavaClass
       << "  if (m_link != 0 && qtjambi_metaobject_is_dynamic(meta_object)) {" << endl
       << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
       << "      __jni_env->PushLocalFrame(100);" << endl
-      << "      const QDynamicMetaObject *dynamic_meta_object = static_cast<const QDynamicMetaObject *>(meta_object);" << endl      
-      << "      _id = dynamic_meta_object->invokeSignalOrSlot(__jni_env, m_link->javaObject(__jni_env), _id, _a);" << endl
+      << "      const QDynamicMetaObject *dynamic_meta_object = static_cast<const QDynamicMetaObject *>(meta_object);" << endl
+      << "      switch (_c) {" << endl
+      << "      case QMetaObject::InvokeMetaMethod:" << endl
+      << "          _id = dynamic_meta_object->invokeSignalOrSlot(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
+      << "      case QMetaObject::ReadProperty:" << endl
+      << "          _id = dynamic_meta_object->readProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
+      << "      case QMetaObject::WriteProperty:" << endl
+      << "          _id = dynamic_meta_object->writeProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
+      << "      case QMetaObject::ResetProperty:" << endl
+      << "          _id = dynamic_meta_object->resetProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
+      << "      };" << endl
       << "      __jni_env->PopLocalFrame(0);" << endl
       << "  }" << endl    
       << "  return _id;" << endl

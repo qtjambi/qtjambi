@@ -1480,4 +1480,42 @@ public class TestConnections extends QApplicationTest implements Qt
 
         assertTrue(e.goodExit);
     }
+    
+    @Test public void standardReadWriteResetProperty() {
+        SignalsAndSlots sas = new SignalsAndSlots();
+        
+        sas.setByteArrayProperty("cppProperty", new QByteArray("it was a dark and stormy night"));
+        QByteArray ba = QVariant.toByteArray(sas.property("cppProperty"));
+        assertEquals("it was a dark and stormy night", ba.toString());
+        
+        sas.setProperty("cppProperty", new QByteArray("it was a stormy, dark night"));
+        ba = sas.byteArrayProperty("cppProperty");
+        assertEquals("it was a stormy, dark night", ba.toString());
+        
+        sas.resetProperty("cppProperty");
+        assertEquals("it was the darkest and stormiest night evar", sas.property("cppProperty").toString());
+    }
+    
+    @Test public void standardClassName() {
+        SignalsAndSlots sas = new SignalsAndSlots();
+        
+        assertEquals("SignalsAndSlots", sas.classNameFromMetaObject());
+        assertEquals("QObject", sas.classNameOfSuperClassFromMetaObject());        
+    }
+    
+    @Test public void standardPropertyCount() {
+        SignalsAndSlots sas = new SignalsAndSlots();
+        
+        assertEquals(2, sas.propertyCountFromMetaObject());
+        assertEquals(1, sas.propertyCountOfSuperClassFromMetaObject());
+    }
+    
+    @Test public void standardPropertyNames() {
+        SignalsAndSlots sas = new SignalsAndSlots();
+        
+        List<String> list = sas.propertyNamesFromMetaObject();
+        assertEquals(2, list.size());
+        assertEquals("objectName", list.get(0));
+        assertEquals("cppProperty", list.get(1));
+    }
 }

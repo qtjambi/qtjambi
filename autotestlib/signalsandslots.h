@@ -15,6 +15,9 @@
 #define SIGNALSANDSLOTS_H
 
 #include <QtCore/QObject>
+#include <QtCore/QVariant>
+#include <QtCore/QMetaProperty>
+#include <QtCore/QStringList>
 
 #ifndef SIGNAL
 #  define SIGNAL(A) #A
@@ -31,6 +34,8 @@
 class SignalsAndSlots: public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(QByteArray cppProperty READ cppProperty WRITE setCppProperty RESET resetCppProperty);
 public:
     SignalsAndSlots()
     {
@@ -132,6 +137,49 @@ public:
         return sas;
     }
 
+    void setByteArrayProperty(const QString &propertyName, const QByteArray &byteArray) {
+        setProperty(propertyName.toLatin1(), QVariant(byteArray));
+    }
+
+    QByteArray byteArrayProperty(const QString &propertyName) {
+        return property(propertyName.toLatin1()).toByteArray();
+    }
+
+    void resetProperty(const QString &propertyName) {
+        QMetaProperty prop = metaObject()->property(metaObject()->indexOfProperty(propertyName.toLatin1()));
+        prop.reset(this);
+    }
+
+    QString classNameFromMetaObject() {
+        return metaObject()->className();
+    }
+
+    QString classNameOfSuperClassFromMetaObject() {
+        return metaObject()->superClass()->className();
+    }
+
+    QStringList propertyNamesFromMetaObject() {
+        QStringList list;
+        for (int i=0; i<metaObject()->propertyCount(); ++i)
+            list.append(QLatin1String(metaObject()->property(i).name()));
+
+        return list;
+    }
+
+    int propertyCountFromMetaObject() {
+        return metaObject()->propertyCount();
+    }
+
+    int propertyCountOfSuperClassFromMetaObject() {
+        return metaObject()->superClass()->propertyCount();
+    }
+
+    QByteArray cppProperty() const { return m_cppProperty; }
+
+    void setCppProperty(const QByteArray &ba) { m_cppProperty = ba; }
+
+    void resetCppProperty() { m_cppProperty = "it was the darkest and stormiest night evar"; }
+
     int slot1_1_called;
     int slot1_2_called;
     int slot1_3_called;
@@ -150,6 +198,9 @@ public slots:
     void slot1_3() { slot1_3_called++; }
     virtual void slot2(int i) { slot2_called += i; }
     void slot3(const QString &str) { slot3_called += str.toInt(); }
+
+private:
+    QByteArray m_cppProperty;
 };
 
 #endif // SIGNALSANDSLOTS_H

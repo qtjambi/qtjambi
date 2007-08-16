@@ -273,6 +273,9 @@ struct QTJAMBI_EXPORT StaticCache
         jfieldID stringData;
         jfieldID signalsArray;
         jfieldID slotsArray;
+        jfieldID propertyReadersArray;
+        jfieldID propertyWritersArray;
+        jfieldID propertyResettersArray;
     } MetaData;
 
     struct {
