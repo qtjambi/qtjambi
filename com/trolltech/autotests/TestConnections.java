@@ -1424,21 +1424,24 @@ public class TestConnections extends QApplicationTest implements Qt
         }
         
         public void myOtherHandler(QUrl url) {
-            path = url.host();
+            path = url.toString();
         }
     }
     
     @Test public void testUrlHandler() {
         MyUrlHandler handler = new MyUrlHandler();
         
-        QDesktopServices.setUrlHandler("superscheme", handler, "myHandler");        
-        QDesktopServices.openUrl(new QUrl("superscheme:host.com/my/super/scheme/path"));        
-        assertEquals("my/super/scheme/path", handler.path);
+        QDesktopServices.setUrlHandler("superscheme", handler, "myHandler");
+        
+        QUrl url = new QUrl("superscheme:host.com/my/super/scheme/path");
+        
+        QDesktopServices.openUrl(url);
+        assertEquals(url.path(), handler.path);
         
         QDesktopServices.unsetUrlHandler("superscheme");
         QDesktopServices.setUrlHandler("superscheme", handler, "myOtherHandler");
         QDesktopServices.openUrl(new QUrl("superscheme:superhost.com/not/a/valid"));
-        assertEquals("superhost.com", handler.path);
+        assertEquals("superscheme:superhost.com/not/a/valid", handler.path);
     }
 
     static class Emitter extends QSignalEmitter implements Runnable {
