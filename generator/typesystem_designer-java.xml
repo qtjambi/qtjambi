@@ -1,2 +1,6 @@
 <typesystem package="com.trolltech.tools.designer" default-superclass="com.trolltech.qt.QtJambiObject">
+
+    <primitive-type name="qdesigner_internal::FlagType" java-name="int" preferred-conversion="no" jni-name="jint" />
+    <primitive-type name="qdesigner_internal::EnumType" java-name="int" preferred-conversion="no" jni-name="jint" />
+
 </typesystem>
