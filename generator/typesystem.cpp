@@ -343,27 +343,27 @@ bool Handler::importFileElement(const QXmlAttributes &atts)
         return false;
     }
     
-    QString quoteFrom = atts.value("quote-from-line");
+    QString quoteFrom = atts.value("quote-after-line");
     bool foundFromOk = quoteFrom.isEmpty();
     bool from = quoteFrom.isEmpty();
 
-    QString quoteTo = atts.value("quote-to-line");
+    QString quoteTo = atts.value("quote-before-line");
     bool foundToOk = quoteTo.isEmpty();
     bool to = true;
 
     QTextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        if(!from && line.contains(quoteFrom)) {
-            from = true;
-            foundFromOk = true;
-        }
-        if(from && to)
-            characters(line + "\n");
         if(from && to && line.contains(quoteTo)) {
             to = false;
             foundToOk = true;
             break;
+        }        
+        if(from && to)
+            characters(line + "\n");
+        if(!from && line.contains(quoteFrom)) {
+            from = true;
+            foundFromOk = true;
         }
     }
     if(!foundFromOk || !foundToOk){
