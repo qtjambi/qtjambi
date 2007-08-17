@@ -191,39 +191,42 @@
         </inject-code>
     </value-type>
 
+    <template name="core.multiply-devide-add-subtract">
+    public final %TYPE multiply(double d) { operator_multiply_assign(d); return this; }
+    public final %TYPE divide(double d) { operator_divide_assign(d); return this; }
+    public final %TYPE add(%TYPE p) { operator_add_assign(p); return this; }
+    public final %TYPE subtract(%TYPE p) { operator_subtract_assign(p); return this; }
+    </template>
+
     <value-type name="QPoint">
         <inject-code>
-	public final QPoint multiply(double d) { operator_multiply_assign(d); return this; }
-	public final QPoint divide(double d) { operator_divide_assign(d); return this; }
-	public final QPoint add(QPoint p) { operator_add_assign(p); return this; }
-	public final QPoint subtract(QPoint p) { operator_subtract_assign(p); return this; }
+            <insert-template name="core.multiply-devide-add-subtract">
+                <replace from="%TYPE" to="QPoint"/>
+            </insert-template>
         </inject-code>
     </value-type>
 
     <value-type name="QPointF">
         <inject-code>
-	public final QPointF multiply(double d) { operator_multiply_assign(d); return this; }
-	public final QPointF divide(double d) { operator_divide_assign(d); return this; }
-	public final QPointF add(QPointF p) { operator_add_assign(p); return this; }
-	public final QPointF subtract(QPointF p) { operator_subtract_assign(p); return this; }
+            <insert-template name="core.multiply-devide-add-subtract">
+                <replace from="%TYPE" to="QPointF"/>
+            </insert-template>
         </inject-code>
     </value-type>
 
     <value-type name="QSize">
         <inject-code>
-        public final QSize multiply(double d) { operator_multiply_assign(d); return this; }
-        public final QSize divide(double d) { operator_divide_assign(d); return this; }
-        public final QSize add(QSize s) { operator_add_assign(s); return this; }
-        public final QSize subtract(QSize s) { operator_subtract_assign(s); return this; }
-        </inject-code>
+            <insert-template name="core.multiply-devide-add-subtract">
+                <replace from="%TYPE" to="QSize"/>
+            </insert-template>
+        </inject-code>   
     </value-type>
 
     <value-type name="QSizeF">
         <inject-code>
-        public final QSizeF multiply(double d) { operator_multiply_assign(d); return this; }
-        public final QSizeF divide(double d) { operator_divide_assign(d); return this; }
-        public final QSizeF add(QSizeF s) { operator_add_assign(s); return this; }
-        public final QSizeF subtract(QSizeF s) { operator_subtract_assign(s); return this; }
+            <insert-template name="core.multiply-devide-add-subtract">
+                <replace from="%TYPE" to="QSizeF"/>
+            </insert-template>
         </inject-code>
     </value-type>
 
@@ -369,21 +372,9 @@
             <remove/>
         </modify-function>
         <inject-code class="java">
-    private native boolean setData_native(long id, int row, int col, Object value, int role);
-    public boolean setData(int row, int col, Object value) {
-        return setData_native(nativeId(), row, col, value, com.trolltech.qt.core.Qt.ItemDataRole.DisplayRole);
-    }
-    public boolean setData(int row, int col, Object value, int role) {
-        return setData_native(nativeId(), row, col, value, role);
-    }
-    private native Object data_native(long id, int row, int col, int role);
-    public Object data(int row, int col, int role) {
-        return data_native(nativeId(), row, col, role);
-    }
-    public Object data(int row, int col) {
-        return data_native(nativeId(), row, col, Qt.ItemDataRole.DisplayRole);
-    }
-    
+            <import-file name="typesystem_core-java.java"
+                         quote-after-line="class QAbstractItemModel___"
+                         quote-before-line="}// class" />
         </inject-code>
         <inject-code class="native">
     extern "C" JNIEXPORT jint QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_setData_1native)
@@ -423,20 +414,9 @@
 
     <value-type name="QByteArray">
         <inject-code class="java">
-    public QByteArray(String s)
-    {
-        this();
-        append(s);
-    }
-
-    public final byte[] toByteArray(){
-        byte[] res = new byte[size()];
-
-        for(int i = 0; i &lt; size(); i++){
-            res[i] = at(i);
-        }
-        return res;
-    }
+            <import-file name="typesystem_core-java.java"
+                         quote-after-line="class QByteArray___"
+                         quote-before-line="}// class" />
 
             <template name="QByteArray::toType(base)">
     public final %TYPE% %NAME%(int base) throws NumberFormatException{
@@ -1255,9 +1235,9 @@
             <access modifier="private"/>        
         </modify-function>
         <inject-code>
-        public final boolean load(byte data[]) {
-            return load(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
-        }
+            <import-file name="typesystem_core-java.java"
+                         quote-after-line="class QTranslator___"
+                         quote-before-line="}// class" />
         </inject-code>
 
         <modify-function signature="translate(const char*,const char*,const char*)const">
@@ -1266,18 +1246,6 @@
                 <remove-default-expression/>
             </modify-argument>   
         </modify-function>
-        <inject-code>
-        public String translate(String context, String sourceText, String comment) {
-            QTextCodec codec = QTextCodec.codecForName("UTF-8");
-            return translate(context != null ? codec.fromUnicode(context).data() : null,
-                             sourceText != null ? codec.fromUnicode(sourceText).data() : null,
-                             comment != null ? codec.fromUnicode(comment).data() : null);
-        }
-
-        public String translate(String context, String sourceText) {
-            return translate(context, sourceText, null);
-        }
-        </inject-code>
     </object-type>
 
     <object-type name="QWaitCondition">
@@ -1335,40 +1303,9 @@
 
     <object-type name="QTimer">
         <inject-code class="java">
-        static private class QSingleShotTimer extends QObject
-        {
-            private int timerId = -1;
-            public Signal0 timeout = new Signal0();
-            
-            public QSingleShotTimer(int msec, QObject obj, String method)
-            {
-                super(obj);
-                timeout.connect(obj, method);
-                timerId = startTimer(msec);
-            }
-            
-            protected void disposed()
-            {
-                if (timerId &gt; 0)
-                    killTimer(timerId);
-                super.disposed();
-            }
-            
-            protected void timerEvent(QTimerEvent e)
-            {
-                if (timerId &gt; 0)
-                    killTimer(timerId);
-                timerId = -1;
-                timeout.emit();
-                disposeLater();
-            }
-            
-        }
-    
-        public static void singleShot(int msec, QObject obj, String method)
-        {
-            new QSingleShotTimer(msec, obj, method);
-        }
+            <import-file name="typesystem_core-java.java"
+                         quote-after-line="class QTimer___"
+                         quote-before-line="}// class" />
         </inject-code>
     </object-type>
 
@@ -1388,21 +1325,9 @@
             </modify-argument>
         </modify-function>
         <inject-code>
-        public static class DetachedProcessInfo {
-            public DetachedProcessInfo(boolean success, long pid) {
-                this.success = success;
-                this.pid = pid;
-            }
-            
-            public boolean success;
-            public long pid;
-        }
-        
-        public static DetachedProcessInfo startDetached(String program, java.util.List&lt;String&gt; arguments, String workingDirectory) {
-            QNativePointer pid = new QNativePointer(QNativePointer.Type.Long);
-            boolean success = startDetached(program, arguments, workingDirectory, pid);
-            return new DetachedProcessInfo(success, pid.longValue());
-        }
+             <import-file name="typesystem_core-java.java"
+                       quote-after-line="class QProcess___"
+                       quote-before-line="}// class" />
         </inject-code>
   </object-type>
   
@@ -1449,47 +1374,10 @@
 
   <object-type name="QObject">
       <inject-code class="java">    
-    @com.trolltech.qt.QtBlockedSlot public java.util.List&lt;QObject&gt; findChildren() { return findChildren(null, (QRegExp) null); }
-    @com.trolltech.qt.QtBlockedSlot public java.util.List&lt;QObject&gt; findChildren(Class&lt;?&gt; cl) { return findChildren(cl, (QRegExp) null); }    
-    @com.trolltech.qt.QtBlockedSlot public java.util.List&lt;QObject&gt; findChildren(Class&lt;?&gt; cl, String name) { 
-        return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
-    }    
-    
-    @com.trolltech.qt.QtBlockedSlot public java.util.List&lt;QObject&gt; findChildren(Class&lt;?&gt; cl, QRegExp name) {
-        return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
-    }
-
-    @com.trolltech.qt.QtBlockedSlot public QObject findChild() { return findChild(null, null); }
-    @com.trolltech.qt.QtBlockedSlot public QObject findChild(Class&lt;?&gt; cl) { return findChild(cl, null); }
-    @com.trolltech.qt.QtBlockedSlot public QObject findChild(Class&lt;?&gt; cl, String name) {    
-        return com.trolltech.qt.QtJambiInternal.findChild(this, cl, name);
-    }
-
-    @com.trolltech.qt.QtBlockedSlot public void setProperty(String name, Object value) {
-        try {
-            com.trolltech.qt.QtPropertyManager.writeProperty(this, name, value);
-        } catch (QNoSuchPropertyException e) {
-            // If property doesn't exist, we'll use the default Qt framework to
-            // insert a dynamic property. 
-            setProperty(QNativePointer.createCharPointer(name), value);
-        }
-    }
-
-    @com.trolltech.qt.QtBlockedSlot public Object property(String name) {
-        try {
-            return com.trolltech.qt.QtPropertyManager.readProperty(this, name);
-        } catch (QNoSuchPropertyException e) {
-            // If a property doesn't exist, we'll use the default Qt framework to
-            // read it as a dynamic property
-            return property(QNativePointer.createCharPointer(name));
-        }
-    }
-
-    @com.trolltech.qt.QtBlockedSlot public void connectSlotsByName() {
-        com.trolltech.qt.QtJambiInternal.connectSlotsByName(this);
-    }
+          <import-file name="typesystem_core-java.java"
+                       quote-after-line="class QObject___"
+                       quote-before-line="}// class" />
       </inject-code>
-
   </object-type>
 
   <object-type name="QCoreApplication">
@@ -1503,103 +1391,14 @@
           </modify-argument>           
       </modify-function>
       <inject-code>
-        public static String translate(String context, String sourceText, String comment) {
-            QTextCodec codec = QTextCodec.codecForName("UTF-8");
-            return translate(context != null ? codec.fromUnicode(context).data() : null,
-                             sourceText != null ? codec.fromUnicode(sourceText).data() : null,
-                             comment != null ? codec.fromUnicode(comment).data() : null,
-                             Encoding.CodecForTr);
-        }
-
-        public static String translate(String context, String sourceText) {
-            return translate(context, sourceText, null);
-        }
+          <import-file name="typesystem_core-java.java"
+                       quote-after-line="class QCoreApplication___"
+                       quote-before-line="}// class" />
       </inject-code>
       
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding,int)">
           <access modifier="private"/>
       </modify-function>
-      <inject-code>
-        public static String translate(String context, String sourceText, String comment, int n) {
-            QTextCodec codec = QTextCodec.codecForName("UTF-8");
-            return translate(context != null ? codec.fromUnicode(context).data() : null,
-                             sourceText != null ? codec.fromUnicode(sourceText).data() : null,
-                             comment != null ? codec.fromUnicode(comment).data() : null,
-                             Encoding.CodecForTr, n);
-        }
-      </inject-code>
-
-      <inject-code class="java">
-    protected static QCoreApplication m_instance = null;
-    public static void initialize(String args[])
-    {
-        if (m_instance != null)
-            throw new RuntimeException("QApplication can only be initialized once");
-            
-        m_instance = new QCoreApplication(args);
-        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
-        String path = Utilities.unpackPlugins();
-        if (path != null)
-            addLibraryPath(path);
-        else
-            QtJambiInternal.setupDefaultPluginPath();
-    }
-        
-    @SuppressWarnings("unused")
-    private void disposeOfMyself() {
-        m_instance = null;
-        System.gc();
-        this.dispose();        
-    }
-    
-    protected final static com.trolltech.qt.QNativePointer argv(String args[])
-    {
-        String newArgs[] = new String[args.length + 1];
-        System.arraycopy(args, 0, newArgs, 1, args.length);
-        newArgs[0] = "Qt Jambi application";
-        argv = com.trolltech.qt.QNativePointer.createCharPointerPointer(newArgs);
-        return argv;
-    }
-
-    protected final static com.trolltech.qt.QNativePointer argc(String args[])
-    {
-        if (argc != null) {
-             throw new RuntimeException("There can only exist one QCoreApplication instance");
-        }
-        argc = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Int);
-        argc.setIntValue(args.length + 1);
-        return argc;
-    }
-
-    public QCoreApplication(String args[])         
-    {
-        this(argc(args), argv(args)); 
-    }
-    
-    @Override
-    protected void disposed() {
-        argc = null; argv = null; m_instance = null;
-        super.disposed();
-    }
-        
-    public static void invokeLater(java.lang.Runnable runnable) {
-        postEvent(new QInvokable(runnable), new QEvent(QInvokable.INVOKABLE_EVENT));
-    }
-    
-    /**
-     * Executes the runnable's run() method in the main thread and waits for it to return. 
-     * If the current thread is not the main thread, an event loop must be running in the main
-     * thread, or this method will wait indefinitely.
-     */    
-    public static void invokeAndWait(Runnable runnable) {
-        QSynchronousInvokable invokable = new QSynchronousInvokable(runnable);        	
-    	QCoreApplication.postEvent(invokable, new QEvent(QSynchronousInvokable.SYNCHRONOUS_INVOKABLE_EVENT));
-    	invokable.waitForInvoked();    		        
-        invokable.disposeLater();
-    }
-
-    private static com.trolltech.qt.QNativePointer argc, argv;
-      </inject-code>
   </object-type>
 
   <object-type name="QDataStream">
@@ -1694,36 +1493,9 @@
       </modify-function>                
 
       <inject-code>
-        private QNativePointer srb = new QNativePointer(QNativePointer.Type.Byte, 32) {
-            {
-                setVerificationEnabled(false);
-            }
-        };
-        public final boolean readBoolean() { operator_shift_right_boolean(srb); return srb.booleanValue(); }
-        public final byte    readByte()    { operator_shift_right_byte(srb);    return srb.byteValue(); }
-        public final short   readShort()   { operator_shift_right_short(srb);   return srb.shortValue(); }
-        public final int     readInt()     { operator_shift_right_int(srb);     return srb.intValue(); }
-        public final long    readLong()    { operator_shift_right_long(srb);    return srb.longValue(); }
-        public final float   readFloat()   { operator_shift_right_float(srb);   return srb.floatValue(); }
-        public final double  readDouble()  { operator_shift_right_double(srb);  return srb.doubleValue(); }
-        public final QDataStream writeShort(short s) { writeShort_char((char) s); return this; }
-      </inject-code>    
-    
-      <inject-code>
-        private native String readString_private(long nativeId);
-        private native void writeString_private(long nativeId, String string);
-        
-        public final String readString() {
-            if (nativeId() == 0)
-                throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
-            return readString_private(nativeId());
-        }
-        
-        public final void writeString(String string) {
-            if (nativeId() == 0)
-                throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
-            writeString_private(nativeId(), string);
-        }
+          <import-file name="typesystem_core-java.java"
+                       quote-after-line="class QDataStream___"
+                       quote-before-line="}// class" />
       </inject-code>
     
       <inject-code class="native">
@@ -1781,21 +1553,6 @@
           </insert-template>
       </inject-code>
       
-      <inject-code>
-    private native int writeBytes(long id, byte buffer[], int length);
-    private native int readBytes(long id, byte buffer[], int length);
-
-    public final int writeBytes(byte buffer[]) { return writeBytes(buffer, buffer.length); }
-    public final int writeBytes(byte buffer[], int length) {
-        return writeBytes(nativeId(), buffer, length);
-    }
-
-    public final int readBytes(byte buffer[]) { return readBytes(buffer, buffer.length); }
-    public final int readBytes(byte buffer[], int length) {
-        return readBytes(nativeId(), buffer, length);
-    }
-      </inject-code>
-
       <template name="core.qdatastream_readorwrite_bytes">
         extern "C" JNIEXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_%FUNCTION_NAME%)
         (JNIEnv *env, jobject, jlong stream, jbyteArray array, jint length)
@@ -1903,32 +1660,11 @@
           <access modifier="private"/>
       </modify-function>
       <inject-code>
-        public final void setCodec(String codecName) {
-            setCodec(QNativePointer.createCharPointer(codecName));
-            if (codec() != __rcCodec)
-                __rcCodec = null;
-        }
+          <import-file name="typesystem_core-java.java"
+                       quote-after-line="class QTextStream___"
+                       quote-before-line="}// class" />
       </inject-code>    
       
-      <inject-code>
-        private QNativePointer srb = new QNativePointer(QNativePointer.Type.Byte, 32) {
-            {
-                setVerificationEnabled(false);
-            }
-        };
-        public final byte    readByte()    { operator_shift_right_byte(srb);    return srb.byteValue(); }
-        public final short   readShort()   { operator_shift_right_short(srb);   return srb.shortValue(); }
-        public final int     readInt()     { operator_shift_right_int(srb);     return srb.intValue(); }
-        public final long    readLong()    { operator_shift_right_long(srb);    return srb.longValue(); }
-        public final float   readFloat()   { operator_shift_right_float(srb);   return srb.floatValue(); }
-        public final double  readDouble()  { operator_shift_right_double(srb);  return srb.doubleValue(); }
-        public final QTextStream writeShort(short s) { writeShort_char((char) s); return this; }
-        public final String readString() { return readString_native(nativeId()); }
-        public final void writeString(String string) { writeString_native(nativeId(), string); }
-        private final native String readString_native(long id);
-        private final native void writeString_native(long id, String string);
-      </inject-code>    
-
       <inject-code class="native">
         extern "C" JNIEXPORT jstring JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_readString_1native)
         (JNIEnv *env, jobject, jlong id)
