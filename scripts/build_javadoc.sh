@@ -46,7 +46,9 @@ cd $JAMBI/generator
 
 # Creating header for HtmlDoclet
 
-DOCHOME="file:///home/gvatteka/dev/qtjambi/4.3/scripts/test"
+if [ "$DOCHOME" = "" ] ; then
+    DOCHOME="http://doc.trolltech.com/qtjambi-$QTJAMBI_VERSION"
+fi
 
 HEADER="<table align='right'><tr><td nowrap><a target='_top' href='$DOCHOME/com/trolltech/qt/qtjambi-index.html'>Qt Jambi Home</a></td>"
 HEADER="$HEADER<td><img src='$DOCHOME/com/trolltech/qt/images/qt-logo.png' width='32' height='32'></td></tr></table>"
