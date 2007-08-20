@@ -1680,8 +1680,10 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
     // If neither object has a link to Java, nothing to resolve
     if (sender_link == 0 && receiver_link == 0) {
 
-        // Java signature on signal, so we need to go through java.
-        if (signal_normalized.at(signal_normalized.length() - 1) != ')') {
+        int idx = qtjambi_find_first_static_metaobject(data->sender->metaObject())->indexOfSignal(data->signal + 1);
+
+        // Signal only exists in Java, so we need to go through java.
+        if (idx < 0 || signal_normalized.at(signal_normalized.length() - 1) != ')') {
             jobject jSender = qtjambi_from_QObject(jni_env, data->sender);
             sender_link = QtJambiLink::findLink(jni_env, jSender);
             jobject jReciever = qtjambi_from_QObject(jni_env, data->receiver);
@@ -1764,6 +1766,11 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
             signal_name = signal_name.left(ltPos);
         }
 
+        ltPos = signal_name.indexOf(QLatin1Char('('));
+        if (ltPos >= 1) {
+            signal_name = signal_name.left(ltPos);
+        }
+
         if (signal_name.isEmpty()) // private and compat signals
             return false;
 
@@ -1817,7 +1824,12 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
 
             // If the slot is actually a signal in Java, we must handle it by finding the
             // ref to the emit() method. Otherwise we find the function specified.
-            if (slot_name.indexOf("(") < 0) {
+            if (class_name == 0 && data->method[0] - '0' == QSIGNAL_CODE) {
+
+                int pos = slot_name.indexOf('(');
+                if (pos >= 1) 
+                    slot_name = slot_name.left(pos);
+
                 resolved_data->java_receiver =
                     jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
                                                     sc->QtJambiInternal.lookupSignal,

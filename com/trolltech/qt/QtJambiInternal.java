@@ -719,6 +719,23 @@ public class QtJambiInternal {
         return clazz.isAnnotationPresent(QtJambiGeneratedClass.class);
     }
     
+    public static String cppSignalSignature(QSignalEmitter signalEmitter, String signalName) {
+        QSignalEmitter.AbstractSignal signal = lookupSignal(signalEmitter, signalName);
+        if (signal != null)
+            return cppSignalSignature(signal);
+        else
+            return "";
+    }
+    
+    public static String cppSignalSignature(QSignalEmitter.AbstractSignal signal) {
+        String signalParameters = signalParameters(signal);
+        String params = internalTypeName(signalParameters, 1);        
+        if (signalParameters.length() > 0 && params.length() == 0)
+            return "";
+        else
+            return signal.name() + "(" + params + ")"; 
+    }
+    
     private native static String internalTypeName(String s, int varContext);
     
     public static MetaData buildMetaData(Class<? extends QObject> clazz, QObject object) {

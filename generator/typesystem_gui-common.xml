@@ -2882,12 +2882,25 @@
         </modify-argument>
     </modify-function>
     <inject-code>
+        protected final void registerField(String name, QWidget widget) {
+            registerField(name, widget, (com.trolltech.qt.QNativePointer) null, (com.trolltech.qt.QNativePointer) null); 
+        }
+        
+        protected final void registerField(String name, QWidget widget, String property) {
+            registerField(name, widget, QNativePointer.createCharPointer(property), null);
+        }
+
        /** 
         * Creates a field called &lt;code&gt;name&lt;/code&gt; associated with the given property of the given widget. From then on, that property becomes accessible using &lt;code&gt;field()&lt;/code&gt; 
         * and &lt;code&gt;setField()&lt;/code&gt;. Fields are global to the entire wizard and make it easy for any single page to access information stored by another page, without 
         * having to put all the logic in &lt;code&gt;QWizard&lt;/code&gt; or having the pages know explicitly about each other.
         * If name ends with an asterisk (*), the field is a mandatory field. When a page has mandatory fields, the Next and/or Finish buttons are enabled 
-        * only when all mandatory fields are filled. It is required that the widget is of a subclass of one of the following Qt Jambi types: 
+        * only when all mandatory fields are filled. This requires a &lt;code&gt;changedSignal&lt;/code&gt; to be specified, to
+        * tell QWizard to recheck the value stored by the mandatory field.
+        *
+        * QWizard knows the most common Qt widgets. For these (or their subclasses), you don't need to specify a &lt;code&gt;property&lt;/code&gt; or a 
+        * &lt;code&gt;changedSignal&lt;/code&gt;. The table below lists these widgets:
+        *
         * &lt;code&gt;QAbstractButton&lt;/code&gt; (for which the relevant property is the &lt;code&gt;checked&lt;/code&gt; property), &lt;code&gt;QAbstractSlider&lt;/code&gt; (the &lt;code&gt;value&lt;/code&gt; property), 
         * &lt;code&gt;QComboBox&lt;/code&gt; (&lt;code&gt;currentIndex&lt;/code&gt; property), 
         * &lt;code&gt;QDateTimeEdit&lt;/code&gt;(&lt;code&gt;dateTime&lt;/code&gt; property), &lt;code&gt;QLineEdit&lt;/code&gt;(&lt;code&gt;text&lt;/code&gt; property), &lt;code&gt;QListWidget&lt;/code&gt;(&lt;code&gt;currentRow&lt;/code&gt; property), 
@@ -2895,12 +2908,17 @@
         *
         * @param name The name which will be used to access the field. Names ending with an asterisk signify mandatory fields.
         * @param widget The widget whose property will be accessed using this field.
+        * @param property The name of the property associated with the field.
+        * @param changedSignal The name of a signal which is emitted when the associated property's value changes.
         *
         * @see com.trolltech.qt.gui.QWizardPage#field
         * @see com.trolltech.qt.gui.QWizardPage#setField
-        */
-        protected final void registerField(String name, QWidget widget) {
-            registerField(name, widget, null, null); 
+        */        
+        protected final void registerField(String name, QWidget widget, String property, String changedSignal) {
+            String signalSignature = com.trolltech.qt.QtJambiInternal.cppSignalSignature(widget, changedSignal);
+            if (signalSignature.length() == 0)
+                throw new QNoSuchSignalException("Signal '" + changedSignal + "' does not exist or has argument types that cannot be converted to Qt Jambi or java.lang types.");
+            registerField(name, widget, com.trolltech.qt.QNativePointer.createCharPointer(property), com.trolltech.qt.QNativePointer.createCharPointer(com.trolltech.qt.QtJambiInternal.SignalPrefix + signalSignature));
         }
     </inject-code>    
   </object-type>
