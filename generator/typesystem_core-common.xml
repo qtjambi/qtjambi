@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <typesystem>
 
   <rejection class="*" function-name="d_func"/>
@@ -459,7 +460,11 @@
     
   </value-type>
   
-  <value-type name="QBitArray">
+  
+    <value-type name="QBitArray">
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QBitArray___" quote-before-line="}// class"/>
+        </inject-code>
     <modify-function signature="operator[](int)" remove="all"/>
     <modify-function signature="operator[](int)const" remove="all"/>
     <modify-function signature="operator[](uint)const" remove="all"/>
@@ -471,18 +476,12 @@
     <modify-function signature="operator|=(QBitArray)" access="private"/>
     <modify-function signature="operator~()const" access="private"/>
 
-    <inject-code>
-    @com.trolltech.qt.QtBlockedSlot public void xor(QBitArray other) { operator_xor_assign(other); }
-    @com.trolltech.qt.QtBlockedSlot public void and(QBitArray other) { operator_and_assign(other); }
-    @com.trolltech.qt.QtBlockedSlot public void or(QBitArray other) { operator_or_assign(other); }
-    @com.trolltech.qt.QtBlockedSlot public void set(QBitArray other) { operator_assign(other); }
-    @com.trolltech.qt.QtBlockedSlot public QBitArray inverted() { return operator_negate(); }
-    </inject-code>
+    
   </value-type>  
 
   <object-type name="QDirIterator"/>
   <object-type name="QAbstractFileEngineIterator"/>
-  <object-type name="QAbstractItemModel" />
+  <object-type name="QAbstractItemModel"/>
     
   <object-type name="QAbstractListModel">
     <extra-includes>
@@ -583,9 +582,9 @@
     <modify-function signature="readLink(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
-  <object-type name="QIODevice" />
+  <object-type name="QIODevice"/>
 
-  <object-type name="QCryptographicHash" />
+  <object-type name="QCryptographicHash"/>
   <object-type name="QLibraryInfo"/>
   <object-type name="QMutex"/>  
   <object-type name="QSemaphore"/>
@@ -663,7 +662,7 @@
     </modify-function>
   </object-type>
   
-  <object-type name="QWaitCondition" />
+  <object-type name="QWaitCondition"/>
 
   <object-type name="QFileSystemWatcher">
     <extra-includes>
@@ -681,7 +680,7 @@
     </modify-function>
   </object-type>
   
-  <object-type name="QTimer" />
+  <object-type name="QTimer"/>
 
   <object-type name="QAbstractFileEngineHandler">
     <modify-function signature="create(const QString &amp;) const">
@@ -712,11 +711,11 @@
     <modify-function signature="mapped(QObject *)">
         <rename to="mappedQObject"/>
     </modify-function>    
-    <modify-function signature="mapped(QWidget *)" remove="all" />
+    <modify-function signature="mapped(QWidget *)" remove="all"/>
     
-    <modify-function signature="mapping(QWidget*)const" remove="all" />
+    <modify-function signature="mapping(QWidget*)const" remove="all"/>
         
-    <modify-function signature="setMapping(QObject*,QWidget*)" remove="all" />
+    <modify-function signature="setMapping(QObject*,QWidget*)" remove="all"/>
   </object-type>  
   
   <object-type name="QObject">
@@ -745,11 +744,11 @@
     </modify-function>
     
     <modify-function signature="property(const char*)const">
-        <access modifier="private" />
+        <access modifier="private"/>
     </modify-function>
     
     <modify-function signature="setProperty(const char*,QVariant)">
-        <access modifier="private" />        
+        <access modifier="private"/>        
     </modify-function>
     
     

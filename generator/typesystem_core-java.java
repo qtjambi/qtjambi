@@ -407,3 +407,32 @@ class QTextStream___ extends QTextStream {
     private final native void writeString_native(long id, String string);
 
 }// class
+
+class QBitArray___ extends QBitArray {
+
+    @com.trolltech.qt.QtBlockedSlot
+    public void xor(QBitArray other) {
+        operator_xor_assign(other);
+    }
+
+    @com.trolltech.qt.QtBlockedSlot
+    public void and(QBitArray other) {
+        operator_and_assign(other);
+    }
+
+    @com.trolltech.qt.QtBlockedSlot
+    public void or(QBitArray other) {
+        operator_or_assign(other);
+    }
+
+    @com.trolltech.qt.QtBlockedSlot
+    public void set(QBitArray other) {
+        operator_assign(other);
+    }
+
+    @com.trolltech.qt.QtBlockedSlot
+    public QBitArray inverted() {
+        return operator_negate();
+    }
+
+}// class
