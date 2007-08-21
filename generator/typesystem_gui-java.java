@@ -287,3 +287,652 @@ class QColor___ extends QColor {
     public static final QColor color1 = new QColor(com.trolltech.qt.core.Qt.GlobalColor.color1);
 
 }// class
+
+class QTextLine___ extends QTextLine {
+
+    public final void draw(QPainter painter, com.trolltech.qt.core.QPointF position) {
+        draw(painter, position, null);
+    }
+
+}// class
+
+class QLineF___ extends QLineF {
+
+    public final QLineF.IntersectType intersect(QLineF line, com.trolltech.qt.core.QPointF intersectionPoint) {
+        return intersect(line, intersectionPoint != null ? intersectionPoint.nativePointer() : null);
+    }
+
+}// class
+
+class QKeySequence___ extends QKeySequence {
+
+    @QtBlockedSlot
+    public final int toInt() {
+        return operator_cast_int();
+    }
+
+    @QtBlockedSlot
+    public final int at(int i) {
+        return operator_subscript(i);
+    }
+
+}// class
+
+class QPicture___ extends QPicture {
+
+    public final boolean load(QIODevice dev) {
+        return load(dev, (QNativePointer) null);
+    }
+
+    public final boolean load(String fileName) {
+        return load(fileName, (com.trolltech.qt.QNativePointer) null);
+    }
+
+    public final boolean save(QIODevice dev) {
+        return save(dev, (com.trolltech.qt.QNativePointer) null);
+    }
+
+    public final boolean save(String fileName) {
+        return save(fileName, (com.trolltech.qt.QNativePointer) null);
+    }
+
+    public final byte[] data() {
+        QNativePointer npData = data_private();
+        if (npData == null)
+            return null;
+        byte returned[] = new byte[size()];
+        for (int i = 0; i < returned.length; ++i)
+            returned[i] = npData.byteAt(i);
+        return returned;
+    }
+
+}// class
+
+class QRegion___ extends QRegion {
+
+    public void setRects(com.trolltech.qt.core.QRect[] rects) {
+        setRects(com.trolltech.qt.core.QRect.nativePointerArray(rects), rects.length);
+    }
+
+}// class
+
+class QPolygon___ extends QPolygon {
+
+}// class
+
+class QPolygonF___ extends QPolygonF {
+
+}// class
+
+class QTextFrame_iterator___ extends QTextFrame_iterator {
+
+    @QtBlockedSlot
+    public final void next() {
+        operator_increment();
+    }
+
+    @QtBlockedSlot
+    public final void previous() {
+        operator_decrement();
+    }
+
+}// class
+
+class QTextBlock_iterator___ extends QTextBlock_iterator {
+
+    @QtBlockedSlot
+    public final void next() {
+        operator_increment();
+    }
+
+    @QtBlockedSlot
+    public final void previous() {
+        operator_decrement();
+    }
+
+}// class
+
+class QPixmap___ extends QPixmap {
+
+    public QPixmap(String xpm[]) {
+        this(com.trolltech.qt.QNativePointer.createCharPointerPointer(xpm));
+    }
+
+}// class
+
+class QItemSelection___ extends QItemSelection {
+
+    public static void split(QItemSelectionRange range, QItemSelectionRange other, QItemSelection result) {
+        com.trolltech.qt.QNativePointer np = result.nativePointer();
+        split(range, other, np);
+    }
+
+}// class
+
+class QPainterPath_Element___ extends QPainterPath_Element {
+
+    @QtBlockedSlot
+    public final com.trolltech.qt.core.QPointF toPoint() {
+        return operator_cast_QPointF();
+    }
+
+}// class
+
+class QBrush___ extends QBrush {
+
+    public static final QBrush NoBrush = new QBrush(com.trolltech.qt.core.Qt.BrushStyle.NoBrush);
+
+}// class
+
+class QAbstractItemView___ extends QAbstractItemView {
+
+    private java.util.Hashtable<Integer, QAbstractItemDelegate> __rcDelegatesForColumns = new java.util.Hashtable<Integer, QAbstractItemDelegate>();
+    private java.util.Hashtable<Integer, QAbstractItemDelegate> __rcDelegatesForRows = new java.util.Hashtable<Integer, QAbstractItemDelegate>();
+
+}// class
+
+class QAccessibleTableInterface___ extends QAccessibleTableInterface {
+
+    public static class CellAtIndex extends QTableArea {
+        public CellAtIndex(int row, int column, int rowSpan, int columnSpan, boolean isSelected) {
+            super(row, column, rowSpan, columnSpan);
+            this.isSelected = isSelected;
+        }
+
+        public boolean isSelected;
+    }
+
+}// class
+
+class QAccessibleInterface___ extends QAccessibleInterface {
+
+    public static class Target {
+        public Target(int childIndex, QAccessibleInterface target) {
+            this.childIndex = childIndex;
+            this.target = target;
+        }
+
+        public QAccessibleInterface target;
+        public int childIndex;
+    }
+
+}// class
+
+class QDesktopServices___ extends QDesktopServices {
+
+    public static void setUrlHandler(String scheme, com.trolltech.qt.core.QObject receiver, String method) {
+        setUrlHandler(scheme, receiver, QNativePointer.createCharPointer(method));
+    }
+
+}// class
+
+class QWizardPage___ extends QWizardPage {
+
+    protected final void registerField(String name, QWidget widget) {
+        registerField(name, widget, (com.trolltech.qt.QNativePointer) null, (com.trolltech.qt.QNativePointer) null);
+    }
+
+    protected final void registerField(String name, QWidget widget, String property) {
+        registerField(name, widget, QNativePointer.createCharPointer(property), null);
+    }
+
+    /**
+     * Creates a field called <code>name</code> associated with the given
+     * property of the given widget. From then on, that property becomes
+     * accessible using <code>field()</code> and <code>setField()</code>.
+     * Fields are global to the entire wizard and make it easy for any single
+     * page to access information stored by another page, without having to put
+     * all the logic in <code>QWizard</code> or having the pages know
+     * explicitly about each other. If name ends with an asterisk (*), the field
+     * is a mandatory field. When a page has mandatory fields, the Next and/or
+     * Finish buttons are enabled only when all mandatory fields are filled.
+     * This requires a <code>changedSignal</code> to be specified, to tell
+     * QWizard to recheck the value stored by the mandatory field.
+     * 
+     * QWizard knows the most common Qt widgets. For these (or their
+     * subclasses), you don't need to specify a <code>property</code> or a
+     * <code>changedSignal</code>. The table below lists these widgets:
+     * 
+     * <code>QAbstractButton</code> (for which the relevant property is the
+     * <code>checked</code> property), <code>QAbstractSlider</code> (the
+     * <code>value</code> property), <code>QComboBox</code> (<code>currentIndex</code>
+     * property), <code>QDateTimeEdit</code>(<code>dateTime</code>
+     * property), <code>QLineEdit</code>(<code>text</code> property),
+     * <code>QListWidget</code>(<code>currentRow</code> property), or
+     * <code>QSpinBox</code>(<code>value</code> property).
+     * 
+     * @param name
+     *            The name which will be used to access the field. Names ending
+     *            with an asterisk signify mandatory fields.
+     * @param widget
+     *            The widget whose property will be accessed using this field.
+     * @param property
+     *            The name of the property associated with the field.
+     * @param changedSignal
+     *            The name of a signal which is emitted when the associated
+     *            property's value changes.
+     * 
+     * @see com.trolltech.qt.gui.QWizardPage#field
+     * @see com.trolltech.qt.gui.QWizardPage#setField
+     */
+    protected final void registerField(String name, QWidget widget, String property, String changedSignal) {
+        String signalSignature = com.trolltech.qt.QtJambiInternal.cppSignalSignature(widget, changedSignal);
+        if (signalSignature.length() == 0)
+            throw new QNoSuchSignalException("Signal '" + changedSignal
+                    + "' does not exist or has argument types that cannot be converted to Qt Jambi or java.lang types.");
+        registerField(name, widget, com.trolltech.qt.QNativePointer.createCharPointer(property), com.trolltech.qt.QNativePointer
+                .createCharPointer(com.trolltech.qt.QtJambiInternal.SignalPrefix + signalSignature));
+    }
+
+}// class
+
+class QFontDialog___ extends QFontDialog {
+
+    public static final class Result {
+        public Result(QFont font, boolean ok) {
+            this.font = font;
+            this.ok = ok;
+        }
+
+        public QFont font;
+        public boolean ok;
+    }
+
+}// class
+
+class QMenu___ extends QMenu {
+
+    protected final void initStyleOption(com.trolltech.qt.gui.QStyleOptionMenuItem option, QAction action) {
+        initStyleOption(option.nativePointer(), action);
+    }
+
+}// class
+
+class QMenuBar___ extends QMenuBar {
+
+    protected final void initStyleOption(com.trolltech.qt.gui.QStyleOptionMenuItem option, QAction action) {
+        initStyleOption(option.nativePointer(), action);
+    }
+
+}// class
+
+class QPixmapCache___ extends QPixmapCache {
+
+    public static boolean find(String key, QPixmap pm) {
+        return find(key, pm.nativePointer());
+    }
+
+}// class
+
+class QShortcut___ extends QShortcut {
+
+    public QShortcut(QKeySequence key, QWidget parent) {
+        this(key, parent, null, null, com.trolltech.qt.core.Qt.ShortcutContext.WindowShortcut);
+    }
+
+    public QShortcut(QKeySequence key, QWidget parent, com.trolltech.qt.core.Qt.ShortcutContext context) {
+        this(key, parent, null, null, context);
+    }
+
+}// class
+
+class QValidator___ extends QValidator {
+
+    public static class QValidationData {
+        public QValidationData(String input, int pos) {
+            string = input;
+            position = pos;
+        }
+
+        public String string;
+        public int position;
+    }
+
+}// class
+
+class QAbstractButton___ extends QAbstractButton {
+
+    /**
+     * Sets the shortcut to the key sequence for the given key string. For
+     * example "Ctrl+O" gives CTRL+'O'. The strings "Ctrl", "Shift", "Alt" and
+     * "Meta" are recognized, as well as their translated equivalents in the
+     * "QShortcut" context (using QObject::tr()). Up to four key codes may be
+     * entered by separating them with commas, e.g. "Alt+X,Ctrl+S,Q".
+     * 
+     * @param key
+     *            The description of the key sequence. Typically used with tr()
+     *            so key sequences can be locale aware.
+     */
+    public void setShortcut(String key) {
+        setShortcut(new QKeySequence(key));
+    }
+
+    /**
+     * Sets the shortcut to the key sequence for the given key. The result will
+     * depend on the currently running platform. The key sequence will be based
+     * on the first element in the list of key bindings for the key.
+     * 
+     * @param key
+     *            The key for which to select a key sequence
+     */
+    public void setShortcut(QKeySequence.StandardKey key) {
+        setShortcut(new QKeySequence(key));
+    }
+
+}// class
+
+class QStyle___ extends QStyle {
+
+    @QtBlockedSlot
+    public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
+            com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget) {
+        return combinedLayoutSpacing(controls1, controls2, orientation, option.nativePointer(), widget);
+    }
+
+    @QtBlockedSlot
+    public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
+            com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option) {
+        return combinedLayoutSpacing(controls1, controls2, orientation, option, null);
+    }
+
+    @QtBlockedSlot
+    public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
+            com.trolltech.qt.core.Qt.Orientation orientation) {
+        return combinedLayoutSpacing(controls1, controls2, orientation, null);
+    }
+
+    @QtBlockedSlot
+    public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, com.trolltech.qt.core.Qt.Orientation orientation,
+            QStyleOption option, QWidget widget) {
+        return layoutSpacing(control1, control2, orientation, option.nativePointer(), widget);
+    }
+
+    @QtBlockedSlot
+    public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, com.trolltech.qt.core.Qt.Orientation orientation,
+            QStyleOption option) {
+        return layoutSpacing(control1, control2, orientation, option, null);
+    }
+
+    @QtBlockedSlot
+    public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, com.trolltech.qt.core.Qt.Orientation orientation) {
+        return layoutSpacing(control1, control2, orientation, null);
+    }
+
+    @QtBlockedSlot
+    public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
+            com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget) {
+        return layoutSpacing(control1, control2, orientation, option.nativePointer(), widget);
+    }
+
+    @QtBlockedSlot
+    public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
+            com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option) {
+        return layoutSpacing(control1, control2, orientation, option, null);
+    }
+
+    @QtBlockedSlot
+    public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
+            com.trolltech.qt.core.Qt.Orientation orientation) {
+        return layoutSpacing(control1, control2, orientation, null);
+    }
+
+}// class
+
+class QLayout___ extends QLayout {
+
+    @QtBlockedSlot
+    public final QContentsMargins getContentsMargins() {
+        QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
+
+        getContentsMargins(left, top, right, bottom);
+        return new QContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+    }
+
+    @QtBlockedSlot
+    public final void setContentsMargins(QContentsMargins margins) {
+        setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
+    }
+
+}// class
+
+class QGridLayout___ extends QGridLayout {
+
+    public final QTableArea getItemPosition(int index) {
+        QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer column = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
+
+        getItemPosition(index, row, column, rowSpan, columnSpan);
+
+        return new QTableArea(row.intValue(), column.intValue(), rowSpan.intValue(), columnSpan.intValue());
+    }
+
+}// class
+
+class QWidget___ extends QWidget {
+
+    private native static void __qt_QMessageBox_setWindowTitle(long native_id, String windowTitle);
+
+    private native static void __qt_QMessageBox_setWindowModality(long native_id, int modality);
+
+    @QtBlockedSlot
+    public final QContentsMargins getContentsMargins() {
+        QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
+
+        getContentsMargins(left, top, right, bottom);
+        return new QContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
+    }
+
+    @QtBlockedSlot
+    public final void setContentsMargins(QContentsMargins margins) {
+        setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
+    }
+
+}// class
+
+class QFileDialog___ extends QFileDialog {
+
+    public static class Filter {
+        public Filter(String filter) {
+            this.filter = filter;
+        }
+
+        public String filter;
+        public String selectedFilter = "";
+    };
+
+}// class
+
+class QTabBar___ extends QTabBar {
+
+    public final void initStyleOption(QStyleOptionTab option, int tabIndex) {
+        initStyleOption(option.nativePointer(), tabIndex);
+    }
+
+}// class
+
+class QClipboard___ extends QClipboard {
+
+    public static class Text {
+        public String text;
+        public String subtype;
+    }
+
+    public final Text text(String subtype, Mode mode) {
+        QNativePointer np = new QNativePointer(QNativePointer.Type.String);
+        np.setStringValue(subtype != null ? subtype : "");
+
+        Text returned = new Text();
+        returned.text = text(np, mode);
+        returned.subtype = np.stringValue();
+        return returned;
+    }
+
+    public final Text text(String subtype) {
+        return text(subtype, Mode.Clipboard);
+    }
+
+}// class
+
+class QAbstractScrollArea___ extends QAbstractScrollArea {
+
+    public QPaintEngine paintEngine() {
+        throw new RuntimeException("Cannot open a painter directly on a QAbstractScrollArea, open QPainter on its viewport instead...");
+    }
+
+}// class
+
+class QTextDocument___ extends QTextDocument {
+
+    public final void redo(QTextCursor cursor) {
+        redo(cursor.nativePointer());
+    }
+
+    public final void undo(QTextCursor cursor) {
+        undo(cursor.nativePointer());
+    }
+
+}// class
+
+class QSplitter___ extends QSplitter {
+
+    public static class Range {
+        public Range(int min, int max) {
+            minimum = min;
+            maximum = max;
+        }
+
+        public int minimum;
+        public int maximum;
+    }
+
+    public Range getRange(int index) {
+        QNativePointer min = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer max = new QNativePointer(QNativePointer.Type.Int);
+
+        getRange(index, min, max);
+
+        return new Range(min.intValue(), max.intValue());
+    }
+
+}// class
+
+class QAction___ extends QAction {
+
+    private QActionGroup __rcActionGroup = null;
+
+    /**
+     * Sets the shortcut to the key sequence for the given key string. For
+     * example "Ctrl+O" gives CTRL+'O'. The strings "Ctrl", "Shift", "Alt" and
+     * "Meta" are recognized, as well as their translated equivalents in the
+     * "QShortcut" context (using QObject::tr()). Up to four key codes may be
+     * entered by separating them with commas, e.g. "Alt+X,Ctrl+S,Q".
+     * 
+     * @param key
+     *            The description of the key sequence. Typically used with tr()
+     *            so key sequences can be locale aware.
+     */
+    public void setShortcut(String key) {
+        setShortcut(new QKeySequence(key));
+    }
+
+    /**
+     * Sets the shortcut to the key sequence for the given key. The result will
+     * depend on the currently running platform. The key sequence will be based
+     * on the first element in the list of key bindings for the key.
+     * 
+     * @param key
+     *            The key for which to select a key sequence
+     */
+    public void setShortcut(QKeySequence.StandardKey key) {
+        setShortcut(new QKeySequence(key));
+    }
+
+    public void setIcon(QPixmap pm) {
+        setIcon(new QIcon(pm));
+    }
+
+}// class
+
+class QPainter___ extends QPainter {
+
+    public void setBrush(QColor color) {
+        setBrush(new QBrush(color));
+    }
+
+    public void setBrush(QGradient gradient) {
+        setBrush(new QBrush(gradient));
+    }
+
+    public void setBrush(QPixmap pm) {
+        setBrush(new QBrush(pm));
+    }
+
+    public static QPaintDeviceInterface redirected(QPaintDeviceInterface device, com.trolltech.qt.core.QPoint offset) {
+        return redirected(device, offset == null ? null : offset.nativePointer());
+    }
+
+    public QPainter(QWidget widget) {
+        this();
+        begin(widget);
+    }
+
+    public boolean begin(QWidget widget) {
+        return com.trolltech.qt.QtJambiGuiInternal.beginPaint(widget, this);
+    }
+
+    private static java.util.Stack<QPaintDeviceInterface> __rcRedirections = new java.util.Stack<QPaintDeviceInterface>();
+
+}// class
+
+class QApplication___ extends QApplication {
+
+    public static void initialize(String args[]) {
+        if (m_instance != null)
+            throw new RuntimeException("QApplication can only be initialized once");
+
+        m_instance = new QApplication(args);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
+        String path = Utilities.unpackPlugins();
+        if (path != null)
+            addLibraryPath(path);
+        else
+            QtJambiInternal.setupDefaultPluginPath();
+    }
+
+    public static void aboutQtJambi() {
+        com.trolltech.qt.QtJambiGuiInternal.aboutQtJambi();
+    }
+
+    public static QApplication instance() {
+        if (type() != Type.Tty)
+            return (QApplication) com.trolltech.qt.core.QCoreApplication.instance();
+        return null;
+    }
+
+    public QApplication(String args[]) {
+        this(argc(args), argv(args));
+    }
+
+    public static void setFont(QFont font) {
+        setFont(font, null);
+    }
+
+    public static void setPalette(QPalette palette) {
+        setPalette(palette, null);
+    }
+
+    public static QCursor overrideCursor() {
+        QNativePointer np = overrideCursor_private();
+        return np == null ? null : QCursor.fromNativePointer(np);
+    }
+
+}// class
+

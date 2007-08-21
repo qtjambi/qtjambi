@@ -133,9 +133,7 @@
 
     <value-type name="QTransform">
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QTransform___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QTransform___" quote-before-line="}// class"/>
         </inject-code>
 
         <extra-includes>
@@ -288,47 +286,50 @@
 
     <value-type name="QBitmap"> 
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QBitmap___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QBitmap___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
 
+    
     <value-type name="QTextLine">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextLine___" quote-before-line="}// class"/>
+        </inject-code>
         <modify-function signature="draw(QPainter*,QPointF,const QTextLayout_FormatRange*)const">
             <access modifier="private"/>
             <modify-argument index="3">
                 <remove-default-expression/>
             </modify-argument>        
         </modify-function>
-        <inject-code>
-        public final void draw(QPainter painter, com.trolltech.qt.core.QPointF position) {
-            draw(painter, position, null);
-        }
-        </inject-code>    
+            
     </value-type>
     
+    
     <value-type name="QLineF">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QLineF___" quote-before-line="}// class"/>
+        </inject-code>
         <modify-function signature="intersect(QLineF,QPointF*)const  ">
             <access modifier="private"/>
         </modify-function>
-        <inject-code>
-        public final QLineF.IntersectType intersect(QLineF line, com.trolltech.qt.core.QPointF intersectionPoint) {
-            return intersect(line, intersectionPoint != null ? intersectionPoint.nativePointer() : null);
-        }
-        </inject-code>    
+            
     </value-type>
 
+    
     <value-type name="QKeySequence">
         <inject-code>
-    @QtBlockedSlot public final int toInt() { return operator_cast_int(); }
-    @QtBlockedSlot public final int at(int i) { return operator_subscript(i); }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QKeySequence___" quote-before-line="}// class"/>
         </inject-code>
+        
     </value-type>
 
 
+    
     <value-type name="QPicture">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPicture___" quote-before-line="}// class"/>
+        </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.core.QIODevice" location="java"/>
         </extra-includes>
@@ -338,11 +339,7 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        <inject-code>                
-    public final boolean load(QIODevice dev) {
-        return load(dev, (QNativePointer) null);
-    }
-        </inject-code>
+        
         
         <modify-function signature="load(QString,const char*)">
             <access modifier="private"/>
@@ -350,11 +347,7 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        <inject-code>
-    public final boolean load(String fileName) {
-        return load(fileName, (com.trolltech.qt.QNativePointer) null);
-    }
-        </inject-code>
+        
     
         <modify-function signature="save(QIODevice*,const char*)">
             <access modifier="private"/>
@@ -362,11 +355,7 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        <inject-code>
-     public final boolean save(QIODevice dev) {
-         return save(dev, (com.trolltech.qt.QNativePointer) null);
-     }
-        </inject-code>
+        
     
         <modify-function signature="save(QString,const char*)">
             <access modifier="private"/>
@@ -374,11 +363,7 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        <inject-code>        
-    public final boolean save(String fileName) {
-        return save(fileName, (com.trolltech.qt.QNativePointer) null);
-    }
-        </inject-code>
+        
     
         <modify-function signature="setData(const char*,uint)">
             <modify-argument index="1">
@@ -413,26 +398,18 @@
             <access modifier="private"/>
             <rename to="data_private"/>
         </modify-function>
-        <inject-code>
-    public final byte[] data() {
-        QNativePointer npData = data_private();
-        if (npData == null) return null;            
-        byte returned[] = new byte[size()];
-        for (int i=0; i&lt;returned.length; ++i) returned[i] = npData.byteAt(i);
-        return returned;
-    }
-        </inject-code>
+        
     </value-type>
 
+    
     <value-type name="QRegion">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QRegion___" quote-before-line="}// class"/>
+        </inject-code>
         <modify-function signature="setRects(const QRect*,int)">
             <access modifier="private"/>
         </modify-function>
-        <inject-code>
-    public void setRects(com.trolltech.qt.core.QRect[] rects) {
-        setRects(com.trolltech.qt.core.QRect.nativePointerArray(rects), rects.length);
-    }
-        </inject-code>
+        
     </value-type>
 
     <value-type name="QPolygon">
@@ -440,9 +417,7 @@
             <include file-name="com.trolltech.qt.core.QPoint" location="java"/>
         </extra-includes>
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QPolygon___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPolygon___" quote-before-line="}// class"/>
         </inject-code>
 
         <inject-code class="native">
@@ -463,9 +438,7 @@
         </extra-includes>
 
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QPolygonF___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPolygonF___" quote-before-line="}// class"/>
         </inject-code>
 
         <inject-code class="native">
@@ -480,41 +453,40 @@
         </inject-code>
     </value-type>
 
+    
     <value-type name="QTextFrame::iterator">
         <inject-code>
-    @QtBlockedSlot public final void next() { operator_increment(); }
-    @QtBlockedSlot public final void previous() { operator_decrement(); }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextFrame_iterator___" quote-before-line="}// class"/>
         </inject-code>
+        
     </value-type>
 
     <value-type name="QTreeWidgetItemIterator">  
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QTreeWidgetItemIterator___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QTreeWidgetItemIterator___" quote-before-line="}// class"/>
         </inject-code>
 
     </value-type>
 
+    
     <value-type name="QTextBlock::iterator">
         <inject-code>
-    @QtBlockedSlot public final void next() { operator_increment(); }
-    @QtBlockedSlot public final void previous() { operator_decrement(); }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextBlock_iterator___" quote-before-line="}// class"/>
         </inject-code>
+        
     </value-type>
 
+    
     <value-type name="QPixmap">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPixmap___" quote-before-line="}// class"/>
+        </inject-code>
         <modify-function signature="fill(const QColor &amp;)"> 
             <modify-argument index="1">
                 <replace-default-expression with="QColor.white"/>
             </modify-argument>
         </modify-function>
-        <inject-code>
-    public QPixmap(String xpm[]) 
-    {
-        this(com.trolltech.qt.QNativePointer.createCharPointerPointer(xpm));
-    }
-        </inject-code>
+        
          
         <template name="gui.pixmap_save">
         public final boolean save(%INPUT_TYPE %INPUT_NAME, String format, int quality) {
@@ -673,45 +645,40 @@
     
     <value-type name="QTextCursor">
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QTextCursor___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextCursor___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
-    <value-type name="QItemSelection"> 
+    
+    <value-type name="QItemSelection">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QItemSelection___" quote-before-line="}// class"/>
+        </inject-code> 
         <modify-function signature="split(QItemSelectionRange,QItemSelectionRange,QItemSelection*)">
             <access modifier="private"/>
         </modify-function>
 
-        <inject-code>
-    public static void split(QItemSelectionRange range, QItemSelectionRange other, QItemSelection result) {
-        com.trolltech.qt.QNativePointer np = result.nativePointer();
-        split(range, other, np);
-    }
-        </inject-code>
+        
     </value-type>
 
     <value-type name="QMatrix">
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QMatrix___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QMatrix___" quote-before-line="}// class"/>
         </inject-code>
 
     </value-type>
 
+    
     <value-type name="QPainterPath::Element">
         <inject-code>
-    @QtBlockedSlot public final com.trolltech.qt.core.QPointF toPoint() { return operator_cast_QPointF(); }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPainterPath_Element___" quote-before-line="}// class"/>
         </inject-code>
+        
     </value-type>
 
     <value-type name="QImage">
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QImage___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QImage___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code>
             <insert-template name="gui.pixmap_save">
@@ -825,16 +792,16 @@
 
     <value-type name="QPen">
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QPen___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPen___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
+    
     <value-type name="QBrush">
-        <inject-code class="java">
-    public static final QBrush NoBrush = new QBrush(com.trolltech.qt.core.Qt.BrushStyle.NoBrush);
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QBrush___" quote-before-line="}// class"/>
         </inject-code>
+        
     
         <modify-function signature="gradient()const">
             <!-- Use custom constructors already defined for gradient -->
@@ -849,9 +816,7 @@
 
     <value-type name="QColor">
         <inject-code>
-            <import-file name="typesystem_gui-java.java"
-                         quote-after-line="class QColor___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QColor___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
@@ -996,11 +961,12 @@
         </modify-function>    
     </object-type>
   
+    
     <object-type name="QAbstractItemView">
         <inject-code>
-    private java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt; __rcDelegatesForColumns = new java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt;();
-    private java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt; __rcDelegatesForRows = new java.util.Hashtable&lt;Integer, QAbstractItemDelegate&gt;();
-        </inject-code>  
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractItemView___" quote-before-line="}// class"/>
+        </inject-code>
+          
 
         <modify-function signature="setIndexWidget(const QModelIndex &amp;,QWidget *)">
             <modify-argument index="2">
@@ -1050,19 +1016,12 @@
         </modify-function>
     </object-type>
 
+    
     <object-type name="QAccessibleTableInterface">
         <inject-code>
-        public static class CellAtIndex extends QTableArea
-        {
-            public CellAtIndex(int row, int column, int rowSpan, int columnSpan, boolean isSelected)
-            {
-                super(row, column, rowSpan, columnSpan);
-                this.isSelected = isSelected;
-            }
-            
-            public boolean isSelected;
-        }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QAccessibleTableInterface___" quote-before-line="}// class"/>
         </inject-code>
+        
 
         <modify-function signature="cellAtIndex(int,int*,int*,int*,int*,bool*)">
         <modify-argument index="2">
@@ -1264,18 +1223,12 @@
         </modify-function>
     </object-type>
 
+    
     <object-type name="QAccessibleInterface">
         <inject-code>
-        public static class Target {            
-            public Target(int childIndex, QAccessibleInterface target) {
-                this.childIndex = childIndex;
-                this.target = target;
-            }
-        
-            public QAccessibleInterface target;
-            public int childIndex;
-        }
-        </inject-code>    
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QAccessibleInterface___" quote-before-line="}// class"/>
+        </inject-code>
+            
 
         <template name="gui.accessible_interface_to_target">            
         jclass __target_class = resolveClass(__jni_env, "QAccessibleInterface$Target", "com/trolltech/qt/gui/");
@@ -1361,69 +1314,28 @@
         </inject-code>
     </object-type>
 
+    
     <object-type name="QDesktopServices">
         <inject-code>
-        public static void setUrlHandler(String scheme, com.trolltech.qt.core.QObject receiver, String method) 
-        {
-            setUrlHandler(scheme, receiver, QNativePointer.createCharPointer(method));
-        }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QDesktopServices___" quote-before-line="}// class"/>
         </inject-code>
+        
     </object-type>
 
+    
     <object-type name="QWizardPage">
         <inject-code>
-        protected final void registerField(String name, QWidget widget) {
-            registerField(name, widget, (com.trolltech.qt.QNativePointer) null, (com.trolltech.qt.QNativePointer) null); 
-        }
-        
-        protected final void registerField(String name, QWidget widget, String property) {
-            registerField(name, widget, QNativePointer.createCharPointer(property), null);
-        }
-
-       /** 
-        * Creates a field called &lt;code&gt;name&lt;/code&gt; associated with the given property of the given widget. From then on, that property becomes accessible using &lt;code&gt;field()&lt;/code&gt; 
-        * and &lt;code&gt;setField()&lt;/code&gt;. Fields are global to the entire wizard and make it easy for any single page to access information stored by another page, without 
-        * having to put all the logic in &lt;code&gt;QWizard&lt;/code&gt; or having the pages know explicitly about each other.
-        * If name ends with an asterisk (*), the field is a mandatory field. When a page has mandatory fields, the Next and/or Finish buttons are enabled 
-        * only when all mandatory fields are filled. This requires a &lt;code&gt;changedSignal&lt;/code&gt; to be specified, to
-        * tell QWizard to recheck the value stored by the mandatory field.
-        *
-        * QWizard knows the most common Qt widgets. For these (or their subclasses), you don't need to specify a &lt;code&gt;property&lt;/code&gt; or a 
-        * &lt;code&gt;changedSignal&lt;/code&gt;. The table below lists these widgets:
-        *
-        * &lt;code&gt;QAbstractButton&lt;/code&gt; (for which the relevant property is the &lt;code&gt;checked&lt;/code&gt; property), &lt;code&gt;QAbstractSlider&lt;/code&gt; (the &lt;code&gt;value&lt;/code&gt; property), 
-        * &lt;code&gt;QComboBox&lt;/code&gt; (&lt;code&gt;currentIndex&lt;/code&gt; property), 
-        * &lt;code&gt;QDateTimeEdit&lt;/code&gt;(&lt;code&gt;dateTime&lt;/code&gt; property), &lt;code&gt;QLineEdit&lt;/code&gt;(&lt;code&gt;text&lt;/code&gt; property), &lt;code&gt;QListWidget&lt;/code&gt;(&lt;code&gt;currentRow&lt;/code&gt; property), 
-        * or &lt;code&gt;QSpinBox&lt;/code&gt;(&lt;code&gt;value&lt;/code&gt; property).
-        *
-        * @param name The name which will be used to access the field. Names ending with an asterisk signify mandatory fields.
-        * @param widget The widget whose property will be accessed using this field.
-        * @param property The name of the property associated with the field.
-        * @param changedSignal The name of a signal which is emitted when the associated property's value changes.
-        *
-        * @see com.trolltech.qt.gui.QWizardPage#field
-        * @see com.trolltech.qt.gui.QWizardPage#setField
-        */        
-        protected final void registerField(String name, QWidget widget, String property, String changedSignal) {
-            String signalSignature = com.trolltech.qt.QtJambiInternal.cppSignalSignature(widget, changedSignal);
-            if (signalSignature.length() == 0)
-                throw new QNoSuchSignalException("Signal '" + changedSignal + "' does not exist or has argument types that cannot be converted to Qt Jambi or java.lang types.");
-            registerField(name, widget, com.trolltech.qt.QNativePointer.createCharPointer(property), com.trolltech.qt.QNativePointer.createCharPointer(com.trolltech.qt.QtJambiInternal.SignalPrefix + signalSignature));
-        }
-        </inject-code>    
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QWizardPage___" quote-before-line="}// class"/>
+        </inject-code>
+            
     </object-type>
 
+    
     <object-type name="QFontDialog">
         <inject-code>
-            public static final class Result {
-            public Result(QFont font, boolean ok) {
-            this.font = font;
-            this.ok = ok;
-            }            
-                public QFont font;
-                public boolean ok;
-            }    
-        </inject-code>    
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QFontDialog___" quote-before-line="}// class"/>
+        </inject-code>
+            
         <template name="gui.fontdialog_get_font_general">
             public static Result getFont(%FONT_ARGUMENT %COMMA QWidget parent %STRING_ARGUMENT) {
                 QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
@@ -1640,12 +1552,12 @@
         </modify-function>
     </object-type>
 
+    
     <object-type name="QMenu">
         <inject-code>
-        protected final void initStyleOption(com.trolltech.qt.gui.QStyleOptionMenuItem option, QAction action) {
-            initStyleOption(option.nativePointer(), action);
-        }
-        </inject-code>  
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QMenu___" quote-before-line="}// class"/>
+        </inject-code>
+          
 
         <template name="gui.addAction">
         public final QAction addAction(%EXTRA String text, Object receiver, String method %END_EXTRA) {
@@ -1695,7 +1607,11 @@
         </inject-code>
     </object-type>
 
-    <object-type name="QMenuBar">  
+    
+    <object-type name="QMenuBar">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QMenuBar___" quote-before-line="}// class"/>
+        </inject-code>  
         <inject-code>
             <insert-template name="gui.addAction">
                 <replace from="%POST_CALL" to=""/>
@@ -1706,11 +1622,7 @@
             </insert-template>
         </inject-code>
 
-        <inject-code>
-        protected final void initStyleOption(com.trolltech.qt.gui.QStyleOptionMenuItem option, QAction action) {
-            initStyleOption(option.nativePointer(), action);
-        }
-        </inject-code>     
+             
     </object-type>
 
     <object-type name="QPictureIO">
@@ -1743,12 +1655,12 @@
         </inject-code>      
     </object-type>
 
+    
     <object-type name="QPixmapCache">
         <inject-code>
-        public static boolean find(String key, QPixmap pm) {
-            return find(key, pm.nativePointer());
-        }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPixmapCache___" quote-before-line="}// class"/>
         </inject-code>
+        
     </object-type>
 
     <object-type name="QProgressBar">
@@ -1767,16 +1679,12 @@
         </inject-code>
     </object-type>
 
+    
     <object-type name="QShortcut">
         <inject-code>
-        public QShortcut(QKeySequence key, QWidget parent) {
-            this(key, parent, null, null, com.trolltech.qt.core.Qt.ShortcutContext.WindowShortcut);
-        }        
-        
-        public QShortcut(QKeySequence key, QWidget parent, com.trolltech.qt.core.Qt.ShortcutContext context) {
-            this(key, parent, null, null, context);
-        }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QShortcut___" quote-before-line="}// class"/>
         </inject-code>
+        
     </object-type>
 
     <object-type name="QStandardItem">
@@ -1858,18 +1766,12 @@
         </modify-function>
     </object-type>
 
+    
     <object-type name="QValidator">
-
         <inject-code>
-        public static class QValidationData {
-            public QValidationData(String input, int pos) {
-                string = input;
-                position = pos;
-            }
-            public String string;
-            public int position;
-        }    
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QValidator___" quote-before-line="}// class"/>
         </inject-code>
+        
         
         <modify-function signature="fixup(QString&amp;)const">
             <modify-argument index="1">
@@ -1944,24 +1846,12 @@
         </modify-function>   
     </object-type>
     
+    
     <object-type name="QAbstractButton">
-        <inject-code class="java">
-        /**
-         * Sets the shortcut to the key sequence for the given key string. For example "Ctrl+O" gives CTRL+'O'. 
-         * The strings "Ctrl", "Shift", "Alt" and "Meta" are recognized, as well as their translated equivalents in the 
-         * "QShortcut" context (using QObject::tr()). Up to four key codes may be entered by separating them with commas, 
-         * e.g. "Alt+X,Ctrl+S,Q".
-         * @param key The description of the key sequence. Typically used with tr() so key sequences can be locale aware.
-         */
-        public void setShortcut(String key) { setShortcut(new QKeySequence(key)); }
-        
-        /**
-         * Sets the shortcut to the key sequence for the given key. The result will depend on the currently running platform.
-         * The key sequence will be based on the first element in the list of key bindings for the key. 
-         * @param key The key for which to select a key sequence 
-         */  
-        public void setShortcut(QKeySequence.StandardKey key) { setShortcut(new QKeySequence(key)); }
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractButton___" quote-before-line="}// class"/>
         </inject-code>
+        
     </object-type>
 
     <template name="gui::qstyleoption_from_object">
@@ -1976,7 +1866,11 @@
         QStyleOption *%out = (QStyleOption *) qtjambi_to_object(__jni_env, %in);
     </template>
 
+    
     <object-type name="QStyle">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QStyle___" quote-before-line="}// class"/>
+        </inject-code>
         <modify-function signature="drawControl(QStyle::ControlElement, const QStyleOption *, QPainter *, const QWidget *) const">
             <modify-argument index="2">
                 <replace-type modified-type="com.trolltech.qt.gui.QStyleOption"/>
@@ -2165,25 +2059,7 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        <inject-code>
-        @QtBlockedSlot public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
-                                                              com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget)
-        {
-            return combinedLayoutSpacing(controls1, controls2, orientation, option.nativePointer(), widget);
-        }
         
-        @QtBlockedSlot public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
-                                                              com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option)
-        {
-            return combinedLayoutSpacing(controls1, controls2, orientation, option, null);
-        }
-
-        @QtBlockedSlot public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
-                                                              com.trolltech.qt.core.Qt.Orientation orientation)
-        {
-            return combinedLayoutSpacing(controls1, controls2, orientation, null);
-        }
-        </inject-code>
         
         <modify-function signature="layoutSpacing(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const">
             <access modifier="private"/>
@@ -2194,25 +2070,7 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        <inject-code>
-        @QtBlockedSlot public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
-                                                      com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget)
-        {
-            return layoutSpacing(control1, control2, orientation, option.nativePointer(), widget);
-        }
         
-        @QtBlockedSlot public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
-                                                      com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option)
-        {
-            return layoutSpacing(control1, control2, orientation, option, null);
-        }
-
-        @QtBlockedSlot public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
-                                                      com.trolltech.qt.core.Qt.Orientation orientation)
-        {
-            return layoutSpacing(control1, control2, orientation, null);
-        }        
-        </inject-code>
         
         <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const">
             <access modifier="private"/>
@@ -2223,25 +2081,7 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>    
-        <inject-code>
-        @QtBlockedSlot public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
-                                                                    com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget)
-        {
-            return layoutSpacing(control1, control2, orientation, option.nativePointer(), widget);
-        }
         
-        @QtBlockedSlot public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
-                                                                    com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option)
-        {
-            return layoutSpacing(control1, control2, orientation, option, null);
-        }
-
-        @QtBlockedSlot public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, 
-                                                                    com.trolltech.qt.core.Qt.Orientation orientation)
-        {
-            return layoutSpacing(control1, control2, orientation, null);
-        }        
-        </inject-code>
 
   
         <inject-code class="shell-declaration"> <!-- Remove in Qt 5 -->
@@ -2251,7 +2091,11 @@
         <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
     </object-type>
 
-    <object-type name="QLayout"> 
+    
+    <object-type name="QLayout">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QLayout___" quote-before-line="}// class"/>
+        </inject-code> 
         <modify-function signature="addItem(QLayoutItem *)">
             <modify-argument index="1">
                 <define-ownership class="java" owner="c++"/>
@@ -2278,36 +2122,15 @@
             </modify-argument>
         </modify-function>
 
-        <inject-code>
-        @QtBlockedSlot public final QContentsMargins getContentsMargins() {
-            QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
-            
-            getContentsMargins(left, top, right, bottom);
-            return new QContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
-        }
         
-        @QtBlockedSlot public final void setContentsMargins(QContentsMargins margins) {
-            setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
-        }
-        </inject-code>
     </object-type>
 
-    <object-type name="QGridLayout">  
-        <inject-code>        
-        public final QTableArea getItemPosition(int index) {
-            QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer column = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
-            
-            getItemPosition(index, row, column, rowSpan, columnSpan);
-            
-            return new QTableArea(row.intValue(), column.intValue(), rowSpan.intValue(), columnSpan.intValue());
-        }
-        </inject-code> 
+    
+    <object-type name="QGridLayout">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QGridLayout___" quote-before-line="}// class"/>
+        </inject-code>  
+         
     </object-type>
 
     <template name="gui.inputDialog_get_input">
@@ -2455,7 +2278,11 @@
         </modify-function>
     </object-type>
 
+    
     <object-type name="QWidget">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QWidget___" quote-before-line="}// class"/>
+        </inject-code>
         <modify-function signature="setWindowTitle(const QString &amp;)">
             <inject-code class="java">
                 <argument-map index="1" meta-name="%1"/>
@@ -2468,9 +2295,7 @@
             }
             </inject-code>
         </modify-function>
-        <inject-code class="java">
-        private native static void __qt_QMessageBox_setWindowTitle(long native_id, String windowTitle);
-        </inject-code>
+        
 
         <modify-function signature="setWindowModality(Qt::WindowModality)">
             <inject-code class="java">
@@ -2485,25 +2310,9 @@
             </inject-code>
         </modify-function>
 
-        <inject-code class="java">
-        private native static void __qt_QMessageBox_setWindowModality(long native_id, int modality);
-        </inject-code>
-
-        <inject-code>
-        @QtBlockedSlot public final QContentsMargins getContentsMargins() {
-            QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
-            
-            getContentsMargins(left, top, right, bottom);
-            return new QContentsMargins(left.intValue(), top.intValue(), right.intValue(), bottom.intValue());
-        }
         
-        @QtBlockedSlot public final void setContentsMargins(QContentsMargins margins) {
-            setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
-        }        
-        </inject-code>
+
+        
     </object-type>
 
     <object-type name="QAbstractSpinBox">
@@ -2619,19 +2428,15 @@
         </inject-code>
     </object-type> 
  
+    
     <object-type name="QFileDialog">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QFileDialog___" quote-before-line="}// class"/>
+        </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
-        <inject-code>
-        public static class Filter {
-            public Filter(String filter) {
-                this.filter = filter;
-            }
-            public String filter;
-            public String selectedFilter = "";
-        };    
-        </inject-code>
+        
         <template name="gui.filedialog_get_xxx_filename">
         public static %TYPE %FUNCTION_NAME(QWidget parent, String caption, String dir, Filter filter, Options options) {
             QNativePointer np = filter != null ? new QNativePointer(QNativePointer.Type.String) : null;
@@ -2686,12 +2491,12 @@
         </inject-code>    
     </object-type>
 
+    
     <object-type name="QTabBar">
         <inject-code>
-        public final void initStyleOption(QStyleOptionTab option, int tabIndex) {
-            initStyleOption(option.nativePointer(), tabIndex);
-        }
-        </inject-code>     
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QTabBar___" quote-before-line="}// class"/>
+        </inject-code>
+             
     </object-type>
 
     <object-type name="QRadioButton">
@@ -2710,37 +2515,23 @@
         </inject-code>    
     </object-type>
     
+    
     <object-type name="QClipboard">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QClipboard___" quote-before-line="}// class"/>
+        </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>   
-        <inject-code>
-        public static class Text {            
-            public String text;
-            public String subtype;
-        }
-        public final Text text(String subtype, Mode mode) {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.String);
-            np.setStringValue(subtype != null ? subtype : "");            
-            
-            Text returned = new Text();
-            returned.text = text(np, mode);                        
-            returned.subtype = np.stringValue();
-            return returned;            
-        }
-        
-        public final Text text(String subtype) {
-            return text(subtype, Mode.Clipboard);
-        }
-        </inject-code>  
+          
     </object-type>
 
+    
     <object-type name="QAbstractScrollArea">
         <inject-code>
-    public QPaintEngine paintEngine() {
-        throw new RuntimeException("Cannot open a painter directly on a QAbstractScrollArea, open QPainter on its viewport instead...");
-    }
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractScrollArea___" quote-before-line="}// class"/>
         </inject-code>
+        
     </object-type>
 
     <object-type name="QRubberBand">
@@ -2751,40 +2542,23 @@
         </inject-code>  
     </object-type>
 
+    
     <object-type name="QTextDocument">
         <inject-code>
-        public final void redo(QTextCursor cursor) {
-            redo(cursor.nativePointer());
-        }
-
-        public final void undo(QTextCursor cursor) {
-            undo(cursor.nativePointer());
-        } 
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextDocument___" quote-before-line="}// class"/>
         </inject-code>
+        
     </object-type>
 
+    
     <object-type name="QSplitter">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QSplitter___" quote-before-line="}// class"/>
+        </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
-        <inject-code>
-        public static class Range {
-            public Range(int min, int max) {
-                minimum = min;
-                maximum = max;
-            }
-            public int minimum;
-            public int maximum;
-        }
-        public Range getRange(int index) {
-            QNativePointer min = new QNativePointer(QNativePointer.Type.Int);
-            QNativePointer max = new QNativePointer(QNativePointer.Type.Int);
-            
-            getRange(index, min, max);
-            
-            return new Range(min.intValue(), max.intValue());
-        }
-        </inject-code>
+        
     </object-type>
 
     <object-type name="QGroupBox">
@@ -3063,28 +2837,12 @@
         </modify-function>
     </object-type>
 
-    <object-type name="QAction">
-        <inject-code class="java">
-        private QActionGroup __rcActionGroup = null;
     
-        /**
-         * Sets the shortcut to the key sequence for the given key string. For example "Ctrl+O" gives CTRL+'O'. 
-         * The strings "Ctrl", "Shift", "Alt" and "Meta" are recognized, as well as their translated equivalents in the 
-         * "QShortcut" context (using QObject::tr()). Up to four key codes may be entered by separating them with commas, 
-         * e.g. "Alt+X,Ctrl+S,Q".
-         * @param key The description of the key sequence. Typically used with tr() so key sequences can be locale aware.
-         */
-        public void setShortcut(String key) { setShortcut(new QKeySequence(key)); }
-        
-        /**
-         * Sets the shortcut to the key sequence for the given key. The result will depend on the currently running platform.
-         * The key sequence will be based on the first element in the list of key bindings for the key. 
-         * @param key The key for which to select a key sequence 
-         */  
-        public void setShortcut(QKeySequence.StandardKey key) { setShortcut(new QKeySequence(key)); }
-        
-        public void setIcon(QPixmap pm) { setIcon(new QIcon(pm)); }
+    <object-type name="QAction">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QAction___" quote-before-line="}// class"/>
         </inject-code>
+        
         <modify-function signature="setActionGroup(QActionGroup*)">
             <modify-argument index="1">
                 <reference-count action="ignore"/>
@@ -3106,12 +2864,12 @@
         </modify-function>
     </object-type>
 
+    
     <object-type name="QPainter">
-        <inject-code class="java">
-    public void setBrush(QColor color) { setBrush(new QBrush(color)); }
-    public void setBrush(QGradient gradient) { setBrush(new QBrush(gradient)); }
-    public void setBrush(QPixmap pm) { setBrush(new QBrush(pm)); }
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPainter___" quote-before-line="}// class"/>
         </inject-code>
+        
         <template name="gui.painter_draw_text_general">
         public final void drawText(%RECT_ARGUMENTS, int flags, String text, %RECT_TYPE boundingRect) {
             drawText(%RECT_CALL_ARGUMENTS, flags, text, boundingRect == null ? null : boundingRect.nativePointer());
@@ -3146,22 +2904,7 @@
             </insert-template>
         </inject-code>
     
-        <inject-code>
-    public static QPaintDeviceInterface redirected(QPaintDeviceInterface device, com.trolltech.qt.core.QPoint offset) {
-        return redirected(device, offset == null ? null : offset.nativePointer());
-    }
-   
-    public QPainter(QWidget widget) {
-        this();
-        begin(widget);  
-    }
-
-    public boolean begin(QWidget widget) {
-        return com.trolltech.qt.QtJambiGuiInternal.beginPaint(widget, this);
-    }
-   
-        private static java.util.Stack&lt;QPaintDeviceInterface&gt; __rcRedirections = new java.util.Stack&lt;QPaintDeviceInterface&gt;();
-        </inject-code>
+        
         <modify-function signature="setRedirected(const QPaintDevice*, QPaintDevice*, const QPoint &amp;)">
             <modify-argument index="1">
                 <reference-count action="ignore"/>
@@ -3183,74 +2926,28 @@
             </inject-code>
         </modify-function>
     </object-type>
+    
     <object-type name="QApplication">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QApplication___" quote-before-line="}// class"/>
+        </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>  
-        <inject-code class="java">
-    public static void initialize(String args[])
-    {
-        if (m_instance != null)
-            throw new RuntimeException("QApplication can only be initialized once");
-            
-        m_instance = new QApplication(args);
-        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
-        String path = Utilities.unpackPlugins();
-        if (path != null)
-            addLibraryPath(path);
-        else
-            QtJambiInternal.setupDefaultPluginPath();
-    }
-    
-    public static void aboutQtJambi() {
-        com.trolltech.qt.QtJambiGuiInternal.aboutQtJambi();
-    }
-
-    public static QApplication instance() {
-        if (type() != Type.Tty)
-            return (QApplication) com.trolltech.qt.core.QCoreApplication.instance();
-        return null;
-    }
-        </inject-code>
-        <inject-code class="java">
-    public QApplication(String args[])         
-    {
-        this(argc(args), argv(args));        
-    }
-        </inject-code>
+        
+        
         <template name="gui.application_char_pointer_function">
         public static %RETURN_TYPE %FUNCTION_NAME(%PRE_ARGUMENTS %COMMA QByteArray className) {
             return %FUNCTION_NAME(%PRE_CALL_ARGUMENTS %COMMA className == null ? null : className.data());
         }
         </template>       
 
-        <inject-code>
-        public static void setFont(QFont font) {
-            setFont(font, null);
-        }
-        </inject-code>
+        
 
-        <inject-code>
-        public static void setPalette(QPalette palette) {
-            setPalette(palette, null);
-        }
-        </inject-code>
+        
     
-        <inject-code>
-        public static QCursor overrideCursor() {
-            QNativePointer np = overrideCursor_private();
-            return np == null ? null : QCursor.fromNativePointer(np);
-        }
-        </inject-code>     
+             
 
     </object-type>
 
 </typesystem>
-
-
-
-
-
-
-
-
