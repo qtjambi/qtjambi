@@ -48,7 +48,7 @@ STEP 4: Compile the java source files
    > javac @java_files
 
    On some systems one may be required to compile the sources with the VM
-   option -J-mx1024 to prevent the VM to run out of heap space.
+   option -J-mx1024m to prevent the VM to run out of heap space.
 
 ------------------------------------------------------------------------
 STEP 5: Start coding...
