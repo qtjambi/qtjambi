@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <typesystem package="com.trolltech.qt.core" default-superclass="com.trolltech.qt.QtJambiObject">
     <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
@@ -161,7 +162,11 @@
 
     <primitive-type name="jobject" java-name="java.lang.Object" jni-name="jobject"/>
 
-    <value-type name="QDate"> 
+    
+    <value-type name="QDate">
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QDate___" quote-before-line="}// class"/>
+        </inject-code> 
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
@@ -171,24 +176,16 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        <inject-code>
-        public final int weekNumber() {            
-            return weekNumber(null);            
-        }
         
-        public final int yearOfWeekNumber() {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
-            weekNumber(np);
-            return np.intValue();
-        }
-        </inject-code>
     </value-type>
 
+    
     <value-type name="QDir">
-        <modify-function signature="operator[](int)const" access="private"/>
         <inject-code>
-            @com.trolltech.qt.QtBlockedSlot public String at(int i) { return operator_subscript(i); }
+            <import-file name="typesystem_core-java.java" quote-after-line="class QDir___" quote-before-line="}// class"/>
         </inject-code>
+        <modify-function signature="operator[](int)const" access="private"/>
+        
     </value-type>
 
     <template name="core.multiply-devide-add-subtract">
@@ -372,9 +369,7 @@
             <remove/>
         </modify-function>
         <inject-code class="java">
-            <import-file name="typesystem_core-java.java"
-                         quote-after-line="class QAbstractItemModel___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractItemModel___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code class="native">
     extern "C" JNIEXPORT jint QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_setData_1native)
@@ -412,11 +407,10 @@
         </modify-function>
     </object-type>
 
+    
     <value-type name="QByteArray">
         <inject-code class="java">
-            <import-file name="typesystem_core-java.java"
-                         quote-after-line="class QByteArray___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_core-java.java" quote-after-line="class QByteArray___" quote-before-line="}// class"/>
 
             <template name="QByteArray::toType(base)">
     public final %TYPE% %NAME%(int base) throws NumberFormatException{
@@ -466,12 +460,7 @@
             
         </inject-code> 
 
-        <inject-code>
-    @com.trolltech.qt.QtBlockedSlot public QByteArray set(QByteArray other) { 
-        operator_assign(other);
-        return this;
-    }
-        </inject-code>
+        
 
    <modify-function signature="toUShort(bool*, int) const" rename="toChar_private" access="private">
         <modify-argument index="1">
@@ -512,11 +501,7 @@
     <modify-function signature="QByteArray(const char*,int)">
         <access modifier="private"/>
     </modify-function>
-    <inject-code>
-        public QByteArray(byte data[]) {
-            this(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
-        }
-    </inject-code>
+    
     
     <modify-function signature="append(QString)">
         <access modifier="private"/>
@@ -560,29 +545,17 @@
     <modify-function signature="contains(const char*)const">
         <remove/>
     </modify-function>
-    <inject-code>
-        public boolean contains(String str) {
-            return contains(new QByteArray(str));
-        }
-    </inject-code>
+    
     
     <modify-function signature="count(const char*)const">
         <remove/>
     </modify-function>
-    <inject-code>
-        public int count(String str) {
-            return count(new QByteArray(str));
-        }
-    </inject-code>
+    
     
     <modify-function signature="endsWith(const char*)const">
         <remove/>
     </modify-function>
-    <inject-code>
-        public boolean endsWith(String str) {
-            return endsWith(new QByteArray(str));
-        }
-    </inject-code>
+    
     
     <modify-function signature="fill(char,int)">
         <access modifier="private"/>
@@ -677,11 +650,7 @@
     <modify-function signature="prepend(const char*)">
         <remove/>    
     </modify-function>
-    <inject-code>
-        public QByteArray prepend(String str) {
-            return prepend(new QByteArray(str));
-        }
-    </inject-code>
+    
     
     <modify-function signature="remove(int,int)">
         <access modifier="private"/>
@@ -699,11 +668,7 @@
     <modify-function signature="replace(QByteArray,const char*)">
         <remove/>
     </modify-function>
-    <inject-code>
-        public QByteArray replace(QByteArray before, String after) {
-            return replace(before, new QByteArray(after));
-        }
-    </inject-code>
+    
 
     <template name="core.qbytearray_replace">
         <insert-template name="core.private_function_return_self">
@@ -728,11 +693,7 @@
     <modify-function signature="replace(QString,const char*)">
         <remove/>
     </modify-function>
-    <inject-code>
-        public QByteArray replace(String before, String after) {
-            return replace(new QByteArray(before), new QByteArray(after));
-        }
-    </inject-code>
+    
     
     <modify-function signature="replace(int,int,const char*)">
         <remove/>
@@ -911,11 +872,7 @@
     <modify-function signature="startsWith(const char*)const">
         <remove/>
     </modify-function>
-    <inject-code>
-        public boolean startsWith(String str) {
-            return startsWith(new QByteArray(str));
-        }
-    </inject-code>
+    
     
     <modify-function signature="fromRawData(const char*,int)">
         <remove/>
@@ -923,18 +880,22 @@
  
     </value-type>
         
-    <object-type name="QFile">  
+    
+    <object-type name="QFile">
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QFile___" quote-before-line="}// class"/>
+        </inject-code>  
         <modify-function signature="decodeName(const char*)">
             <access modifier="private"/>
         </modify-function>
-        <inject-code>
-        public static String decodeName(String localFileName) {
-            return decodeName(com.trolltech.qt.QNativePointer.createCharPointer(localFileName));
-        }
-        </inject-code>
+        
     </object-type>
 
+    
     <object-type name="QIODevice">
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QIODevice___" quote-before-line="}// class"/>
+        </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
@@ -945,18 +906,7 @@
             <access modifier="private"/>
             <rename to="getByte"/>
         </modify-function>
-        <inject-code>
-        /** 
-         * Gets a byte from the device. 
-         *
-         * @return -1 on failure, or the value of the byte on success
-         */
-        public final int getByte() {
-            QNativePointer np = new QNativePointer(QNativePointer.Type.Byte);
-            boolean success = getByte(np);
-            return success ? np.byteValue() : -1;
-        }
-        </inject-code>
+        
         
         <modify-function signature="peek(char*,long long)">
             <access modifier="private"/>
@@ -1138,24 +1088,23 @@
         </modify-function>       
     </object-type>
 
+    
     <object-type name="QCryptographicHash">
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QCryptographicHash___" quote-before-line="}// class"/>
+        </inject-code>
         <modify-function signature="addData(const char*,int)">
             <access modifier="private"/>
         </modify-function>
-        <inject-code>
-        public final void addData(byte data[]) {
-            QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
-            addData(np, data.length);
-        }
-        </inject-code>
+        
     </object-type>
 
+    
     <object-type name="QTextCodec">
-        <inject-code class="java">
-    static {
-        setCodecForTr(QTextCodec.codecForName("UTF-8"));
-    }
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QTextCodec___" quote-before-line="}// class"/>
         </inject-code>
+        
 
 
         <modify-function signature="convertFromUnicode(const QChar*,int,QTextCodec_ConverterState*)const">
@@ -1223,11 +1172,7 @@
         <modify-function signature="codecForName(const char*)  ">
             <access modifier="private"/>
         </modify-function>
-        <inject-code>
-        public static QTextCodec codecForName(String name) {
-            return codecForName(com.trolltech.qt.QNativePointer.createCharPointer(name));
-        }
-        </inject-code>    
+            
     </object-type>
 
     <object-type name="QTranslator">
@@ -1235,9 +1180,7 @@
             <access modifier="private"/>        
         </modify-function>
         <inject-code>
-            <import-file name="typesystem_core-java.java"
-                         quote-after-line="class QTranslator___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_core-java.java" quote-after-line="class QTranslator___" quote-before-line="}// class"/>
         </inject-code>
 
         <modify-function signature="translate(const char*,const char*,const char*)const">
@@ -1251,61 +1194,40 @@
     <object-type name="QWaitCondition">
         <modify-function signature="wait(QMutex *, unsigned long)">
             <modify-argument index="2">
-                <replace-default-expression with="Integer.MAX_VALUE" />
+                <replace-default-expression with="Integer.MAX_VALUE"/>
             </modify-argument>
         </modify-function>
     </object-type>
 
+    
     <object-type name="QBuffer">
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QBuffer___" quote-before-line="}// class"/>
+        </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
-        <inject-code>
-        // retain a reference to avoid gc
-        @SuppressWarnings("unused")
-        private Object strongDataReference = null;
-        </inject-code>
+        
     
         <modify-function signature="QBuffer(QByteArray*,QObject*)">
             <access modifier="private"/>        
         </modify-function>
-        <inject-code>
-        public QBuffer(QByteArray byteArray, QObject parent) {
-            this(byteArray.nativePointer(), parent);            
-            strongDataReference = byteArray;
-        }
         
-        public QBuffer(QByteArray byteArray) {
-            this(byteArray, null);
-        }
-        </inject-code>
     
         <modify-function signature="setBuffer(QByteArray*)">
             <access modifier="private"/>
         </modify-function>
-        <inject-code>
-        public void setBuffer(QByteArray byteArray) {
-            setBuffer(byteArray.nativePointer());
-            strongDataReference = byteArray;
-        }
-        </inject-code>
+        
     
         <modify-function signature="setData(const char*,int)">
             <access modifier="private"/>
         </modify-function>
-        <inject-code>
-        public final void setData(byte data[]) {
-            QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
-            setData(np, data.length);
-        }
-        </inject-code>
+        
     </object-type>
 
     <object-type name="QTimer">
         <inject-code class="java">
-            <import-file name="typesystem_core-java.java"
-                         quote-after-line="class QTimer___"
-                         quote-before-line="}// class" />
+            <import-file name="typesystem_core-java.java" quote-after-line="class QTimer___" quote-before-line="}// class"/>
         </inject-code>
     </object-type>
 
@@ -1325,17 +1247,16 @@
             </modify-argument>
         </modify-function>
         <inject-code>
-             <import-file name="typesystem_core-java.java"
-                       quote-after-line="class QProcess___"
-                       quote-before-line="}// class" />
+             <import-file name="typesystem_core-java.java" quote-after-line="class QProcess___" quote-before-line="}// class"/>
         </inject-code>
   </object-type>
   
-  <object-type name="QSignalMapper">
-      <inject-code>
-        private java.util.Hashtable&lt;QObject, QObject&gt; __rcObjectForObject = new java.util.Hashtable&lt;QObject, QObject&gt;();
-        private java.util.Hashtable&lt;QObject, Object&gt; __rcWidgetForObject = new java.util.Hashtable&lt;QObject, Object&gt;();        
-      </inject-code>
+  
+    <object-type name="QSignalMapper">
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QSignalMapper___" quote-before-line="}// class"/>
+        </inject-code>
+      
 
       <modify-function signature="removeMappings(QObject*)">
           <modify-argument index="1">
@@ -1374,9 +1295,7 @@
 
   <object-type name="QObject">
       <inject-code class="java">    
-          <import-file name="typesystem_core-java.java"
-                       quote-after-line="class QObject___"
-                       quote-before-line="}// class" />
+          <import-file name="typesystem_core-java.java" quote-after-line="class QObject___" quote-before-line="}// class"/>
       </inject-code>
   </object-type>
 
@@ -1391,9 +1310,7 @@
           </modify-argument>           
       </modify-function>
       <inject-code>
-          <import-file name="typesystem_core-java.java"
-                       quote-after-line="class QCoreApplication___"
-                       quote-before-line="}// class" />
+          <import-file name="typesystem_core-java.java" quote-after-line="class QCoreApplication___" quote-before-line="}// class"/>
       </inject-code>
       
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding,int)">
@@ -1493,9 +1410,7 @@
       </modify-function>                
 
       <inject-code>
-          <import-file name="typesystem_core-java.java"
-                       quote-after-line="class QDataStream___"
-                       quote-before-line="}// class" />
+          <import-file name="typesystem_core-java.java" quote-after-line="class QDataStream___" quote-before-line="}// class"/>
       </inject-code>
     
       <inject-code class="native">
@@ -1660,9 +1575,7 @@
           <access modifier="private"/>
       </modify-function>
       <inject-code>
-          <import-file name="typesystem_core-java.java"
-                       quote-after-line="class QTextStream___"
-                       quote-before-line="}// class" />
+          <import-file name="typesystem_core-java.java" quote-after-line="class QTextStream___" quote-before-line="}// class"/>
       </inject-code>    
       
       <inject-code class="native">
@@ -1691,9 +1604,7 @@
   </object-type>
   <value-type name="QBitArray">
       <inject-code>
-          <import-file name="typesystem_core-java.java"
-                       quote-after-line="class QBitArray___"
-                       quote-before-line="}// class" />
+          <import-file name="typesystem_core-java.java" quote-after-line="class QBitArray___" quote-before-line="}// class"/>
       </inject-code>  
   </value-type>
 </typesystem>

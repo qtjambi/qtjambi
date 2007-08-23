@@ -89,22 +89,6 @@ abstract class QAbstractItemModel___ extends QAbstractItemModel {
     }
 }// class
 
-class QByteArray___ extends QByteArray {
-    public QByteArray(String s) {
-        this();
-        append(s);
-    }
-
-    public final byte[] toByteArray() {
-        byte[] res = new byte[size()];
-
-        for (int i = 0; i < size(); i++) {
-            res[i] = at(i);
-        }
-        return res;
-    }
-}// class
-
 class QTimer___ extends QTimer {
     static private class QSingleShotTimer extends QObject {
         private int timerId = -1;
@@ -434,5 +418,163 @@ class QBitArray___ extends QBitArray {
     public QBitArray inverted() {
         return operator_negate();
     }
+
+}// class
+
+// hfr
+
+class QDate___ extends QDate {
+
+    public final int weekNumber() {
+        return weekNumber(null);
+    }
+
+    public final int yearOfWeekNumber() {
+        QNativePointer np = new QNativePointer(QNativePointer.Type.Int);
+        weekNumber(np);
+        return np.intValue();
+    }
+
+}// class
+
+class QDir___ extends QDir {
+
+    @com.trolltech.qt.QtBlockedSlot
+    public String at(int i) {
+        return operator_subscript(i);
+    }
+
+}// class
+
+class QByteArray___ extends QByteArray {
+    public QByteArray(String s) {
+        this();
+        append(s);
+    }
+
+    public QByteArray(byte data[]) {
+        this(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
+    }
+
+    public boolean contains(String str) {
+        return contains(new QByteArray(str));
+    }
+
+    public int count(String str) {
+        return count(new QByteArray(str));
+    }
+
+    public boolean endsWith(String str) {
+        return endsWith(new QByteArray(str));
+    }
+
+    public QByteArray prepend(String str) {
+        return prepend(new QByteArray(str));
+    }
+
+    public QByteArray replace(QByteArray before, String after) {
+        return replace(before, new QByteArray(after));
+    }
+
+    public QByteArray replace(String before, String after) {
+        return replace(new QByteArray(before), new QByteArray(after));
+    }
+
+    public boolean startsWith(String str) {
+        return startsWith(new QByteArray(str));
+    }
+
+    public final byte[] toByteArray() {
+        byte[] res = new byte[size()];
+
+        for (int i = 0; i < size(); i++) {
+            res[i] = at(i);
+        }
+        return res;
+    }
+
+    @com.trolltech.qt.QtBlockedSlot
+    public QByteArray set(QByteArray other) {
+        operator_assign(other);
+        return this;
+    }
+
+}// class
+
+class QFile___ extends QFile {
+
+    public static String decodeName(String localFileName) {
+        return decodeName(com.trolltech.qt.QNativePointer.createCharPointer(localFileName));
+    }
+
+}// class
+
+class QIODevice___ extends QIODevice {
+
+    /**
+     * Gets a byte from the device.
+     * 
+     * @return -1 on failure, or the value of the byte on success
+     */
+    public final int getByte() {
+        QNativePointer np = new QNativePointer(QNativePointer.Type.Byte);
+        boolean success = getByte(np);
+        return success ? np.byteValue() : -1;
+    }
+
+}// class
+
+class QCryptographicHash___ extends QCryptographicHash {
+
+    public final void addData(byte data[]) {
+        QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
+        addData(np, data.length);
+    }
+
+}// class
+
+class QTextCodec___ extends QTextCodec {
+
+    static {
+        setCodecForTr(QTextCodec.codecForName("UTF-8"));
+    }
+
+    public static QTextCodec codecForName(String name) {
+        return codecForName(com.trolltech.qt.QNativePointer.createCharPointer(name));
+    }
+
+}// class
+
+class QBuffer___ extends QBuffer {
+
+    // retain a reference to avoid gc
+    @SuppressWarnings("unused")
+    private Object strongDataReference = null;
+
+    public QBuffer(QByteArray byteArray, QObject parent) {
+        this(byteArray.nativePointer(), parent);
+        strongDataReference = byteArray;
+    }
+
+    public QBuffer(QByteArray byteArray) {
+        this(byteArray, null);
+    }
+
+    public void setBuffer(QByteArray byteArray) {
+        setBuffer(byteArray.nativePointer());
+        strongDataReference = byteArray;
+    }
+
+    public final void setData(byte data[]) {
+        QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
+        setData(np, data.length);
+    }
+
+}// class
+
+class QSignalMapper___ extends QSignalMapper {
+
+    private java.util.Hashtable<QObject, QObject> __rcObjectForObject = new java.util.Hashtable<QObject, QObject>();
+    private java.util.Hashtable<QObject, Object> __rcWidgetForObject = new java.util.Hashtable<QObject, Object>();
 
 }// class
