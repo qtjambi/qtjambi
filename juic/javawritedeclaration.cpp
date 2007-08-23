@@ -18,6 +18,7 @@
 #include "uic.h"
 #include "databaseinfo.h"
 #include "customwidgetsinfo.h"
+#include "javautils.h"
 
 #include <QTextStream>
 
@@ -82,7 +83,8 @@ void WriteDeclaration::acceptWidget(DomWidget *node)
     if (node->hasAttributeClass())
         className = node->attributeClass();
 
-    output << option.indent << "public " << uic->customWidgetsInfo()->realClassName(className) << " " << driver->findOrInsertWidget(node) << ";\n";
+    output << option.indent << "public " << uic->customWidgetsInfo()->realClassName(className) << " "
+           << escapeVariableName(driver->findOrInsertWidget(node)) << ";\n";
 
     TreeWalker::acceptWidget(node);
 }
@@ -93,28 +95,32 @@ void WriteDeclaration::acceptLayout(DomLayout *node)
     if (node->hasAttributeClass())
         className = node->attributeClass();
 
-    output << option.indent << "public " << className << " " << driver->findOrInsertLayout(node) << ";\n";
+    output << option.indent << "public " << className << " "
+           << escapeVariableName(driver->findOrInsertLayout(node)) << ";\n";
 
     TreeWalker::acceptLayout(node);
 }
 
 void WriteDeclaration::acceptSpacer(DomSpacer *node)
 {
-    output << option.indent << "public QSpacerItem " << driver->findOrInsertSpacer(node) << ";\n";
+    output << option.indent << "public QSpacerItem "
+           << escapeVariableName(driver->findOrInsertSpacer(node)) << ";\n";
 
     TreeWalker::acceptSpacer(node);
 }
 
 void WriteDeclaration::acceptActionGroup(DomActionGroup *node)
 {
-    output << option.indent << "public QActionGroup " << driver->findOrInsertActionGroup(node) << ";\n";
+    output << option.indent << "public QActionGroup "
+           << escapeVariableName(driver->findOrInsertActionGroup(node)) << ";\n";
 
     TreeWalker::acceptActionGroup(node);
 }
 
 void WriteDeclaration::acceptAction(DomAction *node)
 {
-    output << option.indent << "public QAction " << driver->findOrInsertAction(node) << ";\n";
+    output << option.indent << "public QAction "
+           << escapeVariableName(driver->findOrInsertAction(node)) << ";\n";
 
     TreeWalker::acceptAction(node);
 }

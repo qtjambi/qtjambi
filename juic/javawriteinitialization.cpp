@@ -65,12 +65,6 @@ void WriteInitialization::acceptUI(DomUI *node)
     if (node->elementImages())
         TreeWalker::acceptImages(node->elementImages());
 
-#if 0
-    // ### port me
-    if (option.generateImplemetation)
-        output << "#include <" << driver->headerFileName() << ">\n\n";
-#endif
-
     m_stdsetdef = true;
     if (node->hasAttributeStdSetDef())
         m_stdsetdef = node->attributeStdSetDef();
@@ -78,7 +72,7 @@ void WriteInitialization::acceptUI(DomUI *node)
     QString className = node->elementClass() + option.postfix;
     m_generatedClass = className;
 
-    QString varName = driver->findOrInsertWidget(node->elementWidget());
+    QString varName = escapeVariableName(driver->findOrInsertWidget(node->elementWidget()));
     m_registeredWidgets.insert(varName, node->elementWidget()); // register the main widget
 
     QString widgetClassName = node->elementWidget()->attributeClass();
@@ -139,12 +133,12 @@ void WriteInitialization::acceptUI(DomUI *node)
 void WriteInitialization::acceptWidget(DomWidget *node)
 {
     QString className = node->attributeClass();
-    QString varName = driver->findOrInsertWidget(node);
+    QString varName = escapeVariableName(driver->findOrInsertWidget(node));
     m_registeredWidgets.insert(varName, node); // register the current widget
 
     QString parentWidget, parentClass;
     if (m_widgetChain.top()) {
-        parentWidget = driver->findOrInsertWidget(m_widgetChain.top());
+        parentWidget = escapeVariableName(driver->findOrInsertWidget(m_widgetChain.top()));
         parentClass = m_widgetChain.top()->attributeClass();
     }
 
@@ -173,7 +167,7 @@ void WriteInitialization::acceptWidget(DomWidget *node)
         if (DomProperty *prop = attributes.value(QLatin1String("buttonGroup"))) {
             QString groupName = toString(prop->elementString());
             if (!m_buttonGroups.contains(groupName)) {
-                m_buttonGroups.insert(groupName, driver->findOrInsertName(groupName));
+                m_buttonGroups.insert(groupName, escapeVariableName(driver->findOrInsertName(groupName)));
                 QString g = m_buttonGroups.value(groupName);
                 output << option.indent << "QButtonGroup " << g << " = new QButtonGroup(" << m_generatedClass << ");\n";
             }
@@ -303,7 +297,7 @@ void WriteInitialization::acceptWidget(DomWidget *node)
 void WriteInitialization::acceptLayout(DomLayout *node)
 {
     QString className = node->attributeClass();
-    QString varName = driver->findOrInsertLayout(node);
+    QString varName = escapeVariableName(driver->findOrInsertLayout(node));
 
     QHash<QString, DomProperty*> properties = propertyMap(node->elementProperty());
 
@@ -314,7 +308,7 @@ void WriteInitialization::acceptLayout(DomLayout *node)
 
         if (!m_layoutChain.top() && (uic->customWidgetsInfo()->extends(parentWidget, QLatin1String("Q3GroupBox"))
                         || uic->customWidgetsInfo()->extends(parentWidget, QLatin1String("Q3ButtonGroup")))) {
-            QString parent = driver->findOrInsertWidget(m_widgetChain.top());
+            QString parent = escapeVariableName(driver->findOrInsertWidget(m_widgetChain.top()));
 
             isGroupBox = true;
 
@@ -352,9 +346,9 @@ void WriteInitialization::acceptLayout(DomLayout *node)
     output << option.indent << varName << " = new " << className << "(";
 
     if (isGroupBox) {
-        output << driver->findOrInsertWidget(m_widgetChain.top()) << ".layout()";
+        output << escapeVariableName(driver->findOrInsertWidget(m_widgetChain.top())) << ".layout()";
     } else if (!m_layoutChain.top()) {
-        output << driver->findOrInsertWidget(m_widgetChain.top());
+        output << escapeVariableName(driver->findOrInsertWidget(m_widgetChain.top()));
     }
 
     output << ");\n";
@@ -410,10 +404,10 @@ void WriteInitialization::acceptLayout(DomLayout *node)
 void WriteInitialization::acceptSpacer(DomSpacer *node)
 {
     QHash<QString, DomProperty *> properties = propertyMap(node->elementProperty());
-    QString varName = driver->findOrInsertSpacer(node);
+    QString varName = escapeVariableName(driver->findOrInsertSpacer(node));
 
     DomSize *sizeHint = properties.contains(QLatin1String("sizeHint"))
-        ? properties.value(QLatin1String("sizeHint"))->elementSize() : 0;
+                        ? properties.value(QLatin1String("sizeHint"))->elementSize() : 0;
 
     QString sizeType = properties.contains(QLatin1String("sizeType"))
         ? properties.value(QLatin1String("sizeType"))->elementEnum()
@@ -459,8 +453,8 @@ void WriteInitialization::acceptLayoutItem(DomLayoutItem *node)
     if (!layout)
         return;
 
-    QString varName = driver->findOrInsertLayoutItem(node);
-    QString layoutName = driver->findOrInsertLayout(layout);
+    QString varName = escapeVariableName(driver->findOrInsertLayoutItem(node));
+    QString layoutName = escapeVariableName(driver->findOrInsertLayout(layout));
 
     QString opt;
     if (layout->attributeClass() == QLatin1String("QGridLayout")) {
@@ -499,8 +493,8 @@ void WriteInitialization::acceptLayoutItem(DomLayoutItem *node)
 
 void WriteInitialization::acceptActionGroup(DomActionGroup *node)
 {
-    QString actionName = driver->findOrInsertActionGroup(node);
-    QString varName = driver->findOrInsertWidget(m_widgetChain.top());
+    QString actionName = escapeVariableName(driver->findOrInsertActionGroup(node));
+    QString varName = escapeVariableName(driver->findOrInsertWidget(m_widgetChain.top()));
 
     if (m_actionGroupChain.top())
         varName = driver->findOrInsertActionGroup(m_actionGroupChain.top());
@@ -518,12 +512,12 @@ void WriteInitialization::acceptAction(DomAction *node)
     if (node->hasAttributeMenu())
         return;
 
-    QString actionName = driver->findOrInsertAction(node);
+    QString actionName = escapeVariableName(driver->findOrInsertAction(node));
     m_registeredActions.insert(actionName, node);
-    QString varName = driver->findOrInsertWidget(m_widgetChain.top());
+    QString varName = escapeVariableName(driver->findOrInsertWidget(m_widgetChain.top()));
 
     if (m_actionGroupChain.top())
-        varName = driver->findOrInsertActionGroup(m_actionGroupChain.top());
+        varName = escapeVariableName(driver->findOrInsertActionGroup(m_actionGroupChain.top()));
 
     output << option.indent << actionName << " = new QAction(" << varName << ");\n";
     writeProperties(actionName, QLatin1String("QAction"), node->elementProperty());
@@ -535,7 +529,7 @@ void WriteInitialization::acceptActionRef(DomActionRef *node)
     bool isSeparator = actionName == QLatin1String("separator");
     bool isMenu = false;
 
-    QString varName = driver->findOrInsertWidget(m_widgetChain.top());
+    QString varName = escapeVariableName(driver->findOrInsertWidget(m_widgetChain.top()));
 
     if (actionName.isEmpty() || !m_widgetChain.top()) {
         return;
@@ -602,7 +596,7 @@ void WriteInitialization::writeProperties(const QString &varName,
                 << varName << ".minimumSizeHint()));\n";
             continue;
         } else if (propertyName == QLatin1String("buttonGroupId") && buttonGroupWidget) { // Q3ButtonGroup support
-            output << option.indent << driver->findOrInsertWidget(buttonGroupWidget) << ".insert("
+            output << option.indent << escapeVariableName(driver->findOrInsertWidget(buttonGroupWidget)) << ".insert("
                    << varName << ", " << p->elementNumber() << ");\n";
             continue;
         } else if (propertyName == QLatin1String("currentRow") // QListWidget::currentRow
@@ -1132,7 +1126,7 @@ QString WriteInitialization::pixCall(DomProperty *p) const
 
 void WriteInitialization::initializeComboBox(DomWidget *w)
 {
-    QString varName = driver->findOrInsertWidget(w);
+    QString varName = escapeVariableName(driver->findOrInsertWidget(w));
     QString className = w->attributeClass();
 
     QList<DomItem*> items = w->elementItem();
@@ -1166,7 +1160,7 @@ void WriteInitialization::initializeComboBox(DomWidget *w)
 
 void WriteInitialization::initializeListWidget(DomWidget *w)
 {
-    QString varName = driver->findOrInsertWidget(w);
+    QString varName = escapeVariableName(driver->findOrInsertWidget(w));
     QString className = w->attributeClass();
 
     QList<DomItem*> items = w->elementItem();
@@ -1199,7 +1193,7 @@ void WriteInitialization::initializeListWidget(DomWidget *w)
 
 void WriteInitialization::initializeTreeWidget(DomWidget *w)
 {
-    QString varName = driver->findOrInsertWidget(w);
+    QString varName = escapeVariableName(driver->findOrInsertWidget(w));
     QString className = w->attributeClass();
 
     // columns
@@ -1229,7 +1223,7 @@ void WriteInitialization::initializeTreeWidget(DomWidget *w)
 
 void WriteInitialization::initializeTableWidget(DomWidget *w)
 {
-    QString varName = driver->findOrInsertWidget(w);
+    QString varName = escapeVariableName(driver->findOrInsertWidget(w));
     QString className = w->attributeClass();
 
     refreshOut << option.indent << varName << ".clear();\n";
@@ -1327,7 +1321,7 @@ QString WriteInitialization::trCall(const QString &str, const QString &/*comment
 
 void WriteInitialization::initializeMenu(DomWidget *w, const QString &/*parentWidget*/)
 {
-    QString menuName = driver->findOrInsertWidget(w);
+    QString menuName = escapeVariableName(driver->findOrInsertWidget(w));
     QString menuAction = menuName + QLatin1String("Action");
 
     DomAction *action = driver->actionByName(menuAction);

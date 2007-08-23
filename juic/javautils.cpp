@@ -12,6 +12,7 @@
 ****************************************************************************/
 
 #include "javautils.h"
+#include <QtCore/QSet>
 
 QString javaFixString(const QString &str)
 {
@@ -46,4 +47,18 @@ QString javaFixString(const QString &str)
     }
 
     return QLatin1String("\"") + result + QLatin1String("\"");
+}
+
+QSet<QString> escaped_names;
+
+QString escapeVariableName(const QString &name)
+{
+    if (name == QLatin1String("native")) {
+        if (!escaped_names.contains(name)) {
+            fprintf(stderr, "juic: Variable 'native' renamed to 'native__'\n");
+            escaped_names << name;
+        }
+        return name + QLatin1String("__");
+    }
+    return name;
 }

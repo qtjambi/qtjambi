@@ -17,5 +17,6 @@
 #include <QtCore/QString>
 
 QString javaFixString(const QString &str);
+QString escapeVariableName(const QString &name);
 
 #endif // JAVAUTILS_H
