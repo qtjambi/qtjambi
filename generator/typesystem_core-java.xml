@@ -1689,4 +1689,11 @@
         }
       </inject-code>
   </object-type>
+  <value-type name="QBitArray">
+      <inject-code>
+          <import-file name="typesystem_core-java.java"
+                       quote-after-line="class QBitArray___"
+                       quote-before-line="}// class" />
+      </inject-code>  
+  </value-type>
 </typesystem>

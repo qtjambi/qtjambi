@@ -461,10 +461,7 @@
   </value-type>
   
   
-    <value-type name="QBitArray">
-        <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QBitArray___" quote-before-line="}// class"/>
-        </inject-code>
+  <value-type name="QBitArray">
     <modify-function signature="operator[](int)" remove="all"/>
     <modify-function signature="operator[](int)const" remove="all"/>
     <modify-function signature="operator[](uint)const" remove="all"/>
@@ -475,8 +472,6 @@
     <modify-function signature="operator^=(QBitArray)" access="private"/>
     <modify-function signature="operator|=(QBitArray)" access="private"/>
     <modify-function signature="operator~()const" access="private"/>
-
-    
   </value-type>  
 
   <object-type name="QDirIterator"/>
