@@ -2934,20 +2934,17 @@
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>  
-        
-        
+                
         <template name="gui.application_char_pointer_function">
         public static %RETURN_TYPE %FUNCTION_NAME(%PRE_ARGUMENTS %COMMA QByteArray className) {
             return %FUNCTION_NAME(%PRE_CALL_ARGUMENTS %COMMA className == null ? null : className.data());
         }
         </template>       
-
-        
-
-        
-    
-             
-
     </object-type>
 
+    <value-type name="QBitArray">
+        <inject-code>
+            <import-file name="typesystem_core-java.java" quote-after-line="class QBitArray___" quote-before-line="}// class"/>
+        </inject-code>
+    </value-type> 
 </typesystem>
