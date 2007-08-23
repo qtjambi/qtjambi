@@ -60,6 +60,21 @@ class QTransform___ extends QTransform {
     }
 
     /**
+     * Creates a transformation that maps a quad to a unit square.
+     *
+     * @return The transformation.
+     * @throws IllegalArgumentException If this transformation is not possible.
+     */
+    public static final QTransform quadToSquare(QPolygonF quad) {
+        QTransform res = new QTransform();
+        QNativePointer resPointer = res.nativePointer();
+        if (quadToSquarePrivate(quad, resPointer)) {
+            return res;
+        } else
+            throw new IllegalArgumentException("Transformation is not possible");
+    }
+
+    /**
      * Creates a transformation that maps a unit square to a the given quad.
      * 
      * @return The transformation.
