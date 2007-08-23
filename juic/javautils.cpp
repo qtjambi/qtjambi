@@ -12,7 +12,7 @@
 ****************************************************************************/
 
 #include "javautils.h"
-#include <QtCore/QSet>
+#include <QtCore/QHash>
 
 QString javaFixString(const QString &str)
 {
@@ -49,15 +49,25 @@ QString javaFixString(const QString &str)
     return QLatin1String("\"") + result + QLatin1String("\"");
 }
 
-QSet<QString> escaped_names;
 
 QString escapeVariableName(const QString &name)
 {
-    if (name == QLatin1String("native")) {
-        if (!escaped_names.contains(name)) {
-            fprintf(stderr, "juic: Variable 'native' renamed to 'native__'\n");
-            escaped_names << name;
+    static QHash<QString, bool> escaped_names;
+    if (escaped_names.isEmpty()) {
+        escaped_names[QLatin1String("native")] = false;
+        escaped_names[QLatin1String("boolean")] = false;
+        escaped_names[QLatin1String("abstract")] = false;
+        escaped_names[QLatin1String("final")] = false;
+    }
+
+    if (escaped_names.contains(name)) {
+        bool &reported = escaped_names[name];
+
+        if (!reported) {
+            fprintf(stderr, "juic: Variable '%s' renamed to '%s__'\n", qPrintable(name), qPrintable(name));
+            reported = true;
         }
+
         return name + QLatin1String("__");
     }
     return name;
