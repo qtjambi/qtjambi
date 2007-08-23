@@ -35,6 +35,9 @@ void QGuiSignalMapper::init()
     // mappedQWidget is a replacement for the original signal
     connect(this, SIGNAL(mappedQWidget(QWidget *)), this, SLOT(emitMapped(QWidget*)));
     connect(this, SIGNAL(mapped(QWidget *)), this, SLOT(emitMappedQWidget(QWidget*)));
+
+    emittingMappedQWidget = false;
+    emittingMapped = false;
 }
 
 void QGuiSignalMapper::setMapping(QObject *sender, QWidget *widget)
