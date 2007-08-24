@@ -2,7 +2,6 @@
 <typesystem package="com.trolltech.qt.core" default-superclass="com.trolltech.qt.QtJambiObject">
     <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
-    com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
     </inject-code>
   
     <template name="core.return_string_instead_of_char*">
@@ -1299,6 +1298,10 @@
   </object-type>
 
   <object-type name="QCoreApplication">
+      <extra-includes>
+          <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+      </extra-includes>
+
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding)">
           <access modifier="private"/>
           <modify-argument index="3">
@@ -1318,6 +1321,9 @@
   </object-type>
 
   <object-type name="QDataStream">
+      <extra-includes>
+          <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+      </extra-includes>
       <template name="core.datastream_operator_shift_right">
           <insert-template name="core.stream_operator_shift_right">
               <replace from="%STREAM_TYPE" to="QDataStream"/>
@@ -1496,6 +1502,9 @@
   </object-type>
 
   <object-type name="QTextStream">
+      <extra-includes>
+          <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+      </extra-includes>
 
       <template name="core.textstream_operator_shift_right">
           <insert-template name="core.stream_operator_shift_right">

@@ -756,7 +756,6 @@
   <object-type name="QCoreApplication">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
-        <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
     </extra-includes>
     <modify-function signature="QCoreApplication(int &amp;, char  **)">
       <access modifier="private"/>
@@ -809,9 +808,6 @@
   <object-type name="QDynamicPropertyChangeEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::DynamicPropertyChange"/>  
             
   <object-type name="QDataStream">    
-    <extra-includes>
-        <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
-    </extra-includes>
     <modify-function signature="setDevice(QIODevice*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcDevice"/>
@@ -848,10 +844,6 @@
   </object-type>
 
   <object-type name="QTextStream">
-    <extra-includes>
-        <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
-    </extra-includes>
-
     <modify-function signature="QTextStream(QByteArray *, QFlags&lt;QIODevice::OpenModeFlag&gt;)"> <remove/> </modify-function>
     <modify-function signature="QTextStream(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(QChar&amp;)"> <remove/> </modify-function>
