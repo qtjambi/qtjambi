@@ -721,7 +721,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const MetaJavaClass
       << "  return m_meta_object;" << endl
       << "}" << endl << endl;
 
-    // QObject::qt_metacast() 
+    // QObject::qt_metacast()
     s << "void *" << shellClassName(java_class) << "::qt_metacast(const char *_clname)" << endl
       << "{" << endl
       << "  if (!_clname) return 0;" << endl
@@ -730,7 +730,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const MetaJavaClass
       << "  return " << java_class->qualifiedCppName() << "::qt_metacast(_clname);" << endl
       << "}" << endl << endl;
 
-    // QObject::qt_metacall() 
+    // QObject::qt_metacall()
     s << "int " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)" << endl
       << "{" << endl
       << "  _id = " << java_class->qualifiedCppName() << "::qt_metacall(_c, _id, _a);" << endl
@@ -749,13 +749,14 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const MetaJavaClass
       << "          _id = dynamic_meta_object->writeProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
       << "      case QMetaObject::ResetProperty:" << endl
       << "          _id = dynamic_meta_object->resetProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
+      << "      default: break;" << endl
       << "      };" << endl
       << "      __jni_env->PopLocalFrame(0);" << endl
-      << "  }" << endl    
+      << "  }" << endl
       << "  return _id;" << endl
       << "}" << endl << endl;
 }
-      
+
 void CppImplGenerator::writeShellConstructor(QTextStream &s, const MetaJavaFunction *java_function)
 {
     if (java_function->isModifiedRemoved(TypeSystem::ShellCode))
@@ -774,11 +775,10 @@ void CppImplGenerator::writeShellConstructor(QTextStream &s, const MetaJavaFunct
             s << ", ";
     }
     s << ")," << endl;
+    if (cls->isQObject())
+        s << "    m_meta_object(0)," << endl;
     s << "      m_vtable(0)," << endl
       << "      m_link(0)" << endl;
-
-    if (cls->isQObject())
-        s << "     ,m_meta_object(0)" << endl;    
 
     s << "{" << endl;
 
@@ -798,7 +798,7 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const MetaJavaClass 
         s << "#ifdef QT_DEBUG" << endl
           << INDENT << "if (m_vtable)" << endl
           << INDENT << "    m_vtable->deref();" << endl
-          << "#endif" << endl          
+          << "#endif" << endl
           << INDENT << "if (m_link) {" << endl;
 
         MetaJavaClassList interfaces = java_class->interfaces();
