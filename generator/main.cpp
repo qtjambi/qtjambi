@@ -261,14 +261,17 @@ int main(int argc, char *argv[])
 
     printf("Classes in typesystem: %d\n"
            "Generated:\n"
-           "  - java......: %d\n"
-           "  - cpp-impl..: %d\n"
-           "  - cpp-h.....: %d\n"
+           "  - java......: %d (%d)\n"
+           "  - cpp-impl..: %d (%d)\n"
+           "  - cpp-h.....: %d (%d)\n"
            "  - meta-info.: %d\n",
            builder.classes().size(),
            java_generator ? java_generator->numGenerated() : 0,
+           java_generator ? java_generator->numGeneratedAndWritten() : 0,
            cpp_impl_generator ? cpp_impl_generator->numGenerated() : 0,
+           cpp_impl_generator ? cpp_impl_generator->numGeneratedAndWritten() : 0,
            cpp_header_generator ? cpp_header_generator->numGenerated() : 0,
+           cpp_header_generator ? cpp_header_generator->numGeneratedAndWritten() : 0,
            metainfo ? metainfo->numGenerated() : 0);
 
     printf("Done, %d warnings (%d known issues)\n", ReportHandler::warningCount(),

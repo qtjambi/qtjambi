@@ -21,6 +21,7 @@
 Generator::Generator()
 {
     m_num_generated = 0;
+    m_num_generated_written = 0;
     m_out_dir = ".";
 }
 
@@ -39,18 +40,39 @@ void Generator::generate()
 
         if (!shouldGenerate(cls))
             continue;
+
         QString fileName = fileNameForClass(cls);
         ReportHandler::debugSparse(QString("generating: %1").arg(fileName));
-        QFile file(dir.absoluteFilePath(fileName));
-        if (!file.open(QIODevice::WriteOnly)) {
-            ReportHandler::warning(QString("failed to open file '%1' for writing")
-                                   .arg(file.fileName()));
-            continue;
-        }
 
-        QTextStream s(&file);
+        QByteArray tmp;
+        QTextStream s(&tmp);
         write(s, cls);
-
+         
+        QFile fileRead(dir.absoluteFilePath(fileName));
+        bool fileEqual = false;
+        QFileInfo info(fileRead);
+        if( info.exists() && info.size() == tmp.size() ) {
+            if ( !fileRead.open(QIODevice::ReadOnly) ) {
+                ReportHandler::warning(QString("failed to open file '%1' for reading")
+                                       .arg(fileRead.fileName()));
+                continue;
+            }
+            
+            QByteArray original = fileRead.readAll();
+            fileEqual = (original == tmp);
+        }
+        if( !fileEqual ) {        
+            QFile fileWrite(dir.absoluteFilePath(fileName));
+            if (!fileWrite.open(QIODevice::WriteOnly)) {
+                ReportHandler::warning(QString("failed to open file '%1' for writing")
+                                       .arg(fileWrite.fileName()));
+                continue;
+            }
+            s.setDevice(&fileWrite);
+            s << tmp;
+            ++m_num_generated_written;
+        }
+                 
         ++m_num_generated;
     }
 }

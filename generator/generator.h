@@ -70,6 +70,7 @@ public:
     void printClasses();
 
     int numGenerated() { return m_num_generated; }
+    int numGeneratedAndWritten() { return m_num_generated_written; }
 
     virtual bool shouldGenerate(const MetaJavaClass *) const { return true; }
     virtual QString subDirectoryForClass(const MetaJavaClass *java_class) const;
@@ -81,6 +82,7 @@ protected:
 
     MetaJavaClassList m_java_classes;
     int m_num_generated;
+    int m_num_generated_written;
     QString m_out_dir;
 };
 
