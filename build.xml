@@ -42,7 +42,7 @@
     <target name="qmake.qtjambi"
             description="Run qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
-	<qmake recursive="true" config="${config}"/>
+	<qmake recursive="true" config="${config} sanitycheck"/>
     </target>
 
     <target name="qmake.generator"

@@ -94,9 +94,9 @@ public class FridgeMagnets extends QWidget {
 
     public void dropEvent(QDropEvent event) {
         if (event.mimeData().hasFormat("application/x-fridgemagnet")) {
-            QMimeData mime = event.mimeData();
+            com.trolltech.qt.core.QMimeData mime = event.mimeData();
             QByteArray itemData = mime.data("application/x-fridgemagnet");
-            QDataStream dataStream = new QDataStream(itemData, 
+            QDataStream dataStream = new QDataStream(itemData,
                    new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly));
 
             String text = dataStream.readString();
@@ -104,7 +104,7 @@ public class FridgeMagnets extends QWidget {
             offset.readFrom(dataStream);
 
             DragLabel newLabel = new DragLabel(text, this);
-            newLabel.move(new QPoint(event.pos().x() - offset.x(), 
+            newLabel.move(new QPoint(event.pos().x() - offset.x(),
                                      event.pos().y() - offset.y()));
             newLabel.show();
 
@@ -154,7 +154,7 @@ public class FridgeMagnets extends QWidget {
             painter.begin(image);
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
             painter.setBrush(QColor.white);
-            QRectF frame = new QRectF(0.5, 0.5, image.width() - 1, 
+            QRectF frame = new QRectF(0.5, 0.5, image.width() - 1,
                                       image.height() - 1);
             painter.drawRoundRect(frame, 25, 25);
 
@@ -162,7 +162,7 @@ public class FridgeMagnets extends QWidget {
             painter.setBrush(QColor.black);
 
             QRect rectangle = new QRect(new QPoint(6, 6), size);
-            painter.drawText(rectangle, Qt.AlignmentFlag.AlignCenter.value(), 
+            painter.drawText(rectangle, Qt.AlignmentFlag.AlignCenter.value(),
                              text);
             painter.end();
 
@@ -173,22 +173,22 @@ public class FridgeMagnets extends QWidget {
         public void mousePressEvent(QMouseEvent event) {
             QByteArray itemData = new QByteArray();
             QDataStream dataStream;
-            dataStream = new QDataStream(itemData, 
+            dataStream = new QDataStream(itemData,
                     new QIODevice.OpenMode(QIODevice.OpenModeFlag.WriteOnly));
 
             dataStream.writeString(labelText);
-            QPoint position = new QPoint(event.pos().x() - rect().topLeft().x(), 
+            QPoint position = new QPoint(event.pos().x() - rect().topLeft().x(),
                                          event.pos().y() - rect().topLeft().y());
             position.writeTo(dataStream);
 
-            QMimeData mimeData = new QMimeData();
+            com.trolltech.qt.core.QMimeData mimeData = new com.trolltech.qt.core.QMimeData();
             mimeData.setData("application/x-fridgemagnet", itemData);
             mimeData.setText(labelText);
 
             QDrag drag = new QDrag(this);
             drag.setMimeData(mimeData);
 
-            drag.setHotSpot(new QPoint(event.pos().x() - rect().topLeft().x(), 
+            drag.setHotSpot(new QPoint(event.pos().x() - rect().topLeft().x(),
                                        event.pos().y() - rect().topLeft().y()));
             drag.setPixmap(pixmap());
 

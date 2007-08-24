@@ -6,8 +6,6 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QMetaObject>
 
-#include <jni.h>
-
 class QTJAMBI_EXPORT QDynamicMetaObject: public QMetaObject
 {
 public:
