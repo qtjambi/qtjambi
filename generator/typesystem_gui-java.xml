@@ -2130,6 +2130,10 @@
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QGridLayout___" quote-before-line="}// class"/>
         </inject-code>  
+        <extra-includes>
+            <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+        </extra-includes>
+
          
     </object-type>
 
@@ -2414,6 +2418,10 @@
     </object-type>
 
     <object-type name="QLabel">
+        <extra-includes>
+            <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+        </extra-includes>
+
         <inject-code>
             <insert-template name="gui.getter_returning_nativepointer">
                 <replace from="%RETURN_TYPE" to="QPicture"/>

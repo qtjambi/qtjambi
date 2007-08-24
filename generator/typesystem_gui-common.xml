@@ -697,9 +697,6 @@
   
   <value-type name="QTextListFormat"/>
   <value-type name="QPolygon">
-    <extra-includes>
-        <include file-name="com.trolltech.qt.core.QPoint" location="java"/>
-    </extra-includes>
     <modify-function signature="QPolygon(int, const int *)" remove="all"/>
     <modify-function signature="constData()const" remove="all"/>
     <modify-function signature="data()" remove="all"/>
@@ -2352,9 +2349,6 @@
                 <reference-count declare-variable="QLayout" action="add" variable-name="__rcWidgets"/>
             </modify-argument>
         </modify-function>
-    <extra-includes>
-        <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
-    </extra-includes>
     <modify-function signature="getItemPosition(int,int*,int*,int*,int*)">
         <access modifier="private"/>
     </modify-function>
@@ -3246,9 +3240,6 @@
   </object-type>
 
   <object-type name="QLabel">
-    <extra-includes>
-        <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
-    </extra-includes>
     <modify-function signature="picture()const">
         <access modifier="private"/>
         <rename to="picture_private"/>
