@@ -11,11 +11,6 @@
     <property name="qtLib"    value="${qt}/lib" />
     <property name="config"    value="release" />
 
-    <taskdef name="juic"      classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
-    <taskdef name="qmake"     classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
-    <taskdef name="make"      classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
-    <taskdef name="generator" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
-
     <target name="help"
             description="Provides detailed help.">
 	<echo>To build Qt Jambi, run ant without parameters.</echo>
@@ -24,6 +19,33 @@
 	<echo/>
 	<echo>You can also see the Qt Jambi intallation document at:</echo>
 	<echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
+    </target>
+
+    <uptodate property="ant-qtjambi.jar.uptodate"
+              targetfile="ant-qtjambi.jar" >
+        <srcfiles dir= "."
+                  includes="com/trolltech/tools/ant/*.java"/>
+    </uptodate>
+
+    <target name="ant-qtjambi.jar"
+            unless="ant-qtjambi.jar.uptodate"
+            description="Create a jar containing all the Qt Jambi ant tasks.">
+        <mkdir dir="ant-qtjambi"/>
+        <javac srcdir="." destdir="ant-qtjambi">
+            <include name="com/trolltech/tools/ant/*.java"/>
+        </javac>
+        <jar destfile="ant-qtjambi.jar">
+            <fileset dir="ant-qtjambi"/>
+        </jar>
+        <delete dir="ant-qtjambi"/>
+    </target>
+
+    <target name="tasks"
+            depends="ant-qtjambi.jar">
+        <taskdef name="juic"      classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
+        <taskdef name="qmake"     classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
+        <taskdef name="make"      classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
+        <taskdef name="generator" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
     </target>
 
     <target name="clean"
@@ -37,24 +59,27 @@
     </target>
 
     <target name="qmake.qtjambi"
+            depends="tasks"
             description="Run qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
 	<qmake recursive="true" config="${config} sanitycheck"/>
     </target>
 
     <target name="qmake.generator"
+            depends="tasks"
             description="Run qmake on the generator project.">
 	<qmake config="release" dir="generator"/>
     </target>
 
     <target name="compile.generator" 
-	    depends="qmake.generator,merge.typesystem"
+	    depends="tasks, qmake.generator,merge.typesystem"
             description="Compile the Qt Jambi generator.">
         <make dir="generator" target="clean" />
         <make dir="generator" />
     </target>
 
     <target name="generator.qtjambi" 
+            depends="tasks"
             description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
         <generator dir="generator" outputDirectory=""/>
     </target>
@@ -65,6 +90,7 @@
     </target>
 
     <target name="juic"
+            depends="tasks"
             description="Generates Java source files from JUI files created by designer.">
         <juic message="Running Juic for all it is worth"
 	      outputDir="${sourceDir}"
@@ -204,20 +230,8 @@
         </xslt>
     </target>
 
-    <target name="ant-qtjambi.jar"
-            description="Create a jar containing all the Qt Jambi ant tasks.">
-        <mkdir dir="ant-qtjambi"/>
-        <javac srcdir="." destdir="ant-qtjambi">
-            <include name="com/trolltech/tools/ant/*.java"/>
-        </javac>
-        <jar destfile="ant-qtjambi.jar">
-            <fileset dir="ant-qtjambi"/>
-        </jar>
-        <delete dir="ant-qtjambi"/>
-    </target>
-
     <target name="qtjambi"
             description="Make QT Jambi."
-            depends="ant-qtjambi.jar, qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar" />
+            depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar" />
 
 </project>
