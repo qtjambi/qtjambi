@@ -14,6 +14,7 @@
 #include "metainfogenerator.h"
 #include "reporthandler.h"
 #include "cppimplgenerator.h"
+#include "fileout.h"
 
 #include <QDir>
 #include <QMetaType>
@@ -261,35 +262,22 @@ void MetaInfoGenerator::writeCppFile()
 
     MetaJavaClassList classes_with_polymorphic_id;
     MetaJavaClassList classList = classes();
-    QHash<QString, QFile *> fileHash;
+    QHash<QString, FileOut *> fileHash;
     foreach (MetaJavaClass *cls, classList) {
-        QTextStream s;
-        QFile *f = fileHash.value(cls->package(), 0);
+        FileOut *f = fileHash.value(cls->package(), 0);
         if (f == 0 && generated(cls)) {
-            QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory));
-            dir.mkpath(dir.absolutePath());
-
-            m_num_generated++;
-            f = new QFile(dir.absoluteFilePath(cppFilename()));
-            if (!f->open(QIODevice::WriteOnly)) {
-                ReportHandler::warning(QString("failed to open file '%1' for writing")
-                    .arg(f->fileName()));
-                return;
-            }
-
-            s.setDevice(f);
-            writeIncludeStatements(s, classList, cls->package());
-            s << endl;
-
+            f = new FileOut(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + cppFilename());
+   
+            writeIncludeStatements(f->stream, classList, cls->package());
+            f->stream << endl;
+   
             fileHash.insert(cls->package(), f);
-        } else {
-            s.setDevice(f);
-        }
+           }
 
-        if (s.device() != 0) {
+        if (f->stream.device() != 0) {
             if (cls->typeEntry()->isObject() && !cls->typeEntry()->isQObject() && !cls->isInterface())
-                writeDestructors(s, cls);
-            writeCustomStructors(s, cls->typeEntry());
+                writeDestructors(f->stream, cls);
+            writeCustomStructors(f->stream, cls->typeEntry());
         }
 
         if (cls->typeEntry()->isPolymorphicBase())
@@ -298,60 +286,58 @@ void MetaInfoGenerator::writeCppFile()
 
     QHash<QString, QStringList> handlers_to_register;
     foreach (QString package, fileHash.keys()) {
-        QFile *f = fileHash.value(package, 0);
+        FileOut *f = fileHash.value(package, 0);
         if (f != 0) {
-            QTextStream s(f);
-            writeSignalsAndSlots(s, package);
-            handlers_to_register[package] = writePolymorphicHandler(s, package, classes_with_polymorphic_id);
+            writeSignalsAndSlots(f->stream, package);
+            handlers_to_register[package] = writePolymorphicHandler(f->stream, package, classes_with_polymorphic_id);
         }
     }
 
     // Primitive types must be added to all packages, in case the other packages are
     // not referenced from the generated code.
-    foreach (QFile *f, fileHash.values()) {
-        QTextStream s(f);
+    foreach (FileOut *f, fileHash.values()) {
         for (it=entries.begin(); it!=entries.end(); ++it) {
             TypeEntry *entry = it.value();
             if (shouldGenerate(entry) && entry->isPrimitive())
-                writeCustomStructors(s, entry);
+                writeCustomStructors(f->stream, entry);
         }
 
         // Initialization function: Registers meta types
-        writeInitializationFunctionName(s, fileHash.key(f, ""), true);
-        s << endl << "{" << endl;
+        writeInitializationFunctionName(f->stream, fileHash.key(f, ""), true);
+        f->stream << endl << "{" << endl;
         for (it=entries.begin(); it!=entries.end(); ++it) {
             TypeEntry *entry = it.value();
             if (entry &&
                  ( (shouldGenerate(entry) && entry->isPrimitive())
                    || entry->isString()
                    || entry->isChar())) {
-                        writeInitialization(s, entry, 0);
+                        writeInitialization(f->stream, entry, 0);
                    }
         }
-        writeRegisterSignalsAndSlots(s);
+        writeRegisterSignalsAndSlots(f->stream);
     }
 
     foreach (MetaJavaClass *cls, classList) {
-        QFile *f = fileHash.value(cls->package(), 0);
+        FileOut *f = fileHash.value(cls->package(), 0);
 
         if (f != 0) {
-            QTextStream s(f);
-            writeInitialization(s, cls->typeEntry(), cls, shouldGenerate(cls));
+            writeInitialization(f->stream, cls->typeEntry(), cls, shouldGenerate(cls));
         }
     }
 
     foreach (QString package, fileHash.keys()) {
-        QFile *f = fileHash.value(package, 0);
+        FileOut *f = fileHash.value(package, 0);
         if (f != 0) {
-            QTextStream s(f);
-
             foreach (QString handler, handlers_to_register.value(package, QStringList())) {
-                s << "    qtjambi_register_polymorphic_id(\"" << handler << "\","
-                  << "polymorphichandler_" << handler << ");" << endl;
+                f->stream << "    qtjambi_register_polymorphic_id(\"" << handler << "\","
+                         << "polymorphichandler_" << handler << ");" << endl;
             }
 
-            s << "}" << endl << endl;
-            f->close();
+            f->stream << "}" << endl << endl;
+            if( f->done() )
+                ++m_num_generated_written;
+            ++m_num_generated;
+
             delete f;
         }
     }
@@ -365,23 +351,17 @@ void MetaInfoGenerator::writeHeaderFile()
     foreach (MetaJavaClass *cls, classList) {
         bool hasGenerated = fileHash.value(cls->package(), false);
         if (!hasGenerated && generated(cls)) {
-            QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory));
-            dir.mkpath(dir.absolutePath());
-
-            QFile file(dir.absoluteFilePath(headerFilename()));
-            if (!file.open(QIODevice::WriteOnly)) {
-                ReportHandler::warning(QString("failed to open file '%1' for writing")
-                                        .arg(file.fileName()));
-                return;
-            }
-
-            QTextStream s(&file);
-            s << "#ifndef " << filenameStub().toUpper() << "_H" << endl;
-            s << "#define " << filenameStub().toUpper() << "_H" << endl << endl;
-            writeInitializationFunctionName(s, cls->package(), true);
-            s << ";" << endl << "#endif" << endl << endl;
+            FileOut file(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + headerFilename());
+            file.stream << "#ifndef " << filenameStub().toUpper() << "_H" << endl;
+            file.stream << "#define " << filenameStub().toUpper() << "_H" << endl << endl;
+            writeInitializationFunctionName(file.stream, cls->package(), true);
+            file.stream << ";" << endl << "#endif" << endl << endl;
 
             fileHash.insert(cls->package(), true);
+
+            if( file.done() )
+                ++m_num_generated_written;
+            ++m_num_generated;
         }
     }
 }
@@ -478,18 +458,12 @@ void MetaInfoGenerator::writeLibraryInitializers()
     QList<QString> known_packages = m_skip_list.keys();
     foreach (QString package, known_packages) {
         if (generatedMetaInfo(package)) { // write cpp file
-            QDir dir(outputDirectory() + "/" + subDirectoryForPackage(package, CppDirectory));
-            dir.mkpath(dir.absolutePath());
 
-            QFile f(dir.absoluteFilePath("qtjambi_libraryinitializer.cpp"));
-            if (!f.open(QIODevice::WriteOnly)) {
-                ReportHandler::warning(QString("failed to open file '%1' for writing")
-                                       .arg(f.fileName()));
-                continue;
-            }
+            FileOut fileOut(outputDirectory() + "/" + subDirectoryForPackage(package, CppDirectory) + "/qtjambi_libraryinitializer.cpp");
+
             QString signature = jni_function_signature(package, "QtJambi_LibraryInitializer",
                                                    "__qt_initLibrary", "void");
-            QTextStream s(&f);
+            QTextStream &s = fileOut.stream;
             s << "#include \"metainfo.h\"" << endl
               << "#include \"qtjambi_global.h\"" << endl << endl
               << signature << "(JNIEnv *, jclass)" << endl
@@ -498,20 +472,17 @@ void MetaInfoGenerator::writeLibraryInitializers()
             writeInitializationFunctionName(s, package, false);
             s << ";" << endl
               << "}" << endl << endl;
+
+            if( fileOut.done() )
+                ++m_num_generated_written;
+            ++m_num_generated;
         }
 
         if (generatedJavaClasses(package)) {
-            QDir dir(outputDirectory() + "/" + subDirectoryForPackage(package, JavaDirectory));
-            dir.mkpath(dir.absolutePath());
+   
+            FileOut fileOut(outputDirectory() + "/" + subDirectoryForPackage(package, JavaDirectory) + "/QtJambi_LibraryInitializer.java");
 
-            QFile f(dir.absoluteFilePath("QtJambi_LibraryInitializer.java"));
-            if (!f.open(QIODevice::WriteOnly)) {
-                ReportHandler::warning(QString("failed to open file '%1' for writing")
-                                       .arg(f.fileName()));
-                continue;
-            }
-
-            QTextStream s(&f);
+            QTextStream &s = fileOut.stream;
             s << "package " << package << ";" << endl << endl
               << "class QtJambi_LibraryInitializer" << endl
               << "{" << endl
@@ -534,6 +505,10 @@ void MetaInfoGenerator::writeLibraryInitializers()
 
             s << "    static void init() { };" << endl
               << "}" << endl << endl;
+
+            if( fileOut.done() )
+                ++m_num_generated_written;
+            ++m_num_generated;
         }
     }
 }

@@ -13,6 +13,7 @@
 
 #include "generator.h"
 #include "reporthandler.h"
+#include "fileout.h"
 
 #include <QDir>
 #include <QFile>
@@ -35,44 +36,17 @@ void Generator::generate()
 
 
     foreach (MetaJavaClass *cls, m_java_classes) {
-        QDir dir(outputDirectory() + "/" + subDirectoryForClass(cls));
-        dir.mkpath(dir.absolutePath());
-
         if (!shouldGenerate(cls))
             continue;
 
         QString fileName = fileNameForClass(cls);
         ReportHandler::debugSparse(QString("generating: %1").arg(fileName));
 
-        QByteArray tmp;
-        QTextStream s(&tmp);
-        write(s, cls);
-         
-        QFile fileRead(dir.absoluteFilePath(fileName));
-        bool fileEqual = false;
-        QFileInfo info(fileRead);
-        if( info.exists() && info.size() == tmp.size() ) {
-            if ( !fileRead.open(QIODevice::ReadOnly) ) {
-                ReportHandler::warning(QString("failed to open file '%1' for reading")
-                                       .arg(fileRead.fileName()));
-                continue;
-            }
-            
-            QByteArray original = fileRead.readAll();
-            fileEqual = (original == tmp);
-        }
-        if( !fileEqual ) {        
-            QFile fileWrite(dir.absoluteFilePath(fileName));
-            if (!fileWrite.open(QIODevice::WriteOnly)) {
-                ReportHandler::warning(QString("failed to open file '%1' for writing")
-                                       .arg(fileWrite.fileName()));
-                continue;
-            }
-            s.setDevice(&fileWrite);
-            s << tmp;
+        FileOut fileOut(outputDirectory() + "/" + subDirectoryForClass(cls) + "/" + fileName);
+        write(fileOut.stream, cls);
+
+        if( fileOut.done() )
             ++m_num_generated_written;
-        }
-                 
         ++m_num_generated;
     }
 }
