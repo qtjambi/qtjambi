@@ -554,7 +554,7 @@ int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
     bool matched = false;
 
     for (int i=0; i<stringValues.size(); ++i) {
-        QString s = stringValues.at(i);
+        QString s = stringValues.at(i).trimmed();
 
         bool ok;
         int v;
