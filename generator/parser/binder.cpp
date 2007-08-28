@@ -690,6 +690,17 @@ void Binder::visitEnumSpecifier(EnumSpecifierAST *node)
   _M_current_enum = 0;
 }
 
+static QString strip_preprocessor_lines(const QString &name)
+{
+    QStringList lst = name.split("\n");
+    QString s;
+    for (int i=0; i<lst.size(); ++i) {
+        if (!lst.at(i).startsWith('#'))
+            s += lst.at(i);
+    }
+    return s.trimmed();
+}
+
 void Binder::visitEnumerator(EnumeratorAST *node)
 {
   Q_ASSERT(_M_current_enum != 0);
@@ -702,8 +713,8 @@ void Binder::visitEnumerator(EnumeratorAST *node)
       const Token &start_token = _M_token_stream->token((int) expr->start_token);
       const Token &end_token = _M_token_stream->token((int) expr->end_token);
 
-      e->setValue(QString::fromUtf8(&start_token.text[start_token.position],
-                                    (int) (end_token.position - start_token.position)).trimmed());
+      e->setValue(strip_preprocessor_lines(QString::fromUtf8(&start_token.text[start_token.position],
+                                    (int) (end_token.position - start_token.position)).trimmed()));
     }
 
   _M_current_enum->addEnumerator(e);

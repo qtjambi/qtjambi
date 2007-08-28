@@ -36,17 +36,6 @@ static QString strip_template_args(const QString &name)
     return pos < 0 ? name : name.left(pos);
 }
 
-static QString strip_preprocessor_lines(const QString &name)
-{
-    QStringList lst = name.split("\n");
-    QString s;
-    for (int i=0; i<lst.size(); ++i) {
-        if (!lst.at(i).startsWith('#'))
-            s += lst.at(i);
-    }
-    return s.trimmed();
-}
-
 static QHash<QString, QString> *operator_names;
 QString rename_operator(const QString &oper)
 {
@@ -565,7 +554,7 @@ int MetaJavaBuilder::figureOutEnumValue(const QString &stringValue,
     bool matched = false;
 
     for (int i=0; i<stringValues.size(); ++i) {
-        QString s = strip_preprocessor_lines(stringValues.at(i));
+        QString s = stringValues.at(i);
 
         bool ok;
         int v;
@@ -827,7 +816,7 @@ MetaJavaEnum *MetaJavaBuilder::traverseEnum(EnumModelItem enum_item, MetaJavaCla
         java_enum_value->setName(value->name());
         // Deciding the enum value...
 
-        java_enum_value->setStringValue(strip_preprocessor_lines(value->value()));
+        java_enum_value->setStringValue(value->value());
         java_enum->addEnumValue(java_enum_value);
 
         ReportHandler::debugFull("   - " + java_enum_value->name() + " = "
