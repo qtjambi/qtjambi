@@ -27,6 +27,8 @@ QString strings_java_lang = QLatin1String("java.lang");
 QString strings_jchar = QLatin1String("jchar");
 QString strings_jobject = QLatin1String("jobject");
 
+static void addRemoveFunctionToTemplates(TypeDatabase *db);
+
 class StackElement
 {
     public:
@@ -336,13 +338,13 @@ bool Handler::importFileElement(const QXmlAttributes &atts)
         m_error = "Required attribute 'name' missing for include-file tag.";
         return false;
     }
-            
+
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         m_error = QString("Could not open file: '%1'").arg(fileName);
         return false;
     }
-    
+
     QString quoteFrom = atts.value("quote-after-line");
     bool foundFromOk = quoteFrom.isEmpty();
     bool from = quoteFrom.isEmpty();
@@ -358,7 +360,7 @@ bool Handler::importFileElement(const QXmlAttributes &atts)
             to = false;
             foundToOk = true;
             break;
-        }        
+        }
         if(from && to)
             characters(line + "\n");
         if(!from && line.contains(quoteFrom)) {
@@ -368,7 +370,7 @@ bool Handler::importFileElement(const QXmlAttributes &atts)
     }
     if(!foundFromOk || !foundToOk){
         QString fromError = QString("Could not find quote-from-line='%1' in file '%2'.").arg(quoteFrom).arg(fileName);
-        QString toError = QString("Could not find quote-to-line='%1' in file '%2'.").arg(quoteTo).arg(fileName); 
+        QString toError = QString("Could not find quote-to-line='%1' in file '%2'.").arg(quoteTo).arg(fileName);
 
         if(!foundToOk)
             m_error = toError;
@@ -421,7 +423,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["extensible"] = "no";
 
             break;
-        
+
         case StackElement::ObjectTypeEntry:
         case StackElement::ValueTypeEntry:
             attributes["force-abstract"] = QString("no");
@@ -589,7 +591,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 if (element->type == StackElement::ObjectTypeEntry || element->type == StackElement::ValueTypeEntry) {
                     if (attributes["force-abstract"] == "yes")
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::ForceAbstract);
-                    if (attributes["deprecated"] == "yes") 
+                    if (attributes["deprecated"] == "yes")
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::Deprecated);
                 }
 
@@ -1383,6 +1385,8 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true)
 
     // Custom types...
     addType(new QModelIndexTypeEntry());
+
+    addRemoveFunctionToTemplates(this);
 }
 
 bool TypeDatabase::parseFile(const QString &filename, bool generate)
@@ -1709,4 +1713,157 @@ QString CodeSnipFragment::code() const{
         return m_instance->expandCode();
     else
         return m_code;
+}
+
+QString FunctionModification::toString() const
+{
+    QString str = signature + QLatin1String("->");
+    if (modifiers & AccessModifierMask) {
+        switch (modifiers & AccessModifierMask) {
+        case Private: str += QLatin1String("private"); break;
+        case Protected: str += QLatin1String("protected"); break;
+        case Public: str += QLatin1String("public"); break;
+        case Friendly: str += QLatin1String("friendly"); break;
+        }
+    }
+
+    if (modifiers & Final) str += QLatin1String("final");
+    if (modifiers & NonFinal) str += QLatin1String("non-final");
+
+    if (modifiers & Readable) str += QLatin1String("readable");
+    if (modifiers & Writable) str += QLatin1String("writable");
+
+    if (modifiers & CodeInjection) {
+        foreach (CodeSnip s, snips) {
+            str += QLatin1String("\n//code injection:\n");
+            str += s.code();
+        }
+    }
+
+    if (modifiers & Rename) str += QLatin1String("renamed:") + renamedToName;
+
+    if (modifiers & Deprecated) str += QLatin1String("deprecate");
+
+    if (modifiers & ReplaceExpression) str += QLatin1String("replace-expression");
+
+    return str;
+}
+
+static void removeFunction(ComplexTypeEntry *e, const char *signature)
+{
+    FunctionModification mod;
+    mod.signature = QMetaObject::normalizedSignature(signature);
+    mod.removal = TypeSystem::All;
+
+    e->addFunctionModification(mod);
+}
+
+
+
+
+static void injectCode(ComplexTypeEntry *e,
+                       const char *signature,
+                       const QByteArray &code,
+                       const ArgumentMap &args)
+{
+    CodeSnip snip;
+    snip.language = TypeSystem::NativeCode;
+    snip.position = CodeSnip::Beginning;
+    snip.addCode(QString::fromLatin1(code));
+    snip.argumentMap = args;
+
+    FunctionModification mod;
+    mod.signature = QMetaObject::normalizedSignature(signature);
+    mod.snips << snip;
+    mod.modifiers = Modification::CodeInjection;
+    e->addFunctionModification(mod);
+}
+
+
+static void addRemoveFunctionToTemplates(TypeDatabase *db)
+{
+    ContainerTypeEntry *qvector = db->findContainerType(QLatin1String("QVector"));
+    removeFunction(qvector, "constData() const");
+    removeFunction(qvector, "data() const");
+    removeFunction(qvector, "data()");
+    removeFunction(qvector, "first() const");
+    removeFunction(qvector, "last() const");
+    removeFunction(qvector, "operator[](int)");
+    removeFunction(qvector, "operator[](int) const");
+    removeFunction(qvector, "operator=(QVector<T>)");
+
+    ContainerTypeEntry *qlist = db->findContainerType(QLatin1String("QList"));
+    removeFunction(qlist, "constData() const");
+    removeFunction(qlist, "data() const");
+    removeFunction(qlist, "data()");
+    removeFunction(qlist, "back() const");
+    removeFunction(qlist, "front() const");
+    removeFunction(qlist, "first() const");
+    removeFunction(qlist, "last() const");
+    removeFunction(qlist, "operator[](int)");
+    removeFunction(qlist, "operator[](int) const");
+    removeFunction(qlist, "operator=(QList<T>)");
+
+    ContainerTypeEntry *qqueue = db->findContainerType(QLatin1String("QQueue"));
+    removeFunction(qqueue, "head() const");
+
+
+    ArgumentMap args1;
+    args1[1] = QLatin1String("$1");
+    ArgumentMap args2 = args1;
+    args2[2] = QLatin1String("$2");
+
+    QByteArray code =
+        "\nif ($1 >= __qt_this->size() || $1 < 0) {"
+        "\n   __jni_env->ThrowNew(__jni_env->FindClass(\"java/lang/IndexOutOfBoundsException\"),"
+        "\n                       QString::fromLatin1(\"Accessing container of size %3 at %4\")"
+        "\n                       .arg(__qt_this->size()).arg($1).toLatin1());"
+        "\n   return;"
+        "\n}";
+
+    QByteArray code_with_return = QByteArray(code).replace("return;", "return 0;");
+
+    QByteArray code_index_length =
+        "\nif ($1 < 0 || $2 < 0 || ($1 + $2) >= __qt_this->size()) {"
+        "\n   __jni_env->ThrowNew(__jni_env->FindClass(\"java/lang/IndexOutOfBoundsException\"),"
+        "\n                       QString::fromLatin1(\"Accessing container of size %3 from %4 to %5\")"
+        "\n                       .arg(__qt_this->size()).arg($1).arg($1+$2).toLatin1());"
+        "\n   return;"
+        "\n}";
+
+    QByteArray code_non_empty =
+        "\nif (__qt_this->isEmpty()) {"
+        "\n   __jni_env->ThrowNew(__jni_env->FindClass(\"java/lang/IndexOutOfBoundsException\"),"
+        "\n                       QString::fromLatin1(\"Accessing empty container...\").toLatin1());"
+        "\n   return;"
+        "\n}";
+
+    QByteArray code_two_indices =
+        "\nif ($1 < 0 || $2 < 0 || $1 >= __qt_this->size() || $2 >= __qt_this->size()) {"
+        "\n   __jni_env->ThrowNew(__jni_env->FindClass(\"java/lang/IndexOutOfBoundsException\"),"
+        "\n                       QString::fromLatin1(\"Accessing container of size %3 from %4 to %5\")"
+        "\n                       .arg(__qt_this->size()).arg($1).arg($1+$2).toLatin1());"
+        "\n   return;"
+        "\n}";
+
+    { // QVector safty...
+        injectCode(qvector, "at(int) const", code_with_return, args1);
+        injectCode(qvector, "replace(int,T)", code, args1);
+        injectCode(qvector, "remove(int)", code, args1);
+        injectCode(qvector, "remove(int, int)", code_index_length, args2);
+        injectCode(qvector, "pop_back()", code_non_empty, ArgumentMap());
+        injectCode(qvector, "pop_front()", code_non_empty, ArgumentMap());
+    }
+
+    { // QList safty...
+        injectCode(qlist, "at(int) const", code_with_return, args1);
+        injectCode(qlist, "replace(int, T)", code, args1);
+        injectCode(qlist, "pop_back()", code_non_empty, ArgumentMap());
+        injectCode(qlist, "pop_front()", code_non_empty, ArgumentMap());
+        injectCode(qlist, "swap(int, int)", code_two_indices, args2);
+        injectCode(qlist, "move(int, int)", code_two_indices, args2);
+        injectCode(qlist, "removeAt(int)", code, args1);
+        injectCode(qlist, "takeAt(int)", code_with_return, args1);
+    }
+
 }

@@ -279,24 +279,11 @@
         <modify-function signature="operator+(QVector&lt;QXmlStreamAttribute>)const" remove="all"/>
         <modify-function signature="operator&lt;&lt;(QVector&lt;QXmlStreamAttribute>)" remove="all"/>
         <modify-function signature="operator&lt;&lt;(QXmlStreamAttribute)" remove="all"/>
-        <modify-function signature="operator[](int)const" remove="all"/>
         <modify-function signature="push_back(QXmlStreamAttribute)" remove="all"/>
         <modify-function signature="pop_back()" remove="all"/>
         <modify-function signature="push_front(QXmlStreamAttribute)" remove="all"/>
         <modify-function signature="pop_front()" remove="all"/>
 
-        <modify-function signature="constData()const">
-            <remove />
-        </modify-function>    
-
-        <modify-function signature="data()">
-            <remove />
-        </modify-function>
-
-        <modify-function signature="data()const">
-            <remove />
-        </modify-function>    
-        
         <modify-function signature="first()">
             <remove />
         </modify-function>       
@@ -305,10 +292,6 @@
             <remove />
         </modify-function> 
 
-        <modify-function signature="operator[](int)">
-            <remove />
-        </modify-function>
-        
         <modify-function signature="value(const QString &amp;, const QLatin1String &amp;)const">
             <remove />
         </modify-function>            
@@ -318,10 +301,6 @@
         <modify-function signature="value(const QLatin1String &amp;)const">
             <remove />            
         </modify-function>            
-        <modify-function signature="operator=(const QVector&lt;QXmlStreamAttribute>&amp;)">
-            <remove/>
-        </modify-function>
-        
     </value-type>
 
     <value-type name="QXmlStreamNamespaceDeclaration">

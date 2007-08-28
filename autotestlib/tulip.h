@@ -40,4 +40,13 @@ public:
     QPair<int, int> do_QPair_of_ints(const QPair<int, int> &p) { return p; }
 };
 
+class QHash_int : public QHash<int, int> { };
+class QLinkedList_int : public QLinkedList<int> { };
+class QList_int : public QList<int> { };
+class QMap_int : public QMap<int, int> { };
+class QQueue_int : public QQueue<int> { };
+class QSet_int : public QSet<int> { };
+class QStack_int : public QStack<int> { };
+class QVector_int : public QVector<int> { };
+
 #endif

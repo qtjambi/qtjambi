@@ -1570,7 +1570,8 @@ void MetaJavaBuilder::decideUsagePattern(MetaJavaType *java_type)
 {
     const TypeEntry *type = java_type->typeEntry();
 
-    if (type->isPrimitive() && java_type->actualIndirections() == 0) {
+    if (type->isPrimitive() && (java_type->actualIndirections() == 0
+                                || (java_type->isConstant() && java_type->isReference() && java_type->indirections() == 0))) {
         java_type->setTypeUsagePattern(MetaJavaType::PrimitivePattern);
 
     } else if (type->isVoid()) {
@@ -1825,6 +1826,11 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
 
     MetaJavaFunctionList funcs = subclass->functions();
     foreach (const MetaJavaFunction *function, template_class->functions()) {
+
+        if (function->isModifiedRemoved(TypeSystem::All)) {
+            continue;
+        }
+
         MetaJavaFunction *f = function->copy();
         f->setArguments(MetaJavaArgumentList());
 
@@ -1860,6 +1866,30 @@ bool MetaJavaBuilder::inheritTemplate(MetaJavaClass *subclass,
         if (found) {
             delete f;
             continue;
+        }
+
+        ComplexTypeEntry *te = subclass->typeEntry();
+        FunctionModificationList mods = function->modifications(template_class);
+        for (int i=0; i<mods.size(); ++i) {
+            FunctionModification mod = mods.at(i);
+            mod.signature = f->minimalSignature();
+
+            // If we ever need it... Below is the code to do
+            // substitution of the template instantation type inside
+            // injected code..
+#if 0
+            if (mod.modifiers & Modification::CodeInjection) {
+                for (int j=0; j<template_types.size(); ++j) {
+                    CodeSnip &snip = mod.snips.last();
+                    QString code = snip.code();
+                    code.replace(QString::fromLatin1("$$QT_TEMPLATE_%1$$").arg(j),
+                                 template_types.at(j)->typeEntry()->qualifiedCppName());
+                    snip.codeList.clear();
+                    snip.addCode(code);
+                }
+            }
+#endif
+            te->addFunctionModification(mod);
         }
 
         subclass->addFunction(f);

@@ -15,7 +15,7 @@ package com.trolltech.autotests;
 
 import java.util.*;
 
-import com.trolltech.autotests.generated.Tulip;
+import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -27,7 +27,7 @@ import org.junit.*;
 public class TestContainers extends QApplicationTest {
 
     private Tulip tulip;
-    
+
     @Before
     public void setUp() throws Exception {
         tulip = new Tulip();
@@ -205,4 +205,36 @@ public class TestContainers extends QApplicationTest {
         assertTrue(q2 != null);
         assertEquals(q, q2);
     }
+
+
+    @Test
+    public void run_testQVector_outofbounds() {
+        QVector_int vector = new QVector_int();
+
+        boolean got;
+
+        got = false; try { vector.at(10); } catch (Exception e) { got = true; } assertTrue(got);
+        got = false; try { vector.replace(23, 14); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { vector.pop_back(); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { vector.pop_front(); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { vector.remove(23); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { vector.remove(23, 14); } catch (Exception e) { got =true; } assertTrue(got);
+    }
+
+    @Test
+    public void run_testQList_outofbounds() {
+        QList_int list = new QList_int();
+
+        boolean got;
+
+        got = false; try { list.at(10); } catch (Exception e) { got = true; } assertTrue(got);
+        got = false; try { list.replace(23, 14); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { list.pop_back(); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { list.pop_front(); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { list.move(14, 15); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { list.swap(15, 14); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { list.removeAt(14); } catch (Exception e) { got =true; } assertTrue(got);
+        got = false; try { list.takeAt(14); } catch (Exception e) { got =true; } assertTrue(got);
+    }
+
 }

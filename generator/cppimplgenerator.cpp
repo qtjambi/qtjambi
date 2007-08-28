@@ -78,7 +78,7 @@ QString jni_signature(const QString &_full_name, JNISignatureFormat format)
         signature = "[";
     }
 
-    int start, end=-1;
+    int start = 0, end = 0;
     while ( (start = full_name.indexOf("<")) >= 0 && (end = full_name.indexOf(">")) >= 0 ) {
         full_name.remove(start, end - start + 1);
     }
@@ -821,6 +821,7 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const MetaJavaClass 
 void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunction *java_function,
                                            const MetaJavaClass *implementor, CodeSnip::Position position)
 {
+
     FunctionModificationList mods;
     const MetaJavaClass *cls = implementor;
     while (cls != 0) {
@@ -839,7 +840,7 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunctio
             if (snip.position != position)
                 continue ;
 
-            if (snip.language != TypeSystem::ShellCode)
+            if (snip.language !=TypeSystem::ShellCode && snip.language != TypeSystem::NativeCode)
                 continue ;
 
             if (position == CodeSnip::End)
@@ -1332,6 +1333,9 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
 
     } else {
         writeFinalFunctionSetup(s, java_function, qt_object_name, cls);
+
+        writeCodeInjections(s, java_function, java_function->implementingClass(), CodeSnip::Beginning);
+
         if (java_function->isConstructor()) {
             writeFinalConstructor(s, java_function, qt_object_name, java_object_name);
         } else {

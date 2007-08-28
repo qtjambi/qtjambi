@@ -178,4 +178,15 @@
   </value-type>
    
   <object-type name="AbstractSocketSubclass" />
+
+
+  <object-type name="QHash_int" />
+  <object-type name="QLinkedList_int" />
+  <object-type name="QList_int" />
+  <object-type name="QMap_int" />
+  <object-type name="QQueue_int" />
+  <object-type name="QSet_int" />
+  <object-type name="QStack_int" />
+  <object-type name="QVector_int" />
+
 </typesystem>

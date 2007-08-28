@@ -142,19 +142,18 @@ class CodeSnipFragment{
 };
 
 class CodeSnipAbstract{
-    public:
-        QString code() const;
+public:
+    QString code() const;
 
-        void addCode(const QString &code){
-            codeList.append(new CodeSnipFragment(code));
-        }
+    void addCode(const QString &code){
+        codeList.append(new CodeSnipFragment(code));
+    }
 
-        void addTemplateInstance(TemplateInstance *ti){
-            codeList.append(new CodeSnipFragment(ti));
-        }
+    void addTemplateInstance(TemplateInstance *ti){
+        codeList.append(new CodeSnipFragment(ti));
+    }
 
-    protected:
-        QList<CodeSnipFragment*> codeList;
+    QList<CodeSnipFragment*> codeList;
 };
 
 class CustomFunction : public CodeSnipAbstract
@@ -168,18 +167,20 @@ class CustomFunction : public CodeSnipAbstract
 
 class TemplateEntry : public CodeSnipAbstract
 {
-    public:
-        TemplateEntry(const QString &name)
-    : m_name(name)
-        {};
-
-        QString name() const{
-            return m_name;
+public:
+    TemplateEntry(const QString &name)
+        : m_name(name)
+        {
         };
 
-    private:
-        QString m_name;
+    QString name() const {
+        return m_name;
+    };
+
+private:
+    QString m_name;
 };
+
 typedef QHash<QString, TemplateEntry *> TemplateEntryHash;
 
 class TemplateInstance
@@ -210,7 +211,8 @@ class CodeSnip : public CodeSnipAbstract
     public:
         enum Position {
             Beginning,
-            End
+            End,
+            AfterThis
         };
 
         CodeSnip() : language(TypeSystem::JavaCode) { }
@@ -310,6 +312,8 @@ struct FunctionModification: public Modification
 
     bool isCodeInjection() const { return modifiers & CodeInjection; }
     bool isRemoveModifier() const { return removal != TypeSystem::NoLanguage; }
+
+    QString toString() const;
 
     QString signature;
     CodeSnipList snips;
@@ -730,7 +734,7 @@ public:
     Include include() const { return m_include; }
     void setInclude(const Include &inc) { m_include = inc; }
 
-    void setTypeFlags(TypeFlags flags) 
+    void setTypeFlags(TypeFlags flags)
     {
         m_type_flags = flags;
     }
