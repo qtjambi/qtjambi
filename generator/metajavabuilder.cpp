@@ -118,7 +118,7 @@ MetaJavaBuilder::MetaJavaBuilder()
 void MetaJavaBuilder::checkFunctionModifications()
 {
     TypeDatabase *types = TypeDatabase::instance();
-    TypeEntryHash entryHash = types->entries();
+    SingleTypeEntryHash entryHash = types->entries();
     QList<TypeEntry *> entries = entryHash.values();
     foreach (TypeEntry *entry, entries) {
         if (entry == 0)

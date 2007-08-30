@@ -257,7 +257,7 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
 
 void MetaInfoGenerator::writeCppFile()
 {
-    TypeEntryHash entries = TypeDatabase::instance()->entries();
+    TypeEntryHash entries = TypeDatabase::instance()->allEntries();
     TypeEntryHash::iterator it;
 
     MetaJavaClassList classes_with_polymorphic_id;
@@ -297,22 +297,26 @@ void MetaInfoGenerator::writeCppFile()
     // not referenced from the generated code.
     foreach (FileOut *f, fileHash.values()) {
         for (it=entries.begin(); it!=entries.end(); ++it) {
-            TypeEntry *entry = it.value();
-            if (shouldGenerate(entry) && entry->isPrimitive())
-                writeCustomStructors(f->stream, entry);
+            QList<TypeEntry *> entries = it.value();
+            foreach (TypeEntry *entry, entries) {
+                if (shouldGenerate(entry) && entry->isPrimitive())
+                    writeCustomStructors(f->stream, entry);
+            }
         }
 
         // Initialization function: Registers meta types
         writeInitializationFunctionName(f->stream, fileHash.key(f, ""), true);
         f->stream << endl << "{" << endl;
         for (it=entries.begin(); it!=entries.end(); ++it) {
-            TypeEntry *entry = it.value();
-            if (entry &&
-                 ( (shouldGenerate(entry) && entry->isPrimitive())
-                   || entry->isString()
-                   || entry->isChar())) {
-                        writeInitialization(f->stream, entry, 0);
-                   }
+            QList<TypeEntry *> entries = it.value();
+            foreach (TypeEntry *entry, entries) {
+                if (entry &&
+                    ( (shouldGenerate(entry) && entry->isPrimitive())
+                    || entry->isString()
+                    || entry->isChar())) {
+                            writeInitialization(f->stream, entry, 0);
+                    }
+            }
         }
         writeRegisterSignalsAndSlots(f->stream);
     }
@@ -581,7 +585,9 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
     QString qtName = entry->qualifiedCppName();
 
-    s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl;
+    if (!entry->isPrimitive() || ((PrimitiveTypeEntry *) entry)->preferredJavaType())
+        s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl;
+
     if (!entry->preferredConversion())
         return ;
 

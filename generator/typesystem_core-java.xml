@@ -132,6 +132,7 @@
     <primitive-type name="qulonglong" preferred-conversion="no" java-name="long" jni-name="jlong"/>
     
     <primitive-type name="short" preferred-conversion="no" java-name="char" jni-name="jchar"/>
+    <primitive-type name="short" preferred-java-type="no" java-name="short" jni-name="jshort" />
     <primitive-type name="signed short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
     <primitive-type name="ushort" java-name="char" jni-name="jchar"/>
     <primitive-type name="unsigned short" java-name="char" preferred-conversion="no" jni-name="jchar"/>

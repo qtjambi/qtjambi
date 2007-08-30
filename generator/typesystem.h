@@ -453,7 +453,8 @@ private:
     CustomFunction m_customDestructor;
     bool m_preferred_conversion;
 };
-typedef QHash<QString, TypeEntry *> TypeEntryHash;
+typedef QHash<QString, QList<TypeEntry *> > TypeEntryHash;
+typedef QHash<QString, TypeEntry *> SingleTypeEntryHash;
 
 
 class TypeSystemTypeEntry : public TypeEntry
@@ -529,7 +530,7 @@ class PrimitiveTypeEntry : public TypeEntry
 {
 public:
     PrimitiveTypeEntry(const QString &name)
-        : TypeEntry(name, PrimitiveType), m_preferred_conversion(true)
+        : TypeEntry(name, PrimitiveType), m_preferred_conversion(true), m_preferred_java_type(true)
     {
     }
 
@@ -546,10 +547,14 @@ public:
     virtual bool preferredConversion() const { return m_preferred_conversion; }
     virtual void setPreferredConversion(bool b) { m_preferred_conversion = b; }
 
+    virtual bool preferredJavaType() const { return m_preferred_java_type; }
+    virtual void setPreferredJavaType(bool b) { m_preferred_java_type = b; }
+
 private:
     QString m_java_name;
     QString m_jni_name;
-    bool m_preferred_conversion;
+    uint m_preferred_conversion : 1;
+    uint m_preferred_java_type : 1;
 };
 
 
@@ -998,8 +1003,30 @@ public:
     inline NamespaceTypeEntry *findNamespaceType(const QString &name);
     ContainerTypeEntry *findContainerType(const QString &name);
 
-    TypeEntry *findType(const QString &name) { return m_entries.value(name); }
-    TypeEntryHash entries() { return m_entries; }
+    TypeEntry *findType(const QString &name) const { 
+        QList<TypeEntry *> entries = findTypes(name);
+        foreach (TypeEntry *entry, entries) {
+            if (entry != 0 && 
+                (!entry->isPrimitive() || static_cast<PrimitiveTypeEntry *>(entry)->preferredJavaType())) {
+                return entry;
+            }
+        }
+        return 0;
+    }
+    QList<TypeEntry *> findTypes(const QString &name) const { return m_entries.value(name); }
+    TypeEntryHash allEntries() { return m_entries; }
+    SingleTypeEntryHash entries() {
+        TypeEntryHash entries = allEntries();
+
+        SingleTypeEntryHash returned;
+        QList<QString> keys = entries.keys();
+
+        foreach(QString key, keys) {
+            returned[key] = findType(key);
+        }
+
+        return returned;
+    }
 
     PrimitiveTypeEntry *findJavaPrimitiveType(const QString &java_name);
 
@@ -1010,9 +1037,9 @@ public:
     bool isFieldRejected(const QString &class_name, const QString &field_name);
     bool isEnumRejected(const QString &class_name, const QString &enum_name);
 
-    void addType(TypeEntry *e) { m_entries[e->qualifiedCppName()] = e; }
+    void addType(TypeEntry *e) { m_entries[e->qualifiedCppName()].append(e); }
 
-    TypeEntryHash flagsEntries() const { return m_flags_entries; }
+    SingleTypeEntryHash flagsEntries() const { return m_flags_entries; }
     FlagsTypeEntry *findFlagsType(const QString &name) const;
     void addFlagsType(FlagsTypeEntry *fte) { m_flags_entries[fte->originalName()] = fte; }
 
@@ -1059,7 +1086,7 @@ public:
 private:
     bool m_suppressWarnings;
     TypeEntryHash m_entries;
-    TypeEntryHash m_flags_entries;
+    SingleTypeEntryHash m_flags_entries;
     TemplateEntryHash m_templates;
     QStringList m_suppressedWarnings;
 
@@ -1069,11 +1096,14 @@ private:
 
 inline PrimitiveTypeEntry *TypeDatabase::findPrimitiveType(const QString &name)
 {
-    TypeEntry *entry = findType(name);
-    if (entry != 0 && entry->isPrimitive())
-        return static_cast<PrimitiveTypeEntry *>(entry);
-    else
-        return 0;
+    QList<TypeEntry *> entries = findTypes(name);
+
+    foreach (TypeEntry *entry, entries) {
+        if (entry != 0 && entry->isPrimitive() && static_cast<PrimitiveTypeEntry *>(entry)->preferredJavaType())
+            return static_cast<PrimitiveTypeEntry *>(entry);
+    }
+
+    return 0;
 }
 
 inline ComplexTypeEntry *TypeDatabase::findComplexType(const QString &name)

@@ -414,6 +414,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["java-name"] = QString();
             attributes["jni-name"] = QString();
             attributes["preferred-conversion"] = "yes";
+            attributes["preferred-java-type"] = "yes";
             break;
         case StackElement::EnumTypeEntry:
             attributes["flags"] = "no";
@@ -449,22 +450,27 @@ bool Handler::startElement(const QString &, const QString &n,
 
         QString name = attributes["name"];
 
+        // We need to be able to have duplicate primitive type entries, or it's not possible to
+        // cover all primitive java types (which we need to do in order to support fake
+        // meta objects)
+        if (element->type != StackElement::PrimitiveTypeEntry) {
+            TypeEntry *tmp = m_database->findType(name);
+            if (tmp != 0) {
+                ReportHandler::warning(QString("Duplicate type entry: '%1'").arg(name));
+            }
+        }
+
         if (name.isEmpty()) {
             m_error = "no 'name' attribute specified";
             return false;
         }
-
-        TypeEntry *tmp = m_database->findType(name);
-        if (tmp != 0) {
-            ReportHandler::warning(QString("Duplicate type entry: '%1'").arg(name));
-        }
-
         switch (element->type) {
         case StackElement::PrimitiveTypeEntry:
             {
                 QString java_name = attributes["java-name"];
                 QString jni_name = attributes["jni-name"];
                 QString preferred_conversion = attributes["preferred-conversion"].toLower();
+                QString preferred_java_type = attributes["preferred-java-type"].toLower();
 
                 if (java_name.isEmpty())
                     java_name = name;
@@ -482,6 +488,17 @@ bool Handler::startElement(const QString &, const QString &n,
                     type->setPreferredConversion(false);
                 } else {
                     QString debug = QString("Preferred conversion value '%1' not valid for '%2'. "
+                                            "Will default to 'yes'.")
+                                    .arg(preferred_conversion).arg(name);
+                    ReportHandler::warning(debug);
+                }
+
+                if (preferred_java_type == "yes") {
+                    type->setPreferredJavaType(true);
+                } else if (preferred_java_type == "no") {
+                    type->setPreferredJavaType(false);
+                } else {
+                    QString debug = QString("Preferred java type value '%1' not valid for '%2'. "
                                             "Will default to 'yes'.")
                                     .arg(preferred_conversion).arg(name);
                     ReportHandler::warning(debug);
@@ -1447,11 +1464,13 @@ ContainerTypeEntry *TypeDatabase::findContainerType(const QString &name)
 
 PrimitiveTypeEntry *TypeDatabase::findJavaPrimitiveType(const QString &java_name)
 {
-    foreach (TypeEntry *e, m_entries.values()) {
-        if (e && e->isPrimitive()) {
-            PrimitiveTypeEntry *pe = static_cast<PrimitiveTypeEntry *>(e);
-            if (pe->javaName() == java_name && pe->preferredConversion())
-                return pe;
+    foreach (QList<TypeEntry *> entries, m_entries.values()) {
+        foreach (TypeEntry *e, entries) {
+            if (e && e->isPrimitive()) {
+                PrimitiveTypeEntry *pe = static_cast<PrimitiveTypeEntry *>(e);
+                if (pe->javaName() == java_name && pe->preferredConversion())
+                    return pe;
+            }
         }
     }
 
@@ -1634,7 +1653,7 @@ bool TypeDatabase::isFieldRejected(const QString &class_name, const QString &fie
 
 FlagsTypeEntry *TypeDatabase::findFlagsType(const QString &name) const
 {
-    FlagsTypeEntry *fte = (FlagsTypeEntry *) m_entries.value(name);
+    FlagsTypeEntry *fte = (FlagsTypeEntry *) findType(name);
     return fte ? fte : (FlagsTypeEntry *) m_flags_entries.value(name);
 }
 
