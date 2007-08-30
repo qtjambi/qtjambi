@@ -123,14 +123,6 @@
         <modify-function signature="push_front(QXmlStreamAttribute)" remove="all"/>
         <modify-function signature="pop_front()" remove="all"/>
 
-        <modify-function signature="first()">
-            <remove />
-        </modify-function>       
-        
-        <modify-function signature="last()">
-            <remove />
-        </modify-function> 
-
         <modify-function signature="value(const QString &amp;, const QLatin1String &amp;)const">
             <remove />
         </modify-function>            
