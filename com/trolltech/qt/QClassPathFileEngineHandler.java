@@ -52,6 +52,8 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     private long m_pos = -1;
     private int m_openMode;
     private boolean m_valid = false;
+    private boolean m_directory = false;
+    private String m_name;
 
     public QJarEntryEngine(JarFile jarFile, String jarFileName, String fileName, String classPathEntryFileName)
     {
@@ -75,19 +77,40 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
         if (fileName.length() == 0) {
             m_entryFileName = "";
+            m_name = "";
             m_valid = true;
+            m_directory = true;
             return ;
         }
 
         if (!fileName.endsWith("/")) {
             setFileName(fileName + "/");
-            if (m_entry != null)
+            if (m_valid)
                 return ;
         }
 
         m_entryFileName = fileName;
         m_entry = m_jarFile.getJarEntry(m_entryFileName);
-        m_valid = m_entry != null;
+        
+        m_valid = false;
+        if (m_entry == null && fileName.endsWith("/")) {                        
+            Enumeration<JarEntry> entries = m_jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                
+                String entryName = entry.getName();
+                if (entryName.length() > fileName.length() && fileName.equals(entryName.substring(0, fileName.length()))) {
+                    m_directory = true;
+                    m_valid = true;
+                    m_name = fileName;
+                }
+            }
+        } else if (m_entry != null) {
+            m_directory = m_entry.isDirectory();
+            m_valid = true;
+            m_name = m_entry.getName();
+        }                
+        
     }
     
     public String classPathEntryName() {
@@ -173,7 +196,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     @Override
     public List<String> entryList(QDir.Filters filters, List<String> filterNames)
     {
-        if (m_entry != null && !m_entry.isDirectory())
+        if (!m_directory)
             return new LinkedList<String>();
 
         List<String> result = new LinkedList<String>();
@@ -182,44 +205,56 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
         if (!filters.isSet(QDir.Filter.Readable, QDir.Filter.Writable, QDir.Filter.Executable))
             filters.set(QDir.Filter.Readable);
 
-        String mentryName = m_entry == null ? "" : m_entry.getName();
+        String mentryName = m_name;
         if (!mentryName.endsWith("/") && mentryName.length() > 0)
             mentryName = mentryName + "/";
 
         Enumeration<JarEntry> entries = m_jarFile.entries();
+        
+        HashSet<String> used = new HashSet<String>();
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
 
             String entryName = entry.getName();
-            int pos = entryName.lastIndexOf('/', entryName.length() - 2);
+            
+            // Must be inside this directory
+            if (entryName.length() <= mentryName.length() || !mentryName.equals(entryName.substring(0, mentryName.length())) || mentryName.equals(entryName))
+                continue;
+            
+            // Only one level
+            boolean isDir;
+            int pos = entryName.indexOf("/", mentryName.length());
+            if (pos > 0) {
+                entryName = entryName.substring(0, pos);
+                isDir = true;
+            } else {
+                isDir = entry.isDirectory();
+            }
+                        
+            if (!filters.isSet(QDir.Filter.Readable))
+                continue ;
 
-            String dirName = "";
-            if (pos > 0)
-                dirName = entryName.substring(0, pos + 1);
+            if (!filters.isSet(QDir.Filter.Dirs) && isDir)
+                continue ;
 
-            if (!entryName.equals(mentryName) && dirName.equals(mentryName)) {
+            if (!filters.isSet(QDir.Filter.Files) && !isDir)
+                continue ;
 
-                boolean isDir = entry.isDirectory();
-
-                if (!filters.isSet(QDir.Filter.Readable))
-                    continue ;
-
-                if (!filters.isSet(QDir.Filter.Dirs) && isDir)
-                    continue ;
-
-                if (!filters.isSet(QDir.Filter.Files) && !isDir)
-                    continue ;
-
-                if (filterNames.size() > 0) {
-                    if ((!isDir || !filters.isSet(QDir.Filter.AllDirs))
-                        && (!QDir.match(filterNames, entryName))) {
-                        continue;
-                    }
+            if (filterNames.size() > 0) {
+                if ((!isDir || !filters.isSet(QDir.Filter.AllDirs))
+                    && (!QDir.match(filterNames, entryName))) {
+                    continue;
                 }
+            }
 
-                if (entryName.endsWith("/") && entryName.length() > 1)
-                    entryName = entryName.substring(0, entryName.length() - 1);
-                result.add(entryName.substring(dirName.length()));
+            if (entryName.endsWith("/") && entryName.length() > 1)
+                entryName = entryName.substring(0, entryName.length() - 1);
+            
+            entryName = entryName.substring(mentryName.length());
+            
+            if (!used.contains(entryName)) {
+                used.add(entryName);
+                result.add(entryName);
             }
         }
 
@@ -241,7 +276,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
                              | FileFlag.ReadUserPerm.value());
              }
     
-             if (m_entry == null || m_entry.isDirectory())
+             if (m_directory)
                  flags |= FileFlag.DirectoryType.value();
              else
                  flags |= FileFlag.FileType.value();
