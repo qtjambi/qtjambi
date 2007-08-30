@@ -250,11 +250,12 @@ public class BCC extends QWidget {
         final String leftDir = leftDirectoryInput.text();
         final String rightDir = rightDirectoryInput.text();
                 
+        packagesCheckVal = packagesCheck.isChecked();
+        packagesCheck.setDisabled(true);
         thread = new QThread(new Runnable() {
             
             public void run() {
-                Hashtable<String,Class<?>> leftHandler = handleDirectory(leftDir);
-                        
+                Hashtable<String,Class<?>> leftHandler = handleDirectory(leftDir);                        
                 Hashtable<String,Class<?>> rightHandler = handleDirectory(rightDir);
                 
                 if (leftHandler == null || rightHandler == null)
@@ -265,6 +266,7 @@ public class BCC extends QWidget {
                 QApplication.invokeLater(new Runnable() {
                     public void run() {               
                         stack.setCurrentIndex(0);
+                        packagesCheck.setDisabled(false);
                     }
                 });
                     
@@ -591,6 +593,14 @@ public class BCC extends QWidget {
         }
     }
     
+    private String packageName(String className) {
+        int pos = className.lastIndexOf(".");
+        if (pos < 0)
+            return "(default)";                      
+        else
+            return className.substring(0,pos).replaceAll("/", ".");
+    }
+    
     private void compare(final Hashtable<String, Class<?>> oldClasses, final Hashtable<String, Class<?>> newClasses) {
         QApplication.invokeLater(new Runnable() {
             public void run() {
@@ -600,8 +610,57 @@ public class BCC extends QWidget {
             }
         });
         
+        final Hashtable<String,Boolean> disabledPackages = new Hashtable<String,Boolean>();        
+        if (packagesCheckVal) {
+            QApplication.invokeAndWait(new Runnable() {
+                public void run() {            
+                    QDialog dialog = new QDialog(BCC.this);
+                    dialog.setWindowTitle("In which packages do you want to look?");
+                    
+                    QVBoxLayout layout = new QVBoxLayout(dialog);
+                    
+                    QListWidget list = new QListWidget();
+                    Set<String> keys = new HashSet<String>(oldClasses.keySet()); 
+                    keys.addAll(newClasses.keySet());
+                    for (String key : keys) {
+                        String packageName = packageName(key);
+                                        
+                        if (!disabledPackages.containsKey(packageName)) {
+                            disabledPackages.put(packageName, false);
+                            
+                            QListWidgetItem item = new QListWidgetItem(packageName);
+                            item.setFlags(Qt.ItemFlag.ItemIsUserCheckable, Qt.ItemFlag.ItemIsEnabled);
+                            item.setCheckState(Qt.CheckState.Checked);
+                            
+                            list.addItem(item);
+                        }
+                    }
+                    layout.addWidget(list);
+                    
+                    QDialogButtonBox box = new QDialogButtonBox(QDialogButtonBox.StandardButton.createQFlags(QDialogButtonBox.StandardButton.Ok, QDialogButtonBox.StandardButton.Cancel));
+                    layout.addWidget(box);
+        
+                    box.accepted.connect(dialog, "accept()");
+                    box.rejected.connect(dialog, "reject()");
+                    
+                    if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
+                        int childCount = list.count();
+                        for (int i=0; i<childCount; ++i) {
+                            QListWidgetItem item = list.item(i);
+                            if (item.checkState() != Qt.CheckState.Checked) 
+                                disabledPackages.put(item.text(), true);
+                        }
+                    }
+                }
+            });
+        }
+        
         Set<String> keys = oldClasses.keySet();
         for (final String key : keys) {
+            String packageName = packageName(key);
+            if (disabledPackages.containsKey(packageName) && disabledPackages.get(packageName))
+                continue;
+            
             Class<?> oldClass = oldClasses.get(key);
             Class<?> newClass = newClasses.containsKey(key) ? newClasses.get(key) : null;
             
@@ -632,6 +691,10 @@ public class BCC extends QWidget {
         
         keys = newClasses.keySet();
         for (final String key : keys) {
+            String packageName = packageName(key);
+            if (disabledPackages.containsKey(packageName) && disabledPackages.get(packageName))
+                continue;
+            
             Class<?> oldClass = oldClasses.containsKey(key) ? oldClasses.get(key) : null;
             Class<?> newClass = newClasses.get(key);
             
@@ -660,9 +723,13 @@ public class BCC extends QWidget {
     }
     
     private ProblemsWidget problemsWidget;
+    private QCheckBox packagesCheck;
+    private boolean packagesCheckVal = false;
     
     private BCC() {
         super();
+        
+        setWindowTitle("Binary Compatibility Clobbering");
         
         QGridLayout layout = new QGridLayout(this);                
         QGuiSignalMapper jarFileMapper = new QGuiSignalMapper(this);
@@ -697,17 +764,25 @@ public class BCC extends QWidget {
         progressBar.setMinimum(0);
         progressBar.setMaximum(0);
         progressBar.setTextVisible(false);
-        
+                
         stack = new QStackedWidget();        
         stack.addWidget(scanButton);
-        stack.addWidget(progressBar);                
+        stack.addWidget(progressBar);
+        
+        QSizePolicy policy = stack.sizePolicy();
+        policy.setVerticalPolicy(QSizePolicy.Policy.Maximum);
+        stack.setSizePolicy(policy);
+        
         layout.addWidget(stack, 2, 0, 1, 2);
         
         QPushButton logButton = new QPushButton("Save to log");
-        layout.addWidget(logButton, 3, 0, 1, 2);
+        layout.addWidget(logButton, 3, 0, 1, 1);
         
         logButton.clicked.connect(problemsWidget, "writeLog()");                      
         scanButton.clicked.connect(this, "scan()");
+        
+        packagesCheck = new QCheckBox("Select packages manually");
+        layout.addWidget(packagesCheck, 3, 1, 1, 1);        
                                        
         {
             QGroupBox rightSide = new QGroupBox("New root of classes");
