@@ -371,23 +371,8 @@
     <modify-function signature="addResourceSearchPath(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
   
-  <value-type name="QPoint">
-    <modify-function signature="operator*=(double)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="operator/=(double)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="operator+=(QPoint)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="operator-=(QPoint)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="rx()"> <remove/> </modify-function>
-    <modify-function signature="ry()"> <remove/> </modify-function>      
-  </value-type>
-  
-  <value-type name="QPointF">
-    <modify-function signature="operator*=(double)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="operator/=(double)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="operator+=(QPointF)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="operator-=(QPointF)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="rx()"> <remove/> </modify-function>
-    <modify-function signature="ry()"> <remove/> </modify-function>      
-  </value-type>
+  <value-type name="QPoint"/>
+  <value-type name="QPointF"/>
   
   <value-type name="QRect">
     <modify-function signature="getCoords(int*,int*,int*,int*)const"> <remove/> </modify-function>

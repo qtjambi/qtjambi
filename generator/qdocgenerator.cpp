@@ -138,7 +138,25 @@ void QDocGenerator::writeOverload(QTextStream &s,
                                           arg_count);
 
     s << "<method java=\"" << protect(signature.toUtf8()) << "\"" << endl
-      << "    cpp=\"" << protect(java_function->signature().toUtf8()) << "\"";
+      << "        cpp=\"" << protect(java_function->signature().toUtf8()) << "\"" << endl;
+
+    FunctionModificationList mods = java_function->modifications(java_function->implementingClass());
+    foreach (const FunctionModification &m, mods) {
+        if (!m.association.isEmpty())
+            s << "        association=\"" << m.association << "\"" << endl;
+        if (m.modifiers & Modification::AccessModifierMask)
+            s << "        access-change=\"" << m.accessModifierString() << "\"" << endl;
+        if (m.modifiers & Modification::Rename)
+            s << "        renamed=\"" << m.renamedToName << "\"" << endl;
+        if (m.modifiers & (Modification::FinalMask)) {
+            s << "        final=\"" << ((m.modifiers & Modification::Final) ? "final" : "non-final")
+              << "\"" << endl;
+        }
+        if (m.modifiers & Modification::Deprecated)
+            s << "        deprecated=\"yes\"" << endl;
+        if (m.removal)
+            s << "        removal=\"" << m.removal << "\"" << endl;
+    }
 
     MetaJavaArgumentList arguments = java_function->arguments();
     bool wroteOwnershipStolen = false;
@@ -215,7 +233,6 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
       << "   cpp=\"" << protect(java_class->typeEntry()->qualifiedCppName().toUtf8()) << "\"" << endl
       << "   java-extends=\"" << protect(java_class->baseClass() ? java_class->baseClass()->name().toUtf8() : "") << "\"" << endl
       << "   package=\"" << protect(java_class->package().toUtf8()) << "\"" << endl;
-
 
     MetaJavaClassList interfaces = java_class->interfaces();
     if (interfaces.count() > 0) {

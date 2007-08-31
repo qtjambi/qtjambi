@@ -196,6 +196,20 @@
     </template>
 
     <value-type name="QPoint">
+        <modify-function signature="operator*=(double)" 
+                         access="private"
+                         associated-to="multiply(double d)"/>
+        <modify-function signature="operator/=(double)" 
+			 access="private" 
+			 associated-to="divide(double d)"/>
+        <modify-function signature="operator+=(QPoint)" 
+			 access="private" 
+			 associated-to="add(QPoint)"/>
+        <modify-function signature="operator-=(QPoint)"
+			 access="private"
+			 associated-to="subtract(QPoint)"/>
+        <modify-function signature="rx()"> <remove/> </modify-function>  
+        <modify-function signature="ry()"> <remove/> </modify-function>      
         <inject-code>
             <insert-template name="core.multiply-devide-add-subtract">
                 <replace from="%TYPE" to="QPoint"/>
@@ -204,6 +218,20 @@
     </value-type>
 
     <value-type name="QPointF">
+        <modify-function signature="operator*=(double)"
+			 access="private"
+			 associated-to="multiply(double d)"/>
+        <modify-function signature="operator/=(double)"
+			 access="private"
+			 associated-to="divide(double d)"/>
+        <modify-function signature="operator+=(QPointF)"
+			 access="private"
+			 associated-to="add(QPointF p)"/>
+        <modify-function signature="operator-=(QPointF)"
+			 access="private"
+			 associated-to="subtract(QPointF p)"/>
+        <modify-function signature="rx()"> <remove/> </modify-function>  
+        <modify-function signature="ry()"> <remove/> </modify-function>      
         <inject-code>
             <insert-template name="core.multiply-devide-add-subtract">
                 <replace from="%TYPE" to="QPointF"/>

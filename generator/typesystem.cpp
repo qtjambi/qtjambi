@@ -681,6 +681,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["remove"] = QString();
             attributes["rename"] = QString();
             attributes["deprecated"] = QString("no");
+            attributes["associated-to"] = QString();
             break;
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
@@ -1135,6 +1136,10 @@ bool Handler::startElement(const QString &, const QString &n,
                     mod.renamedToName = rename;
                     mod.modifiers |= Modification::Rename;
                 }
+
+                QString association = attributes["associated-to"];
+                if (!association.isEmpty())
+                    mod.association = association;
 
                 m_function_mods << mod;
             }

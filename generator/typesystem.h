@@ -274,6 +274,7 @@ struct Modification {
 
         Final =                 0x0010,
         NonFinal =              0x0020,
+        FinalMask =             Final & NonFinal,
 
         Readable =              0x0100,
         Writable =              0x0200,
@@ -316,6 +317,7 @@ struct FunctionModification: public Modification
     QString toString() const;
 
     QString signature;
+    QString association;
     CodeSnipList snips;
     TypeSystem::Language removal;
 
