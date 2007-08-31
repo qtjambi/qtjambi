@@ -141,6 +141,7 @@ void QDocGenerator::writeOverload(QTextStream &s,
       << "        cpp=\"" << protect(java_function->signature().toUtf8()) << "\"" << endl;
 
     FunctionModificationList mods = java_function->modifications(java_function->implementingClass());
+    QList<ArgumentModification> argumentMods;
     foreach (const FunctionModification &m, mods) {
         if (!m.association.isEmpty())
             s << "        association=\"" << m.association << "\"" << endl;
@@ -156,6 +157,8 @@ void QDocGenerator::writeOverload(QTextStream &s,
             s << "        deprecated=\"yes\"" << endl;
         if (m.removal)
             s << "        removal=\"" << m.removal << "\"" << endl;
+
+        argumentMods << m.argument_mods;
     }
 
     MetaJavaArgumentList arguments = java_function->arguments();
@@ -174,6 +177,31 @@ void QDocGenerator::writeOverload(QTextStream &s,
     }
     if (wroteOwnershipStolen)
         s << "\"";
+
+    if (argumentMods.size()) {
+        s << ">" << endl;
+
+        foreach (const ArgumentModification &m, argumentMods) {
+            s << "    <argument index=\"" << m.index << "\"" << endl;
+            if (m.removed_default_expression)
+                s << "              remove-default-expression=\"yes\"" << endl;
+            if (m.removed)
+                s << "              removed=\"yes\"" << endl;
+            if (m.no_null_pointers)
+                s << "              no-null=\"yes\"" << endl;
+            if (!m.modified_type.isEmpty())
+                s << "              modified-type=\"" << m.modified_type << "\"" << endl;
+            if (!m.replaced_default_expression.isEmpty()) {
+                s << "              default-expression=\"" << m.replaced_default_expression
+                  << "\"" << endl;
+            }
+            if (!m.referenceCounts.isEmpty())
+                s << "              reference-counted=\"...\"" << endl;
+        }
+
+        s << "    />" << endl;
+    }
+
     s << " />" << endl;
 }
 
