@@ -698,9 +698,6 @@
   <value-type name="QTextListFormat"/>
   <value-type name="QPolygon">
     <modify-function signature="QPolygon(int, const int *)" remove="all"/>
-    <modify-function signature="first()" remove="all"/>
-    <modify-function signature="last()" remove="all"/>
-
     <modify-function signature="operator+(QVector&lt;QPoint&gt;)const" remove="all"/>
     <modify-function signature="operator&lt;&lt;(QPoint)" remove="all"/>
     <modify-function signature="operator&lt;&lt;(QVector&lt;QPoint&gt;)" remove="all"/>
@@ -709,9 +706,6 @@
   </value-type>
 
   <value-type name="QPolygonF">
-    <modify-function signature="first()" remove="all"/>
-    <modify-function signature="last()" remove="all"/>
-
     <modify-function signature="operator+(QVector&lt;QPointF&gt;)const" remove="all"/>
     <modify-function signature="operator&lt;&lt;(QPointF)" remove="all"/>
     <modify-function signature="operator&lt;&lt;(QVector&lt;QPointF&gt;)" remove="all"/>
@@ -796,10 +790,6 @@
   
   <value-type name="QItemSelection"> 
 
-    <modify-function signature="back()" remove="all"/>
-    <modify-function signature="first()" remove="all"/>
-    <modify-function signature="front()" remove="all"/>
-    <modify-function signature="last()" remove="all"/>
     <modify-function signature="operator+(const QList&lt;QItemSelectionRange&gt;&amp;)const" remove="all"/>
     <modify-function signature="operator+=(const QList&lt;QItemSelectionRange&gt;&amp;)" remove="all"/>
     <modify-function signature="operator+=(const QItemSelectionRange&amp;)" remove="all"/>
