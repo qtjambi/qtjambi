@@ -341,8 +341,11 @@ bool Handler::importFileElement(const QXmlAttributes &atts)
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        m_error = QString("Could not open file: '%1'").arg(fileName);
-        return false;
+        file.setFileName(":/trolltech/generator/" + fileName);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            m_error = QString("Could not open file: '%1'").arg(fileName);
+            return false;
+        }
     }
 
     QString quoteFrom = atts.value("quote-after-line");
