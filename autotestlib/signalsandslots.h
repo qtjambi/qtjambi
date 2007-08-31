@@ -195,7 +195,7 @@ signals:
 public slots:
     void slot1_1() { slot1_1_called++; }
     virtual void slot1_2() { slot1_2_called++; }
-    QByteArray slot1_3() { slot1_3_called++; }
+    QByteArray slot1_3() { slot1_3_called++; return QByteArray(); }
     virtual void slot2(int i) { slot2_called += i; }
     void slot3(const QString &str) { slot3_called += str.toInt(); }
 
