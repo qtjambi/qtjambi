@@ -43,6 +43,7 @@
     </target>
 
     <target name="generator.autotests"
+            depends="tasks"
             description="Run the generator on the autotests.">
         <mkdir dir="${outputDir}/com/trolltech/autotests" />
 	<generator dir="autotestlib"
@@ -52,13 +53,14 @@
     </target>
 
     <target name="compile.qt"
-            depends="sync.qt, configure.qt"
+            depends="sync.qt, configure.qt, tasks"
             description="Sync, configure, and compile qt.">
 	<make dir="${qt}" target="distclean" />
 	<make dir="${qt}" />
     </target>
 
     <target name="compile.autotests" 
+            depends="tasks"
             description="Compile Java and c++ files for autotests.">
         <qmake dir="autotestlib" recursive="true" config="${config}"/>
 	<make dir="autotestlib" target="clean" />
