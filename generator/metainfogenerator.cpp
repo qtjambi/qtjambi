@@ -274,7 +274,7 @@ void MetaInfoGenerator::writeCppFile()
             fileHash.insert(cls->package(), f);
            }
 
-        if (f->stream.device() != 0) {
+        if (f !=0) {
             if (cls->typeEntry()->isObject() && !cls->typeEntry()->isQObject() && !cls->isInterface())
                 writeDestructors(f->stream, cls);
             writeCustomStructors(f->stream, cls->typeEntry());
