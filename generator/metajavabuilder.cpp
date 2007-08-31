@@ -284,6 +284,20 @@ void MetaJavaBuilder::fixQObjectForScope(TypeDatabase *types,
     }
 }
 
+static bool class_less_than(MetaJavaClass *a, MetaJavaClass *b)
+{
+    return a->name() < b->name();
+}
+
+
+void MetaJavaBuilder::sortLists() 
+{
+   qSort(m_java_classes.begin(), m_java_classes.end(), class_less_than);
+   foreach (MetaJavaClass *cls, m_java_classes) {
+        cls->sortFunctions();
+   }
+}
+
 bool MetaJavaBuilder::build()
 {
     Q_ASSERT(!m_file_name.isEmpty());
@@ -419,6 +433,8 @@ bool MetaJavaBuilder::build()
     }
 
     dumpLog();
+
+    sortLists();
 
     return true;
 }

@@ -743,6 +743,8 @@ public:
     void setGreaterThanEqFunctions(const MetaJavaFunctionList &lst) { m_greater_than_eq_functions = lst; }
     MetaJavaFunctionList greaterThanEqFunctions() const { return m_greater_than_eq_functions; }
 
+    void sortFunctions();
+
 private:
     uint m_namespace : 1;
     uint m_qobject : 1;

@@ -669,7 +669,7 @@ QString MetaJavaFunction::javaSignature(bool minimal) const
 
 bool function_sorter(MetaJavaFunction *a, MetaJavaFunction *b)
 {
-    return *a < *b;
+    return a->signature() < b->signature();
 }
 
 /*******************************************************************************
@@ -859,12 +859,17 @@ MetaJavaFunctionList MetaJavaClass::virtualOverrideFunctions() const
            queryFunctions(Signals | NonEmptyFunctions | Visible | VirtualInCppFunctions | NotRemovedFromShell);
 }
 
+void MetaJavaClass::sortFunctions() 
+{
+    qSort(m_functions.begin(), m_functions.end(), function_sorter);
+}
+
 void MetaJavaClass::setFunctions(const MetaJavaFunctionList &functions)
 {
     m_functions = functions;
 
     // Functions must be sorted by name before next loop
-    qSort(m_functions.begin(), m_functions.end(), function_sorter);
+    sortFunctions();
 
     QString currentName;
     bool hasVirtuals = false;

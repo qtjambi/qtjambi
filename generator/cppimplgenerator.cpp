@@ -2661,10 +2661,15 @@ QString CppImplGenerator::translateType(const MetaJavaType *java_type, Option op
      }
 }
 
+static bool include_less_than(const Include &a, const Include &b) 
+{
+    return a.name < b.name;
+}
 
 void CppImplGenerator::writeExtraIncludes(QTextStream &s, const MetaJavaClass *java_class)
 {
     IncludeList includes = java_class->typeEntry()->extraIncludes();
+    qSort(includes.begin(), includes.end(), include_less_than);
 
     int used = 0;
     foreach (const Include &i, includes) {

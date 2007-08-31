@@ -97,6 +97,9 @@ public:
 protected:
     MetaJavaClass *argumentToClass(ArgumentModelItem);
 
+private:
+    void sortLists();
+
     QString m_file_name;
 
     MetaJavaClassList m_java_classes;
