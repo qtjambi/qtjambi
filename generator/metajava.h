@@ -153,7 +153,8 @@ public:
         m_constant(false),
         m_reference(false),
         m_cpp_instantiation(true),
-        m_indirections(0)
+        m_indirections(0),
+        m_reserved(0)
     {
     }
 
@@ -264,7 +265,8 @@ private:
     uint m_constant : 1;
     uint m_reference : 1;
     uint m_cpp_instantiation : 1;
-    short m_indirections : 4;
+    int m_indirections : 4;
+    uint m_reserved : 25; // unused
 };
 
 class MetaJavaVariable
