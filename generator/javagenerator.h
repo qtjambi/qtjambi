@@ -89,7 +89,7 @@ public:
 
     bool shouldGenerate(const AbstractMetaClass *java_class) const {
         return !java_class->typeEntry()->isContainer() && !java_class->typeEntry()->isVariant()
-               && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateJava);
+               && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateTargetLang);
     }
 
     QString documentationDirectory() const { return m_doc_directory; }

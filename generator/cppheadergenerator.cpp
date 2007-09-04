@@ -46,7 +46,7 @@ void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const AbstractMetaFu
 void CppHeaderGenerator::writeSignalWrappers(QTextStream &s, const AbstractMetaClass *java_class)
 {
     AbstractMetaFunctionList signal_funcs =
-        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromJava);
+        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromTargetLang);
 
     if (signal_funcs.size() > 0) {
         s << endl << "public slots:" << endl;
@@ -59,7 +59,7 @@ void CppHeaderGenerator::writeSignalWrappers(QTextStream &s, const AbstractMetaC
 void CppHeaderGenerator::writeWrapperClass(QTextStream &s, const AbstractMetaClass *java_class)
 {
     AbstractMetaFunctionList signal_functions =
-        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromJava);
+        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromTargetLang);
     if (signal_functions.size() == 0)
         return ;
 
@@ -102,7 +102,7 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
     IncludeList list = java_class->typeEntry()->extraIncludes();
     qSort(list.begin(), list.end(), include_less_than);
     foreach (const Include &inc, list) {
-        if (inc.type == Include::JavaImport)
+        if (inc.type == Include::TargetLangImport)
             continue;
 
         s << "#include ";

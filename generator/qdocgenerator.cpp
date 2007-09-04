@@ -117,7 +117,7 @@ void QDocGenerator::writeOverload(QTextStream &s,
                                   const AbstractMetaFunction *java_function,
                                   int arg_count)
 {
-    if (java_function->isModifiedRemoved(TypeSystem::JavaCode))
+    if (java_function->isModifiedRemoved(TypeSystem::TargetLangCode))
         return;
 
     uint included_attributes = NoBlockedSlot;
@@ -218,7 +218,7 @@ void QDocGenerator::write(QTextStream &s, const AbstractMetaEnum *java_enum)
       << "      cpp=\"" << protect(java_enum->name().toUtf8()) << "\"" << endl;
 
     if (java_enum->typeEntry()->flags()) {
-        s << "      flags=\"" << protect(java_enum->typeEntry()->flags()->javaName().toUtf8())
+        s << "      flags=\"" << protect(java_enum->typeEntry()->flags()->targetLangName().toUtf8())
           << "\"" << endl;
     }
 
@@ -233,7 +233,7 @@ void QDocGenerator::write(QTextStream &s, const AbstractMetaEnum *java_enum)
 void QDocGenerator::writeSignal(QTextStream &s, const AbstractMetaFunction *java_function)
 {
     s << "<signal java=\""
-      << protect(java_function->javaSignature().toUtf8()) << "\" cpp=\""
+      << protect(java_function->targetLangSignature().toUtf8()) << "\" cpp=\""
       << protect(java_function->signature().toUtf8()) << "\"/>" << endl;
 }
 
@@ -289,7 +289,7 @@ void QDocGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
         writeSignal(s, f);
 
     // Write functions
-    AbstractMetaFunctionList functions = java_class->functionsInJava();
+    AbstractMetaFunctionList functions = java_class->functionsInTargetLang();
     foreach (AbstractMetaFunction *f, functions) {
         write(s, f);
     }

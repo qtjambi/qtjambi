@@ -201,7 +201,7 @@ void dumpMetaJavaAttributes(const AbstractMetaAttributes *attr)
 {
     if (attr->isNative()) printf(" native");
     if (attr->isAbstract()) printf(" abstract");
-    if (attr->isFinalInJava()) printf(" final(java)");
+    if (attr->isFinalInTargetLang()) printf(" final(java)");
     if (attr->isFinalInCpp()) printf(" final(cpp)");
     if (attr->isStatic()) printf(" static");
     if (attr->isPrivate()) printf(" private");
@@ -220,13 +220,13 @@ void dumpMetaJavaType(const AbstractMetaType *type)
         int indirections = type->indirections();
         if (indirections) printf(" %s", qPrintable(QString(indirections, '*')));
 
-        printf(", %s", qPrintable(type->typeEntry()->qualifiedJavaName()));
+        printf(", %s", qPrintable(type->typeEntry()->qualifiedTargetLangName()));
 
         if (type->isPrimitive()) printf(" primitive");
         if (type->isEnum()) printf(" enum");
         if (type->isQObject()) printf(" q_obj");
         if (type->isNativePointer()) printf(" n_ptr");
-        if (type->isJavaString()) printf(" java_string");
+        if (type->isTargetLangString()) printf(" java_string");
         if (type->isConstant()) printf(" const");
         printf("]");
     }

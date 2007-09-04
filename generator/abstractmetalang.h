@@ -66,7 +66,7 @@ public:
         Abstract                    = 0x00000020,
         Static                      = 0x00000040,
 
-        FinalInJava                 = 0x00000080,
+        FinalInTargetLang           = 0x00000080,
         FinalInCpp                  = 0x00000100,
         ForceShellImplementation    = 0x00000200,
 
@@ -80,7 +80,7 @@ public:
         PropertyWriter              = 0x00008000,
         PropertyResetter            = 0x00010000,
 
-        Final                       = FinalInJava | FinalInCpp
+        Final                       = FinalInTargetLang | FinalInCpp
     };
 
     uint attributes() const { return m_attributes; }
@@ -97,7 +97,7 @@ public:
 
     bool isNative() const { return m_attributes & Native; }
     bool isFinal() const { return (m_attributes & Final) == Final; }
-    bool isFinalInJava() const { return m_attributes & FinalInJava; }
+    bool isFinalInTargetLang() const { return m_attributes & FinalInTargetLang; }
     bool isFinalInCpp() const { return m_attributes & FinalInCpp; }
     bool isAbstract() const { return m_attributes & Abstract; }
     bool isStatic() const { return m_attributes & Static; }
@@ -159,8 +159,8 @@ public:
     }
 
     QString package() const { return m_type_entry->javaPackage(); }
-    QString name() const { return m_type_entry->javaName(); }
-    QString fullName() const { return m_type_entry->qualifiedJavaName(); }
+    QString name() const { return m_type_entry->targetLangName(); }
+    QString fullName() const { return m_type_entry->qualifiedTargetLangName(); }
 
     void setTypeUsagePattern(TypeUsagePattern pattern) { m_pattern = pattern; }
     TypeUsagePattern typeUsagePattern() const { return m_pattern; }
@@ -200,10 +200,10 @@ public:
     bool isNativePointer() const { return m_pattern == NativePointerPattern; }
 
     // returns true if the type was originally a QString or const QString & or equivalent for QLatin1String
-    bool isJavaString() const { return m_pattern == StringPattern; }
+    bool isTargetLangString() const { return m_pattern == StringPattern; }
 
     // returns true if the type was originally a QChar or const QChar &
-    bool isJavaChar() const { return m_pattern == CharPattern; }
+    bool isTargetLangChar() const { return m_pattern == CharPattern; }
 
     // return true if the type was originally a QVariant or const QVariant &
     bool isVariant() const { return m_pattern == VariantPattern; }
@@ -224,13 +224,13 @@ public:
     void setReference(bool ref) { m_reference = ref; }
 
     // Returns true if the type is to be implemented using Java enums, e.g. not plain ints.
-    bool isJavaEnum() const { return isEnum() && !((EnumTypeEntry *) typeEntry())->forceInteger(); }
-    bool isIntegerEnum() const { return isEnum() && !isJavaEnum(); }
+    bool isTargetLangEnum() const { return isEnum() && !((EnumTypeEntry *) typeEntry())->forceInteger(); }
+    bool isIntegerEnum() const { return isEnum() && !isTargetLangEnum(); }
 
     // Returns true if the type is to be implemented using Java QFlags, e.g. not plain ints.
-    bool isJavaFlags() const {
+    bool isTargetLangFlags() const {
         return isFlags() && !((FlagsTypeEntry *) typeEntry())->forceInteger(); }
-    bool isIntegerFlags() const { return isFlags() && !isJavaFlags(); }
+    bool isIntegerFlags() const { return isFlags() && !isTargetLangFlags(); }
 
     int actualIndirections() const { return m_indirections + (isReference() ? 1 : 0); }
     int indirections() const { return m_indirections; }
@@ -447,7 +447,7 @@ public:
     void setFunctionType(FunctionType type) { m_function_type = type; }
 
     QString signature() const;
-    QString javaSignature(bool minimal = false) const;
+    QString targetLangSignature(bool minimal = false) const;
 
     bool isConstant() const { return m_constant; }
     void setConstant(bool constant) { m_constant = constant; }
@@ -554,7 +554,7 @@ public:
     AbstractMetaEnumValueList values() const { return m_enum_values; }
     void addEnumValue(AbstractMetaEnumValue *enumValue) { m_enum_values << enumValue; }
 
-    QString name() const { return m_type_entry->javaName(); }
+    QString name() const { return m_type_entry->targetLangName(); }
     QString qualifier() const { return m_type_entry->javaQualifier(); }
     QString package() const { return m_type_entry->javaPackage(); }
     QString fullName() const { return package() + "." + qualifier()  + "." + name(); }
@@ -579,11 +579,11 @@ public:
     enum FunctionQueryOption {
         Constructors            = 0x000001,   // Only constructors
         //Destructors             = 0x000002,   // Only destructors. Not included in class.
-        VirtualFunctions        = 0x000004,   // Only virtual functions (virtual in both Java and C++)
-        FinalInJavaFunctions    = 0x000008,   // Only functions that are non-virtual in Java
+        VirtualFunctions        = 0x000004,   // Only virtual functions (virtual in both TargetLang and C++)
+        FinalInTargetLangFunctions    = 0x000008,   // Only functions that are non-virtual in TargetLang
         FinalInCppFunctions     = 0x000010,   // Only functions that are non-virtual in C++
         ClassImplements         = 0x000020,   // Only functions implemented by the current class
-        Inconsistent            = 0x000040,   // Only inconsistent functions (inconsistent virtualness in Java/C++)
+        Inconsistent            = 0x000040,   // Only inconsistent functions (inconsistent virtualness in TargetLang/C++)
         StaticFunctions         = 0x000080,   // Only static functions
         Signals                 = 0x000100,   // Only signals
         NormalFunctions         = 0x000200,   // Only functions that aren't signals
@@ -596,10 +596,10 @@ public:
         Invisible               = 0x010000,   // Only private functions
         VirtualInCppFunctions   = 0x020000,   // Only functions that are virtual in C++
         NonEmptyFunctions       = 0x040000,   // Only functions with JNI implementations
-        VirtualInJavaFunctions  = 0x080000,   // Only functions which are virtual in Java
+        VirtualInTargetLangFunctions  = 0x080000,   // Only functions which are virtual in TargetLang
         AbstractFunctions       = 0x100000,   // Only abstract functions
         WasVisible              = 0x200000,   // Only functions that were public or protected in the original code
-        NotRemovedFromJava      = 0x400000,   // Only functions that have not been removed from Java
+        NotRemovedFromTargetLang      = 0x400000,   // Only functions that have not been removed from TargetLang
         NotRemovedFromShell     = 0x800000    // Only functions that have not been removed from the shell class
     };
 
@@ -647,7 +647,7 @@ public:
     AbstractMetaFunctionList queryFunctions(uint query) const;
     inline AbstractMetaFunctionList allVirtualFunctions() const;
     inline AbstractMetaFunctionList allFinalFunctions() const;
-    AbstractMetaFunctionList functionsInJava() const;
+    AbstractMetaFunctionList functionsInTargetLang() const;
     AbstractMetaFunctionList functionsInShellClass() const;
     inline AbstractMetaFunctionList cppInconsistentFunctions() const;
     inline AbstractMetaFunctionList cppSignalFunctions() const;
@@ -664,7 +664,7 @@ public:
 
     AbstractMetaEnum *findEnum(const QString &enumName);
     AbstractMetaEnum *findEnumForValue(const QString &enumName);
-    AbstractMetaEnumValue *findEnumValue(const QString &enumName, AbstractMetaEnum *java_enum);
+    AbstractMetaEnumValue *findEnumValue(const QString &enumName, AbstractMetaEnum *meta_enum);
 
     AbstractMetaClassList interfaces() const { return m_interfaces; }
     void addInterface(AbstractMetaClass *interface);
@@ -820,14 +820,14 @@ private:
 inline AbstractMetaFunctionList AbstractMetaClass::allVirtualFunctions() const
 {
     return queryFunctions(VirtualFunctions
-                          | NotRemovedFromJava);
+                          | NotRemovedFromTargetLang);
 }
 
 inline AbstractMetaFunctionList AbstractMetaClass::allFinalFunctions() const
 {
-    return queryFunctions(FinalInJavaFunctions
+    return queryFunctions(FinalInTargetLangFunctions
                           | FinalInCppFunctions
-                          | NotRemovedFromJava);
+                          | NotRemovedFromTargetLang);
 }
 
 inline AbstractMetaFunctionList AbstractMetaClass::cppInconsistentFunctions() const
@@ -835,14 +835,14 @@ inline AbstractMetaFunctionList AbstractMetaClass::cppInconsistentFunctions() co
     return queryFunctions(Inconsistent
                           | NormalFunctions
                           | Visible
-                          | NotRemovedFromJava);
+                          | NotRemovedFromTargetLang);
 }
 
 inline AbstractMetaFunctionList AbstractMetaClass::cppSignalFunctions() const
 {
     return queryFunctions(Signals
                           | Visible
-                          | NotRemovedFromJava);
+                          | NotRemovedFromTargetLang);
 }
 
-#endif // METAJAVA_H
+#endif // ABSTRACTMETALANG_H

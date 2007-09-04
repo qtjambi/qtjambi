@@ -135,7 +135,7 @@ void AbstractMetaBuilder::checkFunctionModifications()
             QString name = signature.trimmed();
             name = name.mid(0, signature.indexOf("("));
 
-            AbstractMetaClass *clazz = m_java_classes.findClass(centry->qualifiedCppName());
+            AbstractMetaClass *clazz = m_meta_classes.findClass(centry->qualifiedCppName());
             if (clazz == 0)
                 continue;
 
@@ -172,7 +172,7 @@ AbstractMetaClass *AbstractMetaBuilder::argumentToClass(ArgumentModelItem argume
     AbstractMetaType *type = translateType(argument->type(), &ok);
     if (ok && type != 0 && type->typeEntry() != 0 && type->typeEntry()->isComplex()) {
         const TypeEntry *entry = type->typeEntry();
-        returned = m_java_classes.findClass(entry->name());
+        returned = m_meta_classes.findClass(entry->name());
     }
     delete type;
     return returned;
@@ -199,21 +199,21 @@ void AbstractMetaBuilder::traverseCompareOperator(FunctionModelItem item) {
             AbstractMetaClass *old_current_class = m_current_class;
             m_current_class = comparer_class;
 
-            AbstractMetaFunction *java_function = traverseFunction(item);
-            if (java_function != 0 && !java_function->isInvalid()) {
+            AbstractMetaFunction *meta_function = traverseFunction(item);
+            if (meta_function != 0 && !meta_function->isInvalid()) {
                 // Strip away first argument, since that is the containing object
-                AbstractMetaArgumentList arguments = java_function->arguments();
+                AbstractMetaArgumentList arguments = meta_function->arguments();
                 arguments.pop_front();
-                java_function->setArguments(arguments);
+                meta_function->setArguments(arguments);
 
-                java_function->setFunctionType(AbstractMetaFunction::GlobalScopeFunction);
+                meta_function->setFunctionType(AbstractMetaFunction::GlobalScopeFunction);
 
-                java_function->setOriginalAttributes(java_function->attributes());
-                setupFunctionDefaults(java_function, comparer_class);
+                meta_function->setOriginalAttributes(meta_function->attributes());
+                setupFunctionDefaults(meta_function, comparer_class);
 
-                comparer_class->addFunction(java_function);
-            } else if (java_function != 0) {
-                delete java_function;
+                comparer_class->addFunction(meta_function);
+            } else if (meta_function != 0) {
+                delete meta_function;
             }
 
             m_current_class = old_current_class;
@@ -292,8 +292,8 @@ static bool class_less_than(AbstractMetaClass *a, AbstractMetaClass *b)
 
 void AbstractMetaBuilder::sortLists() 
 {
-   qSort(m_java_classes.begin(), m_java_classes.end(), class_less_than);
-   foreach (AbstractMetaClass *cls, m_java_classes) {
+   qSort(m_meta_classes.begin(), m_meta_classes.end(), class_less_than);
+   foreach (AbstractMetaClass *cls, m_meta_classes) {
         cls->sortFunctions();
    }
 }
@@ -339,19 +339,19 @@ bool AbstractMetaBuilder::build()
 
     QHash<QString, NamespaceModelItem> namespaceMap = m_dom->namespaceMap();
     foreach (NamespaceModelItem item, namespaceMap.values()) {
-        AbstractMetaClass *java_class = traverseNamespace(item);
-        if (java_class)
-            m_java_classes << java_class;
+        AbstractMetaClass *meta_class = traverseNamespace(item);
+        if (meta_class)
+            m_meta_classes << meta_class;
     }
 
-    foreach (AbstractMetaClass *cls, m_java_classes) {
+    foreach (AbstractMetaClass *cls, m_meta_classes) {
         if (!cls->isInterface() && !cls->isNamespace()) {
             setupInheritance(cls);
         }
     }
 
 
-    foreach (AbstractMetaClass *cls, m_java_classes) {
+    foreach (AbstractMetaClass *cls, m_meta_classes) {
         cls->fixFunctions();
 
         if (cls->typeEntry() == 0) {
@@ -363,7 +363,7 @@ bool AbstractMetaBuilder::build()
         }
 
         if (cls->isAbstract() && !cls->isInterface()) {
-            cls->typeEntry()->setLookupName(cls->typeEntry()->javaName() + "$ConcreteWrapper");
+            cls->typeEntry()->setLookupName(cls->typeEntry()->targetLangName() + "$ConcreteWrapper");
         }
     }
 
@@ -371,11 +371,11 @@ bool AbstractMetaBuilder::build()
         if (entry->isPrimitive())
             continue;
 
-        QString name = entry->qualifiedJavaName();
+        QString name = entry->qualifiedTargetLangName();
 
         if (!entry->codeGeneration() == TypeEntry::GenerateNothing
             && (entry->isValue() || entry->isObject())
-            && !m_java_classes.findClass(name))
+            && !m_meta_classes.findClass(name))
             ReportHandler::warning(QString("type '%1' is specified in typesystem, but not declared")
                                    .arg(name));
 
@@ -383,13 +383,13 @@ bool AbstractMetaBuilder::build()
             QString pkg = entry->javaPackage();
             QString name = (pkg.isEmpty() ? QString() : pkg + ".")
                            + ((EnumTypeEntry *) entry)->javaQualifier();
-            AbstractMetaClass *cls = m_java_classes.findClass(name);
+            AbstractMetaClass *cls = m_meta_classes.findClass(name);
 
             if (!cls) {
                 ReportHandler::warning(QString("namespace '%1' for enum '%2' is not declared")
-                                       .arg(name).arg(entry->javaName()));
+                                       .arg(name).arg(entry->targetLangName()));
             } else {
-                AbstractMetaEnum *e = cls->findEnum(entry->javaName());
+                AbstractMetaEnum *e = cls->findEnum(entry->targetLangName());
                 if (!e)
                     ReportHandler::warning(QString("enum '%1' is specified in typesystem, "
                                                    "but not declared")
@@ -427,7 +427,7 @@ bool AbstractMetaBuilder::build()
     figureOutDefaultEnumArguments();
     checkFunctionModifications();
 
-    foreach (AbstractMetaClass *cls, m_java_classes) {
+    foreach (AbstractMetaClass *cls, m_meta_classes) {
         setupEquals(cls);
         setupComparable(cls);
     }
@@ -449,10 +449,10 @@ void AbstractMetaBuilder::addAbstractMetaClass(AbstractMetaClass *cls)
     if (cls->typeEntry()->isContainer()) {
         m_templates << cls;
     } else {
-        m_java_classes << cls;
+        m_meta_classes << cls;
         if (cls->typeEntry()->designatedInterface()) {
             AbstractMetaClass *interface = cls->extractInterface();
-            m_java_classes << interface;
+            m_meta_classes << interface;
             ReportHandler::debugSparse(QString(" -> interface '%1'").arg(interface->name()));
         }
     }
@@ -476,19 +476,19 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
         return 0;
     }
 
-    AbstractMetaClass *java_class = createMetaClass();
-    java_class->setTypeEntry(type);
+    AbstractMetaClass *meta_class = createMetaClass();
+    meta_class->setTypeEntry(type);
 
-    *java_class += AbstractMetaAttributes::Public;
+    *meta_class += AbstractMetaAttributes::Public;
 
-    m_current_class = java_class;
+    m_current_class = meta_class;
 
     ReportHandler::debugSparse(QString("namespace '%1.%2'")
-                               .arg(java_class->package())
+                               .arg(meta_class->package())
                                .arg(namespace_item->name()));
 
-    traverseEnums(model_dynamic_cast<ScopeModelItem>(namespace_item), java_class);
-    // traverseFunctions(model_dynamic_cast<ScopeModelItem>(namespace_item), java_class);
+    traverseEnums(model_dynamic_cast<ScopeModelItem>(namespace_item), meta_class);
+    // traverseFunctions(model_dynamic_cast<ScopeModelItem>(namespace_item), meta_class);
 //     traverseClasses(model_dynamic_cast<ScopeModelItem>(namespace_item));
 
     pushScope(model_dynamic_cast<ScopeModelItem>(namespace_item));
@@ -506,7 +506,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
     popScope();
     m_namespace_prefix = currentScope()->qualifiedName().join("::");
 
-    return java_class;
+    return meta_class;
 }
 
 struct Operator
@@ -557,8 +557,8 @@ Operator findOperator(QString *s) {
 
 int AbstractMetaBuilder::figureOutEnumValue(const QString &stringValue,
                                         int oldValuevalue,
-                                        AbstractMetaEnum *java_enum,
-                                        AbstractMetaFunction *java_function)
+                                        AbstractMetaEnum *meta_enum,
+                                        AbstractMetaFunction *meta_function)
 {
     if (stringValue.isEmpty())
         return oldValuevalue;
@@ -592,18 +592,18 @@ int AbstractMetaBuilder::figureOutEnumValue(const QString &stringValue,
         } else {
             AbstractMetaEnumValue *ev = 0;
 
-            if (java_enum && (ev = java_enum->values().find(s))) {
+            if (meta_enum && (ev = meta_enum->values().find(s))) {
                 v = ev->value();
                 matched = true;
 
-            } else if (java_enum && (ev = java_enum->enclosingClass()->findEnumValue(s, java_enum))) {
+            } else if (meta_enum && (ev = meta_enum->enclosingClass()->findEnumValue(s, meta_enum))) {
                 v = ev->value();
                 matched = true;
 
             } else {
                 ReportHandler::warning("unhandled enum value: " + s + " in "
-                                       + java_enum->enclosingClass()->name() + "::"
-                                       + java_enum->name());
+                                       + meta_enum->enclosingClass()->name() + "::"
+                                       + meta_enum->name());
             }
         }
 
@@ -614,10 +614,10 @@ int AbstractMetaBuilder::figureOutEnumValue(const QString &stringValue,
     if (!matched) {
         QString warn = QString("unmatched enum %1").arg(stringValue);
 
-        if (java_function != 0) {
+        if (meta_function != 0) {
             warn += QString(" when parsing default value of '%1' in class '%2'")
-                .arg(java_function->name())
-                .arg(java_function->implementingClass()->name());
+                .arg(meta_function->name())
+                .arg(meta_function->implementingClass()->name());
         }
 
         ReportHandler::warning(warn);
@@ -627,21 +627,21 @@ int AbstractMetaBuilder::figureOutEnumValue(const QString &stringValue,
     return returnValue;
 }
 
-void AbstractMetaBuilder::figureOutEnumValuesForClass(AbstractMetaClass *java_class,
+void AbstractMetaBuilder::figureOutEnumValuesForClass(AbstractMetaClass *meta_class,
                                                   QSet<AbstractMetaClass *> *classes)
 {
-    AbstractMetaClass *base = java_class->baseClass();
+    AbstractMetaClass *base = meta_class->baseClass();
 
     if (base != 0 && !classes->contains(base))
         figureOutEnumValuesForClass(base, classes);
 
-    if (classes->contains(java_class))
+    if (classes->contains(meta_class))
         return;
 
-    AbstractMetaEnumList enums = java_class->enums();
+    AbstractMetaEnumList enums = meta_class->enums();
     foreach (AbstractMetaEnum *e, enums) {
         if (!e)
-            ReportHandler::warning("bad enum in class " + java_class->name());
+            ReportHandler::warning("bad enum in class " + meta_class->name());
         AbstractMetaEnumValueList lst = e->values();
         int value = 0;
         for (int i=0; i<lst.size(); ++i) {
@@ -664,7 +664,7 @@ void AbstractMetaBuilder::figureOutEnumValuesForClass(AbstractMetaClass *java_cl
                     if (!currentRejected && !vRejected) {
                         ReportHandler::warning(
                             QString("duplicate enum values: %1::%2, %3 and %4 are %5")
-                            .arg(java_class->name())
+                            .arg(meta_class->name())
                             .arg(e->name())
                             .arg(v->name())
                             .arg(entries[v->value()]->name())
@@ -687,7 +687,7 @@ void AbstractMetaBuilder::figureOutEnumValuesForClass(AbstractMetaClass *java_cl
                 if (!used) {
                     ReportHandler::warning(
                         QString::fromLatin1("Rejected enum has no alternative...: %1::%2\n")
-                        .arg(java_class->name())
+                        .arg(meta_class->name())
                         .arg(reject->name()));
                     continue;
                 }
@@ -699,7 +699,7 @@ void AbstractMetaBuilder::figureOutEnumValuesForClass(AbstractMetaClass *java_cl
 
 
 
-    *classes += java_class;
+    *classes += meta_class;
 }
 
 
@@ -708,22 +708,22 @@ void AbstractMetaBuilder::figureOutEnumValues()
     // Keep a set of classes that we already traversed. We use this to
     // enforce that we traverse base classes prior to subclasses.
     QSet<AbstractMetaClass *> classes;
-    foreach (AbstractMetaClass *c, m_java_classes) {
+    foreach (AbstractMetaClass *c, m_meta_classes) {
         figureOutEnumValuesForClass(c, &classes);
     }
 }
 
 void AbstractMetaBuilder::figureOutDefaultEnumArguments()
 {
-    foreach (AbstractMetaClass *java_class, m_java_classes) {
-        foreach (AbstractMetaFunction *java_function, java_class->functions()) {
-            foreach (AbstractMetaArgument *arg, java_function->arguments()) {
+    foreach (AbstractMetaClass *meta_class, m_meta_classes) {
+        foreach (AbstractMetaFunction *meta_function, meta_class->functions()) {
+            foreach (AbstractMetaArgument *arg, meta_function->arguments()) {
 
                 QString expr = arg->defaultValueExpression();
                 if (expr.isEmpty())
                     continue;
 
-                if (!java_function->replacedDefaultExpression(java_function->implementingClass(),
+                if (!meta_function->replacedDefaultExpression(meta_function->implementingClass(),
                     arg->argumentIndex()+1).isEmpty()) {
                     continue;
                 }
@@ -732,18 +732,18 @@ void AbstractMetaBuilder::figureOutDefaultEnumArguments()
                 if (arg->type()->isEnum()) {
                     QStringList lst = expr.split(QLatin1String("::"));
                     if (lst.size() == 1) {
-                        AbstractMetaEnum *e = java_class->findEnumForValue(expr);
+                        AbstractMetaEnum *e = meta_class->findEnumForValue(expr);
                         new_expr = QString("%1.%2")
-                                   .arg(e->typeEntry()->qualifiedJavaName())
+                                   .arg(e->typeEntry()->qualifiedTargetLangName())
                                    .arg(expr);
                     } else if (lst.size() == 2) {
-                        AbstractMetaClass *cl = m_java_classes.findClass(lst.at(0));
+                        AbstractMetaClass *cl = m_meta_classes.findClass(lst.at(0));
                         if (!cl) {
                             ReportHandler::warning("missing required class for enums: " + lst.at(0));
                             continue;
                         }
                         new_expr = QString("%1.%2.%3")
-                                   .arg(cl->typeEntry()->qualifiedJavaName())
+                                   .arg(cl->typeEntry()->qualifiedTargetLangName())
                                    .arg(arg->type()->name())
                                    .arg(lst.at(1));
                     } else {
@@ -754,21 +754,21 @@ void AbstractMetaBuilder::figureOutDefaultEnumArguments()
                     const FlagsTypeEntry *flagsEntry =
                         static_cast<const FlagsTypeEntry *>(arg->type()->typeEntry());
                     EnumTypeEntry *enumEntry = flagsEntry->originator();
-                    AbstractMetaEnum *java_enum = m_java_classes.findEnum(enumEntry);
-                    if (!java_enum) {
+                    AbstractMetaEnum *meta_enum = m_meta_classes.findEnum(enumEntry);
+                    if (!meta_enum) {
                         ReportHandler::warning("unknown required enum " + enumEntry->qualifiedCppName());
                         continue;
                     }
 
-                    int value = figureOutEnumValue(expr, 0, java_enum, java_function);
+                    int value = figureOutEnumValue(expr, 0, meta_enum, meta_function);
                     new_expr = QString::number(value);
 
                 } else if (arg->type()->isPrimitive()) {
                     AbstractMetaEnumValue *value = 0;
                     if (expr.contains("::"))
-                        value = m_java_classes.findEnumValue(expr);
+                        value = m_meta_classes.findEnumValue(expr);
                     if (!value)
-                        value = java_class->findEnumValue(expr, 0);
+                        value = meta_class->findEnumValue(expr, 0);
 
                     if (value) {
                         new_expr = QString::number(value->value());
@@ -814,38 +814,38 @@ AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, Abs
         return 0;
     }
 
-    AbstractMetaEnum *java_enum = createMetaEnum();
+    AbstractMetaEnum *meta_enum = createMetaEnum();
 
-    java_enum->setTypeEntry((EnumTypeEntry *) type_entry);
+    meta_enum->setTypeEntry((EnumTypeEntry *) type_entry);
     switch (enum_item->accessPolicy()) {
-    case CodeModel::Public: *java_enum += AbstractMetaAttributes::Public; break;
-    case CodeModel::Protected: *java_enum += AbstractMetaAttributes::Protected; break;
-//     case CodeModel::Private: *java_enum += AbstractMetaAttributes::Private; break;
+    case CodeModel::Public: *meta_enum += AbstractMetaAttributes::Public; break;
+    case CodeModel::Protected: *meta_enum += AbstractMetaAttributes::Protected; break;
+//     case CodeModel::Private: *meta_enum += AbstractMetaAttributes::Private; break;
     default: break;
     }
 
-    ReportHandler::debugMedium(QString(" - traversing enum %1").arg(java_enum->fullName()));
+    ReportHandler::debugMedium(QString(" - traversing enum %1").arg(meta_enum->fullName()));
 
     foreach (EnumeratorModelItem value, enum_item->enumerators()) {
 
-        AbstractMetaEnumValue *java_enum_value = createMetaEnumValue();
-        java_enum_value->setName(value->name());
+        AbstractMetaEnumValue *meta_enum_value = createMetaEnumValue();
+        meta_enum_value->setName(value->name());
         // Deciding the enum value...
 
-        java_enum_value->setStringValue(value->value());
-        java_enum->addEnumValue(java_enum_value);
+        meta_enum_value->setStringValue(value->value());
+        meta_enum->addEnumValue(meta_enum_value);
 
-        ReportHandler::debugFull("   - " + java_enum_value->name() + " = "
-                                 + java_enum_value->value());
+        ReportHandler::debugFull("   - " + meta_enum_value->name() + " = "
+                                 + meta_enum_value->value());
 
         // Add into global register...
-        QString key = enclosing->name() + "::" + java_enum_value->name();
-        m_enum_values[key] = java_enum_value;
+        QString key = enclosing->name() + "::" + meta_enum_value->name();
+        m_enum_values[key] = meta_enum_value;
     }
 
-    m_enums << java_enum;
+    m_enums << meta_enum;
 
-    return java_enum;
+    return meta_enum;
 }
 
 AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
@@ -883,18 +883,18 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
         ((ObjectTypeEntry *)type)->setQObject(isQObject(full_class_name));
     }
 
-    AbstractMetaClass *java_class = createMetaClass();
-    java_class->setTypeEntry(type);
-    java_class->setBaseClassNames(class_item->baseClasses());
-    *java_class += AbstractMetaAttributes::Public;
+    AbstractMetaClass *meta_class = createMetaClass();
+    meta_class->setTypeEntry(type);
+    meta_class->setBaseClassNames(class_item->baseClasses());
+    *meta_class += AbstractMetaAttributes::Public;
 
     AbstractMetaClass *old_current_class = m_current_class;
-    m_current_class = java_class;
+    m_current_class = meta_class;
 
     if (type->isContainer()) {
         ReportHandler::debugSparse(QString("container: '%1'").arg(full_class_name));
     } else {
-        ReportHandler::debugSparse(QString("class: '%1'").arg(java_class->fullName()));
+        ReportHandler::debugSparse(QString("class: '%1'").arg(meta_class->fullName()));
     }
 
 
@@ -907,11 +907,11 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
         m_template_args.append(param_type);
     }
 
-    parseQ_Property(java_class, class_item->propertyDeclarations());
+    parseQ_Property(meta_class, class_item->propertyDeclarations());
 
-    traverseFunctions(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
-    traverseEnums(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
-    traverseFields(model_dynamic_cast<ScopeModelItem>(class_item), java_class);
+    traverseFunctions(model_dynamic_cast<ScopeModelItem>(class_item), meta_class);
+    traverseEnums(model_dynamic_cast<ScopeModelItem>(class_item), meta_class);
+    traverseFields(model_dynamic_cast<ScopeModelItem>(class_item), meta_class);
 
     // Inner classes
     {
@@ -919,8 +919,8 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
         foreach (const ClassModelItem &ci, inner_classes) {
             AbstractMetaClass *cl = traverseClass(ci);
             if (cl) {
-                cl->setEnclosingClass(java_class);
-                m_java_classes << cl;
+                cl->setEnclosingClass(meta_class);
+                m_meta_classes << cl;
             }
         }
 
@@ -936,7 +936,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
         type->setInclude(Include(Include::IncludePath, info.fileName()));
     }
 
-    return java_class;
+    return meta_class;
 }
 
 AbstractMetaField *AbstractMetaBuilder::traverseField(VariableModelItem field, const AbstractMetaClass *cls)
@@ -957,24 +957,24 @@ AbstractMetaField *AbstractMetaBuilder::traverseField(VariableModelItem field, c
     }
 
 
-    AbstractMetaField *java_field = createMetaField();
-    java_field->setName(field_name);
-    java_field->setEnclosingClass(cls);
+    AbstractMetaField *meta_field = createMetaField();
+    meta_field->setName(field_name);
+    meta_field->setEnclosingClass(cls);
 
     bool ok;
     TypeInfo field_type = field->type();
-    AbstractMetaType *java_type = translateType(field_type, &ok);
+    AbstractMetaType *meta_type = translateType(field_type, &ok);
 
-    if (!java_type || !ok) {
+    if (!meta_type || !ok) {
         ReportHandler::warning(QString("skipping field '%1::%2' with unmatched type '%3'")
                                .arg(m_current_class->name())
                                .arg(field_name)
                                .arg(TypeInfo::resolveType(field_type, currentScope()->toItem()).qualifiedName().join("::")));
-        delete java_field;
+        delete meta_field;
         return 0;
     }
 
-    java_field->setType(java_type);
+    meta_field->setType(meta_type);
 
     uint attr = 0;
     if (field->isStatic())
@@ -987,138 +987,138 @@ AbstractMetaField *AbstractMetaBuilder::traverseField(VariableModelItem field, c
         attr |= AbstractMetaAttributes::Protected;
     else
         attr |= AbstractMetaAttributes::Private;
-    java_field->setAttributes(attr);
+    meta_field->setAttributes(attr);
 
-    return java_field;
+    return meta_field;
 }
 
-void AbstractMetaBuilder::traverseFields(ScopeModelItem scope_item, AbstractMetaClass *java_class)
+void AbstractMetaBuilder::traverseFields(ScopeModelItem scope_item, AbstractMetaClass *meta_class)
 {
     foreach (VariableModelItem field, scope_item->variables()) {
-        AbstractMetaField *java_field = traverseField(field, java_class);
+        AbstractMetaField *meta_field = traverseField(field, meta_class);
 
-        if (java_field) {
-            java_field->setOriginalAttributes(java_field->attributes());
-            java_class->addField(java_field);
+        if (meta_field) {
+            meta_field->setOriginalAttributes(meta_field->attributes());
+            meta_class->addField(meta_field);
         }
     }
 }
 
-void AbstractMetaBuilder::setupFunctionDefaults(AbstractMetaFunction *java_function, AbstractMetaClass *java_class)
+void AbstractMetaBuilder::setupFunctionDefaults(AbstractMetaFunction *meta_function, AbstractMetaClass *meta_class)
 {
     // Set the default value of the declaring class. This may be changed
     // in fixFunctions later on
-    java_function->setDeclaringClass(java_class);
+    meta_function->setDeclaringClass(meta_class);
 
     // Some of the queries below depend on the implementing class being set
     // to function properly. Such as function modifications
-    java_function->setImplementingClass(java_class);
+    meta_function->setImplementingClass(meta_class);
 
-    if (java_function->name() == "operator_equal")
-        java_class->setHasEqualsOperator(true);
+    if (meta_function->name() == "operator_equal")
+        meta_class->setHasEqualsOperator(true);
 
-    if (!java_function->isFinalInJava()
-        && java_function->isRemovedFrom(java_class, TypeSystem::JavaCode)) {
-        *java_function += AbstractMetaAttributes::FinalInCpp;
+    if (!meta_function->isFinalInTargetLang()
+        && meta_function->isRemovedFrom(meta_class, TypeSystem::TargetLangCode)) {
+        *meta_function += AbstractMetaAttributes::FinalInCpp;
     }
 }
 
-void AbstractMetaBuilder::traverseFunctions(ScopeModelItem scope_item, AbstractMetaClass *java_class)
+void AbstractMetaBuilder::traverseFunctions(ScopeModelItem scope_item, AbstractMetaClass *meta_class)
 {
     foreach (FunctionModelItem function, scope_item->functions()) {
-        AbstractMetaFunction *java_function = traverseFunction(function);
+        AbstractMetaFunction *meta_function = traverseFunction(function);
 
-        if (java_function) {
+        if (meta_function) {
 
-            java_function->setOriginalAttributes(java_function->attributes());
+            meta_function->setOriginalAttributes(meta_function->attributes());
 
-            if (QPropertySpec *read = java_class->propertySpecForRead(java_function->name())) {
-                if (read->type() == java_function->type()->typeEntry()) {
-                    *java_function += AbstractMetaAttributes::PropertyReader;
-                    java_function->setPropertySpec(read);
+            if (QPropertySpec *read = meta_class->propertySpecForRead(meta_function->name())) {
+                if (read->type() == meta_function->type()->typeEntry()) {
+                    *meta_function += AbstractMetaAttributes::PropertyReader;
+                    meta_function->setPropertySpec(read);
 //                     printf("%s is reader for %s\n",
-//                            qPrintable(java_function->name()),
+//                            qPrintable(meta_function->name()),
 //                            qPrintable(read->name()));
                 }
             } else if (QPropertySpec *write =
-                       java_class->propertySpecForWrite(java_function->name())) {
-                if (write->type() == java_function->arguments().at(0)->type()->typeEntry()) {
-                    *java_function += AbstractMetaAttributes::PropertyWriter;
-                    java_function->setPropertySpec(write);
+                       meta_class->propertySpecForWrite(meta_function->name())) {
+                if (write->type() == meta_function->arguments().at(0)->type()->typeEntry()) {
+                    *meta_function += AbstractMetaAttributes::PropertyWriter;
+                    meta_function->setPropertySpec(write);
 //                     printf("%s is writer for %s\n",
-//                            qPrintable(java_function->name()),
+//                            qPrintable(meta_function->name()),
 //                            qPrintable(write->name()));
                 }
             } else if (QPropertySpec *reset =
-                       java_class->propertySpecForReset(java_function->name())) {
-                *java_function += AbstractMetaAttributes::PropertyResetter;
-                java_function->setPropertySpec(reset);
+                       meta_class->propertySpecForReset(meta_function->name())) {
+                *meta_function += AbstractMetaAttributes::PropertyResetter;
+                meta_function->setPropertySpec(reset);
 //                     printf("%s is resetter for %s\n",
-//                            qPrintable(java_function->name()),
+//                            qPrintable(meta_function->name()),
 //                            qPrintable(reset->name()));
             }
 
 
-            bool isInvalidDestructor = java_function->isDestructor() && java_function->isPrivate();
-            bool isInvalidConstructor = java_function->isConstructor()
-                && (java_function->isPrivate() || java_function->isInvalid());
+            bool isInvalidDestructor = meta_function->isDestructor() && meta_function->isPrivate();
+            bool isInvalidConstructor = meta_function->isConstructor()
+                && (meta_function->isPrivate() || meta_function->isInvalid());
             if ((isInvalidDestructor || isInvalidConstructor)
-                && !java_class->hasNonPrivateConstructor()) {
-                *java_class += AbstractMetaAttributes::Final;
-            } else if (java_function->isConstructor() && !java_function->isPrivate()) {
-                *java_class -= AbstractMetaAttributes::Final;
-                java_class->setHasNonPrivateConstructor(true);
+                && !meta_class->hasNonPrivateConstructor()) {
+                *meta_class += AbstractMetaAttributes::Final;
+            } else if (meta_function->isConstructor() && !meta_function->isPrivate()) {
+                *meta_class -= AbstractMetaAttributes::Final;
+                meta_class->setHasNonPrivateConstructor(true);
             }
 
             // Classes with virtual destructors should always have a shell class
             // (since we aren't registering the destructors, we need this extra check)
-            if (java_function->isDestructor() && !java_function->isFinal())
-                java_class->setForceShellClass(true);
+            if (meta_function->isDestructor() && !meta_function->isFinal())
+                meta_class->setForceShellClass(true);
 
-            if (!java_function->isDestructor()
-                && !java_function->isInvalid()
-                && (!java_function->isConstructor() || !java_function->isPrivate())) {
+            if (!meta_function->isDestructor()
+                && !meta_function->isInvalid()
+                && (!meta_function->isConstructor() || !meta_function->isPrivate())) {
 
-                if (java_class->typeEntry()->designatedInterface() && !java_function->isPublic()
-                    && !java_function->isPrivate()) {
+                if (meta_class->typeEntry()->designatedInterface() && !meta_function->isPublic()
+                    && !meta_function->isPrivate()) {
                     QString warn = QString("non-public function '%1' in interface '%2'")
-                        .arg(java_function->name()).arg(java_class->name());
+                        .arg(meta_function->name()).arg(meta_class->name());
                     ReportHandler::warning(warn);
 
-                    java_function->setVisibility(AbstractMetaClass::Public);
+                    meta_function->setVisibility(AbstractMetaClass::Public);
                 }
 
-                setupFunctionDefaults(java_function, java_class);
+                setupFunctionDefaults(meta_function, meta_class);
 
-                if (java_function->isSignal() && java_class->hasSignal(java_function)) {
+                if (meta_function->isSignal() && meta_class->hasSignal(meta_function)) {
                     QString warn = QString("signal '%1' in class '%2' is overloaded.")
-                        .arg(java_function->name()).arg(java_class->name());
+                        .arg(meta_function->name()).arg(meta_class->name());
                     ReportHandler::warning(warn);
                 }
 
-                if (java_function->isSignal() && !java_class->isQObject()) {
+                if (meta_function->isSignal() && !meta_class->isQObject()) {
                     QString warn = QString("signal '%1' in non-QObject class '%2'")
-                        .arg(java_function->name()).arg(java_class->name());
+                        .arg(meta_function->name()).arg(meta_class->name());
                     ReportHandler::warning(warn);
                 }
 
-                java_class->addFunction(java_function);
-            } else if (java_function->isDestructor() && !java_function->isPublic()) {
-                java_class->setHasPublicDestructor(false);
+                meta_class->addFunction(meta_function);
+            } else if (meta_function->isDestructor() && !meta_function->isPublic()) {
+                meta_class->setHasPublicDestructor(false);
             }
         }
     }
 }
 
-bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *java_class)
+bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
 {
-    Q_ASSERT(!java_class->isInterface());
+    Q_ASSERT(!meta_class->isInterface());
 
-    if (m_setup_inheritance_done.contains(java_class))
+    if (m_setup_inheritance_done.contains(meta_class))
         return true;
-    m_setup_inheritance_done.insert(java_class);
+    m_setup_inheritance_done.insert(meta_class);
 
-    QStringList base_classes = java_class->baseClassNames();
+    QStringList base_classes = meta_class->baseClassNames();
 
     TypeDatabase *types = TypeDatabase::instance();
 
@@ -1138,13 +1138,13 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *java_class)
                 }
             }
             if (templ) {
-                inheritTemplate(java_class, templ, info);
+                inheritTemplate(meta_class, templ, info);
                 return true;
             }
 
             ReportHandler::warning(QString("template baseclass '%1' of '%2' is not known")
                                    .arg(base_name)
-                                   .arg(java_class->name()));
+                                   .arg(meta_class->name()));
             return false;
         }
     }
@@ -1159,7 +1159,7 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *java_class)
         TypeEntry *base_class_entry = types->findType(base_classes.at(i));
         if (!base_class_entry) {
             ReportHandler::warning(QString("class '%1' inherits from unknown base class '%2'")
-                                   .arg(java_class->name()).arg(base_classes.at(i)));
+                                   .arg(meta_class->name()).arg(base_classes.at(i)));
         }
 
         // true for primary base class
@@ -1167,7 +1167,7 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *java_class)
             if (primaries > 0) {
                 ReportHandler::warning(QString("class '%1' has multiple primary base classes"
                                                " '%2' and '%3'")
-                                       .arg(java_class->name())
+                                       .arg(meta_class->name())
                                        .arg(base_classes.at(primary))
                                        .arg(base_class_entry->name()));
                 return false;
@@ -1178,14 +1178,14 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *java_class)
     }
 
     if (primary >= 0) {
-        AbstractMetaClass *base_class = m_java_classes.findClass(base_classes.at(primary));
+        AbstractMetaClass *base_class = m_meta_classes.findClass(base_classes.at(primary));
         if (!base_class) {
             ReportHandler::warning(QString("unknown baseclass for '%1': '%2'")
-                                   .arg(java_class->name())
+                                   .arg(meta_class->name())
                                    .arg(base_classes.at(primary)));
             return false;
         }
-        java_class->setBaseClass(base_class);
+        meta_class->setBaseClass(base_class);
     }
 
     for (int i=0; i<base_classes.size(); ++i) {
@@ -1193,7 +1193,7 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *java_class)
             continue;
 
         if (i != primary) {
-            AbstractMetaClass *base_class = m_java_classes.findClass(base_classes.at(i));
+            AbstractMetaClass *base_class = m_meta_classes.findClass(base_classes.at(i));
             if (base_class == 0) {
                 ReportHandler::warning(QString("class not found for setup inheritance '%1'").arg(base_classes.at(i)));
                 return false;
@@ -1202,33 +1202,33 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *java_class)
             setupInheritance(base_class);
 
             QString interface_name = InterfaceTypeEntry::interfaceName(base_classes.at(i));
-            AbstractMetaClass *iface = m_java_classes.findClass(interface_name);
+            AbstractMetaClass *iface = m_meta_classes.findClass(interface_name);
             if (!iface) {
                 ReportHandler::warning(QString("unknown interface for '%1': '%2'")
-                                       .arg(java_class->name())
+                                       .arg(meta_class->name())
                                        .arg(interface_name));
                 return false;
             }
-            java_class->addInterface(iface);
+            meta_class->addInterface(iface);
 
             AbstractMetaClassList interfaces = iface->interfaces();
             foreach (AbstractMetaClass *iface, interfaces)
-                java_class->addInterface(iface);
+                meta_class->addInterface(iface);
         }
     }
 
     return true;
 }
 
-void AbstractMetaBuilder::traverseEnums(ScopeModelItem scope_item, AbstractMetaClass *java_class)
+void AbstractMetaBuilder::traverseEnums(ScopeModelItem scope_item, AbstractMetaClass *meta_class)
 {
     EnumList enums = scope_item->enums();
     foreach (EnumModelItem enum_item, enums) {
-        AbstractMetaEnum *java_enum = traverseEnum(enum_item, java_class);
-        if (java_enum) {
-            java_enum->setOriginalAttributes(java_enum->attributes());
-            java_class->addEnum(java_enum);
-            java_enum->setEnclosingClass(java_class);
+        AbstractMetaEnum *meta_enum = traverseEnum(enum_item, meta_class);
+        if (meta_enum) {
+            meta_enum->setOriginalAttributes(meta_enum->attributes());
+            meta_class->addEnum(meta_enum);
+            meta_enum->setEnclosingClass(meta_class);
         }
     }
 }
@@ -1265,35 +1265,35 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
             cast_type = function_name.mid(14).trimmed();
     }
 
-    AbstractMetaFunction *java_function = createMetaFunction();
-    java_function->setConstant(function_item->isConstant());
+    AbstractMetaFunction *meta_function = createMetaFunction();
+    meta_function->setConstant(function_item->isConstant());
 
     ReportHandler::debugMedium(QString(" - %2()").arg(function_name));
 
-    java_function->setName(function_name);
-    java_function->setOriginalName(function_item->name());
+    meta_function->setName(function_name);
+    meta_function->setOriginalName(function_item->name());
 
     if (function_item->isAbstract())
-        *java_function += AbstractMetaAttributes::Abstract;
+        *meta_function += AbstractMetaAttributes::Abstract;
 
-    if (!java_function->isAbstract())
-        *java_function += AbstractMetaAttributes::Native;
+    if (!meta_function->isAbstract())
+        *meta_function += AbstractMetaAttributes::Native;
 
     if (!function_item->isVirtual())
-        *java_function += AbstractMetaAttributes::Final;
+        *meta_function += AbstractMetaAttributes::Final;
 
     if (function_item->isStatic()) {
-        *java_function += AbstractMetaAttributes::Static;
-        *java_function += AbstractMetaAttributes::Final;
+        *meta_function += AbstractMetaAttributes::Static;
+        *meta_function += AbstractMetaAttributes::Final;
     }
 
     // Access rights
     if (function_item->accessPolicy() == CodeModel::Public)
-        *java_function += AbstractMetaAttributes::Public;
+        *meta_function += AbstractMetaAttributes::Public;
     else if (function_item->accessPolicy() == CodeModel::Private)
-        *java_function += AbstractMetaAttributes::Private;
+        *meta_function += AbstractMetaAttributes::Private;
     else
-        *java_function += AbstractMetaAttributes::Protected;
+        *meta_function += AbstractMetaAttributes::Protected;
 
 
     QString stripped_class_name = class_name;
@@ -1303,11 +1303,11 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
 
     TypeInfo function_type = function_item->type();
     if (function_name.startsWith('~')) {
-        java_function->setFunctionType(AbstractMetaFunction::DestructorFunction);
-        java_function->setInvalid(true);
+        meta_function->setFunctionType(AbstractMetaFunction::DestructorFunction);
+        meta_function->setInvalid(true);
     } else if (strip_template_args(function_name) == stripped_class_name) {
-        java_function->setFunctionType(AbstractMetaFunction::ConstructorFunction);
-        java_function->setName(m_current_class->name());
+        meta_function->setFunctionType(AbstractMetaFunction::ConstructorFunction);
+        meta_function->setName(m_current_class->name());
     } else {
         bool ok;
         AbstractMetaType *type = 0;
@@ -1327,27 +1327,27 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
                                    .arg(function_item->type().toString()));
             m_rejected_functions[class_name + "::" + function_name] =
                 UnmatchedReturnType;
-            java_function->setInvalid(true);
-            return java_function;
+            meta_function->setInvalid(true);
+            return meta_function;
         }
-        java_function->setType(type);
+        meta_function->setType(type);
 
         if (function_item->functionType() == CodeModel::Signal)
-            java_function->setFunctionType(AbstractMetaFunction::SignalFunction);
+            meta_function->setFunctionType(AbstractMetaFunction::SignalFunction);
         else if (function_item->functionType() == CodeModel::Slot)
-            java_function->setFunctionType(AbstractMetaFunction::SlotFunction);
+            meta_function->setFunctionType(AbstractMetaFunction::SlotFunction);
     }
 
     ArgumentList arguments = function_item->arguments();
-    AbstractMetaArgumentList java_arguments;
+    AbstractMetaArgumentList meta_arguments;
 
     int first_default_argument = 0;
     for (int i=0; i<arguments.size(); ++i) {
         ArgumentModelItem arg = arguments.at(i);
 
         bool ok;
-        AbstractMetaType *java_type = translateType(arg->type(), &ok);
-        if (!java_type || !ok) {
+        AbstractMetaType *meta_type = translateType(arg->type(), &ok);
+        if (!meta_type || !ok) {
             ReportHandler::warning(QString("skipping function '%1::%2', "
                                            "unmatched parameter type '%3'")
                                    .arg(class_name)
@@ -1355,37 +1355,37 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
                                    .arg(arg->type().toString()));
             m_rejected_functions[class_name + "::" + function_name] =
                 UnmatchedArgumentType;
-            java_function->setInvalid(true);
-            return java_function;
+            meta_function->setInvalid(true);
+            return meta_function;
         }
-        AbstractMetaArgument *java_argument = createMetaArgument();
-        java_argument->setType(java_type);
-        java_argument->setName(arg->name());
-        java_argument->setArgumentIndex(i);
-        java_arguments << java_argument;
+        AbstractMetaArgument *meta_argument = createMetaArgument();
+        meta_argument->setType(meta_type);
+        meta_argument->setName(arg->name());
+        meta_argument->setArgumentIndex(i);
+        meta_arguments << meta_argument;
     }
 
-    java_function->setArguments(java_arguments);
+    meta_function->setArguments(meta_arguments);
 
     // Find the correct default values
     for (int i=0; i<arguments.size(); ++i) {
         ArgumentModelItem arg = arguments.at(i);
-        AbstractMetaArgument *java_arg = java_arguments.at(i);
+        AbstractMetaArgument *meta_arg = meta_arguments.at(i);
         if (arg->defaultValue()) {
             QString expr = arg->defaultValueExpression();
             if (!expr.isEmpty())
-                java_arg->setOriginalDefaultValueExpression(expr);
+                meta_arg->setOriginalDefaultValueExpression(expr);
 
-            expr = translateDefaultValue(arg, java_arg->type(), java_function, m_current_class, i);
+            expr = translateDefaultValue(arg, meta_arg->type(), meta_function, m_current_class, i);
             if (expr.isEmpty()) {
                 first_default_argument = i;
             } else {
-                java_arg->setDefaultValueExpression(expr);
+                meta_arg->setDefaultValueExpression(expr);
             }
 
-            if (java_arg->type()->isEnum() || java_arg->type()->isFlags()) {
+            if (meta_arg->type()->isEnum() || meta_arg->type()->isFlags()) {
                 m_enum_default_arguments
-                    << QPair<AbstractMetaArgument *, AbstractMetaFunction *>(java_arg, java_function);
+                    << QPair<AbstractMetaArgument *, AbstractMetaFunction *>(meta_arg, meta_function);
             }
 
         }
@@ -1394,13 +1394,13 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
     // If we where not able to translate the default argument make it
     // reset all default arguments before this one too.
     for (int i=0; i<first_default_argument; ++i)
-        java_arguments[i]->setDefaultValueExpression(QString());
+        meta_arguments[i]->setDefaultValueExpression(QString());
 
     if (ReportHandler::debugLevel() == ReportHandler::FullDebug)
-        foreach(AbstractMetaArgument *arg, java_arguments)
+        foreach(AbstractMetaArgument *arg, meta_arguments)
             ReportHandler::debugFull("   - " + arg->toString());
 
-    return java_function;
+    return meta_function;
 }
 
 
@@ -1532,15 +1532,15 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
     // These are only implicit and should not appear in code...
     Q_ASSERT(!type->isInterface());
 
-    AbstractMetaType *java_type = createMetaType();
-    java_type->setTypeEntry(type);
-    java_type->setIndirections(typeInfo.indirections);
-    java_type->setReference(typeInfo.is_reference);
-    java_type->setConstant(typeInfo.is_constant);
-    java_type->setOriginalTypeDescription(_typei.toString());
-    decideUsagePattern(java_type);
+    AbstractMetaType *meta_type = createMetaType();
+    meta_type->setTypeEntry(type);
+    meta_type->setIndirections(typeInfo.indirections);
+    meta_type->setReference(typeInfo.is_reference);
+    meta_type->setConstant(typeInfo.is_constant);
+    meta_type->setOriginalTypeDescription(_typei.toString());
+    decideUsagePattern(meta_type);
 
-    if (java_type->typeEntry()->isContainer()) {
+    if (meta_type->typeEntry()->isContainer()) {
         ContainerTypeEntry::Type container_type = static_cast<const ContainerTypeEntry *>(type)->type();
 
         if (container_type == ContainerTypeEntry::StringListContainer) {
@@ -1551,8 +1551,8 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
             Q_ASSERT(*ok);
             Q_ASSERT(targ_type);
 
-            java_type->addInstantiation(targ_type);
-            java_type->setInstantiationInCpp(false);
+            meta_type->addInstantiation(targ_type);
+            meta_type->setInstantiationInCpp(false);
 
         } else {
             foreach (const TypeParser::Info &ta, typeInfo.template_instantiations) {
@@ -1565,101 +1565,101 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
 
                 AbstractMetaType *targ_type = translateType(info, ok);
                 if (!(*ok)) {
-                    delete java_type;
+                    delete meta_type;
                     return 0;
                 }
-                java_type->addInstantiation(targ_type);
+                meta_type->addInstantiation(targ_type);
             }
         }
 
         if (container_type == ContainerTypeEntry::ListContainer
             || container_type == ContainerTypeEntry::VectorContainer
             || container_type == ContainerTypeEntry::StringListContainer) {
-            Q_ASSERT(java_type->instantiations().size() == 1);
+            Q_ASSERT(meta_type->instantiations().size() == 1);
         }
     }
 
-    return java_type;
+    return meta_type;
 }
 
-void AbstractMetaBuilder::decideUsagePattern(AbstractMetaType *java_type)
+void AbstractMetaBuilder::decideUsagePattern(AbstractMetaType *meta_type)
 {
-    const TypeEntry *type = java_type->typeEntry();
+    const TypeEntry *type = meta_type->typeEntry();
 
-    if (type->isPrimitive() && (java_type->actualIndirections() == 0
-                                || (java_type->isConstant() && java_type->isReference() && java_type->indirections() == 0))) {
-        java_type->setTypeUsagePattern(AbstractMetaType::PrimitivePattern);
+    if (type->isPrimitive() && (meta_type->actualIndirections() == 0
+                                || (meta_type->isConstant() && meta_type->isReference() && meta_type->indirections() == 0))) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::PrimitivePattern);
 
     } else if (type->isVoid()) {
-        java_type->setTypeUsagePattern(AbstractMetaType::NativePointerPattern);
+        meta_type->setTypeUsagePattern(AbstractMetaType::NativePointerPattern);
 
     } else if (type->isString()
-               && java_type->indirections() == 0
-               && (java_type->isConstant() == java_type->isReference()
-                   || java_type->isConstant())) {
-        java_type->setTypeUsagePattern(AbstractMetaType::StringPattern);
+               && meta_type->indirections() == 0
+               && (meta_type->isConstant() == meta_type->isReference()
+                   || meta_type->isConstant())) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::StringPattern);
 
     } else if (type->isChar()
-        && java_type->indirections() == 0
-        && java_type->isConstant() == java_type->isReference()) {
-        java_type->setTypeUsagePattern(AbstractMetaType::CharPattern);
+        && meta_type->indirections() == 0
+        && meta_type->isConstant() == meta_type->isReference()) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::CharPattern);
 
     } else if (type->isVariant()
-        && java_type->indirections() == 0
-        && java_type->isConstant() == java_type->isReference()) {
-        java_type->setTypeUsagePattern(AbstractMetaType::VariantPattern);
+        && meta_type->indirections() == 0
+        && meta_type->isConstant() == meta_type->isReference()) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::VariantPattern);
 
-    } else if (type->isEnum() && java_type->actualIndirections() == 0) {
-        java_type->setTypeUsagePattern(AbstractMetaType::EnumPattern);
-
-    } else if (type->isObject()
-                && java_type->indirections() == 0
-                && java_type->isReference()) {
-        if (((ComplexTypeEntry *) type)->isQObject())
-            java_type->setTypeUsagePattern(AbstractMetaType::QObjectPattern);
-        else
-            java_type->setTypeUsagePattern(AbstractMetaType::ObjectPattern);
+    } else if (type->isEnum() && meta_type->actualIndirections() == 0) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::EnumPattern);
 
     } else if (type->isObject()
-               && java_type->indirections() == 1) {
+                && meta_type->indirections() == 0
+                && meta_type->isReference()) {
         if (((ComplexTypeEntry *) type)->isQObject())
-            java_type->setTypeUsagePattern(AbstractMetaType::QObjectPattern);
+            meta_type->setTypeUsagePattern(AbstractMetaType::QObjectPattern);
         else
-            java_type->setTypeUsagePattern(AbstractMetaType::ObjectPattern);
+            meta_type->setTypeUsagePattern(AbstractMetaType::ObjectPattern);
+
+    } else if (type->isObject()
+               && meta_type->indirections() == 1) {
+        if (((ComplexTypeEntry *) type)->isQObject())
+            meta_type->setTypeUsagePattern(AbstractMetaType::QObjectPattern);
+        else
+            meta_type->setTypeUsagePattern(AbstractMetaType::ObjectPattern);
 
         // const-references to pointers can be passed as pointers
-        if (java_type->isReference() && java_type->isConstant()) {
-            java_type->setReference(false);
-            java_type->setConstant(false);
+        if (meta_type->isReference() && meta_type->isConstant()) {
+            meta_type->setReference(false);
+            meta_type->setConstant(false);
         }
 
-    } else if (type->isContainer() && java_type->indirections() == 0) {
-        java_type->setTypeUsagePattern(AbstractMetaType::ContainerPattern);
+    } else if (type->isContainer() && meta_type->indirections() == 0) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::ContainerPattern);
 
     } else if (type->isTemplateArgument()) {
 
     } else if (type->isFlags()
-               && java_type->indirections() == 0
-               && (java_type->isConstant() == java_type->isReference())) {
-        java_type->setTypeUsagePattern(AbstractMetaType::FlagsPattern);
+               && meta_type->indirections() == 0
+               && (meta_type->isConstant() == meta_type->isReference())) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::FlagsPattern);
 
     } else if (type->isArray()) {
-        java_type->setTypeUsagePattern(AbstractMetaType::ArrayPattern);
+        meta_type->setTypeUsagePattern(AbstractMetaType::ArrayPattern);
 
     } else if (type->isThread()) {
-        Q_ASSERT(java_type->indirections() == 1);
-        java_type->setTypeUsagePattern(AbstractMetaType::ThreadPattern);
+        Q_ASSERT(meta_type->indirections() == 1);
+        meta_type->setTypeUsagePattern(AbstractMetaType::ThreadPattern);
 
     } else if (type->isValue()
-               && java_type->indirections() == 0
-               && (java_type->isConstant() == java_type->isReference()
-                   || !java_type->isReference())) {
-        java_type->setTypeUsagePattern(AbstractMetaType::ValuePattern);
+               && meta_type->indirections() == 0
+               && (meta_type->isConstant() == meta_type->isReference()
+                   || !meta_type->isReference())) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::ValuePattern);
 
     } else {
-        java_type->setTypeUsagePattern(AbstractMetaType::NativePointerPattern);
+        meta_type->setTypeUsagePattern(AbstractMetaType::NativePointerPattern);
         ReportHandler::debugFull(QString("native pointer pattern for '%1'")
-                                 .arg(java_type->cppSignature()));
+                                 .arg(meta_type->cppSignature()));
     }
 }
 
@@ -1713,13 +1713,13 @@ QString AbstractMetaBuilder::translateDefaultValue(ArgumentModelItem item, Abstr
         } else if (expr.endsWith(")") && expr.contains("::")) {
             TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(expr.indexOf("::")));
             if (typeEntry)
-                return typeEntry->qualifiedJavaName() + "." + expr.right(expr.length() - expr.indexOf("::") - 2);
+                return typeEntry->qualifiedTargetLangName() + "." + expr.right(expr.length() - expr.indexOf("::") - 2);
         } else if (expr.endsWith(")") && type->isValue()) {
             int pos = expr.indexOf("(");
 
             TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(pos));
             if (typeEntry)
-                return "new " + typeEntry->qualifiedJavaName() + expr.right(expr.length() - pos);
+                return "new " + typeEntry->qualifiedTargetLangName() + expr.right(expr.length() - pos);
             else
                 return expr;
         } else if (expr == "0") {
@@ -1729,8 +1729,8 @@ QString AbstractMetaBuilder::translateDefaultValue(ArgumentModelItem item, Abstr
 
             expr = expr.right(expr.length() - expr.indexOf("::") - 2);
             if (typeEntry) {
-                return "new " + type->typeEntry()->qualifiedJavaName() +
-                       "(" + typeEntry->qualifiedJavaName() + "." + expr + ")";
+                return "new " + type->typeEntry()->qualifiedTargetLangName() +
+                       "(" + typeEntry->qualifiedTargetLangName() + "." + expr + ")";
             }
         }
     }
@@ -1782,13 +1782,13 @@ bool AbstractMetaBuilder::isEnum(const QStringList &qualified_name)
 }
 
 AbstractMetaType *AbstractMetaBuilder::inheritTemplateType(const QList<AbstractMetaType *> &template_types,
-                                                   AbstractMetaType *java_type)
+                                                   AbstractMetaType *meta_type)
 {
 
-    if (!java_type || (!java_type->typeEntry()->isTemplateArgument() && !java_type->hasInstantiations()))
-        return java_type ? java_type->copy() : 0;
+    if (!meta_type || (!meta_type->typeEntry()->isTemplateArgument() && !meta_type->hasInstantiations()))
+        return meta_type ? meta_type->copy() : 0;
 
-    AbstractMetaType *returned = java_type->copy();
+    AbstractMetaType *returned = meta_type->copy();
 
     if (returned->typeEntry()->isTemplateArgument()) {
         const TemplateArgumentEntry *tae = static_cast<const TemplateArgumentEntry *>(returned->typeEntry());
@@ -1943,7 +1943,7 @@ TypeEntry *findEntry(TypeDatabase *db, const QString &name, AbstractMetaClass *c
     return 0;
 }
 
-void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *java_class, const QStringList &declarations)
+void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const QStringList &declarations)
 {
     TypeDatabase *typedb = TypeDatabase::instance();
 
@@ -1952,10 +1952,10 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *java_class, const Q
 
         QStringList l = p.split(QLatin1String(" "));
 
-        TypeEntry *t = findEntry(typedb, l.at(0), java_class);
+        TypeEntry *t = findEntry(typedb, l.at(0), meta_class);
         if (!t) {
             ReportHandler::warning(QString("Unable to decide type of property: '%1' in class '%2'")
-                                   .arg(l.at(0)).arg(java_class->name()));
+                                   .arg(l.at(0)).arg(meta_class->name()));
             continue;
         }
 
@@ -1976,7 +1976,7 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *java_class, const Q
                 spec->setReset(l.at(pos+1));
         }
 
-        java_class->addPropertySpec(spec);
+        meta_class->addPropertySpec(spec);
     }
 }
 
@@ -2023,7 +2023,7 @@ void AbstractMetaBuilder::setupEquals(AbstractMetaClass *cls)
     QString op_nequals = QLatin1String("operator_not_equal");
 
     AbstractMetaFunctionList functions = cls->queryFunctions(AbstractMetaClass::ClassImplements
-                                                         | AbstractMetaClass::NotRemovedFromJava);
+                                                         | AbstractMetaClass::NotRemovedFromTargetLang);
     foreach (AbstractMetaFunction *f, functions) {
         if (f->name() == op_equals)
             equals << f;
@@ -2062,7 +2062,7 @@ void AbstractMetaBuilder::setupComparable(AbstractMetaClass *cls)
     QString op_less_eq = QLatin1String("operator_less_or_equal");
 
     AbstractMetaFunctionList functions = cls->queryFunctions(AbstractMetaClass::ClassImplements
-                                                         | AbstractMetaClass::NotRemovedFromJava);
+                                                         | AbstractMetaClass::NotRemovedFromTargetLang);
     foreach (AbstractMetaFunction *f, functions) {
         if (f->name() == op_greater)
             greater << f;

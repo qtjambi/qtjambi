@@ -193,7 +193,7 @@ void MetaInfoGenerator::buildSkipList()
         if (cls->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp)
             m_skip_list[cls->package()] |= GeneratedMetaInfo;
 
-        if (cls->typeEntry()->codeGeneration() & TypeEntry::GenerateJava)
+        if (cls->typeEntry()->codeGeneration() & TypeEntry::GenerateTargetLang)
             m_skip_list[cls->package()] |= GeneratedJavaClasses;
     }
 }
@@ -585,7 +585,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
     QString qtName = entry->qualifiedCppName();
 
-    if (!entry->isPrimitive() || ((PrimitiveTypeEntry *) entry)->preferredJavaType())
+    if (!entry->isPrimitive() || ((PrimitiveTypeEntry *) entry)->preferredTargetLangType())
         s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl;
 
     if (!entry->preferredConversion())

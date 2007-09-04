@@ -15,7 +15,7 @@
 #define ABSTRACTMETABUILDER_H
 
 #include "codemodel.h"
-#include "metajava.h"
+#include "abstractmetalang.h"
 #include "typesystem.h"
 #include "typeparser.h"
 
@@ -36,7 +36,7 @@ public:
     AbstractMetaBuilder();
     virtual ~AbstractMetaBuilder() {};
 
-    AbstractMetaClassList classes() const { return m_java_classes; }
+    AbstractMetaClassList classes() const { return m_meta_classes; }
 
     FileModelItem model() const { return m_dom; }
     void setModel(FileModelItem item) { m_dom = item; }
@@ -53,14 +53,14 @@ public:
 
     bool build();
 
-    void figureOutEnumValuesForClass(AbstractMetaClass *java_class, QSet<AbstractMetaClass *> *classes);
-    int figureOutEnumValue(const QString &name, int value, AbstractMetaEnum *java_enum, AbstractMetaFunction *java_function = 0);
+    void figureOutEnumValuesForClass(AbstractMetaClass *meta_class, QSet<AbstractMetaClass *> *classes);
+    int figureOutEnumValue(const QString &name, int value, AbstractMetaEnum *meta_enum, AbstractMetaFunction *meta_function = 0);
     void figureOutEnumValues();
     void figureOutDefaultEnumArguments();
 
     void addAbstractMetaClass(AbstractMetaClass *cls);
     AbstractMetaClass *traverseClass(ClassModelItem item);
-    bool setupInheritance(AbstractMetaClass *java_class);
+    bool setupInheritance(AbstractMetaClass *meta_class);
     AbstractMetaClass *traverseNamespace(NamespaceModelItem item);
     AbstractMetaEnum *traverseEnum(EnumModelItem item, AbstractMetaClass *enclosing);
     void traverseEnums(ScopeModelItem item, AbstractMetaClass *parent);
@@ -73,10 +73,10 @@ public:
     void checkFunctionModifications();
     void registerHashFunction(FunctionModelItem function_item);
 
-    void parseQ_Property(AbstractMetaClass *java_class, const QStringList &declarations);
-    void setupEquals(AbstractMetaClass *java_class);
-    void setupComparable(AbstractMetaClass *java_class);
-    void setupFunctionDefaults(AbstractMetaFunction *java_function, AbstractMetaClass *java_class);
+    void parseQ_Property(AbstractMetaClass *meta_class, const QStringList &declarations);
+    void setupEquals(AbstractMetaClass *meta_class);
+    void setupComparable(AbstractMetaClass *meta_class);
+    void setupFunctionDefaults(AbstractMetaFunction *meta_function, AbstractMetaClass *meta_class);
 
     QString translateDefaultValue(ArgumentModelItem item, AbstractMetaType *type,
                                                AbstractMetaFunction *fnc, AbstractMetaClass *,
@@ -88,7 +88,7 @@ public:
     bool inheritTemplate(AbstractMetaClass *subclass,
                          const AbstractMetaClass *template_class,
                          const TypeParser::Info &info);
-    AbstractMetaType *inheritTemplateType(const QList<AbstractMetaType *> &template_types, AbstractMetaType *java_type);
+    AbstractMetaType *inheritTemplateType(const QList<AbstractMetaType *> &template_types, AbstractMetaType *meta_type);
 
     bool isQObject(const QString &qualified_name);
     bool isEnum(const QStringList &qualified_name);
@@ -111,7 +111,7 @@ private:
 
     QString m_file_name;
 
-    AbstractMetaClassList m_java_classes;
+    AbstractMetaClassList m_meta_classes;
     AbstractMetaClassList m_templates;
     FileModelItem m_dom;
 

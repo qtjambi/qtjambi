@@ -142,15 +142,15 @@ bool AbstractMetaFunction::needsCallThrough() const
         return true;
 
     foreach (const AbstractMetaArgument *arg, arguments()) {
-        if (arg->type()->isArray() || arg->type()->isJavaEnum() || arg->type()->isJavaFlags())
+        if (arg->type()->isArray() || arg->type()->isTargetLangEnum() || arg->type()->isTargetLangFlags())
             return true;
     }
 
-    if (type() && (type()->isArray() || type()->isJavaEnum() || type()->isJavaFlags()))
+    if (type() && (type()->isArray() || type()->isTargetLangEnum() || type()->isTargetLangFlags()))
         return true;
 
     for (int i=-1; i<=arguments().size(); ++i) {
-        TypeSystem::Ownership owner = this->ownership(implementingClass(), TypeSystem::JavaCode, i);
+        TypeSystem::Ownership owner = this->ownership(implementingClass(), TypeSystem::TargetLangCode, i);
         if (owner != TypeSystem::InvalidOwnership)
             return true;
     }
@@ -617,7 +617,7 @@ QString AbstractMetaFunction::modifiedName() const
     return m_cached_modified_name;
 }
 
-QString AbstractMetaFunction::javaSignature(bool minimal) const
+QString AbstractMetaFunction::targetLangSignature(bool minimal) const
 {
     QString s;
 
@@ -629,7 +629,7 @@ QString AbstractMetaFunction::javaSignature(bool minimal) const
 
 //     if (isNative()) s += "native ";
 //     else
-        if (isFinalInJava()) s += "final ";
+        if (isFinalInTargetLang()) s += "final ";
         else if (isAbstract()) s += "abstract ";
 
         if (isStatic()) s += "static ";
@@ -791,9 +791,9 @@ QList<ReferenceCount> AbstractMetaClass::referenceCounts() const
  * Returns a list of all the functions retrieved during parsing which should
  * be added to the Java API.
  */
-AbstractMetaFunctionList AbstractMetaClass::functionsInJava() const
+AbstractMetaFunctionList AbstractMetaClass::functionsInTargetLang() const
 {
-    int default_flags = NormalFunctions | Visible | NotRemovedFromJava;
+    int default_flags = NormalFunctions | Visible | NotRemovedFromTargetLang;
 
     // Interfaces don't implement functions
     default_flags |= isInterface() ? 0 : ClassImplements;
@@ -806,10 +806,10 @@ AbstractMetaFunctionList AbstractMetaClass::functionsInJava() const
     AbstractMetaFunctionList returned = queryFunctions(Constructors | default_flags | public_flags);
 
     // Final functions
-    returned += queryFunctions(FinalInJavaFunctions | NonStaticFunctions | default_flags | public_flags);
+    returned += queryFunctions(FinalInTargetLangFunctions | NonStaticFunctions | default_flags | public_flags);
 
     // Virtual functions
-    returned += queryFunctions(VirtualInJavaFunctions | NonStaticFunctions | default_flags | public_flags);
+    returned += queryFunctions(VirtualInTargetLangFunctions | NonStaticFunctions | default_flags | public_flags);
 
     // Static functions
     returned += queryFunctions(StaticFunctions | default_flags | public_flags);
@@ -846,8 +846,8 @@ AbstractMetaFunctionList AbstractMetaClass::functionsInShellClass() const
  */
 AbstractMetaFunctionList AbstractMetaClass::publicOverrideFunctions() const
 {
-    return queryFunctions(NormalFunctions | WasProtected | FinalInCppFunctions | NotRemovedFromJava)
-         + queryFunctions(Signals | WasProtected | FinalInCppFunctions | NotRemovedFromJava);
+    return queryFunctions(NormalFunctions | WasProtected | FinalInCppFunctions | NotRemovedFromTargetLang)
+         + queryFunctions(Signals | WasProtected | FinalInCppFunctions | NotRemovedFromTargetLang);
 }
 
 AbstractMetaFunctionList AbstractMetaClass::virtualOverrideFunctions() const
@@ -988,7 +988,7 @@ bool AbstractMetaClass::hasSignal(const AbstractMetaFunction *other) const
 
 QString AbstractMetaClass::name() const
 {
-    return QString(m_type_entry->javaName()).replace("::", "_");
+    return QString(m_type_entry->targetLangName()).replace("::", "_");
 }
 
 bool AbstractMetaClass::hasFunction(const QString &str) const
@@ -1210,11 +1210,11 @@ AbstractMetaFunctionList AbstractMetaClass::queryFunctions(uint query) const
 
     foreach (AbstractMetaFunction *f, m_functions) {
 
-        if ((query & NotRemovedFromJava) && f->isRemovedFrom(f->implementingClass(), TypeSystem::JavaCode)) {
+        if ((query & NotRemovedFromTargetLang) && f->isRemovedFrom(f->implementingClass(), TypeSystem::TargetLangCode)) {
             continue;
         }
 
-        if ((query & NotRemovedFromJava) && !f->isFinal() && f->isRemovedFrom(f->declaringClass(), TypeSystem::JavaCode)) {
+        if ((query & NotRemovedFromTargetLang) && !f->isFinal() && f->isRemovedFrom(f->declaringClass(), TypeSystem::TargetLangCode)) {
             continue;
         }
 
@@ -1230,7 +1230,7 @@ AbstractMetaFunctionList AbstractMetaClass::queryFunctions(uint query) const
             continue;
         }
 
-        if ((query & VirtualInJavaFunctions) && f->isFinalInJava()) {
+        if ((query & VirtualInTargetLangFunctions) && f->isFinalInTargetLang()) {
             continue;
         }
 
@@ -1258,11 +1258,11 @@ AbstractMetaFunctionList AbstractMetaClass::queryFunctions(uint query) const
             continue;
         }
 
-        if ((query & Inconsistent) && (f->isFinalInJava() || !f->isFinalInCpp() || f->isStatic())) {
+        if ((query & Inconsistent) && (f->isFinalInTargetLang() || !f->isFinalInCpp() || f->isStatic())) {
             continue;
         }
 
-        if ((query & FinalInJavaFunctions) && !f->isFinalInJava()) {
+        if ((query & FinalInTargetLangFunctions) && !f->isFinalInTargetLang()) {
             continue;
         }
 
@@ -1402,12 +1402,12 @@ AbstractMetaEnum *AbstractMetaClass::findEnum(const QString &enumName)
 
 /*!  Recursivly searches for the enum value named \a enumValueName in
   this class and its superclasses and interfaces. Values belonging to
-  \a java_enum are excluded from the search.
+  \a meta_enum are excluded from the search.
 */
-AbstractMetaEnumValue *AbstractMetaClass::findEnumValue(const QString &enumValueName, AbstractMetaEnum *java_enum)
+AbstractMetaEnumValue *AbstractMetaClass::findEnumValue(const QString &enumValueName, AbstractMetaEnum *meta_enum)
 {
     foreach (AbstractMetaEnum *e, m_enums) {
-        if (e == java_enum)
+        if (e == meta_enum)
             continue;
         foreach (AbstractMetaEnumValue *v, e->values()) {
             if (v->name() == enumValueName)
@@ -1416,10 +1416,10 @@ AbstractMetaEnumValue *AbstractMetaClass::findEnumValue(const QString &enumValue
     }
 
     if (typeEntry()->designatedInterface())
-        return extractInterface()->findEnumValue(enumValueName, java_enum);
+        return extractInterface()->findEnumValue(enumValueName, meta_enum);
 
     if (baseClass() != 0)
-        return baseClass()->findEnumValue(enumValueName, java_enum);
+        return baseClass()->findEnumValue(enumValueName, meta_enum);
 
     return 0;
 }
@@ -1450,27 +1450,27 @@ AbstractMetaEnum *AbstractMetaClass::findEnumForValue(const QString &enumValueNa
 }
 
 
-static void add_extra_include_for_type(AbstractMetaClass *java_class, const AbstractMetaType *type)
+static void add_extra_include_for_type(AbstractMetaClass *meta_class, const AbstractMetaType *type)
 {
-    Q_ASSERT(java_class != 0);
+    Q_ASSERT(meta_class != 0);
     const TypeEntry *entry = (type ? type->typeEntry() : 0);
     if (entry != 0 && entry->isComplex()) {
         const ComplexTypeEntry *centry = static_cast<const ComplexTypeEntry *>(entry);
-        ComplexTypeEntry *class_entry = java_class->typeEntry();
+        ComplexTypeEntry *class_entry = meta_class->typeEntry();
         if (class_entry != 0 && centry->include().isValid())
             class_entry->addExtraInclude(centry->include());
     }
 }
 
-static void add_extra_includes_for_function(AbstractMetaClass *java_class, const AbstractMetaFunction *java_function)
+static void add_extra_includes_for_function(AbstractMetaClass *meta_class, const AbstractMetaFunction *meta_function)
 {
-    Q_ASSERT(java_class != 0);
-    Q_ASSERT(java_function != 0);
-    add_extra_include_for_type(java_class, java_function->type());
+    Q_ASSERT(meta_class != 0);
+    Q_ASSERT(meta_function != 0);
+    add_extra_include_for_type(meta_class, meta_function->type());
 
-    AbstractMetaArgumentList arguments = java_function->arguments();
+    AbstractMetaArgumentList arguments = meta_function->arguments();
     foreach (AbstractMetaArgument *argument, arguments)
-        add_extra_include_for_type(java_class, argument->type());
+        add_extra_include_for_type(meta_class, argument->type());
 }
 
 void AbstractMetaClass::fixFunctions()
@@ -1544,14 +1544,14 @@ void AbstractMetaClass::fixFunctions()
                                     *f -= AbstractMetaAttributes::FinalInCpp;
     //                                 printf("   --- inherit virtual\n");
                                 }
-                                if (!sf->isFinalInJava() && f->isFinalInJava()) {
-                                    *f -= AbstractMetaAttributes::FinalInJava;
+                                if (!sf->isFinalInTargetLang() && f->isFinalInTargetLang()) {
+                                    *f -= AbstractMetaAttributes::FinalInTargetLang;
     //                                 printf("   --- inherit virtual\n");
                                 }
-                                if (!f->isFinalInJava() && f->isPrivate()) {
+                                if (!f->isFinalInTargetLang() && f->isPrivate()) {
                                     f->setFunctionType(AbstractMetaFunction::EmptyFunction);
                                     f->setVisibility(AbstractMetaAttributes::Protected);
-                                    *f += AbstractMetaAttributes::FinalInJava;
+                                    *f += AbstractMetaAttributes::FinalInTargetLang;
                                     ReportHandler::warning(QString("private virtual function '%1' in '%2'")
                                         .arg(f->signature())
                                         .arg(f->implementingClass()->name()));
@@ -1577,7 +1577,7 @@ void AbstractMetaClass::fixFunctions()
                             if (f->isPrivate() && sf->isAbstract()) {
                                 f->setFunctionType(AbstractMetaFunction::EmptyFunction);
                                 f->setVisibility(sf->visibility());
-                                *f += AbstractMetaAttributes::FinalInJava;
+                                *f += AbstractMetaAttributes::FinalInTargetLang;
                                 *f += AbstractMetaAttributes::FinalInCpp;
                             }
                         }
@@ -1585,7 +1585,7 @@ void AbstractMetaClass::fixFunctions()
                         // Set the class which first declares this function, afawk
                         f->setDeclaringClass(sf->declaringClass());
 
-                        if (sf->isFinalInJava() && !sf->isPrivate() && !f->isPrivate() && !sf->isStatic() && !f->isStatic()) {
+                        if (sf->isFinalInTargetLang() && !sf->isPrivate() && !f->isPrivate() && !sf->isStatic() && !f->isStatic()) {
                             // Shadowed funcion, need to make base class
                             // function non-virtual
                             if (f->implementingClass() != sf->implementingClass() && f->implementingClass()->inheritsFrom(sf->implementingClass())) {
@@ -1759,14 +1759,14 @@ AbstractMetaEnum *AbstractMetaClassList::findEnum(const EnumTypeEntry *entry) co
     QString enum_name = qualified_name.mid(pos + 2);
     QString class_name = qualified_name.mid(0, pos);
 
-    AbstractMetaClass *java_class = findClass(class_name);
-    if (!java_class) {
+    AbstractMetaClass *meta_class = findClass(class_name);
+    if (!meta_class) {
         ReportHandler::warning(QString("AbstractMeta::findEnum(), unknown class '%1' in '%2'")
                                .arg(class_name).arg(entry->qualifiedCppName()));
         return 0;
     }
 
-    return java_class->findEnum(enum_name);
+    return meta_class->findEnum(enum_name);
 }
 
 AbstractMetaEnumValue *AbstractMetaEnumValueList::find(const QString &name) const

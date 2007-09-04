@@ -15,6 +15,7 @@
 #define METAJAVABUILDER_H
 
 #include "abstractmetabuilder.h"
+#include "metajava.h"
 
 class MetaJavaBuilder : public AbstractMetaBuilder
 {

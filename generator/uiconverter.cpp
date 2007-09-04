@@ -162,7 +162,7 @@ void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *)
         return;
     }
 
-    slotSignatureNode.setNodeValue(slotFunction->javaSignature(true));
+    slotSignatureNode.setNodeValue(slotFunction->targetLangSignature(true));
 }
 
 

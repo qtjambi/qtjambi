@@ -482,7 +482,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 PrimitiveTypeEntry *type = new PrimitiveTypeEntry(name);
                 type->setCodeGeneration(m_generate);
-                type->setJavaName(java_name);
+                type->setTargetLangName(java_name);
                 type->setJniName(jni_name);
 
                 if (preferred_conversion == "yes") {
@@ -497,9 +497,9 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
 
                 if (preferred_java_type == "yes") {
-                    type->setPreferredJavaType(true);
+                    type->setPreferredTargetLangType(true);
                 } else if (preferred_java_type == "no") {
-                    type->setPreferredJavaType(false);
+                    type->setPreferredTargetLangType(false);
                 } else {
                     QString debug = QString("Preferred java type value '%1' not valid for '%2'. "
                                             "Will default to 'yes'.")
@@ -521,7 +521,7 @@ bool Handler::startElement(const QString &, const QString &n,
             m_current_enum = new EnumTypeEntry(names.at(0), names.at(1));
             element->entry = m_current_enum;
             m_current_enum->setCodeGeneration(m_generate);
-            m_current_enum->setJavaPackage(m_defaultPackage);
+            m_current_enum->setTargetLangPackage(m_defaultPackage);
             m_current_enum->setUpperBound(attributes["upper-bound"]);
             m_current_enum->setLowerBound(attributes["lower-bound"]);
             m_current_enum->setForceInteger(attributes["force-integer"].toLower() == "yes");
@@ -586,12 +586,12 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
 
                 ComplexTypeEntry *ctype = static_cast<ComplexTypeEntry *>(element->entry);
-                ctype->setJavaPackage(attributes["package"]);
+                ctype->setTargetLangPackage(attributes["package"]);
                 ctype->setDefaultSuperclass(attributes["default-superclass"]);
 
                 QString javaName = attributes["java-name"];
                 if (!javaName.isEmpty())
-                    ctype->setJavaName(javaName);
+                    ctype->setTargetLangName(javaName);
 
                 // The expense policy
                 QString limit = attributes["expense-limit"];
@@ -623,7 +623,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 // ctype->setInclude(Include(Include::IncludePath, ctype->name()));
                 ctype = ctype->designatedInterface();
                 if (ctype != 0)
-                    ctype->setJavaPackage(attributes["package"]);
+                    ctype->setTargetLangPackage(attributes["package"]);
 
             }
             break;
@@ -905,7 +905,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 static QHash<QString, TypeSystem::Language> languageNames;
                 if (languageNames.isEmpty()) {
-                    languageNames["java"] = TypeSystem::JavaCode;
+                    languageNames["java"] = TypeSystem::TargetLangCode;
                     languageNames["shell"] = TypeSystem::ShellCode;
                 }
 
@@ -918,7 +918,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 static QHash<QString, TypeSystem::Ownership> ownershipNames;
                 if (ownershipNames.isEmpty()) {
-                    ownershipNames["java"] = TypeSystem::JavaOwnership;
+                    ownershipNames["java"] = TypeSystem::TargetLangOwnership;
                     ownershipNames["c++"] = TypeSystem::CppOwnership;
                     ownershipNames["default"] = TypeSystem::DefaultOwnership;
                 }
@@ -981,7 +981,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 static QHash<QString, TypeSystem::Language> languageNames;
                 if (languageNames.isEmpty()) {
-                    languageNames["java"] = TypeSystem::JavaAndNativeCode;
+                    languageNames["java"] = TypeSystem::TargetLangAndNativeCode;
                     languageNames["all"] = TypeSystem::All;
                 }
 
@@ -1124,7 +1124,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     if (remove == QLatin1String("all"))
                         mod.removal = TypeSystem::All;
                     else if (remove == QLatin1String("java"))
-                        mod.removal = TypeSystem::JavaAndNativeCode;
+                        mod.removal = TypeSystem::TargetLangAndNativeCode;
                     else {
                         m_error = QString::fromLatin1("Bad removal type '%1'").arg(remove);
                         return false;
@@ -1234,7 +1234,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 static QHash<QString, TypeSystem::Language> languageNames;
                 if (languageNames.isEmpty()) {
-                    languageNames["java"] = TypeSystem::JavaCode;
+                    languageNames["java"] = TypeSystem::TargetLangCode;
                     languageNames["native"] = TypeSystem::NativeCode;
                     languageNames["shell"] = TypeSystem::ShellCode;
                     languageNames["shell-declaration"] = TypeSystem::ShellDeclaration;
@@ -1288,7 +1288,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 if (locationNames.isEmpty()) {
                     locationNames["global"] = Include::IncludePath;
                     locationNames["local"] = Include::LocalPath;
-                    locationNames["java"] = Include::JavaImport;
+                    locationNames["java"] = Include::TargetLangImport;
                 }
 
                 if (!locationNames.contains(location)) {
@@ -1453,7 +1453,7 @@ QString PrimitiveTypeEntry::javaObjectName() const
         table["double"] = "Double";
     }
     Q_ASSERT(table.contains(javaName()));
-    return table[javaName()];
+    return table[targetLangName()];
 }
 
 ContainerTypeEntry *TypeDatabase::findContainerType(const QString &name)
@@ -1470,13 +1470,13 @@ ContainerTypeEntry *TypeDatabase::findContainerType(const QString &name)
     return 0;
 }
 
-PrimitiveTypeEntry *TypeDatabase::findJavaPrimitiveType(const QString &java_name)
+PrimitiveTypeEntry *TypeDatabase::findTargetLangPrimitiveType(const QString &java_name)
 {
     foreach (QList<TypeEntry *> entries, m_entries.values()) {
         foreach (TypeEntry *e, entries) {
             if (e && e->isPrimitive()) {
                 PrimitiveTypeEntry *pe = static_cast<PrimitiveTypeEntry *>(e);
-                if (pe->javaName() == java_name && pe->preferredConversion())
+                if (pe->targetLangName() == java_name && pe->preferredConversion())
                     return pe;
             }
         }
@@ -1545,7 +1545,7 @@ QString ContainerTypeEntry::javaPackage() const
     return "java.util";
 }
 
-QString ContainerTypeEntry::javaName() const
+QString ContainerTypeEntry::targetLangName() const
 {
 
     switch (m_type) {
@@ -1598,9 +1598,9 @@ QString EnumTypeEntry::enumValueRedirection(const QString &value) const
     return QString();
 }
 
-QString FlagsTypeEntry::qualifiedJavaName() const
+QString FlagsTypeEntry::qualifiedTargetLangName() const
 {
-    return javaPackage() + "." + m_enum->javaQualifier() + "." + javaName();
+    return javaPackage() + "." + m_enum->javaQualifier() + "." + targetLangName();
 }
 
 

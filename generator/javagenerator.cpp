@@ -95,7 +95,7 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, Option o
             s = "com.trolltech.qt.QNativePointer";
 
         } else if (java_type->isContainer()) {
-            s = java_type->typeEntry()->qualifiedJavaName();
+            s = java_type->typeEntry()->qualifiedTargetLangName();
             if ((option & SkipTemplateParameters) == 0) {
                 s += '<';
                 QList<AbstractMetaType *> args = java_type->instantiations();
@@ -111,7 +111,7 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, Option o
             const TypeEntry *type = java_type->typeEntry();
             if (type->designatedInterface())
                 type = type->designatedInterface();
-            s = type->qualifiedJavaName();
+            s = type->qualifiedTargetLangName();
         }
     }
 
@@ -201,9 +201,9 @@ void JavaGenerator::writeEnum(QTextStream &s, const AbstractMetaEnum *java_enum)
     // Write out the createQFlags() function if its a QFlags enum
     if (entry->flags()) {
         FlagsTypeEntry *flags_entry = entry->flags();
-        s << "        public static " << flags_entry->javaName() << " createQFlags("
-          << entry->javaName() << " ... values) {" << endl
-          << "            return new " << flags_entry->javaName() << "(values);" << endl
+        s << "        public static " << flags_entry->targetLangName() << " createQFlags("
+          << entry->targetLangName() << " ... values) {" << endl
+          << "            return new " << flags_entry->targetLangName() << "(values);" << endl
           << "        }" << endl;
     }
 
@@ -257,7 +257,7 @@ void JavaGenerator::writeEnum(QTextStream &s, const AbstractMetaEnum *java_enum)
     // Write out the QFlags if present...
     FlagsTypeEntry *flags_entry = entry->flags();
     if (flags_entry) {
-        QString flagsName = flags_entry->javaName();
+        QString flagsName = flags_entry->targetLangName();
         s << "    public static class " << flagsName << " extends com.trolltech.qt.QFlags<"
           << java_enum->name() << "> {" << endl
           << "        private static final long serialVersionUID = 1L;" << endl
@@ -329,7 +329,7 @@ static QString function_call_for_ownership(TypeSystem::Ownership owner)
 {
     if (owner == TypeSystem::CppOwnership) {
         return "disableGarbageCollection()";
-    } else if (owner == TypeSystem::JavaOwnership) {
+    } else if (owner == TypeSystem::TargetLangOwnership) {
         return "setJavaOwnership()";
     } else if (owner == TypeSystem::DefaultOwnership) {
         return "reenableGarbageCollection()";
@@ -383,7 +383,7 @@ void JavaGenerator::writeInjectedCode(QTextStream &s, const AbstractMetaFunction
             if (snip.position != position)
                 continue ;
 
-            if (snip.language != TypeSystem::JavaCode)
+            if (snip.language != TypeSystem::TargetLangCode)
                 continue ;
 
             QString code = snip.formattedCode("    ");
@@ -424,7 +424,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
     AbstractMetaArgumentList arguments = java_function->arguments();
 
     if (!java_function->isConstructor()) {
-        TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, -1);
+        TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::TargetLangCode, -1);
         if (owner != TypeSystem::InvalidOwnership)
             s << "        this." << function_call_for_ownership(owner) << ";" << endl;
     }
@@ -434,7 +434,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
         AbstractMetaType *type = arg->type();
 
         if (!java_function->argumentRemoved(i+1)) {
-            TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, i+1);
+            TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::TargetLangCode, i+1);
             if (owner != TypeSystem::InvalidOwnership) {
                 s << "        "
                 << "if (" << arg->argumentName() << " != null) {" << endl;
@@ -501,13 +501,13 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
     QString new_return_type = java_function->typeReplaced(0);
     bool has_return_type = new_return_type != "void"
         && (!new_return_type.isEmpty() || return_type != 0);
-    TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, 0);
+    TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::TargetLangCode, 0);
 
     bool has_code_injections_at_the_end = false;
     FunctionModificationList mods = get_function_modifications_for_class_hierarchy(java_function);
     foreach (FunctionModification mod, mods) {
         foreach (CodeSnip snip, mod.snips) {
-            if (snip.position == CodeSnip::End && snip.language == TypeSystem::JavaCode) {
+            if (snip.position == CodeSnip::End && snip.language == TypeSystem::TargetLangCode) {
                 has_code_injections_at_the_end = true;
                 break;
             }
@@ -530,10 +530,10 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
             s << "return ";
         }
 
-        if (return_type && return_type->isJavaEnum()) {
-            s << ((EnumTypeEntry *) return_type->typeEntry())->qualifiedJavaName() << ".resolve(";
-        } else if (return_type && return_type->isJavaFlags()) {
-            s << "new " << return_type->typeEntry()->qualifiedJavaName() << "(";
+        if (return_type && return_type->isTargetLangEnum()) {
+            s << ((EnumTypeEntry *) return_type->typeEntry())->qualifiedTargetLangName() << ".resolve(";
+        } else if (return_type && return_type->isTargetLangFlags()) {
+            s << "new " << return_type->typeEntry()->qualifiedTargetLangName() << "(";
         }
     }
 
@@ -551,7 +551,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
             if (i > 0 || (!java_function->isStatic() && !java_function->isConstructor()))
                 s << ", ";
 
-            if (type->isJavaEnum() || type->isJavaFlags()) {
+            if (type->isTargetLangEnum() || type->isTargetLangFlags()) {
                 s << arg->argumentName() << ".value()";
             } else if (!type->hasNativeId()) {
                 s << arg->argumentName();
@@ -561,7 +561,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
                     s << arg->argumentName() << " == null ? ";
                     // Try to call default constructor for value types...
                     if (type->isValue() && hasDefaultConstructor(type))
-                        s << "(" << arg->argumentName() << " = new " << type->typeEntry()->qualifiedJavaName() << "()).nativeId()";
+                        s << "(" << arg->argumentName() << " = new " << type->typeEntry()->qualifiedTargetLangName() << "()).nativeId()";
                     else
                         s << "0";
 
@@ -580,7 +580,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
 	return;
     }
 
-    if (return_type && (return_type->isJavaEnum() || return_type->isJavaFlags()))
+    if (return_type && (return_type->isTargetLangEnum() || return_type->isTargetLangFlags()))
         s << ")";
 
     foreach (ReferenceCount referenceCount, referenceCounts) {
@@ -603,7 +603,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
     }
 
     if (java_function->isConstructor()) {
-        TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::JavaCode, -1);
+        TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::TargetLangCode, -1);
         if (owner != TypeSystem::InvalidOwnership && java_function->isConstructor())
             s << "        this." << function_call_for_ownership(owner) << ";" << endl;
     }
@@ -613,7 +613,7 @@ void JavaGenerator::writeSignal(QTextStream &s, const AbstractMetaFunction *java
 {
     Q_ASSERT(java_function->isSignal());
 
-    if (java_function->isModifiedRemoved(TypeSystem::JavaCode))
+    if (java_function->isModifiedRemoved(TypeSystem::TargetLangCode))
         return ;
 
     AbstractMetaArgumentList arguments = java_function->arguments();
@@ -715,9 +715,9 @@ void JavaGenerator::retrieveModifications(const AbstractMetaFunction *java_funct
         }
 
         if (mod.isFinal()) {
-            *include_attributes |= AbstractMetaAttributes::FinalInJava;
+            *include_attributes |= AbstractMetaAttributes::FinalInTargetLang;
         } else if (mod.isNonFinal()) {
-            *exclude_attributes |= AbstractMetaAttributes::FinalInJava;
+            *exclude_attributes |= AbstractMetaAttributes::FinalInTargetLang;
         }
     }
 
@@ -822,7 +822,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *ja
                                   uint included_attributes, uint excluded_attributes)
 {
 
-    if (java_function->isModifiedRemoved(TypeSystem::JavaCode))
+    if (java_function->isModifiedRemoved(TypeSystem::TargetLangCode))
         return ;
     QString functionName = java_function->name();
     setupForFunction(java_function, &included_attributes, &excluded_attributes);
@@ -838,7 +838,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *ja
         const AbstractMetaClass *c = java_function->implementingClass();
         bool hasObjectTypeArgument = false;
         foreach (AbstractMetaArgument *argument, arguments) {
-            TypeSystem::Ownership java_ownership = java_function->ownership(c, TypeSystem::JavaCode, argument->argumentIndex()+1);
+            TypeSystem::Ownership java_ownership = java_function->ownership(c, TypeSystem::TargetLangCode, argument->argumentIndex()+1);
             TypeSystem::Ownership shell_ownership = java_function->ownership(c, TypeSystem::ShellCode, argument->argumentIndex()+1);
 
             if (argument->type()->typeEntry()->isObject()
@@ -904,7 +904,7 @@ void JavaGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *ja
 static void write_equals_parts(QTextStream &s, const AbstractMetaFunctionList &lst, char prefix, bool *first) {
     foreach (AbstractMetaFunction *f, lst) {
         AbstractMetaArgument *arg = f->arguments().at(0);
-        QString type = arg->type()->typeEntry()->qualifiedJavaName();
+        QString type = arg->type()->typeEntry()->qualifiedTargetLangName();
         s << "        " << (*first ? "if" : "else if") << " (other instanceof " << type << ")" << endl
           << "            return ";
         if (prefix != 0) s << prefix;
@@ -916,7 +916,7 @@ static void write_equals_parts(QTextStream &s, const AbstractMetaFunctionList &l
 static void write_compareto_parts(QTextStream &s, const AbstractMetaFunctionList &lst, int value, bool *first) {
     foreach (AbstractMetaFunction *f, lst) {
         AbstractMetaArgument *arg = f->arguments().at(0);
-        QString type = arg->type()->typeEntry()->qualifiedJavaName();
+        QString type = arg->type()->typeEntry()->qualifiedTargetLangName();
         s << "        " << (*first ? "if" : "else if") << " (other instanceof " << type << " && "
           << f->name() << "((" << type << ") other)) return " << value << ";" << endl;
         *first = false;
@@ -989,13 +989,13 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
                 s << "        else return -1;" << endl;
             }
         } else if (le_functions.size() == 1) {
-            QString className = cls->typeEntry()->qualifiedJavaName();
+            QString className = cls->typeEntry()->qualifiedTargetLangName();
             s << "        if (operator_less((" << className << ") other)) return -1;" << endl
               << "        else if (((" << className << ") other).operator_less(this)) return 1;" << endl
               << "        else return 0;" << endl;
 
         } else if (geq_functions.size() == 1 && leq_functions.size()) {
-            QString className = cls->typeEntry()->qualifiedJavaName();
+            QString className = cls->typeEntry()->qualifiedTargetLangName();
             s << "        boolean less = operator_less_or_equal((" << className << ") other);" << endl
               << "        boolean greater = operator_greater_or_equal((" << className << ") other);" << endl
               << "        if (less && greater) return 0;" << endl
@@ -1061,11 +1061,11 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const AbstractMetaFunction
         || (!java_function->isNormal() || java_function->isEmptyFunction() || java_function->isAbstract())) {
         return ;
     }
-    include_attributes |= AbstractMetaAttributes::FinalInJava;
+    include_attributes |= AbstractMetaAttributes::FinalInTargetLang;
 
     int generate_enum_overload = -1;
     for (int i=0; i<arguments.size(); ++i)
-        generate_enum_overload = arguments.at(i)->type()->isJavaFlags() ? i : -1;
+        generate_enum_overload = arguments.at(i)->type()->isTargetLangFlags() ? i : -1;
 
     if (generate_enum_overload >= 0) {
         if (m_doc_parser) {
@@ -1089,7 +1089,7 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const AbstractMetaFunction
         AbstractMetaArgument *affected_arg = arguments.at(generate_enum_overload);
         EnumTypeEntry *originator = ((FlagsTypeEntry *)affected_arg->type()->typeEntry())->originator();
 
-        s << originator->javaPackage() << "." << originator->javaQualifier() << "." << originator->javaName()
+        s << originator->javaPackage() << "." << originator->javaQualifier() << "." << originator->targetLangName()
           << " ... " << affected_arg->argumentName() << ") {" << endl;
 
         s << "        ";
@@ -1191,7 +1191,7 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const AbstractMetaFun
                             if (type->designatedInterface())
                                 type = type->designatedInterface();
                             if (!type->isEnum() && !type->isFlags())
-                                s << "(" << type->qualifiedJavaName() << ")";
+                                s << "(" << type->qualifiedTargetLangName() << ")";
                         }
                     } else {
                         s << "(" << modified_type.replace('$', '.') << ")";
@@ -1208,7 +1208,7 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const AbstractMetaFun
                         if (ctype != 0 && ctype->isVariant())
                             replacement = "com.trolltech.qt.QVariant.";
                         else if (ctype != 0)
-                            replacement = ctype->javaPackage() + "." + ctype->javaName() + ".";
+                            replacement = ctype->javaPackage() + "." + ctype->targetLangName() + ".";
                         else
                             replacement = someName + ".";
                         defaultExpr = defaultExpr.replace(someName + ".", replacement);
@@ -1240,7 +1240,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
 
     QList<Include> includes = java_class->typeEntry()->extraIncludes();
     foreach (const Include &inc, includes) {
-        if (inc.type == Include::JavaImport) {
+        if (inc.type == Include::TargetLangImport) {
             s << inc.toString() << endl;
         }
     }
@@ -1399,7 +1399,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
 
         uint exclude_attributes = AbstractMetaAttributes::Native | AbstractMetaAttributes::Abstract;
         uint include_attributes = 0;
-        AbstractMetaFunctionList functions = java_class->queryFunctions(AbstractMetaClass::NormalFunctions | AbstractMetaClass::AbstractFunctions | AbstractMetaClass::NonEmptyFunctions | AbstractMetaClass::NotRemovedFromJava);
+        AbstractMetaFunctionList functions = java_class->queryFunctions(AbstractMetaClass::NormalFunctions | AbstractMetaClass::AbstractFunctions | AbstractMetaClass::NonEmptyFunctions | AbstractMetaClass::NotRemovedFromTargetLang);
         foreach (const AbstractMetaFunction *java_function, functions) {
             retrieveModifications(java_function, java_class, &exclude_attributes, &include_attributes);
 
@@ -1426,12 +1426,12 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     AbstractMetaFunctionList signal_funcs = java_class->queryFunctions(AbstractMetaClass::Signals
                                                                    | AbstractMetaClass::ClassImplements
                                                                    | AbstractMetaClass::Visible
-                                                                   | AbstractMetaClass::NotRemovedFromJava);
+                                                                   | AbstractMetaClass::NotRemovedFromTargetLang);
     for (int i=0; i<signal_funcs.size(); ++i)
         writeSignal(s, signal_funcs.at(i));
 
     // Functions
-    AbstractMetaFunctionList java_funcs = java_class->functionsInJava();
+    AbstractMetaFunctionList java_funcs = java_class->functionsInTargetLang();
     for (int i=0; i<java_funcs.size(); ++i) {
         AbstractMetaFunction *function = java_funcs.at(i);
         writeFunction(s, function);
@@ -1441,7 +1441,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
 
     // Just the private functions for abstract functions implemeneted in superclasses
     if (!java_class->isInterface() && java_class->isAbstract()) {
-        java_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions | AbstractMetaClass::AbstractFunctions | AbstractMetaClass::NotRemovedFromJava);
+        java_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions | AbstractMetaClass::AbstractFunctions | AbstractMetaClass::NotRemovedFromTargetLang);
         foreach (AbstractMetaFunction *java_function, java_funcs) {
             if (java_function->implementingClass() != java_class) {
                 writePrivateNativeFunction(s, java_function);
@@ -1495,13 +1495,13 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     if (java_class->isInterface()) {
         s << endl
           << "    public long __qt_cast_to_"
-          << static_cast<const InterfaceTypeEntry *>(type)->origin()->javaName()
+          << static_cast<const InterfaceTypeEntry *>(type)->origin()->targetLangName()
           << "(long ptr);" << endl;
     } else {
         foreach (AbstractMetaClass *cls, interfaces) {
             s << endl
               << "    @QtBlockedSlot public native long __qt_cast_to_"
-              << static_cast<const InterfaceTypeEntry *>(cls->typeEntry())->origin()->javaName()
+              << static_cast<const InterfaceTypeEntry *>(cls->typeEntry())->origin()->targetLangName()
               << "(long ptr);" << endl;
         }
     }
@@ -1648,7 +1648,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         bool isStatic = (attr & AbstractMetaAttributes::Static);
 
         if (attr & AbstractMetaAttributes::Native) s << "native ";
-        else if (!isStatic && (attr & AbstractMetaAttributes::FinalInJava)) s << "final ";
+        else if (!isStatic && (attr & AbstractMetaAttributes::FinalInTargetLang)) s << "final ";
         else if (!isStatic && (attr & AbstractMetaAttributes::Abstract)) s << "abstract ";
 
         if (isStatic) s << "static ";
@@ -1714,7 +1714,7 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass 
 
     CodeSnipList code_snips = class_type->codeSnips();
     foreach (const CodeSnip &snip, code_snips) {
-        if (snip.language == TypeSystem::JavaCode) {
+        if (snip.language == TypeSystem::TargetLangCode) {
             s << snip.code() << endl;
         }
     }
@@ -1722,11 +1722,11 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass 
 
 bool JavaGenerator::hasDefaultConstructor(const AbstractMetaType *type)
 {
-    QString full_name = type->typeEntry()->qualifiedJavaName();
-    QString class_name = type->typeEntry()->javaName();
+    QString full_name = type->typeEntry()->qualifiedTargetLangName();
+    QString class_name = type->typeEntry()->targetLangName();
 
     foreach (const AbstractMetaClass *java_class, m_classes) {
-        if (java_class->typeEntry()->qualifiedJavaName() == full_name) {
+        if (java_class->typeEntry()->qualifiedTargetLangName() == full_name) {
             AbstractMetaFunctionList functions = java_class->functions();
             foreach (const AbstractMetaFunction *function, functions) {
                 if (function->arguments().size() == 0 && function->name() == class_name)

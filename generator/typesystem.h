@@ -39,7 +39,7 @@ struct Include
     enum IncludeType {
         IncludePath,
         LocalPath,
-        JavaImport
+        TargetLangImport
     };
 
     Include() : type(IncludePath) { }
@@ -61,21 +61,21 @@ class TemplateInstance;
 namespace TypeSystem {
     enum Language {
         NoLanguage          = 0x0000,
-        JavaCode            = 0x0001,
+        TargetLangCode      = 0x0001,
         NativeCode          = 0x0002,
         ShellCode           = 0x0004,
         ShellDeclaration    = 0x0008,
         PackageInitializer  = 0x0010,
 
         // masks
-        All                 = JavaCode | NativeCode | ShellCode | ShellDeclaration | PackageInitializer,
-        JavaAndNativeCode   = JavaCode | NativeCode
+        All                 = TargetLangCode | NativeCode | ShellCode | ShellDeclaration | PackageInitializer,
+        TargetLangAndNativeCode   = TargetLangCode | NativeCode
     };
 
     enum Ownership {
         InvalidOwnership,
         DefaultOwnership,
-        JavaOwnership,
+        TargetLangOwnership,
         CppOwnership
     };
 };
@@ -215,7 +215,7 @@ class CodeSnip : public CodeSnipAbstract
             AfterThis
         };
 
-        CodeSnip() : language(TypeSystem::JavaCode) { }
+        CodeSnip() : language(TypeSystem::TargetLangCode) { }
         CodeSnip(TypeSystem::Language lang) : language(lang) { }
 
         // Very simple, easy to make code ugly if you try
@@ -368,7 +368,7 @@ public:
     };
 
     enum CodeGeneration {
-        GenerateJava            = 0x0001,
+        GenerateTargetLang      = 0x0001,
         GenerateCpp             = 0x0002,
         GenerateForSubclass     = 0x0004,
 
@@ -419,19 +419,19 @@ public:
     // Its type's name in JNI
     virtual QString jniName() const { return m_name; }
 
-    // The type's name in Java
-    virtual QString javaName() const { return m_name; }
+    // The type's name in TargetLang
+    virtual QString targetLangName() const { return m_name; }
 
-    // The type to lookup when converting to Java
-    virtual QString lookupName() const { return javaName(); }
+    // The type to lookup when converting to TargetLang
+    virtual QString lookupName() const { return targetLangName(); }
 
     // The package
     virtual QString javaPackage() const { return QString(); }
 
-    virtual QString qualifiedJavaName() const {
+    virtual QString qualifiedTargetLangName() const {
         QString pkg = javaPackage();
-        if (pkg.isEmpty()) return javaName();
-        return pkg + '.' + javaName();
+        if (pkg.isEmpty()) return targetLangName();
+        return pkg + '.' + targetLangName();
     }
 
     virtual InterfaceTypeEntry *designatedInterface() const { return 0; }
@@ -477,7 +477,7 @@ public:
     ThreadTypeEntry() : TypeEntry("QThread", ThreadType) { setCodeGeneration(GenerateNothing); }
 
     QString jniName() const { return strings_jobject; }
-    QString javaName() const { return strings_Thread; }
+    QString targetLangName() const { return strings_Thread; }
     QString javaPackage() const { return strings_java_lang; }
 };
 
@@ -514,7 +514,7 @@ public:
     void setNestedTypeEntry(TypeEntry *nested) { m_nested_type = nested; }
     const TypeEntry *nestedTypeEntry() const { return m_nested_type; }
 
-    QString javaName() const { return m_nested_type->javaName() + "[]"; }
+    QString targetLangName() const { return m_nested_type->targetLangName() + "[]"; }
     QString jniName() const
     {
         if (m_nested_type->isPrimitive())
@@ -536,8 +536,8 @@ public:
     {
     }
 
-    QString javaName() const { return m_java_name; }
-    void setJavaName(const QString &javaName) { m_java_name  = javaName; }
+    QString targetLangName() const { return m_java_name; }
+    void setTargetLangName(const QString &targetLangName) { m_java_name  = targetLangName; }
 
     QString jniName() const { return m_jni_name; }
     void setJniName(const QString &jniName) { m_jni_name = jniName; }
@@ -549,8 +549,8 @@ public:
     virtual bool preferredConversion() const { return m_preferred_conversion; }
     virtual void setPreferredConversion(bool b) { m_preferred_conversion = b; }
 
-    virtual bool preferredJavaType() const { return m_preferred_java_type; }
-    virtual void setPreferredJavaType(bool b) { m_preferred_java_type = b; }
+    virtual bool preferredTargetLangType() const { return m_preferred_java_type; }
+    virtual void setPreferredTargetLangType(bool b) { m_preferred_java_type = b; }
 
 private:
     QString m_java_name;
@@ -586,14 +586,14 @@ public:
     }
 
     QString javaPackage() const { return m_package_name; }
-    void setJavaPackage(const QString &package) { m_package_name = package; }
+    void setTargetLangPackage(const QString &package) { m_package_name = package; }
 
-    QString javaName() const { return m_java_name; }
+    QString targetLangName() const { return m_java_name; }
     QString javaQualifier() const { return m_qualifier; }
-    QString qualifiedJavaName() const {
+    QString qualifiedTargetLangName() const {
         QString pkg = javaPackage();
-        if (pkg.isEmpty()) return javaQualifier() + '.' + javaName();
-        return pkg + '.' + javaQualifier() + '.' + javaName();
+        if (pkg.isEmpty()) return javaQualifier() + '.' + targetLangName();
+        return pkg + '.' + javaQualifier() + '.' + targetLangName();
     }
 
     QString jniName() const;
@@ -649,8 +649,8 @@ public:
     {
     }
 
-    QString qualifiedJavaName() const;
-    QString javaName() const { return m_java_name; }
+    QString qualifiedTargetLangName() const;
+    QString targetLangName() const { return m_java_name; }
     QString jniName() const;
     virtual bool preferredConversion() const { return false; }
 
@@ -720,7 +720,7 @@ public:
         centry->setQObject(isQObject());
         centry->setDefaultSuperclass(defaultSuperclass());
         centry->setCodeSnips(codeSnips());
-        centry->setJavaPackage(javaPackage());
+        centry->setTargetLangPackage(javaPackage());
 
         return centry;
     }
@@ -732,7 +732,7 @@ public:
 
     virtual QString lookupName() const
     {
-        return m_lookup_name.isEmpty() ? javaName() : m_lookup_name;
+        return m_lookup_name.isEmpty() ? targetLangName() : m_lookup_name;
     }
 
     QString jniName() const { return strings_jobject; }
@@ -769,7 +769,7 @@ public:
     FieldModificationList fieldModifications() const { return m_field_mods; }
 
     QString javaPackage() const { return m_package; }
-    void setJavaPackage(const QString &package) { m_package = package; }
+    void setTargetLangPackage(const QString &package) { m_package = package; }
 
     bool isQObject() const { return m_qobject; }
     void setQObject(bool qobject) { m_qobject = qobject; }
@@ -795,11 +795,11 @@ public:
     void setExpensePolicy(const ExpensePolicy &policy) { m_expense_policy = policy; }
     const ExpensePolicy &expensePolicy() const { return m_expense_policy; }
 
-    QString javaName() const { return m_java_name.isEmpty()
-                                   ? TypeEntry::javaName()
+    QString targetLangName() const { return m_java_name.isEmpty()
+                                   ? TypeEntry::targetLangName()
                                    : m_java_name;
     }
-    void setJavaName(const QString &name) { m_java_name = name; }
+    void setTargetLangName(const QString &name) { m_java_name = name; }
 
 private:
     IncludeList m_extra_includes;
@@ -848,7 +848,7 @@ public:
     }
 
     Type type() const { return m_type; }
-    QString javaName() const;
+    QString targetLangName() const;
     QString javaPackage() const;
     QString qualifiedCppName() const;
 
@@ -888,7 +888,7 @@ public:
     }
 
     QString jniName() const { return strings_jobject; }
-    QString javaName() const { return strings_String; }
+    QString targetLangName() const { return strings_String; }
     QString javaPackage() const { return strings_java_lang; }
 
     virtual bool isNativeIdBased() const { return false; }
@@ -903,7 +903,7 @@ public:
     }
 
     QString jniName() const { return strings_jchar; }
-    QString javaName() const { return strings_char; }
+    QString targetLangName() const { return strings_char; }
     QString javaPackage() const { return QString(); }
 
     virtual bool isNativeIdBased() const { return false; }
@@ -915,7 +915,7 @@ public:
     VariantTypeEntry(const QString &name) : ValueTypeEntry(name, VariantType) { }
 
     QString jniName() const { return strings_jobject; }
-    QString javaName() const { return strings_Object; }
+    QString targetLangName() const { return strings_Object; }
     QString javaPackage() const { return strings_java_lang; }
 
     virtual bool isNativeIdBased() const { return false; }
@@ -1009,7 +1009,7 @@ public:
         QList<TypeEntry *> entries = findTypes(name);
         foreach (TypeEntry *entry, entries) {
             if (entry != 0 && 
-                (!entry->isPrimitive() || static_cast<PrimitiveTypeEntry *>(entry)->preferredJavaType())) {
+                (!entry->isPrimitive() || static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())) {
                 return entry;
             }
         }
@@ -1030,7 +1030,7 @@ public:
         return returned;
     }
 
-    PrimitiveTypeEntry *findJavaPrimitiveType(const QString &java_name);
+    PrimitiveTypeEntry *findTargetLangPrimitiveType(const QString &java_name);
 
     void addRejection(const QString &class_name, const QString &function_name,
                       const QString &field_name, const QString &enum_name);
@@ -1101,7 +1101,7 @@ inline PrimitiveTypeEntry *TypeDatabase::findPrimitiveType(const QString &name)
     QList<TypeEntry *> entries = findTypes(name);
 
     foreach (TypeEntry *entry, entries) {
-        if (entry != 0 && entry->isPrimitive() && static_cast<PrimitiveTypeEntry *>(entry)->preferredJavaType())
+        if (entry != 0 && entry->isPrimitive() && static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())
             return static_cast<PrimitiveTypeEntry *>(entry);
     }
 
