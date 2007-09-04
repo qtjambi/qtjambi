@@ -129,14 +129,14 @@ void UiConverter::fixEnumNode(QDomElement el, QDomDocument *)
 void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *)
 {
     QString senderName = el.namedItem("sender").firstChild().nodeValue();
-    MetaJavaClass *senderClass = m_named_widgets[senderName];
+    AbstractMetaClass *senderClass = m_named_widgets[senderName];
     if (!senderClass) {
         ReportHandler::warning(QString::fromLatin1("sender unknown '%1'").arg(senderName));
         return;
     }
     QDomNode signalSignatureNode = el.namedItem("signal").toElement().firstChild();
     QString signalSignature = signalSignatureNode.nodeValue();
-    const MetaJavaFunction *signalFunction = findFunction(senderClass,
+    const AbstractMetaFunction *signalFunction = findFunction(senderClass,
                                                           signalSignature,
                                                           SignalSearch);
     if (!signalFunction) {
@@ -147,7 +147,7 @@ void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *)
     signalSignatureNode.setNodeValue(signalFunction->modifiedName());
 
     QString receiverName = el.namedItem("receiver").firstChild().nodeValue();
-    MetaJavaClass *receiverClass = m_named_widgets[receiverName];
+    AbstractMetaClass *receiverClass = m_named_widgets[receiverName];
     if (!receiverClass) {
         ReportHandler::warning(QString::fromLatin1("receiver unknown '%1'").arg(receiverName));
         return;
@@ -155,7 +155,7 @@ void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *)
 
     QDomNode slotSignatureNode = el.namedItem("slot").firstChild();
     QString slotSignature = slotSignatureNode.nodeValue();
-    const MetaJavaFunction *slotFunction = findFunction(receiverClass, slotSignature, SlotSearch);
+    const AbstractMetaFunction *slotFunction = findFunction(receiverClass, slotSignature, SlotSearch);
     if (!signalFunction) {
         ReportHandler::warning(QString::fromLatin1("Slot not found '%1' in '%2'")
                                .arg(slotSignature).arg(receiverClass->qualifiedCppName()));
@@ -169,7 +169,7 @@ void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *)
 void UiConverter::fixWidgetNode(QDomElement el, QDomDocument *)
 {
     QString className = el.attribute(QLatin1String("class"));
-    MetaJavaClass *javaClass = m_java_classes.findClass(className);
+    AbstractMetaClass *javaClass = m_java_classes.findClass(className);
     if (!javaClass) {
         ReportHandler::warning(QString::fromLatin1("Class '%1' is unknown").arg(className));
         return;
@@ -190,27 +190,27 @@ QString UiConverter::translateEnumValue(const QString &cppEnumValue) {
     }
 
     QStringList names = cppEnumValue.split(QLatin1String("::"));
-    MetaJavaClass *javaClass = m_java_classes.findClass(names.at(0));
+    AbstractMetaClass *javaClass = m_java_classes.findClass(names.at(0));
 
     if (!javaClass) {
         ReportHandler::warning(QString::fromLatin1("Class '%1' is unknown").arg(names.at(0)));
         return QString();
     }
 
-    MetaJavaEnum *javaEnum = javaClass->findEnumForValue(names.at(1));
+    AbstractMetaEnum *javaEnum = javaClass->findEnumForValue(names.at(1));
     if (!javaEnum) {
         ReportHandler::warning(QString::fromLatin1("Enum value '%1' was not found in '%2'")
                                .arg(names.at(1)).arg(names.at(0)));
         return QString();
     }
 
-    MetaJavaEnumValueList enumValues = javaEnum->values();
-    MetaJavaEnumValue *enumValue = enumValues.find(names.at(1));
+    AbstractMetaEnumValueList enumValues = javaEnum->values();
+    AbstractMetaEnumValue *enumValue = enumValues.find(names.at(1));
     int value = enumValue->value();
 
     if (javaEnum->typeEntry()->isEnumValueRejected(enumValue->name())) {
         for (int i=0; i<enumValues.size(); ++i) {
-            MetaJavaEnumValue *ev = enumValues.at(i);
+            AbstractMetaEnumValue *ev = enumValues.at(i);
             if (ev->value() == value) {
                 enumValue = ev;
                 break;
@@ -221,12 +221,12 @@ QString UiConverter::translateEnumValue(const QString &cppEnumValue) {
     return javaEnum->fullName() + QLatin1String(".") + enumValue->name();
 }
 
-const MetaJavaFunction *UiConverter::findFunction(MetaJavaClass *javaClass,
+const AbstractMetaFunction *UiConverter::findFunction(AbstractMetaClass *javaClass,
                                                   const QString &signature,
                                                   SearchType type)
 {
-    MetaJavaFunctionList senderFunctions = javaClass->functions();
-    foreach (const MetaJavaFunction *f, senderFunctions) {
+    AbstractMetaFunctionList senderFunctions = javaClass->functions();
+    foreach (const AbstractMetaFunction *f, senderFunctions) {
         if (type == SignalSearch && !f->isSignal())
             continue;
 

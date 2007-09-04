@@ -20,7 +20,7 @@
 
 
 void QModelIndexTypeEntry::generateCppJavaToQt(QTextStream &s,
-                                               const MetaJavaType *,
+                                               const AbstractMetaType *,
                                                const QString &env_name,
                                                const QString &qt_name,
                                                const QString &java_name) const
@@ -31,7 +31,7 @@ void QModelIndexTypeEntry::generateCppJavaToQt(QTextStream &s,
 
 
 void QModelIndexTypeEntry::generateCppQtToJava(QTextStream &s,
-                                               const MetaJavaType *,
+                                               const AbstractMetaType *,
                                                const QString &env_name,
                                                const QString &qt_name,
                                                const QString &java_name) const

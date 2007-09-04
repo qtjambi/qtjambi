@@ -28,10 +28,10 @@ GeneratorSet *GeneratorSet::getInstance() {
     return new GeneratorSetJava();
 }
 
-void dumpMetaJavaTree(const MetaJavaClassList &classes);
+void dumpMetaJavaTree(const AbstractMetaClassList &classes);
 
 void generatePriFile(const QString &base_dir, const QString &sub_dir,
-                     const MetaJavaClassList &classes,
+                     const AbstractMetaClassList &classes,
                      MetaInfoGenerator *info_generator);
 
 GeneratorSetJava::GeneratorSetJava() :
@@ -197,7 +197,7 @@ QString GeneratorSetJava::generate() {
 
 
 
-void dumpMetaJavaAttributes(const MetaJavaAttributes *attr)
+void dumpMetaJavaAttributes(const AbstractMetaAttributes *attr)
 {
     if (attr->isNative()) printf(" native");
     if (attr->isAbstract()) printf(" abstract");
@@ -210,7 +210,7 @@ void dumpMetaJavaAttributes(const MetaJavaAttributes *attr)
     if (attr->isFriendly()) printf(" friendly");
 }
 
-void dumpMetaJavaType(const MetaJavaType *type)
+void dumpMetaJavaType(const AbstractMetaType *type)
 {
     if (!type) {
         printf("[void]");
@@ -232,7 +232,7 @@ void dumpMetaJavaType(const MetaJavaType *type)
     }
 }
 
-void dumpMetaJavaArgument(const MetaJavaArgument *arg)
+void dumpMetaJavaArgument(const AbstractMetaArgument *arg)
 {
     printf("        ");
     dumpMetaJavaType(arg->type());
@@ -242,52 +242,52 @@ void dumpMetaJavaArgument(const MetaJavaArgument *arg)
     printf("\n");
 }
 
-void dumpMetaJavaFunction(const MetaJavaFunction *func)
+void dumpMetaJavaFunction(const AbstractMetaFunction *func)
 {
     printf("    %s() - ", qPrintable(func->name()));
     dumpMetaJavaType(func->type());
     dumpMetaJavaAttributes(func);
     if (func->isConstant()) printf(" const");
     printf("\n      arguments:\n");
-    foreach (MetaJavaArgument *arg, func->arguments())
+    foreach (AbstractMetaArgument *arg, func->arguments())
         dumpMetaJavaArgument(arg);
 }
 
-void dumpMetaJavaClass(const MetaJavaClass *cls)
+void dumpMetaJavaClass(const AbstractMetaClass *cls)
 {
     printf("\nclass: %s, package: %s\n", qPrintable(cls->name()), qPrintable(cls->package()));
     if (cls->hasVirtualFunctions())
         printf("    shell based\n");
     printf("  baseclass: %s %s\n", qPrintable(cls->baseClassName()), cls->isQObject() ? "'QObject-type'" : "'not a QObject-type'");
     printf("  interfaces:");
-    foreach (MetaJavaClass *iface, cls->interfaces())
+    foreach (AbstractMetaClass *iface, cls->interfaces())
         printf(" %s", qPrintable(iface->name()));
     printf("\n");
     printf("  attributes:");
     dumpMetaJavaAttributes(cls);
 
     printf("\n  functions:\n");
-    foreach (const MetaJavaFunction *func, cls->functions())
+    foreach (const AbstractMetaFunction *func, cls->functions())
         dumpMetaJavaFunction(func);
 
     //     printf("\n  fields:\n");
-    //     foreach (const MetaJavaField *field, cls->fields())
+    //     foreach (const AbstractMetaField *field, cls->fields())
     //         dumpMetaJavaField(field);
 
     //     printf("\n  enums:\n");
-    //     foreach (const MetaJavaEnum *e, cls->enums())
+    //     foreach (const AbstractMetaEnum *e, cls->enums())
     //         dumpMetaJavaEnum(e);
 }
 
-void dumpMetaJavaTree(const MetaJavaClassList &classes)
+void dumpMetaJavaTree(const AbstractMetaClassList &classes)
 {
-    foreach (MetaJavaClass *cls, classes) {
+    foreach (AbstractMetaClass *cls, classes) {
         dumpMetaJavaClass(cls);
     }
 }
 
 
-QFile *openPriFile(const QString &base_dir, const QString &sub_dir, const MetaJavaClass *cls)
+QFile *openPriFile(const QString &base_dir, const QString &sub_dir, const AbstractMetaClass *cls)
 {
     QString pro_file_name = cls->package().replace(".", "_") + "/" + cls->package().replace(".", "_") + ".pri";
 
@@ -307,12 +307,12 @@ QFile *openPriFile(const QString &base_dir, const QString &sub_dir, const MetaJa
 }
 
 void generatePriFile(const QString &base_dir, const QString &sub_dir,
-                     const MetaJavaClassList &classes,
+                     const AbstractMetaClassList &classes,
                      MetaInfoGenerator *info_generator)
 {
     QHash<QString, QFile *> fileHash;
 
-    foreach (const MetaJavaClass *cls, classes) {
+    foreach (const AbstractMetaClass *cls, classes) {
         if (!(cls->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp))
             continue;
 
@@ -350,7 +350,7 @@ void generatePriFile(const QString &base_dir, const QString &sub_dir,
         s << endl << "HEADERS += \\" << endl;
     }
 
-    foreach (const MetaJavaClass *cls, classes) {
+    foreach (const AbstractMetaClass *cls, classes) {
         if (!(cls->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp))
             continue;
 
@@ -358,7 +358,7 @@ void generatePriFile(const QString &base_dir, const QString &sub_dir,
         Q_ASSERT(f);
 
         QTextStream s(f);
-        bool shellfile = (cls->generateShellClass() || cls->queryFunctions(MetaJavaClass::Signals).size() > 0)
+        bool shellfile = (cls->generateShellClass() || cls->queryFunctions(AbstractMetaClass::Signals).size() > 0)
                 && !cls->isNamespace() && !cls->isInterface() && !cls->typeEntry()->isVariant();
             /*bool shellfile = (!cls->isNamespace() && !cls->isInterface() && cls->hasVirtualFunctions()
                           && !cls->typeEntry()->isVariant()) */

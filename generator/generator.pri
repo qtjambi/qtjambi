@@ -34,6 +34,9 @@ HEADERS += \
         $$GENERATORPATH/generatorset.h \
         $$GENERATORPATH/metajava.h \
         $$GENERATORPATH/customtypes.h \
+        $$GENERATORPATH/abstractmetabuilder.h \
+        $$GENERATORPATH/abstractmetalang.h \
+
 
       
 SOURCES += \
@@ -47,6 +50,8 @@ SOURCES += \
         $$GENERATORPATH/generatorset.cpp \
         $$GENERATORPATH/metajava.cpp \
         $$GENERATORPATH/customtypes.cpp \
+        $$GENERATORPATH/abstractmetabuilder.cpp \
+        $$GENERATORPATH/abstractmetalang.cpp \
 
    
 QT = core xml

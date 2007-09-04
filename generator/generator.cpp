@@ -28,14 +28,14 @@ Generator::Generator()
 
 void Generator::generate()
 {
-    if (m_java_classes.size() == 0) {
+    if (m_classes.size() == 0) {
         ReportHandler::warning(QString("%1: no java classes, skipping")
                                .arg(metaObject()->className()));
         return;
     }
 
 
-    foreach (MetaJavaClass *cls, m_java_classes) {
+    foreach (AbstractMetaClass *cls, m_classes) {
         if (!shouldGenerate(cls))
             continue;
 
@@ -56,10 +56,10 @@ void Generator::printClasses()
 {
     QTextStream s(stdout);
 
-    MetaJavaClassList classes = m_java_classes;
+    AbstractMetaClassList classes = m_classes;
     qSort(classes);
 
-    foreach (MetaJavaClass *cls, classes) {
+    foreach (AbstractMetaClass *cls, classes) {
         if (!shouldGenerate(cls))
             continue;
         write(s, cls);
@@ -77,19 +77,19 @@ void Generator::verifyDirectoryFor(const QFile &file)
     }
 }
 
-QString Generator::subDirectoryForClass(const MetaJavaClass *) const
+QString Generator::subDirectoryForClass(const AbstractMetaClass *) const
 {
     Q_ASSERT(false);
     return QString();
 }
 
-QString Generator::fileNameForClass(const MetaJavaClass *) const
+QString Generator::fileNameForClass(const AbstractMetaClass *) const
 {
     Q_ASSERT(false);
     return QString();
 }
 
-void Generator::write(QTextStream &, const MetaJavaClass *)
+void Generator::write(QTextStream &, const AbstractMetaClass *)
 {
     Q_ASSERT(false);
 }

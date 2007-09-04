@@ -28,66 +28,66 @@ class JavaGenerator : public Generator
 public:
     JavaGenerator();
 
-    QString translateType(const MetaJavaType *java_type, Option option = NoOption);
+    QString translateType(const AbstractMetaType *java_type, Option option = NoOption);
 
     void writeInjectedCode(QTextStream &s, 
-                           const MetaJavaFunction *java_function,
+                           const AbstractMetaFunction *java_function,
                            CodeSnip::Position position);
     void writeArgument(QTextStream &s,
-                       const MetaJavaFunction *java_function,
-                       const MetaJavaArgument *java_argument,
+                       const AbstractMetaFunction *java_function,
+                       const AbstractMetaArgument *java_argument,
                        uint options = 0);
-    void writeEnum(QTextStream &s, const MetaJavaEnum *java_enum);
-    void writeIntegerEnum(QTextStream &s, const MetaJavaEnum *java_enum);
-    void writeSignal(QTextStream &s, const MetaJavaFunction *java_function);
-    void writeFunction(QTextStream &s, const MetaJavaFunction *java_function,
+    void writeEnum(QTextStream &s, const AbstractMetaEnum *java_enum);
+    void writeIntegerEnum(QTextStream &s, const AbstractMetaEnum *java_enum);
+    void writeSignal(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writeFunction(QTextStream &s, const AbstractMetaFunction *java_function,
                        uint included_attributes = 0, uint excluded_attributes = 0);
-    void writeFieldAccessors(QTextStream &s, const MetaJavaField *field);
-    void write(QTextStream &s, const MetaJavaClass *java_class);
+    void writeFieldAccessors(QTextStream &s, const AbstractMetaField *field);
+    void write(QTextStream &s, const AbstractMetaClass *java_class);
 
-    void writeFunctionOverloads(QTextStream &s, const MetaJavaFunction *java_function,
+    void writeFunctionOverloads(QTextStream &s, const AbstractMetaFunction *java_function,
                                 uint included_attributes, uint excluded_attributes);
-    void writeEnumOverload(QTextStream &s, const MetaJavaFunction *java_function,
+    void writeEnumOverload(QTextStream &s, const AbstractMetaFunction *java_function,
                            uint include_attributes, uint exclude_attributes);
-    void writeExtraFunctions(QTextStream &s, const MetaJavaClass *java_class);
-    void writeFunctionAttributes(QTextStream &s, const MetaJavaFunction *java_function,
+    void writeExtraFunctions(QTextStream &s, const AbstractMetaClass *java_class);
+    void writeFunctionAttributes(QTextStream &s, const AbstractMetaFunction *java_function,
                                  uint included_attributes = 0, uint excluded_attributes = 0,
                                  uint options = 0);
-    void writeConstructorContents(QTextStream &s, const MetaJavaFunction *java_function);
-    void writeFunctionArguments(QTextStream &s, const MetaJavaFunction *java_function,
+    void writeConstructorContents(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writeFunctionArguments(QTextStream &s, const AbstractMetaFunction *java_function,
         int count = -1, uint options = 0);
-    void writeJavaCallThroughContents(QTextStream &s, const MetaJavaFunction *java_function);
-    void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, MetaJavaArgument *arg,
+    void writeJavaCallThroughContents(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, AbstractMetaArgument *arg,
                                     const QString &indent);
-    void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, MetaJavaType *type,
+    void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, AbstractMetaType *type,
                                     const QString &arg_name, const QString &indent);
-    void writePrivateNativeFunction(QTextStream &s, const MetaJavaFunction *java_function);
-    void writeJavaLangObjectOverrideFunctions(QTextStream &s, const MetaJavaClass *cls);
+    void writePrivateNativeFunction(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writeJavaLangObjectOverrideFunctions(QTextStream &s, const AbstractMetaClass *cls);
     void writeReferenceCount(QTextStream &s, const ReferenceCount &refCount, const QString &argumentName);
-    bool hasDefaultConstructor(const MetaJavaType *type);
+    bool hasDefaultConstructor(const AbstractMetaType *type);
 
-    void retrieveModifications(const MetaJavaFunction *f, const MetaJavaClass *java_class,
+    void retrieveModifications(const AbstractMetaFunction *f, const AbstractMetaClass *java_class,
          uint *exclude_attributes, uint *include_attributes) const;
-    QString functionSignature(const MetaJavaFunction *java_function,
+    QString functionSignature(const AbstractMetaFunction *java_function,
                               uint included_attributes,
                               uint excluded_attributes,
                               Option option = NoOption,
                               int arg_count = -1);
-    void setupForFunction(const MetaJavaFunction *java_function,
+    void setupForFunction(const AbstractMetaFunction *java_function,
        uint *included_attributes, uint *excluded_attributes) const;
 
-    virtual QString subDirectoryForClass(const MetaJavaClass *java_class) const
+    virtual QString subDirectoryForClass(const AbstractMetaClass *java_class) const
     { return subDirectoryForPackage(java_class->package()); }
 
-    virtual QString fileNameForClass(const MetaJavaClass *java_class) const;
+    virtual QString fileNameForClass(const AbstractMetaClass *java_class) const;
 
-    bool isComparable(const MetaJavaClass *cls) const;
+    bool isComparable(const AbstractMetaClass *cls) const;
 
 #if 0
-    void write1_dot_5_enum(QTextStream &s, const MetaJavaEnum *java_enum);
+    void write1_dot_5_enum(QTextStream &s, const AbstractMetaEnum *java_enum);
 #endif
 
-    bool shouldGenerate(const MetaJavaClass *java_class) const {
+    bool shouldGenerate(const AbstractMetaClass *java_class) const {
         return !java_class->typeEntry()->isContainer() && !java_class->typeEntry()->isVariant()
                && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateJava);
     }
@@ -107,8 +107,8 @@ protected:
     QString m_doc_directory;
     DocParser *m_doc_parser;
     bool m_docs_enabled;
-    QList<const MetaJavaFunction *> m_nativepointer_functions;
-    QList<const MetaJavaFunction *> m_reference_count_candidate_functions;
+    QList<const AbstractMetaFunction *> m_nativepointer_functions;
+    QList<const AbstractMetaFunction *> m_reference_count_candidate_functions;
 };
 
 #endif // JAVAGENERATOR_H

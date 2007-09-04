@@ -22,24 +22,24 @@ class CppHeaderGenerator : public CppGenerator
     Q_OBJECT
 
 public:
-    virtual QString fileNameForClass(const MetaJavaClass *cls) const;
+    virtual QString fileNameForClass(const AbstractMetaClass *cls) const;
 
-    void write(QTextStream &s, const MetaJavaClass *java_class);
-    void writeFunction(QTextStream &s, const MetaJavaFunction *java_function);
-    void writePublicFunctionOverride(QTextStream &s, const MetaJavaFunction *java_function);
-    void writeVirtualFunctionOverride(QTextStream &s, const MetaJavaFunction *java_function);
-    void writeForwardDeclareSection(QTextStream &s, const MetaJavaClass *java_class);
-    void writeVariablesSection(QTextStream &s, const MetaJavaClass *java_class);
-    void writeFieldAccessors(QTextStream &s, const MetaJavaField *java_field);
-    void writeSignalWrapper(QTextStream &s, const MetaJavaFunction *java_function);
-    void writeSignalWrappers(QTextStream &s, const MetaJavaClass *java_class);
-    void writeWrapperClass(QTextStream &s, const MetaJavaClass *java_class);
-    void writeInjectedCode(QTextStream &s, const MetaJavaClass *java_class);
+    void write(QTextStream &s, const AbstractMetaClass *java_class);
+    void writeFunction(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writePublicFunctionOverride(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writeVirtualFunctionOverride(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writeForwardDeclareSection(QTextStream &s, const AbstractMetaClass *java_class);
+    void writeVariablesSection(QTextStream &s, const AbstractMetaClass *java_class);
+    void writeFieldAccessors(QTextStream &s, const AbstractMetaField *java_field);
+    void writeSignalWrapper(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writeSignalWrappers(QTextStream &s, const AbstractMetaClass *java_class);
+    void writeWrapperClass(QTextStream &s, const AbstractMetaClass *java_class);
+    void writeInjectedCode(QTextStream &s, const AbstractMetaClass *java_class);
 
-    bool shouldGenerate(const MetaJavaClass *java_class) const {
+    bool shouldGenerate(const AbstractMetaClass *java_class) const {
         return (java_class->generateShellClass()
                 && CppGenerator::shouldGenerate(java_class))
-            || (java_class->queryFunctions(MetaJavaClass::Signals).size() > 0
+            || (java_class->queryFunctions(AbstractMetaClass::Signals).size() > 0
                 && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp));
     }
 };

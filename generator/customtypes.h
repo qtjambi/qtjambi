@@ -30,13 +30,13 @@ public:
     virtual bool isValue() const { return true; }
 
     virtual void generateCppJavaToQt(QTextStream &s,
-                                     const MetaJavaType *java_type,
+                                     const AbstractMetaType *java_type,
                                      const QString &env_name,
                                      const QString &qt_name,
                                      const QString &java_name) const;
 
     virtual void generateCppQtToJava(QTextStream &s,
-                                     const MetaJavaType *java_type,
+                                     const AbstractMetaType *java_type,
                                      const QString &env_name,
                                      const QString &qt_name,
                                      const QString &java_name) const;

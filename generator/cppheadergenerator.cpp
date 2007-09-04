@@ -17,17 +17,17 @@
 
 #include <qdebug.h>
 
-QString CppHeaderGenerator::fileNameForClass(const MetaJavaClass *java_class) const
+QString CppHeaderGenerator::fileNameForClass(const AbstractMetaClass *java_class) const
 {
     return QString("qtjambishell_%1.h").arg(java_class->name());
 }
 
-void CppHeaderGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *java_field)
+void CppHeaderGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaField *java_field)
 {
     Q_ASSERT(java_field->isProtected());
 
-    const MetaJavaFunction *setter = java_field->setter();
-    const MetaJavaFunction *getter = java_field->getter();
+    const AbstractMetaFunction *setter = java_field->setter();
+    const AbstractMetaFunction *getter = java_field->getter();
 
     if (!java_field->type()->isConstant())
         writeFunction(s, setter);
@@ -35,7 +35,7 @@ void CppHeaderGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField
     writeFunction(s, getter);
 }
 
-void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const MetaJavaFunction *signal)
+void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const AbstractMetaFunction *signal)
 {
     s << "    ";
     writeFunctionSignature(s, signal, 0, signalWrapperPrefix(), 
@@ -43,23 +43,23 @@ void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const MetaJavaFuncti
     s << ";" << endl;
 }
 
-void CppHeaderGenerator::writeSignalWrappers(QTextStream &s, const MetaJavaClass *java_class)
+void CppHeaderGenerator::writeSignalWrappers(QTextStream &s, const AbstractMetaClass *java_class)
 {
-    MetaJavaFunctionList signal_funcs =
-        java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible | MetaJavaClass::NotRemovedFromJava);
+    AbstractMetaFunctionList signal_funcs =
+        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromJava);
 
     if (signal_funcs.size() > 0) {
         s << endl << "public slots:" << endl;
-        foreach (const MetaJavaFunction *signal, signal_funcs) {
+        foreach (const AbstractMetaFunction *signal, signal_funcs) {
             writeSignalWrapper(s, signal);
         }
     }
 }
 
-void CppHeaderGenerator::writeWrapperClass(QTextStream &s, const MetaJavaClass *java_class)
+void CppHeaderGenerator::writeWrapperClass(QTextStream &s, const AbstractMetaClass *java_class)
 {
-    MetaJavaFunctionList signal_functions =
-        java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible | MetaJavaClass::NotRemovedFromJava);
+    AbstractMetaFunctionList signal_functions =
+        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromJava);
     if (signal_functions.size() == 0)
         return ;
 
@@ -78,7 +78,7 @@ static bool include_less_than(const Include &a, const Include &b)
     return a.name < b.name;
 }
 
-void CppHeaderGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
+void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
 {
     QString include_block = "QTJAMBISHELL_" + java_class->name().toUpper() + "_H";
 
@@ -147,7 +147,7 @@ void CppHeaderGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
 
     s << "public:" << endl;
-    foreach (const MetaJavaFunction *function, java_class->functions()) {
+    foreach (const AbstractMetaFunction *function, java_class->functions()) {
         if (function->isConstructor() && !function->isPrivate())
             writeFunction(s, function);
     }
@@ -156,25 +156,25 @@ void CppHeaderGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     s << endl;
 
     // All functions in original class that should be reimplemented in shell class
-    MetaJavaFunctionList shell_functions = java_class->functionsInShellClass();
-    foreach (const MetaJavaFunction *function, shell_functions) {
+    AbstractMetaFunctionList shell_functions = java_class->functionsInShellClass();
+    foreach (const AbstractMetaFunction *function, shell_functions) {
         writeFunction(s, function);
     }
 
     // Public call throughs for protected functions
-    MetaJavaFunctionList public_overrides = java_class->publicOverrideFunctions();
-    foreach (const MetaJavaFunction *function, public_overrides) {
+    AbstractMetaFunctionList public_overrides = java_class->publicOverrideFunctions();
+    foreach (const AbstractMetaFunction *function, public_overrides) {
         writePublicFunctionOverride(s, function);
     }
 
     // Override all virtual functions to get the decision on static/virtual call
-    MetaJavaFunctionList virtual_functions = java_class->virtualOverrideFunctions();
-    foreach (const MetaJavaFunction *function, virtual_functions) {
+    AbstractMetaFunctionList virtual_functions = java_class->virtualOverrideFunctions();
+    foreach (const AbstractMetaFunction *function, virtual_functions) {
         writeVirtualFunctionOverride(s, function);
     }
 
     // Field accessors
-    foreach (const MetaJavaField *field, java_class->fields()) {
+    foreach (const AbstractMetaField *field, java_class->fields()) {
         if (field->isProtected())
             writeFieldAccessors(s, field);
     }
@@ -191,7 +191,7 @@ void CppHeaderGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     Writes out declarations of virtual C++ functions so that they
     can be reimplemented from the java side.
 */
-void CppHeaderGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *java_function)
+void CppHeaderGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *java_function)
 {
     if (java_function->isModifiedRemoved(TypeSystem::ShellCode))
         return;
@@ -202,7 +202,7 @@ void CppHeaderGenerator::writeFunction(QTextStream &s, const MetaJavaFunction *j
 }
 
 void CppHeaderGenerator::writePublicFunctionOverride(QTextStream &s,
-                                                     const MetaJavaFunction *java_function)
+                                                     const AbstractMetaFunction *java_function)
 {
     s << "    ";
     writeFunctionSignature(s, java_function, 0, "__public_", Option(EnumAsInts | ShowStatic | UnderscoreSpaces));
@@ -211,7 +211,7 @@ void CppHeaderGenerator::writePublicFunctionOverride(QTextStream &s,
 
 
 void CppHeaderGenerator::writeVirtualFunctionOverride(QTextStream &s,
-                                                      const MetaJavaFunction *java_function)
+                                                      const AbstractMetaFunction *java_function)
 {
     if (java_function->isModifiedRemoved(TypeSystem::NativeCode))
         return;
@@ -222,7 +222,7 @@ void CppHeaderGenerator::writeVirtualFunctionOverride(QTextStream &s,
 }
 
 
-void CppHeaderGenerator::writeForwardDeclareSection(QTextStream &s, const MetaJavaClass *)
+void CppHeaderGenerator::writeForwardDeclareSection(QTextStream &s, const AbstractMetaClass *)
 {
     s << endl
       << "class QtJambiFunctionTable;" << endl
@@ -230,14 +230,14 @@ void CppHeaderGenerator::writeForwardDeclareSection(QTextStream &s, const MetaJa
 }
 
 
-void CppHeaderGenerator::writeVariablesSection(QTextStream &s, const MetaJavaClass *)
+void CppHeaderGenerator::writeVariablesSection(QTextStream &s, const AbstractMetaClass *)
 {
     s << endl
       << "    QtJambiFunctionTable *m_vtable;" << endl
       << "    QtJambiLink *m_link;" << endl;
 }
 
-void CppHeaderGenerator::writeInjectedCode(QTextStream &s, const MetaJavaClass *java_class)
+void CppHeaderGenerator::writeInjectedCode(QTextStream &s, const AbstractMetaClass *java_class)
 {
     CodeSnipList code_snips = java_class->typeEntry()->codeSnips();
     foreach (const CodeSnip &cs, code_snips) {

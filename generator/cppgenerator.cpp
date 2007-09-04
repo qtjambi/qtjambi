@@ -16,7 +16,7 @@
 
 #include "metajava.h"
 
-void CppGenerator::writeTypeInfo(QTextStream &s, const MetaJavaType *type, Option options)
+void CppGenerator::writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option options)
 {
     if ((options & OriginalTypeDescription) && !type->originalTypeDescription().isEmpty()) {
         s << type->originalTypeDescription();
@@ -50,7 +50,7 @@ void CppGenerator::writeTypeInfo(QTextStream &s, const MetaJavaType *type, Optio
         && (!type->isContainer() 
             || (static_cast<const ContainerTypeEntry *>(te))->type() != ContainerTypeEntry::StringListContainer)) {
         s << '<';
-        QList<MetaJavaType *> args = type->instantiations();
+        QList<AbstractMetaType *> args = type->instantiations();
         bool nested_template = false;
         for (int i=0; i<args.size(); ++i) {
             if (i != 0)
@@ -74,7 +74,7 @@ void CppGenerator::writeTypeInfo(QTextStream &s, const MetaJavaType *type, Optio
 
 
 void CppGenerator::writeFunctionArguments(QTextStream &s,
-                                          const MetaJavaArgumentList &arguments,
+                                          const AbstractMetaArgumentList &arguments,
                                           Option option,
                                           int numArguments)
 {
@@ -83,7 +83,7 @@ void CppGenerator::writeFunctionArguments(QTextStream &s,
     for (int i=0; i<numArguments; ++i) {
         if (i != 0)
             s << ", ";
-        MetaJavaArgument *arg = arguments.at(i);
+        AbstractMetaArgument *arg = arguments.at(i);
         writeTypeInfo(s, arg->type(), option);
         if (!(option & SkipName))
             s << " " << arg->indexedName();
@@ -114,8 +114,8 @@ void CppGenerator::writeFunctionArguments(QTextStream &s,
  */
 
 void CppGenerator::writeFunctionSignature(QTextStream &s,
-                                          const MetaJavaFunction *java_function,
-                                          const MetaJavaClass *implementor,
+                                          const AbstractMetaFunction *java_function,
+                                          const AbstractMetaClass *implementor,
                                           const QString &name_prefix,
                                           Option option,
                                           const QString &classname_prefix,
@@ -123,7 +123,7 @@ void CppGenerator::writeFunctionSignature(QTextStream &s,
                                           int numArguments)
 {
 // ### remove the implementor
-    MetaJavaType *function_type = java_function->type();
+    AbstractMetaType *function_type = java_function->type();
 
     if (java_function->isStatic() && (option & ShowStatic))
         s << "static ";
@@ -159,9 +159,9 @@ void CppGenerator::writeFunctionSignature(QTextStream &s,
 
     s << name_prefix << function_name;
 
-    if (java_function->attributes() & MetaJavaAttributes::SetterFunction)
+    if (java_function->attributes() & AbstractMetaAttributes::SetterFunction)
         s << "_setter";
-    else if (java_function->attributes() & MetaJavaAttributes::GetterFunction)
+    else if (java_function->attributes() & AbstractMetaAttributes::GetterFunction)
         s << "_getter";
 
     s << "(";

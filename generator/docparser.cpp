@@ -33,7 +33,7 @@ DocParser::~DocParser()
     delete m_dom;
 }
 
-QString DocParser::documentation(const MetaJavaClass *meta_class) const
+QString DocParser::documentation(const AbstractMetaClass *meta_class) const
 {
     if (!m_dom)
         return QString();
@@ -83,7 +83,7 @@ QString DocParser::documentationForFunction(const QString &signature) const
     return documentationForFunction(signature, "method");
 }
 
-QString DocParser::documentation(const MetaJavaEnum *java_enum) const
+QString DocParser::documentation(const AbstractMetaEnum *java_enum) const
 {
     if (!m_dom)
         return QString();
@@ -107,7 +107,7 @@ QString DocParser::documentation(const MetaJavaEnum *java_enum) const
 }
 
 
-QString DocParser::documentation(const MetaJavaEnumValue *java_enum_value) const
+QString DocParser::documentation(const AbstractMetaEnumValue *java_enum_value) const
 {
     if (!m_dom)
         return QString();

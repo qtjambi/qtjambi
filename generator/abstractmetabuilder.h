@@ -1,0 +1,139 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of $PRODUCT$.
+**
+** $CPP_LICENSE$
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef ABSTRACTMETABUILDER_H
+#define ABSTRACTMETABUILDER_H
+
+#include "codemodel.h"
+#include "metajava.h"
+#include "typesystem.h"
+#include "typeparser.h"
+
+#include <QtCore/QSet>
+
+class AbstractMetaBuilder
+{
+public:
+    enum RejectReason {
+        NotInTypeSystem,
+        GenerationDisabled,
+        RedefinedToNotClass,
+        UnmatchedArgumentType,
+        UnmatchedReturnType,
+        NoReason
+    };
+
+    AbstractMetaBuilder();
+    virtual ~AbstractMetaBuilder() {};
+
+    AbstractMetaClassList classes() const { return m_java_classes; }
+
+    FileModelItem model() const { return m_dom; }
+    void setModel(FileModelItem item) { m_dom = item; }
+
+
+    ScopeModelItem popScope() { return m_scopes.takeLast(); }
+    void pushScope(ScopeModelItem item) { m_scopes << item; }
+    ScopeModelItem currentScope() const { return m_scopes.last(); }
+
+    QString fileName() const { return m_file_name; }
+    void setFileName(const QString &fileName) { m_file_name = fileName; }
+
+    void dumpLog();
+
+    bool build();
+
+    void figureOutEnumValuesForClass(AbstractMetaClass *java_class, QSet<AbstractMetaClass *> *classes);
+    int figureOutEnumValue(const QString &name, int value, AbstractMetaEnum *java_enum, AbstractMetaFunction *java_function = 0);
+    void figureOutEnumValues();
+    void figureOutDefaultEnumArguments();
+
+    void addAbstractMetaClass(AbstractMetaClass *cls);
+    AbstractMetaClass *traverseClass(ClassModelItem item);
+    bool setupInheritance(AbstractMetaClass *java_class);
+    AbstractMetaClass *traverseNamespace(NamespaceModelItem item);
+    AbstractMetaEnum *traverseEnum(EnumModelItem item, AbstractMetaClass *enclosing);
+    void traverseEnums(ScopeModelItem item, AbstractMetaClass *parent);
+    void traverseFunctions(ScopeModelItem item, AbstractMetaClass *parent);
+    void traverseFields(ScopeModelItem item, AbstractMetaClass *parent);
+    void traverseStreamOperator(FunctionModelItem function_item);
+    void traverseCompareOperator(FunctionModelItem item);
+    AbstractMetaFunction *traverseFunction(FunctionModelItem function);
+    AbstractMetaField *traverseField(VariableModelItem field, const AbstractMetaClass *cls);
+    void checkFunctionModifications();
+    void registerHashFunction(FunctionModelItem function_item);
+
+    void parseQ_Property(AbstractMetaClass *java_class, const QStringList &declarations);
+    void setupEquals(AbstractMetaClass *java_class);
+    void setupComparable(AbstractMetaClass *java_class);
+    void setupFunctionDefaults(AbstractMetaFunction *java_function, AbstractMetaClass *java_class);
+
+    QString translateDefaultValue(ArgumentModelItem item, AbstractMetaType *type,
+                                               AbstractMetaFunction *fnc, AbstractMetaClass *,
+                                               int argument_index);
+    AbstractMetaType *translateType(const TypeInfo &type, bool *ok);
+
+    void decideUsagePattern(AbstractMetaType *type);
+
+    bool inheritTemplate(AbstractMetaClass *subclass,
+                         const AbstractMetaClass *template_class,
+                         const TypeParser::Info &info);
+    AbstractMetaType *inheritTemplateType(const QList<AbstractMetaType *> &template_types, AbstractMetaType *java_type);
+
+    bool isQObject(const QString &qualified_name);
+    bool isEnum(const QStringList &qualified_name);
+
+    void fixQObjectForScope  (TypeDatabase *types, 
+			      NamespaceModelItem item);
+protected:
+    AbstractMetaClass *argumentToClass(ArgumentModelItem);
+
+    virtual AbstractMetaClass *createMetaClass() = 0;
+    virtual AbstractMetaEnum *createMetaEnum() = 0;
+    virtual AbstractMetaEnumValue *createMetaEnumValue() = 0;
+    virtual AbstractMetaField *createMetaField() = 0;
+    virtual AbstractMetaFunction *createMetaFunction() = 0;
+    virtual AbstractMetaArgument *createMetaArgument() = 0;
+    virtual AbstractMetaType *createMetaType() = 0;
+
+private:
+    void sortLists();
+
+    QString m_file_name;
+
+    AbstractMetaClassList m_java_classes;
+    AbstractMetaClassList m_templates;
+    FileModelItem m_dom;
+
+    QList<TypeEntry *> m_template_args;
+    QSet<const TypeEntry *> m_used_types;
+
+    QMap<QString, RejectReason> m_rejected_classes;
+    QMap<QString, RejectReason> m_rejected_enums;
+    QMap<QString, RejectReason> m_rejected_functions;
+    QMap<QString, RejectReason> m_rejected_fields;
+
+    QList<AbstractMetaEnum *> m_enums;
+
+    QList<QPair<AbstractMetaArgument *, AbstractMetaFunction *> > m_enum_default_arguments;
+
+    QHash<QString, AbstractMetaEnumValue *> m_enum_values;
+
+    AbstractMetaClass *m_current_class;
+    QList<ScopeModelItem> m_scopes;
+    QString m_namespace_prefix;
+
+    QSet<AbstractMetaClass *> m_setup_inheritance_done;
+};
+
+#endif // ABSTRACTMETBUILDER_H

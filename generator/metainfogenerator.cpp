@@ -36,7 +36,7 @@ QString MetaInfoGenerator::subDirectoryForPackage(const QString &package, Output
     }
 }
 
-QString MetaInfoGenerator::subDirectoryForClass(const MetaJavaClass *cls, OutputDirectoryType type) const
+QString MetaInfoGenerator::subDirectoryForClass(const AbstractMetaClass *cls, OutputDirectoryType type) const
 {
     Q_ASSERT(cls);
     return subDirectoryForPackage(cls->package(), type);
@@ -55,23 +55,23 @@ bool MetaInfoGenerator::shouldGenerate(const TypeEntry *entry) const
     return entry != 0 && !entry->isNamespace() && !entry->isEnum();
 }
 
-bool MetaInfoGenerator::shouldGenerate(const MetaJavaClass *cls) const
+bool MetaInfoGenerator::shouldGenerate(const AbstractMetaClass *cls) const
 {
     return (!cls->isInterface() && cls->typeEntry()->isValue() && !cls->isNamespace()
             && !cls->isAbstract() && (cls->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp));
 }
 
-QString MetaInfoGenerator::fileNameForClass(const MetaJavaClass *) const
+QString MetaInfoGenerator::fileNameForClass(const AbstractMetaClass *) const
 {
     return filenameStub() + ".cpp";
 }
 
-void MetaInfoGenerator::write(QTextStream &, const MetaJavaClass *)
+void MetaInfoGenerator::write(QTextStream &, const AbstractMetaClass *)
 {
     // not used
 }
 
-bool MetaInfoGenerator::generated(const MetaJavaClass *cls) const
+bool MetaInfoGenerator::generated(const AbstractMetaClass *cls) const
 {
     return generatedMetaInfo(cls->package());
 }
@@ -101,16 +101,16 @@ static void metainfo_write_name_list(QTextStream &s, char *var_name, const QList
 
 void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &package)
 {
-    MetaJavaClassList classes = this->classes();
+    AbstractMetaClassList classes = this->classes();
 
     QList<QString> strs;
-    foreach (MetaJavaClass *cls, classes) {
+    foreach (AbstractMetaClass *cls, classes) {
         if (cls->package() == package) {
-            MetaJavaFunctionList functions = cls->functions();
-            foreach (MetaJavaFunction *f, functions) {
+            AbstractMetaFunctionList functions = cls->functions();
+            foreach (AbstractMetaFunction *f, functions) {
                 if (f->implementingClass() == cls && (f->isSignal() || f->isSlot())) {
 
-                    MetaJavaArgumentList arguments = f->arguments();
+                    AbstractMetaArgumentList arguments = f->arguments();
                     int numOverloads = arguments.size();
                     for (int i=arguments.size()-1; i>=0; --i) {
                         if (arguments.at(i)->defaultValueExpression().isEmpty()) {
@@ -141,8 +141,8 @@ void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &pack
                         javaObjectName   = f->implementingClass()->fullName() + "." + javaObjectName;
 
                         QString javaSignature = "(";
-                        MetaJavaArgumentList args = f->arguments();
-                        foreach (MetaJavaArgument *arg, args) {
+                        AbstractMetaArgumentList args = f->arguments();
+                        foreach (AbstractMetaArgument *arg, args) {
                             javaSignature += jni_signature(arg->type(), SlashesAndStuff);
                         }
                         javaSignature += ")" + jni_signature(f->type(), SlashesAndStuff);
@@ -185,8 +185,8 @@ void MetaInfoGenerator::writeRegisterSignalsAndSlots(QTextStream &s)
 
 void MetaInfoGenerator::buildSkipList()
 {
-    MetaJavaClassList classList = classes();
-    foreach (MetaJavaClass *cls, classList) {
+    AbstractMetaClassList classList = classes();
+    foreach (AbstractMetaClass *cls, classList) {
         if (!m_skip_list.contains(cls->package()))
             m_skip_list[cls->package()] = 0x0;
 
@@ -199,17 +199,17 @@ void MetaInfoGenerator::buildSkipList()
 }
 
 QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QString &package,
-                                                       const MetaJavaClassList &classes)
+                                                       const AbstractMetaClassList &classes)
 {
     QStringList handlers;
-    foreach (MetaJavaClass *cls, classes) {
+    foreach (AbstractMetaClass *cls, classes) {
         const ComplexTypeEntry *centry = cls->typeEntry();
         if (!centry->isPolymorphicBase())
             continue;
 
-        MetaJavaClassList classList = this->classes();
+        AbstractMetaClassList classList = this->classes();
         bool first = true;
-        foreach (MetaJavaClass *clazz, classList) {
+        foreach (AbstractMetaClass *clazz, classList) {
             if (clazz->package() == package && clazz->inheritsFrom(cls)) {
                 if (!clazz->typeEntry()->polymorphicIdValue().isEmpty()) {
                     // On first find, open the function
@@ -260,10 +260,10 @@ void MetaInfoGenerator::writeCppFile()
     TypeEntryHash entries = TypeDatabase::instance()->allEntries();
     TypeEntryHash::iterator it;
 
-    MetaJavaClassList classes_with_polymorphic_id;
-    MetaJavaClassList classList = classes();
+    AbstractMetaClassList classes_with_polymorphic_id;
+    AbstractMetaClassList classList = classes();
     QHash<QString, FileOut *> fileHash;
-    foreach (MetaJavaClass *cls, classList) {
+    foreach (AbstractMetaClass *cls, classList) {
         FileOut *f = fileHash.value(cls->package(), 0);
         if (f == 0 && generated(cls)) {
             f = new FileOut(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + cppFilename());
@@ -321,7 +321,7 @@ void MetaInfoGenerator::writeCppFile()
         writeRegisterSignalsAndSlots(f->stream);
     }
 
-    foreach (MetaJavaClass *cls, classList) {
+    foreach (AbstractMetaClass *cls, classList) {
         FileOut *f = fileHash.value(cls->package(), 0);
 
         if (f != 0) {
@@ -349,10 +349,10 @@ void MetaInfoGenerator::writeCppFile()
 
 void MetaInfoGenerator::writeHeaderFile()
 {
-    MetaJavaClassList classList = classes();
+    AbstractMetaClassList classList = classes();
     QHash<QString, bool> fileHash;
 
-    foreach (MetaJavaClass *cls, classList) {
+    foreach (AbstractMetaClass *cls, classList) {
         bool hasGenerated = fileHash.value(cls->package(), false);
         if (!hasGenerated && generated(cls)) {
             FileOut file(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + headerFilename());
@@ -383,7 +383,7 @@ void MetaInfoGenerator::writeCodeBlock(QTextStream &s, const QString &code)
     }
 }
 
-const MetaJavaClass* MetaInfoGenerator::lookupClassWithPublicDestructor(const MetaJavaClass *cls)
+const AbstractMetaClass* MetaInfoGenerator::lookupClassWithPublicDestructor(const AbstractMetaClass *cls)
 {
     while (cls != 0) {
         if (cls->hasPublicDestructor()) {
@@ -395,10 +395,10 @@ const MetaJavaClass* MetaInfoGenerator::lookupClassWithPublicDestructor(const Me
     return 0;
 }
 
-void MetaInfoGenerator::writeDestructors(QTextStream &s, const MetaJavaClass *cls)
+void MetaInfoGenerator::writeDestructors(QTextStream &s, const AbstractMetaClass *cls)
 {
     // We can only delete classes with public destructors
-    const MetaJavaClass *clsWithPublicDestructor = lookupClassWithPublicDestructor(cls);
+    const AbstractMetaClass *clsWithPublicDestructor = lookupClassWithPublicDestructor(cls);
     if(clsWithPublicDestructor != 0)
     {
         const ComplexTypeEntry *entry = cls->typeEntry();
@@ -530,7 +530,7 @@ void MetaInfoGenerator::writeInclude(QTextStream &s, const Include &inc)
     s << endl;
 }
 
-void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const MetaJavaClassList &classList,
+void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const AbstractMetaClassList &classList,
                                                const QString &package)
 {
     writeInclude(s, Include(Include::LocalPath, headerFilename()));
@@ -545,7 +545,7 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const MetaJavaCla
     writeInclude(s, Include(Include::IncludePath, "qtjambi_core.h"));
     s << endl;
 
-    foreach (MetaJavaClass *cls, classList) {
+    foreach (AbstractMetaClass *cls, classList) {
         if (generated(cls) && !cls->isInterface() && cls->package() == package) {
             const ComplexTypeEntry *ctype = cls->typeEntry();
 
@@ -565,7 +565,7 @@ void MetaInfoGenerator::writeInitializationFunctionName(QTextStream &s, const QS
     s << "__metainfo_init_" << QString(package).replace(".", "_") << "()";
 }
 
-void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *entry, const MetaJavaClass *cls,
+void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *entry, const AbstractMetaClass *cls,
                                             bool registerMetaType)
 {
     QString constructorName = entry->customConstructor().name;

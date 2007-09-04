@@ -23,15 +23,15 @@ public:
     QDocGenerator();
 
     virtual void generate();
-    virtual QString subDirectoryForClass(const MetaJavaClass *java_class) const;
-    virtual QString fileNameForClass(const MetaJavaClass *java_class) const;
-    virtual void write(QTextStream &s, const MetaJavaClass *java_class);
-    virtual void write(QTextStream &s, const MetaJavaEnumValue *java_enum_value);
-    virtual void write(QTextStream &s, const MetaJavaEnum *java_enum);
-    virtual void writeOverload(QTextStream &s, const MetaJavaFunction *java_function, int arg_count);
-    virtual void write(QTextStream &s, const MetaJavaFunction *java_function);
-    virtual void write(QTextStream &s, const MetaJavaField *java_field);
-    virtual void writeSignal(QTextStream &s, const MetaJavaFunction *java_function);
+    virtual QString subDirectoryForClass(const AbstractMetaClass *java_class) const;
+    virtual QString fileNameForClass(const AbstractMetaClass *java_class) const;
+    virtual void write(QTextStream &s, const AbstractMetaClass *java_class);
+    virtual void write(QTextStream &s, const AbstractMetaEnumValue *java_enum_value);
+    virtual void write(QTextStream &s, const AbstractMetaEnum *java_enum);
+    virtual void writeOverload(QTextStream &s, const AbstractMetaFunction *java_function, int arg_count);
+    virtual void write(QTextStream &s, const AbstractMetaFunction *java_function);
+    virtual void write(QTextStream &s, const AbstractMetaField *java_field);
+    virtual void writeSignal(QTextStream &s, const AbstractMetaFunction *java_function);
 };
 
 #endif // QDOC_GENERATOR

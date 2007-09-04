@@ -20,12 +20,12 @@
 
 QDocGenerator::QDocGenerator() { }
 
-QString QDocGenerator::subDirectoryForClass(const MetaJavaClass *) const
+QString QDocGenerator::subDirectoryForClass(const AbstractMetaClass *) const
 {
     return "doc/japi";
 }
 
-QString QDocGenerator::fileNameForClass(const MetaJavaClass *) const
+QString QDocGenerator::fileNameForClass(const AbstractMetaClass *) const
 {
     return "qdoc.japi";
 }
@@ -46,8 +46,8 @@ void QDocGenerator::generate()
         QTextStream s(&f);
         s << "<japi>" << endl;
 
-        MetaJavaClassList clazzes = classes();
-        foreach (MetaJavaClass *cls, clazzes) {
+        AbstractMetaClassList clazzes = classes();
+        foreach (AbstractMetaClass *cls, clazzes) {
             if (shouldGenerate(cls)) {
                 write(s, cls);
             }
@@ -96,9 +96,9 @@ static QString protect( const QByteArray& str )
 }
 
 
-void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
+void QDocGenerator::write(QTextStream &s, const AbstractMetaFunction *java_function)
 {
-    MetaJavaArgumentList arguments = java_function->arguments();
+    AbstractMetaArgumentList arguments = java_function->arguments();
     int argument_count = arguments.size();
 
     int overload_count = 0;
@@ -114,7 +114,7 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaFunction *java_function)
 }
 
 void QDocGenerator::writeOverload(QTextStream &s,
-                                  const MetaJavaFunction *java_function,
+                                  const AbstractMetaFunction *java_function,
                                   int arg_count)
 {
     if (java_function->isModifiedRemoved(TypeSystem::JavaCode))
@@ -127,8 +127,8 @@ void QDocGenerator::writeOverload(QTextStream &s,
     if (arg_count < java_function->arguments().size()) {
         // see JavaGenerator::writeFunctionOverloads()
         if (!java_function->isConstructor())
-            included_attributes |= MetaJavaAttributes::Final;
-        excluded_attributes |= MetaJavaAttributes::Abstract | MetaJavaAttributes::Native;
+            included_attributes |= AbstractMetaAttributes::Final;
+        excluded_attributes |= AbstractMetaAttributes::Abstract | AbstractMetaAttributes::Native;
     }
 
     QString signature = functionSignature(java_function,
@@ -161,9 +161,9 @@ void QDocGenerator::writeOverload(QTextStream &s,
         argumentMods << m.argument_mods;
     }
 
-    MetaJavaArgumentList arguments = java_function->arguments();
+    AbstractMetaArgumentList arguments = java_function->arguments();
     bool wroteOwnershipStolen = false;
-    foreach (MetaJavaArgument *argument, arguments) {
+    foreach (AbstractMetaArgument *argument, arguments) {
         if (java_function->disabledGarbageCollection(java_function->implementingClass(),
                                                      argument->argumentIndex() + 1)) {
             if (!wroteOwnershipStolen) {
@@ -205,14 +205,14 @@ void QDocGenerator::writeOverload(QTextStream &s,
     s << " />" << endl;
 }
 
-void QDocGenerator::write(QTextStream &s, const MetaJavaEnumValue *java_enum_value)
+void QDocGenerator::write(QTextStream &s, const AbstractMetaEnumValue *java_enum_value)
 {
     s << "<enum-value java=\"" << protect(java_enum_value->name().toUtf8()) << "\"" << endl
       << "            cpp=\"" << protect(java_enum_value->name().toUtf8()) << "\"" << endl
       << "            value=\"" << java_enum_value->value() << "\"/>" << endl;
 }
 
-void QDocGenerator::write(QTextStream &s, const MetaJavaEnum *java_enum)
+void QDocGenerator::write(QTextStream &s, const AbstractMetaEnum *java_enum)
 {
     s << "<enum java=\"" << protect(java_enum->name().toUtf8()) << "\"" << endl
       << "      cpp=\"" << protect(java_enum->name().toUtf8()) << "\"" << endl;
@@ -223,21 +223,21 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaEnum *java_enum)
     }
 
     s << "      >" << endl;
-    MetaJavaEnumValueList values = java_enum->values();
-    foreach (MetaJavaEnumValue *value, values) {
+    AbstractMetaEnumValueList values = java_enum->values();
+    foreach (AbstractMetaEnumValue *value, values) {
         write(s, value);
     }
     s << "</enum>" << endl;
 }
 
-void QDocGenerator::writeSignal(QTextStream &s, const MetaJavaFunction *java_function)
+void QDocGenerator::writeSignal(QTextStream &s, const AbstractMetaFunction *java_function)
 {
     s << "<signal java=\""
       << protect(java_function->javaSignature().toUtf8()) << "\" cpp=\""
       << protect(java_function->signature().toUtf8()) << "\"/>" << endl;
 }
 
-void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field)
+void QDocGenerator::write(QTextStream &s, const AbstractMetaField *java_field)
 {
     uint included_attributes = NoBlockedSlot;
     uint excluded_attributes = 0;
@@ -254,7 +254,7 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaField *java_field)
       << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
 }
 
-void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
+void QDocGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
 {
     s << "<class" << endl
       << "   java=\"" << protect(java_class->name().toUtf8()) << "\"" << endl
@@ -262,11 +262,11 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
       << "   java-extends=\"" << protect(java_class->baseClass() ? java_class->baseClass()->name().toUtf8() : "") << "\"" << endl
       << "   package=\"" << protect(java_class->package().toUtf8()) << "\"" << endl;
 
-    MetaJavaClassList interfaces = java_class->interfaces();
+    AbstractMetaClassList interfaces = java_class->interfaces();
     if (interfaces.count() > 0) {
         s << "   javaimplements=\"";
         for (int i=0; i<interfaces.count(); ++i) {
-            const MetaJavaClass *interfaze = interfaces.at(i);
+            const AbstractMetaClass *interfaze = interfaces.at(i);
             if (i > 0)
                 s << ",";
             s << protect(interfaze->name().toUtf8());
@@ -284,25 +284,25 @@ void QDocGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     s << "\">" << endl;
 
     // Write signals
-    MetaJavaFunctionList sigs = java_class->queryFunctions(MetaJavaClass::Signals);
-    foreach (MetaJavaFunction *f, sigs)
+    AbstractMetaFunctionList sigs = java_class->queryFunctions(AbstractMetaClass::Signals);
+    foreach (AbstractMetaFunction *f, sigs)
         writeSignal(s, f);
 
     // Write functions
-    MetaJavaFunctionList functions = java_class->functionsInJava();
-    foreach (MetaJavaFunction *f, functions) {
+    AbstractMetaFunctionList functions = java_class->functionsInJava();
+    foreach (AbstractMetaFunction *f, functions) {
         write(s, f);
     }
 
     // Write enums
-    MetaJavaEnumList enums = java_class->enums();
-    foreach (MetaJavaEnum *e, enums) {
+    AbstractMetaEnumList enums = java_class->enums();
+    foreach (AbstractMetaEnum *e, enums) {
         write(s, e);
     }
 
     // Write setters and getters
-    MetaJavaFieldList fields = java_class->fields();
-    foreach (MetaJavaField *f, fields) {
+    AbstractMetaFieldList fields = java_class->fields();
+    foreach (AbstractMetaField *f, fields) {
         write(s, f);
     }
 

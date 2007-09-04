@@ -22,32 +22,32 @@ class CppGenerator : public Generator
     Q_OBJECT
 
 public:
-    virtual QString subDirectoryForClass(const MetaJavaClass *cls) const
+    virtual QString subDirectoryForClass(const AbstractMetaClass *cls) const
     {
         return "cpp/" + cls->package().replace(".", "_") + "/";
     }
 
-    static void writeTypeInfo(QTextStream &s, const MetaJavaType *type, Option option = NoOption);
-    static void writeFunctionSignature(QTextStream &s, const MetaJavaFunction *java_function,
-                                const MetaJavaClass *implementor = 0,
+    static void writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option option = NoOption);
+    static void writeFunctionSignature(QTextStream &s, const AbstractMetaFunction *java_function,
+                                const AbstractMetaClass *implementor = 0,
                                 const QString &name_prefix = QString(),
                                 Option option = NoOption,
                                 const QString &classname_prefix = QString(),
                                 const QStringList &extra_arguments = QStringList(),
                                 int numArguments = -1);
-    static void writeFunctionArguments(QTextStream &s, const MetaJavaArgumentList &arguments,
+    static void writeFunctionArguments(QTextStream &s, const AbstractMetaArgumentList &arguments,
                                 Option option = NoOption,
                                 int numArguments = -1);
 
     QString signalWrapperPrefix() const { return "__qt_signalwrapper_"; }
 
-    bool shouldGenerate(const MetaJavaClass *java_class) const {
+    bool shouldGenerate(const AbstractMetaClass *java_class) const {
         return !java_class->isNamespace() && !java_class->isInterface()
             && !java_class->typeEntry()->isVariant()
             && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp);
     }
 
-    static QString shellClassName(const MetaJavaClass *java_class) {
+    static QString shellClassName(const AbstractMetaClass *java_class) {
         return java_class->generateShellClass()
                ? "QtJambiShell_" + java_class->name()
                : java_class->qualifiedCppName();

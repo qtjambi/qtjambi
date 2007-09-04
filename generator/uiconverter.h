@@ -26,8 +26,8 @@ public:
         SlotSearch
     };
 
-    void setClasses(const MetaJavaClassList &classes) { m_java_classes = classes; }
-    MetaJavaClassList classes() const { return m_java_classes; }
+    void setClasses(const AbstractMetaClassList &classes) { m_java_classes = classes; }
+    AbstractMetaClassList classes() const { return m_java_classes; }
 
     void convertToJui(const QString &uiFile);
 
@@ -39,12 +39,12 @@ private:
     void fixConnectionNode(QDomElement node, QDomDocument *doc);
     void fixWidgetNode(QDomElement, QDomDocument *doc);
     QString translateEnumValue(const QString &enumValue);
-    const MetaJavaFunction *findFunction(MetaJavaClass *javaClass, const QString &signature,
+    const AbstractMetaFunction *findFunction(AbstractMetaClass *javaClass, const QString &signature,
                                          SearchType type);
 
 
-    MetaJavaClassList m_java_classes;
-    QHash<QString, MetaJavaClass *> m_named_widgets;
+    AbstractMetaClassList m_java_classes;
+    QHash<QString, AbstractMetaClass *> m_named_widgets;
 };
 
 #endif // UICONVERTER_H

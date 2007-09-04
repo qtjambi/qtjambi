@@ -42,11 +42,11 @@ inline QTextStream &operator <<(QTextStream &s, const Indentor &)
 
 Indentor INDENT;
 
-QString jni_signature(const MetaJavaFunction *function, JNISignatureFormat format)
+QString jni_signature(const AbstractMetaFunction *function, JNISignatureFormat format)
 {
     QString returned = "(";
-    MetaJavaArgumentList arguments = function->arguments();
-    foreach (const MetaJavaArgument *argument, arguments) {
+    AbstractMetaArgumentList arguments = function->arguments();
+    foreach (const AbstractMetaArgument *argument, arguments) {
         if (!function->argumentRemoved(argument->argumentIndex() + 1)) {
             QString modified_type = function->typeReplaced(argument->argumentIndex()+1);
 
@@ -114,7 +114,7 @@ QString jni_signature(const QString &_full_name, JNISignatureFormat format)
     return signature;
 }
 
-QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
+QString jni_signature(const AbstractMetaType *java_type, JNISignatureFormat format)
 {
     if (!java_type)
         return "V";
@@ -156,7 +156,7 @@ QString jni_signature(const MetaJavaType *java_type, JNISignatureFormat format)
 }
 
 static QHash<QString, QString> table;
-QString default_return_statement_qt(const MetaJavaType *java_type, Generator::Option options = Generator::NoOption)
+QString default_return_statement_qt(const AbstractMetaType *java_type, Generator::Option options = Generator::NoOption)
 {
     QString returnStr = ((options & Generator::NoReturnStatement) == 0 ? "return" : "");
     if (!java_type)
@@ -198,7 +198,7 @@ QString default_return_statement_qt(const MetaJavaType *java_type, Generator::Op
         return returnStr + " 0";
 }
 
-QString default_return_statement_java(const MetaJavaType *java_type)
+QString default_return_statement_java(const AbstractMetaType *java_type)
 {
     if (!java_type)
         return "return";
@@ -252,7 +252,7 @@ QByteArray jniName(const QString &name) {
         return "jobject";
 }
 
-QByteArray jniTypeName(const MetaJavaType *java_type)
+QByteArray jniTypeName(const AbstractMetaType *java_type)
 {
     if (!java_type) {
         return "Void";
@@ -267,36 +267,36 @@ QByteArray jniTypeName(const MetaJavaType *java_type)
     }
 }
 
-QByteArray newXxxArray(const MetaJavaType *java_type)
+QByteArray newXxxArray(const AbstractMetaType *java_type)
 {
     return "New" + jniTypeName(java_type) + "Array";
 }
 
-QByteArray setXxxArrayElement(const MetaJavaType *java_type)
+QByteArray setXxxArrayElement(const AbstractMetaType *java_type)
 {
     Q_ASSERT(java_type);
     return "Set" + jniTypeName(java_type) + "ArrayElement";
 }
 
-QByteArray getXxxArrayElement(const MetaJavaType *java_type)
+QByteArray getXxxArrayElement(const AbstractMetaType *java_type)
 {
     Q_ASSERT(java_type);
     return "Get" + jniTypeName(java_type) + "ArrayElement";
 }
 
-QByteArray getXxxArrayRegion(const MetaJavaType *java_type)
+QByteArray getXxxArrayRegion(const AbstractMetaType *java_type)
 {
     Q_ASSERT(java_type);
     return "Get" + jniTypeName(java_type) + "ArrayRegion";
 }
 
-QByteArray setXxxArrayRegion(const MetaJavaType *java_type)
+QByteArray setXxxArrayRegion(const AbstractMetaType *java_type)
 {
     Q_ASSERT(java_type);
     return "Set" + jniTypeName(java_type) + "ArrayRegion";
 }
 
-QByteArray callXxxMethod(const MetaJavaType *java_type)
+QByteArray callXxxMethod(const AbstractMetaType *java_type)
 {
     return "Call" + jniTypeName(java_type) + "Method";
 }
@@ -329,12 +329,12 @@ QString jni_function_signature(QString package, QString class_name,
     return s;
 }
 
-QString CppImplGenerator::fileNameForClass(const MetaJavaClass *java_class) const
+QString CppImplGenerator::fileNameForClass(const AbstractMetaClass *java_class) const
 {
     return QString("qtjambishell_%1.cpp").arg(java_class->name());
 }
 
-void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunction *signal, const MetaJavaClass *cls,
+void CppImplGenerator::writeSignalFunction(QTextStream &s, const AbstractMetaFunction *signal, const AbstractMetaClass *cls,
                                            int pos)
 {
     writeFunctionSignature(s, signal, cls, signalWrapperPrefix(),
@@ -342,7 +342,7 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunctio
                            "QtJambi_SignalWrapper_");
     s << endl << "{" << endl;
     {
-        MetaJavaArgumentList arguments = signal->arguments();
+        AbstractMetaArgumentList arguments = signal->arguments();
         Indentation indent;
 
         if (arguments.size() > 0)
@@ -353,7 +353,7 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunctio
           << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
 
         for (int i=0; i<arguments.size(); ++i) {
-            const MetaJavaArgument *argument = arguments.at(i);
+            const AbstractMetaArgument *argument = arguments.at(i);
             writeQtToJava(s,
                           argument->type(),
                           argument->indexedName(),
@@ -373,12 +373,12 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const MetaJavaFunctio
     writeFinalFunction(s, signal, cls);
 }
 
-bool CppImplGenerator::hasCustomDestructor(const MetaJavaClass *java_class) const
+bool CppImplGenerator::hasCustomDestructor(const AbstractMetaClass *java_class) const
 {
     return !java_class->isQObject() && !java_class->typeEntry()->isValue();
 }
 
-void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
 {
 
     bool shellClass = java_class->generateShellClass();
@@ -386,11 +386,11 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     // Includes
     writeExtraIncludes(s, java_class);
     bool shellInclude = (java_class->generateShellClass()
-        || java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible | MetaJavaClass::NotRemovedFromShell).size() > 0);
+        || java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromShell).size() > 0);
 
     // need to includ QPainter for all widgets...
     {
-        const MetaJavaClass *qwidget = java_class;
+        const AbstractMetaClass *qwidget = java_class;
         while (qwidget && qwidget->name() != "QWidget") {
             qwidget = qwidget->baseClass();
         }
@@ -427,7 +427,7 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
         writeFinalDestructor(s, java_class);
 
    if (shellClass) {
-        foreach (MetaJavaFunction *function, java_class->functions()) {
+        foreach (AbstractMetaFunction *function, java_class->functions()) {
             if (function->isConstructor() && !function->isPrivate())
                 writeShellConstructor(s, function);
         }
@@ -437,11 +437,11 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
             writeQObjectFunctions(s, java_class);
 
         // Functions in shell class
-        MetaJavaFunctionList shell_functions = java_class->functionsInShellClass();
+        AbstractMetaFunctionList shell_functions = java_class->functionsInShellClass();
 
         int pos = -1;
         for (int i=0; i<shell_functions.size(); ++i) {
-            const MetaJavaFunction *function = shell_functions.at(i);
+            const AbstractMetaFunction *function = shell_functions.at(i);
 
             if (!function->isFinalInCpp())
                 ++pos;
@@ -451,14 +451,14 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
         // Write public overrides for functions that are protected in the base class
         // so they can be accessed from the native callback
-        MetaJavaFunctionList public_override_functions = java_class->publicOverrideFunctions();
-        foreach (MetaJavaFunction *function, public_override_functions) {
+        AbstractMetaFunctionList public_override_functions = java_class->publicOverrideFunctions();
+        foreach (AbstractMetaFunction *function, public_override_functions) {
             writePublicFunctionOverride(s, function, java_class);
         }
 
         // Write virtual function overries used to decide on static/virtual calls
-        MetaJavaFunctionList virtual_functions = java_class->virtualOverrideFunctions();
-        foreach (const MetaJavaFunction *function, virtual_functions) {
+        AbstractMetaFunctionList virtual_functions = java_class->virtualOverrideFunctions();
+        foreach (const AbstractMetaFunction *function, virtual_functions) {
             writeVirtualFunctionOverride(s, function, java_class);
         }
 
@@ -466,27 +466,27 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     writeExtraFunctions(s, java_class);
 
     // Signals
-    MetaJavaFunctionList signal_functions =
-        java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible | MetaJavaClass::NotRemovedFromJava);
+    AbstractMetaFunctionList signal_functions =
+        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromJava);
     for (int i=0; i<signal_functions.size(); ++i)
         writeSignalFunction(s, signal_functions.at(i), java_class, i);
 
     // Native callbacks (all java functions require native callbacks)
-    MetaJavaFunctionList class_funcs = java_class->functionsInJava();
-    foreach (MetaJavaFunction *function, class_funcs) {
+    AbstractMetaFunctionList class_funcs = java_class->functionsInJava();
+    foreach (AbstractMetaFunction *function, class_funcs) {
         if (!function->isEmptyFunction())
             writeFinalFunction(s, function, java_class);
     }
 
-    class_funcs = java_class->queryFunctions(MetaJavaClass::NormalFunctions | MetaJavaClass::AbstractFunctions | MetaJavaClass::NotRemovedFromJava);
-    foreach (MetaJavaFunction *function, class_funcs) {
+    class_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions | AbstractMetaClass::AbstractFunctions | AbstractMetaClass::NotRemovedFromJava);
+    foreach (AbstractMetaFunction *function, class_funcs) {
         if (function->implementingClass() != java_class) {
             writeFinalFunction(s, function, java_class);
         }
     }
 
     // Field accessors
-    foreach (MetaJavaField *field, java_class->fields()) {
+    foreach (AbstractMetaField *field, java_class->fields()) {
         if (field->wasPublic() || (field->wasProtected() && !java_class->isFinal()))
             writeFieldAccessors(s, field);
     }
@@ -498,8 +498,8 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
 
     // generate the __qt_cast_to_Xxx functions
     if (!java_class->isNamespace() && !java_class->isInterface()) {
-        MetaJavaClassList interfaces = java_class->interfaces();
-        foreach (MetaJavaClass *iface, interfaces)
+        AbstractMetaClassList interfaces = java_class->interfaces();
+        foreach (AbstractMetaClass *iface, interfaces)
             writeInterfaceCastFunction(s, java_class, iface);
     }
 
@@ -510,12 +510,12 @@ void CppImplGenerator::write(QTextStream &s, const MetaJavaClass *java_class)
     s << endl << endl;
 }
 
-void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, const MetaJavaClass *cls)
+void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, const AbstractMetaClass *cls)
 {
     if (cls->hasHashFunction()) {
-        MetaJavaFunctionList hashcode_functions = cls->queryFunctionsByName("hashCode");
+        AbstractMetaFunctionList hashcode_functions = cls->queryFunctionsByName("hashCode");
         bool found = false;
-        foreach (const MetaJavaFunction *function, hashcode_functions) {
+        foreach (const AbstractMetaFunction *function, hashcode_functions) {
             if (function->actualMinimumArgumentCount() == 0) {
                 found = true;
                 break;
@@ -543,9 +543,9 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
     // Qt has a standard toString() conversion in QVariant?
     QVariant::Type type = QVariant::nameToType(cls->qualifiedCppName().toLatin1());
     if (QVariant(type).canConvert(QVariant::String)) {
-        MetaJavaFunctionList tostring_functions = cls->queryFunctionsByName("toString");
+        AbstractMetaFunctionList tostring_functions = cls->queryFunctionsByName("toString");
         bool found = false;
-        foreach (const MetaJavaFunction *function, tostring_functions) {
+        foreach (const AbstractMetaFunction *function, tostring_functions) {
             if (function->actualMinimumArgumentCount() == 0) {
                 found = true;
                 break;
@@ -570,7 +570,7 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
     }
 }
 
-void CppImplGenerator::writeExtraFunctions(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass *java_class)
 {
     const ComplexTypeEntry *class_type = java_class->typeEntry();
     Q_ASSERT(class_type);
@@ -583,18 +583,18 @@ void CppImplGenerator::writeExtraFunctions(QTextStream &s, const MetaJavaClass *
     }
 }
 
-void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaClass *java_class)
 {
     bool has_constructors = java_class->hasConstructors();
 
     // Write the function names...
     if (has_constructors && java_class->hasVirtualFunctions()) {
-        MetaJavaFunctionList virtual_functions = java_class->functionsInShellClass();
+        AbstractMetaFunctionList virtual_functions = java_class->functionsInShellClass();
         {
             Indentation indent;
 
             int pos = -1;
-            foreach (MetaJavaFunction *function, virtual_functions) {
+            foreach (AbstractMetaFunction *function, virtual_functions) {
                 if (!function->isFinalInCpp())
                     ++pos;
                 else
@@ -620,7 +620,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
 
 
             int pos = -1;
-            foreach (MetaJavaFunction *function, virtual_functions) {
+            foreach (AbstractMetaFunction *function, virtual_functions) {
                 if (!function->isFinalInCpp())
                     ++pos;
                 else
@@ -646,7 +646,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
     }
 
     if (has_constructors && java_class->hasInconsistentFunctions()) {
-        MetaJavaFunctionList inconsistents = java_class->cppInconsistentFunctions();
+        AbstractMetaFunctionList inconsistents = java_class->cppInconsistentFunctions();
         // Write the inconsistent function names...
         {
             Indentation indent;
@@ -664,7 +664,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
             Indentation indent;
             s << "static const char *qtjambi_inconsistent_signatures[] = {";
             for (int i=0; i<inconsistents.size(); ++i) {
-                const MetaJavaFunction *function = inconsistents.at(i);
+                const AbstractMetaFunction *function = inconsistents.at(i);
 
                 if (i != 0)
                     s << ",";
@@ -679,7 +679,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
     }
 
 
-    MetaJavaFunctionList signal_functions = java_class->cppSignalFunctions();
+    AbstractMetaFunctionList signal_functions = java_class->cppSignalFunctions();
     if (signal_functions.size()) {
         Indentation indent;
         s << "static const char *qtjambi_signal_names[] = {";
@@ -687,7 +687,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
             if (i != 0)
                 s << ",";
 
-            const MetaJavaFunction *f = signal_functions.at(i);
+            const AbstractMetaFunction *f = signal_functions.at(i);
 
             QString signalName = f->name();
 
@@ -707,7 +707,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const MetaJavaClass 
     }
 }
 
-void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaClass *java_class)
 {
     // QObject::metaObject()
     s << "const QMetaObject *" << shellClassName(java_class) << "::metaObject() const" << endl
@@ -757,13 +757,13 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const MetaJavaClass
       << "}" << endl << endl;
 }
 
-void CppImplGenerator::writeShellConstructor(QTextStream &s, const MetaJavaFunction *java_function)
+void CppImplGenerator::writeShellConstructor(QTextStream &s, const AbstractMetaFunction *java_function)
 {
     if (java_function->isModifiedRemoved(TypeSystem::ShellCode))
         return;
 
-    const MetaJavaClass *cls = java_function->ownerClass();
-    MetaJavaArgumentList arguments = java_function->arguments();
+    const AbstractMetaClass *cls = java_function->ownerClass();
+    AbstractMetaArgumentList arguments = java_function->arguments();
 
     writeFunctionSignature(s, java_function, cls);
 
@@ -788,7 +788,7 @@ void CppImplGenerator::writeShellConstructor(QTextStream &s, const MetaJavaFunct
     s << "}" << endl << endl;
 }
 
-void CppImplGenerator::writeShellDestructor(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaClass *java_class)
 {
     s << shellClassName(java_class) << "::~"
       << shellClassName(java_class) << "()" << endl
@@ -801,11 +801,11 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const MetaJavaClass 
           << "#endif" << endl
           << INDENT << "if (m_link) {" << endl;
 
-        MetaJavaClassList interfaces = java_class->interfaces();
+        AbstractMetaClassList interfaces = java_class->interfaces();
         if (interfaces.size() + (java_class->baseClass() != 0 ? 1 : 0) > 1) {
             if (java_class->baseClass() != 0)
                 interfaces += java_class->baseClass();
-            foreach (MetaJavaClass *iface, interfaces) {
+            foreach (AbstractMetaClass *iface, interfaces) {
                 s << INDENT << "    m_link->unregisterSubObject((" << iface->qualifiedCppName() << " *) this);" << endl;
             }
         }
@@ -818,12 +818,12 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const MetaJavaClass 
     s << "}" << endl << endl;
 }
 
-void CppImplGenerator::writeCodeInjections(QTextStream &s, const MetaJavaFunction *java_function,
-                                           const MetaJavaClass *implementor, CodeSnip::Position position)
+void CppImplGenerator::writeCodeInjections(QTextStream &s, const AbstractMetaFunction *java_function,
+                                           const AbstractMetaClass *implementor, CodeSnip::Position position)
 {
 
     FunctionModificationList mods;
-    const MetaJavaClass *cls = implementor;
+    const AbstractMetaClass *cls = implementor;
     while (cls != 0) {
         mods += java_function->modifications(cls);
 
@@ -885,13 +885,13 @@ static QString function_call_for_ownership(TypeSystem::Ownership owner, const QS
 }
 
 void CppImplGenerator::writeOwnership(QTextStream &s,
-                                      const MetaJavaFunction *java_function,
+                                      const AbstractMetaFunction *java_function,
                                       const QString &var_name,
                                       int var_index,
-                                      const MetaJavaClass *implementor)
+                                      const AbstractMetaClass *implementor)
 {
     TypeSystem::Ownership owner = TypeSystem::InvalidOwnership;
-    const MetaJavaClass *cls = implementor;
+    const AbstractMetaClass *cls = implementor;
     while (cls != 0 && owner == TypeSystem::InvalidOwnership) {
         owner = java_function->ownership(cls, TypeSystem::ShellCode, var_index);
         cls = cls->baseClass();
@@ -922,8 +922,8 @@ void CppImplGenerator::writeOwnership(QTextStream &s,
 
 }
 
-void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction *java_function,
-                                          const MetaJavaClass *implementor, int id)
+void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunction *java_function,
+                                          const AbstractMetaClass *implementor, int id)
 {
     writeFunctionSignature(s, java_function, implementor, QString(), OriginalName);
 
@@ -951,8 +951,8 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
               << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
               << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
 
-            MetaJavaArgumentList arguments = java_function->arguments();
-            foreach (const MetaJavaArgument *argument, arguments) {
+            AbstractMetaArgumentList arguments = java_function->arguments();
+            foreach (const AbstractMetaArgument *argument, arguments) {
                 if (!java_function->argumentRemoved(argument->argumentIndex()+1)) {
                     if (!argument->type()->isPrimitive()
                         || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex()+1).isEmpty()) {
@@ -970,7 +970,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
                 writeOwnership(s, java_function, "__java_" + arguments.at(i)->indexedName(), i+1, implementor);
 
 
-            MetaJavaType *function_type = java_function->type();
+            AbstractMetaType *function_type = java_function->type();
             QString new_return_type = java_function->typeReplaced(0);
             bool has_function_type = ((function_type != 0
                                       || !new_return_type.isEmpty())
@@ -1064,9 +1064,9 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
     } else {
         if(java_function->isRemovedFrom(implementor, TypeSystem::JavaCode)){
             // Avoid compiler warnings for unused parameters
-            MetaJavaArgumentList arguments = java_function->arguments();
+            AbstractMetaArgumentList arguments = java_function->arguments();
 
-            foreach (const MetaJavaArgument *argument, arguments) {
+            foreach (const AbstractMetaArgument *argument, arguments) {
                 s << INDENT << "Q_UNUSED(" << argument->indexedName() << ")" << endl;
             }
         }
@@ -1081,12 +1081,12 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const MetaJavaFunction
 // ### kill implementor
 
 void CppImplGenerator::writePublicFunctionOverride(QTextStream &s,
-                                                   const MetaJavaFunction *java_function,
-                                                   const MetaJavaClass *implementor)
+                                                   const AbstractMetaFunction *java_function,
+                                                   const AbstractMetaClass *implementor)
 {
     Q_ASSERT(java_function->originalAttributes()
-             & (MetaJavaAttributes::Protected
-                | MetaJavaAttributes::Final));
+             & (AbstractMetaAttributes::Protected
+                | AbstractMetaAttributes::Final));
 
     // The write a public override version of this function to be used by native functions
     writeFunctionSignature(s, java_function, implementor, "__public_",
@@ -1101,8 +1101,8 @@ void CppImplGenerator::writePublicFunctionOverride(QTextStream &s,
 
 
 void CppImplGenerator::writeVirtualFunctionOverride(QTextStream &s,
-                                                    const MetaJavaFunction *java_function,
-                                                    const MetaJavaClass *implementor)
+                                                    const AbstractMetaFunction *java_function,
+                                                    const AbstractMetaClass *implementor)
 {
     Q_ASSERT(!java_function->isFinalInCpp());
 
@@ -1133,8 +1133,8 @@ void CppImplGenerator::writeVirtualFunctionOverride(QTextStream &s,
 
 
 void CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
-                                                  const MetaJavaFunction *java_function,
-                                                  const MetaJavaClass *,
+                                                  const AbstractMetaFunction *java_function,
+                                                  const AbstractMetaClass *,
                                                   Option options)
 {
     bool static_call = !(options & VirtualCall);
@@ -1146,7 +1146,7 @@ void CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
         if (java_function->type() && (options & NoReturnStatement) == 0)
             s << "return ";
         if (static_call) {
-            const MetaJavaClass *implementor = java_function->implementingClass();
+            const AbstractMetaClass *implementor = java_function->implementingClass();
             if (java_function->isInterfaceFunction())
                 implementor = java_function->interfaceClass()->primaryInterfaceImplementor();
             s << implementor->qualifiedCppName() << "::";
@@ -1159,11 +1159,11 @@ void CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
 
 
 void CppImplGenerator::writeFunctionName(QTextStream &s,
-                                         const MetaJavaFunction *java_function,
-                                         const MetaJavaClass *java_class)
+                                         const AbstractMetaFunction *java_function,
+                                         const AbstractMetaClass *java_class)
 {
-    const MetaJavaClass *cls = java_class ? java_class : java_function->ownerClass();
-    MetaJavaArgumentList arguments = java_function->arguments();
+    const AbstractMetaClass *cls = java_class ? java_class : java_function->ownerClass();
+    AbstractMetaArgumentList arguments = java_function->arguments();
 
     // Function signature
     bool callThrough = java_function->needsCallThrough();
@@ -1186,7 +1186,7 @@ void CppImplGenerator::writeFunctionName(QTextStream &s,
         args += "J";
 
     if (!arguments.isEmpty()) {
-        foreach (const MetaJavaArgument *argument, arguments) {
+        foreach (const AbstractMetaArgument *argument, arguments) {
             if (!java_function->argumentRemoved(argument->argumentIndex() + 1)) {
                 if (!argument->type()->hasNativeId()) {
                     QString modified_type = java_function->typeReplaced(argument->argumentIndex()+1);
@@ -1206,7 +1206,7 @@ void CppImplGenerator::writeFunctionName(QTextStream &s,
 
 }
 
-void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const MetaJavaFunction *java_function,
+void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const AbstractMetaFunction *java_function,
                                                    const QString &java_object_name)
 {
     bool callThrough = java_function->needsCallThrough();
@@ -1223,8 +1223,8 @@ void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const MetaJav
         s << "," << endl << " jlong __this_nativeId";
 
     // the function arguments
-    MetaJavaArgumentList arguments = java_function->arguments();
-    foreach (const MetaJavaArgument *argument, arguments) {
+    AbstractMetaArgumentList arguments = java_function->arguments();
+    foreach (const AbstractMetaArgument *argument, arguments) {
         if (!java_function->argumentRemoved(argument->argumentIndex() + 1)) {
             s << "," << endl << " ";
             if (!argument->type()->hasNativeId())
@@ -1242,13 +1242,13 @@ void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const MetaJav
     Generates type conversion from Java -> Qt for all the arguments
     that are to be to be passed to the function
 */
-void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const MetaJavaFunction *java_function,
+void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const AbstractMetaFunction *java_function,
                                                const QString &qt_object_name,
-                                               const MetaJavaClass *cls)
+                                               const AbstractMetaClass *cls)
 {
     // Translate each of the function arguments into qt types
-    MetaJavaArgumentList arguments = java_function->arguments();
-    foreach (const MetaJavaArgument *argument, arguments) {
+    AbstractMetaArgumentList arguments = java_function->arguments();
+    foreach (const AbstractMetaArgument *argument, arguments) {
         if (!argument->type()->isPrimitive()
             || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex() + 1).isEmpty()) {
                 writeJavaToQt(s,
@@ -1274,21 +1274,21 @@ void CppImplGenerator::writeFinalFunctionSetup(QTextStream &s, const MetaJavaFun
 }
 
 
-void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction *java_function,
-                                          const MetaJavaClass *java_class)
+void CppImplGenerator::writeFinalFunction(QTextStream &s, const AbstractMetaFunction *java_function,
+                                          const AbstractMetaClass *java_class)
 {
     Q_ASSERT(java_class);
 
     if (java_function->isModifiedRemoved(TypeSystem::NativeCode))
         return;
 
-    const MetaJavaClass *cls = java_class ? java_class : java_function->ownerClass();
+    const AbstractMetaClass *cls = java_class ? java_class : java_function->ownerClass();
 
     QString java_function_signature = cls->name() + "::" + java_function->signature();
 
     s << "// " << java_function_signature << endl;
 
-    const MetaJavaType *function_type = java_function->type();
+    const AbstractMetaType *function_type = java_function->type();
     QString new_return_type = java_function->typeReplaced(0);
     bool has_function_type = new_return_type != "void"
                              && (!new_return_type.isEmpty() || function_type != 0)
@@ -1324,9 +1324,9 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
             .arg(java_function->signature()).arg(java_class->name());
         ReportHandler::warning(debug);
         // Avoid compiler warnings for unused parameters
-        MetaJavaArgumentList arguments = java_function->arguments();
+        AbstractMetaArgumentList arguments = java_function->arguments();
 
-        foreach (const MetaJavaArgument *argument, arguments) {
+        foreach (const AbstractMetaArgument *argument, arguments) {
             s << INDENT << "Q_UNUSED(" << argument->indexedName() << ")" << endl;
         }
         s << INDENT << default_return_statement_qt(java_function->type()) << ";";
@@ -1401,7 +1401,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const MetaJavaFunction
 }
 
 void CppImplGenerator::writeAssignment(QTextStream &s, const QString &destName, const QString &srcName,
-                                       const MetaJavaType *java_type)
+                                       const AbstractMetaType *java_type)
 {
     if (java_type->isArray()) {
         for (int i=0; i<java_type->arrayElementCount(); ++i) {
@@ -1413,15 +1413,15 @@ void CppImplGenerator::writeAssignment(QTextStream &s, const QString &destName, 
     }
 }
 
-void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *java_field)
+void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaField *java_field)
 {
     Q_ASSERT(java_field);
     Q_ASSERT(java_field->isPublic() || java_field->isProtected());
 
-    const MetaJavaFunction *setter = java_field->setter();
-    const MetaJavaFunction *getter = java_field->getter();
+    const AbstractMetaFunction *setter = java_field->setter();
+    const AbstractMetaFunction *getter = java_field->getter();
 
-    const MetaJavaClass *cls = java_field->enclosingClass();
+    const AbstractMetaClass *cls = java_field->enclosingClass();
     FieldModification mod = cls->typeEntry()->fieldModification(java_field->name());
 
     // Setter
@@ -1435,7 +1435,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
                 Indentation indent;
 
                 Q_ASSERT(setter->arguments().count() > 0);
-                const MetaJavaArgument *argument = setter->arguments().at(0);
+                const AbstractMetaArgument *argument = setter->arguments().at(0);
 
                 QString thisRef = java_field->isStatic()
                     ? setter->ownerClass()->qualifiedCppName() + QString("::")
@@ -1457,7 +1457,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
             writeFinalFunctionSetup(s, setter, "__qt_object", setter->ownerClass());
 
             Q_ASSERT(setter->arguments().count() == 1);
-            const MetaJavaArgument *argument = setter->arguments().at(0);
+            const AbstractMetaArgument *argument = setter->arguments().at(0);
 
             QString dest;
             if (setter->isStatic())
@@ -1532,7 +1532,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const MetaJavaField *
     }
 }
 
-void CppImplGenerator::writeFinalDestructor(QTextStream &s, const MetaJavaClass *cls)
+void CppImplGenerator::writeFinalDestructor(QTextStream &s, const AbstractMetaClass *cls)
 {
   if (cls->hasConstructors()) {
       s << INDENT << "static void qtjambi_destructor(void *ptr)" << endl
@@ -1552,12 +1552,12 @@ void CppImplGenerator::writeFinalDestructor(QTextStream &s, const MetaJavaClass 
 }
 
 void CppImplGenerator::writeFinalConstructor(QTextStream &s,
-                                         const MetaJavaFunction *java_function,
+                                         const AbstractMetaFunction *java_function,
                                          const QString &qt_object_name,
                                          const QString &java_object_name)
 {
-    const MetaJavaClass *cls = java_function->ownerClass();
-    MetaJavaArgumentList arguments = java_function->arguments();
+    const AbstractMetaClass *cls = java_function->ownerClass();
+    AbstractMetaArgumentList arguments = java_function->arguments();
     QString className = cls->typeEntry()->qualifiedCppName();
 
     bool hasShellClass = cls->generateShellClass();
@@ -1618,11 +1618,11 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
           << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
 
 
-        MetaJavaClassList interfaces = cls->interfaces();
+        AbstractMetaClassList interfaces = cls->interfaces();
         if (interfaces.size() + (cls->baseClass() != 0 ? 1 : 0) > 1)  {
             if (cls->baseClass() != 0)
                 interfaces += cls->baseClass();
-            foreach (MetaJavaClass *iface, interfaces) {
+            foreach (AbstractMetaClass *iface, interfaces) {
                 s << INDENT << qt_object_name << "->m_link->registerSubObject((" << iface->qualifiedCppName() << " *) " << qt_object_name << ");" << endl;
             }
         }
@@ -1657,10 +1657,10 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     s << space << ");" << endl;
 }
 
-void CppImplGenerator::writeSignalInitialization(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::writeSignalInitialization(QTextStream &s, const AbstractMetaClass *java_class)
 {
     if (!java_class->isQObject()
-        || java_class->queryFunctions(MetaJavaClass::Signals | MetaJavaClass::Visible | MetaJavaClass::NotRemovedFromJava).size() == 0) {
+        || java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromJava).size() == 0) {
         return ;
     }
 
@@ -1709,7 +1709,7 @@ QString CppImplGenerator::fromObject(const TypeEntry *entry,
                    + entry->lookupName()
                    + "\", \"" + QString(package).replace(".", "/") + "/\", true);";
     } else {
-        MetaJavaClass *cls = classes().findClass(centry->qualifiedCppName());
+        AbstractMetaClass *cls = classes().findClass(centry->qualifiedCppName());
         if (!cls) {
             qFatal("CppImplGenerator::fromObject(): class '%s' could not be resolved...",
                    qPrintable(centry->qualifiedCppName()));
@@ -1735,7 +1735,7 @@ QString CppImplGenerator::fromObject(const TypeEntry *entry,
     return returned;
 }
 
-void CppImplGenerator::writeFromNativeFunction(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::writeFromNativeFunction(QTextStream &s, const AbstractMetaClass *java_class)
 {
     s << jni_function_signature(java_class->package(),
                                 java_class->name(),
@@ -1754,7 +1754,7 @@ void CppImplGenerator::writeFromNativeFunction(QTextStream &s, const MetaJavaCla
     }
 }
 
-void CppImplGenerator::writeFromArrayFunction(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::writeFromArrayFunction(QTextStream &s, const AbstractMetaClass *java_class)
 {
     s << jni_function_signature(java_class->package(),
                                 java_class->name(),
@@ -1777,8 +1777,8 @@ void CppImplGenerator::writeFromArrayFunction(QTextStream &s, const MetaJavaClas
 
 
 void CppImplGenerator::writeInterfaceCastFunction(QTextStream &s,
-                                                  const MetaJavaClass *java_class,
-                                                  const MetaJavaClass *interface)
+                                                  const AbstractMetaClass *java_class,
+                                                  const AbstractMetaClass *interface)
 {
     Q_ASSERT(interface->isInterface());
     const InterfaceTypeEntry *ie = static_cast<const InterfaceTypeEntry *>(interface->typeEntry());
@@ -1803,7 +1803,7 @@ void CppImplGenerator::writeInterfaceCastFunction(QTextStream &s,
 
 bool CppImplGenerator::writeConversionRule(QTextStream &s,
                                            TypeSystem::Language target_language,
-                                           const MetaJavaFunction *java_function,
+                                           const AbstractMetaFunction *java_function,
                                            int argument_index,
                                            const QString &qt_name,
                                            const QString &java_name)
@@ -1829,7 +1829,7 @@ bool CppImplGenerator::writeConversionRule(QTextStream &s,
         conversion_rule  = conversion_rule.replace(qt_name_var, qt_name)
                                           .replace(java_name_var, java_name);
 
-        MetaJavaArgumentList arguments = java_function->arguments();
+        AbstractMetaArgumentList arguments = java_function->arguments();
         for (int i=0; i<arguments.size(); ++i) {
             conversion_rule = conversion_rule.replace("%" + QString::number(i+1),
                                                       arguments.at(i)->indexedName());
@@ -1848,11 +1848,11 @@ bool CppImplGenerator::writeConversionRule(QTextStream &s,
 
 
 void CppImplGenerator::writeJavaToQt(QTextStream &s,
-                                     const MetaJavaClass *java_class,
-                                     const MetaJavaType *function_return_type,
+                                     const AbstractMetaClass *java_class,
+                                     const AbstractMetaType *function_return_type,
                                      const QString &qt_name,
                                      const QString &java_name,
-                                     const MetaJavaFunction *java_function,
+                                     const AbstractMetaFunction *java_function,
                                      int argument_index)
 {
     // Conversion to C++: Shell code for return values, native code for arguments
@@ -1876,10 +1876,10 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
 
 
 void CppImplGenerator::writeJavaToQt(QTextStream &s,
-                                     const MetaJavaType *java_type,
+                                     const AbstractMetaType *java_type,
                                      const QString &qt_name,
                                      const QString &java_name,
-                                     const MetaJavaFunction *java_function,
+                                     const AbstractMetaFunction *java_function,
                                      int argument_index,
                                      Option options)
 {
@@ -1903,7 +1903,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
         s << INDENT << "QVariant " << qt_name
           << " = qtjambi_to_qvariant(__jni_env, " << java_name << ");" << endl;
     } else if (java_type->isArray() && java_type->arrayElementType()->isPrimitive()) {
-        MetaJavaType *elementType = java_type->arrayElementType();
+        AbstractMetaType *elementType = java_type->arrayElementType();
 
         // ### Don't assert on wrong array lengths
         s << INDENT << "int __java_len = __jni_env->GetArrayLength((jarray) " << java_name << ");" << endl
@@ -1919,7 +1919,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
           << qt_name << ");" << endl;
 
     } else if (java_type->isArray()) {
-        MetaJavaType *elementType = java_type->arrayElementType();
+        AbstractMetaType *elementType = java_type->arrayElementType();
 
         s << INDENT << "int __java_len = __jni_env->GetArrayLength((jarray) " << java_name << ");" << endl
           << INDENT << "Q_ASSERT(__java_len == " << java_type->arrayElementCount() << ");" << endl;
@@ -1943,8 +1943,8 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
 
         bool written = false;
         if (java_type->isEnum()) {
-            MetaJavaEnum *java_enum =
-                m_java_classes.findEnum(static_cast<const EnumTypeEntry *>(java_type->typeEntry()));
+            AbstractMetaEnum *java_enum =
+                m_classes.findEnum(static_cast<const EnumTypeEntry *>(java_type->typeEntry()));
             if (java_enum && !java_enum->isPublic()) {
 
                 s << INDENT << "int " << qt_name << " = ";
@@ -2085,7 +2085,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
     s << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl;
 }
 
-static int nativePointerType(const MetaJavaType *java_type)
+static int nativePointerType(const AbstractMetaType *java_type)
 {
     Q_ASSERT(java_type);
     Q_ASSERT(java_type->isNativePointer());
@@ -2116,10 +2116,10 @@ static int nativePointerType(const MetaJavaType *java_type)
 }
 
 void CppImplGenerator::writeQtToJava(QTextStream &s,
-                                     const MetaJavaType *java_type,
+                                     const AbstractMetaType *java_type,
                                      const QString &qt_name,
                                      const QString &java_name,
-                                     const MetaJavaFunction *java_function,
+                                     const AbstractMetaFunction *java_function,
                                      int argument_index,
                                      Option option)
 {
@@ -2141,7 +2141,7 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
 
 
     if (java_type->isArray() && java_type->arrayElementType()->isPrimitive()) {
-        MetaJavaType *elementType = java_type->arrayElementType();
+        AbstractMetaType *elementType = java_type->arrayElementType();
 
         s << INDENT << translateType(java_type, option) << " " << java_name << " = __jni_env->" << newXxxArray(elementType)
           << "(" << java_type->arrayElementCount() << ");" << endl;
@@ -2153,7 +2153,7 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
           << qt_name << ");" << endl;
 
     } else if (java_type->isArray()) {
-        MetaJavaType *elementType = java_type->arrayElementType();
+        AbstractMetaType *elementType = java_type->arrayElementType();
 
         s << INDENT << "jobject " << java_name << " = __jni_env->NewObjectArray("
           << java_type->arrayElementCount() << ");" << endl;
@@ -2271,10 +2271,10 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
 
 
 void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
-                                              const MetaJavaType *java_type,
+                                              const AbstractMetaType *java_type,
                                               const QString &qt_name,
                                               const QString &java_name,
-                                              const MetaJavaFunction *java_function,
+                                              const AbstractMetaFunction *java_function,
                                               int argument_index)
 {
     // Language for conversion to Java: Native code for return values and Shell code for arguments
@@ -2305,7 +2305,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         || type->type() == ContainerTypeEntry::SetContainer
         || type->type() == ContainerTypeEntry::QueueContainer) {
         Q_ASSERT(java_type->instantiations().size() == 1);
-        MetaJavaType *targ = java_type->instantiations().first();
+        AbstractMetaType *targ = java_type->instantiations().first();
 
         s << endl
           << INDENT << "jobject " << java_name << " = ";
@@ -2349,7 +2349,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         s << INDENT << "}" << endl;
 
     } else if (type->type() == ContainerTypeEntry::PairContainer) {
-        QList<MetaJavaType *> args = java_type->instantiations();
+        QList<AbstractMetaType *> args = java_type->instantiations();
         Q_ASSERT(args.size() == 2);
 
         s << INDENT << "jobject " << java_name << ";" << endl
@@ -2371,8 +2371,8 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
                               : "qtjambi_hashmap_new";
 
         Q_ASSERT(java_type->instantiations().size() == 2);
-        MetaJavaType *targ_key = java_type->instantiations().at(0);
-        MetaJavaType *targ_val = java_type->instantiations().at(1);
+        AbstractMetaType *targ_key = java_type->instantiations().at(0);
+        AbstractMetaType *targ_val = java_type->instantiations().at(1);
 
         s << endl
           << INDENT << "jobject " << java_name << " = " << constructor << "(__jni_env, " << qt_name
@@ -2406,10 +2406,10 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
 
 
 void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
-                                              const MetaJavaType *java_type,
+                                              const AbstractMetaType *java_type,
                                               const QString &qt_name,
                                               const QString &java_name,
-                                              const MetaJavaFunction *java_function,
+                                              const AbstractMetaFunction *java_function,
                                               int argument_index)
 {
     // Conversion to C++: Shell code for return value, native code for arguments
@@ -2441,7 +2441,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
         || type->type() == ContainerTypeEntry::SetContainer
         || type->type() == ContainerTypeEntry::QueueContainer) {
         Q_ASSERT(java_type->instantiations().size() == 1);
-        MetaJavaType *targ = java_type->instantiations().first();
+        AbstractMetaType *targ = java_type->instantiations().first();
 
         s << INDENT;
         writeTypeInfo(s, java_type, ForceValueType);
@@ -2470,7 +2470,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
         }
         s << INDENT << "}" << endl;
     } else if (type->type() == ContainerTypeEntry::PairContainer) {
-        QList<MetaJavaType *> targs = java_type->instantiations();
+        QList<AbstractMetaType *> targs = java_type->instantiations();
         Q_ASSERT(targs.size() == 2);
 
         s << INDENT;
@@ -2495,8 +2495,8 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
     } else if (type->type() == ContainerTypeEntry::MapContainer
                || type->type() == ContainerTypeEntry::HashContainer) {
         Q_ASSERT(java_type->instantiations().size() == 2);
-        MetaJavaType *targ_key = java_type->instantiations().at(0);
-        MetaJavaType *targ_val = java_type->instantiations().at(1);
+        AbstractMetaType *targ_key = java_type->instantiations().at(0);
+        AbstractMetaType *targ_val = java_type->instantiations().at(1);
 
         s << INDENT;
         writeTypeInfo(s, java_type, ForceValueType);
@@ -2537,14 +2537,14 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
 
 
 void CppImplGenerator::writeFunctionCall(QTextStream &s, const QString &object_name,
-                                         const MetaJavaFunction *java_function,
+                                         const AbstractMetaFunction *java_function,
                                          const QString &prefix,
                                          Option option,
                                          const QStringList &extra_arguments)
 {
     QString function_name = option & OriginalName ? java_function->originalName() : java_function->name();
 
-    MetaJavaClassList interfaces = java_function->implementingClass()->interfaces();
+    AbstractMetaClassList interfaces = java_function->implementingClass()->interfaces();
 
     QString classPrefix;
     if (prefix.isEmpty()
@@ -2595,15 +2595,15 @@ void CppImplGenerator::writeFunctionCall(QTextStream &s, const QString &object_n
 
 
 void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
-                                                  const MetaJavaFunction *java_function,
+                                                  const AbstractMetaFunction *java_function,
                                                   const QString &prefix,
                                                   Option options)
 {
-    MetaJavaArgumentList arguments = java_function->arguments();
+    AbstractMetaArgumentList arguments = java_function->arguments();
 
     int written_arguments = 0;
     for (int i=0; i<arguments.size(); ++i) {
-        const MetaJavaArgument *argument = arguments.at(i);
+        const AbstractMetaArgument *argument = arguments.at(i);
 
         if ((options & SkipRemovedArguments) == SkipRemovedArguments
             && java_function->argumentRemoved(i+1)) {
@@ -2617,8 +2617,8 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
         bool enum_as_int = (options & EnumAsInts) && (argument->type()->typeEntry()->isEnum()
                                                       || argument->type()->typeEntry()->isFlags());
         if (argument->type()->isEnum()) {
-            MetaJavaEnum *java_enum =
-                m_java_classes.findEnum(static_cast<const EnumTypeEntry *>(argument->type()->typeEntry()));
+            AbstractMetaEnum *java_enum =
+                m_classes.findEnum(static_cast<const EnumTypeEntry *>(argument->type()->typeEntry()));
             if (java_enum == 0) {
                 ReportHandler::warning(QString("enum not found: '%1'")
                     .arg(argument->type()->typeEntry()->qualifiedCppName()));
@@ -2642,7 +2642,7 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
 }
 
 
-QString CppImplGenerator::translateType(const MetaJavaType *java_type, Option option) const
+QString CppImplGenerator::translateType(const AbstractMetaType *java_type, Option option) const
 {
     if (!java_type)
         return "void";
@@ -2666,7 +2666,7 @@ static bool include_less_than(const Include &a, const Include &b)
     return a.name < b.name;
 }
 
-void CppImplGenerator::writeExtraIncludes(QTextStream &s, const MetaJavaClass *java_class)
+void CppImplGenerator::writeExtraIncludes(QTextStream &s, const AbstractMetaClass *java_class)
 {
     IncludeList includes = java_class->typeEntry()->extraIncludes();
     qSort(includes.begin(), includes.end(), include_less_than);

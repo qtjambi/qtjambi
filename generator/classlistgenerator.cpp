@@ -15,7 +15,7 @@
 
 QString ClassListGenerator::fileName() const { return "qtjambi-classes.qdoc"; }
 
-static bool class_sorter(MetaJavaClass *a, MetaJavaClass *b)
+static bool class_sorter(AbstractMetaClass *a, AbstractMetaClass *b)
 {
     return a->name() < b->name();
 }
@@ -38,7 +38,7 @@ void ClassListGenerator::generate()
           << "This is a list of all Qt Jambi classes." << endl << endl
           << "\\table 100%" << endl;
 
-        MetaJavaClassList classes = Generator::classes();
+        AbstractMetaClassList classes = Generator::classes();
         qSort(classes.begin(), classes.end(), class_sorter);
 
         int numColumns = 4;

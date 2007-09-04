@@ -61,8 +61,8 @@ public:
 
     Generator();
 
-    void setClasses(const MetaJavaClassList &classes) { m_java_classes = classes; }
-    MetaJavaClassList classes() const { return m_java_classes; }
+    void setClasses(const AbstractMetaClassList &classes) { m_classes = classes; }
+    AbstractMetaClassList classes() const { return m_classes; }
 
     QString outputDirectory() const { return m_out_dir; }
     void setOutputDirectory(const QString &outDir) { m_out_dir = outDir; }
@@ -72,15 +72,15 @@ public:
     int numGenerated() { return m_num_generated; }
     int numGeneratedAndWritten() { return m_num_generated_written; }
 
-    virtual bool shouldGenerate(const MetaJavaClass *) const { return true; }
-    virtual QString subDirectoryForClass(const MetaJavaClass *java_class) const;
-    virtual QString fileNameForClass(const MetaJavaClass *java_class) const;
-    virtual void write(QTextStream &s, const MetaJavaClass *java_class);
+    virtual bool shouldGenerate(const AbstractMetaClass *) const { return true; }
+    virtual QString subDirectoryForClass(const AbstractMetaClass *java_class) const;
+    virtual QString fileNameForClass(const AbstractMetaClass *java_class) const;
+    virtual void write(QTextStream &s, const AbstractMetaClass *java_class);
 
 protected:
     void verifyDirectoryFor(const QFile &file);
 
-    MetaJavaClassList m_java_classes;
+    AbstractMetaClassList m_classes;
     int m_num_generated;
     int m_num_generated_written;
     QString m_out_dir;

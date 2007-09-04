@@ -34,8 +34,8 @@ public:
     MetaInfoGenerator();
 
     virtual void generate();
-    virtual QString fileNameForClass(const MetaJavaClass *java_class) const;
-    virtual void write(QTextStream &s, const MetaJavaClass *java_class);
+    virtual QString fileNameForClass(const AbstractMetaClass *java_class) const;
+    virtual void write(QTextStream &s, const AbstractMetaClass *java_class);
 
     void setFilenameStub(const QString &stub) { m_filenameStub = stub; }
     QString filenameStub() const { return m_filenameStub; }
@@ -43,11 +43,11 @@ public:
     QString headerFilename() const { return filenameStub() + ".h"; }
     QString cppFilename() const { return filenameStub() + ".cpp"; }
 
-    virtual QString subDirectoryForClass(const MetaJavaClass *, OutputDirectoryType type) const;
+    virtual QString subDirectoryForClass(const AbstractMetaClass *, OutputDirectoryType type) const;
     virtual QString subDirectoryForPackage(const QString &package, OutputDirectoryType type) const;
-    virtual bool shouldGenerate(const MetaJavaClass *) const;
+    virtual bool shouldGenerate(const AbstractMetaClass *) const;
 
-    bool generated(const MetaJavaClass *cls) const;
+    bool generated(const AbstractMetaClass *cls) const;
     bool generatedJavaClasses(const QString &package) const;
     bool generatedMetaInfo(const QString &package) const;
 
@@ -56,15 +56,15 @@ private:
     void writeHeaderFile();
     void writeLibraryInitializers();
     void writeInclude(QTextStream &s, const Include &inc);
-    void writeIncludeStatements(QTextStream &s, const MetaJavaClassList &classList, const QString &package);
+    void writeIncludeStatements(QTextStream &s, const AbstractMetaClassList &classList, const QString &package);
     void writeInitializationFunctionName(QTextStream &s, const QString &package, bool fullSignature);
-    void writeInitialization(QTextStream &s, const TypeEntry *entry, const MetaJavaClass *cls, bool registerMetaType = true);
+    void writeInitialization(QTextStream &s, const TypeEntry *entry, const AbstractMetaClass *cls, bool registerMetaType = true);
     void writeCustomStructors(QTextStream &s, const TypeEntry *entry);
-    void writeDestructors(QTextStream &s, const MetaJavaClass *cls);
+    void writeDestructors(QTextStream &s, const AbstractMetaClass *cls);
     void writeCodeBlock(QTextStream &s, const QString &code);
     void writeSignalsAndSlots(QTextStream &s, const QString &package);
     void writeRegisterSignalsAndSlots(QTextStream &s);
-    QStringList writePolymorphicHandler(QTextStream &s, const QString &package, const MetaJavaClassList &clss);
+    QStringList writePolymorphicHandler(QTextStream &s, const QString &package, const AbstractMetaClassList &clss);
     bool shouldGenerate(const TypeEntry *entry) const;
     void buildSkipList();
 
@@ -73,7 +73,7 @@ private:
 
     QHash<OutputDirectoryType, QString> m_out_dir;
 
-    const MetaJavaClass* lookupClassWithPublicDestructor(const MetaJavaClass *cls);
+    const AbstractMetaClass* lookupClassWithPublicDestructor(const AbstractMetaClass *cls);
 };
 
 #endif // METAINFOGENERATOR_H

@@ -20,7 +20,7 @@
 #include <QtCore/QMap>
 #include <QDebug>
 
-class MetaJavaType;
+class AbstractMetaType;
 class QTextStream;
 
 class EnumTypeEntry;
@@ -970,13 +970,13 @@ public:
     CustomTypeEntry(const QString &name) : ComplexTypeEntry(name, CustomType) { }
 
     virtual void generateCppJavaToQt(QTextStream &s,
-                                     const MetaJavaType *java_type,
+                                     const AbstractMetaType *java_type,
                                      const QString &env_name,
                                      const QString &qt_name,
                                      const QString &java_name) const = 0;
 
     virtual void generateCppQtToJava(QTextStream &s,
-                                     const MetaJavaType *java_type,
+                                     const AbstractMetaType *java_type,
                                      const QString &env_name,
                                      const QString &qt_name,
                                      const QString &java_name) const = 0;
