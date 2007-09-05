@@ -719,6 +719,8 @@ public class QtJambiInternal {
         return clazz.isAnnotationPresent(QtJambiGeneratedClass.class);
     }
     
+    public native static void emitNativeSignal(QObject object, String signalSignature, String signalCppSignature, Object args[]);
+    
     public static String cppSignalSignature(QSignalEmitter signalEmitter, String signalName) {
         QSignalEmitter.AbstractSignal signal = lookupSignal(signalEmitter, signalName);
         if (signal != null)
@@ -975,12 +977,23 @@ public class QtJambiInternal {
     }
     
     private static String bunchOfClassNamesInARow(Class<?> classes[]) {
+        return bunchOfClassNamesInARow(classes, null);
+    }
+    private static String bunchOfClassNamesInARow(Class<?> classes[], int arrayDimensions[]) {
         String classNames = "";
         
-        for (Class<?> clazz : classes) {
+        for (int i=0; i<classes.length; ++i) {
+            Class<?> clazz = classes[i];
             if (classNames.length() > 0)
                 classNames += ",";
-            classNames += clazz.getName();
+            
+            String className = clazz.getName();
+            if (arrayDimensions != null) {
+                for (int j=0; j<arrayDimensions[i]; ++j) 
+                    className = "java.lang.Object";
+            }                                     
+            
+            classNames += className;
         }
         
         return classNames;
@@ -1003,8 +1016,8 @@ public class QtJambiInternal {
         return methodSignature(m, false);
     }
     
-    private static String signalParameters(QSignalEmitter.AbstractSignal signal) {
-        return bunchOfClassNamesInARow(signal.resolveSignal());
+    /*friendly*/ static String signalParameters(QSignalEmitter.AbstractSignal signal) {
+        return bunchOfClassNamesInARow(signal.resolveSignal(), signal.arrayDimensions());
     }
     
     private static int addString(int metaData[], 

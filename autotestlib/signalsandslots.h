@@ -110,6 +110,11 @@ public:
         connect(this, SIGNAL(  signal6( const QString &, int   ) ), this, SLOT(          unnormalized_signature(   String,   int   )));
     }
 
+    void javaSignalToCppSlot() 
+    {
+        connect(this, SIGNAL(aJavaSignal(const QString &, const QByteArray &)), this, SLOT(aCppSlot(const QString &, const QByteArray &)));
+    }
+
     void disconnectAllFromObject()
     {
         disconnect();
@@ -186,6 +191,9 @@ public:
     int slot2_called;
     int slot3_called;
 
+    QString received_string;
+    QByteArray received_bytearray;
+
 signals:
     void signal1();
     void signal2(int);
@@ -198,6 +206,9 @@ public slots:
     QByteArray slot1_3() { slot1_3_called++; return QByteArray(); }
     virtual void slot2(int i) { slot2_called += i; }
     void slot3(const QString &str) { slot3_called += str.toInt(); }
+
+private slots:
+    void aCppSlot(const QString &str, const QByteArray &ba) { received_string = str; received_bytearray = ba; }
 
 private:
     QByteArray m_cppProperty;

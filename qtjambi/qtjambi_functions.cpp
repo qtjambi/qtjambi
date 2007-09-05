@@ -289,6 +289,43 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_fetchFieldNative)
     return env->GetObjectField(owner, id);
 }
 
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_emitNativeSignal)
+(JNIEnv *env,
+ jclass,
+ jobject owner,
+ jobject signalSignature,
+ jobject signalCppSignature,
+ jobject a)
+{
+    QObject *o = qtjambi_to_qobject(env, owner);
+    if (o != 0) {
+        const QMetaObject *mo = o->metaObject();
+
+        QString signal_cpp_signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(signalCppSignature));
+        int mox = mo->indexOfSignal(signal_cpp_signature.toLatin1().constData());
+        
+        QtJambiTypeManager manager(env);
+        QString signal_signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(signalSignature));
+        QVector<QString> type_list = manager.parseSignature(signal_signature);
+
+        jobjectArray args = reinterpret_cast<jobjectArray>(a);
+        QVector<void *> input_arguments(type_list.size() - 1, 0);        
+        for (int i=0;i<type_list.size()-1;++i) {
+            jvalue *jv = new jvalue; 
+            jv->l = env->GetObjectArrayElement(args, i);     
+            input_arguments[i] = jv;
+        }
+        
+        QVector<void *> converted_arguments = manager.initExternalToInternal(input_arguments, type_list);
+        if (converted_arguments.size() > 0) {
+            void **_a = converted_arguments.data();
+            QMetaObject::activate(o, mox, _a);
+            manager.destroyConstructedInternal(converted_arguments);
+        }
+    }
+}
+
 void qtjambi_shutdown();
 
 extern "C" JNIEXPORT void JNICALL

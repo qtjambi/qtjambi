@@ -44,6 +44,7 @@ public:
 
         Value           = 0x1000,
         String          = 0x2000,
+        QtSubclass      = 0x4000,
 
         TypeMask = Integer + Long + Boolean + Float + Double + Short + Byte + Char
     };
@@ -112,7 +113,7 @@ public:
         const QVector<QString> &typeList);
     void destroyInternal(void *value, VariableContext ctx);
     void *constructInternal(const QString &internalTypeName, VariableContext ctx,
-        const void *copy = 0);
+        const void *copy = 0, int metaType=QMetaType::Void);
     int metaTypeOfInternal(const QString &internalTypeName, VariableContext) const;
     QVector<void *> initExternalToInternal(const QVector<void *> &externalVariables,
         const QVector<QString> &externalTypeNames);

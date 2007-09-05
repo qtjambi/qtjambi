@@ -1620,4 +1620,22 @@ public class TestConnections extends QApplicationTest implements Qt
         
     }
     
+    private static class JavaSignal extends SignalsAndSlots {
+        public Signal2<String, QByteArray> aJavaSignal = new Signal2<String, QByteArray>();
+    }
+    
+    @Test public void javaEmitShouldEmitCpp() {
+        JavaSignal javaSignal = new JavaSignal();
+        
+        javaSignal.javaSignalToCppSlot();
+        
+        assertEquals("", javaSignal.received_string());
+        assertEquals("", javaSignal.received_bytearray().toString());
+        
+        javaSignal.aJavaSignal.emit("where are we?", new QByteArray("what the hell is going on?"));
+        
+        assertEquals("where are we?", javaSignal.received_string());
+        assertEquals("what the hell is going on?", javaSignal.received_bytearray().toString());        
+    }
+    
 }

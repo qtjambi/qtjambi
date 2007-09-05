@@ -247,10 +247,13 @@ void QtJambiTypeManager::destroyInternal(void *value, VariableContext ctx)
     destroyInternal() when the value is no longer in use. If you reimplement this method,
     you must also reimplement destroyInternal().
 */
-void *QtJambiTypeManager::constructInternal(const QString &internalTypeName, VariableContext ctx,
-                                       const void *copy)
+void *QtJambiTypeManager::constructInternal(const QString &internalTypeName, 
+                                            VariableContext ctx,
+                                            const void *copy,
+                                            int metaType)
 {
-    int metaType = metaTypeOfInternal(internalTypeName, ctx);
+    if (metaType == QMetaType::Void)
+        metaType = metaTypeOfInternal(internalTypeName, ctx);
 
     void *returned = 0;
     if (metaType != int(QMetaType::Void)
@@ -786,21 +789,25 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(JNIEnv *env,
         return NativePointer;
 
     // Or we need to resolve the type
-    int type = 0;
-
     QString javaName = getJavaName(internalTypeName);
+    QString strClassName = className(javaName);
+    QString strPackage = package(javaName);
+    int type = 0;
+    int value_type_pattern = valueTypePattern(javaName);
+    if (((value_type_pattern & Primitive) == 0) && isQtSubclass(env, strClassName, strPackage))
+        type |= QtSubclass;
+   
     int metaType = QMetaType::type(internalTypeName.toLatin1().constData());
     if (metaType != QMetaType::Void) {
-        type |= valueTypePattern(javaName);
+        type |= value_type_pattern;
     } else {
         type |= Object;
 
-        QString strClassName = className(javaName);
-        QString strPackage = package(javaName);
 
         if (isQObjectSubclass(env, strClassName, strPackage))
             type |= QObjectSubclass;
     }
+
 
     // Pointers to value types are native pointers
     if ((type & Value) && indirections > 0)
@@ -823,21 +830,28 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(JNIEnv *env, const
     }
 
     QString qtName = getQtName(package + className);
+
     int metaType = QMetaType::Void;
     if (!qtName.isEmpty() && !qtName.endsWith(QLatin1Char('*')))
         metaType = QMetaType::type(qtName.toLatin1().constData());
 
     // Value types are resolved and object types that inherit QtJambiObject are attempted to be resolved.
-    // Otherwise we return 0. We will attempt to map any class which begins with java/lang to
-    // a value type
+    // We will attempt to map any class which begins with java/lang to a value type.
+    // Other types become variants.
     int type = 0;
+    int value_type_pattern = valueTypePattern(package + className);
+    if (((value_type_pattern & Primitive) == 0) && isQtSubclass(env, className, package))
+        type |= QtSubclass;
+
     if (metaType != QMetaType::Void || package.startsWith("java/lang/")) {
-        type |= valueTypePattern(package + className);
-    } else if (isQtSubclass(env, className, package)) {
+        type |= value_type_pattern;
+    } else if (type & QtSubclass) {
         type |= Object;
 
         if (isQObjectSubclass(env, className, package))
             type |= QObjectSubclass;
+    } else {
+        type |= Value; // Try to go with jobject
     }
 
     return Type(type);
@@ -913,7 +927,7 @@ QVector<QString> QtJambiTypeManager::parseSignature(const QString &signature,
       * Reference types, non-QObjects in the Qt package (value types):
         The simple class name by itself
       * Reference types, regular Java Objects
-        Error
+        jobjects
 */
 QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
                                                VariableContext /*ctx*/) const
@@ -921,12 +935,15 @@ QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
     // First we try a simple look up. This will handle any type in the type system,
     // so: primitives, boxed primitives and direct mappings of Qt types
     QString qtName = getQtName(externalTypeName);
-
+    Type t = valueTypePattern(externalTypeName);
+    if ((!qtName.isEmpty() && (t & Primitive)) || externalTypeName.endsWith("[]"))
+        return qtName;
     
     // If not we must do some more work.
     QString strClassName = className(externalTypeName);
     QString strPackage = package(externalTypeName);
     Type type = typeIdOfExternal(mEnvironment, strClassName, strPackage);
+    QTJAMBI_EXCEPTION_CHECK(mEnvironment);
     if (!qtName.isEmpty() && type & Value)
         return qtName;
 
@@ -939,10 +956,9 @@ QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
     } else if (type & Object) {
         return className(closestQtSuperclass(mEnvironment, strClassName, strPackage))
             + QLatin1Char('*');
-    } else if (externalTypeName == QLatin1String("java/lang/Object"))
-        return QLatin1String("QVariant");
-
-    return QString();
+    } else { // All java types can be converted to jobjects
+        return QLatin1String("jobject");
+    }
 }
 
 /*!
@@ -1172,7 +1188,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
     QString strClassName = className(externalTypeName);
     QString strPackage = package(externalTypeName);
     Type type = typeIdOfExternal(mEnvironment, strClassName, strPackage);
-
+    int metaType = metaTypeOfInternal(internalTypeName, ctx);
     jvalue dummyVal;
 
     Type typemasked = Type(type & TypeMask);
@@ -1186,10 +1202,16 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
         type = Type(type | Primitive);
     }
 
+
     bool success = true;
+
+    // Some temporary containers for copying
     void *temp = 0;
+    QVariant v;
     const void *copy = 0;
-    QString strCopy;
+    QString strCopy;   
+    JObjectWrapper wrapper; // for catch all jobject conversion
+
     if (typemasked) {
         switch (typemasked) {
         case None: break ;
@@ -1211,7 +1233,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
     } else if ((type & NativePointer) == NativePointer) {
         temp = qtjambi_to_cpointer(mEnvironment, pval->l, 1);
         copy = &temp;
-    } else if ((type & Value) || (type & Object)) {
+    } else if ((type & QtSubclass) && ((type & Value) || (type & Object))) {
         QtJambiLink *link = QtJambiLink::findLink(mEnvironment, pval->l);
 
         if (link == 0 || link->pointer() == 0) {
@@ -1223,7 +1245,11 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
         } else {
             temp = link->pointer();
             copy = &temp;
-        }
+        }   
+    } else if ((type & Value) || (type & Object)) {
+        metaType = qMetaTypeId<JObjectWrapper>();
+        wrapper = JObjectWrapper(mEnvironment, pval->l);
+        copy = &wrapper;
     } else {
         success = false;
     }
@@ -1233,10 +1259,8 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
             " '%s'", qPrintable(externalTypeName));
     } else {
         if (*out == 0) { // Construct a new one
-            *out = constructInternal(internalTypeName, ctx, copy);
-        } else { // Use QDataStream to copy the value over
-            int metaType = metaTypeOfInternal(internalTypeName, ctx);
-
+            *out = constructInternal(internalTypeName, ctx, copy, metaType);
+        } else { // Use QDataStream to copy the value over            
             if (metaType != int(QMetaType::Void)
                 && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
 

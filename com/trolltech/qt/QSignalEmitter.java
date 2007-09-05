@@ -251,6 +251,14 @@ public class QSignalEmitter {
         public final String fullName() {
             return declaringClassName() + "." + name();
         }
+        
+        /**
+         * @return True if the signal is generated (declared in a generated class)
+         */
+        private boolean isGenerated() {
+            resolveSignal();
+            return declaringClass == null ? false : declaringClass.isAnnotationPresent(QtJambiGeneratedClass.class);
+        }
 
         /**
          * Returns true if the connection receiver is the emission of the C++ version of the current
@@ -278,11 +286,25 @@ public class QSignalEmitter {
             addConnection(receiver, slotMethod, connectionType);            
         }
 
-        private int[] arrayDimensions() {
+        /**
+         * Array dimensions for each of the signal arguments in order of declaration. Used in combination with
+         * resolveSignal(). An array dimension of 0 means the argument is not of an array type.
+         *  
+         * @return An array of integers indicating the number of dimensions of each of the signal arguments
+         */
+        /* friendly */ int[] arrayDimensions() {
             resolveSignal();
             return arrayDimensions;
         }
 
+        /**
+         * Base types of all signal arguments in order of declaration. If the argument is of an array type,
+         * then the base type of the array is returned by resolveSignal, and the actual number of dimensions
+         * of the array can be retrieved using arrayDimensions(). If the argument is not of an array type,
+         * the argument's type is returned.
+         * 
+         * @return An array of Class objects specifying the base type of each of the signal arguments.
+         */
         /* friendly */ Class<?>[] resolveSignal() {
             if (types == null) {
                 types = new Class[0]; // For signals with no parameters
@@ -356,6 +378,25 @@ public class QSignalEmitter {
             return types;
         }
 
+        // Cache string containing list of Java argument types for signal
+        private String signalParameters = null;
+        private String signalParameters() {
+            if (signalParameters == null)
+                signalParameters = QtJambiInternal.signalParameters(this);
+            
+            return signalParameters;
+        }
+        
+        
+        // Cache string containing cpp signature for signal
+        private String cppSignalSignature = null;
+        private String cppSignalSignature() {
+            if (cppSignalSignature == null)
+                cppSignalSignature = QtJambiInternal.cppSignalSignature(this);
+            
+            return cppSignalSignature;
+        }
+        
         /**
          * @exclude
          */
@@ -368,6 +409,15 @@ public class QSignalEmitter {
 
             List<Connection> cons = connections;
             List<Connection> toRemove = null;
+        
+            // If the signal is generated, it will automatically be connected
+            // to the original C++ function for the signal, so the native 
+            // signal will be emitted by this mechanism. In other cases, we 
+            // need to make magic and dynamically fake a signal emission
+            // in c++ for the signal.
+            if (!isGenerated() && QSignalEmitter.this instanceof QObject) {
+                QtJambiInternal.emitNativeSignal((QObject) QSignalEmitter.this, name() + "(" + signalParameters() + ")", cppSignalSignature(), args);
+            }
             
             inEmit = true;
             for (Connection c : cons) {

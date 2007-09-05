@@ -99,87 +99,6 @@ typedef QHash<QThread *, jobject> ThreadTable;
 Q_GLOBAL_STATIC(ThreadTable, qtjambi_thread_table);
 Q_GLOBAL_STATIC(QReadWriteLock, qtjambi_thread_table_lock);
 
-#ifdef JOBJECT_REFCOUNT
-#  include <QtCore/QReadWriteLock>
-#  include <QtCore/QWriteLocker>
-    Q_GLOBAL_STATIC(QReadWriteLock, gRefCountLock);
-
-    static void jobjectRefCount(bool create)
-    {
-        QWriteLocker locker(gRefCountLock());
-
-        static int refs = 0;
-        QString s;
-        if (!create) {
-            s = QString("Deleting jobject reference: %1 references left").arg(--refs);
-        } else {
-            s = QString("Creating jobject reference: %1 references now").arg(++refs);
-        }
-
-        Q_ASSERT(refs >= 0);
-
-        fprintf(stderr, qPrintable(s));
-    }
-
-#  define REF_JOBJECT jobjectRefCount(true)
-#  define DEREF_JOBJECT jobjectRefCount(false)
-#else
-#  define REF_JOBJECT // noop
-#  define DEREF_JOBJECT // noop
-#endif // JOBJECT_REFCOUNT
-
-struct JObjectWrapper
-{
-    JObjectWrapper() : environment(0), object(0)
-    {
-    }
-    
-    JObjectWrapper(const JObjectWrapper &wrapper)
-    {
-        operator=(wrapper);
-    }
-    
-    JObjectWrapper(JNIEnv *env, jobject obj) : environment(env)
-    {
-        Q_ASSERT(env != 0 && obj != 0 || env == 0 && obj == 0);
-        if (obj && env){
-            object = env->NewGlobalRef(obj);
-        }
-        else{
-            object = 0;
-        }
-        REF_JOBJECT;
-    }
-    
-    ~JObjectWrapper()
-    {
-        DEREF_JOBJECT;
-        
-        if (environment && object)
-            environment->DeleteGlobalRef(object);
-    }
-
-    void operator=(const JObjectWrapper &wrapper) {
-        if (wrapper.environment && wrapper.object) {
-            environment = wrapper.environment;
-            object = environment->NewGlobalRef(wrapper.object);
-        } else {
-            object = 0;
-            environment = 0;
-        } 
-        
-        REF_JOBJECT;        
-    }
-
-    
-    
-    JNIEnv *environment;
-    jobject object;
-};
-
-
-Q_DECLARE_METATYPE(JObjectWrapper)
-
 void jobjectwrapper_save(QDataStream &stream, const void *_jObjectWrapper)
 { 
     JObjectWrapper *jObjectWrapper = (JObjectWrapper *) _jObjectWrapper;
@@ -377,16 +296,13 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
     // Do the slightly slower fallback...
     QString fullName = qtjambi_class_name(env, object_class).replace(".", "/");
 
+    JObjectWrapper wrapper(env, java_object);
     QtJambiTypeManager manager(env);
     QString className = manager.getInternalTypeName(fullName, QtJambiTypeManager::ArgumentType);
-    QByteArray l1className = className.toLatin1();
     int type = !className.isEmpty()
-        ? QVariant::nameToType(l1className.constData())
+        ? manager.metaTypeOfInternal(className, QtJambiTypeManager::ArgumentType)
         : QVariant::Invalid;
-    if (type == QVariant::UserType)
-        type = QMetaType::type(l1className.constData());
 
-    JObjectWrapper wrapper(env, java_object);
     void *copy = 0;
     bool destroyCopy = false;
     if (type != QVariant::Invalid) {
@@ -398,8 +314,7 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
             type = QVariant::Invalid;
         else
             destroyCopy = true;
-    }
-
+    } 
 
     if (type == QVariant::Invalid) {
         type = qMetaTypeId<JObjectWrapper>();
@@ -2006,7 +1921,6 @@ void qtjambi_register_callbacks()
     QMetaType::registerStreamOperators(QMetaType::typeName(qMetaTypeId<JObjectWrapper>()),
 				       reinterpret_cast<QMetaType::SaveOperator>(jobjectwrapper_save),
 				       reinterpret_cast<QMetaType::LoadOperator>(jobjectwrapper_load));
-
 }
 
 

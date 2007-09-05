@@ -55,6 +55,85 @@ struct QtJambiSignalInfo
     jmethodID methodId;
 };
 
+#ifdef JOBJECT_REFCOUNT
+#  include <QtCore/QReadWriteLock>
+#  include <QtCore/QWriteLocker>
+    Q_GLOBAL_STATIC(QReadWriteLock, gRefCountLock);
+
+    static void jobjectRefCount(bool create)
+    {
+        QWriteLocker locker(gRefCountLock());
+
+        static int refs = 0;
+        QString s;
+        if (!create) {
+            s = QString("Deleting jobject reference: %1 references left").arg(--refs);
+        } else {
+            s = QString("Creating jobject reference: %1 references now").arg(++refs);
+        }
+
+        Q_ASSERT(refs >= 0);
+
+        fprintf(stderr, qPrintable(s));
+    }
+
+#  define REF_JOBJECT jobjectRefCount(true)
+#  define DEREF_JOBJECT jobjectRefCount(false)
+#else
+#  define REF_JOBJECT // noop
+#  define DEREF_JOBJECT // noop
+#endif // JOBJECT_REFCOUNT
+
+struct JObjectWrapper
+{
+    JObjectWrapper() : environment(0), object(0)
+    {
+    }
+    
+    JObjectWrapper(const JObjectWrapper &wrapper)
+    {
+        operator=(wrapper);
+    }
+    
+    JObjectWrapper(JNIEnv *env, jobject obj) : environment(env)
+    {
+        Q_ASSERT(env != 0 && obj != 0 || env == 0 && obj == 0);
+        if (obj && env){
+            object = env->NewGlobalRef(obj);
+        }
+        else{
+            object = 0;
+        }
+        REF_JOBJECT;
+    }
+    
+    ~JObjectWrapper()
+    {
+        DEREF_JOBJECT;
+
+        if (environment && object)
+            environment->DeleteGlobalRef(object);
+    }
+
+    void operator=(const JObjectWrapper &wrapper) {
+        if (wrapper.environment && wrapper.object) {
+            environment = wrapper.environment;
+            object = environment->NewGlobalRef(wrapper.object);
+        } else {
+            object = 0;
+            environment = 0;
+        } 
+        
+        REF_JOBJECT;        
+    }
+
+    
+    
+    JNIEnv *environment;
+    jobject object;
+};
+Q_DECLARE_METATYPE(JObjectWrapper)
+
 inline void *qtjambi_from_jlong(jlong ptr)
 {
     if (ptr != 0) {
