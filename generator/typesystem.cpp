@@ -1452,7 +1452,7 @@ QString PrimitiveTypeEntry::javaObjectName() const
         table["float"] = "Float";
         table["double"] = "Double";
     }
-    Q_ASSERT(table.contains(javaName()));
+    Q_ASSERT(table.contains(targetLangName()));
     return table[targetLangName()];
 }
 
