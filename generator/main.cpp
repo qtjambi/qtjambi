@@ -16,6 +16,7 @@
 #include "reporthandler.h"
 #include "typesystem.h"
 #include "generatorset.h"
+#include "fileout.h"
 
 #include <QDir>
 
@@ -68,6 +69,10 @@ int main(int argc, char *argv[])
         else if (level == "full")
             ReportHandler::setDebugLevel(ReportHandler::FullDebug);
     }      
+
+    if (args.contains("dummy")) {
+        FileOut::dummy = true;
+    }
     
     if (args.contains("rebuild-only")) {
         QStringList classes = args.value("rebuild-only").split(",", QString::SkipEmptyParts);

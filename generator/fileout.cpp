@@ -17,6 +17,8 @@
 #include <QFileInfo>
 #include <QDir>
 
+bool FileOut::dummy = false;
+
 FileOut::FileOut(QString n):
     name(n),
     stream(&tmp)
@@ -37,18 +39,20 @@ bool FileOut::done() {
         fileRead.close();
         fileEqual = (original == tmp);
     }
-    if( !fileEqual ) {        
-        QDir dir(info.absolutePath());
-        dir.mkpath(dir.absolutePath());
+    if( !fileEqual ) {
+        if( !FileOut::dummy ) {
+            QDir dir(info.absolutePath());
+            dir.mkpath(dir.absolutePath());
 
-        QFile fileWrite(name);
-        if (!fileWrite.open(QIODevice::WriteOnly)) {
-            ReportHandler::warning(QString("failed to open file '%1' for writing")
-                                   .arg(fileWrite.fileName()));
-            return false;
+            QFile fileWrite(name);
+            if (!fileWrite.open(QIODevice::WriteOnly)) {
+                ReportHandler::warning(QString("failed to open file '%1' for writing")
+                                       .arg(fileWrite.fileName()));
+                return false;
+            }
+            stream.setDevice(&fileWrite);
+            stream << tmp;
         }
-        stream.setDevice(&fileWrite);
-        stream << tmp;
         return true;
     }
     return false;

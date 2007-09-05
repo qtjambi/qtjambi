@@ -33,7 +33,8 @@ public:
     bool done();
     
     QTextStream stream;
- 
+
+    static bool dummy;
 };
 
 #endif // FILEOUT_H
