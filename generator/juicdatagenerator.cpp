@@ -62,9 +62,9 @@ void JuicDataGenerator::generate()
 
 void JuicDataGenerator::generateModifications(QDomDocument *doc_node, QDomElement *mods_node)
 {
-    foreach (MetaJavaClass *c, m_classes) {
-        MetaJavaFunctionList functions = c->functions();
-        foreach (MetaJavaFunction *f, functions) {
+    foreach (AbstractMetaClass *c, m_classes) {
+        AbstractMetaFunctionList functions = c->functions();
+        foreach (AbstractMetaFunction *f, functions) {
             FunctionModificationList mods = f->modifications(c);
 
             if (mods.size()) {

@@ -22,8 +22,8 @@ class QDomElement;
 class JuicDataGenerator
 {
 public:
-    void setClasses(const MetaJavaClassList &classes) { m_classes = classes; }
-    MetaJavaClassList classes() const { return m_classes; }
+    void setClasses(const AbstractMetaClassList &classes) { m_classes = classes; }
+    AbstractMetaClassList classes() const { return m_classes; }
 
     void setFileName(const QString &outputFile) { m_file_name = outputFile; }
     QString fileName() const { return m_file_name; }
@@ -35,7 +35,7 @@ public:
     void generateEnumerators(QDomDocument *doc_nod, QDomElement *mods_node);
 
 private:
-    MetaJavaClassList m_classes;
+    AbstractMetaClassList m_classes;
     QString m_file_name;
 };
 
