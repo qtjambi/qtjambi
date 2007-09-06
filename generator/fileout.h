@@ -28,13 +28,20 @@ private:
 
 public:
     FileOut(QString name);
-    ~FileOut() { done(); }
+    ~FileOut() 
+        {
+            if( !isDone )
+                done();
+        }
 
     bool done();
     
     QTextStream stream;
 
     static bool dummy;
+
+ private:
+    bool isDone;
 };
 
 #endif // FILEOUT_H

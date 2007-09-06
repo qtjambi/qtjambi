@@ -21,13 +21,17 @@ bool FileOut::dummy = false;
 
 FileOut::FileOut(QString n):
     name(n),
-    stream(&tmp)
+    stream(&tmp),
+    isDone(false)
 {}
 
 bool FileOut::done() {
+    Q_ASSERT( !isDone );
+    isDone = true;
     bool fileEqual = false;
     QFile fileRead(name);
     QFileInfo info(fileRead);
+    stream.flush();
     if( info.exists() && info.size() == tmp.size() ) {
         if ( !fileRead.open(QIODevice::ReadOnly) ) {
             ReportHandler::warning(QString("failed to open file '%1' for reading")
@@ -39,6 +43,7 @@ bool FileOut::done() {
         fileRead.close();
         fileEqual = (original == tmp);
     }
+    
     if( !fileEqual ) {
         if( !FileOut::dummy ) {
             QDir dir(info.absolutePath());
