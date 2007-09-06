@@ -52,6 +52,7 @@ public class CollidingMice extends QWidget {
         view.setCacheMode(new QGraphicsView.CacheMode(
                 QGraphicsView.CacheModeFlag.CacheBackground));
         view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag);
+        view.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate);
 
         QGridLayout layout = new QGridLayout();
         layout.addWidget(view, 0, 0);
