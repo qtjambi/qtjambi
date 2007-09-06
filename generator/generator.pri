@@ -36,6 +36,8 @@ HEADERS += \
         $$GENERATORPATH/customtypes.h \
         $$GENERATORPATH/abstractmetabuilder.h \
         $$GENERATORPATH/abstractmetalang.h \
+        $$GENERATORPATH/prigenerator.h \
+
 
 
       
@@ -52,6 +54,8 @@ SOURCES += \
         $$GENERATORPATH/customtypes.cpp \
         $$GENERATORPATH/abstractmetabuilder.cpp \
         $$GENERATORPATH/abstractmetalang.cpp \
+        $$GENERATORPATH/prigenerator.cpp \
+
 
    
 QT = core xml
