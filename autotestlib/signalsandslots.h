@@ -185,6 +185,49 @@ public:
 
     void resetCppProperty() { m_cppProperty = "it was the darkest and stormiest night evar"; }
 
+    int numberOfEnumTypes() 
+    {
+        return metaObject()->enumeratorCount();
+    }
+
+    QStringList namesOfEnumType(const QString &name) 
+    {
+        QStringList returned;
+
+        QMetaEnum metaEnum = metaObject()->enumerator(metaObject()->indexOfEnumerator(name.toUtf8().constData()));
+        int count = metaEnum.keyCount();
+        for (int i=0; i<count; ++i) {
+            returned.append(QString::fromLatin1(metaEnum.key(i)));
+        }
+
+        return returned;
+    }
+
+    QList<int> valuesOfEnumType(const QString &name) 
+    {
+        QList<int> returned;
+
+        QMetaEnum metaEnum = metaObject()->enumerator(metaObject()->indexOfEnumerator(name.toUtf8().constData()));
+        int count = metaEnum.keyCount();
+        for (int i=0; i<count; ++i) {
+            returned.append(metaEnum.value(i));
+        }
+        
+        return returned;
+    }
+
+    bool isFlagsType(const QString &name) 
+    {
+        QMetaEnum metaEnum = metaObject()->enumerator(metaObject()->indexOfEnumerator(name.toUtf8().constData()));
+        return metaEnum.isFlag();
+    }
+
+    bool isValidEnum(const QString &name) 
+    {
+        QMetaEnum metaEnum = metaObject()->enumerator(metaObject()->indexOfEnumerator(name.toUtf8().constData()));
+        return metaEnum.isValid();
+    }
+
     int slot1_1_called;
     int slot1_2_called;
     int slot1_3_called;

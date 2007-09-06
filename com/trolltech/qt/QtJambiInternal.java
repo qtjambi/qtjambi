@@ -743,6 +743,35 @@ public class QtJambiInternal {
     
     private native static String internalTypeName(String s, int varContext);
     
+    private static List<QPair<Class<?>, Boolean>> queryEnums(Class<?> clazz, Integer outputEnumConstantCount[]) {
+        List<QPair<Class<?>, Boolean>> returned = new ArrayList<QPair<Class<?>, Boolean>>();
+        
+        Set<String> enumsWithFlags = new HashSet<String>();
+        Class<?> declaredClasses[] = clazz.getDeclaredClasses();
+        for (Class<?> declaredClass : declaredClasses) {
+            if (QFlags.class.isAssignableFrom(declaredClass)) {
+                Type t = declaredClass.getGenericSuperclass();
+                if (t instanceof ParameterizedType) {
+                    Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
+                    
+                    if (typeArguments.length == 1 && typeArguments[0] instanceof Class) {
+                        enumsWithFlags.add(((Class)typeArguments[0]).getName());
+                    }
+                }
+            }
+        }
+        
+        for (Class<?> declaredClass : declaredClasses) {
+            if (declaredClass.isEnum()) {
+                boolean hasQFlags = QtEnumerator.class.isAssignableFrom(declaredClass) && enumsWithFlags.contains(declaredClass.getName());
+                returned.add(new QPair<Class<?>, Boolean>(declaredClass, hasQFlags));
+                outputEnumConstantCount[0] += declaredClass.getEnumConstants().length;
+            }
+        }
+        
+        return returned;
+    }
+    
     public static MetaData buildMetaData(Class<? extends QObject> clazz, QObject object) {
         MetaData metaData = new MetaData();
                 
@@ -753,6 +782,10 @@ public class QtJambiInternal {
         Hashtable<String, Method> propertyWriters = new Hashtable<String, Method>();
         Hashtable<String, Object> propertyDesignables = new Hashtable<String, Object>();
         Hashtable<String, Method> propertyResetters = new Hashtable<String, Method>();
+        
+        Integer outputArgument[] = { 0 };
+        List<QPair<Class<?>, Boolean>> enums = queryEnums(clazz, outputArgument);        
+        int enumConstantCount = outputArgument[0];
         
         Method declaredMethods[] = clazz.getDeclaredMethods();        
         for (Method declaredMethod : declaredMethods) {
@@ -860,8 +893,10 @@ public class QtJambiInternal {
         
         {
             int functionCount = slots.size() + signals.size();
+            int propertyCount = propertyReaders.keySet().size();
+            int enumCount = enums.size();
             
-            metaData.metaData = new int[12 + functionCount * 5 + 1 + propertyReaders.keySet().size() * 3]; // Header size(10) + functionCount*5 + EOD
+            metaData.metaData = new int[12 + functionCount * 5 + 1 + propertyCount * 3 + enumCount * 4 + enumConstantCount * 2]; 
             
             // Add static header
             metaData.metaData[0] = 1; // Revision
@@ -874,11 +909,12 @@ public class QtJambiInternal {
             metaData.metaData[4] = functionCount;
             metaData.metaData[5] = functionCount > 0 ? 12 : 0;
             
-            
-            metaData.metaData[6] = propertyReaders.keySet().size();
+            metaData.metaData[6] = propertyCount;
             metaData.metaData[7] = 12 + functionCount * 5; // Each function takes 5 ints 
             
-            // 0, 0 (### enums not supported yet) 
+            // Enums
+            metaData.metaData[8] = enums.size();
+            metaData.metaData[9] = 12 + functionCount * 5 + propertyCount * 3; // Each property takes 3 ints
                                                 
             int offset = 0;
             int metaDataOffset = 10; // Header is always 10 ints long
@@ -988,6 +1024,42 @@ public class QtJambiInternal {
                 metaData.propertyReadersArray[i] = reader;
                 metaData.propertyWritersArray[i] = writer;
                 metaData.propertyResettersArray[i] = resetter;
+            }
+            
+            // Enum types
+            int enumConstantOffset = metaDataOffset + enums.size() * 4;
+            for (QPair<Class<?>, Boolean> enumPair : enums) {
+                // Name
+                offset += addString(metaData.metaData, strings, stringsInOrder, enumPair.first.getSimpleName(), offset, metaDataOffset++);
+                
+                // Flags (1 == flags, 0 == no flags)
+                metaData.metaData[metaDataOffset++] = enumPair.second ? 0x1 : 0x0;
+                
+                enumConstantCount = enumPair.first.getEnumConstants().length;
+                
+                // Count
+                metaData.metaData[metaDataOffset++] = enumConstantCount;
+                
+                // Data
+                metaData.metaData[metaDataOffset++] = enumConstantOffset;
+                
+                enumConstantOffset += 2 * enumConstantCount;
+            }
+            
+            // Enum constants
+            for (QPair<Class<?>, Boolean> enumPair : enums) {
+                Enum enumConstants[] = (Enum[]) enumPair.first.getEnumConstants();                
+                
+                for (Enum enumConstant : enumConstants) {
+                    // Key
+                    offset += addString(metaData.metaData, strings, stringsInOrder, enumConstant.name(), offset, metaDataOffset++);
+                    
+                    // Value
+                    metaData.metaData[metaDataOffset++] = enumConstant instanceof QtEnumerator 
+                                                          ? ((QtEnumerator) enumConstant).value()
+                                                          : enumConstant.ordinal();
+                }
+            
             }
             
             // EOD
