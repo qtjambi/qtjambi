@@ -704,6 +704,7 @@ public class QtJambiInternal {
         public Method propertyReadersArray[];
         public Method propertyWritersArray[];
         public Method propertyResettersArray[];
+        public Method propertyDesignablesArray[];
     }
     
     private final static int MethodAccessPrivate = 0x00;
@@ -714,6 +715,8 @@ public class QtJambiInternal {
     private final static int PropertyReadable = 0x1;
     private final static int PropertyWritable = 0x2;
     private final static int PropertyResettable = 0x4;    
+    private final static int PropertyDesignable = 0x1000;
+    private final static int PropertyResolveDesignable = 0x2000;
     
     public static boolean isGeneratedClass(Class<?> clazz) {
         return clazz.isAnnotationPresent(QtJambiGeneratedClass.class);
@@ -748,7 +751,7 @@ public class QtJambiInternal {
         
         Hashtable<String, Method> propertyReaders = new Hashtable<String, Method>();
         Hashtable<String, Method> propertyWriters = new Hashtable<String, Method>();
-        Hashtable<String, Method> propertyDesignables = new Hashtable<String, Method>();
+        Hashtable<String, Object> propertyDesignables = new Hashtable<String, Object>();
         Hashtable<String, Method> propertyResetters = new Hashtable<String, Method>();
         
         Method declaredMethods[] = clazz.getDeclaredMethods();        
@@ -778,6 +781,28 @@ public class QtJambiInternal {
                     && declaredMethod.getReturnType() != Void.TYPE
                     && !internalTypeName(declaredMethod.getReturnType().getName(), 0).equals("")) {
                     propertyReaders.put(reader.name(), declaredMethod);
+                    
+                    // The read method may also be annotated with a designable annotation
+                    {
+                        QtPropertyDesignable designable = declaredMethod.getAnnotation(QtPropertyDesignable.class);
+                        
+                        if (designable != null) {
+                            String value = designable.value();
+                            
+                            if (value.equals("true")) {
+                                propertyDesignables.put(reader.name(), Boolean.TRUE);
+                            } else if (value.equals("false")) {
+                                propertyDesignables.put(reader.name(), Boolean.FALSE);                                
+                            } else try {
+                                Method m = clazz.getMethod(value, (Class<?>[]) null);                                
+                                if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class)
+                                    propertyDesignables.put(reader.name(), m);                                
+                            } catch (Throwable t) {
+                                t.printStackTrace();
+                            }
+                        }                             
+                    }
+                    
                 }
             }
             
@@ -808,10 +833,7 @@ public class QtJambiInternal {
                     && declaredMethod.getReturnType() == Void.TYPE) {
                     propertyResetters.put(resetter.name(), declaredMethod);
                 } 
-            }
-
-            // ### Designable properties
-            
+            }            
         }
         
         Field declaredFields[] = clazz.getDeclaredFields();
@@ -931,10 +953,12 @@ public class QtJambiInternal {
             metaData.propertyReadersArray = new Method[propertyNames.length]; 
             metaData.propertyResettersArray = new Method[propertyNames.length];
             metaData.propertyWritersArray = new Method[propertyNames.length];
+            metaData.propertyDesignablesArray = new Method[propertyNames.length];
             for (int i=0; i<propertyNames.length; ++i) {
                 Method reader = propertyReaders.get(propertyNames[i]);
                 Method writer = propertyWriters.get(propertyNames[i]);
                 Method resetter = propertyResetters.get(propertyNames[i]);
+                Object designableVariant = propertyDesignables.get(propertyNames[i]);
                 
                 if (writer != null && !reader.getReturnType().isAssignableFrom(writer.getParameterTypes()[0])) {
                     System.err.println("QtJambiInternal.buildMetaData: Writer for property " 
@@ -948,8 +972,16 @@ public class QtJambiInternal {
                 // Type
                 offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(reader.getReturnType().getName(), 0), offset, metaDataOffset++);
                 
+                int designableFlags = 0;
+                if (designableVariant instanceof Boolean) {
+                    if ((Boolean) designableVariant) designableFlags = PropertyDesignable;
+                } else if (designableVariant instanceof Method) {
+                    designableFlags = PropertyResolveDesignable;
+                    metaData.propertyDesignablesArray[i] = (Method) designableVariant;
+                }
+                
                 // Flags
-                metaData.metaData[metaDataOffset++] = PropertyReadable 
+                metaData.metaData[metaDataOffset++] = PropertyReadable | designableFlags 
                     | (writer != null ? PropertyWritable : 0)
                     | (resetter != null ? PropertyResettable : 0);
                                 

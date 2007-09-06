@@ -1044,6 +1044,9 @@ void StaticCache::resolveMetaData_internal()
 
     MetaData.propertyResettersArray = env->GetFieldID(MetaData.class_ref, "propertyResettersArray", "[Ljava/lang/reflect/Method;");
     Q_ASSERT(MetaData.propertyResettersArray);
+
+    MetaData.propertyDesignablesArray = env->GetFieldID(MetaData.class_ref, "propertyDesignablesArray", "[java/lang/reflect/Method;");
+    Q_ASSERT(MetaData.propertyDesignablesArray);
 }
 
 void StaticCache::resolveQtJambiGuiInternal_internal()

@@ -59,6 +59,7 @@ void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaO
     m_property_readers = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyReadersArray);
     m_property_writers = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyWritersArray);
     m_property_resetters = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyResettersArray);
+    m_property_designables = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyDesignablesArray);
 
     if (m_methods != 0) {
         m_methods = (jobjectArray) env->NewGlobalRef(m_methods);    
@@ -83,6 +84,11 @@ void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaO
     if (m_property_resetters != 0) {
         m_property_resetters = (jobjectArray) env->NewGlobalRef(m_property_resetters);
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_resetters));
+    }
+
+    if (m_property_designables != 0) {
+        m_property_designables = (jobjectArray) env->NewGlobalRef(m_property_designables);
+        Q_ASSERT(m_property_count == env->GetArrayLength(m_property_designables));
     }
 
     env->PopLocalFrame(0);
@@ -236,6 +242,23 @@ int QDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, void
 
     if (_id < m_property_count) {
         jobject method_object = env->GetObjectArrayElement(m_property_resetters, _id);
+        if (method_object != 0)
+            invokeMethod(env, object, method_object, _a);
+    }
+
+    return _id - m_property_count;
+}
+
+int QDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, int _id, void **_a) const 
+{
+    const QMetaObject *super_class = superClass();
+    if (qtjambi_metaobject_is_dynamic(super_class))
+        _id = static_cast<const QDynamicMetaObject *>(super_class)->queryPropertyDesignable(env, object, _id, _a);
+    if (_id < 0) return _id;
+
+    if (_id < m_property_count) {
+        jobject method_object = env->GetObjectArrayElement(m_property_designables, _id);
+        Q_ASSERT(method_object != 0); // This method should never be called without a method object
         if (method_object != 0)
             invokeMethod(env, object, method_object, _a);
     }

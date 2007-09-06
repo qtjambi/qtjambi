@@ -16,6 +16,7 @@ public:
     int readProperty(JNIEnv *env, jobject object, int _id, void **_a) const;
     int writeProperty(JNIEnv *env, jobject object, int _id, void **_a) const;
     int resetProperty(JNIEnv *env, jobject object, int _id, void **_a) const;
+    int queryPropertyDesignable(JNIEnv *env, jobject object, int _id, void **_a) const;
 
 private:
     void initialize(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object, jobject object);
@@ -31,6 +32,7 @@ private:
     jobjectArray m_property_readers;
     jobjectArray m_property_writers;
     jobjectArray m_property_resetters;
+    jobjectArray m_property_designables;
 };
 
 #endif // QDYNAMICMETAOBJECT_H

@@ -749,6 +749,8 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
       << "          _id = dynamic_meta_object->writeProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
       << "      case QMetaObject::ResetProperty:" << endl
       << "          _id = dynamic_meta_object->resetProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
+      << "      case QMetaObject::QueryPropertyDesignable:" << endl
+      << "          _id = dynamic_meta_object->queryPropertyDesignable(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
       << "      default: break;" << endl
       << "      };" << endl
       << "      __jni_env->PopLocalFrame(0);" << endl
