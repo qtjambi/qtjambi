@@ -13,6 +13,7 @@ HEADERS += \
         qdocgenerator.h \
         uiconverter.h \
         generatorsetjava.h \
+        prigenerator.h \
    
 SOURCES += \
         classlistgenerator.cpp \
@@ -26,5 +27,6 @@ SOURCES += \
         qdocgenerator.cpp \
         uiconverter.cpp \
         generatorsetjava.cpp \
+        prigenerator.cpp \
    
 include(generator.pri)

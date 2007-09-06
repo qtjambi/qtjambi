@@ -30,6 +30,11 @@ class CppImplGenerator : public CppGenerator
     Q_OBJECT
 
 public:
+    CppImplGenerator(PriGenerator *pri)
+    {
+        priGenerator = pri;
+    }
+
     virtual QString fileNameForClass(const AbstractMetaClass *cls) const;
 
     void write(QTextStream &s, const AbstractMetaClass *java_class);

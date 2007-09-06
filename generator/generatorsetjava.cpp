@@ -30,10 +30,6 @@ GeneratorSet *GeneratorSet::getInstance() {
 
 void dumpMetaJavaTree(const AbstractMetaClassList &classes);
 
-void generatePriFile(const QString &base_dir, const QString &sub_dir,
-                     const AbstractMetaClassList &classes,
-                     MetaInfoGenerator *info_generator);
-
 GeneratorSetJava::GeneratorSetJava() :
     no_java(false),
     no_cpp_h(false),
@@ -113,6 +109,7 @@ QString GeneratorSetJava::generate() {
 
     // Code generation
     QList<Generator *> generators;
+    PriGenerator *priGenerator = new PriGenerator;
     JavaGenerator *java_generator = 0;
     CppHeaderGenerator *cpp_header_generator = 0;
     CppImplGenerator *cpp_impl_generator = 0;
@@ -133,19 +130,19 @@ QString GeneratorSetJava::generate() {
     }
 
     if (!no_cpp_h) {
-        cpp_header_generator = new CppHeaderGenerator;
+        cpp_header_generator = new CppHeaderGenerator(priGenerator);
         generators << cpp_header_generator;
         contexts << "CppHeaderGenerator";
     }
 
     if (!no_cpp_impl) {
-        cpp_impl_generator = new CppImplGenerator;
+        cpp_impl_generator = new CppImplGenerator(priGenerator);
         generators << cpp_impl_generator;
         contexts << "CppImplGenerator";
     }
 
     if (!no_metainfo) {
-        metainfo = new MetaInfoGenerator;
+        metainfo = new MetaInfoGenerator(priGenerator);
         generators << metainfo;
         contexts << "MetaInfoGenerator";
     }
@@ -154,6 +151,9 @@ QString GeneratorSetJava::generate() {
         generators << new ClassListGenerator;
         contexts << "ClassListGenerator";
     }
+
+    generators << priGenerator;
+    contexts << "PriGenerator";
 
     for (int i=0; i<generators.size(); ++i) {
         Generator *generator = generators.at(i);
@@ -167,12 +167,6 @@ QString GeneratorSetJava::generate() {
             generator->generate();
     }
 
-    no_metainfo = metainfo == 0 || metainfo->numGenerated() == 0;
-    if (!no_cpp_impl || !no_cpp_h || !no_metainfo) {
-        generatePriFile(outDir, "cpp", builder.classes(),
-                        metainfo);
-    }
-
     QString res;
     res = QString("Classes in typesystem: %1\n"
                   "Generated:\n"
@@ -180,6 +174,7 @@ QString GeneratorSetJava::generate() {
                   "  - cpp-impl..: %4 (%5)\n"
                   "  - cpp-h.....: %6 (%7)\n"
                   "  - meta-info.: %8 (%9)\n"
+                  "  - pri.......: %10 (%11)\n"
                   )
         .arg(builder.classes().size())
         .arg(java_generator ? java_generator->numGenerated() : 0)
@@ -189,13 +184,12 @@ QString GeneratorSetJava::generate() {
         .arg(cpp_header_generator ? cpp_header_generator->numGenerated() : 0)
         .arg(cpp_header_generator ? cpp_header_generator->numGeneratedAndWritten() : 0)
         .arg(metainfo ? metainfo->numGenerated() : 0)
-        .arg(metainfo ? metainfo->numGeneratedAndWritten() : 0);
+        .arg(metainfo ? metainfo->numGeneratedAndWritten() : 0)
+        .arg(priGenerator->numGenerated())
+        .arg(priGenerator->numGeneratedAndWritten());
     
     return res;
-
 }
-
-
 
 void dumpMetaJavaAttributes(const AbstractMetaAttributes *attr)
 {
@@ -286,88 +280,3 @@ void dumpMetaJavaTree(const AbstractMetaClassList &classes)
     }
 }
 
-
-QFile *openPriFile(const QString &base_dir, const QString &sub_dir, const AbstractMetaClass *cls)
-{
-    QString pro_file_name = cls->package().replace(".", "_") + "/" + cls->package().replace(".", "_") + ".pri";
-
-    if (!sub_dir.isEmpty())
-        pro_file_name = sub_dir + "/" + pro_file_name;
-
-    if (!base_dir.isEmpty())
-        pro_file_name = base_dir + "/" + pro_file_name;
-
-    QFile *pro_file = new QFile(pro_file_name);
-    if (!pro_file->open(QIODevice::WriteOnly)) {
-        ReportHandler::warning(QString("failed to open %1 for writing...") .arg(pro_file_name));
-        return 0;
-    }
-
-    return pro_file;
-}
-
-void generatePriFile(const QString &base_dir, const QString &sub_dir,
-                     const AbstractMetaClassList &classes,
-                     MetaInfoGenerator *info_generator)
-{
-    QHash<QString, QFile *> fileHash;
-
-    foreach (const AbstractMetaClass *cls, classes) {
-        if (!(cls->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp))
-            continue;
-
-        QString meta_info_stub = info_generator->filenameStub();
-        if (info_generator == 0 || info_generator->generated(cls) == 0)
-            meta_info_stub = QString();
-
-        QTextStream s;
-
-        QFile *f = fileHash.value(cls->package(), 0);
-        if (f == 0) {
-            f = openPriFile(base_dir, sub_dir, cls);
-            fileHash.insert(cls->package(), f);
-
-            s.setDevice(f);
-            if (!meta_info_stub.isEmpty()) {
-                s << "HEADERS += $$PWD/" << meta_info_stub << ".h" << endl;
-            }
-
-            s << "SOURCES += \\" << endl;
-            if (!meta_info_stub.isEmpty()) {
-                s << "        " << "$$PWD/" << meta_info_stub << ".cpp \\" << endl;
-                s << "     $$PWD/qtjambi_libraryinitializer.cpp \\" << endl;
-            }
-        } else {
-            s.setDevice(f);
-        }
-
-        if (!cls->isNamespace() && !cls->isInterface() && !cls->typeEntry()->isVariant())
-            s << "        " << "$$PWD/qtjambishell_" << cls->name() << ".cpp \\" << endl;
-    }
-
-    foreach (QFile *f, fileHash.values()) {
-        QTextStream s(f);
-        s << endl << "HEADERS += \\" << endl;
-    }
-
-    foreach (const AbstractMetaClass *cls, classes) {
-        if (!(cls->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp))
-            continue;
-
-        QFile *f = fileHash.value(cls->package(), 0);
-        Q_ASSERT(f);
-
-        QTextStream s(f);
-        bool shellfile = (cls->generateShellClass() || cls->queryFunctions(AbstractMetaClass::Signals).size() > 0)
-                && !cls->isNamespace() && !cls->isInterface() && !cls->typeEntry()->isVariant();
-            /*bool shellfile = (!cls->isNamespace() && !cls->isInterface() && cls->hasVirtualFunctions()
-                          && !cls->typeEntry()->isVariant()) */
-        if (shellfile)
-            s << "        $$PWD/qtjambishell_" << cls->name() << ".h \\" << endl;
-    }
-
-    foreach (QFile *f, fileHash.values()) {
-        f->close();
-        delete f;
-    }
-}

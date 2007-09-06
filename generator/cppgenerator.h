@@ -16,6 +16,7 @@
 
 #include "generator.h"
 #include "metajava.h"
+#include "prigenerator.h"
 
 class CppGenerator : public Generator
 {
@@ -52,6 +53,9 @@ public:
                ? "QtJambiShell_" + java_class->name()
                : java_class->qualifiedCppName();
     }
+
+ protected:
+    PriGenerator *priGenerator;
 
 };
 

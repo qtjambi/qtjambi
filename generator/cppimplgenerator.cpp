@@ -508,6 +508,9 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     writeJavaLangObjectOverrideFunctions(s, java_class);
 
     s << endl << endl;
+
+    QString pro_file_name = java_class->package().replace(".", "_") + "/" + java_class->package().replace(".", "_") + ".pri";
+    priGenerator->addSource(pro_file_name, fileNameForClass(java_class));
 }
 
 void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, const AbstractMetaClass *cls)

@@ -21,6 +21,8 @@
 class MetaInfoGenerator : public JavaGenerator
 {
 public:
+    MetaInfoGenerator(PriGenerator *pri);
+
     enum GenerationFlags {
         GeneratedJavaClasses = 0x1,
         GeneratedMetaInfo = 0x2
@@ -74,6 +76,8 @@ private:
     QHash<OutputDirectoryType, QString> m_out_dir;
 
     const AbstractMetaClass* lookupClassWithPublicDestructor(const AbstractMetaClass *cls);
+
+    PriGenerator *priGenerator;
 };
 
 #endif // METAINFOGENERATOR_H
