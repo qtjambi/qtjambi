@@ -933,25 +933,33 @@ public class QtJambiInternal {
             }
             
             // Signals
-            for (QSignalEmitter.AbstractSignal signal : signals) {
+            for (int i=0; i<signals.size(); ++i) {
+                QSignalEmitter.AbstractSignal signal = signals.get(i);
+                Field signalField = signalFields.get(i);
+                
                 String signalParameters = internalTypeName(signalParameters(signal), 1);
                                                 
                 // Signal name
                 offset += addString(metaData.metaData, strings, stringsInOrder, signal.name() + "(" + signalParameters + ")", offset, metaDataOffset++);
-                
-                
-                
+                                                
                 // Signal parameters
                 offset += addString(metaData.metaData, strings, stringsInOrder, signalParameters, offset, metaDataOffset++);
                 
                 // Signal type (signals are always void in Qt Jambi)
                 offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);
                 
-                // Signal tag (### not implemented)
+                // Signal tag (Currently not supported by the moc either)
                 offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);
                 
-                // Signal flags (### implement access types)
-                int flags = (MethodAccessPublic | MethodSignal);
+                // Signal flags
+                int flags = MethodSignal;
+                int modifiers = signalField.getModifiers();
+                if ((modifiers & Modifier.PRIVATE) == Modifier.PRIVATE)
+                    flags |= MethodAccessPrivate;
+                else if ((modifiers & Modifier.PROTECTED) == Modifier.PROTECTED)
+                    flags |= MethodAccessProtected;
+                else if ((modifiers & Modifier.PUBLIC) == Modifier.PUBLIC)
+                    flags |= MethodAccessPublic;                
                 metaData.metaData[metaDataOffset++] = flags;
             }
             
@@ -968,7 +976,7 @@ public class QtJambiInternal {
                 if (returnType.equals("void")) returnType = "";
                 offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(returnType,0), offset, metaDataOffset++);
                 
-                // Slot tag (### not implemented)
+                // Slot tag (Currently not supported by the moc either)
                 offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);
                 
                 // Slot flags
