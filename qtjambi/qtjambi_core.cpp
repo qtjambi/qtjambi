@@ -1989,3 +1989,4 @@ bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object) {
     int idx = meta_object->indexOfClassInfo("__qt__binding_shell_language");
     return (idx >= 0 && !strcmp(meta_object->classInfo(idx).value(), "Qt Jambi"));
 }
+
