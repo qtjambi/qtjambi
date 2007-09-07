@@ -181,7 +181,7 @@ public class FridgeMagnets extends QWidget {
                                          event.pos().y() - rect().topLeft().y());
             position.writeTo(dataStream);
 
-            QMimeData mimeData = new MyMimeData();
+            QMimeData mimeData = new QMimeData();
             mimeData.setData("application/x-fridgemagnet", itemData);
             mimeData.setText(labelText);
 
