@@ -195,12 +195,12 @@ class QUdpSocket___ extends QUdpSocket {
         return len;
     }
 
-    public int writeDatagram(byte data[], QHostAddress address, int port) {
+    public final int writeDatagram(byte data[], QHostAddress address, int port) {
         QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
         return (int) writeDatagram(np, data.length, address, (char) port);
     }
 
-    public int writeDatagram(com.trolltech.qt.core.QByteArray data, QHostAddress address, int port) {
+    public final int writeDatagram(com.trolltech.qt.core.QByteArray data, QHostAddress address, int port) {
         return (int) writeDatagram(data, address, (char) port);
     }
 

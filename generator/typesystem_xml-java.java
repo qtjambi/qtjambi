@@ -34,7 +34,7 @@ class QXmlNamespaceSupport___ extends QXmlNamespaceSupport {
         public String localName;
     }
 
-    public ProcessedName processName(String qname, boolean isAttribute) {
+    public final ProcessedName processName(String qname, boolean isAttribute) {
         QNativePointer nsUri = new QNativePointer(QNativePointer.Type.String);
         QNativePointer localName = new QNativePointer(QNativePointer.Type.String);
         processName(qname, isAttribute, nsUri, localName);
@@ -52,7 +52,7 @@ class QXmlNamespaceSupport___ extends QXmlNamespaceSupport {
         public String localname;
     }
 
-    public SplitName splitName(String qname) {
+    public final SplitName splitName(String qname) {
         QNativePointer prefix = new QNativePointer(QNativePointer.Type.String);
         QNativePointer localName = new QNativePointer(QNativePointer.Type.String);
         splitName(qname, prefix, localName);
