@@ -231,6 +231,6 @@
 
     <target name="qtjambi"
             description="Make QT Jambi."
-            depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar" />
+            depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, juic, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar" />
 
 </project>
