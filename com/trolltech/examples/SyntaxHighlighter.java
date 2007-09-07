@@ -52,10 +52,6 @@ public class SyntaxHighlighter extends QMainWindow {
                         + "highlighting rules using regular expressions.</p>"));
     }
 
-    public void aboutQt() {
-        QApplication.aboutQt();
-    }
-
     public void newFile() {
         editor.clear();
     }
@@ -120,9 +116,14 @@ public class SyntaxHighlighter extends QMainWindow {
         QAction aboutAct = new QAction(tr("&About"), this);
         aboutAct.triggered.connect(this, "about()");
         helpMenu.addAction(aboutAct);
+        
+        QAction aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
+        aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
+        helpMenu.addSeparator();
+        helpMenu.addAction(aboutQtJambiAct);
 
-        QAction aboutQtAct = new QAction(tr("About &Qt"), this);
-        aboutQtAct.triggered.connect(this, "aboutQt()");
+        QAction aboutQtAct = new QAction(tr("About Q&t"), this);
+        aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
         helpMenu.addAction(aboutQtAct);
     }
 

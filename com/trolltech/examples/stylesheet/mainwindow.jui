@@ -14,9 +14,6 @@
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
     <property name="spacing" >
      <number>6</number>
     </property>
@@ -29,9 +26,6 @@
        <enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</enum>
       </property>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
        </property>
@@ -51,10 +45,7 @@
           <string>Profession:</string>
          </property>
          <property name="alignment" >
-          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignTop|com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight</set>
-         </property>
-         <property name="buddy" >
-          <cstring>professionList</cstring>
+          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignTop</set>
          </property>
         </widget>
        </item>
@@ -64,10 +55,7 @@
           <string>&amp;Name:</string>
          </property>
          <property name="alignment" >
-          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>nameCombo</cstring>
+          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -87,10 +75,7 @@
           <string>&amp;Password:</string>
          </property>
          <property name="alignment" >
-          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>passwordEdit</cstring>
+          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -148,10 +133,7 @@
           <string>&amp;Age:</string>
          </property>
          <property name="alignment" >
-          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>ageSpinBox</cstring>
+          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -161,10 +143,7 @@
           <string>Country:</string>
          </property>
          <property name="alignment" >
-          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>countryCombo</cstring>
+          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -174,7 +153,7 @@
           <string>Gender:</string>
          </property>
          <property name="alignment" >
-          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
+          <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight|com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -233,7 +212,7 @@
        <item row="1" column="4" >
         <spacer>
          <property name="orientation" >
-          <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -246,7 +225,7 @@
        <item row="2" column="3" colspan="2" >
         <spacer>
          <property name="orientation" >
-          <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -308,7 +287,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>29</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File" >
@@ -324,6 +303,8 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="aboutAction" />
+    <addaction name="separator" />
+    <addaction name="aboutQtJambiAction" />
     <addaction name="aboutQtAction" />
    </widget>
    <addaction name="menu_File" />
@@ -337,7 +318,7 @@
   </action>
   <action name="aboutQtAction" >
    <property name="text" >
-    <string>About Qt</string>
+    <string>About Q&amp;t</string>
    </property>
   </action>
   <action name="editStyleAction" >
@@ -348,6 +329,11 @@
   <action name="aboutAction" >
    <property name="text" >
     <string>About</string>
+   </property>
+  </action>
+  <action name="aboutQtJambiAction" >
+   <property name="text" >
+    <string>About &amp;Qt Jambi</string>
    </property>
   </action>
  </widget>

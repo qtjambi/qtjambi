@@ -37,7 +37,7 @@ public class QtJambiGuiInternal {
                    + "portability across MS&nbsp;Windows, Mac&nbsp;OS&nbsp;X, "
                    + "Linux, and all major commercial Unix variants"
                    + "<p>Qt Jambi is a Trolltech product. See "
-                   + "<tt>http://www.trolltech.com/</tt> for more information.</p>");
+                   + "<a href=\"http://www.trolltech.com/jambi\">http://www.trolltech.com/jambi</a> for more information.</p>");
         mb.setIconPixmap(new QPixmap(
                 "classpath:com/trolltech/images/qt-logo.png"));
         mb.exec();

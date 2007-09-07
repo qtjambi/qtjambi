@@ -19,6 +19,12 @@ import com.trolltech.qt.gui.*;
 @QtJambiExample(name = "Drag and Drop")
 public class FridgeMagnets extends QWidget {
 
+    private static class MyMimeData extends QMimeData {
+        protected Object retrieveData(String mimeType, int preferredType) {
+           return super.retrieveData(mimeType, preferredType);  
+        }
+    }
+    
     public static void main(String args[]) {
         QApplication.initialize(args);
         FridgeMagnets fridgeMagnets = new FridgeMagnets(null);
@@ -169,7 +175,7 @@ public class FridgeMagnets extends QWidget {
             setPixmap(QPixmap.fromImage(image));
             labelText = text;
         }
-
+        
         public void mousePressEvent(QMouseEvent event) {
             QByteArray itemData = new QByteArray();
             QDataStream dataStream;
@@ -182,6 +188,7 @@ public class FridgeMagnets extends QWidget {
             position.writeTo(dataStream);
 
             com.trolltech.qt.core.QMimeData mimeData = new com.trolltech.qt.core.QMimeData();
+
             mimeData.setData("application/x-fridgemagnet", itemData);
             mimeData.setText(labelText);
 

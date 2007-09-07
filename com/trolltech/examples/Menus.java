@@ -64,6 +64,7 @@ public class Menus extends QMainWindow {
     QAction setParagraphSpacingAct;
     QAction aboutAct;
     QAction aboutQtAct;
+    QAction aboutQtJambiAct;
     QLabel infoLabel;
 
     public Menus() {
@@ -191,74 +192,66 @@ public class Menus extends QMainWindow {
     void aboutQt() {
         infoLabel.setText(tr("Invoked <b>Help|About Qt</b>"));
     }
+    
+    void aboutQtJambi() {
+        infoLabel.setText(tr("Invoked <b>Help|About Qt Jambi</b>"));
+    }
 
     void createActions() {
-        String tip;
         newAct = new QAction(tr("&New"), this);
         newAct.setShortcut(tr("Ctrl+N"));
-        tip = tr("Create a new file");
-        newAct.setStatusTip(tip);
+        newAct.setStatusTip(tr("Create a new file"));
         newAct.triggered.connect(this, "newFile()");
 
         openAct = new QAction(tr("&Open..."), this);
         openAct.setShortcut(tr("Ctrl+O"));
-        tip = tr("Open an existing file");
-        openAct.setStatusTip(tip);
+        openAct.setStatusTip(tr("Open an existing file"));
         openAct.triggered.connect(this, "open()");
 
         saveAct = new QAction(tr("&Save"), this);
         saveAct.setShortcut(tr("Ctrl+S"));
-        tip = tr("Save the document to disk");
-        saveAct.setStatusTip(tip);
+        saveAct.setStatusTip(tr("Save the document to disk"));
         saveAct.triggered.connect(this, "save()");
 
         printAct = new QAction(tr("&Print..."), this);
         printAct.setShortcut(tr("Ctrl+P"));
-        tip = tr("Print the document");
-        printAct.setStatusTip(tip);
+        printAct.setStatusTip(tr("Print the document"));
         printAct.triggered.connect(this, "print()");
 
         exitAct = new QAction(tr("E&xit"), this);
         exitAct.setShortcut(tr("Ctrl+Q"));
-        tip = tr("Exit the application");
-        exitAct.setStatusTip(tip);
+        exitAct.setStatusTip(tr("Exit the application"));
         exitAct.triggered.connect(this, "close()");
 
         undoAct = new QAction(tr("&Undo"), this);
         undoAct.setShortcut(tr("Ctrl+Z"));
-        tip = tr("Undo the last operation");
-        undoAct.setStatusTip(tip);
+        undoAct.setStatusTip(tr("Undo the last operation"));
         undoAct.triggered.connect(this, "undo()");
 
         redoAct = new QAction(tr("&Redo"), this);
         redoAct.setShortcut(tr("Ctrl+Y"));
-        tip = tr("Redo the last operation");
-        redoAct.setStatusTip(tip);
+        redoAct.setStatusTip(tr("Redo the last operation"));
         redoAct.triggered.connect(this, "redo()");
 
         cutAct = new QAction(tr("Cu&t"), this);
         cutAct.setShortcut(tr("Ctrl+X"));
-        tip = tr("Cut the current selection's contents to the clipboard");
-        cutAct.setStatusTip(tip);
+        cutAct.setStatusTip(tr("Cut the current selection's contents to the clipboard"));
         cutAct.triggered.connect(this, "cut()");
 
         copyAct = new QAction(tr("&Copy"), this);
         copyAct.setShortcut(tr("Ctrl+C"));
-        tip = tr("Copy the current selection's contents to the clipboard");
-        copyAct.setStatusTip(tip);
+        copyAct.setStatusTip(tr("Copy the current selection's contents to the clipboard"));
         copyAct.triggered.connect(this, "copy()");
 
         pasteAct = new QAction(tr("&Paste"), this);
         pasteAct.setShortcut(tr("Ctrl+V"));
-        tip = tr("Paste the clipboard's contents into the current selection");
-        pasteAct.setStatusTip(tip);
+        pasteAct.setStatusTip(tr("Paste the clipboard's contents into the current selection"));
         pasteAct.triggered.connect(this, "paste()");
 
         boldAct = new QAction(tr("&Bold"), this);
         boldAct.setCheckable(true);
         boldAct.setShortcut(tr("Ctrl+B"));
-        tip = tr("Make the text bold");
-        boldAct.setStatusTip(tip);
+        boldAct.setStatusTip(tr("Make the text bold"));
         boldAct.triggered.connect(this, "bold()");
 
         QFont boldFont = boldAct.font();
@@ -268,8 +261,7 @@ public class Menus extends QMainWindow {
         italicAct = new QAction(tr("&Italic"), this);
         italicAct.setCheckable(true);
         italicAct.setShortcut(tr("Ctrl+I"));
-        tip = tr("Make the text italic");
-        italicAct.setStatusTip(tip);
+        italicAct.setStatusTip(tr("Make the text italic"));
         italicAct.triggered.connect(this, "italic()");
 
         QFont italicFont = italicAct.font();
@@ -277,53 +269,50 @@ public class Menus extends QMainWindow {
         italicAct.setFont(italicFont);
 
         setLineSpacingAct = new QAction(tr("Set &Line Spacing..."), this);
-        tip = tr("Change the gap between the lines of a paragraph");
-        setLineSpacingAct.setStatusTip(tip);
+        setLineSpacingAct.setStatusTip(tr("Change the gap between the lines of a paragraph"));
         setLineSpacingAct.triggered.connect(this, "setLineSpacing()");
 
         setParagraphSpacingAct = new QAction(tr("Set &Paragraph Spacing..."), 
                                              this);
-        tip = tr("Change the gap between paragraphs");
-        setLineSpacingAct.setStatusTip(tip);
+        setLineSpacingAct.setStatusTip(tr("Change the gap between paragraphs"));
         setParagraphSpacingAct.triggered.connect(this, "setParagraphSpacing()");
 
         aboutAct = new QAction(tr("&About"), this);
-        tip = tr("Show the application's About box");
-        aboutAct.setStatusTip(tip);
+        aboutAct.setStatusTip(tr("Show the application's About box"));
         aboutAct.triggered.connect(this, "about()");
+        
+        aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
+        aboutQtJambiAct.setStatusTip(tr("Show the Qt Jambi library's About box"));
+        aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
+        aboutQtJambiAct.triggered.connect(this, "aboutQtJambi()");
 
-        aboutQtAct = new QAction(tr("About &Qt"), this);
-        tip = tr("Show the Qt library's About box");
-        aboutQtAct.setStatusTip(tip);
+        aboutQtAct = new QAction(tr("About Q&t"), this);
+        aboutQtAct.setStatusTip(tr("Show the Qt library's About box"));
         aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
         aboutQtAct.triggered.connect(this, "aboutQt()");
 
         leftAlignAct = new QAction(tr("&Left Align"), this);
         leftAlignAct.setCheckable(true);
         leftAlignAct.setShortcut(tr("Ctrl+L"));
-        tip = tr("Left align the selected text");
-        leftAlignAct.setStatusTip(tip);
+        leftAlignAct.setStatusTip(tr("Left align the selected text"));
         leftAlignAct.triggered.connect(this, "leftAlign()");
 
         rightAlignAct = new QAction(tr("&Right Align"), this);
         rightAlignAct.setCheckable(true);
         rightAlignAct.setShortcut(tr("Ctrl+R"));
-        tip = tr("Right align the selected text");
-        rightAlignAct.setStatusTip(tip);
+        rightAlignAct.setStatusTip(tr("Right align the selected text"));
         rightAlignAct.triggered.connect(this, "rightAlign()");
 
         justifyAct = new QAction(tr("&Justify"), this);
         justifyAct.setCheckable(true);
         justifyAct.setShortcut(tr("Ctrl+J"));
-        tip = tr("Justify the selected text");
-        justifyAct.setStatusTip(tip);
+        justifyAct.setStatusTip(tr("Justify the selected text"));
         justifyAct.triggered.connect(this, "justify()");
 
         centerAct = new QAction(tr("&Center"), this);
         centerAct.setCheckable(true);
         centerAct.setShortcut(tr("Ctrl+E"));
-        tip = tr("Center the selected text");
-        centerAct.setStatusTip(tip);
+        centerAct.setStatusTip(tr("Center the selected text"));
         centerAct.triggered.connect(this, "center()");
 
         alignmentGroup = new QActionGroup(this);
@@ -354,6 +343,8 @@ public class Menus extends QMainWindow {
 
         helpMenu = menuBar().addMenu(tr("&Help"));
         helpMenu.addAction(aboutAct);
+        helpMenu.addSeparator();
+        helpMenu.addAction(aboutQtJambiAct);
         helpMenu.addAction(aboutQtAct);
 
         formatMenu = editMenu.addMenu(tr("&Format"));

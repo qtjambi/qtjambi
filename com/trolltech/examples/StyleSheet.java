@@ -46,6 +46,7 @@ public class StyleSheet extends QMainWindow {
 
         ui.exitAction.triggered.connect(this, "close()");
         ui.aboutQtAction.triggered.connect(QApplication.instance(), "aboutQt()");
+        ui.aboutQtJambiAction.triggered.connect(QApplication.instance(), "aboutQtJambi()");
 
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }

@@ -38,6 +38,7 @@ public class DomBookmarks extends QMainWindow {
     private QAction exitAct;
     private QAction aboutAct;
     private QAction aboutQtAct;
+    private QAction aboutQtJambiAct;
 
     private XbelTree xbelTree;
 
@@ -123,8 +124,11 @@ public class DomBookmarks extends QMainWindow {
         aboutAct = new QAction(tr("&About"), this);
         aboutAct.triggered.connect(this, "about()");
 
-        aboutQtAct = new QAction(tr("About &Qt"), this);
-        aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
+        aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
+        aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
+        
+        aboutQtAct = new QAction(tr("About Q&t"), this);
+        aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");        
     }
 
     private void createMenus() {
@@ -137,6 +141,8 @@ public class DomBookmarks extends QMainWindow {
 
         helpMenu = menuBar().addMenu(tr("&Help"));
         helpMenu.addAction(aboutAct);
+        helpMenu.addSeparator();
+        helpMenu.addAction(aboutQtJambiAct);
         helpMenu.addAction(aboutQtAct);
     }
 

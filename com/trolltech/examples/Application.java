@@ -38,6 +38,7 @@ public class Application extends QMainWindow {
     private QAction copyAct;
     private QAction pasteAct;
     private QAction aboutAct;
+    private QAction aboutQtJambiAct;
     private QAction aboutQtAct;
 
     private String rsrcPath = "classpath:com/trolltech/images";
@@ -171,10 +172,15 @@ public class Application extends QMainWindow {
         aboutAct = new QAction(tr("&About"), this);
         aboutAct.setStatusTip(tr("Show the application's About box"));
         aboutAct.triggered.connect(this, "about()");
-
-        aboutQtAct = new QAction(tr("About &Qt"), this);
+        
+        aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
+        aboutQtJambiAct.setStatusTip(tr("Show the Qt Jambi library's About box"));
+        aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
+        
+        aboutQtAct = new QAction(tr("About Q&t"), this);
         aboutQtAct.setStatusTip(tr("Show the Qt library's About box"));
         aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
+        
 
         cutAct.setEnabled(false);
         copyAct.setEnabled(false);
@@ -201,7 +207,9 @@ public class Application extends QMainWindow {
 
         helpMenu = menuBar().addMenu(tr("&Help"));
         helpMenu.addAction(aboutAct);
-        helpMenu.addAction(aboutQtAct);
+        helpMenu.addSeparator();
+        helpMenu.addAction(aboutQtJambiAct);
+        helpMenu.addAction(aboutQtAct);        
     }
 
     private void createToolBars()
