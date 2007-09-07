@@ -5,42 +5,42 @@ import com.trolltech.qt.core.*;
 
 class QObject___ extends QObject {
     @com.trolltech.qt.QtBlockedSlot
-    public java.util.List<QObject> findChildren() {
+    public final java.util.List<QObject> findChildren() {
         return findChildren(null, (QRegExp) null);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public java.util.List<QObject> findChildren(Class<?> cl) {
+    public final java.util.List<QObject> findChildren(Class<?> cl) {
         return findChildren(cl, (QRegExp) null);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public java.util.List<QObject> findChildren(Class<?> cl, String name) {
+    public final java.util.List<QObject> findChildren(Class<?> cl, String name) {
         return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public java.util.List<QObject> findChildren(Class<?> cl, QRegExp name) {
+    public final java.util.List<QObject> findChildren(Class<?> cl, QRegExp name) {
         return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public QObject findChild() {
+    public final QObject findChild() {
         return findChild(null, null);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public QObject findChild(Class<?> cl) {
+    public final QObject findChild(Class<?> cl) {
         return findChild(cl, null);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public QObject findChild(Class<?> cl, String name) {
+    public final QObject findChild(Class<?> cl, String name) {
         return com.trolltech.qt.QtJambiInternal.findChild(this, cl, name);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public void setProperty(String name, Object value) {
+    public final void setProperty(String name, Object value) {
         try {
             com.trolltech.qt.QtPropertyManager.writeProperty(this, name, value);
         } catch (QNoSuchPropertyException e) {
@@ -51,7 +51,7 @@ class QObject___ extends QObject {
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public Object property(String name) {
+    public final Object property(String name) {
         try {
             return com.trolltech.qt.QtPropertyManager.readProperty(this, name);
         } catch (QNoSuchPropertyException e) {
@@ -62,7 +62,7 @@ class QObject___ extends QObject {
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public void connectSlotsByName() {
+    public final void connectSlotsByName() {
         com.trolltech.qt.QtJambiInternal.connectSlotsByName(this);
     }
 }// class
@@ -70,21 +70,21 @@ class QObject___ extends QObject {
 abstract class QAbstractItemModel___ extends QAbstractItemModel {
     private native boolean setData_native(long id, int row, int col, Object value, int role);
 
-    public boolean setData(int row, int col, Object value) {
+    public final boolean setData(int row, int col, Object value) {
         return setData_native(nativeId(), row, col, value, com.trolltech.qt.core.Qt.ItemDataRole.DisplayRole);
     }
 
-    public boolean setData(int row, int col, Object value, int role) {
+    public final boolean setData(int row, int col, Object value, int role) {
         return setData_native(nativeId(), row, col, value, role);
     }
 
     private native Object data_native(long id, int row, int col, int role);
 
-    public Object data(int row, int col, int role) {
+    public final Object data(int row, int col, int role) {
         return data_native(nativeId(), row, col, role);
     }
 
-    public Object data(int row, int col) {
+    public final Object data(int row, int col) {
         return data_native(nativeId(), row, col, Qt.ItemDataRole.DisplayRole);
     }
 }// class
@@ -215,13 +215,13 @@ class QTranslator___ extends QTranslator {
         return load(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
     }
 
-    public String translate(String context, String sourceText, String comment) {
+    public final String translate(String context, String sourceText, String comment) {
         QTextCodec codec = QTextCodec.codecForName("UTF-8");
         return translate(context != null ? codec.fromUnicode(context).data() : null, sourceText != null ? codec.fromUnicode(sourceText).data() : null,
                 comment != null ? codec.fromUnicode(comment).data() : null);
     }
 
-    public String translate(String context, String sourceText) {
+    public final String translate(String context, String sourceText) {
         return translate(context, sourceText, null);
     }
 }// class
@@ -395,27 +395,27 @@ class QTextStream___ extends QTextStream {
 class QBitArray___ extends QBitArray {
 
     @com.trolltech.qt.QtBlockedSlot
-    public void xor(QBitArray other) {
+    public final void xor(QBitArray other) {
         operator_xor_assign(other);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public void and(QBitArray other) {
+    public final void and(QBitArray other) {
         operator_and_assign(other);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public void or(QBitArray other) {
+    public final void or(QBitArray other) {
         operator_or_assign(other);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public void set(QBitArray other) {
+    public final void set(QBitArray other) {
         operator_assign(other);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public QBitArray inverted() {
+    public final QBitArray inverted() {
         return operator_negate();
     }
 
@@ -456,31 +456,31 @@ class QByteArray___ extends QByteArray {
         this(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
     }
 
-    public boolean contains(String str) {
+    public final boolean contains(String str) {
         return contains(new QByteArray(str));
     }
 
-    public int count(String str) {
+    public final int count(String str) {
         return count(new QByteArray(str));
     }
 
-    public boolean endsWith(String str) {
+    public final boolean endsWith(String str) {
         return endsWith(new QByteArray(str));
     }
 
-    public QByteArray prepend(String str) {
+    public final QByteArray prepend(String str) {
         return prepend(new QByteArray(str));
     }
 
-    public QByteArray replace(QByteArray before, String after) {
+    public final QByteArray replace(QByteArray before, String after) {
         return replace(before, new QByteArray(after));
     }
 
-    public QByteArray replace(String before, String after) {
+    public final QByteArray replace(String before, String after) {
         return replace(new QByteArray(before), new QByteArray(after));
     }
 
-    public boolean startsWith(String str) {
+    public final boolean startsWith(String str) {
         return startsWith(new QByteArray(str));
     }
 
@@ -494,7 +494,7 @@ class QByteArray___ extends QByteArray {
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public QByteArray set(QByteArray other) {
+    public final QByteArray set(QByteArray other) {
         operator_assign(other);
         return this;
     }
@@ -560,7 +560,7 @@ class QBuffer___ extends QBuffer {
         this(byteArray, null);
     }
 
-    public void setBuffer(QByteArray byteArray) {
+    public final void setBuffer(QByteArray byteArray) {
         setBuffer(byteArray.nativePointer());
         strongDataReference = byteArray;
     }

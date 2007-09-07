@@ -618,7 +618,7 @@ class QAbstractButton___ extends QAbstractButton {
      *            The description of the key sequence. Typically used with tr()
      *            so key sequences can be locale aware.
      */
-    public void setShortcut(String key) {
+    public final void setShortcut(String key) {
         setShortcut(new QKeySequence(key));
     }
 
@@ -630,7 +630,7 @@ class QAbstractButton___ extends QAbstractButton {
      * @param key
      *            The key for which to select a key sequence
      */
-    public void setShortcut(QKeySequence.StandardKey key) {
+    public final void setShortcut(QKeySequence.StandardKey key) {
         setShortcut(new QKeySequence(key));
     }
 
@@ -828,7 +828,7 @@ class QSplitter___ extends QSplitter {
         public int maximum;
     }
 
-    public Range getRange(int index) {
+    public final Range getRange(int index) {
         QNativePointer min = new QNativePointer(QNativePointer.Type.Int);
         QNativePointer max = new QNativePointer(QNativePointer.Type.Int);
 
@@ -854,7 +854,7 @@ class QAction___ extends QAction {
      *            The description of the key sequence. Typically used with tr()
      *            so key sequences can be locale aware.
      */
-    public void setShortcut(String key) {
+    public final void setShortcut(String key) {
         setShortcut(new QKeySequence(key));
     }
 
@@ -866,11 +866,11 @@ class QAction___ extends QAction {
      * @param key
      *            The key for which to select a key sequence
      */
-    public void setShortcut(QKeySequence.StandardKey key) {
+    public final void setShortcut(QKeySequence.StandardKey key) {
         setShortcut(new QKeySequence(key));
     }
 
-    public void setIcon(QPixmap pm) {
+    public final void setIcon(QPixmap pm) {
         setIcon(new QIcon(pm));
     }
 
@@ -878,15 +878,15 @@ class QAction___ extends QAction {
 
 class QPainter___ extends QPainter {
 
-    public void setBrush(QColor color) {
+    public final void setBrush(QColor color) {
         setBrush(new QBrush(color));
     }
 
-    public void setBrush(QGradient gradient) {
+    public final void setBrush(QGradient gradient) {
         setBrush(new QBrush(gradient));
     }
 
-    public void setBrush(QPixmap pm) {
+    public final void setBrush(QPixmap pm) {
         setBrush(new QBrush(pm));
     }
 
@@ -899,7 +899,7 @@ class QPainter___ extends QPainter {
         begin(widget);
     }
 
-    public boolean begin(QWidget widget) {
+    public boolean begin(QWidget widget) { // can't be final because of QStylePainter
         return com.trolltech.qt.QtJambiGuiInternal.beginPaint(widget, this);
     }
 
