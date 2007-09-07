@@ -27,7 +27,6 @@ public class TestQTextStream {
 		p.add(new QPointF(12.2, 13.3));
 		p.add(new QPointF(14, 15));
 		
-		QByteArray ba = new QByteArray();
 		QFile f = new QTemporaryFile();
 		
 		{

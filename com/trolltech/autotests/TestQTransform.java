@@ -236,7 +236,6 @@ public class TestQTransform extends QApplicationTest {
 	
 	@Test
 	public void squareToQuad() {
-		QTransform transform = new QTransform();
 		QPolygonF pol = new QPolygonF();
 		
 		System.gc();

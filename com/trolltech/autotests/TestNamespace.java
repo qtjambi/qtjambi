@@ -13,9 +13,6 @@
 
 package com.trolltech.autotests;
 
-import java.util.*;
-
-import com.trolltech.qt.*;
 import com.trolltech.autotests.generated.*;
 
 import static org.junit.Assert.*;
@@ -38,7 +35,6 @@ public class TestNamespace extends QApplicationTest {
         ObjectA a = new ObjectA();
         ObjectB b = new ObjectB();
         ValueA v = new ValueA();
-        ValueA v2 = a.vFunc(v);
 
         assertEquals(a.aFunc(a), a);
         assertEquals(a.bFunc(b), b);

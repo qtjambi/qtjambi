@@ -15,17 +15,9 @@ package com.trolltech.autotests;
 
 import org.junit.Test;
 import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.gui.QAccessibleTableInterface.CellAtIndex;
 import com.trolltech.qt.network.*;
-import com.trolltech.qt.network.QAbstractSocket.SocketType;
-import com.trolltech.qt.opengl.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.xml.*;
 import static org.junit.Assert.*;
-import org.junit.*;
 
 public class TestInjectedCodeV2 extends QApplicationTest {
     @Test

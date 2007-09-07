@@ -1465,14 +1465,11 @@ public class TestConnections extends QApplicationTest implements Qt
         e.signal.connect(e, "slot1()");
         t.start();
 
-        boolean finished = false;
-
         try {
             for (int i=0; i<100000; ++i) {
                 e.signal.connect(e, "slot2()");
                 e.signal.disconnect(e, "slot2()");
             }
-            finished = true;
             t.join();
         } catch(Exception ex) {
 

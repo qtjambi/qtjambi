@@ -289,17 +289,9 @@ public class Utilities {
         return new File(tmpDir, "QtJambi_" + user + "_" + arch + "_" + VERSION_STRING);
     }
 
-    /*private  static void copy(URL sourceUrl, String destination) throws IOException {
-        copy(sourceUrl.openStream(), new FileOutputStream(destination));
-    }*/
-
     private static void copy(URL sourceUrl, File destination) throws IOException {
         copy(sourceUrl.openStream(), new FileOutputStream(destination));
     }
-
-    /*private static void copy(String source, String destination) throws IOException {
-        copy(new FileInputStream(source), new FileOutputStream(destination));
-    }*/
 
     /**
      * Copies the data in the inputstream into the output stream.
@@ -431,7 +423,7 @@ public class Utilities {
         if (pluginJars != null) {
             File tmpDir = jambiTempDir();
             String jars[] = pluginJars.split(File.pathSeparator);
-            //String classpath = System.getProperty("java.class.path");
+
             for (String jar : jars) {
                 try {
                     File f = new File(jar);

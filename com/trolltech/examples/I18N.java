@@ -87,8 +87,6 @@ public class I18N extends QDialog {
             window = new MainWindow(this);
             window.visible.connect(checkBox, "setChecked(boolean)");
 
-//             window.setPalette(new QPalette(colorForLanguage(checkBox.text())));
-
             window.installEventFilter(this);
             mainWindowForCheckBoxMap.put(checkBox, window);
 

@@ -17,7 +17,6 @@ import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.gui.QAccessibleTableInterface.CellAtIndex;
 import com.trolltech.qt.network.*;
 import com.trolltech.qt.network.QHostAddress.SpecialAddress;
 import com.trolltech.qt.opengl.*;

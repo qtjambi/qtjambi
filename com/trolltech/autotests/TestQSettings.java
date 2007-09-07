@@ -53,7 +53,7 @@ public class TestQSettings extends QApplicationTest implements Serializable {
         QSettings settings = new QSettings("Trolltech", "Test");
         settings.sync();
 
-        List<String> list = (List<String>) settings.value("test", new Vector<String>());
+        List<?> list = (List<?>) settings.value("test", new Vector<String>());
 
         for (int i = 0; i < 10; i++) {
             assertEquals("entry-" + i, list.get(i));

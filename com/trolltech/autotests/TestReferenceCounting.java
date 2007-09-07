@@ -19,14 +19,10 @@ import java.util.*;
 
 import org.junit.*;
 
-import com.trolltech.qt.QSignalEmitter;
-import com.trolltech.qt.core.QAbstractItemModel;
-import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QRect;
-import com.trolltech.qt.core.QRectF;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt.KeyboardModifiers;
 import com.trolltech.qt.gui.*;

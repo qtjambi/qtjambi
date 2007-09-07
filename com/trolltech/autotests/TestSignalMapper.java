@@ -138,6 +138,7 @@ public class TestSignalMapper extends QApplicationTest{
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void run_mappedQWidget() {
         QGuiSignalMapper mapper = new QGuiSignalMapper();
