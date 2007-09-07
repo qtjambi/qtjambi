@@ -486,8 +486,8 @@ void MetaInfoGenerator::writeLibraryInitializers()
             s << ";" << endl
               << "}" << endl << endl;
 
-            QString pro_file_name = package.replace(".", "_") + "/" + package.replace(".", "_") + ".pri";
-            priGenerator->addSource(pro_file_name, "qtjambi_libraryinitializer.cpp");
+            QString pro_file_name = QString(package).replace(".", "_");
+            priGenerator->addSource(pro_file_name + "/" + pro_file_name + ".pri", "qtjambi_libraryinitializer.cpp");
 
             if( fileOut.done() )
                 ++m_num_generated_written;
