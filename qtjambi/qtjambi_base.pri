@@ -19,7 +19,7 @@ INCLUDEPATH += $$PWD/../qtjambi $$PWD/../common
 DEPENDPATH += $$PWD/../qtjambi $$PWD/../common
 
 macx:{
-    LIBS += -framework JavaVm
+    LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
 } else {
     INCLUDEPATH += $$(JAVADIR)/include
