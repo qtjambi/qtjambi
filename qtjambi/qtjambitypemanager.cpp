@@ -957,7 +957,7 @@ QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
         return className(closestQtSuperclass(mEnvironment, strClassName, strPackage))
             + QLatin1Char('*');
     } else { // All java types can be converted to jobjects
-        return QLatin1String("jobject");
+        return QLatin1String("JObjectWrapper");
     }
 }
 
@@ -1070,7 +1070,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
         const void * const*in_p = reinterpret_cast<const void * const*>(in);
         p->l = qtjambi_from_cpointer(mEnvironment, *in_p, 8, 1);
         success = true;
-    } else if ((type & Object) || (type & Value)) {
+    } else if ((type & QtSubclass) && (((type & Object) || (type & Value)))) {
         jobject javaObject = 0;
 
         // If we're dealing with a QObject, then we try to find the original java instance
@@ -1130,8 +1130,8 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
     }
 
     if (!success) {
-        qWarning("QtJambiTypeManager::convertInternalToExternal: Cannot convert to type: %s",
-            qPrintable(externalTypeName));
+        qWarning("QtJambiTypeManager::convertInternalToExternal: Cannot convert to type '%s' from '%s'",
+            qPrintable(externalTypeName), qPrintable(internalTypeName));
     }
 
     return success;
