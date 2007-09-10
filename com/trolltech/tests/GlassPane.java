@@ -30,7 +30,8 @@ public class GlassPane extends QWidget {
             SplitHorizontal,
             Rotate,
             Rect,
-            Flip
+            Flip,
+            Stuff
         };
 
         public Overlay(QPixmap start, QPixmap end) {
@@ -115,26 +116,26 @@ public class GlassPane extends QWidget {
                 break;
             case Rotate:
                 p.eraseRect(rect());
-                
+
                 p.setRenderHint(RenderHint.SmoothPixmapTransform);
                 p.rotate(level * 90);
                 p.drawPixmap(0, 0, start);
-                
+
                 p.rotate(-90);
                 p.drawPixmap(0, 0, end);
                 break;
-            
+
             case Rect:
                 int w = start.width();
                 int h = start.height();
-                
+
                 p.drawPixmap((int)(w/2 - w/2 * level), (int)(h/2 - h/2 * level), end, (int)(w/2 - w/2 * level), (int)(h/2 - h/2 * level), (int)(w * level) , (int)(h * level));
                 p.drawRoundRect((int)(w/2 - w/2 * level), (int)(h/2 - h/2 * level), (int)(w * level) , (int)(h * level), 10, 10);
                 break;
-                
+
             case Flip:
                 double l = Math.sin(level * Math.PI/2);
-                                
+
                 p.eraseRect(rect());
                 p.setRenderHint(RenderHint.SmoothPixmapTransform);
                 if( l < 0.5 ) {
@@ -147,7 +148,27 @@ public class GlassPane extends QWidget {
                     p.scale(1, (0.5 - l) * -2);
                     p.drawPixmap(0, 0, end);
                 }
+                break;
+            case Stuff:
+                p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform);
+                p.fillRect(rect(), palette().brush(backgroundRole()));
+
+                int x = (int) ((1 - level)  * width());
+                int h2 = height() / 2;
+
+                QTransform t = new QTransform();
+                t.translate(x, h2);
+                t.rotate(level * 90, Qt.Axis.YAxis);
+                p.setTransform(t);
+                p.drawPixmap(-start.width(), -h2, start);
+
+                t = new QTransform();
+                t.translate(x, h2);
+                t.rotate((1 - level) * -90, Qt.Axis.YAxis);
+                p.setTransform(t);
+                p.drawPixmap(0, -h2, end);
             }
+
         }
 
         private Transition transition;
@@ -206,7 +227,7 @@ public class GlassPane extends QWidget {
         // make sure the layout is up to date...
         next.setGeometry(current.geometry());
 
-        QPixmap startpm = QPixmap.grabWindow(current.winId());
+        QPixmap startpm = QPixmap.grabWidget(current);
         QPixmap endpm = QPixmap.grabWidget(next);
 
         Overlay overlay = new Overlay(startpm, endpm);
