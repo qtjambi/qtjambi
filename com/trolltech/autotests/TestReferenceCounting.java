@@ -26,6 +26,7 @@ import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt.KeyboardModifiers;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QIcon.Mode;
 import com.trolltech.qt.gui.QItemSelectionModel.SelectionFlags;
 
 public class TestReferenceCounting extends QApplicationTest {
@@ -1518,4 +1519,50 @@ public class TestReferenceCounting extends QApplicationTest {
         
         
 	}
+    
+	private static int deletedEngines = 0; 
+    private static class MyIconEngine extends QIconEngineV2 {
+        private int i;
+        public MyIconEngine(int i) {
+            this.i = i;
+        }
+
+        @Override
+        public void paint(QPainter painter, QRect rect, Mode mode, com.trolltech.qt.gui.QIcon.State state) {
+            
+        }
+        
+        @Override
+        public QIconEngineV2 clone() {
+            return new MyIconEngine(i);
+        }
+        
+        @Override
+        protected void disposed() {
+            deletedEngines++;
+        }
+        
+    }
+    
+    private static class MyIcon extends QIcon {
+        
+        public MyIcon(int i) {
+            super(new MyIconEngine(i));
+        }
+    }
+    
+    @Test public void testIconEngine() {
+        QListWidget w = new QListWidget();
+        
+        deletedEngines = 0;
+        
+        for (int i=0; i<100; ++i) {
+            w.addItem(new QListWidgetItem(new MyIcon(i), "" + i));
+            System.gc();
+        }
+        
+        // Don't crash
+        w.show();
+        assertEquals(0, deletedEngines);
+    }
 }
