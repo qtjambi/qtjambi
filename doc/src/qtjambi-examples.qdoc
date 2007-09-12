@@ -2,6 +2,8 @@
     \page qtjambi-examples.html
     \title Qt Jambi Examples
 
+    Check out \l{Installation}.
+
     This is the list of examples in Qt Jambi's \c examples
     directory. The examples demonstrate Qt Jambi features in small,
     self-contained programs. They are not very impressive when you run
@@ -43,6 +45,7 @@
         \o \l{Line Edits Example}{Line Edits}\raisedaster
         \o \l{Scribble Example}{Scribble}\raisedaster
         \o \l{Shaped Clock Example}{Shaped Clock}\raisedaster
+        \o \l{Sliders Example}{Sliders}\raisedaster
         \o \l{Spin Boxes Example}{Spin Boxes}\raisedaster
         \o \l{Styles Example}{Styles}\raisedaster
         \o \l{Tablet Example}{Tablet}\raisedaster
