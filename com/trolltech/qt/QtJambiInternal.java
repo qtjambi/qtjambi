@@ -927,8 +927,9 @@ public class QtJambiInternal {
             List<String> stringsInOrder = new ArrayList<String>();
             // Class name
             {
-                stringsInOrder.add(clazz.getSimpleName());
-                strings.put(clazz.getName(), offset); offset += clazz.getSimpleName().length() + 1;                
+                String className = clazz.getName().replaceAll("\\.", "::");
+                stringsInOrder.add(className);
+                strings.put(clazz.getName(), offset); offset += className.length() + 1;                
             }
             
             // Class info
@@ -937,7 +938,7 @@ public class QtJambiInternal {
                 offset += addString(metaData.metaData, strings, stringsInOrder, "Qt Jambi", offset, metaDataOffset++);                 
             }
             
-            // Signals
+            // Signals (### make sure enum types are covered)
             for (int i=0; i<signals.size(); ++i) {
                 QSignalEmitter.AbstractSignal signal = signals.get(i);
                 Field signalField = signalFields.get(i);
@@ -968,7 +969,7 @@ public class QtJambiInternal {
                 metaData.metaData[metaDataOffset++] = flags;
             }
             
-            // Slots
+            // Slots (### make sure enum types are covered, ### also test QFlags)
             for (Method slot : slots) {
                 // Slot signature
                 offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(methodSignature(slot),1), offset, metaDataOffset++);
@@ -1027,7 +1028,7 @@ public class QtJambiInternal {
                     // To avoid using JObjectWrapper for enums and flags (which is required in certain cases.)
                     // ### Maybe we should make sure the dynamic meta object for the class is created at this
                     // point.
-                    typeName = t.getDeclaringClass().getSimpleName() + "::" + t.getSimpleName();
+                    typeName = t.getDeclaringClass().getName().replaceAll("\\.", "::") + "::" + t.getSimpleName();
                 } else { 
                     typeName = internalTypeName(t.getName(), 0);
                 }
