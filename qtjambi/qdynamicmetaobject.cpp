@@ -258,7 +258,6 @@ int QDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, int
 
     if (_id < m_property_count) {
         jobject method_object = env->GetObjectArrayElement(m_property_designables, _id);
-        Q_ASSERT(method_object != 0); // This method should never be called without a method object
         if (method_object != 0)
             invokeMethod(env, object, method_object, _a);
     }
