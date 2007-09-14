@@ -97,13 +97,11 @@ struct JObjectWrapper
     
     JObjectWrapper(JNIEnv *env, jobject obj) : environment(env)
     {
-        Q_ASSERT(env != 0 && obj != 0 || env == 0 && obj == 0);
-        if (obj && env){
-            object = env->NewGlobalRef(obj);
-        }
-        else{
+        Q_ASSERT(env != 0);
+        if (obj && env)
+            object = env->NewGlobalRef(obj);        
+        else
             object = 0;
-        }
         REF_JOBJECT;
     }
     

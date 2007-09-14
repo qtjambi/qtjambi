@@ -44,7 +44,7 @@ public:
 
         Value           = 0x1000,
         String          = 0x2000,
-        QtSubclass      = 0x4000,
+        QtClass         = 0x4000,
 
         TypeMask = Integer + Long + Boolean + Float + Double + Short + Byte + Char
     };
@@ -78,7 +78,7 @@ public:
     static QString closestQtSuperclass(JNIEnv *env, const QString &className,
                                        const QString &package);
     static bool isQObjectSubclass(JNIEnv *env, const QString &className, const QString &package);
-    static bool isQtSubclass(JNIEnv *env, const QString &className, const QString &package);
+    static bool isQtClass(JNIEnv *env, const QString &className, const QString &package);
     static QString complexTypeOf(Type type);
     static QString primitiveTypeOf(Type type);
     static Type valueTypePattern(const QString &javaName);
