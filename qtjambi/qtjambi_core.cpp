@@ -202,7 +202,7 @@ QString qtjambi_class_name(JNIEnv *env, jclass java_class)
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveClass();
     jstring name = (jstring) env->CallObjectMethod(java_class, sc->Class.getName);
-    return QtJambiTypeManager::jstringToQString(env, name);
+    return qtjambi_to_qstring(env, name);
 }
 
 QString qtjambi_object_class_name(JNIEnv *env, jobject java_object)

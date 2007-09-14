@@ -67,8 +67,6 @@ public:
     inline static jlong ptrToJlong(void *ptr);
     static QString demangle(const QString &mangledName);
     static QString mangle(const QString &demangledName);
-    static QString jstringToQString(JNIEnv *env, jstring s);
-    static jstring qStringToJstring(JNIEnv *env, const QString &s);
     static QString toJNISignature(const QString &signature, QString *name);
     static jvalue convertToPrimitive(JNIEnv *env, jobject javaRef, Type typeId);
     static jvalue convertToComplex(JNIEnv *env, jvalue val, Type typeId,

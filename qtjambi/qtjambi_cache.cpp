@@ -416,7 +416,7 @@ jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char
 
             if (methodId != 0) {
                 jstring className = (jstring) env->CallObjectMethod(clazz, methodId);
-                if (QtJambiTypeManager::jstringToQString(env, className).startsWith("com.trolltech."))
+                if (qtjambi_to_qstring(env, className).startsWith("com.trolltech."))
                     returned = clazz;
             }
         }

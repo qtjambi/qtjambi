@@ -102,7 +102,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toString)
     (JNIEnv *env, jclass, jobject object)
 {
     QVariant v = qtjambi_to_qvariant(env, object);
-    return QtJambiTypeManager::qStringToJstring(env, v.toString());
+    return qtjambi_from_qstring(env, v.toString());
 }
 
 extern "C" JNIEXPORT jboolean JNICALL

@@ -463,8 +463,7 @@ QString QtJambiLink::nameForClass(JNIEnv *env, jclass clazz)
 
     jmethodID methodId = resolveMethod(env, "getName", "()Ljava/lang/String;", "Class", "java/lang/");
     if (methodId != 0) {
-        returned =
-            QtJambiTypeManager::jstringToQString(env, (jstring) env->CallObjectMethod(clazz, methodId));
+        returned = qtjambi_to_qstring(env, reinterpret_cast<jstring>(env->CallObjectMethod(clazz, methodId)));
     }
 
     return returned;

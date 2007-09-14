@@ -522,21 +522,6 @@ jvalue QtJambiTypeManager::convertToComplex(JNIEnv *env, jvalue val, Type typeId
     return returned;
 }
 
-/*!
-    \internal
-*/
-QString QtJambiTypeManager::jstringToQString(JNIEnv *env, jstring s)
-{
-    Q_ASSERT(env != 0);
-
-    QString result;
-    int length = env->GetStringLength(s);
-    result.resize(length);
-    env->GetStringRegion(s, 0, length, reinterpret_cast<ushort *>(result.data()));
-
-    return result;
-}
-
 jvalue QtJambiTypeManager::callMethod(JNIEnv *env, jobject javaRef, jmethodID methodId,
                                      Type typeId, jvalue *param)
 {
@@ -713,16 +698,6 @@ QString QtJambiTypeManager::toJNISignature(const QString &signature, QString *na
     outSignature += QLatin1String(")") + returnType;
 
     return outSignature;
-}
-
-/*!
-    \internal
-*/
-jstring QtJambiTypeManager::qStringToJstring(JNIEnv *env, const QString &s)
-{
-    Q_ASSERT(env != 0);
-
-    return env->NewString(s.utf16(), s.length());
 }
 
 QtJambiTypeManager::Type QtJambiTypeManager::valueTypePattern(const QString &javaName)
@@ -1064,7 +1039,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
         }
     } else if (type & String) {
         const QString *strp = reinterpret_cast<const QString *>(in);
-        p->l = qStringToJstring(mEnvironment, *strp);
+        p->l = qtjambi_from_qstring(mEnvironment, *strp);
         success = true;
     } else if (type & NativePointer) {
         const void * const*in_p = reinterpret_cast<const void * const*>(in);
@@ -1228,7 +1203,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
             break ;
         }
     } else if (type & String) {
-        strCopy = jstringToQString(mEnvironment, (jstring) pval->l);
+        strCopy = qtjambi_to_qstring(mEnvironment, reinterpret_cast<jstring>(pval->l));
         copy = &strCopy;
     } else if ((type & NativePointer) == NativePointer) {
         temp = qtjambi_to_cpointer(mEnvironment, pval->l, 1);
