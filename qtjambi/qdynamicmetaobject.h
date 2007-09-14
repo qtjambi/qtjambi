@@ -21,6 +21,7 @@ public:
 private:
     void initialize(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object, jobject object);
     void invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a) const;
+    void registerEnumTypes();
 
     int m_method_count;
     int m_signal_count;

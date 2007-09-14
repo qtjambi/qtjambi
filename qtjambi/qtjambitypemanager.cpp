@@ -20,7 +20,7 @@
 
 Q_GLOBAL_STATIC(QReadWriteLock, gStaticDataLock)
 
-QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env) : mEnvironment(env)
+QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env) : mEnvironment(env), mConvertEnums(false)
 {
 }
 

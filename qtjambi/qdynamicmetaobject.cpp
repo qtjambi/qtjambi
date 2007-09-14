@@ -4,6 +4,7 @@
 
 #include <QtCore/QHash>
 #include <QtCore/QVarLengthArray>
+#include <QtCore/QMetaEnum>
 
 
 QDynamicMetaObject::QDynamicMetaObject(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object, jobject object) 
@@ -91,7 +92,19 @@ void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaO
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_designables));
     }
 
+    registerEnumTypes();
+
     env->PopLocalFrame(0);
+}
+
+void QDynamicMetaObject::registerEnumTypes()
+{
+    // Make sure the added enums are handles like ints
+    int count = enumeratorCount();
+    for (int i=0; i<count; ++i) {
+        QMetaEnum meta_enum = enumerator(i);
+        qRegisterMetaType<int>((QString::fromLatin1(meta_enum.scope()) + QString::fromLatin1("::") + QString::fromLatin1(meta_enum.name())).toLatin1().constData());
+    }
 }
 
 void QDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a) const

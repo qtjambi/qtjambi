@@ -713,11 +713,13 @@ public class QtJambiInternal {
     private final static int MethodSignal = 0x04;
     private final static int MethodSlot = 0x8;
     private final static int PropertyReadable = 0x1;
-    private final static int PropertyWritable = 0x2;
-    private final static int PropertyResettable = 0x4;    
+    private final static int PropertyWritable = 0x2;    
+    private final static int PropertyResettable = 0x4;
+    private final static int PropertyEnumOrFlag = 0x8;
     private final static int PropertyDesignable = 0x1000;
     private final static int PropertyResolveDesignable = 0x2000;
     private final static int PropertyStored = 0x10000;
+    
     
     public static boolean isGeneratedClass(Class<?> clazz) {
         return clazz.isAnnotationPresent(QtJambiGeneratedClass.class);
@@ -925,8 +927,8 @@ public class QtJambiInternal {
             List<String> stringsInOrder = new ArrayList<String>();
             // Class name
             {
-                stringsInOrder.add(clazz.getName());
-                strings.put(clazz.getName(), offset); offset += clazz.getName().length() + 1;                
+                stringsInOrder.add(clazz.getSimpleName());
+                strings.put(clazz.getName(), offset); offset += clazz.getSimpleName().length() + 1;                
             }
             
             // Class info
@@ -1016,9 +1018,21 @@ public class QtJambiInternal {
                 // Name
                 offset += addString(metaData.metaData, strings, stringsInOrder, propertyNames[i], offset, metaDataOffset++);
                 
-                // Type
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(reader.getReturnType().getName(), 0), offset, metaDataOffset++);
-                
+                // Type (need to special case flags and enums)
+                Class<?> t = reader.getReturnType();
+                boolean isEnumOrFlags = Enum.class.isAssignableFrom(t) || QFlags.class.isAssignableFrom(t);
+                                                
+                String typeName = null;
+                if (isEnumOrFlags && t.getDeclaringClass() != null && QObject.class.isAssignableFrom(t.getDeclaringClass())) {
+                    // To avoid using JObjectWrapper for enums and flags (which is required in certain cases.)
+                    // ### Maybe we should make sure the dynamic meta object for the class is created at this
+                    // point.
+                    typeName = t.getDeclaringClass().getSimpleName() + "::" + t.getSimpleName();
+                } else { 
+                    typeName = internalTypeName(t.getName(), 0);
+                }
+                offset += addString(metaData.metaData, strings, stringsInOrder, typeName, offset, metaDataOffset++);
+                                                
                 int designableFlags = 0;
                 if (designableVariant instanceof Boolean) {
                     if ((Boolean) designableVariant) designableFlags = PropertyDesignable;
@@ -1030,7 +1044,8 @@ public class QtJambiInternal {
                 // Flags
                 metaData.metaData[metaDataOffset++] = PropertyReadable | PropertyStored | designableFlags 
                     | (writer != null ? PropertyWritable : 0)
-                    | (resetter != null ? PropertyResettable : 0);
+                    | (resetter != null ? PropertyResettable : 0)
+                    | (isEnumOrFlags ? PropertyEnumOrFlag : 0);
                                 
                 metaData.propertyReadersArray[i] = reader;
                 metaData.propertyWritersArray[i] = writer;

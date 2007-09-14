@@ -118,16 +118,18 @@ public:
     QVector<void *> initInternalToExternal(const QVector<void *> &internalVariables,
         const QVector<QString> &externalTypeNames);
 
-
+    bool convertEnums() const { return mConvertEnums; }
+    void setConvertEnums(bool on) { mConvertEnums = on; }
 
 private:
     static QString processInternalTypeName(const QString &typeName, int *indirections = 0);
 
 private:
     QHash<void *, QString> mOwnedVariables_internal;
+    QHash<jvalue *, bool> mOwnedVariables_external;
 
     JNIEnv *mEnvironment;
-    QHash<jvalue *, bool> mOwnedVariables_external;
+    uint mConvertEnums : 1;
 };
 
 // *********** Implementations ***********
