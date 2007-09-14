@@ -328,7 +328,7 @@
 ./com/trolltech/qt/gui/QMenu.java
 ./com/trolltech/qt/gui/QMenuBar.java
 ./com/trolltech/qt/gui/QMessageBox.java
-./com/trolltech/qt/gui/QMimeData.java
+./com/trolltech/qt/core/QMimeData.java
 ./com/trolltech/qt/gui/QMotifStyle.java
 ./com/trolltech/qt/gui/QMouseEvent.java
 ./com/trolltech/qt/gui/QMoveEvent.java
