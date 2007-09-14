@@ -28,7 +28,7 @@ public class Utilities {
     private static HashSet<String> LOADED_LIBS = new HashSet<String>();
     
 	/** The Qt Library's major version. */
-	public static final int MAJOR_VERSION = 4;
+    public static final int MAJOR_VERSION = 4;
 	/** The Qt Library's minor version. */
     public static final int MINOR_VERSION = 3;
 	/** The Qt Library's patch version. */
@@ -73,11 +73,10 @@ public class Utilities {
     public static String exceptionsForMessages = System.getProperty("com.trolltech.qt.exceptions-for-messages");
     private static final String DEBUG_SUFFIX = "_debuglib";
 
-    private static final boolean VERBOSE_LOADING =
-        System.getProperty("com.trolltech.qt.verbose-loading") != null;
+
 
     private static String EXCLUDE_STRING = "com.trolltech.qt.exclude-libraries";
-
+    
     /**
      * Returns true if the system property name contains any of the specified
      * substrings. If substrings is null or empty the function returns true
@@ -109,11 +108,9 @@ public class Utilities {
                                                             File.pathSeparator);
             while (tokenizer.hasMoreElements()) {
                 if (library.equals(tokenizer.nextElement())) {
-                    if (VERBOSE_LOADING) {
-                        System.out.println("Skipped library (" + library
-                                           + ") since it is listed in "
-                                           + excludeLibraries);
-                    }
+                    VERBOSE_LOADING.DEBUG("Skipped library (" + library
+                            + ") since it is listed in "
+                            + excludeLibraries);
                     return;
                 }
             }
@@ -130,9 +127,7 @@ public class Utilities {
     }
 
     private static boolean loadFromEnv(String env, String lib) {
-        if (VERBOSE_LOADING) {
-            System.out.print(".. from environment: " + env + " ");
-        }
+        VERBOSE_LOADING.DEBUG(".. from environment: " + env + " ");
         try {
             String envPath = System.getProperty(env);
             if (envPath != null) {
@@ -142,23 +137,19 @@ public class Utilities {
 
                     if (f.exists()) {
                         Runtime.getRuntime().load(f.getAbsolutePath());
-                        if (VERBOSE_LOADING)
-                            System.out.println("\n   Loaded from: " + path);
+                        VERBOSE_LOADING.DEBUG("\n   Loaded from: " + path);
                         LOADED_LIBS.add(lib);
                         return true;
                     }
                 }
-                if (VERBOSE_LOADING && envPath.length() > 0) {
-                    System.out.println("\n   Failed to find " + lib + " in " + env + "(" + envPath + ")");
+                if (envPath.length() > 0) {
+                    VERBOSE_LOADING.DEBUG("\n   Failed to find " + lib + " in " + env + "(" + envPath + ")");
                 }
             } else {
-                if (VERBOSE_LOADING) {
-                    System.out.println("(Skipped, environment was empty)");
-                }
+                VERBOSE_LOADING.DEBUG("(Skipped, environment was empty)");
             }
         } catch (Throwable e) {
-            if (VERBOSE_LOADING)
-                System.out.println("\n   Failed to load " + lib + " from " + env);
+            VERBOSE_LOADING.DEBUG("\n   Failed to load " + lib + " from " + env);
             return false;
         }
         return false;
@@ -167,13 +158,11 @@ public class Utilities {
     public static boolean loadLibrary(String lib) {
         
         if(LOADED_LIBS.contains(lib)){
-            if (VERBOSE_LOADING)
-                System.out.println("\nAlready loaded: " + lib + " skipping it.");
+            VERBOSE_LOADING.DEBUG("\nAlready loaded: " + lib + " skipping it.");
             return true;
         }
         
-        if (VERBOSE_LOADING)
-            System.out.println("\nGoing to load: " + lib);
+        VERBOSE_LOADING.DEBUG("\nGoing to load: " + lib);
 
         if (loadFromEnv("com.trolltech.qt.library-path", lib))
             return true;
@@ -185,9 +174,7 @@ public class Utilities {
         // temp directory, then load
         // from there.
         try {
-            if (VERBOSE_LOADING) {
-                System.out.println(".. from classpath:");
-            }
+            VERBOSE_LOADING.DEBUG(".. from classpath:");
             URL libUrl = Thread.currentThread().getContextClassLoader().getResource(lib);
             if (libUrl == null) {
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
@@ -208,65 +195,55 @@ public class Utilities {
                 
                 Runtime.getRuntime().load(destLib.getAbsolutePath());
 
-                if (VERBOSE_LOADING)
-                    System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
+                VERBOSE_LOADING.DEBUG("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
             } else {
                 Runtime.getRuntime().load(destLib.getAbsolutePath());
-                if (VERBOSE_LOADING)
-                    System.out.println("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
+                VERBOSE_LOADING.DEBUG("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
             }
             LOADED_LIBS.add(lib);
             return true;
         } catch (Throwable e) {
-            if (VERBOSE_LOADING)
-                e.printStackTrace();
+            VERBOSE_LOADING.DEBUG(e);
         }
 
         // Try to load using relative path (relative to qtjambi.jar or
         // root of package where class file are loaded from
         if (implicitLoading) {
-            if (VERBOSE_LOADING) {
-                System.out.println(".. using relative path (com.trolltech.qt.implicit-loading).");
-            }
+            VERBOSE_LOADING.DEBUG(".. using relative path (com.trolltech.qt.implicit-loading).");
             try {
                 String basePath = filePathForClasses();
 
                 String libraryPath = basePath + File.separator + libSubPath + File.separator + lib;
                 if (new File(libraryPath).exists()) {
                     Runtime.getRuntime().load(libraryPath);
-                    if (VERBOSE_LOADING)
-                        System.out.println("Loaded(" + libraryPath + ") using deploy path, as " + lib);
+                    VERBOSE_LOADING.DEBUG("Loaded(" + libraryPath + ") using deploy path, as " + lib);
                     LOADED_LIBS.add(lib);
                     return true;
                 }
 
             } catch (Throwable e) {
-                if (VERBOSE_LOADING)
-                    e.printStackTrace();
+                VERBOSE_LOADING.DEBUG(e);
             }
         }
 
         // Try to load in standard way.
-        if (VERBOSE_LOADING) {
-            System.out.println(".. in standard way.");
-        }
+        VERBOSE_LOADING.DEBUG(".. in standard way.");
+        
         try {
             String stripped = stripLibraryName(lib);
             System.loadLibrary(stripped);
-            if (VERBOSE_LOADING)
-                System.out.println("Loaded(" + lib + ") in standard way as " + stripped);
+            VERBOSE_LOADING.DEBUG("Loaded(" + lib + ") in standard way as " + stripped);
             LOADED_LIBS.add(lib);
             return true;
         } catch (Throwable e) {
-            if (VERBOSE_LOADING)
-                e.printStackTrace();
+            VERBOSE_LOADING.DEBUG(e);
         }
 
         if (loadFromEnv("java.library.path", lib))
             return true;
 
-        if (VERBOSE_LOADING)
-            System.out.println("Loading: " + lib + " failed.\n");
+        VERBOSE_LOADING.DEBUG("Loading: " + lib + " failed.\n");
+        VERBOSE_LOADING.FAILED();
         return false;
     }
 
@@ -389,8 +366,8 @@ public class Utilities {
                 list.add(s);
         } else {
             InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("qt_system_libs");
-            if (in == null && VERBOSE_LOADING)
-                System.out.println("No 'qt_system_libs' file");
+            if (in == null)
+                VERBOSE_LOADING.DEBUG("No 'qt_system_libs' file");
 
             if (in != null) {
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
@@ -399,7 +376,9 @@ public class Utilities {
                     String s = null;
                     while ((s = r.readLine()) != null)
                         list.add(s);
-                } catch (Exception e) { if (VERBOSE_LOADING) e.printStackTrace(); }
+                } catch (Exception e) {
+                    VERBOSE_LOADING.DEBUG(e);
+                }
             }
         }
         return list;
@@ -408,8 +387,7 @@ public class Utilities {
     public static String unpackPlugins() {
         String pluginJars = System.getProperty("com.trolltech.qt.pluginjars");
 
-        if (VERBOSE_LOADING)
-            System.out.println("Loading plugins from: " + pluginJars);
+        VERBOSE_LOADING.DEBUG("Loading plugins from: " + pluginJars);
 
         List<URL> urls = new ArrayList<URL>();
         try {
@@ -439,10 +417,8 @@ public class Utilities {
                         }
                     }
                 } catch (Exception e) {
-                    if (VERBOSE_LOADING) {
-                        System.out.println("could not load plugin archive...: " + jar);
-                        e.printStackTrace();
-                    }
+                    VERBOSE_LOADING.DEBUG("could not load plugin archive...: " + jar);
+                    VERBOSE_LOADING.DEBUG(e);
                 }
             }
             return tmpDir.getAbsolutePath() + "/plugins";
@@ -469,8 +445,7 @@ public class Utilities {
             }
         }
 
-        if (VERBOSE_LOADING)
-            System.out.println("unpacked plugins from: " + jar);
+        VERBOSE_LOADING.DEBUG("unpacked plugins from: " + jar);
     }
     
     public static QMessageHandler messageHandler() {
@@ -516,5 +491,57 @@ public class Utilities {
             }
         }
         return null;
+    }
+    
+    private static class VERBOSE_LOADING {
+        private static Vector<Object> debug = new Vector<Object>();
+        private static final boolean VERBOSE_LOADING =
+            System.getProperty("com.trolltech.qt.verbose-loading") != null;
+        
+        private static synchronized void DEBUG(String s){
+            if (VERBOSE_LOADING) {
+                System.out.println(s);
+            }
+            else {
+                debug.add(s);
+            }            
+        }
+        
+        private static synchronized void DEBUG(Throwable e){
+            if (VERBOSE_LOADING) {
+                e.printStackTrace();
+            }
+            else {
+                debug.add(e);
+            }   
+        }
+        
+        private static synchronized void FAILED(){
+            System.out.println(format(debug));
+            debug = new Vector<Object>();
+            if(!VERBOSE_LOADING)
+                System.exit(1);
+        }
+        
+        private static String format(Vector<Object> debug){
+            String res = "";
+            for (Iterator<Object> iterator = debug.iterator(); iterator.hasNext();) {
+                Object element = (Object) iterator.next();
+                if(element instanceof String){
+                    res += element.toString() + "\n";
+                }
+                else if(element instanceof Throwable){
+                    Throwable throwable = (Throwable)element;
+                    res += "   Failed with exception:\n";
+                    res += "     " + throwable.toString() + "\n";
+                    StackTraceElement[] stackTraceElementArray = throwable.getStackTrace();
+                    for (int i = 0; i < stackTraceElementArray.length; i++) {
+                        res += "     " + stackTraceElementArray[i].toString() + "\n";
+                    }
+                    res += "\n";
+                }
+            }
+            return res;
+        }
     }
 }
