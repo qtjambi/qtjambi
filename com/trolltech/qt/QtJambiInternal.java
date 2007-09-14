@@ -717,6 +717,7 @@ public class QtJambiInternal {
     private final static int PropertyResettable = 0x4;    
     private final static int PropertyDesignable = 0x1000;
     private final static int PropertyResolveDesignable = 0x2000;
+    private final static int PropertyStored = 0x10000;
     
     public static boolean isGeneratedClass(Class<?> clazz) {
         return clazz.isAnnotationPresent(QtJambiGeneratedClass.class);
@@ -833,7 +834,9 @@ public class QtJambiInternal {
                             } catch (Throwable t) {
                                 t.printStackTrace();
                             }
-                        }                             
+                        } else {
+                            propertyDesignables.put(reader.name(), Boolean.TRUE);
+                        }
                     }
                     
                 }
@@ -1025,7 +1028,7 @@ public class QtJambiInternal {
                 }
                 
                 // Flags
-                metaData.metaData[metaDataOffset++] = PropertyReadable | designableFlags 
+                metaData.metaData[metaDataOffset++] = PropertyReadable | PropertyStored | designableFlags 
                     | (writer != null ? PropertyWritable : 0)
                     | (resetter != null ? PropertyResettable : 0);
                                 
