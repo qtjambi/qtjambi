@@ -848,6 +848,12 @@ void StaticCache::resolveClass_internal()
     Class.getDeclaredMethods = env->GetMethodID(Class.class_ref, "getDeclaredMethods",
         "()[Ljava/lang/reflect/Method;");
     Q_ASSERT(Class.getDeclaredMethods);
+
+    Class.isEnum = env->GetMethodID(Class.class_ref, "isEnum", "()Z");
+    Q_ASSERT(Class.isEnum);
+
+    Class.getEnumConstants = env->GetMethodID(Class.class_ref, "getEnumConstants", "()[Ljava/lang/Object;");
+    Q_ASSERT(Class.getEnumConstants);
 }
 
 
@@ -1173,3 +1179,15 @@ void StaticCache::resolveCellAtIndex_internal()
     CellAtIndex.isSelected = env->GetFieldID(CellAtIndex.class_ref, "isSelected", "Z");
     Q_ASSERT(CellAtIndex.isSelected);
 }
+
+void StaticCache::resolveEnum_internal()
+{
+    Q_ASSERT(!Enum.class_ref);
+
+    Enum.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Enum"));
+    Q_ASSERT(Enum.class_ref);
+
+    Enum.ordinal = env->GetMethodID(Enum.class_ref, "ordinal", "()I");
+    Q_ASSERT(Enum.ordinal);
+}
+

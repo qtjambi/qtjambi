@@ -24,6 +24,11 @@ QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env) : mEnvironment(env), mConver
 {
 }
 
+QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env, bool convertEnums) : mEnvironment(env), mConvertEnums(convertEnums)
+{
+}
+
+
 QtJambiTypeManager::~QtJambiTypeManager()
 {
     destroyConstructedInternal(mOwnedVariables_internal.keys().toVector());
@@ -750,8 +755,7 @@ QString QtJambiTypeManager::processInternalTypeName(const QString &_internalType
     return _internalTypeName.left(_internalTypeName.length() - indirections);
 }
 
-QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(JNIEnv *env,
-                                                            const QString &_internalTypeName)
+QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_internalTypeName) const
 {
     // For "void" we always return None.
     if (_internalTypeName == QLatin1String("void"))
@@ -770,7 +774,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(JNIEnv *env,
     QString strPackage = package(javaName);
     int type = 0;
     int value_type_pattern = valueTypePattern(javaName);
-    if (((value_type_pattern & Primitive) == 0) && isQtClass(env, strClassName, strPackage))
+    if (((value_type_pattern & Primitive) == 0) && isQtClass(mEnvironment, strClassName, strPackage))
         type |= QtClass;
    
     int metaType = QMetaType::type(internalTypeName.toLatin1().constData());
@@ -780,10 +784,9 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(JNIEnv *env,
         type |= Object;
 
 
-        if (isQObjectSubclass(env, strClassName, strPackage))
+        if (isQObjectSubclass(mEnvironment, strClassName, strPackage))
             type |= QObjectSubclass;
     }
-
 
     // Pointers to value types are native pointers
     if ((type & Value) && indirections > 0)
@@ -792,8 +795,41 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(JNIEnv *env,
     return Type(type);
 }
 
-QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(JNIEnv *env, const QString &className,
-                                                            const QString &package)
+int QtJambiTypeManager::intForEnum(jobject enum_value) const
+{
+    if (enum_value == 0) 
+        return 0;
+
+    Q_ASSERT(isEnumType(mEnvironment->GetObjectClass(enum_value)));
+
+    StaticCache *sc = StaticCache::instance(mEnvironment);
+    sc->resolveQtEnumerator();
+    if (mEnvironment->IsInstanceOf(enum_value, sc->QtEnumerator.class_ref)) {
+        return mEnvironment->CallIntMethod(enum_value, sc->QtEnumerator.value);
+    } else {
+        sc->resolveEnum();
+        return mEnvironment->CallIntMethod(enum_value, sc->Enum.ordinal);
+    }
+}
+
+bool QtJambiTypeManager::isEnumType(jclass clazz) const
+{
+    Q_ASSERT(clazz != 0);
+    StaticCache *sc = StaticCache::instance(mEnvironment);
+    sc->resolveClass();
+    return mEnvironment->CallBooleanMethod(clazz, sc->Class.isEnum);
+}
+
+bool QtJambiTypeManager::isEnumType(const QString &className, const QString &package) const 
+{
+    jclass clazz = resolveClass(mEnvironment, className.toUtf8().constData(), package.toUtf8().constData());
+    if (clazz != 0)
+        return isEnumType(clazz);
+
+    return false;
+}
+
+QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &className, const QString &package) const
 {
     // For "void" we always return None.
     if (className == QLatin1String("void"))
@@ -816,7 +852,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(JNIEnv *env, const
     // Other types become variants.
     int type = 0;
     int value_type_pattern = valueTypePattern(package + className);
-    if (((value_type_pattern & Primitive) == 0) && isQtClass(env, className, package))
+    if (((value_type_pattern & Primitive) == 0) && isQtClass(mEnvironment, className, package))
         type |= QtClass;
 
     if (metaType != QMetaType::Void || package.startsWith("java/lang/")) {
@@ -824,8 +860,10 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(JNIEnv *env, const
     } else if (type & QtClass) {
         type |= Object;
 
-        if (isQObjectSubclass(env, className, package))
+        if (isQObjectSubclass(mEnvironment, className, package))
             type |= QObjectSubclass;
+    } else if (qtName.isEmpty() && convertEnums() && isEnumType(className, package)) {
+        type |= Enum;
     } else {
         type |= Value; // Try to go with jobject
     }
@@ -918,7 +956,7 @@ QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
     // If not we must do some more work.
     QString strClassName = className(externalTypeName);
     QString strPackage = package(externalTypeName);
-    Type type = typeIdOfExternal(mEnvironment, strClassName, strPackage);
+    Type type = typeIdOfExternal(strClassName, strPackage);
     QTJAMBI_EXCEPTION_CHECK(mEnvironment);
     if (!qtName.isEmpty() && type & Value)
         return qtName;
@@ -961,7 +999,7 @@ QString QtJambiTypeManager::getExternalTypeName(const QString &internalTypeName,
     if (ctx == ArgumentType && !javaName.isEmpty())
         return javaName;
 
-    Type type = typeIdOfInternal(mEnvironment, internalTypeName);
+    Type type = typeIdOfInternal(internalTypeName);
 
     // If it's a primitive, then we're doing a return type and we convert to an object
     if (type & TypeMask)
@@ -976,6 +1014,33 @@ QString QtJambiTypeManager::getExternalTypeName(const QString &internalTypeName,
     qWarning("QtJambiTypeManager::getExternalTypeName: Couldn't convert '%s' to Java type",
         qPrintable(internalTypeName));
     return QString();
+}
+
+jobject QtJambiTypeManager::enumForInt(int value, const QString &className, const QString &package) const
+{    
+    QByteArray utfClassName = className.toUtf8();
+    QByteArray utfPackage = package.toUtf8();
+    jclass clazz = resolveClass(mEnvironment, utfClassName, utfPackage);
+    Q_ASSERT(isEnumType(clazz));
+
+    StaticCache *sc = StaticCache::instance(mEnvironment);
+    sc->resolveQtEnumerator();
+
+    if (mEnvironment->IsAssignableFrom(clazz, sc->QtEnumerator.class_ref)) {
+        QByteArray utfSignature = "(I)L" + utfPackage + utfClassName + ";";
+        jmethodID resolve = resolveMethod(mEnvironment, 
+                                          "resolve", 
+                                          utfSignature.constData(), 
+                                          utfClassName.constData(), 
+                                          utfPackage.constData(), 
+                                          true);
+
+        return mEnvironment->CallObjectMethod(clazz, resolve, value);
+    } else {
+        sc->resolveClass();
+        jobjectArray enum_constants = reinterpret_cast<jobjectArray>(mEnvironment->CallObjectMethod(clazz, sc->Class.getEnumConstants));
+        return mEnvironment->GetObjectArrayElement(enum_constants, value);
+    }
 }
 
 /*!
@@ -1015,7 +1080,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
     QString strPackage = package(externalTypeName);
 
     // Find usage pattern
-    Type type = typeIdOfExternal(mEnvironment, strClassName, strPackage);
+    Type type = typeIdOfExternal(strClassName, strPackage);
     if (type & TypeMask) {
         jvalue val;
         switch (type & TypeMask) {
@@ -1103,6 +1168,9 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
 
         if (success)
             p->l = javaObject;
+    } else if (type & Enum) {
+        p->l = enumForInt(*reinterpret_cast<const int *>(in), strClassName, strPackage);
+        success = p->l != 0;
     }
 
     if (!success) {
@@ -1146,6 +1214,17 @@ void QtJambiTypeManager::destroyExternal(void *p, VariableContext )
     \a out is expected to be a pointer to memory capable of holding the conversion. The
     destination type is given by getInternalTypeName() when passed \a externalTypeName.
 */
+
+struct PlaceHolder {
+    QVariant variant;
+    QString str;
+    JObjectWrapper wrapper;
+    union {
+        int i;
+        void *ptr;    
+    };
+};
+
 bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
                                                   const QString &externalTypeName,
                                                   const QString &internalTypeName,
@@ -1163,31 +1242,25 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
 
     QString strClassName = className(externalTypeName);
     QString strPackage = package(externalTypeName);
-    Type type = typeIdOfExternal(mEnvironment, strClassName, strPackage);
+    Type type = typeIdOfExternal(strClassName, strPackage);
     int metaType = metaTypeOfInternal(internalTypeName, ctx);
-    jvalue dummyVal;
+    
 
     Type typemasked = Type(type & TypeMask);
     bool convert = typemasked != None;
 
     convert = convert && ((ctx == ReturnType && ((type & Primitive) == None))
                           || ctx == ArgumentType);
+    jvalue dummyVal;
     if (convert) {
         dummyVal = convertToPrimitive(mEnvironment, pval->l, typemasked);
         pval = &dummyVal;
         type = Type(type | Primitive);
     }
 
-
     bool success = true;
-
-    // Some temporary containers for copying
-    void *temp = 0;
-    QVariant v;
     const void *copy = 0;
-    QString strCopy;   
-    JObjectWrapper wrapper; // for catch all jobject conversion
-
+    PlaceHolder placeHolder;
     if (typemasked) {
         switch (typemasked) {
         case None: break ;
@@ -1204,11 +1277,11 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
             break ;
         }
     } else if (type & String) {
-        strCopy = qtjambi_to_qstring(mEnvironment, reinterpret_cast<jstring>(pval->l));
-        copy = &strCopy;
+        placeHolder.str = qtjambi_to_qstring(mEnvironment, reinterpret_cast<jstring>(pval->l));
+        copy = &placeHolder.str;
     } else if ((type & NativePointer) == NativePointer) {
-        temp = qtjambi_to_cpointer(mEnvironment, pval->l, 1);
-        copy = &temp;
+        placeHolder.ptr = qtjambi_to_cpointer(mEnvironment, pval->l, 1);
+        copy = &placeHolder.ptr;
     } else if ((type & QtClass) && ((type & Value) || (type & Object))) {
         QtJambiLink *link = QtJambiLink::findLink(mEnvironment, pval->l);
 
@@ -1219,13 +1292,17 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
         } else if (type & Value) {
             copy = link->pointer();
         } else {
-            temp = link->pointer();
-            copy = &temp;
+            placeHolder.ptr = link->pointer();
+            copy = &placeHolder.ptr;
         }   
     } else if ((type & Value) || (type & Object)) {
         metaType = qMetaTypeId<JObjectWrapper>();
-        wrapper = JObjectWrapper(mEnvironment, pval->l);
-        copy = &wrapper;
+        placeHolder.wrapper = JObjectWrapper(mEnvironment, pval->l);
+        copy = &placeHolder.wrapper;
+    } else if (type & Enum) {
+        metaType = QMetaType::Int;
+        placeHolder.i = intForEnum(pval->l);
+        copy = &placeHolder.i;
     } else {
         success = false;
     }

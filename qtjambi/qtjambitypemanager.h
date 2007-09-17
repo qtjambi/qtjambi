@@ -45,6 +45,7 @@ public:
         Value           = 0x1000,
         String          = 0x2000,
         QtClass         = 0x4000,
+        Enum            = 0x8000,
 
         TypeMask = Integer + Long + Boolean + Float + Double + Short + Byte + Char
     };
@@ -57,11 +58,12 @@ public:
 
 
     QtJambiTypeManager(JNIEnv *env);
+    QtJambiTypeManager(JNIEnv *env, bool convertEnums);
     virtual ~QtJambiTypeManager();
 
     // Some convenience functions
-    static Type typeIdOfExternal(JNIEnv *env, const QString &className, const QString &package);
-    static Type typeIdOfInternal(JNIEnv *env, const QString &internalType);
+    Type typeIdOfExternal(const QString &className, const QString &package) const;
+    Type typeIdOfInternal(const QString &internalType) const;
 
     inline static void *jlongToPtr(jlong id);
     inline static jlong ptrToJlong(void *ptr);
@@ -96,6 +98,11 @@ public:
     void *constructExternal(const QString &externalTypeName, VariableContext ctx,
         const void *copy = 0);
     void destroyExternal(void *value, VariableContext ctx);
+
+    bool isEnumType(const QString &className, const QString &package) const;
+    bool isEnumType(jclass clazz) const;
+    int intForEnum(jobject enum_value) const;
+    jobject enumForInt(int value, const QString &className, const QString &package) const;
 
     bool canConvertInternalToExternal(const QString &internalTypeName,
         const QString &externalTypeName, VariableContext ctx) const;

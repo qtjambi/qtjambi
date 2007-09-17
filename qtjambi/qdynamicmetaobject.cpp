@@ -118,7 +118,7 @@ void QDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject metho
     QString signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(method_signature));
     Q_ASSERT(!signature.isEmpty());
 
-    QtJambiTypeManager manager(env);
+    QtJambiTypeManager manager(env, true);
 
     QVector<QString> type_list = manager.parseSignature(signature);
     QVector<void *> input_arguments(type_list.size() - 1, 0);

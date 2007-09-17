@@ -167,6 +167,8 @@ struct QTJAMBI_EXPORT StaticCache
         jclass class_ref;
         jmethodID getName;
         jmethodID getDeclaredMethods;
+        jmethodID isEnum;
+        jmethodID getEnumConstants;
     } Class;
 
     struct {
@@ -328,6 +330,11 @@ struct QTJAMBI_EXPORT StaticCache
         jfieldID isSelected;
     } CellAtIndex;
 
+    struct {
+        jclass class_ref;
+        jmethodID ordinal;
+    } Enum;
+
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
@@ -370,6 +377,7 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(QTableArea);
     DECLARE_RESOLVE_FUNCTIONS(CellAtIndex);
     DECLARE_RESOLVE_FUNCTIONS(MetaData);
+    DECLARE_RESOLVE_FUNCTIONS(Enum);
 
 public:
     static StaticCache *instance(JNIEnv *env);
