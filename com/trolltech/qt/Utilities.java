@@ -243,7 +243,7 @@ public class Utilities {
             return true;
 
         VERBOSE_LOADING.DEBUG("Loading: " + lib + " failed.\n");
-        VERBOSE_LOADING.FAILED();
+        VERBOSE_LOADING.FAILED(lib);
         return false;
     }
 
@@ -506,7 +506,7 @@ public class Utilities {
                 debug.add(s);
             }            
         }
-        
+  
         private static synchronized void DEBUG(Throwable e){
             if (VERBOSE_LOADING) {
                 e.printStackTrace();
@@ -516,11 +516,13 @@ public class Utilities {
             }   
         }
         
-        private static synchronized void FAILED(){
-            System.out.println(format(debug));
+        private static synchronized void FAILED(String failingLib){
+            if(!VERBOSE_LOADING) {
+                throw new RuntimeException("\nLog showing how we tried to load the library: " + failingLib + "\n\n" + format(debug) + "-- End load-library log --\n");  
+            } else {    
+                System.out.println(format(debug));
+            }
             debug = new Vector<Object>();
-            if(!VERBOSE_LOADING)
-                System.exit(1);
         }
         
         private static String format(Vector<Object> debug){
