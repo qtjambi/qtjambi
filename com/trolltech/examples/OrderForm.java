@@ -6,27 +6,24 @@ import com.trolltech.qt.gui.*;
 
 import java.util.*;
 
-public class OrderForm
+public class OrderForm extends QMainWindow
 {
     public static void main(String args[])
     {
         QApplication.initialize(args);
 
-        MainWindow window = new MainWindow();
+        OrderForm window = new OrderForm();
         window.resize(500, 550);
         window.show();
         window.createSample();
 
         QApplication.exec();
     }
-}
 
-class MainWindow extends QMainWindow
-{
     private QAction printAction;
     private QTabWidget letters;
 
-    public MainWindow()
+    public OrderForm()
     {
         QMenu fileMenu = new QMenu(tr("&File"), this);
         QAction newAction = fileMenu.addAction(tr("&New..."));
