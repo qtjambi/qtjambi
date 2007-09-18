@@ -127,6 +127,7 @@ public:
 
     void writeFieldAccessors(QTextStream &s, const AbstractMetaField *java_field);
 
+    void writeOriginalMetaObjectFunction(QTextStream &s, const AbstractMetaClass *java_class);
     void writeFromNativeFunction(QTextStream &s,
                                  const AbstractMetaClass *java_class);
     void writeFromArrayFunction(QTextStream &s, const AbstractMetaClass *java_class);

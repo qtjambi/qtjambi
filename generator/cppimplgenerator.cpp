@@ -493,6 +493,9 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
 
     writeFromNativeFunction(s, java_class);
 
+    if (java_class->isQObject())
+        writeOriginalMetaObjectFunction(s, java_class);
+
     if (java_class->typeEntry()->isValue())
         writeFromArrayFunction(s, java_class);
 
@@ -719,7 +722,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
       << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
       << "      jobject __obj = m_link != 0 ? m_link->javaObject(__jni_env) : 0;" << endl
       << "      if (__obj == 0) m_meta_object = " << java_class->qualifiedCppName() << "::metaObject();" << endl
-      << "      else m_meta_object = qtjambi_metaobject_for_class(__jni_env, __jni_env->GetObjectClass(__obj), " << java_class->qualifiedCppName() << "::metaObject(), __obj);" << endl
+      << "      else m_meta_object = qtjambi_metaobject_for_class(__jni_env, __jni_env->GetObjectClass(__obj), " << java_class->qualifiedCppName() << "::metaObject());" << endl
       << "  }" << endl
       << "  return m_meta_object;" << endl
       << "}" << endl << endl;
@@ -1738,6 +1741,26 @@ QString CppImplGenerator::fromObject(const TypeEntry *entry,
     }
 
     return returned;
+}
+
+void CppImplGenerator::writeOriginalMetaObjectFunction(QTextStream &s, const AbstractMetaClass *java_class)
+{
+    Q_ASSERT(java_class->isQObject());
+
+    s << jni_function_signature(java_class->package(),
+                                java_class->name(),
+                                "originalMetaObject",
+                                "jlong");
+
+    s << endl 
+      << "(JNIEnv *," << endl
+      << " jclass)" << endl
+      << "{" << endl;
+    {
+        Indentation indent;
+        s << INDENT << "return reinterpret_cast<jlong>(&" << java_class->qualifiedCppName() << "::staticMetaObject);";
+    }
+    s << "}" << endl << endl;
 }
 
 void CppImplGenerator::writeFromNativeFunction(QTextStream &s, const AbstractMetaClass *java_class)

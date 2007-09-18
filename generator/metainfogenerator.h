@@ -65,7 +65,9 @@ private:
     void writeDestructors(QTextStream &s, const AbstractMetaClass *cls);
     void writeCodeBlock(QTextStream &s, const QString &code);
     void writeSignalsAndSlots(QTextStream &s, const QString &package);
+    void writeEnums(QTextStream &s, const QString &package);
     void writeRegisterSignalsAndSlots(QTextStream &s);
+    void writeRegisterEnums(QTextStream &s);
     QStringList writePolymorphicHandler(QTextStream &s, const QString &package, const AbstractMetaClassList &clss);
     bool shouldGenerate(const TypeEntry *entry) const;
     void buildSkipList();

@@ -1464,6 +1464,12 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
           << "QNativePointer nativePointer);" << endl;
     }
 
+    if (java_class->isQObject()) {
+        s << endl
+          << "    @SuppressWarnings(\"unused\")" << endl
+          << "    private static native long originalMetaObject();" << endl;
+    }
+
     // The __qt_signalInitialization() function
     if (signal_funcs.size() > 0) {
         s << endl

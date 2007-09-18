@@ -90,16 +90,46 @@ bool MetaInfoGenerator::generatedJavaClasses(const QString &package) const
 }
 
 static void metainfo_write_name_list(QTextStream &s, char *var_name, const QList<QString> &strs,
-                                     int offset)
+                                     int offset, int skip)
 {
     s << "static const char *" << var_name << "[] = {" << endl;
-    for (int i=offset; i<strs.size(); i += 4) {
+    for (int i=offset; i<strs.size(); i += skip) {
         s << "    \"" << strs.at(i).toLatin1() << "\"";
         if (i < strs.size() - 1)
             s << ",";
         s << endl;
     }
     s << "};" << endl << endl;
+}
+
+void MetaInfoGenerator::writeEnums(QTextStream &s, const QString &package) 
+{
+    TypeEntryHash entries = TypeDatabase::instance()->allEntries();
+    TypeEntryHash::iterator it;
+
+    QList<QString> strs;
+    for (it=entries.begin(); it!=entries.end(); ++it) {
+        QList<TypeEntry *> entries = it.value();
+        foreach (TypeEntry *entry, entries) {
+            if (entry->isEnum() && entry->javaPackage() == package) {
+                EnumTypeEntry *eentry = static_cast<EnumTypeEntry *>(entry);
+                strs.append((eentry->javaPackage().isEmpty() ? QString() : eentry->javaPackage().replace('.', '/')  + "/")
+                            + eentry->javaQualifier() + "$" + eentry->targetLangName());
+                strs.append(entry->qualifiedCppName());
+            }
+        }
+    }
+
+    Q_ASSERT(strs.size() % 2 == 0);
+
+    s << "static int enum_count = " << (strs.size() / 2) << ";" << endl;
+    if (strs.size() > 0) {        
+        metainfo_write_name_list(s, "enumJavaNames", strs, 0, 2);
+        metainfo_write_name_list(s, "enumCppNames", strs, 1, 2);
+    } else {
+        s << "static const char **enumCppNames = 0;" << endl
+          << "static const char **enumJavaNames = 0;" << endl;
+    }
 }
 
 void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &package)
@@ -164,10 +194,10 @@ void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &pack
 
     s << "static int sns_count = " << (strs.size() / 4) << ";" << endl;
     if (strs.size() > 0) {
-        metainfo_write_name_list(s, "qtNames", strs, 0);
-        metainfo_write_name_list(s, "javaFunctionNames", strs, 1);
-        metainfo_write_name_list(s, "javaObjectNames", strs, 2);
-        metainfo_write_name_list(s, "javaSignatures", strs, 3);
+        metainfo_write_name_list(s, "qtNames", strs, 0, 4);
+        metainfo_write_name_list(s, "javaFunctionNames", strs, 1, 4);
+        metainfo_write_name_list(s, "javaObjectNames", strs, 2, 4);
+        metainfo_write_name_list(s, "javaSignatures", strs, 3, 4);
     } else {
         s << "static const char **qtNames = 0;" << endl
           << "static const char **javaFunctionNames = 0;" << endl
@@ -183,6 +213,14 @@ void MetaInfoGenerator::writeRegisterSignalsAndSlots(QTextStream &s)
       << "        if (getQtName(javaObjectNames[i]).length() < QByteArray(qtNames[i]).size())" << endl
       << "            registerJavaToQt(javaObjectNames[i], qtNames[i]);" << endl
       << "        registerJavaSignature(qtNames[i], javaSignatures[i]);" << endl
+      << "    }" << endl;
+}
+
+void MetaInfoGenerator::writeRegisterEnums(QTextStream &s) 
+{
+    s << "    for (int i=0;i<enum_count; ++i) {" << endl
+      << "        registerQtToJava(enumCppNames[i], enumJavaNames[i]);" << endl
+      << "        registerJavaToQt(enumJavaNames[i], enumCppNames[i]);" << endl
       << "    }" << endl;
 }
 
@@ -295,6 +333,7 @@ void MetaInfoGenerator::writeCppFile()
         FileOut *f = fileHash.value(package, 0);
         if (f != 0) {
             writeSignalsAndSlots(f->stream, package);
+            writeEnums(f->stream, package);
             handlers_to_register[package] = writePolymorphicHandler(f->stream, package, classes_with_polymorphic_id);
         }
     }
@@ -325,6 +364,7 @@ void MetaInfoGenerator::writeCppFile()
             }
         }
         writeRegisterSignalsAndSlots(f->stream);
+        writeRegisterEnums(f->stream);
     }
 
     foreach (AbstractMetaClass *cls, classList) {
