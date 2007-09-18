@@ -1965,18 +1965,14 @@ const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class
         QMutexLocker locker(metaObjectsLock());
         returned = metaObjects()->value(class_name, 0);    
         if (returned == 0) {
-            QMutexLocker locker(metaObjectsLock());
-            returned = metaObjects()->value(class_name, 0);
-            if (returned == 0) {
-                // Return original meta object for generated classes, and 
-                // create a new dynamic meta object for subclasses
-                if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) {
-                    returned = original_meta_object;
-                } else {
-                    returned = new QDynamicMetaObject(env, object_class, original_meta_object, object);
-                }
-                metaObjects()->insert(class_name, returned);
+            // Return original meta object for generated classes, and 
+            // create a new dynamic meta object for subclasses
+            if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) {
+                returned = original_meta_object;
+            } else {
+                returned = new QDynamicMetaObject(env, object_class, original_meta_object, object);
             }
+            metaObjects()->insert(class_name, returned);
         }
     }
 
