@@ -790,7 +790,45 @@ public class QtJambiInternal {
         return enumConstantCount;
     }
     
-    public static MetaData buildMetaData(Class<? extends QObject> clazz) {
+    private static int putEnumTypeInHash(Class<?> type, Hashtable<String, EnumInfo> enums) {
+        Class<?> flagsType = QFlags.class.isAssignableFrom(type) ? type : null;
+        Class<?> enumType = type.isEnum() ? type : null;                    
+        if (enumType == null && flagsType != null) {
+            Type t = flagsType.getGenericSuperclass();
+            if (t instanceof ParameterizedType) {
+                Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
+                enumType = ((Class) typeArguments[0]);
+            }
+        }
+        
+        if (enumType == null)
+            return 0;        
+        
+        // Since Qt supports enums that are not part of the meta object
+        // we need to check whether the enum can actually be used in
+        // a property. 
+        Class<?> enclosingClass = enumType.getEnclosingClass();
+        if (   enclosingClass != null               
+            && ((!QObject.class.isAssignableFrom(enclosingClass) /*&& !Qt.class.equals(enclosingClass)*/)
+               || enumType.isAnnotationPresent(QtBlockedEnum.class))) {
+            return -1;
+        }
+                        
+        if (enumType != null) {
+            if (enums.contains(enumType.getName())) {
+                enums.get(enumType.getName()).flagsClass = flagsType;
+                return 0;
+            } else { 
+                enums.put(enumType.getName(), new EnumInfo(flagsType, enumType));
+                return enumType.getEnumConstants().length;
+            }            
+        }
+        
+        return -1;        
+    }
+    
+    @SuppressWarnings("unused")
+    private static MetaData buildMetaData(Class<? extends QObject> clazz) {
         MetaData metaData = new MetaData();
                 
         List<Method> slots = new ArrayList<Method>();
@@ -835,32 +873,15 @@ public class QtJambiInternal {
                     // we need to register the owner class in the meta object (in which case
                     // it has to be a QObject)
                     Class<?> returnType = declaredMethod.getReturnType();                    
-                    Class<?> flagsType = QFlags.class.isAssignableFrom(returnType) ? returnType : null;
-                    Class<?> enumType = returnType.isEnum() ? returnType : null;                    
-                    if (enumType == null && flagsType != null) {
-                        Type t = flagsType.getGenericSuperclass();
-                        if (t instanceof ParameterizedType) {
-                            Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
-                            enumType = ((Class) typeArguments[0]);
-                        }
-                    }
                     
-                    
-                    if (  (enumType != null && enumType.getEnclosingClass() == null)
-                       || (enumType != null && !QObject.class.isAssignableFrom(enumType.getEnclosingClass()))) {
-                        System.err.println("In property '" + reader.name() + "': Only enum types declared inside QObject subclasses are supported for properties");
+                    int count = putEnumTypeInHash(returnType, enums);
+                    if (count < 0) {
+                        System.err.println("Error in property '" + reader.name() + "': Only enum types 1. declared inside QObject subclasses (as well as certain enums in the Qt interface) and 2. declared without the QtBlockedEnum annotation are supported for properties");
                         continue;
+                    } else {
+                        enumConstantCount += count;
                     }
-
-                    if (enumType != null) {
-                        if (enums.contains(enumType.getName())) {
-                            enums.get(enumType.getName()).flagsClass = flagsType;
-                        } else { 
-                            enums.put(enumType.getName(), new EnumInfo(flagsType, enumType));
-                            enumConstantCount += enumType.getEnumConstants().length;
-                        }
-                    }                    
-                    
+                                        
                     propertyReaders.put(reader.name(), declaredMethod);
                     
                     // The read method may also be annotated with a designable annotation
@@ -1066,8 +1087,6 @@ public class QtJambiInternal {
                 String typeName = null;
                 if (isEnumOrFlags && t.getDeclaringClass() != null && QObject.class.isAssignableFrom(t.getDeclaringClass())) {
                     // To avoid using JObjectWrapper for enums and flags (which is required in certain cases.)
-                    // ### Maybe we should make sure the dynamic meta object for the class is created at this
-                    // point.
                     typeName = t.getDeclaringClass().getName().replaceAll("\\.", "::") + "::" + t.getSimpleName();
                 } else { 
                     typeName = internalTypeName(t.getName(), 0);
@@ -1120,7 +1139,6 @@ public class QtJambiInternal {
                 // extra-data. 
                 Class<?> enclosingClass = enumInfo.enumClass.getEnclosingClass();
                 if (!enclosingClass.isAssignableFrom(clazz) && !enclosingClasses.contains(enclosingClass.getName())) {
-                    System.out.println("putting " + enclosingClass.getName());
                     enclosingClasses.put(enclosingClass.getName(), enclosingClass);
                 }
             }
