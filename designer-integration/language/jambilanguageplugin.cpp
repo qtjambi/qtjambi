@@ -89,7 +89,7 @@ void JambiLanguagePlugin::initialize(QDesignerFormEditorInterface *core)
     Q_ASSERT (mgr != 0);
 
     mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerLanguageExtension));
-    mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerPropertySheetExtension));
+    //mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerPropertySheetExtension));
     mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerMemberSheetExtension));
     mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerExtraInfoExtension));
 }

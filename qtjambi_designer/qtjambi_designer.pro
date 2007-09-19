@@ -9,11 +9,9 @@ CONFIG += designer
 
 HEADERS += \
 	jambimembersheet.h \
-	jambipropertysheet.h \
     jambiresourcebrowser.h \
 
 SOURCES += \
 	jambimembersheet.cpp \
-	jambipropertysheet.cpp \
 		
 	
