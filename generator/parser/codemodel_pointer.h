@@ -34,11 +34,25 @@
 
 #include <QtCore/QSharedData>
 
+// Since the atomic API changed in 4.4 we need to hack a little here
+// to make it work with both 4.3 and 4.4 until that is not required
+
+#if QT_VERSION >= 0x040400
+
+#   include <QtCore/qatomic.h>
+template <class T> class CodeModelPointer: public QAtomicPointer<T>
+
+#else
+
 template <class T> class CodeModelPointer
+
+#endif // QT_VERSION >= 0x040400
+
 {
 public:
     typedef T Type;
 
+#if QT_VERSION < 0x040400
     inline T &operator*() { return *d; }
     inline const T &operator*() const { return *d; }
     inline T *operator->() { return d; }
@@ -60,7 +74,7 @@ public:
     explicit CodeModelPointer(T *data);
     inline CodeModelPointer(const CodeModelPointer<T> &o) : d(o.d) { if (d) d->ref.ref(); }
     inline CodeModelPointer<T> & operator=(const CodeModelPointer<T> &o) {
-        if (o.d != d) {
+        if (o.d != d) {            
             T *x = o.d;
             if (x) x->ref.ref();
             x = qAtomicSetPtr(&d, x);
@@ -83,12 +97,25 @@ public:
     inline bool operator!() const { return !d; }
 
 private:
-
     T *d;
+#else // QT_VERSION < 0x040400
+    inline CodeModelPointer(T *value = 0) : QAtomicPointer<T>(value) {} 
+
+    inline CodeModelPointer &operator=(T *o) {
+        QAtomicPointer<T>::operator=(o);
+        return *this;
+    }
+
+    inline T *data() { return (T *) *this; }
+    inline const T *data() const { return (const T *) *this; }
+    inline const T *constData() const { return (const T *) *this; }
+#endif
 };
 
+#if QT_VERSION < 0x040400
 template <class T>
 Q_INLINE_TEMPLATE CodeModelPointer<T>::CodeModelPointer(T *adata) : d(adata)
 { if (d) d->ref.ref(); }
+#endif
 
 #endif // CODEMODEL_POINTER_H
