@@ -120,6 +120,7 @@ struct UsingDirectiveAST;
 struct WhileStatementAST;
 struct WinDeclSpecAST;
 struct QPropertyAST;
+struct QEnumsAST;
 
 struct AST
 {
@@ -201,6 +202,7 @@ struct AST
       Kind_WhileStatement,
       Kind_WinDeclSpec,
       Kind_QPropertyAST,
+      Kind_QEnumsAST,
 
       NODE_KIND_COUNT
     };
@@ -847,6 +849,11 @@ struct WinDeclSpecAST: public AST
 struct QPropertyAST : public DeclarationAST
 {
   DECLARE_AST_NODE(QPropertyAST)
+};
+
+struct QEnumsAST : public DeclarationAST
+{
+  DECLARE_AST_NODE(QEnumsAST)
 };
 
 template <class _Tp>

@@ -299,6 +299,9 @@ public:
   TypeAliasModelItem findTypeAlias(const QString &name) const;
   VariableModelItem findVariable(const QString &name) const;
 
+  void addEnumsDeclaration(const QString &enumsDeclaration);
+  QStringList enumsDeclarations() const { return _M_enumsDeclarations; }
+
   inline QHash<QString, ClassModelItem> classMap() const { return _M_classes; }
   inline QHash<QString, EnumModelItem> enumMap() const { return _M_enums; }
   inline QHash<QString, TypeAliasModelItem> typeAliasMap() const { return _M_typeAliases; }
@@ -323,6 +326,8 @@ private:
 private:
   _ScopeModelItem(const _ScopeModelItem &other);
   void operator = (const _ScopeModelItem &other);
+
+  QStringList _M_enumsDeclarations;
 };
 
 class _ClassModelItem: public _ScopeModelItem
@@ -359,7 +364,7 @@ private:
   TemplateParameterList _M_templateParameters;
   CodeModel::ClassType _M_classType;
 
-  QStringList _M_propertyDeclarations;
+  QStringList _M_propertyDeclarations;  
 
 private:
   _ClassModelItem(const _ClassModelItem &other);

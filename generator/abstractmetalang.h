@@ -549,7 +549,7 @@ public:
 class AbstractMetaEnum : public AbstractMetaAttributes
 {
 public:
-    AbstractMetaEnum() : m_type_entry(0), m_class(0){}
+    AbstractMetaEnum() : m_type_entry(0), m_class(0), m_has_qenums_declaration(false) {}
 
     AbstractMetaEnumValueList values() const { return m_enum_values; }
     void addEnumValue(AbstractMetaEnumValue *enumValue) { m_enum_values << enumValue; }
@@ -558,6 +558,10 @@ public:
     QString qualifier() const { return m_type_entry->javaQualifier(); }
     QString package() const { return m_type_entry->javaPackage(); }
     QString fullName() const { return package() + "." + qualifier()  + "." + name(); }
+
+    // Has the enum been declared inside a Q_ENUMS() macro in its enclosing class?
+    void setHasQEnumsDeclaration(bool on) { m_has_qenums_declaration = on; }
+    bool hasQEnumsDeclaration() const { return m_has_qenums_declaration; }
 
     EnumTypeEntry *typeEntry() const { return m_type_entry; }
     void setTypeEntry(EnumTypeEntry *entry) { m_type_entry = entry; }
@@ -569,6 +573,9 @@ private:
     AbstractMetaEnumValueList m_enum_values;
     EnumTypeEntry *m_type_entry;
     AbstractMetaClass *m_class;
+
+    uint m_has_qenums_declaration : 1;
+    uint m_reserved : 31;
 };
 
 typedef QList<AbstractMetaEnum *> AbstractMetaEnumList;
@@ -685,6 +692,7 @@ public:
     bool isInterface() const { return m_type_entry->isInterface(); }
     bool isNamespace() const { return m_type_entry->isNamespace(); }
     bool isQObject() const { return m_type_entry->isQObject(); }
+    bool isQtNamespace() const { return isNamespace() && name() == "Qt"; }
     QString qualifiedCppName() const { return m_type_entry->qualifiedCppName(); }
 
     bool hasInconsistentFunctions() const;

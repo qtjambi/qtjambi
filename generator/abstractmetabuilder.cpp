@@ -487,7 +487,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
                                .arg(meta_class->package())
                                .arg(namespace_item->name()));
 
-    traverseEnums(model_dynamic_cast<ScopeModelItem>(namespace_item), meta_class);
+    traverseEnums(model_dynamic_cast<ScopeModelItem>(namespace_item), meta_class, namespace_item->enumsDeclarations());
     // traverseFunctions(model_dynamic_cast<ScopeModelItem>(namespace_item), meta_class);
 //     traverseClasses(model_dynamic_cast<ScopeModelItem>(namespace_item));
 
@@ -788,7 +788,7 @@ void AbstractMetaBuilder::figureOutDefaultEnumArguments()
 }
 
 
-AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, AbstractMetaClass *enclosing)
+AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, AbstractMetaClass *enclosing, const QSet<QString> &enumsDeclarations)
 {
     // Skipping private enums.
     if (enum_item->accessPolicy() == CodeModel::Private) {
@@ -815,6 +815,10 @@ AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, Abs
     }
 
     AbstractMetaEnum *meta_enum = createMetaEnum();
+    if (   enumsDeclarations.contains(qualified_name) 
+        || enumsDeclarations.contains(enum_name)) {
+        meta_enum->setHasQEnumsDeclaration(true);
+    }
 
     meta_enum->setTypeEntry((EnumTypeEntry *) type_entry);
     switch (enum_item->accessPolicy()) {
@@ -910,7 +914,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
     parseQ_Property(meta_class, class_item->propertyDeclarations());
 
     traverseFunctions(model_dynamic_cast<ScopeModelItem>(class_item), meta_class);
-    traverseEnums(model_dynamic_cast<ScopeModelItem>(class_item), meta_class);
+    traverseEnums(model_dynamic_cast<ScopeModelItem>(class_item), meta_class, class_item->enumsDeclarations());
     traverseFields(model_dynamic_cast<ScopeModelItem>(class_item), meta_class);
 
     // Inner classes
@@ -1220,11 +1224,11 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
     return true;
 }
 
-void AbstractMetaBuilder::traverseEnums(ScopeModelItem scope_item, AbstractMetaClass *meta_class)
+void AbstractMetaBuilder::traverseEnums(ScopeModelItem scope_item, AbstractMetaClass *meta_class, const QStringList &enumsDeclarations)
 {
     EnumList enums = scope_item->enums();
     foreach (EnumModelItem enum_item, enums) {
-        AbstractMetaEnum *meta_enum = traverseEnum(enum_item, meta_class);
+        AbstractMetaEnum *meta_enum = traverseEnum(enum_item, meta_class, QSet<QString>::fromList(enumsDeclarations));
         if (meta_enum) {
             meta_enum->setOriginalAttributes(meta_enum->attributes());
             meta_class->addEnum(meta_enum);

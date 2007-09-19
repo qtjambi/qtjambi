@@ -73,6 +73,7 @@ protected:
   virtual void visitUsing(UsingAST *);
   virtual void visitUsingDirective(UsingDirectiveAST *);
   virtual void visitQProperty(QPropertyAST *);
+  virtual void visitQEnums(QEnumsAST *);
 
 private:
 

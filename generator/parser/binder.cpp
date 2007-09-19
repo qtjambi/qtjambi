@@ -725,6 +725,18 @@ void Binder::visitUsingDirective(UsingDirectiveAST *node)
   DefaultVisitor::visitUsingDirective(node);
 }
 
+void Binder::visitQEnums(QEnumsAST *node) 
+{
+  const Token &start = _M_token_stream->token((int) node->start_token);
+  const Token &end = _M_token_stream->token((int) node->end_token);
+  QStringList enum_list = QString::fromLatin1(start.text + start.position,
+                                              end.position - start.position).split(' ');
+ 
+  ScopeModelItem scope = currentScope();
+  for (int i=0; i<enum_list.size(); ++i) 
+    scope->addEnumsDeclaration(enum_list.at(i));  
+}
+
 void Binder::visitQProperty(QPropertyAST *node)
 {
     const Token &start = _M_token_stream->token((int) node->start_token);

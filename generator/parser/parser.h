@@ -168,6 +168,7 @@ public:
   bool parseWinDeclSpec(WinDeclSpecAST *&node);
 
   bool parseQ_PROPERTY(DeclarationAST *&node);
+  bool parseQ_ENUMS(DeclarationAST *&node);
 
   bool skipUntil(int token);
   bool skipUntilDeclaration();

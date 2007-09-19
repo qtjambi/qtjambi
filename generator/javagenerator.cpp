@@ -167,6 +167,12 @@ void JavaGenerator::writeEnum(QTextStream &s, const AbstractMetaEnum *java_enum)
         return;
     }
 
+    // Check if enums in QObjects are declared in the meta object. If not
+    if (  (java_enum->enclosingClass()->isQObject() || java_enum->enclosingClass()->isQtNamespace())
+        && !java_enum->hasQEnumsDeclaration()) {
+        s << "    @QtBlockedEnum" << endl;
+    }
+
     // Generates Java 1.5 type enums
     s << "    public enum " << java_enum->name()
       << " implements com.trolltech.qt.QtEnumerator {" << endl;

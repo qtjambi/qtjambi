@@ -62,8 +62,8 @@ public:
     AbstractMetaClass *traverseClass(ClassModelItem item);
     bool setupInheritance(AbstractMetaClass *meta_class);
     AbstractMetaClass *traverseNamespace(NamespaceModelItem item);
-    AbstractMetaEnum *traverseEnum(EnumModelItem item, AbstractMetaClass *enclosing);
-    void traverseEnums(ScopeModelItem item, AbstractMetaClass *parent);
+    AbstractMetaEnum *traverseEnum(EnumModelItem item, AbstractMetaClass *enclosing, const QSet<QString> &enumsDeclarations);
+    void traverseEnums(ScopeModelItem item, AbstractMetaClass *parent, const QStringList &enumsDeclarations);
     void traverseFunctions(ScopeModelItem item, AbstractMetaClass *parent);
     void traverseFields(ScopeModelItem item, AbstractMetaClass *parent);
     void traverseStreamOperator(FunctionModelItem function_item);

@@ -1478,6 +1478,20 @@ void Lexer::scanKeyword7()
 	  return;
 	}
       break;
+
+    case 'Q':
+      if (*(cursor + 1) == '_' &&
+      *(cursor + 2) == 'E' &&
+      *(cursor + 3) == 'N' &&
+      *(cursor + 4) == 'U' &&
+      *(cursor + 5) == 'M' &&
+      *(cursor + 6) == 'S') 
+      {
+        token_stream[(int) index++].kind = Token_Q_ENUMS;
+        return;
+      } 
+        break;
+
     }
   token_stream[(int) index++].kind = Token_identifier;
 }
@@ -1699,8 +1713,10 @@ void Lexer::scanKeyword10()
             token_stream[(int) index++].kind = Token_Q_PROPERTY;
             return;
           }
+          
         break;
     }
+   
   token_stream[(int) index++].kind = Token_identifier;
 }
 

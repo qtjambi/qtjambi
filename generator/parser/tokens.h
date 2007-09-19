@@ -139,6 +139,7 @@ enum TOKEN_KIND
     Token_whitespaces,
     Token_xor,
     Token_xor_eq,
+    Token_Q_ENUMS,
 
     TOKEN_KIND_COUNT
 };

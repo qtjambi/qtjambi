@@ -412,6 +412,11 @@ FunctionList _ScopeModelItem::functions() const
   return _M_functions.values();
 }
 
+void _ScopeModelItem::addEnumsDeclaration(const QString &enumsDeclaration) 
+{
+    _M_enumsDeclarations << enumsDeclaration;
+}
+
 FunctionDefinitionList _ScopeModelItem::functionDefinitions() const
 {
   return _M_functionDefinitions.values();
