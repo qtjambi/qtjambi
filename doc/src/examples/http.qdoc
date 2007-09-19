@@ -1,0 +1,9 @@
+/*!
+    \page qtjambi-http.html
+    \title HTTP Example
+
+    The HTTP example demonstrates a simple HTTP client that shows how to fetch files
+    specified by URLs from remote hosts.
+
+    \image http-example.png
+*/

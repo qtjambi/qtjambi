@@ -121,6 +121,7 @@
     \section1 Network Examples
 
     \list
+        \o \l{HTTP Example}{HTTP}
         \o \l{Simple HTTP Server}{Simple HTTP Server}
     \endlist
 
