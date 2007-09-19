@@ -26,6 +26,58 @@ import java.util.*;
  */
 public class QSignalEmitter {
 
+    static class ResolvedSignal {
+        Class<?> types[] = new Class[0];        
+        int arrayDimensions[] = new int[0];
+        String name = ""; 
+    }
+
+    /* friendly */ static ResolvedSignal resolveSignal(Field field, Class<?> declaringClass) {
+        ResolvedSignal resolvedSignal = new ResolvedSignal();
+        resolvedSignal.name = field.getName();
+
+        Type t = field.getGenericType();
+
+        // either t is a parameterized type, or it is Signal0
+        if (t instanceof ParameterizedType) {
+            ParameterizedType p = (ParameterizedType) t;
+            Type actualTypes[] = p.getActualTypeArguments();
+
+            resolvedSignal.types = new Class[actualTypes.length];
+            resolvedSignal.arrayDimensions = new int[actualTypes.length];
+            for (int j = 0; j < resolvedSignal.types.length; ++j) {
+
+                Type actualType = actualTypes[j];
+                int arrayDims = 0;
+                while (actualType instanceof GenericArrayType
+                        || actualType instanceof ParameterizedType) {
+                    if (actualType instanceof GenericArrayType) {
+                        actualType = ((GenericArrayType) actualType)
+                                .getGenericComponentType();
+                        ++arrayDims;
+                    } else { // ParameterizedType
+                        actualType = ((ParameterizedType) actualType)
+                                .getRawType();
+                    }
+                }
+
+                if (actualType instanceof Class) {
+                    resolvedSignal.types[j] = (Class) actualType;
+                    resolvedSignal.arrayDimensions[j] = arrayDims;
+                } else {
+                    throw new RuntimeException(
+                            "Signals of generic types not supported: "
+                                    + actualTypes[j]
+                                    .toString());
+                }
+            }
+        }
+        
+        return resolvedSignal;
+    }
+
+    
+    
     /**
      * Internal superclass of all signals
      * @exclude
@@ -295,8 +347,8 @@ public class QSignalEmitter {
         /* friendly */ int[] arrayDimensions() {
             resolveSignal();
             return arrayDimensions;
-        }
-
+        }            
+                
         /**
          * Base types of all signal arguments in order of declaration. If the argument is of an array type,
          * then the base type of the array is returned by resolveSignal, and the actual number of dimensions
@@ -307,11 +359,11 @@ public class QSignalEmitter {
          */
         /* friendly */ Class<?>[] resolveSignal() {
             if (types == null) {
+                boolean found = false;
                 types = new Class[0]; // For signals with no parameters
                 arrayDimensions = new int[0];
-                boolean found = false;
 
-                Class cls = QSignalEmitter.this.getClass();
+                Class<?> cls = QSignalEmitter.this.getClass();
                 while (cls != null) {
                     Field fields[] = cls.getDeclaredFields();
                     for (Field field : fields) {
@@ -319,46 +371,14 @@ public class QSignalEmitter {
                             AbstractSignal sig = QtJambiInternal.fetchSignal(QSignalEmitter.this, field);
                             if (sig == this) {
                                 found = true;
-                                name = field.getName();
                                 declaringClass = field.getDeclaringClass();
-
-                                Type t = field.getGenericType();
-
-                                // either t is a parameterized type, or it is Signal0
-                                if (t instanceof ParameterizedType) {
-                                    ParameterizedType p = (ParameterizedType) t;
-                                    Type actualTypes[] = p
-                                            .getActualTypeArguments();
-
-                                    types = new Class[actualTypes.length];
-                                    arrayDimensions = new int[actualTypes.length];
-                                    for (int j = 0; j < types.length; ++j) {
-
-                                        Type actualType = actualTypes[j];
-                                        int arrayDims = 0;
-                                        while (actualType instanceof GenericArrayType
-                                                || actualType instanceof ParameterizedType) {
-                                            if (actualType instanceof GenericArrayType) {
-                                                actualType = ((GenericArrayType) actualType)
-                                                        .getGenericComponentType();
-                                                ++arrayDims;
-                                            } else { // ParameterizedType
-                                                actualType = ((ParameterizedType) actualType)
-                                                        .getRawType();
-                                            }
-                                        }
-
-                                        if (actualType instanceof Class) {
-                                            types[j] = (Class) actualType;
-                                            arrayDimensions[j] = arrayDims;
-                                        } else {
-                                            throw new RuntimeException(
-                                                    "Signals of generic types not supported: "
-                                                            + actualTypes[j]
-                                                            .toString());
-                                        }
-                                    }
-                                }
+                                
+                                ResolvedSignal resolvedSignal = QSignalEmitter.resolveSignal(field, declaringClass);
+                                                                
+                                name = resolvedSignal.name;
+                                types = resolvedSignal.types;
+                                arrayDimensions = resolvedSignal.arrayDimensions;
+                                
                                 break;
                             }
                         }

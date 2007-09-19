@@ -1007,7 +1007,7 @@ void StaticCache::resolveQtJambiInternal_internal()
 
     QtJambiInternal.buildMetaData = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                            "buildMetaData",
-                                                           "(Ljava/lang/Class;Lcom/trolltech/qt/core/QObject;)"
+                                                           "(Ljava/lang/Class;)"
                                                            "Lcom/trolltech/qt/QtJambiInternal$MetaData;");
     Q_ASSERT(QtJambiInternal.buildMetaData);
 
@@ -1053,6 +1053,9 @@ void StaticCache::resolveMetaData_internal()
 
     MetaData.propertyDesignablesArray = env->GetFieldID(MetaData.class_ref, "propertyDesignablesArray", "[Ljava/lang/reflect/Method;");
     Q_ASSERT(MetaData.propertyDesignablesArray);
+
+    MetaData.extraDataArray = env->GetFieldID(MetaData.class_ref, "extraDataArray", "[Ljava/lang/Class;");
+    Q_ASSERT(MetaData.extraDataArray);
 }
 
 void StaticCache::resolveQtJambiGuiInternal_internal()

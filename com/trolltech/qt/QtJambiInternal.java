@@ -705,6 +705,7 @@ public class QtJambiInternal {
         public Method propertyWritersArray[];
         public Method propertyResettersArray[];
         public Method propertyDesignablesArray[];
+        public Class<?> extraDataArray[];
     }
     
     private final static int MethodAccessPrivate = 0x00;
@@ -746,50 +747,63 @@ public class QtJambiInternal {
     
     private native static String internalTypeName(String s, int varContext);
     
-    private static List<QPair<Class<?>, Boolean>> queryEnums(Class<?> clazz, Integer outputEnumConstantCount[]) {
-        List<QPair<Class<?>, Boolean>> returned = new ArrayList<QPair<Class<?>, Boolean>>();
+    private static class EnumInfo {
+        public EnumInfo(Class<?> flagsClass, Class<?> enumClass) {
+            this.flagsClass = flagsClass;
+            this.enumClass = enumClass;
+        }
         
-        Set<String> enumsWithFlags = new HashSet<String>();
-        Class<?> declaredClasses[] = clazz.getDeclaredClasses();
+        public Class<?> flagsClass;
+        public Class<?> enumClass;
+    }
+    
+    private static int queryEnums(Class<?> clazz, Hashtable<String, EnumInfo> enums) {
+        int enumConstantCount = 0;
+        
+        Class<?> declaredClasses[] = clazz.getDeclaredClasses();        
         for (Class<?> declaredClass : declaredClasses) {
-            if (QFlags.class.isAssignableFrom(declaredClass)) {
+            if (declaredClass.isEnum()) {
+                String name = declaredClass.getName();
+                if (enums.contains(name))
+                    enums.get(name).enumClass = declaredClass;
+                else
+                    enums.put(name, new EnumInfo(null, declaredClass));
+                
+                enumConstantCount += declaredClass.getEnumConstants().length;
+            } else if (QFlags.class.isAssignableFrom(declaredClass)) {
                 Type t = declaredClass.getGenericSuperclass();
                 if (t instanceof ParameterizedType) {
                     Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
                     
                     if (typeArguments.length == 1 && typeArguments[0] instanceof Class) {
-                        enumsWithFlags.add(((Class)typeArguments[0]).getName());
+                        String name = ((Class)typeArguments[0]).getName();
+                        if (enums.contains(name))
+                            enums.get(name).flagsClass = declaredClass;
+                        else
+                            enums.put(name, new EnumInfo(declaredClass, ((Class)typeArguments[0])));
                     }
                 }
             }
+
         }
         
-        for (Class<?> declaredClass : declaredClasses) {
-            if (declaredClass.isEnum()) {
-                boolean hasQFlags = QtEnumerator.class.isAssignableFrom(declaredClass) && enumsWithFlags.contains(declaredClass.getName());
-                returned.add(new QPair<Class<?>, Boolean>(declaredClass, hasQFlags));
-                outputEnumConstantCount[0] += declaredClass.getEnumConstants().length;
-            }
-        }
-        
-        return returned;
+        return enumConstantCount;
     }
     
-    public static MetaData buildMetaData(Class<? extends QObject> clazz, QObject object) {
+    public static MetaData buildMetaData(Class<? extends QObject> clazz) {
         MetaData metaData = new MetaData();
                 
         List<Method> slots = new ArrayList<Method>();
-        List<QSignalEmitter.AbstractSignal> signals = new ArrayList<QSignalEmitter.AbstractSignal>();
         
         Hashtable<String, Method> propertyReaders = new Hashtable<String, Method>();
         Hashtable<String, Method> propertyWriters = new Hashtable<String, Method>();
         Hashtable<String, Object> propertyDesignables = new Hashtable<String, Object>();
         Hashtable<String, Method> propertyResetters = new Hashtable<String, Method>();
         
-        Integer outputArgument[] = { 0 };
-        List<QPair<Class<?>, Boolean>> enums = queryEnums(clazz, outputArgument);        
-        int enumConstantCount = outputArgument[0];
-        
+        // First we get all enums actually declared in the class 
+        Hashtable<String, EnumInfo> enums = new Hashtable<String, EnumInfo>(); 
+        int enumConstantCount = queryEnums(clazz, enums);        
+                
         Method declaredMethods[] = clazz.getDeclaredMethods();        
         for (Method declaredMethod : declaredMethods) {
             
@@ -816,6 +830,37 @@ public class QtJambiInternal {
                     && declaredMethod.getParameterTypes().length == 0 
                     && declaredMethod.getReturnType() != Void.TYPE
                     && !internalTypeName(declaredMethod.getReturnType().getName(), 0).equals("")) {
+                    
+                    // If the return type of the property reader is not registered, then 
+                    // we need to register the owner class in the meta object (in which case
+                    // it has to be a QObject)
+                    Class<?> returnType = declaredMethod.getReturnType();                    
+                    Class<?> flagsType = QFlags.class.isAssignableFrom(returnType) ? returnType : null;
+                    Class<?> enumType = returnType.isEnum() ? returnType : null;                    
+                    if (enumType == null && flagsType != null) {
+                        Type t = flagsType.getGenericSuperclass();
+                        if (t instanceof ParameterizedType) {
+                            Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
+                            enumType = ((Class) typeArguments[0]);
+                        }
+                    }
+                    
+                    
+                    if (  (enumType != null && enumType.getEnclosingClass() == null)
+                       || (enumType != null && !QObject.class.isAssignableFrom(enumType.getEnclosingClass()))) {
+                        System.err.println("In property '" + reader.name() + "': Only enum types declared inside QObject subclasses are supported for properties");
+                        continue;
+                    }
+
+                    if (enumType != null) {
+                        if (enums.contains(enumType.getName())) {
+                            enums.get(enumType.getName()).flagsClass = flagsType;
+                        } else { 
+                            enums.put(enumType.getName(), new EnumInfo(flagsType, enumType));
+                            enumConstantCount += enumType.getEnumConstants().length;
+                        }
+                    }                    
+                    
                     propertyReaders.put(reader.name(), declaredMethod);
                     
                     // The read method may also be annotated with a designable annotation
@@ -875,29 +920,24 @@ public class QtJambiInternal {
         }
         
         Field declaredFields[] = clazz.getDeclaredFields();
-        List<Field> signalFields = new ArrayList<Field>();        
+        List<Field> signalFields = new ArrayList<Field>();
+        List<QSignalEmitter.ResolvedSignal> resolvedSignals = new ArrayList<QSignalEmitter.ResolvedSignal>();
         for (Field declaredField : declaredFields) {
-            QSignalEmitter.AbstractSignal signal = null;
-            if (isSignal(declaredField.getType())) try {
-                declaredField.setAccessible(true);      
-                signal = (QSignalEmitter.AbstractSignal) declaredField.get(object);
-            } catch (Exception e) {                
-                signal = (QSignalEmitter.AbstractSignal) fetchFieldNative(object, declaredField);                
-            }
-        
-            // If we can't convert all the types we don't list the signal
-            if (signal != null) {
-                String signalParameters = signalParameters(signal);
-                if (signalParameters.equals("") || !internalTypeName(signalParameters, 1).equals("")) {
-                    signals.add(signal);
+            if (isSignal(declaredField.getType())) {        
+                // If we can't convert all the types we don't list the signal
+                QSignalEmitter.ResolvedSignal resolvedSignal = QSignalEmitter.resolveSignal(declaredField, declaredField.getDeclaringClass());
+                String signalParameters = signalParameters(resolvedSignal);
+                if (signalParameters.length() == 0 || internalTypeName(signalParameters, 1).length() != 0) {
                     signalFields.add(declaredField);
+                    resolvedSignals.add(resolvedSignal);
                 }
-            }            
+                    
+            }
         }
         metaData.signalsArray = signalFields.toArray(new Field[0]);
         
         {
-            int functionCount = slots.size() + signals.size();
+            int functionCount = slots.size() + signalFields.size();
             int propertyCount = propertyReaders.keySet().size();
             int enumCount = enums.size();
             
@@ -939,14 +979,14 @@ public class QtJambiInternal {
             }
             
             // Signals (### make sure enum types are covered)
-            for (int i=0; i<signals.size(); ++i) {
-                QSignalEmitter.AbstractSignal signal = signals.get(i);
+            for (int i=0; i<signalFields.size(); ++i) {
                 Field signalField = signalFields.get(i);
+                QSignalEmitter.ResolvedSignal resolvedSignal = resolvedSignals.get(i);
                 
-                String signalParameters = internalTypeName(signalParameters(signal), 1);
+                String signalParameters = internalTypeName(signalParameters(signalField, signalField.getDeclaringClass()), 1);
                                                 
                 // Signal name
-                offset += addString(metaData.metaData, strings, stringsInOrder, signal.name() + "(" + signalParameters + ")", offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, resolvedSignal.name + "(" + signalParameters + ")", offset, metaDataOffset++);
                                                 
                 // Signal parameters
                 offset += addString(metaData.metaData, strings, stringsInOrder, signalParameters, offset, metaDataOffset++);
@@ -1055,14 +1095,17 @@ public class QtJambiInternal {
             
             // Enum types
             int enumConstantOffset = metaDataOffset + enums.size() * 4;
-            for (QPair<Class<?>, Boolean> enumPair : enums) {
+            
+            Hashtable<String, Class<?>> enclosingClasses = new Hashtable<String, Class<?>>();
+            Collection<EnumInfo> enumInfos = enums.values();
+            for (EnumInfo enumInfo : enumInfos) {
                 // Name
-                offset += addString(metaData.metaData, strings, stringsInOrder, enumPair.first.getSimpleName(), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, enumInfo.enumClass.getSimpleName(), offset, metaDataOffset++);
                 
                 // Flags (1 == flags, 0 == no flags)
-                metaData.metaData[metaDataOffset++] = enumPair.second ? 0x1 : 0x0;
+                metaData.metaData[metaDataOffset++] = enumInfo.flagsClass != null ? 0x1 : 0x0;
                 
-                enumConstantCount = enumPair.first.getEnumConstants().length;
+                enumConstantCount = enumInfo.enumClass.getEnumConstants().length;
                 
                 // Count
                 metaData.metaData[metaDataOffset++] = enumConstantCount;
@@ -1071,11 +1114,21 @@ public class QtJambiInternal {
                 metaData.metaData[metaDataOffset++] = enumConstantOffset;
                 
                 enumConstantOffset += 2 * enumConstantCount;
+                
+                // If the enclosing class of an enum is not in the current class hierarchy, then 
+                // the generated meta object needs to have a pointer to its meta object in the
+                // extra-data. 
+                Class<?> enclosingClass = enumInfo.enumClass.getEnclosingClass();
+                if (!enclosingClass.isAssignableFrom(clazz) && !enclosingClasses.contains(enclosingClass.getName())) {
+                    System.out.println("putting " + enclosingClass.getName());
+                    enclosingClasses.put(enclosingClass.getName(), enclosingClass);
+                }
             }
+            metaData.extraDataArray = enclosingClasses.values().toArray(new Class<?>[0]);
             
             // Enum constants
-            for (QPair<Class<?>, Boolean> enumPair : enums) {
-                Enum enumConstants[] = (Enum[]) enumPair.first.getEnumConstants();                
+            for (EnumInfo enumInfo : enumInfos) {
+                Enum enumConstants[] = (Enum[]) enumInfo.enumClass.getEnumConstants();                
                 
                 for (Enum enumConstant : enumConstants) {
                     // Key
@@ -1101,6 +1154,8 @@ public class QtJambiInternal {
                 stringDataOffset += s.length();
                 metaData.stringData[stringDataOffset++] = 0;                
             }
+            
+            
             
         }
         
@@ -1147,8 +1202,18 @@ public class QtJambiInternal {
         return methodSignature(m, false);
     }
     
-    /*friendly*/ static String signalParameters(QSignalEmitter.AbstractSignal signal) {
+    /*friendly*/ static String signalParameters(QSignalEmitter.AbstractSignal signal) 
+    {
         return bunchOfClassNamesInARow(signal.resolveSignal(), signal.arrayDimensions());
+    }
+    
+    private static String signalParameters(QSignalEmitter.ResolvedSignal resolvedSignal) {
+        return bunchOfClassNamesInARow(resolvedSignal.types, resolvedSignal.arrayDimensions);
+    }
+    
+    private static String signalParameters(Field field, Class<?> declaringClass) {
+        QSignalEmitter.ResolvedSignal resolvedSignal = QSignalEmitter.resolveSignal(field, declaringClass);
+        return signalParameters(resolvedSignal);
     }
     
     private static int addString(int metaData[], 

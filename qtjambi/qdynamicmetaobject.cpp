@@ -7,13 +7,13 @@
 #include <QtCore/QMetaEnum>
 
 
-QDynamicMetaObject::QDynamicMetaObject(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object, jobject object) 
+QDynamicMetaObject::QDynamicMetaObject(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object) 
     : m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0), m_property_readers(0), m_property_writers(0), m_property_resetters(0)
 {
     Q_ASSERT(env != 0);
     Q_ASSERT(java_class != 0);
 
-    initialize(env, java_class, original_meta_object, object);
+    initialize(env, java_class, original_meta_object);
 }
 
 QDynamicMetaObject::~QDynamicMetaObject() 
@@ -25,14 +25,14 @@ QDynamicMetaObject::~QDynamicMetaObject()
     }
 }
 
-void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object, jobject object)
+void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object)
 {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
 
     env->PushLocalFrame(100);
 
-    jobject meta_data_struct = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.buildMetaData, java_class, object);
+    jobject meta_data_struct = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.buildMetaData, java_class);
     qtjambi_exception_check(env);
     Q_ASSERT(meta_data_struct);
 
@@ -43,7 +43,7 @@ void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaO
     jbyteArray string_data = (jbyteArray) env->GetObjectField(meta_data_struct, sc->MetaData.stringData);
     Q_ASSERT(string_data);
 
-    d.superdata = qtjambi_metaobject_for_class(env, env->GetSuperclass(java_class), original_meta_object, object);
+    d.superdata = qtjambi_metaobject_for_class(env, env->GetSuperclass(java_class), original_meta_object);
 
     int string_data_len = env->GetArrayLength(string_data);
     d.stringdata = new char[string_data_len];
@@ -61,6 +61,7 @@ void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaO
     m_property_writers = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyWritersArray);
     m_property_resetters = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyResettersArray);
     m_property_designables = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyDesignablesArray);
+    jobjectArray extra_data = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.extraDataArray);
 
     if (m_methods != 0) {
         m_methods = (jobjectArray) env->NewGlobalRef(m_methods);    
@@ -92,19 +93,17 @@ void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaO
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_designables));
     }
 
-    registerEnumTypes();
+    int extra_data_count = extra_data != 0 ? env->GetArrayLength(extra_data) : 0;
+    if (extra_data_count > 0) {
+        d.extradata = new const QMetaObject *[extra_data_count];
+        Q_ASSERT(d.extradata != 0);
+
+        for (int i=0; i<extra_data_count; ++i)
+            d.extradata[i] = qtjambi_metaobject_for_class(env, reinterpret_cast<jclass>(env->GetObjectArrayElement(extra_data, i)), 0);                
+    }
+    
 
     env->PopLocalFrame(0);
-}
-
-void QDynamicMetaObject::registerEnumTypes()
-{
-    // Make sure the added enums are handles like ints
-    int count = enumeratorCount();
-    for (int i=0; i<count; ++i) {
-        QMetaEnum meta_enum = enumerator(i);
-        qRegisterMetaType<int>((QString::fromLatin1(meta_enum.scope()) + QString::fromLatin1("::") + QString::fromLatin1(meta_enum.name())).toLatin1().constData());
-    }
 }
 
 void QDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a) const

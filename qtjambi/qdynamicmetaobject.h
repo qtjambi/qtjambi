@@ -9,7 +9,7 @@
 class QTJAMBI_EXPORT QDynamicMetaObject: public QMetaObject
 {
 public:
-    QDynamicMetaObject(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object, jobject object);
+    QDynamicMetaObject(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object);
     virtual ~QDynamicMetaObject();
 
     int invokeSignalOrSlot(JNIEnv *env, jobject object, int _id, void **_a) const;
@@ -19,9 +19,8 @@ public:
     int queryPropertyDesignable(JNIEnv *env, jobject object, int _id, void **_a) const;
 
 private:
-    void initialize(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object, jobject object);
+    void initialize(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object);
     void invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a) const;
-    void registerEnumTypes();
 
     int m_method_count;
     int m_signal_count;

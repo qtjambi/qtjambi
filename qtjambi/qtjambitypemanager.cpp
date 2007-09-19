@@ -1020,7 +1020,7 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
 {    
     QByteArray utfClassName = className.toUtf8();
     QByteArray utfPackage = package.toUtf8();
-    jclass clazz = resolveClass(mEnvironment, utfClassName, utfPackage);
+    jclass clazz = resolveClass(mEnvironment, utfClassName.constData(), utfPackage.constData());
     Q_ASSERT(isEnumType(clazz));
 
     StaticCache *sc = StaticCache::instance(mEnvironment);
@@ -1111,6 +1111,9 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
         const void * const*in_p = reinterpret_cast<const void * const*>(in);
         p->l = qtjambi_from_cpointer(mEnvironment, *in_p, 8, 1);
         success = true;
+    } else if (type & Enum) {
+        p->l = enumForInt(*reinterpret_cast<const int *>(in), strClassName, strPackage);
+        success = p->l != 0;    
     } else if ((type & QtClass) && (((type & Object) || (type & Value)))) {
         jobject javaObject = 0;
 
@@ -1168,9 +1171,6 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
 
         if (success)
             p->l = javaObject;
-    } else if (type & Enum) {
-        p->l = enumForInt(*reinterpret_cast<const int *>(in), strClassName, strPackage);
-        success = p->l != 0;
     }
 
     if (!success) {
@@ -1295,14 +1295,14 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
             placeHolder.ptr = link->pointer();
             copy = &placeHolder.ptr;
         }   
-    } else if ((type & Value) || (type & Object)) {
-        metaType = qMetaTypeId<JObjectWrapper>();
-        placeHolder.wrapper = JObjectWrapper(mEnvironment, pval->l);
-        copy = &placeHolder.wrapper;
     } else if (type & Enum) {
         metaType = QMetaType::Int;
         placeHolder.i = intForEnum(pval->l);
         copy = &placeHolder.i;
+    } else if ((type & Value) || (type & Object)) {
+        metaType = qMetaTypeId<JObjectWrapper>();
+        placeHolder.wrapper = JObjectWrapper(mEnvironment, pval->l);
+        copy = &placeHolder.wrapper;
     } else {
         success = false;
     }

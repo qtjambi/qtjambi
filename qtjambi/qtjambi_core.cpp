@@ -1951,11 +1951,13 @@ typedef QHash<QString, const QMetaObject *> MetaObjectHash;
 Q_GLOBAL_STATIC(MetaObjectHash, metaObjects);
 Q_GLOBAL_STATIC_WITH_ARGS(QMutex, metaObjectsLock, (QMutex::Recursive));
 
-const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class, const QMetaObject *original_meta_object, jobject object) 
+const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class, const QMetaObject *original_meta_object) 
 {
     Q_ASSERT(object_class != 0);
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
+
+    // If original_meta_object is null then we have to look it up
 
     QString class_name = qtjambi_class_name(env, object_class);
     Q_ASSERT(!class_name.isEmpty());
@@ -1967,10 +1969,17 @@ const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class
         if (returned == 0) {
             // Return original meta object for generated classes, and 
             // create a new dynamic meta object for subclasses
-            if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) {
+            if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) { 
+                if (original_meta_object == 0) {
+                    jmethodID originalMetaObjectID = env->GetStaticMethodID(object_class, "originalMetaObject", "()J");
+                    Q_ASSERT(originalMetaObjectID != 0);
+
+                    // yee
+                    original_meta_object = reinterpret_cast<const QMetaObject *>(env->CallStaticLongMethod(object_class, originalMetaObjectID));
+                }
                 returned = original_meta_object;
             } else {
-                returned = new QDynamicMetaObject(env, object_class, original_meta_object, object);
+                returned = new QDynamicMetaObject(env, object_class, original_meta_object);
             }
             metaObjects()->insert(class_name, returned);
         }
