@@ -1222,9 +1222,14 @@
     <object-type name="QWaitCondition">
         <modify-function signature="wait(QMutex *, unsigned long)">
             <modify-argument index="2">
-                <replace-default-expression with="Integer.MAX_VALUE"/>
+                <replace-default-expression with="0xffffffff"/>
             </modify-argument>
         </modify-function>
+        <modify-function signature="wait(QReadWriteLock *, unsigned long)">
+            <modify-argument index="2">
+                <replace-default-expression with="0xffffffff"/>
+            </modify-argument>
+        </modify-function>        
     </object-type>
 
     

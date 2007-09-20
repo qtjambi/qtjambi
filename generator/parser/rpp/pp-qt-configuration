@@ -4,7 +4,6 @@
 
 // Qt
 #define QOBJECTDEFS_H
-#define QT_NO_DEPRECATED
 
 // not yet supported
 #define Q_SLOTS slots
