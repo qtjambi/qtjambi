@@ -336,6 +336,10 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID ordinal;
     } Enum;
 
+    struct {
+        jclass class_ref;
+    } Qt;
+
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
@@ -379,6 +383,7 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(CellAtIndex);
     DECLARE_RESOLVE_FUNCTIONS(MetaData);
     DECLARE_RESOLVE_FUNCTIONS(Enum);
+    DECLARE_RESOLVE_FUNCTIONS(Qt);
 
 public:
     static StaticCache *instance(JNIEnv *env);

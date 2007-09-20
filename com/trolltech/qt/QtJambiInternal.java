@@ -809,22 +809,18 @@ public class QtJambiInternal {
         // a property. 
         Class<?> enclosingClass = enumType.getEnclosingClass();
         if (   enclosingClass != null               
-            && ((!QObject.class.isAssignableFrom(enclosingClass) /*&& !Qt.class.equals(enclosingClass)*/)
+            && ((!QObject.class.isAssignableFrom(enclosingClass) && !Qt.class.equals(enclosingClass))
                || enumType.isAnnotationPresent(QtBlockedEnum.class))) {
             return -1;
         }
                         
-        if (enumType != null) {
-            if (enums.contains(enumType.getName())) {
-                enums.get(enumType.getName()).flagsClass = flagsType;
-                return 0;
-            } else { 
-                enums.put(enumType.getName(), new EnumInfo(flagsType, enumType));
-                return enumType.getEnumConstants().length;
-            }            
-        }
-        
-        return -1;        
+        if (enums.contains(enumType.getName())) {
+            enums.get(enumType.getName()).flagsClass = flagsType;
+            return 0;
+        } else { 
+            enums.put(enumType.getName(), new EnumInfo(flagsType, enumType));
+            return enumType.getEnumConstants().length;
+        }            
     }
     
     @SuppressWarnings("unused")

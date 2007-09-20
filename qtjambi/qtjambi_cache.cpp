@@ -1194,3 +1194,10 @@ void StaticCache::resolveEnum_internal()
     Q_ASSERT(Enum.ordinal);
 }
 
+void StaticCache::resolveQt_internal()
+{
+    Q_ASSERT(!Qt.class_ref);
+
+    Qt.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/Qt"));
+    Q_ASSERT(Qt.class_ref);
+}

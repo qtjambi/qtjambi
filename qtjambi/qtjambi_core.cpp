@@ -1951,6 +1951,12 @@ typedef QHash<QString, const QMetaObject *> MetaObjectHash;
 Q_GLOBAL_STATIC(MetaObjectHash, metaObjects);
 Q_GLOBAL_STATIC_WITH_ARGS(QMutex, metaObjectsLock, (QMutex::Recursive));
 
+class StaticQtMetaObjectAccessor: public QObject
+{
+public:
+    static const QMetaObject *illicitMetaObjectForQtNamespace() { return &staticQtMetaObject; }
+};
+
 const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class, const QMetaObject *original_meta_object) 
 {
     Q_ASSERT(object_class != 0);
@@ -1971,11 +1977,16 @@ const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class
             // create a new dynamic meta object for subclasses
             if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) { 
                 if (original_meta_object == 0) {
-                    jmethodID originalMetaObjectID = env->GetStaticMethodID(object_class, "originalMetaObject", "()J");
-                    Q_ASSERT(originalMetaObjectID != 0);
+                    sc->resolveQt();
+                    if (env->IsSameObject(sc->Qt.class_ref, object_class)) {
+                        original_meta_object = StaticQtMetaObjectAccessor::illicitMetaObjectForQtNamespace();
+                    } else {
+                        jmethodID originalMetaObjectID = env->GetStaticMethodID(object_class, "originalMetaObject", "()J");
+                        Q_ASSERT(originalMetaObjectID != 0);
 
-                    // yee
-                    original_meta_object = reinterpret_cast<const QMetaObject *>(env->CallStaticLongMethod(object_class, originalMetaObjectID));
+                        // yee
+                        original_meta_object = reinterpret_cast<const QMetaObject *>(env->CallStaticLongMethod(object_class, originalMetaObjectID));
+                    }
                 }
                 returned = original_meta_object;
             } else {
