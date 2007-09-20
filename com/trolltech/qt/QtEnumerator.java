@@ -13,7 +13,17 @@
 
 package com.trolltech.qt;
 
-
+/**
+ * Interface for Qt Jambi's internal enums. If you manually implement this class, 
+ * your implementation must contain a method with the following signature:
+ *  
+ *      public static T resolve(int value);
+ *      
+ * where T is your subclass. This should return the enum value corresponding to the 
+ * specified int value.
+ *  
+ * @exclude 
+ */
 public interface QtEnumerator {
     public int value();
 }

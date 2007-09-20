@@ -747,58 +747,31 @@ public class QtJambiInternal {
     
     private native static String internalTypeName(String s, int varContext);
     
-    private static class EnumInfo {
-        public EnumInfo(Class<?> flagsClass, Class<?> enumClass) {
-            this.flagsClass = flagsClass;
-            this.enumClass = enumClass;
-        }
-        
-        public Class<?> flagsClass;
-        public Class<?> enumClass;
-    }
-    
-    private static int queryEnums(Class<?> clazz, Hashtable<String, EnumInfo> enums) {
+    private static int queryEnums(Class<?> clazz, Hashtable<String, Class<?>> enums) {
         int enumConstantCount = 0;
         
         Class<?> declaredClasses[] = clazz.getDeclaredClasses();        
-        for (Class<?> declaredClass : declaredClasses) {
-            if (declaredClass.isEnum()) {
-                String name = declaredClass.getName();
-                if (enums.contains(name))
-                    enums.get(name).enumClass = declaredClass;
-                else
-                    enums.put(name, new EnumInfo(null, declaredClass));
-                
-                enumConstantCount += declaredClass.getEnumConstants().length;
-            } else if (QFlags.class.isAssignableFrom(declaredClass)) {
-                Type t = declaredClass.getGenericSuperclass();
-                if (t instanceof ParameterizedType) {
-                    Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
-                    
-                    if (typeArguments.length == 1 && typeArguments[0] instanceof Class) {
-                        String name = ((Class)typeArguments[0]).getName();
-                        if (enums.contains(name))
-                            enums.get(name).flagsClass = declaredClass;
-                        else
-                            enums.put(name, new EnumInfo(declaredClass, ((Class)typeArguments[0])));
-                    }
-                }
-            }
-
-        }
+        for (Class<?> declaredClass : declaredClasses)
+            enumConstantCount += putEnumTypeInHash(declaredClass, enums);        
         
         return enumConstantCount;
     }
     
-    private static int putEnumTypeInHash(Class<?> type, Hashtable<String, EnumInfo> enums) {
+    private static Class getEnumForQFlags(Class<?> flagsType) {
+        Type t = flagsType.getGenericSuperclass();
+        if (t instanceof ParameterizedType) {
+            Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
+            return ((Class) typeArguments[0]);
+        }
+        
+        return null;
+    }
+    
+    private static int putEnumTypeInHash(Class<?> type, Hashtable<String, Class<?>> enums) {
         Class<?> flagsType = QFlags.class.isAssignableFrom(type) ? type : null;
         Class<?> enumType = type.isEnum() ? type : null;                    
         if (enumType == null && flagsType != null) {
-            Type t = flagsType.getGenericSuperclass();
-            if (t instanceof ParameterizedType) {
-                Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
-                enumType = ((Class) typeArguments[0]);
-            }
+            enumType = getEnumForQFlags(flagsType);
         }
         
         if (enumType == null)
@@ -813,14 +786,18 @@ public class QtJambiInternal {
                || enumType.isAnnotationPresent(QtBlockedEnum.class))) {
             return -1;
         }
-                        
-        if (enums.contains(enumType.getName())) {
-            enums.get(enumType.getName()).flagsClass = flagsType;
-            return 0;
-        } else { 
-            enums.put(enumType.getName(), new EnumInfo(flagsType, enumType));
-            return enumType.getEnumConstants().length;
-        }            
+                
+        int enumConstantCount = 0;
+        if (!enums.contains(enumType.getName())) {
+            enums.put(enumType.getName(), enumType);            
+            
+            enumConstantCount = enumType.getEnumConstants().length;
+        } 
+        
+        if (flagsType != null && !enums.contains(flagsType.getName()))
+            enums.put(flagsType.getName(), flagsType);
+                
+        return enumConstantCount;
     }
     
     @SuppressWarnings("unused")
@@ -835,8 +812,9 @@ public class QtJambiInternal {
         Hashtable<String, Method> propertyResetters = new Hashtable<String, Method>();
         
         // First we get all enums actually declared in the class 
-        Hashtable<String, EnumInfo> enums = new Hashtable<String, EnumInfo>(); 
-        int enumConstantCount = queryEnums(clazz, enums);        
+        Hashtable<String, Class<?>> enums = new Hashtable<String, Class<?>>(); 
+        int enumConstantCount = queryEnums(clazz, enums);
+        int enumCount = enums.size(); // Get the size before we add external enums
                 
         Method declaredMethods[] = clazz.getDeclaredMethods();        
         for (Method declaredMethod : declaredMethods) {
@@ -874,9 +852,7 @@ public class QtJambiInternal {
                     if (count < 0) {
                         System.err.println("Error in property '" + reader.name() + "': Only enum types 1. declared inside QObject subclasses or the Qt interface and 2. declared without the QtBlockedEnum annotation are supported for properties");
                         continue;
-                    } else {
-                        enumConstantCount += count;
-                    }
+                    } 
                                         
                     propertyReaders.put(reader.name(), declaredMethod);
                     
@@ -955,8 +931,7 @@ public class QtJambiInternal {
         
         {
             int functionCount = slots.size() + signalFields.size();
-            int propertyCount = propertyReaders.keySet().size();
-            int enumCount = enums.size();
+            int propertyCount = propertyReaders.keySet().size();            
             
             metaData.metaData = new int[12 + functionCount * 5 + 1 + propertyCount * 3 + enumCount * 4 + enumConstantCount * 2]; 
             
@@ -975,7 +950,7 @@ public class QtJambiInternal {
             metaData.metaData[7] = 12 + functionCount * 5; // Each function takes 5 ints 
             
             // Enums
-            metaData.metaData[8] = enums.size();
+            metaData.metaData[8] = enumCount;
             metaData.metaData[9] = 12 + functionCount * 5 + propertyCount * 3; // Each property takes 3 ints
                                                 
             int offset = 0;
@@ -1109,51 +1084,65 @@ public class QtJambiInternal {
             }
             
             // Enum types
-            int enumConstantOffset = metaDataOffset + enums.size() * 4;
+            int enumConstantOffset = metaDataOffset + enumCount * 4;
             
             Hashtable<String, Class<?>> enclosingClasses = new Hashtable<String, Class<?>>();
-            Collection<EnumInfo> enumInfos = enums.values();
-            for (EnumInfo enumInfo : enumInfos) {
-                // Name
-                offset += addString(metaData.metaData, strings, stringsInOrder, enumInfo.enumClass.getSimpleName(), offset, metaDataOffset++);
-                
-                // Flags (1 == flags, 0 == no flags)
-                metaData.metaData[metaDataOffset++] = enumInfo.flagsClass != null ? 0x1 : 0x0;
-                
-                enumConstantCount = enumInfo.enumClass.getEnumConstants().length;
-                
-                // Count
-                metaData.metaData[metaDataOffset++] = enumConstantCount;
-                
-                // Data
-                metaData.metaData[metaDataOffset++] = enumConstantOffset;
-                
-                enumConstantOffset += 2 * enumConstantCount;
-                
-                // If the enclosing class of an enum is not in the current class hierarchy, then 
-                // the generated meta object needs to have a pointer to its meta object in the
-                // extra-data. 
-                Class<?> enclosingClass = enumInfo.enumClass.getEnclosingClass();
-                if (!enclosingClass.isAssignableFrom(clazz) && !enclosingClasses.contains(enclosingClass.getName())) {
+            Collection<Class<?>> classes = enums.values();
+            for (Class<?> cls : classes) {
+                Class<?> enclosingClass = cls.getEnclosingClass();                                
+                if (enclosingClass.equals(clazz)) {                
+                    // Name
+                    offset += addString(metaData.metaData, strings, stringsInOrder, cls.getSimpleName(), offset, metaDataOffset++);
+                    
+                    // Flags (1 == flags, 0 == no flags)
+                    metaData.metaData[metaDataOffset++] = QFlags.class.isAssignableFrom(cls) ? 0x1 : 0x0;
+                    
+                    // Get the enum class 
+                    Class<?> enumClass = Enum.class.isAssignableFrom(cls) ? cls : null;
+                    if (enumClass == null) {
+                        enumClass = getEnumForQFlags(cls);
+                    }                 
+                    
+                    enumConstantCount = enumClass.getEnumConstants().length;
+                    
+                    // Count
+                    metaData.metaData[metaDataOffset++] = enumConstantCount;
+                    
+                    // Data
+                    metaData.metaData[metaDataOffset++] = enumConstantOffset;
+                    
+                    enumConstantOffset += 2 * enumConstantCount;
+                } else if (!enclosingClass.isAssignableFrom(clazz) && !enclosingClasses.contains(enclosingClass.getName())) { 
+                    // If the enclosing class of an enum is not in the current class hierarchy, then 
+                    // the generated meta object needs to have a pointer to its meta object in the
+                    // extra-data.                                 
                     enclosingClasses.put(enclosingClass.getName(), enclosingClass);
                 }
             }
             metaData.extraDataArray = enclosingClasses.values().toArray(new Class<?>[0]);
             
             // Enum constants
-            for (EnumInfo enumInfo : enumInfos) {
-                Enum enumConstants[] = (Enum[]) enumInfo.enumClass.getEnumConstants();                
+            for (Class<?> cls : classes) {
                 
-                for (Enum enumConstant : enumConstants) {
-                    // Key
-                    offset += addString(metaData.metaData, strings, stringsInOrder, enumConstant.name(), offset, metaDataOffset++);
+                if (cls.getEnclosingClass().equals(clazz)) {
+                    // Get the enum class 
+                    Class<?> enumClass = Enum.class.isAssignableFrom(cls) ? cls : null;
+                    if (enumClass == null) {
+                        enumClass = getEnumForQFlags(cls);
+                    }                 
                     
-                    // Value
-                    metaData.metaData[metaDataOffset++] = enumConstant instanceof QtEnumerator 
-                                                          ? ((QtEnumerator) enumConstant).value()
-                                                          : enumConstant.ordinal();
+                    Enum enumConstants[] = (Enum[]) enumClass.getEnumConstants();                
+                    
+                    for (Enum enumConstant : enumConstants) {
+                        // Key
+                        offset += addString(metaData.metaData, strings, stringsInOrder, enumConstant.name(), offset, metaDataOffset++);
+                        
+                        // Value
+                        metaData.metaData[metaDataOffset++] = enumConstant instanceof QtEnumerator 
+                                                              ? ((QtEnumerator) enumConstant).value()
+                                                              : enumConstant.ordinal();
+                    }
                 }
-            
             }
             
             // EOD

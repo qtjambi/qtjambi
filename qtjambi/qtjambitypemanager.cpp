@@ -1026,8 +1026,11 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
     StaticCache *sc = StaticCache::instance(mEnvironment);
     sc->resolveQtEnumerator();
 
+    jobject resolved = 0;
     if (mEnvironment->IsAssignableFrom(clazz, sc->QtEnumerator.class_ref)) {
         QByteArray utfSignature = "(I)L" + utfPackage + utfClassName + ";";
+        
+        // Try to find the resolve method if it can be done
         jmethodID resolve = resolveMethod(mEnvironment, 
                                           "resolve", 
                                           utfSignature.constData(), 
@@ -1035,12 +1038,23 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
                                           utfPackage.constData(), 
                                           true);
 
-        return mEnvironment->CallObjectMethod(clazz, resolve, value);
-    } else {
+        
+        if (resolve != 0)
+            resolved = mEnvironment->CallObjectMethod(clazz, resolve, value);
+        else
+            qWarning("If you subclass QtEnumerator, make sure your class implements a static method resolve() which takes an int value and returns the enum value corresponding to the value.");
+
+        // Make sure we catch any exception currently on the stack
+        qtjambi_exception_check(mEnvironment);
+    } 
+
+    if (resolved == 0) {
         sc->resolveClass();
         jobjectArray enum_constants = reinterpret_cast<jobjectArray>(mEnvironment->CallObjectMethod(clazz, sc->Class.getEnumConstants));
-        return mEnvironment->GetObjectArrayElement(enum_constants, value);
+        resolved = mEnvironment->GetObjectArrayElement(enum_constants, value);
     }
+
+    return resolved;
 }
 
 /*!
