@@ -790,8 +790,8 @@ void CppImplGenerator::writeShellConstructor(QTextStream &s, const AbstractMetaF
 
     s << "{" << endl;
 
-    writeCodeInjections(s, java_function, cls, CodeSnip::Beginning);
-    writeCodeInjections(s, java_function, cls, CodeSnip::End);
+    writeCodeInjections(s, java_function, cls, CodeSnip::Beginning, TypeSystem::ShellCode);
+    writeCodeInjections(s, java_function, cls, CodeSnip::End, TypeSystem::ShellCode);
 
     s << "}" << endl << endl;
 }
@@ -827,7 +827,8 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
 }
 
 void CppImplGenerator::writeCodeInjections(QTextStream &s, const AbstractMetaFunction *java_function,
-                                           const AbstractMetaClass *implementor, CodeSnip::Position position)
+                                           const AbstractMetaClass *implementor, CodeSnip::Position position,
+                                           TypeSystem::Language language)
 {
 
     FunctionModificationList mods;
@@ -848,7 +849,7 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const AbstractMetaFun
             if (snip.position != position)
                 continue ;
 
-            if (snip.language !=TypeSystem::ShellCode && snip.language != TypeSystem::NativeCode)
+            if ((snip.language & language) == false)
                 continue ;
 
             if (position == CodeSnip::End)
@@ -944,7 +945,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
     s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << implementor->name() << "::"
       << java_function_signature << "\");" << endl;
 
-    writeCodeInjections(s, java_function, implementor, CodeSnip::Beginning);
+    writeCodeInjections(s, java_function, implementor, CodeSnip::Beginning, TypeSystem::ShellCode);
 
     //     s << "    printf(\"%s : %s\\n\", \"" << java_function->enclosingClass()->name() << "\""
     //       << ", \"" << java_function->name() << "\");" << endl;
@@ -1061,7 +1062,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
 
         s << INDENT << "}" << endl;
 
-        writeCodeInjections(s, java_function, implementor, CodeSnip::End);
+        writeCodeInjections(s, java_function, implementor, CodeSnip::End, TypeSystem::ShellCode);
 
         // A little trick to close open painters on a widget
         if (java_function->name() == "paintEvent") {
@@ -1079,7 +1080,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
             }
         }
         writeBaseClassFunctionCall(s, java_function, implementor);
-        writeCodeInjections(s, java_function, implementor, CodeSnip::End);
+        writeCodeInjections(s, java_function, implementor, CodeSnip::End, TypeSystem::ShellCode);
     }
 
         s << "}" << endl << endl;
@@ -1342,7 +1343,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const AbstractMetaFunc
     } else {
         writeFinalFunctionSetup(s, java_function, qt_object_name, cls);
 
-        writeCodeInjections(s, java_function, java_function->implementingClass(), CodeSnip::Beginning);
+        writeCodeInjections(s, java_function, java_function->implementingClass(), CodeSnip::Beginning, TypeSystem::NativeCode);
 
         if (java_function->isConstructor()) {
             writeFinalConstructor(s, java_function, qt_object_name, java_object_name);

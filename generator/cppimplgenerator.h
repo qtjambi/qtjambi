@@ -45,7 +45,7 @@ public:
         const AbstractMetaType *java_type);
     void writeSignalInitialization(QTextStream &s, const AbstractMetaClass *java_class);
     void writeCodeInjections(QTextStream &s, const AbstractMetaFunction *java_function,
-        const AbstractMetaClass *implementor, CodeSnip::Position position);
+        const AbstractMetaClass *implementor, CodeSnip::Position position, TypeSystem::Language language);
     void writeExtraFunctions(QTextStream &s, const AbstractMetaClass *java_class);
     void writeShellSignatures(QTextStream &s, const AbstractMetaClass *java_class);
     void writeShellConstructor(QTextStream &s, const AbstractMetaFunction *java_function);
