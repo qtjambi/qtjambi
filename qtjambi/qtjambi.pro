@@ -16,6 +16,7 @@ SOURCES += \
 	qtobject.cpp \
 	qvariant.cpp \
         qdynamicmetaobject.cpp \
+        qjambivariant.cpp \
 
 
 HEADERS += \
