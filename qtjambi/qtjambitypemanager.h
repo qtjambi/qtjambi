@@ -27,25 +27,26 @@ class QtJambiTypeManager
 public:
     enum Type {
         None = 0,
-        Primitive       = 0x0001,
-        Integer         = 0x0002,
-        Long            = 0x0004,
-        Boolean         = 0x0008,
-        Float           = 0x0010,
-        Double          = 0x0020,
-        Short           = 0x0040,
-        Byte            = 0x0080,
-        Char            = 0x0100,
+        Primitive       = 0x00001,
+        Integer         = 0x00002,
+        Long            = 0x00004,
+        Boolean         = 0x00008,
+        Float           = 0x00010,
+        Double          = 0x00020,
+        Short           = 0x00040,
+        Byte            = 0x00080,
+        Char            = 0x00100,
 
-        QObjectSubclass = 0x0200,
-        Object          = 0x0400,
+        QObjectSubclass = 0x00200,
+        Object          = 0x00400,
 
-        NativePointer   = 0x0800,
+        NativePointer   = 0x00800,
 
-        Value           = 0x1000,
-        String          = 0x2000,
-        QtClass         = 0x4000,
-        Enum            = 0x8000,
+        Value           = 0x01000,
+        String          = 0x02000,
+        QtClass         = 0x04000,
+        Enum            = 0x08000,
+        Flags           = 0x10000,
 
         TypeMask = Integer + Long + Boolean + Float + Double + Short + Byte + Char
     };
@@ -101,8 +102,11 @@ public:
 
     bool isEnumType(const QString &className, const QString &package) const;
     bool isEnumType(jclass clazz) const;
-    int intForEnum(jobject enum_value) const;
+    bool isFlagsType(const QString &className, const QString &package) const;
+    bool isFlagsType(jclass clazz) const;
+    int intForQtEnumerator(jobject enum_value) const;
     jobject enumForInt(int value, const QString &className, const QString &package) const;
+    jobject flagsForInt(int value, const QString &className, const QString &package) const;
 
     bool canConvertInternalToExternal(const QString &internalTypeName,
         const QString &externalTypeName, VariableContext ctx) const;

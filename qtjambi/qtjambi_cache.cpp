@@ -1201,3 +1201,11 @@ void StaticCache::resolveQt_internal()
     Qt.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/Qt"));
     Q_ASSERT(Qt.class_ref);
 }
+
+void StaticCache::resolveQFlags_internal()
+{
+    Q_ASSERT(!QFlags.class_ref);
+
+    QFlags.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QFlags"));
+    Q_ASSERT(QFlags.class_ref);
+}
