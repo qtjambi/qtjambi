@@ -518,6 +518,8 @@
 
   <enum-type name="QTextFormat::Property">
     <reject-enum-value name="FontSizeIncrement"/>
+    <reject-enum-value name="FirstFontProperty"/>
+    <reject-enum-value name="LastFontProperty"/>
   </enum-type>
   
   <value-type name="QTransform">
