@@ -95,38 +95,31 @@ struct JObjectWrapper
         operator=(wrapper);
     }
     
-    JObjectWrapper(JNIEnv *env, jobject obj) : environment(env)
+    JObjectWrapper(JNIEnv *env, jobject obj)
     {
         Q_ASSERT(env != 0);
-        if (obj && env)
-            object = env->NewGlobalRef(obj);        
+        if (obj)
+            initialize(env, obj);
         else
             object = 0;
         REF_JOBJECT;
     }
     
-    ~JObjectWrapper()
-    {
-        DEREF_JOBJECT;
+    ~JObjectWrapper();
 
-        if (environment && object)
-            environment->DeleteGlobalRef(object);
-    }
 
     void operator=(const JObjectWrapper &wrapper) {
         if (wrapper.environment && wrapper.object) {
-            environment = wrapper.environment;
-            object = environment->NewGlobalRef(wrapper.object);
+            initialize(wrapper.environment, wrapper.object);
         } else {
             object = 0;
             environment = 0;
         } 
-        
         REF_JOBJECT;        
     }
 
-    
-    
+    void initialize(JNIEnv *env, jobject obj);
+
     JNIEnv *environment;
     jobject object;
 };

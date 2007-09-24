@@ -326,7 +326,6 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
         manager.destroyInternal(copy, QtJambiTypeManager::ArgumentType);
 
 //  qDebug() << fullName << className << returned.type() << returned.typeName();
-
     return returned;
 }
 
@@ -2004,5 +2003,19 @@ bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object) {
 
     int idx = meta_object->indexOfClassInfo("__qt__binding_shell_language");
     return (idx >= 0 && !strcmp(meta_object->classInfo(idx).value(), "Qt Jambi"));
+}
+
+void JObjectWrapper::initialize(JNIEnv *env, jobject obj) 
+{
+    environment = env;
+    object = env->NewGlobalRef(obj);
+}
+
+JObjectWrapper::~JObjectWrapper()
+{
+    DEREF_JOBJECT;
+    
+    if (environment && object)
+        environment->DeleteGlobalRef(object);
 }
 
