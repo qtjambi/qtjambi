@@ -68,6 +68,10 @@ public:
     int currentType() const { return current.type(); }
 
     bool isValid() const { return current.isValid(); }
+    
+    QString currentToString() { return current.toString(); }
+
+    int currentToInt() { return current.toInt(); }
 
 private:
     QVariant current;

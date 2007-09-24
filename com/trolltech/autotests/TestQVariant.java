@@ -16,6 +16,7 @@ package com.trolltech.autotests;
 import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
+
 import static org.junit.Assert.*;
 import org.junit.*;
 
@@ -464,5 +465,20 @@ public class TestQVariant extends QApplicationTest {
         byte the_ubyte = (byte) ++value;
         v.pushThrough(the_ubyte);
         assertEquals(v.currentQUInt8(), the_ubyte);
+    }
+    
+    @Test
+    public void run_JObjectWrapper_test() {
+        Variants v = new Variants();
+
+        v.pushThrough(new Object() {
+            public String toString() {
+                return "abcd";
+            }
+        });
+        assertEquals(v.currentToString(), "abcd");
+
+        v.pushThrough(Qt.ArrowType.UpArrow);
+        assertEquals(v.currentToInt(), Qt.ArrowType.UpArrow.value());
     }
 }
