@@ -2942,7 +2942,12 @@
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>  
-                
+        <modify-function signature="QApplication(int &amp;, char  **, int)">
+            <inject-code class="shell">
+                extern int qRegisterJambiVariant();
+                qRegisterJambiVariant();
+            </inject-code>
+        </modify-function> 
         <template name="gui.application_char_pointer_function">
         public static %RETURN_TYPE %FUNCTION_NAME(%PRE_ARGUMENTS %COMMA QByteArray className) {
             return %FUNCTION_NAME(%PRE_CALL_ARGUMENTS %COMMA className == null ? null : className.data());
