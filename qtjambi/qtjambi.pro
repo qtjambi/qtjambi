@@ -29,6 +29,7 @@ HEADERS += \
 	qtjambitypemanager.h \
         qtjambidestructorevent.h \
         qdynamicmetaobject.h \
+        qjambivariant.h \
 
 DEFINES += QTJAMBI_EXPORT
 

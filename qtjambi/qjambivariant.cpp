@@ -13,14 +13,13 @@
 
 #include <QDebug>
 
-#define protected public
-#include "qvariant.h"
-#define protected protected
+#include "qjambivariant.h"
 
 #include "qtjambi_core.h"
 
 static const uint JOBJECTWRAPPER_TYPE = qMetaTypeId<JObjectWrapper>();
 static const QVariant::Handler *qt_jambivariant_last_handler = 0;
+
 Q_CORE_EXPORT const QVariant::Handler *qcoreVariantHandler();
 
 inline static const JObjectWrapper *cast_to_object_wrapper(const QVariant::Private *d) 
@@ -169,14 +168,14 @@ const QVariant::Handler qt_jambi_variant_handler = {
 
 int qRegisterJambiVariant()
 {
-    qt_jambivariant_last_handler = QVariant::handler;
-    QVariant::handler = &qt_jambi_variant_handler;
+    qt_jambivariant_last_handler = QJambiVariant::getHandler();
+    QJambiVariant::setHandler(&qt_jambi_variant_handler);
     return 1;
 }
 
 int qUnregisterJambiVariant()
 {
-    QVariant::handler = qt_jambivariant_last_handler;
+    QJambiVariant::setHandler(qt_jambivariant_last_handler);
     qt_jambivariant_last_handler = 0;
     return 1;
 }
