@@ -12,7 +12,7 @@
 ****************************************************************************/
 
 #include "qtjambi_core.h"
-
+#include "qjambivariant.h"
 #include "qtjambitypemanager.h"
 
 #include <QtCore/QCoreApplication>
@@ -68,6 +68,9 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initia
 {
     QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, 0);
     qtjambi_register_callbacks();
+
+    if (QCoreApplication::instance())
+        QJambiVariant::qRegisterJambiVariant();
 }
 
 
