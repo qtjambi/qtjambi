@@ -15,19 +15,46 @@
 #define QJAMBIVARIANT_H
 
 #include <QVariant>
-
+#include "qtjambi_core.h"
 
 class QJambiVariant: private QVariant
 {
    
  public:
-    static void setHandler(const Handler *_handler) {
-        handler = _handler;
+    static const uint JOBJECTWRAPPER_TYPE;
+
+    static const QVariant::Handler *getLastHandler()
+        {
+            return lastHandler;
+        }
+
+    static int QJambiVariant::qRegisterJambiVariant()
+        {
+            lastHandler = QJambiVariant::getHandler();
+            setHandler(&handler);
+            return 1;
+        }
+    
+    static int QJambiVariant::qUnregisterJambiVariant()
+        {
+            setHandler(lastHandler);
+            lastHandler = 0;
+            return 1;
+        }
+
+ private:
+    static const QVariant::Handler handler;
+
+    static void setHandler(const Handler *handler) {
+        QVariant::handler = handler;
     }
 
     static const Handler *getHandler() {
-        return handler;
+        return QVariant::handler;
     }
+
+    static const QVariant::Handler *lastHandler;
+
 };
 
 #endif // QJAMBIVARIANT_H
