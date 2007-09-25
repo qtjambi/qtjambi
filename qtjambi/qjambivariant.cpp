@@ -53,6 +53,7 @@ static bool isNull(const QVariant::Private *d)
         return QJambiVariant::getLastHandler()->isNull(d);
     else if (qcoreVariantHandler())
         return qcoreVariantHandler()->isNull(d);
+
     return false;
 }
 
@@ -89,8 +90,9 @@ static bool convert(const QVariant::Private *d, QVariant::Type t,
 
     if (QJambiVariant::getLastHandler())
         return QJambiVariant::getLastHandler()->convert(d, t, result, ok);
-    if (qcoreVariantHandler())
+    else if (qcoreVariantHandler())
         return qcoreVariantHandler()->convert(d, t, result, ok);
+
     return false;
 }
 
@@ -102,20 +104,13 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
         const JObjectWrapper *wrapper_b = cast_to_object_wrapper(a);
         JNIEnv *env = qtjambi_current_environment();
         StaticCache *sc = StaticCache::instance(env);
-        bool res = env->CallBooleanMethod(wrapper_a->object, sc->Object.equals, wrapper_b->object);
-
-        QString aa;
-        convert(a,QVariant::String, &aa, 0);
-        QString bb;
-        convert(b,QVariant::String, &bb, 0);
-
-        qDebug() << aa << " == " << bb << " -->> " << res;
-        return res;
+        return env->CallBooleanMethod(wrapper_a->object, sc->Object.equals, wrapper_b->object);
     }
     if (QJambiVariant::getLastHandler())
         return QJambiVariant::getLastHandler()->compare(a, b);
-    if (qcoreVariantHandler())
+    else if (qcoreVariantHandler())
         return qcoreVariantHandler()->compare(a, b);
+    
     return false;
 }
 
@@ -133,11 +128,11 @@ static void streamDebug(QDebug dbg, const QVariant &v)
         dbg << qtjambi_to_qstring(env, static_cast<jstring>(env->CallObjectMethod(java_object, sc->Object.toString)));
         return;
     }
-    if (QJambiVariant::getLastHandler()) {
+    else if (QJambiVariant::getLastHandler()) {
         QJambiVariant::getLastHandler()->debugStream(dbg, v);
         return;
     }
-    if (qcoreVariantHandler()) {
+    else if (qcoreVariantHandler()) {
         qcoreVariantHandler()->debugStream(dbg, v);
         return;
     }
@@ -145,7 +140,6 @@ static void streamDebug(QDebug dbg, const QVariant &v)
 #endif
 
 const QVariant::Handler QJambiVariant::handler = {
-//static const QVariant::Handler qt_jambi_variant_handler = {
     ::construct,
     ::clear,
     ::isNull,
