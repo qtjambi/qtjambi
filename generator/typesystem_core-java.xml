@@ -1338,7 +1338,7 @@
       </extra-includes>
       <modify-function signature="QCoreApplication(int &amp;, char  **)">
           <inject-code class="shell">
-              QJambiVariant::qRegisterJambiVariant();
+              QtJambiVariant::registerHandler();
           </inject-code>
       </modify-function> 
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding)">

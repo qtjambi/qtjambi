@@ -15,14 +15,14 @@
 
 #include "qjambivariant.h"
 
-const uint QJambiVariant::JOBJECTWRAPPER_TYPE = qMetaTypeId<JObjectWrapper>();
-const QVariant::Handler *QJambiVariant::lastHandler = 0;
+static const uint JOBJECTWRAPPER_TYPE = qMetaTypeId<JObjectWrapper>();
+const QVariant::Handler *QtJambiVariant::lastHandler = 0;
 
 Q_CORE_EXPORT const QVariant::Handler *qcoreVariantHandler();
 
 inline static const JObjectWrapper *cast_to_object_wrapper(const QVariant::Private *d) 
 {
-    if (d->type == QJambiVariant::JOBJECTWRAPPER_TYPE) {
+    if (d->type == JOBJECTWRAPPER_TYPE) {
         if (d->is_shared) return reinterpret_cast<const JObjectWrapper *>(d->data.shared->ptr);
         else return reinterpret_cast<const JObjectWrapper *>(&d->data.c);
     }
@@ -31,26 +31,26 @@ inline static const JObjectWrapper *cast_to_object_wrapper(const QVariant::Priva
 
 static void construct(QVariant::Private *x, const void *copy)
 {
-    if (QJambiVariant::getLastHandler())
-        QJambiVariant::getLastHandler()->construct(x, copy);
+    if (QtJambiVariant::getLastHandler())
+        QtJambiVariant::getLastHandler()->construct(x, copy);
     else if (qcoreVariantHandler())
         qcoreVariantHandler()->construct(x, copy);
 }
 
 static void clear(QVariant::Private *d)
 {
-    if (QJambiVariant::getLastHandler())
-        QJambiVariant::getLastHandler()->clear(d);
+    if (QtJambiVariant::getLastHandler())
+        QtJambiVariant::getLastHandler()->clear(d);
     else if (qcoreVariantHandler())
         qcoreVariantHandler()->clear(d);
 }
 
 static bool isNull(const QVariant::Private *d)
 {
-    if(d->type == QJambiVariant::JOBJECTWRAPPER_TYPE)
+    if(d->type == JOBJECTWRAPPER_TYPE)
         return false;
-    else if (QJambiVariant::getLastHandler())
-        return QJambiVariant::getLastHandler()->isNull(d);
+    else if (QtJambiVariant::getLastHandler())
+        return QtJambiVariant::getLastHandler()->isNull(d);
     else if (qcoreVariantHandler())
         return qcoreVariantHandler()->isNull(d);
 
@@ -88,8 +88,8 @@ static bool convert(const QVariant::Private *d, QVariant::Type t,
         }
     }        
 
-    if (QJambiVariant::getLastHandler())
-        return QJambiVariant::getLastHandler()->convert(d, t, result, ok);
+    if (QtJambiVariant::getLastHandler())
+        return QtJambiVariant::getLastHandler()->convert(d, t, result, ok);
     else if (qcoreVariantHandler())
         return qcoreVariantHandler()->convert(d, t, result, ok);
 
@@ -106,8 +106,8 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
         StaticCache *sc = StaticCache::instance(env);
         return env->CallBooleanMethod(wrapper_a->object, sc->Object.equals, wrapper_b->object);
     }
-    if (QJambiVariant::getLastHandler())
-        return QJambiVariant::getLastHandler()->compare(a, b);
+    if (QtJambiVariant::getLastHandler())
+        return QtJambiVariant::getLastHandler()->compare(a, b);
     else if (qcoreVariantHandler())
         return qcoreVariantHandler()->compare(a, b);
     
@@ -119,7 +119,7 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
 static void streamDebug(QDebug dbg, const QVariant &v)
 {
 
-    if((uint)v.userType() == QJambiVariant::JOBJECTWRAPPER_TYPE) {
+    if((uint)v.userType() == JOBJECTWRAPPER_TYPE) {
         const JObjectWrapper wrapper = v.value<JObjectWrapper>();
         JNIEnv *env = qtjambi_current_environment();
         StaticCache *sc = StaticCache::instance(env);
@@ -128,8 +128,8 @@ static void streamDebug(QDebug dbg, const QVariant &v)
         dbg << qtjambi_to_qstring(env, static_cast<jstring>(env->CallObjectMethod(java_object, sc->Object.toString)));
         return;
     }
-    else if (QJambiVariant::getLastHandler()) {
-        QJambiVariant::getLastHandler()->debugStream(dbg, v);
+    else if (QtJambiVariant::getLastHandler()) {
+        QtJambiVariant::getLastHandler()->debugStream(dbg, v);
         return;
     }
     else if (qcoreVariantHandler()) {
@@ -139,7 +139,7 @@ static void streamDebug(QDebug dbg, const QVariant &v)
 }
 #endif
 
-const QVariant::Handler QJambiVariant::handler = {
+const QVariant::Handler QtJambiVariant::handler = {
     ::construct,
     ::clear,
     ::isNull,

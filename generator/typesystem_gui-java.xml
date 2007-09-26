@@ -2945,7 +2945,7 @@
         </extra-includes>  
         <modify-function signature="QApplication(int &amp;, char  **, int)">
             <inject-code class="shell">
-                QJambiVariant::qRegisterJambiVariant();
+                QtJambiVariant::registerHandler();
             </inject-code>
         </modify-function> 
         <template name="gui.application_char_pointer_function">

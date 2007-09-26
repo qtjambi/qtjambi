@@ -17,25 +17,23 @@
 #include <QVariant>
 #include "qtjambi_core.h"
 
-class QTJAMBI_EXPORT QJambiVariant: private QVariant
+class QTJAMBI_EXPORT QtJambiVariant: private QVariant
 {
    
  public:
-    static const uint JOBJECTWRAPPER_TYPE;
-
     static const QVariant::Handler *getLastHandler()
         {
             return lastHandler;
         }
 
-    static int QJambiVariant::qRegisterJambiVariant()
+    static int registerHandler()
         {
-            lastHandler = QJambiVariant::getHandler();
+            lastHandler = QVariant::handler;
             setHandler(&handler);
             return 1;
         }
     
-    static int QJambiVariant::qUnregisterJambiVariant()
+    static int unregisterHandler()
         {
             setHandler(lastHandler);
             lastHandler = 0;

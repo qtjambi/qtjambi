@@ -70,7 +70,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initia
     qtjambi_register_callbacks();
 
     if (QCoreApplication::instance())
-        QJambiVariant::qRegisterJambiVariant();
+        QtJambiVariant::registerHandler();
 }
 
 
