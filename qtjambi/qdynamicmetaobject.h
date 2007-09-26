@@ -6,11 +6,11 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QMetaObject>
 
-class QTJAMBI_EXPORT QDynamicMetaObject: public QMetaObject
+class QTJAMBI_EXPORT QtDynamicMetaObject: public QMetaObject
 {
 public:
-    QDynamicMetaObject(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object);
-    virtual ~QDynamicMetaObject();
+    QtDynamicMetaObject(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object);
+    virtual ~QtDynamicMetaObject();
 
     int invokeSignalOrSlot(JNIEnv *env, jobject object, int _id, void **_a) const;
     int readProperty(JNIEnv *env, jobject object, int _id, void **_a) const;

@@ -1989,7 +1989,7 @@ const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class
                 }
                 returned = original_meta_object;
             } else {
-                returned = new QDynamicMetaObject(env, object_class, original_meta_object);
+                returned = new QtDynamicMetaObject(env, object_class, original_meta_object);
             }
             metaObjects()->insert(class_name, returned);
         }

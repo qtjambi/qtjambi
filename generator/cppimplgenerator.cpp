@@ -745,7 +745,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
       << "  if (m_link != 0 && qtjambi_metaobject_is_dynamic(meta_object)) {" << endl
       << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
       << "      __jni_env->PushLocalFrame(100);" << endl
-      << "      const QDynamicMetaObject *dynamic_meta_object = static_cast<const QDynamicMetaObject *>(meta_object);" << endl
+      << "      const QtDynamicMetaObject *dynamic_meta_object = static_cast<const QtDynamicMetaObject *>(meta_object);" << endl
       << "      switch (_c) {" << endl
       << "      case QMetaObject::InvokeMetaMethod:" << endl
       << "          _id = dynamic_meta_object->invokeSignalOrSlot(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl

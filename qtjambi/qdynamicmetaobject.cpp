@@ -7,7 +7,7 @@
 #include <QtCore/QMetaEnum>
 
 
-QDynamicMetaObject::QDynamicMetaObject(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object) 
+QtDynamicMetaObject::QtDynamicMetaObject(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object) 
     : m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0), m_property_readers(0), m_property_writers(0), m_property_resetters(0)
 {
     Q_ASSERT(env != 0);
@@ -16,7 +16,7 @@ QDynamicMetaObject::QDynamicMetaObject(JNIEnv *env, jclass java_class, const QMe
     initialize(env, java_class, original_meta_object);
 }
 
-QDynamicMetaObject::~QDynamicMetaObject() 
+QtDynamicMetaObject::~QtDynamicMetaObject() 
 {
     JNIEnv *env = qtjambi_current_environment();
     if (env != 0) {
@@ -25,7 +25,7 @@ QDynamicMetaObject::~QDynamicMetaObject()
     }
 }
 
-void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object)
+void QtDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object)
 {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
@@ -106,7 +106,7 @@ void QDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaO
     env->PopLocalFrame(0);
 }
 
-void QDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a) const
+void QtDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a) const
 {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
@@ -158,7 +158,7 @@ void QDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject metho
             case 'C': returned->c = env->CallCharMethodA(object, id, args); break;
             case 'L': returned->l = env->CallObjectMethodA(object, id, args); break;
             default:
-                qWarning("QDynamicMetaObject::invokeMethod: Unrecognized JNI type '%c'", jni_type.at(0).toLatin1());
+                qWarning("QtDynamicMetaObject::invokeMethod: Unrecognized JNI type '%c'", jni_type.at(0).toLatin1());
                 break;
             };
         }
@@ -168,15 +168,15 @@ void QDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject metho
 
         manager.destroyConstructedExternal(converted_arguments);
     } else {
-        qWarning("QDynamicMetaObject::invokeMethod: Failed to convert arguments");
+        qWarning("QtDynamicMetaObject::invokeMethod: Failed to convert arguments");
     }
 }
 
-int QDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id, void **_a) const
+int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id, void **_a) const
 {
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
-        _id = static_cast<const QDynamicMetaObject *>(super_class)->invokeSignalOrSlot(env, object, _id, _a);
+        _id = static_cast<const QtDynamicMetaObject *>(super_class)->invokeSignalOrSlot(env, object, _id, _a);
     if (_id < 0) return _id;
 
     // Emit the correct signal
@@ -208,11 +208,11 @@ int QDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id,
     return _id - m_method_count - m_signal_count;
 }
 
-int QDynamicMetaObject::readProperty(JNIEnv *env, jobject object, int _id, void **_a) const 
+int QtDynamicMetaObject::readProperty(JNIEnv *env, jobject object, int _id, void **_a) const 
 {
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
-        _id = static_cast<const QDynamicMetaObject *>(super_class)->readProperty(env, object, _id, _a);
+        _id = static_cast<const QtDynamicMetaObject *>(super_class)->readProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
     if (_id < m_property_count) {
@@ -225,11 +225,11 @@ int QDynamicMetaObject::readProperty(JNIEnv *env, jobject object, int _id, void 
     return _id - m_property_count;
 }
 
-int QDynamicMetaObject::writeProperty(JNIEnv *env, jobject object, int _id, void **_a) const
+int QtDynamicMetaObject::writeProperty(JNIEnv *env, jobject object, int _id, void **_a) const
 {
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
-        _id = static_cast<const QDynamicMetaObject *>(super_class)->writeProperty(env, object, _id, _a);
+        _id = static_cast<const QtDynamicMetaObject *>(super_class)->writeProperty(env, object, _id, _a);
     if (_id < 0) return _id;
    
     if (_id < m_property_count) {
@@ -245,11 +245,11 @@ int QDynamicMetaObject::writeProperty(JNIEnv *env, jobject object, int _id, void
     return _id - m_property_count;
 }
 
-int QDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, void **_a) const
+int QtDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, void **_a) const
 {
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
-        _id = static_cast<const QDynamicMetaObject *>(super_class)->resetProperty(env, object, _id, _a);
+        _id = static_cast<const QtDynamicMetaObject *>(super_class)->resetProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
     if (_id < m_property_count) {
@@ -261,11 +261,11 @@ int QDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, void
     return _id - m_property_count;
 }
 
-int QDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, int _id, void **_a) const 
+int QtDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, int _id, void **_a) const 
 {
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
-        _id = static_cast<const QDynamicMetaObject *>(super_class)->queryPropertyDesignable(env, object, _id, _a);
+        _id = static_cast<const QtDynamicMetaObject *>(super_class)->queryPropertyDesignable(env, object, _id, _a);
     if (_id < 0) return _id;
 
     if (_id < m_property_count) {
