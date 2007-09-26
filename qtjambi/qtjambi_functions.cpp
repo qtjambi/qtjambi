@@ -12,7 +12,7 @@
 ****************************************************************************/
 
 #include "qtjambi_core.h"
-#include "qjambivariant.h"
+#include "qtjambivariant.h"
 #include "qtjambitypemanager.h"
 
 #include <QtCore/QCoreApplication>
