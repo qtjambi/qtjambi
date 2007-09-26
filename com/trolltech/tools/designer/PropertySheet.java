@@ -69,6 +69,7 @@ public class PropertySheet extends JambiPropertySheet {
         addCustomProperty(TabWidgetProperty.class);
         addCustomProperty(BuddyProperty.class);
         addCustomProperty(GridLayoutMarginPropertyRemover.class);
+        addCustomProperty(DockWidgetProperty.class);
 
         // Custom reset...
         RESETTABLE_TYPES = new HashMap<Class, Object>();
@@ -196,7 +197,7 @@ public class PropertySheet extends JambiPropertySheet {
         if (index < 0)
             return false;
         Property p = properties.get(index);
-        return p.entry.isDesignable(invokationTarget(p)) && p.entry.write != null || p.visible;
+        return p.entry.isDesignable(invokationTarget(p)) && p.entry.write != null && p.visible;
     }
 
     public Object readProperty(int index) {
@@ -242,7 +243,7 @@ public class PropertySheet extends JambiPropertySheet {
         return false;
     }
 
-    private NamedIntSet createAndFillNamedIntSet(Class<?> cl) {
+    private static NamedIntSet createAndFillNamedIntSet(Class<?> cl) {
         Object values[];
         try {
             Method valuesMethod = cl.getMethod("values");
@@ -262,7 +263,7 @@ public class PropertySheet extends JambiPropertySheet {
         return set;
     }
 
-    private Object translateFlags(QFlags result) {
+    public static Object translateFlags(QFlags result) {
         Class flagsClass = result.getClass();
         ParameterizedType superClass = (ParameterizedType) flagsClass.getGenericSuperclass();
         Class enumClass = (Class) superClass.getActualTypeArguments()[0];
@@ -273,7 +274,7 @@ public class PropertySheet extends JambiPropertySheet {
         return set;
     }
 
-    private Object translateEnum(QtEnumerator result) {
+    public static Object translateEnum(QtEnumerator result) {
         NamedIntSet set = createAndFillNamedIntSet(result.getClass());
         set.value = result.value();
         set.isEnum = true;
