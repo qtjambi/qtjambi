@@ -1,11 +1,8 @@
 package com.trolltech.examples;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
-
-import java.util.*;
 
 public class Http {
     public static void main(String args[])
@@ -81,6 +78,7 @@ class HttpWindow extends QDialog
         urlLineEdit.setFocus();
     }
 
+    @SuppressWarnings("unused")
     private void downloadFile()
     {
         QUrl url = new QUrl(urlLineEdit.text());
@@ -125,6 +123,7 @@ class HttpWindow extends QDialog
         downloadButton.setEnabled(false);
     }
 
+    @SuppressWarnings("unused")
     private void cancelDownload()
     {
         statusLabel.setText(tr("Download canceled."));
@@ -133,6 +132,7 @@ class HttpWindow extends QDialog
         downloadButton.setEnabled(true);
     }
 
+    @SuppressWarnings("unused")
     private void httpRequestFinished(int requestId, boolean error)
     {
         if (requestId != httpGetId)
@@ -168,6 +168,7 @@ class HttpWindow extends QDialog
         file = null;
     }
 
+    @SuppressWarnings("unused")
     private void readResponseHeader(QHttpResponseHeader responseHeader)
     {
         if (responseHeader.statusCode() != 200) {
@@ -180,6 +181,7 @@ class HttpWindow extends QDialog
         }
     }
 
+    @SuppressWarnings("unused")
     private void updateDataReadProgress(int bytesRead, int totalBytes)
     {
         if (httpRequestAborted)
@@ -188,12 +190,14 @@ class HttpWindow extends QDialog
         progressDialog.setMaximum(totalBytes);
         progressDialog.setValue(bytesRead);
     }
-
+    
+    @SuppressWarnings("unused")
     private void enableDownloadButton()
     {
         downloadButton.setEnabled(!urlLineEdit.text().equals(""));
     }
 
+    @SuppressWarnings("unused")
     private void slotAuthenticationRequired(String hostName, int i, QAuthenticator authenticator)
     {
         QDialog dlg = new QDialog();
