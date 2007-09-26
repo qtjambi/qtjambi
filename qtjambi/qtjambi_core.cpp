@@ -17,7 +17,7 @@
 #include "qtjambilink.h"
 #include "qtjambitypemanager.h"
 #include "qnativepointer.h"
-#include "qdynamicmetaobject.h"
+#include "qtdynamicmetaobject.h"
 
 #include <qglobal.h>
 

@@ -1,4 +1,4 @@
-#include "qdynamicmetaobject.h"
+#include "qtdynamicmetaobject.h"
 #include "qtjambi_core.h"
 #include "qtjambitypemanager.h"
 

@@ -402,7 +402,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
         s << "#include \"qtjambishell_" << java_class->name() << ".h\"" << endl;
 
     if (java_class->isQObject())
-        s << "#include <qdynamicmetaobject.h>" << endl;
+        s << "#include <qtdynamicmetaobject.h>" << endl;
 
     Include inc = java_class->typeEntry()->include();
     s << "#include ";
