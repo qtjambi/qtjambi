@@ -73,6 +73,10 @@ int main(int argc, char *argv[])
     if (args.contains("dummy")) {
         FileOut::dummy = true;
     }
+
+    if (args.contains("diff")) {
+        FileOut::diff = true;
+    }
     
     if (args.contains("rebuild-only")) {
         QStringList classes = args.value("rebuild-only").split(",", QString::SkipEmptyParts);
