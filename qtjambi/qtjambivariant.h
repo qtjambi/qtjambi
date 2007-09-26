@@ -11,8 +11,8 @@
 **
 ****************************************************************************/
 
-#ifndef QJAMBIVARIANT_H
-#define QJAMBIVARIANT_H
+#ifndef QTJAMBIVARIANT_H
+#define QTJAMBIVARIANT_H
 
 #include <QVariant>
 #include "qtjambi_core.h"
@@ -55,4 +55,4 @@ class QTJAMBI_EXPORT QtJambiVariant: private QVariant
 
 };
 
-#endif // QJAMBIVARIANT_H
+#endif // QTJAMBIVARIANT_H
