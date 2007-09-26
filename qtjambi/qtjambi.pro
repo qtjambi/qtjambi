@@ -16,7 +16,7 @@ SOURCES += \
 	qtobject.cpp \
 	qvariant.cpp \
         qdynamicmetaobject.cpp \
-        qjambivariant.cpp \
+        qtjambivariant.cpp \
 
 
 HEADERS += \
@@ -29,7 +29,7 @@ HEADERS += \
 	qtjambitypemanager.h \
         qtjambidestructorevent.h \
         qdynamicmetaobject.h \
-        qjambivariant.h \
+        qtjambivariant.h \
 
 DEFINES += QTJAMBI_EXPORT
 
