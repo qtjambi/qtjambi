@@ -850,7 +850,10 @@ public class QtJambiInternal {
                     
                     int count = putEnumTypeInHash(returnType, enums);
                     if (count < 0) {
-                        System.err.println("Error in property '" + reader.name() + "': Only enum types 1. declared inside QObject subclasses or the Qt interface and 2. declared without the QtBlockedEnum annotation are supported for properties");
+                        System.err.println("Problem in property '" + reader.name() + "' in '" + clazz.getName() 
+                                           + "': Only enum types 1. declared inside QObject subclasses or the " 
+                                           + "Qt interface and 2. declared without the QtBlockedEnum annotation " 
+                                           + "are supported for properties");
                         continue;
                     } 
                                         
