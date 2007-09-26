@@ -22,16 +22,19 @@
 ./com/trolltech/examples/DomBookmarks.java
 ./com/trolltech/examples/ElasticNodes.java
 ./com/trolltech/examples/FridgeMagnets.java
+./com/trolltech/examples/Http.java
 ./com/trolltech/examples/I18N.java
 ./com/trolltech/examples/ItemviewChart.java
 ./com/trolltech/examples/LineEdits.java
 ./com/trolltech/examples/Mandelbrot.java
 ./com/trolltech/examples/Menus.java
+./com/trolltech/examples/OrderForm.java
 ./com/trolltech/examples/QtJambiExample.java
 ./com/trolltech/examples/ResourceSystem.java
 ./com/trolltech/examples/Screenshot.java
 ./com/trolltech/examples/ShapedClock.java
 ./com/trolltech/examples/SimpleUIExample.java
+./com/trolltech/examples/Sliders.java
 ./com/trolltech/examples/SpinBoxes.java
 ./com/trolltech/examples/SqlCommon.java
 ./com/trolltech/examples/StarDelegate.java
@@ -45,6 +48,7 @@
 ./com/trolltech/examples/Ui_CalculatorNormal.java
 ./com/trolltech/examples/Ui_CalculatorSimple.java
 ./com/trolltech/examples/Ui_ChatDialog.java
+./com/trolltech/examples/Ui_Dialog.java
 ./com/trolltech/examples/Ui_SimpleUIExample.java
 ./com/trolltech/examples/Ui_SimpleUIExampleMainWindow.java
 ./com/trolltech/examples/Wiggly.java
@@ -606,6 +610,7 @@
 ./com/trolltech/tools/designer/ResourceBrowserModel.java
 ./com/trolltech/tools/designer/SearchPathDialog.java
 ./com/trolltech/tools/designer/propertysheet/BuddyProperty.java
+./com/trolltech/tools/designer/propertysheet/DockWidgetProperty.java
 ./com/trolltech/tools/designer/propertysheet/FakeProperty.java
 ./com/trolltech/tools/designer/propertysheet/GridLayoutMarginPropertyRemover.java
 ./com/trolltech/tools/designer/propertysheet/LayoutProperty.java
