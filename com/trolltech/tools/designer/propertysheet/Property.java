@@ -21,7 +21,7 @@ public class Property implements Comparable {
     public String groupName;
     public int subclassLevel;
     public boolean changed;
-    public boolean visible = true;
+    public boolean visible;
     public boolean attribute;
 
     public boolean isPropertyInvokationTarget() {

@@ -28,7 +28,15 @@ public abstract class FakeProperty extends Property {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        try {
+            entry.reset = getClass().getMethod("reset");
+        } catch (NoSuchMethodException e) {
+            // not resettable...
+        }
     }
+
+
 
     @Override
     public boolean isPropertyInvokationTarget() {

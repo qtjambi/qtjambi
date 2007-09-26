@@ -197,7 +197,7 @@ public class PropertySheet extends JambiPropertySheet {
         if (index < 0)
             return false;
         Property p = properties.get(index);
-        return p.entry.isDesignable(invokationTarget(p)) && p.entry.write != null && p.visible;
+        return p.entry.isDesignable(invokationTarget(p)) && p.entry.write != null || p.visible;
     }
 
     public Object readProperty(int index) {

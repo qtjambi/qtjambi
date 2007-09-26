@@ -42,29 +42,31 @@ public class DockWidgetProperty extends FakeProperty {
 
 
     public void write(Object value) {
-        if (entry.name == DOCKED && dependency != null)
-            dependency.visible = (Boolean) value;
         widget.setProperty(entry.name, value);
     }
 
+    public void reset() {
+        if (entry.name == DOCKED) write(false);
+        else if (entry.name == WINDOW_TITLE) write(null);
+        else if (entry.name == DOCKWIDGET_AREA) write(Qt.DockWidgetArea.LeftDockWidgetArea);
+    }
+
+    public boolean designable() {
+        if (entry.name == DOCKWIDGET_AREA)
+            return (Boolean) widget.property(DOCKED);
+        return true;
+    }
 
     public static void initialize(List<Property> properties, QObject object) {
          if (object instanceof QDockWidget) {
              QDockWidget widget = (QDockWidget) object;
 
-             DockWidgetProperty docked = new DockWidgetProperty(widget, DOCKED);
-//             DockWidgetProperty area = new DockWidgetProperty(widget, DOCKWIDGET_AREA);
-//             docked.dependency = area;
-//             area.visible = false;
-
-//             properties.add(new DockWidgetProperty(widget, WINDOW_TITLE));
-             properties.add(docked);
-//             properties.add(area);
+             properties.add(new DockWidgetProperty(widget, WINDOW_TITLE));
+             properties.add(new DockWidgetProperty(widget, DOCKED));
+             properties.add(new DockWidgetProperty(widget, DOCKWIDGET_AREA));
          }
     }
 
 
     private QDockWidget widget;
-    private Property dependency;
-
 }
