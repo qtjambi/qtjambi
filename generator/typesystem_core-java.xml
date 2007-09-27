@@ -1203,7 +1203,10 @@
             
     </object-type>
 
-    <object-type name="QTranslator">
+    <object-type name="QTranslator">  
+        <extra-includes>
+            <include file-name="QTextCodec" location="global"/>
+         </extra-includes>
         <modify-function signature="load(const unsigned char*,int)">
             <access modifier="private"/>        
         </modify-function>
@@ -1212,10 +1215,50 @@
         </inject-code>
 
         <modify-function signature="translate(const char*,const char*,const char*)const">
-            <access modifier="private"/>
+            <modify-argument index="1">
+                <replace-type modified-type="java.lang.String"/>            
+                <conversion-rule class="shell">
+        QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+        QByteArray b;
+        if (%in != 0) 
+            b = codec->fromUnicode(%in);
+        
+        jobject %out = qtjambi_from_qstring(__jni_env, QString::QString(b));
+                </conversion-rule>
+
+                <conversion-rule class="native">
+        QByteArray b;
+        b = qtjambi_to_qstring(__jni_env, (jstring) %in).toLatin1();
+        const char* %out = b.data();
+                </conversion-rule>
+            </modify-argument>
+            <modify-argument index="2">
+                <replace-type modified-type="java.lang.String"/>            
+                <conversion-rule class="shell">
+        if (%in != 0) 
+            b = codec->fromUnicode(%in);
+        
+        jobject %out = qtjambi_from_qstring(__jni_env, QString::QString(b));
+                </conversion-rule>
+                <conversion-rule class="native">
+        b = qtjambi_to_qstring(__jni_env, (jstring) %in).toLatin1();
+        const char* %out = b.data();
+                </conversion-rule>
+ 
+            </modify-argument>
             <modify-argument index="3">
-                <remove-default-expression/>
-            </modify-argument>   
+                <replace-type modified-type="java.lang.String"/>            
+                <conversion-rule class="shell">
+        if (%in != 0) 
+            b = codec->fromUnicode(%in);
+        
+        jobject %out = qtjambi_from_qstring(__jni_env, QString::QString(b));
+                </conversion-rule>
+                <conversion-rule class="native">
+        b = qtjambi_to_qstring(__jni_env, (jstring) %in).toLatin1();
+        const char* %out = b.data();
+                </conversion-rule>
+            </modify-argument>
         </modify-function>
     </object-type>
 

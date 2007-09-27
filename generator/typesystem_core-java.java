@@ -214,16 +214,6 @@ class QTranslator___ extends QTranslator {
     public final boolean load(byte data[]) {
         return load(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
     }
-
-    public final String translate(String context, String sourceText, String comment) {
-        QTextCodec codec = QTextCodec.codecForName("UTF-8");
-        return translate(context != null ? codec.fromUnicode(context).data() : null, sourceText != null ? codec.fromUnicode(sourceText).data() : null,
-                comment != null ? codec.fromUnicode(comment).data() : null);
-    }
-
-    public final String translate(String context, String sourceText) {
-        return translate(context, sourceText, null);
-    }
 }// class
 
 class QProcess___ extends QProcess {
