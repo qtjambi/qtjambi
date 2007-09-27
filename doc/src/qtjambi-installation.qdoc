@@ -77,6 +77,16 @@
 
     \endtable
 
+    You are then ready to run Qt Jambi applications. For instance, the
+    launcher can be run like this:
+
+    \code
+        java -jar qtjambi.jar com.trolltech.launcher.Launcher
+    \endcode
+
+    Note that the \c {-jar} option must be given the complete file
+    path to the \c .jar file.
+
     \section1 Building Qt Jambi from a Source Package
 
     This section describes how to build Qt Jambi from source. We first
@@ -128,10 +138,12 @@
     are essentially equal on all platforms; we will point out
     differences as we go along.
 
+    \omit
     We also provide a script (build_jambi.sh) on Linux/Mac OS X that
     performs this procedure. The script also checks that the
     environment is set up correctly to build Jambi. It is located in
     the \c scripts subdirectory of the Qt Jambi directory.
+    \endomit
 
     \section3 Building and Running the Jambi Generator 
 
@@ -201,8 +213,8 @@
     \endcode
 
     Note that on some systems it might be necessary to invoke \c javac
-    with the VM option -J-mx1024 to prevent the VM from running out of
-    heap space. You may need to chose a different heap size than 1024.
+    with the VM option -J-mx1024m to prevent the VM from running out
+    of heap space.
 
     \omit (This solution is not publicly available yet)
     \section2 Building with Ant
@@ -210,7 +222,7 @@
     Building Qt Jambi with default settings is simply a matter of
     running \c ant without options in the Qt Jambi directory. The
     environment must have been configured as described in the section
-    \l{Configuring the System for Qt Jambi}.
+    \l {Configuring the System for Qt Jambi}.
 
     The Jambi build file (build.xml in the Qt Jambi directory)
     contains \c ant targets for each of the steps given in \l{Building
@@ -303,8 +315,12 @@
         java com.trolltech.launcher.Launcher
     \endcode
 
+    If Qt was built with debugging turned on, you need to use the Qt
+    Jambi debug libraries. You specify this with the
+    \c{com.trolltech.qt.debug} system property.
+
     Note that on Mac OS X, the VM must be invoked with the
-    -XstartOnFirstThread option.
+    -XstartOnFirstThread option. 
 
     \section2 Trouble Shooting
 
@@ -352,6 +368,10 @@
                modified, which can be a problem if Java sources
                are deleted.
             \o Run juic with the \c -a option.
+        \row
+            \o Qt Jambi expects that Qt was built with debugging turned off.
+               If Qt was built with debugging, the libraries will not be found.
+            \o Run Qt Jambi with the \c{com.trolltech.qt.debug} system property.
     \endtable
 
     \section3 Load Issues
