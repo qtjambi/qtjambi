@@ -26,13 +26,13 @@ related tasks.
 */
 public class Utilities {
     private static HashSet<String> LOADED_LIBS = new HashSet<String>();
-    
+
 	/** The Qt Library's major version. */
     public static final int MAJOR_VERSION = 4;
 	/** The Qt Library's minor version. */
     public static final int MINOR_VERSION = 3;
 	/** The Qt Library's patch version. */
-    public static final int PATCH_VERSION = 1;
+    public static final int PATCH_VERSION = 2;
 
 	/** Qt Library build number */
     public static final int BUILD_NUMBER = 1;
@@ -76,7 +76,7 @@ public class Utilities {
 
 
     private static String EXCLUDE_STRING = "com.trolltech.qt.exclude-libraries";
-    
+
     /**
      * Returns true if the system property name contains any of the specified
      * substrings. If substrings is null or empty the function returns true
@@ -93,7 +93,7 @@ public class Utilities {
                 return true;
         return false;
     }
-   
+
     public static void loadSystemLibraries() {
         List<String> libs = readSystemLibraries();
         for (String s : libs) {
@@ -156,12 +156,12 @@ public class Utilities {
     }
 
     public static boolean loadLibrary(String lib) {
-        
+
         if(LOADED_LIBS.contains(lib)){
             VERBOSE_LOADING.DEBUG("\nAlready loaded: " + lib + " skipping it.");
             return true;
         }
-        
+
         VERBOSE_LOADING.DEBUG("\nGoing to load: " + lib);
 
         if (loadFromEnv("com.trolltech.qt.library-path", lib))
@@ -192,7 +192,7 @@ public class Utilities {
             if (!destLib.exists() || !loadFromCache) {
                 tmpLibDir.mkdirs();
                 copy(libUrl, destLib);
-                
+
                 Runtime.getRuntime().load(destLib.getAbsolutePath());
 
                 VERBOSE_LOADING.DEBUG("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
@@ -228,7 +228,7 @@ public class Utilities {
 
         // Try to load in standard way.
         VERBOSE_LOADING.DEBUG(".. in standard way.");
-        
+
         try {
             String stripped = stripLibraryName(lib);
             System.loadLibrary(stripped);
@@ -447,7 +447,7 @@ public class Utilities {
 
         VERBOSE_LOADING.DEBUG("unpacked plugins from: " + jar);
     }
-    
+
     public static QMessageHandler messageHandler() {
         if (exceptionsForMessages != null) {
             final String config = exceptionsForMessages.trim().toUpperCase();
@@ -492,39 +492,39 @@ public class Utilities {
         }
         return null;
     }
-    
+
     private static class VERBOSE_LOADING {
         private static Vector<Object> debug = new Vector<Object>();
         private static final boolean VERBOSE_LOADING =
             System.getProperty("com.trolltech.qt.verbose-loading") != null;
-        
+
         private static synchronized void DEBUG(String s){
             if (VERBOSE_LOADING) {
                 System.out.println(s);
             }
             else {
                 debug.add(s);
-            }            
+            }
         }
-  
+
         private static synchronized void DEBUG(Throwable e){
             if (VERBOSE_LOADING) {
                 e.printStackTrace();
             }
             else {
                 debug.add(e);
-            }   
+            }
         }
-        
+
         private static synchronized void FAILED(String failingLib){
             if(!VERBOSE_LOADING) {
-                throw new RuntimeException("\nLog showing how we tried to load the library: " + failingLib + "\n\n" + format(debug) + "-- End load-library log --\n");  
-            } else {    
+                throw new RuntimeException("\nLog showing how we tried to load the library: " + failingLib + "\n\n" + format(debug) + "-- End load-library log --\n");
+            } else {
                 System.out.println(format(debug));
             }
             debug = new Vector<Object>();
         }
-        
+
         private static String format(Vector<Object> debug){
             String res = "";
             for (Iterator<Object> iterator = debug.iterator(); iterator.hasNext();) {
