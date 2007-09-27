@@ -15,6 +15,8 @@ package com.trolltech.autotests;
 
 import org.junit.Test;
 import com.trolltech.autotests.generated.*;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
 import static org.junit.Assert.*;
@@ -166,4 +168,49 @@ public class TestInjectedCodeV2 extends QApplicationTest {
         
         assertTrue(receivedWidget == mappedWidget);                      
     }
+    
+    private static class LookupHostQObject extends QObject
+    {
+        public String fromFirstSlot = "";
+        public String fromSecondSlot = "";
+        
+        public Signal1<QHostInfo> mySignal = new Signal1<QHostInfo>(); {
+            mySignal.connect(this, "secondSlot(QHostInfo)");
+        }
+        
+        public void firstSlot(QHostInfo info) {
+            fromFirstSlot = info.addresses().get(0).toString();
+        }
+        
+        public void secondSlot(QHostInfo info) {
+            fromSecondSlot = info.addresses().get(0).toString();
+        }
+    }
+    
+    @Test
+    public void testLookupHostWithSlot() 
+    {
+        LookupHostQObject helloObject = new LookupHostQObject();
+        
+        QHostInfo.lookupHost("ftp.trolltech.com", helloObject, "firstSlot");
+        while (helloObject.fromFirstSlot.length() == 0) {
+            QApplication.processEvents();
+        }
+        
+        assertEquals("62.70.27.67", helloObject.fromFirstSlot);
+    }
+    
+    @Test
+    public void testLookupHostWithSignal() 
+    {
+        LookupHostQObject helloObject = new LookupHostQObject();
+        
+        QHostInfo.lookupHost("ftp.trolltech.com", helloObject.mySignal);
+        while (helloObject.fromSecondSlot.length() == 0) {
+            QApplication.processEvents();
+        }
+        
+        assertEquals("62.70.27.67", helloObject.fromSecondSlot);
+    }
+    
 }

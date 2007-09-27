@@ -1023,6 +1023,10 @@ void StaticCache::resolveQtJambiInternal_internal()
     QtJambiInternal.methodSignature2 = env->GetStaticMethodID(QtJambiInternal.class_ref, "methodSignature",
                                                               "(Ljava/lang/reflect/Method;Z)Ljava/lang/String;");
     Q_ASSERT(QtJambiInternal.methodSignature2);
+
+    QtJambiInternal.signalParameters = env->GetStaticMethodID(QtJambiInternal.class_ref, "signalParameters",
+                                                              "(Lcom/trolltech/qt/QSignalEmitter$AbstractSignal;)Ljava/lang/String;");
+    Q_ASSERT(QtJambiInternal.signalParameters);
 }
 
 void StaticCache::resolveMetaData_internal() 

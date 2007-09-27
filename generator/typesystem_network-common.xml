@@ -51,7 +51,7 @@
 
   <value-type name="QHostInfo">
         <modify-function signature="operator=(QHostInfo)" remove="all"/>
-        <modify-function signature="lookupHost(QString,QObject*,const char*)" remove="all"/>
+        <modify-function signature="lookupHost(QString,QObject*,const char*)" access="private" />        
   </value-type>
 
   <value-type name="QHttpRequestHeader">

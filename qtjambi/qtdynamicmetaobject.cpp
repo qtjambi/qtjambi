@@ -106,7 +106,7 @@ void QtDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMeta
     env->PopLocalFrame(0);
 }
 
-void QtDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a) const
+void QtDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a, const QString &_signature) const
 {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
@@ -114,7 +114,10 @@ void QtDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject meth
     jobject method_signature = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.methodSignature2, method_object, true);
     Q_ASSERT(method_signature != 0);
 
-    QString signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(method_signature));
+    // If no signature is specified, we look it up
+    QString signature(_signature);
+    if (signature.isEmpty())
+        signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(method_signature));
     Q_ASSERT(!signature.isEmpty());
 
     QtJambiTypeManager manager(env, true);
@@ -197,7 +200,15 @@ int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id
         qtjambi_exception_check(env);
         Q_ASSERT(signal_emit_method);
 
-        invokeMethod(env, signal_object, signal_emit_method, _a);
+        jstring j_signal_parameters = static_cast<jstring>(env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, 
+                                                                                       sc->QtJambiInternal.signalParameters, 
+                                                                                       signal_object));
+        qtjambi_exception_check(env);
+        Q_ASSERT(j_signal_parameters);
+
+        // Because of type erasure, we need to find the compile time signature of the emit method
+        QString signal_parameters = "void emit(" + qtjambi_to_qstring(env, j_signal_parameters) + ")";
+        invokeMethod(env, signal_object, signal_emit_method, _a, signal_parameters);
     } else if (_id < m_signal_count + m_method_count) { // Call the correct method
         jobject method_object = env->GetObjectArrayElement(m_methods, _id - m_signal_count);
         Q_ASSERT(method_object != 0);

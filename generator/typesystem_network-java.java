@@ -3,6 +3,48 @@ package generator;
 import com.trolltech.qt.*;
 import com.trolltech.qt.network.*;
 
+class QHostInfo___ extends QHostInfo {
+    /**
+     * Looks up the IP address(es) associated with host name <code>name</code>, 
+     * and returns an ID for the lookup. When the result of the lookup is ready, 
+     * the specified method in <code>receiver</code> is called with a 
+     * <code>QHostInfo</code> argument. The <code>QHostInfo</code> object can 
+     * then be inspected to get the results of the lookup.
+     * 
+     * @param name The host name.
+     * @param receiver The object on which the method will be called.
+     * @param methodName The name of a method which takes a single <code>QHostInfo</code> argument.
+     */
+    public static int lookupHost(String name, com.trolltech.qt.core.QObject receiver, String methodName)
+    {
+        methodName = com.trolltech.qt.QtJambiInternal.SlotPrefix + methodName + "(QHostInfo)";
+        return lookupHost(name, receiver, com.trolltech.qt.QNativePointer.createCharPointer(methodName));
+    }
+
+    /**
+     * Looks up the IP address(es) associated with host name <code>name</code>, 
+     * and returns an ID for the lookup. When the result of the lookup is ready, 
+     * the specified signal is emitted with a <code>QHostInfo</code> argument. 
+     * The <code>QHostInfo</code> object can then be inspected to get the results 
+     * of the lookup.
+     * 
+     * @param name The host name.
+     * @param signal The signal to emit. Must take a single <code>QHostInfo</code> 
+     *               argument, and must be contained in a <code>QObject</code> 
+     *               subclass.
+     */
+    public static int lookupHost(String name, com.trolltech.qt.QSignalEmitter.Signal1<QHostInfo> signal)
+    {
+        if (!(signal.containingObject() instanceof com.trolltech.qt.core.QObject)) {
+            throw new IllegalArgumentException("Only signals contained in QObject subclasses are supported. "
+                                             + "Signal's class is '" + signal.containingObject().getClass() + "'.");
+        }
+
+        return lookupHost(name, (com.trolltech.qt.core.QObject)signal.containingObject(), 
+                          com.trolltech.qt.QtJambiInternal.SignalPrefix + signal.name() + "(QHostInfo)");
+    }
+}// class
+
 class QAbstractSocket___ extends QAbstractSocket {
 
     public Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();

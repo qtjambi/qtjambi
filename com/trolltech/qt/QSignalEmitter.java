@@ -159,6 +159,16 @@ public class QSignalEmitter {
             }
         } // public class Connection
 
+        
+        /**
+         * Returns the object containing this signal
+         * 
+         * @exclude
+         */
+        public final QSignalEmitter containingObject() {
+            return QSignalEmitter.this;
+        }
+        
         /**
          * Connects the signal to a method in an object. Whenever it is emitted, the method will be invoked
          * on the given object.
@@ -324,7 +334,7 @@ public class QSignalEmitter {
             return (connection.slot.getName().equals(name())
                     && connection.receiver == QSignalEmitter.this
                     && connection.slot.getDeclaringClass().equals(declaringClass));
-        }
+        }               
 
         private void connectSignalMethod(Method slotMethod,
                                             Object receiver,

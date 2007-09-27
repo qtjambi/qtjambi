@@ -786,7 +786,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_in
 
         if (isQObjectSubclass(mEnvironment, strClassName, strPackage))
             type |= QObjectSubclass;
-    }
+    }    
 
     // Pointers to value types are native pointers
     if ((type & Value) && indirections > 0)
@@ -1124,6 +1124,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
     if (internalTypeName == QLatin1String("void"))
         return true;
 
+
     Q_ASSERT(out != 0);
     Q_ASSERT(*out == 0);
 
@@ -1138,6 +1139,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
 
     // Find usage pattern
     Type type = typeIdOfExternal(strClassName, strPackage);
+
     if (type & TypeMask) {
         jvalue val;
         switch (type & TypeMask) {
@@ -1231,7 +1233,14 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
 
         if (success)
             p->l = javaObject;
-    }
+    } /*else if (type & Value) {
+        int metaType = QMetaType::type(internalTypeName.toLatin1().constData());
+
+        if (metaType == qMetaTypeId<JObjectWrapper>()) {
+            p->l = mEnvironment->NewLocalRef( (*(JObjectWrapper **)in)->object);
+            success = true;
+        }
+    }*/
 
     if (!success) {
         qWarning("QtJambiTypeManager::convertInternalToExternal: Cannot convert to type '%s' from '%s'",
@@ -1369,7 +1378,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
 
     if (!success) {
         qWarning("QtJambiTypeManager::convertExternalToInternal: Couldn't convert external type "
-            " '%s'", qPrintable(externalTypeName));
+            " '%s' to '%s'", qPrintable(externalTypeName), qPrintable(internalTypeName));
     } else {
         if (*out == 0) { // Construct a new one
             *out = constructInternal(internalTypeName, ctx, copy, metaType);

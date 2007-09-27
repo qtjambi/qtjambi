@@ -43,6 +43,12 @@
 
         
     </object-type>
+    
+    <value-type name="QHostInfo">
+        <inject-code class="java">
+            <import-file name="typesystem_network-java.java" quote-after-line="class QHostInfo___" quote-before-line="}// class"/>
+        </inject-code>
+    </value-type>
 
 
     <object-type name="QFtp">
