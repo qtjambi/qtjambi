@@ -67,15 +67,36 @@ struct Unit
     int end;
 
     void print(QList<QByteArray> a, QList<QByteArray> b){
-        for (int i = start; i <= end; i++) {
+        {
             if (type == Unchanged) {
-                //      printf("  %s\n", a[i].data());
+                if ((end - start) > 9) {
+                    for (int i = start; i <= start+2; i++)
+                        printf("  %s\n", a[i].data());
+                    printf("=\n= %d more lines\n=\n", end - start - 6);
+                    for (int i = end-2; i <= end; i++) 
+                        printf("  %s\n", a[i].data());
+                }
+                else 
+                    for (int i = start; i <= end; i++) 
+                        printf("  %s\n", a[i].data());
             }
             else if(type == Add) {
-                printf("> %s\n", b[i].data());
+                for (int i = start; i <= end; i++){
+#ifdef Q_OS_LINUX
+                    printf("\033[32m+ %s\033[0m\n", b[i].data());
+#else
+                    printf("+ %s\n", b[i].data());
+#endif
+                }
             } 
             else if (type == Delete) {
-                printf("< %s\n", a[i].data());
+                for (int i = start; i <= end; i++) {
+#ifdef Q_OS_LINUX
+                    printf("\033[31m- %s\033[0m\n", a[i].data());
+#else
+                    printf("- %s\n", b[i].data());
+#endif
+                }
             }    
         }
     }
