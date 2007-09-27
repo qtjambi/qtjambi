@@ -609,7 +609,7 @@
     holder tokens in for the function name and the return type.
 
     \code
-        <object-type name="GameObject" />
+        <object-type name="GameObject">
             <inject-code>
                 <insert-template name="from_nativepointer_to_value_type">
                     <replace from="%RETURN_TYPE%" to="Point3D" />
