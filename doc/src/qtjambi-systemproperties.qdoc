@@ -50,11 +50,9 @@
         \row
             \o com.trolltech.qt.load-from-cache
             \o By default, Qt Jambi copies the native libraries before they are
-               loaded to a caching directory. If this property is
-               set to true, Qt Jambi will not search for
-               libraries, but use the cache instead. Qt Jambi
-               fails to start if required libraries are missing
-               from the cache. 
+               loaded to a caching directory. If this property is set to true,
+               Qt Jambi will first try to load the libraries from the cache 
+               without copying. 
         \row
             \o com.trolltech.qt.exclude-libraries
             \o If you
