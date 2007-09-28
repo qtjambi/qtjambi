@@ -37,6 +37,8 @@ public class Utilities {
 	/** Qt Library build number */
     public static final int BUILD_NUMBER = 1;
 
+    private static final boolean VERBOSE_LOADING = System.getProperty("com.trolltech.qt.verbose-loading") != null;
+
 	/** A formated String with versioning*/
     public static final String VERSION_STRING = String.format("%1$d.%2$d.%3$d_%4$02d",
             MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION, BUILD_NUMBER);
@@ -108,9 +110,8 @@ public class Utilities {
                                                             File.pathSeparator);
             while (tokenizer.hasMoreElements()) {
                 if (library.equals(tokenizer.nextElement())) {
-                    VERBOSE_LOADING.DEBUG("Skipped library (" + library
-                            + ") since it is listed in "
-                            + excludeLibraries);
+                    if (VERBOSE_LOADING)
+                        System.out.println("Skipped library (" + library + ") since it is listed in " + excludeLibraries);
                     return;
                 }
             }
@@ -126,8 +127,8 @@ public class Utilities {
     	loadLibrary(lib);
     }
 
-    private static boolean loadFromEnv(String env, String lib) {
-        VERBOSE_LOADING.DEBUG(".. from environment: " + env + " ");
+    private static boolean loadFromEnv(String env, String lib, LibraryLoadingInfo debug) {
+        debug.message(".. from environment: " + env + " ");
         try {
             String envPath = System.getProperty(env);
             if (envPath != null) {
@@ -137,44 +138,46 @@ public class Utilities {
 
                     if (f.exists()) {
                         Runtime.getRuntime().load(f.getAbsolutePath());
-                        VERBOSE_LOADING.DEBUG("\n   Loaded from: " + path);
+                        debug.sucsess("   Loaded from: " + path);
                         LOADED_LIBS.add(lib);
                         return true;
                     }
                 }
                 if (envPath.length() > 0) {
-                    VERBOSE_LOADING.DEBUG("\n   Failed to find " + lib + " in " + env + "(" + envPath + ")");
+                    debug.message("   Failed to find " + lib + " in " + env + "(" + envPath + ")");
                 }
             } else {
-                VERBOSE_LOADING.DEBUG("(Skipped, environment was empty)");
+                debug.message("(Skipped, environment was empty)");
             }
         } catch (Throwable e) {
-            VERBOSE_LOADING.DEBUG("\n   Failed to load " + lib + " from " + env);
+            debug.message("   Failed to load " + lib + " from " + env);
+            debug.failed();
             return false;
         }
         return false;
     }
 
     public static boolean loadLibrary(String lib) {
+        LibraryLoadingInfo debug = new LibraryLoadingInfo(lib);
 
         if(LOADED_LIBS.contains(lib)){
-            VERBOSE_LOADING.DEBUG("\nAlready loaded: " + lib + " skipping it.");
+            debug.sucsess("Already loaded: " + lib + " skipping it.");
             return true;
         }
 
-        VERBOSE_LOADING.DEBUG("\nGoing to load: " + lib);
+        debug.message("Going to load: " + lib);
 
-        if (loadFromEnv("com.trolltech.qt.library-path", lib))
+        if (loadFromEnv("com.trolltech.qt.library-path", lib, debug))
             return true;
 
-        if (loadFromEnv("com.trolltech.qt.internal.jambipath", lib))
+        if (loadFromEnv("com.trolltech.qt.internal.jambipath", lib, debug))
             return true;
 
         // Try to search in the classpath, including .jar files and unpack to a
         // temp directory, then load
         // from there.
         try {
-            VERBOSE_LOADING.DEBUG(".. from classpath:");
+            debug.message(".. from classpath:");
             URL libUrl = Thread.currentThread().getContextClassLoader().getResource(lib);
             if (libUrl == null) {
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
@@ -194,56 +197,54 @@ public class Utilities {
                 copy(libUrl, destLib);
 
                 Runtime.getRuntime().load(destLib.getAbsolutePath());
-
-                VERBOSE_LOADING.DEBUG("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
+                debug.sucsess("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
             } else {
                 Runtime.getRuntime().load(destLib.getAbsolutePath());
-                VERBOSE_LOADING.DEBUG("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
+                debug.sucsess("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
             }
             LOADED_LIBS.add(lib);
             return true;
         } catch (Throwable e) {
-            VERBOSE_LOADING.DEBUG(e);
+            debug.message(e);
         }
 
         // Try to load using relative path (relative to qtjambi.jar or
         // root of package where class file are loaded from
         if (implicitLoading) {
-            VERBOSE_LOADING.DEBUG(".. using relative path (com.trolltech.qt.implicit-loading).");
+            debug.message(".. using relative path (com.trolltech.qt.implicit-loading).");
             try {
                 String basePath = filePathForClasses();
 
                 String libraryPath = basePath + File.separator + libSubPath + File.separator + lib;
                 if (new File(libraryPath).exists()) {
                     Runtime.getRuntime().load(libraryPath);
-                    VERBOSE_LOADING.DEBUG("Loaded(" + libraryPath + ") using deploy path, as " + lib);
+                    debug.sucsess("Loaded(" + libraryPath + ") using deploy path, as " + lib);
                     LOADED_LIBS.add(lib);
                     return true;
                 }
 
             } catch (Throwable e) {
-                VERBOSE_LOADING.DEBUG(e);
+                debug.message(e);
             }
         }
 
         // Try to load in standard way.
-        VERBOSE_LOADING.DEBUG(".. in standard way.");
+        debug.message(".. in standard way.");
 
         try {
             String stripped = stripLibraryName(lib);
             System.loadLibrary(stripped);
-            VERBOSE_LOADING.DEBUG("Loaded(" + lib + ") in standard way as " + stripped);
+            debug.sucsess("Loaded(" + lib + ") in standard way as " + stripped);
             LOADED_LIBS.add(lib);
             return true;
         } catch (Throwable e) {
-            VERBOSE_LOADING.DEBUG(e);
+            debug.message(e);
         }
 
-        if (loadFromEnv("java.library.path", lib))
+        if (loadFromEnv("java.library.path", lib, debug))
             return true;
 
-        VERBOSE_LOADING.DEBUG("Loading: " + lib + " failed.\n");
-        VERBOSE_LOADING.FAILED(lib);
+        debug.failed();
         return false;
     }
 
@@ -366,8 +367,8 @@ public class Utilities {
                 list.add(s);
         } else {
             InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("qt_system_libs");
-            if (in == null)
-                VERBOSE_LOADING.DEBUG("No 'qt_system_libs' file");
+            if (in == null && VERBOSE_LOADING)
+                System.out.println("No 'qt_system_libs' file");
 
             if (in != null) {
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
@@ -377,7 +378,8 @@ public class Utilities {
                     while ((s = r.readLine()) != null)
                         list.add(s);
                 } catch (Exception e) {
-                    VERBOSE_LOADING.DEBUG(e);
+                    if (VERBOSE_LOADING)
+                        e.printStackTrace();
                 }
             }
         }
@@ -387,7 +389,8 @@ public class Utilities {
     public static String unpackPlugins() {
         String pluginJars = System.getProperty("com.trolltech.qt.pluginjars");
 
-        VERBOSE_LOADING.DEBUG("Loading plugins from: " + pluginJars);
+        if (VERBOSE_LOADING)
+            System.out.println("Loading plugins from: " + pluginJars);
 
         List<URL> urls = new ArrayList<URL>();
         try {
@@ -417,8 +420,10 @@ public class Utilities {
                         }
                     }
                 } catch (Exception e) {
-                    VERBOSE_LOADING.DEBUG("could not load plugin archive...: " + jar);
-                    VERBOSE_LOADING.DEBUG(e);
+                    if (VERBOSE_LOADING) {
+                        System.out.println("could not load plugin archive...: " + jar);
+                        e.printStackTrace();
+                    }
                 }
             }
             return tmpDir.getAbsolutePath() + "/plugins";
@@ -444,8 +449,8 @@ public class Utilities {
                 }
             }
         }
-
-        VERBOSE_LOADING.DEBUG("unpacked plugins from: " + jar);
+        if (VERBOSE_LOADING)
+            System.out.println("unpacked plugins from: " + jar);
     }
 
     public static QMessageHandler messageHandler() {
@@ -493,57 +498,67 @@ public class Utilities {
         return null;
     }
 
-    private static class VERBOSE_LOADING {
-        private static Vector<Object> debug = new Vector<Object>();
-        private static final boolean VERBOSE_LOADING =
-            System.getProperty("com.trolltech.qt.verbose-loading") != null;
+    private static class LibraryLoadingInfo {
+        private String libraryName;
+        private boolean sucess = false;
+        private Vector<Object> messages = new Vector<Object>();
 
-        private static synchronized void DEBUG(String s){
-            if (VERBOSE_LOADING) {
-                System.out.println(s);
-            }
-            else {
-                debug.add(s);
-            }
+        LibraryLoadingInfo(String libraryName) {
+            this.libraryName = libraryName;
         }
 
-        private static synchronized void DEBUG(Throwable e){
-            if (VERBOSE_LOADING) {
-                e.printStackTrace();
-            }
-            else {
-                debug.add(e);
-            }
+        private void message(String s) {
+            messages.add(s);
         }
 
-        private static synchronized void FAILED(String failingLib){
-            if(!VERBOSE_LOADING) {
-                throw new RuntimeException("\nLog showing how we tried to load the library: " + failingLib + "\n\n" + format(debug) + "-- End load-library log --\n");
-            } else {
-                System.out.println(format(debug));
-            }
-            debug = new Vector<Object>();
+        private void message(Throwable e) {
+            messages.add(e);
         }
 
-        private static String format(Vector<Object> debug){
+        private String format() {
             String res = "";
-            for (Iterator<Object> iterator = debug.iterator(); iterator.hasNext();) {
-                Object element = (Object) iterator.next();
-                if(element instanceof String){
-                    res += element.toString() + "\n";
-                }
-                else if(element instanceof Throwable){
-                    Throwable throwable = (Throwable)element;
-                    res += "   Failed with exception:\n";
-                    res += "     " + throwable.toString() + "\n";
-                    StackTraceElement[] stackTraceElementArray = throwable.getStackTrace();
-                    for (int i = 0; i < stackTraceElementArray.length; i++) {
-                        res += "     " + stackTraceElementArray[i].toString() + "\n";
+            if (sucess) {
+                System.out.println(messages.lastElement().toString());
+            } else {
+                for (Iterator<Object> iterator = messages.iterator(); iterator.hasNext();) {
+                    Object element = (Object) iterator.next();
+
+                    if (element instanceof String) {
+                        res += element.toString() + "\n";
+                    } else if (element instanceof Throwable) {
+                        Throwable throwable = (Throwable) element;
+                        res += "   Failed with exception:\n";
+                        res += "     " + throwable.toString() + "\n";
+                        StackTraceElement[] stackTraceElementArray = throwable.getStackTrace();
+                        for (int i = 0; i < stackTraceElementArray.length; i++) {
+                            res += "     " + stackTraceElementArray[i].toString() + "\n";
+                        }
+                        res += "\n";
                     }
-                    res += "\n";
                 }
             }
             return res;
+        }
+
+        private void sucsess(String message) {
+            message(message);
+            sucess = true;
+            if (VERBOSE_LOADING) {
+                System.out.print(format());
+            }
+        }
+
+        private void failed() {
+            sucess = false;
+            if (VERBOSE_LOADING) {
+                System.out.println("Failed to laod : " + libraryName);
+                System.out.println("Below you will se how we tried to load it:\n");
+                System.out.println(format());
+                System.out.println("... giving up loading library: " + libraryName);
+            } else {
+                throw new RuntimeException("Loading library: " + libraryName + " failed.\nLog showing how we tried to load the library: " + libraryName + "\n" + format()
+                        + "-- End load-library log --\n");
+            }
         }
     }
 }
