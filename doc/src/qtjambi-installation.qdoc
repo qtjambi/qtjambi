@@ -428,6 +428,18 @@
 
     \endtable
 
+    \section1 Running the Qt Designer
+    
+    The Qt Designer is Trolltech's tool for designing and building
+    user interfaces. If you have a prebuilt package, you can run it
+    from the command line with the \c qtdesigner.bat or \c
+    qtdesigner.sh scripts.  The \l{Qt Jambi Eclipse
+    Integration}{Eclipse integration} handles the designer
+    automatically.
+
+    You will find more information in the \l{Qt Designer}{Qt Designer
+    document}. 
+
     \section1 Running the Qt Jambi Generator
 
     The generator is a Qt application which can be used to map C++
