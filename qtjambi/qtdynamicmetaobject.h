@@ -3,6 +3,7 @@
 
 #include "qtjambi_global.h"
 
+#include <QtCore/QString>
 #include <QtCore/QByteArray>
 #include <QtCore/QMetaObject>
 
