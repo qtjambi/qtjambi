@@ -83,10 +83,10 @@ echo.
 rm -rf %QT_GPL_PACKAGE% qt-opensource
 unzip %QT_GPL_PACKAGE%.zip > log
 mv %QT_GPL_PACKAGE% qt-opensource
-cp -Rf qt-commercial/tools/activeqt  qt-opensource/tools/activeqt
-cp -Rf qt-commercial/src/activeqt qt-opensource/src/activeqt
-cp -Rf qt-commercial/include/ActiveQt/* qt-opensource/include/ActiveQt
-cp -Rf qt-commercial/src/tools/idc qt-opensource/src/tools/idc
+cp -Rf qt-commercial/tools/activeqt  qt-opensource/tools
+cp -Rf qt-commercial/src/activeqt qt-opensource/src
+cp -Rf qt-commercial/include/ActiveQt qt-opensource/include
+cp -Rf qt-commercial/src/tools/idc qt-opensource/src/tools
 echo SUBDIRS += activeqt>> qt-opensource\tools\tools.pro
 echo SUBDIRS += activeqt>> qt-opensource\src\src.pro
 echo SUBDIRS += src_tools_idc>> qt-opensource\src\src.pro
