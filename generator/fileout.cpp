@@ -29,7 +29,7 @@ const char* colorReset = "\033[0m";
 const char* colorDelete = "";
 const char* colorAdd = "";
 const char* colorInfo = "";
-const char* ColorReset = ""; 
+const char* colorReset = ""; 
 #endif
 
 FileOut::FileOut(QString n):
