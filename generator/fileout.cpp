@@ -20,6 +20,18 @@
 bool FileOut::dummy = false;
 bool FileOut::diff = false;
 
+#ifdef Q_OS_LINUX
+const char* colorDelete = "\033[31m";
+const char* colorAdd = "\033[32m";
+const char* colorInfo = "\033[36m";
+const char* colorReset = "\033[0m";
+#else
+const char* colorDelete = "";
+const char* colorAdd = "";
+const char* colorInfo = "";
+const char* ColorReset = ""; 
+#endif
+
 FileOut::FileOut(QString n):
     name(n),
     stream(&tmp),
@@ -72,7 +84,7 @@ struct Unit
                 if ((end - start) > 9) {
                     for (int i = start; i <= start+2; i++)
                         printf("  %s\n", a[i].data());
-                    printf("=\n= %d more lines\n=\n", end - start - 6);
+                    printf("%s=\n= %d more lines\n=%s\n", colorInfo, end - start - 6, colorReset);
                     for (int i = end-2; i <= end; i++) 
                         printf("  %s\n", a[i].data());
                 }
@@ -81,22 +93,18 @@ struct Unit
                         printf("  %s\n", a[i].data());
             }
             else if(type == Add) {
+                printf("%s", colorAdd);
                 for (int i = start; i <= end; i++){
-#ifdef Q_OS_LINUX
-                    printf("\033[32m+ %s\033[0m\n", b[i].data());
-#else
                     printf("+ %s\n", b[i].data());
-#endif
                 }
+                printf("%s", colorReset);
             } 
             else if (type == Delete) {
+                printf("%s", colorDelete);
                 for (int i = start; i <= end; i++) {
-#ifdef Q_OS_LINUX
-                    printf("\033[31m- %s\033[0m\n", a[i].data());
-#else
-                    printf("- %s\n", b[i].data());
-#endif
+                    printf("- %s\n", a[i].data());
                 }
+                printf("%s", colorReset);
             }    
         }
     }
@@ -184,7 +192,7 @@ bool FileOut::done() {
             stream << tmp;
         }
         if (diff) {
-            printf("File: %s\n", qPrintable(name));
+            printf("%sFile: %s%s\n", colorInfo, qPrintable(name), colorReset);
          
             ::diff(original.split('\n'), tmp.split('\n'));
             
