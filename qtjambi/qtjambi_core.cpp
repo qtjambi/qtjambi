@@ -1152,6 +1152,8 @@ Q_GLOBAL_STATIC(QString, oldUrlBase);
 Q_GLOBAL_STATIC(QReadWriteLock, gClassLoaderLock);
 jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
 {
+    qtjambi_exception_check(env);
+
     // This should do the trick when running outside Eclipse,
     // or in the context of a previously loaded class
     jclass returned = env->FindClass(qualifiedName);

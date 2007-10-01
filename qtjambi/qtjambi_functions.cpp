@@ -405,6 +405,8 @@ void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
     jstring str = qtjambi_from_qstring(env, QString::fromLocal8Bit(message));
 
     jboolean eaten = env->CallStaticBooleanMethod(cls, id, (jint) type, str);
+    qtjambi_exception_check(env);
+
     if (!eaten && qt_message_handler)
         qt_message_handler(type, message);
 }

@@ -18,8 +18,6 @@ import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
-import com.trolltech.qt.core.QMessageHandler;
-
 /**
 This class contains static members that gives information and performs Qt Jambi
 related tasks.
@@ -72,7 +70,7 @@ public class Utilities {
     /** Whether Qt Jambi should prefer to load libraries from its cache */
     public static boolean loadFromCache = matchProperty("com.trolltech.qt.load-from-cache", "true");
     /** Wheter Qt Jambi should throw exceptions on warnings, debug, critical or/and fatal messages from c++ code. */
-    public static String exceptionsForMessages = System.getProperty("com.trolltech.qt.exceptions-for-messages");
+    
     private static final String DEBUG_SUFFIX = "_debuglib";
 
 
@@ -451,51 +449,6 @@ public class Utilities {
         }
         if (VERBOSE_LOADING)
             System.out.println("unpacked plugins from: " + jar);
-    }
-
-    public static QMessageHandler messageHandler() {
-        if (exceptionsForMessages != null) {
-            final String config = exceptionsForMessages.trim().toUpperCase();
-            final boolean all = config.equals("") || config.equals("ALL") || config.equals("TRUE");
-            final boolean critical = config.contains("CRITICAL");
-            final boolean debug = config.contains("DEBUG");
-            final boolean fatal = config.contains("FATAL");
-            final boolean warning = config.contains("WARNING");
-
-            if (all || critical || debug || fatal || warning) {
-                return new QMessageHandler() {
-
-                    public void critical(String message) {
-                        if (critical || all)
-                            throw new RuntimeException("Critical: " + message);
-                        else
-                            System.err.println("Critical: " + message);
-                    }
-
-                    public void debug(String message) {
-                        if (debug || all)
-                            throw new RuntimeException("Debug: " + message);
-                        else
-                            System.err.println("Debug: " + message);
-                    }
-
-                    public void fatal(String message) {
-                        if (fatal || all)
-                            throw new RuntimeException("Fatal: " + message);
-                        else
-                            System.err.println("Fatal: " + message);
-                    }
-
-                    public void warning(String message) {
-                        if (warning || all)
-                            throw new RuntimeException("Warning: " + message);
-                        else
-                            System.err.println("Warning: " + message);
-                    }
-                };
-            }
-        }
-        return null;
     }
 
     private static class LibraryLoadingInfo {
