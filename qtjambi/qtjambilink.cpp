@@ -374,8 +374,10 @@ void QtJambiLink::javaObjectFinalized(JNIEnv *env)
 
 void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 {
-    if (m_pointer)
+    if (m_pointer) {
+        setJavaOwnership(env, m_java_object);
         deleteNativeObject(env);
+    }
 }
 
 
