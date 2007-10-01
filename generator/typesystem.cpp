@@ -1813,8 +1813,8 @@ static void addRemoveFunctionToTemplates(TypeDatabase *db)
     removeFunction(qvector, "constData() const");
     removeFunction(qvector, "data() const");
     removeFunction(qvector, "data()");
-    removeFunction(qvector, "first() const");
-    removeFunction(qvector, "last() const");
+    removeFunction(qvector, "first()");
+    removeFunction(qvector, "last()");
     removeFunction(qvector, "operator[](int)");
     removeFunction(qvector, "operator[](int) const");
     removeFunction(qvector, "operator=(QVector<T>)");
@@ -1823,10 +1823,10 @@ static void addRemoveFunctionToTemplates(TypeDatabase *db)
     removeFunction(qlist, "constData() const");
     removeFunction(qlist, "data() const");
     removeFunction(qlist, "data()");
-    removeFunction(qlist, "back() const");
-    removeFunction(qlist, "front() const");
-    removeFunction(qlist, "first() const");
-    removeFunction(qlist, "last() const");
+    removeFunction(qlist, "back()");
+    removeFunction(qlist, "front()");
+    removeFunction(qlist, "first()");
+    removeFunction(qlist, "last()");
     removeFunction(qlist, "operator[](int)");
     removeFunction(qlist, "operator[](int) const");
     removeFunction(qlist, "operator=(QList<T>)");
