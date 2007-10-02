@@ -422,10 +422,15 @@ public class ElasticNodes extends QGraphicsView {
             painter.drawLine(line);
 
             // Draw the arrows if there's enough room
-            double angle = Math.acos(line.dx() / line.length());
+            double angle;
+            if (line.length() > 0)
+                angle = Math.acos(line.dx() / line.length());
+            else
+                angle = 0;
+
             if (line.dy() >= 0)
                 angle = (Math.PI * 2) - angle;
-
+                   
             sourceArrowP1.setX(sourcePoint.x() + Math.sin(angle + Math.PI / 3) * arrowSize);
             sourceArrowP1.setY(sourcePoint.y() + Math.cos(angle + Math.PI / 3) * arrowSize);
 
@@ -438,14 +443,13 @@ public class ElasticNodes extends QGraphicsView {
             destArrowP2.setX(destPoint.x() + Math.sin(angle - Math.PI + Math.PI / 3) * arrowSize);
             destArrowP2.setY(destPoint.y() + Math.cos(angle - Math.PI + Math.PI / 3) * arrowSize);
 
-
             pol1.clear();
             pol2.clear();
 
             pol1.append(line.p1());
             pol1.append(sourceArrowP1);
             pol1.append(sourceArrowP2);
-
+          
             pol2.append(line.p2());
             pol2.append(destArrowP1);
             pol2.append(destArrowP2);
