@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if  [ "$QTJAMBI_VERSION" = "" ]; then
-     export QTJAMBI_VERSION=4.3.0_01
+     export QTJAMBI_VERSION=4.3.2_01
 fi
 
 if [ "$QDOC" = "" ]; then
@@ -16,8 +16,7 @@ fi
 
 echo "qdoc3 found in: $LOCAL_QDOC"
 
-export JAMBI="/home/gvatteka/dev/qtjambi/4.3"
-
+export JAMBI=`echo $PWD | sed s,/scripts,,g`
 
 # Clean the directory
 cd  $JAMBI/doc/html
