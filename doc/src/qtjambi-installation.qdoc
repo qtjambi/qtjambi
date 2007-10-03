@@ -94,6 +94,10 @@
     procedure of building Qt Jambi from the command line.  Finally, we
     look at some common installation problems.
 
+    Note that a source package requires a Qt installation. On Mac OS
+    X, Qt must be configured without frameworks (by running the \c
+    configure script with the --no-framework option).
+
     \section2 Configuring the System for Qt Jambi
     
     The Jambi source package requires Qt to be installed on the
@@ -417,7 +421,9 @@
     \header \o Platform \o Comment
     \row \o Mac OS X
     \o When running a Qt Jambi application, it is necessary to pass
-    the \c -XstartOnFirstThread argument to the Java executable.
+    the \c -XstartOnFirstThread argument to the Java executable. Also,
+    if you have a source package, you have to build Qt with the 
+    --no-framework option.
 
     \row \o Linux / 64 bit:
 
