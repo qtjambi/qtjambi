@@ -18,7 +18,6 @@ package com.trolltech.qt.core;
  * The QInvokable class is used internally by QCoreApplication.invokeLater()
  * to execute a java.lang.Runnable from the gui-thread.
  *
- * @author gunnar
  * @see QCoreApplication
  */
 class QInvokable extends QObject {
@@ -27,7 +26,7 @@ class QInvokable extends QObject {
 
     QInvokable(Runnable r) {
         disableGarbageCollection();
-        if(QCoreApplication.instance().nativeId() != 0) {
+        if(QCoreApplication.instance() != null && QCoreApplication.instance().nativeId() != 0) {
             moveToThread(QCoreApplication.instance().thread());
             runnable = r;
         }
