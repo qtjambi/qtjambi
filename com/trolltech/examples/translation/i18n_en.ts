@@ -9,7 +9,7 @@
     </message>
 </context>
 <context>
-    <name>com.trolltech.examples.MainWindow</name>
+    <name>com.trolltech.examples.I18N$MainWindow</name>
     <message>
         <location filename="../I18N.java" line="164"/>
         <source>E&amp;xit</source>
