@@ -22,19 +22,69 @@ import com.trolltech.qt.gui.*;
                 canInstantiate = "call-static-method:notWebstart")
 public class I18N extends QDialog {
 
-    static public void main(String args[]) {
-        QApplication.initialize(args);
-        I18N i18n = new I18N();
-        i18n.show();
-        QApplication.exec();
-    }
+    private class MainWindow extends QMainWindow {
+        private QWidget centralWidget;
+        private QGroupBox groupBox;
+        private QListWidget listWidget;
+        private QRadioButton perspectiveRadioButton;
+        private QRadioButton isometricRadioButton;
+        private QRadioButton obliqueRadioButton;
+        private QMenu fileMenu;
+        private QAction exitAction;
 
-    private QGroupBox groupBox;
-    private QDialogButtonBox buttonBox;
-    private QAbstractButton showAllButton;
-    private QAbstractButton hideAllButton;
-    private Map<QCheckBox, String> qmFileForCheckBoxMap = new HashMap<QCheckBox, String>();
-    private Map<QCheckBox, MainWindow> mainWindowForCheckBoxMap = new HashMap<QCheckBox, MainWindow>();
+        public Signal1<Boolean> visible = new Signal1<Boolean>();
+
+        public MainWindow(QWidget parent) {
+            super(parent);
+            centralWidget = new QWidget();
+            setCentralWidget(centralWidget);
+
+            createGroupBox();
+
+            listWidget = new QListWidget();
+            listWidget.addItem(tr("First"));
+            listWidget.addItem(tr("Second"));
+            listWidget.addItem(tr("Third"));
+
+            QVBoxLayout mainLayout = new QVBoxLayout();
+            mainLayout.addWidget(groupBox);
+            mainLayout.addWidget(listWidget);
+            centralWidget.setLayout(mainLayout);
+
+            exitAction = new QAction(tr("E&xit"), this);
+            exitAction.triggered.connect(this, "close()");
+
+            fileMenu = menuBar().addMenu(tr("&File"));
+            fileMenu.addAction(exitAction);
+
+            setWindowTitle(String.format(tr("Language: %1$s"), tr("English")));
+            setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+
+            statusBar().showMessage(tr("Internationalization Example"));
+
+            if (tr("LTR").equals("RTL"))
+                setLayoutDirection(Qt.LayoutDirection.RightToLeft);
+        }
+
+        private void createGroupBox() {
+            groupBox = new QGroupBox(tr("View"));
+            perspectiveRadioButton = new QRadioButton(tr("Perspective"));
+            isometricRadioButton = new QRadioButton(tr("Isometric"));
+            obliqueRadioButton = new QRadioButton(tr("Oblique"));
+            perspectiveRadioButton.setChecked(true);
+
+            QVBoxLayout groupBoxLayout = new QVBoxLayout();
+            groupBoxLayout.addWidget(perspectiveRadioButton);
+            groupBoxLayout.addWidget(isometricRadioButton);
+            groupBoxLayout.addWidget(obliqueRadioButton);
+            groupBox.setLayout(groupBoxLayout);
+        }
+
+        @Override
+        protected void closeEvent(QCloseEvent event) {
+            visible.emit(false);
+        }
+    }
 
     public I18N() {
         this(null);
@@ -123,68 +173,19 @@ public class I18N extends QDialog {
     public static boolean notWebstart() {
         return System.getProperty("com.trolltech.launcher.webstart") == null;
     }
-}
 
-class MainWindow extends QMainWindow {
-    private QWidget centralWidget;
     private QGroupBox groupBox;
-    private QListWidget listWidget;
-    private QRadioButton perspectiveRadioButton;
-    private QRadioButton isometricRadioButton;
-    private QRadioButton obliqueRadioButton;
-    private QMenu fileMenu;
-    private QAction exitAction;
+    private QDialogButtonBox buttonBox;
+    private QAbstractButton showAllButton;
+    private QAbstractButton hideAllButton;
+    private Map<QCheckBox, String> qmFileForCheckBoxMap = new HashMap<QCheckBox, String>();
+    private Map<QCheckBox, MainWindow> mainWindowForCheckBoxMap = new HashMap<QCheckBox, MainWindow>();
 
-    public Signal1<Boolean> visible = new Signal1<Boolean>();
-
-    public MainWindow(QWidget parent) {
-        super(parent);
-        centralWidget = new QWidget();
-        setCentralWidget(centralWidget);
-
-        createGroupBox();
-
-        listWidget = new QListWidget();
-        listWidget.addItem(tr("First"));
-        listWidget.addItem(tr("Second"));
-        listWidget.addItem(tr("Third"));
-
-        QVBoxLayout mainLayout = new QVBoxLayout();
-        mainLayout.addWidget(groupBox);
-        mainLayout.addWidget(listWidget);
-        centralWidget.setLayout(mainLayout);
-
-        exitAction = new QAction(tr("E&xit"), this);
-        exitAction.triggered.connect(this, "close()");
-
-        fileMenu = menuBar().addMenu(tr("&File"));
-        fileMenu.addAction(exitAction);
-
-        setWindowTitle(String.format(tr("Language: %1$s"), tr("English")));
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
-
-        statusBar().showMessage(tr("Internationalization Example"));
-
-        if (tr("LTR").equals("RTL"))
-            setLayoutDirection(Qt.LayoutDirection.RightToLeft);
-    }
-
-    private void createGroupBox() {
-        groupBox = new QGroupBox(tr("View"));
-        perspectiveRadioButton = new QRadioButton(tr("Perspective"));
-        isometricRadioButton = new QRadioButton(tr("Isometric"));
-        obliqueRadioButton = new QRadioButton(tr("Oblique"));
-        perspectiveRadioButton.setChecked(true);
-
-        QVBoxLayout groupBoxLayout = new QVBoxLayout();
-        groupBoxLayout.addWidget(perspectiveRadioButton);
-        groupBoxLayout.addWidget(isometricRadioButton);
-        groupBoxLayout.addWidget(obliqueRadioButton);
-        groupBox.setLayout(groupBoxLayout);
-    }
-
-    @Override
-    protected void closeEvent(QCloseEvent event) {
-        visible.emit(false);
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+        I18N i18n = new I18N();
+        i18n.show();
+        QApplication.exec();
     }
 }
+
