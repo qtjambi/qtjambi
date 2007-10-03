@@ -20,6 +20,7 @@ import java.util.*;
 @QtJambiExample(name = "SVG Card Deck",
                 canInstantiate = "call-static-method:notWebstart")
 public class SvgCards extends QGraphicsView {
+    private static boolean closing = false;
     private static String[] CARDS = {
         "black_joker",
         "red_joker",
@@ -77,6 +78,10 @@ public class SvgCards extends QGraphicsView {
         "10_heart",
         "10_spade"
     };
+    
+    protected void closeEvent(QCloseEvent e) {
+        closing = true;
+    }
 
     private static class Card extends QGraphicsSvgItem {
         private double opacity = 1.0;
@@ -115,7 +120,7 @@ public class SvgCards extends QGraphicsView {
                           QWidget widget) {
             painter.setOpacity(opacity);
             super.paint(painter, option, widget);
-        }
+        }        
     }
 
     private static class CardBox extends QGraphicsItem {
@@ -228,7 +233,7 @@ public class SvgCards extends QGraphicsView {
     private QGraphicsScene scene;
 
     public final void loadCards() {
-        if (cardsToLoad != 0) {
+        if (cardsToLoad != 0 && !closing) {
             addCard(random.nextInt(50));
             --cardsToLoad;
             if (cardsToLoad != 0) {
@@ -237,10 +242,10 @@ public class SvgCards extends QGraphicsView {
                 manager.setOperation("Loading Cards : " + (int) percent + "% ");
             } else {
                 manager.setOperation("Click on a Card");
-	    }
+            }
             viewport().update();
             QApplication.invokeLater(new Runnable() {
-                    public void run() { loadCards(); } });
+                public void run() { loadCards(); } });
         }
     }
 

@@ -124,6 +124,7 @@ public class Launchable {
     }
 
     public void killWidget() {
+        m_widget.close();
         m_widget.disposeLater();
         m_widget = null;
     }
