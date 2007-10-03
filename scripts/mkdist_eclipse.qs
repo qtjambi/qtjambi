@@ -55,6 +55,10 @@ var option = new Object();
 option.verbose = array_contains(args, "--verbose");
 option.gpl = array_contains(args, "--gpl");
 option.sixtyFour = System.getenv("ARCH") == "x86_64";
+option.arch = option.sixtyFour ? "x86_64" : "x86"
+
+print("arch: " + option.arch);
+
 option.qtdir = findQtDir();
 if (option.gpl)
     command.make = find_executable("mingw32-make");
@@ -337,8 +341,8 @@ function compileDesignerJavaCode(destDir) {
 
 function buildLinuxQtJarFile() {
     verbose("Building Linux Qt library package");
-    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux." + System.getenv("ARCH") + "_" + qtVersion;
-    var linuxQtRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt.linux." + System.getenv("ARCH");
+    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux." + option.arch + "_" + qtVersion;
+    var linuxQtRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt.linux." + option.arch;
     var dir = new Dir(linuxQtDest + "/lib");
     dir.mkdirs(linuxQtDest + "/lib");
 
@@ -358,18 +362,18 @@ function buildDesignerPlatform() {
     var designerPackageDest = packageDir + "/tempQtDesignerPackage";
 
     var designerRootDir = os_name() == OS_NAME_WINDOWS
-                          ? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32." + System.getenv("ARCH")
-	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH");
+                          ? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32." + option.arch
+	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + option.arch;
 
     if (os_name() != OS_NAME_WINDOWS) {
-	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux."+ System.getenv("ARCH") + "_" + version;
+	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux."+ option.arch + "_" + version;
 	    dir = new Dir(pluginsDir);
 	    dir.mkdirs(pluginsDir);
 	    var suffixes = ["", ".4", ".4.3", "." + qtVersion];
 	    for (var i=0; i<suffixes.length; ++i) {
-	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH") + "/lib/libqtdesigner.so"
+	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + option.arch + "/lib/libqtdesigner.so"
                         + suffixes[i]],
-                        packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH"),
+                        packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + option.arch,
                         pluginsDir);
 	    }
 	    copyFiles([designerRootDir + "/META-INF/MANIFEST.MF"], designerRootDir, pluginsDir);
@@ -398,7 +402,7 @@ function makePlatformSpecificPackageWindows(destDir) {
     var qswtDir = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer/qtdesigner";
     var jambiScriptDir = packageDir + "/qtjambi/" + depotVersion + "/scripts";
 
-    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32." + System.getenv("ARCH") + "_" + version;
+    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32." + option.arch + "_" + version;
     var dir = new Dir(dllDest);
     dir.mkdirs(dllDest);
 
@@ -469,13 +473,22 @@ function buildPackage() {
     if (dir.fileExists("."))
        print("WARNING: output dir already exists. delete the entire " + packageDir + " folder before running this script for best results");
     dir.mkdirs(pluginsDir);
+
+
+
     buildDesignerPlugins();
+
+    print(" +++ done with buildDesignerPlugin()");
 
 
     var files = find_files(jarFilesDest, ["jar"]);
     copyFiles(files, jarFilesDest, pluginsDir);
 
-    eval("makePlatformSpecificPackage" + os_name() + "(packageDest);");
+    if (os_name() == OS_NAME_WINDOWS) {
+        makePlatformSpecificPackageWindows(packageDest);
+    } else if (os_name() == OS_NAME_LINUX) {
+        makePlatformSpecificPackageLinux(packageDest);
+    }
 }
 
 function setPathForMinGW() {
