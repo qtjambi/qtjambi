@@ -4,12 +4,10 @@ const packageDir = os_name() == OS_NAME_WINDOWS
 const version = figureVersion();
 const javaDir = packageDir + "/qtjambi/" + version;
 const javadocName = "qtjambi-javadoc-" + version + ".jar";
-const jdocName = "qtjambi-jdoc-" + version + ".jar";
 
 var command = new Object();
 var option = new Object();
 
-option.qtdir = findQtDir();
 option.verbose = array_contains(args, "--verbose");
 option.startDir = new Dir().absPath;
 option.javadocHTTP = array_get_next_value(args, "--javadoc");
@@ -22,6 +20,10 @@ option.qtEvalLocation = array_get_next_value(args, "--qt-eval");
 option.qtCommercialLocation = array_get_next_value(args, "--qt-commercial");
 option.qtGPLLocation = array_get_next_value(args, "--qt-gpl");
 option.platformJar = !array_contains(args, "--no-platform-jar");
+option.crtRedist = array_get_next_value(args, "--crt-redist");
+
+if (option.crtRedist)
+    option.crtRedist = option.crtRedist.replace(/\\/g, "/");
 
 command.chmod = find_executable("chmod");
 command.cp = find_executable("cp");
@@ -40,18 +42,16 @@ else
     command.wget = find_executable("wget");
 
 if (!option.javadocHTTP) {
-    option.javadocHTTP = "http://anarki/~gunnar/packages";
+    option.javadocHTTP = "http://anarki.troll.no/~gunnar/packages";
 }
 
 option.javadocLocation = option.javadocHTTP + "/" + javadocName;
-option.jdocLocation = option.javadocHTTP + "/" + jdocName;
 
 if (array_contains(args, "-help") || array_contains(args, "-h")) {
     displayHelp();
 } else {
     for (var i in option)
-        if (option[i])
-            verbose("'%1': %2".arg(i).arg(option[i]));
+	verbose("'%1': %2".arg(i).arg(option[i]));
     verbose("");
     for (var i in command)
         verbose("using command '%1' in: %2".arg(i).arg(command[i]));
@@ -71,11 +71,6 @@ if (option.sourcePackages) {
 }
 
 if (option.binaryPackages) {
-    if (!option.qtCommercialLocation) {
-        verbose("no --qt-commercial specified, using QTDIR at: " + option.qtdir);
-        option.qtCommercialLocation = option.qtdir;
-    }
-
     if (!option.qtCommercialLocation)
         throw "missing '--qt-commercial [location]' for location of binaries";
 
@@ -133,6 +128,7 @@ function setupDefaultPackage() {
                       "com/trolltech/autotests",
                       "com/trolltech/benchmarks",
                       "com/trolltech/extensions",
+                      "com/trolltech/manualtests",
                       "com/trolltech/tests",
                       "cpp",
                       "dist",
@@ -152,7 +148,8 @@ function setupDefaultPackage() {
     pkg.removeFiles = [
                        "rebuild.bat",
                        "rebuild.sh",
-                       "build.xml"
+                       "build.xml",
+                       "dev.xml"
     ];
 
     pkg.mkdirs = [
@@ -169,7 +166,7 @@ function setupDefaultPackage() {
                      ["qtjambi/qtjambitypemanager.h", "include"],
 
                      // text files for main directory...
-                     "dist/README",
+                     "dist/readme.html",
                      "dist/changes-" + version
     ];
 
@@ -241,17 +238,25 @@ function setupBinaryPackage(pkg) {
 
 
     pkg.copyFiles.push(
-                       [command.generator, "bin"]
+                       [command.generator, "bin"],
+                       pkg.qt + "/translations"
                        );
+
 
     // System libraries...
     if (os_name() == OS_NAME_WINDOWS) {
-        try {
-            pkg.copyFiles.push([find_executable("msvcr80.dll"), "bin"],
-                               [find_executable("msvcp80.dll"), "bin"]);
-        } catch (e) {
-            pkg.copyFiles.push([find_executable("msvcr71.dll"), "bin"],
-                               [find_executable("msvcp71.dll"), "bin"]);
+        if (pkg.license == "gpl") {
+            pkg.copyFiles.push([find_executable("mingwm10.dll"), "bin"]);
+        } else {
+
+	    if (!File.exists(option.crtRedist + "/msvcr80.dll")) {
+		throw "Failed to locate '" + option.crtRedist
+		    + "/msvcr80.dll', is --crt-redist properly specified?";
+	    }
+
+            pkg.copyFiles.push([option.crtRedist + "/msvcr80.dll", "bin"],
+                               [option.crtRedist + "/msvcp80.dll", "bin"],
+			       [option.crtRedist + "/Microsoft.VC80.CRT.manifest", "bin"]);
         }
     } else if (os_name() == OS_NAME_LINUX) {
         var locs = ["/lib", "/usr/lib"];
@@ -278,7 +283,7 @@ function setupBinaryPackage(pkg) {
                             "QtSvg",
                             "QtXml"
     ];
-    const qtBinaryNames = ["assistant", "designer", "linguist", "lrelease", "lupdate"];
+    const qtBinaryNames = ["designer", "linguist", "lrelease", "lupdate"];
 
     var isWindows = os_name() == OS_NAME_WINDOWS;
 
@@ -340,22 +345,6 @@ function setupBinaryPackage(pkg) {
         }
     }
 
-
-
-    if (os_name() == OS_NAME_MACOSX) {
-        pkg.copyFiles.push("dist/mac/qtjambi.sh");
-        pkg.copyFiles.push(["dist/mac/generator_example.sh", "generator_example"]);
-        pkg.copyFiles.push("dist/mac/designer.sh");
-    } else if (os_name() == OS_NAME_WINDOWS) {
-        pkg.copyFiles.push("dist/win/designer.bat");
-        pkg.copyFiles.push("dist/win/qtjambi.exe");
-        pkg.copyFiles.push(["dist/win/generator_example.bat", "generator_example"]);
-    } else {
-        pkg.copyFiles.push("dist/linux/designer.sh");
-        pkg.copyFiles.push("dist/linux/qtjambi.sh");
-        pkg.copyFiles.push(["dist/linux/generator_example.sh", "generator_example"]);
-    }
-
     if (os_name() == OS_NAME_WINDOWS) {
         var arch = System.getenv("PROCESSOR_ARCHITEW6432");
         if (arch && arch.indexOf("64") >= 0)
@@ -364,12 +353,29 @@ function setupBinaryPackage(pkg) {
             pkg.packageName = "win32";
     } else if (os_name() == OS_NAME_LINUX) {
         Process.execute("uname -a");
-        if (Process.stdout.indexOf("64"))
+        if (Process.stdout.indexOf("64") >= 0)
             pkg.packageName = "linux64";
         else
             pkg.packageName = "linux32";
     } else {
         pkg.packageName = "mac";
+    }
+
+    if (os_name() == OS_NAME_MACOSX) {
+        pkg.copyFiles.push("dist/mac/qtjambi.sh");
+        pkg.copyFiles.push(["dist/mac/generator_example.sh", "generator_example"]);
+        pkg.copyFiles.push("dist/mac/designer.sh");
+    } else if (os_name() == OS_NAME_WINDOWS) {
+        pkg.copyFiles.push("dist/win/designer.bat");
+        if (pkg.packageName == "win64")
+            pkg.copyFiles.push(["dist/win/qtjambi64.exe", "qtjambi.exe"]);
+        else
+            pkg.copyFiles.push("dist/win/qtjambi.exe");
+        pkg.copyFiles.push(["dist/win/generator_example.bat", "generator_example"]);
+    } else {
+        pkg.copyFiles.push("dist/linux/designer.sh");
+        pkg.copyFiles.push("dist/linux/qtjambi.sh");
+        pkg.copyFiles.push(["dist/linux/generator_example.sh", "generator_example"]);
     }
 }
 
@@ -389,10 +395,8 @@ function setupSourcePackage(pkg) {
                     "qtjambi_designer/private"
                     );
 
-    var uicPrefix = option.qtdir + "/src/tools/uic/";
+    var uicPrefix = pkg.qt + "/src/tools/uic/";
     pkg.copyFiles.push(
-                       "dist/BUILDING_SOURCE_PACKAGE",
-
                        // uic files
                        [uicPrefix + "customwidgetsinfo.cpp", "juic"],
                        [uicPrefix + "customwidgetsinfo.h", "juic"],
@@ -414,12 +418,13 @@ function setupSourcePackage(pkg) {
                        [uicPrefix + "validator.h", "juic"],
 
                        // designer files...
+                       [pkg.qt + "/tools/designer/src/lib/uilib/ui4_p.h",
                        [option.qtdir + "/tools/designer/src/lib/uilib/ui4_p.h",
                         "designer-integration/language/private/ui4_p.h"],
-
-                       // qtjambi_designer files...
-                       [option.qtdir + "/tools/designer/src/lib/shared/qdesigner_utils_p.h", "qtjambi_designer/private"]
-
+                       [pkg.qt + "/tools/designer/src/lib/shared/qdesigner_utils_p.h",
+                        "qtjambi_designer/private/qdesigner_utils_p.h"],
+                       [pkg.qt + "/tools/designer/src/lib/shared/shared_global_p.h",
+                        "qtjambi_designer/private/shared_global_p.h"]
                        );
 
     File.write("d:/dirs.txt", pkg.mkdirs.join("\n"));
@@ -467,6 +472,7 @@ function setupCommercialPackage(pkg) {
  */
 function setupGPLSourcePackage() {
     var pkg = setupDefaultPackage();
+    pkg.qt = option.qtGPLLocation;
     setupSourcePackage(pkg);
     setupGPLPackage(pkg);
     finalizeDefaultPackage(pkg);
@@ -484,12 +490,12 @@ function setupGPLSourcePackage() {
 function setupGPLBinaryPackage() {
     var pkg = setupDefaultPackage();
     pkg.qt = option.qtGPLLocation;
+
+    setupGPLPackage(pkg);
     setupBinaryPackage(pkg);
 
     if (pkg.packageName == "win64")
         return undefined;
-
-    setupGPLPackage(pkg);
 
     if (os_name() == OS_NAME_WINDOWS) {
 	pkg.maketool = find_executable("mingw32-make");
@@ -551,6 +557,7 @@ function setPathForMinGW(pkg) {
  */
 function setupCommercialSourcePackage() {
     var pkg = setupDefaultPackage();
+    pkg.qt = option.qtCommercialLocation;
     setupSourcePackage(pkg);
     setupCommercialPackage(pkg);
     finalizeDefaultPackage(pkg);
@@ -575,7 +582,7 @@ function setupEvalPackages() {
     pkg.qt = option.qtEvalLocation;
     pkg.license = "eval";
     pkg.licenseHeader = File.read(option.startDir + "/../dist/eval_header.txt");
-    pkg.copyFiles.push("dist/README.EVAL",
+    pkg.copyFiles.push("dist/readme_eval.html",
                        "dist/LICENSE.EVAL");
 
     if (os_name() == OS_NAME_LINUX) {
@@ -639,11 +646,26 @@ function createPackage(pkg) {
         createPlatformJar(pkg);
     }
 
+    verbose(" - changing access and ownership of files..");
+    changeAccessAndOwnership(pkg);
+
     verbose(" - bundling package...");
     createBundle(pkg);
 
 
     verbose(" - done!");
+}
+
+/*******************************************************************************
+ * Fix the properties of the files so that they look really UNIX'y...
+ */
+function changeAccessAndOwnership() {
+    new Dir(javaDir).setCurrent();
+
+    if (os_name() == OS_NAME_LINUX || os_name() == OS_NAME_MACOSX) {
+        Process.execute([command.chmod, "a+rx", "designer.sh", "qtjambi.sh"]);
+        Process.execute([command.chmod, "-R", "a+rw"]);
+    }
 }
 
 /*******************************************************************************
@@ -688,18 +710,6 @@ function prepareSourceTree()
 
 
 /*******************************************************************************
- * Does an attempt to find QTDIR
- */
-function findQtDir() {
-    var qtdir = array_get_next_value(args, "--qt");
-    if (!qtdir)
-        qtdir = System.getenv("QTDIR");
-    if (!File.exists(qtdir))
-        throw "Qt library '%1' does not exist".arg(option.qtdir);
-    return qtdir;
-}
-
-/*******************************************************************************
  * Finds the generator name
  */
 function findGeneratorName() {
@@ -722,15 +732,22 @@ function compileAndRunGenerator(pkg) {
 
     System.setenv("QTDIR", pkg.qt);
 
+    if (os_name() == OS_NAME_MACOSX)
+        System.setenv("DYLD_LIBRARY_PATH", pkg.qt + "/lib");
+    else if (os_name() == OS_NAME_LINUX)
+        System.setenv("LD_LIBRARY_PATH", pkg.qt + "/lib");
+    else if (os_name() == OS_NAME_WINDOWS)
+        System.setenv("PATH", pkg.qt + "/bin;" + System.getenv("PATH"));
+
     verbose("   - running qmake");
     execute([pkg.qmake, "-spec", pkg.qmakespec, "-config", "release"]);
 
     verbose("   - building");
-    var make = [pkg.maketool];
+    var make = [pkg.maketool, "-f", "Makefile"];
     execute(make);
 
     verbose("   - running");
-    execute([command.generator, "--jdoc-enabled", "--jdoc-dir", "../doc/jdoc"]);
+    execute([command.generator]);
 
     dir.cdUp();
     dir.setCurrent();
@@ -764,7 +781,7 @@ function compileNativeLibraries(pkg) {
     execute([pkg.qmake, "-spec", pkg.qmakespec, "-r", "CONFIG+=release", "-after", "CONFIG-=debug debug_and_release"]);
 
     verbose("   - running make");
-    var make = [pkg.maketool];
+    var make = [pkg.maketool, "-f", "Makefile"];
     execute(make);
 }
 
@@ -924,7 +941,7 @@ function removeFiles(pkg) {
     for_all_files(javaDir, function(name) {
         if (name.endsWith(".ilk")
             || name.endsWith(".pdb")
-            || name.endsWith(".manifest")
+            || (name.endsWith(".manifest") && !name.indexOf("CRT") >= 0)
             || name.endsWith(".exp")
             || name.endsWith(".log"))
             files.push(name);
@@ -998,11 +1015,9 @@ function createPlatformJar(pkg) {
         file.open(File.WriteOnly);
         if (os_name() == OS_NAME_WINDOWS) {
             if (pkg.license == "gpl") {
-                file.writeLine("mingwm10.dll");
-            } else if (pkg.packageName == "win32") {
-                file.writeLine("msvcr71.dll");
-                file.writeLine("msvcp71.dll");
+                file.writeLine("mingw10.dll");
             } else {
+		file.writeLine("Microsoft.VC80.CRT.manifest");
                 file.writeLine("msvcr80.dll");
                 file.writeLine("msvcp80.dll");
             }
@@ -1036,7 +1051,7 @@ function createBundle(pkg) {
         try  { execute([command.rm, packageFile]); } catch (e) { }
         execute([command.zip, "-rq", packageFile, pkg.name]);
     } else {
-        execute([command.tar, "-czf", packageFile, pkg.name]);
+        execute([command.tar, "-czf", packageFile, "--owner=0", "--group=0", pkg.name]);
     }
 }
 
@@ -1056,6 +1071,29 @@ function fixInstallName() {
             Process.execute(["install_name_tool", "-change", file, "@loader_path/" + file, files[j]]);
         }
     }
+
+    // Fix that we load libqtjambi.1.jnilib when we really want libqtjambi.jnilib
+    for (var i=0; i<files.length; ++i) {
+        var file = files[i];
+        Process.execute(["install_name_tool", "-change",
+                         "@loader_path/libqtjambi.1.jnilib",
+                         "@loader_path/libqtjambi.jnilib", file]);
+    }
+
+    dir.cdUp();
+    dir.setCurrent();
+
+    // and then plugins...
+    for_all_files("plugins", function(name) {
+            updatePluginInstallName(name, files);
+        });
+}
+
+function updatePluginInstallName(name, files) {
+    for (var i=0; i<files.length; ++i)
+        Process.execute(["install_name_tool", "-change",
+                         files[i], "@loader_path/../../lib/" + files[i],
+                         name]);
 }
 
 /*******************************************************************************

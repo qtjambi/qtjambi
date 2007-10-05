@@ -72,7 +72,7 @@ nmake sub-src sub-tools
 nmake clean
 cd ..
 
-if "%PROCESSOR_ARCHITEW6432%" == "AMD64" then goto cleanup
+if "%PROCESSOR_LEVEL%" == "15" then goto cleanup
 
 
 echo.
