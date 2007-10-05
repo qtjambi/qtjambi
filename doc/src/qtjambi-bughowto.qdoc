@@ -16,7 +16,10 @@
     \o The Java version
     \o The Qt Jambi version
     \o Whether you have a source or prebuilt (binary) package
-    \o Java Stack Traces and error \c .log files
+    \o Java Stack Traces and error \c .log files. Qt Jambi should
+       be run with the \c{com.trolltech.qt.verbose-loading}
+       \l{Qt Jambi System Properties Reference}{system
+       property}.
     \o The name and version number of your operating system
     \endlist
 

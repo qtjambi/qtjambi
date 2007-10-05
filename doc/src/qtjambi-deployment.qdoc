@@ -146,7 +146,7 @@
     directory structure as in the Jambi installation directory. When
     running the application, the \c {com.trolltech.qt.pluginjars}
     system property must be set to contain the path to the \c .jar
-    file containing the plugins. The plugins does not need to have
+    file containing the plugins. The plugins do not need to have
     their own file, so it is, for instance, possible to deploy them in
     the same file as your application.
 
@@ -176,8 +176,6 @@
     \quotefromfile snippets/application.xml
     \skipto /target name/
     \printuntil /\/jar/
-
-    A ha. This doc is beginning to get huge.
 
     \section2 Creating a File from the Command Line
     \endomit
@@ -218,6 +216,7 @@
 
     \omit
         This uses debuglibs. Create on Windows instead.
+        Need to have a separate example for binary package.
     \endomit
 
     \code
@@ -227,6 +226,11 @@
     -C $QTDIR/lib libQtGui.so.4 -C $QTDIR/lib libQtCore.so.4
     qt_system_libs -C /usr/lib libstdc++.so.6 -C lib libqtjambi_debuglib.so
     \endcode
+
+    This example uses a source package. If you have a prebuilt
+    package, the Qt libraries are located in the same directory as Qt
+    Jambi's libraries (i.e., the QTDIR variable would be set to the Qt
+    Jambi directory in the example above).
 
     The Application Example only uses the \c{com.trolltech.core} and
     \c{com.trolltech.gui} packages, so we only need to include
@@ -239,7 +243,7 @@
     Java installation must be present, of course):
 
     \code
-        java -jar application.jar
+        java -Dcom.trolltech.qt.debug -jar application.jar
     \endcode
 
     \section1 Creating a Web Start Application

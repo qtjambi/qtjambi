@@ -78,7 +78,7 @@
 
     A minimal Java class using signals and slots may read:
 
-    \quotefromfile snippets/SignalsSlotsExample.java
+    \quotefromfile SignalsSlotsExample.java
     \skipto /class Counter/
     \printuntil /^\s\s\s\s\}/
     
@@ -87,7 +87,7 @@
     changes. We will now go through the class step-by-step to describe
     how signals are created and emitted.
 
-    \quotefromfile snippets/SignalsSlotsExample.java
+    \quotefromfile SignalsSlotsExample.java
     \skipto Signal1
     \printline Signal1
 
@@ -118,7 +118,7 @@
     if \c{b.valueChanged()} were connected to \c{a.setValue()}). We
     move on the see how signals are connected to slots.
 
-    \quotefromfile snippets/SignalsSlotsExample.java
+    \quotefromfile SignalsSlotsExample.java
     \skipto Counter a
     \printuntil b.setValue
 

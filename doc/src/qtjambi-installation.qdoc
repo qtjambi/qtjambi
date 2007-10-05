@@ -104,8 +104,9 @@
     system. The java version must be at least 1.5.
 
     The following table describes the environment variables necessary
-    to install Qt Jambi. We assume that the JAMBI environment
-    variable contains the path to the Qt Jambi directory.
+    to install Qt Jambi. We assume that the JAMBI environment variable
+    contains the path to the Qt Jambi directory. The QTDIR variable
+    contains the Qt directory.
 
     \table 80% \header \o Variable \o Value
     \row
@@ -218,7 +219,8 @@
 
     Note that on some systems it might be necessary to invoke \c javac
     with the VM option -J-mx1024m to prevent the VM from running out
-    of heap space.
+    of heap space; you may need to choose a different heap size than
+    1024.
 
     \omit (This solution is not publicly available yet)
     \section2 Building with Ant
@@ -336,7 +338,10 @@
     good place to start. In the \l
     {http://lists.trolltech.com/qt-jambi-interest/}{Jambi Mailing
     List}, active Jambi users and the Jambi development team can be
-    helpful with installation problems.
+    helpful with installation problems; please run Qt Jambi with the
+    \c{com.trolltech.qt.verbose-loading} \l{Qt Jambi System Properties
+    Reference}{system property} and give stack traces if Qt Jambi
+    fails to load native libraries.
 
     \section3 Common Problems
 
@@ -369,7 +374,7 @@
             \o if using snapshots \endomit
         \row
             \o \c juic does not update .juic files that are
-               modified, which can be a problem if Java sources
+               not modified, which can be a problem if Java sources
                are deleted.
             \o Run juic with the \c -a option.
         \row
@@ -382,7 +387,8 @@
 
     If Jambi cannot find the native libraries, you will get
     \c{java.lang.UnsatisfiedLinkError}'s or other load issues. The
-    paths in the order Jambi searches for libraries are listed below.
+    search paths - in the order Jambi searches - for libraries are
+    listed below.
 
     \list
         \o The com.trolltech.qt.library-path system property,

@@ -8,6 +8,13 @@
     e.g., libraries and Qt plugins. We present the properties in the
     table below.
 
+    You specify a system property on the command line to the Java VM
+    with the \c{-D} option. For instance:
+
+    \code
+        java -Dcom.trolltech.qt.verbose-loading=true -jar qtjambi.jar
+    \endcode
+
     \table 75%
         \header
             \o Property
