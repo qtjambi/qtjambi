@@ -114,6 +114,8 @@ public class View extends QWidget
             p.drawImage(0, height() - reflection.height() + 10, reflection);
 
         }
+        
+        p.end();
     }
 
     protected void resizeEvent(QResizeEvent e) {
@@ -221,8 +223,12 @@ public class View extends QWidget
             targetQuad.add(iw / 2 - r.width() / 2, 0);
             targetQuad.add(iw / 2 + r.width() / 2, 0);
             targetQuad.add(iw, ih);
-            pt.setTransform(QTransform.quadToQuad(imageQuad, targetQuad));
-            pt.drawImage(imageQuad.boundingRect(), source);
+            try {
+                pt.setTransform(QTransform.quadToQuad(imageQuad, targetQuad));
+                pt.drawImage(imageQuad.boundingRect(), source);
+            } catch (IllegalArgumentException e) {
+                // user has resized the view too small
+            }
         } pt.restore();
 
         QLinearGradient lg = new QLinearGradient(0, 0, 0, image.height());
