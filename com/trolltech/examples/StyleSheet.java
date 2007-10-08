@@ -116,6 +116,7 @@ public class StyleSheet extends QMainWindow {
             ui.styleTextEdit.setPlainText(styleSheet);
             main.setStyleSheet(styleSheet);
             ui.applyButton.setEnabled(false);
+            file.close();
         }
     }
 
