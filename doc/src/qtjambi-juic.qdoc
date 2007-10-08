@@ -46,32 +46,32 @@
     \o Specifies the output directory.
 
     \row
+    \o \c {-x <xml file>}
+    \o Load custom configuration file.
+
+    \row
     \o \c {-p <package>}
     \o Specifies a package for the generated \c .class file (relative
     to the output directory).
 
     \row
     \o \c {-cp <path>}
-
     \o Updates all the \c .jui files in the given path.The path
     argument is optional; the default path is $CLASSPATH.
 
     \row
     \o \c {-pf <prefix>}
-
     \o Specifies the the prefix used for the generated classes. JUIC
     automatically adds 'Ui_' prefix to the generated classes. Use this
     option to alter the prefix, omit the argument to remove the prefix.
 
     \row
     \o \c {-i <file1>:<...>:<fileX>}
-
     \o Used in combination with the 'cp' option, making JUIC only
     update the specified files.
 
     \row
     \o \c {-e <file1>:<...>:<fileX>}
-
     \o Used in combination with the 'cp' option, prohibiting JUIC from
     updating the specified files.
 
