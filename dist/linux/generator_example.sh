@@ -9,7 +9,8 @@ then
     echo try to unset these and try again.
 fi
 
-if [ ! -f $JAVADIR/include/jni.h ] 
+
+if [ ! -f `echo $JAVADIR | sed s,/scripts,,g`/include/jni.h ] 
 then
     echo WARNING!!!
     echo Your JAVADIR does not appear to include a jni.h header file. 
