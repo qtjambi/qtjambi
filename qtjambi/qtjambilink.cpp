@@ -309,13 +309,13 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
                 jclass cl = env->GetObjectClass(t);
 //                qDebug() << ".. au ..";
 
-                if (QCoreApplication::instance() == 0 || qtjambi_class_name(env, cl) == QLatin1String("com.trolltech.qt.QThread")) {
+                if (qtjambi_class_name(env, cl) == QLatin1String("com.trolltech.qt.QThread")) {
     //                 printf(" - delete later in QThread=%p %s [%s]\n",
     //                        objectThread,
     //                        qPrintable(qobj->objectName()),
     //                        qobj->metaObject()->className());
                     qobj->deleteLater();
-                } else {
+                } else if (QCoreApplication::instance()) {
                     qWarning("QObjects can only be implicitly garbage collected when owned"
                             " by a QThread, native resource ('%s' [%s]) is leaked",
                             qPrintable(qobj->objectName()),
