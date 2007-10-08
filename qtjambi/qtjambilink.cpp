@@ -309,7 +309,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
                 jclass cl = env->GetObjectClass(t);
 //                qDebug() << ".. au ..";
 
-                if (qtjambi_class_name(env, cl) == QLatin1String("com.trolltech.qt.QThread")) {
+                if (QCoreApplication::instance() == 0 || qtjambi_class_name(env, cl) == QLatin1String("com.trolltech.qt.QThread")) {
     //                 printf(" - delete later in QThread=%p %s [%s]\n",
     //                        objectThread,
     //                        qPrintable(qobj->objectName()),
@@ -320,7 +320,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
                             " by a QThread, native resource ('%s' [%s]) is leaked",
                             qPrintable(qobj->objectName()),
                             qobj->metaObject()->className());
-                }
+                } 
 
     //             StaticCache *sc = StaticCache::instance(env);
     //             sc->resolveQThread();
@@ -332,12 +332,11 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
     //                 // Message: "QObjects can only be implicitly garbage collected when owned by a QThread".
     //                 qWarning("something really bad happened...");
     //             }
-            }
-            else {
+            } else {
                 delete qobj;
             }
             env->DeleteLocalRef(t);
-        }
+        } 
         m_pointer = 0;
 
     } else {
