@@ -64,12 +64,12 @@ struct Preprocess
             qWarning("QTDIR environment variable not set. This may cause problems with finding the necessary include files.");
         } else {
             qtdir += "/include";
-            includes << qtdir;
             includes << (qtdir + "/QtXml");
             includes << (qtdir + "/QtNetwork");
             includes << (qtdir + "/QtCore");
             includes << (qtdir + "/QtGui");
             includes << (qtdir + "/QtOpenGL");
+            includes << qtdir;
         }
 
         foreach (QString include, includes)
