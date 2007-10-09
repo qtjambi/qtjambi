@@ -423,6 +423,8 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
 
     writeShellSignatures(s, java_class);
 
+    writeDefaultConstructedValues(s, java_class);
+
     if (hasCustomDestructor(java_class))
         writeFinalDestructor(s, java_class);
 
@@ -1017,7 +1019,6 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
 
                 if (java_function->nullPointersDisabled()) {
                     s << INDENT << "if (__java_return_value == 0) {" << endl;
-
                     {
                         Indentation indent;
                         s << INDENT << "fprintf(stderr, \"QtJambi: Unexpected null pointer returned from override of '" << java_function->name() << "' in class '%s'\\n\"," << endl
@@ -1753,7 +1754,7 @@ void CppImplGenerator::writeOriginalMetaObjectFunction(QTextStream &s, const Abs
                                 "originalMetaObject",
                                 "jlong");
 
-    s << endl 
+    s << endl
       << "(JNIEnv *," << endl
       << " jclass)" << endl
       << "{" << endl;
@@ -2092,21 +2093,33 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
             }
 
         } else {
+            // Return values...
             if (argument_index == 0) {
-                s << "(" << java_name << " != 0 ? ";
-            }
-            s << "*"
-              << "(" << qualified_class_name << " *)";
-            if ((options & UseNativeIds) == 0)
-                s << "qtjambi_to_object(__jni_env, ";
-            else
-                s << "qtjambi_from_jlong(";
-            s << java_name;
-
-            if (argument_index == 0) {
+                s << "(" << java_name << " != 0 ? *(" << qualified_class_name << " *)";
+                if ((options & UseNativeIds) == 0)
+                    s << "qtjambi_to_object(__jni_env, ";
+                else
+                    s << "qtjambi_from_jlong(";
+                s << java_name;
                 s << ") : " << qualified_class_name << "());" << endl;
             } else {
-                s << ");" << endl;
+                s << "*"
+                  << "(" << qualified_class_name << " *)";
+                bool null_check = false;
+                if ((options & UseNativeIds) == 0) {
+                    s << "qtjambi_to_object(__jni_env, ";
+                } else if (hasDefaultConstructor(java_type)) {
+                    null_check = true;
+                    s << "(" << java_name << " != 0 ? qtjambi_from_jlong(";
+                } else {
+                    s << "qtjambi_from_jlong(";
+                }
+                s << java_name;
+                s << ")";
+
+                if (null_check)
+                    s << " : default_" << QString(qualified_class_name).replace("::", "_") << "())";
+                s << ";" << endl;
             }
 
         }
@@ -2690,7 +2703,7 @@ QString CppImplGenerator::translateType(const AbstractMetaType *java_type, Optio
      }
 }
 
-static bool include_less_than(const Include &a, const Include &b) 
+static bool include_less_than(const Include &a, const Include &b)
 {
     return a.name < b.name;
 }
@@ -2714,3 +2727,36 @@ void CppImplGenerator::writeExtraIncludes(QTextStream &s, const AbstractMetaClas
 
 }
 
+
+void CppImplGenerator::writeDefaultConstructedValues_helper(QSet<QString> &values,
+                                                            const AbstractMetaFunction *func)
+{
+    foreach (AbstractMetaArgument *arg, func->arguments()) {
+        AbstractMetaType *type = arg->type();
+        if (type->isValue() && hasDefaultConstructor(type))
+            values << type->typeEntry()->qualifiedCppName();
+    }
+}
+
+
+void CppImplGenerator::writeDefaultConstructedValues(QTextStream &s, const AbstractMetaClass *java_class) {
+
+    QSet<QString> values;
+
+    foreach (const AbstractMetaFunction *func, java_class->functions())
+        writeDefaultConstructedValues_helper(values, func);
+
+    foreach (AbstractMetaField *field, java_class->fields()) {
+        writeDefaultConstructedValues_helper(values, field->setter());
+    }
+
+    if (!values.isEmpty()) {
+        s << endl << endl
+          << "// Default constructed values used throughout final functions..." << endl;
+        for (QSet<QString>::const_iterator it = values.constBegin(); it != values.constEnd(); ++it) {
+            s << "Q_GLOBAL_STATIC(" << *it << ", default_" << QString(*it).replace("::", "_")
+              << ");" << endl;
+        }
+        s << endl << endl;
+    }
+}

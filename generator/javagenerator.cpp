@@ -524,7 +524,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
         && (owner != TypeSystem::InvalidOwnership || referenceCounts.size() > 0 || has_code_injections_at_the_end);
 
     if (has_return_type && java_function->argumentReplaced(0).isEmpty()) {
-	
+
         if (needs_return_variable) {
             if (new_return_type.isEmpty())
                 s << translateType(return_type);
@@ -564,14 +564,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
             } else {
                 bool force_abstract = type->typeEntry()->isComplex() && (((static_cast<const ComplexTypeEntry *>(type->typeEntry()))->typeFlags() & ComplexTypeEntry::ForceAbstract) != 0);
                 if (!force_abstract) {
-                    s << arg->argumentName() << " == null ? ";
-                    // Try to call default constructor for value types...
-                    if (type->isValue() && hasDefaultConstructor(type))
-                        s << "(" << arg->argumentName() << " = new " << type->typeEntry()->qualifiedTargetLangName() << "()).nativeId()";
-                    else
-                        s << "0";
-
-                    s << " : ";
+                    s << arg->argumentName() << " == null ? 0 : ";
                 } // else if (value type is abstract) then we will get a null pointer exception, which is all right
 
                 s << arg->argumentName() << ".nativeId()";
@@ -772,7 +765,7 @@ void JavaGenerator::setupForFunction(const AbstractMetaFunction *java_function,
 void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &refCount,
                                         const QString &argumentName)
 {
-    if (refCount.action == ReferenceCount::Ignore) 
+    if (refCount.action == ReferenceCount::Ignore)
         return;
 
     QString refCountVariableName = refCount.variableName;
@@ -1629,7 +1622,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
     }
 
     if ((options & SkipAttributes) == 0) {
-        if (java_function->isEmptyFunction()        
+        if (java_function->isEmptyFunction()
             || java_function->isDeprecated()) s << "@Deprecated ";
 
         bool needsSuppressUnusedWarning = (((excluded_attributes & AbstractMetaAttributes::Private) == 0)
@@ -1639,7 +1632,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         if (needsSuppressUnusedWarning && java_function->needsSuppressUncheckedWarning()) {
             s << "@SuppressWarnings({\"unchecked\", \"unused\"}) ";
         } else if (java_function->needsSuppressUncheckedWarning()) {
-            s << "@SuppressWarnings(\"unchecked\") "; 
+            s << "@SuppressWarnings(\"unchecked\") ";
         } else if (needsSuppressUnusedWarning) {
             s << "    @SuppressWarnings(\"unused\") ";
         }
@@ -1732,20 +1725,3 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass 
     }
 }
 
-bool JavaGenerator::hasDefaultConstructor(const AbstractMetaType *type)
-{
-    QString full_name = type->typeEntry()->qualifiedTargetLangName();
-    QString class_name = type->typeEntry()->targetLangName();
-
-    foreach (const AbstractMetaClass *java_class, m_classes) {
-        if (java_class->typeEntry()->qualifiedTargetLangName() == full_name) {
-            AbstractMetaFunctionList functions = java_class->functions();
-            foreach (const AbstractMetaFunction *function, functions) {
-                if (function->arguments().size() == 0 && function->name() == class_name)
-                    return true;
-            }
-            return false;
-        }
-    }
-    return false;
-}

@@ -94,3 +94,20 @@ void Generator::write(QTextStream &, const AbstractMetaClass *)
     Q_ASSERT(false);
 }
 
+bool Generator::hasDefaultConstructor(const AbstractMetaType *type)
+{
+    QString full_name = type->typeEntry()->qualifiedTargetLangName();
+    QString class_name = type->typeEntry()->targetLangName();
+
+    foreach (const AbstractMetaClass *java_class, m_classes) {
+        if (java_class->typeEntry()->qualifiedTargetLangName() == full_name) {
+            AbstractMetaFunctionList functions = java_class->functions();
+            foreach (const AbstractMetaFunction *function, functions) {
+                if (function->arguments().size() == 0 && function->name() == class_name)
+                    return true;
+            }
+            return false;
+        }
+    }
+    return false;
+}

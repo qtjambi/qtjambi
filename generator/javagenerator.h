@@ -30,7 +30,7 @@ public:
 
     QString translateType(const AbstractMetaType *java_type, Option option = NoOption);
 
-    void writeInjectedCode(QTextStream &s, 
+    void writeInjectedCode(QTextStream &s,
                            const AbstractMetaFunction *java_function,
                            CodeSnip::Position position);
     void writeArgument(QTextStream &s,
@@ -64,8 +64,6 @@ public:
     void writePrivateNativeFunction(QTextStream &s, const AbstractMetaFunction *java_function);
     void writeJavaLangObjectOverrideFunctions(QTextStream &s, const AbstractMetaClass *cls);
     void writeReferenceCount(QTextStream &s, const ReferenceCount &refCount, const QString &argumentName);
-    bool hasDefaultConstructor(const AbstractMetaType *type);
-
     void retrieveModifications(const AbstractMetaFunction *f, const AbstractMetaClass *java_class,
          uint *exclude_attributes, uint *include_attributes) const;
     QString functionSignature(const AbstractMetaFunction *java_function,

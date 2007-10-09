@@ -77,6 +77,9 @@ public:
     virtual QString fileNameForClass(const AbstractMetaClass *java_class) const;
     virtual void write(QTextStream &s, const AbstractMetaClass *java_class);
 
+    bool hasDefaultConstructor(const AbstractMetaType *type);
+
+
 protected:
     void verifyDirectoryFor(const QFile &file);
 

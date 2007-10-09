@@ -150,11 +150,15 @@ public:
                                 const AbstractMetaFunction *java_function,
                                 int argument_index);
 
+    void writeDefaultConstructedValues(QTextStream &s, const AbstractMetaClass *java_class);
+
     bool hasCustomDestructor(const AbstractMetaClass *java_class) const;
 
     QString translateType(const AbstractMetaType *java_type, Option option = NoOption) const;
 
 private:
+    void writeDefaultConstructedValues_helper(QSet<QString> &values,
+                                              const AbstractMetaFunction *function);
     QString fromObject(const TypeEntry *centry, const QString &var_name);
 
 
