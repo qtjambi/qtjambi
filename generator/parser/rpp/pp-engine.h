@@ -184,6 +184,7 @@ public:
   void operator () (_InputIterator __first, _InputIterator __last, _OutputIterator __result);
 
 private:
+  inline bool file_isdir (std::string const &__filename) const;
   inline bool file_exists (std::string const &__filename) const;
   FILE *find_include_file (std::string const &__filename, std::string *__filepath,
                            INCLUDE_POLICY __include_policy, bool __skip_current_path = false) const;
