@@ -66,7 +66,7 @@ struct Preprocess
             qtdir += "/include";
             includes << qtdir;
             includes << (qtdir + "/QtXml");
-            includes << (qtdir + "/QtNetWork");
+            includes << (qtdir + "/QtNetwork");
             includes << (qtdir + "/QtCore");
             includes << (qtdir + "/QtGui");
             includes << (qtdir + "/QtOpenGL");
