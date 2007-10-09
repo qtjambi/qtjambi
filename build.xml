@@ -78,7 +78,7 @@
     </target>
 
     <target name="generator.qtjambi" 
-            depends="tasks"
+            depends="tasks, compile.generator"
             description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
         <generator dir="generator" outputDirectory=""/>
     </target>
