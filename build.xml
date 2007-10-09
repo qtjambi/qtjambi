@@ -84,6 +84,7 @@
     </target>
 
     <target name="compile.qtjambi" 
+            depends="tasks"
             description="Compile the c++ Qt Jambi bindings.">
 	<make />
     </target>
