@@ -134,7 +134,7 @@ public class QNativePointer {
     }
 
     /**
-     * Creates a native pointer to an arrow with <code>size</code>
+     * Creates a native pointer to an array with <code>size</code>
      * length of the specified <code>type</code>. The pointer will
      * have an indirection of 1 and be deleted when the QNativePointer
      * is garbage collected.
