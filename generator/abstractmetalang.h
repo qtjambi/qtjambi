@@ -621,6 +621,7 @@ public:
           m_force_shell_class(false),
           m_has_hash_function(false),
           m_has_equals_operator(false),
+          m_has_tostring_capability(false),
           m_enclosing_class(0),
           m_base_class(0),
           m_extracted_interface(0),
@@ -721,6 +722,11 @@ public:
     void setHasHashFunction(bool on) { m_has_hash_function = on; }
     bool hasHashFunction() const { return m_has_hash_function; }
 
+    void setToStringCapability(bool on) { m_has_tostring_capability = on; }
+    bool hasToStringCapability() const { return m_has_tostring_capability; }
+
+    bool hasDefaultToStringFunction() const;
+
     void setHasEqualsOperator(bool on) { m_has_equals_operator = on; }
     bool hasEqualsOperator() const { return m_has_equals_operator; }
 
@@ -765,6 +771,7 @@ private:
 
     uint m_has_hash_function : 1;
     uint m_has_equals_operator : 1;
+    uint m_has_tostring_capability : 1;
 
     const AbstractMetaClass *m_enclosing_class;
     AbstractMetaClass *m_base_class;

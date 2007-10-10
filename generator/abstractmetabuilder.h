@@ -72,6 +72,7 @@ public:
     AbstractMetaField *traverseField(VariableModelItem field, const AbstractMetaClass *cls);
     void checkFunctionModifications();
     void registerHashFunction(FunctionModelItem function_item);
+    void registerToStringCapability(FunctionModelItem function_item);
 
     void parseQ_Property(AbstractMetaClass *meta_class, const QStringList &declarations);
     void setupEquals(AbstractMetaClass *meta_class);

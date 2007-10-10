@@ -190,6 +190,25 @@ void AbstractMetaBuilder::registerHashFunction(FunctionModelItem function_item)
     }
 }
 
+/**
+ * Check if a class has a debug stream operator that can be used as toString
+ */
+
+void AbstractMetaBuilder::registerToStringCapability(FunctionModelItem function_item)
+{
+    ArgumentList arguments = function_item->arguments();
+    if (arguments.size() == 2) {
+        if (arguments.at(0)->type().toString() == "QDebug"){
+            ArgumentModelItem arg = arguments.at(1);
+            if (AbstractMetaClass *cls = argumentToClass(arg)) {
+                if (arg->type().indirections()==0) {
+                    cls->setToStringCapability(true);
+                }
+            }
+        }
+    }
+}
+
 void AbstractMetaBuilder::traverseCompareOperator(FunctionModelItem item) {
     ArgumentList arguments = item->arguments();
     if (arguments.size() == 2 && item->accessPolicy() == CodeModel::Public) {
@@ -402,6 +421,13 @@ bool AbstractMetaBuilder::build()
         FunctionList hash_functions = m_dom->findFunctions("qHash");
         foreach (FunctionModelItem item, hash_functions) {
             registerHashFunction(item);
+        }
+    }
+
+    {
+        FunctionList hash_functions = m_dom->findFunctions("operator<<");
+        foreach (FunctionModelItem item, hash_functions) {
+            registerToStringCapability(item);
         }
     }
 

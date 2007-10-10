@@ -467,6 +467,9 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     }
     writeExtraFunctions(s, java_class);
 
+    if (java_class->hasToStringCapability() && !java_class->hasDefaultToStringFunction())
+        writeToStringFunction(s, java_class);
+
     // Signals
     AbstractMetaFunctionList signal_functions =
         java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromTargetLang);
@@ -550,7 +553,7 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
 
     // Qt has a standard toString() conversion in QVariant?
     QVariant::Type type = QVariant::nameToType(cls->qualifiedCppName().toLatin1());
-    if (QVariant(type).canConvert(QVariant::String)) {
+    if (QVariant(type).canConvert(QVariant::String) && !cls->hasToStringCapability()) {
         AbstractMetaFunctionList tostring_functions = cls->queryFunctionsByName("toString");
         bool found = false;
         foreach (const AbstractMetaFunction *function, tostring_functions) {
@@ -589,6 +592,29 @@ void CppImplGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaCla
             s << snip.code() << endl;
         }
     }
+}
+
+void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaClass *java_class)
+{
+    s << endl;
+    s << "#include <QDebug>" << endl;
+    s << jni_function_signature(java_class->package(), java_class->name(), "__qt_toString", "jstring")
+    << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
+    << INDENT << "{" << endl;
+    {
+        Indentation indent;
+        s << INDENT << java_class->qualifiedCppName() << " *__qt_this = ("
+          << java_class->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
+          << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
+          << INDENT << "Q_ASSERT(__qt_this);" << endl
+       
+          << INDENT << "QString res;" << endl
+          << INDENT << "QDebug d(&res);" << endl
+          << INDENT << "d << *__qt_this;" << endl
+                    
+          << INDENT << "return qtjambi_from_qstring(__jni_env, res);" << endl;
+    }
+    s << INDENT << "}" << endl;
 }
 
 void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaClass *java_class)
@@ -1084,7 +1110,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
         writeCodeInjections(s, java_function, implementor, CodeSnip::End, TypeSystem::ShellCode);
     }
 
-        s << "}" << endl << endl;
+    s << "}" << endl << endl;
 
 }
 

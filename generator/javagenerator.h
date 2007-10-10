@@ -50,6 +50,7 @@ public:
     void writeEnumOverload(QTextStream &s, const AbstractMetaFunction *java_function,
                            uint include_attributes, uint exclude_attributes);
     void writeExtraFunctions(QTextStream &s, const AbstractMetaClass *java_class);
+    void writeToStringFunction(QTextStream &s);
     void writeFunctionAttributes(QTextStream &s, const AbstractMetaFunction *java_function,
                                  uint included_attributes = 0, uint excluded_attributes = 0,
                                  uint options = 0);

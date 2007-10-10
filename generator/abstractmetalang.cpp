@@ -957,6 +957,17 @@ bool AbstractMetaClass::hasFieldAccessors() const
     return false;
 }
 
+bool AbstractMetaClass::hasDefaultToStringFunction() const
+{
+    foreach (AbstractMetaFunction *f, queryFunctionsByName("toString")) {
+        if (f->actualMinimumArgumentCount() == 0) {
+            return true;
+        }
+
+    }
+    return false;
+}
+
 void AbstractMetaClass::addFunction(AbstractMetaFunction *function)
 {
     function->setOwnerClass(this);

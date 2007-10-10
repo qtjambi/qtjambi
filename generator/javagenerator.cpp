@@ -1029,7 +1029,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
 
     // Qt has a standard toString() conversion in QVariant?
     QVariant::Type type = QVariant::nameToType(cls->qualifiedCppName().toLatin1());
-    if (QVariant(type).canConvert(QVariant::String)) {
+    if (QVariant(type).canConvert(QVariant::String) &&  !cls->hasToStringCapability()) {
         AbstractMetaFunctionList tostring_functions = cls->queryFunctionsByName("toString");
         bool found = false;
         foreach (const AbstractMetaFunction *function, tostring_functions) {
@@ -1514,6 +1514,9 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     writeJavaLangObjectOverrideFunctions(s, java_class);
     writeExtraFunctions(s, java_class);
 
+    if (java_class->hasToStringCapability() && !java_class->hasDefaultToStringFunction())
+        writeToStringFunction(s);
+  
     s << "}" << endl;
 
     if (m_docs_enabled) {
@@ -1725,3 +1728,13 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass 
     }
 }
 
+void JavaGenerator::writeToStringFunction(QTextStream &s)
+{
+    s << endl
+      << "    public String toString() {" << endl
+      << "        if (nativeId() == 0)" << endl
+      << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
+      << "        return __qt_toString(nativeId());" << endl
+      << "    }" << endl
+      << "    private static native String __qt_toString(long __this_nativeId);" << endl << endl;
+}
