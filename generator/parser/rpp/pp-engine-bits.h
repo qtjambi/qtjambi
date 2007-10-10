@@ -225,7 +225,7 @@ inline bool pp::file_isdir (std::string const &__filename) const
         return false;
 #else
     if (lstat (__filename.c_str (), &__st) == 0)
-        return (__st.st_mode & _S_IFDIR) == S_IFDIR;
+        return (__st.st_mode & S_IFDIR) == S_IFDIR;
     else 
         return false;
 #endif
