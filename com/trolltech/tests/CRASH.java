@@ -2,30 +2,16 @@ package com.trolltech.tests;
 
 import com.trolltech.qt.gui.*;
 
-public class CRASH extends QTextEdit {
-    CRASH(QWidget parent) {
-        super(parent);
-
-        connectSlotsByName();
-        loadStyleSheet("Coffee");
-    }
-        
-    void loadStyleSheet(final String sheetName) {
-        String styleSheet;
-        styleSheet = "hello"; 
-        
-        for (int i=0; i<1000; ++i) {
-            setPlainText(styleSheet);
-            System.gc();
-        }                                                
-    }
-    
+public class CRASH extends QTextEdit {    
     public static void main(String args[]) {
         QApplication.initialize(args);
         
-        CRASH crash = new CRASH(null);
-        crash.show();
+        QTextEdit crash = new QTextEdit();
+        crash.connectSlotsByName();
+        for (int i=0; i<1000; ++i) {
+            crash.setPlainText("hello");
+            System.gc();
+        }                                                
         
-        QApplication.exec();
     }
 }
