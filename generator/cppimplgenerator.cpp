@@ -468,7 +468,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     writeExtraFunctions(s, java_class);
 
     if (java_class->hasToStringCapability() && !java_class->hasDefaultToStringFunction())
-        writeToStringFunction(s, java_class);
+        writeToStringFunction(s, java_class->hasToStringCapability(), java_class);
 
     // Signals
     AbstractMetaFunctionList signal_functions =
@@ -594,8 +594,10 @@ void CppImplGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaCla
     }
 }
 
-void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaClass *java_class)
+void CppImplGenerator::writeToStringFunction(QTextStream &s, const FunctionModelItem fun, const AbstractMetaClass *java_class)
 {
+    int indirections = fun->arguments().at(1)->type().indirections();
+
     s << endl;
     s << "#include <QDebug>" << endl;
     s << jni_function_signature(java_class->package(), java_class->name(), "__qt_toString", "jstring")
@@ -609,12 +611,15 @@ void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaC
           << INDENT << "Q_ASSERT(__qt_this);" << endl
        
           << INDENT << "QString res;" << endl
-          << INDENT << "QDebug d(&res);" << endl
-          << INDENT << "d << *__qt_this;" << endl
+          << INDENT << "QDebug d(&res);" << endl;
+        if (indirections == 0)
+            s << INDENT << "d << *__qt_this;" << endl;
+        else 
+            s << INDENT << "d << __qt_this;" << endl;
                     
-          << INDENT << "return qtjambi_from_qstring(__jni_env, res);" << endl;
+        s << INDENT << "return qtjambi_from_qstring(__jni_env, res);" << endl;
     }
-    s << INDENT << "}" << endl;
+    s << INDENT << "}" << endl << endl;
 }
 
 void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaClass *java_class)

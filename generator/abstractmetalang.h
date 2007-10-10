@@ -621,12 +621,12 @@ public:
           m_force_shell_class(false),
           m_has_hash_function(false),
           m_has_equals_operator(false),
-          m_has_tostring_capability(false),
           m_enclosing_class(0),
           m_base_class(0),
           m_extracted_interface(0),
           m_primary_interface_implementor(0),
-          m_type_entry(0)
+          m_type_entry(0), 
+          m_qDebug_stream_function(0)
     {
     }
 
@@ -722,8 +722,8 @@ public:
     void setHasHashFunction(bool on) { m_has_hash_function = on; }
     bool hasHashFunction() const { return m_has_hash_function; }
 
-    void setToStringCapability(bool on) { m_has_tostring_capability = on; }
-    bool hasToStringCapability() const { return m_has_tostring_capability; }
+    void setToStringCapability(FunctionModelItem fun) { m_qDebug_stream_function= fun; }
+    FunctionModelItem hasToStringCapability() const { return m_qDebug_stream_function; }
 
     bool hasDefaultToStringFunction() const;
 
@@ -771,7 +771,6 @@ private:
 
     uint m_has_hash_function : 1;
     uint m_has_equals_operator : 1;
-    uint m_has_tostring_capability : 1;
 
     const AbstractMetaClass *m_enclosing_class;
     AbstractMetaClass *m_base_class;
@@ -792,6 +791,7 @@ private:
 
     QStringList m_base_class_names;
     ComplexTypeEntry *m_type_entry;
+    FunctionModelItem m_qDebug_stream_function;
 };
 
 class QPropertySpec {
