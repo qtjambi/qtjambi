@@ -143,6 +143,7 @@ static QList<Unit*> *diffHelper(int *lcs, QList<QByteArray> a, QList<QByteArray>
             return unitAppend(diffHelper(lcs, a, b, row-1, col), Delete, row-1);;
         }
     }
+    delete lcs;
     return 0;
 }
 
