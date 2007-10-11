@@ -438,7 +438,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["polymorphic-base"] = QString("no");
             attributes["polymorphic-id-expression"] = QString();
             attributes["java-name"] = QString();
-	    attributes["delete-in-main-thread"] = QString("no");
+            attributes["delete-in-main-thread"] = QString("no");
             // fall through
         case StackElement::NamespaceTypeEntry:
             attributes["package"] = m_defaultPackage;

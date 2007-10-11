@@ -78,7 +78,7 @@ QString jni_signature(const QString &_full_name, JNISignatureFormat format)
         signature = "[";
     }
 
-    int start = 0, end = 0;
+    int start = 0, end = -1;
     while ( (start = full_name.indexOf("<")) >= 0 && (end = full_name.indexOf(">")) >= 0 ) {
         full_name.remove(start, end - start + 1);
     }

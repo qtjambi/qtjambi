@@ -342,7 +342,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
     } else {
 	if (deleteInMainThread() && (QCoreApplication::instance() == 0 || QCoreApplication::instance()->thread() != QThread::currentThread())) {
 	    if (QCoreApplication::instance()) {
-		    QCoreApplication::postEvent(QCoreApplication::instance(), new QtJambiDestructorEvent(m_pointer, m_meta_type, m_ownership, m_destructor_function));
+                QCoreApplication::postEvent(QCoreApplication::instance(), new QtJambiDestructorEvent(m_pointer, m_meta_type, m_ownership, m_destructor_function));
 	    }
         } else if (m_pointer != 0 && m_meta_type != QMetaType::Void && (QCoreApplication::instance() != 0 
                    || (m_meta_type < QMetaType::FirstGuiType || m_meta_type > QMetaType::LastGuiType))) {
@@ -351,6 +351,9 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
             m_destructor_function(m_pointer);
         }
         m_pointer = 0;
+
+
+
     }
 }
 
