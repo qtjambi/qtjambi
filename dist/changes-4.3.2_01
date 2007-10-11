@@ -32,6 +32,9 @@ ____________________
  * Types that inherit Qt C++ template classes now contain
    out-of-bounds checks, throwing exceptions instead of crashing. This
    includes QPolygon, QPolygonF, QItemSelection among others.
+   
+ * Fixed internal race condition in use of text related API which in
+   rare cases would cause the application to crash.
 
 
 ************************************************************************
