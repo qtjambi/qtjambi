@@ -679,7 +679,7 @@ class ComplexTypeEntry : public TypeEntry
 public:
     enum TypeFlag {
         ForceAbstract      = 0x1,
-	DeleteInMainThread = 0x2,
+	    DeleteInMainThread = 0x2,
         Deprecated         = 0x4
     };
     typedef QFlags<TypeFlag> TypeFlags;

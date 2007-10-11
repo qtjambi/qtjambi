@@ -635,8 +635,14 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
         javaName.prepend(javaPackage.replace(".", "/") + "/");
     }
 
-    QString qtName = entry->qualifiedCppName();
 
+    if (entry->isComplex()) {
+        const ComplexTypeEntry *centry = static_cast<const ComplexTypeEntry *>(entry);
+        if (centry->typeFlags() & ComplexTypeEntry::DeleteInMainThread)
+            s << "    registerDeletionPolicy(\"" << javaName << "\", DeletionPolicyDeleteInMainThread);" << endl;        
+    }
+
+    QString qtName = entry->qualifiedCppName();
     if (!entry->isPrimitive() || ((PrimitiveTypeEntry *) entry)->preferredTargetLangType())
         s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl;
 
@@ -648,9 +654,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
         QString patchedName = QString(javaName).replace("/", "_").replace("$", "_");
 
         if(lookupClassWithPublicDestructor(cls))
-        {
             s << "    registerDestructor(\"" << javaName << "\", destructor_" << patchedName << ");" << endl;
-        }
     }
 
     if (!registerMetaType)
