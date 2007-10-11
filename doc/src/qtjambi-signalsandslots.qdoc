@@ -40,7 +40,7 @@
     and add your own slots so that you can handle the signals that you
     are interested in.
 
-    \image abstract-connections.png
+    \image qtjambi-abstract-connections.png
 
     The signals and slots mechanism is type safe: The signature of a
     signal must match the signature of the receiving slot. Signals and
@@ -78,7 +78,7 @@
 
     A minimal Java class using signals and slots may read:
 
-    \quotefromfile SignalsSlotsExample.java
+    \quotefromfile snippets/SignalsSlotsExample.java
     \skipto /class Counter/
     \printuntil /^\s\s\s\s\}/
     
@@ -87,7 +87,7 @@
     changes. We will now go through the class step-by-step to describe
     how signals are created and emitted.
 
-    \quotefromfile SignalsSlotsExample.java
+    \quotefromfile snippets/SignalsSlotsExample.java
     \skipto Signal1
     \printline Signal1
 
@@ -118,7 +118,7 @@
     if \c{b.valueChanged()} were connected to \c{a.setValue()}). We
     move on the see how signals are connected to slots.
 
-    \quotefromfile SignalsSlotsExample.java
+    \quotefromfile snippets/SignalsSlotsExample.java
     \skipto Counter a
     \printuntil b.setValue
 

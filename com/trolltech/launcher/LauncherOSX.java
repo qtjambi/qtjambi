@@ -86,6 +86,7 @@ public class LauncherOSX {
         cmd.append(" -Djava.library.path=" + tmp);
 
 	cmd.append(" -XstartOnFirstThread");
+        cmd.append(" -Dcom.trolltech.launcher.webstart=true");
 
         // the app itself...
         cmd.append(" com.trolltech.launcher.Launcher");

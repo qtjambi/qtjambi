@@ -27,3 +27,8 @@ win32-msvc.net{
 RESOURCES += resources.qrc
 
 INCLUDEPATH += $$PWD $$QTDIR/QtDesigner
+
+win32-msvc2005 {
+    CONFIG -= embed_manifest_dll 
+    QMAKE_LFLAGS += /MANIFEST:no
+}

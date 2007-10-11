@@ -2,13 +2,9 @@
     \page qtjambi-examples.html
     \title Qt Jambi Examples
 
-    Check out \l{Installation}.
-
     This is the list of examples in Qt Jambi's \c examples
     directory. The examples demonstrate Qt Jambi features in small,
-    self-contained programs. They are not very impressive when you run
-    them, but their source code is carefully written to show good Qt
-    Jambi programming practices.
+    self-contained programs. 
 
     In addition to the examples, Qt Jambi includes a small selection
     of \l {Qt Jambi Demonstrations}{demos} that deliberately show off
@@ -122,7 +118,6 @@
 
     \list
         \o \l{HTTP Example}{HTTP}
-        \o \l{Simple HTTP Server}{Simple HTTP Server}
     \endlist
 
     \section1 Drag and Drop Examples

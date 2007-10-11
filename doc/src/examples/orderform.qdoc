@@ -123,7 +123,7 @@
     instantiated and set as the window's central widget.
 
     \quotefromfile OrderForm.java
-    \skipto /public MainWindow/
+    \skipto /public OrderForm/
     \printuntil /^\s{4}\}/
 
     The \c createLetter() function creates a new QTabWidget with a QTextEdit,

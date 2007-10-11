@@ -19,6 +19,7 @@ INCLUDEPATH += $$PWD/../qtjambi $$PWD/../common
 DEPENDPATH += $$PWD/../qtjambi $$PWD/../common
 
 macx:{
+    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
 } else {
@@ -44,7 +45,6 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
 win32:CONFIG += precompile_header
 
 macx{
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     contains(QT_CONFIG, x86):contains(QT_CONFIG, ppc):CONFIG += x86 ppc
     CONFIG -= precompile_header
 }

@@ -21,13 +21,18 @@ import java.util.*;
 
 public class MemberSheet extends JambiMemberSheet {
 
-    private interface Entry {
-        String name();
-        String signature();
-        String group();
+    private static abstract class Entry {
+        public abstract String name();
+        public abstract String signature();
+        public abstract String group();
+        public abstract boolean isWidget();
+        public boolean visible() { return visible; }
+        public void setVisible(boolean b) { visible = b; }
+
+        private boolean visible = true;
     }
 
-    private class SignalEntry implements Entry {
+    private static class SignalEntry extends Entry {
         Field signal;
 
         public String name() {
@@ -64,9 +69,11 @@ public class MemberSheet extends JambiMemberSheet {
         public String group() {
             return signal.getDeclaringClass().getName();
         }
+
+        public boolean isWidget() { return signal.getDeclaringClass() == com.trolltech.qt.gui.QWidget.class; }
     }
 
-    private class SlotEntry implements Entry {
+    private static class SlotEntry extends Entry {
         Method method;
 
         public String group() { return method.getDeclaringClass().getName(); }
@@ -87,6 +94,8 @@ public class MemberSheet extends JambiMemberSheet {
 
             return s.toString();
         }
+
+        public boolean isWidget() { return method.getDeclaringClass() == com.trolltech.qt.gui.QWidget.class; }
     }
 
     public MemberSheet(QObject object, QObject parent) {
@@ -94,6 +103,7 @@ public class MemberSheet extends JambiMemberSheet {
         this.object = object;
         build();
     }
+
 
     public int count() {
         return entries.size();
@@ -107,12 +117,13 @@ public class MemberSheet extends JambiMemberSheet {
     }
 
     public int indexOf(String name) {
-        System.out.println("index of: " + name);
         return 0;
     }
 
     public boolean inheritedFromWidget(int i) {
-        return false;
+        if (i >= entries.size())
+            return false;
+        return entries.get(i).isWidget();
     }
 
     public boolean isSignal(int i) {
@@ -130,7 +141,9 @@ public class MemberSheet extends JambiMemberSheet {
     }
 
     public boolean isVisible(int i) {
-        return true;
+        if (i >= entries.size())
+            return false;
+        return entries.get(i).visible();
     }
 
     public String memberGroup(int i) {
@@ -156,7 +169,10 @@ public class MemberSheet extends JambiMemberSheet {
     public void setMemberGroup(int i, String arg__2) {
     }
 
-    public void setVisible(int i, boolean arg__2) {
+    public void setVisible(int i, boolean arg) {
+        if (i >= entries.size()) {
+            entries.get(i).setVisible(arg);
+        }
     }
 
     public String signature(int index) {

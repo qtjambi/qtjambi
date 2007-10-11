@@ -3,6 +3,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+@QtJambiExample(name = "Sliders")
 public class Sliders extends QWidget
 {
     private SlidersGroup horizontalSliders;

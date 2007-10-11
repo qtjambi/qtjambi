@@ -219,7 +219,7 @@
     \skipto invertAppearance
     \printuntil /^\s{4}\}/
 
-    \skipto invertKeyBindings
+    \skipto invertedKeyBindings
     \printuntil /^\s{4}\}/
 
     The \c invertAppearance() and \c invertKeyBindings() slots

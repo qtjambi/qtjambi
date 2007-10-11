@@ -22,6 +22,7 @@ public class BuddyProperty extends FakeProperty {
     public BuddyProperty(QLabel label) {
         super("buddy");
         this.label = label;
+        this.attribute = false;
 
         groupName = "QLabel";
         subclassLevel = decideSubclassLevel(QLabel.class);

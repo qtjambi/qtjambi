@@ -1005,13 +1005,6 @@ don't want to fill in all the information themselves.
 */
 
 
-$$QAccessibleInterfaceEx.invokeMethodEx(com.trolltech.qt.gui.QAccessible.Method, int, java.util.List<java.lang.Object>)
-/**
-This method is internal to Qt Jambi.
-
-*/
-
-
 $$QDockWidget.initStyleOption(com.trolltech.qt.gui.QStyleOptionDockWidget)
 /**
 Initialize <tt>option</tt> with the values from this QDockWidget. This
@@ -1127,23 +1120,10 @@ Sets the <tt>mouseState</tt> of this QMouseEvent.
 */
 
 
-$$QTableArea.QTableArea(int, int, int, int)
-/**
-This constructor is internal to Qt Jambi.
-*/
-
-
 $$QApplication.QApplication(java.lang.String[])
 /**
 Initializes the window system and constructs an application object
 with the command line arguments in <tt>argv</tt>.
-
-*/
-
-
-$$QApplication.initialize(java.lang.String[])
-/**
-This method is internal to Qt Jambi.
 
 */
 
@@ -1245,14 +1225,6 @@ Starts a drag by calling drag.start() using the given
 <tt>supportedActions</tt>.
 
 */
-
-
-$$QFont.cacheStatistics()
-/**
-Internal function that dumps font cache statistics.
-
-*/
-
 
 $$QClipboard.text(java.lang.String, com.trolltech.qt.gui.QClipboard.Mode)
 /**

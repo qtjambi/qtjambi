@@ -70,7 +70,7 @@ public class Utilities {
     /** Whether Qt Jambi should prefer to load libraries from its cache */
     public static boolean loadFromCache = matchProperty("com.trolltech.qt.load-from-cache", "true");
     /** Wheter Qt Jambi should throw exceptions on warnings, debug, critical or/and fatal messages from c++ code. */
-    
+
     private static final String DEBUG_SUFFIX = "_debuglib";
 
 
@@ -136,7 +136,7 @@ public class Utilities {
 
                     if (f.exists()) {
                         Runtime.getRuntime().load(f.getAbsolutePath());
-                        debug.sucsess("   Loaded from: " + path);
+                        debug.success("   Loaded from: " + path);
                         LOADED_LIBS.add(lib);
                         return true;
                     }
@@ -159,16 +159,22 @@ public class Utilities {
         LibraryLoadingInfo debug = new LibraryLoadingInfo(lib);
 
         if(LOADED_LIBS.contains(lib)){
-            debug.sucsess("Already loaded: " + lib + " skipping it.");
+            debug.success("Already loaded: " + lib + " skipping it.");
             return true;
         }
 
         debug.message("Going to load: " + lib);
 
-        if (loadFromEnv("com.trolltech.qt.library-path", lib, debug))
+        boolean onlyUnpack = operatingSystem == OperatingSystem.Windows
+                             && (lib.equals("Microsoft.VC80.CRT.manifest")
+                                 || lib.equals("msvcr80.dll")
+                                 || lib.equals("msvcm80.dll")
+                                 || lib.equals("msvcp80.dll"));
+
+        if (!onlyUnpack && loadFromEnv("com.trolltech.qt.library-path", lib, debug))
             return true;
 
-        if (loadFromEnv("com.trolltech.qt.internal.jambipath", lib, debug))
+        if (!onlyUnpack && loadFromEnv("com.trolltech.qt.internal.jambipath", lib, debug))
             return true;
 
         // Try to search in the classpath, including .jar files and unpack to a
@@ -194,17 +200,25 @@ public class Utilities {
                 tmpLibDir.mkdirs();
                 copy(libUrl, destLib);
 
+                if (onlyUnpack) {
+                    debug.success("Unpacked file: " + destLib.getAbsolutePath());
+                    return true;
+                }
+
                 Runtime.getRuntime().load(destLib.getAbsolutePath());
-                debug.sucsess("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
+                debug.success("Loaded " + destLib.getAbsolutePath() + " as " + lib + " from class path");
             } else {
                 Runtime.getRuntime().load(destLib.getAbsolutePath());
-                debug.sucsess("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
+                debug.success("Loaded " + destLib.getAbsolutePath() + " as " + lib + " using cached");
             }
             LOADED_LIBS.add(lib);
             return true;
         } catch (Throwable e) {
             debug.message(e);
         }
+
+        if (onlyUnpack)
+            return true;
 
         // Try to load using relative path (relative to qtjambi.jar or
         // root of package where class file are loaded from
@@ -216,7 +230,7 @@ public class Utilities {
                 String libraryPath = basePath + File.separator + libSubPath + File.separator + lib;
                 if (new File(libraryPath).exists()) {
                     Runtime.getRuntime().load(libraryPath);
-                    debug.sucsess("Loaded(" + libraryPath + ") using deploy path, as " + lib);
+                    debug.success("Loaded(" + libraryPath + ") using deploy path, as " + lib);
                     LOADED_LIBS.add(lib);
                     return true;
                 }
@@ -232,7 +246,7 @@ public class Utilities {
         try {
             String stripped = stripLibraryName(lib);
             System.loadLibrary(stripped);
-            debug.sucsess("Loaded(" + lib + ") in standard way as " + stripped);
+            debug.success("Loaded(" + lib + ") in standard way as " + stripped);
             LOADED_LIBS.add(lib);
             return true;
         } catch (Throwable e) {
@@ -493,7 +507,7 @@ public class Utilities {
             return res;
         }
 
-        private void sucsess(String message) {
+        private void success(String message) {
             message(message);
             sucess = true;
             if (VERBOSE_LOADING) {

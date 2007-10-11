@@ -6,6 +6,7 @@ import com.trolltech.qt.gui.*;
 
 import java.util.*;
 
+@QtJambiExample(name = "Order Form")
 public class OrderForm extends QMainWindow
 {
     private static class DetailsDialog extends QDialog

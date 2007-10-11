@@ -123,7 +123,7 @@ public class QNativePointer {
     }
 
     /**
-     * Creates a native pointer of the specified <code>type</endcode>.
+     * Creates a native pointer of the specified <code>type</code>.
      * The object has an indirection of 1 and the internal pointer
      * will be deleted when the QNativePointer object is deleted.
      *
@@ -687,7 +687,7 @@ public class QNativePointer {
     /**
      * This function deletes the internal pointer. 
      *
-     * Currently, all QNativePointer's should be deleted using the
+     * Currently, all QNativePointers should be deleted using the
      * delete() function.
      * After the pointer has been deleted, you cannot use the same
      * QNativePointer to allocate further data. Note also that the
@@ -814,7 +814,7 @@ public class QNativePointer {
     }
 
     /**
-     * Creates a char** native pointer from the input string.
+     * Creates a char** native pointer from the array of input strings.
      *
      * @param strings the input strings
      * @return a char **

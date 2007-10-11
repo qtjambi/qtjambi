@@ -175,16 +175,16 @@ than, equal to, or greater than the specified object.
 $$QTimer.singleShot(int, com.trolltech.qt.core.QObject, java.lang.String)
 /**
 This static function calls a slot after a given time interval.
-
+<p>
 It is very convenient to use this function because you do not need
 to bother with a QObject.timerEvent() or
 create a local QTimer object.
-
+<p>
 Example:
 <pre>
 <code>
-    #include <QApplication>
-    #include <QTimer>
+    #include &ltQApplication&gt
+    #include &ltQTimer&gt
 
     int main(int argc, char *argv[])
     {
@@ -195,10 +195,10 @@ Example:
     }
 </endcode>
 </pre>
-
+<p>
 This sample program automatically terminates after 10 minutes
 (600,000 milliseconds).
-
+<p>
 The <tt>obj</tt> is the receiving object and the <tt>member</tt> is the
 slot. The time interval is <tt>msec</tt> milliseconds.
 
@@ -1220,49 +1220,6 @@ Returns the ConversionFlags of this ConverterState object.
 */
 
 
-$$QTextCodec_ConverterState.setRemainingChars(int)
-/**
-This function is internal to Jambi and not part of the public API.
-
-*/
-
-
-$$QTextCodec_ConverterState.remainingChars()
-/**
-This function is internal to Jambi and not part of the public API.
-
-*/
-
-
-$$QTextCodec_ConverterState.setInvalidChars(int)
-/**
-This function is internal to Jambi and not part of the public API.
-
-*/
-
-
-$$QTextCodec_ConverterState.invalidChars()
-/**
-This function is internal to Jambi and not part of the public API.
-
-
-*/
-
-
-$$QTextCodec_ConverterState.setState_data(int[])
-/**
-This function is internal to Jambi and not part of the public API.
-
-*/
-
-
-$$QTextCodec_ConverterState.state_data()
-/**
-This function is internal to Jambi and not part of the public API.
-
-*/
-
-
 $$QDir.entryInfoList(java.util.List<java.lang.String>, com.trolltech.qt.core.QDir.Filters)
 /**
 Returns a list of QFileInfo objects for all the files and
@@ -1789,29 +1746,6 @@ information about contexts and comments.
 <p>
 <tt>n</tt> is used in conjunction with <b>%n</b> to support plural forms.
 See QObject.tr() for details.
-
-*/
-
-
-$$QCoreApplication.initialize(java.lang.String[])
-/**
-This function is internal to Qt Jambi and not part of the public API.
-
-*/
-
-
-$$QCoreApplication.argv(java.lang.String[])
-/**
-
-This function is internal to Qt Jambi and not part of the public API.
-
-*/
-
-
-$$QCoreApplication.argc(java.lang.String[])
-/**
-
-This function is internal to Qt Jambi and not part of the public API.
 
 */
 
