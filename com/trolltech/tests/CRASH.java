@@ -1,15 +1,20 @@
 package com.trolltech.tests;
 
+import java.util.List;
+
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.*;
 
-public class CRASH extends QTextEdit {    
+public class CRASH {    
     public static void main(String args[]) {
         QApplication.initialize(args);
         
         QTextEdit crash = new QTextEdit();
-        crash.connectSlotsByName();
+        {
+            List<QObject> children = crash.findChildren();
+        }
         for (int i=0; i<1000; ++i) {
-            crash.setPlainText("hello");
+            crash.setPlainText("a");
             System.gc();
         }                                                
         
