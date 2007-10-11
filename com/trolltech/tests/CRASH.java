@@ -11,7 +11,7 @@ public class CRASH {
         
         QTextEdit crash = new QTextEdit();
         {
-            List<QObject> children = crash.findChildren();
+            List<QObject> children = crash.children();
         }
         for (int i=0; i<1000; ++i) {
             crash.setPlainText("a");
