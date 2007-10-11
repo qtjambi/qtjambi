@@ -22,7 +22,6 @@ abstract class QtJambi_LibraryInitializer
     static {
         Utilities.loadSystemLibraries();
         Utilities.loadQtLibrary("QtCore");
-        Utilities.loadQtLibrary("QtGui");
         Utilities.loadJambiLibrary("qtjambi");
 
         handler = new QClassPathFileEngineHandler();
