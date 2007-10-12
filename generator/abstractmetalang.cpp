@@ -1688,7 +1688,9 @@ void AbstractMetaClass::fixFunctions()
 
 
         // Make sure that we include files for all classes that are in use
-        add_extra_includes_for_function(this, func);
+        
+        if (!func->isRemovedFrom(this, TypeSystem::ShellCode))
+            add_extra_includes_for_function(this, func);
     }
 
     if (hasPrivateConstructors && !hasPublicConstructors) {
