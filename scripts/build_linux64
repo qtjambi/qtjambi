@@ -1,2 +1,7 @@
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/qt/package-builder/qt-x11-commercial-src-4.3.0/lib
  ~/package-builder/qt-x11-commercial-src-4.3.0/bin/qsengine ~/package-builder/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --no-source --qt-commercial $QT_PACKAGE_DIRECTORY/qt-commercial --qt-gpl $QT_PACKAGE_DIRECTORY/qt-gpl --qt-eval $QT_PACKAGE_DIRECTORY/qt-eval
+
+scp qtjambi-linux63-eval-*.tar.gz gunnar@anarki:~/public_html/packages/eval
+scp qtjambi-linux64-gpl-*.tar.gz gunnar@anarki:~/public_html/packages/gpl
+scp qtjambi-linux64-commercial-*.tar.gz  gunnar@anarki:~/public_html/packages/commercial
+scp qtjambi-linux64-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart 
