@@ -62,8 +62,8 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" class="even"><td>Linux</td><td>Set the <tt>LD_LIBRARY_PATH</tt> environment variable to include the lib directory in the Qt Jambi directory.</td></tr>
 <tr valign="top" class="odd"><td>Mac OS X</td><td>Set the <tt>DYLD_LIBRARY_PATH</tt> environment variable to include the lib directory in the Qt Jambi directory.</td></tr>
 </table></p>
-<p>You are then ready to run Qt Jambi applications. For instance, the launcher can be run like this:</p>
-<pre>    java -jar qtjambi.jar com.trolltech.launcher.Launcher</pre>
+<p>You are then ready to run Qt Jambi applications. For instance, the launcher can be run in the Qt Jambi directory like this on Linux (on Windows, replace the ':' with ';'):</p>
+<pre>    java -cp qtjambi.jar:. com.trolltech.launcher.Launcher</pre>
 <p>Note that the <tt>-jar</tt> option must be given the complete file path to the <tt>.jar</tt> file.</p>
 <a name="building-qt-jambi-from-a-source-package"></a>
 <h2>Building Qt Jambi from a Source Package</h2>
