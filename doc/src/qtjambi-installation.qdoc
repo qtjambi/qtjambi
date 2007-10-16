@@ -26,7 +26,7 @@
         qtjambi.exe
     \endcode
 
-    executable from the root directory. On Linux and Mac OS X run the
+    executable from the Qt Jambi directory. On Linux and Mac OS X run the
 
     \code
         qtjambi.sh
@@ -35,10 +35,7 @@
     shell script from the Qt Jambi directory.
 
     Running these files will verify the virtual machine version and
-    set the correct environment for running Qt Jambi applications. If
-    you later have problems running your own applications, you can
-    examine the script, update the class path, and replace your own
-    class with \c{ com.trolltech.launcher.Launcher }.
+    set the correct environment for running Qt Jambi applications.
 
     When you are ready to distribute your own applications, see the
     \l{Deploying Qt Jambi Applications}{deployment} document.
@@ -78,10 +75,11 @@
     \endtable
 
     You are then ready to run Qt Jambi applications. For instance, the
-    launcher can be run like this:
+    launcher can be run like this from the Qt Jambi directory (On
+    Windows, replace the ':' with ';'):
 
     \code
-        java -jar qtjambi.jar com.trolltech.launcher.Launcher
+        java -cp qtjambi.jar:. com.trolltech.launcher.Launcher 
     \endcode
 
     Note that the \c {-jar} option must be given the complete file
@@ -118,9 +116,6 @@
         \o This variable must contain the path to the directory
            where Java is installed.
     \row
-        \o PATH
-        \o This variable must include the directory JAVADIR/bin.
-    \row
         \o 
             \list 
                 \o LD_LIBRARY_PATH on Linux
@@ -131,7 +126,7 @@
            QTDIR/Lib
     \row
         \o CLASSPATH
-        \o This variable must include the JAMBI directory.
+        \o This variable should include the JAMBI directory.
     \endtable
 
     \section2 Building 
@@ -373,7 +368,7 @@
             \o Qt headers not in default locations
             \o if using snapshots \endomit
         \row
-            \o \c juic does not update .juic files that are
+            \o \c juic does not update .jui files that are
                not modified, which can be a problem if Java sources
                are deleted.
             \o Run juic with the \c -a option.
