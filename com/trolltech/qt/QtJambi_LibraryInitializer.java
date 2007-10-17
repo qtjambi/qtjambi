@@ -18,7 +18,8 @@ import com.trolltech.qt.core.QMessageHandler;
 abstract class QtJambi_LibraryInitializer
 {
     static QClassPathFileEngineHandler handler;
-    
+    static QMessageHandler messageHandler;
+
     static {
         Utilities.loadSystemLibraries();
         Utilities.loadQtLibrary("QtCore");
@@ -26,7 +27,7 @@ abstract class QtJambi_LibraryInitializer
 
         handler = new QClassPathFileEngineHandler();
         installMessageHandlerForExceptions(System.getProperty("com.trolltech.qt.exceptions-for-messages"));
-        
+
         initialize();
         QThreadManager.initialize();
 
@@ -34,7 +35,7 @@ abstract class QtJambi_LibraryInitializer
     }
 
     private static void installMessageHandlerForExceptions(String config) {
-        
+
         if (config != null) {
             config = config.trim().toUpperCase();
             final boolean all = config.equals("") || config.equals("ALL") || config.equals("TRUE");
@@ -42,10 +43,9 @@ abstract class QtJambi_LibraryInitializer
             final boolean debug = config.contains("DEBUG");
             final boolean fatal = config.contains("FATAL");
             final boolean warning = config.contains("WARNING");
-           
+
             if (all || critical || debug || fatal || warning) {
-                System.out.println("Installing message handler for: " + config);
-                QMessageHandler handler = new QMessageHandler() {
+                QMessageHandler messageHandler = new QMessageHandler() {
 
                     public void critical(String message) {
                         if (critical || all)
@@ -75,11 +75,11 @@ abstract class QtJambi_LibraryInitializer
                             System.err.println("Warning: " + message);
                     }
                 };
-                QMessageHandler.installMessageHandler(handler);
+                QMessageHandler.installMessageHandler(messageHandler);
             }
         }
-    }   
-    
+    }
+
     static void init() {}
 
     private static native void initialize();

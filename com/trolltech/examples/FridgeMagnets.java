@@ -43,13 +43,15 @@ public class FridgeMagnets extends QWidget {
                 DragLabel wordLabel = new DragLabel(word, this);
                 wordLabel.move(x, y);
                 wordLabel.show();
-                x += wordLabel.width() + 2;
+                x += wordLabel.sizeHint().width() + 2;
                 if (x >= 245) {
                     x = 5;
-                    y += wordLabel.height() + 2;
+                    y += wordLabel.sizeHint().height() + 2;
                 }
             }
         }
+        inputStream.dispose();
+        dictionaryFile.dispose();
 
         QPalette newPalette = palette();
         newPalette.setColor(QPalette.ColorRole.Window, QColor.white);
@@ -156,7 +158,7 @@ public class FridgeMagnets extends QWidget {
             painter.setBrush(QColor.white);
             QRectF frame = new QRectF(0.5, 0.5, image.width() - 1,
                                       image.height() - 1);
-            painter.drawRoundRect(frame, 25, 25);
+            painter.drawRoundRect(frame, 10 * 100 / image.width(), 10 * 100 / image.height());
 
             painter.setFont(font);
             painter.setBrush(QColor.black);
@@ -169,7 +171,7 @@ public class FridgeMagnets extends QWidget {
             setPixmap(QPixmap.fromImage(image));
             labelText = text;
         }
-        
+
         public void mousePressEvent(QMouseEvent event) {
             QByteArray itemData = new QByteArray();
             QDataStream dataStream;

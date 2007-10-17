@@ -1,5 +1,8 @@
-call build --crt-redist "%VCINSTALLDIR%\redist\x86\Microsoft.VC80.CRT" --qt-commercial c:\tmp\qt-commercial --qt-gpl c:\tmp\qt-opensource --qt-eval c:\tmp\qt-eval --no-source
-
-scp qtjambi*eval* gunnar@anarki.troll.no:~/public_html/packages/eval
-scp qtjambi*gpl* gunnar@anarki.troll.no:~/public_html/packages/gpl
-scp qtjambi*commerc* gunnar@anarki.troll.no:~/public_html/packages/commercial
+call build --crt-redist "%VCINSTALLDIR%\redist\x86\Microsoft.VC80.CRT"
+     
+scp qtjambi-win32-eval*.zip gunnar@anarki.troll.no:~/public_html/packages/eval
+scp qtjambi-win32-gpl*.zip gunnar@anarki.troll.no:~/public_html/packages/gpl
+scp qtjambi-win32-commercial*.zip gunnar@anarki.troll.no:~/public_html/packages/commercial
+scp qtjambi-win32-gpl*.jar gunnar@anarki.troll.no:~/public_html/packages/webstart
+scp qtjambi-commercial-src*.zip gunnar@anarki.troll.no:~/public_html/packages/commercial
+scp qtjambi-gpl-src*.zip gunnar@anarki.troll.no:~/public_html/packages/gpl

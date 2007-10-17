@@ -1,5 +1,9 @@
 #!/bin/sh
-$DEPOT/private/gunnar/qsengine_mac $DEPOT/private/gunnar/utils.qs mkdist.qs -args --verbose --no-source --qt-eval ~/qt-eval --qt-commercial ~/qt-commercial --qt-gpl ~/qt-gpl --qt ~/qt-commercial
-scp qtjambi*eval* gunnar@anarki:~/public_html/packages/eval
-scp qtjambi*gpl* gunnar@anarki:~/public_html/packages/gpl
-scp qtjambi*commercial* gunnar@anarki:~/public_html/packages/commercial
+$DEPOT/private/gunnar/qsengine_mac $DEPOT/private/gunnar/utils.qs mkdist.qs -args --verbose --qt-eval ~/qt-eval --qt-commercial ~/qt-commercial --qt-gpl ~/qt-gpl --qt ~/qt-commercial
+
+scp qtjambi-mac-eval-*.tar.gz gunnar@anarki:~/public_html/packages/eval
+scp qtjambi-mac-gpl-*.tar.gz gunnar@anarki:~/public_html/packages/gpl
+scp qtjambi-mac-commercial-*.tar.gz  gunnar@anarki:~/public_html/packages/commercial
+scp qtjambi-mac-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart 
+scp qtjambi-commercial-src*.tar.gz gunnar@anarki:~/public_html/packages/commercial
+scp qtjambi-gpl-src*.tar.gz gunnar@anarki:~/public_html/packages/gpl

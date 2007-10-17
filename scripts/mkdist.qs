@@ -141,7 +141,6 @@ function setupDefaultPackage() {
                       "libbenchmark",
                       "scripts",
                       "tools",
-                      "uic4",
                       "whitepaper"
     ];
 
@@ -149,7 +148,8 @@ function setupDefaultPackage() {
                        "rebuild.bat",
                        "rebuild.sh",
                        "build.xml",
-                       "dev.xml"
+                       "dev.xml",
+                       "README"
     ];
 
     pkg.mkdirs = [
@@ -167,6 +167,7 @@ function setupDefaultPackage() {
 
                      // text files for main directory...
                      "dist/readme.html",
+                     "dist/install.html",
                      "dist/changes-" + version
     ];
 
@@ -245,18 +246,40 @@ function setupBinaryPackage(pkg) {
 
     // System libraries...
     if (os_name() == OS_NAME_WINDOWS) {
+
+        // jdk 1.6 depends on this so we include it in the package for
+        // our own convenience...
+        pkg.copyFiles.push([find_executable("msvcr71.dll"), "bin"]);
+
         if (pkg.license == "gpl") {
             pkg.copyFiles.push([find_executable("mingwm10.dll"), "bin"]);
         } else {
-
 	    if (!File.exists(option.crtRedist + "/msvcr80.dll")) {
 		throw "Failed to locate '" + option.crtRedist
 		    + "/msvcr80.dll', is --crt-redist properly specified?";
 	    }
 
-            pkg.copyFiles.push([option.crtRedist + "/msvcr80.dll", "bin"],
-                               [option.crtRedist + "/msvcp80.dll", "bin"],
-			       [option.crtRedist + "/Microsoft.VC80.CRT.manifest", "bin"]);
+            var crtPluginDests = ["plugins/accessible/Microsoft.VC80.CRT",
+                                  "plugins/codecs/Microsoft.VC80.CRT",
+                                  "plugins/designer/Microsoft.VC80.CRT",
+                                  "plugins/iconengines/Microsoft.VC80.CRT",
+                                  "plugins/imageformats/Microsoft.VC80.CRT",
+                                  "plugins/sqldrivers/Microsoft.VC80.CRT"];
+
+            var crtDests = ["bin"];
+            for (var x=0; x<crtPluginDests.length; ++x) {
+                var dest = crtPluginDests[x];
+                pkg.mkdirs.push(dest);
+                crtDests.push(dest);
+            }
+
+            for (var x=0; x<crtDests.length; ++x) {
+                var dest = crtDests[x];
+                pkg.copyFiles.push([option.crtRedist + "/msvcr80.dll", dest],
+                                   [option.crtRedist + "/msvcp80.dll", dest],
+                                   [option.crtRedist + "/msvcm80.dll", dest],
+                                   [option.crtRedist + "/Microsoft.VC80.CRT.manifest", dest]);
+            }
         }
     } else if (os_name() == OS_NAME_LINUX) {
         var locs = ["/lib", "/usr/lib"];
@@ -531,24 +554,6 @@ function setupGPLBinaryPackage() {
 }
 
 
-function setPathForMinGW(pkg) {
-    // setup mingw for compilation...
-    if (os_name() == OS_NAME_WINDOWS) {
-        // remove cygwin from path...
-        var path = pkg.originalPath.split(";");
-        var newPath = [pkg.qt + "/bin"];
-        for (var i=0; i<path.length; ++i) {
-            if (path[i].find("cygwin") < 0) {
-                newPath.push(path[i]);
-            }
-        }
-        System.setenv("PATH", newPath.join(";"));
-    }
-}
-
-
-
-
 /*******************************************************************************
  *
  * Creates and modifies the package with the content that is required for the
@@ -572,6 +577,7 @@ function setupCommercialBinaryPackage() {
     setupCommercialPackage(pkg);
     setupBinaryPackage(pkg);
     finalizeDefaultPackage(pkg);
+
     return pkg;
 }
 
@@ -702,8 +708,7 @@ function prepareSourceTree()
 
     verbose(" - sync'ing source tree");
     execute([command.p4, "sync", "-f",
-             "//depot/qtjambi/" + version + "/...",
-             "//depot/research/main/uic4/..."]);
+             "//depot/qtjambi/" + version + "/..."]);
 
     execute([command.chmod, "-R", "u+w", "."]);
 }
@@ -823,6 +828,12 @@ function expandMacros(header) {
     from.push("\\$JAVA_LICENSE\\$");    to.push(header);
     from.push("\\$CPP_LICENSE\\$");     to.push(header);
     replace(from, to);
+
+    if (File.exists("LICENSE.GPL"))
+        multireplace_in_file("LICENSE.GPL", from, to);
+
+    if (File.exists("LICENSE"))
+        multireplace_in_file("LICENSE", from, to);
 }
 
 
@@ -941,7 +952,7 @@ function removeFiles(pkg) {
     for_all_files(javaDir, function(name) {
         if (name.endsWith(".ilk")
             || name.endsWith(".pdb")
-            || (name.endsWith(".manifest") && !name.indexOf("CRT") >= 0)
+            || (name.endsWith(".manifest") && name.indexOf("CRT") < 0)
             || name.endsWith(".exp")
             || name.endsWith(".log"))
             files.push(name);
@@ -953,6 +964,8 @@ function removeFiles(pkg) {
             files.push(name);
 	else if (name.endsWith(".debug"))
 	    files.push(name);
+        else if (name.endsWith(".a"))
+            files.push(name);
     });
     for (var i=0; i<files.length; ++i)
         execute([command.rm, files[i]]);
@@ -1015,11 +1028,12 @@ function createPlatformJar(pkg) {
         file.open(File.WriteOnly);
         if (os_name() == OS_NAME_WINDOWS) {
             if (pkg.license == "gpl") {
-                file.writeLine("mingw10.dll");
+                file.writeLine("mingwm10.dll");
             } else {
 		file.writeLine("Microsoft.VC80.CRT.manifest");
                 file.writeLine("msvcr80.dll");
                 file.writeLine("msvcp80.dll");
+                file.writeLine("msvcm80.dll");
             }
         } else if (os_name() == OS_NAME_LINUX) {
             file.writeLine("libstdc++.so.5");

@@ -20,13 +20,14 @@ class QtJambi_LibraryShutdown implements Runnable {
         QCoreApplication app = QCoreApplication.instance();
         QtJambi_LibraryInitializer.handler.dispose();
         QtJambi_LibraryInitializer.handler  = null;
-        
-        QMessageHandler.removeAllMessageHandlers();
-        
+
+        if (QtJambi_LibraryInitializer.messageHandler != null)
+            QMessageHandler.removeMessageHandler(QtJambi_LibraryInitializer.messageHandler);
+
         if (app != null) {
             Thread appThread = app.thread();
             QCoreApplication.quit();
-            
+
             try {
             	if (appThread != null)
                     appThread.join(500);

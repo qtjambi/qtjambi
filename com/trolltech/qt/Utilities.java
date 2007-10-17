@@ -467,7 +467,7 @@ public class Utilities {
 
     private static class LibraryLoadingInfo {
         private String libraryName;
-        private boolean sucess = false;
+        private boolean success = false;
         private Vector<Object> messages = new Vector<Object>();
 
         LibraryLoadingInfo(String libraryName) {
@@ -484,7 +484,7 @@ public class Utilities {
 
         private String format() {
             String res = "";
-            if (sucess) {
+            if (success) {
                 System.out.println(messages.lastElement().toString());
             } else {
                 for (Iterator<Object> iterator = messages.iterator(); iterator.hasNext();) {
@@ -509,22 +509,26 @@ public class Utilities {
 
         private void success(String message) {
             message(message);
-            sucess = true;
+            success = true;
             if (VERBOSE_LOADING) {
                 System.out.print(format());
             }
         }
 
         private void failed() {
-            sucess = false;
+            success = false;
             if (VERBOSE_LOADING) {
                 System.out.println("Failed to laod : " + libraryName);
                 System.out.println("Below you will se how we tried to load it:\n");
                 System.out.println(format());
                 System.out.println("... giving up loading library: " + libraryName);
             } else {
-                throw new RuntimeException("Loading library: " + libraryName + " failed.\nLog showing how we tried to load the library: " + libraryName + "\n" + format()
-                        + "-- End load-library log --\n");
+                throw new RuntimeException("Loading library: "
+                                           + libraryName
+                                           + " failed.\n"
+                                           + "Log showing how we tried to load the library: "
+                                           + libraryName + "\n"
+                                           + format() + "-- End load-library log --\n");
             }
         }
     }

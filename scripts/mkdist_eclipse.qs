@@ -1,7 +1,9 @@
 
 // Change these with every new version
-const version           = "1.0.1";
-const qtVersion         = "4.3.1";
+const VERSION = figureVersion();
+
+const version           = "1.0." + VERSION.patch;
+const qtVersion         = VERSION.major + "." + VERSION.minor + "." + VERSION.patch;
 const depotVersion      = qtVersion + "_01";
 const jambiVersion      = qtVersion + "_01";
 const eclipseBranch     = "stable";
@@ -10,12 +12,12 @@ const eclipseBranch     = "stable";
 
 // ### Fixed path (must also be changed in client spec)
 const packageDir        = os_name() == OS_NAME_WINDOWS
-                            ? "c:/package-builder/tmp"
-                            : "/home/qt/package-builder/tmp";
+                            ? "c:/tmp/package-builder"
+                            : "/tmp/package-builder";
 
 // ### Fixed path
 const eclipsePackages   = os_name() == OS_NAME_WINDOWS
-                            ? "c:/package-builder/eclipse_classes"
+                            ? "c:/eclipse-sdk"
                             : "/home/qt/eclipse_package";
 
 const dirSeparator      = os_name() == OS_NAME_WINDOWS ? ";" : ":";
@@ -30,16 +32,28 @@ var jarFilesDir = new Dir(jarFilesDest);
 jarFilesDir.mkdirs(jarFilesDest);
 
 // ### Fixed paths (needed to build with mingw, but we should implement a search for vs i suppose)
-const midlPath = "c:/progra~1/micros~1.net/common7/tools/bin/midl.exe";
-const vcPath = "c:/progra~1/micros~1.net/vc7/bin;c:/progra~1/micros~1.net/common7/ide";
-const vcInclude = "c:/progra~1/micros~1.net/vc7/include;c:/progra~1/micros~1.net/vc7/platformsdk/include;c:/progra~1/micros~1.net/sdk/v1.1/include";
+const midlPath = find_executable("midl.exe");
+const vcPath = System.getenv("VSINSTALLDIR") + "/vc/bin;"
+               + System.getenv("VSINSTALLDIR") + "/common7/ide";
+const vcInclude = System.getenv("VSINSTALLDIR") + "/vc/include;"
+                  + System.getenv("VSINSTALLDIR") + "/vc/platformsdk/include"
 
+
+// *** Options
+var option = new Object();
+option.verbose = array_contains(args, "--verbose");
+option.gpl = array_contains(args, "--gpl");
+option.sixtyFour = System.getenv("ARCH") == "x86_64";
+option.qtdir = findQtDir();
+
+option.crtRedist = array_get_next_value(args, "--crt-redist");
+if (option.crtRedist)
+    option.crtRedist = option.crtRedist.replace(/\\/g, "/");
 
 // *** Commands
 var command = new Object();
 command.chmod = find_executable("chmod");
 command.p4 = find_executable("p4");
-command.qmake = find_executable("qmake");
 command.rm = find_executable("rm");
 command.make = make_from_qmakespec();
 command.javac = find_executable("javac");
@@ -49,19 +63,14 @@ command.zip = find_executable("zip");
 command.gzip = find_executable("gzip");
 command.tar = find_executable("tar");
 command.unzip = find_executable("unzip");
+command.qmake = option.qtdir + "/bin/qmake";
 
-// *** Options
-var option = new Object();
-option.verbose = array_contains(args, "--verbose");
-option.gpl = array_contains(args, "--gpl");
-option.sixtyFour = System.getenv("ARCH") == "x86_64";
-option.arch = option.sixtyFour ? "x86_64" : "x86"
 
-print("arch: " + option.arch);
-
-option.qtdir = findQtDir();
-if (option.gpl)
-    command.make = find_executable("mingw32-make");
+for (var i in option)
+    verbose("'%1': %2".arg(i).arg(option[i]));
+verbose("");
+for (var i in command)
+    verbose("using command '%1' in: %2".arg(i).arg(command[i]));
 
 // Suffix for package names
 const gplExtension = option.gpl ? "-mingw" : "";
@@ -102,7 +111,7 @@ function displayHelp() {
 
 function prepareSourceTree() {
     verbose("Preparing source tree:");
-    var client = "eclipse-package-builder" + (os_name() == OS_NAME_WINDOWS ? "" : "-linux");
+    var client = "package-builder" + (os_name() == OS_NAME_WINDOWS ? "" : "-linux");
 
     System.setenv("P4PORT", "p4.troll.no:866");
     System.setenv("P4CLIENT", client);
@@ -317,6 +326,14 @@ function generateDesignerCode() {
     var dir = new Dir(generatorPath);
     dir.setCurrent();
 
+    var oldpath = System.getenv("PATH");
+    var oldinclude = System.getenv("INCLUDE");
+
+    if (option.gpl && os_name() == OS_NAME_WINDOWS) {
+        System.setenv("INCLUDE", "");
+        System.setenv("PATH", "c:/MinGW/bin;" + option.qtdir + "/bin");
+    }
+
     execute([command.qmake, "-config", "release"]);
     execute([command.make]);
     execute([execPrefix + "designer"]);
@@ -341,8 +358,8 @@ function compileDesignerJavaCode(destDir) {
 
 function buildLinuxQtJarFile() {
     verbose("Building Linux Qt library package");
-    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux." + option.arch + "_" + qtVersion;
-    var linuxQtRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt.linux." + option.arch;
+    var linuxQtDest = packageDir + "/output/plugins/com.trolltech.qt.linux." + System.getenv("ARCH") + "_" + qtVersion;
+    var linuxQtRootDir = packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qt.linux." + System.getenv("ARCH");
     var dir = new Dir(linuxQtDest + "/lib");
     dir.mkdirs(linuxQtDest + "/lib");
 
@@ -362,18 +379,18 @@ function buildDesignerPlatform() {
     var designerPackageDest = packageDir + "/tempQtDesignerPackage";
 
     var designerRootDir = os_name() == OS_NAME_WINDOWS
-                          ? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32." + option.arch
-	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + option.arch;
+                          ? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32." + System.getenv("ARCH")
+	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH");
 
     if (os_name() != OS_NAME_WINDOWS) {
-	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux."+ option.arch + "_" + version;
+	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux."+ System.getenv("ARCH") + "_" + version;
 	    dir = new Dir(pluginsDir);
 	    dir.mkdirs(pluginsDir);
 	    var suffixes = ["", ".4", ".4.3", "." + qtVersion];
 	    for (var i=0; i<suffixes.length; ++i) {
-	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + option.arch + "/lib/libqtdesigner.so"
+	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH") + "/lib/libqtdesigner.so"
                         + suffixes[i]],
-                        packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + option.arch,
+                        packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH"),
                         pluginsDir);
 	    }
 	    copyFiles([designerRootDir + "/META-INF/MANIFEST.MF"], designerRootDir, pluginsDir);
@@ -402,7 +419,7 @@ function makePlatformSpecificPackageWindows(destDir) {
     var qswtDir = packageDir + "/eclipse/" + eclipseBranch + "/qswt/designer/qtdesigner";
     var jambiScriptDir = packageDir + "/qtjambi/" + depotVersion + "/scripts";
 
-    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32." + option.arch + "_" + version;
+    var dllDest = destDir + "/plugins/com.trolltech.qtdesigner.win32." + System.getenv("ARCH") + "_" + version;
     var dir = new Dir(dllDest);
     dir.mkdirs(dllDest);
 
@@ -416,8 +433,11 @@ function makePlatformSpecificPackageWindows(destDir) {
     }
 
     if (!option.gpl) {
-        copyFiles(["c:/windows/system32/msvcp80.dll", "c:/windows/system32/msvcr80.dll"],
-                  "c:/windows/system32",
+        copyFiles([option.crtRedist + "/msvcr80.dll",
+                   option.crtRedist + "/msvcp80.dll",
+                   option.crtRedist + "/msvcm80.dll",
+                   option.crtRedist + "/Microsoft.VC80.CRT.manifest"],
+                  option.crtRedist,
                   dllDest);
     } else {
         var mingwDllPath = find_executable("mingwm10.dll");
@@ -463,6 +483,16 @@ function buildDesignerPlugins() {
         files = [pluginsSrc + "/libJambiCustomWidget.so", pluginsSrc + "/libJambiLanguage.so"];
 
    copyFiles(files, pluginsSrc, packageDest);
+
+   if (os_name() == OS_NAME_WINDOWS && !option.gpl) {
+       dir.mkdirs(packageDest + "/Microsoft.VC80.CRT");
+       copyFiles([option.crtRedist + "/msvcr80.dll",
+                  option.crtRedist + "/msvcp80.dll",
+                  option.crtRedist + "/msvcm80.dll",
+                  option.crtRedist + "/Microsoft.VC80.CRT.manifest"],
+                 option.crtRedist,
+                 packageDest + "/Microsoft.VC80.CRT");
+   }
 }
 
 function buildPackage() {
@@ -473,43 +503,39 @@ function buildPackage() {
     if (dir.fileExists("."))
        print("WARNING: output dir already exists. delete the entire " + packageDir + " folder before running this script for best results");
     dir.mkdirs(pluginsDir);
-
-
-
     buildDesignerPlugins();
-
-    print(" +++ done with buildDesignerPlugin()");
 
 
     var files = find_files(jarFilesDest, ["jar"]);
     copyFiles(files, jarFilesDest, pluginsDir);
 
-    if (os_name() == OS_NAME_WINDOWS) {
-        makePlatformSpecificPackageWindows(packageDest);
-    } else if (os_name() == OS_NAME_LINUX) {
-        makePlatformSpecificPackageLinux(packageDest);
-    }
-}
-
-function setPathForMinGW() {
-    // setup mingw for compilation...
-    if (os_name() == OS_NAME_WINDOWS) {
-        // remove cygwin from path...
-        var path = originalPath.split(";");
-        var newPath = [];
-        for (var i=0; i<path.length; ++i) {
-            if (path[i].find("cygwin") < 0) {
-                newPath.push(path[i]);
-            }
-        }
-        System.setenv("PATH", newPath.join(";"));
-    }
+    eval("makePlatformSpecificPackage" + os_name() + "(packageDest);");
 }
 
 function copyQmakeCache() {
     verbose("Copy .qmake.cache");
     copyFiles([option.qtdir + "/.qmake.cache"], option.qtdir, packageDir);
 }
+
+function figureVersion() {
+    var content = File.read("../com/trolltech/qt/Utilities.java");
+
+    var regexp_major = /MAJOR_VERSION += +(\d) *;/;
+    var regexp_minor = /MINOR_VERSION += +(\d) *;/;
+    var regexp_patch = /PATCH_VERSION += +(\d) *;/;
+    var regexp_build = /BUILD_NUMBER += +(\d) *;/;
+
+    if (regexp_major.search(content) < 0) throw "failed to locate MAJOR_VERSION in QtJambi.java";
+    if (regexp_minor.search(content) < 0) throw "failed to locate MINOR_VERSION in QtJambi.java";
+    if (regexp_patch.search(content) < 0) throw "failed to locate PATCH_VERSION in QtJambi.java";
+    if (regexp_build.search(content) < 0) throw "failed to locate BUILD_NUMBER in QtJambi.java";
+
+    return { major: regexp_major.cap(1),
+             minor: regexp_minor.cap(1),
+            patch: regexp_patch.cap(1),
+            build: regexp_build.cap(1) };
+}
+
 
 function build() {
     verbose("Hello, making Qt Jambi Eclipse Integration");

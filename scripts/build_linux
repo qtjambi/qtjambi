@@ -1,5 +1,7 @@
-/home/qt/dev/private/gunnar/qsengine_linux /home/qt/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --qt-eval ~/qt-eval --qt-commercial ~/qt-commercial --qt-gpl ~/qt-commercial --qt ~/qt-commercial --no-source
+/home/qt/dev/private/gunnar/qsengine_linux /home/qt/dev/private/gunnar/utils.qs mkdist.qs -args --verbose --qt-eval ~/package-builder/qt-eval --qt-commercial ~/package-builder/qt-commercial --qt-gpl ~/package-builder/qt-gpl --no-source
 
-scp qtjambi*eval* gunnar@anarki:~/public_html/packages/eval
-scp qtjambi*gpl* gunnar@anarki:~/public_html/packages/gpl
-scp qtjambi*commerc* gunnar@anarki:~/public_html/packages/commercial
+
+scp qtjambi-linux32-eval-*.tar.gz gunnar@anarki:~/public_html/packages/eval
+scp qtjambi-linux32-gpl-*.tar.gz gunnar@anarki:~/public_html/packages/gpl
+scp qtjambi-linux32-commercial-*.tar.gz  gunnar@anarki:~/public_html/packages/commercial
+scp qtjambi-linux32-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart 

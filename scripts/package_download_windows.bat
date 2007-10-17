@@ -44,6 +44,7 @@ echo.
 echo.
 echo Eval packages...
 echo.
+title building Qt %QT_VERSION% Evaluation Packages
 rm -rf %QT_COMMERCIAL_PACKAGE% qt-eval
 unzip %QT_COMMERCIAL_PACKAGE%.zip > log
 unzip %QT_EVAL_PACKAGE%.zip > log
@@ -61,6 +62,7 @@ echo.
 echo.
 echo Commercial packages
 echo.
+title building Qt %QT_VERSION% Commercial Packages
 rm -rf qt-commercial
 unzip %QT_COMMERCIAL_PACKAGE%.zip > log
 mv %QT_COMMERCIAL_PACKAGE% qt-commercial
@@ -80,6 +82,7 @@ echo.
 echo.
 echo Open Source packages
 echo. 
+title building Qt %QT_VERSION% Open Source Packages
 rm -rf %QT_GPL_PACKAGE% qt-opensource
 unzip %QT_GPL_PACKAGE%.zip > log
 mv %QT_GPL_PACKAGE% qt-opensource

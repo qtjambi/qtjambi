@@ -72,15 +72,7 @@ public abstract class QMessageHandler {
             }
         }
     }
-    
-    /**
-     * Removes all message handlers.
-     */
-    public static void removeAllMessageHandlers() {
-        removeMessageHandlerProxy();
-        handlers = null;
-    }
-    
+
     @SuppressWarnings("unused")
     private static boolean process(int id, String message) {
         if (handlers == null)

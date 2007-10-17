@@ -1,5 +1,5 @@
 !macx:!exists($(JAVADIR)) {
-  error("Please set your JAVADIR environment variable to point to the directory of your Java SDK:\nCurrent JAVADIR: $(JAVADIR)")
+  error("Please set your JAVADIR environment variable to point to the directory of your Java SDK; Current JAVADIR: $(JAVADIR)")
 }
 
 isEmpty(TARGET) {
