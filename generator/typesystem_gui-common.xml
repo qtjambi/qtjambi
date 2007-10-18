@@ -502,6 +502,12 @@
 
   <enum-type name="QPrinter::PageSize">
     <reject-enum-value name="NPageSize"/>
+    <reject-enum-value name="NPaperSize"/>
+  </enum-type>
+
+  <enum-type name="QPrinter::PaperSize">
+    <reject-enum-value name="NPageSize"/>
+    <reject-enum-value name="NPaperSize"/>
   </enum-type>
 
   <enum-type name="QSlider::TickPosition">
