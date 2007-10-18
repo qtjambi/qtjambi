@@ -969,8 +969,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
     bool hasEquals = eq_functions.size() || neq_functions.size();
     bool comparable = isComparable(cls);
     if (comparable) {
-        s << "    @Override" << endl
-          << "    public int compareTo(Object other) {" << endl;
+        s << "    public int compareTo(Object other) {" << endl;
 
         if (hasEquals) {
             s << "        if (equals(other)) return 0;" << endl;
