@@ -951,6 +951,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
     if (eq_functions.size() || neq_functions.size()) {
         s << endl
           << "    @SuppressWarnings(\"unchecked\")" << endl
+          << "    @Override" << endl
           << "    public boolean equals(Object other) {" << endl;
         bool first = true;
         write_equals_parts(s, eq_functions, (char) 0, &first);
@@ -968,7 +969,8 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
     bool hasEquals = eq_functions.size() || neq_functions.size();
     bool comparable = isComparable(cls);
     if (comparable) {
-        s << "    public int compareTo(Object other) {" << endl;
+        s << "    @Override" << endl
+          << "    public int compareTo(Object other) {" << endl;
 
         if (hasEquals) {
             s << "        if (equals(other)) return 0;" << endl;
@@ -1018,6 +1020,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
 
         if (!found) {
             s << endl
+              << "    @Override" << endl
               << "    public int hashCode() {" << endl
               << "        if (nativeId() == 0)" << endl
               << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
@@ -1041,6 +1044,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
 
         if (!found) {
             s << endl
+              << "    @Override" << endl
               << "    public String toString() {" << endl
               << "        if (nativeId() == 0)" << endl
               << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
@@ -1747,11 +1751,13 @@ void JavaGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaClas
         
         if (qevent && core) {
             s << endl
+              << "    @Override" << endl
               << "    public String toString() {" << endl
               << "        return getClass().getSimpleName() + \"(type=\" + type().name() + \")\";" << endl
               << "    }" << endl;
         } else {
             s << endl
+              << "    @Override" << endl
               << "    public String toString() {" << endl
               << "        if (nativeId() == 0)" << endl
               << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
