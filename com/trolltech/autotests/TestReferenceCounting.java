@@ -135,6 +135,7 @@ public class TestReferenceCounting extends QApplicationTest {
 			assertEquals(0, w.actions().size());
 		}
 		new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
@@ -219,11 +220,13 @@ public class TestReferenceCounting extends QApplicationTest {
 			System.gc();
 		}
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return COUNT == deleted;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 0 == w.actions().size();
             }
@@ -355,12 +358,14 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
 
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
         }.test();
         
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return null == proxy.sourceModel();
             }
@@ -491,12 +496,14 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
 		
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
         }.test();
         
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return null == proxy.sourceModel();
             }
@@ -541,11 +548,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
 		
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 0 == layout.count();
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return COUNT == deleted;
             }
@@ -594,11 +603,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
 		
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 0 == layout.count();
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return COUNT == deleted;
             }
@@ -672,11 +683,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
 		
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return box.completer() == null;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
@@ -746,11 +759,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
        
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return lineEdit.completer() == null;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
@@ -778,12 +793,14 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
 		
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
         }.test();
         
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return lineEdit.completer() == null;
             }
@@ -835,11 +852,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
 		
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return lineEdit.completer() == null;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
@@ -1013,11 +1032,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
         
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return box.validator() == null;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
@@ -1050,11 +1071,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
        
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return box.validator() == null;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
               //  return 1 == deleted;  // this wan't work because box will probably remember the validator.
                 return 0 == deleted;
@@ -1119,11 +1142,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
            
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return group.buttons().size() == 0;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return COUNT == deleted;
             }
@@ -1291,11 +1316,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
 
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return view.itemDelegate() == null;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
@@ -1434,11 +1461,13 @@ public class TestReferenceCounting extends QApplicationTest {
 		}
         
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return view.selectionModel() != null;
             }
         }.test();
         new AssertEquals() {
+            @Override
             protected boolean equals() {
                 return 1 == deleted;
             }

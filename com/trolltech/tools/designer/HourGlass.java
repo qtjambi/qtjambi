@@ -55,19 +55,23 @@ public class HourGlass extends QWidget {
         hide();
     }
 
+    @Override
     protected void showEvent(QShowEvent e) {
         run(true);
     }
 
+    @Override
     protected void hideEvent(QHideEvent e) {
         run(false);
     }
 
+    @Override
     protected void timerEvent(QTimerEvent e) {
         rotation += 360 / 8;
         update();
     }
 
+    @Override
     protected void paintEvent(QPaintEvent arg) {
         QPainter p = new QPainter(this);
         p.setRenderHint(QPainter.RenderHint.Antialiasing);
@@ -81,6 +85,7 @@ public class HourGlass extends QWidget {
         p.fillPath(path, new QBrush(QColor.gray));
     }
 
+    @Override
     public QSize sizeHint() {
         return new QSize(16, 16);
     }

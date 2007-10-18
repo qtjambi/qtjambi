@@ -24,6 +24,7 @@ public class ObjectOwnership {
             setObjectName("DyingObject(" + id + ")");
         }
 
+        @Override
         public void disposed() {
             System.out.println(" -> disposed: " + id);
         }
@@ -94,6 +95,7 @@ public class ObjectOwnership {
 
     private static void objectInThreadExplicitDelete() {
         Thread t = new Thread() {
+            @Override
             public void run() {
                 DyingObject o = new DyingObject();
                 o.dispose();

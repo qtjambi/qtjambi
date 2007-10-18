@@ -404,8 +404,8 @@ public class TestQVariant extends QApplicationTest {
                 new DataPrimitive(new Character((char) 8), "currentQUInt16"),
                 new DataPrimitive(new Byte((byte) 9), "currentQInt8"),
                 new DataPrimitive(new Byte((byte) 10), "currentQUInt8"),
-                new DataPrimitive(new Float((float) 11), "currentFloat"),
-                new DataPrimitive(new Double((double)12), "currentDouble") };
+                new DataPrimitive(new Float(11), "currentFloat"),
+                new DataPrimitive(new Double(12), "currentDouble") };
 
         for (int i = 0; i < data.length; i++) {
             Object value = data[i].value;
@@ -472,6 +472,7 @@ public class TestQVariant extends QApplicationTest {
         Variants v = new Variants();
 
         v.pushThrough(new Object() {
+            @Override
             public String toString() {
                 return "abcd";
             }

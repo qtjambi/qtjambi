@@ -34,15 +34,18 @@ class PaintWidget extends QWidget {
         this.setGeometry(new QRect(100, 100, 32 * 16 + 2, 480));
     }
 
+    @Override
     public void mousePressEvent(QMouseEvent e) {
         current = new QPolygon();
     }
 
+    @Override
     public void mouseMoveEvent(QMouseEvent e) {
         current.append(new QPoint(e.x(), e.y()));
         update();
     }
     
+    @Override
     public void contextMenuEvent(QContextMenuEvent e)
     {
         QMenu menu = new QMenu(this);
@@ -54,6 +57,7 @@ class PaintWidget extends QWidget {
         menu.exec(e.globalPos());        
     }
 
+    @Override
     public void mouseReleaseEvent(QMouseEvent e) {
         polygons.add(current);
         colors.add(m_current_color);
@@ -66,6 +70,7 @@ class PaintWidget extends QWidget {
         update();
     }
     
+    @Override
     public void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter();
         p.begin(this);

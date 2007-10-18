@@ -488,7 +488,7 @@ public class Utilities {
                 System.out.println(messages.lastElement().toString());
             } else {
                 for (Iterator<Object> iterator = messages.iterator(); iterator.hasNext();) {
-                    Object element = (Object) iterator.next();
+                    Object element = iterator.next();
 
                     if (element instanceof String) {
                         res += element.toString() + "\n";

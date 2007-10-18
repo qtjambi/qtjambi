@@ -15,7 +15,6 @@ package com.trolltech.autotests;
 
 import org.junit.Test;
 import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;

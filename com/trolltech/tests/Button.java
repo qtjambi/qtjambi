@@ -24,22 +24,26 @@ public class Button extends QPushButton {
     private int counter = 0;
     Signal1<String> clicked_string = new Signal1<String>();
 
+    @Override
     public void mousePressEvent(QMouseEvent e) {
     	setText("[" + e.x() + ", " + e.y() + "]");
     	super.mousePressEvent(e);
     }
 
+    @Override
     public void mouseMoveEvent(QMouseEvent e) {
     	setText("[" + e.x() + ", " + e.y() + "]");
     	super.mouseMoveEvent(e);
     }
 
+    @Override
     public void mouseReleaseEvent(QMouseEvent e) {
     	setText("Clicked " + String.valueOf(++counter) + " times...");
         clicked_string.emit("hello");
     	super.mouseReleaseEvent(e);
     }
 
+    @Override
     protected void disposed() {
     	System.out.println("object disposed...\n");
     	super.disposed();

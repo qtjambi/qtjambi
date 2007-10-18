@@ -72,6 +72,7 @@ public class ThreadedSenderAccess extends QObject implements Runnable {
         }
     }
 
+    @Override
     public String toString() { return "Accessor(" + i + ")"; }
 
     public static void main(String args[]) {

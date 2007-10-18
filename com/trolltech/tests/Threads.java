@@ -21,6 +21,7 @@ public class Threads implements Runnable {
     public QEventLoop eventLoop;
 
     public static class Reciever extends QWidget {
+        @Override
         protected void customEvent(QEvent e) {
             System.out.println("got event in thread="
                     + Thread.currentThread().getId() + ", type=" + e.type());
@@ -28,6 +29,7 @@ public class Threads implements Runnable {
     }
     
     public class ThreadReceiver extends QObject {
+        @Override
         public boolean event(QEvent e) {            
             if (e.type() == QEvent.Type.Quit) {
                 System.out.println("ThreadReceiver should call quit()");

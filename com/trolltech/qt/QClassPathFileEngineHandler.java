@@ -574,6 +574,7 @@ class QClassPathEngine extends QAbstractFileEngine
     	}
     }
 
+    @Override
     public void setFileName(String fileName)
     {
         cleanUp();
@@ -605,6 +606,7 @@ class QClassPathEngine extends QAbstractFileEngine
         }
     }
 
+    @Override
     public boolean copy(String newName)
     {
         if (m_engines.size() > 0)
@@ -613,6 +615,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return false;
     }
 
+    @Override
     public boolean setPermissions(int perms)
     {
         for (QAbstractFileEngine engine : m_engines) {
@@ -623,11 +626,13 @@ class QClassPathEngine extends QAbstractFileEngine
         return false;
     }
 
+    @Override
     public boolean caseSensitive()
     {
         return true;
     }
 
+    @Override
     public boolean close()
     {
         if (m_engines.size() == 0)
@@ -636,6 +641,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).close();
     }
 
+    @Override
     public List<String> entryList(QDir.Filters filters, List<String> filterNames)
     {
         List<String> result = null;
@@ -652,6 +658,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return result;
     }
 
+    @Override
     public FileFlags fileFlags(FileFlags type)
     {
         FileFlags flags = new FileFlags();
@@ -667,6 +674,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return flags;
     }
 
+    @Override
     public String fileName(FileName file)
     {
         if (m_engines.size() == 0)
@@ -712,6 +720,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return result;
     }
 
+    @Override
     public QDateTime fileTime(FileTime time)
     {
         if (m_engines.size() == 0)
@@ -720,6 +729,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).fileTime(time);
     }
 
+    @Override
     public boolean link(String newName)
     {
         for (QAbstractFileEngine engine : m_engines) {
@@ -729,6 +739,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return false;
     }
 
+    @Override
     public boolean mkdir(String dirName, boolean createParentDirectories)
     {
         for (QAbstractFileEngine engine : m_engines) {
@@ -738,6 +749,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return false;
     }
 
+    @Override
     public boolean open(QIODevice.OpenMode openMode)
     {
         if (m_engines.size() == 0)
@@ -746,6 +758,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).open(openMode);
     }
 
+    @Override
     public long pos()
     {
         if (m_engines.size() == 0)
@@ -754,6 +767,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).pos();
     }
 
+    @Override
     public long read(QNativePointer data, long maxlen)
     {
         if (m_engines.size() == 0)
@@ -762,6 +776,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).read(data, maxlen);
     }
 
+    @Override
     public long readLine(QNativePointer data, long maxlen)
     {
         if (m_engines.size() == 0)
@@ -770,6 +785,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).readLine(data, maxlen);
     }
 
+    @Override
     public boolean remove()
     {
         boolean ok = true;
@@ -778,6 +794,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return ok;
     }
 
+    @Override
     public boolean rename(String newName)
     {
         boolean ok = true;
@@ -786,6 +803,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return ok;
     }
 
+    @Override
     public boolean rmdir(String dirName, boolean recursive)
     {
         boolean ok = true;
@@ -794,6 +812,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return ok;
     }
 
+    @Override
     public boolean seek(long offset)
     {
         if (m_engines.size() == 0)
@@ -802,6 +821,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).seek(offset);
     }
 
+    @Override
     public String owner(FileOwner owner)
     {
         String result = "";
@@ -812,6 +832,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return result;
     }
 
+    @Override
     public int ownerId(FileOwner owner)
     {
         int result = -2;
@@ -822,11 +843,13 @@ class QClassPathEngine extends QAbstractFileEngine
         return result;
     }
 
+    @Override
     public boolean isRelativePath()
     {
     	return false;
     }
 
+    @Override
     public boolean isSequential()
     {
         for (QAbstractFileEngine engine : m_engines) {
@@ -837,6 +860,7 @@ class QClassPathEngine extends QAbstractFileEngine
         return false;
     }
 
+    @Override
     public boolean setSize(long sz)
     {
         if (m_engines.size() == 0)
@@ -845,6 +869,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).setSize(sz);
     }
 
+    @Override
     public long size()
     {
         if (m_engines.size() == 0)
@@ -853,6 +878,7 @@ class QClassPathEngine extends QAbstractFileEngine
             return m_engines.get(0).size();
     }
 
+    @Override
     public long write(QNativePointer data, long len)
     {
         if (m_engines.size() == 0)
@@ -929,7 +955,7 @@ class QClassPathEngine extends QAbstractFileEngine
 	        try {
 	            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
 	            while (urls.hasMoreElements()) {
-	                URL url = (URL) urls.nextElement();
+	                URL url = urls.nextElement();
 	                                
 	                if (url.getProtocol().equals("jar")) try {
 	                    
@@ -961,6 +987,7 @@ public class QClassPathFileEngineHandler extends QAbstractFileEngineHandler
         super();
     }
 
+    @Override
     public QAbstractFileEngine create(String fileName)
     {    	
         if (fileName.startsWith(QClassPathEngine.FileNamePrefix))

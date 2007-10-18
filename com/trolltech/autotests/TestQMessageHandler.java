@@ -25,18 +25,22 @@ public class TestQMessageHandler extends QMessageHandler {
 
 
 
+    @Override
     public void debug(String message) {
         lastDebug = message;
     }
 
+    @Override
     public void warning(String message) {
         lastWarning = message;
     }
 
+    @Override
     public void critical(String message) {
         lastCritical = message;
     }
 
+    @Override
     public void fatal(String message) {
 
     }

@@ -23,10 +23,12 @@ import org.junit.*;
 
 class JavaNonAbstractSubclass extends AbstractClass {
 
+    @Override
     public void abstractFunction(String something) {
         setS("Even more " + something);
     }
 
+    @Override
     public AbstractClass getAbstractClass() {
         return new JavaNonAbstractSubclass();
     }
@@ -72,6 +74,7 @@ public class VirtualFunctions extends QApplicationTest {
             m_size = size;
         }
 
+        @Override
         public QSize sizeHint() {
             return m_size;
         }
@@ -186,6 +189,7 @@ public class VirtualFunctions extends QApplicationTest {
             return called;
         }
 
+        @Override
         public QPaintEngine paintEngine() {
             ++called;
             if (called > 1) {
@@ -207,6 +211,7 @@ public class VirtualFunctions extends QApplicationTest {
             return called;
         }
 
+        @Override
         public QPaintEngine paintEngine() {
             ++called;
             if (called > 1) {
@@ -242,6 +247,7 @@ public class VirtualFunctions extends QApplicationTest {
     private static class PaintThread extends Thread {
         public Image image;
 
+        @Override
         public void run() {
             QPainter p = new QPainter();
             p.begin(image);

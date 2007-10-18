@@ -665,7 +665,8 @@ public class TestInjectedCode extends QApplicationTest {
     	savedPalette = null;
     	
     	QApplication.setStyle(new QPlastiqueStyle() { 
-    		public void polish(QPalette palette) { 
+    		@Override
+            public void polish(QPalette palette) { 
     			savedPalette = palette; 
     			super.polish(palette); 
     		} 

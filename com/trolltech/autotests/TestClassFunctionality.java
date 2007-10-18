@@ -31,6 +31,7 @@ class OrdinarySubclass extends OrdinaryDestroyed {
         this.tc = tc;
     }
 
+    @Override
     protected void disposed() {
         tc.disposed++;
     }
@@ -45,6 +46,7 @@ class QObjectSubclass extends QObjectDestroyed {
         this.tc = tc;
     }
 
+    @Override
     protected void disposed() {
         tc.disposed++;
     }
@@ -79,6 +81,7 @@ class EventReceiver extends QWidget {
         myString = str;
     }
 
+    @Override
     public boolean event(QEvent event) {
         if (event instanceof QResizeEvent) {
             QResizeEvent rs = (QResizeEvent) event;
@@ -778,6 +781,7 @@ public class TestClassFunctionality extends QApplicationTest {
 
         public QRect rect;
 
+        @Override
         public boolean event(QEvent e) {
             event_id = e.type();
 
@@ -800,6 +804,7 @@ public class TestClassFunctionality extends QApplicationTest {
             super(rect);
         }
 
+        @Override
         protected void disposed() {
             super.disposed();
             finalized = true;

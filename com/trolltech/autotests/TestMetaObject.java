@@ -4,9 +4,6 @@ import java.util.List;
 
 import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.core.Qt.Orientation;
-import com.trolltech.qt.gui.*;
 import static org.junit.Assert.*;
 import org.junit.*;
 

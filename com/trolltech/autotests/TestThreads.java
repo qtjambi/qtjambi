@@ -52,6 +52,7 @@ public class TestThreads extends QApplicationTest{
         public PingPong other;
         public boolean affinityOk = true;
         Signal0 done = new Signal0();
+        @Override
         public boolean event(QEvent e) {
             if (e.type() == ID_PING) {
                 numPings++;
@@ -72,6 +73,7 @@ public class TestThreads extends QApplicationTest{
             setDaemon(true);
             this.ping = ping;
         }
+        @Override
         public void run() {            
             synchronized (this) {
                 object = new PingPong();
@@ -155,6 +157,7 @@ public class TestThreads extends QApplicationTest{
             setDaemon(true);
             this.ping = ping;
         }
+        @Override
         public void run() {
             object = new PingPongSS();
             try { sleep(100); } catch (Exception e) { e.printStackTrace(); };

@@ -101,6 +101,7 @@ public class CustomWidget {
         this.whatsThis = whatsThis;
     }
 
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append("CustomWidget(").append(pluginClass.toString());

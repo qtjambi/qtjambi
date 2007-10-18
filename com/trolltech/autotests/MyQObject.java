@@ -60,6 +60,7 @@ class MyQObject extends QObject
         super(parent);
     }
             
+    @Override
     protected void disposed()
     {
     	if (destroyed != null)

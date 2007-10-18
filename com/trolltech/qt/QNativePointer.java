@@ -850,6 +850,7 @@ public class QNativePointer {
     /*
      * This is doc in superclass 
      */
+    @Override
     protected void finalize() {
         switch (m_autodelete) {
         case Free:

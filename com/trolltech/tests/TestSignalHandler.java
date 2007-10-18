@@ -34,42 +34,49 @@ public class TestSignalHandler extends QSignalEmitter {
         TestSignalHandler tester = new TestSignalHandler();
 
         new QSignalHandler0(tester.zero) {
+            @Override
             public void handle() {
                 System.out.println("got zero signal...");
             }
         };
 
         new QSignalHandler1<String>(tester.one) {
+            @Override
             public void handle(String arg) {
                 System.out.println("got 'one' signal: " + arg);
             }
         };
 
         new QSignalHandler2<String, String>(tester.two) {
+            @Override
             public void handle(String arg1, String arg2) {
                 System.out.println("got 'two' signal: " + arg1 + ", " + arg2);
             }
         };
 
         new QSignalHandler3<String, String, String>(tester.three) {
+            @Override
             public void handle(String arg1, String arg2, String arg3) {
                 System.out.println("got 'three' signal: " + arg1 + ", " + arg2 + ", " + arg3);
             }
         };
 
         new QSignalHandler4<String, String, String, String>(tester.four) {
+            @Override
             public void handle(String a, String b, String c, String d) {
                 System.out.println("got 'four' signal: " + a + b + c + d);
             }
         };
 
         new QSignalHandler5<String, String, String, String, String>(tester.five) {
+            @Override
             public void handle(String a, String b, String c, String d, String e) {
                 System.out.println("got 'five' signal: " + a + b + c + d + e);
             }
         };
 
         new QSignalHandler6<String, String, String, String, String, String>(tester.six) {
+            @Override
             public void handle(String a, String b, String c, String d, String e, String f) {
                 System.out.println("got 'six' signal: " + a + b + c + d + e + f);
             }
@@ -77,12 +84,14 @@ public class TestSignalHandler extends QSignalEmitter {
 
 
         new QSignalHandler7<String, String, String, String, String, String, String>(tester.seven) {
+            @Override
             public void handle(String a, String b, String c, String d, String e, String f, String g) {
                 System.out.println("got 'seven' signal: " + a + b + c + d + e + f + g);
             }
         };
 
         new QSignalHandler8<String, String, String, String, String, String, String, String>(tester.eight) {
+            @Override
             public void handle(String a, String b, String c, String d, String e, String f, String g, String h) {
                 System.out.println("got 'eight' signal: " + a + b + c + d + e + f + g + h);
             }
@@ -90,6 +99,7 @@ public class TestSignalHandler extends QSignalEmitter {
 
 
         new QSignalHandler9<String, String, String, String, String, String, String, String, String>(tester.nine) {
+            @Override
             public void handle(String a, String b, String c, String d, String e, String f, String g, String h, String i) {
                 System.out.println("got 'nine' signal: " + a + b + c + d + e + f + g + h + i);
             }

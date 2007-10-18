@@ -116,6 +116,7 @@ public class DrawLinesVsDrawLine extends QWidget {
     }
     
     private int do_this_just_once = 0;
+    @Override
     protected void paintEvent(QPaintEvent e) {               
         if (do_this_just_once++ == 0) {
             QPainter p = new QPainter(this);

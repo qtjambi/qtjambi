@@ -45,6 +45,7 @@ class SignalsAndSlotsSubclass extends SignalsAndSlots
 
     public void slot4() { java_slot4_called++; }
 
+    @Override
     public void slot2(int i)
     {
         java_slot2_called += i * 2;
@@ -919,26 +920,26 @@ public class TestConnections extends QApplicationTest implements Qt
 
             obj.javaSignalboolean(false);
             assertTrue(obj.slotResult instanceof Boolean);
-            assertEquals((Boolean) obj.slotResult, false);
+            assertEquals(obj.slotResult, false);
 
             obj.javaSignalboolean(true);
             assertTrue(obj.slotResult instanceof Boolean);
-            assertEquals((Boolean) obj.slotResult, true);
+            assertEquals(obj.slotResult, true);
 
             obj.blockSignals(true);
             obj.javaSignalboolean(false);
             assertTrue(obj.slotResult instanceof Boolean);
-            assertEquals((Boolean) obj.slotResult, true);
+            assertEquals(obj.slotResult, true);
 
             obj.blockSignals(false);
             obj.javaSignalboolean(false);
             assertTrue(obj.slotResult instanceof Boolean);
-            assertEquals((Boolean) obj.slotResult, false);
+            assertEquals(obj.slotResult, false);
 
             obj2.blockSignals(true);
             obj.javaSignalboolean(true);
             assertTrue(obj.slotResult instanceof Boolean);
-            assertEquals((Boolean) obj.slotResult, false);
+            assertEquals(obj.slotResult, false);
         }
     }
 

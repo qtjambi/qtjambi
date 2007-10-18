@@ -67,7 +67,7 @@ class SmokeEffect
 // 		int d = m_data[oset + m_width + x];
 //  		m_data[oset + x] = (int) ((dl + (d * 2) + dr) / (4 + 10.0 / m_width));		
 // 		m_data[oset + x] = (int) ((dl + du + dr + dd) / 4);
-		m_data[oset + x] = (int) (((m_data[oset+x+m_width]<<2) + 
+		m_data[oset + x] = (((m_data[oset+x+m_width]<<2) + 
 					   (m_data[oset+x]<<1) +
 					   (m_data[oset+x+1]) +
 					   (m_data[oset+x-1])) - 7) >> 3;
@@ -343,6 +343,7 @@ public class Image extends QWidget
 	t.start(10);
     }
 
+    @Override
     protected void paintEvent(QPaintEvent e) {
 	m_smoke_effect.next();
 	
@@ -363,6 +364,7 @@ public class Image extends QWidget
 	p.end();
     }    
 
+    @Override
     public QSize sizeHint() {
 	return new QSize(270, 320);
     }

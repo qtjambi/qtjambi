@@ -22,6 +22,7 @@ class Item extends QStandardItem {
         disableGarbageCollection();
     }
 
+    @Override
     public Object data(int role) {
         if (role == Qt.ItemDataRole.DisplayRole)
             return "Item " + id;

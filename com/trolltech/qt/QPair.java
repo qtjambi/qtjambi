@@ -35,6 +35,7 @@ public class QPair <T, S> implements Cloneable {
      * @param The other parameter
      * @return True if they are equal.
      */
+    @Override
     public boolean equals(Object o) {
         QPair other = o instanceof QPair ? (QPair) o : null; 
         if (other == null || first == null || second == null || other.first == null || other.second == null)
@@ -46,6 +47,7 @@ public class QPair <T, S> implements Cloneable {
     /**
      * Returns a string representation of this pair.
      */
+    @Override
     public String toString() {
         return "Pair(" + (first != null ? first.toString() : "null")
          + "," + (second != null ? second.toString() : "null") + ")";
@@ -55,6 +57,7 @@ public class QPair <T, S> implements Cloneable {
     /**
      * Returns a copy of this object.
      */
+    @Override
     public QPair<T, S> clone() {
         return new QPair<T, S>(first, second);
     }

@@ -57,6 +57,7 @@ public class GlassPane extends QWidget {
             transition = type == null ? Transition.Fade : type;
         }
 
+        @Override
         protected void paintEvent(QPaintEvent e) {
             QPainter p = new QPainter(this);
 

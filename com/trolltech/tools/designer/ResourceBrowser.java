@@ -97,7 +97,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
         }
 
         if (window() instanceof QDialog) {
-            view.doubleClicked.connect(((QDialog) window()), "accept()");
+            view.doubleClicked.connect((window()), "accept()");
         }
 
         view.expandAll();
@@ -133,6 +133,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
         	selection.setCurrentIndex(index, QItemSelectionModel.SelectionFlag.SelectCurrent);
     }
 
+    @Override
     protected void showEvent(QShowEvent arg) {
         if (walker == null)
         	reindex();     

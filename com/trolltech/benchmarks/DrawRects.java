@@ -25,6 +25,7 @@ public class DrawRects {
     private static class AwtWidget extends Component {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void paint(Graphics g) {
             g.setColor(new Color(255, 0, 0));
 
@@ -42,13 +43,14 @@ public class DrawRects {
                     }
                 }
 
-                long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+                long opsPrSec = (drawCount * 1000 / (endTime - startTime));
                 System.out.printf("Awt:   rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
             }
 
             setVisible(false);
         }
 
+        @Override
         public Dimension getPreferredSize() {
             return new Dimension(512, 512);
         }
@@ -56,6 +58,7 @@ public class DrawRects {
 
 
     private static class QtWidget extends QWidget {
+        @Override
         protected void paintEvent(QPaintEvent e) {
 
             QPainter p = new QPainter();
@@ -77,7 +80,7 @@ public class DrawRects {
                     }
                 }
 
-                long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+                long opsPrSec = (drawCount * 1000 / (endTime - startTime));
                 System.out.printf("Qt:    rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
             }
 
@@ -86,12 +89,14 @@ public class DrawRects {
             hide();
         }
 
+        @Override
         public QSize sizeHint() {
             return new QSize(512, 512);
         }
     }
 
     private static class QtGLWidget extends QGLWidget {
+        @Override
         protected void paintEvent(QPaintEvent e) {
 
             QPainter p = new QPainter();
@@ -113,7 +118,7 @@ public class DrawRects {
                     }
                 }
 
-                long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+                long opsPrSec = (drawCount * 1000 / (endTime - startTime));
                 System.out.printf("Qt/GL: rect fills: size=%3d: ops/sec=%d\n", size, opsPrSec);
             }
 
@@ -122,6 +127,7 @@ public class DrawRects {
             hide();
         }
 
+        @Override
         public QSize sizeHint() {
             return new QSize(512, 512);
         }

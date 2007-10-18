@@ -105,7 +105,8 @@ public abstract class QFlags<T extends QtEnumerator>
     /**
      * {@inheritDoc}
      */
-     public final boolean equals(Object object) {
+     @Override
+    public final boolean equals(Object object) {
          return object != null
              && object.getClass() == getClass()
              && ((QFlags) object).value() == value();
@@ -114,7 +115,8 @@ public abstract class QFlags<T extends QtEnumerator>
     /**
      * {@inheritDoc}
      */
-     public final String toString() {
+     @Override
+    public final String toString() {
          String hexString = Integer.toHexString(value);
          return "0x" + ("00000000".substring(hexString.length())) + hexString;
      }

@@ -4,6 +4,7 @@ import com.trolltech.qt.gui.*;
 
 public class Unicode extends QWidget {
 
+    @Override
     protected void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter(this);
 

@@ -74,7 +74,7 @@ public class TestNativePointer extends QApplicationTest {
     public void run_createCharPointer() {
         {
             QNativePointer ptr = new QNativePointer(QNativePointer.Type.Char);
-            ptr.setCharValue((char) '!');
+            ptr.setCharValue('!');
             assertTrue(!ptr.isNull());
             assertEquals(ptr.type(), QNativePointer.Type.Char);
             assertEquals(ptr.indirections(), 1);

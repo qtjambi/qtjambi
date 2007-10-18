@@ -13,7 +13,6 @@
 
 package com.trolltech.tests;
 
-import com.trolltech.qt.*;
 import com.trolltech.qt.gui.*;
 
 public class OnConnection extends QWidget

@@ -115,6 +115,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * which will be called either as the native resources are being removed
      * or just before the object is finalized, whichever happens first.
      */
+    @Override
     protected final native void finalize();
 
     /**

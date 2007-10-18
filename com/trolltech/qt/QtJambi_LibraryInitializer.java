@@ -47,6 +47,7 @@ abstract class QtJambi_LibraryInitializer
             if (all || critical || debug || fatal || warning) {
                 QMessageHandler messageHandler = new QMessageHandler() {
 
+                    @Override
                     public void critical(String message) {
                         if (critical || all)
                             throw new RuntimeException("Critical: " + message);
@@ -54,6 +55,7 @@ abstract class QtJambi_LibraryInitializer
                             System.err.println("Critical: " + message);
                     }
 
+                    @Override
                     public void debug(String message) {
                         if (debug || all)
                             throw new RuntimeException("Debug: " + message);
@@ -61,6 +63,7 @@ abstract class QtJambi_LibraryInitializer
                             System.err.println("Debug: " + message);
                     }
 
+                    @Override
                     public void fatal(String message) {
                         if (fatal || all)
                             throw new RuntimeException("Fatal: " + message);
@@ -68,6 +71,7 @@ abstract class QtJambi_LibraryInitializer
                             System.err.println("Fatal: " + message);
                     }
 
+                    @Override
                     public void warning(String message) {
                         if (warning || all)
                             throw new RuntimeException("Warning: " + message);

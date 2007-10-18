@@ -78,6 +78,7 @@ public class TestSignalMapper extends QApplicationTest{
         }
         
         Thread thread = new Thread("Reciver Thread"){
+            @Override
             public void run() {
                 new QEventLoop().exec();
             }

@@ -35,10 +35,12 @@ public class MemberSheet extends JambiMemberSheet {
     private static class SignalEntry extends Entry {
         Field signal;
 
+        @Override
         public String name() {
             return signal.getName();
         }
 
+        @Override
         public String signature() {
             StringBuilder s = new StringBuilder();
             s.append(signal.getName());
@@ -66,18 +68,23 @@ public class MemberSheet extends JambiMemberSheet {
             return s.toString();
         }
 
+        @Override
         public String group() {
             return signal.getDeclaringClass().getName();
         }
 
+        @Override
         public boolean isWidget() { return signal.getDeclaringClass() == com.trolltech.qt.gui.QWidget.class; }
     }
 
     private static class SlotEntry extends Entry {
         Method method;
 
+        @Override
         public String group() { return method.getDeclaringClass().getName(); }
+        @Override
         public String name() { return method.getName(); }
+        @Override
         public String signature() {
             StringBuilder s = new StringBuilder();
             s.append(method.getName());
@@ -95,6 +102,7 @@ public class MemberSheet extends JambiMemberSheet {
             return s.toString();
         }
 
+        @Override
         public boolean isWidget() { return method.getDeclaringClass() == com.trolltech.qt.gui.QWidget.class; }
     }
 
@@ -105,10 +113,12 @@ public class MemberSheet extends JambiMemberSheet {
     }
 
 
+    @Override
     public int count() {
         return entries.size();
     }
 
+    @Override
     public String declaredInClass(int i) {
         if (i >= entries.size())
             return null;
@@ -116,16 +126,19 @@ public class MemberSheet extends JambiMemberSheet {
         return entries.get(i).group();
     }
 
+    @Override
     public int indexOf(String name) {
         return 0;
     }
 
+    @Override
     public boolean inheritedFromWidget(int i) {
         if (i >= entries.size())
             return false;
         return entries.get(i).isWidget();
     }
 
+    @Override
     public boolean isSignal(int i) {
         if (i >= entries.size())
             return false;
@@ -133,6 +146,7 @@ public class MemberSheet extends JambiMemberSheet {
         return !(entries.get(i) instanceof SlotEntry);
     }
 
+    @Override
     public boolean isSlot(int i) {
         if (i >= entries.size())
             return false;
@@ -140,41 +154,49 @@ public class MemberSheet extends JambiMemberSheet {
         return entries.get(i) instanceof SlotEntry;
     }
 
+    @Override
     public boolean isVisible(int i) {
         if (i >= entries.size())
             return false;
         return entries.get(i).visible();
     }
 
+    @Override
     public String memberGroup(int i) {
         if (i >= entries.size())
             return null;
         return entries.get(i).group();
     }
 
+    @Override
     public String memberName(int i) {
         if (i >= entries.size())
             return null;
         return entries.get(i).name();
     }
 
+    @Override
     public List<QByteArray> parameterNames(int i) {
         return null;
     }
 
+    @Override
     public List<QByteArray> parameterTypes(int i) {
         return null;
     }
 
+    @Override
     public void setMemberGroup(int i, String arg__2) {
     }
 
+    @Override
     public void setVisible(int i, boolean arg) {
         if (i >= entries.size()) {
             entries.get(i).setVisible(arg);
         }
     }
 
+    @Override
     public String signature(int index) {
         return entries.get(index).signature();
     }

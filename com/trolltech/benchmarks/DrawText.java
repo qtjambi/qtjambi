@@ -25,6 +25,7 @@ public class DrawText {
     private static class AwtWidget extends Component {
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void paint(Graphics g) {
 	    g.setColor(new Color(0, 0, 0));
 
@@ -40,20 +41,22 @@ public class DrawText {
 		}
 	    }
 
-	    long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
 	    System.out.printf("Awt:   text drawing: ops/sec=%d\n", opsPrSec);
 	    
 	    setVisible(false);
 	}
 
-	public Dimension getPreferredSize() {
+	@Override
+    public Dimension getPreferredSize() {
 	    return new Dimension(512, 512);
 	}
     }
 
 
     private static class QtWidget extends QWidget {
-	protected void paintEvent(QPaintEvent e) {
+	@Override
+    protected void paintEvent(QPaintEvent e) {
 	    
 	    QPainter p = new QPainter();
 	    p.begin(this);
@@ -70,7 +73,7 @@ public class DrawText {
 		}
 	    }
 
-	    long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
 	    System.out.printf("Qt:    text drawing: ops/sec=%d\n", opsPrSec);
 	    
 	    p.end();
@@ -78,13 +81,15 @@ public class DrawText {
 	    hide();
 	}
 
-	public QSize sizeHint() {
+	@Override
+    public QSize sizeHint() {
 	    return new QSize(512, 512);
 	}
     }
 
     private static class QtGLWidget extends QGLWidget {
-	protected void paintEvent(QPaintEvent e) {
+	@Override
+    protected void paintEvent(QPaintEvent e) {
 	    
 	    QPainter p = new QPainter();
 	    p.begin(this);
@@ -101,7 +106,7 @@ public class DrawText {
 		}
 	    }
 
-	    long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
 	    System.out.printf("Qt/GL: text drawing: ops/sec=%d\n", opsPrSec);
 	    
 	    p.end();
@@ -109,7 +114,8 @@ public class DrawText {
 	    hide();
 	}
 
-	public QSize sizeHint() {
+	@Override
+    public QSize sizeHint() {
 	    return new QSize(512, 512);
 	}
     }

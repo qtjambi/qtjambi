@@ -21,6 +21,7 @@ class MainWindowState extends QMainWindow {
     }
 
 
+    @Override
     protected void hideEvent(QHideEvent e) {
         QSettings settings = new QSettings("MySoft", "testing");
         QByteArray array = saveState();
@@ -28,6 +29,7 @@ class MainWindowState extends QMainWindow {
     }
 
 
+    @Override
     protected void showEvent(QShowEvent e) {
         QSettings settings = new QSettings("MySoft", "testing");
         QByteArray state = (QByteArray) settings.value("state");

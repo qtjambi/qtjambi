@@ -32,6 +32,7 @@ public class DrawLines {
         
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void paint(Graphics g) {
 	    g.setColor(new Color(255, 0, 0));
 
@@ -49,21 +50,23 @@ public class DrawLines {
 		    }
 		}
 
-		long opsPrSec = (long) (drawCount * 1000 / (endTime - startTime));
+		long opsPrSec = (drawCount * 1000 / (endTime - startTime));
 		System.out.printf("Awt:   diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
 	    }
 
 	    setVisible(false);
 	}
 
-	public Dimension getPreferredSize() {
+	@Override
+    public Dimension getPreferredSize() {
 	    return new Dimension(SIZE, SIZE);
 	}
     }
 
 
     private static class QtWidget extends QWidget {
-	protected void paintEvent(QPaintEvent e) {
+	@Override
+    protected void paintEvent(QPaintEvent e) {
 	    
 	    QPainter p = new QPainter();
 	    p.begin(this);
@@ -83,7 +86,7 @@ public class DrawLines {
 		    }
 		}
 
-		long opsPrSec = (long) (drawCount / (endTime - startTime) * 1000);
+		long opsPrSec = (drawCount / (endTime - startTime) * 1000);
 		System.out.printf("Qt:    diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
 	    }
 
@@ -92,13 +95,15 @@ public class DrawLines {
 	    hide();
 	}
 
-	public QSize sizeHint() {
+	@Override
+    public QSize sizeHint() {
 	    return new QSize(SIZE, SIZE);
 	}
     }
 
     private static class QtGLWidget extends QGLWidget {
-	protected void paintEvent(QPaintEvent e) {
+	@Override
+    protected void paintEvent(QPaintEvent e) {
 	    
 	    QPainter p = new QPainter();
 	    p.begin(this);
@@ -118,7 +123,7 @@ public class DrawLines {
 		    }
 		}
 
-		long opsPrSec = (long) (drawCount / (endTime - startTime) * 1000);
+		long opsPrSec = (drawCount / (endTime - startTime) * 1000);
 		System.out.printf("Qt/GL: diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
 	    }
 
@@ -127,7 +132,8 @@ public class DrawLines {
 	    hide();
 	}
 
-	public QSize sizeHint() {
+	@Override
+    public QSize sizeHint() {
 	    return new QSize(SIZE, SIZE);
 	}
     }

@@ -35,6 +35,7 @@ public class QNoSuchSlotException extends ConnectionException {
         this.slotSignature = slotSignature;
     }
 
+    @Override
     public String getMessage() {
         if (message != null)
             return message;

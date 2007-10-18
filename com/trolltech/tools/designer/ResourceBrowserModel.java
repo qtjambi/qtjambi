@@ -32,6 +32,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
         public NamedItem(String name) {
             this.name = name;
         }
+        @Override
         public String toString() { return name; }
         public int compareTo(Object o) { return name.compareTo(o.toString()); }
         String name;
@@ -66,6 +67,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
             return false;
         }
 
+        @Override
         protected boolean filterAcceptsRow(int row, QModelIndex parent) {
             ResourceBrowserModel m = (ResourceBrowserModel) sourceModel();
 
@@ -193,10 +195,12 @@ public class ResourceBrowserModel extends QAbstractItemModel {
         return s;
     }
 
+    @Override
     public int columnCount(QModelIndex parent) {
         return 1;
     }
 
+    @Override
     public Object data(QModelIndex index, int role) {
         if (index == null)
             return null;
@@ -222,6 +226,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
         return null;
     }
 
+    @Override
     public QModelIndex index(int row, int column, QModelIndex parent) {
         if (parent == null) {
             return createIndex(row, column);
@@ -230,12 +235,14 @@ public class ResourceBrowserModel extends QAbstractItemModel {
         }
     }
 
+    @Override
     public QModelIndex parent(QModelIndex child) {
         if (child.internalId() == 0)
             return null;
         return createIndex((int) child.internalId() - 1, 0);
     }
 
+    @Override
     public int rowCount(QModelIndex parent) {
         if (parent == null)
             return roots.size();

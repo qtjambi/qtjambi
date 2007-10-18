@@ -56,6 +56,7 @@ public class QThreadAffinityException extends RuntimeException {
      * Returns a string representation of this exception.
      * @return This exception as a string.
      */
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append(getMessage());

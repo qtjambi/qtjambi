@@ -126,6 +126,7 @@ public final class QThread extends Thread {
      *
      * @see com.trolltech.qt.core.QObject#disposeLater()
      */
+    @Override
     public void run() {
         starting.emit();
 

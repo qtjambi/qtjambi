@@ -28,6 +28,7 @@ class Node {
         this.model = model;
     }
 
+    @Override
     public String toString() { return text + ":" + counter; }
 
     List<Node> children = new ArrayList<Node>();
@@ -46,6 +47,7 @@ class Model extends QTreeModel {
      * Called to query the child of parent at index. If parent is null we have only one child,
      * the root.
      */
+    @Override
     public Object child(Object parent, int index) {
         if (parent == null)
             return root;
@@ -56,6 +58,7 @@ class Model extends QTreeModel {
      * Called to query the number of children of the given object or the number of root objects if
      * parent is null.
      */
+    @Override
     public int childCount(Object parent) {
         int count = parent == null ? 1 : ((Node) parent).children.size();
         return count;
@@ -65,6 +68,7 @@ class Model extends QTreeModel {
      * Convenience virtual function to get the textual value of an object. I could also
      * implement icon() for pixmap data or the data() function for other types of roles.
      */
+    @Override
     public String text(Object value) {
         return "" + value;
     }

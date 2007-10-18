@@ -71,10 +71,12 @@ public class CustomWidgetTester extends QWidget {
     public void setPositionX(int x) { setPosition(new QPoint(x, position.y())); }
     public void setPositionY(int y) { setPosition(new QPoint(position.x(), y)); }
     
+    @Override
     public QSize sizeHint() {
         return new QSize(200, 200);
     }
     
+    @Override
     protected void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter();
         p.begin(this);

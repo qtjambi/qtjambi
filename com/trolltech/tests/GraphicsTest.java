@@ -37,10 +37,12 @@ class Renderer {
 public class GraphicsTest extends QWidget {
 
     public static class Component extends JComponent {
+        @Override
         public void paintComponent(Graphics g) {
             Renderer.render((Graphics2D) g);
         }
 
+        @Override
         public Dimension getPreferredSize() {
             return new Dimension(500, 400);
         }
@@ -55,6 +57,7 @@ public class GraphicsTest extends QWidget {
         super(parent);
     }
 
+    @Override
     protected void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter(this);
         com.trolltech.extensions.awt.QPainterGraphics g = new QPainterGraphics(p);
@@ -63,6 +66,7 @@ public class GraphicsTest extends QWidget {
         Renderer.render(g);
     }
 
+    @Override
     public QSize sizeHint() {
         return new QSize(500, 400);
     }
