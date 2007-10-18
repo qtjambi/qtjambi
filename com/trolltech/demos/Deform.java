@@ -61,6 +61,7 @@ class PathDeformRenderer extends ArthurFrame
     }
 
     public void setFontSize(int fontSize) { m_fontSize = fontSize; setText(m_text); }
+    @Override
     public QSize sizeHint() { return new QSize(600, 500); }
     public boolean animated() { return m_animated; }
     public int radius() { return (int)m_radius; }
@@ -186,6 +187,7 @@ class PathDeformRenderer extends ArthurFrame
         }
     }
 
+    @Override
     protected void paintEvent(QPaintEvent e)
     {
         if (m_textDirty)
@@ -193,6 +195,7 @@ class PathDeformRenderer extends ArthurFrame
         super.paintEvent(e);
     }
 
+    @Override
     protected void timerEvent(QTimerEvent e)
     {
         if (e.timerId() == m_repaintTimer.timerId()) {
@@ -235,6 +238,7 @@ class PathDeformRenderer extends ArthurFrame
         }
     }
 
+    @Override
     protected void mousePressEvent(QMouseEvent e)
     {
         setDescriptionEnabled(false);
@@ -250,6 +254,7 @@ class PathDeformRenderer extends ArthurFrame
         mouseMoveEvent(e);
     }
 
+    @Override
     protected void mouseReleaseEvent(QMouseEvent e)
     {
         if (e.buttons().isSet(Qt.MouseButton.NoButton) && m_animated) {
@@ -258,6 +263,7 @@ class PathDeformRenderer extends ArthurFrame
         }
     }
 
+    @Override
     protected void mouseMoveEvent(QMouseEvent e)
     {
         QRect rectBefore = circle_bounds(m_pos, m_radius, m_fontSize);
@@ -331,6 +337,7 @@ class PathDeformRenderer extends ArthurFrame
         return path;
     }
 
+    @Override
     public void paint(QPainter painter)
     {
         int pad_x = 5;
@@ -372,7 +379,7 @@ class PathDeformRenderer extends ArthurFrame
 
     public void setRadius(int radius)
     {
-        double max = Math.max(m_radius, (double) radius);
+        double max = Math.max(m_radius, radius);
         m_radius = radius;
 
         generateLensPixmap();

@@ -127,11 +127,13 @@ class TetrixBoard extends QFrame
 
     int squareHeight() { return contentsRect().height() / BoardHeight; }
 
+    @Override
     public QSize sizeHint()
     {
         return new QSize(BoardWidth * 15 + frameWidth() * 2, BoardHeight * 15 + frameWidth() * 2);
     }
 
+    @Override
     public QSize minimumSizeHint()
     {
         return new QSize(BoardWidth * 5 + frameWidth() * 2, BoardHeight * 5 + frameWidth() * 2);
@@ -175,6 +177,7 @@ class TetrixBoard extends QFrame
         update();
     }
 
+    @Override
     protected void paintEvent(QPaintEvent e)
     {
         super.paintEvent(e);
@@ -215,6 +218,7 @@ class TetrixBoard extends QFrame
         painter.end();
     }
 
+    @Override
     protected void keyPressEvent(QKeyEvent event)
     {
         if (!isStarted || isPaused || curPiece.shape() == TetrixShape.NoShape) {
@@ -238,6 +242,7 @@ class TetrixBoard extends QFrame
             super.keyPressEvent(event);
     }
 
+    @Override
     protected void timerEvent(QTimerEvent event)
     {
         if (event.timerId() == timer.timerId()) {

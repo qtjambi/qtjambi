@@ -85,6 +85,7 @@ public class ScrollingHTMLView extends QWidget {
         m_document.setTextWidth(wrap ? width() - margine : -1);
     }
 
+    @Override
     protected void paintEvent(QPaintEvent e) {
         int w = width(), h = height();
         double margin = 0.1;
@@ -117,19 +118,23 @@ public class ScrollingHTMLView extends QWidget {
         p.end();
     }
 
+    @Override
     protected void wheelEvent(QWheelEvent e) {
         setYOffset(m_y_offset + e.delta() / 3);
     }
 
+    @Override
     protected void mousePressEvent(QMouseEvent e) {
         m_mouse_pos = e.pos();
     }
 
+    @Override
     protected void mouseMoveEvent(QMouseEvent e) {
         setYOffset(m_y_offset + e.y() - m_mouse_pos.y());
         m_mouse_pos = e.pos();
     }
 
+    @Override
     public QSize sizeHint() {
         return new QSize(500, 400);
     }
@@ -142,6 +147,7 @@ public class ScrollingHTMLView extends QWidget {
         this.background = background;
     }
 
+    @Override
     protected void resizeEvent(QResizeEvent e) {
         m_document.setTextWidth(wrap ? e.size().width() - margine : -1);
     }

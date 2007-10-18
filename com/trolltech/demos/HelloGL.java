@@ -13,12 +13,10 @@
 
 package com.trolltech.demos;
 
+import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.opengl.*;
-import com.trolltech.examples.*;
-
-import javax.media.opengl.*;
+import com.trolltech.qt.opengl.QGLWidget;
 
 class GLWidget extends QGLWidget
 {
@@ -48,17 +46,20 @@ class GLWidget extends QGLWidget
         trolltechPurple = QColor.fromCmykF(0.39, 0.39, 0.0, 0.0);
     }
 
+    @Override
     protected void disposed()
     {
         makeCurrent();
         func.glDeleteLists(object, 1);
     }
 
+    @Override
     public QSize minimumSizeHint()
     {
         return new QSize(50, 50);
     }
 
+    @Override
     public QSize sizeHint()
     {
         return new QSize(400, 400);
@@ -100,6 +101,7 @@ class GLWidget extends QGLWidget
         }
     }
 
+    @Override
     protected void initializeGL()
     {
         GLDrawableFactory factory = GLDrawableFactory.getFactory();
@@ -115,6 +117,7 @@ class GLWidget extends QGLWidget
 
     }
 
+    @Override
     protected void paintGL()
     {
         func.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -126,6 +129,7 @@ class GLWidget extends QGLWidget
         func.glCallList(object);
     }
 
+    @Override
     protected void resizeGL(int width, int height)
     {
         int side = Math.min(width, height);
@@ -137,11 +141,13 @@ class GLWidget extends QGLWidget
         func.glMatrixMode(GL.GL_MODELVIEW);
     }
 
+    @Override
     protected void mousePressEvent(QMouseEvent event)
     {
         lastPos = event.pos();
     }
 
+    @Override
     protected void mouseMoveEvent(QMouseEvent event)
     {
         int dx = event.x() - lastPos.x();

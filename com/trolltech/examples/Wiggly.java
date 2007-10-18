@@ -41,6 +41,7 @@ class WigglyWidget extends QWidget {
         text = s;
     }
 
+    @Override
     protected void paintEvent(QPaintEvent e) {
         QFontMetrics metrics = new QFontMetrics(font());
         int x = (width() - metrics.width(text)) / 2;
@@ -59,6 +60,7 @@ class WigglyWidget extends QWidget {
         painter.end();
     }
 
+    @Override
     protected void timerEvent(QTimerEvent event) {
         if (event.timerId() == timer.timerId()) {
             ++step;

@@ -47,6 +47,7 @@ public class AnalogClock
         resize(200, 200);
     }
 
+    @Override
     protected void paintEvent(QPaintEvent e)
     {
         QColor hourColor = new QColor(127, 0, 127);
@@ -93,14 +94,17 @@ public class AnalogClock
         }
     }
 
+    @Override
     public QSize sizeHint() {
         return new QSize(200, 200);
     }
 
+    @Override
     public void showEvent(QShowEvent e) {
         m_timer.start(1000);
     }
 
+    @Override
     public void hideEvent(QHideEvent e) {
         m_timer.stop();
     }

@@ -320,6 +320,7 @@ public class Tablet extends QMainWindow
             return false;
         }
 
+        @Override
         protected void tabletEvent(QTabletEvent event)
         {
             switch (event.type()) {
@@ -348,6 +349,7 @@ public class Tablet extends QMainWindow
             update();
         }
 
+        @Override
         protected void paintEvent(QPaintEvent event)
         {
             QPainter painter = new QPainter(this);
@@ -469,6 +471,7 @@ public class Tablet extends QMainWindow
             super(args);
         }
 
+        @Override
         public boolean event(QEvent event)
         {
             if (event.type().equals(QEvent.Type.TabletEnterProximity) ||

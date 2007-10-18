@@ -30,6 +30,7 @@ public class TreeModel extends QTreeView
         /**
          * Returns the number of children this parent has.
          */
+        @Override
         public int childCount(Object parent) {
             return entryList(dir(parent)).size();
         }
@@ -39,6 +40,7 @@ public class TreeModel extends QTreeView
          * Converts the parent to a QDir and accesses its entry list to
          * create a new QDir as the child.
          */
+        @Override
         public Object child(Object parent, int row) {
             QDir d = dir(parent);
             return new QDir(d.absoluteFilePath(entryList(d).get(row)));
@@ -48,6 +50,7 @@ public class TreeModel extends QTreeView
         /**
          * Converts the directory to a QDir and returns it.
          */
+        @Override
         public String text(Object value) {
             return ((QDir) value).dirName();
         }

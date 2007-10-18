@@ -31,6 +31,7 @@ public class Launcher extends QWidget {
 
         protected abstract void updateHtml(String s);
 
+        @Override
         protected void execute() {
             QModelIndex i = ui.list.selectionModel().currentIndex();
             Launchable l = null;
@@ -39,6 +40,7 @@ public class Launcher extends QWidget {
             updateHtml(l == null ? "n/a" : html(l));
         }
 
+        @Override
         public void start() {
             updateHtml("loading...");
             super.start();
@@ -46,20 +48,24 @@ public class Launcher extends QWidget {
     }
 
     private HtmlUpdater m_source_updater = new HtmlUpdater(this) {
+            @Override
             protected String html(Launchable l) {
                 return l.source();
             }
 
+            @Override
             protected void updateHtml(String html) {
                 ui.source.setHtml(html);
             }
 	};
 
     private HtmlUpdater m_description_updater = new HtmlUpdater(this) {
+            @Override
             protected String html(Launchable l) {
                 return l.description();
             }
 
+            @Override
             protected void updateHtml(String html) {
                 ui.description.setHtml(html);
             }
@@ -115,6 +121,7 @@ public class Launcher extends QWidget {
             ui.button_documentation.hide();
     }
 
+    @Override
     public boolean eventFilter(QObject object, QEvent e) {
         if (object == m_current.widget() && e.type() == QEvent.Type.Close) {
             launch_close();
@@ -123,6 +130,7 @@ public class Launcher extends QWidget {
         return false;
     }
 
+    @Override
     public void closeEvent(QCloseEvent e) {
         QApplication.quit();
     }

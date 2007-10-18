@@ -224,6 +224,7 @@ public class UndoFramework extends QMainWindow
             movingItem = null;
         }
 
+        @Override
         public void mousePressEvent(QGraphicsSceneMouseEvent event)
         {
             QPointF mousePos = new QPointF(event.buttonDownScenePos(Qt.MouseButton.LeftButton).x(),
@@ -236,6 +237,7 @@ public class UndoFramework extends QMainWindow
             super.mousePressEvent(event);
         }
 
+        @Override
         public void mouseReleaseEvent(QGraphicsSceneMouseEvent event)
         {
             if (movingItem != null && event.button() == Qt.MouseButton.LeftButton) {
@@ -247,6 +249,7 @@ public class UndoFramework extends QMainWindow
             super.mouseReleaseEvent(event);
         }
 
+        @Override
         protected void drawBackground(QPainter painter, QRectF rect)
         {
             double startY = rect.top() - Math.IEEEremainder(rect.top(), 30.0);
@@ -275,11 +278,13 @@ public class UndoFramework extends QMainWindow
             setText("Delete " + UndoFramework.createCommandString(myDiagramItem, myDiagramItem.pos()));
         }
 
+        @Override
         public void redo()
         {
             myGraphicsScene.removeItem(myDiagramItem);
         }
 
+        @Override
         public void undo()
         {
             myGraphicsScene.addItem(myDiagramItem);
@@ -301,8 +306,10 @@ public class UndoFramework extends QMainWindow
             myOldPos = oldPos;
         }
 
+        @Override
         public int id() { return 1; }
 
+        @Override
         public void undo()
         {
             myDiagramItem.setPos(myOldPos);
@@ -310,12 +317,14 @@ public class UndoFramework extends QMainWindow
             setText(tr("Move " + UndoFramework.createCommandString(myDiagramItem, newPos)));
        } 
 
+        @Override
         public void redo()
         {
             myDiagramItem.setPos(newPos);
             setText(tr("Move " + UndoFramework.createCommandString(myDiagramItem, newPos)));
         }    
 
+        @Override
         public boolean mergeWith(QUndoCommand other)
         {
             MoveCommand moveCommand = (MoveCommand) other;
@@ -348,6 +357,7 @@ public class UndoFramework extends QMainWindow
             setText(tr("Add " + UndoFramework.createCommandString(myDiagramItem, initialPosition)));
         }
 
+        @Override
         public void redo()
         {
             myGraphicsScene.addItem(myDiagramItem);
@@ -356,6 +366,7 @@ public class UndoFramework extends QMainWindow
             myGraphicsScene.update();
         }
 
+        @Override
         public void undo()
         {
             myGraphicsScene.removeItem(myDiagramItem);

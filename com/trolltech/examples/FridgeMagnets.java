@@ -64,6 +64,7 @@ public class FridgeMagnets extends QWidget {
         setAcceptDrops(true);
     }
 
+    @Override
     public void dragEnterEvent(QDragEnterEvent event) {
         if (event.mimeData().hasFormat("application/x-fridgemagnet")) {
             if (children().contains(event.source())) {
@@ -79,6 +80,7 @@ public class FridgeMagnets extends QWidget {
         }
     }
 
+    @Override
     public void dragMoveEvent(QDragMoveEvent event) {
         if (event.mimeData().hasFormat("application/x-fridgemagnet")) {
             if (children().contains(event.source())) {
@@ -94,6 +96,7 @@ public class FridgeMagnets extends QWidget {
         }
     }
 
+    @Override
     public void dropEvent(QDropEvent event) {
         if (event.mimeData().hasFormat("application/x-fridgemagnet")) {
             com.trolltech.qt.core.QMimeData mime = event.mimeData();
@@ -172,6 +175,7 @@ public class FridgeMagnets extends QWidget {
             labelText = text;
         }
 
+        @Override
         public void mousePressEvent(QMouseEvent event) {
             QByteArray itemData = new QByteArray();
             QDataStream dataStream;

@@ -177,7 +177,7 @@ class Client extends QObject {
 
     String nickName() {
         return peerManager.userName() + "@" + QHostInfo.localHostName() + ":"
-                + (int) server.serverPort();
+                + server.serverPort();
     }
 
     boolean hasConnection(final QHostAddress senderIp, int senderPort) {
@@ -322,6 +322,7 @@ class Connection extends QTcpSocket {
         return write(data) == data.size();
     }
 
+    @Override
     public void timerEvent(QTimerEvent timerEvent) {
         if (timerEvent.timerId() == transferTimerId) {
             abort();
@@ -351,7 +352,7 @@ class Connection extends QTcpSocket {
                 return;
             }
 
-            username = buffer + "@" + peerAddress().toString() + ":" + (int) peerPort();
+            username = buffer + "@" + peerAddress().toString() + ":" + peerPort();
             currentDataType = DataType.Undefined;
             numBytesForCurrentDataType = 0;
             buffer.clear();
@@ -649,6 +650,7 @@ class Server extends QTcpServer {
         listen(new QHostAddress(QHostAddress.SpecialAddress.Any), 0);
     }
 
+    @Override
     public void incomingConnection(int socketDescriptor) {
         Connection connection = new Connection(this);
         connection.setSocketDescriptor(socketDescriptor);

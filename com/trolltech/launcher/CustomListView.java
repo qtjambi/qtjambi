@@ -21,6 +21,7 @@ public class CustomListView extends QListView
     public CustomListView(QWidget parent) { super(parent); }
     public CustomListView() { this(null); }
 
+    @Override
     public QSize sizeHint() {
 	QSize s = new QSize(sizeHintForColumn(0), sizeHintForRow(0) /** model().rowCount()*/);
 	return s;

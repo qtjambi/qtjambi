@@ -69,6 +69,7 @@ public class Application extends QMainWindow {
         setCurrentFile("");
     }
 
+    @Override
     public void closeEvent(QCloseEvent event)
     {
         if (maybeSave()) {

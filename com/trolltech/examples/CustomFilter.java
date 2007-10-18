@@ -207,6 +207,7 @@ public class CustomFilter extends QWidget {
             invalidateFilter();
         }
 
+        @Override
         protected boolean filterAcceptsRow(int sourceRow,
                                            QModelIndex sourceParent) {
             QModelIndex index0;
@@ -227,6 +228,7 @@ public class CustomFilter extends QWidget {
             return matchFound && dateInRange((QDateTime) (model.data(index2)));
         }
 
+        @Override
         protected boolean lessThan(QModelIndex left, QModelIndex right) {
 
             boolean result = false;

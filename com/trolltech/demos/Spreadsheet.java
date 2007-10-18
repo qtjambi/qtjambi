@@ -620,6 +620,7 @@ public class Spreadsheet extends QMainWindow {
             }
         }
 
+        @Override
         public String toString() {
             return value.toString();
         }
@@ -902,6 +903,7 @@ public class Spreadsheet extends QMainWindow {
     class SpreadsheetIntepreter extends Intepreter {
         SpreadsheetIntepreter() {
             Function function = new Function("sum") {
+                @Override
                 public Object result(Object[] args) throws ParseException {
                     checkNumberOfArguments(2, args);
                     int[] cell1 = Util.parseCell(args[0].toString());
@@ -931,6 +933,7 @@ public class Spreadsheet extends QMainWindow {
             functions.put(function.getName(), function);
 
             function = new Function("value") {
+                @Override
                 public Object result(Object[] args) throws ParseException {
                     checkNumberOfArguments(1, args);
                     int[] cell = Util.parseCell(args[0].toString());
@@ -980,9 +983,9 @@ public class Spreadsheet extends QMainWindow {
             for (int i = 0; i < chars.length; i++) {
                 char c = chars[i];
                 if (Character.isDigit(c))
-                    chars[i] = (char) ((int) c - (int) '0' + (int) 'a');
+                    chars[i] = (char) (c - '0' + 'a');
                 else
-                    chars[i] = (char) ((int) c - (int) 'a' + (int) 'k');
+                    chars[i] = (char) (c - 'a' + 'k');
             }
             return String.valueOf(chars);
         }

@@ -105,6 +105,7 @@ public class Menus extends QMainWindow {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
+    @Override
     public void contextMenuEvent(QContextMenuEvent event) {
         QMenu menu = new QMenu(this);
         menu.addAction(cutAct);

@@ -224,6 +224,7 @@ public class ResourceSystem extends QWidget
 
     }
 
+    @Override
     protected void disposed()
     {
         if (m_jar_name != null)
@@ -231,6 +232,7 @@ public class ResourceSystem extends QWidget
         super.disposed();
     }
 
+    @Override
     protected void showEvent(QShowEvent e) {
         if (!m_shown) {
             QTimer.singleShot(0, this, "setupSelection()");

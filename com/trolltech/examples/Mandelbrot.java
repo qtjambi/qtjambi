@@ -53,6 +53,7 @@ public class Mandelbrot extends QWidget {
         this(null);
     }
     
+    @Override
     protected void disposed() {
         synchronized (thread) {
             abort = true;
@@ -77,6 +78,7 @@ public class Mandelbrot extends QWidget {
         resize(550, 400);
     }
 
+    @Override
     public void paintEvent(QPaintEvent event) {
         QPainter painter = new QPainter();
         painter.begin(this);
@@ -132,10 +134,12 @@ public class Mandelbrot extends QWidget {
         painter.end();
     }
 
+    @Override
     public void resizeEvent(QResizeEvent event) {
         thread.render(centerX, centerY, currentScale, size());
     }
 
+    @Override
     protected void closeEvent(QCloseEvent event) {
         synchronized (thread) {
             abort = true;
@@ -144,6 +148,7 @@ public class Mandelbrot extends QWidget {
         super.closeEvent(event);
     }
 
+    @Override
     public void keyPressEvent(QKeyEvent event) {
         Qt.Key key = Qt.Key.resolve(event.key());
         switch (key) {
@@ -170,17 +175,20 @@ public class Mandelbrot extends QWidget {
         }
     }
 
+    @Override
     public void wheelEvent(QWheelEvent event) {
         int numDegrees = event.delta() / 8;
         double numSteps = numDegrees / 15.0f;
         zoom(Math.pow(ZoomInFactor, numSteps));
     }
 
+    @Override
     public void mousePressEvent(QMouseEvent event) {
         if (event.button() == Qt.MouseButton.LeftButton)
             lastDragPosition = event.pos();
     }
 
+    @Override
     public void mouseMoveEvent(QMouseEvent event) {
         if (event.buttons().isSet(Qt.MouseButton.LeftButton)) {
             pixmapOffset.add(event.pos());
@@ -191,6 +199,7 @@ public class Mandelbrot extends QWidget {
         }
     }
 
+    @Override
     public void mouseReleaseEvent(QMouseEvent event) {
         if (event.button() == Qt.MouseButton.LeftButton) {
             pixmapOffset.add(event.pos());
@@ -270,6 +279,7 @@ public class Mandelbrot extends QWidget {
             }
         }
 
+        @Override
         public void run() {
             QSize resultSize;
             double scaleFactor;

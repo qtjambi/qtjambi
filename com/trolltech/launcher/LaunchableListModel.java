@@ -40,10 +40,12 @@ class LaunchableListModel extends QAbstractListModel {
     }
 
     // item view classes...
+    @Override
     public int rowCount(QModelIndex parent) {
         return size();
     }
 
+    @Override
     public Object data(QModelIndex index, int role) {
         if (role == Qt.ItemDataRole.DisplayRole)
             return at(index.row()).name();

@@ -121,6 +121,7 @@ public class I18N extends QDialog {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
+    @Override
     public void closeEvent(QCloseEvent event) {
         hideAll();
     }

@@ -81,12 +81,14 @@ public class TextEdit extends QMainWindow {
         resize(640, 800);
     }
 
+    @Override
     protected void showEvent(QShowEvent e) {
         if (!initialized)
             init();
         super.showEvent(e);
     }
 
+    @Override
     protected void closeEvent(QCloseEvent e) {
         if (maybeSave())
             e.accept();

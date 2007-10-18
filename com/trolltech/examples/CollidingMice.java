@@ -90,6 +90,7 @@ public class CollidingMice extends QWidget {
         private double adjust = 0.5;
         private QRectF boundingRect = new QRectF(-20 - adjust, -22 - adjust,
                                                  40 + adjust, 83 + adjust);
+        @Override
         public QRectF boundingRect() {
             return boundingRect;
         }
@@ -98,6 +99,7 @@ public class CollidingMice extends QWidget {
         {
             shape.addRect(-10, -20, 20, 40);
         }
+        @Override
         public QPainterPath shape() {
             return shape;
         }

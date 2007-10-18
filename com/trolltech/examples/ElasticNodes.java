@@ -130,6 +130,7 @@ public class ElasticNodes extends QGraphicsView {
             timerId = startTimer(1000 / 25);
     }
 
+    @Override
     protected void keyPressEvent(QKeyEvent event) {
         Qt.Key key = Qt.Key.resolve(event.key());
         switch (key) {
@@ -163,6 +164,7 @@ public class ElasticNodes extends QGraphicsView {
         }
     }
 
+    @Override
     protected void timerEvent(QTimerEvent event) {
        for (Node node : nodes)
             node.calculateForces();
@@ -179,10 +181,12 @@ public class ElasticNodes extends QGraphicsView {
         }
     }
 
+    @Override
     protected void wheelEvent(QWheelEvent event) {
         scaleView(Math.pow(2, -event.delta() / 240.0));
     }
 
+    @Override
     protected void drawBackground(QPainter painter, QRectF rect) {
         // Shadow
         QRectF sceneRect = this.sceneRect();
@@ -292,10 +296,12 @@ public class ElasticNodes extends QGraphicsView {
             return true;
         }
 
+        @Override
         public QRectF boundingRect() {
             return boundingRect;
         }
 
+        @Override
         public QPainterPath shape() {
             return NODE_SHAPE;
         }
@@ -316,6 +322,7 @@ public class ElasticNodes extends QGraphicsView {
             painter.drawEllipse(-10, -10, 20, 20);
         }
 
+        @Override
         public Object itemChange(GraphicsItemChange change, Object value) {
             switch (change) {
             case ItemPositionChange:
@@ -330,11 +337,13 @@ public class ElasticNodes extends QGraphicsView {
             return super.itemChange(change, value);
         }
 
+        @Override
         public void mousePressEvent(QGraphicsSceneMouseEvent event) {
             update();
             super.mousePressEvent(event);
         }
 
+        @Override
         public void mouseReleaseEvent(QGraphicsSceneMouseEvent event) {
             update();
             super.mouseReleaseEvent(event);
@@ -406,10 +415,12 @@ public class ElasticNodes extends QGraphicsView {
 
         }
 
+        @Override
         public QRectF boundingRect() {
             return boundingRect;
         }
 
+        @Override
         public void paint(QPainter painter, QStyleOptionGraphicsItem option, QWidget widget) {
 
             if (source == null || dest == null)

@@ -302,6 +302,7 @@ public class PathStrokeWidget extends QWidget {
             update();
         }
 
+        @Override
         public QSize sizeHint() {
             return new QSize(500, 500);
         }
@@ -334,6 +335,7 @@ public class PathStrokeWidget extends QWidget {
 
         }
 
+        @Override
         public void paint(QPainter painter) {
             if (m_points.isEmpty())
                 initializePoints();
@@ -471,6 +473,7 @@ public class PathStrokeWidget extends QWidget {
             update();
         }
 
+        @Override
         public void mousePressEvent(QMouseEvent e) {
             setDescriptionEnabled(false);
             m_activePoint = -1;
@@ -490,6 +493,7 @@ public class PathStrokeWidget extends QWidget {
             }
         }
 
+        @Override
         public void mouseMoveEvent(QMouseEvent e) {
             if (m_activePoint >= 0 && m_activePoint < m_points.size()) {
                 m_points.set(m_activePoint, new QPointF(e.pos()));
@@ -497,11 +501,13 @@ public class PathStrokeWidget extends QWidget {
             }
         }
 
+        @Override
         public void mouseReleaseEvent(QMouseEvent e) {
             m_activePoint = -1;
             setAnimation(m_wasAnimated);
         }
 
+        @Override
         public void timerEvent(QTimerEvent e) {
             if (e.timerId() == m_timer.timerId()) {
                 updatePoints();

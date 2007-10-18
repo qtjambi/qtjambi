@@ -79,6 +79,7 @@ public class SvgCards extends QGraphicsView {
         "10_spade"
     };
     
+    @Override
     protected void closeEvent(QCloseEvent e) {
         closing = true;
     }
@@ -102,6 +103,7 @@ public class SvgCards extends QGraphicsView {
             return elementId();
         }
 
+        @Override
         public void mousePressEvent(QGraphicsSceneMouseEvent event) {
             setZValue(10);
             opacity = 0.7;
@@ -109,6 +111,7 @@ public class SvgCards extends QGraphicsView {
             super.mousePressEvent(event);
         }
 
+        @Override
         public void mouseReleaseEvent(QGraphicsSceneMouseEvent event) {
             opacity = 1.0;
             setZValue(5);
@@ -116,6 +119,7 @@ public class SvgCards extends QGraphicsView {
             super.mouseReleaseEvent(event);
         }
 
+        @Override
         public void paint(QPainter painter, QStyleOptionGraphicsItem option,
                           QWidget widget) {
             painter.setOpacity(opacity);
@@ -132,6 +136,7 @@ public class SvgCards extends QGraphicsView {
             rectangle = new QRectF(0, 0, 200, 50);
         }
 
+        @Override
         public QRectF boundingRect() {
             return rectangle;
         }
@@ -281,6 +286,7 @@ public class SvgCards extends QGraphicsView {
                     public void run() { loadCards(); } });
     }
 
+    @Override
     public QSize sizeHint() {
         return new QSize(800, 600);
     }

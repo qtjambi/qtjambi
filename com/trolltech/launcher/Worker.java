@@ -43,6 +43,7 @@ public abstract class Worker extends QObject {
 	return m_delay;
     }
 
+    @Override
     protected void timerEvent(QTimerEvent e) {
 	if (e.timerId() == m_timer_id) {
 	    execute();

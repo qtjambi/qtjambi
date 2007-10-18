@@ -55,6 +55,7 @@ public class  Painting2D extends QWidget
             repaint();
         }
 
+        @Override
         protected void paintEvent(QPaintEvent event)
         {
             QPainter painter = new QPainter();
@@ -83,6 +84,7 @@ public class  Painting2D extends QWidget
             repaint();
         }
 
+        @Override
         public void paintEvent(QPaintEvent event)
         {
             QPainter painter = new QPainter();
@@ -128,7 +130,7 @@ public class  Painting2D extends QWidget
             painter.setPen(circlePen);
             painter.rotate(elapsed * 0.030);
             
-            double r = ((double) elapsed)/1000.0;
+            double r = (elapsed)/1000.0;
             int n = 30;
             for (int i = 0; i < n; ++i) {
                 painter.rotate(30);

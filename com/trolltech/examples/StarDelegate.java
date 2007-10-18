@@ -91,6 +91,7 @@ public class StarDelegate extends QWidget {
             super(parent);
         }
 
+        @Override
         public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index)
         {
             Object data = index.data();
@@ -105,6 +106,7 @@ public class StarDelegate extends QWidget {
                 super.paint(painter, option, index);
         }
 
+        @Override
         public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index)
         {
             Object data = index.data();
@@ -115,6 +117,7 @@ public class StarDelegate extends QWidget {
                 return super.sizeHint(option, index);
         }
 
+        @Override
         public QWidget createEditor(QWidget parent, QStyleOptionViewItem item,
                                     QModelIndex index)
         {
@@ -126,6 +129,7 @@ public class StarDelegate extends QWidget {
                 return super.createEditor(parent, item, index);
         }
 
+        @Override
         public void setEditorData(QWidget editor, QModelIndex index)
         {
             Object data = index.data();
@@ -136,6 +140,7 @@ public class StarDelegate extends QWidget {
                 super.setEditorData(editor, index);
         }
 
+        @Override
         public void setModelData(QWidget editor, QAbstractItemModel model,
                                  QModelIndex index)
         {
@@ -159,17 +164,20 @@ public class StarDelegate extends QWidget {
             setAutoFillBackground(true);
         }
 
+        @Override
         public QSize sizeHint()
         {
             return starRating.sizeHint();
         }
 
+        @Override
         public void paintEvent(QPaintEvent event)
         {
             QPainter painter = new QPainter(this);
             starRating.paint(painter, rect(), palette(), StarRating.ReadWrite);
         }
 
+        @Override
         public void mouseMoveEvent(QMouseEvent event)
         {
             int star = starAtPosition(event.x());

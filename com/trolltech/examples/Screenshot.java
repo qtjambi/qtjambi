@@ -67,6 +67,7 @@ public class Screenshot extends QWidget {
         resize(300, 200);
     }
 
+    @Override
     public void resizeEvent(QResizeEvent event) {
         QSize scaledSize = originalPixmap.size();
         scaledSize.scale(screenshotLabel.size(), 

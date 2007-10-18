@@ -31,6 +31,7 @@ public class Delegate extends QItemDelegate {
         return tmp[tmp.length - 1];
     }
 
+    @Override
     public void paint(QPainter p, QStyleOptionViewItem option, QModelIndex index) {
         Launchable l = m_model.at(index);
         String text = stripName(l.name());
@@ -45,6 +46,7 @@ public class Delegate extends QItemDelegate {
         Style.drawShadowText(p, rect.translated(0, -1), text, 2, 2);
     }
 
+    @Override
     public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
         Launchable l = m_model.at(index);
 

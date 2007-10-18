@@ -242,6 +242,7 @@ public class Styles extends QDialog
 
     class NorwegianWoodStyle extends QMotifStyle
     {
+        @Override
         public void polish(QPalette palette)
         {
             QColor beige = new QColor(236, 182, 120);
@@ -273,6 +274,7 @@ public class Styles extends QDialog
             palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Mid, brush);
         }
 
+        @Override
         public void polish(QWidget widget)
         {
             if (widget instanceof QPushButton
@@ -280,6 +282,7 @@ public class Styles extends QDialog
                 widget.setAttribute(Qt.WidgetAttribute.WA_Hover, true);
         }
         
+        @Override
         public void unpolish(QWidget widget)
         {
             if (widget instanceof QPushButton
@@ -287,6 +290,7 @@ public class Styles extends QDialog
                 widget.setAttribute(Qt.WidgetAttribute.WA_Hover, false);
         }
 
+        @Override
         public int pixelMetric(PixelMetric metric, QStyleOption option,
                                QWidget widget)
         {
@@ -300,6 +304,7 @@ public class Styles extends QDialog
             }
         }
         
+        @Override
         public int styleHint(StyleHint hint, QStyleOption option, QWidget widget,
                              QStyleHintReturn returnData)
         {
@@ -313,6 +318,7 @@ public class Styles extends QDialog
             }
         }
 
+        @Override
         public void drawPrimitive(QStyle.PrimitiveElement element, QStyleOption option,
                                   QPainter painter, QWidget widget) 
         {
@@ -418,6 +424,7 @@ public class Styles extends QDialog
             }
         }
 
+        @Override
         public void drawControl(ControlElement element, QStyleOption option,
                                 QPainter painter, QWidget widget)
         {

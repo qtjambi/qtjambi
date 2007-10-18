@@ -184,7 +184,7 @@ public class Launchable {
             Class<?> cl = Class.forName(className);
 
             if (Modifier.isPublic(cl.getModifiers()) && QWidget.class.isAssignableFrom(cl)) {
-                QtJambiExample info = (QtJambiExample) cl.getAnnotation(QtJambiExample.class);
+                QtJambiExample info = cl.getAnnotation(QtJambiExample.class);
                 if (info != null) {
 
                     Constructor constructor = null;

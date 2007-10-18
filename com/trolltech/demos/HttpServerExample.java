@@ -48,7 +48,7 @@ public class HttpServerExample extends QWidget {
 
 		editor.setPlainText("<h1>Server is up and running!</h1>"
 				+ "You should be able to view it in a normal web browser."
-				+ " Try this address: http://localhost:" + (int) server.serverPort());
+				+ " Try this address: http://localhost:" + server.serverPort());
 
 		QGridLayout layout = new QGridLayout(this);
 		setLayout(layout);

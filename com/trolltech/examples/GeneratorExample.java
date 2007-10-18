@@ -15,13 +15,6 @@ package com.trolltech.examples;
 
 import java.util.List;
 
-import com.trolltech.examples.generator.AbstractGameObjectInterface;
-import com.trolltech.examples.generator.Game;
-import com.trolltech.examples.generator.GameAction;
-import com.trolltech.examples.generator.GameAnimation;
-import com.trolltech.examples.generator.GameObject;
-import com.trolltech.examples.generator.GameScene;
-import com.trolltech.examples.generator.Point3D;
 import com.trolltech.qt.core.QPointF;
 import com.trolltech.qt.core.QRectF;
 import com.trolltech.qt.gui.QApplication;

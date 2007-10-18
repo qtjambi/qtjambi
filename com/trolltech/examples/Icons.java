@@ -403,6 +403,7 @@ public class Icons extends QMainWindow
 
     class IconSizeSpinBox extends QSpinBox
     {
+        @Override
         public int valueFromText(String text)
         {
             QRegExp regExp = new QRegExp(tr("(\\d+)(\\s*[xx]\\s*\\d+)?"));
@@ -414,6 +415,7 @@ public class Icons extends QMainWindow
             }
         }
 
+        @Override
         public String textFromValue(int value)
         {
             return "" + value +" x " + value;
@@ -427,6 +429,7 @@ public class Icons extends QMainWindow
             super(widget);
         }
 
+        @Override
         public QWidget createEditor(QWidget parent, QStyleOptionViewItem option,
                                     QModelIndex index)
         {
@@ -446,6 +449,7 @@ public class Icons extends QMainWindow
             return comboBox;
         }
 
+        @Override
         public void setEditorData(QWidget editor, QModelIndex index)
         {
             QComboBox comboBox = (QComboBox) editor;
@@ -457,6 +461,7 @@ public class Icons extends QMainWindow
             comboBox.setCurrentIndex(pos);
         }
 
+        @Override
         public void setModelData(QWidget editor, QAbstractItemModel model,
                                  QModelIndex index)
         {

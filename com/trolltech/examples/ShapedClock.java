@@ -64,6 +64,7 @@ public class ShapedClock extends QWidget {
         setWindowTitle(tr("Shaped Analog Clock"));
     }
 
+    @Override
     public void mousePressEvent(QMouseEvent event) {
         if (event.button() == MouseButton.LeftButton) {
             QPoint topLeft = frameGeometry().topLeft();
@@ -73,6 +74,7 @@ public class ShapedClock extends QWidget {
         }
     }
 
+    @Override
     public void mouseMoveEvent(QMouseEvent event) {
         if (event.buttons().isSet(MouseButton.LeftButton)) {
             move(new QPoint(event.globalPos().x() - dragPosition.x(), 
@@ -81,6 +83,7 @@ public class ShapedClock extends QWidget {
         }
     }
 
+    @Override
     public void paintEvent(QPaintEvent event) {
 
         QColor hourColor = new QColor(127, 0, 127);
@@ -126,6 +129,7 @@ public class ShapedClock extends QWidget {
         }
     }
 
+    @Override
     public void resizeEvent(QResizeEvent event) {
         int side = Math.min(width(), height());
         QRegion maskedRegion;
@@ -134,6 +138,7 @@ public class ShapedClock extends QWidget {
         setMask(maskedRegion);
     }
 
+    @Override
     public QSize sizeHint() {
         return new QSize(100, 100);
     }

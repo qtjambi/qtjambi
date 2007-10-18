@@ -21,6 +21,7 @@ public class Intepreter {
 
     public Intepreter() {
         Function function = new Function("time") {
+            @Override
             public Object result(Object[] args) throws ParseException {
                 checkNumberOfArguments(0, args);
                 return new Date();
@@ -29,6 +30,7 @@ public class Intepreter {
         functions.put(function.name, function);
 
         function = new Function("abs") {
+            @Override
             public Object result(Object[] args) throws ParseException {
                 checkNumberOfArguments(1, args);
                 return Math.abs(Double.parseDouble(args[0].toString()));
@@ -37,6 +39,7 @@ public class Intepreter {
         functions.put(function.name, function);
 
         function = new Function("pow") {
+            @Override
             public Object result(Object[] args) throws ParseException {
                 checkNumberOfArguments(2, args);
                 return Math.pow(Double.parseDouble(args[0].toString()), Double.parseDouble(args[1].toString()));
@@ -45,6 +48,7 @@ public class Intepreter {
         functions.put(function.name, function);
 
         function = new Function("cos") {
+            @Override
             public Object result(Object[] args) throws ParseException {
                 checkNumberOfArguments(1, args);
                 return Math.cos(Double.parseDouble(args[0].toString()));
@@ -54,6 +58,7 @@ public class Intepreter {
         functions.put(function.name, function);
 
         function = new Function("sin") {
+            @Override
             public Object result(Object[] args) throws ParseException {
                 checkNumberOfArguments(1, args);
                 return Math.sin(Double.parseDouble(args[0].toString()));
@@ -63,6 +68,7 @@ public class Intepreter {
         functions.put(function.name, function);
 
         function = new Function("random") {
+            @Override
             public Object result(Object[] args) throws ParseException {
                 checkNumberOfArguments(0, args);
                 return Math.random();
@@ -71,6 +77,7 @@ public class Intepreter {
         functions.put(function.name, function);
 
         function = new Function("min") {
+            @Override
             public Object result(Object[] args) {
                 double minimum = Double.parseDouble(args[0].toString());
                 for (int i = 1; i < args.length; i++) {
@@ -82,6 +89,7 @@ public class Intepreter {
         functions.put(function.name, function);
 
         infixFunctions.add(new Function("*") {
+            @Override
             public Object result(Object[] args) {
                 double product = Double.parseDouble(args[0].toString());
                 for (int i = 1; i < args.length; i++) {
@@ -91,6 +99,7 @@ public class Intepreter {
             }
         });
         infixFunctions.add(new Function("/") {
+            @Override
             public Object result(Object[] args) {
                 double quotient = Double.parseDouble(args[0].toString());
                 for (int i = 1; i < args.length; i++) {
@@ -101,6 +110,7 @@ public class Intepreter {
         });
 
         infixFunctions.add(new Function("-") {
+            @Override
             public Object result(Object[] args) {
                 double difference = Double.parseDouble(args[0].toString());
                 for (int i = 1; i < args.length; i++) {
@@ -111,6 +121,7 @@ public class Intepreter {
         });
 
         infixFunctions.add(new Function("+") {
+            @Override
             public Object result(Object[] args) {
                 double sum = 0;
                 for (int i = 0; i < args.length; i++) {
@@ -134,7 +145,7 @@ public class Intepreter {
             if (vector.isEmpty())
                 return 0;
             if (vector.size() > 1)
-                return new ParseException("Found multiple values when expecting one: " + o);
+                throw new ParseException("Found multiple values when expecting one: " + o);
             return evaluate(vector.firstElement());
         }
 
@@ -193,6 +204,7 @@ public class Intepreter {
     private void prioritize(Vector vector) throws ParseException {
 
         Function unaryMinusProt = new Function("unaryMinus") {
+            @Override
             public Object result(Object[] args) {
                 return -Double.parseDouble(args[0].toString());
             }
@@ -281,6 +293,7 @@ public class Intepreter {
             return name;
         }
 
+        @Override
         public String toString() {
             String signature = "";
             signature += "{function_" + name + "_ ";
@@ -293,6 +306,7 @@ public class Intepreter {
             return signature;
         }
 
+        @Override
         protected Object clone() {
             Function function = null;
             try {

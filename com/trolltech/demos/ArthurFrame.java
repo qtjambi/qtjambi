@@ -216,6 +216,7 @@ class ArthurFrame extends QWidget
         }
     }
 
+    @Override
     protected void paintEvent(QPaintEvent e)
     {
         QPainter painter = new QPainter();

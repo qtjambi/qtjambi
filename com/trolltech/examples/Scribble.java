@@ -38,6 +38,7 @@ public class Scribble extends QMainWindow
         resize(500, 500);
     }
 
+    @Override
     protected void closeEvent(QCloseEvent event)
     {
         if (maybeSave()) {
@@ -280,6 +281,7 @@ public class Scribble extends QMainWindow
             update();
         }
         
+        @Override
         protected void mousePressEvent(QMouseEvent event)
         {
             if (event.button() == Qt.MouseButton.LeftButton) {
@@ -288,12 +290,14 @@ public class Scribble extends QMainWindow
             }
         }
 
+        @Override
         protected void mouseMoveEvent(QMouseEvent event)
         {
             if ((event.buttons().isSet(Qt.MouseButton.LeftButton)) && scribbling)
                 drawLineTo(event.pos());
         }
 
+        @Override
         protected void mouseReleaseEvent(QMouseEvent event)
         {
             if (event.button() == Qt.MouseButton.LeftButton && scribbling) {
@@ -302,6 +306,7 @@ public class Scribble extends QMainWindow
             }
         }
 
+        @Override
         protected void paintEvent(QPaintEvent event)
         {
             QPainter painter = new QPainter(this);
@@ -310,6 +315,7 @@ public class Scribble extends QMainWindow
             painter.restore();
         }
 
+        @Override
         protected void resizeEvent(QResizeEvent event)
         {
             if (width() > image.width() || height() > image.height()) {

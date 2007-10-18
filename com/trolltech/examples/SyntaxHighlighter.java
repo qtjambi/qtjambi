@@ -219,6 +219,7 @@ public class SyntaxHighlighter extends QMainWindow {
             commentEndExpression = new QRegExp("\\*/");
         }
 
+        @Override
         public void highlightBlock(String text) {
 
             for (HighlightingRule rule : highlightingRules) {

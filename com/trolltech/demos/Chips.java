@@ -119,16 +119,19 @@ public class Chips extends QWidget {
             setAcceptsHoverEvents(true);
         }
 
+        @Override
         public QRectF boundingRect() {
             return new QRectF(0, 0, 110, 70);
         }
 
+        @Override
         public QPainterPath shape() {
             QPainterPath path = new QPainterPath();
             path.addRect(14, 14, 82, 42);
             return path;
         }
 
+        @Override
         public void paint(QPainter painter, final QStyleOptionGraphicsItem option, QWidget widget) {
 
             QColor fillColor = (option.state().isSet(QStyle.StateFlag.State_Selected)) ? color.darker(150) : color;
@@ -212,11 +215,13 @@ public class Chips extends QWidget {
             }
         }
 
+        @Override
         public void mousePressEvent(QGraphicsSceneMouseEvent event) {
             super.mousePressEvent(event);
             update();
         }
 
+        @Override
         public void mouseMoveEvent(QGraphicsSceneMouseEvent event) {
             if (event.modifiers().isSet(Qt.KeyboardModifier.ShiftModifier)) {
                 stuff.add(event.pos());
@@ -226,6 +231,7 @@ public class Chips extends QWidget {
             super.mouseMoveEvent(event);
         }
 
+        @Override
         public void mouseReleaseEvent(QGraphicsSceneMouseEvent event) {
             super.mouseReleaseEvent(event);
             update();

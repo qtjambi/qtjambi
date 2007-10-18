@@ -298,6 +298,7 @@ public class OrderForm extends QMainWindow
         printAction.setEnabled(true);
     }
 
+    @Override
     public QSize sizeHint() {
         return new QSize(500, 550);
     }

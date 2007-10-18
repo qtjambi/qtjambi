@@ -177,6 +177,7 @@ public class ItemviewChart extends QMainWindow {
             totalValue = 0.0;
         }
 
+        @Override
         protected void dataChanged(final QModelIndex topLeft, final QModelIndex bottomRight) {
             super.dataChanged(topLeft, bottomRight);
 
@@ -196,10 +197,12 @@ public class ItemviewChart extends QMainWindow {
             viewport().update();
         }
 
+        @Override
         protected boolean edit(final QModelIndex index, EditTrigger trigger, QEvent event) {
             return false;
         }
 
+        @Override
         public QModelIndex indexAt(final QPoint point) {
             if (validItems == 0)
                 return null;
@@ -240,6 +243,7 @@ public class ItemviewChart extends QMainWindow {
             return null;
         }
 
+        @Override
         protected boolean isIndexHidden(final QModelIndex index) {
             return false;
         }
@@ -291,10 +295,12 @@ public class ItemviewChart extends QMainWindow {
             return null;
         }
 
+        @Override
         protected int horizontalOffset() {
             return horizontalScrollBar().value();
         }
 
+        @Override
         protected void mousePressEvent(QMouseEvent event) {
             super.mousePressEvent(event);
             origin = event.pos();
@@ -304,6 +310,7 @@ public class ItemviewChart extends QMainWindow {
             rubberBand.show();
         }
 
+        @Override
         protected void mouseMoveEvent(QMouseEvent event) {
             QRect rect = new QRect(origin, event.pos()).normalized();
             rubberBand.setRubberBandGeometry(rect);
@@ -315,12 +322,14 @@ public class ItemviewChart extends QMainWindow {
             viewport().update();
         }
 
+        @Override
         protected void mouseReleaseEvent(QMouseEvent event) {
             super.mouseReleaseEvent(event);
             rubberBand.hide();
             viewport().update();
         }
 
+        @Override
         protected QModelIndex moveCursor(QAbstractItemView.CursorAction cursorAction, Qt.KeyboardModifiers modifiers) {
             QModelIndex current = currentIndex();
 
@@ -347,6 +356,7 @@ public class ItemviewChart extends QMainWindow {
             return current;
         }
 
+        @Override
         protected void paintEvent(QPaintEvent event) {
             QItemSelectionModel selections = selectionModel();
             QStyleOptionViewItem option = viewOptions();
@@ -399,6 +409,7 @@ public class ItemviewChart extends QMainWindow {
             painter.end();
         }
 
+        @Override
         protected void resizeEvent(QResizeEvent event) {
             updateGeometries();
         }
@@ -407,6 +418,7 @@ public class ItemviewChart extends QMainWindow {
             return model().rowCount(model().parent(index));
         }
 
+        @Override
         protected void rowsInserted(final QModelIndex parent, int start, int end) {
             for (int row = start; row <= end; ++row) {
 
@@ -422,6 +434,7 @@ public class ItemviewChart extends QMainWindow {
             super.rowsInserted(parent, start, end);
         }
 
+        @Override
         protected void rowsAboutToBeRemoved(final QModelIndex parent, int start, int end) {
             for (int row = start; row <= end; ++row) {
 
@@ -436,6 +449,7 @@ public class ItemviewChart extends QMainWindow {
             super.rowsAboutToBeRemoved(parent, start, end);
         }
 
+        @Override
         public void scrollTo(final QModelIndex index, ScrollHint hint) {
             QRect area = viewport().rect();
             QRect rect = visualRect(index);
@@ -459,6 +473,7 @@ public class ItemviewChart extends QMainWindow {
             update();
         }
 
+        @Override
         protected void setSelection(final QRect rect, QItemSelectionModel.SelectionFlags command) {
             QRect contentsRect = rect.translated(horizontalScrollBar().value(), verticalScrollBar().value()).normalized();
 
@@ -502,6 +517,7 @@ public class ItemviewChart extends QMainWindow {
             update();
         }
 
+        @Override
         protected void updateGeometries() {
             horizontalScrollBar().setPageStep(viewport().width());
             horizontalScrollBar().setRange(0, Math.max(0, totalSize - viewport().width()));
@@ -509,10 +525,12 @@ public class ItemviewChart extends QMainWindow {
             verticalScrollBar().setRange(0, Math.max(0, totalSize - viewport().height()));
         }
 
+        @Override
         protected int verticalOffset() {
             return verticalScrollBar().value();
         }
 
+        @Override
         public QRect visualRect(final QModelIndex index) {
             QRect rect = itemRect(index);
             if (rect.isValid())
@@ -521,6 +539,7 @@ public class ItemviewChart extends QMainWindow {
                 return rect;
         }
 
+        @Override
         protected QRegion visualRegionForSelection(final QItemSelection selection) {
             int ranges = selection.size();
 

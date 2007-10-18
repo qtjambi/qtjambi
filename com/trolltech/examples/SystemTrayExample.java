@@ -159,6 +159,7 @@ public class SystemTrayExample extends QWidget {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
+    @Override
     public void closeEvent(QCloseEvent e) {
         
     }

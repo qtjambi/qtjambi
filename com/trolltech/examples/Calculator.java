@@ -366,6 +366,7 @@ public class Calculator extends QWidget
             setPalette(newPalette);
         } 
 
+        @Override
         public QSize sizeHint()
         {
             QSize size = super.sizeHint();
