@@ -1514,8 +1514,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     writeJavaLangObjectOverrideFunctions(s, java_class);
     writeExtraFunctions(s, java_class);
 
-    if (java_class->hasToStringCapability() && !java_class->hasDefaultToStringFunction())
-        writeToStringFunction(s);
+    writeToStringFunction(s, java_class);
   
     s << "}" << endl;
 
@@ -1728,13 +1727,37 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass 
     }
 }
 
-void JavaGenerator::writeToStringFunction(QTextStream &s)
+
+void JavaGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaClass *java_class)
 {
-    s << endl
-      << "    public String toString() {" << endl
-      << "        if (nativeId() == 0)" << endl
-      << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
-      << "        return __qt_toString(nativeId());" << endl
-      << "    }" << endl
-      << "    private static native String __qt_toString(long __this_nativeId);" << endl << endl;
+    bool generate = java_class->hasToStringCapability() && !java_class->hasDefaultToStringFunction();
+    bool core = java_class->package() == QLatin1String("com.trolltech.qt.core");
+    bool qevent = false;
+    
+    const AbstractMetaClass *cls = java_class;
+    while (cls) {
+        if (cls->name() == "QEvent") {
+            qevent = true;
+            break;
+        }
+        cls = cls->baseClass();
+    }
+    
+    if (generate || qevent) {
+        
+        if (qevent && core) {
+            s << endl
+              << "    public String toString() {" << endl
+              << "        return getClass().getSimpleName() + \"(type=\" + type().name() + \")\";" << endl
+              << "    }" << endl;
+        } else {
+            s << endl
+              << "    public String toString() {" << endl
+              << "        if (nativeId() == 0)" << endl
+              << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
+              << "        return __qt_toString(nativeId());" << endl
+              << "    }" << endl
+              << "    private static native String __qt_toString(long __this_nativeId);" << endl << endl;
+        }
+    }
 }
