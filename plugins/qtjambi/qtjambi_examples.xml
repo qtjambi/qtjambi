@@ -24,6 +24,11 @@
     class="com.trolltech.examples.Tetrix"
     group="Qt Jambi Examples"
   />
+  
+  <qt-jambi-custom-widget
+    class="com.trolltech.examples.CustomWidget"
+    group="Qt Jambi Examples"
+  />
 
 </qt-jambi-custom-widget-list>
 

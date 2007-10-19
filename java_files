@@ -19,6 +19,7 @@
 ./com/trolltech/examples/CollidingMice.java
 ./com/trolltech/examples/ConfigDialog.java
 ./com/trolltech/examples/CustomFilter.java
+./com/trolltech/examples/CustomWidget.java
 ./com/trolltech/examples/DomBookmarks.java
 ./com/trolltech/examples/ElasticNodes.java
 ./com/trolltech/examples/FridgeMagnets.java
