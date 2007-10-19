@@ -64,6 +64,7 @@ public class Spreadsheet extends QMainWindow {
 
         setupFileActions();
         setupCellActions();
+        setupHelpMenu();
 
         view = new TableView(this);
         view.setEnabled(true);
@@ -120,6 +121,29 @@ public class Spreadsheet extends QMainWindow {
         action(tr("&Exprt PDF..."), "exportpdf", null, "filePrintPdf()", menu, tb);
         menu.addSeparator();
         action(tr("&Quit"), null, "Ctrl+Q", "close()", menu, null);
+    }
+
+    private void setupHelpMenu() {
+        QMenu helpMenu = new QMenu(tr("&Help"), this);
+        menuBar().addMenu(helpMenu);
+
+        QAction aboutAct = new QAction(tr("&About"), this);
+        aboutAct.triggered.connect(this, "about()");
+        helpMenu.addAction(aboutAct);
+
+        QAction aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
+        aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
+        helpMenu.addSeparator();
+        helpMenu.addAction(aboutQtJambiAct);
+
+        QAction aboutQtAct = new QAction(tr("About Q&t"), this);
+        aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
+        helpMenu.addAction(aboutQtAct);
+    }
+
+    public void about() {
+        QMessageBox.about(this, tr("About Spreadsheet Demo"), tr("<p>The <b>Spreadsheet Demo</b> shows how a simple spreadsheet application can be done "
+                + "using Qt Jambi.</p>"));
     }
 
     private void updateActionVisuals(QAction a, boolean bold, boolean underline, boolean italic, boolean checkable) {
