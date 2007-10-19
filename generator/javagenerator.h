@@ -58,10 +58,9 @@ public:
     void writeFunctionArguments(QTextStream &s, const AbstractMetaFunction *java_function,
         int count = -1, uint options = 0);
     void writeJavaCallThroughContents(QTextStream &s, const AbstractMetaFunction *java_function);
-    void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, AbstractMetaArgument *arg,
-                                    const QString &indent);
+    void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, AbstractMetaArgument *arg);
     void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, AbstractMetaType *type,
-                                    const QString &arg_name, const QString &indent);
+                                    const QString &arg_name);
     void writePrivateNativeFunction(QTextStream &s, const AbstractMetaFunction *java_function);
     void writeJavaLangObjectOverrideFunctions(QTextStream &s, const AbstractMetaClass *cls);
     void writeReferenceCount(QTextStream &s, const ReferenceCount &refCount, const QString &argumentName);

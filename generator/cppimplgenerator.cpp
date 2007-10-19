@@ -21,26 +21,7 @@
 
 #define VOID_POINTER_ORDINAL 8
 
-class Indentation {
-public:
-    Indentation() { ++indent; }
-    ~Indentation() { --indent; }
-    static int indent;
-};
-
-class Indentor {
-public:
-};
-
-int Indentation::indent = 0;
-inline QTextStream &operator <<(QTextStream &s, const Indentor &)
-{
-    for (int i=0; i<Indentation::indent; ++i)
-        s << "    ";
-    return s;
-}
-
-Indentor INDENT;
+static Indentor INDENT;
 
 QString jni_signature(const AbstractMetaFunction *function, JNISignatureFormat format)
 {
@@ -343,7 +324,7 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const AbstractMetaFun
     s << endl << "{" << endl;
     {
         AbstractMetaArgumentList arguments = signal->arguments();
-        Indentation indent;
+        Indentation indent(INDENT);
 
         if (arguments.size() > 0)
             s << INDENT << "jvalue arguments[" << arguments.size() << "];" << endl;
@@ -538,7 +519,7 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
               << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
               << INDENT << "{" << endl;
             {
-                Indentation indent;
+                Indentation indent(INDENT);
                 s << INDENT << "Q_UNUSED(__jni_env);" << endl
                   << INDENT << cls->qualifiedCppName() << " *__qt_this = ("
                   << cls->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
@@ -568,7 +549,7 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
               << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
               << INDENT << "{" << endl;
             {
-                Indentation indent;
+                Indentation indent(INDENT);
                 s << INDENT << cls->qualifiedCppName() << " *__qt_this = ("
                   << cls->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
                   << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
@@ -620,7 +601,7 @@ void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaC
           << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
           << INDENT << "{" << endl;
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT << java_class->qualifiedCppName() << " *__qt_this = ("
               << java_class->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
               << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
@@ -643,7 +624,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
     if (has_constructors && java_class->hasVirtualFunctions()) {
         AbstractMetaFunctionList virtual_functions = java_class->functionsInShellClass();
         {
-            Indentation indent;
+            Indentation indent(INDENT);
 
             int pos = -1;
             foreach (AbstractMetaFunction *function, virtual_functions) {
@@ -668,7 +649,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
 
         // Write the function signatures
         {
-            Indentation indent;
+            Indentation indent(INDENT);
 
 
             int pos = -1;
@@ -701,7 +682,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
         AbstractMetaFunctionList inconsistents = java_class->cppInconsistentFunctions();
         // Write the inconsistent function names...
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << "static const char *qtjambi_inconsistent_names[] = {";
             for (int i=0; i<inconsistents.size(); ++i) {
                 if (i != 0)
@@ -713,7 +694,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
 
         // Write the function signatures
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << "static const char *qtjambi_inconsistent_signatures[] = {";
             for (int i=0; i<inconsistents.size(); ++i) {
                 const AbstractMetaFunction *function = inconsistents.at(i);
@@ -733,7 +714,7 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
 
     AbstractMetaFunctionList signal_functions = java_class->cppSignalFunctions();
     if (signal_functions.size()) {
-        Indentation indent;
+        Indentation indent(INDENT);
         s << "static const char *qtjambi_signal_names[] = {";
         for (int i=0; i<signal_functions.size(); ++i) {
             if (i != 0)
@@ -848,7 +829,7 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
       << shellClassName(java_class) << "()" << endl
       << "{" << endl;
     {
-        Indentation indent;
+        Indentation indent(INDENT);
         s << "#ifdef QT_DEBUG" << endl
           << INDENT << "if (m_vtable)" << endl
           << INDENT << "    m_vtable->deref();" << endl
@@ -958,7 +939,7 @@ void CppImplGenerator::writeOwnership(QTextStream &s,
     if (var_index != -1) {
         s << INDENT << "if (" << var_name << " != 0) {" << endl;
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT << "QtJambiLink *__link = QtJambiLink::findLink(__jni_env, "
                         << var_name << ");" << endl
             << INDENT << "Q_ASSERT(__link != 0);" << endl;
@@ -969,7 +950,7 @@ void CppImplGenerator::writeOwnership(QTextStream &s,
     } else {
         s << INDENT << "if (m_link) {" << endl;
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT << "m_link->" << function_call_for_ownership(owner, "m_link->javaObject(__jni_env)") << ";" << endl;
         }
         s << INDENT << "}" << endl;
@@ -985,7 +966,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
     s << endl
       << "{" << endl;
 
-    Indentation indent;
+    Indentation indent(INDENT);
 
     QString java_function_signature = java_function->signature();
     s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << implementor->name() << "::"
@@ -1001,7 +982,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
         s << INDENT << "if (method_id) {" << endl;
 
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT << "JNIEnv *__jni_env = qtjambi_current_environment();" << endl
               << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
               << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
@@ -1064,7 +1045,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
                 if (java_function->nullPointersDisabled()) {
                     s << INDENT << "if (__java_return_value == 0) {" << endl;
                     {
-                        Indentation indent;
+                        Indentation indent(INDENT);
                         s << INDENT << "fprintf(stderr, \"QtJambi: Unexpected null pointer returned from override of '" << java_function->name() << "' in class '%s'\\n\"," << endl
                           << INDENT << "        qPrintable(qtjambi_object_class_name(__jni_env, m_link->javaObject(__jni_env))));" << endl;
                         s << INDENT << "__qt_return_value = ";
@@ -1098,7 +1079,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
         s << INDENT << "} else {" << endl;
 
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) -> super() and leaving: "
               << implementor->name() << "::" << java_function_signature << "\");" << endl;
             writeBaseClassFunctionCall(s, java_function, implementor);
@@ -1148,7 +1129,7 @@ void CppImplGenerator::writePublicFunctionOverride(QTextStream &s,
                            | (java_function->isAbstract() ? SkipName : NoOption)));
     s << endl
       << "{" << endl;
-    Indentation indent;
+    Indentation indent(INDENT);
     writeBaseClassFunctionCall(s, java_function, implementor);
     s << "}" << endl << endl;
 }
@@ -1169,15 +1150,15 @@ void CppImplGenerator::writeVirtualFunctionOverride(QTextStream &s,
                            QStringList() << "bool static_call");
     s << endl
       << "{" << endl;
-    Indentation indent;
+    Indentation indent(INDENT);
     s << INDENT << "if (static_call) {" << endl;
     {
-        Indentation indent;
+        Indentation indent(INDENT);
         writeBaseClassFunctionCall(s, java_function, implementor);
     }
     s << INDENT << "} else {" << endl;
     {
-        Indentation indent;
+        Indentation indent(INDENT);
         writeBaseClassFunctionCall(s, java_function, implementor, VirtualCall);
     }
 
@@ -1357,7 +1338,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const AbstractMetaFunc
     s << endl;
     writeFinalFunctionArguments(s, java_function, java_object_name);
 
-    Indentation indent;
+    Indentation indent(INDENT);
 
     s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(native) entering: " << java_function_signature << "\");" << endl;
 
@@ -1486,7 +1467,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaFie
             s << endl
               << "{" << endl;
             {
-                Indentation indent;
+                Indentation indent(INDENT);
 
                 Q_ASSERT(setter->arguments().count() > 0);
                 const AbstractMetaArgument *argument = setter->arguments().at(0);
@@ -1504,7 +1485,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaFie
         writeFinalFunctionArguments(s, setter, "__java_object");
 
         {
-            Indentation indent;
+            Indentation indent(INDENT);
 
             s << INDENT << "Q_UNUSED(__jni_env);" << endl << endl;
 
@@ -1540,7 +1521,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaFie
             s << endl
               << "{" << endl;
             {
-                Indentation indent;
+                Indentation indent(INDENT);
                 s << INDENT << "return " << java_field->name() << ";" << endl;
             }
             s << "}" << endl << endl;
@@ -1552,7 +1533,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaFie
         writeFinalFunctionArguments(s, getter, "__java_object");
 
         {
-            Indentation indent;
+            Indentation indent(INDENT);
 
         if (!java_field->isStatic())
             s << INDENT << "Q_UNUSED(__jni_env);" << endl << endl;
@@ -1593,7 +1574,7 @@ void CppImplGenerator::writeFinalDestructor(QTextStream &s, const AbstractMetaCl
 	<< INDENT << "{" << endl;
 
       {
-	Indentation indent;
+	Indentation indent(INDENT);
 	if (!cls->isQObject() && !cls->generateShellClass()) {
 	  s << INDENT << "QtJambiLink *link = QtJambiLink::findLinkForUserObject(ptr);" << endl
             << INDENT << "if (link) link->resetObject(qtjambi_current_environment());" << endl;
@@ -1636,7 +1617,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     s << ";" << endl
       << INDENT << "if (!__qt_java_link) {" << endl;
     {
-        Indentation indent;
+        Indentation indent(INDENT);
         s << INDENT << "qWarning(\"object construction failed for type: "
           << className << "\");" << endl
           << INDENT << "return;" << endl;
@@ -1803,7 +1784,7 @@ void CppImplGenerator::writeOriginalMetaObjectFunction(QTextStream &s, const Abs
       << " jclass)" << endl
       << "{" << endl;
     {
-        Indentation indent;
+        Indentation indent(INDENT);
         s << INDENT << "return reinterpret_cast<jlong>(&" << java_class->qualifiedCppName() << "::staticMetaObject);";
     }
     s << "}" << endl << endl;
@@ -1821,7 +1802,7 @@ void CppImplGenerator::writeFromNativeFunction(QTextStream &s, const AbstractMet
       << " jobject nativePointer)" << endl
       << "{" << endl;
     {
-        Indentation indent;
+        Indentation indent(INDENT);
         s << INDENT << "void *ptr = qtjambi_to_cpointer(__jni_env, nativePointer, 1);" << endl
             << INDENT << "return " << fromObject(java_class->typeEntry(), "ptr") << endl
           << "}" << endl;
@@ -1840,7 +1821,7 @@ void CppImplGenerator::writeFromArrayFunction(QTextStream &s, const AbstractMeta
       << " jobjectArray array)" << endl
       << "{" << endl;
     {
-        Indentation indent;
+        Indentation indent(INDENT);
         s << INDENT << "return qtjambi_array_to_nativepointer(__jni_env, " << endl
           << INDENT << "                                     array, " << endl
           << INDENT << "                                     sizeof("
@@ -2424,7 +2405,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         s << "::const_iterator " << qt_name << "_it = " << qt_name << ".constBegin(); "
           << qt_name << "_it != __qt_end_iterator; ++" << qt_name << "_it) {" << endl;
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT;
             writeTypeInfo(s, targ);
             s << " __qt_tmp = *" << qt_name << "_it;" << endl;
@@ -2441,7 +2422,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         s << INDENT << "jobject " << java_name << ";" << endl
           << INDENT << "{" << endl;
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             writeQtToJava(s, args.at(0), qt_name + ".first", "__java_tmp_first", 0, -1, BoxedPrimitive);
             writeQtToJava(s, args.at(1), qt_name + ".second", "__java_tmp_second", 0, -1, BoxedPrimitive);
             s << INDENT << java_name << " = qtjambi_pair_new(__jni_env, "
@@ -2468,7 +2449,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         s << "::const_iterator it;" << endl
           << INDENT << "for (it=" << qt_name << ".constBegin(); it!=" << qt_name << ".constEnd(); ++it) {" << endl;
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT;
             writeTypeInfo(s, targ_key);
             s << " __qt_tmp_key = it.key();" << endl
@@ -2535,7 +2516,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
 
         s << INDENT << "if (" << java_name << " != 0) {" << endl;
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT << "jobjectArray __qt__array = qtjambi_collection_toArray(__jni_env, "
               << java_name << ");" << endl
               << INDENT << "jsize __qt__size = __jni_env->GetArrayLength(__qt__array);" << endl;
@@ -2546,7 +2527,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
 
             s << INDENT << "for (int i=0; i<__qt__size; ++i) {" << endl;
             {
-                Indentation indent;
+                Indentation indent(INDENT);
                 s << INDENT << "jobject __java_element = "
                   << "__jni_env->GetObjectArrayElement(__qt__array, i);" << endl;
                 writeJavaToQt(s, targ, "__qt_element", "__java_element", 0, -1, BoxedPrimitive);
@@ -2565,7 +2546,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
           << INDENT << "if (" << java_name << " != 0) {" << endl;
         {
             // separate scope required just in case function takes two QPair's.
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT << "jobject __java_first = qtjambi_pair_get(__jni_env, "
               << java_name << ", 0);" << endl;
             writeJavaToQt(s, targs.at(0), "__qt_first", "__java_first", 0, -1, BoxedPrimitive);
@@ -2589,7 +2570,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
         s << qt_name << ";" << endl;
         s << INDENT << "if (" << java_name << " != 0) {" << endl;
         {
-            Indentation indent;
+            Indentation indent(INDENT);
             s << INDENT << "int __qt_list_size = qtjambi_map_size(__jni_env, " << java_name
               << ");" << endl
               << INDENT
@@ -2598,7 +2579,7 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
 
             s << INDENT << "for (int i=0; i<__qt_list_size; ++i) {" << endl;
             {
-                Indentation indent;
+                Indentation indent(INDENT);
                 s << INDENT
                   << "QPair<jobject, jobject> __java_entry = "
                   << "qtjambi_entryset_array_get(__jni_env, __java_entry_set, i);"

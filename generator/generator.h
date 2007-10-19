@@ -89,4 +89,36 @@ protected:
     QString m_out_dir;
 };
 
+class Indentor {
+public:
+    Indentor():
+        indent(0)
+        {}
+    int indent;
+};
+
+class Indentation {
+public:
+    Indentation(Indentor &indentor):
+        indentor(indentor) 
+        {
+            indentor.indent++;
+        }
+    ~Indentation() 
+        { 
+            indentor.indent--;
+        }
+
+private:
+    Indentor &indentor;
+};
+
+inline QTextStream &operator <<(QTextStream &s, const Indentor &indentor)
+{
+    for (int i=0; i<indentor.indent; ++i)
+        s << "    ";
+    return s;
+}
+
+
 #endif // GENERATOR_H
