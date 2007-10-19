@@ -52,6 +52,7 @@ public class Spreadsheet extends QMainWindow {
     private QAction actionAlignJustify;
 
     private QAction actionTextColor;
+    private QAction actionCellColor;
 
     private String fileName;
 
@@ -191,12 +192,15 @@ public class Spreadsheet extends QMainWindow {
 
         m.addSeparator();
 
-        QPixmap pix = new QPixmap(16, 16);
-        pix.fill(QColor.black);
-        actionTextColor = new QAction(new QIcon(pix), "&Color...", this);
+        actionTextColor = new QAction(createPixmapForButton(tr("T"), QColor.black, QColor.transparent), "&Color...", this);
         actionTextColor.triggered.connect(this, "textColor()");
         b.addAction(actionTextColor);
         m.addAction(actionTextColor);
+
+        actionCellColor = new QAction(createPixmapForButton(tr("T"), QColor.white, QColor.black), "&Color...", this);
+        actionCellColor.triggered.connect(this, "backgroundColor()");
+        b.addAction(actionCellColor);
+        m.addAction(actionCellColor);
 
         b = new QToolBar(this);
         b.setAllowedAreas(new Qt.ToolBarAreas(Qt.ToolBarArea.TopToolBarArea, Qt.ToolBarArea.BottomToolBarArea));
@@ -241,6 +245,20 @@ public class Spreadsheet extends QMainWindow {
         comboSize.activated.connect(this, "textSize(String)");
         comboSize.setCurrentIndex(comboSize.findText("" + QApplication.font().pointSize(), new Qt.MatchFlags(Qt.MatchFlag.MatchExactly,
                 Qt.MatchFlag.MatchCaseSensitive)));
+    }
+
+    private QIcon createPixmapForButton(String text, QColor front, QColor back) {
+        QPixmap pix = new QPixmap(32, 32);
+        pix.fill(back);
+        QPainter painter = new QPainter(pix);
+        QFont font = new QFont();
+        font.setPixelSize(32);
+        font.setBold(true);
+        painter.setFont(font);
+        painter.setPen(front);
+        painter.drawText(4, 28, tr(text));
+        painter.end();
+        return new QIcon(pix);
     }
 
     protected void applyToCurrentSelection(Cell.Property prop, Object value) {
@@ -459,6 +477,15 @@ public class Spreadsheet extends QMainWindow {
         applyToCurrentSelection(Cell.Property.TextColor, col);
     }
 
+    protected void backgroundColor() {
+        Cell cell = model.get(view.currentIndex());
+
+        QColor col = QColorDialog.getColor(cell != null ? cell.textColor : null, this);
+        if (!col.isValid())
+            return;
+        applyToCurrentSelection(Cell.Property.BackgroundColor, col);
+    }
+
     protected void textBold() {
         applyToCurrentSelection(Cell.Property.Bold, actionTextBold.isChecked());
     }
@@ -552,7 +579,7 @@ public class Spreadsheet extends QMainWindow {
                     break;
 
                 case StartElement:
-                    if (xml.name().equalsIgnoreCase(Property.TextColor.name())) {
+                    if (xml.name().equalsIgnoreCase(Property.TextColor.name()) || xml.name().equalsIgnoreCase(Property.BackgroundColor.name())) {
                         QColor color = new QColor();
                         QXmlStreamAttributes attributes = xml.attributes();
                         for (int i = 0; i < attributes.size(); i++) {
@@ -569,7 +596,10 @@ public class Spreadsheet extends QMainWindow {
                                 color.setAlpha(Integer.parseInt(value));
                             }
                         }
-                        this.textColor = color;
+                        if (xml.name().equalsIgnoreCase(Property.TextColor.name()))
+                            this.textColor = color;
+                        else
+                            this.backgroundColor = color;
 
                     } else {
                         throw new RuntimeException("unknown element found: " + xml.name());
@@ -597,6 +627,10 @@ public class Spreadsheet extends QMainWindow {
             switch (prop) {
             case TextColor:
                 textColor = (QColor) value;
+                break;
+
+            case BackgroundColor:
+                backgroundColor = (QColor) value;
                 break;
 
             case Bold:
@@ -670,14 +704,21 @@ public class Spreadsheet extends QMainWindow {
                         + (borderLeft ? "left " : ""));
             }
             if (textColor != null) {
-                xml.writeStartElement(Property.TextColor.name());
-                xml.writeAttribute("r", textColor.red() + "");
-                xml.writeAttribute("g", textColor.green() + "");
-                xml.writeAttribute("b", textColor.blue() + "");
-                xml.writeAttribute("a", textColor.alpha() + "");
-                xml.writeEndElement();
+                writeXmlColor(xml, Property.TextColor.name(), textColor);
+            }
+            if (backgroundColor != null) {
+                writeXmlColor(xml, Property.BackgroundColor.name(), backgroundColor);
             }
             xml.writeCDATA(value.toString());
+            xml.writeEndElement();
+        }
+
+        private void writeXmlColor(QXmlStreamWriter xml, String name, QColor color) {
+            xml.writeStartElement(name);
+            xml.writeAttribute("r", color.red() + "");
+            xml.writeAttribute("g", color.green() + "");
+            xml.writeAttribute("b", color.blue() + "");
+            xml.writeAttribute("a", color.alpha() + "");
             xml.writeEndElement();
         }
     }
@@ -696,14 +737,16 @@ public class Spreadsheet extends QMainWindow {
 
         @Override
         public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
-            super.paint(painter, option, index);
             painter.save();
+            super.paint(painter, option, index);
             QRect rect = option.rect();
+            Cell cell = model.get(index);
             painter.setPen(penNormal);
             painter.drawRect(rect);
             rect.adjust(1, 1, -1, -1);
-            Cell cell = model.get(index);
+
             if (cell != null) {
+
                 painter.setPen(penBorder);
                 if (cell.borderLeft)
                     painter.drawLine(rect.topLeft(), rect.bottomLeft());
@@ -767,9 +810,8 @@ public class Spreadsheet extends QMainWindow {
                 actionTextUnderline.setChecked(font != null && font.underline());
                 actionTextItalic.setChecked(font != null && font.italic());
 
-                QPixmap pix = new QPixmap(16, 16);
-                pix.fill(cell.textColor != null ? cell.textColor : QColor.black);
-                actionTextColor.setIcon(new QIcon(pix));
+                actionTextColor.setIcon(createPixmapForButton(tr("T"), cell.textColor != null ? cell.textColor : QColor.black, QColor.transparent));
+                actionCellColor.setIcon(createPixmapForButton(tr("T"), QColor.white, cell.backgroundColor != null ? cell.backgroundColor : QColor.black));
             } else {
                 cellEdit.setText("");
             }
@@ -866,14 +908,8 @@ public class Spreadsheet extends QMainWindow {
                 return null;
 
             case Qt.ItemDataRole.BackgroundRole:
-                if (get(index) != null && !get(index).equals("")) {
-                    try {
-                        if (!intepreter.parseAndEvaluate(get(index)).equals(get(index))) {
-                            return QColor.lightGray;
-                        }
-                    } catch (Intepreter.ParseException e) {
-                        return QColor.red;
-                    }
+                if (cell != null) {
+                    return cell.backgroundColor;
                 }
                 return null;
 
