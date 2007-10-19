@@ -1316,7 +1316,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
             s << endl << "    implements ";
         else
             s << "," << endl << "            ";
-        s << "java.lang.Comparable";
+        s << "java.lang.Comparable<Object>";
     }
 
     s << endl << "{" << endl;
