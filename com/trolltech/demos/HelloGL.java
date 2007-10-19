@@ -13,6 +13,10 @@
 
 package com.trolltech.demos;
 
+import javax.media.opengl.GL;
+import javax.media.opengl.GLContext;
+import javax.media.opengl.GLDrawableFactory;
+
 import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
