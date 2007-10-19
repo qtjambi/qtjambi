@@ -561,10 +561,10 @@ public class CustomWidget extends QWidget {
         p.show();
         
         
-        /*QMessageBox.information(customWidget, "Just a hint!", 
+        QMessageBox.information(customWidget, "Just a hint!", 
                 "This is an example of how you can make your own custom widgets\n"
               + "and import them in Qt Designer. Try running Qt Designer and look\n"
-              + "for Custom Widget in the widget box.");*/
+              + "for Custom Widget in the widget box.");
         
         QApplication.exec();
     }
