@@ -672,7 +672,7 @@ public class QSignalEmitter {
     }
     
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * no parameters.
      */
     public final class Signal0 extends AbstractSignal {
@@ -689,7 +689,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * one parameter.
      * 
      * @param <A> The type of the single parameter of the signal.
@@ -709,7 +709,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * two parameters.
      * 
      * @param <A> The type of the first parameter of the signal.
@@ -729,7 +729,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * three parameters.
      * 
      * @param <A> The type of the first parameter of the signal.
@@ -750,7 +750,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * four parameters.
      * 
      * @param <A> The type of the first parameter of the signal.
@@ -773,7 +773,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * five parameters.
      * 
      * @param <A> The type of the first parameter of the signal.
@@ -796,7 +796,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * six parameters.
      * 
      * @param <A> The type of the first parameter of the signal.
@@ -820,7 +820,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * seven parameters.
      * 
      * @param <A> The type of the first parameter of the signal.
@@ -845,7 +845,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * eight parameters.
      * 
      * @param <A> The type of the first parameter of the signal.
@@ -873,7 +873,7 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QObject subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
      * nine parameters.
      * 
      * @param <A> The type of the first parameter of the signal.
@@ -904,8 +904,8 @@ public class QSignalEmitter {
     
     /**
      * Returns the thread affinity of the object. If this is an instance of
-     * QObject the thread that owns the object is returned. For non QObject's
-     * the current thread is returned...
+     * QObject the thread that owns the object is returned. For non-QObjects
+     * the current thread is returned.
      */
     public Thread thread() { return Thread.currentThread(); }
         
@@ -943,14 +943,14 @@ public class QSignalEmitter {
     }
     
     /**
-     * Disconnect all connections originating in this signal emitter
+     * Disconnect all connections originating in this signal emitter.
      */
     public final void disconnect() {
         disconnect(null);
     }
     
     /**
-     * Disconnect all connections made from this signal emitter to a specific object
+     * Disconnect all connections made from this signal emitter to a specific object.
      * 
      * @param other The receiver to disconnect, or null to disconnect all receivers
      */ 
