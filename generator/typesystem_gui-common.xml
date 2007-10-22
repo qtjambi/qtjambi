@@ -245,10 +245,14 @@
     <reject-enum-value name="PM_MDIFrameWidth"/>
     <reject-enum-value name="PM_MDIMinimizedWidth"/>
   </enum-type>
-  <enum-type name="QStyle::PrimitiveElement" extensible="yes"/>
+  <enum-type name="QStyle::PrimitiveElement" extensible="yes">
+    <reject-enum-value name="PE_IndicatorItemViewItemCheck" />
+  </enum-type>
   <enum-type name="QStyle::StandardPixmap" extensible="yes"/>
   <enum-type name="QStyle::StateFlag" flags="QStyle::State"/>
-  <enum-type name="QStyle::SubElement" extensible="yes"/>
+  <enum-type name="QStyle::SubElement" extensible="yes">
+    <reject-enum-value name="SE_ItemViewItemCheckIndicator" />
+  </enum-type>
   <enum-type name="QStyleHintReturn::HintReturnType"/>
   <enum-type name="QStyleHintReturn::StyleOptionType"/>
   <enum-type name="QStyleHintReturn::StyleOptionVersion"/>
