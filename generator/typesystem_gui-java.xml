@@ -424,6 +424,7 @@
       extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QPolygon_add_1private)
       (JNIEnv *__jni_env, jobject, jlong nativeId, jint x, jint y)
       {
+          Q_UNUSED(__jni_env);
           QPolygon *polygon = (QPolygon *) qtjambi_from_jlong(nativeId);
           if (!polygon)
               return;
@@ -445,6 +446,7 @@
       extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QPolygonF_add_1private)
       (JNIEnv *__jni_env, jobject, jlong nativeId, jdouble x, jdouble y)
       {
+          Q_UNUSED(__jni_env);
           QPolygonF *polygon = (QPolygonF *) qtjambi_from_jlong(nativeId);
           if (!polygon)
               return;
