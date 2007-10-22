@@ -9,9 +9,20 @@ public class CRASH {
     public static void main(String args[]) {
         QApplication.initialize(args);
         
-        QTextEdit crash = new QTextEdit();
+        QGraphicsScene scene = new QGraphicsScene();
+        QGraphicsView view = new QGraphicsView();
+        
+        view.setScene(scene);
+        
+        QGraphicsTextItem crash = new QGraphicsTextItem();
+        
+        scene.addItem(crash );
+        
+
+        
         {
             List<QObject> children = crash.children();
+            QTextDocument document = crash.document();
         }
         for (int i=0; i<1000; ++i) {
             crash.setPlainText("a");
