@@ -20,6 +20,8 @@
 #include <QtCore/QMap>
 #include <QDebug>
 
+class Indentor;
+
 class AbstractMetaType;
 class QTextStream;
 
@@ -219,7 +221,7 @@ class CodeSnip : public CodeSnipAbstract
         CodeSnip(TypeSystem::Language lang) : language(lang) { }
 
         // Very simple, easy to make code ugly if you try
-        QString formattedCode(const QString &_defaultIndent);
+        QTextStream &formattedCode(QTextStream &s, Indentor &indentor) const;
 
         TypeSystem::Language language;
         Position position;

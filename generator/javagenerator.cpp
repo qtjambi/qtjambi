@@ -393,7 +393,9 @@ void JavaGenerator::writeInjectedCode(QTextStream &s, const AbstractMetaFunction
             if (snip.language != TypeSystem::TargetLangCode)
                 continue ;
 
-            QString code = snip.formattedCode("    ");
+            QString code;
+            QTextStream tmpStream(&code);
+            snip.formattedCode(tmpStream, INDENT);
             ArgumentMap map = snip.argumentMap;
             ArgumentMap::iterator it = map.begin();
             for (;it!=map.end();++it) {

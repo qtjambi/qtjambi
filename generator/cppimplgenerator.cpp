@@ -569,7 +569,7 @@ void CppImplGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaCla
     CodeSnipList code_snips = class_type->codeSnips();
     foreach (const CodeSnip &snip, code_snips) {
         if (snip.language == TypeSystem::ShellCode || snip.language == TypeSystem::NativeCode) {
-            s << snip.code() << endl;
+            snip.formattedCode(s, INDENT) << endl;
         }
     }
 }
@@ -816,10 +816,11 @@ void CppImplGenerator::writeShellConstructor(QTextStream &s, const AbstractMetaF
       << "      m_link(0)" << endl;
 
     s << "{" << endl;
-
-    writeCodeInjections(s, java_function, cls, CodeSnip::Beginning, TypeSystem::ShellCode);
-    writeCodeInjections(s, java_function, cls, CodeSnip::End, TypeSystem::ShellCode);
-
+    {
+        Indentation indent(INDENT); 
+        writeCodeInjections(s, java_function, cls, CodeSnip::Beginning, TypeSystem::ShellCode);
+        writeCodeInjections(s, java_function, cls, CodeSnip::End, TypeSystem::ShellCode);
+    }
     s << "}" << endl << endl;
 }
 
@@ -882,7 +883,9 @@ void CppImplGenerator::writeCodeInjections(QTextStream &s, const AbstractMetaFun
             if (position == CodeSnip::End)
                 s << endl;
 
-            QString code = snip.formattedCode("    ");
+            QString code;
+            QTextStream tmpStream(&code);
+            snip.formattedCode(tmpStream, INDENT);
             ArgumentMap map = snip.argumentMap;
             ArgumentMap::iterator it = map.begin();
             for (;it!=map.end();++it) {

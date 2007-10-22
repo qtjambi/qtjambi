@@ -12,6 +12,7 @@
 ****************************************************************************/
 
 #include "typesystem.h"
+#include "generator.h"
 
 #include "customtypes.h"
 
@@ -1677,38 +1678,54 @@ QString fixCppTypeName(const QString &name)
     return name;
 }
 
-QString CodeSnip::formattedCode(const QString &_defaultIndent)
+QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lines){  
+    while (!lines.isEmpty()) {
+        QString line = lines.takeFirst().trimmed();
+        if (line.isEmpty()) {
+            continue;
+        }
+        else if (line == "}") {
+            return line;
+        } else if (line.endsWith("}")) {
+            s << indentor << line << endl; 
+            return 0;
+        } else if(line.endsWith("{")) {
+            s << indentor << line << endl;
+            QString tmp;
+            {
+                Indentation indent(indentor); 
+                tmp = formattedCodeHelper(s, indentor, lines);
+            }
+            if (!tmp.isNull()) {
+                s << indentor << tmp << endl;
+            }
+        } else if (!line.endsWith(";") && !line.startsWith("//") &&
+                   !lines.isEmpty() && !lines.first().trimmed().startsWith("{")) {
+            s << indentor << line << endl << "    ";
+        } else {
+            s << indentor << line << endl;
+        }
+    }
+    return 0;
+}
+
+
+QTextStream &CodeSnip::formattedCode(QTextStream &s, Indentor &indentor) const
 {
-    QString returned;
     QStringList lst;
     foreach(CodeSnipFragment *codeFrag, codeList){
         lst = lst + codeFrag->code().split("\n");
     }
 
-    QString defaultIndent(_defaultIndent);
-    QString indent = defaultIndent;
-    foreach (QString s, lst) {
-        if (s.trimmed().isEmpty())
-            continue ;
-
-        if (s.trimmed().endsWith("}"))
-            indent.chop(4);
-
-        returned += indent + s.trimmed();
-
-        indent = defaultIndent;
-        if (!returned.endsWith(";") && !returned.endsWith("}"))
-            indent += "    ";
-
-        if (returned.endsWith("{"))
-            defaultIndent += "    ";
-        else if (returned.endsWith("}"))
-            defaultIndent.chop(4);
-
-        returned += "\n";
+    while (!lst.isEmpty()) {
+        QString tmp = formattedCodeHelper(s, indentor, lst);
+        if (!tmp.isNull()) {
+            s << indentor << tmp << endl;
+        }
     }
 
-    return returned;
+    s.flush();
+    return s;
 }
 
 QString TemplateInstance::expandCode() const{
