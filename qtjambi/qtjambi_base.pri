@@ -48,3 +48,6 @@ macx{
     contains(QT_CONFIG, x86):contains(QT_CONFIG, ppc):CONFIG += x86 ppc
     CONFIG -= precompile_header
 }
+
+# gcc reports some functions as unused when they are not.
+linux-g++:QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
