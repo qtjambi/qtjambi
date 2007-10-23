@@ -302,7 +302,7 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
     QString className = manager.getInternalTypeName(fullName, QtJambiTypeManager::ArgumentType);
     int type = !className.isEmpty()
         ? manager.metaTypeOfInternal(className, QtJambiTypeManager::ArgumentType)
-        : QVariant::Invalid;
+        : (int)QVariant::Invalid;
 
     void *copy = 0;
     bool destroyCopy = false;
