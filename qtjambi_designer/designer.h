@@ -16,7 +16,6 @@
 
 #include <QtDesigner/QtDesigner>
 
-#include "jambimembersheet.h"
 #include "jambiresourcebrowser.h"
 
 #endif // DESIGNER_H

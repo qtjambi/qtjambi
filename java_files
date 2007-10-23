@@ -598,13 +598,7 @@
 ./com/trolltech/tools/designer/CustomWidget.java
 ./com/trolltech/tools/designer/CustomWidgetManager.java
 ./com/trolltech/tools/designer/HourGlass.java
-./com/trolltech/tools/designer/JambiMemberSheet.java
 ./com/trolltech/tools/designer/JambiResourceBrowser.java
-./com/trolltech/tools/designer/MemberSheet.java
-./com/trolltech/tools/designer/QDesignerMemberSheetExtension.java
-./com/trolltech/tools/designer/QDesignerMemberSheetExtensionInterface.java
-./com/trolltech/tools/designer/QDesignerPropertySheetExtension.java
-./com/trolltech/tools/designer/QDesignerPropertySheetExtensionInterface.java
 ./com/trolltech/tools/designer/QDesignerResourceBrowserInterface.java
 ./com/trolltech/tools/designer/QtJambi_LibraryInitializer.java
 ./com/trolltech/tools/designer/ResourceBrowser.java

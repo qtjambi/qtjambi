@@ -1040,6 +1040,10 @@ void StaticCache::resolveQtJambiInternal_internal()
     QtJambiInternal.signalParameters = env->GetStaticMethodID(QtJambiInternal.class_ref, "signalParameters",
                                                               "(Lcom/trolltech/qt/QSignalEmitter$AbstractSignal;)Ljava/lang/String;");
     Q_ASSERT(QtJambiInternal.signalParameters);
+
+    QtJambiInternal.getEnumForQFlags = env->GetStaticMethodID(QtJambiInternal.class_ref, "getEnumForQFlags",
+                                                              "(Ljava/lang/Class;)Ljava/lang/Class;");
+    Q_ASSERT(QtJambiInternal.getEnumForQFlags);
 }
 
 void StaticCache::resolveMetaData_internal() 

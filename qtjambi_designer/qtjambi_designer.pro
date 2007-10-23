@@ -8,10 +8,7 @@ INCLUDEPATH += $$PWD $$QTDIR/QtDesigner
 CONFIG += designer
 
 HEADERS += \
-	jambimembersheet.h \
-    jambiresourcebrowser.h \
+           jambiresourcebrowser.h \
 
-SOURCES += \
-	jambimembersheet.cpp \
 		
 	

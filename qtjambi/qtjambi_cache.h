@@ -33,7 +33,7 @@ QTJAMBI_EXPORT void registerJavaSignature(const QString &qt_name, const QString 
 QTJAMBI_EXPORT void registerDeletionPolicy(const QString &java_name, DeletionPolicy policy);
 
 QTJAMBI_EXPORT QString getQtName(const QString &java_name);
-QString getJavaName(const QString &qt_name);
+QTJAMBI_EXPORT QString getJavaName(const QString &qt_name);
 QString getJavaSignature(const QString &qt_name);
 PtrDestructorFunction destructor(const QString &java_name);
 DeletionPolicy deletionPolicy(const QString &java_name);
@@ -276,6 +276,7 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID methodSignature;
         jmethodID methodSignature2;
         jmethodID signalParameters;
+        jmethodID getEnumForQFlags;
     } QtJambiInternal;
 
     struct {

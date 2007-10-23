@@ -2029,3 +2029,24 @@ JObjectWrapper::~JObjectWrapper()
         environment->DeleteGlobalRef(object);
 }
 
+QString qtjambi_enum_name_for_flags_name(JNIEnv *env, const QString &qualified_name)
+{
+    jclass flags_class = qtjambi_find_class(env, qualified_name.toUtf8());
+    if (flags_class == 0) {
+        qtjambi_exception_check(env);
+        return QString();
+    }
+
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiInternal();
+
+    jclass enum_class = reinterpret_cast<jclass>(env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.getEnumForQFlags, flags_class));
+    if (enum_class == 0) {
+        qWarning("No enum type found for flags type '%s'", qPrintable(qualified_name));
+        qtjambi_exception_check(env);
+        return QString();
+    }
+
+    return qtjambi_class_name(env, enum_class);
+}
+

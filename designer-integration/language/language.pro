@@ -9,10 +9,12 @@ include(../pri/jambi.pri)
 
 HEADERS += \ 
 	jambilanguageplugin.h \
+        qtjambiintrospection_p.h \
 
 
 SOURCES += \ 
 	jambilanguageplugin.cpp \ 
+        qtjambiintrospection.cpp \
 
 CONFIG(debug, debug|release) {
     TARGET = $$member(TARGET, 0)_debuglib

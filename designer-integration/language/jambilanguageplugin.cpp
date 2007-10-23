@@ -13,6 +13,8 @@
 
 #include "jambilanguageplugin.h"
 
+#include "qtjambiintrospection_p.h"
+
 #include "qtjambi_core.h"
 #include "qtjambi_utils.h"
 
@@ -25,14 +27,12 @@
 #include <QMessageBox>
 
 jclass class_ResourceBrowser;
-jclass class_MemberSheet;
 
 jmethodID method_ResourceBrowser;
 jmethodID method_signalMatchesSlot;
 
 static ClassData jni_class_table[] = {
     { &class_ResourceBrowser, "com/trolltech/tools/designer/ResourceBrowser" },
-    { &class_MemberSheet, "com/trolltech/tools/designer/MemberSheet" },
     { 0, 0 }
 };
 
@@ -42,7 +42,6 @@ static MethodData jni_method_table[] = {
 };
 
 static MethodData jni_static_method_table[] = {
-    { &class_MemberSheet, &method_signalMatchesSlot, "signalMatchesSlot", "(Ljava/lang/String;Ljava/lang/String;)Z" },
     { 0, 0, 0, 0 }
 };
 
@@ -84,13 +83,12 @@ void JambiLanguagePlugin::initialize(QDesignerFormEditorInterface *core)
         return;
 
     m_core = core;
+    m_core->setIntrospection(new QtJambiIntrospection);
 
     QExtensionManager *mgr = m_core->extensionManager();
     Q_ASSERT (mgr != 0);
 
     mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerLanguageExtension));
-    //mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerPropertySheetExtension));
-    //mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerMemberSheetExtension));
     mgr->registerExtensions(new JambiExtensionFactory(this, mgr), Q_TYPEID(QDesignerExtraInfoExtension));
 }
 
@@ -203,12 +201,8 @@ bool JambiLanguage::signalMatchesSlot(const QString &signal, const QString &slot
     jstring slotString = qtjambi_from_qstring(env, slot);
     QTJAMBI_EXCEPTION_CHECK(env);
 
-    bool result = env->CallStaticBooleanMethod(class_MemberSheet,
-                                         method_signalMatchesSlot,
-                                         signalString,
-                                         slotString);
-    qtjambi_exception_check(env);
-
+    // ### todo
+    bool result = false;
     return result;
 }
 
@@ -284,57 +278,9 @@ JambiExtensionFactory::~JambiExtensionFactory()
 
 QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
 {
-    if (iid == Q_TYPEID(QDesignerLanguageExtension) && qobject_cast<QDesignerFormEditorInterface*> (object))
+    if (iid == Q_TYPEID(QDesignerLanguageExtension) && qobject_cast<QDesignerFormEditorInterface*> (object)) {
         return new JambiLanguage(parent);
 
-    else if (iid == Q_TYPEID(QDesignerPropertySheetExtension)) {
-
-        if (qstrcmp(object->metaObject()->className(), "Spacer") == 0)
-            return 0;
-
-        JNIEnv *env = qtjambi_current_environment();
-        jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/PropertySheet");
-        if (cl == 0)
-            return 0;
-
-        jmethodID id = env->GetStaticMethodID(cl, "create",
-                                              "(Lcom/trolltech/qt/core/QObject;"
-                                              "Lcom/trolltech/qt/core/QObject;)Lcom/trolltech/tools/designer/PropertySheet;");
-        Q_ASSERT(id);
-
-        jobject jps = env->CallStaticObjectMethod(cl, id,
-                                                  qtjambi_from_QObject(env, object),
-                                                  qtjambi_from_QObject(env, parent)
-                                                  );
-
-        QObject *qps = qtjambi_to_qobject(env, jps);
-        Q_ASSERT(qps);
-        QObject::connect(object, SIGNAL(destroyed()), qps, SLOT(deleteLater()));
-
-        Q_ASSERT(qobject_cast<QDesignerPropertySheetExtension *>(qps));
-
-        return qps;
-    } else if (iid == Q_TYPEID(QDesignerMemberSheetExtension)) {
-        JNIEnv *env = qtjambi_current_environment();
-        jclass cl = qtjambi_find_class(env, "com/trolltech/tools/designer/MemberSheet");
-        if (cl == 0)
-            return 0;
-
-        jmethodID id = env->GetMethodID(cl, "<init>", "(Lcom/trolltech/qt/core/QObject;"
-                                                       "Lcom/trolltech/qt/core/QObject;)V");
-        Q_ASSERT(id);
-
-        jobject jps = env->NewObject(cl, id,
-                                     qtjambi_from_QObject(env, object),
-                                     qtjambi_from_QObject(env, parent)
-                                     );
-
-        QObject *qps = qtjambi_to_qobject(env, jps);
-        Q_ASSERT(qps);
-
-        Q_ASSERT(qobject_cast<QDesignerMemberSheetExtension *>(qps));
-
-        return qps;
     } else if (iid == Q_TYPEID(QDesignerExtraInfoExtension)) {
         QWidget *w = qobject_cast<QWidget *>(object);
         return new JambiExtraInfoExtension(w, m_jambi->core());
