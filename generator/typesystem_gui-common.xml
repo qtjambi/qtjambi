@@ -2876,6 +2876,7 @@
             jlong __this_nativeId,
             jint windowModality0)
         {
+            Q_UNUSED(__jni_env);
             QTJAMBI_DEBUG_TRACE("(native) entering: QMessageBox::setWindowModality(Qt::WindowModality modality)");
             Qt::WindowModality __qt_windowModality0 = (Qt::WindowModality) windowModality0;
             QTJAMBI_EXCEPTION_CHECK(__jni_env);
