@@ -311,8 +311,7 @@ QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &
         Q_ASSERT(qps);
         QObject::connect(object, SIGNAL(destroyed()), qps, SLOT(deleteLater()));
 
-        QDesignerPropertySheetExtension *p = qobject_cast<QDesignerPropertySheetExtension *>(qps);
-        Q_ASSERT(p);
+        Q_ASSERT(qobject_cast<QDesignerPropertySheetExtension *>(qps));
 
         return qps;
     } else if (iid == Q_TYPEID(QDesignerMemberSheetExtension)) {
@@ -333,8 +332,7 @@ QObject *JambiExtensionFactory::createExtension(QObject *object, const QString &
         QObject *qps = qtjambi_to_qobject(env, jps);
         Q_ASSERT(qps);
 
-        QDesignerMemberSheetExtension *p = qobject_cast<QDesignerMemberSheetExtension *>(qps);
-        Q_ASSERT(p);
+        Q_ASSERT(qobject_cast<QDesignerMemberSheetExtension *>(qps));
 
         return qps;
     } else if (iid == Q_TYPEID(QDesignerExtraInfoExtension)) {
