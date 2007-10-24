@@ -297,6 +297,61 @@ public class QtJambiInternal {
     			newSender != 0 ? newSender : 0, returnPreviousSender);
     }
 
+    @SuppressWarnings("unused")
+    private static boolean signalMatchesSlot(String signal, String slot) {
+        if (signal.equals("<signal>") || slot.equals("<slot>"))
+            return true; // ### 
+        
+        if (signal.length() == 0 || slot.length() == 0)
+            return false;
+            
+        // void slots always match...
+        if (slot.contains("()"))
+            return true;
+
+        int signalIndex = signal.indexOf('<');
+
+        // Match only if () slot which is covered above already...
+        if (signalIndex < 0)
+            return false;
+
+        int slotIndex = slot.indexOf('(');
+        if (slotIndex < 0) {
+            throw new IllegalArgumentException("slot doesn't contain () as expected, '"
+                                               + slot + "'");
+        }
+
+        String signalArguments[] = signal.substring(signalIndex + 1, signal.length() - 1).split(",");
+        String slotArguments[] = slot.substring(slotIndex + 1, slot.length() - 1).split(",");
+
+        if (slotArguments.length > signalArguments.length)
+            return false;
+
+        for (int i=0; i<slotArguments.length; ++i) {
+            if (!matchTypes(signalArguments[i], slotArguments[i]))
+                return false;
+        }
+
+        return true;
+    }
+
+    
+    private static HashMap<String, String> typeMap;
+    static {
+        typeMap = new HashMap<String, String>();
+        typeMap.put("java.lang.Boolean", "boolean");
+        typeMap.put("java.lang.Byte", "byte");
+        typeMap.put("java.lang.Char", "char");
+        typeMap.put("java.lang.Short", "short");
+        typeMap.put("java.lang.Integer", "int");
+        typeMap.put("java.lang.Long", "long");
+        typeMap.put("java.lang.Float", "float");
+        typeMap.put("java.lang.Double", "double");
+    }    
+    private static boolean matchTypes(String a, String b) {
+        return (a.equals(b) || (typeMap.get(a) != null && typeMap.get(a).equals(b)));
+    }        
+    
     public static void disconnect(QSignalEmitter sender, Object receiver) {
         Class cls = sender.getClass();
         while (QSignalEmitter.class.isAssignableFrom(cls)) {
@@ -706,6 +761,8 @@ public class QtJambiInternal {
         public Method propertyResettersArray[];
         public Method propertyDesignablesArray[];
         public Class<?> extraDataArray[];
+        
+        public String originalSignatures[];
     }
     
     private final static int MethodAccessPrivate = 0x00;
@@ -973,12 +1030,18 @@ public class QtJambiInternal {
                 offset += addString(metaData.metaData, strings, stringsInOrder, "Qt Jambi", offset, metaDataOffset++);                 
             }
             
+            metaData.originalSignatures = new String[signalFields.size() + slots.size()];
+            
             // Signals (### make sure enum types are covered)
             for (int i=0; i<signalFields.size(); ++i) {
                 Field signalField = signalFields.get(i);
                 QSignalEmitter.ResolvedSignal resolvedSignal = resolvedSignals.get(i);
                 
-                String signalParameters = internalTypeName(signalParameters(signalField, signalField.getDeclaringClass()), 1);
+                String javaSignalParameters = signalParameters(resolvedSignal);
+                metaData.originalSignatures[i] = resolvedSignal.name 
+                    + (javaSignalParameters.length() > 0 ? '<' + javaSignalParameters + '>' : "");
+                
+                String signalParameters = internalTypeName(javaSignalParameters, 1);
                                                 
                 // Signal name
                 offset += addString(metaData.metaData, strings, stringsInOrder, resolvedSignal.name + "(" + signalParameters + ")", offset, metaDataOffset++);
@@ -1005,17 +1068,22 @@ public class QtJambiInternal {
             }
             
             // Slots (### make sure enum types are covered, ### also test QFlags)
-            for (Method slot : slots) {
+            for (int i=0; i<slots.size(); ++i) {
+                Method slot = slots.get(i);
+                
+                String javaMethodSignature = methodSignature(slot);
+                metaData.originalSignatures[signalFields.size() + i] = javaMethodSignature;
+                
                 // Slot signature
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(methodSignature(slot),1), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(javaMethodSignature, 1), offset, metaDataOffset++);
                 
                 // Slot parameters
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(methodParameters(slot),1), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(methodParameters(slot), 1), offset, metaDataOffset++);
                 
                 // Slot type 
                 String returnType = slot.getReturnType().getName();
                 if (returnType.equals("void")) returnType = "";
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(returnType,0), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(returnType, 0), offset, metaDataOffset++);
                 
                 // Slot tag (Currently not supported by the moc either)
                 offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);

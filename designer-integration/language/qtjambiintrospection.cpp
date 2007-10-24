@@ -12,6 +12,7 @@
 ****************************************************************************/
 
 #include "qtjambiintrospection_p.h"
+#include "qtdynamicmetaobject.h"
 #include "qtjambi_core.h"
 #include "qtjambi_cache.h"
 
@@ -82,7 +83,7 @@ private:
 class QtJambiMetaMethod: public QDesignerMetaMethodInterface
 {
 public:
-    QtJambiMetaMethod(const QMetaMethod &regularMethod, const QtJambiMetaObject *jambiMetaObject);
+    QtJambiMetaMethod(const QMetaMethod &regularMethod, const QtJambiMetaObject *jambiMetaObject, int index);
 
     virtual Access access() const ;
     virtual MethodType methodType() const;
@@ -96,6 +97,7 @@ public:
 private:
     QStringList byteArraysToStrings(const QList<QByteArray> &) const;
 
+    QString m_java_signature;
     QMetaMethod m_regular_method;
     const QtJambiMetaObject *m_jambi_meta_object;
 };
@@ -336,9 +338,36 @@ bool QtJambiMetaProperty::write(QObject *object, const QVariant &value) const
 /**
  * QtJambiMetaMethod
  */
-QtJambiMetaMethod::QtJambiMetaMethod(const QMetaMethod &regularMethod, const QtJambiMetaObject *jambiMetaObject)
+QtJambiMetaMethod::QtJambiMetaMethod(const QMetaMethod &regularMethod, const QtJambiMetaObject *jambiMetaObject, int index)
     : m_regular_method(regularMethod), m_jambi_meta_object(jambiMetaObject)
 {
+    Q_ASSERT(jambiMetaObject != 0);
+
+    if (m_jambi_meta_object->metaObjectIsDynamic()) {
+        // If the meta object is dynamic, then we can query it for the original
+        // signature of the method
+        const QtDynamicMetaObject *dynamic_meta_object = static_cast<const QtDynamicMetaObject *>(jambiMetaObject->metaObject());
+        dynamic_meta_object->originalSignalOrSlotSignature(qtjambi_current_environment(), index, &m_java_signature);
+    } else {
+        // If it's not dynamic, then we can query the meta info
+        QString qt_signature = QLatin1String(m_regular_method.enclosingMetaObject()->className()) + QLatin1String("::") + m_regular_method.signature();
+        m_java_signature = getJavaName(qt_signature.toLatin1());
+
+    }
+
+    if (methodType() == Signal) {
+        m_java_signature.replace(QLatin1String("()"), QLatin1String(""))
+                        .replace(QLatin1String("("), QLatin1String("<"))
+                        .replace(QLatin1String(")"), QLatin1String(">"));
+    }
+
+    int pos = methodType() == Signal ? m_java_signature.lastIndexOf(QLatin1String("<")) : m_java_signature.lastIndexOf(QLatin1String("("));
+    pos = m_java_signature.lastIndexOf(QLatin1String("."), pos);
+
+    if (pos >= 0)
+        m_java_signature = m_java_signature.right(m_java_signature.length() - pos - 1);
+
+    m_java_signature = m_java_signature.trimmed();
 }
 
 QDesignerMetaMethodInterface::Access QtJambiMetaMethod::access() const
@@ -378,12 +407,13 @@ QStringList QtJambiMetaMethod::parameterTypes() const
 
 QString QtJambiMetaMethod::signature() const
 {
-    return m_regular_method.signature();
+    qDebug("returning %s", qPrintable(m_java_signature));
+    return m_java_signature;
 }
 
 QString QtJambiMetaMethod::normalizedSignature() const
 {
-    return QLatin1String(QMetaObject::normalizedSignature(m_regular_method.signature()));
+    return m_java_signature;
 }
 
 QString QtJambiMetaMethod::tag() const
@@ -401,7 +431,8 @@ QString QtJambiMetaMethod::typeName() const
  */
 
 QtJambiMetaObject::QtJambiMetaObject(const QMetaObject *regularMetaObject) 
-    : QDesignerMetaObjectInterface(), m_regular_meta_object(regularMetaObject), m_enumerators(0), m_properties(0), m_methods(0)
+    : m_regular_meta_object(regularMetaObject), m_enumerators(0), m_properties(0), 
+      m_methods(0), m_meta_object_is_dynamic(qtjambi_metaobject_is_dynamic(regularMetaObject))
 { 
     Q_ASSERT(m_regular_meta_object != 0);
 }
@@ -455,12 +486,10 @@ void QtJambiMetaObject::resolve()
     if (count > 0) {
         m_methods = new QtJambiMetaMethod *[count];
         for (int i=0; i<count; ++i) 
-            m_methods[i] = new QtJambiMetaMethod(m_regular_meta_object->method(i), this);
+            m_methods[i] = new QtJambiMetaMethod(m_regular_meta_object->method(i), this, i);
     } else {
         m_methods = 0;
-    }
-
-    m_meta_object_is_dynamic = qtjambi_metaobject_is_dynamic(m_regular_meta_object);
+    }    
 }
 
 QString QtJambiMetaObject::fullClassName() const

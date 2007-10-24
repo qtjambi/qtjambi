@@ -8,7 +8,9 @@
 
 
 QtDynamicMetaObject::QtDynamicMetaObject(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object) 
-    : m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0), m_property_readers(0), m_property_writers(0), m_property_resetters(0)
+    : m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0), 
+      m_property_readers(0), m_property_writers(0), m_property_resetters(0), m_property_designables(0), 
+      m_original_signatures(0)
 {
     Q_ASSERT(env != 0);
     Q_ASSERT(java_class != 0);
@@ -22,7 +24,13 @@ QtDynamicMetaObject::~QtDynamicMetaObject()
     if (env != 0) {
         if (m_methods != 0) env->DeleteGlobalRef(m_methods);
         if (m_signals != 0) env->DeleteGlobalRef(m_signals);
+        if (m_property_readers != 0) env->DeleteGlobalRef(m_property_readers);
+        if (m_property_writers != 0) env->DeleteGlobalRef(m_property_writers);
+        if (m_property_resetters != 0) env->DeleteGlobalRef(m_property_resetters);
+        if (m_property_designables != 0) env->DeleteGlobalRef(m_property_designables);        
     }
+
+    delete[] m_original_signatures;
 }
 
 void QtDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object)
@@ -72,6 +80,14 @@ void QtDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMeta
         m_signals = (jobjectArray) env->NewGlobalRef(m_signals);    
         m_signal_count = env->GetArrayLength(m_signals);
     }
+
+    if (m_method_count + m_signal_count > 0) {
+        m_original_signatures = new QString[m_method_count + m_signal_count];
+        jobjectArray original_signatures = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.originalSignatures);
+        for (int i=0; i<m_method_count + m_signal_count; ++i)
+            m_original_signatures[i] = qtjambi_to_qstring(env, (jstring) env->GetObjectArrayElement(original_signatures, i));           
+    }
+
 
     if (m_property_readers != 0) {
         m_property_readers = (jobjectArray) env->NewGlobalRef(m_property_readers);
@@ -173,6 +189,28 @@ void QtDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject meth
     } else {
         qWarning("QtDynamicMetaObject::invokeMethod: Failed to convert arguments");
     }
+}
+
+int QtDynamicMetaObject::originalSignalOrSlotSignature(JNIEnv *env, int _id, QString *signature) const
+{
+    const QMetaObject *super_class = superClass();
+
+    bool is_dynamic = qtjambi_metaobject_is_dynamic(super_class);
+    if (is_dynamic) {
+        _id = static_cast<const QtDynamicMetaObject *>(super_class)->originalSignalOrSlotSignature(env, _id, signature);
+    } else {
+        if (_id < super_class->methodCount()) {
+            QString qt_signature = QLatin1String(super_class->className()) + QLatin1String("::") + QString::fromLatin1(super_class->method(_id).signature());
+            *signature = getJavaName(qt_signature.toLatin1());
+        }
+        _id -= super_class->methodCount();
+    }
+    if (_id < 0) return _id;
+
+    if (_id < m_signal_count + m_method_count)
+        *signature = m_original_signatures[_id];    
+
+    return _id - m_method_count - m_signal_count;
 }
 
 int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id, void **_a) const

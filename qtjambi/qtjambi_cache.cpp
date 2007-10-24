@@ -1044,6 +1044,10 @@ void StaticCache::resolveQtJambiInternal_internal()
     QtJambiInternal.getEnumForQFlags = env->GetStaticMethodID(QtJambiInternal.class_ref, "getEnumForQFlags",
                                                               "(Ljava/lang/Class;)Ljava/lang/Class;");
     Q_ASSERT(QtJambiInternal.getEnumForQFlags);
+
+    QtJambiInternal.signalMatchesSlot = env->GetStaticMethodID(QtJambiInternal.class_ref, "signalMatchesSlot",
+                                                               "(Ljava/lang/String;Ljava/lang/String;)Z");
+    Q_ASSERT(QtJambiInternal.signalMatchesSlot);
 }
 
 void StaticCache::resolveMetaData_internal() 
@@ -1077,6 +1081,9 @@ void StaticCache::resolveMetaData_internal()
 
     MetaData.extraDataArray = env->GetFieldID(MetaData.class_ref, "extraDataArray", "[Ljava/lang/Class;");
     Q_ASSERT(MetaData.extraDataArray);
+
+    MetaData.originalSignatures = env->GetFieldID(MetaData.class_ref, "originalSignatures", "[Ljava/lang/String;");
+    Q_ASSERT(MetaData.originalSignatures);
 }
 
 void StaticCache::resolveQtJambiGuiInternal_internal()

@@ -201,9 +201,11 @@ bool JambiLanguage::signalMatchesSlot(const QString &signal, const QString &slot
     jstring slotString = qtjambi_from_qstring(env, slot);
     QTJAMBI_EXCEPTION_CHECK(env);
 
-    // ### todo
-    bool result = false;
-    return result;
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtJambiInternal();
+
+    return env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.signalMatchesSlot, 
+                                        signalString, slotString);
 }
 
 QString JambiLanguage::widgetBoxContents() const
