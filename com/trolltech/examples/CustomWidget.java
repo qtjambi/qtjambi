@@ -23,13 +23,14 @@ public class CustomWidget extends QWidget {
     
     public CustomWidget(QWidget parent) { super(parent); }
 
-    // *** Caches for commonly used stuff 
+    //
+    // Caches for commonly used stuff
+    //
     private int x = rect().x();
     private int y = rect().y();
     private int w = rect().width();
     private int h = rect().height();
-    private QRect rect = rect();
-    
+    private QRect rect = rect();    
     private QBrush gradient = null; 
     private QRectF innerCircle = null;
     private QRectF outerCircle = null;
@@ -43,21 +44,27 @@ public class CustomWidget extends QWidget {
         timeLine.finished.connect(this, "noLongerAnimating()");
     }
     
-    // **** Signals
+    //
+    // Signals
+    //
     public Signal0 propertyChanged = new Signal0(); {
         propertyChanged.connect(this, "update()");
     }
     
     public Signal1<Integer> speedChanged = new Signal1<Integer>();
     
-    // **** Properties 
+    //
+    // framingSizeFactor property
+    //
     private static final float FRAMING_SIZE = 0.01f;
     private float framingSize = FRAMING_SIZE; 
+    
     @QtPropertyReader(name="framingSizeFactor")
     @QtBlockedSlot public final float framingSizeFactor() {
         return framingSize;
     }
-    @QtPropertyReader(name="framingSizeFactor")
+    
+    @QtPropertyWriter(name="framingSizeFactor")
     public final void setFramingSizeFactor(float framingSize) {
         this.framingSize = framingSize;
         propertyChanged.emit();
@@ -67,36 +74,52 @@ public class CustomWidget extends QWidget {
         framingSize = FRAMING_SIZE; propertyChanged.emit(); resetAll();        
     }
     
+    /** 
+     * Calculates the size of the frame based on the framingSizeFactor
+     * property.
+     * @return The width of the frame.
+     */
     private float framingSize() {
         return framingSizeFactor() * (float)outerCircle().width();
     }
                     
+    //
+    // topSpeed property
+    //
     private static final int TOP_SPEED = 260;
     private int topSpeed = TOP_SPEED;
+    
     @QtPropertyReader(name="topSpeed")
     @QtBlockedSlot public final int topSpeed() {
         return topSpeed;
     }
+    
     @QtPropertyWriter(name="topSpeed")
     public final void setTopSpeed(int topSpeed) {
         this.topSpeed = topSpeed; propertyChanged.emit();
     }
+    
     @QtPropertyResetter(enabled=true, name="topSpeed") 
     public final void resetTopSpeed() {
         topSpeed = TOP_SPEED; propertyChanged.emit();
     }
     
+    //
+    // animationSpeed property
+    //
     private static final float ANIMATION_SPEED = 10.0f;
     private float animationSpeed = ANIMATION_SPEED;
+    
     @QtPropertyReader(name="animationSpeed")
     public final float animationSpeed() { return animationSpeed; }
+    
     @QtPropertyWriter(name="animationSpeed")
     public final void setAnimationSpeed(float animationSpeed) { 
         this.animationSpeed = animationSpeed;
         propertyChanged.emit();
     }
     
-    private int tail[] = new int[TAIL_LENGTH];
+    private int tail[] = new int[TAIL_LENGTH];    
     private void resetTail() {                      
         int newTail[] = new int[tailLength()];
         for (int i=0; i<(tail.length > newTail.length ? newTail.length : tail.length); ++i) 
@@ -104,10 +127,15 @@ public class CustomWidget extends QWidget {
         tail = newTail;
     }
     
+    //
+    // tailLength property
+    //
     private static final int TAIL_LENGTH = 10;
     private int tailLength = TAIL_LENGTH;
+    
     @QtPropertyReader(name="tailLength")
     public final int tailLength() { return tailLength; }
+    
     @QtPropertyWriter(name="tailLength") 
     public final void setTailLength(int tailLength) {
         if (tailLength < 0) 
@@ -117,6 +145,7 @@ public class CustomWidget extends QWidget {
         resetTail();
         propertyChanged.emit();
     }
+    
     @QtPropertyResetter(name="tailLength")
     public final void resetTailLength() { tailLength = TAIL_LENGTH; }
     
@@ -124,17 +153,22 @@ public class CustomWidget extends QWidget {
     private void noLongerAnimating() {
         isAnimating = false;
     }
-        
-    private Boolean isAnimating = false;    
+
+    //
+    // currentSpeed property
+    // 
+    private boolean isAnimating = false;    
     private int startTail;
     private int endTail;
     private int oldSpeed;
     private int diff = 0;
     private int requestedSpeed = 0;
     private int currentSpeed = 0;
+    
     @QtPropertyReader(name="currentSpeed")
     @QtPropertyDesignable(value="false")
     @QtBlockedSlot public int currentSpeed() { return currentSpeed; }
+    
     @QtPropertyWriter(name="currentSpeed")
     public void setCurrentSpeed(int currentSpeed) {
         oldSpeed = this.currentSpeed;
@@ -151,110 +185,183 @@ public class CustomWidget extends QWidget {
         timeLine.setDuration((int)(Math.abs(diff) * animationSpeed()) + 1);
         timeLine.start();                
     }
-        
+    
+    // 
+    // skip property
+    //
     private static final int SKIP = 20;
     private int skip = SKIP;
+    
     @QtPropertyReader(name="skip")
     @QtBlockedSlot public final int skip() {
         return skip;
     }
+    
     @QtPropertyWriter(name="skip")
     public final void setSkip(int skip) { this.skip = skip; propertyChanged.emit(); }
+    
     @QtPropertyResetter(enabled=true, name="skip")
     public final void resetSkip() { skip = SKIP; propertyChanged.emit(); }
     
+    //
+    // unit property
+    //
     private SpeedUnit unit = SpeedUnit.KilometersPerHour;
+    
     @QtPropertyReader(name="unit")
     @QtBlockedSlot public SpeedUnit unit() { return unit; }
+    
     @QtPropertyWriter(name="unit")
     public void setUnit(SpeedUnit unit) { this.unit = unit; propertyChanged.emit(); }
-        
+    
+    // 
+    // startAngle property
+    //
     private static final float START_ANGLE = -30.0f;
     private float startAngle = START_ANGLE;
+    
     @QtPropertyReader(name="startAngle")
     @QtBlockedSlot public final float startAngle() { return startAngle; }
+    
     @QtPropertyWriter(name="startAngle")
     public final void setStartAngle(float startAngle) { this.startAngle = startAngle; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="startAngle")
     public final void resetStartAngle() { startAngle = START_ANGLE; }
 
+    //
+    // endAngle property
+    //
     private static final float END_ANGLE = 210.0f;
     private float endAngle = END_ANGLE;
+    
     @QtPropertyReader(name="endAngle")
     @QtBlockedSlot public final float endAngle() { return endAngle; }
+    
     @QtPropertyWriter(name="endAngle")
     public final void setEndAngle(float endAngle) { this.endAngle = endAngle; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="endAngle")
     public final void resetEndAngle() { endAngle = END_ANGLE; }
-        
+    
+    // 
+    // font property
+    //
     private QFont font = font();
     @QtPropertyReader(name="speedFont")
     @QtBlockedSlot public final QFont speedFont() { return font; }
+    
     @QtPropertyWriter(name="speedFont")
     public final void setSpeedFont(QFont font) { this.font = font; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="speedFont", enabled=true)
     public final void resetSpeedFont() { font = font(); propertyChanged.emit(); }
     
+    //
+    // highlightLight property
+    //
     private static final QColor HIGHLIGHT_LIGHT = QColor.fromRgba(0xffffffff);
     private QColor highlightLight = HIGHLIGHT_LIGHT;
+    
     @QtPropertyReader(name="highlightLight")
     @QtBlockedSlot public final QColor highlightLight() { return highlightLight; }
+    
     @QtPropertyWriter(name="highlightLight")
     public final void setHighlightLight(QColor color) { highlightLight = color; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="highlightLight")
     public final void resetHighlightLight() { highlightLight = HIGHLIGHT_LIGHT; }
 
+    //
+    // highlightDark property
+    //
     private static final QColor HIGHLIGHT_DARK = QColor.fromRgba(0x00ffffff);
     private QColor highlightDark = HIGHLIGHT_DARK;
+    
     @QtPropertyReader(name="highlightDark")
     @QtBlockedSlot public final QColor highlightDark() { return highlightDark; }
+    
     @QtPropertyWriter(name="highlightDark")
     public final void setHighlightDark(QColor color) { highlightDark = color; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="highlightDark")
     public final void resetHighlightDark() { highlightDark = HIGHLIGHT_DARK; }
 
+    //
+    // needleColor property
+    //
     private static final QColor NEEDLE_COLOR = QColor.red;
     private QColor needleColor = NEEDLE_COLOR;
+    
     @QtPropertyReader(name="needleColor")
     @QtBlockedSlot public final QColor needleColor() { return needleColor; }
+    
     @QtPropertyWriter(name="needleColor")
     public final void setNeedleColor(QColor needleColor) { this.needleColor = needleColor; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="needleColor")
     public final void resetNeedleColor() { needleColor = NEEDLE_COLOR; propertyChanged.emit(); }
     
+    //
+    // backgroundColor property
+    //
     private static final QColor BACKGROUND_COLOR = QColor.white;
     private QColor backgroundColor = BACKGROUND_COLOR;
-    @QtPropertyReader(name="backgroundColor")
+    
+    @QtPropertyReader(name="backgroundColor")    
     @QtBlockedSlot public final QColor backgroundColor() { return backgroundColor; }
+    
     @QtPropertyWriter(name="backgroundColor")
-    public final void setBackgroundColor(QColor backgroundColor) { this.backgroundColor = backgroundColor; propertyChanged.emit(); }
+    public final void setBackgroundColor(QColor backgroundColor) { 
+        this.backgroundColor = backgroundColor; 
+        propertyChanged.emit(); 
+    }
+    
     @QtPropertyResetter(name="backgroundColor")
     public final void resetBackgroundColor() { backgroundColor = BACKGROUND_COLOR; propertyChanged.emit(); }
     
+    //
+    // needleFrameColor property
+    //
     private static final QColor NEEDLE_FRAME_COLOR = QColor.black;
     private QColor needleFrameColor = NEEDLE_FRAME_COLOR;
+    
     @QtPropertyReader(name="needleFrameColor")
     @QtBlockedSlot public final QColor needleFrameColor() { return needleFrameColor; }
+    
     @QtPropertyWriter(name="needleFrameColor")
     public final void setNeedleFrameColor(QColor needleFrameColor) { this.needleFrameColor = needleFrameColor; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="needleFrameColor")
     public final void resetNeedleFrameColor() { needleFrameColor = NEEDLE_FRAME_COLOR; propertyChanged.emit(); }
     
+    //
+    // frameColorDark property
+    //
     private static final QColor FRAME_COLOR_DARK = QColor.fromRgb(0x00514f48);
     private QColor frameColorDark = FRAME_COLOR_DARK;
+    
     @QtPropertyReader(name="frameColorDark")
     @QtBlockedSlot public final QColor frameColorDark() { return frameColorDark; }
+    
     @QtPropertyWriter(name="frameColorDark")
     public final void setFrameColorDark(QColor frameColorDark) { this.frameColorDark = frameColorDark; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="frameColorDark")
     public final void resetFrameColorDark() { frameColorDark = FRAME_COLOR_DARK; propertyChanged.emit(); }
     
+    // 
+    // frameColorLight property
+    //
     private static final QColor FRAME_COLOR_LIGHT = QColor.fromRgb(0x00a49a92);
     private QColor frameColorLight = FRAME_COLOR_LIGHT;
+    
     @QtPropertyReader(name="frameColorLight")
     @QtBlockedSlot public final QColor frameColorLight() { return frameColorLight; }
+    
     @QtPropertyWriter(name="frameColorLight")
     public final void setFrameColorLight(QColor frameColorLight) { this.frameColorLight = frameColorLight; propertyChanged.emit(); }
+    
     @QtPropertyResetter(name="frameColorLight")
     public final void resetFrameColorLight() { frameColorLight = FRAME_COLOR_LIGHT; propertyChanged.emit(); }    
                    
@@ -384,7 +491,7 @@ public class CustomWidget extends QWidget {
         int skip = skip();
         float step = ((float)skip / (float)topSpeed()) * (endAngle() - startAngle());
         QFont font = speedFont();
-        font.setPointSize((int)(-innerCircle.width() / 20.0f));
+        font.setPointSize((int)(innerCircle.width() / 20.0f));
         p.setFont(font);
         
         QFontMetrics fm = new QFontMetrics(font);                    
