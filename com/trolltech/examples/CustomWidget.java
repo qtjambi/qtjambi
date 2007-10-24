@@ -4,7 +4,6 @@ import com.trolltech.qt.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
-@QtJambiExample(name = "Custom Widget")
 public class CustomWidget extends QWidget {
     
     public enum SpeedUnit {
@@ -56,16 +55,16 @@ public class CustomWidget extends QWidget {
     //
     // framingSizeFactor property
     //
-    private static final float FRAMING_SIZE = 0.01f;
-    private float framingSize = FRAMING_SIZE; 
+    private static final double FRAMING_SIZE = 0.01f;
+    private double framingSize = FRAMING_SIZE; 
     
     @QtPropertyReader(name="framingSizeFactor")
-    @QtBlockedSlot public final float framingSizeFactor() {
+    @QtBlockedSlot public final double framingSizeFactor() {
         return framingSize;
     }
     
     @QtPropertyWriter(name="framingSizeFactor")
-    public final void setFramingSizeFactor(float framingSize) {
+    public final void setFramingSizeFactor(double framingSize) {
         this.framingSize = framingSize;
         propertyChanged.emit();
     }
@@ -79,8 +78,8 @@ public class CustomWidget extends QWidget {
      * property.
      * @return The width of the frame.
      */
-    private float framingSize() {
-        return framingSizeFactor() * (float)outerCircle().width();
+    private double framingSize() {
+        return framingSizeFactor() * (double)outerCircle().width();
     }
                     
     //
@@ -107,14 +106,14 @@ public class CustomWidget extends QWidget {
     //
     // animationSpeed property
     //
-    private static final float ANIMATION_SPEED = 10.0f;
-    private float animationSpeed = ANIMATION_SPEED;
+    private static final double ANIMATION_SPEED = 10.0f;
+    private double animationSpeed = ANIMATION_SPEED;
     
     @QtPropertyReader(name="animationSpeed")
-    public final float animationSpeed() { return animationSpeed; }
+    public final double animationSpeed() { return animationSpeed; }
     
     @QtPropertyWriter(name="animationSpeed")
-    public final void setAnimationSpeed(float animationSpeed) { 
+    public final void setAnimationSpeed(double animationSpeed) { 
         this.animationSpeed = animationSpeed;
         propertyChanged.emit();
     }
@@ -217,14 +216,14 @@ public class CustomWidget extends QWidget {
     // 
     // startAngle property
     //
-    private static final float START_ANGLE = -30.0f;
-    private float startAngle = START_ANGLE;
+    private static final double START_ANGLE = -30.0f;
+    private double startAngle = START_ANGLE;
     
     @QtPropertyReader(name="startAngle")
-    @QtBlockedSlot public final float startAngle() { return startAngle; }
+    @QtBlockedSlot public final double startAngle() { return startAngle; }
     
     @QtPropertyWriter(name="startAngle")
-    public final void setStartAngle(float startAngle) { this.startAngle = startAngle; propertyChanged.emit(); }
+    public final void setStartAngle(double startAngle) { this.startAngle = startAngle; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="startAngle")
     public final void resetStartAngle() { startAngle = START_ANGLE; }
@@ -232,14 +231,14 @@ public class CustomWidget extends QWidget {
     //
     // endAngle property
     //
-    private static final float END_ANGLE = 210.0f;
-    private float endAngle = END_ANGLE;
+    private static final double END_ANGLE = 210.0f;
+    private double endAngle = END_ANGLE;
     
     @QtPropertyReader(name="endAngle")
-    @QtBlockedSlot public final float endAngle() { return endAngle; }
+    @QtBlockedSlot public final double endAngle() { return endAngle; }
     
     @QtPropertyWriter(name="endAngle")
-    public final void setEndAngle(float endAngle) { this.endAngle = endAngle; propertyChanged.emit(); }
+    public final void setEndAngle(double endAngle) { this.endAngle = endAngle; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="endAngle")
     public final void resetEndAngle() { endAngle = END_ANGLE; }
@@ -462,7 +461,7 @@ public class CustomWidget extends QWidget {
             needlePath = new QPainterPath();
             needlePath.moveTo(0.0, 0.0);
             
-            float tipLength = (float)innerCircle.width() / 50.0f;
+            double tipLength = (double)innerCircle.width() / 50.0f;
             needlePath.lineTo(-innerCircle.width() / 2.0 + tipLength, -tipLength);
             needlePath.lineTo(-innerCircle.width() / 2.0, 0.0);
             needlePath.lineTo(-innerCircle.width() / 2.0 + tipLength, tipLength);
@@ -484,12 +483,12 @@ public class CustomWidget extends QWidget {
             p.setClipPath(path);
         
         QRectF innerCircle = innerCircle();
-        float x = (float)innerCircle.x() + (float)innerCircle.width() / 2.0f;
-        float y = (float)innerCircle.y() + (float)innerCircle.height() / 2.0f;
+        double x = (double)innerCircle.x() + (double)innerCircle.width() / 2.0f;
+        double y = (double)innerCircle.y() + (double)innerCircle.height() / 2.0f;
         
         // Draw the speed bars
         int skip = skip();
-        float step = ((float)skip / (float)topSpeed()) * (endAngle() - startAngle());
+        double step = ((double)skip / (double)topSpeed()) * (endAngle() - startAngle());
         QFont font = speedFont();
         font.setPointSize((int)(innerCircle.width() / 20.0f));
         p.setFont(font);
@@ -503,7 +502,7 @@ public class CustomWidget extends QWidget {
                 speedBarPen.setWidthF(innerCircle.width() / 100.0f);
                 p.setPen(speedBarPen);
                 
-                float angle;
+                double angle;
                 int speed = 0;
                 p.rotate(startAngle());
                 for (angle=startAngle(); angle<endAngle(); angle += step) {                    
@@ -619,10 +618,10 @@ public class CustomWidget extends QWidget {
         p.restore();
     }
     
-    private float angleOfSpeed(int speed) {
+    private double angleOfSpeed(int speed) {
         int skip = skip();
-        float step = ((float)skip / (float)topSpeed()) * (endAngle() - startAngle());
-        return startAngle() + step * ((float)speed / (float)skip);
+        double step = ((double)skip / (double)topSpeed()) * (endAngle() - startAngle());
+        return startAngle() + step * ((double)speed / (double)skip);
     }
     
     private QMatrix matrix = new QMatrix();
@@ -647,33 +646,5 @@ public class CustomWidget extends QWidget {
         speedChanged.emit(currentSpeed);
     }
     
-    public static void main(String[] args) {
-        QApplication.initialize(args);
-        
-        QWidget p = new QWidget();                
-        
-        QHBoxLayout layout = new QHBoxLayout(p);
-        
-        CustomWidget customWidget = new CustomWidget();
-        layout.addWidget(customWidget);
-        
-        QSlider slider = new QSlider();
-        layout.addWidget(slider);
-        
-        slider.setMaximum(customWidget.topSpeed());
-        slider.setMinimum(0);
-        
-        slider.valueChanged.connect(customWidget, "setCurrentSpeed(int)");
-
-        p.show();
-        
-        
-        QMessageBox.information(customWidget, "Just a hint!", 
-                "This is an example of how you can make your own custom widgets\n"
-              + "and import them in Qt Designer. Try running Qt Designer and look\n"
-              + "for Custom Widget in the widget box.");
-        
-        QApplication.exec();
-    }
 
 }
