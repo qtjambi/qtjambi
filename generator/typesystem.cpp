@@ -1678,13 +1678,31 @@ QString fixCppTypeName(const QString &name)
     return name;
 }
 
-QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lines){  
+QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lines) {
+    bool multilineComment = false;
+    bool lastEmpty = true;
+    QString lastLine;
     while (!lines.isEmpty()) {
-        QString line = lines.takeFirst().trimmed();
+        const QString line = lines.takeFirst().trimmed();
         if (line.isEmpty()) {
+            if (!lastEmpty)
+                s << endl;
+            lastEmpty = true;
             continue;
+        } else {
+            lastEmpty = false;
         }
-        else if (line == "}") {
+        if (line.startsWith("/*"))
+            multilineComment = true;
+                                
+        if (multilineComment) {
+            s << indentor;
+            if (line.startsWith("*")) 
+                s << " ";
+            s << line << endl;
+            if (line.endsWith("*/"))
+                multilineComment = false;
+        } else if (line.startsWith("}")) {
             return line;
         } else if (line.endsWith("}")) {
             s << indentor << line << endl; 
@@ -1699,12 +1717,21 @@ QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lin
             if (!tmp.isNull()) {
                 s << indentor << tmp << endl;
             }
-        } else if (!line.endsWith(";") && !line.startsWith("//") &&
-                   !lines.isEmpty() && !lines.first().trimmed().startsWith("{")) {
-            s << indentor << line << endl << "    ";
+            lastLine = tmp;
+            continue;
         } else {
-            s << indentor << line << endl;
+            s << indentor;
+            if (!lastLine.isEmpty() &&
+                !lastLine.endsWith(";") &&
+                !line.startsWith("@") &&
+                !line.startsWith("//") && 
+                !lastLine.startsWith("//") &&
+                !lastLine.endsWith("}") &&
+                !line.startsWith("{"))
+                s << "    ";
+            s << line << endl;
         }
+        lastLine = line;
     }
     return 0;
 }
@@ -1712,18 +1739,13 @@ QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lin
 
 QTextStream &CodeSnip::formattedCode(QTextStream &s, Indentor &indentor) const
 {
-    QStringList lst;
-    foreach(CodeSnipFragment *codeFrag, codeList){
-        lst = lst + codeFrag->code().split("\n");
-    }
-
+    QStringList lst(code().split("\n"));
     while (!lst.isEmpty()) {
         QString tmp = formattedCodeHelper(s, indentor, lst);
         if (!tmp.isNull()) {
             s << indentor << tmp << endl;
         }
     }
-
     s.flush();
     return s;
 }

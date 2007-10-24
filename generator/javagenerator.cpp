@@ -1735,7 +1735,8 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass 
     CodeSnipList code_snips = class_type->codeSnips();
     foreach (const CodeSnip &snip, code_snips) {
         if (snip.language == TypeSystem::TargetLangCode) {
-            s << snip.code() << endl;
+            s << endl;
+            snip.formattedCode(s, INDENT);
         }
     }
 }
