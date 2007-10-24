@@ -473,7 +473,7 @@ QString QtJambiMetaObject::fullClassName() const
 
 QString QtJambiMetaObject::className() const 
 {
-    return QLatin1String(m_regular_meta_object->className());
+    return QString::fromLatin1(m_regular_meta_object->className()).replace(QLatin1String("::"), QLatin1String("."));
 }
 
 const QDesignerMetaObjectInterface *QtJambiMetaObject::superClass() const
