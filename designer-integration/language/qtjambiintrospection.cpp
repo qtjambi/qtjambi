@@ -138,9 +138,15 @@ public:
 private:
     const QMetaObject *m_regular_meta_object;
 
-    QtJambiMetaEnumerator **m_enumerators;     
-    QtJambiMetaProperty   **m_properties;
-    QtJambiMetaMethod     **m_methods;
+    mutable int m_total_method_count;
+    
+    int m_method_count;
+    int m_property_count;
+    int m_enumerator_count;
+
+    QtJambiMetaEnumerator      **m_enumerators;     
+    QtJambiMetaProperty        **m_properties;
+    QVector<QtJambiMetaMethod *> m_methods;
 
     uint m_meta_object_is_dynamic : 1;
     uint m_reserved               : 31;
@@ -407,7 +413,6 @@ QStringList QtJambiMetaMethod::parameterTypes() const
 
 QString QtJambiMetaMethod::signature() const
 {
-    qDebug("returning %s", qPrintable(m_java_signature));
     return m_java_signature;
 }
 
@@ -432,7 +437,9 @@ QString QtJambiMetaMethod::typeName() const
 
 QtJambiMetaObject::QtJambiMetaObject(const QMetaObject *regularMetaObject) 
     : m_regular_meta_object(regularMetaObject), m_enumerators(0), m_properties(0), 
-      m_methods(0), m_meta_object_is_dynamic(qtjambi_metaobject_is_dynamic(regularMetaObject))
+      m_total_method_count(-1), 
+      m_method_count(0), m_property_count(0), m_enumerator_count(0),
+      m_meta_object_is_dynamic(qtjambi_metaobject_is_dynamic(regularMetaObject))
 { 
     Q_ASSERT(m_regular_meta_object != 0);
 }
@@ -441,54 +448,78 @@ QtJambiMetaObject::QtJambiMetaObject(const QMetaObject *regularMetaObject)
 QtJambiMetaObject::~QtJambiMetaObject() 
 {
     {
-        int count = enumeratorCount();
+        int count = m_enumerator_count;
         for (int i=0; i<count; ++i) 
             delete m_enumerators[i];
         delete[] m_enumerators;
     }
 
     {
-        int count = propertyCount();
+        int count = m_property_count;
         for (int i=0; i<count; ++i) 
             delete m_properties[i];
         delete[] m_properties;
     }
 
     {
-        int count = methodCount();
+        int count = m_method_count;
         for (int i=0; i<count; ++i) 
-            delete m_methods[i];
-        delete[] m_methods;
+            delete m_methods[i];        
     }
 }
 
 void QtJambiMetaObject::resolve() 
 {
-    int count = enumeratorCount();
-    if (count > 0) {
-        m_enumerators = new QtJambiMetaEnumerator *[count];
-        for (int i=0; i<count; ++i)
-            m_enumerators[i] = new QtJambiMetaEnumerator(m_regular_meta_object->enumerator(i), this);
+    int count = m_regular_meta_object->enumeratorCount();
+    int offset = m_regular_meta_object->enumeratorOffset();
+    if (count > 0) {        
+        m_enumerator_count = count - offset;
+        m_enumerators = new QtJambiMetaEnumerator *[m_enumerator_count];
+
+        for (int i=offset; i<count; ++i)
+            m_enumerators[i - offset] = new QtJambiMetaEnumerator(m_regular_meta_object->enumerator(i), this);
     } else {
         m_enumerators = 0;
     }
 
-    count = propertyCount();
+    count = m_regular_meta_object->propertyCount();
+    offset = m_regular_meta_object->propertyOffset();
     if (count > 0) {
-        m_properties = new QtJambiMetaProperty *[count];
-        for (int i=0; i<count; ++i) 
-            m_properties[i] = new QtJambiMetaProperty(m_regular_meta_object->property(i), this);
+        m_property_count = count - offset;
+        m_properties = new QtJambiMetaProperty *[m_property_count];
+
+        for (int i=offset; i<count; ++i) 
+            m_properties[i - offset] = new QtJambiMetaProperty(m_regular_meta_object->property(i), this);
     } else {
         m_properties = 0;
     }
 
-    count = methodCount();
+
+    count = m_regular_meta_object->methodCount();
+    offset = m_regular_meta_object->methodOffset();
     if (count > 0) {
-        m_methods = new QtJambiMetaMethod *[count];
-        for (int i=0; i<count; ++i) 
-            m_methods[i] = new QtJambiMetaMethod(m_regular_meta_object->method(i), this, i);
-    } else {
-        m_methods = 0;
+        m_methods.resize(count - offset);
+
+        m_method_count = 0;
+        for (int i=offset; i<count; ++i) {
+            bool valid_method = true;
+            
+            // Not all signals and slots should appear in Designer
+            // since not all are mapped. This is only valid for 
+            // non-dynamic meta objects
+            QMetaMethod regular_method = m_regular_meta_object->method(i);
+            if (!metaObjectIsDynamic()) {
+                QString qt_signature = QLatin1String(m_regular_meta_object->className()) 
+                                     + QLatin1String("::") 
+                                     + QLatin1String(regular_method.signature());
+                QString java_signature = getJavaName(qt_signature.toLatin1());
+                valid_method = !java_signature.isEmpty();
+            }
+
+            if (valid_method)
+                m_methods[m_method_count++] = new QtJambiMetaMethod(regular_method, this, i);            
+        }
+
     }    
 }
 
@@ -517,6 +548,14 @@ const QDesignerMetaPropertyInterface *QtJambiMetaObject::userProperty() const
 
 const QDesignerMetaEnumInterface *QtJambiMetaObject::enumerator(int index) const
 {
+    // First check for it in the super class
+    const QtJambiMetaObject *super_class = static_cast<const QtJambiMetaObject *>(superClass());
+    if (super_class != 0 && index < enumeratorOffset())
+        return super_class->enumerator(index);   
+
+    index -= enumeratorOffset();
+
+    Q_ASSERT(index < m_enumerator_count);
     return m_enumerators[index];    
 }
 
@@ -530,48 +569,82 @@ int QtJambiMetaObject::enumeratorOffset() const
     return m_regular_meta_object->enumeratorOffset();
 }
 
-int QtJambiMetaObject::indexOfEnumerator(const QString &name) const
+int QtJambiMetaObject::indexOfEnumerator(const QString &enumerator) const
 {
-    return m_regular_meta_object->indexOfEnumerator(name.toLatin1());
+    return m_regular_meta_object->indexOfEnumerator(enumerator.toLatin1());
 }
 
 int QtJambiMetaObject::indexOfMethod(const QString &method) const
 {
-    return m_regular_meta_object->indexOfMethod(method.toLatin1());
+    const QtJambiMetaObject *super_class = static_cast<const QtJambiMetaObject *>(superClass());
+    
+    int idx = super_class != 0 ? super_class->indexOfMethod(method) : -1;
+    if (idx < 0) {
+        for (int i=0; i<m_method_count; ++i) {
+            if (m_methods[i]->signature() == method) {
+                idx = i + methodOffset();
+                break;
+            }
+        }
+    }
+
+    return idx;
 }
 
-int QtJambiMetaObject::indexOfProperty(const QString &name) const
-{
-    return m_regular_meta_object->indexOfProperty(name.toLatin1());
+int QtJambiMetaObject::indexOfProperty(const QString &property) const
+{    
+    return m_regular_meta_object->indexOfProperty(property.toLatin1());
 }
 
-int QtJambiMetaObject::indexOfSignal(const QString &signal) const
+int QtJambiMetaObject::indexOfSignal(const QString &) const
 {
-    return m_regular_meta_object->indexOfSignal(signal.toLatin1());
+    Q_ASSERT_X(false, "indexOfSignal", "function not implemented");
+    return -1;
 }
 
-int QtJambiMetaObject::indexOfSlot(const QString &slot) const
+int QtJambiMetaObject::indexOfSlot(const QString &) const
 {
-    return m_regular_meta_object->indexOfSlot(slot.toLatin1());
+    Q_ASSERT_X(false, "indexOfSlot", "function not implemented");
+    return -1;
 }
 
 const QDesignerMetaMethodInterface *QtJambiMetaObject::method(int index) const
 {
+    // First check for it in the super class
+    const QtJambiMetaObject *super_class = static_cast<const QtJambiMetaObject *>(superClass());
+    if (super_class != 0 && index < methodOffset())
+        return super_class->method(index);   
+
+    index -= methodOffset();
+
+    Q_ASSERT(index < m_method_count);
     return m_methods[index];
 }
 
 int QtJambiMetaObject::methodCount() const
 {
-    return m_regular_meta_object->methodCount();
+    if (m_total_method_count < 0) {
+        const QtJambiMetaObject *super_class = static_cast<const QtJambiMetaObject *>(superClass());
+        m_total_method_count = m_method_count + (super_class ? super_class->methodCount() : 0);
+    }
+
+    return m_total_method_count;
 }
 
 int QtJambiMetaObject::methodOffset() const
-{
-    return m_regular_meta_object->methodOffset();
+{    
+    return methodCount() - m_method_count;
 }
 
 const QDesignerMetaPropertyInterface *QtJambiMetaObject::property(int index) const
 {
+    // First check for it in the super class
+    const QtJambiMetaObject *super_class = static_cast<const QtJambiMetaObject *>(superClass());
+    if (super_class != 0 && index < propertyOffset())
+        return super_class->property(index);
+
+    index -= propertyOffset();
+    Q_ASSERT(index < m_property_count);
     return m_properties[index];
 }
 

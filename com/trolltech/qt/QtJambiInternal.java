@@ -298,13 +298,7 @@ public class QtJambiInternal {
     }
 
     @SuppressWarnings("unused")
-    private static boolean signalMatchesSlot(String signal, String slot) {
-        if (signal.equals("<signal>") || slot.equals("<slot>"))
-            return true; // ### 
-        
-        if (signal.length() == 0 || slot.length() == 0)
-            return false;
-            
+    private static boolean signalMatchesSlot(String signal, String slot) {                    
         // void slots always match...
         if (slot.contains("()"))
             return true;
