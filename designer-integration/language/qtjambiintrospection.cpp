@@ -95,6 +95,8 @@ public:
     virtual QString typeName() const ;
 
 private:
+    static QString boxed(const QString &unboxed);
+
     QStringList byteArraysToStrings(const QList<QByteArray> &) const;
 
     QString m_java_signature;
@@ -367,12 +369,46 @@ QtJambiMetaMethod::QtJambiMetaMethod(const QMetaMethod &regularMethod, const QtJ
     }
 
     int pos = methodType() == Signal ? m_java_signature.lastIndexOf(QLatin1String("<")) : m_java_signature.lastIndexOf(QLatin1String("("));
+
+    // Signals use object types, but the meta info system contains the original primitive types
+    // because it contains the names of the method equivalents of signals. Thus, we convert
+    // each primitive type name to its complex equivalent.
+    if (methodType() == Signal) {
+        int pos2 = m_java_signature.lastIndexOf(">");
+        if (pos2 > pos) {
+            QString paramString = m_java_signature.mid(pos + 1, pos2 - pos - 1);
+            QStringList params = paramString.split(",");        
+            for (int i=0; i<params.size(); ++i)
+                params[i] = boxed(params.at(i).trimmed());
+            
+            m_java_signature = m_java_signature.left(pos) + QLatin1String("<") + params.join(", ") 
+                            + QLatin1String(">") + m_java_signature.right(m_java_signature.length() - pos2 -1);
+        }
+    }
+    
     pos = m_java_signature.lastIndexOf(QLatin1String("."), pos);
 
     if (pos >= 0)
         m_java_signature = m_java_signature.right(m_java_signature.length() - pos - 1);
 
     m_java_signature = m_java_signature.trimmed();
+}
+
+QString QtJambiMetaMethod::boxed(const QString &unboxed)
+{
+    static QHash<QString, const char *> boxes;
+    if (boxes.isEmpty()) {
+        boxes[QLatin1String("boolean")] = "java.lang.Boolean";
+        boxes[QLatin1String("int")] = "java.lang.Integer";
+        boxes[QLatin1String("char")] = "java.lang.Character";
+        boxes[QLatin1String("long")] = "java.lang.Long";
+        boxes[QLatin1String("float")] = "java.lang.Float";
+        boxes[QLatin1String("double")] = "java.lang.Double";
+        boxes[QLatin1String("short")] = "java.lang.Short";
+        boxes[QLatin1String("byte")] = "java.lang.Byte";
+    }
+
+    return QLatin1String(boxes.value(unboxed, unboxed.toLatin1().constData()));
 }
 
 QDesignerMetaMethodInterface::Access QtJambiMetaMethod::access() const
