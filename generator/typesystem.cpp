@@ -1240,6 +1240,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     languageNames["shell"] = TypeSystem::ShellCode;
                     languageNames["shell-declaration"] = TypeSystem::ShellDeclaration;
                     languageNames["library-initializer"] = TypeSystem::PackageInitializer;
+                    languageNames["constructors"] = TypeSystem::Constructors;
                 }
 
                 QString className = attributes["class"].toLower();

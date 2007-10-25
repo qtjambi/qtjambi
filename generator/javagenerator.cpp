@@ -1702,6 +1702,12 @@ void JavaGenerator::writeConstructorContents(QTextStream &s, const AbstractMetaF
             s << INDENT << "QtJambiInternal.countExpense(" << java_class->fullName()
               << ".class, " << ep.cost << ", " << ep.limit << ");" << endl;
         }
+
+        foreach (CodeSnip snip, te->codeSnips()) {
+            if (snip.language == TypeSystem::Constructors) {
+                snip.formattedCode(s, INDENT);
+            }
+        }
     }
     s << INDENT << "}" << endl << endl;
         

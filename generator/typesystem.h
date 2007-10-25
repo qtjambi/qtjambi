@@ -68,9 +68,10 @@ namespace TypeSystem {
         ShellCode           = 0x0004,
         ShellDeclaration    = 0x0008,
         PackageInitializer  = 0x0010,
-
+        Constructors        = 0x0020,
+        
         // masks
-        All                 = TargetLangCode | NativeCode | ShellCode | ShellDeclaration | PackageInitializer,
+        All                 = TargetLangCode | NativeCode | ShellCode | ShellDeclaration | PackageInitializer | Constructors,
         TargetLangAndNativeCode   = TargetLangCode | NativeCode
     };
 
