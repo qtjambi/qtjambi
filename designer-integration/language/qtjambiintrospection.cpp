@@ -358,7 +358,6 @@ QtJambiMetaMethod::QtJambiMetaMethod(const QMetaMethod &regularMethod, const QtJ
         // If it's not dynamic, then we can query the meta info
         QString qt_signature = QLatin1String(m_regular_method.enclosingMetaObject()->className()) + QLatin1String("::") + m_regular_method.signature();
         m_java_signature = getJavaName(qt_signature.toLatin1());
-
     }
 
     if (methodType() == Signal) {
@@ -501,14 +500,15 @@ void QtJambiMetaObject::resolve()
         m_methods.resize(count - offset);
 
         m_method_count = 0;
-        for (int i=offset; i<count; ++i) {
-            bool valid_method = true;
-            
-            // Not all signals and slots should appear in Designer
-            // since not all are mapped. This is only valid for 
-            // non-dynamic meta objects
+        for (int i=offset; i<count; ++i) {                        
             QMetaMethod regular_method = m_regular_meta_object->method(i);
-            if (!metaObjectIsDynamic()) {
+
+            // We don't allow signal overloads
+            bool valid_method = (regular_method.methodType() != QMetaMethod::Signal || (regular_method.attributes() & QMetaMethod::Cloned) == 0);
+  
+            // Not all C++ signals and slots should appear in Designer
+            // since not all are mapped. 
+            if (valid_method && !metaObjectIsDynamic()) {
                 QString qt_signature = QLatin1String(m_regular_meta_object->className()) 
                                      + QLatin1String("::") 
                                      + QLatin1String(regular_method.signature());
