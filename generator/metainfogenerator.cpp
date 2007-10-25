@@ -165,7 +165,7 @@ void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &pack
                         qtName = f->implementingClass()->qualifiedCppName() + "::" + qtName;
                         qtName = QMetaObject::normalizedSignature(qtName.toLatin1().constData());
 
-                        QString javaFunctionName = functionSignature(f, 0, 0, option);
+                        QString javaFunctionName = functionSignature(f, 0, 0, option, arguments.size() - (f->isSignal() ? 0 : i));
                         QString javaObjectName = f->isSignal()
                                                 ? f->name()
                                                 : javaFunctionName;
@@ -174,8 +174,8 @@ void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &pack
                         javaObjectName   = f->implementingClass()->fullName() + "." + javaObjectName;
 
                         QString javaSignature = "(";
-                        AbstractMetaArgumentList args = f->arguments();
-                        foreach (AbstractMetaArgument *arg, args) {
+                        for (int j=0; j < (arguments.size() - (f->isSignal() ? 0 : i)); ++j)  {
+                            AbstractMetaArgument *arg = arguments.at(j);
                             javaSignature += jni_signature(arg->type(), SlashesAndStuff);
                         }
                         javaSignature += ")" + jni_signature(f->type(), SlashesAndStuff);
