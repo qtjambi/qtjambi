@@ -219,7 +219,9 @@
   <enum-type name="QPainter::CompositionMode"/>
   <enum-type name="QPainter::RenderHint" flags="QPainter::RenderHints"/>
   <enum-type name="QPainterPath::ElementType"/>
-  <enum-type name="QPrintEngine::PrintEnginePropertyKey"/>
+  <enum-type name="QPrintEngine::PrintEnginePropertyKey">
+    <reject-enum-value name="PPK_PaperSize" />
+  </enum-type>
   <enum-type name="QPrinter::ColorMode"/>
   <enum-type name="QPrinter::Orientation"/>
   <enum-type name="QPrinter::OutputFormat"/>
