@@ -851,6 +851,45 @@ public class QtJambiInternal {
         return enumConstantCount;
     }
     
+    private static boolean isValidSetter(Method declaredMethod) {
+        return (declaredMethod.getParameterTypes().length == 1
+                && declaredMethod.getReturnType() == Void.TYPE                     
+                && !internalTypeName(methodParameters(declaredMethod), 1).equals(""));        
+    }
+    
+    private static Method getMethod(Class<?> clazz, String name, Class<?> args[]) {
+        try {
+            return clazz.getMethod(name, args);
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+    }
+    
+    private static String capitalizeFirst(String str) {
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1);
+    }
+    
+    private static Method notBogus(Method method, String propertyName, Class<?> paramType) {
+        if (method == null)
+            return null;        
+        
+        QtPropertyReader reader = method.getAnnotation(QtPropertyReader.class);
+        
+        if (reader == null 
+            || !reader.name().equals(propertyName)
+            || !reader.enabled()
+            || !method.getReturnType().isAssignableFrom(paramType)) { 
+            return null;
+        } else {
+            return method;
+        }
+    }
+    
+    private static boolean isValidGetter(Method method) {
+        return (method.getParameterTypes().length == 0 
+                && method.getReturnType() != Void.TYPE);        
+    }
+    
     @SuppressWarnings("unused")
     private static MetaData buildMetaData(Class<? extends QObject> clazz) {
         MetaData metaData = new MetaData();
@@ -885,13 +924,13 @@ public class QtJambiInternal {
             // Rules for readers:
             // 1. Zero arguments
             // 2. Return something other than void
-            // 3. We can convert the type            
-            {
-                QtPropertyReader reader = declaredMethod.getAnnotation(QtPropertyReader.class);
+            // 3. We can convert the type
+            QtPropertyReader reader = declaredMethod.getAnnotation(QtPropertyReader.class);
+            {                
                 
                 if (reader != null 
-                    && declaredMethod.getParameterTypes().length == 0 
-                    && declaredMethod.getReturnType() != Void.TYPE
+                    && reader.enabled()
+                    && isValidGetter(declaredMethod)
                     && !internalTypeName(declaredMethod.getReturnType().getName(), 0).equals("")) {
                     
                     // If the return type of the property reader is not registered, then 
@@ -940,14 +979,12 @@ public class QtJambiInternal {
             // 1. Takes exactly one argument
             // 2. Return void
             // 3. We can convert the type
+            QtPropertyWriter writer = declaredMethod.getAnnotation(QtPropertyWriter.class);
             {
-                QtPropertyWriter writer = declaredMethod.getAnnotation(QtPropertyWriter.class);
-                
+                                
                 Class<?> parameterTypes[] = declaredMethod.getParameterTypes();
                 if (writer != null 
-                    && parameterTypes.length == 1
-                    && declaredMethod.getReturnType() == Void.TYPE                     
-                    && !internalTypeName(methodParameters(declaredMethod), 1).equals("")) {
+                    && isValidSetter(declaredMethod)) {
                     propertyWriters.put(writer.name(), declaredMethod);
                 }
             }
@@ -964,6 +1001,40 @@ public class QtJambiInternal {
                     propertyResetters.put(resetter.name(), declaredMethod);
                 } 
             }            
+            
+            // Check naming convention by looking for setXxx patterns, but only if it hasn't already been 
+            // annotated as a writer
+            if (writer == null
+                && reader == null // can't be a writer, cause the signature doesn't match, just an optimization
+                && declaredMethod.getName().startsWith("set")
+                && declaredMethod.getName().charAt(3) == Character.toUpperCase(declaredMethod.getName().charAt(3))
+                && isValidSetter(declaredMethod)) {
+                
+                Class<?> paramType = declaredMethod.getParameterTypes()[0];                
+                String propertyName = Character.toLowerCase(declaredMethod.getName().charAt(3))
+                                    + declaredMethod.getName().substring(4);
+                
+                if (!propertyReaders.containsKey(propertyName)) {                                                                     
+                    // We need a reader as well, and the reader must not be annotated as disabled
+                    // The reader can be called 'xxx', 'getXxx', 'isXxx' or 'hasXxx' 
+                    // (just booleans for the last two)
+                    Method readerMethod = notBogus(getMethod(clazz, propertyName, new Class[0]), propertyName, paramType);
+                    if (readerMethod == null) 
+                        readerMethod = notBogus(getMethod(clazz, "get" + capitalizeFirst(propertyName), new Class[0]), propertyName, paramType);
+                    if (readerMethod == null && (paramType == Boolean.class || paramType == Boolean.TYPE))
+                        readerMethod = notBogus(getMethod(clazz, "is" + capitalizeFirst(propertyName), new Class[0]), propertyName, paramType);
+                    if (readerMethod == null && (paramType == Boolean.class || paramType == Boolean.TYPE))
+                        readerMethod = notBogus(getMethod(clazz, "has" + capitalizeFirst(propertyName), new Class[0]), propertyName, paramType);
+                    
+                    if (readerMethod != null) { // yay
+                        reader = readerMethod.getAnnotation(QtPropertyReader.class);
+                        if (reader != null) {
+                            propertyReaders.put(propertyName, readerMethod);
+                            propertyWriters.put(propertyName, declaredMethod);
+                        }
+                    }
+                }
+            }
         }
         
         Field declaredFields[] = clazz.getDeclaredFields();
