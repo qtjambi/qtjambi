@@ -408,7 +408,7 @@ QString QtJambiMetaMethod::boxed(const QString &unboxed)
         boxes[QLatin1String("byte")] = "java.lang.Byte";
     }
 
-    return QLatin1String(boxes.value(unboxed, unboxed.toLatin1().constData()));
+    return boxes.contains(unboxed) ? QString::fromLatin1(boxes.value(unboxed)) : unboxed;
 }
 
 QDesignerMetaMethodInterface::Access QtJambiMetaMethod::access() const
