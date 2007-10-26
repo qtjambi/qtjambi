@@ -111,11 +111,16 @@ void MetaInfoGenerator::writeEnums(QTextStream &s, const QString &package)
     for (it=entries.begin(); it!=entries.end(); ++it) {
         QList<TypeEntry *> entries = it.value();
         foreach (TypeEntry *entry, entries) {
-            if (entry->isEnum() && entry->javaPackage() == package) {
-                EnumTypeEntry *eentry = static_cast<EnumTypeEntry *>(entry);
-                strs.append((eentry->javaPackage().isEmpty() ? QString() : eentry->javaPackage().replace('.', '/')  + "/")
-                            + eentry->javaQualifier() + "$" + eentry->targetLangName());
-                strs.append(entry->qualifiedCppName());
+            if ((entry->isFlags() || entry->isEnum()) && entry->javaPackage() == package) {
+                QString javaQualifier;
+                if (entry->isEnum())
+                    javaQualifier = static_cast<EnumTypeEntry *>(entry)->javaQualifier();
+                else
+                    javaQualifier = static_cast<FlagsTypeEntry *>(entry)->originator()->javaQualifier();
+                
+                strs.append((entry->javaPackage().isEmpty() ? QString() : entry->javaPackage().replace('.', '/')  + "/")
+                            + javaQualifier + "$" + entry->targetLangName());
+                strs.append(entry->isFlags() ? static_cast<FlagsTypeEntry *>(entry)->originalName() : entry->qualifiedCppName());
             }
         }
     }

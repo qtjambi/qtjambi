@@ -851,6 +851,30 @@ public class QtJambiInternal {
         return enumConstantCount;
     }
     
+    private static Object isDesignable(Method declaredMethod, Class<?> clazz) {
+        QtPropertyDesignable designable = declaredMethod.getAnnotation(QtPropertyDesignable.class);
+        
+        if (designable != null) {
+            String value = designable.value();
+            
+            if (value.equals("true")) {
+                return Boolean.TRUE;
+            } else if (value.equals("false")) {
+                return Boolean.FALSE;                                
+            } else try {
+                Method m = clazz.getMethod(value, (Class<?>[]) null);                                
+                if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class)
+                    return m;
+                else
+                    throw new RuntimeException("Wrong return type of designable method '" + m.getName() + "'");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        } 
+        
+        return Boolean.TRUE;
+    }
+    
     private static boolean isValidSetter(Method declaredMethod) {
         return (declaredMethod.getParameterTypes().length == 1
                 && declaredMethod.getReturnType() == Void.TYPE                     
@@ -873,12 +897,11 @@ public class QtJambiInternal {
         if (method == null)
             return null;        
         
-        QtPropertyReader reader = method.getAnnotation(QtPropertyReader.class);
-        
-        if (reader == null 
-            || !reader.name().equals(propertyName)
-            || !reader.enabled()
-            || !method.getReturnType().isAssignableFrom(paramType)) { 
+        QtPropertyReader reader = method.getAnnotation(QtPropertyReader.class);        
+        if (reader != null            
+            && (!reader.name().equals(propertyName)
+                || !reader.enabled()
+                || !method.getReturnType().isAssignableFrom(paramType))) { 
             return null;
         } else {
             return method;
@@ -948,30 +971,7 @@ public class QtJambiInternal {
                     } 
                                         
                     propertyReaders.put(reader.name(), declaredMethod);
-                    
-                    // The read method may also be annotated with a designable annotation
-                    {
-                        QtPropertyDesignable designable = declaredMethod.getAnnotation(QtPropertyDesignable.class);
-                        
-                        if (designable != null) {
-                            String value = designable.value();
-                            
-                            if (value.equals("true")) {
-                                propertyDesignables.put(reader.name(), Boolean.TRUE);
-                            } else if (value.equals("false")) {
-                                propertyDesignables.put(reader.name(), Boolean.FALSE);                                
-                            } else try {
-                                Method m = clazz.getMethod(value, (Class<?>[]) null);                                
-                                if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class)
-                                    propertyDesignables.put(reader.name(), m);                                
-                            } catch (Throwable t) {
-                                t.printStackTrace();
-                            }
-                        } else {
-                            propertyDesignables.put(reader.name(), Boolean.TRUE);
-                        }
-                    }
-                    
+                    propertyDesignables.put(reader.name(), isDesignable(declaredMethod, clazz));                                      
                 }
             }
             
@@ -1005,7 +1005,7 @@ public class QtJambiInternal {
             // Check naming convention by looking for setXxx patterns, but only if it hasn't already been 
             // annotated as a writer
             if (writer == null
-                && reader == null // can't be a writer, cause the signature doesn't match, just an optimization
+                && reader == null // reader can't be a writer, cause the signature doesn't match, just an optimization
                 && declaredMethod.getName().startsWith("set")
                 && declaredMethod.getName().charAt(3) == Character.toUpperCase(declaredMethod.getName().charAt(3))
                 && isValidSetter(declaredMethod)) {
@@ -1018,19 +1018,21 @@ public class QtJambiInternal {
                     // We need a reader as well, and the reader must not be annotated as disabled
                     // The reader can be called 'xxx', 'getXxx', 'isXxx' or 'hasXxx' 
                     // (just booleans for the last two)
-                    Method readerMethod = notBogus(getMethod(clazz, propertyName, new Class[0]), propertyName, paramType);
+                    Method readerMethod = notBogus(getMethod(clazz, propertyName, null), propertyName, paramType);
                     if (readerMethod == null) 
-                        readerMethod = notBogus(getMethod(clazz, "get" + capitalizeFirst(propertyName), new Class[0]), propertyName, paramType);
+                        readerMethod = notBogus(getMethod(clazz, "get" + capitalizeFirst(propertyName), null), propertyName, paramType);
                     if (readerMethod == null && (paramType == Boolean.class || paramType == Boolean.TYPE))
-                        readerMethod = notBogus(getMethod(clazz, "is" + capitalizeFirst(propertyName), new Class[0]), propertyName, paramType);
+                        readerMethod = notBogus(getMethod(clazz, "is" + capitalizeFirst(propertyName), null), propertyName, paramType);
                     if (readerMethod == null && (paramType == Boolean.class || paramType == Boolean.TYPE))
-                        readerMethod = notBogus(getMethod(clazz, "has" + capitalizeFirst(propertyName), new Class[0]), propertyName, paramType);
+                        readerMethod = notBogus(getMethod(clazz, "has" + capitalizeFirst(propertyName), null), propertyName, paramType);
                     
                     if (readerMethod != null) { // yay
                         reader = readerMethod.getAnnotation(QtPropertyReader.class);
-                        if (reader != null) {
+                        if (reader == null) {
                             propertyReaders.put(propertyName, readerMethod);
                             propertyWriters.put(propertyName, declaredMethod);
+                            
+                            propertyDesignables.put(propertyName, isDesignable(readerMethod, clazz));
                         }
                     }
                 }

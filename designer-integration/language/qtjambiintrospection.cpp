@@ -204,14 +204,27 @@ QString QtJambiMetaEnumerator::scope() const
     JNIEnv *env = qtjambi_current_environment();
     Q_ASSERT(env != 0);
 
-    QString scope = m_jambi_meta_object->fullClassName() + QLatin1String("$") + name();
+    QString flags_name = m_jambi_meta_object->fullClassName() + QLatin1String("$") + name();
+    if (m_jambi_meta_object->metaObjectIsDynamic()) {
+        QString scope = flags_name;
 
-    // The scope for the enum values needs to be the enum type, not the flag type
-    // so we need to look this up in Java.
-    if (isFlag())
-        scope = qtjambi_enum_name_for_flags_name(env, scope.replace(QLatin1String("."), QLatin1String("/")));
+        // The scope for the enum values needs to be the enum type, not the flag type
+        // so we need to look this up in Java.
+        if (isFlag())
+            scope = qtjambi_enum_name_for_flags_name(env, scope.replace(QLatin1String("."), QLatin1String("/")));
 
-    return scope.replace(QLatin1String("$"), QLatin1String("."));
+        return scope.replace(QLatin1String("$"), QLatin1String("."));
+    } else {
+        QString full_name = QLatin1String(m_regular_enum.scope()) + QLatin1String("::") + QLatin1String(m_regular_enum.name());
+        full_name = getJavaName(full_name.toLatin1());
+        Q_ASSERT(!full_name.isEmpty());
+
+        int pos = full_name.lastIndexOf(QLatin1String("$"));
+        if (pos < 0)
+            pos = full_name.lastIndexOf(QLatin1String("."));
+        
+        return full_name.left(pos);        
+    }
 }
 
 QString QtJambiMetaEnumerator::separator() const
