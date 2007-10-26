@@ -218,12 +218,8 @@ QString QtJambiMetaEnumerator::scope() const
         QString full_name = QLatin1String(m_regular_enum.scope()) + QLatin1String("::") + QLatin1String(m_regular_enum.name());
         full_name = getJavaName(full_name.toLatin1());
         Q_ASSERT(!full_name.isEmpty());
-
-        int pos = full_name.lastIndexOf(QLatin1String("$"));
-        if (pos < 0)
-            pos = full_name.lastIndexOf(QLatin1String("."));
         
-        return full_name.left(pos).replace(QLatin1String("/"), QLatin1String(".")).replace(QLatin1String("$"), QLatin1String("."));        
+        return full_name.replace(QLatin1String("/"), QLatin1String(".")).replace(QLatin1String("$"), QLatin1String("."));        
     }
 }
 

@@ -112,14 +112,16 @@ void MetaInfoGenerator::writeEnums(QTextStream &s, const QString &package)
         QList<TypeEntry *> entries = it.value();
         foreach (TypeEntry *entry, entries) {
             if ((entry->isFlags() || entry->isEnum()) && entry->javaPackage() == package) {
-                QString javaQualifier;
-                if (entry->isEnum())
-                    javaQualifier = static_cast<EnumTypeEntry *>(entry)->javaQualifier();
-                else
-                    javaQualifier = static_cast<FlagsTypeEntry *>(entry)->originator()->javaQualifier();
-                
-                strs.append((entry->javaPackage().isEmpty() ? QString() : entry->javaPackage().replace('.', '/')  + "/")
-                            + javaQualifier + "$" + entry->targetLangName());
+                EnumTypeEntry *eentry = entry->isEnum() ? static_cast<EnumTypeEntry *>(entry) : static_cast<FlagsTypeEntry *>(entry)->originator();
+
+                // The Qt flags names should map to the enum names, this is
+                // required for the designer plugin to find the enum type of
+                // a flags type since this functionality is not available in
+                // Qt. This may be a little bit inconsistent, but it saves
+                // us making yet another hash table for lookups. If it causes
+                // problems, make a new one for this particular purpose.                
+                strs.append((eentry->javaPackage().isEmpty() ? QString() : eentry->javaPackage().replace('.', '/')  + "/")
+                            + eentry->javaQualifier() + "$" + eentry->targetLangName());
                 strs.append(entry->isFlags() ? static_cast<FlagsTypeEntry *>(entry)->originalName() : entry->qualifiedCppName());
             }
         }
