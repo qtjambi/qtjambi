@@ -135,8 +135,7 @@ void displayHelp(GeneratorSet* generatorSet) {
     printf("Usage:\n  generator [options] header-file typesystem-file\n\n");
     printf("Available options:\n\n");
     printf("General:\n");
-    printf("  --lang=[java|qtscript]                    \n"
-           "  --debug-level=[sparse|medium|full]        \n"
+    printf("  --debug-level=[sparse|medium|full]        \n"
            "  --dump-object-tree                        \n"
            "  --help, -h or -?                          \n"
            "  --no-suppress-warnings                    \n"
