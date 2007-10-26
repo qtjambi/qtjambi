@@ -2208,3 +2208,51 @@ void AbstractMetaBuilder::dumpLog()
     write_reject_log_file("mjb_rejected_functions.log", m_rejected_functions);
     write_reject_log_file("mjb_rejected_fields.log", m_rejected_fields);
 }
+
+AbstractMetaClassList AbstractMetaBuilder::classesTopologicalSorted() const
+{
+    AbstractMetaClassList res;
+
+    QSet<AbstractMetaClass*> noDependency;
+    QHash<AbstractMetaClass*, QSet<AbstractMetaClass* >* > hash;
+    foreach (AbstractMetaClass *cls, m_meta_classes) {
+        QSet<AbstractMetaClass* > *depends = new QSet<AbstractMetaClass* >();
+        
+        if (cls->baseClass())
+            depends->insert(cls->baseClass());
+             
+        foreach (AbstractMetaClass *interface, cls->interfaces()) {
+            depends->insert(interface);
+        }
+        
+        if (depends->empty()) {
+            noDependency.insert(cls);
+        } else {
+            hash.insert(cls, depends);
+        }       
+    }
+  
+    while (!noDependency.empty()) {
+        foreach (AbstractMetaClass *cls, noDependency.values()) {
+            if(!cls->isInterface())
+                res.append(cls);
+            noDependency.remove(cls);
+            QHashIterator<AbstractMetaClass*, QSet<AbstractMetaClass* >* > i(hash);
+            while (i.hasNext()) {
+                i.next();
+                i.value()->remove(cls);
+                if (i.value()->empty()) {
+                    AbstractMetaClass *key = i.key();
+                    noDependency.insert(key);
+                    hash.remove(key);
+                    delete(i.value());
+                }
+            }
+        }
+    }
+    
+    if (!noDependency.empty() || !hash.empty()) {
+        qWarning("dependency graph was cyclic.");
+    }
+    return res;
+}

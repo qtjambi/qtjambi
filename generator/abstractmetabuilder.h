@@ -37,6 +37,7 @@ public:
     virtual ~AbstractMetaBuilder() {};
 
     AbstractMetaClassList classes() const { return m_meta_classes; }
+    AbstractMetaClassList classesTopologicalSorted() const;
 
     FileModelItem model() const { return m_dom; }
     void setModel(FileModelItem item) { m_dom = item; }
