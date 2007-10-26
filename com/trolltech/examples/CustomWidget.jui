@@ -14,7 +14,15 @@
   </property>
   <layout class="QGridLayout" name="gridLayout" >
    <item row="0" column="1" >
-    <widget class="com.trolltech.examples.CustomWidget" name="customWidget" />
+    <widget class="com.trolltech.examples.CustomWidget" name="customWidget" >
+     <property name="needleColor" stdset="0" >
+      <color alpha="128" >
+       <red>255</red>
+       <green>0</green>
+       <blue>0</blue>
+      </color>
+     </property>
+    </widget>
    </item>
    <item row="0" column="2" >
     <widget class="QSlider" name="verticalSlider" >

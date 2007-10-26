@@ -52,32 +52,15 @@ public class CustomWidget extends QWidget {
     
     public Signal1<Integer> speedChanged = new Signal1<Integer>();
     
-    //
-    // framingSizeFactor property
-    //
-    private static final double FRAMING_SIZE = 0.01f;
-    private double framingSize = FRAMING_SIZE; 
-    
-    @QtBlockedSlot public final double framingSizeFactor() {
-        return framingSize;
-    }
-    
-    public final void setFramingSizeFactor(double framingSize) {
-        this.framingSize = framingSize;
-        propertyChanged.emit();
-    }
-    @QtPropertyResetter(enabled=true, name="framingSizeFactor")
-    public final void resetFramingSizeFactor() {
-        framingSize = FRAMING_SIZE; propertyChanged.emit(); resetAll();        
-    }
-    
+        
     /** 
      * Calculates the size of the frame based on the framingSizeFactor
      * property.
      * @return The width of the frame.
      */
+    private static final double FRAMING_SIZE = 0.01f;
     private double framingSize() {
-        return framingSizeFactor() * (double)outerCircle().width();
+        return FRAMING_SIZE * (double)outerCircle().width();
     }
                     
     //
@@ -474,7 +457,7 @@ public class CustomWidget extends QWidget {
                 double angle;
                 int speed = 0;
                 p.rotate(startAngle());
-                for (angle=startAngle(); angle<endAngle(); angle += step) {                    
+                for (angle=startAngle(); angle<=endAngle(); angle += step) {                    
                     p.drawLine((int)(-innerCircle.width() / 2.0f) + (int)(innerCircle.width() / 30.0f), 0, (int)(-innerCircle.width() / 2.0f) + (int)(innerCircle.width() / 14.0f), 0);
                     
                     String speedString = "" + speed;
@@ -512,7 +495,7 @@ public class CustomWidget extends QWidget {
             matrix.rotate(angleOfSpeed(tail[i]));
             
             int len = i >= startTail ? i - startTail : i + tail.length - startTail;
-            p.setOpacity((1.0 / (tail.length+1)) * len);            
+            p.setOpacity((needleColor().alphaF() / (tail.length+1)) * len);            
             QPainterPath temporaryPath = matrix.map(needlePath());        
             p.drawPath(temporaryPath);                
             
