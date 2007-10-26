@@ -249,6 +249,7 @@
   </enum-type>
   <enum-type name="QStyle::PrimitiveElement" extensible="yes">
     <reject-enum-value name="PE_IndicatorItemViewItemCheck" />
+    <reject-enum-value name="PE_FrameStatusBarItem" />
   </enum-type>
   <enum-type name="QStyle::StandardPixmap" extensible="yes"/>
   <enum-type name="QStyle::StateFlag" flags="QStyle::State"/>
