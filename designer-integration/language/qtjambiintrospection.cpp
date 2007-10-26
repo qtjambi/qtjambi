@@ -223,7 +223,7 @@ QString QtJambiMetaEnumerator::scope() const
         if (pos < 0)
             pos = full_name.lastIndexOf(QLatin1String("."));
         
-        return full_name.left(pos);        
+        return full_name.left(pos).replace(QLatin1String("/"), QLatin1String(".")).replace(QLatin1String("$"), QLatin1String("."));        
     }
 }
 
