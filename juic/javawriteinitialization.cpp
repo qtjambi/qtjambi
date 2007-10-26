@@ -687,10 +687,11 @@ void WriteInitialization::writeProperties(const QString &varName,
         }
         case DomProperty::Color: {
             DomColor *c = p->elementColor();
-            propertyValue = QString::fromLatin1("new QColor(%1, %2, %3)")
+            propertyValue = QString::fromLatin1("new QColor(%1, %2, %3, %4)")
                   .arg(c->elementRed())
                   .arg(c->elementGreen())
-                  .arg(c->elementBlue()); }
+                  .arg(c->elementBlue())
+                  .arg(c->attributeAlpha()); }
             break;
         case DomProperty::Cstring:
             propertyValue = javaFixString(p->elementCstring());
