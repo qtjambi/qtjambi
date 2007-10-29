@@ -15,7 +15,7 @@ package com.trolltech.examples;
 
 import java.util.*;
 
-import com.trolltech.demos.Intepreter;
+import com.trolltech.demos.Interpreter;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Advanced Calculator")
@@ -31,7 +31,7 @@ public class AdvancedCalculator extends QMainWindow {
     private QLineEdit lineEdit;
     private QTextBrowser textBrowser;
 
-    private Intepreter intepreter = new Intepreter();
+    private Interpreter interpreter = new Interpreter();
 
     public AdvancedCalculator() {
         Vector<String> uiTypes = new Vector<String>(3);
@@ -66,8 +66,8 @@ public class AdvancedCalculator extends QMainWindow {
         String result = "";
         boolean error = false;
         try {
-            result = intepreter.evaluate(intepreter.parse(expression)).toString();
-        } catch (Intepreter.ParseException exception) {
+            result = interpreter.evaluate(interpreter.parse(expression)).toString();
+        } catch (Interpreter.ParseException exception) {
             result = "Error: <font color=\"red\">" + exception.getMessage() + "</font>";
             error = true;
         }
@@ -167,8 +167,8 @@ public class AdvancedCalculator extends QMainWindow {
     }
 
     public void on_button_functions_clicked() {
-        Vector<String> functionKeys = new Vector<String>(intepreter.functions.size());
-        functionKeys.addAll(intepreter.functions.keySet());
+        Vector<String> functionKeys = new Vector<String>(interpreter.functions.size());
+        functionKeys.addAll(interpreter.functions.keySet());
 
         String key = QInputDialog.getItem(this, tr("Function selector"), tr("Available functions:"), functionKeys, 0, false);
         if (key != null)
