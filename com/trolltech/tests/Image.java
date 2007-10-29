@@ -17,6 +17,9 @@ import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+
+import com.trolltech.qt.core.QIODevice.OpenModeFlag;
+
 class SmokeEffect 
 {
     private int m_seeds[];
@@ -42,6 +45,8 @@ class SmokeEffect
     public SmokeEffect(int width, int height) {
 	m_width = width;
 	m_height = height;
+    
+    OpenModeFlag.createQFlags(OpenModeFlag.ReadWrite);
 
 	m_seeds = new int[16000];
 	for (int i=0; i<m_seeds.length; ++i) {

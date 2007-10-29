@@ -19,94 +19,12 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
-    The QtPropertyManager class implements the Qt Jambi Property
-    system. To the outer world, a property appears to be similar
-    to a data member; however, a property has features that
-    distinguishes it from a normal data member:
-    <p>
-    <ul>
-        <li>It has a read method. This must always exist.</li>
-        <li>A write method; this is optional.</li>
-        <li>A reset method that sets the property back to a
-            default state. This is also optional</li>
-        <li>It usually stores its value.</li>
-        <li>It has a "designable" attribute that indicates whether it
-            makes sense to edit the property in a GUI builder
-            (e.g, the Qt Designer).</li>
-    </ul>
-    <p>
-    When Qt Jambi resolves the properties of a class, it identifies
-    them by their read, write, and reset property methods. The
-    methods of a property are identified by annotations or by
-    compliance with a method naming scheme. A property is set as
-    designable with an annotation. We take a look at the annotations
-    before we examine the scheme. For detailed usage of the
-    annotations, see their javadoc.
-    <p>
-    <center>
-    <table border="1">
-        <tr>
-            <th>Annotation</th>
-            <th>Propety Method</th>
-        </tr>
-        <tr>
-            <td>QtPropertyReader</td>
-            <td>The property read method.</td>.
-        </tr>
-        <tr>
-            <td>QtPropertyWriter</td>
-            <td>The property write method.</td>
-        </tr>
-        <tr>
-            <td>QtPropertyResetter</td>
-            <td>The property reset method.</td>
-        </tr>
-        <tr>
-            <td>QtPropertyDesignable</td>
-            <td>Decides whether the property is suitable for
-                editing in a GUI builder.</td>
-        </tr>
-        <tr>
-            <td>QtPropertyOrder</td>
-            <td>Gives a value that can be used for
-                sorting properties.</td>
-        </tr>
-    </table>
-    </center>
-    <p>
-    The following table describe the property method naming scheme.
-    The names are given for a property with name <b>x</b> and type
-    <b>T</b>. Note that resetter methods can only be specified
-    with the QtPropertyResetter annotation.
-    <p>
-    <center>
-    <table border="1">
-        <tr>
-            <th>Method Name</th>
-            <th>Property Method</th>
-        </tr>
-        <tr>
-            <td>T getX() or T x() - for boolean values also T
-                isX() or T hasX()</td>
-            <td>Property reader</td>
-        </tr>
-        <tr>
-            <td>setX(T)</td>
-            <td>Property writer</td>
-        </tr>
-    </table>
-    </center>
-    <p>
-    The propery system is provided for convenience and provides the
-    same functionality as the native Qt system, which has advantages
-    over using ordinary data members and Java Reflection to access
-    them by name. The code required to set, get, and reset properties
-    are already implemented. You can set and get a property's value
-    without knowing the method names, and the naming of property
-    methods needs not follow a specific naming scheme. You can also
-    query a property for whether it is designable, readable, or
-    writeable.
+ * This class has been deprecated, and will be removed 
+ * from the next minor release of Qt Jambi. Use 
+ * QObject.property() and QObject.setProperty() to access
+ * properties.
  */
+@Deprecated
 public class QtPropertyManager {
 
     private static Class QT_PROPERTY_ANNOTATION_CLASSES[] = new Class[] {

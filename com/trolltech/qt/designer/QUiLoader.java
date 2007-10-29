@@ -425,6 +425,7 @@ public class QUiLoader {
         return cl;
     }
 
+    @SuppressWarnings("deprecation")
     private void setProperty(QObject o, String property, Object value) {
         try {
             QtPropertyManager.Entry entry = QtPropertyManager.findPropertiesRecursive(o.getClass()).get(property);

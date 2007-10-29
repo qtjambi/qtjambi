@@ -16,10 +16,12 @@ package com.trolltech.qt;
 import java.lang.annotation.*;
 
 /**
- * The QtPropertyOrder annotation gives the property a value that can be used
- * for sorting properties. The Qt Designer sorts properties with this value.
- *
+ * This annotation has been deprecated and will be removed from
+ * the next minor release of Qt Jambi. A change in the implementation
+ * of the property system for the next minor release has obsoleted
+ * the use of this annotation.
  */
+@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QtPropertyOrder {
     /**
