@@ -18,8 +18,10 @@ public class CustomWidget extends QWidget {
         public String title() { return title; }
     }
     
-    public CustomWidget() { this(null); }
-    
+    // 
+    // Constructors
+    //
+    public CustomWidget() { this(null); }    
     public CustomWidget(QWidget parent) { super(parent); }
 
     //
@@ -54,8 +56,7 @@ public class CustomWidget extends QWidget {
     
         
     /** 
-     * Calculates the size of the frame based on the framingSizeFactor
-     * property.
+     * Calculates the size of the frame.
      * @return The width of the frame.
      */
     private static final double FRAMING_SIZE = 0.01f;
@@ -66,20 +67,22 @@ public class CustomWidget extends QWidget {
     //
     // topSpeed property
     //
-    private static final int TOP_SPEED = 260;
-    private int topSpeed = TOP_SPEED;
+    private static final int MAX_SPEED = 260;
+    private int maxSpeed = MAX_SPEED;
     
-    @QtBlockedSlot public final int topSpeed() {
-        return topSpeed;
+    @QtPropertyReader(name="topSpeed")
+    @QtBlockedSlot public final int maxSpeed() {
+        return maxSpeed;
     }
     
-    public final void setTopSpeed(int topSpeed) {
-        this.topSpeed = topSpeed; propertyChanged.emit();
+    @QtPropertyWriter(name="topSpeed")
+    public final void setMaxSpeed(int maxSpeed) {
+        this.maxSpeed = maxSpeed; propertyChanged.emit();
     }
     
-    @QtPropertyResetter(enabled=true, name="topSpeed") 
-    public final void resetTopSpeed() {
-        topSpeed = TOP_SPEED; propertyChanged.emit();
+    @QtPropertyResetter(name="topSpeed") 
+    public final void resetMaxSpeed() {
+        setMaxSpeed(MAX_SPEED);
     }
     
     //
@@ -93,6 +96,11 @@ public class CustomWidget extends QWidget {
     public final void setAnimationSpeed(double animationSpeed) { 
         this.animationSpeed = animationSpeed;
         propertyChanged.emit();
+    }
+    
+    @QtPropertyResetter(name="animationSpeed")
+    public final void resetAnimationSpeed() {
+        setAnimationSpeed(ANIMATION_SPEED);
     }
     
     private int tail[] = new int[TAIL_LENGTH];    
@@ -121,13 +129,8 @@ public class CustomWidget extends QWidget {
     }
     
     @QtPropertyResetter(name="tailLength")
-    public final void resetTailLength() { tailLength = TAIL_LENGTH; }
+    public final void resetTailLength() { setTailLength(TAIL_LENGTH); }
     
-    @SuppressWarnings("unused")
-    private void noLongerAnimating() {
-        isAnimating = false;
-    }
-
     //
     // currentSpeed property
     // 
@@ -170,8 +173,8 @@ public class CustomWidget extends QWidget {
     
     public final void setSkip(int skip) { this.skip = skip; propertyChanged.emit(); }
     
-    @QtPropertyResetter(enabled=true, name="skip")
-    public final void resetSkip() { skip = SKIP; propertyChanged.emit(); }
+    @QtPropertyResetter(name="skip")
+    public final void resetSkip() { setSkip(SKIP); }
     
     //
     // unit property
@@ -181,10 +184,7 @@ public class CustomWidget extends QWidget {
     @QtBlockedSlot public SpeedUnit unit() { return unit; }
     
     public void setUnit(SpeedUnit unit) { this.unit = unit; propertyChanged.emit(); }
-    
-    public void setFooBar(int i) { }
-    public int fooBar() { return 0; }
-    
+        
     // 
     // startAngle property
     //
@@ -196,7 +196,7 @@ public class CustomWidget extends QWidget {
     public final void setStartAngle(double startAngle) { this.startAngle = startAngle; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="startAngle")
-    public final void resetStartAngle() { startAngle = START_ANGLE; }
+    public final void resetStartAngle() { setStartAngle(START_ANGLE); }
 
     //
     // endAngle property
@@ -209,7 +209,7 @@ public class CustomWidget extends QWidget {
     public final void setEndAngle(double endAngle) { this.endAngle = endAngle; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="endAngle")
-    public final void resetEndAngle() { endAngle = END_ANGLE; }
+    public final void resetEndAngle() { setEndAngle(endAngle); }
     
     // 
     // font property
@@ -219,8 +219,8 @@ public class CustomWidget extends QWidget {
     
     public final void setSpeedFont(QFont font) { this.font = font; propertyChanged.emit(); }
     
-    @QtPropertyResetter(name="speedFont", enabled=true)
-    public final void resetSpeedFont() { font = font(); propertyChanged.emit(); }
+    @QtPropertyResetter(name="speedFont")
+    public final void resetSpeedFont() { setSpeedFont(font()); }
     
     //
     // highlightLight property
@@ -233,7 +233,7 @@ public class CustomWidget extends QWidget {
     public final void setHighlightLight(QColor color) { highlightLight = color; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="highlightLight")
-    public final void resetHighlightLight() { highlightLight = HIGHLIGHT_LIGHT; }
+    public final void resetHighlightLight() { setHighlightLight(HIGHLIGHT_LIGHT); }
 
     //
     // highlightDark property
@@ -246,7 +246,7 @@ public class CustomWidget extends QWidget {
     public final void setHighlightDark(QColor color) { highlightDark = color; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="highlightDark")
-    public final void resetHighlightDark() { highlightDark = HIGHLIGHT_DARK; }
+    public final void resetHighlightDark() { setHighlightDark(HIGHLIGHT_DARK); }
 
     //
     // needleColor property
@@ -259,7 +259,7 @@ public class CustomWidget extends QWidget {
     public final void setNeedleColor(QColor needleColor) { this.needleColor = needleColor; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="needleColor")
-    public final void resetNeedleColor() { needleColor = NEEDLE_COLOR; propertyChanged.emit(); }
+    public final void resetNeedleColor() { setNeedleColor(NEEDLE_COLOR); }
     
     //
     // backgroundColor property
@@ -275,7 +275,7 @@ public class CustomWidget extends QWidget {
     }
     
     @QtPropertyResetter(name="backgroundColor")
-    public final void resetBackgroundColor() { backgroundColor = BACKGROUND_COLOR; propertyChanged.emit(); }
+    public final void resetBackgroundColor() { setBackgroundColor(BACKGROUND_COLOR); }
     
     //
     // needleFrameColor property
@@ -288,7 +288,7 @@ public class CustomWidget extends QWidget {
     public final void setNeedleFrameColor(QColor needleFrameColor) { this.needleFrameColor = needleFrameColor; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="needleFrameColor")
-    public final void resetNeedleFrameColor() { needleFrameColor = NEEDLE_FRAME_COLOR; propertyChanged.emit(); }
+    public final void resetNeedleFrameColor() { setNeedleFrameColor(NEEDLE_FRAME_COLOR); }
     
     //
     // frameColorDark property
@@ -301,7 +301,7 @@ public class CustomWidget extends QWidget {
     public final void setFrameColorDark(QColor frameColorDark) { this.frameColorDark = frameColorDark; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="frameColorDark")
-    public final void resetFrameColorDark() { frameColorDark = FRAME_COLOR_DARK; propertyChanged.emit(); }
+    public final void resetFrameColorDark() { setFrameColorDark(FRAME_COLOR_DARK); }
     
     // 
     // frameColorLight property
@@ -314,7 +314,7 @@ public class CustomWidget extends QWidget {
     public final void setFrameColorLight(QColor frameColorLight) { this.frameColorLight = frameColorLight; propertyChanged.emit(); }
     
     @QtPropertyResetter(name="frameColorLight")
-    public final void resetFrameColorLight() { frameColorLight = FRAME_COLOR_LIGHT; propertyChanged.emit(); }    
+    public final void resetFrameColorLight() { setFrameColorLight(FRAME_COLOR_LIGHT); }    
                    
     @Override
     protected void resizeEvent(QResizeEvent e) {
@@ -440,7 +440,7 @@ public class CustomWidget extends QWidget {
         
         // Draw the speed bars
         int skip = skip();
-        double step = ((double)skip / (double)topSpeed()) * (endAngle() - startAngle());
+        double step = ((double)skip / (double)maxSpeed()) * (endAngle() - startAngle());
         QFont font = speedFont();
         font.setPointSize((int)(innerCircle.width() / 20.0f));
         p.setFont(font);
@@ -572,9 +572,14 @@ public class CustomWidget extends QWidget {
     
     private double angleOfSpeed(int speed) {
         int skip = skip();
-        double step = ((double)skip / (double)topSpeed()) * (endAngle() - startAngle());
+        double step = ((double)skip / (double)maxSpeed()) * (endAngle() - startAngle());
         return startAngle() + step * ((double)speed / (double)skip);
     }
+    
+    @SuppressWarnings("unused")
+    private void noLongerAnimating() {
+        isAnimating = false;
+    }    
     
     private QMatrix matrix = new QMatrix();
     

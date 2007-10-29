@@ -145,6 +145,7 @@
     \list
         \o \l{Calculator UI Example}{Calculator UI}\raisedaster
         \o \l{Simple UI Example}{Simple UI}\raisedaster
+        \o \l{Custom Widget Example}{Custom Widget}\raisedaster
     \endlist
 
     \section1 Miscellaneous Examples

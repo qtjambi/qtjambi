@@ -26,10 +26,7 @@
     group of the widgets (see \c
     path/to/qt/jambi/plugins/qtjambi/qtjambi_examples.xml for an
     example), and locate this file in a plugins directory like \c
-    path/to/qt/jambi/plugins/qtjambi. But the Qt Jambi team is
-    investigating the possibility of adding a tool to the \l {Qt Jambi
-    Eclipse Integration}{Eclipse integration} to automate this
-    procedure within the Eclipse environment.
+    path/to/qt/jambi/plugins/qtjambi. 
 
     For more details on how to use Qt Designer, please see the \l {Qt
     Designer Manual}. This manual covers the fundamental steps that
