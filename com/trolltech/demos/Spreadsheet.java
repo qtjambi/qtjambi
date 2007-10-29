@@ -41,7 +41,6 @@ public class Spreadsheet extends QMainWindow {
     private TableModel model;
     private QLabel cellLabel = new QLabel("Cell:   ");
     private QLineEdit cellEdit = new QLineEdit();
-    private QAction actionSave;
     private QAction actionTextBold;
     private QAction actionTextItalic;
     private QAction actionTextUnderline;
@@ -115,7 +114,7 @@ public class Spreadsheet extends QMainWindow {
         action(tr("&New"), "filenew", StandardKey.New, "fileNew()", menu, null);
         action(tr("Open"), "fileopen", StandardKey.Open, "fileOpen()", menu, tb);
         menu.addSeparator();
-        actionSave = action(tr("&Save"), "filesave", StandardKey.Save, "fileSave()", menu, tb);
+        action(tr("&Save"), "filesave", StandardKey.Save, "fileSave()", menu, tb);
         action(tr("Save &As..."), null, null, "fileSaveAs()", menu, null);
         menu.addSeparator();
         action(tr("&Print"), "fileprint", StandardKey.Print, "filePrint()", menu, tb);

@@ -48,6 +48,7 @@ public class Scribble extends QMainWindow
         }
     }
 
+    @SuppressWarnings("unused")
     private void open()
     {
         if (maybeSave()) {
@@ -58,6 +59,7 @@ public class Scribble extends QMainWindow
         }
     }
 
+    @SuppressWarnings("unused")
     private void save()
     {
         QAction action = (QAction) QSignalEmitter.signalSender();
@@ -65,6 +67,7 @@ public class Scribble extends QMainWindow
         saveFile(new String(fileFormat.toByteArray()));
     }
 
+    @SuppressWarnings("unused")
     private void penColor()
     {
         QColor newColor = QColorDialog.getColor(scribbleArea.penColor());
@@ -72,6 +75,7 @@ public class Scribble extends QMainWindow
             scribbleArea.setPenColor(newColor);
     }
 
+    @SuppressWarnings("unused")
     private void penWidth()
     {
         
@@ -116,6 +120,7 @@ public class Scribble extends QMainWindow
         }
     }
 
+    @SuppressWarnings("unused")
     private void about()
     {
         QMessageBox.about(this, tr("About Scribble"),

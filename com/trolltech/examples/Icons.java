@@ -77,6 +77,7 @@ public class Icons extends QMainWindow
         resize(minimumSizeHint());
     }
 
+    @SuppressWarnings("unused")
     private void about()
     {
         QMessageBox.about(this, tr("About Icons"),
@@ -85,6 +86,7 @@ public class Icons extends QMainWindow
                "states (on and off) based on a set of images."));
     }
 
+    @SuppressWarnings("unused")
     private void changeStyle(boolean checked)
     {
         if (!checked)
@@ -119,6 +121,7 @@ public class Icons extends QMainWindow
         changeSize(true);
     }
 
+    @SuppressWarnings("unused")
     private void changeSize(int value)
     {
         changeSize(true);
@@ -193,6 +196,7 @@ public class Icons extends QMainWindow
         previewArea.setIcon(icon);
     }
 
+    @SuppressWarnings("unused")
     private void addImages()
     {
         List<String> fileNames = QFileDialog.getOpenFileNames(this,
@@ -238,6 +242,7 @@ public class Icons extends QMainWindow
         }
     }
 
+    @SuppressWarnings("unused")
     private void removeAllImages()
     {
         imagesTable.setRowCount(0);
@@ -472,6 +477,7 @@ public class Icons extends QMainWindow
             model.setData(index, comboBox.currentText());
         }
 
+        @SuppressWarnings("unused")
         private void emitCommitData()
         {
             commitData.emit((QWidget) QSignalEmitter.signalSender());

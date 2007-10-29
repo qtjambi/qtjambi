@@ -8,7 +8,6 @@ public class Tablet extends QMainWindow
     public static TabletCanvas myCanvas;
 
     private QAction brushColorAction;
-    private QActionGroup brushActionGroup;
 
     private QActionGroup alphaChannelGroup;
     private QAction alphaChannelPressureAction;
@@ -248,7 +247,6 @@ public class Tablet extends QMainWindow
         private AlphaChannelType alphaChannelType;
         private ColorSaturationType colorSaturationType;
         private LineWidthType lineWidthType;
-        private QTabletEvent.PointerType pointerType;
         private QTabletEvent.TabletDevice myTabletDevice;
         private QColor myColor;
 
@@ -408,9 +406,8 @@ public class Tablet extends QMainWindow
 
         private void updateBrush(QTabletEvent event)
         {
-            int hue, saturation, value, alpha;
+            int hue, value, alpha;
             hue = myColor.hue();
-            saturation = myColor.saturation();
             value = myColor.value();
             alpha = myColor.alpha();
         

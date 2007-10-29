@@ -69,6 +69,7 @@ public class FindFiles extends QDialog
         resize(700, 300);
     }
 
+    @SuppressWarnings("unused")
     private void browse()
     {
         String directory = QFileDialog.getExistingDirectory(this,
@@ -79,6 +80,7 @@ public class FindFiles extends QDialog
         }
     }
 
+    @SuppressWarnings("unused")
     private void find()
     {
         filesTable.setRowCount(0);
@@ -118,7 +120,7 @@ public class FindFiles extends QDialog
             progressDialog.setValue(i);
             progressDialog.setLabelText(tr("Searching file number "+i+
                                            " of "+files.size()+"..."));
-            QApplication.instance().processEvents();
+            QApplication.processEvents();
 
             if (progressDialog.wasCanceled())
                 break;
