@@ -139,6 +139,7 @@ public class Interpreter {
             return o;
     }
 
+    @SuppressWarnings("unchecked")
     public Object evaluate(Object o) throws ParseException {
         if (o instanceof Vector) {
             Vector<Object> vector = (Vector) o;
