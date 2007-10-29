@@ -15,11 +15,11 @@ package com.trolltech.demos;
 
 import java.util.*;
 
-public class Intepreter {
+public class Interpreter {
     protected Vector<Function> infixFunctions = new Vector<Function>();
     public java.util.Hashtable<String, Function> functions = new Hashtable<String, Function>();
 
-    public Intepreter() {
+    public Interpreter() {
         Function function = new Function("time") {
             @Override
             public Object result(Object[] args) throws ParseException {

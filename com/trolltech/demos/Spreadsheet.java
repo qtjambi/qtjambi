@@ -834,7 +834,7 @@ public class Spreadsheet extends QMainWindow {
 
     class TableModel extends QAbstractTableModel {
 
-        private SpreadsheetIntepreter intepreter = new SpreadsheetIntepreter();
+        private SpreadsheetInterpreter interpreter = new SpreadsheetInterpreter();
 
         public Hashtable<String, Cell> data = new Hashtable<String, Cell>();
 
@@ -886,9 +886,9 @@ public class Spreadsheet extends QMainWindow {
             case Qt.ItemDataRole.DisplayRole:
                 try {
                     if (!empty)
-                        return intepreter.parseAndEvaluate(get(index).value);
+                        return interpreter.parseAndEvaluate(get(index).value);
                     return null;
-                } catch (final Intepreter.ParseException e) {
+                } catch (final Interpreter.ParseException e) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {
                             statusBar().showMessage("Error (" + Util.convertIndex(index) + "): " + e.getMessage(), 5000);
@@ -959,8 +959,8 @@ public class Spreadsheet extends QMainWindow {
         }
     }
 
-    class SpreadsheetIntepreter extends Intepreter {
-        SpreadsheetIntepreter() {
+    class SpreadsheetInterpreter extends Interpreter {
+        private SpreadsheetInterpreter() {
             Function function = new Function("sum") {
                 @Override
                 public Object result(Object[] args) throws ParseException {
