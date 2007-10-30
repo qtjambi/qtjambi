@@ -35,7 +35,7 @@ Q_GLOBAL_STATIC(LinkHash, gUserObjectCache);
 int qtjambi_user_data_id = -1;
 
 
-static int user_data_id() 
+static int user_data_id()
 {
   {
     QReadLocker read_lock(gStaticUserDataIdLock());
@@ -49,7 +49,7 @@ static int user_data_id()
       qtjambi_user_data_id = QObject::registerUserData();
     return qtjambi_user_data_id;
   }
-  
+
 }
 
 inline static void deleteWeakObject(JNIEnv *env, jobject object)
@@ -320,7 +320,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
                             " by a QThread, native resource ('%s' [%s]) is leaked",
                             qPrintable(qobj->objectName()),
                             qobj->metaObject()->className());
-                } 
+                }
 
     //             StaticCache *sc = StaticCache::instance(env);
     //             sc->resolveQThread();
@@ -336,7 +336,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
                 delete qobj;
             }
             env->DeleteLocalRef(t);
-        } 
+        }
         m_pointer = 0;
 
     } else {
@@ -344,7 +344,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
             if (QCoreApplication::instance()) {
                 QCoreApplication::postEvent(QCoreApplication::instance(), new QtJambiDestructorEvent(m_pointer, m_meta_type, m_ownership, m_destructor_function));
 	        }
-        } else if (m_pointer != 0 && m_meta_type != QMetaType::Void && (QCoreApplication::instance() != 0 
+        } else if (m_pointer != 0 && m_meta_type != QMetaType::Void && (QCoreApplication::instance() != 0
                    || (m_meta_type < QMetaType::FirstGuiType || m_meta_type > QMetaType::LastGuiType))) {
             QMetaType::destroy(m_meta_type, m_pointer);
         } else if (m_ownership == JavaOwnership && m_destructor_function) {
@@ -525,7 +525,7 @@ void QtJambiLink::setCppOwnership(JNIEnv *env, jobject obj)
     m_ownership = CppOwnership;
 }
 
-void QtJambiLink::setDefaultOwnership(JNIEnv *env, jobject obj) 
+void QtJambiLink::setDefaultOwnership(JNIEnv *env, jobject obj)
 {
     if (createdByJava())
         setJavaOwnership(env, obj);
@@ -561,6 +561,10 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
 {
     if (m_link) {
         JNIEnv *env = qtjambi_current_environment();
+        // This typically happens when a QObject is destroyed after the vm shuts down,
+        // in which case there is no way for us to properly clean up...
+        if (!env)
+            return;
         m_link->releaseJavaObject(env);
         m_link->setAsQObjectDeleted();
         m_link->resetObject(env);
