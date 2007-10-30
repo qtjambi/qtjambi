@@ -986,9 +986,20 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
 
         {
             Indentation indent(INDENT);
-            s << INDENT << "JNIEnv *__jni_env = qtjambi_current_environment();" << endl
-              << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
-              << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
+            s << INDENT << "JNIEnv *__jni_env = qtjambi_current_environment();" << endl;
+
+            // This nasty case comes up when we're shutting down while receiving virtual
+            // calls.. With these checks we safly abort...
+            s << INDENT << "if (!__jni_env) {" << endl
+              << "    ";
+            writeBaseClassFunctionCall(s, java_function, implementor);
+            if (!java_function->type()) {
+                s << INDENT << "    return;" << endl;
+            }
+            s << INDENT << "}" << endl;
+
+            // otherwise, continue with the function call...
+            s << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
 
             AbstractMetaArgumentList arguments = java_function->arguments();
             foreach (const AbstractMetaArgument *argument, arguments) {
