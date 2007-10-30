@@ -1352,6 +1352,7 @@ public class QtJambiInternal {
         return bunchOfClassNamesInARow(resolvedSignal.types, resolvedSignal.arrayDimensions);
     }
     
+    @SuppressWarnings("unused")
     private static String signalParameters(Field field, Class<?> declaringClass) {
         QSignalEmitter.ResolvedSignal resolvedSignal = QSignalEmitter.resolveSignal(field, declaringClass);
         return signalParameters(resolvedSignal);
