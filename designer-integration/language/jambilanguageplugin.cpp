@@ -233,6 +233,57 @@ bool JambiExtraInfoExtension::saveUiExtraInfo(DomUI *ui)
     return false;
 }
 
+void JambiExtraInfoExtension::fiddleWith(DomProperty *property) 
+{
+    if (property->hasAttributeName() && property->attributeName() == QLatin1String("orientation")
+        && property->kind() == DomProperty::Enum) {
+        if (property->elementEnum() == QLatin1String("Qt::Horizontal")) {            
+            property->setElementEnum(QLatin1String("com.trolltech.qt.core.Qt.Orientation.Horizontal"));
+        } else if (property->elementEnum() == QLatin1String("Qt::Vertical")) {
+            property->setElementEnum(QLatin1String("com.trolltech.qt.core.Qt.Orientation.Vertical"));
+        }
+    }
+}
+
+void JambiExtraInfoExtension::fiddleWith(DomSpacer *spacer)
+{
+    QList<DomProperty *> properties = spacer->elementProperty();
+    foreach (DomProperty *property, properties)
+        fiddleWith(property);
+}
+
+void JambiExtraInfoExtension::fiddleWith(DomWidget *widget)
+{
+    QList<DomWidget *> widgets = widget->elementWidget();
+    foreach (DomWidget *w, widgets)
+        fiddleWith(w);
+
+    QList<DomLayout *> layouts = widget->elementLayout();
+    foreach (DomLayout *layout, layouts)
+        fiddleWith(layout);
+}
+
+void JambiExtraInfoExtension::fiddleWith(DomLayoutItem *layoutItem)
+{
+    DomSpacer *spacer = layoutItem->elementSpacer();
+    if (spacer != 0)
+        fiddleWith(spacer);
+
+    DomWidget *widget = layoutItem->elementWidget();
+    if (widget != 0)
+        fiddleWith(widget);
+
+    DomLayout *layout = layoutItem->elementLayout();
+    if (layout != 0)
+        fiddleWith(layout);
+}
+
+void JambiExtraInfoExtension::fiddleWith(DomLayout *layout) 
+{
+    QList<DomLayoutItem *> layoutItems = layout->elementItem();
+    foreach (DomLayoutItem *layoutItem, layoutItems) 
+        fiddleWith(layoutItem);
+}
 
 bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
 {
@@ -247,6 +298,10 @@ bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
                              );
         return false;
     }
+
+    if (ui->elementWidget())
+        fiddleWith(ui->elementWidget());
+    
     return true;
 }
 

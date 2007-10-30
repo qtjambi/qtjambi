@@ -57,6 +57,12 @@ public:
     virtual bool loadWidgetExtraInfo(DomWidget *ui_widget);
 
 private:
+    void fiddleWith(DomProperty *property);
+    void fiddleWith(DomSpacer *spacer);
+    void fiddleWith(DomWidget *widget);
+    void fiddleWith(DomLayoutItem *layoutItem);
+    void fiddleWith(DomLayout *layout);
+
     QWidget *m_widget;
     QDesignerFormEditorInterface *m_core;
 };
