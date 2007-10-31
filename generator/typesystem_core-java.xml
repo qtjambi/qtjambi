@@ -400,11 +400,11 @@
             <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractItemModel___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code class="native">
-    extern "C" JNIEXPORT jint QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_setData_1native)
+    extern "C" JNIEXPORT jboolean JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_setData_1native)
     (JNIEnv *__jni_env,
      jobject,
-     int __this_nativeId,
-     int row, int col, jobject value, int role)
+     jlong __this_nativeId,
+     jint row, jint col, jobject value, jint role)
     {
         QtJambiShell_QAbstractItemModel *__qt_this =
             (QtJambiShell_QAbstractItemModel *) qtjambi_from_jlong(__this_nativeId);
@@ -414,11 +414,11 @@
         return __qt_this-&gt;setData(index, qt_value, role);
     }
 
-    extern "C" JNIEXPORT jobject QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_data_1native)
+    extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_data_1native)
     (JNIEnv *__jni_env,
      jobject,
-     int __this_nativeId,
-     int row, int col, int role)
+     jlong __this_nativeId,
+     jint row, jint col, jint role)
     {
         QtJambiShell_QAbstractItemModel *__qt_this =
             (QtJambiShell_QAbstractItemModel *) qtjambi_from_jlong(__this_nativeId);
