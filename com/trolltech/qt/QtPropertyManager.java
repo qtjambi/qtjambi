@@ -294,6 +294,18 @@ public class QtPropertyManager {
         }
         return map;
     }
+    
+    public static List<QtProperty> properties(Object owner) 
+    {
+        List<QtProperty> returned = new ArrayList<QtProperty>();
+        Class<?> cl = owner.getClass();
+        
+        HashMap<String, Entry> properties = findProperties(cl);
+        for (Entry e : properties.values())
+            returned.add(new QtProperty(e.writable, e.isDesignable(owner), e.reset != null, e.name));
+        
+        return returned;
+    }
 
     /**
      * Returns the properties of class <tt>cl</tt>. The properties
