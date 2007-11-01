@@ -73,11 +73,6 @@ void CppHeaderGenerator::writeWrapperClass(QTextStream &s, const AbstractMetaCla
       << "};" << endl << endl;
 }
 
-static bool include_less_than(const Include &a, const Include &b) 
-{
-    return a.name < b.name;
-}
-
 void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
 {
     QString include_block = "QTJAMBISHELL_" + java_class->name().toUpper() + "_H";
@@ -100,7 +95,7 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
     s << endl << endl;
 
     IncludeList list = java_class->typeEntry()->extraIncludes();
-    qSort(list.begin(), list.end(), include_less_than);
+    qSort(list.begin(), list.end());
     foreach (const Include &inc, list) {
         if (inc.type == Include::TargetLangImport)
             continue;

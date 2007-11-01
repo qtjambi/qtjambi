@@ -53,6 +53,8 @@ struct Include
     QString name;
 
     QString toString() const;
+
+    bool operator<(const Include &other) const { return name < other.name; }
 };
 typedef QList<Include> IncludeList;
 

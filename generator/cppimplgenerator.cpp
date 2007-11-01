@@ -2740,15 +2740,10 @@ QString CppImplGenerator::translateType(const AbstractMetaType *java_type, Optio
      }
 }
 
-static bool include_less_than(const Include &a, const Include &b)
-{
-    return a.name < b.name;
-}
-
 void CppImplGenerator::writeExtraIncludes(QTextStream &s, const AbstractMetaClass *java_class)
 {
     IncludeList includes = java_class->typeEntry()->extraIncludes();
-    qSort(includes.begin(), includes.end(), include_less_than);
+    qSort(includes.begin(), includes.end());
 
     int used = 0;
     foreach (const Include &i, includes) {
