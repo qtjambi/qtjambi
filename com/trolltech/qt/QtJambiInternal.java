@@ -893,11 +893,104 @@ public class QtJambiInternal {
         return Character.toUpperCase(str.charAt(0)) + str.substring(1);
     }
     
+    
+    private static class Container {
+        enum AnnotationType {
+            Reader,
+            Writer,
+            Resetter
+        }
+        
+        private Method method;
+        private String name = null;
+        private boolean enabled;
+        private AnnotationType type;
+        
+        
+        private Container(String name, Method method, boolean enabled, AnnotationType type) {
+            this.name = name;
+            this.method = method;
+            this.enabled = enabled;
+            this.type = type;
+        }
+
+        private Container(QtPropertyReader reader, Method method) {
+            this(reader.name(), method, reader.enabled(), AnnotationType.Reader);
+        }
+        
+        private Container(QtPropertyWriter writer, Method method) {
+            this(writer.name(), method, writer.enabled(), AnnotationType.Writer);
+        }
+        
+        private Container(QtPropertyResetter resetter, Method method) {
+            this(resetter.name(), method, resetter.enabled(), AnnotationType.Resetter);
+        }
+        
+        private static String removeAndLowercaseFirst(String name, int count) {
+            return Character.toLowerCase(name.charAt(count)) + name.substring(count + 1);
+        }    
+        
+        private String getNameFromMethod(Method method) {
+            if (type == AnnotationType.Resetter) {
+                return "";
+            } else if (type == AnnotationType.Reader) {
+                String name = method.getName();
+                if (name.startsWith("get"))
+                    name = removeAndLowercaseFirst(name, 3);
+                else if (isBoolean(method.getReturnType()) && name.startsWith("is"))
+                    name = removeAndLowercaseFirst(name, 2);
+                else if (isBoolean(method.getReturnType()) && name.startsWith("has"))
+                    name = removeAndLowercaseFirst(name, 3);
+            } else { // starts with "set"
+                name = method.getName();
+                if (!name.startsWith("set")) {
+                    throw new IllegalArgumentException("The correct pattern for setter accessor names is setXxx where Xxx is the property name with upper case initial.");
+                }
+                                
+                name = removeAndLowercaseFirst(name, 3);
+            }
+            
+            return name;
+        }
+        
+        private String name() {
+            if (name == null || name.length() == 0)
+                name = getNameFromMethod(method);                
+            
+            return name;            
+        }
+        
+        private boolean enabled() {
+            return enabled;
+        }
+
+        private static Container readerAnnotation(Method method) {
+            QtPropertyReader reader = method.getAnnotation(QtPropertyReader.class);        
+            return reader == null ? null : new Container(reader, method);
+        }        
+        
+        private static Container writerAnnotation(Method method) {
+            QtPropertyWriter writer = method.getAnnotation(QtPropertyWriter.class);        
+            return writer == null ? null : new Container(writer, method);            
+        }
+        
+        private static Container resetterAnnotation(Method method) {
+            QtPropertyResetter resetter = method.getAnnotation(QtPropertyResetter.class);        
+            return resetter == null ? null : new Container(resetter, method);            
+        }
+        
+    }
+    
+    private static boolean isBoolean(Class<?> type) {
+        return (type == Boolean.class || type == Boolean.TYPE);
+    }
+    
+    
     private static Method notBogus(Method method, String propertyName, Class<?> paramType) {
         if (method == null)
             return null;        
         
-        QtPropertyReader reader = method.getAnnotation(QtPropertyReader.class);        
+        Container reader = Container.readerAnnotation(method);         
         if (reader != null            
             && (!reader.name().equals(propertyName)
                 || !reader.enabled()
@@ -948,7 +1041,7 @@ public class QtJambiInternal {
             // 1. Zero arguments
             // 2. Return something other than void
             // 3. We can convert the type
-            QtPropertyReader reader = declaredMethod.getAnnotation(QtPropertyReader.class);
+            Container reader = Container.readerAnnotation(declaredMethod);
             {                
                 
                 if (reader != null 
@@ -979,7 +1072,7 @@ public class QtJambiInternal {
             // 1. Takes exactly one argument
             // 2. Return void
             // 3. We can convert the type
-            QtPropertyWriter writer = declaredMethod.getAnnotation(QtPropertyWriter.class);
+            Container writer = Container.writerAnnotation(declaredMethod);
             {
                                 
                 Class<?> parameterTypes[] = declaredMethod.getParameterTypes();
@@ -993,7 +1086,7 @@ public class QtJambiInternal {
             // 1. No arguments
             // 2. Return void            
             {
-                QtPropertyResetter resetter = declaredMethod.getAnnotation(QtPropertyResetter.class);
+                Container resetter = Container.resetterAnnotation(declaredMethod);
                 
                 if (resetter != null 
                     && declaredMethod.getParameterTypes().length == 0
@@ -1021,13 +1114,13 @@ public class QtJambiInternal {
                     Method readerMethod = notBogus(getMethod(clazz, propertyName, null), propertyName, paramType);
                     if (readerMethod == null) 
                         readerMethod = notBogus(getMethod(clazz, "get" + capitalizeFirst(propertyName), null), propertyName, paramType);
-                    if (readerMethod == null && (paramType == Boolean.class || paramType == Boolean.TYPE))
+                    if (readerMethod == null && isBoolean(paramType))
                         readerMethod = notBogus(getMethod(clazz, "is" + capitalizeFirst(propertyName), null), propertyName, paramType);
-                    if (readerMethod == null && (paramType == Boolean.class || paramType == Boolean.TYPE))
+                    if (readerMethod == null && isBoolean(paramType))
                         readerMethod = notBogus(getMethod(clazz, "has" + capitalizeFirst(propertyName), null), propertyName, paramType);
                     
                     if (readerMethod != null) { // yay
-                        reader = readerMethod.getAnnotation(QtPropertyReader.class);
+                        reader = Container.readerAnnotation(readerMethod);
                         if (reader == null) {
                             propertyReaders.put(propertyName, readerMethod);
                             propertyWriters.put(propertyName, declaredMethod);
