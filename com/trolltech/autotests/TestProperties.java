@@ -30,11 +30,7 @@ public class TestProperties extends QApplicationTest {
         
         @QtPropertyWriter(name="annotatedProperty")
         public final void fooBarSetIt(int i) { }
-        
-        @QtPropertyReader(enabled=false)
-        public final int disabledProperty() { return 0; }        
-        public final void setDisabledProperty(int i) { }
-        
+                
         @QtPropertyReader()
         public final int ordinaryReadOnlyProperty() { return 0; }
 
@@ -54,11 +50,7 @@ public class TestProperties extends QApplicationTest {
         public final int fooBarXyz() { return 0; }
         @QtPropertyWriter()
         public final void setAnnotatedNonDesignableProperty(int i) { }
-        
-        @QtPropertyDesignable(value="test()")
-        public final int functionDesignableProperty() { return 0; }
-        public final void setFunctionDesignableProperty(int i) { }
-        
+                
         public final boolean hasBooleanProperty() { return false; }
         public final void setBooleanProperty(boolean b) { }
         
@@ -73,10 +65,6 @@ public class TestProperties extends QApplicationTest {
         
         @QtPropertyResetter
         public final void resetResettableProperty() { }
-        
-        public boolean test() {
-            return isDesignableTest;
-        }
     }
     
     private static class ExpectedValues {
@@ -104,15 +92,18 @@ public class TestProperties extends QApplicationTest {
                 new ExpectedValues("readOnlyProperty", false, false, true),
                 new ExpectedValues("ordinaryNonDesignableProperty", true, false, false),
                 new ExpectedValues("annotatedNonDesignableProperty", true, false, false),
-                new ExpectedValues("functionDesignableProperty", true, false, true),
                 new ExpectedValues("booleanProperty", true, false, true),
                 new ExpectedValues("otherBooleanProperty", true, false, true),
                 new ExpectedValues("resettableProperty", true, true, true),
-                new ExpectedValues("objectName", true, false, true)
+                new ExpectedValues("objectName", true, false, true),
+                new ExpectedValues("parent", true, false, true)
         };
                 
         FullOfProperties fop = new FullOfProperties(true);
         List<QtProperty> properties = fop.properties();
+        for (QtProperty p : properties) {
+            System.err.println("p: " + p.name());
+        }
         
         assertEquals(expectedValues.length, properties.size());
         for (ExpectedValues e : expectedValues) {

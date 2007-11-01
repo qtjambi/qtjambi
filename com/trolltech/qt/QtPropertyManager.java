@@ -300,9 +300,13 @@ public class QtPropertyManager {
         List<QtProperty> returned = new ArrayList<QtProperty>();
         Class<?> cl = owner.getClass();
         
-        HashMap<String, Entry> properties = findProperties(cl);
-        for (Entry e : properties.values())
-            returned.add(new QtProperty(e.writable, e.isDesignable(owner), e.reset != null, e.name));
+        while (cl != null) {            
+            HashMap<String, Entry> properties = findProperties(cl);
+            for (Entry e : properties.values())
+                returned.add(new QtProperty(e.writable, e.isDesignable(owner), e.reset != null, e.name));
+            
+            cl = cl.getSuperclass();
+        }
         
         return returned;
     }
