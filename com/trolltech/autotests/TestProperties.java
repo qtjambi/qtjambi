@@ -101,9 +101,6 @@ public class TestProperties extends QApplicationTest {
                 
         FullOfProperties fop = new FullOfProperties(true);
         List<QtProperty> properties = fop.properties();
-        for (QtProperty p : properties) {
-            System.err.println("p: " + p.name());
-        }
         
         assertEquals(expectedValues.length, properties.size());
         for (ExpectedValues e : expectedValues) {
