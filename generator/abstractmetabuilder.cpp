@@ -487,10 +487,9 @@ void AbstractMetaBuilder::addAbstractMetaClass(AbstractMetaClass *cls)
 
 AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem namespace_item)
 {
-    NamespaceTypeEntry *type = TypeDatabase::instance()->findNamespaceType(namespace_item->name());
-
-    QString namespace_name = namespace_item->name();
-
+    QString namespace_name = (!m_namespace_prefix.isEmpty() ? m_namespace_prefix + "::" : QString::fromLatin1("")) + namespace_item->name();
+    NamespaceTypeEntry *type = TypeDatabase::instance()->findNamespaceType(namespace_name);
+   
     if (TypeDatabase::instance()->isClassRejected(namespace_name)) {
         m_rejected_classes.insert(namespace_name, GenerationDisabled);
         return 0;
@@ -498,7 +497,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
 
     if (!type) {
         ReportHandler::warning(QString("namespace '%1' does not have a type entry")
-                               .arg(namespace_item->name()));
+                               .arg(namespace_name));
         return 0;
     }
 
@@ -527,7 +526,12 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
         addAbstractMetaClass(mjc);
     }
 
+    // Traverse namespaces recursively    
+    QList<NamespaceModelItem> inner_namespaces = namespace_item->namespaceMap().values();
+    foreach (const NamespaceModelItem &ni, inner_namespaces)
+        traverseNamespace(ni);    
     m_current_class = 0;
+
 
     popScope();
     m_namespace_prefix = currentScope()->qualifiedName().join("::");
