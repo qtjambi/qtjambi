@@ -630,7 +630,7 @@ public:
     {
     }
 
-    ~AbstractMetaClass();
+    virtual ~AbstractMetaClass();
 
     AbstractMetaClass *extractInterface();
     void fixFunctions();
@@ -725,7 +725,7 @@ public:
     void setToStringCapability(FunctionModelItem fun) { m_qDebug_stream_function= fun; }
     FunctionModelItem hasToStringCapability() const { return m_qDebug_stream_function; }
 
-    bool hasDefaultToStringFunction() const;
+    virtual bool hasDefaultToStringFunction() const;
 
     void setHasEqualsOperator(bool on) { m_has_equals_operator = on; }
     bool hasEqualsOperator() const { return m_has_equals_operator; }
