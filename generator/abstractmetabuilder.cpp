@@ -487,7 +487,7 @@ void AbstractMetaBuilder::addAbstractMetaClass(AbstractMetaClass *cls)
 
 AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem namespace_item)
 {
-    QString namespace_name = (!m_namespace_prefix.isEmpty() ? m_namespace_prefix + "::" : QString::fromLatin1("")) + namespace_item->name();
+    QString namespace_name = (!m_namespace_prefix.isEmpty() ? m_namespace_prefix + "::" : QString()) + namespace_item->name();
     NamespaceTypeEntry *type = TypeDatabase::instance()->findNamespaceType(namespace_name);
    
     if (TypeDatabase::instance()->isClassRejected(namespace_name)) {
