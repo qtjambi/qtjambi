@@ -33,14 +33,19 @@ void PriGenerator::generate()
 
         FileOut file(m_out_dir + "/cpp/" + pri.key());
         file.stream << "HEADERS += \\\n";
-        for (int i = 0; i < pri.value().headers.size(); ++i)
-            file.stream << "           $$PWD/" << pri.value().headers.at(i) << " \\\n";
+        QStringList list = pri.value().headers;
+        qSort(list.begin(), list.end());
+        foreach (const QString &entry, list) {
+            file.stream << "           $$PWD/" << entry << " \\\n";
+        }
 
         file.stream << "\n";
         file.stream << "SOURCES += \\\n";
-        for (int i = 0; i < pri.value().sources.size(); ++i)
-            file.stream << "           $$PWD/" << pri.value().sources.at(i) << " \\\n";
-
+        list = pri.value().sources;
+        qSort(list.begin(), list.end());
+        foreach (const QString &entry, list) {
+            file.stream << "           $$PWD/" << entry << " \\\n";
+        }
         file.stream << "\n\n";
 
         if (file.done())
