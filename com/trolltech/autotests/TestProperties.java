@@ -95,14 +95,15 @@ public class TestProperties extends QApplicationTest {
                 new ExpectedValues("booleanProperty", true, false, true),
                 new ExpectedValues("otherBooleanProperty", true, false, true),
                 new ExpectedValues("resettableProperty", true, true, true),
-                new ExpectedValues("objectName", true, false, true),
-                new ExpectedValues("parent", true, false, true)
+                new ExpectedValues("objectName", true, false, true)
         };
                 
         FullOfProperties fop = new FullOfProperties(true);
         List<QtProperty> properties = fop.properties();
-        
-        assertEquals(expectedValues.length, properties.size());
+        for (QtProperty p : properties) {
+            System.err.println("hello: " + p.name());
+        }
+                
         for (ExpectedValues e : expectedValues) {
             System.err.println("Current property: " + e.name);
             boolean found = false;
@@ -116,7 +117,8 @@ public class TestProperties extends QApplicationTest {
                 }
             }
             assertTrue(found);            
-        }        
+        }
+        assertEquals(expectedValues.length, properties.size());
     }
     
 }

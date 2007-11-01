@@ -1237,3 +1237,15 @@ void StaticCache::resolveQFlags_internal()
     QFlags.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QFlags"));
     Q_ASSERT(QFlags.class_ref);
 }
+
+void StaticCache::resolveQtProperty_internal()
+{
+    Q_ASSERT(!QtProperty.class_ref);
+
+    QtProperty.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtProperty"));
+    Q_ASSERT(QtProperty.class_ref);
+
+    QtProperty.constructor = env->GetMethodID(QtProperty.class_ref, "<init>", "(ZZZLjava/lang/String;)V");
+    Q_ASSERT(QtProperty.constructor);
+}
+

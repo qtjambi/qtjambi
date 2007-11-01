@@ -355,6 +355,11 @@ struct QTJAMBI_EXPORT StaticCache
         jclass class_ref;
     } QFlags;
 
+    struct {
+        jclass class_ref;
+        jmethodID constructor;
+    } QtProperty;
+
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
@@ -400,6 +405,7 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(Enum);
     DECLARE_RESOLVE_FUNCTIONS(Qt);
     DECLARE_RESOLVE_FUNCTIONS(QFlags);
+    DECLARE_RESOLVE_FUNCTIONS(QtProperty);
 
 public:
     static StaticCache *instance(JNIEnv *env);

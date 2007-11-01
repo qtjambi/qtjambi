@@ -40,26 +40,23 @@ class QObject___ extends QObject {
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public final void setProperty(String name, Object value) {
-        try {
-            com.trolltech.qt.QtPropertyManager.writeProperty(this, name, value);
-        } catch (QNoSuchPropertyException e) {
-            // If property doesn't exist, we'll use the default Qt framework to
-            // insert a dynamic property.
-            setProperty(QNativePointer.createCharPointer(name), value);
-        }
+    public final void setProperty(String name, Object value) 
+    {
+        setProperty(QNativePointer.createCharPointer(name), value);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public final Object property(String name) {
-        try {
-            return com.trolltech.qt.QtPropertyManager.readProperty(this, name);
-        } catch (QNoSuchPropertyException e) {
-            // If a property doesn't exist, we'll use the default Qt framework
-            // to read it as a dynamic property
-            return property(QNativePointer.createCharPointer(name));
-        }
+    public final Object property(String name) 
+    {
+        return property(QNativePointer.createCharPointer(name));
     }
+
+    @com.trolltech.qt.QtBlockedSlot
+    public final java.util.List<com.trolltech.qt.QtProperty> properties() 
+    {
+        return com.trolltech.qt.QtJambiInternal.properties(nativeId());
+    }
+
 
     @com.trolltech.qt.QtBlockedSlot
     public final void connectSlotsByName() {

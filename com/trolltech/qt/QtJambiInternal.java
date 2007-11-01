@@ -1303,6 +1303,8 @@ public class QtJambiInternal {
         return metaData;
     }
     
+    public native static List<QtProperty> properties(long nativeId);
+    
     private static String bunchOfClassNamesInARow(Class<?> classes[]) {
         return bunchOfClassNamesInARow(classes, null);
     }

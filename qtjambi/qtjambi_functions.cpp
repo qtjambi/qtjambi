@@ -19,6 +19,8 @@
 #include <QtCore/QVarLengthArray>
 #include <QtCore/QPointer>
 #include <QtCore/QStringList>
+#include <QtCore/QMetaObject>
+#include <QtCore/QMetaProperty>
 
 #ifdef QTJAMBI_SANITY_CHECK
 #include <QtCore/QObject>
@@ -391,6 +393,42 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_internalTypeName)
     }
 
     return qtjambi_from_qstring(env, prefix + allArgs.join(",") + postfix);
+}
+
+extern "C" JNIEXPORT jobject JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_properties)
+(JNIEnv *env,
+ jclass,
+ jlong nativeId)
+{
+    if (nativeId == 0)
+        return 0;
+
+    QObject *_this = reinterpret_cast<QObject *>(qtjambi_from_jlong(nativeId));
+    Q_ASSERT(_this != 0);
+
+    const QMetaObject *metaObject = _this->metaObject();
+    Q_ASSERT(metaObject != 0);
+
+    int count = metaObject->propertyCount();
+    jobject propertyList = qtjambi_arraylist_new(env, count);
+    Q_ASSERT(propertyList != 0);
+
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveQtProperty();
+
+    for (int i=0; i<count; ++i) {
+        QMetaProperty property = metaObject->property(i);
+
+        jobject javaProperty = env->NewObject(sc->QtProperty.class_ref, sc->QtProperty.constructor, 
+                                              property.isWritable(), property.isDesignable(), property.isResettable(),
+                                              qtjambi_from_qstring(env, property.name()));
+        Q_ASSERT(javaProperty != 0);
+
+        qtjambi_collection_add(env, propertyList, javaProperty);
+    }
+
+    return propertyList;
 }
 
 void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
