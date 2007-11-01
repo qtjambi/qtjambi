@@ -121,7 +121,7 @@
 
     \code
         QFile file = new QFile("classpath:images/fileopen.png");
-        file.open(QFile.OpenMode.ReadOnly);
+        file.open(QIODevice.OpenModeFlag.ReadOnly);
         QByteArray rawData = file.readAll();
     \endcode
 
