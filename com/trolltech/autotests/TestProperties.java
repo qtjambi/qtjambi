@@ -51,7 +51,8 @@ public class TestProperties extends QApplicationTest {
         
         @QtPropertyDesignable(value="false")
         @QtPropertyReader(name="annotatedNonDesignableProperty")
-        public final int fooBarXyz() { return 0; }        
+        public final int fooBarXyz() { return 0; }
+        @QtPropertyWriter()
         public final void setAnnotatedNonDesignableProperty(int i) { }
         
         @QtPropertyDesignable(value="test()")
@@ -64,10 +65,13 @@ public class TestProperties extends QApplicationTest {
         public final boolean isOtherBooleanProperty() { return false; }
         public final void setOtherBooleanProperty(boolean b) { }
         
+        @QtPropertyReader
         public final int resettableProperty() { return 0; }
+        
+        @QtPropertyWriter
         public final void setResettableProperty(int i) { }
         
-        @QtPropertyResetter()
+        @QtPropertyResetter
         public final void resetResettableProperty() { }
         
         public boolean test() {

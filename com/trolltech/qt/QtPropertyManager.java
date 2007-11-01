@@ -82,7 +82,7 @@ public class QtPropertyManager {
         /** Indicates wether the property can be read. */
         boolean readable = true;
         /** Indicates whether the property can be written to. */
-        boolean writable = true;
+        boolean writable = false;
 
         /**
          * Invokes the <tt>designable</tt> Method and returns the result.
