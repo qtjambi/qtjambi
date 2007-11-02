@@ -895,7 +895,7 @@ public class QtJambiInternal {
     
     
     private static class Container {
-        enum AnnotationType {
+        private enum AnnotationType {
             Reader,
             Writer,
             Resetter
@@ -941,21 +941,22 @@ public class QtJambiInternal {
                     name = removeAndLowercaseFirst(name, 2);
                 else if (isBoolean(method.getReturnType()) && name.startsWith("has"))
                     name = removeAndLowercaseFirst(name, 3);
+                
+                return name;
             } else { // starts with "set"
-                name = method.getName();
+                String name = method.getName();
                 if (!name.startsWith("set")) {
                     throw new IllegalArgumentException("The correct pattern for setter accessor names is setXxx where Xxx is the property name with upper case initial.");
                 }
                                 
                 name = removeAndLowercaseFirst(name, 3);
+                return name;
             }
-            
-            return name;
         }
         
         private String name() {
             if (name == null || name.length() == 0)
-                name = getNameFromMethod(method);                
+                name = getNameFromMethod(method);
             
             return name;            
         }
@@ -1076,7 +1077,8 @@ public class QtJambiInternal {
             {
                                 
                 Class<?> parameterTypes[] = declaredMethod.getParameterTypes();
-                if (writer != null 
+                if (writer != null
+                    && writer.enabled()
                     && isValidSetter(declaredMethod)) {
                     propertyWriters.put(writer.name(), declaredMethod);
                 }
@@ -1308,7 +1310,7 @@ public class QtJambiInternal {
                     | (writer != null ? PropertyWritable : 0)
                     | (resetter != null ? PropertyResettable : 0)
                     | (isEnumOrFlags ? PropertyEnumOrFlag : 0);
-                                
+                                                
                 metaData.propertyReadersArray[i] = reader;
                 metaData.propertyWritersArray[i] = writer;
                 metaData.propertyResettersArray[i] = resetter;

@@ -63,7 +63,7 @@ public class TestProperties extends QApplicationTest {
         @QtPropertyWriter
         public final void setResettableProperty(int i) { }
         
-        @QtPropertyResetter
+        @QtPropertyResetter(name="resettableProperty")
         public final void resetResettableProperty() { }
     }
     
