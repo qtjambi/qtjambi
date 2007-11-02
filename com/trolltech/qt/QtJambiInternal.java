@@ -862,8 +862,8 @@ public class QtJambiInternal {
             } else if (value.equals("false")) {
                 return Boolean.FALSE;                                
             } else try {
-                Method m = clazz.getMethod(value, (Class<?>[]) null);                                
-                if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class)
+                Method m = clazz.getMethod(value, (Class<?>[]) null);  
+                if (isBoolean(m.getReturnType()))
                     return m;
                 else
                     throw new RuntimeException("Wrong return type of designable method '" + m.getName() + "'");
@@ -1274,7 +1274,7 @@ public class QtJambiInternal {
                 Method writer = propertyWriters.get(propertyNames[i]);
                 Method resetter = propertyResetters.get(propertyNames[i]);
                 Object designableVariant = propertyDesignables.get(propertyNames[i]);
-                
+                                
                 if (writer != null && !reader.getReturnType().isAssignableFrom(writer.getParameterTypes()[0])) {
                     System.err.println("QtJambiInternal.buildMetaData: Writer for property " 
                             + propertyNames[i] + " takes a type which is incompatible with reader's return type.");
@@ -1399,6 +1399,16 @@ public class QtJambiInternal {
     }
     
     public native static List<QtProperty> properties(long nativeId);
+    public static int indexOfProperty(long nativeId, String name) {
+        List<QtProperty> properties = properties(nativeId);
+        
+        for (int i=0; i<properties.size(); ++i) {
+            if (name.equals(properties.get(i).name())) 
+                return i;
+        }
+        
+        return -1;
+    }
     
     private static String bunchOfClassNamesInARow(Class<?> classes[]) {
         return bunchOfClassNamesInARow(classes, null);

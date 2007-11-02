@@ -57,6 +57,10 @@ class QObject___ extends QObject {
         return com.trolltech.qt.QtJambiInternal.properties(nativeId());
     }
 
+    @com.trolltech.qt.QtBlockedSlot
+    public final int indexOfProperty(String name) {
+        return com.trolltech.qt.QtJambiInternal.indexOfProperty(nativeId(), name);
+    }
 
     @com.trolltech.qt.QtBlockedSlot
     public final void connectSlotsByName() {

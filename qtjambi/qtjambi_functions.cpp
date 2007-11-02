@@ -421,7 +421,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_properties)
         QMetaProperty property = metaObject->property(i);
 
         jobject javaProperty = env->NewObject(sc->QtProperty.class_ref, sc->QtProperty.constructor, 
-                                              property.isWritable(), property.isDesignable(), property.isResettable(),
+                                              property.isWritable(), property.isDesignable(_this), property.isResettable(),
                                               qtjambi_from_qstring(env, property.name()));
         Q_ASSERT(javaProperty != 0);
 

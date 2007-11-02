@@ -65,6 +65,14 @@ public class TestProperties extends QApplicationTest {
         
         @QtPropertyResetter(name="resettableProperty")
         public final void resetResettableProperty() { }
+
+        @QtPropertyDesignable(value="test")
+        public final int testDesignableProperty() { return 0; }        
+        public final void setTestDesignableProperty(int i) { }
+        
+        public boolean test() {
+            return isDesignableTest;
+        }
     }
     
     private static class ExpectedValues {
@@ -95,14 +103,12 @@ public class TestProperties extends QApplicationTest {
                 new ExpectedValues("booleanProperty", true, false, true),
                 new ExpectedValues("otherBooleanProperty", true, false, true),
                 new ExpectedValues("resettableProperty", true, true, true),
-                new ExpectedValues("objectName", true, false, true)
+                new ExpectedValues("objectName", true, false, true),
+                new ExpectedValues("testDesignableProperty", true, false, true)
         };
                 
         FullOfProperties fop = new FullOfProperties(true);
         List<QtProperty> properties = fop.properties();
-        for (QtProperty p : properties) {
-            System.err.println("hello: " + p.name());
-        }
                 
         for (ExpectedValues e : expectedValues) {
             System.err.println("Current property: " + e.name);
@@ -119,6 +125,31 @@ public class TestProperties extends QApplicationTest {
             assertTrue(found);            
         }
         assertEquals(expectedValues.length, properties.size());
+    }
+    
+    @Test
+    public void testFunctionDesignableProperty() {
+        {
+            FullOfProperties fop = new FullOfProperties(true);
+            int idx = fop.indexOfProperty("testDesignableProperty");
+            assertTrue(idx >= 0);
+            
+            List<QtProperty> properties = fop.properties();
+            QtProperty property = properties.get(idx);
+            
+            assertTrue(property.isDesignable());
+        }
+        
+        {
+            FullOfProperties fop = new FullOfProperties(false);
+            int idx = fop.indexOfProperty("testDesignableProperty");
+            assertTrue(idx >= 0);
+            
+            List<QtProperty> properties = fop.properties();
+            QtProperty property = properties.get(idx);
+            
+            assertFalse(property.isDesignable());          
+        }
     }
     
 }
