@@ -1235,7 +1235,7 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
 
             setupInheritance(base_class);
 
-            QString interface_name = InterfaceTypeEntry::interfaceName(base_classes.at(i));
+            QString interface_name = InterfaceTypeEntry::interfaceName(base_class->name());
             AbstractMetaClass *iface = m_meta_classes.findClass(interface_name);
             if (!iface) {
                 ReportHandler::warning(QString("unknown interface for '%1': '%2'")
