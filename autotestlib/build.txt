@@ -161,6 +161,13 @@
 
   <object-type name="AccessibleTableInterfaceSubclass" />   
 
+  <namespace-type name="NameSpace::NameSpace2" />
+  <namespace-type name="NameSpace::NameSpace2::NameSpace3" />
+  <object-type name="NameSpace::NameSpace2::NameSpace3::ObjectC" />
+  <object-type name="NameSpace::NameSpace2::NameSpace3::ObjectD" />
+  <value-type name="NameSpace::NameSpace2::NameSpace3::ValueB" />
+  <interface-type name="NameSpace::NameSpace2::NameSpace3::InterfaceA" />
+
   <namespace-type name="NameSpace">
     <include file-name="namespace.h" location="local"/>
   </namespace-type>
