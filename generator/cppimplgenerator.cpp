@@ -1865,7 +1865,7 @@ void CppImplGenerator::writeInterfaceCastFunction(QTextStream &s,
       << " jobject," << endl
       << " jlong ptr)" << endl
       << "{" << endl
-      << "    return (jlong) (" << java_class->qualifiedCppName() << " *) "
+      << "    return (jlong) (" << interface->qualifiedCppName() << " *) "
       << "(" << java_class->qualifiedCppName() << " *) ptr;" << endl
       << "}" << endl;
 }
