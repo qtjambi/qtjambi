@@ -944,7 +944,7 @@ public:
 
     virtual bool isNativeIdBased() const { return true; }
     virtual QString qualifiedCppName() const {
-        return name().left(name().length() - interfaceName("").length());
+        return ComplexTypeEntry::qualifiedCppName().left(ComplexTypeEntry::qualifiedCppName().length() - interfaceName("").length());
     }
 
 private:
