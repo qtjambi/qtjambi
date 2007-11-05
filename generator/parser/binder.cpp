@@ -610,7 +610,15 @@ void Binder::visitClassSpecifier(ClassSpecifierAST *node)
   ClassModelItem old = changeCurrentClass(_M_model->create<ClassModelItem>());
   updateItemPosition (_M_current_class->toItem(), node);
   _M_current_class->setName(class_cc.name());
-  _M_current_class->setBaseClasses(class_cc.baseClasses());
+
+  QStringList baseClasses = class_cc.baseClasses(); TypeInfo info;
+  for (int i=0; i<baseClasses.size(); ++i) 
+    {
+        info.setQualifiedName(baseClasses.at(i).split("::"));
+        baseClasses[i] = qualifyType(info, scope->qualifiedName()).qualifiedName().join("::");
+    }
+
+  _M_current_class->setBaseClasses(baseClasses);
   _M_current_class->setClassType(decode_class_type(node->class_key));
   _M_current_class->setTemplateParameters(_M_current_template_parameters);
 
