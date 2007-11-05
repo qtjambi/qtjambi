@@ -182,7 +182,7 @@ public class Utilities {
         // from there.
         try {
             debug.message(".. from classpath:");
-            URL libUrl = Thread.currentThread().getContextClassLoader().getResource(lib);
+            URL libUrl = classLoader().getResource(lib);
             if (libUrl == null) {
                 throw new RuntimeException("Library: '" + lib + "' could not be resolved");
             }
@@ -378,7 +378,7 @@ public class Utilities {
             for (String s : libs)
                 list.add(s);
         } else {
-            InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("qt_system_libs");
+            InputStream in = classLoader().getResourceAsStream("qt_system_libs");
             if (in == null && VERBOSE_LOADING)
                 System.out.println("No 'qt_system_libs' file");
 
@@ -390,12 +390,21 @@ public class Utilities {
                     while ((s = r.readLine()) != null)
                         list.add(s);
                 } catch (Exception e) {
-                    if (VERBOSE_LOADING)
+		    if (VERBOSE_LOADING)
                         e.printStackTrace();
                 }
             }
         }
         return list;
+    }
+
+    private static ClassLoader classLoader() { 
+	ClassLoader loader = Thread.currentThread().getContextClassLoader();
+	if (loader == null) {
+	    loader = Utilities.class.getClassLoader();
+	    assert loader != null;
+	}
+	return loader;
     }
 
     public static String unpackPlugins() {
@@ -406,7 +415,7 @@ public class Utilities {
 
         List<URL> urls = new ArrayList<URL>();
         try {
-            Enumeration<URL> bases = Thread.currentThread().getContextClassLoader().getResources("plugins");
+            Enumeration<URL> bases = classLoader().getResources("plugins");
             while (bases.hasMoreElements())
                 urls.add(bases.nextElement());
         } catch (Exception e) {
