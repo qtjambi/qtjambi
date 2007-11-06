@@ -71,6 +71,7 @@ public:
   bool parseBlockDeclaration(DeclarationAST *&node);
   bool parseCastExpression(ExpressionAST *&node);
   bool parseClassSpecifier(TypeSpecifierAST *&node);
+  bool parseForwardDeclarationSpecifier(TypeSpecifierAST *&node);
   bool parseCommaExpression(ExpressionAST *&node);
   bool parseCompoundStatement(StatementAST *&node);
   bool parseCondition(ConditionAST *&node, bool initRequired = true);
@@ -185,6 +186,8 @@ public:
   bool block_errors(bool block);
 
 private:
+  QString tokenText(AST *) const;
+
   LocationManager _M_location;
   Control *control;
   Lexer lexer;

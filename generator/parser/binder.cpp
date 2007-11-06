@@ -592,6 +592,16 @@ void Binder::visitNamespace(NamespaceAST *node)
     }
 }
 
+void Binder::visitForwardDeclarationSpecifier(ForwardDeclarationSpecifierAST *node)
+{
+    name_cc.run(node->name);
+    if (name_cc.name().isEmpty())
+        return;
+
+    ScopeModelItem scope = currentScope();
+    _M_qualified_types[(scope->qualifiedName() + name_cc.qualifiedName()).join(".") ] = QString();
+}
+
 void Binder::visitClassSpecifier(ClassSpecifierAST *node)
 {
   ClassCompiler class_cc(this);
@@ -643,6 +653,7 @@ void Binder::visitClassSpecifier(ClassSpecifierAST *node)
 
   _M_current_class->setScope(scope->qualifiedName());
   _M_qualified_types[_M_current_class->qualifiedName().join(".")] = QString();
+
   scope->addClass(_M_current_class);
 
   name_cc.run(node->name->unqualified_name);

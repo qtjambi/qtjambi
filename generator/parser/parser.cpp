@@ -468,7 +468,8 @@ bool Parser::parseDeclaration(DeclarationAST *&node)
 
         TypeSpecifierAST *spec = 0;
         if (parseEnumSpecifier(spec)
-            || parseClassSpecifier(spec))
+            || parseClassSpecifier(spec)
+            || parseForwardDeclarationSpecifier(spec))
           {
             parseCvQualify(cv);
 
@@ -488,7 +489,7 @@ bool Parser::parseDeclaration(DeclarationAST *&node)
             node = ast;
 
             return true;
-          }
+          } 
       }
     } // end switch
 
@@ -1755,6 +1756,62 @@ bool Parser::parse_Attribute__() {
     return true;
 }
 
+QString Parser::tokenText(AST *ast) const
+{
+    if (ast == 0) return QString();
+
+    int start_token = ast->start_token; 
+    int end_token = ast->end_token;
+
+    Token const &tk = token_stream.token (start_token);
+    Token const &end_tk = token_stream.token(end_token);
+
+    return QString::fromLatin1 (&tk.text[tk.position],(int) (end_tk.position - tk.position)).trimmed();
+}
+
+bool Parser::parseForwardDeclarationSpecifier(TypeSpecifierAST *&node)
+{
+  std::size_t start = token_stream.cursor();
+
+  int kind = token_stream.lookAhead();
+  if (kind != Token_class && kind != Token_struct && kind != Token_union)
+    return false;
+
+  std::size_t class_key = token_stream.cursor();
+  token_stream.nextToken();
+
+  NameAST *name = 0;
+  if (!parseName(name, false)) {
+      token_stream.rewind((int) start);
+      return false;
+  }
+
+  BaseClauseAST *bases = 0;
+  if (token_stream.lookAhead() == ':')
+    {
+      if (!parseBaseClause(bases))
+        {
+          token_stream.rewind((int) start);
+          return false;
+        }
+    }
+
+  if (token_stream.lookAhead() != ';') 
+    {
+        token_stream.rewind((int) start);
+        return false;
+    }
+
+  ForwardDeclarationSpecifierAST *ast = CreateNode<ForwardDeclarationSpecifierAST>(_M_pool);
+  ast->class_key = class_key;
+  ast->name = name;
+  ast->base_clause = bases;
+
+  UPDATE_POS(ast, start, token_stream.cursor());
+  node = ast;
+
+  return true;
+}
 
 bool Parser::parseClassSpecifier(TypeSpecifierAST *&node)
 {
@@ -1784,6 +1841,7 @@ bool Parser::parseClassSpecifier(TypeSpecifierAST *&node)
   parseName(name, true);
 
   BaseClauseAST *bases = 0;
+
   if (token_stream.lookAhead() == ':')
     {
       if (!parseBaseClause(bases))
@@ -1794,6 +1852,7 @@ bool Parser::parseClassSpecifier(TypeSpecifierAST *&node)
 
   if (token_stream.lookAhead() != '{')
     {
+
       token_stream.rewind((int) start);
       return false;
     }

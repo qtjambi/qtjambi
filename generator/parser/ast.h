@@ -202,6 +202,7 @@ struct AST
       Kind_WhileStatement,
       Kind_WinDeclSpec,
       Kind_QPropertyAST,
+      Kind_ForwardDeclarationSpecifier,
       Kind_QEnumsAST,
 
       NODE_KIND_COUNT
@@ -296,6 +297,15 @@ struct ClassSpecifierAST: public TypeSpecifierAST
   NameAST *name;
   BaseClauseAST *base_clause;
   const ListNode<DeclarationAST*> *member_specs;
+};
+
+struct ForwardDeclarationSpecifierAST: public TypeSpecifierAST
+{
+    DECLARE_AST_NODE(ForwardDeclarationSpecifier)
+
+    std::size_t class_key;
+    NameAST *name;
+    BaseClauseAST *base_clause;
 };
 
 struct CompoundStatementAST: public StatementAST

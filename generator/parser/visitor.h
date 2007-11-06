@@ -117,6 +117,7 @@ protected:
   virtual void visitWhileStatement(WhileStatementAST *) {}
   virtual void visitWinDeclSpec(WinDeclSpecAST *) {}
   virtual void visitQProperty(QPropertyAST *) {}
+  virtual void visitForwardDeclarationSpecifier(ForwardDeclarationSpecifierAST *) {}
   virtual void visitQEnums(QEnumsAST *) {}
 
 private:
