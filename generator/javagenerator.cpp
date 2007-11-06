@@ -864,10 +864,6 @@ void JavaGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *ja
     if (spec && java_function->modifiedName() == java_function->originalName()) {
         if (java_function->isPropertyReader()) {
             s << "    @com.trolltech.qt.QtPropertyReader(name=\"" << spec->name() << "\")" << endl;
-            if (spec->index() >= 0) {
-                s << "    @SuppressWarnings(\"deprecation\")" << endl
-                  << "    @com.trolltech.qt.QtPropertyOrder(" << spec->index() << ")" << endl;
-            }
             if (!spec->designable().isEmpty())
                 s << "    @com.trolltech.qt.QtPropertyDesignable(\"" << spec->designable() << "\")" << endl;
         } else if (java_function->isPropertyWriter()) {

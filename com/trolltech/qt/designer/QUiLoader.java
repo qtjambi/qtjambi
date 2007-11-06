@@ -428,7 +428,8 @@ public class QUiLoader {
     @SuppressWarnings("deprecation")
     private void setProperty(QObject o, String property, Object value) {
         try {
-            QtPropertyManager.Entry entry = QtPropertyManager.findPropertiesRecursive(o.getClass()).get(property);
+            int idx = o.indexOfProperty(property);
+            QtProperty entry = o.properties().get(idx);
 
             if (property.equals("geometry") && o.isWidgetType() && ((QWidget) o).isWindow()) {
                 QWidget window = (QWidget) o;
@@ -462,7 +463,7 @@ public class QUiLoader {
                 System.out.println("No property entry for: " + property + ", " + value + " in " + o);
 
             if (null != entry && value != null) {
-                entry.write.invoke(o, value);
+                o.setProperty(property, value);
             }
         } catch (Exception e) {
             System.err.println("setProperty failed: value=" + value + ", name=" + property + ", on=" + o);

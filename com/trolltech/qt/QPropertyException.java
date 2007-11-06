@@ -14,11 +14,10 @@
 package com.trolltech.qt;
 
 /**
- * QPropertyException's are thrown when the reading, writing, or reseting
- * of Qt Jambi properties fails. See the QtPropertyManager class description
- * for further information on when this excaption is thrown.
- *
+ * This exception is deprecated. It is no longer thrown by any
+ * methods due to a change in the property system.
  */
+@Deprecated
 public class QPropertyException extends ConnectionException
 {
     private static final long serialVersionUID = 1L;

@@ -32,7 +32,6 @@ public class CustomWidgetTester extends QWidget {
     }
 
     
-    @QtPropertyOrder(0)
     public String text() {
         return text;
     }
@@ -51,7 +50,6 @@ public class CustomWidgetTester extends QWidget {
     }
 
 
-    @QtPropertyOrder(1)
     public QPoint position() {
         return position;
     }
@@ -92,7 +90,7 @@ public class CustomWidgetTester extends QWidget {
     private QPoint position = new QPoint(50, 50);
     
     public static void main(String args[]) throws Exception {
-        QtPropertyManager.findProperties(CustomWidgetTester.class);
+        
         
     }
 }

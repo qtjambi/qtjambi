@@ -20,4 +20,9 @@ public class QtProperty {
     public final boolean isResettable() { return resettable; }
     public final boolean isDesignable() { return designable; }
     public final String name() { return name; }
+    
+    @Override
+    public final String toString() {
+        return name;
+    }
 }
