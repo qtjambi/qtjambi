@@ -139,7 +139,7 @@ void Lexer::tokenize(const char *contents, std::size_t size)
     current_token->position = cursor - begin_buffer;
     (this->*s_scan_table[*cursor])();
     current_token->size = cursor - begin_buffer - current_token->position;
-  } while (cursor < end_buffer-1);
+  } while (cursor < end_buffer);
 
   if (index == token_stream.size())
       token_stream.resize(token_stream.size() * 2);
