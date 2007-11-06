@@ -70,10 +70,18 @@ namespace TypeSystem {
         ShellCode           = 0x0004,
         ShellDeclaration    = 0x0008,
         PackageInitializer  = 0x0010,
-        Constructors        = 0x0020,
-        
+        DestructorFunction  = 0x0020,
+        Constructors        = 0x0040,
+
         // masks
-        All                 = TargetLangCode | NativeCode | ShellCode | ShellDeclaration | PackageInitializer | Constructors,
+        All                 = TargetLangCode
+                              | NativeCode
+                              | ShellCode
+                              | ShellDeclaration
+                              | PackageInitializer
+                              | Constructors
+                              | DestructorFunction,
+        JavaAndNativeCode   = TargetLangCode | NativeCode,
         TargetLangAndNativeCode   = TargetLangCode | NativeCode
     };
 
@@ -1010,10 +1018,10 @@ public:
     inline NamespaceTypeEntry *findNamespaceType(const QString &name);
     ContainerTypeEntry *findContainerType(const QString &name);
 
-    TypeEntry *findType(const QString &name) const { 
+    TypeEntry *findType(const QString &name) const {
         QList<TypeEntry *> entries = findTypes(name);
         foreach (TypeEntry *entry, entries) {
-            if (entry != 0 && 
+            if (entry != 0 &&
                 (!entry->isPrimitive() || static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())) {
                 return entry;
             }

@@ -1593,6 +1593,14 @@ void CppImplGenerator::writeFinalDestructor(QTextStream &s, const AbstractMetaCl
 	  s << INDENT << "QtJambiLink *link = QtJambiLink::findLinkForUserObject(ptr);" << endl
             << INDENT << "if (link) link->resetObject(qtjambi_current_environment());" << endl;
 	}
+
+        // Code injectsions...
+        foreach (const CodeSnip &snip, cls->typeEntry()->codeSnips()) {
+            if (snip.language == TypeSystem::DestructorFunction) {
+                s << snip.code();
+            }
+        }
+
 	s << INDENT << "delete (" << shellClassName(cls) << " *)ptr;" << endl;
       }
 

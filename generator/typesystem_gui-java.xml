@@ -2879,6 +2879,14 @@
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QPainter___" quote-before-line="}// class"/>
         </inject-code>
+
+	<inject-code class="destructor-function">
+	  if (((QPainter *) ptr)->isActive()) {
+	      qWarning("QPainter: trying to delete an active painter, "
+                       "did you forget to call \"end()\"?\n");
+              return;
+          }
+        </inject-code>
         
         <template name="gui.painter_draw_text_general">
         public final void drawText(%RECT_ARGUMENTS, int flags, String text, %RECT_TYPE boundingRect) {

@@ -616,7 +616,9 @@ bool Handler::startElement(const QString &, const QString &n,
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::Deprecated);
                 }
 
-		if (element->type == StackElement::InterfaceTypeEntry || element->type == StackElement::ValueTypeEntry || element->type == StackElement::ObjectTypeEntry) {
+                if (element->type == StackElement::InterfaceTypeEntry ||
+                    element->type == StackElement::ValueTypeEntry ||
+                    element->type == StackElement::ObjectTypeEntry) {
                     if (attributes["delete-in-main-thread"] == "yes")
 			ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::DeleteInMainThread);
                 }
@@ -1240,6 +1242,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     languageNames["shell"] = TypeSystem::ShellCode;
                     languageNames["shell-declaration"] = TypeSystem::ShellDeclaration;
                     languageNames["library-initializer"] = TypeSystem::PackageInitializer;
+                    languageNames["destructor-function"] = TypeSystem::DestructorFunction;
                     languageNames["constructors"] = TypeSystem::Constructors;
                 }
 
@@ -1248,6 +1251,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     m_error = QString("Invalid class specifier: '%1'").arg(className);
                     return false;
                 }
+
 
                 static QHash<QString, CodeSnip::Position> positionNames;
                 if (positionNames.isEmpty()) {
