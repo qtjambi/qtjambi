@@ -43,7 +43,7 @@ QString AbstractMetaType::cppSignature() const
     if (isConstant())
         s += "const ";
 
-    s += typeEntry()->name();
+    s += typeEntry()->qualifiedCppName();
 
     if (hasInstantiationInCpp()) {
         QList<AbstractMetaType *> types = instantiations();
