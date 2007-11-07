@@ -5,8 +5,7 @@
 #include "codemodel.h"
 
 #include <QString>
-
-class QXmlStreamWriter;
+#include <QXmlStreamWriter>
 
 void astToXML(const QString name);
 void writeOutNamespace(QXmlStreamWriter &s, NamespaceModelItem &item);
