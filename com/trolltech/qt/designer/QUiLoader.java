@@ -236,12 +236,12 @@ public class QUiLoader {
             // These are added when positioned via their attribute, see AttributeReceiver above
             else if (widget instanceof QToolBar || widget instanceof QDockWidget);
 
-            else 
+            else
                 System.err.println("unhandled child of main window..." + widget + ", " + widget.objectName());
         } else if (parent instanceof QTabWidget) {
             String title = widgetNode.namedItem("attribute").firstChild().firstChild().nodeValue();
             ((QTabWidget ) parent).addTab(widget, title);
-            
+
         // QDockWidgets don't have a special layout, so add it properly
         } else if (parent instanceof QDockWidget) {
             ((QDockWidget) parent).setWidget(widget);
@@ -428,9 +428,6 @@ public class QUiLoader {
     @SuppressWarnings("deprecation")
     private void setProperty(QObject o, String property, Object value) {
         try {
-            int idx = o.indexOfProperty(property);
-            QtProperty entry = o.properties().get(idx);
-
             if (property.equals("geometry") && o.isWidgetType() && ((QWidget) o).isWindow()) {
                 QWidget window = (QWidget) o;
                 QRect r = (QRect) value;
@@ -458,11 +455,9 @@ public class QUiLoader {
             }
 
             if (value == null)
-                System.out.println("Null value for: " + property + ", " + entry + ", " + value);
-            if (entry == null)
-                System.out.println("No property entry for: " + property + ", " + value + " in " + o);
+                System.out.println("Null value for: " + property + ", " + value);
 
-            if (null != entry && value != null) {
+            if (value != null) {
                 o.setProperty(property, value);
             }
         } catch (Exception e) {
@@ -480,7 +475,7 @@ public class QUiLoader {
         if (property.equals("rightMargin")) margins.right = x;
         else if (property.equals("leftMargin")) margins.left = x;
         else if (property.equals("topMargin")) margins.top = x;
-        else if (property.equals("bottomMargin")) margins.bottom = x; 
+        else if (property.equals("bottomMargin")) margins.bottom = x;
 
         l.setContentsMargins(margins);
     }
@@ -607,7 +602,7 @@ public class QUiLoader {
         PropertyReceiver old = swapPropertyReceiver(rcv);
 
         parseChildren(node,  action);
-        
+
         swapPropertyReceiver(old);
     }
 
