@@ -369,7 +369,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     bool shellInclude = (java_class->generateShellClass()
         || java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromShell).size() > 0);
 
-    // need to includ QPainter for all widgets...
+    // need to include QPainter for all widgets...
     {
         const AbstractMetaClass *qwidget = java_class;
         while (qwidget && qwidget->name() != "QWidget") {
@@ -579,7 +579,7 @@ void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaC
     FunctionModelItem fun = java_class->hasToStringCapability();
     bool core = java_class->package() == QLatin1String("com.trolltech.qt.core");
     bool qevent = false;
-    
+
     const AbstractMetaClass *cls = java_class;
     while (cls) {
         if (cls->name() == "QEvent") {
@@ -589,12 +589,12 @@ void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaC
         }
         cls = cls->baseClass();
     }
-    
+
     if (!java_class->hasDefaultToStringFunction() && fun && !(qevent && core)) {
-       
+
         int indirections = fun->arguments().at(1)->type().indirections();
         QString deref = QLatin1String(indirections == 0 ? "*" : "");
-        
+
         s << endl;
         s << "#include <QDebug>" << endl;
         s << jni_function_signature(java_class->package(), java_class->name(), "__qt_toString", "jstring")
@@ -606,7 +606,7 @@ void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaC
               << java_class->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
               << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
               << INDENT << "Q_ASSERT(__qt_this);" << endl
-                
+
               << INDENT << "QString res;" << endl
               << INDENT << "QDebug d(&res);" << endl
               << INDENT << "d << " << deref << "__qt_this;" << endl;
@@ -817,7 +817,7 @@ void CppImplGenerator::writeShellConstructor(QTextStream &s, const AbstractMetaF
 
     s << "{" << endl;
     {
-        Indentation indent(INDENT); 
+        Indentation indent(INDENT);
         writeCodeInjections(s, java_function, cls, CodeSnip::Beginning, TypeSystem::ShellCode);
         writeCodeInjections(s, java_function, cls, CodeSnip::End, TypeSystem::ShellCode);
     }
@@ -2773,8 +2773,13 @@ void CppImplGenerator::writeDefaultConstructedValues_helper(QSet<QString> &value
 {
     foreach (AbstractMetaArgument *arg, func->arguments()) {
         AbstractMetaType *type = arg->type();
-        if (type->isValue() && hasDefaultConstructor(type))
+        if (type->isValue() && hasDefaultConstructor(type)) {
+            printf("found %s for %s in %s\n",
+                   qPrintable(type->typeEntry()->qualifiedCppName()),
+                   qPrintable(func->name()),
+                   qPrintable(const_cast<AbstractMetaFunction *>(func)->implementingClass()->name()));
             values << type->typeEntry()->qualifiedCppName();
+        }
     }
 }
 
@@ -2783,8 +2788,30 @@ void CppImplGenerator::writeDefaultConstructedValues(QTextStream &s, const Abstr
 
     QSet<QString> values;
 
-    foreach (const AbstractMetaFunction *func, java_class->functions())
-        writeDefaultConstructedValues_helper(values, func);
+    // Class functions, more or less copied from the logic in write(Class) above...
+    AbstractMetaFunctionList class_funcs;
+
+    // Add normal final functions
+    foreach (AbstractMetaFunction *function, java_class->functionsInTargetLang()) {
+        if (!function->isEmptyFunction())
+            class_funcs << function;
+    }
+
+    // Add abstract functions, I think...
+    foreach (AbstractMetaFunction *function, java_class->queryFunctions(AbstractMetaClass::NormalFunctions
+                                                                        | AbstractMetaClass::AbstractFunctions
+                                                                        | AbstractMetaClass::NotRemovedFromTargetLang)) {
+        if (function->implementingClass() != java_class)
+            class_funcs << function;
+    }
+
+    // Signals (their c++ wrapper calls actually...)
+    class_funcs += java_class->queryFunctions(AbstractMetaClass::Signals);
+
+    //
+    foreach (AbstractMetaFunction *f, class_funcs) {
+        writeDefaultConstructedValues_helper(values, f);
+    }
 
     foreach (AbstractMetaField *field, java_class->fields()) {
         writeDefaultConstructedValues_helper(values, field->setter());
