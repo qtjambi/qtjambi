@@ -44,31 +44,28 @@ public class QtJambiGuiInternal {
     }
 
 
-    private static HashMap<QWidget, List<QPainter>> painters = new HashMap<QWidget, List<QPainter>>();
+
+    private static HashMap<QWidget, QPainter> painters = new HashMap<QWidget, QPainter>();
+
     public static boolean beginPaint(QWidget widget, QPainter painter) {
-        List<QPainter> l = painters.get(widget);
-        if (l == null) {
-            l = new LinkedList<QPainter>();
-            painters.put(widget, l);
-        }
-        if (l.contains(painter))
+        if (painters.containsKey(widget))
             throw new RuntimeException("Painter opened twice on the same widget");
         if (painter.isActive())
             throw new RuntimeException("Painter already active");
-        l.add(painter);
+        painters.put(widget, painter);
         return painter.begin((QPaintDeviceInterface) widget);
     }
 
-    @SuppressWarnings("unused")
     private static void endPaint(QWidget widget) {
-        List <QPainter> ps = painters.get(widget);
-        if (ps != null) {
-            for (QPainter p : ps) {
-                p.dispose();
-            }
+        QPainter p = painters.get(widget);
+        if (p != null) {
+            p.dispose();
             painters.remove(widget);
         }
-    }
 
+        if (widget instanceof QAbstractScrollArea) {
+            endPaint(((QAbstractScrollArea) widget).viewport());
+        }
+    }
 
 }
