@@ -1,6 +1,18 @@
 #ifndef QTJAMBIDESTRUCTOREVENT_H
 #define QTJAMBIDESTRUCTOREVENT_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt Jambi API. 
+// This header file may change from version to version without notice, 
+// or even be removed.
+//
+// We mean it.
+//
+//
+
 #include "qtjambilink.h"
 
 #include <QEvent>
