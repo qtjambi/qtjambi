@@ -170,8 +170,6 @@
   <namespace-type name="Qt"/>
 
 
-  <enum-type name="Qt::enum_1"/>
-  <enum-type name="Qt::enum_2"/>
 
   <enum-type name="QAbstractFileEngine::Extension" extensible="yes"/>
   <enum-type name="QAbstractFileEngine::FileFlag" flags="QAbstractFileEngine::FileFlags"/>
@@ -180,7 +178,6 @@
   <enum-type name="QAbstractFileEngine::FileTime"/>
   <enum-type name="QDataStream::Status"/>
   <enum-type name="QDir::Filter" flags="QDir::Filters"/>
-  <enum-type name="QDirModel::Roles"/>
   <enum-type name="QEvent::Type" extensible="yes">
     <reject-enum-value name="ApplicationActivated"/>
     <reject-enum-value name="ApplicationDeactivated"/>
@@ -188,7 +185,6 @@
   <enum-type name="QEventLoop::ProcessEventsFlag" flags="QEventLoop::ProcessEventsFlags"/>
   <enum-type name="QFile::FileError"/>
   <enum-type name="QFile::Permission" flags="QFile::Permissions"/>
-  <enum-type name="QFileInfo::Permission" flags="QFileInfo::Permissions"/>
   <enum-type name="QIODevice::OpenModeFlag" flags="QIODevice::OpenMode"/>
   <enum-type name="QLibraryInfo::LibraryLocation"/>
   <enum-type name="QLocale::FormatType"/>
@@ -205,7 +201,6 @@
   <enum-type name="QSettings::Scope"/>
   <enum-type name="QSettings::Status"/>
   <enum-type name="QSocketNotifier::Type"/>
-  <enum-type name="QString::SectionFlag" flags="QString::SectionFlags"/>
   <enum-type name="QSystemLocale::QueryType"/>
   <enum-type name="QTextCodec::ConversionFlag" flags="QTextCodec::ConversionFlags"/>
   <enum-type name="QTextStream::FieldAlignment"/>
@@ -300,7 +295,6 @@
 
   <enum-type name="QDataStream::Version"> 
     <reject-enum-value name="Qt_4_1"/>
-    <reject-enum-value name="Qt_4_4"/>
   </enum-type>
 
   <enum-type name="QDir::SortFlag" flags="QDir::SortFlags">

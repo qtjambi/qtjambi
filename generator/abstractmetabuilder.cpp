@@ -386,17 +386,16 @@ bool AbstractMetaBuilder::build()
         }
     }
 
-    foreach (const TypeEntry *entry, m_used_types) {
+    QList<TypeEntry *> entries = TypeDatabase::instance()->entries().values();
+    foreach (const TypeEntry *entry, entries) {
         if (entry->isPrimitive())
             continue;
 
-        QString name = entry->qualifiedTargetLangName();
-
-        if (!entry->codeGeneration() == TypeEntry::GenerateNothing
-            && (entry->isValue() || entry->isObject())
-            && !m_meta_classes.findClass(name))
-            ReportHandler::warning(QString("type '%1' is specified in typesystem, but not declared")
-                                   .arg(name));
+        if ((entry->isValue() || entry->isObject())
+            && !m_meta_classes.findClass(name)) {
+            ReportHandler::warning(QString("type '%1' is specified in typesystem, but not defined. This could potentially lead to compilation errors.")
+                                   .arg(name)); 
+        }
 
         if (entry->isEnum()) {
             QString pkg = entry->javaPackage();

@@ -1,5 +1,7 @@
 <typesystem>
    <namespace-type name="QSvg" />
+
+  <enum-type name="QGraphicsSvgItem::enum_1"/>
   
   <object-type name="QSvgRenderer">
     <extra-includes>

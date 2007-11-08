@@ -115,6 +115,7 @@
   <enum-type name="QAccessible::Role"/>
   <enum-type name="QAccessible::StateFlag" flags="QAccessible::State"/>
   <enum-type name="QAccessible::Text"/>
+  <enum-type name="QDirModel::Roles"/>  
   <enum-type name="QMdiArea::AreaOption" flags="QMdiArea::AreaOptions"/>
   <enum-type name="QMdiArea::WindowOrder"/>
   <enum-type name="QMdiSubWindow::SubWindowOption" flags="QMdiSubWindow::SubWindowOptions"/>
@@ -144,17 +145,14 @@
   <enum-type name="QFileDialog::Option" flags="QFileDialog::Options"/>
   <enum-type name="QFileDialog::ViewMode"/>
   <enum-type name="QFileIconProvider::IconType"/>
-  <enum-type name="QFont::FontWeight"/>
   <enum-type name="QFont::Stretch"/>
   <enum-type name="QFont::Style"/>
   <enum-type name="QFont::StyleStrategy"/>
   <enum-type name="QFont::Weight"/>
   <enum-type name="QFontComboBox::FontFilter" flags="QFontComboBox::FontFilters"/>
-  <enum-type name="QFrame::FrameFlags"/>
   <enum-type name="QFrame::Shadow" extensible="yes"/>
   <enum-type name="QFrame::Shape"/>
   <enum-type name="QFrame::StyleMask"/>
-  <enum-type name="QFrame::enum_1"/>
   <enum-type name="QGradient::CoordinateMode"/>
   <enum-type name="QGradient::Spread" lower-bound="QGradient.PadSpread" upper-bound="QGradient.RepeatSpread"/>
   <enum-type name="QGradient::Type"/>
@@ -184,7 +182,6 @@
   <enum-type name="QImage::Format"/>
   <enum-type name="QImage::InvertMode"/>
   <enum-type name="QImageIOHandler::ImageOption"/>
-  <enum-type name="QImageIOPlugin::Capability" flags="QImageIOPlugin::Capabilitys"/>
   <enum-type name="QImageReader::ImageReaderError"/>
   <enum-type name="QImageWriter::ImageWriterError"/>
   <enum-type name="QInputContext::StandardFormat"/>
@@ -204,9 +201,7 @@
   <enum-type name="QListView::ResizeMode"/>
   <enum-type name="QListView::ViewMode"/>
   <enum-type name="QListWidgetItem::ItemType"/>
-  <enum-type name="QListWidgetItem::enum_1"/>
   <enum-type name="QMainWindow::DockOption" flags="QMainWindow::DockOptions"/>
-  <enum-type name="QMessageBox::Button"/>
   <enum-type name="QMessageBox::ButtonRole"/>
   <enum-type name="QMessageBox::Icon"/>
   <enum-type name="QMovie::CacheMode"/>
@@ -237,7 +232,6 @@
   <enum-type name="QSizePolicy::Policy"/>
   <enum-type name="QSizePolicy::PolicyFlag"/>
   <enum-type name="QSizePolicy::ControlType" flags="QSizePolicy::ControlTypes"/>
-  <enum-type name="QSizePolicy::SizePolicyMasks"/>
   <enum-type name="QStandardItem::ItemType"/>
   <enum-type name="QStyle::SubControl" flags="QStyle::SubControls" extensible="yes" force-integer="yes"/>
   <enum-type name="QStyle::ComplexControl" extensible="yes"/>
@@ -262,130 +256,78 @@
   <enum-type name="QStyleHintReturnVariant::StyleOptionType"/>
   <enum-type name="QStyleHintReturnVariant::StyleOptionVersion"/>
 
-  <enum-type name="QStyleHintReturn::enum_1"/>
-  <enum-type name="QStyleHintReturn::enum_2"/>
   <enum-type name="QStyleHintReturnMask::StyleOptionType"/>
   <enum-type name="QStyleHintReturnMask::StyleOptionVersion"/>
-  <enum-type name="QStyleHintReturnMask::enum_1"/>
-  <enum-type name="QStyleHintReturnMask::enum_2"/>
   <enum-type name="QStyleOption::StyleOptionType"/>
   <enum-type name="QStyleOption::OptionType" extensible="yes"/>
   <enum-type name="QStyleOption::StyleOptionVersion"/>
-  <enum-type name="QStyleOption::enum_2"/>
   <enum-type name="QStyleOptionButton::ButtonFeature" flags="QStyleOptionButton::ButtonFeatures"/>
   <enum-type name="QStyleOptionButton::StyleOptionType"/>
   <enum-type name="QStyleOptionButton::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionButton::enum_1"/>
-  <enum-type name="QStyleOptionButton::enum_2"/>
   <enum-type name="QStyleOptionComboBox::StyleOptionType"/>
   <enum-type name="QStyleOptionComboBox::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionComboBox::enum_1"/>
-  <enum-type name="QStyleOptionComboBox::enum_2"/>
   <enum-type name="QStyleOptionComplex::StyleOptionType"/>
   <enum-type name="QStyleOptionComplex::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionComplex::enum_1"/>
-  <enum-type name="QStyleOptionComplex::enum_2"/>
   <enum-type name="QStyleOptionDockWidget::StyleOptionType"/>
   <enum-type name="QStyleOptionDockWidget::StyleOptionVersion"/>
   <enum-type name="QStyleOptionDockWidgetV2::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionDockWidget::enum_1"/>
-  <enum-type name="QStyleOptionDockWidget::enum_2"/>
   <enum-type name="QStyleOptionFocusRect::StyleOptionType"/>
   <enum-type name="QStyleOptionFocusRect::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionFocusRect::enum_1"/>
-  <enum-type name="QStyleOptionFocusRect::enum_2"/>
   <enum-type name="QStyleOptionFrame::StyleOptionType"/>
   <enum-type name="QStyleOptionFrame::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionFrame::enum_1"/>
-  <enum-type name="QStyleOptionFrame::enum_2"/>
   <enum-type name="QStyleOptionFrameV2::FrameFeature" flags="QStyleOptionFrameV2::FrameFeatures"/>
   <enum-type name="QStyleOptionFrameV2::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionFrameV2::enum_1"/>
   <enum-type name="QStyleOptionGraphicsItem::StyleOptionType"/>
   <enum-type name="QStyleOptionGraphicsItem::StyleOptionVersion"/>
   <enum-type name="QStyleOptionGroupBox::StyleOptionType"/>
   <enum-type name="QStyleOptionGroupBox::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionGroupBox::enum_1"/>
-  <enum-type name="QStyleOptionGroupBox::enum_2"/>
   <enum-type name="QStyleOptionHeader::SectionPosition"/>
   <enum-type name="QStyleOptionHeader::SelectedPosition"/>
   <enum-type name="QStyleOptionHeader::SortIndicator"/>
   <enum-type name="QStyleOptionHeader::StyleOptionType"/>
   <enum-type name="QStyleOptionHeader::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionHeader::enum_1"/>
-  <enum-type name="QStyleOptionHeader::enum_2"/>
   <enum-type name="QStyleOptionMenuItem::CheckType"/>
   <enum-type name="QStyleOptionMenuItem::MenuItemType"/>
   <enum-type name="QStyleOptionMenuItem::StyleOptionType"/>
   <enum-type name="QStyleOptionMenuItem::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionMenuItem::enum_1"/>
-  <enum-type name="QStyleOptionMenuItem::enum_2"/>
   <enum-type name="QStyleOptionProgressBar::StyleOptionType"/>
   <enum-type name="QStyleOptionProgressBar::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionProgressBar::enum_1"/>
-  <enum-type name="QStyleOptionProgressBar::enum_2"/>
   <enum-type name="QStyleOptionProgressBarV2::StyleOptionType"/>
   <enum-type name="QStyleOptionProgressBarV2::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionProgressBarV2::enum_1"/>
-  <enum-type name="QStyleOptionProgressBarV2::enum_2"/>
-  <enum-type name="QStyleOptionQ3ListViewItem::Q3ListViewItemFeature"/>
   <enum-type name="QStyleOptionRubberBand::StyleOptionType"/>
   <enum-type name="QStyleOptionRubberBand::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionRubberBand::enum_1"/>
-  <enum-type name="QStyleOptionRubberBand::enum_2"/>
   <enum-type name="QStyleOptionSizeGrip::StyleOptionType"/>
   <enum-type name="QStyleOptionSizeGrip::StyleOptionVersion"/>
   <enum-type name="QStyleOptionSlider::StyleOptionType"/>
   <enum-type name="QStyleOptionSlider::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionSlider::enum_1"/>
-  <enum-type name="QStyleOptionSlider::enum_2"/>
   <enum-type name="QStyleOptionSpinBox::StyleOptionType"/>
   <enum-type name="QStyleOptionSpinBox::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionSpinBox::enum_1"/>
-  <enum-type name="QStyleOptionSpinBox::enum_2"/>
   <enum-type name="QStyleOptionTab::CornerWidget" flags="QStyleOptionTab::CornerWidgets"/>
   <enum-type name="QStyleOptionTab::SelectedPosition"/>
   <enum-type name="QStyleOptionTab::StyleOptionType"/>
   <enum-type name="QStyleOptionTab::StyleOptionVersion"/>
   <enum-type name="QStyleOptionTab::TabPosition"/>
-  <enum-type name="QStyleOptionTab::enum_1"/>
-  <enum-type name="QStyleOptionTab::enum_2"/>
   <enum-type name="QStyleOptionTabBarBase::StyleOptionType"/>
   <enum-type name="QStyleOptionTabBarBase::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionTabBarBase::enum_1"/>
-  <enum-type name="QStyleOptionTabBarBase::enum_2"/>
   <enum-type name="QStyleOptionTabV2::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionTabV2::enum_1"/>
   <enum-type name="QStyleOptionTabWidgetFrame::StyleOptionType"/>
   <enum-type name="QStyleOptionTabWidgetFrame::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionTabWidgetFrame::enum_1"/>
-  <enum-type name="QStyleOptionTabWidgetFrame::enum_2"/>
   <enum-type name="QStyleOptionTitleBar::StyleOptionType"/>
   <enum-type name="QStyleOptionTitleBar::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionTitleBar::enum_1"/>
-  <enum-type name="QStyleOptionTitleBar::enum_2"/>
   <enum-type name="QStyleOptionToolBar::StyleOptionType"/>
   <enum-type name="QStyleOptionToolBar::StyleOptionVersion"/>
   <enum-type name="QStyleOptionToolBar::ToolBarFeature" flags="QStyleOptionToolBar::ToolBarFeatures"/>
   <enum-type name="QStyleOptionToolBar::ToolBarPosition"/>
-  <enum-type name="QStyleOptionToolBar::enum_1"/>
-  <enum-type name="QStyleOptionToolBar::enum_2"/>
   <enum-type name="QStyleOptionToolBox::StyleOptionType"/>
   <enum-type name="QStyleOptionToolBox::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionToolBox::enum_1"/>
-  <enum-type name="QStyleOptionToolBox::enum_2"/>
   <enum-type name="QStyleOptionToolButton::StyleOptionType"/>
   <enum-type name="QStyleOptionToolButton::StyleOptionVersion"/>
   <enum-type name="QStyleOptionToolButton::ToolButtonFeature" flags="QStyleOptionToolButton::ToolButtonFeatures">
     <reject-enum-value name="MenuButtonPopup"/>
   </enum-type>
-  <enum-type name="QStyleOptionToolButton::enum_1"/>
-  <enum-type name="QStyleOptionToolButton::enum_2"/>
   <enum-type name="QStyleOptionViewItem::Position"/>
   <enum-type name="QStyleOptionViewItem::StyleOptionType"/>
   <enum-type name="QStyleOptionViewItem::StyleOptionVersion"/>
-  <enum-type name="QStyleOptionViewItem::enum_1"/>
-  <enum-type name="QStyleOptionViewItem::enum_2"/>
   <enum-type name="QStyleOptionViewItemV2::StyleOptionVersion"/>
   <enum-type name="QStyleOptionViewItemV2::ViewItemFeature" flags="QStyleOptionViewItemV2::ViewItemFeatures"/>
   <enum-type name="QSystemTrayIcon::ActivationReason"/>
@@ -394,7 +336,6 @@
   <enum-type name="QTabWidget::TabPosition"/>
   <enum-type name="QTabWidget::TabShape"/>
   <enum-type name="QTableWidgetItem::ItemType"/>
-  <enum-type name="QTableWidgetItem::enum_1"/>
   <enum-type name="QTabletEvent::PointerType"/>
   <enum-type name="QTabletEvent::TabletDevice"/>
   <enum-type name="QTextCharFormat::UnderlineStyle"/>
@@ -406,7 +347,6 @@
   <enum-type name="QTextDocument::MetaInformation"/>
   <enum-type name="QTextDocument::ResourceType"/>
   <enum-type name="QTextEdit::AutoFormattingFlag" flags="QTextEdit::AutoFormatting"/>
-  <enum-type name="QTextEdit::CursorAction"/>
   <enum-type name="QTextEdit::LineWrapMode"/>
   <enum-type name="QTextFormat::ObjectTypes"/>
   <enum-type name="QTextFormat::PageBreakFlag" flags="QTextFormat::PageBreakFlags"/>
@@ -422,15 +362,12 @@
   <enum-type name="QTextOption::WrapMode"/>
   <enum-type name="QToolButton::ToolButtonPopupMode"/>
   <enum-type name="QTreeWidgetItem::ItemType"/>
-  <enum-type name="QTreeWidgetItem::enum_1"/>
   <enum-type name="QTreeWidgetItemIterator::IteratorFlag" flags="QTreeWidgetItemIterator::IteratorFlags"/>
   <enum-type name="QValidator::State"/>
-  <enum-type name="QWidget::WidgetMode"/>
   <enum-type name="QWidget::RenderFlag" flags="QWidget::RenderFlags"/>
   <enum-type name="QWorkspace::WindowOrder"/>
   <enum-type name="QDoubleValidator::Notation"/>
   <enum-type name="QGraphicsScene::SceneLayer" flags="QGraphicsScene::SceneLayers"/>
-  <enum-type name="QGraphicsSvgItem::enum_1"/>
   <enum-type name="QStyleOptionToolBoxV2::SelectedPosition"/>
   <enum-type name="QStyleOptionToolBoxV2::StyleOptionVersion"/>
   <enum-type name="QStyleOptionToolBoxV2::TabPosition"/>
@@ -508,11 +445,6 @@
   </enum-type>
 
   <enum-type name="QPrinter::PageSize">
-    <reject-enum-value name="NPageSize"/>
-    <reject-enum-value name="NPaperSize"/>
-  </enum-type>
-
-  <enum-type name="QPrinter::PaperSize">
     <reject-enum-value name="NPageSize"/>
     <reject-enum-value name="NPaperSize"/>
   </enum-type>
@@ -4150,7 +4082,6 @@
 
   </object-type>
 
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: type '*' is specified in typesystem, but not declared"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private const\*'"/>  
