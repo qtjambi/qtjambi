@@ -5,7 +5,7 @@
 
 #include <QEvent>
 
-class QtJambiDestructorEvent : public QEvent
+class QTJAMBI_EXPORT QtJambiDestructorEvent : public QEvent
 {
 
 public:
