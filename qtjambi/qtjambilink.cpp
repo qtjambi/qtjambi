@@ -15,8 +15,8 @@
 
 #include "qtjambi_cache.h"
 #include "qtjambi_core.h"
-#include "qtjambitypemanager.h"
-#include "qtjambidestructorevent.h"
+#include "qtjambitypemanager_p.h"
+#include "qtjambidestructorevent_p.h"
 
 #include <QDebug>
 #include <QHash>

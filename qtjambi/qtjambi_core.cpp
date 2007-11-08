@@ -15,10 +15,11 @@
 #include "qtjambi_cache.h"
 #include "qtjambifunctiontable.h"
 #include "qtjambilink.h"
-#include "qtjambitypemanager.h"
+#include "qtjambitypemanager_p.h"
 #include "qnativepointer.h"
-#include "qtjambidestructorevent.h"
+#include "qtjambidestructorevent_p.h"
 #include "qtdynamicmetaobject.h"
+#include "qtjambivariant_p.h"
 
 #include <qglobal.h>
 
@@ -2050,3 +2051,7 @@ QString qtjambi_enum_name_for_flags_name(JNIEnv *env, const QString &qualified_n
     return qtjambi_class_name(env, enum_class);
 }
 
+void qtjambi_register_variant_handler()
+{
+    QtJambiVariant::registerHandler();
+}

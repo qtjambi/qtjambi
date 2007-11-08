@@ -575,5 +575,7 @@ QTJAMBI_EXPORT bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object
 
 QTJAMBI_EXPORT QString qtjambi_enum_name_for_flags_name(JNIEnv *env, const QString &qualified_name);
 
+QTJAMBI_EXPORT void qtjambi_register_variant_handler();
+
 
 #endif // QTJAMBI_CORE_H

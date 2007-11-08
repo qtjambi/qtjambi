@@ -17,7 +17,7 @@
 #include <QVariant>
 #include "qtjambi_core.h"
 
-class QTJAMBI_EXPORT QtJambiVariant: private QVariant
+class QtJambiVariant: private QVariant
 {
    
  public:

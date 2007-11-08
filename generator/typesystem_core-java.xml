@@ -1378,11 +1378,10 @@
   <object-type name="QCoreApplication">
       <extra-includes>
           <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
-          <include file-name="qtjambivariant.h" location="local"/>
       </extra-includes>
       <modify-function signature="QCoreApplication(int &amp;, char  **)">
           <inject-code class="shell">
-              QtJambiVariant::registerHandler();
+              qtjambi_register_variant_handler();
           </inject-code>
       </modify-function> 
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding)">

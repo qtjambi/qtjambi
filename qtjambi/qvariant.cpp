@@ -13,7 +13,7 @@
 
 #include "qtjambilink.h"
 #include "qtjambi_core.h"
-#include "qtjambitypemanager.h"
+#include "qtjambitypemanager_p.h"
 
 #include <QtCore/QVariant>
 #include <QtCore/QPoint>

@@ -13,7 +13,7 @@
 
 #include <QDebug>
 
-#include "qtjambivariant.h"
+#include "qtjambivariant_p.h"
 
 static const uint JOBJECTWRAPPER_TYPE = qMetaTypeId<JObjectWrapper>();
 const QVariant::Handler *QtJambiVariant::lastHandler = 0;

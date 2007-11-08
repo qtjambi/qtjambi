@@ -12,10 +12,10 @@
 ****************************************************************************/
 
 #include "qtjambi_cache.h"
-#include <qtjambifunctiontable.h>
-#include <qtjambitypemanager.h>
-#include <qtjambilink.h>
-#include <qtjambi_core.h>
+#include "qtjambifunctiontable.h"
+#include "qtjambitypemanager_p.h"
+#include "qtjambilink.h"
+#include "qtjambi_core.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QReadWriteLock>

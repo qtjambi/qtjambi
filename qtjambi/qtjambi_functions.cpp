@@ -12,8 +12,8 @@
 ****************************************************************************/
 
 #include "qtjambi_core.h"
-#include "qtjambivariant.h"
-#include "qtjambitypemanager.h"
+#include "qtjambivariant_p.h"
+#include "qtjambitypemanager_p.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QVarLengthArray>

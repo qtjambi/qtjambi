@@ -26,10 +26,10 @@ HEADERS += \
 	qtjambi_utils.h \
 	qtjambifunctiontable.h \
 	qtjambilink.h \
-	qtjambitypemanager.h \
-        qtjambidestructorevent.h \
+	qtjambitypemanager_p.h \
+        qtjambidestructorevent_p.h \
         qtdynamicmetaobject.h \
-        qtjambivariant.h \
+        qtjambivariant_p.h \
 
 DEFINES += QTJAMBI_EXPORT
 
