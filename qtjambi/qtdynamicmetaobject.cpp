@@ -12,7 +12,7 @@ class QtDynamicMetaObjectPrivate
     Q_DECLARE_PUBLIC(QtDynamicMetaObject);
 
 public:
-    QtDynamicMetaObjectPrivate(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object);
+    QtDynamicMetaObjectPrivate(QtDynamicMetaObject *q, JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object);
     ~QtDynamicMetaObjectPrivate();
 
     void initialize(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object);
@@ -33,8 +33,8 @@ public:
     QString *m_original_signatures;
 };
 
-QtDynamicMetaObjectPrivate::QtDynamicMetaObjectPrivate(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object) 
-    : m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0), 
+QtDynamicMetaObjectPrivate::QtDynamicMetaObjectPrivate(QtDynamicMetaObject *q, JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object) 
+    : q_ptr(q), m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0), 
       m_property_readers(0), m_property_writers(0), m_property_resetters(0), m_property_designables(0), 
       m_original_signatures(0)
 {
@@ -220,7 +220,7 @@ void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobje
 }
 
 QtDynamicMetaObject::QtDynamicMetaObject(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object)
-    : d_ptr(new QtDynamicMetaObjectPrivate(jni_env, java_class, original_meta_object)) { }
+    : d_ptr(new QtDynamicMetaObjectPrivate(this, jni_env, java_class, original_meta_object)) { }
 
 QtDynamicMetaObject::~QtDynamicMetaObject()
 {
