@@ -2773,13 +2773,8 @@ void CppImplGenerator::writeDefaultConstructedValues_helper(QSet<QString> &value
 {
     foreach (AbstractMetaArgument *arg, func->arguments()) {
         AbstractMetaType *type = arg->type();
-        if (type->isValue() && hasDefaultConstructor(type)) {
-            printf("found %s for %s in %s\n",
-                   qPrintable(type->typeEntry()->qualifiedCppName()),
-                   qPrintable(func->name()),
-                   qPrintable(const_cast<AbstractMetaFunction *>(func)->implementingClass()->name()));
-            values << type->typeEntry()->qualifiedCppName();
-        }
+        if (type->isValue() && hasDefaultConstructor(type))
+            values << type->typeEntry()->qualifiedCppName();        
     }
 }
 
