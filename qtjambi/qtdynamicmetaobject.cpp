@@ -6,8 +6,34 @@
 #include <QtCore/QVarLengthArray>
 #include <QtCore/QMetaEnum>
 
+class QtDynamicMetaObjectPrivate
+{
+    QtDynamicMetaObject *q_ptr;
+    Q_DECLARE_PUBLIC(QtDynamicMetaObject);
 
-QtDynamicMetaObject::QtDynamicMetaObject(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object) 
+public:
+    QtDynamicMetaObjectPrivate(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object);
+    ~QtDynamicMetaObjectPrivate();
+
+    void initialize(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object);
+    void invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a, const QString &signature = QString()) const;
+
+    int m_method_count;
+    int m_signal_count;
+    int m_property_count;
+
+    jobjectArray m_methods;
+    jobjectArray m_signals;
+
+    jobjectArray m_property_readers;
+    jobjectArray m_property_writers;
+    jobjectArray m_property_resetters;
+    jobjectArray m_property_designables;
+
+    QString *m_original_signatures;
+};
+
+QtDynamicMetaObjectPrivate::QtDynamicMetaObjectPrivate(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object) 
     : m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0), 
       m_property_readers(0), m_property_writers(0), m_property_resetters(0), m_property_designables(0), 
       m_original_signatures(0)
@@ -18,7 +44,7 @@ QtDynamicMetaObject::QtDynamicMetaObject(JNIEnv *env, jclass java_class, const Q
     initialize(env, java_class, original_meta_object);
 }
 
-QtDynamicMetaObject::~QtDynamicMetaObject() 
+QtDynamicMetaObjectPrivate::~QtDynamicMetaObjectPrivate() 
 {
     JNIEnv *env = qtjambi_current_environment();
     if (env != 0) {
@@ -33,8 +59,10 @@ QtDynamicMetaObject::~QtDynamicMetaObject()
     delete[] m_original_signatures;
 }
 
-void QtDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object)
+void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object)
 {
+    Q_Q(QtDynamicMetaObject);
+
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
 
@@ -51,17 +79,17 @@ void QtDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMeta
     jbyteArray string_data = (jbyteArray) env->GetObjectField(meta_data_struct, sc->MetaData.stringData);
     Q_ASSERT(string_data);
 
-    d.superdata = qtjambi_metaobject_for_class(env, env->GetSuperclass(java_class), original_meta_object);
+    q->d.superdata = qtjambi_metaobject_for_class(env, env->GetSuperclass(java_class), original_meta_object);
 
     int string_data_len = env->GetArrayLength(string_data);
-    d.stringdata = new char[string_data_len];
+    q->d.stringdata = new char[string_data_len];
 
     int meta_data_len = env->GetArrayLength(meta_data);
-    d.data = new uint[meta_data_len];
-    d.extradata = 0;
+    q->d.data = new uint[meta_data_len];
+    q->d.extradata = 0;
 
-    env->GetByteArrayRegion(string_data, 0, string_data_len, (jbyte *) d.stringdata);
-    env->GetIntArrayRegion(meta_data, 0, meta_data_len, (jint *) d.data);
+    env->GetByteArrayRegion(string_data, 0, string_data_len, (jbyte *) q->d.stringdata);
+    env->GetIntArrayRegion(meta_data, 0, meta_data_len, (jint *) q->d.data);
 
     m_methods = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.slotsArray);
     m_signals = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.signalsArray);
@@ -111,18 +139,18 @@ void QtDynamicMetaObject::initialize(JNIEnv *env, jclass java_class, const QMeta
 
     int extra_data_count = extra_data != 0 ? env->GetArrayLength(extra_data) : 0;
     if (extra_data_count > 0) {
-        d.extradata = new const QMetaObject *[extra_data_count];
-        Q_ASSERT(d.extradata != 0);
+        q->d.extradata = new const QMetaObject *[extra_data_count];
+        Q_ASSERT(q->d.extradata != 0);
 
         for (int i=0; i<extra_data_count; ++i)
-            d.extradata[i] = qtjambi_metaobject_for_class(env, reinterpret_cast<jclass>(env->GetObjectArrayElement(extra_data, i)), 0);                
+            q->d.extradata[i] = qtjambi_metaobject_for_class(env, reinterpret_cast<jclass>(env->GetObjectArrayElement(extra_data, i)), 0);                
     }
     
 
     env->PopLocalFrame(0);
 }
 
-void QtDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a, const QString &_signature) const
+void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a, const QString &_signature) const
 {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveQtJambiInternal();
@@ -191,8 +219,19 @@ void QtDynamicMetaObject::invokeMethod(JNIEnv *env, jobject object, jobject meth
     }
 }
 
+QtDynamicMetaObject::QtDynamicMetaObject(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object)
+    : d_ptr(new QtDynamicMetaObjectPrivate(jni_env, java_class, original_meta_object)) { }
+
+QtDynamicMetaObject::~QtDynamicMetaObject()
+{
+    delete d_ptr;
+}
+
+
 int QtDynamicMetaObject::originalSignalOrSlotSignature(JNIEnv *env, int _id, QString *signature) const
 {
+    Q_D(const QtDynamicMetaObject);
+
     const QMetaObject *super_class = superClass();
 
     bool is_dynamic = qtjambi_metaobject_is_dynamic(super_class);
@@ -207,22 +246,24 @@ int QtDynamicMetaObject::originalSignalOrSlotSignature(JNIEnv *env, int _id, QSt
     }
     if (_id < 0) return _id;
 
-    if (_id < m_signal_count + m_method_count)
-        *signature = m_original_signatures[_id];    
+    if (_id < d->m_signal_count + d->m_method_count)
+        *signature = d->m_original_signatures[_id];    
 
-    return _id - m_method_count - m_signal_count;
+    return _id - d->m_method_count - d->m_signal_count;
 }
 
 int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id, void **_a) const
 {
+    Q_D(const QtDynamicMetaObject);
+
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->invokeSignalOrSlot(env, object, _id, _a);
     if (_id < 0) return _id;
 
     // Emit the correct signal
-    if (_id < m_signal_count) {
-        jobject signal_field = env->GetObjectArrayElement(m_signals, _id);
+    if (_id < d->m_signal_count) {
+        jobject signal_field = env->GetObjectArrayElement(d->m_signals, _id);
         Q_ASSERT(signal_field);
 
         jfieldID field_id = env->FromReflectedField(signal_field);
@@ -246,82 +287,90 @@ int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id
 
         // Because of type erasure, we need to find the compile time signature of the emit method
         QString signal_parameters = "void emit(" + qtjambi_to_qstring(env, j_signal_parameters) + ")";
-        invokeMethod(env, signal_object, signal_emit_method, _a, signal_parameters);
-    } else if (_id < m_signal_count + m_method_count) { // Call the correct method
-        jobject method_object = env->GetObjectArrayElement(m_methods, _id - m_signal_count);
+        d->invokeMethod(env, signal_object, signal_emit_method, _a, signal_parameters);
+    } else if (_id < d->m_signal_count + d->m_method_count) { // Call the correct method
+        jobject method_object = env->GetObjectArrayElement(d->m_methods, _id - d->m_signal_count);
         Q_ASSERT(method_object != 0);
 
-        invokeMethod(env, object, method_object, _a);
+        d->invokeMethod(env, object, method_object, _a);
     } 
 
-    return _id - m_method_count - m_signal_count;
+    return _id - d->m_method_count - d->m_signal_count;
 }
 
 int QtDynamicMetaObject::readProperty(JNIEnv *env, jobject object, int _id, void **_a) const 
 {
+    Q_D(const QtDynamicMetaObject);
+
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->readProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
-    if (_id < m_property_count) {
-        jobject method_object = env->GetObjectArrayElement(m_property_readers, _id);
+    if (_id < d->m_property_count) {
+        jobject method_object = env->GetObjectArrayElement(d->m_property_readers, _id);
         Q_ASSERT(method_object != 0);
 
-        invokeMethod(env, object, method_object, _a);
+        d->invokeMethod(env, object, method_object, _a);
     }
 
-    return _id - m_property_count;
+    return _id - d->m_property_count;
 }
 
 int QtDynamicMetaObject::writeProperty(JNIEnv *env, jobject object, int _id, void **_a) const
 {
+    Q_D(const QtDynamicMetaObject);
+
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->writeProperty(env, object, _id, _a);
     if (_id < 0) return _id;
    
-    if (_id < m_property_count) {
-        jobject method_object = env->GetObjectArrayElement(m_property_writers, _id);
+    if (_id < d->m_property_count) {
+        jobject method_object = env->GetObjectArrayElement(d->m_property_writers, _id);
         if (method_object != 0) {
             // invokeMethod expects a place holder for return value, but write property meta calls
             // do not since all property writers return void by convention.
             void *a[2] = { 0, _a[0] };
-            invokeMethod(env, object, method_object, a);
+            d->invokeMethod(env, object, method_object, a);
         }
     }
 
-    return _id - m_property_count;
+    return _id - d->m_property_count;
 }
 
 int QtDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, void **_a) const
 {
+    Q_D(const QtDynamicMetaObject);
+
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->resetProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
-    if (_id < m_property_count) {
-        jobject method_object = env->GetObjectArrayElement(m_property_resetters, _id);
+    if (_id < d->m_property_count) {
+        jobject method_object = env->GetObjectArrayElement(d->m_property_resetters, _id);
         if (method_object != 0)
-            invokeMethod(env, object, method_object, _a);
+            d->invokeMethod(env, object, method_object, _a);
     }
 
-    return _id - m_property_count;
+    return _id - d->m_property_count;
 }
 
 int QtDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, int _id, void **_a) const 
 {
+    Q_D(const QtDynamicMetaObject);
+
     const QMetaObject *super_class = superClass();
     if (qtjambi_metaobject_is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->queryPropertyDesignable(env, object, _id, _a);
     if (_id < 0) return _id;
 
-    if (_id < m_property_count) {
-        jobject method_object = env->GetObjectArrayElement(m_property_designables, _id);
+    if (_id < d->m_property_count) {
+        jobject method_object = env->GetObjectArrayElement(d->m_property_designables, _id);
         if (method_object != 0)
-            invokeMethod(env, object, method_object, _a);
+            d->invokeMethod(env, object, method_object, _a);
     }
 
-    return _id - m_property_count;
+    return _id - d->m_property_count;
 }

@@ -7,6 +7,8 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QMetaObject>
 
+class QtDynamicMetaObjectPrivate;
+
 class QTJAMBI_EXPORT QtDynamicMetaObject: public QMetaObject
 {
 public:
@@ -22,22 +24,8 @@ public:
     int originalSignalOrSlotSignature(JNIEnv *env, int _id, QString *signature) const;
 
 private:
-    void initialize(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object);
-    void invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a, const QString &signature = QString()) const;
-
-    int m_method_count;
-    int m_signal_count;
-    int m_property_count;
-
-    jobjectArray m_methods;
-    jobjectArray m_signals;
-
-    jobjectArray m_property_readers;
-    jobjectArray m_property_writers;
-    jobjectArray m_property_resetters;
-    jobjectArray m_property_designables;
-
-    QString *m_original_signatures;
+    QtDynamicMetaObjectPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(QtDynamicMetaObject);
 };
 
 #endif // QDYNAMICMETAOBJECT_H
