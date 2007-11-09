@@ -13,9 +13,16 @@
 
 package com.trolltech.qt;
 
+ /**
+  * QPair keeps two generic values. They are public with the names
+  * <tt>first</tt> and <tt>second</tt>.
+  *
+  */
 public class QPair <T, S> implements Cloneable {    
     
+    /** First value of the pair. */
     public T first;
+    /** Second value of the pair. */
     public S second;
     
     /**
