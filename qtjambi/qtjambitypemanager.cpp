@@ -11,7 +11,7 @@
 **
 ****************************************************************************/
 
-#include "qtjambitypemanager.h"
+#include "qtjambitypemanager_p.h"
 #include "qtjambilink.h"
 #include "qtjambi_core.h"
 #include "qtjambi_cache.h"
@@ -252,7 +252,7 @@ void QtJambiTypeManager::destroyInternal(void *value, VariableContext ctx)
     destroyInternal() when the value is no longer in use. If you reimplement this method,
     you must also reimplement destroyInternal().
 */
-void *QtJambiTypeManager::constructInternal(const QString &internalTypeName, 
+void *QtJambiTypeManager::constructInternal(const QString &internalTypeName,
                                             VariableContext ctx,
                                             const void *copy,
                                             int metaType)
@@ -751,7 +751,7 @@ QString QtJambiTypeManager::processInternalTypeName(const QString &_internalType
 {
     int indirections = _internalTypeName.count(QLatin1Char('*'));
     if (_indirections != 0)
-        *_indirections = indirections; 
+        *_indirections = indirections;
     return _internalTypeName.left(_internalTypeName.length() - indirections);
 }
 
@@ -776,7 +776,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_in
     int value_type_pattern = valueTypePattern(javaName);
     if (((value_type_pattern & Primitive) == 0) && isQtClass(mEnvironment, strClassName, strPackage))
         type |= QtClass;
-   
+
     int metaType = QMetaType::type(internalTypeName.toLatin1().constData());
     if (metaType != QMetaType::Void) {
         type |= value_type_pattern;
@@ -786,7 +786,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_in
 
         if (isQObjectSubclass(mEnvironment, strClassName, strPackage))
             type |= QObjectSubclass;
-    }    
+    }
 
     // Pointers to value types are native pointers
     if ((type & Value) && indirections > 0)
@@ -797,7 +797,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_in
 
 int QtJambiTypeManager::intForQtEnumerator(jobject enum_value) const
 {
-    if (enum_value == 0) 
+    if (enum_value == 0)
         return 0;
 
     StaticCache *sc = StaticCache::instance(mEnvironment);
@@ -826,7 +826,7 @@ bool QtJambiTypeManager::isFlagsType(jclass clazz) const
     return mEnvironment->IsAssignableFrom(clazz, sc->QFlags.class_ref);
 }
 
-bool QtJambiTypeManager::isEnumType(const QString &className, const QString &package) const 
+bool QtJambiTypeManager::isEnumType(const QString &className, const QString &package) const
 {
     jclass clazz = resolveClass(mEnvironment, className.toUtf8().constData(), package.toUtf8().constData());
     if (clazz != 0)
@@ -1033,7 +1033,7 @@ QString QtJambiTypeManager::getExternalTypeName(const QString &internalTypeName,
     return QString();
 }
 
-jobject QtJambiTypeManager::flagsForInt(int value, const QString &className, const QString &package) const 
+jobject QtJambiTypeManager::flagsForInt(int value, const QString &className, const QString &package) const
 {
     QByteArray utfClassName = className.toUtf8();
     QByteArray utfPackage = package.toUtf8();
@@ -1044,11 +1044,11 @@ jobject QtJambiTypeManager::flagsForInt(int value, const QString &className, con
 
     jmethodID constructor = resolveMethod(mEnvironment, "<init>", "(I)V", utfClassName.constData(), utfPackage.constData());
     if (constructor != 0) {
-        flags = mEnvironment->NewObject(clazz, constructor, value);    
+        flags = mEnvironment->NewObject(clazz, constructor, value);
     } else {
         qWarning("Problem in class '%s%s': If you subclass QFlags, make sure your class implements a "
                  "constructor that takes an integer value corresponding to the binary combination of "
-                 "the flags.", 
+                 "the flags.",
                  utfPackage.constData(), utfClassName.constData());
     }
 
@@ -1056,7 +1056,7 @@ jobject QtJambiTypeManager::flagsForInt(int value, const QString &className, con
 }
 
 jobject QtJambiTypeManager::enumForInt(int value, const QString &className, const QString &package) const
-{    
+{
     QByteArray utfClassName = className.toUtf8();
     QByteArray utfPackage = package.toUtf8();
     jclass clazz = resolveClass(mEnvironment, utfClassName.constData(), utfPackage.constData());
@@ -1068,28 +1068,28 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
     jobject resolved = 0;
     if (mEnvironment->IsAssignableFrom(clazz, sc->QtEnumerator.class_ref)) {
         QByteArray utfSignature = "(I)L" + utfPackage + utfClassName + ";";
-        
+
         // Try to find the resolve method if it can be done
-        jmethodID resolve = resolveMethod(mEnvironment, 
-                                          "resolve", 
-                                          utfSignature.constData(), 
-                                          utfClassName.constData(), 
-                                          utfPackage.constData(), 
+        jmethodID resolve = resolveMethod(mEnvironment,
+                                          "resolve",
+                                          utfSignature.constData(),
+                                          utfClassName.constData(),
+                                          utfPackage.constData(),
                                           true);
 
-        
+
         if (resolve != 0) {
             resolved = mEnvironment->CallStaticObjectMethod(clazz, resolve, value);
         } else {
             qWarning("Problem in class '%s%s': If you subclass QtEnumerator, make sure your class "
                      "implements a static method resolve() which takes an int value and returns the "
-                     "enum value corresponding to the value.", 
+                     "enum value corresponding to the value.",
                      utfPackage.constData(), utfClassName.constData());
         }
 
         // Make sure we catch any exception currently on the stack
         qtjambi_exception_check(mEnvironment);
-    } 
+    }
 
     if (resolved == 0) {
         sc->resolveClass();
@@ -1172,7 +1172,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
         success = true;
     } else if (type & Enum) {
         p->l = enumForInt(*reinterpret_cast<const int *>(in), strClassName, strPackage);
-        success = p->l != 0;    
+        success = p->l != 0;
     } else if (type & Flags) {
         p->l = flagsForInt(*reinterpret_cast<const int *>(in), strClassName, strPackage);
         success = p->l != 0;
@@ -1290,7 +1290,7 @@ struct PlaceHolder {
     JObjectWrapper wrapper;
     union {
         int i;
-        void *ptr;    
+        void *ptr;
     };
 };
 
@@ -1313,7 +1313,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
     QString strPackage = package(externalTypeName);
     Type type = typeIdOfExternal(strClassName, strPackage);
     int metaType = metaTypeOfInternal(internalTypeName, ctx);
-    
+
 
     Type typemasked = Type(type & TypeMask);
     bool convert = typemasked != None;
@@ -1363,7 +1363,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
         } else {
             placeHolder.ptr = link->pointer();
             copy = &placeHolder.ptr;
-        }   
+        }
     } else if (type & Enum || type & Flags) {
         metaType = QMetaType::Int;
         placeHolder.i = intForQtEnumerator(pval->l);
@@ -1382,7 +1382,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
     } else {
         if (*out == 0) { // Construct a new one
             *out = constructInternal(internalTypeName, ctx, copy, metaType);
-        } else { // Use QDataStream to copy the value over            
+        } else { // Use QDataStream to copy the value over
             if (metaType != int(QMetaType::Void)
                 && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
 

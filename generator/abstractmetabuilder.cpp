@@ -309,7 +309,7 @@ static bool class_less_than(AbstractMetaClass *a, AbstractMetaClass *b)
 }
 
 
-void AbstractMetaBuilder::sortLists() 
+void AbstractMetaBuilder::sortLists()
 {
    qSort(m_meta_classes.begin(), m_meta_classes.end(), class_less_than);
    foreach (AbstractMetaClass *cls, m_meta_classes) {
@@ -392,9 +392,9 @@ bool AbstractMetaBuilder::build()
             continue;
 
         if ((entry->isValue() || entry->isObject())
-            && !m_meta_classes.findClass(name)) {
+            && !m_meta_classes.findClass(entry->qualifiedCppName())) {
             ReportHandler::warning(QString("type '%1' is specified in typesystem, but not defined. This could potentially lead to compilation errors.")
-                                   .arg(name)); 
+                                   .arg(entry->qualifiedCppName()));
         }
 
         if (entry->isEnum()) {
@@ -488,7 +488,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
 {
     QString namespace_name = (!m_namespace_prefix.isEmpty() ? m_namespace_prefix + "::" : QString()) + namespace_item->name();
     NamespaceTypeEntry *type = TypeDatabase::instance()->findNamespaceType(namespace_name);
-   
+
     if (TypeDatabase::instance()->isClassRejected(namespace_name)) {
         m_rejected_classes.insert(namespace_name, GenerationDisabled);
         return 0;
@@ -525,10 +525,10 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
         addAbstractMetaClass(mjc);
     }
 
-    // Traverse namespaces recursively    
+    // Traverse namespaces recursively
     QList<NamespaceModelItem> inner_namespaces = namespace_item->namespaceMap().values();
     foreach (const NamespaceModelItem &ni, inner_namespaces)
-        traverseNamespace(ni);    
+        traverseNamespace(ni);
     m_current_class = 0;
 
 
@@ -844,7 +844,7 @@ AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, Abs
     }
 
     AbstractMetaEnum *meta_enum = createMetaEnum();
-    if (   enumsDeclarations.contains(qualified_name) 
+    if (   enumsDeclarations.contains(qualified_name)
         || enumsDeclarations.contains(enum_name)) {
         meta_enum->setHasQEnumsDeclaration(true);
     }
@@ -2220,21 +2220,21 @@ AbstractMetaClassList AbstractMetaBuilder::classesTopologicalSorted() const
     QHash<AbstractMetaClass*, QSet<AbstractMetaClass* >* > hash;
     foreach (AbstractMetaClass *cls, m_meta_classes) {
         QSet<AbstractMetaClass* > *depends = new QSet<AbstractMetaClass* >();
-        
+
         if (cls->baseClass())
             depends->insert(cls->baseClass());
-             
+
         foreach (AbstractMetaClass *interface, cls->interfaces()) {
             depends->insert(interface);
         }
-        
+
         if (depends->empty()) {
             noDependency.insert(cls);
         } else {
             hash.insert(cls, depends);
-        }       
+        }
     }
-  
+
     while (!noDependency.empty()) {
         foreach (AbstractMetaClass *cls, noDependency.values()) {
             if(!cls->isInterface())
@@ -2253,7 +2253,7 @@ AbstractMetaClassList AbstractMetaBuilder::classesTopologicalSorted() const
             }
         }
     }
-    
+
     if (!noDependency.empty() || !hash.empty()) {
         qWarning("dependency graph was cyclic.");
     }
