@@ -392,6 +392,11 @@ bool AbstractMetaBuilder::build()
             continue;
 
         if ((entry->isValue() || entry->isObject())
+            && !entry->isString()
+            && !entry->isChar()
+            && !entry->isContainer()
+            && !entry->isCustom()
+            && !entry->isVariant()
             && !m_meta_classes.findClass(entry->qualifiedCppName())) {
             ReportHandler::warning(QString("type '%1' is specified in typesystem, but not defined. This could potentially lead to compilation errors.")
                                    .arg(entry->qualifiedCppName()));

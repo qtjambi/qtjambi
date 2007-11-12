@@ -8,8 +8,6 @@
 
   <rejection class="QAbstractUndoItem"/>    
   <rejection class="QAccessibleApplication"/>
-  <rejection class="QAccessibleBridgeFactoryInterface"/>
-  <rejection class="QAccessibleBridgePlugin"/>
   <rejection class="QAccessibleFactoryInterface"/>
   <rejection class="QAccessiblePlugin"/>
   <rejection class="QBrushData"/>
@@ -17,11 +15,7 @@
   <rejection class="QIconEngineFactoryInterfaceV2"/>
   <rejection class="QIconEnginePluginV2"/>
   <rejection class="QIconEnginePlugin"/>
-  <rejection class="QImageIOHandlerFactoryInterface"/>
-  <rejection class="QImageIOPlugin"/>
   <rejection class="QImageTextKeyLang"/>
-  <rejection class="QInputContextFactoryInterface"/>
-  <rejection class="QInputContextPlugin"/>
   <rejection class="QItemEditorCreator"/>
   <rejection class="QLibrary"/>
   <rejection class="QLinkedList"/>
@@ -30,17 +24,11 @@
   <rejection class="QLinkedListNode"/>
   <rejection class="QMimeSource"/>
   <rejection class="QPainterPathPrivate"/>
-  <rejection class="QPictureFormatInterface"/>
-  <rejection class="QPictureFormatPlugin"/>
   <rejection class="QRegionData"/>
   <rejection class="QStandardItemEditorCreator"/>
-  <rejection class="QStyleFactoryInterface"/>
   <rejection class="QStyleOptionQ3DockWindow"/>
   <rejection class="QStyleOptionQ3ListView"/>
   <rejection class="QStyleOptionQ3ListViewItem"/>
-  <rejection class="QStylePlugin"/>
-  <rejection class="QTextCodecFactoryInterface"/>
-  <rejection class="QTextCodecPlugin"/>
   <rejection class="QTextFrameLayoutData"/>
   <rejection class="QUpdateLaterEvent"/>
   <rejection class="QVFbHeader"/>
@@ -1226,9 +1214,6 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QAccessibleBridgeFactoryInterface"/>
-  <object-type name="QAccessibleBridgePlugin"/>
-  <object-type name="QAccessibleFactoryInterface"/>
   <object-type name="QAccessible2Interface"/>
   <object-type name="QAccessibleTableInterface">
     <modify-function signature="qAccessibleTableCastHelper()" remove="all"/>
@@ -1238,7 +1223,6 @@
   <object-type name="QAccessibleInterfaceEx"/>
   <object-type name="QAccessibleObject"/>
   <object-type name="QAccessibleObjectEx"/>
-  <object-type name="QAccessiblePlugin"/>
   <object-type name="QAccessibleWidget"/>
   <object-type name="QAccessibleWidgetEx"/>  
   <object-type name="QActionGroup" />
@@ -1434,8 +1418,6 @@
         </modify-argument>    
     </modify-function>    
   </object-type>
-  <object-type name="QImageIOHandlerFactoryInterface"/>
-  <object-type name="QImageIOPlugin"/>
   <object-type name="QImageWriter">
   <modify-function signature="setDevice(QIODevice*)">
     <modify-argument index="1">
@@ -1446,8 +1428,6 @@
       <modify-function signature="setDescription(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QInputContextFactory"/>
-  <object-type name="QInputContextFactoryInterface"/>
-  <object-type name="QInputContextPlugin"/>
   <object-type name="QIntValidator"/>
   <object-type name="QItemDelegate">  
     <modify-function signature="doLayout(QStyleOptionViewItem,QRect*,QRect*,QRect*,bool)const">
@@ -1693,8 +1673,6 @@
     <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>  
   <object-type name="QPainterPathStroker"/>
-  <object-type name="QPictureFormatInterface"/>
-  <object-type name="QPictureFormatPlugin"/>
  
   <object-type name="QPictureIO">
       <modify-function signature="QPictureIO(QIODevice*,const char*)">
@@ -1825,12 +1803,10 @@
   </object-type>
   <object-type name="QStringListModel"/>
   <object-type name="QStyleFactory"/>
-  <object-type name="QStyleFactoryInterface"/>
   <object-type name="QStyleHintReturn"/>
   <object-type name="QStyleHintReturnVariant"/>
   <object-type name="QStyleHintReturnMask"/>
   <object-type name="QStylePainter"/>
-  <object-type name="QStylePlugin"/>
   <object-type name="QSyntaxHighlighter">
     <modify-function signature="setCurrentBlockUserData(QTextBlockUserData*)">
         <modify-argument index="1">

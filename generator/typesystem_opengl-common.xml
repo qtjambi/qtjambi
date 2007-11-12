@@ -1,7 +1,6 @@
 <?xml-stylesheet type="text/xsl" href="merge.xsl"?>
 <typesystem>
   <rejection class="QGLWidget" function-name="setMouseTracking"/>
-  <rejection class="QGLColormap::QGLColormapData" />
   
   <enum-type name="QGL::FormatOption" flags="QGL::FormatOptions"/>
   <enum-type name="QGLFormat::OpenGLVersionFlag" flags="QGLFormat::OpenGLVersionFlags"/>
@@ -23,7 +22,6 @@
     <modify-function signature="operator=(QGLFormat)" remove="all"/>
   </value-type>
   
-  <object-type name="QGLColormapData"/>
   <object-type name="QGLContext">  
     <modify-function signature="getProcAddress(QString)const">
         <remove />
@@ -52,6 +50,7 @@
     <modify-function signature="setFormat(QGLFormat)" remove="all"/>
   </object-type>  
  
+
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QGLColormap::QGLColormapData\*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />  
   <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />
