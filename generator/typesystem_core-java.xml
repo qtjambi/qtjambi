@@ -1342,6 +1342,7 @@
           <inject-code class="java" position="end">
               <argument-map index="1" meta-name="%1"/>
             if (__rcObjectForObject.containsKey(%1)) __rcObjectForObject.remove(%1);
+            if (__rcWidgetForObject.containsKey(%1)) __rcWidgetForObject.remove(%1);
           </inject-code>
       </modify-function>
 

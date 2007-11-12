@@ -567,4 +567,6 @@ class QSignalMapper___ extends QSignalMapper {
     
     private java.util.Hashtable<QObject, QObject> __rcObjectForObject = new java.util.Hashtable<QObject, QObject>();
     
+    private java.util.Hashtable<QObject, Object> __rcWidgetForObject = new java.util.Hashtable<QObject, Object>();
+    
 }// class
