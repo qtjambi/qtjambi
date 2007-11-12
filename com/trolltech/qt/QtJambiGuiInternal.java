@@ -59,7 +59,8 @@ public class QtJambiGuiInternal {
     private static void endPaint(QWidget widget) {
         QPainter p = painters.get(widget);
         if (p != null) {
-            p.end();
+            if (p.isActive())
+                p.end();
             p.dispose();
             painters.remove(widget);
         }

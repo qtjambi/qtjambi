@@ -39,7 +39,3 @@ win32:PRECOMPILED_HEADER = qtjambi_core.h
 macx:CONFIG -= precompile_header
 
 QT = core
-
-sanitycheck:{
-	DEFINES += QTJAMBI_SANITY_CHECK
-}

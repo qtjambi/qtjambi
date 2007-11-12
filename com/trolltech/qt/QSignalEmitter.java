@@ -22,14 +22,14 @@ import java.util.*;
 /**
  * This class implements the functionality to emit signals. All
  * objects in QtJambi can emit signals, so the class is inherited by
- * QtJambiObject. 
+ * QtJambiObject.
  */
 public class QSignalEmitter {
 
     static class ResolvedSignal {
-        Class<?> types[] = new Class[0];        
+        Class<?> types[] = new Class[0];
         int arrayDimensions[] = new int[0];
-        String name = ""; 
+        String name = "";
     }
 
     /* friendly */ static ResolvedSignal resolveSignal(Field field, Class<?> declaringClass) {
@@ -72,12 +72,12 @@ public class QSignalEmitter {
                 }
             }
         }
-        
+
         return resolvedSignal;
     }
 
-    
-    
+
+
     /**
      * Internal superclass of all signals
      * @exclude
@@ -93,7 +93,7 @@ public class QSignalEmitter {
         private boolean             connectedToCpp      = false;
         private boolean             inDisconnect        = false;
         private boolean 			inEmit				= false;
-        
+
         @SuppressWarnings("unused")
         private int                 cppConnections      = 0;
 
@@ -109,7 +109,7 @@ public class QSignalEmitter {
             public int      convertTypes[]  = null;
             public long     slotId          = 0;
             public Object   args[]          = null;
-            
+
 
             public static final int DIRECT_CONNECTION = 0x0001;
             public static final int QUEUED_CONNECTION = 0x0002;
@@ -159,16 +159,16 @@ public class QSignalEmitter {
             }
         } // public class Connection
 
-        
+
         /**
          * Returns the object containing this signal
-         * 
+         *
          * @exclude
          */
         public final QSignalEmitter containingObject() {
             return QSignalEmitter.this;
         }
-        
+
         /**
          * Connects the signal to a method in an object. Whenever it is emitted, the method will be invoked
          * on the given object.
@@ -177,14 +177,14 @@ public class QSignalEmitter {
          * @param method    The signature of the method excluding return type and argument names, such as "setText(String)".
          * @param type      One of the connection types defined in the Qt interface.
          * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
-         * @throws java.lang.RuntimeException Raised if the signal object could not be successfully introspected or if the 
+         * @throws java.lang.RuntimeException Raised if the signal object could not be successfully introspected or if the
          *                                    signatures of the signal and slot are incompatible.
          */
         public final void connect(Object receiver, String method,
                                      Qt.ConnectionType type) {
             if (receiver == null)
                 throw new NullPointerException("Receiver must be non-null");
-            
+
             Method slotMethod = QtJambiInternal.lookupSlot(receiver, method);
             if (slotMethod == null)
                 throw new QNoSuchSlotException(receiver, method);
@@ -251,9 +251,9 @@ public class QSignalEmitter {
         }
 
         /**
-         * Creates an auto connection from this signal to another. Whenever this signal is emitted, it will cause the second 
+         * Creates an auto connection from this signal to another. Whenever this signal is emitted, it will cause the second
          * signal to be emitted as well.
-         * 
+         *
          * @param signalOut The second signal. This will be emitted whenever this signal is emitted.
          * @throws RuntimeException Raised if either of the signal objects could not be successfully be introspected or if their
          *                                    signatures are incompatible.
@@ -263,9 +263,9 @@ public class QSignalEmitter {
         }
 
         /**
-         * Creates a connection from this signal to another. Whenever this signal is emitted, it will cause the second 
+         * Creates a connection from this signal to another. Whenever this signal is emitted, it will cause the second
          * signal to be emitted as well.
-         * 
+         *
          * @param signalOut The second signal. This will be emitted whenever this signal is emitted.
          * @param type      One of the connection types defined in the Qt interface.
          * @throws RuntimeException Raised if either of the signal objects could not be successfully be introspected or if their
@@ -307,13 +307,13 @@ public class QSignalEmitter {
 
         /**
          * Returns the full name of the signal, on the form "package.class.signalName"
-         * 
+         *
          *  @return The fully qualified name of the signal
          */
         public final String fullName() {
             return declaringClassName() + "." + name();
         }
-        
+
         /**
          * @return True if the signal is generated (declared in a generated class)
          */
@@ -334,37 +334,37 @@ public class QSignalEmitter {
             return (connection.slot.getName().equals(name())
                     && connection.receiver == QSignalEmitter.this
                     && connection.slot.getDeclaringClass().equals(declaringClass));
-        }               
+        }
 
         private void connectSignalMethod(Method slotMethod,
                                             Object receiver,
                                             int connectionType) {
             if (slotMethod.getAnnotation(QtBlockedSlot.class) != null)
                 throw new QNoSuchSlotException(slotMethod.toString());
-            
-            if (!matchSlot(slotMethod))
-                throw new RuntimeException("Signature of signal '" + fullName() + "' does not match slot '" + slotMethod.toString() + "'"); 
 
-            addConnection(receiver, slotMethod, connectionType);            
+            if (!matchSlot(slotMethod))
+                throw new RuntimeException("Signature of signal '" + fullName() + "' does not match slot '" + slotMethod.toString() + "'");
+
+            addConnection(receiver, slotMethod, connectionType);
         }
 
         /**
          * Array dimensions for each of the signal arguments in order of declaration. Used in combination with
          * resolveSignal(). An array dimension of 0 means the argument is not of an array type.
-         *  
+         *
          * @return An array of integers indicating the number of dimensions of each of the signal arguments
          */
         /* friendly */ int[] arrayDimensions() {
             resolveSignal();
             return arrayDimensions;
-        }            
-                
+        }
+
         /**
          * Base types of all signal arguments in order of declaration. If the argument is of an array type,
          * then the base type of the array is returned by resolveSignal, and the actual number of dimensions
          * of the array can be retrieved using arrayDimensions(). If the argument is not of an array type,
          * the argument's type is returned.
-         * 
+         *
          * @return An array of Class objects specifying the base type of each of the signal arguments.
          */
         /* friendly */ Class<?>[] resolveSignal() {
@@ -382,13 +382,13 @@ public class QSignalEmitter {
                             if (sig == this) {
                                 found = true;
                                 declaringClass = field.getDeclaringClass();
-                                
+
                                 ResolvedSignal resolvedSignal = QSignalEmitter.resolveSignal(field, declaringClass);
-                                                                
+
                                 name = resolvedSignal.name;
                                 types = resolvedSignal.types;
                                 arrayDimensions = resolvedSignal.arrayDimensions;
-                                
+
                                 break;
                             }
                         }
@@ -413,45 +413,45 @@ public class QSignalEmitter {
         private String signalParameters() {
             if (signalParameters == null)
                 signalParameters = QtJambiInternal.signalParameters(this);
-            
+
             return signalParameters;
         }
-        
-        
+
+
         // Cache string containing cpp signature for signal
         private String cppSignalSignature = null;
         private String cppSignalSignature() {
             if (cppSignalSignature == null)
                 cppSignalSignature = QtJambiInternal.cppSignalSignature(this);
-            
+
             return cppSignalSignature;
         }
-        
+
         /**
          * @exclude
          */
         protected synchronized final void emit_helper(Object... args) {
         	if (inEmit) // Recursion block
-        		return;        	        	
+        		return;
 
             if (QSignalEmitter.this.signalsBlocked())
                 return;
 
             List<Connection> cons = connections;
             List<Connection> toRemove = null;
-        
+
             // If the signal is generated, it will automatically be connected
-            // to the original C++ function for the signal, so the native 
-            // signal will be emitted by this mechanism. In other cases, we 
+            // to the original C++ function for the signal, so the native
+            // signal will be emitted by this mechanism. In other cases, we
             // need to make magic and dynamically fake a signal emission
             // in c++ for the signal.
             if (!isGenerated() && QSignalEmitter.this instanceof QObject) {
                 QtJambiInternal.emitNativeSignal((QObject) QSignalEmitter.this, name() + "(" + signalParameters() + ")", cppSignalSignature(), args);
             }
-            
+
             inEmit = true;
             for (Connection c : cons) {
-            	
+
                 // If the receiver has been deleted we take the connection out of the list
                 if (c.receiver instanceof QtJambiObject && ((QtJambiObject)c.receiver).nativeId() == 0) {
                     if (toRemove == null)
@@ -463,7 +463,7 @@ public class QSignalEmitter {
                 if (inCppEmission && slotIsCppEmit(c))
                     continue;
 
-            	                
+
                 if (args.length == c.convertTypes.length) {
                     c.args = args;
                 } else {
@@ -490,8 +490,8 @@ public class QSignalEmitter {
                         boolean updateSender = c.receiver instanceof QObject && QSignalEmitter.this instanceof QObject;
                         long oldSender = 0;
                         if (updateSender) {
-                            oldSender = QtJambiInternal.swapQObjectSender(((QObject) c.receiver).nativeId(),
-                                                                           ((QObject) QSignalEmitter.this).nativeId(), true);
+                            oldSender = QtJambiInternal.setQObjectSender(((QObject) c.receiver).nativeId(),
+                                                                         ((QObject) QSignalEmitter.this).nativeId());
                         }
 
                         try {
@@ -502,14 +502,14 @@ public class QSignalEmitter {
                         }
 
                         if (updateSender) {
-                            QtJambiInternal.swapQObjectSender(((QObject) c.receiver).nativeId(),
-                                                              oldSender, false);
+                            QtJambiInternal.resetQObjectSender(((QObject) c.receiver).nativeId(),
+                                                              oldSender);
                         }
 
                     } catch (InvocationTargetException e) {
                         System.err.println("Exception caught after invoking slot");
                         e.getCause().printStackTrace();
-                        
+
                     } catch (Exception e) {
                         System.err.println("Exception caught after invoking slot:");
                         e.printStackTrace();
@@ -521,7 +521,7 @@ public class QSignalEmitter {
                     if(c.receiver instanceof QObject && QSignalEmitter.this instanceof QObject) {
                         sender = (QObject) QSignalEmitter.this;
                     }
-                    
+
                     QMetaCallEvent event = new QMetaCallEvent(c, sender, c.args);
                     QObject eventReceiver = null;
                     if (c.receiver instanceof QObject)
@@ -535,7 +535,7 @@ public class QSignalEmitter {
 
             // Remove the ones marked for removal..
             removeConnection_helper(toRemove);
-            
+
             inEmit = false;
         }
 
@@ -562,12 +562,12 @@ public class QSignalEmitter {
         private boolean matchTwoTypes(Class<?> slotArgument, Class<?> signalArgument, int signalArrayDims) {
             return matchTwoTypes(slotArgument, signalArgument, signalArrayDims, false);
         }
-        
+
         private boolean matchTwoTypes(Class<?> slotArgument,
-                                      Class<?> signalArgument, 
+                                      Class<?> signalArgument,
                                       int signalArrayDims,
                                       boolean wasArray) {
-        
+
             if (slotArgument.isArray() || signalArrayDims < 0) {
                 int slotArrayDims = 0;
                 while (slotArgument.isArray()) {
@@ -625,7 +625,7 @@ public class QSignalEmitter {
             inDisconnect = true;
 
             if (!connectedToCpp) {
-                connectedToCpp = true;                
+                connectedToCpp = true;
                 __qt_signalInitialization(name());
             }
 
@@ -670,9 +670,9 @@ public class QSignalEmitter {
             }
         }
     }
-    
+
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * no parameters.
      */
     public final class Signal0 extends AbstractSignal {
@@ -689,9 +689,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * one parameter.
-     * 
+     *
      * @param <A> The type of the single parameter of the signal.
      */
     public final class Signal1<A> extends AbstractSignal {
@@ -709,9 +709,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * two parameters.
-     * 
+     *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      */
@@ -729,9 +729,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * three parameters.
-     * 
+     *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      * @param <C> The type of the third parameter of the signal.
@@ -750,9 +750,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * four parameters.
-     * 
+     *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      * @param <C> The type of the third parameter of the signal.
@@ -773,9 +773,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * five parameters.
-     * 
+     *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      * @param <C> The type of the third parameter of the signal.
@@ -796,9 +796,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * six parameters.
-     * 
+     *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      * @param <C> The type of the third parameter of the signal.
@@ -820,9 +820,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * seven parameters.
-     * 
+     *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      * @param <C> The type of the third parameter of the signal.
@@ -845,9 +845,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * eight parameters.
-     * 
+     *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      * @param <C> The type of the third parameter of the signal.
@@ -873,9 +873,9 @@ public class QSignalEmitter {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes  
+     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
      * nine parameters.
-     * 
+     *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      * @param <C> The type of the third parameter of the signal.
@@ -900,15 +900,15 @@ public class QSignalEmitter {
             emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
     }
-    
-    
+
+
     /**
      * Returns the thread affinity of the object. If this is an instance of
      * QObject the thread that owns the object is returned. For non-QObjects
      * the current thread is returned.
      */
     public Thread thread() { return Thread.currentThread(); }
-        
+
     /**
      * Returns true if this QSignalEmitter is blocked. If it is
      * blocked, no signals will be emitted.
@@ -916,7 +916,7 @@ public class QSignalEmitter {
     public boolean signalsBlocked() {
         return signalsBlocked;
     }
-    
+
     /**
      * Blocks this QSignalEmitter from emiting its signals.
      */
@@ -925,35 +925,35 @@ public class QSignalEmitter {
         signalsBlocked = b;
         return returned;
     }
-    
+
     /**
-     * @exclude 
+     * @exclude
      */
-    protected boolean __qt_signalInitialization(String name) { 
+    protected boolean __qt_signalInitialization(String name) {
         return false;
     }
-    
-    /** 
+
+    /**
      * If a signal is currently being emitted (e.g. if this method is called from within a slot that has been invoked by a signal),
-     * then this function will return the object containing the signal that was emitted. 
+     * then this function will return the object containing the signal that was emitted.
      * @return Current sender, or null if a signal is not currently being emitted.
      */
     public static QSignalEmitter signalSender() {
         return currentSender.get();
     }
-    
+
     /**
      * Disconnect all connections originating in this signal emitter.
      */
     public final void disconnect() {
         disconnect(null);
     }
-    
+
     /**
      * Disconnect all connections made from this signal emitter to a specific object.
-     * 
+     *
      * @param other The receiver to disconnect, or null to disconnect all receivers
-     */ 
+     */
     public final void disconnect(Object other) {
         QtJambiInternal.disconnect(this, other);
     }

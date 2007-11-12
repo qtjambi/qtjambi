@@ -34,37 +34,6 @@ static void qtjambi_messagehandler_proxy(QtMsgType type, const char *message);
 
 class QThreadData;
 
-class QObjectPrivateAccessor : public QObjectData
-{
-public:
-    virtual ~QObjectPrivateAccessor() { }
-    QList<QObject *> unused;
-    QThreadData *thread;
-    QObject *currentSender;
-
-    int currentSenderSignalIdStart;
-    int currentSenderSignalIdEnd;
-    QList< QPointer<QObject> > eventFilters;
-    struct ExtraData
-    {
-#ifndef QT_NO_USERDATA
-        QVector<QObjectUserData *> userData;
-#endif
-        QList<QByteArray> propertyNames;
-        QList<QVariant> propertyValues;
-    };
-    ExtraData *extraData;
-    mutable int connectedSignals;
-    QString objectName;
-
-};
-
-class QObjectAccessor {
-public:
-    virtual ~QObjectAccessor() { }
-    QObjectPrivateAccessor *d_ptr;
-};
-
 extern "C" JNIEXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize(JNIEnv *, jclass))
 {
@@ -84,44 +53,71 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QThreadManager_releaseNativeResour
 
 
 extern "C" JNIEXPORT jlong JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_nativeSwapQObjectSender)
-(JNIEnv *env, jclass, jlong r, jlong s, jboolean return_previous_sender)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_setQObjectSender)
+(JNIEnv *, jclass, jlong r, jlong s)
 {
-    Q_UNUSED(env)
     QObject *the_receiver = reinterpret_cast<QObject *>(qtjambi_from_jlong(r));
     QObject *the_sender = reinterpret_cast<QObject *>(qtjambi_from_jlong(s));
     if (the_receiver == 0)
         return 0;
 
-    QObjectPrivateAccessor *d = (reinterpret_cast<QObjectAccessor *>(the_receiver))->d_ptr;
-    if (d == 0)
-        return 0;
+    int id = -1;
+    void *args[] = {
+        the_receiver,
+        the_sender,
+        &id,            // the signal id, unknown right now...
+        0,              // return value for old sender...
+        0               // return value new sender
+    };
 
-#ifdef QTJAMBI_SANITY_CHECK
-    Q_ASSERT(sizeof(QObjectPrivateAccessor) == sizeof(QObjectPrivate));
-    Q_ASSERT(d->currentSender == ((QObjectPrivate *) d)->currentSender);
-#endif
+    if (!QInternal::callFunction(QInternal::SetQObjectSender, args)) {
+        qWarning("QtJambiInternal::setQObjectSender: internal function call failed...");
+    }
 
-    QObject *prev = d->currentSender;
-    d->currentSender = the_sender;
+    void **keep = new void*[2];
+    keep[0] = args[3];
+    keep[1] = args[4];
 
-    return return_previous_sender ? long(prev) : 0L;
+    return (jlong) keep;
+}
+
+
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_resetQObjectSender)
+(JNIEnv *, jclass, jlong r, jlong keep)
+{
+    QObject *receiver = reinterpret_cast<QObject *>(qtjambi_from_jlong(r));
+    void **senders = (void **) keep;
+
+    void *args[] = {
+        receiver,
+        senders[0],
+        senders[1]
+    };
+
+    if (!QInternal::callFunction(QInternal::ResetQObjectSender, args))
+        qWarning("QtJambiInternal::resetQObjectSender: internal function call failed...");
+
+    delete [] senders;
 }
 
 
 extern "C" JNIEXPORT jobject JNICALL
-
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_sender(JNIEnv *env, jclass, jobject obj))
 {
     QObject *qobject = qtjambi_to_qobject(env, obj);
-    QObjectPrivateAccessor *d = (reinterpret_cast<QObjectAccessor *>(qobject))->d_ptr;
 
-#ifdef QTJAMBI_SANITY_CHECK
-    Q_ASSERT(sizeof(QObjectPrivateAccessor) == sizeof(QObjectPrivate));
-    Q_ASSERT(d->currentSender == ((QObjectPrivate *) d)->currentSender);
-#endif
+    void *args[] = {
+        qobject,
+        0
+    };
 
-    return qtjambi_from_qobject(env, d->currentSender, "QObject", "com.trolltech.qt.core");
+    if (!QInternal::callFunction(QInternal::GetQObjectSender, args)) {
+        qWarning("QtJambiInternal::sender: internal function call failed...");
+        return 0;
+    }
+
+    return qtjambi_from_qobject(env, (QObject *) args[1], "QObject", "com.trolltech.qt.core");
 }
 
 
@@ -309,19 +305,19 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_emitNativeSignal)
 
         QString signal_cpp_signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(signalCppSignature));
         int mox = mo->indexOfSignal(signal_cpp_signature.toLatin1().constData());
-        
+
         QtJambiTypeManager manager(env);
         QString signal_signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(signalSignature));
         QVector<QString> type_list = manager.parseSignature(signal_signature);
 
         jobjectArray args = reinterpret_cast<jobjectArray>(a);
-        QVector<void *> input_arguments(type_list.size() - 1, 0);        
+        QVector<void *> input_arguments(type_list.size() - 1, 0);
         for (int i=0;i<type_list.size()-1;++i) {
-            jvalue *jv = new jvalue; 
-            jv->l = env->GetObjectArrayElement(args, i);     
+            jvalue *jv = new jvalue;
+            jv->l = env->GetObjectArrayElement(args, i);
             input_arguments[i] = jv;
         }
-        
+
         QVector<void *> converted_arguments = manager.initExternalToInternal(input_arguments, type_list);
         if (converted_arguments.size() > 0) {
             void **_a = converted_arguments.data();
@@ -366,14 +362,14 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_internalTypeName)
 (JNIEnv *env, jclass, jstring s, jint varContext)
 {
     QString signature = qtjambi_to_qstring(env, s);
-    
+
     int prefix_end = signature.indexOf("(");
     QString prefix;
     if (prefix_end >= 0) {
         prefix = signature.mid(0, prefix_end+1);
         signature = signature.mid(prefix_end+1);
     }
-    
+
     int postfix_start = signature.lastIndexOf(")");
     QString postfix;
     if (postfix_start >= 0) {
@@ -420,7 +416,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_properties)
     for (int i=0; i<count; ++i) {
         QMetaProperty property = metaObject->property(i);
 
-        jobject javaProperty = env->NewObject(sc->QtProperty.class_ref, sc->QtProperty.constructor, 
+        jobject javaProperty = env->NewObject(sc->QtProperty.class_ref, sc->QtProperty.constructor,
                                               property.isWritable(), property.isDesignable(_this), property.isResettable(),
                                               qtjambi_from_qstring(env, property.name()));
         Q_ASSERT(javaProperty != 0);
