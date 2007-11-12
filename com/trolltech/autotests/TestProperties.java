@@ -10,8 +10,11 @@ import com.trolltech.qt.QtProperty;
 import com.trolltech.qt.QtPropertyDesignable;
 import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyResetter;
+import com.trolltech.qt.QtPropertyUser;
 import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.gui.QAbstractButton;
+import com.trolltech.qt.gui.QCheckBox;
 
 public class TestProperties extends QApplicationTest {
     
@@ -69,6 +72,18 @@ public class TestProperties extends QApplicationTest {
         @QtPropertyDesignable(value="test")
         public final int testDesignableProperty() { return 0; }        
         public final void setTestDesignableProperty(int i) { }
+
+        @QtPropertyReader
+        @QtPropertyUser
+        public final int annotatedUserProperty() { return 0; }
+        
+        @QtPropertyWriter
+        public final void setAnnotatedUserProperty(int i) {}
+        
+        @QtPropertyUser
+        public final int myUserProperty() { return 0; }        
+        public final void setMyUserProperty(int i) {}
+        
         
         public boolean test() {
             return isDesignableTest;
@@ -79,14 +94,16 @@ public class TestProperties extends QApplicationTest {
         private boolean writable;
         private boolean resettable;
         private boolean designable;
+        private boolean user;
         private String name;
         
-        private ExpectedValues(String name, boolean writable, boolean resettable, boolean designable)
+        private ExpectedValues(String name, boolean writable, boolean resettable, boolean designable, boolean user)
         {
             this.name = name;        
             this.writable = writable;
             this.resettable = resettable;
             this.designable = designable;
+            this.user = user;
         }
     }
     
@@ -94,17 +111,19 @@ public class TestProperties extends QApplicationTest {
     public void testProperties() {
         ExpectedValues expectedValues[] = 
         {                 
-                new ExpectedValues("ordinaryProperty", true, false, true),
-                new ExpectedValues("annotatedProperty", true, false, true),
-                new ExpectedValues("ordinaryReadOnlyProperty", false, false, true),
-                new ExpectedValues("readOnlyProperty", false, false, true),
-                new ExpectedValues("ordinaryNonDesignableProperty", true, false, false),
-                new ExpectedValues("annotatedNonDesignableProperty", true, false, false),
-                new ExpectedValues("booleanProperty", true, false, true),
-                new ExpectedValues("otherBooleanProperty", true, false, true),
-                new ExpectedValues("resettableProperty", true, true, true),
-                new ExpectedValues("objectName", true, false, true),
-                new ExpectedValues("testDesignableProperty", true, false, true)
+                new ExpectedValues("ordinaryProperty", true, false, true, false),
+                new ExpectedValues("annotatedProperty", true, false, true, false),
+                new ExpectedValues("ordinaryReadOnlyProperty", false, false, true, false),
+                new ExpectedValues("readOnlyProperty", false, false, true, false),
+                new ExpectedValues("ordinaryNonDesignableProperty", true, false, false, false),
+                new ExpectedValues("annotatedNonDesignableProperty", true, false, false, false),
+                new ExpectedValues("booleanProperty", true, false, true, false),
+                new ExpectedValues("otherBooleanProperty", true, false, true, false),
+                new ExpectedValues("resettableProperty", true, true, true, false),
+                new ExpectedValues("objectName", true, false, true, false),
+                new ExpectedValues("testDesignableProperty", true, false, true, false),
+                new ExpectedValues("myUserProperty", true, false, true, true),
+                new ExpectedValues("annotatedUserProperty", true, false, true, true)
         };
                 
         FullOfProperties fop = new FullOfProperties(true);
@@ -118,6 +137,7 @@ public class TestProperties extends QApplicationTest {
                     assertEquals(e.writable, property.isWritable());
                     assertEquals(e.resettable, property.isResettable());
                     assertEquals(e.designable, property.isDesignable());
+                    assertEquals(e.user, property.isUser());
                     found = true;
                     break;
                 }
@@ -150,6 +170,15 @@ public class TestProperties extends QApplicationTest {
             
             assertFalse(property.isDesignable());          
         }
+    }
+    
+    @Test
+    public void testUserPropertyInQt() {
+        QAbstractButton b = new QCheckBox();
+        
+        QtProperty property = b.userProperty();
+        assertEquals("checked", property.name());
+        assertEquals(true, property.isUser());
     }
     
 }

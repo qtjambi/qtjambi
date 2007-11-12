@@ -1245,7 +1245,7 @@ void StaticCache::resolveQtProperty_internal()
     QtProperty.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtProperty"));
     Q_ASSERT(QtProperty.class_ref);
 
-    QtProperty.constructor = env->GetMethodID(QtProperty.class_ref, "<init>", "(ZZZLjava/lang/String;)V");
+    QtProperty.constructor = env->GetMethodID(QtProperty.class_ref, "<init>", "(ZZZZLjava/lang/String;)V");
     Q_ASSERT(QtProperty.constructor);
 }
 

@@ -52,6 +52,12 @@ class QObject___ extends QObject {
     }
 
     @com.trolltech.qt.QtBlockedSlot
+    public final QtProperty userProperty() 
+    {
+        return com.trolltech.qt.QtJambiInternal.userProperty(nativeId());
+    }
+
+    @com.trolltech.qt.QtBlockedSlot
     public final java.util.List<com.trolltech.qt.QtProperty> properties() 
     {
         return com.trolltech.qt.QtJambiInternal.properties(nativeId());

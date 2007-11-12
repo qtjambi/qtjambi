@@ -18,9 +18,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * QtPropertyDesignable specifies wether a proprety
- * is suitable for editing in a GUI builder (e.g., the Qt Designer).
- * It is the read method of the property that must be annotated.
+ * QtPropertyDesignable specifies whether a proprety
+ * is suitable for editing in a GUI builder (e.g. the Qt Designer). The default is true.
+ * This annotation should be used with the read method of the property.  
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

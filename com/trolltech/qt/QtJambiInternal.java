@@ -770,18 +770,20 @@ public class QtJambiInternal {
         public String originalSignatures[];
     }
 
-    private final static int MethodAccessPrivate = 0x00;
-    private final static int MethodAccessProtected = 0x01;
-    private final static int MethodAccessPublic = 0x02;
-    private final static int MethodSignal = 0x04;
-    private final static int MethodSlot = 0x8;
-    private final static int PropertyReadable = 0x1;
-    private final static int PropertyWritable = 0x2;
-    private final static int PropertyResettable = 0x4;
-    private final static int PropertyEnumOrFlag = 0x8;
-    private final static int PropertyDesignable = 0x1000;
-    private final static int PropertyResolveDesignable = 0x2000;
-    private final static int PropertyStored = 0x10000;
+    private final static int MethodAccessPrivate                    = 0x0;
+    private final static int MethodAccessProtected                  = 0x1;
+    private final static int MethodAccessPublic                     = 0x2;
+    private final static int MethodSignal                           = 0x4;
+    private final static int MethodSlot                             = 0x8;
+    
+    private final static int PropertyReadable                       = 0x00000001;
+    private final static int PropertyWritable                       = 0x00000002;
+private final static int PropertyResettable                         = 0x00000004;
+    private final static int PropertyEnumOrFlag                     = 0x00000008;
+    private final static int PropertyDesignable                     = 0x00001000;
+    private final static int PropertyResolveDesignable              = 0x00002000;
+    private final static int PropertyStored                         = 0x00010000;
+    private final static int PropertyUser                           = 0x00100000;
 
 
     public static boolean isGeneratedClass(Class<?> clazz) {
@@ -996,6 +998,10 @@ public class QtJambiInternal {
     private static boolean isBoolean(Class<?> type) {
         return (type == Boolean.class || type == Boolean.TYPE);
     }
+    
+    private static Boolean isUser(Method m) {
+        return (m.getAnnotation(QtPropertyUser.class) != null);
+    }
 
 
     private static Method notBogus(Method method, String propertyName, Class<?> paramType) {
@@ -1028,6 +1034,7 @@ public class QtJambiInternal {
         Hashtable<String, Method> propertyWriters = new Hashtable<String, Method>();
         Hashtable<String, Object> propertyDesignables = new Hashtable<String, Object>();
         Hashtable<String, Method> propertyResetters = new Hashtable<String, Method>();
+        Hashtable<String, Boolean> propertyUser = new Hashtable<String, Boolean>();
 
         // First we get all enums actually declared in the class
         Hashtable<String, Class<?>> enums = new Hashtable<String, Class<?>>();
@@ -1077,6 +1084,7 @@ public class QtJambiInternal {
 
                     propertyReaders.put(reader.name(), declaredMethod);
                     propertyDesignables.put(reader.name(), isDesignable(declaredMethod, clazz));
+                    propertyUser.put(reader.name(), isUser(declaredMethod));
                 }
             }
 
@@ -1113,9 +1121,9 @@ public class QtJambiInternal {
             if (writer == null
                 && reader == null // reader can't be a writer, cause the signature doesn't match, just an optimization
                 && declaredMethod.getName().startsWith("set")
-                && declaredMethod.getName().charAt(3) == Character.toUpperCase(declaredMethod.getName().charAt(3))
+                && Character.isUpperCase(declaredMethod.getName().charAt(3))
                 && isValidSetter(declaredMethod)) {
-
+                
                 Class<?> paramType = declaredMethod.getParameterTypes()[0];
                 String propertyName = Character.toLowerCase(declaredMethod.getName().charAt(3))
                                     + declaredMethod.getName().substring(4);
@@ -1139,6 +1147,7 @@ public class QtJambiInternal {
                             propertyWriters.put(propertyName, declaredMethod);
 
                             propertyDesignables.put(propertyName, isDesignable(readerMethod, clazz));
+                            propertyUser.put(propertyName, isUser(readerMethod));
                         }
                     }
                 }
@@ -1285,6 +1294,7 @@ public class QtJambiInternal {
                 Method writer = propertyWriters.get(propertyNames[i]);
                 Method resetter = propertyResetters.get(propertyNames[i]);
                 Object designableVariant = propertyDesignables.get(propertyNames[i]);
+                boolean isUser = propertyUser.get(propertyNames[i]);
 
                 if (writer != null && !reader.getReturnType().isAssignableFrom(writer.getParameterTypes()[0])) {
                     System.err.println("QtJambiInternal.buildMetaData: Writer for property "
@@ -1320,7 +1330,8 @@ public class QtJambiInternal {
                 metaData.metaData[metaDataOffset++] = PropertyReadable | PropertyStored | designableFlags
                     | (writer != null ? PropertyWritable : 0)
                     | (resetter != null ? PropertyResettable : 0)
-                    | (isEnumOrFlags ? PropertyEnumOrFlag : 0);
+                    | (isEnumOrFlags ? PropertyEnumOrFlag : 0)
+                    | (isUser ? PropertyUser : 0);
 
                 metaData.propertyReadersArray[i] = reader;
                 metaData.propertyWritersArray[i] = writer;
@@ -1419,6 +1430,18 @@ public class QtJambiInternal {
         }
 
         return -1;
+    }
+    
+    public static QtProperty userProperty(long nativeId) 
+    {
+        List<QtProperty> properties = properties(nativeId);
+        
+        for (QtProperty property : properties) {
+            if (property.isUser()) 
+                return property;
+        }
+        
+        return null;
     }
 
     private static String bunchOfClassNamesInARow(Class<?> classes[]) {
