@@ -56,6 +56,17 @@
 	<delete file="qtjambi-designer.jar"/>
         <delete dir="bin"/>
 	<delete dir="lib"/>
+        <delete dir="cpp"/>
+        <delete includeEmptyDirs="true">
+          <fileset dir="." includes="**/*.o"/>
+          <fileset dir="." includes="**/moc_*.cpp"/>
+          <fileset dir="." includes="**/*.obj"/>
+          <fileset dir="." includes="**/*.pdb"/>
+          <fileset dir="." includes="**/*.ilk"/>
+          <fileset dir="." includes="**/release"/>
+          <fileset dir="." includes="**/debug"/>
+          <fileset dir="." includes="**/Makefile*"/>
+        </delete>
     </target>
 
     <target name="qmake.qtjambi"
