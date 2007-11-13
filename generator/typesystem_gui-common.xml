@@ -3997,7 +3997,6 @@
   <object-type name="QApplication">
     <extra-includes>
       <include file-name="QBasicTimer" location="global"/>
-      <include file-name="qtjambi_cache.h" location="local"/>
       <include file-name="QFont" location="global"/>
       <include file-name="QFontMetrics" location="global"/>
       <include file-name="QPalette" location="global"/>
