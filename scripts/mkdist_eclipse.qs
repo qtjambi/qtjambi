@@ -32,7 +32,6 @@ var jarFilesDir = new Dir(jarFilesDest);
 jarFilesDir.mkdirs(jarFilesDest);
 
 // ### Fixed paths (needed to build with mingw, but we should implement a search for vs i suppose)
-const midlPath = find_executable("midl.exe");
 const vcPath = System.getenv("VSINSTALLDIR") + "/vc/bin;"
                + System.getenv("VSINSTALLDIR") + "/common7/ide";
 const vcInclude = System.getenv("VSINSTALLDIR") + "/vc/include;"
@@ -311,6 +310,7 @@ function workAroundMissingMidl() {
     System.setenv("PATH", vcPath + ";" + currentPath);
     System.setenv("INCLUDE", vcInclude);
 
+    const midlPath = find_executable("midl.exe");
     execute([midlPath, "tmp/obj/release_shared/qtdesigner.idl", "/nologo", "/tlb", "tmp/obj/release_shared/qtdesigner.tlb"]);
 
     System.setenv("PATH", currentPath);
