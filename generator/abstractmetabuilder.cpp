@@ -634,10 +634,13 @@ int AbstractMetaBuilder::figureOutEnumValue(const QString &stringValue,
                 v = ev->value();
                 matched = true;
 
-            } else {
-                ReportHandler::warning("unhandled enum value: " + s + " in "
-                                       + meta_enum->enclosingClass()->name() + "::"
-                                       + meta_enum->name());
+            } else { 
+                if (meta_enum)
+                    ReportHandler::warning("unhandled enum value: " + s + " in "
+                                           + meta_enum->enclosingClass()->name() + "::"
+                                           + meta_enum->name());
+                else
+                    ReportHandler::warning("unhandled enum value: Unknown enum");
             }
         }
 
@@ -2221,9 +2224,12 @@ AbstractMetaClassList AbstractMetaBuilder::classesTopologicalSorted() const
 {
     AbstractMetaClassList res;
 
+    AbstractMetaClassList classes = m_meta_classes;
+    qSort(classes);
+
     QSet<AbstractMetaClass*> noDependency;
     QHash<AbstractMetaClass*, QSet<AbstractMetaClass* >* > hash;
-    foreach (AbstractMetaClass *cls, m_meta_classes) {
+    foreach (AbstractMetaClass *cls, classes) {
         QSet<AbstractMetaClass* > *depends = new QSet<AbstractMetaClass* >();
 
         if (cls->baseClass())
@@ -2262,5 +2268,6 @@ AbstractMetaClassList AbstractMetaBuilder::classesTopologicalSorted() const
     if (!noDependency.empty() || !hash.empty()) {
         qWarning("dependency graph was cyclic.");
     }
+
     return res;
 }
