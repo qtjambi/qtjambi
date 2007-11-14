@@ -448,6 +448,7 @@ public:
 
     QString signature() const;
     QString targetLangSignature(bool minimal = false) const;
+    bool shouldReturnThisObject() const { return QLatin1String("this") == argumentReplaced(0); }
 
     bool isConstant() const { return m_constant; }
     void setConstant(bool constant) { m_constant = constant; }
