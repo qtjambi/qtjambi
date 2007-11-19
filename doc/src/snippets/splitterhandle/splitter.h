@@ -8,13 +8,18 @@
 class QPaintEvent;
 
 //! [0]
-class Splitter : public QSplitter
+public class Splitter extends QSplitter
 {
-public:
-    Splitter(Qt::Orientation orientation, QWidget *parent = 0);
 
-protected:
-    QSplitterHandle *createHandle();
+    public Splitter(Qt.Orientation orientation, QWidget parent)
+    {
+        ...
+    }
+
+    protected QSplitterHandle createHandle()
+    {
+        ...
+    }
 };
 //! [0]
 
