@@ -40,6 +40,8 @@ public:
                                 Option option = NoOption,
                                 int numArguments = -1);
 
+    static inline AbstractMetaFunctionList signalFunctions(const AbstractMetaClass *cls);
+
     QString signalWrapperPrefix() const { return "__qt_signalwrapper_"; }
 
     bool shouldGenerate(const AbstractMetaClass *java_class) const {
@@ -58,6 +60,13 @@ public:
     PriGenerator *priGenerator;
 
 };
+
+inline AbstractMetaFunctionList CppGenerator::signalFunctions(const AbstractMetaClass *cls) {
+    return cls->queryFunctions(AbstractMetaClass::Signals
+                               | AbstractMetaClass::Visible
+                               | AbstractMetaClass::NotRemovedFromTargetLang
+                               | AbstractMetaClass::ClassImplements);
+}
 
 
 #endif // CPPGENERATOR_H

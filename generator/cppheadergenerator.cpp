@@ -38,16 +38,14 @@ void CppHeaderGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaF
 void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const AbstractMetaFunction *signal)
 {
     s << "    ";
-    writeFunctionSignature(s, signal, 0, signalWrapperPrefix(), 
+    writeFunctionSignature(s, signal, 0, signalWrapperPrefix(),
                            Option(OriginalName | OriginalTypeDescription | IncludeDefaultExpression));
     s << ";" << endl;
 }
 
 void CppHeaderGenerator::writeSignalWrappers(QTextStream &s, const AbstractMetaClass *java_class)
 {
-    AbstractMetaFunctionList signal_funcs =
-        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromTargetLang);
-
+    AbstractMetaFunctionList signal_funcs = signalFunctions(java_class);
     if (signal_funcs.size() > 0) {
         s << endl << "public slots:" << endl;
         foreach (const AbstractMetaFunction *signal, signal_funcs) {

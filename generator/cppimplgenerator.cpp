@@ -451,8 +451,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     writeToStringFunction(s, java_class);
 
     // Signals
-    AbstractMetaFunctionList signal_functions =
-        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromTargetLang);
+    AbstractMetaFunctionList signal_functions = signalFunctions(java_class);
     for (int i=0; i<signal_functions.size(); ++i)
         writeSignalFunction(s, signal_functions.at(i), java_class, i);
 
@@ -2774,7 +2773,7 @@ void CppImplGenerator::writeDefaultConstructedValues_helper(QSet<QString> &value
     foreach (AbstractMetaArgument *arg, func->arguments()) {
         AbstractMetaType *type = arg->type();
         if (type->isValue() && hasDefaultConstructor(type))
-            values << type->typeEntry()->qualifiedCppName();        
+            values << type->typeEntry()->qualifiedCppName();
     }
 }
 
