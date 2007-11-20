@@ -949,8 +949,14 @@ class QClassPathEngine extends QAbstractFileEngine
 	        classpaths = new HashSet<String>();
 	
 	        String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
-	        for (String p : paths)
-	            classpaths.add(makeUrl(p));        
+
+		int k=0;
+	        for (String p : paths) {		    
+		    if (p.trim().length() > 0) {
+			k++; // count all paths, invalid and valid
+			classpaths.add(makeUrl(p));        		
+		    }
+		}
 	
 	        try {
 		    ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -967,8 +973,10 @@ class QClassPathEngine extends QAbstractFileEngine
 	                    int bang = f.indexOf("!");                    
 	                    if (bang >= 0)
 	                        f = f.substring(0, bang);
-	                                       
-	                    classpaths.add(f);
+
+			    
+	                    if (f.trim().length() > 0)
+				classpaths.add(f);			    
 	                } catch (Exception e) {
 	                    e.printStackTrace();
 	                }
@@ -976,6 +984,11 @@ class QClassPathEngine extends QAbstractFileEngine
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
+
+		// If there are no paths set in java.class.path, we do what Java does and
+		// add the current directory
+		if (k == 0)
+		    classpaths.add("file:" + QDir.currentPath());		
 	    }
     }
 }
