@@ -953,7 +953,11 @@ class QClassPathEngine extends QAbstractFileEngine
 	            classpaths.add(makeUrl(p));        
 	
 	        try {
-	            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
+		    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		    if (loader == null) 
+			loader = QClassPathFileEngineHandler.class.getClassLoader();
+
+	            Enumeration<URL> urls = loader.getResources("META-INF/MANIFEST.MF");
 	            while (urls.hasMoreElements()) {
 	                URL url = urls.nextElement();
 	                                
