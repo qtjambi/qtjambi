@@ -34,7 +34,7 @@
     \section1 Resolving Native Libraries
 
     The Qt Jambi native libraries are located in the \c lib directory
-    in the Qt Jambi directory. If you have a prebuildt package, the Qt
+    in the Qt Jambi directory. If you have a prebuilt package, the Qt
     libraries will also be available there. In case you have a source
     package, you will find the necessary Qt libraries in the \c lib
     directory in the Qt directory.
@@ -43,7 +43,7 @@
     the libraries with your application, you can simply include them
     in a JAR bundle, which is then placed in the classpath.
 
-    The Qt and Qt Jambi native libreries may depend on other
+    The Qt and Qt Jambi native libraries may depend on other
     libraries, which must be distributed as well. It is possible to
     specify dependent libraries by listing them in a file called \c
     qt_system_libs, which should be located somewhere in the classpath
@@ -53,7 +53,7 @@
     order listed in the file or on the command line.
 
     We present a table with the necessary libraries below:
-    
+
     \table 75%
         \header \o Platform \o Native Libraries
         \row
@@ -67,7 +67,16 @@
             \o msvcr71.dll and msvcp71.dll
         \row
             \o MSVC 2005
-            \o msvcr80.dll and msvcp80.dll
+            \o When deploying for MSVC 2005, you have two possibilities:
+
+            \list
+                \o You can ship the vc_redist.exe application, which comes with MSVC.
+                   This will install the necessary libraries on the system.
+                \o You can copy the entire \c{Microsoft.VC80.CRT} directory or just its contents,
+                   which has the MSVC \c{dll}'s and manifest, into every
+                   directory in your distribution that contains libraries. 
+                   Note that for plugins, the entire directory must be copied.
+            \endlist
         \row
             \o Open Source Windows Version
             \o mingwm10.dll
@@ -102,7 +111,7 @@
 
     To generate code that maps a C++ library onto an equivalent Java
     API, \QJ provides its own generator. For more information, please
-    see the \l {The \QJ Generator} documentation.
+    see the \l {The Qt Jambi Generator}{Qt Jambi generator} documentation.
 
     \section1 Including Resources
 
@@ -152,7 +161,6 @@
 
     \section1 Creating an Executable .jar File
 
-
     \omit (ant is not officially supported yet)
     There are two approaches for creating a \c .jar file for your
     application. You can create it manually from the command line
@@ -160,17 +168,17 @@
     qt_system_libs files. Qt Jambi also comes with an \c ant
     target for \c jar.
 
-    We recommend the use of \c ant. Still, we do inlcude a separate
+    We recommend the use of \c ant. Still, we do include a separate
     section that explains how to use the \c jar tool directly if you
-    perfer that. If you are in doubt of which files you need to
+    prefer that. If you are in doubt of which files you need to
     include in the JAR bundle, please refer to \l {Resolving Native
     Libraries}.
     \endomit
 
-    \omit (This is not publically available yet)
+    \omit (This is not publicly available yet)
     \section2 Creating a File With Ant
-    
-    (Which I should probably do berfore I start writing about it,
+
+    (Which I should probably do before I start writing about it,
      eh). Go through xml file.
 
     \quotefromfile snippets/application.xml
@@ -212,19 +220,16 @@
     \l{Resolving Native Libraries}.
 
     Assuming your current directory is the Jambi directory, you can
-    create a \c .jar file on a Linux system using debug libraries with:
-
-    \omit
-        This uses debuglibs. Create on Windows instead.
-        Need to have a separate example for binary package.
-    \endomit
+    create a \c .jar file on a Linux system with:
 
     \code
-    jar mcf Manifest.text application.jar com/trolltech/images/*png com/trolltech/examples/Application.class
-    -C lib libcom_trolltech_qt_core_debuglib.so -C lib libcom_trolltech_qt_gui_debuglib.so
-    com/trolltech/qt/*class com/trolltech/qt/gui/*class com/trolltech/qt/core/*class
-    -C $QTDIR/lib libQtGui.so.4 -C $QTDIR/lib libQtCore.so.4
-    qt_system_libs -C /usr/lib libstdc++.so.6 -C lib libqtjambi_debuglib.so
+    jar mcf Manifest.text application.jar com/trolltech/images/*png
+    com/trolltech/examples/Application.class -C lib
+    libcom_trolltech_qt_core.so -C lib libcom_trolltech_qt_gui.so
+    com/trolltech/qt/*class com/trolltech/qt/gui/*class
+    com/trolltech/qt/core/*class -C $QTDIR/lib libQtGui.so.4 -C
+    $QTDIR/lib libQtCore.so.4 qt_system_libs -C /usr/lib
+    libstdc++.so.6 -C lib libqtjambi.so
     \endcode
 
     This example uses a source package. If you have a prebuilt
@@ -243,7 +248,7 @@
     Java installation must be present, of course):
 
     \code
-        java -Dcom.trolltech.qt.debug -jar application.jar
+        java -jar application.jar
     \endcode
 
     \section1 Creating a Web Start Application
