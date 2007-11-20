@@ -10,7 +10,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-
+#define QT_NO_STL
 #include "abstractgameobject.h"
 #include "gameaction.h"
 #include "gameanimation.h"
