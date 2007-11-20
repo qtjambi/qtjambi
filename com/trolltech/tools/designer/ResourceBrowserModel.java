@@ -22,11 +22,16 @@ public class ResourceBrowserModel extends QAbstractItemModel {
 
     public static final QSize PIXMAP_SIZE = new QSize(16, 16);
     private static final String DEFAULT_PACKAGE = "<default package>";
-    private static final QPixmap FOLDER_PIXMAP =
-            new QPixmap("classpath:com/trolltech/tools/designer/folder.png").
-                    scaled(PIXMAP_SIZE,
-                            Qt.AspectRatioMode.KeepAspectRatio,
-                            Qt.TransformationMode.SmoothTransformation);
+    private static final QPixmap FOLDER_PIXMAP;
+    static {
+	QPixmap pm = new QPixmap("classpath:com/trolltech/tools/designer/folder.png");
+	if (pm.isNull()) {
+	    FOLDER_PIXMAP = pm; // invalid
+	    System.err.println("Qt Jambi Designer: folder.png not found in com/trolltech/tools/designer!");
+	} else {
+	    FOLDER_PIXMAP = pm.scaled(PIXMAP_SIZE, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation);
+	}
+    }
 
     private static class NamedItem implements Comparable {
         public NamedItem(String name) {
