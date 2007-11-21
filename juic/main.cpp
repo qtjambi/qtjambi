@@ -260,7 +260,7 @@ void showHelp(const char *appName)
             "                           files and traverses the directories specified. The\n"
             "                           paths should be separated by '%c'.\n"
             "  -e <paths>               when used with 'cp' argument, excludes the files\n"
-            "                           and does not traverse the directories specified. The\n" 
+            "                           and does not traverse the directories specified. The\n"
             "                           paths should be separated by '%c'.\n"
             "  -a                       update files regardless of modification date.\n"
             "\n", appName, ENV_SPLITTER, ENV_SPLITTER);
