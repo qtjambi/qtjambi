@@ -22,6 +22,8 @@ import java.util.*;
 public class CollidingMice extends QWidget {
 
     static final int MOUSE_COUNT = 7;
+    private Signal0 stop = new Signal0();
+    private Signal0 start = new Signal0();
 
     public static void main(String args[]) {
         QApplication.initialize(args);
@@ -78,13 +80,11 @@ public class CollidingMice extends QWidget {
                                generator.nextInt(256));
             rotate(generator.nextDouble() * 360);
 
-            QObject timer = new QObject(parent) {
-                @Override
-                protected void timerEvent(QTimerEvent arg__0) {
-                    move();
-                }
-            };
-            timer.startTimer(1000 / 33);
+            QTimer timer = new QTimer();
+            timer.start(1000/33);
+            timer.timeout.connect(this, "move()");
+            start.connect(timer, "start()");
+            stop.connect(timer, "stop()");
         }
 
         private double adjust = 0.5;
