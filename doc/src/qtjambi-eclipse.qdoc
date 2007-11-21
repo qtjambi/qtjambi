@@ -58,10 +58,11 @@
 
     \section1 Creating Qt Jambi Projects
 
-    To create a new Qt Jambi project, you simply select \gui New
-    Project in the \gui File menu. Then select the \gui {Qt Jambi Gui
-    Project} option from the Qt Jambi folder and click the \gui Next
-    button.
+    To create a new Qt Jambi project, you simply select \gui {New
+    Project} in the \gui File menu. Then select the \gui {Qt Jambi
+    Project (Using Designer Form)} option from the Qt Jambi folder and
+    click the \gui Next button. If you want to create a without a
+    designer form, you can select \gui {Qt Jambi Project}.
 
     This will open a wizard guiding you through the steps of creating
     a new Qt Jambi project. Most of these are identical to the steps
