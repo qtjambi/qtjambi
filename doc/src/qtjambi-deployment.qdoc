@@ -70,13 +70,17 @@
             \o When deploying for MSVC 2005, you have two possibilities:
 
             \list
-                \o You can ship the vc_redist.exe application, which comes with MSVC.
-                   This will install the necessary libraries on the system.
+                \o You can ship the vc_redist.exe application. This application is available
+                   from Microsoft's web pages. It must be run before any Qt Jambi applications. 
                 \o You can copy the entire \c{Microsoft.VC80.CRT} directory or just its contents,
                    which has the MSVC \c{dll}'s and manifest, into every
                    directory in your distribution that contains libraries. 
-                   Note that for plugins, the entire directory must be copied.
+                   For plugins, the entire directory must be copied,
+                   and some Qt Jambi libraries - those that have a name starting with \c{com_trolltech...}
+                   - need the \c{dll}s and manifest in their own directory.
             \endlist
+
+            See the \l{Creating a .jar file for MSVC 2005} section for an example.
         \row
             \o Open Source Windows Version
             \o mingwm10.dll
@@ -213,7 +217,7 @@
     The qt_system_libs file on Linux will read:
 
     \code
-       libstdc++.so.6
+       libstdc++.so.5
     \endcode
 
     The necessary system libraries on other platforms are given in
@@ -229,7 +233,7 @@
     com/trolltech/qt/*class com/trolltech/qt/gui/*class
     com/trolltech/qt/core/*class -C $QTDIR/lib libQtGui.so.4 -C
     $QTDIR/lib libQtCore.so.4 qt_system_libs -C /usr/lib
-    libstdc++.so.6 -C lib libqtjambi.so
+    libstdc++.so.5 -C lib libqtjambi.so
     \endcode
 
     This example uses a source package. If you have a prebuilt
@@ -250,6 +254,39 @@
     \code
         java -jar application.jar
     \endcode
+
+    \section2 Creating a .jar file for MSVC 2005
+
+    Since the deployment of MSVC 2005 applications is somewhat
+    involved, we here show the contents of a \c{.jar} file. This is
+    not the complete contents of the file, but shows the MSVC
+    relevant contents.
+
+    \code
+      QtCore4.dll
+      QtGui4.dll
+      qtjambi.dll
+      com_trolltech_qt_core.dll
+      com_trolltech_qt_gui.dll
+      msvcr80.dll
+      msvcp80.dll
+      msvcm80.dll
+      Microsoft.VC80.CRT.manifest
+      plugins/imageformats/qjpeg4.dll
+      plugins/imageformats/Microsoft.VC80.CRT/msvcr80.dll
+      plugins/imageformats/Microsoft.VC80.CRT/msvcp80.dll
+      plugins/imageformats/Microsoft.VC80.CRT/msvcm80.dll
+      plugins/imageformats/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest
+      qt_system_libs
+      
+      ...
+    \endcode
+
+    The \c{qt_system_libs} file must include the \c{msvc*80.dll} files and
+    the manifest. If an application uses other plugins, they are
+    added in the same manner. See also the \l{Including Plugins}
+    section. Other files can be added as described in the previous
+    section.
 
     \section1 Creating a Web Start Application
 
