@@ -79,8 +79,8 @@ public class QSignalEmitter {
 
 
     /**
-     * Internal superclass of all signals
-     * @exclude
+     * QSignalEmitter is a class used internally by Qt Jambi.
+     * You should never have to concern yourself with this class.
      */
     public abstract class AbstractSignal {
 
