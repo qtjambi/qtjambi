@@ -181,8 +181,12 @@ bool FileOut::done() {
     if( !fileEqual ) {
         if( !FileOut::dummy ) {
             QDir dir(info.absolutePath());
-            dir.mkpath(dir.absolutePath());
-
+            if (!dir.mkpath(dir.absolutePath())) {
+                ReportHandler::warning(QString("unable to create directory '%1'")
+                                       .arg(dir.absolutePath()));
+                return false;
+            }
+            
             QFile fileWrite(name);
             if (!fileWrite.open(QIODevice::WriteOnly)) {
                 ReportHandler::warning(QString("failed to open file '%1' for writing")
