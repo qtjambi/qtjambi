@@ -405,18 +405,14 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
     if (qt_object == 0)
         return 0;
 
-    int metaType = QMetaType::Void;
-
-    if (makeCopyOfValueTypes) {
-        QString java_full_name = QString::fromLatin1("%1%2").arg(packageName).arg(className);
-        QString qt_name = getQtName(java_full_name);
-        metaType = QMetaType::type(qt_name.toLatin1());
-    }
+    QString java_full_name = QString::fromLatin1("%1%2").arg(packageName).arg(className);
+    QString qt_name = getQtName(java_full_name);
+    int metaType = QMetaType::type(qt_name.toLatin1());
 
     // If it's not a value type, we just link to the pointer directly.
     void *copy = 0;
     QString java_name = QLatin1String(packageName) + QLatin1String(className);
-    if (metaType == QMetaType::Void) {
+    if (!makeCopyOfValueTypes || metaType == QMetaType::Void) {
         // If the object is constructed in Java, then we can look it up
         QtJambiLink *link = QtJambiLink::findLinkForUserObject(qt_object);
         if (link != 0)
@@ -448,7 +444,11 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
     if (returned == 0)
         return 0;
 
-    if (QtJambiLink *link = qtjambi_construct_object(env, returned, copy, metaType, java_name, false)) {        
+    if (QtJambiLink *link = qtjambi_construct_object(env, returned, copy, metaType, java_name, false)) {
+        // If the type is copied in, we own the pointer
+        if (metaType != QMetaType::Void && makeCopyOfValueTypes)
+            link->setJavaOwnership(env, link->javaObject(env));
+
         if (deletionPolicy(java_name) == DeletionPolicyDeleteInMainThread)
             link->setDeleteInMainThread(true);
     } else {

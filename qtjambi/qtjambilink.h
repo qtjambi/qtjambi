@@ -128,7 +128,7 @@ public:
     void unregisterSubObject(void *);
 
     inline bool hasBeenFinalized() const { return m_has_been_finalized; }
-    inline bool readyForDelete() const { return !isQObject() || (hasBeenFinalized() && qobjectDeleted()); }
+    inline bool readyForDelete() const { return (!deleteInMainThread() && !isQObject()) || (isQObject() && hasBeenFinalized() && qobjectDeleted()); }
     inline bool qobjectDeleted() const { return m_qobject_deleted; }
     inline PtrDestructorFunction destructorFunction() const { return m_destructor_function; }
     inline bool connectedToJava() const { return m_connected_to_java; }
