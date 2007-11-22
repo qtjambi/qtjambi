@@ -82,9 +82,6 @@
         java -cp qtjambi.jar:. com.trolltech.launcher.Launcher 
     \endcode
 
-    Note that the \c {-jar} option must be given the complete file
-    path to the \c .jar file.
-
     \section1 Building Qt Jambi from a Source Package
 
     This section describes how to build Qt Jambi from source. We first
