@@ -21,8 +21,9 @@ class QtJambiDestructorEvent : public QEvent
 {
 
 public:
-    QtJambiDestructorEvent(void *pointer, int meta_type, int ownership, PtrDestructorFunction destructor_function)
+    QtJambiDestructorEvent(QtJambiLink *link, void *pointer, int meta_type, int ownership, PtrDestructorFunction destructor_function)
 	: QEvent( QEvent::Type(513) ), 
+      m_link(link),
 	  m_pointer(pointer),
       m_meta_type(meta_type),
 	  m_ownership(ownership),
@@ -37,9 +38,15 @@ public:
 	        m_destructor_function(m_pointer);
 	    }
 	    m_pointer = 0; 
+
+        // This cannot be deleted before now, since the type may have a virtual destructor and may be a shell class object,
+        // which means it will try to access its link. But everything is ready for
+        // deletion, as this was done when the java object was finalized.
+        delete m_link;
     }
     
 private:
+    QtJambiLink *m_link;
     void * m_pointer;
     int m_meta_type;
     int m_ownership;
