@@ -89,8 +89,20 @@ public class StyleSheet extends QMainWindow {
         }
 
         void on_styleCombo_activated(final String styleName) {
-            QApplication.setStyle(styleName);
+            QStyle style = QStyleFactory.create(styleName);
+            setStyle(style, main);
+            setStyle(style, this);
             ui.applyButton.setEnabled(false);
+        }
+
+        void setStyle(QStyle style, QObject object)
+        {
+            for (QObject obj : object.children()) {
+                if (obj instanceof QWidget) {
+                    ((QWidget) obj).setStyle(style);
+                    setStyle(style, obj);
+                }
+            }
         }
 
         void on_styleSheetCombo_activated(final String sheetName) {
