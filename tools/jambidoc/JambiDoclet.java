@@ -290,8 +290,9 @@ public class JambiDoclet
 
 		int loc = currentDocs.indexOf("$$"+signature);
 		if (loc != -1) {
-			documentation = currentDocs.substring(
-					loc + signature.length() + 6, currentDocs.indexOf("*/", loc));
+                    int startPos = currentDocs.indexOf("/**", loc + signature.length()) + 3;
+                    documentation = currentDocs.substring(startPos,
+                                                          currentDocs.indexOf("*/", startPos));
 		} else {
 			if (method.name().equals("compareTo")) {
                             documentation = "{@inheritDoc}";
