@@ -8,20 +8,17 @@ class QString;
 class QStringList;
 
 //! [0]
-class ButtonWidget : public QWidget
+class ButtonWidget extends QWidget
 {
-    Q_OBJECT
+    ...
 
-public:
-    ButtonWidget(QStringList texts, QWidget *parent = 0);
+    public ButtonWidget(List<String> texts) {...};
 
-signals:
-    void clicked(const QString &text);
+    public Signal1<String> clicked = new Qignal1<String>();
 
-private:
-    QSignalMapper *signalMapper;
+    private QSignalMapper signalMapper;
 //! [0] //! [1]
-};
+}
 //! [1]
 
 #endif

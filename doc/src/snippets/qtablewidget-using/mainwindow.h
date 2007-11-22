@@ -23,7 +23,7 @@ private:
 
     QAction *removeAction;
 //! [0]
-    QTableWidget *tableWidget;
+    QTableWidget tableWidget;
 //! [0]
 };
 

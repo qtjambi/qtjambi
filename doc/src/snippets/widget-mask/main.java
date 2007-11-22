@@ -1,0 +1,21 @@
+import com.trolltech.qt.*;
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+
+public class main
+{
+
+    public static void main(String args[])
+    {
+        QApplication.initialize(args);
+    //! [0]
+        QLabel topLevelLabel = new QLabel();
+        QPixmap pixmap = new QPixmap("classpath:tux.png");
+        topLevelLabel.setPixmap(pixmap);
+        topLevelLabel.setMask(pixmap.mask());
+    //! [0]
+        topLevelLabel.show();
+
+        QApplication.exec();
+    }
+}
