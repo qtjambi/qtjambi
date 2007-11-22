@@ -134,7 +134,7 @@ void QDocGenerator::writeOverload(QTextStream &s,
     QString signature = functionSignature(java_function,
                                           included_attributes,
                                           excluded_attributes,
-                                          SkipName,
+                                          NoOption,
                                           arg_count);
 
     s << "<method java=\"" << protect(signature.toUtf8()) << "\"" << endl
