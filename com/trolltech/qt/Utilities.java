@@ -233,8 +233,9 @@ public class Utilities {
                     debug.success("Loaded(" + libraryPath + ") using deploy path, as " + lib);
                     LOADED_LIBS.add(lib);
                     return true;
+                } else {
+                    debug.message("   File not found: " + libraryPath);
                 }
-
             } catch (Throwable e) {
                 debug.message(e);
             }
