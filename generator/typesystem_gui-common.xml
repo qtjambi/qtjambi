@@ -701,7 +701,7 @@
   </value-type>
   <value-type name="QAbstractTextDocumentLayout::Selection"/>
 
-  <value-type name="QPixmap">
+  <value-type name="QPixmap" delete-in-main-thread="yes">
     <modify-function signature="operator=(QPixmap)" remove="all"/>
     <modify-function signature="operator!()const" remove="all"/>
     <modify-function signature="QPixmap(const char **)" access="private"/>
@@ -836,7 +836,7 @@
     <include file-name="QTextEdit" location="global"/>
   </value-type>
 
-  <value-type name="QFont">
+  <value-type name="QFont" delete-in-main-thread="true">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>    
@@ -3853,7 +3853,7 @@
     </modify-function>
   </object-type>
 
-  <object-type name="QPrinter">
+  <object-type name="QPrinter" delete-in-main-thread="true">
     <modify-function signature="setEngines(QPrintEngine*,QPaintEngine*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcPrintEngine"/>
