@@ -77,13 +77,13 @@
     </target>
 
     <target name="qmake.generator"
-            depends="tasks"
+            depends="tasks, merge.typesystem"
             description="Run qmake on the generator project.">
 	<qmake config="release" dir="generator"/>
     </target>
 
     <target name="compile.generator" 
-	    depends="tasks, qmake.generator,merge.typesystem"
+	    depends="tasks, qmake.generator"
             description="Compile the Qt Jambi generator.">
         <make dir="generator" />
     </target>
