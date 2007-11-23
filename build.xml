@@ -73,7 +73,7 @@
             depends="tasks"
             description="Run qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
-	<qmake recursive="true" config="${config} sanitycheck"/>
+	<qmake recursive="true"/>
     </target>
 
     <target name="qmake.generator"
