@@ -1144,9 +1144,7 @@
   <interface-type name="QGraphicsItem">
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
    
-    <modify-function signature="children()const">	
-       <rename to="childItems"/>
-    </modify-function>
+    <modify-function signature="children()const" remove="all"/>	
     <modify-function signature="installSceneEventFilter(QGraphicsItem *)">
         <modify-argument index="1">
             <!-- Safe to ignore because items in a scene are memory managed by the scene --> 
@@ -2283,6 +2281,9 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+
+    <modify-function signature="render(QPainter *, const QRectF&amp;, const QRect&amp;, Qt::AspectRatioMode)" rename="renderView"/>
+
     
     <modify-function signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*)">
         <modify-argument index="2">
