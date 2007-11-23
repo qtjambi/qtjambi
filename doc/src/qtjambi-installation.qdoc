@@ -47,12 +47,15 @@
     To run the examples or launcher, the classpath must also include
     the Qt Jambi directory.
 
-    The QT_PLUGIN_PATH variable must contain the path to the \c
-    plugins directory in the Qt Jambi directory. Qt Jambi will also
-    search for plugins in .jar files to which the system property \c
-    {com.trolltech.qt.pluginjars} contains paths.
-
-    Finally, Qt Jambi must be enabled to find the native libraries:
+    Qt Jambi must be enabled to find the native libraries.  The Qt
+    Jambi libraries is a set of class files contained in the
+    qtjambi.jar file and a set of native libraries. Using the default
+    package structure from the prebuilt package the native libraries
+    will be automatically found by Qt Jambi, but it is also possible to change
+    this structure and manually specify where to find libraries. This
+    is done by specifying either the JVM system property
+    \c{-Djava.library.path=[path_to_libraries]} or setting the
+    following environment variable:
 
     \table 100%
         \header \o Platform \o Comment
@@ -74,6 +77,16 @@
 
     \endtable
 
+    Some of Qt's functionality is loaded via native plugins. This
+    includes for instance support for jpeg images. In order for Qt
+    Jambi to locate these plugins the QT_PLUGIN_PATH environment
+    variable need to point to the location of $JAMBIDIR/plugins.  It
+    is also possible to deploy plugins as part of a .jar file rather
+    than on the local filesystem by putting the contents of the
+    $JAMBIDIR/plugins folder into a .jar file and starting java with
+    the system property
+    \c{-Dcom.trolltech.qt.pluginjars=[name_of_jarfile]}. 
+
     You are then ready to run Qt Jambi applications. For instance, the
     launcher can be run like this from the Qt Jambi directory (On
     Windows, replace the ':' with ';'):
@@ -81,6 +94,9 @@
     \code
         java -cp qtjambi.jar:. com.trolltech.launcher.Launcher 
     \endcode
+
+    \bold{Note:} When running a Qt Jambi application on Mac, it is necessary to pass
+    the \c -XstartOnFirstThread argument to the Java executable.
 
     \section1 Building Qt Jambi from a Source Package
 
@@ -206,13 +222,12 @@
     and will then compile all sources.
 
     \code
-        javac @java_files
+        javac -J-mx1024m @java_files
     \endcode
 
-    Note that on some systems it might be necessary to invoke \c javac
-    with the VM option -J-mx1024m to prevent the VM from running out
-    of heap space; you may need to choose a different heap size than
-    1024.
+    The VM option \c{-J-mx1024m} is on some systems necessary to
+    prevent the VM from running out of heap space; you may need to
+    choose a different heap size than 1024.
 
     \omit (This solution is not publicly available yet)
     \section2 Building with Ant
@@ -314,11 +329,11 @@
     \endcode
 
     If Qt was built with debugging turned on, you need to use the Qt
-    Jambi debug libraries. You specify this with the
+    Jambi debug libraries. You can specify this with the
     \c{com.trolltech.qt.debug} system property.
 
-    Note that on Mac OS X, the VM must be invoked with the
-    -XstartOnFirstThread option. 
+    \bold{Note:} When running a Qt Jambi application on Mac, it is necessary to pass
+    the \c -XstartOnFirstThread argument to the Java executable.
 
     \section2 Trouble Shooting
 
