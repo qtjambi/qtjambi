@@ -72,30 +72,29 @@
     Microsoft Visual Studio 2005 introduces manifest files as a way of
     describing dependencies between dll's. This restricts the way
     binaries can be deployed. Manifest based runtime libraries will in
-    this case need to be available for Qt Jambi to load. These files are
-    not available on Windows XP or Windows 2000. This is solved by
-    either:
+    this case need to be available for Qt Jambi to load. These files
+    are not available by default on Windows Vista, Windows XP nor
+    Windows 2000. This is solved by either:
 
     \list
     \o Installing manifest based runtimes on the target system using
       Microsoft's Visual Studio Redistributable Package. At the time of
       writing this is possible using the application
-      "vcredist_x86.exe", which is provided on the microsoft.com
+      "vcredist_x86.exe", which is provided on the \c{microsoft.com}
       websites.
 
     \o Redistribute the runtime libraries provided in the Qt Jambi
       package or in your own Visual Studio version along with their
       manifest next to every .dll. The redistributables can be placed
       either directly next to the Qt Jambi .dll's or in a subdirectory
-      Microsoft.VC80.CRT. For projects with .dll's in multiple
+      called Microsoft.VC80.CRT. For projects with .dll's in multiple
       folders, such as the Qt Jambi plugins in the plugin sub
       directory, the files need to be duplicated in all places. Note:
       Since Qt treats all .dll files in a plugin folder as a plugin it
       will try to load the the runtime libraries as plugins. To
       prevent this, it is recommended that the redistributable runtime
       libraries are placed in a Micrsoft.VC.CRT sub directory under
-      each plugin. 
-    \endlist
+      each plugin. \endlist
 
         See the \l{Creating a .jar file for MSVC 2005} section for an example.
         \row
