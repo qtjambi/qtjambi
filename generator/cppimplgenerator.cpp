@@ -351,7 +351,8 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const AbstractMetaFun
     }
     s << "}" << endl << endl;
 
-    writeFinalFunction(s, signal, cls);
+    if (signal->implementingClass() == signal->ownerClass())
+        writeFinalFunction(s, signal, cls);
 }
 
 bool CppImplGenerator::hasCustomDestructor(const AbstractMetaClass *java_class) const
