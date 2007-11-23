@@ -124,91 +124,91 @@ class when dealing with Qt Jambi classes that requires them.
 public class QVariant extends QtJambiObject {
 
     // Java types
-    /** An invalid Java data type*/
+    /** */
     public static final int Invalid = 0;
-    /** Java Double */
+    /** */
     public static final int Double = 6;
-    /** Java String */
+    /** */
     public static final int String = 10;
-    /** Java Boolean */
+    /** */
     public static final int Boolean = 1;
-    /** Java ByteArray */
+    /** */
     public static final int ByteArray = 12;
-    /** Java BitArray */
+    /** */
     public static final int BitArray = 13;
-    /** Java Char */
+    /** */
     public static final int Char = 7;
-    /** Java Date */
+    /** */
     public static final int Date = 14;
-    /** Java DateTime */
+    /** */
     public static final int DateTime = 16;
-    /** Java Int */
+    /** */
     public static final int Int = 2;
-    /** Java Line */
+    /** */
     public static final int Line = 23;
-    /** Java LineF */
+    /** */
     public static final int LineF = 24;
-    /** Java Locale */
+    /** */
     public static final int Locale = 18;
-    /** Java Long */
+    /** */
     public static final int Long = 4;
-    /** Java Point */
+    /** */
     public static final int Point = 25;
-    /** Java PointF */
+    /** */
     public static final int PointF = 26;
-    /** Java Rect */
+    /** */
     public static final int Rect = 19;
-    /** Java RectF */
+    /** */
     public static final int RectF = 20;
-    /** Java RegExp */
+    /** */
     public static final int RegExp = 27;
-    /** Java Size */
+    /** */
     public static final int Size = 21;
-    /** Java SizeF */
+    /** */
     public static final int SizeF = 22;
-    /** Java StringList */
+    /** */
     public static final int StringList = 11;
-    /** Java Time */
+    /** */
     public static final int Time = 15; 
 
     // Gui types
-    /** Java Font */
+    /** */
     public static final int Font = 64;
-    /** Java Pixmap */
+    /** */
     public static final int Pixmap = 65;
-    /** Java Brush */
+    /** */
     public static final int Brush = 66;
-    /** Java Color */
+    /** */
     public static final int Color = 67;
-    /** Java Palette */
+    /** */
     public static final int Palette = 68;
-    /** Java Icon */
+    /** */
     public static final int Icon = 69;
-    /** Java Image */
+    /** */
     public static final int Image = 70;
-    /** Java Polygon */
+    /** */
     public static final int Polygon = 71;
-    /** Java Region */
+    /** */
     public static final int Region = 72;
-    /** Java Bitmap */
+    /** */
     public static final int Bitmap = 73;
-    /** Java Cursor */
+    /** */
     public static final int Cursor = 74;
-    /** Java SizePolicy */
+    /** */
     public static final int SizePolicy = 75;
-    /** Java KeySequence */
+    /** */
     public static final int KeySequence = 76;
-    /** Java Pen */
+    /** */
     public static final int Pen = 77;
-    /** Java TextLength */
+    /** */
     public static final int TextLength = 78;
-    /** Java TextFormat */
+    /** */
     public static final int TextFormat = 79;
-    /** Java Usertype */
+    /** */
     public static final int UserType = 127;
 
     
-    /** This enum describes the data types of QVariant. */
+    /** @exclude */
     enum Types {
         Invalid(0),
         Double(6),
