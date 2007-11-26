@@ -526,6 +526,26 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
 
     QtJambiLink *link = QtJambiLink::findLinkForQObject(qt_object);
 
+    // Since QObjects are created in a class based on virtual function calls, 
+    // if they at some point during their constructor are converted to Java,
+    // the Java object will get the wrong class. In order to fix this as well
+    // as possible, we replace the java object if it turns out it has previously
+    // been created using a different metaObject than the current. This should
+    // at least make the brokeness identical to that of C++, and we can't do this
+    // better than C++ since we depend on C++ to do it.
+    if (link != 0) {
+        QtJambiLinkUserData *p = static_cast<QtJambiLinkUserData *>(qt_object->userData(QtJambiLinkUserData::id()));
+        if (p != 0 && p->metaObject() != qt_object->metaObject()) {
+            // It should already be split ownership, but in case it has been changed, we need to make sure the c++
+            // object isn't deleted.
+            link->setSplitOwnership(env, link->javaObject(env));
+            delete p;
+            delete link;
+            qt_object->setUserData(QtJambiLinkUserData::id(), 0);
+            link = 0;
+        }
+    }
+
     if (!link) {
         const QMetaObject *mo = qtjambi_find_first_static_metaobject(qt_object->metaObject());
 

@@ -36,13 +36,18 @@ class QtJambiLink;
 
 struct QtJambiLinkUserData : public QObjectUserData
 {
-    QtJambiLinkUserData(QtJambiLink *link) : m_link(link) { }
+    QtJambiLinkUserData(QtJambiLink *link, const QMetaObject *metaObject) : m_link(link), m_metaObject(metaObject) { }
     virtual ~QtJambiLinkUserData();
 
     inline QtJambiLink *link() { return m_link; }
+    inline const QMetaObject *metaObject() { return m_metaObject; }
+
+    static int id();
 
 private:
     QtJambiLink *m_link;
+    const QMetaObject *m_metaObject;
+
 };
 
 /*

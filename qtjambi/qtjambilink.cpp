@@ -52,6 +52,11 @@ static int user_data_id()
 
 }
 
+int QtJambiLinkUserData::id() 
+{
+    return user_data_id();
+}
+
 inline static void deleteWeakObject(JNIEnv *env, jobject object)
 {
 #ifdef Q_CC_MINGW
@@ -88,7 +93,7 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     link->m_pointer = object;
 
     // Fetch the user data id
-    object->setUserData(user_data_id(), new QtJambiLinkUserData(link));
+    object->setUserData(user_data_id(), new QtJambiLinkUserData(link, object->metaObject()));
 
     // Set the native__id field of the java object
     StaticCache *sc = StaticCache::instance(env);
