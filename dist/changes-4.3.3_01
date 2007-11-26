@@ -50,10 +50,10 @@ ____________________
    objects would do virtual calls into Java after the VM had closed
    down. 
    
- * Exceptions such as IllegalArgumentException and ClassCastException 
-   could occur in some rare cases. E.g. when calling addSubWindow() on 
-   a QMdiArea widget which reimplemented the eventFilter() method.
-   
+ * Fixed exceptions such as IllegalArgumentException and ClassCastException
+   in certain, rare cases, e.g. when calling addSubWindow() on a
+   QMdiArea widget which reimplemented the eventFilter() method.
+ 
  * Mac OS X: The deployment target for the binaries has properly been
    set to 10.4.
 
