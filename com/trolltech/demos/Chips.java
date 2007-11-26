@@ -175,7 +175,7 @@ public class Chips extends QWidget {
                 painter.setRenderHint(QPainter.RenderHint.TextAntialiasing, false);
                 painter.save();
                 painter.scale(0.1, 0.1);
-                painter.drawText(170, 180, String.format("Model: VSC-2000 (Very Small Chip) at $s $s", x, y));
+                painter.drawText(170, 180, String.format("Model: VSC-2000 (Very Small Chip) at %1$s %2$s", x, y));
                 painter.drawText(170, 200, String.format("Serial number: DLWR-WEER-123L-ZZ33-SDSJ", x, y));
                 painter.drawText(170, 220, String.format("Manufacturer: Chip Manufacturer", x, y));
                 painter.restore();
