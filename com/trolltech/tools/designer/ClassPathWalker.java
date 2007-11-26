@@ -157,17 +157,18 @@ public class ClassPathWalker extends QObject {
     }
 
     public synchronized static void addRootsFromSettings() {
-    	QSettings settings = new QSettings("Trolltech", "Qt Jambi Resource Browser");
+        QSettings settings = new QSettings("Trolltech", "Qt Jambi Resource Browser");
         Object path = settings.value("Extra paths");
         if (roots != null && path != null && path instanceof String) {
-        	String paths[] = ((String)path).split(java.io.File.pathSeparator);
-        	for (String p : paths) {
-        		QtJambiInternal.addSearchPathForResourceEngine(p);
-        		roots.add(p);
-        	}
+            String paths[] = ((String) path).split(java.io.File.pathSeparator);
+            for (String p : paths) {
+                if (!p.equals("")) {
+                    QtJambiInternal.addSearchPathForResourceEngine(p);
+                    roots.add(p);
+                }
+            }
         }
     }
-
 
     public synchronized static void setRoots(List<String> r) {
         roots = r;
@@ -181,7 +182,8 @@ public class ClassPathWalker extends QObject {
     /**
      * Traverses the directory and emits a signal for all the files that match the fileExtensions.
      * @param dir The directory to find files in...
-     */    @SuppressWarnings("unused")
+     */
+    @SuppressWarnings("unused")
     private void traverse(QDir dir, String rootDir) {
     }
 
