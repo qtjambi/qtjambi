@@ -533,15 +533,15 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
     // been created using a different metaObject than the current. This should
     // at least make the brokeness identical to that of C++, and we can't do this
     // better than C++ since we depend on C++ to do it.
-    if (link != 0) {
+    if (link != 0 && !link->createdByJava()) {
         QtJambiLinkUserData *p = static_cast<QtJambiLinkUserData *>(qt_object->userData(QtJambiLinkUserData::id()));
         if (p != 0 && p->metaObject() != qt_object->metaObject()) {
             // It should already be split ownership, but in case it has been changed, we need to make sure the c++
             // object isn't deleted.
             link->setSplitOwnership(env, link->javaObject(env));
-            delete p;
-            delete link;
             qt_object->setUserData(QtJambiLinkUserData::id(), 0);
+            delete p;
+            delete link;            
             link = 0;
         }
     }
