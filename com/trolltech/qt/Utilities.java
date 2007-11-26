@@ -30,7 +30,7 @@ public class Utilities {
 	/** The Qt Library's minor version. */
     public static final int MINOR_VERSION = 3;
 	/** The Qt Library's patch version. */
-    public static final int PATCH_VERSION = 2;
+    public static final int PATCH_VERSION = 3;
 
 	/** Qt Library build number */
     public static final int BUILD_NUMBER = 1;
@@ -399,7 +399,7 @@ public class Utilities {
         return list;
     }
 
-    private static ClassLoader classLoader() { 
+    private static ClassLoader classLoader() {
 	ClassLoader loader = Thread.currentThread().getContextClassLoader();
 	if (loader == null) {
 	    loader = Utilities.class.getClassLoader();
