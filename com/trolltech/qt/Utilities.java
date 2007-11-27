@@ -25,14 +25,16 @@ related tasks.
 public class Utilities {
     private static HashSet<String> LOADED_LIBS = new HashSet<String>();
 
-	/** The Qt Library's major version. */
+    /** The Qt Library's major version. */
     public static final int MAJOR_VERSION = 4;
-	/** The Qt Library's minor version. */
-    public static final int MINOR_VERSION = 3;
-	/** The Qt Library's patch version. */
-    public static final int PATCH_VERSION = 3;
 
-	/** Qt Library build number */
+    /** The Qt Library's minor version. */
+    public static final int MINOR_VERSION = 4;
+
+    /** The Qt Library's patch version. */
+    public static final int PATCH_VERSION = p0;
+
+    /** Qt Library build number */
     public static final int BUILD_NUMBER = 1;
 
     private static final boolean VERBOSE_LOADING = System.getProperty("com.trolltech.qt.verbose-loading") != null;
