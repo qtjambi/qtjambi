@@ -13,6 +13,7 @@ import org.xml.sax.helpers.*;
 
 import com.trolltech.qt.Utilities;
 
+
 class DeploymentSpecException extends RuntimeException {
     public DeploymentSpecException(String msg) {
         super(msg);
@@ -25,9 +26,14 @@ public class NativeLibraryManager {
 
     private static final boolean REPORT = true;
 
+    private static final int LOAD_TRUE = 1;
+    private static final int LOAD_FALSE = 2;
+    private static final int LOAD_NEVER = 3;
+
     private static class LibraryEntry {
         public String name;
-        public boolean load;
+        public int load;
+        public DeploymentSpec spec;
     }
 
 
@@ -41,23 +47,17 @@ public class NativeLibraryManager {
             if (pluginPaths == null)
                 pluginPaths = new ArrayList<String>();
             pluginPaths.add(path);
-            if (REPORT) report(" - plugin path='" + path + "'");
+            reporter.report(" - plugin path='", path, "'");
         }
 
         public void addLibraryEntry(LibraryEntry e) {
             if (libraries == null)
                 libraries = new ArrayList<LibraryEntry>();
             libraries.add(e);
-            if (REPORT) report(" - library: name='" + e.name + "', load=" + e.load);
-        }
-
-        public void dump() {
-            System.out.println("Deployment spec:");
-            System.out.println(" - key: " + key);
-            System.out.println(" - jar: " + jar);
-            for (LibraryEntry e : libraries) {
-                System.out.println("   - library: " + e.name + ", load=" + e.load);
-            }
+            reporter.report(" - library: name='", e.name, "', ",
+                            (e.load == LOAD_TRUE ? "load" :
+                             (e.load == LOAD_NEVER ? "never load" : ""))
+                            );
         }
     }
 
@@ -75,16 +75,38 @@ public class NativeLibraryManager {
                     throw new DeploymentSpecException("<cache> element missing required attribute \"key\"");
                 }
                 spec.key = key;
-                if (REPORT) report(" - cache key='" + spec.key + "'");
+                reporter.report(" - cache key='", spec.key, "'");
+
             } else if (name.equals("library")) {
                 LibraryEntry e = new LibraryEntry();
                 e.name = attributes.getValue("name");
-                String load = attributes.getValue("load");
-                e.load = load == null || !load.equals("false");
                 if (e.name == null) {
                     throw new DeploymentSpecException("<library> element missing required attribute \"name\"");
                 }
+
+                String load = attributes.getValue("load");
+                if (load != null && load.equals("true")) e.load = LOAD_TRUE;
+                else if (load != null && load.equals("never")) e.load = LOAD_NEVER;
+                else e.load = LOAD_FALSE;
+
+                e.spec = spec;
+
+                if (e.load != LOAD_NEVER) {
+                    // Add library name to the global map of libraries...
+                    String fileName = new File(e.name).getName();
+                    LibraryEntry old = libraryMap.get(fileName);
+                    if (old != null) {
+                        throw new DeploymentSpecException("<library> '" + e.name
+                                                          + "' is duplicated. Present in both '"
+                                                          + spec.jar.getName() + "' and '"
+                                                          + old.spec.jar.getName() + "'.");
+                    }
+                    reporter.report(" - adding '", fileName, "' to library map");
+                    libraryMap.put(fileName, e);
+                }
+
                 spec.addLibraryEntry(e);
+
             } else if (name.equals("plugin")) {
                 String path = attributes.getValue("path");
                 if (path == null) {
@@ -95,7 +117,6 @@ public class NativeLibraryManager {
         }
     }
 
-
     private static class ChecksumFileFilter implements FilenameFilter {
         public boolean accept(File dir, String name) {
             return name.endsWith(".chk");
@@ -104,11 +125,11 @@ public class NativeLibraryManager {
 
 
     private static DeploymentSpec readDeploySpec(JarFile file) throws Exception {
-        if (REPORT) report("Checking Archive '" + file.getName() + "'");
+        reporter.report("Checking Archive '", file.getName(), "'");
 
         JarEntry descriptor = file.getJarEntry(DEPLOY_DESCRIPTOR_NAME);
         if (descriptor == null) {
-            if (REPORT) report(" - does not contain '" + DEPLOY_DESCRIPTOR_NAME + "', skipping");
+            reporter.report(" - does not contain '", DEPLOY_DESCRIPTOR_NAME, "', skipping");
             return null;
         }
 
@@ -126,6 +147,8 @@ public class NativeLibraryManager {
         if (spec.key == null) {
             throw new DeploymentSpecException("Deployment Specification doesn't include required <cache key='...'/>");
         }
+
+        deploymentSpecs.add(spec);
 
         return spec;
     }
@@ -156,6 +179,7 @@ public class NativeLibraryManager {
 
         byte digest[] = md.digest();
 
+        // Construct the md5 string...
         StringBuffer buffer = new StringBuffer();
         for (int i=0; i<digest.length; ++i) {
             int val = digest[i];
@@ -171,14 +195,19 @@ public class NativeLibraryManager {
     }
 
 
-    private static void report(String msg) {
-        System.out.println(msg);
+    public static void unpackJarFile(URI name) throws Exception {
+        try {
+            unpackJarFile_helper(name);
+        } catch (Exception e) {
+            throw new Exception("Failed to unpack .jar file, progress so far:\n"
+                                + reporter.toString(), e);
+        }
     }
 
 
-    public static void loadJarFile(URI name) throws Exception {
+    private static void unpackJarFile_helper(URI name) throws Exception {
 
-        if (REPORT) report("Loading .jar file: '" + name + "'");
+        reporter.report("Unpacking .jar file: '", name.toString(), "'");
 
         File file = new File(name);
         JarFile jarFile = new JarFile(file);
@@ -186,7 +215,7 @@ public class NativeLibraryManager {
         DeploymentSpec spec = readDeploySpec(jarFile);
         File tmpDir = jambiTempDirBase(spec.key);
 
-        if (REPORT) report(" - using cache directory: '" + tmpDir.getAbsolutePath() + "'");
+        reporter.report(" - using cache directory: '", tmpDir.getAbsolutePath(), "'");
 
         String md5 = md5(name);
 
@@ -194,12 +223,12 @@ public class NativeLibraryManager {
 
         // If the dir exists, sanity check the contents...
         if (tmpDir.exists()) {
-            if (REPORT) report(" - cache directory exists");
+            reporter.report(" - cache directory exists");
 
             File files[] = tmpDir.listFiles(new ChecksumFileFilter());
 
             if (files == null || files.length == 0) {
-                if (REPORT) report(" - cache directory doesn't have .chk file");
+                reporter.report(" - cache directory doesn't have .chk file");
                 shouldCopy = true;
 
             } else if (files.length != 1) {
@@ -207,7 +236,7 @@ public class NativeLibraryManager {
                                            + "'has multiple .chk's files. Loading aborted!");
 
             } else if (new File(tmpDir, md5 + ".chk").equals(files[0])) {
-                if (REPORT) report(" - checksum ok!");
+                reporter.report(" - checksum ok!");
 
             } else {
                 throw new RuntimeException("Failed to unpack contents of .jar file '"
@@ -222,10 +251,10 @@ public class NativeLibraryManager {
 
         // If the dir doesn't exists or it was only half completed, copy the files over...
         if (shouldCopy) {
-            if (REPORT) report(" - starting to copy content to cache directory...");
+            reporter.report(" - starting to copy content to cache directory...");
 
             for (LibraryEntry e : spec.libraries) {
-                if (REPORT) report(" - copying over: '" + e.name + "'...");
+                reporter.report(" - copying over: '", e.name, "'...");
                 JarEntry entry = jarFile.getJarEntry(e.name);
                 if (entry == null) {
                     throw new FileNotFoundException("Library '" + e.name
@@ -237,7 +266,7 @@ public class NativeLibraryManager {
                 File outFile = new File(tmpDir, e.name);
                 File outFileDir = outFile.getParentFile();
                 if (!outFileDir.exists()) {
-                    if (REPORT) report(" - creating directory: " + outFileDir.getAbsolutePath());
+                    reporter.report(" - creating directory: ", outFileDir.getAbsolutePath());
                     outFileDir.mkdirs();
                 }
 
@@ -246,22 +275,23 @@ public class NativeLibraryManager {
             }
         }
 
+
         // Load the libraries tagged for loading...
         Runtime rt = Runtime.getRuntime();
         for (LibraryEntry e : spec.libraries) {
-            if (e.load) {
-                if (REPORT) report(" - trying to load: " + e.name);
+            if (e.load == LOAD_TRUE) {
+                reporter.report(" - trying to load: ", e.name);
                 File f = new File(tmpDir, e.name);
                 rt.load(f.getAbsolutePath());
-                if (REPORT) report(" - ok!");
+                reporter.report(" - ok!");
             }
         }
 
         // plugin paths need to be handled somehow...
-
         File chk = new File(tmpDir, md5 + ".chk");
         chk.createNewFile();
     }
+
 
     public static File jambiTempDirBase(String key) {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
@@ -269,6 +299,18 @@ public class NativeLibraryManager {
         String arch = System.getProperty("os.arch");
         return new File(tmpDir, "QtJambi_" + user + "_" + arch + "_" + Utilities.VERSION_STRING + "_" + key);
     }
+
+
+    public static List<String> pluginPaths() {
+        List<String> paths = new ArrayList<String>();
+        for (DeploymentSpec spec : deploymentSpecs) {
+            File root = jambiTempDirBase(spec.key);
+            for (String path : spec.pluginPaths)
+                paths.add(new File(root, path).getAbsolutePath());
+        }
+        return paths;
+    }
+
 
     /**
      * Copies the data in the inputstream into the output stream.
@@ -286,9 +328,11 @@ public class NativeLibraryManager {
     }
 
 
+    private static Map<String, LibraryEntry> libraryMap = new HashMap<String, LibraryEntry>();
+    private static List<DeploymentSpec> deploymentSpecs = new ArrayList<DeploymentSpec>();
+    private static Reporter reporter = new Reporter();
 
     public static void main(String args[]) throws Exception {
-
         String fileName;
 
         if (args.length >= 1) {
@@ -299,21 +343,12 @@ public class NativeLibraryManager {
             return;
         }
 
-//         checkArchive(new JarFile(fileName));
+        unpackJarFile(new URI(fileName));
 
+        for (String s : pluginPaths())
+            System.out.println("PluginPath: " + s);
 
-//         for (int j=0; j<10; ++j) {
-//             URI jarFile = new URI(fileName);
-
-//             long l = System.currentTimeMillis();
-
-//             String md5 = md5(jarFile);
-
-//             System.out.println(md5 + " :: took: " + (System.currentTimeMillis() - l));
-//         }
-
-        loadJarFile(new URI(fileName));
-
+        System.out.println(reporter.toString());
     }
 
 }
