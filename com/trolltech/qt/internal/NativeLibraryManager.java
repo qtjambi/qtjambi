@@ -24,6 +24,8 @@ public class NativeLibraryManager {
 
     public static String DEPLOY_DESCRIPTOR_NAME = "qtjambi-deployment.xml";
 
+    private static final String DEBUG_SUFFIX = "_debuglib";
+
     private static final boolean REPORT = true;
 
     private static final int LOAD_TRUE = 1;
@@ -34,6 +36,7 @@ public class NativeLibraryManager {
         public String name;
         public int load;
         public DeploymentSpec spec;
+        public boolean loaded;
     }
 
 
@@ -91,9 +94,12 @@ public class NativeLibraryManager {
 
                 e.spec = spec;
 
-                if (e.load != LOAD_NEVER) {
+                String fileName = new File(e.name).getName();
+                if (e.load == LOAD_NEVER) {
+                    neverLoad.put(fileName, e);
+
+                } else {
                     // Add library name to the global map of libraries...
-                    String fileName = new File(e.name).getName();
                     LibraryEntry old = libraryMap.get(fileName);
                     if (old != null) {
                         throw new DeploymentSpecException("<library> '" + e.name
@@ -120,6 +126,142 @@ public class NativeLibraryManager {
     private static class ChecksumFileFilter implements FilenameFilter {
         public boolean accept(File dir, String name) {
             return name.endsWith(".chk");
+        }
+    }
+
+
+    public static void unpackJarFile(URI name) {
+        try {
+            unpackJarFile_helper(name);
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to unpack .jar file, progress so far:\n"
+                                + reporter.toString(), e);
+        }
+    }
+
+
+    public static File jambiTempDirBase(String key) {
+        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+        String user = System.getProperty("user.name");
+        String arch = System.getProperty("os.arch");
+        return new File(tmpDir, "QtJambi_" + user + "_" + arch + "_" + Utilities.VERSION_STRING + "_" + key);
+    }
+
+
+    public static List<String> pluginPaths() {
+        List<String> paths = new ArrayList<String>();
+        for (DeploymentSpec spec : deploymentSpecs) {
+            File root = jambiTempDirBase(spec.key);
+            for (String path : spec.pluginPaths)
+                paths.add(new File(root, path).getAbsolutePath());
+        }
+        return paths;
+    }
+
+
+    public static void loadJambiLibrary(String library) {
+    	if (Utilities.configuration == Utilities.Configuration.Debug)
+            library += DEBUG_SUFFIX;
+    	String lib = jniLibraryName(library);
+    	loadLibrary(lib);
+    }
+
+
+    public static void loadQtLibrary(String library) {
+        String lib = qtLibraryName(library);
+        loadLibrary(lib);
+    }
+
+
+    private static void unpack() {
+        try {
+            unpack_helper();
+        } catch (Throwable t) {
+            throw new RuntimeException("Faild to unpack native libraries, progress so far:\n"
+                                       + reporter, t);
+        }
+    }
+
+    private static void unpack_helper() throws Exception {
+        ClassLoader loader = classLoader();
+        Enumeration<URL> specs = loader.getResources(DEPLOY_DESCRIPTOR_NAME);
+        int count = 0;
+        while (specs.hasMoreElements()) {
+            URL url = specs.nextElement();
+
+            if (url.getProtocol().equals("jar")) {
+                String eform = url.toExternalForm();
+                URI uri =
+                    new URI(url.toExternalForm().substring(4, eform.length()
+                                                           - DEPLOY_DESCRIPTOR_NAME.length() - 2));
+                unpackJarFile(uri);
+                ++count;
+            }
+        }
+
+        if (count == 0)
+            reporter.report("No '", DEPLOY_DESCRIPTOR_NAME,
+                            "' found in classpath, loading libraries via 'java.library.path'");
+    }
+
+    /**
+     * Returns a classloader for
+     */
+    private static ClassLoader classLoader() {
+	ClassLoader loader = Thread.currentThread().getContextClassLoader();
+	if (loader == null) {
+	    loader = NativeLibraryManager.class.getClassLoader();
+	    assert loader != null;
+	}
+	return loader;
+    }
+
+    /**
+     * Tries to load the specified library. It will first try to load
+     * the library using the deploy spec, and if that fails, it will
+     * try to load the library using a standard System.loadLibrary()
+     * call.
+     * @param lib The full name of the library to load, such as libQtCore.so.4
+     */
+    private static void loadLibrary(String lib) {
+        try {
+            loadLibrary_helper(lib);
+        } catch (Throwable e) {
+            throw new RuntimeException("Loading library failed, progress so far:\n" + reporter, e);
+        }
+    }
+
+
+    private static void loadLibrary_helper(String lib) {
+        reporter.report("Loading library: '", lib, "'...");
+
+        // First of all verify that we're allowed to load this library...
+        LibraryEntry e = neverLoad.get(lib);
+        if (e != null) {
+            throw new RuntimeException("Library '" + lib + "' cannot be loaded, deploy spec");
+        }
+
+        // Try to load via deploy spec...
+        e = libraryMap.get(lib);
+        if (e != null) {
+
+            if (e.loaded) {
+                reporter.report(" - already loaded, skipping...");
+                return;
+            }
+
+            reporter.report(" - using deployment spec");
+            File libFile = new File(jambiTempDirBase(e.spec.key), e.name);
+            Runtime.getRuntime().load(libFile.getAbsolutePath());
+            reporter.report(" - ok!");
+            e.loaded = true;
+
+        // Load via System.load() using default paths..
+        } else {
+            String libBase = stripLibraryName(lib);
+            reporter.report(" - using 'java.library.path' as '", libBase, "'");
+            System.loadLibrary(libBase);
+            reporter.report(" - ok!");
         }
     }
 
@@ -194,19 +336,7 @@ public class NativeLibraryManager {
         return buffer.toString();
     }
 
-
-    public static void unpackJarFile(URI name) throws Exception {
-        try {
-            unpackJarFile_helper(name);
-        } catch (Exception e) {
-            throw new Exception("Failed to unpack .jar file, progress so far:\n"
-                                + reporter.toString(), e);
-        }
-    }
-
-
     private static void unpackJarFile_helper(URI name) throws Exception {
-
         reporter.report("Unpacking .jar file: '", name.toString(), "'");
 
         File file = new File(name);
@@ -275,7 +405,6 @@ public class NativeLibraryManager {
             }
         }
 
-
         // Load the libraries tagged for loading...
         Runtime rt = Runtime.getRuntime();
         for (LibraryEntry e : spec.libraries) {
@@ -293,22 +422,55 @@ public class NativeLibraryManager {
     }
 
 
-    public static File jambiTempDirBase(String key) {
-        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-        String user = System.getProperty("user.name");
-        String arch = System.getProperty("os.arch");
-        return new File(tmpDir, "QtJambi_" + user + "_" + arch + "_" + Utilities.VERSION_STRING + "_" + key);
+    private static String jniLibraryName(String lib) {
+        switch (Utilities.operatingSystem) {
+        case Windows: return lib + ".dll";
+        case MacOSX: return "lib" + lib + ".jnilib";
+        case Linux: return "lib" + lib + ".so";
+        }
+        throw new RuntimeException("Unreachable statement");
     }
 
 
-    public static List<String> pluginPaths() {
-        List<String> paths = new ArrayList<String>();
-        for (DeploymentSpec spec : deploymentSpecs) {
-            File root = jambiTempDirBase(spec.key);
-            for (String path : spec.pluginPaths)
-                paths.add(new File(root, path).getAbsolutePath());
+    private static String qtLibraryName(String lib) {
+        switch (Utilities.operatingSystem) {
+        case Windows:
+            return Utilities.configuration == Utilities.Configuration.Debug
+                ? lib + "d4.dll"
+                : lib + "4.dll";
+        case MacOSX:
+            return Utilities.configuration == Utilities.Configuration.Debug
+                ? "lib" + lib + "_debug.4.dylib"
+                : "lib" + lib + ".4.dylib";
+        case Linux:
+            // Linux doesn't have a dedicated "debug" library since 4.2
+            return "lib" + lib + ".so.4";
         }
-        return paths;
+        throw new RuntimeException("Unreachable statement");
+    }
+
+
+    private static String stripLibraryName(String lib) {
+        // Strip away "lib" prefix
+        if (Utilities.operatingSystem != Utilities.OperatingSystem.Windows)
+            lib = lib.substring(3);
+
+        int dot = -1;
+
+        switch (Utilities.operatingSystem) {
+        case Windows:
+            dot = lib.indexOf(".dll");
+            break;
+        case Linux:
+            dot = lib.indexOf(".so");
+            break;
+        case MacOSX:
+            dot = lib.indexOf("."); // makes a fair attemt at matching /.[0-9]*.(jni)|(dy)lib/
+            break;
+        }
+
+        // Strip away the library postfix...
+        return lib.substring(0, dot);
     }
 
 
@@ -329,26 +491,31 @@ public class NativeLibraryManager {
 
 
     private static Map<String, LibraryEntry> libraryMap = new HashMap<String, LibraryEntry>();
+    private static Map<String, LibraryEntry> neverLoad = new HashMap<String, LibraryEntry>();
     private static List<DeploymentSpec> deploymentSpecs = new ArrayList<DeploymentSpec>();
     private static Reporter reporter = new Reporter();
 
     public static void main(String args[]) throws Exception {
-        String fileName;
 
-        if (args.length >= 1) {
-            fileName = args[0];
-        } else {
-            System.out.println("   USAGE:\n" +
-                               " > java " + NativeLibraryManager.class.getName() + " [xmlfile]");
-            return;
-        }
+//         unpackJarFile(new URI(fileName));
 
-        unpackJarFile(new URI(fileName));
+        unpack();
+
+        loadQtLibrary("QtCore");
+        loadQtLibrary("QtGui");
+        loadJambiLibrary("qtjambi");
+        loadJambiLibrary("com_trolltech_qt_core");
+        loadJambiLibrary("com_trolltech_qt_gui");
+        loadQtLibrary("QtGui");
+//         loadQtLibrary("QtNetwork");
+//         loadJambiLibrary("com_trolltech_qt_network");
 
         for (String s : pluginPaths())
             System.out.println("PluginPath: " + s);
 
-        System.out.println(reporter.toString());
+//         System.out.println(reporter.toString());
+
+
     }
 
 }
