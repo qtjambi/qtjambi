@@ -13,6 +13,7 @@
 
 package com.trolltech.tools.designer;
 
+import com.trolltech.qt.QtJambiInternal;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -24,13 +25,17 @@ public class ResourceBrowserModel extends QAbstractItemModel {
     private static final String DEFAULT_PACKAGE = "<default package>";
     private static final QPixmap FOLDER_PIXMAP;
     static {
-	QPixmap pm = new QPixmap("classpath:com/trolltech/tools/designer/folder.png");
-	if (pm.isNull()) {
-	    FOLDER_PIXMAP = pm; // invalid
-	    System.err.println("Qt Jambi Designer: folder.png not found in com/trolltech/tools/designer!");
-	} else {
-	    FOLDER_PIXMAP = pm.scaled(PIXMAP_SIZE, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation);
-	}
+        String extra = System.getProperty("com.trolltech.qtjambi.internal.extra_classpath");
+        if (extra != null) {
+            QtJambiInternal.addSearchPathForResourceEngine(extra);
+        }
+        QPixmap pm = new QPixmap("classpath:com/trolltech/tools/designer/folder.png");
+        if (pm.isNull()) {
+            FOLDER_PIXMAP = pm; // invalid
+            System.err.println("Qt Jambi Designer: folder.png not found in com/trolltech/tools/designer!");
+        } else {
+            FOLDER_PIXMAP = pm.scaled(PIXMAP_SIZE, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation);
+        }
     }
 
     private static class NamedItem implements Comparable {
