@@ -243,10 +243,6 @@ jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant)
     // generic java object
     if (qt_variant.userType() == type) {
         JObjectWrapper wrapper = qVariantValue<JObjectWrapper>(qt_variant);
-        if (wrapper.object) {
-            jclass cls = env->GetObjectClass(wrapper.object);
-            QString classname = qtjambi_class_name(env, cls);
-        }
         return env->NewLocalRef(wrapper.object);
     } else {
         QString qtType = QLatin1String(qt_variant.typeName());
