@@ -39,7 +39,7 @@ body { color: black; }</style>
                 super(parent);
     
                 fileName = file;
-                renderer = new QSvgRenderer(fileName);
+                renderer = new QSvgRenderer(fileName, parent);
                 cards = new LinkedList&lt;Card&gt;();
                 for (int i = 0; i &lt; CARDS.length; ++i) {
                     Card item = new Card(CARDS[i], renderer);
@@ -61,6 +61,7 @@ body { color: black; }</style>
                 super();
                 setElementId(card);
                 setSharedRenderer(renderer);
+                setParent(renderer);
             }</pre>
 <p>When constructing a card item, we start by calling the base class constructor to create a top-level item. Then we specify the XML element we want this item to render using QGraphicsSvgItem's setElementId() method.</p>
 <p>We also set the item's renderer using it as a shared renderer; in this example we use the same renderer for all our items. The benefit of using a shared renderer is that the SVG file is parsed only once. Note that the QSvgRenderer object that we pass to the setSharedRenderer() method has to exist for as long as this item is used.</p>
@@ -97,7 +98,7 @@ body { color: black; }</style>
         }</pre>
 <p>Finally, we load the cards into the application by calling the <tt>loadCards()</tt> method.</p>
 <pre>&nbsp;       public final void loadCards() {
-            if (cardsToLoad != 0) {
+            if (cardsToLoad != 0 &amp;&amp; !closing) {
                 addCard(random.nextInt(50));
                 --cardsToLoad;
                 if (cardsToLoad != 0) {
@@ -109,7 +110,7 @@ body { color: black; }</style>
                 }
                 viewport().update();
                 QApplication.invokeLater(new Runnable() {
-                        public void run() { loadCards(); } });
+                    public void run() { loadCards(); } });
             }
         }</pre>
 <p>The <tt>loadCards()</tt> method is a recursive method, randomly spreading out the cards one by one. While loading the cards, the application's view is continuously updated to reflect the progress. Each card is added to the view using the <tt>addCard()</tt> convenience method:</p>

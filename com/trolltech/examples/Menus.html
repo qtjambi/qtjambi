@@ -48,6 +48,7 @@ body { color: black; }</style>
         QAction setParagraphSpacingAct;
         QAction aboutAct;
         QAction aboutQtAct;
+        QAction aboutQtJambiAct;
         QLabel infoLabel;</pre>
 <p>The QMenu class provides a menu widget for use in menu bars, context menus, and other popup menus while the QAction class provides an abstract user interface action that can be inserted into widgets.</p>
 <p>In some situations it is useful to group actions together, e.g., we have a <b>Left Align</b> action, a <b>Right Align</b> action, a <b>Justify</b> action, and a <b>Center</b> action, and we want only one of these actions to be active at any one time. One simple way of achieving this is to group the actions together in an action group using the QActionGroup class.</p>
@@ -91,11 +92,9 @@ body { color: black; }</style>
 <p>QMainWindow's statusBar() method returns the status bar for the main window (if the status bar does not exist, this method will create and return an empty status bar). We initialize the status bar and window title, resize the window to an appropriate size as well as ensure that the main window cannot be resized to a smaller size than the given one. Finally, we set the window icon.</p>
 <p>Now, let's take a closer look at the <tt>createActions()</tt> convenience method that creates the various actions:</p>
 <pre>&nbsp;       void createActions() {
-            String tip;
             newAct = new QAction(tr(&quot;&amp;New&quot;), this);
             newAct.setShortcut(tr(&quot;Ctrl+N&quot;));
-            tip = tr(&quot;Create a new file&quot;);
-            newAct.setStatusTip(tip);
+            newAct.setStatusTip(tr(&quot;Create a new file&quot;));
             newAct.triggered.connect(this, &quot;newFile()&quot;);
             ...</pre>
 <p>A QAction object may contain an icon, a text, a shortcut, a status tip, a &quot;What's This?&quot; text, and a tooltip. Most of these can be set in the constructor, but they can also be set independently using the provided convenience methods.</p>
@@ -131,6 +130,8 @@ body { color: black; }</style>
     
             helpMenu = menuBar().addMenu(tr(&quot;&amp;Help&quot;));
             helpMenu.addAction(aboutAct);
+            helpMenu.addSeparator();
+            helpMenu.addAction(aboutQtJambiAct);
             helpMenu.addAction(aboutQtAct);</pre>
 <p>QMenuBar's addMenu() method appends a new QMenu with the given title, to the menubar (note that the menubar takes ownership of the menu). We use QWidget's addAction() method to add each action to the corresponding menu.</p>
 <p>Alternatively, the QMenu class provides several addAction() convenience methods that create and add new actions from given texts and/or icons. You can also provide a member that will automatically connect to the new action's triggered() signal, and a shortcut represented by a QKeySequence instance.</p>

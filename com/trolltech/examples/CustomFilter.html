@@ -38,12 +38,12 @@ body { color: black; }</style>
 <p>On the other hand, it is worth noting that many of QSortFilterProxyModel's default implementations of methods are written so that they call the equivalent methods in the relevant source model. This simple proxying mechanism may need to be overridden for source models with more complex behavior; in this example we derive from the QSortFilterProxyModel class to ensure that our filter can recognize a valid range of dates, and to control the sorting behavior.</p>
 <pre>&nbsp;           private void setFilterMinimumDate(QDate date) {
                 minDate = new QDateTime(date);
-                filterChanged();
+                invalidateFilter();
             }
     
             private void setFilterMaximumDate(QDate date) {
                 maxDate = new QDateTime(date);
-                filterChanged();
+                invalidateFilter();
             }</pre>
 <p>We want to be able to filter our data by specifying a given period of time. For that reason, we implement custom <tt>setFilterMinimumDate()</tt> and <tt>setFilterMaximumDate()</tt> methods to set the corresponding variables. The QSortFilterProxyModel.filterChanged() method updates the proxy model's mapping by reapplying the filter. Note that QSortFilterProxyModel also provides the clear() method that removes all mapping, forcing the model to update the sorting as well as the data filtering.</p>
 <p>In addition, we reimplement QSortFilterProxyModel's filterAcceptsRow() method to only accept rows with valid dates:</p>

@@ -4,19 +4,9 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
 
-public class Http {
-    public static void main(String args[])
-    {
-        QApplication.initialize(args);
 
-        HttpWindow window = new HttpWindow();
-        window.show();
-
-        QApplication.exec();
-    }
-}
-
-class HttpWindow extends QDialog
+@QtJambiExample(name = "Http Example")
+public class Http extends QWidget
 {
     private QLabel statusLabel;
     private QLabel urlLabel;
@@ -31,28 +21,28 @@ class HttpWindow extends QDialog
     private int httpGetId;
     private boolean httpRequestAborted;
 
-    public HttpWindow()
+    public Http()
     {
         urlLineEdit = new QLineEdit("https://");
-        
+
         urlLabel = new QLabel(tr("&URL:"));
         urlLabel.setBuddy(urlLineEdit);
         statusLabel = new QLabel(tr("Please enter the URL of a file you want "
                                     + " to download."));
-        
+
         downloadButton = new QPushButton(tr("Download"));
         downloadButton.setDefault(true);
         quitButton = new QPushButton(tr("Quit"));
         quitButton.setAutoDefault(false);
-        
+
         buttonBox = new QDialogButtonBox();
         buttonBox.addButton(downloadButton, QDialogButtonBox.ButtonRole.ActionRole);
         buttonBox.addButton(quitButton, QDialogButtonBox.ButtonRole.RejectRole);
-        
+
         progressDialog = new QProgressDialog(this);
-        
+
         http = new QHttp(this);
-        
+
         urlLineEdit.textChanged.connect(this, "enableDownloadButton()");
         http.requestFinished.connect(this, "httpRequestFinished(int, boolean)");
         http.dataReadProgress.connect(this, "updateDataReadProgress(int,int)");
@@ -67,7 +57,7 @@ class HttpWindow extends QDialog
         QHBoxLayout topLayout = new QHBoxLayout();
         topLayout.addWidget(urlLabel);
         topLayout.addWidget(urlLineEdit);
-        
+
         QVBoxLayout mainLayout = new QVBoxLayout();
         mainLayout.addLayout(topLayout);
         mainLayout.addWidget(statusLabel);
@@ -78,7 +68,7 @@ class HttpWindow extends QDialog
         urlLineEdit.setFocus();
     }
 
-    @SuppressWarnings("unused")
+
     private void downloadFile()
     {
         QUrl url = new QUrl(urlLineEdit.text());
@@ -107,7 +97,7 @@ class HttpWindow extends QDialog
             return;
         }
 
-        QHttp.ConnectionMode mode = url.scheme().toLowerCase().equals("https") 
+        QHttp.ConnectionMode mode = url.scheme().toLowerCase().equals("https")
                                     ? QHttp.ConnectionMode.ConnectionModeHttps
                                     : QHttp.ConnectionMode.ConnectionModeHttp;
         http.setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
@@ -123,7 +113,6 @@ class HttpWindow extends QDialog
         downloadButton.setEnabled(false);
     }
 
-    @SuppressWarnings("unused")
     private void cancelDownload()
     {
         statusLabel.setText(tr("Download canceled."));
@@ -132,7 +121,6 @@ class HttpWindow extends QDialog
         downloadButton.setEnabled(true);
     }
 
-    @SuppressWarnings("unused")
     private void httpRequestFinished(int requestId, boolean error)
     {
         if (requestId != httpGetId)
@@ -168,7 +156,6 @@ class HttpWindow extends QDialog
         file = null;
     }
 
-    @SuppressWarnings("unused")
     private void readResponseHeader(QHttpResponseHeader responseHeader)
     {
         if (responseHeader.statusCode() != 200) {
@@ -181,7 +168,6 @@ class HttpWindow extends QDialog
         }
     }
 
-    @SuppressWarnings("unused")
     private void updateDataReadProgress(int bytesRead, int totalBytes)
     {
         if (httpRequestAborted)
@@ -190,14 +176,12 @@ class HttpWindow extends QDialog
         progressDialog.setMaximum(totalBytes);
         progressDialog.setValue(bytesRead);
     }
-    
-    @SuppressWarnings("unused")
+
     private void enableDownloadButton()
     {
         downloadButton.setEnabled(!urlLineEdit.text().equals(""));
     }
 
-    @SuppressWarnings("unused")
     private void slotAuthenticationRequired(String hostName, int i, QAuthenticator authenticator)
     {
         QDialog dlg = new QDialog();
@@ -211,4 +195,15 @@ class HttpWindow extends QDialog
             authenticator.setPassword(ui.passwordEdit.text());
         }
     }
+
+    public static void main(String args[])
+    {
+        QApplication.initialize(args);
+
+        Http window = new Http();
+        window.show();
+
+        QApplication.exec();
+    }
+
 }

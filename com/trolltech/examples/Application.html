@@ -48,6 +48,7 @@ body { color: black; }</style>
         private QAction copyAct;
         private QAction pasteAct;
         private QAction aboutAct;
+        private QAction aboutQtJambiAct;
         private QAction aboutQtAct;
     
         private String rsrcPath = &quot;classpath:com/trolltech/images&quot;;</pre>
@@ -146,7 +147,7 @@ body { color: black; }</style>
             openAct.setStatusTip(tr(&quot;Open an existing file&quot;));
             openAct.triggered.connect(this, &quot;open()&quot;);
         ...
-            aboutQtAct = new QAction(tr(&quot;About &amp;Qt&quot;), this);
+            aboutQtAct = new QAction(tr(&quot;About Q&amp;t&quot;), this);
             aboutQtAct.setStatusTip(tr(&quot;Show the Qt library's About box&quot;));
             aboutQtAct.triggered.connect(QApplication.instance(), &quot;aboutQt()&quot;);</pre>
 <p>The <tt>createActions()</tt> private method, which is called from the <tt>MainWindow</tt> constructor, creates QActions. The code is very repetitive, so we show only the actions corresponding to <b>File|New</b>, <b>File|Open</b>, and <b>Help|About Qt</b>.</p>
@@ -178,7 +179,9 @@ body { color: black; }</style>
     
             helpMenu = menuBar().addMenu(tr(&quot;&amp;Help&quot;));
             helpMenu.addAction(aboutAct);
-            helpMenu.addAction(aboutQtAct);
+            helpMenu.addSeparator();
+            helpMenu.addAction(aboutQtJambiAct);
+            helpMenu.addAction(aboutQtAct);        
         }</pre>
 <p>Creating actions isn't sufficient to make them available to the user; we must also add them to the menu system. This is what <tt>createMenus()</tt> does. We create a <b>File</b>, an <b>Edit</b>, and a <b>Help</b> menu. QMainWindow.menuBar() lets us access the window's menu bar widget. We don't have to worry about creating the menu bar ourselves; the first time we call this method, the QMenuBar is created.</p>
 <p>Just before we create the <b>Help</b> menu, we call QMenuBar.addSeparator(). This has no effect for most widget styles (e.g., Windows and Mac OS X styles), but for Motif-based styles this makes sure that <b>Help</b> is pushed to the right side of the menu bar. Try running the application with various styles and see the results:</p>
