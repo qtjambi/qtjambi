@@ -26,7 +26,7 @@ public class NativeLibraryManager {
 
     private static final String DEBUG_SUFFIX = "_debuglib";
 
-    private static final boolean REPORT = true;
+    private static final boolean VERBOSE_LOADING = System.getProperty("com.trolltech.qt.verbose-loading") != null;
 
     private static final int LOAD_TRUE = 1;
     private static final int LOAD_FALSE = 2;
@@ -176,6 +176,8 @@ public class NativeLibraryManager {
     private static void unpack() {
         try {
             unpack_helper();
+            if (VERBOSE_LOADING)
+                System.out.println(reporter.recentReports());
         } catch (Throwable t) {
             throw new RuntimeException("Faild to unpack native libraries, progress so far:\n"
                                        + reporter, t);
@@ -226,6 +228,9 @@ public class NativeLibraryManager {
     private static void loadLibrary(String lib) {
         try {
             loadLibrary_helper(lib);
+            if (VERBOSE_LOADING)
+                System.out.println(reporter.recentReports());
+
         } catch (Throwable e) {
             throw new RuntimeException("Loading library failed, progress so far:\n" + reporter, e);
         }
@@ -507,7 +512,7 @@ public class NativeLibraryManager {
         loadJambiLibrary("com_trolltech_qt_core");
         loadJambiLibrary("com_trolltech_qt_gui");
         loadQtLibrary("QtGui");
-//         loadQtLibrary("QtNetwork");
+        loadQtLibrary("QtNetwork");
 //         loadJambiLibrary("com_trolltech_qt_network");
 
         for (String s : pluginPaths())

@@ -79,7 +79,7 @@ public class Reporter {
     }
 
     public String toString() {
-        return buffer.toString();
+        return (old != null) ? old.toString() + "\n" + buffer.toString() : buffer.toString();
     }
 
     public void setReportEnabled(boolean e) {
@@ -90,6 +90,22 @@ public class Reporter {
         return report;
     }
 
+    /**
+     * Extracts the last batch of reports made since the last time
+     * this function was called.
+     * @returns The last batch of reprts...
+     */
+    public String recentReports() {
+        String batch = buffer.toString();
+        if (old == null)
+            old = buffer;
+        else
+            old.append(buffer);
+        buffer = new StringBuilder();
+        return batch;
+    }
+
     private boolean report = true;
-    private StringBuffer buffer = new StringBuffer();
+    private StringBuilder buffer = new StringBuilder();
+    private StringBuilder old;
 }
