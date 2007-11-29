@@ -68,7 +68,7 @@ public class Http extends QWidget
         urlLineEdit.setFocus();
     }
 
-
+    @SuppressWarnings("unused")
     private void downloadFile()
     {
         QUrl url = new QUrl(urlLineEdit.text());
@@ -81,7 +81,7 @@ public class Http extends QWidget
             QMessageBox.StandardButtons buttons = QMessageBox.StandardButton.createQFlags(
                 QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Cancel);
 
-            if (QMessageBox.question(this, tr("HTTP"), tr("There already exists a file called")
+            if (QMessageBox.question(this, tr("HTTP"), tr("There already exists a file called ")
                 + fileName + tr(" the current directory. Overwrite?"), buttons,
                 QMessageBox.StandardButton.Cancel).equals(QMessageBox.StandardButton.Cancel))
                 return;
@@ -113,6 +113,7 @@ public class Http extends QWidget
         downloadButton.setEnabled(false);
     }
 
+    @SuppressWarnings("unused")
     private void cancelDownload()
     {
         statusLabel.setText(tr("Download canceled."));
@@ -121,6 +122,7 @@ public class Http extends QWidget
         downloadButton.setEnabled(true);
     }
 
+    @SuppressWarnings("unused")
     private void httpRequestFinished(int requestId, boolean error)
     {
         if (requestId != httpGetId)
@@ -156,6 +158,7 @@ public class Http extends QWidget
         file = null;
     }
 
+    @SuppressWarnings("unused")
     private void readResponseHeader(QHttpResponseHeader responseHeader)
     {
         if (responseHeader.statusCode() != 200) {
@@ -168,6 +171,7 @@ public class Http extends QWidget
         }
     }
 
+    @SuppressWarnings("unused")
     private void updateDataReadProgress(int bytesRead, int totalBytes)
     {
         if (httpRequestAborted)
@@ -177,11 +181,13 @@ public class Http extends QWidget
         progressDialog.setValue(bytesRead);
     }
 
+    @SuppressWarnings("unused")
     private void enableDownloadButton()
     {
         downloadButton.setEnabled(!urlLineEdit.text().equals(""));
     }
 
+    @SuppressWarnings("unused")
     private void slotAuthenticationRequired(String hostName, int i, QAuthenticator authenticator)
     {
         QDialog dlg = new QDialog();
