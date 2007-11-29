@@ -99,10 +99,15 @@ public class ClassPathWalker extends QObject {
 				stack.push(new QPair<Object, String>(new QDir(dir.absoluteFilePath(dirName)), data.second));
 			}
 		} else if (data.first instanceof QFileInfo) {
-			String name = ((QFileInfo) data.first).absoluteFilePath();
-			name = "classpath:"
-					+ name.substring(new QDir(data.second).canonicalPath()
-							.length() + 1);
+		    String name = ((QFileInfo) data.first).absoluteFilePath();
+            int pos = name.lastIndexOf('#') + 1;
+
+            name = name.substring(pos);
+            if (name.startsWith("/"))
+                name = name.substring(1);
+            name = "classpath:" + name;
+            System.out.println(name);
+
 			QImage image = new QImage(name);
 			if (!image.isNull()) {
 				QImage smallImage = image.scaled(size,
@@ -136,6 +141,8 @@ public class ClassPathWalker extends QObject {
         
         stack = new Stack<QPair<Object, String>>();
         for (String s : roots) {
+            s = "classpath:" + s + "#/";
+
             QDir d = new QDir(s);
             stack.push(new QPair<Object, String>(d, d.absolutePath()));
         }
