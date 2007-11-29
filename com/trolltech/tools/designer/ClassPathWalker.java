@@ -106,7 +106,6 @@ public class ClassPathWalker extends QObject {
             if (name.startsWith("/"))
                 name = name.substring(1);
             name = "classpath:" + name;
-            System.out.println(name);
 
 			QImage image = new QImage(name);
 			if (!image.isNull()) {
