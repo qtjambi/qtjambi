@@ -32,7 +32,7 @@ public class Utilities {
     public static final int MINOR_VERSION = 4;
 
     /** The Qt Library's patch version. */
-    public static final int PATCH_VERSION = p0;
+    public static final int PATCH_VERSION = 0;
 
     /** Qt Library build number */
     public static final int BUILD_NUMBER = 1;
