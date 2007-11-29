@@ -53,6 +53,9 @@ ____________________
  * Fixed exceptions such as IllegalArgumentException and ClassCastException
    in certain, rare cases, e.g. when calling addSubWindow() on a
    QMdiArea widget which reimplemented the eventFilter() method.
+   
+ * QObject.properties() now returns the same set of properties as it 
+   does in Qt.
  
  * Mac OS X: The deployment target for the binaries has properly been
    set to 10.4.
@@ -87,6 +90,14 @@ ____________________
 
  * The Generator now correctly supports forward declarations of classes 
    inside namespaces.
+
+
+************************************************************************
+ Qt Jambi Designer
+************************************************************************
+
+  * A few missing properties have been added to the property editor and 
+    some run time properties have been removed.
 
 
 ************************************************************************
