@@ -6,7 +6,7 @@ import com.trolltech.qt.network.*;
 
 
 @QtJambiExample(name = "Http Example")
-public class Http extends QWidget
+public class Http extends QDialog
 {
     private QLabel statusLabel;
     private QLabel urlLabel;
