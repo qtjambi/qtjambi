@@ -71,7 +71,12 @@ public class Http extends QDialog
     @SuppressWarnings("unused")
     private void downloadFile()
     {
-        QUrl url = new QUrl(urlLineEdit.text());
+        String text = urlLineEdit.text();
+
+        QUrl url = new QUrl(text);
+        if (text.endsWith(url.host()))
+            url = new QUrl(text + "/");
+
         QFileInfo fileInfo = new QFileInfo(url.path());
         String fileName = fileInfo.fileName();
         if (fileName.equals(""))
