@@ -140,10 +140,11 @@ public class ClassPathWalker extends QObject {
         
         stack = new Stack<QPair<Object, String>>();
         for (String s : roots) {
-            s = "classpath:" + s + "#/";
-
-            QDir d = new QDir(s);
-            stack.push(new QPair<Object, String>(d, d.absolutePath()));
+            if (!s.equals("")) {
+                s = "classpath:" + s + "#/";
+                QDir d = new QDir(s);
+                stack.push(new QPair<Object, String>(d, d.absolutePath()));
+            }
         }
         processedDirs = new HashSet<String>();
 
