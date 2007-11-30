@@ -534,6 +534,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
     QList<NamespaceModelItem> inner_namespaces = namespace_item->namespaceMap().values();
     foreach (const NamespaceModelItem &ni, inner_namespaces)
         traverseNamespace(ni);
+
     m_current_class = 0;
 
 
