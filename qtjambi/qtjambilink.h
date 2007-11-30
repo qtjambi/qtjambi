@@ -36,11 +36,13 @@ class QtJambiLink;
 
 struct QtJambiLinkUserData : public QObjectUserData
 {
-    QtJambiLinkUserData(QtJambiLink *link, const QMetaObject *metaObject) : m_link(link), m_metaObject(metaObject) { }
+    QtJambiLinkUserData(QtJambiLink *link) : m_link(link), m_metaObject(0) { }
     virtual ~QtJambiLinkUserData();
 
     inline QtJambiLink *link() { return m_link; }
-    inline const QMetaObject *metaObject() { return m_metaObject; }
+
+    inline void setMetaObject(const QMetaObject *mo) { m_metaObject = mo; }
+    inline const QMetaObject *metaObject() const { return m_metaObject; }
 
     static int id();
 
@@ -98,6 +100,9 @@ public:
     /* Returns the pointer value as a QObject, will assert if pointer
        is not a QObject */
     inline QObject *qobject() const { Q_ASSERT(isQObject()); return reinterpret_cast<QObject *>(m_pointer); }
+
+    /* Sets the QObject user data's meta object pointer. Object must be a QObject */
+    void setMetaObject(const QMetaObject *mo) const;
 
     inline int metaType() const { return m_meta_type; }
     void setMetaType(int metaType);

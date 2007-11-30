@@ -93,7 +93,7 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     link->m_pointer = object;
 
     // Fetch the user data id
-    object->setUserData(user_data_id(), new QtJambiLinkUserData(link, object->metaObject()));
+    object->setUserData(user_data_id(), new QtJambiLinkUserData(link));
 
     // Set the native__id field of the java object
     StaticCache *sc = StaticCache::instance(env);
@@ -123,7 +123,9 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
     Q_ASSERT(constructorId);
 
     jobject java_object = env->NewObject(object_class, constructorId, 0);
-    return createLinkForQObject(env, java_object, object);
+    QtJambiLink *link = createLinkForQObject(env, java_object, object);
+    link->setMetaObject(object->metaObject());
+    return link;
 }
 
 
@@ -235,6 +237,20 @@ void QtJambiLink::aboutToMakeObjectInvalid(JNIEnv *env)
         QTJAMBI_EXCEPTION_CHECK(env);
         m_object_invalid = true;
     }
+}
+
+void QtJambiLink::setMetaObject(const QMetaObject *mo) const
+{
+    Q_ASSERT(isQObject());
+    if (!isQObject())
+        return;
+
+    QObject *o = qobject();
+    QtJambiLinkUserData *d = static_cast<QtJambiLinkUserData *>(o->userData(QtJambiLinkUserData::id()));
+    if (d != 0)
+        d->setMetaObject(mo);
+    else
+        qWarning("setMetaObject: No jambi user data in QObject, line %d in file '%s'", __LINE__, __FILE__);
 }
 
 void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)

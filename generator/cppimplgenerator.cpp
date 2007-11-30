@@ -748,7 +748,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
       << "  if (m_meta_object == 0) {" << endl
       << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
       << "      jobject __obj = m_link != 0 ? m_link->javaObject(__jni_env) : 0;" << endl
-      << "      if (__obj == 0) m_meta_object = " << java_class->qualifiedCppName() << "::metaObject();" << endl
+      << "      if (__obj == 0) return " << java_class->qualifiedCppName() << "::metaObject();" << endl
       << "      else m_meta_object = qtjambi_metaobject_for_class(__jni_env, __jni_env->GetObjectClass(__obj), " << java_class->qualifiedCppName() << "::metaObject());" << endl
       << "  }" << endl
       << "  return m_meta_object;" << endl
@@ -1671,8 +1671,16 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
 
     if (hasShellClass) {
         // Set up the link object
-        s << INDENT << qt_object_name << "->m_link = __qt_java_link;" << endl
-          << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
+        s << INDENT << qt_object_name << "->m_link = __qt_java_link;" << endl;
+
+        // Make sure the user data in the QObject has bindings to the qobject's meta object
+        // (this has to be done after the link is set, so that the fake meta object
+        //  can access the java object, for which it gets a reference in the link)
+        if (cls->isQObject())
+            s << INDENT << qt_object_name << "->m_link->setMetaObject(" << qt_object_name << "->metaObject());" << endl;
+
+        s << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
+          
 
 
         AbstractMetaClassList interfaces = cls->interfaces();
