@@ -10,7 +10,6 @@ public class JuicTask extends MatchingTask {
     private String msg = "";
     private String classpath = "";
     private String outputDir = "";
-    private String xmlConfigFile = "";
     private String trFunction = "";
     private String classNamePrefix = "";
     private boolean alwaysUpdate = false;
@@ -29,8 +28,6 @@ public class JuicTask extends MatchingTask {
         String arguments = "";
         if (!outputDir.equals(""))
             arguments += " -d " + outputDir;
-        if (!xmlConfigFile.equals(""))
-            arguments += " -d " + xmlConfigFile;
         if (!trFunction.equals(""))
             arguments += " -tr " + trFunction;
         if (!classNamePrefix.equals(""))
@@ -62,7 +59,7 @@ public class JuicTask extends MatchingTask {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
     }
@@ -77,10 +74,6 @@ public class JuicTask extends MatchingTask {
 
     public void setOutputDir(String outputDir) {
         this.outputDir = outputDir;
-    }
-
-    public void setXmlConfigFile(String xmlConfigFile) {
-        this.xmlConfigFile = xmlConfigFile;
     }
 
     public void setTrFunction(String trFunction) {
