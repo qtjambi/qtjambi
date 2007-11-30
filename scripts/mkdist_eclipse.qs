@@ -33,7 +33,8 @@ jarFilesDir.mkdirs(jarFilesDest);
 
 // ### Fixed paths (needed to build with mingw, but we should implement a search for vs i suppose)
 const vcPath = System.getenv("VSINSTALLDIR") + "/vc/bin;"
-               + System.getenv("VSINSTALLDIR") + "/common7/ide";
+               + System.getenv("VSINSTALLDIR") + "/common7/ide;"
+               + System.getenv("VSINSTALLDIR") + "/common7/tools/bin";
 const vcInclude = System.getenv("VSINSTALLDIR") + "/vc/include;"
                   + System.getenv("VSINSTALLDIR") + "/vc/platformsdk/include"
 

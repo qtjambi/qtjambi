@@ -52,7 +52,7 @@ mv %QT_COMMERCIAL_PACKAGE% qt-eval
 cd qt-eval
 echo Trolltech employees and agents use this software under authority> LICENSE.TROLL
 echo from Trolltech ASA of Norway.>> LICENSE.TROLL
-configure -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_EVAL 
+configure -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_EVAL -D QT_JAMBI_BUILD
 nmake sub-src sub-tools
 nmake clean
 cd ..
@@ -69,7 +69,7 @@ mv %QT_COMMERCIAL_PACKAGE% qt-commercial
 cd qt-commercial
 echo Trolltech employees and agents use this software under authority> LICENSE.TROLL
 echo from Trolltech ASA of Norway.>> LICENSE.TROLL
-configure -no-qt3support -release -shared -no-dsp -no-vcproj
+configure -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_JAMBI_BUILD
 nmake sub-src sub-tools
 nmake clean
 cd ..
@@ -115,7 +115,7 @@ set LIB=
 set INCLUDE=
 cd qt-opensource
 set QMAKESPEC=win32-g++
-echo y | configure -no-qt3support -release -shared -no-vcproj -no-dsp
+echo y | configure -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD
 cd src && ..\bin\qmake -r && mingw32-make && cd .. 
 cd tools && ..\bin\qmake -r && mingw32-make && cd ..
 cd ..

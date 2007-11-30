@@ -43,7 +43,7 @@ function unpack_and_build {
     echo yes>input
 
     echo - configuring
-    ./configure -universal -no-framework -no-qt3support -release -no-rpath -shared -prefix $PWD $CONFIGURE_EXTRA<input
+    ./configure -universal -no-framework -no-qt3support -release -no-rpath -shared -prefix -sdk /Developer/SDKs/MacOSX10.4u.sdk -D QT_JAMBI_BUILD $PWD $CONFIGURE_EXTRA<input
     echo - building
     cd src 
       pwd

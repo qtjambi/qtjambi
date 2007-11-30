@@ -42,7 +42,7 @@ function unpack_and_build {
     echo yes>input
 
     echo - configuring
-    ./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD -no-mmx -no-3dnow -no-sse -no-sse2 $CONFIGURE_EXTRA<input
+    ./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD -no-mmx -no-3dnow -no-sse -no-sse2 -D QT_JAMBI_BUILD $CONFIGURE_EXTRA<input
     echo - building
     cd src 
       make || failure "failed to build source $DIRECTORY_NAME"

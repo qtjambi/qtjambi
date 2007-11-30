@@ -1549,7 +1549,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaFie
         {
             Indentation indent(INDENT);
 
-            if (!java_field->isStatic() || getter->type()->isPrimitive())
+            if (!java_field->isStatic() || setter->isStatic() || getter->type()->isPrimitive())
                 s << INDENT << "Q_UNUSED(__jni_env);" << endl;
 
             writeFinalFunctionSetup(s, getter, "__qt_object", getter->ownerClass());
@@ -1996,8 +1996,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
     } else if (java_type->isArray()) {
         AbstractMetaType *elementType = java_type->arrayElementType();
 
-        s << INDENT << "int __java_len = __jni_env->GetArrayLength((jarray) " << java_name << ");" << endl
-          << INDENT << "Q_ASSERT(__java_len == " << java_type->arrayElementCount() << ");" << endl;
+        s << INDENT << "Q_ASSERT(__jni_env->GetArrayLength((jarray) " << java_name << ") == " << java_type->arrayElementCount() << ");" << endl;
         writeTypeInfo(s, elementType);
         s << "[" << java_type->arrayElementCount() << "]" << qt_name << ";" << endl;
 

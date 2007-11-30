@@ -39,6 +39,7 @@ void Generator::generate()
         if (!shouldGenerate(cls))
             continue;
 
+
         QString fileName = fileNameForClass(cls);
         ReportHandler::debugSparse(QString("generating: %1").arg(fileName));
 
