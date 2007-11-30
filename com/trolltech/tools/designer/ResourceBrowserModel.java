@@ -25,10 +25,6 @@ public class ResourceBrowserModel extends QAbstractItemModel {
     private static final String DEFAULT_PACKAGE = "<default package>";
     private static final QPixmap FOLDER_PIXMAP;
     static {
-        String extra = System.getProperty("com.trolltech.qtjambi.internal.extra_classpath");
-        if (extra != null) {
-            QtJambiInternal.addSearchPathForResourceEngine(extra);
-        }
         QPixmap pm = new QPixmap("classpath:com/trolltech/tools/designer/folder.png");
         if (pm.isNull()) {
             FOLDER_PIXMAP = pm; // invalid
