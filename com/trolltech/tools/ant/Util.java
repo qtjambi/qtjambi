@@ -5,7 +5,7 @@ import org.apache.tools.ant.*;
 import java.io.*;
 import java.util.*;
 
-public class Util {
+class Util {
 
     enum OS {
         UNKNOWN, WINDOWS, LINUX, MAC
