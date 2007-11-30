@@ -70,7 +70,6 @@ class Util {
         private InputStream in;
     }
 
-
     public static void redirectOutput(Process proc, boolean silent) {
         try {
             new StreamConsumer(proc.getInputStream(), System.out).start();
@@ -79,5 +78,22 @@ class Util {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void copy(File src, File dst) throws IOException {
+        File destDir = dst.getParentFile();
+        if (!destDir.exists())
+            destDir.mkdirs();
+        
+        InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
+
+        byte buffer[] = new byte[1024 * 64];
+        while (in.available() > 0) {
+            int read = in.read(buffer);
+            out.write(buffer, 0, read);
+        }
+        in.close();
+        out.close();
     }
 }
