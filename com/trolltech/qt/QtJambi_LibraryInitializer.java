@@ -45,7 +45,7 @@ abstract class QtJambi_LibraryInitializer
             final boolean warning = config.contains("WARNING");
 
             if (all || critical || debug || fatal || warning) {
-                QMessageHandler messageHandler = new QMessageHandler() {
+                messageHandler = new QMessageHandler() {
 
                     @Override
                     public void critical(String message) {
