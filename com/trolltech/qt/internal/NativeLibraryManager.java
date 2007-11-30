@@ -263,6 +263,9 @@ public class NativeLibraryManager {
 
         // Load via System.load() using default paths..
         } else {
+            /* TODO: Mac OS X, loadLibrary won't load .dylib files, only .jnilib so special
+             * handling of QtCore and friends must be added...            
+             */
             String libBase = stripLibraryName(lib);
             reporter.report(" - using 'java.library.path' as '", libBase, "'");
             System.loadLibrary(libBase);
