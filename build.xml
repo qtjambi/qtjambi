@@ -40,12 +40,16 @@
         <delete dir="ant-qtjambi"/>
     </target>
 
-    <target name="tasks"
+    <target name="qtjambi.init"
             depends="ant-qtjambi.jar">
         <taskdef name="juic"      classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
         <taskdef name="qmake"     classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
         <taskdef name="make"      classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
         <taskdef name="generator" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
+        <taskdef name="qtjambi-platform-jar" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
+        <taskdef name="qtjambi-initialize" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
+        
+        <qtjambi-initialize verbose="false" />
     </target>
 
     <target name="clean"
@@ -70,42 +74,41 @@
     </target>
 
     <target name="qmake.qtjambi"
-            depends="tasks"
+            depends="qtjambi.init"
             description="Run qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
 	<qmake recursive="true"/>
     </target>
 
     <target name="qmake.generator"
-            depends="tasks, merge.typesystem"
+            depends="qtjambi.init, merge.typesystem"
             description="Run qmake on the generator project.">
 	<qmake config="release" dir="generator"/>
     </target>
 
     <target name="compile.generator" 
-	    depends="tasks, qmake.generator"
+	    depends="qtjambi.init, qmake.generator"
             description="Compile the Qt Jambi generator.">
         <make dir="generator" />
     </target>
 
     <target name="generator.qtjambi" 
-            depends="tasks, compile.generator"
+            depends="qtjambi.init, compile.generator"
             description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
         <generator dir="generator" outputDirectory=""/>
     </target>
 
     <target name="compile.qtjambi" 
-            depends="tasks"
+            depends="qtjambi.init"
             description="Compile the c++ Qt Jambi bindings.">
 	<make />
     </target>
 
     <target name="juic"
-            depends="tasks"
+            depends="qtjambi.init"
             description="Generates Java source files from JUI files created by designer.">
         <juic message="Running Juic for all it is worth"
 	      outputDir="${sourceDir}"
-	      xmlConfigFile=""
               trFunction=""
               classNamePrefix=""
               alwaysUpdate="true"
@@ -127,7 +130,7 @@
              includes="com/trolltech/qt/*.class,com/trolltech/qt/*/*.class"
              includesfile="com/trolltech/images/qt-logo.png">
             <manifest>
-                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
         </jar>
     </target>
@@ -147,7 +150,7 @@
             <exclude name="com/trolltech/examples/*.java"/>
             <exclude name="com/trolltech/demos/*.java"/>
            <manifest>
-                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
         </jar>
     </target>
@@ -162,7 +165,7 @@
             <include name="com/trolltech/launcher/*"/> 
             <exclude name="com/trolltech/launcher/*.java"/>
            <manifest>
-                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
         </jar>
     </target>
@@ -177,9 +180,40 @@
             <include name="com/trolltech/tools/designer/*"/> 
             <exclude name="com/trolltech/tools/designer/*.java"/>
            <manifest>
-                <attribute name="Built-By" value="${USER} - ${TODAY}"/>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
         </jar>
+    </target>
+
+    <target name="qtjambi-platform.jar"
+	    depends="qtjambi.init"
+	    description="Creating .jar file with native libs...">
+
+        <qtjambi-platform-jar cacheKey="build-${DSTAMP}-${TSTAMP}"
+                              outdir="platform-output"
+                >
+
+            <!-- Qt Libraries... -->
+            <library name="QtCore"  type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtGui"   type="qt"      rootPath="${qtjambi.qtdir}" />
+
+            <!-- Qt Plugins... -->
+            <library name="qjpeg"   type="plugin"  rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qgif"    type="plugin"  rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+
+            <!-- Qt Jambi Libraries -->
+            <library name="qtjambi"                 type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_core"   type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_gui"    type="qtjambi" rootPath="." />
+
+        </qtjambi-platform-jar>
+
+        <jar destfile="qtjambi-${qtjambi.osname}-${qtjambi.version}.jar">
+            <fileset dir="platform-output" />
+        </jar>
+
+        <delete dir="platform-output"/>
+        
     </target>
 
     <target name="merge.typesystem">
@@ -243,6 +277,6 @@
 
     <target name="qtjambi"
             description="Make QT Jambi."
-            depends="qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, juic, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar" />
+            depends="qtjambi.init,qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, juic, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar, qtjambi-platform.jar" />
 
 </project>

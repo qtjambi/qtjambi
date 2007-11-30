@@ -59,7 +59,8 @@ class Util {
             String line = null;
             try {
                 while ( (line = reader.readLine()) != null) {
-                    out.println(line);
+                    if (out != null)
+                        out.println(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -78,6 +79,31 @@ class Util {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Executes the command specified by cmd and returns the printed output
+     * from the process' stdout and stderr in the array on position 0 and 1 respectivly.
+     * @param cmd The command to execute
+     * @return An array of length 2, containing the [stdout, stderr] output.
+     * @throws IOException If an error occurs
+     * @throws InterruptedException If an error occurs...
+     */
+    public static String[] execute(String ... cmd) throws IOException, InterruptedException {
+        Process p = Runtime.getRuntime().exec(cmd);
+
+        ByteArrayOutputStream outdata = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(outdata);
+
+        ByteArrayOutputStream errdata = new ByteArrayOutputStream();
+        PrintStream err = new PrintStream(errdata);
+
+        new StreamConsumer(p.getInputStream(), out).start();
+        new StreamConsumer(p.getErrorStream(), null).start();
+        p.waitFor();
+        out.close();
+        err.close();
+        return new String[] { outdata.toString(), errdata.toString() };
     }
 
     public static void copy(File src, File dst) throws IOException {

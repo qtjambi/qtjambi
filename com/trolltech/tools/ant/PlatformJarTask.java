@@ -1,6 +1,7 @@
 package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.*;
+import org.apache.tools.ant.taskdefs.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +63,13 @@ public class PlatformJarTask extends Task {
         try {
             writer = new PrintWriter(new BufferedWriter(new FileWriter(new File(outdir, "qtjambi-deployment.xml"))));
         } catch (IOException e) {
-            throw new BuildException("Failed to open 'qtjambi-deployment.xml' for writing in '" + outdir + "'", e);
+            e.printStackTrace();
+            throw new BuildException("Failed to open 'qtjambi-deployment.xml' for writing in '" + outdir + "'");
         }
 
         writer.println("<qtjambi-deploy>");
         writer.println("  <cache key=\"" + cacheKey + "\" />");
         for (LibraryEntry e : libs) {
-            File rootPath = e.getRootpath();
             String libraryName = e.getName();
             String subdir = e.getSubdir();
             String load = e.getLoad();
@@ -97,7 +98,14 @@ public class PlatformJarTask extends Task {
         String subdir = e.getSubdir();
         String load = e.getLoad();
 
-        // TODO: copy over...
+        File src = new File(rootPath, subdir + "/" + libraryName);
+        File dest = new File(outdir, subdir + "/" + libraryName);
+        try {
+            Util.copy(src, dest);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new BuildException("Failed to copy library '" + libraryName + "'");
+        }
     }
 
 
