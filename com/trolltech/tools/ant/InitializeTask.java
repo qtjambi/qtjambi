@@ -10,6 +10,7 @@ public class InitializeTask extends Task {
     public static final String LIBSUBDIR = "qtjambi.libsubdir";
     public static final String QTDIR = "qtjambi.qtdir";
     public static final String QMAKESPEC = "qtjambi.qmakespec";
+    public static final String VERSION = "qtjambi.version";
     
     public boolean isVerbose() {
         return verbose;
@@ -23,7 +24,7 @@ public class InitializeTask extends Task {
         String osname = null;
         switch (Util.OS()) {
             case WINDOWS:
-                if (System.getProperty("os.name").equalsIgnoreCase("amd64")) osname = "win64";
+                if (System.getProperty("os.arch").equalsIgnoreCase("amd64")) osname = "win64";
                 else osname = "win32";
                 break;
             case LINUX:
@@ -67,6 +68,7 @@ public class InitializeTask extends Task {
         h.setNewProperty(null, LIBSUBDIR, decideLibSubDir());
         h.setNewProperty(null, QTDIR, decideQtDir());
         h.setNewProperty(null, QMAKESPEC, decideQMakeSpec());
+        h.setNewProperty(null, VERSION, "4.4.0_01");
     }
 
     private boolean verbose;
