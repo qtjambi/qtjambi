@@ -560,7 +560,9 @@ class QClassPathEngine extends QAbstractFileEngine
     	synchronized(QClassPathEngine.class){ 
 	        if (classpaths == null)
 	            findClassPaths();
-	        
+            
+            String url = makeUrl(path);
+	        classpaths.remove(url); // make sure it isn't added twice
 	        classpaths.add(makeUrl(path));
     	}
     }
