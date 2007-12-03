@@ -33,7 +33,7 @@ class Util {
             searchPath += prepend + File.pathSeparator;
 
         searchPath += System.getenv("PATH");
-        
+
         if (append != null && !append.equals(""))
             searchPath += File.pathSeparator + append;
 
@@ -56,7 +56,7 @@ class Util {
         @Override
         public void run() {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String line = null;
+            String line;
             try {
                 while ( (line = reader.readLine()) != null) {
                     if (out != null)
@@ -99,18 +99,19 @@ class Util {
         PrintStream err = new PrintStream(errdata);
 
         new StreamConsumer(p.getInputStream(), out).start();
-        new StreamConsumer(p.getErrorStream(), null).start();
+        new StreamConsumer(p.getErrorStream(), err).start();
         p.waitFor();
         out.close();
         err.close();
         return new String[] { outdata.toString(), errdata.toString() };
     }
 
+
     public static void copy(File src, File dst) throws IOException {
         File destDir = dst.getParentFile();
         if (!destDir.exists())
             destDir.mkdirs();
-        
+
         InputStream in = new FileInputStream(src);
         OutputStream out = new FileOutputStream(dst);
 
@@ -121,5 +122,18 @@ class Util {
         }
         in.close();
         out.close();
+    }
+
+
+    public static void copyRecursive(File src, File target) throws IOException {
+        if (src.isDirectory()) {
+            File entries[] = src.listFiles();
+            for (File e : entries) {
+                copyRecursive(e, new File(target, e.getName()));
+            }
+        } else {
+            copy(src, target);
+        }
+
     }
 }

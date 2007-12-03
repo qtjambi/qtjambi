@@ -1,17 +1,22 @@
 package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.io.*;
 
 public class PlatformJarTask extends Task {
 
+    public static final String SYSLIB_AUTO = "auto";
+    public static final String SYSLIB_NONE = "none";
 
     public String getCacheKey() {
         return cacheKey;
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    private void zootyZootZoot() {
+
     }
 
 
@@ -40,20 +45,35 @@ public class PlatformJarTask extends Task {
     }
 
 
-    @Override
     public void execute() throws BuildException {
+        try {
+            execute_internal();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BuildException("Failed to create native .jar", e);
+        }
+    }
+
+    public void execute_internal() throws BuildException {
+        props = PropertyHelper.getPropertyHelper(getProject());
+
         if (outdir == null)
             throw new BuildException("Missing required attribute 'outdir'. This directory is used for building the .jar file...");
 
-        if (outdir.exists())
-            throw new BuildException("Output directory: '" + outdir.getAbsolutePath() + "' already exists, aborting...");
+        if (outdir.exists()) {
+            outdir.delete();
+        }
 
         outdir.mkdirs();
 
-        writeQtJambiDeployment();
-
         for (LibraryEntry e : libs)
             processLibraryEntry(e);
+
+        if (systemLibs.equals(SYSLIB_AUTO))
+            processSystemLibs();
+
+        writeQtJambiDeployment();
+
     }
 
     private void writeQtJambiDeployment() {
@@ -80,6 +100,12 @@ public class PlatformJarTask extends Task {
             writer.println("/>");
         }
 
+        if (systemLibs.equals(SYSLIB_AUTO)) {
+            for (String unpack : unpackLibs) {
+                writer.println("  <library name=\"" + unpack + "\" load=\"never\" />");
+            }
+        }
+
         writer.println("</qtjambi-deploy>");
 
         writer.close();
@@ -87,8 +113,13 @@ public class PlatformJarTask extends Task {
 
 
     public void addConfiguredLibrary(LibraryEntry task) {
-        task.perform();
-        libs.add(task);
+        try {
+            task.perform();
+            libs.add(task);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BuildException("Failed to add library entry.....");
+        }
     }
 
 
@@ -96,15 +127,59 @@ public class PlatformJarTask extends Task {
         File rootPath = e.getRootpath();
         String libraryName = e.getName();
         String subdir = e.getSubdir();
-        String load = e.getLoad();
 
         File src = new File(rootPath, subdir + "/" + libraryName);
         File dest = new File(outdir, subdir + "/" + libraryName);
         try {
             Util.copy(src, dest);
+            libraryDir.add(subdir);
         } catch (IOException ex) {
             ex.printStackTrace();
             throw new BuildException("Failed to copy library '" + libraryName + "'");
+        }
+    }
+
+
+    private void processSystemLibs() {
+        String compiler = String.valueOf(props.getProperty(null, InitializeTask.COMPILER));
+        InitializeTask.Compiler c = InitializeTask.Compiler.resolve(compiler);
+
+        String vcnumber = "80";
+
+        switch (c) {
+
+            // The manifest based ones...
+            case MSVC2008:
+            case MSVC2008_64:
+                vcnumber = "90";
+
+            case MSVC2005:
+            case MSVC2005_64:
+
+                File crt = new File(props.getProperty(null, InitializeTask.VSREDISTDIR).toString(),
+                                    "Microsoft.VC" + vcnumber + ".CRT");
+
+                String files[] = new String[] { "Microsoft.VC" + vcnumber + ".CRT.manifest",
+                                                "msvcm" + vcnumber + ".dll",
+                                                "msvcp" + vcnumber + ".dll",
+                                                "msvcr" + vcnumber + ".dll"
+                };
+
+                for (String libDir : libraryDir) {
+                    for (String name : files) {
+                        String lib = libDir + "/Microsoft.VC" + vcnumber + ".CRT/" + name;
+                        unpackLibs.add(lib);
+
+                        try {
+                            Util.copy(new File(crt, name), new File(outdir, lib));
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                            throw new BuildException("Failed to copy VS CRT libraries", e);
+                        }
+                    }
+                }
+
+                break;
         }
     }
 
@@ -113,6 +188,10 @@ public class PlatformJarTask extends Task {
     private String cacheKey = "default";
     private File outdir;
     private List<LibraryEntry> libs = new ArrayList<LibraryEntry>();
+    private Set<String> libraryDir = new HashSet<String>();
+    private List<String> unpackLibs = new ArrayList<String>();
+    private String systemLibs = SYSLIB_AUTO;
 
+    private PropertyHelper props;
 }
 

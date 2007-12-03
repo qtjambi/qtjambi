@@ -49,7 +49,7 @@
         <taskdef name="qtjambi-platform-jar" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
         <taskdef name="qtjambi-initialize" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
         
-        <qtjambi-initialize verbose="false" />
+        <qtjambi-initialize verbose="true" />
     </target>
 
     <target name="clean"
@@ -190,21 +190,39 @@
 	    description="Creating .jar file with native libs...">
 
         <qtjambi-platform-jar cacheKey="build-${DSTAMP}-${TSTAMP}"
-                              outdir="platform-output"
-                >
+                              outdir="platform-output">
 
             <!-- Qt Libraries... -->
-            <library name="QtCore"  type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="QtGui"   type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtCore"          type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtGui"           type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtXml"           type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtSql"           type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtSvg"           type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtNetwork"       type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtOpenGL"        type="qt"      rootPath="${qtjambi.qtdir}" />
 
             <!-- Qt Plugins... -->
-            <library name="qjpeg"   type="plugin"  rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
-            <library name="qgif"    type="plugin"  rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qgif" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qmng" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qtiff" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qsvg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qsvg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/iconengines" load="never"/>
+            <library name="qcncodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
+            <library name="qjpcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
+            <library name="qkrcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
+            <library name="qtwcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
+            <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/accessible" load="never"/>
 
             <!-- Qt Jambi Libraries -->
-            <library name="qtjambi"                 type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_core"   type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_gui"    type="qtjambi" rootPath="." />
+            <library name="qtjambi"                  type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_network" type="qtjambi" rootPath="." />
+            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="." />
 
         </qtjambi-platform-jar>
 
