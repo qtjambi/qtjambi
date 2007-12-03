@@ -155,7 +155,9 @@ class pp
     PP_IF,
     PP_IFDEF,
     PP_IFNDEF,
-    PP_UNDEF
+    PP_UNDEF,
+    PP_PRAGMA,
+    PP_ERROR
   };
 
 public:

@@ -187,8 +187,12 @@ inline pp::PP_DIRECTIVE_TYPE pp::find_directive (char const *__directive, std::s
           return PP_IFDEF;
         else if (__directive[0] == 'u' && !strcmp (__directive, "undef"))
           return PP_UNDEF;
-        else if (__directive[0] == 'e' && !strcmp (__directive, "endif"))
-          return PP_ENDIF;
+        else if (__directive[0] == 'e') {
+          if (!strcmp (__directive, "endif"))
+            return PP_ENDIF;
+          else if (!strcmp (__directive, "error"))
+            return PP_ERROR;
+        }
         break;
 
       case 6:
@@ -196,11 +200,13 @@ inline pp::PP_DIRECTIVE_TYPE pp::find_directive (char const *__directive, std::s
           return PP_IFNDEF;
         else if (__directive[0] == 'd' && !strcmp (__directive, "define"))
           return PP_DEFINE;
+        else if (__directive[0] == 'p' && !strcmp (__directive, "pragma"))
+          return PP_PRAGMA;
         break;
 
       case 7:
         if (__directive[0] == 'i' && !strcmp (__directive, "include"))
-          return PP_INCLUDE;
+            return PP_INCLUDE;
         break;
 
       case 12:
@@ -211,7 +217,7 @@ inline pp::PP_DIRECTIVE_TYPE pp::find_directive (char const *__directive, std::s
       default:
         break;
     }
-
+  std::cerr << "** WARNING unknown directive '#" << __directive << "' at " << env.current_file << ":" << env.current_line << std::endl;
   return PP_UNKNOWN_DIRECTIVE;
 }
 
