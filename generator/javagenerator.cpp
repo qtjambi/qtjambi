@@ -1056,10 +1056,16 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const AbstractMetaFunction
     AbstractMetaArgumentList arguments = java_function->arguments();
 
     if ((java_function->implementingClass() != java_function->declaringClass())
-        || (!java_function->isNormal() || java_function->isEmptyFunction() || java_function->isAbstract())) {
+        || ((!java_function->isNormal() && !java_function->isConstructor()) || java_function->isEmptyFunction() || java_function->isAbstract())) {
         return ;
     }
-    include_attributes |= AbstractMetaAttributes::FinalInTargetLang;
+    
+
+    int option = 0;
+    if (java_function->isConstructor())
+        option = Option(option | SkipReturnType);
+    else
+        include_attributes |= AbstractMetaAttributes::FinalInTargetLang;
 
     int generate_enum_overload = -1;
     for (int i=0; i<arguments.size(); ++i)
@@ -1076,7 +1082,7 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const AbstractMetaFunction
 
         s << endl;
 
-        writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes, 0);
+        writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes, option);
         s << java_function->name() << "(";
         if (generate_enum_overload > 0) {
             writeFunctionArguments(s, java_function, generate_enum_overload);
@@ -1095,12 +1101,17 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const AbstractMetaFunction
         if (new_return_type != "void" && (!new_return_type.isEmpty() || java_function->type() != 0))
             s << "return ";
 
-        if (java_function->isStatic())
-            s << java_function->implementingClass()->fullName() << ".";
-        else
-            s << "this.";
+        if (java_function->isConstructor()) {
+            s << "this";
+        } else {
+            if (java_function->isStatic())
+                s << java_function->implementingClass()->fullName() << ".";
+            else
+                s << "this.";
+            s << java_function->name();
+        }
 
-        s << java_function->name() << "(";
+        s << "(";
         for (int i=0; i<generate_enum_overload; ++i) {
             s << arguments.at(i)->argumentName() << ", ";
         }
