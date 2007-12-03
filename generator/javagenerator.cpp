@@ -1637,9 +1637,10 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         if (java_function->isEmptyFunction()
             || java_function->isDeprecated()) s << INDENT << "@Deprecated" << endl;
 
-        bool needsSuppressUnusedWarning = (((excluded_attributes & AbstractMetaAttributes::Private) == 0)
-                                            && (java_function->isPrivate()
-                                                || ((included_attributes & AbstractMetaAttributes::Private) != 0)));
+        bool needsSuppressUnusedWarning = java_function->isSignal()
+                                          && (((excluded_attributes & AbstractMetaAttributes::Private) == 0)
+                                               && (java_function->isPrivate()
+                                                   || ((included_attributes & AbstractMetaAttributes::Private) != 0)));
         
         if (needsSuppressUnusedWarning && java_function->needsSuppressUncheckedWarning()) {
             s << INDENT<< "@SuppressWarnings({\"unchecked\", \"unused\"})" << endl;
