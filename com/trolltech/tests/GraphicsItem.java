@@ -3,8 +3,6 @@ package com.trolltech.tests;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-import com.trolltech.qt.opengl.*;
-
 public class GraphicsItem {
 
     private static class Heli extends QGraphicsItem {

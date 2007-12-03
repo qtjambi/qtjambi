@@ -8,13 +8,17 @@ import java.security.*;
 
 import javax.xml.parsers.*;
 
-import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import com.trolltech.qt.Utilities;
 
 
 class DeploymentSpecException extends RuntimeException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     public DeploymentSpecException(String msg) {
         super(msg);
     }
@@ -311,8 +315,7 @@ public class NativeLibraryManager {
         InputStream stream = new FileInputStream(file);
 
         int skip = stream.available() / 5;
-        int read;
-        while ((read = stream.read(data)) > 0) {
+        while (stream.read(data) > 0) {
             md.update(data);
             stream.skip(skip - data.length);
         }
@@ -322,7 +325,7 @@ public class NativeLibraryManager {
         JarFile jarFile = new JarFile(file);
         JarEntry entry = jarFile.getJarEntry(DEPLOY_DESCRIPTOR_NAME);
         stream = jarFile.getInputStream(entry);
-        while ((read = stream.read(data)) > 0) {
+        while (stream.read(data) > 0) {
             md.update(data);
         }
         stream.close();

@@ -16,7 +16,6 @@ package com.trolltech.qt.designer;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.xml.*;
-import com.trolltech.qt.*;
 
 import java.lang.reflect.*;
 import java.util.*;

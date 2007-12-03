@@ -37,6 +37,8 @@ class Renderer {
 public class GraphicsTest extends QWidget {
 
     public static class Component extends JComponent {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void paintComponent(Graphics g) {
             Renderer.render((Graphics2D) g);

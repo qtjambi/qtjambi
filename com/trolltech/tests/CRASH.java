@@ -1,8 +1,5 @@
 package com.trolltech.tests;
 
-import java.util.List;
-
-import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.*;
 
 public class CRASH {    
@@ -21,8 +18,8 @@ public class CRASH {
 
         
         {
-            List<QObject> children = crash.children();
-            QTextDocument document = crash.document();
+            crash.children();
+            crash.document();
         }
         for (int i=0; i<1000; ++i) {
             crash.setPlainText("a");

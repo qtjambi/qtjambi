@@ -221,6 +221,7 @@ public class GlassPane extends QWidget {
         selector.activated.connect(this, "changeTransition(String)");
     }
 
+    @SuppressWarnings("unused")
     private void toggle() {
         QWidget current = panels.currentWidget();
         QWidget next = panels.widget((panels.currentIndex() + 1) % 2);
@@ -240,6 +241,7 @@ public class GlassPane extends QWidget {
         panels.setCurrentIndex((panels.currentIndex() + 1) % 2);
     }
 
+    @SuppressWarnings("unused")
     private void changeTransition(String type) {
         for (Overlay.Transition t : Overlay.Transition.values()) {
             if (type.equals(t.name())) {
