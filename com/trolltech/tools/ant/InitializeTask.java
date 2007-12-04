@@ -125,12 +125,26 @@ public class InitializeTask extends Task {
                 compiler = Compiler.GCC;
                 break;
             case LINUX:
-                compiler = Compiler.GCC;
+                compiler = testForGCC();
                 break;
         }
 
         if (verbose) System.out.println("qtjambi.compiler: " + compiler.toString());
         return compiler.toString();
+    }
+
+    private Compiler testForGCC() {
+        try {
+            String output = Util.execute("gcc", "-dumpversion")[0];
+            if (output.contains("3.3."))
+                return Compiler.OldGCC;
+            return Compiler.GCC;
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+            throw new BuildException("Failed to properly execute 'gcc' command");
+        } catch (IOException ex) {
+            return null;
+        }
     }
 
     private Compiler testForMinGW() {
