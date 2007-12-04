@@ -136,4 +136,25 @@ class Util {
         }
 
     }
+
+    public static File findInPath(String name) {
+        String PATH[] = System.getenv("PATH").split(File.pathSeparator);
+        for (String p : PATH) {
+            File f = new File(p, name);
+            if (f.exists())
+                return f;
+        }
+        return null;
+    }
+
+    public static File findInLibraryPath(String name) {
+        String PATH[] = System.getProperty("java.library.path").split(File.pathSeparator);
+        for (String p : PATH) {
+            File f = new File(p, name);
+            if (f.exists())
+                return f;
+        }
+        return null;
+    }
+
 }
