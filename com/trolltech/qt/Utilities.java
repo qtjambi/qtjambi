@@ -104,27 +104,31 @@ public class Utilities {
     }
 
     public static void loadQtLibrary(String library) {
-    	String excludeLibraries = System.getProperty(EXCLUDE_STRING);
-    	if (excludeLibraries != null) {
-            StringTokenizer tokenizer = new StringTokenizer(excludeLibraries,
-                                                            File.pathSeparator);
-            while (tokenizer.hasMoreElements()) {
-                if (library.equals(tokenizer.nextElement())) {
-                    if (VERBOSE_LOADING)
-                        System.out.println("Skipped library (" + library + ") since it is listed in " + excludeLibraries);
-                    return;
-                }
-            }
-    	}
-        String lib = qtLibraryName(library);
-        loadLibrary(lib);
+        com.trolltech.qt.internal.NativeLibraryManager.loadQtLibrary(library);
+
+//     	String excludeLibraries = System.getProperty(EXCLUDE_STRING);
+//     	if (excludeLibraries != null) {
+//             StringTokenizer tokenizer = new StringTokenizer(excludeLibraries,
+//                                                             File.pathSeparator);
+//             while (tokenizer.hasMoreElements()) {
+//                 if (library.equals(tokenizer.nextElement())) {
+//                     if (VERBOSE_LOADING)
+//                         System.out.println("Skipped library (" + library + ") since it is listed in " + excludeLibraries);
+//                     return;
+//                 }
+//             }
+//     	}
+//         String lib = qtLibraryName(library);
+//         loadLibrary(lib);
     }
 
     public static void loadJambiLibrary(String library) {
-    	if (configuration == Configuration.Debug)
-            library += DEBUG_SUFFIX;
-    	String lib = jniLibraryName(library);
-    	loadLibrary(lib);
+        com.trolltech.qt.internal.NativeLibraryManager.loadJambiLibrary(library);
+
+//     	if (configuration == Configuration.Debug)
+//             library += DEBUG_SUFFIX;
+//     	String lib = jniLibraryName(library);
+//     	loadLibrary(lib);
     }
 
     private static boolean loadFromEnv(String env, String lib, LibraryLoadingInfo debug) {

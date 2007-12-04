@@ -15,7 +15,7 @@ import com.trolltech.qt.Utilities;
 
 class DeploymentSpecException extends RuntimeException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -178,6 +178,7 @@ public class NativeLibraryManager {
             unpack_helper();
             if (VERBOSE_LOADING)
                 System.out.println(reporter.recentReports());
+            unpacked = true;
         } catch (Throwable t) {
             throw new RuntimeException("Faild to unpack native libraries, progress so far:\n"
                                        + reporter, t);
@@ -226,6 +227,9 @@ public class NativeLibraryManager {
      * @param lib The full name of the library to load, such as libQtCore.so.4
      */
     private static void loadLibrary(String lib) {
+        if (!unpacked)
+            unpack();
+
         try {
             loadLibrary_helper(lib);
             if (VERBOSE_LOADING)
@@ -264,7 +268,7 @@ public class NativeLibraryManager {
         // Load via System.load() using default paths..
         } else {
             /* TODO: Mac OS X, loadLibrary won't load .dylib files, only .jnilib so special
-             * handling of QtCore and friends must be added...            
+             * handling of QtCore and friends must be added...
              */
             String libBase = stripLibraryName(lib);
             reporter.report(" - using 'java.library.path' as '", libBase, "'");
@@ -501,6 +505,8 @@ public class NativeLibraryManager {
     private static Map<String, LibraryEntry> neverLoad = new HashMap<String, LibraryEntry>();
     private static List<DeploymentSpec> deploymentSpecs = new ArrayList<DeploymentSpec>();
     private static Reporter reporter = new Reporter();
+
+    private static boolean unpacked = false;
 
     public static void main(String args[]) throws Exception {
 
