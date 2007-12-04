@@ -38,7 +38,7 @@ public class InitializeTask extends Task {
             if (name.equals("mingw")) return MinGW;
             if (name.equals("gcc3.3")) return OldGCC;
             if (name.equals("gcc")) return GCC;
-            return Other; 
+            return Other;
         }
     }
 
@@ -62,7 +62,6 @@ public class InitializeTask extends Task {
     }
 
     public void execute() throws BuildException {
-        try {
         props = PropertyHelper.getPropertyHelper(getProject());
         props.setNewProperty(null, OSNAME, decideOSName());
         props.setNewProperty(null, LIBSUBDIR, decideLibSubDir());
@@ -86,9 +85,6 @@ public class InitializeTask extends Task {
                     throw new BuildException("Trying to mix 32-bit virtual machine with 64-bit MSVC compiler...");
             }
         }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void checkCompilerDetails() {
@@ -110,7 +106,7 @@ public class InitializeTask extends Task {
                 if (!new File(redistDir).exists())
                     throw new BuildException("MSVC redistributables not found in '" + redistDir + "'");
                 props.setNewProperty(null, VSREDISTDIR, redistDir);
-                
+
                 break;
         }
     }
