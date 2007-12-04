@@ -156,8 +156,9 @@ public class NativeLibraryManager {
         List<String> paths = new ArrayList<String>();
         for (DeploymentSpec spec : deploymentSpecs) {
             File root = jambiTempDirBase(spec.key);
-            for (String path : spec.pluginPaths)
-                paths.add(new File(root, path).getAbsolutePath());
+            if (spec.pluginPaths != null)
+                for (String path : spec.pluginPaths)
+                    paths.add(new File(root, path).getAbsolutePath());
         }
         return paths;
     }
