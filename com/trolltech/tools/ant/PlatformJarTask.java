@@ -208,6 +208,10 @@ public class PlatformJarTask extends Task {
             copyRuntime("msvcp71.dll");
             break;
 
+        case MinGW:
+            copyRuntime("mingwm10.dll");
+            break;
+
         case GCC:
             if (Util.OS() == Util.OS.LINUX) copyRuntime("libstdc++.so.6");
             break;
