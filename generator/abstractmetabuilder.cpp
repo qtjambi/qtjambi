@@ -2118,41 +2118,44 @@ void AbstractMetaBuilder::setupComparable(AbstractMetaClass *cls)
 
     bool hasEquals = cls->equalsFunctions().size() || cls->notEqualsFunctions().size();
 
-    // Conditions for comparrable is:
+    // Conditions for comparable is:
     //     >, ==, <             - The basic case
     //     >, ==                - Less than becomes else case
     //     <, ==                - Greater than becomes else case
     //     >=, <=               - if (<= && >=) -> equal
-    bool isComparable = greater.size() || greaterEquals.size() || less.size() || lessEquals.size()
+    bool mightBeComparable = greater.size() || greaterEquals.size() || less.size() || lessEquals.size()
                         || greaterEquals.size() == 1 || lessEquals.size() == 1;
 
-    if (isComparable) {
-        hide_functions(greater);
-        hide_functions(greaterEquals);
-        hide_functions(less);
-        hide_functions(lessEquals);
-
+    if (mightBeComparable) {
         QSet<QString> signatures;
 
-        // The three upper cases, prefer the <, == approach
+        // We only hide the original functions if we are able to make a compareTo() method
+        bool wasComparable = false;
+
+        // The three upper cases, prefer the <, == approach        
         if (hasEquals && (greater.size() || less.size())) {
             cls->setLessThanFunctions(filter_functions(less, &signatures));
             cls->setGreaterThanFunctions(filter_functions(greater, &signatures));
             filter_functions(greaterEquals, &signatures);
             filter_functions(lessEquals, &signatures);
+            wasComparable = true;
         } else if (hasEquals && (greaterEquals.size() || lessEquals.size())) {
             cls->setLessThanEqFunctions(filter_functions(lessEquals, &signatures));
             cls->setGreaterThanEqFunctions(filter_functions(greaterEquals, &signatures));
-        } else if (less.size() == 1) {
-            cls->setLessThanFunctions(filter_functions(less, &signatures));
-            filter_functions(greater, &signatures);
-            filter_functions(greaterEquals, &signatures);
-            filter_functions(lessEquals, &signatures);
+            wasComparable = true;
         } else if (greaterEquals.size() == 1 || lessEquals.size() == 1) {
             cls->setGreaterThanEqFunctions(greaterEquals);
             cls->setLessThanEqFunctions(lessEquals);
             filter_functions(less, &signatures);
             filter_functions(greater, &signatures);
+            wasComparable = true;
+        }
+
+        if (wasComparable) {
+            hide_functions(greater);
+            hide_functions(greaterEquals);
+            hide_functions(less);
+            hide_functions(lessEquals);
         }
     }
 
