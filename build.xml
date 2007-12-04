@@ -137,35 +137,23 @@
 
     <target name="qtjambi-examples.jar">
         <javac srcdir=".">
-            <include name="com/trolltech/demos/*.java"/>
-            <include name="com/trolltech/examples/*.java"/>
+            <include name="com/trolltech/demos/**/*.java"/>
+            <include name="com/trolltech/examples/**/*.java"/>
+            <include name="com/trolltech/launcher/*.java"/>
             <exclude name="com/trolltech/examples/GeneratorExample.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java"/>
         </javac>
 
         <jar destfile="qtjambi-examples.jar"
              basedir=".">
-            <include name="com/trolltech/examples/*"/>
-            <include name="com/trolltech/demos/*"/> 
-            <exclude name="com/trolltech/examples/*.java"/>
-            <exclude name="com/trolltech/demos/*.java"/>
-           <manifest>
-                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
-            </manifest>
-        </jar>
-    </target>
-
-    <target name="qtjambi-launcher.jar">
-        <javac srcdir=".">
-            <include name="com/trolltech/launcher/*.java"/>
-        </javac>
-
-        <jar destfile="qtjambi-launcher.jar"
-             basedir=".">
+            <include name="com/trolltech/examples/**/*"/>
+            <include name="com/trolltech/demos/**/*"/>
             <include name="com/trolltech/launcher/*"/> 
-            <exclude name="com/trolltech/launcher/*.java"/>
-           <manifest>
+            <exclude name="com/trolltech/**/*.java"/>
+            <exclude name="com/trolltech/**/*.jui"/>
+            <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+                <attribute name="Main-Class" value="com.trolltech.launcher.Launcher"/>
             </manifest>
         </jar>
     </target>
@@ -297,6 +285,6 @@
 
     <target name="qtjambi"
             description="Make QT Jambi."
-            depends="qtjambi.init,qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, juic, qtjambi.jar, qtjambi-examples.jar, qtjambi-launcher.jar, qtjambi-designer.jar, qtjambi-platform.jar" />
+            depends="qtjambi.init,qmake.generator, compile.generator, generator.qtjambi, qmake.qtjambi, compile.qtjambi, juic, qtjambi.jar, qtjambi-examples.jar, qtjambi-designer.jar, qtjambi-platform.jar" />
 
 </project>
