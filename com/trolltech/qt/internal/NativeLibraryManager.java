@@ -134,13 +134,8 @@ public class NativeLibraryManager {
     }
 
 
-    public static void unpackJarFile(URI name) {
-        try {
-            unpackJarFile_helper(name);
-        } catch (Throwable e) {
-            throw new RuntimeException("Failed to unpack .jar file, progress so far:\n"
-                                + reporter.toString(), e);
-        }
+    public static void unpackJarFile(URI name) throws Exception {
+        unpackJarFile_helper(name);
     }
 
 
