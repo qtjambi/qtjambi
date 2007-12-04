@@ -7,13 +7,13 @@ import java.io.*;
 public class InitializeTask extends Task {
 
     public enum Compiler {
-        MSVC1998("vc98"),
-        MSVC2002("vc2002"),
-        MSVC2003("vc2003"),
-        MSVC2005("vc2005"),
-        MSVC2005_64("vc2005x64"),
-        MSVC2008("vc2008"),
-        MSVC2008_64("vc2008_64"),
+        MSVC1998("msvc98"),
+        MSVC2002("msvc2002"),
+        MSVC2003("msvc2003"),
+        MSVC2005("msvc2005"),
+        MSVC2005_64("msvc2005x64"),
+        MSVC2008("msvc2008"),
+        MSVC2008_64("msvc2008_64"),
         MinGW("mingw"),
         OldGCC("gcc3.3"),
         GCC("gcc"),
@@ -62,11 +62,11 @@ public class InitializeTask extends Task {
     }
 
     public void execute() throws BuildException {
+        try {
         props = PropertyHelper.getPropertyHelper(getProject());
         props.setNewProperty(null, OSNAME, decideOSName());
         props.setNewProperty(null, LIBSUBDIR, decideLibSubDir());
         props.setNewProperty(null, QTDIR, decideQtDir());
-        props.setNewProperty(null, QMAKESPEC, decideQMakeSpec());
 
         // TODO: Find a better way to get a hold of version...
         props.setNewProperty(null, VERSION, "4.4.0_01");
@@ -85,6 +85,9 @@ public class InitializeTask extends Task {
                 else
                     throw new BuildException("Trying to mix 32-bit virtual machine with 64-bit MSVC compiler...");
             }
+        }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -115,11 +118,31 @@ public class InitializeTask extends Task {
     private String decideCompiler() {
         switch(Util.OS()) {
             case WINDOWS:
-                String spec = props.getProperty(null, QMAKESPEC).toString();
-                if (spec.contains("msvc"))
-                    compiler = testForVisualStudio();
-                else if (spec.contains("gcc"))
-                    compiler = testForMinGW();
+
+                Compiler msvc = testForVisualStudio();
+                Compiler mingw = testForMinGW();
+
+                if (msvc != null && mingw != null) {
+                    System.out.println("Both Visual C++ and MinGW compilers are available\n"
+                                       + "Choosing based on environment variable QMAKESPEC");
+                    String spec = System.getenv("QMAKESPEC");
+                    if (spec == null) {
+                        throw new BuildException("Environment variable QMAKESPEC is not set...");
+                    } else if (spec.contains("msvc")) {
+                        compiler = msvc;
+                    } else if (spec.contains("g++")) {
+                        compiler = mingw;
+                    } else {
+                        throw new BuildException("Invalid QMAKESPEC variable...");
+                    }
+                } else if (msvc != null) {
+                    compiler = msvc;
+                } else if (mingw != null) {
+                    compiler = mingw;
+                } else {
+                    throw new BuildException("No compiler detected, please make sure MinGW or VisualC++ binaries are available in PATH");
+                }
+
                 break;
             case MAC:
                 compiler = Compiler.GCC;
@@ -213,14 +236,6 @@ public class InitializeTask extends Task {
             throw new BuildException("QTDIR environment variable points to non-existing directory");
         if (verbose) System.out.println("qtjambi.qtdir: " + qtdir);
         return qtdir;
-    }
-
-    private String decideQMakeSpec() {
-        String spec = System.getenv("QMAKESPEC");
-        if (spec == null || spec.length() == 0)
-            throw new BuildException("QMAKESPEC environment variable must be set to build Qt Jambi");
-        if (verbose) System.out.println("qtjambi.qmakespec: " + spec);
-        return spec;
     }
 
     private Compiler compiler;
