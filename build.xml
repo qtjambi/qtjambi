@@ -224,6 +224,8 @@
             <library name="com_trolltech_qt_network" type="qtjambi" rootPath="." />
             <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="." />
 
+	    <plugin path="plugins" />
+
         </qtjambi-platform-jar>
 
         <jar destfile="qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">

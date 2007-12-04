@@ -88,11 +88,12 @@ public class PlatformJarTask extends Task {
         }
 
         writer.println("<qtjambi-deploy>");
-        writer.println("  <cache key=\"" + cacheKey + "\" />");
+        writer.println("\n  <cache key=\"" + cacheKey + "\" />");
 
         // system libraries that must be loaded first of all...
         if (systemLibs.equals(SYSLIB_AUTO)) {
-            writer.println("\n  <!-- Runtime libraries, automatically loaded... -->");
+            if (runtimeLibs.size() > 0)
+                writer.println("\n  <!-- Runtime libraries, automatically loaded... -->");
             for (String rt : runtimeLibs) {
                 writer.println("  <library name=\"" + rt + "\" load=\"yes\" />");
             }
@@ -112,13 +113,22 @@ public class PlatformJarTask extends Task {
 
         // Manifests and the like...
         if (systemLibs.equals(SYSLIB_AUTO)) {
-            writer.println("\n  <!-- Dependency libraries, not loaded... -->");
+            if (unpackLibs.size() > 0)
+                writer.println("\n  <!-- Dependency libraries, not loaded... -->");
             for (String unpack : unpackLibs) {
                 writer.println("  <library name=\"" + unpack + "\" load=\"never\" />");
             }
         }
 
-        writer.println("</qtjambi-deploy>");
+        // plugins...
+        if (pluginPaths.size() > 0) {
+            writer.println("\n  <!-- Plugins... -->");
+            for (PluginPath p : pluginPaths) {
+                writer.println("  <plugin path=\"" + p.getPath() + "\" />");
+            }
+        }
+
+        writer.println("\n</qtjambi-deploy>");
 
         writer.close();
     }
@@ -131,6 +141,16 @@ public class PlatformJarTask extends Task {
         } catch (Exception e) {
             e.printStackTrace();
             throw new BuildException("Failed to add library entry.....");
+        }
+    }
+
+    public void addConfiguredPlugin(PluginPath path) {
+        try {
+            path.perform();
+            pluginPaths.add(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BuildException("Failed to add plugin path.......");
         }
     }
 
@@ -250,6 +270,7 @@ public class PlatformJarTask extends Task {
     private List<String> unpackLibs = new ArrayList<String>();
     private List<String> runtimeLibs = new ArrayList<String>();
     private String systemLibs = SYSLIB_AUTO;
+    private List<PluginPath> pluginPaths = new ArrayList<PluginPath>();
 
     private PropertyHelper props;
 }
