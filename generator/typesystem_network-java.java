@@ -72,15 +72,41 @@ class QAbstractSocket___ extends QAbstractSocket {
         connectToHost(host, (char) port, mode);
     }
 
+    public final void connectToHost(String host, int port, com.trolltech.qt.core.QIODevice.OpenModeFlag ... mode) {
+        connectToHost(host, (char) port, mode);
+    }
+
+    public final void connectToHost(String host, int port) {
+        connectToHost(host, (char) port);
+    }
+
     public final void connectToHost(QHostAddress host, int port, com.trolltech.qt.core.QIODevice.OpenMode mode) {
         connectToHost(host, (char) port, mode);
+    }
+
+    public final void connectToHost(QHostAddress host, int port, com.trolltech.qt.core.QIODevice.OpenModeFlag ... mode) {
+        connectToHost(host, (char) port, mode);
+    }
+
+    public final void connectToHost(QHostAddress host, int port) 
+    {
+        connectToHost(host, (char) port);
     }
 
     protected final void connectToHostImplementation(String host, int port, com.trolltech.qt.core.QIODevice.OpenMode mode) {
         connectToHostImplementation(host, (char) port, mode);
     }
 
-    public final int localPort() {
+    protected final void connectToHostImplementation(String host, int port, com.trolltech.qt.core.QIODevice.OpenModeFlag ... mode) {
+        connectToHostImplementation(host, (char) port, mode);
+    }
+
+    protected final void connectToHostImplementation(String host, int port) {
+        connectToHostImplementation(host, (char) port);
+    }
+
+    public final int localPort() 
+    {
         return localPort_private();
     }
 
@@ -142,12 +168,20 @@ class QHttp___ extends QHttp {
         }
     }
 
+    public QHttp(String hostname) {
+        this(hostname, (char) 80);
+    }
+
     public QHttp(String hostname, int port) {
         this(hostname, (char) port);
     }
 
     public QHttp(String hostname, int port, com.trolltech.qt.core.QObject parent) {
         this(hostname, (char) port, parent);
+    }
+
+    public QHttp(java.lang.String hostname, com.trolltech.qt.network.QHttp.ConnectionMode mode) {
+        this(hostname, mode, '\0');
     }
 
     public QHttp(String hostname, QHttp.ConnectionMode mode, int port) {
@@ -158,8 +192,16 @@ class QHttp___ extends QHttp {
         this(hostname, mode, (char) port, parent);
     }
 
+    public final int setHost(String hostName, QHttp.ConnectionMode mode) {
+        return setHost(hostName, mode, '\0');
+    }
+
     public final int setHost(String hostname, QHttp.ConnectionMode mode, int port) {
         return setHost(hostname, mode, (char) port);
+    }
+
+    public final int setHost(String hostname) {
+        return setHost(hostname, (char) 80);
     }
 
     public final int setHost(String hostname, int port) {
@@ -172,6 +214,14 @@ class QTcpServer___ extends QTcpServer {
 
     public final boolean listen(QHostAddress address, int port) {
         return listen(address, (char) port);
+    }
+
+    public final boolean listen(QHostAddress address) {
+        return listen(address, '\0');
+    }
+
+    public final boolean listen() {
+        return listen(new com.trolltech.qt.network.QHostAddress(com.trolltech.qt.network.QHostAddress.SpecialAddress.Any));
     }
 
     public final int serverPort() {
@@ -201,12 +251,24 @@ class QUdpSocket___ extends QUdpSocket {
         return bind_private(address, (char) port);
     }
 
+    public final boolean bind() {
+        return bind_private();
+    }
+
     public final boolean bind(int port) {
         return bind_private((char) port);
     }
 
+    public final boolean bind(QHostAddress address, int port, BindFlag ... mode) {
+        return bind_private(address, (char) port, mode);
+    }
+
     public final boolean bind(QHostAddress address, int port, BindMode mode) {
         return bind_private(address, (char) port, mode);
+    }
+
+    public final boolean bind(int port, BindFlag ... mode) {
+        return bind_private((char) port, mode);
     }
 
     public final boolean bind(int port, BindMode mode) {
@@ -237,6 +299,10 @@ class QUdpSocket___ extends QUdpSocket {
         return len;
     }
 
+    public final int readDatagram(byte data[]) {
+        return readDatagram(data, null);
+    }
+
     public final int writeDatagram(byte data[], QHostAddress address, int port) {
         QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
         return (int) writeDatagram(np, data.length, address, (char) port);
@@ -249,6 +315,14 @@ class QUdpSocket___ extends QUdpSocket {
 }// class
 
 class QNetworkProxy___ extends QNetworkProxy {
+
+    public QNetworkProxy(QNetworkProxy.ProxyType type) {
+        this(type, null, '\0');
+    }
+
+    public QNetworkProxy(QNetworkProxy.ProxyType type, String host) {
+        this(type, host, '\0');
+    }
 
     public QNetworkProxy(QNetworkProxy.ProxyType type, String host, int port) {
         this(type, host, (char) port);

@@ -464,7 +464,7 @@
     <modify-function signature="operator+=(double)" access="private"/>
     <modify-function signature="operator-=(double)" access="private"/>
     <modify-function signature="operator/=(double)" access="private"/>
-    <modify-function signature="operator*(QTransform)const" access="private"/>
+    <modify-function signature="operator*(QTransform)const" rename="multiplied" />
     <modify-function signature="operator*=(QTransform)" access="private"/>
   </value-type>  
   
@@ -912,6 +912,9 @@
         <modify-argument index="2">
             <remove-default-expression/>
         </modify-argument>
+        <modify-argument index="3">
+            <remove-default-expression/>
+        </modify-argument>        
     </modify-function>
         
     <modify-function signature="loadFromData(QByteArray,const char*)">
@@ -2329,21 +2332,84 @@
     <modify-function signature="getDouble(QWidget *, const QString &amp;, const QString &amp;, double, double, double, int, bool *, QFlags&lt;Qt::WindowType&gt;)">
         <rename to="getDouble_internal"/>
         <access modifier="private"/>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="7">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="8">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="9">
+            <remove-default-expression />
+        </modify-argument>        
     </modify-function>
     
     <modify-function signature="getInteger(QWidget *, const QString &amp;, const QString &amp;, int, int, int, int, bool *, QFlags&lt;Qt::WindowType&gt;)">
         <rename to="getInteger_internal"/>
         <access modifier="private"/>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="7">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="8">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="9">
+            <remove-default-expression />
+        </modify-argument>                
     </modify-function>
       
     <modify-function signature="getItem(QWidget *, const QString &amp;, const QString &amp;, const QStringList&lt;QString&gt; &amp;, int, bool, bool *, QFlags&lt;Qt::WindowType&gt;)">
         <rename to="getItem_internal"/>
         <access modifier="private"/>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="7">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="8">
+            <remove-default-expression />
+        </modify-argument>
     </modify-function>
    
     <modify-function signature="getText(QWidget *, const QString &amp;, const QString &amp;, QLineEdit::EchoMode, const QString &amp;, bool *, QFlags&lt;Qt::WindowType&gt;)">
         <rename to="getText_internal"/>
         <access modifier="private"/>
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="7">
+            <remove-default-expression />
+        </modify-argument>
     </modify-function>
   </object-type>
   

@@ -13,6 +13,11 @@ class QTransform___ extends QTransform {
         return this;
     }
 
+    public final QTransform multiply(QTransform matrix) {
+        operator_multiply_assign(matrix);
+        return this;
+    }
+
     public final QTransform add(double d) {
         operator_add_assign(d);
         return this;
@@ -676,19 +681,19 @@ class QStyle___ extends QStyle {
     @QtBlockedSlot
     public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
             com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget) {
-        return layoutSpacing(control1, control2, orientation, option.nativePointer(), widget);
+        return layoutSpacingImplementation(control1, control2, orientation, option.nativePointer(), widget);
     }
 
     @QtBlockedSlot
     public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
             com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option) {
-        return layoutSpacing(control1, control2, orientation, option, null);
+        return layoutSpacingImplementation(control1, control2, orientation, option, null);
     }
 
     @QtBlockedSlot
     public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
             com.trolltech.qt.core.Qt.Orientation orientation) {
-        return layoutSpacing(control1, control2, orientation, null);
+        return layoutSpacingImplementation(control1, control2, orientation, null);
     }
 
 }// class

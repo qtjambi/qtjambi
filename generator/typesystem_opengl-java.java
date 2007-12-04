@@ -10,7 +10,7 @@ class QGLColormap___ extends QGLColormap {
     }
 
     public final void setEntries(int colors[]) {
-        setEntries(colors, 0);
+        setEntries(colors.length, QtJambiInternal.intArrayToNativePointer(colors));
     }
 
 }// class

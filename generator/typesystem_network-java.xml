@@ -77,8 +77,16 @@ authenticationRequired.connect(this, "emitAuthenticationRequiredPrivate(String, 
 authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, char, QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
         </inject-code>
 
-        <modify-function signature="QHttp(const QString &amp;, unsigned short, QObject *)" access="private" />
-        <modify-function signature="QHttp(const QString &amp;, QHttp::ConnectionMode, unsigned short, QObject *)" access="private" />
+        <modify-function signature="QHttp(const QString &amp;, unsigned short, QObject *)" access="private">
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="QHttp(const QString &amp;, QHttp::ConnectionMode, unsigned short, QObject *)" access="private">
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>        
+        </modify-function>
 
         <modify-function signature="read(char*,long long)">
             <access modifier="private"/>
@@ -92,8 +100,16 @@ authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, 
             </modify-argument>
         </modify-function>
 
-        <modify-function signature="setHost(QString, unsigned short)" access="private"/>
-        <modify-function signature="setHost(QString, QHttp::ConnectionMode, unsigned short)" access="private"/>
+        <modify-function signature="setHost(QString, unsigned short)" access="private">
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="setHost(QString, QHttp::ConnectionMode, unsigned short)" access="private">
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>        
+        </modify-function>
        
     </object-type>
 
@@ -108,8 +124,11 @@ authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, 
         </extra-includes>
         <modify-function signature="listen(QHostAddress,unsigned short)" access="private">
             <modify-argument index="1">
-                <replace-default-expression with="new com.trolltech.qt.network.QHostAddress(com.trolltech.qt.network.QHostAddress.SpecialAddress.Any)"/>
+                <remove-default-expression />
             </modify-argument>
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>            
         </modify-function>
         
 
@@ -153,6 +172,12 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
         
         <modify-function signature="readDatagram(char*,long long,QHostAddress*,unsigned short*)">
             <access modifier="private"/>
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
         </modify-function>
         
         <modify-function signature="bind(QHostAddress, unsigned short)" access="private" rename="bind_private"/>
@@ -175,7 +200,14 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
         <inject-code>
             <import-file name="typesystem_network-java.java" quote-after-line="class QNetworkProxy___" quote-before-line="}// class"/>
         </inject-code>
-        <modify-function signature="QNetworkProxy(QNetworkProxy::ProxyType,QString,unsigned short,QString,QString)" access="private"/>
+        <modify-function signature="QNetworkProxy(QNetworkProxy::ProxyType,QString,unsigned short,QString,QString)" access="private">
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>        
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
         <modify-function signature="setPort(unsigned short)" access="private"/>
         <modify-function signature="port()const" access="private" rename="port_private"/>
     </value-type>

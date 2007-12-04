@@ -275,6 +275,11 @@ class QDataStream___ extends QDataStream {
         return srb.longValue();
     }
 
+    public final char readChar() {
+        operator_shift_right_char(srb);
+        return srb.charValue();
+    }
+
     public final float readFloat() {
         operator_shift_right_float(srb);
         return srb.floatValue();

@@ -839,6 +839,13 @@
         </insert-template>
     </inject-code>
     
+    <inject-code>
+        <insert-template name="core.qbytearray_setNum_integer">
+            <replace from="%INTEGER_TYPE" to="char"/>
+        </insert-template>
+    </inject-code>
+    
+    
     <modify-function signature="setNum(float,char,int)">
         <access modifier="private"/>
         <rename to="setNum_private"/>                
@@ -1287,7 +1294,10 @@
         
     
         <modify-function signature="QBuffer(QByteArray*,QObject*)">
-            <access modifier="private"/>        
+            <access modifier="private"/>
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>            
         </modify-function>
         
     
@@ -1543,7 +1553,8 @@
         }
         
         public %CLASSNAME(QByteArray a, QIODevice.OpenModeFlag ... mode) {
-            this(a, new QIODevice.OpenMode(mode));
+            this(a.nativePointer(), mode);
+            byteArray = a;
         }    
       </template>
       

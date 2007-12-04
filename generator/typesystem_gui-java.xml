@@ -508,7 +508,7 @@
         }
         
         public %RETURN_TYPE %FUNCTION_NAME(%INPUT_TYPE %INPUT_NAME, String format, Qt.ImageConversionFlag ... flags) {
-            %FUNCTION_CALL(%INPUT_NAME, format, new Qt.ImageConversionFlags(flags));
+            %FUNCTION_CALL(%OUTPUT_NAME, format == null ? null : QNativePointer.createCharPointer(format), flags);            
         }
         
         public %RETURN_TYPE %FUNCTION_NAME(%INPUT_TYPE %INPUT_NAME, String format) {
@@ -2147,7 +2147,9 @@
     }
 
     public static %RETURN_TYPE %FUNCTION_NAME(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, %EXTRA, com.trolltech.qt.core.Qt.WindowType ... f) {
-        return %FUNCTION_NAME(parent, title, label, %CALL, new com.trolltech.qt.core.Qt.WindowFlags(f));
+        com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+        %RETURN_TYPE result = %FUNCTION_NAME_internal(parent, title, label, %CALL, ok, f);
+        return ok.booleanValue() ? result : null;
     }    
 
     public static %RETURN_TYPE %FUNCTION_NAME(com.trolltech.qt.gui.QWidget parent, java.lang.String title, java.lang.String label, %EXTRA) {
@@ -2457,7 +2459,11 @@
         }
         
         public static %TYPE %FUNCTION_NAME(QWidget parent, String caption, String dir, Filter filter, Option ... options) {
-            return %FUNCTION_NAME(parent, caption, dir, filter, new Options(options));
+            QNativePointer np = filter != null ? new QNativePointer(QNativePointer.Type.String) : null;
+            %TYPE returned = %FUNCTION_NAME(parent, caption, dir, filter != null ? filter.filter : "", np, options);
+            if (filter != null) 
+                filter.selectedFilter = np.stringValue();
+            return returned;
         }
         
         public static %TYPE %FUNCTION_NAME(QWidget parent, String caption, String dir, Filter filter) {
