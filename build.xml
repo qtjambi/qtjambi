@@ -9,7 +9,7 @@
     <property name="jambiLib" value="./lib" />
     <property name="qt"       value="${env.QTDIR}" />
     <property name="qtLib"    value="${qt}/lib" />
-    <property name="config"    value="release" />
+    <property name="config"   value="release" />
 
     <target name="help"
             description="Provides detailed help.">
@@ -134,7 +134,8 @@
         </jar>
     </target>
 
-    <target name="qtjambi-examples.jar">
+    <target name="qtjambi-examples.jar"
+            depends="qtjambi.init">
         <javac srcdir=".">
             <include name="com/trolltech/demos/**/*.java"/>
             <include name="com/trolltech/examples/**/*.java"/>
@@ -153,6 +154,7 @@
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
                 <attribute name="Main-Class" value="com.trolltech.launcher.Launcher"/>
+                <attribute name="Class-Path" value="qtjambi.jar qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar" />
             </manifest>
         </jar>
     </target>
