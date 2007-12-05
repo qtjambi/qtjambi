@@ -148,7 +148,8 @@
              basedir=".">
             <include name="com/trolltech/examples/**/*"/>
             <include name="com/trolltech/demos/**/*"/>
-            <include name="com/trolltech/launcher/*"/> 
+            <include name="com/trolltech/launcher/*"/>
+            <include name="com/trolltech/images/**/*"/>
             <exclude name="com/trolltech/**/*.java"/>
             <exclude name="com/trolltech/**/*.jui"/>
             <manifest>
