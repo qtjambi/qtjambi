@@ -93,7 +93,6 @@
   
   <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrlInfo' has equals operators but no qHash() function" />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrl' has equals operators but no qHash() function" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QAuthenticator' has equals operators but no qHash() function" />
   
 </typesystem>

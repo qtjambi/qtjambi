@@ -902,5 +902,5 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRectF' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDate' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPoint' has equals operators but no qHash() function"/>
-
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrl' has equals operators but no qHash() function"/>
 </typesystem>
