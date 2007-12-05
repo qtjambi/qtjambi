@@ -55,7 +55,6 @@
     <target name="clean"
             description="Clean everything.">
 	<delete file="qtjambi.jar"/>
-	<delete file="qtjambi-launcher.jar"/>
 	<delete file="qtjambi-examples.jar"/>
 	<delete file="qtjambi-designer.jar"/>
         <delete dir="bin"/>
