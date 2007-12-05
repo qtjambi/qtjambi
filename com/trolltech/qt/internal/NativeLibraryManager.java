@@ -14,12 +14,17 @@ import com.trolltech.qt.Utilities;
 
 
 class DeploymentSpecException extends RuntimeException {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public DeploymentSpecException(String msg) {
+        super(msg);
+    }
+}
+
+class WrongSystemException extends DeploymentSpecException {
+    private static final long serialVersionUID = 1L;
+
+    public WrongSystemException(String msg) {
         super(msg);
     }
 }
@@ -123,6 +128,14 @@ public class NativeLibraryManager {
                     throw new DeploymentSpecException("<plugin> element missing required attribute \"path\"");
                 }
                 spec.addPluginPath(path);
+            } else if (name.equals("qtjambi-deploy")) {
+                String system = attributes.getValue("system");
+                if (system == null || system.length() == 0) {
+                    throw new DeploymentSpecException("<qtjambi-deploy> element missing required attribute 'system'");
+                } else if (!system.equals(decideOSName())) {
+                    throw new WrongSystemException("trying to load: '" + system
+                                                   + "', expected: '" + decideOSName() + "'");
+                }
             }
         }
     }
@@ -296,15 +309,19 @@ public class NativeLibraryManager {
         XMLHandler handler = new XMLHandler();
         handler.spec = spec;
 
-        parser.parse(file.getInputStream(descriptor), handler);
+        try {
+            parser.parse(file.getInputStream(descriptor), handler);
+            if (spec.key == null) {
+                throw new DeploymentSpecException("Deployment Specification doesn't include required <cache key='...'/>");
+            }
 
-        if (spec.key == null) {
-            throw new DeploymentSpecException("Deployment Specification doesn't include required <cache key='...'/>");
+            deploymentSpecs.add(spec);
+
+            return spec;
+        } catch (WrongSystemException e) {
+            reporter.report(" - skipping because of wrong system: " + e.getMessage());
+            return null;
         }
-
-        deploymentSpecs.add(spec);
-
-        return spec;
     }
 
 
@@ -354,6 +371,9 @@ public class NativeLibraryManager {
         JarFile jarFile = new JarFile(file);
 
         DeploymentSpec spec = readDeploySpec(jarFile);
+        if (spec == null)
+            return;
+
         File tmpDir = jambiTempDirBase(spec.key);
 
         reporter.report(" - using cache directory: '", tmpDir.getAbsolutePath(), "'");
@@ -498,6 +518,24 @@ public class NativeLibraryManager {
         }
         in.close();
         out.close();
+    }
+
+
+    private static String decideOSName() {
+        String osname = null;
+        switch (Utilities.operatingSystem) {
+            case Windows:
+                if (System.getProperty("os.arch").equalsIgnoreCase("amd64")) osname = "win64";
+                else osname = "win32";
+                break;
+            case Linux:
+                osname = "linux32";
+                break;
+            case MacOSX:
+                osname = "macosx";
+                break;
+        }
+        return osname;
     }
 
 

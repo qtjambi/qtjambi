@@ -87,7 +87,9 @@ public class PlatformJarTask extends Task {
             throw new BuildException("Failed to open 'qtjambi-deployment.xml' for writing in '" + outdir + "'");
         }
 
-        writer.println("<qtjambi-deploy>");
+        writer.println("<qtjambi-deploy"
+                       + " system=\"" + props.getProperty(null, InitializeTask.OSNAME).toString()
+                       + "\">");
         writer.println("\n  <cache key=\"" + cacheKey + "\" />");
 
         // system libraries that must be loaded first of all...
