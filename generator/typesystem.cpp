@@ -164,6 +164,7 @@ private:
                               QHash<QString, QString> *acceptedAttributes);
 
     bool importFileElement(const QXmlAttributes &atts);
+    bool convertBoolean(const QString &, const QString &, bool);
 
     TypeDatabase *m_database;
     StackElement* current;
@@ -388,6 +389,22 @@ bool Handler::importFileElement(const QXmlAttributes &atts)
     return true;
 }
 
+bool Handler::convertBoolean(const QString &_value, const QString &attributeName, bool defaultValue) 
+{
+    QString value = _value.toLower();
+    if (value == "true" || value == "yes") {
+        return true;
+    } else if (value == "false" || value == "no") {
+        return false;
+    } else {
+        QString warn = QString("Boolean value '%1' not supported in attribute '%2'. Use 'yes' or 'no'. Defaulting to '%3'.")
+            .arg(value).arg(attributeName).arg(defaultValue ? "yes" : "no");
+
+        ReportHandler::warning(warn);
+        return defaultValue;
+    }
+}
+
 bool Handler::startElement(const QString &, const QString &n,
                            const QString &, const QXmlAttributes &atts)
 {
@@ -429,14 +446,13 @@ bool Handler::startElement(const QString &, const QString &n,
 
             break;
 
-        case StackElement::ObjectTypeEntry:
+        case StackElement::ObjectTypeEntry:            
         case StackElement::ValueTypeEntry:
             attributes["force-abstract"] = QString("no");
             attributes["deprecated"] = QString("no");
             // fall throooough
         case StackElement::InterfaceTypeEntry:
-            attributes["default-superclass"] = m_defaultSuperclass;
-            attributes["polymorphic-base"] = QString("no");
+            attributes["default-superclass"] = m_defaultSuperclass;            
             attributes["polymorphic-id-expression"] = QString();
             attributes["java-name"] = QString();
             attributes["delete-in-main-thread"] = QString("no");
@@ -445,6 +461,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["package"] = m_defaultPackage;
             attributes["expense-cost"] = "1";
             attributes["expense-limit"] = "none";
+            attributes["polymorphic-base"] = QString("no");
             break;
         default:
             ; // nada
@@ -486,27 +503,8 @@ bool Handler::startElement(const QString &, const QString &n,
                 type->setTargetLangName(java_name);
                 type->setJniName(jni_name);
 
-                if (preferred_conversion == "yes") {
-                    type->setPreferredConversion(true);
-                } else if (preferred_conversion == "no") {
-                    type->setPreferredConversion(false);
-                } else {
-                    QString debug = QString("Preferred conversion value '%1' not valid for '%2'. "
-                                            "Will default to 'yes'.")
-                                    .arg(preferred_conversion).arg(name);
-                    ReportHandler::warning(debug);
-                }
-
-                if (preferred_java_type == "yes") {
-                    type->setPreferredTargetLangType(true);
-                } else if (preferred_java_type == "no") {
-                    type->setPreferredTargetLangType(false);
-                } else {
-                    QString debug = QString("Preferred java type value '%1' not valid for '%2'. "
-                                            "Will default to 'yes'.")
-                                    .arg(preferred_conversion).arg(name);
-                    ReportHandler::warning(debug);
-                }
+                type->setPreferredConversion(convertBoolean(preferred_conversion, "preferred-conversion", true));
+                type->setPreferredTargetLangType(convertBoolean(preferred_java_type, "preferred-java-type", true));
 
                 element->entry = type;
             }
@@ -525,11 +523,11 @@ bool Handler::startElement(const QString &, const QString &n,
             m_current_enum->setTargetLangPackage(m_defaultPackage);
             m_current_enum->setUpperBound(attributes["upper-bound"]);
             m_current_enum->setLowerBound(attributes["lower-bound"]);
-            m_current_enum->setForceInteger(attributes["force-integer"].toLower() == "yes");
-            m_current_enum->setExtensible(attributes["extensible"].toLower() == "yes");
+            m_current_enum->setForceInteger(convertBoolean(attributes["force-integer"], "force-integer", false));
+            m_current_enum->setExtensible(convertBoolean(attributes["extensible"], "extensible", false));
 
             // put in the flags parallel...
-            if (!attributes["flags"].isEmpty() && attributes["flags"] != "no") {
+            if (!attributes["flags"].isEmpty() && attributes["flags"].toLower() != "no") {
                 FlagsTypeEntry *ftype = new FlagsTypeEntry("QFlags<" + name + ">");
                 ftype->setOriginator(m_current_enum);
                 ftype->setOriginalName(attributes["flags"]);
@@ -603,24 +601,22 @@ bool Handler::startElement(const QString &, const QString &n,
                     ctype->setExpensePolicy(ep);
                 }
 
-                bool polymorphic = attributes["polymorphic-base"].toLower() == "yes"
-                                   ? true : false;
-
-                ctype->setIsPolymorphicBase(polymorphic);
+                qDebug("polymorphic base for %s: %s", qPrintable(name), qPrintable(attributes["polymorphic-base"]));
+                ctype->setIsPolymorphicBase(convertBoolean(attributes["polymorphic-base"], "polymorphic-base", false));
                 ctype->setPolymorphicIdValue(attributes["polymorphic-id-expression"]);
 
                 if (element->type == StackElement::ObjectTypeEntry || element->type == StackElement::ValueTypeEntry) {
-                    if (attributes["force-abstract"] == "yes")
+                    if (convertBoolean(attributes["force-abstract"], "force-abstract", false))
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::ForceAbstract);
-                    if (attributes["deprecated"] == "yes")
+                    if (convertBoolean(attributes["deprecated"], "deprecated", false))
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::Deprecated);
                 }
 
                 if (element->type == StackElement::InterfaceTypeEntry ||
                     element->type == StackElement::ValueTypeEntry ||
                     element->type == StackElement::ObjectTypeEntry) {
-                    if (attributes["delete-in-main-thread"] == "yes")
-			ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::DeleteInMainThread);
+                    if (convertBoolean(attributes["delete-in-main-thread"], "delete-in-main-thread", false))
+			            ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::DeleteInMainThread);
                 }
 
                 // ctype->setInclude(Include(Include::IncludePath, ctype->name()));
@@ -780,19 +776,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                QString str_generate = attributes["generate"].toLower();
-
-                bool generate;
-                if (str_generate == "no") {
-                    generate = false;
-                } else if (str_generate == "yes") {
-                    generate = true;
-                } else {
-                    m_error = "Use 'yes' or 'no' to indicate whether a typesystem should generate code";
-                    return false;
-                }
-
-                if (!m_database->parseFile(name, generate)) {
+                if (!m_database->parseFile(name, convertBoolean(attributes["generate"], "generate", true))) {
                     m_error = QString("Failed to parse: '%1'").arg(name);
                     return false;
                 }
@@ -1118,7 +1102,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     }
                 }
 
-                if (attributes["deprecated"].toLower() == "yes") {
+                if (convertBoolean(attributes["deprecated"], "deprecated", false)) {
                     mod.modifiers |= Modification::Deprecated;
                 }
 
@@ -1179,11 +1163,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
 
                 ReferenceCount rc;
-                rc.threadSafe = (attributes["thread-safe"].toLower() == "yes");
-                if (!rc.threadSafe && attributes["thread-safe"].toLower() != "no") {
-                    m_error = "thread-safe attribute must be either 'yes' or 'no'";
-                    return false;
-                }
+                rc.threadSafe = convertBoolean(attributes["thread-safe"], "thread-safe", false);
 
                 static QHash<QString, ReferenceCount::Action> actions;
                 if (actions.isEmpty()) {
