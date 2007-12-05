@@ -18,6 +18,8 @@ import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
+import com.trolltech.qt.internal.*;
+
 /**
 This class contains static members that gives information and performs Qt Jambi
 related tasks.
@@ -26,22 +28,21 @@ public class Utilities {
     private static HashSet<String> LOADED_LIBS = new HashSet<String>();
 
     /** The Qt Library's major version. */
-    public static final int MAJOR_VERSION = 4;
+    public static final int MAJOR_VERSION = Version.MAJOR;
 
     /** The Qt Library's minor version. */
-    public static final int MINOR_VERSION = 4;
+    public static final int MINOR_VERSION = Version.MINOR;
 
     /** The Qt Library's patch version. */
-    public static final int PATCH_VERSION = 0;
+    public static final int PATCH_VERSION = Version.PATCH;
 
     /** Qt Library build number */
-    public static final int BUILD_NUMBER = 1;
+    public static final int BUILD_NUMBER = Version.BUILD;
 
     private static final boolean VERBOSE_LOADING = System.getProperty("com.trolltech.qt.verbose-loading") != null;
 
-	/** A formated String with versioning*/
-    public static final String VERSION_STRING = String.format("%1$d.%2$d.%3$d_%4$02d",
-            MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION, BUILD_NUMBER);
+    /** A formated String with versioning*/
+    public static final String VERSION_STRING = Version.STRING;
 
 	/** Enum for defining the operation system. */
     public enum OperatingSystem {

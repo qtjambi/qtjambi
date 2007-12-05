@@ -4,6 +4,8 @@ import org.apache.tools.ant.*;
 
 import java.io.*;
 
+import com.trolltech.qt.internal.Version;
+
 public class InitializeTask extends Task {
 
     public enum Compiler {
@@ -68,7 +70,7 @@ public class InitializeTask extends Task {
         props.setNewProperty(null, QTDIR, decideQtDir());
 
         // TODO: Find a better way to get a hold of version...
-        props.setNewProperty(null, VERSION, "4.4.0_01");
+        props.setNewProperty(null, VERSION, Version.STRING);
 
         props.setNewProperty(null, COMPILER, decideCompiler());
 
