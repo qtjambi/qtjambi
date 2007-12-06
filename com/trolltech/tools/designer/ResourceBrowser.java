@@ -28,87 +28,87 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
         try {
 
-        QAbstractItemModel model;
+            QAbstractItemModel model;
 
-        if (UNFILTERED) {
-            model = browserModel;
-        } else {
-            filterModel = new ResourceBrowserModel.FilterModel(this);
-            filterModel.setSourceModel(browserModel);
-            model = filterModel;
-        }
+            if (UNFILTERED) {
+                model = browserModel;                                   
+            } else {
+                filterModel = new ResourceBrowserModel.FilterModel(this);
+                filterModel.setSourceModel(browserModel);
+                model = filterModel;
+            }
+            
+            selection = new QItemSelectionModel(model);
 
-        selection = new QItemSelectionModel(model);
+            view = new QTreeView(this);
+            view.header().hide();
+            view.setModel(model);
+            view.setSelectionModel(selection);
+            view.setRootIsDecorated(false);
 
-        view = new QTreeView(this);
-        view.header().hide();
-        view.setModel(model);
-        view.setSelectionModel(selection);
-        view.setRootIsDecorated(false);
+            filterEdit = new QLineEdit(this);
 
-        filterEdit = new QLineEdit(this);
+            pathText = new QLabel();
+            pathText.setMaximumSize(250, pathText.maximumHeight());
+            pathText.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);
 
-        pathText = new QLabel();
-        pathText.setMaximumSize(250, pathText.maximumHeight());
-        pathText.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);
+            sizeText = new QLabel();
+            sizeText.setAlignment(Qt.AlignmentFlag.AlignLeft);
+            preview = new QLabel();
 
-        sizeText = new QLabel();
-        sizeText.setAlignment(Qt.AlignmentFlag.AlignLeft);
-        preview = new QLabel();
-
-        preview.setFixedSize(new QSize(64, 64));
+            preview.setFixedSize(new QSize(64, 64));
         preview.setAlignment(Qt.AlignmentFlag.AlignHCenter, Qt.AlignmentFlag.AlignVCenter);
+            
+            hourGlass = new HourGlass(this);
 
-        hourGlass = new HourGlass(this);
+            QGridLayout layout = new QGridLayout(this);
+            QHBoxLayout hbox = new QHBoxLayout();
 
-        QGridLayout layout = new QGridLayout(this);
-        QHBoxLayout hbox = new QHBoxLayout();
+            hbox.addWidget(new QLabel(tr("Filter:"), this));
+            hbox.addWidget(filterEdit);
+            hbox.addWidget(hourGlass);
 
-        hbox.addWidget(new QLabel(tr("Filter:"), this));
-        hbox.addWidget(filterEdit);
-        hbox.addWidget(hourGlass);
+            layout.addItem(hbox, 0, 0, 1, 2);
+            layout.addWidget(view, 1, 0, 1, 2);
 
-        layout.addItem(hbox, 0, 0, 1, 2);
-        layout.addWidget(view, 1, 0, 1, 2);
+            layout.addWidget(new QLabel(tr("Size:")), 2, 0);
+            layout.addWidget(sizeText, 2, 1);
 
-        layout.addWidget(new QLabel(tr("Size:")), 2, 0);
-        layout.addWidget(sizeText, 2, 1);
+            layout.addWidget(new QLabel(tr("Path:")), 3, 0);
+            layout.addWidget(pathText, 3, 1);
 
-        layout.addWidget(new QLabel(tr("Path:")), 3, 0);
-        layout.addWidget(pathText, 3, 1);
+            layout.addWidget(preview, 4, 0, 1, 2);
 
-        layout.addWidget(preview, 4, 0, 1, 2);
+            layout.setMargin(0);
+            hbox.setSpacing(6);
+            hbox.setMargin(0);
 
-        layout.setMargin(0);
-        hbox.setSpacing(6);
-        hbox.setMargin(0);
-
-        QWidget.setTabOrder(filterEdit, view);
+            QWidget.setTabOrder(filterEdit, view);
 
         QSizePolicy policy = new QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred);
-        policy.setHorizontalStretch((byte) 1);
-        pathText.setSizePolicy(policy);
-        sizeText.setSizePolicy(policy);
+            policy.setHorizontalStretch((byte) 1);
+            pathText.setSizePolicy(policy);
+            sizeText.setSizePolicy(policy);
 
-        if (!UNFILTERED) {
+            if (!UNFILTERED) {
             filterEdit.textChanged.connect(filterModel, "setFilterRegExp(String)");
-            filterEdit.textChanged.connect(view, "expandAll()");
-            filterEdit.textChanged.connect(this, "checkOnlyOne()");
-        }
+                filterEdit.textChanged.connect(view, "expandAll()");
+                filterEdit.textChanged.connect(this, "checkOnlyOne()");
+            }
 
         if (window() instanceof QDialog) {
             view.doubleClicked.connect((window()), "accept()");
         }
 
-        view.expandAll();
+            view.expandAll();
 
         selection.currentChanged.connect(this, "selectionChanged(QModelIndex, QModelIndex)");
 
-        setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu);
-        addAction("Reset resourcelist", "reindex()");
-        addAction("Edit searchpath", "changeSearchPath()");
+            setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu);
+            addAction("Refresh", "reindex()");
+            addAction("Edit searchpath", "changeSearchPath()");
         } catch (Exception e) { e.printStackTrace(); }
-    }
+        }
 
     @Override
     public String currentPath() {
@@ -126,18 +126,19 @@ public class ResourceBrowser extends JambiResourceBrowser {
             return;
         QModelIndex index = null;
         if (browserModel != null)
-        	index = browserModel.indexForPath(currentPath);
+            index = browserModel.indexForPath(currentPath);
         if (filterModel != null && index != null && !UNFILTERED)
             index = filterModel.mapFromSource(index);
         if (selection != null)
         	selection.setCurrentIndex(index, QItemSelectionModel.SelectionFlag.SelectCurrent);
-    }
+        }
 
     @Override
     protected void showEvent(QShowEvent arg) {
         if (walker == null)
-        	reindex();     
-        filterEdit.setFocus();      
+            reindex();
+
+        filterEdit.setFocus();
     }
 
     @Override
@@ -201,7 +202,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private void checkOnlyOne() {
         if (UNFILTERED || filterModel.rowCount() != 1)
             return;
-
+        
         QModelIndex i = filterModel.index(0, 0, null);
 
         if (filterModel.rowCount(i) == 1) {
@@ -216,15 +217,15 @@ public class ResourceBrowser extends JambiResourceBrowser {
         action.triggered.connect(this, method);
         addAction(action);
     }
-    
+
     @SuppressWarnings("unused")
     private void expand(QModelIndex parent) {
-    	if (UNFILTERED) {
-    		view.expand(parent);
-    	} else {
-    		QModelIndex filteredIndex = filterModel.mapFromSource(parent);
-    		this.view.expand(filteredIndex);
-    	}
+        if (UNFILTERED) {
+            view.expand(parent);
+        } else {
+            QModelIndex filteredIndex = filterModel.mapFromSource(parent);
+            this.view.expand(filteredIndex);
+        }
     }
 
     private void setupSearchConnections() {
@@ -233,15 +234,15 @@ public class ResourceBrowser extends JambiResourceBrowser {
         walker.resourceFound.connect(hourGlass, "start()");
 
         browserModel.rowsAdded.connect(this, "expand(QModelIndex)");
-//        browserModel.rowsAdded.connect(this, "reselectCurrent()");
+        // browserModel.rowsAdded.connect(this, "reselectCurrent()");
     }
-    
+
     @Override
     protected void disposed() {
         if (browserModel != null)
             browserModel.dispose();
         if (walker != null) {
-            walker.kill();        
+            walker.kill();
             walker.dispose();
         }
     }
@@ -274,15 +275,15 @@ public class ResourceBrowser extends JambiResourceBrowser {
         }
 
         for (String newPath : newPaths) {
-        	if (!oldRoots.contains(newPath) || oldExtraPaths.contains(newPath)) {
-        		if (!newExtraPath.equals(""))
-        			newExtraPath += java.io.File.pathSeparator;
-        		newExtraPath += newPath;
-        	}
+            if (!oldRoots.contains(newPath) || oldExtraPaths.contains(newPath)) {
+                if (!newExtraPath.equals(""))
+                    newExtraPath += java.io.File.pathSeparator;
+                newExtraPath += newPath;
+            }
         }
 
-    	settings.setValue("Extra paths", newExtraPath);
-    	settings.sync();
+        settings.setValue("Extra paths", newExtraPath);
+        settings.sync();
     }
 
     @SuppressWarnings("unused")
@@ -296,19 +297,19 @@ public class ResourceBrowser extends JambiResourceBrowser {
             // Remove roots that are no longer wanted from ClassPathFileEngine
             List<String> oldRoots = ClassPathWalker.roots();
             {
-            	for (String root : oldRoots) {
-            		if (!newPaths.contains(root))
-            			QtJambiInternal.removeSearchPathForResourceEngine(root);
-            	}
+                for (String root : oldRoots) {
+                    if (!newPaths.contains(root))
+                        QtJambiInternal.removeSearchPathForResourceEngine(root);
+                }
             }
 
             // Add new roots to ClassPathFileEngine
             {
-            	for (String path : newPaths) {
-            		if (!oldRoots.contains(path)) {
-            			QtJambiInternal.addSearchPathForResourceEngine(path);
-            		}
-            	}
+                for (String path : newPaths) {
+                    if (!oldRoots.contains(path)) {
+                        QtJambiInternal.addSearchPathForResourceEngine(path);
+                    }
+                }
             }
 
             updateSettings(newPaths, oldRoots);
