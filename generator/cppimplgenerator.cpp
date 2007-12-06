@@ -420,17 +420,18 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
         if (java_class->isQObject())
             writeQObjectFunctions(s, java_class);
 
-        // Functions in shell class
-        AbstractMetaFunctionList shell_functions = java_class->functionsInShellClass();
-
-        int pos = -1;
-        for (int i=0; i<shell_functions.size(); ++i) {
-            const AbstractMetaFunction *function = shell_functions.at(i);
-
-            if (!function->isFinalInCpp())
-                ++pos;
-
+        // Virtual overrides
+        AbstractMetaFunctionList virtualFunctions = java_class->virtualFunctions();
+        for (int pos = 0; pos<virtualFunctions.size(); ++pos) {
+            const AbstractMetaFunction *function = virtualFunctions.at(pos);
             writeShellFunction(s, function, java_class, pos);
+        }
+
+        // Functions in shell class
+        AbstractMetaFunctionList shellFunctions = java_class->nonVirtualShellFunctions();
+        for (int i=0; i<shellFunctions.size(); ++i) {            
+            const AbstractMetaFunction *function = shellFunctions.at(i);
+            writeShellFunction(s, function, java_class, -1);            
         }
 
         // Write public overrides for functions that are protected in the base class
@@ -622,16 +623,13 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
 
     // Write the function names...
     if (has_constructors && java_class->hasVirtualFunctions()) {
-        AbstractMetaFunctionList virtual_functions = java_class->functionsInShellClass();
+        AbstractMetaFunctionList virtual_functions = java_class->virtualFunctions();
         {
             Indentation indent(INDENT);
 
             int pos = -1;
             foreach (AbstractMetaFunction *function, virtual_functions) {
-                if (!function->isFinalInCpp())
-                    ++pos;
-                else
-                    continue ;
+                ++pos;
 
                 if (pos == 0)
                     s << "static const char *qtjambi_method_names[] = {";
@@ -651,13 +649,9 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
         {
             Indentation indent(INDENT);
 
-
             int pos = -1;
             foreach (AbstractMetaFunction *function, virtual_functions) {
-                if (!function->isFinalInCpp())
-                    ++pos;
-                else
-                    continue ;
+                ++pos;
 
                 if (pos == 0)
                     s << "static const char *qtjambi_method_signatures[] = {";
@@ -749,8 +743,22 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
       << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
       << "      jobject __obj = m_link != 0 ? m_link->javaObject(__jni_env) : 0;" << endl
       << "      if (__obj == 0) return " << java_class->qualifiedCppName() << "::metaObject();" << endl
-      << "      else m_meta_object = qtjambi_metaobject_for_class(__jni_env, __jni_env->GetObjectClass(__obj), " << java_class->qualifiedCppName() << "::metaObject());" << endl
-      << "  }" << endl
+      << "      else m_meta_object = qtjambi_metaobject_for_class(__jni_env, __jni_env->GetObjectClass(__obj), " << java_class->qualifiedCppName() << "::metaObject());" << endl;
+      
+
+    AbstractMetaFunctionList virtualFunctions = java_class->virtualFunctions();
+    for (int pos=0; pos<virtualFunctions.size(); ++pos) {
+        const AbstractMetaFunction *virtualFunction = virtualFunctions.at(pos);
+        if (virtualFunction->isVirtualSlot()) {
+            s << "      m_map.insert(" << java_class->qualifiedCppName() 
+              << "::metaObject()->indexOfMethod(\"" 
+              << virtualFunction->minimalSignature() << "\"), " 
+              << pos << ");" << endl;
+        }
+
+    }
+
+    s << "  }" << endl
       << "  return m_meta_object;" << endl
       << "}" << endl << endl;
 
@@ -765,8 +773,49 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
 
     // QObject::qt_metacall()
     s << "int " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)" << endl
-      << "{" << endl
-      << "  _id = " << java_class->qualifiedCppName() << "::qt_metacall(_c, _id, _a);" << endl
+      << "{" << endl;
+
+    if (java_class->hasVirtualSlots()) {
+        s << "  int virtual_idx = m_map.value(_id, -1);" << endl
+          << "  if (virtual_idx >= 0) {" << endl;
+
+        AbstractMetaFunctionList virtualFunctions = java_class->virtualFunctions();
+        for (int pos=0; pos<virtualFunctions.size(); ++pos) {
+            const AbstractMetaFunction *virtualFunction = virtualFunctions.at(pos);
+            if (virtualFunction->isVirtualSlot()) {
+                s << "  case " << pos << ": {" << endl;
+
+                // Set up variable names so the function call works
+                AbstractMetaArgumentList arguments = virtualFunction->arguments();
+                for (int i=1; i<=arguments.size(); ++i) {
+                    AbstractMetaArgument *argument = arguments.at(i-1);
+
+                    s << "      ";
+                    writeTypeInfo(s, argument->type());
+                    s << " " << argument->argumentName() << " = *reinterpret_cast<";
+                    writeTypeInfo(s, argument->type());
+                    s << " *>(_a[" << i << "])" << endl;
+                }
+
+                // Function call
+                if (virtualFunction->type() != 0) {
+                    s << "      ";
+                    s << "*reinterpret_cast<";
+                    writeTypeInfo(s, virtualFunction->type());
+                    s << ">(_a[0]) = ";
+                }
+
+                writeFunctionCall(s, "this", virtualFunction);
+                s << endl;
+  
+                s << "  }" << endl;
+            }
+        }
+
+        s << "  }" << endl;
+    }
+
+    s << "  _id = " << java_class->qualifiedCppName() << "::qt_metacall(_c, _id, _a);" << endl
       << "  if (_id < 0) return _id;" << endl
       << "  const QMetaObject *meta_object = metaObject();" << endl
       << "  if (m_link != 0 && qtjambi_metaobject_is_dynamic(meta_object)) {" << endl
@@ -1815,7 +1864,7 @@ void CppImplGenerator::writeOriginalMetaObjectFunction(QTextStream &s, const Abs
       << "{" << endl;
     {
         Indentation indent(INDENT);
-        s << INDENT << "return reinterpret_cast<jlong>(&" << java_class->qualifiedCppName() << "::staticMetaObject);";
+        s << INDENT << "return reinterpret_cast<jlong>(&" << java_class->qualifiedCppName() << "::staticMetaObject);" << endl;
     }
     s << "}" << endl << endl;
 }

@@ -16,6 +16,7 @@ package com.trolltech.autotests;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QIcon.Mode;
 import com.trolltech.autotests.generated.*;
 import static org.junit.Assert.*;
 
@@ -303,5 +304,82 @@ public class VirtualFunctions extends QApplicationTest {
 
         obj.doVirtualCall(foo, "of my non-super strings");
         assertEquals(foo.getS(), "Even more of my non-super strings");
+    }
+    
+    private boolean myVirtualFunctionWasCalled;
+    @Test
+    //  Test whether slots are magically virtual as predicated by Qt
+    public void slotsAsVirtualFromCppToJava() {
+        myVirtualFunctionWasCalled = false;
+        QStyle style = new QStyle() {
+            @Override
+            protected QIcon standardIconImplementation(QStyle.StandardPixmap standardIcon, QStyleOption opt, QWidget widget) {
+                myVirtualFunctionWasCalled = true;
+                return new QIcon();
+            }
+
+            @Override
+            public void drawComplexControl(ComplexControl cc, QStyleOptionComplex opt, QPainter p, QWidget widget) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void drawControl(ControlElement element, QStyleOption opt, QPainter p, QWidget w) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void drawPrimitive(PrimitiveElement pe, QStyleOption opt, QPainter p, QWidget w) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public QPixmap generatedIconPixmap(Mode iconMode, QPixmap pixmap, QStyleOption opt) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public int hitTestComplexControl(ComplexControl cc, QStyleOptionComplex opt, QPoint pt, QWidget widget) {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public int pixelMetric(PixelMetric metric, QStyleOption option, QWidget widget) {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public QSize sizeFromContents(ContentsType ct, QStyleOption opt, QSize contentsSize, QWidget w) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public int styleHint(StyleHint stylehint, QStyleOption opt, QWidget widget, QStyleHintReturn returnData) {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public QRect subControlRect(ComplexControl cc, QStyleOptionComplex opt, int sc, QWidget widget) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public QRect subElementRect(SubElement subElement, QStyleOption option, QWidget widget) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        };
+        
+        style.standardIcon(QStyle.StandardPixmap.SP_ArrowBack);
+        assertTrue(myVirtualFunctionWasCalled);
     }
 }

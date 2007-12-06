@@ -475,6 +475,8 @@ public:
     // Returns the ownership rules for the given argument in the given context
     TypeSystem::Ownership ownership(const AbstractMetaClass *cls, TypeSystem::Language language, int idx) const;
 
+    bool isVirtualSlot() const;
+
     QString typeReplaced(int argument_index) const;
     bool isRemovedFromAllLanguages(const AbstractMetaClass *) const;
     bool isRemovedFrom(const AbstractMetaClass *, TypeSystem::Language language) const;
@@ -608,7 +610,8 @@ public:
         AbstractFunctions       = 0x100000,   // Only abstract functions
         WasVisible              = 0x200000,   // Only functions that were public or protected in the original code
         NotRemovedFromTargetLang      = 0x400000,   // Only functions that have not been removed from TargetLang
-        NotRemovedFromShell     = 0x800000    // Only functions that have not been removed from the shell class
+        NotRemovedFromShell     = 0x800000,    // Only functions that have not been removed from the shell class
+        VirtualSlots           = 0x1000000     // Only functions that are set as virtual slots in the type system
     };
 
     AbstractMetaClass()
@@ -616,6 +619,7 @@ public:
           m_qobject(false),
           m_has_virtuals(false),
           m_has_nonpublic(false),
+          m_has_virtual_slots(false),
           m_has_nonprivateconstructor(false),
           m_functions_fixed(false),
           m_has_public_destructor(true),
@@ -662,6 +666,8 @@ public:
     inline AbstractMetaFunctionList cppSignalFunctions() const;
     AbstractMetaFunctionList publicOverrideFunctions() const;
     AbstractMetaFunctionList virtualOverrideFunctions() const;
+    AbstractMetaFunctionList virtualFunctions() const;
+    AbstractMetaFunctionList nonVirtualShellFunctions() const;
 
     AbstractMetaFieldList fields() const { return m_fields; }
     void setFields(const AbstractMetaFieldList &fields) { m_fields = fields; }
@@ -704,6 +710,7 @@ public:
     void setForceShellClass(bool on) { m_force_shell_class = on; }
     bool generateShellClass() const;
 
+    bool hasVirtualSlots() const { return m_has_virtual_slots; }
     bool hasVirtualFunctions() const { return !isFinal() && m_has_virtuals; }
     bool hasProtectedFunctions() const;
 
@@ -765,13 +772,14 @@ private:
     uint m_qobject : 1;
     uint m_has_virtuals : 1;
     uint m_has_nonpublic : 1;
+    uint m_has_virtual_slots : 1;
     uint m_has_nonprivateconstructor : 1;
     uint m_functions_fixed : 1;
     uint m_has_public_destructor : 1;
     uint m_force_shell_class : 1;
-
     uint m_has_hash_function : 1;
     uint m_has_equals_operator : 1;
+    uint m_reserved : 21;
 
     const AbstractMetaClass *m_enclosing_class;
     AbstractMetaClass *m_base_class;

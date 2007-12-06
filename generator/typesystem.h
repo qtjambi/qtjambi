@@ -287,7 +287,7 @@ struct Modification {
 
         Final =                 0x0010,
         NonFinal =              0x0020,
-        FinalMask =             Final & NonFinal,
+        FinalMask =             Final | NonFinal,
 
         Readable =              0x0100,
         Writable =              0x0200,
@@ -295,7 +295,8 @@ struct Modification {
         CodeInjection =         0x1000,
         Rename =                0x2000,
         Deprecated =            0x4000,
-        ReplaceExpression =     0x8000
+        ReplaceExpression =     0x8000,
+        VirtualSlot =          0x10000 | NonFinal
     };
 
     Modification() : modifiers(0) { }
@@ -308,6 +309,7 @@ struct Modification {
     bool isFriendly() const { return accessModifier() == Friendly; }
     bool isFinal() const { return modifiers & Final; }
     bool isNonFinal() const { return modifiers & NonFinal; }
+    bool isVirtualSlot() const { return (modifiers & VirtualSlot) == VirtualSlot; }
     QString accessModifierString() const;
 
     bool isDeprecated() const { return modifiers & Deprecated; }

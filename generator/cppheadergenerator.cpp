@@ -77,7 +77,8 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
 
     s << "#ifndef " << include_block << endl
       << "#define " << include_block << endl << endl
-      << "#include <qtjambi_core.h>" << endl;
+      << "#include <qtjambi_core.h>" << endl
+      << "#include <QtCore/QHash>" << endl;
 
     Include inc = java_class->typeEntry()->include();
     s << "#include ";
@@ -133,8 +134,13 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
     if (java_class->isQObject()) {
       s << "public:" << endl
         << "  Q_OBJECT_CHECK" << endl
-        << "  mutable const QMetaObject *m_meta_object;" << endl
-        << "  const QMetaObject *metaObject() const;" << endl
+        << "  mutable const QMetaObject *m_meta_object;" << endl;
+
+      if (java_class->hasVirtualSlots()) {
+          s << "  QHash<int,int> m_map;" << endl;
+      }
+
+      s << "  const QMetaObject *metaObject() const;" << endl
         << "  void *qt_metacast(const char *);" << endl
         << "  QT_TR_FUNCTIONS" << endl
         << "  virtual int qt_metacall(QMetaObject::Call, int, void **);" << endl

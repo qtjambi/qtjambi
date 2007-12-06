@@ -484,6 +484,16 @@ bool AbstractMetaFunction::argumentRemoved(int key) const
     return false;
 }
 
+bool AbstractMetaFunction::isVirtualSlot() const
+{
+    FunctionModificationList modifications = this->modifications(declaringClass());
+    foreach (FunctionModification modification, modifications) {
+        if (modification.isVirtualSlot())
+            return true;
+    }
+
+    return false;
+}
 
 bool AbstractMetaFunction::disabledGarbageCollection(const AbstractMetaClass *cls, int key) const
 {
@@ -820,6 +830,31 @@ AbstractMetaFunctionList AbstractMetaClass::functionsInTargetLang() const
     return returned;
 }
 
+AbstractMetaFunctionList AbstractMetaClass::virtualFunctions() const
+{
+    AbstractMetaFunctionList list = functionsInShellClass();
+
+    AbstractMetaFunctionList returned;
+    foreach (AbstractMetaFunction *f, list) {
+        if (!f->isFinalInCpp() || f->isVirtualSlot())
+            returned += f;
+    }
+
+    return returned;
+}
+
+AbstractMetaFunctionList AbstractMetaClass::nonVirtualShellFunctions() const
+{
+    AbstractMetaFunctionList list = functionsInShellClass();
+    AbstractMetaFunctionList returned;
+    foreach (AbstractMetaFunction *f, list) {
+        if (f->isFinalInCpp() && !f->isVirtualSlot())
+            returned += f;
+    }
+
+    return returned;
+}
+
 /*******************************************************************************
  * Returns a list of all functions that should be declared and implemented in
  * the shell class which is generated as a wrapper on top of the actual C++ class
@@ -835,6 +870,9 @@ AbstractMetaFunctionList AbstractMetaClass::functionsInShellClass() const
     // All functions explicitly set to be implemented by the shell class
     // (mainly superclass functions that are hidden by other declarations)
     returned += queryFunctions(ForcedShellFunctions | default_flags);
+
+    // All functions explicitly set to be virtual slots
+    returned += queryFunctions(VirtualSlots | FinalInCpp | default_flags);
 
     return returned;
 }
@@ -874,7 +912,8 @@ void AbstractMetaClass::setFunctions(const AbstractMetaFunctionList &functions)
     foreach (AbstractMetaFunction *f, m_functions) {
         f->setOwnerClass(this);
 
-        m_has_virtuals |= !f->isFinal();
+        m_has_virtual_slots |= f->isVirtualSlot();
+        m_has_virtuals |= !f->isFinal() || f->isVirtualSlot();
         m_has_nonpublic |= !f->isPublic();
 
         // If we have non-virtual overloads of a virtual function, we have to implement
@@ -978,8 +1017,8 @@ void AbstractMetaClass::addFunction(AbstractMetaFunction *function)
     }
 
 
-
-    m_has_virtuals |= !function->isFinal();
+    m_has_virtual_slots |= function->isVirtualSlot();
+    m_has_virtuals |= !function->isFinal() || function->isVirtualSlot();
     m_has_nonpublic |= !function->isPublic();
 }
 
@@ -1220,6 +1259,9 @@ AbstractMetaFunctionList AbstractMetaClass::queryFunctions(uint query) const
     AbstractMetaFunctionList functions;
 
     foreach (AbstractMetaFunction *f, m_functions) {
+
+        if ((query & VirtualSlots) && !f->isVirtualSlot())
+            continue;
 
         if ((query & NotRemovedFromTargetLang) && f->isRemovedFrom(f->implementingClass(), TypeSystem::TargetLangCode)) {
             continue;

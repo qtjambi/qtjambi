@@ -601,7 +601,6 @@ bool Handler::startElement(const QString &, const QString &n,
                     ctype->setExpensePolicy(ep);
                 }
 
-//                 qDebug("polymorphic base for %s: %s", qPrintable(name), qPrintable(attributes["polymorphic-base"]));
                 ctype->setIsPolymorphicBase(convertBoolean(attributes["polymorphic-base"], "polymorphic-base", false));
                 ctype->setPolymorphicIdValue(attributes["polymorphic-id-expression"]);
 
@@ -681,6 +680,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["rename"] = QString();
             attributes["deprecated"] = QString("no");
             attributes["associated-to"] = QString();
+            attributes["virtual-slot"] = QString("no");
             break;
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
@@ -1127,6 +1127,8 @@ bool Handler::startElement(const QString &, const QString &n,
                 QString association = attributes["associated-to"];
                 if (!association.isEmpty())
                     mod.association = association;
+
+                mod.modifiers |= (convertBoolean(attributes["virtual-slot"], "virtual-slot", false) ? Modification::VirtualSlot : 0);
 
                 m_function_mods << mod;
             }
