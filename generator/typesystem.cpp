@@ -389,7 +389,7 @@ bool Handler::importFileElement(const QXmlAttributes &atts)
     return true;
 }
 
-bool Handler::convertBoolean(const QString &_value, const QString &attributeName, bool defaultValue) 
+bool Handler::convertBoolean(const QString &_value, const QString &attributeName, bool defaultValue)
 {
     QString value = _value.toLower();
     if (value == "true" || value == "yes") {
@@ -446,13 +446,13 @@ bool Handler::startElement(const QString &, const QString &n,
 
             break;
 
-        case StackElement::ObjectTypeEntry:            
+        case StackElement::ObjectTypeEntry:
         case StackElement::ValueTypeEntry:
             attributes["force-abstract"] = QString("no");
             attributes["deprecated"] = QString("no");
             // fall throooough
         case StackElement::InterfaceTypeEntry:
-            attributes["default-superclass"] = m_defaultSuperclass;            
+            attributes["default-superclass"] = m_defaultSuperclass;
             attributes["polymorphic-id-expression"] = QString();
             attributes["java-name"] = QString();
             attributes["delete-in-main-thread"] = QString("no");
@@ -601,7 +601,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     ctype->setExpensePolicy(ep);
                 }
 
-                qDebug("polymorphic base for %s: %s", qPrintable(name), qPrintable(attributes["polymorphic-base"]));
+//                 qDebug("polymorphic base for %s: %s", qPrintable(name), qPrintable(attributes["polymorphic-base"]));
                 ctype->setIsPolymorphicBase(convertBoolean(attributes["polymorphic-base"], "polymorphic-base", false));
                 ctype->setPolymorphicIdValue(attributes["polymorphic-id-expression"]);
 
@@ -1679,10 +1679,10 @@ QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lin
         }
         if (line.startsWith("/*"))
             multilineComment = true;
-                                
+
         if (multilineComment) {
             s << indentor;
-            if (line.startsWith("*")) 
+            if (line.startsWith("*"))
                 s << " ";
             s << line << endl;
             if (line.endsWith("*/"))
@@ -1690,13 +1690,13 @@ QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lin
         } else if (line.startsWith("}")) {
             return line;
         } else if (line.endsWith("}")) {
-            s << indentor << line << endl; 
+            s << indentor << line << endl;
             return 0;
         } else if(line.endsWith("{")) {
             s << indentor << line << endl;
             QString tmp;
             {
-                Indentation indent(indentor); 
+                Indentation indent(indentor);
                 tmp = formattedCodeHelper(s, indentor, lines);
             }
             if (!tmp.isNull()) {
@@ -1709,7 +1709,7 @@ QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lin
             if (!lastLine.isEmpty() &&
                 !lastLine.endsWith(";") &&
                 !line.startsWith("@") &&
-                !line.startsWith("//") && 
+                !line.startsWith("//") &&
                 !lastLine.startsWith("//") &&
                 !lastLine.endsWith("}") &&
                 !line.startsWith("{"))
