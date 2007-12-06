@@ -20,6 +20,8 @@
     </extra-includes>  
   </object-type> 
 
+  <object-type name="QSvgGenerator" />
+
   <object-type name="QGraphicsSvgItem">
     <extra-includes>
         <include file-name="QGraphicsItem" location="global" />
