@@ -2087,7 +2087,7 @@
 
   
         <inject-code class="shell-declaration"> <!-- Remove in Qt 5 -->
-            QPixmap standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*) const { return 0; }
+            QPixmap standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*) const { return QPixmap(); }
         </inject-code>
 
         <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
