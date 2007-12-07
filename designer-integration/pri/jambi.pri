@@ -9,7 +9,7 @@ isEmpty(TARGET) {
 }
 
 macx:{
-    LIBS += -framework JavaVm
+    LIBS += -framework JavaVM
 } else {
     INCLUDEPATH += $$(JAVADIR)/include
     win32 {
