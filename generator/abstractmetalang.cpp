@@ -593,8 +593,7 @@ QString AbstractMetaFunction::minimalSignature() const
         minimalSignature += "const";
 
     minimalSignature = QMetaObject::normalizedSignature(minimalSignature.toLocal8Bit().constData());
-
-    const_cast<AbstractMetaFunction *>(this)->m_cached_minimal_signature = minimalSignature;
+    m_cached_minimal_signature = minimalSignature;
 
     return minimalSignature;
 }
@@ -872,7 +871,7 @@ AbstractMetaFunctionList AbstractMetaClass::functionsInShellClass() const
     returned += queryFunctions(ForcedShellFunctions | default_flags);
 
     // All functions explicitly set to be virtual slots
-    returned += queryFunctions(VirtualSlots | FinalInCpp | default_flags);
+    returned += queryFunctions(VirtualSlots | default_flags);
 
     return returned;
 }

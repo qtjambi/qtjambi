@@ -499,7 +499,7 @@ public:
 private:
     QString m_name;
     QString m_original_name;
-    QString m_cached_minimal_signature;
+    mutable QString m_cached_minimal_signature;
     mutable QString m_cached_modified_name;
 
     FunctionType m_function_type;
