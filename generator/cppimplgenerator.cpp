@@ -348,6 +348,9 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const AbstractMetaFun
                     << endl;
 
         s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
+
+        if (signal->type() != 0)
+            s << INDENT << default_return_statement_qt(signal->type()) << ";" << endl;
     }
     s << "}" << endl << endl;
 
