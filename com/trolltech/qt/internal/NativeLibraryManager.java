@@ -29,6 +29,24 @@ class WrongSystemException extends DeploymentSpecException {
     }
 }
 
+/**
+ * The NativeLibraryManager class is responsible for handling native
+ * libraries in Qt Jambi. Native libraries can be loaded either
+ * directly from the file system using
+ * <code>-Djava.library.path</code> or indirectly JAR-file that
+ * contain a deployment descriptor. For normal deployment, the JAR
+ * approach is recommended.
+ *
+ * Loading libraries is done by calling the methods
+ * <code>loadQtLibrary</code> and <code>loadJambiLibrary</code>.
+ *
+ *
+ *
+ * To get runtime information about how library loading works, specify
+ * the <code>-Dcom.trolltech.qt.verbose-loading</code> system property
+ * to the Virtual Machine.
+ *
+ */
 public class NativeLibraryManager {
 
     public static String DEPLOY_DESCRIPTOR_NAME = "qtjambi-deployment.xml";
@@ -172,6 +190,23 @@ public class NativeLibraryManager {
     }
 
 
+    /**
+     * Loads a library with name specified in <code>library</code>.
+     * The library name will be expanded to the JNI shared library
+     * name for a given platform, so the name "qtjambi" will be
+     * expanded like this:
+     *
+     * <ll>
+     *   <li> Windows: qtjambi.dll
+     *   <li> Linux / Unix: libqtjambi.so
+     *   <li> Mac OS X: libqtjambi.jnilib
+     * </ll>
+     *
+     * When using loading libraries from the filesystem, this method
+     * simply calls <code>System.loadLibrary</code>.
+     *
+     * @param library The name of the library..
+     */
     public static void loadJambiLibrary(String library) {
     	if (Utilities.configuration == Utilities.Configuration.Debug)
             library += DEBUG_SUFFIX;
@@ -180,6 +215,23 @@ public class NativeLibraryManager {
     }
 
 
+    /**
+     * Loads a library with name specified in <code>library</code>.
+     * The library name will be expanded to the default shared library
+     * name for a given platform, so the name "QtCore" will be
+     * expanded like this:
+     *
+     * <ll>
+     *   <li> Windows: QtCore4.dll
+     *   <li> Linux / Unix: libQtCore.so.4
+     *   <li> Mac OS X: libQtCore.4.dylib
+     * </ll>
+     *
+     * When using loading libraries from the filesystem, this method
+     * simply calls <code>System.loadLibrary</code>.
+     *
+     * @param library The name of the library..
+     */
     public static void loadQtLibrary(String library) {
         String lib = qtLibraryName(library);
         loadLibrary(lib);
