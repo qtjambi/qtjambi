@@ -33,7 +33,7 @@ public class Chat extends QDialog {
     }
 
     private Ui_ChatDialog ui = new Ui_ChatDialog();
-    private Client client = new Client(this);
+    private Client client = new Client();
     private String myNickName;
     private QTextTableFormat tableFormat = new QTextTableFormat();
 
@@ -130,529 +130,513 @@ public class Chat extends QDialog {
 
     void showInformation() {
         if (ui.listWidget.count() == 1) {
-            QMessageBox.information(this, tr("Chat"), tr("Launch several instances of this "
-                    + "program on your local network and " + "start chatting!"));
+            QMessageBox.information(this, tr("Chat"), tr("Launch several instances of this " + "program on your local network and " + "start chatting!"));
         }
     }
-}
 
-class Client extends QObject {
+    class Client extends QObject {
 
-    private PeerManager peerManager;
-    private Server server = new Server(this);
-    private Hashtable<QHostAddress, Vector<Connection>> peers = new Hashtable<QHostAddress, Vector<Connection>>();
+        private PeerManager peerManager;
+        private Server server = new Server(this);
+        private Vector<Connection> peers = new Vector<Connection>();
+        private Vector<Connection> inConnection = new Vector<Connection>();
 
-    // from, message
-    Signal2<String, String> newMessage__from__message = new Signal2<String, String>();
-    // nick
-    Signal1<String> newParticipant__nick = new Signal1<String>();
-    // nick
-    Signal1<String> participantLeft__nick = new Signal1<String>();
+        // from, message
+        Signal2<String, String> newMessage__from__message = new Signal2<String, String>();
+        // nick
+        Signal1<String> newParticipant__nick = new Signal1<String>();
+        // nick
+        Signal1<String> participantLeft__nick = new Signal1<String>();
 
-    Client(QObject parent) {
-        super(parent);
-        peerManager = new PeerManager(this);
-        peerManager.setServerPort(server.serverPort());
-        peerManager.startBroadcasting();
+        Client() {
+            peerManager = new PeerManager(server);
+            peerManager.startBroadcasting();
 
-        peerManager.newConnection.connect(this, "newConnection(Connection)");
-        server.newConnection.connect(this, "newConnection(Connection)");
+            peerManager.newConnection__hostAddress_port.connect(this, "newConnection(QHostAddress, int)");
+            server.newConnection__descriptor.connect(this, "newConnection(int)");
+        }
 
-    }
+        public synchronized void sendMessage(final String message) {
+            if (message.equals(""))
+                return;
 
-    void sendMessage(final String message) {
-        if (message.equals(""))
-            return;
-
-        Collection<Vector<Connection>> connectionVector = peers.values();
-
-        for (Vector<Connection> connections : connectionVector) {
-
-            for (Connection connection : connections) {
+            for (Connection connection : peers) {
                 connection.sendMessage(message);
             }
         }
-    }
 
-    String nickName() {
-        return peerManager.userName() + "@" + QHostInfo.localHostName() + ":"
-                + server.serverPort();
-    }
-
-    boolean hasConnection(final QHostAddress senderIp, int senderPort) {
-
-        if (senderPort == -1) {
-            return peers.containsKey(senderIp);
+        public String nickName() {
+            return peerManager.userName() + "@" + QHostInfo.localHostName() + ":" + (int) server.serverPort();
         }
 
-        if (!peers.containsKey(senderIp)) {
+        protected void newConnection(QHostAddress address, int port) {
+            if (inConnection.isEmpty()) {
+                for (Connection conn : peers) {
+                    if (conn.equals(address, port))
+                        return;
+                }
+                Connection connection = new Connection(this, port, server.serverPort());
+                connection.connectToHost(address, port, new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadWrite));
+                newConnection(connection);
+            }
+        }
+
+        protected void newConnection(int descriptor) {
+            Connection connection = new Connection(this, -1, server.serverPort());
+            connection.setSocketDescriptor(descriptor);
+            newConnection(connection);
+        }
+
+        private void newConnection(Connection connection) {
+            inConnection.add(connection);
+            connection.setGreetingMessage(peerManager.userName().toString());
+
+            connection.error.connect(this, "connectionError(QAbstractSocket$SocketError)");
+            connection.disconnected.connect(this, "disconnected()");
+            connection.readyForUse.connect(this, "readyForUse()");
+        }
+
+        protected synchronized void readyForUse() {
+            Connection connection = (Connection) signalSender();
+
+            connection.newMessage.connect(this.newMessage__from__message);
+
+            peers.add(connection);
+
+            String nick = connection.name();
+
+            if (!nick.equals(""))
+                newParticipant__nick.emit(nick);
+
+            inConnection.removeElement(connection);
+        }
+
+        protected void disconnected() {
+            removeConnection((Connection) signalSender());
+        }
+
+        protected void connectionError(QAbstractSocket.SocketError socketError) {
+            removeConnection((Connection) signalSender());
+        }
+
+        protected void removeConnection(Connection con) {
+            if (peers.removeElement(con)) {
+                String nick = con.name();
+                if (!nick.equals(""))
+                    participantLeft__nick.emit(nick);
+            }
+        }
+    }
+
+    static class Connection extends QTcpSocket {
+
+        static final int MaxBufferSize = 1024000;
+        static final int TransferTimeout = 30 * 1000;
+        static final int PongTimeout = 60 * 1000;
+        static final int PingInterval = 5 * 1000;
+        static final char SeparatorToken = ' ';
+
+        private enum ConnectionState {
+            WaitingForGreeting, ReadingGreeting, ReadyForUse
+        };
+
+        private enum DataType {
+            PlainText, Ping, Pong, Greeting, Undefined
+        };
+
+        Signal0 readyForUse = new Signal0();
+        Signal2<String, String> newMessage = new Signal2<String, String>();
+
+        private QTextCodec codec = QTextCodec.codecForName(new QByteArray("UTF-8"));
+
+        private String greetingMessage;
+        private String username;
+        private QTimer pingTimer = new QTimer();
+        private QTime pongTime = new QTime();
+        private QByteArray buffer = new QByteArray();
+        private ConnectionState state;
+        private DataType currentDataType;
+        private int numBytesForCurrentDataType;
+        private int transferTimerId;
+        private boolean isGreetingMessageSent;
+        private int otherServerPort;
+        private int thisServerPort;
+
+        Connection(QObject parent, int otherServerPort, int thisServerPort) {
+            super(parent);
+            this.otherServerPort = otherServerPort;
+            this.thisServerPort = thisServerPort;
+            greetingMessage = tr("undefined");
+            username = tr("unknown");
+            state = ConnectionState.WaitingForGreeting;
+            currentDataType = DataType.Undefined;
+            numBytesForCurrentDataType = -1;
+            transferTimerId = 0;
+            isGreetingMessageSent = false;
+            pingTimer.setInterval(PingInterval);
+
+            readyRead.connect(this, "processReadyRead()");
+            disconnected.connect(pingTimer, "stop()");
+            pingTimer.timeout.connect(this, "sendPing()");
+            connected.connect(this, "sendGreetingMessage()");
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other instanceof Connection) {
+                Connection con = (Connection) other;
+                return (con.peerAddress().equals(peerAddress()) && con.otherServerPort == otherServerPort);
+            }
             return false;
         }
 
-        List<Connection> connections = peers.get(senderIp);
-        if (connections != null)
-            for (Connection connection : connections) {
-                if (connection.peerPort() == (char) senderPort) {
-                    return true;
+        public boolean equals(QHostAddress address, int port) {
+            return this.peerAddress().equals(address) && this.otherServerPort == port;
+        }
+
+        String name() {
+            return username;
+        }
+
+        void setGreetingMessage(final String message) {
+            greetingMessage = message;
+        }
+
+        boolean sendMessage(final String message) {
+            if (message.equals(""))
+                return false;
+
+            QByteArray msg = codec.fromUnicode(message);
+            QByteArray data = new QByteArray("MESSAGE " + msg.length() + " ");
+            data.append(msg);
+            return write(data) == data.size();
+        }
+
+        public void timerEvent(QTimerEvent timerEvent) {
+            if (timerEvent.timerId() == transferTimerId) {
+                abort();
+                killTimer(transferTimerId);
+                transferTimerId = 0;
+            }
+        }
+
+        void processReadyRead() {
+            if (state == ConnectionState.WaitingForGreeting) {
+                if (!readProtocolHeader())
+                    return;
+                if (currentDataType != DataType.Greeting) {
+                    abort();
+                    return;
                 }
+                state = ConnectionState.ReadingGreeting;
             }
 
-        return false;
-    }
+            if (state == ConnectionState.ReadingGreeting) {
+                if (!hasEnoughData())
+                    return;
 
-    void newConnection(Connection connection) {
-        connection.setGreetingMessage(peerManager.userName().toString());
+                buffer = read(numBytesForCurrentDataType);
+                if (buffer.size() != numBytesForCurrentDataType) {
+                    abort();
+                    return;
+                }
 
-        connection.error.connect(this, "connectionError(QAbstractSocket$SocketError)");
-        connection.disconnected.connect(this, "disconnected()");
-        connection.readyForUse.connect(this, "readyForUse()");
-    }
+                username = buffer.toString();
 
-    void readyForUse() {
-        Connection connection = (Connection) signalSender();
-        if (connection == null || hasConnection(connection.peerAddress(), connection.peerPort()))
-            return;
+                String[] list = username.split("[:@]");
+                otherServerPort = Integer.parseInt(list[2]);
 
-        connection.newMessage.connect(this.newMessage__from__message);
+                currentDataType = DataType.Undefined;
+                numBytesForCurrentDataType = 0;
+                buffer.clear();
 
-        Vector<Connection> connections = peers.get(connection.peerAddress());
-        if (connections != null) {
-            connections.add(connection);
-        } else {
-            connections = new Vector<Connection>();
-            connections.add(connection);
-            peers.put(connection.peerAddress(), connections);
+                if (!isValid()) {
+                    abort();
+                    return;
+                }
+
+                if (!isGreetingMessageSent)
+                    sendGreetingMessage();
+
+                pingTimer.start();
+                pongTime.start();
+                state = ConnectionState.ReadyForUse;
+
+                readyForUse.emit();
+            }
+
+            do {
+                if (currentDataType == DataType.Undefined) {
+                    if (!readProtocolHeader())
+                        return;
+                }
+                if (!hasEnoughData())
+                    return;
+                processData();
+            } while (bytesAvailable() > 0);
         }
-        String nick = connection.name();
 
-        if (!nick.equals(""))
-            newParticipant__nick.emit(nick);
-    }
-
-    void disconnected() {
-        Connection connection = (Connection) signalSender();
-        if (connection != null) {
-            removeConnection(connection);
-            connection.dispose();
-        }
-    }
-
-    void connectionError(QAbstractSocket.SocketError socketError) {
-        Connection connection = (Connection) signalSender();
-        if (connection != null)
-            removeConnection(connection);
-    }
-
-    private void removeConnection(Connection connection) {
-        if (peers.containsKey(connection.peerAddress())) {
-            peers.remove(connection.peerAddress());
-            String nick = connection.name();
-            if (!nick.equals(""))
-                participantLeft__nick.emit(nick);
-        }
-    }
-}
-
-class Connection extends QTcpSocket {
-
-    static final int MaxBufferSize = 1024000;
-    static final int TransferTimeout = 30 * 1000;
-    static final int PongTimeout = 60 * 1000;
-    static final int PingInterval = 5 * 1000;
-    static final char SeparatorToken = ' ';
-
-    private enum ConnectionState {
-        WaitingForGreeting, ReadingGreeting, ReadyForUse
-    };
-
-    private enum DataType {
-        PlainText, Ping, Pong, Greeting, Undefined
-    };
-
-    Signal0 readyForUse = new Signal0();
-    Signal2<String, String> newMessage = new Signal2<String, String>();
-
-    private QTextCodec codec = QTextCodec.codecForName(new QByteArray("UTF-8"));
-
-    private String greetingMessage;
-    private String username;
-    private QTimer pingTimer = new QTimer(this);
-    private QTime pongTime = new QTime();
-    private QByteArray buffer = new QByteArray();
-    private ConnectionState state;
-    private DataType currentDataType;
-    private int numBytesForCurrentDataType;
-    private int transferTimerId;
-    private boolean isGreetingMessageSent;
-
-    Connection(QObject parent) {
-        super(parent);
-        greetingMessage = tr("undefined");
-        username = tr("unknown");
-        state = ConnectionState.WaitingForGreeting;
-        currentDataType = DataType.Undefined;
-        numBytesForCurrentDataType = -1;
-        transferTimerId = 0;
-        isGreetingMessageSent = false;
-        pingTimer.setInterval(PingInterval);
-
-        readyRead.connect(this, "processReadyRead()");
-        disconnected.connect(pingTimer, "stop()");
-        pingTimer.timeout.connect(this, "sendPing()");
-        connected.connect(this, "sendGreetingMessage()");
-
-    }
-
-    String name() {
-        return username;
-    }
-
-    void setGreetingMessage(final String message) {
-        greetingMessage = message;
-    }
-
-    boolean sendMessage(final String message) {
-        if (message.equals(""))
-            return false;
-
-        QByteArray msg = codec.fromUnicode(message);
-        QByteArray data = new QByteArray("MESSAGE " + msg.length() + " ");
-        data.append(msg);
-        return write(data) == data.size();
-    }
-
-    @Override
-    public void timerEvent(QTimerEvent timerEvent) {
-        if (timerEvent.timerId() == transferTimerId) {
-            abort();
-            killTimer(transferTimerId);
-            transferTimerId = 0;
-        }
-    }
-
-    void processReadyRead() {
-        if (state == ConnectionState.WaitingForGreeting) {
-            if (!readProtocolHeader())
-                return;
-            if (currentDataType != DataType.Greeting) {
+        void sendPing() {
+            if (pongTime.elapsed() > PongTimeout) {
                 abort();
                 return;
             }
-            state = ConnectionState.ReadingGreeting;
+
+            write(new QByteArray("PING 1 p"));
         }
 
-        if (state == ConnectionState.ReadingGreeting) {
-            if (!hasEnoughData())
-                return;
+        private void sendGreetingMessage() {
+            QByteArray greeting = new QByteArray(greetingMessage + "@" + this.localAddress() + ":" + thisServerPort);
+            QByteArray data = new QByteArray("GREETING " + greeting.length() + " " + greeting);
 
+            if (write(data) == data.size())
+                isGreetingMessageSent = true;
+        }
+
+        private int readDataIntoBuffer(int maxSize) {
+            if (maxSize > MaxBufferSize)
+                return 0;
+
+            int numBytesBeforeRead = buffer.size();
+            if (numBytesBeforeRead == MaxBufferSize) {
+                abort();
+                return 0;
+            }
+
+            while (bytesAvailable() > 0 && buffer.size() < maxSize) {
+                buffer.append(read(1));
+                if (buffer.endsWith("" + SeparatorToken))
+                    break;
+            }
+            return buffer.size() - numBytesBeforeRead;
+        }
+
+        private int dataLengthForCurrentDataType() {
+            if (bytesAvailable() <= 0 || readDataIntoBuffer(MaxBufferSize) <= 0 || !buffer.endsWith("" + SeparatorToken))
+                return 0;
+
+            buffer.chop(1);
+            int number = buffer.toInt();
+            buffer.clear();
+            return number;
+        }
+
+        private boolean readProtocolHeader() {
+            if (transferTimerId != 0) {
+                killTimer(transferTimerId);
+                transferTimerId = 0;
+            }
+
+            if (readDataIntoBuffer(MaxBufferSize) <= 0) {
+                transferTimerId = startTimer(TransferTimeout);
+                return false;
+            }
+
+            if (buffer.equals("PING ")) {
+                currentDataType = DataType.Ping;
+            } else if (buffer.equals("PONG ")) {
+                currentDataType = DataType.Pong;
+            } else if (buffer.equals("MESSAGE ")) {
+                currentDataType = DataType.PlainText;
+            } else if (buffer.equals("GREETING ")) {
+                currentDataType = DataType.Greeting;
+            } else {
+                currentDataType = DataType.Undefined;
+                abort();
+                return false;
+            }
+
+            buffer.clear();
+            numBytesForCurrentDataType = dataLengthForCurrentDataType();
+            return true;
+        }
+
+        private boolean hasEnoughData() {
+            if (transferTimerId != 0) {
+                killTimer(transferTimerId);
+                transferTimerId = 0;
+            }
+
+            if (numBytesForCurrentDataType <= 0)
+                numBytesForCurrentDataType = dataLengthForCurrentDataType();
+
+            if (bytesAvailable() < numBytesForCurrentDataType || numBytesForCurrentDataType <= 0) {
+                transferTimerId = startTimer(TransferTimeout);
+                return false;
+            }
+
+            return true;
+        }
+
+        private void processData() {
             buffer = read(numBytesForCurrentDataType);
             if (buffer.size() != numBytesForCurrentDataType) {
                 abort();
                 return;
             }
 
-            username = buffer + "@" + peerAddress().toString() + ":" + peerPort();
+            switch (currentDataType) {
+            case PlainText:
+                newMessage.emit(username, codec.toUnicode(buffer));
+                break;
+            case Ping:
+                write(new QByteArray("PONG 1 p"));
+                break;
+            case Pong:
+                pongTime.restart();
+                break;
+            default:
+                break;
+            }
+
             currentDataType = DataType.Undefined;
             numBytesForCurrentDataType = 0;
             buffer.clear();
-
-            if (!isValid()) {
-                abort();
-                return;
-            }
-
-            if (!isGreetingMessageSent)
-                sendGreetingMessage();
-
-            pingTimer.start();
-            pongTime.start();
-            state = ConnectionState.ReadyForUse;
-
-            readyForUse.emit();
         }
 
-        do {
-            if (currentDataType == DataType.Undefined) {
-                if (!readProtocolHeader())
-                    return;
-            }
-            if (!hasEnoughData())
-                return;
-            processData();
-        } while (bytesAvailable() > 0);
+        @Override
+        public String toString() {
+            return peerAddress() + ">::<" + peerPort() + " server:" + otherServerPort;
+        }
     }
 
-    void sendPing() {
-        if (pongTime.elapsed() > PongTimeout) {
-            abort();
-            return;
-        }
+    class PeerManager extends QObject {
+        static final int BroadcastInterval = 2000;
+        static final int broadcastPort = 45000;
 
-        write(new QByteArray("PING 1 p"));
-    }
+        private Server server;
+        private Vector<QHostAddress> broadcastAddresses = new Vector<QHostAddress>();
+        private Vector<QHostAddress> ipAddresses = new Vector<QHostAddress>();
+        private QUdpSocket broadcastSocket = new QUdpSocket();
+        private QTimer broadcastTimer = new QTimer();
+        private String username = "";
 
-    private void sendGreetingMessage() {
-        QByteArray greeting = new QByteArray(greetingMessage); // FIXME
-        QByteArray data = new QByteArray("GREETING " + greeting.length() + " " + greeting);
-        if (write(data) == data.size())
-            isGreetingMessageSent = true;
-    }
+        Signal2<QHostAddress, Integer> newConnection__hostAddress_port = new Signal2<QHostAddress, Integer>();
 
-    private int readDataIntoBuffer(int maxSize) {
-        if (maxSize > MaxBufferSize)
-            return 0;
+        public PeerManager(Server server) {
+            this.server = server;
 
-        int numBytesBeforeRead = buffer.size();
-        if (numBytesBeforeRead == MaxBufferSize) {
-            abort();
-            return 0;
-        }
+            List<String> envVariables = new Vector<String>();
 
-        while (bytesAvailable() > 0 && buffer.size() < maxSize) {
-            buffer.append(read(1));
-            if (buffer.endsWith("" + SeparatorToken))
-                break;
+            envVariables.add("USERNAME.*");
+            envVariables.add("USER.*");
+            envVariables.add("USERDOMAIN.*");
+            envVariables.add("HOSTNAME.*");
+            envVariables.add("DOMAINNAME.*");
 
-        }
-        return buffer.size() - numBytesBeforeRead;
-    }
+            List<String> environment = QProcess.systemEnvironment();
 
-    private int dataLengthForCurrentDataType() {
-        if (bytesAvailable() <= 0 || readDataIntoBuffer(MaxBufferSize) <= 0
-                || !buffer.endsWith("" + SeparatorToken))
-            return 0;
-
-        buffer.chop(1);
-        int number = buffer.toInt();
-        buffer.clear();
-        return number;
-    }
-
-    private boolean readProtocolHeader() {
-        if (transferTimerId != 0) {
-            killTimer(transferTimerId);
-            transferTimerId = 0;
-        }
-
-        if (readDataIntoBuffer(MaxBufferSize) <= 0) {
-            transferTimerId = startTimer(TransferTimeout);
-            return false;
-        }
-
-        if (buffer.equals("PING ")) {
-            currentDataType = DataType.Ping;
-        } else if (buffer.equals("PONG ")) {
-            currentDataType = DataType.Pong;
-        } else if (buffer.equals("MESSAGE ")) {
-            currentDataType = DataType.PlainText;
-        } else if (buffer.equals("GREETING ")) {
-            currentDataType = DataType.Greeting;
-        } else {
-            currentDataType = DataType.Undefined;
-            abort();
-            return false;
-        }
-
-        buffer.clear();
-        numBytesForCurrentDataType = dataLengthForCurrentDataType();
-        return true;
-    }
-
-    private boolean hasEnoughData() {
-        if (transferTimerId != 0) {
-            killTimer(transferTimerId);
-            transferTimerId = 0;
-        }
-
-        if (numBytesForCurrentDataType <= 0)
-            numBytesForCurrentDataType = dataLengthForCurrentDataType();
-
-        if (bytesAvailable() < numBytesForCurrentDataType || numBytesForCurrentDataType <= 0) {
-            transferTimerId = startTimer(TransferTimeout);
-            return false;
-        }
-
-        return true;
-    }
-
-    private void processData() {
-        buffer = read(numBytesForCurrentDataType);
-        if (buffer.size() != numBytesForCurrentDataType) {
-            abort();
-            return;
-        }
-
-        switch (currentDataType) {
-        case PlainText:
-            newMessage.emit(username, codec.toUnicode(buffer));
-            break;
-        case Ping:
-            write(new QByteArray("PONG 1 p"));
-            break;
-        case Pong:
-            pongTime.restart();
-            break;
-        default:
-            break;
-        }
-
-        currentDataType = DataType.Undefined;
-        numBytesForCurrentDataType = 0;
-        buffer.clear();
-    }
-}
-
-class PeerManager extends QObject {
-    static final int BroadcastInterval = 2000;
-    static final int broadcastPort = 45000;
-
-    private Client client;
-    private Vector<QHostAddress> broadcastAddresses = new Vector<QHostAddress>();
-    private Vector<QHostAddress> ipAddresses = new Vector<QHostAddress>();
-    private QUdpSocket broadcastSocket = new QUdpSocket(this);
-    private QTimer broadcastTimer = new QTimer(this);
-    private String username = "";
-    private int serverPort;
-
-    Signal1<Connection> newConnection = new Signal1<Connection>();
-
-    public PeerManager(Client client) {
-        super(client);
-        this.client = client;
-
-        List<String> envVariables = new Vector<String>();
-
-        envVariables.add("USERNAME.*");
-        envVariables.add("USER.*");
-        envVariables.add("USERDOMAIN.*");
-        envVariables.add("HOSTNAME.*");
-        envVariables.add("DOMAINNAME.*");
-
-        List<String> environment = QProcess.systemEnvironment();
-
-        for (String string : envVariables) {
-            int index = 0;
-            for (String entry : environment) {
-                if (new QRegExp(string).exactMatch(entry))
-                    break;
-                index++;
-            }
-            if (index < environment.size()) {
-                String[] stringList = environment.get(index).split("=");
-                if (stringList.length == 2) {
-                    username = stringList[1];
-                    break;
+            for (String string : envVariables) {
+                int index = 0;
+                for (String entry : environment) {
+                    if (new QRegExp(string).exactMatch(entry))
+                        break;
+                    index++;
+                }
+                if (index < environment.size()) {
+                    String[] stringList = environment.get(index).split("=");
+                    if (stringList.length == 2) {
+                        username = stringList[1];
+                        break;
+                    }
                 }
             }
-        }
 
-        if (username.equals(""))
-            username = "unknown";
+            if (username.equals(""))
+                username = "unknown";
 
-        updateAddresses();
-        serverPort = 0;
+            username += (int) (Math.random() * 10);
 
-        broadcastSocket.bind(new QHostAddress(QHostAddress.SpecialAddress.Any),
-                             broadcastPort,
-                             new QUdpSocket.BindMode(QUdpSocket.BindFlag.ShareAddress,
-                                                     QUdpSocket.BindFlag.ReuseAddressHint));
-
-        broadcastSocket.readyRead.connect(this, "readBroadcastDatagram()");
-
-        broadcastTimer.setInterval(BroadcastInterval);
-
-        broadcastTimer.timeout.connect(this, "sendBroadcastDatagram()");
-
-    }
-
-    void setServerPort(int port) {
-        serverPort = port;
-    }
-
-    String userName() {
-        return username;
-    }
-
-    void startBroadcasting() {
-        broadcastTimer.start();
-    }
-
-    private boolean isLocalHostAddress(final QHostAddress address) {
-        for (QHostAddress localAddress : ipAddresses) {
-            if (address.equals(localAddress))
-                return true;
-        }
-        return false;
-    }
-
-    void sendBroadcastDatagram() {
-        QByteArray datagram = new QByteArray(username + "@" + serverPort);
-
-        boolean validBroadcastAddresses = true;
-        for (QHostAddress address : broadcastAddresses) {
-            if (broadcastSocket.writeDatagram(datagram, address, broadcastPort) == -1)
-                validBroadcastAddresses = false;
-        }
-
-        if (!validBroadcastAddresses)
             updateAddresses();
 
-    }
+            broadcastSocket.bind(new QHostAddress(QHostAddress.SpecialAddress.Any), broadcastPort, new QUdpSocket.BindMode(QUdpSocket.BindFlag.ShareAddress,
+                    QUdpSocket.BindFlag.ReuseAddressHint));
 
-    void readBroadcastDatagram() {
+            broadcastSocket.readyRead.connect(this, "readBroadcastDatagram()");
 
-        while (broadcastSocket.hasPendingDatagrams()) {
-            byte datagram[] = new byte[(int) broadcastSocket.pendingDatagramSize()];
-            QUdpSocket.HostInfo info = new QUdpSocket.HostInfo();
-            if (broadcastSocket.readDatagram(datagram, info) == -1)
-                continue;
+            broadcastTimer.setInterval(BroadcastInterval);
 
-            QByteArray baDatagram = new QByteArray(datagram);
-            List<QByteArray> list = baDatagram.split((byte) '@');
-            if (list.size() != 2)
-                continue;
+            broadcastTimer.timeout.connect(this, "sendBroadcastDatagram()");
 
-            int senderServerPort = list.get(1).toChar();
+        }
 
-            if (isLocalHostAddress(info.address) && senderServerPort == serverPort)
-                continue;
+        String userName() {
+            return username;
+        }
 
-            if (!client.hasConnection(info.address, -1)) {
-                Connection connection = new Connection(this);
-                newConnection.emit(connection);
-                connection.connectToHost(info.address, senderServerPort, new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadWrite));
+        void startBroadcasting() {
+            broadcastTimer.start();
+        }
+
+        private boolean isLocalHostAddress(final QHostAddress address) {
+            for (QHostAddress localAddress : ipAddresses) {
+                if (address.equals(localAddress)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        void sendBroadcastDatagram() {
+            QByteArray datagram = new QByteArray(username + "@" + server.serverPort());
+            boolean validBroadcastAddresses = true;
+            for (QHostAddress address : broadcastAddresses) {
+                if (broadcastSocket.writeDatagram(datagram, address, broadcastPort) == -1)
+                    validBroadcastAddresses = false;
+            }
+
+            if (!validBroadcastAddresses)
+                updateAddresses();
+        }
+
+        void readBroadcastDatagram() {
+            while (broadcastSocket.hasPendingDatagrams()) {
+                byte datagram[] = new byte[(int) broadcastSocket.pendingDatagramSize()];
+                QUdpSocket.HostInfo info = new QUdpSocket.HostInfo();
+                if (broadcastSocket.readDatagram(datagram, info) == -1)
+                    continue;
+
+                QByteArray baDatagram = new QByteArray(datagram);
+                List<QByteArray> list = baDatagram.split((byte) '@');
+                if (list.size() != 2)
+                    continue;
+
+                int senderServerPort = Integer.parseInt(list.get(1).toString());
+
+                if (isLocalHostAddress(info.address) && (senderServerPort == server.serverPort())) {
+                    continue;
+                }
+                newConnection__hostAddress_port.emit(info.address, senderServerPort);
             }
         }
-    }
 
-    private void updateAddresses() {
-        broadcastAddresses.clear();
-        ipAddresses.clear();
-        for (QNetworkInterface networkInterface : QNetworkInterface.allInterfaces()) {
-            for (QNetworkAddressEntry entry : networkInterface.addressEntries()) {
-                QHostAddress broadcastAddress = entry.broadcast();
-                if (!broadcastAddress.equals(QHostAddress.SpecialAddress.Null)) {
-                    broadcastAddresses.add(broadcastAddress);
-                    ipAddresses.add(entry.ip());
+        private void updateAddresses() {
+            broadcastAddresses.clear();
+            ipAddresses.clear();
+            for (QNetworkInterface networkInterface : QNetworkInterface.allInterfaces()) {
+                if (!networkInterface.flags().isSet(QNetworkInterface.InterfaceFlag.IsLoopBack)) {
+                    for (QNetworkAddressEntry entry : networkInterface.addressEntries()) {
+                        QHostAddress broadcastAddress = entry.broadcast();
+                        if (!broadcastAddress.equals(QHostAddress.SpecialAddress.Null)) {
+                            broadcastAddresses.add(broadcastAddress);
+                            ipAddresses.add(entry.ip());
+                        }
+                    }
                 }
             }
         }
     }
-}
 
-class Server extends QTcpServer {
+    class Server extends QTcpServer {
+        Signal1<Integer> newConnection__descriptor = new Signal1<Integer>();
 
-    Signal1<Connection> newConnection = new Signal1<Connection>();
+        public Server(QObject parent) {
+            super(parent);
+            listen(new QHostAddress(QHostAddress.SpecialAddress.Any), 0);
+        }
 
-    public Server(QObject parent) {
-        super(parent);
-        listen(new QHostAddress(QHostAddress.SpecialAddress.Any), 0);
-    }
-
-    @Override
-    public void incomingConnection(int socketDescriptor) {
-        Connection connection = new Connection(this);
-        connection.setSocketDescriptor(socketDescriptor);
-        newConnection.emit(connection);
+        public void incomingConnection(int socketDescriptor) {
+            newConnection__descriptor.emit(socketDescriptor);
+        }
     }
 }
