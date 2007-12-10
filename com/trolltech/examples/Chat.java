@@ -61,6 +61,8 @@ public class Chat extends QDialog {
         newParticipant(myNickName);
         tableFormat.setBorder(0);
 
+        setWindowTitle("Chat " + myNickName);
+        
         QTimer.singleShot(10 * 1000, this, "showInformation()");
     }
 
@@ -344,6 +346,10 @@ public class Chat extends QDialog {
                 username = buffer.toString();
 
                 String[] list = username.split("[:@]");
+                if(list.length!=3) {
+                    abort();
+                    return;
+                }
                 otherServerPort = Integer.parseInt(list[2]);
 
                 currentDataType = DataType.Undefined;
@@ -493,11 +499,6 @@ public class Chat extends QDialog {
             numBytesForCurrentDataType = 0;
             buffer.clear();
         }
-
-        @Override
-        public String toString() {
-            return peerAddress() + ">::<" + peerPort() + " server:" + otherServerPort;
-        }
     }
 
     class PeerManager extends QObject {
@@ -544,8 +545,6 @@ public class Chat extends QDialog {
 
             if (username.equals(""))
                 username = "unknown";
-
-            username += (int) (Math.random() * 10);
 
             updateAddresses();
 
@@ -611,17 +610,24 @@ public class Chat extends QDialog {
         }
 
         private void updateAddresses() {
+            updateAddresses(false);
+            if (broadcastAddresses.isEmpty())
+                updateAddresses(true);
+        }        
+        
+        private void updateAddresses(boolean enableLoopBack) {
             broadcastAddresses.clear();
             ipAddresses.clear();
             for (QNetworkInterface networkInterface : QNetworkInterface.allInterfaces()) {
-                if (!networkInterface.flags().isSet(QNetworkInterface.InterfaceFlag.IsLoopBack)) {
+                if (enableLoopBack || !networkInterface.flags().isSet(QNetworkInterface.InterfaceFlag.IsLoopBack)) {
                     for (QNetworkAddressEntry entry : networkInterface.addressEntries()) {
+
                         QHostAddress broadcastAddress = entry.broadcast();
                         if (!broadcastAddress.equals(QHostAddress.SpecialAddress.Null)) {
-                            broadcastAddresses.add(broadcastAddress);
-                            ipAddresses.add(entry.ip());
+                            broadcastAddresses.add(broadcastAddress); 
                         }
-                    }
+                        ipAddresses.add(entry.ip());
+                    }  
                 }
             }
         }
