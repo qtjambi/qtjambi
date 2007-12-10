@@ -107,7 +107,7 @@ public class Chat extends QDialog {
         ui.textEdit.setTextColor(QColor.gray);
         ui.textEdit.append(String.format(tr("* %1$s has joined"), nick));
         ui.textEdit.setTextColor(color);
-        ui.listWidget.addItem(nick);
+        ui.listWidget.addItem(new QListWidgetItem(nick));
     }
 
     void participantLeft(final String nick) {
@@ -116,11 +116,10 @@ public class Chat extends QDialog {
 
         List<QListWidgetItem> items = ui.listWidget.findItems(nick, MatchFlag.MatchExactly);
 
-        // temporary workaround, should be replaced by items.get(0).displose();
-        for (int i = 0; i < ui.listWidget.count(); i++) {
-            if (ui.listWidget.item(i).data(0).equals(items.get(0).data(0))) {
-                ui.listWidget.takeItem(i).dispose();
-            }
+        for (Iterator<QListWidgetItem> iterator = items.iterator(); iterator.hasNext();) {
+            QListWidgetItem item = (QListWidgetItem) iterator.next();
+            ui.listWidget.removeItemWidget(item);
+            ui.listWidget.takeItem(ui.listWidget.row(item));
         }
 
         QColor color = ui.textEdit.textColor();
