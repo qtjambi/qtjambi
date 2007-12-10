@@ -1228,22 +1228,20 @@
   <object-type name="QAccessibleWidgetEx"/>  
   <object-type name="QActionGroup" />
   <object-type name="QCDEStyle">
-      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
+      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
   </object-type>
   <object-type name="QCheckBox">
     <modify-function signature="initStyleOption(QStyleOptionButton*)const">
         <access modifier="private"/>
     </modify-function>
   </object-type>
-  <object-type name="QCleanlooksStyle">
-    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
-  
-      <modify-function signature="standardPixmap(QStyle::StandardPixmap,const QStyleOption*,const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
+  <object-type name="QCleanlooksStyle">  
+    <modify-function signature="standardPixmap(QStyle::StandardPixmap,const QStyleOption*,const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
   </object-type>  
   <object-type name="QCommonStyle">
-    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
-  
       <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*,const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
   </object-type>  
   <object-type name="QDataWidgetMapper">
     <modify-function signature="addMapping(QWidget*,int)">
@@ -1670,8 +1668,8 @@
     </modify-function>
   </object-type>
   <object-type name="QMotifStyle">
-    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
     <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
   </object-type>  
   <object-type name="QPainterPathStroker"/>
  
@@ -1723,9 +1721,9 @@
     </modify-function>
   </object-type>
   <object-type name="QPlastiqueStyle">
-    <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const" remove="all"/>
-    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>    
     <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
+    <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType, QSizePolicy::ControlType, Qt::Orientation, const QStyleOption *, const QWidget *) const" virtual-slot="yes" />    
   </object-type>
   <object-type name="QPrintDialog"/>  
   <object-type name="QPrintEngine"/>
@@ -1983,8 +1981,8 @@
   </object-type>
   <object-type name="QWidgetItem"/>
   <object-type name="QWindowsStyle">
-      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
       <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
   </object-type>  
   <object-type name="QWorkspace">
     <modify-function signature="addWindow(QWidget*,QFlags&lt;Qt::WindowType&gt;)">
@@ -2087,7 +2085,8 @@
   <object-type name="QAbstractButton" />
 
   <object-type name="QStyle">
-      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" access="non-final"/>
+      <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
+      <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType, QSizePolicy::ControlType, Qt::Orientation, const QStyleOption *, const QWidget *) const" virtual-slot="yes" />
   </object-type>
 
   <object-type name="QColorDialog">

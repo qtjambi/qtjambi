@@ -379,7 +379,27 @@ public class VirtualFunctions extends QApplicationTest {
             }
         };
         
-        style.standardIcon(QStyle.StandardPixmap.SP_ArrowBack);
+        QIcon icon = style.standardIcon(QStyle.StandardPixmap.SP_ArrowBack);
         assertTrue(myVirtualFunctionWasCalled);
+        assertTrue(icon.isNull());
     }
+    
+    
+    @Test
+    //  Test whether slots are magically virtual as predicated by Qt
+    public void slotsAsVirtualFromCppToJava2() {
+        myVirtualFunctionWasCalled = false;
+        QStyle style = new QWindowsStyle() {
+            @Override
+            protected int layoutSpacingImplementation(com.trolltech.qt.gui.QSizePolicy.ControlType control1, com.trolltech.qt.gui.QSizePolicy.ControlType control2, com.trolltech.qt.core.Qt.Orientation orientation, com.trolltech.qt.gui.QStyleOption option, com.trolltech.qt.gui.QWidget widget)    {
+                myVirtualFunctionWasCalled = true;
+                return 123;
+            }
+        };
+        
+        int k = style.layoutSpacing(QSizePolicy.ControlType.ButtonBox, QSizePolicy.ControlType.ButtonBox, Qt.Orientation.Horizontal);
+        assertTrue(myVirtualFunctionWasCalled);
+        assertEquals(123, k);
+    }
+    
 }

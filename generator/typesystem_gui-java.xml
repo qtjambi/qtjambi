@@ -2075,13 +2075,15 @@
         
         
         <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType,QSizePolicy::ControlType,Qt::Orientation,const QStyleOption*,const QWidget*)const">
-            <access modifier="private"/>
             <modify-argument index="4">
-                <remove-default-expression/>
-            </modify-argument>
-            <modify-argument index="5">
-                <remove-default-expression/>
-            </modify-argument>
+                <replace-type modified-type="com.trolltech.qt.gui.QStyleOption"/>
+                <conversion-rule class="shell">
+                    <insert-template name="gui::qstyleoption_from_object"/>                
+                </conversion-rule>
+                <conversion-rule class="native">
+                    <insert-template name="gui::qstyleoption_to_object"/>
+                </conversion-rule>            
+            </modify-argument>                
         </modify-function>    
         
 

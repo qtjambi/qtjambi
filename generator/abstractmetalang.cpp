@@ -295,6 +295,25 @@ AbstractMetaFunction *AbstractMetaFunction::copy() const
     return cpy;
 }
 
+QStringList AbstractMetaFunction::introspectionCompatibleSignatures(const QStringList &resolvedArguments) const
+{
+    AbstractMetaArgumentList arguments = this->arguments();
+    if (arguments.size() == resolvedArguments.size()) {
+        return (QStringList() << QMetaObject::normalizedSignature((name() + "(" + resolvedArguments.join(",") + ")").toUtf8().constData()));
+    } else {
+        QStringList returned;
+
+        AbstractMetaArgument *argument = arguments.at(resolvedArguments.size());
+        QStringList minimalTypeSignature = argument->type()->minimalSignature().split("::");
+        for (int i=0; i<minimalTypeSignature.size(); ++i) {
+            returned += introspectionCompatibleSignatures(QStringList(resolvedArguments) 
+                << QStringList(minimalTypeSignature.mid(minimalTypeSignature.size() - i - 1)).join("::"));
+        }
+
+        return returned;
+    }
+}
+
 QString AbstractMetaFunction::signature() const
 {
     QString s(m_original_name);

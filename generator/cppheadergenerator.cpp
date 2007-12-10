@@ -137,7 +137,7 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
         << "  mutable const QMetaObject *m_meta_object;" << endl;
 
       if (java_class->hasVirtualSlots()) {
-          s << "  QHash<int,int> m_map;" << endl;
+          s << "  mutable QHash<int,int> m_map;" << endl;
       }
 
       s << "  const QMetaObject *metaObject() const;" << endl

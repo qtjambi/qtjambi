@@ -646,7 +646,7 @@ class QStyle___ extends QStyle {
     @QtBlockedSlot
     public final int combinedLayoutSpacing(QSizePolicy.ControlTypes controls1, QSizePolicy.ControlTypes controls2,
             com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget) {
-        return combinedLayoutSpacing(controls1, controls2, orientation, option.nativePointer(), widget);
+        return combinedLayoutSpacing(controls1, controls2, orientation, option == null ? null : option.nativePointer(), widget);
     }
 
     @QtBlockedSlot
@@ -664,7 +664,7 @@ class QStyle___ extends QStyle {
     @QtBlockedSlot
     public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, com.trolltech.qt.core.Qt.Orientation orientation,
             QStyleOption option, QWidget widget) {
-        return layoutSpacing(control1, control2, orientation, option.nativePointer(), widget);
+        return layoutSpacing(control1, control2, orientation, option == null ? null : option.nativePointer(), widget);
     }
 
     @QtBlockedSlot
@@ -676,24 +676,6 @@ class QStyle___ extends QStyle {
     @QtBlockedSlot
     public final int layoutSpacing(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2, com.trolltech.qt.core.Qt.Orientation orientation) {
         return layoutSpacing(control1, control2, orientation, null);
-    }
-
-    @QtBlockedSlot
-    public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
-            com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option, QWidget widget) {
-        return layoutSpacingImplementation(control1, control2, orientation, option.nativePointer(), widget);
-    }
-
-    @QtBlockedSlot
-    public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
-            com.trolltech.qt.core.Qt.Orientation orientation, QStyleOption option) {
-        return layoutSpacingImplementation(control1, control2, orientation, option, null);
-    }
-
-    @QtBlockedSlot
-    public final int layoutSpacingImplementation(QSizePolicy.ControlType control1, QSizePolicy.ControlType control2,
-            com.trolltech.qt.core.Qt.Orientation orientation) {
-        return layoutSpacingImplementation(control1, control2, orientation, null);
     }
 
 }// class

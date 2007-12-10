@@ -750,10 +750,16 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
     for (int pos=0; pos<virtualFunctions.size(); ++pos) {
         const AbstractMetaFunction *virtualFunction = virtualFunctions.at(pos);
         if (virtualFunction->isVirtualSlot()) {
-            s << "      m_map.insert(" << java_class->qualifiedCppName() 
-              << "::metaObject()->indexOfMethod(\"" 
-              << virtualFunction->minimalSignature() << "\"), " 
-              << pos << ");" << endl;
+            QStringList introspectionCompatibleSignatures = virtualFunction->introspectionCompatibleSignatures();
+            foreach (QString introspectionCompatibleSignature, introspectionCompatibleSignatures) {
+                s << "      {" << endl
+                  << "          int idx = " 
+                  << java_class->qualifiedCppName() << "::metaObject()->indexOfMethod(\"" 
+                  << introspectionCompatibleSignature << "\");" << endl;
+
+                s << "          if (idx >= 0) m_map.insert(idx, " << pos << ");" << endl
+                  << "      }" << endl;
+            }
         }
 
     }
@@ -777,42 +783,47 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
 
     if (java_class->hasVirtualSlots()) {
         s << "  int virtual_idx = m_map.value(_id, -1);" << endl
-          << "  if (virtual_idx >= 0) {" << endl;
+          << "  if (virtual_idx >= 0) {" << endl
+          << "      switch (virtual_idx) {";
 
         AbstractMetaFunctionList virtualFunctions = java_class->virtualFunctions();
         for (int pos=0; pos<virtualFunctions.size(); ++pos) {
             const AbstractMetaFunction *virtualFunction = virtualFunctions.at(pos);
             if (virtualFunction->isVirtualSlot()) {
-                s << "  case " << pos << ": {" << endl;
+                s << endl << "      case " << pos << ": {" << endl;
 
                 // Set up variable names so the function call works
                 AbstractMetaArgumentList arguments = virtualFunction->arguments();
                 for (int i=1; i<=arguments.size(); ++i) {
                     AbstractMetaArgument *argument = arguments.at(i-1);
 
-                    s << "      ";
+                    s << "          ";
                     writeTypeInfo(s, argument->type());
-                    s << " " << argument->argumentName() << " = *reinterpret_cast<";
+                    s << " __qt_" << argument->indexedName() << " = *reinterpret_cast<";
                     writeTypeInfo(s, argument->type());
-                    s << " *>(_a[" << i << "])" << endl;
+                    s << " *>(_a[" << i << "]);" << endl;
                 }
 
                 // Function call
+                s << "          ";
                 if (virtualFunction->type() != 0) {
-                    s << "      ";
-                    s << "*reinterpret_cast<";
                     writeTypeInfo(s, virtualFunction->type());
-                    s << ">(_a[0]) = ";
-                }
+                    s << " _r = ";
+                } 
 
                 writeFunctionCall(s, "this", virtualFunction);
-                s << endl;
+                s << "          if (_a[0] != 0) "
+                  << "*reinterpret_cast<";
+                writeTypeInfo(s, virtualFunction->type());
+                s << " *>(_a[0]) = _r;" << endl
+                  << "          return -1;" << endl;
   
-                s << "  }" << endl;
-            }
+                s << "      }";
+            }            
         }
 
-        s << "  }" << endl;
+        s << "};" << endl
+          << "  }" << endl;
     }
 
     s << "  _id = " << java_class->qualifiedCppName() << "::qt_metacall(_c, _id, _a);" << endl
@@ -1029,7 +1040,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
     //     s << "    printf(\"%s : %s\\n\", \"" << java_function->enclosingClass()->name() << "\""
     //       << ", \"" << java_function->name() << "\");" << endl;
 
-    if (!java_function->isFinalInCpp()) {
+    if (!java_function->isFinalInCpp() || java_function->isVirtualSlot()) {
         s << INDENT << "jmethodID method_id = m_vtable->method(" << id << ");" << endl;
         s << INDENT << "if (method_id) {" << endl;
 

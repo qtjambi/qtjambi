@@ -395,6 +395,7 @@ public:
     QString modifiedName() const;
 
     QString minimalSignature() const;
+    QStringList possibleIntrospectionCompatibleSignatures() const;
 
     QString marshalledName() const;
 
@@ -446,6 +447,7 @@ public:
     FunctionType functionType() const { return m_function_type; }
     void setFunctionType(FunctionType type) { m_function_type = type; }
 
+    QStringList introspectionCompatibleSignatures(const QStringList &resolvedArguments = QStringList()) const;
     QString signature() const;
     QString targetLangSignature(bool minimal = false) const;
     bool shouldReturnThisObject() const { return QLatin1String("this") == argumentReplaced(0); }
