@@ -48,7 +48,7 @@
   <rejection class="QAccessible" function-name="installRootObjectHandler"/>
   <rejection class="QAccessible" function-name="installUpdateHandler"/>
   <rejection class="QAccessible" function-name="removeFactory"/>
-  <rejection class="QApplication" function-name="compressEvent"/>
+  <rejection class="QApplication" function-name="compressEvent"/>  
   <rejection class="QBrush" function-name="cleanUp"/>
   <rejection class="QPictureIO" function-name="defineIOHandler"/>
   <rejection class="QPolygon" function-name="putPoints"/>
@@ -103,9 +103,14 @@
   <enum-type name="QAccessible::Role"/>
   <enum-type name="QAccessible::StateFlag" flags="QAccessible::State"/>
   <enum-type name="QAccessible::Text"/>
+  <enum-type name="QDesktopServices::StandardLocation" />
   <enum-type name="QDirModel::Roles"/>  
+  <enum-type name="QFont::Capitalization" />
+  <enum-type name="QFont::SpacingType" />
+  <enum-type name="QGraphicsItem::CacheMode" />
   <enum-type name="QMdiArea::AreaOption" flags="QMdiArea::AreaOptions"/>
   <enum-type name="QMdiArea::WindowOrder"/>
+  <enum-type name="QMdiArea::ViewMode" />
   <enum-type name="QMdiSubWindow::SubWindowOption" flags="QMdiSubWindow::SubWindowOptions"/>
  
   <enum-type name="QAction::ActionEvent"/>
@@ -199,6 +204,7 @@
   <enum-type name="QPaintEngine::PaintEngineFeature" flags="QPaintEngine::PaintEngineFeatures"/>
   <enum-type name="QPaintEngine::PolygonDrawMode"/>
   <enum-type name="QPaintEngine::Type"/>
+  <enum-type name="QPageSetupDialog::PageSetupDialogOption" flags="QPageSetupDialog::PageSetupDialogOptions" />
   <enum-type name="QPainter::CompositionMode"/>
   <enum-type name="QPainter::RenderHint" flags="QPainter::RenderHints"/>
   <enum-type name="QPainterPath::ElementType"/>
@@ -213,8 +219,11 @@
   <enum-type name="QPrinter::PrintRange"/>
   <enum-type name="QPrinter::PrinterMode"/>
   <enum-type name="QPrinter::PrinterState"/>
+  <enum-type name="QPrinter::Unit" />
+  <enum-type name="QPrinter::DuplexMode" />
   <enum-type name="QProgressBar::Direction"/>
-  <enum-type name="QRegion::RegionType"/>
+  <enum-type name="QReadWriteLock::RecursionMode" />  
+  <enum-type name="QRegion::RegionType"/>  
   <enum-type name="QRubberBand::Shape"/>
   <enum-type name="QSessionManager::RestartHint"/>
   <enum-type name="QSizePolicy::Policy"/>
@@ -348,6 +357,7 @@
   <enum-type name="QTextListFormat::Style"/>
   <enum-type name="QTextOption::Flag" flags="QTextOption::Flags"/>
   <enum-type name="QTextOption::WrapMode"/>
+  <enum-type name="QTextOption::TabType" />
   <enum-type name="QToolButton::ToolButtonPopupMode"/>
   <enum-type name="QTreeWidgetItem::ItemType"/>
   <enum-type name="QTreeWidgetItemIterator::IteratorFlag" flags="QTreeWidgetItemIterator::IteratorFlags"/>

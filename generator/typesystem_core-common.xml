@@ -184,11 +184,13 @@
   </enum-type>
   <enum-type name="QEventLoop::ProcessEventsFlag" flags="QEventLoop::ProcessEventsFlags"/>
   <enum-type name="QFile::FileError"/>
+  <enum-type name="QFile::MemoryMapFlags" />
   <enum-type name="QFile::Permission" flags="QFile::Permissions"/>
   <enum-type name="QIODevice::OpenModeFlag" flags="QIODevice::OpenMode"/>
   <enum-type name="QLibraryInfo::LibraryLocation"/>
   <enum-type name="QLocale::FormatType"/>
   <enum-type name="QLocale::NumberOption" flags="QLocale::NumberOptions"/>
+  <enum-type name="QLocale::MeasurementSystem" />
   <enum-type name="QMutex::RecursionMode"/>
   <enum-type name="QProcess::ExitStatus"/>
   <enum-type name="QProcess::ProcessChannel"/>
@@ -214,6 +216,9 @@
   <enum-type name="QUrl::ParsingMode"/>
   <enum-type name="QUuid::Variant"/>
   <enum-type name="QUuid::Version"/>
+  <enum-type name="Qt::SizeHint" />
+  <enum-type name="Qt::SizeMode" />
+  <enum-type name="Qt::WindowFrameSection" />
   <enum-type name="Qt::Axis"/>
   <enum-type name="Qt::AnchorAttribute"/>
   <enum-type name="Qt::ApplicationAttribute"/>
