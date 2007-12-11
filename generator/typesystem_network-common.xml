@@ -41,6 +41,11 @@
   <object-type name="QHttpHeader">
     <modify-function signature="operator=(QHttpHeader)" remove="all"/>
   </object-type>
+  <object-type name="QLocalServer" />
+  <object-type name="QLocalSocket" />
+  <object-type name="QNetworkAccessManager" />
+  <object-type name="QNetworkCookieJar" />
+  <object-type name="QNetworkReply" />
 
   <value-type name="QHostAddress">
     <modify-function signature="QHostAddress(unsigned char*)" remove="all"/>
@@ -90,6 +95,8 @@
   <value-type name="QAuthenticator">
     <modify-function signature="operator=(QAuthenticator)" remove="all"/>
   </value-type>
+  <value-type name="QNetworkCookie" />
+  <value-type name="QNetworkRequest" />
   
   <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrlInfo' has equals operators but no qHash() function" />

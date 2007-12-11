@@ -41,7 +41,10 @@
   <rejection class="QAccessibleEditableTextInterface"/>
   <rejection class="QAccessibleSimpleEditableTextInterface"/>
   <rejection class="QAccessibleTextInterface"/>
-  <rejection class="QAccessibleValueInterface"/>
+  <rejection class="QAccessibleValueInterface"/>    
+  <rejection class="QImageIOHandlerFactoryInterface" />
+  <rejection class="QImageIOPlugin" />
+  <rejection class="QAccessibleBridgePlugin" />
     
   <rejection class="QAbstractItemDelegate" function-name="operator="/>
   <rejection class="QAccessible" function-name="installFactory"/>
@@ -1217,7 +1220,7 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
-  </object-type>
+  </object-type>      
   <object-type name="QAccessibleBridge">
     <modify-function signature="setRootObject(QAccessibleInterface *)">
         <modify-argument index="1">
@@ -2053,6 +2056,8 @@
         <remove/>
     </modify-function>
   </object-type>
+  <object-type name="QGraphicsSceneMoveEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::GraphicsSceneMove" />
+  <object-type name="QGraphicsSceneResizeEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::GraphicsSceneResize" />
   <object-type name="QGraphicsSceneHelpEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::GraphicsSceneHelp"/>
   <object-type name="QGraphicsSceneHoverEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::GraphicsSceneHoverEnter || %1-&gt;type() == QEvent::GraphicsSceneHoverLeave || %1-&gt;type() == QEvent::GraphicsSceneHoverMove"/>
   <object-type name="QGraphicsSceneMouseEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::GraphicsSceneMouseDoubleClick || %1-&gt;type() == QEvent::GraphicsSceneMouseMove || %1-&gt;type() == QEvent::GraphicsSceneMousePress || %1-&gt;type() == QEvent::GraphicsSceneMouseRelease"/>
@@ -4130,7 +4135,19 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
-
+  </object-type>
+  
+  <object-type name="QCommandLinkButton" />
+  <object-type name="QFileSystemModel" />
+  <object-type name="QFormLayout" />
+  <object-type name="QGraphicsGridLayout" />
+  <object-type name="QGraphicsLayout" />
+  <interface-type name="QGraphicsLayoutItem" />
+  <object-type name="QGraphicsLinearLayout" />
+  <object-type name="QGraphicsProxyWidget" />
+  <object-type name="QGraphicsWidget">
+    <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
+    <modify-function signature="children()const" remove="all" />
   </object-type>
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>

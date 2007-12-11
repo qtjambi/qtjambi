@@ -1,6 +1,7 @@
 <?xml-stylesheet type="text/xsl" href="merge.xsl"?>
 <typesystem>
-  <rejection class="QGLWidget" function-name="setMouseTracking"/>
+  <rejection class="QGLColormap::QGLColormapData" />
+  <rejection class="QGLWidget" function-name="setMouseTracking"/>  
   
   <enum-type name="QGL::FormatOption" flags="QGL::FormatOptions"/>
   <enum-type name="QGLFormat::OpenGLVersionFlag" flags="QGLFormat::OpenGLVersionFlags"/>

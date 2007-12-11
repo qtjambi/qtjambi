@@ -12,6 +12,8 @@
   <rejection class="QAlgorithmsPrivate"/>
   <rejection class="QAtomic"/>
   <rejection class="QAtomicPointer"/>
+  <rejection class="QAtomicInt" />
+  <rejection class="QBasicAtomicInt" />
   <rejection class="QBasicAtomic"/>
   <rejection class="QBasicAtomicPointer"/>
   <rejection class="QBitRef"/>
@@ -105,6 +107,14 @@
   <rejection class="QMutableSetIterator"/>
   <rejection class="QSubString"/>
   <rejection class="QUintForType"/>
+  <rejection class="QFuture" />
+  <rejection class="QFutureInterface" />
+  <rejection class="QFutureInterfaceBase" />
+  <rejection class="QFutureIterator" />
+  <rejection class="QFutureSynchronizer" />
+  <rejection class="QFutureWatcher" />
+  <rejection class="QFutureWatcherBase" />
+  <rejection class="QLocale::Data" />  
 
   <rejection class="QAbstractEventDispatcher" function-name="filterEvent"/>
   <rejection class="QAbstractEventDispatcher" function-name="setEventFilter"/>
@@ -668,6 +678,9 @@
     </modify-function>
   </object-type>
   
+  <object-type name="QAbstractFileEngine::MapExtensionOption" />
+  <object-type name="QAbstractFileEngine::MapExtensionReturn" />
+  <object-type name="QAbstractFileEngine::UnMapExtensionOption" />
   <object-type name="QAbstractFileEngine">
     <extra-includes>
         <include file-name="QDateTime" location="global"/>
