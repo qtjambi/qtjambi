@@ -45,6 +45,7 @@
   <rejection class="QImageIOHandlerFactoryInterface" />
   <rejection class="QImageIOPlugin" />
   <rejection class="QAccessibleBridgePlugin" />
+  <rejection class="JObject_key" />
     
   <rejection class="QAbstractItemDelegate" function-name="operator="/>
   <rejection class="QAccessible" function-name="installFactory"/>
@@ -533,6 +534,9 @@
   <value-type name="QStyleOptionViewItemV3" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItemV3::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItemV3::Version">
     <modify-function signature="operator=(QStyleOptionViewItem)" remove="all"/>
   </value-type>              
+  <value-type name="QStyleOptionViewItemV4" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItemV4::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItemV4::Version">
+    <modify-function signature="operator=(QStyleOptionViewItem)" remove="all" />
+  </value-type>
   <value-type name="QTextFragment">  
     <modify-function signature="operator=(QTextFragment)" remove="all"/>
   </value-type>
@@ -631,6 +635,7 @@
      </modify-function>
   </value-type>
   <value-type name="QTextBlockFormat"/>
+  <value-type name="QTextTableCellFormat" />
   <value-type name="QTextCharFormat">
     <modify-function signature="isValid()const" access="non-final"/>
   
@@ -1079,6 +1084,7 @@
         </modify-argument>                
     </modify-function>
    </value-type>
+   <value-type name="QTextOption::Tab" />
 
   <value-type name="QFontMetrics">
     <custom-constructor>
@@ -1153,6 +1159,8 @@
     delete copy;
     </custom-destructor>
   </value-type>
+  
+  <value-type name="QPrinterInfo" />
      
   <interface-type name="QLayoutItem"/>
   <interface-type name="QPaintDevice"/>
@@ -4149,6 +4157,11 @@
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
   </object-type>
+  <object-type name="QPlainTextDocumentLayout" />
+  <object-type name="QPlainTextEdit" />
+  <object-type name="QPrintPreviewDialog" />
+  <object-type name="QPrintPreviewWidget" />
+  <object-type name="QStyledItemDelegate" />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>

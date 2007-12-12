@@ -115,6 +115,20 @@
   <rejection class="QFutureWatcher" />
   <rejection class="QFutureWatcherBase" />
   <rejection class="QLocale::Data" />  
+  <rejection class="QGlobalStaticDeleter" />
+  <rejection class="_Revbidit" />
+  <rejection class="_complex" />
+  <rejection class="_exception" />
+  <rejection class="_iobuf" />
+  <rejection class="_stat" />
+  <rejection class="_wfinddata_t" />
+  <rejection class="exception" />
+  <rejection class="istreambuf_iterator" />
+  <rejection class="ostreambuf_iterator" />
+  <rejection class="reverse_bidirectional_iterator" />
+  <rejection class="reverse_iterator" />
+  <rejection class="stat" />
+  <rejection class="tm" />
 
   <rejection class="QAbstractEventDispatcher" function-name="filterEvent"/>
   <rejection class="QAbstractEventDispatcher" function-name="setEventFilter"/>
@@ -563,8 +577,10 @@
     <modify-function signature="operator+=(QString)" remove="all"/>
     <modify-function signature="operator+=(char)" remove="all"/>
   </value-type>
+  
+  <value-type name="QTextBoundaryFinder" />
 
-
+  <object-type name="QXmlStreamEntityResolver" />
   <object-type name="QAbstractEventDispatcher"/>  
   <object-type name="QEventLoop"/>
   <object-type name="QFile">  
@@ -880,9 +896,14 @@
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcDevice"/>
         </modify-argument>
-    </modify-function>
-         
+    </modify-function>         
   </object-type>
+  
+  <object-type name="QSharedMemory">
+    <modify-function signature="data()const" remove="all" />
+  </object-type>
+  <object-type name="QSystemSemaphore" />
+  
   
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>
