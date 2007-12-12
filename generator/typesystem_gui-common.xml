@@ -115,6 +115,19 @@
   <enum-type name="QMdiArea::AreaOption" flags="QMdiArea::AreaOptions"/>
   <enum-type name="QMdiArea::WindowOrder"/>
   <enum-type name="QMdiArea::ViewMode" />
+  <enum-type name="QFileSystemModel::Roles" />
+  <enum-type name="QFormLayout::FieldGrowthPolicy" />
+  <enum-type name="QFormLayout::FormStyle" />
+  <enum-type name="QFormLayout::ItemRole" />    
+  <enum-type name="QFormLayout::RowWrapPolicy" />
+  <enum-type name="QGraphicsProxyWidget::enum_1" />
+  <enum-type name="QGraphicsWidget::enum_1" />
+  <enum-type name="QPlainTextEdit::LineWrapMode" />
+  <enum-type name="QPrintPreviewWidget::ViewMode" />
+  <enum-type name="QPrintPreviewWidget::ZoomMode" />
+  <enum-type name="QStyleOptionViewItemV4::StyleOptionVersion" />
+  <enum-type name="QStyleOptionViewItemV4::ViewItemPosition" />
+
   <enum-type name="QMdiSubWindow::SubWindowOption" flags="QMdiSubWindow::SubWindowOptions"/>
  
   <enum-type name="QAction::ActionEvent"/>

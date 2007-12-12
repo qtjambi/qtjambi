@@ -194,7 +194,12 @@
   <namespace-type name="Qt"/>
 
 
-
+  <enum-type name="QSharedMemory::AccessMode" />
+  <enum-type name="QSharedMemory::SharedMemoryError" />
+  <enum-type name="QSystemSemaphore::AccessMode" />
+  <enum-type name="QSystemSemaphore::SystemSemaphoreError" />
+  <enum-type name="QTextBoundaryFinder::BoundaryReason" flags="QTextBoundaryFinder::BoundaryReasons" />
+  <enum-type name="QTextBoundaryFinder::BoundaryType" />  
   <enum-type name="QAbstractFileEngine::Extension" extensible="yes"/>
   <enum-type name="QAbstractFileEngine::FileFlag" flags="QAbstractFileEngine::FileFlags"/>
   <enum-type name="QAbstractFileEngine::FileName"/>

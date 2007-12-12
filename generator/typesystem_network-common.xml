@@ -26,7 +26,14 @@
   <enum-type name="QSsl::KeyAlgorithm"/>
   <enum-type name="QSsl::AlternateNameEntryType"/>
   <enum-type name="QSsl::SslProtocol" />
-      
+  <enum-type name="QLocalSocket::LocalSocketError" />
+  <enum-type name="QLocalSocket::LocalSocketState" />
+  <enum-type name="QNetworkAccessManager::Operation" />
+  <enum-type name="QNetworkCookie::RawForm" />
+  <enum-type name="QNetworkReply::NetworkError" />
+  <enum-type name="QNetworkRequest::Attribute" extensible="yes" />
+  <enum-type name="QNetworkRequest::CacheLoadControl" />
+  <enum-type name="QNetworkRequest::KnownHeaders" />
 
   <object-type name="QAbstractSocket" />
   <object-type name="QFtp" />
