@@ -282,7 +282,7 @@ class QPen___ extends QPen {
     }
 
     public static final QPen NoPen = new QPen(com.trolltech.qt.core.Qt.PenStyle.NoPen);
-}// Class
+}// class
 
 class QColor___ extends QColor {
     public static final QColor white = new QColor(com.trolltech.qt.core.Qt.GlobalColor.white);
