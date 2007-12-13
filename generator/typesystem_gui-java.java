@@ -938,3 +938,70 @@ class QApplication___ extends QApplication {
 
 }// class
 
+class QFormLayout___ extends QFormLayout {
+    /**
+     * Retrieves the row and role (column) of the item at the specified index.      
+     * If index is out of bounds, -1 is returned in place of the row.
+     * 
+     * @param index The index of the item for which to retrieve the position.
+     * @return A pair of an int (row of item) and an ItemRole (role of the item.)
+     **/
+    @QtBlockedSlot
+    public final com.trolltech.qt.QPair<Integer, ItemRole> getItemPosition(int index) {
+       com.trolltech.qt.QNativePointer row = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Int);
+       com.trolltech.qt.QNativePointer role = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Int);
+
+       getItemPosition(index, row, role);
+
+       return new com.trolltech.qt.QPair<Integer, ItemRole>(row.intValue(), ItemRole.resolve(role.intValue()));
+    }
+
+    /**
+     * Retrieves the row and role (column) of the specified child layout. 
+     * If the layout is not in the form layout, -1 is returned in place of the row.
+     * 
+     * @param layout The layout for which to retrieve the position.
+     * @return A pair of an int (row of item) and an ItemRole (role of the item.)
+     */
+    @QtBlockedSlot
+    public final com.trolltech.qt.QPair<Integer, ItemRole> getLayoutPosition(QLayout layout) {
+        com.trolltech.qt.QNativePointer row = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Int);
+        com.trolltech.qt.QNativePointer role = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Int);
+
+        getLayoutPosition(layout, row, role);
+
+        return new com.trolltech.qt.QPair<Integer, ItemRole>(row.intValue(), ItemRole.resolve(role.intValue()));
+    }
+
+    /**
+     * Retrieves the row and role (column) of the specified widget in the layout. 
+     * If the widget is not in the form layout, -1 is returned in place of the row.
+     * 
+     * @param widget The widget for which to retrieve the position.
+     * @return A pair of an int (row of item) and an ItemRole (role of the item.)
+     */
+    @QtBlockedSlot
+    public final com.trolltech.qt.QPair<Integer, ItemRole> getWidgetPosition(QWidget widget) {
+        com.trolltech.qt.QNativePointer row = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Int);
+        com.trolltech.qt.QNativePointer role = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Int);
+
+        getWidgetPosition(widget, row, role);
+
+        return new com.trolltech.qt.QPair<Integer, ItemRole>(row.intValue(), ItemRole.resolve(role.intValue()));
+    }
+}// class
+
+class QGraphicsLayoutItem___ extends QGraphicsLayoutItem {
+    @QtBlockedSlot
+    public final QContentsMarginsF getContentsMargins() {
+        QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer right = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer bottom = new QNativePointer(QNativePointer.Type.Double);
+
+        getContentsMargins(left, top, right, bottom);
+        return new QContentsMarginsF(left.doubleValue(), top.doubleValue(), right.doubleValue(), bottom.doubleValue());
+    }
+}// class
+
+

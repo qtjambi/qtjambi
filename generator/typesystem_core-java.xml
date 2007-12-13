@@ -1590,6 +1590,26 @@
       </inject-code>
   </object-type>
 
+  <object-type name="QAbstractFileEngine::UnMapExtensionOption">
+    <modify-field name="address">
+        <access modifier="private" />
+        <rename to="address_private" />
+    </modify-field>
+    <inject-code>
+        <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractFileEngine_UnMapExtensionOption___" quote-before-line="}// class"/>
+    </inject-code>        
+  </object-type>
+  
+  <object-type name="QAbstractFileEngine::MapExtensionReturn">    
+    <modify-field name="address">
+        <access modifier="private" />
+        <rename to="address_private" />
+    </modify-field>
+    <inject-code>
+        <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractFileEngine_MapExtensionReturn___" quote-before-line="}// class"/>
+    </inject-code>            
+  </object-type>
+
   <object-type name="QTextStream">
       <extra-includes>
           <include file-name="com.trolltech.qt.QNativePointer" location="java"/>

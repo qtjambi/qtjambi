@@ -374,8 +374,8 @@ bool Handler::importFileElement(const QXmlAttributes &atts)
         }
     }
     if(!foundFromOk || !foundToOk){
-        QString fromError = QString("Could not find quote-from-line='%1' in file '%2'.").arg(quoteFrom).arg(fileName);
-        QString toError = QString("Could not find quote-to-line='%1' in file '%2'.").arg(quoteTo).arg(fileName);
+        QString fromError = QString("Could not find quote-after-line='%1' in file '%2'.").arg(quoteFrom).arg(fileName);
+        QString toError = QString("Could not find quote-before-line='%1' in file '%2'.").arg(quoteTo).arg(fileName);
 
         if(!foundToOk)
             m_error = toError;

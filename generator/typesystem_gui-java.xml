@@ -2972,4 +2972,14 @@
         }
         </template>       
     </object-type>
+    
+    <object-type name="QFormLayout">    
+        <modify-function signature="getLayoutPosition(QLayout*,int*,QFormLayout::ItemRole*)const" access="private"/>
+        <modify-function signature="getWidgetPosition(QWidget*,int*,QFormLayout::ItemRole*)const" access="private"/>
+        <modify-function signature="getItemPosition(int,int*,QFormLayout::ItemRole*)const" access="private"/>
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QFormLayout___" quote-before-line="}// class"/>
+        </inject-code>
+    </object-type>
+    
 </typesystem>

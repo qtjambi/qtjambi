@@ -581,3 +581,29 @@ class QSignalMapper___ extends QSignalMapper {
     private java.util.Hashtable<QObject, Object> __rcWidgetForObject = new java.util.Hashtable<QObject, Object>();
     
 }// class
+
+class QAbstractFileEngine_MapExtensionReturn___ extends QAbstractFileEngine_MapExtensionReturn {
+    private QNativePointer currentAddressNativePointer; // don't garbage collect while in use
+    public final void setAddress(String address) {
+        currentAddressNativePointer = address != null ? QNativePointer.createCharPointer(address) : null;
+        address_private(currentAddressNativePointer);
+    }
+
+    public final String address() {
+        QNativePointer np = address_private();
+        return np != null ? com.trolltech.qt.QtJambiInternal.charPointerToString(np) : null;
+    }
+}// class
+
+class QAbstractFileEngine_UnMapExtensionOption___ extends QAbstractFileEngine_UnMapExtensionOption {
+    private QNativePointer currentAddressNativePointer; // don't garbage collect while in use
+    public final void setAddress(String address) {
+        currentAddressNativePointer = address != null ? QNativePointer.createCharPointer(address) : null;
+        address_private(currentAddressNativePointer);
+    }
+
+    public final String address() {
+        QNativePointer np = address_private();
+        return np != null ? com.trolltech.qt.QtJambiInternal.charPointerToString(np) : null;
+    }
+}// class

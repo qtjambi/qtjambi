@@ -569,6 +569,16 @@ public class QtJambiInternal {
                                                    Thread.currentThread());
             }
     }
+    
+    public static String charPointerToString(QNativePointer np) {
+        int pos = 0; byte b;
+        
+        String returned = "";
+        while ((b = np.byteAt(pos++)) != 0)
+            returned += Byte.toString(b);         
+        
+        return returned;
+    }
 
     public static QNativePointer intArrayToNativePointer(int data[]) {
         QNativePointer np = new QNativePointer(QNativePointer.Type.Int, data.length);
