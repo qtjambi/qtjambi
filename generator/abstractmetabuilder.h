@@ -78,6 +78,7 @@ public:
     void parseQ_Property(AbstractMetaClass *meta_class, const QStringList &declarations);
     void setupEquals(AbstractMetaClass *meta_class);
     void setupComparable(AbstractMetaClass *meta_class);
+    void setupClonable(AbstractMetaClass *cls);
     void setupFunctionDefaults(AbstractMetaFunction *meta_function, AbstractMetaClass *meta_class);
 
     QString translateDefaultValue(ArgumentModelItem item, AbstractMetaType *type,

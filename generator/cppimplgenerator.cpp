@@ -455,6 +455,10 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
 
     writeToStringFunction(s, java_class);
 
+    if (java_class->hasCloneOperator()) {
+        writeCloneFunction(s, java_class);
+    }
+
     // Signals
     AbstractMetaFunctionList signal_functions = signalFunctions(java_class);
     for (int i=0; i<signal_functions.size(); ++i)
@@ -618,6 +622,25 @@ void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaC
         }
         s << INDENT << "}" << endl << endl;
     }
+}
+
+void CppImplGenerator::writeCloneFunction(QTextStream &s, const AbstractMetaClass *java_class)
+{
+    s << endl
+      << jni_function_signature(java_class->package(), java_class->name(), "__qt_clone", "jobject") << endl
+      << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
+      << INDENT << "{" << endl;
+    {
+        Indentation indent(INDENT);
+        s << INDENT << java_class->qualifiedCppName() << " *__qt_this = ("
+            
+          << java_class->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
+          << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
+          << INDENT << "Q_ASSERT(__qt_this);" << endl
+          << INDENT << java_class->qualifiedCppName() << " *res = __qt_this;" << endl
+          << INDENT << "return qtjambi_from_object(__jni_env, res, \"" << java_class->name() << "\", \"" << java_class->package().replace(".", "/") << "/\", true);" << endl;
+    }
+    s << INDENT << "}" << endl << endl;
 }
 
 void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaClass *java_class)

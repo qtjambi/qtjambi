@@ -460,6 +460,7 @@ bool AbstractMetaBuilder::build()
     foreach (AbstractMetaClass *cls, m_meta_classes) {
         setupEquals(cls);
         setupComparable(cls);
+        setupClonable(cls);
     }
 
     dumpLog();
@@ -2161,6 +2162,25 @@ void AbstractMetaBuilder::setupComparable(AbstractMetaClass *cls)
 
 }
 
+void AbstractMetaBuilder::setupClonable(AbstractMetaClass *cls)
+{
+    QString op_assign = QLatin1String("operator_assign");
+
+    AbstractMetaFunctionList functions = cls->queryFunctions(AbstractMetaClass::ClassImplements);
+    foreach (AbstractMetaFunction *f, functions) {
+        if ((f->name() == op_assign || f->isConstructor()) && f->isPublic()) {
+            AbstractMetaArgumentList arguments = f->arguments();
+            if (arguments.size() == 1) {
+                if (cls->typeEntry()->qualifiedCppName() == arguments.at(0)->type()->typeEntry()->qualifiedCppName()) {
+                    if (cls->typeEntry()->isValue()) {
+                        cls->setHasCloneOperator(true);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}
 
 static void write_reject_log_file(const QString &name,
                                   const QMap<QString, AbstractMetaBuilder::RejectReason> &rejects)

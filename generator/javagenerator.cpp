@@ -1323,11 +1323,23 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     }
 
     if (isComparable(java_class)) {
-        if (!implements)
+        if (!implements) {
+            implements = true;
             s << endl << "    implements ";
+        }
         else
             s << "," << endl << "            ";
         s << "java.lang.Comparable<Object>";
+    }
+
+    if (java_class->hasCloneOperator()) {
+        if (!implements) {
+            implements = true;
+            s << endl << "    implements ";
+        }
+        else
+            s << "," << endl << "            ";
+        s << "java.lang.Cloneable";
     }
 
     s << endl << "{" << endl;
@@ -1536,6 +1548,10 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     writeJavaLangObjectOverrideFunctions(s, java_class);
     writeExtraFunctions(s, java_class);
     writeToStringFunction(s, java_class);
+    
+    if (java_class->hasCloneOperator()) {
+        writeCloneFunction(s, java_class);
+    }
   
     s << "}" << endl;
 
@@ -1792,4 +1808,16 @@ void JavaGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaClas
               << "    private static native String __qt_toString(long __this_nativeId);" << endl;
         }
     }
+}
+
+void JavaGenerator::writeCloneFunction(QTextStream &s, const AbstractMetaClass *java_class)
+{
+    s << endl
+      << "    @Override" << endl
+      << "    public " << java_class->name() << " clone() {" << endl
+      << "        if (nativeId() == 0)" << endl
+      << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
+      << "        return __qt_clone(nativeId());" << endl   
+      << "    }" << endl
+      << "    private static native " << java_class->name() << " __qt_clone(long __this_nativeId);" << endl;
 }

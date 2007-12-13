@@ -628,6 +628,7 @@ public:
           m_force_shell_class(false),
           m_has_hash_function(false),
           m_has_equals_operator(false),
+          m_has_clone_operator(false),
           m_enclosing_class(0),
           m_base_class(0),
           m_extracted_interface(0),
@@ -740,6 +741,9 @@ public:
     void setHasEqualsOperator(bool on) { m_has_equals_operator = on; }
     bool hasEqualsOperator() const { return m_has_equals_operator; }
 
+    void setHasCloneOperator(bool on) { m_has_clone_operator = on; }
+    bool hasCloneOperator() const { return m_has_clone_operator; }
+
     void addPropertySpec(QPropertySpec *spec) { m_property_specs << spec; }
     QList<QPropertySpec *> propertySpecs() const { return m_property_specs; }
 
@@ -781,7 +785,8 @@ private:
     uint m_force_shell_class : 1;
     uint m_has_hash_function : 1;
     uint m_has_equals_operator : 1;
-    uint m_reserved : 21;
+    uint m_has_clone_operator :1;
+    uint m_reserved : 20;
 
     const AbstractMetaClass *m_enclosing_class;
     AbstractMetaClass *m_base_class;
