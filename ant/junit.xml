@@ -46,7 +46,9 @@
     <target name="test" 
             depends="clean.report" 
             description="JUnit test with web report">
-        <junit printsummary="yes" haltonfailure="false">
+        <junit printsummary="yes"
+               haltonfailure="false"
+               timeout="160000">
 
             <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/> 
 	    <jvmarg value="-Dcom.trolltech.qt.implicit-loading=false" />
