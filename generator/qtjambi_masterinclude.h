@@ -12,11 +12,13 @@
 ****************************************************************************/
 
 #define QT_NO_STL
+#define QT_NO_CONCURRENT
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
 #include <QtSql/QtSql>
 #include <QtSvg/qsvgrenderer.h>
+#include <QtSvg/qsvggenerator.h>
 #include <QtSvg/qsvgwidget.h>
 #include <QtSvg/qgraphicssvgitem.h>
 #include <QtXml/QtXml>

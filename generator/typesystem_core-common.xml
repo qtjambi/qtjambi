@@ -107,6 +107,8 @@
   <rejection class="QMutableSetIterator"/>
   <rejection class="QSubString"/>
   <rejection class="QUintForType"/>
+  <rejection class="QtConcurrent" />
+  <rejection class="QtConcurrentBlocking" />
   <rejection class="QFuture" />
   <rejection class="QFutureInterface" />
   <rejection class="QFutureInterfaceBase" />
