@@ -84,7 +84,7 @@ public:
     QString translateDefaultValue(ArgumentModelItem item, AbstractMetaType *type,
                                                AbstractMetaFunction *fnc, AbstractMetaClass *,
                                                int argument_index);
-    AbstractMetaType *translateType(const TypeInfo &type, bool *ok);
+    AbstractMetaType *translateType(const TypeInfo &type, bool *ok, bool resolveType = true, bool resolveScope = true);
 
     void decideUsagePattern(AbstractMetaType *type);
 

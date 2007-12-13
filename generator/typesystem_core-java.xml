@@ -119,27 +119,22 @@
     <primitive-type name="bool" java-name="boolean" jni-name="jboolean"/>
     
     <primitive-type name="double" jni-name="jdouble"/>
-    <primitive-type name="qreal" java-name="double" preferred-conversion="no" jni-name="jdouble"/>
     
     <primitive-type name="float" jni-name="jfloat"/>  
     
-    <primitive-type name="qint64" java-name="long" jni-name="jlong"/>
     <primitive-type name="__int64" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="unsigned __int64" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="unsigned long long" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="long long" java-name="long" preferred-conversion="no" jni-name="jlong"/>
-    <primitive-type name="qlonglong" preferred-conversion="no" java-name="long" jni-name="jlong"/>
-    <primitive-type name="qulonglong" preferred-conversion="no" java-name="long" jni-name="jlong"/>
+    <primitive-type name="quintptr" preferred-conversion="no" java-name="long" jni-name="jlong" />
     
     <primitive-type name="short" preferred-conversion="no" java-name="char" jni-name="jchar"/>
     <primitive-type name="short" preferred-java-type="no" java-name="short" jni-name="jshort" />
     <primitive-type name="signed short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
-    <primitive-type name="ushort" java-name="char" jni-name="jchar"/>
     <primitive-type name="unsigned short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
     
     <primitive-type name="char" java-name="byte" jni-name="jbyte"/>
     <primitive-type name="signed char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>  
-    <primitive-type name="uchar" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>
     <primitive-type name="unsigned char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>  
     
     <primitive-type name="int" jni-name="jint"/>

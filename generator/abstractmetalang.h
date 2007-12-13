@@ -812,7 +812,7 @@ private:
 
 class QPropertySpec {
 public:
-    QPropertySpec(TypeEntry *type)
+    QPropertySpec(const TypeEntry *type)
         : m_type(type),
           m_index(-1)
     {
@@ -844,7 +844,7 @@ private:
     QString m_write;
     QString m_designable;
     QString m_reset;
-    TypeEntry *m_type;
+    const TypeEntry *m_type;
     int m_index;
 };
 
