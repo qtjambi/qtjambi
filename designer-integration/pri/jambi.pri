@@ -53,6 +53,6 @@ INCLUDEPATH += $$PWD/../../qtjambi
 macx:{
     LIBS += ../../lib/lib$${LIB_QTJAMBI}.jnilib
 } else {
-    LIBS += -L$$PWD/../../lib -l$${LIB_QTJAMBI}
+    LIBS += -L../../lib -l$${LIB_QTJAMBI}
 }
         

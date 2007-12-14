@@ -7,8 +7,8 @@ isEmpty(TARGET) {
 }
 
 TEMPLATE = lib
-DESTDIR = $$PWD/../lib
-DLLDESTDIR = $$PWD/../bin
+DESTDIR = ../lib
+DLLDESTDIR = ../bin
 
 
 CONFIG(debug, debug|release) {

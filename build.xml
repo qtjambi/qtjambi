@@ -5,8 +5,9 @@
     <tstamp/>
 
     <property name="sourceDir" value="." />
+    <property name="outputDir" value="." />
 
-    <property name="jambiLib" value="./lib" />
+    <property name="jambiLib" value="${outputDir}/lib" />
     <property name="qt"       value="${env.QTDIR}" />
     <property name="qtLib"    value="${qt}/lib" />
     <property name="config"   value="release" />
@@ -22,53 +23,54 @@
     </target>
 
     <uptodate property="ant-qtjambi.jar.uptodate"
-              targetfile="ant-qtjambi.jar" >
-        <srcfiles dir= "."
+              targetfile="${outputDir}/ant-qtjambi.jar" >
+        <srcfiles dir= "${sourceDir}"
                   includes="com/trolltech/tools/ant/*.java"/>
     </uptodate>
 
     <target name="ant-qtjambi.jar"
             unless="ant-qtjambi.jar.uptodate"
             description="Create a jar containing all the Qt Jambi ant tasks.">
-        <mkdir dir="ant-qtjambi"/>
-        <javac srcdir="." destdir="ant-qtjambi">
+        <mkdir dir="${outputDir}/ant-qtjambi"/>
+        <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi">
             <include name="com/trolltech/tools/ant/*.java"/>
         </javac>
-        <jar destfile="ant-qtjambi.jar">
-            <fileset dir="ant-qtjambi"/>
+        <jar destfile="${outputDir}/ant-qtjambi.jar">
+            <fileset dir="${outputDir}/ant-qtjambi"/>
         </jar>
-        <delete dir="ant-qtjambi"/>
+        <delete dir="${outputDir}/ant-qtjambi"/>
     </target>
 
     <target name="qtjambi.init"
             depends="ant-qtjambi.jar">
-        <taskdef name="juic"      classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
-        <taskdef name="qmake"     classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
-        <taskdef name="make"      classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
-        <taskdef name="generator" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
-        <taskdef name="qtjambi-platform-jar" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
-        <taskdef name="qtjambi-initialize" classpath="ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
+        <taskdef name="juic"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
+        <taskdef name="qmake"     classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
+        <taskdef name="make"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
+        <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
+        <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
+        <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
         
         <qtjambi-initialize verbose="true" />
     </target>
 
     <target name="clean"
             description="Clean everything.">
-	<delete file="qtjambi.jar"/>
-	<delete file="qtjambi-examples.jar"/>
-	<delete file="qtjambi-designer.jar"/>
-        <delete dir="bin"/>
-	<delete dir="lib"/>
-        <delete dir="cpp"/>
+        <delete file="${outputDir}/ant-qtjambi.jar"/>
+	<delete file="${outputDir}/qtjambi.jar"/>
+	<delete file="${outputDir}/qtjambi-examples.jar"/>
+	<delete file="${outputDir}/qtjambi-designer.jar"/>
+        <delete dir="${outputDir}/bin"/>
+	<delete dir="${outputDir}/lib"/>
+        <delete dir="${outputDir}/cpp"/>
         <delete includeEmptyDirs="true">
-          <fileset dir="." includes="**/*.o"/>
-          <fileset dir="." includes="**/moc_*.cpp"/>
-          <fileset dir="." includes="**/*.obj"/>
-          <fileset dir="." includes="**/*.pdb"/>
-          <fileset dir="." includes="**/*.ilk"/>
-          <fileset dir="." includes="**/release"/>
-          <fileset dir="." includes="**/debug"/>
-          <fileset dir="." includes="**/Makefile*"/>
+          <fileset dir="${outputDir}" includes="**/*.o"/>
+          <fileset dir="${outputDir}" includes="**/moc_*.cpp"/>
+          <fileset dir="${outputDir}" includes="**/*.obj"/>
+          <fileset dir="${outputDir}" includes="**/*.pdb"/>
+          <fileset dir="${outputDir}" includes="**/*.ilk"/>
+          <fileset dir="${outputDir}" includes="**/release"/>
+          <fileset dir="${outputDir}" includes="**/debug"/>
+          <fileset dir="${outputDir}" includes="**/Makefile*"/>
         </delete>
     </target>
 
@@ -76,58 +78,72 @@
             depends="qtjambi.init"
             description="Run qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
-	<qmake recursive="true"/>
+	<qmake recursive="true" 
+               dir="${outputDir}"
+               pro="${sourceDir}/java.pro"/>
     </target>
 
     <target name="qmake.generator"
             depends="qtjambi.init, merge.typesystem"
             description="Run qmake on the generator project.">
-	<qmake config="release" dir="generator"/>
+	<qmake config="release" 
+               dir="${outputDir}/generator"
+               pro="${sourceDir}/generator/generator.pro"/>
     </target>
 
     <target name="compile.generator" 
 	    depends="qtjambi.init, qmake.generator"
             description="Compile the Qt Jambi generator.">
-        <make dir="generator" />
+        <make dir="${outputDir}/generator" />
     </target>
 
     <target name="generator.qtjambi" 
             depends="qtjambi.init, compile.generator"
             description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
-        <generator dir="generator" outputDirectory=""/>
+        <generator dir="${outputDir}/generator"
+                   outputDirectory="${outputDir}"
+                   typesystem="${sourceDir}/generator/build_all.txt"
+                   header="${sourceDir}/generator/qtjambi_masterinclude.h"/>
     </target>
 
     <target name="compile.qtjambi" 
             depends="qtjambi.init"
             description="Compile the c++ Qt Jambi bindings.">
-	<make />
+	<make dir="${outputDir}"/>
     </target>
 
     <target name="juic"
             depends="qtjambi.init"
             description="Generates Java source files from JUI files created by designer.">
         <juic message="Running Juic for all it is worth"
-	      outputDir="${sourceDir}"
+	      outputDir="${outputDir}"
               trFunction=""
               classNamePrefix=""
               alwaysUpdate="true"
-	      classpath=".">
+	      classpath="${sourceDir}">
 	     <include name="com/**/**.jui"/>
         </juic>
     </target>
 
     <target name="qtjambi.jar">
-        <javac srcdir="."
+        <javac srcdir="${sourceDir}"
                memoryMaximumSize="1024m"
-	       fork="true">
+	       fork="true"
+               destdir="${outputDir}">
             <include name="com/trolltech/qt/*.java"/>
             <include name="com/trolltech/qt/*/*.java"/>
         </javac>
-
-        <jar destfile="qtjambi.jar"
-             basedir="."
+        <javac srcdir="${outputDir}"
+               memoryMaximumSize="1024m"
+	       fork="true"
+               destdir="${outputDir}">
+            <include name="com/trolltech/qt/*.java"/>
+            <include name="com/trolltech/qt/*/*.java"/>
+        </javac>
+        <jar destfile="${outputDir}/qtjambi.jar"
+             basedir="${outputDir}"
              includes="com/trolltech/qt/*.class,com/trolltech/qt/*/*.class"
-             includesfile="com/trolltech/images/qt-logo.png">
+             includesfile="${sourceDir}/com/trolltech/images/qt-logo.png">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
@@ -136,16 +152,47 @@
 
     <target name="qtjambi-examples.jar"
             depends="qtjambi.init">
-        <javac srcdir=".">
+
+        <javac srcdir="${sourceDir}"
+               sourcepath=""
+               destdir="${outputDir}"
+               classpath="${outputDir}/qtjambi.jar">
             <include name="com/trolltech/demos/**/*.java"/>
             <include name="com/trolltech/examples/**/*.java"/>
             <include name="com/trolltech/launcher/*.java"/>
-            <exclude name="com/trolltech/examples/GeneratorExample.java"/>
+            <exclude name="com/trolltech/examples/generator/*.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java"/>
+            <exclude name="com/trolltech/examples/GeneratorExample.java"/>
+        </javac> 
+
+        <!-- also compile any generated java files in the output directory.
+             if the outputDir equals sourceDir the two next steps could be
+             skiped. -->
+        <javac srcdir="${outputDir}"
+               sourcepath=""
+               destdir="${outputDir}"
+               classpath="${outputDir}/qtjambi.jar">
+            <include name="com/trolltech/demos/**/*.java"/>
+            <include name="com/trolltech/examples/**/*.java"/>
+            <include name="com/trolltech/launcher/*.java"/>
+            <exclude name="com/trolltech/examples/generator/*.java"/>
+            <exclude name="com/trolltech/demos/HelloGL.java"/>
+            <exclude name="com/trolltech/examples/GeneratorExample.java"/>
         </javac>
 
-        <jar destfile="qtjambi-examples.jar"
-             basedir=".">
+        <copy todir="${outputDir}">
+            <fileset dir="${sourceDir}">
+                <include name="com/trolltech/examples/**/*"/>
+                <include name="com/trolltech/demos/**/*"/>
+                <include name="com/trolltech/launcher/*"/>
+                <include name="com/trolltech/images/**/*"/>
+                <exclude name="com/trolltech/**/*.java"/>
+                <exclude name="com/trolltech/**/*.jui"/>
+            </fileset>
+        </copy>
+
+        <jar destfile="${outputDir}/qtjambi-examples.jar"
+             basedir="${outputDir}/">
             <include name="com/trolltech/examples/**/*"/>
             <include name="com/trolltech/demos/**/*"/>
             <include name="com/trolltech/launcher/*"/>
@@ -161,12 +208,13 @@
     </target>
 
     <target name="qtjambi-designer.jar">
-        <javac srcdir=".">
+        <javac srcdir="${sourceDir}"
+               destdir="${outputDir}">
             <include name="com/trolltech/tools/designer/*.java"/>
         </javac>
 
-        <jar destfile="qtjambi-designer.jar"
-             basedir=".">
+        <jar destfile="${outputDir}/qtjambi-designer.jar"
+             basedir="${outputDir}">
             <include name="com/trolltech/tools/designer/*"/> 
             <exclude name="com/trolltech/tools/designer/*.java"/>
            <manifest>
@@ -180,7 +228,7 @@
 	    description="Creating .jar file with native libs...">
 
         <qtjambi-platform-jar cacheKey="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
-                              outdir="platform-output">
+                              outdir="${outputDir}/platform-output">
 
             <!-- Qt Libraries... -->
             <library name="QtCore"          type="qt"      rootPath="${qtjambi.qtdir}" />
@@ -205,80 +253,80 @@
             <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/accessible" load="never"/>
 
             <!-- Qt Jambi Libraries -->
-            <library name="qtjambi"                  type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_network" type="qtjambi" rootPath="." />
-            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="." />
+            <library name="qtjambi"                  type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}" />
 
 	    <plugin path="plugins" />
 
         </qtjambi-platform-jar>
 
-        <jar destfile="qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
-            <fileset dir="platform-output" />
+        <jar destfile="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
+            <fileset dir="${outputDir}/platform-output" />
         </jar>
 
-        <delete dir="platform-output"/>
+        <delete dir="${outputDir}/platform-output"/>
         
     </target>
 
     <target name="merge.typesystem">
-        <xslt in="generator/typesystem_core-common.xml" 
-              out="generator/typesystem_core.xml"
-              style="generator/merge.xsl"
+        <xslt in="${sourceDir}/generator/typesystem_core-common.xml" 
+              out="${outputDir}/generator/typesystem_core.xml"
+              style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_core-java.xml"/>
         </xslt>
-        <xslt in="generator/typesystem_gui-common.xml" 
-              out="generator/typesystem_gui.xml"
-              style="generator/merge.xsl"
+        <xslt in="${sourceDir}/generator/typesystem_gui-common.xml" 
+              out="${outputDir}/generator/typesystem_gui.xml"
+              style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_gui-java.xml"/>
         </xslt>
-        <xslt in="generator/typesystem_network-common.xml" 
-              out="generator/typesystem_network.xml"
-              style="generator/merge.xsl"
+        <xslt in="${sourceDir}/generator/typesystem_network-common.xml" 
+              out="${outputDir}/generator/typesystem_network.xml"
+              style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_network-java.xml"/>
         </xslt>
-        <xslt in="generator/typesystem_svg-common.xml" 
-              out="generator/typesystem_svg.xml"
-              style="generator/merge.xsl"
+        <xslt in="${sourceDir}/generator/typesystem_svg-common.xml" 
+              out="${outputDir}/generator/typesystem_svg.xml"
+              style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_svg-java.xml"/>
         </xslt>
-        <xslt in="generator/typesystem_xml-common.xml" 
-              out="generator/typesystem_xml.xml"
-              style="generator/merge.xsl"
+        <xslt in="${sourceDir}/generator/typesystem_xml-common.xml" 
+              out="${outputDir}/generator/typesystem_xml.xml"
+              style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_xml-java.xml"/>
         </xslt>
         <xslt in="generator/typesystem_opengl-common.xml" 
-              out="generator/typesystem_opengl.xml"
-              style="generator/merge.xsl"
+              out="${outputDir}/generator/typesystem_opengl.xml"
+              style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_opengl-java.xml"/>
         </xslt>
-        <xslt in="generator/typesystem_sql-common.xml" 
-              out="generator/typesystem_sql.xml"
-              style="generator/merge.xsl"
+        <xslt in="${sourceDir}/generator/typesystem_sql-common.xml" 
+              out="${outputDir}/generator/typesystem_sql.xml"
+              style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_sql-java.xml"/>
         </xslt>
-        <xslt in="generator/typesystem_designer-common.xml" 
-              out="generator/typesystem_designer.xml"
-              style="generator/merge.xsl"
+        <xslt in="${sourceDir}/generator/typesystem_designer-common.xml" 
+              out="${outputDir}/generator/typesystem_designer.xml"
+              style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_designer-java.xml"/>

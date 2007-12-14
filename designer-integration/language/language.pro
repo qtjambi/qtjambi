@@ -1,11 +1,11 @@
 
 TEMPLATE = lib
 CONFIG  += qt warn_on plugin designer
-DESTDIR = $$PWD/../../plugins/designer
+DESTDIR = ../../plugins/designer
 TARGET = JambiLanguage
 
 # Have to include after TARGET...
-include(../pri/jambi.pri)
+include($$PWD/../pri/jambi.pri)
 
 HEADERS += \ 
 	jambilanguageplugin.h \
