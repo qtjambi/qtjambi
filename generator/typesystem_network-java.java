@@ -345,3 +345,56 @@ class QNetworkProxy___ extends QNetworkProxy {
     }
 
 }// class
+
+class QNetworkAccessManager___ extends QNetworkAccessManager {
+    public Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
+    private boolean inEmission = false;
+
+    @SuppressWarnings("unused")
+    private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) 
+    {
+        if (!inEmission) 
+        {
+            inEmission = true;
+            proxyAuthenticationRequiredPrivate.emit(proxy, authenticator.nativePointer());
+            inEmission = false;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator) 
+    {
+        if (!inEmission) 
+        {
+            inEmission = true;
+            proxyAuthenticationRequired.emit(proxy, QAuthenticator.fromNativePointer(authenticator));
+            inEmission = false;
+        }
+    }
+
+    public Signal3<String, Integer, QAuthenticator> authenticationRequired = new Signal3<QNetworkReply, QAuthenticator>();
+    private boolean inEmissionAuthenticationRequired = false;
+
+    @SuppressWarnings("unused")
+    private void emitAuthenticationRequiredPrivate(QNetworkReply, QAuthenticator authenticator) 
+    {
+        if (!inEmissionAuthenticationRequired) 
+        {
+            inEmissionAuthenticationRequired = true;
+            authenticationRequiredPrivate.emit(reply, authenticator.nativePointer());
+            inEmissionAuthenticationRequired = false;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private void emitAuthenticationRequired(QNetworkReply, QNativePointer authenticator) 
+    {
+        if (!inEmissionAuthenticationRequired) 
+        {
+            inEmissionAuthenticationRequired = true;
+            authenticationRequired.emit(reply, QAuthenticator.fromNativePointer(authenticator));
+            inEmissionAuthenticationRequired = false;
+        }
+    }
+
+}// class

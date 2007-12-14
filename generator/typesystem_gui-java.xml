@@ -2988,7 +2988,7 @@
             <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
         </inject-code>    
         <inject-code class="interface">
-            public QContentsMarginsF getContentsMargins();
+            public QMarginsF getContentsMargins();
         </inject-code> 
     </interface-type>
     <object-type name="QGraphicsLayout">
@@ -2999,9 +2999,32 @@
     </object-type>
     <object-type name="QGraphicsWidget">
         <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
+        <modify-function signature="getWindowFrameMargins(double*,double*,double*,double*)const" access="private"/>
+
         <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QGraphicsWidget___" quote-before-line="}// class"/>
             <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
         </inject-code>    
+        
+        <modify-function signature="initStyleOption(QStyleOption*)const" access="private" />
+        <inject-code>
+            <insert-template name="gui.init_style_option">
+                <replace from="%TYPE" to="QStyleOption"/>
+            </insert-template>
+        </inject-code>
+        
+        <modify-function signature="paintWindowFrame(QPainter*,const QStyleOptionGraphicsItem*,QWidget*)">
+            <modify-argument index="2"> 
+                <conversion-rule class="shell">
+                    jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionGraphicsItem", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", true);
+                </conversion-rule>       
+                <conversion-rule class="native">
+                    const QStyleOptionGraphicsItem *%out = (QStyleOptionGraphicsItem *) qtjambi_to_object(__jni_env, %in);
+                </conversion-rule>           
+                <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionGraphicsItem"/>
+            </modify-argument>        
+        </modify-function>
+        
     </object-type>
     
     

@@ -13,8 +13,8 @@
 
 package com.trolltech.qt.gui;
 
-public class QContentsMarginsF {
-    public QContentsMarginsF(double left, double top, double right, double bottom) {
+public class QMarginsF {
+    public QMarginsF(double left, double top, double right, double bottom) {
         this.left = left;
         this.top = top;
         this.right = right;

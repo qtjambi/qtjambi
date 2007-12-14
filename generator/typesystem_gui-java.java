@@ -993,15 +993,35 @@ class QFormLayout___ extends QFormLayout {
 
 class Subclass_of_QGraphicsLayoutItem___ extends QGraphicsLayoutItem {
     @QtBlockedSlot
-    public final QContentsMarginsF getContentsMargins() {
+    public final QMarginsF getContentsMargins() {
         QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
         QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
         QNativePointer right = new QNativePointer(QNativePointer.Type.Double);
         QNativePointer bottom = new QNativePointer(QNativePointer.Type.Double);
 
         getContentsMargins(left, top, right, bottom);
-        return new QContentsMarginsF(left.doubleValue(), top.doubleValue(), right.doubleValue(), bottom.doubleValue());
+        return new QMarginsF(left.doubleValue(), top.doubleValue(), right.doubleValue(), bottom.doubleValue());
     }
+}// class
+
+class QGraphicsWidget___ extends QGraphicsWidget {
+
+    /**
+     * Gets the widget's window frame margins. 
+     * 
+     * @returns An object containing the margins in left, right, top and bottom coordinates.
+     */
+    @QtBlockedSlot
+    public final QMarginsF getWindowFrameMargins() {
+        QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer right = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer bottom = new QNativePointer(QNativePointer.Type.Double);
+
+        getWindowFrameMargins(left, top, right, bottom);
+        return new QMarginsF(left.doubleValue(), top.doubleValue(), right.doubleValue(), bottom.doubleValue());
+    }
+
 }// class
 
 

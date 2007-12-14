@@ -211,5 +211,27 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
         <modify-function signature="setPort(unsigned short)" access="private"/>
         <modify-function signature="port()const" access="private" rename="port_private"/>
     </value-type>
+    
+    <object-type name="QNetworkAccessManager">
+        <inject-code>
+            <import-file name="typesystem_network-java.java" quote-after-line="class QNetworkAccessManager___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)">
+            <access modifier="private"/>
+            <rename to="proxyAuthenticationRequiredPrivate"/>
+        </modify-function>  
+        
+        <modify-function signature="authenticationRequired(QNetworkReply *,QAuthenticator*)">
+            <access modifier="private"/>
+            <rename to="authenticationRequiredPrivate"/>
+        </modify-function>
+                
+        <inject-code class="constructors">
+            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            authenticationRequired.connect(this, "emitAuthenticationRequiredPrivate(QNetworkReply, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(QNetworkReply, QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+    </object-type>
   
 </typesystem>
