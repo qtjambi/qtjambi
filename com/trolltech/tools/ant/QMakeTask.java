@@ -9,6 +9,7 @@ public class QMakeTask extends Task {
     private String msg = "";
     private String config = "";
     private String dir = ".";
+    private String pro = "";
 
     private boolean recursive = false;
 
@@ -26,6 +27,11 @@ public class QMakeTask extends Task {
             arguments += " -r ";
 
         String comand = "qmake" + arguments;
+        
+        if (!pro.equals("")) {
+            comand += " " + new File(pro).getAbsolutePath();
+        }
+
         System.out.println(comand);
         try {
             Process process = Runtime.getRuntime().exec(comand, null, new File(dir));
@@ -51,5 +57,9 @@ public class QMakeTask extends Task {
 
     public void setRecursive(boolean recursive) {
         this.recursive = recursive;
+    }
+    
+    public void setPro(String pro) {
+        this.pro = pro;
     }
 }
