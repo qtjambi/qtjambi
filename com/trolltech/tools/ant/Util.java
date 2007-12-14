@@ -73,9 +73,13 @@ class Util {
 
     public static void redirectOutput(Process proc, boolean silent) {
         try {
-            new StreamConsumer(proc.getInputStream(), System.out).start();
-            new StreamConsumer(proc.getErrorStream(), System.err).start();
+            StreamConsumer std = new StreamConsumer(proc.getInputStream(), System.out);
+            StreamConsumer err = new StreamConsumer(proc.getErrorStream(), System.err);
+            std.start();
+            err.start();
             proc.waitFor();
+            std.join();
+            err.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
