@@ -72,6 +72,7 @@ namespace TypeSystem {
         PackageInitializer  = 0x0010,
         DestructorFunction  = 0x0020,
         Constructors        = 0x0040,
+        Interface           = 0x0080,
 
         // masks
         All                 = TargetLangCode
@@ -80,7 +81,9 @@ namespace TypeSystem {
                               | ShellDeclaration
                               | PackageInitializer
                               | Constructors
+                              | Interface
                               | DestructorFunction,
+
         JavaAndNativeCode   = TargetLangCode | NativeCode,
         TargetLangAndNativeCode   = TargetLangCode | NativeCode
     };

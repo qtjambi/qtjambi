@@ -1467,6 +1467,17 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     AbstractMetaFunctionList java_funcs = java_class->functionsInTargetLang();
     for (int i=0; i<java_funcs.size(); ++i) {
         AbstractMetaFunction *function = java_funcs.at(i);
+
+        // If a method in an interface class is modified to be private, this should
+        // not be present in the interface at all, only in the implementation.
+        if (java_class->isInterface()) {
+            uint includedAttributes = 0;  
+            uint excludedAttributes = 0;
+            retrieveModifications(function, java_class, &excludedAttributes, &includedAttributes);
+            if (includedAttributes & AbstractMetaAttributes::Private)
+                continue;
+        }
+
         writeFunction(s, function);
     }
 
@@ -1766,10 +1777,11 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass 
 
     CodeSnipList code_snips = class_type->codeSnips();
     foreach (const CodeSnip &snip, code_snips) {
-        if (snip.language == TypeSystem::TargetLangCode) {
+        if ((!java_class->isInterface() && snip.language == TypeSystem::TargetLangCode)
+            || (java_class->isInterface() && snip.language == TypeSystem::Interface)) {
             s << endl;
             snip.formattedCode(s, INDENT);
-        }
+        } 
     }
 }
 

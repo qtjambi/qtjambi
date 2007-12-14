@@ -991,7 +991,7 @@ class QFormLayout___ extends QFormLayout {
     }
 }// class
 
-class QGraphicsLayoutItem___ extends QGraphicsLayoutItem {
+class Subclass_of_QGraphicsLayoutItem___ extends QGraphicsLayoutItem {
     @QtBlockedSlot
     public final QContentsMarginsF getContentsMargins() {
         QNativePointer left = new QNativePointer(QNativePointer.Type.Double);

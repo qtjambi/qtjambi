@@ -2982,4 +2982,27 @@
         </inject-code>
     </object-type>
     
+    <interface-type name="QGraphicsLayoutItem">
+        <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
+        </inject-code>    
+        <inject-code class="interface">
+            public QContentsMarginsF getContentsMargins();
+        </inject-code> 
+    </interface-type>
+    <object-type name="QGraphicsLayout">
+        <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
+        </inject-code>    
+    </object-type>
+    <object-type name="QGraphicsWidget">
+        <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
+        </inject-code>    
+    </object-type>
+    
+    
 </typesystem>

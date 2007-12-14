@@ -240,6 +240,7 @@ bool Handler::endElement(const QString &, const QString &localName, const QStrin
             centry->setFunctionModifications(m_function_mods);
             centry->setFieldModifications(m_field_mods);
             centry->setCodeSnips(m_code_snips);
+
             if (centry->designatedInterface()) {
                 centry->designatedInterface()->setCodeSnips(m_code_snips);
                 centry->designatedInterface()->setFunctionModifications(m_function_mods);
@@ -320,6 +321,7 @@ bool Handler::characters(const QString &ch)
                         break;
                     case StackElement::ObjectTypeEntry:
                     case StackElement::ValueTypeEntry:
+                    case StackElement::InterfaceTypeEntry:
                         m_code_snips.last().addCode(ch);
                         break;
                     default:
@@ -1226,6 +1228,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     languageNames["library-initializer"] = TypeSystem::PackageInitializer;
                     languageNames["destructor-function"] = TypeSystem::DestructorFunction;
                     languageNames["constructors"] = TypeSystem::Constructors;
+                    languageNames["interface"] = TypeSystem::Interface;
                 }
 
                 QString className = attributes["class"].toLower();
@@ -1250,6 +1253,11 @@ bool Handler::startElement(const QString &, const QString &n,
                 CodeSnip snip;
                 snip.language = languageNames[className];
                 snip.position = positionNames[position];
+
+                if (snip.language == TypeSystem::Interface && topElement.type != StackElement::InterfaceTypeEntry) {
+                    m_error = "Interface code injections must be direct child of an interface type entry";
+                    return false;
+                }
 
                 if (topElement.type == StackElement::ModifyFunction) {
                     FunctionModification mod = m_function_mods.last();
