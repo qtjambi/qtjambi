@@ -41,25 +41,24 @@ public class JuicTask extends MatchingTask {
         while (tokenizer.hasMoreTokens()) {
             File dir = new File(tokenizer.nextToken());
 
-            try {
             DirectoryScanner ds = getDirectoryScanner(dir);
             String[] files = ds.getIncludedFiles();
-                for (String file : files) {
+            for (String file : files) {
 
-                    file = file.replaceAll("\\\\", "/");
+                file = file.replaceAll("\\\\", "/");
 
-                    String packageString = file.substring(0, file.lastIndexOf('/')).replaceAll("/", ".");
-                    String comand = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + '/' + file;
+                String packageString = file.substring(0, file.lastIndexOf('/')).replaceAll("/", ".");
+                String comand = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + '/' + file;
 
-                    try {
-                        Process process = Runtime.getRuntime().exec(comand);
-                        Util.redirectOutput(process, true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                try {
+                    Process process = Runtime.getRuntime().exec(comand);
+                    Util.redirectOutput(process, true);
+                    if (process.exitValue() != 0) {
+                        throw new BuildException("Running : " + comand + " failed.");
                     }
+                } catch (IOException e) {
+                    throw new BuildException("Running : " + comand + " failed.", e);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
