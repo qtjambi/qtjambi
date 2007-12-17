@@ -63,6 +63,7 @@
 	<delete dir="${outputDir}/lib"/>
         <delete dir="${outputDir}/cpp"/>
         <delete includeEmptyDirs="true">
+          <fileset dir="${outputDir}" includes="**/*.class"/>
           <fileset dir="${outputDir}" includes="**/*.o"/>
           <fileset dir="${outputDir}" includes="**/moc_*.cpp"/>
           <fileset dir="${outputDir}" includes="**/*.obj"/>
