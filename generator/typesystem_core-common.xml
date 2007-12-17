@@ -584,7 +584,10 @@
     <modify-function signature="operator+=(char)" remove="all"/>
   </value-type>
   
-  <value-type name="QTextBoundaryFinder" />
+  <value-type name="QTextBoundaryFinder">
+    <modify-function signature="QTextBoundaryFinder(QTextBoundaryFinder::BoundaryType,const QChar*,int,unsigned char*,int)" remove="all" />
+    <modify-function signature="operator=(QTextBoundaryFinder)" remove="all" />
+  </value-type>
 
   <object-type name="QXmlStreamEntityResolver" />
   <object-type name="QAbstractEventDispatcher"/>  
