@@ -38,7 +38,7 @@ class WrongSystemException extends DeploymentSpecException {
  * approach is recommended.
  *
  * Loading libraries is done by calling the methods
- * <code>loadQtLibrary</code> and <code>loadJambiLibrary</code>.
+ * <code>loadQtLibrary</code> and <code>loadLibrary</code>.
  *
  *
  *
@@ -205,13 +205,17 @@ public class NativeLibraryManager {
      * When using loading libraries from the filesystem, this method
      * simply calls <code>System.loadLibrary</code>.
      *
+     * When the system property <code>-Dcom.trolltech.qt.debug</code>
+     * is specified, the suffix <code>_debuglib</code> will be appended
+     * to the filename, replacing "qtjambi" above with "qtjambi_debuglib".
+     *
      * @param library The name of the library..
      */
-    public static void loadJambiLibrary(String library) {
+    public static void loadLibrary(String library) {
     	if (Utilities.configuration == Utilities.Configuration.Debug)
             library += DEBUG_SUFFIX;
     	String lib = jniLibraryName(library);
-    	loadLibrary(lib);
+    	loadNativeLibrary(lib);
     }
 
 
@@ -234,11 +238,13 @@ public class NativeLibraryManager {
      */
     public static void loadQtLibrary(String library) {
         String lib = qtLibraryName(library);
-        loadLibrary(lib);
+        loadNativeLibrary(lib);
     }
 
 
     private static void unpack() {
+        if (unpacked)
+            return;
         try {
             unpack_helper();
             if (VERBOSE_LOADING)
@@ -273,7 +279,8 @@ public class NativeLibraryManager {
     }
 
     /**
-     * Returns a classloader for
+     * Returns a classloader for current context...
+     * @return The classloader
      */
     private static ClassLoader classLoader() {
 	ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -291,10 +298,7 @@ public class NativeLibraryManager {
      * call.
      * @param lib The full name of the library to load, such as libQtCore.so.4
      */
-    private static void loadLibrary(String lib) {
-        if (!unpacked)
-            unpack();
-
+    private static void loadNativeLibrary(String lib) {
         try {
             loadLibrary_helper(lib);
             if (VERBOSE_LOADING)
@@ -403,14 +407,13 @@ public class NativeLibraryManager {
 
         // Construct the md5 string...
         StringBuffer buffer = new StringBuffer();
-        for (int i=0; i<digest.length; ++i) {
-            int val = digest[i];
+        for (byte val : digest) {
             val += 127;
 
             if (val == 0) buffer.append('0');
             if (val <= 0x0f) buffer.append('0');
 
-            buffer.append(Integer.toString(digest[i] + 127, 16));
+            buffer.append(Integer.toString(val + 127, 16));
         }
 
         return buffer.toString();
@@ -561,6 +564,8 @@ public class NativeLibraryManager {
      * Copies the data in the inputstream into the output stream.
      * @param in The source.
      * @param out The destination.
+     *
+     * @throws IOException when there is a problem...
      */
     private static void copy(InputStream in, OutputStream out) throws IOException {
         byte buffer[] = new byte[1024 * 64];
@@ -606,12 +611,12 @@ public class NativeLibraryManager {
 
         loadQtLibrary("QtCore");
         loadQtLibrary("QtGui");
-        loadJambiLibrary("qtjambi");
-        loadJambiLibrary("com_trolltech_qt_core");
-        loadJambiLibrary("com_trolltech_qt_gui");
+        loadLibrary("qtjambi");
+        loadLibrary("com_trolltech_qt_core");
+        loadLibrary("com_trolltech_qt_gui");
         loadQtLibrary("QtGui");
         loadQtLibrary("QtNetwork");
-//         loadJambiLibrary("com_trolltech_qt_network");
+//         loadLibrary("com_trolltech_qt_network");
 
         for (String s : pluginPaths())
             System.out.println("PluginPath: " + s);

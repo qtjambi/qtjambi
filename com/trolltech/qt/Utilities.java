@@ -52,7 +52,7 @@ public class Utilities {
         MacOSX,
 	/** Linux */
         Linux
-    };
+    }
 
 	/** Defines whether Qt is build in Release or Debug. */
     public enum Configuration {
@@ -60,7 +60,7 @@ public class Utilities {
         Release,
 	/** Debug build. */
         Debug
-    };
+    }
 
 	/** The operating system Qt Jambi is running on. */
     public static OperatingSystem operatingSystem = decideOperatingSystem();
@@ -124,7 +124,7 @@ public class Utilities {
     }
 
     public static void loadJambiLibrary(String library) {
-        com.trolltech.qt.internal.NativeLibraryManager.loadJambiLibrary(library);
+        com.trolltech.qt.internal.NativeLibraryManager.loadLibrary(library);
 
 //     	if (configuration == Configuration.Debug)
 //             library += DEBUG_SUFFIX;
