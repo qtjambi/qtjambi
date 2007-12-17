@@ -29,6 +29,7 @@ class WrongSystemException extends DeploymentSpecException {
     }
 }
 
+
 /**
  * The NativeLibraryManager class is responsible for handling native
  * libraries in Qt Jambi. Native libraries can be loaded either
@@ -40,11 +41,52 @@ class WrongSystemException extends DeploymentSpecException {
  * Loading libraries is done by calling the methods
  * <code>loadQtLibrary</code> and <code>loadLibrary</code>.
  *
+ * When the indirect .jar file approach is taken, the .jar file will
+ * be opened and the native library manager will search for a file
+ * named "qtjambi-deployment.xml". This file contains a list of native
+ * libraries that should unpacked to a temporary directory and loaded,
+ * either right away or at a later time. There are three types of
+ * libraries.
  *
+ * <ll>
+ *
+ *   <li> System libraries; such as the system runtime
+ *   libraries. These libraries are usually loaded automatically by
+ *   the native library loader.
+ *
+ *   <li> Normal libraries; such as the QtCore and
+ *   com_trolltech_qt_core libraries. These are loaded at runtime on
+ *   demand.
+ *
+ *   <li> Plugins; such as qjpeg. These are never loaded explicitly by
+ *   the native library manager, but are unpacked into the temporary
+ *   folder so that Qt can find and load them from the file system.
+ *
+ * </ll>
+ *
+ * There are three possible deployment scenarios. The simplest and
+ * most straightforward approach is when deploying a Pure Java
+ * application based on Qt Jambi. In this case the prebuilt binaries
+ * from the binary package can just be deployed as part of the
+ * classpath and the rest will solve itself.
+ *
+ * When deploying a Qt Jambi application that is using native code
+ * other than Qt Jambi, we recommend building a new .jar file with a
+ * custom qtjambi-deployment.xml which contais the Qt Jambi libraries
+ * and the custom native libraries. Deployment can then be done by
+ * making sure that this new .jar file is available in the classpath.
+ *
+ * The final option for deployment is when users have a C++
+ * application which starts and makes use of Qt Jambi. In this case we
+ * suggest that all dependent libraries are available in the file
+ * system and via <code>-Djava.library.path<code>
  *
  * To get runtime information about how library loading works, specify
  * the <code>-Dcom.trolltech.qt.verbose-loading</code> system property
- * to the Virtual Machine.
+ * to the Virtual Machine. It possible to specify that the native
+ * library manager should load debug versions of libraries as
+ * well. This is done by specifying the system property
+ * </code>-Dcom.trolltech.qt.debug</code>
  *
  */
 public class NativeLibraryManager {
@@ -165,11 +207,40 @@ public class NativeLibraryManager {
     }
 
 
+    /**
+     * Unpacks the .jar file specified in <code>name</code> to a temp
+     * directory based on the <code>tempDirBase</code> with the
+     * cache-key specified in the deployment descriptor of the input
+     * .jar file.
+     *
+     * Users only need to call this method to explicitly unpack .jar
+     * files that are not included in the CLASSPATH.
+     *
+     * @param name The name of the .jar file...
+     * @throw Throws an Exception if something goes wrong...
+     */
     public static void unpackJarFile(URI name) throws Exception {
         unpackJarFile_helper(name);
     }
 
 
+    /**
+     * Returns a file that is used for caching native libraries. The
+     * path is a subdirectory of <code>java.io.tmpdir</code>, named
+     * <code>QtJambi_{user}_{architecture}_{version}_{key}</code>. The
+     * key is the same as the cache key used in the deployment
+     * descriptor. The purpose of using different keys is to avoid
+     * binary compatibility when various configurations of Qt and Qt
+     * Jambi are used on the same system.
+     *
+     * When deployment descriptors are not used, this location will
+     * not be used.
+     *
+     * @param key The cache key to.
+     * @return A File representing the location directory for
+     * temporary content. The directory is not explicitly created in
+     * this here.
+     */
     public static File jambiTempDirBase(String key) {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         String user = System.getProperty("user.name");
@@ -178,6 +249,13 @@ public class NativeLibraryManager {
     }
 
 
+    /**
+     * Returns the list of all plugin paths that are specified in the
+     * deployment descriptors. If deployment descriptors are not used,
+     * this list will be an empty list.
+     *
+     * @return The list of plugin paths
+     */
     public static List<String> pluginPaths() {
         List<String> paths = new ArrayList<String>();
         for (DeploymentSpec spec : deploymentSpecs) {
