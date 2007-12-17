@@ -372,11 +372,11 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
         }
     }
 
-    public Signal3<String, Integer, QAuthenticator> authenticationRequired = new Signal3<QNetworkReply, QAuthenticator>();
+    public Signal2<QNetworkReply, QAuthenticator> authenticationRequired = new Signal2<QNetworkReply, QAuthenticator>();
     private boolean inEmissionAuthenticationRequired = false;
 
     @SuppressWarnings("unused")
-    private void emitAuthenticationRequiredPrivate(QNetworkReply, QAuthenticator authenticator) 
+    private void emitAuthenticationRequiredPrivate(QNetworkReply reply, QAuthenticator authenticator) 
     {
         if (!inEmissionAuthenticationRequired) 
         {
@@ -387,7 +387,7 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
     }
 
     @SuppressWarnings("unused")
-    private void emitAuthenticationRequired(QNetworkReply, QNativePointer authenticator) 
+    private void emitAuthenticationRequired(QNetworkReply reply, QNativePointer authenticator) 
     {
         if (!inEmissionAuthenticationRequired) 
         {
