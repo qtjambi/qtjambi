@@ -149,9 +149,9 @@ authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, 
   
     <object-type name="QTcpSocket">
         <inject-code class="constructors">
-proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
-AbstractSignal sig = (AbstractSignal) QtJambiInternal.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");	
-sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            AbstractSignal sig = (AbstractSignal) QtJambiInternal.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");	
+            sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
         </inject-code>
     </object-type>
 
@@ -232,6 +232,21 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
             authenticationRequired.connect(this, "emitAuthenticationRequiredPrivate(QNetworkReply, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
             authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(QNetworkReply, QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
         </inject-code>
+    </object-type>
+    
+    <object-type name="QLocalServer">
+        <inject-code>
+            <import-file name="typesystem_network-java.java" quote-after-line="class QLocalServer___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="waitForNewConnection(int,bool*)">
+            <access modifier="private"/>
+            <modify-argument index="1">
+                <remove-default-expression/>
+            </modify-argument>
+            <modify-argument index="2">
+                <remove-default-expression/>
+            </modify-argument>        
+        </modify-function>    
     </object-type>
   
 </typesystem>

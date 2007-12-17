@@ -1024,4 +1024,25 @@ class QGraphicsWidget___ extends QGraphicsWidget {
 
 }// class
 
+class QPrinter___ extends QPrinter {
+
+    /**
+     * Returns the page margins for this printer.
+     * The unit of the returned margins are specified with the unit parameter.
+     * This function was introduced in Qt 4.4.
+     * 
+     * @param unit Specifies the unit of the returned margins.
+     * @return The page margins for this printer.
+     */
+    public final QMarginsF getPageMargins(QPrinter.Unit unit) {
+        QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer right = new QNativePointer(QNativePointer.Type.Double);
+        QNativePointer bottom = new QNativePointer(QNativePointer.Type.Double);
+
+        getPageMargins(left, top, right, bottom, unit);
+        return new QMarginsF(left.doubleValue(), top.doubleValue(), right.doubleValue(), bottom.doubleValue());
+    }
+
+}// class
 

@@ -21,6 +21,7 @@
   </object-type>
   
   <object-type name="SenderQObject" />
+  <object-type name="StyledItemDelegateSubclass" />
 
   <object-type name="AbstractClass">
     <include file-name="abstractclass.h" location="local"/>

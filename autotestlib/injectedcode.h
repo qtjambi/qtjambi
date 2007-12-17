@@ -380,4 +380,13 @@ signals:
     void mappedSignal(const QString &, int);
 };
 
+class StyledItemDelegateSubclass: public QStyledItemDelegate
+{
+public:
+    void initStyleOptionInStyledDelegate(QStyleOptionViewItem *styleOption) 
+    {
+        initStyleOption(styleOption, QModelIndex());
+    }
+};
+
 #endif

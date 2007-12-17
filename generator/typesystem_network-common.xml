@@ -102,8 +102,12 @@
   <value-type name="QAuthenticator">
     <modify-function signature="operator=(QAuthenticator)" remove="all"/>
   </value-type>
-  <value-type name="QNetworkCookie" />
-  <value-type name="QNetworkRequest" />
+  <value-type name="QNetworkCookie">
+    <modify-function signature="operator=(QNetworkCookie)" remove="all" />
+  </value-type>
+  <value-type name="QNetworkRequest">
+    <modify-function signature="operator=(QNetworkRequest)" remove="all" />
+  </value-type>
   
   <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrlInfo' has equals operators but no qHash() function" />

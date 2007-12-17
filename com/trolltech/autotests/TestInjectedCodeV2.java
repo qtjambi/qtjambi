@@ -15,7 +15,9 @@ package com.trolltech.autotests;
 
 import org.junit.Test;
 import com.trolltech.autotests.generated.*;
+import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
 import static org.junit.Assert.*;
@@ -212,4 +214,20 @@ public class TestInjectedCodeV2 extends QApplicationTest {
         assertEquals("62.70.27.67", helloObject.fromSecondSlot);
     }
     
+    @Test
+    public void QStylesItemDelegateInitStyleOption() {
+        QStyleOptionViewItem item = new QStyleOptionViewItem();
+        StyledItemDelegateSubclass delegate = new StyledItemDelegateSubclass() {
+            
+            @Override
+            protected void initStyleOption(QStyleOptionViewItem item, QModelIndex index) {
+                item.setDecorationSize(new QSize(123, 456));
+            }
+        };
+        
+        delegate.initStyleOptionInStyledDelegate(item.nativePointer());
+        
+        assertEquals(123, item.decorationSize().width());
+        assertEquals(456, item.decorationSize().height());
+    }
 }

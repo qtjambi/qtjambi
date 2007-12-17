@@ -398,3 +398,22 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
     }
 
 }// class
+
+class QLocalServer___ extends QLocalServer {
+
+    public enum Result {
+        Success, Failure, TimedOut
+    }
+
+    public final Result waitForNewConnection(int msec) {
+        QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
+        boolean success = waitForNewConnection(msec, np);
+
+        return (np.booleanValue() ? Result.TimedOut : (success ? Result.Success : Result.Failure));
+    }
+
+    public final Result waitForNewConnection() {
+        return waitForNewConnection(0);
+    }
+
+}// class

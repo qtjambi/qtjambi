@@ -3027,5 +3027,25 @@
         
     </object-type>
     
+    <object-type name="QPrinter">
+        <modify-function signature="getPageMargins(double*,double*,double*,double*,QPrinter::Unit)const" access="private" />
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QPrinter___" quote-before-line="}// class"/>
+        </inject-code>
+    </object-type>
+    
+    <object-type name="QStyledItemDelegate">
+        <modify-function signature="initStyleOption(QStyleOptionViewItem*,QModelIndex)const">
+            <modify-argument index="1">
+                <conversion-rule class="shell">
+                    jobject %out = qtjambi_from_object(__jni_env, %in, "QStyleOptionViewItem", "com/trolltech/qt/gui/", "Lcom_trolltech_qt_gui_QStyleOption_2", false);
+                </conversion-rule>
+                <conversion-rule class="native">
+                    QStyleOptionViewItem *%out = (QStyleOptionViewItem *) qtjambi_to_object(__jni_env, %in);
+                </conversion-rule>
+                <replace-type modified-type="com.trolltech.qt.gui.QStyleOptionViewItem" />
+            </modify-argument>
+        </modify-function>
+    </object-type>
     
 </typesystem>
