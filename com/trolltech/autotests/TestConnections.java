@@ -1417,32 +1417,33 @@ public class TestConnections extends QApplicationTest implements Qt
     }
     
     
-    private static class MyUrlHandler extends QObject 
-    {
-        public String path = "not/the/right/path";
-        public void myHandler(QUrl url) {
-            path = url.path();
-        }
-        
-        public void myOtherHandler(QUrl url) {
-            path = url.toString();
-        }
-    }
-    
+    private String path = "not/the/right/path";
     @Test public void testUrlHandler() {
-        MyUrlHandler handler = new MyUrlHandler();
-        
-        QDesktopServices.setUrlHandler("superscheme", handler, "myHandler");
+        QDesktopServices.setUrlHandler("superscheme", new QDesktopServices.UrlHandler() {
+           
+            public void handleUrl(QUrl url) {
+                path = url.path();
+            }
+            
+        });
         
         QUrl url = new QUrl("superscheme:host.com/my/super/scheme/path");
         
         QDesktopServices.openUrl(url);
-        assertEquals(url.path(), handler.path);
+        assertEquals(url.path(), path);
         
         QDesktopServices.unsetUrlHandler("superscheme");
-        QDesktopServices.setUrlHandler("superscheme", handler, "myOtherHandler");
+        QDesktopServices.setUrlHandler("superscheme", new QDesktopServices.UrlHandler() {
+            
+            public void handleUrl(QUrl url) {
+                path = url.toString();
+            }
+            
+        });
         QDesktopServices.openUrl(new QUrl("superscheme:superhost.com/not/a/valid"));
-        assertEquals("superscheme:superhost.com/not/a/valid", handler.path);
+        assertEquals("superscheme:superhost.com/not/a/valid", path);
+        
+        QDesktopServices.setUrlHandler("superscheme", null);
     }
 
     static class Emitter extends QSignalEmitter implements Runnable {
@@ -1599,9 +1600,9 @@ public class TestConnections extends QApplicationTest implements Qt
     @Test public void className() {
         SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
         
-        assertEquals("com.trolltech.autotests.TestConnections$SignalsAndSlotsWithMoreProperties",  
+        assertEquals("com::trolltech::autotests::TestConnections$SignalsAndSlotsWithMoreProperties",  
                      sas.classNameFromMetaObject());
-        assertEquals("com.trolltech.autotests.TestConnections$SignalsAndSlotsWithProperties",  
+        assertEquals("com::trolltech::autotests::TestConnections$SignalsAndSlotsWithProperties",  
                 sas.classNameOfSuperClassFromMetaObject());        
     }
     

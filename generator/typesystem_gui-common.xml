@@ -1306,7 +1306,11 @@
   </object-type>
   <object-type name="QDateEdit"/>
   <object-type name="QDesktopServices">
-    <modify-function signature="setUrlHandler(const QString &amp;, QObject *, const char *)" access="private" />
+    <modify-function signature="setUrlHandler(const QString &amp;, QObject *, const char *)" access="private">
+        <modify-argument index="2">
+            <reference-count action="ignore" /> <!-- Handled in injected code -->
+        </modify-argument>
+    </modify-function>
   </object-type>
   <object-type name="QDialog">
     <modify-function signature="setExtension(QWidget*)" remove="all"/>
@@ -2236,6 +2240,17 @@
             <define-ownership class="java" owner="c++"/>
         </modify-argument>            
     </modify-function>    
+    <modify-function signature="addSpacerItem(QSpacerItem*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertSpacerItem(int,QSpacerItem*)">
+        <modify-argument index="2">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+    
     <modify-function signature="addLayout(QLayout *, int)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++"/>
@@ -3206,6 +3221,13 @@
   
   <object-type name="QDateTimeEdit">
     <modify-function signature="initStyleOption(QStyleOptionSpinBox*)const" access="private" rename="initDateTimeEditStyleOption"/>
+    <modify-function signature="setCalendarWidget(QCalendarWidget*)">
+        <modify-argument index="1">
+            <!-- Safe to ignore because widget is reparented --> 
+            <reference-count action="ignore"/> 
+        </modify-argument>
+    </modify-function>
+    
   </object-type>
 
   <object-type name="QSortFilterProxyModel">
@@ -4166,8 +4188,51 @@
   </object-type>
   
   <object-type name="QCommandLinkButton" />
-  <object-type name="QFileSystemModel" />
-  <object-type name="QFormLayout" />
+  <object-type name="QFileSystemModel">
+    <modify-function signature="setIconProvider(QFileIconProvider*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcIconProvider"/>
+        </modify-argument>
+    </modify-function>
+  </object-type>  
+  <object-type name="QFormLayout">
+    <modify-function signature="addRow(QWidget*,QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addRow(QLayout*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addRow(QWidget*,QLayout*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />            
+        </modify-argument>
+        <modify-argument index="2">
+            <reference-count action="ignore" />            
+        </modify-argument>        
+    </modify-function>
+
+com.trolltech.qt.gui.QFormLayout : addRow(QWidget*)
+com.trolltech.qt.gui.QFormLayout : addRow(QString,QLayout*)
+com.trolltech.qt.gui.QFormLayout : addRow(QString,QWidget*)
+com.trolltech.qt.gui.QFormLayout : insertRow(int,QLayout*)
+com.trolltech.qt.gui.QFormLayout : insertRow(int,QWidget*,QLayout*)
+com.trolltech.qt.gui.QFormLayout : insertRow(int,QWidget*,QWidget*)
+com.trolltech.qt.gui.QFormLayout : insertRow(int,QWidget*)
+com.trolltech.qt.gui.QFormLayout : insertRow(int,QString,QLayout*)
+com.trolltech.qt.gui.QFormLayout : insertRow(int,QString,QWidget*)
+com.trolltech.qt.gui.QFormLayout : setItem(int,QFormLayout::ItemRole,QLayoutItem*)
+com.trolltech.qt.gui.QFormLayout : setLayout(int,QFormLayout::ItemRole,QLayout*)
+com.trolltech.qt.gui.QFormLayout : setWidget(int,QFormLayout::ItemRole,QWidget*)
+com.trolltech.qt.gui.QFormLayout : addItem(QLayoutItem*)
+  
+  </object-type>
   <object-type name="QGraphicsGridLayout" />
   <object-type name="QGraphicsLayout" />
   <interface-type name="QGraphicsLayoutItem" />
