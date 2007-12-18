@@ -2991,11 +2991,25 @@
             public QMarginsF getContentsMargins();
         </inject-code> 
     </interface-type>
-    <object-type name="QGraphicsLayout">
+    <object-type name="QGraphicsLayout">        
         <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
-        <inject-code>
+        <inject-code>            
             <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
         </inject-code>    
+    </object-type>
+    <object-type name="QGraphicsProxyWidget">
+    <modify-function signature="setWidget(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <inject-code>
+            <argument-map index="1" meta-name="%1" />
+            if (%1 != null)
+                %1.disableGarbageCollection();
+            else if (widget() != null)
+                widget().reenableGarbageCollection();
+        </inject-code>
+    </modify-function>    
     </object-type>
     <object-type name="QGraphicsWidget">
         <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
@@ -3047,5 +3061,7 @@
             </modify-argument>
         </modify-function>
     </object-type>
+    
+    <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcItems' in 'com.trolltech.qt.gui.QGraphicsGridLayout' but not both" />
     
 </typesystem>

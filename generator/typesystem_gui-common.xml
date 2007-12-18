@@ -4215,28 +4215,139 @@
         </modify-argument>
         <modify-argument index="2">
             <reference-count action="ignore" />            
-        </modify-argument>        
+        </modify-argument>                
     </modify-function>
 
-com.trolltech.qt.gui.QFormLayout : addRow(QWidget*)
-com.trolltech.qt.gui.QFormLayout : addRow(QString,QLayout*)
-com.trolltech.qt.gui.QFormLayout : addRow(QString,QWidget*)
-com.trolltech.qt.gui.QFormLayout : insertRow(int,QLayout*)
-com.trolltech.qt.gui.QFormLayout : insertRow(int,QWidget*,QLayout*)
-com.trolltech.qt.gui.QFormLayout : insertRow(int,QWidget*,QWidget*)
-com.trolltech.qt.gui.QFormLayout : insertRow(int,QWidget*)
-com.trolltech.qt.gui.QFormLayout : insertRow(int,QString,QLayout*)
-com.trolltech.qt.gui.QFormLayout : insertRow(int,QString,QWidget*)
-com.trolltech.qt.gui.QFormLayout : setItem(int,QFormLayout::ItemRole,QLayoutItem*)
-com.trolltech.qt.gui.QFormLayout : setLayout(int,QFormLayout::ItemRole,QLayout*)
-com.trolltech.qt.gui.QFormLayout : setWidget(int,QFormLayout::ItemRole,QWidget*)
-com.trolltech.qt.gui.QFormLayout : addItem(QLayoutItem*)
-  
+    <modify-function signature="addRow(QWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addRow(QString,QLayout*)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addRow(QString,QWidget*)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertRow(int,QLayout*)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertRow(int,QWidget*,QLayout*)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>            
+    </modify-function>
+    <modify-function signature="insertRow(int,QWidget*,QWidget*)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>            
+    </modify-function>
+    <modify-function signature="insertRow(int,QWidget*)">
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>    
+    </modify-function>
+    <modify-function signature="insertRow(int,QString,QLayout*)">
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>    
+    </modify-function>
+    <modify-function signature="insertRow(int,QString,QWidget*)">
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>    
+    </modify-function>    
+    <modify-function signature="setLayout(int,QFormLayout::ItemRole,QLayout*)">
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>    
+    </modify-function>
+    <modify-function signature="setWidget(int,QFormLayout::ItemRole,QWidget*)">
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>    
+    </modify-function>
+    <modify-function signature="setItem(int,QFormLayout::ItemRole,QLayoutItem*)" access="private" rename="setItem_private">
+        <modify-argument index="3">
+            <define-ownership class="java" owner="c++"/>
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addItem(QLayoutItem*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++"/>
+        </modify-argument>    
+    </modify-function>
   </object-type>
-  <object-type name="QGraphicsGridLayout" />
-  <object-type name="QGraphicsLayout" />
-  <interface-type name="QGraphicsLayoutItem" />
-  <object-type name="QGraphicsLinearLayout" />
+  <object-type name="QGraphicsGridLayout">
+    <modify-function signature="addItem(QGraphicsLayoutItem*,int,int,QFlags&lt;Qt::AlignmentFlag&gt;)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcItems" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="addItem(QGraphicsLayoutItem*,int,int,int,int,QFlags&lt;Qt::AlignmentFlag&gt;)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcItems" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setAlignment(QGraphicsLayoutItem*,QFlags&lt;Qt::AlignmentFlag&gt;)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  </object-type>  
+  <object-type name="QGraphicsLayout">
+    <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcParentLayoutItem" />
+        </modify-argument>
+    </modify-function>
+  </object-type>  
+  <interface-type name="QGraphicsLayoutItem">
+    <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcParentLayoutItem" />
+        </modify-argument>
+    </modify-function>  
+  </interface-type>
+  <object-type name="QGraphicsLinearLayout">
+    <modify-function signature="addItem(QGraphicsLayoutItem*)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcItems" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertItem(int,QGraphicsLayoutItem*)">
+        <modify-argument index="2">
+            <reference-count action="add" variable-name="__rcItems" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="removeItem(QGraphicsLayoutItem*)">
+        <modify-argument index="1">
+            <reference-count action="remove" variable-name="__rcItems" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setAlignment(QGraphicsLayoutItem*,QFlags&lt;Qt::AlignmentFlag&gt;)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setStretchFactor(QGraphicsLayoutItem*,int)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  </object-type>  
   <object-type name="QGraphicsProxyWidget" />
   <object-type name="QGraphicsWidget">
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->

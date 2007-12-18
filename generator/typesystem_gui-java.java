@@ -1016,6 +1016,19 @@ class QFormLayout___ extends QFormLayout {
 
         return new com.trolltech.qt.QPair<Integer, ItemRole>(row.intValue(), ItemRole.resolve(role.intValue()));
     }
+
+    /**
+     * Sets the item in the given row for the given role to item, extending the layout with empty rows if necessary.
+     * If the cell is already occupied, the item is not inserted and a IllegalArgumentException is thrown.
+     */
+    @QtBlockedSlot
+    public final void setItem(int row, ItemRole role, QLayoutItem item) {
+        if (itemAt(row, role) == null)
+            setItem_private(row, role, item);
+        else
+            throw new IllegalArgumentException("Cell in form layout is already occupied");
+    }
+
 }// class
 
 class Subclass_of_QGraphicsLayoutItem___ extends QGraphicsLayoutItem {
@@ -1060,7 +1073,7 @@ class QPrinter___ extends QPrinter {
      * 
      * @param unit Specifies the unit of the returned margins.
      * @return The page margins for this printer.
-     */
+     */    
     public final QMarginsF getPageMargins(QPrinter.Unit unit) {
         QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
         QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
