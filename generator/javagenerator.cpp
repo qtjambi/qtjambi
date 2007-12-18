@@ -1347,64 +1347,66 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     Indentation indent(INDENT);
 
     // Define variables for reference count mechanism
-    QHash<QString, int> variables;
-    foreach (AbstractMetaFunction *function, java_class->functions()) {
-        QList<ReferenceCount> referenceCounts = function->referenceCounts(java_class);
-        foreach (ReferenceCount refCount, referenceCounts) {
-            variables[refCount.variableName] |= refCount.action
-                                                | refCount.access
-                                                | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
-                                                | (function->isStatic() ? ReferenceCount::Static : 0)
-                                                | (refCount.declareVariable.isEmpty() ? ReferenceCount::DeclareVariable : 0);
-        }
-    }
-
-    foreach (QString variableName, variables.keys()) {
-        int actions = variables.value(variableName) & ReferenceCount::ActionsMask;
-        bool threadSafe = variables.value(variableName) & ReferenceCount::ThreadSafe;
-        bool isStatic = variables.value(variableName) & ReferenceCount::Static;
-        bool declareVariable = variables.value(variableName) & ReferenceCount::DeclareVariable;
-        int access = variables.value(variableName) & ReferenceCount::AccessMask;
-
-        if (actions == ReferenceCount::Ignore || !declareVariable)
-            continue;
-
-        if (((actions & ReferenceCount::Add) == 0) != ((actions & ReferenceCount::Remove) == 0)) {
-            QString warn = QString("either add or remove specified for reference count variable '%1' in '%2' but not both")
-                .arg(variableName).arg(java_class->fullName());
-            ReportHandler::warning(warn);
-        }
-        s << endl
-          << INDENT << "@SuppressWarnings(\"unused\")" << endl
-          << INDENT;
-        switch (access) {
-        case ReferenceCount::Private:
-            s << "private "; break;
-        case ReferenceCount::Protected:
-            s << "protected "; break;
-        case ReferenceCount::Public:
-            s << "public "; break;
-        default:
-            ; // friendly
+    if (!java_class->isInterface() && !java_class->isNamespace()) {
+        QHash<QString, int> variables;
+        foreach (AbstractMetaFunction *function, java_class->functions()) {
+            QList<ReferenceCount> referenceCounts = function->referenceCounts(java_class);
+            foreach (ReferenceCount refCount, referenceCounts) {
+                variables[refCount.variableName] |= refCount.action
+                                                    | refCount.access
+                                                    | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
+                                                    | (function->isStatic() ? ReferenceCount::Static : 0)
+                                                    | (refCount.declareVariable.isEmpty() ? ReferenceCount::DeclareVariable : 0);
+            }
         }
 
-        if (isStatic)
-            s << "static ";
+        foreach (QString variableName, variables.keys()) {
+            int actions = variables.value(variableName) & ReferenceCount::ActionsMask;
+            bool threadSafe = variables.value(variableName) & ReferenceCount::ThreadSafe;
+            bool isStatic = variables.value(variableName) & ReferenceCount::Static;
+            bool declareVariable = variables.value(variableName) & ReferenceCount::DeclareVariable;
+            int access = variables.value(variableName) & ReferenceCount::AccessMask;
 
-        if (actions != ReferenceCount::Set && actions != ReferenceCount::Ignore) {
-            s << "java.util.Collection<Object> " << variableName << " = ";
+            if (actions == ReferenceCount::Ignore || !declareVariable)
+                continue;
 
-            if (threadSafe)
-                s << "java.util.Collections.synchronizedCollection(";
-            s << "new java.util.ArrayList<Object>()";
-            if (threadSafe)
-                s << ")";
-            s << ";" << endl;
-        } else if (actions != ReferenceCount::Ignore) {
+            if (((actions & ReferenceCount::Add) == 0) != ((actions & ReferenceCount::Remove) == 0)) {
+                QString warn = QString("either add or remove specified for reference count variable '%1' in '%2' but not both")
+                    .arg(variableName).arg(java_class->fullName());
+                ReportHandler::warning(warn);
+            }
+            s << endl
+            << INDENT << "@SuppressWarnings(\"unused\")" << endl
+            << INDENT;
+            switch (access) {
+            case ReferenceCount::Private:
+                s << "private "; break;
+            case ReferenceCount::Protected:
+                s << "protected "; break;
+            case ReferenceCount::Public:
+                s << "public "; break;
+            default:
+                ; // friendly
+            }
 
-            if (threadSafe)
-                s << "synchronized ";
-            s << "Object " << variableName << " = null;" << endl;
+            if (isStatic)
+                s << "static ";
+
+            if (actions != ReferenceCount::Set && actions != ReferenceCount::Ignore) {
+                s << "java.util.Collection<Object> " << variableName << " = ";
+
+                if (threadSafe)
+                    s << "java.util.Collections.synchronizedCollection(";
+                s << "new java.util.ArrayList<Object>()";
+                if (threadSafe)
+                    s << ")";
+                s << ";" << endl;
+            } else if (actions != ReferenceCount::Ignore) {
+
+                if (threadSafe)
+                    s << "synchronized ";
+                s << "Object " << variableName << " = null;" << endl;
+            }
         }
     }
 
