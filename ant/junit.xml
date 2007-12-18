@@ -1,6 +1,5 @@
 <project default="all" basedir="..">
 
-    <property name="config"    value="sanitycheck" />
     <import file="../build.xml"/>
 
     <property name="MailLogger.mailhost" value="smtp.trolltech.com" />
