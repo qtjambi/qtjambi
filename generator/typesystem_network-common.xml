@@ -50,7 +50,13 @@
   </object-type>
   <object-type name="QLocalServer" />
   <object-type name="QLocalSocket" />
-  <object-type name="QNetworkAccessManager" />
+  <object-type name="QNetworkAccessManager">
+    <modify-function signature="setCookieJar(QNetworkCookieJar*)">
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QNetworkCookieJar" />
   <object-type name="QNetworkReply" />
 

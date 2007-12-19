@@ -2470,6 +2470,20 @@
     <extra-includes>
         <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
+    <modify-function signature="addWidget(QWidget*,QFlags&lt;Qt::WindowType&gt;)">
+        
+    </modify-function>
+    <modify-function signature="setActiveWindow(QGraphicsWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setStyle(QStyle*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+
     <modify-function signature="addItem(QGraphicsItem *)">
       <modify-argument index="1">
         <define-ownership class="java" owner="c++"/>
@@ -2509,6 +2523,14 @@
         <modify-argument index="return">
             <define-ownership class="java" owner="c++"/>
         </modify-argument>        
+    </modify-function>
+    <modify-function signature="addWidget(QWidget*,QFlags&lt;Qt::WindowType&gt;)">
+        <modify-argument index="return">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+        <modify-argument index="1">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
     </modify-function>
     <modify-function signature="removeItem(QGraphicsItem*)">
         <modify-argument index="1">
@@ -2576,6 +2598,16 @@
     <modify-function signature="removeItemWidget(QTreeWidgetItem*,int)">
         <modify-argument index="1">
             <define-ownership class="java" owner="default"/>
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setCurrentItem(QTreeWidgetItem*,int,QFlags&lt;QItemSelectionModel::SelectionFlag&gt;)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setFirstItemColumnSpanned(const QTreeWidgetItem*,bool)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
         </modify-argument>
     </modify-function>
     <modify-function signature="setCurrentItem(QTreeWidgetItem*)">
@@ -2842,6 +2874,11 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+    <modify-function signature="setCurrentItem(QListWidgetItem*,QFlags&lt;QItemSelectionModel::SelectionFlag&gt;)">
+        <modify-argument index="1">
+            <reference-count action="ignore"/>
+        </modify-argument>
+    </modify-function>    
     <modify-function signature="setItemHidden(const QListWidgetItem*,bool)">
         <remove/>
     </modify-function>
@@ -3639,6 +3676,11 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+    <modify-function signature="setCurrentItem(QTableWidgetItem*,QFlags&lt;QItemSelectionModel::SelectionFlag&gt;)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
     <modify-function signature="setItemSelected(const QTableWidgetItem*,bool)">
         <remove/>
     </modify-function>
@@ -4352,12 +4394,57 @@
   <object-type name="QGraphicsWidget">
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
+    <modify-function signature="setLayout(QGraphicsLayout*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcLayout" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setStyle(QStyle*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcStyle" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setTabOrder(QGraphicsWidget*,QGraphicsWidget*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+        <modify-argument index="2">
+            <reference-count action="ignore" />
+        </modify-argument>        
+    </modify-function>
   </object-type>
   <object-type name="QPlainTextDocumentLayout" />
-  <object-type name="QPlainTextEdit" />
+  <object-type name="QPlainTextEdit">
+    <modify-function signature="setDocument(QTextDocument*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDocument" />           
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertFromMimeData(const QMimeData*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QPrintPreviewDialog" />
   <object-type name="QPrintPreviewWidget" />
-  <object-type name="QStyledItemDelegate" />
+  <object-type name="QStyledItemDelegate">
+    <modify-function signature="setItemEditorFactory(QItemEditorFactory*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcItemEditorFactory" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setEditorData(QWidget*,QModelIndex)const">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setModelData(QWidget*,QAbstractItemModel*,QModelIndex)const">
+        <modify-argument index="1">
+            <reference-count action="ignore"/>
+        </modify-argument>
+    </modify-function>    
+  </object-type>
    
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPixmap::QPixmap', unmatched parameter type 'QPixmapData*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>
