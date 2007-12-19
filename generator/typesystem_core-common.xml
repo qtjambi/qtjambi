@@ -20,8 +20,7 @@
   <rejection class="QCache"/>
   <rejection class="QCharRef"/>
   <rejection class="QDebug"/>
-  <rejection class="QExplicitlySharedDataPointer"/>
-  <rejection class="QFactoryInterface"/>
+  <rejection class="QExplicitlySharedDataPointer"/>  
   <rejection class="QFlag"/>
   <rejection class="QFlags"/>
   <rejection class="QForeachContainer"/>
@@ -534,6 +533,8 @@
   
     <modify-function signature="readLink()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
+
+  <interface-type name="QFactoryInterface" />
 
   <value-type name="QByteArray">
    

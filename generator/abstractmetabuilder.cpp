@@ -771,10 +771,31 @@ void AbstractMetaBuilder::figureOutDefaultEnumArguments()
                 if (arg->type()->isEnum()) {
                     QStringList lst = expr.split(QLatin1String("::"));
                     if (lst.size() == 1) {
-                        AbstractMetaEnum *e = meta_class->findEnumForValue(expr);
-                        new_expr = QString("%1.%2")
-                                   .arg(e->typeEntry()->qualifiedTargetLangName())
-                                   .arg(expr);
+                        QVector<AbstractMetaClass *> classes(1, meta_class);
+                        AbstractMetaEnum *e = 0;
+                        while (!classes.isEmpty() && e == 0) {
+                            if (classes.front() != 0) {
+                                classes << classes.front()->baseClass();
+
+                                AbstractMetaClassList interfaces = classes.front()->interfaces();
+                                foreach (AbstractMetaClass *interface, interfaces)
+                                    classes << interface->primaryInterfaceImplementor();
+
+                                if (expr == "Client")
+                                    qDebug("checking %s", qPrintable(classes.front()->name()));
+                                e = classes.front()->findEnumForValue(expr);
+                            }
+
+                            classes.pop_front();
+                        }
+                        
+                        if (e != 0) {
+                            new_expr = QString("%1.%2")
+                                    .arg(e->typeEntry()->qualifiedTargetLangName())
+                                    .arg(expr);
+                        } else {
+                            ReportHandler::warning("Cannot find enum constant for value '" + expr + "' in '" + meta_class->name() + "' or any of its super classes");
+                        }
                     } else if (lst.size() == 2) {
                         AbstractMetaClass *cl = m_meta_classes.findClass(lst.at(0));
                         if (!cl) {

@@ -8,13 +8,7 @@
 
   <rejection class="QAbstractUndoItem"/>    
   <rejection class="QAccessibleApplication"/>
-  <rejection class="QAccessibleFactoryInterface"/>
-  <rejection class="QAccessiblePlugin"/>
   <rejection class="QBrushData"/>
-  <rejection class="QIconEngineFactoryInterface"/>
-  <rejection class="QIconEngineFactoryInterfaceV2"/>
-  <rejection class="QIconEnginePluginV2"/>
-  <rejection class="QIconEnginePlugin"/>
   <rejection class="QImageTextKeyLang"/>
   <rejection class="QItemEditorCreator"/>
   <rejection class="QLibrary"/>
@@ -38,15 +32,13 @@
   <rejection class="QWindowsVistaStyle"/>
   <rejection class="QWSEmbedWidget"/>
   <rejection class="QRegion::QRegionData"/>
+  <rejection class="JObject_key" />
   <rejection class="QAccessibleEditableTextInterface"/>
   <rejection class="QAccessibleSimpleEditableTextInterface"/>
   <rejection class="QAccessibleTextInterface"/>
-  <rejection class="QAccessibleValueInterface"/>    
-  <rejection class="QImageIOHandlerFactoryInterface" />
-  <rejection class="QImageIOPlugin" />
-  <rejection class="QAccessibleBridgePlugin" />
-  <rejection class="JObject_key" />
-    
+  <rejection class="QAccessibleValueInterface"/>        
+  <rejection class="QIconEngineFactoryInterface"/>    
+  <rejection class="QIconEnginePlugin"/>  
   <rejection class="QAbstractItemDelegate" function-name="operator="/>
   <rejection class="QAccessible" function-name="installFactory"/>
   <rejection class="QAccessible" function-name="installRootObjectHandler"/>
@@ -82,6 +74,9 @@
   <rejection class="QAccessibleInterface" function-name="editableTextInterface"/>
   <rejection class="QAccessibleInterface" function-name="cast_helper"/>
   <rejection class="QAccessibleInterfaceEx" function-name="interface_cast"/>
+  <rejection class="QAccessibleBridgePlugin" />
+  <rejection class="QAccessibleBridge" />
+  <rejection class="QAccessibleBridgeFactoryInterface" />  
   <rejection class="QTabletEvent" field-name="mExtra"/>  
 
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
@@ -392,6 +387,7 @@
   <enum-type name="QWizard::WizardOption" flags="QWizard::WizardOptions"/>
   <enum-type name="QWizard::WizardPixmap"/>
   <enum-type name="QWizard::WizardStyle"/>
+  <enum-type name="QImageIOPlugin::Capability" flags="QImageIOPlugin::Capabilities" />
 
   <enum-type name="QWizard::WizardButton">
     <reject-enum-value name="NStandardButtons"/>
@@ -1242,13 +1238,6 @@
         </modify-argument>
     </modify-function>
   </object-type>      
-  <object-type name="QAccessibleBridge">
-    <modify-function signature="setRootObject(QAccessibleInterface *)">
-        <modify-argument index="1">
-            <reference-count action="ignore"/>
-        </modify-argument>
-    </modify-function>
-  </object-type>
   <object-type name="QAccessible2Interface"/>
   <object-type name="QAccessibleTableInterface">
     <modify-function signature="qAccessibleTableCastHelper()" remove="all"/>
@@ -4445,7 +4434,23 @@
         </modify-argument>
     </modify-function>    
   </object-type>
-   
+
+  <interface-type name="QAccessibleFactoryInterface" />
+  <interface-type name="QIconEngineFactoryInterfaceV2"/>
+  <interface-type name="QImageIOHandlerFactoryInterface" />  
+  <interface-type name="QInputContextFactoryInterface" />
+  <interface-type name="QStyleFactoryInterface" />
+  <interface-type name="QTextCodecFactoryInterface" />
+  <interface-type name="QPictureFormatInterface" />
+  
+  <object-type name="QIconEnginePluginV2"/>
+  <object-type name="QAccessiblePlugin"/>  
+  <object-type name="QImageIOPlugin" />
+  <object-type name="QInputContextPlugin" />
+  <object-type name="QPictureFormatPlugin" />
+  <object-type name="QStylePlugin" />
+  <object-type name="QTextCodecPlugin" />
+     
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPixmap::QPixmap', unmatched parameter type 'QPixmapData*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>
