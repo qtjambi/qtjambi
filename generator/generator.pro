@@ -1,4 +1,16 @@
+contains(QT_CONFIG, release) {
+    CONFIG -= debug
+    CONFIG += release
+}
 
+unix:CONFIG += debug_and_release
+
+CONFIG += console
+RESOURCES += generator.qrc
+
+include(parser/rxx.pri)
+
+include(parser/rpp/rpp.pri)
 
 # Input
 HEADERS += \
