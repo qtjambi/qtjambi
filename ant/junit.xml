@@ -10,7 +10,7 @@
     <property name="MailLogger.success.to" value="hfroilan@trolltech.com" />
 
     <property name="reportDir" value="${outputDir}/reports" />
-    <property name="htmlDir"   value="/var/www/junit/" />
+    <property name="htmlDir"   value="${outputDir}/www" />
 
     <target name="clean.report"
             description="Clean report directory.">
