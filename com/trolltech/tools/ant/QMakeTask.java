@@ -26,21 +26,13 @@ public class QMakeTask extends Task {
         if (recursive)
             arguments += " -r ";
 
-        String comand = "qmake" + arguments;
+        String command = "qmake" + arguments;
         
         if (!pro.equals("")) {
-            comand += " " + new File(pro).getAbsolutePath();
+            command += " " + Util.makeCanonical(pro).getAbsolutePath();
         }
-
-        System.out.println(comand);
-        try {
-            Process process = Runtime.getRuntime().exec(comand, null, new File(dir));
-            Util.redirectOutput(process, true);
-            System.out.println("OK");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        
+        Util.exec(command, new File(dir));
     }
 
     public void setMessage(String msg) {

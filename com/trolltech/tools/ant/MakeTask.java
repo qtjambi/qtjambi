@@ -27,16 +27,8 @@ public class MakeTask extends Task {
         if (silent && Util.OS() != Util.OS.WINDOWS)
             arguments += " -s";
 
-        String comand = compilerName() + arguments + " " + target;
-        
-        System.out.println(dir + "  " + comand);
-        try {
-            Process process = Runtime.getRuntime().exec(comand, null, new File(dir));
-            Util.redirectOutput(process, silent);
-            System.out.println("OK");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String command = compilerName() + arguments + " " + target;
+        Util.exec(command, new File(dir));
     }
 
     public void setMessage(String msg) {

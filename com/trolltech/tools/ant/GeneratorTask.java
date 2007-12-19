@@ -44,38 +44,28 @@ public class GeneratorTask extends Task{
         }
         
         if( !outputDirectory.equals("")){
-            File file = new File(outputDirectory);
+            File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
             arguments += " --output-directory=" + file.getAbsolutePath(); 
         }
         
-        File typesystemFile = new File(typesystem);
+        File typesystemFile = Util.makeCanonical(typesystem);
         if (!typesystemFile.exists()) {
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
         }
         
-        File headerFile = new File(header);
+        File headerFile = Util.makeCanonical(header);
         if (!headerFile.exists()) {
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
         
         arguments += " " + headerFile.getAbsolutePath() + " " + typesystemFile.getAbsolutePath();
 
-        String comand = Util.LOCATE_EXEC(generatorExecutable(), searchPath(), null).getAbsolutePath() + arguments;
+        String command = Util.LOCATE_EXEC(generatorExecutable(), searchPath(), null).getAbsolutePath() + arguments;
 
-        System.out.println(comand);
-        try {
-            Process process = Runtime.getRuntime().exec(comand, null, new File(dir));
-            Util.redirectOutput(process, silent);
-
-            if (process.exitValue() != 0) {
-                throw new BuildException("Running : " + comand + " failed.");
-            }
-        } catch (IOException e) {
-            throw new BuildException("Running : " + comand + " failed.", e);
-        }
+        Util.exec(command, new File(dir));
     }
 
     public void setMessage(String msg) {

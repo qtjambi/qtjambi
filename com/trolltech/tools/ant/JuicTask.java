@@ -39,8 +39,8 @@ public class JuicTask extends MatchingTask {
 
         StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
-            File dir = new File(tokenizer.nextToken());
-
+            File dir = Util.makeCanonical(tokenizer.nextToken());
+            
             DirectoryScanner ds = getDirectoryScanner(dir);
             String[] files = ds.getIncludedFiles();
             for (String file : files) {
@@ -48,17 +48,9 @@ public class JuicTask extends MatchingTask {
                 file = file.replaceAll("\\\\", "/");
 
                 String packageString = file.substring(0, file.lastIndexOf('/')).replaceAll("/", ".");
-                String comand = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + '/' + file;
+                String command = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + '/' + file;
 
-                try {
-                    Process process = Runtime.getRuntime().exec(comand);
-                    Util.redirectOutput(process, true);
-                    if (process.exitValue() != 0) {
-                        throw new BuildException("Running : " + comand + " failed.");
-                    }
-                } catch (IOException e) {
-                    throw new BuildException("Running : " + comand + " failed.", e);
-                }
+                Util.exec(command);
             }
         }
     }

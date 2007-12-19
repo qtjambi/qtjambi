@@ -41,7 +41,7 @@ class Util {
         while (tokenizer.hasMoreTokens()) {
             File exec = new File(tokenizer.nextToken() + File.separator + name);
             if (exec.isFile())
-                return exec;
+                return makeCanonical(exec);
         }
         throw new BuildException("Could not find executable: " + name);
     }
@@ -160,5 +160,33 @@ class Util {
         }
         return null;
     }
-
+    
+    public static void exec(String command) {
+        exec(command, null);
+    }
+    
+    public static void exec(String command, File dir) throws BuildException {
+        System.out.println("Running : " + ((dir!=null)? "(" + makeCanonical(dir) + ")" : "") + " " + command);
+        try {
+            Process process = Runtime.getRuntime().exec(command, null, dir);
+            Util.redirectOutput(process, true);
+            if (process.exitValue() != 0) {
+                throw new BuildException("Running: " + command + " failed.");
+            }
+        } catch (IOException e) {
+            throw new BuildException("Running: " + command + " failed.", e);
+        }
+    }
+    
+    public static File makeCanonical(String file) throws BuildException {
+        return makeCanonical(new File(file));
+    }
+    
+    public static File makeCanonical(File file) throws BuildException {
+        try {
+            return file.getCanonicalFile();
+        } catch (IOException e) {
+            throw new BuildException("Path : " + file.getAbsolutePath() + " failed to create canonical form.", e);
+        }
+    }
 }
