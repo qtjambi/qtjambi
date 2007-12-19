@@ -83,6 +83,12 @@
                dir="${outputDir}"
                pro="${sourceDir}/java.pro"
                config="${config}"/>
+
+        <!-- FIXME // Temporary put in here so we get teamtester to compile all files. -->
+        <qmake recursive="true" 
+               dir="${outputDir}"
+               pro="${sourceDir}/java.pro"
+               config="${config}"/>
     </target>
 
     <target name="qmake.generator"
