@@ -1377,6 +1377,10 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true)
     e->setPreferredConversion(false);
     addType(e);
 
+    e = new StringTypeEntry("QXmlStreamStringRef");
+    e->setPreferredConversion(false);
+    addType(e);
+
     addType(new CharTypeEntry("QChar"));
 
     CharTypeEntry *c = new CharTypeEntry("QLatin1Char");
