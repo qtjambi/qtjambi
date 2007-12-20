@@ -21,7 +21,6 @@
     <target name="generator.autotests"
             depends="qtjambi.init"
             description="Run the generator on the autotests.">
-        <mkdir dir="${outputDir}/auto/com/trolltech/autotests" />
 	<generator dir="${sourceDir}/autotestlib"
 	           header="${sourceDir}/autotestlib/global.h"
                    typesystem="${sourceDir}/autotestlib/build.txt" 
@@ -38,10 +37,10 @@
                pro="${sourceDir}/autotestlib/autotestlib.pro"/>
 	<make dir="${outputDir}/autotestlib" target="clean" />
 	<make dir="${outputDir}/autotestlib" silent="true"/>
-        <javac srcdir="${sourceDir}" destdir="${outputDir}/auto" >
+        <javac srcdir="${sourceDir}" >
             <include name="com/trolltech/autotests/**.java" />
         </javac>
-        <javac srcdir="${outputDir}" destdir="${outputDir}/auto" >
+        <javac srcdir="${outputDir}" destdir="${outputDir}" >
             <include name="com/trolltech/autotests/**.java" />
         </javac>
     </target>
@@ -61,7 +60,7 @@
 
             <classpath>
                 <pathelement location="${outputDir}/qtjambi.jar" />
-                <pathelement location="${outputDir}/auto" /> 
+                <pathelement location="${outputDir}" /> 
                 <pathelement location="${sourceDir}" /> 
             </classpath>
             <formatter type="xml"/>
