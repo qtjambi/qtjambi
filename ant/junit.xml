@@ -37,10 +37,9 @@
                pro="${sourceDir}/autotestlib/autotestlib.pro"/>
 	<make dir="${outputDir}/autotestlib" target="clean" />
 	<make dir="${outputDir}/autotestlib" silent="true"/>
-        <javac srcdir="${sourceDir}" >
-            <include name="com/trolltech/autotests/**.java" />
-        </javac>
-        <javac srcdir="${outputDir}" destdir="${outputDir}" >
+        <javac>
+            <src path="${outputDir}"/>
+            <src path="${sourceDir}"/>
             <include name="com/trolltech/autotests/**.java" />
         </javac>
     </target>
