@@ -781,8 +781,6 @@ void AbstractMetaBuilder::figureOutDefaultEnumArguments()
                                 foreach (AbstractMetaClass *interface, interfaces)
                                     classes << interface->primaryInterfaceImplementor();
 
-                                if (expr == "Client")
-                                    qDebug("checking %s", qPrintable(classes.front()->name()));
                                 e = classes.front()->findEnumForValue(expr);
                             }
 
