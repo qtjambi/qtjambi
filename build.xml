@@ -134,17 +134,11 @@
     </target>
 
     <target name="qtjambi.jar">
-        <javac srcdir="${sourceDir}"
-               memoryMaximumSize="1024m"
+        <javac memoryMaximumSize="1024m"
 	       fork="true"
                destdir="${outputDir}">
-            <include name="com/trolltech/qt/*.java"/>
-            <include name="com/trolltech/qt/*/*.java"/>
-        </javac>
-        <javac srcdir="${outputDir}"
-               memoryMaximumSize="1024m"
-	       fork="true"
-               destdir="${outputDir}">
+            <src path="${outputDir}"/>
+            <src path="${sourceDir}"/>
             <include name="com/trolltech/qt/*.java"/>
             <include name="com/trolltech/qt/*/*.java"/>
         </javac>
@@ -160,26 +154,9 @@
 
     <target name="qtjambi-examples.jar"
             depends="qtjambi.init">
-
-        <javac srcdir="${sourceDir}"
-               sourcepath=""
-               destdir="${outputDir}"
-               classpath="${outputDir}/qtjambi.jar">
-            <include name="com/trolltech/demos/**/*.java"/>
-            <include name="com/trolltech/examples/**/*.java"/>
-            <include name="com/trolltech/launcher/*.java"/>
-            <exclude name="com/trolltech/examples/generator/*.java"/>
-            <exclude name="com/trolltech/demos/HelloGL.java"/>
-            <exclude name="com/trolltech/examples/GeneratorExample.java"/>
-        </javac> 
-
-        <!-- also compile any generated java files in the output directory.
-             if the outputDir equals sourceDir the two next steps could be
-             skiped. -->
-        <javac srcdir="${outputDir}"
-               sourcepath=""
-               destdir="${outputDir}"
-               classpath="${outputDir}/qtjambi.jar">
+        <javac destdir="${outputDir}">
+            <src path="${outputDir}"/>
+            <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/**/*.java"/>
             <include name="com/trolltech/examples/**/*.java"/>
             <include name="com/trolltech/launcher/*.java"/>
@@ -216,8 +193,9 @@
     </target>
 
     <target name="qtjambi-designer.jar">
-        <javac srcdir="${sourceDir}"
-               destdir="${outputDir}">
+        <javac destdir="${outputDir}">
+            <src path="${outputDir}"/>
+            <src path="${sourceDir}"/>
             <include name="com/trolltech/tools/designer/*.java"/>
         </javac>
 
