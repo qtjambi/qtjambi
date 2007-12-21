@@ -4,17 +4,16 @@
 #include <QWindowsStyle>
 
 //! [0]
-class CustomStyle : public QWindowsStyle
+public class CustomStyle extends QWindowsStyle
 {
-    Q_OBJECT
+    public CustomStyle() { ... }
 
-public:
-    CustomStyle()
-    ~CustomStyle() {}
-
-    void drawPrimitive(PrimitiveElement element, const QStyleOption *option,
-                       QPainter *painter, const QWidget *widget) const;
-};
+    public void drawPrimitive(QStyle.PrimitiveElement element, QStyleOption option,
+                              QPainter painter, QWidget widget)
+    {
+        ...
+    }
+}
 //! [0]
 
 #endif
