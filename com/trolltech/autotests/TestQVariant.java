@@ -314,11 +314,11 @@ public class TestQVariant extends QApplicationTest {
             List expectedList, Boolean canConvertList, Map expectedMap, Boolean canConvertMap) {
 
         assertEquals(QVariant.toString(object), expectedString);
-        assertEquals(QVariant.toDouble(object), expectedDouble);
-        assertEquals(QVariant.toInt(object), expectedInt);
+        assertEquals((double)QVariant.toDouble(object), (double)expectedDouble);
+        assertEquals((int)QVariant.toInt(object), (double)expectedInt);
         assertEquals(QVariant.toBoolean(object), expectedBool);
         assertTrue(QVariant.toBitArray(object).equals(expectedBitArray));
-        assertEquals(QVariant.toChar(object), expectedChar);
+        assertEquals((char)QVariant.toChar(object), (char)expectedChar);
         assertTrue(QVariant.toDate(object).equals(expectedDate));
         assertTrue(QVariant.toTime(object).equals(expectedTime));
         assertTrue(QVariant.toDateTime(object).equals(expectedDateTime));

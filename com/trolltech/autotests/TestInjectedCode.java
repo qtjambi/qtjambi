@@ -591,9 +591,9 @@ public class TestInjectedCode extends QApplicationTest {
     	ints = AccessibleTableInterfaceSubclass.callSelectedColumns(m, 55, ints);
     	
     	assertEquals(3, ints.size());
-    	assertEquals(43, ints.get(0));
-    	assertEquals(55, ints.get(1));
-    	assertEquals(57, ints.get(2));
+    	assertEquals((Integer)43, ints.get(0));
+    	assertEquals((Integer)55, ints.get(1));
+    	assertEquals((Integer)57, ints.get(2));
     }
 
     @Test
@@ -607,9 +607,9 @@ public class TestInjectedCode extends QApplicationTest {
     	ints = AccessibleTableInterfaceSubclass.callSelectedRows(m, 55, ints);
     	
     	assertEquals(3, ints.size());
-    	assertEquals(43, ints.get(0));
-    	assertEquals(55, ints.get(1));
-    	assertEquals(53, ints.get(2));
+    	assertEquals((Integer)43, ints.get(0));
+    	assertEquals((Integer)55, ints.get(1));
+    	assertEquals((Integer)53, ints.get(2));
     }    
     
     @Test

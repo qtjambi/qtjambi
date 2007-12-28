@@ -68,9 +68,9 @@ public class TestMetaObject extends QApplicationTest {
             List<Integer> values = sass.valuesOfEnumType("YoYoYo");
             assertEquals(3, values.size());
             
-            assertEquals(0, values.get(0));
-            assertEquals(1, values.get(1));
-            assertEquals(2, values.get(2));
+            assertEquals((Integer)0, values.get(0));
+            assertEquals((Integer)1, values.get(1));
+            assertEquals((Integer)2, values.get(2));
         }                
     }
     
@@ -91,8 +91,8 @@ public class TestMetaObject extends QApplicationTest {
             List<Integer> values = sass.valuesOfEnumType("HeyYo");
             assertEquals(2, values.size());
             
-            assertEquals(0x4, values.get(0));
-            assertEquals(1123, values.get(1));
+            assertEquals((Integer)0x4, values.get(0));
+            assertEquals((Integer)1123, values.get(1));
         }                       
     }
     
@@ -114,9 +114,9 @@ public class TestMetaObject extends QApplicationTest {
             List<Integer> values = sass.valuesOfEnumType("FlipModeSquad");
             assertEquals(3, values.size());
             
-            assertEquals(1, values.get(0));
-            assertEquals(2, values.get(1));
-            assertEquals(4, values.get(2));
+            assertEquals((Integer)1, values.get(0));
+            assertEquals((Integer)2, values.get(1));
+            assertEquals((Integer)4, values.get(2));
         }                       
         
     }
