@@ -219,7 +219,6 @@ public class Spreadsheet extends QMainWindow {
         b = new QToolBar(this);
         b.setAllowedAreas(new Qt.ToolBarAreas(Qt.ToolBarArea.TopToolBarArea, Qt.ToolBarArea.BottomToolBarArea));
         b.setWindowTitle(tr("Format Actions"));
-        addToolBarBreak(Qt.ToolBarArea.TopToolBarArea);
         addToolBar(b);
 
         QComboBox comboFont = new QComboBox(b);
@@ -244,6 +243,15 @@ public class Spreadsheet extends QMainWindow {
         comboSize.activated.connect(this, "textSize(String)");
         comboSize.setCurrentIndex(comboSize.findText("" + QApplication.font().pointSize(), new Qt.MatchFlags(Qt.MatchFlag.MatchExactly,
                 Qt.MatchFlag.MatchCaseSensitive)));
+
+        m.addSeparator();
+
+        b = new QToolBar(this);
+        b.setAllowedAreas(new Qt.ToolBarAreas(Qt.ToolBarArea.TopToolBarArea, Qt.ToolBarArea.BottomToolBarArea));
+        b.setWindowTitle(tr("Function Actions"));
+        addToolBar(b);
+
+        action(tr("&Sum"), null, "", "sum()", m, b);
     }
 
     private QIcon createPixmapForButton(String text, QColor front, QColor back) {
@@ -347,6 +355,10 @@ public class Spreadsheet extends QMainWindow {
 
     protected void textFamily(String font) {
         applyToCurrentSelection(Cell.Property.FontName, font);
+    }
+
+    protected void sum() {
+        view.selectionFunction("sum");
     }
 
     protected void fileOpen() {
@@ -778,7 +790,53 @@ public class Spreadsheet extends QMainWindow {
         }
 
         @Override
+        protected void mouseReleaseEvent(QMouseEvent event) {
+            if (selectState) {
+                selectState = false;
+
+            }
+            super.mouseReleaseEvent(event);
+        }
+
+        boolean selectState;
+        QModelIndex selectStateCurrent;
+        String selectStateFunction;
+
+        public void selectionFunction(String fun) {
+            if (selectState)
+                return;
+            selectStateCurrent = view.currentIndex();
+            if (selectStateCurrent == null)
+                return;
+            selectState = true;
+            selectStateFunction = fun;
+        }
+
+        @Override
         protected void currentChanged(QModelIndex current, QModelIndex previous) {
+            if (selectState) {
+                QModelIndex topLeft = null;
+                QModelIndex bottomRight = null;
+                for (Iterator<QModelIndex> iterator = selectedIndexes().iterator(); iterator.hasNext();) {
+                    QModelIndex index = (QModelIndex) iterator.next();
+                    if (index.equals(selectStateCurrent))
+                        continue;
+                    if (topLeft == null) {
+                        topLeft = index;
+                        bottomRight = index;
+                    } else {
+                        if (topLeft.column() > index.column() || (topLeft.column() == index.column() && topLeft.row() > index.row()))
+                            topLeft = index;
+                        else if (bottomRight.column() < index.column() || (bottomRight.column() == index.column() && bottomRight.row() < index.row()))
+                            bottomRight = index;
+                    }
+                }
+                if (topLeft != null) {
+                    model.put(selectStateCurrent, selectStateFunction + "(" + Util.convertIndex(topLeft) + " " + Util.convertIndex(bottomRight) + ")");
+                }
+                view.update(selectStateCurrent);
+            }
+
             cellLabel.setText("Cell: " + Util.convertIndex(current) + "  ");
 
             boolean enabled = false;
