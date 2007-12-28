@@ -15,7 +15,8 @@
     <target name="clean.report"
             description="Clean report directory.">
          <delete dir="${reportDir}" />
-	 <mkdir dir="${reportDir}" />
+         <mkdir dir="${reportDir}" />
+         <delete dir="${htmlDir}" />
     </target>
 
     <target name="generator.autotests"
@@ -55,19 +56,20 @@
             description="JUnit test with web report">
         <junit printsummary="yes"
                haltonfailure="false"
-               timeout="160000">
+               timeout="160000"
+               tempdir="${outputDir}">
 
             <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/> 
 	    <jvmarg value="-Dcom.trolltech.qt.implicit-loading=false" />
 
             <classpath>
-                <pathelement location="${outputDir}/qtjambi.jar" />
+                <pathelement location="${outputDir}" />
                 <pathelement location="${outputDir}/auto" /> 
                 <pathelement location="${sourceDir}" /> 
             </classpath>
             <formatter type="xml"/>
             <batchtest fork="true" todir="${reportDir}">
-                <fileset dir=".">
+                <fileset dir="${sourceDir}">
                     <include name="**/autotests//Test*.java"/>
                 </fileset>
             </batchtest>
