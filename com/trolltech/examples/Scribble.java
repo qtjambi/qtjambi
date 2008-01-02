@@ -78,7 +78,7 @@ public class Scribble extends QMainWindow
     @SuppressWarnings("unused")
     private void penWidth()
     {
-        
+
         Integer newWidth = QInputDialog.getInteger(this, tr("Scribble"),
                                             tr("Select pen width:"),
                                             scribbleArea.penWidth(),
@@ -95,7 +95,7 @@ public class Scribble extends QMainWindow
                               tr("The image has been modified.\n" +
                                  "Do you want to save your changes?"),
                               new QMessageBox.StandardButtons(QMessageBox.StandardButton.Save, QMessageBox.StandardButton.Discard));
-    
+
             if (ret == QMessageBox.StandardButton.Save) {
                 return saveFile("png");
             } else if (ret == QMessageBox.StandardButton.Cancel) {
@@ -108,7 +108,7 @@ public class Scribble extends QMainWindow
     private boolean saveFile(String fileFormat)
     {
         String initialPath = QDir.currentPath() + "/untitled." + fileFormat;
-    
+
         String fileName = QFileDialog.getSaveFileName(this, tr("Save As"),
                                     initialPath,
                                     new QFileDialog.Filter(fileFormat.toUpperCase() + " Files (*."+
@@ -142,37 +142,37 @@ public class Scribble extends QMainWindow
         openAct = new QAction(tr("&Open..."), this);
         openAct.setShortcut(tr("Ctrl+O"));
         openAct.triggered.connect(this, "open()");
-    
+
         saveAsActs = new LinkedList<QAction>();
         for (QByteArray format : QImageWriter.supportedImageFormats()) {
-            String text = new String(format.toByteArray()).toUpperCase() + "...";    
+            String text = new String(format.toByteArray()).toUpperCase() + "...";
 
             QAction action = new QAction(text, this);
             action.setData(format);
             action.triggered.connect(this, "save()");
             saveAsActs.add(action);
         }
-    
+
         printAct = new QAction(tr("&Print..."), this);
         printAct.triggered.connect(scribbleArea, "print()");
-    
+
         exitAct = new QAction(tr("E&xit"), this);
         exitAct.setShortcut(tr("Ctrl+Q"));
         exitAct.triggered.connect(this, "close()");
-    
+
         penColorAct = new QAction(tr("&Pen Color..."), this);
         penColorAct.triggered.connect(this, "penColor()");
-    
+
         penWidthAct = new QAction(tr("Pen &Width..."), this);
         penWidthAct.triggered.connect(this, "penWidth()");
-    
+
         clearScreenAct = new QAction(tr("&Clear Screen"), this);
         clearScreenAct.setShortcut(tr("Ctrl+L"));
         clearScreenAct.triggered.connect(scribbleArea, "clearImage()");
-    
+
         aboutAct = new QAction(tr("&About"), this);
         aboutAct.triggered.connect(this, "about()");
-    
+
         aboutQtAct = new QAction(tr("About &Qt"), this);
         aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
     }
@@ -182,24 +182,24 @@ public class Scribble extends QMainWindow
         saveAsMenu = new QMenu(tr("&Save As"), this);
         for (QAction action : saveAsActs)
             saveAsMenu.addAction(action);
-    
+
         fileMenu = new QMenu(tr("&File"), this);
         fileMenu.addAction(openAct);
         fileMenu.addMenu(saveAsMenu);
         fileMenu.addAction(printAct);
         fileMenu.addSeparator();
         fileMenu.addAction(exitAct);
-    
+
         optionMenu = new QMenu(tr("&Options"), this);
         optionMenu.addAction(penColorAct);
         optionMenu.addAction(penWidthAct);
         optionMenu.addSeparator();
         optionMenu.addAction(clearScreenAct);
-    
+
         helpMenu = new QMenu(tr("&Help"), this);
         helpMenu.addAction(aboutAct);
         helpMenu.addAction(aboutQtAct);
-    
+
         menuBar().addMenu(fileMenu);
         menuBar().addMenu(optionMenu);
         menuBar().addMenu(helpMenu);
@@ -218,7 +218,7 @@ public class Scribble extends QMainWindow
         {
             image = new QImage();
             lastPoint = new QPoint();
-    
+
             setAttribute(Qt.WidgetAttribute.WA_StaticContents);
             modified = false;
             scribbling = false;
@@ -230,7 +230,7 @@ public class Scribble extends QMainWindow
         {
             return modified;
         }
-        
+
         public QColor penColor()
         {
             return myPenColor;
@@ -246,7 +246,7 @@ public class Scribble extends QMainWindow
             QImage loadedImage = new QImage();
             if (!loadedImage.load(fileName))
                 return false;
-        
+
             QSize newSize = loadedImage.size().expandedTo(size());
             loadedImage = resizeImage(loadedImage, newSize);
             image = loadedImage;
@@ -259,7 +259,7 @@ public class Scribble extends QMainWindow
         {
             QImage visibleImage = image;
             visibleImage = resizeImage(visibleImage, size());
-        
+
             if (visibleImage.save(fileName, fileFormat)) {
                 modified = false;
                 return true;
@@ -276,7 +276,7 @@ public class Scribble extends QMainWindow
 
         public void setPenWidth(int newWidth)
         {
-            myPenWidth = newWidth;   
+            myPenWidth = newWidth;
         }
 
         public void clearImage()
@@ -285,7 +285,7 @@ public class Scribble extends QMainWindow
             modified = true;
             update();
         }
-        
+
         @Override
         protected void mousePressEvent(QMouseEvent event)
         {
@@ -344,6 +344,8 @@ public class Scribble extends QMainWindow
             update(new QRect(lastPoint, endPoint).normalized()
                                              .adjusted(-rad, -rad, +rad, +rad));
             lastPoint = endPoint;
+
+            painter.end();
         }
 
         public QImage resizeImage(QImage image, QSize newSize)
@@ -355,6 +357,7 @@ public class Scribble extends QMainWindow
             newImage.fill(new QColor(Qt.GlobalColor.white).rgb());
             QPainter painter = new QPainter(newImage);
             painter.drawImage(new QPoint(0, 0), image);
+            painter.end();
 
             return newImage;
         }
@@ -372,6 +375,7 @@ public class Scribble extends QMainWindow
                 painter.setViewport(rect.x(), rect.y(), size.width(), size.height());
                 painter.setWindow(image.rect());
                 painter.drawImage(0, 0, image);
+                painter.end();
             }
         }
     }
