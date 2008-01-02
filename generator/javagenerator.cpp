@@ -911,10 +911,13 @@ static void write_compareto_parts(QTextStream &s, const AbstractMetaFunctionList
     foreach (AbstractMetaFunction *f, lst) {
         AbstractMetaArgument *arg = f->arguments().at(0);
         QString type = arg->type()->typeEntry()->qualifiedTargetLangName();
-        s << INDENT << (*first ? "if" : "else if") << " (other instanceof " << type << " && "
-          << f->name() << "((" << type << ") other)) return " << value << ";" << endl;
+        s << INDENT << (*first ? "if" : "else if") << " (other instanceof " << type << ") {" << endl
+          << INDENT << "    if (" << f->name() << "((" << type << ") other)) return " << value << ";" << endl
+          << INDENT << "    else return " << -value << ";" << endl
+          << INDENT << "}" << endl;
         *first = false;
     }
+    s << INDENT << "throw new ClassCastException();" << endl;
 }
 
 bool JavaGenerator::isComparable(const AbstractMetaClass *cls) const
@@ -972,17 +975,14 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
                 bool first = false;
                 if (le_functions.size()) {
                     write_compareto_parts(s, le_functions, -1, &first);
-                    s << INDENT<< "else return 1;" << endl;
                 } else if (ge_functions.size()) {
                     write_compareto_parts(s, ge_functions, 1, &first);
-                    s << INDENT<< "else return -1;" << endl;
                 } else if (leq_functions.size()) {
                     write_compareto_parts(s, leq_functions, -1, &first);
-                    s << INDENT<< "else return 1;" << endl;
                 } else if (geq_functions.size()) {
                     write_compareto_parts(s, geq_functions, 1, &first);
-                    s << INDENT<< "else return -1;" << endl;
                 }
+                
             } else if (le_functions.size() == 1) {
                 QString className = cls->typeEntry()->qualifiedTargetLangName();
                 s << INDENT << "if (operator_less((" << className << ") other)) return -1;" << endl
