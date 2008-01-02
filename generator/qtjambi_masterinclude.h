@@ -17,10 +17,7 @@
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
 #include <QtSql/QtSql>
-#include <QtSvg/qsvgrenderer.h>
-#include <QtSvg/qsvggenerator.h>
-#include <QtSvg/qsvgwidget.h>
-#include <QtSvg/qgraphicssvgitem.h>
+#include <QtSvg/QtSvg>
 #include <QtXml/QtXml>
 
 #include <../qtjambi_designer/designer.h>
