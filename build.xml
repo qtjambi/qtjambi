@@ -34,6 +34,7 @@
         <mkdir dir="${outputDir}/ant-qtjambi"/>
         <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi">
             <include name="com/trolltech/tools/ant/*.java"/>
+            <include name="com/trolltech/qt/internal/Version.java"/>
         </javac>
         <jar destfile="${outputDir}/ant-qtjambi.jar">
             <fileset dir="${outputDir}/ant-qtjambi"/>
