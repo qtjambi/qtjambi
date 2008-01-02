@@ -30,13 +30,13 @@ public class InitializeTask extends Task {
         private String name;
 
         public static Compiler resolve(String name) {
-            if (name.equals("vc98")) return MSVC1998;
-            if (name.equals("vc2002")) return MSVC2002;
-            if (name.equals("vc2003")) return MSVC2003;
-            if (name.equals("vc2005")) return MSVC2005;
-            if (name.equals("vc2005x64")) return MSVC2005_64;
-            if (name.equals("vc2008")) return MSVC2008;
-            if (name.equals("vc2008x64")) return MSVC2008_64;
+            if (name.equals("msvc98")) return MSVC1998;
+            if (name.equals("msvc2002")) return MSVC2002;
+            if (name.equals("msvc2003")) return MSVC2003;
+            if (name.equals("msvc2005")) return MSVC2005;
+            if (name.equals("msvc2005x64")) return MSVC2005_64;
+            if (name.equals("msvc2008")) return MSVC2008;
+            if (name.equals("msvc2008x64")) return MSVC2008_64;
             if (name.equals("mingw")) return MinGW;
             if (name.equals("gcc3.3")) return OldGCC;
             if (name.equals("gcc")) return GCC;
