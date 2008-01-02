@@ -31,6 +31,53 @@
 
     \tableofcontents
 
+    * Composition of a deployment qtjambi package...
+      - Application class files
+      - Class files
+      - native libraries
+        ' system libraries
+	' qt libraries
+	' qtjambi libaries
+      - resources
+      - plugins
+
+    * Scenarios
+
+      - Two possible ways of loading libraries
+      	' via .jar
+	' via -Djava.library.path
+
+      - Plain Qt Jambi application
+        ' deploy using supplied .jar files
+	' tip on Mac OS X JarBundler
+	' Creating a webstart application
+	' Creating an executable .jar file
+
+      - Qt Jambi application using generated code
+        ' build Qt from scratch
+ 	' build Jambi from scratch
+	' build your generated libraries based on these Qt and Qt Jambi's
+	' create your own platform .jar for jambi
+	' create your own platform .jar for the custom library
+ 	' create libraries using your own deploy spec
+	' Creating a webstart application
+	' Creating an executable .jar file.
+
+      - Application using Qt Jambi, e.g. Qt Designer
+        ' build Qt from scratch
+	' build Qt Jambi from scratch
+	' build your application based on Qt and Jambi
+	' make sure libraries are available in -Djava.library.path
+	' QT_PLUGIN_PATH for plugins
+	' 
+
+    * Troubleshooting
+      - -Dcom.trolltech.qt.verbose-loading
+
+    * load libraries from 
+    
+
+
     \section1 Resolving Native Libraries
 
     The Qt Jambi native libraries are located in the \c lib directory
