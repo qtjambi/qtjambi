@@ -425,61 +425,73 @@ void Binder::visitFunctionDefinition(FunctionDefinitionAST *node)
 
 void Binder::visitTemplateDeclaration(TemplateDeclarationAST *node)
 {
-  const ListNode<TemplateParameterAST*> *it = node->template_parameters;
-  if (it == 0)
-    return;
+    const ListNode<TemplateParameterAST*> *it = node->template_parameters;
+    if (it == 0)
+        return;
 
-  TemplateParameterList savedTemplateParameters = changeTemplateParameters(TemplateParameterList());
+    TemplateParameterList savedTemplateParameters = changeTemplateParameters(TemplateParameterList());
 
-  it = it->toFront();
-  const ListNode<TemplateParameterAST*> *end = it;
+    it = it->toFront();
+    const ListNode<TemplateParameterAST*> *end = it;
 
-  TemplateParameterList templateParameters;
-  do
-    {
-      TemplateParameterAST *parameter = it->element;
-      TypeParameterAST *type_parameter = parameter->type_parameter;
-      if (! type_parameter)
-        {
-//           std::cerr << "** WARNING template declaration not supported ``";
-//           Token const &tk = _M_token_stream->token ((int) node->start_token);
-//           Token const &end_tk = _M_token_stream->token ((int) node->declaration->start_token);
+    TemplateParameterList templateParameters;
+    do {
+        TemplateParameterAST *parameter = it->element;
+        TypeParameterAST *type_parameter = parameter->type_parameter;
 
-//           std::cerr << std::string (&tk.text[tk.position], (end_tk.position) - tk.position) << "''"
-//                     << std::endl << std::endl;
+        NameAST *name;
+        if (!type_parameter) {
+            // A hacky hack to work around missing support for parameter declarations in
+            // templates. We just need the to get the name of the variable, since we 
+            // aren't actually compiling these anyway. We are still not supporting much
+            // more, but we are refusing to fail for a few more declarations
+            if (parameter->parameter_declaration == 0 || 
+                parameter->parameter_declaration->declarator == 0 ||  
+                parameter->parameter_declaration->declarator->id == 0) {
 
-          changeTemplateParameters(savedTemplateParameters);
-          return;
+                    /*std::cerr << "** WARNING template declaration not supported ``";
+                    Token const &tk = _M_token_stream->token ((int) node->start_token);
+                    Token const &end_tk = _M_token_stream->token ((int) node->declaration->start_token);
+
+                    std::cerr << std::string (&tk.text[tk.position], (end_tk.position) - tk.position) << "''"
+                        << std::endl << std::endl;*/
+
+                    changeTemplateParameters(savedTemplateParameters);
+                    return;
+
+            }
+
+            name = parameter->parameter_declaration->declarator->id;
+        } else {            
+            int tk = decode_token(type_parameter->type);
+            if (tk != Token_typename && tk != Token_class)
+            {
+                /*std::cerr << "** WARNING template declaration not supported ``";
+                Token const &tk = _M_token_stream->token ((int) node->start_token);
+                Token const &end_tk = _M_token_stream->token ((int) node->declaration->start_token);
+
+                std::cerr << std::string (&tk.text[tk.position], (end_tk.position) - tk.position) << "''"
+                << std::endl << std::endl;*/
+
+                changeTemplateParameters(savedTemplateParameters);
+                return;
+            }
+            assert(tk == Token_typename || tk == Token_class);
+
+            name = type_parameter->name;
         }
-      assert(type_parameter != 0);
 
-      TemplateParameterModelItem p = model()->create<TemplateParameterModelItem>();
-      int tk = decode_token(type_parameter->type);
-      if (tk != Token_typename && tk != Token_class)
-        {
-//           std::cerr << "** WARNING template declaration not supported ``";
-//           Token const &tk = _M_token_stream->token ((int) node->start_token);
-//           Token const &end_tk = _M_token_stream->token ((int) node->declaration->start_token);
+        TemplateParameterModelItem p = model()->create<TemplateParameterModelItem>();
+        name_cc.run(name);
+        p->setName(name_cc.name());
 
-//           std::cerr << std::string (&tk.text[tk.position], (end_tk.position) - tk.position) << "''"
-//                     << std::endl << std::endl;
+        _M_current_template_parameters.append(p);
+        it = it->next;
+    } while (it != end);
 
-          changeTemplateParameters(savedTemplateParameters);
-          return;
-        }
-      assert(tk == Token_typename || tk == Token_class);
+    visit(node->declaration);
 
-      name_cc.run(type_parameter->name);
-      p->setName(name_cc.name());
-
-      _M_current_template_parameters.append(p);
-      it = it->next;
-    }
-  while (it != end);
-
-  visit(node->declaration);
-
-  changeTemplateParameters(savedTemplateParameters);
+    changeTemplateParameters(savedTemplateParameters);
 }
 
 void Binder::visitTypedef(TypedefAST *node)
