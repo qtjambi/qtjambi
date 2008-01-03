@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = qtjambi juic qtjambi_core qtjambi_gui qtjambi_sql qtjambi_opengl \
-	  qtjambi_svg qtjambi_network qtjambi_xml 
+	  qtjambi_svg qtjambi_network qtjambi_xml qtjambi_webkit
 
 SUBDIRS += qtjambi_designer designer-integration
 

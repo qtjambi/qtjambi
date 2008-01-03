@@ -19,6 +19,7 @@
 #include <QtSql/QtSql>
 #include <QtSvg/QtSvg>
 #include <QtXml/QtXml>
+#include <QtWebKit/QtWebKit>
 
 #include <../qtjambi_designer/designer.h>
 
