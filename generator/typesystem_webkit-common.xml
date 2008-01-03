@@ -12,4 +12,16 @@
     <object-type name="QWebFrame"/>
     <object-type name="QWebHistory"/>
     <object-type name="QWebSettings"/>
+    <object-type name="QWebPage"/>
+
+    <value-type name="QWebHistoryItem">
+        <custom-constructor>
+            return new QWebHistoryItem(*copy);
+        </custom-constructor>
+        <custom-destructor>
+            delete copy;
+        </custom-destructor>
+    </value-type>
+
+    <object-type name="QWebHistoryInterface"/>
 </typesystem>
