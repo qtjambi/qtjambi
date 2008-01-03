@@ -98,10 +98,10 @@ public class Utilities {
     }
 
     public static void loadSystemLibraries() {
-        List<String> libs = readSystemLibraries();
-        for (String s : libs) {
-            loadLibrary(s);
-        }
+//         List<String> libs = readSystemLibraries();
+//         for (String s : libs) {
+//             loadLibrary(s);
+//         }
     }
 
     public static void loadQtLibrary(String library) {
@@ -379,6 +379,7 @@ public class Utilities {
 
 
     private static List<String> readSystemLibraries() {
+
         List<String> list = new ArrayList<String>();
         String liblist = System.getProperty("com.trolltech.qt.systemlibraries");
         if (liblist != null) {
@@ -416,47 +417,47 @@ public class Utilities {
     }
 
     public static String unpackPlugins() {
-        String pluginJars = System.getProperty("com.trolltech.qt.pluginjars");
+//         String pluginJars = System.getProperty("com.trolltech.qt.pluginjars");
 
-        if (VERBOSE_LOADING)
-            System.out.println("Loading plugins from: " + pluginJars);
+//         if (VERBOSE_LOADING)
+//             System.out.println("Loading plugins from: " + pluginJars);
 
-        List<URL> urls = new ArrayList<URL>();
-        try {
-            Enumeration<URL> bases = classLoader().getResources("plugins");
-            while (bases.hasMoreElements())
-                urls.add(bases.nextElement());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//         List<URL> urls = new ArrayList<URL>();
+//         try {
+//             Enumeration<URL> bases = classLoader().getResources("plugins");
+//             while (bases.hasMoreElements())
+//                 urls.add(bases.nextElement());
+//         } catch (Exception e) {
+//             e.printStackTrace();
+//         }
 
-        if (pluginJars != null) {
-            File tmpDir = jambiTempDir();
-            String jars[] = pluginJars.split(File.pathSeparator);
+//         if (pluginJars != null) {
+//             File tmpDir = jambiTempDir();
+//             String jars[] = pluginJars.split(File.pathSeparator);
 
-            for (String jar : jars) {
-                try {
-                    File f = new File(jar);
-                    if (f.exists()) {
-                        unpackPlugins(new JarFile(f));
-                    } else {
-                        for (URL url : urls) {
-                            if (url.toString().contains(jar)) {
-                                URLConnection connection = url.openConnection();
-                                if (connection instanceof JarURLConnection)
-                                    unpackPlugins(((JarURLConnection) connection).getJarFile());
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    if (VERBOSE_LOADING) {
-                        System.out.println("could not load plugin archive...: " + jar);
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return tmpDir.getAbsolutePath() + "/plugins";
-        }
+//             for (String jar : jars) {
+//                 try {
+//                     File f = new File(jar);
+//                     if (f.exists()) {
+//                         unpackPlugins(new JarFile(f));
+//                     } else {
+//                         for (URL url : urls) {
+//                             if (url.toString().contains(jar)) {
+//                                 URLConnection connection = url.openConnection();
+//                                 if (connection instanceof JarURLConnection)
+//                                     unpackPlugins(((JarURLConnection) connection).getJarFile());
+//                             }
+//                         }
+//                     }
+//                 } catch (Exception e) {
+//                     if (VERBOSE_LOADING) {
+//                         System.out.println("could not load plugin archive...: " + jar);
+//                         e.printStackTrace();
+//                     }
+//                 }
+//             }
+//             return tmpDir.getAbsolutePath() + "/plugins";
+//         }
         return null;
     }
 

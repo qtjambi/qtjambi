@@ -329,7 +329,7 @@ public class NativeLibraryManager {
                 System.out.println(reporter.recentReports());
             unpacked = true;
         } catch (Throwable t) {
-            throw new RuntimeException("Faild to unpack native libraries, progress so far:\n"
+            throw new RuntimeException("Failed to unpack native libraries, progress so far:\n"
                                        + reporter, t);
         }
     }
@@ -351,9 +351,11 @@ public class NativeLibraryManager {
             }
         }
 
-        if (count == 0)
+        if (count == 0) {
+            System.out.println("no deploy specs...\n");
             reporter.report("No '", DEPLOY_DESCRIPTOR_NAME,
                             "' found in classpath, loading libraries via 'java.library.path'");
+        }
     }
 
     /**
@@ -389,6 +391,8 @@ public class NativeLibraryManager {
 
 
     private static void loadLibrary_helper(String lib) {
+        unpack();
+
         reporter.report("Loading library: '", lib, "'...");
 
         // First of all verify that we're allowed to load this library...
