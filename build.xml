@@ -318,6 +318,13 @@
             <param name="source"
                    expression="typesystem_designer-java.xml"/>
         </xslt>
+         <xslt in="${sourceDir}/generator/typesystem_webkit-common.xml" 
+              out="${outputDir}/generator/typesystem_webkit.xml"
+              style="${sourceDir}/generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_webkit-java.xml"/>
+        </xslt>
     </target>
 
     <target name="qtjambi"

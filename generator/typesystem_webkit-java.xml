@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<typesystem package="com.trolltech.qt.webkit" default-superclass="com.trolltech.qt.QtJambiObject">
+    <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtWebKit");
+    </inject-code>
+</typesystem>
