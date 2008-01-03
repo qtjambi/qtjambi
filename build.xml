@@ -188,7 +188,7 @@
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
                 <attribute name="Main-Class" value="com.trolltech.launcher.Launcher"/>
-                <attribute name="Class-Path" value="c:/qtjambi-${qtjambi.version}.jar c:/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar qtjambi-linux32-gcc-4.4.0_01.jar" />
+                <attribute name="Class-Path" value="c:/qtjambi-${qtjambi.version}.jar c:/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar" />
 
             </manifest>
         </jar>
