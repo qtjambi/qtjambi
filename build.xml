@@ -57,9 +57,9 @@
     <target name="clean"
             description="Clean everything.">
         <delete file="${outputDir}/ant-qtjambi.jar"/>
-	<delete file="${outputDir}/qtjambi.jar"/>
-	<delete file="${outputDir}/qtjambi-examples.jar"/>
-	<delete file="${outputDir}/qtjambi-designer.jar"/>
+	<delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
+	<delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
+	<delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
         <delete dir="${outputDir}/bin"/>
 	<delete dir="${outputDir}/lib"/>
         <delete dir="${outputDir}/cpp"/>
@@ -143,7 +143,7 @@
             <include name="com/trolltech/qt/*.java"/>
             <include name="com/trolltech/qt/*/*.java"/>
         </javac>
-        <jar destfile="${outputDir}/qtjambi.jar"
+        <jar destfile="${outputDir}/qtjambi-${qtjambi.version}.jar"
              basedir="${outputDir}"
              includes="com/trolltech/qt/*.class,com/trolltech/qt/*/*.class"
              includesfile="${sourceDir}/com/trolltech/images/qt-logo.png">
@@ -177,7 +177,7 @@
             </fileset>
         </copy>
 
-        <jar destfile="${outputDir}/qtjambi-examples.jar"
+        <jar destfile="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"
              basedir="${outputDir}/">
             <include name="com/trolltech/examples/**/*"/>
             <include name="com/trolltech/demos/**/*"/>
@@ -188,7 +188,8 @@
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
                 <attribute name="Main-Class" value="com.trolltech.launcher.Launcher"/>
-                <attribute name="Class-Path" value="qtjambi.jar qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar" />
+                <attribute name="Class-Path" value="c:/qtjambi-${qtjambi.version}.jar c:/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar qtjambi-linux32-gcc-4.4.0_01.jar" />
+
             </manifest>
         </jar>
     </target>
@@ -200,7 +201,7 @@
             <include name="com/trolltech/tools/designer/*.java"/>
         </javac>
 
-        <jar destfile="${outputDir}/qtjambi-designer.jar"
+        <jar destfile="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"
              basedir="${outputDir}">
             <include name="com/trolltech/tools/designer/*"/> 
             <exclude name="com/trolltech/tools/designer/*.java"/>
