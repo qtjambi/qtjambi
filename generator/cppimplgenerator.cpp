@@ -2511,12 +2511,12 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
 
 
         writeTypeInfo(s, java_type, ForceValueType);
-        s << "::const_iterator __qt_end_iterator = " << qt_name << ".constEnd();" << endl
+        s << "::const_iterator " << qt_name << "_end_it = " << qt_name << ".constEnd();" << endl
           << INDENT;
         s << "for (";
         writeTypeInfo(s, java_type, ForceValueType);
         s << "::const_iterator " << qt_name << "_it = " << qt_name << ".constBegin(); "
-          << qt_name << "_it != __qt_end_iterator; ++" << qt_name << "_it) {" << endl;
+          << qt_name << "_it != " << qt_name << "_end_it; ++" << qt_name << "_it) {" << endl;
         {
             Indentation indent(INDENT);
             s << INDENT;
