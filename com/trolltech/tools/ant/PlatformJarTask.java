@@ -10,15 +10,20 @@ public class PlatformJarTask extends Task {
     public static final String SYSLIB_AUTO = "auto";
     public static final String SYSLIB_NONE = "none";
 
+    public void setSyslibs(String s) {
+        if (s.equals(SYSLIB_NONE) || s.equals(SYSLIB_AUTO))
+            systemLibs = s;
+        else
+            throw new BuildException("Bad 'syslibs' parameter... Only 'auto' or 'none' available, was " + s);
+    }
+
+    public String getSyslibs() {
+        return systemLibs;
+    }
+
     public String getCacheKey() {
         return cacheKey;
     }
-
-    @SuppressWarnings({"UnusedDeclaration"})
-    private void zootyZootZoot() {
-
-    }
-
 
     public void setCacheKey(String cacheKey) {
         this.cacheKey = cacheKey;
