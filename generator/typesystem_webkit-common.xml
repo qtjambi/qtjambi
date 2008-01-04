@@ -12,7 +12,15 @@
     <object-type name="QWebFrame"/>
     <object-type name="QWebHistory"/>
     <object-type name="QWebSettings"/>
-    <object-type name="QWebPage"/>
+    <object-type name="QWebPage">
+        <inject-code class="java">
+            <import-file name="typesystem_webkit-java.java" quote-after-line="class QWebPage___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="javaScriptPrompt(QWebFrame*,QString,QString,QString*)">
+            <access modifier="private"/>
+        </modify-function>
+
+    </object-type>
 
     <value-type name="QWebHistoryItem">
         <custom-constructor>
@@ -21,6 +29,7 @@
         <custom-destructor>
             delete copy;
         </custom-destructor>
+        <modify-function signature="operator=(QWebHistoryItem)" remove="all"/>
     </value-type>
 
     <object-type name="QWebHistoryInterface"/>
