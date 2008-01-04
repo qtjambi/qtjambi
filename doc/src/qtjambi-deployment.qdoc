@@ -351,6 +351,11 @@
     containing Qt Core and Qt Gui and the jpeg plugin in addition to
     \c customlibrary.
 
+    Rather than using \c {System.loadLibrary()} to load custom
+    libraries you should use \c
+    {com.trolltech.qt.Utilities.loadJambiLibrary()} which supports
+    loading native libraries via platform archives.
+
     The \c {build.xml} file in the Qt Jambi source package can also be
     used as a source of information on how to build the platform
     archives.
