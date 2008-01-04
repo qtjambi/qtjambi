@@ -13,6 +13,8 @@
 <file>typesystem_network-java.java</file>
 <file alias="typesystem_xml.txt">typesystem_xml.xml</file>
 <file>typesystem_xml-java.java</file>
+<file>typesystem_webkit.xml</file>
+<file>typesystem_webkit-java.java</file>
 <file>parser/rpp/pp-qt-configuration</file>
 </qresource>
 </RCC>
