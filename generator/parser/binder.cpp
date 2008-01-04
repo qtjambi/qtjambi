@@ -745,7 +745,7 @@ void Binder::visitEnumerator(EnumeratorAST *node)
       const Token &end_token = _M_token_stream->token((int) expr->end_token);
 
       e->setValue(strip_preprocessor_lines(QString::fromUtf8(&start_token.text[start_token.position],
-                                    (int) (end_token.position - start_token.position)).trimmed()));
+                                    (int) (end_token.position - start_token.position)).trimmed()).remove(' '));
     }
 
   _M_current_enum->addEnumerator(e);
