@@ -352,7 +352,6 @@ public class NativeLibraryManager {
         }
 
         if (count == 0) {
-            System.out.println("no deploy specs...\n");
             reporter.report("No '", DEPLOY_DESCRIPTOR_NAME,
                             "' found in classpath, loading libraries via 'java.library.path'");
         }
