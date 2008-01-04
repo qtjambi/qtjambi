@@ -25,16 +25,6 @@ public class PlatformJarTask extends Task {
     }
 
 
-    public String getDestfile() {
-        return destfile;
-    }
-
-
-    public void setDestfile(String destfile) {
-        this.destfile = destfile;
-    }
-
-
     public File getOutdir() {
         return outdir;
     }
@@ -264,7 +254,6 @@ public class PlatformJarTask extends Task {
     }
 
 
-    private String destfile = "qtjambi-native.jar";
     private String cacheKey = "default";
     private File outdir;
     private List<LibraryEntry> libs = new ArrayList<LibraryEntry>();
