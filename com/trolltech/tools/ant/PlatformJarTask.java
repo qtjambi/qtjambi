@@ -52,6 +52,8 @@ public class PlatformJarTask extends Task {
     public void execute_internal() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
 
+        debugConfiguration = "debug".equals(props.getProperty(null, InitializeTask.CONFIGURATION));
+
         if (outdir == null)
             throw new BuildException("Missing required attribute 'outdir'. This directory is used for building the .jar file...");
 
@@ -184,6 +186,10 @@ public class PlatformJarTask extends Task {
 
         case MSVC2005:
         case MSVC2005_64:
+            if (debugConfiguration) {
+                printVisualStudioDebugRuntimeWarning();
+                break;
+            }
 
             File crt = new File(props.getProperty(null, InitializeTask.VSREDISTDIR).toString(),
                                 "Microsoft.VC" + vcnumber + ".CRT");
@@ -211,16 +217,28 @@ public class PlatformJarTask extends Task {
             break;
 
         case MSVC1998:
+            if (debugConfiguration) {
+                printVisualStudioDebugRuntimeWarning();
+                break;
+            }
             copyRuntime("msvcr60.dll");
             copyRuntime("msvcp60.dll");
             break;
 
         case MSVC2002:
+            if (debugConfiguration) {
+                printVisualStudioDebugRuntimeWarning();
+                break;
+            }
             copyRuntime("msvcr70.dll");
             copyRuntime("msvcp70.dll");
             break;
 
         case MSVC2003:
+            if (debugConfiguration) {
+                printVisualStudioDebugRuntimeWarning();
+                break;
+            }
             copyRuntime("msvcr71.dll");
             copyRuntime("msvcp71.dll");
             break;
@@ -234,7 +252,7 @@ public class PlatformJarTask extends Task {
             break;
 
         case OldGCC:
-            if (Util.OS() == Util.OS.LINUX) copyRuntime("libstdC++.so.5");
+            if (Util.OS() == Util.OS.LINUX) copyRuntime("libstdc++.so.5");
             break;
         }
 
@@ -258,6 +276,22 @@ public class PlatformJarTask extends Task {
         }
     }
 
+    private void printVisualStudioDebugRuntimeWarning() {
+        System.out.println();
+        System.out.println("************************************************************************");
+        System.out.println();
+        System.out.println("                              WARNING");
+        System.out.println();
+        System.out.println("The debug runtimes for Visual Studio are not available for");
+        System.out.println("redistribution by Microsoft, so it is not possible to create a");
+        System.out.println("platform archive that runs on other machines...");
+        System.out.println();
+        System.out.println("************************************************************************");
+        System.out.println();
+        System.out.println();
+
+    }
+
 
     private String cacheKey = "default";
     private File outdir;
@@ -267,6 +301,7 @@ public class PlatformJarTask extends Task {
     private List<String> runtimeLibs = new ArrayList<String>();
     private String systemLibs = SYSLIB_AUTO;
     private List<PluginPath> pluginPaths = new ArrayList<PluginPath>();
+    private boolean debugConfiguration = false;
 
     private PropertyHelper props;
 }

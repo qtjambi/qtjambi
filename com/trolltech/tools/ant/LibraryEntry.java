@@ -65,45 +65,71 @@ public class LibraryEntry extends Task {
 
         PropertyHelper h = PropertyHelper.getPropertyHelper(getProject());
 
+        boolean debug = "debug".equals(h.getProperty(null, InitializeTask.CONFIGURATION));
+
         // Change subdir...
         if (subdir.equals("auto"))
             subdir = (String) h.getProperty(null, InitializeTask.LIBSUBDIR);
 
         // Fix name...
-        if (type.equals(TYPE_PLUGIN))       name = formatPluginName(name);
-        else if (type.equals(TYPE_QT))      name = formatQtName(name);
-        else if (type.equals(TYPE_QTJAMBI)) name = formatQtJambiName(name);
+        if (type.equals(TYPE_PLUGIN))       name = formatPluginName(name, debug);
+        else if (type.equals(TYPE_QT))      name = formatQtName(name, debug);
+        else if (type.equals(TYPE_QTJAMBI)) name = formatQtJambiName(name, debug);
 
         if (!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT))
             load = LOAD_DEFAULT;
     }
 
 
-    private String formatPluginName(String name) {
-        switch (Util.OS()) {
+    private String formatPluginName(String name, boolean debug) {
+        if (debug) {
+            switch (Util.OS()) {
+            case WINDOWS: return name + "d4.dll";
+            case MAC: return "lib" + name + "_debug.dylib";
+            case LINUX: return "lib" + name + ".so";
+            }
+        } else {
+            switch (Util.OS()) {
             case WINDOWS: return name + "4.dll";
             case MAC: return "lib" + name + ".dylib";
             case LINUX: return "lib" + name + ".so";
+            }
         }
         throw new BuildException("unhandled case...");
     }
 
 
-    private String formatQtName(String name) {
-        switch (Util.OS()) {
+    private String formatQtName(String name, boolean debug) {
+        if (debug) {
+            switch (Util.OS()) {
+            case WINDOWS: return name + "d4.dll";
+            case MAC: return "lib" + name + "_debug.4.dylib";
+            case LINUX: return "lib" + name + ".so.4";
+            }
+        } else {
+            switch (Util.OS()) {
             case WINDOWS: return name + "4.dll";
             case MAC: return "lib" + name + ".4.dylib";
             case LINUX: return "lib" + name + ".so.4";
+            }
         }
         throw new BuildException("unhandled case...");
     }
 
 
-    private String formatQtJambiName(String name) {
-        switch (Util.OS()) {
+    private String formatQtJambiName(String name, boolean debug) {
+        if (debug)  {
+            switch (Util.OS()) {
+            case WINDOWS: return name + "_debuglib.dll";
+            case MAC: return "lib" + name + "_debuglib.jnilib";
+            case LINUX: return "lib" + name + "_debuglib.so";
+            }
+        } else {
+            switch (Util.OS()) {
             case WINDOWS: return name + ".dll";
             case MAC: return "lib" + name + ".jnilib";
             case LINUX: return "lib" + name + ".so";
+            }
         }
         throw new BuildException("unhandled case...");
     }

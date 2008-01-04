@@ -55,12 +55,22 @@ public class InitializeTask extends Task {
     public static final String VSINSTALLDIR = "qtjambi.vsinstalldir";
     public static final String VSREDISTDIR = "qtjambi.vsredistdir";
 
+    public static final String CONFIGURATION = "qtjambi.configuration";
+
     public boolean isVerbose() {
         return verbose;
     }
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    public boolean getDebug() {
+        return this.debug;
     }
 
     public void execute() throws BuildException {
@@ -87,6 +97,8 @@ public class InitializeTask extends Task {
                     throw new BuildException("Trying to mix 32-bit virtual machine with 64-bit MSVC compiler...");
             }
         }
+
+        props.setNewProperty(null, CONFIGURATION, debug ? "debug" : "release");
     }
 
     private void checkCompilerDetails() {
@@ -239,4 +251,5 @@ public class InitializeTask extends Task {
     private Compiler compiler;
     private boolean verbose;
     private PropertyHelper props;
+    private boolean debug;
 }
