@@ -1523,6 +1523,10 @@ AbstractMetaEnum *AbstractMetaClass::findEnumForValue(const QString &enumValueNa
 
 static void add_extra_include_for_type(AbstractMetaClass *meta_class, const AbstractMetaType *type)
 {
+
+    if (type == 0) 
+        return;
+
     Q_ASSERT(meta_class != 0);
     const TypeEntry *entry = (type ? type->typeEntry() : 0);
     if (entry != 0 && entry->isComplex()) {
@@ -1530,6 +1534,12 @@ static void add_extra_include_for_type(AbstractMetaClass *meta_class, const Abst
         ComplexTypeEntry *class_entry = meta_class->typeEntry();
         if (class_entry != 0 && centry->include().isValid())
             class_entry->addExtraInclude(centry->include());
+    }
+
+    if (type->hasInstantiations()) {
+        QList<AbstractMetaType *> instantiations = type->instantiations();
+        foreach (AbstractMetaType *instantiation, instantiations) 
+            add_extra_include_for_type(meta_class, instantiation);
     }
 }
 
@@ -1541,7 +1551,7 @@ static void add_extra_includes_for_function(AbstractMetaClass *meta_class, const
 
     AbstractMetaArgumentList arguments = meta_function->arguments();
     foreach (AbstractMetaArgument *argument, arguments)
-        add_extra_include_for_type(meta_class, argument->type());
+        add_extra_include_for_type(meta_class, argument->type());    
 }
 
 void AbstractMetaClass::fixFunctions()
@@ -1566,10 +1576,17 @@ void AbstractMetaClass::fixFunctions()
         // interrested in what each super class implements, not what
         // we may have propagated from their base classes again.
         AbstractMetaFunctionList super_funcs;
-        if (super_class)
+        if (super_class) {
+            
+            // Super classes can never be final 
+            if (super_class->isFinalInTargetLang()) {
+                ReportHandler::warning("Final class '" + super_class->name() + "' set to non-final, as it is extended by other classes");
+                *super_class -= AbstractMetaAttributes::FinalInTargetLang;
+            }
             super_funcs = super_class->queryFunctions(AbstractMetaClass::ClassImplements);
-        else
+        } else {
             super_funcs = interfaces().at(iface_idx)->queryFunctions(AbstractMetaClass::NormalFunctions);
+        }
 
         QSet<AbstractMetaFunction *> funcs_to_add;
         for (int sfi=0; sfi<super_funcs.size(); ++sfi) {

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<typesystem package="com.trolltech.qt.phonon" default-superclass="com.trolltech.qt.QtJambiObject">
+    <inject-code>
+        com.trolltech.qt.Utilities.loadQtLibrary("phonon");
+    </inject-code>
+        
+    <value-type name="Phonon::EffectDescription">
+        <modify-function signature="fromIndex(int)" remove="all"> <!-- temporarily removed so we can compile this -->
+            <modify-argument index="return">
+                <replace-type modified-type="com.trolltech.qt.phonon.EffectDescription" />
+                <conversion-rule class="shell">
+                    ObjectDescription %out = (ObjectDescription) (%in != 0 ? *(ObjectDescription *)qtjambi_to_object(__jni_env, __java_return_value) : EffectDescription());                    
+                </conversion-rule>
+                <conversion-rule class="native">
+                    jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "EffectDescription", "com/trolltech/qt/phonon/", true);
+                </conversion-rule>
+            </modify-argument>            
+        </modify-function>
+    </value-type>
+
+    
+</typesystem>

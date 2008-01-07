@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<typesystem>
+    
+    <rejection class="Phonon::ObjectDescriptionData" />
+    <rejection class="Phonon::ObjectDescriptionModelData" />
+    <rejection class="Phonon::MediaNodeDestructionHandler" />
+    <rejection class="Phonon::GlobalConfig" />
+    <rejection class="Phonon::IODeviceStream" />
+    
+    <namespace-type name="Phonon" />
+    
+    <enum-type name="Phonon::Category">
+        <reject-enum-value name="LastCategory" />
+    </enum-type>
+    <enum-type name="Phonon::DiscType" />
+    <enum-type name="Phonon::ErrorType" />
+    <enum-type name="Phonon::MetaData" />
+    <enum-type name="Phonon::ObjectDescriptionType" />
+    <enum-type name="Phonon::State" />
+    
+    <enum-type name="Phonon::AddonInterface::AngleCommand" />
+    <enum-type name="Phonon::AddonInterface::ChapterCommand" />
+    <enum-type name="Phonon::AddonInterface::Interface" />
+    <enum-type name="Phonon::AddonInterface::NavigationCommand" />
+    <enum-type name="Phonon::AddonInterface::TitleCommand" />
+    <enum-type name="Phonon::BackendInterface::Class" />
+    <enum-type name="Phonon::EffectParameter::Hint" flags="Phonon::EffectParameter::Hints" />
+    <enum-type name="Phonon::MediaController::Feature" flags="Phonon::MediaController::Features" />
+    <enum-type name="Phonon::MediaSource::Type" />
+    <enum-type name="Phonon::VideoWidget::AspectRatio" />
+    <enum-type name="Phonon::VideoWidget::ScaleMode" />
+    <enum-type name="Phonon::VolumeFaderEffect::FadeCurve" />                         
+
+    <interface-type name="Phonon::AbstractVideoOutput" java-name="AbstractVideoOutput" />
+    <interface-type name="Phonon::AddonInterface" java-name="AddonInterface" />
+    <interface-type name="Phonon::AudioOutputInterface" java-name="AudioOutputInterface" />
+    <interface-type name="Phonon::BackendInterface" java-name="BackendInterface" />
+    <interface-type name="Phonon::EffectInterface" java-name="EffectInterface" />
+    <interface-type name="Phonon::MediaNode" java-name="MediaNode" />
+    
+    <interface-type name="Phonon::MediaObjectInterface" java-name="MediaObjectInterface" />
+    <interface-type name="Phonon::PlatformPlugin" java-name="PlatformPlugin" />
+    <interface-type name="Phonon::StreamInterface" java-name="StreamInterface" />
+    <interface-type name="Phonon::VideoWidgetInterface" java-name="VideoWidgetInterface" />
+    <interface-type name="Phonon::VolumeFaderInterface" java-name="VolumeFaderInterface" />
+
+    <value-type name="Phonon::EffectParameter" java-name="EffectParameter">
+        <modify-function signature="EffectParameter()" remove="all" /> <!-- internal -->
+        <modify-function signature="operator&lt;(const EffectParameter &amp;)const" remove="all" /> <!-- internal -->
+        <modify-function signature="operator&gt;(const EffectParameter &amp;)const" remove="all" /> <!-- internal -->
+        <modify-function signature="id()const" remove="all" /> <!-- internal -->
+    </value-type>
+    <value-type name="Phonon::MediaSource" java-name="MediaSource" />
+    <value-type name="Phonon::Path" java-name="Path">
+        <modify-function signature="disconnect()" rename="disconnectPath" />
+    </value-type>
+    <value-type name="Phonon::ObjectDescription" generate="no" />
+    <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
+
+    <object-type name="Phonon::AbstractAudioOutput" java-name="AbstractAudioOutput" />
+    <object-type name="Phonon::AbstractMediaStream" java-name="AbstractMediaStream" />
+    <object-type name="Phonon::AudioOutput" java-name="AudioOutput" />
+    <object-type name="Phonon::Effect" java-name="Effect" />
+    <object-type name="Phonon::EffectWidget" java-name="EffectWidget" />
+    <object-type name="Phonon::MediaController" java-name="MediaController" />
+    <object-type name="Phonon::MediaObject" java-name="MediaObject">     
+        <modify-function signature="enqueue(const QList&lt;QUrl&gt; &amp;)" rename="enqueueUrls" />
+        <modify-function signature="setQueue(const QList&lt;QUrl&gt; &amp;)" rename="setQueueToUrls" />
+    </object-type>
+    <object-type name="Phonon::SeekSlider" java-name="SeekSlider" />
+    <object-type name="Phonon::VideoPlayer" java-name="VideoPlayer" />
+    <object-type name="Phonon::VideoWidget" java-name="VideoWidget" />
+    <object-type name="Phonon::VolumeFaderEffect" java-name="VolumeFaderEffect" />
+    <object-type name="Phonon::VolumeSlider" java-name="VolumeSlider" />    
+  
+</typesystem>

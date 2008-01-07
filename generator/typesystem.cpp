@@ -449,7 +449,7 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
 
         case StackElement::ObjectTypeEntry:
-        case StackElement::ValueTypeEntry:
+        case StackElement::ValueTypeEntry:            
             attributes["force-abstract"] = QString("no");
             attributes["deprecated"] = QString("no");
             // fall throooough
@@ -457,13 +457,14 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["default-superclass"] = m_defaultSuperclass;
             attributes["polymorphic-id-expression"] = QString();
             attributes["java-name"] = QString();
-            attributes["delete-in-main-thread"] = QString("no");
+            attributes["delete-in-main-thread"] = QString("no");            
             // fall through
         case StackElement::NamespaceTypeEntry:
             attributes["package"] = m_defaultPackage;
             attributes["expense-cost"] = "1";
             attributes["expense-limit"] = "none";
             attributes["polymorphic-base"] = QString("no");
+            attributes["generate"] = QString("yes");
             break;
         default:
             ; // nada
@@ -513,13 +514,8 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::EnumTypeEntry: {
             QStringList names = name.split(QLatin1String("::"));
-            if (names.size() != 2) {
-                ReportHandler::warning(QString("enum %1 is not on the pattern Qualifier::Name")
-                                       .arg(name));
-                break;
-            }
 
-            m_current_enum = new EnumTypeEntry(names.at(0), names.at(1));
+            m_current_enum = new EnumTypeEntry(QStringList(names.mid(0, names.size() - 1)).join("::"), names.last());
             element->entry = m_current_enum;
             m_current_enum->setCodeGeneration(m_generate);
             m_current_enum->setTargetLangPackage(m_defaultPackage);
@@ -537,16 +533,13 @@ bool Handler::startElement(const QString &, const QString &n,
                 QString n = ftype->originalName();
 
                 QStringList lst = n.split("::");
-                if (lst.size() != 2) {
-                    ReportHandler::warning(QString("flag %2 is not on pattern Qualifier::Name")
-                                           .arg(n));
-                } else if (lst.at(0) != m_current_enum->javaQualifier()) {
+                if (QStringList(lst.mid(0, lst.size() - 1)).join("::") != m_current_enum->javaQualifier()) {
                     ReportHandler::warning(QString("enum %1 and flags %2 differ in qualifiers")
                                            .arg(m_current_enum->javaQualifier())
                                            .arg(lst.at(0)));
                 }
 
-                ftype->setFlagsName(lst.at(1));
+                ftype->setFlagsName(lst.last());
                 m_current_enum->setFlags(ftype);
 
                 m_database->addFlagsType(ftype);
@@ -558,10 +551,16 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::InterfaceTypeEntry:
             {
                 ObjectTypeEntry *otype = new ObjectTypeEntry(name);
-                otype->setCodeGeneration(m_generate);
+                QString javaName = attributes["java-name"];
+                if (javaName.isEmpty()) 
+                    javaName = name;
                 InterfaceTypeEntry *itype =
-                    new InterfaceTypeEntry(InterfaceTypeEntry::interfaceName(name));
-                itype->setCodeGeneration(m_generate);
+                    new InterfaceTypeEntry(InterfaceTypeEntry::interfaceName(javaName));
+                
+                if (!convertBoolean(attributes["generate"], "generate", true))
+                    itype->setCodeGeneration(TypeEntry::GenerateForSubclass);
+                else
+                    itype->setCodeGeneration(m_generate);
                 otype->setDesignatedInterface(itype);
                 itype->setOrigin(otype);
                 element->entry = otype;
@@ -570,25 +569,27 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::NamespaceTypeEntry:
             if (element->entry == 0) {
                 element->entry = new NamespaceTypeEntry(name);
-                element->entry->setCodeGeneration(m_generate);
             }
             // fall through
         case StackElement::ObjectTypeEntry:
             if (element->entry == 0) {
                 element->entry = new ObjectTypeEntry(name);
-                element->entry->setCodeGeneration(m_generate);
             }
             // fall through
         case StackElement::ValueTypeEntry:
             {
                 if (element->entry == 0) {
                     element->entry = new ValueTypeEntry(name);
-                    element->entry->setCodeGeneration(m_generate);
                 }
 
                 ComplexTypeEntry *ctype = static_cast<ComplexTypeEntry *>(element->entry);
                 ctype->setTargetLangPackage(attributes["package"]);
                 ctype->setDefaultSuperclass(attributes["default-superclass"]);
+
+                if (!convertBoolean(attributes["generate"], "generate", true))
+                    element->entry->setCodeGeneration(TypeEntry::GenerateForSubclass);
+                else
+                    element->entry->setCodeGeneration(m_generate);
 
                 QString javaName = attributes["java-name"];
                 if (!javaName.isEmpty())
@@ -686,7 +687,7 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
-	    attributes["replace-value"] = QString();
+	        attributes["replace-value"] = QString();
             break;
         case StackElement::ModifyField:
             attributes["name"] = QString();
@@ -1520,8 +1521,9 @@ FunctionModificationList ComplexTypeEntry::functionModifications(const QString &
     FunctionModificationList lst;
     for (int i=0; i<m_function_mods.count(); ++i) {
         FunctionModification mod = m_function_mods.at(i);
-        if (mod.signature == signature)
+        if (mod.signature == signature) {
             lst << mod;
+        }
     }
 
     return lst;
@@ -1573,6 +1575,15 @@ QString ContainerTypeEntry::qualifiedCppName() const
     if (m_type == StringListContainer)
         return "QStringList";
     return ComplexTypeEntry::qualifiedCppName();
+}
+
+QString EnumTypeEntry::javaQualifier() const
+{
+    TypeEntry *te = TypeDatabase::instance()->findType(m_qualifier);
+    if (te != 0)
+        return te->targetLangName();
+    else
+        return m_qualifier;
 }
 
 QString EnumTypeEntry::jniName() const

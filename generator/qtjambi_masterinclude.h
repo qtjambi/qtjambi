@@ -19,13 +19,21 @@
 #include <QtSql/QtSql>
 #include <QtSvg/QtSvg>
 #include <QtXml/QtXml>
-#include <QtWebKit/QtWebKit>
+
+#ifndef QT_NO_WEBKIT
+#  include <QtWebKit/QtWebKit>
+#endif
+
+#ifndef QT_NO_PHONON
+#  include <phonon/phonon>
+#endif
 
 #include <../qtjambi_designer/designer.h>
 
 #include <../qtjambi_gui/qtreemodel.h>
 #include <../qtjambi_gui/qguisignalmapper.h>
 
+#ifndef QT_NO_OPENGL
 #define GL_ACCUM                          0x0100
 #define GL_LOAD                           0x0101
 #define GL_RETURN                         0x0102
@@ -1111,3 +1119,4 @@
 #define GL_LOGIC_OP GL_INDEX_LOGIC_OP
 #define GL_TEXTURE_COMPONENTS GL_TEXTURE_INTERNAL_FORMAT
 #include <QtOpenGL/QtOpenGL>
+#endif // QT_NO_OPENGL

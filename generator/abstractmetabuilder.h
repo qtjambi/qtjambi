@@ -60,6 +60,7 @@ public:
     void figureOutDefaultEnumArguments();
 
     void addAbstractMetaClass(AbstractMetaClass *cls);
+    AbstractMetaClass *traverseTypeAlias(TypeAliasModelItem item);
     AbstractMetaClass *traverseClass(ClassModelItem item);
     bool setupInheritance(AbstractMetaClass *meta_class);
     AbstractMetaClass *traverseNamespace(NamespaceModelItem item);

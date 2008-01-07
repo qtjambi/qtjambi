@@ -169,11 +169,9 @@ QString default_return_statement_qt(const AbstractMetaType *java_type, Generator
         return returnStr + " QChar()";
     else if (java_type->isEnum())
         return returnStr + " " + java_type->typeEntry()->name() + "(0)";
-    else if (java_type->isValue())
-        return returnStr + " " + java_type->typeEntry()->name() + "()";
     else if (java_type->isContainer() && ((ContainerTypeEntry *)java_type->typeEntry())->type() == ContainerTypeEntry::StringListContainer)
         return returnStr + " " + java_type->typeEntry()->name() + "()";
-    else if (java_type->isContainer())
+    else if (java_type->isValue() || java_type->isContainer())
         return returnStr + " " + java_type->cppSignature() + "()";
     else
         return returnStr + " 0";
@@ -928,7 +926,8 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
             if (java_class->baseClass() != 0)
                 interfaces += java_class->baseClass();
             foreach (AbstractMetaClass *iface, interfaces) {
-                s << INDENT << "    m_link->unregisterSubObject((" << iface->qualifiedCppName() << " *) this);" << endl;
+                AbstractMetaClass *impl = iface->isInterface() ? iface->primaryInterfaceImplementor() : iface;
+                s << INDENT << "    m_link->unregisterSubObject((" << impl->qualifiedCppName() << " *) this);" << endl;
             }
         }
 
@@ -1774,7 +1773,8 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
             if (cls->baseClass() != 0)
                 interfaces += cls->baseClass();
             foreach (AbstractMetaClass *iface, interfaces) {
-                s << INDENT << qt_object_name << "->m_link->registerSubObject((" << iface->qualifiedCppName() << " *) " << qt_object_name << ");" << endl;
+                AbstractMetaClass *impl = iface->isInterface() ? iface->primaryInterfaceImplementor() : iface;
+                s << INDENT << qt_object_name << "->m_link->registerSubObject((" << impl->qualifiedCppName() << " *) " << qt_object_name << ");" << endl;
             }
         }
     }
@@ -1967,7 +1967,7 @@ void CppImplGenerator::writeInterfaceCastFunction(QTextStream &s,
       << " jobject," << endl
       << " jlong ptr)" << endl
       << "{" << endl
-      << "    return (jlong) (" << interface->qualifiedCppName() << " *) "
+      << "    return (jlong) (" << interface->primaryInterfaceImplementor()->qualifiedCppName() << " *) "
       << "(" << java_class->qualifiedCppName() << " *) ptr;" << endl
       << "}" << endl;
 }

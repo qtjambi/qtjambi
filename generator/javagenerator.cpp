@@ -1465,6 +1465,22 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     for (int i=0; i<signal_funcs.size(); ++i)
         writeSignal(s, signal_funcs.at(i));
 
+    // Class has subclasses but also only private constructors
+    if (!java_class->isFinalInTargetLang() && java_class->isFinalInCpp()) {
+        s << endl << INDENT << "/**" << endl
+          << INDENT << " * This constructor is a place holder intended to prevent" << endl
+          << INDENT << " * users from subclassing the class. Certain classes can" << endl
+          << INDENT << " * unfortunately only be subclasses internally. The constructor" << endl
+          << INDENT << " * will indiscriminately throw an exception if called. If the" << endl
+          << INDENT << " * exception is ignored, any use of the constructed object will" << endl
+          << INDENT << " * cause an exception to occur." << endl << endl
+          << INDENT << " * @throws QClassCannotBeSubclassedException" << endl
+          << INDENT << " **/" << endl
+          << INDENT << "protected " << java_class->name() << "() throws QClassCannotBeSubclassedException {" << endl
+          << INDENT << "    throw new QClassCannotBeSubclassedException(" << java_class->name() << ".class);" << endl
+          << INDENT << "}" << endl << endl;             
+    }
+
     // Functions
     AbstractMetaFunctionList java_funcs = java_class->functionsInTargetLang();
     for (int i=0; i<java_funcs.size(); ++i) {
@@ -1717,7 +1733,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         if (modified_type.isEmpty())
             s << translateType(java_function->type(), (Option) options);
         else
-            s << modified_type.replace('$', '.');
+            s << modified_type.replace('$', '.');        
         s << " ";
     }
 }

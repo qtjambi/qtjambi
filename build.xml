@@ -326,6 +326,13 @@
             <param name="source"
                    expression="typesystem_webkit-java.xml"/>
         </xslt>
+        <xslt in="${sourceDir}/generator/typesystem_phonon-common.xml" 
+              out="${outputDir}/generator/typesystem_phonon.xml"
+              style="${sourceDir}/generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_phonon-java.xml"/>
+        </xslt>        
     </target>
 
     <target name="qtjambi"

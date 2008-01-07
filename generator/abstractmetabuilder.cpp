@@ -363,6 +363,14 @@ bool AbstractMetaBuilder::build()
             m_meta_classes << meta_class;
     }
 
+    // Go through all typedefs to see if we have defined any 
+    // specific typedefs to be used as classes.
+    TypeAliasList typeAliases = m_dom->typeAliases();
+    foreach (TypeAliasModelItem typeAlias, typeAliases) {
+        AbstractMetaClass *cls = traverseTypeAlias(typeAlias);
+        addAbstractMetaClass(cls);
+    }
+
     foreach (AbstractMetaClass *cls, m_meta_classes) {
         if (!cls->isInterface() && !cls->isNamespace()) {
             setupInheritance(cls);
@@ -377,7 +385,7 @@ bool AbstractMetaBuilder::build()
             ReportHandler::warning(QString("class '%1' does not have an entry in the type system")
                                    .arg(cls->name()));
         } else {
-            if (!cls->hasConstructors() && !cls->isFinal() && !cls->isInterface() && !cls->isNamespace())
+            if (!cls->hasConstructors() && !cls->isFinalInCpp() && !cls->isInterface() && !cls->isNamespace())
                 cls->addDefaultConstructor();
         }
 
@@ -530,6 +538,16 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
         AbstractMetaClass *mjc = traverseClass(cls);
         addAbstractMetaClass(mjc);
     }
+
+    // Go through all typedefs to see if we have defined any 
+    // specific typedefs to be used as classes.
+    TypeAliasList typeAliases = namespace_item->typeAliases();
+    foreach (TypeAliasModelItem typeAlias, typeAliases) {
+        AbstractMetaClass *cls = traverseTypeAlias(typeAlias);
+        addAbstractMetaClass(cls);
+    }
+
+
 
     // Traverse namespaces recursively
     QList<NamespaceModelItem> inner_namespaces = namespace_item->namespaceMap().values();
@@ -910,11 +928,44 @@ AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, Abs
     return meta_enum;
 }
 
+AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typeAlias) 
+{
+    QString class_name = strip_template_args(typeAlias->name());
+
+    QString full_class_name = class_name;
+    // we have an inner class
+    if (m_current_class) {
+        full_class_name = strip_template_args(m_current_class->typeEntry()->qualifiedCppName())
+                          + "::" + full_class_name;
+    }
+
+    // If we haven't specified anything for the typedef, then we don't care
+    ComplexTypeEntry *type = TypeDatabase::instance()->findComplexType(full_class_name);
+    if (type == 0)
+        return 0;
+
+    if (type->isObject())
+        static_cast<ObjectTypeEntry *>(type)->setQObject(isQObject(full_class_name));    
+
+    AbstractMetaClass *meta_class = createMetaClass();
+    meta_class->setTypeEntry(type);
+    meta_class->setBaseClassNames(QStringList() << typeAlias->type().qualifiedName().join("::"));
+    *meta_class += AbstractMetaAttributes::Public;
+
+    // Set the default include file name
+    if (!type->include().isValid()) {
+        QFileInfo info(typeAlias->fileName());
+        type->setInclude(Include(Include::IncludePath, info.fileName()));
+    }
+
+    return meta_class;
+}
+
 AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
 {
     QString class_name = strip_template_args(class_item->name());
-
     QString full_class_name = class_name;
+
     // we have inner an class
     if (m_current_class) {
         full_class_name = strip_template_args(m_current_class->typeEntry()->qualifiedCppName())
@@ -923,6 +974,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
 
     ComplexTypeEntry *type = TypeDatabase::instance()->findComplexType(full_class_name);
     RejectReason reason = NoReason;
+
 
     if (TypeDatabase::instance()->isClassRejected(full_class_name)) {
         reason = GenerationDisabled;
@@ -938,7 +990,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
 
     if (reason != NoReason) {
         m_rejected_classes.insert(full_class_name, reason);
-        return false;
+        return 0;
     }
 
     if (type->isObject()) {
@@ -987,6 +1039,18 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
         }
 
     }
+
+    // Go through all typedefs to see if we have defined any 
+    // specific typedefs to be used as classes.
+    TypeAliasList typeAliases = class_item->typeAliases();
+    foreach (TypeAliasModelItem typeAlias, typeAliases) {
+        AbstractMetaClass *cls = traverseTypeAlias(typeAlias);
+        if (cls != 0) {
+            cls->setEnclosingClass(meta_class);
+            addAbstractMetaClass(cls);
+        }
+    }
+
 
     m_template_args.clear();
 
@@ -1186,12 +1250,14 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
 
     // we only support our own containers and ONLY if there is only one baseclass
     if (base_classes.size() == 1 && base_classes.first().count('<') == 1) {
-        QString complete_name = base_classes.first();
-        TypeParser::Info info = TypeParser::parse(complete_name);
-        QString base_name = info.qualified_name.join("::");
-        ContainerTypeEntry *cte = types->findContainerType(base_name);
+        QStringList scope = meta_class->typeEntry()->qualifiedCppName().split("::");
+        scope.removeLast();
+        for (int i=scope.size(); i>=0; --i) {
+            QString prefix = i > 0 ? QStringList(scope.mid(0, i)).join("::") + "::" : QString();
+            QString complete_name = prefix + base_classes.first();
+            TypeParser::Info info = TypeParser::parse(complete_name);            
+            QString base_name = info.qualified_name.join("::");
 
-        if (cte) {
             AbstractMetaClass *templ = 0;
             foreach (AbstractMetaClass *c, m_templates) {
                 if (c->typeEntry()->name() == base_name) {
@@ -1199,16 +1265,20 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
                     break;
                 }
             }
+
+            if (templ == 0) 
+                templ = m_meta_classes.findClass(base_name);
+
             if (templ) {
                 inheritTemplate(meta_class, templ, info);
                 return true;
             }
-
-            ReportHandler::warning(QString("template baseclass '%1' of '%2' is not known")
-                                   .arg(base_name)
-                                   .arg(meta_class->name()));
-            return false;
         }
+
+        ReportHandler::warning(QString("template baseclass '%1' of '%2' is not known")
+                                .arg(base_classes.first())
+                                .arg(meta_class->name()));
+        return false;
     }
 
     int primary = -1;
@@ -1483,8 +1553,20 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
 
     if (!resolveType)
         typei = _typei;
-    else
-        typei = TypeInfo::resolveType(_typei, currentScope()->toItem());
+    else {        
+        // Go through all parts of the current scope (including global namespace)
+        // to resolve typedefs. The parser does not properly resolve typedefs in
+        // the global scope when they are referenced from inside a namespace.
+        // This is a work around to fix this bug since fixing it in resolveType
+        // seemed non-trivial
+        int i = m_scopes.size() - 1;
+        while (i >= 0) {
+            typei = TypeInfo::resolveType(_typei, m_scopes.at(i--)->toItem());
+            if (typei.qualifiedName().join("::") != _typei.qualifiedName().join("::"))
+                break;            
+        }
+        
+    }
 
     if (typei.isFunctionPointer()) {
         *ok = false;
@@ -1923,12 +2005,7 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
             temporary_type->setReference(i.is_reference);
             temporary_type->setIndirections(i.indirections);
             template_types << temporary_type;
-        } else {
-            ReportHandler::warning(QString("unknown type used as template argument: %1 in %2")
-                                   .arg(i.toString())
-                                   .arg(info.toString()));
-            return false;
-        }
+        } 
     }
 
     AbstractMetaFunctionList funcs = subclass->functions();
@@ -1955,6 +2032,11 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
         // There is no base class in java to inherit from here, so the
         // template instantiation is the class that implements the function..
         f->setImplementingClass(subclass);
+
+        // We also set it as the declaring class, since the superclass is 
+        // supposed to disappear. This allows us to make certain function modifications
+        // on the inherited functions.
+        f->setDeclaringClass(subclass);
 
         if (f->isConstructor()) {
             delete f;

@@ -607,7 +607,7 @@ public:
     void setTargetLangPackage(const QString &package) { m_package_name = package; }
 
     QString targetLangName() const { return m_java_name; }
-    QString javaQualifier() const { return m_qualifier; }
+    QString javaQualifier() const;
     QString qualifiedTargetLangName() const {
         QString pkg = javaPackage();
         if (pkg.isEmpty()) return javaQualifier() + '.' + targetLangName();
@@ -837,7 +837,6 @@ private:
     ExpensePolicy m_expense_policy;
     TypeFlags m_type_flags;
 };
-
 
 class ContainerTypeEntry : public ComplexTypeEntry
 {
