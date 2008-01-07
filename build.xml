@@ -8,15 +8,16 @@
     <property name="outputDir" value="." />
 
     <property name="jambiLib" value="${outputDir}/lib" />
-    <property name="qt"       value="${env.QTDIR}" />
-    <property name="qtLib"    value="${qt}/lib" />
-    <property name="config"   value="release" />
 
     <target name="help"
             description="Provides detailed help.">
 	<echo>To build Qt Jambi, run ant without parameters.</echo>
 	<echo></echo>
         <echo>To get a description of all tasks run: ant -projecthelp</echo>
+	<echo/>
+	<echo>Available build properties:</echo>
+	<echo>    -Dqtjambi.config=debug|release    Decide what native libraries</echo>
+	<echo>                                      should be included.</echo>
 	<echo/>
 	<echo>You can also see the Qt Jambi intallation document at:</echo>
 	<echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
@@ -51,7 +52,7 @@
         <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
         <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
         
-        <qtjambi-initialize verbose="true" />
+        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
     </target>
 
     <target name="clean"
@@ -83,13 +84,13 @@
 	<qmake recursive="true" 
                dir="${outputDir}"
                pro="${sourceDir}/java.pro"
-               config="${config}"/>
+               config="${qtjambi.configuration}"/>
 
         <!-- FIXME // Temporary put in here so we get teamtester to compile all files. -->
         <qmake recursive="true" 
                dir="${outputDir}"
                pro="${sourceDir}/java.pro"
-               config="${config}"/>
+               config="${qtjambi.configuration}"/>
     </target>
 
     <target name="qmake.generator"

@@ -65,12 +65,12 @@ public class InitializeTask extends Task {
         this.verbose = verbose;
     }
 
-    public void setDebug(boolean debug) {
-        this.debug = debug;
+    public void setConfiguration(String configuration) {
+        this.configuration = configuration;
     }
 
-    public boolean getDebug() {
-        return this.debug;
+    public String getConfiguration() {
+        return configuration;
     }
 
     public void execute() throws BuildException {
@@ -98,7 +98,7 @@ public class InitializeTask extends Task {
             }
         }
 
-        props.setNewProperty(null, CONFIGURATION, debug ? "debug" : "release");
+        props.setNewProperty(null, CONFIGURATION, decideConfiguration());
     }
 
     private void checkCompilerDetails() {
@@ -248,8 +248,23 @@ public class InitializeTask extends Task {
         return qtdir;
     }
 
+    private String decideConfiguration() {
+
+        String result = null;
+
+        if ("debug".equals(configuration)) {
+            result = "debug";
+        } else {
+            result = "release";
+        }
+
+        if (verbose) System.out.println(CONFIGURATION + ": " + result);
+        return result;
+    }
+
+
     private Compiler compiler;
     private boolean verbose;
     private PropertyHelper props;
-    private boolean debug;
+    private String configuration;
 }
