@@ -227,6 +227,7 @@
             <library name="QtSvg"           type="qt"      rootPath="${qtjambi.qtdir}" />
             <library name="QtNetwork"       type="qt"      rootPath="${qtjambi.qtdir}" />
             <library name="QtOpenGL"        type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtWebKit"        type="qt"      rootPath="${qtjambi.qtdir}" />
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
@@ -250,6 +251,7 @@
             <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}" />
+	    <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" />
 
 	    <plugin path="plugins" />
 
