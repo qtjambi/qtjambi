@@ -35,7 +35,7 @@
         <mkdir dir="${outputDir}/autotestlib"/>
         <qmake dir="${outputDir}/autotestlib/" 
                recursive="true" 
-               config="${config}"
+               config="${qtjambi.configuration}"
                pro="${sourceDir}/autotestlib/autotestlib.pro"/>
 	<make dir="${outputDir}/autotestlib" silent="true"/>
         
