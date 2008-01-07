@@ -17,6 +17,33 @@
             </modify-argument>            
         </modify-function>
     </value-type>
-
+    
+    <value-type name="Phonon::AudioOutputDevice">
+        <modify-function signature="fromIndex(int)" remove="all" /> <!-- temporarily removed so we can compile this -->
+    </value-type>
+    
+    <interface-type name="Phonon::PlatformPlugin">
+        <modify-function signature="notification(const char *, const QString &amp;, const QStringList&lt;QString&gt; &amp;, QObject *, const char *)const">
+            <modify-argument index="3">
+                <replace-default-expression with="null" />
+            </modify-argument>
+        </modify-function>
+    </interface-type>
+    
+    <interface-type name="Phonon::AddonInterface">
+        <modify-function signature="interfaceCall(Phonon::AddonInterface::Interface, int, const QList&lt;QVariant&gt; &amp;)">
+            <modify-argument index="3">
+                <replace-default-expression with="null" />
+            </modify-argument>
+        </modify-function>
+    </interface-type>
+    
+    <interface-type name="Phonon::BackendInterface">
+        <modify-function signature="createObject(Phonon::BackendInterface::Class, QObject *, const QList&lt;QVariant&gt; &amp;)">
+            <modify-argument index="3">
+                <replace-default-expression with="null" />
+            </modify-argument>
+        </modify-function>
+    </interface-type>
     
 </typesystem>

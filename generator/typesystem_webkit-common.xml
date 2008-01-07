@@ -60,4 +60,20 @@
             </modify-argument>
         </modify-function>
     </object-type>
+
+    <!-- Needed to avoid warnings on compilers that don't support webkit -->    
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'NavigationRequestResponse' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebSettings' for enum 'WebAttribute' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebSettings' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebHistoryItem' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebHistoryInterface' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'WebAction' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebSettings' for enum 'FontSize' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebSettings' for enum 'WebGraphic' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'NavigationType' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebSettings' for enum 'FontType' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebFrame' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebHistory' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebView' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPage' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
 </typesystem>

@@ -1807,7 +1807,7 @@ QString AbstractMetaType::minimalSignature() const
     QString minimalSignature;
     if (isConstant())
         minimalSignature += "const ";
-    minimalSignature += typeEntry()->name();
+    minimalSignature += typeEntry()->qualifiedCppName();
     if (hasInstantiations()) {
         QList<AbstractMetaType *> instantiations = this->instantiations();
         minimalSignature += "<";

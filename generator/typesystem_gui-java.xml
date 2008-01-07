@@ -296,7 +296,7 @@
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QTextLine___" quote-before-line="}// class"/>
         </inject-code>
-        <modify-function signature="draw(QPainter*,QPointF,const QTextLayout_FormatRange*)const">
+        <modify-function signature="draw(QPainter*,QPointF,const QTextLayout::FormatRange*)const">
             <access modifier="private"/>
             <modify-argument index="3">
                 <remove-default-expression/>

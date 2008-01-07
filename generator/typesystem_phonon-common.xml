@@ -6,6 +6,11 @@
     <rejection class="Phonon::MediaNodeDestructionHandler" />
     <rejection class="Phonon::GlobalConfig" />
     <rejection class="Phonon::IODeviceStream" />
+    <rejection class="Phonon::Factory" />
+    <rejection class="Phonon::Experimental" />
+    <rejection class="Phonon::BackendCapabilities" />
+    <rejection class="AudioOutputAdaptor" />
+    <rejection class="*" field-name="k_ptr" />
     
     <namespace-type name="Phonon" />
     
@@ -46,8 +51,8 @@
 
     <value-type name="Phonon::EffectParameter" java-name="EffectParameter">
         <modify-function signature="EffectParameter()" remove="all" /> <!-- internal -->
-        <modify-function signature="operator&lt;(const EffectParameter &amp;)const" remove="all" /> <!-- internal -->
-        <modify-function signature="operator&gt;(const EffectParameter &amp;)const" remove="all" /> <!-- internal -->
+        <modify-function signature="operator&lt;(const Phonon::EffectParameter &amp;)const" remove="all" /> <!-- internal -->
+        <modify-function signature="operator&gt;(const Phonon::EffectParameter &amp;)const" remove="all" /> <!-- internal -->
         <modify-function signature="id()const" remove="all" /> <!-- internal -->
     </value-type>
     <value-type name="Phonon::MediaSource" java-name="MediaSource" />
@@ -56,6 +61,7 @@
     </value-type>
     <value-type name="Phonon::ObjectDescription" generate="no" />
     <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
+    <value-type name="Phonon::AudioOutputDevice" java-name="AudioOutputDevice" />
 
     <object-type name="Phonon::AbstractAudioOutput" java-name="AbstractAudioOutput" />
     <object-type name="Phonon::AbstractMediaStream" java-name="AbstractMediaStream" />
@@ -72,5 +78,16 @@
     <object-type name="Phonon::VideoWidget" java-name="VideoWidget" />
     <object-type name="Phonon::VolumeFaderEffect" java-name="VolumeFaderEffect" />
     <object-type name="Phonon::VolumeSlider" java-name="VolumeSlider" />    
+    
+    <suppress-warning text="skipping function 'Phonon::ObjectDescription::operator!=', unmatched parameter type 'ObjectDescription const&amp;'" />
+    <suppress-warning text="skipping function 'Phonon::ObjectDescription::ObjectDescription', unmatched parameter type 'QExplicitlySharedDataPointer&lt;ObjectDescriptionData&gt; const&amp;'" />
+    <suppress-warning text="skipping function 'Phonon::ObjectDescription::operator==', unmatched parameter type 'ObjectDescription const&amp;'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Final class 'AbstractAudioOutput' set to non-final, as it is extended by other classes" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'QDBus' does not have a type entry" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'create(const QString &amp; name)' in 'QTextCodecPlugin'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'keys() const' in 'QTextCodecPlugin'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'MediaSource' has equals operators but no qHash() function" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'Path' has equals operators but no qHash() function" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'EffectParameter' has equals operators but no qHash() function" />
   
 </typesystem>

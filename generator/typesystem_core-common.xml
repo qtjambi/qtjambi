@@ -118,6 +118,25 @@
   <rejection class="QLocale::Data" />  
   <rejection class="QGlobalStaticDeleter" />
   <rejection class="QSharedMemory" /> <!-- Temporarily until we know how to implement it in Java -->
+  <rejection class="QVarLengthArray" />
+  
+  <!-- DBus -->
+  <rejection class="QDBusAbstractAdaptor" />
+  <rejection class="QDBusAbstractInterface" />
+  <rejection class="QDBusArgument" />
+  <rejection class="QDBusConnection" />
+  <rejection class="QDBusConnectionInterface" />
+  <rejection class="QDBusContext" />
+  <rejection class="QDBusError" />
+  <rejection class="QDBusInterface" />
+  <rejection class="QDBusMessage" />
+  <rejection class="QDBusMetaType" />
+  <rejection class="QDBusObjectPath" />
+  <rejection class="QDBusReply" />
+  <rejection class="QDBusServer" />
+  <rejection class="QDBusSignature" />
+  <rejection class="QDBusVariant" />
+   
   <rejection class="_Revbidit" />
   <rejection class="_complex" />
   <rejection class="_exception" />
@@ -647,11 +666,11 @@
         </modify-argument>
     </modify-function>
   
-    <modify-function signature="fromUnicode(const QChar*,int,QTextCodec_ConverterState*)const">
+    <modify-function signature="fromUnicode(const QChar*,int,QTextCodec::ConverterState*)const">
         <remove/>
     </modify-function>
     
-    <modify-function signature="toUnicode(const char*,int,QTextCodec_ConverterState*)const">
+    <modify-function signature="toUnicode(const char*,int,QTextCodec::ConverterState*)const">
         <remove/>
     </modify-function>
     

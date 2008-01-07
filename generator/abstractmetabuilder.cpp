@@ -2099,17 +2099,29 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
 
         QStringList l = p.split(QLatin1String(" "));
 
-        TypeInfo info;
-        info.setQualifiedName(l.at(0).split("::"));
-        bool ok;
-        AbstractMetaType *type = translateType(info, &ok);
-        if (!type || !ok) {
+
+        QStringList qualifiedScopeName = currentScope()->qualifiedName();
+        bool ok = false;
+        AbstractMetaType *type = 0;
+        QString scope;
+        for (int j=qualifiedScopeName.size(); j>=0; --j) {
+            scope = j > 0 ? QStringList(qualifiedScopeName.mid(0, j)).join("::") + "::" : QString();
+            TypeInfo info;
+            info.setQualifiedName((scope + l.at(0)).split("::"));
+
+            type = translateType(info, &ok);
+            if (type != 0 && ok) {
+                break;            
+            }
+        }
+
+        if (type == 0 || !ok) {
             ReportHandler::warning(QString("Unable to decide type of property: '%1' in class '%2'")
                                    .arg(l.at(0)).arg(meta_class->name()));
             continue;
         }
 
-        QString typeName = l.at(0);
+        QString typeName = scope + l.at(0);
 
         QPropertySpec *spec = new QPropertySpec(type->typeEntry());
         spec->setName(l.at(1));
