@@ -62,6 +62,27 @@
     <value-type name="Phonon::Path" java-name="Path">
         <modify-function signature="disconnect()" rename="disconnectPath" />
         <modify-function signature="operator=(Phonon::Path)" remove="all" /> <!-- Covered by copy constructor -->
+        <modify-function signature="insertEffect(Phonon::EffectDescription,Phonon::Effect*)">
+            <modify-argument index="1">
+                <reference-count action="add" variable-name="__rcEffects" />
+            </modify-argument>
+            <modify-argument index="2">
+                <reference-count action="ignore" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="insertEffect(Phonon::Effect*,Phonon::Effect*)">
+            <modify-argument index="1">
+                <reference-count action="add" variable-name="__rcEffects" />
+            </modify-argument>
+            <modify-argument index="2">
+                <reference-count action="ignore" />
+            </modify-argument>
+        </modify-function>        
+        <modify-function signature="removeEffect(Phonon::Effect*)">
+            <modify-argument index="1">
+                <reference-count action="remove" variable-name="__rcEffects" />
+            </modify-argument>
+        </modify-function>
     </value-type>
     <value-type name="Phonon::ObjectDescription" generate="no" />
     <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
@@ -77,11 +98,23 @@
         <modify-function signature="enqueue(const QList&lt;QUrl&gt; &amp;)" rename="enqueueUrls" />
         <modify-function signature="setQueue(const QList&lt;QUrl&gt; &amp;)" rename="setQueueToUrls" />
     </object-type>
-    <object-type name="Phonon::SeekSlider" java-name="SeekSlider" />
+    <object-type name="Phonon::SeekSlider" java-name="SeekSlider">
+        <modify-function signature="setMediaObject(Phonon::MediaObject*)">
+            <modify-argument index="1">
+                <reference-count action="set" variable-name="__rcMediaObject" />
+            </modify-argument>
+        </modify-function>
+    </object-type>
     <object-type name="Phonon::VideoPlayer" java-name="VideoPlayer" />
     <object-type name="Phonon::VideoWidget" java-name="VideoWidget" />
     <object-type name="Phonon::VolumeFaderEffect" java-name="VolumeFaderEffect" />
-    <object-type name="Phonon::VolumeSlider" java-name="VolumeSlider" />    
+    <object-type name="Phonon::VolumeSlider" java-name="VolumeSlider">
+        <modify-function signature="setAudioOutput(Phonon::AudioOutput*)">
+            <modify-argument index="1">
+                <reference-count action="set" variable-name="__rcAudioOutput" />
+            </modify-argument>
+        </modify-function>
+    </object-type>
     
     <suppress-warning text="skipping function 'Phonon::ObjectDescription::operator!=', unmatched parameter type 'ObjectDescription const&amp;'" />
     <suppress-warning text="skipping function 'Phonon::ObjectDescription::ObjectDescription', unmatched parameter type 'QExplicitlySharedDataPointer&lt;ObjectDescriptionData&gt; const&amp;'" />
