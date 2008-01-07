@@ -54,10 +54,14 @@
         <modify-function signature="operator&lt;(const Phonon::EffectParameter &amp;)const" remove="all" /> <!-- internal -->
         <modify-function signature="operator&gt;(const Phonon::EffectParameter &amp;)const" remove="all" /> <!-- internal -->
         <modify-function signature="id()const" remove="all" /> <!-- internal -->
+        <modify-function signature="operator=(Phonon::EffectParameter)" remove="all" /> <!-- Covered by copy constructor -->
     </value-type>
-    <value-type name="Phonon::MediaSource" java-name="MediaSource" />
+    <value-type name="Phonon::MediaSource" java-name="MediaSource">
+        <modify-function signature="operator=(Phonon::MediaSource)" remove="all" /> <!-- Covered by copy constructor -->
+    </value-type>
     <value-type name="Phonon::Path" java-name="Path">
         <modify-function signature="disconnect()" rename="disconnectPath" />
+        <modify-function signature="operator=(Phonon::Path)" remove="all" /> <!-- Covered by copy constructor -->
     </value-type>
     <value-type name="Phonon::ObjectDescription" generate="no" />
     <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
