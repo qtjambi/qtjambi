@@ -301,6 +301,13 @@
             <param name="source"
                    expression="typesystem_xml-java.xml"/>
         </xslt>
+        <xslt in="${sourceDir}/generator/typesystem_xmlpatterns-common.xml" 
+              out="${outputDir}/generator/typesystem_xmlpatterns.xml"
+              style="${sourceDir}/generator/merge.xsl"
+              force="yes">
+            <param name="source"
+                   expression="typesystem_xmlpatterns-java.xml"/>
+        </xslt>
         <xslt in="generator/typesystem_opengl-common.xml" 
               out="${outputDir}/generator/typesystem_opengl.xml"
               style="${sourceDir}/generator/merge.xsl"
