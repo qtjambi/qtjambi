@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <typesystem>
+    <namespace-type name="WebCore"/>
+
     <enum-type name="QWebSettings::FontType"/>
     <enum-type name="QWebSettings::FontSize"/>
     <enum-type name="QWebSettings::WebGraphic"/>
