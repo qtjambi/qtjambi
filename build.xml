@@ -135,7 +135,7 @@
         </juic>
     </target>
 
-    <target name="qtjambi.jar">
+    <target name="qtjambi.jar" depends="qtjambi.init">
         <javac memoryMaximumSize="1024m"
 	       fork="true"
                destdir="${outputDir}">
@@ -195,7 +195,7 @@
         </jar>
     </target>
 
-    <target name="qtjambi-designer.jar">
+    <target name="qtjambi-designer.jar" depends="qtjambi.init">
         <javac destdir="${outputDir}">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
