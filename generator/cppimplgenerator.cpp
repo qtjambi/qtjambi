@@ -388,17 +388,19 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
         s << "#include <qtdynamicmetaobject.h>" << endl;
 
     Include inc = java_class->typeEntry()->include();
-    s << "#include ";
-    if (inc.type == Include::IncludePath)
-        s << "<";
-    else
-        s << "\"";
-    s << inc.name;
-    if (inc.type == Include::IncludePath)
-        s << ">";
-    else
-        s << "\"";
-    s << endl;
+    if (!inc.name.isEmpty()) {
+        s << "#include ";
+        if (inc.type == Include::IncludePath)
+            s << "<";
+        else
+            s << "\"";
+        s << inc.name;
+        if (inc.type == Include::IncludePath)
+            s << ">";
+        else
+            s << "\"";
+        s << endl;
+    }
 
     s << "#include \"qtjambi_core.h\"" << endl
       << "#include \"qtjambifunctiontable.h\"" << endl

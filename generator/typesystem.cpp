@@ -235,6 +235,7 @@ bool Handler::endElement(const QString &, const QString &localName, const QStrin
     case StackElement::ObjectTypeEntry:
     case StackElement::ValueTypeEntry:
     case StackElement::InterfaceTypeEntry:
+    case StackElement::NamespaceTypeEntry:
         {
             ComplexTypeEntry *centry = static_cast<ComplexTypeEntry *>(current->entry);
             centry->setFunctionModifications(m_function_mods);
@@ -859,15 +860,15 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-		QString replace_value = attributes["replace-value"];
+		        QString replace_value = attributes["replace-value"];
 
-		if (!replace_value.isEmpty() && idx != 0) {
-		    m_error = QString("replace-value is only supported for return values (index=0).");
-		    return false;
-		}
+		        if (!replace_value.isEmpty() && idx != 0) {
+		            m_error = QString("replace-value is only supported for return values (index=0).");
+		            return false;
+		        }
 
-		ArgumentModification argumentModification = ArgumentModification(idx);
-		argumentModification.replace_value = replace_value;
+		        ArgumentModification argumentModification = ArgumentModification(idx);
+		        argumentModification.replace_value = replace_value;
                 m_function_mods.last().argument_mods.append(argumentModification);
             }
             break;

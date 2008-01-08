@@ -526,7 +526,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
                                .arg(namespace_item->name()));
 
     traverseEnums(model_dynamic_cast<ScopeModelItem>(namespace_item), meta_class, namespace_item->enumsDeclarations());
-    // traverseFunctions(model_dynamic_cast<ScopeModelItem>(namespace_item), meta_class);
+    traverseFunctions(model_dynamic_cast<ScopeModelItem>(namespace_item), meta_class);
 //     traverseClasses(model_dynamic_cast<ScopeModelItem>(namespace_item));
 
     pushScope(model_dynamic_cast<ScopeModelItem>(namespace_item));
@@ -1155,8 +1155,9 @@ void AbstractMetaBuilder::traverseFunctions(ScopeModelItem scope_item, AbstractM
         AbstractMetaFunction *meta_function = traverseFunction(function);
 
         if (meta_function) {
-
             meta_function->setOriginalAttributes(meta_function->attributes());
+            if (meta_class->isNamespace())
+                *meta_function += AbstractMetaAttributes::Static;
 
             if (QPropertySpec *read = meta_class->propertySpecForRead(meta_function->name())) {
                 if (read->type() == meta_function->type()->typeEntry()) {

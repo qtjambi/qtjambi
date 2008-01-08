@@ -1277,8 +1277,10 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
             s << "final ";
 
 
-        if (java_class->isNamespace()) {
+        if (java_class->isNamespace() && java_class->functionsInTargetLang().size() == 0) {
             s << "interface ";
+        } else if (java_class->isNamespace()) {
+            s << "final class ";
         } else {
             if (java_class->isAbstract() || force_abstract)
                 s << "abstract ";

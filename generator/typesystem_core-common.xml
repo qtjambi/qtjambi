@@ -212,7 +212,12 @@
   <rejection class="QDataStream" enum-name="ByteOrder"/>
   
 
-  <namespace-type name="Qt"/>
+  <namespace-type name="Qt">
+    <modify-function signature="codecForHtml(const QByteArray &amp;)" remove="all" />
+    <modify-function signature="mightBeRichText(const QString &amp;)" remove="all" />
+    <modify-function signature="escape(const QString&amp;)" remove="all" />
+    <modify-function signature="convertFromPlainText(const QString &amp;, Qt::WhiteSpaceMode)" remove="all" />
+  </namespace-type>
 
 
   <enum-type name="QSystemSemaphore::AccessMode" />

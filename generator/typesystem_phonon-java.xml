@@ -20,6 +20,14 @@
         </inject-code>        
     </value-type>
     
+    <namespace-type name="Phonon">
+        <modify-function signature="createPlayer(Phonon::Category, Phonon::MediaSource)">
+            <modify-argument index="2">
+                <replace-default-expression with="null" />
+            </modify-argument>
+        </modify-function>
+    </namespace-type>
+    
     <interface-type name="Phonon::PlatformPlugin">
         <modify-function signature="notification(const char *, const QString &amp;, const QStringList&lt;QString&gt; &amp;, QObject *, const char *)const">
             <modify-argument index="3">

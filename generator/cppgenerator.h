@@ -45,7 +45,7 @@ public:
     QString signalWrapperPrefix() const { return "__qt_signalwrapper_"; }
 
     bool shouldGenerate(const AbstractMetaClass *java_class) const {
-        return !java_class->isNamespace() && !java_class->isInterface()
+        return (!java_class->isNamespace() || java_class->functionsInTargetLang().size() > 0) && !java_class->isInterface()
             && !java_class->typeEntry()->isVariant()
             && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp);
     }

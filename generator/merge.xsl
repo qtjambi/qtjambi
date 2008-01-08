@@ -21,7 +21,7 @@
         </xsl:copy>
       </xsl:for-each>
   
-      <xsl:variable name="other" select="document($source)/typesystem/*[not(self::object-type | self::value-type | self::interface-type)]" />  
+      <xsl:variable name="other" select="document($source)/typesystem/*[not(self::object-type | self::value-type | self::interface-type | self::namespace-type)]" />  
       <xsl:if test="$other">
           <xsl:choose>
           <xsl:when test="$lang != ''">
@@ -43,7 +43,7 @@
 
 
 
-  <xsl:template match="/typesystem/*[self::object-type | self::value-type | self::interface-type]">
+  <xsl:template match="/typesystem/*[self::object-type | self::value-type | self::interface-type | self::namespace-type]">
     <xsl:variable name="name" select="name()" />
     <xsl:copy>
       <xsl:for-each select="@*">
