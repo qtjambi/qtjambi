@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<typesystem>
+    <enum-type name="QXmlNodeModelIndex::NodeKind"/>
+    <enum-type name="QXmlNodeModelIndex::DocumentOrder"/>
+    <enum-type name="QXmlNodeModelIndex::Axis"/>
+    <enum-type name="QSimpleXmlNodeModel::SimpleAxis"/>
+
+<!--    <object-type name="QAbstractMessageHandler"/> -->
+    <object-type name="QAbstractUriResolver"/>
+<!--    <object-type name="QAbstractXmlForwardIterator"/> -->
+<!--    <value-type name="QAbstractXmlNodeModel"/> -->
+    <value-type name="QAbstractXmlReceiver"/>
+<!--    <value-type name="QSimpleXmlNodeModel"/> -->
+    <value-type name="QSourceLocation"/>
+    <object-type name="QXmlFormatter"/>
+    <value-type name="QXmlItem"/>
+    <value-type name="QXmlName">
+        <modify-function signature="localName()const"> <remove/> </modify-function>
+        <modify-function signature="prefix()const"> <remove/> </modify-function>
+        <modify-function signature="hasPrefix()const"> <remove/> </modify-function>
+        <modify-function signature="hasNamespace()const"> <remove/> </modify-function>
+        <modify-function signature="namespaceURI()const"> <remove/> </modify-function>
+        <modify-function signature="isLexicallyEqual(const QXmlName)const"> <remove/> </modify-function>
+       
+<!-- FIXME 
+        <modify-function signature="setPrefix(const QXmlName::PrefixCode)"> <remove/> </modify-function>
+        <modify-function signature="setNamespaceURI(const QXmlName::NamespaceCode)"> <remove/> </modify-function>
+        <modify-function signature="setLocalName(const QXmlName::LocalNameCode)"> <remove/> </modify-function>
+-->
+      
+        <modify-function signature="setPrefix(const short)"> <remove/> </modify-function>
+        <modify-function signature="setNamespaceURI(const short)"> <remove/> </modify-function>
+        <modify-function signature="setLocalName(const short)"> <remove/> </modify-function>
+
+
+        <modify-function signature="code()const"> <remove/> </modify-function>
+    </value-type>
+    <value-type name="QXmlNamePool"/>
+    <value-type name="QXmlNodeModelIndex">
+        <modify-function signature="name() const"> <remove/> </modify-function>
+        <modify-function signature="root() const"> <remove/> </modify-function>
+        <modify-function signature="iterate(const Axis) const"> <remove/> </modify-function>
+        <modify-function signature="sequencedTypedValue() const"> <remove/> </modify-function>
+        <modify-function signature="documentUri() const"> <remove/> </modify-function>
+        <modify-function signature="baseUri() const"> <remove/> </modify-function>
+        <modify-function signature="kind() const"> <remove/> </modify-function>
+        <modify-function signature="isDeepEqual(const QXmlNodeModelIndex) const"> <remove/> </modify-function>
+        <modify-function signature="compareOrder(const QXmlNodeModelIndex) const"> <remove/> </modify-function>
+        <modify-function signature="sendNamespaces(const QExplicitlySharedDataPointer) const"> <remove/> </modify-function>
+        <modify-function signature="namespaceBindings() const"> <remove/> </modify-function>
+<!-- FIXME 
+        <modify-function signature="namespaceForPrefix(const QXmlName::PrefixCode) const"> <remove/> </modify-function> 
+-->
+        <modify-function signature="stringValue() const"> <remove/> </modify-function>
+        <modify-function signature="type() const"> <remove/> </modify-function>
+        <modify-function signature="is(const QXmlNodeModelIndex) const"> <remove/> </modify-function>
+        <modify-function signature="reset()"> <remove/> </modify-function>  
+
+        <modify-function signature="namespaceForPrefix(const short) const"> <remove/> </modify-function> 
+    </value-type>
+
+
+<!--        <value-type name="QXmlQuery"/>  -->
+    <object-type name="QXmlResultItems"/>
+    <object-type name="QXmlSerializer"/>
+</typesystem>
