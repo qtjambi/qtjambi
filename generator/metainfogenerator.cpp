@@ -609,10 +609,7 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const AbstractMet
             const ComplexTypeEntry *ctype = cls->typeEntry();
 
             Include inc = ctype->include();
-            if (inc.name.isEmpty())
-                writeInclude(s, Include(Include::IncludePath, ctype->name()));
-            else
-                writeInclude(s, inc);
+            writeInclude(s, inc);
         }
     }
 }
