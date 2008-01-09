@@ -125,6 +125,24 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * reference the object after it has been disposed.
      */
     public final native void dispose();
+    
+    
+    /**
+     * Used to check if this object shares native resources with the other object
+     * if the other object is a subtype of QtJambiInterface. Otherwise it will 
+     * return the result of calling the super class implementation.
+     * 
+     * @param other The object with which to compare
+     * @return true if the native resources of the two objects are one and the same. 
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof QtJambiInterface)            
+            return ((QtJambiInterface)other).nativeId() == nativeId();
+        else
+            return super.equals(other);
+    }
+    
 
 
     /**
