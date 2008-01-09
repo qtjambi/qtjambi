@@ -298,9 +298,16 @@ public class NativeLibraryManager {
 
 
     /**
+     * Overload which passes the default value of "4" as the version
+     */
+    public static void loadQtLibrary(String library) {
+        loadQtLibrary(library, "4");
+    }
+    
+    /**
      * Loads a library with name specified in <code>library</code>.
      * The library name will be expanded to the default shared library
-     * name for a given platform, so the name "QtCore" will be
+     * name for a given platform, so the name "QtCore" and version "4" will be
      * expanded like this:
      *
      * <ll>
@@ -314,8 +321,8 @@ public class NativeLibraryManager {
      *
      * @param library The name of the library..
      */
-    public static void loadQtLibrary(String library) {
-        String lib = qtLibraryName(library);
+    public static void loadQtLibrary(String library, String version) {
+        String lib = qtLibraryName(library, version);
         loadNativeLibrary(lib);
     }
 
@@ -599,19 +606,19 @@ public class NativeLibraryManager {
     }
 
 
-    private static String qtLibraryName(String lib) {
+    private static String qtLibraryName(String lib, String version) {
         switch (Utilities.operatingSystem) {
         case Windows:
             return Utilities.configuration == Utilities.Configuration.Debug
-                ? lib + "d4.dll"
-                : lib + "4.dll";
+                ? lib + "d" + version + ".dll"
+                : lib + version + ".dll";
         case MacOSX:
             return Utilities.configuration == Utilities.Configuration.Debug
-                ? "lib" + lib + "_debug.4.dylib"
-                : "lib" + lib + ".4.dylib";
+                ? "lib" + lib + "_debug." + version + ".dylib"
+                : "lib" + lib + "." + version + ".dylib";
         case Linux:
             // Linux doesn't have a dedicated "debug" library since 4.2
-            return "lib" + lib + ".so.4";
+            return "lib" + lib + ".so." + version;
         }
         throw new RuntimeException("Unreachable statement");
     }

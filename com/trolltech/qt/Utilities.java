@@ -105,7 +105,11 @@ public class Utilities {
     }
 
     public static void loadQtLibrary(String library) {
-        com.trolltech.qt.internal.NativeLibraryManager.loadQtLibrary(library);
+        loadQtLibrary(library, "4");
+    }
+    
+    public static void loadQtLibrary(String library, String version) {
+        com.trolltech.qt.internal.NativeLibraryManager.loadQtLibrary(library, version);
 
 //     	String excludeLibraries = System.getProperty(EXCLUDE_STRING);
 //     	if (excludeLibraries != null) {

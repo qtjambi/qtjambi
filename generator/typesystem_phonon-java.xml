@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <typesystem package="com.trolltech.qt.phonon" default-superclass="com.trolltech.qt.QtJambiObject">
     <inject-code>
-        com.trolltech.qt.Utilities.loadQtLibrary("phonon");
+        com.trolltech.qt.Utilities.loadQtLibrary("phonon", "5");
     </inject-code>
         
     <value-type name="Phonon::EffectDescription">
