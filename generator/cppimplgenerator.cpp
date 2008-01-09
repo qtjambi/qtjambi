@@ -2546,6 +2546,46 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
 
         s << INDENT << "}" << endl;
 
+    } else if (type->type() == ContainerTypeEntry::MultiMapContainer) {
+
+        Q_ASSERT(java_type->instantiations().size() == 2);
+        AbstractMetaType *targ_key = java_type->instantiations().at(0);
+        AbstractMetaType *targ_val = java_type->instantiations().at(1);
+
+        s << endl
+          << INDENT << "jobject " << java_name << " = qtjambi_treemap_new(__jni_env, " << qt_name << ".keys().size());" << endl
+          << INDENT << "QList<";
+        writeTypeInfo(s, targ_key);
+        s << "> __qt_keys = " << qt_name << ".keys();" << endl
+          << INDENT << "for (int i=0; i<__qt_keys.size(); ++i) {" << endl;
+        {
+            Indentation indent(INDENT);
+
+            s << INDENT;
+            writeTypeInfo(s, targ_key);
+            s << " __qt_tmp_key = __qt_keys.at(i);" << endl;
+            writeQtToJava(s, targ_key, "__qt_tmp_key", "__java_tmp_key", 0, -1, BoxedPrimitive);
+            
+            s << INDENT << "QList<";
+            writeTypeInfo(s, targ_val);            
+            s << "> __qt_values = " << qt_name << ".values(__qt_tmp_key);" << endl
+              << INDENT << "jobject __java_value_list = qtjambi_arraylist_new(__jni_env, __qt_values.size());" << endl
+              << INDENT << "for (int j=0; j<__qt_values.size(); ++j) {" << endl;
+            {
+                Indentation indent(INDENT);
+
+                s << INDENT;
+                writeTypeInfo(s, targ_val);
+                s << " __qt_tmp_val = __qt_values.at(i);" << endl;
+                writeQtToJava(s, targ_val, "__qt_tmp_val", "__java_tmp_val", 0, -1, BoxedPrimitive);
+
+                s << INDENT << "qtjambi_collection_add(__jni_env, __java_value_list, __java_tmp_val);" << endl;
+            }
+            s << INDENT << "}" << endl
+              << INDENT << "qtjambi_map_put(__jni_env, " << java_name << ", __java_tmp_key, __java_value_list);" << endl;
+        }
+        s << INDENT << "}" << endl;        
+
     } else if (type->type() == ContainerTypeEntry::MapContainer
                || type->type() == ContainerTypeEntry::HashContainer) {
         QString constructor = type->type() == ContainerTypeEntry::MapContainer

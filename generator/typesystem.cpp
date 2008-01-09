@@ -1409,6 +1409,7 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true)
     addType(new ContainerTypeEntry("QHash", ContainerTypeEntry::HashContainer));
     addType(new ContainerTypeEntry("QPair", ContainerTypeEntry::PairContainer));
     addType(new ContainerTypeEntry("QQueue", ContainerTypeEntry::QueueContainer));
+    addType(new ContainerTypeEntry("QMultiMap", ContainerTypeEntry::MultiMapContainer));
 
     // Custom types...
     addType(new QModelIndexTypeEntry());
@@ -1560,7 +1561,7 @@ QString ContainerTypeEntry::targetLangName() const
     case QueueContainer: return "Queue";
     case SetContainer: return "Set";
     case MapContainer: return "SortedMap";
-        //     case MultiMapContainer: return "MultiMap";
+    case MultiMapContainer: return "SortedMap";
     case HashContainer: return "HashMap";
         //     case MultiHashCollectio: return "MultiHash";
     case PairContainer: return "QPair";

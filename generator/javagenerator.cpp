@@ -104,7 +104,13 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, Option o
                 for (int i=0; i<args.size(); ++i) {
                     if (i != 0)
                         s += ", ";
+                    bool isMultiMap = static_cast<const ContainerTypeEntry *>(java_type->typeEntry())->type() == ContainerTypeEntry::MultiMapContainer 
+                        && i == 1;
+                    if (isMultiMap)
+                        s += "java.util.List<";
                     s += translateType(args.at(i), BoxedPrimitive);
+                    if (isMultiMap)
+                        s += ">";
                 }
                 s += '>';
             }
