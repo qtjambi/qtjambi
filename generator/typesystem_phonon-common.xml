@@ -8,11 +8,11 @@
     <rejection class="Phonon::IODeviceStream" />
     <rejection class="Phonon::Factory" />
     <rejection class="Phonon::Experimental" />
-    <rejection class="Phonon::BackendCapabilities" />
     <rejection class="AudioOutputAdaptor" />
     <rejection class="*" field-name="k_ptr" />
     
     <namespace-type name="Phonon" />
+    <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities" />
     
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />
@@ -115,10 +115,7 @@
             </modify-argument>
         </modify-function>
     </object-type>
-    
-    <suppress-warning text="skipping function 'Phonon::ObjectDescription::operator!=', unmatched parameter type 'ObjectDescription const&amp;'" />
-    <suppress-warning text="skipping function 'Phonon::ObjectDescription::ObjectDescription', unmatched parameter type 'QExplicitlySharedDataPointer&lt;ObjectDescriptionData&gt; const&amp;'" />
-    <suppress-warning text="skipping function 'Phonon::ObjectDescription::operator==', unmatched parameter type 'ObjectDescription const&amp;'" />
+
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Final class 'AbstractAudioOutput' set to non-final, as it is extended by other classes" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'QDBus' does not have a type entry" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'create(const QString &amp; name)' in 'QTextCodecPlugin'" />
@@ -126,5 +123,10 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'MediaSource' has equals operators but no qHash() function" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'Path' has equals operators but no qHash() function" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'EffectParameter' has equals operators but no qHash() function" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'Phonon_ObjectDescription' has equals operators but no qHash() function" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'EffectDescription' has equals operators but no qHash() function" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioOutputDevice' has equals operators but no qHash() function" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'Phonon::operator&lt;&lt;', unmatched return type 'QDebug'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'Phonon::ObjectDescription::ObjectDescription', unmatched parameter type 'QExplicitlySharedDataPointer&lt;ObjectDescriptionData&gt; const&amp;'" />
   
 </typesystem>

@@ -551,14 +551,21 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
 
     // Traverse namespaces recursively
     QList<NamespaceModelItem> inner_namespaces = namespace_item->namespaceMap().values();
-    foreach (const NamespaceModelItem &ni, inner_namespaces)
-        traverseNamespace(ni);
+    foreach (const NamespaceModelItem &ni, inner_namespaces) {
+        AbstractMetaClass *mjc = traverseNamespace(ni);
+        addAbstractMetaClass(mjc);
+    }
 
     m_current_class = 0;
 
 
     popScope();
     m_namespace_prefix = currentScope()->qualifiedName().join("::");
+
+    if (!type->include().isValid()) {
+        QFileInfo info(namespace_item->fileName());
+        type->setInclude(Include(Include::IncludePath, info.fileName()));
+    }
 
     return meta_class;
 }
@@ -1013,13 +1020,15 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
 
 
     TemplateParameterList template_parameters = class_item->templateParameters();
-    m_template_args.clear();
+    QList<TypeEntry *> template_args;
+    template_args.clear();
     for (int i=0; i<template_parameters.size(); ++i) {
         const TemplateParameterModelItem &param = template_parameters.at(i);
         TemplateArgumentEntry *param_type = new TemplateArgumentEntry(param->name());
         param_type->setOrdinal(i);
-        m_template_args.append(param_type);
+        template_args.append(param_type);
     }
+    meta_class->setTemplateArguments(template_args);
 
     parseQ_Property(meta_class, class_item->propertyDeclarations());
 
@@ -1051,8 +1060,6 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
         }
     }
 
-
-    m_template_args.clear();
 
     m_current_class = old_current_class;
 
@@ -1656,8 +1663,9 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
 
     // 8. No? Check if the current class is a template and this type is one 
     //    of the parameters.
-    if (!type) {
-        foreach (TypeEntry *te, m_template_args) {
+    if (type == 0 && m_current_class != 0) {
+        QList<TypeEntry *> template_args = m_current_class->templateArguments();
+        foreach (TypeEntry *te, template_args) {
             if (te->name() == qualified_name)
                 type = te;
         }
@@ -1667,9 +1675,11 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
     //    context and all baseclasses of the current context
     if (!type && !TypeDatabase::instance()->isClassRejected(qualified_name) && m_current_class != 0 && resolveScope) {
         QStringList contexts;            
-        contexts.append(m_current_class->qualifiedCppName());            
-        
-        TypeInfo info;
+        contexts.append(m_current_class->qualifiedCppName());
+        contexts.append(currentScope()->qualifiedName().join("::"));
+
+                
+        TypeInfo info = typei;
         bool subclasses_done = false;
         while (!contexts.isEmpty() && type == 0) {
             //type = TypeDatabase::instance()->findType(contexts.at(0) + "::" + qualified_name);
@@ -1678,7 +1688,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
             info.setQualifiedName(QStringList() << contexts.at(0) << qualified_name);
             AbstractMetaType *t = translateType(info, &ok, true, false);
             if (t != 0 && ok)
-                return t;
+                return t;            
 
             ClassModelItem item = m_dom->findClass(contexts.at(0));
             if (item != 0)
@@ -1734,6 +1744,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
                 info.setConstant(ta.is_constant);
                 info.setReference(ta.is_reference);
                 info.setIndirections(ta.indirections);
+                
                 info.setFunctionPointer(false);
                 info.setQualifiedName(ta.instantiationName().split("::"));
 
@@ -1742,6 +1753,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
                     delete meta_type;
                     return 0;
                 }
+
                 meta_type->addInstantiation(targ_type);
             }
         }

@@ -2810,9 +2810,15 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
         }
 
         if ((!(options & NoCasts) && !enum_as_int) || ((options & ForceEnumCast) && argument->type()->isEnum())) {
-            s << "(";
-            writeTypeInfo(s, argument->type());
-            s << ")";
+            
+            // If the type in the signature is specified without template instantiation, but the 
+            // class is actually a template class, then we have troubles.
+            AbstractMetaClass *cls = classes().findClass(argument->type()->typeEntry()->qualifiedCppName());
+            if (cls == 0 || cls->templateArguments().size() == argument->type()->instantiations().size()) {
+                s << "(";
+                writeTypeInfo(s, argument->type());
+                s << ")";
+            }
         }
 
         if (!argument->type()->isPrimitive()
@@ -2868,7 +2874,7 @@ void CppImplGenerator::writeDefaultConstructedValues_helper(QSet<QString> &value
 {
     foreach (AbstractMetaArgument *arg, func->arguments()) {
         AbstractMetaType *type = arg->type();
-        if (type->isValue() && hasDefaultConstructor(type))
+        if (func->typeReplaced(arg->argumentIndex()+1).isEmpty() && type->isValue() && hasDefaultConstructor(type))
             values << type->typeEntry()->qualifiedCppName();
     }
 }

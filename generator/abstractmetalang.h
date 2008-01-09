@@ -717,6 +717,9 @@ public:
     bool hasVirtualFunctions() const { return !isFinal() && m_has_virtuals; }
     bool hasProtectedFunctions() const;
 
+    QList<TypeEntry *> templateArguments() const { return m_template_args; }
+    void setTemplateArguments(const QList<TypeEntry *> &args) { m_template_args = args; }
+
     bool hasFieldAccessors() const;
 
     // only valid during metajavabuilder's run
@@ -806,6 +809,7 @@ private:
     AbstractMetaFunctionList m_greater_than_eq_functions;
 
     QStringList m_base_class_names;
+    QList<TypeEntry *> m_template_args;
     ComplexTypeEntry *m_type_entry;
     FunctionModelItem m_qDebug_stream_function;
 };

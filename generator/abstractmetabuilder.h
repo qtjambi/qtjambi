@@ -118,8 +118,7 @@ private:
     AbstractMetaClassList m_meta_classes;
     AbstractMetaClassList m_templates;
     FileModelItem m_dom;
-
-    QList<TypeEntry *> m_template_args;
+    
     QSet<const TypeEntry *> m_used_types;
 
     QMap<QString, RejectReason> m_rejected_classes;

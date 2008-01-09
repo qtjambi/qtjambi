@@ -456,11 +456,11 @@ bool Handler::startElement(const QString &, const QString &n,
             // fall throooough
         case StackElement::InterfaceTypeEntry:
             attributes["default-superclass"] = m_defaultSuperclass;
-            attributes["polymorphic-id-expression"] = QString();
-            attributes["java-name"] = QString();
+            attributes["polymorphic-id-expression"] = QString();            
             attributes["delete-in-main-thread"] = QString("no");            
             // fall through
         case StackElement::NamespaceTypeEntry:
+            attributes["java-name"] = QString();
             attributes["package"] = m_defaultPackage;
             attributes["expense-cost"] = "1";
             attributes["expense-limit"] = "none";

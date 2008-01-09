@@ -902,7 +902,9 @@ void JavaGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *ja
 static void write_equals_parts(QTextStream &s, const AbstractMetaFunctionList &lst, char prefix, bool *first) {
     foreach (AbstractMetaFunction *f, lst) {
         AbstractMetaArgument *arg = f->arguments().at(0);
-        QString type = arg->type()->typeEntry()->qualifiedTargetLangName();
+        QString type = f->typeReplaced(1);
+        if (type.isEmpty()) 
+            type = arg->type()->typeEntry()->qualifiedTargetLangName();
         s << INDENT << (*first ? "if" : "else if") << " (other instanceof " << type << ")" << endl
           << INDENT << "    return ";
         if (prefix != 0) s << prefix;
@@ -914,7 +916,9 @@ static void write_equals_parts(QTextStream &s, const AbstractMetaFunctionList &l
 static void write_compareto_parts(QTextStream &s, const AbstractMetaFunctionList &lst, int value, bool *first) {
     foreach (AbstractMetaFunction *f, lst) {
         AbstractMetaArgument *arg = f->arguments().at(0);
-        QString type = arg->type()->typeEntry()->qualifiedTargetLangName();
+        QString type = f->typeReplaced(1);
+        if (type.isEmpty()) 
+            type = arg->type()->typeEntry()->qualifiedTargetLangName();
         s << INDENT << (*first ? "if" : "else if") << " (other instanceof " << type << ") {" << endl
           << INDENT << "    if (" << f->name() << "((" << type << ") other)) return " << value << ";" << endl
           << INDENT << "    else return " << -value << ";" << endl
