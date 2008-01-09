@@ -287,9 +287,9 @@ void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const AbstractMet
     else
         include_attributes |= AbstractMetaAttributes::Native;
 
-    if (!java_function->isConstructor())
-        include_attributes |= AbstractMetaAttributes::Static;
-    
+//     if (!java_function->isConstructor())
+//         include_attributes |= AbstractMetaAttributes::Static;
+
     writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
                             EnumAsInts
                             | (java_function->isEmptyFunction()
@@ -418,7 +418,7 @@ void JavaGenerator::writeInjectedCode(QTextStream &s, const AbstractMetaFunction
 }
 
 
-void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractMetaFunction *java_function)
+void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractMetaFunction *java_function, uint attributes)
 {
     writeInjectedCode(s, java_function, CodeSnip::Beginning);
 
@@ -543,6 +543,10 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
         }
     }
 
+    if (attributes & SuperCall) {
+        s << "super.";
+    }
+
     s << java_function->marshalledName() << "(";
 
     if (!java_function->isConstructor() && !java_function->isStatic())
@@ -588,7 +592,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
 
     s << ";" << endl;
     writeInjectedCode(s, java_function, CodeSnip::End);
-   
+
     if (needs_return_variable) {
         if (owner != TypeSystem::InvalidOwnership) {
             s << INDENT << "if (__qt_return_value != null) {" << endl;
@@ -774,20 +778,20 @@ void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &re
           << INDENT << "                                                                 \"" << refCountVariableName << "\");" << endl;
         refCountVariableName = "__rcTmp";
     }
-    
+
     if (refCount.action != ReferenceCount::Set) {
         s << INDENT << "if (" << argumentName << " != null";
-        
+
         if (!refCount.conditional.isEmpty())
             s << " && " << refCount.conditional;
-        
+
         s << ") {" << endl;
     } else {
          if (!refCount.conditional.isEmpty())
              s << INDENT << "if (" << refCount.conditional << ") ";
          s << INDENT << "{" << endl;
     }
-    
+
     {
         Indentation indent(INDENT);
         switch (refCount.action) {
@@ -982,13 +986,13 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
                 } else if (geq_functions.size()) {
                     write_compareto_parts(s, geq_functions, 1, &first);
                 }
-                
+
             } else if (le_functions.size() == 1) {
                 QString className = cls->typeEntry()->qualifiedTargetLangName();
                 s << INDENT << "if (operator_less((" << className << ") other)) return -1;" << endl
                   << INDENT << "else if (((" << className << ") other).operator_less(this)) return 1;" << endl
                   << INDENT << "else return 0;" << endl;
-                
+
             } else if (geq_functions.size() == 1 && leq_functions.size()) {
                 QString className = cls->typeEntry()->qualifiedTargetLangName();
                 s << INDENT << "boolean less = operator_less_or_equal((" << className << ") other);" << endl
@@ -1021,7 +1025,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
               << INDENT << "        throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
               << INDENT << "    return __qt_hashCode(nativeId());" << endl
               << INDENT << "}" << endl
-              << INDENT << "private static native int __qt_hashCode(long __this_nativeId);" << endl;
+              << INDENT << "native int __qt_hashCode(long __this_nativeId);" << endl;
         }
     }
 
@@ -1045,7 +1049,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
               << INDENT << "        throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
               << INDENT << "    return __qt_toString(nativeId());" << endl
               << INDENT << "}" << endl
-              << INDENT << "private static native String __qt_toString(long __this_nativeId);" << endl;
+              << INDENT << "native String __qt_toString(long __this_nativeId);" << endl;
         }
     }
 }
@@ -1059,7 +1063,7 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const AbstractMetaFunction
         || ((!java_function->isNormal() && !java_function->isConstructor()) || java_function->isEmptyFunction() || java_function->isAbstract())) {
         return ;
     }
-    
+
 
     int option = 0;
     if (java_function->isConstructor())
@@ -1424,28 +1428,28 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
         s << endl
           << INDENT << "@SuppressWarnings(\"unused\")" << endl
           << INDENT << "private static class ConcreteWrapper extends " << java_class->fullName() << " {" << endl;
-          
+
         {
             Indentation indent(INDENT);
             s << INDENT << "protected ConcreteWrapper(QPrivateConstructor p) { super(p); }" << endl;
-            
+
             uint exclude_attributes = AbstractMetaAttributes::Native | AbstractMetaAttributes::Abstract;
             uint include_attributes = 0;
             AbstractMetaFunctionList functions = java_class->queryFunctions(AbstractMetaClass::NormalFunctions | AbstractMetaClass::AbstractFunctions | AbstractMetaClass::NonEmptyFunctions | AbstractMetaClass::NotRemovedFromTargetLang);
             foreach (const AbstractMetaFunction *java_function, functions) {
                 retrieveModifications(java_function, java_class, &exclude_attributes, &include_attributes);
-                
+
                 s << endl
                   << INDENT << "@Override" << endl;
                 writeFunctionAttributes(s, java_function, include_attributes, exclude_attributes,
                                         java_function->isNormal() || java_function->isSignal() ? 0 : SkipReturnType);
-                
+
                 s << java_function->name() << "(";
                 writeFunctionArguments(s, java_function, java_function->arguments().count());
                 s << ") {" << endl;
                 {
                     Indentation indent(INDENT);
-                    writeJavaCallThroughContents(s, java_function);
+                    writeJavaCallThroughContents(s, java_function, SuperCall);
                 }
                 s << INDENT << "}" << endl;
             }
@@ -1480,7 +1484,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
           << INDENT << " **/" << endl
           << INDENT << "protected " << java_class->name() << "() throws QClassCannotBeSubclassedException {" << endl
           << INDENT << "    throw new QClassCannotBeSubclassedException(" << java_class->name() << ".class);" << endl
-          << INDENT << "}" << endl << endl;             
+          << INDENT << "}" << endl << endl;
     }
 
     // Functions
@@ -1491,7 +1495,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
         // If a method in an interface class is modified to be private, this should
         // not be present in the interface at all, only in the implementation.
         if (java_class->isInterface()) {
-            uint includedAttributes = 0;  
+            uint includedAttributes = 0;
             uint excludedAttributes = 0;
             retrieveModifications(function, java_class, &excludedAttributes, &includedAttributes);
             if (includedAttributes & AbstractMetaAttributes::Private)
@@ -1542,7 +1546,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
           << INDENT << "}" << endl
           << endl
           << INDENT << "@QtBlockedSlot" << endl
-          << INDENT << "private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
+          << INDENT << "native boolean __qt_signalInitialization(long ptr, String name);" << endl;
     }
 
     // Add dummy constructor for use when constructing subclasses
@@ -1579,11 +1583,11 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     writeJavaLangObjectOverrideFunctions(s, java_class);
     writeExtraFunctions(s, java_class);
     writeToStringFunction(s, java_class);
-    
+
     if (java_class->hasCloneOperator()) {
         writeCloneFunction(s, java_class);
     }
-  
+
     s << "}" << endl;
 
     if (m_docs_enabled) {
@@ -1699,7 +1703,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
                                           && (((excluded_attributes & AbstractMetaAttributes::Private) == 0)
                                                && (java_function->isPrivate()
                                                    || ((included_attributes & AbstractMetaAttributes::Private) != 0)));
-        
+
         if (needsSuppressUnusedWarning && java_function->needsSuppressUncheckedWarning()) {
             s << INDENT<< "@SuppressWarnings({\"unchecked\", \"unused\"})" << endl;
         } else if (java_function->needsSuppressUncheckedWarning()) {
@@ -1707,7 +1711,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         } else if (needsSuppressUnusedWarning) {
             s << INDENT<< "@SuppressWarnings(\"unused\")" << endl;
         }
-        
+
         if (!(attr & NoBlockedSlot)
             && !java_function->isConstructor()
             && !java_function->isSlot()
@@ -1735,7 +1739,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         if (modified_type.isEmpty())
             s << translateType(java_function->type(), (Option) options);
         else
-            s << modified_type.replace('$', '.');        
+            s << modified_type.replace('$', '.');
         s << " ";
     }
 }
@@ -1749,7 +1753,7 @@ void JavaGenerator::writeConstructorContents(QTextStream &s, const AbstractMetaF
         s << INDENT << "super((QPrivateConstructor)null);" << endl;
 
         writeJavaCallThroughContents(s, java_function);
-        
+
         // Write out expense checks if present...
         const AbstractMetaClass *java_class = java_function->implementingClass();
         const ComplexTypeEntry *te = java_class->typeEntry();
@@ -1767,7 +1771,7 @@ void JavaGenerator::writeConstructorContents(QTextStream &s, const AbstractMetaF
         }
     }
     s << INDENT << "}" << endl << endl;
-        
+
     // Write native constructor
     writePrivateNativeFunction(s, java_function);
 }
@@ -1801,7 +1805,7 @@ void JavaGenerator::writeExtraFunctions(QTextStream &s, const AbstractMetaClass 
             || (java_class->isInterface() && snip.language == TypeSystem::Interface)) {
             s << endl;
             snip.formattedCode(s, INDENT);
-        } 
+        }
     }
 }
 
@@ -1811,7 +1815,7 @@ void JavaGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaClas
     bool generate = java_class->hasToStringCapability() && !java_class->hasDefaultToStringFunction();
     bool core = java_class->package() == QLatin1String("com.trolltech.qt.core");
     bool qevent = false;
-    
+
     const AbstractMetaClass *cls = java_class;
     while (cls) {
         if (cls->name() == "QEvent") {
@@ -1820,9 +1824,9 @@ void JavaGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaClas
         }
         cls = cls->baseClass();
     }
-    
+
     if (generate || qevent) {
-        
+
         if (qevent && core) {
             s << endl
               << "    @Override" << endl
@@ -1837,7 +1841,7 @@ void JavaGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaClas
               << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
               << "        return __qt_toString(nativeId());" << endl
               << "    }" << endl
-              << "    private static native String __qt_toString(long __this_nativeId);" << endl;
+              << "    native String __qt_toString(long __this_nativeId);" << endl;
         }
     }
 }
@@ -1849,7 +1853,7 @@ void JavaGenerator::writeCloneFunction(QTextStream &s, const AbstractMetaClass *
       << "    public " << java_class->name() << " clone() {" << endl
       << "        if (nativeId() == 0)" << endl
       << "            throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
-      << "        return __qt_clone(nativeId());" << endl   
+      << "        return __qt_clone(nativeId());" << endl
       << "    }" << endl
-      << "    private static native " << java_class->name() << " __qt_clone(long __this_nativeId);" << endl;
+      << "    native " << java_class->name() << " __qt_clone(long __this_nativeId);" << endl;
 }

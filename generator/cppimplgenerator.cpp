@@ -432,9 +432,9 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
 
         // Functions in shell class
         AbstractMetaFunctionList shellFunctions = java_class->nonVirtualShellFunctions();
-        for (int i=0; i<shellFunctions.size(); ++i) {            
+        for (int i=0; i<shellFunctions.size(); ++i) {
             const AbstractMetaFunction *function = shellFunctions.at(i);
-            writeShellFunction(s, function, java_class, -1);            
+            writeShellFunction(s, function, java_class, -1);
         }
 
         // Write public overrides for functions that are protected in the base class
@@ -633,7 +633,7 @@ void CppImplGenerator::writeCloneFunction(QTextStream &s, const AbstractMetaClas
     {
         Indentation indent(INDENT);
         s << INDENT << java_class->qualifiedCppName() << " *__qt_this = ("
-            
+
           << java_class->qualifiedCppName() << " *) qtjambi_from_jlong(__this_nativeId);" << endl
           << INDENT << "QTJAMBI_EXCEPTION_CHECK(__jni_env);" << endl
           << INDENT << "Q_ASSERT(__qt_this);" << endl
@@ -770,7 +770,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
       << "      jobject __obj = m_link != 0 ? m_link->javaObject(__jni_env) : 0;" << endl
       << "      if (__obj == 0) return " << java_class->qualifiedCppName() << "::metaObject();" << endl
       << "      else m_meta_object = qtjambi_metaobject_for_class(__jni_env, __jni_env->GetObjectClass(__obj), " << java_class->qualifiedCppName() << "::metaObject());" << endl;
-      
+
 
     AbstractMetaFunctionList virtualFunctions = java_class->virtualFunctions();
     for (int pos=0; pos<virtualFunctions.size(); ++pos) {
@@ -779,8 +779,8 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
             QStringList introspectionCompatibleSignatures = virtualFunction->introspectionCompatibleSignatures();
             foreach (QString introspectionCompatibleSignature, introspectionCompatibleSignatures) {
                 s << "      {" << endl
-                  << "          int idx = " 
-                  << java_class->qualifiedCppName() << "::metaObject()->indexOfMethod(\"" 
+                  << "          int idx = "
+                  << java_class->qualifiedCppName() << "::metaObject()->indexOfMethod(\""
                   << introspectionCompatibleSignature << "\");" << endl;
 
                 s << "          if (idx >= 0) m_map.insert(idx, " << pos << ");" << endl
@@ -835,7 +835,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
                 if (virtualFunction->type() != 0) {
                     writeTypeInfo(s, virtualFunction->type());
                     s << " _r = ";
-                } 
+                }
 
                 writeFunctionCall(s, "this", virtualFunction);
                 s << "          if (_a[0] != 0) "
@@ -843,9 +843,9 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
                 writeTypeInfo(s, virtualFunction->type());
                 s << " *>(_a[0]) = _r;" << endl
                   << "          return -1;" << endl;
-  
+
                 s << "      }";
-            }            
+            }
         }
 
         s << "};" << endl
@@ -1767,7 +1767,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
             s << INDENT << qt_object_name << "->m_link->setMetaObject(" << qt_object_name << "->metaObject());" << endl;
 
         s << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
-          
+
 
 
         AbstractMetaClassList interfaces = cls->interfaces();

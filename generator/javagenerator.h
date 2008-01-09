@@ -58,7 +58,7 @@ public:
     void writeConstructorContents(QTextStream &s, const AbstractMetaFunction *java_function);
     void writeFunctionArguments(QTextStream &s, const AbstractMetaFunction *java_function,
         int count = -1, uint options = 0);
-    void writeJavaCallThroughContents(QTextStream &s, const AbstractMetaFunction *java_function);
+    void writeJavaCallThroughContents(QTextStream &s, const AbstractMetaFunction *java_function, uint attributes = 0);
     void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, AbstractMetaArgument *arg);
     void writeOwnershipForContainer(QTextStream &s, TypeSystem::Ownership ownership, AbstractMetaType *type,
                                     const QString &arg_name);

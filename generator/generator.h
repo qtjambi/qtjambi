@@ -54,6 +54,8 @@ public:
         NoReturnStatement        = 0x00080000,
         NoBlockedSlot            = 0x00100000,
 
+        SuperCall                = 0x00200000,
+
         GlobalRefJObject         = 0x00100000,
 
         ForceValueType           = ExcludeReference | ExcludeConst
@@ -100,12 +102,12 @@ public:
 class Indentation {
 public:
     Indentation(Indentor &indentor):
-        indentor(indentor) 
+        indentor(indentor)
         {
             indentor.indent++;
         }
-    ~Indentation() 
-        { 
+    ~Indentation()
+        {
             indentor.indent--;
         }
 
