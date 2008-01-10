@@ -374,8 +374,8 @@ public class MediaPlayer extends QWidget {
         List<String> trackArtists = metaData.get("ARTIST");
         List<String> trackTitles = metaData.get("TITLE");
         
-        String trackArtist = trackArtists.size() > 0 ? trackArtists.get(0) : "";
-        String trackTitle = trackTitles.size() > 0 ? trackTitles.get(0) : "";
+        String trackArtist = trackArtists != null ? trackArtists.get(0) : "";
+        String trackTitle = trackTitles != null ? trackTitles.get(0) : "";
         String timeString = "", time = "";
         if (pos != 0 || len != 0)
         {
