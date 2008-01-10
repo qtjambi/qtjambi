@@ -220,15 +220,15 @@
                               outdir="${outputDir}/platform-output">
 
             <!-- Qt Libraries... -->
-            <library name="QtCore"          type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="QtGui"           type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="QtXml"           type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="QtSql"           type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="QtSvg"           type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="QtNetwork"       type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="QtOpenGL"        type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="QtWebKit"        type="qt"      rootPath="${qtjambi.qtdir}" />
-            <library name="phonon"          type="qt"      rootPath="${qtjambi.qtdir}" />
+            <library name="QtCore"    type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtGui"     type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtXml"     type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtSql"     type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
+            <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
@@ -252,7 +252,8 @@
             <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}" />
-	    <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" />
+	    <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" 
+		     if="${qtjambi.webkit}"/>
 
 	    <plugin path="plugins" />
 

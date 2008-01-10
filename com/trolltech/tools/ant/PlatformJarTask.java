@@ -135,6 +135,8 @@ public class PlatformJarTask extends Task {
 
     public void addConfiguredLibrary(LibraryEntry task) {
         try {
+            if (!task.isIncluded())
+                return;
             task.perform();
             libs.add(task);
         } catch (Exception e) {

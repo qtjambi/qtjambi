@@ -58,6 +58,14 @@ public class LibraryEntry extends Task {
         this.load = load;
     }
 
+    public void setIf(boolean included) {
+        this.included = included;
+    }
+
+    public boolean isIncluded() {
+        return included;
+    }
+
     @Override
     public void execute() throws BuildException {
         if (name == null || name.length() == 0)
@@ -81,7 +89,7 @@ public class LibraryEntry extends Task {
     }
 
 
-    private String formatPluginName(String name, boolean debug) {
+    public static String formatPluginName(String name, boolean debug) {
         if (debug) {
             switch (Util.OS()) {
             case WINDOWS: return name + "d4.dll";
@@ -99,25 +107,30 @@ public class LibraryEntry extends Task {
     }
 
 
-    private String formatQtName(String name, boolean debug) {
+
+    public static String formatQtName(String name, boolean debug) {
+        return formatQtName(name, debug, 4);
+    }
+
+    public static String formatQtName(String name, boolean debug, int version) {
         if (debug) {
             switch (Util.OS()) {
-            case WINDOWS: return name + "d4.dll";
-            case MAC: return "lib" + name + "_debug.4.dylib";
-            case LINUX: return "lib" + name + ".so.4";
+            case WINDOWS: return name + "d" + version + ".dll";
+            case MAC: return "lib" + name + "_debug." + version + ".dylib";
+            case LINUX: return "lib" + name + ".so." + version;
             }
         } else {
             switch (Util.OS()) {
-            case WINDOWS: return name + "4.dll";
-            case MAC: return "lib" + name + ".4.dylib";
-            case LINUX: return "lib" + name + ".so.4";
+            case WINDOWS: return name + version + ".dll";
+            case MAC: return "lib" + name + "." + version + ".dylib";
+            case LINUX: return "lib" + name + ".so." + version;
             }
         }
         throw new BuildException("unhandled case...");
     }
 
 
-    private String formatQtJambiName(String name, boolean debug) {
+    public static String formatQtJambiName(String name, boolean debug) {
         if (debug)  {
             switch (Util.OS()) {
             case WINDOWS: return name + "_debuglib.dll";
@@ -140,4 +153,5 @@ public class LibraryEntry extends Task {
     private File rootpath;
     private String subdir = SUBDIR_DEFAULT;
     private String load = LOAD_DEFAULT;
+    private boolean included;
 }

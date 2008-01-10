@@ -44,18 +44,19 @@ public class InitializeTask extends Task {
         }
     }
 
-    public static final String OSNAME = "qtjambi.osname";
-    public static final String LIBSUBDIR = "qtjambi.libsubdir";
-    public static final String QTDIR = "qtjambi.qtdir";
-    public static final String QMAKESPEC = "qtjambi.qmakespec";
-    public static final String VERSION = "qtjambi.version";
+    public static final String OSNAME           = "qtjambi.osname";
+    public static final String LIBSUBDIR        = "qtjambi.libsubdir";
+    public static final String QTDIR            = "qtjambi.qtdir";
+    public static final String QMAKESPEC        = "qtjambi.qmakespec";
+    public static final String VERSION          = "qtjambi.version";
+    public static final String COMPILER         = "qtjambi.compiler";
+    public static final String CONFIGURATION    = "qtjambi.configuration";
+    public static final String PHONON           = "qtjambi.phonon";
+    public static final String WEBKIT           = "qtjambi.webkit";
 
-    public static final String COMPILER = "qtjambi.compiler";
-
-    public static final String VSINSTALLDIR = "qtjambi.vsinstalldir";
-    public static final String VSREDISTDIR = "qtjambi.vsredistdir";
-
-    public static final String CONFIGURATION = "qtjambi.configuration";
+    // Windows specific vars...
+    public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
+    public static final String VSREDISTDIR      = "qtjambi.vsredistdir";
 
     public boolean isVerbose() {
         return verbose;
@@ -99,6 +100,11 @@ public class InitializeTask extends Task {
         }
 
         props.setNewProperty(null, CONFIGURATION, decideConfiguration());
+
+        // These depend on both qtdir, libsubdir and configration, so
+        // run rather late...
+        props.setNewProperty(null, PHONON, decidePhonon());
+        props.setNewProperty(null, WEBKIT, decideWebkit());
     }
 
     private void checkCompilerDetails() {
@@ -233,13 +239,13 @@ public class InitializeTask extends Task {
     }
 
     private String decideLibSubDir() {
-        String dir = Util.OS() == Util.OS.WINDOWS ? "bin" : "lib";
-        if (verbose) System.out.println("qtjambi.libsubdir: " + dir);
-        return dir;
+        libSubDir = Util.OS() == Util.OS.WINDOWS ? "bin" : "lib";
+        if (verbose) System.out.println("qtjambi.libsubdir: " + libSubDir);
+        return libSubDir;
     }
 
     private String decideQtDir() {
-        String qtdir = System.getenv("QTDIR");
+        qtdir = System.getenv("QTDIR");
         if (qtdir == null)
             throw new BuildException("QTDIR environment variable missing");
         if (!new File(qtdir).exists())
@@ -249,16 +255,34 @@ public class InitializeTask extends Task {
     }
 
     private String decideConfiguration() {
-
         String result = null;
 
-        if ("debug".equals(configuration)) {
-            result = "debug";
-        } else {
-            result = "release";
-        }
+        debug = "debug".equals(configuration);
+        result = debug ? "debug" : "release";
 
         if (verbose) System.out.println(CONFIGURATION + ": " + result);
+        return result;
+    }
+
+    private boolean doesQtLibExist(String name, int version) {
+        StringBuilder path = new StringBuilder();
+        path.append(props.getProperty(null, QTDIR));
+        path.append("/");
+        path.append(props.getProperty(null, LIBSUBDIR));
+        path.append("/");
+        path.append(LibraryEntry.formatQtName(name, debug, version));
+        return new File(path.toString()).exists();
+    }
+
+    private String decidePhonon() {
+        String result = String.valueOf(doesQtLibExist("phonon", 5));
+        if (verbose) System.out.println(PHONON + ": " + result);
+        return result;
+    }
+
+    private String decideWebkit() {
+        String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
+        if (verbose) System.out.println(WEBKIT + ": " + result);
         return result;
     }
 
@@ -267,4 +291,7 @@ public class InitializeTask extends Task {
     private boolean verbose;
     private PropertyHelper props;
     private String configuration;
+    private boolean debug;
+    private String qtdir;
+    private String libSubDir;
 }
