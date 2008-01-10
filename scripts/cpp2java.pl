@@ -14,13 +14,16 @@ while ($file = shift @ARGV) {
     for (@array) {
         s/->/\./g;
         s/::/\./g;
-        s/\*//g;
+        s/\*[a-zA-Z]//g;
         s/foreach/for/g;
         s/bool\s/boolean\s/g;
-        s/qreal\s/double\s/g;
-        s/&//g;
-        s/const\s//g;
+        s/qreal /double /g;
+        s/&\w//g;
+        s/const //g;
+        s/ const//g;
         s/QString\s/String\s/g;
         s/QStringList/List<String>/g;
     }
 }
+
+const QString &x,cmv

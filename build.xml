@@ -143,10 +143,11 @@
             <src path="${sourceDir}"/>
             <include name="com/trolltech/qt/*.java"/>
             <include name="com/trolltech/qt/*/*.java"/>
+	    <include name="com/trolltech/extensions/signalhandler/*.java"/>
         </javac>
         <jar destfile="${outputDir}/qtjambi-${qtjambi.version}.jar"
              basedir="${outputDir}"
-             includes="com/trolltech/qt/*.class,com/trolltech/qt/*/*.class"
+             includes="com/trolltech/qt/*.class,com/trolltech/qt/*/*.class,com/trolltech/extensions/signalhandler/*.class"
              includesfile="${sourceDir}/com/trolltech/images/qt-logo.png">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
@@ -178,7 +179,7 @@
 
     <target name="qtjambi-examples.jar"
             depends="qtjambi.init, qtjambi-phonon-examples, qtjambi-webkit-examples">
-        <javac destdir="${outputDir}">
+        <javac destdir="${outputDir}" debug="true">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/**/*.java"/>
