@@ -1,8 +1,8 @@
-package com.trolltech.demos;
+package com.trolltech.demos.phonon;
 
 import java.util.*;
 
-import com.trolltech.demos.mediaplayer.*;
+import com.trolltech.demos.phonon.mediaplayer.*;
 import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
