@@ -4435,13 +4435,13 @@
     </modify-function>    
   </object-type>
 
-  <interface-type name="QAccessibleFactoryInterface" />
-  <interface-type name="QIconEngineFactoryInterfaceV2"/>
-  <interface-type name="QImageIOHandlerFactoryInterface" />  
-  <interface-type name="QInputContextFactoryInterface" />
-  <interface-type name="QStyleFactoryInterface" />
-  <interface-type name="QTextCodecFactoryInterface" />
-  <interface-type name="QPictureFormatInterface" />
+  <interface-type name="QAccessibleFactoryInterface" java-name="QAbstractAccessibleFactory" />
+  <interface-type name="QIconEngineFactoryInterfaceV2" java-name="QAbstractIconEngineFactoryV2" />
+  <interface-type name="QImageIOHandlerFactoryInterface" java-name="QAbstractImageIOHandlerFactory" />  
+  <interface-type name="QInputContextFactoryInterface" java-name="QAbstractInputContextFactory" />
+  <interface-type name="QStyleFactoryInterface" java-name="QAbstractStyleFactory" />
+  <interface-type name="QTextCodecFactoryInterface" java-name="QAbstractTextCodecFactory" />
+  <interface-type name="QPictureFormatInterface" java-name="QAbstractPictureFormat" />
   
   <object-type name="QIconEnginePluginV2"/>
   <object-type name="QAccessiblePlugin"/>  

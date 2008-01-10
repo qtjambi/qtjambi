@@ -8,7 +8,9 @@
     <rejection class="Phonon::IODeviceStream" />
     <rejection class="Phonon::Factory" />
     <rejection class="Phonon::Experimental" />
-    <rejection class="AudioOutputAdaptor" />
+    <rejection class="Phonon::ObjectDescriptionModel" />
+    <rejection class="Phonon::BackendCapabilities::Notifier" />
+    <rejection class="AudioOutputAdaptor" />    
     <rejection class="*" field-name="k_ptr" />
     
     <namespace-type name="Phonon" />
@@ -37,17 +39,17 @@
     <enum-type name="Phonon::VolumeFaderEffect::FadeCurve" />                         
 
     <interface-type name="Phonon::AbstractVideoOutput" java-name="AbstractVideoOutput" />
-    <interface-type name="Phonon::AddonInterface" java-name="AddonInterface" />
+    <interface-type name="Phonon::AddonInterface" java-name="AbstractAddon" />
     <interface-type name="Phonon::AudioOutputInterface" java-name="AudioOutputInterface" />
-    <interface-type name="Phonon::BackendInterface" java-name="BackendInterface" />
-    <interface-type name="Phonon::EffectInterface" java-name="EffectInterface" />
+    <interface-type name="Phonon::BackendInterface" java-name="AbstractBackend" />
+    <interface-type name="Phonon::EffectInterface" java-name="AbstractEffect" />
     <interface-type name="Phonon::MediaNode" java-name="MediaNode" />
     
-    <interface-type name="Phonon::MediaObjectInterface" java-name="MediaObjectInterface" />
+    <interface-type name="Phonon::MediaObjectInterface" java-name="AbstractMediaObject" />
     <interface-type name="Phonon::PlatformPlugin" java-name="PlatformPlugin" />
-    <interface-type name="Phonon::StreamInterface" java-name="StreamInterface" />
-    <interface-type name="Phonon::VideoWidgetInterface" java-name="VideoWidgetInterface" />
-    <interface-type name="Phonon::VolumeFaderInterface" java-name="VolumeFaderInterface" />
+    <interface-type name="Phonon::StreamInterface" java-name="AbstractStream" />
+    <interface-type name="Phonon::VideoWidgetInterface" java-name="AbstractVideoWidget" />
+    <interface-type name="Phonon::VolumeFaderInterface" java-name="AbstractVolumeFader" />
 
     <value-type name="Phonon::EffectParameter" java-name="EffectParameter">
         <modify-function signature="EffectParameter()" remove="all" /> <!-- internal -->

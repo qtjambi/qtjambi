@@ -558,7 +558,7 @@
     <modify-function signature="readLink()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
-  <interface-type name="QFactoryInterface" />
+  <interface-type name="QFactoryInterface" java-name="QAbstractFactory" />
 
   <value-type name="QByteArray">
    
