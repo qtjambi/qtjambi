@@ -2576,7 +2576,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
 
                 s << INDENT;
                 writeTypeInfo(s, targ_val);
-                s << " __qt_tmp_val = __qt_values.at(i);" << endl;
+                s << " __qt_tmp_val = __qt_values.at(j);" << endl;
                 writeQtToJava(s, targ_val, "__qt_tmp_val", "__java_tmp_val", 0, -1, BoxedPrimitive);
 
                 s << INDENT << "qtjambi_collection_add(__jni_env, __java_value_list, __java_tmp_val);" << endl;
