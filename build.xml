@@ -154,14 +154,37 @@
         </jar>
     </target>
 
+    <target name="qtjambi-phonon-examples"
+	    depends="qtjambi.init"
+	    if="${qtjambi.phonon}">
+        <javac destdir="${outputDir}">
+            <src path="${outputDir}"/>
+            <src path="${sourceDir}"/>
+            <include name="com/trolltech/demos/phonon/*.java"/>
+            <include name="com/trolltech/examples/phonon/*.java"/>
+        </javac>
+    </target>
+
+    <target name="qtjambi-webkit-examples"
+	    depends="qtjambi.init"
+	    if="${qtjambi.webkit}">
+        <javac destdir="${outputDir}">
+            <src path="${outputDir}"/>
+            <src path="${sourceDir}"/>
+            <include name="com/trolltech/demos/webkit/*.java"/>
+            <include name="com/trolltech/examples/webkit/*.java"/>
+        </javac>
+    </target>
+
     <target name="qtjambi-examples.jar"
-            depends="qtjambi.init">
+            depends="qtjambi.init, qtjambi-phonon-examples, qtjambi-webkit-examples">
         <javac destdir="${outputDir}">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/**/*.java"/>
             <include name="com/trolltech/examples/**/*.java"/>
             <include name="com/trolltech/launcher/*.java"/>
+	    <exclude name="com/trolltech/demos/phonon/*.java"/>
             <exclude name="com/trolltech/examples/generator/*.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java"/>
             <exclude name="com/trolltech/examples/GeneratorExample.java"/>
