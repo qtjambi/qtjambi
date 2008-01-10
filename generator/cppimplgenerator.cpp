@@ -524,7 +524,7 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
         if (!found) {
             s << endl
               << INDENT << jni_function_signature(cls->package(), cls->name(), "__qt_hashCode", "jint")
-              << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
+              << "(JNIEnv *__jni_env, jobject, jlong __this_nativeId)" << endl
               << INDENT << "{" << endl;
             {
                 Indentation indent(INDENT);
@@ -554,7 +554,7 @@ void CppImplGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s, cons
         if (!found) {
             s << endl
               << INDENT << jni_function_signature(cls->package(), cls->name(), "__qt_toString", "jstring")
-              << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
+              << "(JNIEnv *__jni_env, jobject, jlong __this_nativeId)" << endl
               << INDENT << "{" << endl;
             {
                 Indentation indent(INDENT);
@@ -606,7 +606,7 @@ void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaC
         s << endl;
         s << "#include <QDebug>" << endl;
         s << jni_function_signature(java_class->package(), java_class->name(), "__qt_toString", "jstring")
-          << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
+          << "(JNIEnv *__jni_env, jobject, jlong __this_nativeId)" << endl
           << INDENT << "{" << endl;
         {
             Indentation indent(INDENT);
@@ -628,7 +628,7 @@ void CppImplGenerator::writeCloneFunction(QTextStream &s, const AbstractMetaClas
 {
     s << endl
       << jni_function_signature(java_class->package(), java_class->name(), "__qt_clone", "jobject") << endl
-      << "(JNIEnv *__jni_env, jclass, jlong __this_nativeId)" << endl
+      << "(JNIEnv *__jni_env, jobject, jlong __this_nativeId)" << endl
       << INDENT << "{" << endl;
     {
         Indentation indent(INDENT);
@@ -1349,9 +1349,12 @@ void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const Abstrac
 
     s << "("
       << "JNIEnv *__jni_env," << endl;
-    if (!java_function->isConstructor())
-        s << " jclass";
-    else
+    if (!java_function->isConstructor()) {
+        if (java_function->isStatic())
+            s << " jclass";
+        else
+            s << " jobject";
+    } else
         s << " jobject " << java_object_name;
 
     bool hasNativeId = (callThrough && !java_function->isStatic() && !java_function->isConstructor());
@@ -2565,9 +2568,9 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
             writeTypeInfo(s, targ_key);
             s << " __qt_tmp_key = __qt_keys.at(i);" << endl;
             writeQtToJava(s, targ_key, "__qt_tmp_key", "__java_tmp_key", 0, -1, BoxedPrimitive);
-            
+
             s << INDENT << "QList<";
-            writeTypeInfo(s, targ_val);            
+            writeTypeInfo(s, targ_val);
             s << "> __qt_values = " << qt_name << ".values(__qt_tmp_key);" << endl
               << INDENT << "jobject __java_value_list = qtjambi_arraylist_new(__jni_env, __qt_values.size());" << endl
               << INDENT << "for (int j=0; j<__qt_values.size(); ++j) {" << endl;
@@ -2584,7 +2587,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
             s << INDENT << "}" << endl
               << INDENT << "qtjambi_map_put(__jni_env, " << java_name << ", __java_tmp_key, __java_value_list);" << endl;
         }
-        s << INDENT << "}" << endl;        
+        s << INDENT << "}" << endl;
 
     } else if (type->type() == ContainerTypeEntry::MapContainer
                || type->type() == ContainerTypeEntry::HashContainer) {
@@ -2850,8 +2853,8 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
         }
 
         if ((!(options & NoCasts) && !enum_as_int) || ((options & ForceEnumCast) && argument->type()->isEnum())) {
-            
-            // If the type in the signature is specified without template instantiation, but the 
+
+            // If the type in the signature is specified without template instantiation, but the
             // class is actually a template class, then we have troubles.
             AbstractMetaClass *cls = classes().findClass(argument->type()->typeEntry()->qualifiedCppName());
             if (cls == 0 || cls->templateArguments().size() == argument->type()->instantiations().size()) {

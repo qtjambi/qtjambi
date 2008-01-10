@@ -104,7 +104,7 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, Option o
                 for (int i=0; i<args.size(); ++i) {
                     if (i != 0)
                         s += ", ";
-                    bool isMultiMap = static_cast<const ContainerTypeEntry *>(java_type->typeEntry())->type() == ContainerTypeEntry::MultiMapContainer 
+                    bool isMultiMap = static_cast<const ContainerTypeEntry *>(java_type->typeEntry())->type() == ContainerTypeEntry::MultiMapContainer
                         && i == 1;
                     if (isMultiMap)
                         s += "java.util.List<";
@@ -909,7 +909,7 @@ static void write_equals_parts(QTextStream &s, const AbstractMetaFunctionList &l
     foreach (AbstractMetaFunction *f, lst) {
         AbstractMetaArgument *arg = f->arguments().at(0);
         QString type = f->typeReplaced(1);
-        if (type.isEmpty()) 
+        if (type.isEmpty())
             type = arg->type()->typeEntry()->qualifiedTargetLangName();
         s << INDENT << (*first ? "if" : "else if") << " (other instanceof " << type << ")" << endl
           << INDENT << "    return ";
@@ -923,7 +923,7 @@ static void write_compareto_parts(QTextStream &s, const AbstractMetaFunctionList
     foreach (AbstractMetaFunction *f, lst) {
         AbstractMetaArgument *arg = f->arguments().at(0);
         QString type = f->typeReplaced(1);
-        if (type.isEmpty()) 
+        if (type.isEmpty())
             type = arg->type()->typeEntry()->qualifiedTargetLangName();
         s << INDENT << (*first ? "if" : "else if") << " (other instanceof " << type << ") {" << endl
           << INDENT << "    if (" << f->name() << "((" << type << ") other)) return " << value << ";" << endl
@@ -1556,7 +1556,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
           << INDENT << "}" << endl
           << endl
           << INDENT << "@QtBlockedSlot" << endl
-          << INDENT << "native boolean __qt_signalInitialization(long ptr, String name);" << endl;
+          << INDENT << "private native boolean __qt_signalInitialization(long ptr, String name);" << endl;
     }
 
     // Add dummy constructor for use when constructing subclasses
