@@ -252,6 +252,9 @@
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
             <library name="phonon"    type="qt" version="5" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
+            <library name="phonon_ds9" type="unversioned-plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}" /> 
+            <library name="phonon_gstreamer" type="unversioned-plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}" />
+            <library name="phonon_qt7" type="unversioned-plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}" />
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
@@ -275,8 +278,8 @@
             <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}" />
-	    <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" 
-		     if="${qtjambi.webkit}"/>
+            <library name="com_trolltech_qt_phonon"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.phonon}"/>
+            <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.webkit}"/>
 
 	    <plugin path="plugins" />
 

@@ -53,6 +53,9 @@ public class InitializeTask extends Task {
     public static final String CONFIGURATION    = "qtjambi.configuration";
     public static final String PHONON           = "qtjambi.phonon";
     public static final String WEBKIT           = "qtjambi.webkit";
+    public static final String PHONON_DS9       = "qtjambi.phonon_ds9";
+    public static final String PHONON_GSTREAMER = "qtjambi.phonon_gstreamer";
+    public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -103,8 +106,16 @@ public class InitializeTask extends Task {
 
         // These depend on both qtdir, libsubdir and configration, so
         // run rather late...
-        props.setNewProperty(null, PHONON, decidePhonon());
+        String phonon = decidePhonon();
+        props.setNewProperty(null, PHONON, phonon);
         props.setNewProperty(null, WEBKIT, decideWebkit());
+        if (Boolean.parseBoolean(phonon)) {
+            switch (Util.OS()) {
+            case WINDOWS: props.setNewProperty(null, PHONON_DS9, true); break;
+            case LINUX: props.setNewProperty(null, PHONON_GSTREAMER, true); break;
+            case MAC: props.setNewProperty(null, PHONON_QT7, true); break;
+            }
+        }
     }
 
     private void checkCompilerDetails() {

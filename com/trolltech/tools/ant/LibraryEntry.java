@@ -6,19 +6,19 @@ import java.io.File;
 
 public class LibraryEntry extends Task {
    
-    public static final String TYPE_DEFAULT     = "user";
-    public static final int VERSION_DEFAULT     = 4;
+    public static final String TYPE_DEFAULT            = "user";
+    public static final int VERSION_DEFAULT            = 4;
     
-    public static final String TYPE_PLUGIN      = "plugin";
-    public static final String TYPE_QT          = "qt";
-    public static final String TYPE_QTJAMBI     = "qtjambi";
-    public static final String TYPE_VERSION     = "version";
+    public static final String TYPE_PLUGIN             = "plugin";
+    public static final String TYPE_QT                 = "qt";
+    public static final String TYPE_QTJAMBI            = "qtjambi";
+    public static final String TYPE_UNVERSIONED_PLUGIN = "unversioned-plugin"; 
 
-    public static final String LOAD_DEFAULT     = "default";
-    public static final String LOAD_YES         = "yes";
-    public static final String LOAD_NEVER       = "never";
+    public static final String LOAD_DEFAULT            = "default";
+    public static final String LOAD_YES                = "yes";
+    public static final String LOAD_NEVER              = "never";
 
-    public static final String SUBDIR_DEFAULT   = "auto";
+    public static final String SUBDIR_DEFAULT          = "auto";
 
     public int getVersion() {
         return version;
@@ -93,6 +93,7 @@ public class LibraryEntry extends Task {
         if (type.equals(TYPE_PLUGIN))       name = formatPluginName(name, debug);
         else if (type.equals(TYPE_QT))      name = formatQtName(name, debug, version);
         else if (type.equals(TYPE_QTJAMBI)) name = formatQtJambiName(name, debug);
+        else if (type.equals(TYPE_UNVERSIONED_PLUGIN)) name = formatUnversionedPluginName(name, debug);
 
         if (!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT))
             load = LOAD_DEFAULT;
@@ -139,6 +140,22 @@ public class LibraryEntry extends Task {
         throw new BuildException("unhandled case...");
     }
 
+    public static String formatUnversionedPluginName(String name, boolean debug) {
+        if (debug) {
+            switch (Util.OS()) {
+            case WINDOWS: return name + "d.dll";
+            case MAC: return "lib" + name + "_debug.dylib";
+            case LINUX: return "lib" + name + ".so";
+            }
+        } else {
+            switch (Util.OS()) {
+            case WINDOWS: return name + ".dll";
+            case MAC: return "lib" + name + ".dylib";
+            case LINUX: return "lib" + name + ".so";
+            }
+        }
+        throw new BuildException("unhandled case...");        
+    }
 
     public static String formatQtJambiName(String name, boolean debug) {
         if (debug)  {
