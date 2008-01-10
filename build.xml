@@ -251,7 +251,7 @@
             <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
-            <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
+            <library name="phonon"    type="qt" version="5" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>

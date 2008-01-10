@@ -5,11 +5,14 @@ import org.apache.tools.ant.*;
 import java.io.File;
 
 public class LibraryEntry extends Task {
-
+   
     public static final String TYPE_DEFAULT     = "user";
+    public static final int VERSION_DEFAULT     = 4;
+    
     public static final String TYPE_PLUGIN      = "plugin";
     public static final String TYPE_QT          = "qt";
     public static final String TYPE_QTJAMBI     = "qtjambi";
+    public static final String TYPE_VERSION     = "version";
 
     public static final String LOAD_DEFAULT     = "default";
     public static final String LOAD_YES         = "yes";
@@ -17,6 +20,13 @@ public class LibraryEntry extends Task {
 
     public static final String SUBDIR_DEFAULT   = "auto";
 
+    public int getVersion() {
+        return version;
+    }
+    
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public String getType() {
         return type;
@@ -81,7 +91,7 @@ public class LibraryEntry extends Task {
 
         // Fix name...
         if (type.equals(TYPE_PLUGIN))       name = formatPluginName(name, debug);
-        else if (type.equals(TYPE_QT))      name = formatQtName(name, debug);
+        else if (type.equals(TYPE_QT))      name = formatQtName(name, debug, version);
         else if (type.equals(TYPE_QTJAMBI)) name = formatQtJambiName(name, debug);
 
         if (!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT))
@@ -149,6 +159,7 @@ public class LibraryEntry extends Task {
 
 
     private String type = TYPE_DEFAULT;
+    private int version = VERSION_DEFAULT;
     private String name;
     private File rootpath;
     private String subdir = SUBDIR_DEFAULT;
