@@ -39,7 +39,6 @@ public class PadNavigator extends QGraphicsView {
                 proxyWidget = new QGraphicsProxyWidget(this);
                 proxyWidget.setFocusPolicy(Qt.FocusPolicy.StrongFocus);
                 proxyWidget.setWidget(embeddedWidget);
-                proxyWidget.setGeometry(boundingRect().adjusted(25, 25, -25, -25));
             }
         }
 
@@ -60,7 +59,7 @@ public class PadNavigator extends QGraphicsView {
                 proxyWidget.setFocus(Qt.FocusReason.OtherFocusReason);
             }
 
-            if (proxyWidget != null && proxyWidget.pos().isNull())
+            if (proxyWidget != null && !proxyWidget.pos().isNull())
                 proxyWidget.setGeometry(boundingRect().adjusted(25, 25, -25, -25));
 
             painter.setOpacity(opacity());
@@ -174,7 +173,7 @@ public class PadNavigator extends QGraphicsView {
         ui.setupUi(embed);
         ui.hostName.setFocus(Qt.FocusReason.OtherFocusReason);
 
-        backItem = new RoundRectItem(bounds, QColor.red, embed);
+        backItem = new RoundRectItem(bounds, palette().color(QPalette.ColorRole.Window), embed);
         backItem.setTransform(new QTransform().rotate(180, Qt.Axis.YAxis), false);
         backItem.setParentItem(baseItem);
 
@@ -233,11 +232,11 @@ public class PadNavigator extends QGraphicsView {
             return;
         }
 
-        selectedX = (selectedX
+        selectedX = (selectedX + width
                     + (event.key() == Qt.Key.Key_Right.value() ? 1 : 0)
                     - (event.key() == Qt.Key.Key_Left.value() ? 1 : 0)) % width;
 
-        selectedY = (selectedY
+        selectedY = (selectedY + height
                     + (event.key() == Qt.Key.Key_Down.value() ? 1 : 0)
                     - (event.key() == Qt.Key.Key_Up.value() ? 1 : 0)) % height;
 
@@ -304,7 +303,7 @@ public class PadNavigator extends QGraphicsView {
     }
 
     public QPointF posForLocation(int x, int y) {
-        return new QPointF(x * 150 - (width - 1) * 75, 
+        return new QPointF(x * 150 - (width - 1) * 75,
                            y * 150 - (height - 1) * 75);
     }
 
@@ -335,7 +334,7 @@ public class PadNavigator extends QGraphicsView {
     private boolean flipLeft = true;
 
     private Ui_BackSide ui;
-    
+
 
 
     public static void main(String args[]) {
