@@ -4042,6 +4042,8 @@
       <include file-name="QPixmap" location="global"/>
     </extra-includes>
     
+    <modify-function signature="drawText(const QPointF &amp;, const QString &amp;, int, int)" remove="all" />
+    
     <modify-function signature="drawConvexPolygon(const QPoint *, int)">
         <remove/>
     </modify-function>
