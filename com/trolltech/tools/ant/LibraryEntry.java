@@ -5,14 +5,14 @@ import org.apache.tools.ant.*;
 import java.io.File;
 
 public class LibraryEntry extends Task {
-   
+
     public static final String TYPE_DEFAULT            = "user";
     public static final int VERSION_DEFAULT            = 4;
-    
+
     public static final String TYPE_PLUGIN             = "plugin";
     public static final String TYPE_QT                 = "qt";
     public static final String TYPE_QTJAMBI            = "qtjambi";
-    public static final String TYPE_UNVERSIONED_PLUGIN = "unversioned-plugin"; 
+    public static final String TYPE_UNVERSIONED_PLUGIN = "unversioned-plugin";
 
     public static final String LOAD_DEFAULT            = "default";
     public static final String LOAD_YES                = "yes";
@@ -23,7 +23,7 @@ public class LibraryEntry extends Task {
     public int getVersion() {
         return version;
     }
-    
+
     public void setVersion(int version) {
         this.version = version;
     }
@@ -154,7 +154,7 @@ public class LibraryEntry extends Task {
             case LINUX: return "lib" + name + ".so";
             }
         }
-        throw new BuildException("unhandled case...");        
+        throw new BuildException("unhandled case...");
     }
 
     public static String formatQtJambiName(String name, boolean debug) {
@@ -181,5 +181,5 @@ public class LibraryEntry extends Task {
     private File rootpath;
     private String subdir = SUBDIR_DEFAULT;
     private String load = LOAD_DEFAULT;
-    private boolean included;
+    private boolean included = true;
 }
