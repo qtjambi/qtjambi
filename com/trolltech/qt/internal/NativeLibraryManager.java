@@ -303,7 +303,7 @@ public class NativeLibraryManager {
     public static void loadQtLibrary(String library) {
         loadQtLibrary(library, "4");
     }
-    
+
     /**
      * Loads a library with name specified in <code>library</code>.
      * The library name will be expanded to the default shared library
@@ -424,13 +424,24 @@ public class NativeLibraryManager {
 
         // Load via System.load() using default paths..
         } else {
-            /* TODO: Mac OS X, loadLibrary won't load .dylib files, only .jnilib so special
-             * handling of QtCore and friends must be added...
-             */
-            String libBase = stripLibraryName(lib);
-            reporter.report(" - using 'java.library.path' as '", libBase, "'");
-            System.loadLibrary(libBase);
-            reporter.report(" - ok!");
+            boolean loaded = false;
+            reporter.report(" - using 'java.library.path'");
+            String libPaths = System.getProperty("java.library.path");
+            if (libPaths != null) {
+                String paths[] = libPaths.split(File.pathSeparator);
+                for (String path : paths) {
+                    File f = new File(path, lib);
+                    if (f.exists()) {
+                        Runtime.getRuntime().load(f.getAbsolutePath());
+                        reporter.report(" - ok, path was: " + f.getAbsolutePath());
+                        loaded = true;
+                    }
+                }
+            }
+            if (!loaded) {
+                throw new RuntimeException("Library '" + lib +"' could was not found in 'java.library.path'="
+                                           + libPaths);
+            }
         }
     }
 
