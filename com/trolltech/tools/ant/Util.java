@@ -160,11 +160,11 @@ class Util {
         }
         return null;
     }
-    
+
     public static void exec(String command) {
         exec(command, null);
     }
-    
+
     public static void exec(String command, File dir) throws BuildException {
         System.out.println("Running : " + ((dir!=null)? "(" + makeCanonical(dir) + ")" : "") + " " + command);
         try {
@@ -177,11 +177,31 @@ class Util {
             throw new BuildException("Running: " + command + " failed.", e);
         }
     }
-    
+
+    public static void exec(String cmd[], File dir, boolean verbose) throws BuildException {
+        if (verbose) {
+            StringBuilder b = new StringBuilder();
+            for (String s : cmd)
+                b.append(s).append(' ');
+            System.out.println("Running : " + ((dir!=null)? "(" + makeCanonical(dir) + ")" : "") + " " + b);
+        }
+
+        try {
+            Process process = Runtime.getRuntime().exec(cmd, null, dir);
+            Util.redirectOutput(process, true);
+            if (process.exitValue() != 0) {
+                throw new BuildException("Running: " + cmd + " failed.");
+            }
+        } catch (IOException e) {
+            throw new BuildException("Running: " + cmd + " failed.", e);
+        }
+    }
+
+
     public static File makeCanonical(String file) throws BuildException {
         return makeCanonical(new File(file));
     }
-    
+
     public static File makeCanonical(File file) throws BuildException {
         try {
             return file.getCanonicalFile();

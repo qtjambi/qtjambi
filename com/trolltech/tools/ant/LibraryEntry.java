@@ -99,6 +99,13 @@ public class LibraryEntry extends Task {
             load = LOAD_DEFAULT;
     }
 
+    public String absoluteSourcePath() {
+        return rootpath + "/" + subdir + "/" + name;
+    }
+
+    public String relativePath() {
+        return subdir + "/" + name;
+    }
 
     public static String formatPluginName(String name, boolean debug) {
         if (debug) {

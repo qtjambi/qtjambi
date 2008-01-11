@@ -39,7 +39,6 @@ public class PlatformJarTask extends Task {
         this.outdir = outdir;
     }
 
-
     public void execute() throws BuildException {
         try {
             execute_internal();
@@ -47,6 +46,14 @@ public class PlatformJarTask extends Task {
             e.printStackTrace();
             throw new BuildException("Failed to create native .jar", e);
         }
+    }
+
+    public void setOsxinstallname(boolean iname) {
+        processInstallName = iname;
+    }
+
+    public boolean getOsxinstallname() {
+        return processInstallName;
     }
 
     public void execute_internal() throws BuildException {
@@ -68,6 +75,9 @@ public class PlatformJarTask extends Task {
 
         if (systemLibs.equals(SYSLIB_AUTO))
             processSystemLibs();
+
+        if (processInstallName && Util.OS() == Util.OS.MAC)
+            processOSXInstallName();
 
         writeQtJambiDeployment();
 
@@ -295,6 +305,49 @@ public class PlatformJarTask extends Task {
     }
 
 
+    private void processOSXInstallName() {
+        System.out.println("Processing Mac OS X install_name...");
+
+        String cmd[] = new String[] {
+            "install_name_tool",
+            "-change",
+            null,       // Old install name
+            null,       // new install name
+            null        // library to update...
+        };
+
+        for (LibraryEntry with : libs) {
+
+            if (LibraryEntry.TYPE_PLUGIN.equals(with.getType()))
+                continue;
+
+            System.out.println(" - updating: " + with.getName());
+
+            for (LibraryEntry change : libs) {
+                if ("libqtjambi.jnilib".equals(with.getName()))
+                    cmd[2] = "libqtjambi.1.jnilib";
+                else
+                    cmd[2] = with.absoluteSourcePath();
+
+                // Calculate the new subdir...
+                int subdir = change.getSubdir().split("/").length;
+                StringBuilder builder = new StringBuilder(subdir * 3);
+                for (int i=0; i<subdir; ++i)
+                    builder.append("../");
+                builder.append(with.getSubdir());
+                builder.append("/");
+                builder.append(with.getName());
+                builder.insert(0, "@loader_path/");
+
+                cmd[3] = builder.toString();
+                cmd[4] = change.relativePath();
+
+                Util.exec(cmd, outdir, false);
+            }
+        }
+    }
+
+
     private String cacheKey = "default";
     private File outdir;
     private List<LibraryEntry> libs = new ArrayList<LibraryEntry>();
@@ -304,6 +357,8 @@ public class PlatformJarTask extends Task {
     private String systemLibs = SYSLIB_AUTO;
     private List<PluginPath> pluginPaths = new ArrayList<PluginPath>();
     private boolean debugConfiguration = false;
+
+    private boolean processInstallName = true;
 
     private PropertyHelper props;
 }
