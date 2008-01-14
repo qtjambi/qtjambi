@@ -1,0 +1,34 @@
+/*   Ported from: src.network.ssl.qsslcertificate.cpp
+<snip>
+//! [0]
+    foreach (QSslCertificate cert, QSslCertificate::fromPath("C:/ssl/certificate.*.pem",
+                                                             QRegExp::Wildcard)) {
+        qDebug() << cert.issuerInfo(QSslCertificate::Organization);
+    }
+//! [0]
+
+
+</snip>
+*/
+import com.trolltech.qt.*;
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+import com.trolltech.qt.xml.*;
+import com.trolltech.qt.network.*;
+import com.trolltech.qt.sql.*;
+import com.trolltech.qt.svg.*;
+
+
+public class src_network_ssl_qsslcertificate {
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+//! [0]
+    for (QSslCertificate cert, QSslCertificate.fromPath("C:/ssl/certificate.*.pem",
+                                                             QRegExp.Wildcard)) {
+        qDebug() << cert.issuerInfo(QSslCertificate.Organization);
+    }
+//! [0]
+
+
+    }
+}

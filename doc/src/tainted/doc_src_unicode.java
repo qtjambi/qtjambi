@@ -1,0 +1,58 @@
+/*   Ported from: doc.src.unicode.qdoc
+<snip>
+//! [0]
+        label->setText("Password:");
+//! [0]
+
+
+//! [1]
+        label->setText(tr("Password:"));
+//! [1]
+
+
+//! [2]
+        QFile file(QString::fromLatin1("appicon.png"));
+//! [2]
+
+
+//! [3]
+        QFile file(QLatin1String("appicon.png"));
+//! [3]
+
+
+</snip>
+*/
+import com.trolltech.qt.*;
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+import com.trolltech.qt.xml.*;
+import com.trolltech.qt.network.*;
+import com.trolltech.qt.sql.*;
+import com.trolltech.qt.svg.*;
+
+
+public class doc_src_unicode {
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+//! [0]
+        label.setText("Password:");
+//! [0]
+
+
+//! [1]
+        label.setText(tr("Password:"));
+//! [1]
+
+
+//! [2]
+        QFile file(QString.fromLatin1("appicon.png"));
+//! [2]
+
+
+//! [3]
+        QFile file(QLatin1String("appicon.png"));
+//! [3]
+
+
+    }
+}

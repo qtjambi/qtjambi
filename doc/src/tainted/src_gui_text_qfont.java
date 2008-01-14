@@ -1,0 +1,76 @@
+/*   Ported from: src.gui.text.qfont.cpp
+<snip>
+//! [0]
+        QFont serifFont("Times", 10, QFont::Bold);
+        QFont sansFont("Helvetica [Cronyx]", 12);
+//! [0]
+
+
+//! [1]
+        QFont f("Helvetica");
+//! [1]
+
+
+//! [2]
+        QFont f("Helvetica [Cronyx]");
+//! [2]
+
+
+//! [3]
+        QFontInfo info(f1);
+        QString family = info.family();
+//! [3]
+
+
+//! [4]
+        QFontMetrics fm(f1);
+        int textWidthInPixels = fm.width("How many pixels wide is this text?");
+        int textHeightInPixels = fm.height();
+//! [4]
+
+
+</snip>
+*/
+import com.trolltech.qt.*;
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+import com.trolltech.qt.xml.*;
+import com.trolltech.qt.network.*;
+import com.trolltech.qt.sql.*;
+import com.trolltech.qt.svg.*;
+
+
+public class src_gui_text_qfont {
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+//! [0]
+        QFont serifFont("Times", 10, QFont.Bold);
+        QFont sansFont("Helvetica [Cronyx]", 12);
+//! [0]
+
+
+//! [1]
+        QFont f("Helvetica");
+//! [1]
+
+
+//! [2]
+        QFont f("Helvetica [Cronyx]");
+//! [2]
+
+
+//! [3]
+        QFontInfo info(f1);
+        Stringsfamily = info.family();
+//! [3]
+
+
+//! [4]
+        QFontMetrics fm(f1);
+        int textWidthInPixels = fm.width("How many pixels wide is this text?");
+        int textHeightInPixels = fm.height();
+//! [4]
+
+
+    }
+}
