@@ -25,5 +25,3 @@ while ($file = shift @ARGV) {
         s/QStringList/List<String>/g;
     }
 }
-
-const QString &x,cmv
