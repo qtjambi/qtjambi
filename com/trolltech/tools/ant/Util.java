@@ -171,10 +171,10 @@ class Util {
             Process process = Runtime.getRuntime().exec(command, null, dir);
             Util.redirectOutput(process, true);
             if (process.exitValue() != 0) {
-                throw new BuildException("Running: " + command + " failed.");
+                throw new BuildException("Running: " + command + " failed with exit code: " + process.exitValue());
             }
         } catch (IOException e) {
-            throw new BuildException("Running: " + command + " failed.", e);
+            throw new BuildException("Running: " + command + " failed with error message: " + e.getMessage(), e);
         }
     }
 
