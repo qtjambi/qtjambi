@@ -64,7 +64,6 @@
 
 
     <object-type name="QXmlQuery">
-        <!-- FIXME should not be removed-->
         <modify-function signature="evaluateToStringList(QStringList&lt;QString&gt;*)const"> <remove/> </modify-function>
     </object-type>
     <object-type name="QXmlResultItems"/>
@@ -82,6 +81,7 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QSimpleXmlNodeModel::mapToItem', unmatched parameter type 'QExplicitlySharedDataPointer&lt;QPatternist::DynamicContext&gt; const&amp;'"/>
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QSimpleXmlNodeModel::mapToSequence', unmatched return type 'QAbstractXmlForwardIterator&lt;QXmlNodeModelIndex&gt;::Ptr'"/>
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlItem::QXmlItem', unmatched parameter type 'QPatternist::Item const&amp;'"/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlFormatter::item', unmatched parameter type 'QPatternist::Item const&amp;'"/>
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlReceiver::item', unmatched parameter type 'QPatternist::Item const&amp;'"/>
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlReceiver::sendAsNode', unmatched parameter type 'QPatternist::Item const&amp;'"/>
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlSerializer::item', unmatched parameter type 'QPatternist::Item const&amp;'"/>

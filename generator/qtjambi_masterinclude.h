@@ -19,6 +19,7 @@
 #include <QtSql/QtSql>
 #include <QtSvg/QtSvg>
 #include <QtXml/QtXml>
+#include <QtXmlPatterns/QtXmlPatterns>
 
 #ifndef QT_NO_WEBKIT
 #  include <QtWebKit/QtWebKit>
