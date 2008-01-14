@@ -1724,4 +1724,60 @@
           <import-file name="typesystem_core-java.java" quote-after-line="class QBitArray___" quote-before-line="}// class"/>
       </inject-code>  
   </value-type>
+  
+  <value-type name="QFuture">
+    <modify-function signature="operator==(const QFuture &amp;)const">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.core.QFuture" />
+            <conversion-rule class="native">
+                const QtJambiFuture &amp;  %out = %in != 0 ? (const QtJambiFuture&amp; ) *(QtJambiFuture *)qtjambi_from_jlong(%in) : QtJambiFuture();
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>  
+  </value-type>
+  
+  <object-type name="QFutureWatcherBase">
+    <inject-code class="shell-declaration">
+        // private virtual and considered internal
+        virtual const QFutureInterfaceBase &amp;futureInterface() const { return QFutureInterfaceBase(); }
+        virtual QFutureInterfaceBase &amp;futureInterface() { return QFutureInterfaceBase(); }            
+    </inject-code>  
+  </object-type>
+  
+  <object-type name="QFutureWatcher">
+    <modify-function signature="setFuture(const QFuture &amp;)">
+        <modify-argument index="1">
+            <replace-type modified-type="com.trolltech.qt.core.QFuture" />
+            <conversion-rule class="native">
+                const QtJambiFuture &amp;  %out = %in != 0 ? (const QtJambiFuture&amp; ) *(QtJambiFuture *)qtjambi_from_jlong(%in) : QtJambiFuture();                
+            </conversion-rule>
+        </modify-argument>
+    </modify-function>
+       
+    <inject-code>
+        <import-file name="typesystem_core-java.java" quote-after-line="class QFutureWatcher___" quote-before-line="}// class"/>
+    </inject-code>
+    <inject-code class="native">
+        extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QFutureWatcher__1_1qt_1future__J)
+        (JNIEnv *__jni_env,
+         jobject,
+         jlong __this_nativeId)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) entering: QFutureWatcher::future() const");
+            Q_UNUSED(__jni_env)
+            Q_UNUSED(__this_nativeId)
+            QtJambiShell_QFutureWatcher *__qt_this = (QtJambiShell_QFutureWatcher *) qtjambi_from_jlong(__this_nativeId);
+            QTJAMBI_EXCEPTION_CHECK(__jni_env);
+            Q_ASSERT(__qt_this);
+            QtJambiFuture  __qt_return_value = __qt_this->future();
+
+            jobject __java_return_value = qtjambi_from_object(__jni_env, &amp;__qt_return_value, "QFuture", "com/trolltech/qt/core/", true);
+            
+            QTJAMBI_DEBUG_TRACE("(native) -> leaving: QFutureWatcher::future() const");
+            return __java_return_value;
+        }
+    
+    </inject-code>
+  </object-type>
+  
 </typesystem>

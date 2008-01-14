@@ -458,11 +458,13 @@ void MetaInfoGenerator::writeDestructors(QTextStream &s, const AbstractMetaClass
     if(clsWithPublicDestructor != 0)
     {
         const ComplexTypeEntry *entry = cls->typeEntry();
-        s   << "void destructor_" << entry->javaPackage().replace(".", "_")  << "_"
-            << entry->lookupName().replace(".", "_").replace("$", "_") << "(void *ptr)" << endl
-            << "{" << endl
-            << "    delete reinterpret_cast<" << clsWithPublicDestructor->qualifiedCppName() << " *>(ptr);" << endl
-            << "}" << endl << endl;
+        if ((entry->codeGeneration() & TypeEntry::GenerateCode) != 0) {
+            s   << "void destructor_" << entry->javaPackage().replace(".", "_")  << "_"
+                << entry->lookupName().replace(".", "_").replace("$", "_") << "(void *ptr)" << endl
+                << "{" << endl
+                << "    delete reinterpret_cast<" << clsWithPublicDestructor->qualifiedCppName() << " *>(ptr);" << endl
+                << "}" << endl << endl;
+        }
     }
 }
 

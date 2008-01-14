@@ -391,7 +391,8 @@ public:
         GenerateForSubclass     = 0x0004,
 
         GenerateNothing         = 0,
-        GenerateAll             = 0xffff
+        GenerateAll             = 0xffff,
+        GenerateCode            = GenerateTargetLang | GenerateCpp
     };
 
     TypeEntry(const QString &name, Type t)

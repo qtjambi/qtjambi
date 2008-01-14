@@ -607,3 +607,15 @@ class QAbstractFileEngine_UnMapExtensionOption___ extends QAbstractFileEngine_Un
         return np != null ? com.trolltech.qt.QtJambiInternal.charPointerToString(np) : null;
     }
 }// class
+
+class QFutureWatcher___ extends QFutureWatcher {
+
+    public final QFuture future() {
+        if (nativeId() == 0)
+            throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+        return __qt_future(nativeId());
+    }
+    private native QFuture __qt_future(long nativeId);
+
+}// class
+

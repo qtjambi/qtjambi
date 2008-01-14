@@ -12,7 +12,6 @@
 ****************************************************************************/
 
 #define QT_NO_STL
-#define QT_NO_CONCURRENT
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
@@ -33,6 +32,8 @@
 
 #include <../qtjambi_gui/qtreemodel.h>
 #include <../qtjambi_gui/qguisignalmapper.h>
+
+#include <../qtjambi_core/qtjambiconcurrent.h>
 
 #ifndef QT_NO_OPENGL
 #define GL_ACCUM                          0x0100

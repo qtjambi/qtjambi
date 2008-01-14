@@ -130,5 +130,6 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioOutputDevice' has equals operators but no qHash() function" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'Phonon::operator&lt;&lt;', unmatched return type 'QDebug'" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'Phonon::ObjectDescription::ObjectDescription', unmatched parameter type 'QExplicitlySharedDataPointer&lt;ObjectDescriptionData&gt; const&amp;'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'Phonon::BackendCapabilities::notifier', unmatched return type 'Phonon::BackendCapabilities::Notifier*'" />
   
 </typesystem>

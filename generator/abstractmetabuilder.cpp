@@ -938,6 +938,7 @@ AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, Abs
 AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typeAlias) 
 {
     QString class_name = strip_template_args(typeAlias->name());
+    
 
     QString full_class_name = class_name;
     // we have an inner class
@@ -1278,6 +1279,7 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
                 templ = m_meta_classes.findClass(base_name);
 
             if (templ) {
+                setupInheritance(templ);
                 inheritTemplate(meta_class, templ, info);
                 return true;
             }
@@ -2102,6 +2104,12 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
         delete type;
     }
 
+
+    {
+        subclass->setInterfaces(template_class->interfaces());
+        subclass->setBaseClass(template_class->baseClass());
+    }
+    
     return true;
 }
 
