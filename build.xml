@@ -155,33 +155,6 @@
         </jar>
     </target>
 
-
-
-    <target name="qtjambi-generator-example" 
-	    depends="qtjambi.init"
-	    if="qtjambi.generatorexample">
-
-        <generator dir="${outputDir}/generator_example"
-		   outputDirectory="${outputDir}"
-		   typesystem="${sourceDir}/generator_example/typesystem_generatorexample.txt"
-		   header="${sourceDir}/generator_example/global.h"/>
-
-	<qmake config="${qtjambi.configuration}"
-	       dir="${outputDir}/generator_example"
-	       pro="${sourceDir}/generator_example/generator_example.pro" />
-
-	<make dir="${outputDir}/generator_example" />
-
-	<javac destdir="${outputDir}"
-	       debug="true">
-            <src path="${outputDir}"/>
-            <src path="${sourceDir}"/>
-            <include name="com/trolltech/examples/generator/*.java"/>
-            <include name="com/trolltech/examples/GeneratorExample.java"/>
-	</javac>
-
-    </target>
-
     <target name="qtjambi-phonon-examples"
 	    depends="qtjambi.init"
 	    if="${qtjambi.phonon}">
@@ -205,7 +178,7 @@
     </target>
 
     <target name="qtjambi-examples.jar"
-            depends="qtjambi.init, qtjambi-phonon-examples, qtjambi-webkit-examples, qtjambi-generator-example">
+            depends="qtjambi.init, qtjambi-phonon-examples, qtjambi-webkit-examples">
         <javac destdir="${outputDir}" debug="true">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>

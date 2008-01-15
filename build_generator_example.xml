@@ -1,0 +1,97 @@
+<project default="all" basedir=".">
+
+    <property environment="env"/> 
+
+    <tstamp/>
+
+    <property name="sourceDir" value="." />
+    <property name="outputDir" value="." />
+
+    <property name="jambiLib" value="${outputDir}/lib" />
+
+    <target name="help"
+            description="Provides detailed help.">
+	<echo>Generates an executable .jar file that runs the generator example...</echo>
+    </target>
+
+
+    <target name="init">
+        <taskdef name="qmake"     classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
+        <taskdef name="make"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
+        <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
+        <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
+        <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
+        
+        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
+
+        <mkdir dir="${outputDir}/platform-output"/>
+    </target>
+
+    <target name="compile" 
+	    depends="init">
+
+        <generator dir="${outputDir}/generator_example"
+		   outputDirectory="${outputDir}"
+		   typesystem="${sourceDir}/generator_example/typesystem_generatorexample.txt"
+		   header="${sourceDir}/generator_example/global.h"/>
+
+	<qmake config="${qtjambi.configuration}"
+	       dir="${outputDir}/generator_example"
+	       pro="${sourceDir}/generator_example/generator_example.pro" />
+
+	<make dir="${outputDir}/generator_example" />
+
+
+	<javac destdir="${outputDir}/platform-output"
+	       debug="true">
+            <src path="${outputDir}"/>
+            <src path="${sourceDir}"/>
+            <include name="com/trolltech/examples/generator/*.java"/>
+            <include name="com/trolltech/examples/GeneratorExample.java"/>
+	</javac>
+    </target>
+
+    <target name="package"
+	    depends="init"
+	    description="Creating .jar file with native libs...">
+
+        <qtjambi-platform-jar cacheKey="genex-${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
+                              outdir="${outputDir}/platform-output">
+
+            <!-- Qt Libraries... -->
+            <library name="QtCore"    type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtGui"     type="qt" rootPath="${qtjambi.qtdir}" />
+
+            <!-- Qt Plugins... -->
+            <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
+	    <plugin path="plugins" />
+
+            <!-- Qt Jambi Libraries -->
+            <library name="qtjambi"                  type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${outputDir}" />
+            <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${outputDir}" />
+
+	    <!-- The generator examplelibrary -->
+            <library name="com_trolltech_examples_generator" type="qtjambi" rootPath="${outputDir}" />
+
+        </qtjambi-platform-jar>
+
+        <jar destfile="${outputDir}/qtjambi-generator-example-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
+            <fileset dir="${outputDir}/platform-output" />
+	    <fileset dir="${sourceDir}" includes="com/trolltech/examples/generator/images/*"/>
+            <manifest>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+                <attribute name="Main-Class" value="com.trolltech.examples.GeneratorExample"/>
+                <attribute name="Class-Path" value="qtjambi-${qtjambi.version}.jar" />
+            </manifest>
+
+        </jar>
+
+        <delete dir="${outputDir}/platform-output"/>
+        
+    </target>
+
+    <target name="all"
+	    depends="init, compile, package" />
+
+</project>

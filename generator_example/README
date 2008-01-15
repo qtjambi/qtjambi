@@ -1,3 +1,5 @@
+The generator example is an example that illustrates how to make use of the Qt Jambi Generator 
+
 To run the generator example, simply execute the generator_example
 script:
 
