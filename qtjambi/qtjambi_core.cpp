@@ -2071,3 +2071,14 @@ void qtjambi_register_variant_handler()
 {
     QtJambiVariant::registerHandler();
 }
+
+JObjectWrapper qtjambi_to_jobjectwrapper(JNIEnv *env, jobject java_object)
+{
+    return JObjectWrapper(env, java_object);
+}
+
+jobject qtjambi_from_jobjectwrapper(JNIEnv *env, const JObjectWrapper &wrapper)
+{
+    return env->NewLocalRef(wrapper.object);
+}
+

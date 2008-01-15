@@ -141,6 +141,7 @@ public:
         NativePointerPattern,
         ContainerPattern,
         VariantPattern,
+        JObjectWrapperPattern,
         ArrayPattern,
         ThreadPattern
     };
@@ -149,6 +150,7 @@ public:
         m_type_entry(0),
         m_array_element_count(0),
         m_array_element_type(0),
+        m_original_template_type(0),
         m_pattern(InvalidPattern),
         m_constant(false),
         m_reference(false),
@@ -208,6 +210,9 @@ public:
     // return true if the type was originally a QVariant or const QVariant &
     bool isVariant() const { return m_pattern == VariantPattern; }
 
+    // return true if the type was originally a JObjectWrapper or const JObjectWrapper &
+    bool isJObjectWrapper() const { return m_pattern == JObjectWrapperPattern; }
+
     // returns true if the type was used as a container
     bool isContainer() const { return m_pattern == ContainerPattern; }
 
@@ -252,6 +257,9 @@ public:
     void setOriginalTypeDescription(const QString &otd) { m_original_type_description = otd; }
     QString originalTypeDescription() const { return m_original_type_description; }
 
+    void setOriginalTemplateType(const AbstractMetaType *type) { m_original_template_type = type; }
+    const AbstractMetaType *originalTemplateType() const { return m_original_template_type; }
+
 private:
     const TypeEntry *m_type_entry;
     QList <AbstractMetaType *> m_instantiations;
@@ -260,6 +268,7 @@ private:
 
     int m_array_element_count;
     AbstractMetaType *m_array_element_type;
+    const AbstractMetaType *m_original_template_type;
 
     TypeUsagePattern m_pattern;
     uint m_constant : 1;
@@ -631,6 +640,7 @@ public:
           m_has_clone_operator(false),
           m_enclosing_class(0),
           m_base_class(0),
+          m_template_base_class(0),
           m_extracted_interface(0),
           m_primary_interface_implementor(0),
           m_type_entry(0), 
@@ -776,6 +786,9 @@ public:
 
     void sortFunctions();
 
+    const AbstractMetaClass *templateBaseClass() const { return m_template_base_class; }
+    void setTemplateBaseClass(const AbstractMetaClass *cls) { m_template_base_class = cls; }
+
 private:
     uint m_namespace : 1;
     uint m_qobject : 1;
@@ -793,6 +806,7 @@ private:
 
     const AbstractMetaClass *m_enclosing_class;
     AbstractMetaClass *m_base_class;
+    const AbstractMetaClass *m_template_base_class;
     AbstractMetaFunctionList m_functions;
     AbstractMetaFieldList m_fields;
     AbstractMetaEnumList m_enums;

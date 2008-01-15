@@ -311,24 +311,23 @@ bool Handler::characters(const QString &ch)
     }
 
     if  (current->parent){
-        if (current->type & StackElement::CodeSnipMask) {
-            if (current->type & StackElement::CodeSnipMask) {
-                switch (current->parent->type) {
-                    case StackElement::Root:
-                        ((TypeSystemTypeEntry *) current->parent->entry)->snips.last().addCode(ch);
-                        break;
-                    case StackElement::ModifyFunction:
-                        m_function_mods.last().snips.last().addCode(ch);
-                        break;
-                    case StackElement::ObjectTypeEntry:
-                    case StackElement::ValueTypeEntry:
-                    case StackElement::InterfaceTypeEntry:
-                        m_code_snips.last().addCode(ch);
-                        break;
-                    default:
-                        Q_ASSERT(false);
-                };
-            }
+        if ((current->type & StackElement::CodeSnipMask) != 0) {
+            switch (current->parent->type) {
+                case StackElement::Root:
+                    ((TypeSystemTypeEntry *) current->parent->entry)->snips.last().addCode(ch);
+                    break;
+                case StackElement::ModifyFunction:
+                    m_function_mods.last().snips.last().addCode(ch);
+                    break;
+                case StackElement::NamespaceTypeEntry:
+                case StackElement::ObjectTypeEntry:
+                case StackElement::ValueTypeEntry:
+                case StackElement::InterfaceTypeEntry:
+                    m_code_snips.last().addCode(ch);
+                    break;
+                default:
+                    Q_ASSERT(false);
+            };            
             return true;
         }
     }
@@ -466,6 +465,8 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["expense-limit"] = "none";
             attributes["polymorphic-base"] = QString("no");
             attributes["generate"] = QString("yes");
+            attributes["target-type"] = QString();
+            attributes["generic-class"] = QString("no");
             break;
         default:
             ; // nada
@@ -586,6 +587,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 ComplexTypeEntry *ctype = static_cast<ComplexTypeEntry *>(element->entry);
                 ctype->setTargetLangPackage(attributes["package"]);
                 ctype->setDefaultSuperclass(attributes["default-superclass"]);
+                ctype->setGenericClass(convertBoolean(attributes["generic-class"], "generic-class", false));
 
                 if (!convertBoolean(attributes["generate"], "generate", true))
                     element->entry->setCodeGeneration(TypeEntry::GenerateForSubclass);
@@ -621,6 +623,10 @@ bool Handler::startElement(const QString &, const QString &n,
                     if (convertBoolean(attributes["delete-in-main-thread"], "delete-in-main-thread", false))
 			            ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::DeleteInMainThread);
                 }
+
+                QString targetType = attributes["target-type"];
+                if (!targetType.isEmpty() && element->entry->isComplex())
+                    static_cast<ComplexTypeEntry *>(element->entry)->setTargetType(targetType);                
 
                 // ctype->setInclude(Include(Include::IncludePath, ctype->name()));
                 ctype = ctype->designatedInterface();
@@ -1393,6 +1399,12 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true)
         VariantTypeEntry *qvariant = new VariantTypeEntry("QVariant");
         qvariant->setCodeGeneration(TypeEntry::GenerateNothing);
         addType(qvariant);
+    }
+
+    {
+        JObjectWrapperTypeEntry *wrapper = new JObjectWrapperTypeEntry("JObjectWrapper");
+        wrapper->setCodeGeneration(TypeEntry::GenerateNothing);
+        addType(wrapper);
     }
 
     addType(new ThreadTypeEntry());

@@ -28,6 +28,7 @@ AbstractMetaType *AbstractMetaType::copy() const
 	cpy->setInstantiations(instantiations());
     cpy->setArrayElementCount(arrayElementCount());
     cpy->setOriginalTypeDescription(originalTypeDescription());
+    cpy->setOriginalTemplateType(originalTemplateType() ? originalTemplateType()->copy() : 0);
 
     cpy->setArrayElementType(arrayElementType() ? arrayElementType()->copy() : 0);
 

@@ -379,6 +379,7 @@ public:
         ObjectType,
         NamespaceType,
         VariantType,
+        JObjectWrapperType,
         CharType,
         ArrayType,
         TypeSystemType,
@@ -416,6 +417,7 @@ public:
     bool isNamespace() const { return m_type == NamespaceType; }
     bool isContainer() const { return m_type == ContainerType; }
     bool isVariant() const { return m_type == VariantType; }
+    bool isJObjectWrapper() const { return m_type == JObjectWrapperType; }
     bool isArray() const { return m_type == ArrayType; }
     bool isTemplateArgument() const { return m_type == TemplateArgumentType; }
     bool isVoid() const { return m_type == VoidType; }
@@ -520,7 +522,6 @@ public:
 private:
     int m_ordinal;
 };
-
 
 class ArrayTypeEntry : public TypeEntry
 {
@@ -708,6 +709,7 @@ public:
           m_qualified_cpp_name(name),
           m_qobject(false),
           m_polymorphic_base(false),
+          m_generic_class(false),
           m_type_flags(0)
     {
         Include inc;
@@ -814,11 +816,17 @@ public:
     void setExpensePolicy(const ExpensePolicy &policy) { m_expense_policy = policy; }
     const ExpensePolicy &expensePolicy() const { return m_expense_policy; }
 
+    QString targetType() const { return m_target_type; }
+    void setTargetType(const QString &code) { m_target_type = code; }
+
     QString targetLangName() const { return m_java_name.isEmpty()
                                    ? TypeEntry::targetLangName()
                                    : m_java_name;
     }
     void setTargetLangName(const QString &name) { m_java_name = name; }
+
+    bool isGenericClass() const { return m_generic_class; }
+    void setGenericClass(bool isGeneric) { m_generic_class = isGeneric; }
 
 private:
     IncludeList m_extra_includes;
@@ -831,10 +839,14 @@ private:
     QString m_default_superclass;
     QString m_qualified_cpp_name;
     QString m_java_name;
+
     uint m_qobject : 1;
-    bool m_polymorphic_base;
+    uint m_polymorphic_base : 1;
+    uint m_generic_class : 1;
+
     QString m_polymorphic_id_value;
     QString m_lookup_name;
+    QString m_target_type;
     ExpensePolicy m_expense_policy;
     TypeFlags m_type_flags;
 };
@@ -925,6 +937,18 @@ public:
     QString javaPackage() const { return QString(); }
 
     virtual bool isNativeIdBased() const { return false; }
+};
+
+class JObjectWrapperTypeEntry: public ValueTypeEntry
+{
+public:
+    JObjectWrapperTypeEntry(const QString &name) : ValueTypeEntry(name, JObjectWrapperType) { }
+
+    QString jniName() const { return strings_jobject; }
+    QString targetLangName() const { return strings_Object; }
+    QString javaPackage() const { return strings_java_lang; }
+
+    bool isNativeIdBased() const { return false; }
 };
 
 class VariantTypeEntry: public ValueTypeEntry

@@ -69,13 +69,17 @@ void JavaGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaField 
     }
 }
 
-QString JavaGenerator::translateType(const AbstractMetaType *java_type, Option option)
+QString JavaGenerator::translateType(const AbstractMetaType *java_type, const AbstractMetaClass *context, Option option)
 {
     QString s;
+
+    if (context != 0 && java_type != 0 && context->typeEntry()->isGenericClass() && java_type->originalTemplateType() != 0)
+        java_type = java_type->originalTemplateType();
+
     if (!java_type) {
         s = "void";
     } else if (java_type->isArray()) {
-        s = translateType(java_type->arrayElementType()) + "[]";
+        s = translateType(java_type->arrayElementType(), context) + "[]";
     } else if (java_type->isEnum() || java_type->isFlags()) {
         if (java_type->isEnum() && ((EnumTypeEntry *)java_type->typeEntry())->forceInteger()
             || java_type->isFlags() && ((FlagsTypeEntry *)java_type->typeEntry())->forceInteger()) {
@@ -108,7 +112,7 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, Option o
                         && i == 1;
                     if (isMultiMap)
                         s += "java.util.List<";
-                    s += translateType(args.at(i), BoxedPrimitive);
+                    s += translateType(args.at(i), context, BoxedPrimitive);
                     if (isMultiMap)
                         s += ">";
                 }
@@ -134,7 +138,7 @@ void JavaGenerator::writeArgument(QTextStream &s,
     QString modified_type = java_function->typeReplaced(java_argument->argumentIndex() + 1);
 
     if (modified_type.isEmpty())
-        s << translateType(java_argument->type(), (Option) options);
+        s << translateType(java_argument->type(), java_function->implementingClass(), (Option) options);
     else
         s << modified_type.replace('$', '.');
 
@@ -533,7 +537,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
     if (has_return_type && java_function->argumentReplaced(0).isEmpty()) {
         if (needs_return_variable) {
             if (new_return_type.isEmpty())
-                s << translateType(return_type);
+                s << translateType(return_type, java_function->implementingClass());
             else
                 s << new_return_type.replace('$', '.');
 
@@ -639,7 +643,7 @@ void JavaGenerator::writeSignal(QTextStream &s, const AbstractMetaFunction *java
             QString modifiedType = java_function->typeReplaced(i+1);
 
             if (modifiedType.isEmpty())
-                signalTypeName += translateType(arguments.at(i)->type(), BoxedPrimitive);
+                signalTypeName += translateType(arguments.at(i)->type(), java_function->implementingClass(), BoxedPrimitive);
             else
                 signalTypeName += modifiedType;
         }
@@ -1289,15 +1293,16 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
         bool force_abstract = (java_class->typeEntry()->typeFlags() & ComplexTypeEntry::ForceAbstract) != 0;
         if (java_class->isFinal() && !force_abstract)
             s << "final ";
+        if ((java_class->isAbstract() && !java_class->isNamespace()) || force_abstract)
+            s << "abstract ";
 
-
-        if (java_class->isNamespace() && java_class->functionsInTargetLang().size() == 0) {
+        if (!java_class->typeEntry()->targetType().isEmpty()) {
+            s << java_class->typeEntry()->targetType() << " ";
+        } else if (java_class->isNamespace() && java_class->functionsInTargetLang().size() == 0) {
             s << "interface ";
         } else if (java_class->isNamespace()) {
-            s << "final class ";
+            s << "class ";
         } else {
-            if (java_class->isAbstract() || force_abstract)
-                s << "abstract ";
             s << "class ";
         }
 
@@ -1306,6 +1311,18 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     const ComplexTypeEntry *type = java_class->typeEntry();
 
     s << java_class->name();
+
+    if (type->isGenericClass()) {
+        s << "<";
+        QList<TypeEntry *> templateArguments = java_class->templateBaseClass()->templateArguments();
+        for (int i=0; i<templateArguments.size(); ++i) {
+            TypeEntry *templateArgument = templateArguments.at(i);
+            if (i > 0)
+                s << ", ";
+            s << templateArgument->name();
+        }
+        s << ">";
+    }
 
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         if (!java_class->baseClassName().isEmpty()) {
@@ -1747,7 +1764,7 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
     if ((options & SkipReturnType) == 0) {
         QString modified_type = java_function->typeReplaced(0);
         if (modified_type.isEmpty())
-            s << translateType(java_function->type(), (Option) options);
+            s << translateType(java_function->type(), java_function->implementingClass(), (Option) options);
         else
             s << modified_type.replace('$', '.');
         s << " ";

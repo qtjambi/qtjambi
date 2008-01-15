@@ -28,7 +28,7 @@ class JavaGenerator : public Generator
 public:
     JavaGenerator();
 
-    QString translateType(const AbstractMetaType *java_type, Option option = NoOption);
+    QString translateType(const AbstractMetaType *java_type, const AbstractMetaClass *context, Option option = NoOption);
 
     void writeInjectedCode(QTextStream &s,
                            const AbstractMetaFunction *java_function,

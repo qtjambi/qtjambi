@@ -1019,7 +1019,6 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
         ReportHandler::debugSparse(QString("class: '%1'").arg(meta_class->fullName()));
     }
 
-
     TemplateParameterList template_parameters = class_item->templateParameters();
     QList<TypeEntry *> template_args;
     template_args.clear();
@@ -1792,6 +1791,11 @@ void AbstractMetaBuilder::decideUsagePattern(AbstractMetaType *meta_type)
         && meta_type->isConstant() == meta_type->isReference()) {
         meta_type->setTypeUsagePattern(AbstractMetaType::CharPattern);
 
+    } else if (type->isJObjectWrapper()
+        && meta_type->indirections() == 0
+        && meta_type->isConstant() == meta_type->isReference()) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::JObjectWrapperPattern);
+
     } else if (type->isVariant()
         && meta_type->indirections() == 0
         && meta_type->isConstant() == meta_type->isReference()) {
@@ -1970,19 +1974,28 @@ bool AbstractMetaBuilder::isEnum(const QStringList &qualified_name)
 }
 
 AbstractMetaType *AbstractMetaBuilder::inheritTemplateType(const QList<AbstractMetaType *> &template_types,
-                                                   AbstractMetaType *meta_type)
+                                                   AbstractMetaType *meta_type, bool *ok)
 {
-
+    if (ok != 0)
+        *ok = true;
     if (!meta_type || (!meta_type->typeEntry()->isTemplateArgument() && !meta_type->hasInstantiations()))
         return meta_type ? meta_type->copy() : 0;
 
     AbstractMetaType *returned = meta_type->copy();
+    returned->setOriginalTemplateType(meta_type->copy());
 
     if (returned->typeEntry()->isTemplateArgument()) {
         const TemplateArgumentEntry *tae = static_cast<const TemplateArgumentEntry *>(returned->typeEntry());
 
-        AbstractMetaType *t = returned->copy();
+        // If the template is intantiated with void we special case this as rejecting the functions that use this 
+        // parameter from the instantiation. 
+        if (template_types.size() <= tae->ordinal() || template_types.at(tae->ordinal())->typeEntry()->name() == "void") {
+            if (ok != 0)
+                *ok = false;
+            return 0;
+        }
 
+        AbstractMetaType *t = returned->copy();
         t->setTypeEntry(template_types.at(tae->ordinal())->typeEntry());
         t->setIndirections(template_types.at(tae->ordinal())->indirections() + t->indirections()
                            ? 1
@@ -1990,13 +2003,18 @@ AbstractMetaType *AbstractMetaBuilder::inheritTemplateType(const QList<AbstractM
         decideUsagePattern(t);
 
         delete returned;
-        returned = inheritTemplateType(template_types, t);
+        returned = inheritTemplateType(template_types, t, ok);
+        if (ok != 0 && !(*ok))
+            return 0;
     }
 
     if (returned->hasInstantiations()) {
         QList<AbstractMetaType *> instantiations = returned->instantiations();
-        for (int i=0; i<instantiations.count(); ++i)
-            instantiations[i] = inheritTemplateType(template_types, instantiations.at(i));
+        for (int i=0; i<instantiations.count(); ++i) {
+            instantiations[i] = inheritTemplateType(template_types, instantiations.at(i), ok);
+            if (ok != 0 && !(*ok))
+                return 0;            
+        }
         returned->setInstantiations(instantiations);
     }
 
@@ -2026,22 +2044,33 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
     AbstractMetaFunctionList funcs = subclass->functions();
     foreach (const AbstractMetaFunction *function, template_class->functions()) {
 
-        if (function->isModifiedRemoved(TypeSystem::All)) {
+        if (function->isModifiedRemoved(TypeSystem::All))
             continue;
-        }
-
+        
         AbstractMetaFunction *f = function->copy();
         f->setArguments(AbstractMetaArgumentList());
 
+        bool ok = true;
         AbstractMetaType *ftype = function->type();
-        f->setType(inheritTemplateType(template_types, ftype));
+        f->setType(inheritTemplateType(template_types, ftype, &ok));
+        if (!ok) {
+            delete f;
+            continue;
+        }
 
         foreach (AbstractMetaArgument *argument, function->arguments()) {
             AbstractMetaType *atype = argument->type();
 
             AbstractMetaArgument *arg = argument->copy();
-            arg->setType(inheritTemplateType(template_types, atype));
+            arg->setType(inheritTemplateType(template_types, atype, &ok));
+            if (!ok) 
+                break;
             f->addArgument(arg);
+        }
+
+        if (!ok) {
+            delete f;
+            continue ;
         }
 
         // There is no base class in java to inherit from here, so the
@@ -2106,6 +2135,8 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
 
 
     {
+        subclass->setTemplateBaseClass(template_class);
+
         subclass->setInterfaces(template_class->interfaces());
         subclass->setBaseClass(template_class->baseClass());
     }

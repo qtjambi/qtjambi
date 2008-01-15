@@ -92,7 +92,7 @@ public:
     bool inheritTemplate(AbstractMetaClass *subclass,
                          const AbstractMetaClass *template_class,
                          const TypeParser::Info &info);
-    AbstractMetaType *inheritTemplateType(const QList<AbstractMetaType *> &template_types, AbstractMetaType *meta_type);
+    AbstractMetaType *inheritTemplateType(const QList<AbstractMetaType *> &template_types, AbstractMetaType *meta_type, bool *ok = 0);
 
     bool isQObject(const QString &qualified_name);
     bool isEnum(const QStringList &qualified_name);

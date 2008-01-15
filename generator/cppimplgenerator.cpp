@@ -161,6 +161,8 @@ QString default_return_statement_qt(const AbstractMetaType *java_type, Generator
         return returnStr + " " + signature;
 
     Q_ASSERT(!java_type->isPrimitive());
+    if (java_type->isJObjectWrapper())
+        return returnStr + " JObjectWrapper()";
     if (java_type->isVariant())
         return returnStr + " QVariant()";
     if (java_type->isTargetLangString())
@@ -2075,7 +2077,10 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
         return;
     }
 
-    if (java_type->isVariant()) {
+    if (java_type->isJObjectWrapper()) {
+        s << INDENT << "JObjectWrapper " << qt_name 
+          << " = qtjambi_to_jobjectwrapper(__jni_env, " << java_name << ");" << endl;
+    } else if (java_type->isVariant()) {
         s << INDENT << "QVariant " << qt_name
           << " = qtjambi_to_qvariant(__jni_env, " << java_name << ");" << endl;
     } else if (java_type->isArray() && java_type->arrayElementType()->isPrimitive()) {
@@ -2363,6 +2368,9 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
             s << INDENT << type->jniName() <<  " " << java_name << " = (" << type->jniName() << ") "
               << qt_name << ";" << endl;
         }
+    } else if (java_type->isJObjectWrapper()) {
+        s << INDENT << "jobject " << java_name << " = qtjambi_from_jobjectwrapper(__jni_env, "
+          << qt_name << ");" << endl;
     } else if (java_type->isVariant()) {
         s << INDENT << "jobject " << java_name << " = qtjambi_from_qvariant(__jni_env, "
           << qt_name << ");" << endl;
@@ -2881,6 +2889,7 @@ QString CppImplGenerator::translateType(const AbstractMetaType *java_type, Optio
     if (java_type->isPrimitive()
         || java_type->isTargetLangString()
         || java_type->isVariant()
+        || java_type->isJObjectWrapper()
         || java_type->isTargetLangChar()
         || java_type->isArray()) {
         return java_type->typeEntry()->jniName();

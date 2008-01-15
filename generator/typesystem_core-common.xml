@@ -319,7 +319,7 @@
   <enum-type name="Qt::MaskMode"/>
   <enum-type name="QCryptographicHash::Algorithm"/>
   
-  <enum-type name="QtConcurrent::ReduceOption" />
+  <enum-type name="QtConcurrent::ReduceOption" flags="QtConcurrent::ReduceOptions" />
   <enum-type name="QtConcurrent::enum_1" />
   <enum-type name="QtConcurrent::ThreadFunctionResult" />
 
@@ -939,19 +939,25 @@
   
   <object-type name="QSystemSemaphore" />
   
-  <namespace-type name="QtConcurrent" />
+  <namespace-type name="QtConcurrent" target-type="class" />
   
   <value-type name="QFuture" generate="no">
     <modify-function signature="operator T() const" remove="all" />
     <modify-function signature="operator=(const QFuture &amp;)" remove="all" />
   </value-type>
-  <value-type name="QtJambiFuture" java-name="QFuture" />
+  <value-type name="QtJambiVoidFuture" java-name="QFutureVoid">
+    <modify-function signature="resultCount()const" remove="all" />
+    <modify-function signature="isResultReadyAt(int)const" remove="all" />
+  </value-type>
+  <value-type name="QtJambiFuture" java-name="QFuture" generic-class="yes" />
   
   <object-type name="QFutureWatcherBase" />
+  <object-type name="QtJambiVoidFutureWatcher" java-name="QFutureWatcherVoid" />
+  
   <object-type name="QFutureWatcher" generate="no">
     <modify-function signature="future()const" remove="all" />
   </object-type>
-  <object-type name="QtJambiFutureWatcher" java-name="QFutureWatcher" />
+  <object-type name="QtJambiFutureWatcher" java-name="QFutureWatcher" generic-class="yes" />
   
   
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
@@ -998,5 +1004,6 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFutureWatcher::futureInterface', unmatched return type 'QFutureInterfaceBase const&amp;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFuture' has equals operators but no qHash() function" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: unknown operator 'T'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFutureVoid' has equals operators but no qHash() function" />
 
 </typesystem>

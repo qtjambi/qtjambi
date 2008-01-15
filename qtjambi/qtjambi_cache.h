@@ -360,6 +360,21 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID constructor;
     } QtProperty;
 
+    struct {
+        jclass class_ref;
+        jmethodID map;
+    } QtConcurrent_MapFunctor;
+
+    struct {
+        jclass class_ref;
+        jmethodID map;
+    } QtConcurrent_MappedFunctor;
+
+    struct {
+        jclass class_ref;
+        jmethodID reduce;
+    } QtConcurrent_ReduceFunctor;
+
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
@@ -406,6 +421,9 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(Qt);
     DECLARE_RESOLVE_FUNCTIONS(QFlags);
     DECLARE_RESOLVE_FUNCTIONS(QtProperty);
+    DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_MapFunctor);
+    DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_MappedFunctor);
+    DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_ReduceFunctor);
 
 public:
     static StaticCache *instance(JNIEnv *env);

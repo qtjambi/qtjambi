@@ -84,7 +84,7 @@ struct QtJambiSignalInfo
 #  define DEREF_JOBJECT // noop
 #endif // JOBJECT_REFCOUNT
 
-struct JObjectWrapper
+struct QTJAMBI_EXPORT JObjectWrapper
 {
     JObjectWrapper() : environment(0), object(0)
     {
@@ -162,6 +162,10 @@ QTJAMBI_EXPORT QObject *qtjambi_to_qobject(JNIEnv *env, jobject java_object);
 QTJAMBI_EXPORT int qtjambi_to_enum(JNIEnv *env, jobject java_object);
 
 QTJAMBI_EXPORT QString qtjambi_to_qstring(JNIEnv *env, jstring java_string);
+
+QTJAMBI_EXPORT JObjectWrapper qtjambi_to_jobjectwrapper(JNIEnv *env, jobject java_object);
+
+QTJAMBI_EXPORT jobject qtjambi_from_jobjectwrapper(JNIEnv *env, const JObjectWrapper &wrapper);
 
 //QTJAMBI_EXPORT jobject qtjambi_from_qstyleoption(JNIEnv *env, const QStyleOption *so);
 
