@@ -16,13 +16,13 @@ package com.trolltech.qt.sql;
 import java.sql.*;
 import java.util.*;
 
-public class QJdbcSqlDriver extends QSqlDriver
+class QJdbcSqlDriver extends QSqlDriver
 {
     private static QJdbcSqlDriverCreator creator;
     public static void initialize() {
         if (creator == null) {
             creator = new QJdbcSqlDriverCreator();
-            QSqlDatabase.registerSqlDriver("QJDBC", creator);
+            QSqlDatabase.registerSqlDriver(QJdbc.ID, creator);
         }
     }
 

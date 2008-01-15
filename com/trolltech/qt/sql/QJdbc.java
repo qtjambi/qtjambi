@@ -11,22 +11,31 @@
  **
  ****************************************************************************/
 
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.sql.*;
+package com.trolltech.qt.sql;
 
-public class JavaTest
-{
+
+/**
+ * The QJdbc class is responsible for implementing a Qt database
+ * plugin based on a JDBC database driver. In addition to making use
+ * of the QJdbc database driver an application also needs a JDBC
+ * driver.
+ *
+ * Below you find an example use of the QJdbc database driver in
+ * combination with a mysql JDBC driver and opens the output in
+ * two separate QTableView's.
+
+ <pre>
     public static void main(String args[])
     {
         QApplication.initialize(args);
 
-        QJdbcSqlDriver.initialize();
+        QJdbc.initialize();
 
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
         } catch (Exception ex) { System.err.println(ex); return; }
 
-        QSqlDatabase db = QSqlDatabase.addDatabase("QJDBC");
+        QSqlDatabase db = QSqlDatabase.addDatabase(QJdbc.ID);
         db.setDatabaseName("jdbc:mysql://myhostname/mydatabase");
         db.setUserName("myusername");
         db.setPassword("mypassword");
@@ -55,5 +64,21 @@ public class JavaTest
 
         db.close();
     }
-}
+ </pre>
 
+ */
+public class QJdbc {
+
+    /** The id string that should be used in calls to
+     * QSqlDatabase.addDatabase() when setting up a new database
+     * connection.
+     */
+    public static String ID = "QJDBC";
+
+    /** Sets up the QJdbc Database driver plugin. This function must
+     * be called before the QJdbc driver plugin can be used.
+     */
+    public static void initialize() {
+        QJdbcSqlDriver.initialize();
+    }
+}

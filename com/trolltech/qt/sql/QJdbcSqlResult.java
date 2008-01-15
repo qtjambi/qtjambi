@@ -15,7 +15,7 @@ package com.trolltech.qt.sql;
 
 import java.sql.*;
 
-public class QJdbcSqlResult extends QSqlResult
+class QJdbcSqlResult extends QSqlResult
 {
     public QJdbcSqlResult(QSqlDriver db, Connection c)
     {
