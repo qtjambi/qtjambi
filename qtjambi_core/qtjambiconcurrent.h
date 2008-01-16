@@ -3,6 +3,8 @@
 
 #ifndef QT_NO_CONCURRENT
 
+#include <qtjambi_core.h>
+
 #include <QVariant>
 #include <qfuture.h>
 #include <qfuturewatcher.h>

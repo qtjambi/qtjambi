@@ -1738,9 +1738,12 @@
   
   <object-type name="QFutureWatcherBase">
     <inject-code class="shell-declaration">
+
+        QFutureInterfaceBase dummyBase; 
+
         // private virtual and considered internal
-        virtual const QFutureInterfaceBase &amp;futureInterface() const { return QFutureInterfaceBase(); }
-        virtual QFutureInterfaceBase &amp;futureInterface() { return QFutureInterfaceBase(); }            
+        virtual const QFutureInterfaceBase &amp;futureInterface() const { return dummyBase; }
+        virtual QFutureInterfaceBase &amp;futureInterface() { return dummyBase; }            
     </inject-code>  
   </object-type>
   
