@@ -2032,6 +2032,17 @@ bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object) {
     return (idx >= 0 && !strcmp(meta_object->classInfo(idx).value(), "Qt Jambi"));
 }
 
+bool JObjectWrapper::operator==(const JObjectWrapper &other) const
+{
+    if (environment != 0 && object != 0) {
+        StaticCache *sc = StaticCache::instance(environment);
+        sc->resolveObject();
+        return environment->CallBooleanMethod(object, sc->Object.equals, other.object);
+    } else {
+        return (object == other.object);
+    }
+}
+
 void JObjectWrapper::initialize(JNIEnv *env, jobject obj) 
 {
     environment = env;

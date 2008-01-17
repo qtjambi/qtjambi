@@ -959,6 +959,17 @@
   </object-type>
   <object-type name="QtJambiFutureWatcher" java-name="QFutureWatcher" generic-class="yes" />
   
+  <object-type name="QFutureSynchronizer" generate="no" />
+  <object-type name="QtJambiFutureSynchronizer" generic-class="yes" java-name="QFutureSynchronizer" />
+  <object-type name="QtJambiVoidFutureSynchronizer" java-name="QFutureSynchronizerVoid" />
+  <object-type name="QThreadPool" />
+  
+  <object-type name="QFutureIterator" generate="no">
+      <modify-function signature="operator=(const QFuture&amp;)" remove="all" />
+  </object-type>
+  <object-type name="QtJambiFutureIterator" generic-class="yes" java-name="QFutureIterator" />
+  <object-type name="QRunnable" />
+  
   
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>

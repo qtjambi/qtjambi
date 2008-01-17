@@ -631,6 +631,28 @@ class QFutureWatcherVoid___ extends QFutureWatcherVoid {
 
 }// class
 
+class QFutureSynchronizer___ extends QFutureSynchronizer {
+
+    public final java.util.List<QFuture<T>> futures() {
+        if (nativeId() == 0)
+            throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+        return __qt_futures(nativeId());
+    }
+    private native java.util.List<QFuture<T>> __qt_futures(long nativeId);
+
+}// class
+
+class QFutureSynchronizerVoid___ extends QFutureSynchronizerVoid {
+
+    public final java.util.List<QFutureVoid> futures() {
+        if (nativeId() == 0)
+            throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+        return __qt_futures(nativeId());
+    }
+    private native java.util.List<QFutureVoid> __qt_futures(long nativeId);
+
+}// class
+
 
 class QtConcurrent___ extends QtConcurrent {
 
@@ -646,38 +668,74 @@ class QtConcurrent___ extends QtConcurrent {
     public static native <U, T> QFuture<U> mapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);    
     public static native <U, T> java.util.List<U> blockingMapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);
 
-    public interface ReduceFunctor<U, T> {
+    public interface ReducedFunctor<U, T> {
         public void reduce(U result, T intermediate);
     }
     
-    public static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReduceFunctor<U, V> reduceFunctor) {
-        return mappedReduced(sequence, functor, reduceFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
+    public static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor) {
+        return mappedReduced(sequence, functor, reducedFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
     }
 
-    public static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReduceFunctor<U, V> reduceFunctor, ReduceOption ... options) {
-        return mappedReduced(sequence, functor, reduceFunctor, new ReduceOptions(options));
+    public static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor, ReduceOption ... options) {
+        return mappedReduced(sequence, functor, reducedFunctor, new ReduceOptions(options));
     }
 
-    public static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReduceFunctor<U, V> reduceFunctor, ReduceOptions options) {
-        return mappedReduced(sequence, functor, reduceFunctor, options.value());
+    public static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor, ReduceOptions options) {
+        return mappedReduced(sequence, functor, reducedFunctor, options.value());
     }
 
-    private native static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReduceFunctor<U, V> reduceFunctor, int options);
+    private native static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor, int options);
 
     
-    public static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReduceFunctor<U, V> reduceFunctor) {
-        return blockingMappedReduced(sequence, functor, reduceFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
+    public static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor) {
+        return blockingMappedReduced(sequence, functor, reducedFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
     }
 
-    public static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReduceFunctor<U, V> reduceFunctor, ReduceOption ... options) {
-        return blockingMappedReduced(sequence, functor, reduceFunctor, new ReduceOptions(options));
+    public static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor, ReduceOption ... options) {
+        return blockingMappedReduced(sequence, functor, reducedFunctor, new ReduceOptions(options));
     }
 
-    public static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReduceFunctor<U, V> reduceFunctor, ReduceOptions options) {
-        return blockingMappedReduced(sequence, functor, reduceFunctor, options.value());
+    public static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor, ReduceOptions options) {
+        return blockingMappedReduced(sequence, functor, reducedFunctor, options.value());
     }
 
-    private native static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReduceFunctor<U, V> reduceFunctor, int options);
+    private native static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor, int options);
+
+    //public native static <U> QFuture<U> run(Method m, Object _this, Object ... args);
+
+    public interface FilteredFunctor<T> {
+        public boolean filter(T object);
+    }
+
+    public native static <T> QFuture<T> filtered(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor);
+    public native static <T> java.util.List<T> blockingFiltered(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor);
+
+    public static <U, T> QFuture<U> filteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor) {
+        return filteredReduced(sequence, filteredFunctor, reducedFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
+    }
+
+    public static <U, T> QFuture<U> filteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOption ... options) {
+        return filteredReduced(sequence, filteredFunctor, reducedFunctor, new ReduceOptions(options));
+    }
+
+    public static <U, T> QFuture<U> filteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOptions options) {
+        return filteredReduced(sequence, filteredFunctor, reducedFunctor, options.value());
+    }
+    private native static <U, T> QFuture<U> filteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, int options); 
+
+    public static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor) {
+        return blockingFilteredReduced(sequence, filteredFunctor, reducedFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
+    }
+
+    private static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOption ... options) {
+        return blockingFilteredReduced(sequence, filteredFunctor, reducedFunctor, new ReduceOptions(options));
+    }
+
+    private static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOptions options) {
+        return blockingFilteredReduced(sequence, filteredFunctor, reducedFunctor, options.value());
+    }
+
+    private native static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, int options); 
 
 
 }// class

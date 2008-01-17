@@ -956,6 +956,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typ
         static_cast<ObjectTypeEntry *>(type)->setQObject(isQObject(full_class_name));    
 
     AbstractMetaClass *meta_class = createMetaClass();
+    meta_class->setTypeAlias(true);
     meta_class->setTypeEntry(type);
     meta_class->setBaseClassNames(QStringList() << typeAlias->type().qualifiedName().join("::"));
     *meta_class += AbstractMetaAttributes::Public;
@@ -965,7 +966,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typ
         QFileInfo info(typeAlias->fileName());
         type->setInclude(Include(Include::IncludePath, info.fileName()));
     }
-
+    
     return meta_class;
 }
 
@@ -2082,7 +2083,10 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
         // on the inherited functions.
         f->setDeclaringClass(subclass);
 
-        if (f->isConstructor()) {
+
+        if (f->isConstructor() && subclass->isTypeAlias()) {
+            f->setName(subclass->name());        
+        } else if (f->isConstructor()) {
             delete f;
             continue;
         }

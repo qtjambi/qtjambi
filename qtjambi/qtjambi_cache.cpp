@@ -1271,13 +1271,24 @@ void StaticCache::resolveQtConcurrent_MappedFunctor_internal()
     Q_ASSERT(QtConcurrent_MappedFunctor.map);
 }
 
-void StaticCache::resolveQtConcurrent_ReduceFunctor_internal()
+void StaticCache::resolveQtConcurrent_ReducedFunctor_internal()
 {
-    Q_ASSERT(!QtConcurrent_ReduceFunctor.class_ref);
+    Q_ASSERT(!QtConcurrent_ReducedFunctor.class_ref);
 
-    QtConcurrent_ReduceFunctor.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QtConcurrent$ReduceFunctor"));
-    Q_ASSERT(QtConcurrent_ReduceFunctor.class_ref);
+    QtConcurrent_ReducedFunctor.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QtConcurrent$ReducedFunctor"));
+    Q_ASSERT(QtConcurrent_ReducedFunctor.class_ref);
 
-    QtConcurrent_ReduceFunctor.reduce = env->GetMethodID(QtConcurrent_ReduceFunctor.class_ref, "reduce", "(Ljava/lang/Object;Ljava/lang/Object;)V");
-    Q_ASSERT(QtConcurrent_ReduceFunctor.reduce);
+    QtConcurrent_ReducedFunctor.reduce = env->GetMethodID(QtConcurrent_ReducedFunctor.class_ref, "reduce", "(Ljava/lang/Object;Ljava/lang/Object;)V");
+    Q_ASSERT(QtConcurrent_ReducedFunctor.reduce);
+}
+
+void StaticCache::resolveQtConcurrent_FilteredFunctor_internal()
+{
+    Q_ASSERT(!QtConcurrent_FilteredFunctor.class_ref);
+
+    QtConcurrent_FilteredFunctor.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QtConcurrent$FilteredFunctor"));
+    Q_ASSERT(QtConcurrent_FilteredFunctor.class_ref);
+
+    QtConcurrent_FilteredFunctor.filter = env->GetMethodID(QtConcurrent_FilteredFunctor.class_ref, "filter", "(Ljava/lang/Object;)Z");
+    Q_ASSERT(QtConcurrent_FilteredFunctor.filter);
 }

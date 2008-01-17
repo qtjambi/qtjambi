@@ -4,6 +4,8 @@
 
 #include <QtCore>
 
+#ifndef QT_NO_CONCURRENT
+
 class Functor {
 public:
     Functor(jobject functor) : m_functor(0)
@@ -84,22 +86,22 @@ public:
     }
 };
 
-class ReduceFunctor: public Functor {
+class ReducedFunctor: public Functor {
 public:
-    ReduceFunctor(jobject javaReduceFunctor) : Functor(javaReduceFunctor) {}
-    ReduceFunctor(const ReduceFunctor &other) : Functor(other) {}
+    ReducedFunctor(jobject javaReducedFunctor) : Functor(javaReducedFunctor) {}
+    ReducedFunctor(const ReducedFunctor &other) : Functor(other) {}
 
     void operator()(JObjectWrapper &result, const JObjectWrapper &wrapper) 
     {
         JNIEnv *env = qtjambi_current_environment();
-        if (env != 0 && m_functor) {
+        if (env != 0 && m_functor != 0) {
             jobject javaObject = qtjambi_from_jobjectwrapper(env, wrapper);
             jobject javaResult = qtjambi_from_jobjectwrapper(env, result);
 
             StaticCache *sc = StaticCache::instance(env);
-            sc->resolveQtConcurrent_ReduceFunctor();
+            sc->resolveQtConcurrent_ReducedFunctor();
 
-            env->CallObjectMethod(m_functor, sc->QtConcurrent_ReduceFunctor.reduce, javaResult, javaObject);
+            env->CallVoidMethod(m_functor, sc->QtConcurrent_ReducedFunctor.reduce, javaResult, javaObject);
         } else {
             qWarning("Reduce functor called with invalid data. JNI Environment == %p, java functor object == %p",
                     env, m_functor);
@@ -107,6 +109,67 @@ public:
     }
 
 };
+
+class FilteredFunctor: public Functor {
+public:
+    FilteredFunctor(jobject javaFilteredFunctor) : Functor(javaFilteredFunctor) {}
+    FilteredFunctor(const FilteredFunctor &other) : Functor(other) {}
+
+    bool operator()(const JObjectWrapper &wrapper) {
+        JNIEnv *env = qtjambi_current_environment();
+        if (env != 0 && m_functor != 0) {
+            jobject javaObject = qtjambi_from_jobjectwrapper(env, wrapper);
+
+            StaticCache *sc = StaticCache::instance(env);
+            sc->resolveQtConcurrent_FilteredFunctor();
+
+            return env->CallBooleanMethod(m_functor, sc->QtConcurrent_FilteredFunctor.filter, javaObject);
+        } else {
+            qWarning("Filtered functor called with invalid data. JNI Environment == %p, java functor object == %p",
+                    env, m_functor);
+            return false;
+        }
+    }
+};
+
+/*class RunFunctor: public Functor {
+public:
+    typedef JObjectWrapper result_type;
+
+    RunFunctor(jobject javaMethod, jobjectArray javaArguments) : Functor(javaMethod), m_java_arguments(0) {
+        init(javaArguments);
+    }
+    RunFunctor(const RunFunctor &other) : Functor(other), m_java_arguments(0) { init(other.m_java_arguments); }
+    ~RunFunctor() { 
+        JNIEnv *env = qtjambi_current_environment();
+        if (env != 0 && m_java_arguments != 0)
+            env->DeleteGlobalRef(m_java_arguments);
+    }
+
+    JObjectWrapper operator()() {
+        JNIEnv *env = qtjambi_current_environment();
+        if (env != 0 && m_functor != 0) {
+            int len = m_java_arguments != 0 ? env->GetObjectArrayLength(m_java_arguments) : 0;
+
+            QVarLengthArray<jvalue *, 16> args(len);
+            for (int i=0; i<len; ++i)
+                args[i].l = env->GetObjectArrayElement(m_java_arguments, i);
+            
+            jobject javaResult = env->CallObjectMethod(
+        }
+    }
+
+
+private:
+    void init(jobject javaArguments) {
+        JNIEnv *env = qtjambi_current_environment();
+        if (env != 0 && m_java_arguments != 0 && javaArguments != 0)
+            m_java_arguments = env->NewGlobalRef(javaArguments);
+    }
+
+    jobject m_java_arguments;
+
+};*/
 
 static QList<JObjectWrapper> convertJavaSequenceToCpp(JNIEnv *env, jobject javaSequence) 
 {
@@ -203,15 +266,14 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
  jclass,
  jobject javaSequence,
  jobject javaMappedFunctor,
- jobject javaReduceFunctor,
+ jobject javaReducedFunctor,
  jint options)
 {
     QList<JObjectWrapper> sequence = convertJavaSequenceToCpp(__jni_env, javaSequence);
     
     MappedFunctor mappedFunctor(javaMappedFunctor);
-    ReduceFunctor reduceFunctor(javaReduceFunctor);
-    // ### Doesn't compile, why?
-    JObjectWrapper result = JObjectWrapper();//QtConcurrent::blockingMappedReduced(sequence, mappedFunctor, reduceFunctor, QtConcurrent::ReduceOptions(options));
+    ReducedFunctor reduceFunctor(javaReducedFunctor);
+    JObjectWrapper result = QtConcurrent::blockingMappedReduced<JObjectWrapper, QList<JObjectWrapper>, MappedFunctor, ReducedFunctor>(sequence, mappedFunctor, reduceFunctor, QtConcurrent::ReduceOptions(options));
 
     return qtjambi_from_jobjectwrapper(__jni_env, result);
 }
@@ -221,15 +283,92 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
  jclass,
  jobject javaSequence,
  jobject javaMappedFunctor,
- jobject javaReduceFunctor,
+ jobject javaReducedFunctor,
  jint options)
 {
     QList<JObjectWrapper> sequence = convertJavaSequenceToCpp(__jni_env, javaSequence);
     
     MappedFunctor mappedFunctor(javaMappedFunctor);
-    ReduceFunctor reduceFunctor(javaReduceFunctor);
-    // ### Doesn't compile, why?
-    QFuture<JObjectWrapper> result = QFuture<JObjectWrapper>();//QtConcurrent::mappedReduced(sequence, mappedFunctor, reduceFunctor, QtConcurrent::ReduceOptions(options));
+    ReducedFunctor reduceFunctor(javaReducedFunctor);
+    QFuture<JObjectWrapper> result = QtConcurrent::mappedReduced<JObjectWrapper, QList<JObjectWrapper>, MappedFunctor, ReducedFunctor>(sequence, mappedFunctor, reduceFunctor, QtConcurrent::ReduceOptions(options));
 
     return convertCppFutureToJava(__jni_env, result);
 }
+
+// ### run not impl.
+/*extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_run)
+(JNIEnv *__jni_env,
+ jclass,
+ jobject method,
+ jobjectArray args)
+{
+    RunFunctor runFunctor(method, args);
+    QFuture<JObjectWrapper> result = QtConcurrent::run(runFunctor);
+
+    return convertCppFutureToJava(__jni_env, result);
+}*/
+
+extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_filtered)
+(JNIEnv *__jni_env,
+ jclass,
+ jobject javaSequence,
+ jobject javaFilteredFunctor)
+{
+    QList<JObjectWrapper> sequence = convertJavaSequenceToCpp(__jni_env, javaSequence);
+
+    FilteredFunctor filteredFunctor(javaFilteredFunctor);
+    QFuture<JObjectWrapper> result = QtConcurrent::filtered(sequence, filteredFunctor);
+
+    return convertCppFutureToJava(__jni_env, result);
+}
+
+extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_blockingFiltered)
+(JNIEnv *__jni_env,
+ jclass,
+ jobject javaSequence,
+ jobject javaFilteredFunctor)
+{
+    QList<JObjectWrapper> sequence = convertJavaSequenceToCpp(__jni_env, javaSequence);
+
+    FilteredFunctor filteredFunctor(javaFilteredFunctor);
+    QList<JObjectWrapper> result = QtConcurrent::blockingFiltered(sequence, filteredFunctor);
+
+    return convertCppSequenceToJava(__jni_env, result);
+}
+
+
+extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_filteredReduced)
+(JNIEnv *__jni_env,
+ jclass,
+ jobject javaSequence,
+ jobject javaFilteredFunctor,
+ jobject javaReducedFunctor,
+ jint options)
+{
+    QList<JObjectWrapper> sequence = convertJavaSequenceToCpp(__jni_env, javaSequence);
+
+    FilteredFunctor filteredFunctor(javaFilteredFunctor);
+    ReducedFunctor reducedFunctor(javaReducedFunctor);
+    QFuture<JObjectWrapper> result = QtConcurrent::filteredReduced<JObjectWrapper, QList<JObjectWrapper>, FilteredFunctor, ReducedFunctor>(sequence, filteredFunctor, reducedFunctor, QtConcurrent::ReduceOptions(options));
+
+    return convertCppFutureToJava(__jni_env, result);
+}
+
+extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_blockingFilteredReduced)
+(JNIEnv *__jni_env,
+ jclass,
+ jobject javaSequence,
+ jobject javaFilteredFunctor,
+ jobject javaReducedFunctor,
+ jint options)
+{
+    QList<JObjectWrapper> sequence = convertJavaSequenceToCpp(__jni_env, javaSequence);
+
+    FilteredFunctor filteredFunctor(javaFilteredFunctor);
+    ReducedFunctor reducedFunctor(javaReducedFunctor);
+    JObjectWrapper result = QtConcurrent::blockingFilteredReduced<JObjectWrapper, QList<JObjectWrapper>, FilteredFunctor, ReducedFunctor>(sequence, filteredFunctor, reducedFunctor, QtConcurrent::ReduceOptions(options));
+
+    return qtjambi_from_jobjectwrapper(__jni_env, result);
+}
+
+#endif // QT_NO_CONCURRENT

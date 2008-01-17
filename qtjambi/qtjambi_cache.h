@@ -373,7 +373,12 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jmethodID reduce;
-    } QtConcurrent_ReduceFunctor;
+    } QtConcurrent_ReducedFunctor;
+
+    struct {
+        jclass class_ref;
+        jmethodID filter;
+    } QtConcurrent_FilteredFunctor;
 
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
@@ -423,7 +428,8 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(QtProperty);
     DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_MapFunctor);
     DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_MappedFunctor);
-    DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_ReduceFunctor);
+    DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_ReducedFunctor);
+    DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_FilteredFunctor);
 
 public:
     static StaticCache *instance(JNIEnv *env);

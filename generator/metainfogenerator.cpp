@@ -626,6 +626,9 @@ void MetaInfoGenerator::writeInitializationFunctionName(QTextStream &s, const QS
 void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *entry, const AbstractMetaClass *cls,
                                             bool registerMetaType)
 {
+    if (entry->codeGeneration() == TypeEntry::GenerateForSubclass)
+        return ;
+
     QString constructorName = entry->customConstructor().name;
     QString destructorName = entry->customDestructor().name;
 

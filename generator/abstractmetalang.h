@@ -638,6 +638,7 @@ public:
           m_has_hash_function(false),
           m_has_equals_operator(false),
           m_has_clone_operator(false),
+          m_is_type_alias(false),
           m_enclosing_class(0),
           m_base_class(0),
           m_template_base_class(0),
@@ -789,6 +790,9 @@ public:
     const AbstractMetaClass *templateBaseClass() const { return m_template_base_class; }
     void setTemplateBaseClass(const AbstractMetaClass *cls) { m_template_base_class = cls; }
 
+    void setTypeAlias(bool typeAlias) { m_is_type_alias = typeAlias; }
+    bool isTypeAlias() const { return m_is_type_alias; }
+
 private:
     uint m_namespace : 1;
     uint m_qobject : 1;
@@ -802,7 +806,8 @@ private:
     uint m_has_hash_function : 1;
     uint m_has_equals_operator : 1;
     uint m_has_clone_operator :1;
-    uint m_reserved : 20;
+    uint m_is_type_alias : 1;
+    uint m_reserved : 19;
 
     const AbstractMetaClass *m_enclosing_class;
     AbstractMetaClass *m_base_class;

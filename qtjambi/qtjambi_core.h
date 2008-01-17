@@ -118,6 +118,8 @@ struct QTJAMBI_EXPORT JObjectWrapper
         REF_JOBJECT;        
     }
 
+    bool operator==(const JObjectWrapper &other) const;
+
     void initialize(JNIEnv *env, jobject obj);
 
     JNIEnv *environment;
