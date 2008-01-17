@@ -73,7 +73,7 @@ public class QJdbc {
      * QSqlDatabase.addDatabase() when setting up a new database
      * connection.
      */
-    public static String ID = "QJDBC";
+    public static final String ID = "QJDBC";
 
     /** Sets up the QJdbc Database driver plugin. This function must
      * be called before the QJdbc driver plugin can be used.
