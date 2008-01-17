@@ -1184,11 +1184,12 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const AbstractMetaFun
                                                                            : SkipReturnType,
                                               used_arguments);
 
+        s << endl;
         if (m_doc_parser) {
             s << m_doc_parser->documentationForFunction(signature) << endl;
         }
 
-        s << "\n    " << signature << " {\n        ";
+        s << signature << " {\n        ";
         QString new_return_type = java_function->typeReplaced(0);
         if (new_return_type != "void" && (!new_return_type.isEmpty() || java_function->type()))
             s << "return ";
