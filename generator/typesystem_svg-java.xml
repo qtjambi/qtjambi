@@ -5,7 +5,7 @@
     </inject-code>
 
 
-    <object-type name="QGraphicsSvgItem">
+    <object-type name="QGraphicsSvgItem" delete-in-main-thread="yes">
         <modify-function signature="setGroup(QGraphicsItemGroup*)">
             <modify-argument index="1">
                 <!-- Handled by injected code in QGraphicsItem -->

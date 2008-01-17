@@ -1174,7 +1174,7 @@
   <interface-type name="QLayoutItem"/>
   <interface-type name="QPaintDevice"/>
 
-  <interface-type name="QGraphicsItem">
+  <interface-type name="QGraphicsItem" delete-in-main-thread="yes">
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
    
     <modify-function signature="children()const" remove="all"/>	
@@ -1197,7 +1197,7 @@
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </interface-type>  
   
-  <object-type name="QAbstractGraphicsShapeItem">
+  <object-type name="QAbstractGraphicsShapeItem" delete-in-main-thread="yes">
     <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1"/>
@@ -1383,8 +1383,8 @@
   </object-type>
   <object-type name="QFontComboBox"/>
   <object-type name="QFontDialog"/>
-  <object-type name="QGraphicsEllipseItem"/>
-  <object-type name="QGraphicsItemAnimation">
+  <object-type name="QGraphicsEllipseItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsItemAnimation" >
     <modify-function signature="setItem(QGraphicsItem*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcItem"/>
@@ -1396,29 +1396,29 @@
         </modify-argument>
     </modify-function>  
   </object-type>
-  <object-type name="QGraphicsItemGroup">
+  <object-type name="QGraphicsItemGroup" delete-in-main-thread="yes">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsLineItem">
+  <object-type name="QGraphicsLineItem" delete-in-main-thread="yes">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsPathItem" />
+  <object-type name="QGraphicsPathItem"  delete-in-main-thread="yes"/>
    
-  <object-type name="QGraphicsPixmapItem">
+  <object-type name="QGraphicsPixmapItem"  delete-in-main-thread="yes">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsPolygonItem"/>
-  <object-type name="QGraphicsRectItem"/>
-  <object-type name="QGraphicsSimpleTextItem"/>
+  <object-type name="QGraphicsPolygonItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsRectItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsSimpleTextItem" delete-in-main-thread="yes"/>
   <object-type name="QHBoxLayout"/>
   <object-type name="QHeaderView">
     <modify-function signature="initStyleOption(QStyleOptionHeader*)const">
@@ -2706,7 +2706,7 @@
       <modify-function signature="textColor()const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
-  <object-type name="QGraphicsTextItem">
+  <object-type name="QGraphicsTextItem"> <!-- a QObject so main-thread delete redundant -->
     <extra-includes>
       <include file-name="QTextCursor" location="global"/>
     </extra-includes>
@@ -4323,7 +4323,7 @@
         </modify-argument>    
     </modify-function>
   </object-type>
-  <object-type name="QGraphicsGridLayout">
+  <object-type name="QGraphicsGridLayout" delete-in-main-thread="yes">
     <modify-function signature="addItem(QGraphicsLayoutItem*,int,int,QFlags&lt;Qt::AlignmentFlag&gt;)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcItems" />
@@ -4340,21 +4340,21 @@
         </modify-argument>
     </modify-function>
   </object-type>  
-  <object-type name="QGraphicsLayout">
+  <object-type name="QGraphicsLayout" delete-in-main-thread="yes">
     <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcParentLayoutItem" />
         </modify-argument>
     </modify-function>
   </object-type>  
-  <interface-type name="QGraphicsLayoutItem">
+  <interface-type name="QGraphicsLayoutItem" delete-in-main-thread="yes">
     <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcParentLayoutItem" />
         </modify-argument>
     </modify-function>  
   </interface-type>
-  <object-type name="QGraphicsLinearLayout">
+  <object-type name="QGraphicsLinearLayout" delete-in-main-thread="yes">
     <modify-function signature="addItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcItems" />
@@ -4381,8 +4381,8 @@
         </modify-argument>
     </modify-function>
   </object-type>  
-  <object-type name="QGraphicsProxyWidget" />
-  <object-type name="QGraphicsWidget">
+  <object-type name="QGraphicsProxyWidget"/> <!-- a QObject so main-thread delete redundant -->
+  <object-type name="QGraphicsWidget">  <!-- a QObject so main-thread delete redundant -->
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
     <modify-function signature="setLayout(QGraphicsLayout*)">
