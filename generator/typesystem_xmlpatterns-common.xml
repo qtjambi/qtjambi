@@ -8,6 +8,8 @@
     <enum-type name="QXmlNodeModelIndex::Axis"/>
     <enum-type name="QSimpleXmlNodeModel::SimpleAxis"/>
     <enum-type name="QAbstractXmlNodeModel::NodeCopySetting"/>
+    <enum-type name="QAbstractXmlNodeModel::SimpleAxis"/>
+        
 
 <!--    <object-type name="QAbstractMessageHandler"/> -->
     <object-type name="QAbstractUriResolver"/>
@@ -23,7 +25,11 @@
     </value-type>
 
     <value-type name="QAbstractXmlReceiver"/>
-    <value-type name="QSimpleXmlNodeModel"/> 
+
+    <value-type name="QSimpleXmlNodeModel">
+         <modify-function signature="QSimpleXmlNodeModel(const QXmlNamePool&amp;)"> <remove/> </modify-function>
+    </value-type>
+
     <value-type name="QSourceLocation"/>
     <object-type name="QXmlFormatter"/>
     <value-type name="QXmlItem"/>
@@ -59,7 +65,15 @@
         <modify-function signature="is(const QXmlNodeModelIndex) const"> <remove/> </modify-function>
         <modify-function signature="reset()"> <remove/> </modify-function>  
 
-        
+        <modify-function signature="model()const">
+            <access modifier="private"/>  
+            <rename to="model_private" />
+        </modify-function>
+        <inject-code>
+            <import-file name="typesystem_xmlpatterns-java.java" quote-after-line="class QXmlNodeModelIndex___" quote-before-line="}// class"/>
+        </inject-code>
+
+
     </value-type>
 
 
