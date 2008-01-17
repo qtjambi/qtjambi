@@ -17,7 +17,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.xmlpatterns.*;
 
-@QtJambiExample(name = "Xml Query")
+@QtJambiExample(name = "XML Query")
 public class XMLQuery extends QWidget {
 
     private QLineEdit queryLine;
@@ -59,6 +59,9 @@ public class XMLQuery extends QWidget {
 
         queryLine.setText("doc(\"" + fileName + "\")/xbel/folder/title");
         executeQuery();
+        
+        setWindowTitle("XML Query");
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
     private void executeQuery() {
@@ -89,7 +92,7 @@ public class XMLQuery extends QWidget {
         } else {
             res = "Query was not valid.\n";
         }
-        resultBrowser.setText(res);
+        resultBrowser.setPlainText(res);
     }
 
     public static void main(String[] args) {
