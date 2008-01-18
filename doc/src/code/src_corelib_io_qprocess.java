@@ -41,10 +41,11 @@ public class src_corelib_io_qprocess {
 //! [1]
     }
 
+    /*
 //! [2]
         command1 | command2
 //! [2]
-
+    */
 
     if (true)
     {
@@ -66,7 +67,7 @@ public class src_corelib_io_qprocess {
         QProcess process = new QProcess();
         process.start("del /s *.txt");
         // same as process.start("del", List<String>() << "/s" << "*.txt");
-        ...
+        // ...
 //! [5]
     }
 

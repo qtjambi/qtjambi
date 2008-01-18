@@ -76,7 +76,7 @@ public class src_corelib_io_qsettings {
 //! [7]
         }
 
-
+/*
 //! [8]
         pos = @Point(100 100)
 //! [8]
@@ -85,7 +85,7 @@ public class src_corelib_io_qsettings {
 //! [9]
         windir = C:\Windows
 //! [9]
-
+*/
 
         {
 //! [10]
@@ -146,7 +146,7 @@ public class src_corelib_io_qsettings {
             public String password;
         };
         List<Login> logins = new ArrayList<Login>();
-        ...
+        // ...
 
         QSettings settings = new QSettings();
         int size = settings.beginReadArray("logins");
@@ -169,7 +169,7 @@ public class src_corelib_io_qsettings {
             String password;
         };
         List<Login> logins = new ArrayList<Login>();
-        ...
+        // ...
 
         QSettings settings = new QSettings();
         settings.beginWriteArray("logins");

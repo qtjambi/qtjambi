@@ -132,10 +132,11 @@ public class src_corelib_io_qdir {
 //! [11]
         }
 
+        /*
 //! [12]
         C:/Documents and Settings/Username
 //! [12]
-
+*/
 
 //! [13]
         // This snippet is not relevant for Jambi
