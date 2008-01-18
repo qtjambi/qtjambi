@@ -1,31 +1,4 @@
 /*   Ported from: src.gui.util.qcompleter.cpp
-<snip>
-//! [0]
-        QStringList wordList;
-        wordList << "alpha" << "omega" << "omicron" << "zeta";
-
-        QLineEdit *lineEdit = new QLineEdit(this);
-
-        QCompleter *completer = new QCompleter(wordList, this);
-        completer->setCaseSensitivity(Qt::CaseInsensitive);
-        lineEdit->setCompleter(completer);
-//! [0]
-
-
-//! [1]
-        QCompleter *completer = new QCompleter(this);
-        completer->setModel(new QDirModel(completer));
-        lineEdit->setCompleter(completer);
-//! [1]
-
-
-//! [2]
-        for (int i = 0; completer->setCurrentRow(i); i++)
-            qDebug() << completer->currentCompletion() << " is match number " << i;
-//! [2]
-
-
-</snip>
 */
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
@@ -34,35 +7,36 @@ import com.trolltech.qt.xml.*;
 import com.trolltech.qt.network.*;
 import com.trolltech.qt.sql.*;
 import com.trolltech.qt.svg.*;
+import java.util.*;
 
 
 public class src_gui_util_qcompleter {
-    public static void main(String args[]) {
+    static void main(String args[]) {
         QApplication.initialize(args);
-//! [0]
-        List<String> wordList;
-        wordList << "alpha" << "omega" << "omicron" << "zeta";
+        //! [0]
+        List<String> wordList = new Vector<String>();
+        wordList.add("alpha");
+        wordList.add("omega");
+        wordList.add("omicron");
+        wordList.add("zeta");
 
-        QLineEdit ineEdit = new QLineEdit(this);
+        QLineEdit lineEdit = new QLineEdit();
 
-        QCompleter ompleter = new QCompleter(wordList, this);
-        completer.setCaseSensitivity(Qt.CaseInsensitive);
+        QCompleter completer = new QCompleter(wordList);
+        completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive);
         lineEdit.setCompleter(completer);
-//! [0]
+        //! [0]
 
+        //! [1]
+        QCompleter completer2 = new QCompleter();
+        completer2.setModel(new QDirModel(completer2));
+        lineEdit.setCompleter(completer2);
+        //! [1]
 
-//! [1]
-        QCompleter ompleter = new QCompleter(this);
-        completer.setModel(new QDirModel(completer));
-        lineEdit.setCompleter(completer);
-//! [1]
-
-
-//! [2]
-        for (int i = 0; completer.setCurrentRow(i); i++)
-            qDebug() << completer.currentCompletion() << " is match number " << i;
-//! [2]
-
+        //! [2]
+            for (int i = 0; completer.setCurrentRow(i); i++)
+                System.out.println(completer.currentCompletion() + " is match number " + i);
+        //! [2]
 
     }
 }
