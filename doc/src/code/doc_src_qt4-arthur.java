@@ -1,112 +1,4 @@
 /*   Ported from: doc.src.qt4-arthur.qdoc
-<snip>
-//! [0]
-    QLinearGradient gradient(0, 0, 100, 100);
-    gradient.setColorAt(0, Qt::red);
-    gradient.setColorAt(0.5, Qt::green);
-    gradient.setColorAt(1, Qt::blue);
-    painter.setBrush(gradient);
-    painter.drawRect(0, 0, 100, 100);
-//! [0]
-
-
-//! [1]
-    QRadialGradient gradient(50, 50, 50, 30, 30);
-    gradient.setColorAt(0.2, Qt::white);
-    gradient.setColorAt(0.8, Qt::green);
-    gradient.setColorAt(1, Qt::black);
-    painter.setBrush(gradient);
-    painter.drawEllipse(0, 0, 100, 100);
-//! [1]
-
-
-//! [2]
-    QConicalGradient gradient(60, 40, 0);
-    gradient.setColorAt(0, Qt::black);
-    gradient.setColorAt(0.4, Qt::green);
-    gradient.setColorAt(0.6, Qt::white);
-    gradient.setColorAt(1, Qt::black);
-    painter.setBrush(gradient);
-    painter.drawEllipse(0, 0, 100, 100);
-//! [2]
-
-
-//! [3]
-    // Specfiy semi-transparent red
-    painter.setBrush(QColor(255, 0, 0, 127));
-    painter.drawRect(0, 0, width()/2, height());
-
-    // Specify semi-transparend blue
-    painter.setBrush(QColor(0, 0, 255, 127));
-    painter.drawRect(0, 0, width(), height()/2);
-//! [3]
-
-
-//! [4]
-    // One line without anti-aliasing
-    painter.drawLine(0, 0, width()/2, height());
-
-    // One line with anti-aliasing
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.drawLine(width()/2, 0, width()/2, height());
-//! [4]
-
-
-//! [5]
-    QPainterPath path;
-    path.addRect(20, 20, 60, 60);
-    path.addBezier(0, 0,  99, 0,  50, 50,  99, 99);
-    path.addBezier(99, 99,  0, 99,  50, 50,  0, 0);
-    painter.drawPath(path);
-//! [5]
-
-
-//! [6]
-    QPixmap buffer(size());
-    QPainter painter(&buffer);
-
-    // Paint code here
-
-    painter.end();
-    bitBlt(this, 0, 0, &buffer);
-//! [6]
-
-
-//! [7]
-    QPainter painter(this);
-
-    // Paint code here
-
-    painter.end();
-//! [7]
-
-
-//! [8]
-    unbufferedWidget->setAttribute(Qt::WA_PaintOnScreen);
-//! [8]
-
-
-//! [9]
-    QLinearGradient gradient(0, 0, 100, 100);
-    gradient.setColorAt(0, Qt::blue);
-    gradient.setColorAt(1, Qt::red);
-    painter.setPen(QPen(gradient, 0));
-    for (int y=fontSize; y<100; y+=fontSize)
-        drawText(0, y, text);
-//! [9]
-
-
-//! [10]
-    QImage image(100, 100, 32);
-    QPainter painter(&image);
-
-    // painter commands.
-
-    painter.end();
-//! [10]
-
-
-</snip>
 */
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
@@ -117,114 +9,123 @@ import com.trolltech.qt.sql.*;
 import com.trolltech.qt.svg.*;
 
 
-public class doc_src_qt4-arthur {
+class doc_src_qt4 extends QWidget 
+{
     public static void main(String args[]) {
         QApplication.initialize(args);
-//! [0]
-    QLinearGradient gradient(0, 0, 100, 100);
-    gradient.setColorAt(0, Qt.red);
-    gradient.setColorAt(0.5, Qt.green);
-    gradient.setColorAt(1, Qt.blue);
+    }
+
+    public void paintEvent(QPaintEvent paintEvent) {
+    {
+    QPainter painter = new QPainter();
+    {
+    //! [0]
+    QLinearGradient gradient = new QLinearGradient(0, 0, 100, 100);
+    gradient.setColorAt(0, QColor.red);
+    gradient.setColorAt(0.5, QColor.green);
+    gradient.setColorAt(1, QColor.blue);
     painter.setBrush(gradient);
     painter.drawRect(0, 0, 100, 100);
 //! [0]
-
-
+    }
+    {
 //! [1]
-    QRadialGradient gradient(50, 50, 50, 30, 30);
-    gradient.setColorAt(0.2, Qt.white);
-    gradient.setColorAt(0.8, Qt.green);
-    gradient.setColorAt(1, Qt.black);
+    QRadialGradient gradient = new QRadialGradient(50, 50, 50, 30, 30);
+    gradient.setColorAt(0.2, QColor.white);
+    gradient.setColorAt(0.8, QColor.green);
+    gradient.setColorAt(1, QColor.black);
     painter.setBrush(gradient);
     painter.drawEllipse(0, 0, 100, 100);
 //! [1]
-
-
+    }
+    {
 //! [2]
-    QConicalGradient gradient(60, 40, 0);
-    gradient.setColorAt(0, Qt.black);
-    gradient.setColorAt(0.4, Qt.green);
-    gradient.setColorAt(0.6, Qt.white);
-    gradient.setColorAt(1, Qt.black);
+    QConicalGradient gradient = new QConicalGradient(60, 40, 0);
+    gradient.setColorAt(0, QColor.black);
+    gradient.setColorAt(0.4, QColor.green);
+    gradient.setColorAt(0.6, QColor.white);
+    gradient.setColorAt(1, QColor.black);
     painter.setBrush(gradient);
     painter.drawEllipse(0, 0, 100, 100);
 //! [2]
-
-
+    }
 //! [3]
     // Specfiy semi-transparent red
-    painter.setBrush(QColor(255, 0, 0, 127));
+    painter.setBrush(new QColor(255, 0, 0, 127));
     painter.drawRect(0, 0, width()/2, height());
 
     // Specify semi-transparend blue
-    painter.setBrush(QColor(0, 0, 255, 127));
+    painter.setBrush(new QColor(0, 0, 255, 127));
     painter.drawRect(0, 0, width(), height()/2);
 //! [3]
-
-
 //! [4]
+
     // One line without anti-aliasing
     painter.drawLine(0, 0, width()/2, height());
 
     // One line with anti-aliasing
-    painter.setRenderHint(QPainter.Antialiasing);
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing);
     painter.drawLine(width()/2, 0, width()/2, height());
 //! [4]
 
-
 //! [5]
-    QPainterPath path;
+    QPainterPath path = new QPainterPath();
     path.addRect(20, 20, 60, 60);
     path.addBezier(0, 0,  99, 0,  50, 50,  99, 99);
     path.addBezier(99, 99,  0, 99,  50, 50,  0, 0);
     painter.drawPath(path);
 //! [5]
+    }
 
-
+/*
 //! [6]
     QPixmap buffer(size());
-    QPainter painter(uffer);
+    QPainter painter(&buffer);
 
     // Paint code here
 
     painter.end();
-    bitBlt(this, 0, 0, uffer);
+    bitBlt(this, 0, 0, buffer);
 //! [6]
 
-
 //! [7]
-    QPainter painter(this);
+    QPainter painter = new QPainter(this);
 
     // Paint code here
 
     painter.end();
 //! [7]
+*/
 
 
+    QWidget unbufferedWidget = new QWidget();
 //! [8]
-    unbufferedWidget.setAttribute(Qt.WA_PaintOnScreen);
+    unbufferedWidget.setAttribute(Qt.WidgetAttribute.WA_PaintOnScreen);
 //! [8]
 
-
+    {
+    int fontSize = 10;
+    QPainter painter = new QPainter(this);
+    String text = "text";
 //! [9]
-    QLinearGradient gradient(0, 0, 100, 100);
-    gradient.setColorAt(0, Qt.blue);
-    gradient.setColorAt(1, Qt.red);
-    painter.setPen(QPen(gradient, 0));
-    for (int y=fontSize; y<100; y+=fontSize)
-        drawText(0, y, text);
+    QLinearGradient gradient = new QLinearGradient(0, 0, 100, 100);
+    gradient.setColorAt(0, QColor.blue);
+    gradient.setColorAt(1, QColor.red);
+    painter.setPen(new QPen(new QBrush(gradient), 0));
+    for (int y=fontSize; y<100; y += fontSize)
+        painter.drawText(0, y, text);
 //! [9]
-
-
+    }
+    {
 //! [10]
-    QImage image(100, 100, 32);
-    QPainter painter(mage);
+    QImage image = new QImage(100, 100, QImage.Format.Format_RGB32);
+    QPainter painter = new QPainter(image);
 
     // painter commands.
 
     painter.end();
 //! [10]
-
+    }
 
     }
 }
