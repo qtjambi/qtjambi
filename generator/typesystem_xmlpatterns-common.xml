@@ -111,4 +111,8 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPatternist::makeListIterator', unmatched return type 'QAbstractXmlForwardIterator&lt;T&gt;::Ptr'"/>
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPatternist::makeVectorIterator', unmatched return type 'QAbstractXmlForwardIterator&lt;T&gt;::Ptr'"/>
     
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::mapToItem', unmatched parameter type 'QExplicitlySharedDataPointer&lt;QPatternist::DynamicContext&gt; const&amp;'"/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::mapToSequence', unmatched return type 'QExplicitlySharedDataPointer&lt;QAbstractXmlForwardIterator&lt;QXmlNodeModelIndex&gt;&gt;"/>
+
+
 </typesystem>
