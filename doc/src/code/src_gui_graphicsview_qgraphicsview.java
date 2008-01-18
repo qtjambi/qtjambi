@@ -1,101 +1,3 @@
-/*   Ported from: src.gui.graphicsview.qgraphicsview.cpp
-<snip>
-//! [0]
-        QGraphicsScene scene;
-        scene.addText("Hello, world!");
-
-        QGraphicsView view(&scene);
-        view.show();
-//! [0]
-
-
-//! [1]
-        QGraphicsScene scene;
-        scene.addRect(QRectF(-10, -10, 20, 20));
-
-        QGraphicsView view(&scene);
-        view.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-        view.show();
-//! [1]
-
-
-//! [2]
-        QGraphicsView view;
-        view.setBackgroundBrush(QImage(":/images/backgroundtile.png"));
-        view.setCacheMode(QGraphicsView::CacheBackground);
-//! [2]
-
-
-//! [3]
-        QGraphicsScene scene;
-        scene.addText("GraphicsView rotated clockwise");
-
-        QGraphicsView view(&scene);
-        view.rotate(90); // the text is rendered with a 90 degree clockwise rotation
-        view.show();
-//! [3]
-
-
-//! [4]
-        QGraphicsScene scene;
-        scene.addItem(...
-        ...
-
-        QGraphicsView view(&scene);
-        view.show();
-        ...
-
-        QPrinter printer(QPrinter::HighResolution);
-        printer.setPageSize(QPrinter::A4);
-        QPainter painter(&printer);
-
-        // print, fitting the viewport contents into a full page
-        view.render(&painter);
-
-        // print the upper half of the viewport into the lower.
-        // half of the page.
-        QRect viewport = view.viewport()->rect();
-        view.render(&painter,
-                    QRectF(0, printer.height() / 2,
-                           printer.width(), printer.height() / 2),
-                    viewport.adjusted(0, 0, 0, -viewport.height() / 2));
-
-//! [4]
-
-
-//! [5]
-        void CustomView::mousePressEvent(QMouseEvent *event)
-        {
-            qDebug() << "There are" << items(event->pos()).size()
-                     << "items at position" << mapToScene(event->pos());
-        }
-//! [5]
-
-
-//! [6]
-        void CustomView::mousePressEvent(QMouseEvent *event)
-        {
-            if (QGraphicsItem *item = itemAt(event->pos())) {
-                qDebug() << "You clicked on item" << item;
-            } else {
-                qDebug() << "You didn't click on an item.";
-            }
-        }
-//! [6]
-
-
-//! [7]
-        QGraphicsScene scene;
-        scene.addText("GraphicsView rotated clockwise");
-
-        QGraphicsView view(&scene);
-        view.rotate(90); // the text is rendered with a 90 degree clockwise rotation
-        view.show();
-//! [7]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -104,103 +6,108 @@ import com.trolltech.qt.network.*;
 import com.trolltech.qt.sql.*;
 import com.trolltech.qt.svg.*;
 
+class CustomView1 extends QGraphicsView {
+//! [5]
+    protected void mousePressEvent(QMouseEvent event)
+    {
+        System.out.println("There are " + items(event.pos()).size()
+                           + " items at position " + mapToScene(event.pos()));
+    }
+//! [5]
+}
+
+class CustomView2 extends QGraphicsView {
+//! [6]
+    protected void mousePressEvent(QMouseEvent event)
+    {
+        QGraphicsItemInterface item = itemAt(event.pos());
+        if (item != null) {
+            System.out.println("You clicked on item " + item);
+        } else {
+            System.out.println("You didn't click on an item.");
+        }
+    }
+//! [6]
+}
+
 
 public class src_gui_graphicsview_qgraphicsview {
-    public static void main(String args[]) {
-        QApplication.initialize(args);
+    private static void f0() {
 //! [0]
-        QGraphicsScene scene;
+        QGraphicsScene scene = new QGraphicsScene();
         scene.addText("Hello, world!");
 
-        QGraphicsView view(cene);
+        QGraphicsView view = new QGraphicsView(scene);
         view.show();
 //! [0]
+    }
 
-
+    private static void f1() {
 //! [1]
-        QGraphicsScene scene;
-        scene.addRect(QRectF(-10, -10, 20, 20));
+        QGraphicsScene scene = new QGraphicsScene();
+        scene.addRect(new QRectF(-10, -10, 20, 20));
 
-        QGraphicsView view(cene);
-        view.setRenderHints(QPainter.Antialiasing | QPainter.SmoothPixmapTransform);
+        QGraphicsView view = new QGraphicsView(scene);
+        view.setRenderHints(QPainter.RenderHint.Antialiasing, QPainter.RenderHint.SmoothPixmapTransform);
         view.show();
 //! [1]
+    }
 
-
+    private static void f2() {
 //! [2]
-        QGraphicsView view;
-        view.setBackgroundBrush(QImage(":/images/backgroundtile.png"));
-        view.setCacheMode(QGraphicsView.CacheBackground);
+        QGraphicsView view = new QGraphicsView();
+        view.setBackgroundBrush(new QBrush(new QImage(":/images/backgroundtile.png")));
+        view.setCacheMode(QGraphicsView.CacheModeFlag.CacheBackground);
 //! [2]
+    }
 
-
+    private static void f3() {
 //! [3]
-        QGraphicsScene scene;
+        QGraphicsScene scene = new QGraphicsScene();
         scene.addText("GraphicsView rotated clockwise");
 
-        QGraphicsView view(cene);
+        QGraphicsView view = new QGraphicsView(scene);
         view.rotate(90); // the text is rendered with a 90 degree clockwise rotation
         view.show();
 //! [3]
+    }
 
-
+    private static void f4() {
 //! [4]
-        QGraphicsScene scene;
+        QGraphicsScene scene = new QGraphicsScene();
         scene.addItem(...
         ...
 
-        QGraphicsView view(cene);
+        QGraphicsView view = new QGraphicsView(scene);
         view.show();
         ...
 
-        QPrinter printer(QPrinter.HighResolution);
-        printer.setPageSize(QPrinter.A4);
-        QPainter painter(rinter);
+        QPrinter printer = new QPrinter(QPrinter.PrinterMode.HighResolution);
+        printer.setPageSize(QPrinter.PageSize.A4);
+        QPainter painter = new QPainter(printer);
 
         // print, fitting the viewport contents into a full page
-        view.render(ainter);
+        view.render(painter);
 
         // print the upper half of the viewport into the lower.
         // half of the page.
         QRect viewport = view.viewport().rect();
-        view.render(ainter,
-                    QRectF(0, printer.height() / 2,
-                           printer.width(), printer.height() / 2),
+        view.render(painter,
+                    new QRectF(0, printer.height() / 2,
+                               printer.width(), printer.height() / 2),
                     viewport.adjusted(0, 0, 0, -viewport.height() / 2));
 
 //! [4]
+    }
 
-
-//! [5]
-        void CustomView.mousePressEvent(QMouseEvent vent)
-        {
-            qDebug() << "There are" << items(event.pos()).size()
-                     << "items at position" << mapToScene(event.pos());
-        }
-//! [5]
-
-
-//! [6]
-        void CustomView.mousePressEvent(QMouseEvent vent)
-        {
-            if (QGraphicsItem tem = itemAt(event.pos())) {
-                qDebug() << "You clicked on item" << item;
-            } else {
-                qDebug() << "You didn't click on an item.";
-            }
-        }
-//! [6]
-
-
+    private static void f7() {
 //! [7]
-        QGraphicsScene scene;
+        QGraphicsScene scene = new QGraphicsScene();
         scene.addText("GraphicsView rotated clockwise");
 
-        QGraphicsView view(cene);
+        QGraphicsView view = new QGraphicsView(scene);
         view.rotate(90); // the text is rendered with a 90 degree clockwise rotation
         view.show();
 //! [7]
-
-
     }
 }
