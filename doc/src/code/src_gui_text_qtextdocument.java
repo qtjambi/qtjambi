@@ -26,17 +26,5 @@ import com.trolltech.qt.svg.*;
 public class src_gui_text_qtextdocument {
     public static void main(String args[]) {
         QApplication.initialize(args);
-//! [0]
-        Stringsplain = "#include <QtCore>"
-        Stringshtml = Qt.escape(plain);
-        // html == "#include t;QtCoret;"
-//! [0]
-
-
-//! [1]
-    <html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>...
-//! [1]
-
-
     }
 }
