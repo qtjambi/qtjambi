@@ -1,56 +1,3 @@
-/*   Ported from: doc.src.coordsys.qdoc
-<snip>
-//! [0]
-    QPainter painter(this);
-
-    painter.setPen(Qt::darkGreen);
-    painter.drawRect(1, 2, 6, 4);
-//! [0]
-
-
-//! [1]
-    QPainter painter(this);
-
-    painter.setPen(Qt::darkGreen);
-    painter.drawLine(2, 7, 6, 1);
-//! [1]
-
-
-//! [2]
-    QPainter painter(this);
-    painter.setRenderHint(
-        QPainter::Antialiasing);
-    painter.setPen(Qt::darkGreen);
-    painter.drawRect(1, 2, 6, 4);
-//! [2]
-
-
-//! [3]
-    QPainter painter(this);
-    painter.setRenderHint(
-        QPainter::Antialiasing);
-    painter.setPen(Qt::darkGreen);
-    painter.drawLine(2, 7, 6, 1);
-//! [3]
-
-
-//! [4]
-        QPainter painter(this);
-        painter.setWindow(QRect(-50, -50, 100, 100));
-//! [4]
-
-
-//! [5]
-        int side = qMin(width(), height())
-        int x = (width() - side / 2);
-        int y = (height() - side / 2);
-
-        painter.setViewport(x, y, side, side);
-//! [5]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -60,57 +7,65 @@ import com.trolltech.qt.sql.*;
 import com.trolltech.qt.svg.*;
 
 
-public class doc_src_coordsys {
+public class doc_src_coordsys extends QWidget {
+
     public static void main(String args[]) {
         QApplication.initialize(args);
-//! [0]
-    QPainter painter(this);
+    }
 
-    painter.setPen(Qt.darkGreen);
+    public void m0() {
+//! [0]
+    QPainter painter = new QPainter(this);
+
+    painter.setPen(new QColor(Qt.GlobalColor.darkGreen));
     painter.drawRect(1, 2, 6, 4);
 //! [0]
+    }
 
-
+    public void m1() {
 //! [1]
-    QPainter painter(this);
+    QPainter painter = new QPainter(this);
 
-    painter.setPen(Qt.darkGreen);
+    painter.setPen(new QColor(Qt.GlobalColor.darkGreen));
     painter.drawLine(2, 7, 6, 1);
 //! [1]
+    }
 
-
+    public void m2() {
 //! [2]
-    QPainter painter(this);
+    QPainter painter = new QPainter(this);
     painter.setRenderHint(
-        QPainter.Antialiasing);
-    painter.setPen(Qt.darkGreen);
+        QPainter.RenderHint.Antialiasing);
+    painter.setPen(new QColor(Qt.GlobalColor.darkGreen));
     painter.drawRect(1, 2, 6, 4);
 //! [2]
+    }
 
-
+    public void m3() {
 //! [3]
-    QPainter painter(this);
+    QPainter painter = new QPainter(this);
     painter.setRenderHint(
-        QPainter.Antialiasing);
-    painter.setPen(Qt.darkGreen);
+        QPainter.RenderHint.Antialiasing);
+    painter.setPen(new QColor(Qt.GlobalColor.darkGreen));
     painter.drawLine(2, 7, 6, 1);
 //! [3]
+    }
 
-
+    public void m4() {
 //! [4]
-        QPainter painter(this);
-        painter.setWindow(QRect(-50, -50, 100, 100));
+        QPainter painter = new QPainter(this);
+        painter.setWindow(new QRect(-50, -50, 100, 100));
 //! [4]
+    }
 
-
+    public void m5() {
 //! [5]
-        int side = qMin(width(), height())
+        QPainter painter = new QPainter(this);
+
+        int side = Math.min(width(), height());
         int x = (width() - side / 2);
         int y = (height() - side / 2);
-
         painter.setViewport(x, y, side, side);
 //! [5]
-
-
     }
 }
