@@ -75,12 +75,11 @@ public class src_gui_graphicsview_qgraphicsview {
     private static void f4() {
 //! [4]
         QGraphicsScene scene = new QGraphicsScene();
-        scene.addItem(...
-        ...
+        // scene.addItem(...
 
         QGraphicsView view = new QGraphicsView(scene);
         view.show();
-        ...
+        // ...
 
         QPrinter printer = new QPrinter(QPrinter.PrinterMode.HighResolution);
         printer.setPageSize(QPrinter.PageSize.A4);
@@ -92,10 +91,10 @@ public class src_gui_graphicsview_qgraphicsview {
         // print the upper half of the viewport into the lower.
         // half of the page.
         QRect viewport = view.viewport().rect();
-        view.render(painter,
-                    new QRectF(0, printer.height() / 2,
-                               printer.width(), printer.height() / 2),
-                    viewport.adjusted(0, 0, 0, -viewport.height() / 2));
+        view.renderView(painter,
+                    new QRectF(0, printer.height() / 2, printer.width(), printer.height() / 2),
+                    viewport.adjusted(0, 0, 0, -viewport.height() / 2)       
+        );
 
 //! [4]
     }
