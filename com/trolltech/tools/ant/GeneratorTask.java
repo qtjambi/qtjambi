@@ -19,12 +19,9 @@ public class GeneratorTask extends Task{
         switch(Util.OS()){
         case WINDOWS:
             return "generator\\release;generator\\debug";
-        case LINUX:
-        case MAC:
+        default:
             return "." + s + "generator";
         }
-
-        return "";
     }
 
     private String generatorExecutable() {

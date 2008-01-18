@@ -11,6 +11,8 @@ public class PlatformJarTask extends Task {
     public static final String SYSLIB_NONE = "none";
 
     public void setSyslibs(String s) {
+	if (Util.OS() == Util.OS.SOLARIS)
+            return;
         if (s.equals(SYSLIB_NONE) || s.equals(SYSLIB_AUTO))
             systemLibs = s;
         else
@@ -354,7 +356,7 @@ public class PlatformJarTask extends Task {
     private Set<String> libraryDir = new HashSet<String>();
     private List<String> unpackLibs = new ArrayList<String>();
     private List<String> runtimeLibs = new ArrayList<String>();
-    private String systemLibs = SYSLIB_AUTO;
+    private String systemLibs = Util.OS() == Util.OS.SOLARIS ? SYSLIB_NONE : SYSLIB_AUTO;
     private List<PluginPath> pluginPaths = new ArrayList<PluginPath>();
     private boolean debugConfiguration = false;
 

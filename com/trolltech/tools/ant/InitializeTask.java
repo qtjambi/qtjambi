@@ -19,6 +19,7 @@ public class InitializeTask extends Task {
         MinGW("mingw"),
         OldGCC("gcc3.3"),
         GCC("gcc"),
+	SUNCC("suncc"),
         Other("unknown");
 
         Compiler(String n) {
@@ -40,6 +41,7 @@ public class InitializeTask extends Task {
             if (name.equals("mingw")) return MinGW;
             if (name.equals("gcc3.3")) return OldGCC;
             if (name.equals("gcc")) return GCC;
+            if (name.equals("suncc")) return SUNCC;
             return Other;
         }
     }
@@ -111,7 +113,7 @@ public class InitializeTask extends Task {
         props.setNewProperty(null, WEBKIT, decideWebkit());
         if (Boolean.parseBoolean(phonon)) {
             switch (Util.OS()) {
-            case WINDOWS: props.setNewProperty(null, PHONON_DS9, true); break;
+           case WINDOWS: props.setNewProperty(null, PHONON_DS9, true); break;
             case LINUX: props.setNewProperty(null, PHONON_GSTREAMER, true); break;
             case MAC: props.setNewProperty(null, PHONON_QT7, true); break;
             }
@@ -177,6 +179,19 @@ public class InitializeTask extends Task {
             case LINUX:
                 compiler = testForGCC();
                 break;
+            case SOLARIS:
+                 String spec = System.getenv("QMAKESPEC");
+                 if (spec == null) {
+                     System.out.println("QMAKESPEC environment variable not specified using SunCC compiler");
+                     compiler = Compiler.SUNCC;
+                 } else if (spec.contains("cc")) {
+                     compiler = Compiler.SUNCC;
+                 } else if (spec.contains("g++")) {
+                     compiler = Compiler.GCC;
+                 } else {
+                     throw new BuildException("Invalid QMAKESPEC variable...");
+                 }
+                 break;
         }
 
         if (verbose) System.out.println("qtjambi.compiler: " + compiler.toString());
@@ -244,6 +259,9 @@ public class InitializeTask extends Task {
             case MAC:
                 osname = "macosx";
                 break;
+            case SOLARIS:
+                osname = "sunos";
+                break;
         }
         if (verbose) System.out.println("qtjambi.osname: " + osname);
         return osname;
@@ -303,6 +321,7 @@ public class InitializeTask extends Task {
     private PropertyHelper props;
     private String configuration;
     private boolean debug;
+    private String qmakespec;
     private String qtdir;
     private String libSubDir;
 }

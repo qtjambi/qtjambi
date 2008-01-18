@@ -8,7 +8,7 @@ import java.util.*;
 class Util {
 
     enum OS {
-        UNKNOWN, WINDOWS, LINUX, MAC
+        UNKNOWN, WINDOWS, LINUX, MAC, SOLARIS
     }
 
     public static OS OS() {
@@ -19,6 +19,8 @@ class Util {
             return OS.WINDOWS;
         if (os.contains("mac os x"))
             return OS.MAC;
+	if (os.contains("sunos"))
+            return OS.SOLARIS;
         return OS.UNKNOWN;
     }
 
