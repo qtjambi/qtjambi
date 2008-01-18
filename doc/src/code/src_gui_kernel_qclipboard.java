@@ -27,22 +27,22 @@ import com.trolltech.qt.svg.*;
 
 
 public class src_gui_kernel_qclipboard {
-    public static void main(String args[]) {
+    static void main(String args[]) {
         QApplication.initialize(args);
-//! [0]
-        QClipboard lipboard = QApplication.clipboard();
-        StringsoriginalText = clipboard.text();
-        ...
+        
+        //! [0]
+        QClipboard clipboard = QApplication.clipboard();
+        String originalText = clipboard.text();
+        String newText = "new words";
         clipboard.setText(newText);
-//! [0]
+        //! [0]
 
-
-//! [1]
-        QMimeData ata = new QMimeData;
+        QImage image = new QImage();
+        
+        //! [1]
+        QMimeData data = new QMimeData();
         data.setImageData(image);
-        clipboard.setMimeData(data, mode);
-//! [1]
-
-
+        clipboard.setMimeData(data, QClipboard.Mode.Clipboard);
+        //! [1]
     }
 }
