@@ -1,0 +1,119 @@
+/*   Ported from: src.gui.dialogs.qfontdialog.cpp
+<snip>
+//! [0]
+    bool ok;
+    QFont font = QFontDialog::getFont(
+                    &ok, QFont("Helvetica [Cronyx]", 10), this);
+    if (ok) {
+        // the user clicked OK and font is set to the font the user selected
+    } else {
+        // the user canceled the dialog; font is set to the initial
+        // value, in this case Helvetica [Cronyx], 10
+    }
+//! [0]
+
+
+//! [1]
+    myWidget.setFont(QFontDialog::getFont(0, myWidget.font()));
+//! [1]
+
+
+//! [2]
+    bool ok;
+    QFont font = QFontDialog::getFont(&ok, QFont("Times", 12), this);
+    if (ok) {
+        // font is set to the font the user selected
+    } else {
+        // the user canceled the dialog; font is set to the initial
+        // value, in this case Times, 12.
+    }
+//! [2]
+
+
+//! [3]
+    myWidget.setFont(QFontDialog::getFont(0, myWidget.font()));
+//! [3]
+
+
+//! [4]
+    bool ok;
+    QFont font = QFontDialog::getFont(&ok, this);
+    if (ok) {
+        // font is set to the font the user selected
+    } else {
+        // the user canceled the dialog; font is set to the default
+        // application font, QApplication::font()
+    }
+//! [4]
+
+
+</snip>
+*/
+import com.trolltech.qt.*;
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+import com.trolltech.qt.xml.*;
+import com.trolltech.qt.network.*;
+import com.trolltech.qt.sql.*;
+import com.trolltech.qt.svg.*;
+
+
+public class src_gui_dialogs_qfontdialog extends QWidget {
+    public static void main(String args[]) {
+        QApplication.initialize(args);
+ 
+        }
+    public void doFontDialog() {
+
+//! [0]
+    QFont font;
+    QFontDialog.Result fontResult  = QFontDialog.getFont(new QFont("Helvetica [Cronyx]", 10), this);
+    if (fontResult.ok) {
+        // the user clicked OK and font is set to the font the user selected
+        font = fontResult.font;
+    } else {
+        // the user canceled the dialog; font is set to the initial
+        // value, in this case Helvetica [Cronyx], 10
+    }
+//! [0]
+
+    QWidget myWidget = new QWidget(this);
+
+//! [1]
+    myWidget.setFont(QFontDialog.getFont(myWidget.font()).font);
+//! [1]
+
+
+//! [2]
+    QFont f;
+    QFontDialog.Result fr = QFontDialog.getFont(new QFont("Times", 12), this);
+    if (fr.ok) {
+        // font is set to the font the user selected
+        f = fr.font;
+    } else {
+        // the user canceled the dialog; font is set to the initial
+        // value, in this case Times, 12.
+    }
+//! [2]
+
+
+//! [3]
+    myWidget.setFont(QFontDialog.getFont(myWidget.font()).font);
+//! [3]
+
+
+//! [4]
+    QFont fnt;
+    QFontDialog.Result fntResult= QFontDialog.getFont(this);
+    if (fntResult.ok) {
+        // font is set to the font the user selected
+        fnt = fntResult.font;
+    } else {
+        // the user canceled the dialog; font is set to the default
+        // application font, QApplication.font()
+    }
+//! [4]
+
+
+    }
+}
