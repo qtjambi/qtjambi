@@ -1,13 +1,3 @@
-/*   Ported from: src.corelib.plugin.quuid.cpp
-<snip>
-//! [0]
-    // {67C8770B-44F1-410A-AB9A-F9B5446F13EE}
-    QUuid IID_MyInterface(0x67c8770b, 0x44f1, 0x410a, 0xab, 0x9a, 0xf9, 0xb5, 0x44, 0x6f, 0x13, 0xee)
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -22,7 +12,9 @@ public class src_corelib_plugin_quuid {
         QApplication.initialize(args);
 //! [0]
     // {67C8770B-44F1-410A-AB9A-F9B5446F13EE}
-    QUuid IID_MyInterface(0x67c8770b, 0x44f1, 0x410a, 0xab, 0x9a, 0xf9, 0xb5, 0x44, 0x6f, 0x13, 0xee)
+    QUuid IID_MyInterface = new QUuid(0x67c8770b, (char) 0x44f1, (char) 0x410a, (byte) 0xab,
+				      (byte) 0x9a, (byte) 0xf9, (byte) 0xb5, (byte) 0x44,
+				      (byte) 0x6f, (byte) 0x13, (byte) 0xee);
 //! [0]
 
 
