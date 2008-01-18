@@ -80,27 +80,35 @@ import com.trolltech.qt.sql.*;
 import com.trolltech.qt.svg.*;
 
 
-public class src_gui_dialogs_qmessagebox {
+public class src_gui_dialogs_qmessagebox extends QWidget {
     public static void main(String args[]) {
         QApplication.initialize(args);
+    }
+    
+    private void snippetWrapper0() {
+    
 //! [0]
-        int ret = QMessageBox.warning(this, tr("My Application"),
+    	QMessageBox.StandardButtons buttons = new QMessageBox.StandardButtons();
+    	buttons.set(QMessageBox.StandardButton.Save);
+    	buttons.set(QMessageBox.StandardButton.Discard);
+    	buttons.set(QMessageBox.StandardButton.Cancel);
+        QMessageBox.StandardButton ret = QMessageBox.warning(this, tr("My Application"),
                           tr("The document has been modified.\n"
-                             "Do you want to save your changes?"),
-                          QMessageBox.Save | QMessageBox.Discard
-                          | QMessageBox.Cancel,
-                          QMessageBox.Save);
+                             + "Do you want to save your changes?"),
+                             buttons, QMessageBox.StandardButton.Save);
 //! [0]
+    }
 
-
+    
+    private void snippetWrapper1() {
 //! [1]
-        QMessageBox msgBox;
-        msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No);
-        switch (msgBox.exec()) {
-        case QMessageBox.Yes:
+        QMessageBox msgBox = new QMessageBox();
+        msgBox.setStandardButtons(QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No);
+        switch (QMessageBox.StandardButton.resolve(msgBox.exec())) {
+        case Yes:
             // yes was clicked
             break;
-        case QMessageBox.No:
+        case No:
             // no was clicked
             break;
         default:
@@ -108,12 +116,13 @@ public class src_gui_dialogs_qmessagebox {
             break;
         }
 //! [1]
+    }
 
-
+    private void snippetWrapper2() {
 //! [2]
-        QMessageBox msgBox;
-        QPushButton onnectButton = msgBox.addButton(tr("Connect"), QMessageBox.ActionRole);
-        QPushButton bortButton = msgBox.addButton(QMessageBox.Abort);
+        QMessageBox msgBox = new QMessageBox();
+        QPushButton connectButton = msgBox.addButton(tr("Connect"), QMessageBox.ButtonRole.ActionRole);
+        QPushButton abortButton = msgBox.addButton(QMessageBox.StandardButton.Abort);
 
         msgBox.exec();
 
@@ -123,20 +132,22 @@ public class src_gui_dialogs_qmessagebox {
             // abort
         }
 //! [2]
+    }
 
-
+    private void snippetWrapper3() {
 //! [3]
-        QMessageBox messageBox(this);
-        QAbstractButton isconnectButton =
-              messageBox.addButton(tr("Disconnect"), QMessageBox.ActionRole);
-        ...
+        QMessageBox messageBox = new QMessageBox(this);
+        QAbstractButton disconnectButton =
+              messageBox.addButton(tr("Disconnect"), QMessageBox.ButtonRole.ActionRole);
+        // ...
         messageBox.exec();
         if (messageBox.clickedButton() == disconnectButton) {
-            ...
+           // ...
         }
 //! [3]
+    }
 
-
+/*
 //! [4]
         #include <QApplication>
         #include <QMessageBox>
@@ -146,11 +157,9 @@ public class src_gui_dialogs_qmessagebox {
             QT_REQUIRE_VERSION(argc, argv, "4.0.2")
 
             QApplication app(argc, argv);
-            ...
+            //...
             return app.exec();
         }
 //! [4]
-
-
-    }
+*/
 }
