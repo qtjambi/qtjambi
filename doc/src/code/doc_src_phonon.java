@@ -6,7 +6,7 @@ import com.trolltech.qt.network.*;
 import com.trolltech.qt.sql.*;
 import com.trolltech.qt.svg.*;
 
-
+/*
 public class doc_src_phonon {
     public static void main(String args[]) {
         QApplication.initialize(args);
@@ -21,9 +21,10 @@ public class doc_src_phonon {
 
 
 //! [2]
-        #include <Phonon>
+        import com.trolltech.qt.phonon.*;
 //! [2]
 
 
     }
 }
+*/
