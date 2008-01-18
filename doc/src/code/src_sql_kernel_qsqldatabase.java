@@ -32,11 +32,13 @@ public class src_sql_kernel_qsqldatabase {
 //! [1]
 	}
 	{
+/*
 //! [2]
      QSqlDatabase.registerSqlDriver("MYDRIVER",
                                      new QSqlDriverCreator<MyDatabaseDriver>);
      QSqlDatabase db = QSqlDatabase.addDatabase("MYDRIVER");
 //! [2]
+*/
 	}
 	{
 	    QSqlDatabase db;
@@ -77,12 +79,12 @@ public class src_sql_kernel_qsqldatabase {
     }
 //! [4]
 	}
-
+/*
 //! [5]
         #include "qtdir/src/sql/drivers/psql/qsql_psql.cpp"
 //! [5]
-
-
+*/
+/*
 //! [6]
 	PGconn on = PQconnectdb("host=server user=bart password=simpson dbname=springfield");
         QPSQLDriver rv =  new QPSQLDriver(con);
@@ -91,13 +93,13 @@ public class src_sql_kernel_qsqldatabase {
         query.exec("SELECT NAME, ID FROM STAFF");
         // ...
 //! [6]
-
-
+*/
+/*
 //! [7]
          unix:LIBS += -lpq
 	 win32:LIBS += libpqdll.lib
 //! [7]
-
+*/
 	{
 //! [8]
         QSqlDatabase db = new QSqlDatabase();
