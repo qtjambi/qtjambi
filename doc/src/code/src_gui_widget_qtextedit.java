@@ -34,29 +34,35 @@ import com.trolltech.qt.svg.*;
 
 
 public class src_gui_widgets_qtextedit {
-    public static void main(String args[]) {
+    static void main(String args[]) {
         QApplication.initialize(args);
+
+        QTextEdit edit = new QTextEdit();
+        QTextDocument document = edit.document();
+        QTextCursor textCursor = new QTextCursor(document);
+
+        String text = "insert me";
+        String fragment = "<B>Hi!</B>";
+        
+        //! [1]
+        edit.textCursor().insertText(text);
+        //! [1]
+
+        //! [2]
+        edit.textCursor().insertHtml(fragment);
+        //! [2]
+    }
+
 //! [0]
-  void MyTextEdit.contextMenuEvent(QContextMenuEvent vent)
-  {
-      QMenu enu = createStandardContextMenu();
-      menu.addAction(tr("My Menu Item"));
-      //...
-      menu.exec(event.globalPos());
-      delete menu;
-  }
+    void contextMenuEvent(QContextMenuEvent event) {
+        QMenu menu = createStandardContextMenu();
+        menu.addAction(tr("My Menu Item"));
+        //...
+        menu.exec(event.globalPos());
+    }
 //! [0]
 
-
-//! [1]
-    edit.textCursor().insertText(text);
-//! [1]
-
-
-//! [2]
-    edit.textCursor().insertHtml(fragment);
-//! [2]
-
-
+    private QMenu createStandardContextMenu() {
+        return new QMenu();
     }
 }
