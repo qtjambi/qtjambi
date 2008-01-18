@@ -41,32 +41,31 @@ import com.trolltech.qt.svg.*;
 public class src_network_socket_qudpsocket {
     public static void main(String args[]) {
         QApplication.initialize(args);
+    }
 //! [0]
-        void Server.initSocket()
+    public class Server extends QObject {
+	private QUdpSocket udpSocket;
+
+        public void initSocket()
         {
             udpSocket = new QUdpSocket(this);
-            udpSocket.bind(QHostAddress.LocalHost, 7755);
+            udpSocket.bind(new QHostAddress(QHostAddress.SpecialAddress.LocalHost), 7755);
 
-            connect(udpSocket, SIGNAL(readyRead()),
-                    this, SLOT(readPendingDatagrams()));
+            udpSocket.readyRead.connect(this, "readPendingDatagrams()");
         }
 
-        void Server.readPendingDatagrams()
+        public void readPendingDatagrams()
         {
             while (udpSocket.hasPendingDatagrams()) {
-                QByteArray datagram;
-                datagram.resize(udpSocket.pendingDatagramSize());
-                QHostAddress sender;
-                quint16 senderPort;
+                byte[] datagram = new byte[(int)udpSocket.pendingDatagramSize()];
+		QUdpSocket.HostInfo senderInfo = new QUdpSocket.HostInfo();
 
-                udpSocket.readDatagram(datagram.data(), datagram.size(),
-                                        ender, enderPort);
+                udpSocket.readDatagram(datagram, senderInfo);
 
-                processTheDatagram(datagram);
+                // process the datagram
             }
         }
+    }
 //! [0]
 
-
-    }
 }
