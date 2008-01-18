@@ -38,38 +38,34 @@
 
 </snip>
 */
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
 
 
-public class src_gui_kernel_qformlayout {
-    public static void main(String args[]) {
-        QApplication.initialize(args);
+public class src_gui_kernel_qformlayout extends QWidget {
+    QLineEdit nameLineEdit, emailLineEdit, ageSpinBox;
+    QLabel nameLabel, emailLabel, ageLabel;
+    public void fooBar() {
 //! [0]
-        QFormLayout ormLayout = new QFormLayout;
-        formLayout.addRow(tr("ame:"), nameLineEdit);
-        formLayout.addRow(tr("mail:"), emailLineEdit);
-        formLayout.addRow(tr("ge:"), ageSpinBox);
+        QFormLayout formLayout = new QFormLayout();
+        formLayout.addRow(tr("Name:"), nameLineEdit);
+        formLayout.addRow(tr("Email:"), emailLineEdit);
+        formLayout.addRow(tr("Age:"), ageSpinBox);
         setLayout(formLayout);
 //! [0]
 
 
 //! [1]
-        nameLabel = new QLabel(tr("ame:"));
+        nameLabel = new QLabel(tr("Name:"));
         nameLabel.setBuddy(nameLineEdit);
 
-        emailLabel = new QLabel(tr("ame:"));
+        emailLabel = new QLabel(tr("Email:"));
         emailLabel.setBuddy(emailLineEdit);
 
-        ageLabel = new QLabel(tr("ame:"));
+        ageLabel = new QLabel(tr("Age:"));
         ageLabel.setBuddy(ageSpinBox);
 
-        QGridLayout ridLayout = new QGridLayout;
+        QGridLayout gridLayout = new QGridLayout();
         gridLayout.addWidget(nameLabel, 0, 0);
         gridLayout.addWidget(nameLineEdit, 0, 1);
         gridLayout.addWidget(emailLabel, 1, 0);
@@ -81,8 +77,8 @@ public class src_gui_kernel_qformlayout {
 
 
 //! [2]
-        formLayout.setFormStyle(QFormLayout.MacStyle);
-        formLayout.setLabelAlignment(Qt.AlignLeft);
+        formLayout.setFormStyle(QFormLayout.FormStyle.MacStyle);
+        formLayout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft);
 //! [2]
 
 
