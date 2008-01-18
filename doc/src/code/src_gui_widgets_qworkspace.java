@@ -1,17 +1,3 @@
-/*   Ported from: src.gui.widgets.qworkspace.cpp
-<snip>
-//! [0]
-    MainWindow::MainWindow()
-    {
-        workspace = new QWorkspace;
-        setCentralWidget(workspace);
-        ...
-    }
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
