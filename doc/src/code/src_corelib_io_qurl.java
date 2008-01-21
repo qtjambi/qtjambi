@@ -1,83 +1,30 @@
-/*   Ported from: src.corelib.io.qurl.cpp
-<snip>
-//! [0]
-        QUrl url("http://www.example.com/List of holidays.xml");
-        // url.toEncoded() == "http://www.example.com/List%20of%20holidays.xml"
-//! [0]
-
-
-//! [1]
-        QUrl url = QUrl::fromEncoded("http://www.trolltech.com/List%20of%20holidays.xml");
-//! [1]
-
-
-//! [2]
-        bool checkUrl(const QUrl &url) {
-            if (!url.isValid()) {
-                qDebug(QString("Invalid URL: %1").arg(url.toString()));
-                return false;
-            }
-
-            return true;
-        }
-//! [2]
-
-
-//! [3]
-        QFtp ftp;
-        ftp.connectToHost(url.host(), url.port(21));
-//! [3]
-
-
-//! [4]
-        http://www.example.com/cgi-bin/drawgraph.cgi?type-pie/color-green
-//! [4]
-
-
-//! [5]
-         QUrl baseUrl("http://www.trolltech.com/support");
-         QUrl relativeUrl("../products/solutions");
-         qDebug(baseUrl.resolved(relativeUrl).toString());
-         // prints "http://www.trolltech.com/products/solutions"
-//! [5]
-
-
-//! [6]
-         QByteArray ba = QUrl::toPercentEncoding("{a fishy string?}", "{}", "s");
-         qDebug(ba.constData());
-         // prints "{a fi%73hy %73tring%3F}"
-//! [6]
-
-
-</snip>
-*/
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
+import com.trolltech.qt.core.QByteArray;
+import com.trolltech.qt.core.QUrl;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.network.QFtp;
 
 
 public class src_corelib_io_qurl {
     public static void main(String args[]) {
         QApplication.initialize(args);
+        {
+            code();
 //! [0]
-        QUrl url("http://www.example.com/List of holidays.xml");
+        QUrl url = new QUrl("http://www.example.com/List of holidays.xml");
         // url.toEncoded() == "http://www.example.com/List%20of%20holidays.xml"
 //! [0]
+        }
 
 
 //! [1]
-        QUrl url = QUrl.fromEncoded("http://www.trolltech.com/List%20of%20holidays.xml");
+        QUrl url = QUrl.fromEncoded(new QByteArray("http://www.trolltech.com/List%20of%20holidays.xml"));
 //! [1]
 
-
+    }
 //! [2]
-        booleanscheckUrl(QUrl rl) {
+        private boolean checkUrl(QUrl url) {
             if (!url.isValid()) {
-                qDebug(QString("Invalid URL: %1").arg(url.toString()));
+                System.out.println("Invalid URL: " + url);
                 return false;
             }
 
@@ -85,29 +32,30 @@ public class src_corelib_io_qurl {
         }
 //! [2]
 
-
+        static void code() {
+            QUrl url = new QUrl();
 //! [3]
-        QFtp ftp;
-        ftp.connectToHost(url.host(), url.port(21));
+        QFtp ftp = new QFtp();
+        ftp.connectToHost(url.host(), (char)url.port(21));
 //! [3]
 
-
+/*
 //! [4]
         http://www.example.com/cgi-bin/drawgraph.cgi?type-pie/color-green
 //! [4]
-
+*/
 
 //! [5]
-         QUrl baseUrl("http://www.trolltech.com/support");
-         QUrl relativeUrl("../products/solutions");
-         qDebug(baseUrl.resolved(relativeUrl).toString());
+         QUrl baseUrl = new QUrl("http://www.trolltech.com/support");
+         QUrl relativeUrl = new QUrl("../products/solutions");
+         System.out.println(baseUrl.resolved(relativeUrl).toString());
          // prints "http://www.trolltech.com/products/solutions"
 //! [5]
 
 
 //! [6]
-         QByteArray ba = QUrl.toPercentEncoding("{a fishy string?}", "{}", "s");
-         qDebug(ba.constData());
+         QByteArray ba = QUrl.toPercentEncoding("{a fishy string?}", new QByteArray("{}"), new QByteArray("s"));
+         System.out.println(ba);
          // prints "{a fi%73hy %73tring%3F}"
 //! [6]
 
