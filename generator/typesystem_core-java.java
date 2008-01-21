@@ -656,6 +656,10 @@ class QFutureSynchronizerVoid___ extends QFutureSynchronizerVoid {
 
 class QtConcurrent___ extends QtConcurrent {
 
+    static {
+        com.trolltech.qt.core.QtJambi_LibraryInitializer.init();
+    }
+
     public interface MapFunctor<T> {
         public void map(T object);
     }
@@ -701,8 +705,6 @@ class QtConcurrent___ extends QtConcurrent {
 
     private native static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor, int options);
 
-    //public native static <U> QFuture<U> run(Method m, Object _this, Object ... args);
-
     public interface FilteredFunctor<T> {
         public boolean filter(T object);
     }
@@ -727,11 +729,11 @@ class QtConcurrent___ extends QtConcurrent {
         return blockingFilteredReduced(sequence, filteredFunctor, reducedFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
     }
 
-    private static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOption ... options) {
+    public static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOption ... options) {
         return blockingFilteredReduced(sequence, filteredFunctor, reducedFunctor, new ReduceOptions(options));
     }
 
-    private static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOptions options) {
+    public static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOptions options) {
         return blockingFilteredReduced(sequence, filteredFunctor, reducedFunctor, options.value());
     }
 

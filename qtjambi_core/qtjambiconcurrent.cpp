@@ -181,15 +181,17 @@ public:
 private:
     void init(jclass declaringClass, jobjectArray javaArguments) {
         JNIEnv *env = qtjambi_current_environment();
-        if (env != 0 && javaArguments != 0)
-            m_java_arguments = reinterpret_cast<jobjectArray>(env->NewGlobalRef(javaArguments));
-        if (env != 0 && declaringClass != 0)
-            m_declaring_class = reinterpret_cast<jclass>(env->NewGlobalRef(declaringClass));
+        if (env != 0) {
+            if (javaArguments != 0)
+                m_java_arguments = reinterpret_cast<jobjectArray>(env->NewGlobalRef(javaArguments));
+            if (declaringClass != 0)
+                m_declaring_class = reinterpret_cast<jclass>(env->NewGlobalRef(declaringClass));
 
-        int len = env->GetArrayLength(m_java_arguments);
-        m_arguments = QVarLengthArray<jvalue, 16>(len);
-        for (int i=0; i<len; ++i)
-            m_arguments[i].l = env->GetObjectArrayElement(m_java_arguments, i);
+            int len = m_java_arguments != 0 ? env->GetArrayLength(m_java_arguments) : 0;
+            m_arguments = QVarLengthArray<jvalue, 16>(len);
+            for (int i=0; i<len; ++i)
+                m_arguments[i].l = env->GetObjectArrayElement(m_java_arguments, i);
+        }
     }
 
 protected:

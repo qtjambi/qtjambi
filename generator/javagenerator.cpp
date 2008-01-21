@@ -1444,7 +1444,8 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
         }
     }
 
-    if (!java_class->isInterface() && !java_class->isNamespace()
+
+    if (!java_class->isInterface() && (!java_class->isNamespace() || java_class->functionsInTargetLang().size() > 0)
         && (java_class->baseClass() == 0 || java_class->package() != java_class->baseClass()->package())) {
         s << endl
           << INDENT << "static {" << endl
