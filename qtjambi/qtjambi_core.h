@@ -84,6 +84,8 @@ struct QtJambiSignalInfo
 #  define DEREF_JOBJECT // noop
 #endif // JOBJECT_REFCOUNT
 
+QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
+
 struct QTJAMBI_EXPORT JObjectWrapper
 {
     JObjectWrapper() : environment(0), object(0)
@@ -110,7 +112,7 @@ struct QTJAMBI_EXPORT JObjectWrapper
 
     void operator=(const JObjectWrapper &wrapper) {
         if (wrapper.environment && wrapper.object) {
-            initialize(wrapper.environment, wrapper.object);
+            initialize(qtjambi_current_environment(), wrapper.object);
         } else {
             object = 0;
             environment = 0;
@@ -148,8 +150,6 @@ QTJAMBI_EXPORT bool qtjambi_destroy_vm();
 extern "C" QTJAMBI_EXPORT void qtjambi_set_vm_location_override(const QString &location);
 
 QTJAMBI_EXPORT bool qtjambi_exception_check(JNIEnv *env);
-
-QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
 
 QTJAMBI_EXPORT jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName);
 

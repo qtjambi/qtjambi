@@ -150,12 +150,7 @@ public class QSignalEmitter {
 
                 Class<?> slotParameterTypes[] = slot.getParameterTypes();
                 Class<?> signalParameterTypes[] = resolveSignal();
-                convertTypes = new int[slotParameterTypes.length];
-                for (int i = 0; i < convertTypes.length; ++i) {
-                    convertTypes[i] = 'L';
-                    if (slotParameterTypes[i].isPrimitive())
-                        convertTypes[i] = QtJambiInternal.primitiveToByte(signalParameterTypes[i]);
-                }
+                convertTypes = QtJambiInternal.resolveConversionSchema(signalParameterTypes, slotParameterTypes);
             }
         } // public class Connection
 

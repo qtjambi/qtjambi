@@ -132,44 +132,105 @@ public:
     }
 };
 
-/*class RunFunctor: public Functor {
-public:
-    typedef JObjectWrapper result_type;
+class RunFunctorBase: public Functor 
+{
+public:    
 
-    RunFunctor(jobject javaMethod, jobjectArray javaArguments) : Functor(javaMethod), m_java_arguments(0) {
-        init(javaArguments);
-    }
-    RunFunctor(const RunFunctor &other) : Functor(other), m_java_arguments(0) { init(other.m_java_arguments); }
-    ~RunFunctor() { 
-        JNIEnv *env = qtjambi_current_environment();
-        if (env != 0 && m_java_arguments != 0)
-            env->DeleteGlobalRef(m_java_arguments);
+    RunFunctorBase(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments) 
+        : Functor(javaThis), m_declaring_class(0), m_java_arguments(0), m_method_id(javaMethodId) 
+    {
+        init(declaringClass, javaArguments);
     }
 
-    JObjectWrapper operator()() {
-        JNIEnv *env = qtjambi_current_environment();
-        if (env != 0 && m_functor != 0) {
-            int len = m_java_arguments != 0 ? env->GetObjectArrayLength(m_java_arguments) : 0;
+    RunFunctorBase(const RunFunctorBase &other) 
+        : Functor(other), m_declaring_class(0), m_java_arguments(0), m_method_id(other.m_method_id)
+    { 
+        init(other.m_declaring_class, other.m_java_arguments); 
+    }
 
-            QVarLengthArray<jvalue *, 16> args(len);
-            for (int i=0; i<len; ++i)
-                args[i].l = env->GetObjectArrayElement(m_java_arguments, i);
-            
-            jobject javaResult = env->CallObjectMethod(
+    ~RunFunctorBase() { 
+        JNIEnv *env = qtjambi_current_environment();
+        if (env != 0) {
+            if (m_java_arguments != 0) 
+                env->DeleteGlobalRef(m_java_arguments);
+            if (m_declaring_class != 0)
+                env->DeleteGlobalRef(m_declaring_class);
         }
     }
 
 
 private:
-    void init(jobject javaArguments) {
+    void init(jclass declaringClass, jobjectArray javaArguments) {
         JNIEnv *env = qtjambi_current_environment();
-        if (env != 0 && m_java_arguments != 0 && javaArguments != 0)
-            m_java_arguments = env->NewGlobalRef(javaArguments);
+        if (env != 0 && javaArguments != 0)
+            m_java_arguments = reinterpret_cast<jobjectArray>(env->NewGlobalRef(javaArguments));
+        if (env != 0 && declaringClass != 0)
+            m_declaring_class = reinterpret_cast<jclass>(env->NewGlobalRef(declaringClass));
+
+        int len = env->GetArrayLength(m_java_arguments);
+        m_arguments = QVarLengthArray<jvalue, 16>(len);
+        for (int i=0; i<len; ++i)
+            m_arguments[i].l = env->GetObjectArrayElement(m_java_arguments, i);
     }
 
-    jobject m_java_arguments;
+protected:
+    jclass m_declaring_class;
+    jobjectArray m_java_arguments;
+    jmethodID m_method_id;
+    QVarLengthArray<jvalue, 16> m_arguments;
+};
 
-};*/
+class RunFunctor: public RunFunctorBase {
+public:
+    typedef JObjectWrapper result_type;
+
+    RunFunctor(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments) 
+        : RunFunctorBase(javaThis, declaringClass, javaMethodId, javaArguments) 
+    {
+    }
+
+    RunFunctor(const RunFunctor &other) 
+        : RunFunctorBase(other) 
+    {
+    }
+
+    JObjectWrapper operator()() {
+        JNIEnv *env = qtjambi_current_environment();
+        if (env != 0 && m_method_id != 0) {
+            jobject javaResult = 0;
+            if (m_functor != 0)
+                javaResult = env->CallObjectMethod(m_functor, m_method_id, m_arguments.data());
+            else
+                javaResult = env->CallStaticObjectMethod(m_declaring_class, m_method_id, m_arguments.data());
+            return JObjectWrapper(env, javaResult);
+        }
+    }
+};
+
+class RunVoidFunctor: public RunFunctorBase {
+public:
+    typedef void result_type;
+
+    RunVoidFunctor(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments) 
+        : RunFunctorBase(javaThis, declaringClass, javaMethodId, javaArguments) 
+    {
+    }
+
+    RunVoidFunctor(const RunFunctor &other) 
+        : RunFunctorBase(other) 
+    {
+    }
+
+    void operator()() {
+        JNIEnv *env = qtjambi_current_environment();
+        if (env != 0 && m_method_id != 0) {
+            if (m_functor != 0)
+                env->CallVoidMethod(m_functor, m_method_id, m_arguments.data());
+            else
+                env->CallStaticVoidMethod(m_declaring_class, m_method_id, m_arguments.data());
+        }
+    }
+};
 
 static QList<JObjectWrapper> convertJavaSequenceToCpp(JNIEnv *env, jobject javaSequence) 
 {
@@ -370,5 +431,40 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
 
     return qtjambi_from_jobjectwrapper(__jni_env, result);
 }
+
+extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_runPrivate)
+(JNIEnv *__jni_env,
+ jclass,
+ jobject javaThis,
+ jclass declaringClass,
+ jobject javaMethod,
+ jobjectArray javaArgs)
+{
+    jmethodID methodId = __jni_env->FromReflectedMethod(javaMethod);
+    Q_ASSERT(methodId);
+
+    RunFunctor runFunctor(javaThis, declaringClass, methodId, javaArgs);
+    QFuture<JObjectWrapper> result = QtConcurrent::run(runFunctor);
+
+    return convertCppFutureToJava(__jni_env, result);
+}
+
+extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_runVoidMethodPrivate)
+(JNIEnv *__jni_env,
+ jclass,
+ jobject javaThis,
+ jclass declaringClass,
+ jobject javaMethod,
+ jobjectArray javaArgs)
+{
+    jmethodID methodId = __jni_env->FromReflectedMethod(javaMethod);
+    Q_ASSERT(methodId);
+
+    RunVoidFunctor runFunctor(javaThis, declaringClass, methodId, javaArgs);
+    QFuture<void> result = QtConcurrent::run(runFunctor);
+
+    return convertCppFutureVoidToJava(__jni_env, result);
+}
+
 
 #endif // QT_NO_CONCURRENT

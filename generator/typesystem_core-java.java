@@ -736,6 +736,22 @@ class QtConcurrent___ extends QtConcurrent {
     }
 
     private native static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, int options); 
+ 
+    public static <T> QFuture<T> run(Object _this, java.lang.reflect.Method m, Object ... args) {
+        if (m.getReturnType() == null || m.getReturnType().equals(Void.TYPE))
+            throw new IllegalArgumentException("Cannot call run on method returning void. Use 'runVoidMethod' instead.");
+
+        return runPrivate(_this, m.getDeclaringClass(), m, args);
+    }
+    private native static <T> QFuture<T> runPrivate(Object _this, Class<?> declaringClass, java.lang.reflect.Method m, Object args[]);
+
+    public static QFutureVoid runVoidMethod(Object _this, java.lang.reflect.Method m, Object ... args) {
+        if (m.getReturnType() != null && !m.getReturnType().equals(Void.TYPE))
+            throw new IllegalArgumentException("Cannot call runVoidMethod on method returning non-void type. Use 'run' instead.");
+
+        return runVoidMethodPrivate(_this, m.getDeclaringClass(), m, args);
+    }
+    private native static QFutureVoid runVoidMethodPrivate(Object _this, Class<?> declaringClass, java.lang.reflect.Method m, Object args[]);
 
 
 }// class

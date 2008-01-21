@@ -939,7 +939,6 @@ AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typ
 {
     QString class_name = strip_template_args(typeAlias->name());
     
-
     QString full_class_name = class_name;
     // we have an inner class
     if (m_current_class) {
@@ -953,7 +952,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typ
         return 0;
 
     if (type->isObject())
-        static_cast<ObjectTypeEntry *>(type)->setQObject(isQObject(full_class_name));    
+        static_cast<ObjectTypeEntry *>(type)->setQObject(isQObject(strip_template_args(typeAlias->type().qualifiedName().join("::"))));
 
     AbstractMetaClass *meta_class = createMetaClass();
     meta_class->setTypeAlias(true);
@@ -1957,8 +1956,8 @@ bool AbstractMetaBuilder::isQObject(const QString &qualified_name)
     if (class_item && !isqobject) {
         QStringList baseClasses = class_item->baseClasses();
         for (int i=0; i<baseClasses.count(); ++i) {
+        
             isqobject = isQObject(baseClasses.at(i));
-
             if (isqobject)
                 break;
         }

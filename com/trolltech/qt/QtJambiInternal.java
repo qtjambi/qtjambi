@@ -110,6 +110,17 @@ public class QtJambiInternal {
         private Object arguments[];
         private QSignalEmitter.AbstractSignal.Connection connection;
     }
+    
+    public static int[] resolveConversionSchema(Class<?> inputParameterTypes[], Class<?> outputParameterTypes[]) {
+        int returned[] = new int[outputParameterTypes.length];    
+        for (int i = 0; i < returned.length; ++i) {
+            returned[i] = 'L';
+            if (outputParameterTypes[i].isPrimitive())
+                returned[i] = QtJambiInternal.primitiveToByte(inputParameterTypes[i]);
+        }
+        
+        return returned;
+    }
 
     static Class<?> getComplexType(Class<?> primitiveType) {
         if (!primitiveType.isPrimitive())

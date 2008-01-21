@@ -428,8 +428,12 @@ EnumList _ScopeModelItem::enums() const
 }
 
 void _ScopeModelItem::addClass(ClassModelItem item)
-{
-  _M_classes.insert(item->name(), item);
+{ 
+ QString name = item->name();
+ int idx = name.indexOf("<");
+ if (idx > 0)
+     _M_classes.insert(name.left(idx), item); 
+  _M_classes.insert(name, item);
 }
 
 void _ScopeModelItem::addFunction(FunctionModelItem item)
