@@ -17,13 +17,7 @@
 
 </snip>
 */
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -31,7 +25,8 @@ public class src_corelib_concurrent_qfuturesynchronizer {
     
     private Method anotherMethod;
     private List<String> list;
-    private QtConcurrent.MapFunctor<String> mapFunctor;
+    private QtConcurrent.MapFunctor<String> mapFunctor;   
+    Object arg1, arg2;
     
 //! [0]
     public final void someFunction()
@@ -40,7 +35,7 @@ public class src_corelib_concurrent_qfuturesynchronizer {
         
         /* ... */
         
-        synchronizer.addFuture(QtConcurrent.run(anotherMethod));
+        synchronizer.addFuture(QtConcurrent.runVoidMethod(this, anotherMethod, arg1, arg2));
         synchronizer.addFuture(QtConcurrent.map(list, mapFunctor));
         
         return; // QFutureSynchronizer waits for all futures to finish

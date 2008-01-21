@@ -21,9 +21,9 @@ import java.lang.reflect.*;
 class MyClass {}
 
 public class src_corelib_concurrent_qfuturewatcher {
-    public static void main(String args[]) {
-        QApplication.initialize(args);
+    public void main() {
         Method method = null;
+        int arg1 = 0, arg2 = 0;
 //! [0]
     // Instantiate the objects and connect to the finished signal.
     MyClass myObject = new MyClass();
@@ -31,7 +31,7 @@ public class src_corelib_concurrent_qfuturewatcher {
     watcher.finished.connect(myObject, "handleFinished()");
 
     // Start the computation.
-    QFuture<Integer> future = QtConcurrent.run(method);
+    QFuture<Integer> future = QtConcurrent.run(this, method, arg1, arg2);
     watcher.setFuture(future);
 //! [0]
 
