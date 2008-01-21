@@ -1,10 +1,29 @@
 #include "qtjambiconcurrent.h"
 
 #include <qtjambi_core.h>
+#include "qtjambiconcurrent_p.h"
 
 #include <QtCore>
 
 #ifndef QT_NO_CONCURRENT
+
+FutureSequenceCleanUp::FutureSequenceCleanUp(QList<JObjectWrapper> *sequence)
+        : m_sequence(sequence)
+{
+    connect(this, SIGNAL(finished()), this, SLOT(cleanUp()));
+}
+
+FutureSequenceCleanUp::~FutureSequenceCleanUp()
+{
+    delete m_sequence;
+}
+
+void FutureSequenceCleanUp::cleanUp() 
+{
+    delete m_sequence; m_sequence = 0;
+    deleteLater();
+}
+
 
 class Functor {
 public:
@@ -13,7 +32,7 @@ public:
         init(functor);
     }
 
-    Functor(const Functor &other)
+    Functor(const Functor &other) : m_functor(0)
     {
         init(other.m_functor);
     }
@@ -48,11 +67,11 @@ public:
         JNIEnv *env = qtjambi_current_environment();
         if (env != 0 && m_functor) {
             jobject javaObject = qtjambi_from_jobjectwrapper(env, wrapper);
-
             StaticCache *sc = StaticCache::instance(env);
             sc->resolveQtConcurrent_MapFunctor();
 
-            env->CallVoidMethod(m_functor, sc->QtConcurrent_MapFunctor.map, javaObject);
+            if (javaObject != 0)
+                env->CallVoidMethod(m_functor, sc->QtConcurrent_MapFunctor.map, javaObject);
         } else {
             qWarning("Map functor called with invalid data. JNI Environment == %p, java functor object == %p",
                     env, m_functor);
@@ -202,7 +221,11 @@ public:
                 javaResult = env->CallObjectMethod(m_functor, m_method_id, m_arguments.data());
             else
                 javaResult = env->CallStaticObjectMethod(m_declaring_class, m_method_id, m_arguments.data());
-            return JObjectWrapper(env, javaResult);
+            return qtjambi_to_jobjectwrapper(env, javaResult);
+        } else {
+            qWarning("Run functor called with invalid data. JNI Environment == %p, java functor object == %p",
+                     env, m_functor);
+            return JObjectWrapper();
         }
     }
 };
@@ -231,6 +254,7 @@ public:
         }
     }
 };
+
 
 static QList<JObjectWrapper> convertJavaSequenceToCpp(JNIEnv *env, jobject javaSequence) 
 {
@@ -274,9 +298,18 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
  jobject javaMapFunctor)
 {
     QList<JObjectWrapper> sequence = convertJavaSequenceToCpp(__jni_env, javaSequence);
-    
+
+    // Make sure we don't destroy this list while it's in use 
+    // (map does in place editing and keeps a reference to the list instead of copying)
+    QList<JObjectWrapper> *heapSequence = new QList<JObjectWrapper>(sequence);
+
+    // Make sure the list on the heap is cleaned up when the 
+    // job is over.
+    FutureSequenceCleanUp *cleanUp = new FutureSequenceCleanUp(heapSequence);
+
     MapFunctor mapFunctor(javaMapFunctor);
-    QFuture<void> future = QtConcurrent::map(sequence, mapFunctor);
+    QFuture<void> future = QtConcurrent::map(*heapSequence, mapFunctor);
+    cleanUp->setFuture(future);
 
     return convertCppFutureVoidToJava(__jni_env, future);
 }
@@ -355,19 +388,6 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
 
     return convertCppFutureToJava(__jni_env, result);
 }
-
-// ### run not impl.
-/*extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_run)
-(JNIEnv *__jni_env,
- jclass,
- jobject method,
- jobjectArray args)
-{
-    RunFunctor runFunctor(method, args);
-    QFuture<JObjectWrapper> result = QtConcurrent::run(runFunctor);
-
-    return convertCppFutureToJava(__jni_env, result);
-}*/
 
 extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QtConcurrent_filtered)
 (JNIEnv *__jni_env,

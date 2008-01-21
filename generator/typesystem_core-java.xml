@@ -1726,10 +1726,10 @@
   </value-type>
 
   <template name="convert_qtjambifuture_to_native">
-    const QtJambiFuture &amp;  %out = %in != 0 ? (const QtJambiFuture&amp; ) *(QtJambiFuture *)qtjambi_from_jlong(%in) : QtJambiFuture();
+    QtJambiFuture %out = %in != 0 ? (const QtJambiFuture&amp; ) *(QtJambiFuture *)qtjambi_from_jlong(%in) : QtJambiFuture();
   </template>
   <template name="convert_futurevoid_to_native">
-    const QtJambiVoidFuture &amp;  %out = %in != 0 ? (const QtJambiVoidFuture&amp; ) *(QtJambiVoidFuture *)qtjambi_from_jlong(%in) : QtJambiVoidFuture();
+    QtJambiVoidFuture %out = %in != 0 ? (const QtJambiVoidFuture&amp; ) *(QtJambiVoidFuture *)qtjambi_from_jlong(%in) : QtJambiVoidFuture();
   </template>
   
   <value-type name="QFuture">

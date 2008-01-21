@@ -320,7 +320,6 @@
   <enum-type name="QCryptographicHash::Algorithm"/>
   
   <enum-type name="QtConcurrent::ReduceOption" flags="QtConcurrent::ReduceOptions" />
-  <enum-type name="QtConcurrent::enum_1" />
   <enum-type name="QtConcurrent::ThreadFunctionResult" />
 
   <enum-type name="QCoreApplication::Encoding">
