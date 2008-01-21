@@ -75,7 +75,7 @@
 
 
     </value-type>
-
+    <value-type name="QXmlSerializerPointer"/>
 
     <object-type name="QXmlQuery">
         <modify-function signature="evaluateToStringList(QStringList&lt;QString&gt;*)const"> <remove/> </modify-function>
