@@ -30,13 +30,22 @@ proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequire
             <access modifier="private"/>
             <rename to="proxyAuthenticationRequiredPrivate"/>
         </modify-function>  
-        <modify-function signature="connectToHostImplementation(QString, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private"/>
+        <modify-function signature="connectToHostImplementation(QString, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private" />
         <modify-function signature="localPort()const" access="private" rename="localPort_private"/>
         <modify-function signature="peerPort()const" access="private" rename="peerPort_private"/>
         <modify-function signature="setLocalPort(unsigned short)" access="private"/>
         <modify-function signature="setPeerPort(unsigned short)" access="private"/>
         <modify-function signature="connectToHost(QString, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private"/>
         <modify-function signature="connectToHost(QHostAddress, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private"/>
+
+        <modify-function signature="abort()" access="non-final" />
+        <modify-function signature="disconnectFromHostImplementation()" access="non-final" />
+        <modify-function signature="flush()" access="non-final" />
+        <modify-function signature="setReadBufferSize(long long)" access="non-final" />
+	<modify-function signature="setSocketDescriptor(int,QAbstractSocket::SocketState,QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="non-final" />
+        <modify-function signature="waitForConnected(int)" access="non-final" />
+        <modify-function signature="waitForDisconnected(int)" access="non-final" />
+
     </object-type>
     
     <value-type name="QHostInfo">
@@ -248,5 +257,34 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
             </modify-argument>        
         </modify-function>    
     </object-type>
+
+    <value-type name="QSslCipher">
+      <modify-function signature="operator=(QSslCipher)" remove="all" />
+    </value-type>
+
+    <value-type name="QSslError">
+      <modify-function signature="operator=(QSslError)" remove="all" />
+    </value-type>
+
+    <value-type name="QSslKey">
+      <modify-function signature="operator=(QSslKey)" remove="all" />
+    </value-type>
+
+    <value-type name="QSslCertificate">
+      <modify-function signature="operator=(QSslCertificate)" remove="all" />
+    </value-type>
+
+    <value-type name="QSslConfiguration">
+      <modify-function signature="operator=(QSslConfiguration)" remove="all" />
+    </value-type>
+
+
+    <object-type name="QSslSocket">
+      <inject-code>
+        <import-file name="typesystem_network-java.java" quote-after-line="class QSslSocket___" quote-before-line="}// class"/>
+      </inject-code>
+      <modify-function signature="connectToHostImplementation(QString, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private" />
+    </object-type>
+
   
 </typesystem>

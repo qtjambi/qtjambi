@@ -5,12 +5,12 @@ import com.trolltech.qt.network.*;
 
 class QHostInfo___ extends QHostInfo {
     /**
-     * Looks up the IP address(es) associated with host name <code>name</code>, 
-     * and returns an ID for the lookup. When the result of the lookup is ready, 
-     * the specified method in <code>receiver</code> is called with a 
-     * <code>QHostInfo</code> argument. The <code>QHostInfo</code> object can 
+     * Looks up the IP address(es) associated with host name <code>name</code>,
+     * and returns an ID for the lookup. When the result of the lookup is ready,
+     * the specified method in <code>receiver</code> is called with a
+     * <code>QHostInfo</code> argument. The <code>QHostInfo</code> object can
      * then be inspected to get the results of the lookup.
-     * 
+     *
      * @param name The host name.
      * @param receiver The object on which the method will be called.
      * @param methodName The name of a method which takes a single <code>QHostInfo</code> argument.
@@ -22,15 +22,15 @@ class QHostInfo___ extends QHostInfo {
     }
 
     /**
-     * Looks up the IP address(es) associated with host name <code>name</code>, 
-     * and returns an ID for the lookup. When the result of the lookup is ready, 
-     * the specified signal is emitted with a <code>QHostInfo</code> argument. 
-     * The <code>QHostInfo</code> object can then be inspected to get the results 
+     * Looks up the IP address(es) associated with host name <code>name</code>,
+     * and returns an ID for the lookup. When the result of the lookup is ready,
+     * the specified signal is emitted with a <code>QHostInfo</code> argument.
+     * The <code>QHostInfo</code> object can then be inspected to get the results
      * of the lookup.
-     * 
+     *
      * @param name The host name.
-     * @param signal The signal to emit. Must take a single <code>QHostInfo</code> 
-     *               argument, and must be contained in a <code>QObject</code> 
+     * @param signal The signal to emit. Must take a single <code>QHostInfo</code>
+     *               argument, and must be contained in a <code>QObject</code>
      *               subclass.
      */
     public static int lookupHost(String name, com.trolltech.qt.QSignalEmitter.Signal1<QHostInfo> signal)
@@ -40,7 +40,7 @@ class QHostInfo___ extends QHostInfo {
                                              + "Signal's class is '" + signal.containingObject().getClass() + "'.");
         }
 
-        return lookupHost(name, (com.trolltech.qt.core.QObject)signal.containingObject(), 
+        return lookupHost(name, (com.trolltech.qt.core.QObject)signal.containingObject(),
                           com.trolltech.qt.QtJambiInternal.SignalPrefix + signal.name() + "(QHostInfo)");
     }
 }// class
@@ -88,24 +88,24 @@ class QAbstractSocket___ extends QAbstractSocket {
         connectToHost(host, (char) port, mode);
     }
 
-    public final void connectToHost(QHostAddress host, int port) 
+    public final void connectToHost(QHostAddress host, int port)
     {
         connectToHost(host, (char) port);
     }
 
-    protected final void connectToHostImplementation(String host, int port, com.trolltech.qt.core.QIODevice.OpenMode mode) {
+    protected void connectToHostImplementation(String host, int port, com.trolltech.qt.core.QIODevice.OpenMode mode) {
         connectToHostImplementation(host, (char) port, mode);
     }
 
-    protected final void connectToHostImplementation(String host, int port, com.trolltech.qt.core.QIODevice.OpenModeFlag ... mode) {
+    protected void connectToHostImplementation(String host, int port, com.trolltech.qt.core.QIODevice.OpenModeFlag ... mode) {
         connectToHostImplementation(host, (char) port, mode);
     }
 
-    protected final void connectToHostImplementation(String host, int port) {
+    protected void connectToHostImplementation(String host, int port) {
         connectToHostImplementation(host, (char) port);
     }
 
-    public final int localPort() 
+    public final int localPort()
     {
         return localPort_private();
     }
@@ -122,6 +122,21 @@ class QAbstractSocket___ extends QAbstractSocket {
         setPeerPort((char) port);
     }
 
+}// class
+
+class QSslSocket___ extends QSslSocket {
+
+    protected void connectToHostImplementation(String host, int port, com.trolltech.qt.core.QIODevice.OpenMode mode) {
+        connectToHostImplementation(host, (char) port, mode);
+    }
+
+    protected void connectToHostImplementation(String host, int port, com.trolltech.qt.core.QIODevice.OpenModeFlag ... mode) {
+        connectToHostImplementation(host, (char) port, mode);
+    }
+
+    protected void connectToHostImplementation(String host, int port) {
+        connectToHostImplementation(host, (char) port);
+    }
 }// class
 
 class QHttp___ extends QHttp {
@@ -351,9 +366,9 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
     private boolean inEmission = false;
 
     @SuppressWarnings("unused")
-    private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) 
+    private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator)
     {
-        if (!inEmission) 
+        if (!inEmission)
         {
             inEmission = true;
             proxyAuthenticationRequiredPrivate.emit(proxy, authenticator.nativePointer());
@@ -362,9 +377,9 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
     }
 
     @SuppressWarnings("unused")
-    private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator) 
+    private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator)
     {
-        if (!inEmission) 
+        if (!inEmission)
         {
             inEmission = true;
             proxyAuthenticationRequired.emit(proxy, QAuthenticator.fromNativePointer(authenticator));
@@ -376,9 +391,9 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
     private boolean inEmissionAuthenticationRequired = false;
 
     @SuppressWarnings("unused")
-    private void emitAuthenticationRequiredPrivate(QNetworkReply reply, QAuthenticator authenticator) 
+    private void emitAuthenticationRequiredPrivate(QNetworkReply reply, QAuthenticator authenticator)
     {
-        if (!inEmissionAuthenticationRequired) 
+        if (!inEmissionAuthenticationRequired)
         {
             inEmissionAuthenticationRequired = true;
             authenticationRequiredPrivate.emit(reply, authenticator.nativePointer());
@@ -387,9 +402,9 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
     }
 
     @SuppressWarnings("unused")
-    private void emitAuthenticationRequired(QNetworkReply reply, QNativePointer authenticator) 
+    private void emitAuthenticationRequired(QNetworkReply reply, QNativePointer authenticator)
     {
-        if (!inEmissionAuthenticationRequired) 
+        if (!inEmissionAuthenticationRequired)
         {
             inEmissionAuthenticationRequired = true;
             authenticationRequired.emit(reply, QAuthenticator.fromNativePointer(authenticator));
