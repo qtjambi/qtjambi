@@ -307,7 +307,7 @@ QStringList AbstractMetaFunction::introspectionCompatibleSignatures(const QStrin
         AbstractMetaArgument *argument = arguments.at(resolvedArguments.size());
         QStringList minimalTypeSignature = argument->type()->minimalSignature().split("::");
         for (int i=0; i<minimalTypeSignature.size(); ++i) {
-            returned += introspectionCompatibleSignatures(QStringList(resolvedArguments) 
+            returned += introspectionCompatibleSignatures(QStringList(resolvedArguments)
                 << QStringList(minimalTypeSignature.mid(minimalTypeSignature.size() - i - 1)).join("::"));
         }
 
@@ -535,13 +535,13 @@ bool AbstractMetaFunction::disabledGarbageCollection(const AbstractMetaClass *cl
     return false;
 }
 
-bool AbstractMetaFunction::isDeprecated() const 
+bool AbstractMetaFunction::isDeprecated() const
 {
     FunctionModificationList modifications = this->modifications(declaringClass());
     foreach (FunctionModification modification, modifications) {
         if (modification.isDeprecated())
             return true;
-    }    
+    }
     return false;
 }
 
@@ -913,7 +913,7 @@ AbstractMetaFunctionList AbstractMetaClass::virtualOverrideFunctions() const
            queryFunctions(Signals | NonEmptyFunctions | Visible | VirtualInCppFunctions | NotRemovedFromShell);
 }
 
-void AbstractMetaClass::sortFunctions() 
+void AbstractMetaClass::sortFunctions()
 {
     qSort(m_functions.begin(), m_functions.end(), function_sorter);
 }
@@ -1525,7 +1525,7 @@ AbstractMetaEnum *AbstractMetaClass::findEnumForValue(const QString &enumValueNa
 static void add_extra_include_for_type(AbstractMetaClass *meta_class, const AbstractMetaType *type)
 {
 
-    if (type == 0) 
+    if (type == 0)
         return;
 
     Q_ASSERT(meta_class != 0);
@@ -1539,7 +1539,7 @@ static void add_extra_include_for_type(AbstractMetaClass *meta_class, const Abst
 
     if (type->hasInstantiations()) {
         QList<AbstractMetaType *> instantiations = type->instantiations();
-        foreach (AbstractMetaType *instantiation, instantiations) 
+        foreach (AbstractMetaType *instantiation, instantiations)
             add_extra_include_for_type(meta_class, instantiation);
     }
 }
@@ -1552,7 +1552,7 @@ static void add_extra_includes_for_function(AbstractMetaClass *meta_class, const
 
     AbstractMetaArgumentList arguments = meta_function->arguments();
     foreach (AbstractMetaArgument *argument, arguments)
-        add_extra_include_for_type(meta_class, argument->type());    
+        add_extra_include_for_type(meta_class, argument->type());
 }
 
 void AbstractMetaClass::fixFunctions()
@@ -1578,8 +1578,8 @@ void AbstractMetaClass::fixFunctions()
         // we may have propagated from their base classes again.
         AbstractMetaFunctionList super_funcs;
         if (super_class) {
-            
-            // Super classes can never be final 
+
+            // Super classes can never be final
             if (super_class->isFinalInTargetLang()) {
                 ReportHandler::warning("Final class '" + super_class->name() + "' set to non-final, as it is extended by other classes");
                 *super_class -= AbstractMetaAttributes::FinalInTargetLang;
@@ -1680,17 +1680,21 @@ void AbstractMetaClass::fixFunctions()
                             if (f->implementingClass() != sf->implementingClass() && f->implementingClass()->inheritsFrom(sf->implementingClass())) {
 
                                 // Check whether the superclass method has been redefined to non-final
-                            
+
                                 bool hasNonFinalModifier = false;
+                                bool isBaseImplPrivate = false;
                                 FunctionModificationList mods = sf->modifications(sf->implementingClass());
                                 foreach (FunctionModification mod, mods) {
                                     if (mod.isNonFinal()) {
                                         hasNonFinalModifier = true;
                                         break;
+                                    } else if (mod.isPrivate()) {
+                                        isBaseImplPrivate = true;
+                                        break;
                                     }
                                 }
 
-                                if (!hasNonFinalModifier) {
+                                if (!hasNonFinalModifier && !isBaseImplPrivate) {
                                     ReportHandler::warning(QString::fromLatin1("Shadowing: %1::%2 and %3::%4; Java code will not compile")
                                                         .arg(sf->implementingClass()->name())
                                                         .arg(sf->signature())
@@ -1723,7 +1727,7 @@ void AbstractMetaClass::fixFunctions()
                     add = false;
                 }
 
-            } 
+            }
 
             if (add)
                 funcs_to_add << sf;
@@ -1766,7 +1770,7 @@ void AbstractMetaClass::fixFunctions()
 
 
         // Make sure that we include files for all classes that are in use
-        
+
         if (!func->isRemovedFrom(this, TypeSystem::ShellCode))
             add_extra_includes_for_function(this, func);
     }
