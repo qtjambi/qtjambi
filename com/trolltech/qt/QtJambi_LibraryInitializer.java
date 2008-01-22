@@ -15,7 +15,7 @@ package com.trolltech.qt;
 
 import com.trolltech.qt.core.QMessageHandler;
 
-abstract class QtJambi_LibraryInitializer
+public abstract class QtJambi_LibraryInitializer
 {
     static QClassPathFileEngineHandler handler;
     static QMessageHandler messageHandler;
@@ -84,7 +84,7 @@ abstract class QtJambi_LibraryInitializer
         }
     }
 
-    static void init() {}
+    public static void init() {}
 
     private static native void initialize();
 }

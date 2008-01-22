@@ -170,10 +170,12 @@ public:
     ~RunFunctorBase() { 
         JNIEnv *env = qtjambi_current_environment();
         if (env != 0) {
-            if (m_java_arguments != 0) 
-                env->DeleteGlobalRef(m_java_arguments);
             if (m_declaring_class != 0)
                 env->DeleteGlobalRef(m_declaring_class);
+            if (m_java_arguments != 0)
+                env->DeleteGlobalRef(m_java_arguments);
+            for (int i=0; i<m_arguments.size(); ++i) 
+                env->DeleteGlobalRef(m_arguments[i].l);
         }
     }
 
@@ -181,16 +183,17 @@ public:
 private:
     void init(jclass declaringClass, jobjectArray javaArguments) {
         JNIEnv *env = qtjambi_current_environment();
+        Q_ASSERT(env != 0);
         if (env != 0) {
-            if (javaArguments != 0)
-                m_java_arguments = reinterpret_cast<jobjectArray>(env->NewGlobalRef(javaArguments));
             if (declaringClass != 0)
                 m_declaring_class = reinterpret_cast<jclass>(env->NewGlobalRef(declaringClass));
+            if (javaArguments != 0)
+                m_java_arguments = reinterpret_cast<jobjectArray>(env->NewGlobalRef(javaArguments));
 
-            int len = m_java_arguments != 0 ? env->GetArrayLength(m_java_arguments) : 0;
+            int len = javaArguments != 0 ? env->GetArrayLength(javaArguments) : 0;
             m_arguments = QVarLengthArray<jvalue, 16>(len);
             for (int i=0; i<len; ++i)
-                m_arguments[i].l = env->GetObjectArrayElement(m_java_arguments, i);
+                m_arguments[i].l = env->NewGlobalRef(env->GetObjectArrayElement(javaArguments, i));
         }
     }
 
@@ -217,16 +220,18 @@ public:
 
     JObjectWrapper operator()() {
         JNIEnv *env = qtjambi_current_environment();
+        Q_ASSERT(env != 0);
         if (env != 0 && m_method_id != 0) {
             jobject javaResult = 0;
             if (m_functor != 0)
-                javaResult = env->CallObjectMethod(m_functor, m_method_id, m_arguments.data());
+                javaResult = env->CallObjectMethodA(m_functor, m_method_id, m_arguments.data());
             else
-                javaResult = env->CallStaticObjectMethod(m_declaring_class, m_method_id, m_arguments.data());
-            return qtjambi_to_jobjectwrapper(env, javaResult);
+                javaResult = env->CallStaticObjectMethodA(m_declaring_class, m_method_id, m_arguments.data());
+
+            return javaResult != 0 ? qtjambi_to_jobjectwrapper(env, javaResult) : JObjectWrapper();
         } else {
-            qWarning("Run functor called with invalid data. JNI Environment == %p, java functor object == %p",
-                     env, m_functor);
+            qWarning("Run functor called with invalid data. JNI Environment == %p, method id == %p",
+                     env, m_method_id);
             return JObjectWrapper();
         }
     }
@@ -248,11 +253,15 @@ public:
 
     void operator()() {
         JNIEnv *env = qtjambi_current_environment();
+        Q_ASSERT(env != 0);
         if (env != 0 && m_method_id != 0) {
             if (m_functor != 0)
-                env->CallVoidMethod(m_functor, m_method_id, m_arguments.data());
+                env->CallVoidMethodA(m_functor, m_method_id, m_arguments.data());
             else
-                env->CallStaticVoidMethod(m_declaring_class, m_method_id, m_arguments.data());
+                env->CallStaticVoidMethodA(m_declaring_class, m_method_id, m_arguments.data());
+        } else {
+            qWarning("Run functor called with invalid data. JNI Environment == %p, method_id == %p",
+                     env, m_method_id);
         }
     }
 };

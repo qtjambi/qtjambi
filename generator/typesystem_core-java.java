@@ -657,7 +657,8 @@ class QFutureSynchronizerVoid___ extends QFutureSynchronizerVoid {
 class QtConcurrent___ extends QtConcurrent {
 
     static {
-        com.trolltech.qt.core.QtJambi_LibraryInitializer.init();
+        com.trolltech.qt.QtJambi_LibraryInitializer.init();
+        com.trolltech.qt.core.QtJambi_LibraryInitializer.init();        
     }
 
     public interface MapFunctor<T> {
