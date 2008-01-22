@@ -11,18 +11,15 @@
 
 </snip>
 */
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
 
 
 public class src_gui_widgets_qsplitter {
     public static void main(String args[]) {
         QApplication.initialize(args);
+        QSplitter splitter = null;
+        int index = 0;
+        byte stretch = 0;
 //! [0]
         QWidget widget = splitter.widget(index);
         QSizePolicy policy = widget.sizePolicy();

@@ -14,7 +14,7 @@ public class src_corelib_tools_qtimeline extends QWidget{
         QPushButton pushButton;
         QProgressBar progressBar;
 //! [0]
-        ...
+        // ...
         progressBar = new QProgressBar(this);
         progressBar.setRange(0, 100);
 
@@ -26,7 +26,7 @@ public class src_corelib_tools_qtimeline extends QWidget{
         // Clicking the push button will start the progress bar animation
         pushButton = new QPushButton(tr("Start animation"), this);
         pushButton.clicked.connect(timeLine, "start()");
-        ...
+        // ...
 //! [0]
 
     }

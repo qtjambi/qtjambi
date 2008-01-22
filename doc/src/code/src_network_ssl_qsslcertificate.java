@@ -23,7 +23,7 @@ public class src_network_ssl_qsslcertificate {
     public static void main(String args[]) {
         QApplication.initialize(args);
 //! [0]
-    for (QSslCertificate cert, QSslCertificate.fromPath("C:/ssl/certificate.*.pem",
+    for (QSslCertificate cert : QSslCertificate.fromPath("C:/ssl/certificate.*.pem",
                                                              QRegExp.Wildcard)) {
         qDebug() << cert.issuerInfo(QSslCertificate.Organization);
     }

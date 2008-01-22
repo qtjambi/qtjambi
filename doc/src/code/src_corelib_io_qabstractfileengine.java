@@ -1,21 +1,18 @@
 /*   Ported from: src.corelib.io.qabstractfileengine.cpp
 */
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
 
 
 public class src_corelib_io_qabstractfileengine
 {
-    class MainWindow extends QMainWindow
-    {
+    static class MainWindow extends QMainWindow {
+        public MainWindow(QWidget parent) {
+            super(parent);
+        }
     }
 
-    class ZipEngine extends QAbstractFileEngine
+    static class ZipEngine extends QAbstractFileEngine
     {
         public ZipEngine(String fn) {}
     }
@@ -23,7 +20,7 @@ public class src_corelib_io_qabstractfileengine
 
 
 //! [0]
-    public class ZipEngineHandler extends QAbstractFileEngineHandler
+    public static class ZipEngineHandler extends QAbstractFileEngineHandler
     {
         public QAbstractFileEngine create(String fileName)
         {

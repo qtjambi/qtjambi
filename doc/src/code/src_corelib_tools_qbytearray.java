@@ -281,7 +281,7 @@ public class src_corelib_tools_qbytearray {
         QByteArray url = new QByteArray("ftp://ftp.trolltech.com/");
         if (url.startsWith("ftp:"))
             System.out.println("foo");
-            ...
+            // ...
 //! [25]
         }
 
@@ -291,7 +291,7 @@ public class src_corelib_tools_qbytearray {
         QByteArray url = new QByteArray("http://www.trolltech.com/index.html");
         if (url.endsWith(".html"))
             System.out.println("foo");
-            ...
+            // ...
 //! [26]
         }
 

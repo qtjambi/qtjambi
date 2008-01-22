@@ -49,7 +49,7 @@ class MyWizard extends QWizard {
     public MyWizard(QWidget parent)
     {
         super(parent);
-        ...
+        // ...
         List<QWizard.WizardButton> layout = new LinkedList<QWizard.WizardButton>();
         layout.add(QWizard.WizardButton.Stretch);
         layout.add(QWizard.WizardButton.BackButton);
@@ -57,7 +57,7 @@ class MyWizard extends QWizard {
         layout.add(QWizard.WizardButton.NextButton);
         layout.add(QWizard.WizardButton.FinishButton);
         setButtonLayout(layout);
-        ...
+        // ...
     }
 //! [1]
 }

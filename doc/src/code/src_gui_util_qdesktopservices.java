@@ -16,7 +16,7 @@ public class src_gui_util_qdesktopservices {
 
 //! [0]
 		QDesktopServices.setUrlHandler("help", new QDesktopServices.UrlHandler() {
-			public void handle() {
+			public void handleUrl(QUrl url) {
 				// respond to url...
 			}
 			});
