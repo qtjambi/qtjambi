@@ -290,7 +290,7 @@ void JavaGenerator::writeEnum(QTextStream &s, const AbstractMetaEnum *java_enum)
 void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const AbstractMetaFunction *java_function)
 {
     int exclude_attributes = AbstractMetaAttributes::Public | AbstractMetaAttributes::Protected;
-    int include_attributes = AbstractMetaAttributes::Private;
+    int include_attributes = 0;
 
     if (java_function->isEmptyFunction())
         exclude_attributes |= AbstractMetaAttributes::Native;
