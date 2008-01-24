@@ -16,6 +16,7 @@ import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.opengl.*;
 
+@QtJambiExample (name = "Pad Navigator")
 public class PadNavigator extends QGraphicsView {
 
     private static class RoundRectItem extends QGraphicsRectItem {
@@ -140,6 +141,10 @@ public class PadNavigator extends QGraphicsView {
                 setTransform(new QTransform().scale(1 - value / 10.0, 1 - value / 10.0), false);
         }
 
+    }
+
+    public PadNavigator() {
+	this(3, 3);
     }
 
 
