@@ -305,7 +305,8 @@
         
     </target>
 
-    <target name="generator.xmlmerge">
+    <target name="generator.xmlmerge"
+	    description="Merge the XML files used by the Qt Jambi generator">
         <xslt in="${sourceDir}/generator/typesystem_core-common.xml" 
               out="${outputDir}/generator/typesystem_core.xml"
               style="${sourceDir}/generator/merge.xsl"
@@ -390,7 +391,7 @@
 	    description="Initializes the Qt Jambi build environment..."/>
 
     <target name="generator" 
-	    depends="generator.xmlmerge, generator.qmake, generator.compile, generator.run"
+	    depends="init, generator.xmlmerge, generator.qmake, generator.compile, generator.run"
 	    description="Compile and run the Qt Jambi Generator..."/>
 
     <target name="library.native"
@@ -406,11 +407,11 @@
 	    description="Compile and bundle the Qt Jambi designer libraries..."/>
 
     <target name="library"
-	    depends="library.native, library.java, library.designer"
+	    depends="init, library.native, library.java, library.designer"
 	    description="Compile and bundle the Qt Jambi libraries..."/>
 
     <target name="examples"
-	    depends="examples.juic, examples.bundle" 
+	    depends="init, examples.juic, examples.bundle" 
 	    description="Compile and bundle the Qt Jambi examples..."/>
 
     <target name="all"
