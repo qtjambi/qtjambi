@@ -154,11 +154,17 @@ class Util {
     }
 
     public static File findInLibraryPath(String name) {
-        String PATH[] = System.getProperty("java.library.path").split(File.pathSeparator);
+	String libraryPath = System.getProperty("java.library.path");
+
+	// Make /usr/lib an implicit part of library path
+	if (OS() == OS.LINUX || OS() == OS.SOLARIS)
+	    libraryPath += File.pathSeparator + "/usr/lib";
+
+        String PATH[] = libraryPath.split(File.pathSeparator);
         for (String p : PATH) {
             File f = new File(p, name);
             if (f.exists())
-                return f;
+		return f;
         }
         return null;
     }
