@@ -425,8 +425,14 @@ public class NativeLibraryManager {
         // Load via System.load() using default paths..
         } else {
             boolean loaded = false;
-            reporter.report(" - using 'java.library.path'");
-            String libPaths = System.getProperty("java.library.path");
+            String libPaths = System.getProperty("com.trolltech.qt.library-path-override");
+            if (libPaths != null && libPaths.length() > 0) {
+                reporter.report(" - using 'com.trolltech.qt.library-path-override");
+            } else {
+                reporter.report(" - using 'java.library.path'");
+                libPaths = System.getProperty("java.library.path");
+            }
+            
             if (libPaths != null) {
                 String paths[] = libPaths.split(File.pathSeparator);
                 for (String path : paths) {
