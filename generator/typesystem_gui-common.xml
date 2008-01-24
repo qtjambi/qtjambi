@@ -4514,5 +4514,9 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QImage' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkCookie' has equals operators but no qHash() function" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkRequest' has equals operators but no qHash() function" />
-  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPixmap::pixmapData', unmatched return type 'QPixmapData*'"/>
+
+
+
+
 </typesystem>
