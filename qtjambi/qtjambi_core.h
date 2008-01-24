@@ -566,12 +566,18 @@ inline void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info,
 {
     StaticCache *sc = StaticCache::instance(env);
     sc->resolveAbstractSignal();
-    env->SetBooleanField(signal_info.object, sc->AbstractSignal.inCppEmission, true);
+
+    // Check if signal has since been collected
+    jobject object = env->NewLocalRef(signal_info.object);
+    if (object == 0)
+        return ; 
+
+    env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, true);
     if (args == 0)
-        env->CallVoidMethod(signal_info.object, signal_info.methodId);
+        env->CallVoidMethod(object, signal_info.methodId);
     else
-        env->CallVoidMethodA(signal_info.object, signal_info.methodId, args);
-    env->SetBooleanField(signal_info.object, sc->AbstractSignal.inCppEmission, false);
+        env->CallVoidMethodA(object, signal_info.methodId, args);
+    env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, false);
 }
 
 
