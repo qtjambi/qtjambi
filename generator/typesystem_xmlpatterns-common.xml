@@ -1,119 +1,128 @@
 <?xml version="1.0"?>
 <typesystem>
-    <namespace-type name="QPatternist"/>
-    <namespace-type name="QPatternistSDK"/>
+  
 
-    <enum-type name="QXmlNodeModelIndex::NodeKind"/>
-    <enum-type name="QXmlNodeModelIndex::DocumentOrder"/>
-    <enum-type name="QXmlNodeModelIndex::Axis"/>
-    <enum-type name="QSimpleXmlNodeModel::SimpleAxis"/>
-    <enum-type name="QAbstractXmlNodeModel::NodeCopySetting"/>
-    <enum-type name="QAbstractXmlNodeModel::SimpleAxis"/>
-        
-    <object-type name="QAbstractMessageHandler">
-        <modify-function signature="QAbstractMessageHandler(QObject*)"> <remove/> </modify-function>
-    </object-type>
-    <object-type name="QAbstractUriResolver"/>
-    <object-type name="QAbstractXmlForwardIterator"/>
-    <value-type name="QAbstractXmlNodeModel">
-        <modify-function signature="QAbstractXmlNodeModel()"> <remove/> </modify-function>
-<!--    <modify-function signature="sequencedTypedValue(const QXmlNodeModelIndex) const"> <remove/> </modify-function> -->
-<!--    <modify-function signature="type(const QXmlNodeModelIndex) const"> <remove/> </modify-function> -->
-        <modify-function signature="namespaceForPrefix(const QXmlNodeModelIndex, const short) const"> <remove/> </modify-function>
-        <modify-function signature="isDeepEqual(const QXmlNodeModelIndex, const QXmlNodeModelIndex) const"> <remove/> </modify-function>
-<!--    <modify-function signature="sendNamespaces(const QXmlNodeModelIndex, short) const"> <remove/> </modify-function> -->
+  <namespace-type name="QPatternist"/>
+  <namespace-type name="QPatternistSDK"/>
 
-    </value-type>
+  <enum-type name="QXmlNodeModelIndex::NodeKind"/>
+  <enum-type name="QXmlNodeModelIndex::DocumentOrder"/>
+  <enum-type name="QAbstractXmlNodeModel::NodeCopySetting"/>
+  <enum-type name="QAbstractXmlNodeModel::SimpleAxis"/>
+  
+  <object-type name="QAbstractMessageHandler">
+    <modify-function signature="QAbstractMessageHandler(QObject*)" remove="all" />
+  </object-type>
+  <object-type name="QAbstractUriResolver"/>
+  <object-type name="QAbstractXmlForwardIterator"/>
 
-    <value-type name="QAbstractXmlReceiver"/>
+  <rejection class="QAbstractXmlNodeModel" function-name="mapToItem" />
+  <rejection class="QAbstractXmlNodeModel" function-name="mapToSequence" />
+  <rejection class="QAbstractXmlNodeModel" function-name="sequencedTypedValue" />
+  <rejection class="QAbstractXmlNodeModel" function-name="sendNamespaces" />
+  <rejection class="QAbstractXmlNodeModel" function-name="iterate" />
+  <rejection class="QAbstractXmlNodeModel" function-name="copyNodeTo" />
+  <rejection class="QAbstractXmlNodeModel" function-name="type" />
+  <value-type name="QAbstractXmlNodeModel">
+    <modify-function signature="QAbstractXmlNodeModel()" remove="all" />
+    <modify-function signature="namespaceForPrefix(QXmlNodeModelIndex,short) const" 
+		     remove="all" />
+    <modify-function signature="isDeepEqual(QXmlNodeModelIndex,QXmlNodeModelIndex) const" 
+		     remove="all" />
+  </value-type>
 
-    <value-type name="QSimpleXmlNodeModel">
-         <modify-function signature="QSimpleXmlNodeModel(const QXmlNamePool&amp;)"> <remove/> </modify-function>
-    </value-type>
+  <rejection class="QAbstractXmlReceiver" function-name="item" />
+  <rejection class="QAbstractXmlReceiver" function-name="sendAsNode" />
+  <value-type name="QAbstractXmlReceiver"/>
 
-    <value-type name="QSourceLocation"/>
-    <object-type name="QXmlFormatter"/>
-    <value-type name="QXmlItem"/>
-    <value-type name="QXmlName">
-        <modify-function signature="localName()const"> <remove/> </modify-function>
-        <modify-function signature="prefix()const"> <remove/> </modify-function>
-        <modify-function signature="hasPrefix()const"> <remove/> </modify-function>
-        <modify-function signature="hasNamespace()const"> <remove/> </modify-function>
-        <modify-function signature="namespaceURI()const"> <remove/> </modify-function>
-        <modify-function signature="isLexicallyEqual(const QXmlName)const"> <remove/> </modify-function>
-        <modify-function signature="setPrefix(const short)"> <remove/> </modify-function>
-        <modify-function signature="setNamespaceURI(const short)"> <remove/> </modify-function>
-        <modify-function signature="setLocalName(const short)"> <remove/> </modify-function>
+  <value-type name="QSimpleXmlNodeModel">
+  </value-type>
 
-        <modify-function signature="code()const"> <remove/> </modify-function>
-    </value-type>
-    <value-type name="QXmlNamePool"/>
-    <value-type name="QXmlNodeModelIndex">
-        <modify-function signature="name() const"> <remove/> </modify-function>
-        <modify-function signature="root() const"> <remove/> </modify-function>
-<!--    <modify-function signature="iterate(const Axis) const"> <remove/> </modify-function> -->
-<!--    <modify-function signature="sequencedTypedValue() const"> <remove/> </modify-function> -->
-        <modify-function signature="documentUri() const"> <remove/> </modify-function>
-        <modify-function signature="baseUri() const"> <remove/> </modify-function>
-        <modify-function signature="kind() const"> <remove/> </modify-function>
-        <modify-function signature="isDeepEqual(const QXmlNodeModelIndex) const"> <remove/> </modify-function>
-        <modify-function signature="compareOrder(const QXmlNodeModelIndex) const"> <remove/> </modify-function>
-<!--    <modify-function signature="sendNamespaces(const QExplicitlySharedDataPointer) const"> <remove/> </modify-function> -->
-        <modify-function signature="namespaceBindings() const"> <remove/> </modify-function>
-        <modify-function signature="namespaceForPrefix(const short) const"> <remove/> </modify-function> 
-        <modify-function signature="stringValue() const"> <remove/> </modify-function>
-<!--    <modify-function signature="type() const"> <remove/> </modify-function> -->
-        <modify-function signature="is(const QXmlNodeModelIndex) const"> <remove/> </modify-function>
-        <modify-function signature="reset()"> <remove/> </modify-function>  
+  <value-type name="QSourceLocation"/>
 
-        <modify-function signature="model()const">
-            <access modifier="private"/>  
-            <rename to="model_private" />
-        </modify-function>
-        <inject-code>
-            <import-file name="typesystem_xmlpatterns-java.java" quote-after-line="class QXmlNodeModelIndex___" quote-before-line="}// class"/>
-        </inject-code>
+  <rejection class="QXmlFormatter" function-name="item" />
+  <object-type name="QXmlFormatter">
+    <modify-function signature="startFormattingContent()" remove="all" />
+  </object-type> 
 
+  <value-type name="QXmlItem"/>
 
-    </value-type>
-    <value-type name="QXmlSerializerPointer"/>
+  <value-type name="QXmlName">
+    <modify-function signature="QXmlName(short,short,short)" 
+		     remove="all" />
+    <modify-function signature="localName()const" remove="all" />
+    <modify-function signature="prefix()const" remove="all" />
+    <modify-function signature="hasPrefix()const" remove="all" />
+    <modify-function signature="hasNamespace()const" remove="all" />
+    <modify-function signature="namespaceURI()const" remove="all" />
+    <modify-function signature="isLexicallyEqual(const QXmlName)const" remove="all" />
+    <modify-function signature="setPrefix(const short)" remove="all" />
+    <modify-function signature="setNamespaceURI(const short)" remove="all" />
+    <modify-function signature="setLocalName(const short)" remove="all" />
+    <modify-function signature="code()const" remove="all" />
+  </value-type>
 
-    <object-type name="QXmlQuery">
-        <modify-function signature="evaluateToStringList(QStringList&lt;QString&gt;*)const"> <remove/> </modify-function>
-    </object-type>
-    <object-type name="QXmlResultItems"/>
-    <object-type name="QXmlSerializer"/>
+  <value-type name="QXmlNamePool"/>
 
+  <rejection class="QXmlNodeModelIndex" function-name="sequencedTypedValue" />
+  <rejection class="QXmlNodeModelIndex" function-name="sendNamespaces" />
+  <rejection class="QXmlNodeModelIndex" function-name="iterate" />
+  <rejection class="QXmlNodeModelIndex" function-name="type" />
+  <rejection class="QXmlNodeModelIndex" enum-name="Axis" />
+  <value-type name="QXmlNodeModelIndex">
+    <modify-function signature="name() const" remove="all" />
+    <modify-function signature="root() const" remove="all" />
+    <modify-function signature="documentUri() const" remove="all" />
+    <modify-function signature="baseUri() const" remove="all" />
+    <modify-function signature="kind() const" remove="all" />
+    <modify-function signature="isDeepEqual(QXmlNodeModelIndex) const" remove="all" />
+    <modify-function signature="compareOrder(QXmlNodeModelIndex) const" remove="all" />
+    <modify-function signature="namespaceBindings() const" remove="all" />
+    <modify-function signature="namespaceForPrefix(short) const" remove="all" /> 
+    <modify-function signature="stringValue() const" remove="all" />
+    <modify-function signature="is(QXmlNodeModelIndex) const" remove="all" />
+    <modify-function signature="reset()" remove="all" />  
 
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::sequencedTypedValue', unmatched return type 'QPatternist::ItemIteratorPtr'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::sequencedTypedValue', unmatched return type 'QPatternist::ItemIteratorPtr'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::sendNamespaces', unmatched parameter type 'QExplicitlySharedDataPointer&lt;QAbstractXmlReceiver&gt; const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::iterate', unmatched return type 'QXmlNodeModelIndexIteratorPointer'"/>
-
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::copyNodeTo', unmatched parameter type 'QExplicitlySharedDataPointer&lt;QAbstractXmlReceiver&gt; const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::type', unmatched return type 'QPatternist::ItemTypePtr'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QSimpleXmlNodeModel::iterate', unmatched return type 'QXmlNodeModelIndexIteratorPointer'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QSimpleXmlNodeModel::mapToItem', unmatched parameter type 'QExplicitlySharedDataPointer&lt;QPatternist::DynamicContext&gt; const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QSimpleXmlNodeModel::mapToSequence', unmatched return type 'QAbstractXmlForwardIterator&lt;QXmlNodeModelIndex&gt;::Ptr'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlItem::QXmlItem', unmatched parameter type 'QPatternist::Item const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlFormatter::item', unmatched parameter type 'QPatternist::Item const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlReceiver::item', unmatched parameter type 'QPatternist::Item const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlReceiver::sendAsNode', unmatched parameter type 'QPatternist::Item const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlSerializer::item', unmatched parameter type 'QPatternist::Item const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::QXmlNodeModelIndex', unmatched parameter type 'QPatternist::NodeIndexStorage const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::sequencedTypedValue', unmatched return type 'QExplicitlySharedDataPointer&lt;QAbstractXmlForwardIterator&lt;QPatternist::Item&gt;&gt;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::sendNamespaces', unmatched parameter type 'QExplicitlySharedDataPointer&lt;QAbstractXmlReceiver&gt; const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::iterate', unmatched return type 'QExplicitlySharedDataPointer&lt;QAbstractXmlForwardIterator&lt;QXmlNodeModelIndex&gt;&gt;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::type', unmatched return type 'QPatternist::ItemTypePtr'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlQuery::setMessageHandler', unmatched parameter type 'QAbstractMessageHandler*'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlQuery::evaluateToReceiver', unmatched parameter type 'QAbstractXmlReceiverPointer const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlQuery::messageHandler', unmatched return type 'QAbstractMessageHandler*'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: horribly broken type ''"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPatternist::makeListIterator', unmatched return type 'QAbstractXmlForwardIterator&lt;T&gt;::Ptr'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPatternist::makeVectorIterator', unmatched return type 'QAbstractXmlForwardIterator&lt;T&gt;::Ptr'"/>
+    <modify-function signature="model()const">
+      <access modifier="private"/>  
+      <rename to="model_private" />
+    </modify-function>
     
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::mapToItem', unmatched parameter type 'QExplicitlySharedDataPointer&lt;QPatternist::DynamicContext&gt; const&amp;'"/>
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QAbstractXmlNodeModel::mapToSequence', unmatched return type 'QExplicitlySharedDataPointer&lt;QAbstractXmlForwardIterator&lt;QXmlNodeModelIndex&gt;&gt;"/>
+    <inject-code>
+      <import-file name="typesystem_xmlpatterns-java.java" quote-after-line="class QXmlNodeModelIndex___" quote-before-line="}// class"/>
+    </inject-code>
 
+
+  </value-type>
+
+  <value-type name="QXmlSerializerPointer"/>
+
+  <rejection class="QXmlQuery" function-name="evaluateToReceiver" />
+  <object-type name="QXmlQuery">
+    <modify-function signature="evaluateToStringList(QStringList&lt;QString&gt;*)const" remove="all" />
+  </object-type>
+  <object-type name="QXmlResultItems"/>
+
+  <rejection class="QXmlSerializer" function-name="item" />
+  <object-type name="QXmlSerializer">
+    <modify-function signature="atDocumentRoot()const" remove="all" />
+    <modify-function signature="startContent()" remove="all" />
+    <modify-function signature="writeEscaped(QString)" remove="all" />
+    <modify-function signature="writeEscapedAttribute(QString)" remove="all" />
+    <modify-function signature="write(QString)" remove="all" />
+    <modify-function signature="write(QXmlName)" remove="all" />
+    <modify-function signature="write(const char *)" remove="all" />
+    <modify-function signature="isBindingInScope(QXmlName)const" remove="all" />
+  </object-type>
+
+
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: horribly broken type ''"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: template baseclass 'QExplicitlySharedDataPointer&lt;QXmlSerializer&gt;' of 'QXmlSerializerPointer' is not known" />
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlItem::QXmlItem', unmatched parameter type 'QPatternist::Item const&amp;'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::sequencedTypedValue', unmatched return type 'QExplicitlySharedDataPointer&lt;QAbstractXmlForwardIterator&lt;QPatternist::Item&gt;&gt;"/>
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::QXmlNodeModelIndex', unmatched parameter type 'QPatternist::NodeIndexStorage const&amp;'" />
 
 </typesystem>
