@@ -51,8 +51,6 @@
         <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
         <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
         <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
-        
-        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
     </target>
 
     <target name="clean"
@@ -388,7 +386,9 @@
 
     <target name="init"
 	    depends="init.ant, init.taskdef" 
-	    description="Initializes the Qt Jambi build environment..."/>
+	    description="Initializes the Qt Jambi build environment..." >
+      <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
+    </target>
 
     <target name="generator" 
 	    depends="init, generator.xmlmerge, generator.qmake, generator.compile, generator.run"
