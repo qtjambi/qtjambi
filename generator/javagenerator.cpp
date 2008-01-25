@@ -1584,7 +1584,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     }
 
     // Add dummy constructor for use when constructing subclasses
-    if (!java_class->isNamespace() && !java_class->isInterface() && !java_class->isFinal()) {
+    if (!java_class->isNamespace() && !java_class->isInterface()) {
         s << endl
           << INDENT << "protected "
           << java_class->name()
