@@ -325,9 +325,6 @@ void MetaInfoGenerator::writeCppFile()
             fileHash.insert(cls->package(), f);
 
             QString pro_file_name = cls->package().replace(".", "_") + "/" + cls->package().replace(".", "_") + ".pri";
-
-            printf("adding %s %s\n", qPrintable(pro_file_name), qPrintable(cppFilename()));
-
             priGenerator->addSource(pro_file_name, cppFilename());
         }
 
@@ -343,8 +340,6 @@ void MetaInfoGenerator::writeCppFile()
 
             if (cls->typeEntry()->isPolymorphicBase())
                 classes_with_polymorphic_id.append(cls);
-        } else {
-            printf(" -> skipping %s\n", qPrintable(cls->name()));
         }
     }
 
@@ -549,8 +544,6 @@ void MetaInfoGenerator::writeLibraryInitializers()
               << "}" << endl << endl;
 
             QString pro_file_name = QString(package).replace(".", "_");
-
-            printf("adding2 %s %s\n", qPrintable(pro_file_name));
 
             priGenerator->addSource(pro_file_name + "/" + pro_file_name + ".pri", "qtjambi_libraryinitializer.cpp");
 
