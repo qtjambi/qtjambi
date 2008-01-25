@@ -9,7 +9,23 @@
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
 
-  
+  <rejection class="" enum-name="QtValidLicenseForTestModule"/>
+
+  <rejection class="" enum-name="QtValidLicenseForDBusModule"/>
+  <rejection class="" enum-name="QtValidLicenseForSqlModule"/>
+  <rejection class="" enum-name="QtValidLicenseForOpenGLModule"/>
+  <rejection class="" enum-name="enum_1"/>
+  <rejection class="" enum-name="QtValidLicenseForXmlModule"/>
+  <rejection class="" enum-name="QtValidLicenseForXmlPatternsModule"/>
+  <rejection class="" enum-name="QtValidLicenseForActiveQtModule"/>
+  <rejection class="" enum-name="QtValidLicenseForCoreModule"/>
+  <rejection class="" enum-name="QtValidLicenseForQt3SupportLightModule"/>
+  <rejection class="" enum-name="QtValidLicenseForQt3SupportModule"/>
+  <rejection class="" enum-name="QtValidLicenseForNetworkModule"/>
+  <rejection class="" enum-name="QtValidLicenseForSvgModule"/>
+  <rejection class="" enum-name="QtValidLicenseForGuiModule"/>
+  <rejection class="" enum-name="QtValidLicenseForScriptModule"/>
+  <rejection class="" enum-name="QtValidLicenseForHelpModule"/>
  
   <rejection class="QAlgorithmsPrivate"/>
   <rejection class="QAtomic"/>
