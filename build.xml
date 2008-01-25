@@ -26,7 +26,7 @@
     <uptodate property="ant-qtjambi.jar.uptodate"
               targetfile="${outputDir}/ant-qtjambi.jar" >
         <srcfiles dir= "${sourceDir}"
-                  includes="com/trolltech/tools/ant/*.java"/>
+                  includes="com/trolltech/tools/ant/*.java,com/trolltech/qt/internal/Version.java,com/trolltech/qt/internal/OSInfo.java"/>
     </uptodate>
 
     <target name="init.ant"
@@ -36,6 +36,7 @@
         <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi">
             <include name="com/trolltech/tools/ant/*.java"/>
             <include name="com/trolltech/qt/internal/Version.java"/>
+            <include name="com/trolltech/qt/internal/OSInfo.java"/>
         </javac>
         <jar destfile="${outputDir}/ant-qtjambi.jar">
             <fileset dir="${outputDir}/ant-qtjambi"/>

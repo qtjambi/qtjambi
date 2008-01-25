@@ -4,6 +4,8 @@ import org.apache.tools.ant.*;
 
 import java.io.File;
 
+import com.trolltech.qt.internal.*;
+
 public class LibraryEntry extends Task {
 
     public static final String TYPE_DEFAULT            = "user";
@@ -109,18 +111,18 @@ public class LibraryEntry extends Task {
 
     public static String formatPluginName(String name, boolean debug) {
         if (debug) {
-            switch (Util.OS()) {
-            case WINDOWS: return name + "d4.dll";
-            case MAC: return "lib" + name + "_debug.dylib";
-            case SOLARIS:
-            case LINUX: return "lib" + name + ".so";
+            switch (OSInfo.os()) {
+            case Windows: return name + "d4.dll";
+            case MacOS: return "lib" + name + "_debug.dylib";
+            case Solaris:
+            case Linux: return "lib" + name + ".so";
             }
         } else {
-            switch (Util.OS()) {
-            case WINDOWS: return name + "4.dll";
-            case MAC: return "lib" + name + ".dylib";
-            case SOLARIS:
-            case LINUX: return "lib" + name + ".so";
+            switch (OSInfo.os()) {
+            case Windows: return name + "4.dll";
+            case MacOS: return "lib" + name + ".dylib";
+            case Solaris:
+            case Linux: return "lib" + name + ".so";
             }
         }
         throw new BuildException("unhandled case...");
@@ -134,18 +136,18 @@ public class LibraryEntry extends Task {
 
     public static String formatQtName(String name, boolean debug, int version) {
         if (debug) {
-            switch (Util.OS()) {
-            case WINDOWS: return name + "d" + version + ".dll";
-            case MAC: return "lib" + name + "_debug." + version + ".dylib";
-            case SOLARIS:
-            case LINUX: return "lib" + name + ".so." + version;
+            switch (OSInfo.os()) {
+            case Windows: return name + "d" + version + ".dll";
+            case MacOS: return "lib" + name + "_debug." + version + ".dylib";
+            case Solaris:
+            case Linux: return "lib" + name + ".so." + version;
             }
         } else {
-            switch (Util.OS()) {
-            case WINDOWS: return name + version + ".dll";
-            case MAC: return "lib" + name + "." + version + ".dylib";
-            case SOLARIS:
-            case LINUX: return "lib" + name + ".so." + version;
+            switch (OSInfo.os()) {
+            case Windows: return name + version + ".dll";
+            case MacOS: return "lib" + name + "." + version + ".dylib";
+            case Solaris:
+            case Linux: return "lib" + name + ".so." + version;
             }
         }
         throw new BuildException("unhandled case...");
@@ -153,18 +155,18 @@ public class LibraryEntry extends Task {
 
     public static String formatUnversionedPluginName(String name, boolean debug) {
         if (debug) {
-            switch (Util.OS()) {
-            case WINDOWS: return name + "d.dll";
-            case MAC: return "lib" + name + "_debug.dylib";
-            case SOLARIS:
-            case LINUX: return "lib" + name + ".so";
+            switch (OSInfo.os()) {
+            case Windows: return name + "d.dll";
+            case MacOS: return "lib" + name + "_debug.dylib";
+            case Solaris:
+            case Linux: return "lib" + name + ".so";
             }
         } else {
-            switch (Util.OS()) {
-            case WINDOWS: return name + ".dll";
-            case MAC: return "lib" + name + ".dylib";
-            case SOLARIS:
-            case LINUX: return "lib" + name + ".so";
+            switch (OSInfo.os()) {
+            case Windows: return name + ".dll";
+            case MacOS: return "lib" + name + ".dylib";
+            case Solaris:
+            case Linux: return "lib" + name + ".so";
             }
         }
         throw new BuildException("unhandled case...");
@@ -172,18 +174,18 @@ public class LibraryEntry extends Task {
 
     public static String formatQtJambiName(String name, boolean debug) {
         if (debug)  {
-            switch (Util.OS()) {
-            case WINDOWS: return name + "_debuglib.dll";
-            case MAC: return "lib" + name + "_debuglib.jnilib";
-            case SOLARIS:
-            case LINUX: return "lib" + name + "_debuglib.so";
+            switch (OSInfo.os()) {
+            case Windows: return name + "_debuglib.dll";
+            case MacOS: return "lib" + name + "_debuglib.jnilib";
+            case Solaris:
+            case Linux: return "lib" + name + "_debuglib.so";
             }
         } else {
-            switch (Util.OS()) {
-            case WINDOWS: return name + ".dll";
-            case MAC: return "lib" + name + ".jnilib";
-            case SOLARIS:
-            case LINUX: return "lib" + name + ".so";
+            switch (OSInfo.os()) {
+            case Windows: return name + ".dll";
+            case MacOS: return "lib" + name + ".jnilib";
+            case Solaris:
+            case Linux: return "lib" + name + ".so";
             }
         }
         throw new BuildException("unhandled case...");

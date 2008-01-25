@@ -192,9 +192,9 @@ public class NativeLibraryManager {
                 String system = attributes.getValue("system");
                 if (system == null || system.length() == 0) {
                     throw new DeploymentSpecException("<qtjambi-deploy> element missing required attribute 'system'");
-                } else if (!system.equals(decideOSName())) {
+                } else if (!system.equals(OSInfo.osArchName())) {
                     throw new WrongSystemException("trying to load: '" + system
-                                                   + "', expected: '" + decideOSName() + "'");
+                                                   + "', expected: '" + OSInfo.osArchName() + "'");
                 }
             }
         }
@@ -432,7 +432,7 @@ public class NativeLibraryManager {
                 reporter.report(" - using 'java.library.path'");
                 libPaths = System.getProperty("java.library.path");
             }
-            
+
             if (libPaths != null) {
                 String paths[] = libPaths.split(File.pathSeparator);
                 for (String path : paths) {
@@ -680,24 +680,6 @@ public class NativeLibraryManager {
         }
         in.close();
         out.close();
-    }
-
-
-    private static String decideOSName() {
-        String osname = null;
-        switch (Utilities.operatingSystem) {
-            case Windows:
-                if (System.getProperty("os.arch").equalsIgnoreCase("amd64")) osname = "win64";
-                else osname = "win32";
-                break;
-            case Linux:
-                osname = "linux32";
-                break;
-            case MacOSX:
-                osname = "macosx";
-                break;
-        }
-        return osname;
     }
 
 

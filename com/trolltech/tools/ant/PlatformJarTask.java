@@ -5,13 +5,15 @@ import org.apache.tools.ant.*;
 import java.util.*;
 import java.io.*;
 
+import com.trolltech.qt.internal.*;
+
 public class PlatformJarTask extends Task {
 
     public static final String SYSLIB_AUTO = "auto";
     public static final String SYSLIB_NONE = "none";
 
     public void setSyslibs(String s) {
-	if (Util.OS() == Util.OS.SOLARIS)
+        if (OSInfo.os() == OSInfo.OS.Solaris)
             return;
         if (s.equals(SYSLIB_NONE) || s.equals(SYSLIB_AUTO))
             systemLibs = s;
@@ -78,7 +80,7 @@ public class PlatformJarTask extends Task {
         if (systemLibs.equals(SYSLIB_AUTO))
             processSystemLibs();
 
-        if (processInstallName && Util.OS() == Util.OS.MAC)
+        if (processInstallName && OSInfo.os() == OSInfo.OS.MacOS)
             processOSXInstallName();
 
         writeQtJambiDeployment();
@@ -262,11 +264,11 @@ public class PlatformJarTask extends Task {
             break;
 
         case GCC:
-            if (Util.OS() == Util.OS.LINUX) copyRuntime("libstdc++.so.6");
+            if (OSInfo.os() == OSInfo.OS.Linux) copyRuntime("libstdc++.so.6");
             break;
 
         case OldGCC:
-            if (Util.OS() == Util.OS.LINUX) copyRuntime("libstdc++.so.5");
+            if (OSInfo.os() == OSInfo.OS.Linux) copyRuntime("libstdc++.so.5");
             break;
         }
 
@@ -356,7 +358,7 @@ public class PlatformJarTask extends Task {
     private Set<String> libraryDir = new HashSet<String>();
     private List<String> unpackLibs = new ArrayList<String>();
     private List<String> runtimeLibs = new ArrayList<String>();
-    private String systemLibs = Util.OS() == Util.OS.SOLARIS ? SYSLIB_NONE : SYSLIB_AUTO;
+    private String systemLibs = OSInfo.os() == OSInfo.OS.Solaris ? SYSLIB_NONE : SYSLIB_AUTO;
     private List<PluginPath> pluginPaths = new ArrayList<PluginPath>();
     private boolean debugConfiguration = false;
 

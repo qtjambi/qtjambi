@@ -4,6 +4,8 @@ import org.apache.tools.ant.*;
 
 import java.io.*;
 
+import com.trolltech.qt.internal.*;
+
 public class GeneratorTask extends Task{
     private String msg = "";
     private String header = "";
@@ -16,8 +18,8 @@ public class GeneratorTask extends Task{
     private String searchPath() {
         
         String s = File.separator;
-        switch(Util.OS()){
-        case WINDOWS:
+        switch(OSInfo.os()) {
+        case Windows:
             return "generator\\release;generator\\debug";
         default:
             return "." + s + "generator";
@@ -25,8 +27,8 @@ public class GeneratorTask extends Task{
     }
 
     private String generatorExecutable() {
-        switch (Util.OS()) { 
-            case WINDOWS: return "generator.exe";
+        switch (OSInfo.os()) {
+            case Windows: return "generator.exe";
             default: return "generator";
         }
     }

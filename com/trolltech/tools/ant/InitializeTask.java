@@ -4,7 +4,7 @@ import org.apache.tools.ant.*;
 
 import java.io.*;
 
-import com.trolltech.qt.internal.Version;
+import com.trolltech.qt.internal.*;
 
 public class InitializeTask extends Task {
 
@@ -93,7 +93,7 @@ public class InitializeTask extends Task {
         checkCompilerDetails();
 
         // Sanity checks...
-        if (Util.OS() == Util.OS.WINDOWS) {
+        if (OSInfo.os() == OSInfo.OS.Windows) {
             boolean vmx64 = decideOSName().contains("64");
             boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64;
             if (vmx64 != compiler64) {
@@ -112,10 +112,10 @@ public class InitializeTask extends Task {
         props.setNewProperty(null, PHONON, phonon);
         props.setNewProperty(null, WEBKIT, decideWebkit());
         if (Boolean.parseBoolean(phonon)) {
-            switch (Util.OS()) {
-           case WINDOWS: props.setNewProperty(null, PHONON_DS9, true); break;
-            case LINUX: props.setNewProperty(null, PHONON_GSTREAMER, true); break;
-            case MAC: props.setNewProperty(null, PHONON_QT7, true); break;
+            switch (OSInfo.os()) {
+            case Windows: props.setNewProperty(null, PHONON_DS9, true); break;
+            case Linux: props.setNewProperty(null, PHONON_GSTREAMER, true); break;
+            case MacOS: props.setNewProperty(null, PHONON_QT7, true); break;
             }
         }
     }
@@ -145,8 +145,8 @@ public class InitializeTask extends Task {
     }
 
     private String decideCompiler() {
-        switch(Util.OS()) {
-            case WINDOWS:
+        switch(OSInfo.os()) {
+            case Windows:
 
                 Compiler msvc = testForVisualStudio();
                 Compiler mingw = testForMinGW();
@@ -173,13 +173,13 @@ public class InitializeTask extends Task {
                 }
 
                 break;
-            case MAC:
+            case MacOS:
                 compiler = Compiler.GCC;
                 break;
-            case LINUX:
+            case Linux:
                 compiler = testForGCC();
                 break;
-            case SOLARIS:
+            case Solaris:
                  String spec = System.getenv("QMAKESPEC");
                  if (spec == null) {
                      System.out.println("QMAKESPEC environment variable not specified using SunCC compiler");
@@ -247,28 +247,13 @@ public class InitializeTask extends Task {
     }
 
     private String decideOSName() {
-        String osname = null;
-        switch (Util.OS()) {
-            case WINDOWS:
-                if (System.getProperty("os.arch").equalsIgnoreCase("amd64")) osname = "win64";
-                else osname = "win32";
-                break;
-            case LINUX:
-                osname = "linux32";
-                break;
-            case MAC:
-                osname = "macosx";
-                break;
-            case SOLARIS:
-                osname = "sunos";
-                break;
-        }
+        String osname = OSInfo.osArchName();
         if (verbose) System.out.println("qtjambi.osname: " + osname);
         return osname;
     }
 
     private String decideLibSubDir() {
-        libSubDir = Util.OS() == Util.OS.WINDOWS ? "bin" : "lib";
+        libSubDir = OSInfo.os() == OSInfo.OS.Windows ? "bin" : "lib";
         if (verbose) System.out.println("qtjambi.libsubdir: " + libSubDir);
         return libSubDir;
     }

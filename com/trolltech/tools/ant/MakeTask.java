@@ -4,6 +4,8 @@ import org.apache.tools.ant.*;
 
 import java.io.*;
 
+import com.trolltech.qt.internal.*;
+
 public class MakeTask extends Task {
     private String msg = "";
     private String target = "";
@@ -11,8 +13,8 @@ public class MakeTask extends Task {
     private boolean silent = true;
   
     private String compilerName() {
-        switch(Util.OS()){
-        case WINDOWS:
+        switch(OSInfo.os()){
+        case Windows:
             return "nmake";
         }
         return "make";
@@ -24,7 +26,7 @@ public class MakeTask extends Task {
 
         String arguments = "";
         
-        if (silent && Util.OS() != Util.OS.WINDOWS)
+        if (silent && OSInfo.os() != OSInfo.OS.Windows)
             arguments += " -s";
 
         String command = compilerName() + arguments + " " + target;

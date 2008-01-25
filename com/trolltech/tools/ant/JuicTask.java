@@ -6,6 +6,8 @@ import org.apache.tools.ant.taskdefs.*;
 import java.io.*;
 import java.util.*;
 
+import com.trolltech.qt.internal.*;
+
 public class JuicTask extends MatchingTask {
     private String msg = "";
     private String classpath = "";
@@ -15,8 +17,8 @@ public class JuicTask extends MatchingTask {
     private boolean alwaysUpdate = false;
 
     public String executableName() {
-        switch (Util.OS()) {
-            case WINDOWS: return "juic.exe";
+        switch (OSInfo.os()) {
+            case Windows: return "juic.exe";
             default: return "juic";
         }
     }

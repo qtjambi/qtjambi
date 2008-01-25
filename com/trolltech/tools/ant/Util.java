@@ -5,24 +5,9 @@ import org.apache.tools.ant.*;
 import java.io.*;
 import java.util.*;
 
+import com.trolltech.qt.internal.*;
+
 class Util {
-
-    enum OS {
-        UNKNOWN, WINDOWS, LINUX, MAC, SOLARIS
-    }
-
-    public static OS OS() {
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("linux"))
-            return OS.LINUX;
-        if (os.contains("windows"))
-            return OS.WINDOWS;
-        if (os.contains("mac os x"))
-            return OS.MAC;
-	if (os.contains("sunos"))
-            return OS.SOLARIS;
-        return OS.UNKNOWN;
-    }
 
     public static File LOCATE_EXEC(String name) {
         return LOCATE_EXEC(name, "", "");
@@ -154,17 +139,17 @@ class Util {
     }
 
     public static File findInLibraryPath(String name) {
-	String libraryPath = System.getProperty("java.library.path");
+        String libraryPath = System.getProperty("java.library.path");
 
-	// Make /usr/lib an implicit part of library path
-	if (OS() == OS.LINUX || OS() == OS.SOLARIS)
-	    libraryPath += File.pathSeparator + "/usr/lib";
+	    // Make /usr/lib an implicit part of library path
+	    if (OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris)
+    	    libraryPath += File.pathSeparator + "/usr/lib";
 
         String PATH[] = libraryPath.split(File.pathSeparator);
         for (String p : PATH) {
             File f = new File(p, name);
             if (f.exists())
-		return f;
+                return f;
         }
         return null;
     }
