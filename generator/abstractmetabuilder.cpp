@@ -345,9 +345,11 @@ bool AbstractMetaBuilder::build()
 
     QHash<QString, ClassModelItem> typeMap = m_dom->classMap();
 
+
     // fix up QObject's in the type system..
     TypeDatabase *types = TypeDatabase::instance();
     fixQObjectForScope(types, model_dynamic_cast<NamespaceModelItem>(m_dom));
+
 
     // Start the generation...
     foreach (ClassModelItem item, typeMap.values()) {
@@ -363,13 +365,49 @@ bool AbstractMetaBuilder::build()
             m_meta_classes << meta_class;
     }
 
-    // Go through all typedefs to see if we have defined any 
+
+    // Some trickery to support global-namespace enums...
+    QHash<QString, EnumModelItem> enumMap = m_dom->enumMap();
+    m_current_class = 0;
+    foreach (EnumModelItem item, enumMap) {
+        AbstractMetaEnum *meta_enum = traverseEnum(item, 0, QSet<QString>());
+
+        if (meta_enum) {
+            QString package = meta_enum->typeEntry()->javaPackage();
+            QString globalName = TypeDatabase::globalNamespaceClassName(meta_enum->typeEntry());
+
+            AbstractMetaClass *global = m_meta_classes.findClass(package + "." + globalName);
+            if (!global) {
+                ComplexTypeEntry *gte = new ObjectTypeEntry(globalName);
+                gte->setTargetLangPackage(meta_enum->typeEntry()->javaPackage());
+                global = createMetaClass();
+                global->setTypeEntry(gte);
+                *global += AbstractMetaAttributes::Final;
+                *global += AbstractMetaAttributes::Public;
+                *global += AbstractMetaAttributes::Fake;
+
+                m_meta_classes << global;
+            }
+
+            global->addEnum(meta_enum);
+            meta_enum->setEnclosingClass(global);
+            meta_enum->typeEntry()->setQualifier(globalName);
+        }
+
+
+    }
+
+
+    // Go through all typedefs to see if we have defined any
     // specific typedefs to be used as classes.
     TypeAliasList typeAliases = m_dom->typeAliases();
     foreach (TypeAliasModelItem typeAlias, typeAliases) {
         AbstractMetaClass *cls = traverseTypeAlias(typeAlias);
         addAbstractMetaClass(cls);
     }
+
+
+
 
     foreach (AbstractMetaClass *cls, m_meta_classes) {
         if (!cls->isInterface() && !cls->isNamespace()) {
@@ -539,7 +577,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseNamespace(NamespaceModelItem nam
         addAbstractMetaClass(mjc);
     }
 
-    // Go through all typedefs to see if we have defined any 
+    // Go through all typedefs to see if we have defined any
     // specific typedefs to be used as classes.
     TypeAliasList typeAliases = namespace_item->typeAliases();
     foreach (TypeAliasModelItem typeAlias, typeAliases) {
@@ -661,7 +699,7 @@ int AbstractMetaBuilder::figureOutEnumValue(const QString &stringValue,
                 v = ev->value();
                 matched = true;
 
-            } else { 
+            } else {
                 if (meta_enum)
                     ReportHandler::warning("unhandled enum value: " + s + " in "
                                            + meta_enum->enclosingClass()->name() + "::"
@@ -727,12 +765,13 @@ void AbstractMetaBuilder::figureOutEnumValuesForClass(AbstractMetaClass *meta_cl
                     bool currentRejected = ete->isEnumValueRejected(current->name());
                     if (!currentRejected && !vRejected) {
                         ReportHandler::warning(
-                            QString("duplicate enum values: %1::%2, %3 and %4 are %5")
+                            QString("duplicate enum values: %1::%2, %3 and %4 are %5, already rejected: (%6)")
                             .arg(meta_class->name())
                             .arg(e->name())
                             .arg(v->name())
                             .arg(entries[v->value()]->name())
-                            .arg(v->value()));
+                            .arg(v->value())
+                            .arg(ete->enumValueRejections().join(", ")));
                         continue;
                     }
                 }
@@ -811,7 +850,7 @@ void AbstractMetaBuilder::figureOutDefaultEnumArguments()
 
                             classes.pop_front();
                         }
-                        
+
                         if (e != 0) {
                             new_expr = QString("%1.%2")
                                     .arg(e->typeEntry()->qualifiedTargetLangName())
@@ -879,22 +918,25 @@ AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, Abs
     }
 
     QString qualified_name = enum_item->qualifiedName().join("::");
-    TypeEntry *type_entry = TypeDatabase::instance()->findType(qualified_name);
 
-    Q_ASSERT(m_current_class != 0);
+    TypeEntry *type_entry = TypeDatabase::instance()->findType(qualified_name);
     QString enum_name = enum_item->name();
-    QString class_name = m_current_class->typeEntry()->qualifiedCppName();
-    if (m_current_class && TypeDatabase::instance()->isEnumRejected(class_name, enum_name)) {
+
+    QString class_name;
+    if (m_current_class)
+        class_name = m_current_class->typeEntry()->qualifiedCppName();
+
+    if (TypeDatabase::instance()->isEnumRejected(class_name, enum_name)) {
         m_rejected_enums.insert(qualified_name, GenerationDisabled);
         return 0;
     }
 
     if (!type_entry || !type_entry->isEnum()) {
-        ReportHandler::warning(QString("enum '%1::%2' does not have a type entry or is not an enum")
-                               .arg(m_current_class->name())
-                               .arg(enum_item->name()));
+        QString context = m_current_class ? m_current_class->name() : QLatin1String("");
+        ReportHandler::warning(QString("enum '%1' does not have a type entry or is not an enum")
+                               .arg(qualified_name));
         m_rejected_enums.insert(qualified_name, NotInTypeSystem);
-        return 0;
+       return 0;
     }
 
     AbstractMetaEnum *meta_enum = createMetaEnum();
@@ -926,8 +968,10 @@ AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, Abs
                                  + meta_enum_value->value());
 
         // Add into global register...
-        QString key = enclosing->name() + "::" + meta_enum_value->name();
-        m_enum_values[key] = meta_enum_value;
+        if (enclosing)
+            m_enum_values[enclosing->name() + "::" + meta_enum_value->name()] = meta_enum_value;
+        else
+            m_enum_values[meta_enum_value->name()] = meta_enum_value;
     }
 
     m_enums << meta_enum;
@@ -935,10 +979,10 @@ AbstractMetaEnum *AbstractMetaBuilder::traverseEnum(EnumModelItem enum_item, Abs
     return meta_enum;
 }
 
-AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typeAlias) 
+AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typeAlias)
 {
     QString class_name = strip_template_args(typeAlias->name());
-    
+
     QString full_class_name = class_name;
     // we have an inner class
     if (m_current_class) {
@@ -965,7 +1009,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseTypeAlias(TypeAliasModelItem typ
         QFileInfo info(typeAlias->fileName());
         type->setInclude(Include(Include::IncludePath, info.fileName()));
     }
-    
+
     return meta_class;
 }
 
@@ -1049,7 +1093,7 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
 
     }
 
-    // Go through all typedefs to see if we have defined any 
+    // Go through all typedefs to see if we have defined any
     // specific typedefs to be used as classes.
     TypeAliasList typeAliases = class_item->typeAliases();
     foreach (TypeAliasModelItem typeAlias, typeAliases) {
@@ -1263,7 +1307,7 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
         for (int i=scope.size(); i>=0; --i) {
             QString prefix = i > 0 ? QStringList(scope.mid(0, i)).join("::") + "::" : QString();
             QString complete_name = prefix + base_classes.first();
-            TypeParser::Info info = TypeParser::parse(complete_name);            
+            TypeParser::Info info = TypeParser::parse(complete_name);
             QString base_name = info.qualified_name.join("::");
 
             AbstractMetaClass *templ = 0;
@@ -1274,7 +1318,7 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
                 }
             }
 
-            if (templ == 0) 
+            if (templ == 0)
                 templ = m_meta_classes.findClass(base_name);
 
             if (templ) {
@@ -1550,7 +1594,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
     Q_ASSERT(ok);
     *ok = true;
 
-    // 1. Test the type info without resolving typedefs in case this is present in the 
+    // 1. Test the type info without resolving typedefs in case this is present in the
     //    type system
     TypeInfo typei;
     if (resolveType) {
@@ -1562,7 +1606,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
 
     if (!resolveType)
         typei = _typei;
-    else {        
+    else {
         // Go through all parts of the current scope (including global namespace)
         // to resolve typedefs. The parser does not properly resolve typedefs in
         // the global scope when they are referenced from inside a namespace.
@@ -1572,9 +1616,9 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
         while (i >= 0) {
             typei = TypeInfo::resolveType(_typei, m_scopes.at(i--)->toItem());
             if (typei.qualifiedName().join("::") != _typei.qualifiedName().join("::"))
-                break;            
+                break;
         }
-        
+
     }
 
     if (typei.isFunctionPointer()) {
@@ -1651,7 +1695,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
     if (qualified_name == "QFlags")
         qualified_name = typeInfo.toString();
 
-    // 5. Try to find the type 
+    // 5. Try to find the type
     const TypeEntry *type = TypeDatabase::instance()->findType(qualified_name);
 
     // 6. No? Try looking it up as a flags type
@@ -1662,7 +1706,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
     if (!type)
         type = TypeDatabase::instance()->findContainerType(name);
 
-    // 8. No? Check if the current class is a template and this type is one 
+    // 8. No? Check if the current class is a template and this type is one
     //    of the parameters.
     if (type == 0 && m_current_class != 0) {
         QList<TypeEntry *> template_args = m_current_class->templateArguments();
@@ -1675,11 +1719,11 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
     // 9. Try finding the type by prefixing it with the current
     //    context and all baseclasses of the current context
     if (!type && !TypeDatabase::instance()->isClassRejected(qualified_name) && m_current_class != 0 && resolveScope) {
-        QStringList contexts;            
+        QStringList contexts;
         contexts.append(m_current_class->qualifiedCppName());
         contexts.append(currentScope()->qualifiedName().join("::"));
 
-                
+
         TypeInfo info = typei;
         bool subclasses_done = false;
         while (!contexts.isEmpty() && type == 0) {
@@ -1689,11 +1733,11 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
             info.setQualifiedName(QStringList() << contexts.at(0) << qualified_name);
             AbstractMetaType *t = translateType(info, &ok, true, false);
             if (t != 0 && ok)
-                return t;            
+                return t;
 
             ClassModelItem item = m_dom->findClass(contexts.at(0));
             if (item != 0)
-                contexts += item->baseClasses();                
+                contexts += item->baseClasses();
             contexts.pop_front();
 
             // 10. Last resort: Special cased prefix of Qt namespace since the meta object implicitly inherits this, so
@@ -1745,7 +1789,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
                 info.setConstant(ta.is_constant);
                 info.setReference(ta.is_reference);
                 info.setIndirections(ta.indirections);
-                
+
                 info.setFunctionPointer(false);
                 info.setQualifiedName(ta.instantiationName().split("::"));
 
@@ -1956,7 +2000,7 @@ bool AbstractMetaBuilder::isQObject(const QString &qualified_name)
     if (class_item && !isqobject) {
         QStringList baseClasses = class_item->baseClasses();
         for (int i=0; i<baseClasses.count(); ++i) {
-        
+
             isqobject = isQObject(baseClasses.at(i));
             if (isqobject)
                 break;
@@ -1987,8 +2031,8 @@ AbstractMetaType *AbstractMetaBuilder::inheritTemplateType(const QList<AbstractM
     if (returned->typeEntry()->isTemplateArgument()) {
         const TemplateArgumentEntry *tae = static_cast<const TemplateArgumentEntry *>(returned->typeEntry());
 
-        // If the template is intantiated with void we special case this as rejecting the functions that use this 
-        // parameter from the instantiation. 
+        // If the template is intantiated with void we special case this as rejecting the functions that use this
+        // parameter from the instantiation.
         if (template_types.size() <= tae->ordinal() || template_types.at(tae->ordinal())->typeEntry()->name() == "void") {
             if (ok != 0)
                 *ok = false;
@@ -2013,7 +2057,7 @@ AbstractMetaType *AbstractMetaBuilder::inheritTemplateType(const QList<AbstractM
         for (int i=0; i<instantiations.count(); ++i) {
             instantiations[i] = inheritTemplateType(template_types, instantiations.at(i), ok);
             if (ok != 0 && !(*ok))
-                return 0;            
+                return 0;
         }
         returned->setInstantiations(instantiations);
     }
@@ -2038,7 +2082,7 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
             temporary_type->setReference(i.is_reference);
             temporary_type->setIndirections(i.indirections);
             template_types << temporary_type;
-        } 
+        }
     }
 
     AbstractMetaFunctionList funcs = subclass->functions();
@@ -2046,7 +2090,7 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
 
         if (function->isModifiedRemoved(TypeSystem::All))
             continue;
-        
+
         AbstractMetaFunction *f = function->copy();
         f->setArguments(AbstractMetaArgumentList());
 
@@ -2063,7 +2107,7 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
 
             AbstractMetaArgument *arg = argument->copy();
             arg->setType(inheritTemplateType(template_types, atype, &ok));
-            if (!ok) 
+            if (!ok)
                 break;
             f->addArgument(arg);
         }
@@ -2077,14 +2121,14 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
         // template instantiation is the class that implements the function..
         f->setImplementingClass(subclass);
 
-        // We also set it as the declaring class, since the superclass is 
+        // We also set it as the declaring class, since the superclass is
         // supposed to disappear. This allows us to make certain function modifications
         // on the inherited functions.
         f->setDeclaringClass(subclass);
 
 
         if (f->isConstructor() && subclass->isTypeAlias()) {
-            f->setName(subclass->name());        
+            f->setName(subclass->name());
         } else if (f->isConstructor()) {
             delete f;
             continue;
@@ -2143,7 +2187,7 @@ bool AbstractMetaBuilder::inheritTemplate(AbstractMetaClass *subclass,
         subclass->setInterfaces(template_class->interfaces());
         subclass->setBaseClass(template_class->baseClass());
     }
-    
+
     return true;
 }
 
@@ -2166,7 +2210,7 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
 
             type = translateType(info, &ok);
             if (type != 0 && ok) {
-                break;            
+                break;
             }
         }
 
@@ -2308,7 +2352,7 @@ void AbstractMetaBuilder::setupComparable(AbstractMetaClass *cls)
         // We only hide the original functions if we are able to make a compareTo() method
         bool wasComparable = false;
 
-        // The three upper cases, prefer the <, == approach        
+        // The three upper cases, prefer the <, == approach
         if (hasEquals && (greater.size() || less.size())) {
             cls->setLessThanFunctions(filter_functions(less, &signatures));
             cls->setGreaterThanFunctions(filter_functions(greater, &signatures));

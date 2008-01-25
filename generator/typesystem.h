@@ -597,7 +597,8 @@ class EnumTypeEntry : public TypeEntry
 {
 public:
     EnumTypeEntry(const QString &nspace, const QString &enumName)
-        : TypeEntry(nspace + QLatin1String("::") + enumName, EnumType),
+        : TypeEntry(nspace.isEmpty() ? enumName : nspace + QLatin1String("::") + enumName,
+                    EnumType),
           m_flags(0),
           m_extensible(false)
     {
@@ -619,6 +620,7 @@ public:
     QString jniName() const;
 
     QString qualifier() const { return m_qualifier; }
+    void setQualifier(const QString &q) { m_qualifier = q; }
 
     virtual bool preferredConversion() const { return false; }
 
@@ -638,6 +640,7 @@ public:
 
     bool isEnumValueRejected(const QString &name) { return m_rejected_enums.contains(name); }
     void addEnumValueRejection(const QString &name) { m_rejected_enums << name; }
+    QStringList enumValueRejections() const { return m_rejected_enums; }
 
     void addEnumValueRedirection(const QString &rejected, const QString &usedValue);
     QString enumValueRedirection(const QString &value) const;
@@ -1123,6 +1126,7 @@ public:
 
     void setRebuildClasses(const QStringList &cls) { m_rebuild_classes = cls; }
 
+    static QString globalNamespaceClassName(const TypeEntry *te);
     QString filename() const { return "typesystem.txt"; }
 
     bool parseFile(const QString &filename, bool generate = true);

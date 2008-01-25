@@ -327,7 +327,7 @@ bool Handler::characters(const QString &ch)
                     break;
                 default:
                     Q_ASSERT(false);
-            };            
+            };
             return true;
         }
     }
@@ -449,14 +449,14 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
 
         case StackElement::ObjectTypeEntry:
-        case StackElement::ValueTypeEntry:            
+        case StackElement::ValueTypeEntry:
             attributes["force-abstract"] = QString("no");
             attributes["deprecated"] = QString("no");
             // fall throooough
         case StackElement::InterfaceTypeEntry:
             attributes["default-superclass"] = m_defaultSuperclass;
-            attributes["polymorphic-id-expression"] = QString();            
-            attributes["delete-in-main-thread"] = QString("no");            
+            attributes["polymorphic-id-expression"] = QString();
+            attributes["delete-in-main-thread"] = QString("no");
             // fall through
         case StackElement::NamespaceTypeEntry:
             attributes["java-name"] = QString();
@@ -517,7 +517,13 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::EnumTypeEntry: {
             QStringList names = name.split(QLatin1String("::"));
 
-            m_current_enum = new EnumTypeEntry(QStringList(names.mid(0, names.size() - 1)).join("::"), names.last());
+            if (names.size() == 1) {
+                m_current_enum = new EnumTypeEntry(QString(), name);
+            }
+            else
+                m_current_enum =
+                    new EnumTypeEntry(QStringList(names.mid(0, names.size() - 1)).join("::"),
+                                      names.last());
             element->entry = m_current_enum;
             m_current_enum->setCodeGeneration(m_generate);
             m_current_enum->setTargetLangPackage(m_defaultPackage);
@@ -554,11 +560,11 @@ bool Handler::startElement(const QString &, const QString &n,
             {
                 ObjectTypeEntry *otype = new ObjectTypeEntry(name);
                 QString javaName = attributes["java-name"];
-                if (javaName.isEmpty()) 
+                if (javaName.isEmpty())
                     javaName = name;
                 InterfaceTypeEntry *itype =
                     new InterfaceTypeEntry(InterfaceTypeEntry::interfaceName(javaName));
-                
+
                 if (!convertBoolean(attributes["generate"], "generate", true))
                     itype->setCodeGeneration(TypeEntry::GenerateForSubclass);
                 else
@@ -626,7 +632,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 QString targetType = attributes["target-type"];
                 if (!targetType.isEmpty() && element->entry->isComplex())
-                    static_cast<ComplexTypeEntry *>(element->entry)->setTargetType(targetType);                
+                    static_cast<ComplexTypeEntry *>(element->entry)->setTargetType(targetType);
 
                 // ctype->setInclude(Include(Include::IncludePath, ctype->name()));
                 ctype = ctype->designatedInterface();
@@ -798,7 +804,10 @@ bool Handler::startElement(const QString &, const QString &n,
                 return false;
             }
             QString name = attributes["name"];
+
+            bool added = false;
             if (!name.isEmpty()) {
+                added = true;
                 m_current_enum->addEnumValueRejection(name);
             }
 
@@ -1688,6 +1697,10 @@ FlagsTypeEntry *TypeDatabase::findFlagsType(const QString &name) const
 {
     FlagsTypeEntry *fte = (FlagsTypeEntry *) findType(name);
     return fte ? fte : (FlagsTypeEntry *) m_flags_entries.value(name);
+}
+
+QString TypeDatabase::globalNamespaceClassName(const TypeEntry * /*entry*/) {
+    return QLatin1String("Global");
 }
 
 

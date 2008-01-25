@@ -1849,10 +1849,17 @@ AbstractMetaEnum *AbstractMetaClassList::findEnum(const EnumTypeEntry *entry) co
 
     QString qualified_name = entry->qualifiedCppName();
     int pos = qualified_name.lastIndexOf("::");
-    Q_ASSERT(pos > 0);
 
-    QString enum_name = qualified_name.mid(pos + 2);
-    QString class_name = qualified_name.mid(0, pos);
+    QString enum_name;
+    QString class_name;
+
+    if (pos > 0) {
+        enum_name = qualified_name.mid(pos + 2);
+        class_name = qualified_name.mid(0, pos);
+    } else {
+        enum_name = qualified_name;
+        class_name = TypeDatabase::globalNamespaceClassName(entry);
+    }
 
     AbstractMetaClass *meta_class = findClass(class_name);
     if (!meta_class) {

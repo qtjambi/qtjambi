@@ -8,6 +8,8 @@
 
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
+
+  
  
   <rejection class="QAlgorithmsPrivate"/>
   <rejection class="QAtomic"/>
@@ -212,6 +214,10 @@
     <modify-function signature="convertFromPlainText(const QString &amp;, Qt::WhiteSpaceMode)" remove="all" />
   </namespace-type>
 
+
+  <enum-type name="QtMsgType">
+    <reject-enum-value name="QtSystemMsg" />
+  </enum-type>
 
   <enum-type name="QSystemSemaphore::AccessMode" />
   <enum-type name="QSystemSemaphore::SystemSemaphoreError" />

@@ -47,7 +47,8 @@ public:
     bool shouldGenerate(const AbstractMetaClass *java_class) const {
         return (!java_class->isNamespace() || java_class->functionsInTargetLang().size() > 0) && !java_class->isInterface()
             && !java_class->typeEntry()->isVariant()
-            && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp);
+            && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp)
+            && !(java_class->attributes() & AbstractMetaAttributes::Fake);
     }
 
     static QString shellClassName(const AbstractMetaClass *java_class) {

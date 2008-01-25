@@ -1258,6 +1258,8 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
 {
     ReportHandler::debugSparse("Generating class: " + java_class->fullName());
 
+    bool fakeClass = java_class->attributes() & AbstractMetaAttributes::Fake;
+
     if (m_docs_enabled) {
         m_doc_parser = new DocParser(m_doc_directory + "/" + java_class->name().toLower() + ".jdoc");
     }
@@ -1558,7 +1560,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     }
 
     // the static fromNativePointer function...
-    if (!java_class->isNamespace() && !java_class->isInterface()) {
+    if (!java_class->isNamespace() && !java_class->isInterface() && !fakeClass) {
         s << endl
           << INDENT << "public static native " << java_class->name() << " fromNativePointer("
           << "QNativePointer nativePointer);" << endl;
@@ -1584,7 +1586,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     }
 
     // Add dummy constructor for use when constructing subclasses
-    if (!java_class->isNamespace() && !java_class->isInterface()) {
+    if (!java_class->isNamespace() && !java_class->isInterface() && !fakeClass) {
         s << endl
           << INDENT << "protected "
           << java_class->name()
@@ -1593,7 +1595,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     }
 
     // Add a function that converts an array of the value type to a QNativePointer
-    if (java_class->typeEntry()->isValue()) {
+    if (java_class->typeEntry()->isValue() && !fakeClass) {
         s << endl
           << INDENT << "public static native QNativePointer nativePointerArray(" << java_class->name()
           << " array[]);" << endl;

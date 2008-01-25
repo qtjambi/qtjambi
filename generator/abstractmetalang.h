@@ -80,6 +80,8 @@ public:
         PropertyWriter              = 0x00008000,
         PropertyResetter            = 0x00010000,
 
+        Fake                        = 0x00020000,
+
         Final                       = FinalInTargetLang | FinalInCpp
     };
 
@@ -644,7 +646,7 @@ public:
           m_template_base_class(0),
           m_extracted_interface(0),
           m_primary_interface_implementor(0),
-          m_type_entry(0), 
+          m_type_entry(0),
           m_qDebug_stream_function(0)
     {
     }

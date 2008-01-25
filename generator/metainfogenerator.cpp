@@ -22,7 +22,7 @@
 MetaInfoGenerator::MetaInfoGenerator(PriGenerator *pri):
     JavaGenerator(),
     priGenerator(pri)
-   
+
 {
     setFilenameStub("metainfo");
 }
@@ -102,7 +102,7 @@ static void metainfo_write_name_list(QTextStream &s, char *var_name, const QList
     s << "};" << endl << endl;
 }
 
-void MetaInfoGenerator::writeEnums(QTextStream &s, const QString &package) 
+void MetaInfoGenerator::writeEnums(QTextStream &s, const QString &package)
 {
     TypeEntryHash entries = TypeDatabase::instance()->allEntries();
     TypeEntryHash::iterator it;
@@ -119,7 +119,7 @@ void MetaInfoGenerator::writeEnums(QTextStream &s, const QString &package)
                 // a flags type since this functionality is not available in
                 // Qt. This may be a little bit inconsistent, but it saves
                 // us making yet another hash table for lookups. If it causes
-                // problems, make a new one for this particular purpose.                
+                // problems, make a new one for this particular purpose.
                 strs.append((eentry->javaPackage().isEmpty() ? QString() : eentry->javaPackage().replace('.', '/')  + "/")
                             + eentry->javaQualifier() + "$" + eentry->targetLangName());
                 strs.append(entry->isFlags() ? static_cast<FlagsTypeEntry *>(entry)->originalName() : entry->qualifiedCppName());
@@ -130,7 +130,7 @@ void MetaInfoGenerator::writeEnums(QTextStream &s, const QString &package)
     Q_ASSERT(strs.size() % 2 == 0);
 
     s << "static int enum_count = " << (strs.size() / 2) << ";" << endl;
-    if (strs.size() > 0) {        
+    if (strs.size() > 0) {
         metainfo_write_name_list(s, "enumJavaNames", strs, 0, 2);
         metainfo_write_name_list(s, "enumCppNames", strs, 1, 2);
     } else {
@@ -223,7 +223,7 @@ void MetaInfoGenerator::writeRegisterSignalsAndSlots(QTextStream &s)
       << "    }" << endl;
 }
 
-void MetaInfoGenerator::writeRegisterEnums(QTextStream &s) 
+void MetaInfoGenerator::writeRegisterEnums(QTextStream &s)
 {
     s << "    for (int i=0;i<enum_count; ++i) {" << endl
       << "        registerQtToJava(enumCppNames[i], enumJavaNames[i]);" << endl
@@ -311,28 +311,41 @@ void MetaInfoGenerator::writeCppFile()
     AbstractMetaClassList classes_with_polymorphic_id;
     AbstractMetaClassList classList = classes();
     QHash<QString, FileOut *> fileHash;
+
+    // Seems continue is not supported by our foreach loop, so
     foreach (AbstractMetaClass *cls, classList) {
+
         FileOut *f = fileHash.value(cls->package(), 0);
         if (f == 0 && generated(cls)) {
             f = new FileOut(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + cppFilename());
-   
+
             writeIncludeStatements(f->stream, classList, cls->package());
             f->stream << endl;
-   
+
             fileHash.insert(cls->package(), f);
 
             QString pro_file_name = cls->package().replace(".", "_") + "/" + cls->package().replace(".", "_") + ".pri";
+
+            printf("adding %s %s\n", qPrintable(pro_file_name), qPrintable(cppFilename()));
+
             priGenerator->addSource(pro_file_name, cppFilename());
         }
 
-        if (f !=0) {
-            if (cls->typeEntry()->isObject() && !cls->typeEntry()->isQObject() && !cls->isInterface())
-                writeDestructors(f->stream, cls);
-            writeCustomStructors(f->stream, cls->typeEntry());
-        }
+        if (!(cls->attributes() & AbstractMetaAttributes::Fake)) {
+            if (f != 0) {
+                if (cls->typeEntry()->isObject()
+                    && !cls->typeEntry()->isQObject()
+                    && !cls->isInterface()) {
+                    writeDestructors(f->stream, cls);
+                }
+                writeCustomStructors(f->stream, cls->typeEntry());
+            }
 
-        if (cls->typeEntry()->isPolymorphicBase())
-            classes_with_polymorphic_id.append(cls);
+            if (cls->typeEntry()->isPolymorphicBase())
+                classes_with_polymorphic_id.append(cls);
+        } else {
+            printf(" -> skipping %s\n", qPrintable(cls->name()));
+        }
     }
 
     QHash<QString, QStringList> handlers_to_register;
@@ -536,6 +549,9 @@ void MetaInfoGenerator::writeLibraryInitializers()
               << "}" << endl << endl;
 
             QString pro_file_name = QString(package).replace(".", "_");
+
+            printf("adding2 %s %s\n", qPrintable(pro_file_name));
+
             priGenerator->addSource(pro_file_name + "/" + pro_file_name + ".pri", "qtjambi_libraryinitializer.cpp");
 
             if( fileOut.done() )
@@ -544,7 +560,7 @@ void MetaInfoGenerator::writeLibraryInitializers()
         }
 
         if (generatedJavaClasses(package)) {
-   
+
             FileOut fileOut(outputDirectory() + "/" + subDirectoryForPackage(package, JavaDirectory) + "/QtJambi_LibraryInitializer.java");
 
             QTextStream &s = fileOut.stream;
@@ -627,7 +643,11 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
                                             bool registerMetaType)
 {
     if (entry->codeGeneration() == TypeEntry::GenerateForSubclass)
-        return ;
+        return;
+
+    if (cls && cls->attributes() & AbstractMetaAttributes::Fake)
+        return;
+
 
     QString constructorName = entry->customConstructor().name;
     QString destructorName = entry->customDestructor().name;
@@ -648,7 +668,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
     if (entry->isComplex()) {
         const ComplexTypeEntry *centry = static_cast<const ComplexTypeEntry *>(entry);
         if (centry->typeFlags() & ComplexTypeEntry::DeleteInMainThread)
-            s << "    registerDeletionPolicy(\"" << javaName << "\", DeletionPolicyDeleteInMainThread);" << endl;        
+            s << "    registerDeletionPolicy(\"" << javaName << "\", DeletionPolicyDeleteInMainThread);" << endl;
     }
 
     QString qtName = entry->qualifiedCppName();
