@@ -673,7 +673,16 @@ class QtConcurrent___ extends QtConcurrent {
     public static native <U, T> QFuture<U> mapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);    
     public static native <U, T> java.util.List<U> blockingMapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);
 
+    /**
+     * Implement this interface in order to perform a reduce operation. 
+     * 
+     * The reduce method will be called once per intermediate result (the result of the mapping of the data)
+     * and the very first time the reduce() method is called for the particular data set, the result is set to 
+     * the returned value of the defaultResult() method. 
+     */
     public interface ReducedFunctor<U, T> {
+        public U defaultResult();
+
         public void reduce(U result, T intermediate);
     }
     

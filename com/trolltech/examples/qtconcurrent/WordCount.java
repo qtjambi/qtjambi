@@ -70,6 +70,10 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
             result.put(key, i + w.get(key));
         }        
     }
+    
+    public HashMap<String, Integer> defaultResult() {
+        return new HashMap<String, Integer>();
+    }
 
     public static void main(String args[])
     {

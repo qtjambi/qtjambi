@@ -107,25 +107,35 @@ public:
 
 class ReducedFunctor: public Functor {
 public:
-    ReducedFunctor(jobject javaReducedFunctor) : Functor(javaReducedFunctor) {}
-    ReducedFunctor(const ReducedFunctor &other) : Functor(other) {}
+    ReducedFunctor(jobject javaReducedFunctor) : Functor(javaReducedFunctor), m_first_call(true) {}
+    ReducedFunctor(const ReducedFunctor &other) : Functor(other), m_first_call(other.m_first_call) {}
 
     void operator()(JObjectWrapper &result, const JObjectWrapper &wrapper) 
     {
         JNIEnv *env = qtjambi_current_environment();
-        if (env != 0 && m_functor != 0) {
-            jobject javaObject = qtjambi_from_jobjectwrapper(env, wrapper);
-            jobject javaResult = qtjambi_from_jobjectwrapper(env, result);
 
+        if (env != 0 && m_functor != 0) {
             StaticCache *sc = StaticCache::instance(env);
             sc->resolveQtConcurrent_ReducedFunctor();
 
+            // reduce() is synchronous, so while this data is static in terms
+            // of the map/reduce operation, it does not need to be protected
+            if (m_first_call) {
+                m_first_call = false;
+                result = JObjectWrapper(env, env->CallObjectMethod(m_functor, sc->QtConcurrent_ReducedFunctor.defaultResult));
+            } 
+
+            jobject javaObject = qtjambi_from_jobjectwrapper(env, wrapper);
+            jobject javaResult = qtjambi_from_jobjectwrapper(env, result);
             env->CallVoidMethod(m_functor, sc->QtConcurrent_ReducedFunctor.reduce, javaResult, javaObject);
         } else {
             qWarning("Reduce functor called with invalid data. JNI Environment == %p, java functor object == %p",
                     env, m_functor);
         }  
     }
+
+private:
+    uint m_first_call : 1;
 
 };
 

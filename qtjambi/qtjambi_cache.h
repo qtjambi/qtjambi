@@ -373,6 +373,7 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jmethodID reduce;
+        jmethodID defaultResult;
     } QtConcurrent_ReducedFunctor;
 
     struct {

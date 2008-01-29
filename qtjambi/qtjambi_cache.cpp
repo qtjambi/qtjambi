@@ -1280,6 +1280,9 @@ void StaticCache::resolveQtConcurrent_ReducedFunctor_internal()
 
     QtConcurrent_ReducedFunctor.reduce = env->GetMethodID(QtConcurrent_ReducedFunctor.class_ref, "reduce", "(Ljava/lang/Object;Ljava/lang/Object;)V");
     Q_ASSERT(QtConcurrent_ReducedFunctor.reduce);
+
+    QtConcurrent_ReducedFunctor.defaultResult = env->GetMethodID(QtConcurrent_ReducedFunctor.class_ref, "defaultResult", "()Ljava/lang/Object;");
+    Q_ASSERT(QtConcurrent_ReducedFunctor.defaultResult);
 }
 
 void StaticCache::resolveQtConcurrent_FilteredFunctor_internal()
