@@ -88,7 +88,7 @@ QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
 
 struct QTJAMBI_EXPORT JObjectWrapper
 {
-    JObjectWrapper() : environment(0), object(0)
+    JObjectWrapper() : object(0)
     {
     }
     
@@ -100,7 +100,7 @@ struct QTJAMBI_EXPORT JObjectWrapper
     JObjectWrapper(JNIEnv *env, jobject obj)
     {
         Q_ASSERT(env != 0);
-        if (obj)
+        if (obj != 0)
             initialize(env, obj);
         else
             object = 0;
@@ -111,11 +111,10 @@ struct QTJAMBI_EXPORT JObjectWrapper
 
 
     void operator=(const JObjectWrapper &wrapper) {
-        if (wrapper.environment && wrapper.object) {
+        if (wrapper.object != 0) {
             initialize(qtjambi_current_environment(), wrapper.object);
         } else {
             object = 0;
-            environment = 0;
         } 
         REF_JOBJECT;        
     }
@@ -124,7 +123,6 @@ struct QTJAMBI_EXPORT JObjectWrapper
 
     void initialize(JNIEnv *env, jobject obj);
 
-    JNIEnv *environment;
     jobject object;
 };
 Q_DECLARE_METATYPE(JObjectWrapper)

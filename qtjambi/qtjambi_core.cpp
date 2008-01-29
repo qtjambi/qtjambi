@@ -2034,10 +2034,11 @@ bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object) {
 
 bool JObjectWrapper::operator==(const JObjectWrapper &other) const
 {
-    if (environment != 0 && object != 0) {
-        StaticCache *sc = StaticCache::instance(environment);
+    if (object != 0) {
+        JNIEnv *env = qtjambi_current_environment();
+        StaticCache *sc = StaticCache::instance(env);
         sc->resolveObject();
-        return environment->CallBooleanMethod(object, sc->Object.equals, other.object);
+        return env->CallBooleanMethod(object, sc->Object.equals, other.object);
     } else {
         return (object == other.object);
     }
@@ -2045,7 +2046,6 @@ bool JObjectWrapper::operator==(const JObjectWrapper &other) const
 
 void JObjectWrapper::initialize(JNIEnv *env, jobject obj) 
 {
-    environment = env;
     object = env->NewGlobalRef(obj);
 }
 
@@ -2053,8 +2053,8 @@ JObjectWrapper::~JObjectWrapper()
 {
     DEREF_JOBJECT;
     
-    if (environment && object)
-        environment->DeleteGlobalRef(object);
+    if (object)
+        qtjambi_current_environment()->DeleteGlobalRef(object);
 }
 
 QString qtjambi_enum_name_for_flags_name(JNIEnv *env, const QString &qualified_name)
