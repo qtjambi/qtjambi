@@ -121,6 +121,13 @@ public class QtJambiInternal {
         
         return returned;
     }
+    
+    public static byte typeConversionCode(Class<?> cls) {
+        if (cls.isPrimitive())
+            return QtJambiInternal.primitiveToByte(cls);
+        else
+            return 'L';
+    }
 
     static Class<?> getComplexType(Class<?> primitiveType) {
         if (!primitiveType.isPrimitive())

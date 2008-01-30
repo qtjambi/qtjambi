@@ -807,6 +807,9 @@ void StaticCache::resolveFloat_internal()
     Float.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Float"));
     Q_ASSERT(Float.class_ref);
 
+    Float.constructor = env->GetMethodID(Float.class_ref, "<init>", "(F)V");
+    Q_ASSERT(Float.constructor);
+
     Float.floatValue = env->GetMethodID(Float.class_ref, "floatValue", "()F");
     Q_ASSERT(Float.floatValue);
 }
@@ -818,6 +821,9 @@ void StaticCache::resolveShort_internal()
     Short.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Short"));
     Q_ASSERT(Short.class_ref);
 
+    Short.constructor = env->GetMethodID(Short.class_ref, "<init>", "(S)V");
+    Q_ASSERT(Short.constructor);
+
     Short.shortValue = env->GetMethodID(Short.class_ref, "shortValue", "()S");
     Q_ASSERT(Short.shortValue);
 }
@@ -828,6 +834,9 @@ void StaticCache::resolveByte_internal()
 
     Byte.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Byte"));
     Q_ASSERT(Byte.class_ref);
+
+    Byte.constructor = env->GetMethodID(Byte.class_ref, "<init>", "(B)V");
+    Q_ASSERT(Byte.constructor);
 
     Byte.byteValue = env->GetMethodID(Byte.class_ref, "byteValue", "()B");
     Q_ASSERT(Byte.byteValue);

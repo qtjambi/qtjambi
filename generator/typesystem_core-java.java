@@ -753,17 +753,17 @@ class QtConcurrent___ extends QtConcurrent {
         if (m.getReturnType() == null || m.getReturnType().equals(Void.TYPE))
             throw new IllegalArgumentException("Cannot call run on method returning void. Use 'runVoidMethod' instead.");
 
-        return runPrivate(_this, m.getDeclaringClass(), m, args);
+        return runPrivate(_this, m.getDeclaringClass(), m, args, com.trolltech.qt.QtJambiInternal.resolveConversionSchema(m.getParameterTypes(), m.getParameterTypes()), com.trolltech.qt.QtJambiInternal.typeConversionCode(m.getReturnType()));
     }
-    private native static <T> QFuture<T> runPrivate(Object _this, Class<?> declaringClass, java.lang.reflect.Method m, Object args[]);
+    private native static <T> QFuture<T> runPrivate(Object _this, Class<?> declaringClass, java.lang.reflect.Method m, Object args[], int conversionScheme[], byte returnType);
 
     public static QFutureVoid runVoidMethod(Object _this, java.lang.reflect.Method m, Object ... args) {
         if (m.getReturnType() != null && !m.getReturnType().equals(Void.TYPE))
             throw new IllegalArgumentException("Cannot call runVoidMethod on method returning non-void type. Use 'run' instead.");
 
-        return runVoidMethodPrivate(_this, m.getDeclaringClass(), m, args);
+        return runVoidMethodPrivate(_this, m.getDeclaringClass(), m, args, com.trolltech.qt.QtJambiInternal.resolveConversionSchema(m.getParameterTypes(), m.getParameterTypes()));
     }
-    private native static QFutureVoid runVoidMethodPrivate(Object _this, Class<?> declaringClass, java.lang.reflect.Method m, Object args[]);
+    private native static QFutureVoid runVoidMethodPrivate(Object _this, Class<?> declaringClass, java.lang.reflect.Method m, Object args[], int conversionScheme[]);
 
 
 }// class

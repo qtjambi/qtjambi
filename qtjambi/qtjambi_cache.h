@@ -223,12 +223,14 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
+        jmethodID constructor;
         jmethodID floatValue;
     } Float;
 
     struct {
         jclass class_ref;
-        jmethodID shortValue;
+        jmethodID constructor;
+        jmethodID shortValue;        
     } Short;
 
     struct {
@@ -239,6 +241,7 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
+        jmethodID constructor;
         jmethodID byteValue;
     } Byte;
 

@@ -31,6 +31,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QEvent>
 #include <QtCore/QModelIndex>
+#include <QtCore/QVarLengthArray>
 
 #ifdef QT_NO_DEBUG
 #  define QTJAMBI_EXCEPTION_CHECK(env)
@@ -399,6 +400,28 @@ inline jobject qtjambi_from_long(JNIEnv *env, qint64 long_value)
     return env->NewObject(sc->Long.class_ref, sc->Long.constructor, long_value);
 }
 
+inline jobject qtjambi_from_short(JNIEnv *env, short short_value) 
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveShort();
+    return env->NewObject(sc->Short.class_ref, sc->Short.constructor, short_value);
+}
+
+inline jobject qtjambi_from_float(JNIEnv *env, float float_value)
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveFloat();
+    return env->NewObject(sc->Float.class_ref, sc->Float.constructor, float_value);
+}
+
+inline jobject qtjambi_from_byte(JNIEnv *env, char byte_value)
+{
+    StaticCache *sc = StaticCache::instance(env);
+    sc->resolveByte();
+    return env->NewObject(sc->Byte.class_ref, sc->Byte.constructor, byte_value);
+}
+
+
 inline jchar qtjambi_to_char(JNIEnv *env, jobject char_object) 
 {
     StaticCache *sc = StaticCache::instance(env);
@@ -586,6 +609,11 @@ QTJAMBI_EXPORT bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object
 QTJAMBI_EXPORT QString qtjambi_enum_name_for_flags_name(JNIEnv *env, const QString &qualified_name);
 
 QTJAMBI_EXPORT void qtjambi_register_variant_handler();
+
+QTJAMBI_EXPORT jobject qtjambi_invoke_method(JNIEnv *env, jobject receiver, jmethodID methodId, jbyte returnType, QVarLengthArray<jvalue> argsArray);
+
+QTJAMBI_EXPORT QVarLengthArray<jvalue> qtjambi_from_jobjectArray(JNIEnv *env, jobjectArray args, jintArray _cnvTypes, bool globalRefs = false);
+
 
 
 #endif // QTJAMBI_CORE_H

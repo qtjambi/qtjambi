@@ -165,16 +165,17 @@ class RunFunctorBase: public Functor
 {
 public:    
 
-    RunFunctorBase(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments) 
-        : Functor(javaThis), m_declaring_class(0), m_java_arguments(0), m_method_id(javaMethodId) 
+    RunFunctorBase(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments, jintArray typeConversionScheme,
+                   jbyte resultType) 
+        : Functor(javaThis), m_declaring_class(0), m_method_id(javaMethodId), m_result_type(resultType), m_conversion_scheme(0)
     {
-        init(declaringClass, javaArguments);
+        init(declaringClass, javaArguments, QVarLengthArray<jvalue>(), typeConversionScheme);
     }
 
     RunFunctorBase(const RunFunctorBase &other) 
-        : Functor(other), m_declaring_class(0), m_java_arguments(0), m_method_id(other.m_method_id)
+        : Functor(other), m_declaring_class(0), m_method_id(other.m_method_id), m_result_type(other.m_result_type), m_conversion_scheme(0)
     { 
-        init(other.m_declaring_class, other.m_java_arguments); 
+        init(other.m_declaring_class, 0, other.m_arguments, other.m_conversion_scheme);
     }
 
     ~RunFunctorBase() { 
@@ -182,44 +183,63 @@ public:
         if (env != 0) {
             if (m_declaring_class != 0)
                 env->DeleteGlobalRef(m_declaring_class);
-            if (m_java_arguments != 0)
-                env->DeleteGlobalRef(m_java_arguments);
-            for (int i=0; i<m_arguments.size(); ++i) 
-                env->DeleteGlobalRef(m_arguments[i].l);
+
+            jint *a = m_conversion_scheme != 0 ? env->GetIntArrayElements(m_conversion_scheme, 0) : 0;
+            for (int i=0; i<m_arguments.size(); ++i) {                
+                if (a != 0 && a[i] == 'L')
+                    env->DeleteGlobalRef(m_arguments[i].l);
+            }
+            env->ReleaseIntArrayElements(m_conversion_scheme, a, JNI_ABORT);
+            if (m_conversion_scheme != 0)
+                env->DeleteGlobalRef(m_conversion_scheme);
         }
     }
 
 
 private:
-    void init(jclass declaringClass, jobjectArray javaArguments) {
+    void init(jclass declaringClass, jobjectArray javaArguments, QVarLengthArray<jvalue> convertedArgs, jintArray conversionScheme) {
         JNIEnv *env = qtjambi_current_environment();
         Q_ASSERT(env != 0);
         if (env != 0) {
             if (declaringClass != 0)
                 m_declaring_class = reinterpret_cast<jclass>(env->NewGlobalRef(declaringClass));
-            if (javaArguments != 0)
-                m_java_arguments = reinterpret_cast<jobjectArray>(env->NewGlobalRef(javaArguments));
+            if (conversionScheme != 0)
+                m_conversion_scheme = reinterpret_cast<jintArray>(env->NewGlobalRef(conversionScheme));
 
-            int len = javaArguments != 0 ? env->GetArrayLength(javaArguments) : 0;
-            m_arguments = QVarLengthArray<jvalue, 16>(len);
-            for (int i=0; i<len; ++i)
-                m_arguments[i].l = env->NewGlobalRef(env->GetObjectArrayElement(javaArguments, i));
+            if (javaArguments != 0) { 
+                // Convert all the arguments
+                m_arguments = qtjambi_from_jobjectArray(env, javaArguments, m_conversion_scheme, true);
+            } else { 
+                // Copy the converted arguments
+                jint *a = m_conversion_scheme != 0 ? env->GetIntArrayElements(m_conversion_scheme, 0) : 0;
+                for (int i=0; i<convertedArgs.size(); ++i) {
+                    if (a != 0 && a[i] == 'L') {
+                        jvalue val;
+                        val.l = env->NewGlobalRef(convertedArgs[i].l);
+                        m_arguments.append(val);
+                    } else {
+                        m_arguments.append(convertedArgs[i]);
+                    }
+                }
+                env->ReleaseIntArrayElements(m_conversion_scheme, a, JNI_ABORT);
+            }
         }
     }
 
 protected:
     jclass m_declaring_class;
-    jobjectArray m_java_arguments;
     jmethodID m_method_id;
-    QVarLengthArray<jvalue, 16> m_arguments;
+    QVarLengthArray<jvalue> m_arguments;
+    jbyte m_result_type;
+    jintArray m_conversion_scheme;
 };
 
 class RunFunctor: public RunFunctorBase {
 public:
     typedef JObjectWrapper result_type;
 
-    RunFunctor(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments) 
-        : RunFunctorBase(javaThis, declaringClass, javaMethodId, javaArguments) 
+    RunFunctor(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments, jintArray typeConversionScheme, jbyte resultType) 
+        : RunFunctorBase(javaThis, declaringClass, javaMethodId, javaArguments, typeConversionScheme, resultType) 
     {
     }
 
@@ -232,12 +252,7 @@ public:
         JNIEnv *env = qtjambi_current_environment();
         Q_ASSERT(env != 0);
         if (env != 0 && m_method_id != 0) {
-            jobject javaResult = 0;
-            if (m_functor != 0)
-                javaResult = env->CallObjectMethodA(m_functor, m_method_id, m_arguments.data());
-            else
-                javaResult = env->CallStaticObjectMethodA(m_declaring_class, m_method_id, m_arguments.data());
-
+            jobject javaResult = qtjambi_invoke_method(env, m_functor, m_method_id, m_result_type, m_arguments);
             return javaResult != 0 ? qtjambi_to_jobjectwrapper(env, javaResult) : JObjectWrapper();
         } else {
             qWarning("Run functor called with invalid data. JNI Environment == %p, method id == %p",
@@ -251,8 +266,8 @@ class RunVoidFunctor: public RunFunctorBase {
 public:
     typedef void result_type;
 
-    RunVoidFunctor(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments) 
-        : RunFunctorBase(javaThis, declaringClass, javaMethodId, javaArguments) 
+    RunVoidFunctor(jobject javaThis, jclass declaringClass, jmethodID javaMethodId, jobjectArray javaArguments, jintArray conversionScheme) 
+        : RunFunctorBase(javaThis, declaringClass, javaMethodId, javaArguments, conversionScheme, 'V') 
     {
     }
 
@@ -265,10 +280,7 @@ public:
         JNIEnv *env = qtjambi_current_environment();
         Q_ASSERT(env != 0);
         if (env != 0 && m_method_id != 0) {
-            if (m_functor != 0)
-                env->CallVoidMethodA(m_functor, m_method_id, m_arguments.data());
-            else
-                env->CallStaticVoidMethodA(m_declaring_class, m_method_id, m_arguments.data());
+            qtjambi_invoke_method(env, m_functor, m_method_id, m_result_type, m_arguments);
         } else {
             qWarning("Run functor called with invalid data. JNI Environment == %p, method_id == %p",
                      env, m_method_id);
@@ -479,12 +491,14 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
  jobject javaThis,
  jclass declaringClass,
  jobject javaMethod,
- jobjectArray javaArgs)
+ jobjectArray javaArgs,
+ jintArray typeConversionScheme,
+ jbyte resultType)
 {
     jmethodID methodId = __jni_env->FromReflectedMethod(javaMethod);
     Q_ASSERT(methodId);
 
-    RunFunctor runFunctor(javaThis, declaringClass, methodId, javaArgs);
+    RunFunctor runFunctor(javaThis, declaringClass, methodId, javaArgs, typeConversionScheme, resultType);
     QFuture<JObjectWrapper> result = QtConcurrent::run(runFunctor);
 
     return convertCppFutureToJava(__jni_env, result);
@@ -496,12 +510,13 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
  jobject javaThis,
  jclass declaringClass,
  jobject javaMethod,
- jobjectArray javaArgs)
+ jobjectArray javaArgs,
+ jintArray typeConversionScheme)
 {
     jmethodID methodId = __jni_env->FromReflectedMethod(javaMethod);
     Q_ASSERT(methodId);
 
-    RunVoidFunctor runFunctor(javaThis, declaringClass, methodId, javaArgs);
+    RunVoidFunctor runFunctor(javaThis, declaringClass, methodId, javaArgs, typeConversionScheme);
     QFuture<void> result = QtConcurrent::run(runFunctor);
 
     return convertCppFutureVoidToJava(__jni_env, result);

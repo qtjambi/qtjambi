@@ -316,12 +316,53 @@ public class Concurrent extends QApplicationTest {
         Method m = null;
         try {
             m = Concurrent.class.getMethod("method2", Integer.class);
-        } catch (Exception e) {}
+        } catch (Exception e) { }
+        
+        assertTrue(m != null);
         
         QFuture<Integer> future = QtConcurrent.run(this, m, 4321);
         
         future.waitForFinished();
         assertEquals(5555, future.result());
+    }
+    
+    public int method3(int a, byte b, short c, float d) {
+        return (int) (a + b + c + d);
+    }
+    
+    @Test
+    public void testRunWithPrimitiveTypes() {
+        Method m = null;
+        try {
+            m = Concurrent.class.getMethod("method3", Integer.TYPE, Byte.TYPE, Short.TYPE, Float.TYPE);
+        } catch (Exception e) {}
+        
+        assertTrue(m != null);
+        
+        QFuture<Integer> future = QtConcurrent.run(this, m, 1, 2, 3, 4);
+        
+        future.waitForFinished();
+        assertEquals(10, future.result());        
+    }
+    
+    public void method4(MutableInteger a, int b, int c) {
+        a.value = b + c;
+    }
+    
+    @Test
+    public void testRunVoidWithPrimitiveTypes() {
+        Method m = null;
+        try {
+            m = Concurrent.class.getMethod("method4", MutableInteger.class, Integer.TYPE, Integer.TYPE);
+        } catch (Exception e) {}
+        
+        assertTrue(m != null);        
+        
+        MutableInteger i = new MutableInteger(0);
+        QFutureVoid future = QtConcurrent.runVoidMethod(this, m, i, 123, 321);
+        
+        future.waitForFinished();
+        assertEquals(444, i.value);        
     }
     
     @Test

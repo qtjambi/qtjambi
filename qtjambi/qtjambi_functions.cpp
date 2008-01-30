@@ -214,48 +214,13 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_invokeSlot)
  jlong m,
  jbyte returnType,
  jobjectArray args,
- jintArray _cnvTypes)
+ jintArray cnvTypes)
 {
     Q_ASSERT(receiver != 0);
     Q_ASSERT(m != 0);
 
-    int len = env->GetArrayLength(_cnvTypes);
-    jint *cnvTypes = env->GetIntArrayElements(_cnvTypes, 0);
-    QVarLengthArray<jvalue> argsArray(len);
-    for (int i=0; i<len; ++i) {
-        jobject arg_object = env->GetObjectArrayElement(args, i);
-        switch (cnvTypes[i]) {
-        case 'L': argsArray[i].l = arg_object; break ;
-        case 'Z': argsArray[i].z = qtjambi_to_boolean(env, arg_object); break ;
-        case 'J': argsArray[i].j = qtjambi_to_long(env, arg_object); break ;
-        case 'I': argsArray[i].i = qtjambi_to_int(env, arg_object); break ;
-        case 'F': argsArray[i].f = qtjambi_to_float(env, arg_object); break ;
-        case 'D': argsArray[i].d = qtjambi_to_double(env, arg_object); break ;
-        case 'S': argsArray[i].s = qtjambi_to_short(env, arg_object); break ;
-        case 'B': argsArray[i].b = qtjambi_to_byte(env, arg_object); break ;
-        case 'C': argsArray[i].c = qtjambi_to_jchar(env, arg_object); break ;
-        default:
-            Q_ASSERT_X(false, "invokeSlot", "Error in conversion array");
-        }
-    }
-    env->ReleaseIntArrayElements(_cnvTypes, cnvTypes, JNI_ABORT);
-
     jmethodID methodId = reinterpret_cast<jmethodID>(m);
-    switch (returnType)
-    {
-    case 'L': env->CallObjectMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'V': env->CallVoidMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'I': env->CallIntMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'J': env->CallLongMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'S': env->CallShortMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'Z': env->CallBooleanMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'F': env->CallFloatMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'D': env->CallDoubleMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'B': env->CallByteMethodA(receiver, methodId, argsArray.data()); break ;
-    case 'C': env->CallCharMethodA(receiver, methodId, argsArray.data()); break ;
-    default:
-        Q_ASSERT_X(false, "invokeSlot", "Invalid return type parameter");
-    };
+    qtjambi_invoke_method(env, receiver, methodId, returnType, qtjambi_from_jobjectArray(env, args, cnvTypes));
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
