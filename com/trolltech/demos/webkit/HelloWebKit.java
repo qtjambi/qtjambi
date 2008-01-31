@@ -4,7 +4,8 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.webkit.*;
 
-class HelloWebKit extends QMainWindow {
+@com.trolltech.examples.QtJambiExample(name="Hello WebKit")
+public class HelloWebKit extends QMainWindow {
 
     private QWebView browser;
     private QLineEdit field;
@@ -15,6 +16,12 @@ class HelloWebKit extends QMainWindow {
     private QAction stop;
 
     public HelloWebKit() {
+	this(null);
+    }
+    
+    public HelloWebKit(QWidget parent) {
+	super(parent);
+
         field = new QLineEdit();
         browser = new QWebView();
 
