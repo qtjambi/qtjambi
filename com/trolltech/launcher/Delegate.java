@@ -21,9 +21,9 @@ public class Delegate extends QItemDelegate {
     public static final int MARGE_HOR = 20; // Extra pixels on each side of text...
     public static final int MARGE_VER = 6;
 
-    public Delegate(LaunchableListModel model) {
+    public Delegate(QSortFilterProxyModel model) {
         super(model);
-        m_model = model;
+        m_proxyModel = model;
     }
 
     private static String stripName(String s) {
@@ -33,7 +33,8 @@ public class Delegate extends QItemDelegate {
 
     @Override
     public void paint(QPainter p, QStyleOptionViewItem option, QModelIndex index) {
-        Launchable l = m_model.at(index);
+        index = m_proxyModel.mapToSource(index);
+        Launchable l = ((LaunchableListModel)m_proxyModel.sourceModel()).at(index);
         String text = stripName(l.name());
         boolean selected = (option.state().isSet(QStyle.StateFlag.State_Selected));
         QRectF rect = new QRectF(option.rect());
@@ -48,7 +49,8 @@ public class Delegate extends QItemDelegate {
 
     @Override
     public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
-        Launchable l = m_model.at(index);
+        index = m_proxyModel.mapToSource(index);
+        Launchable l = ((LaunchableListModel)m_proxyModel.sourceModel()).at(index);
 
         String text = stripName(l.name());
 
@@ -58,5 +60,5 @@ public class Delegate extends QItemDelegate {
     }
 
     // Member variables...
-    private LaunchableListModel m_model;
+    private QSortFilterProxyModel m_proxyModel;
 }

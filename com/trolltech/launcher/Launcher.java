@@ -33,7 +33,7 @@ public class Launcher extends QWidget {
 
         @Override
         protected void execute() {
-            QModelIndex i = ui.list.selectionModel().currentIndex();
+            QModelIndex i = sortFilterProxyModel.mapToSource(ui.list.selectionModel().currentIndex());
             Launchable l = null;
             if (i != null)
                 l = m_model.at(i);
@@ -82,18 +82,24 @@ public class Launcher extends QWidget {
     public Launcher() {
     }
 
+    private QSortFilterProxyModel sortFilterProxyModel = new QSortFilterProxyModel();
     public void init() {
         ui.setupUi(this);
 
         ui.source.setWordWrap(false);
-
-        ui.list.setModel(m_model);
-        ui.list.setItemDelegate(new Delegate(m_model));
-        ui.list.setCurrentIndex(null);
-
+        
+        
         progressChanged.emit("Setting up examples");
 
         setupExamples();
+
+        sortFilterProxyModel.setSourceModel(m_model);
+        sortFilterProxyModel.invalidate();
+        sortFilterProxyModel.sort(0);
+
+        ui.list.setModel(sortFilterProxyModel);
+        ui.list.setItemDelegate(new Delegate(sortFilterProxyModel));
+        ui.list.setCurrentIndex(null);        
 
         progressChanged.emit("Setting up styles");
         setupStyles();
@@ -232,7 +238,7 @@ public class Launcher extends QWidget {
     private void launch_show() {
         ui.button_launch.setText(tr("Close"));
 
-        QModelIndex i = ui.list.selectionModel().currentIndex();
+        QModelIndex i = sortFilterProxyModel.mapToSource(ui.list.selectionModel().currentIndex());
         m_current = m_model.at(i);
 
         m_current.widget().show();
@@ -301,6 +307,29 @@ public class Launcher extends QWidget {
             styleChanged();
         firstStyleSetup = false;
     }
+    
+    private void traverseDirectory(String directory) {
+        QDir dir = new QDir(directory);
+        List<QFileInfo> infos = dir.entryInfoList(QDir.Filter.createQFlags(QDir.Filter.Files, QDir.Filter.Dirs, QDir.Filter.NoDotAndDotDot));
+        
+        for (QFileInfo info : infos) {
+            if (info.isDir()) {
+                traverseDirectory(info.absoluteFilePath());
+            } else if (info.fileName().endsWith(".class")) {
+                int idx = directory.lastIndexOf("#") + 1;
+                if (idx <= 0)
+                    idx = 10;
+                String pkg = directory.substring(idx).replace("/", ".");
+                
+                Launchable l = Launchable.create(pkg + "." + info.baseName());
+                if (l != null) {
+                    progressChanged.emit("Setting up examples: " + info.baseName());
+                    m_model.add(l);
+                }
+                
+            }
+        }
+    }
 
     /**
      * Helper function for reading the list of launchable examples... We will
@@ -310,23 +339,8 @@ public class Launcher extends QWidget {
         String dirs[] = new String[] { "classpath:com/trolltech/examples",
                                        "classpath:com/trolltech/demos" };
 
-        List<String> filter = new ArrayList<String>();
-        filter.add("*.class");
-
-        for (int i = 0; i < dirs.length; ++i) {
-            QDir dir = new QDir(dirs[i]);
-
-            List<QFileInfo> classFiles = dir.entryInfoList(filter);
-
-            String pkg = dirs[i].substring(10).replace("/", ".");
-            for (QFileInfo info : classFiles) {
-
-                Launchable l = Launchable.create(pkg + "." + info.baseName());
-                if (l != null) {
-                    progressChanged.emit("Setting up examples: " + info.baseName());
-                    m_model.add(l);
-                }
-            }
+        for (int i = 0; i < dirs.length; ++i) {            
+            traverseDirectory(dirs[i]);           
         }
     }
 
