@@ -1129,3 +1129,160 @@ class QListWidget___ extends QListWidget {
             insertItem(row++, label);
     }
 }// class
+
+
+class QGraphicsScene___ extends QGraphicsScene {
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect) {
+        return addEllipse(rect, null);
+    }
+
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen) {
+        return addEllipse(rect, pen, null);
+    }
+
+
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush) {
+        return addEllipse(rect.x(), rect.y(), rect.width(), rect.height(), pen, brush);
+    }
+
+    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h) {
+        return addEllipse(x, y, w, h, null);
+    }
+
+    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen) {
+        return addEllipse(x, y, w, h, pen, null);
+    }
+
+    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen, QBrush brush) {
+        QGraphicsEllipseItem item = new QGraphicsEllipseItem(x, y, w, h);
+        item.setPen(pen);
+        item.setBrush(brush);
+
+        addItem(item);
+
+        return item;
+    }
+
+    public final QGraphicsLineItem addLine(QLineF line) {
+        return addLine(line, null);
+    }
+
+    public final QGraphicsLineItem addLine(QLineF line, QPen pen) {
+        return addLine(line.x1(), line.y1(), line.x2(), line.y2(), pen);
+    }
+
+    public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2) {
+        return addLine(x1, y1, x2, y2, null);
+    }
+
+    public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2, QPen pen) {
+        QGraphicsLineItem item = new QGraphicsLineItem(x1, y1, x2, y2);
+        item.setPen(pen);
+
+        addItem(item);
+
+        return item;
+    }
+
+    public final QGraphicsPathItem addPath(QPainterPath path) {
+        return addPath(path, null);
+    }
+
+    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen) {
+        return addPath(path, pen, null);
+    }
+
+    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen, QBrush brush) {
+        QGraphicsPathItem item = new QGraphicsPathItem(path);
+        item.setPen(pen);
+        item.setBrush(brush);
+
+        addItem(item);
+
+        return item;
+    }
+
+    public final QGraphicsPixmapItem addPixmap(QPixmap pixmap) {
+        QGraphicsPixmapItem item = new QGraphicsPixmapItem(pixmap);
+
+        addItem(item);
+
+        return item;
+    }
+
+    public final QGraphicsPolygonItem addPolygon(QPolygonF polygon) {
+        return addPolygon(polygon, null);
+    }
+
+    public final QGraphicsPolygonItem addPolygon(QPolygonF polygon, QPen pen) {
+        return addPolygon(polygon, pen, null);
+    }
+
+    public final QGraphicsPolygonItem addPolygon(QPolygonF polygon, QPen pen, QBrush brush) {
+        QGraphicsPolygonItem item = new QGraphicsPolygonItem(polygon);
+        item.setPen(pen);
+        item.setBrush(brush);
+
+        addItem(item);
+
+        return item;
+    }
+
+    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect) {
+        return addRect(rect, null);
+    }
+
+
+    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen) {
+        return addRect(rect, pen, null);
+    }
+
+    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush) {
+        return addRect(rect.x(), rect.y(), rect.width(), rect.height(), pen, brush);
+    }
+
+    public final QGraphicsRectItem addRect(double x, double y, double w, double h) {
+        return addRect(x, y, w, h, null);
+    }
+
+    public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen) {
+        return addRect(x, y, w, h, pen, null);
+    }
+
+    public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen, QBrush brush) {
+        QGraphicsRectItem item = new QGraphicsRectItem(x, y, w, h);
+        item.setPen(pen);
+        item.setBrush(brush);
+
+        addItem(item);
+
+        return item;
+    }
+
+    public final QGraphicsSimpleTextItem addSimpleText(String text) {
+        return addSimpleText(text, null);
+    }
+
+    public final QGraphicsSimpleTextItem addSimpleText(String text, QFont font) {
+        QGraphicsSimpleTextItem item = new QGraphicsSimpleTextItem(text);
+        item.setFont(font);
+
+        addItem(item);
+
+        return item;
+    }
+
+    public final QGraphicsTextItem addText(String text) {
+        return addText(text, null);
+    }
+
+    public final QGraphicsTextItem addText(String text, QFont font) {
+        QGraphicsTextItem item = new QGraphicsTextItem(text);
+        item.setFont(font);
+
+        addItem(item);
+
+        return item;
+    }
+
+}// class

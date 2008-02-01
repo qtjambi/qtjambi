@@ -2247,6 +2247,22 @@
     </object-type>
 
     <object-type name="QGraphicsScene">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QGraphicsScene___" quote-before-line="}// class"/>
+        </inject-code>
+    
+        <modify-function signature="addEllipse(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
+        <modify-function signature="addEllipse(double, double, double, double, const QPen &amp;, const QBrush &amp;)" remove="all" />
+        <modify-function signature="addLine(const QLineF &amp;, const QPen &amp;)" remove="all" />
+        <modify-function signature="addLine(double, double, double, double, const QPen &amp;)" remove="all" />
+        <modify-function signature="addPath(const QPainterPath &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
+        <modify-function signature="addPixmap(const QPixmap &amp;)" remove="all" />
+        <modify-function signature="addPolygon(const QPolygonF &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
+        <modify-function signature="addRect(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
+        <modify-function signature="addRect(double, double, double, double, const QPen &amp;, const QBrush &amp;)" remove="all" />
+        <modify-function signature="addSimpleText(const QString &amp;, const QFont &amp;)" remove="all" />
+        <modify-function signature="addText(const QString &amp;, const QFont &amp;)" remove="all" />
+    
         <modify-function signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*,QWidget*)">
             <modify-argument index="2">
                 <remove-argument/>
@@ -3064,9 +3080,9 @@
     
     <object-type name="QListWidget">
         <modify-function signature="addItem(const QString &amp;)" remove="all" />
-        <modify-function signature="addItems(const QList&lt;QString&gt; &amp;)" remove="all" />
+        <modify-function signature="addItems(const QStringList&lt;QString&gt; &amp;)" remove="all" />
         <modify-function signature="insertItem(int, const QString &amp;)" remove="all" />
-        <modify-function signature="insertItems(int, const QList&lt;QString&gt; &amp;)" remove="all" />
+        <modify-function signature="insertItems(int, const QStringList&lt;QString&gt; &amp;)" remove="all" />
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QListWidget___" quote-before-line="}// class" />
         </inject-code>
