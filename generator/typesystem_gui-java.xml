@@ -3062,6 +3062,16 @@
         </modify-function>
     </object-type>
     
+    <object-type name="QListWidget">
+        <modify-function signature="addItem(const QString &amp;)" remove="all" />
+        <modify-function signature="addItems(const QList&lt;QString&gt; &amp;)" remove="all" />
+        <modify-function signature="insertItem(int, const QString &amp;)" remove="all" />
+        <modify-function signature="insertItems(int, const QList&lt;QString&gt; &amp;)" remove="all" />
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QListWidget___" quote-before-line="}// class" />
+        </inject-code>
+    </object-type>
+    
     <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcItems' in 'com.trolltech.qt.gui.QGraphicsGridLayout' but not both" />
     
 </typesystem>

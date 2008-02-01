@@ -1086,3 +1086,46 @@ class QPrinter___ extends QPrinter {
 
 }// class
 
+class QListWidget___ extends QListWidget {
+
+    /**
+     * Inserts an item with the text label at the end of the list widget.
+     * 
+     * @param label The text of the new item.
+     */
+    public final void addItem(String label) {
+        addItem(new QListWidgetItem(label, this));
+    }
+
+    /**
+     * Inserts items with the text labels at the end of the list widget.
+     * 
+     * @param labels The collection of labels for the new items.
+     */
+    public final void addItems(java.util.Collection<String> labels) {
+        for (String label : labels)
+            addItem(label);
+    }
+    
+    /**
+     * This is an overloaded member function, provided for convenience.
+     * Inserts an item with the text label in the list widget at the position given by row.
+     * 
+     * @param row The position in which to insert the new item.
+     * @param label The text of the new item.
+     */
+    public final void insertItem(int row, String label) {
+        insertItem(row, new QListWidgetItem(label, this));
+    }
+    
+    /**
+     * Inserts items from the list of labels into the list, starting at the given row.
+     * 
+     * @param row The position in which to insert the new items.
+     * @param labels The collection of labels for the new items.
+     */
+    public final void insertItems(int row, java.util.Collection<String> labels) {
+        for (String label : labels)
+            insertItem(row++, label);
+    }
+}// class
