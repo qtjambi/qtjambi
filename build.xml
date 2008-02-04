@@ -298,6 +298,9 @@
 
         <jar destfile="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
             <fileset dir="${outputDir}/platform-output" />
+	    <manifest>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+	    </manifest>
         </jar>
 
         <delete dir="${outputDir}/platform-output"/>
