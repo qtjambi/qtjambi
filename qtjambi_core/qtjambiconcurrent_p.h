@@ -20,6 +20,6 @@ private:
     QList<JObjectWrapper> *m_sequence;
 };
 
-#endif QT_NO_CONCURRENT
+#endif // QT_NO_CONCURRENT
 
 #endif
