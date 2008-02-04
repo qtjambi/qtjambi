@@ -1132,28 +1132,82 @@ class QListWidget___ extends QListWidget {
 
 
 class QGraphicsScene___ extends QGraphicsScene {
-    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect) {
+    /**
+     * Equivalent to addEllipse(rect, null, null)
+     */
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect) 
+    {
         return addEllipse(rect, null);
     }
 
-    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen) {
+    /**
+     * Equivalent to addEllipse(rect, pen, null)
+     */
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen) 
+    {
         return addEllipse(rect, pen, null);
     }
 
 
-    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush) {
+    /**
+     * Creates and adds an ellipse item to the scene, and returns the item
+     * reference. The geometry of the ellipse is defined by rect, and its pen
+     * and brush are initialized to pen and brush.
+     * 
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0).
+     * 
+     * If the item is visible (i.e., QGraphicsItem::isVisible() returns true),
+     * QGraphicsScene will emit changed() once control goes back to the event
+     * loop.
+     * 
+     * @param rect The bounding rectangle of the ellipse.
+     * @param pen The pen for the resulting QGraphicsEllipseItem.
+     * @param brush The brush for the resulting QGraphicsEllipseItem.
+     * @return The resulting item.
+     */
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush) 
+    {
         return addEllipse(rect.x(), rect.y(), rect.width(), rect.height(), pen, brush);
     }
 
+    /**
+     * Equivalent to addEllipse(x, y, w, h, null, null)
+     */
     public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h) {
         return addEllipse(x, y, w, h, null);
     }
 
-    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen) {
+    /**
+     * Equivalent to addEllipse(x, y, w, h, pen, null)
+     */
+    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen) 
+    {
         return addEllipse(x, y, w, h, pen, null);
     }
 
-    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen, QBrush brush) {
+    /**
+     * Creates and adds an ellipse item to the scene, and returns the item
+     * reference. The geometry of the ellipse is defined by x, y, w, h, and its pen
+     * and brush are initialized to pen and brush.
+     * 
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0).
+     * 
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param x The left horizontal coordinate of the ellipse's bounding rectangle.
+     * @param y The top vertical coordinate of the ellipse's bounding rectangle.
+     * @param w The width of the ellipse's bounding rectangle.
+     * @param h The height of the ellipse's bounding rectangle.
+     * @param pen The pen for the resulting QGraphicsEllipseItem.
+     * @param brush The brush for the resulting QGraphicsEllipseItem.
+     * @return The resulting item.
+     */
+    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen, QBrush brush) 
+    {
         QGraphicsEllipseItem item = new QGraphicsEllipseItem(x, y, w, h);
         item.setPen(pen);
         item.setBrush(brush);
@@ -1163,19 +1217,62 @@ class QGraphicsScene___ extends QGraphicsScene {
         return item;
     }
 
+    /**
+     * Equivalent to addLine(line, null)
+     */
     public final QGraphicsLineItem addLine(QLineF line) {
         return addLine(line, null);
     }
 
-    public final QGraphicsLineItem addLine(QLineF line, QPen pen) {
+    /**
+     * Creates and adds a line item to the scene, and returns the item
+     * reference. The geometry of the line is defined by line, and its pen
+     * is initialized to pen.
+     *
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0).
+     *
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param line The definition of the line.
+     * @param pen The pen with which to draw the line.
+     * @return The resulting item.
+     */
+    public final QGraphicsLineItem addLine(QLineF line, QPen pen) 
+    {
         return addLine(line.x1(), line.y1(), line.x2(), line.y2(), pen);
     }
 
+    /**
+     * Equivalent to addLine(x1, y1, x2, y2, null)
+     */
     public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2) {
         return addLine(x1, y1, x2, y2, null);
     }
 
-    public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2, QPen pen) {
+    /**
+     * Creates and adds a line item to the scene, and returns the item
+     * reference. The geometry of the line is defined by x1, y1, x2, y2, and its pen
+     * is initialized to pen.
+     *
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0).
+     *
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param x1 The first horizontal coordinate of the line.
+     * @param y1 The first vertical coordinate of the line.
+     * @param x2 The second horizontal coordinate of the line.
+     * @param y2 The second vertical coordinate of the line.
+     * @param pen The pen with which to draw the line.
+     * @return The resulting item.
+     */
+    public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2, QPen pen) 
+    {
         QGraphicsLineItem item = new QGraphicsLineItem(x1, y1, x2, y2);
         item.setPen(pen);
 
@@ -1184,15 +1281,40 @@ class QGraphicsScene___ extends QGraphicsScene {
         return item;
     }
 
+
+    /** 
+     * Equivalent to addPath(path, null, null)
+     */
     public final QGraphicsPathItem addPath(QPainterPath path) {
         return addPath(path, null);
     }
 
-    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen) {
+    /** 
+     * Equivalent to addPath(path, pen, null)
+     */
+    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen) 
+    {
         return addPath(path, pen, null);
     }
-
-    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen, QBrush brush) {
+    /**
+     * Creates and adds a path item to the scene, and returns the item
+     * reference. The geometry of the path is defined by path, and its pen and
+     * brush are initialized to pen and brush.
+     * 
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0).
+     * 
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param path The definition of the path.
+     * @param pen The pen for drawing the path.
+     * @param brush The brush for drawing the path.
+     * @return The resulting item.
+     */
+    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen, QBrush brush) 
+    {
         QGraphicsPathItem item = new QGraphicsPathItem(path);
         item.setPen(pen);
         item.setBrush(brush);
@@ -1202,7 +1324,22 @@ class QGraphicsScene___ extends QGraphicsScene {
         return item;
     }
 
-    public final QGraphicsPixmapItem addPixmap(QPixmap pixmap) {
+    /**
+     * Creates and adds a pixmap item to the scene, and returns the item
+     * reference. The pixmap is defined by pixmap.
+     * 
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0).
+     * 
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param pixmap The pixmap for which to create a graphics item.
+     * @return The resulting item.
+     */
+    public final QGraphicsPixmapItem addPixmap(QPixmap pixmap) 
+    {
         QGraphicsPixmapItem item = new QGraphicsPixmapItem(pixmap);
 
         addItem(item);
@@ -1210,15 +1347,39 @@ class QGraphicsScene___ extends QGraphicsScene {
         return item;
     }
 
+    /**
+     * Equivalent to addPolygon(polygon, null, null)
+     */
     public final QGraphicsPolygonItem addPolygon(QPolygonF polygon) {
         return addPolygon(polygon, null);
     }
 
+    /**
+     * Equivalent to addPolygon(polygon, pen, null)
+     */
     public final QGraphicsPolygonItem addPolygon(QPolygonF polygon, QPen pen) {
         return addPolygon(polygon, pen, null);
     }
 
-    public final QGraphicsPolygonItem addPolygon(QPolygonF polygon, QPen pen, QBrush brush) {
+    /**
+     * Creates and adds a polygon item to the scene, and returns the item
+     * reference. The polygon is defined by polygon, and its pen and
+     * brush are initialized to pen and brush.
+     * 
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0).
+     * 
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param polygon The definition of the polygon.
+     * @param pen The pen with which to draw the polygon.
+     * @param brush The brush with which to draw the polygon.
+     * @return The resulting item.
+     */
+    public final QGraphicsPolygonItem addPolygon(QPolygonF polygon, QPen pen, QBrush brush) 
+    {
         QGraphicsPolygonItem item = new QGraphicsPolygonItem(polygon);
         item.setPen(pen);
         item.setBrush(brush);
@@ -1228,28 +1389,81 @@ class QGraphicsScene___ extends QGraphicsScene {
         return item;
     }
 
+    /**
+     * Equivalent to addRect(rect, null, null)
+     */
     public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect) {
         return addRect(rect, null);
     }
 
-
-    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen) {
+    /**
+     * Equivalent to addRect(rect, pen, null)
+     */
+    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen) 
+    {
         return addRect(rect, pen, null);
     }
 
-    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush) {
+    /**
+     * Creates and adds a rectangle item to the scene, and returns the item
+     * reference. The geometry of the rectangle is defined by rect, and its pen
+     * and brush are initialized to pen and brush.
+     *
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0). For example, if a QRect(50, 50, 100,
+     * 100) is added, its top-left corner will be at (50, 50) relative to the
+     * origin in the item's coordinate system.
+     * 
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param rect The definition of the rectangle.
+     * @param pen The pen with which to draw the rectangle.
+     * @param brush The brush with which to draw the rectangle.
+     * @return The resulting item.
+     */
+    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush) 
+    {
         return addRect(rect.x(), rect.y(), rect.width(), rect.height(), pen, brush);
     }
 
+    /**
+     * Equivalent to addRect(x, y, w, h, null, null)
+     */
     public final QGraphicsRectItem addRect(double x, double y, double w, double h) {
         return addRect(x, y, w, h, null);
     }
 
+    /**
+     * Equivalent to addRect(x, y, w, h, pen, null)
+     */
     public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen) {
         return addRect(x, y, w, h, pen, null);
     }
 
-    public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen, QBrush brush) {
+    /**
+     * Creates and adds a rectangle item to the scene, and returns the item
+     * reference. The geometry of the rectangle is defined by x, y, w, h, and its pen
+     * and brush are initialized to pen and brush.
+     *
+     * Note that the item's geometry is provided in item coordinates, and its
+     * position is initialized to (0, 0). 
+     * 
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param x The left horizontal coordinate of the rectangle.
+     * @param y The top vertical coordinate of the rectangle.
+     * @param w The width of the rectangle.
+     * @param h The height of the rectangle.
+     * @param pen The pen with which to draw the rectangle.
+     * @param brush The brush with which to draw the rectangle.
+     * @return The resulting item.
+     */
+    public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen, QBrush brush) 
+    {
         QGraphicsRectItem item = new QGraphicsRectItem(x, y, w, h);
         item.setPen(pen);
         item.setBrush(brush);
@@ -1259,11 +1473,30 @@ class QGraphicsScene___ extends QGraphicsScene {
         return item;
     }
 
+    /**
+     * Equivalent to addSimpleText(text, null)
+     */
     public final QGraphicsSimpleTextItem addSimpleText(String text) {
         return addSimpleText(text, null);
     }
 
-    public final QGraphicsSimpleTextItem addSimpleText(String text, QFont font) {
+    /**
+     * Creates and adds a QGraphicsSimpleTextItem to the scene, and returns the
+     * item reference. The text string is initialized to text, and its font is
+     * initialized to font.
+     * 
+     * The item's position is initialized to (0, 0).
+     * 
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param text The text to add to the scene.
+     * @param font The font to use for displaying the text.
+     * @return The resulting item.
+     */
+    public final QGraphicsSimpleTextItem addSimpleText(String text, QFont font) 
+    {
         QGraphicsSimpleTextItem item = new QGraphicsSimpleTextItem(text);
         item.setFont(font);
 
@@ -1272,11 +1505,30 @@ class QGraphicsScene___ extends QGraphicsScene {
         return item;
     }
 
+    /**
+     * Equivalent to addText(text, null)
+     */
     public final QGraphicsTextItem addText(String text) {
         return addText(text, null);
     }
 
-    public final QGraphicsTextItem addText(String text, QFont font) {
+    /**
+     * Creates and adds a text item to the scene, and returns the item
+     * reference. The text string is initialized to text, and its font
+     * is initialized to font.
+     * 
+     * The item's position is initialized to (0, 0).
+     * 
+     * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
+     * QGraphicsScene will emit changed once control goes back to the event
+     * loop.
+     * 
+     * @param text The text to add to the scene.
+     * @param font The font to use for displaying the text.
+     * @return The resulting item.
+     */
+    public final QGraphicsTextItem addText(String text, QFont font) 
+    {
         QGraphicsTextItem item = new QGraphicsTextItem(text);
         item.setFont(font);
 
