@@ -844,11 +844,13 @@ bool QtJambiTypeManager::isFlagsType(const QString &className, const QString &pa
         return false;
 }
 
-QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &className, const QString &package) const
+QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &className, const QString &_package) const
 {
+    QString package = _package;
+
     // For "void" we always return None.
     if (className == QLatin1String("void"))
-        return None;
+        return None;   
 
     // Native pointers are native pointers
     if (package == QLatin1String("com/trolltech/qt/") &&
@@ -881,6 +883,8 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &cla
         type |= Enum;
     } else if (convertEnums() && isFlagsType(className, package)) {
         type |= Flags;
+    } else if (package.startsWith("[")) {
+        type |= Array;
     } else {
         type |= Value; // Try to go with jobject
     }
@@ -1233,14 +1237,14 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
 
         if (success)
             p->l = javaObject;
-    } /*else if (type & Value) {
+    } else if ((type & Value) || (type & Object) || (type & Array)) {
         int metaType = QMetaType::type(internalTypeName.toLatin1().constData());
 
         if (metaType == qMetaTypeId<JObjectWrapper>()) {
-            p->l = mEnvironment->NewLocalRef( (*(JObjectWrapper **)in)->object);
+            p->l = mEnvironment->NewLocalRef( ((JObjectWrapper *)in)->object);
             success = true;
         }
-    }*/
+    }
 
     if (!success) {
         qWarning("QtJambiTypeManager::convertInternalToExternal: Cannot convert to type '%s' from '%s'",
@@ -1368,7 +1372,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
         metaType = QMetaType::Int;
         placeHolder.i = intForQtEnumerator(pval->l);
         copy = &placeHolder.i;
-    } else if ((type & Value) || (type & Object)) {
+    } else if ((type & Value) || (type & Object) || (type & Array)) {
         metaType = qMetaTypeId<JObjectWrapper>();
         placeHolder.wrapper = JObjectWrapper(mEnvironment, pval->l);
         copy = &placeHolder.wrapper;

@@ -1637,4 +1637,51 @@ public class TestConnections extends QApplicationTest implements Qt
         assertEquals("what the hell is going on?", javaSignal.received_bytearray().toString());        
     }
     
+    private static class ArrayQObject extends QObject {
+        public Object received = null; 
+            
+        public void fooBar(String args[]) {
+            received = args;
+        }
+        
+        public Signal1<String[]> zootBaz = new Signal1<String[]>();
+    }
+    
+    @Test
+    public void signatureOfJavaMethodsWithArrays() {
+        ArrayQObject aqo = new ArrayQObject();
+        
+        String signature = SignalsAndSlots.metaObjectMethodSignature(aqo, "fooBar");
+        assertEquals("fooBar(JObjectWrapper)", signature);
+        
+        assertTrue(SignalsAndSlots.invokeMethod(aqo, "fooBar", new String[] { "hello", "world" }));
+        assertTrue(aqo.received instanceof String[]);
+        
+        String array[] = (String[])aqo.received;
+        assertEquals(2, array.length);
+        
+        assertEquals("hello", array[0]);
+        assertEquals("world", array[1]);
+    }
+    
+    @Test
+    public void signatureOfJavaSignalWithArrays() {
+        ArrayQObject aqo = new ArrayQObject();
+        
+        String signature = SignalsAndSlots.metaObjectMethodSignature(aqo, "zootBaz");
+        assertEquals("zootBaz(JObjectWrapper)", signature);
+        
+        aqo.zootBaz.connect(aqo, "fooBar(String [])");
+        
+        assertTrue(SignalsAndSlots.invokeMethod(aqo, "zootBaz", new String[] { "goodday", "planet" }));
+        assertTrue(aqo.received instanceof String[]);
+        
+        String array[] = (String[])aqo.received;
+        assertEquals(2, array.length);
+        
+        assertEquals("goodday", array[0]);
+        assertEquals("planet", array[1]);
+        
+    }
+    
 }

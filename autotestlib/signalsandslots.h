@@ -19,6 +19,9 @@
 #include <QtCore/QMetaProperty>
 #include <QtCore/QStringList>
 
+#include <qtjambi_core.h>
+#include <jni.h>
+
 #ifndef SIGNAL
 #  define SIGNAL(A) #A
 #endif
@@ -226,6 +229,23 @@ public:
     {
         QMetaEnum metaEnum = metaObject()->enumerator(metaObject()->indexOfEnumerator(name.toUtf8().constData()));
         return metaEnum.isValid();
+    }
+
+    static QString metaObjectMethodSignature(QObject *obj, const QString &name) 
+    {
+        for (int i=0; i<obj->metaObject()->methodCount(); ++i) {
+            if (QString(obj->metaObject()->method(i).signature()).contains(name)) {
+                return obj->metaObject()->method(i).signature();
+            }
+        }
+
+        return "";
+    }
+
+    static bool invokeMethod(QObject *obj, const QString &name, jobject arg) 
+    {
+        JNIEnv *env = qtjambi_current_environment();
+        return QMetaObject::invokeMethod(obj, name.toLatin1(), Qt::DirectConnection, Q_ARG(JObjectWrapper, JObjectWrapper(env, arg)));
     }
 
     int slot1_1_called;

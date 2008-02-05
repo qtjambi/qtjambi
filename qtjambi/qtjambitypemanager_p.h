@@ -59,6 +59,7 @@ public:
         QtClass         = 0x04000,
         Enum            = 0x08000,
         Flags           = 0x10000,
+        Array           = 0x20000,
 
         TypeMask = Integer + Long + Boolean + Float + Double + Short + Byte + Char
     };

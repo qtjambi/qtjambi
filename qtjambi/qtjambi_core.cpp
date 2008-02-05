@@ -2142,6 +2142,7 @@ jobject qtjambi_invoke_method(JNIEnv *env,
     case 'C': return qtjambi_from_char(env, env->CallCharMethodA(receiver, methodId, argsArray.data()));
     default:
         Q_ASSERT_X(false, "qtjambi_invoke_slot", "Invalid return type parameter");
+        return 0;
     };
 }
 
