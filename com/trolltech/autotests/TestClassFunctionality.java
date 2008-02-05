@@ -425,7 +425,8 @@ public class TestClassFunctionality extends QApplicationTest {
             disposed = 0;
             QObject qobject = new QObjectSubclass(null, this);
             qobject.disposeLater();
-            QApplication.processEvents(new QEventLoop.ProcessEventsFlags(QEventLoop.ProcessEventsFlag.DeferredDeletion));
+            QApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
+            
             assertEquals(disposed, 1);
             assertEquals(qobject.nativeId(), 0L);
         }
