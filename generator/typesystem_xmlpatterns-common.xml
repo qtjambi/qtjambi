@@ -34,8 +34,6 @@
   <rejection class="QAbstractXmlReceiver" function-name="item" />
   <rejection class="QAbstractXmlReceiver" function-name="sendAsNode" />
   <value-type name="QAbstractXmlReceiver">
-    <modify-function signature="attribute(const QXmlName &amp;, const QStringRef &amp;)" remove="all" />
-    <modify-function signature="characters(const QStringRef &amp;)" remove="all" />
   </value-type>  
 
   <value-type name="QSimpleXmlNodeModel">
