@@ -30,8 +30,8 @@ public class TestQSettings extends QApplicationTest implements Serializable {
         QSettings settings = new QSettings("Trolltech", "Test");
         settings.sync();
 
-        assertEquals(5, Integer.parseInt((String) settings.value("int")));
-        assertEquals(5.000001d, Double.parseDouble((String) settings.value("double")));
+        assertEquals(5,settings.value("int"));
+        assertEquals(5.000001d, Double.parseDouble(settings.value("double").toString()));
         assertEquals("String", settings.value("String"));
     }
 
