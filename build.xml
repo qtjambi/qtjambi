@@ -182,7 +182,10 @@
 
     <target name="examples.compile"
             depends="init, examples.phonon, examples.webkit">
-        <javac destdir="${outputDir}" debug="true">
+        <javac destdir="${outputDir}"
+	       debug="true"
+	       fork="true"
+	       memoryMaximumSize="1024m">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/**/*.java"/>
