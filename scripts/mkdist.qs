@@ -25,10 +25,10 @@ option.crtRedist = array_get_next_value(args, "--crt-redist");
 if (option.crtRedist)
     option.crtRedist = option.crtRedist.replace(/\\/g, "/");
 
+command.ant = find_executable("ant");
 command.chmod = find_executable("chmod");
 command.cp = find_executable("cp");
 command.jar = find_executable("jar");
-command.javac = find_executable("javac");
 command.mv = find_executable("mv");
 command.p4 = find_executable("p4");
 command.rm = find_executable("rm");
@@ -145,11 +145,6 @@ function setupDefaultPackage() {
     ];
 
     pkg.removeFiles = [
-                       "rebuild.bat",
-                       "rebuild.sh",
-                       "build.xml",
-                       "dev.xml",
-                       "README"
     ];
 
     pkg.mkdirs = [
@@ -163,7 +158,6 @@ function setupDefaultPackage() {
                      ["qtjambi/qtjambi_global.h", "include"],
                      ["qtjambi/qtjambilink.h", "include"],
                      ["qtjambi/qtjambifunctiontable.h", "include"],
-                     ["qtjambi/qtjambitypemanager.h", "include"],
 
                      // text files for main directory...
                      "dist/readme.html",
@@ -211,32 +205,15 @@ function setupBinaryPackage(pkg) {
         pkg.qmakespec = "win32-msvc2005";
     }
 
-    pkg.removeDirs.push(
-                   "com/trolltech/qt",
-                   "com/trolltech/tools",
-                   "common",
-                   "designer-integration",
-                   "generator",
-                   "juic",
-                   "qtjambi",
-                   "qtjambi_core",
-                   "qtjambi_designer",
-                   "qtjambi_generator",
-                   "qtjambi_gui",
-                   "qtjambi_network",
-                   "qtjambi_opengl",
-                   "qtjambi_sql",
-                   "qtjambi_svg",
-                   "qtjambi_xml"
-                   );
+    if (os_name() == OS_NAME_WINDOWS) {
+        pkg.removeDirs.push(
+                            "lib"
+                            );
+    }
 
     pkg.removeFiles.push(
-                         "Makefile",
-                         "java.pro",
-                         "java_files"
+                         "Makefile"
                          );
-
-
 
     pkg.copyFiles.push(
                        [command.generator, "bin"],
@@ -386,7 +363,6 @@ function setupBinaryPackage(pkg) {
 
     if (os_name() == OS_NAME_MACOSX) {
         pkg.copyFiles.push("dist/mac/qtjambi.sh");
-        pkg.copyFiles.push(["dist/mac/generator_example.sh", "generator_example"]);
         pkg.copyFiles.push("dist/mac/designer.sh");
     } else if (os_name() == OS_NAME_WINDOWS) {
         pkg.copyFiles.push("dist/win/designer.bat");
@@ -394,11 +370,9 @@ function setupBinaryPackage(pkg) {
             pkg.copyFiles.push(["dist/win/qtjambi64.exe", "qtjambi.exe"]);
         else
             pkg.copyFiles.push("dist/win/qtjambi.exe");
-        pkg.copyFiles.push(["dist/win/generator_example.bat", "generator_example"]);
     } else {
         pkg.copyFiles.push("dist/linux/designer.sh");
         pkg.copyFiles.push("dist/linux/qtjambi.sh");
-        pkg.copyFiles.push(["dist/linux/generator_example.sh", "generator_example"]);
     }
 }
 
@@ -420,6 +394,7 @@ function setupSourcePackage(pkg) {
 
     var uicPrefix = pkg.qt + "/src/tools/uic/";
     pkg.copyFiles.push(
+
                        // uic files
                        [uicPrefix + "customwidgetsinfo.cpp", "juic"],
                        [uicPrefix + "customwidgetsinfo.h", "juic"],
@@ -442,12 +417,12 @@ function setupSourcePackage(pkg) {
 
                        // designer files...
                        [pkg.qt + "/tools/designer/src/lib/uilib/ui4_p.h",
-                       [option.qtdir + "/tools/designer/src/lib/uilib/ui4_p.h",
                         "designer-integration/language/private/ui4_p.h"],
                        [pkg.qt + "/tools/designer/src/lib/shared/qdesigner_utils_p.h",
                         "qtjambi_designer/private/qdesigner_utils_p.h"],
                        [pkg.qt + "/tools/designer/src/lib/shared/shared_global_p.h",
                         "qtjambi_designer/private/shared_global_p.h"]
+
                        );
 
     File.write("d:/dirs.txt", pkg.mkdirs.join("\n"));
@@ -614,17 +589,18 @@ function createPackage(pkg) {
         verbose(" - pre compile step...");
         pkg.preCompileStep(pkg);
 
-        verbose(" - compiling and running generator...");
-        compileAndRunGenerator(pkg);
+        verbose(" - Run the 'ant' step...");
+        replace_in_file("build.xml", "${user.name}", "Trolltech ASA");
+        execute(command.ant);
 
-        verbose(" - compiling native libraries...");
-        compileNativeLibraries(pkg);
+        verbose("\n\nANT (stdout):");
+        verbose(Process.stdout);
 
-        verbose(" - compiling java files...");
-        compileJavaFiles(pkg);
+        verbose("\n\nANT (stderr):");
+        verbose(Process.stderr);
 
-        verbose(" - creating qtjambi.jar");
-        createJarFile(pkg);
+        verbose("\n\n");
+
 
         verbose(" - documentation...");
         createDocs(pkg);
@@ -642,16 +618,6 @@ function createPackage(pkg) {
     verbose(" - expanding macroes...");
     expandMacros(pkg.licenseHeader);
 
-    if (pkg.binary && os_name() == OS_NAME_MACOSX) {
-        verbose(" - OSX install_name foo...");
-        fixInstallName();
-    }
-
-    if (pkg.binary && option.platformJar) {
-        verbose(" - creating platform .jar...");
-        createPlatformJar(pkg);
-    }
-
     verbose(" - changing access and ownership of files..");
     changeAccessAndOwnership(pkg);
 
@@ -662,6 +628,7 @@ function createPackage(pkg) {
     verbose(" - done!");
 }
 
+
 /*******************************************************************************
  * Fix the properties of the files so that they look really UNIX'y...
  */
@@ -671,19 +638,6 @@ function changeAccessAndOwnership() {
     if (os_name() == OS_NAME_LINUX || os_name() == OS_NAME_MACOSX) {
         Process.execute([command.chmod, "a+rx", "designer.sh", "qtjambi.sh"]);
         Process.execute([command.chmod, "-R", "a+rw"]);
-    }
-}
-
-/*******************************************************************************
- * Check the compiler as we can only do the .net 2003 on windows
- */
-function checkCompiler() {
-    if (os_name() == OS_NAME_WINDOWS) {
-        execute([find_executable("cl"), "/?"]);
-        if (Process.stderr.indexOf("13.10") < 0)
-            throw "checkCompiler(): bad compiler version, only MSVC.net2003 is supported";
-    } else {
-        print("TODO: check compiler for non-windows...");
     }
 }
 
@@ -713,7 +667,6 @@ function prepareSourceTree()
     execute([command.chmod, "-R", "u+w", "."]);
 }
 
-
 /*******************************************************************************
  * Finds the generator name
  */
@@ -724,70 +677,6 @@ function findGeneratorName() {
     else
         name = "generator";
     return javaDir  + "/generator/" + name;
-}
-
-
-/*******************************************************************************
- * Compiles and runs the generator
- */
-function compileAndRunGenerator(pkg) {
-    var dir = new Dir(javaDir);
-    dir.cd("generator");
-    dir.setCurrent();
-
-    System.setenv("QTDIR", pkg.qt);
-
-    if (os_name() == OS_NAME_MACOSX)
-        System.setenv("DYLD_LIBRARY_PATH", pkg.qt + "/lib");
-    else if (os_name() == OS_NAME_LINUX)
-        System.setenv("LD_LIBRARY_PATH", pkg.qt + "/lib");
-    else if (os_name() == OS_NAME_WINDOWS)
-        System.setenv("PATH", pkg.qt + "/bin;" + System.getenv("PATH"));
-
-    verbose("   - running qmake");
-    execute([pkg.qmake, "-spec", pkg.qmakespec, "-config", "release"]);
-
-    verbose("   - building");
-    var make = [pkg.maketool, "-f", "Makefile"];
-    execute(make);
-
-    verbose("   - running");
-    execute([command.generator]);
-
-    dir.cdUp();
-    dir.setCurrent();
-}
-
-
-/*******************************************************************************
- * Compiles the native libraries
- */
-function compileJavaFiles() {
-    verbose("   - running juic");
-    execute(javaDir + "/bin/juic -cp .");
-
-    verbose("   - building");
-    execute([command.javac, "-J-Xmx1024m", "-target", "1.5", "@java_files"]);
-
-    try {
-        execute([command.javac, "-J-Xmx1024m", "-target", "1.5", "com/trolltech/demos/HelloGL.java"]);
-    } catch (e) {
-        print("warning: failed to compile HelloGL demo, see 'hellogl_error.log' for details\n");
-        File.write("hellogl_error.log", e);
-    }
-}
-
-
-/*******************************************************************************
- * Compiles the native libraries
- */
-function compileNativeLibraries(pkg) {
-    verbose("   - running qmake");
-    execute([pkg.qmake, "-spec", pkg.qmakespec, "-r", "CONFIG+=release", "-after", "CONFIG-=debug debug_and_release"]);
-
-    verbose("   - running make");
-    var make = [pkg.maketool, "-f", "Makefile"];
-    execute(make);
 }
 
 
@@ -837,29 +726,6 @@ function expandMacros(header) {
 }
 
 
-
-
-/*******************************************************************************
- * Creates the jar file
- */
-function createJarFile() {
-    var tmpfile = "jar_file.tmp";
-    var fileList = [];
-
-    // Add all the class files in com.trolltech.qt + core, gui, sql, opengl
-    var cutPoint = javaDir.length + 1;
-    for_all_files(javaDir, function(name) {
-        if (name.indexOf("trolltech/qt/") >= 0 && name.endsWith(".class"))
-            fileList.push(name.substring(cutPoint));
-        else if (name.indexOf("trolltech/tools/designer/") >= 0 && name.endsWith(".class"))
-            fileList.push(name.substring(cutPoint));
-    });
-
-    // Write the content file.
-    File.write(tmpfile, fileList.join("\n"));
-    execute([command.jar, "-cf", "qtjambi.jar", "@" + tmpfile]);
-    execute([command.rm, tmpfile]);
-}
 
 
 /*******************************************************************************
@@ -956,93 +822,38 @@ function removeFiles(pkg) {
             || name.endsWith(".exp")
             || name.endsWith(".log"))
             files.push(name);
-        else if (name.indexOf("/lib/") >=0 && name.endsWith(".dll"))
-            files.push(name);
         else if (name.indexOf("com_trolltech_") >= 0 && name.endsWith(".lib"))
             files.push(name);
         else if (name.indexOf("/plugins/") >= 0 && name.endsWith(".lib"))
             files.push(name);
-	else if (name.endsWith(".debug"))
+	else if (name.endsWith(".debug") || name.indexOf("_debuglib.") > 0)
 	    files.push(name);
         else if (name.endsWith(".a"))
             files.push(name);
+        else if (name.endsWith(".o") || name.endsWith(".obj"))
+            files.push(name);
+        else if (name.endsWith(".pch"))
+            files.push(name);
+        else if (File.isDir(name) && (name.endsWith("debug") || name.endsWith("release")))
+            files.push(name);
+        else if (name.endsWith(".class"))
+            files.push(name);
+        else if (name.endsWith("Makefile") || name.endsWith("Makefile.Debug") || name.endsWith("Makefile.Release"))
+            files.push(name);
+
     });
-    for (var i=0; i<files.length; ++i)
-        execute([command.rm, files[i]]);
-}
 
-/*******************************************************************************
- *
- * Creates the platform bundle...
- *
- */
-function createPlatformJar(pkg) {
-    var dir = new Dir(javaDir);
-    dir.setCurrent();
-
-    var name = option.startDir + "/" + pkg.name + ".jar";
-
-    var libDir = os_name() == OS_NAME_WINDOWS ? "bin" : "lib";
-    var postfix;
-
-    // plugins...
-    execute([command.jar, "-cf", name, "plugins"]);
-
-    var re_numeric = /\.\d\.jnilib/;
-
-    // libraries...
-    for_all_files(libDir, function(f) {
-        if (f.endsWith(".dll")
-            || f.indexOf(".so") >= 0
-            || f.indexOf(".dylib") >=0 || f.endsWith(".jnilib") >= 0) {
-
-	    // Avoid symlinks on linux...
-	    if (os_name() == OS_NAME_LINUX
-		&& (f.indexOf("libqtjambi") >= 0 || f.indexOf("libcom_trolltech") >= 0)
-		&& !f.endsWith(".so"))
-		return;
-
-	    // Avoid symlinks on macosx...
-	    if (os_name() == OS_NAME_MACOSX
-                && f.indexOf("lib") >= 0
-                && re_numeric.search(f) >= 0)
-		return;
-
-	    // Skip util libs...
-	    if (f.indexOf("Assistant") >= 0
-		|| f.indexOf("Designer") >= 0
-		|| f.indexOf("Script") >= 0)
-		return;
-
-              if (f.endsWith(".exe"))
-                  return;
-
-	    verbose("   - adding: " + f.split("/").pop());
-            execute([command.jar, "-uf", name, "-C", libDir, f.split("/").pop()]);
+    for (var i=0; i<files.length; ++i) {
+        if (File.isDir(files[i])) {
+            print("removing directory: " + files[i]);
+            execute([command.rm, "-rf", files[i]]);
+        } else {
+            print("removing file: " + files[i]);
+            execute([command.rm, files[i]]);
         }
-        });
-
-    // qt_system_libs file...
-    if (os_name() != OS_NAME_MACOSX) {
-        var file = new File("qt_system_libs");
-        file.open(File.WriteOnly);
-        if (os_name() == OS_NAME_WINDOWS) {
-            if (pkg.license == "gpl") {
-                file.writeLine("mingwm10.dll");
-            } else {
-		file.writeLine("Microsoft.VC80.CRT.manifest");
-                file.writeLine("msvcr80.dll");
-                file.writeLine("msvcp80.dll");
-                file.writeLine("msvcm80.dll");
-            }
-        } else if (os_name() == OS_NAME_LINUX) {
-            file.writeLine("libstdc++.so.5");
-        }
-        file.close();
-        execute([command.jar, "-uf", name, "qt_system_libs"]);
-	File.remove("qt_system_libs");
     }
 }
+
 
 
 /*******************************************************************************
@@ -1069,46 +880,6 @@ function createBundle(pkg) {
     }
 }
 
-/* mac specific stuff */
-
-function fixInstallName() {
-    verbose(" - fixing install name");
-
-    var dir = new Dir(javaDir);
-    dir.cd("lib");
-    dir.setCurrent();
-
-    var files = dir.entryList("lib*");
-    for (var i=0; i<files.length; ++i) {
-        var file = files[i];
-        for (var j=0; j<files.length; ++j) {
-            Process.execute(["install_name_tool", "-change", file, "@loader_path/" + file, files[j]]);
-        }
-    }
-
-    // Fix that we load libqtjambi.1.jnilib when we really want libqtjambi.jnilib
-    for (var i=0; i<files.length; ++i) {
-        var file = files[i];
-        Process.execute(["install_name_tool", "-change",
-                         "@loader_path/libqtjambi.1.jnilib",
-                         "@loader_path/libqtjambi.jnilib", file]);
-    }
-
-    dir.cdUp();
-    dir.setCurrent();
-
-    // and then plugins...
-    for_all_files("plugins", function(name) {
-            updatePluginInstallName(name, files);
-        });
-}
-
-function updatePluginInstallName(name, files) {
-    for (var i=0; i<files.length; ++i)
-        Process.execute(["install_name_tool", "-change",
-                         files[i], "@loader_path/../../lib/" + files[i],
-                         name]);
-}
 
 /*******************************************************************************
  *
@@ -1117,17 +888,17 @@ function updatePluginInstallName(name, files) {
  *
  */
 function figureVersion() {
-    var content = File.read("../com/trolltech/qt/Utilities.java");
+    var content = File.read("../com/trolltech/qt/internal/Version.java");
 
-    var regexp_major = /MAJOR_VERSION += +(\d) *;/;
-    var regexp_minor = /MINOR_VERSION += +(\d) *;/;
-    var regexp_patch = /PATCH_VERSION += +(\d) *;/;
-    var regexp_build = /BUILD_NUMBER += +(\d) *;/;
+    var regexp_major = /MAJOR *= *(\d) *;/;
+    var regexp_minor = /MINOR *= *(\d) *;/;
+    var regexp_patch = /PATCH *= *(\d) *;/;
+    var regexp_build = /BUILD *= *(\d) *;/;
 
-    if (regexp_major.search(content) < 0) throw "failed to locate MAJOR_VERSION in QtJambi.java";
-    if (regexp_minor.search(content) < 0) throw "failed to locate MINOR_VERSION in QtJambi.java";
-    if (regexp_patch.search(content) < 0) throw "failed to locate PATCH_VERSION in QtJambi.java";
-    if (regexp_build.search(content) < 0) throw "failed to locate BUILD_NUMBER in QtJambi.java";
+    if (regexp_major.search(content) < 0) throw "failed to locate MAJOR_VERSION in Version.java";
+    if (regexp_minor.search(content) < 0) throw "failed to locate MINOR_VERSION in Version.java";
+    if (regexp_patch.search(content) < 0) throw "failed to locate PATCH_VERSION in Version.java";
+    if (regexp_build.search(content) < 0) throw "failed to locate BUILD_NUMBER in Version.java";
 
     var str = regexp_major.cap(1)
               + "." + regexp_minor.cap(1)
