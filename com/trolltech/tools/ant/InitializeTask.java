@@ -109,15 +109,18 @@ public class InitializeTask extends Task {
         // These depend on both qtdir, libsubdir and configration, so
         // run rather late...
         String phonon = decidePhonon();
-        props.setNewProperty(null, PHONON, phonon);
-        props.setNewProperty(null, WEBKIT, decideWebkit());
-        if (Boolean.parseBoolean(phonon)) {
+        if ("true".equals(phonon)) {
+            props.setNewProperty(null, PHONON, phonon);
             switch (OSInfo.os()) {
             case Windows: props.setNewProperty(null, PHONON_DS9, true); break;
             case Linux: props.setNewProperty(null, PHONON_GSTREAMER, true); break;
             case MacOS: props.setNewProperty(null, PHONON_QT7, true); break;
             }
         }
+
+        String webkit = decideWebkit();
+        if ("true".equals(webkit))
+            props.setNewProperty(null, WEBKIT, webkit);
     }
 
     private void checkCompilerDetails() {

@@ -160,7 +160,7 @@
 
     <target name="examples.phonon"
 	    depends="init"
-	    if="${qtjambi.phonon}">
+	    if="qtjambi.phonon">
         <javac destdir="${outputDir}">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
@@ -171,7 +171,7 @@
 
     <target name="examples.webkit"
 	    depends="init"
-	    if="${qtjambi.webkit}">
+	    if="qtjambi.webkit">
         <javac destdir="${outputDir}">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
