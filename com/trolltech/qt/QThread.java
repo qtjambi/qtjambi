@@ -133,10 +133,8 @@ public final class QThread extends Thread {
         super.run();
 
         System.gc();
-        QEventLoop e = new QEventLoop();
-        e.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
-        e.dispose();
-
+        QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
+        
         finished.emit();
     }
 
