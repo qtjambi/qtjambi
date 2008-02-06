@@ -186,9 +186,9 @@ JNIEnv *qtjambi_current_environment()
     JNIEnv *env;
     if (qtjambi_vm == 0)
         return 0;
-    int result = qtjambi_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_4);
+    int result = qtjambi_vm->GetEnv( (void **) (void *) (&env), JNI_VERSION_1_4);
     if (result == JNI_EDETACHED) {
-        if (qtjambi_vm->AttachCurrentThreadAsDaemon(reinterpret_cast<void **>(&env), 0) < 0) {
+      if (qtjambi_vm->AttachCurrentThreadAsDaemon((void **) (void *) (&env), 0) < 0) {
             qWarning("Failed attaching current thread");
             return 0;
         }
@@ -653,7 +653,7 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
 //                    qobject->metaObject()->className(),
 //                    qobject);
             qtjambi_thread_table()->insert(qt_thread, env->NewWeakGlobalRef(java_thread));
-            QInternal::callFunction(QInternal::RefAdoptedThread, (void **) &qt_thread);
+            QInternal::callFunction(QInternal::RefAdoptedThread, (void **) (void *) (&qt_thread));
         }
     }
 
@@ -1003,7 +1003,7 @@ QThread *qtjambi_to_thread(JNIEnv *env, jobject thread)
     // No thread found, need to create a "fake" thread and insert it
     // into the thread table for later mapping between Qt / Java.
     // This thread object is already ref'ed by Qt.
-    QInternal::callFunction(QInternal::CreateThreadForAdoption, (void **) &qt_thread);
+    QInternal::callFunction(QInternal::CreateThreadForAdoption, (void **) (void *) &qt_thread);
     Q_ASSERT_X(qt_thread, "qtjambi_to_thread", "Thread adoption failed, have to abort...");
 
     ThreadTable *table = qtjambi_thread_table();
@@ -1039,7 +1039,7 @@ bool qtjambi_release_threads(JNIEnv *env)
             it = table->erase(it);
 //             locker.unlock();
             Q_ASSERT(thread);
-            QInternal::callFunction(QInternal::DerefAdoptedThread, (void **) &thread);
+            QInternal::callFunction(QInternal::DerefAdoptedThread, (void **) (void *) &thread);
 //             locker.relock();
         } else {
             ++it;
@@ -1124,7 +1124,7 @@ QModelIndex qtjambi_to_QModelIndex(JNIEnv *env, jobject index)
         qtjambi_to_qobject(env, env->GetObjectField(index, sc->QModelIndex.field_model))
     };
     QTJAMBI_EXCEPTION_CHECK(env);
-    return *(QModelIndex *) &mia;
+    return * (QModelIndex *) (void *) (&mia) ;
 
 }
 
@@ -1352,7 +1352,7 @@ bool qtjambi_initialize_vm()
             qtjambi_vm = vms[0];
     }
 
-    if (qtjambi_vm == 0 && ptrCreateJavaVM(&qtjambi_vm, (void**) &env, &vm_args)) {
+    if (qtjambi_vm == 0 && ptrCreateJavaVM(&qtjambi_vm, (void**) (void *) &env, &vm_args)) {
         qWarning("QtJambi: failed to create vm");
         delete [] vm_options;
         return false;
