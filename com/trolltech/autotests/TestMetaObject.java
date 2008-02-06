@@ -51,7 +51,7 @@ public class TestMetaObject extends QApplicationTest {
     @Test public void regularEnumDeclarations() {
         SignalsAndSlotsSubclass sass = new SignalsAndSlotsSubclass();
         
-        assertEquals(3, sass.numberOfEnumTypes());
+        assertEquals(4, sass.numberOfEnumTypes());
         
         assertFalse(sass.isFlagsType("YoYoYo"));
         
@@ -99,7 +99,7 @@ public class TestMetaObject extends QApplicationTest {
     @Test public void flagsDeclarations() {
         SignalsAndSlotsSubclass sass = new SignalsAndSlotsSubclass();
         
-        assertTrue(sass.isFlagsType("FlipModeSquad"));
+        assertTrue(sass.isFlagsType("FlipModeSquads"));
         
         {
             List<String> names = sass.namesOfEnumType("FlipModeSquad");
