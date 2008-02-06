@@ -18,7 +18,7 @@ public class HelloWebKit extends QMainWindow {
     public HelloWebKit() {
 	this(null);
     }
-    
+
     public HelloWebKit(QWidget parent) {
 	super(parent);
 
@@ -49,6 +49,14 @@ public class HelloWebKit extends QMainWindow {
         backward.triggered.connect(browser, "backward()");
         reload.triggered.connect(browser, "reload()");
         stop.triggered.connect(browser, "stop()");
+
+        // Set an initial loading page once its up and showing...
+        QApplication.invokeLater(new Runnable() {
+                public void run() {
+                    field.setText("http://www.trolltech.com");
+                    open();
+                }
+            });
     }
 
     public void loadStarted() {
@@ -68,8 +76,6 @@ public class HelloWebKit extends QMainWindow {
 
         if (text.indexOf("://") < 0)
             text = "http://" + text;
-
-        System.out.println(text);
 
         browser.load(new QUrl(text));
     }
