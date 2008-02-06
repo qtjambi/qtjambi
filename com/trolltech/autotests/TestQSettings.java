@@ -7,6 +7,7 @@ import java.util.*;
 
 import org.junit.*;
 
+import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QSettings;
 
 public class TestQSettings extends QApplicationTest implements Serializable {
@@ -30,9 +31,9 @@ public class TestQSettings extends QApplicationTest implements Serializable {
         QSettings settings = new QSettings("Trolltech", "Test");
         settings.sync();
 
-        assertEquals(5,settings.value("int"));
-        assertEquals(5.000001d, Double.parseDouble(settings.value("double").toString()));
-        assertEquals("String", settings.value("String"));
+        assertEquals(5, QVariant.toInt(settings.value("int")));
+        assertEquals(5.000001d, QVariant.toDouble(settings.value("double").toString()));
+        assertEquals("String", QVariant.toString(settings.value("String")));
     }
 
     @Test
