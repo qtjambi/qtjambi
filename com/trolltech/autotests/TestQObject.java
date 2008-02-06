@@ -196,7 +196,7 @@ public class TestQObject extends QApplicationTest{
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(1000);
 
-        QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
+        QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -204,7 +204,7 @@ public class TestQObject extends QApplicationTest{
     public void disposal_objectWithUnParent() {
         DyingObject.alive.clear();
         objectWithUnParent();        
-        QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
+        QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
         
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(1000);           
@@ -234,7 +234,7 @@ public class TestQObject extends QApplicationTest{
 
     @Test
     public void disposal_gcInQThread_objectWithParent() {
-        DyingObject.alive.clear();
+    	DyingObject.alive.clear();
         threadExecutor(runnable_objectWithParent, true);
         
         // we need to wait for gc to collect the parent.
@@ -269,7 +269,12 @@ public class TestQObject extends QApplicationTest{
         DyingObject.alive.clear();
         threadExecutor(runnable_objectWithParent, false);
         
-        DyingObject.waitForEmpty(500); // make sure we do an effort to make this test fail. 
+
+        try {
+        	Thread.sleep(1000); // make sure we do an effort to make this test fail.
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
         
         assertEquals(1, DyingObject.alive.size());
     }
@@ -279,7 +284,7 @@ public class TestQObject extends QApplicationTest{
         // Will warn twice about leaking the C++ object, but both objects will be collected
         DyingObject.alive.clear();
         threadExecutor(runnable_objectWithUnParent, false);
-
+                
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(1000);
         
