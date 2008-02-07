@@ -62,7 +62,7 @@ public class QSignalEmitter {
                 }
 
                 if (actualType instanceof Class) {
-                    resolvedSignal.types[j] = (Class) actualType;
+                    resolvedSignal.types[j] = (Class<?>) actualType;
                     resolvedSignal.arrayDimensions[j] = arrayDims;
                 } else {
                     throw new RuntimeException(

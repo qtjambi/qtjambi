@@ -335,9 +335,9 @@ public class BCC extends QWidget {
         return null;
     }
     
-    private Constructor findConstructor(Class<?> cls, Constructor constructor) {
-        Constructor constructors[] = cls.getConstructors();
-        for (Constructor otherConstructor : constructors) {
+    private Constructor<?> findConstructor(Class<?> cls, Constructor<?> constructor) {
+        Constructor<?> constructors[] = cls.getConstructors();
+        for (Constructor<?> otherConstructor : constructors) {
             if (otherConstructor.toString().equals(constructor.toString()))
                 return otherConstructor;
         }
@@ -476,13 +476,13 @@ public class BCC extends QWidget {
                 }            
             }
             
-            Constructor oldConstructors[] = oldClass.getConstructors();
-            for (final Constructor oldConstructor : oldConstructors) {
+            Constructor<?> oldConstructors[] = oldClass.getConstructors();
+            for (final Constructor<?> oldConstructor : oldConstructors) {
                 oldModifiers = oldConstructor.getModifiers();
                 if (!isPublic(oldModifiers) && !isProtected(oldModifiers)) 
                     continue;
                 
-                Constructor newConstructor = findConstructor(newClass, oldConstructor);                
+                Constructor<?> newConstructor = findConstructor(newClass, oldConstructor);                
                 if (newConstructor == null) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {
@@ -508,13 +508,13 @@ public class BCC extends QWidget {
                 }            
             }
             
-            Constructor newConstructors[] = newClass.getConstructors();
-            for (final Constructor newConstructor : newConstructors) {
+            Constructor<?> newConstructors[] = newClass.getConstructors();
+            for (final Constructor<?> newConstructor : newConstructors) {
                 newModifiers = newConstructor.getModifiers();
                 if (!isPublic(newModifiers) && !isProtected(newModifiers))
                     continue;
                 
-                Constructor oldConstructor = findConstructor(oldClass, newConstructor);                
+                Constructor<?> oldConstructor = findConstructor(oldClass, newConstructor);                
                 if (oldConstructor == null) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {

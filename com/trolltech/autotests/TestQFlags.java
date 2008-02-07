@@ -104,8 +104,8 @@ public class TestQFlags extends QApplicationTest {
 
     @Test
     public void run_clear() {
-        for (Iterator iter = data.iterator(); iter.hasNext();) {
-            DataClear d = (DataClear) iter.next();
+        for (Iterator<DataClear> iter = data.iterator(); iter.hasNext();) {
+            DataClear d = iter.next();
 
             Flags f = new Flags(d.toSet);
             f.clear(d.toClear);

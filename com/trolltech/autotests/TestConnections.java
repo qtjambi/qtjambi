@@ -951,7 +951,7 @@ public class TestConnections extends QApplicationTest implements Qt
              Object[] parameters,
              Object expectedSlotResult,
              Boolean checkReturnedReference,
-             Class[] parameterTypes)
+             Class<?>[] parameterTypes)
      {
 
         ((QSignalEmitter.AbstractSignal)signal).connect(receiver, slot);
@@ -979,7 +979,7 @@ public class TestConnections extends QApplicationTest implements Qt
      public void run_javaToJavaConnect()
      {
 
-        Class[] parameterTypes = new Class[1];
+        Class<?>[] parameterTypes = new Class[1];
         parameterTypes[0] = Long.class;
 
         Object[] params = new Object[1];
@@ -1200,7 +1200,7 @@ public class TestConnections extends QApplicationTest implements Qt
              Object signal,
              QObject receiver,
              String slotSignature,
-             Class expectedExceptionType,
+             Class<?> expectedExceptionType,
              String expectedExceptionMessage)
      {
 

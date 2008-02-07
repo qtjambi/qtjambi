@@ -37,7 +37,7 @@ public abstract class ManualTests {
     
     
     public void run() {
-        Class cls = this.getClass();
+        Class<?> cls = this.getClass();
         Method methods[] = cls.getMethods();
         for (Method m : methods) {
             if (m.isAnnotationPresent(Test.class))

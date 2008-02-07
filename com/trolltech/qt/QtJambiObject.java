@@ -252,7 +252,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     // The constructor must take a single object reference as its
     // parameter and accept null. Basically, it should be the
     // QPrivateConstructor-constructor.
-    private static native QtJambiObject __qt_reassignLink(long newNativeId, Class cls, Constructor constructor);
+    private static native QtJambiObject __qt_reassignLink(long newNativeId, Class<?> cls, Constructor<?> constructor);
 
     private long native__id = 0;
 }

@@ -414,8 +414,8 @@ public class PathStrokeWidget extends QWidget {
                 painter.setBrush(Qt.BrushStyle.NoBrush);
 
                 QPolygonF pol = new QPolygonF();
-                for (Iterator iter = m_points.iterator(); iter.hasNext();) {
-                    QPointF element = (QPointF) iter.next();
+                for (Iterator<QPointF> iter = m_points.iterator(); iter.hasNext();) {
+                    QPointF element = iter.next();
                     pol.append(element);
                 }
 

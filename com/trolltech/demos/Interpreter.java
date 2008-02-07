@@ -283,7 +283,7 @@ public class Interpreter {
     }
 
     protected abstract class Function implements Cloneable {
-        protected Vector arguments;
+        protected Vector<Object> arguments;
         protected String name;
 
         public Function(String name) {
@@ -298,7 +298,7 @@ public class Interpreter {
         public String toString() {
             String signature = "";
             signature += "{function_" + name + "_ ";
-            for (Iterator iterator = arguments.iterator(); iterator.hasNext();) {
+            for (Iterator<Object> iterator = arguments.iterator(); iterator.hasNext();) {
                 signature += iterator.next();
                 if (iterator.hasNext())
                     signature += " ";
@@ -312,7 +312,7 @@ public class Interpreter {
             Function function = null;
             try {
                 function = (Function) super.clone();
-                function.arguments = new Vector();
+                function.arguments = new Vector<Object>();
             } catch (CloneNotSupportedException exception) {
                 exception.printStackTrace();
             }
@@ -323,7 +323,7 @@ public class Interpreter {
         public Object evaluateFunction() throws ParseException {
             Object[] args = new Object[arguments.size()];
             int i = 0;
-            for (Iterator iterator = arguments.iterator(); iterator.hasNext();) {
+            for (Iterator<Object> iterator = arguments.iterator(); iterator.hasNext();) {
                 args[i] = evaluate(iterator.next());
                 i++;
             }

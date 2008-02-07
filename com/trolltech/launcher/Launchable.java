@@ -171,7 +171,7 @@ public class Launchable {
 		cl.getConstructor();
 		m_widget = (QWidget) cl.newInstance();
 	    } catch(Exception e) {
-		Constructor constructor = cl.getConstructor(QWidget.class);
+		Constructor<?> constructor = cl.getConstructor(QWidget.class);
 		m_widget = (QWidget) constructor.newInstance((QWidget) null);
 	    }
 	} catch (Exception e) {
@@ -187,7 +187,7 @@ public class Launchable {
                 QtJambiExample info = cl.getAnnotation(QtJambiExample.class);
                 if (info != null) {
 
-                    Constructor constructor = null;
+                    Constructor<?> constructor = null;
                     try {
                         constructor = cl.getConstructor();
                     } catch (Exception e) {

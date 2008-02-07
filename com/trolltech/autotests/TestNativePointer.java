@@ -246,8 +246,8 @@ public class TestNativePointer extends QApplicationTest {
 
     @Test
     public void run_testCreateCharPointer() {
-        for (Iterator iter = data.iterator(); iter.hasNext();) {
-            String s = (String) iter.next();
+        for (Iterator<String> iter = data.iterator(); iter.hasNext();) {
+            String s = iter.next();
 
             QNativePointer np = QNativePointer.createCharPointer(s);
             assertEquals(s, pointerToString(np));

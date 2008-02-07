@@ -311,7 +311,7 @@ public class TestQVariant extends QApplicationTest {
             Character expectedChar, Boolean canConvertChar, QDate expectedDate, Boolean canConvertDate, QTime expectedTime, Boolean canConvertTime, QDateTime expectedDateTime,
             Boolean canConvertDateTime, QPoint expectedPoint, Boolean canConvertPoint, QPointF expectedPointF, Boolean canConvertPointF, QRect expectedRect, Boolean canConvertRect,
             QRectF expectedRectF, Boolean canConvertRectF, QRegExp expectedRegExp, Boolean canConvertRegExp, QSize expectedSize, Boolean canConvertSize, QSizeF expectedSizeF, Boolean canConvertSizeF,
-            List expectedList, Boolean canConvertList, Map expectedMap, Boolean canConvertMap) {
+            List<?> expectedList, Boolean canConvertList, Map<?, ?> expectedMap, Boolean canConvertMap) {
 
         assertEquals(QVariant.toString(object), expectedString);
         assertEquals((double)QVariant.toDouble(object), (double)expectedDouble);

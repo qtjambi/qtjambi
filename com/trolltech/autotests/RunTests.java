@@ -31,7 +31,7 @@ public class RunTests {
 
         for (QFileInfo info : infos) {
             String className = "com.trolltech.autotests." + info.baseName();
-            Class cl = Class.forName(className);
+            Class<?> cl = Class.forName(className);
 
             Method methods[] = cl.getMethods();
             boolean hasTestFunctions = false;

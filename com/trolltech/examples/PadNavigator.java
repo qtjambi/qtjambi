@@ -330,7 +330,6 @@ public class PadNavigator extends QGraphicsView {
     private QPointF startPos;
     private QPointF endPos = new QPointF();
     private double xrot, yrot;
-    private double xrot2, yrot2;
 
     private int width;
     private int height;

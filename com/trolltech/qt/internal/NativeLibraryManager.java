@@ -641,6 +641,7 @@ public class NativeLibraryManager {
     }
 
 
+    @SuppressWarnings("unused")
     private static String stripLibraryName(String lib) {
         // Strip away "lib" prefix
         if (Utilities.operatingSystem != Utilities.OperatingSystem.Windows)

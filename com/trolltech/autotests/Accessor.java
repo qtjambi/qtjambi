@@ -1,8 +1,5 @@
 package com.trolltech.autotests;
 
-import com.trolltech.qt.QSignalEmitter.AbstractSignal;
-import com.trolltech.qt.QSignalEmitter.Signal0;
-import com.trolltech.qt.QSignalEmitter.Signal1;
 import com.trolltech.qt.core.QObject;
 
 class Accessor extends QObject
