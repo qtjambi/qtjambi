@@ -960,6 +960,9 @@ void StaticCache::resolveAbstractSignal_internal()
                                                    "inCppEmission", "Z");
     Q_ASSERT(AbstractSignal.inCppEmission);
 
+    AbstractSignal.inJavaEmission = env->GetFieldID(AbstractSignal.class_ref, "inJavaEmission", "Z");
+    Q_ASSERT(AbstractSignal.inJavaEmission);
+
     AbstractSignal.connect = env->GetMethodID(AbstractSignal.class_ref,
                                               "connect",
                                               "(Ljava/lang/Object;"

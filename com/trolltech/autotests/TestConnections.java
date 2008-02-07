@@ -1684,4 +1684,25 @@ public class TestConnections extends QApplicationTest implements Qt
         
     }
     
+    static class RecursiveSignalEmission extends QPushButton {
+    	public static final int COUNT = 100;
+    	
+    	public int emitted = 0;
+    	public void slot() {
+    		if (++emitted < COUNT)
+    			clicked.emit(true);
+    	}
+    }
+    
+    @Test
+    public void recursiveSignalEmission() {
+    	RecursiveSignalEmission e = new RecursiveSignalEmission();
+    	
+    	assertEquals(0, e.emitted);
+    	e.clicked.connect(e, "slot()");
+    	e.slot();
+    	
+    	assertEquals(RecursiveSignalEmission.COUNT, e.emitted);
+    }
+    
 }

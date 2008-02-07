@@ -593,6 +593,10 @@ inline void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info,
     if (object == 0)
         return ; 
 
+    // Don't recurse
+    if (env->GetBooleanField(object, sc->AbstractSignal.inJavaEmission))
+        return;
+
     env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, true);
     if (args == 0)
         env->CallVoidMethod(object, signal_info.methodId);

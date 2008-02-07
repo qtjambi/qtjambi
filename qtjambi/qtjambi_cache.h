@@ -255,10 +255,11 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
-        jfieldID inCppEmission;
+        jfieldID inCppEmission;        
         jmethodID connect;
         jmethodID connectSignalMethod;
         jmethodID removeConnection;
+        jfieldID inJavaEmission;
     } AbstractSignal;
 
     struct {
