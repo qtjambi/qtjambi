@@ -27,7 +27,7 @@ public class QPair <T, S> implements Cloneable {
     
     /**
      * Constructs a pair.
-     * @param t The first paramterer.
+     * @param t The first parameter.
      * @param s The second parameter.
      */
     public QPair(T t, S s) {
@@ -44,7 +44,7 @@ public class QPair <T, S> implements Cloneable {
      */
     @Override
     public boolean equals(Object o) {
-        QPair other = o instanceof QPair ? (QPair) o : null; 
+        QPair<?, ?> other = o instanceof QPair ? (QPair<?, ?>) o : null; 
         if (other == null || first == null || second == null || other.first == null || other.second == null)
             return false;
         return first.equals(other.first) && second.equals(other.second);    

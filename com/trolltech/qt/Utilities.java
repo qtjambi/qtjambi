@@ -16,7 +16,6 @@ package com.trolltech.qt;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.jar.*;
 
 import com.trolltech.qt.internal.*;
 
@@ -64,21 +63,15 @@ public class Utilities {
 
 	/** The operating system Qt Jambi is running on. */
     public static OperatingSystem operatingSystem = decideOperatingSystem();
-	/** The Configuration of Qt Jambi. */
+	/** The configuration of Qt Jambi. */
     public static Configuration configuration = decideConfiguration();
-	/** Wheter Qt Jambi has implicit loading. */
+	/** Whether Qt Jambi has implicit loading. */
     public static boolean implicitLoading = !matchProperty("com.trolltech.qt.implicit-loading", "false");
 	/** The library sub path. */
     public static String libSubPath = decideLibSubPath();
     /** Whether Qt Jambi should prefer to load libraries from its cache */
     public static boolean loadFromCache = matchProperty("com.trolltech.qt.load-from-cache", "true");
-    /** Wheter Qt Jambi should throw exceptions on warnings, debug, critical or/and fatal messages from c++ code. */
-
-    private static final String DEBUG_SUFFIX = "_debuglib";
-
-
-
-    private static String EXCLUDE_STRING = "com.trolltech.qt.exclude-libraries";
+    /** Whether Qt Jambi should throw exceptions on warnings, debug, critical or/and fatal messages from c++ code. */
 
     /**
      * Returns true if the system property name contains any of the specified
@@ -332,16 +325,6 @@ public class Utilities {
     }
 
 
-    private static String jniLibraryName(String lib) {
-        switch (operatingSystem) {
-        case Windows: return lib + ".dll";
-        case MacOSX: return "lib" + lib + ".jnilib";
-        case Linux: return "lib" + lib + ".so";
-        }
-        throw new RuntimeException("Unreachable statement");
-    }
-
-
     private static String stripLibraryName(String lib) {
         // Strip away "lib" prefix
         if (operatingSystem != OperatingSystem.Windows)
@@ -365,51 +348,6 @@ public class Utilities {
         return lib.substring(0, dot);
     }
 
-
-    private static String qtLibraryName(String lib) {
-        switch (operatingSystem) {
-        case Windows:
-            return configuration == Configuration.Debug ? lib + "d4.dll" :   lib + "4.dll";
-        case MacOSX:
-            if (configuration == Configuration.Debug)
-                return "lib" + lib + "_debug.4.dylib";
-            return "lib" + lib + ".4.dylib";
-        case Linux:
-            // Linux doesn't have a dedicated "debug" library since 4.2
-            return "lib" + lib + ".so.4";
-        }
-        throw new RuntimeException("Unreachable statement");
-    }
-
-
-    private static List<String> readSystemLibraries() {
-
-        List<String> list = new ArrayList<String>();
-        String liblist = System.getProperty("com.trolltech.qt.systemlibraries");
-        if (liblist != null) {
-            String libs[] = liblist.split(File.pathSeparator);
-            for (String s : libs)
-                list.add(s);
-        } else {
-            InputStream in = classLoader().getResourceAsStream("qt_system_libs");
-            if (in == null && VERBOSE_LOADING)
-                System.out.println("No 'qt_system_libs' file");
-
-            if (in != null) {
-                BufferedReader r = new BufferedReader(new InputStreamReader(in));
-                // may return null, but that will be covered by the catch below...
-                try {
-                    String s = null;
-                    while ((s = r.readLine()) != null)
-                        list.add(s);
-                } catch (Exception e) {
-		    if (VERBOSE_LOADING)
-                        e.printStackTrace();
-                }
-            }
-        }
-        return list;
-    }
 
     private static ClassLoader classLoader() {
 	ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -463,28 +401,6 @@ public class Utilities {
 //             return tmpDir.getAbsolutePath() + "/plugins";
 //         }
         return null;
-    }
-
-    private static void unpackPlugins(JarFile jar) throws IOException {
-        File tmpDir = jambiTempDir();
-
-        Enumeration<JarEntry> entries = jar.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
-            InputStream stream = jar.getInputStream(entry);
-
-            if (entry.getName().startsWith("plugins") && !entry.isDirectory()) {
-                File destination = new File(tmpDir.getAbsolutePath(), entry.getName());
-                if (!destination.exists()) {
-                    File path = destination.getParentFile();
-                    if (!path.exists())
-                        path.mkdirs();
-                    copy(stream, new FileOutputStream(destination));
-                }
-            }
-        }
-        if (VERBOSE_LOADING)
-            System.out.println("unpacked plugins from: " + jar);
     }
 
     private static class LibraryLoadingInfo {

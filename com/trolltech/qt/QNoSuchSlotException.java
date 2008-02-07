@@ -48,8 +48,8 @@ public class QNoSuchSlotException extends ConnectionException {
             if(!possibleMethods.isEmpty()) {
                 res += "Possible matching methods:\n";
 
-                for (Iterator iter = possibleMethods.iterator(); iter.hasNext();) {
-                    Method method = (Method) iter.next();
+                for (Iterator<Method> iter = possibleMethods.iterator(); iter.hasNext();) {
+                    Method method = iter.next();
                    
                     res += "   " + methodToString(method) + "\n";
                 }
@@ -59,11 +59,11 @@ public class QNoSuchSlotException extends ConnectionException {
     }
 
     private String methodToString(Method method) {
-        Class a[] = method.getParameterTypes();
+        Class<?> a[] = method.getParameterTypes();
 
         String args = "";
         for (int i = 0; i < a.length; ++i) {
-            Class t = a[i];
+            Class<?> t = a[i];
 
             String brackets = "";
             if (t.isArray()) {
@@ -79,7 +79,7 @@ public class QNoSuchSlotException extends ConnectionException {
     
     
     private static Vector<Method> findPossibleFunctionRecursive(Object reciver, String signature) {
-        Class cls = reciver.getClass();
+        Class<?> cls = reciver.getClass();
 
         int pos = signature.indexOf('(');
         String name = signature.substring(0, pos).trim();
@@ -99,7 +99,7 @@ public class QNoSuchSlotException extends ConnectionException {
         return findPossibleFunctionRecursiveHelper(cls, name, argumentTypes, new Vector<Method>());
     }
 
-    private static Vector<Method> findPossibleFunctionRecursiveHelper(Class cls,
+    private static Vector<Method> findPossibleFunctionRecursiveHelper(Class<?> cls,
             String functionName, String argumentTypes[], Vector<Method> res) {
         Method methods[] = cls.getDeclaredMethods();
 
@@ -107,7 +107,7 @@ public class QNoSuchSlotException extends ConnectionException {
             if (!m.getName().equalsIgnoreCase(functionName))
                 continue;
 
-            Class a[] = m.getParameterTypes();
+            Class<?> a[] = m.getParameterTypes();
             if (a.length != argumentTypes.length)
                 continue;
 

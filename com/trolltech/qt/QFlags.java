@@ -109,7 +109,7 @@ public abstract class QFlags<T extends QtEnumerator>
     public final boolean equals(Object object) {
          return object != null
              && object.getClass() == getClass()
-             && ((QFlags) object).value() == value();
+             && ((QFlags<?>) object).value() == value();
      }
 
     /**

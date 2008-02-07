@@ -676,7 +676,7 @@ public class QVariant extends QtJambiObject {
         Map<String, Object> map = new HashMap<String, Object>();
         if (obj instanceof Map) {
             Map<?, ?> otherMap = (Map<?, ?>) obj;
-            for (Map.Entry e : otherMap.entrySet())
+            for (Map.Entry<?, ?> e : otherMap.entrySet())
                 map.put(e.getKey().toString(), e.getValue());                                
         }         
         return map; 
