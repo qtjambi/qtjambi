@@ -75,7 +75,6 @@
   <rejection class="QAccessibleInterface" function-name="cast_helper"/>
   <rejection class="QAccessibleInterfaceEx" function-name="interface_cast"/>
   <rejection class="QAccessibleBridgePlugin" />
-  <rejection class="QAccessibleBridge" />
   <rejection class="QAccessibleBridgeFactoryInterface" />  
   <rejection class="QTabletEvent" field-name="mExtra"/>  
 
@@ -1238,6 +1237,13 @@
         </modify-argument>
     </modify-function>
   </object-type>      
+  <object-type name="QAccessibleBridge">
+    <modify-function signature="setRootObject(QAccessibleInterface *)">
+        <modify-argument index="1">
+            <reference-count action="ignore"/>
+        </modify-argument>
+    </modify-function>
+  </object-type>  
   <object-type name="QAccessible2Interface"/>
   <object-type name="QAccessibleTableInterface">
     <modify-function signature="qAccessibleTableCastHelper()" remove="all"/>
