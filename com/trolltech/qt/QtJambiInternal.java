@@ -180,7 +180,7 @@ public class QtJambiInternal {
         }
     }
 
-    @SuppressWarnings( "all" )
+    @SuppressWarnings("unused")
     private static QSignalEmitter.AbstractSignal lookupSignal(QSignalEmitter signalEmitter, String name)
     {
         if (name == null || signalEmitter == null) {
@@ -189,7 +189,7 @@ public class QtJambiInternal {
         }
 
         QSignalEmitter.AbstractSignal returned = null;
-        for (Class cls = signalEmitter.getClass();
+        for (Class<?> cls = signalEmitter.getClass();
              QSignalEmitter.class.isAssignableFrom(cls) && returned == null;
              cls = cls.getSuperclass()) {
 
