@@ -10,7 +10,6 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-
 package com.trolltech.qt;
 
 import com.trolltech.qt.core.*;
@@ -995,24 +994,7 @@ class QClassPathEngine extends QAbstractFileEngine
     }
 }
 
-
-public class QClassPathFileEngineHandler extends QAbstractFileEngineHandler
+public abstract class QClassPathFileEngineHandler 
 {
-    static List<QClassPathEngine> engines = new LinkedList<QClassPathEngine>();
-
-
-    public QClassPathFileEngineHandler()
-    {
-        super();
-    }
-
-    @Override
-    public QAbstractFileEngine create(String fileName)
-    {    	
-        if (fileName.startsWith(QClassPathEngine.FileNamePrefix))
-            return new QClassPathEngine(fileName);
-        else
-            return null;
-    }
-
+	public native static void initialize();
 }

@@ -21,6 +21,8 @@
 #include <QtCore/QStringList>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
+#include <QtCore/QAbstractFileEngine>
+#include <QtCore/QAbstractFileEngineHandler>
 
 #ifdef QTJAMBI_SANITY_CHECK
 #include <QtCore/QObject>
@@ -390,6 +392,50 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_properties)
     }
 
     return propertyList;
+}
+
+class QClassPathFileEngineHandler: public QAbstractFileEngineHandler
+{
+public:
+    QAbstractFileEngine *create(const QString &fileName) const 
+    {
+        if (fileName.startsWith("classpath:"))
+            return newClassPathFileEngine(fileName);
+        else
+            return 0;
+    }
+
+private:
+    QAbstractFileEngine *newClassPathFileEngine(const QString &fileName) const
+    {        
+        JNIEnv *env = qtjambi_current_environment();
+        env->PushLocalFrame(100);
+
+        StaticCache *sc = StaticCache::instance(env);
+        sc->resolveQClassPathEngine();
+
+        jstring javaFileName = qtjambi_from_qstring(env, fileName);
+        jobject javaFileEngine = env->NewObject(sc->QClassPathEngine.class_ref, sc->QClassPathEngine.constructor, javaFileName);
+        QTJAMBI_EXCEPTION_CHECK(env);
+        QAbstractFileEngine *fileEngine = reinterpret_cast<QAbstractFileEngine *>(qtjambi_to_object(env, javaFileEngine));
+        if (javaFileEngine != 0) {
+            QtJambiLink *link = QtJambiLink::findLink(env, javaFileEngine);
+            Q_ASSERT(link != 0);
+
+            link->setCppOwnership(env, javaFileEngine);
+        }
+        env->PopLocalFrame(0);
+
+        return fileEngine;
+    }
+};
+
+extern "C" JNIEXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QClassPathFileEngineHandler_initialize)
+(JNIEnv *env,
+ jclass)
+{
+    new QClassPathFileEngineHandler;
 }
 
 void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)

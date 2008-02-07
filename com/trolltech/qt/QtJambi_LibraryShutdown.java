@@ -18,8 +18,6 @@ import com.trolltech.qt.core.*;
 class QtJambi_LibraryShutdown implements Runnable {
     public void run() {
         QCoreApplication app = QCoreApplication.instance();
-        QtJambi_LibraryInitializer.handler.dispose();
-        QtJambi_LibraryInitializer.handler  = null;
 
         if (QtJambi_LibraryInitializer.messageHandler != null)
             QMessageHandler.removeMessageHandler(QtJambi_LibraryInitializer.messageHandler);

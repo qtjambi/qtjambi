@@ -17,7 +17,6 @@ import com.trolltech.qt.core.QMessageHandler;
 
 public abstract class QtJambi_LibraryInitializer
 {
-    static QClassPathFileEngineHandler handler;
     static QMessageHandler messageHandler;
 
     static {
@@ -25,7 +24,7 @@ public abstract class QtJambi_LibraryInitializer
         Utilities.loadQtLibrary("QtCore");
         Utilities.loadJambiLibrary("qtjambi");
 
-        handler = new QClassPathFileEngineHandler();
+        QClassPathFileEngineHandler.initialize();
         installMessageHandlerForExceptions(System.getProperty("com.trolltech.qt.exceptions-for-messages"));
 
         initialize();

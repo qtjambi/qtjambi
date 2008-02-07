@@ -1304,3 +1304,14 @@ void StaticCache::resolveQtConcurrent_FilteredFunctor_internal()
     QtConcurrent_FilteredFunctor.filter = env->GetMethodID(QtConcurrent_FilteredFunctor.class_ref, "filter", "(Ljava/lang/Object;)Z");
     Q_ASSERT(QtConcurrent_FilteredFunctor.filter);
 }
+
+void StaticCache::resolveQClassPathEngine_internal()
+{
+    Q_ASSERT(!QClassPathEngine.class_ref);
+
+    QClassPathEngine.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QClassPathEngine"));
+    Q_ASSERT(QClassPathEngine.class_ref);
+
+    QClassPathEngine.constructor = env->GetMethodID(QClassPathEngine.class_ref, "<init>", "(Ljava/lang/String;)V");
+    Q_ASSERT(QClassPathEngine.constructor);
+}
