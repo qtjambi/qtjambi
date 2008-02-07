@@ -218,7 +218,7 @@ public class QtJambiInternal {
     }
 
     static Method lookupSlot(Object object, String signature) {
-        Class cls = object.getClass();
+        Class<?> cls = object.getClass();
 
         int pos = signature.indexOf('(');
         if (pos < 0) {
@@ -254,7 +254,7 @@ public class QtJambiInternal {
         return findFunctionRecursive(cls, name, argumentTypes);
     }
 
-    private static Method findFunctionRecursive(Class cls, String functionName,
+    private static Method findFunctionRecursive(Class<?> cls, String functionName,
             String argumentTypes[]) {
         Method methods[] = cls.getDeclaredMethods();
 
@@ -263,7 +263,7 @@ public class QtJambiInternal {
             if (!m.getName().equals(functionName))
                 continue;
 
-            Class a[] = m.getParameterTypes();
+            Class<?> a[] = m.getParameterTypes();
             if (a.length != argumentTypes.length)
                 continue;
 
@@ -271,7 +271,7 @@ public class QtJambiInternal {
             for (int i = 0; i < a.length; ++i) {
                 String arg = a[i].getName();
 
-                Class t = a[i];
+                Class<?> t = a[i];
 
                 if(t.isArray()){
                     String brackets = "";
@@ -376,7 +376,7 @@ public class QtJambiInternal {
     }
 
     public static void disconnect(QSignalEmitter sender, Object receiver) {
-        Class cls = sender.getClass();
+        Class<?> cls = sender.getClass();
         while (QSignalEmitter.class.isAssignableFrom(cls)) {
             Field fields[] = cls.getDeclaredFields();
 
@@ -419,7 +419,7 @@ public class QtJambiInternal {
      * @return True if the class is a signal
      * @param cl The class to check
      */
-    static boolean isSignal(Class cl) {
+    static boolean isSignal(Class<?> cl) {
         return QSignalEmitter.AbstractSignal.class.isAssignableFrom(cl);
     }
 
@@ -442,7 +442,7 @@ public class QtJambiInternal {
     static private HashMap<String, String> signalMethodSignatureCash = new HashMap<String, String>();
     static String findSignalMethodSignature(QSignalEmitter signalEmitter, String name) throws NoSuchFieldException, IllegalAccessException {
 
-        Class cls = signalEmitter.getClass();
+        Class<?> cls = signalEmitter.getClass();
         String fullName = cls + "." + name;
         String found = signalMethodSignatureCash.get(fullName);
 
@@ -519,17 +519,17 @@ public class QtJambiInternal {
     }
 
     public native static Object createExtendedEnum(int value, int ordinal,
-            Class cl, String name);
+            Class<?> cl, String name);
 
 
     private static class MutableInteger {
         int value;
     }
 
-    private static HashMap<Class, MutableInteger> expensesTable;
-    public static void countExpense(Class cl, int cost, int limit) {
+    private static HashMap<Class<?>, MutableInteger> expensesTable;
+    public static void countExpense(Class<?> cl, int cost, int limit) {
         if (expensesTable == null)
-            expensesTable = new HashMap<Class, MutableInteger>();
+            expensesTable = new HashMap<Class<?>, MutableInteger>();
 
         MutableInteger mi = expensesTable.get(cl);
         if (mi == null) {
@@ -630,7 +630,7 @@ public class QtJambiInternal {
      * classes.
      */
     private static List<Field> findSignals(QObject o) {
-        Class c = o.getClass();
+        Class<?> c = o.getClass();
         List<Field> fields = new ArrayList<Field>();
         while (c != null) {
             Field declared[] = c.getDeclaredFields();
@@ -644,7 +644,7 @@ public class QtJambiInternal {
         return fields;
     }
 
-    private static Class objectClass(Class cl) {
+    private static Class<?> objectClass(Class<?> cl) {
         if (cl == boolean.class)
             return java.lang.Boolean.class;
         if (cl == byte.class)
@@ -668,7 +668,7 @@ public class QtJambiInternal {
      * Compares the signatures and does a connect if the signatures match up.
      */
     private static void tryConnect(QObject receiver, Method method, QObject sender, Field signal) {
-        Class params[] = method.getParameterTypes();
+        Class<?> params[] = method.getParameterTypes();
         Type type = signal.getGenericType();
 
         if (type instanceof ParameterizedType) {
@@ -680,8 +680,8 @@ public class QtJambiInternal {
                 return;
 
             for (int i = 0; i < params.length; ++i) {
-                Class signal_type = (Class) types[i];
-                Class param_type = params[i];
+                Class<?> signal_type = (Class<?>) types[i];
+                Class<?> param_type = params[i];
 
                 if (signal_type.isPrimitive())
                     signal_type = objectClass(signal_type);
@@ -718,7 +718,7 @@ public class QtJambiInternal {
      */
     public static void connectSlotsByName(QObject object) {
         List<QObject> children = object.findChildren();
-        Class objectClass = object.getClass();
+        Class<?> objectClass = object.getClass();
         while (objectClass != null) {
             Method methods[] = objectClass.getDeclaredMethods();
             for (QObject child : children) {
@@ -761,7 +761,7 @@ public class QtJambiInternal {
      * returns the class of the object itself if its class is
      * generated by the designer.
      */
-    public static Class findGeneratedSuperclass(Object obj){
+    public static Class<?> findGeneratedSuperclass(Object obj){
         Class<?> clazz = obj.getClass();
         while(clazz!=null && !clazz.isAnnotationPresent(QtJambiGeneratedClass.class)){
             clazz = clazz.getSuperclass();
@@ -849,11 +849,11 @@ private final static int PropertyResettable                         = 0x00000004
         return enumConstantCount;
     }
 
-    private static Class getEnumForQFlags(Class<?> flagsType) {
+    private static Class<?> getEnumForQFlags(Class<?> flagsType) {
         Type t = flagsType.getGenericSuperclass();
         if (t instanceof ParameterizedType) {
             Type typeArguments[] = ((ParameterizedType)t).getActualTypeArguments();
-            return ((Class) typeArguments[0]);
+            return ((Class<?>) typeArguments[0]);
         }
 
         return null;
@@ -1414,9 +1414,9 @@ private final static int PropertyResettable                         = 0x00000004
                         enumClass = getEnumForQFlags(cls);
                     }
 
-                    Enum enumConstants[] = (Enum[]) enumClass.getEnumConstants();
+                    Enum<?> enumConstants[] = (Enum[]) enumClass.getEnumConstants();
 
-                    for (Enum enumConstant : enumConstants) {
+                    for (Enum<?> enumConstant : enumConstants) {
                         // Key
                         offset += addString(metaData.metaData, strings, stringsInOrder, enumConstant.name(), offset, metaDataOffset++);
 
