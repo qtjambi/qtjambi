@@ -22,14 +22,14 @@ import java.util.*;
 
 class ResourceItem extends QTreeWidgetItem
 {
-    private QFileInfo m_info = null;
-    private static QFileIconProvider m_iconProvider = new QFileIconProvider();
-    private boolean m_is_populated = false;
-    private QTreeWidgetItem m_dummy_node = null;
+    private QFileInfo mainInfo = null;
+    private static QFileIconProvider iconProvider = new QFileIconProvider();
+    private boolean isPopulated = false;
+    private QTreeWidgetItem dummyNode = null;
 
     public ResourceItem(QTreeWidgetItem parent, QFileInfo info, boolean recurse)
     {
-        super(parent);
+        super(parent); 
         setInfo(info, recurse);
     }
 
@@ -38,10 +38,10 @@ class ResourceItem extends QTreeWidgetItem
         super(parent);
         setInfo(info, recurse);
     }
-
+    
     public QFileInfo getInfo()
     {
-        return m_info;
+        return mainInfo;
     }
 
     boolean shouldInsertFile(QFileInfo i)
@@ -54,7 +54,7 @@ class ResourceItem extends QTreeWidgetItem
 
     private void populate()
     {
-        QDir dir = new QDir(m_info.absoluteFilePath());
+        QDir dir = new QDir(mainInfo.absoluteFilePath());
 
         List<QFileInfo> entryList = dir.entryInfoList();
 
@@ -63,16 +63,16 @@ class ResourceItem extends QTreeWidgetItem
                 new ResourceItem(this, i, false);
         }
 
-        m_is_populated = true;
+        isPopulated = true;
     }
 
     public void expand()
     {
-        if (!m_is_populated) {
-            if (m_dummy_node != null) {
+        if (!isPopulated) {
+            if (dummyNode != null) {
                 takeChildren();
-                m_dummy_node.dispose();
-                m_dummy_node = null;
+                dummyNode.dispose();
+                dummyNode = null;
             }
 
             populate();
@@ -81,15 +81,15 @@ class ResourceItem extends QTreeWidgetItem
 
     private void setInfo(QFileInfo info, boolean recurse)
     {
-        m_info = info;
+        mainInfo = info;
 
-        setText(0, m_info.fileName());
-        setIcon(0, m_iconProvider.icon(info));
+        setText(0, mainInfo.fileName());
+        setIcon(0, iconProvider.icon(info));
 
-        if (m_info.isDir() && recurse) {
+        if (mainInfo.isDir() && recurse) {
             populate();
-        } else if (m_info.isDir()) {
-            m_dummy_node = new QTreeWidgetItem(this);
+        } else if (mainInfo.isDir()) {
+            dummyNode = new QTreeWidgetItem(this);
         }
 
     }
@@ -99,11 +99,12 @@ class ResourceItem extends QTreeWidgetItem
                 canInstantiate = "call-static-method:notWebstart")
 public class ResourceSystem extends QWidget
 {
-    private QLabel m_currentImage = null;
-    private QTreeWidget m_selection = null;
-    private boolean m_browse_class_path = true;
-    private boolean m_shown = false;
-    private String m_jar_name = null;
+    private QLabel currentImage = null;
+    private QTreeWidget selection = null;
+    private QRadioButton browseClassPathButton;
+    private boolean browseClassPath = true;
+    private boolean shown = false;
+    private String jarName = null;
 
     public Signal1<String> pathChanged = new Signal1<String>();
 
@@ -116,36 +117,36 @@ public class ResourceSystem extends QWidget
 
     private void setupUI()
     {
-        m_currentImage = new QLabel();
-        m_selection = new QTreeWidget();
-        m_selection.setColumnCount(1);
-        m_selection.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum);
-        m_selection.currentItemChanged.connect(this, "itemChanged(QTreeWidgetItem, QTreeWidgetItem)");
-        m_selection.itemExpanded.connect(this, "expandItem(QTreeWidgetItem)");
+        currentImage = new QLabel();
+        selection = new QTreeWidget();
+        selection.setColumnCount(1);
+        selection.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum);
+        selection.currentItemChanged.connect(this, "itemChanged(QTreeWidgetItem, QTreeWidgetItem)");
+        selection.itemExpanded.connect(this, "expandItem(QTreeWidgetItem)");
 
         List<String> labels = new LinkedList<String>();
         labels.add("Name");
-        m_selection.setHeaderLabels(labels);
+        selection.setHeaderLabels(labels);
 
-        QRadioButton bt1 = new QRadioButton("Browse class path + ResourceSystem.jar");
-        bt1.setChecked(true);
-        QRadioButton bt2 = new QRadioButton("Browse just ResourceSystem.jar");
+        browseClassPathButton = new QRadioButton("Browse class path");
+        browseClassPathButton.setChecked(true);
+        QRadioButton bt2 = new QRadioButton("Pick file to browse");
 
         QButtonGroup group = new QButtonGroup(this);
-        group.addButton(bt1);
+        group.addButton(browseClassPathButton);
         group.addButton(bt2);
-        group.setId(bt1, 0);
+        group.setId(browseClassPathButton, 0);
         group.setId(bt2, 1);
         group.buttonIdClicked.connect(this, "modeChanged(int)");
 
         QHBoxLayout layout2 = new QHBoxLayout();
-        layout2.addWidget(bt1);
+        layout2.addWidget(browseClassPathButton);
         layout2.addWidget(bt2);
 
         QVBoxLayout layout = new QVBoxLayout();
-        layout.addWidget(m_selection);
+        layout.addWidget(selection);
         layout.addLayout(layout2);
-        layout.addWidget(m_currentImage);
+        layout.addWidget(currentImage);
 
         setLayout(layout);
 
@@ -163,9 +164,9 @@ public class ResourceSystem extends QWidget
     protected void modeChanged(int id)
     {
         if (id == 0)
-            m_browse_class_path = true;
+            browseClassPath = true;
         else
-            m_browse_class_path = false;
+            browseClassPath = false;
 
         setupSelection();
     }
@@ -187,31 +188,30 @@ public class ResourceSystem extends QWidget
         QPixmap pm = new QPixmap(path);
         if (pm.width() > 100 || pm.height() > 100)
             pm = pm.scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation);
-        m_currentImage.setPixmap(pm);
+        currentImage.setPixmap(pm);
 
     }
 
     private void setupSelection()
     {
-        m_selection.clear();
-
-        // Find the jar file (bundled with the class) and add it to the class path if requested by the user
-        String jar_file_name = "classpath:com/trolltech/examples/ResourceSystem.jar";
-        QFileInfo jarInfo = new QFileInfo(jar_file_name);
-        if (!jarInfo.exists()) {
-            QMessageBox.warning(this, "File not found", "Can't find the resource jar file");
-            return ;
-        }
-
+        selection.clear();
+        
         String searchPath = null;
-        if (m_browse_class_path) {
-            if (m_jar_name == null) {
-                QtJambiInternal.addSearchPathForResourceEngine(jarInfo.canonicalFilePath());
-                m_jar_name = jarInfo.canonicalFilePath();
-            }
-            searchPath = "classpath:/";
-        } else { // Otherwise just browse the root of the jar file
+        if (!browseClassPath) { 
+        	String fileName = QFileDialog.getOpenFileName(this, "Select a .jar file",
+        			null, new QFileDialog.Filter("Jar Files (*.jar)"));
+        	
+        	if (fileName.length() == 0) {
+        		browseClassPath = true;
+        		browseClassPathButton.setChecked(true);
+        	}
+        	
+        	QFileInfo jarInfo = new QFileInfo(fileName);        	
             searchPath = "classpath:" + jarInfo.canonicalFilePath() + "#/";
+        }
+        
+        if (browseClassPath) {
+            searchPath = "classpath:/";
         }
 
         QFileInfo info = new QFileInfo(searchPath);
@@ -219,24 +219,23 @@ public class ResourceSystem extends QWidget
             QMessageBox.warning(this, "Couldn't open root dir", "Problem reading from class path");
             return ;
         }
-        new ResourceItem(m_selection, info, true);
-
+        new ResourceItem(selection, info, true);
 
     }
 
     @Override
     protected void disposed()
     {
-        if (m_jar_name != null)
-            QtJambiInternal.removeSearchPathForResourceEngine(m_jar_name);
+        if (jarName != null)
+            QtJambiInternal.removeSearchPathForResourceEngine(jarName);
         super.disposed();
     }
 
     @Override
     protected void showEvent(QShowEvent e) {
-        if (!m_shown) {
+        if (!shown) {
             QTimer.singleShot(0, this, "setupSelection()");
-            m_shown = true;
+            shown = true;
         }
     }
 
