@@ -39,6 +39,7 @@ protected:
 
     void createImage()
     {
+//! [0]
 	pixmap = QPixmap(100, 100);
 	pixmap.fill(Qt::transparent);
 
@@ -50,6 +51,7 @@ protected:
 
 	channelImage = pixmap.alphaChannel();
 	update();
+//! [0]
     }
 
     QPixmap channelImage, pixmap; 
