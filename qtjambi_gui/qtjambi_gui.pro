@@ -3,7 +3,8 @@ TARGET = com_trolltech_qt_gui
 
 SOURCES += \
 	qtreemodel.cpp \
-	qguisignalmapper.cpp
+	qguisignalmapper.cpp \
+        qtjambiitemeditorcreator.cpp
 
 HEADERS += \
 	qtreemodel.h \

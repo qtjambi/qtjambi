@@ -1,0 +1,106 @@
+package com.trolltech.examples;
+
+import java.util.*;
+
+import com.trolltech.qt.*;
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+
+class ColorListEditor extends QComboBox {
+	public ColorListEditor() {
+		this(null);
+	}
+	
+	public ColorListEditor(QWidget widget) {
+		super(widget);
+		
+		populateList();
+	}
+	
+	@QtPropertyUser()
+	@QtPropertyReader()
+	public final QColor color() {
+		return (QColor) itemData(currentIndex(), Qt.ItemDataRole.DecorationRole);
+	}
+	
+	@QtPropertyWriter()
+	public final void setColor(QColor color) {
+		setCurrentIndex(findData(color, Qt.ItemDataRole.DecorationRole));
+	}
+	
+	private void populateList() {
+	    List<String> colorNames = QColor.colorNames();
+
+	    for (int i = 0; i < colorNames.size(); ++i) {
+	        QColor color = new QColor(colorNames.get(i));
+
+	        insertItem(i, colorNames.get(i));
+	        setItemData(i, color, Qt.ItemDataRole.DecorationRole);
+	    }
+		
+	}
+}
+
+@QtJambiExample(name="Color Editor Factory")
+public class ColorEditorFactory extends QWidget {
+	
+	QItemEditorCreatorBase colorListCreator;
+	QItemEditorFactory factory;
+	public ColorEditorFactory() {
+		this(null);
+		
+		factory = new QItemEditorFactory();
+		colorListCreator = new QStandardItemEditorCreator(ColorListEditor.class);
+		
+		factory.registerEditor(QVariant.Color, colorListCreator);
+		QItemEditorFactory.setDefaultFactory(factory);
+		
+		createGUI();
+	}
+	
+	public ColorEditorFactory(QWidget parent) {
+		super(parent);
+	}
+	
+	private void createGUI() {
+		List<QPair<String, QColor>> list = new ArrayList<QPair<String, QColor>>();
+		list.add(new QPair<String, QColor> (tr("Alice"), new QColor("aliceblue")));
+	    list.add(new QPair<String, QColor>(tr("Neptun"), new QColor("aquamarine")));
+	    list.add(new QPair<String, QColor>(tr("Ferdinand"), new QColor("springgreen")));
+	    
+	    QTableWidget table = new QTableWidget(3, 2);	    
+	    table.setHorizontalHeaderLabels(Arrays.asList(new String[] { "Name", "Hair color" } ));
+	    table.verticalHeader().setVisible(false);
+	    table.resize(150, 50);
+	    
+	    for (int i = 0; i < list.size(); ++i) {
+	        QPair<String, QColor> pair = list.get(i);
+
+	        QTableWidgetItem nameItem = new QTableWidgetItem(pair.first);
+	        QTableWidgetItem colorItem = new QTableWidgetItem();
+	        colorItem.setData(Qt.ItemDataRole.DisplayRole, pair.second);
+
+	        table.setItem(i, 0, nameItem);
+	        table.setItem(i, 1, colorItem);
+	    }
+	    table.resizeColumnToContents(0);
+	    table.horizontalHeader().resizeSection(1, 150);
+
+	    QGridLayout layout = new QGridLayout();
+	    layout.addWidget(table, 0, 0);
+
+	    setLayout(layout);
+
+	    setWindowTitle(tr("Color Editor Factory"));	    
+	}
+	
+
+	public static void main(String args[]) {
+		QApplication.initialize(args);
+		
+		ColorEditorFactory window = new ColorEditorFactory();
+		window.show();
+		
+		QApplication.exec();
+	}
+}

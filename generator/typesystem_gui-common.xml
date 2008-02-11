@@ -1487,7 +1487,18 @@
     
   </object-type>
   <object-type name="QItemEditorCreatorBase"/>
-  <object-type name="QItemEditorFactory"/>
+  <object-type name="QItemEditorFactory">
+    <modify-function signature="registerEditor(QVariant::Type, QItemEditorCreatorBase *)">
+        <modify-argument index="2">
+            <define-ownership class="java" owner="c++" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setDefaultFactory(QItemEditorFactory *)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDefaultItemEditorFactory" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QItemSelectionModel"/>
   <object-type name="QTreeModel"/>
   <object-type name="QListView"/>

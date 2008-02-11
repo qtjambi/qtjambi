@@ -1318,3 +1318,19 @@ void StaticCache::resolveQClassPathEngine_internal()
     QClassPathEngine.constructor = env->GetMethodID(QClassPathEngine.class_ref, "<init>", "(Ljava/lang/String;)V");
     Q_ASSERT(QClassPathEngine.constructor);
 }
+
+void StaticCache::resolveQItemEditorCreatorBase_internal() 
+{
+    Q_ASSERT(!QItemEditorCreatorBase.class_ref);
+
+    QItemEditorCreatorBase.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QItemEditorCreatorBase"));
+    Q_ASSERT(QItemEditorCreatorBase.class_ref);
+
+    QItemEditorCreatorBase.createWidget = env->GetMethodID(QItemEditorCreatorBase.class_ref, "createWidget", 
+        "(Lcom/trolltech/qt/gui/QWidget;)Lcom/trolltech/qt/gui/QWidget;");
+    Q_ASSERT(QItemEditorCreatorBase.createWidget);
+
+    QItemEditorCreatorBase.valuePropertyName = env->GetMethodID(QItemEditorCreatorBase.class_ref, "valuePropertyName",
+        "()Lcom/trolltech/qt/core/QByteArray;");
+    Q_ASSERT(QItemEditorCreatorBase.valuePropertyName);
+}
