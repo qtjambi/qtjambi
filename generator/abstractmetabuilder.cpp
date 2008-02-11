@@ -380,6 +380,7 @@ bool AbstractMetaBuilder::build()
             if (!global) {
                 ComplexTypeEntry *gte = new ObjectTypeEntry(globalName);
                 gte->setTargetLangPackage(meta_enum->typeEntry()->javaPackage());
+                gte->setCodeGeneration(meta_enum->typeEntry()->codeGeneration());
                 global = createMetaClass();
                 global->setTypeEntry(gte);
                 *global += AbstractMetaAttributes::Final;
