@@ -2,25 +2,38 @@ import os
 import zipfile
 import socket
 
-verbose = 1
+VERBOSE = 1
 PORT = 8184
 
+ARCH_32 = "32"
+ARCH_64 = "64"
+ARCH_UNIVERSAL = "universal"
 
+PLATFORM_WINDOWS = "win"
+PLATFORM_LINUX = "linux"
+PLATFORM_MAC = "mac"
+
+LICENSE_GPL = "gpl"
+LICENSE_EVAL = "eval"
+LICENSE_COMMERCIAL = "commercial"
+
+# Debugs out a string if the global variable "VERBOSE" is set
+#  - 0: str: The string to debug out...
 def debug(str):
-    if verbose:
+    if VERBOSE:
         print str
 
 
 
-
 # Compresses a directory into a zipfile
-#  0: zipName: The name of the output file...
-#  1: zipRoot: The directory to zip down
+#  - 0: zipFile: The name of the output file...
+#  - 1: zipRoot: The directory to zip down
 def compress(zipFile, zipRoot):
     def zipHelper(unused, dir, fileList):
         for file in fileList:
             absFile = (dir + "/" + file)[len(zipRoot) + 1:]
             if os.path.isfile(absFile):
+                print "wrote: "  + absFile;
                 zip.write(absFile);
     os.chdir(zipRoot);
     zip = zipfile.ZipFile(zipFile, "w");
@@ -70,3 +83,34 @@ def sendDataFile(hostName, dataFile):
 
 
 
+# Recursively deletes the directory specified with root
+#  - 0: root: The root directory. 
+def rmdirs(root):
+    for (dir, dirs, names) in os.walk(root, False):
+        for name in names:
+            os.remove(os.path.join(dir, name))
+        os.rmdir(dir)
+
+
+
+# Returns true if the script is running on mac os x
+def isMac():
+    return platform.system().find("Darwin") >= 0;
+
+
+
+# Returns true if the script is running on windows
+def isWindows():
+    return platform.system().find("Windows") >= 0;
+
+
+
+# Returns true if the script is running on linux
+def isLinux():
+    return platform.system().find("Linux") >= 0;
+
+
+
+
+        
+            
