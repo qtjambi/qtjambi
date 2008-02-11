@@ -1,5 +1,15 @@
 import os
 import zipfile
+import socket
+
+verbose = 1
+PORT = 8184
+
+
+def debug(str):
+    if verbose:
+        print str
+
 
 
 
@@ -38,4 +48,25 @@ def uncompress(zipFile, rootDir):
         outfile = open(os.path.join(rootDir, name), 'wb')
         outfile.write(file.read(name))
         outfile.close()
-        
+
+
+
+# Opens a connection to hostName and sends the file specified by
+# dataFile to that machine... The port number used is 8184 (ascii dec
+# codes for 'Q', 'T')
+#  - 0: hostName: The host name of the target machine.
+#  - 1: dataFile: The file to send...
+def sendDataFile(hostName, dataFile):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    debug(" - sendDataFile: connecting to: %s:%d" % (hostName, PORT))
+    s.connect((hostName, 8184))
+    file = open(dataFile, "rb")
+    debug(" - sendDataFile: transfering...")
+    block = file.read(4096)
+    while block:
+        s.send(block);
+        block = file.read(4096)
+    debug(" - sendDataFile: transfer complete...")
+
+
+
