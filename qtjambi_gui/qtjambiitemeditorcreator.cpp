@@ -1,6 +1,8 @@
 #include <QItemEditorCreator>
+#include <QWidget>
 
 #include <qtjambilink.h>
+#include <qtjambi_core.h>
 
 #include <jni.h>
 
