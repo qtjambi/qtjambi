@@ -9,7 +9,7 @@
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
 
-  <rejection class="" enum-name="QtValidLicenseForTestModule"/>
+  <rejection class="" enum-name="QtValidLicenseForTestModule"/>  
 
   <rejection class="" enum-name="QtValidLicenseForDBusModule"/>
   <rejection class="" enum-name="QtValidLicenseForSqlModule"/>
@@ -26,7 +26,10 @@
   <rejection class="" enum-name="QtValidLicenseForGuiModule"/>
   <rejection class="" enum-name="QtValidLicenseForScriptModule"/>
   <rejection class="" enum-name="QtValidLicenseForHelpModule"/>
- 
+  <rejection class="QtConcurrent" enum-name="enum_1" />
+
+  <rejection class="QMdi" />
+  <rejection class="stdext" /> 
   <rejection class="QAlgorithmsPrivate"/>
   <rejection class="QAtomic"/>
   <rejection class="QAtomicPointer"/>
@@ -991,7 +994,6 @@
   <object-type name="QtJambiFutureIterator" generic-class="yes" java-name="QFutureIterator" />
   <object-type name="QRunnable" />
   
-  
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>
@@ -1037,19 +1039,11 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFuture' has equals operators but no qHash() function" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: unknown operator 'T'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFutureVoid' has equals operators but no qHash() function" />
-
-
-
-
-
-
-
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFuture::constBegin', unmatched return type 'const_iterator'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFuture::end', unmatched return type 'const_iterator'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFuture::constEnd', unmatched return type 'const_iterator'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFuture::QFuture', unmatched parameter type 'QFutureInterface&lt;T&gt;*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFuture::begin', unmatched return type 'const_iterator'" />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: enum 'QtConcurrent::enum_1' does not have a type entry or is not an enum" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingMapped', unmatched return type 'Sequence'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingMapped', unmatched return type 'QList&lt;U&gt;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingMapped', unmatched return type 'QList&lt;MapFunctor::result_type&gt;'" />
@@ -1093,7 +1087,6 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::run', unmatched parameter type 'FunctionObject'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::run', unmatched parameter type 'T'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingFilter', unmatched parameter type 'Sequence&amp;'" />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'stdext' does not have a type entry" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::createFunctor', unmatched return type 'QtConcurrent::SelectMemberFunctor0&lt;T,Class&gt;::type'" />
 
 </typesystem>

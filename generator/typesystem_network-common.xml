@@ -138,4 +138,17 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCipher' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslConfiguration' has equals operators but no qHash() function"/>
   
+  <!-- For people building without SSL support -->
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslSocket' for enum 'SslMode' is not declared" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslError' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslCipher' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslKey' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslError' for enum 'SslError' is not declared" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslCertificate' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslSocket' for enum 'PeerVerifyMode' is not declared"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslCertificate' for enum 'SubjectInfo' is not declared"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslConfiguration' is specified in typesystem, but not defined. This could potentially lead to compilation errors."/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslSocket' is specified in typesystem, but not defined. This could potentially lead to compilation errors."/>
+  <!-- -->    
+  
 </typesystem>
