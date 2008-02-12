@@ -47,10 +47,10 @@ def compress(zipFile, zipRoot):
 def uncompress(zipFile, rootDir):
 
     if os.path.isfile(rootDir):
-        raise "uncompress: rootdir " + rootDir + " exists and is a file!"
+        raise "   - uncompress: rootdir " + rootDir + " exists and is a file!"
     elif not os.path.isdir(rootDir):
         os.makedirs(rootDir, 0777)
-        print "uncompres: directory didn't exist, created..."
+        print "   - uncompres: directory didn't exist, created..."
         
     file = zipfile.ZipFile(zipFile);
     for name in file.namelist():
@@ -71,16 +71,16 @@ def uncompress(zipFile, rootDir):
 #  - 1: dataFile: the file to transfer...
 def sendDataFile(hostName, dataFile):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    debug(" - sendDataFile: connecting to: %s:%d" % (hostName, PORT))
+    debug("   - sendDataFile: connecting to: %s:%d" % (hostName, PORT))
     s.connect((hostName, 8184))
     file = open(dataFile, "rb")
-    debug(" - sendDataFile: transfering %s..." % dataFile)
+    debug("   - sendDataFile: transfering %s..." % dataFile)
     block = file.read(4096)
     while len(block) > 0:
         s.send(block);
         block = file.read(4096)
     s.close()
-    debug(" - sendDataFile: transfer of file %s complete..." % dataFile)
+    debug("   - sendDataFile: transfer of file %s complete..." % dataFile)
 
 
 
@@ -88,14 +88,14 @@ def sendDataFile(hostName, dataFile):
 #  - 0: socket: The socket
 #  - 1: dataFile: the binary file to write..
 def getDataFile(socket, dataFile):
-    debug(" - getDataFile: receiving  %s..." % dataFile)
+    debug("   - getDataFile: receiving  %s..." % dataFile)
     file = open(dataFile, "wb")
     data = socket.recv(4096)
     while len(data) > 0:
         file.write(data);
         data = socket.recv(4096);
     file.close();
-    debug(" - getDataFile: transfer of file %s complete..." % dataFile)
+    debug("   - getDataFile: transfer of file %s complete..." % dataFile)
 
 
 
