@@ -380,6 +380,16 @@ class QTextStream___ extends QTextStream {
         return this;
     }
 
+    public final QTextStream writeChar(char c) {
+        writeShort_char(c);
+        return this;
+    }
+
+    public final char readChar() {
+        operator_shift_right_short(srb);
+        return srb.charValue();
+    }
+
     public final String readString() {
         return readString_native(nativeId());
     }
