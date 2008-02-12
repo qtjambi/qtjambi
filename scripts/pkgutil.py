@@ -1,6 +1,7 @@
 import os
 import zipfile
 import socket
+import platform
 
 VERBOSE = 1
 PORT = 8184
@@ -69,17 +70,40 @@ def uncompress(zipFile, rootDir):
 # codes for 'Q', 'T')
 #  - 0: hostName: The host name of the target machine.
 #  - 1: dataFile: The file to send...
-def sendDataFile(hostName, dataFile):
+#  --> returns the socket used for the transfer
+def sendDataFileToHost(hostName, dataFile):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     debug(" - sendDataFile: connecting to: %s:%d" % (hostName, PORT))
     s.connect((hostName, 8184))
+    sendDataFile(s, dataFile)
+    return s
+
+
+# Sends the binary file in 'dataFile' to the already opened 'socket'
+#  - 0: socket: An opened socket
+#  - 1: dataFile: the file to transfer...
+def sendDataFile(socket, dataFile):
     file = open(dataFile, "rb")
     debug(" - sendDataFile: transfering...")
     block = file.read(4096)
     while block:
-        s.send(block);
+        socket.send(block);
         block = file.read(4096)
     debug(" - sendDataFile: transfer complete...")
+
+
+
+# Gets a binary file from the 'socket' and writes it to 'dataFile'
+#  - 0: socket: The socket
+#  - 1: dataFile: the binary file to write..
+def getDataFile(socket, dataFile):
+    file = open(dataFile, "wb")
+    data = socket.recv(4096)
+    while data:
+        file.write(data);
+        data = socket.recv(4096);
+    file.close();
+
 
 
 
@@ -101,7 +125,7 @@ def isMac():
 
 # Returns true if the script is running on windows
 def isWindows():
-    return platform.system().find("Windows") >= 0;
+    return platform.system().find("Windows") >= 0 or platform.system().find("CYGWIN") >= 0;
 
 
 
