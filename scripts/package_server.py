@@ -25,12 +25,12 @@ else:
 
 
 while 1:
-    (clientsocket, address) = serversocket.accept()
-    print "got connection: ", address, ", ", clientsocket
+    (clientsocket, (host, port) ) = serversocket.accept()
+    print "got connection: %s on %s:%d" % (clientsocket, host, port)
 
-    print address[0], address[1]
 
-    path = "%s/%d" % (rootDir, address[1])
+    path = "%s/%d" % (rootDir, port)
+
     if os.path.isdir(path):
         shutil.rmtree(path)
         
@@ -40,11 +40,18 @@ while 1:
 
     zipFileName = os.path.join(path, "tmp.zip")
     pkgutil.getDataFile(clientsocket, zipFileName)
-
+    
     pkgutil.uncompress(zipFileName, path)
+    os.remove(zipFileName);
     os.system(task);
 
-    pkgutil.compress(zipFileName, path)
+   
+    resultZipFile = path + ".zip"
+    pkgutil.compress(resultZipFile, path)
+    pkgutil.sendDataFile(host, resultZipFile)
+
+
+serversocket.close()
     
 
     
