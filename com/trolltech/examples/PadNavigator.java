@@ -229,6 +229,7 @@ public class PadNavigator extends QGraphicsView {
         updateSelectionStep(0);
 
         setWindowTitle(tr("Pad Navigator Example"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
     public void keyPressEvent(QKeyEvent event) {

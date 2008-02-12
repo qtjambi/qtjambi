@@ -91,7 +91,8 @@ public class ColorEditorFactory extends QWidget {
 
 	    setLayout(layout);
 
-	    setWindowTitle(tr("Color Editor Factory"));	    
+	    setWindowTitle(tr("Color Editor Factory"));
+	    setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 	}
 	
 

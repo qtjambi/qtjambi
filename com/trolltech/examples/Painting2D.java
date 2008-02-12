@@ -9,8 +9,7 @@ public class  Painting2D extends QWidget
 {
     private Helper helper;
 
-    public Painting2D()
-    {
+    public Painting2D() {
         helper = new Helper();
 
         Widget widget = new Widget(helper, this);
@@ -34,30 +33,27 @@ public class  Painting2D extends QWidget
         timer.start(50);
 
         setWindowTitle(tr("2D Painting on Native and OpenGL Widgets"));
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
-    class GLWidget extends QGLWidget
-    {
+    class GLWidget extends QGLWidget {
         private Helper helper;
         private int elapsed;
 
-        public GLWidget(Helper helper, QWidget parent)
-        {
+        public GLWidget(Helper helper, QWidget parent) {
             super(new QGLFormat(), parent);
 
             this.helper = helper;
             setFixedSize(200, 200);    
         }
 
-        public void animate()
-        {
+        public void animate() {
             elapsed = (elapsed + ((QTimer) signalSender()).interval()) % 1000;
             repaint();
         }
 
         @Override
-        protected void paintEvent(QPaintEvent event)
-        {
+        protected void paintEvent(QPaintEvent event) {
             QPainter painter = new QPainter();
             painter.begin(this);
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
@@ -66,27 +62,23 @@ public class  Painting2D extends QWidget
         }
     }
 
-    class Widget extends QWidget
-    {
+    class Widget extends QWidget {
         private int elapsed;
         private Helper helper; 
     
-        public Widget(Helper helper, QWidget parent)
-        {
+        public Widget(Helper helper, QWidget parent) {
             super(parent);
             this.helper = helper;
             setFixedSize(200, 200);
         }
 
-        public void animate()
-        {
+        public void animate() {
             elapsed = (elapsed + ((QTimer) signalSender()).interval()) % 1000;
             repaint();
         }
 
         @Override
-        public void paintEvent(QPaintEvent event)
-        {
+        public void paintEvent(QPaintEvent event) {
             QPainter painter = new QPainter();
             painter.begin(this);
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
@@ -95,16 +87,14 @@ public class  Painting2D extends QWidget
         }
     }
 
-    class Helper
-    {
+    class Helper {
         private QBrush background;
         private QBrush circleBrush;
         private QFont textFont;
         private QPen circlePen;
         private QPen textPen;
 
-        public Helper()
-        {
+        public Helper() {
             QLinearGradient gradient =
                 new QLinearGradient(new QPointF(50, -20), new QPointF(80, 20));
             gradient.setColorAt(0.0, new QColor(Qt.GlobalColor.white));
@@ -120,8 +110,7 @@ public class  Painting2D extends QWidget
             textFont.setPixelSize(50);
         }
 
-        public void paint(QPainter painter, QPaintEvent event, int elapsed)
-        {
+        public void paint(QPainter painter, QPaintEvent event, int elapsed) {
             painter.fillRect(event.rect(), background);
             painter.translate(100, 100);
             
@@ -147,8 +136,7 @@ public class  Painting2D extends QWidget
         }
     }
 
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         QApplication.initialize(args);
 
         Painting2D painting2d = new Painting2D();
