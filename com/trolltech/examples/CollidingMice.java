@@ -80,7 +80,7 @@ public class CollidingMice extends QWidget {
                                generator.nextInt(256));
             rotate(generator.nextDouble() * 360);
 
-            QTimer timer = new QTimer();
+            QTimer timer = new QTimer(CollidingMice.this);
             timer.start(1000/33);
             timer.timeout.connect(this, "move()");
             start.connect(timer, "start()");
