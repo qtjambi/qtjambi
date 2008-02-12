@@ -56,6 +56,18 @@
     \o Converts the given \c .ui file to a Java user interface file
     (\c .jui). The \c .jui file format's datastructure is based on
     Java syntax.
+    
+    \row
+    \o --custom-widgets=[files]
+    \o To be used together with --convert-to-jui in order to specify
+    the names of xml files containing lists of promoted widgets
+    used in the original .ui file. These custom widgets will then
+    be replaced by their specified Java counter part. The class 
+    name in Java should be the same as the type to which the widget 
+    has been promoted, and there should only be a single class 
+    specified for each class name. If several files are required,
+    separate the file names using ';' on Windows and ':' on other
+    platforms.
 
     \row
     \o --no-cpp-h

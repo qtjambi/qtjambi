@@ -45,6 +45,7 @@ private:
 
     QString doc_dir;
     QString ui_file_name;
+    QString custom_widgets;
 
     MetaJavaBuilder builder;
 

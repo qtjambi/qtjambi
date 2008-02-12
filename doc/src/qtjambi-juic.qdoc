@@ -116,6 +116,23 @@
     generator. Please see the \l {The Qt Jambi Generator}{Qt Jambi
     Generator} documentation for details.
 
+    If the original user interface contains promoted widgets, then 
+    the Java equivalents for these should first be added to the 
+    custom widgets specification for the Qt Jambi Designer (this 
+    can be done automatically using the \l {Qt Jambi Eclipse Integration}
+    {Eclipse Integration} or manually using a text editor) then the name(s) 
+    of these xml specifications should be passed to the generator on the 
+    command line:
+    
+    \code
+        ./generator qtmasterheaderfile.h jambimastertypesystem.txt
+                     --convert-to-jui=calculatorform.ui
+                     --custom-widgets=../plugins/qtjambi/qtjambi_examples.xml    
+    \endcode
+    
+    For more details on this, see \l {The Qt Jambi Generator}{Qt Jambi
+    Generator} documentation.
+    
 
 
 */

@@ -48,7 +48,8 @@ QString GeneratorSetJava::usage() {
         "  --no-metainfo                             \n" 
         "  --no-cpp-h                                \n"
         "  --no-cpp-impl                             \n"
-        "  --convert-to-jui=[.ui-filename]           \n";
+        "  --convert-to-jui=[.ui-file name]          \n"
+        "  --custom-widgets=[file names]             \n";
 
     return usage;
 }
@@ -73,6 +74,9 @@ bool GeneratorSetJava::readParameters(const QMap<QString, QString> args) {
     }
 
     docs_enabled = args.contains("jdoc-enabled");
+
+    if (args.contains("custom-widgets"))
+        custom_widgets = args.value("custom-widgets");    
 
     if (args.contains("convert-to-jui")) {
         ui_file_name = args.value("convert-to-jui");
@@ -103,8 +107,10 @@ QString GeneratorSetJava::generate() {
     if (do_ui_convert) {
         UiConverter converter;
         converter.setClasses(builder.classes());
-        converter.convertToJui(ui_file_name);
+        converter.convertToJui(ui_file_name, custom_widgets);
         return 0;
+    } else if (!custom_widgets.isEmpty()) {
+        fprintf(stderr, "NOTE: The --custom-widgets option only has an effect when used with --convert-to-jui");
     }
 
     // Code generation
