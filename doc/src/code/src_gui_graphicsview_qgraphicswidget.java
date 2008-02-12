@@ -39,28 +39,34 @@ import com.trolltech.qt.sql.*;
 import com.trolltech.qt.svg.*;
 
 
-public class src_gui_graphicsview_qgraphicswidget {
-    public static void main(String args[]) {
-        QApplication.initialize(args);
+public class src_gui_graphicsview_qgraphicswidget extends QGraphicsWidget {
+
+	
+	public int lineWidth() { return 0; }
+	
 //! [0]
-        void MyGroupBoxWidget.initStyleOption(QStyleOption ption)
-        {
-            QGraphicsWidget.initStyleOption(option);
-            if (QStyleOptionGroupBox ox = qstyleoption_cast<QStyleOptionGroupBox *>(option)) {
+        @Override
+        protected void initStyleOption(QStyleOption option) {
+            super.initStyleOption(option);
+            if (option instanceof QStyleOptionGroupBox) {
+            	QStyleOptionGroupBox box = (QStyleOptionGroupBox)option;
                 // Add group box specific state.
-                box.flat = isFlat();
-                ...
+                box.setLineWidth(lineWidth());
+                // ...
             }
         }
 //! [0]
 
 
+        QGraphicsWidget a, b, c, d;
+        
+        {
 //! [1]
         setTabOrder(a, b); // a to b
         setTabOrder(b, c); // a to b to c
         setTabOrder(c, d); // a to b to c to d
 //! [1]
-
+        
 
 //! [2]
         // WRONG
@@ -68,7 +74,7 @@ public class src_gui_graphicsview_qgraphicswidget {
         setTabOrder(a, b); // a to b AND c to d
         setTabOrder(b, c); // a to b to c, but not c to d
 //! [2]
-
+        }
 
     }
-}
+

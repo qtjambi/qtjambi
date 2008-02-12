@@ -15,7 +15,7 @@ public class src_corelib_io_qsettings {
         {
 //! [0]
         QSettings settings = new QSettings("MySoft", "Star Runner");
-        QColor color = QVariant.toColor(settings.value("DataPump/bgcolor"));
+        QColor color = (QColor) settings.value("DataPump/bgcolor");
 //! [0]
         }
 

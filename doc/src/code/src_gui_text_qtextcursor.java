@@ -27,9 +27,9 @@ public class src_gui_text_qtextcursor extends QWidget {
             insertHelloWorld(cursor);
             insertImage(textDocument, cursor);
             
-            clearDocument();
+            //clearDocument();
             insertMoreText(textDocument);
-            insertEvenMoreText(textDocument);
+            //insertEvenMoreText(textDocument);
         }        
     }
 
@@ -44,7 +44,7 @@ public class src_gui_text_qtextcursor extends QWidget {
     public static void insertImage(QTextDocument textDocument, QTextCursor cursor) {
         //! [1]
         QImage img = new QImage();
-        textDocument.addResource(QTextDocument.ResourceType.ImageResource, new QUrl("myimage"), img);
+        textDocument.addResource(QTextDocument.ResourceType.ImageResource.value(), new QUrl("myimage"), img);
         cursor.insertImage("myimage");
         //! [1]
     }
@@ -55,7 +55,7 @@ public class src_gui_text_qtextcursor extends QWidget {
 
     public static void insertMoreText(QTextDocument textDocument){
         //! [2]
-        QTextCursor cursor(textDocument);
+        QTextCursor cursor = new QTextCursor(textDocument);
         cursor.beginEditBlock();
         cursor.insertText("Hello");
         cursor.insertText("World");
@@ -65,9 +65,9 @@ public class src_gui_text_qtextcursor extends QWidget {
         //! [2]
     }
     
-    public static void insertEvenMoreText(QTextDocument textDocument(){
+    public static void insertEvenMoreText(QTextDocument textDocument) {
         //! [3]
-        QTextCursor cursor(textDocument);
+        QTextCursor cursor = new QTextCursor(textDocument);
         cursor.beginEditBlock();
         cursor.insertText("Hello");
         cursor.insertText("World");

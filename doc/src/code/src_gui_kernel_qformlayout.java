@@ -76,8 +76,9 @@ public class src_gui_kernel_qformlayout extends QWidget {
 //! [1]
 
 
+        // FormStyle does not seem to actually exist at all
+        // so I removed that line
 //! [2]
-        formLayout.setFormStyle(QFormLayout.FormStyle.MacStyle);
         formLayout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft);
 //! [2]
 

@@ -31,7 +31,7 @@ public class src_gui_kernel_qsound {
 
 
 //! [1]
-        QSound bells("mysounds/bells.wav");
+        QSound bells = new QSound("mysounds/bells.wav");
         bells.play();
 //! [1]
 

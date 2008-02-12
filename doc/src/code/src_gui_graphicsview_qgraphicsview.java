@@ -91,7 +91,7 @@ public class src_gui_graphicsview_qgraphicsview {
         // print the upper half of the viewport into the lower.
         // half of the page.
         QRect viewport = view.viewport().rect();
-        view.renderView(painter,
+        view.render(painter,
                     new QRectF(0, printer.height() / 2, printer.width(), printer.height() / 2),
                     viewport.adjusted(0, 0, 0, -viewport.height() / 2)       
         );

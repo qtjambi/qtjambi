@@ -113,9 +113,11 @@ import com.trolltech.qt.svg.*;
 public class src_corelib_kernel_qvariant {
     public static void main(String args[]) {
         QApplication.initialize(args);
+        
+        /*
 //! [0]
-        QDataStream out(...);
-        QVariant v(123);                // The variant now contains an int
+        QDataStream out = new QDataStream(ioDevice);
+        Integer v = 123;                // The variant now contains an int
         int x = v.toInt();              // x = 123
         out << v;                       // Writes a type tag and an int to out
         v = QVariant("hello");          // The variant now contains a QByteArray
@@ -210,7 +212,7 @@ public class src_corelib_kernel_qvariant {
     QObject bject = getObjectFromSomewhere();
     QVariant data = qVariantFromValue(object);
 //! [8]
-
+	*/
 
     }
 }
