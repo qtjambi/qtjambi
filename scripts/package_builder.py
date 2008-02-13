@@ -162,6 +162,7 @@ class Package:
         
         
 packages = []
+serverSockets = []
 
 
 
@@ -246,7 +247,16 @@ def packageAndSend(package):
     pkgutil.compress(os.path.join(options.packageRoot, "tmp.zip"), os.path.join(options.packageRoot, "tmptree"))
 
     pkgutil.debug(" - sending %s to host: %s.." % (package.name(), package.buildServer))
-    pkgutil.sendDataFile(package.buildServer, os.path.join(options.packageRoot, "tmp.zip"))
+
+    if not package.socket:
+        package.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        debug("   - sendDataFile: connecting to: %s:%d" % (hostName, pkgutil.PORT_SERVER))
+        package.socket.connect((hostName, pkgutil.PORT_SERVER))
+        package.socket.send(pkgutil.CMD_RESET)
+        serverSockets.append(package.socket)
+        
+    package.socket.send(socket.send(CMD_NEWPKG));
+    pkgutil.sendDataFile(package.socket, os.path.join(options.packageRoot, "tmp.zip"))
 
 
 
@@ -454,8 +464,12 @@ def main():
     pkgutil.debug("configuring packages...");
     setupPackages()
 
+    # Package and send all packages, finish off by closing all sockets
+    # to make sure they are properly closed...
     for package in packages:
         packageAndSend(package)
+    for socket in serverSockets:
+        socket.close()
 
     waitForResponse()
 

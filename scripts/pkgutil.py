@@ -4,7 +4,8 @@ import socket
 import platform
 
 VERBOSE = 1
-PORT = 8184
+PORT_SERVER = 8184
+PORT_CREATOR = 8185
 
 ARCH_32 = "32"
 ARCH_64 = "64"
@@ -17,6 +18,9 @@ PLATFORM_MAC = "mac"
 LICENSE_GPL = "gpl"
 LICENSE_EVAL = "eval"
 LICENSE_COMMERCIAL = "commercial"
+
+CMD_RESET = "R";
+CMD_NEWPKG = "N";
 
 # Debugs out a string if the global variable "VERBOSE" is set
 #  - 0: str: The string to debug out...
@@ -69,17 +73,13 @@ def uncompress(zipFile, rootDir):
 # codes for 'Q', 'T')
 #  - 0: hostName: The host name of the target machine.
 #  - 1: dataFile: the file to transfer...
-def sendDataFile(hostName, dataFile):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    debug("   - sendDataFile: connecting to: %s:%d" % (hostName, PORT))
-    s.connect((hostName, 8184))
+def sendDataFile(socket, dataFile):
     file = open(dataFile, "rb")
     debug("   - sendDataFile: transfering %s..." % dataFile)
     block = file.read(4096)
     while len(block) > 0:
         s.send(block);
         block = file.read(4096)
-    s.close()
     debug("   - sendDataFile: transfer of file %s complete..." % dataFile)
 
 
