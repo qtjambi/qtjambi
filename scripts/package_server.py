@@ -71,7 +71,7 @@ def runTask(taskDef):
     exitCode = os.system(task)
     
     if exitCode:
-        fh = open(os.path.join(path, "FATAL.ERROR");
+        fh = open(os.path.join(path, "FATAL.ERROR"), "w")
         fh.write("Exit code: %d\n" % exitCode)
         fh.close()
 
