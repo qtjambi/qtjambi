@@ -1,10 +1,5 @@
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
 
 
 public class src_corelib_codecs_qtextcodec {
@@ -16,6 +11,7 @@ public class src_corelib_codecs_qtextcodec {
         QTextCodec codec = QTextCodec.codecForName("KOI8-R");
         String string = codec.toUnicode(encodedString);
 //! [0]
+        if (string != null) {}
 	}
 
 	{
@@ -24,6 +20,7 @@ public class src_corelib_codecs_qtextcodec {
         QTextCodec codec = QTextCodec.codecForName("KOI8-R");
         QByteArray encodedString = codec.fromUnicode(string);
 //! [1]
+        if (encodedString != null) {}
 	}
 
 	{

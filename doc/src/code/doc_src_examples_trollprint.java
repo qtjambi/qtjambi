@@ -3,13 +3,14 @@ import com.trolltech.qt.*;
 
 
 public class doc_src_examples_trollprint extends QtJambiObject {
+    static QRadioButton twoSidedEnabledRadio;
+    static QRadioButton twoSidedDisabledRadio;
+    static QRadioButton colorsEnabledRadio;
+    static QRadioButton colorsDisabledRadio;
+	
     public void main(String args[]) {
         QApplication.initialize(args);
 
-        QRadioButton twoSidedEnabledRadio;
-        QRadioButton twoSidedDisabledRadio;
-        QRadioButton colorsEnabledRadio;
-        QRadioButton colorsDisabledRadio;
 
         QWidget colors = null;
 

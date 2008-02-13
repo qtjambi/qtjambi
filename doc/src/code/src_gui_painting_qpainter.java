@@ -1,426 +1,261 @@
-/*   Ported from: src.gui.painting.qpainter.cpp
-<snip>
-//! [0]
-    void SimpleExampleWidget::paintEvent(QPaintEvent *)
-    {
-        QPainter painter(this);
-        painter.setPen(Qt::blue);
-        painter.setFont(QFont("Arial", 30));
-        painter.drawText(rect(), Qt::AlignCenter, "Qt");
-    }
-//! [0]
+import java.util.Arrays;
 
-
-//! [1]
-        void MyWidget::paintEvent(QPaintEvent *)
-        {
-            QPainter p;
-            p.begin(this);
-            p.drawLine(...);        // drawing code
-            p.end();
-        }
-//! [1]
-
-
-//! [2]
-        void MyWidget::paintEvent(QPaintEvent *)
-        {
-            QPainter p(this);
-            p.drawLine(...);        // drawing code
-        }
-//! [2]
-
-
-//! [3]
-        painter->begin(0); // impossible - paint device cannot be 0
-
-        QPixmap image(0, 0);
-        painter->begin(&image); // impossible - image.isNull() == true;
-
-        painter->begin(myWidget);
-        painter2->begin(myWidget); // impossible - only one painter at a time
-//! [3]
-
-
-//! [4]
-        void QPainter::rotate(qreal angle)
-        {
-            QMatrix matrix;
-            matrix.rotate(angle);
-            setWorldMatrix(matrix, true);
-        }
-//! [4]
-
-
-//! [5]
-    QPainterPath path;
-    path.moveTo(20, 80);
-    path.lineTo(20, 30);
-    path.cubicTo(80, 0, 50, 50, 80, 80);
-
-    QPainter painter(this);
-    painter.drawPath(path);
-//! [5]
-
-
-//! [6]
-    QLineF line(10.0, 80.0, 90.0, 20.0);
-
-    QPainter(this);
-    painter.drawLine(line);
-//! [6]
-
-
-//! [7]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-
-        QPainter painter(this);
-        painter.drawRect(rectangle);
-//! [7]
-
-
-//! [8]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-
-        QPainter painter(this);
-        painter.drawRoundedRect(rectangle, 20.0, 15.0);
-//! [8]
-
-
-//! [9]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-
-        QPainter painter(this);
-        painter.drawEllipse(rectangle);
-//! [9]
-
-
-//! [10]
-    QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-    int startAngle = 30 * 16;
-    int spanAngle = 120 * 16;
-
-    QPainter painter(this);
-    painter.drawArc(rectangle, startAngle, spanAngle);
-//! [10]
-
-
-//! [11]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-        int startAngle = 30 * 16;
-        int spanAngle = 120 * 16;
-
-        QPainter painter(this);
-        painter.drawPie(rectangle, startAngle, spanAngle);
-//! [11]
-
-
-//! [12]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-        int startAngle = 30 * 16;
-        int spanAngle = 120 * 16;
-
-        QPainter painter(this);
-        painter.drawChord(rect, startAngle, spanAngle);
-//! [12]
-
-
-//! [13]
-        static const QPointF points[3] = {
-            QPointF(10.0, 80.0),
-            QPointF(20.0, 10.0),
-            QPointF(80.0, 30.0),
-        };
-
-        QPainter painter(this);
-        painter.drawPolyline(points, 3);
-//! [13]
-
-
-//! [14]
-    static const QPointF points[4] = {
-        QPointF(10.0, 80.0),
-        QPointF(20.0, 10.0),
-        QPointF(80.0, 30.0),
-        QPointF(90.0, 70.0)
-    };
-
-    QPainter painter(this);
-    painter.drawPolygon(points, 4);
-//! [14]
-
-
-//! [15]
-    static const QPointF points[4] = {
-        QPointF(10.0, 80.0),
-        QPointF(20.0, 10.0),
-        QPointF(80.0, 30.0),
-        QPointF(90.0, 70.0)
-    };
-
-    QPainter painter(this);
-    painter.drawConvexPolygon(points, 4);
-//! [15]
-
-
-//! [16]
-    QRectF target(10.0, 20.0, 80.0, 60.0);
-    QRectF source(0.0, 0.0, 70.0, 40.0);
-    QPixmap pixmap(":myPixmap.png");
-
-    QPainter(this);
-    painter.drawPixmap(target, image, source);
-//! [16]
-
-
-//! [17]
-        QPainter painter(this);
-        painter.drawText(rect, Qt::AlignCenter, tr("Qt by\nTrolltech"));
-//! [17]
-
-
-//! [18]
-        QPicture picture;
-        QPointF point(10.0, 20.0)
-        picture.load("drawing.pic");
-
-        QPainter painter(this);
-        painter.drawPicture(0, 0, picture);
-//! [18]
-
-
-//! [19]
-        fillRect(rectangle, background()).
-//! [19]
-
-
-//! [20]
-    QRectF target(10.0, 20.0, 80.0, 60.0);
-    QRectF source(0.0, 0.0, 70.0, 40.0);
-    QImage image(":/images/myImage.png");
-
-    QPainter(this);
-    painter.drawImage(target, image, source);
-//! [20]
-
-
-</snip>
-*/
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
 
 
-public class src_gui_painting_qpainter {
-    public static void main(String args[]) {
-        QApplication.initialize(args);
+public class src_gui_painting_qpainter extends QWidget {
 //! [0]
-    void SimpleExampleWidget.paintEvent(QPaintEvent *)
-    {
-        QPainter painter(this);
-        painter.setPen(Qt.blue);
-        painter.setFont(QFont("Arial", 30));
-        painter.drawText(rect(), Qt.AlignCenter, "Qt");
+    @Override
+    protected void paintEvent(QPaintEvent e) { 
+        QPainter painter = new QPainter(this);
+        painter.setPen(QColor.blue);
+        painter.setFont(new QFont("Arial", 30));
+        painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(), "Qt");
+        painter.end();
     }
 //! [0]
+}
 
-
+class painterfoobar extends QWidget {
+	QLine line;
 //! [1]
-        void MyWidget.paintEvent(QPaintEvent *)
-        {
-            QPainter p;
-            p.begin(this);
-            p.drawLine(...);        // drawing code
-            p.end();
-        }
+	@Override
+    protected void paintEvent(QPaintEvent e) {
+        QPainter p = new QPainter();
+        p.begin(this);
+        p.drawLine(line);        // drawing code
+        p.end();
+    }
 //! [1]
+}
 
-
+class painterfoobar2 extends painterfoobar {
 //! [2]
-        void MyWidget.paintEvent(QPaintEvent *)
-        {
-            QPainter p(this);
-            p.drawLine(...);        // drawing code
-        }
+	@Override
+	protected void paintEvent(QPaintEvent e) {
+        QPainter p = new QPainter(this);
+        p.drawLine(line);        // drawing code
+        p.end();
+    }
 //! [2]
 
 
+	public void abc(QPainter painter) {
+		QWidget myWidget = null;
+		QPainter painter2 = null;
+		
 //! [3]
-        painter.begin(0); // impossible - paint device cannot be 0
+        painter.begin(null); // impossible - paint device cannot be null
 
-        QPixmap image(0, 0);
-        painter.begin(mage); // impossible - image.isNull() == true;
+        QPixmap image = new QPixmap(0, 0);
+        painter.begin(image); // impossible - image.isNull() == true;
 
         painter.begin(myWidget);
         painter2.begin(myWidget); // impossible - only one painter at a time
 //! [3]
+	}
 
 
+	void setWorldMatrix(QMatrix matrix, boolean b) {}
+	
 //! [4]
-        void QPainter.rotate(double angle)
-        {
-            QMatrix matrix;
-            matrix.rotate(angle);
-            setWorldMatrix(matrix, true);
-        }
+    void rotate(double angle) {
+        QMatrix matrix = new QMatrix();
+        matrix.rotate(angle);
+        setWorldMatrix(matrix, true);
+    }
 //! [4]
 
 
+    void abcdef() {
+    	{
 //! [5]
-    QPainterPath path;
+    QPainterPath path = new QPainterPath();
     path.moveTo(20, 80);
     path.lineTo(20, 30);
     path.cubicTo(80, 0, 50, 50, 80, 80);
 
-    QPainter painter(this);
+    QPainter painter = new QPainter(this);
     painter.drawPath(path);
+    painter.end();
 //! [5]
+    	}
 
-
+    {
 //! [6]
-    QLineF line(10.0, 80.0, 90.0, 20.0);
+    QLineF line = new QLineF(10.0, 80.0, 90.0, 20.0);
 
-    QPainter(this);
+    QPainter painter = new QPainter(this);
     painter.drawLine(line);
+    painter.end();
 //! [6]
+    }
 
-
+    {
 //! [7]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+        QRectF rectangle = new QRectF(10.0, 20.0, 80.0, 60.0);
 
-        QPainter painter(this);
+        QPainter painter = new QPainter(this);
         painter.drawRect(rectangle);
+        painter.end();
 //! [7]
+    }
 
-
+    {
 //! [8]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+        QRectF rectangle = new QRectF(10.0, 20.0, 80.0, 60.0);
 
-        QPainter painter(this);
+        QPainter painter = new QPainter(this);
         painter.drawRoundedRect(rectangle, 20.0, 15.0);
+        painter.end();
 //! [8]
+    }
 
-
+    {
 //! [9]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+        QRectF rectangle = new QRectF(10.0, 20.0, 80.0, 60.0);
 
-        QPainter painter(this);
+        QPainter painter = new QPainter(this);
         painter.drawEllipse(rectangle);
+        painter.end();
 //! [9]
+    }
 
-
+    {
 //! [10]
-    QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+    QRectF rectangle = new QRectF(10.0, 20.0, 80.0, 60.0);
     int startAngle = 30 * 16;
     int spanAngle = 120 * 16;
 
-    QPainter painter(this);
+    QPainter painter = new QPainter(this);
     painter.drawArc(rectangle, startAngle, spanAngle);
+    painter.end();
 //! [10]
+    }
 
-
+    {
 //! [11]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+        QRectF rectangle = new QRectF(10.0, 20.0, 80.0, 60.0);
         int startAngle = 30 * 16;
         int spanAngle = 120 * 16;
 
-        QPainter painter(this);
+        QPainter painter = new QPainter(this);
         painter.drawPie(rectangle, startAngle, spanAngle);
+        painter.end();
 //! [11]
+    }
 
-
+    {
 //! [12]
-        QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+        QRectF rectangle = new QRectF(10.0, 20.0, 80.0, 60.0);
         int startAngle = 30 * 16;
         int spanAngle = 120 * 16;
 
-        QPainter painter(this);
-        painter.drawChord(rect, startAngle, spanAngle);
+        QPainter painter = new QPainter(this);
+        painter.drawChord(rectangle, startAngle, spanAngle);
+        painter.end();
 //! [12]
+    }
 
-
+    {
 //! [13]
-        static QPointF points[3] = {
-            QPointF(10.0, 80.0),
-            QPointF(20.0, 10.0),
-            QPointF(80.0, 30.0),
+        final QPointF points[] = {
+            new QPointF(10.0, 80.0),
+            new QPointF(20.0, 10.0),
+            new QPointF(80.0, 30.0),
         };
 
-        QPainter painter(this);
-        painter.drawPolyline(points, 3);
+        QPainter painter = new QPainter(this);
+        painter.drawPolyline(new QPolygonF(Arrays.asList(points)));
+        painter.end();
 //! [13]
+    }
 
-
+    {
 //! [14]
-    static QPointF points[4] = {
-        QPointF(10.0, 80.0),
-        QPointF(20.0, 10.0),
-        QPointF(80.0, 30.0),
-        QPointF(90.0, 70.0)
+    final QPointF points[] = {
+        new QPointF(10.0, 80.0),
+        new QPointF(20.0, 10.0),
+        new QPointF(80.0, 30.0),
+        new QPointF(90.0, 70.0)
     };
 
-    QPainter painter(this);
-    painter.drawPolygon(points, 4);
+    QPainter painter = new QPainter(this);
+    painter.drawPolygon(new QPolygonF(Arrays.asList(points)));
+    painter.end();
 //! [14]
+    }
 
-
+    {
 //! [15]
-    static QPointF points[4] = {
-        QPointF(10.0, 80.0),
-        QPointF(20.0, 10.0),
-        QPointF(80.0, 30.0),
-        QPointF(90.0, 70.0)
+    final QPointF points[] = {
+        new QPointF(10.0, 80.0),
+        new QPointF(20.0, 10.0),
+        new QPointF(80.0, 30.0),
+        new QPointF(90.0, 70.0)
     };
 
-    QPainter painter(this);
-    painter.drawConvexPolygon(points, 4);
+    QPainter painter = new QPainter(this);
+    painter.drawConvexPolygon(new QPolygonF(Arrays.asList(points)));
+    painter.end();
 //! [15]
-
-
+    }
+    
+    {
 //! [16]
-    QRectF target(10.0, 20.0, 80.0, 60.0);
-    QRectF source(0.0, 0.0, 70.0, 40.0);
-    QPixmap pixmap(":myPixmap.png");
+    QRectF target = new QRectF(10.0, 20.0, 80.0, 60.0);
+    QRectF source = new QRectF(0.0, 0.0, 70.0, 40.0);
+    QPixmap pixmap = new QPixmap("classpath:myPixmap.png");
 
-    QPainter(this);
-    painter.drawPixmap(target, image, source);
+    QPainter painter = new QPainter(this);
+    painter.drawPixmap(target, pixmap, source);
+    painter.end();
 //! [16]
+    }
 
-
+    {
+    	QRectF rect = null;
 //! [17]
-        QPainter painter(this);
-        painter.drawText(rect, Qt.AlignCenter, tr("Qt by\nTrolltech"));
+        QPainter painter = new QPainter(this);
+        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter.value(), tr("Qt by\nTrolltech"));
+        painter.end();
 //! [17]
+    }
 
-
+    {
 //! [18]
-        QPicture picture;
-        QPointF point(10.0, 20.0)
+        QPicture picture = new QPicture();
         picture.load("drawing.pic");
 
-        QPainter painter(this);
+        QPainter painter = new QPainter(this);
         painter.drawPicture(0, 0, picture);
+        painter.end();
 //! [18]
+    }
+    }
 
-
+    
+    public void fillRect(int a, int b) {}
+    public int background() 
+    {
+    	int rectangle = 0;
 //! [19]
-        fillRect(rectangle, background()).
+        fillRect(rectangle, background());
 //! [19]
+    
 
-
+    {
 //! [20]
-    QRectF target(10.0, 20.0, 80.0, 60.0);
-    QRectF source(0.0, 0.0, 70.0, 40.0);
-    QImage image(":/images/myImage.png");
+    QRectF target = new QRectF(10.0, 20.0, 80.0, 60.0);
+    QRectF source = new QRectF(0.0, 0.0, 70.0, 40.0);
+    QImage image = new QImage("classpath:/images/myImage.png");
 
-    QPainter(this);
+    QPainter painter = new QPainter(this);
     painter.drawImage(target, image, source);
+    painter.end();
 //! [20]
-
-
+    }
+    return 0;
     }
 }

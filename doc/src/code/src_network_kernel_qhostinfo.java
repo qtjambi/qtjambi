@@ -65,10 +65,7 @@ import com.trolltech.qt.svg.*;
 
 
 public class src_network_kernel_qhostinfo {
-    public static void main(String args[]) {
-        QApplication.initialize(args);
-    }
-    public class MyWidget {
+    public class MyWidget extends QObject {
 
 	public void foo1()
 	{
@@ -115,21 +112,19 @@ public class src_network_kernel_qhostinfo {
 	}
 
 
-	private QHostInfo host;
 //! [3]
-        public void lookedUp(QHostInfo ost)
-        {
+        public void lookedUp(QHostInfo host) {
             if (host.error() != QHostInfo.HostInfoError.NoError) {
                 System.out.println("Lookup failed:");
-		System.out.println(host.errorString());
+                System.out.println(host.errorString());
                 return;
             }
 
             for (int c = 0; c < host.addresses().size(); c++) {
-		QHostAddress address = host.addresses().get(c);
+            	QHostAddress address = host.addresses().get(c);
                 System.out.println("Found address:");
-		System.out.println(address.toString());
-	    }
+                System.out.println(address.toString());
+            }
         }
 //! [3]
 

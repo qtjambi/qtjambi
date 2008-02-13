@@ -4,7 +4,7 @@ import com.trolltech.qt.gui.*;
 
 import java.util.*;
 
-public class SimpleExecution
+class SimpleExecution
 {
 
     public static void main(String args[])

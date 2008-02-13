@@ -15,7 +15,6 @@
 </snip>
 */
 import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
 import java.lang.reflect.*;
 
 class MyClass {}

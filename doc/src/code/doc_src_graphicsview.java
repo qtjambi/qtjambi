@@ -1,10 +1,5 @@
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
 import com.trolltech.qt.opengl.*;
 
 public class doc_src_graphicsview {
@@ -36,12 +31,15 @@ public class doc_src_graphicsview {
         {
 //! [0]
             QGraphicsScene scene = new QGraphicsScene();
-            QGraphicsRectItem ect = scene.addRect(new QRectF(0, 0, 100, 100));
+            QGraphicsRectItem rect = scene.addRect(new QRectF(0, 0, 100, 100));
 
-            QGraphicsItemInterface tem = scene.itemAt(50, 50);
+            QGraphicsItemInterface item = scene.itemAt(50, 50);
             // item == rect
 //! [0]
+            if (item != null && rect != null) {}
+            
         }
+        
 
 
         if (true)

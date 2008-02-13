@@ -68,6 +68,7 @@ class doc_src_qt4 extends QWidget
     painter.drawLine(width()/2, 0, width()/2, height());
 //! [4]
 
+    /*
 //! [5]
     QPainterPath path = new QPainterPath();
     path.addRect(20, 20, 60, 60);
@@ -75,6 +76,8 @@ class doc_src_qt4 extends QWidget
     path.addBezier(99, 99,  0, 99,  50, 50,  0, 0);
     painter.drawPath(path);
 //! [5]
+ * 
+ */
     }
 
 /*

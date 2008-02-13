@@ -1,66 +1,4 @@
-/*   Ported from: doc.src.richtext.qdoc
-<snip>
-//! [0]
-QTextDocument *newDocument = new QTextDocument;
-//! [0]
-
-
-//! [1]
-QTextEdit *editor = new QTextEdit;
-QTextDocument *editorDocument = editor->document();
-//! [1]
-
-
-//! [2]
-    QTextEdit *editor = new QTextEdit(parent);
-    editor->setHtml(aStringContainingHTMLtext);
-    editor->show();
-//! [2]
-
-
-//! [3]
-    QTextDocument *document = editor->document();
-//! [3]
-
-
-//! [4]
-    QTextCursor cursor = editor->textCursor();
-//! [4]
-
-
-//! [5]
-    editor->setTextCursor(cursor);
-//! [5]
-
-
-//! [6]
-    textEdit.show();
-
-    textCursor.beginEditBlock();
-
-    for (int i = 0; i < 1000; ++i) {
-        textCursor.insertBlock();
-        textCursor.insertText(paragraphText.at(i));
-    }
-
-    textCursor.endEditBlock(); 
-//! [6]
-
-
-//! [7]
-        <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP" />
-//! [7]
-
-
-</snip>
-*/
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.sql.*;
-import com.trolltech.qt.svg.*;
 
 
 public class doc_src_richtext {
@@ -69,12 +7,13 @@ public class doc_src_richtext {
 //! [0]
 QTextDocument newDocument = new QTextDocument();
 //! [0]
-
+	if (newDocument != null) {}
 
 //! [1]
 QTextEdit editor = new QTextEdit();
 QTextDocument editorDocument = editor.document();
 //! [1]
+	if (editorDocument != null) {}
 
     theRest();
 }
@@ -92,6 +31,7 @@ public static void theRest() {
 //! [3]
     QTextDocument document = editor.document();
 //! [3]
+    if (document != null) {}
 
 
 //! [4]

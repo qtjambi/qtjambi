@@ -1,4 +1,3 @@
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -16,6 +15,7 @@ public class doc_src_examples_editabletreemodel {
 //! [1]
     Object b = model.index(1, 0, null).data();
 //! [1]
+    if (b != null && a != null) {}
 
 
     }
