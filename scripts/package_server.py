@@ -17,6 +17,9 @@ serversocket.listen(5)
 if pkgutil.isWindows():
     rootDir = "c:/tmp/package_server"
     task = "cmd /c task.bat > .task.log 2>&1"
+elif pkgutil.isLinux():
+    rootDir = "/tmp/package_server"
+    task = "sh task.sh > .task.log"
 else:
     rootDir = "/tmp/package_server"
     task = ". task.sh > .task.log"
