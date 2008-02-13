@@ -4,18 +4,16 @@
 #include <qtjambilink.h>
 #include <qtjambi_core.h>
 
-#include <jni.h>
-
-class JavaWidgetCreator 
+class JavaWidgetCreator
 {
-public: 
+public:
     JavaWidgetCreator(JNIEnv *env, jclass widgetType)
         : m_widget_type(reinterpret_cast<jclass>(env->NewGlobalRef(widgetType))), m_constructor(0)
     {
         m_constructor = env->GetMethodID(m_widget_type, "<init>", "(Lcom/trolltech/qt/gui/QWidget;)V");
     }
 
-    virtual ~JavaWidgetCreator() 
+    virtual ~JavaWidgetCreator()
     {
         JNIEnv *env = qtjambi_current_environment();
         if (env != 0 && m_widget_type != 0)
@@ -43,9 +41,9 @@ class QtJambiItemEditorCreatorBase: public T, public JavaWidgetCreator
 {
 public:
     QtJambiItemEditorCreatorBase(const QByteArray &valuePropertyName, JNIEnv *env, jclass widgetType, bool createWidgetOverride, bool valuePropertyNameOverride)
-        : T(valuePropertyName), 
-          JavaWidgetCreator(env, widgetType), 
-          m_create_widget_overridden(createWidgetOverride), 
+        : T(valuePropertyName),
+          JavaWidgetCreator(env, widgetType),
+          m_create_widget_overridden(createWidgetOverride),
           m_value_property_name_overridden(valuePropertyNameOverride)
     {
     }
@@ -57,7 +55,7 @@ public:
         if (env == 0)
             return T::createWidget(parent);
 
-        if (m_create_widget_overridden) {            
+        if (m_create_widget_overridden) {
 
             StaticCache *sc = StaticCache::instance(env);
             sc->resolveQItemEditorCreatorBase();
@@ -91,7 +89,7 @@ public:
             env->PushLocalFrame(100);
 
             jobject __java_return_value = env->CallObjectMethod(m_link->javaObject(env), sc->QItemEditorCreatorBase.valuePropertyName);
-            qtjambi_exception_check(env); 
+            qtjambi_exception_check(env);
 
             QByteArray __qt_return_value = * (QByteArray *) qtjambi_to_object(env, __java_return_value);
 
@@ -109,10 +107,10 @@ private:
     uint m_create_widget_overridden : 1;
     uint m_value_property_name_overridden : 1;
     uint m_reserved : 30;
-    
+
 };
 
-class QtJambiItemEditorCreator: public QtJambiItemEditorCreatorBase<QItemEditorCreator<QWidget> > 
+class QtJambiItemEditorCreator: public QtJambiItemEditorCreatorBase<QItemEditorCreator<QWidget> >
 {
 public:
      QtJambiItemEditorCreator(const QByteArray &valuePropertyName, JNIEnv *env, jclass widgetType, bool createWidgetOverride, bool valuePropertyNameOverride)
@@ -123,16 +121,16 @@ public:
 
 // Quick-n-easy to match the constructor requirement of QtJambiItemEditorCreatorBase
 template <typename T>
-class __StandardItemEditorCreator: public QStandardItemEditorCreator<QWidget> 
+class __StandardItemEditorCreator: public QStandardItemEditorCreator<QWidget>
 {
 public:
-    __StandardItemEditorCreator(const QByteArray &) 
+    __StandardItemEditorCreator(const QByteArray &)
         : QStandardItemEditorCreator<QWidget>()
     { }
 
 };
 
-class QtJambiStandardItemEditorCreator: public QtJambiItemEditorCreatorBase<__StandardItemEditorCreator<QWidget> > 
+class QtJambiStandardItemEditorCreator: public QtJambiItemEditorCreatorBase<__StandardItemEditorCreator<QWidget> >
 {
 public:
      QtJambiStandardItemEditorCreator(JNIEnv *env, jclass widgetType, bool createWidgetOverride, bool valuePropertyNameOverride)
@@ -156,7 +154,7 @@ extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_
 {
     QByteArray *valuePropertyName = reinterpret_cast<QByteArray *>(qtjambi_from_jlong(valuePropertyNameId));
 
-    QtJambiItemEditorCreator *__qt_this = new QtJambiItemEditorCreator(*valuePropertyName, __jni_env, widgetType, 
+    QtJambiItemEditorCreator *__qt_this = new QtJambiItemEditorCreator(*valuePropertyName, __jni_env, widgetType,
         bool(createWidgetOverride), bool(valuePropertyNameOverride));
     QtJambiLink *__qt_java_link = qtjambi_construct_object(__jni_env, __jni_object, __qt_this, QMetaType::Void, QLatin1String("com/trolltech/qt/gui/QItemEditorCreator"), true);
     if (!__qt_java_link) {
@@ -186,7 +184,7 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
  jlong nativeId)
 {
     QtJambiItemEditorCreator *__qt_this = reinterpret_cast<QtJambiItemEditorCreator *>(qtjambi_from_jlong(nativeId));
-    
+
     QByteArray valuePropertyName = __qt_this->QItemEditorCreator<QWidget>::valuePropertyName();
     return qtjambi_from_object(__jni_env, &valuePropertyName, "QByteArray", "com/trolltech/qt/core/", true);
 }
@@ -202,7 +200,7 @@ extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_
  jboolean createWidgetOverride,
  jboolean valuePropertyNameOverride)
 {
-    QtJambiStandardItemEditorCreator *__qt_this = new QtJambiStandardItemEditorCreator(__jni_env, widgetType, 
+    QtJambiStandardItemEditorCreator *__qt_this = new QtJambiStandardItemEditorCreator(__jni_env, widgetType,
         bool(createWidgetOverride), bool(valuePropertyNameOverride));
     QtJambiLink *__qt_java_link = qtjambi_construct_object(__jni_env, __jni_object, __qt_this, QMetaType::Void, QLatin1String("com/trolltech/qt/gui/QStandardItemEditorCreator"), true);
     if (!__qt_java_link) {
@@ -232,7 +230,7 @@ extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_
  jlong nativeId)
 {
     QtJambiStandardItemEditorCreator *__qt_this = reinterpret_cast<QtJambiStandardItemEditorCreator *>(qtjambi_from_jlong(nativeId));
-    
+
     QByteArray valuePropertyName = __qt_this->QStandardItemEditorCreator<QWidget>::valuePropertyName();
     return qtjambi_from_object(__jni_env, &valuePropertyName, "QByteArray", "com/trolltech/qt/core/", true);
 }
