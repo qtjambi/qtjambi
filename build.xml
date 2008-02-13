@@ -266,7 +266,7 @@
             <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
-            <library name="phonon"    type="qt" version="5" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
+            <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
             <library name="phonon_ds9" type="unversioned-plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}" /> 
             <library name="phonon_gstreamer" type="unversioned-plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}" />
             <library name="phonon_qt7" type="unversioned-plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}" />

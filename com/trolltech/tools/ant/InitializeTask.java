@@ -292,7 +292,7 @@ public class InitializeTask extends Task {
     }
 
     private String decidePhonon() {
-        String result = String.valueOf(doesQtLibExist("phonon", 5));
+        String result = String.valueOf(doesQtLibExist("phonon", 4));
         if (verbose) System.out.println(PHONON + ": " + result);
         return result;
     }
