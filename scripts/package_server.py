@@ -19,7 +19,7 @@ if pkgutil.isWindows():
     task = "cmd /c task.bat > .task.log 2>&1"
 else:
     rootDir = "/tmp/package_server"
-    task = "task.sh > .task.log"
+    task = ". task.sh > .task.log"
 
 pendingTasks = []
 waitCondition = threading.Condition()

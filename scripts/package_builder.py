@@ -16,7 +16,7 @@ import pkgutil
 # initialize the socket callback interface so we have it
 # available..
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serversocket.bind((socket.gethostname(), 8184))
+serversocket.bind((socket.gethostname(), pkgutil.PORT_CREATOR))
 serversocket.listen(16)
 
 
@@ -34,13 +34,12 @@ options = Options()
 
 class Package:
     def __init__(self, platform, arch, license):
-        self.socket = None
         self.license = license
         self.platform = platform
         self.arch = arch
         self.binary = False
         self.removeDirs = [
-            "ant",
+            "ant", 
             "autotestlib",
             "com/trolltech/autotests",
             "com/trolltech/benchmarks",
@@ -100,6 +99,16 @@ class Package:
             ]
         self.licenseHeader = readLicenseHeader(self.license)
 
+        if self.license == pkgutil.LICENSE_COMMERCIAL:
+            self.setCommercial()
+        elif self.license == pkgutil.LICENSE_EVAL:
+            self.setEval()
+        elif self.license == pkgutil.LICENSE_GPL:
+            self.setGpl()
+        else:
+            raise "bad license type:" + self.license
+        
+
     def setBinary(self):
         self.binary = True
 
@@ -109,7 +118,7 @@ class Package:
         self.copyFiles.append("dist/mac/designer.sh")
         self.compiler = "gcc"
         self.make = "make"
-        self.platformJarName = "qtjambi-mac-gcc-" + options.qtJambiVersion + ".jar"
+        self.platformJarName = "qtjambi-macosx-gcc-" + options.qtJambiVersion + ".jar"
 
     def setWinBinary(self):
         self.setBinary()
@@ -151,7 +160,10 @@ class Package:
         self.copyFiles.append("dist/LICENSE.EVAL")
 
     def name(self):
-        return "qtjambi-" + self.platform + self.arch + "-" + self.license + "-" + options.qtJambiVersion;
+        arch = self.arch
+        if self.arch == pkgutil.ARCH_UNIVERSAL:
+            arch = ""
+        return "qtjambi-" + self.platform + arch + "-" + self.license + "-" + options.qtJambiVersion;
 
     def writeLog(self, list, subname):
         logName = os.path.join(options.packageRoot, ".%s.%s" % (self.name(), subname))
@@ -160,10 +172,7 @@ class Package:
         log.write("\n".join(list))
         log.close()
         
-        
-        
 packages = []
-serverSockets = []
 
 
 
@@ -186,11 +195,51 @@ def readLicenseHeader(license):
 # Sets up all the various packages to be built into the global
 # variable "packages"
 def setupPackages():
-    win64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_COMMERCIAL)
-    win64.setWinBinary()
-    win64.setCommercial()
-    win64.buildServer = "aeryn.troll.no";
-    packages.append(win64);
+
+    if options.buildWindows:
+        if options.build64:
+            if options.buildCommercial:
+                win64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_COMMERCIAL)
+                win64.setWinBinary()
+                win64.buildServer = "aeryn.troll.no"
+                packages.append(win64)
+
+    if options.buildMac:
+        if options.buildCommercial:
+            macMoney = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
+            macMoney.setMacBinary()
+            macMoney.buildServer = "lyta.troll.no"
+            packages.append(macMoney)
+        if options.buildGpl:
+            macGpl = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
+            macGpl.setMacBinary()
+            macGpl.buildServer = "lyta.troll.no"
+            packages.append(macGpl)
+        if options.buildEval:
+            macEval = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
+            macEval.setMacBinary()
+            macEval.buildServer = "lyta.troll.no"
+            packages.append(macEval)
+
+    if options.buildLinux:
+        if options.buildCommercial:
+            linuxMoney = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
+            linuxMoney.setLinuxBinary()
+            linuxMoney.buildServer = "haavard.troll.no"
+            packages.append(linuxMoney)
+        if options.buildGpl:
+            linuxGpl = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
+            linuxGpl.setLinuxBinary()
+            linuxGpl.buildServer = "haavard.troll.no"
+            packages.append(linuxGpl)
+        if options.buildEval:
+            linuxEval = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
+            linuxEval.setLinuxBinary()
+            linuxEval.buildServer = "haavard.troll.no"
+            packages.append(linuxEval)
+
+    
+
 
 
 
@@ -227,37 +276,29 @@ def packageAndSend(package):
     
     os.chdir(options.packageRoot)
 
+    if os.path.isdir("tmptree"):
+        shutil.rmtree("tmptree")
+        
     shutil.copytree("qtjambi", "tmptree");
 
     pkgutil.debug(" - creating task script")
     if package.platform == pkgutil.PLATFORM_WINDOWS:
         buildFile = open("tmptree/task.bat", "w")
-        buildFile.write("call pkg_set_compiler " + package.compiler + "\n")
-        buildFile.write("call pkg_set_qt " + options.qtVersion + "\n")
-        buildFile.write("call ant generator.xmlmerge\n")
+        buildFile.write("call qt_pkg_setup %s %s %s\n" % (package.compiler, options.qtVersion, package.license))
+        buildFile.write("call ant\n")
         buildFile.write(package.make + " clean\n")
     else:
-        buildfile = open("tmptree/task.sh", "w")
-        buildFile.write("pkg_set_compiler " + package.compiler + "\n")
-        buildFile.write("pkg_set_qt " + options.qtVersion + "\n")
+        buildFile = open("tmptree/task.sh", "w")
+        buildFile.write("qt_pkg_setup %s %s %s\n" % (package.compiler, options.qtVersion, package.license))
         buildFile.write("ant\n")
         buildFile.write(package.make + " clean \n")
     buildFile.close()
-
+                        
+    zipFile = os.path.join(options.packageRoot, "tmp.zip")
     pkgutil.debug(" - compressing...")
-    pkgutil.compress(os.path.join(options.packageRoot, "tmp.zip"), os.path.join(options.packageRoot, "tmptree"))
-
+    pkgutil.compress(zipFile, os.path.join(options.packageRoot, "tmptree"))
     pkgutil.debug(" - sending %s to host: %s.." % (package.name(), package.buildServer))
-
-    if not package.socket:
-        package.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        pkgutil.debug("   - sendDataFile: connecting to: %s:%d" % (package.buildServer, pkgutil.PORT_SERVER))
-        package.socket.connect((package.buildServer, pkgutil.PORT_SERVER))
-        package.socket.send(pkgutil.CMD_RESET)
-        serverSockets.append(package.socket)
-        
-    package.socket.send(pkgutil.CMD_NEWPKG);
-    pkgutil.sendDataFile(package.socket, os.path.join(options.packageRoot, "tmp.zip"))
+    pkgutil.sendDataFileToHost(package.buildServer, pkgutil.PORT_SERVER, zipFile)
 
 
 
@@ -270,6 +311,12 @@ def postProcessPackage(package):
     pkgutil.uncompress(package.dataFile, package.packageDir);
 
     os.chdir(package.packageDir)
+
+    if os.path.isfile("FATAL.ERROR"):
+        print "\nFATAL ERROR on package %s" % (package.name())
+        return;
+
+    shutil.copy(package.packageDir + "/.task.log", options.packageRoot + "/." + package.name() + ".tasklog");
 
     pkgutil.debug(" - creating directories...")
     for mkdir in package.mkdirs:
@@ -423,6 +470,8 @@ def waitForResponse():
 
 
 def shortcutPackageBuild():
+    setupPackages()
+    
     print "deleting old crap..."
 
     if os.path.isdir("/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01"):
@@ -439,6 +488,15 @@ def shortcutPackageBuild():
 # The main function, parses cmd line arguments and starts the pacakge
 # building process...
 def main():
+    options.buildMac = True;
+    options.buildWindows = True;
+    options.buildLinux = True;
+    options.build32 = True;
+    options.build64 = True;
+    options.buildEval = True;
+    options.buildGpl = True;
+    options.buildCommercial = True;
+    
     for i in range(0, len(sys.argv)):
         arg = sys.argv[i];
         if arg == "--qt-version":
@@ -447,6 +505,22 @@ def main():
             options.packageRoot = sys.argv[i+1]
         elif arg == "--qt-jambi-version":
             options.qtJambiVersion = sys.argv[i+1]
+        elif arg == "--no-mac":
+            options.buildMac = False;
+        elif arg == "--no-win":
+            options.buildWindows = False;
+        elif arg == "--no-linux":
+            options.buildLinux = False;
+        elif arg == "--no-eval":
+            options.buildEval = False;
+        elif arg == "--no-gpl":
+            options.buildGpl = False;
+        elif arg == "--no-commercial":
+            options.buildCommercial = False;
+        elif arg == "--no-32bit":
+            options.build32 = False;
+        elif arg == "--no-64bit":
+            options.build64 = False;
         elif arg == "--verbose":
             pkgutil.VERBOSE = 1
 
@@ -458,22 +532,26 @@ def main():
     print "  - Qt Jambi Version: " + options.qtJambiVersion
     print "  - P4 User: " + options.p4User
     print "  - P4 Client: " + options.p4Client
-
-
-    setupPackages()
+    print "  - buildMac: %s" % options.buildMac
+    print "  - buildWindows: %s" % options.buildWindows
+    print "  - buildLinux: %s" % options.buildLinux
+    print "  - buildEval: %s" % options.buildEval
+    print "  - buildGpl: %s" % options.buildGpl
+    print "  - buildCommercial: %s" % options.buildCommercial
+    print "  - build32: %s" % options.build32
+    print "  - build64: %s" % options.build64
 
     pkgutil.debug("preparing source tree...")
     prepareSourceTree()
 
     pkgutil.debug("configuring packages...");
     setupPackages()
+    pkgutil.debug(" - %d packages in total..." % len(packages))
 
     # Package and send all packages, finish off by closing all sockets
     # to make sure they are properly closed...
     for package in packages:
         packageAndSend(package)
-    for socket in serverSockets:
-        socket.close()
 
     waitForResponse()
 
