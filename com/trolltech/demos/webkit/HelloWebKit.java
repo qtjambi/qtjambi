@@ -42,7 +42,7 @@ public class HelloWebKit extends QMainWindow {
         field.returnPressed.connect(this, "open()");
 
         browser.loadStarted.connect(this, "loadStarted()");
-        browser.loadProgressChanged.connect(this, "loadProgress(int)");
+        browser.loadProgress.connect(this, "loadProgress(int)");
         browser.loadFinished.connect(this, "loadDone()");
 
         forward.triggered.connect(browser, "forward()");
