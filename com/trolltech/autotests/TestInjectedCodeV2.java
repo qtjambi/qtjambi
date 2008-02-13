@@ -230,4 +230,26 @@ public class TestInjectedCodeV2 extends QApplicationTest {
         assertEquals(123, item.decorationSize().width());
         assertEquals(456, item.decorationSize().height());
     }
+    
+    
+    static class GraphicsWidgetSubclassSubclass extends GraphicsWidgetSubclass {
+    	
+    	@Override
+    	protected void initStyleOption(QStyleOption option) {
+    		if (option instanceof QStyleOptionGroupBox) {
+    			QStyleOptionGroupBox box = (QStyleOptionGroupBox) option;
+    			box.setLineWidth(321);
+    		}
+    		
+    		super.initStyleOption(option);
+    	}
+    	
+    }
+    
+    @Test
+    public void QGraphicsWidgetInitStyleOption() {
+    	GraphicsWidgetSubclassSubclass gwss = new GraphicsWidgetSubclassSubclass();
+		int ret = GraphicsWidgetSubclass.callInitStyleOption(gwss);
+		assertEquals(444, ret);
+    }
 }

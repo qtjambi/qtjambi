@@ -389,4 +389,24 @@ public:
     }
 };
 
+class GraphicsWidgetSubclass: public QGraphicsWidget
+{
+protected:
+    void initStyleOption(QStyleOption *option) const
+    {
+        if (QStyleOptionGroupBox *box = qstyleoption_cast<QStyleOptionGroupBox *>(option)) {
+            box->midLineWidth = 123;
+        }
+    }
+
+public:
+    static int callInitStyleOption(GraphicsWidgetSubclass *widget) 
+    {
+        QStyleOptionGroupBox box;
+        widget->initStyleOption(&box);
+
+        return box.lineWidth + box.midLineWidth;
+    }
+};
+
 #endif
