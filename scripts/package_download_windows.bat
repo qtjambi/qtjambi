@@ -22,19 +22,19 @@ rm %QT_COMMERCIAL_PACKAGE%.zip
 rm %QT_GPL_PACKAGE%.zip
 rm %QT_EVAL_PACKAGE%.zip
 set ERRORLEVEL=0
-wget http://ares.troll.no/~qt/packages/%QT_COMMERCIAL_PACKAGE%.zip
+wget http://tirion.troll.no/~qt/packages/%QT_VERSION%/%QT_COMMERCIAL_PACKAGE%.zip
 if not "%errorlevel%" == "0" (
-   echo failed to download 'http://ares.troll.no/~qt/packages/%QT_COMMERCIAL_PACKAGE%.zip'
+   echo failed to download 'http://tirion.troll.no/~qt/packages/%QT_VERSION%/%QT_COMMERCIAL_PACKAGE%.zip'
    goto cleanup
 )
-wget http://ares.troll.no/~qt/packages/%QT_GPL_PACKAGE%.zip
+wget http://tirion.troll.no/~qt/packages/%QT_VERSION%/%QT_GPL_PACKAGE%.zip
 if not "%errorlevel%" == "0" (
-   echo failed to download 'http://ares.troll.no/~qt/packages/%QT_GPL_PACKAGE%.zip'
+   echo failed to download 'http://tirion.troll.no/~qt/packages/%QT_VERSION%/%QT_GPL_PACKAGE%.zip'
    goto cleanup
 )
-wget http://ares.troll.no/~qt/packages/%QT_EVAL_PACKAGE%.zip
+wget http://tirion.troll.no/~qt/packages/%QT_VERSION%/%QT_EVAL_PACKAGE%.zip
 if not "%errorlevel%" == "0" (
-   echo failed to download 'http://ares.troll.no/~qt/packages/%QT_EVAL_PACKAGE%.zip'
+   echo failed to download 'http://tirion.troll.no/~qt/packages/%QT_VERSION%/%QT_EVAL_PACKAGE%.zip'
    goto cleanup
 )
 

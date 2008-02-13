@@ -84,6 +84,23 @@ def sendDataFile(socket, dataFile):
 
 
 
+# Opens a connection to hostName and sends the file specified by
+# dataFile to that machine... The port number used is 8184 (ascii dec
+# codes for 'Q', 'T')
+#  - 0: hostName: The host name of the target machine.
+#  - 1: port: the port of the target machine, preferably PORT_SERVER or PORT_CREATOR
+#  - 2: dataFile: the file to transfer...
+def sendDataFileToHost(hostName, port, dataFile):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    address = (hostName, port)
+    debug("   - sendDataFile: connecting to: %s:%d" % address)
+    s.connect(address)
+    sendDataFile(s, dataFile)
+    s.close()
+
+
+
+
 # Gets a binary file from the 'socket' and writes it to 'dataFile'
 #  - 0: socket: The socket
 #  - 1: dataFile: the binary file to write..

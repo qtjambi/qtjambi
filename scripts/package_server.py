@@ -8,12 +8,9 @@ import threading
 
 import pkgutil
 
-
-PORT = 8184
-
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print "binding to " + socket.gethostname() + ":", PORT, "..."
-serversocket.bind((socket.gethostname(), PORT))
+print "binding to " + socket.gethostname() + ":", pkgutil.PORT_SERVER, "..."
+serversocket.bind((socket.gethostname(), pkgutil.PORT_SERVER))
 print "listening..."
 serversocket.listen(5)
 
@@ -25,60 +22,77 @@ else:
     task = "task.sh > .task.log"
 
 pendingTasks = []
-lock = threading.Event()
+waitCondition = threading.Condition()
+
 
 class SocketListener(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
+        self.setDaemon(True)
 
     def run(self):
         while 1:
-            
+            print "listener: waiting for socket accept..."
             (clientsocket, (host, port) ) = serversocket.accept()
-    print "got connection: %s on %s:%d" % (clientsocket, host, port)
-
-
-    path = "%s/%d" % (rootDir, port)
-
-    if os.path.isdir(path):
-        shutil.rmtree(path)
-        
-    cmd = clientsocket.read(1)
-    if cmd == pkgutil.CMD_RESET:
-        pendingTasks = []
-        
-    elif cmd == pkgutil.CMD_NEWPKG:
-        print "doing build in: " + path
-        os.makedirs(path)
-
-
+            print "listener: got connection: %s on %s:%d" % (clientsocket, host, port)
             
+            path = "%s/%d" % (rootDir, port)
 
-while 1:
+            if os.path.isdir(path):
+                shutil.rmtree(path)
 
-        zipFileName = os.path.join(path, "tmp.zip")
-        pkgutil.getDataFile(clientsocket, zipFileName)
-        pkgutil.uncompress(zipFileName, path)
-        os.remove(zipFileName);
+            os.makedirs(path)
         
-        taskDef = (task, path, host)
-        pendingTasks.append(taskDef)
-        lock.set()
+            zipFileName = os.path.join(path, "tmp.zip")
+            pkgutil.getDataFile(clientsocket, zipFileName)
+            print "listener: uncompressing %s from %s" % (path, zipFileName)
+            pkgutil.uncompress(zipFileName, path)
+            os.remove(zipFileName)
+            
+            taskDef = (task, path, host)
+            print "listener: aquiring lock for task push"
+            waitCondition.acquire()
+            pendingTasks.append(taskDef)
+            print "listener: aquiring lock for notify/release after task push"
+            waitCondition.notify()
+            waitCondition.release()
 
-    
+
+
 def runTask(taskDef):
     (task, path, host) = taskDef
+    
+    print "runTask:\n - command='%s'\n - directory='%s'\n - host='%s'" % taskDef
 
-    os.chdir(task);
+    os.chdir(path);
     os.system(task);
 
     resultZipFile = path + ".zip"
     pkgutil.compress(resultZipFile, path)
-    pkgutil.sendDataFile(host, resultZipFile, pkgutil.PORT_CREATOR)
 
+    pkgutil.sendDataFileToHost(host, pkgutil.PORT_CREATOR, resultZipFile)
 
-serversocket.close()
     
+    
+if __name__ == "__main__":
+    socketListener = SocketListener()
+    socketListener.start()
+    
+    while 1:
+        print "mt: aquired lock..."
+        waitCondition.acquire()
+        if len(pendingTasks) == 0:
+            print "mt: waiting..."
+            waitCondition.wait()
+            print "mt: woke up..."
+
+        if len(pendingTasks) == 0:
+            print "mt: no pending tasks after all this time..."
+
+        todo = pendingTasks[0]
+        del pendingTasks[0]
+        waitCondition.release()
+        runTask(todo)
 
     
     
