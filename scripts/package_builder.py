@@ -34,6 +34,7 @@ options = Options()
 
 class Package:
     def __init__(self, platform, arch, license):
+        self.socket = None
         self.license = license
         self.platform = platform
         self.arch = arch
@@ -233,7 +234,7 @@ def packageAndSend(package):
         buildFile = open("tmptree/task.bat", "w")
         buildFile.write("call pkg_set_compiler " + package.compiler + "\n")
         buildFile.write("call pkg_set_qt " + options.qtVersion + "\n")
-        buildFile.write("call ant\n")
+        buildFile.write("call ant generator.xmlmerge\n")
         buildFile.write(package.make + " clean\n")
     else:
         buildfile = open("tmptree/task.sh", "w")
@@ -250,12 +251,12 @@ def packageAndSend(package):
 
     if not package.socket:
         package.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        debug("   - sendDataFile: connecting to: %s:%d" % (hostName, pkgutil.PORT_SERVER))
-        package.socket.connect((hostName, pkgutil.PORT_SERVER))
+        pkgutil.debug("   - sendDataFile: connecting to: %s:%d" % (package.buildServer, pkgutil.PORT_SERVER))
+        package.socket.connect((package.buildServer, pkgutil.PORT_SERVER))
         package.socket.send(pkgutil.CMD_RESET)
         serverSockets.append(package.socket)
         
-    package.socket.send(socket.send(CMD_NEWPKG));
+    package.socket.send(pkgutil.CMD_NEWPKG);
     pkgutil.sendDataFile(package.socket, os.path.join(options.packageRoot, "tmp.zip"))
 
 
@@ -420,6 +421,18 @@ def waitForResponse():
         if match:
             packagesRemaining = packagesRemaining - 1
 
+
+def shortcutPackageBuild():
+    print "deleting old crap..."
+
+    if os.path.isdir("/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01"):
+        shutil.rmtree("/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01")
+
+    packages[0].dataFile = "/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01.zip"
+    postProcessPackage(packages[0])
+    
+    return 0
+
         
 
 
@@ -448,15 +461,6 @@ def main():
 
 
     setupPackages()
-    print "deleting old crap..."
-
-    if os.path.isdir("/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01"):
-        shutil.rmtree("/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01")
-
-    packages[0].dataFile = "/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01.zip"
-    postProcessPackage(packages[0])
-    
-    return 0
 
     pkgutil.debug("preparing source tree...")
     prepareSourceTree()

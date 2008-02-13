@@ -78,7 +78,7 @@ def sendDataFile(socket, dataFile):
     debug("   - sendDataFile: transfering %s..." % dataFile)
     block = file.read(4096)
     while len(block) > 0:
-        s.send(block);
+        socket.send(block);
         block = file.read(4096)
     debug("   - sendDataFile: transfer of file %s complete..." % dataFile)
 
