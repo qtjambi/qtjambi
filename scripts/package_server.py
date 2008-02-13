@@ -66,12 +66,17 @@ def runTask(taskDef):
     
     print "runTask:\n - command='%s'\n - directory='%s'\n - host='%s'" % taskDef
 
-    os.chdir(path);
-    os.system(task);
+    os.chdir(path)
+    
+    exitCode = os.system(task)
+    
+    if exitCode:
+        fh = open(os.path.join(path, "FATAL.ERROR");
+        fh.write("Exit code: %d\n" % exitCode)
+        fh.close()
 
     resultZipFile = path + ".zip"
     pkgutil.compress(resultZipFile, path)
-
     pkgutil.sendDataFileToHost(host, pkgutil.PORT_CREATOR, resultZipFile)
 
     try:
