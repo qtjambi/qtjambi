@@ -16,13 +16,15 @@ serversocket.listen(5)
 
 if pkgutil.isWindows():
     rootDir = "c:/tmp/package_server"
-    task = "cmd /c task.bat > .task.log"
+    task = "cmd /c task.bat > .task.log 2>&1"
 else:
     rootDir = "/tmp/package_server"
     task = "task.sh > .task.log"
 
 pendingTasks = []
 waitCondition = threading.Condition()
+startDir = os.getcwd()
+
 
 
 class SocketListener(threading.Thread):
@@ -72,11 +74,22 @@ def runTask(taskDef):
 
     pkgutil.sendDataFileToHost(host, pkgutil.PORT_CREATOR, resultZipFile)
 
+    try:
+        os.chdir(startDir)
+        os.remove(resultZipFile)
+        shutil.rmtree(path)
+    except OSError:
+        print " - runTask: failed to clean up, cause='%s'" % OSError
+        
     
     
 if __name__ == "__main__":
     socketListener = SocketListener()
     socketListener.start()
+
+    # some initial cleanup...
+    if os.path.isdir(rootDir):
+        shutil.rmtree(rootDir)
     
     while 1:
         print "mt: aquired lock..."
