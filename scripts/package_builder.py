@@ -26,8 +26,23 @@ class Options:
         self.qtVersion = None
         self.packageRoot = None
         self.qtJambiVersion = "4.4.0_01"
-        self.p4User = "qt";
-        self.p4Client = "qt-builder";
+        self.p4User = "qt"
+        self.p4Client = "qt-builder"
+        self.binaryPackageCount = 0
+
+        self.buildMac = True
+        self.buildWindows = True
+        self.buildLinux = True
+        self.build32 = True
+        self.build64 = True
+        self.buildEval = True
+        self.buildGpl = True
+        self.buildCommercial = True
+        self.buildBinary = True
+        self.buildSource = True
+    
+
+        
 options = Options()
 
 
@@ -150,6 +165,9 @@ class Package:
         else:
             self.platformJarName = "qtjambi-linux32-gcc-" + options.qtJambiVersion + ".jar"
 
+    def setSource(self):
+        self.binary = False
+
     def setCommercial(self):
         self.copyFiles.append("dist/LICENSE")
 
@@ -160,10 +178,13 @@ class Package:
         self.copyFiles.append("dist/LICENSE.EVAL")
 
     def name(self):
-        arch = self.arch
-        if self.arch == pkgutil.ARCH_UNIVERSAL:
-            arch = ""
-        return "qtjambi-" + self.platform + arch + "-" + self.license + "-" + options.qtJambiVersion;
+        if self.binary:
+            arch = self.arch
+            if self.arch == pkgutil.ARCH_UNIVERSAL:
+                arch = ""
+            return "qtjambi-" + self.platform + arch + "-" + self.license + "-" + options.qtJambiVersion;
+        else:
+            return "qtjambi-src-%s-%s" % (self.license, options.qtJambiVersion)
 
     def writeLog(self, list, subname):
         logName = os.path.join(options.packageRoot, ".%s.%s" % (self.name(), subname))
@@ -173,7 +194,6 @@ class Package:
         log.close()
         
 packages = []
-
 
 
 # Reads the license header from /dist/license_....txt and returns it
@@ -196,50 +216,72 @@ def readLicenseHeader(license):
 # variable "packages"
 def setupPackages():
 
-    if options.buildWindows:
-        if options.build64:
+    if options.buildBinary:
+        if options.buildWindows:
+            if options.build64:
+                if options.buildCommercial:
+                    win64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_COMMERCIAL)
+                    win64.setWinBinary()
+                    win64.buildServer = "aeryn.troll.no"
+                    packages.append(win64)
+
+        if options.buildMac:
             if options.buildCommercial:
-                win64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_COMMERCIAL)
-                win64.setWinBinary()
-                win64.buildServer = "aeryn.troll.no"
-                packages.append(win64)
+                macMoney = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
+                macMoney.setMacBinary()
+                macMoney.buildServer = "lyta.troll.no"
+                packages.append(macMoney)
+            if options.buildGpl:
+                macGpl = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
+                macGpl.setMacBinary()
+                macGpl.buildServer = "lyta.troll.no"
+                packages.append(macGpl)
+            if options.buildEval:
+                macEval = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
+                macEval.setMacBinary()
+                macEval.buildServer = "lyta.troll.no"
+                packages.append(macEval)
 
-    if options.buildMac:
-        if options.buildCommercial:
-            macMoney = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
-            macMoney.setMacBinary()
-            macMoney.buildServer = "lyta.troll.no"
-            packages.append(macMoney)
+        if options.buildLinux:
+            if options.buildCommercial:
+                linuxMoney = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
+                linuxMoney.setLinuxBinary()
+                linuxMoney.buildServer = "haavard.troll.no"
+                packages.append(linuxMoney)
+            if options.buildGpl:
+                linuxGpl = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
+                linuxGpl.setLinuxBinary()
+                linuxGpl.buildServer = "haavard.troll.no"
+                packages.append(linuxGpl)
+            if options.buildEval:
+                linuxEval = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
+                linuxEval.setLinuxBinary()
+                linuxEval.buildServer = "haavard.troll.no"
+                packages.append(linuxEval)
+
+    if options.buildSource:
         if options.buildGpl:
-            macGpl = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
-            macGpl.setMacBinary()
-            macGpl.buildServer = "lyta.troll.no"
-            packages.append(macGpl)
-        if options.buildEval:
-            macEval = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
-            macEval.setMacBinary()
-            macEval.buildServer = "lyta.troll.no"
-            packages.append(macEval)
+            if options.buildWindows:
+                winSrcGpl = Package(pkgutil.PLATFORM_WINDOWS, None, pkgutil.LICENSE_GPL)
+                winSrcGpl.setSource()
+                packages.append(winSrcGpl)
+            if options.buildLinux:
+                linuxSrcGpl = Package(pkgutil.PLATFORM_LINUX, None, pkgutil.LICENSE_GPL)
+                linuxSrcGpl.setSource()
+                packages.append(linuxSrcGpl)
+        if options.buildCommercial: 
+            if options.buildWindows:
+                winSrcMoney = Package(pkgutil.PLATFORM_WINDOWS, None, pkgutil.LICENSE_COMMERCIAL)
+                winSrcMoney.setSource()
+                packages.append(winSrcMoney)
+            if options.buildLinux:
+                linuxSrcMoney = Package(pkgutil.PLATFORM_LINUX, None, pkgutil.LICENSE_COMMERCIAL)
+                linuxSrcMoney.setSource()
+                packages.append(linuxSrcMoney)
 
-    if options.buildLinux:
-        if options.buildCommercial:
-            linuxMoney = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
-            linuxMoney.setLinuxBinary()
-            linuxMoney.buildServer = "haavard.troll.no"
-            packages.append(linuxMoney)
-        if options.buildGpl:
-            linuxGpl = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
-            linuxGpl.setLinuxBinary()
-            linuxGpl.buildServer = "haavard.troll.no"
-            packages.append(linuxGpl)
-        if options.buildEval:
-            linuxEval = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
-            linuxEval.setLinuxBinary()
-            linuxEval.buildServer = "haavard.troll.no"
-            packages.append(linuxEval)
-
-    
-
+    # set some extra properties that depend on the config above...
+    for package in packages:
+        package.packageDir = options.packageRoot + "/" + package.name()
 
 
 
@@ -266,7 +308,21 @@ def prepareSourceTree():
     # sync p4 client spec into subdirectory...
     pkgutil.debug(" - syncing p4...")
     os.system("p4 -u %s -c %s sync -f //%s/... > .p4sync.buildlog" % (options.p4User, options.p4Client, options.p4Client))
+    os.system("chmod -R a+uw .")
 
+
+
+def packageSourcePackage(package):
+    pkgutil.debug("packaging source package: %s..." % package.name())
+    
+    os.chdir(options.packageRoot)
+
+    if os.path.isdir(package.name()):
+        shutil.rmtree(package.name())
+        
+    shutil.copytree("qtjambi", package.name())
+    
+    postProcessPackage(package)
 
 
 # Creates the build script (.bat or .sh), zips up the file and sends it off to the
@@ -305,18 +361,15 @@ def packageAndSend(package):
 # performs the post-compilation processing of the package
 def postProcessPackage(package):
     pkgutil.debug("Post process package " + package.name())
-
-    pkgutil.debug(" - uncompressing...")
-    package.packageDir = options.packageRoot + "/" + package.name()
-    pkgutil.uncompress(package.dataFile, package.packageDir);
-
     os.chdir(package.packageDir)
 
     if os.path.isfile("FATAL.ERROR"):
-        print "\nFATAL ERROR on package %s" % (package.name())
+        print "\nFATAL ERROR on package %s\n" % (package.name())
         return;
 
-    shutil.copy(package.packageDir + "/.task.log", options.packageRoot + "/." + package.name() + ".tasklog");
+    logFile = package.packageDir + "/.task.log"
+    if os.path.isfile(logFile):
+        shutil.copy(logFile, options.packageRoot + "/." + package.name() + ".tasklog");
 
     pkgutil.debug(" - creating directories...")
     for mkdir in package.mkdirs:
@@ -328,19 +381,24 @@ def postProcessPackage(package):
     pkgutil.debug(" - deleting files and directories...")
     removeFiles(package)
 
-    # unjar docs into doc directory...
-    pkgutil.debug(" - doing docs...")
-    os.makedirs("doc/html")
-    os.chdir("doc/html")
-    os.system("jar -xf %s/qtjambi-javadoc-%s.jar" % (options.startDir, options.qtJambiVersion) )
-    os.chdir(package.packageDir)
+    if package.binary:
+        # unjar docs into doc directory...
+        pkgutil.debug(" - doing docs...")
+        os.makedirs("doc/html")
+        os.chdir("doc/html")
+        os.system("jar -xf %s/qtjambi-javadoc-%s.jar" % (options.startDir, options.qtJambiVersion) )
+        os.chdir(package.packageDir)
+
+        # unpack the platform .jar to get the correct binary content into
+        # the package...
+        os.system("jar -xf %s" % package.platformJarName)
+        shutil.rmtree("%s/META-INF" % package.packageDir)
+
+        if not package.platform == PLATFORM_WINDOWS:
+            os.system("chmod a+rx designer.sh qtjambi.sh")
+            os.system("chmod -R a+rw .")
 
     expandMacroes(package)
-
-    # unpack the platform .jar to get the correct binary content into
-    # the package...
-    os.system("jar -xf %s" % package.platformJarName)
-    shutil.rmtree("%s/META-INF" % package.packageDir)
 
     bundle(package)
 
@@ -349,10 +407,11 @@ def postProcessPackage(package):
 # Zips or tars the final content of the package into a bundle in the
 # users root directory...
 def bundle(package):
+    os.chdir(options.packageRoot)
     if package.platform == pkgutil.PLATFORM_WINDOWS:
-        pkgutil.compress("%s/%s.zip" % (options.startDir, package.name()), package.packageDir)
+        os.system("zip -rq %s/%s.zip %s" % (options.startDir, package.name(), package.name()))
     else:
-        os.system("tar -czf %s/%s.tar.gz %s" % (options.startDir, package.name(), package.packageDir))
+        os.system("tar -czf %s/%s.tar.gz --owner=0 --group=0 %s" % (options.startDir, package.name(), package.name()))
     
 
 
@@ -451,7 +510,7 @@ def removeFiles(package):
 
 
 def waitForResponse():
-    packagesRemaining = len(packages)
+    packagesRemaining = binaryPackageCount
     pkgutil.debug("Waiting for build server responses...")
     
     while packagesRemaining:
@@ -459,10 +518,12 @@ def waitForResponse():
         pkgutil.debug(" - got response from %s:%d" % (host, port))
         match = False
         for pkg in packages:
-            pkgutil.debug("   - matching %s vs %s... " % (pkg.buildServer, host))
             if socket.gethostbyname(pkg.buildServer) == host:
                 pkg.dataFile = options.packageRoot + "/" + pkg.name() + ".zip"
                 pkgutil.getDataFile(sock, pkg.dataFile)
+                pkgutil.debug(" - uncompressing to %s" %s (package.packageDir))
+                pkgutil.uncompress(package.dataFile, package.packageDir);
+                
                 postProcessPackage(pkg)
                 match = True
         if match:
@@ -488,15 +549,6 @@ def shortcutPackageBuild():
 # The main function, parses cmd line arguments and starts the pacakge
 # building process...
 def main():
-    options.buildMac = True;
-    options.buildWindows = True;
-    options.buildLinux = True;
-    options.build32 = True;
-    options.build64 = True;
-    options.buildEval = True;
-    options.buildGpl = True;
-    options.buildCommercial = True;
-    
     for i in range(0, len(sys.argv)):
         arg = sys.argv[i];
         if arg == "--qt-version":
@@ -506,21 +558,25 @@ def main():
         elif arg == "--qt-jambi-version":
             options.qtJambiVersion = sys.argv[i+1]
         elif arg == "--no-mac":
-            options.buildMac = False;
+            options.buildMac = False
         elif arg == "--no-win":
-            options.buildWindows = False;
+            options.buildWindows = False
         elif arg == "--no-linux":
-            options.buildLinux = False;
+            options.buildLinux = False
         elif arg == "--no-eval":
-            options.buildEval = False;
+            options.buildEval = False
         elif arg == "--no-gpl":
-            options.buildGpl = False;
+            options.buildGpl = False
         elif arg == "--no-commercial":
-            options.buildCommercial = False;
+            options.buildCommercial = False
         elif arg == "--no-32bit":
-            options.build32 = False;
+            options.build32 = False
         elif arg == "--no-64bit":
-            options.build64 = False;
+            options.build64 = False
+        elif arg == "--no-source":
+            options.buildSource = False
+        elif arg == "--no-binary":
+            options.buildBinary = False
         elif arg == "--verbose":
             pkgutil.VERBOSE = 1
 
@@ -540,6 +596,8 @@ def main():
     print "  - buildCommercial: %s" % options.buildCommercial
     print "  - build32: %s" % options.build32
     print "  - build64: %s" % options.build64
+    print "  - buildBinary: %s" % options.buildBinary
+    print "  - buildSource: %s" % options.buildSource
 
     pkgutil.debug("preparing source tree...")
     prepareSourceTree()
@@ -548,12 +606,20 @@ def main():
     setupPackages()
     pkgutil.debug(" - %d packages in total..." % len(packages))
 
+    
     # Package and send all packages, finish off by closing all sockets
     # to make sure they are properly closed...
     for package in packages:
-        packageAndSend(package)
+        if package.binary:
+            packageAndSend(package)
+            options.binaryPackageCount = options.binaryPackageCount + 1
 
-    waitForResponse()
+    for package in packages:
+        if not package.binary:
+            packageSourcePackage(package)
+
+    if options.binaryPackageCount:
+        waitForResponse()
 
     
 
