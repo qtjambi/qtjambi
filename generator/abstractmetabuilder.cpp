@@ -1372,6 +1372,16 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class)
             return false;
         }
         meta_class->setBaseClass(base_class);
+
+        if (meta_class->typeEntry()->designatedInterface() != 0 && meta_class->isQObject()) {
+            ReportHandler::warning(QString("QObject extended by interface type '%1'. This is not supported and the generated Java code will not compile.")
+                                   .arg(meta_class->name()));
+        } else if (meta_class->typeEntry()->designatedInterface() != 0 && base_class != 0 && !base_class->isInterface()) {
+            ReportHandler::warning(QString("object type '%1' extended by interface type '%2'. The resulting API will be less expressive than the original.")
+                                   .arg(base_class->name())
+                                   .arg(meta_class->name()));
+        }
+
     }
 
     for (int i=0; i<base_classes.size(); ++i) {
