@@ -45,7 +45,7 @@
     \endcode
 
     where \c module can be replaced by \c core, \c gui, \c xml, \c
-    svg, \c network, \c opengl or \c sql depending on the
+    svg, \c network, \c opengl, \c phonon, \c webkit or \c sql depending on the
     project. When importing custom type systems, any absolute or
     relative path can be used to address the \c .xml specification
     file.
