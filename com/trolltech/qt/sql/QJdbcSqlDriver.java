@@ -143,7 +143,7 @@ class QJdbcSqlDriver extends QSqlDriver
             con.setAutoCommit(true);
         } catch (SQLException ex) {
             setError(ex, tr("Unable to enable auto-commit"), QSqlError.ErrorType.ConnectionError);
-            // this is anoying, but not fatal.
+            // this is annoying, but not fatal.
         }
 
         this.connection = con;

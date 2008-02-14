@@ -32,11 +32,11 @@ class QJdbcSqlResult extends QSqlResult
     {
         return statement;
     }
-
+    
     protected Object data(int i)
     {
         try {
-            return resultSet.getObject(i + 1);
+            return QJdbcSqlUtil.javaToQt(resultSet.getObject(i + 1));
         } catch (SQLException ex) {
             setError(ex, tr("Unable to retrieve data"), QSqlError.ErrorType.StatementError);
         }
@@ -201,17 +201,17 @@ class QJdbcSqlResult extends QSqlResult
 
         return true;
     }
-
+    
     protected boolean exec()
     {
         if ((statement == null) || !(statement instanceof PreparedStatement))
             return false;
-
+        
         PreparedStatement ps = (PreparedStatement)statement;
-
+        
         try {
-            for (int i = 0; i < boundValueCount(); ++i) {
-                ps.setObject(i + 1, boundValue(i));
+            for (int i = 0; i<boundValueCount(); ++i) {
+        		ps.setObject(i + 1, QJdbcSqlUtil.qtToJava(boundValue(i)));
             }
         } catch (SQLException ex) {
             setError(ex, tr("Unable to bind parameters"), QSqlError.ErrorType.StatementError);
