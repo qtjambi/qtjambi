@@ -1,7 +1,9 @@
+import datetime
 import os
-import zipfile
-import socket
 import platform
+import re
+import socket
+import zipfile
 
 VERBOSE = 1
 PORT_SERVER = 8184
@@ -144,6 +146,61 @@ def isLinux():
 
 
 
+# Reads the license header from /dist/license_....txt and returns it
+def readLicenseHeader(license, startDir):
+    if license == LICENSE_GPL:
+        name = "gpl_header.txt"
+    elif license == LICENSE_EVAL:
+        name = "eval_header.txt"
+    elif license == LICENSE_COMMERCIAL:
+        name = "commercial_header.txt"
+    name = "%s/../dist/%s" % (startDir, name)
+    file = open(name, "r")
+    content = file.read()
+    file.close()
+    return content
+
+
+
+# Locates all text files and expands the $LICENSE$ macroes and similar
+# located in them
+# 0: dir: The directory to perform the expansion
+# 1: header: The content to replace $LICENSE$ tags
+def expandMacroes(dir, header):
+    thisYear = "%d" % datetime.date.today().year
+    patterns = [
+        [ re.compile("\\$THISYEAR\\$"), thisYear ],
+        [ re.compile("\\$TROLLTECH\\$"), "Trolltech ASA" ],
+        [ re.compile("\\$PRODUCT\\$"), "Qt Jambi" ],
+        [ re.compile("\\$LICENSE\\$"), header ],
+        [ re.compile("\\$CPP_LICENSE\\$"), header ],
+        [ re.compile("\\$JAVA_LICENSE\\$"), header ]
+        ]
+    extensions = [
+        re.compile("\\.cpp$"),
+        re.compile("\\.h$"),
+        re.compile("\\.java"),
+        re.compile("\\.html"),
+        re.compile("\\.ui"),
+        re.compile("LICENSE")
+        ]
+    for (root, dirs, files) in os.walk(dir):
+        for relfile in files:
+            file = os.path.join(root, relfile)
+            replace = False
+            for ext in extensions:
+                if ext.search(file):
+                    replace = True
+            if replace:
+                handle = open(file, "r")
+                content = handle.read()
+                handle.close()
+                check = False
+                for (regex, replacement) in patterns:
+                    content = re.sub(regex, replacement, content)
+                handle = open(file, "w")
+                handle.write(content)
+                handle.close()
 
         
             
