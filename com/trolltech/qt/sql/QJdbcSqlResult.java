@@ -66,7 +66,7 @@ class QJdbcSqlResult extends QSqlResult
             setError(ex, tr("Unable to fetch previous"), QSqlError.ErrorType.StatementError);
             return false;
         }
-        setAt(at() + 1);
+        setAt(at() - 1);
         return true;
     }
 
