@@ -5,6 +5,7 @@ import shutil
 import socket
 import time
 import threading
+import sys
 
 import pkgutil
 
@@ -19,16 +20,16 @@ if pkgutil.isWindows():
     task = "cmd /c task.bat > .task.log 2>&1"
 elif pkgutil.isLinux():
     rootDir = "/tmp/package_server"
-    task = "bash ./task.sh > .task.log"
+    task = "bash ./task.sh > .task.log 2>&1"
 else:
     rootDir = "/tmp/package_server"
-    task = ". task.sh > .task.log"
+    task = ". task.sh > .task.log 2>&1"
 
 pendingTasks = []
 waitCondition = threading.Condition()
 startDir = os.getcwd()
 
-
+cleanTmp = True
 
 class SocketListener(threading.Thread):
     def __init__(self):
@@ -45,7 +46,6 @@ class SocketListener(threading.Thread):
 
             if os.path.isdir(path):
                 shutil.rmtree(path)
-
             os.makedirs(path)
         
             zipFileName = os.path.join(path, "tmp.zip")
@@ -79,26 +79,32 @@ def runTask(taskDef):
         fh.close()
 
     resultZipFile = path + ".zip"
+
+    print "runTask: - completed, compressing..."
     pkgutil.compress(resultZipFile, path)
     pkgutil.sendDataFileToHost(host, pkgutil.PORT_CREATOR, resultZipFile)
 
-    return 
-
-    try:
-        os.chdir(startDir)
-        os.remove(resultZipFile)
-        shutil.rmtree(path)
-    except OSError:
-        print " - runTask: failed to clean up, cause='%s'" % OSError
+    if cleanTmp:
+        try:
+            os.chdir(startDir)
+            os.remove(resultZipFile)
+            shutil.rmtree(path)
+        except OSError:
+            print " - runTask: failed to clean up, cause='%s'" % OSError
         
     
     
 if __name__ == "__main__":
+
+    for arg in sys.argv:
+        if arg == "--keep-tmp":
+            cleanTmp = False
+    
     socketListener = SocketListener()
     socketListener.start()
 
     # some initial cleanup...
-    if os.path.isdir(rootDir):
+    if os.path.isdir(rootDir) and cleanTmp:
         shutil.rmtree(rootDir)
     
     while 1:
