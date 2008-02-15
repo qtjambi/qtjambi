@@ -10,7 +10,7 @@ import pkgutil
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print "binding to " + socket.gethostname() + ":", pkgutil.PORT_SERVER, "..."
-serversocket.bind(('localhost', pkgutil.PORT_SERVER))
+serversocket.bind((socket.gethostname(), pkgutil.PORT_SERVER))
 print "listening..."
 serversocket.listen(5)
 
@@ -19,7 +19,7 @@ if pkgutil.isWindows():
     task = "cmd /c task.bat > .task.log 2>&1"
 elif pkgutil.isLinux():
     rootDir = "/tmp/package_server"
-    task = "sh task.sh > .task.log"
+    task = "bash ./task.sh > .task.log"
 else:
     rootDir = "/tmp/package_server"
     task = ". task.sh > .task.log"
@@ -81,6 +81,8 @@ def runTask(taskDef):
     resultZipFile = path + ".zip"
     pkgutil.compress(resultZipFile, path)
     pkgutil.sendDataFileToHost(host, pkgutil.PORT_CREATOR, resultZipFile)
+
+    return 
 
     try:
         os.chdir(startDir)
