@@ -160,7 +160,8 @@ class QJdbcSqlResult extends QSqlResult
                 statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
                                     ResultSet.CONCUR_UPDATABLE);
             } else {
-                statement = connection.createStatement();
+                statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                		ResultSet.CONCUR_READ_ONLY);
             }
         } catch (SQLException ex) {
             setError(ex, tr("Unable to create statement"), QSqlError.ErrorType.StatementError);
@@ -171,7 +172,10 @@ class QJdbcSqlResult extends QSqlResult
         // execute the query
         boolean executionResult;
         try {
-            executionResult = statement.execute(query, Statement.RETURN_GENERATED_KEYS);
+        	if (connection.getMetaData().supportsGetGeneratedKeys())
+        		executionResult = statement.execute(query, Statement.RETURN_GENERATED_KEYS);
+        	else
+        		executionResult = statement.execute(query, Statement.NO_GENERATED_KEYS);        	
         } catch (SQLException ex) {
             setError(ex, tr("Unable to execute query"), QSqlError.ErrorType.ConnectionError);
             resultSet = null;
@@ -305,7 +309,10 @@ class QJdbcSqlResult extends QSqlResult
             return null;
 
         try {
-            ResultSet keys = statement.getGeneratedKeys();
+            ResultSet keys = connection.getMetaData().supportsGetGeneratedKeys() 
+                             ? statement.getGeneratedKeys()
+                             : null;
+            
             if (keys == null)
                 return null;
 
