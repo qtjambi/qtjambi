@@ -1,22 +1,44 @@
-cd eval
-configure -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_EVAL -D QT_JAMBI_BUILD
-nmake sub-src sub-tools
+cd gpl
+set QTDIR=%cd%
+echo blah > LICENSE.GPL2
+call bin/syncqt.bat
+copy configure.exe configure_hack.exe
+echo yes | configure_hack -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD
+echo #ifndef AWESOME_CRAXX >> src\corelib\global\qglobal.h
+echo #define AWESOME_CRAXX >> src\corelib\global\qglobal.h
+echo #if defined(__cplusplus) >> src\corelib\global\qglobal.h
+echo QT_LICENSED_MODULE(ActiveQt) >> src\corelib\global\qglobal.h
+echo #endif // __cplusplus >> src\corelib\global\qglobal.h
+echo #endif // AWESOME_CRAXX >> src\corelib\global\qglobal.h
+cd src && qmake -r && nmake && cd .. 
+cd tools && qmake -r && nmake && cd ..
 nmake clean
 cd ..
+
+
+cd eval
+set QTDIR=%cd%
+echo blah > LICENSE.EVAL
+call bin/syncqt.bat
+copy configure.exe configure_hack.exe
+echo yes | configure_hack -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_EVAL -D QT_JAMBI_BUILD
+cd src && qmake -r && nmake && cd ..
+cd tools && qmake -r && nmake && cd ..
+nmake clean
+cd ..
+
 
 cd commercial
-configure -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_JAMBI_BUILD
-nmake sub-src sub-tools
+set QTDIR=%cd%
+echo blah > LICENSE
+call bin/syncqt.bat
+copy configure.exe configure_hack.exe
+echo yes | configure_hack -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_JAMBI_BUILD
+cd src && qmake -r && nmake && cd ..
+cd tools && qmake -r && nmake && cd ..
 nmake clean
 cd ..
 
-cd gpl
-configure -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD
-echo DEFINES -= QT_EDITION=QT_DESKTOP_EDITION >> .qmake.cache
-echo DEFINES *= QT_EDITION=QT_OPENSOURCE_EDITION >> .qmake.cache
-cd src && ..\bin\qmake -r && nmake && cd .. 
-cd tools && ..\bin\qmake -r && nmake && cd ..
-cd ..
 
 echo y | rd /s c:\tmp\qt-eval
 echo y | rd /s c:\tmp\qt-gpl

@@ -13,7 +13,7 @@ import pkgutil
 # initialize the socket callback interface so we have it
 # available..
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serversocket.bind(('localhost', pkgutil.PORT_CREATOR))
+serversocket.bind((socket.gethostname(), pkgutil.PORT_CREATOR))
 serversocket.listen(16)
 
 
@@ -27,6 +27,12 @@ class Options:
         self.p4Client = "qt-builder"
         self.startDir = os.getcwd()
         self.p4Resync = True
+        
+        self.buildMac = True
+        self.buildWindows = True
+        self.buildLinux = True
+        self.build32 = True
+        self.build64 = True
         
 options = Options()
 
@@ -47,11 +53,23 @@ servers = []
 def setupServers():
     os.chdir(options.packageRoot)
 
-    mac = BuildServer(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL)
-    mac.host = 'localhost'
-    mac.task = options.startDir + "/build_qt_mac.sh"
-    servers.append(mac)
-    
+    if options.buildLinux and options.build32:
+        linux32 = BuildServer(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL)
+        linux32.host = "babel.troll.no"
+        linux32.task = options.startDir + "/build_qt_linux.sh"
+        servers.append(linux32)
+
+    if options.buildWindows and options.build64:
+        win64 = BuildServer(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_UNIVERSAL)
+        win64.host = "aeryn.troll.no"
+        win64.task = options.startDir + "/build_qt_windows.bat"
+        servers.append(win64)
+
+    if options.buildMac:
+        mac = BuildServer(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL)
+        mac.host = "lyta.troll.no"
+        mac.task = options.startDir + "/build_qt_mac.sh"
+        servers.append(mac)
 
 # Sets up the client spec and performs a complete checkout of the
 # tree...
@@ -75,7 +93,6 @@ def prepareSourceTree():
     tmpFile.write("        -//depot/qt/%s/tests/... //qt-builder/qt/tests/...\n" % options.qtVersion)
     tmpFile.write("        -//depot/qt/%s/demos/... //qt-builder/qt/demos/...\n" % options.qtVersion)
     tmpFile.write("        -//depot/qt/%s/doc/... //qt-builder/qt/doc/...\n" % options.qtVersion)
-    tmpFile.write("        -//depot/qt/%s/util/... //qt-builder/qt/util/...\n" % options.qtVersion)
     tmpFile.write("        -//depot/qt/%s/tmake/... //qt-builder/qt/tmake/...\n" % options.qtVersion)
     tmpFile.write("        -//depot/qt/%s/dist/... //qt-builder/qt/dist/...\n" % options.qtVersion)
     tmpFile.write("        -//depot/qt/%s/translations/... //qt-builder/qt/translations/...\n" % options.qtVersion)
@@ -169,6 +186,16 @@ def main():
             options.p4Resync = False
         elif arg == "--verbose":
             pkgutil.VERBOSE = 1
+        elif arg == "--no-mac":
+            options.buildMac = False
+        elif arg == "--no-win":
+            options.buildWindows = False
+        elif arg == "--no-linux":
+            options.buildLinux = False
+        elif arg == "--no-32bit":
+            options.build32 = False
+        elif arg == "--no-64bit":
+            options.build64 = False
 
     pkgutil.debug("Options:")
     print "  - Qt Version: " + options.qtVersion
@@ -176,6 +203,11 @@ def main():
     print "  - P4 User: " + options.p4User
     print "  - P4 Client: " + options.p4Client
     print "  - P4 Resync: %s" % options.p4Resync
+    print "  - buildMac: %s" % options.buildMac
+    print "  - buildWindows: %s" % options.buildWindows
+    print "  - buildLinux: %s" % options.buildLinux
+    print "  - build32: %s" % options.build32
+    print "  - build64: %s" % options.build64
 
     if options.p4Resync:
         pkgutil.debug("preparing source tree...")

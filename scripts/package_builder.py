@@ -112,7 +112,7 @@ class Package:
             "dist/install.html",
             "dist/changes-" + options.qtJambiVersion
             ]
-        self.licenseHeader = readLicenseHeader(self.license)
+        self.licenseHeader = pkgutil.readLicenseHeader(self.license, options.startDir)
 
         if self.license == pkgutil.LICENSE_COMMERCIAL:
             self.setCommercial()
@@ -194,21 +194,6 @@ class Package:
         log.close()
         
 packages = []
-
-
-# Reads the license header from /dist/license_....txt and returns it
-def readLicenseHeader(license):
-    if license == pkgutil.LICENSE_GPL:
-        name = "gpl_header.txt"
-    elif license == pkgutil.LICENSE_EVAL:
-        name = "eval_header.txt"
-    elif license == pkgutil.LICENSE_COMMERCIAL:
-        name = "commercial_header.txt"
-    name = "%s/../dist/%s" % (options.startDir, name)
-    file = open(name, "r")
-    content = file.read()
-    file.close()
-    return content
 
 
 
