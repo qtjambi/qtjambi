@@ -136,7 +136,8 @@ def isMac():
 
 # Returns true if the script is running on windows
 def isWindows():
-    return platform.system().find("Windows") >= 0 or platform.system().find("CYGWIN") >= 0;
+    s = platform.system()
+    return s.find("Windows") >= 0 or s.find("CYGWIN") >= 0 or s.find("Microsoft") >= 0
 
 
 
