@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**opyright 2005 Harald Fernengel <harry@kdevelop.org>
+** Copyright 2005 Harald Fernengel <harry@kdevelop.org>
 **
 ** This file is part of $PRODUCT$.
 **

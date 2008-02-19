@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**opyright 2005 Roberto Raggi <roberto@kdevelop.org>
+** Copyright 2005 Roberto Raggi <roberto@kdevelop.org>
 **
 ** This file is part of $PRODUCT$.
 **
