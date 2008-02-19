@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+** Copyright (C) 2002-2005 Roberto Raggi <roberto@kdevelop.org>
 **
 ** This file is part of $PRODUCT$.
 **
@@ -10,27 +11,6 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-
-/* This file is part of KDevelop
-    Copyright (C) 2002-2005 Roberto Raggi <roberto@kdevelop.org>
-    Copyright (C) 2005 Trolltech AS
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License version 2 as published by the Free Software Foundation.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this library; see the file COPYING.LIB.  If not, write to
-   the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
-   Boston, MA 02110-1301, USA.
-*/
 
 #include "binder.h"
 #include "lexer.h"
@@ -442,11 +422,11 @@ void Binder::visitTemplateDeclaration(TemplateDeclarationAST *node)
         NameAST *name;
         if (!type_parameter) {
             // A hacky hack to work around missing support for parameter declarations in
-            // templates. We just need the to get the name of the variable, since we 
+            // templates. We just need the to get the name of the variable, since we
             // aren't actually compiling these anyway. We are still not supporting much
             // more, but we are refusing to fail for a few more declarations
-            if (parameter->parameter_declaration == 0 || 
-                parameter->parameter_declaration->declarator == 0 ||  
+            if (parameter->parameter_declaration == 0 ||
+                parameter->parameter_declaration->declarator == 0 ||
                 parameter->parameter_declaration->declarator->id == 0) {
 
                     /*std::cerr << "** WARNING template declaration not supported ``";
@@ -462,7 +442,7 @@ void Binder::visitTemplateDeclaration(TemplateDeclarationAST *node)
             }
 
             name = parameter->parameter_declaration->declarator->id;
-        } else {            
+        } else {
             int tk = decode_token(type_parameter->type);
             if (tk != Token_typename && tk != Token_class)
             {
@@ -634,7 +614,7 @@ void Binder::visitClassSpecifier(ClassSpecifierAST *node)
   _M_current_class->setName(class_cc.name());
 
   QStringList baseClasses = class_cc.baseClasses(); TypeInfo info;
-  for (int i=0; i<baseClasses.size(); ++i) 
+  for (int i=0; i<baseClasses.size(); ++i)
     {
         info.setQualifiedName(baseClasses.at(i).split("::"));
         baseClasses[i] = qualifyType(info, scope->qualifiedName()).qualifiedName().join("::");
@@ -756,16 +736,16 @@ void Binder::visitUsingDirective(UsingDirectiveAST *node)
   DefaultVisitor::visitUsingDirective(node);
 }
 
-void Binder::visitQEnums(QEnumsAST *node) 
+void Binder::visitQEnums(QEnumsAST *node)
 {
   const Token &start = _M_token_stream->token((int) node->start_token);
   const Token &end = _M_token_stream->token((int) node->end_token);
   QStringList enum_list = QString::fromLatin1(start.text + start.position,
                                               end.position - start.position).split(' ');
- 
+
   ScopeModelItem scope = currentScope();
-  for (int i=0; i<enum_list.size(); ++i) 
-    scope->addEnumsDeclaration(enum_list.at(i));  
+  for (int i=0; i<enum_list.size(); ++i)
+    scope->addEnumsDeclaration(enum_list.at(i));
 }
 
 void Binder::visitQProperty(QPropertyAST *node)

@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+** Copyright (C) 2002-2005 Roberto Raggi <roberto@kdevelop.org>
 **
 ** This file is part of $PRODUCT$.
 **
@@ -11,23 +12,6 @@
 **
 ****************************************************************************/
 
-/* This file is part of KDevelop
-    Copyright (C) 2002-2005 Roberto Raggi <roberto@kdevelop.org>
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License version 2 as published by the Free Software Foundation.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this library; see the file COPYING.LIB.  If not, write to
-   the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
-   Boston, MA 02110-1301, USA.
-*/
 
 #include "lexer.h"
 #include "tokens.h"
@@ -1485,11 +1469,11 @@ void Lexer::scanKeyword7()
       *(cursor + 3) == 'N' &&
       *(cursor + 4) == 'U' &&
       *(cursor + 5) == 'M' &&
-      *(cursor + 6) == 'S') 
+      *(cursor + 6) == 'S')
       {
         token_stream[(int) index++].kind = Token_Q_ENUMS;
         return;
-      } 
+      }
         break;
 
     }
@@ -1713,10 +1697,10 @@ void Lexer::scanKeyword10()
             token_stream[(int) index++].kind = Token_Q_PROPERTY;
             return;
           }
-          
+
         break;
     }
-   
+
   token_stream[(int) index++].kind = Token_identifier;
 }
 

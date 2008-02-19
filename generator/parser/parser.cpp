@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+** Copyright (C) 2002-2005 Roberto Raggi <roberto@kdevelop.org>
 **
 ** This file is part of $PRODUCT$.
 **
@@ -13,23 +14,6 @@
 
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 
-/* This file is part of KDevelop
-    Copyright (C) 2002-2005 Roberto Raggi <roberto@kdevelop.org>
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License version 2 as published by the Free Software Foundation.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this library; see the file COPYING.LIB.  If not, write to
-   the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
-   Boston, MA 02110-1301, USA.
-*/
 
 // c++ support
 #include "parser.h"
@@ -489,7 +473,7 @@ bool Parser::parseDeclaration(DeclarationAST *&node)
             node = ast;
 
             return true;
-          } 
+          }
       }
     } // end switch
 
@@ -1738,12 +1722,12 @@ bool Parser::parseParameterDeclaration(ParameterDeclarationAST *&node)
 
 bool Parser::parse_Attribute__() {
     token_stream.nextToken();
-	    
+
     ADVANCE('(', "(");
-	    
+
     ExpressionAST *expr = 0;
     parseExpression(expr);
-	    
+
     if (token_stream.lookAhead() != ')')
 	{
 	    reportError(("')' expected"));
@@ -1760,7 +1744,7 @@ QString Parser::tokenText(AST *ast) const
 {
     if (ast == 0) return QString();
 
-    int start_token = ast->start_token; 
+    int start_token = ast->start_token;
     int end_token = ast->end_token;
 
     Token const &tk = token_stream.token (start_token);
@@ -1796,7 +1780,7 @@ bool Parser::parseForwardDeclarationSpecifier(TypeSpecifierAST *&node)
         }
     }
 
-  if (token_stream.lookAhead() != ';') 
+  if (token_stream.lookAhead() != ';')
     {
         token_stream.rewind((int) start);
         return false;
@@ -1827,7 +1811,7 @@ bool Parser::parseClassSpecifier(TypeSpecifierAST *&node)
   WinDeclSpecAST *winDeclSpec = 0;
   parseWinDeclSpec(winDeclSpec);
 
-  if (token_stream.lookAhead() == Token___attribute__) {       
+  if (token_stream.lookAhead() == Token___attribute__) {
       parse_Attribute__();
   }
 
@@ -1966,7 +1950,7 @@ bool Parser::parseMemberSpecification(DeclarationAST *&node)
     {
       return true;
     }
-  else if (parseQ_ENUMS(node)) 
+  else if (parseQ_ENUMS(node))
     {
       return true;
     }
