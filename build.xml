@@ -203,8 +203,11 @@
             <include name="com/trolltech/examples/**/*.java"/>
             <include name="com/trolltech/launcher/*.java"/>
 	        <exclude name="com/trolltech/demos/phonon/*.java"/>
+	        <exclude name="com/trolltech/demos/xmlpatterns/*.java"/>
 	        <exclude name="com/trolltech/demos/webkit/*.java"/>
+	        <exclude name="com/trolltech/examples/phonon/*.java"/>
 	        <exclude name="com/trolltech/examples/xmlpatterns/*.java"/>
+	        <exclude name="com/trolltech/examples/webkit/*.java"/>
             <exclude name="com/trolltech/examples/generator/*.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java"/>
             <exclude name="com/trolltech/examples/GeneratorExample.java"/>
@@ -278,6 +281,7 @@
             <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
+	    <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
             <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
             <library name="phonon_ds9" type="unversioned-plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}" /> 
             <library name="phonon_gstreamer" type="unversioned-plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}" />
@@ -307,6 +311,7 @@
             <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_phonon"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.phonon}"/>
             <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.webkit}"/>
+            <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.xmlpatterns}"/>
 
 	    <plugin path="plugins" />
 
