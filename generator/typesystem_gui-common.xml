@@ -632,6 +632,9 @@
     <modify-function signature="intersect(QRegion)const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="subtract(QRegion)const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="unite(QRegion)const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="operator&amp;=(QRect)" remove="all" />
+    <modify-function signature="operator+=(QRect)" remove="all" />
+
   </value-type>
 
   <value-type name="QTextBlock">
@@ -1168,7 +1171,9 @@
     </custom-destructor>
   </value-type>
   
-  <value-type name="QPrinterInfo" />
+  <value-type name="QPrinterInfo">
+    <modify-function signature="operator=(const QPrinterInfo &amp;)" remove="all" />
+  </value-type>
      
   <interface-type name="QLayoutItem"/>
   <interface-type name="QPaintDevice"/>

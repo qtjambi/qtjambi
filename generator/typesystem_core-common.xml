@@ -975,7 +975,10 @@
   </value-type>
   <value-type name="QtJambiFuture" java-name="QFuture" generic-class="yes" />
   
-  <object-type name="QFutureWatcherBase" />
+  <object-type name="QFutureWatcherBase">
+    <modify-function signature="connectNotify(const char *)" remove="all" />
+    <modify-function signature="disconnectNotify(const char *)" remove="all" />
+  </object-type>  
   <object-type name="QtJambiVoidFutureWatcher" java-name="QFutureWatcherVoid" />
   
   <object-type name="QFutureWatcher" generate="no">

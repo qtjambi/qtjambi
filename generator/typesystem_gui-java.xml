@@ -3102,6 +3102,33 @@
         </inject-code>
     </object-type>
     
+    <interface-type name="QPictureFormatInterface">
+        <modify-function signature="loadPicture(QString,QString,QPicture*)">
+            <modify-argument index="3">
+                <replace-type modified-type="com.trolltech.qt.gui.QPicture" />
+                <conversion-rule class="shell">
+                    jobject %out = qtjambi_from_object(__jni_env, %in, "QPicture", "com/trolltech/qt/gui/", false);
+                    jobject __tmp = %out;
+                </conversion-rule>
+                <conversion-rule class="native">
+                    QPicture *%out = (QPicture *) qtjambi_to_object(__jni_env, %in);
+                </conversion-rule>
+            </modify-argument>
+            <modify-argument index="return">
+                <conversion-rule class="shell">
+                    // Make sure the java object is not usable after this, since
+                    // the QPicture* may be deleted at any time.
+                    qtjambi_invalidate_object(__jni_env, __tmp);
+                    __tmp = 0;
+                    bool %out = (bool) %in;
+                </conversion-rule>
+                <conversion-rule class="native">
+                    jboolean %out = (jboolean) %in;
+                </conversion-rule>
+            </modify-argument>            
+        </modify-function>
+    </interface-type>
+    
     <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcItems' in 'com.trolltech.qt.gui.QGraphicsGridLayout' but not both" />
     
 </typesystem>
