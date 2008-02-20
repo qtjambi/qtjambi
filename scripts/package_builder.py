@@ -23,6 +23,7 @@ serversocket.listen(16)
 
 class Options:
     def __init__(self):
+        self.qtDir = None
         self.qtVersion = None
         self.packageRoot = None
         self.qtJambiVersion = "4.4.0_01"
@@ -40,11 +41,9 @@ class Options:
         self.buildCommercial = True
         self.buildBinary = True
         self.buildSource = True
-    
 
         
 options = Options()
-
 
 
 class Package:
@@ -59,6 +58,9 @@ class Package:
             "com/trolltech/autotests",
             "com/trolltech/benchmarks",
             "com/trolltech/extensions",
+            "com/trolltech/extensions/jfc",
+            "com/trolltech/extensions/jython",
+            "com/trolltech/extensions/awt",
             "com/trolltech/manualtests",
             "com/trolltech/tests",
             "cpp",
@@ -96,16 +98,6 @@ class Package:
             re.compile("com_trolltech.*\\.lib$"),
             re.compile("task(.bat)?$")
             ]
-        self.mkdirs = [
-            "include"
-            ]
-        self.copyFiles = [
-            # Include files...
-            ["qtjambi/qtjambi_core.h", "include"],
-            ["qtjambi/qtjambi_cache.h", "include"],
-            ["qtjambi/qtjambi_global.h", "include"],
-            ["qtjambi/qtjambilink.h", "include"],
-            ["qtjambi/qtjambifunctiontable.h", "include"],
 
             # text files for main directory...
             "dist/readme.html",
@@ -126,6 +118,21 @@ class Package:
 
     def setBinary(self):
         self.binary = True
+        self.removeFiles.append("build_generator_example.xml")
+        self.removeDirs.append("generator",
+                               "qtjambi",
+                               "qtjambi_core",
+                               "qtjambi_gui",
+                               "qtjambi_xml",
+                               "qtjambi_network",
+                               "qtjambi_sql",
+                               "qtjambi_svg",
+                               "qtjambi_designer",
+                               "qtjambi_webkit",
+                               "qtjambi_phonon",
+                               "qtjambi_xmlpatterns"
+                               )
+                               
 
     def setMacBinary(self):
         self.setBinary()
@@ -152,7 +159,6 @@ class Package:
             self.compiler = "msvc2005"
             self.make = "nmake"
         self.removeDirs.append("lib")
-        self.copyFiles.append(["generator/release/generator.exe", "bin"])        
 
     def setLinuxBinary(self):
         self.setBinary()
@@ -167,6 +173,24 @@ class Package:
 
     def setSource(self):
         self.binary = False
+        self.mkdirs.append("qtjambi_designer/private",
+                           "designer-integration/language/private",
+                           "include"
+                           )
+        self.copyFiles.append([options.qtDir + "/tools/designer/src/lib/sdk/abstractintrospection_p.h",
+                               "designer-integration/language/private"],
+                              [options.qtDir + "/tools/designer/src/lib/uilib/ui4_p.h",
+                               "designer-integration/language/private/ui4_p.h"],
+                              [options.qtDir + "/tools/designer/src/lib/shared/qdesigner_utils_p.h",
+                               "qtjambi_designer/private/qdesigner_utils_p.h"],
+                              [options.qtDir + "/tools/designer/src/lib/shared/shared_global_p.h",
+                               "qtjambi_designer/private/shared_global_p.h"]
+                              ["qtjambi/qtjambi_core.h", "include"],
+                              ["qtjambi/qtjambi_cache.h", "include"],
+                              ["qtjambi/qtjambi_global.h", "include"],
+                              ["qtjambi/qtjambilink.h", "include"],
+                              ["qtjambi/qtjambifunctiontable.h", "include"]
+
 
     def setCommercial(self):
         self.copyFiles.append("dist/LICENSE")
@@ -231,17 +255,17 @@ def setupPackages():
             if options.buildCommercial:
                 linuxMoney = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
                 linuxMoney.setLinuxBinary()
-                linuxMoney.buildServer = "haavard.troll.no"
+                linuxMoney.buildServer = "babel.troll.no"
                 packages.append(linuxMoney)
             if options.buildGpl:
                 linuxGpl = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
                 linuxGpl.setLinuxBinary()
-                linuxGpl.buildServer = "haavard.troll.no"
+                linuxGpl.buildServer = "babel.troll.no"
                 packages.append(linuxGpl)
             if options.buildEval:
                 linuxEval = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
                 linuxEval.setLinuxBinary()
-                linuxEval.buildServer = "haavard.troll.no"
+                linuxEval.buildServer = "babel.troll.no"
                 packages.append(linuxEval)
 
     if options.buildSource:
@@ -325,7 +349,10 @@ def packageAndSend(package):
     pkgutil.debug(" - creating task script")
     if package.platform == pkgutil.PLATFORM_WINDOWS:
         buildFile = open("tmptree/task.bat", "w")
-        buildFile.write("call qt_pkg_setup %s %s %s\n" % (package.compiler, options.qtVersion, package.license))
+        compiler = package.compiler
+        if package.arch == pkgutil.ARCH_64:
+            compiler = "msvc2005_x64"
+        buildFile.write("call qt_pkg_setup %s %s\n" % (compiler, "qt-" + package.license))
         buildFile.write("call ant\n")
         buildFile.write(package.make + " clean\n")
     else:
@@ -569,6 +596,7 @@ def main():
 
     pkgutil.debug("Options:")
     print "  - Qt Version: " + options.qtVersion
+    print "  - Qt Directory: " + options.qtDir
     print "  - Package Root: " + options.packageRoot
     print "  - Qt Jambi Version: " + options.qtJambiVersion
     print "  - P4 User: " + options.p4User
