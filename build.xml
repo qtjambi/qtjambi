@@ -204,6 +204,7 @@
             <include name="com/trolltech/launcher/*.java"/>
 	        <exclude name="com/trolltech/demos/phonon/*.java"/>
 	        <exclude name="com/trolltech/demos/webkit/*.java"/>
+	        <exclude name="com/trolltech/examples/xmlpatterns/*.java"/>
             <exclude name="com/trolltech/examples/generator/*.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java"/>
             <exclude name="com/trolltech/examples/GeneratorExample.java"/>
