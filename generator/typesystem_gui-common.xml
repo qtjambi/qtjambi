@@ -77,6 +77,7 @@
   <rejection class="QAccessibleBridgePlugin" />
   <rejection class="QAccessibleBridgeFactoryInterface" />  
   <rejection class="QTabletEvent" field-name="mExtra"/>  
+  <rejection class="QWidgetItem" field-name="wid" />
 
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
   <enum-type name="QAbstractItemView::CursorAction"/>
@@ -2028,7 +2029,7 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QWidgetItem"/>
+  <object-type name="QWidgetItem" /> 
   <object-type name="QWindowsStyle">
       <modify-function signature="standardPixmap(QStyle::StandardPixmap, const QStyleOption*, const QWidget*)const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
