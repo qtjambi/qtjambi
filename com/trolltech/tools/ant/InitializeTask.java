@@ -55,6 +55,7 @@ public class InitializeTask extends Task {
     public static final String CONFIGURATION    = "qtjambi.configuration";
     public static final String PHONON           = "qtjambi.phonon";
     public static final String WEBKIT           = "qtjambi.webkit";
+    public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
     public static final String PHONON_DS9       = "qtjambi.phonon_ds9";
     public static final String PHONON_GSTREAMER = "qtjambi.phonon_gstreamer";
     public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
@@ -121,6 +122,10 @@ public class InitializeTask extends Task {
         String webkit = decideWebkit();
         if ("true".equals(webkit))
             props.setNewProperty(null, WEBKIT, webkit);
+
+        String patterns = decideXMLPatterns();
+        if ("true".equals(patterns))
+            props.setNewProperty(null, XMLPATTERNS, patterns);
     }
 
     private void checkCompilerDetails() {
@@ -300,6 +305,12 @@ public class InitializeTask extends Task {
     private String decideWebkit() {
         String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
         if (verbose) System.out.println(WEBKIT + ": " + result);
+        return result;
+    }
+
+    private String decideXMLPatterns() {
+        String result = String.valueOf(doesQtLibExist("QtXmlPatterns", 4));
+        if (verbose) System.out.println(XMLPATTERNS + ": " + result);
         return result;
     }
 

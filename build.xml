@@ -180,8 +180,19 @@
         </javac>
     </target>
 
+    <target name="examples.xmlpatterns"
+	    depends="init"
+	    if="qtjambi.xmlpatterns">
+        <javac destdir="${outputDir}">
+            <src path="${outputDir}"/>
+            <src path="${sourceDir}"/>
+            <include name="com/trolltech/demos/xmlpatterns/*.java"/>
+            <include name="com/trolltech/examples/xmlpatterns/*.java"/>
+        </javac>
+    </target>
+
     <target name="examples.compile"
-            depends="init, examples.phonon, examples.webkit">
+            depends="init, examples.phonon, examples.webkit, examples.xmlpatterns">
         <javac destdir="${outputDir}"
 	       debug="true"
 	       fork="true"
