@@ -217,9 +217,6 @@ QString QtJambiMetaEnumerator::scope() const
     } else {
         QString full_name = QLatin1String(m_regular_enum.scope()) + QLatin1String("::") + QLatin1String(m_regular_enum.name());
         full_name = getJavaName(full_name.toLatin1());
-	if (full_name.isEmpty()) {
-	  qDebug("ok: %s", qPrintable(QLatin1String(m_regular_enum.scope()) + QLatin1String("::") + QLatin1String(m_regular_enum.name())));
-	}
 
         return full_name.replace(QLatin1String("/"), QLatin1String(".")).replace(QLatin1String("$"), QLatin1String("."));
     }
