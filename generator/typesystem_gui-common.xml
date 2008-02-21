@@ -38,7 +38,8 @@
   <rejection class="QAccessibleTextInterface"/>
   <rejection class="QAccessibleValueInterface"/>        
   <rejection class="QIconEngineFactoryInterface"/>    
-  <rejection class="QIconEnginePlugin"/>  
+  <rejection class="QIconEnginePlugin"/>
+  <rejection class="QWidgetItemV2" />
   <rejection class="QAbstractItemDelegate" function-name="operator="/>
   <rejection class="QAccessible" function-name="installFactory"/>
   <rejection class="QAccessible" function-name="installRootObjectHandler"/>
@@ -78,6 +79,7 @@
   <rejection class="QAccessibleBridgeFactoryInterface" />  
   <rejection class="QTabletEvent" field-name="mExtra"/>  
   <rejection class="QWidgetItem" field-name="wid" />
+  <rejection class="QFont" enum-name="ResolveProperties" />
 
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
   <enum-type name="QAbstractItemView::CursorAction"/>
@@ -4540,6 +4542,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkCookie' has equals operators but no qHash() function" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkRequest' has equals operators but no qHash() function" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPixmap::pixmapData', unmatched return type 'QPixmapData*'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: object type 'QAccessible' extended by interface type 'QAbstractAccessibleFactory'. The resulting API will be less expressive than the original." />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextOption_Tab' has equals operators but no qHash() function"/>
 
