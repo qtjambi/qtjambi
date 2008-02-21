@@ -16,6 +16,7 @@
   <object-type name="QAbstractUriResolver"/>
   <object-type name="QAbstractXmlForwardIterator"/>
 
+  <rejection class="QPatternist::NodeIndexStorage" />
   <rejection class="QAbstractXmlNodeModel" function-name="mapToItem" />
   <rejection class="QAbstractXmlNodeModel" function-name="mapToSequence" />
   <rejection class="QAbstractXmlNodeModel" function-name="sequencedTypedValue" />

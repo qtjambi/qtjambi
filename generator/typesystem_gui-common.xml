@@ -6,6 +6,8 @@
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
 
+  <rejection class="QWindowsCEStyle" />
+  <rejection class="QWindowsMobileStyle" />
   <rejection class="QAbstractUndoItem"/>    
   <rejection class="QAccessibleApplication"/>
   <rejection class="QBrushData"/>
