@@ -25,7 +25,7 @@ class QXmlName___ extends QXmlName {
        *
        * The user guarantees that the string components are valid for a
        * <code>QName</code>. In particular, the local name, and the prefix (if present),
-       * must be valid <a href="http://www.w3.org/TR/REC-xml-names/#NT-NCName">NCNames</a>
+       * must be valid {@link <a href="http://www.w3.org/TR/REC-xml-names/#NT-NCName">NCNames</a>}
        * The function <code>isNCName()</code> can be used to test validity
        * of these names. The namespace URI should be an absolute URI.
        * <code>QUrl.isRelative()</code> can be used to test whether the namespace URI
