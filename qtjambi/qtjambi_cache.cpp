@@ -117,13 +117,13 @@ PtrDestructorFunction destructor(const QString &java_name)
 typedef QHash<QString, DeletionPolicy> DeletionPolicyHash;
 Q_GLOBAL_STATIC(QReadWriteLock, gDeletionPolicyHashLock);
 Q_GLOBAL_STATIC(DeletionPolicyHash, gDeletionPolicyHash);
-void registerDeletionPolicy(const QString &java_name, DeletionPolicy policy) 
+void registerDeletionPolicy(const QString &java_name, DeletionPolicy policy)
 {
     QWriteLocker locker(gDeletionPolicyHashLock());
     gDeletionPolicyHash()->insert(java_name, policy);
 }
 
-DeletionPolicy deletionPolicy(const QString &java_name) 
+DeletionPolicy deletionPolicy(const QString &java_name)
 {
     QReadLocker locker(gDeletionPolicyHashLock());
     return gDeletionPolicyHash()->value(java_name, DeletionPolicyNormal);
@@ -495,18 +495,25 @@ void removeFunctionTable(QtJambiFunctionTable *table)
 
 StaticCache *StaticCache::instance(JNIEnv *env)
 {
-    // chances are that number of envs are so few that a linear search is faster than
-    // time spent doing hashing and collision resolution.
-    for (int i=0; i<m_caches.size(); ++i)
-        if (env == m_caches.at(i)->env)
-            return m_caches.at(i);
+    static QReadWriteLock lock;
 
-    StaticCache *s = new StaticCache;
-    memset(s, 0, sizeof(StaticCache));
-    s->env = env;
+    {
+        QReadLocker readLocker(&lock);
+        // chances are that number of envs are so few that a linear search is faster than
+        // time spent doing hashing and collision resolution.
+        for (int i=0; i<m_caches.size(); ++i)
+            if (env == m_caches.at(i)->env)
+                return m_caches.at(i);
+    }
 
-    m_caches << s;
-    return s;
+    {
+        QWriteLocker writeLocker(&lock);
+        StaticCache *s = new StaticCache;
+        memset(s, 0, sizeof(StaticCache));
+        s->env = env;
+        m_caches << s;
+        return s;
+    }
 }
 
 
@@ -1014,8 +1021,8 @@ void StaticCache::resolveQtJambiInternal_internal()
         env->GetStaticMethodID(QtJambiInternal.class_ref, "findGeneratedSuperclass",
                                "(Ljava/lang/Object;)Ljava/lang/Class;");
     Q_ASSERT(QtJambiInternal.findGeneratedSuperclass);
-    
-    
+
+
     QtJambiInternal.writeSerializableJavaObject = env->GetStaticMethodID(QtJambiInternal.class_ref,
 									 "writeSerializableJavaObject",
 									 "(Lcom/trolltech/qt/core/QDataStream;"
@@ -1062,7 +1069,7 @@ void StaticCache::resolveQtJambiInternal_internal()
     Q_ASSERT(QtJambiInternal.signalMatchesSlot);
 }
 
-void StaticCache::resolveMetaData_internal() 
+void StaticCache::resolveMetaData_internal()
 {
     MetaData.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiInternal$MetaData"));
     Q_ASSERT(MetaData.class_ref);
@@ -1319,14 +1326,14 @@ void StaticCache::resolveQClassPathEngine_internal()
     Q_ASSERT(QClassPathEngine.constructor);
 }
 
-void StaticCache::resolveQItemEditorCreatorBase_internal() 
+void StaticCache::resolveQItemEditorCreatorBase_internal()
 {
     Q_ASSERT(!QItemEditorCreatorBase.class_ref);
 
     QItemEditorCreatorBase.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QItemEditorCreatorBase"));
     Q_ASSERT(QItemEditorCreatorBase.class_ref);
 
-    QItemEditorCreatorBase.createWidget = env->GetMethodID(QItemEditorCreatorBase.class_ref, "createWidget", 
+    QItemEditorCreatorBase.createWidget = env->GetMethodID(QItemEditorCreatorBase.class_ref, "createWidget",
         "(Lcom/trolltech/qt/gui/QWidget;)Lcom/trolltech/qt/gui/QWidget;");
     Q_ASSERT(QItemEditorCreatorBase.createWidget);
 
