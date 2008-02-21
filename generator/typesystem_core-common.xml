@@ -32,7 +32,7 @@
   <rejection class="QFutureInterface" />
   <rejection class="QFutureInterfaceBase" />
   <rejection class="QtConcurrent::BlockSizeManager" />
-  <rejection class="QtConcurrent::ConstMemberFunctionWrapper
+  <rejection class="QtConcurrent::ConstMemberFunctionWrapper" />
   <rejection class="QtConcurrent::Exception"/>
   <rejection class="QtConcurrent::FilterKernel"/>
   <rejection class="QtConcurrent::FilteredEachKernel"/>
