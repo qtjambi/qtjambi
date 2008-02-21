@@ -18,7 +18,7 @@
         </modify-function>
     </object-type>
     <object-type name="QWebFrame">
-        <modify-function signature="addToJSWindowObject(QString,QObject*)">
+        <modify-function signature="addToJavaScriptWindowObject(QString,QObject*)">
             <modify-argument index="2">
                 <reference-count action="ignore"/>
             </modify-argument>
