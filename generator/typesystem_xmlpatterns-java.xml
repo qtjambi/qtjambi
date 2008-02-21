@@ -4,11 +4,11 @@
     com.trolltech.qt.Utilities.loadQtLibrary("QtXmlPatterns");
     </inject-code>
 
-    <object-type name="QXmlNodeModelIndex">
+    <value-type name="QXmlNodeModelIndex">
       <inject-code> 
             <import-file name="typesystem_xmlpatterns-java.java" quote-after-line="class QXmlNodeModelIndex___" quote-before-line="}// class"/>
       </inject-code>
-    </object-type>
+    </value-type>
 
     <value-type name="QXmlName">
       <inject-code>

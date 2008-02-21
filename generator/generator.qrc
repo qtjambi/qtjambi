@@ -17,6 +17,8 @@
 <file>typesystem_phonon-java.java</file>
 <file alias="typesystem_webkit.txt">typesystem_webkit.xml</file>
 <file>typesystem_webkit-java.java</file>
+<file alias="typesystem_xmlpatterns.txt">typesystem_xmlpatterns.xml</file>
+<file>typesystem_xmlpatterns-java.java</file>
 <file>parser/rpp/pp-qt-configuration</file>
 </qresource>
 </RCC>
