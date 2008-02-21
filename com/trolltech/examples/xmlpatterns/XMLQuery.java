@@ -11,11 +11,12 @@
  **
  ****************************************************************************/
 
-package com.trolltech.examples;
+package com.trolltech.examples.xmlpatterns;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.xmlpatterns.*;
+import com.trolltech.examples.*;
 
 @QtJambiExample(name = "XML Query")
 public class XMLQuery extends QWidget {
