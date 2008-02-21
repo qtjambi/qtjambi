@@ -88,5 +88,10 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebView' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPage' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
 
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebHitTestResult' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'FindFlag' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'LinkDelegationPolicy' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebSettings' for enum 'FontFamily' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'WebWindowType' is not declared" />
 
 </typesystem>
