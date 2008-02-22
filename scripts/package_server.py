@@ -81,10 +81,15 @@ def runTask(taskDef):
     resultZipFile = path + ".zip"
 
     print "runTask: - completed, compressing..."
-    pkgutil.compress(resultZipFile, path)
-    pkgutil.sendDataFileToHost(host, pkgutil.PORT_CREATOR, resultZipFile)
+    callbackFail = False
+    try:
+        pkgutil.compress(resultZipFile, path)
+        pkgutil.sendDataFileToHost(host, pkgutil.PORT_CREATOR, resultZipFile)
+    except socket.error, (error, message):
+        print "socket error, %s" % (message)
+        callbackFail = True
 
-    if cleanTmp:
+    if cleanTmp and not callbackFail:
         try:
             os.chdir(startDir)
             os.remove(resultZipFile)
