@@ -10,8 +10,11 @@ import sys
 import pkgutil
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print "binding to " + socket.gethostname() + ":", pkgutil.PORT_SERVER, "..."
-serversocket.bind((socket.gethostname(), pkgutil.PORT_SERVER))
+hostname = socket.gethostname()
+if hostname.find(".") < 0:
+    hostname = hostname + ".troll.no"
+print "binding to " + hostname + ":", pkgutil.PORT_SERVER, "..."
+serversocket.bind((hostname, pkgutil.PORT_SERVER))
 print "listening..."
 serversocket.listen(5)
 
