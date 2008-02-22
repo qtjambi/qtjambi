@@ -21,7 +21,7 @@ import com.trolltech.qt.gui.QPainter.RenderHint;
 public class Mandelbrot extends QWidget {
 
     private RenderThread thread = new RenderThread();
-    private QPixmap pixmap = new QPixmap();
+    private QImage pixmap = new QImage();
     private QPoint pixmapOffset = new QPoint();
     private QPoint lastDragPosition = new QPoint();
     private double centerX;
@@ -95,7 +95,7 @@ public class Mandelbrot extends QWidget {
             return;
         }
         if (currentScale == pixmapScale) {
-            painter.drawPixmap(pixmapOffset, pixmap);
+            painter.drawImage(pixmapOffset, pixmap);
         } else {
             double scaleFactor = pixmapScale / currentScale;
             int newWidth = (int) (pixmap.width() * scaleFactor);
@@ -113,9 +113,9 @@ public class Mandelbrot extends QWidget {
             exposed = exposed.adjusted(-1, -1, 1, 1);
 
             if(scaleFactor>=0)
-                painter.drawPixmap(pixmapOffset, pixmap);
+                painter.drawImage(pixmapOffset, pixmap);
             else
-                painter.drawPixmap(exposed, pixmap, exposed);
+                painter.drawImage(exposed, pixmap, exposed);
 
             painter.restore();
         }
@@ -216,7 +216,7 @@ public class Mandelbrot extends QWidget {
     private void updatePixmap(QImage image, Double scaleFactor) {
         if (!lastDragPosition.isNull())
             return;
-        pixmap = QPixmap.fromImage(image);
+        pixmap = image;
         pixmapOffset = new QPoint();
         lastDragPosition = new QPoint();
         pixmapScale = scaleFactor;
