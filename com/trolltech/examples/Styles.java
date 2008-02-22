@@ -248,8 +248,8 @@ public class Styles extends QDialog
             QColor beige = new QColor(236, 182, 120);
             QColor slightlyOpaqueBlack = new QColor(0, 0, 0, 63);
             
-            QPixmap backgroundImage = new QPixmap("images/woodbackground.png");
-            QPixmap buttonImage = new QPixmap("images/woodbutton.png");
+            QPixmap backgroundImage = new QPixmap("classpath:com/trolltech/examples/images/woodbackground.png");
+            QPixmap buttonImage = new QPixmap("classpath:com/trolltech/examples/images/woodbutton.png");
 
             QPixmap midImage = new QPixmap(buttonImage);
             
