@@ -568,7 +568,7 @@ def waitForResponse():
                 pkgutil.uncompress(pkg.dataFile, pkg.packageDir);
                 try:
                     postProcessPackage(pkg)
-                except , (error, message):
+                except Error, (error, message):
                     print "  ERROR! Postprocessing failed... '%s'" % message
                 packagesRemaining = packagesRemaining - 1
                 pkg.done = True
@@ -635,7 +635,7 @@ def main():
     options.startDir = os.getcwd()
 
     pkgutil.debug("Options:")
-    print "  - Qt Version: " + options.qtVersion
+    print "  - Qt Version: %s" % options.qtVersion
     print "  - Qt Directory: " + options.qtDir
     print "  - Package Root: " + options.packageRoot
     print "  - Qt Jambi Version: " + options.qtJambiVersion
