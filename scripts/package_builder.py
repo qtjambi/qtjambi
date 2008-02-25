@@ -7,6 +7,7 @@ import re
 import shutil
 import socket
 import sys
+import string
 import time
 import types
 
@@ -19,7 +20,11 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((socket.gethostname(), pkgutil.PORT_CREATOR))
 serversocket.listen(16)
 
-
+host_linux64 = "tirionvm-linux64.troll.no"
+host_linux32 = "tirionvm-linux32.troll.no"
+host_win64   = "tirionvm-win64.troll.no"
+host_win32   = "tirionvm-win32.troll.no"
+host_mac     = "alqualonde.troll.no"
 
 class Options:
     def __init__(self):
@@ -48,6 +53,8 @@ options = Options()
 
 class Package:
     def __init__(self, platform, arch, license):
+        self.done = False
+        self.success = False
         self.license = license
         self.platform = platform
         self.arch = arch
@@ -99,6 +106,9 @@ class Package:
             re.compile("task(.bat)?$")
             ]
 
+        self.mkdirs = []
+
+        self.copyFiles = [
             # text files for main directory...
             "dist/readme.html",
             "dist/install.html",
@@ -119,19 +129,21 @@ class Package:
     def setBinary(self):
         self.binary = True
         self.removeFiles.append("build_generator_example.xml")
-        self.removeDirs.append("generator",
-                               "qtjambi",
-                               "qtjambi_core",
-                               "qtjambi_gui",
-                               "qtjambi_xml",
-                               "qtjambi_network",
-                               "qtjambi_sql",
-                               "qtjambi_svg",
-                               "qtjambi_designer",
-                               "qtjambi_webkit",
-                               "qtjambi_phonon",
-                               "qtjambi_xmlpatterns"
-                               )
+        self.removeDirs.extend(["designer-integration",
+                                "generator",
+                                "qtjambi",
+                                "qtjambi_core",
+                                "qtjambi_designer",
+                                "qtjambi_gui",
+                                "qtjambi_network",
+                                "qtjambi_opengl",
+                                "qtjambi_phonon",
+                                "qtjambi_sql",
+                                "qtjambi_svg",
+                                "qtjambi_webkit",
+                                "qtjambi_xml",
+                                "qtjambi_xmlpatterns"
+                               ])
                                
 
     def setMacBinary(self):
@@ -173,23 +185,25 @@ class Package:
 
     def setSource(self):
         self.binary = False
-        self.mkdirs.append("qtjambi_designer/private",
-                           "designer-integration/language/private",
-                           "include"
+        self.mkdirs.extend(["qtjambi_designer/private",
+                            "designer-integration/language/private",
+                            "include"
+                            ]
                            )
-        self.copyFiles.append([options.qtDir + "/tools/designer/src/lib/sdk/abstractintrospection_p.h",
+        self.copyFiles.extend([[options.qtDir + "/tools/designer/src/lib/sdk/abstractintrospection_p.h",
                                "designer-integration/language/private"],
-                              [options.qtDir + "/tools/designer/src/lib/uilib/ui4_p.h",
-                               "designer-integration/language/private/ui4_p.h"],
-                              [options.qtDir + "/tools/designer/src/lib/shared/qdesigner_utils_p.h",
-                               "qtjambi_designer/private/qdesigner_utils_p.h"],
-                              [options.qtDir + "/tools/designer/src/lib/shared/shared_global_p.h",
-                               "qtjambi_designer/private/shared_global_p.h"]
-                              ["qtjambi/qtjambi_core.h", "include"],
-                              ["qtjambi/qtjambi_cache.h", "include"],
-                              ["qtjambi/qtjambi_global.h", "include"],
-                              ["qtjambi/qtjambilink.h", "include"],
-                              ["qtjambi/qtjambifunctiontable.h", "include"]
+                               [options.qtDir + "/tools/designer/src/lib/uilib/ui4_p.h",
+                                "designer-integration/language/private/ui4_p.h"],
+                               [options.qtDir + "/tools/designer/src/lib/shared/qdesigner_utils_p.h",
+                                "qtjambi_designer/private/qdesigner_utils_p.h"],
+                               [options.qtDir + "/tools/designer/src/lib/shared/shared_global_p.h",
+                                "qtjambi_designer/private/shared_global_p.h"],
+                               ["qtjambi/qtjambi_core.h", "include"],
+                               ["qtjambi/qtjambi_cache.h", "include"],
+                               ["qtjambi/qtjambi_global.h", "include"],
+                               ["qtjambi/qtjambilink.h", "include"],
+                               ["qtjambi/qtjambifunctiontable.h", "include"]
+                               ])
 
 
     def setCommercial(self):
@@ -229,44 +243,87 @@ def setupPackages():
         if options.buildWindows:
             if options.build64:
                 if options.buildCommercial:
-                    win64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_COMMERCIAL)
-                    win64.setWinBinary()
-                    win64.buildServer = "aeryn.troll.no"
-                    packages.append(win64)
+                    winMoney64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_COMMERCIAL)
+                    winMoney64.setWinBinary()
+                    winMoney64.buildServer = host_win64;
+                    packages.append(winMoney64)
+                if options.buildGpl:
+                    winFree64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_GPL)
+                    winFree64.setWinBinary()
+                    winFree64.buildServer = host_win64
+                    packages.append(winFree64)
+                if options.buildEval:
+                    winEval64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_EVAL)
+                    winEval64.setWinBinary()
+                    winEval64.buildServer = host_win64
+                    packages.append(winEval64)
+            if options.build32:
+                if options.buildCommercial:
+                    winMoney32 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32, pkgutil.LICENSE_COMMERCIAL)
+                    winMoney32.setWinBinary()
+                    winMoney32.buildServer = host_win32
+                    packages.append(winMoney32)
+                if options.buildGpl:
+                    winFree32 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32, pkgutil.LICENSE_GPL)
+                    winFree32.setWinBinary()
+                    winFree32.buildServer = host_win32
+                    packages.append(winFree32)
+                if options.buildEval:
+                    winEval64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32, pkgutil.LICENSE_EVAL)
+                    winEval64.setWinBinary()
+                    winEval64.buildServer = host_win32
+                    packages.append(winEval64)
 
         if options.buildMac:
             if options.buildCommercial:
                 macMoney = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
                 macMoney.setMacBinary()
-                macMoney.buildServer = "lyta.troll.no"
+                macMoney.buildServer = host_mac
                 packages.append(macMoney)
             if options.buildGpl:
-                macGpl = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
-                macGpl.setMacBinary()
-                macGpl.buildServer = "lyta.troll.no"
-                packages.append(macGpl)
+                macFree = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
+                macFree.setMacBinary()
+                macFree.buildServer = host_mac
+                packages.append(macFree)
             if options.buildEval:
                 macEval = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
                 macEval.setMacBinary()
-                macEval.buildServer = "lyta.troll.no"
+                macEval.buildServer = host_mac
                 packages.append(macEval)
 
         if options.buildLinux:
-            if options.buildCommercial:
-                linuxMoney = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_COMMERCIAL)
-                linuxMoney.setLinuxBinary()
-                linuxMoney.buildServer = "babel.troll.no"
-                packages.append(linuxMoney)
-            if options.buildGpl:
-                linuxGpl = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_GPL)
-                linuxGpl.setLinuxBinary()
-                linuxGpl.buildServer = "babel.troll.no"
-                packages.append(linuxGpl)
-            if options.buildEval:
-                linuxEval = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
-                linuxEval.setLinuxBinary()
-                linuxEval.buildServer = "babel.troll.no"
-                packages.append(linuxEval)
+            if options.build64:
+                if options.buildCommercial:
+                    linuxMoney64 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_64, pkgutil.LICENSE_COMMERCIAL)
+                    linuxMoney64.setLinuxBinary()
+                    linuxMoney64.buildServer = host_linux64
+                    packages.append(linuxMoney64)
+                if options.buildGpl:
+                    linuxFree64 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_64, pkgutil.LICENSE_GPL)
+                    linuxFree64.setLinuxBinary()
+                    linuxFree64.buildServer = host_linux64
+                    packages.append(linuxFree64)
+                if options.buildEval:
+                    linuxEval64 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_64, pkgutil.LICENSE_EVAL)
+                    linuxEval64.setLinuxBinary()
+                    linuxEval64.buildServer = host_linux64
+                    packages.append(linuxEval64)
+            if options.build32:
+                if options.buildCommercial:
+                    linuxMoney32 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_32, pkgutil.LICENSE_COMMERCIAL)
+                    linuxMoney32.setLinuxBinary()
+                    linuxMoney32.buildServer = host_linux32
+                    packages.append(linuxMoney32)
+                if options.buildGpl:
+                    linuxFree32 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_32, pkgutil.LICENSE_GPL)
+                    linuxFree32.setLinuxBinary()
+                    linuxFree32.buildServer = host_linux32
+                    packages.append(linuxFree32)
+                if options.buildEval:
+                    linuxEval32 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_32, pkgutil.LICENSE_EVAL)
+                    linuxEval32.setLinuxBinary()
+                    linuxEval32.buildServer = host_linux32
+                    packages.append(linuxEval32)
 
     if options.buildSource:
         if options.buildGpl:
@@ -299,7 +356,8 @@ def setupPackages():
 def prepareSourceTree():
 
     # remove and recreat dir and cd into it...
-    shutil.rmtree(options.packageRoot)
+    if os.path.isdir(options.packageRoot):
+        shutil.rmtree(options.packageRoot)
     os.makedirs(options.packageRoot)
     os.chdir(options.packageRoot)
 
@@ -352,12 +410,13 @@ def packageAndSend(package):
         compiler = package.compiler
         if package.arch == pkgutil.ARCH_64:
             compiler = "msvc2005_x64"
-        buildFile.write("call qt_pkg_setup %s %s\n" % (compiler, "qt-" + package.license))
+        buildFile.write("call qt_pkg_setup %s %s\n" % (compiler, "c:\\tmp\\qt-" + package.license))
         buildFile.write("call ant\n")
-        buildFile.write(package.make + " clean\n")
+        buildFile.write('if "%ERRORLEVEL%" == "0" ' + package.make + ' clean\n')
     else:
         buildFile = open("tmptree/task.sh", "w")
-        buildFile.write("qt_pkg_setup %s %s %s\n" % (package.compiler, options.qtVersion, package.license))
+        buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/qt-" + package.license))
+        buildFile.write("echo $QTDIR\n")
         buildFile.write("ant\n")
         buildFile.write(package.make + " clean \n")
     buildFile.close()
@@ -406,11 +465,11 @@ def postProcessPackage(package):
         os.system("jar -xf %s" % package.platformJarName)
         shutil.rmtree("%s/META-INF" % package.packageDir)
 
-        if not package.platform == PLATFORM_WINDOWS:
+        if not package.platform == pkgutil.PLATFORM_WINDOWS:
             os.system("chmod a+rx designer.sh qtjambi.sh")
             os.system("chmod -R a+rw .")
 
-    expandMacroes(package)
+    pkgutil.expandMacroes(package.packageDir, package.licenseHeader)
 
     bundle(package)
 
@@ -424,46 +483,6 @@ def bundle(package):
         os.system("zip -rq %s/%s.zip %s" % (options.startDir, package.name(), package.name()))
     else:
         os.system("tar -czf %s/%s.tar.gz --owner=0 --group=0 %s" % (options.startDir, package.name(), package.name()))
-    
-
-
-# Locates all text files and expands the $LICENSE$ macroes and similar
-# located in them
-def expandMacroes(package):
-    thisYear = "%d" % datetime.date.today().year
-    patterns = [
-        [ re.compile("\\$THISYEAR\\$"), thisYear ],
-        [ re.compile("\\$TROLLTECH\\$"), "Trolltech ASA" ],
-        [ re.compile("\\$PRODUCT\\$"), "Qt Jambi" ],
-        [ re.compile("\\$LICENSE\\$"), package.licenseHeader ],
-        [ re.compile("\\$CPP_LICENSE\\$"), package.licenseHeader ],
-        [ re.compile("\\$JAVA_LICENSE\\$"), package.licenseHeader ]
-        ]
-    extensions = [
-        re.compile("\\.cpp$"),
-        re.compile("\\.h$"),
-        re.compile("\\.java"),
-        re.compile("\\.html"),
-        re.compile("\\.ui"),
-        re.compile("LICENSE")
-        ]
-    for (root, dirs, files) in os.walk(package.packageDir):
-        for relfile in files:
-            file = os.path.join(root, relfile)
-            replace = False
-            for ext in extensions:
-                if ext.search(file):
-                    replace = True
-            if replace:
-                handle = open(file, "r")
-                content = handle.read()
-                handle.close()
-                check = False
-                for (regex, replacement) in patterns:
-                    content = re.sub(regex, replacement, content)
-                handle = open(file, "w")
-                handle.write(content)
-                handle.close()
 
 
 
@@ -522,24 +541,43 @@ def removeFiles(package):
 
 
 def waitForResponse():
-    packagesRemaining = binaryPackageCount
+    packagesRemaining = options.binaryPackageCount
     pkgutil.debug("Waiting for build server responses...")
     
     while packagesRemaining:
+        print "********************** Server status: ( + = ok, - = not ok, blank = waiting)"
+        for pkg in packages:
+            if not pkg.binary:
+                continue
+            status = "   ";
+            if pkg.done:
+                if pkg.success:
+                    status = " + "
+                else:
+                    status = " - "
+            print "    %s: %s %s" % (status, string.ljust(pkg.buildServer, 30), string.ljust(pkg.name(), 25))
+        print "********************"
         (sock, (host, port)) = serversocket.accept()
         pkgutil.debug(" - got response from %s:%d" % (host, port))
         match = False
         for pkg in packages:
-            if socket.gethostbyname(pkg.buildServer) == host:
+            if socket.gethostbyname(pkg.buildServer) == host and not pkg.done:
                 pkg.dataFile = options.packageRoot + "/" + pkg.name() + ".zip"
                 pkgutil.getDataFile(sock, pkg.dataFile)
-                pkgutil.debug(" - uncompressing to %s" %s (package.packageDir))
-                pkgutil.uncompress(package.dataFile, package.packageDir);
-                
-                postProcessPackage(pkg)
+                pkgutil.debug(" - uncompressing to %s" % (pkg.packageDir))
+                pkgutil.uncompress(pkg.dataFile, pkg.packageDir);
+                try:
+                    postProcessPackage(pkg)
+                except , (error, message):
+                    print "  ERROR! Postprocessing failed... '%s'" % message
+                packagesRemaining = packagesRemaining - 1
+                pkg.done = True
                 match = True
-        if match:
-            packagesRemaining = packagesRemaining - 1
+                break
+        if not match:
+            print "   - unknown host... %s" % host
+
+            
 
 
 def shortcutPackageBuild():
@@ -565,6 +603,8 @@ def main():
         arg = sys.argv[i];
         if arg == "--qt-version":
             options.qtVersion = sys.argv[i+1]
+        elif arg == "--qt-dir":
+            options.qtDir = sys.argv[i+1]
         elif arg == "--package-root":
             options.packageRoot = sys.argv[i+1]
         elif arg == "--qt-jambi-version":

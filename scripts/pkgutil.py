@@ -44,6 +44,7 @@ def compress(zipFile, zipRoot):
     os.chdir(zipRoot);
     zip = zipfile.ZipFile(zipFile, "w");
     os.path.walk(zipRoot, zipHelper, 'somenull')
+    zip.close()
 
 
 
@@ -56,7 +57,6 @@ def uncompress(zipFile, rootDir):
         raise "   - uncompress: rootdir " + rootDir + " exists and is a file!"
     elif not os.path.isdir(rootDir):
         os.makedirs(rootDir, 0777)
-        print "   - uncompres: directory didn't exist, created..."
         
     file = zipfile.ZipFile(zipFile);
     for name in file.namelist():
@@ -64,9 +64,11 @@ def uncompress(zipFile, rootDir):
         if not os.path.isdir(absPath):
             os.makedirs(absPath)
         
-        outfile = open(os.path.join(rootDir, name), 'wb')
+        outName = os.path.join(rootDir, name)
+        outfile = open(outName, 'wb')
         outfile.write(file.read(name))
         outfile.close()
+    file.close()
 
 
 
@@ -79,10 +81,13 @@ def sendDataFile(socket, dataFile):
     file = open(dataFile, "rb")
     debug("   - sendDataFile: transfering %s..." % dataFile)
     block = file.read(4096)
+    total = len(block)
     while len(block) > 0:
         socket.send(block);
         block = file.read(4096)
-    debug("   - sendDataFile: transfer of file %s complete..." % dataFile)
+        total = total + len(block)
+    file.close()
+    debug("   - sendDataFile: transfer of file %s complete, total=%d..." % (dataFile, total))
 
 
 
@@ -98,6 +103,7 @@ def sendDataFileToHost(hostName, port, dataFile):
     debug("   - sendDataFile: connecting to: %s:%d" % address)
     s.connect(address)
     sendDataFile(s, dataFile)
+    debug("   - sendDataFile: closed connection...")
     s.close()
 
 
@@ -110,12 +116,13 @@ def getDataFile(socket, dataFile):
     debug("   - getDataFile: receiving  %s..." % dataFile)
     file = open(dataFile, "wb")
     data = socket.recv(4096)
+    total = len(data)
     while len(data) > 0:
         file.write(data);
         data = socket.recv(4096);
+        total = total + len(data)
     file.close();
-    debug("   - getDataFile: transfer of file %s complete..." % dataFile)
-
+    debug("   - getDataFile: transfer of file %s complete, total=%d..." % (dataFile, total))
 
 
 # Recursively deletes the directory specified with root
@@ -174,6 +181,7 @@ def expandMacroes(dir, header):
         [ re.compile("\\$TROLLTECH\\$"), "Trolltech ASA" ],
         [ re.compile("\\$PRODUCT\\$"), "Qt Jambi" ],
         [ re.compile("\\$LICENSE\\$"), header ],
+        [ re.compile("\\$TROLLTECH_DUAL_LICENSE\\$"), header ],
         [ re.compile("\\$CPP_LICENSE\\$"), header ],
         [ re.compile("\\$JAVA_LICENSE\\$"), header ]
         ]
@@ -199,6 +207,7 @@ def expandMacroes(dir, header):
                 check = False
                 for (regex, replacement) in patterns:
                     content = re.sub(regex, replacement, content)
+                os.chmod(file, 0755)
                 handle = open(file, "w")
                 handle.write(content)
                 handle.close()
