@@ -328,11 +328,6 @@ public class PlatformJarTask extends Task {
             System.out.println(" - updating: " + with.getName());
 
             for (LibraryEntry change : libs) {
-                if ("libqtjambi.jnilib".equals(with.getName()))
-                    cmd[2] = "libqtjambi.1.jnilib";
-                else
-                    cmd[2] = with.absoluteSourcePath();
-
                 // Calculate the new subdir...
                 int subdir = change.getSubdir().split("/").length;
                 StringBuilder builder = new StringBuilder(subdir * 3);
@@ -346,6 +341,15 @@ public class PlatformJarTask extends Task {
                 cmd[3] = builder.toString();
                 cmd[4] = change.relativePath();
 
+                // only name, when Qt is configured with -no-rpath
+                cmd[2] = with.getName();
+                Util.exec(cmd, outdir, false);
+
+                // full path, when Qt is configured with rpath
+                if ("libqtjambi.jnilib".equals(with.getName()))
+                    cmd[2] = "libqtjambi.1.jnilib";
+                else
+                    cmd[2] = with.absoluteSourcePath();
                 Util.exec(cmd, outdir, false);
             }
         }
