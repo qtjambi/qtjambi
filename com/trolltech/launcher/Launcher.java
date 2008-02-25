@@ -87,8 +87,8 @@ public class Launcher extends QWidget {
         ui.setupUi(this);
 
         ui.source.setWordWrap(false);
-        
-        
+
+
         progressChanged.emit("Setting up examples");
 
         setupExamples();
@@ -99,7 +99,7 @@ public class Launcher extends QWidget {
 
         ui.list.setModel(sortFilterProxyModel);
         ui.list.setItemDelegate(new Delegate(sortFilterProxyModel));
-        ui.list.setCurrentIndex(null);        
+        ui.list.setCurrentIndex(null);
 
         progressChanged.emit("Setting up styles");
         setupStyles();
@@ -307,11 +307,11 @@ public class Launcher extends QWidget {
             styleChanged();
         firstStyleSetup = false;
     }
-    
+
     private void traverseDirectory(String directory) {
         QDir dir = new QDir(directory);
         List<QFileInfo> infos = dir.entryInfoList(QDir.Filter.createQFlags(QDir.Filter.Files, QDir.Filter.Dirs, QDir.Filter.NoDotAndDotDot));
-        
+
         for (QFileInfo info : infos) {
             if (info.isDir()) {
                 traverseDirectory(info.absoluteFilePath());
@@ -320,13 +320,13 @@ public class Launcher extends QWidget {
                 if (idx <= 0)
                     idx = 10;
                 String pkg = directory.substring(idx).replace("/", ".");
-                
+
                 Launchable l = Launchable.create(pkg + "." + info.baseName());
                 if (l != null) {
                     progressChanged.emit("Setting up examples: " + info.baseName());
                     m_model.add(l);
                 }
-                
+
             }
         }
     }
@@ -339,8 +339,8 @@ public class Launcher extends QWidget {
         String dirs[] = new String[] { "classpath:com/trolltech/examples",
                                        "classpath:com/trolltech/demos" };
 
-        for (int i = 0; i < dirs.length; ++i) {            
-            traverseDirectory(dirs[i]);           
+        for (int i = 0; i < dirs.length; ++i) {
+            traverseDirectory(dirs[i]);
         }
     }
 
@@ -372,10 +372,6 @@ public class Launcher extends QWidget {
 
     public static void main(String args[]) {
         QApplication.initialize(args == null ? start_qt() : args);
-
-        // ### not an optimal solution, but at least it makes the launcher run the
-        // image viewer demos and sql demos properly...
-        QApplication.addLibraryPath(new QFileInfo(".").absoluteFilePath() + "/plugins");
 
         SplashScreen splashScreen = null;
         splashScreen = new SplashScreen();
