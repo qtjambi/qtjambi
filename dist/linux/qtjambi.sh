@@ -13,5 +13,9 @@ then
     echo "to work. If Java is installed then make sure that the 'java' executable"
     echo "is available in the PATH environment."
 else
-    PATH=$me/bin:$PATH QT_PLUGIN_PATH=$me/plugins java -cp $me/qtjambi.jar:. com.trolltech.launcher.Launcher
+    VERSION=$(ls qtjambi-4*.jar)
+    VERSION=${VERSION:8:8}
+    PLATFORM_JAR=$(ls qtjambi-linux*$VERSION.jar}
+    CP=qtjambi-$VERSION.jar:qtjambi-examples-$VERSION.jar:$PLATFORM_JAR
+    java -cp $CP com.trolltech.launcher.Launcher
 fi

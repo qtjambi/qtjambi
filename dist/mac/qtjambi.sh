@@ -13,5 +13,8 @@ then
     echo "to work. If Java is installed then make sure that the 'java' executable"
     echo "is available in the PATH environment."
 else
-    PATH=$me/bin:$PATH QT_PLUGIN_PATH=$me/plugins java -XstartOnFirstThread -cp $me/qtjambi.jar:$me com.trolltech.launcher.Launcher
+    for lib in $(ls qtjambi*.jar); do
+	CP=$lib:$CP
+    done
+    java -XstartOnFirstThread -cp $CP com.trolltech.launcher.Launcher
 fi
