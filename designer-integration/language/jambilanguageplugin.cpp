@@ -201,10 +201,10 @@ bool JambiLanguage::signalMatchesSlot(const QString &signal, const QString &slot
     jstring slotString = qtjambi_from_qstring(env, slot);
     QTJAMBI_EXCEPTION_CHECK(env);
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
 
-    return env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.signalMatchesSlot, 
+    return env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.signalMatchesSlot,
                                         signalString, slotString);
 }
 
@@ -233,11 +233,11 @@ bool JambiExtraInfoExtension::saveUiExtraInfo(DomUI *ui)
     return false;
 }
 
-void JambiExtraInfoExtension::fiddleWith(DomProperty *property) 
+void JambiExtraInfoExtension::fiddleWith(DomProperty *property)
 {
     if (property->hasAttributeName() && property->attributeName() == QLatin1String("orientation")
         && property->kind() == DomProperty::Enum) {
-        if (property->elementEnum() == QLatin1String("Qt::Horizontal")) {            
+        if (property->elementEnum() == QLatin1String("Qt::Horizontal")) {
             property->setElementEnum(QLatin1String("com.trolltech.qt.core.Qt.Orientation.Horizontal"));
         } else if (property->elementEnum() == QLatin1String("Qt::Vertical")) {
             property->setElementEnum(QLatin1String("com.trolltech.qt.core.Qt.Orientation.Vertical"));
@@ -278,10 +278,10 @@ void JambiExtraInfoExtension::fiddleWith(DomLayoutItem *layoutItem)
         fiddleWith(layout);
 }
 
-void JambiExtraInfoExtension::fiddleWith(DomLayout *layout) 
+void JambiExtraInfoExtension::fiddleWith(DomLayout *layout)
 {
     QList<DomLayoutItem *> layoutItems = layout->elementItem();
-    foreach (DomLayoutItem *layoutItem, layoutItems) 
+    foreach (DomLayoutItem *layoutItem, layoutItems)
         fiddleWith(layoutItem);
 }
 
@@ -301,7 +301,7 @@ bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
 
     if (ui->elementWidget())
         fiddleWith(ui->elementWidget());
-    
+
     return true;
 }
 

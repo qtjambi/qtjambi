@@ -63,7 +63,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 {
     Q_Q(QtDynamicMetaObject);
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
 
     env->PushLocalFrame(100);
@@ -152,7 +152,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
 void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a, const QString &_signature) const
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
 
     jobject method_signature = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.methodSignature2, method_object, true);
@@ -272,7 +272,7 @@ int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id
         jobject signal_object = env->GetObjectField(object, field_id);
         Q_ASSERT(signal_object);
 
-        StaticCache *sc = StaticCache::instance(env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveQtJambiInternal();
 
         jobject signal_emit_method = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.findEmitMethod, signal_object);

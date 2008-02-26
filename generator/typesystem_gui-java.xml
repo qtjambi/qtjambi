@@ -20,7 +20,7 @@
     </template>
 
     <template name="gui.convert_validationdata_to_java">
-        StaticCache *sc = StaticCache::instance(__jni_env);
+        StaticCache *sc = StaticCache::instance();
         sc-&gt;resolveValidationData();
         jstring __qt_converted_input = qtjambi_from_qstring(__jni_env, %STRING);
         jobject %out = __jni_env-&gt;NewObject(sc-&gt;ValidationData.class_ref, sc-&gt;ValidationData.constructor, __qt_converted_input, %POS);
@@ -33,7 +33,7 @@
     </template>
     
     <template name="gui.convert_validationdata_to_string">
-        StaticCache *sc = StaticCache::instance(__jni_env);
+        StaticCache *sc = StaticCache::instance();
         sc-&gt;resolveValidationData();
         jstring __java_string = (jstring) __jni_env-&gt;GetObjectField(%in, sc-&gt;ValidationData.string);
         QString %out = __java_string == 0 ? QString() : qtjambi_to_qstring(__jni_env, __java_string);
@@ -1091,7 +1091,7 @@
         <modify-argument index="2">
             <replace-type modified-type="java.util.List&lt;Integer&gt;"/>
             <conversion-rule class="shell">
-                StaticCache *sc = StaticCache::instance(__jni_env);
+                StaticCache *sc = StaticCache::instance();
                 sc-&gt;resolveArrayList();
                 sc-&gt;resolveCollection();
                 sc-&gt;resolveInteger();
@@ -1108,7 +1108,7 @@
                 jobject %out = columnsHolder;
             </conversion-rule>
             <conversion-rule class="native">
-                StaticCache *sc = StaticCache::instance(__jni_env);
+                StaticCache *sc = StaticCache::instance();
                 sc-&gt;resolveCollection();
                 
                 QList&lt;int&gt; columnHolder;                
@@ -1159,7 +1159,7 @@
         <modify-argument index="2">
             <replace-type modified-type="java.util.List&lt;Integer&gt;"/>
             <conversion-rule class="shell">
-                StaticCache *sc = StaticCache::instance(__jni_env);
+                StaticCache *sc = StaticCache::instance();
                 sc-&gt;resolveArrayList();
                 sc-&gt;resolveCollection();
                 sc-&gt;resolveInteger();
@@ -1176,7 +1176,7 @@
                 jobject %out = rowsHolder;
             </conversion-rule>
             <conversion-rule class="native">
-                StaticCache *sc = StaticCache::instance(__jni_env);
+                StaticCache *sc = StaticCache::instance();
                 sc-&gt;resolveCollection();
                 
                 QList&lt;int&gt; rowsHolder;                

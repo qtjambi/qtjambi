@@ -17,6 +17,7 @@
 #include "qtjambi_global.h"
 
 #include <QtCore/QList>
+#include <QtCore/QReadWriteLock>
 
 class QtJambiFunctionTable;
 class QString;
@@ -56,10 +57,27 @@ void removeFunctionTable(QtJambiFunctionTable *table);
 jclass resolveClosestQtSuperclass(JNIEnv *env, jclass clazz);
 jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char *package);
 
+
+class StaticCachePrivate {
+public:
+    virtual ~StaticCachePrivate() { }
+
+    QReadWriteLock lock;
+};
+
+
 #define DECLARE_RESOLVE_FUNCTIONS(type_name) \
 public: \
     inline void resolve##type_name() { \
-        if (!type_name.class_ref) resolve##type_name##_internal(); \
+        d->lock.lockForRead(); \
+        if (type_name.class_ref) { \
+            d->lock.unlock(); \
+            return; \
+        } \
+        d->lock.unlock(); \
+        d->lock.lockForWrite(); \
+        resolve##type_name##_internal(); \
+        d->lock.unlock(); \
     } \
 private: \
     void resolve##type_name##_internal()
@@ -67,8 +85,6 @@ private: \
 
 struct QTJAMBI_EXPORT StaticCache
 {
-    JNIEnv *env;
-
     struct {
         jclass class_ref;
         jmethodID constructor;
@@ -230,7 +246,7 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jmethodID constructor;
-        jmethodID shortValue;        
+        jmethodID shortValue;
     } Short;
 
     struct {
@@ -255,7 +271,7 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
-        jfieldID inCppEmission;        
+        jfieldID inCppEmission;
         jmethodID connect;
         jmethodID connectSignalMethod;
         jmethodID removeConnection;
@@ -450,10 +466,11 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(QItemEditorCreatorBase);
 
 public:
-    static StaticCache *instance(JNIEnv *env);
+    static StaticCache *instance();
 
 private:
-    static QList<StaticCache *> m_caches;
+    ~StaticCache();
+    StaticCachePrivate *d;
 };
 
 #endif // QTJAMBI_CACHE_H

@@ -56,7 +56,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1canConvert)
 static inline void setOk(JNIEnv *env, jobjectArray ok, bool isOk)
 {
     if (!env->IsSameObject(ok, 0) && env->GetArrayLength(ok)) {
-        StaticCache *sc = StaticCache::instance(env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveBoolean();
         jfieldID fieldId = isOk ? sc->Boolean.field_TRUE : sc->Boolean.field_FALSE;
         jobject boolObject = env->GetStaticObjectField(sc->Boolean.class_ref, fieldId);

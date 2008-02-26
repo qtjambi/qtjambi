@@ -20,7 +20,7 @@ const QVariant::Handler *QtJambiVariant::lastHandler = 0;
 
 Q_CORE_EXPORT const QVariant::Handler *qcoreVariantHandler();
 
-inline static const JObjectWrapper *cast_to_object_wrapper(const QVariant::Private *d) 
+inline static const JObjectWrapper *cast_to_object_wrapper(const QVariant::Private *d)
 {
     if (d->type == JOBJECTWRAPPER_TYPE) {
         if (d->is_shared) return reinterpret_cast<const JObjectWrapper *>(d->data.shared->ptr);
@@ -65,28 +65,28 @@ static bool convert(const QVariant::Private *d, QVariant::Type t,
 
     if(wrapper != 0) {
         JNIEnv *env = qtjambi_current_environment();
-        StaticCache *sc = StaticCache::instance(env);
+        StaticCache *sc = StaticCache::instance();
         jobject java_object =  wrapper->object;
 
         switch (t) {
         case QVariant::Int :
-            sc->resolveQtEnumerator();           
+            sc->resolveQtEnumerator();
             if (env->IsInstanceOf(java_object, sc->QtEnumerator.class_ref)) {
                 *((int*)result) = env->CallIntMethod(java_object, sc->QtEnumerator.value);
                 return true;
             }
             break;
-                    
+
         case QVariant::String :
             sc->resolveObject();
             *((QString*)result) = qtjambi_to_qstring(env, static_cast<jstring>(env->CallObjectMethod(java_object, sc->Object.toString)));
             return true;
             break;
-            
+
         default :
             return false;
         }
-    }        
+    }
 
     if (QtJambiVariant::getLastHandler())
         return QtJambiVariant::getLastHandler()->convert(d, t, result, ok);
@@ -103,14 +103,14 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
     if (wrapper_a) {
         const JObjectWrapper *wrapper_b = cast_to_object_wrapper(a);
         JNIEnv *env = qtjambi_current_environment();
-        StaticCache *sc = StaticCache::instance(env);
+        StaticCache *sc = StaticCache::instance();
         return env->CallBooleanMethod(wrapper_a->object, sc->Object.equals, wrapper_b->object);
     }
     if (QtJambiVariant::getLastHandler())
         return QtJambiVariant::getLastHandler()->compare(a, b);
     else if (qcoreVariantHandler())
         return qcoreVariantHandler()->compare(a, b);
-    
+
     return false;
 }
 
@@ -122,7 +122,7 @@ static void streamDebug(QDebug dbg, const QVariant &v)
     if((uint)v.userType() == JOBJECTWRAPPER_TYPE) {
         const JObjectWrapper wrapper = v.value<JObjectWrapper>();
         JNIEnv *env = qtjambi_current_environment();
-        StaticCache *sc = StaticCache::instance(env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveObject();
         jobject java_object =  wrapper.object;
         dbg << qtjambi_to_qstring(env, static_cast<jstring>(env->CallObjectMethod(java_object, sc->Object.toString)));

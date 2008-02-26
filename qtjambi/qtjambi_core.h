@@ -92,12 +92,12 @@ struct QTJAMBI_EXPORT JObjectWrapper
     JObjectWrapper() : object(0)
     {
     }
-    
+
     JObjectWrapper(const JObjectWrapper &wrapper)
     {
         operator=(wrapper);
     }
-    
+
     JObjectWrapper(JNIEnv *env, jobject obj)
     {
         Q_ASSERT(env != 0);
@@ -107,7 +107,7 @@ struct QTJAMBI_EXPORT JObjectWrapper
             object = 0;
         REF_JOBJECT;
     }
-    
+
     ~JObjectWrapper();
 
 
@@ -116,8 +116,8 @@ struct QTJAMBI_EXPORT JObjectWrapper
             initialize(qtjambi_current_environment(), wrapper.object);
         } else {
             object = 0;
-        } 
-        REF_JOBJECT;        
+        }
+        REF_JOBJECT;
     }
 
     bool operator==(const JObjectWrapper &other) const;
@@ -345,7 +345,7 @@ QTJAMBI_EXPORT void qtjambi_debug_trace(const char *location, const char *file, 
 
 // Boxing functions
 inline jobject qtjambi_from_int(JNIEnv *env, int int_value) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveInteger();
     return env->NewObject(sc->Integer.class_ref, sc->Integer.constructor, int_value);
 }
@@ -353,120 +353,120 @@ inline jobject qtjambi_from_int(JNIEnv *env, int int_value) {
 
 inline int qtjambi_to_int(JNIEnv *env, jobject int_object)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveInteger();
     return env->CallIntMethod(int_object, sc->Integer.intValue);
 }
 
 
 inline jobject qtjambi_from_double(JNIEnv *env, double double_value) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveDouble();
     return env->NewObject(sc->Double.class_ref, sc->Double.constructor, double_value);
 }
 
 
 inline double qtjambi_to_double(JNIEnv *env, jobject double_object) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveDouble();
     return env->CallDoubleMethod(double_object, sc->Double.doubleValue);
 }
 
 inline jobject qtjambi_from_boolean(JNIEnv *env, bool bool_value)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveBoolean();
     return env->NewObject(sc->Boolean.class_ref, sc->Boolean.constructor, bool_value);
 }
 
 inline bool qtjambi_to_boolean(JNIEnv *env, jobject bool_object)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveBoolean();
     return env->CallBooleanMethod(bool_object, sc->Boolean.booleanValue);
 }
 
 inline jlong qtjambi_to_long(JNIEnv *env, jobject long_object)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveLong();
     return env->CallLongMethod(long_object, sc->Long.longValue);
 }
 
-inline jobject qtjambi_from_long(JNIEnv *env, qint64 long_value) 
+inline jobject qtjambi_from_long(JNIEnv *env, qint64 long_value)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveLong();
     return env->NewObject(sc->Long.class_ref, sc->Long.constructor, long_value);
 }
 
-inline jobject qtjambi_from_short(JNIEnv *env, short short_value) 
+inline jobject qtjambi_from_short(JNIEnv *env, short short_value)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveShort();
     return env->NewObject(sc->Short.class_ref, sc->Short.constructor, short_value);
 }
 
 inline jobject qtjambi_from_float(JNIEnv *env, float float_value)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveFloat();
     return env->NewObject(sc->Float.class_ref, sc->Float.constructor, float_value);
 }
 
 inline jobject qtjambi_from_byte(JNIEnv *env, char byte_value)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveByte();
     return env->NewObject(sc->Byte.class_ref, sc->Byte.constructor, byte_value);
 }
 
 
-inline jchar qtjambi_to_char(JNIEnv *env, jobject char_object) 
+inline jchar qtjambi_to_char(JNIEnv *env, jobject char_object)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveCharacter();
     return env->CallCharMethod(char_object, sc->Character.charValue);
 }
 
-inline jobject qtjambi_from_char(JNIEnv *env, jchar char_value) 
+inline jobject qtjambi_from_char(JNIEnv *env, jchar char_value)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveCharacter();
     return env->NewObject(sc->Character.class_ref, sc->Character.constructor, char_value);
 }
 
 inline float qtjambi_to_float(JNIEnv *env, jobject float_object)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveFloat();
     return env->CallFloatMethod(float_object, sc->Float.floatValue);
 }
 
 inline short qtjambi_to_short(JNIEnv *env, jobject short_object)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveShort();
     return env->CallShortMethod(short_object, sc->Short.shortValue);
 }
 
 inline jchar qtjambi_to_jchar(JNIEnv *env, jobject char_object)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveCharacter();
     return env->CallCharMethod(char_object, sc->Character.charValue);
 }
 
 inline jbyte qtjambi_to_byte(JNIEnv *env, jobject byte_object)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveByte();
     return env->CallByteMethod(byte_object, sc->Byte.byteValue);
 }
 
 // Container helpers...
 inline jobject qtjambi_pair_new(JNIEnv *env, jobject first, jobject second) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolvePair();
     return env->NewObject(sc->Pair.class_ref, sc->Pair.constructor, first, second);
 }
@@ -474,7 +474,7 @@ inline jobject qtjambi_pair_new(JNIEnv *env, jobject first, jobject second) {
 
 inline jobject qtjambi_pair_get(JNIEnv *env, jobject pair, int pos) {
     Q_ASSERT(pos == 0 || pos == 1);
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolvePair();
     if (pos == 0)
         return env->GetObjectField(pair, sc->Pair.first);
@@ -483,40 +483,40 @@ inline jobject qtjambi_pair_get(JNIEnv *env, jobject pair, int pos) {
 }
 
 inline jobject qtjambi_hashset_new(JNIEnv *env) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveHashSet();
     return env->NewObject(sc->HashSet.class_ref, sc->HashSet.constructor);
 }
 
 inline jobject qtjambi_hashmap_new(JNIEnv *env, int size) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveHashMap();
     return env->NewObject(sc->HashMap.class_ref, sc->HashMap.constructor, size);
 }
 
 inline jobject qtjambi_treemap_new(JNIEnv *env, int size) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveTreeMap();
     return env->NewObject(sc->TreeMap.class_ref, sc->TreeMap.constructor, size);
 }
 
 inline void qtjambi_map_put(JNIEnv *env, jobject map, jobject key, jobject val)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveMap();
     env->CallObjectMethod(map, sc->Map.put, key, val);
 }
 
 inline int qtjambi_map_size(JNIEnv *env, jobject map)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveMap();
     return env->CallIntMethod(map, sc->Map.size);
 }
 
 inline jobjectArray qtjambi_map_entryset_array(JNIEnv *env, jobject map)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveMap();
     jobject set = env->CallObjectMethod(map, sc->Map.entrySet);
     sc->resolveCollection();
@@ -527,7 +527,7 @@ inline QPair<jobject, jobject> qtjambi_entryset_array_get(JNIEnv *env, jobjectAr
 {
     jobject entry = env->GetObjectArrayElement(array, idx);
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveMapEntry();
     jobject key = env->CallObjectMethod(entry, sc->MapEntry.getKey);
     jobject value = env->CallObjectMethod(entry, sc->MapEntry.getValue);
@@ -536,31 +536,31 @@ inline QPair<jobject, jobject> qtjambi_entryset_array_get(JNIEnv *env, jobjectAr
 }
 
 inline jobject qtjambi_arraylist_new(JNIEnv *env, int size) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveArrayList();
     return env->NewObject(sc->ArrayList.class_ref, sc->ArrayList.constructor, size);
 }
 
 inline jobject qtjambi_linkedlist_new(JNIEnv *env) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveLinkedList();
     return env->NewObject(sc->LinkedList.class_ref, sc->LinkedList.constructor);
 }
 
 inline jobject qtjambi_stack_new(JNIEnv *env) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveStack();
     return env->NewObject(sc->Stack.class_ref, sc->Stack.constructor);
 }
 
 inline void qtjambi_collection_add(JNIEnv *env, jobject list, jobject obj) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveCollection();
     env->CallObjectMethod(list, sc->Collection.add, obj);
 }
 
 inline jobjectArray qtjambi_collection_toArray(JNIEnv *env, jobject col) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveCollection();
     return (jobjectArray) env->CallObjectMethod(col, sc->Collection.toArray);
 }
@@ -585,13 +585,13 @@ bool qtjambi_connect_cpp_to_java(JNIEnv *,
 // slot deletes its sender.
 inline void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue *args)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveAbstractSignal();
 
     // Check if signal has since been collected
     jobject object = env->NewLocalRef(signal_info.object);
     if (object == 0)
-        return ; 
+        return ;
 
     // Don't recurse
     if (env->GetBooleanField(object, sc->AbstractSignal.inJavaEmission))

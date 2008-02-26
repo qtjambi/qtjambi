@@ -23,8 +23,6 @@
 
 #include <QtCore/QDebug>
 
-QList<StaticCache *> StaticCache::m_caches;
-
 // #define QTJAMBI_NOCACHE
 // #define QTJAMBI_COUNTCACHEMISSES(T) cacheMisses(T)
 
@@ -493,27 +491,30 @@ void removeFunctionTable(QtJambiFunctionTable *table)
 }
 
 
-StaticCache *StaticCache::instance(JNIEnv *env)
+StaticCache::~StaticCache() {
+    delete d;
+}
+
+
+StaticCache *StaticCache::instance()
 {
+    static StaticCache *the_cache = 0;
     static QReadWriteLock lock;
 
     {
-        QReadLocker readLocker(&lock);
-        // chances are that number of envs are so few that a linear search is faster than
-        // time spent doing hashing and collision resolution.
-        for (int i=0; i<m_caches.size(); ++i)
-            if (env == m_caches.at(i)->env)
-                return m_caches.at(i);
+        QReadLocker read(&lock);
+        if (the_cache)
+            return the_cache;
     }
 
     {
-        QWriteLocker writeLocker(&lock);
-        StaticCache *s = new StaticCache;
-        memset(s, 0, sizeof(StaticCache));
-        s->env = env;
-        m_caches << s;
-        return s;
+        QWriteLocker write(&lock);
+        the_cache = new StaticCache;
+        memset(the_cache, 0, sizeof(StaticCache));
+        the_cache->d = new StaticCachePrivate();
+        return the_cache;
     }
+
 }
 
 
@@ -521,6 +522,7 @@ StaticCache *StaticCache::instance(JNIEnv *env)
 
 #define IMPLEMENT_RESOLVE_DEFAULT_FUNCTION(structName, qualifiedClassName, constructorSignature) \
     void StaticCache::resolve##structName##_internal() {                                        \
+        JNIEnv *env = qtjambi_current_environment();                                          \
         Q_ASSERT(!structName.class_ref);                                                      \
         structName.class_ref = ref_class(qtjambi_find_class(env, qualifiedClassName));        \
         Q_ASSERT(structName.class_ref);                                                       \
@@ -532,9 +534,10 @@ StaticCache *StaticCache::instance(JNIEnv *env)
 
 IMPLEMENT_RESOLVE_DEFAULT_FUNCTION(HashSet, "java/util/HashSet", "()V");
 
-
 void StaticCache::resolveArrayList_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!ArrayList.class_ref);
 
     ArrayList.class_ref = ref_class(qtjambi_find_class(env, "java/util/ArrayList"));
@@ -546,6 +549,8 @@ void StaticCache::resolveArrayList_internal()
 
 void StaticCache::resolveStack_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Stack.class_ref);
 
     Stack.class_ref = ref_class(qtjambi_find_class(env, "java/util/Stack"));
@@ -557,6 +562,8 @@ void StaticCache::resolveStack_internal()
 
 void StaticCache::resolveLinkedList_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!LinkedList.class_ref);
 
     LinkedList.class_ref = ref_class(qtjambi_find_class(env, "java/util/LinkedList"));
@@ -568,6 +575,8 @@ void StaticCache::resolveLinkedList_internal()
 
 void StaticCache::resolveMap_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Map.class_ref);
 
     Map.class_ref = ref_class(qtjambi_find_class(env, "java/util/Map"));
@@ -586,6 +595,8 @@ void StaticCache::resolveMap_internal()
 
 void StaticCache::resolveMapEntry_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!MapEntry.class_ref);
 
     MapEntry.class_ref = ref_class(qtjambi_find_class(env, "java/util/Map$Entry"));
@@ -600,6 +611,8 @@ void StaticCache::resolveMapEntry_internal()
 
 void StaticCache::resolveHashMap_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!HashMap.class_ref);
 
     HashMap.class_ref = ref_class(qtjambi_find_class(env, "java/util/HashMap"));
@@ -611,6 +624,8 @@ void StaticCache::resolveHashMap_internal()
 
 void StaticCache::resolveTreeMap_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!TreeMap.class_ref);
 
     TreeMap.class_ref = ref_class(qtjambi_find_class(env, "java/util/TreeMap"));
@@ -622,6 +637,8 @@ void StaticCache::resolveTreeMap_internal()
 
 void StaticCache::resolveNullPointerException_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!NullPointerException.class_ref);
 
     NullPointerException.class_ref = ref_class(qtjambi_find_class(env, "java/lang/NullPointerException"));
@@ -630,6 +647,8 @@ void StaticCache::resolveNullPointerException_internal()
 
 void StaticCache::resolveCollection_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Collection.class_ref);
 
     Collection.class_ref = ref_class(qtjambi_find_class(env, "java/util/Collection"));
@@ -649,6 +668,8 @@ void StaticCache::resolveCollection_internal()
 
 void StaticCache::resolvePair_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Pair.class_ref);
 
     Pair.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QPair"));
@@ -666,6 +687,8 @@ void StaticCache::resolvePair_internal()
 
 void StaticCache::resolveInteger_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Integer.class_ref);
 
     Integer.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Integer"));
@@ -681,6 +704,8 @@ void StaticCache::resolveInteger_internal()
 
 void StaticCache::resolveDouble_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Double.class_ref);
 
     Double.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Double"));
@@ -696,6 +721,8 @@ void StaticCache::resolveDouble_internal()
 
 void StaticCache::resolveMethod_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Method.class_ref);
 
     Method.class_ref = ref_class(qtjambi_find_class(env, "java/lang/reflect/Method"));
@@ -714,6 +741,8 @@ void StaticCache::resolveMethod_internal()
 
 void StaticCache::resolveModifier_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Modifier.class_ref);
 
     Modifier.class_ref = ref_class(qtjambi_find_class(env, "java/lang/reflect/Modifier"));
@@ -726,6 +755,8 @@ void StaticCache::resolveModifier_internal()
 
 void StaticCache::resolveObject_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Object.class_ref);
 
     Object.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Object"));
@@ -742,6 +773,8 @@ void StaticCache::resolveObject_internal()
 
 void StaticCache::resolveNativePointer_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!NativePointer.class_ref);
 
     NativePointer.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QNativePointer"));
@@ -762,6 +795,8 @@ void StaticCache::resolveNativePointer_internal()
 
 void StaticCache::resolveQtJambiObject_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QtJambiObject.class_ref);
 
     QtJambiObject.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiObject"));
@@ -775,6 +810,8 @@ void StaticCache::resolveQtJambiObject_internal()
 
 void StaticCache::resolveBoolean_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Boolean.class_ref);
 
     Boolean.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Boolean"));
@@ -795,6 +832,8 @@ void StaticCache::resolveBoolean_internal()
 
 void StaticCache::resolveLong_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Long.class_ref);
 
     Long.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Long"));
@@ -809,6 +848,8 @@ void StaticCache::resolveLong_internal()
 
 void StaticCache::resolveFloat_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Float.class_ref);
 
     Float.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Float"));
@@ -823,6 +864,8 @@ void StaticCache::resolveFloat_internal()
 
 void StaticCache::resolveShort_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Short.class_ref);
 
     Short.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Short"));
@@ -837,6 +880,8 @@ void StaticCache::resolveShort_internal()
 
 void StaticCache::resolveByte_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Byte.class_ref);
 
     Byte.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Byte"));
@@ -851,6 +896,8 @@ void StaticCache::resolveByte_internal()
 
 void StaticCache::resolveCharacter_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Character.class_ref);
 
     Character.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Character"));
@@ -865,6 +912,8 @@ void StaticCache::resolveCharacter_internal()
 
 void StaticCache::resolveClass_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Class.class_ref);
 
     Class.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Class"));
@@ -888,6 +937,8 @@ void StaticCache::resolveClass_internal()
 
 void StaticCache::resolveSystem_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!System.class_ref);
 
     System.class_ref = ref_class(qtjambi_find_class(env, "java/lang/System"));
@@ -902,6 +953,8 @@ void StaticCache::resolveSystem_internal()
 
 void StaticCache::resolveURL_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!URL.class_ref);
 
     URL.class_ref = ref_class(qtjambi_find_class(env, "java/net/URL"));
@@ -913,6 +966,8 @@ void StaticCache::resolveURL_internal()
 
 void StaticCache::resolveURLClassLoader_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!URLClassLoader.class_ref);
 
     URLClassLoader.class_ref = ref_class(qtjambi_find_class(env, "java/net/URLClassLoader"));
@@ -927,6 +982,8 @@ void StaticCache::resolveURLClassLoader_internal()
 
 void StaticCache::resolveClassLoader_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!ClassLoader.class_ref);
 
     ClassLoader.class_ref = ref_class(qtjambi_find_class(env, "java/lang/ClassLoader"));
@@ -938,6 +995,8 @@ void StaticCache::resolveClassLoader_internal()
 
 void StaticCache::resolveQSignalEmitter_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QSignalEmitter.class_ref);
 
     QSignalEmitter.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QSignalEmitter"));
@@ -949,6 +1008,8 @@ void StaticCache::resolveQSignalEmitter_internal()
 
 void StaticCache::resolveQObject_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QObject.class_ref);
 
     QObject.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QObject"));
@@ -957,6 +1018,8 @@ void StaticCache::resolveQObject_internal()
 
 void StaticCache::resolveAbstractSignal_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!AbstractSignal.class_ref);
 
     AbstractSignal.class_ref =
@@ -990,6 +1053,8 @@ void StaticCache::resolveAbstractSignal_internal()
 
 void StaticCache::resolveQtJambiInternal_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     QtJambiInternal.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiInternal"));
     Q_ASSERT(QtJambiInternal.class_ref);
 
@@ -1071,6 +1136,8 @@ void StaticCache::resolveQtJambiInternal_internal()
 
 void StaticCache::resolveMetaData_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     MetaData.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiInternal$MetaData"));
     Q_ASSERT(MetaData.class_ref);
 
@@ -1107,6 +1174,8 @@ void StaticCache::resolveMetaData_internal()
 
 void StaticCache::resolveQtJambiGuiInternal_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     QtJambiGuiInternal.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiGuiInternal"));
     Q_ASSERT(QtJambiGuiInternal.class_ref);
 
@@ -1118,6 +1187,8 @@ void StaticCache::resolveQtJambiGuiInternal_internal()
 
 void StaticCache::resolveString_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!String.class_ref);
 
     String.class_ref = ref_class(qtjambi_find_class(env, "java/lang/String"));
@@ -1126,6 +1197,8 @@ void StaticCache::resolveString_internal()
 
 void StaticCache::resolveThread_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Thread.class_ref);
 
     Thread.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Thread"));
@@ -1143,6 +1216,8 @@ void StaticCache::resolveThread_internal()
 
 void StaticCache::resolveQModelIndex_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QModelIndex.class_ref);
 
     QModelIndex.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QModelIndex"));
@@ -1166,6 +1241,8 @@ void StaticCache::resolveQModelIndex_internal()
 
 void StaticCache::resolveQtEnumerator_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QtEnumerator.class_ref);
 
     QtEnumerator.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtEnumerator"));
@@ -1178,6 +1255,8 @@ void StaticCache::resolveQtEnumerator_internal()
 
 void StaticCache::resolveValidationData_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!ValidationData.class_ref);
 
     ValidationData.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QValidator$QValidationData"));
@@ -1195,6 +1274,8 @@ void StaticCache::resolveValidationData_internal()
 
 void StaticCache::resolveQTableArea_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QTableArea.class_ref);
 
     QTableArea.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QTableArea"));
@@ -1218,6 +1299,8 @@ void StaticCache::resolveQTableArea_internal()
 
 void StaticCache::resolveCellAtIndex_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!CellAtIndex.class_ref);
 
     CellAtIndex.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QAccessibleTableInterface$CellAtIndex"));
@@ -1232,6 +1315,8 @@ void StaticCache::resolveCellAtIndex_internal()
 
 void StaticCache::resolveEnum_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Enum.class_ref);
 
     Enum.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Enum"));
@@ -1243,6 +1328,8 @@ void StaticCache::resolveEnum_internal()
 
 void StaticCache::resolveQt_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!Qt.class_ref);
 
     Qt.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/Qt"));
@@ -1251,6 +1338,8 @@ void StaticCache::resolveQt_internal()
 
 void StaticCache::resolveQFlags_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QFlags.class_ref);
 
     QFlags.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QFlags"));
@@ -1259,6 +1348,8 @@ void StaticCache::resolveQFlags_internal()
 
 void StaticCache::resolveQtProperty_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QtProperty.class_ref);
 
     QtProperty.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtProperty"));
@@ -1270,6 +1361,8 @@ void StaticCache::resolveQtProperty_internal()
 
 void StaticCache::resolveQtConcurrent_MapFunctor_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QtConcurrent_MapFunctor.class_ref);
 
     QtConcurrent_MapFunctor.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QtConcurrent$MapFunctor"));
@@ -1281,6 +1374,8 @@ void StaticCache::resolveQtConcurrent_MapFunctor_internal()
 
 void StaticCache::resolveQtConcurrent_MappedFunctor_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QtConcurrent_MappedFunctor.class_ref);
 
     QtConcurrent_MappedFunctor.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QtConcurrent$MappedFunctor"));
@@ -1292,6 +1387,8 @@ void StaticCache::resolveQtConcurrent_MappedFunctor_internal()
 
 void StaticCache::resolveQtConcurrent_ReducedFunctor_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QtConcurrent_ReducedFunctor.class_ref);
 
     QtConcurrent_ReducedFunctor.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QtConcurrent$ReducedFunctor"));
@@ -1306,6 +1403,8 @@ void StaticCache::resolveQtConcurrent_ReducedFunctor_internal()
 
 void StaticCache::resolveQtConcurrent_FilteredFunctor_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QtConcurrent_FilteredFunctor.class_ref);
 
     QtConcurrent_FilteredFunctor.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/core/QtConcurrent$FilteredFunctor"));
@@ -1317,6 +1416,8 @@ void StaticCache::resolveQtConcurrent_FilteredFunctor_internal()
 
 void StaticCache::resolveQClassPathEngine_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QClassPathEngine.class_ref);
 
     QClassPathEngine.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QClassPathEngine"));
@@ -1328,6 +1429,8 @@ void StaticCache::resolveQClassPathEngine_internal()
 
 void StaticCache::resolveQItemEditorCreatorBase_internal()
 {
+    JNIEnv *env = qtjambi_current_environment();
+
     Q_ASSERT(!QItemEditorCreatorBase.class_ref);
 
     QItemEditorCreatorBase.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/gui/QItemEditorCreatorBase"));

@@ -102,14 +102,14 @@ Q_GLOBAL_STATIC(ThreadTable, qtjambi_thread_table);
 Q_GLOBAL_STATIC(QReadWriteLock, qtjambi_thread_table_lock);
 
 void jobjectwrapper_save(QDataStream &stream, const void *_jObjectWrapper)
-{ 
+{
     JObjectWrapper *jObjectWrapper = (JObjectWrapper *) _jObjectWrapper;
     JNIEnv *env = qtjambi_current_environment();
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
 
     jobject jstream = qtjambi_from_object(env, &stream, "QDataStream", "com/trolltech/qt/core/", false);
-    
+
     env->CallStaticVoidMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.writeSerializableJavaObject, jstream, jObjectWrapper->object);
 }
 
@@ -117,11 +117,11 @@ void jobjectwrapper_load(QDataStream &stream, void *_jObjectWrapper)
 {
     JObjectWrapper *jObjectWrapper = (JObjectWrapper *) _jObjectWrapper;
     JNIEnv *env = qtjambi_current_environment();
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
 
     jobject jstream = qtjambi_from_object(env, &stream, "QDataStream", "com/trolltech/qt/core/", false);
-    
+
     jobject res = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.readSerializableJavaObject, jstream);
 
     *jObjectWrapper = JObjectWrapper(env, res);
@@ -201,7 +201,7 @@ JNIEnv *qtjambi_current_environment()
 QString qtjambi_class_name(JNIEnv *env, jclass java_class)
 {
     Q_ASSERT(java_class);
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveClass();
     jstring name = (jstring) env->CallObjectMethod(java_class, sc->Class.getName);
     return qtjambi_to_qstring(env, name);
@@ -216,7 +216,7 @@ jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant)
 {
     int type = qMetaTypeId<JObjectWrapper>();
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
 
     switch (qt_variant.userType()) {
     case QVariant::Invalid: return 0;
@@ -273,7 +273,7 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
         return QVariant();
 
     // Test some quick ones first...
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveString();
     sc->resolveInteger();
     sc->resolveDouble();
@@ -312,7 +312,7 @@ QVariant qtjambi_to_qvariant(JNIEnv *env, jobject java_object)
             type = QVariant::Invalid;
         else
             destroyCopy = true;
-    } 
+    }
 
     if (type == QVariant::Invalid) {
         type = qMetaTypeId<JObjectWrapper>();
@@ -340,7 +340,7 @@ QObject *qtjambi_to_qobject(JNIEnv *env, jobject java_object)
     if (java_object == 0)
         return 0;
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
 
     jlong id = env->GetLongField(java_object, sc->QtJambiObject.native_id);
@@ -415,7 +415,7 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
             return link->javaObject(env);
 
         // Otherwise we have to create it
-        copy = const_cast<void *>(qt_object);        
+        copy = const_cast<void *>(qt_object);
     } else {
         copy = QMetaType::construct(metaType, qt_object);
         if (copy == 0)
@@ -468,10 +468,10 @@ static bool qtjambi_connect_callback(void **raw_data);
 
 // Find the first in meta_object's line of ancestors (including meta_object itself) which
 // is a static meta object (hence, not one of Qt Jambi's fake meta objects)
-static const QMetaObject *qtjambi_find_first_static_metaobject(const QMetaObject *meta_object) 
+static const QMetaObject *qtjambi_find_first_static_metaobject(const QMetaObject *meta_object)
 {
     while (meta_object != 0 && qtjambi_metaobject_is_dynamic(meta_object))
-        meta_object = meta_object->superClass();        
+        meta_object = meta_object->superClass();
     return meta_object;
 }
 
@@ -522,7 +522,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
 
     QtJambiLink *link = QtJambiLink::findLinkForQObject(qt_object);
 
-    // Since QObjects are created in a class based on virtual function calls, 
+    // Since QObjects are created in a class based on virtual function calls,
     // if they at some point during their constructor are converted to Java,
     // the Java object will get the wrong class. In order to fix this as well
     // as possible, we replace the java object if it turns out it has previously
@@ -537,7 +537,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
             link->setSplitOwnership(env, link->javaObject(env));
             qt_object->setUserData(QtJambiLinkUserData::id(), 0);
             delete p;
-            delete link;            
+            delete link;
             link = 0;
         }
     }
@@ -620,7 +620,7 @@ jobject qtjambi_from_flags(JNIEnv *env, int qt_flags, const char *className)
 
 int qtjambi_to_enumerator(JNIEnv *env, jobject value)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtEnumerator();
     return env->CallIntMethod(value, sc->QtEnumerator.value);
 }
@@ -628,7 +628,7 @@ int qtjambi_to_enumerator(JNIEnv *env, jobject value)
 
 QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveThread();
     jobject java_thread = env->CallStaticObjectMethod(sc->Thread.class_ref,
                                                       sc->Thread.currentThread);
@@ -687,7 +687,8 @@ void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections)
 {
     if (java_object == 0)
         return 0;
-    StaticCache *sc = StaticCache::instance(env);
+
+    StaticCache *sc = StaticCache::instance();
     sc->resolveNativePointer();
     int object_indirections = env->GetIntField(java_object, sc->NativePointer.indirections);
     if (object_indirections != indirections) {
@@ -696,12 +697,14 @@ void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections)
         env->ThrowNew(exception_class, "Illegal number of indirections");
         return 0;
     }
-    return reinterpret_cast<void *>(env->GetLongField(java_object, sc->NativePointer.ptr));
+    void *ptr = reinterpret_cast<void *>(env->GetLongField(java_object, sc->NativePointer.ptr));
+
+    return ptr;
 }
 
 jobject qtjambi_from_cpointer(JNIEnv *env, const void *qt_object, int type, int indirections)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveNativePointer();
     return env->CallStaticObjectMethod(sc->NativePointer.class_ref,
                                        sc->NativePointer.fromNative,
@@ -710,14 +713,14 @@ jobject qtjambi_from_cpointer(JNIEnv *env, const void *qt_object, int type, int 
 
 jobject qtjambi_to_tablearea(JNIEnv *env, int row, int column, int rowCount, int columnCount)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQTableArea();
     return env->NewObject(sc->QTableArea.class_ref, sc->QTableArea.constructor, row, column, rowCount, columnCount);
 }
 
 void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *column, int *rowCount, int *columnCount)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQTableArea();
     if (row != 0)
         *row = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.row) : -1;
@@ -731,7 +734,7 @@ void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *colum
 
 jobject qtjambi_to_cellatindex(JNIEnv *env, int row, int column, int rowCount, int columnCount, bool isSelected)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveCellAtIndex();
     return env->NewObject(sc->CellAtIndex.class_ref, sc->CellAtIndex.constructor, row, column, rowCount, columnCount, isSelected);
 }
@@ -740,7 +743,7 @@ void qtjambi_from_cellatindex(JNIEnv *env, jobject cellAtIndex, int *row, int *c
 {
     qtjambi_from_tablearea(env, cellAtIndex, row, column, rowCount, columnCount);
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveCellAtIndex();
 
     if (isSelected != 0)
@@ -783,7 +786,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
 
 //     printf("vtable for: %s\n", qPrintable(qtjambi_class_name(env, object_class)));
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveClass();
     sc->resolveObject();
     sc->resolveMethod();
@@ -877,7 +880,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
 }
 
 jclass qtjambi_find_generated_superclass(JNIEnv *env,  jobject obj){
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
     return (jclass)env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.findGeneratedSuperclass, obj);
 }
@@ -957,7 +960,7 @@ jobject qtjambi_array_to_nativepointer(JNIEnv *env, jobjectArray array, int elem
     if (len == 0)
         return 0;
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveNativePointer();
     jobject nativePointer = env->NewObject(sc->NativePointer.class_ref, sc->NativePointer.constructor,
                                            jint(ByteType), elementSize * len, 1);
@@ -1054,7 +1057,7 @@ bool qtjambi_adopt_current_thread(void **args)
     if (env == 0)
       return false;
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveThread();
 
     jobject java_thread = env->CallStaticObjectMethod(sc->Thread.class_ref,
@@ -1113,7 +1116,7 @@ QModelIndex qtjambi_to_QModelIndex(JNIEnv *env, jobject index)
     if (!index)
         return QModelIndex();
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQModelIndex();
 
     QModelIndexAccessor mia = {
@@ -1132,7 +1135,7 @@ jobject qtjambi_from_QModelIndex(JNIEnv *env, const QModelIndex &index)
 {
     if (!index.isValid())
         return 0;
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQModelIndex();
 
     jobject retVal = env->NewObject(sc->QModelIndex.class_ref, sc->QModelIndex.constructor,
@@ -1158,7 +1161,7 @@ bool qtjambi_is_created_by_java(QObject *qobject)
 }
 
 static QString qtjambi_urlbase(JNIEnv *env) {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveSystem();
     jstring classPath = (jstring) env->CallStaticObjectMethod(sc->System.class_ref, sc->System.getProperty, qtjambi_from_qstring(env, "com.trolltech.qtjambi.internal.urlbase"));
     if (classPath != 0)
@@ -1186,7 +1189,7 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
         QString qtClassPath = qtjambi_urlbase(env);
         if (!qtClassPath.isEmpty()) {
             QString qtClassName = QString::fromLatin1(qualifiedName).replace('/', '.');
-            StaticCache *sc = StaticCache::instance(env);
+            StaticCache *sc = StaticCache::instance();
             sc->resolveClassLoader();
 
             jobject classLoader = 0;
@@ -1710,7 +1713,7 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
         if (signal_name.isEmpty()) // private and compat signals
             return false;
 
-        StaticCache *sc = StaticCache::instance(jni_env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveQtJambiInternal();
         resolved_data->java_signal =
             jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
@@ -1754,7 +1757,7 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
             if (slot_name.isEmpty()) // Private and compat slots...
                 return false;
 
-            StaticCache *sc = StaticCache::instance(jni_env);
+            StaticCache *sc = StaticCache::instance();
             sc->resolveQtJambiInternal();
             sc->resolveAbstractSignal();
 
@@ -1763,7 +1766,7 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
             if (class_name == 0 && data->method[0] - '0' == QSIGNAL_CODE) {
 
                 int pos = slot_name.indexOf('(');
-                if (pos >= 1) 
+                if (pos >= 1)
                     slot_name = slot_name.left(pos);
 
                 resolved_data->java_receiver =
@@ -1806,7 +1809,7 @@ static void qtjambi_disconnect_all(JNIEnv *jni_env, QObject *sender, QObject *re
             ? qtjambi_from_qobject(jni_env, receiver, "QObject", "com/trolltech/qt/core/")
             : 0;
 
-        StaticCache *sc = StaticCache::instance(jni_env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveQSignalEmitter();
         jni_env->CallVoidMethod(java_sender, sc->QSignalEmitter.disconnect, java_receiver);
     }
@@ -1833,7 +1836,7 @@ static bool qtjambi_disconnect_callback(void **raw_data)
         if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, false, false))
             return false;
 
-        StaticCache *sc = StaticCache::instance(jni_env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveAbstractSignal();
         jni_env->CallBooleanMethod(resolved_data.java_signal,
                                 sc->AbstractSignal.removeConnection,
@@ -1867,7 +1870,7 @@ static bool qtjambi_connect_callback(void **raw_data)
     if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, true, true))
         return false;
 
-    StaticCache *sc = StaticCache::instance(jni_env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveAbstractSignal();
     bool result = jni_env->CallBooleanMethod(resolved_data.java_signal,
                                              sc->AbstractSignal.connectSignalMethod,
@@ -1952,7 +1955,7 @@ void qtjambi_register_callbacks()
 
 void qtjambi_end_paint(JNIEnv *env, jobject widget)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiGuiInternal();
     env->CallStaticVoidMethod(sc->QtJambiGuiInternal.class_ref, sc->QtJambiGuiInternal.endPaint, widget);
     QTJAMBI_EXCEPTION_CHECK(env);
@@ -1983,10 +1986,10 @@ public:
     static const QMetaObject *illicitMetaObjectForQtNamespace() { return &staticQtMetaObject; }
 };
 
-const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class, const QMetaObject *original_meta_object) 
+const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class, const QMetaObject *original_meta_object)
 {
     Q_ASSERT(object_class != 0);
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
 
     // If original_meta_object is null then we have to look it up
@@ -1997,11 +2000,11 @@ const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class
     const QMetaObject *returned = 0;
     {
         QMutexLocker locker(metaObjectsLock());
-        returned = metaObjects()->value(class_name, 0);    
+        returned = metaObjects()->value(class_name, 0);
         if (returned == 0) {
-            // Return original meta object for generated classes, and 
+            // Return original meta object for generated classes, and
             // create a new dynamic meta object for subclasses
-            if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) { 
+            if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) {
                 if (original_meta_object == 0) {
                     sc->resolveQt();
                     if (env->IsSameObject(sc->Qt.class_ref, object_class)) {
@@ -2036,7 +2039,7 @@ bool JObjectWrapper::operator==(const JObjectWrapper &other) const
 {
     if (object != 0) {
         JNIEnv *env = qtjambi_current_environment();
-        StaticCache *sc = StaticCache::instance(env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveObject();
         return env->CallBooleanMethod(object, sc->Object.equals, other.object);
     } else {
@@ -2044,7 +2047,7 @@ bool JObjectWrapper::operator==(const JObjectWrapper &other) const
     }
 }
 
-void JObjectWrapper::initialize(JNIEnv *env, jobject obj) 
+void JObjectWrapper::initialize(JNIEnv *env, jobject obj)
 {
     object = env->NewGlobalRef(obj);
 }
@@ -2052,7 +2055,7 @@ void JObjectWrapper::initialize(JNIEnv *env, jobject obj)
 JObjectWrapper::~JObjectWrapper()
 {
     DEREF_JOBJECT;
-    
+
     if (object)
         qtjambi_current_environment()->DeleteGlobalRef(object);
 }
@@ -2065,7 +2068,7 @@ QString qtjambi_enum_name_for_flags_name(JNIEnv *env, const QString &qualified_n
         return QString();
     }
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
 
     jclass enum_class = reinterpret_cast<jclass>(env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.getEnumForQFlags, flags_class));
@@ -2093,7 +2096,7 @@ jobject qtjambi_from_jobjectwrapper(JNIEnv *env, const JObjectWrapper &wrapper)
     return env->NewLocalRef(wrapper.object);
 }
 
-QVarLengthArray<jvalue> qtjambi_from_jobjectArray(JNIEnv *env, 
+QVarLengthArray<jvalue> qtjambi_from_jobjectArray(JNIEnv *env,
                                                   jobjectArray args,
                                                   jintArray _cnvTypes,
                                                   bool globalRefs)
@@ -2127,7 +2130,7 @@ jobject qtjambi_invoke_method(JNIEnv *env,
                             jmethodID methodId,
                             jbyte returnType,
                             QVarLengthArray<jvalue> argsArray)
-{        
+{
     switch (returnType)
     {
     case 'L': return env->CallObjectMethodA(receiver, methodId, argsArray.data());

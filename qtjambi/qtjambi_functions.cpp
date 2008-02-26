@@ -377,14 +377,14 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_properties)
     jobject propertyList = qtjambi_arraylist_new(env, count);
     Q_ASSERT(propertyList != 0);
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtProperty();
 
     for (int i=0; i<count; ++i) {
         QMetaProperty property = metaObject->property(i);
 
         jobject javaProperty = env->NewObject(sc->QtProperty.class_ref, sc->QtProperty.constructor,
-                                              property.isWritable(), property.isDesignable(_this), property.isResettable(), 
+                                              property.isWritable(), property.isDesignable(_this), property.isResettable(),
                                               property.isUser(), qtjambi_from_qstring(env, property.name()));
         Q_ASSERT(javaProperty != 0);
 
@@ -397,7 +397,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_properties)
 class QClassPathFileEngineHandler: public QAbstractFileEngineHandler
 {
 public:
-    QAbstractFileEngine *create(const QString &fileName) const 
+    QAbstractFileEngine *create(const QString &fileName) const
     {
         if (fileName.startsWith("classpath:"))
             return newClassPathFileEngine(fileName);
@@ -407,11 +407,11 @@ public:
 
 private:
     QAbstractFileEngine *newClassPathFileEngine(const QString &fileName) const
-    {        
+    {
         JNIEnv *env = qtjambi_current_environment();
         env->PushLocalFrame(100);
 
-        StaticCache *sc = StaticCache::instance(env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveQClassPathEngine();
 
         jstring javaFileName = qtjambi_from_qstring(env, fileName);
@@ -432,7 +432,7 @@ private:
 
 extern "C" JNIEXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QClassPathFileEngineHandler_initialize)
-(JNIEnv *env,
+(JNIEnv *,
  jclass)
 {
     new QClassPathFileEngineHandler;

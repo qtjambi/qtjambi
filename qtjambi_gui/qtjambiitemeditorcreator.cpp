@@ -57,7 +57,7 @@ public:
 
         if (m_create_widget_overridden) {
 
-            StaticCache *sc = StaticCache::instance(env);
+            StaticCache *sc = StaticCache::instance();
             sc->resolveQItemEditorCreatorBase();
 
             env->PushLocalFrame(100);
@@ -83,7 +83,7 @@ public:
             if (env == 0)
                 return T::valuePropertyName();
 
-            StaticCache *sc = StaticCache::instance(env);
+            StaticCache *sc = StaticCache::instance();
             sc->resolveQItemEditorCreatorBase();
 
             env->PushLocalFrame(100);

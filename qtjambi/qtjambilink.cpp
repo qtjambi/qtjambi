@@ -52,7 +52,7 @@ static int user_data_id()
 
 }
 
-int QtJambiLinkUserData::id() 
+int QtJambiLinkUserData::id()
 {
     return user_data_id();
 }
@@ -96,7 +96,7 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     object->setUserData(user_data_id(), new QtJambiLinkUserData(link));
 
     // Set the native__id field of the java object
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
     env->SetLongField(link->m_java_object, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
 
@@ -154,7 +154,7 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     }
 
     // Set the native__id field of the java object
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
     env->SetLongField(link->m_java_object, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
 
@@ -186,7 +186,7 @@ QtJambiLink *QtJambiLink::findLink(JNIEnv *env, jobject java)
     if (java == 0)
         return 0;
 
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
     return reinterpret_cast<QtJambiLink *>(env->GetLongField(java, sc->QtJambiObject.native_id));
 }
@@ -229,7 +229,7 @@ QtJambiLink::~QtJambiLink()
 void QtJambiLink::aboutToMakeObjectInvalid(JNIEnv *env)
 {
     if (env != 0 && m_pointer != 0 && m_java_object != 0 && !m_object_invalid) {
-        StaticCache *sc = StaticCache::instance(env);
+        StaticCache *sc = StaticCache::instance();
         sc->resolveQtJambiObject();
         env->CallVoidMethod(m_java_object, sc->QtJambiObject.disposed);
         qtjambi_exception_check(env);
@@ -343,7 +343,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
                             qobj->metaObject()->className());
                 }
 
-    //             StaticCache *sc = StaticCache::instance(env);
+    //             StaticCache *sc = StaticCache::instance();
     //             sc->resolveQThread();
     //             if (env->IsSameObject(cl, sc->QThread.class_ref)) {
     //                 qobj->deleteLater();
@@ -361,7 +361,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         m_pointer = 0;
 
     } else {
-        
+
 
         if (m_ownership == JavaOwnership && deleteInMainThread() && (QCoreApplication::instance() == 0 || QCoreApplication::instance()->thread() != QThread::currentThread())) {
 
@@ -373,7 +373,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
 
         } else if (m_ownership == JavaOwnership && m_pointer != 0 && m_meta_type != QMetaType::Void && (QCoreApplication::instance() != 0
                    || (m_meta_type < QMetaType::FirstGuiType || m_meta_type > QMetaType::LastGuiType))) {
-                
+
            QMetaType::destroy(m_meta_type, m_pointer);
 
         } else if (m_ownership == JavaOwnership && m_destructor_function) {

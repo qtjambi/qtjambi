@@ -146,7 +146,7 @@ Node *QTreeModel::node(const QModelIndex &index) const
 Node *QTreeModel::node(jobject object) const
 {
     JNIEnv *env = qtjambi_current_environment();
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveObject();
 
     JObject_key key = {
@@ -384,7 +384,7 @@ void QTreeModel::queryChildren(Node *parentNode, int start, int length) const
     Q_ASSERT(start + length <= parentNode->nodes.size());
 
     JNIEnv *env = qtjambi_current_environment();
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveObject();
 
 
@@ -426,7 +426,7 @@ void QTreeModel::releaseChildren(const QModelIndex &index)
 {
     Node *n = node(index);
     JNIEnv *env = qtjambi_current_environment();
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveObject();
 
     int count = n->nodes.size();

@@ -454,7 +454,7 @@ QString QtJambiTypeManager::demangle(const QString &_typeName)
 
 bool QtJambiTypeManager::isQtClass(JNIEnv *env, const QString &className, const QString &package)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
     sc->resolveQtJambiInternal();
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
@@ -463,7 +463,7 @@ bool QtJambiTypeManager::isQtClass(JNIEnv *env, const QString &className, const 
 
 bool QtJambiTypeManager::isQObjectSubclass(JNIEnv *env, const QString &className, const QString &package)
 {
-    StaticCache *sc = StaticCache::instance(env);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQObject();
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
     return (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QObject.class_ref)));
@@ -800,7 +800,7 @@ int QtJambiTypeManager::intForQtEnumerator(jobject enum_value) const
     if (enum_value == 0)
         return 0;
 
-    StaticCache *sc = StaticCache::instance(mEnvironment);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtEnumerator();
     if (mEnvironment->IsInstanceOf(enum_value, sc->QtEnumerator.class_ref)) {
         return mEnvironment->CallIntMethod(enum_value, sc->QtEnumerator.value);
@@ -813,7 +813,7 @@ int QtJambiTypeManager::intForQtEnumerator(jobject enum_value) const
 bool QtJambiTypeManager::isEnumType(jclass clazz) const
 {
     Q_ASSERT(clazz != 0);
-    StaticCache *sc = StaticCache::instance(mEnvironment);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveEnum();
     return mEnvironment->IsAssignableFrom(clazz, sc->Enum.class_ref);
 }
@@ -821,7 +821,7 @@ bool QtJambiTypeManager::isEnumType(jclass clazz) const
 bool QtJambiTypeManager::isFlagsType(jclass clazz) const
 {
     Q_ASSERT(clazz != 0);
-    StaticCache *sc = StaticCache::instance(mEnvironment);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQFlags();
     return mEnvironment->IsAssignableFrom(clazz, sc->QFlags.class_ref);
 }
@@ -850,7 +850,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &cla
 
     // For "void" we always return None.
     if (className == QLatin1String("void"))
-        return None;   
+        return None;
 
     // Native pointers are native pointers
     if (package == QLatin1String("com/trolltech/qt/") &&
@@ -1066,7 +1066,7 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
     jclass clazz = resolveClass(mEnvironment, utfClassName.constData(), utfPackage.constData());
     Q_ASSERT(isEnumType(clazz));
 
-    StaticCache *sc = StaticCache::instance(mEnvironment);
+    StaticCache *sc = StaticCache::instance();
     sc->resolveQtEnumerator();
 
     jobject resolved = 0;
