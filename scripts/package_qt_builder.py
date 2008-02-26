@@ -215,7 +215,7 @@ def main():
             options.build64 = False
 
     pkgutil.debug("Options:")
-    print "  - Qt Version: " + options.qtVersion
+    print "  - Qt Version: %s" % options.qtVersion
     print "  - Package Root: " + options.packageRoot
     print "  - P4 User: " + options.p4User
     print "  - P4 Client: " + options.p4Client

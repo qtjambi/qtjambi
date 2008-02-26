@@ -131,9 +131,11 @@ class Package:
         self.removeFiles.append("build_generator_example.xml")
         self.removeDirs.extend(["designer-integration",
                                 "generator",
+                                "lib",
                                 "qtjambi",
                                 "qtjambi_core",
                                 "qtjambi_designer",
+                                "qtjambi_generator",
                                 "qtjambi_gui",
                                 "qtjambi_network",
                                 "qtjambi_opengl",
@@ -170,7 +172,6 @@ class Package:
         else:
             self.compiler = "msvc2005"
             self.make = "nmake"
-        self.removeDirs.append("lib")
 
     def setLinuxBinary(self):
         self.setBinary()
@@ -436,7 +437,7 @@ def postProcessPackage(package):
 
     if os.path.isfile("FATAL.ERROR"):
         print "\nFATAL ERROR on package %s\n" % (package.name())
-        return;
+        return
 
     logFile = package.packageDir + "/.task.log"
     if os.path.isfile(logFile):
@@ -472,6 +473,8 @@ def postProcessPackage(package):
     pkgutil.expandMacroes(package.packageDir, package.licenseHeader)
 
     bundle(package)
+
+    package.success = True
 
 
 
@@ -562,16 +565,18 @@ def waitForResponse():
         match = False
         for pkg in packages:
             if socket.gethostbyname(pkg.buildServer) == host and not pkg.done:
+                pkg.done = True
                 pkg.dataFile = options.packageRoot + "/" + pkg.name() + ".zip"
                 pkgutil.getDataFile(sock, pkg.dataFile)
                 pkgutil.debug(" - uncompressing to %s" % (pkg.packageDir))
                 pkgutil.uncompress(pkg.dataFile, pkg.packageDir);
                 try:
                     postProcessPackage(pkg)
-                except Error, (error, message):
-                    print "  ERROR! Postprocessing failed... '%s'" % message
+                except OSError, (error, message):
+                    print "  OSError! Postprocessing failed... '%s'" % message
+                except IOError, (error, message):
+                    print "  IOError! Postprocessing failed... '%s'" % message
                 packagesRemaining = packagesRemaining - 1
-                pkg.done = True
                 match = True
                 break
         if not match:
