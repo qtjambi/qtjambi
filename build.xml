@@ -33,7 +33,7 @@
             unless="ant-qtjambi.jar.uptodate"
             description="Create a jar containing all the Qt Jambi ant tasks.">
         <mkdir dir="${outputDir}/ant-qtjambi"/>
-        <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi">
+        <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi" target="1.5">
             <include name="com/trolltech/tools/ant/*.java"/>
             <include name="com/trolltech/qt/internal/Version.java"/>
             <include name="com/trolltech/qt/internal/OSInfo.java"/>
@@ -137,7 +137,8 @@
     <target name="library.java.compile" depends="init">
       <javac memoryMaximumSize="1024m"
 	     fork="true"
-             destdir="${outputDir}">
+             destdir="${outputDir}"
+	     target="1.5">
         <src path="${outputDir}"/>
         <src path="${sourceDir}"/>
         <include name="com/trolltech/qt/*.java"/>
@@ -161,7 +162,7 @@
     <target name="examples.phonon"
 	    depends="init"
 	    if="qtjambi.phonon">
-        <javac destdir="${outputDir}">
+        <javac destdir="${outputDir}" target="1.5">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/phonon/*.java"/>
@@ -172,7 +173,7 @@
     <target name="examples.webkit"
 	    depends="init"
 	    if="qtjambi.webkit">
-        <javac destdir="${outputDir}">
+        <javac destdir="${outputDir}" target="1.5">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/webkit/*.java"/>
@@ -183,7 +184,7 @@
     <target name="examples.xmlpatterns"
 	    depends="init"
 	    if="qtjambi.xmlpatterns">
-        <javac destdir="${outputDir}">
+        <javac destdir="${outputDir}" target="1.5">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/xmlpatterns/*.java"/>
@@ -196,7 +197,8 @@
         <javac destdir="${outputDir}"
 	       debug="true"
 	       fork="true"
-	       memoryMaximumSize="1024m">
+	       memoryMaximumSize="1024m"
+	       target="1.5">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/**/*.java"/>
@@ -246,7 +248,7 @@
     </target>
 
     <target name="library.designer.compile" depends="init">
-        <javac destdir="${outputDir}">
+        <javac destdir="${outputDir}" target="1.5">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/tools/designer/*.java"/>
