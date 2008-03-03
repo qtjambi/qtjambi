@@ -219,10 +219,23 @@ Q_GLOBAL_STATIC(QReadWriteLock, gRefCountStaticLock);
 Q_GLOBAL_STATIC(RefCountingHash, gRefCountHash);
 #endif
 
+// If the object is to be deleted in the main thread, then the gc thread will post an event
+// to the main thread which will delete the link, and then proceed to alter the link object.
+// If the event is delivered before the process of cleaning up the link in the gc thread is
+// done, we will get crashes. Therefore, the lock guarantees that only one thread is cleaning
+// up the link at any given time.
+Q_GLOBAL_STATIC(QReadWriteLock, g_deleteLinkLock);
+
 QtJambiLink::~QtJambiLink()
 {
+    if (deleteInMainThread())
+        g_deleteLinkLock()->lockForWrite();
+
     JNIEnv *env = qtjambi_current_environment();
     cleanUpAll(env);
+
+    if (deleteInMainThread())
+        g_deleteLinkLock()->unlock();
 }
 
 
@@ -361,14 +374,10 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         m_pointer = 0;
 
     } else {
-
-
         if (m_ownership == JavaOwnership && deleteInMainThread() && (QCoreApplication::instance() == 0 || QCoreApplication::instance()->thread() != QThread::currentThread())) {
 
             if (QCoreApplication::instance()) {
-                void *ptr = m_pointer;
-                m_pointer = 0;
-                QCoreApplication::postEvent(QCoreApplication::instance(), new QtJambiDestructorEvent(this, ptr, m_meta_type, m_ownership, m_destructor_function));
+                QCoreApplication::postEvent(QCoreApplication::instance(), new QtJambiDestructorEvent(this, m_pointer, m_meta_type, m_ownership, m_destructor_function));
 	        }
 
         } else if (m_ownership == JavaOwnership && m_pointer != 0 && m_meta_type != QMetaType::Void && (QCoreApplication::instance() != 0
@@ -379,12 +388,14 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         } else if (m_ownership == JavaOwnership && m_destructor_function) {
             m_destructor_function(m_pointer);
         }
+
         m_pointer = 0;
     }
 }
 
 void QtJambiLink::cleanUpAll(JNIEnv *env)
 {
+    
     if (m_java_object != 0)
         releaseJavaObject(env);
 
@@ -394,18 +405,30 @@ void QtJambiLink::cleanUpAll(JNIEnv *env)
 
 void QtJambiLink::javaObjectFinalized(JNIEnv *env)
 {
+    if (deleteInMainThread())
+        g_deleteLinkLock()->lockForWrite();
+
     cleanUpAll(env);
     setAsFinalized();
-    if (readyForDelete())
+
+    if (deleteInMainThread())
+        g_deleteLinkLock()->unlock();
+    else if (readyForDelete())
         delete this;
 }
 
 void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 {
+    if (deleteInMainThread())
+        g_deleteLinkLock()->lockForWrite();
+
     if (m_pointer) {
         setJavaOwnership(env, m_java_object);
         deleteNativeObject(env);
     }
+
+    if (deleteInMainThread())
+        g_deleteLinkLock()->unlock();
 }
 
 
