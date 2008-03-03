@@ -822,7 +822,9 @@
         </inject-code>
     </value-type>
 
-    <value-type name="QFontMetricsF">
+    <value-type name="QFontInfo" delete-in-main-thread="yes" />
+
+    <value-type name="QFontMetricsF" delete-in-main-thread="yes">
         <template name="gui.fontmetricsf_boundingrect">
             <insert-template name="gui.fontmetrics_tabarray_function">
                 <replace from="%RETURN_TYPE" to="com.trolltech.qt.core.QRectF"/>
@@ -849,7 +851,7 @@
         </inject-code>      
     </value-type>
 
-    <value-type name="QFontMetrics">
+    <value-type name="QFontMetrics" delete-in-main-thread="yes">
         <template name="gui.fontmetrics_tabarray_function">
         public final %RETURN_TYPE %FUNCTION_NAME(%RECT_ARGUMENTSint flags, String text, int tabStops, int tabArray[]) {
             QNativePointer np = tabArray == null ? null : new QNativePointer(QNativePointer.Type.Int, tabArray.length + 1);
