@@ -502,10 +502,31 @@ static HMODULE search_registry_for_jvm_dll_w()
     return LoadLibraryW(path);
 }
 
+bool decide_library_version(char *str)
+{
+    char name[] = "qtjambi-4.X.Y_0Z.jar";
+    for (int build = 1; build < 9; ++build) {
+        for (int minor = 4; minor<9; ++minor) {
+            for (int patch = 0; patch < 9; ++patch) {
+                name[10] = '0' + minor;
+                name[12] = '0' + patch;
+                name[15] = '0' + build;
+                if (GetFileAttributesA(name) != 0xffffffff) {
+                    str[2] = '0' + minor;
+                    str[4] = '0' + patch;
+                    str[7] = '0' + build;
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 #if defined(_DEBUG)
-#  define NOPTIONS 3
-#else
 #  define NOPTIONS 2
+#else
+#  define NOPTIONS 1
 #endif
 
 #ifdef QT_CONSOLE_BUILD
@@ -553,31 +574,19 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     hook_to_qt();
 
+    char version[] = "4.X.Y_0Z";
+    if (!decide_library_version(version)) {
+        bug_out("Failed to detect library versions...\n");
+    }
+
     // Set up VM options
-    void *extra_class_path   = QT_WA_INLINE((void *)L"-Djava.class.path=.;qtjambi.jar;",
-                                            (void *)"-Djava.class.path=.;qtjambi.jar;");
-    void *extra_library_path = QT_WA_INLINE((void *)L"-Djava.library.path=",
-                                            (void *)"-Djava.library.path=");
+    void *extra_class_path   = QT_WA_INLINE((void *)L"-Djava.class.path=qtjambi-$VERHAX$.jar;qtjambi-examples-$VERHAX$.jar;qtjambi-win64-msvc2005x64-$VERHAX$.jar;qtjambi-win32-msvc2005-$VERHAX$.jar;",
+                                            (void *)"-Djava.class.path=qtjambi-$VERHAX$.jar;qtjambi-examples-$VERHAX$.jar;qtjambi-win64-msvc2005x64-$VERHAX$.jar;qtjambi-win32-msvc2005-$VERHAX$.jar;");
 
     JavaVMInitArgs args;
     args.version = JNI_VERSION_1_4;
     args.ignoreUnrecognized = JNI_FALSE;
     args.nOptions = NOPTIONS;
-
-    char new_library_path[BUFFER_SIZE + MAX_PATH];
-    QT_WA(
-    {
-        if (!setup_path_w(new_library_path, (wchar_t *)extra_library_path,
-                          L"PATH")) {
-            return bug_out("Failed to set PATH environment");
-        }
-    },{
-        if (!setup_path_a(new_library_path, (char *)extra_library_path,
-                          "PATH")) {
-            return bug_out("Failed to set PATH environment");
-        }
-
-    });
 
     char new_class_path[BUFFER_SIZE + MAX_PATH];
     QT_WA(
@@ -593,12 +602,18 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         }
     });
 
+    // search replace all $VERHAX$ with version
+    char *pos = new_class_path;
+
+    while (pos = strstr(pos, "$VERHAX$")) {
+        strncpy(pos, version, strlen(version));
+    }
+
     JavaVMOption options[NOPTIONS];
-    options[0].optionString = new_library_path;
-    options[1].optionString = new_class_path;
+    options[0].optionString = new_class_path;
 
 #if defined(_DEBUG)
-    options[2].optionString = "-Dcom.trolltech.qt.debug";
+    options[1].optionString = "-Dcom.trolltech.qt.debug";
 #endif
 
     args.options = options;
