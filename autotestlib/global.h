@@ -31,5 +31,6 @@
 #include "threads.h"
 #include "tulip.h"
 #include "variants.h"
+#include "general.h"
 
 #endif

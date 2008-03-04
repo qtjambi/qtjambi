@@ -871,6 +871,61 @@ public class TestClassFunctionality extends QApplicationTest {
 
         public Thread thread;
     }
+    
+    public QPainter painterReference;
+    
+    @Test
+    public void resetAfterUseTemporary() {
+    	painterReference = null;
+    	
+    	QCalendarWidget w = new QCalendarWidget() {
+    		@Override
+    		public void paintCell(QPainter painter, QRect rect, QDate date) {
+    			painterReference = painter;
+    		}
+    	};
+    	
+    	// painter == null passes a temporary C++ painter
+    	General.callPaintCell(w, null);
+    	
+    	assertTrue(painterReference != null);
+    	assertEquals(0, painterReference.nativeId());
+    }
+    
+    @Test
+    public void resetAfterUseNonTemporary() {
+    	painterReference = null;
+    	
+    	QCalendarWidget w = new QCalendarWidget() {
+    		@Override
+    		public void paintCell(QPainter painter, QRect rect, QDate date) {
+    			painterReference = painter;
+    		}
+    	};
+    	
+    	QPainter p = new QPainter();
+    	General.callPaintCell(w, p);
+    	
+    	assertTrue(painterReference != null);
+    	assertTrue(0 != painterReference.nativeId());
+    	assertEquals(p, painterReference);
+    }
+    
+    @Test
+    public void resetAfterUseNull() {
+    	painterReference = new QPainter();
+    	
+    	QCalendarWidget w = new QCalendarWidget() {
+    		@Override
+    		public void paintCell(QPainter painter, QRect rect, QDate date) {
+    			painterReference = painter;
+    		}
+    	};
+    	
+    	General.callPaintCellNull(w);
+    	
+    	assertEquals(null, painterReference);    	
+    }
 
     /**
      * Create an invokable object and post it. Then verify that its not executed

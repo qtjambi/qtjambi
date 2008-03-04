@@ -19,6 +19,7 @@ HEADERS += \
 	testdialog.h \
 	tulip.h \
 	variants.h \
+        general.h \
 
 
 SOURCES += \
