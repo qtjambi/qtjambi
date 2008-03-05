@@ -1,14 +1,14 @@
 #!/usr/bin/python
 
-from threading import Thread
 import datetime
 import os
 import re
 import shutil
 import socket
-import sys
 import string
+import sys
 import time
+import traceback
 import types
 
 import pkgutil
@@ -32,9 +32,11 @@ class Options:
         self.qtVersion = None
         self.packageRoot = None
         self.qtJambiVersion = "4.4.0_01"
+        self.eclipseVersion = "1.1.0"
         self.p4User = "qt"
         self.p4Client = "qt-builder"
         self.binaryPackageCount = 0
+        self.packageExtraName = ""
 
         self.buildMac = True
         self.buildWindows = True
@@ -63,17 +65,20 @@ class Package:
             "ant", 
             "autotestlib",
             "com/trolltech/autotests",
+            "com/trolltech/bcc",
             "com/trolltech/benchmarks",
             "com/trolltech/extensions",
+            "com/trolltech/extensions/awt",
             "com/trolltech/extensions/jfc",
             "com/trolltech/extensions/jython",
-            "com/trolltech/extensions/awt",
             "com/trolltech/manualtests",
             "com/trolltech/tests",
             "cpp",
             "dist",
             "doc/config",
             "doc/src",
+            "eclipse",
+            "ide",
             "launcher_launcher",
             "libbenchmark",
             "scripts",
@@ -103,7 +108,7 @@ class Package:
             re.compile("\\[\\/]release$"),
             re.compile("\\_debuglib\\."),
             re.compile("com_trolltech.*\\.lib$"),
-            re.compile("task(.bat)?$")
+            re.compile("task(.bat)?$"),
             ]
 
         self.mkdirs = []
@@ -129,23 +134,33 @@ class Package:
     def setBinary(self):
         self.binary = True
         self.removeFiles.append("build_generator_example.xml")
-        self.removeDirs.extend(["designer-integration",
-                                "generator",
-                                "lib",
-                                "qtjambi",
-                                "qtjambi_core",
-                                "qtjambi_designer",
-                                "qtjambi_generator",
-                                "qtjambi_gui",
-                                "qtjambi_network",
-                                "qtjambi_opengl",
-                                "qtjambi_phonon",
-                                "qtjambi_sql",
-                                "qtjambi_svg",
-                                "qtjambi_webkit",
-                                "qtjambi_xml",
-                                "qtjambi_xmlpatterns"
-                               ])
+        self.removePatterns.extend([
+            re.compile("ant-qtjambi.jar"),
+            re.compile("build.xml$"),
+            re.compile("java.pro")
+            ])
+        self.removeDirs.extend([
+            "common",
+            "com/trolltech/qt",
+            "designer-integration",
+            "juic", 
+            "generator",
+            "generator_example",
+            "lib",
+            "qtjambi",
+            "qtjambi_core",
+            "qtjambi_designer",
+            "qtjambi_generator",
+            "qtjambi_gui",
+            "qtjambi_network",
+            "qtjambi_opengl",
+            "qtjambi_phonon",
+            "qtjambi_sql",
+            "qtjambi_svg",
+            "qtjambi_webkit",
+            "qtjambi_xml",
+            "qtjambi_xmlpatterns"
+            ])
                                
 
     def setMacBinary(self):
@@ -155,6 +170,7 @@ class Package:
         self.compiler = "gcc"
         self.make = "make"
         self.platformJarName = "qtjambi-macosx-gcc-" + options.qtJambiVersion + ".jar"
+        self.removeFiles.append("set_qtjambi_env.bat")
 
     def setWinBinary(self):
         self.setBinary()
@@ -165,13 +181,13 @@ class Package:
         else:
             self.copyFiles.append("dist/win/qtjambi.exe")
             self.platformJarName = "qtjambi-win32-msvc2005-" + options.qtJambiVersion + ".jar"
-            
-        if self.license == pkgutil.LICENSE_GPL:
-            self.compiler = "mingw"
-            self.make = "mingw32-make"
+        
+        if self.arch == pkgutil.ARCH_64:
+            self.compiler = "msvc2005_x64"
         else:
             self.compiler = "msvc2005"
-            self.make = "nmake"
+        self.make = "nmake"
+        self.removeFiles.append("set_qtjambi_env.sh")
 
     def setLinuxBinary(self):
         self.setBinary()
@@ -183,6 +199,7 @@ class Package:
             self.platformJarName = "qtjambi-linux64-gcc-" + options.qtJambiVersion + ".jar"
         else:
             self.platformJarName = "qtjambi-linux32-gcc-" + options.qtJambiVersion + ".jar"
+        self.removeFiles.append("set_qtjambi_env.bat")
 
     def setSource(self):
         self.binary = False
@@ -205,6 +222,10 @@ class Package:
                                ["qtjambi/qtjambilink.h", "include"],
                                ["qtjambi/qtjambifunctiontable.h", "include"]
                                ])
+        if self.platform = PLATFORM_WINDOWS:
+            self.removeFiles.append("set_qtjambi_env.sh")
+        else:
+            self.removeFiles.append("set_qtjambi_env.bat")
 
 
     def setCommercial(self):
@@ -231,6 +252,14 @@ class Package:
         log = open(logName, "w")
         log.write("\n".join(list))
         log.close()
+
+    def hasEclipse(self):
+        if self.binary and self.license == pkgutil.LICENSE_COMMERCIAL:
+            if self.platform == pkgutil.PLATFORM_LINUX and self.arch == pkgutil.ARCH_32:
+                return True
+            if self.platform == pkgutil.PLATFORM_WINDOWS and self.arch == pkgutil.ARCH_32:
+                return True
+        return False
         
 packages = []
 
@@ -326,6 +355,17 @@ def setupPackages():
                     linuxEval32.buildServer = host_linux32
                     packages.append(linuxEval32)
 
+
+    # randomize the packages a bit to spread the load better...
+    i = 0
+    while i < len(packages):
+        fr = i
+        to = (i * 3 + 1) % len(packages)
+        tmp = packages[to]
+        packages[to] = packages[fr]
+        packages[fr] = tmp
+        i = i + 1
+
     if options.buildSource:
         if options.buildGpl:
             if options.buildWindows:
@@ -369,6 +409,9 @@ def prepareSourceTree():
     tmpFile.write("Client: %s\n" % options.p4Client)
     tmpFile.write("View:\n")
     tmpFile.write("        //depot/qtjambi/%s/...  //qt-builder/qtjambi/...\n" % options.qtJambiVersion)
+    tmpFile.write("        //depot/eclipse/main/...  //qt-builder/qtjambi/eclipse/main/...\n")
+    tmpFile.write("        //depot/ide/main/shared/designerintegration/...  //qt-builder/qtjambi/ide/main/shared/designerintegration/...\n")
+    tmpFile.write("        //depot/ide/main/shared/namespace_global.h  //qt-builder/qtjambi/ide/main/shared/namespace_global.h\n")
     tmpFile.close()
     os.system("p4 -u %s -c %s client -i < p4spec.tmp" % (options.p4User, options.p4Client) );
     os.remove("p4spec.tmp")
@@ -406,20 +449,42 @@ def packageAndSend(package):
     shutil.copytree("qtjambi", "tmptree");
 
     pkgutil.debug(" - creating task script")
+    arch = "x86";
+    if arch == pkgutil.ARCH_64:
+        arch = "x86_64"
     if package.platform == pkgutil.PLATFORM_WINDOWS:
         buildFile = open("tmptree/task.bat", "w")
-        compiler = package.compiler
-        if package.arch == pkgutil.ARCH_64:
-            compiler = "msvc2005_x64"
-        buildFile.write("call qt_pkg_setup %s %s\n" % (compiler, "c:\\tmp\\qt-" + package.license))
+        buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\qt-" + package.license))
         buildFile.write("call ant\n")
         buildFile.write('if "%ERRORLEVEL%" == "0" ' + package.make + ' clean\n')
+        buildFile.write("copy %QTDIR%\\bin\\designer.exe bin\n")
+        buildFile.write("copy %QTDIR%\\bin\\lrelease.exe bin\n")
+        buildFile.write("copy %QTDIR%\\bin\\lupdate.exe bin\n")
+        buildFile.write("copy %QTDIR%\\bin\\linguist.exe bin\n")
+        # build eclipse on 32-bit windows...
+        if package.hasEclipse():
+            buildFile.write("cd scripts\n")
+            buildFile.write("call build_eclipse.bat %%cd%%\\..\\eclipse\\main %s %s\n" % (options.eclipseVersion, arch))
+        
     else:
         buildFile = open("tmptree/task.sh", "w")
         buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/qt-" + package.license))
-        buildFile.write("echo $QTDIR\n")
         buildFile.write("ant\n")
         buildFile.write(package.make + " clean \n")
+        if package.platform == pkgutil.PLATFORM_LINUX:
+            buildFile.write("cp $QTDIR/bin/designer bin\n")
+            buildFile.write("cp $QTDIR/bin/lrelease bin\n")
+            buildFile.write("cp $QTDIR/bin/lupdate bin\n")
+            buildFile.write("cp $QTDIR/bin/linguist bin\n")
+        else:
+            buildFile.write("cp -R $QTDIR/bin/Designer.app bin\n")
+            buildFile.write("cp $QTDIR/bin/lrelease bin\n")
+            buildFile.write("cp $QTDIR/bin/lupdate bin\n")
+            buildFile.write("cp -R $QTDIR/bin/Linguist.app bin\n")
+            
+        if package.hasEclipse():
+            buildFile.write("cd scripts\n")
+            buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/main %s %s\n" % (options.eclipseVersion, arch))
     buildFile.close()
                         
     zipFile = os.path.join(options.packageRoot, "tmp.zip")
@@ -439,6 +504,9 @@ def postProcessPackage(package):
         print "\nFATAL ERROR on package %s\n" % (package.name())
         return
 
+    if package.hasEclipse():
+        doEclipse(package)
+        
     logFile = package.packageDir + "/.task.log"
     if os.path.isfile(logFile):
         shutil.copy(logFile, options.packageRoot + "/." + package.name() + ".tasklog");
@@ -470,6 +538,10 @@ def postProcessPackage(package):
             os.system("chmod a+rx designer.sh qtjambi.sh")
             os.system("chmod -R a+rw .")
 
+        # Recover from the nasty libqtdesigner.so trick in doEclipse...
+        if package.platform == pkgutil.PLATFORM_LINUX and package.hasEclipse():
+            shutil.move("libqtdesigner.so", "lib/libqtdesigner.so")
+
     pkgutil.expandMacroes(package.packageDir, package.licenseHeader)
 
     bundle(package)
@@ -478,14 +550,42 @@ def postProcessPackage(package):
 
 
 
+# Goes into the eclipse folder, removes all directories and creates a zip file of the
+# remaining .jar files there..
+def doEclipse(package):
+    os.chdir("eclipse")
+    for name in os.listdir("main"):
+        fullName = os.path.join("main", name)
+        if os.path.isdir(fullName):
+            shutil.rmtree(fullName)
+    shutil.move("main", "plugins")
+
+    if package.platform == pkgutil.PLATFORM_WINDOWS:
+        os.system("zip -rq %s/qtjambi-eclipse-integration-%s%s-%s.zip ." % (options.startDir, package.platform, package.arch, options.qtJambiVersion))
+    else:
+        os.system("tar -czf %s/qtjambi-eclipse-integration-%s%s-%s.tar.gz --owner=0 --group=0 ." % (options.startDir, package.platform, package.arch, options.qtJambiVersion))
+
+        # A little nasty detail... The designer lib is in the lib
+        # folder which will be deleted by removeFiles to come later...
+        shutil.move("../lib/libqtdesigner.so", "../libqtdesigner.so")
+
+    os.chdir(package.packageDir)
+
+
 # Zips or tars the final content of the package into a bundle in the
 # users root directory...
 def bundle(package):
     os.chdir(options.packageRoot)
     if package.platform == pkgutil.PLATFORM_WINDOWS:
-        os.system("zip -rq %s/%s.zip %s" % (options.startDir, package.name(), package.name()))
+        if package.binary:
+            os.system("chmod -R a+x %s" % package.name())
+        os.system("zip -rq %s/%s%s.zip %s" % (options.startDir, package.name(), options.packageExtraName, package.name()))
     else:
-        os.system("tar -czf %s/%s.tar.gz --owner=0 --group=0 %s" % (options.startDir, package.name(), package.name()))
+        if package.binary:
+            os.system("chmod a+x %s/designer.sh" % package.name())
+            os.system("chmod a+x %s/qtjambi.sh" % package.name())
+            os.system("chmod -R a+x %s/bin" % package.name())
+        os.system("tar -czf %s/%s%s.tar.gz --owner=0 --group=0 %s" % (options.startDir, package.name(), options.packageExtraName, package.name()))
 
 
 
@@ -572,10 +672,8 @@ def waitForResponse():
                 pkgutil.uncompress(pkg.dataFile, pkg.packageDir);
                 try:
                     postProcessPackage(pkg)
-                except OSError, (error, message):
-                    print "  OSError! Postprocessing failed... '%s'" % message
-                except IOError, (error, message):
-                    print "  IOError! Postprocessing failed... '%s'" % message
+                except:
+                    traceback.print_exc()
                 packagesRemaining = packagesRemaining - 1
                 match = True
                 break
@@ -612,6 +710,8 @@ def main():
             options.qtDir = sys.argv[i+1]
         elif arg == "--package-root":
             options.packageRoot = sys.argv[i+1]
+        elif arg == "--package-extra-name":
+            options.packageExtraName = sys.argv[i+1]
         elif arg == "--qt-jambi-version":
             options.qtJambiVersion = sys.argv[i+1]
         elif arg == "--no-mac":
@@ -646,6 +746,7 @@ def main():
     print "  - Qt Jambi Version: " + options.qtJambiVersion
     print "  - P4 User: " + options.p4User
     print "  - P4 Client: " + options.p4Client
+    print "  - Package Extra Name: " + options.packageExtraName
     print "  - buildMac: %s" % options.buildMac
     print "  - buildWindows: %s" % options.buildWindows
     print "  - buildLinux: %s" % options.buildLinux

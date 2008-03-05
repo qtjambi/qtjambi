@@ -68,6 +68,7 @@ def uncompress(zipFile, rootDir):
         outfile = open(outName, 'wb')
         outfile.write(file.read(name))
         outfile.close()
+        
     file.close()
 
 
