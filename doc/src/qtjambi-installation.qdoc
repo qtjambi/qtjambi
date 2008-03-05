@@ -42,16 +42,36 @@
 
     \section2 Manually Launching Qt Jambi Applications
 
-    To manually run Qt Jambi, the \c CLASSPATH environment variable
-    must include the the file \c {qtjambi-VERSION.jar}, where VERSION
-    means the Qt Jambi version.
+    To manually run Qt Jambi, the qtjambi classes archive and qtjambi
+    platform archive must be available in the CLASSPATH. The qtjambi
+    classes archive is named \c{qtjambi-4.4.0_01.jar} and the platform
+    archive is named according to the operating system and compiler
+    used to generated the native binaries, such as \c
+    {qtjambi-win32-msvc2005-4.4.0_01.jar}
 
     To run the examples or launcher, the classpath must also include
-    the Qt Jambi directory.
+    the \c{qtjambi-examples-4.4.0_01.jar}.
+
+    \code
+        // Linux 
+        java -cp qtjambi-4.4.0_01.jar:qtjambi-linux32-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
+
+        // Mac OS X
+        java -XstartOnFirstThread -cp qtjambi-4.4.0_01.jar:qtjambi-mac-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
+
+        // Windows
+        java -cp qtjambi-4.4.0_01.jar:qtjambi-win32-msvc2005-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
+    \endcode
+
+    \bold{Note:} When running a Qt Jambi application on Mac, it is necessary to pass
+    the \c -XstartOnFirstThread argument to the Java executable.
+
+
+    \section3 Alternate way of loading native libraries
 
     Qt Jambi must be enabled to find the native libraries. The Qt
     Jambi libraries is a set of class files contained in the \c
-    {qtjambi-VERSION.jar] file and a set of native libraries. The
+    {qtjambi-4.4.0_01.jar} file and a set of native libraries. The
     native libraries are located in a .jar file named according to
     your operating system, hardware configuration and the compiler
     that was used to build the package, for instance \c
@@ -99,20 +119,6 @@
     You are then ready to run Qt Jambi applications. An example of how
     to run the launcher manually is illustrated below:
 
-    \code
-        // Linux 
-        java -cp qtjambi-4.4.0_01.jar:qtjambi-linux32-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
-
-        // Mac OS X
-        java -XstartOnFirstThread -cp qtjambi-4.4.0_01.jar:qtjambi-mac-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
-
-        // Windows
-        java -cp qtjambi-4.4.0_01.jar:qtjambi-win32-msvc2005-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
-    \endcode
-
-    \bold{Note:} When running a Qt Jambi application on Mac, it is necessary to pass
-    the \c -XstartOnFirstThread argument to the Java executable.
-
     \section1 Building Qt Jambi from a Source Package
 
     This section describes how to build Qt Jambi from source. We first
@@ -127,7 +133,7 @@
     \section2 Configuring the System for Qt Jambi
     
     The Jambi source package requires a Qt source package, JDK 1.5 or
-    higher and the build utility ant.
+    higher and the build utility \c ant.
 
     \section2 Building Qt for Qt Jambi
 
@@ -137,12 +143,14 @@
 
     \table 80%
 
-    \row \o On Mac OS X, Qt Jambi only supports Qt configured with \c
-    {-no-framework}
+    \header \o Configuration \o Comment
 
-    \row \o Sun's Java Virtual Machine has a bug preventing it from
-    using MMX and SSE instructions. For deployment against 1.5 Java
-    runtimes, configure Qt with the options \c{-no-mmx -no-sse
+    \row \o Mac OS X \o Qt Jambi only supports Qt configured with \c
+     	    	     {-no-framework}
+
+    \row \o Linux \o Sun's Java Virtual Machine has a bug preventing
+    it from using MMX and SSE instructions. For deployment against 1.5
+    Java runtimes, configure Qt with the options \c{-no-mmx -no-sse
     -no-sse2 -no-3dnow} to avoid problems.
 
     \endtable
@@ -150,9 +158,7 @@
     \section2 Setting up the environment
 
     The following table describes the environment variables necessary
-    to install Qt Jambi. We assume that the JAMBI environment variable
-    contains the path to the Qt Jambi directory. The QTDIR variable
-    contains the Qt directory.
+    to install Qt Jambi. 
 
     \table 80% \header \o Variable \o Value
     \row
@@ -163,6 +169,12 @@
         \o JAVADIR
         \o This variable must contain the path to the directory
            where Java is installed.
+    \row
+        \o QMAKESPEC
+        \o This variable is redundant in most cases, but may be
+        required to pick between ambigous compilers, such as MinGW or
+        MSVC on windows.
+
     \endtable
 
 
@@ -187,6 +199,19 @@
     \i Run Juic over the examples.
     \i Compile and bundle the examples
     \endlist
+
+    For a description of the various sub-targets of the ant build one can:
+
+    \code
+    > ant -projecthelp
+    \endcode
+
+    For a description of the various build configurations, one can do:
+    
+    \code 
+    > ant help
+    \endcode
+    
 
     \section2 Trouble Shooting
 
