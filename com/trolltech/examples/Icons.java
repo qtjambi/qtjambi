@@ -397,9 +397,9 @@ public class Icons extends QMainWindow
         for (QAction action : styleActionGroup.actions()) {
             String styleName = action.data().toString();
             QStyle candidate = QStyleFactory.create(styleName);
-
-            if (candidate.getClass().getName().equals(
-                    QApplication.style().getClass().getName())) {
+            
+            if (candidate.objectName().equals(
+                    QApplication.style().objectName())) {
                 action.trigger();
                 return;
             }
