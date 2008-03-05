@@ -46,7 +46,7 @@ public class HelloWebKit extends QMainWindow {
         browser.loadFinished.connect(this, "loadDone()");
 
         forward.triggered.connect(browser, "forward()");
-        backward.triggered.connect(browser, "backward()");
+        backward.triggered.connect(browser, "back()");
         reload.triggered.connect(browser, "reload()");
         stop.triggered.connect(browser, "stop()");
 
