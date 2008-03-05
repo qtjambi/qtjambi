@@ -118,7 +118,7 @@ public class Spreadsheet extends QMainWindow {
         action(tr("Save &As..."), null, null, "fileSaveAs()", menu, null);
         menu.addSeparator();
         action(tr("&Print"), "fileprint", StandardKey.Print, "filePrint()", menu, tb);
-        action(tr("&Exprt PDF..."), "exportpdf", null, "filePrintPdf()", menu, tb);
+        action(tr("&Export PDF..."), "exportpdf", null, "filePrintPdf()", menu, tb);
         menu.addSeparator();
         action(tr("&Quit"), null, "Ctrl+Q", "close()", menu, null);
     }
