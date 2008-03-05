@@ -346,27 +346,8 @@ public class Launcher extends QWidget {
 
     private static String[] start_qt()
     {
-        File f_out = null;
-        File f_err = null;
-
         String args[] = new String[1];
         args[0] = "Start Qt";
-
-        try {
-            f_out = new File("START_QT_STDOUT.TXT");
-            f_err = new File("START_QT_STDERR.TXT");
-
-            System.setOut(new PrintStream(f_out));
-            System.setErr(new PrintStream(f_err));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (f_out != null)
-            System.out.close();
-        if (f_err != null)
-            System.err.close();
-
         return args;
     }
 
