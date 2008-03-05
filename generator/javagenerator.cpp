@@ -1661,8 +1661,35 @@ void JavaGenerator::generate()
                 s << f->minimalSignature() << endl;
             }
 
-            m_nativepointer_functions.clear();
-        }
+            m_nativepointer_functions.clear();        }
+    }
+
+    {
+        const AbstractMetaClass *last_class = 0;
+        QFile file("mjb_object_type_usage.log");
+        if (file.open(QFile::WriteOnly)) {
+            QTextStream s(&file);
+
+            AbstractMetaFunctionList resettable_object_functions;
+            for (int i=0; i<m_resettable_object_functions.size(); ++i) {
+                AbstractMetaFunction *f = const_cast<AbstractMetaFunction *>(m_resettable_object_functions[i]);
+                if (f->ownerClass() == f->declaringClass() || f->isFinal())
+                    resettable_object_functions.append(f);
+            }
+
+            s << "Number of public or protected functions that return a non-QObject object type, or that are virtual and take a non-QObject object type argument: " << resettable_object_functions.size() << endl;
+            foreach (const AbstractMetaFunction *f, resettable_object_functions) {
+                if (last_class != f->ownerClass()) {
+                    last_class = f->ownerClass();
+                    s << endl << endl<< "Class " << last_class->name() << ":" << endl;
+                    s << "---------------------------------------------------------------------------------"
+                    << endl;
+                }
+
+                s << f->minimalSignature() << endl;
+            }
+
+            m_resettable_object_functions.clear();        }
     }
 
     {
@@ -1690,11 +1717,18 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
 
     if ((attr & AbstractMetaAttributes::Public) || (attr & AbstractMetaAttributes::Protected)) {
 
+        // Does the function use native pointer API?
         bool nativePointer = java_function->type() && java_function->type()->isNativePointer()
                              && java_function->typeReplaced(0).isEmpty();
 
-        if (!nativePointer && java_function->type()
-            && java_function->type()->hasInstantiations() && java_function->typeReplaced(0).isEmpty()) {
+        // Does the function need to be considered for resetting the Java objects after use?
+        bool resettableObject = false;
+
+        if (!nativePointer 
+            && java_function->type()
+            && java_function->type()->hasInstantiations() 
+            && java_function->typeReplaced(0).isEmpty()) {
+
             QList<AbstractMetaType *> instantiations = java_function->type()->instantiations();
 
             foreach (const AbstractMetaType *type, instantiations) {
@@ -1703,32 +1737,54 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
                     break;
                 }
             }
+
         }
 
         AbstractMetaArgumentList arguments = java_function->arguments();
-        if (!nativePointer) foreach (const AbstractMetaArgument *argument, arguments) {
-            if (!java_function->argumentRemoved(argument->argumentIndex()+1)
-                && java_function->typeReplaced(argument->argumentIndex()+1).isEmpty()) {
+        if (!nativePointer || (!resettableObject && !java_function->isFinal())) {
+            foreach (const AbstractMetaArgument *argument, arguments) {
+                if (!java_function->argumentRemoved(argument->argumentIndex()+1)
+                    && java_function->typeReplaced(argument->argumentIndex()+1).isEmpty()) {
 
-                if (argument->type()->isNativePointer()) {
-                    nativePointer = true;
-                    break ;
-                } else if (argument->type()->hasInstantiations()) {
-                    QList<AbstractMetaType *> instantiations = argument->type()->instantiations();
-                    foreach (AbstractMetaType *type, instantiations) {
-                        if (type && type->isNativePointer()) {
-                            nativePointer = true;
-                            break;
+                    if (argument->type()->isNativePointer()) {
+
+                        nativePointer = true;
+                        if (resettableObject) break ;
+
+                    } else if (!java_function->isFinalInTargetLang() 
+                                && argument->type()->isObject() 
+                                && !argument->type()->isQObject() 
+                                && !java_function->resetObjectAfterUse(argument->argumentIndex()+1)
+                                && java_function->ownership(java_function->declaringClass(), TypeSystem::ShellCode, argument->argumentIndex()+1) == TypeSystem::InvalidOwnership) {
+
+                        resettableObject = true;
+                        if (nativePointer) break ;
+
+                    } else if (argument->type()->hasInstantiations()) {
+
+                        QList<AbstractMetaType *> instantiations = argument->type()->instantiations();
+                        foreach (AbstractMetaType *type, instantiations) {
+                            if (type && type->isNativePointer()) {
+                                nativePointer = true;
+                                if (resettableObject) break;
+                            } else if (!java_function->isFinal() && type && type->isObject() && !type->isQObject()) {
+                                resettableObject = true;
+                                if (nativePointer) break ;
+                            }
                         }
+
+                        if (nativePointer && resettableObject)
+                            break;
+
                     }
-                    if (nativePointer)
-                        break;
                 }
             }
         }
 
         if (nativePointer && !m_nativepointer_functions.contains(java_function))
             m_nativepointer_functions.append(java_function);
+        if (resettableObject && !m_resettable_object_functions.contains(java_function))
+            m_resettable_object_functions.append(java_function);
     }
 
     if ((options & SkipAttributes) == 0) {

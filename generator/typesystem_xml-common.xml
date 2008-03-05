@@ -215,6 +215,10 @@
     <object-type name="QXmlInputSource" />
     <object-type name="QXmlLocator" />        
     <object-type name="QXmlSimpleReader">
+        <modify-function signature="parse(const QXmlInputSource*,bool)">
+            <modify-argument index="1" invalidate-after-use="yes" />
+        </modify-function>
+    
         <modify-function signature="setContentHandler(QXmlContentHandler*)">
             <modify-argument index="1">
                 <reference-count action="set" variable-name="__rcContentHandler" />
@@ -263,6 +267,9 @@
     </object-type>
     
     <object-type name="QXmlReader">
-    </object-type>
+        <modify-function signature="parse(const QXmlInputSource*)">
+            <modify-argument index="1" invalidate-after-use="yes" />
+        </modify-function>
+    </object-type>    
     
 </typesystem>

@@ -931,6 +931,22 @@
   </object-type>  
   
   <object-type name="QObject">
+    <modify-function signature="childEvent(QChildEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="customEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="event(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="eventFilter(QObject*,QEvent*)">
+        <modify-argument index="2" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="timerEvent(QTimerEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
     <modify-function signature="installEventFilter(QObject*)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcEventFilters"/>
@@ -977,6 +993,11 @@
     
     <modify-function signature="argv()" remove="all" /> <!-- Obsolete -->
     <modify-function signature="argc()" remove="all" /> <!-- Obsolete -->
+    
+    <modify-function signature="notify(QObject*,QEvent*)">
+        <modify-argument index="2" invalidate-after-use="yes" />
+    </modify-function>
+    
     
     <modify-function signature="QCoreApplication(int &amp;, char  **)">
       <access modifier="private"/>

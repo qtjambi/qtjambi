@@ -482,6 +482,8 @@ public:
     bool nullPointersDisabled(const AbstractMetaClass *cls = 0, int argument_idx = 0) const;
     QString nullPointerDefaultValue(const AbstractMetaClass *cls = 0, int argument_idx = 0) const;
 
+    bool resetObjectAfterUse(int argument_idx) const;
+
     // Returns whether garbage collection is disabled for the argument in any context
     bool disabledGarbageCollection(const AbstractMetaClass *cls, int key) const;
 

@@ -1185,6 +1185,78 @@
 
   <interface-type name="QGraphicsItem" delete-in-main-thread="yes">
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
+    
+    <modify-function signature="paint(QPainter*,const QStyleOptionGraphicsItem*,QWidget*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="collidesWithItem(const QGraphicsItem*,Qt::ItemSelectionMode)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
+    <modify-function signature="contextMenuEvent(QGraphicsSceneContextMenuEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dragEnterEvent(QGraphicsSceneDragDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dragLeaveEvent(QGraphicsSceneDragDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dragMoveEvent(QGraphicsSceneDragDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dropEvent(QGraphicsSceneDragDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="focusInEvent(QFocusEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="focusOutEvent(QFocusEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="hoverEnterEvent(QGraphicsSceneHoverEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="hoverLeaveEvent(QGraphicsSceneHoverEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="hoverMoveEvent(QGraphicsSceneHoverEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="inputMethodEvent(QInputMethodEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="isObscuredBy(const QGraphicsItem*)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="keyPressEvent(QKeyEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="keyReleaseEvent(QKeyEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseDoubleClickEvent(QGraphicsSceneMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseMoveEvent(QGraphicsSceneMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mousePressEvent(QGraphicsSceneMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseReleaseEvent(QGraphicsSceneMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="sceneEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="sceneEventFilter(QGraphicsItem*,QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+        <modify-argument index="2" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="wheelEvent(QGraphicsSceneWheelEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
    
     <modify-function signature="children()const" remove="all"/>	
     <modify-function signature="installSceneEventFilter(QGraphicsItem *)">
@@ -1226,6 +1298,14 @@
       <modify-function signature="setHorizontalStepsPerItem(int)" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setVerticalStepsPerItem(int)" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="verticalStepsPerItem()const" remove="all"/> <!--### Obsolete in 4.3-->
+      
+      <modify-function signature="edit(QModelIndex,QAbstractItemView::EditTrigger,QEvent*)">
+        <modify-argument index="3" invalidate-after-use="yes" />
+      </modify-function>
+      <modify-function signature="selectionCommand(QModelIndex,const QEvent*)const">
+        <modify-argument index="2" invalidate-after-use="yes" />
+      </modify-function>
+
   </object-type>  
 
   <object-type name="QAbstractPageSetupDialog"/>
@@ -1237,6 +1317,14 @@
             <reference-count action="set" variable-name="__rcPaintDevice"/>
         </modify-argument>
     </modify-function>
+    
+    <modify-function signature="draw(QPainter*,QAbstractTextDocumentLayout::PaintContext)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawInlineObject(QPainter*,QRectF,QTextInlineObject,int,QTextFormat)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
   </object-type>
   <object-type name="QAccessible">
     <modify-function signature="initialize()" remove="all"/>
@@ -1246,12 +1334,20 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+    <modify-function signature="queryAccessibleInterface(QObject *)">
+        <modify-argument index="return">
+            <define-ownership class="java" owner="java" />
+        </modify-argument>
+    </modify-function>
   </object-type>      
   <object-type name="QAccessibleBridge">
     <modify-function signature="setRootObject(QAccessibleInterface *)">
         <modify-argument index="1">
-            <reference-count action="ignore"/>
+            <define-ownership class="shell" owner="java" />
         </modify-argument>
+    </modify-function>
+    <modify-function signature="notifyAccessibilityUpdate(int,QAccessibleInterface*,int)">
+        <modify-argument invalidate-after-use="yes" index="2" />
     </modify-function>
   </object-type>  
   <object-type name="QAccessible2Interface"/>
@@ -1259,7 +1355,14 @@
     <modify-function signature="qAccessibleTableCastHelper()" remove="all"/>
   </object-type>
   
-  <object-type name="QAccessibleInterface" />
+  <object-type name="QAccessibleInterface">
+    <modify-function signature="indexOfChild(const QAccessibleInterface*)const">
+        <modify-argument invalidate-after-use="yes" index="1" />
+    </modify-function>
+    <modify-function signature="relationTo(int,const QAccessibleInterface*,int)const">
+        <modify-argument invalidate-after-use="yes" index="2" />
+    </modify-function>  
+  </object-type>
   <object-type name="QAccessibleInterfaceEx"/>
   <object-type name="QAccessibleObject"/>
   <object-type name="QAccessibleObjectEx"/>
@@ -1440,6 +1543,11 @@
     <modify-function signature="initStyleOption(QStyleOptionHeader*)const">
         <access modifier="private"/>
     </modify-function>
+    
+    <modify-function signature="paintSection(QPainter*,QRect,int)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    
     <inject-code>
         <insert-template name="gui.init_style_option">
             <replace from="%TYPE" to="QStyleOptionHeader"/>
@@ -1451,8 +1559,19 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QIconEngine"/>
+  <object-type name="QIconEngine">
+    <modify-function signature="paint(QPainter*,QRect,QIcon::Mode,QIcon::State)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>  
+  </object-type>
   <object-type name="QIconEngineV2">
+    <modify-function signature="read(QDataStream&amp;)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="write(QDataStream&amp;)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+  
     <modify-function signature="virtual_hook(int,void*)" remove="all"/>
     <modify-function signature="clone()const">
         <modify-argument index="return">
@@ -1475,6 +1594,20 @@
     <modify-function signature="doLayout(QStyleOptionViewItem,QRect*,QRect*,QRect*,bool)const">
         <remove/>
     </modify-function>
+    
+    <modify-function signature="drawCheck(QPainter*,QStyleOptionViewItem,QRect,Qt::CheckState)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawDecoration(QPainter*,QStyleOptionViewItem,QRect,QPixmap)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawDisplay(QPainter*,QStyleOptionViewItem,QRect,QString)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawFocus(QPainter*,QStyleOptionViewItem,QRect)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
     
     <modify-function signature="selected(QPixmap,QPalette,bool)const">
         <remove/>
@@ -1826,6 +1959,16 @@
   <object-type name="QSpacerItem"/>
   <object-type name="QStandardItem">
     <modify-function signature="operator=(QStandardItem)" remove="all"/>
+    <modify-function signature="operator&lt;(QStandardItem)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="read(QDataStream&amp;)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="write(QDataStream&amp;)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
   </object-type>
   <object-type name="QStatusBar">   
     <modify-function signature="addPermanentWidget(QWidget *, int)">
@@ -1914,7 +2057,11 @@
       <modify-function signature="isEmpty()const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
   <object-type name="QTextObject"/>
-  <object-type name="QTextObjectInterface"/>
+  <object-type name="QTextObjectInterface">
+    <modify-function signature="drawObject(QPainter*,QRectF,QTextDocument*,int,QTextFormat)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+  </object-type>
   <object-type name="QTimeEdit"/>
   <object-type name="QToolBox">
     <modify-function signature="addItem(QWidget*,QString)">
@@ -1961,6 +2108,14 @@
   </object-type>
   <object-type name="QToolTip"/>
   <object-type name="QTreeView">
+  
+    <modify-function signature="drawBranches(QPainter*,QRect,QModelIndex)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawRow(QPainter*,QStyleOptionViewItem,QModelIndex)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
     <modify-function signature="setHeader(QHeaderView*)">
         <modify-argument index="1">
             <reference-count action="ignore"/>
@@ -1980,7 +2135,11 @@
   
       <modify-function signature="sortByColumn(int)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QUndoCommand"/>
+  <object-type name="QUndoCommand">
+    <modify-function signature="mergeWith(const QUndoCommand*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+  </object-type>
   <object-type name="QUndoGroup">
     <modify-function signature="addStack(QUndoStack*)">
         <modify-argument index="1">
@@ -2143,6 +2302,26 @@
   <object-type name="QStyle">
       <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
       <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType, QSizePolicy::ControlType, Qt::Orientation, const QStyleOption *, const QWidget *) const" virtual-slot="yes" />
+      
+      <modify-function signature="drawComplexControl(QStyle::ComplexControl,const QStyleOptionComplex*,QPainter*,const QWidget*)const">
+        <modify-argument index="3" invalidate-after-use="yes" />
+      </modify-function>
+      <modify-function signature="drawControl(QStyle::ControlElement,const QStyleOption*,QPainter*,const QWidget*)const">
+        <modify-argument index="3" invalidate-after-use="yes" />
+      </modify-function>
+      <modify-function signature="drawPrimitive(QStyle::PrimitiveElement,const QStyleOption*,QPainter*,const QWidget*)const">
+        <modify-argument index="3" invalidate-after-use="yes" />
+      </modify-function>
+      <modify-function signature="styleHint(QStyle::StyleHint,const QStyleOption*,const QWidget*,QStyleHintReturn*)const">
+        <modify-argument index="4" invalidate-after-use="yes" />
+      </modify-function>
+      <modify-function signature="drawItemPixmap(QPainter*,QRect,int,QPixmap)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+      </modify-function>
+      <modify-function signature="drawItemText(QPainter*,QRect,int,QPalette,bool,QString,QPalette::ColorRole)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+      </modify-function>
+
   </object-type>
 
   <object-type name="QColorDialog">
@@ -2157,6 +2336,10 @@
   </object-type>
   
   <object-type name="QLayout">  
+    <modify-function signature="addItem(QLayoutItem*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+  
     <modify-function signature="setSpacing(int)" rename="setWidgetSpacing"/>
     <modify-function signature="spacing()const" rename="widgetSpacing"/>
     <modify-function signature="addWidget(QWidget *)">
@@ -2350,7 +2533,17 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
-
+    
+    <modify-function signature="drawBackground(QPainter*,QRectF)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawForeground(QPainter*,QRectF)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    
     <modify-function signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*)">
         <modify-argument index="2">
             <remove-argument/>
@@ -2481,9 +2674,65 @@
     <extra-includes>
         <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
-    <modify-function signature="addWidget(QWidget*,QFlags&lt;Qt::WindowType&gt;)">
         
+    <modify-function signature="contextMenuEvent(QGraphicsSceneContextMenuEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
+    <modify-function signature="dragEnterEvent(QGraphicsSceneDragDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dragLeaveEvent(QGraphicsSceneDragDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dragMoveEvent(QGraphicsSceneDragDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawBackground(QPainter*,QRectF)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawForeground(QPainter*,QRectF)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawItems(QPainter*,int,QGraphicsItem**,const QStyleOptionGraphicsItem*,QWidget*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dropEvent(QGraphicsSceneDragDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="focusInEvent(QFocusEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="focusOutEvent(QFocusEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="helpEvent(QGraphicsSceneHelpEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="inputMethodEvent(QInputMethodEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="keyPressEvent(QKeyEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="keyReleaseEvent(QKeyEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseDoubleClickEvent(QGraphicsSceneMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseMoveEvent(QGraphicsSceneMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mousePressEvent(QGraphicsSceneMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseReleaseEvent(QGraphicsSceneMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="wheelEvent(QGraphicsSceneWheelEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    
     <modify-function signature="setActiveWindow(QGraphicsWidget*)">
         <modify-argument index="1">
             <reference-count action="ignore" />
@@ -2563,9 +2812,16 @@
   
       <modify-function signature="isHeaderVisible()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setHeaderVisible(bool)" remove="all"/> <!--### Obsolete in 4.3-->
+      
+      <modify-function signature="paintCell(QPainter*,QRect,QDate)const">
+        <modify-argument invalidate-after-use="yes" index="1" />
+      </modify-function>
   </object-type>
 
   <object-type name="QTreeWidget">
+    <modify-function signature="dropMimeData(QTreeWidgetItem*,int,const QMimeData*,Qt::DropAction)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
     <modify-function signature="isSortingEnabled()const" remove="all"/>
     <modify-function signature="setSortingEnabled(bool)" remove="all"/>
     <modify-function signature="indexOfTopLevelItem(QTreeWidgetItem *)">
@@ -2681,6 +2937,13 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+    
+    <modify-function signature="paint(QPainter*,QStyleOptionViewItem,QModelIndex)const">
+        <modify-argument index="1" invalidate-after-use="yes" />        
+    </modify-function>
+    <modify-function signature="editorEvent(QEvent*,QAbstractItemModel*,QStyleOptionViewItem,QModelIndex)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
   
       <modify-function signature="elidedText(QFontMetrics, int, Qt::TextElideMode, QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
@@ -2697,9 +2960,32 @@
       <modify-function signature="setBackgroundColor(QColor)" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setTextColor(QColor)" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="textColor()const" remove="all"/> <!--### Obsolete in 4.3-->
+      
+    <modify-function signature="operator&lt;(QTableWidgetItem)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="read(QDataStream&amp;)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="write(QDataStream&amp;)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
   </object-type>
 
   <object-type name="QListWidgetItem">
+  
+    <modify-function signature="operator&lt;(QListWidgetItem)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="read(QDataStream&amp;)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="write(QDataStream&amp;)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
+  
     <modify-function signature="operator=(const QListWidgetItem&amp;)" remove="all"/>
     <modify-function signature="QListWidgetItem(QListWidget *, int)">
         <modify-argument index="this">
@@ -2783,6 +3069,16 @@
 
 
   <object-type name="QTreeWidgetItem">
+
+    <modify-function signature="operator&lt;(QTreeWidgetItem)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="read(QDataStream&amp;)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="write(QDataStream&amp;)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
 
     <modify-function signature="QTreeWidgetItem(const QTreeWidgetItem &amp;)" remove="all"/>
     <modify-function signature="operator=(const QTreeWidgetItem&amp;)" remove="all"/>
@@ -2929,6 +3225,85 @@
         <include file-name="QMessageBox" location="global"/>
     </extra-includes> 
     
+    <modify-function signature="actionEvent(QActionEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="changeEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="closeEvent(QCloseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="contextMenuEvent(QContextMenuEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dragEnterEvent(QDragEnterEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dragLeaveEvent(QDragLeaveEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dragMoveEvent(QDragMoveEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="dropEvent(QDropEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="enterEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="focusInEvent(QFocusEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="focusOutEvent(QFocusEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="hideEvent(QHideEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="inputMethodEvent(QInputMethodEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="keyPressEvent(QKeyEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="keyReleaseEvent(QKeyEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="leaveEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseDoubleClickEvent(QMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseMoveEvent(QMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mousePressEvent(QMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseReleaseEvent(QMouseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="moveEvent(QMoveEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="paintEvent(QPaintEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="resizeEvent(QResizeEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="showEvent(QShowEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="tabletEvent(QTabletEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="wheelEvent(QWheelEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+
     <modify-function signature="render(QPainter*,QPoint,QRegion,QFlags&lt;QWidget::RenderFlag&gt;)">
         <modify-argument index="2">
             <!-- Removed because the render(QPainter*) overload conflicts with the identical function in QGraphicsView -->
@@ -3316,6 +3691,13 @@
     <modify-function signature="setFocusWidget(QWidget*)">
         <remove/>
     </modify-function>
+    <modify-function signature="filterEvent(const QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="mouseHandler(int,QMouseEvent*)">
+        <modify-argument index="2" invalidate-after-use="yes" />
+    </modify-function>
+
   </object-type>
       
   <object-type name="QProgressDialog">
@@ -3620,6 +4002,11 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+    
+    <modify-function signature="viewportEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    
   </object-type>
 
   <object-type name="QPaintEngineState">
@@ -3811,6 +4198,9 @@
       </modify-argument>
     </modify-function>
     <modify-function signature="repaint()" remove="all"/>
+    <modify-function signature="drawContents(QPainter*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
   </object-type>
     
   <object-type name="QDockWidget">
@@ -3949,6 +4339,17 @@
   </object-type>
   
   <object-type name="QPaintEngine">
+  
+    <modify-function signature="begin(QPaintDevice*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="updateState(QPaintEngineState)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="drawTextItem(QPointF,QTextItem)">
+        <modify-argument index="2" invalidate-after-use="yes" />
+    </modify-function>
+
     <extra-includes>
         <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
@@ -4370,6 +4771,11 @@
     </modify-function>
   </object-type>  
   <object-type name="QGraphicsLayout" delete-in-main-thread="yes">
+  
+    <modify-function signature="widgetEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+  
     <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcParentLayoutItem" />
@@ -4419,6 +4825,44 @@
             <reference-count action="set" variable-name="__rcLayout" />
         </modify-argument>
     </modify-function>
+    
+    <modify-function signature="changeEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="closeEvent(QCloseEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="grabKeyboardEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="grabMouseEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="hideEvent(QHideEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="moveEvent(QGraphicsSceneMoveEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="paintWindowFrame(QPainter*,const QStyleOptionGraphicsItem*,QWidget*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="resizeEvent(QGraphicsSceneResizeEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="showEvent(QShowEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="ungrabKeyboardEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="ungrabMouseEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+    <modify-function signature="windowFrameEvent(QEvent*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+        
     <modify-function signature="setStyle(QStyle*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcStyle" />

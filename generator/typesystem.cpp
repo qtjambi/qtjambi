@@ -701,6 +701,7 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
 	        attributes["replace-value"] = QString();
+            attributes["invalidate-after-use"] = QString("no");
             break;
         case StackElement::ModifyField:
             attributes["name"] = QString();
@@ -884,6 +885,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
 		        ArgumentModification argumentModification = ArgumentModification(idx);
 		        argumentModification.replace_value = replace_value;
+                argumentModification.reset_after_use = convertBoolean(attributes["invalidate-after-use"], "invalidate-after-use", false);
                 m_function_mods.last().argument_mods.append(argumentModification);
             }
             break;

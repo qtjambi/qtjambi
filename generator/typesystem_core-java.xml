@@ -1133,11 +1133,10 @@
     <object-type name="QTextCodec">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QTextCodec___" quote-before-line="}// class"/>
-        </inject-code>
-        
-
+        </inject-code>       
 
         <modify-function signature="convertFromUnicode(const QChar*,int,QTextCodec::ConverterState*)const">
+            <modify-argument index="3" invalidate-after-use="yes" />
             <modify-argument index="1">
                 <replace-type modified-type="char[]"/>
                 <conversion-rule class="shell">
@@ -1170,6 +1169,7 @@
         </modify-function>
         
         <modify-function signature="convertToUnicode(const char*,int,QTextCodec::ConverterState*)const">        
+            <modify-argument index="3" invalidate-after-use="yes" />
             <modify-argument index="1">
                 <replace-type modified-type="byte[]"/>
                 <conversion-rule class="shell">

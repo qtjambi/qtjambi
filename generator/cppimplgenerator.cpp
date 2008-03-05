@@ -1091,6 +1091,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
             s << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
 
             AbstractMetaArgumentList arguments = java_function->arguments();
+            QStringList argumentsToReset;
             foreach (const AbstractMetaArgument *argument, arguments) {
                 if (!java_function->argumentRemoved(argument->argumentIndex()+1)) {
                     if (!argument->type()->isPrimitive()
@@ -1101,6 +1102,10 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
                                     "__java_" + argument->indexedName(),
                                     java_function,
                                     argument->argumentIndex() + 1);
+                    }
+
+                    if (java_function->resetObjectAfterUse(argument->argumentIndex()+1)) {
+                        argumentsToReset += "__java_" + argument->indexedName();
                     }
                 }
             }
@@ -1168,6 +1173,17 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
 
             writeOwnership(s, java_function, "this", -1, implementor);
             writeOwnership(s, java_function, "__java_return_value", 0, implementor);
+
+            foreach (QString argumentToReset, argumentsToReset) {
+                s << INDENT << "{" << endl;
+                {
+                    Indentation indent(INDENT);
+                    s << INDENT << "QtJambiLink *__lnk = QtJambiLink::findLink(__jni_env, " << argumentToReset << ");" << endl
+                      << INDENT << "if (__lnk && __lnk->ownership() != QtJambiLink::JavaOwnership)" << endl
+                      << INDENT << "    qtjambi_invalidate_object(__jni_env, " << argumentToReset << ");" << endl;
+                }
+                s << INDENT << "}" << endl;
+            }
 
             s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
 

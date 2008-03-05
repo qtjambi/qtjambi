@@ -402,6 +402,21 @@ bool AbstractMetaFunction::removedDefaultExpression(const AbstractMetaClass *cls
     return false;
 }
 
+bool AbstractMetaFunction::resetObjectAfterUse(int argument_idx) const
+{
+    const AbstractMetaClass *cls = declaringClass();
+    FunctionModificationList modifications = this->modifications(cls);
+    foreach (FunctionModification modification, modifications) {
+        QList<ArgumentModification> argumentModifications = modification.argument_mods;
+        foreach (ArgumentModification argumentModification, argumentModifications) {
+            if (argumentModification.index == argument_idx && argumentModification.reset_after_use)
+                return true;            
+        }
+    }
+
+    return false;
+}
+
 QString AbstractMetaFunction::nullPointerDefaultValue(const AbstractMetaClass *mainClass, int argument_idx) const
 {
     Q_ASSERT(nullPointersDisabled(mainClass, argument_idx));

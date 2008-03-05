@@ -252,6 +252,7 @@ struct ArgumentModification
     uint removed_default_expression : 1;
     uint removed : 1;
     uint no_null_pointers : 1;
+    uint reset_after_use : 1;
 
     // The index of this argument
     int index;

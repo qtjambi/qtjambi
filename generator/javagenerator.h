@@ -107,6 +107,7 @@ protected:
     DocParser *m_doc_parser;
     bool m_docs_enabled;
     QList<const AbstractMetaFunction *> m_nativepointer_functions;
+    QList<const AbstractMetaFunction *> m_resettable_object_functions;
     QList<const AbstractMetaFunction *> m_reference_count_candidate_functions;
 };
 
