@@ -236,7 +236,6 @@
             <include name="com/trolltech/demos/**/*"/>
             <include name="com/trolltech/launcher/*"/>
             <include name="com/trolltech/images/**/*"/>
-            <exclude name="com/trolltech/**/*.java"/>
             <exclude name="com/trolltech/**/*.jui"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
