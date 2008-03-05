@@ -874,20 +874,6 @@ public class Spreadsheet extends QMainWindow {
             }
         }
 
-        @Override
-        protected void contextMenuEvent(QContextMenuEvent e) {
-            QMenu menu = new QMenu();
-            QAction colorAction = new QAction("Color", this);
-            menu.addAction(colorAction);
-
-            QAction fontAction = new QAction("Font", this);
-            menu.addAction(fontAction);
-
-            QAction formatAction = new QAction("Format", this);
-            menu.addAction(formatAction);
-
-            menu.popup(e.globalPos());
-        }
     }
 
     class TableModel extends QAbstractTableModel {
