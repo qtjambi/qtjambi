@@ -735,14 +735,14 @@
   </value-type>
   <value-type name="QAbstractTextDocumentLayout::Selection"/>
 
-  <value-type name="QPixmap" delete-in-main-thread="yes">
+  <value-type name="QPixmap">
     <modify-function signature="operator=(QPixmap)" remove="all"/>
     <modify-function signature="operator!()const" remove="all"/>
     <modify-function signature="QPixmap(const char **)" access="private"/>
     <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->    
   </value-type>
 
-  <value-type name="QTextCursor" delete-in-main-thread="yes">
+  <value-type name="QTextCursor">
     <extra-includes>
         <include file-name="QTextBlock" location="global"/>
         <include file-name="QTextDocumentFragment" location="global"/>
@@ -870,7 +870,7 @@
     <include file-name="QTextEdit" location="global"/>
   </value-type>
 
-  <value-type name="QFont" delete-in-main-thread="true">
+  <value-type name="QFont">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>    
@@ -1183,7 +1183,7 @@
   <interface-type name="QLayoutItem"/>
   <interface-type name="QPaintDevice"/>
 
-  <interface-type name="QGraphicsItem" delete-in-main-thread="yes">
+  <interface-type name="QGraphicsItem">
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
     
     <modify-function signature="paint(QPainter*,const QStyleOptionGraphicsItem*,QWidget*)">
@@ -1278,7 +1278,7 @@
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </interface-type>  
   
-  <object-type name="QAbstractGraphicsShapeItem" delete-in-main-thread="yes">
+  <object-type name="QAbstractGraphicsShapeItem">
     <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1"/>
@@ -1502,7 +1502,7 @@
   </object-type>
   <object-type name="QFontComboBox"/>
   <object-type name="QFontDialog"/>
-  <object-type name="QGraphicsEllipseItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsEllipseItem"/>
   <object-type name="QGraphicsItemAnimation" >
     <modify-function signature="setItem(QGraphicsItem*)">
         <modify-argument index="1">
@@ -1515,29 +1515,29 @@
         </modify-argument>
     </modify-function>  
   </object-type>
-  <object-type name="QGraphicsItemGroup" delete-in-main-thread="yes">
+  <object-type name="QGraphicsItemGroup">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsLineItem" delete-in-main-thread="yes">
+  <object-type name="QGraphicsLineItem">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsPathItem"  delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsPathItem"/>
    
-  <object-type name="QGraphicsPixmapItem"  delete-in-main-thread="yes">
+  <object-type name="QGraphicsPixmapItem">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsPolygonItem" delete-in-main-thread="yes"/>
-  <object-type name="QGraphicsRectItem" delete-in-main-thread="yes"/>
-  <object-type name="QGraphicsSimpleTextItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsPolygonItem"/>
+  <object-type name="QGraphicsRectItem"/>
+  <object-type name="QGraphicsSimpleTextItem"/>
   <object-type name="QHBoxLayout"/>
   <object-type name="QHeaderView">
     <modify-function signature="initStyleOption(QStyleOptionHeader*)const">
@@ -4445,7 +4445,7 @@
     </modify-function>
   </object-type>
 
-  <object-type name="QPrinter" delete-in-main-thread="true">
+  <object-type name="QPrinter">
     <modify-function signature="setEngines(QPrintEngine*,QPaintEngine*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcPrintEngine"/>
@@ -4753,7 +4753,7 @@
         </modify-argument>    
     </modify-function>
   </object-type>
-  <object-type name="QGraphicsGridLayout" delete-in-main-thread="yes">
+  <object-type name="QGraphicsGridLayout">
     <modify-function signature="addItem(QGraphicsLayoutItem*,int,int,QFlags&lt;Qt::AlignmentFlag&gt;)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcItems" />
@@ -4770,26 +4770,25 @@
         </modify-argument>
     </modify-function>
   </object-type>  
-  <object-type name="QGraphicsLayout" delete-in-main-thread="yes">
+  <object-type name="QGraphicsLayout">
   
     <modify-function signature="widgetEvent(QEvent*)">
         <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
-  
     <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcParentLayoutItem" />
         </modify-argument>
     </modify-function>
   </object-type>  
-  <interface-type name="QGraphicsLayoutItem" delete-in-main-thread="yes">
+  <interface-type name="QGraphicsLayoutItem">
     <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcParentLayoutItem" />
         </modify-argument>
     </modify-function>  
   </interface-type>
-  <object-type name="QGraphicsLinearLayout" delete-in-main-thread="yes">
+  <object-type name="QGraphicsLinearLayout">
     <modify-function signature="addItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcItems" />

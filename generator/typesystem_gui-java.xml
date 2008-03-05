@@ -822,9 +822,9 @@
         </inject-code>
     </value-type>
 
-    <value-type name="QFontInfo" delete-in-main-thread="yes" />
+    <value-type name="QFontInfo"/>
 
-    <value-type name="QFontMetricsF" delete-in-main-thread="yes">
+    <value-type name="QFontMetricsF">
         <template name="gui.fontmetricsf_boundingrect">
             <insert-template name="gui.fontmetrics_tabarray_function">
                 <replace from="%RETURN_TYPE" to="com.trolltech.qt.core.QRectF"/>
@@ -851,7 +851,7 @@
         </inject-code>      
     </value-type>
 
-    <value-type name="QFontMetrics" delete-in-main-thread="yes">
+    <value-type name="QFontMetrics">
         <template name="gui.fontmetrics_tabarray_function">
         public final %RETURN_TYPE %FUNCTION_NAME(%RECT_ARGUMENTSint flags, String text, int tabStops, int tabArray[]) {
             QNativePointer np = tabArray == null ? null : new QNativePointer(QNativePointer.Type.Int, tabArray.length + 1);
@@ -3130,7 +3130,102 @@
             </modify-argument>            
         </modify-function>
     </interface-type>
-    
+
+  <!-- Some delete on main thread triggers... -->    
+  <interface-type name="QGraphicsItem" delete-in-main-thread="yes"/>
+  <interface-type name="QGraphicsLayoutItem" delete-in-main-thread="yes"/>
+  <object-type name="QAbstractGraphicsShapeItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsEllipseItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsGridLayout" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsItemGroup" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsLayout" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsLineItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsLinearLayout" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsPathItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsPixmapItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsPolygonItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsRectItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsSimpleTextItem" delete-in-main-thread="yes"/>
+  <object-type name="QListWidgetItem" delete-in-main-thread="yes"/>
+  <object-type name="QPrinter" delete-in-main-thread="true"/>
+  <object-type name="QStylePainter" delete-in-main-thread="yes"/>
+  <object-type name="QTableWidgetItem" delete-in-main-thread="yes"/>
+  <object-type name="QTextBlockGroup" delete-in-main-thread="yes"/>
+  <object-type name="QTextBlockUserData" delete-in-main-thread="yes"/>
+  <object-type name="QTextFrame" delete-in-main-thread="yes"/>
+  <object-type name="QTextItem" delete-in-main-thread="yes"/>
+  <object-type name="QTextList" delete-in-main-thread="yes"/>
+  <object-type name="QTextObject" delete-in-main-thread="yes"/>
+  <object-type name="QTextObjectInterface" delete-in-main-thread="yes"/>
+  <object-type name="QTreeWidgetItem" delete-in-main-thread="yes"/>
+  <value-type name="QAbstractTextDocumentLayout::PaintContext" delete-in-main-thread="yes"/>
+  <value-type name="QAbstractTextDocumentLayout::Selection" delete-in-main-thread="yes"/>
+  <value-type name="QBitmap"  delete-in-main-thread="yes"/>  
+  <value-type name="QColormap" delete-in-main-thread="yes"/>
+  <value-type name="QCursor" delete-in-main-thread="yes"/>  
+  <value-type name="QFont" delete-in-main-thread="true"/>
+  <value-type name="QFontDatabase" delete-in-main-thread="yes"/>
+  <value-type name="QFontInfo" delete-in-main-thread="yes"/>
+  <value-type name="QFontMetrics" delete-in-main-thread="yes"/>
+  <value-type name="QFontMetricsF" delete-in-main-thread="yes"/>
+  <value-type name="QIcon" delete-in-main-thread="yes"/>    
+  <value-type name="QItemSelection" delete-in-main-thread="yes"/> 
+  <value-type name="QPicture" delete-in-main-thread="yes"/>
+  <value-type name="QPixmap" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOption" polymorphic-base="yes" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionButton" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionComboBox" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionComplex" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionDockWidget" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionDockWidgetV2" delete-in-main-thread="yes"/> 
+  <value-type name="QStyleOptionFocusRect" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionFrame" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionFrameV2" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionGraphicsItem" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionGroupBox" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionHeader" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionMenuItem" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionProgressBar" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionProgressBarV2" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionRubberBand" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionSizeGrip" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionSlider" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionSpinBox" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionTab" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionTabBarBase" delete-in-main-thread="yes"/> 
+  <value-type name="QStyleOptionTabV2" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionTabWidgetFrame" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionTitleBar" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionToolBar" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionToolBox" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionToolBoxV2" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionToolButton" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionViewItem" delete-in-main-thread="yes"/>  
+  <value-type name="QStyleOptionViewItemV2" delete-in-main-thread="yes"/>                
+  <value-type name="QStyleOptionViewItemV3" delete-in-main-thread="yes"/>
+  <value-type name="QStyleOptionViewItemV4" delete-in-main-thread="yes"/>
+  <value-type name="QTextBlock" delete-in-main-thread="yes"/>
+  <value-type name="QTextBlock::iterator" delete-in-main-thread="yes"/>
+  <value-type name="QTextBlockFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextCharFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextCursor" delete-in-main-thread="yes"/>
+  <value-type name="QTextDocumentFragment"  delete-in-main-thread="yes"/>
+  <value-type name="QTextEdit::ExtraSelection" delete-in-main-thread="yes"/>
+  <value-type name="QTextFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextFragment"  delete-in-main-thread="yes"/>  
+  <value-type name="QTextFrame::iterator" delete-in-main-thread="yes"/>
+  <value-type name="QTextFrameFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextImageFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextInlineObject"  delete-in-main-thread="yes"/>
+  <value-type name="QTextLength" delete-in-main-thread="yes"/>
+  <value-type name="QTextLine" delete-in-main-thread="yes"/>
+  <value-type name="QTextListFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextOption" delete-in-main-thread="yes"/>
+  <value-type name="QTextTableCell" delete-in-main-thread="yes"/>
+  <value-type name="QTextTableCellFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextTableFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTreeWidgetItemIterator" delete-in-main-thread="yes"/>  
+
     <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcItems' in 'com.trolltech.qt.gui.QGraphicsGridLayout' but not both" />
     
 </typesystem>
