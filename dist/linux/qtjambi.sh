@@ -13,9 +13,8 @@ then
     echo "to work. If Java is installed then make sure that the 'java' executable"
     echo "is available in the PATH environment."
 else
-    VERSION=$(ls qtjambi-4*.jar)
-    VERSION=${VERSION:8:8}
-    PLATFORM_JAR=$(ls qtjambi-linux*$VERSION.jar}
-    CP=qtjambi-$VERSION.jar:qtjambi-examples-$VERSION.jar:$PLATFORM_JAR
+    for lib in $(ls $me/qtjambi*.jar); do
+        CP=$lib:$CP
+    done
     java -cp $CP com.trolltech.launcher.Launcher
 fi
