@@ -55,25 +55,24 @@ public class Icons extends QMainWindow
     {
         centralWidget = new QWidget();
         setCentralWidget(centralWidget);
-        
+
         createPreviewGroupBox();
         createImagesGroupBox();
         createIconSizeGroupBox();
-        
+
         createActions();
         createMenus();
         createContextMenu();
-        
+
         QGridLayout mainLayout = new QGridLayout();
         mainLayout.addWidget(previewGroupBox, 0, 0, 1, 2);
         mainLayout.addWidget(imagesGroupBox, 1, 0);
         mainLayout.addWidget(iconSizeGroupBox, 1, 1);
         centralWidget.setLayout(mainLayout);
-        
+
         setWindowTitle(tr("Icons"));
-        checkCurrentStyle();
         otherRadioButton.click();
-        
+
         resize(minimumSizeHint());
     }
 
@@ -94,7 +93,7 @@ public class Icons extends QMainWindow
 
         QAction action = (QAction) QSignalEmitter.signalSender();
         QStyle style = QStyleFactory.create((String) action.data());
-    
+
         if (style != null) {
             QApplication.setStyle(style);
             QApplication.setPalette(style.standardPalette());
@@ -397,7 +396,7 @@ public class Icons extends QMainWindow
         for (QAction action : styleActionGroup.actions()) {
             String styleName = action.data().toString();
             QStyle candidate = QStyleFactory.create(styleName);
-            
+
             if (candidate.objectName().equals(
                     QApplication.style().objectName())) {
                 action.trigger();
