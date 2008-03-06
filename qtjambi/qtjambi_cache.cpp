@@ -509,6 +509,9 @@ StaticCache *StaticCache::instance()
 
     {
         QWriteLocker write(&lock);
+        if (the_cache)
+            return the_cache;
+
         the_cache = new StaticCache;
         memset(the_cache, 0, sizeof(StaticCache));
         the_cache->d = new StaticCachePrivate();
