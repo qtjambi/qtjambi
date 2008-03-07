@@ -7,27 +7,27 @@ import com.trolltech.qt.gui.*;
 public class Styles extends QDialog
 {
     private QPalette originalPalette;
-    
+
     private QLabel styleLabel;
     private QComboBox styleComboBox;
     private QCheckBox useStylePaletteCheckBox;
     private QCheckBox disableWidgetsCheckBox;
-    
+
     private QGroupBox topLeftGroupBox;
     private QRadioButton radioButton1;
     private QRadioButton radioButton2;
     private QRadioButton radioButton3;
     private QCheckBox checkBox;
-    
+
     private QGroupBox topRightGroupBox;
     private QPushButton defaultPushButton;
     private QPushButton togglePushButton;
     private QPushButton flatPushButton;
-    
+
     private QTabWidget bottomLeftTabWidget;
     private QTableWidget tableWidget;
     private QTextEdit textEdit;
-    
+
     private QGroupBox bottomRightGroupBox;
     private QLineEdit lineEdit;
     private QSpinBox spinBox;
@@ -35,45 +35,45 @@ public class Styles extends QDialog
     private QSlider slider;
     private QScrollBar scrollBar;
     private QDial dial;
-    
+
     private QProgressBar progressBar;
 
     public Styles()
     {
         originalPalette = QApplication.palette();
-        
+
         styleComboBox = new QComboBox();
         styleComboBox.addItem("NorwegianWood");
         styleComboBox.addItems(QStyleFactory.keys());
-        
+
         styleLabel = new QLabel(tr("&Style:"));
         styleLabel.setBuddy(styleComboBox);
-        
+
         useStylePaletteCheckBox = new QCheckBox(tr("&Use style's standard palette"));
         useStylePaletteCheckBox.setChecked(true);
-        
+
         disableWidgetsCheckBox = new QCheckBox(tr("&Disable widgets"));
-        
+
         createTopLeftGroupBox();
         createTopRightGroupBox();
         createBottomLeftTabWidget();
         createBottomRightGroupBox();
         createProgressBar();
-        
+
         styleComboBox.activated.connect(this, "changeStyle(String)");
-        useStylePaletteCheckBox.toggled.connect(this, "changePalette()");        
+        useStylePaletteCheckBox.toggled.connect(this, "changePalette()");
         disableWidgetsCheckBox.toggled.connect(topLeftGroupBox, "setDisabled(boolean)");
         disableWidgetsCheckBox.toggled.connect(topRightGroupBox, "setDisabled(boolean)");
         disableWidgetsCheckBox.toggled.connect(bottomLeftTabWidget, "setDisabled(boolean)");
         disableWidgetsCheckBox.toggled.connect(bottomRightGroupBox, "setDisabled(boolean)");
-        
+
         QHBoxLayout topLayout = new QHBoxLayout();
         topLayout.addWidget(styleLabel);
         topLayout.addWidget(styleComboBox);
         topLayout.addStretch(1);
         topLayout.addWidget(useStylePaletteCheckBox);
         topLayout.addWidget(disableWidgetsCheckBox);
-        
+
         QGridLayout mainLayout = new QGridLayout();
         mainLayout.addLayout(topLayout, 0, 0, 1, 2);
         mainLayout.addWidget(topLeftGroupBox, 1, 0);
@@ -86,7 +86,7 @@ public class Styles extends QDialog
         mainLayout.setColumnStretch(0, 1);
         mainLayout.setColumnStretch(1, 1);
         setLayout(mainLayout);
-        
+
         setWindowTitle(tr("Styles"));
         changeStyle("NorwegianWood");
     }
@@ -100,7 +100,7 @@ public class Styles extends QDialog
         }
         changePalette();
     }
-    
+
     public void changePalette()
     {
         if (useStylePaletteCheckBox.isChecked())
@@ -108,7 +108,7 @@ public class Styles extends QDialog
         else
             QApplication.setPalette(originalPalette);
     }
-    
+
     public void advanceProgressBar()
     {
         int curVal = progressBar.value();
@@ -119,16 +119,16 @@ public class Styles extends QDialog
     public void createTopLeftGroupBox()
     {
         topLeftGroupBox = new QGroupBox(tr("Group 1"));
-    
+
         radioButton1 = new QRadioButton(tr("Radio button 1"));
         radioButton2 = new QRadioButton(tr("Radio button 2"));
         radioButton3 = new QRadioButton(tr("Radio button 3"));
         radioButton1.setChecked(true);
-    
+
         checkBox = new QCheckBox(tr("Tri-state check box"));
         checkBox.setTristate(true);
         checkBox.setCheckState(Qt.CheckState.PartiallyChecked);
-    
+
         QVBoxLayout layout = new QVBoxLayout();
         layout.addWidget(radioButton1);
         layout.addWidget(radioButton2);
@@ -137,21 +137,21 @@ public class Styles extends QDialog
         layout.addStretch(1);
         topLeftGroupBox.setLayout(layout);
     }
-    
+
     private void createTopRightGroupBox()
     {
         topRightGroupBox = new QGroupBox(tr("Group 2"));
-    
+
         defaultPushButton = new QPushButton(tr("Default Push Button"));
         defaultPushButton.setDefault(true);
-    
+
         togglePushButton = new QPushButton(tr("Toggle Push Button"));
         togglePushButton.setCheckable(true);
         togglePushButton.setChecked(true);
-    
+
         flatPushButton = new QPushButton(tr("Flat Push Button"));
         flatPushButton.setFlat(true);
-    
+
         QVBoxLayout layout = new QVBoxLayout();
         layout.addWidget(defaultPushButton);
         layout.addWidget(togglePushButton);
@@ -165,30 +165,30 @@ public class Styles extends QDialog
         bottomLeftTabWidget = new QTabWidget();
         bottomLeftTabWidget.setSizePolicy(QSizePolicy.Policy.Preferred,
                                            QSizePolicy.Policy.Ignored);
-    
+
         QWidget tab1 = new QWidget();
         tableWidget = new QTableWidget(10, 10);
-    
+
         QHBoxLayout tab1hbox = new QHBoxLayout();
         tab1hbox.setMargin(5);
         tab1hbox.addWidget(tableWidget);
         tab1.setLayout(tab1hbox);
-    
+
         QWidget tab2 = new QWidget();
         textEdit = new QTextEdit();
-    
+
         textEdit.setPlainText(tr("Twinkle, twinkle, little star,\n" +
                                   "How I wonder what you are.\n" +
                                   "Up above the world so high,\n" +
                                   "Like a diamond in the sky.\n" +
                                   "Twinkle, twinkle, little star,\n" +
                                   "How I wonder what you are!\n"));
-    
+
         QHBoxLayout tab2hbox = new QHBoxLayout();
         tab2hbox.setMargin(5);
         tab2hbox.addWidget(textEdit);
         tab2.setLayout(tab2hbox);
-    
+
         bottomLeftTabWidget.addTab(tab1, tr("&Table"));
         bottomLeftTabWidget.addTab(tab2, tr("Text &Edit"));
     }
@@ -198,26 +198,26 @@ public class Styles extends QDialog
         bottomRightGroupBox = new QGroupBox(tr("Group 3"));
         bottomRightGroupBox.setCheckable(true);
         bottomRightGroupBox.setChecked(true);
-    
+
         lineEdit = new QLineEdit("s3cRe7");
         lineEdit.setEchoMode(QLineEdit.EchoMode.Password);
-    
+
         spinBox = new QSpinBox(bottomRightGroupBox);
         spinBox.setValue(50);
-    
+
         dateTimeEdit = new QDateTimeEdit(bottomRightGroupBox);
         dateTimeEdit.setDateTime(QDateTime.currentDateTime());
-    
+
         slider = new QSlider(Qt.Orientation.Horizontal, bottomRightGroupBox);
         slider.setValue(40);
-    
+
         scrollBar = new QScrollBar(Qt.Orientation.Horizontal, bottomRightGroupBox);
         scrollBar.setValue(60);
-    
+
         dial = new QDial(bottomRightGroupBox);
         dial.setValue(30);
         dial.setNotchesVisible(true);
-    
+
         QGridLayout layout = new QGridLayout();
         layout.addWidget(lineEdit, 0, 0, 1, 2);
         layout.addWidget(spinBox, 1, 0, 1, 2);
@@ -247,28 +247,28 @@ public class Styles extends QDialog
         {
             QColor beige = new QColor(236, 182, 120);
             QColor slightlyOpaqueBlack = new QColor(0, 0, 0, 63);
-            
+
             QPixmap backgroundImage = new QPixmap("classpath:com/trolltech/examples/images/woodbackground.png");
             QPixmap buttonImage = new QPixmap("classpath:com/trolltech/examples/images/woodbutton.png");
 
             QPixmap midImage = new QPixmap(buttonImage);
-            
+
             QPainter painter = new QPainter();
             painter.begin(midImage);
             painter.setPen(Qt.PenStyle.NoPen);
             painter.fillRect(midImage.rect(), new QBrush(slightlyOpaqueBlack));
             painter.end();
-            
+
             palette.setBrush(QPalette.ColorRole.BrightText, new QBrush(new QColor(Qt.GlobalColor.white)));
             palette.setBrush(QPalette.ColorRole.Base, new QBrush(beige));
             palette.setBrush(QPalette.ColorRole.Highlight, new QBrush(new QColor(Qt.GlobalColor.darkGreen)));
             setTexture(palette, QPalette.ColorRole.Button, buttonImage);
             setTexture(palette, QPalette.ColorRole.Mid, midImage);
             setTexture(palette, QPalette.ColorRole.Window, backgroundImage);
-            
+
             QBrush brush = palette.window();
             brush.setColor(brush.color().darker());
-            
+
             palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush);
             palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Button, brush);
             palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Mid, brush);
@@ -281,7 +281,7 @@ public class Styles extends QDialog
                 || widget instanceof QComboBox)
                 widget.setAttribute(Qt.WidgetAttribute.WA_Hover, true);
         }
-        
+
         @Override
         public void unpolish(QWidget widget)
         {
@@ -303,7 +303,7 @@ public class Styles extends QDialog
                     return super.pixelMetric(metric, option, widget);
             }
         }
-        
+
         @Override
         public int styleHint(StyleHint hint, QStyleOption option, QWidget widget,
                              QStyleHintReturn returnData)
@@ -320,7 +320,7 @@ public class Styles extends QDialog
 
         @Override
         public void drawPrimitive(QStyle.PrimitiveElement element, QStyleOption option,
-                                  QPainter painter, QWidget widget) 
+                                  QPainter painter, QWidget widget)
         {
             switch (element) {
                 case PE_PanelButtonCommand:
@@ -328,7 +328,7 @@ public class Styles extends QDialog
                     QColor slightlyOpaqueBlack = new QColor(0, 0, 0, 63);
                     QColor semiTransparentWhite = new QColor(255, 255, 255, 127 + delta);
                     QColor semiTransparentBlack = new QColor(0, 0, 0, 127 - delta);
-        
+
                     int x, y, width, height;
                     x = option.rect().x();
                     y = option.rect().y();
@@ -337,10 +337,10 @@ public class Styles extends QDialog
 
                     QPainterPath roundRect = roundRectPath(option.rect());
                     int radius = Math.min(width, height) / 2;
-        
+
                     QBrush brush;
                     boolean darker;
-        
+
                     if (option instanceof QStyleOptionButton &&
                         ((QStyleOptionButton) option).features().isSet(QStyleOptionButton.ButtonFeature.Flat)) {
                         brush = option.palette().brush(QPalette.ColorRole.Window);
@@ -359,7 +359,7 @@ public class Styles extends QDialog
                     painter.fillPath(roundRect, brush);
                     if (darker)
                         painter.fillPath(roundRect, new QBrush(slightlyOpaqueBlack));
-        
+
                     int penWidth;
                     if (radius < 10)
                         penWidth = 3;
@@ -367,22 +367,22 @@ public class Styles extends QDialog
                         penWidth = 5;
                     else
                         penWidth = 7;
-        
+
                     QPen topPen = new QPen(semiTransparentWhite, penWidth);
                     QPen bottomPen = new QPen(semiTransparentBlack, penWidth);
-        
+
                     if (option.state().isSet(StateFlag.State_Sunken) ||
                         option.state().isSet(StateFlag.State_On)) {
                         QPen tmpPen = topPen;
                         topPen = bottomPen;
                         bottomPen = tmpPen;
                     }
-        
+
                     int x1 = x;
                     int x2 = x + radius;
                     int x3 = x + width - radius;
                     int x4 = x + width;
-        
+
                     if (option.direction().equals(Qt.LayoutDirection.RightToLeft)) {
                         int tmp;
 
@@ -393,30 +393,30 @@ public class Styles extends QDialog
                         x3 = x2;
                         x2 = tmp;
                     }
-        
+
                     QPolygon topHalf = new QPolygon();
                     topHalf.add(new QPoint(x1, y));
                     topHalf.add(new QPoint(x4, y));
                     topHalf.add(new QPoint(x3, y + radius));
                     topHalf.add(new QPoint(x2, y + height - radius));
                     topHalf.add(new QPoint(x1, y + height));
-        
+
                     painter.setClipPath(roundRect);
                     painter.setClipRegion(new QRegion(topHalf), Qt.ClipOperation.IntersectClip);
                     painter.setPen(topPen);
                     painter.drawPath(roundRect);
-        
+
                     QPolygon bottomHalf = new QPolygon(topHalf);
                     bottomHalf.replace(0, new QPoint(x4, y + height));
                     painter.setClipPath(roundRect);
                     painter.setClipRegion(new QRegion(bottomHalf), Qt.ClipOperation.IntersectClip);
                     painter.setPen(bottomPen);
                     painter.drawPath(roundRect);
-        
-                    painter.setPen(option.palette().color(QPalette.ColorRole.Button));
+
+                    painter.setPen(option.palette().windowText().color());
                     painter.setClipping(false);
                     painter.drawPath(roundRect);
-        
+
                     painter.restore();
                 break;
                 default:
@@ -460,18 +460,18 @@ public class Styles extends QDialog
                 palette.setBrush(cg, role, new QBrush(color, pixmap));
             }
         }
-        
+
         private QPainterPath roundRectPath(QRect rect)
         {
             int radius = Math.min(rect.width(), rect.height()) / 2;
             int diam = 2 * radius;
-        
+
             int x1, y1, x2, y2;
             x1 = rect.left();
             y1 = rect.top();
             x2 = rect.right();
             y2 = rect.bottom();
-            
+
             QPainterPath path = new QPainterPath();
             path.moveTo(x2, y1 + radius);
             path.arcTo(new QRectF(x2 - diam, y1, diam, diam), 0.0, +90.0);
@@ -492,7 +492,7 @@ public class Styles extends QDialog
         QApplication.initialize(args);
 
         new Styles().setVisible(true);
-        
+
         QApplication.exec();
     }
 
