@@ -372,11 +372,11 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
                 || file == FileName.CanonicalName) {
             return QClassPathEngine.FileNamePrefix + m_jarFile.getName() + QClassPathEngine.FileNameDelim + entryFileName;
         } else if (file == FileName.BaseName) {
-            int pos = m_entryFileName.lastIndexOf("/", m_entryFileName.length() - 2);
+            int pos = m_entryFileName.lastIndexOf("/");
             return pos >= 0 ? m_entryFileName.substring(pos + 1) : entryFileName;
         } else if (file == FileName.PathName) {
-            int pos = m_entryFileName.lastIndexOf("/", m_entryFileName.length() - 2);
-            return pos >= 0 ? m_entryFileName.substring(0, pos) : "/";
+            int pos = m_entryFileName.lastIndexOf("/");
+            return pos > 0 ? m_entryFileName.substring(0, pos) : "";
         } else if (file == FileName.CanonicalPathName || file == FileName.AbsolutePathName) {
             return QClassPathEngine.FileNamePrefix + m_jarFile.getName() + QClassPathEngine.FileNameDelim + fileName(FileName.PathName);
         } else {
@@ -633,21 +633,24 @@ class QClassPathEngine extends QAbstractFileEngine
     public static void addSearchPath(String path)
     {
     	synchronized(QClassPathEngine.class){
-	        if (classpaths == null)
-	            findClassPaths();
+            if (classpaths == null)
+                findClassPaths();
 
             String url = makeUrl(path);
-	        classpaths.remove(url); // make sure it isn't added twice
-	        classpaths.add(makeUrl(path));
+            classpaths.remove(url); // make sure it isn't added twice
+            classpaths.add(makeUrl(path));
+
+            JarCache.reset(classpaths);
     	}
     }
 
     public static void removeSearchPath(String path)
     {
     	synchronized(QClassPathEngine.class){
-	        if (classpaths == null)
-	            findClassPaths();
-	        classpaths.remove(makeUrl(path));
+            if (classpaths == null)
+                findClassPaths();
+            classpaths.remove(makeUrl(path));
+            JarCache.reset(classpaths);
     	}
     }
 
@@ -677,7 +680,7 @@ class QClassPathEngine extends QAbstractFileEngine
         int first = 0;
         int last = search.length();
 
-        while (search.charAt(first) == '/')
+        while (first < last && search.charAt(first) == '/')
             ++first;
         if (search.endsWith("/"))
             --last;
@@ -828,11 +831,11 @@ class QClassPathEngine extends QAbstractFileEngine
         } else if (file == FileName.AbsoluteName || file == FileName.LinkName) {
             result = QClassPathEngine.FileNamePrefix + classPathEntry + FileNameDelim + m_baseName;
         } else if (file == FileName.BaseName) {
-            int pos = m_baseName.lastIndexOf("/", m_baseName.length() - 2);
-            result = pos >= 0 ? m_baseName.substring(pos + 1) : m_baseName;
+            int pos = m_baseName.lastIndexOf("/");
+            result = pos > 0 ? m_baseName.substring(pos + 1) : m_baseName;
         } else if (file == FileName.PathName) {
-            int pos = m_baseName.lastIndexOf("/", m_baseName.length() - 2);
-            result = pos >= 0 ? m_baseName.substring(0, pos) : "/";
+            int pos = m_baseName.lastIndexOf("/");
+            result = pos > 0 ? m_baseName.substring(0, pos) : "";
         } else if (file == FileName.AbsolutePathName) {
             result = QClassPathEngine.FileNamePrefix + classPathEntry + FileNameDelim + fileName(FileName.PathName);
         } else if (file == FileName.CanonicalPathName) {
