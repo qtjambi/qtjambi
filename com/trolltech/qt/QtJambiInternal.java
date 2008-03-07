@@ -33,8 +33,9 @@ public class QtJambiInternal {
 
     public static void setupDefaultPluginPath() {
         try {
-            String basePath = Utilities.filePathForClasses();
-            QCoreApplication.addLibraryPath(basePath + File.separatorChar + "plugins");
+            List<String> paths = com.trolltech.qt.internal.NativeLibraryManager.pluginPaths();
+            if (paths != null)
+                QCoreApplication.setLibraryPaths(paths);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,18 +111,18 @@ public class QtJambiInternal {
         private Object arguments[];
         private QSignalEmitter.AbstractSignal.Connection connection;
     }
-    
+
     public static int[] resolveConversionSchema(Class<?> inputParameterTypes[], Class<?> outputParameterTypes[]) {
-        int returned[] = new int[outputParameterTypes.length];    
+        int returned[] = new int[outputParameterTypes.length];
         for (int i = 0; i < returned.length; ++i) {
             returned[i] = 'L';
             if (outputParameterTypes[i].isPrimitive())
                 returned[i] = QtJambiInternal.primitiveToByte(inputParameterTypes[i]);
         }
-        
+
         return returned;
     }
-    
+
     public static byte typeConversionCode(Class<?> cls) {
         if (cls.isPrimitive())
             return QtJambiInternal.primitiveToByte(cls);
@@ -587,14 +588,14 @@ public class QtJambiInternal {
                                                    Thread.currentThread());
             }
     }
-    
+
     public static String charPointerToString(QNativePointer np) {
         int pos = 0; byte b;
-        
+
         String returned = "";
         while ((b = np.byteAt(pos++)) != 0)
-            returned += Byte.toString(b);         
-        
+            returned += Byte.toString(b);
+
         return returned;
     }
 
@@ -803,7 +804,7 @@ public class QtJambiInternal {
     private final static int MethodAccessPublic                     = 0x2;
     private final static int MethodSignal                           = 0x4;
     private final static int MethodSlot                             = 0x8;
-    
+
     private final static int PropertyReadable                       = 0x00000001;
     private final static int PropertyWritable                       = 0x00000002;
 private final static int PropertyResettable                         = 0x00000004;
@@ -1026,7 +1027,7 @@ private final static int PropertyResettable                         = 0x00000004
     private static boolean isBoolean(Class<?> type) {
         return (type == Boolean.class || type == Boolean.TYPE);
     }
-    
+
     private static Boolean isUser(Method m) {
         return (m.getAnnotation(QtPropertyUser.class) != null);
     }
@@ -1151,7 +1152,7 @@ private final static int PropertyResettable                         = 0x00000004
                 && declaredMethod.getName().startsWith("set")
                 && Character.isUpperCase(declaredMethod.getName().charAt(3))
                 && isValidSetter(declaredMethod)) {
-                
+
                 Class<?> paramType = declaredMethod.getParameterTypes()[0];
                 String propertyName = Character.toLowerCase(declaredMethod.getName().charAt(3))
                                     + declaredMethod.getName().substring(4);
@@ -1459,16 +1460,16 @@ private final static int PropertyResettable                         = 0x00000004
 
         return -1;
     }
-    
-    public static QtProperty userProperty(long nativeId) 
+
+    public static QtProperty userProperty(long nativeId)
     {
         List<QtProperty> properties = properties(nativeId);
-        
+
         for (QtProperty property : properties) {
-            if (property.isUser()) 
+            if (property.isUser())
                 return property;
         }
-        
+
         return null;
     }
 
