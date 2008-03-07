@@ -113,8 +113,9 @@ public class Http extends QDialog
         httpRequestAborted = false;
         httpGetId = http.get(url.path(), file);
 
+        progressDialog.show();
         progressDialog.setWindowTitle(tr("HTTP"));
-        progressDialog.setLabelText(tr("Downloading") + fileName + tr("."));
+        progressDialog.setLabelText(tr("Downloading: ") + fileName + tr("."));
         downloadButton.setEnabled(false);
     }
 
@@ -156,7 +157,7 @@ public class Http extends QDialog
                                      http.errorString() + tr("."));
         } else {
             String fileName = new QFileInfo(new QUrl(urlLineEdit.text()).path()).fileName();
-            statusLabel.setText(tr("Downloaded ") + fileName + tr(" to current directory."));
+            statusLabel.setText(tr("Downloaded: \"") + fileName + tr("\" to current directory."));
         }
 
         downloadButton.setEnabled(true);
