@@ -683,6 +683,10 @@ public class NativeLibraryManager {
         out.close();
     }
 
+    public static boolean isUsingDeploymentSpec() {
+        unpack();
+        return deploymentSpecs != null && deploymentSpecs.size() != 0;
+    }
 
     private static Map<String, LibraryEntry> libraryMap = new HashMap<String, LibraryEntry>();
     private static Map<String, LibraryEntry> neverLoad = new HashMap<String, LibraryEntry>();

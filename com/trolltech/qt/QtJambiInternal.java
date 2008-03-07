@@ -33,9 +33,10 @@ public class QtJambiInternal {
 
     public static void setupDefaultPluginPath() {
         try {
-            List<String> paths = com.trolltech.qt.internal.NativeLibraryManager.pluginPaths();
-            if (paths != null)
+            if (com.trolltech.qt.internal.NativeLibraryManager.isUsingDeploymentSpec()) {
+                List<String> paths = com.trolltech.qt.internal.NativeLibraryManager.pluginPaths();
                 QCoreApplication.setLibraryPaths(paths);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
