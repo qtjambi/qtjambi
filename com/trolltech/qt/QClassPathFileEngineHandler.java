@@ -1118,7 +1118,6 @@ class QClassPathEngine extends QAbstractFileEngine
             addJarFileFromPath(jarFile, fileName, isDirectory);
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
 
