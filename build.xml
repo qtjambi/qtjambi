@@ -281,6 +281,7 @@
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
 	    <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
             <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
+	    <library name="QtDBus"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.dbus}"/>
             <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}" /> 
             <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}" />
             <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}" />

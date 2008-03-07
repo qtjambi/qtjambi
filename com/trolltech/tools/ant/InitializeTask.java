@@ -59,6 +59,7 @@ public class InitializeTask extends Task {
     public static final String PHONON_DS9       = "qtjambi.phonon_ds9";
     public static final String PHONON_GSTREAMER = "qtjambi.phonon_gstreamer";
     public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
+    public static final String DBUS             = "qtjambi.dbus";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -113,9 +114,17 @@ public class InitializeTask extends Task {
         if ("true".equals(phonon)) {
             props.setNewProperty(null, PHONON, phonon);
             switch (OSInfo.os()) {
-            case Windows: props.setNewProperty(null, PHONON_DS9, true); break;
-            case Linux: props.setNewProperty(null, PHONON_GSTREAMER, true); break;
-            case MacOS: props.setNewProperty(null, PHONON_QT7, true); break;
+            case Windows:
+                props.setNewProperty(null, PHONON_DS9, true);
+                break;
+            case Linux:
+                props.setNewProperty(null, PHONON_GSTREAMER, true);
+                props.setNewProperty(null, DBUS, doesQtLibExist("QtDBus", 4));
+    break;
+            case MacOS:
+                props.setNewProperty(null, PHONON_QT7, true);
+                props.setNewProperty(null, DBUS, doesQtLibExist("QtDBus", 4));
+                break;
             }
         }
 
