@@ -495,65 +495,65 @@
     <modify-function signature="operator*=(QTransform)" access="private"/>
   </value-type>  
   
-  <value-type name="QStyleOption" polymorphic-base="yes" polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Default">
+  <value-type name="QStyleOption" delete-in-main-thread="yes" polymorphic-base="yes" polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Default">
       <modify-function signature="operator=(QStyleOption)" remove="all"/>
       <modify-function signature="init(const QWidget*)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
-  <value-type name="QStyleOptionGraphicsItem" polymorphic-id-expression="%1-&gt;type == QStyleOptionGraphicsItem::Type &amp;&amp; %1-&gt;version == QStyleOptionGraphicsItem::Version"/>
-  <value-type name="QStyleOptionSizeGrip" polymorphic-id-expression="%1-&gt;type == QStyleOptionSizeGrip::Type &amp;&amp; %1-&gt;version == QStyleOptionSizeGrip::Version"/>
-  <value-type name="QStyleOptionButton" polymorphic-id-expression="%1-&gt;type == QStyleOptionButton::Type &amp;&amp; %1-&gt;version == QStyleOptionButton::Version"/>
-  <value-type name="QStyleOptionComboBox" polymorphic-id-expression="%1-&gt;type == QStyleOptionComboBox::Type &amp;&amp; %1-&gt;version == QStyleOptionComboBox::Version"/>
-  <value-type name="QStyleOptionComplex" polymorphic-id-expression="%1-&gt;type == QStyleOptionComplex::Type &amp;&amp; %1-&gt;version == QStyleOptionComplex::Version"/>
-  <value-type name="QStyleOptionDockWidget" polymorphic-id-expression="%1-&gt;type == QStyleOptionDockWidget::Type &amp;&amp; %1-&gt;version == QStyleOptionDockWidget::Version"/>
-  <value-type name="QStyleOptionDockWidgetV2" polymorphic-id-expression="%1-&gt;type == QStyleOptionDockWidgetV2::Type &amp;&amp; %1-&gt;version == QStyleOptionDockWidgetV2::Version"> 
+  <value-type name="QStyleOptionGraphicsItem" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionGraphicsItem::Type &amp;&amp; %1-&gt;version == QStyleOptionGraphicsItem::Version"/>
+  <value-type name="QStyleOptionSizeGrip" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionSizeGrip::Type &amp;&amp; %1-&gt;version == QStyleOptionSizeGrip::Version"/>
+  <value-type name="QStyleOptionButton" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionButton::Type &amp;&amp; %1-&gt;version == QStyleOptionButton::Version"/>
+  <value-type name="QStyleOptionComboBox" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionComboBox::Type &amp;&amp; %1-&gt;version == QStyleOptionComboBox::Version"/>
+  <value-type name="QStyleOptionComplex" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionComplex::Type &amp;&amp; %1-&gt;version == QStyleOptionComplex::Version"/>
+  <value-type name="QStyleOptionDockWidget" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionDockWidget::Type &amp;&amp; %1-&gt;version == QStyleOptionDockWidget::Version"/>
+  <value-type name="QStyleOptionDockWidgetV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionDockWidgetV2::Type &amp;&amp; %1-&gt;version == QStyleOptionDockWidgetV2::Version"> 
       <modify-function signature="operator=(QStyleOptionDockWidget)" remove="all"/>
   </value-type>
-  <value-type name="QStyleOptionFocusRect" polymorphic-id-expression="%1-&gt;type == QStyleOptionFocusRect::Type &amp;&amp; %1-&gt;version == QStyleOptionFocusRect::Version"/>
-  <value-type name="QStyleOptionFrame" polymorphic-id-expression="%1-&gt;type == QStyleOptionFrame::Type &amp;&amp; %1-&gt;version == QStyleOptionFrame::Version"/>
+  <value-type name="QStyleOptionFocusRect" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionFocusRect::Type &amp;&amp; %1-&gt;version == QStyleOptionFocusRect::Version"/>
+  <value-type name="QStyleOptionFrame" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionFrame::Type &amp;&amp; %1-&gt;version == QStyleOptionFrame::Version"/>
               
-  <value-type name="QStyleOptionFrameV2" polymorphic-id-expression="%1-&gt;type == QStyleOptionFrameV2::Type &amp;&amp; %1-&gt;version == QStyleOptionFrameV2::Version">
+  <value-type name="QStyleOptionFrameV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionFrameV2::Type &amp;&amp; %1-&gt;version == QStyleOptionFrameV2::Version">
     <modify-function signature="operator=(QStyleOptionFrame)" remove="all"/>
   </value-type>              
               
-  <value-type name="QStyleOptionGroupBox" polymorphic-id-expression="%1-&gt;type == QStyleOptionGroupBox::Type &amp;&amp; %1-&gt;version == QStyleOptionGroupBox::Version"/>
-  <value-type name="QStyleOptionHeader" polymorphic-id-expression="%1-&gt;type == QStyleOptionHeader::Type &amp;&amp; %1-&gt;version == QStyleOptionHeader::Version"/>
-  <value-type name="QStyleOptionMenuItem" polymorphic-id-expression="%1-&gt;type == QStyleOptionMenuItem::Type &amp;&amp; %1-&gt;version == QStyleOptionMenuItem::Version"/>
-  <value-type name="QStyleOptionProgressBar" polymorphic-id-expression="%1-&gt;type == QStyleOptionProgressBar::Type &amp;&amp; %1-&gt;version == QStyleOptionProgressBar::Version"/>
+  <value-type name="QStyleOptionGroupBox" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionGroupBox::Type &amp;&amp; %1-&gt;version == QStyleOptionGroupBox::Version"/>
+  <value-type name="QStyleOptionHeader" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionHeader::Type &amp;&amp; %1-&gt;version == QStyleOptionHeader::Version"/>
+  <value-type name="QStyleOptionMenuItem" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionMenuItem::Type &amp;&amp; %1-&gt;version == QStyleOptionMenuItem::Version"/>
+  <value-type name="QStyleOptionProgressBar" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionProgressBar::Type &amp;&amp; %1-&gt;version == QStyleOptionProgressBar::Version"/>
               
-  <value-type name="QStyleOptionProgressBarV2" polymorphic-id-expression="%1-&gt;type == QStyleOptionProgressBarV2::Type &amp;&amp; %1-&gt;version == QStyleOptionProgressBarV2::Version">
+  <value-type name="QStyleOptionProgressBarV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionProgressBarV2::Type &amp;&amp; %1-&gt;version == QStyleOptionProgressBarV2::Version">
     <modify-function signature="operator=(QStyleOptionProgressBar)" remove="all"/>
   </value-type>              
   
-  <value-type name="QStyleOptionRubberBand" polymorphic-id-expression="%1-&gt;type == QStyleOptionRubberBand::Type &amp;&amp; %1-&gt;version == QStyleOptionRubberBand::Version"/>
-  <value-type name="QStyleOptionSlider" polymorphic-id-expression="%1-&gt;type == QStyleOptionSlider::Type &amp;&amp; %1-&gt;version == QStyleOptionSlider::Version"/>
-  <value-type name="QStyleOptionSpinBox" polymorphic-id-expression="%1-&gt;type == QStyleOptionSpinBox::Type &amp;&amp; %1-&gt;version == QStyleOptionSpinBox::Version"/>
-  <value-type name="QStyleOptionTab" polymorphic-id-expression="%1-&gt;type == QStyleOptionTab::Type &amp;&amp; %1-&gt;version == QStyleOptionTab::Version"/>
-  <value-type name="QStyleOptionTabV2" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabV2::Type &amp;&amp; %1-&gt;version == QStyleOptionTabV2::Version">
+  <value-type name="QStyleOptionRubberBand" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionRubberBand::Type &amp;&amp; %1-&gt;version == QStyleOptionRubberBand::Version"/>
+  <value-type name="QStyleOptionSlider" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionSlider::Type &amp;&amp; %1-&gt;version == QStyleOptionSlider::Version"/>
+  <value-type name="QStyleOptionSpinBox" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionSpinBox::Type &amp;&amp; %1-&gt;version == QStyleOptionSpinBox::Version"/>
+  <value-type name="QStyleOptionTab" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTab::Type &amp;&amp; %1-&gt;version == QStyleOptionTab::Version"/>
+  <value-type name="QStyleOptionTabV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabV2::Type &amp;&amp; %1-&gt;version == QStyleOptionTabV2::Version">
     <modify-function signature="operator=(const QStyleOptionTab &amp;)" remove="all"/>
   </value-type>             
-  <value-type name="QStyleOptionTabBarBase" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabBarBase::Type &amp;&amp; %1-&gt;version == QStyleOptionTabBarBase::Version"/> 
-  <value-type name="QStyleOptionTabWidgetFrame" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabWidgetFrame::Type &amp;&amp; %1-&gt;version == QStyleOptionTabWidgetFrame::Version"/>
-  <value-type name="QStyleOptionTitleBar" polymorphic-id-expression="%1-&gt;type == QStyleOptionTitleBar::Type &amp;&amp; %1-&gt;version == QStyleOptionTitleBar::Version"/>
-  <value-type name="QStyleOptionToolBar" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBar::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBar::Version"/>
-  <value-type name="QStyleOptionToolBox" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBox::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBox::Version"/>
-  <value-type name="QStyleOptionToolBoxV2" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBoxV2::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBoxV2::Version">
+  <value-type name="QStyleOptionTabBarBase" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabBarBase::Type &amp;&amp; %1-&gt;version == QStyleOptionTabBarBase::Version"/> 
+  <value-type name="QStyleOptionTabWidgetFrame" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabWidgetFrame::Type &amp;&amp; %1-&gt;version == QStyleOptionTabWidgetFrame::Version"/>
+  <value-type name="QStyleOptionTitleBar" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTitleBar::Type &amp;&amp; %1-&gt;version == QStyleOptionTitleBar::Version"/>
+  <value-type name="QStyleOptionToolBar" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBar::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBar::Version"/>
+  <value-type name="QStyleOptionToolBox" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBox::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBox::Version"/>
+  <value-type name="QStyleOptionToolBoxV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBoxV2::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBoxV2::Version">
     <modify-function signature="operator=(QStyleOptionToolBox)" remove="all"/>
   </value-type>              
-  <value-type name="QStyleOptionToolButton" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolButton::Type &amp;&amp; %1-&gt;version == QStyleOptionToolButton::Version"/>
-  <value-type name="QStyleOptionViewItem" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItem::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItem::Version"/>  
-  <value-type name="QStyleOptionViewItemV2" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItemV2::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItemV2::Version">                
+  <value-type name="QStyleOptionToolButton" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolButton::Type &amp;&amp; %1-&gt;version == QStyleOptionToolButton::Version"/>
+  <value-type name="QStyleOptionViewItem" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItem::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItem::Version"/>  
+  <value-type name="QStyleOptionViewItemV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItemV2::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItemV2::Version">                
     <modify-function signature="operator=(QStyleOptionViewItem)" remove="all"/>
   </value-type>              
-  <value-type name="QStyleOptionViewItemV3" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItemV3::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItemV3::Version">
+  <value-type name="QStyleOptionViewItemV3" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItemV3::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItemV3::Version">
     <modify-function signature="operator=(QStyleOptionViewItem)" remove="all"/>
   </value-type>              
-  <value-type name="QStyleOptionViewItemV4" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItemV4::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItemV4::Version">
+  <value-type name="QStyleOptionViewItemV4" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionViewItemV4::Type &amp;&amp; %1-&gt;version == QStyleOptionViewItemV4::Version">
     <modify-function signature="operator=(QStyleOptionViewItem)" remove="all" />
   </value-type>
-  <value-type name="QTextFragment">  
+  <value-type name="QTextFragment" delete-in-main-thread="yes">  
     <modify-function signature="operator=(QTextFragment)" remove="all"/>
   </value-type>
-  <value-type name="QBitmap">  
+  <value-type name="QBitmap" delete-in-main-thread="yes">  
     <modify-function signature="operator=(const QPixmap &amp;)" remove="all"/>
     <modify-function signature="QBitmap(QString,const char*)" access="private">
         <modify-argument index="2"> <remove-default-expression/> </modify-argument>
@@ -566,26 +566,26 @@
         </modify-argument>
     </modify-function>
   </value-type>
-  <value-type name="QTextInlineObject"/>
+  <value-type name="QTextInlineObject" delete-in-main-thread="yes"/>
   <value-type name="QSizePolicy"/>
   <value-type name="QTableWidgetSelectionRange"/>
-  <value-type name="QTextDocumentFragment">
+  <value-type name="QTextDocumentFragment" delete-in-main-thread="yes">
     <modify-function signature="operator=(QTextDocumentFragment)" remove="all"/>
   </value-type>
-  <value-type name="QTextOption">
+  <value-type name="QTextOption" delete-in-main-thread="yes">
     <modify-function signature="operator=(const QTextOption &amp;)" remove="all"/>
   </value-type>
-  <value-type name="QTextLine">
+  <value-type name="QTextLine" delete-in-main-thread="yes">
     <modify-function signature="cursorToX(int*,QTextLine::Edge)const">
         <remove/>
     </modify-function>
   </value-type>
-  <value-type name="QTextTableFormat"/>
-  <value-type name="QTextImageFormat"/>
-  <value-type name="QTextFrameFormat">
+  <value-type name="QTextTableFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextImageFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextFrameFormat" delete-in-main-thread="yes">
     <modify-function signature="isValid()const" access="non-final"/>
   </value-type>
-  <value-type name="QTextLength"/>
+  <value-type name="QTextLength" delete-in-main-thread="yes"/>
   <value-type name="QItemSelectionRange">
       <modify-function signature="intersect(QItemSelectionRange)const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
@@ -609,7 +609,7 @@
     <modify-function signature="operator[](uint)const" access="private"/>
   </value-type>
 
-  <value-type name="QPicture">
+  <value-type name="QPicture" delete-in-main-thread="yes">
     <modify-function signature="operator=(QPicture)" remove="all"/>
     <modify-function signature="pictureFormat(QString)">
         <remove/>
@@ -642,7 +642,7 @@
 
   </value-type>
 
-  <value-type name="QTextBlock">
+  <value-type name="QTextBlock" delete-in-main-thread="yes">
     <modify-function signature="operator=(QTextBlock)" remove="all"/>
     <modify-function signature="setUserData(QTextBlockUserData *)">
         <modify-argument index="1">
@@ -650,21 +650,21 @@
         </modify-argument>
      </modify-function>
   </value-type>
-  <value-type name="QTextBlockFormat"/>
-  <value-type name="QTextTableCellFormat" />
-  <value-type name="QTextCharFormat">
+  <value-type name="QTextBlockFormat" delete-in-main-thread="yes"/>
+  <value-type name="QTextTableCellFormat" delete-in-main-thread="yes" />
+  <value-type name="QTextCharFormat" delete-in-main-thread="yes">
     <modify-function signature="isValid()const" access="non-final"/>
   
       <modify-function signature="anchorName()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setAnchorName(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
-  <value-type name="QTextFormat">
+  <value-type name="QTextFormat" delete-in-main-thread="yes">
     <modify-function signature="operator=(QTextFormat)" remove="all"/>
     <modify-function signature="isValid()const" access="non-final"/>
     
   </value-type>
   
-  <value-type name="QTextListFormat"/>
+  <value-type name="QTextListFormat" delete-in-main-thread="yes"/>
   <value-type name="QPolygon">
     <modify-function signature="QPolygon(int, const int *)" remove="all"/>
     <modify-function signature="operator+(QVector&lt;QPoint&gt;)const" remove="all"/>
@@ -680,7 +680,7 @@
     <modify-function signature="operator&lt;&lt;(QVector&lt;QPointF&gt;)" remove="all"/>
   </value-type>
 
-  <value-type name="QIcon">    
+  <value-type name="QIcon" delete-in-main-thread="yes">    
     <modify-function signature="operator=(QIcon)" remove="all"/>
     <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="QIcon(QIconEngineV2 *)">
@@ -695,7 +695,7 @@
     </modify-function>    
   </value-type>  
 
-  <value-type name="QTextFrame::iterator">
+  <value-type name="QTextFrame::iterator" delete-in-main-thread="yes">
     <include file-name="QTextFrame" location="global"/>
     <modify-function signature="operator++(int)" remove="all"/>
     <modify-function signature="operator--(int)" remove="all"/>
@@ -704,7 +704,7 @@
     <modify-function signature="operator--()" access="private"/>
   </value-type>
 
-  <value-type name="QTreeWidgetItemIterator">  
+  <value-type name="QTreeWidgetItemIterator" delete-in-main-thread="yes">  
     <custom-constructor>
     return new QTreeWidgetItemIterator(*copy);
     </custom-constructor>
@@ -721,7 +721,7 @@
     <modify-function signature="operator*()const" access="private"/>
    </value-type>
    
-  <value-type name="QTextBlock::iterator">
+  <value-type name="QTextBlock::iterator" delete-in-main-thread="yes">
     <include file-name="QTextBlock" location="global"/>
     
     <modify-function signature="operator++()" access="private"/>
@@ -730,19 +730,19 @@
     <modify-function signature="operator--(int)" remove="all"/>
    </value-type>
 
-  <value-type name="QAbstractTextDocumentLayout::PaintContext">
+  <value-type name="QAbstractTextDocumentLayout::PaintContext" delete-in-main-thread="yes">
     <include file-name="QAbstractTextDocumentLayout" location="global"/>
   </value-type>
-  <value-type name="QAbstractTextDocumentLayout::Selection"/>
+  <value-type name="QAbstractTextDocumentLayout::Selection" delete-in-main-thread="yes"/>
 
-  <value-type name="QPixmap">
+  <value-type name="QPixmap" delete-in-main-thread="yes">
     <modify-function signature="operator=(QPixmap)" remove="all"/>
     <modify-function signature="operator!()const" remove="all"/>
     <modify-function signature="QPixmap(const char **)" access="private"/>
     <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->    
   </value-type>
 
-  <value-type name="QTextCursor">
+  <value-type name="QTextCursor" delete-in-main-thread="yes">
     <extra-includes>
         <include file-name="QTextBlock" location="global"/>
         <include file-name="QTextDocumentFragment" location="global"/>
@@ -767,7 +767,7 @@
     </custom-destructor>
   </value-type>
   
-  <value-type name="QItemSelection"> 
+  <value-type name="QItemSelection" delete-in-main-thread="yes"> 
 
     <modify-function signature="operator+(const QList&lt;QItemSelectionRange&gt;&amp;)const" remove="all"/>
     <modify-function signature="operator+=(const QList&lt;QItemSelectionRange&gt;&amp;)" remove="all"/>
@@ -838,7 +838,7 @@
     </custom-destructor>  
   </value-type>
 
-  <value-type name="QFontInfo">
+  <value-type name="QFontInfo" delete-in-main-thread="yes">
     <custom-constructor>
     return new QFontInfo(*copy);
     </custom-constructor>
@@ -866,18 +866,18 @@
     <modify-function signature="operator QPointF()const" access="private"/>
   </value-type>
 
-  <value-type name="QTextEdit::ExtraSelection">
+  <value-type name="QTextEdit::ExtraSelection" delete-in-main-thread="yes">
     <include file-name="QTextEdit" location="global"/>
   </value-type>
 
-  <value-type name="QFont">
+  <value-type name="QFont" delete-in-main-thread="yes">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>    
     <modify-function signature="operator=(QFont)" remove="all"/>
   </value-type>
 
-  <value-type name="QTextTableCell">
+  <value-type name="QTextTableCell" delete-in-main-thread="yes">
     <extra-includes>
         <include file-name="QTextCursor" location="global"/>
     </extra-includes>
@@ -983,7 +983,7 @@
       <modify-function signature="textLanguages()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
-  <value-type name="QColormap">
+  <value-type name="QColormap" delete-in-main-thread="yes">
     <modify-function signature="operator=(QColormap)" remove="all"/>
     <extra-includes>
         <include file-name="QColor" location="global"/>
@@ -996,14 +996,14 @@
     </custom-destructor>    
   </value-type>
 
-  <value-type name="QCursor">  
+  <value-type name="QCursor" delete-in-main-thread="yes">  
      <extra-includes>
         <include file-name="QPixmap" location="global"/>
     </extra-includes>
     <modify-function signature="operator=(QCursor)" remove="all"/>
   </value-type>
       
-  <value-type name="QFontDatabase">
+  <value-type name="QFontDatabase" delete-in-main-thread="yes">
       <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
@@ -1063,7 +1063,7 @@
       <modify-function signature="light(int)const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
  
-  <value-type name="QFontMetricsF">
+  <value-type name="QFontMetricsF" delete-in-main-thread="yes">
     <custom-constructor>
         return new QFontMetricsF(*copy);
     </custom-constructor>
@@ -1102,7 +1102,7 @@
    </value-type>
    <value-type name="QTextOption::Tab" />
 
-  <value-type name="QFontMetrics">
+  <value-type name="QFontMetrics" delete-in-main-thread="yes">
     <custom-constructor>
         return new QFontMetrics(*copy);
     </custom-constructor>
@@ -1183,7 +1183,7 @@
   <interface-type name="QLayoutItem"/>
   <interface-type name="QPaintDevice"/>
 
-  <interface-type name="QGraphicsItem">
+  <interface-type name="QGraphicsItem" delete-in-main-thread="yes">
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
     
     <modify-function signature="paint(QPainter*,const QStyleOptionGraphicsItem*,QWidget*)">
@@ -1278,7 +1278,7 @@
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </interface-type>  
   
-  <object-type name="QAbstractGraphicsShapeItem">
+  <object-type name="QAbstractGraphicsShapeItem" delete-in-main-thread="yes">
     <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*,QGraphicsScene*)">
         <inject-code position="end">
             <argument-map index="1" meta-name="%1"/>
@@ -1502,7 +1502,7 @@
   </object-type>
   <object-type name="QFontComboBox"/>
   <object-type name="QFontDialog"/>
-  <object-type name="QGraphicsEllipseItem"/>
+  <object-type name="QGraphicsEllipseItem" delete-in-main-thread="yes"/>
   <object-type name="QGraphicsItemAnimation" >
     <modify-function signature="setItem(QGraphicsItem*)">
         <modify-argument index="1">
@@ -1515,29 +1515,29 @@
         </modify-argument>
     </modify-function>  
   </object-type>
-  <object-type name="QGraphicsItemGroup">
+  <object-type name="QGraphicsItemGroup" delete-in-main-thread="yes"> 
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsLineItem">
+  <object-type name="QGraphicsLineItem" delete-in-main-thread="yes">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsPathItem"/>
+  <object-type name="QGraphicsPathItem" delete-in-main-thread="yes"/>
    
-  <object-type name="QGraphicsPixmapItem">
+  <object-type name="QGraphicsPixmapItem" delete-in-main-thread="yes">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QGraphicsPolygonItem"/>
-  <object-type name="QGraphicsRectItem"/>
-  <object-type name="QGraphicsSimpleTextItem"/>
+  <object-type name="QGraphicsPolygonItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsRectItem" delete-in-main-thread="yes"/>
+  <object-type name="QGraphicsSimpleTextItem" delete-in-main-thread="yes"/>
   <object-type name="QHBoxLayout"/>
   <object-type name="QHeaderView">
     <modify-function signature="initStyleOption(QStyleOptionHeader*)const">
@@ -2002,7 +2002,7 @@
   <object-type name="QStyleHintReturn"/>
   <object-type name="QStyleHintReturnVariant"/>
   <object-type name="QStyleHintReturnMask"/>
-  <object-type name="QStylePainter"/>
+  <object-type name="QStylePainter" delete-in-main-thread="yes"/>
   <object-type name="QSyntaxHighlighter">
     <modify-function signature="setCurrentBlockUserData(QTextBlockUserData*)">
         <modify-argument index="1">
@@ -2048,16 +2048,16 @@
   
       <modify-function signature="sortByColumn(int)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QTextBlockGroup"/>
-  <object-type name="QTextBlockUserData"/>
-  <object-type name="QTextItem"/>
-  <object-type name="QTextList">
+  <object-type name="QTextBlockGroup" delete-in-main-thread="yes"/>
+  <object-type name="QTextBlockUserData" delete-in-main-thread="yes"/>
+  <object-type name="QTextItem" delete-in-main-thread="yes"/>
+  <object-type name="QTextList" delete-in-main-thread="yes">
     <modify-function signature="format()const" rename="textListFormat"/>
   
       <modify-function signature="isEmpty()const" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  <object-type name="QTextObject"/>
-  <object-type name="QTextObjectInterface">
+  <object-type name="QTextObject" delete-in-main-thread="yes"/>
+  <object-type name="QTextObjectInterface" delete-in-main-thread="yes">
     <modify-function signature="drawObject(QPainter*,QRectF,QTextDocument*,int,QTextFormat)">
         <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
@@ -2948,7 +2948,7 @@
       <modify-function signature="elidedText(QFontMetrics, int, Qt::TextElideMode, QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
 
-  <object-type name="QTableWidgetItem">
+  <object-type name="QTableWidgetItem" delete-in-main-thread="yes">
     <modify-function signature="operator=(const QTableWidgetItem&amp;)" remove="all"/>
     <modify-function signature="clone() const">
         <modify-argument index="return">
@@ -2973,7 +2973,7 @@
 
   </object-type>
 
-  <object-type name="QListWidgetItem">
+  <object-type name="QListWidgetItem" delete-in-main-thread="yes">
   
     <modify-function signature="operator&lt;(QListWidgetItem)const">
         <modify-argument index="1" invalidate-after-use="yes" />
@@ -3068,7 +3068,7 @@
   </object-type>
 
 
-  <object-type name="QTreeWidgetItem">
+  <object-type name="QTreeWidgetItem" delete-in-main-thread="yes">
 
     <modify-function signature="operator&lt;(QTreeWidgetItem)const">
         <modify-argument index="1" invalidate-after-use="yes" />
@@ -3495,7 +3495,7 @@
     </modify-function>
   </object-type>
 
-  <object-type name="QTextFrame">
+  <object-type name="QTextFrame" delete-in-main-thread="yes">
     <extra-includes>
         <include file-name="QTextCursor" location="global"/>
     </extra-includes>              
@@ -4445,7 +4445,7 @@
     </modify-function>
   </object-type>
 
-  <object-type name="QPrinter">
+  <object-type name="QPrinter" delete-in-main-thread="yes">
     <modify-function signature="setEngines(QPrintEngine*,QPaintEngine*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcPrintEngine"/>
@@ -4753,7 +4753,7 @@
         </modify-argument>    
     </modify-function>
   </object-type>
-  <object-type name="QGraphicsGridLayout">
+  <object-type name="QGraphicsGridLayout" delete-in-main-thread="yes">
     <modify-function signature="addItem(QGraphicsLayoutItem*,int,int,QFlags&lt;Qt::AlignmentFlag&gt;)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcItems" />
@@ -4770,7 +4770,7 @@
         </modify-argument>
     </modify-function>
   </object-type>  
-  <object-type name="QGraphicsLayout">
+  <object-type name="QGraphicsLayout" delete-in-main-thread="yes">
   
     <modify-function signature="widgetEvent(QEvent*)">
         <modify-argument index="1" invalidate-after-use="yes" />
@@ -4781,14 +4781,14 @@
         </modify-argument>
     </modify-function>
   </object-type>  
-  <interface-type name="QGraphicsLayoutItem">
+  <interface-type name="QGraphicsLayoutItem" delete-in-main-thread="yes">
     <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcParentLayoutItem" />
         </modify-argument>
     </modify-function>  
   </interface-type>
-  <object-type name="QGraphicsLinearLayout">
+  <object-type name="QGraphicsLinearLayout" delete-in-main-thread="yes">
     <modify-function signature="addItem(QGraphicsLayoutItem*)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcItems" />
@@ -4990,6 +4990,5 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: object type 'QAccessible' extended by interface type 'QAbstractAccessibleFactory'. The resulting API will be less expressive than the original." />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextOption_Tab' has equals operators but no qHash() function"/>
-
 
 </typesystem>
