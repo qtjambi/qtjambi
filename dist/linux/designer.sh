@@ -1,5 +1,3 @@
-#!/bin/sh
-
 if [ -e binpatch ];
 then 
     ./binpatch
@@ -14,7 +12,7 @@ then
     echo "is available in the PATH environment."
 else
     VERSION=$(ls qtjambi-4*.jar)
-    VERSION=${VERSION:8:8}
-    CP=qtjambi-$VERSION.jar:qtjambi-examples-$VERSION.jar:qtjambi-designer-$VERSION.jar
+    VERSION=`echo $VERSION | awk '{ print substr($1, 9, 8); }'`
+    CP=$me/qtjambi-$VERSION.jar:$me/qtjambi-examples-$VERSION.jar:$me/qtjambi-designer-$VERSION.jar
     LD_LIBRARY_PATH=$me/lib QT_PLUGIN_PATH=$me/plugins CLASSPATH=$CP $me/bin/designer
 fi
