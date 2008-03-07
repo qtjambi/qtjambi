@@ -107,6 +107,13 @@ class JarCache {
             }
         }
 
+//         for (String s : cache.keySet()) {
+//             System.out.println(s);
+//             for (JarFile f : cache.get(s)) {
+//                 System.out.println(" - '" + f.getName() + "'");
+//             }
+//         }
+
         lock.writeLock().unlock();
     }
 
@@ -271,6 +278,13 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
             return new LinkedList<String>();
 
         List<String> result = new LinkedList<String>();
+
+        if (!filters.isSet(QDir.Filter.NoDotAndDotDot)) {
+            result.add(".");
+            if (m_entryFileName.length() > 0)
+                result.add("..");
+        }
+
 
         // Default to readable
         if (!filters.isSet(QDir.Filter.Readable, QDir.Filter.Writable, QDir.Filter.Executable))
@@ -675,50 +689,48 @@ class QClassPathEngine extends QAbstractFileEngine
             m_selectedSource = searchPath[0];
         }
 
-        String search = m_baseName;
-
         int first = 0;
-        int last = search.length();
+        int last = m_baseName.length();
 
-        while (first < last && search.charAt(first) == '/')
+        while (first < last && m_baseName.charAt(first) == '/')
             ++first;
-        if (search.endsWith("/"))
+        if (m_baseName.endsWith("/"))
             --last;
 
         if (last < first)
-            search = "";
+            m_baseName = "";
         else
-            search = search.substring(first, last).replace('\\', '/');
+            m_baseName = m_baseName.substring(first, last).replace('\\', '/');
 
         if (m_selectedSource.equals("*")) {
             if (classpaths == null)
                 findClassPaths();
 
-            List<JarFile> potentialJars = JarCache.jarFiles(search);
+            List<JarFile> potentialJars = JarCache.jarFiles(m_baseName);
 
             if (potentialJars != null) { // Its at least a directory which exists in jar files
                 for (JarFile path : potentialJars) {
-                    addJarFileFromPath(path, search, true);
+                    addJarFileFromPath(path, m_baseName, true);
                 }
             } else { // Its a file or directory, look for jar files which contains its a directory
 
                 String parentSearch;
 
-                int pos = search.lastIndexOf("/");
+                int pos = m_baseName.lastIndexOf("/");
                 if (pos < 0)
                     parentSearch = "";
                 else
-                    parentSearch = search.substring(0, pos);
+                    parentSearch = m_baseName.substring(0, pos);
 
                 List<JarFile> parentDirJars = JarCache.jarFiles(parentSearch);
                 if (parentDirJars != null) {
                     for (JarFile path : parentDirJars) {
-                        addJarFileFromPath(path, search, false);
+                        addJarFileFromPath(path, m_baseName, false);
                     }
                 }
 
                 for (String path : JarCache.classPathDirs()) try {
-                    addFromPath(new URL(makeUrl(path)), search);
+                    addFromPath(new URL(makeUrl(path)), m_baseName);
                 } catch (Exception e) {}
             }
         } else
@@ -726,9 +738,9 @@ class QClassPathEngine extends QAbstractFileEngine
                 File f = new File(m_selectedSource);
 
                 if (f.isDirectory())
-                    addFromPath(new URL(makeUrl(m_selectedSource)), search);
+                    addFromPath(new URL(makeUrl(m_selectedSource)), m_baseName);
                 else {
-                    addJarFileFromPath(new URL("jar:" + makeUrl(m_selectedSource) + "!/"), search);
+                    addJarFileFromPath(new URL("jar:" + makeUrl(m_selectedSource) + "!/"), m_baseName);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -843,6 +855,7 @@ class QClassPathEngine extends QAbstractFileEngine
         } else {
             throw new IllegalArgumentException("Unknown file name type: " + file);
         }
+
 
         return result;
     }
@@ -1054,16 +1067,34 @@ class QClassPathEngine extends QAbstractFileEngine
             // If the entry exists in the given file, look it up and
             // check if its a dir or not
             if (fileInJar != null) {
-                isDirectory = fileInJar.isDirectory();
-            } else {
+                try {
+                    isDirectory = fileInJar.isDirectory();
+
+                    // JarEntry will return a directory even though it
+                    // is not a directory, so we try to read a byte
+                    // from the entry in order to trigger an exception
+                    // in the case where it is a directory...
+                    if (!isDirectory) {
+                        InputStream s = jarFile.getInputStream(fileInJar);
+                        int x = s.read();
+                    }
+                } catch (Exception e) {
+                    isDirectory = true;
+                }
+
+            }
+
+            if (!isDirectory) {
                 // Otherwise, look if the directory exists in the
                 // cache...
                 List<JarFile> files = JarCache.jarFiles(fileName);
                 String jarFileName = jarFile.getName();
-                for (JarFile f : files) {
-                    if (f.getName().equals(jarFile.getName())) {
-                        isDirectory = true;
-                        break;
+                if (files != null) {
+                    for (JarFile f : files) {
+                        if (f.getName().equals(jarFileName)) {
+                            isDirectory = true;
+                            break;
+                        }
                     }
                 }
 
@@ -1087,6 +1118,7 @@ class QClassPathEngine extends QAbstractFileEngine
             addJarFileFromPath(jarFile, fileName, isDirectory);
 
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
