@@ -17,7 +17,7 @@
 #include "qtjambi_global.h"
 
 #include <QtCore/QList>
-#include <QtCore/QReadWriteLock>
+#include <QtCore/QMutex>
 
 class QtJambiFunctionTable;
 class QString;
@@ -60,22 +60,21 @@ jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char
 
 class StaticCachePrivate {
 public:
+    StaticCachePrivate() : lock(QMutex::Recursive) {}
     virtual ~StaticCachePrivate() { }
 
-    QReadWriteLock lock;
+    QMutex lock;
 };
 
 
 #define DECLARE_RESOLVE_FUNCTIONS(type_name) \
 public: \
     inline void resolve##type_name() { \
-        d->lock.lockForRead(); \
+        d->lock.lock(); \
         if (type_name.class_ref) { \
             d->lock.unlock(); \
             return; \
         } \
-        d->lock.unlock(); \
-        d->lock.lockForWrite(); \
         resolve##type_name##_internal(); \
         d->lock.unlock(); \
     } \
