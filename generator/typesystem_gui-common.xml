@@ -392,6 +392,7 @@
   <enum-type name="QWizard::WizardPixmap"/>
   <enum-type name="QWizard::WizardStyle"/>
   <enum-type name="QImageIOPlugin::Capability" flags="QImageIOPlugin::Capabilities" />
+  <enum-type name="QStackedLayout::StackingMode" />
 
   <enum-type name="QWizard::WizardButton">
     <reject-enum-value name="NStandardButtons"/>
