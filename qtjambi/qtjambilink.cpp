@@ -247,6 +247,8 @@ void QtJambiLink::aboutToMakeObjectInvalid(JNIEnv *env)
         env->CallVoidMethod(m_java_object, sc->QtJambiObject.disposed);
         qtjambi_exception_check(env);
         env->SetLongField(m_java_object, sc->QtJambiObject.native_id, 0);
+        if (m_in_cache)
+            removeFromCache(env);
         QTJAMBI_EXCEPTION_CHECK(env);
         m_object_invalid = true;
     }
@@ -448,10 +450,9 @@ void QtJambiLink::setMetaType(int metaType)
 
 
 void QtJambiLink::resetObject(JNIEnv *env) {
+    releaseJavaObject(env);
     aboutToMakeObjectInvalid(env);
 
-    if (m_in_cache)
-        removeFromCache(env);
     m_pointer = 0;
 
     if (m_wrapper) {
@@ -490,9 +491,6 @@ jmethodID QtJambiLink::findMethod(JNIEnv *env, jobject javaRef, const QString &m
 void QtJambiLink::removeFromCache(JNIEnv *env)
 {
     QWriteLocker locker(gUserObjectCacheLock());
-
-    releaseJavaObject(env);
-
     if (m_pointer != 0 && gUserObjectCache() && gUserObjectCache()->contains(m_pointer)) {
         int count = gUserObjectCache()->remove(m_pointer);
         Q_ASSERT(count == 1);
