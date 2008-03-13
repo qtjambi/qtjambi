@@ -1,17 +1,4 @@
 /****************************************************************************
-**
-** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
-**
-** This file is part of $PRODUCT$.
-**
-** $JAVA_LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
-/****************************************************************************
  **
  **  (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
  **
@@ -72,18 +59,18 @@ public class Menus extends QMainWindow {
         setCentralWidget(widget);
 
         QWidget topFiller = new QWidget();
-        topFiller.setSizePolicy(QSizePolicy.Policy.Expanding, 
+        topFiller.setSizePolicy(QSizePolicy.Policy.Expanding,
                                 QSizePolicy.Policy.Expanding);
 
-        infoLabel = new QLabel(tr("<i>Choose a menu option, " 
+        infoLabel = new QLabel(tr("<i>Choose a menu option, "
                                   + "or right-click to invoke "
                                   + "a context menu</i>"));
-        infoLabel.setFrameStyle(QFrame.Shape.StyledPanel.value() 
+        infoLabel.setFrameStyle(QFrame.Shape.StyledPanel.value()
                                 | QFrame.Shadow.Sunken.value());
         infoLabel.setAlignment(AlignmentFlag.AlignCenter);
 
         QWidget bottomFiller = new QWidget();
-        bottomFiller.setSizePolicy(QSizePolicy.Policy.Expanding, 
+        bottomFiller.setSizePolicy(QSizePolicy.Policy.Expanding,
                                    QSizePolicy.Policy.Expanding);
 
         QVBoxLayout layout = new QVBoxLayout();
@@ -193,7 +180,7 @@ public class Menus extends QMainWindow {
     void aboutQt() {
         infoLabel.setText(tr("Invoked <b>Help|About Qt</b>"));
     }
-    
+
     void aboutQtJambi() {
         infoLabel.setText(tr("Invoked <b>Help|About Qt Jambi</b>"));
     }
@@ -273,7 +260,7 @@ public class Menus extends QMainWindow {
         setLineSpacingAct.setStatusTip(tr("Change the gap between the lines of a paragraph"));
         setLineSpacingAct.triggered.connect(this, "setLineSpacing()");
 
-        setParagraphSpacingAct = new QAction(tr("Set &Paragraph Spacing..."), 
+        setParagraphSpacingAct = new QAction(tr("Set &Paragraph Spacing..."),
                                              this);
         setLineSpacingAct.setStatusTip(tr("Change the gap between paragraphs"));
         setParagraphSpacingAct.triggered.connect(this, "setParagraphSpacing()");
@@ -281,7 +268,7 @@ public class Menus extends QMainWindow {
         aboutAct = new QAction(tr("&About"), this);
         aboutAct.setStatusTip(tr("Show the application's About box"));
         aboutAct.triggered.connect(this, "about()");
-        
+
         aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
         aboutQtJambiAct.setStatusTip(tr("Show the Qt Jambi library's About box"));
         aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
