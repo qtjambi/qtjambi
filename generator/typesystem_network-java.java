@@ -40,8 +40,9 @@ class QHostInfo___ extends QHostInfo {
                                              + "Signal's class is '" + signal.containingObject().getClass() + "'.");
         }
 
+        String methodName = com.trolltech.qt.QtJambiInternal.SignalPrefix + signal.name() + "(QHostInfo)";
         return lookupHost(name, (com.trolltech.qt.core.QObject)signal.containingObject(),
-                          com.trolltech.qt.QtJambiInternal.SignalPrefix + signal.name() + "(QHostInfo)");
+                          com.trolltech.qt.QNativePointer.createCharPointer(methodName));
     }
 }// class
 
