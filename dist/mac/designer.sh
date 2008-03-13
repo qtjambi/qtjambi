@@ -16,5 +16,5 @@ else
     VERSION=$(ls qtjambi-4*.jar)
     VERSION=${VERSION:8:8}
     CP=qtjambi-$VERSION.jar:qtjambi-examples-$VERSION.jar:qtjambi-designer-$VERSION.jar
-    DYLD_LIBRARY_PATH=$me/lib PATH=$me/bin:$PATH CLASSPATH=$CP $me/bin/designer.app/Contents/MacOS/Designer
+    DYLD_LIBRARY_PATH=$me/lib QT_PLUGIN_PATH=$me/plugins PATH=$me/bin:$PATH CLASSPATH=$CP $me/bin/designer.app/Contents/MacOS/Designer
 fi
