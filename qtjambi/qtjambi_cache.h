@@ -411,6 +411,13 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID valuePropertyName;
     } QItemEditorCreatorBase;
 
+    struct {
+        jclass class_ref;
+        jmethodID constructor;
+        jfieldID error;
+        jfieldID inputSource;
+    } ResolvedEntity;
+
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
     DECLARE_RESOLVE_FUNCTIONS(Boolean);
@@ -463,6 +470,7 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(QtConcurrent_FilteredFunctor);
     DECLARE_RESOLVE_FUNCTIONS(QClassPathEngine);
     DECLARE_RESOLVE_FUNCTIONS(QItemEditorCreatorBase);
+    DECLARE_RESOLVE_FUNCTIONS(ResolvedEntity);
 
 public:
     static StaticCache *instance();

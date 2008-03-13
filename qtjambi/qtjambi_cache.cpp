@@ -1447,3 +1447,23 @@ void StaticCache::resolveQItemEditorCreatorBase_internal()
         "()Lcom/trolltech/qt/core/QByteArray;");
     Q_ASSERT(QItemEditorCreatorBase.valuePropertyName);
 }
+
+void StaticCache::resolveResolvedEntity_internal() 
+{
+    JNIEnv *env = qtjambi_current_environment();
+
+    Q_ASSERT(!ResolvedEntity.class_ref);
+
+    ResolvedEntity.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/xml/QXmlEntityResolver$ResolvedEntity"));
+    Q_ASSERT(ResolvedEntity.class_ref);
+
+    ResolvedEntity.constructor = env->GetMethodID(ResolvedEntity.class_ref, "<init>", "(ZLcom/trolltech/qt/xml/QXmlInputSource;)V");
+    Q_ASSERT(ResolvedEntity.constructor);
+
+    ResolvedEntity.error = env->GetFieldID(ResolvedEntity.class_ref, "error", "Z");
+    Q_ASSERT(ResolvedEntity.error);
+
+    ResolvedEntity.inputSource = env->GetFieldID(ResolvedEntity.class_ref, "inputSource", "Lcom/trolltech/qt/xml/QXmlInputSource;");
+    Q_ASSERT(ResolvedEntity.inputSource);
+}
+

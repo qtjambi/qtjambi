@@ -409,4 +409,29 @@ public:
     }
 };
 
+class XmlEntityResolverSubclass: public QXmlEntityResolver 
+{
+public:
+    bool resolveEntity(const QString &publicId, const QString &systemId, QXmlInputSource *&ret)
+    {
+        if (publicId == "c++") {
+            ret = new QXmlInputSource;
+            ret->setData(QString::fromLatin1("Made in C++"));
+        } 
+
+        return (systemId != "error");
+    }
+
+    QXmlInputSource *callResolveEntity(const QString &publicId, const QString &systemId) 
+    {
+        QXmlInputSource *ptr = 0;
+        bool error = !resolveEntity(publicId, systemId, ptr);
+
+        if (error && ptr != 0)
+            ptr->setData(ptr->data() + QString::fromLatin1(" with error"));
+
+        return ptr;
+    }
+};
+
 #endif

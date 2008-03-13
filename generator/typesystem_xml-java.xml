@@ -313,6 +313,34 @@
         </modify-function>                
     </object-type>
     
+    <interface-type name="QXmlEntityResolver">
+        <inject-code>        
+            <import-file name="typesystem_xml-java.java" quote-after-line="interface QXmlEntityResolver___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="resolveEntity(QString,QString,QXmlInputSource&amp;*)">
+            <modify-argument index="3"> 
+                <remove-argument/> 
+                <conversion-rule class="shell">
+                    // nothing
+                </conversion-rule>
+                <conversion-rule class="native">
+                    QXmlInputSource *inputSourceHolder = 0;
+                    QXmlInputSource *&amp;%out = inputSourceHolder;
+                </conversion-rule>
+            </modify-argument>
+            <modify-argument index="return">
+                <replace-type modified-type="com.trolltech.qt.xml.QXmlEntityResolver$ResolvedEntity" />
+                <conversion-rule class="native">
+                    jobject %out = qtjambi_to_resolvedentity(__jni_env, %in, inputSourceHolder);
+                </conversion-rule>
+                <conversion-rule class="shell">                    
+                    bool %out = qtjambi_from_resolvedentity(__jni_env, (void *&amp;) %3, %in);
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>
+
+    </interface-type>
+    
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomNodeList' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamNamespaceDeclaration' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomNamedNodeMap' has equals operators but no qHash() function"/>

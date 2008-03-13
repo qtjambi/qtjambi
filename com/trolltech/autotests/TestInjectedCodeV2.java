@@ -20,6 +20,9 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
+import com.trolltech.qt.xml.QXmlInputSource;
+import com.trolltech.qt.xml.QXmlEntityResolver.ResolvedEntity;
+
 import static org.junit.Assert.*;
 
 public class TestInjectedCodeV2 extends QApplicationTest {
@@ -252,4 +255,54 @@ public class TestInjectedCodeV2 extends QApplicationTest {
 		int ret = GraphicsWidgetSubclass.callInitStyleOption(gwss);
 		assertEquals(444, ret);
     }
+    
+    static class XmlEntityResolverSubclassSubclass extends XmlEntityResolverSubclass{
+
+		@Override
+		public ResolvedEntity resolveEntity(String publicId, String systemId) {
+			if (publicId.equals("In java")) {
+				QXmlInputSource src = new QXmlInputSource();
+				src.setData("Made in Java");
+				return new ResolvedEntity(systemId.equals("error"), src);
+			} else {
+				return super.resolveEntity(publicId, systemId);
+			}
+		}
+
+		@Override
+		public String errorString() {			
+			return null;
+		}
+    	
+    }
+    
+    
+    @Test
+    public void QXmlEntityResolverResolveEntityMadeInJava() {
+    	XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
+    	QXmlInputSource src = xerss.callResolveEntity("In java", "");
+    	assertEquals("Made in Java", src.data());    	
+    }
+    
+    @Test
+    public void QXmlEntityResolverResolveEntityMadeInJavaWithError() {
+    	XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
+    	QXmlInputSource src = xerss.callResolveEntity("In java", "error");
+    	assertEquals("Made in Java with error", src.data());    	    	
+    }
+    
+    @Test
+    public void QXmlEntityResolverResolveEntityMadeInCpp() {
+    	XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
+    	QXmlInputSource src = xerss.callResolveEntity("c++", "");
+    	assertEquals("Made in C++", src.data());    	
+    }
+    
+    @Test
+    public void QXmlEntityResolverResolveEntityMadeInCppWithError() {
+    	XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
+    	QXmlInputSource src = xerss.callResolveEntity("c++", "error");
+    	assertEquals("Made in C++ with error", src.data());    	    	
+    }
+    
 }

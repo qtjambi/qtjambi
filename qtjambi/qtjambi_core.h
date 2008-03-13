@@ -310,6 +310,12 @@ QTJAMBI_EXPORT
 void qtjambi_from_cellatindex(JNIEnv *env, jobject tableArea, int *row, int *column, int *rowCount, int *columnCount, bool *isSelected);
 
 QTJAMBI_EXPORT
+jobject qtjambi_to_resolvedentity(JNIEnv *env, bool success, void *inputSource);
+
+QTJAMBI_EXPORT
+bool qtjambi_from_resolvedentity(JNIEnv *env, void *&inputSource, jobject resolvedEntity);
+
+QTJAMBI_EXPORT
 void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections);
 
 QTJAMBI_EXPORT

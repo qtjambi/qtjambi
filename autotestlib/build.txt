@@ -88,6 +88,7 @@
     </inject-code>
   </object-type>
   <object-type name="QObjectDestroyed" />
+  <object-type name="XmlEntityResolverSubclass" />
   <object-type name="SpinBoxHandler" />
   <object-type name="SpinBoxSubclass" />
   <object-type name="GraphicsSceneSubclass" />

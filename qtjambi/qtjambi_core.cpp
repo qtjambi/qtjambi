@@ -743,6 +743,26 @@ void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *colum
         *columnCount = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.columnCount) : -1;
 }
 
+jobject qtjambi_to_resolvedentity(JNIEnv *env, bool success, void *inputSource)
+{
+    StaticCache *sc = StaticCache::instance();
+    sc->resolveResolvedEntity();
+
+    jobject java_inputSource = qtjambi_from_object(env, inputSource, "QXmlInputSource", "com/trolltech/qt/xml/", true);
+    return env->NewObject(sc->ResolvedEntity.class_ref, sc->ResolvedEntity.constructor, !success, java_inputSource);
+}
+
+bool qtjambi_from_resolvedentity(JNIEnv *env, void *&inputSource, jobject resolvedEntity) 
+{
+    StaticCache *sc = StaticCache::instance();
+    sc->resolveResolvedEntity();
+    
+    jobject java_inputSource = env->GetObjectField(resolvedEntity, sc->ResolvedEntity.inputSource);
+    inputSource = qtjambi_to_object(env, java_inputSource);
+
+    return !env->GetBooleanField(resolvedEntity, sc->ResolvedEntity.error);
+}
+
 jobject qtjambi_to_cellatindex(JNIEnv *env, int row, int column, int rowCount, int columnCount, bool isSelected)
 {
     StaticCache *sc = StaticCache::instance();

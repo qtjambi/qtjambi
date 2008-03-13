@@ -75,3 +75,21 @@ class QXmlStreamWriter___ extends QXmlStreamWriter {
     }
 
 }// class
+
+interface QXmlEntityResolver___ extends QXmlEntityResolver {
+
+    public static class ResolvedEntity {
+
+        public boolean error;
+        public QXmlInputSource inputSource;
+
+        public ResolvedEntity(boolean error, QXmlInputSource inputSource) {
+
+            this.error = error;
+            this.inputSource = inputSource;
+
+        }
+
+    }
+
+}// class
