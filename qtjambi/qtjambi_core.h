@@ -283,6 +283,9 @@ QTJAMBI_EXPORT
 void qtjambi_invalidate_object(JNIEnv *env, jobject java_object);
 
 QTJAMBI_EXPORT
+void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection);
+
+QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject);
 
 QTJAMBI_EXPORT

@@ -1767,7 +1767,11 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
                             if (type && type->isNativePointer()) {
                                 nativePointer = true;
                                 if (resettableObject) break;
-                            } else if (!java_function->isFinal() && type && type->isObject() && !type->isQObject()) {
+                            } else if (!java_function->isFinal() 
+                                       && type 
+                                       && type->isObject() 
+                                       && !type->isQObject()
+                                       && !java_function->resetObjectAfterUse(argument->argumentIndex()+1)) {
                                 resettableObject = true;
                                 if (nativePointer) break ;
                             }

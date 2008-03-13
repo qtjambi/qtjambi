@@ -1091,8 +1091,8 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
             s << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
 
             AbstractMetaArgumentList arguments = java_function->arguments();
-            QStringList argumentsToReset;
-            foreach (const AbstractMetaArgument *argument, arguments) {
+            AbstractMetaArgumentList argumentsToReset;
+            foreach (AbstractMetaArgument *argument, arguments) {
                 if (!java_function->argumentRemoved(argument->argumentIndex()+1)) {
                     if (!argument->type()->isPrimitive()
                         || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex()+1).isEmpty()) {
@@ -1104,9 +1104,8 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
                                     argument->argumentIndex() + 1);
                     }
 
-                    if (java_function->resetObjectAfterUse(argument->argumentIndex()+1)) {
-                        argumentsToReset += "__java_" + argument->indexedName();
-                    }
+                    if (java_function->resetObjectAfterUse(argument->argumentIndex()+1))
+                        argumentsToReset.append(argument);
                 }
             }
 
@@ -1174,13 +1173,23 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
             writeOwnership(s, java_function, "this", -1, implementor);
             writeOwnership(s, java_function, "__java_return_value", 0, implementor);
 
-            foreach (QString argumentToReset, argumentsToReset) {
+            foreach (AbstractMetaArgument *argumentToReset, argumentsToReset) {
                 s << INDENT << "{" << endl;
                 {
                     Indentation indent(INDENT);
-                    s << INDENT << "QtJambiLink *__lnk = QtJambiLink::findLink(__jni_env, " << argumentToReset << ");" << endl
+
+                    QString argumentName = "__java_" + argumentToReset->indexedName();
+
+                    s << INDENT << "QtJambiLink *__lnk = QtJambiLink::findLink(__jni_env, " << argumentName << ");" << endl
                       << INDENT << "if (__lnk && __lnk->ownership() != QtJambiLink::JavaOwnership)" << endl
-                      << INDENT << "    qtjambi_invalidate_object(__jni_env, " << argumentToReset << ");" << endl;
+                      << INDENT << "    ";
+
+                    if (argumentToReset->type()->isContainer())
+                        s << "qtjambi_invalidate_collection(";
+                    else
+                        s << "qtjambi_invalidate_object(";
+
+                    s << "__jni_env, " << argumentName << ");" << endl;
                 }
                 s << INDENT << "}" << endl;
             }

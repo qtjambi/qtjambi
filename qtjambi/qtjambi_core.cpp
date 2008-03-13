@@ -464,6 +464,17 @@ void qtjambi_invalidate_object(JNIEnv *env, jobject java_object)
         link->resetObject(env);
 }
 
+void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection) 
+{
+    jobjectArray java_array = qtjambi_collection_toArray(env, java_collection);
+    jsize array_size = env->GetArrayLength(java_array);
+    for (int i=0; i<array_size; ++i) {
+        jobject java_element = env->GetObjectArrayElement(java_array, i);
+        if (java_element != 0)
+            qtjambi_invalidate_object(env, java_element);
+    }
+}
+
 static bool qtjambi_connect_callback(void **raw_data);
 
 // Find the first in meta_object's line of ancestors (including meta_object itself) which

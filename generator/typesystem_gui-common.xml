@@ -2820,6 +2820,9 @@
   </object-type>
 
   <object-type name="QTreeWidget">
+    <modify-function signature="mimeData(const QList&lt;QTreeWidgetItem*&gt;)const">
+        <modify-argument index="1" invalidate-after-use="yes"/>
+    </modify-function>
     <modify-function signature="dropMimeData(QTreeWidgetItem*,int,const QMimeData*,Qt::DropAction)">
         <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
@@ -3162,6 +3165,9 @@
   </object-type>
 
   <object-type name="QListWidget">
+    <modify-function signature="mimeData(const QList&lt;QListWidgetItem *&gt;)const">
+        <modify-argument index="1" invalidate-after-use="yes" />        
+    </modify-function>
     <modify-function signature="addItem(QListWidgetItem *)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++"/>
@@ -4035,6 +4041,9 @@
   </object-type>  
 
   <object-type name="QTableWidget">
+    <modify-function signature="mimeData(const QList&lt;QTableWidgetItem*&gt;)const">
+        <modify-argument index="1" invalidate-after-use="yes"/>
+    </modify-function>
     <modify-function signature="isSortingEnabled()const" remove="all"/>
     <modify-function signature="setSortingEnabled(bool)" remove="all"/>  
     <modify-function signature="setHorizontalHeaderItem(int, QTableWidgetItem *)">
