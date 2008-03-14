@@ -457,21 +457,27 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
     return returned;
 }
 
-void qtjambi_invalidate_object(JNIEnv *env, jobject java_object)
+void qtjambi_invalidate_object(JNIEnv *env, jobject java_object, bool checkJavaOwnership)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, java_object);
-    if (link != 0)
+    if (link != 0 && (!checkJavaOwnership || !link->createdByJava()))
         link->resetObject(env);
 }
 
-void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection) 
+void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection, bool checkJavaOwnership) 
 {
     jobjectArray java_array = qtjambi_collection_toArray(env, java_collection);
+    qtjambi_invalidate_array(env, java_array, checkJavaOwnership);
+}
+
+void qtjambi_invalidate_array(JNIEnv *env, jobjectArray java_array, bool checkJavaOwnership)
+{
     jsize array_size = env->GetArrayLength(java_array);
     for (int i=0; i<array_size; ++i) {
         jobject java_element = env->GetObjectArrayElement(java_array, i);
-        if (java_element != 0)
-            qtjambi_invalidate_object(env, java_element);
+        if (java_element != 0) {
+            qtjambi_invalidate_object(env, java_element, checkJavaOwnership);
+        }
     }
 }
 

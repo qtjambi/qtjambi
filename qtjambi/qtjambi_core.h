@@ -280,10 +280,13 @@ inline jstring qtjambi_from_qstring(JNIEnv *env, const QStringRef &s)
 }
 
 QTJAMBI_EXPORT
-void qtjambi_invalidate_object(JNIEnv *env, jobject java_object);
+void qtjambi_invalidate_object(JNIEnv *env, jobject java_object, bool checkJavaOwnership = true);
 
 QTJAMBI_EXPORT
-void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection);
+void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection, bool checkJavaOwnership = true);
+
+QTJAMBI_EXPORT
+void qtjambi_invalidate_array(JNIEnv *env, jobjectArray java_array, bool checkJavaOwnership = true);
 
 QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject);

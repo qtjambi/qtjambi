@@ -1174,24 +1174,16 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
             writeOwnership(s, java_function, "__java_return_value", 0, implementor);
 
             foreach (AbstractMetaArgument *argumentToReset, argumentsToReset) {
-                s << INDENT << "{" << endl;
-                {
-                    Indentation indent(INDENT);
 
-                    QString argumentName = "__java_" + argumentToReset->indexedName();
+                QString argumentName = "__java_" + argumentToReset->indexedName();
 
-                    s << INDENT << "QtJambiLink *__lnk = QtJambiLink::findLink(__jni_env, " << argumentName << ");" << endl
-                      << INDENT << "if (__lnk && __lnk->ownership() != QtJambiLink::JavaOwnership)" << endl
-                      << INDENT << "    ";
+                s << INDENT;
+                if (argumentToReset->type()->isContainer())
+                    s << "qtjambi_invalidate_collection(";
+                else
+                    s << "qtjambi_invalidate_object(";
 
-                    if (argumentToReset->type()->isContainer())
-                        s << "qtjambi_invalidate_collection(";
-                    else
-                        s << "qtjambi_invalidate_object(";
-
-                    s << "__jni_env, " << argumentName << ");" << endl;
-                }
-                s << INDENT << "}" << endl;
+                s << "__jni_env, " << argumentName << ");" << endl;
             }
 
             s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
