@@ -1211,30 +1211,32 @@ void AbstractMetaBuilder::traverseFunctions(ScopeModelItem scope_item, AbstractM
             if (meta_class->isNamespace())
                 *meta_function += AbstractMetaAttributes::Static;
 
-            if (QPropertySpec *read = meta_class->propertySpecForRead(meta_function->name())) {
-                if (read->type() == meta_function->type()->typeEntry()) {
-                    *meta_function += AbstractMetaAttributes::PropertyReader;
-                    meta_function->setPropertySpec(read);
+            if (!meta_function->isInvalid()) {
+                if (QPropertySpec *read = meta_class->propertySpecForRead(meta_function->name())) {
+                    if (read->type() == meta_function->type()->typeEntry()) {
+                        *meta_function += AbstractMetaAttributes::PropertyReader;
+                        meta_function->setPropertySpec(read);
 //                     printf("%s is reader for %s\n",
 //                            qPrintable(meta_function->name()),
 //                            qPrintable(read->name()));
-                }
-            } else if (QPropertySpec *write =
-                       meta_class->propertySpecForWrite(meta_function->name())) {
-                if (write->type() == meta_function->arguments().at(0)->type()->typeEntry()) {
+                    }
+                } else if (QPropertySpec *write =
+                           meta_class->propertySpecForWrite(meta_function->name())) {
+                    if (write->type() == meta_function->arguments().at(0)->type()->typeEntry()) {
                     *meta_function += AbstractMetaAttributes::PropertyWriter;
                     meta_function->setPropertySpec(write);
 //                     printf("%s is writer for %s\n",
 //                            qPrintable(meta_function->name()),
 //                            qPrintable(write->name()));
-                }
-            } else if (QPropertySpec *reset =
-                       meta_class->propertySpecForReset(meta_function->name())) {
-                *meta_function += AbstractMetaAttributes::PropertyResetter;
-                meta_function->setPropertySpec(reset);
+                    }
+                } else if (QPropertySpec *reset =
+                           meta_class->propertySpecForReset(meta_function->name())) {
+                    *meta_function += AbstractMetaAttributes::PropertyResetter;
+                    meta_function->setPropertySpec(reset);
 //                     printf("%s is resetter for %s\n",
 //                            qPrintable(meta_function->name()),
 //                            qPrintable(reset->name()));
+                }
             }
 
 
