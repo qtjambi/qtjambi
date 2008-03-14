@@ -20,6 +20,7 @@ PLATFORM_MAC = "mac"
 LICENSE_GPL = "gpl"
 LICENSE_EVAL = "eval"
 LICENSE_COMMERCIAL = "commercial"
+LICENSE_PREVIEW = "preview"
 
 CMD_RESET = "R";
 CMD_NEWPKG = "N";
@@ -163,6 +164,8 @@ def readLicenseHeader(license, startDir):
         name = "eval_header.txt"
     elif license == LICENSE_COMMERCIAL:
         name = "commercial_header.txt"
+    elif license == LICENSE_PREVIEW:
+        name = "preview_header.txt"
     name = "%s/../dist/%s" % (startDir, name)
     file = open(name, "r")
     content = file.read()

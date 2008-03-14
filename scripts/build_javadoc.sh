@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if  [ "$QTJAMBI_VERSION" = "" ]; then
-     export QTJAMBI_VERSION=4.3.2_01
+     export QTJAMBI_VERSION=4.4.0_01
 fi
 
 if [ "$QDOC" = "" ]; then
@@ -17,14 +17,12 @@ fi
 echo "qdoc3 found in: $LOCAL_QDOC"
 
 export JAMBI=`echo $PWD | sed s,/scripts,,g`
+echo using jambi dir $JAMBI
 
 # Clean the directory
-cd  $JAMBI/doc/html
-if [ $? = 0 ]; then
-    rm -Rf *
-else
-    echo "Cannot find $JAMBI/doc/html. The script must be run in the scripts folder."
-    exit 1
+echo Cleaning up the old directory...
+if [ -d $JAMBI/doc/html ]; then
+    rm -Rf $JAMBI/doc/html
 fi
 
 # Generating the QDoc JAPI file
@@ -39,7 +37,7 @@ cd $JAMBI/doc/html/com/trolltech/qt
 jar -cf $JAMBI/scripts/qtjambi-jdoc-$QTJAMBI_VERSION.jar *.jdoc
 
 # Generating the sourcecode
-# cd $JAMBI/generator
+echo $PWD
 cd $JAMBI/generator
 ./generator --jdoc-enabled --jdoc-dir ../doc/html/com/trolltech/qt
 
@@ -54,7 +52,7 @@ HEADER="$HEADER<td><img src='$DOCHOME/com/trolltech/qt/images/qt-logo.png' width
 
 # Generating the Javadoc
 cd $JAMBI/doc/html
-javadoc -doclet jambidoc.JambiDoclet -header "$HEADER" -J-Xmx500m -sourcepath $JAMBI com.trolltech.qt com.trolltech.qt.core com.trolltech.qt.gui com.trolltech.qt.opengl com.trolltech.qt.sql com.trolltech.qt.opengl com.trolltech.qt.svg com.trolltech.qt.network com.trolltech.qt.xml com.trolltech.qt.designer
+javadoc -doclet jambidoc.JambiDoclet -header "$HEADER" -J-Xmx500m -sourcepath $JAMBI com.trolltech.qt com.trolltech.qt.core com.trolltech.qt.gui com.trolltech.qt.opengl com.trolltech.qt.sql com.trolltech.qt.opengl com.trolltech.qt.svg com.trolltech.qt.network com.trolltech.qt.xml com.trolltech.qt.designer com.trolltech.qt.webkit com.trolltech.qt.phonon
 
 jar -cf qtjambi-javadoc-$QTJAMBI_VERSION.jar *
 
