@@ -32,7 +32,7 @@ public class QSignalEmitter {
         String name = "";
     }
 
-    /* friendly */ static ResolvedSignal resolveSignal(Field field, Class<?> declaringClass) {
+    static ResolvedSignal resolveSignal(Field field, Class<?> declaringClass) {
         ResolvedSignal resolvedSignal = new ResolvedSignal();
         resolvedSignal.name = field.getName();
 
@@ -93,7 +93,7 @@ public class QSignalEmitter {
         private Class<?>            declaringClass      = null;
         private boolean             connectedToCpp      = false;
         private boolean             inDisconnect        = false;
-        
+
         @SuppressWarnings("unused")
         private boolean 			inJavaEmission	    = false;
 
@@ -352,7 +352,7 @@ public class QSignalEmitter {
          *
          * @return An array of integers indicating the number of dimensions of each of the signal arguments
          */
-        /* friendly */ int[] arrayDimensions() {
+        int[] arrayDimensions() {
             resolveSignal();
             return arrayDimensions;
         }
@@ -365,7 +365,7 @@ public class QSignalEmitter {
          *
          * @return An array of Class objects specifying the base type of each of the signal arguments.
          */
-        /* friendly */ Class<?>[] resolveSignal() {
+        Class<?>[] resolveSignal() {
             if (types == null) {
                 boolean found = false;
                 types = new Class[0]; // For signals with no parameters
@@ -447,7 +447,7 @@ public class QSignalEmitter {
             inJavaEmission = true;
             try {
 	            for (Connection c : cons) {
-	
+
 	                // If the receiver has been deleted we take the connection out of the list
 	                if (c.receiver instanceof QtJambiObject && ((QtJambiObject)c.receiver).nativeId() == 0) {
 	                    if (toRemove == null)
@@ -455,11 +455,11 @@ public class QSignalEmitter {
 	                    toRemove.add(c);
 	                    continue;
 	                }
-	
+
 	                if (inCppEmission && slotIsCppEmit(c))
 	                    continue;
-	
-	
+
+
 	                if (args.length == c.convertTypes.length) {
 	                    c.args = args;
 	                } else {
@@ -467,7 +467,7 @@ public class QSignalEmitter {
 	                        c.args = new Object[c.convertTypes.length];
 	                    System.arraycopy(args, 0, c.args, 0, c.args.length);
 	                }
-	
+
 	                // We do a direct connection in three cases:
 	                // 1. If the connection is explicitly set to be direct
 	                // 2. If it is automatic and the receiver is not a QObject (no thread() function)
@@ -489,46 +489,46 @@ public class QSignalEmitter {
 	                            oldSender = QtJambiInternal.setQObjectSender(((QObject) c.receiver).nativeId(),
 	                                                                         ((QObject) QSignalEmitter.this).nativeId());
 	                        }
-	
+
 	                        try {
 	                            c.slot.invoke(c.receiver, c.args);
 	                        } catch (IllegalAccessException e) {
 	                            QtJambiInternal.invokeSlot(c.receiver, c.slotId, c.returnType,
 	                                    c.args, c.convertTypes);
 	                        }
-	
+
 	                        if (updateSender) {
 	                            QtJambiInternal.resetQObjectSender(((QObject) c.receiver).nativeId(),
 	                                                              oldSender);
 	                        }
-	
+
 	                    } catch (InvocationTargetException e) {
 	                        System.err.println("Exception caught after invoking slot");
 	                        e.getCause().printStackTrace();
-	
+
 	                    } catch (Exception e) {
 	                        System.err.println("Exception caught after invoking slot:");
 	                        e.printStackTrace();
 	                    }
 	                    currentSender.set(oldEmitter);
 	                } else {
-	
+
 	                    QObject sender = null;
 	                    if(c.receiver instanceof QObject && QSignalEmitter.this instanceof QObject) {
 	                        sender = (QObject) QSignalEmitter.this;
 	                    }
-	
+
 	                    QMetaCallEvent event = new QMetaCallEvent(c, sender, c.args);
 	                    QObject eventReceiver = null;
 	                    if (c.receiver instanceof QObject)
 	                        eventReceiver = (QObject) c.receiver;
 	                    else
 	                        eventReceiver = QCoreApplication.instance();
-	
+
 	                    QCoreApplication.postEvent(eventReceiver, event);
 	                }
 	            }
-	
+
 	            // Remove the ones marked for removal..
 	            removeConnection_helper(toRemove);
 

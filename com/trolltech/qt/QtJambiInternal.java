@@ -1514,7 +1514,7 @@ private final static int PropertyResettable                         = 0x00000004
         return methodSignature(m, false);
     }
 
-    /*friendly*/ static String signalParameters(QSignalEmitter.AbstractSignal signal)
+    static String signalParameters(QSignalEmitter.AbstractSignal signal)
     {
         return bunchOfClassNamesInARow(signal.resolveSignal(), signal.arrayDimensions());
     }
