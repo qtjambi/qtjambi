@@ -839,7 +839,7 @@
     </custom-destructor>  
   </value-type>
 
-  <value-type name="QFontInfo" delete-in-main-thread="yes">
+  <value-type name="QFontInfo" delete-in-main-thread="yes" expense-cost="1" expense-limit="1000">
     <custom-constructor>
     return new QFontInfo(*copy);
     </custom-constructor>
@@ -871,7 +871,7 @@
     <include file-name="QTextEdit" location="global"/>
   </value-type>
 
-  <value-type name="QFont" delete-in-main-thread="yes">
+  <value-type name="QFont" delete-in-main-thread="yes" expense-cost="1" expense-limit="1000">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>    
@@ -1064,7 +1064,7 @@
       <modify-function signature="light(int)const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
  
-  <value-type name="QFontMetricsF" delete-in-main-thread="yes">
+  <value-type name="QFontMetricsF" delete-in-main-thread="yes" expense-cost="1" expense-limit="1000">
     <custom-constructor>
         return new QFontMetricsF(*copy);
     </custom-constructor>
@@ -1103,7 +1103,7 @@
    </value-type>
    <value-type name="QTextOption::Tab" />
 
-  <value-type name="QFontMetrics" delete-in-main-thread="yes">
+  <value-type name="QFontMetrics" delete-in-main-thread="yes" expense-cost="1" expense-limit="1000">
     <custom-constructor>
         return new QFontMetrics(*copy);
     </custom-constructor>
