@@ -28,15 +28,18 @@ class JavaGenerator : public Generator
 public:
     JavaGenerator();
 
-    QString translateType(const AbstractMetaType *java_type, const AbstractMetaClass *context, Option option = NoOption);
+    static QString translateType(const AbstractMetaType *java_type, const AbstractMetaClass *context, Option option = NoOption);
 
     void writeInjectedCode(QTextStream &s,
                            const AbstractMetaFunction *java_function,
                            CodeSnip::Position position);
-    void writeArgument(QTextStream &s,
+    static void writeArgument(QTextStream &s,
                        const AbstractMetaFunction *java_function,
                        const AbstractMetaArgument *java_argument,
                        uint options = 0);
+    static QString argumentString(const AbstractMetaFunction *java_function,
+                                  const AbstractMetaArgument *java_argument,
+                                  uint options = 0);
     void writeEnum(QTextStream &s, const AbstractMetaEnum *java_enum);
     void writeIntegerEnum(QTextStream &s, const AbstractMetaEnum *java_enum);
     void writeSignal(QTextStream &s, const AbstractMetaFunction *java_function);
@@ -98,6 +101,9 @@ public:
     void setDocumentationEnabled(bool e) { m_docs_enabled = e; }
     void generate();
 
+    inline bool nativeJumpTable() const { return m_native_jump_table; }
+    inline void setNativeJumpTable(bool n) { m_native_jump_table = n; }
+
 private:
     QString subDirectoryForPackage(const QString &package) const { return QString(package).replace(".", "/"); }
 
@@ -106,6 +112,7 @@ protected:
     QString m_doc_directory;
     DocParser *m_doc_parser;
     bool m_docs_enabled;
+    bool m_native_jump_table;
     QList<const AbstractMetaFunction *> m_nativepointer_functions;
     QList<const AbstractMetaFunction *> m_resettable_object_functions;
     QList<const AbstractMetaFunction *> m_reference_count_candidate_functions;

@@ -233,6 +233,17 @@ QByteArray jniName(const QString &name) {
         return "jobject";
 }
 
+QString CppImplGenerator::jniReturnName(const AbstractMetaFunction *java_function)
+{
+    QString return_type = translateType(java_function->type(), EnumAsInts);
+    QString new_return_type = java_function->typeReplaced(0);
+    if (!new_return_type.isEmpty()) {
+        return_type = jniName(new_return_type);
+    }
+    return return_type;
+}
+
+
 QByteArray jniTypeName(const AbstractMetaType *java_type)
 {
     if (!java_type) {
@@ -1321,15 +1332,10 @@ void CppImplGenerator::writeFunctionName(QTextStream &s,
     AbstractMetaArgumentList arguments = java_function->arguments();
 
     // Function signature
-    bool callThrough = java_function->needsCallThrough();
-    QString return_type = translateType(java_function->type(), EnumAsInts);
-    QString new_return_type = java_function->typeReplaced(0);
-    if (!new_return_type.isEmpty()) {
-        return_type = jniName(new_return_type);
-    }
-
+    QString return_type = jniReturnName(java_function);
     QString function_name;
 
+    bool callThrough = java_function->needsCallThrough();
     if (!callThrough)
         function_name = java_function->name();
     else
@@ -2095,7 +2101,7 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
     }
 
     if (java_type->isJObjectWrapper()) {
-        s << INDENT << "JObjectWrapper " << qt_name 
+        s << INDENT << "JObjectWrapper " << qt_name
           << " = qtjambi_to_jobjectwrapper(__jni_env, " << java_name << ");" << endl;
     } else if (java_type->isVariant()) {
         s << INDENT << "QVariant " << qt_name
@@ -2898,7 +2904,7 @@ void CppImplGenerator::writeFunctionCallArguments(QTextStream &s,
 }
 
 
-QString CppImplGenerator::translateType(const AbstractMetaType *java_type, Option option) const
+QString CppImplGenerator::translateType(const AbstractMetaType *java_type, Option option)
 {
     if (!java_type)
         return "void";

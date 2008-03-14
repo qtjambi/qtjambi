@@ -21,6 +21,7 @@
 #include "classlistgenerator.h"
 #include "qdocgenerator.h"
 #include "uiconverter.h"
+#include "jumptable.h"
 
 #include <QFileInfo>
 
@@ -39,13 +40,14 @@ GeneratorSetJava::GeneratorSetJava() :
     build_qdoc_japi(false),
     docs_enabled(false),
     do_ui_convert(false),
+    native_jump_table(false),
     doc_dir("../../main/doc/jdoc")
 {}
 
 QString GeneratorSetJava::usage() {
     QString usage =
-        "  --no-java                                 \n" 
-        "  --no-metainfo                             \n" 
+        "  --no-java                                 \n"
+        "  --no-metainfo                             \n"
         "  --no-cpp-h                                \n"
         "  --no-cpp-impl                             \n"
         "  --convert-to-jui=[.ui-file name]          \n"
@@ -58,9 +60,10 @@ bool GeneratorSetJava::readParameters(const QMap<QString, QString> args) {
     no_java = args.contains("no-java");
     no_cpp_h = args.contains("no-cpp-h");
     no_cpp_impl = args.contains("no-cpp-impl");
-    no_metainfo = args.contains("no-metainfo"); 
+    no_metainfo = args.contains("no-metainfo");
     build_class_list = args.contains("build-class-list");
-    
+    native_jump_table = args.contains("native-jump-table");
+
     if (args.contains("build-qdoc-japi")) {
         no_java = true;
         no_cpp_h = true;
@@ -68,7 +71,7 @@ bool GeneratorSetJava::readParameters(const QMap<QString, QString> args) {
         no_metainfo = true;
         build_qdoc_japi = true;
     }
-         
+
     if (args.contains("jdoc-dir")) {
         doc_dir =  args.value("jdoc-dir");
     }
@@ -76,16 +79,16 @@ bool GeneratorSetJava::readParameters(const QMap<QString, QString> args) {
     docs_enabled = args.contains("jdoc-enabled");
 
     if (args.contains("custom-widgets"))
-        custom_widgets = args.value("custom-widgets");    
+        custom_widgets = args.value("custom-widgets");
 
     if (args.contains("convert-to-jui")) {
         ui_file_name = args.value("convert-to-jui");
         do_ui_convert = true;
-        
+
         if (!QFileInfo(ui_file_name).exists()) {
             printf(".ui file '%s' does not exist\n", qPrintable(ui_file_name));
             return false;
-        } 
+        }
     }
     return GeneratorSet::readParameters(args);
 }
@@ -120,6 +123,8 @@ QString GeneratorSetJava::generate() {
     CppHeaderGenerator *cpp_header_generator = 0;
     CppImplGenerator *cpp_impl_generator = 0;
     MetaInfoGenerator *metainfo = 0;
+    JumpTablePreprocessor *jumpTablePreprocessor = 0;
+    JumpTableGenerator *jumpTableGenerator = 0;
 
     QStringList contexts;
     if (build_qdoc_japi) {
@@ -127,11 +132,19 @@ QString GeneratorSetJava::generate() {
         contexts << "QDocGenerator";
     }
 
+    if (native_jump_table) {
+        jumpTablePreprocessor = new JumpTablePreprocessor();
+        generators << jumpTablePreprocessor;
+        contexts << "JumpTablePreprocessor";
+    }
+
     if (!no_java) {
         java_generator = new JavaGenerator;
         java_generator->setDocumentationDirectory(doc_dir);
         java_generator->setDocumentationEnabled(docs_enabled);
+        java_generator->setNativeJumpTable(native_jump_table);
         generators << java_generator;
+
         contexts << "JavaGenerator";
     }
 
@@ -143,8 +156,15 @@ QString GeneratorSetJava::generate() {
 
     if (!no_cpp_impl) {
         cpp_impl_generator = new CppImplGenerator(priGenerator);
+        cpp_impl_generator->setNativeJumpTable(native_jump_table);
         generators << cpp_impl_generator;
         contexts << "CppImplGenerator";
+    }
+
+    if (native_jump_table) {
+        jumpTableGenerator = new JumpTableGenerator(jumpTablePreprocessor);
+        generators << jumpTableGenerator;
+        contexts << "JumpTableGenerator";
     }
 
     if (!no_metainfo) {
@@ -193,7 +213,7 @@ QString GeneratorSetJava::generate() {
         .arg(metainfo ? metainfo->numGeneratedAndWritten() : 0)
         .arg(priGenerator->numGenerated())
         .arg(priGenerator->numGeneratedAndWritten());
-    
+
     return res;
 }
 

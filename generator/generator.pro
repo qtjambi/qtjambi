@@ -10,12 +10,13 @@ HEADERS += \
         cppheadergenerator.h \
         cppimplgenerator.h \
         docparser.h \
+        generatorsetjava.h \
         javagenerator.h \
+        jumptable.h \
         metainfogenerator.h \
         metajavabuilder.h \
         qdocgenerator.h \
         uiconverter.h \
-        generatorsetjava.h \
    
 SOURCES += \
         classlistgenerator.cpp \
@@ -23,11 +24,12 @@ SOURCES += \
         cppheadergenerator.cpp \
         cppimplgenerator.cpp \
         docparser.cpp \
+        generatorsetjava.cpp \
         javagenerator.cpp \
+        jumptable.cpp \
         metainfogenerator.cpp \
         metajavabuilder.cpp \
         qdocgenerator.cpp \
         uiconverter.cpp \
-        generatorsetjava.cpp \
    
 include(generator.pri)

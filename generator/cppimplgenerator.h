@@ -31,6 +31,7 @@ class CppImplGenerator : public CppGenerator
 
 public:
     CppImplGenerator(PriGenerator *pri)
+        : m_native_jump_table(false)
     {
         priGenerator = pri;
     }
@@ -156,14 +157,19 @@ public:
 
     bool hasCustomDestructor(const AbstractMetaClass *java_class) const;
 
-    QString translateType(const AbstractMetaType *java_type, Option option = NoOption) const;
+    static QString translateType(const AbstractMetaType *java_type, Option option = NoOption);
+
+    inline bool nativeJumpTable() const { return m_native_jump_table; }
+    inline void setNativeJumpTable(bool n) { m_native_jump_table = n; }
+
+    static QString jniReturnName(const AbstractMetaFunction *java_function);
 
 private:
     void writeDefaultConstructedValues_helper(QSet<QString> &values,
                                               const AbstractMetaFunction *function);
     QString fromObject(const TypeEntry *centry, const QString &var_name);
 
-
+    bool m_native_jump_table;
 };
 
 #endif // CPPIMPLGENERATOR_H

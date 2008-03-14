@@ -42,6 +42,7 @@ private:
     bool build_qdoc_japi;
     bool docs_enabled;
     bool do_ui_convert;
+    bool native_jump_table;
 
     QString doc_dir;
     QString ui_file_name;

@@ -391,7 +391,8 @@ public:
           m_interface_class(0),
           m_property_spec(0),
           m_constant(false),
-          m_invalid(false)
+          m_invalid(false),
+          m_jumptable_id(-1)
     {
     }
 
@@ -511,6 +512,9 @@ public:
     void setPropertySpec(QPropertySpec *spec) { m_property_spec = spec; }
     QPropertySpec *propertySpec() const { return m_property_spec; }
 
+    int jumpTableId() const { return m_jumptable_id; }
+    void setJumpTableId(int id) { m_jumptable_id = id; }
+
 private:
     QString m_name;
     QString m_original_name;
@@ -527,6 +531,7 @@ private:
     AbstractMetaArgumentList m_arguments;
     uint m_constant                 : 1;
     uint m_invalid                  : 1;
+    int m_jumptable_id;
 };
 
 

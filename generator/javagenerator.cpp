@@ -25,7 +25,8 @@ static Indentor INDENT;
 
 JavaGenerator::JavaGenerator()
     : m_doc_parser(0),
-      m_docs_enabled(false)
+      m_docs_enabled(false),
+      m_native_jump_table(false)
 {
 }
 
@@ -130,21 +131,34 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, const Ab
     return s;
 }
 
+QString JavaGenerator::argumentString(const AbstractMetaFunction *java_function,
+                                      const AbstractMetaArgument *java_argument,
+                                      uint options)
+{
+    QString modified_type = java_function->typeReplaced(java_argument->argumentIndex() + 1);
+    QString arg;
+
+    if (modified_type.isEmpty())
+        arg = translateType(java_argument->type(), java_function->implementingClass(), (Option) options);
+    else
+        arg = modified_type.replace('$', '.');
+
+    if ((options & SkipName) == 0) {
+        arg += " ";
+        arg += java_argument->argumentName();
+    }
+
+    return arg;
+}
+
 void JavaGenerator::writeArgument(QTextStream &s,
                                   const AbstractMetaFunction *java_function,
                                   const AbstractMetaArgument *java_argument,
                                   uint options)
 {
-    QString modified_type = java_function->typeReplaced(java_argument->argumentIndex() + 1);
-
-    if (modified_type.isEmpty())
-        s << translateType(java_argument->type(), java_function->implementingClass(), (Option) options);
-    else
-        s << modified_type.replace('$', '.');
-
-    if ((options & SkipName) == 0)
-        s << " " << java_argument->argumentName();
+    s << argumentString(java_function, java_argument, options);
 }
+
 
 void JavaGenerator::writeIntegerEnum(QTextStream &s, const AbstractMetaEnum *java_enum)
 {
@@ -285,7 +299,6 @@ void JavaGenerator::writeEnum(QTextStream &s, const AbstractMetaEnum *java_enum)
           << "    }" << endl << endl;
     }
 }
-
 
 void JavaGenerator::writePrivateNativeFunction(QTextStream &s, const AbstractMetaFunction *java_function)
 {
@@ -1724,9 +1737,9 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         // Does the function need to be considered for resetting the Java objects after use?
         bool resettableObject = false;
 
-        if (!nativePointer 
+        if (!nativePointer
             && java_function->type()
-            && java_function->type()->hasInstantiations() 
+            && java_function->type()->hasInstantiations()
             && java_function->typeReplaced(0).isEmpty()) {
 
             QList<AbstractMetaType *> instantiations = java_function->type()->instantiations();
@@ -1751,9 +1764,9 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
                         nativePointer = true;
                         if (resettableObject) break ;
 
-                    } else if (!java_function->isFinalInTargetLang() 
-                                && argument->type()->isObject() 
-                                && !argument->type()->isQObject() 
+                    } else if (!java_function->isFinalInTargetLang()
+                                && argument->type()->isObject()
+                                && !argument->type()->isQObject()
                                 && !java_function->resetObjectAfterUse(argument->argumentIndex()+1)
                                 && java_function->ownership(java_function->declaringClass(), TypeSystem::ShellCode, argument->argumentIndex()+1) == TypeSystem::InvalidOwnership) {
 
@@ -1767,9 +1780,9 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
                             if (type && type->isNativePointer()) {
                                 nativePointer = true;
                                 if (resettableObject) break;
-                            } else if (!java_function->isFinal() 
-                                       && type 
-                                       && type->isObject() 
+                            } else if (!java_function->isFinal()
+                                       && type
+                                       && type->isObject()
                                        && !type->isQObject()
                                        && !java_function->resetObjectAfterUse(argument->argumentIndex()+1)) {
                                 resettableObject = true;
