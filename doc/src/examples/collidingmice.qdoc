@@ -45,7 +45,7 @@
     the direction in which the mouse will start moving.
 
     \skipto timer
-    \printuntil startTimer
+    \printuntil start
     \printline }
 
     Then we create a QObject instance that will act as a timer. We

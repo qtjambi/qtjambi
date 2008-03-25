@@ -127,7 +127,7 @@
     opportunity to abort the operation.
 
     \skipto foundFiles
-    \printuntil instance
+    \printuntil break
 
     We run through the files, one at a time, and for each file we
     update the QProgressDialog value. This property holds the current

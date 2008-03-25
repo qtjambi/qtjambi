@@ -31,8 +31,7 @@
 
     \quotefromfile AdvancedCalculator.java
     \skipto class AdvancedCalculator
-    \printuntil functions
-    \printuntil Function>();
+    \printuntil Interpreter
 
     In the \c Calculator class, we first provide a \c main() method
     to create and show the main application window when the example is
@@ -91,6 +90,7 @@
     in place, we can also establish the previously mentioned access to
     the input line edit and output text browser.
 
+    \omit
     Then we create the calculator functionality:
 
     \skipto Function fun
@@ -105,6 +105,7 @@
     define a operation specific \c result() method for each object,
     providing the operation's calculations. See the example code for
     more details.
+    \endomit
 
     \section1 Connecting to the User Interface
 
