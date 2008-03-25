@@ -158,7 +158,7 @@ class QJdbcSqlResult extends QSqlResult
         try {
             if (isForwardOnly()) {
                 statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-                                    ResultSet.CONCUR_UPDATABLE);
+                                    ResultSet.CONCUR_READ_ONLY);
             } else {
                 statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                 		ResultSet.CONCUR_READ_ONLY);
