@@ -249,8 +249,8 @@
     called.
 
     \omit
-    \printline ::readSettings(
-    \printuntil /^\}/
+    \printline readSettings(
+    \printuntil }
 
     The \c readSettings() method is called from the constructor to
     load the user's preferences and other application settings. The
@@ -273,8 +273,8 @@
     to call QWidget::resize() before QWidget::move(). The reason why
     is given in the \l{geometry.html}{Window Geometry} overview.
 
-    \printline ::writeSettings(
-    \printuntil /^\}/
+    \printline writeSettings(
+    \printuntil }
 
     The \c writeSettings() method is called from \c closeEvent().
     Writing settings is similar to reading them, except simpler. The
