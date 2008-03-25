@@ -31,7 +31,7 @@
 
     <target name="init.ant"
             unless="ant-qtjambi.jar.uptodate"
-            description="Create a jar containing all the Qt Jambi ant tasks.">
+            description="Creates a .jar file containing all the Qt Jambi ant tasks.">
         <mkdir dir="${outputDir}/ant-qtjambi"/>
         <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi" target="1.5">
             <include name="com/trolltech/tools/ant/*.java"/>
@@ -55,7 +55,7 @@
     </target>
 
     <target name="clean"
-            description="Clean everything.">
+            description="Cleans everything.">
         <delete file="${outputDir}/ant-qtjambi.jar"/>
 	<delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
 	<delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
@@ -78,7 +78,7 @@
 
     <target name="library.native.qmake"
             depends="init"
-            description="Run qmake on the Qt Jambi project.">
+            description="Runs qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
 	<qmake recursive="true" 
                dir="${outputDir}"
@@ -94,7 +94,7 @@
 
     <target name="generator.qmake"
             depends="init, generator.xmlmerge"
-            description="Run qmake on the generator project.">
+            description="Runs qmake on the generator project.">
 	<qmake config="${qtjambi.configuration}" 
                dir="${outputDir}/generator"
                pro="${sourceDir}/generator/generator.pro"/>
@@ -102,13 +102,13 @@
 
     <target name="generator.compile" 
 	    depends="init, generator.qmake"
-            description="Compile the Qt Jambi generator.">
+            description="Compiles the Qt Jambi generator.">
         <make dir="${outputDir}/generator" />
     </target>
 
     <target name="generator.run" 
             depends="init, generator.compile"
-            description="Run the Qt Jambi generator on the Qt source. It will use the Qt version found at the QTDIR variable.">
+            description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
         <generator dir="${outputDir}/generator"
                    outputDirectory="${outputDir}"
                    typesystem="${sourceDir}/generator/build_all.txt"
@@ -117,7 +117,7 @@
 
     <target name="library.native.compile" 
             depends="init"
-            description="Compile the c++ Qt Jambi bindings.">
+            description="Compiles the C++ Qt Jambi bindings.">
 	<make dir="${outputDir}"/>
     </target>
 
@@ -265,7 +265,7 @@
 
     <target name="library.native.bundle"
 	    depends="init"
-	    description="Creating .jar file with native libs...">
+	    description="Creates a .jar file file containing native libraries.">
 
         <qtjambi-platform-jar cacheKey="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
                               outdir="${outputDir}/platform-output">
@@ -328,7 +328,7 @@
     </target>
 
     <target name="generator.xmlmerge"
-	    description="Merge the XML files used by the Qt Jambi generator">
+	    description="Merges the XML files used by the Qt Jambi generator.">
         <xslt in="${sourceDir}/generator/typesystem_core-common.xml" 
               out="${outputDir}/generator/typesystem_core.xml"
               style="${sourceDir}/generator/merge.xsl"
@@ -410,35 +410,35 @@
 
     <target name="init"
 	    depends="init.ant, init.taskdef" 
-	    description="Initializes the Qt Jambi build environment..." >
+	    description="Initializes the Qt Jambi build environment." >
       <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
     </target>
 
     <target name="generator" 
 	    depends="init, generator.xmlmerge, generator.qmake, generator.compile, generator.run"
-	    description="Compile and run the Qt Jambi Generator..."/>
+	    description="Compiles and runs the Qt Jambi Generator."/>
 
     <target name="library.native"
 	    depends="library.native.qmake, library.native.compile, library.native.bundle"
-	    description="Compile and bundle the Qt Jambi native libraries..."/>
+	    description="Compiles and bundles the Qt Jambi native libraries."/>
 
     <target name="library.java"
 	    depends="library.java.compile, library.java.bundle"
-	    description="Compile and bundle the Qt Jambi java libraries..."/>
+	    description="Compiles and bundles the Qt Jambi java libraries."/>
 
     <target name="library.designer"
 	    depends="library.designer.compile, library.designer.bundle" 
-	    description="Compile and bundle the Qt Jambi designer libraries..."/>
+	    description="Compiles and bundles the Qt Jambi designer libraries."/>
 
     <target name="library"
 	    depends="init, library.native, library.java, library.designer"
-	    description="Compile and bundle the Qt Jambi libraries..."/>
+	    description="Compiles and bundles the Qt Jambi libraries."/>
 
     <target name="examples"
 	    depends="init, examples.juic, examples.bundle" 
-	    description="Compile and bundle the Qt Jambi examples..."/>
+	    description="Compiles and bundles the Qt Jambi examples."/>
 
     <target name="all"
-            description="Generates, builds and bundles the Qt Jambi libraries"
+            description="Generates, builds and bundles the Qt Jambi libraries."
             depends="init, generator, library, examples" />
 </project>
