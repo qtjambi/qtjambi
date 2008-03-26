@@ -36,7 +36,7 @@ public class XMLQuery extends QWidget {
         QGridLayout layout = new QGridLayout(this);
 
         sourceBrowser = new QTextBrowser(this);
-        sourceBrowser.setToolTip(tr("This window contains the source file used in the example.\n" + 
+        sourceBrowser.setToolTip(tr("This window contains the source file used in the example.\n" +
                 "The file is accessed using the classpath file engine. '"
                 + fileName + "'"));
         resultBrowser = new QTextBrowser(this);
@@ -60,7 +60,7 @@ public class XMLQuery extends QWidget {
 
         queryLine.setText("doc(\"" + fileName + "\")/xbel/folder/title");
         executeQuery();
-        
+
         setWindowTitle("XML Query");
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
@@ -76,7 +76,7 @@ public class XMLQuery extends QWidget {
         if (query.isValid()) {
 
             QXmlResultItems result = new QXmlResultItems();
-            query.evaluateToResult(result);
+            query.evaluateTo(result);
 
             QXmlItem item = result.next();
             while (!item.isNull()) {
